@@ -90538,6 +90538,9 @@ msgstr ""
 msgid "WorkItemBoard|Column actions"
 msgstr ""
 
+msgid "WorkItemBoard|Hide list"
+msgstr ""
+
 msgid "WorkItemBoard|Move left"
 msgstr ""
 

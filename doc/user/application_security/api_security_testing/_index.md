@@ -20,12 +20,12 @@ title: API security testing analyzer
 
 Test web APIs to help discover bugs and potential security issues that other QA processes may miss.
 Use API security testing in addition to other security scanners and your own test processes. You can
-run API security testing tests either as part your CI/CD workflow,
+run API security testing tests either as part of your CI/CD workflow,
 [on-demand](../dast/on-demand_scan.md), or both.
 
 > [!warning]
 > Do not run API security testing against a production server. Not only can it perform any function that
-> the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
+> the API can, but it may also trigger bugs in the API. This includes actions like modifying and deleting
 > data. Only run API security testing against a test server.
 
 ## Getting started
@@ -82,7 +82,7 @@ To view the output of a security scan:
    - Scanner: Identifies which analyzer detected the vulnerability.
    - Method: Establishes the vulnerable server interaction type.
    - URL: Shows the location of the vulnerability.
-   - Evidence: Describes test case to prove the presence of a given vulnerability
+   - Evidence: Describes a test case to prove the presence of a given vulnerability.
    - Identifiers: A list of references used to classify the vulnerability, such as CWE identifiers.
 
 You can also download the security scan results:
@@ -120,7 +120,7 @@ environment in a stage before the `dast` stage.
 
 If your pipeline is configured to deploy to the same web server on each run, running a pipeline
 while another is still running could cause a race condition in which one pipeline overwrites the
-code from another. The API to be scanned should be excluded from changes for the duration of a
+code from another. The API to be scanned should be excluded from changes for the duration of an
 API security testing scan. The only changes to the API should be from the API security testing scanner. Changes made to the
 API (for example, by users, scheduled tasks, database changes, code changes, other pipelines, or
 other scanners) during a scan could cause inaccurate results.
@@ -153,7 +153,7 @@ instructions to configure review apps for DAST in the [README.md](https://gitlab
 
 #### Docker Services
 
-If your application uses Docker containers you have another option for deploying and scanning with DAST.
+If your application uses Docker containers, you have another option for deploying and scanning with DAST.
 After your Docker build job completes and your image is added to your container registry, you can use the image as a
 [service](../../../ci/services/_index.md).
 
@@ -193,7 +193,7 @@ variables:
 ```
 
 Most applications depend on multiple services such as databases or caching services. By default, services defined in the services fields cannot communicate
-with each another. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags).
+with each other. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags).
 
 ```yaml
 variables:
@@ -211,9 +211,9 @@ services: # use services to link the container to the dast job
 To get support for your particular problem, use the [getting help channels](https://about.gitlab.com/get-help/).
 
 The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API security testing.
-Use `~"Category:API Security"` label when opening a new issue regarding API security testing to ensure it is quickly reviewed by the right people.
+Use the `~"Category:API Security"` label when opening a new issue regarding API security testing to ensure it is quickly reviewed by the right people.
 
-[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an emoji reaction or join the discussion.
+[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own. There's a good chance somebody else had the same issue or feature proposal. Show your support with an emoji reaction or join the discussion.
 
 When experiencing a behavior not working as expected, consider providing contextual information:
 
@@ -231,7 +231,7 @@ When experiencing a behavior not working as expected, consider providing context
   configurations. A check can use multiple Assertions. For example, Log Analysis, Response Analysis,
   and Status Code are common Assertions used together by checks. Checks with multiple Assertions
   allow them to be turned on and off.
-- Check: Performs a specific type of test, or performed a check for a type of vulnerability. For
+- Check: Performs a specific type of test, or performs a check for a type of vulnerability. For
   example, the SQL Injection Check performs DAST testing for SQL Injection vulnerabilities. The API security testing scanner is comprised of several checks. Checks can be turned on and off in a profile.
 - Profile: A configuration file has one or more testing profiles, or sub-configurations. You may
   have a profile for feature branches and another with extra testing for a main branch.

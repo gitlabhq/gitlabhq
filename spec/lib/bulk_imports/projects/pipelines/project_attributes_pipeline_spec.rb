@@ -85,7 +85,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :wit
       let(:extra) { { 'archived' => true } }
 
       it 'sets project as archived' do
-        expect(project.archived).to eq(true)
+        expect(project.archived).to be(true)
       end
     end
   end
@@ -115,7 +115,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :wit
 
       pipeline.load(context, project_attributes)
 
-      expect(project.importing?).to eq(true)
+      expect(project.importing?).to be(true)
     end
   end
 

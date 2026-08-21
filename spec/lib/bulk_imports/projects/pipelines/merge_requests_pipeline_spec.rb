@@ -331,7 +331,7 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
 
         note = imported_mr.notes.first
 
-        expect(note.system).to eq(true)
+        expect(note.system).to be(true)
         expect(note.noteable_type).to eq('MergeRequest')
         expect(note.system_note_metadata.action).to eq('commit')
         expect(note.system_note_metadata.commit_count).to eq(3)

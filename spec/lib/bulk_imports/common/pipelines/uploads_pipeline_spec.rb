@@ -39,7 +39,7 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
 
         expect(portable.uploads.map { |u| u.retrieve_uploader.filename }).to include('upload.txt')
 
-        expect(Dir.exist?(tmpdir)).to eq(false)
+        expect(Dir.exist?(tmpdir)).to be(false)
       end
 
       it 'skips loads on duplicates' do
@@ -107,7 +107,7 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
         expect(extracted_data.data).to contain_exactly(upload_file_path)
         expect(extracted_data.data).not_to include(uploads_dir_path)
         expect(extracted_data.data).not_to include(tar_file_path)
-        expect(File.exist?(tar_file_path)).to eq(false)
+        expect(File.exist?(tar_file_path)).to be(false)
       end
     end
 
@@ -176,7 +176,7 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
 
         pipeline.after_run(nil)
 
-        expect(Dir.exist?(tmpdir)).to eq(false)
+        expect(Dir.exist?(tmpdir)).to be(false)
       end
     end
   end

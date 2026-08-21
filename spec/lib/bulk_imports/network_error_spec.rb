@@ -20,10 +20,10 @@ RSpec.describe BulkImports::NetworkError, :clean_gitlab_redis_shared_state, feat
         raise described_class, cause
       rescue StandardError => exception
         described_class::MAX_RETRIABLE_COUNT.times do
-          expect(exception.retriable?(tracker)).to eq(true)
+          expect(exception.retriable?(tracker)).to be(true)
         end
 
-        expect(exception.retriable?(tracker)).to eq(false)
+        expect(exception.retriable?(tracker)).to be(false)
       end
     end
 
@@ -31,10 +31,10 @@ RSpec.describe BulkImports::NetworkError, :clean_gitlab_redis_shared_state, feat
       exception = described_class.new(response: double(code: 429))
 
       described_class::MAX_RETRIABLE_COUNT.times do
-        expect(exception.retriable?(tracker)).to eq(true)
+        expect(exception.retriable?(tracker)).to be(true)
       end
 
-      expect(exception.retriable?(tracker)).to eq(false)
+      expect(exception.retriable?(tracker)).to be(false)
     end
 
     it 'returns false for other exceptions' do
@@ -43,7 +43,7 @@ RSpec.describe BulkImports::NetworkError, :clean_gitlab_redis_shared_state, feat
       begin
         raise described_class, cause
       rescue StandardError => exception
-        expect(exception.retriable?(tracker)).to eq(false)
+        expect(exception.retriable?(tracker)).to be(false)
       end
     end
 

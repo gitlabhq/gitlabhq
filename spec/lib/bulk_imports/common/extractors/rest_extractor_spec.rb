@@ -25,7 +25,7 @@ RSpec.describe BulkImports::Common::Extractors::RestExtractor, feature_category:
       expect(extracted_data).to be_instance_of(BulkImports::Pipeline::ExtractedData)
       expect(extracted_data.data).to contain_exactly(response.parsed_response)
       expect(extracted_data.next_page).to eq(response.headers['x-next-page'])
-      expect(extracted_data.has_next_page?).to eq(true)
+      expect(extracted_data.has_next_page?).to be(true)
     end
   end
 end

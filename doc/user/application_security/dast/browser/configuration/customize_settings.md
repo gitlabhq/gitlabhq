@@ -14,9 +14,9 @@ Scope controls what URLs DAST follows when crawling the target application. Prop
 
 There are three types of scope:
 
-- in scope
-- out of scope
-- excluded from scope
+- In scope
+- Out of scope
+- Excluded from scope
 
 #### In scope
 
@@ -111,7 +111,7 @@ You can manage the trade-off between coverage and scan time with the following m
 
 Due to poor network conditions or heavy application load, the default timeouts may not be applicable to your application.
 
-Browser-based scans offer the ability to adjust various timeouts to ensure it continues smoothly as it transitions from one page to the next. These values are configured using a [Duration string](https://pkg.go.dev/time#ParseDuration), which allow you to configure durations with a prefix: `m` for minutes, `s` for seconds, and `ms` for milliseconds.
+Browser-based scans offer the ability to adjust various timeouts to ensure it continues smoothly as it transitions from one page to the next. These values are configured using a [Duration string](https://pkg.go.dev/time#ParseDuration), which allows you to configure durations with a prefix: `m` for minutes, `s` for seconds, and `ms` for milliseconds.
 
 Navigations, or the act of loading a new page, usually require the most amount of time because they are
 loading multiple new resources such as JavaScript or CSS files. Depending on the size of these resources, or the speed at which they are returned, the default `DAST_PAGE_READY_AFTER_NAVIGATION_TIMEOUT` may not be sufficient.
@@ -165,7 +165,7 @@ For a comprehensive list, see [Available CI/CD variables](variables.md).
 | `DAST_PAGE_READY_AFTER_ACTION_TIMEOUT` | `7s` | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis. Used as an alternative to `DAST_PAGE_READY_AFTER_NAVIGATION_TIMEOUT` for in-page actions that don't trigger a full page load. |
 | `DAST_PAGE_DOM_STABLE_WAIT` | `500ms` | Define how long to wait for updates to the DOM before checking a page is stable. Used at the beginning of the client-side render phase. |
 | `DAST_PAGE_DOM_READY_TIMEOUT` | `6s` | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after a navigation completes. Controls waiting for background data fetching and DOM rendering. |
-| `DAST_PAGE_IS_LOADING_ELEMENT` | None | Selector that when no longer visible on the page, indicates to the analyzer that the page has finished loading and the scan can continue. Marks the end of the client-side render process. |
+| `DAST_PAGE_IS_LOADING_ELEMENT` | None | Selector that, when no longer visible on the page, indicates to the analyzer that the page has finished loading and the scan can continue. Marks the end of the client-side render process. |
 
 #### Page loading workflow
 
@@ -176,16 +176,16 @@ each step in the process:
 
    1. Fetch HTML content from the server.
    1. Load referenced CSS and JavaScript files.
-   1. Parse content and renders the initial page.
+   1. Parse content and render the initial page.
    1. Trigger the standard "document ready" event.
 
    This phase uses either `DAST_PAGE_READY_AFTER_NAVIGATION_TIMEOUT` (for full page loads) or `DAST_PAGE_READY_AFTER_ACTION_TIMEOUT` (for in-page actions), which sets the maximum wait time for document loading.
 
-1. **Client-Side rendering**: After initial loading, many single-page applications:
+1. **Client-side rendering**: After initial loading, many single-page applications:
 
    - Perform initial JavaScript execution (`DAST_PAGE_DOM_STABLE_WAIT`).
    - Fetch background data with AJAX or other API calls.
-   - Render a DOM and performs updates based on fetched data (`DAST_PAGE_DOM_READY_TIMEOUT`).
+   - Render a DOM and perform updates based on fetched data (`DAST_PAGE_DOM_READY_TIMEOUT`).
    - Display page loading indicators (`DAST_PAGE_IS_LOADING_ELEMENT`).
 
    The scanner monitors these activities to determine when the page is ready for interaction.
@@ -316,7 +316,7 @@ You can also split the product details group pattern further into two groups:
 1. Generic product details group pattern: The pattern `www.your-site.com/products/*/details` matches all other products.
 
 One page can match more than one URL pattern. Specify patterns in the order you want them matched. For example,
-`www.your-site.com/products/4782-orange-777/details` matches both patterns but this is an orange product detail page.
+`www.your-site.com/products/4782-orange-777/details` matches both patterns, but this is an orange product detail page.
 To ensure it matches the orange product details group pattern, specify the orange product details before the generic
 product details group pattern in configuration.
 

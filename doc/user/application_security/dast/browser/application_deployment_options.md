@@ -9,7 +9,7 @@ title: Application deployment options
 DAST requires a deployed application to be available to scan.
 
 Depending on the complexity of the target application, there are a few options as to how to deploy and configure
-the DAST template. A set of example applications have been provided with their configurations in the
+the DAST template. A set of example applications has been provided with their configurations in the
 [DAST demonstrations](https://gitlab.com/gitlab-org/security-products/demos/dast/) project.
 
 ## Review apps
@@ -21,7 +21,7 @@ instructions to configure review apps for DAST in the [README](https://gitlab.co
 
 ## Docker Services
 
-If your application uses Docker containers you have another option for deploying and scanning with DAST.
+If your application uses Docker containers, you have another option for deploying and scanning with DAST.
 After your Docker build job completes and your image is added to your container registry, you can use the image as a
 [service](../../../../ci/services/_index.md).
 
@@ -63,7 +63,7 @@ variables:
 ```
 
 Most applications depend on multiple services such as databases or caching services. By default, services defined in the services fields cannot communicate
-with each another. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags).
+with each other. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags).
 
 ```yaml
 variables:

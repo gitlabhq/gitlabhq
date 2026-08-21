@@ -27,9 +27,10 @@ import {
 } from '../utils';
 import updateBoardWorkItemMutation from './graphql/update_board_work_item.mutation.graphql';
 import { DEFAULT_GROUP_BY, groupingStrategyFor } from './grouping';
-import { SHOW_ALL_GROUPS } from './grouping/visibility';
+import { SHOW_ALL_GROUPS, toggleGroupVisibility } from './grouping/visibility';
 import { orderGroups, reorderGroupIds } from './grouping/ordering';
 import workItemsGroupByVisibleGroupsQuery from './grouping/graphql/client/visible_groups.query.graphql';
+import updateVisibleGroupsMutation from './grouping/graphql/client/update_visible_groups.mutation.graphql';
 import {
   boardColumnQuery,
   boardColumnQueryVariables,
@@ -98,7 +99,7 @@ export default {
       required: false,
       default: () => [],
     },
-    canReorder: {
+    canManageColumns: {
       type: Boolean,
       required: false,
       default: false,
@@ -134,7 +135,14 @@ export default {
       default: false,
     },
   },
-  emits: ['set-error', 'set-active-item', 'toggle-collapse', 'reorder-groups', 'work-item-created'],
+  emits: [
+    'set-error',
+    'set-active-item',
+    'toggle-collapse',
+    'reorder-groups',
+    'hide-group',
+    'work-item-created',
+  ],
   data() {
     return {
       groupByValues: [],
@@ -196,7 +204,7 @@ export default {
     },
     // Reordering needs a user who can persist it and more than one column to move.
     canReorderColumns() {
-      return this.canReorder && this.orderedGroupByValues.length > 1;
+      return this.canManageColumns && this.orderedGroupByValues.length > 1;
     },
     // Epics are a fixed type on their board, so the type selector is hidden there.
     alwaysShowWorkItemTypeSelect() {
@@ -578,6 +586,29 @@ export default {
       }
       this.moveColumn(oldIndex, oldIndex + delta);
     },
+    async onColumnHide(value) {
+      const visibleGroups = toggleGroupVisibility({
+        visibleGroups: this.workItemsGroupByVisibleGroups,
+        groupBy: this.groupBy,
+        value,
+        allValues: this.groupByValues,
+      });
+
+      try {
+        await this.$apollo.mutate({
+          mutation: updateVisibleGroupsMutation,
+          variables: { visibleGroups },
+          // See syncVisibleGroupsToCache in planning_view.vue: caching this client-only
+          // mutation lets a later work item refetch overwrite unrelated edits.
+          fetchPolicy: 'no-cache',
+        });
+      } catch (error) {
+        Sentry.captureException(error);
+        return;
+      }
+
+      this.$emit('hide-group', visibleGroups);
+    },
     isDropAllowed({ item, value }) {
       return this.strategy?.isDropAllowed?.({ item, value, gateData: this.gateData }) ?? true;
     },
@@ -742,6 +773,7 @@ export default {
         :reorderable="canReorderColumns"
         :can-move-left="index > 0"
         :can-move-right="index < renderedColumns.length - 1"
+        :can-hide="canManageColumns"
         :can-create-work-item="canCreateWorkItem"
         :hidden-metadata-keys="hiddenMetadataKeys"
         :active-item="activeItem"
@@ -749,6 +781,7 @@ export default {
         @drag-start="onDragStart"
         @card-move="onCardMove"
         @move-column="onColumnShift({ value, delta: $event })"
+        @hide-column="onColumnHide(value)"
         @set-active-item="$emit('set-active-item', $event)"
         @check-board-params="checkDetailPanelParams"
         @toggle-collapse="$emit('toggle-collapse', groupId(value))"

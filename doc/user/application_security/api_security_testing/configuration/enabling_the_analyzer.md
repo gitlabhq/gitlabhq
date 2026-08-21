@@ -28,7 +28,7 @@ the body generation is limited to these body types:
 
 ## OpenAPI and media types
 
-A media type (formerly known as MIME type) is an identifier for file formats and format contents transmitted. A OpenAPI document lets you specify that a given operation can accept different media types, hence a given request can send data using different file content. As for example, a `PUT /user` operation to update user data could accept data in either XML (media type `application/xml`) or JSON (media type `application/json`) format.
+A media type (formerly known as MIME type) is an identifier for file formats and format contents transmitted. An OpenAPI document lets you specify that a given operation can accept different media types, hence a given request can send data using different file content. For example, a `PUT /user` operation to update user data could accept data in either XML (media type `application/xml`) or JSON (media type `application/json`) format.
 OpenAPI 2.x lets you specify the accepted media types globally or per operation, and OpenAPI 3.x lets you specify the accepted media types per operation. API security testing will check the listed media types, and try to produce sample data for each supported media type.
 
 - The default behavior is to select one of the supported media types to use. The first supported media type is chosen from the list. This behavior is configurable.
@@ -40,7 +40,7 @@ The environment variable `APISEC_OPENAPI_ALL_MEDIA_TYPES` lets you specify wheth
 
 Alternatively, the variable `APISEC_OPENAPI_MEDIA_TYPES` is used to provide a list of media types that will each be tested. Providing more than one media type causes testing to take longer, as testing is performed for each media type selected. When the environment variable `APISEC_OPENAPI_MEDIA_TYPES` is set to a list of media types, only the listed media types are included when creating requests.
 
-Multiple media types in `APISEC_OPENAPI_MEDIA_TYPES` are separated by a colon (`:`). For example, to limit request generation to the media types `application/x-www-form-urlencoded` and `multipart/form-data`, set the environment variable `APISEC_OPENAPI_MEDIA_TYPES` to `application/x-www-form-urlencoded:multipart/form-data`. Only supported media types in this list are included when creating requests, though non-supported media types are always skipped. A media type text may contain different sections. For example, `application/vnd.api+json; charset=UTF-8`, is a compound of `type "/" [tree "."] subtype ["+" suffix]* [";" parameter]`. Parameters are not taken into account when performing the filtering media types on request generation.
+Multiple media types in `APISEC_OPENAPI_MEDIA_TYPES` are separated by a colon (`:`). For example, to limit request generation to the media types `application/x-www-form-urlencoded` and `multipart/form-data`, set the environment variable `APISEC_OPENAPI_MEDIA_TYPES` to `application/x-www-form-urlencoded:multipart/form-data`. Only supported media types in this list are included when creating requests, though non-supported media types are always skipped. A media type text may contain different sections. For example, `application/vnd.api+json; charset=UTF-8` is a compound of `type "/" [tree "."] subtype ["+" suffix]* [";" parameter]`. Parameters are not taken into account when performing the filtering media types on request generation.
 
 The environment variables `APISEC_OPENAPI_ALL_MEDIA_TYPES` and `APISEC_OPENAPI_MEDIA_TYPES` allow you to decide how to handle media types. These settings are mutually exclusive. If both are enabled, API security testing reports an error.
 
@@ -149,7 +149,7 @@ This example is a minimal configuration for API security testing. From here you 
 ## GraphQL Schema
 
 GraphQL is a query language for your API and an alternative to REST APIs.
-API security testing supports testing GraphQL endpoints multiple ways:
+API security testing supports testing GraphQL endpoints in multiple ways:
 
 - Test using the GraphQL Schema.
 - Test using a recording (HAR) of GraphQL queries.
@@ -201,7 +201,7 @@ This example is a minimal configuration for API security testing. From here you 
 
 ### API security testing scanning with a GraphQL Schema file
 
-API security testing can use a GraphQL schema file to understand and test a GraphQL endpoint that has introspection disabled. To use a GraphQL schema file, it must be in the introspection JSON format. A GraphQL schema can be converted to a the introspection JSON format using an online 3rd party tool: <https://transform.tools/graphql-to-introspection-json>.
+API security testing can use a GraphQL schema file to understand and test a GraphQL endpoint that has introspection disabled. To use a GraphQL schema file, it must be in the introspection JSON format. A GraphQL schema can be converted to the introspection JSON format using an online third-party tool: <https://transform.tools/graphql-to-introspection-json>.
 
 To configure API security testing to use a GraphQL schema file that provides information about the target API to test:
 
@@ -216,7 +216,7 @@ To configure API security testing to use a GraphQL schema file that provides inf
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
    dynamic environments. For more information, see [dynamic environment solutions](../troubleshooting.md#dynamic-environment-solutions).
 
-Complete example configuration of using an GraphQL schema file:
+Complete example configuration of using a GraphQL schema file:
 
 ```yaml
 stages:
@@ -232,7 +232,7 @@ api_security:
     APISEC_TARGET_URL: http://test-deployment/
 ```
 
-Complete example configuration of using an GraphQL schema file URL:
+Complete example configuration of using a GraphQL schema file URL:
 
 ```yaml
 stages:
@@ -333,7 +333,7 @@ You can then use the variables in sections such as URL, headers, and others:
 
 Postman has grown from a basic client tool with a nice UX experience to a more complex ecosystem that allows testing APIs with scripts, creating complex collections that trigger secondary requests, and setting variables along the way. Not every feature in the Postman ecosystem is supported. For example, scripts are not supported. The main focus of the Postman support is to ingest Postman Collection definitions that are used by the Postman Client and their related variables defined in the workspace, environments, and the collections themselves.
 
-Postman allows creating variables in different scopes. Each scope has a different level of visibility in the Postman tools. For example, you can create a variable in a _global environment_ scope that is seen by every operation definition and workspace. You can also create a variable in a specific _environment_ scope that is only visible and used when that specific environment is selected for use. Some scopes are not always available, for example in the Postman ecosystem you can create requests in the Postman Client, these requests do not have a _local_ scope, but test scripts do.
+Postman allows creating variables in different scopes. Each scope has a different level of visibility in the Postman tools. For example, you can create a variable in a _global environment_ scope that is seen by every operation definition and workspace. You can also create a variable in a specific _environment_ scope that is only visible and used when that specific environment is selected for use. Some scopes are not always available, for example, in the Postman ecosystem you can create requests in the Postman Client. These requests do not have a _local_ scope, but test scripts do.
 
 Variable scopes in Postman can be a daunting topic and not everyone is familiar with it. Read [Variable Scopes](https://learning.postman.com/docs/sending-requests/variables/variables/#variable-scopes) from Postman documentation before moving forward.
 

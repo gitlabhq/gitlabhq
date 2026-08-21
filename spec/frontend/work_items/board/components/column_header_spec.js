@@ -18,7 +18,8 @@ describe('ColumnHeader', () => {
   const findCollapseToggle = () => wrapper.findComponentByTestId('column-collapse-toggle');
   const findHeaderBar = () => wrapper.findByTestId('column-header');
   const findActionsMenu = () => wrapper.findComponentByTestId('column-actions-menu');
-  const findActionItem = (index) => findActionsMenu().props('items')[index];
+  const findActionItems = () => findActionsMenu().props('items');
+  const findActionItem = (text) => findActionItems().find((item) => item.text === text);
   const DRAG_HANDLE_CLASS = 'js-board-column-drag-handle';
   const findCreateButton = () => wrapper.findComponentByTestId('column-create-item');
 
@@ -105,41 +106,61 @@ describe('ColumnHeader', () => {
   });
 
   describe('actions menu', () => {
-    it('is not rendered when the column is not reorderable', () => {
+    it('is not rendered when the column can neither be hidden nor reordered', () => {
       createComponent();
 
       expect(findActionsMenu().exists()).toBe(false);
     });
 
     it('is not rendered while the column is collapsed', () => {
-      createComponent({ props: { reorderable: true, collapsed: true } });
+      createComponent({ props: { canHide: true, reorderable: true, collapsed: true } });
 
       expect(findActionsMenu().exists()).toBe(false);
     });
 
-    it('renders Move left and Move right items on a reorderable expanded column', () => {
-      createComponent({ props: { reorderable: true } });
+    it('renders Hide list above the move items when the column can be hidden and reordered', () => {
+      createComponent({ props: { canHide: true, reorderable: true } });
 
       expect(findActionsMenu().exists()).toBe(true);
-      expect(
-        findActionsMenu()
-          .props('items')
-          .map((item) => item.text),
-      ).toEqual(['Move left', 'Move right']);
+      expect(findActionItems().map((item) => item.text)).toEqual([
+        'Hide list',
+        'Move left',
+        'Move right',
+      ]);
+    });
+
+    it('renders only Hide list when the column cannot be reordered', () => {
+      createComponent({ props: { canHide: true } });
+
+      expect(findActionItems().map((item) => item.text)).toEqual(['Hide list']);
+    });
+
+    it('renders only the move items when the column cannot be hidden', () => {
+      createComponent({ props: { reorderable: true } });
+
+      expect(findActionItems().map((item) => item.text)).toEqual(['Move left', 'Move right']);
+    });
+
+    it('emits hide-column when Hide list is actioned', () => {
+      createComponent({ props: { canHide: true, reorderable: true } });
+
+      findActionItem('Hide list').action();
+
+      expect(wrapper.emitted('hide-column')).toEqual([[]]);
     });
 
     it('disables Move left on the first column and Move right on the last', () => {
       createComponent({ props: { reorderable: true, canMoveLeft: false, canMoveRight: true } });
 
-      expect(findActionItem(0).extraAttrs.disabled).toBe(true);
-      expect(findActionItem(1).extraAttrs.disabled).toBe(false);
+      expect(findActionItem('Move left').extraAttrs.disabled).toBe(true);
+      expect(findActionItem('Move right').extraAttrs.disabled).toBe(false);
     });
 
     it('emits move-column with a -1/+1 delta when an item is actioned', () => {
       createComponent({ props: { reorderable: true, canMoveLeft: true, canMoveRight: true } });
 
-      findActionItem(0).action();
-      findActionItem(1).action();
+      findActionItem('Move left').action();
+      findActionItem('Move right').action();
 
       expect(wrapper.emitted('move-column')).toEqual([[-1], [1]]);
     });

@@ -203,7 +203,11 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       end
     end
 
-    it 'can apply multiple suggestions as a batch' do
+    it 'can apply multiple suggestions as a batch',
+      quarantine: {
+        issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43944',
+        type: :flaky
+      } do
       files.each_with_index do |file, index|
         container = find_in_panel_by_scrolling("[id='#{file[:hash]}']")
 
@@ -367,7 +371,11 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       end
     end
 
-    it 'suggestion is presented' do
+    it 'suggestion is presented',
+      quarantine: {
+        issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43944',
+        type: :flaky
+      } do
       page.within("[id='#{hash}']") do
         expect(page).to have_button('Apply suggestion')
         expect(page).to have_content('Suggested change')

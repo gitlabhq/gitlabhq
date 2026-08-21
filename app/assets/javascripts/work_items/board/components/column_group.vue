@@ -107,6 +107,11 @@ export default {
       required: false,
       default: false,
     },
+    canHide: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     canCreateWorkItem: {
       type: Boolean,
       required: false,
@@ -120,6 +125,7 @@ export default {
     'drag-start',
     'check-board-params',
     'move-column',
+    'hide-column',
     'create-item',
   ],
   data() {
@@ -317,9 +323,11 @@ export default {
       :reorderable="reorderable"
       :can-move-left="canMoveLeft"
       :can-move-right="canMoveRight"
+      :can-hide="canHide"
       :can-create-work-item="canCreateWorkItem"
       @toggle-collapse="$emit('toggle-collapse')"
       @move-column="$emit('move-column', $event)"
+      @hide-column="$emit('hide-column')"
       @create-item="$emit('create-item', value)"
     />
     <div

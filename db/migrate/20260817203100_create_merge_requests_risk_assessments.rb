@@ -34,6 +34,6 @@ class CreateMergeRequestsRiskAssessments < Gitlab::Database::Migration[2.3]
   end
 
   def down
-    drop_table TABLE_NAME
+    drop_table TABLE_NAME, if_exists: true
   end
 end

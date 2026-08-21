@@ -16,12 +16,12 @@ RSpec.describe BulkImports::Common::Transformers::MemberAttributesTransformer, f
     let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
     it 'returns nil when receives no data' do
-      expect(subject.transform(context, nil)).to eq(nil)
+      expect(subject.transform(context, nil)).to be_nil
     end
 
     it 'returns nil when no user is found' do
-      expect(subject.transform(context, member_data)).to eq(nil)
-      expect(subject.transform(context, member_data(email: 'inexistent@email.com'))).to eq(nil)
+      expect(subject.transform(context, member_data)).to be_nil
+      expect(subject.transform(context, member_data(email: 'inexistent@email.com'))).to be_nil
     end
 
     context 'when the user is not confirmed' do
@@ -32,14 +32,14 @@ RSpec.describe BulkImports::Common::Transformers::MemberAttributesTransformer, f
       it 'returns nil even when the primary email match' do
         data = member_data(email: user.email)
 
-        expect(subject.transform(context, data)).to eq(nil)
+        expect(subject.transform(context, data)).to be_nil
       end
 
       it 'returns nil even when a secondary email match' do
         user.emails << Email.new(email: secondary_email)
         data = member_data(email: secondary_email)
 
-        expect(subject.transform(context, data)).to eq(nil)
+        expect(subject.transform(context, data)).to be_nil
       end
     end
 

@@ -69,11 +69,11 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
         entity.update!(bulk_import: offline_bulk_import)
       end
 
-      it { expect(subject.offline?).to eq(true) }
+      it { expect(subject.offline?).to be(true) }
     end
 
     context 'when not offline' do
-      it { expect(subject.offline?).to eq(false) }
+      it { expect(subject.offline?).to be(false) }
     end
   end
 
@@ -143,13 +143,13 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
     context 'when importer user mapping is disabled' do
       let(:status) { false }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when importer user mapping is enabled' do
       let(:status) { true }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -184,7 +184,7 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
           stub_feature_flags(import_admin_override_max_file_size: [user, group.root_ancestor])
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when import_admin_override_max_file_size is enabled only for the user' do
@@ -192,7 +192,7 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
           stub_feature_flags(import_admin_override_max_file_size: [user])
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when import_admin_override_max_file_size is enabled only for the top-level group' do
@@ -200,7 +200,7 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
           stub_feature_flags(import_admin_override_max_file_size: [group.root_ancestor])
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when import_admin_override_max_file_size is disabled' do
@@ -208,12 +208,12 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
           stub_feature_flags(import_admin_override_max_file_size: false)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
     context 'and the importing user is not in admin mode' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

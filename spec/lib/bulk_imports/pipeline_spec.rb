@@ -29,7 +29,7 @@ RSpec.describe BulkImports::Pipeline, feature_category: :importers do
         expect(BulkImports::TestWikiPipeline.get_extractor).to eq({ klass: BulkImports::Extractor, options: { foo: :bar } })
         expect(BulkImports::TestWikiPipeline.transformers).to contain_exactly({ klass: BulkImports::Transformer, options: { foo: :bar } })
         expect(BulkImports::TestWikiPipeline.get_loader).to eq({ klass: BulkImports::Loader, options: { foo: :bar } })
-        expect(BulkImports::TestWikiPipeline.abort_on_failure?).to eq(true)
+        expect(BulkImports::TestWikiPipeline.abort_on_failure?).to be(true)
         expect(BulkImports::TestWikiPipeline.relation).to eq('test_wiki')
       end
 
@@ -75,8 +75,8 @@ RSpec.describe BulkImports::Pipeline, feature_category: :importers do
 
         expect(BulkImports::TestWikiPipeline.get_loader).to eq({ klass: klass, options: options })
 
-        expect(BulkImports::TestWikiPipeline.abort_on_failure?).to eq(true)
-        expect(BulkImports::TestWikiPipeline.file_extraction_pipeline?).to eq(true)
+        expect(BulkImports::TestWikiPipeline.abort_on_failure?).to be(true)
+        expect(BulkImports::TestWikiPipeline.file_extraction_pipeline?).to be(true)
       end
     end
   end

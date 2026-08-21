@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
@@ -61,6 +62,7 @@ type queryResponse struct {
 type queryErrorResponse struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
+	Reason  string `json:"reason,omitempty"`
 }
 
 type mcpResponse struct {
@@ -120,6 +122,21 @@ func (sq *SendQuery) Inject(w http.ResponseWriter, r *http.Request, sendData str
 		format = orbitpb.ResponseFormat_RESPONSE_FORMAT_LLM
 	}
 
+	ok := sendInitialRequest(ctx, w, r, stream, params, format)
+	if !ok {
+		return
+	}
+
+	sq.recvLoop(ctx, w, r, stream, params, format)
+}
+
+func sendInitialRequest(
+	ctx context.Context,
+	w http.ResponseWriter, r *http.Request,
+	stream orbitpb.OrbitService_ExecuteQueryClient,
+	params sendQueryParams,
+	format orbitpb.ResponseFormat,
+) bool {
 	queryType := orbitpb.QueryType_QUERY_TYPE_JSON
 	if params.QueryType == queryTypeNamed {
 		queryType = orbitpb.QueryType_QUERY_TYPE_NAMED
@@ -136,11 +153,14 @@ func (sq *SendQuery) Inject(w http.ResponseWriter, r *http.Request, sendData str
 	}
 
 	if err := stream.Send(initialMsg); err != nil {
+		if _, recvErr := stream.Recv(); recvErr != nil {
+			handleRecvError(ctx, w, r, recvErr, params.McpID)
+			return false
+		}
 		fail.Request(w, r, fmt.Errorf("orbit.SendQuery: send request: %v", err), fail.WithStatus(http.StatusBadGateway))
-		return
+		return false
 	}
-
-	sq.recvLoop(ctx, w, r, stream, params, format)
+	return true
 }
 
 const maxStreamMessages = 10
@@ -155,7 +175,7 @@ func (sq *SendQuery) recvLoop(
 	for range maxStreamMessages {
 		msg, err := stream.Recv()
 		if err != nil {
-			handleRecvError(ctx, w, r, err)
+			handleRecvError(ctx, w, r, err, params.McpID)
 			return
 		}
 
@@ -169,7 +189,7 @@ func (sq *SendQuery) recvLoop(
 			writeResultResponse(w, r, c.Result, format, params.McpID)
 			return
 		case *orbitpb.ExecuteQueryMessage_Error:
-			writeErrorResponse(w, r, c.Error, params.McpID)
+			writeQueryError(w, r, params.McpID, c.Error.GetCode(), c.Error.GetMessage(), "")
 			return
 		}
 	}
@@ -178,7 +198,10 @@ func (sq *SendQuery) recvLoop(
 		fail.WithStatus(http.StatusBadGateway))
 }
 
-func handleRecvError(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
+const codeQuotaExhausted = "quota_exhausted"
+const reasonGitLabCreditsExhausted = "GITLAB_CREDITS_EXHAUSTED" // #nosec G101 -- constant for gitlab credits exhausted. Needs exception as it matches "cred" string which triggers linter failure.
+
+func handleRecvError(ctx context.Context, w http.ResponseWriter, r *http.Request, err error, mcpID any) {
 	if err == io.EOF {
 		fail.Request(w, r, fmt.Errorf("orbit.SendQuery: stream ended without result"), fail.WithStatus(http.StatusBadGateway))
 		return
@@ -187,8 +210,24 @@ func handleRecvError(ctx context.Context, w http.ResponseWriter, r *http.Request
 		fail.Request(w, r, fmt.Errorf("orbit.SendQuery: %v", err), fail.WithStatus(http.StatusGatewayTimeout))
 		return
 	}
+	if st, ok := status.FromError(err); ok && st.Code() == codes.ResourceExhausted {
+		if reason := quotaDenyReason(st); reason == reasonGitLabCreditsExhausted {
+			writeQueryError(w, r, mcpID, codeQuotaExhausted, st.Message(), reason)
+			log.WithRequest(r).WithFields(log.Fields{"grpc_code": "ResourceExhausted", "quota_deny_reason": reason}).Info("orbit.SendQuery: quota exhausted")
+			return
+		}
+	}
 	log.WithRequest(r).WithError(fmt.Errorf("orbit.SendQuery: stream recv: %v", err)).Error()
 	fail.Request(w, r, fmt.Errorf("orbit.SendQuery: stream error"), fail.WithStatus(http.StatusBadGateway))
+}
+
+func quotaDenyReason(st *status.Status) string {
+	for _, d := range st.Details() {
+		if info, ok := d.(*errdetails.ErrorInfo); ok {
+			return info.GetReason()
+		}
+	}
+	return ""
 }
 
 // isContextDone returns true when the recv error was caused by the context
@@ -294,7 +333,7 @@ func writeLLMResultResponse(w http.ResponseWriter, r *http.Request, result *orbi
 	}
 }
 
-func writeErrorResponse(w http.ResponseWriter, r *http.Request, qErr *orbitpb.ExecuteQueryError, mcpID any) {
+func writeQueryError(w http.ResponseWriter, r *http.Request, mcpID any, code, message, reason string) {
 	w.Header().Del("Content-Length")
 	w.Header().Set("Content-Type", "application/json")
 
@@ -304,17 +343,14 @@ func writeErrorResponse(w http.ResponseWriter, r *http.Request, qErr *orbitpb.Ex
 		err = json.NewEncoder(w).Encode(mcpResponse{
 			JSONRPC: "2.0",
 			Result: mcpToolResult{
-				Content: []mcpContent{{Type: "text", Text: qErr.GetMessage()}},
+				Content: []mcpContent{{Type: "text", Text: message}},
 				IsError: true,
 			},
 			ID: mcpID,
 		})
 	} else {
-		w.WriteHeader(gkgErrorToHTTPStatus(qErr.GetCode()))
-		err = json.NewEncoder(w).Encode(queryErrorResponse{
-			Code:    qErr.GetCode(),
-			Message: qErr.GetMessage(),
-		})
+		w.WriteHeader(gkgErrorToHTTPStatus(code))
+		err = json.NewEncoder(w).Encode(queryErrorResponse{Code: code, Message: message, Reason: reason})
 	}
 	if err != nil {
 		log.WithRequest(r).WithError(fmt.Errorf("orbit.SendQuery: write error response: %v", err)).Error()
@@ -377,6 +413,8 @@ func gkgErrorToHTTPStatus(code string) int {
 		return http.StatusBadGateway
 	case "timeout":
 		return http.StatusGatewayTimeout
+	case codeQuotaExhausted:
+		return http.StatusPaymentRequired
 	default:
 		return http.StatusBadRequest
 	}

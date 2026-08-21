@@ -236,6 +236,7 @@ yarn.lock @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/import-direct-and-offline.md @gitlab-com/create-team/import
 # END GENERATED: gitlab-ai-principles-distiller
 /.claude/ @gitlab-org/maintainers/ai-harness
+/.claude/skills/gitlab-mcp-tool-builder/ @gitlab-org/maintainers/ai-harness @gitlab-org/ai-powered/mcp-tool-review-board
 /AGENTS.md @gitlab-org/maintainers/ai-harness
 /CLAUDE.md @gitlab-org/maintainers/ai-harness
 /opencode.example.json @gitlab-org/maintainers/ai-harness

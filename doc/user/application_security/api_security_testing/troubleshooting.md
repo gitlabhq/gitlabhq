@@ -7,7 +7,7 @@ title: Troubleshooting API security testing jobs
 
 ## API security testing job times out after N hours
 
-For larger repositories, the API security testing job could time out on the [small hosted runner on Linux](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64), which is set per default. If this happens in your jobs, you should scale up to a [larger runner](performance.md#using-a-larger-runner).
+For larger repositories, the API security testing job could time out on the [small hosted runner on Linux](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64), which is set by default. If this happens in your jobs, you should scale up to a [larger runner](performance.md#using-a-larger-runner).
 
 See the following documentation sections for assistance:
 
@@ -79,15 +79,15 @@ variable `APISEC_API_PORT` to specify a different port for the scanner backgroun
 
 The API security testing engine outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml` file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
 
-There is a order of precedence in which the API security testing engine tries to get the target API when checking the different sources. First, it tries to use the `APISEC_TARGET_URL`. If the environment variable has not been set, then the API security testing engine attempts to use the `environment_url.txt` file. If there is no file `environment_url.txt`, then the API security testing engine uses the OpenAPI document contents and the URL provided in `APISEC_OPENAPI` (if a URL is provided) to try to compute the target API.
+There is an order of precedence in which the API security testing engine tries to get the target API when checking the different sources. First, it tries to use the `APISEC_TARGET_URL`. If the environment variable has not been set, then the API security testing engine attempts to use the `environment_url.txt` file. If there is no file `environment_url.txt`, then the API security testing engine uses the OpenAPI document contents and the URL provided in `APISEC_OPENAPI` (if a URL is provided) to try to compute the target API.
 
-The best-suited solution depends on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment, in this case refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
+The best-suited solution depends on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment. In this case, refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment, a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
 
 ## API security testing job excludes some paths from operations
 
 If you find that some paths are being excluded from operations, make sure that:
 
-- The variable `DAST_API_EXCLUDE_URLS` is not configured to exclude operations you want to test.
+- The variable `APISEC_EXCLUDE_URLS` is not configured to exclude operations you want to test.
 - The `consumes` array is defined and has a valid type in the target definition JSON file.
 
   For an example definition, see the [example project target definition file](https://gitlab.com/gitlab-org/security-products/demos/api-dast/openapi-example/-/blob/12e2b039d08208f1dd38a1e7c52b0bda848bb449/rest_target_openapi.json?plain=1#L13).
@@ -96,7 +96,7 @@ If you find that some paths are being excluded from operations, make sure that:
 
 This solution is for pipelines in which the target API URL doesn't change (is static).
 
-**Add environmental variable**
+**Add environment variable**
 
 For environments where the target API remains the same, specify the target URL by using the `APISEC_TARGET_URL` environment variable. In your `.gitlab-ci.yml`, add a variable `APISEC_TARGET_URL`. The variable must be set to the base URL of API testing target. For example:
 
@@ -114,11 +114,11 @@ variables:
 
 ### Dynamic environment solutions
 
-In a dynamic environment your target API changes for each different deployment. In this case, there is more than one possible solution: use the `environment_url.txt` file when dealing with dynamic environments.
+In a dynamic environment, your target API changes for each different deployment. In this case, there is more than one possible solution: use the `environment_url.txt` file when dealing with dynamic environments.
 
 **Use `environment_url.txt`**
 
-To support dynamic environments in which the target API URL changes during each pipeline, API security testing engine supports the use of an `environment_url.txt` file that contains the URL to use. This file is not checked into the repository, instead it's created during the pipeline by the job that deploys the test target and collected as an artifact that can be used by later jobs in the pipeline. The job that creates the `environment_url.txt` file must run before the API security testing engine job.
+To support dynamic environments in which the target API URL changes during each pipeline, the API security testing engine supports the use of an `environment_url.txt` file that contains the URL to use. This file is not checked into the repository, instead it's created during the pipeline by the job that deploys the test target and collected as an artifact that can be used by later jobs in the pipeline. The job that creates the `environment_url.txt` file must run before the API security testing engine job.
 
 1. Modify the test target deployment job adding the base URL in an `environment_url.txt` file at the root of your project.
 1. Modify the test target deployment job collecting the `environment_url.txt` as an artifact.
@@ -154,7 +154,7 @@ If your OpenAPI document is generated manually, load your document in the editor
 
 ### Enable OpenAPI relaxed validation
 
-Relaxed validation is meant for cases when the OpenAPI document cannot meet OpenAPI specifications, but it still has enough content to be consumed by different tools. A validation is performed but less strictly in regards to document schema.
+Relaxed validation is meant for cases when the OpenAPI document cannot meet OpenAPI specifications, but it still has enough content to be consumed by different tools. A validation is performed but less strictly in regard to document schema.
 
 API security testing can still try to consume an OpenAPI document that does not fully comply with OpenAPI specifications. To instruct API security testing to perform a relaxed validation, set the variable `APISEC_OPENAPI_RELAXED_VALIDATION` to any value, for example:
 
@@ -259,11 +259,11 @@ ERROR: Job failed: failed to pull image "registry.example.com/my-target-app:late
 
 **Solution**
 
-Authentication credentials are provided using the methods outlined in the [Access an image from a private container registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry) documentation section. The method used is dictated by your container registry provider and its configuration. If you're using a container registry provided by a third party, such as a cloud provider (Azure, Google Cloud (GCP), AWS, and so on), check the providers documentation for information on how to authenticate to their container registries.
+Authentication credentials are provided using the methods outlined in the [Access an image from a private container registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry) documentation section. The method used is dictated by your container registry provider and its configuration. If you're using a container registry provided by a third party, such as a cloud provider (Azure, Google Cloud (GCP), AWS, and so on), check the provider's documentation for information on how to authenticate to their container registries.
 
 The following example uses the [statically defined credentials](../../../ci/docker/using_docker_images.md#use-statically-defined-credentials) authentication method. In this example the container registry is `registry.example.com` and image is `my-target-app:latest`.
 
-1. Read how to [Determine your `DOCKER_AUTH_CONFIG` data](../../../ci/docker/using_docker_images.md#determine-your-docker_auth_config-data) to understand how to compute the variable value for `DOCKER_AUTH_CONFIG`. The configuration variable `DOCKER_AUTH_CONFIG` contains the Docker JSON configuration to provide the appropriate authentication information. For example, to access private container registry: `registry.example.com` with the credentials `abcdefghijklmn`, the Docker JSON looks like:
+1. Read how to [Determine your `DOCKER_AUTH_CONFIG` data](../../../ci/docker/using_docker_images.md#determine-your-docker_auth_config-data) to understand how to compute the variable value for `DOCKER_AUTH_CONFIG`. The configuration variable `DOCKER_AUTH_CONFIG` contains the Docker JSON configuration to provide the appropriate authentication information. For example, to access a private container registry: `registry.example.com` with the credentials `abcdefghijklmn`, the Docker JSON looks like:
 
    ```json
    {
@@ -275,8 +275,8 @@ The following example uses the [statically defined credentials](../../../ci/dock
    }
    ```
 
-1. Add the `DOCKER_AUTH_CONFIG` as a CI/CD variable. Instead of adding the configuration variable directly in your `.gitlab-ci.yml`file you should create a project [CI/CD variable](../../../ci/variables/_index.md#for-a-project).
-1. Rerun your job, and the statically-defined credentials are now used to sign in to the private container registry `registry.example.com`, and let you pull the image `my-target-app:latest`. If succeeded the job console shows an output like:
+1. Add the `DOCKER_AUTH_CONFIG` as a CI/CD variable. Instead of adding the configuration variable directly in your `.gitlab-ci.yml` file, you should create a project [CI/CD variable](../../../ci/variables/_index.md#for-a-project).
+1. Rerun your job, and the statically-defined credentials are now used to sign in to the private container registry `registry.example.com`, and let you pull the image `my-target-app:latest`. If successful, the job console shows an output like:
 
    ```log
    Running with gitlab-runner 15.6.0~beta.186.ga889181a (a889181a)
@@ -296,7 +296,7 @@ The following example uses the [statically defined credentials](../../../ci/dock
 
 ## Differing vulnerability results between consecutive scans
 
-It is possible that consecutive scans may return differing vulnerability findings in the absence of code or configuration changes. This is primarily due to the unpredictability associated with the target environment and its state, and the parallelization of requests sent by the scanner. Multiple requests are sent in parallel by the scanner to optimize scan time, which in turn means that the exact order the target server responds to the requests is not predetermined.
+It is possible that consecutive scans may return differing vulnerability findings in the absence of code or configuration changes. This is primarily due to the unpredictability associated with the target environment and its state, and the parallelization of requests sent by the scanner. Multiple requests are sent in parallel by the scanner to optimize scan time, which in turn means that the exact order in which the target server responds to the requests is not predetermined.
 
 Timing attack vulnerabilities that are detected by the length of time between request and response such as OS Command or SQL Injections may be detected if the server is under load and unable to service responses to the tests within their given thresholds. The same scan executions when the server is not under load may not return positive findings for these vulnerabilities, leading to differing results. Profiling the target server, [Performance tuning and testing speed](performance.md), and establishing baselines for optimal server performance during testing may be helpful in identifying where false positives may appear due to the aforementioned factors.
 
@@ -304,7 +304,7 @@ Timing attack vulnerabilities that are detected by the length of time between re
 
 Starting with v5 of the analyzer, a non-root user is used by default. This requires the use of `sudo` when performing privileged operations.
 
-This error occurs with a specific container daemon setup that prevents running containers from obtaining new permissions. In most settings, this is not the default configuration, it's something specifically configured, often as part of a security hardening guide.
+This error occurs with a specific container daemon setup that prevents running containers from obtaining new permissions. In most settings, this is not the default configuration. It's something specifically configured, often as part of a security hardening guide.
 
 **Error message**
 
@@ -322,7 +322,7 @@ sudo: If sudo is running in a container, you may need to adjust the container co
 
 This issue can be worked around in the following ways:
 
-- Run the container as the `root` user. You should test this configuration as it may not work in all cases. This can be done by modifying the CICD configuration and checking the job output to make sure that `whoami` returns `root` and not `gitlab`. If `gitlab` is displayed, use another workaround. After testing has confirmed the change is successful, the `before_script` can be removed.
+- Run the container as the `root` user. You should test this configuration as it may not work in all cases. This can be done by modifying the CI/CD configuration and checking the job output to make sure that `whoami` returns `root` and not `gitlab`. If `gitlab` is displayed, use another workaround. After testing has confirmed the change is successful, the `before_script` can be removed.
 
   ```yaml
   api_security:
@@ -348,7 +348,7 @@ This issue can be worked around in the following ways:
   17:17:14 [INF] API Security: version: 5.7.0
   ```
 
-- Wrap the container and add any dependencies at build time. This option has the benefit of running with lower privileges than root which may be a requirement for some customers.
+- Wrap the container and add any dependencies at build time. This option has the benefit of running with lower privileges than root, which may be a requirement for some customers.
 
   1. Create a new `Dockerfile` that wraps the existing image.
 

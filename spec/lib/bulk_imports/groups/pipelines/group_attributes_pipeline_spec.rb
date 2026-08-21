@@ -64,7 +64,7 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupAttributesPipeline, feature_
       it do
         transformed_data = pipeline.transform(context, group_attributes)
 
-        expect(transformed_data).to eq(nil)
+        expect(transformed_data).to be_nil
       end
     end
   end

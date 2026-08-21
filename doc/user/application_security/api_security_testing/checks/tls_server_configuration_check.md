@@ -7,13 +7,13 @@ title: TLS server configuration
 
 ## Description
 
-Check for various TLS Server configuration issues. Checks TLS versions, hmacs, ciphers, and compression algs supported by server.
+Check for various TLS Server configuration issues. Checks TLS versions, hmacs, ciphers, and compression algs supported by the server.
 
 ## Remediation
 
 Insufficient transport layer protection allows communication to be exposed to untrusted third-parties, providing an attack vector to compromise a web application and/or steal sensitive information. Websites typically use Secure Sockets Layer/Transport Layer Security (SSL/TLS) to provide encryption at the transport layer. However, unless the website is configured to use SSL/TLS and configured to use SSL/TLS properly, the website may be vulnerable to traffic interception and modification.
 
-SSL/TLS as a protocol have gone through several revisions over the years. Each new version adds features and fixes weaknesses in the protocol. Over time some versions of the protocol are broken so badly as to become vulnerabilities if supported. It's recommended to support only the most recent TLS versions such as TLS 1.3 (2018), and TLS 1.2 (2008).
+SSL/TLS as a protocol has gone through several revisions over the years. Each new version adds features and fixes weaknesses in the protocol. Over time some versions of the protocol are broken so badly as to become vulnerabilities if supported. It's recommended to support only the most recent TLS versions such as TLS 1.3 (2018) and TLS 1.2 (2008).
 
 Compression has been linked to side-channel attacks on TLS connections. Disabling compression can prevent these attacks. One attack in particular, CRIME ("Compression Ratio Info-leak Made Easy") can be prevented. CRIME is an attack that targets clients, but if the server does not support compression the attack is mitigated.
 

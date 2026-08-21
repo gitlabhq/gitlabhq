@@ -95,6 +95,63 @@ You can manually trigger analysis for existing vulnerabilities:
 
 The GitLab Duo analysis runs and results are displayed on the vulnerability details page.
 
+## Analyze multiple vulnerabilities
+
+{{< details >}}
+
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21890) in GitLab 19.3 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `bulk_vulnerabilities_duo_workflow_api`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+You can trigger the flow to analyze multiple vulnerabilities for
+false positives.
+
+The following severity levels
+are analyzed:
+
+- Critical
+- High
+- Medium
+- Low
+- Unknown
+- Info
+
+Prerequisites:
+
+- To analyze multiple vulnerabilities, you must have either:
+  - The Security Manager, Maintainer, or Owner role for the project
+  - Custom role with `admin_vulnerability` permission
+- To view the flow's progress, you must have the Developer role.
+
+1. In the left sidebar, select **Search or go to** and find your project.
+1. Select **Secure** > **Vulnerability report**.
+1. Select the checkbox beside each vulnerability you want to analyze.
+   To select all vulnerabilities on the page, select the checkbox in the table header.
+1. From the **Select action** dropdown list, select **Run SAST False Positive Detection**.
+1. Select **Run SAST False Positive Detection**.
+
+### Known limitations
+
+- The progress report only shows the amount of vulnerabilities that are eligable for resolution.
+  If you select 10 vulnerabilities and three are eligible, the progress report only reports three.
+- Only one run of each flow can be active in a project at a time.
+  The run belongs to the project, so a run started by another user also blocks a new run.
+  Wait for the active run to finish before you start another run of the same flow.
+- You can only run a bulk flow execution for a maximum of 1,000 vulnerabilities.
+  This limit applies to the vulnerabilities you select in the vulnerability report.
+  To resolve more than 1,000 vulnerabilities, use the GraphQL.
+
 ## Confidence scores
 
 The confidence score estimates how likely the GitLab Duo assessment is to be correct:

@@ -40,7 +40,7 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
 
       expect(portable.lfs_objects.count).to eq(1)
       expect(portable.lfs_objects_projects.count).to eq(4)
-      expect(Dir.exist?(tmpdir)).to eq(false)
+      expect(Dir.exist?(tmpdir)).to be(false)
     end
 
     it 'does not call load on duplicates' do
@@ -215,7 +215,7 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
 
       pipeline.after_run(nil)
 
-      expect(Dir.exist?(tmpdir)).to eq(false)
+      expect(Dir.exist?(tmpdir)).to be(false)
     end
   end
 end

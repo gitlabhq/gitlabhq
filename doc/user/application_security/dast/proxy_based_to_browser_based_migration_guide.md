@@ -91,7 +91,7 @@ DAST version 5 provides more control over scope compared to the proxy-based anal
 Changes to make:
 
 - Use `DAST_SCOPE_ALLOW_HOSTS` instead of `DAST_ALLOWED_HOSTS`.
-- The domain of `DAST_TARGET_URL` is automatically added to `DAST_SCOPE_ALLOW_HOSTS`, consider adding domains for the
+- The domain of `DAST_TARGET_URL` is automatically added to `DAST_SCOPE_ALLOW_HOSTS`. Consider adding domains for the
   target application API and asset endpoints.
 - Remove domains from the scan by adding them to `DAST_SCOPE_EXCLUDE_HOSTS` (except during authentication).
 
@@ -132,7 +132,7 @@ Remaining check:
 
 ## On-demand scans
 
-On-demand scans runs a browser-based scan using [DAST version 5](https://gitlab.com/groups/gitlab-org/-/epics/11429) from GitLab 17.0.
+On-demand scans run a browser-based scan using [DAST version 5](https://gitlab.com/groups/gitlab-org/-/epics/11429) from GitLab 17.0.
 
 ## Troubleshooting
 

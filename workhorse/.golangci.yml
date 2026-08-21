@@ -146,6 +146,7 @@ linters:
             - google.golang.org/grpc/credentials/insecure
             - google.golang.org/grpc/keepalive
             - google.golang.org/grpc/metadata
+            - google.golang.org/genproto/googleapis/rpc/errdetails
             - google.golang.org/protobuf/encoding/protojson
             - google.golang.org/protobuf/proto
             - google.golang.org/protobuf/types/known/anypb

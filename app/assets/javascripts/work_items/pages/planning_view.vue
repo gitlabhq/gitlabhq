@@ -1826,6 +1826,16 @@ export default {
 
       this.persistNamespaceDisplaySettings(newSettings);
     },
+    handleHideGroup(visibleGroups) {
+      const newSettings = { ...this.namespacePreferences, visibleGroups };
+
+      if (this.isSavedView) {
+        this.handleLocalDisplayPreferencesUpdate(newSettings);
+        return;
+      }
+
+      this.persistNamespaceDisplaySettings(newSettings);
+    },
     async persistNamespaceDisplaySettings(displaySettings) {
       if (!this.isLoggedIn) {
         return;
@@ -2393,7 +2403,7 @@ export default {
       :query-variables="queryVariables"
       :collapsed-groups="collapsedGroups"
       :group-order="groupOrder"
-      :can-reorder="isLoggedIn"
+      :can-manage-columns="isLoggedIn"
       :hidden-metadata-keys="hiddenMetadataKeys"
       :active-item="activeItem"
       :detail-panel-enabled="workItemDetailPanelEnabled"
@@ -2404,6 +2414,7 @@ export default {
       @set-active-item="handleSetActiveItem"
       @toggle-collapse="handleToggleGroupCollapse"
       @reorder-groups="handleReorderGroups"
+      @hide-group="handleHideGroup"
       @work-item-created="handleBoardWorkItemCreated"
     />
     <work-item-display-settings-drawer

@@ -39,7 +39,7 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline, feature_c
 
       pipeline.run
 
-      expect(portable.design_repository.exists?).to eq(true)
+      expect(portable.design_repository.exists?).to be(true)
     end
 
     it 'skips import if already cached' do
@@ -102,7 +102,7 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline, feature_c
 
       pipeline.load(context, design_bundle_path)
 
-      expect(portable.design_repository.exists?).to eq(true)
+      expect(portable.design_repository.exists?).to be(true)
     end
 
     context 'when lfs is disabled' do
@@ -113,7 +113,7 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline, feature_c
 
         pipeline.load(context, design_bundle_path)
 
-        expect(portable.design_repository.exists?).to eq(false)
+        expect(portable.design_repository.exists?).to be(false)
       end
     end
 
@@ -123,7 +123,7 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline, feature_c
 
         pipeline.load(context, File.join(tmpdir, 'bogus'))
 
-        expect(portable.design_repository.exists?).to eq(false)
+        expect(portable.design_repository.exists?).to be(false)
       end
     end
 
@@ -133,7 +133,7 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline, feature_c
 
         pipeline.load(context, tmpdir)
 
-        expect(portable.design_repository.exists?).to eq(false)
+        expect(portable.design_repository.exists?).to be(false)
       end
     end
 
@@ -147,7 +147,7 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline, feature_c
 
         pipeline.load(context, symlink)
 
-        expect(portable.design_repository.exists?).to eq(false)
+        expect(portable.design_repository.exists?).to be(false)
       end
     end
 
@@ -160,7 +160,7 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline, feature_c
 
         pipeline.load(context, design_bundle_path)
 
-        expect(portable.design_repository.exists?).to eq(false)
+        expect(portable.design_repository.exists?).to be(false)
       end
     end
 
@@ -186,7 +186,7 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline, feature_c
 
       pipeline.after_run(nil)
 
-      expect(Dir.exist?(tmpdir)).to eq(false)
+      expect(Dir.exist?(tmpdir)).to be(false)
     end
   end
 end

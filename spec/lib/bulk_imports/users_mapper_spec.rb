@@ -61,7 +61,7 @@ RSpec.describe BulkImports::UsersMapper, feature_category: :importers do
       it 'returns true' do
         allow(subject).to receive(:map).and_return({ 1 => 2 })
 
-        expect(subject.include?(1)).to eq(true)
+        expect(subject.include?(1)).to be(true)
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe BulkImports::UsersMapper, feature_category: :importers do
       it 'returns false' do
         allow(subject).to receive(:map).and_return({})
 
-        expect(subject.include?(1)).to eq(false)
+        expect(subject.include?(1)).to be(false)
       end
     end
   end

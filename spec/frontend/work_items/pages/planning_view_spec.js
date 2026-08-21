@@ -2995,7 +2995,7 @@ describe('planning-view', () => {
         'queryVariables',
         'collapsedGroups',
         'groupOrder',
-        'canReorder',
+        'canManageColumns',
         'activeItem',
         'detailPanelEnabled',
         'preselectedWorkItemType',
@@ -3680,13 +3680,13 @@ describe('planning-view', () => {
         it('lets signed-in users reorder', async () => {
           await mountAllItemsBoard();
 
-          expect(findBoardView().props('canReorder')).toBe(true);
+          expect(findBoardView().props('canManageColumns')).toBe(true);
         });
 
         it('does not offer reordering to signed-out users', async () => {
           await mountAllItemsBoard({ isLoggedInValue: false });
 
-          expect(findBoardView().props('canReorder')).toBe(false);
+          expect(findBoardView().props('canManageColumns')).toBe(false);
         });
 
         it('persists a reorder, merged with existing display settings', async () => {
@@ -3764,6 +3764,43 @@ describe('planning-view', () => {
               displaySettings: expect.objectContaining({ groupOrder }),
             }),
           );
+        });
+      });
+
+      describe('hiding a column', () => {
+        const visibleGroups = ['status:gid://gitlab/WorkItems::Statuses::Custom::Status/2'];
+
+        it('persists the remaining visible groups, merged with existing display settings', async () => {
+          const mutationHandler = userPrefUpdateHandlerWith({
+            hiddenMetadataKeys: ['labels'],
+            visibleGroups,
+          });
+          await mountAllItemsBoard({
+            mockPreferencesHandler: preferencesHandlerWith({ hiddenMetadataKeys: ['labels'] }),
+            userPreferenceMutationResponse: mutationHandler,
+          });
+
+          findBoardView().vm.$emit('hide-group', visibleGroups);
+          await waitForPromises();
+
+          expect(mutationHandler).toHaveBeenCalledWith({
+            namespace: 'full/path',
+            displaySettings: { hiddenMetadataKeys: ['labels'], visibleGroups },
+          });
+        });
+
+        it('writes to the localStorage draft without calling the mutation on a saved view', async () => {
+          await mountSavedViewBoard();
+
+          findBoardView().vm.$emit('hide-group', visibleGroups);
+          await nextTick();
+
+          expect(localStorage.setItem).toHaveBeenCalledWith(
+            'full/path-saved-view-3',
+            expect.stringContaining(visibleGroups[0]),
+          );
+          expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
+          expect(findUpdateViewButton().exists()).toBe(true);
         });
       });
     });

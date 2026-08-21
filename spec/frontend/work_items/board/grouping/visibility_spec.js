@@ -92,6 +92,17 @@ describe('work_items/board/grouping/visibility', () => {
           toggleGroupVisibility({ visibleGroups, groupBy, value: values[0], allValues: values }),
         ).toEqual([groupId(values[1])]);
       });
+
+      it('returns an empty list, not null, when the last visible value is removed', () => {
+        expect(
+          toggleGroupVisibility({
+            visibleGroups: [groupId(values[0])],
+            groupBy,
+            value: values[0],
+            allValues: values,
+          }),
+        ).toEqual([]);
+      });
     });
   });
 });

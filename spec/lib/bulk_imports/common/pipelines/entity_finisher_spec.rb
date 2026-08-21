@@ -52,7 +52,7 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher, feature_category:
 
       described_class.new(context).run
 
-      expect(entity.reload.failed?).to eq(true)
+      expect(entity.reload.failed?).to be(true)
     end
   end
 

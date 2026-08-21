@@ -56,6 +56,7 @@ $detail-layout-gap: 2rem;
       );
       overflow-y: auto;
       overflow-x: hidden;
+      outline: none;
       // Matches the transition of the sticky header appearing/disappearing,
       // which shifts the top value
       transition: top $gl-transition-duration-medium $gl-easing-out-cubic;

@@ -79,7 +79,7 @@ sequenceDiagram
 ## Getting started
 
 > [!note]
-> You should periodically confirming that the analyzer's authentication is still working, as this tends to break over
+> You should periodically confirm that the analyzer's authentication is still working, as this tends to break over
 > time due to changes to the application.
 
 To run a DAST authenticated scan:
@@ -256,8 +256,8 @@ See [Custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project
 
 ### Configuration for Single Sign-On (SSO)
 
-If a user can sign in to an application, then in most cases, DAST is also able to sign in.
-Even when an application uses Single Sign-on. Applications using SSO solutions should configure DAST
+If a user can sign in to an application, then in most cases, DAST is also able to sign in,
+even when an application uses single sign-on (SSO). Applications that use SSO solutions should configure DAST
 authentication using the [single-step](#configuration-for-a-single-step-login-form) or [multi-step](#configuration-for-a-multi-step-login-form) login form configuration guides.
 
 DAST supports authentication processes where a user is redirected to an external Identity Provider's site to sign in.
@@ -463,10 +463,10 @@ Selectors have the format `type`:`search string`. DAST searches for the selector
 
 | Selector type | Example                            | Description                                                                                                                                                                                           |
 |---------------|------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `css`         | `css:.password-field`              | Searches for a HTML element having the supplied CSS selector. Selectors should be as specific as possible for performance reasons.                                                                    |
+| `css`         | `css:.password-field`              | Searches for an HTML element having the supplied CSS selector. Selectors should be as specific as possible for performance reasons.                                                                    |
 | `id`          | `id:element`                       | Searches for an HTML element with the provided element ID.                                                                                                                                            |
 | `name`        | `name:element`                     | Searches for an HTML element with the provided element name.                                                                                                                                          |
-| `xpath`       | `xpath://input[@id="my-button"]/a` | Searches for a HTML element with the provided XPath. XPath searches are expected to be less performant than other searches.                                                                           |
+| `xpath`       | `xpath://input[@id="my-button"]/a` | Searches for an HTML element with the provided XPath. XPath searches are expected to be less performant than other searches.                                                                           |
 
 #### Find selectors with Google Chrome
 
@@ -492,8 +492,8 @@ Judicious choice of selector leads to a scan that is resilient to the applicatio
 
 In order of preference, you should choose as selectors:
 
-- `id` fields. These fields generally unique on a page, and rarely change.
-- `name` fields. These fields generally unique on a page, and rarely change.
+- `id` fields. These fields are generally unique on a page, and rarely change.
+- `name` fields. These fields are generally unique on a page, and rarely change.
 - `class` values specific to the field, such as the selector `"css:.username"` for the `username` class on the username field.
 - Presence of field specific data attributes, such as the selector, `"css:[data-username]"` when the `data-username` field has any value on the username field.
 - Multiple `class` hierarchy values, such as the selector `"css:.login-form .username"` when there are multiple elements with class `username` but only one nested inside the element with the class `login-form`.
@@ -586,7 +586,7 @@ To record tokens, DAST takes a snapshot of cookies, local storage, and session s
 the authentication process. DAST does the same after authentication and uses the difference to determine which were created
 by the authentication process.
 
-DAST considers cookies, local storage and session storage values set with sufficiently "random" values to be authentication tokens.
+DAST considers cookies, local storage, and session storage values set with sufficiently "random" values to be authentication tokens.
 For example, `sessionID=HVxzpS8GzMlPAc2e39uyIVzwACIuGe0H` would be viewed as an authentication token, while `ab_testing_group=A1` would not.
 
 The CI/CD variable `DAST_AUTH_COOKIE_NAMES` can be used to specify the names of authentication cookies and bypass the randomness check used by DAST.
@@ -648,7 +648,7 @@ Authentication failed because a home page should be displayed after login. Inste
 
 An authentication report can be saved as a CI/CD job artifact to assist with understanding the cause of an authentication failure.
 
-The report contains steps performed during the login process, HTTP requests and responses, the Document Object Model (DOM) and screenshots.
+The report contains steps performed during the login process, HTTP requests and responses, the Document Object Model (DOM), and screenshots.
 
 ![dast-auth-report](img/dast_auth_report_v16_9.jpg)
 
@@ -743,7 +743,7 @@ Suggested actions:
 - Verify that the username and password/authentication credentials used are correct.
 - Generate the [authentication report](#configure-the-authentication-report) and verify the `Request` for the `Login submit` is correct.
 - It's possible that the authentication report `Login submit` request and response are empty. This occurs when there is no request that would result
-  in a full page reload, such as a request made when submitting a HTML form. This occurs when using websockets or AJAX to submit the login form.
+  in a full page reload, such as a request made when submitting an HTML form. This occurs when using websockets or AJAX to submit the login form.
 - If the page displayed following user authentication genuinely has elements matching the login form selectors, configure `DAST_AUTH_SUCCESS_IF_AT_URL`
   or `DAST_AUTH_SUCCESS_IF_ELEMENT_FOUND` to use an alternate method of verifying the login attempt.
 
@@ -796,7 +796,7 @@ DAST could not detect an [authentication token](#authentication-tokens) created 
 2022-12-07T11:25:29.010 INF AUTH  requirement is unsatisfied, no basic authentication, cookie or storage event authentication token detected want="has authentication token"
 ```
 
-Suggestion actions:
+Suggested actions:
 
 - Generate the [authentication report](#configure-the-authentication-report) and look at the screenshot from the `Login submit` to verify that the login worked as expected.
 - Using the browser's developer tools, investigate the cookies and local/session storage objects created while logging in. Ensure there is an authentication token created with sufficiently random value.
