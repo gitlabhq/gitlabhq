@@ -165,6 +165,7 @@ Example response:
   "security_scan_stale_after_days": 90,
   "bulk_import_concurrent_pipeline_batch_limit": 25,
   "concurrent_relation_batch_export_limit": 25,
+  "concurrent_relation_export_limit": 25,
   "relation_export_batch_size": 50,
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
@@ -399,6 +400,7 @@ Example response:
   "security_scan_stale_after_days": 90,
   "bulk_import_concurrent_pipeline_batch_limit": 25,
   "concurrent_relation_batch_export_limit": 25,
+  "concurrent_relation_export_limit": 25,
   "relation_export_batch_size": 50,
   "downstream_pipeline_trigger_limit_per_project_user_sha": 0,
   "concurrent_github_import_jobs_limit": 1000,
@@ -891,6 +893,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `wiki_page_max_content_bytes`            | integer          | no                                   | Maximum wiki page content size in **bytes**. Default: 5242880 Bytes (5 MB). The minimum value is 1024 bytes. |
 | `bulk_import_concurrent_pipeline_batch_limit` | integer     | no                                   | Maximum simultaneous direct transfer batch exports to process. |
 | `concurrent_relation_batch_export_limit` | integer          | no                                   | Maximum number of simultaneous batch export jobs to process. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169122) in GitLab 17.6. |
+| `concurrent_relation_export_limit`       | integer          | no                                   | Maximum number of simultaneous project file exports to process. Default: 25. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599092) in GitLab 19.4. |
 | `asciidoc_max_includes`                  | integer          | no                                   | Maximum limit of AsciiDoc include directives being processed in any one document. Default: 32. Maximum: 64. |
 | `duo_custom_agents_enabled`              | boolean          | no                                   | Indicates whether custom agents are allowed for this instance. Default: `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0. |
 | `duo_custom_flows_enabled`               | boolean          | no                                   | Indicates whether custom flows are allowed for this instance. Default: `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0. |

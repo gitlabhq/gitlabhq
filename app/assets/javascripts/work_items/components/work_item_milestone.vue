@@ -62,7 +62,7 @@ export default {
       default: false,
     },
   },
-  emits: ['error', 'milestoneUpdated', 'parent-milestone', 'update-widget-draft'],
+  emits: ['error', 'milestone-updated', 'parent-milestone', 'update-widget-draft'],
   data() {
     return {
       searchTerm: '',
@@ -204,7 +204,7 @@ export default {
           if (data.workItemUpdate.errors.length) {
             throw new Error(data.workItemUpdate.errors.join('\n'));
           }
-          this.$emit('milestoneUpdated', selectedMilestoneId);
+          this.$emit('milestone-updated', selectedMilestoneId);
         })
         .catch((error) => {
           this.localMilestone = this.workItemMilestone;

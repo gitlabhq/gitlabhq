@@ -67,7 +67,7 @@ export default {
       default: false,
     },
   },
-  emits: ['error', 'labelsUpdated', 'update-widget-draft'],
+  emits: ['error', 'labels-updated', 'update-widget-draft'],
   data() {
     return {
       searchLabels: [],
@@ -301,7 +301,7 @@ export default {
 
           this.track('updated_labels');
         }
-        this.$emit('labelsUpdated', [...addLabelIds, ...removeLabelIds]);
+        this.$emit('labels-updated', [...addLabelIds, ...removeLabelIds]);
       } catch {
         this.$emit('error', i18n.updateError);
       } finally {

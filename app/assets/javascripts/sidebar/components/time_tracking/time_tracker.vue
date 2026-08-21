@@ -197,7 +197,7 @@ export default {
     },
   },
   created() {
-    eventHub.$on('timeTracker:refresh', this.refresh);
+    eventHub.$on('time-tracker-refresh', this.refresh);
   },
   methods: {
     refresh() {

@@ -85,7 +85,7 @@ DIFF
       describe 'unchanged line' do
         let(:line) { @lines.last }
 
-        it { expect(line.type).to eq(nil) }
+        it { expect(line.type).to be_nil }
         it { expect(line.old_pos).to eq(24) }
         it { expect(line.new_pos).to eq(31) }
         it { expect(line.text).to eq('       @cmd_output << stderr.read') }

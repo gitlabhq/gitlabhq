@@ -87,6 +87,10 @@ describe('App', () => {
         expect(getDrawer().exists()).toBe(true);
       });
 
+      it('keeps the drawer header sticky', () => {
+        expect(getDrawer().props('headerSticky')).toBe(true);
+      });
+
       it('dispatches openDrawer and fires view_whats_new_drawer with the placement', () => {
         expect(store.openDrawer).toHaveBeenCalledWith('version-digest');
         expect(trackingSpy).toHaveBeenCalledWith(

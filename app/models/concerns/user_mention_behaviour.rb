@@ -7,10 +7,6 @@ module UserMentionBehaviour # rubocop:disable Gitlab/BoundedContexts -- Module i
     scope :for_notes, ->(notes) { where(note_id: notes) }
   end
 
-  def has_mentions?
-    mentioned_users_ids.present? || mentioned_groups_ids.present? || mentioned_projects_ids.present?
-  end
-
   private
 
   def mentioned_users

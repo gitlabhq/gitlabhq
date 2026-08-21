@@ -21,19 +21,13 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
 
   it_behaves_like 'an idempotent worker'
 
-  subject(:perform) {  described_class.new.perform(user.id, project.id, after_export_strategy, params) }
+  subject(:perform) { described_class.new.perform(user.id, project.id, after_export_strategy, params) }
 
-  context 'when job is re-enqueued after an interuption and same JID is used' do
-    before do
-      allow_next_instance_of(described_class) do |job|
-        allow(job).to receive(:jid).and_return(1234)
-      end
-    end
-
+  context 'when a ProjectExportJob already exists for this user and project' do
     it_behaves_like 'an idempotent worker'
 
     it 'does not start the export process twice' do
-      project.export_jobs.create!(jid: 1234, status_event: :start)
+      project.export_jobs.create!(jid: SecureRandom.hex(8), user_id: user.id, status_event: :start)
 
       expect { perform }.not_to change { Projects::ImportExport::WaitRelationExportsWorker.jobs.size }
     end
@@ -94,6 +88,168 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
           exported_by_admin: true
         )
       )
+    end
+  end
+
+  describe 'sidekiq deduplication configuration' do
+    it 'reschedules deduplicated jobs so a self re-enqueue is not dropped' do
+      expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+      expect(described_class.get_deduplication_options).to include(if_deduplicated: :reschedule_once)
+    end
+  end
+
+  describe 'concurrency and FIFO gate' do
+    context 'when under the concurrency limit' do
+      before do
+        stub_application_setting(concurrent_relation_export_limit: 5)
+      end
+
+      it 'starts the export immediately' do
+        perform
+
+        expect(project.export_jobs.last.started?).to be(true)
+      end
+    end
+
+    context 'when the concurrency limit has already been reached' do
+      let_it_be_with_reload(:other_started_job) { create(:project_export_job, :started) }
+
+      before do
+        stub_application_setting(concurrent_relation_export_limit: 1)
+      end
+
+      it 'does not start the export and re-enqueues itself' do
+        expect(described_class).to receive(:perform_in)
+          .with(described_class::RE_ENQUEUE_DELAY, user.id, project.id, after_export_strategy, params)
+          .and_call_original
+
+        expect { perform }.not_to change { Projects::ImportExport::RelationExportWorker.jobs.size }
+
+        export_job = project.export_jobs.last
+        expect(export_job.queued?).to be(true)
+      end
+
+      it "updates its jid to the re-enqueued job's, so StuckExportJobsWorker sees it as still alive" do
+        perform
+
+        export_job = project.export_jobs.last
+        re_enqueued_job = described_class.jobs.last
+
+        expect(re_enqueued_job['args']).to eq([user.id, project.id, after_export_strategy, params])
+        expect(export_job.jid).to eq(re_enqueued_job['jid'])
+      end
+
+      it 'reuses the same queued ProjectExportJob on a later attempt, regardless of jid' do
+        perform
+        export_job = project.export_jobs.last
+
+        allow_next_instance_of(described_class) do |job|
+          allow(job).to receive(:jid).and_return(SecureRandom.hex(8))
+        end
+
+        expect do
+          described_class.new.perform(user.id, project.id, after_export_strategy, params)
+        end.not_to change { ProjectExportJob.count }
+
+        expect(export_job.reload.queued?).to be(true)
+      end
+
+      context 'and the started job has timed out' do
+        before do
+          other_started_job.update!(updated_at: (StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION + 1.minute).ago)
+        end
+
+        it 'no longer counts it towards the limit and starts the export' do
+          perform
+
+          expect(project.export_jobs.last.started?).to be(true)
+        end
+      end
+
+      context 'and the job cannot be re-enqueued' do
+        before do
+          allow(described_class).to receive(:perform_in).and_return(nil)
+        end
+
+        it 'logs the abandoned export and leaves it queued' do
+          expect(Gitlab::Export::Logger).to receive(:error).with(
+            hash_including(message: 'Throttled project export was not re-enqueued', project_id: project.id)
+          )
+
+          perform
+
+          export_job = project.export_jobs.last
+          expect(export_job.queued?).to be(true)
+          expect(export_job.jid).to eq(jid)
+        end
+      end
+    end
+
+    context 'when the limit_concurrent_project_exports feature flag is disabled' do
+      let_it_be(:other_started_job) { create(:project_export_job, :started) }
+
+      before do
+        stub_feature_flags(limit_concurrent_project_exports: false)
+        stub_application_setting(concurrent_relation_export_limit: 1)
+      end
+
+      it 'starts the export regardless of the limit' do
+        expect(described_class).not_to receive(:perform_in)
+          .with(described_class::RE_ENQUEUE_DELAY, any_args)
+
+        perform
+
+        expect(project.export_jobs.last.started?).to be(true)
+      end
+
+      it 'looks the export job up by jid' do
+        export_job = project.export_jobs.create!(jid: jid, user_id: user.id)
+
+        expect { perform }.not_to change { ProjectExportJob.count }
+        expect(export_job.reload.started?).to be(true)
+      end
+    end
+
+    context 'when multiple exports are queued' do
+      let_it_be(:project_2) { create(:project) }
+      let_it_be(:project_3) { create(:project) }
+
+      let_it_be(:oldest_job) { create(:project_export_job, :queued, project: project, user: user) }
+      let_it_be(:middle_job) { create(:project_export_job, :queued, project: project_2, user: user) }
+      let_it_be(:newest_job) { create(:project_export_job, :queued, project: project_3, user: user) }
+
+      before do
+        stub_application_setting(concurrent_relation_export_limit: 1)
+      end
+
+      def perform_for(project)
+        described_class.new.perform(user.id, project.id, {}, {})
+      end
+
+      it 'promotes the oldest queued job first, not whichever job is asked about first' do
+        perform_for(project_3)
+        expect(newest_job.reload.queued?).to be(true)
+
+        perform_for(project)
+        expect(oldest_job.reload.started?).to be(true)
+
+        perform_for(project_2)
+        expect(middle_job.reload.queued?).to be(true)
+      end
+
+      context 'and the oldest queued jobs have stopped being re-enqueued' do
+        before do
+          [oldest_job, middle_job].each do |export_job|
+            export_job.update!(updated_at: (described_class::QUEUED_JOBS_EXPIRATION + 1.minute).ago)
+          end
+        end
+
+        it 'ignores them so they do not hold the queue positions' do
+          perform_for(project_3)
+
+          expect(newest_job.reload.started?).to be(true)
+        end
+      end
     end
   end
 end

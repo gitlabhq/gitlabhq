@@ -17,7 +17,7 @@ title: セマンティック検索の管理
 
 {{< history >}}
 
-- GitLab 18.7で[ベータ版](../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/groups/gitlab-org/-/epics/16910)されました。
+- GitLab 18.7で[ベータ版](../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/groups/gitlab-org/-/work_items/16910)されました。
 - GitLab 18.8でGitLab Duo Coreに[追加](https://gitlab.com/gitlab-org/gitlab/-/work_items/588259)されました。
 - GitLab 18.9でGitLab Premiumに[追加](https://gitlab.com/gitlab-org/gitlab/-/issues/590394)されました。
 
@@ -30,7 +30,7 @@ title: セマンティック検索の管理
 
 ## 前提条件 {#prerequisites}
 
-- [GitLab AIゲートウェイ](gitlab_duo/gateway.md)または[GitLab Duo Self-Hosted](gitlab_duo_self_hosted/_index.md)へのアクセス。詳細については、[埋め込みモデル](#embedding-models)を参照してください。
+- [GitLab AIゲートウェイ](gitlab_duo/gateway.md)または[GitLab Duo Self-Hosted](gitlab_duo_self_hosted/_index.md)へのアクセス。
 - ベータ版および実験的機能が[インスタンス](../user/duo_agent_platform/turn_on_off.md#on-gitlab-self-managed-2)で有効になっている。
 - [ベクターストアが設定されている](#vector-storage):
   - Elasticsearch 8.0以降。
@@ -50,7 +50,7 @@ title: セマンティック検索の管理
 
 {{< /history >}}
 
-GitLabインスタンスがElasticsearchまたはOpenSearchを[詳細検索](../user/search/advanced_search.md)に使用している場合、同じクラスターに接続することでセマンティック検索を有効にできます:
+Your GitLabインスタンスがElasticsearchまたはOpenSearchを[詳細検索](../user/search/advanced_search.md)に使用している場合、同じクラスターに接続することでセマンティック検索を有効にできます:
 
 1. 右上隅で、**管理者**を選択します。
 1. 左サイドバーで、**設定** > **検索**を選択します。
@@ -60,95 +60,64 @@ GitLabインスタンスがElasticsearchまたはOpenSearchを[詳細検索](../
 
 ### カスタムベクターストアを設定する {#configure-a-custom-vector-store}
 
-Elasticsearch、OpenSearch、またはPostgreSQL用のカスタムベクターストア接続を設定するには:
-
-- Railsコンソールで、`adapter_class`と`options`を使用して`Ai::ActiveContext::Connection`を作成します。
-
-#### Elasticsearch {#elasticsearch}
-
-```ruby
-connection = Ai::ActiveContext::Connection.create!(
-  name: "elasticsearch",
-  options: options,
-  adapter_class: "ActiveContext::Databases::Elasticsearch::Adapter"
-)
-connection.activate!
-```
-
-接続オプション:
-
-| オプション                   | 型             | 必須 | デフォルト    | 説明 |
-|--------------------------|------------------|----------|------------|-------------|
-| `url`                    | 文字列の配列 | はい      | なし       | ElasticsearchクラスターのURLの配列（例: `["http://localhost:9200"]`）。 |
-| `client_adapter`         | 文字列           | いいえ       | `typhoeus` | 使用するHTTPアダプター。使用可能な値は`typhoeus`と`net_http`です。 |
-| `client_request_timeout` | 整数          | いいえ       | `30`       | リクエストのタイムアウト（秒）。 |
-| `retry_on_failure`       | 整数          | いいえ       | `0`        | 失敗時の再試行回数。 |
-| `debug`                  | ブール値          | いいえ       | `false`    | デバッグログを有効にします。 |
-
-#### OpenSearch {#opensearch}
-
-```ruby
-connection = Ai::ActiveContext::Connection.create!(
-  name: "opensearch",
-  options: options,
-  adapter_class: "ActiveContext::Databases::Opensearch::Adapter"
-)
-connection.activate!
-```
-
-接続オプション:
-
-| オプション                   | 型             | 必須 | デフォルト    | 説明 |
-|--------------------------|------------------|----------|------------|-------------|
-| `url`                    | 文字列の配列 | はい      | なし       | OpenSearchクラスターのURLの配列（例: `["http://localhost:9200"]`）。 |
-| `client_adapter`         | 文字列           | いいえ       | `typhoeus` | 使用するHTTPアダプター。使用可能な値は`typhoeus`と`net_http`です。 |
-| `client_request_timeout` | 整数          | いいえ       | `30`       | リクエストのタイムアウト（秒）。 |
-| `retry_on_failure`       | 整数          | いいえ       | `0`        | 失敗時の再試行回数。 |
-| `debug`                  | ブール値          | いいえ       | `false`    | デバッグログを有効にします。 |
-| `aws`                    | ブール値          | いいえ       | `false`    | AWS Signature Version 4署名を有効にします。 |
-| `aws_region`             | 文字列           | いいえ       | なし       | OpenSearchドメインのAWSリージョン。 |
-| `aws_access_key`         | 文字列           | いいえ       | なし       | AWSアクセスキーID。 |
-| `aws_secret_access_key`  | 文字列           | いいえ       | なし       | AWSシークレットアクセスキー。 |
-| `aws_role_arn`           | 文字列           | いいえ       | なし       | ロールベースの認証用のAWS IAMロールARN。 |
-
-#### `pgvector`機能付きPostgreSQL {#postgresql-with-pgvector}
-
 {{< history >}}
 
-- GitLab 18.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/552311)されました。
+- GitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/585318)されました。
 
 {{< /history >}}
 
-PostgreSQLでは、[`pgvector`](https://github.com/pgvector/pgvector)拡張機能を使用します:
+カスタムベクターストア接続を設定するには:
 
-1. PostgreSQLデータベースで、拡張機能を作成します:
+1. 右上隅で、**管理者**を選択します。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **セマンティック検索**を展開します。
+1. **ベクターストレージ**で、**設定する**を選択します。
+1. **Search adapter**ドロップダウンリストから、**Elasticsearch**、**OpenSearch**、または**PostgreSQL**を選択します。
+1. アダプターのフィールドを完了します。
+1. **変更を保存**を選択します。
 
-   ```sql
-   CREATE EXTENSION vector;
-   ```
+#### Elasticsearch {#elasticsearch}
 
-1. Railsコンソールで、接続を作成します:
+| 設定      | 説明 |
+|--------------|-------------|
+| **URL**      | ElasticsearchクラスターのURLをコンマ区切りで入力します（例: `http://localhost:9200, http://localhost:9201`）。 |
+| **ユーザー名** | パスワードで保護されたElasticsearchサーバーのユーザー名。 |
+| **パスワード** | パスワードで保護されたElasticsearchサーバーのパスワード。 |
 
-   ```ruby
-   connection = Ai::ActiveContext::Connection.create!(
-     name: "postgres",
-     options: options,
-     adapter_class: "ActiveContext::Databases::Postgresql::Adapter"
-   )
-   connection.activate!
-   ```
+#### OpenSearch {#opensearch}
 
-接続オプション:
+| 設定      | 説明 |
+|--------------|-------------|
+| **URL**      | OpenSearchクラスターのURLをコンマ区切りで入力します（例: `http://localhost:9200, http://localhost:9201`）。 |
+| **ユーザー名** | パスワードで保護されたOpenSearchサーバーのユーザー名。 |
+| **パスワード** | パスワードで保護されたOpenSearchサーバーのパスワード。 |
 
-| オプション           | 型    | 必須 | デフォルト | 説明 |
-|------------------|---------|----------|---------|-------------|
-| `host`           | 文字列  | はい      | なし    | PostgreSQLホスト。 |
-| `port`           | 整数 | いいえ       | なし    | PostgreSQLポート。 |
-| `database`       | 文字列  | いいえ       | なし    | データベース名。 |
-| `user`           | 文字列  | いいえ       | なし    | PostgreSQLユーザー。 |
-| `password`       | 文字列  | いいえ       | なし    | PostgreSQLパスワード。 |
-| `connect_timeout`| 整数 | いいえ       | `5`     | 接続タイムアウト（秒）。 |
-| `pool_size`      | 整数 | いいえ       | `5`     | 接続プールサイズ。 |
+AWS OpenSearch Serviceを使用するには、**IAM認証情報でAWS OpenSearchを使用します**を選択し、フィールドに入力します:
+
+| 設定                   | 説明 |
+|---------------------------|-------------|
+| **AWSリージョン**            | OpenSearchドメインのAWSリージョン。 |
+| **AWSアクセスキー**        | AWSアクセスキーID。ロールインスタンスの認証情報を使用していない場合にのみ必要です。 |
+| **AWSシークレットアクセスキー** | AWSシークレットアクセスキー。ロールインスタンスの認証情報を使用していない場合にのみ必要です。 |
+| **AWSのRole ARN**          | アカウント間の`AssumeRole`認可のAWS IAMロールARN。 |
+
+#### PostgreSQL with `pgvector` {#postgresql-with-pgvector}
+
+前提条件: 
+
+- PostgreSQLデータベースで[`pgvector`](https://github.com/pgvector/pgvector)拡張機能を有効にします:
+
+  ```sql
+  CREATE EXTENSION vector;
+  ```
+
+| 設定      | 説明 |
+|--------------|-------------|
+| **ホスト**     | PostgreSQLサーバーのホスト名。 |
+| **ポート**     | PostgreSQLサーバーのポート。デフォルトは`5432`です。 |
+| **データベース** | PostgreSQLデータベースの名前。 |
+| **ユーザー名** | PostgreSQLユーザー名。 |
+| **パスワード** | PostgreSQLパスワード。 |
 
 ## 埋め込みモデルを設定する {#configure-an-embedding-model}
 
@@ -171,15 +140,17 @@ PostgreSQLでは、[`pgvector`](https://github.com/pgvector/pgvector)拡張機�
 {{< history >}}
 
 - GitLab 19.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/582638)され、`semantic_search_user_model_selection`という名前の[機能フラグ](feature_flags/_index.md)で提供されました。デフォルトでは無効になっています。
+- 機能フラグ`semantic_search_user_model_selection`はGitLab 19.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246289)。
 
 {{< /history >}}
 
-> [!flag]
-> この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+前提条件: 
+
+- [GitLab AIゲートウェイ](gitlab_duo/gateway.md)と[GitLab Duo Self-Hosted](gitlab_duo_self_hosted/_index.md)の両方へのアクセス。
 
 GitLab管理モデルは、[GitLab AIゲートウェイ](gitlab_duo/gateway.md)で提供されます。Gemini Enterprise Agent Platformによって提供される`text-embedding-005`モデルを選択します。
 
-[GitLab Duo Self-Hosted](gitlab_duo_self_hosted/_index.md)セットアップでGitLab管理モデルを選択することもできます。詳細については、[ハイブリッドAIゲートウェイとモデル設定](gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration)を参照してください。
+[GitLab Duo Self-Hosted](gitlab_duo_self_hosted/_index.md)セットアップでのGitLab管理モデルの詳細については、[ハイブリッドAIゲートウェイおよびモデルの設定](gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration)を参照してください。
 
 > [!warning]
 > GitLabが選択したモデルを非推奨にした場合、ご自身で別のモデルに切り替える必要があります。
@@ -189,11 +160,14 @@ GitLab管理モデルは、[GitLab AIゲートウェイ](gitlab_duo/gateway.md)�
 {{< history >}}
 
 - GitLab 19.1で`semantic_search_user_model_selection`[機能フラグ](feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/588849)されました。デフォルトでは無効になっています。
+- 機能フラグ`semantic_search_user_model_selection`はGitLab 19.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246289)。
 
 {{< /history >}}
 
-> [!flag]
-> この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+前提条件: 
+
+- [GitLab Duo Self-Hosted](gitlab_duo_self_hosted/_index.md)へのアクセス。
+- [自己ホスト型のベータモデルと機能が有効になっています](gitlab_duo_self_hosted/configure_duo_features.md#turn-on-self-hosted-beta-models-and-features)。
 
 セルフホストモデルは、[独自のインフラストラクチャでホストされる](gitlab_duo_self_hosted/_index.md) AIモデルです。
 
@@ -207,11 +181,9 @@ GitLab管理モデルは、[GitLab AIゲートウェイ](gitlab_duo/gateway.md)�
 {{< history >}}
 
 - GitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/600201)され、`semantic_search_user_model_selection`という名前の[機能フラグ](feature_flags/_index.md)で提供されました。デフォルトでは無効になっています。
+- 機能フラグ`semantic_search_user_model_selection`はGitLab 19.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246289)。
 
 {{< /history >}}
-
-> [!flag]
-> この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
 
 チャンク戦略は、コードファイルを埋め込み用のより小さなスニペットに分割するために使用されるアルゴリズムです。次のいずれかの戦略を選択します:
 

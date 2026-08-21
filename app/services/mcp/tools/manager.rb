@@ -56,6 +56,7 @@ module Mcp
         'get_work_item_types' => ::Mcp::Tools::WorkItems::GetWorkItemTypesService,
         'link_work_items' => ::Mcp::Tools::WorkItems::LinkWorkItemsService,
         'list_merge_requests' => ::Mcp::Tools::MergeRequests::ListMergeRequestsService,
+        'list_repository_tree' => ::Mcp::Tools::Repositories::ListRepositoryTreeService,
         'list_wiki_pages' => ::Mcp::Tools::Wikis::ListWikiPagesService,
         'save_merge_request_review' => ::Mcp::Tools::MergeRequests::SaveMergeRequestReviewService,
         'save_pipeline' => ::Mcp::Tools::Pipelines::SavePipelineService,

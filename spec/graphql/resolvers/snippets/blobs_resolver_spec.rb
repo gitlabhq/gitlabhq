@@ -20,7 +20,7 @@ RSpec.describe Resolvers::Snippets::BlobsResolver, feature_category: :source_cod
 
       it 'redacts the field' do
         expect(resolve_blobs(snippet, user: other_user)).to be_nil
-        expect(query_context[:unretrievable_blobs?]).to eq(false)
+        expect(query_context[:unretrievable_blobs?]).to be(false)
       end
     end
 
@@ -31,7 +31,7 @@ RSpec.describe Resolvers::Snippets::BlobsResolver, feature_category: :source_cod
         expect(result).to match_array(snippet.list_files.map do |file|
           have_attributes(path: file)
         end)
-        expect(query_context[:unretrievable_blobs?]).to eq(false)
+        expect(query_context[:unretrievable_blobs?]).to be(false)
       end
     end
 
@@ -41,14 +41,14 @@ RSpec.describe Resolvers::Snippets::BlobsResolver, feature_category: :source_cod
           path = 'CHANGELOG'
 
           expect(resolve_blobs(snippet, paths: [path])).to contain_exactly(have_attributes(path: path))
-          expect(query_context[:unretrievable_blobs?]).to eq(false)
+          expect(query_context[:unretrievable_blobs?]).to be(false)
         end
       end
 
       context 'the argument does not match anything' do
         it 'returns an empty result' do
           expect(resolve_blobs(snippet, paths: ['does not exist'])).to be_empty
-          expect(query_context[:unretrievable_blobs?]).to eq(true)
+          expect(query_context[:unretrievable_blobs?]).to be(true)
         end
       end
 
@@ -59,7 +59,7 @@ RSpec.describe Resolvers::Snippets::BlobsResolver, feature_category: :source_cod
           expect(resolve_blobs(snippet, paths: paths)).to match_array(paths.map do |file|
             have_attributes(path: file)
           end)
-          expect(query_context[:unretrievable_blobs?]).to eq(false)
+          expect(query_context[:unretrievable_blobs?]).to be(false)
         end
       end
     end
@@ -74,7 +74,7 @@ RSpec.describe Resolvers::Snippets::BlobsResolver, feature_category: :source_cod
       it 'flags unretrievable blobs even when all blobs are returned' do
         resolve_blobs(snippet, args: {})
 
-        expect(query_context[:unretrievable_blobs?]).to eq(true)
+        expect(query_context[:unretrievable_blobs?]).to be(true)
       end
     end
   end

@@ -149,7 +149,7 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult, feature_categor
       let(:status) { described_class::FAILED_STATUS }
 
       it 'returns true' do
-        expect(failed).to eq true
+        expect(failed).to be true
       end
     end
 
@@ -157,7 +157,7 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult, feature_categor
       let(:status) { described_class::SUCCESS_STATUS }
 
       it 'returns false' do
-        expect(failed).to eq false
+        expect(failed).to be false
       end
     end
   end
@@ -169,7 +169,7 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult, feature_categor
       let(:status) { described_class::FAILED_STATUS }
 
       it 'returns false' do
-        expect(success).to eq false
+        expect(success).to be false
       end
     end
 
@@ -177,7 +177,7 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult, feature_categor
       let(:status) { described_class::SUCCESS_STATUS }
 
       it 'returns true' do
-        expect(success).to eq true
+        expect(success).to be true
       end
     end
   end
@@ -189,7 +189,7 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult, feature_categor
       let(:status) { described_class::FAILED_STATUS }
 
       it 'returns false' do
-        expect(checking).to eq false
+        expect(checking).to be false
       end
     end
 
@@ -197,7 +197,7 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult, feature_categor
       let(:status) { described_class::CHECKING_STATUS }
 
       it 'returns true' do
-        expect(checking).to eq true
+        expect(checking).to be true
       end
     end
   end
@@ -209,7 +209,7 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult, feature_categor
       let(:status) { described_class::FAILED_STATUS }
 
       it 'returns true' do
-        expect(unsuccessful).to eq true
+        expect(unsuccessful).to be true
       end
     end
 
@@ -217,7 +217,7 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult, feature_categor
       let(:status) { described_class::CHECKING_STATUS }
 
       it 'returns true' do
-        expect(unsuccessful).to eq true
+        expect(unsuccessful).to be true
       end
     end
 
@@ -225,7 +225,7 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult, feature_categor
       let(:status) { described_class::SUCCESS_STATUS }
 
       it 'returns false' do
-        expect(unsuccessful).to eq false
+        expect(unsuccessful).to be false
       end
     end
   end

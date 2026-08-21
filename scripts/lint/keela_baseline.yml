@@ -447,7 +447,6 @@ methods:
   app/models/concerns/use_sql_function_for_primary_key_lookups.rb:
   - _query_by_sql
   app/models/concerns/user_mention_behaviour.rb:
-  - has_mentions?
   - mentioned_groups
   - mentioned_projects
   app/models/group.rb:

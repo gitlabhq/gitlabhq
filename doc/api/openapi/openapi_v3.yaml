@@ -19427,7 +19427,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_f33ea4923f09"
+              "$ref": "#/components/schemas/RequestBody_2dac44d324b8"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -87022,6 +87022,8 @@ components:
           type: string
         concurrent_relation_batch_export_limit:
           type: string
+        concurrent_relation_export_limit:
+          type: string
         relation_export_batch_size:
           type: string
         bulk_import_enabled:
@@ -101418,7 +101420,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_f33ea4923f09:
+    RequestBody_2dac44d324b8:
       type: object
       properties:
         admin_mode:
@@ -103310,6 +103312,9 @@ components:
           type: string
           nullable: true
         can_create_organization:
+          type: string
+          nullable: true
+        concurrent_relation_export_limit:
           type: string
           nullable: true
         relation_export_batch_size:

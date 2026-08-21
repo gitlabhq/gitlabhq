@@ -64,6 +64,21 @@ RSpec.describe StuckExportJobsWorker, feature_category: :importers do
         end
       end
 
+      context 'when the export was re-enqueued under a new jid in the meantime' do
+        before do
+          allow(Gitlab::SidekiqStatus).to receive(:completed_jids) do
+            completed_jid = project_export_job.jid
+            project_export_job.update!(jid: SecureRandom.hex(8))
+
+            [completed_jid]
+          end
+        end
+
+        it 'does not mark the export as failed' do
+          expect { worker.perform }.not_to change { project_export_job.reload.status }
+        end
+      end
+
       context 'when the job is not in queue and db record in queued state' do
         before do
           allow(Gitlab::SidekiqStatus).to receive(:completed_jids).and_return([project_export_job.jid])

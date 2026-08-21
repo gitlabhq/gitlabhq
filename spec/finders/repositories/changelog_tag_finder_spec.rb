@@ -68,7 +68,7 @@ RSpec.describe Repositories::ChangelogTagFinder, feature_category: :source_code_
 
       it 'supports GitLab release process' do
         expect(finder.execute('16.9.0')).to eq(previous_tag)
-        expect(finder.execute('16.8.0')).to eq(nil)
+        expect(finder.execute('16.8.0')).to be_nil
       end
     end
 
@@ -88,7 +88,7 @@ RSpec.describe Repositories::ChangelogTagFinder, feature_category: :source_code_
       it 'supports Omnibus release process' do
         expect(finder.execute('16.9.0')).to eq(previous_tag)
         expect(finder.execute('16.8.0')).to eq(previous_tag)
-        expect(finder.execute('16.7.0')).to eq(nil)
+        expect(finder.execute('16.7.0')).to be_nil
       end
     end
 
@@ -104,7 +104,7 @@ RSpec.describe Repositories::ChangelogTagFinder, feature_category: :source_code_
 
       it 'supports Gitaly release process' do
         expect(finder.execute('16.9.0')).to eq(previous_tag)
-        expect(finder.execute('16.8.0')).to eq(nil)
+        expect(finder.execute('16.8.0')).to be_nil
       end
     end
 

@@ -892,7 +892,7 @@ GEM
     gitlab-kas-grpc (19.4.0.pre.rc1)
       google-protobuf (>= 3.25, < 5.0)
       grpc (~> 1.81)
-    gitlab-labkit (4.4.0)
+    gitlab-labkit (4.4.1)
       actionpack (>= 5.0.0, < 8.2.0)
       activesupport (>= 5.0.0, < 8.2.0)
       google-protobuf (>= 3.25, < 5.0)
@@ -1232,7 +1232,7 @@ GEM
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     i18n_data (0.13.1)
-    icalendar (2.12.3)
+    icalendar (2.12.4)
       base64
       ice_cube (~> 0.16)
       logger
@@ -2533,7 +2533,7 @@ DEPENDENCIES
   gitlab-http!
   gitlab-iam-grpc!
   gitlab-kas-grpc (~> 19.4.0.pre.rc1)
-  gitlab-labkit (~> 4.4.0)
+  gitlab-labkit (~> 4.4.1)
   gitlab-license (~> 2.6)
   gitlab-lookbook (~> 2.3)
   gitlab-mail_room (~> 1.1.0)
@@ -3052,7 +3052,7 @@ CHECKSUMS
   gitlab-http (0.1.0)
   gitlab-iam-grpc (0.1.0)
   gitlab-kas-grpc (19.4.0.pre.rc1) sha256=ebe94f6a8611d43ab1f09967bb997185a1745716caa429a4f359387a79ec8a91
-  gitlab-labkit (4.4.0) sha256=a717fa91723480a8bb1dfb916a1d27b98109103188643ce1ef295c6fc558063f
+  gitlab-labkit (4.4.1) sha256=171bcae6da88144bec9ef1b30043ef7b89bc3231f037d4e71c0ec37bc616a21e
   gitlab-license (2.6.0) sha256=2c1f8ae73835640ec77bf758c1d0c9730635043c01cf77902f7976e826d7d016
   gitlab-lookbook (2.3.14) sha256=146e78e7e72c3ce58b6e71400276af9ce2929c8eff4965bc2d2a70d527d2a0c7
   gitlab-mail_room (1.1.0) sha256=784847b914a6636b30264fd8a042c15e39f3473f3acd78ebd254ac0a885a5878
@@ -3162,7 +3162,7 @@ CHECKSUMS
   httpclient (2.9.0) sha256=4b645958e494b2f86c2f8a2f304c959baa273a310e77a2931ddb986d83e498c8
   i18n (1.14.8) sha256=285778639134865c5e0f6269e0b818256017e8cde89993fdfcbfb64d088824a5
   i18n_data (0.13.1) sha256=e5aa99b09a69b463bb0443fc1f9540351a49f3d1541c5e91316bafa035c63f66
-  icalendar (2.12.3) sha256=37dea76c36f5b21dd745bcd3cb53e7bacfbb4ad0a8d9c2a1c0aa9d39af83c850
+  icalendar (2.12.4) sha256=acf9b8b166dad4679b8be2cc3202260896c199ab7302f748c760c97e9d32e3a2
   ice_cube (0.16.4) sha256=da117e5de24bdc33931be629f9b55048641924442c7e9b72fedc05e5592531b7
   imagen (0.2.0) sha256=369fe912078877dba92615ebfc6f35a7d833e31f24f47bdd3ad5371a4139e24b
   invisible_captcha (2.3.0) sha256=309ee5a5e891ecfb732c85b12f1aa9252a648df6f2761b3b41205e824e30ff15

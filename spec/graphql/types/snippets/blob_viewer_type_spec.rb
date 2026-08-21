@@ -40,7 +40,7 @@ RSpec.describe GitlabSchema.types['SnippetBlobViewer'], feature_category: :sourc
 
       expect(snippet_blob['path']).to eq blob.path
       expect(blob_attribute).to be_nil
-      expect(snippet_blob['simpleViewer'][attribute]).to eq false
+      expect(snippet_blob['simpleViewer'][attribute]).to be false
     end
   end
 

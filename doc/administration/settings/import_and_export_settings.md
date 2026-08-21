@@ -368,6 +368,26 @@ To modify this setting, send an API request to `/api/v4/application/settings`
 with `concurrent_relation_batch_export_limit`.
 For more information, see [application settings API](../../api/settings.md).
 
+### Concurrent project file exports
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599092) in GitLab 19.4.
+
+{{< /history >}}
+
+Project file exports run on Sidekiq nodes with limited memory and disk space, so too many
+concurrent exports can saturate those nodes and delay every export on the instance.
+To limit how many project file exports run at the same time, administrators can configure the
+`concurrent_relation_export_limit` setting.
+
+The default value is `25` exports. Exports requested while the limit is reached stay queued and
+start in the order they were requested, as running exports finish.
+
+To modify this setting, send an API request to `/api/v4/application/settings`
+with `concurrent_relation_export_limit`.
+For more information, see [application settings API](../../api/settings.md).
+
 ### Export batch size
 
 {{< history >}}

@@ -191,7 +191,7 @@ RSpec.describe Mutations::MergeRequests::Update, feature_category: :code_review_
         let(:time_estimate) { '1d' }
 
         it 'returns true' do
-          expect(subject).to eq(true)
+          expect(subject).to be(true)
         end
       end
     end

@@ -14,53 +14,53 @@ title: CI/CDパイプライン修正フロー
 
 {{< history >}}
 
-- GitLab 18.4で[実験](../../../../policy/development_stages_support.md)として、[機能フラグ](../../../../administration/feature_flags/_index.md) `duo_workflow_in_ci`および`ai_duo_agent_fix_pipeline_button`とともに導入されました。`duo_workflow_in_ci`はデフォルトで有効になっています。`ai_duo_agent_fix_pipeline_button`はデフォルトで無効になっています。これらのフラグは、インスタンスまたはプロジェクトに対して有効または無効にすることができます。
+- GitLab 18.4で`duo_workflow_in_ci`および`ai_duo_agent_fix_pipeline_button`[機能フラグ](../../../../administration/feature_flags/_index.md)とともに[実験的機能](../../../../policy/development_stages_support.md)として導入されました。`duo_workflow_in_ci`はデフォルトで有効になっています。`ai_duo_agent_fix_pipeline_button`はデフォルトで無効になっています。これらのフラグは、インスタンスまたはプロジェクトに対して有効または無効にすることができます。
 - GitLab 18.5のGitLab.comおよびGitLab Self-Managedで有効になりました。
 - 機能フラグ`ai_duo_agent_fix_pipeline_button`は、GitLab 18.5で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205086)になっています。
 - GitLab 18.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273)になりました。機能フラグ`ai_duo_agent_fix_pipeline_button`は[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216681)されました。機能フラグ`duo_workflow_in_ci`は、GitLab 18.9で削除されました。
 - GitLab 18.10で、GitLab.comのFreeプランにおいてGitLabクレジットを使用して利用できるようになりました。
-- マージリクエストに関連付けられたパイプラインへの修正は、GitLab 19.1で`fix_pipeline_next`という[機能フラグ](../../../../administration/feature_flags/_index.md)とともに、コード提案として適用されるように[変更](https://gitlab.com/groups/gitlab-org/-/work_items/21837)されました。GitLab.comの一部のユーザーで有効になっています。
+- GitLab 19.1で、`fix_pipeline_next`[機能フラグ](../../../../administration/feature_flags/_index.md)とともに、マージリクエストに関連付けられたパイプラインの修正がコード提案として適用されるように[変更](https://gitlab.com/groups/gitlab-org/-/work_items/21837)されました。一部のユーザーを対象にGitLab.comで有効になりました。
 - GitLab 19.2で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241608)になりました。機能フラグ`fix_pipeline_next`は削除されました。
 
 {{< /history >}}
 
-CI/CDパイプライン修正フローは、GitLab CI/CDパイプラインにおける問題を診断し、修正を提案します。フローは、失敗を診断するために、以下を調べます:
+CI/CDパイプライン修正フローは、GitLab CI/CDパイプラインの問題を診断し、修正を提案します。失敗を診断するために、フローは次の情報を調べます:
 
-- パイプラインジョブログ、エラーメッセージ、失敗したジョブの出力、終了コードなど。
+- エラーメッセージ、失敗したジョブの出力、終了コードなどのパイプラインログ。
 - 失敗の原因となった可能性のあるマージリクエストの変更。
-- リポジトリの内容。これには、構文、Lint、またはインポートエラーの特定が含まれます。
-- スクリプトのエラー。これには、コマンドの失敗、不足している実行可能ファイル、または権限の問題が含まれます。
+- 構文エラー、Lintエラー、またはインポートエラーを特定するためのリポジトリの内容。
+- コマンドの失敗、実行可能ファイルの欠落、権限の問題などのスクリプトエラー。
 
 フローが修正を適用する方法は、パイプラインのコンテキストによって異なります:
 
-- パイプラインがマージリクエストに関連付けられている場合、フローはソースブランチにインラインのコード提案を適用します。マージリクエストから直接レビューして提案を適用できます。
-  - 修正に現在のマージリクエスト差分の外部にあるファイルへの変更が必要な場合、フローは代わりに新しいマージリクエストを作成します。
+- パイプラインがマージリクエストに関連付けられている場合、フローはソースブランチにインラインコード提案を適用します。提案は、マージリクエストから直接レビューして適用できます。
+  - 修正のため、現在のマージリクエストの差分に含まれていないファイルを変更する必要がある場合、フローは代わりに新しいマージリクエストを作成します。
 - パイプラインがマージリクエストに関連付けられていない場合、フローは修正を含む新しいマージリクエストを作成します。
 
-場合によっては、修正を試みる代わりに、フローは失敗と可能性のある次のステップを説明するコメントを投稿します。これは、パイプラインがマージリクエストに関連付けられている場合に発生します。例:
+場合によっては、フローは修正を試みる代わりに、失敗および実行可能な次のステップについて説明するコメントを投稿します。たとえば、パイプラインがマージリクエストに関連付けられている場合、次のような状況でこの処理が行われます:
 
-- 信頼性の高い修正を決定するための十分なコンテキストが存在しません。
-- 失敗はセキュリティ上の機密性が高く、担当者によってレビューされる必要があります。
-- 失敗のカテゴリはフローによって対応できません。
+- 信頼性の高い修正を特定するためのコンテキストが不足している。
+- 失敗がセキュリティに関係するため、人によるレビューが必要である。
+- 失敗のカテゴリが、フローで対処可能なものではない。
 
-セッションが開始および完了すると、フローはセッションへのリンクとともに、マージリクエストにシステムノートを投稿します。このフローはGitLab UIでのみ使用できます。
+セッションが開始および完了すると、フローはセッションへのリンクを含むシステムノートをマージリクエストに投稿します。このフローはGitLab UIでのみ使用できます。
 
-GitLab Duo Agent Platformを使用し、失敗したパイプラインを自動的に修正したい場合は、このフローが推奨されるパスです。これは、単一ジョブの失敗をトラブルシューティングを行うためのGitLab Duo Chat機能である[根本原因分析](../../../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)とは別のエクスペリエンスです。
+GitLab Duo Agent Platformを使用しており、失敗したパイプラインを自動的に修正する場合は、このフローの使用をおすすめします。このフローは、単一ジョブの失敗についてトラブルシューティングを行うためのGitLab Duo Chat機能である[根本原因分析](../../../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)とは別の機能です。
 
 ## 前提条件 {#prerequisites}
 
 - [GitLab Duo Agent Platformの前提条件](../../_index.md#prerequisites)を満たしていること。
-- **基本フローを許可**および**CI/CDパイプランの修正**を[トップレベルグループに対して](_index.md#turn-foundational-flows-on-or-off)オンにします。
-- プロジェクトのデベロッパー、メンテナー、またはオーナーロールを持っていること。
+- [トップレベルグループ](_index.md#turn-foundational-flows-on-or-off)で、**基本フローを許可**と**CI/CDパイプランの修正**をオンにしている。
+- プロジェクトのデベロッパー、メンテナー、またはオーナーロールを持っている。
 - 既存の失敗しているパイプラインがある。
 - [サービスアカウントを許可するようにプッシュルールを設定していること](../../troubleshooting.md#configure-push-rules-to-allow-a-service-account)。
-- プロジェクトで[独自のRunnerを設定](../execution.md#configure-runners-to-execute-flows)しているか、[GitLabホストRunner](../../../../ci/runners/hosted_runners/_index.md)を有効にしていること。
+- プロジェクトで[独自のRunnerを設定](../execution/_index.md#configure-runners-to-execute-flows)しているか、[GitLabホストRunner](../../../../ci/runners/hosted_runners/_index.md)を有効にしていること。
 
 ## マージリクエストでパイプラインを修正する {#fix-the-pipeline-in-a-merge-request}
 
 {{< history >}}
 
-- GitLab Duo Agentic Chatでのフローの使用は、GitLab 19.2で[機能フラグ](../../../../administration/feature_flags/_index.md) `agentic_foundational_flow_tool`という名前で[導入されました](https://gitlab.com/groups/gitlab-org/-/work_items/20484)。デフォルトでは有効になっています。
+- GitLab 19.2で、GitLab Duo Agentic Chatの会話においてフローを使用する機能が`agentic_foundational_flow_tool`[機能フラグ](../../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/work_items/20484)されました。デフォルトでは有効になっています。
 
 {{< /history >}}
 
@@ -70,18 +70,18 @@ GitLab Duo Agent Platformを使用し、失敗したパイプラインを自動�
 マージリクエストでCI/CDパイプラインを修正するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. 左サイドバーで、**コード** > **マージリクエスト**を選択し、マージリクエストを開きます。
+1. 左側のサイドバーで、**コード** > **マージリクエスト**を選択して、マージリクエストを開きます。
 1. パイプラインを修正するには、次のいずれかの方法を使用します:
-   - **概要**タブを選択し、失敗しているパイプラインの下にある**Duoでパイプラインを修正**を選択します。
-   - **パイプライン**タブを選択し、一番右の列で**Duoでパイプラインを修正**（{{< icon name="tanuki-ai" >}}）を選択します。
-   - GitLab Duoサイドバーで、新規または既存のAgentic Chat会話を開きます。Agentic Chatにパイプラインを修正するように依頼します。
-1. 進捗状況を監視するには、左サイドバーで**AI** > **セッション**を選択します。
+   - **概要**タブを選択し、失敗しているパイプラインの下にある**Duoでパイプラインを修正**を選択する。
+   - **パイプライン**タブを選択し、右端の列にある**Duoでパイプラインを修正**（{{< icon name="tanuki-ai" >}}）を選択する。
+   - GitLab Duoサイドバーで、新規または既存のAgentic Chatの会話を開き、Agentic Chatにパイプラインの修正を依頼する。
+1. 進捗状況を監視するには、左側のサイドバーで**AI** > **セッション**を選択します。
 
-   Agentic Chatを使用している場合、以下のこともできます:
-   - チャットの会話で進捗状況を確認します。
-   - 会話で**View Agent Session**を選択します。
+   Agentic Chatを使用している場合、次の操作もできます:
+   - Chatの会話で進捗状況を確認する。
+   - 会話で**エージェントセッションを表示**を選択する。
 
-セッションが完了すると、フローはマージリクエストにコード提案を追加するか、可能性のある次のステップを説明するコメントを投稿します。
+セッションが完了すると、フローはマージリクエストにコード提案を追加するか、実行可能な次のステップについて説明するコメントを投稿します。
 
 ## 他のCI/CDパイプラインを修正する {#fix-other-cicd-pipelines}
 
@@ -90,15 +90,16 @@ GitLab Duo Agent Platformを使用し、失敗したパイプラインを自動�
 1. **ビルド** > **パイプライン**を選択します。
 1. 失敗しているパイプラインを選択します。
 1. 右上隅で、**Duoでパイプラインを修正**を選択します。
-1. 進捗を監視するには、**AI** > **セッション**を選択します。
+1. 進捗状況を監視するには、**AI** > **セッション**を選択します。
 
 ## `AGENTS.md`を使用してフローをカスタマイズする {#use-agentsmd-to-customize-the-flow}
 
 フローは、リポジトリ内の[`AGENTS.md`](../../customize/agents_md.md)ファイルからリポジトリ固有の指示を読み取ります。`AGENTS.md`を使用して、次のような動作をカスタマイズできます:
 
 - フローがコミットする変更のコミットメッセージ形式。
-- フローが作成するマージリクエストのマージリクエストメタデータ（ラベル、説明など）。
-- 特定の種類の失敗を分類および処理する方法。
+- フローが作成するマージリクエストのラベルや説明などのメタデータ。
+- 特定の種類の失敗を分類して処理する方法。
+- 同じフローが複数回失敗しないように、同じ種類の繰り返しの失敗をどのように処理するか。
 
 例: 
 
@@ -116,30 +117,56 @@ apply labels based on the following failed pipeline scenarios:
   merge_request case.
 ```
 
+例えば、移行の失敗を処理するには:
+
+```markdown
+## Migration failures
+
+If a pipeline fails because of a database migration:
+
+- Run `bin/rails db:migrate:status` to check the current migration state before attempting
+  a fix.
+- Do not edit or delete past migration files.
+- If the migration cannot be safely reversed, post a comment describing the issue instead
+  of attempting a fix.
+```
+
 ## 既知の問題 {#known-issues}
 
-- AIゲートウェイは、最後の150 KiBのジョブログのみを処理します。あなたのジョブが大量の出力を生成する場合、フローはログの以前の部分に表示される関連する失敗情報をキャプチャできない可能性があります。回避策については、次のセクションを参照してください。
-- フローは、サンドボックス化されたランタイム環境でのパッケージのインストールを常に検証できるとは限りません。依存関係が不足している場合、デフォルトのフローイメージをカスタマイズできます。[デフォルトのDockerイメージを変更](../execution.md#change-the-default-docker-image)を参照してください。
+- AIゲートウェイは、ジョブログの末尾150 KiBのみを処理します。ジョブから大量の出力が生成される場合、ログの前半にある関連性の高い失敗情報をフローが取得できない可能性があります。回避策については、次のセクションを参照してください。
+- フローは、サンドボックス化されたランタイム環境でパッケージのインストールを常に検証できるとは限りません。依存関係が不足している場合、デフォルトのフローイメージをカスタマイズできます。[デフォルトのDockerイメージを変更する](../execution/images.md#change-the-default-docker-image)を参照してください。
 - `AGENTS.md`に記載されているリポジトリの指示はフローの動作に影響を与えますが、すべての場合でそれに従うことを保証するものではありません。
 
 ## トラブルシューティング {#troubleshooting}
 
-CI/CDパイプライン修正フローを使用しているときに、次のイシューに遭遇する可能性があります。
+CI/CDパイプライン修正フローを使用する際に、次の問題が発生する可能性があります。
 
 ### フローが失敗の根本原因を特定できない {#flow-cannot-identify-the-root-cause-of-a-failure}
 
-フローは、パイプラインの失敗の根本原因を特定できない場合があります。
+フローがパイプラインの失敗の根本原因を特定できない場合があります。
 
-このイシューは、ジョブログが150 KiBを超える場合に発生します。AIゲートウェイは最後の150 KiBのみを処理するため、ログの以前の部分に表示される関連する失敗情報はキャプチャされない可能性があります。
+この問題は、ジョブログが150 KiBを超える場合に発生します。AIゲートウェイはジョブログの末尾150 KiBのみを処理するため、ログの前半にある関連性の高い失敗情報を取得できない可能性があります。
 
-このイシューを回避するには、次を試してください:
+この問題を回避するには、次の方法を試してください:
 
-- デバッグログと進捗インジケーターを削除して、詳細な出力を減らします。
-- 重要でない出力をShellリダイレクト（`> /dev/null`）を使用してリダイレクトします。
-- スクリプトの最後に、主要なエラーメッセージをエコーする要約ステップを追加します。
-- メインスクリプトの完了後に、`after_script`を使用して診断情報を出力します。
-- 冗長なジョブを、より簡潔なログを持つ、より小さく焦点を絞ったジョブに分割します。
+- デバッグログや進捗インジケーターを削除して、詳細な出力を減らす。
+- Shellリダイレクト（`> /dev/null`）を使用して、重要でない出力をリダイレクトする。
+- スクリプトの最後にサマリーステップを追加し、主要なエラーメッセージを出力する。
+- `after_script`を使用して、メインスクリプトの完了後に診断情報を出力する。
+- 出力の多いジョブを、ログがより簡潔かつ小規模で目的を絞ったジョブに分割する。
+
+### Duoでパイプラインを修正ボタンが表示されない {#fix-pipeline-with-duo-button-does-not-appear}
+
+[前提条件](#prerequisites)を満たしているにもかかわらず、**Duoでパイプラインを修正**ボタンが表示されません。
+
+この問題は、ボタンが3つの別々のページ（GitLab Duo、Duo Agent Platform、および基本フロー）の設定に依存しているために発生します。あるレベルで有効になっている設定が、その下にあるすべてのレベルで有効であることを保証するものではありません。
+
+この問題を解決するには、各要件を再確認してください:
+
+- [GitLab Duo](../../turn_on_off.md#turn-gitlab-duo-on-or-off)または[GitLab Duo Core](../../turn_on_off.md#turn-gitlab-duo-core-on-or-off)がオンになっていること。
+- [Agent Platformがオンになっている](../../turn_on_off.md#turn-gitlab-duo-agent-platform-on-or-off)こと。
+- **基本フローを許可**と**CI/CDパイプランの修正**がトップレベルグループでオンになっており、GitLab Self-Managedの場合はインスタンスでオンになっていること。
 
 ## フィードバックを提供する {#give-feedback}
 
-チームはCI/CDパイプライン修正フローを積極的に改善しています。イシューを報告したり、改善を提案したりするには、[フィードバックイシュー601991](https://gitlab.com/gitlab-org/gitlab/-/work_items/601991)にフィードバックを残してください。
+チームは、CI/CDパイプライン修正フローの改善に積極的に取り組んでいます。問題を報告したり改善を提案したりするには、[フィードバックイシュー601991](https://gitlab.com/gitlab-org/gitlab/-/work_items/601991)にフィードバックを投稿してください。

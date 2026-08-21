@@ -250,7 +250,7 @@ export default {
       :work-item-type="workItemType"
       :can-invite-members="workItemAssignees.canInviteMembers"
       @error="$emit('error', $event)"
-      @assigneesUpdated="
+      @assignees-updated="
         $emit('attributes-updated', { type: $options.ListType.assignee, ids: $event })
       "
     />
@@ -264,7 +264,7 @@ export default {
       :work-item-iid="workItem.iid"
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
-      @labelsUpdated="$emit('attributes-updated', { type: $options.ListType.label, ids: $event })"
+      @labels-updated="$emit('attributes-updated', { type: $options.ListType.label, ids: $event })"
     />
     <work-item-parent
       v-if="showParent"
@@ -298,7 +298,7 @@ export default {
       :work-item-type="workItemType"
       :can-update="canUpdateMetadata"
       @error="$emit('error', $event)"
-      @milestoneUpdated="
+      @milestone-updated="
         $emit('attributes-updated', { type: $options.ListType.milestone, ids: [$event] })
       "
     />

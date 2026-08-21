@@ -353,14 +353,14 @@ describe('Issuable Time Tracker', () => {
   });
 
   describe('Event listeners', () => {
-    it('refetches issuableTimeTracking query when eventHub emits `timeTracker:refresh` event', async () => {
+    it('refetches issuableTimeTracking query when eventHub emits `time-tracker-refresh` event', async () => {
       // `initialTimeTracking: null` allows the smart query to run (and be refetchable)
       // instead of being skipped when time tracking data is provided via prop.
       wrapper = mountComponent({ props: { initialTimeTracking: null } });
       await waitForPromises();
       issuableTimeTrackingHandler.mockClear();
 
-      SidebarEventHub.$emit('timeTracker:refresh');
+      SidebarEventHub.$emit('time-tracker-refresh');
 
       await waitForPromises();
 

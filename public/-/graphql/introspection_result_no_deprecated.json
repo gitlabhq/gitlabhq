@@ -141854,6 +141854,18 @@
               "deprecationReason": null
             },
             {
+              "name": "duoCreatedSession",
+              "description": "GitLab Duo Agent Platform session that created the note.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflow",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "duoTriggeredSession",
               "description": "Duo Agent Platform session triggered by the note. Returns nil for system notes or when no triggered session exists.",
               "args": [],

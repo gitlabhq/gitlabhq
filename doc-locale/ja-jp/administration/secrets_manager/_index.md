@@ -1,8 +1,8 @@
 ---
-stage: Sec
-group: Pipeline Security
+stage: Security Platform
+group: Secrets Manager OpenBao
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: GitLabシークレットマネージャー (OpenBao)
+title: GitLab Secrets Manager（OpenBao）
 ---
 
 {{< details >}}
@@ -16,13 +16,13 @@ title: GitLabシークレットマネージャー (OpenBao)
 {{< history >}}
 
 - GitLab 18.8で[導入](https://gitlab.com/groups/gitlab-org/-/work_items/16319)され、実験として、GitLab 18.8で一部の初期テスター向けにクローズド[ベータ](../../policy/development_stages_support.md#beta)が提供されました。
-- GitLab 19.0でクローズドベータ版からパブリックベータ版へ[変更](https://gitlab.com/groups/gitlab-org/-/work_items/21731)されました。
+- GitLab 19.0でクローズドベータからパブリックベータに[変更](https://gitlab.com/groups/gitlab-org/-/work_items/21731)されました。
 
 {{< /history >}}
 
-The [GitLabシークレットマネージャー](../../ci/secrets/secrets_manager/_index.md)は、[OpenBao](https://openbao.org/)（オープンソースのシークレット管理ソリューション）を使用します。OpenBaoは、GitLabのインスタンスで使用されるシークレットに対して、安全なストレージ、アクセス制御、およびライフサイクル管理を提供します。
+[GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md)は、オープンソースのシークレット管理ソリューションである[OpenBao](https://openbao.org/)を使用します。OpenBaoは、GitLabのインスタンスで使用されるシークレットに対して、安全なストレージ、アクセス制御、およびライフサイクル管理を提供します。
 
-GitLab CI/CDジョブで、GitLabシークレットマネージャーのシークレットを使用する場合は、[GitLab Runner](https://docs.gitlab.com/runner/#gitlab-runner-versions) 19.0以降を使用する必要があります。
+GitLab CI/CDジョブで、GitLab Secrets Managerのシークレットを使用する場合は、[GitLab Runner](https://docs.gitlab.com/runner/#gitlab-runner-versions) 19.0以降を使用する必要があります。
 
 ## OpenBaoアーキテクチャ {#openbao-architecture}
 
@@ -30,8 +30,7 @@ OpenBaoは、既存のGitLabサービスと並行して動作するオプショ�
 
 - RailsバックエンドとRunnerは、ロードバランサーを介してOpenBao APIに接続します。
 - OpenBaoはPostgreSQLにデータを保存します。Helmチャートは、OpenBaoが同じPostgreSQLインスタンス上の別個の論理データベースを使用するように設定します。Helmチャートの`global.openbao.psql`を使用して接続を設定します。
-- OpenBaoはシークレットストアからアンシールキーを取得します。
-- OpenBaoは、HelmチャートによってマウントされたKubernetesシークレットからアンシールキーを読み取ります。
+- OpenBaoは、設定されたシークレットストア（デフォルトではHelmチャートによってマウントされたKubernetesシークレット）からアンシールキーを取得します。
 - OpenBaoは、監査ログが有効な場合にRailsバックエンドに監査ログを送信します。
 
 ```mermaid
@@ -69,7 +68,7 @@ GitLabデプロイに基づいて、インストール方法を選択してく�
 - **Cloud Native GitLab**: GitLabをKubernetesにデプロイする場合にこれを使用します。詳細については、[OpenBao Helmチャートドキュメント](https://docs.gitlab.com/charts/charts/openbao/)を参照してください。
 - **Linux package**: GitLabをLinuxパッケージで単一ノードまたは複数のノードにデプロイする場合にこれを使用します。詳細については、[LinuxパッケージインスタンスへのOpenBaoのインストール](linux_package_integration.md)を参照してください。
 
-インストール後、[GitLabシークレットマネージャー](../../ci/secrets/secrets_manager/_index.md)のユーザードキュメントに従ってOpenBaoが機能していることを確認してください。
+インストール後、[GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md)のユーザードキュメントに従ってOpenBaoが機能していることを確認してください。
 
 ## サイジングの推奨事項 {#sizing-recommendations}
 
@@ -81,7 +80,7 @@ OpenBaoのリソース要件は、GitLabインスタンスのサイズとシー�
 
 OpenBaoは、すべてのリクエストを処理する単一ノードで実行されます。追加のレプリカは、高可用性のフェイルオーバーのみを提供します。OpenBaoはPostgreSQLデータベースに接続されている場合、水平リードスケーラビリティ（HRS）をサポートしないため、スタンバイノードはリードトラフィックを処理しません。
 
-| シークレットフェッチ/秒 | CPUリクエスト | メモリリクエスト | レプリカ |
+| シークレットフェッチ数/秒 | CPUリクエスト | メモリリクエスト | レプリカ |
 |------------------|-------------|----------------|----------|
 | 3まで          | 500m        | 2 GB           | 2        |
 | 6まで          | 500m        | 3 GB           | 2        |
@@ -104,7 +103,7 @@ fetches/s = Git Pull RPS × adoption rate × 3
 - `adoption rate`は、シークレットマネージャーを使用するCI/CDジョブの割合（たとえば、5％の場合は0.05、20％の場合は0.20、50％の場合は0.50）です。
 - `3`は、シークレットマネージャーを使用するジョブごとにフェッチされるシークレットの想定平均数です。
 
-Select the row where **Secret fetches/s**が結果を満たすか、わずかに超える行を選択します。たとえば、20%の採用率で20 GitプルRPSを測定したデプロイの場合: `20 × 0.20 × 3 = 12 fetches/s`。Use at least the **Up to 12** row。
+**シークレットフェッチ数/秒**が結果と同じか、わずかに上回る行を選択します。たとえば、導入率20%でGitプルRPSの測定値が20のデプロイの場合: `20 × 0.20 × 3 = 12 fetches/s`。少なくとも**最大12**の行を使用します。
 
 デプロイ後、推定値を実際の使用量と比較して検証します。[モニタリングクエリ](#monitor-your-openbao-deployment)を使用してリソース使用量を測定し、しきい値を超えた場合は次の行にスケールすることで、リソースを増やしてください。
 
@@ -144,7 +143,7 @@ OpenBao Helmチャートは、これらのPostgreSQL接続プールデフォル�
 
 すべてのリファレンスアーキテクチャの階層で、ストレージの増加は無視できます。5〜10 GBのデータベースストレージを割り当てることで、十分なヘッドルームが確保されます。
 
-## GitLabシークレットマネージャーを有効にする {#enable-gitlab-secrets-manager}
+## GitLab Secrets Managerを有効にする {#enable-gitlab-secrets-manager}
 
 {{< history >}}
 
@@ -163,7 +162,7 @@ OpenBao Helmチャートは、これらのPostgreSQL接続プールデフォル�
 
 1. 右上隅で、**管理者**を選択します。
 1. 左側のサイドバーで、**設定** > **一般**を選択します。
-1. **GitLabシークレットマネージャー**を展開する。
+1. **GitLab Secrets Manager**を展開します。
 1. **Secrets Manager**切替をオンにします。
 
 ## OpenBaoのデプロイをモニタリングする {#monitor-your-openbao-deployment}
@@ -204,6 +203,45 @@ sum(rate(container_cpu_cfs_periods_total{container="openbao-server"}[5m]))
 
 スロットル比率が0.25（25％）を超える場合、現在のワークロードに対してCPU制限が低すぎることを示します。OpenBaoがスロットルされると、CPU時間を待機しているgoroutineがシークレットフェッチレイテンシーの増加を引き起こします。
 
+### OpenBaoメトリクス {#openbao-metrics}
+
+OpenBao Prometheusメトリクスを使用して、要求レイテンシー、ストレージバックエンドのパフォーマンス、キャッシュの効率性、およびノードの健全性を監視します。
+
+デフォルトでは、OpenBaoはポート`8209`の認証されていないリスナーで、パス`/v1/sys/metrics`のメトリクスを提供します。メトリクス名は`openbao_`プレフィックスを使用し、OpenBaoは24時間メトリクスデータを保持します。ポート、メトリクスのプレフィックス、または保持期間を変更するには、[モニタリング設定オプション](https://docs.gitlab.com/charts/charts/openbao/#monitoring-configuration-options)を参照してください。
+
+メトリクスポートはサービスを通じて公開されていないため、監視機能をスクレイプしてOpenBaoポッドを直接設定します。
+
+Prometheus Operatorを使用している場合、GitLabチャートには、デフォルトで無効になっているPodMonitorが含まれています。これを有効にするには、`openbao.podMonitor.enabled`を`true`に設定します。
+
+これらのメトリクスは、デプロイの運用に最も役立ちます:
+
+| メトリック                               | タイプ    | 説明 |
+|--------------------------------------|---------|-------------|
+| `openbao_core_active`                | ゲージ   | ノードがアクティブなノード（`1`）であるか、スタンバイノード（`0`）であるか。 |
+| `openbao_core_unsealed`              | ゲージ   | ノードがアンシール済み（`1`）か、シール済み（`0`）か。 |
+| `openbao_core_in_flight_requests`    | ゲージ   | 同時に処理されているリクエストの数。 |
+| `openbao_core_handle_request`        | 概要 | リクエスト処理のレイテンシー。 |
+| `openbao_postgres_get`               | 概要 | PostgreSQLストレージバックエンドからエントリを読み取る時間。 |
+| `openbao_postgres_put`               | 概要 | PostgreSQLストレージバックエンドにエントリを書き込む時間。 |
+| `openbao_postgres_list`              | 概要 | PostgreSQLストレージバックエンドのエントリをリストする時間。 |
+| `openbao_postgres_delete`            | 概要 | PostgreSQLストレージバックエンドからエントリを削除する時間。 |
+| `openbao_barrier_get`                | 概要 | 暗号化バリアを介してエントリを読み取る時間。 |
+| `openbao_barrier_put`                | 概要 | 暗号化バリアを介してエントリを書き込む時間。 |
+| `openbao_barrier_list`               | 概要 | 暗号化バリアを介してエントリをリストする時間。 |
+| `openbao_barrier_delete`             | 概要 | 暗号化バリアを介してエントリを削除する時間。 |
+| `openbao_cache_hit`                  | カウンター | キャッシュヒット数。 |
+| `openbao_cache_miss`                 | カウンター | キャッシュミス数。 |
+| `openbao_cache_write`                | カウンター | キャッシュ書き込み数。 |
+| `openbao_audit_log_request_failure`  | カウンター | 監査ログリクエストの失敗数。 |
+| `openbao_audit_log_response_failure` | カウンター | 監査ログ応答の失敗数。 |
+| `openbao_runtime_alloc_bytes`        | ゲージ   | OpenBaoプロセスによって割り当てられたメモリのバイト数。 |
+
+概要メトリクスは、`_count`、`_sum`、およびクオンタイル系列（`0.5`、`0.9`、`0.99`）を公開します。平均を計算するには、[レイテンシーの上昇を確認](troubleshooting.md#confirm-latency-is-elevated)で示すように、`_count`系列のレートで`_sum`系列のレートを割ります。
+
+これらのメトリクスを使用するしきい値と診断クエリについては、[低速なシークレット操作を診断する](troubleshooting.md#diagnose-slow-secret-operations)を参照してください。
+
+OpenBaoメトリクスの完全なリストについては、[OpenBaoテレメトリメトリクス](https://openbao.org/docs/internals/telemetry/metrics/all/)を参照してください。
+
 ### ヘルスチェックエンドポイント {#health-check-endpoints}
 
 OpenBaoは、モニタリング用のヘルスチェックエンドポイントを提供します:
@@ -212,16 +250,6 @@ OpenBaoは、モニタリング用のヘルスチェックエンドポイント�
 - `<your-openbao-url>/v1/sys/seal-status`: シールステータスを返します。
 
 これらのエンドポイントをモニタリングシステムと統合できます。
-
-## バックアップと復元 {#backup-and-restore}
-
-OpenBaoは、PostgreSQL上の独立した論理データベースにデータを保存します。シークレットが復元されることを確実にするため、このデータベースを通常のGitLabバックアップと共にバックアップしてください。
-
-OpenBao固有の詳細なバックアップおよび復元手順については、[OpenBaoバックアップドキュメント](https://docs.gitlab.com/charts/charts/openbao/#back-up-openbao)を参照してください。
-
-## リカバリーキー管理 {#recovery-key-management}
-
-OpenBaoのリカバリーキーの管理に関する情報（保存、表示、ルートトークン生成への使用を含む）については、[リカバリーキー管理](recovery_key.md)を参照してください。
 
 ## 高可用性 {#high-availability}
 
@@ -249,6 +277,9 @@ OpenBaoがオンデマンドのネームスペース読み込みを実装する�
 
 OpenBaoは[Geo](../geo/_index.md)デプロイをサポートしています。OpenBaoはプライマリとセカンダリ両方のGeoサイトにデプロイされますが、プライマリサイトのみがアクティブなOpenBaoノードを実行します。
 
+> [!warning]
+> OpenBaoは、異なるドメインを使用するセカンダリサイトへのGeoフェイルオーバーをサポートしていません。セカンダリサイトがプライマリドメインを指すようにDNSを更新せずに独自のドメインを維持する場合、GitLab Secrets Managerが有効になっているすべてのプロジェクトとグループに対してJWT認証を手動で再プロビジョニングする必要があります。再プロビジョニングはルートレベルと各ネームスペースに適用され、大規模なデプロイでは時間がかかります。移行ツールが[issue 595722](https://gitlab.com/gitlab-org/gitlab/-/issues/595722)で提案されています。ツールが存在するまでは、DNSレコードを更新して、プライマリドメインがプロモートされたセカンダリサイトを指すようにします。
+
 ### GeoにおけるOpenBaoの動作 {#openbao-behavior-in-geo}
 
 プライマリサイトでは、OpenBaoは書き込み可能なPostgreSQLデータベースに接続されたアクティブノードとして実行されます。セカンダリサイトでは、OpenBaoはPostgreSQLリードレプリカに接続されたスタンバイモードで実行されます。
@@ -266,13 +297,17 @@ PostgreSQLストリーミングレプリケーションは、すべてのOpenBao
 - Geoが設定されている必要があります。詳細については、[Geo](../geo/setup/_index.md)の設定を参照してください。
 - OpenBaoは、セカンダリにデプロイする前に、プライマリサイトにインストールされ、動作している必要があります。詳細については、[OpenBaoのインストール](#install-openbao)を参照してください。
 
-1. セカンダリOpenBaoは、レプリケートされたデータを復号化するために、プライマリと同じアンシールキーを使用する必要があります。プライマリクラスターからセカンダリクラスターへ`gitlab-openbao-unseal` Kubernetesシークレットをコピーします:
+1. セカンダリOpenBaoは、レプリケートされたデータを復号化するために、プライマリと同じアンシール設定を使用する必要があります。手順は、設定されたアンシール方法によって異なります:
 
-   ```shell
-   kubectl --namespace gitlab get secret gitlab-openbao-unseal -o yaml
-   ```
+   - Kubernetesシークレット（デフォルト）: プライマリクラスターからセカンダリクラスターへ`gitlab-openbao-unseal` Kubernetesシークレットをコピーします:
 
-   エクスポートされたシークレットをセカンダリクラスターに適用します。詳細については、[シークレットをバックアップする](https://docs.gitlab.com/charts/backup-restore/backup/#back-up-the-secrets)を参照してください。
+     ```shell
+     kubectl --namespace gitlab get secret gitlab-openbao-unseal -o yaml
+     ```
+
+     エクスポートされたシークレットをセカンダリクラスターに適用します。詳細については、[シークレットをバックアップする](https://docs.gitlab.com/charts/backup-restore/backup/#back-up-the-secrets)を参照してください。
+
+   - KMSベースの自動アンシール: セカンダリクラスターに同じKMSキーを設定します。詳細については、[シール解除と初期化のオプション](https://docs.gitlab.com/charts/charts/openbao/#unsealing-and-initialization-options)を参照してください。
 
 1. DNSレコードを更新して、フェイルオーバー中にプライマリドメインがセカンダリサイトを指すように計画している場合、事前にOpenBaoを適切に設定することをお勧めします。Helmチャートを設定し、`url`と`jwt_audience`をプライマリOpenBao URLに設定します:
 
@@ -284,7 +319,7 @@ PostgreSQLストリーミングレプリケーションは、すべてのOpenBao
        jwt_audience: https://openbao.<primary-domain>
    ```
 
-   チャート設定オプションの詳細については、[Geo](https://docs.gitlab.com/charts/charts/openbao/#geo-configuration)設定を参照してください。
+   チャートの設定オプションの詳細については、[OpenBaoチャートドキュメント](https://docs.gitlab.com/charts/charts/openbao/)を参照してください。
 
 1. セカンダリサイトにGitLab Helmチャートをデプロイします。OpenBaoポッドが起動し、スタンバイモードのままになります。これは想定される動作です。
 
@@ -308,49 +343,8 @@ PostgreSQLストリーミングレプリケーションは、すべてのOpenBao
 
 ## トラブルシューティング {#troubleshooting}
 
-シークレットマネージャーを使用する際に、次の問題が発生する可能性があります。
+デプロイ、接続、プロビジョニング、シーリング、データベース、監査ログ、およびGeoに関する問題を診断するには、[OpenBaoのトラブルシューティング](troubleshooting.md)を参照してください。
 
-### Geoデプロイのトラブルシューティングを行う {#troubleshoot-geo-deployments}
+## メンテナンス {#maintenance}
 
-| 症状 | 原因 | 解決策 |
-|---------|-------|------------|
-| セカンダリOpenBaoログでの`cipher: message authentication failed`または`unknown key ID` | プライマリとセカンダリ間のアンシールキーの不一致 | プライマリクラスターからセカンダリクラスターへ`gitlab-openbao-unseal`をコピーし、OpenBaoポッドを再起動します。 |
-| セカンダリOpenBaoログでの`failed to acquire lock` | 読み取り専用データベースでのOpenBaoスタンバイ | 期待される動作。アクションは不要です。 |
-| セカンダリOpenBaoログでの`cannot execute INSERT in a read-only transaction` | OpenBaoがリードレプリカでリーダー選出を試行しています | 期待される動作。アクションは不要です。 |
-| Geoフェイルオーバー後、JWT認証が失敗します | OpenBaoで`jwt_audience`が`boundAudiences`と一致しません | 両方のサイトで`jwt_audience`をプライマリOpenBao URLに設定します。 |
-
-### 遅いシークレット操作の診断 {#diagnose-slow-secret-operations}
-
-CI/CDジョブがシークレットのフェッチに時間がかかったり、シークレット操作がタイムアウトしたりする場合に、このセクションを使用してください。
-
-#### レイテンシーが上昇していることを確認する {#confirm-latency-is-elevated}
-
-次のクエリを使用して、平均要求レイテンシーをミリ秒単位で測定します。このクエリは、低トラフィックデプロイを含む、あらゆるトラフィックレベルで機能します:
-
-```prometheus
-rate(openbao_core_handle_request_sum[5m])
-/
-rate(openbao_core_handle_request_count[5m])
-```
-
-通常の負荷では、すべてのリクエストタイプにおける平均レイテンシーは通常3〜7ミリ秒です。平均レイテンシーが継続的に20ミリ秒を超える場合は、調査してください。
-
-OpenBaoがリクエストをアクティブに処理している場合は、P99レイテンシーに次のクエリを使用します:
-
-```prometheus
-openbao_core_handle_request{quantile="0.99"}
-```
-
-通常のP99は10ミリ秒未満です。概要ウィンドウに最近の観測値がないため、OpenBaoがアイドル状態のとき、このクエリは`NaN`を返します。その場合はレートベースのクエリを使用してください。
-
-#### 潜在的な問題を特定する {#identify-potential-issues}
-
-| 潜在的な問題             | 確認事項                   | クエリ                                                                       | しきい値           | アクション                                                             |
-|-----------------------------|---------------------------------|-----------------------------------------------------------------------------|---------------------|--------------------------------------------------------------------|
-| CPU制限が低すぎる           | CFSスロットル比率              | [CPU throttling query](#cpu-throttling)                                     | 25％超               | CPU制限を増やす                                                 |
-| 需要がCPU容量を超える | CPU使用率                 | [CPU utilization query](#cpu-utilization)                                   | リクエストの50％超    | [sizing table](#pod-resources)の次の行にスケールする        |
-| リクエストの急増               | 処理中のリクエスト              | `openbao_core_in_flight_requests`                                           | 5を超えて持続   | 一時的な。再発を監視する。                                 |
-| PostgreSQLのボトルネック       | 平均PostgreSQLリードレイテンシー | `rate(openbao_postgres_get_sum[5m]) / rate(openbao_postgres_get_count[5m])` | > 5ミリ秒              | PostgreSQLのリソースと接続プールを確認する                     |
-| メモリの負荷             | メモリ使用率              | [Memory utilization query](#memory-utilization)                             | メモリリクエストに近い | [namespace formula](#memory-utilization)を使用してメモリを増やす |
-
-PostgreSQLのレイテンシーが高い場合は、接続プールが飽和状態にあるかどうかを確認してください。すべての接続がビジー状態の場合、追加のリクエストがキューに入れられ、レイテンシーを引き起こします。接続プール設定については、[Database resources](#database-resources)を参照してください。PostgreSQLモニタリングまたはOpenBaoログで接続数を確認します。
+OpenBaoをバックアップおよび復元する、リカバリーキーを管理する、またはOpenBao認証をリカバリーするには、[OpenBaoを保守する](maintenance.md)を参照してください。

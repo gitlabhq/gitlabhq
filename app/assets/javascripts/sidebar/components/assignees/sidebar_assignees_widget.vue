@@ -283,7 +283,7 @@ export default {
       :issuable-type="issuableType"
       :issuable-id="issuableId"
       :query-variables="queryVariables"
-      @assigneesUpdated="$emit('assignees-updated', $event)"
+      @assignees-updated="$emit('assignees-updated', $event)"
     />
     <sidebar-editable-item
       ref="toggle"

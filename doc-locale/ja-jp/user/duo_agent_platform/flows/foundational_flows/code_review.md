@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Coding
+stage: AI Coding
+group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: コードレビューフロー
 ---
@@ -22,7 +22,7 @@ title: コードレビューフロー
 
 {{< history >}}
 
-- GitLab [18.7](https://gitlab.com/groups/gitlab-org/-/epics/18645)で、[機能フラグ](../../../../administration/feature_flags/_index.md) `duo_code_review_on_agent_platform`という名前の[ベータ](../../../../policy/development_stages_support.md)版として導入されました。デフォルトでは無効になっています。
+- GitLab [18.7](https://gitlab.com/groups/gitlab-org/-/epics/18645)で`duo_code_review_on_agent_platform`[機能フラグ](../../../../administration/feature_flags/_index.md)とともに[ベータ版](../../../../policy/development_stages_support.md)として導入されました。デフォルトでは無効になっています。
 - GitLab 18.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273)になりました。機能フラグ`duo_code_review_on_agent_platform`は[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217209)されました。
 - GitLab 18.10で、GitLab.comのFreeプランにおいてGitLabクレジットを使用して利用できるようになりました。
 - GitLabバージョン19.1で、LLMがClaude Sonnet 4.6 Vertexに[更新](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876)されました。
@@ -30,39 +30,39 @@ title: コードレビューフロー
 {{< /history >}}
 
 > [!note]
-> アドオンとグループの設定に応じて、GitLabは以下の2つのコードレビュー機能を実行します:
+> アドオンとグループの設定に応じて、GitLabでは以下の2つのコードレビュー機能のいずれかが実行されます:
 >
 > - コードレビューフロー: GitLab Duo Agent Platformの一部であるエージェント型バージョン。
 > - GitLab Duoコードレビュー: GitLab Duo Enterpriseアドオンを使用するユーザーのみが利用できる非エージェント型バージョン。
 >
 > このページでは、エージェント型バージョンについて説明します。
 >
-> 2つの機能の比較方法、およびGitLab Duo Enterpriseのシートでコードレビューフローを有効にする方法の詳細については、[GitLab Duoでコードレビューを使用する](../../../project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code)を参照してください。
+> この2つの機能の比較、およびGitLab Duo Enterpriseシートでコードレビューフローをオンにする方法の詳細については、[GitLab Duoを使用してコードをレビューする](../../../project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code)を参照してください。
 
 コードレビューフローを使用すると、エージェント型AIによってコードレビューを効率化できます。
 
-このフローには次の特長があります:
+このフローでは次のことができます:
 
-- コードの変更を分析します。
-- リポジトリ構造やファイル間の依存関係を踏まえて、より高度にコンテキストを理解します。
-- 実行可能なフィードバックを含む、詳細なレビューコメントを提供します。
-- プロジェクトに合わせて調整されたカスタムレビュー指示をサポートします。
+- コードの変更を分析する。
+- リポジトリ構造やファイル間の依存関係を踏まえて、より高度にコンテキストを理解する。
+- 実行可能なフィードバックを含む、詳細なレビューコメントを提供する。
+- プロジェクトに合わせて調整されたカスタムレビュー指示をサポートする。
 
 このフローはGitLab UIでのみ使用できます。
 
 ## 前提条件 {#prerequisites}
 
 - [GitLab Duo Agent Platformの前提条件](../../_index.md#prerequisites)を満たしていること。
-- [トップレベルグループ](_index.md#turn-foundational-flows-on-or-off)で、**基本フローを許可**と**コードレビュー**を有効にしていること。
-- プロジェクトのデベロッパー、メンテナー、またはオーナーロールを持っていること。
-- 複数のGitLab Duoネームスペースに属している場合は、[デフォルトのGitLab Duoのネームスペースを設定](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace)すること。
-- `gitlab--duo`タグとDockerイメージをサポートするexecutorを使用して[独自のRunnerを設定する](../execution.md#configure-runners-to-execute-flows)か、プロジェクトの[GitLabホスト型Runnerを有効にします](../../../../ci/runners/hosted_runners/_index.md)。コードレビューフローはCI/CDのジョブとして実行され、実行にはRunnerが必要です。
+- [トップレベルグループ](_index.md#turn-foundational-flows-on-or-off)で、**基本フローを許可**と**コードレビュー**をオンにしている。
+- プロジェクトのデベロッパー、メンテナー、またはオーナーロールを持っている。
+- 複数のGitLab Duoネームスペースに属している場合は、[デフォルトのGitLab Duoネームスペースを設定](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace)している。
+- `gitlab--duo`タグとDockerイメージをサポートするexecutorを使用する[独自のRunnerを設定](../execution/_index.md#configure-runners-to-execute-flows)するか、プロジェクトで[GitLabホストRunner](../../../../ci/runners/hosted_runners/_index.md)をオンにしている。コードレビューフローはCI/CDジョブとして実行されるため、実行にはRunnerが必要です。
 
 ## フローを使用する {#use-the-flow}
 
 {{< history >}}
 
-- GitLab Duo Agentic Chatでのフローの使用は、GitLab 19.2で[機能フラグ](../../../../administration/feature_flags/_index.md) `agentic_foundational_flow_tool`という名前で[導入されました](https://gitlab.com/groups/gitlab-org/-/work_items/20484)。デフォルトでは有効になっています。
+- GitLab 19.2で、GitLab Duo Agentic Chatの会話においてフローを使用する機能が`agentic_foundational_flow_tool`[機能フラグ](../../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/work_items/20484)されました。デフォルトでは有効になっています。
 
 {{< /history >}}
 
@@ -73,15 +73,15 @@ title: コードレビューフロー
 
 1. 左側のサイドバーで、**コード** > **マージリクエスト**を選択して、マージリクエストを見つけます。
 1. 次のいずれかの方法でレビューをリクエストします:
-   - `@GitLabDuo`をレビュアーとして割り当てます。
-   - コメントボックスに、クイックアクション`/assign_reviewer @GitLabDuo`を入力します。
-   - コメントボックスで`@GitLabDuo`にメンションし、レビューをリクエストします。
-   - GitLab Duoサイドバーで、新規または既存のAgentic Chat会話を開きます。Agentic Chatにマージリクエストのレビューを依頼します。
-1. 進捗状況を監視するには、左サイドバーで**AI** > **セッション**を選択します。
+   - `@GitLabDuo`をレビュアーとして割り当てる。
+   - コメントボックスに、クイックアクション`/assign_reviewer @GitLabDuo`を入力する。
+   - コメントボックスで`@GitLabDuo`をメンションし、レビューをリクエストする。
+   - GitLab Duoサイドバーで、新規または既存のAgentic Chatの会話を開き、Agentic Chatにマージリクエストのレビューを依頼する。
+1. 進捗状況を監視するには、左側のサイドバーで**AI** > **セッション**を選択します。
 
-   Agentic Chatを使用している場合、以下のこともできます:
-   - チャットの会話で進捗状況を確認します。
-   - 会話で**View Agent Session**を選択します。
+   Agentic Chatを使用している場合、次の操作もできます:
+   - Chatの会話で進捗状況を確認する。
+   - 会話で**エージェントセッションを表示**を選択する。
 
 ## レビューでGitLab Duoとやり取りする {#interact-with-gitlab-duo-in-reviews}
 
@@ -137,59 +137,58 @@ GitLab Duoに提供したフィードバックは、他のマージリクエス�
 
 リポジトリ固有のレビュー指示を使用して、GitLab Duoをガイドできます:
 
-- 特定のコード品質の側面（セキュリティ、パフォーマンス、保守性など）に重点を置く。
+- コード品質の特定の側面（セキュリティ、パフォーマンス、保守性など）に重点を置く。
 - プロジェクトに固有のコーディング標準やベストプラクティスを適用する。
 - 特定のファイルパターンを対象に、カスタマイズされたレビュー基準を適用する。
 - 特定の種類の変更について、より詳細な説明を提供する。
 
-コードレビューフローは、`AGENTS.md`と`SKILL.md`ファイルを参照しません。
+コードレビューフローは、`AGENTS.md`ファイルと`SKILL.md`ファイルを参照しません。
 
 カスタム指示を設定するには、[GitLab Duoへのレビューの指示をカスタマイズする](../../customize/review_instructions.md)を参照してください。
 
-## プロジェクトのGitLab Duoによる自動レビュー {#automatic-reviews-from-gitlab-duo-for-a-project}
+## 自動レビュー {#automatic-reviews}
 
 {{< history >}}
 
-- GitLab 18.0でUI設定に[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/506537)されました。
+- GitLab 18.0で、プロジェクトの自動レビューがUI設定に[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/506537)されました。
+- GitLab 18.4で、グループとインスタンス向けの自動レビューが、[ベータ](../../../../policy/development_stages_support.md#beta)版として[機能フラグ](../../../../administration/feature_flags/_index.md) `cascading_auto_duo_code_review_settings`と共に[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/554070)されました。デフォルトでは無効になっています。
+- 機能フラグ`cascading_auto_duo_code_review_settings`はGitLab 18.7で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213240)されました。
+- GitLab 19.1のGitLab.comで、新しいGitLab Duoトライアル向けに、グループおよびアプリケーション向けの自動レビューが[デフォルトで有効化](https://gitlab.com/gitlab-org/gitlab/-/work_items/592822)されました。
 
 {{< /history >}}
 
-GitLab Duoの自動レビューにより、プロジェクト内のすべてのマージリクエストが初期レビューを受けるようになります。マージリクエストが作成されると、次の場合を除き、GitLab Duoがレビューします: 
+GitLab Duoによる自動レビューにより、プロジェクト、グループ、またはインスタンスのすべてのマージリクエストが最初のレビューを受けることが保証されます。
+
+ユーザーがマージリクエストを作成すると、GitLab Duoは自動的にレビューを行いますが、以下の場合を除きます:
 
 - ドラフトとしてマークされている場合。GitLab Duoにマージリクエストをレビューさせるには、準備完了とマークします。
 - 変更が含まれていない場合。GitLab Duoにマージリクエストをレビューさせるには、変更を追加します。
+- 設定した1つ以上の除外ルールと一致する場合。GitLab Duoがマージリクエストをレビューするようにするには、手動でレビューをリクエストしてください。
+
+GitLabバージョン19.1以降、GitLab.comの新しいGitLab Duoトライアルでは、グループの自動レビューがデフォルトで有効になっています。
+
+{{< tabs >}}
+
+{{< tab title="プロジェクト" >}}
 
 前提条件: 
 
-- プロジェクトの[メンテナーロール](../../../permissions.md)以上が必要です。
+- プロジェクトのメンテナーまたはオーナーのロール。
 
-`@GitLabDuo`がマージリクエストを自動的にレビューできるようにするには:
+プロジェクトの自動レビューを有効にするには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. 左側のサイドバーで、**設定** > **マージリクエスト**を選択します。
 1. **GitLab Duoコードレビュー**セクションで、**GitLab Duoによる自動レビューを有効にする**を選択します。
 1. **変更を保存**を選択します。
 
-自動レビューのクレジット使用量がどのように割り当てられるかについては、[実行されるコードレビュー機能を判定する](../../../project/merge_requests/duo_in_merge_requests.md#determine-which-review-feature-runs)を参照してください。
+{{< /tab >}}
 
-## グループとアプリケーションのGitLab Duoによる自動レビュー {#automatic-reviews-from-gitlab-duo-for-groups-and-applications}
-
-{{< history >}}
-
-- GitLab 18.4で、[機能フラグ](../../../../administration/feature_flags/_index.md) `cascading_auto_duo_code_review_settings`という名前の[ベータ](../../../../policy/development_stages_support.md#beta)版として[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/554070)。デフォルトでは無効になっています。
-- 機能フラグ`cascading_auto_duo_code_review_settings`はGitLab 18.7で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213240)されました。
-- GitLab 19.1で、GitLab.comの新しいGitLab Duoトライアルでは[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/work_items/592822)になりました。
-
-{{< /history >}}
-
-グループまたはアプリケーションの設定を使用して、複数のプロジェクトで自動レビューを有効にします。
-
-GitLabバージョン19.1以降、GitLab.comの新しいGitLab Duoトライアルでは、グループの自動レビューがデフォルトで有効になっています。
+{{< tab title="グループ" >}}
 
 前提条件: 
 
-- グループの自動レビューをオンにするには、グループのオーナーロールが必要です。
-- すべてのプロジェクトで自動レビューをオンにするには、管理者である必要があります。
+- グループのオーナーロール。
 
 グループの自動レビューを有効にするには:
 
@@ -199,43 +198,51 @@ GitLabバージョン19.1以降、GitLab.comの新しいGitLab Duoトライア�
 1. **GitLab Duoコードレビュー**セクションで、**GitLab Duoによる自動レビューを有効にする**を選択します。
 1. **変更を保存**を選択します。
 
-すべてのプロジェクトで自動レビューを有効にするには:
+設定はグループからプロジェクトへとカスケードされます。より具体的な設定は、より広範な設定をオーバーライドします。
+
+{{< /tab >}}
+
+{{< tab title="インスタンス" >}}
+
+前提条件: 
+
+- 管理者アクセス
+
+インスタンスの自動レビューを有効にするには:
 
 1. 右上隅で、**管理者**を選択します。
 1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **GitLab Duoコードレビュー**セクションで、**GitLab Duoによる自動レビューを有効にする**を選択します。
 1. **変更を保存**を選択します。
 
-設定は、アプリケーションからグループ、プロジェクトへとカスケードします。より具体的な設定は、より広範な設定をオーバーライドします。
+設定は、インスタンスからグループ、プロジェクトへとカスケードされます。より具体的な設定は、より広範な設定をオーバーライドします。
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+自動レビューを有効にした後、特定のマージリクエストを除外するルールを指定できます。
 
 自動レビューのクレジット使用量がどのように割り当てられるかについては、[実行されるコードレビュー機能を判定する](../../../project/merge_requests/duo_in_merge_requests.md#determine-which-review-feature-runs)を参照してください。
 
-## 自動レビューからマージリクエストを除外する {#exclude-merge-requests-from-automatic-reviews}
-
-{{< details >}}
-
-- ステータス: ベータ版
-
-{{< /details >}}
+### プロジェクトのマージリクエストを除外する {#exclude-merge-requests-for-a-project}
 
 {{< history >}}
 
-- GitLab 19.2で、[機能フラグ](../../../../administration/feature_flags/_index.md) `duo_code_review_automated_rules`という名前の[ベータ](../../../../policy/development_stages_support.md#beta)版として[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240236)。デフォルトでは有効になっています。
+- GitLab 19.2で`duo_code_review_automated_rules`[フラグ](../../../../administration/feature_flags/_index.md)とともに[ベータ版](../../../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240236)されました。デフォルトでは有効になっています。
+- GitLab 19.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245852)になりました。機能フラグ`duo_code_review_automated_rules`は削除されました。
 
 {{< /history >}}
 
-> [!flag]
-> この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+プロジェクトで自動レビューがオンになっている場合、GitLab Duoは対象となるすべてのマージリクエストをレビューします。特定のマージリクエストを除外するには、`.gitlab/duo/mr-review-automated-rules.yaml`ファイルで除外ルールを定義します。
 
-プロジェクトで自動レビューが有効になっている場合、GitLab Duoはすべての対象となるマージリクエストをレビューします。特定のマージリクエストを除外するには、`.gitlab/duo/mr-review-automated-rules.yaml`ファイルで除外ルールを定義します。
-
-除外ルールは自動レビューのみを防止します。除外する対象のマージリクエストであっても、手動でレビューをリクエストできます。
+除外ルールは自動レビューのみに適用されます。除外されたマージリクエストでも、手動でレビューをリクエストできます。
 
 除外ルールを定義するには:
 
 1. リポジトリのルートで、`.gitlab/duo`ディレクトリが存在しない場合は作成します。
 1. `.gitlab/duo`ディレクトリに、`mr-review-automated-rules.yaml`という名前のファイルを作成します。
-1. 次の形式を使用して除外ルールを追加します:
+1. 次の形式で除外ルールを追加します:
 
    ```yaml
    exclude:
@@ -247,15 +254,15 @@ GitLabバージョン19.1以降、GitLab.comの新しいGitLab Duoトライア�
        - <pattern>
    ```
 
-   各キーはオプションです。GitLab Duoは、マージリクエストがいずれかのカテゴリのパターンと一致する場合に自動レビューをスキップします:
+   各キーはオプションです。マージリクエストがいずれかのカテゴリのいずれかのパターンと一致する場合、GitLab Duoは自動レビューをスキップします:
 
-   - `target_branches`: マージリクエストのターゲットブランチ名と一致します。
-   - `source_branches`: マージリクエストのソースブランチ名と一致します。
-   - `authors`: マージリクエストの作成者のユーザー名と一致します。
+   - `target_branches`: マージリクエストのターゲットブランチ名と照合します。
+   - `source_branches`: マージリクエストのソースブランチ名と照合します。
+   - `authors`: マージリクエスト作成者のユーザー名と照合します。
 
-   パターンはワイルドカード（glob）マッチングをサポートします。たとえば、`dependabot/*`は`dependabot/`で始まるすべてのソースブランチに一致します。
+   パターンでは、ワイルドカード（glob）マッチングを使用できます。たとえば、`dependabot/*`は`dependabot/`で始まるすべてのソースブランチに一致します。
 
-   たとえば、リリースブランチをターゲットとするマージリクエスト、またはボットアカウントが作成するマージリクエストの自動レビューをスキップするには:
+   たとえば、リリースブランチをターゲットとするマージリクエストや、ボットアカウントによって作成されたマージリクエストの自動レビューをスキップするには、次のようにします:
 
    ```yaml
    exclude:
@@ -267,27 +274,27 @@ GitLabバージョン19.1以降、GitLab.comの新しいGitLab Duoトライア�
 
 1. ファイルをリポジトリのデフォルトブランチにコミットします。
 
-GitLab Duoは、リポジトリのデフォルトブランチから除外ルールを読み取ります。GitLab Duoは、他のブランチにはルールを適用しません。
+GitLab Duoは、リポジトリのデフォルトブランチから除外ルールを読み取ります。他のブランチにあるルールは適用されません。
 
 ### グループのマージリクエストを除外する {#exclude-merge-requests-for-a-group}
 
-グループとそのサブグループ内のすべてのプロジェクトに除外ルールを定義するには、テンプレートとして使用するプロジェクトを指定します。テンプレートプロジェクトには、`.gitlab/duo/mr-review-automated-rules.yaml`ファイルが含まれている必要があります。
+グループとそのサブグループ内のすべてのプロジェクトに適用する除外ルールを定義するには、テンプレートとして使用するプロジェクトを指定します。テンプレートプロジェクトには、`.gitlab/duo/mr-review-automated-rules.yaml`ファイルが含まれている必要があります。
+
+GitLab Duoは、グループテンプレートプロジェクトにある除外ルールと、個々のプロジェクトで定義されているルールを組み合わせます。同じカテゴリが両方のレベルで定義されている場合、プロジェクトのルールが優先されます。グループとそのサブグループでそれぞれがテンプレートプロジェクトを設定している場合、GitLab Duoはすべてのレベルのルールを組み合わせます。
 
 > [!note]
-> [グループのカスタムレビュー指示](../../customize/review_instructions.md#configure-custom-review-instructions-for-a-group)を使用している場合は、除外ルールを同じテンプレートプロジェクトに追加します。UIでテンプレートプロジェクトを再度指定する必要はありません。GitLab Duoは`mr-review-automated-rules.yaml`ファイルを自動的に読み取ります。
-
-GitLab Duoは、グループテンプレートプロジェクトの除外ルールと、個々のプロジェクトで定義されたルールを組み合わせます。同じカテゴリが両方のレベルで定義されている場合、プロジェクトのルールが優先されます。グループとそのサブグループのそれぞれがテンプレートプロジェクトを設定している場合、GitLab Duoはすべてのレベルのルールを組み合わせます。
+> グループ向けに[カスタムレビュー指示](../../customize/review_instructions.md#configure-custom-review-instructions-for-a-group)を保存するプロジェクトをすでに設定している場合、`mr-review-automated-rules.yaml`を同じプロジェクトに保存します。グループのコードレビューをカスタマイズするために指定できるプロジェクトは1つだけであるため、GitLabは自動的にそのプロジェクトも除外ルールについてチェックします。以下の手順を再度実行する必要はありません。
 
 前提条件: 
 
 - グループのオーナーロール。
-- グループ内のプロジェクトには、設定する除外ルールが含まれています。
+- グループ内のプロジェクトに、グループに適用する除外ルールが含まれている。
 
 グループの除外ルールを設定するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
-1. 左サイドバーで、**設定** > **一般** > **GitLab Duoの機能**を選択します。
-1. **Customize code review**で、`.gitlab/duo/mr-review-automated-rules.yaml`ファイルを含むプロジェクトを選択します。
+1. 左側のサイドバーで、**設定** > **一般** > **GitLab Duoの機能**を選択します。
+1. **コードレビューをカスタマイズ**で、`.gitlab/duo/mr-review-automated-rules.yaml`ファイルが含まれているプロジェクトを選択します。
 1. **変更を保存**を選択します。
 
 ## トラブルシューティング {#troubleshooting}
@@ -304,7 +311,7 @@ GitLab Duoは、グループテンプレートプロジェクトの除外ルー�
 
 `Code Review Flow is enabled but the service account needs to be verified. Contact your administrator. Error code: DCR4001`というエラーが表示されることがあります。
 
-このエラーは、コードレビューフローが有効になっているにもかかわらず、トップレベルグループのサービスアカウントが存在しないか、準備ができていない場合に発生します。
+このエラーは、コードレビューフローが有効になっているものの、トップレベルグループのサービスアカウントが存在しないか、準備ができていない場合に発生します。
 
 管理者に、[サービスアカウントの存在を確認](../../troubleshooting.md#foundational-flow-service-account-not-created)し、問題を解決するための手順に従うよう依頼してください。
 
@@ -314,7 +321,7 @@ GitLab Duoは、グループテンプレートプロジェクトの除外ルー�
 
 このエラーは、現在の請求期間に割り当てられたGitLabクレジットをすべて使い切った場合に発生します。
 
-追加のクレジットを購入するよう管理者に依頼するか、次の請求期間の開始時にクレジットがリセットされるまで待ってください。
+追加のクレジットを購入するよう管理者に依頼するか、次の請求期間の開始時にクレジットがリセットされるまでお待ちください。
 
 ### `Error DCR4003` {#error-dcr4003}
 
@@ -328,15 +335,15 @@ GitLab Duoは、グループテンプレートプロジェクトの除外ルー�
 
 `<User>, you need to set a default GitLab Duo namespace to use Code Review Flow in this project. Please set a default GitLab Duo namespace in your preferences. Error code: DCR4004`というエラーが表示されることがあります。
 
-このエラーは、GitLab Duoがレビューを開始したユーザーのデフォルトのGitLab Duoのネームスペースを特定できない場合に発生します。
+このエラーは、GitLab Duoが、レビューを開始したユーザーのデフォルトのGitLab Duoネームスペースを特定できない場合に発生します。
 
-[設定](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace)でデフォルトのGitLab Duoのネームスペースを設定し、もう一度レビューをリクエストしてください。
+[設定](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace)でデフォルトのGitLab Duoネームスペースを設定し、もう一度レビューをリクエストしてください。
 
 ### `Error DCR4005` {#error-dcr4005}
 
 `Code Review Flow could not obtain the required authentication tokens to connect to the GitLab AI Gateway and the GitLab API. Please request a new review. If the issue persists, contact your administrator. Error code: DCR4005`というエラーが表示されることがあります。
 
-コードレビューフローがGitLab AIゲートウェイおよびGitLab APIに接続するには、認証トークンが必要です。このエラーは、トークンを生成できない場合に発生します。これは通常、GitLab Duoの設定が正しくないか、一時的なインフラストラクチャの問題が原因です。
+コードレビューフローがGitLab AIゲートウェイおよびGitLab APIに接続するには、認証トークンが必要です。このエラーは、通常、GitLab Duoの設定に誤りがあるか、一時的なインフラストラクチャの問題により、トークンを生成できない場合に発生します。
 
 Self-Managedインスタンスの場合、管理者に[GitLab Duoの設定](../../../../administration/gitlab_duo/configure/_index.md)を確認するよう依頼してください。
 
@@ -352,7 +359,7 @@ Self-Managedインスタンスの場合、管理者に[GitLab Duoの設定](../.
 
 `Code Review Flow is not available for this project. Contact your administrator to verify that the flow is enabled and the required configuration is in place. Error code: DCR4007`というエラーが表示されることがあります。
 
-このエラーは、フローが無効になっているか、プロジェクトに必要な設定がない場合に発生します。
+このエラーは、プロジェクトでフローが無効になっているか、必要な設定が不足している場合に発生します。
 
 管理者に連絡し、プロジェクトで[フローが有効になっている](_index.md#turn-foundational-flows-on-or-off)ことを確認するよう依頼してください。
 
@@ -384,7 +391,7 @@ Self-Managedインスタンスの場合、管理者に[GitLab Duoの設定](../.
 
 `Code Review Flow completed the review but could not post the review comments. Please request a new review to try again. Error code: DCR5001`というエラーが表示されることがあります。
 
-このエラーは、コードレビューフローがレビューを完了したものの、複数回の試行後もレビューコメントを投稿できない場合に発生します。これは多くの場合、一時的なインフラストラクチャの問題が原因です。
+このエラーは、コードレビューフローがレビューを完了したものの、複数回試行してもレビューコメントを投稿できない場合に発生します。これは多くの場合、一時的なインフラストラクチャの問題が原因です。
 
 新しいレビューをリクエストします。エラーが解決しない場合は、管理者に連絡してください。
 
@@ -402,9 +409,9 @@ Self-Managedインスタンスの場合、管理者に[GitLab Duoの設定](../.
 
 ### 設定診断スクリプト {#configuration-diagnostic-script}
 
-文書化されているエラーコードからコードレビューフローの問題の原因を特定できない場合は、診断スクリプトを実行してGitLab Duo設定を確認できます。
+記載されているエラーコードからコードレビューフローの問題の原因を特定できない場合は、診断スクリプトを実行してGitLab Duo設定を確認できます。
 
-このスクリプトは、すべてのGitLab Duo Agent Platform機能に適用されるチェックを含め、コードレビューフローに必要な設定チェーン全体をチェックします。
+このスクリプトは、すべてのGitLab Duo Agent Platform機能に適用されるチェックを含め、コードレビューフローに必要な一連の設定をすべてチェックします。
 
 詳細については、[設定診断スクリプトを実行する](../../troubleshooting.md#run-the-configuration-diagnostic-script)を参照してください。
 
@@ -412,4 +419,4 @@ Self-Managedインスタンスの場合、管理者に[GitLab Duoの設定](../.
 
 - [マージリクエストにおけるGitLab Duo](../../../project/merge_requests/duo_in_merge_requests.md)
 - [Agent PlatformのAIモデル](../../model_selection.md)
-- [GitLab Duo Enterpriseのシートでコードレビューフローを有効にする](../../../project/merge_requests/duo_in_merge_requests.md#turn-on-code-review-flow-for-gitlab-duo-enterprise-seats)。
+- [GitLab Duo Enterpriseシートでコードレビューフローをオンにする](../../../project/merge_requests/duo_in_merge_requests.md#turn-on-code-review-flow-for-gitlab-duo-enterprise-seats)。

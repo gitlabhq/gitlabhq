@@ -2,6 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: グループ、プロジェクト、インスタンス向けのGitLab Duo Agent Platformの可用性を制御します。
 title: GitLab Duo Agent Platformの可用性を制御
 ---
 
@@ -19,19 +20,21 @@ Agent Platformのオン/オフを切り替えることができます:
 - GitLab.comの場合: トップレベルグループの場合。
 - GitLab Self-Managed: インスタンスの場合。
 
+Agent Platformのツールガバナンスを設定するには、[エージェントツールのガバナンス](agents/tool-governance.md)を参照してください。
+
 ## GitLab Duo Agent Platformのオン/オフを切り替える {#turn-gitlab-duo-agent-platform-on-or-off}
 
 ### GitLab.com {#on-gitlabcom}
 
 {{< details >}}
 
-- プラン: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom)、Premium、Ultimate
+- プラン: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier)、Premium、Ultimate
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 18.10でGitLab.comのFreeティアでGitLabクレジットとともに利用可能です。
+- GitLab 18.10で、GitLab.comのFreeプランにおいてGitLabクレジットを使用して利用できるようになりました。
 
 {{< /history >}}
 
@@ -41,7 +44,7 @@ Agent Platformのオン/オフを切り替えることができます:
 
 トップレベルグループのAgent Platformのオン/オフを切り替えるには:
 
-1. 上部のバーで**検索または移動先**を選択し、トップレベルグループを見つけます。
+1. 上部のバーで**検索または移動先**を選択して、トップレベルグループを見つけます。
 1. **設定** > **GitLab Duo**を選択します。
 1. **設定の変更**を選択します。
 1. **GitLab Duo Agent Platform**で、**GitLab Duo Agentic Chat、エージェント、フローを有効にする**チェックボックスをオンまたはオフにします。
@@ -49,13 +52,19 @@ Agent Platformのオン/オフを切り替えることができます:
 
 Agent Platformの可用性は、すべてのサブグループとプロジェクトに適用されます。
 
-Agent Platformがオフの場合、フローおよび[基本エージェント](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off)の関連設定は非表示になります。
+Agent Platformがオフの場合、次の機能は非表示になります:
+
+- フローと[基本エージェント](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off)の関連設定。
+- AIカタログ。
 
 ### GitLab Self-Managed {#on-gitlab-self-managed}
 
 前提条件: 
 
-- 管理者アクセス権が必要です。
+- 管理者アクセス権。
+- 以下のいずれかを備えたインスタンス:
+  - 有効なGitLab Duo Pro、Enterprise、またはセルフホスト型アドオンと有料ライセンス。
+  - 有効なGitLabクレジット。
 
 インスタンスのAgent Platformのオン/オフを切り替えるには:
 
@@ -65,7 +74,65 @@ Agent Platformがオフの場合、フローおよび[基本エージェント](
 1. **GitLab Duo Agent Platform**で、**GitLab Duo Agentic Chat、エージェント、フローを有効にする**チェックボックスをオンまたはオフにします。
 1. **変更を保存**を選択します。
 
-Agent Platformがオフの場合、フローおよび[基本エージェント](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off)の関連設定は非表示になります。
+Agent Platformがオフの場合、次の機能は非表示になります:
+
+- フロー、[基本エージェント](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off)、およびGitLab Duo CLIの関連設定。
+- AIカタログ。
+
+## GitLab Duoをオンに固定する {#lock-gitlab-duo-on}
+
+{{< history >}}
+
+- GitLab 19.1で[導入](https://gitlab.com/groups/gitlab-org/-/work_items/21844)されました。
+
+{{< /history >}}
+
+グループまたはプロジェクトの設定にかかわらず、すべてのユーザーに対してGitLab Duoをオンにします。
+
+GitLab Duoの可用性を**常にオン**に設定しても、実験的機能とベータ版機能は自動的にはオンになりません。実験的機能とベータ版機能を使用するには、[個別にオンにする](#turn-on-beta-and-experimental-features)必要があります。
+
+{{< tabs >}}
+
+{{< tab title="GitLab.com" >}}
+
+前提条件: 
+
+- トップレベルグループのオーナーロール。
+
+トップレベルグループに対してGitLab Duoをオンに固定するには:
+
+1. 上部のバーで**検索または移動先**を選択して、トップレベルグループを見つけます。
+1. 左側のサイドバーで、**設定** > **GitLab Duo**を選択します。
+1. **設定の変更**を選択します。
+1. **GitLab Duoの可用性**で、**常にオン**を選択します。
+1. **変更を保存**を選択します。
+
+GitLab Duoは、すべてのサブグループとプロジェクトに対してオンに固定されます。サブグループまたはプロジェクトのオーナーロールを持つユーザーは、GitLab Duoをオフにできません。
+
+{{< /tab >}}
+
+{{< tab title="GitLab Self-Managed" >}}
+
+前提条件: 
+
+- 管理者アクセス権。
+- 以下のいずれかを備えたインスタンス:
+  - 有効なGitLab Duo Pro、Enterprise、またはセルフホスト型アドオンと有料ライセンス。
+  - 有効なGitLabクレジット。
+
+インスタンスに対してGitLab Duoをオンに固定するには:
+
+1. 右上隅で、**管理者**を選択します。
+1. 左側のサイドバーで、**GitLab Duo**を選択します。
+1. **設定の変更**を選択します。
+1. **GitLab Duoの可用性**で、**常にオン**を選択します。
+1. **変更を保存**を選択します。
+
+GitLab Duoは、すべてのグループ、サブグループ、プロジェクトに対してオンに固定されます。グループ、サブグループ、またはプロジェクトのオーナーロールを持つユーザーは、GitLab Duoをオフにできません。
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## GitLab Duoのオン/オフを切り替える {#turn-gitlab-duo-on-or-off}
 
@@ -78,13 +145,13 @@ GitLab Duoはデフォルトでオンになっています。GitLab Duoのオン
 
 {{< details >}}
 
-- プラン: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom)、Premium、Ultimate
+- プラン: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier)、Premium、Ultimate
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 18.10でGitLab.comのFreeティアでGitLabクレジットとともに利用可能です。
+- GitLab 18.10で、GitLab.comのFreeプランにおいてGitLabクレジットを使用して利用できるようになりました。
 
 {{< /history >}}
 
@@ -94,9 +161,9 @@ GitLab Duoはデフォルトでオンになっています。GitLab Duoのオン
 
 - トップレベルグループのオーナーロール。
 
-トップレベルグループのGitLab Duoの可用性を変更するには:
+トップレベルグループに対してGitLab Duoの可用性を変更するには:
 
-1. 上部のバーで**検索または移動先**を選択し、トップレベルグループを見つけます。
+1. 上部のバーで**検索または移動先**を選択して、トップレベルグループを見つけます。
 1. **設定** > **GitLab Duo**を選択します。
 1. **設定の変更**を選択します。
 1. **GitLab Duoの可用性**で、オプションを選択します。
@@ -112,7 +179,7 @@ GitLab Duoはデフォルトでオンになっています。GitLab Duoのオン
 
 グループまたはサブグループに対してGitLab Duoの可用性を変更するには: 
 
-1. トップバーで、**検索または移動先**を選択し、グループまたはサブグループを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、グループまたはサブグループを見つけます。
 1. **設定** > **一般**を選択します。
 1. **GitLab Duoの機能**を展開します。
 1. **GitLab Duoの可用性**で、オプションを選択します。
@@ -124,14 +191,14 @@ GitLab Duoはデフォルトでオンになっています。GitLab Duoのオン
 
 前提条件: 
 
-- プロジェクトのオーナーまたはメンテナーロール。
+- プロジェクトのメンテナーまたはオーナーのロール。
 
 プロジェクトに対してGitLab Duoの可用性を変更するには: 
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **GitLab Duo**を展開します。
-1. **GitLab Duo**切替をオンまたはオフにします。
+1. **GitLab Duo**の切替をオンまたはオフにします。
 1. **変更を保存**を選択します。
 
 ### GitLab Self-Managed {#on-gitlab-self-managed-1}
@@ -140,9 +207,12 @@ GitLab Duoはデフォルトでオンになっています。GitLab Duoのオン
 
 前提条件: 
 
-- 管理者アクセス権が必要です。
+- 管理者アクセス権。
+- 以下のいずれかを備えたインスタンス:
+  - 有効なGitLab Duo Pro、Enterprise、またはセルフホスト型アドオンと有料ライセンス。
+  - 有効なGitLabクレジット。
 
-インスタンスのGitLab Duoの可用性を変更するには:
+インスタンスに対してGitLab Duoの可用性を変更するには:
 
 1. 右上隅で、**管理者**を選択します。
 1. 左側のサイドバーで、**GitLab Duo**を選択します。
@@ -158,7 +228,7 @@ GitLab Duoはデフォルトでオンになっています。GitLab Duoのオン
 
 グループまたはサブグループに対してGitLab Duoの可用性を変更するには: 
 
-1. トップバーで、**検索または移動先**を選択し、グループまたはサブグループを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、グループまたはサブグループを見つけます。
 1. **設定** > **一般**を選択します。
 1. **GitLab Duoの機能**を展開します。
 1. **GitLab Duoの可用性**で、オプションを選択します。
@@ -170,19 +240,19 @@ GitLab Duoはデフォルトでオンになっています。GitLab Duoのオン
 
 前提条件: 
 
-- プロジェクトのオーナーまたはメンテナーロール。
+- プロジェクトのメンテナーまたはオーナーのロール。
 
 プロジェクトに対してGitLab Duoの可用性を変更するには: 
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **GitLab Duo**を展開します。
-1. **GitLab Duo**切替をオンまたはオフにします。
+1. **GitLab Duo**の切替をオンまたはオフにします。
 1. **変更を保存**を選択します。
 
 ## GitLab Duo Coreのオン/オフを切り替える {#turn-gitlab-duo-core-on-or-off}
 
-GitLab Duo Coreは、PremiumおよびUltimateサブスクリプションに含まれています。
+GitLab Duo Coreは、PremiumおよびUltimateのサブスクリプションに含まれています。
 
 - GitLab 17.11以前から利用を継続しているユーザーは、GitLab Duo Coreの機能をオンにする必要があります。
 - GitLab 18.0以降の新規ユーザーの場合、GitLab Duo Coreは自動的にオンになり、それ以上のアクションは必要ありません。
@@ -193,13 +263,13 @@ GitLab Duo Coreは、PremiumおよびUltimateサブスクリプションに含�
 
 {{< details >}}
 
-- プラン: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom)、Premium、Ultimate
+- プラン: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier)、Premium、Ultimate
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 18.10でGitLab.comのFreeティアでGitLabクレジットとともに利用可能です。
+- GitLab 18.10で、GitLab.comのFreeプランにおいてGitLabクレジットを使用して利用できるようになりました。
 
 {{< /history >}}
 
@@ -207,13 +277,13 @@ GitLab Duo Coreは、PremiumおよびUltimateサブスクリプションに含�
 
 - トップレベルグループのオーナーロール。
 
-トップレベルグループのGitLab Duo Coreの可用性を変更するには:
+トップレベルグループに対してGitLab Duo Coreの可用性を変更するには:
 
-1. 上部のバーで**検索または移動先**を選択し、トップレベルグループを見つけます。
+1. 上部のバーで**検索または移動先**を選択して、トップレベルグループを見つけます。
 1. **設定** > **GitLab Duo**を選択します。
 1. **設定の変更**を選択します。
 1. **GitLab Duoの可用性**で、オプションを選択します。
-1. **GitLab Duo Core**で、**GitLab Duo Agent Platformのアクセスを有効にする**チェックボックスをオンまたはオフにします。GitLab Duoの可用性で**常にオフ**を選択した場合、この設定にアクセスできません。
+1. **GitLab Duo Core**で、**GitLab Duo Coreの機能を有効にする**チェックボックスをオンまたはオフにします。GitLab Duoの可用性で**常にオフ**を選択した場合、この設定にアクセスできません。
 1. **変更を保存**を選択します。
 
 変更が反映されるまで、最大10分かかる場合があります。
@@ -222,15 +292,18 @@ GitLab Duo Coreは、PremiumおよびUltimateサブスクリプションに含�
 
 前提条件: 
 
-- 管理者アクセス権が必要です。
+- 管理者アクセス権。
+- 以下のいずれかを備えたインスタンス:
+  - 有効なGitLab Duo Pro、Enterprise、またはセルフホスト型アドオンと有料ライセンス。
+  - 有効なGitLabクレジット。
 
-インスタンスのGitLab Duo Coreの可用性を変更するには:
+インスタンスに対してGitLab Duo Coreの可用性を変更するには:
 
 1. 右上隅で、**管理者**を選択します。
 1. 左側のサイドバーで、**GitLab Duo**を選択します。
 1. **設定の変更**を選択します。
 1. **GitLab Duoの可用性**で、オプションを選択します。
-1. **GitLab Duo Core**で、**GitLab Duo Agent Platformのアクセスを有効にする**チェックボックスをオンまたはオフにします。GitLab Duoの可用性で**常にオフ**を選択した場合、この設定にアクセスできません。
+1. **GitLab Duo Core**で、**GitLab Duo Coreの機能を有効にする**チェックボックスをオンまたはオフにします。GitLab Duoの可用性で**常にオフ**を選択した場合、この設定にアクセスできません。
 1. **変更を保存**を選択します。
 
 ## ベータ版および実験的機能をオンにする {#turn-on-beta-and-experimental-features}
@@ -241,13 +314,13 @@ GitLab Duoの実験的機能とベータ版機能は、デフォルトでオフ�
 
 {{< details >}}
 
-- プラン: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom)、Premium、Ultimate
+- プラン: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier)、Premium、Ultimate
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 18.10でGitLab.comのFreeティアでGitLabクレジットとともに利用可能です。
+- GitLab 18.10で、GitLab.comのFreeプランにおいてGitLabクレジットを使用して利用できるようになりました。
 
 {{< /history >}}
 
@@ -258,12 +331,12 @@ GitLab Duoの実験的機能とベータ版機能は、デフォルトでオフ�
 トップレベルグループに対してGitLab Duoの実験的機能とベータ版機能をオンにするには:
 
 1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
-1. **設定** > **GitLab Duo**を選択します。
+1. 左側のサイドバーで、**設定** > **GitLab Duo**を選択します。
 1. **設定の変更**を選択します。
 1. **機能プレビュー**で、**GitLab Duoの実験的機能とベータ版機能を有効にする**を選択します。
 1. **変更を保存**を選択します。
 
-この設定は、グループに属する[すべてのプロジェクトにカスケードされます](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)。
+この設定は、グループに属する[すべてのプロジェクトにカスケード](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)されます。
 
 ### GitLab Self-Managed {#on-gitlab-self-managed-3}
 
@@ -271,16 +344,19 @@ GitLab Duoの実験的機能とベータ版機能は、デフォルトでオフ�
 
 {{< tab title="17.4以降" >}}
 
-GitLab 17.4以降では、次の手順に従って、GitLab Self-ManagedインスタンスのGitLab Duoの実験的およびベータ版機能をオンにします。
+GitLab 17.4以降では、次の手順に従って、GitLab Self-Managedインスタンスに対してGitLab Duoの実験的機能およびベータ版機能をオンにします。
 
 前提条件: 
 
-- 管理者アクセス権が必要です。
+- 管理者アクセス権。
+- 以下のいずれかを備えたインスタンス:
+  - 有効なGitLab Duo Pro、Enterprise、またはセルフホスト型アドオンと有料ライセンス。
+  - 有効なGitLabクレジット。
 
 インスタンスに対してGitLab Duoの実験的機能およびベータ版機能をオンにするには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **GitLab Duo**を選択します。
+1. 左側のサイドバーで、**設定** > **GitLab Duo**を選択します。
 1. **設定の変更**を展開します。
 1. **機能プレビュー**で、**GitLab Duoの実験的機能とベータ版機能を使用する**を選択します。
 1. **変更を保存**を選択します。
@@ -291,14 +367,17 @@ GitLab 17.4以降では、次の手順に従って、GitLab Self-Managedイン�
 
 前提条件: 
 
-- 管理者アクセス権が必要です。
-- [Network connectivity](../../administration/gitlab_duo/configure/gitlab_self_managed.md)が有効になっています。
-- [Silent Mode](../../administration/silent_mode/_index.md)はオフになっています。
+- 管理者アクセス権。
+- 以下のいずれかを備えたインスタンス:
+  - 有効なGitLab Duo Pro、Enterprise、またはセルフホスト型アドオンと有料ライセンス。
+  - 有効なGitLabクレジット。
+- [ネットワーク接続](../../administration/gitlab_duo/configure/_index.md)が有効になっている。
+- [サイレントモード](../../administration/silent_mode/_index.md)がオフになっている。
 
 インスタンスに対してGitLab Duoの実験的機能およびベータ版機能をオンにするには:
 
 1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**設定** > **GitLab Duo**を選択します。
+1. 左側のサイドバーで、**設定** > **GitLab Duo**を選択します。
 1. **設定の変更**を展開します。
 1. **機能プレビュー**で、**GitLab Duoの実験的機能とベータ版機能を使用する**を選択します。
 1. **変更を保存**を選択します。

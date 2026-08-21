@@ -31403,6 +31403,9 @@ msgstr ""
 msgid "DuoCodeReview|I have encountered some problems while I was reviewing. Please try again later."
 msgstr ""
 
+msgid "DuoCodeReview|I reviewed the changes since my last review and found no new issues. Previous findings:"
+msgstr ""
+
 msgid "DuoCodeReview|I'm already reviewing this merge request. I'll post my feedback when I'm done."
 msgstr ""
 
@@ -59728,6 +59731,9 @@ msgstr ""
 msgid "PolicyStore|Freeze Window"
 msgstr ""
 
+msgid "PolicyStore|Hide configuration details"
+msgstr ""
+
 msgid "PolicyStore|Last updated"
 msgstr ""
 
@@ -59749,10 +59755,16 @@ msgstr ""
 msgid "PolicyStore|Name"
 msgstr ""
 
+msgid "PolicyStore|No actions configured"
+msgstr ""
+
 msgid "PolicyStore|No building blocks match your search."
 msgstr ""
 
 msgid "PolicyStore|No policies found"
+msgstr ""
+
+msgid "PolicyStore|No rules configured"
 msgstr ""
 
 msgid "PolicyStore|None added"
@@ -59774,6 +59786,12 @@ msgid "PolicyStore|Owner"
 msgstr ""
 
 msgid "PolicyStore|Policies"
+msgstr ""
+
+msgid "PolicyStore|Policy %{name} was created."
+msgstr ""
+
+msgid "PolicyStore|Policy %{name} was updated."
 msgstr ""
 
 msgid "PolicyStore|Policy configuration"
@@ -59854,6 +59872,9 @@ msgstr ""
 msgid "PolicyStore|Select..."
 msgstr ""
 
+msgid "PolicyStore|Show configuration details"
+msgstr ""
+
 msgid "PolicyStore|Showing the first %{shown} of %{total} projects."
 msgstr ""
 
@@ -59864,6 +59885,9 @@ msgid "PolicyStore|Staging"
 msgstr ""
 
 msgid "PolicyStore|Start from scratch"
+msgstr ""
+
+msgid "PolicyStore|Status"
 msgstr ""
 
 msgid "PolicyStore|Targeted"
@@ -64685,6 +64709,9 @@ msgstr ""
 msgid "ReleaseCreation|Description cannot exceed %{maxLength} characters."
 msgstr ""
 
+msgid "ReleaseCreation|Failed to add the version. Please try again."
+msgstr ""
+
 msgid "ReleaseCreation|Failed to create the release. Refresh the page to try again."
 msgstr ""
 
@@ -64715,6 +64742,9 @@ msgstr ""
 msgid "ReleaseCreation|Services and versions"
 msgstr ""
 
+msgid "ReleaseCreation|Use \"%{name}\""
+msgstr ""
+
 msgid "ReleaseCreation|Version"
 msgstr ""
 
@@ -64731,6 +64761,9 @@ msgid "ReleaseCreation|e.g. v1.2.3"
 msgstr ""
 
 msgid "ReleaseCreation|not deployed"
+msgstr ""
+
+msgid "ReleaseCreation|unverified version"
 msgstr ""
 
 msgid "Released"

@@ -64,6 +64,14 @@ Grants the ability to read pipeline execution project schedules.
 | ------ | ------ | ---- | ---- |
 | Read | Project | Type | `PipelineExecutionProjectSchedule` |
 
+#### Policy Store Policy
+
+Grants the ability to create, delete, read, and update policies in the policy store.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Instance | Type | `GovernPolicy` |
+
 #### Secrets Manager
 
 Grants the ability to read secrets managers.
@@ -635,6 +643,7 @@ Grants the ability to create, read, resume, and update duo workflows.
 | Read | User | Type | `DuoWorkflowMergeRequestLink` |
 | Read | User | Type | `DuoWorkflowNoteLink` |
 | Read | User | Type | `DuoWorkflowWorkItemLink` |
+| Read | User | Field | `Note.duoCreatedSession` |
 | Read | User | Field | `Note.duoTriggeredSession` |
 | Update | User | Mutation | `UpdateDuoWorkflowAgentPrivileges` |
 | Update | User | Mutation | `UpdateDuoWorkflowWebSearch` |

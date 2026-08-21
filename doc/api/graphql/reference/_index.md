@@ -44671,6 +44671,30 @@ Fields:
 | <a id="googlecloudloggingconfigurationtype-logidname"></a>`logIdName` | [`String!`](#string) | Log ID. |
 | <a id="googlecloudloggingconfigurationtype-name"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 
+### `GovernPolicy`
+
+Policy stored in the policy store.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="governpolicy-actions"></a>`actions` {{< icon name="warning-solid" >}} | [`[JSON!]`](#json) | Introduced in GitLab 19.4. Status: Experiment. Actions of the policy. |
+| <a id="governpolicy-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp of when the policy was created. |
+| <a id="governpolicy-description"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Description of the policy. |
+| <a id="governpolicy-id"></a>`id` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.4. Status: Experiment. ID of the policy. |
+| <a id="governpolicy-lifecyclestate"></a>`lifecycleState` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Lifecycle state of the policy. |
+| <a id="governpolicy-mode"></a>`mode` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Enforcement mode of the policy. |
+| <a id="governpolicy-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Name of the policy. |
+| <a id="governpolicy-namespaceid"></a>`namespaceId` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. ID of the namespace the policy is scoped to. Null for organization-wide policies. |
+| <a id="governpolicy-organizationid"></a>`organizationId` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.4. Status: Experiment. ID of the organization the policy belongs to. |
+| <a id="governpolicy-policyscope"></a>`policyScope` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 19.4. Status: Experiment. Scope of the policy. |
+| <a id="governpolicy-rules"></a>`rules` {{< icon name="warning-solid" >}} | [`[JSON!]`](#json) | Introduced in GitLab 19.4. Status: Experiment. Rules of the policy. |
+| <a id="governpolicy-scoperego"></a>`scopeRego` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Rego expression scoping the policy. Mutually exclusive with policyScope. |
+| <a id="governpolicy-triggertype"></a>`triggerType` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Trigger the policy responds to. |
+| <a id="governpolicy-updatedat"></a>`updatedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp of when the policy was last updated. |
+| <a id="governpolicy-version"></a>`version` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. Version of the policy. |
+
 ### `GpgSignature`
 
 GPG signature for a signed commit.
@@ -52749,6 +52773,7 @@ Fields:
 | <a id="note-bodyhtml"></a>`bodyHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of the content of the note. |
 | <a id="note-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of the note creation. |
 | <a id="note-discussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion the note is a part of. |
+| <a id="note-duocreatedsession"></a>`duoCreatedSession` | [`DuoWorkflow`](#duoworkflow) | GitLab Duo Agent Platform session that created the note. |
 | <a id="note-duotriggeredsession"></a>`duoTriggeredSession` | [`DuoWorkflow`](#duoworkflow) | Duo Agent Platform session triggered by the note. Returns nil for system notes or when no triggered session exists. |
 | <a id="note-externalauthor"></a>`externalAuthor` | [`String`](#string) | Email address of non-GitLab user adding the note. For guests, the email address is obfuscated. |
 | <a id="note-id"></a>`id` | [`NoteID!`](#noteid) | ID of the note. |
@@ -54874,6 +54899,27 @@ Fields:
 | <a id="policystore-actions"></a>`actions` {{< icon name="warning-solid" >}} | [`[PolicyStoreAction!]!`](#policystoreaction) | Introduced in GitLab 19.4. Status: Experiment. Actions available when creating a policy in the policy store. |
 | <a id="policystore-rules"></a>`rules` {{< icon name="warning-solid" >}} | [`[PolicyStoreRule!]!`](#policystorerule) | Introduced in GitLab 19.4. Status: Experiment. Rule kinds available when creating a policy in the policy store. |
 | <a id="policystore-triggers"></a>`triggers` {{< icon name="warning-solid" >}} | [`[PolicyStoreTrigger!]!`](#policystoretrigger) | Introduced in GitLab 19.4. Status: Experiment. Triggers available when creating a policy in the policy store. |
+
+#### Fields with arguments
+
+##### `PolicyStore.policies`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Policies stored in the policy store for the organization. Returns `null` for groups and when the current user cannot read the policies of the organization.
+
+Returns [`[GovernPolicy!]`](#governpolicy).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policystore-policies-triggertype"></a>`triggerType` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Return only the policies that respond to this trigger. Valid values are the ids in the policy store triggers catalog. |
 
 ### `PolicyStoreAction`
 
