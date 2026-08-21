@@ -1175,8 +1175,8 @@ export default {
       },
     },
     isDisplayDrawerOpen(isOpen) {
-      // The drawer is fixed, we need to keep its top edge aligned with the bottom of the
-      // search bar (which scrolls in-flow, then becomes the sticky filter bar) while it is open.
+      // The drawer is fixed, we need to keep its top edge below the header rows (which scroll
+      // in-flow, then hand off to the sticky filter bar) while it is open.
       if (isOpen) {
         this.updateDrawerTopOffset();
         this.bindDrawerOffsetListeners();
@@ -1255,6 +1255,7 @@ export default {
     this.releasesCache = [];
     this.areReleasesFetched = false;
     this.drawerOffsetFrameId = null;
+    this.drawerScroller = null;
     // Anonymous users never fetch displaySettings (see its `skip`), so there's no
     // preferences query to wait on — the answer ("no persisted visibleGroups") is
     // already known.
@@ -1356,13 +1357,13 @@ export default {
         this.drawerTopOffset = `${Math.max(Math.round(stickyBottom) + 8, 0)}px`;
         return;
       }
+      const anchor = this.$refs.stateCountRow || el;
       // Need to measure drawer's position based on the `.panel-content`, not the whole viewport.
       // Here we subtract the difference so the drawer's top edge lines up with the
-      // search bar's bottom regardless of the containing block.
-      const containingBlock = el.closest('.panel-content');
+      // anchor's bottom regardless of the containing block.
+      const containingBlock = anchor.closest('.panel-content');
       const offsetTop = containingBlock ? containingBlock.getBoundingClientRect().top : 0;
-      const scroller = el.closest('.panel-content-inner');
-      const bottom = el.getBoundingClientRect().bottom + (scroller ? scroller.scrollTop : 0);
+      const { bottom } = anchor.getBoundingClientRect();
 
       this.drawerTopOffset = `${Math.max(Math.round(bottom - offsetTop) + 8, 0)}px`;
     },
@@ -1376,15 +1377,18 @@ export default {
       });
     },
     bindDrawerOffsetListeners() {
-      // The offset is anchored to the bar's resting position, so scrolling never changes it.
-      // Only resize and the mobile/desktop breakpoint move the bar, so we listen for those.
-      // (The sticky handoff is handled separately by the `isStickyHeaderVisible` watcher.)
       window.addEventListener('resize', this.scheduleDrawerOffsetUpdate, { passive: true });
       PanelBreakpointInstance.addBreakpointListener(this.scheduleDrawerOffsetUpdate);
+      this.drawerScroller = this.$refs.stateCountRow?.closest('.panel-content-inner');
+      this.drawerScroller?.addEventListener('scroll', this.scheduleDrawerOffsetUpdate, {
+        passive: true,
+      });
     },
     unbindDrawerOffsetListeners() {
       window.removeEventListener('resize', this.scheduleDrawerOffsetUpdate);
       PanelBreakpointInstance.removeBreakpointListener(this.scheduleDrawerOffsetUpdate);
+      this.drawerScroller?.removeEventListener('scroll', this.scheduleDrawerOffsetUpdate);
+      this.drawerScroller = null;
       if (this.drawerOffsetFrameId) {
         window.cancelAnimationFrame(this.drawerOffsetFrameId);
         this.drawerOffsetFrameId = null;
@@ -2215,7 +2219,8 @@ export default {
     <template v-if="!isServiceDeskList">
       <!-- state-count -->
       <div
-        class="gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3 gl-py-3 sm:gl-flex-nowrap"
+        ref="stateCountRow"
+        class="gl-border-b gl-flex gl-h-8 gl-flex-wrap gl-justify-between gl-gap-y-3 gl-py-3 sm:gl-flex-nowrap"
       >
         <div class="gl-flex gl-items-center gl-gap-3">
           <span data-testid="work-item-count" class="gl-mr-3">{{ workItemTotalStateCount }}</span>

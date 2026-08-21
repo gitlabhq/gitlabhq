@@ -31,7 +31,11 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
       before do
         visit project_issue_path(project, issue)
 
-        find('button:not([aria-disabled="true"])', text: 'Create merge request')
+        create_mr_button = find('button:not([aria-disabled="true"])', text: 'Create merge request')
+
+        # The issue description's sticky markdown toolbar can overlap the split button and
+        # intercept clicks. Center the button in the viewport so it is clear of the toolbar.
+        scroll_to(create_mr_button, align: :center)
       end
 
       it 'shows elements' do

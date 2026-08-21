@@ -17,9 +17,6 @@ class Import::BitbucketServerController < Import::BaseController
   def new; end
 
   def create
-    @project_key = params[:bitbucket_server_project]
-    @repo_slug = params[:bitbucket_server_repo]
-
     repo = client.repo(@project_key, @repo_slug)
 
     unless repo
@@ -34,7 +31,7 @@ class Import::BitbucketServerController < Import::BaseController
     result = Import::BitbucketServerService.new(
       client,
       current_user,
-      params.merge({ organization_id: Current.organization.id })
+      bitbucket_server_import_params
     ).execute(credentials)
 
     if result[:status] == :success
@@ -45,11 +42,11 @@ class Import::BitbucketServerController < Import::BaseController
   end
 
   def configure
-    session[personal_access_token_key] = params[:personal_access_token]
-    session[bitbucket_server_username_key] = params[:bitbucket_server_username]
-    session[bitbucket_server_url_key] = params[:bitbucket_server_url]
+    session[personal_access_token_key] = configure_params[:personal_access_token]
+    session[bitbucket_server_username_key] = configure_params[:bitbucket_server_username]
+    session[bitbucket_server_url_key] = configure_params[:bitbucket_server_url]
 
-    redirect_to status_import_bitbucket_server_path(namespace_id: params[:namespace_id])
+    redirect_to status_import_bitbucket_server_path(namespace_id: namespace_id_param)
   end
 
   # We need to re-expose controller's internal method 'status' as action.
@@ -101,16 +98,31 @@ class Import::BitbucketServerController < Import::BaseController
   end
 
   def normalize_import_params
-    project_key, repo_slug = params[:repo_id].split('/')
-    params[:bitbucket_server_project] = project_key
-    params[:bitbucket_server_repo] = repo_slug
+    @project_key, @repo_slug = repo_id_param.split('/')
+  end
+
+  def configure_params
+    params.permit(:personal_access_token, :bitbucket_server_username, :bitbucket_server_url)
+  end
+
+  def repo_id_param
+    params.permit(:repo_id)[:repo_id]
+  end
+
+  def bitbucket_server_import_params
+    params.permit(:repo_id, :new_name, :new_namespace, :bitbucket_server_url, :timeout_strategy, :target_namespace)
+      .merge(
+        bitbucket_server_project: @project_key,
+        bitbucket_server_repo: @repo_slug,
+        organization_id: Current.organization.id
+      )
   end
 
   def bitbucket_auth
     unless session[bitbucket_server_url_key].present? &&
         session[bitbucket_server_username_key].present? &&
         session[personal_access_token_key].present?
-      redirect_to new_import_bitbucket_server_path(namespace_id: params[:namespace_id])
+      redirect_to new_import_bitbucket_server_path(namespace_id: namespace_id_param)
     end
   end
 
@@ -144,8 +156,12 @@ class Import::BitbucketServerController < Import::BaseController
     }
   end
 
+  def page_param
+    params.permit(:page)[:page]
+  end
+
   def page_offset
-    [0, params[:page].to_i].max
+    [0, page_param.to_i].max
   end
 
   def limit_per_page

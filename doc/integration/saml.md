@@ -875,6 +875,13 @@ Prerequisites:
   To tell GitLab where to find these groups, add a `groups_attribute:`
   element to your SAML settings. This attribute is case-sensitive.
 
+  Add `groups_attribute` at the provider level of your SAML settings, as a sibling of `name`
+  and `label`, not inside the provider's `args`.
+  If it's inside `args`, GitLab ignores it without an error and none of the group-based
+  configuration on this page takes effect.
+  The same applies to `required_groups`, `external_groups`, `admin_groups`, and
+  `auditor_groups`.
+
 ### Required groups
 
 Your IdP passes group information to GitLab in the SAML response. To use this

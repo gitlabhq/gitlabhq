@@ -287,17 +287,7 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache, feature_
     end
 
     it 'returns cache key' do
-      is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{options_hash([cache.diff_options, true])}")
-    end
-
-    context 'when the `diff_line_syntax_highlighting` feature flag is disabled' do
-      before do
-        stub_feature_flags(diff_line_syntax_highlighting: false)
-      end
-
-      it 'returns the original version of the cache' do
-        is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{options_hash([cache.diff_options, false])}")
-      end
+      is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{options_hash([cache.diff_options, false])}")
     end
   end
 end

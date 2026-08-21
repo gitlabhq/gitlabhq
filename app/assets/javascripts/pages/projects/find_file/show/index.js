@@ -5,10 +5,12 @@ import { initFindFileRefSwitcher } from './init_find_file_ref_switcher';
 
 initFindFileRefSwitcher();
 const findElement = document.querySelector('.js-file-finder');
-const projectFindFile = new ProjectFindFile(document.querySelector('.file-finder-holder'), {
-  treeUrl: findElement.dataset.findTreeUrl,
-  blobUrlTemplate: findElement.dataset.blobUrlTemplate,
-  refType: findElement.dataset.refType,
-});
-projectFindFile.load(findElement.dataset.fileFindUrl);
-addShortcutsExtension(ShortcutsFindFile, projectFindFile);
+if (findElement) {
+  const projectFindFile = new ProjectFindFile(document.querySelector('.file-finder-holder'), {
+    treeUrl: findElement.dataset.findTreeUrl,
+    blobUrlTemplate: findElement.dataset.blobUrlTemplate,
+    refType: findElement.dataset.refType,
+  });
+  projectFindFile.load(findElement.dataset.fileFindUrl);
+  addShortcutsExtension(ShortcutsFindFile, projectFindFile);
+}

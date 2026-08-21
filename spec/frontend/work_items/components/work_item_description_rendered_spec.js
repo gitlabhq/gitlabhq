@@ -224,7 +224,7 @@ describe('WorkItemDescriptionRendered', () => {
       await nextTick();
 
       const updatedDescription = `- [x] todo 1\n- [x] todo 2`;
-      expect(wrapper.emitted('descriptionUpdated')).toEqual([[updatedDescription]]);
+      expect(wrapper.emitted('description-updated')).toEqual([[updatedDescription]]);
       expect(findReadMore().exists()).toBe(false);
     });
 
@@ -242,7 +242,7 @@ describe('WorkItemDescriptionRendered', () => {
       await nextTick();
 
       const updatedDescription = `- [ ] todo 1\n- [ ] todo 2`;
-      expect(wrapper.emitted('descriptionUpdated')).toEqual([[updatedDescription]]);
+      expect(wrapper.emitted('description-updated')).toEqual([[updatedDescription]]);
       expect(findReadMore().exists()).toBe(false);
     });
   });
@@ -386,7 +386,7 @@ and even more`,
 
         findCreateWorkItemModal().vm.$emit('work-item-created');
 
-        expect(wrapper.emitted('descriptionUpdated')).toEqual([[newDescription]]);
+        expect(wrapper.emitted('description-updated')).toEqual([[newDescription]]);
 
         findCreateWorkItemModal().vm.$emit('hide-modal');
         await nextTick();
@@ -471,7 +471,7 @@ and even more`,
           sourcepos: '4:4-5:19',
         });
 
-        expect(wrapper.emitted('descriptionUpdated')).toEqual([[newDescription]]);
+        expect(wrapper.emitted('description-updated')).toEqual([[newDescription]]);
       });
     });
   });

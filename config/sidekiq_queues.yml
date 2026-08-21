@@ -137,6 +137,8 @@
   - 1
 - - authn_cleanup_scim_group_memberships
   - 1
+- - authn_iam_replication_drain
+  - 1
 - - authn_oauth_applications_cleanup_dynamic_applications
   - 1
 - - authn_sync_group_scim_identity_record

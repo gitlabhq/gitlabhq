@@ -20119,6 +20119,34 @@ Fields:
 | <a id="mutation-workitemexport-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-workitemexport-message"></a>`message` | [`String`](#string) | Export request result message. |
 
+### `Mutation.workItemGenerateWorkplan`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Generates a workplan for a work item asynchronously through a Duo Agent Platform flow, instead of Duo Chat. Available only when the `duo_workplan_async_flow` feature flag is enabled; returns an error otherwise.
+
+Input type: `WorkItemGenerateWorkplanInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemgenerateworkplan-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemgenerateworkplan-id"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item to generate a workplan for. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemgenerateworkplan-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemgenerateworkplan-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-workitemgenerateworkplan-workflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Duo Agent Platform workflow started to generate the workplan. |
+
 ### `Mutation.workItemHierarchyAddChildrenItems`
 
 {{< details >}}

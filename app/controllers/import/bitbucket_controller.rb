@@ -18,12 +18,12 @@ class Import::BitbucketController < Import::BaseController
     auth_state = session[:bitbucket_auth_state]
     session[:bitbucket_auth_state] = nil
 
-    if auth_state.blank? || !ActiveSupport::SecurityUtils.secure_compare(auth_state, params[:state])
+    if auth_state.blank? || !ActiveSupport::SecurityUtils.secure_compare(auth_state, callback_params[:state])
       go_to_bitbucket_for_permissions
     else
       response = oauth_client.auth_code.get_token(
-        params[:code],
-        redirect_uri: users_import_bitbucket_callback_url(namespace_id: params[:namespace_id])
+        callback_params[:code],
+        redirect_uri: users_import_bitbucket_callback_url(namespace_id: namespace_id_param)
       )
 
       session[:bitbucket_token]         = response.token
@@ -31,7 +31,7 @@ class Import::BitbucketController < Import::BaseController
       session[:bitbucket_expires_in]    = response.expires_in
       session[:bitbucket_refresh_token] = response.refresh_token
 
-      redirect_to status_import_bitbucket_url(namespace_id: params[:namespace_id])
+      redirect_to status_import_bitbucket_url(namespace_id: namespace_id_param)
     end
   end
 
@@ -48,8 +48,9 @@ class Import::BitbucketController < Import::BaseController
       end
 
       format.html do
-        if params[:namespace_id].present?
-          @namespace = Namespace.find_by_id(params[:namespace_id])
+        namespace_id = namespace_id_param
+        if namespace_id.present?
+          @namespace = Namespace.find_by_id(namespace_id)
 
           render_404 unless current_user.can?(:import_projects, @namespace)
         end
@@ -58,14 +59,14 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def create
-    repo_id = params[:repo_id].to_s
+    repo_id = bitbucket_import_params[:repo_id].to_s
     name = repo_id.gsub('___', '/')
     repo = client.repo(name)
-    project_name = params[:new_name].presence || repo.name
+    project_name = bitbucket_import_params[:new_name].presence || repo.name
 
     repo_owner = repo.owner
     repo_owner = current_user.username if repo_owner == client.user.username
-    namespace_path = params[:new_namespace].presence || repo_owner
+    namespace_path = bitbucket_import_params[:new_namespace].presence || repo_owner
     target_namespace = find_or_create_namespace(namespace_path, current_user)
 
     Gitlab::Tracking.event(
@@ -127,6 +128,14 @@ class Import::BitbucketController < Import::BaseController
 
   private
 
+  def callback_params
+    params.permit(:state, :code)
+  end
+
+  def bitbucket_import_params
+    params.permit(:repo_id, :new_name, :new_namespace)
+  end
+
   def page_info
     bitbucket_repos.page_info
   end
@@ -166,10 +175,15 @@ class Import::BitbucketController < Import::BaseController
     )
   end
 
-  def workspace_paging_info_param
-    return [] unless params[:workspace_paging_info].present?
+  def encoded_workspace_paging_info_param
+    params.permit(:workspace_paging_info)[:workspace_paging_info]
+  end
 
-    decoded = Base64.decode64(params[:workspace_paging_info])
+  def workspace_paging_info_param
+    encoded = encoded_workspace_paging_info_param
+    return [] unless encoded.present?
+
+    decoded = Base64.decode64(encoded)
     workspace_paging_info = Gitlab::Json.safe_parse(decoded)
 
     return [] unless workspace_paging_info.is_a?(Array)
@@ -228,7 +242,7 @@ class Import::BitbucketController < Import::BaseController
     state = SecureRandom.base64(64)
     session[:bitbucket_auth_state] = state
     redirect_to oauth_client.auth_code.authorize_url(
-      redirect_uri: users_import_bitbucket_callback_url(namespace_id: params[:namespace_id]),
+      redirect_uri: users_import_bitbucket_callback_url(namespace_id: namespace_id_param),
       state: state
     )
   end

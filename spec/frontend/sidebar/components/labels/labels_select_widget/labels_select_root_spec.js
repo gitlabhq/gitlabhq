@@ -133,6 +133,18 @@ describe('LabelsSelectRoot', () => {
     },
   );
 
+  describe('when the collapsed sidebar icon requests the labels dropdown', () => {
+    it('emits `toggle-collapse`', async () => {
+      createComponent();
+      await waitForPromises();
+
+      document.dispatchEvent(new Event('toggleSidebarRevealLabelsDropdown'));
+      await nextTick();
+
+      expect(wrapper.emitted('toggle-collapse')).toEqual([[]]);
+    });
+  });
+
   describe('if dropdown variant is `sidebar`', () => {
     it('renders the listbox and the edit toggle button', () => {
       createComponent();
@@ -239,7 +251,7 @@ describe('LabelsSelectRoot', () => {
         expect(findCreateView().exists()).toBe(true);
       });
 
-      it('restores the listbox when hide-create-view is emitted', async () => {
+      it('restores the listbox when `hide-create-view` is emitted', async () => {
         createComponent();
         await openCreateForm();
         findCreateView().vm.$emit('hide-create-view');

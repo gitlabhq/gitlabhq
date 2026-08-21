@@ -18,4 +18,3 @@
 ### Internationalization (i18n)
 
 - DO NOT split a translatable sentence across multiple `GlSprintf` instances; keep the full sentence (e.g., `"Created %{date} by %{author}"`) in a single `GlSprintf :message` so translators can reorder words across languages
-- Extract translation strings to a static `i18n` object on the Vue component (e.g., `$options.i18n.myString`) instead of inlining `s__()` / `__()` calls directly in `<template>`

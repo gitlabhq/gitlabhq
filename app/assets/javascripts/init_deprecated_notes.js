@@ -2,6 +2,8 @@ import Notes from './deprecated_notes';
 
 export default () => {
   const dataEl = document.querySelector('.js-notes-data');
+  if (!dataEl) return;
+
   const { notesUrl, now, diffView, enableGFM } = JSON.parse(dataEl.innerHTML);
 
   // Create a singleton so that we don't need to assign

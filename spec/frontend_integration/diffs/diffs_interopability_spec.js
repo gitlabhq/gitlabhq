@@ -25,7 +25,7 @@ const EXPECT_INLINE = [
   ['head', 3],
   ['base', 4],
   ['head', 4],
-  null,
+  ['head', 5],
   ['base', 6],
   ['head', 6],
   null,
@@ -35,7 +35,7 @@ const EXPECT_PARALLEL_LEFT_SIDE = [
   ['base', 2],
   ['base', 3],
   ['base', 4],
-  null,
+  ['base', 5],
   ['base', 6],
   null,
 ];
@@ -44,7 +44,7 @@ const EXPECT_PARALLEL_RIGHT_SIDE = [
   ['head', 2],
   ['head', 3],
   ['head', 4],
-  null,
+  ['head', 5],
   ['head', 6],
   null,
 ];

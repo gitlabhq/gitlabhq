@@ -160,7 +160,7 @@ export default {
     :style="{ '--drawer-top-offset': headerHeight || '0px' }"
     header-sticky
     :z-index="$options.DRAWER_Z_INDEX"
-    class="work-item-display-settings-drawer"
+    class="work-item-display-settings-drawer gl-duration-fast"
     data-testid="display-settings-drawer"
     @close="onClose"
   >

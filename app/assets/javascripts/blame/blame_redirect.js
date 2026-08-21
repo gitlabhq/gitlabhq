@@ -4,7 +4,10 @@ import { __ } from '~/locale';
 
 export default function redirectToCorrectBlamePage() {
   const { hash } = window.location;
-  const linesPerPage = parseInt(document.querySelector('.js-per-page').dataset.perPage, 10);
+  const perPageEl = document.querySelector('.js-per-page');
+  if (!perPageEl) return;
+
+  const linesPerPage = parseInt(perPageEl.dataset.perPage, 10);
   const params = new URLSearchParams(window.location.search);
   const currentPage = parseInt(params.get('page'), 10);
   const isPaginationDisabled = params.get('no_pagination');

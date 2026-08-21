@@ -14,7 +14,7 @@ title: Repository files API
 {{< /details >}}
 
 Use this API to manage [repository files](../user/project/repository/_index.md).
-You can also [configure rate limits](../administration/settings/files_api_rate_limits.md)
+You can also [configure rate limits](../rate_limits/api/repository-files.md)
 for this API.
 
 ## Available scopes for personal access tokens

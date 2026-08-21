@@ -13,12 +13,6 @@ title: Analyze GitLab usage
 
 {{< /details >}}
 
-{{< history >}}
-
-- Group-level analytics moved to GitLab Premium in 13.9.
-
-{{< /history >}}
-
 GitLab provides analytics features that give you insights into your software development lifecycle.
 Use these features to track productivity, code quality, deployment performance, and security.
 Analytics features are available for instances, groups, and [projects](../project/settings/_index.md#turn-off-project-analytics),

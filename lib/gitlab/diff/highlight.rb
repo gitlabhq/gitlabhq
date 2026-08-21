@@ -88,7 +88,7 @@ module Gitlab
         return unless diff_file && diff_file.diff_refs
         return diff_line_highlighting(diff_line, plain: true) if blobs_too_large? || plain
 
-        if diff_line_syntax_highlighting? || @use_diff_line_highlighting
+        if @use_diff_line_highlighting
           diff_line_highlighting(diff_line)
         else
           blob_highlighting(diff_line)
@@ -122,8 +122,6 @@ module Gitlab
         )
       end
 
-      # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/324159
-      # ------------------------------------------------------------------------
       def blob_highlighting(diff_line)
         rich_line =
           if diff_line.unchanged? || diff_line.added?
@@ -155,11 +153,6 @@ module Gitlab
 
         blob.present.highlight(used_on: :diff).lines
       end
-
-      def diff_line_syntax_highlighting?
-        Feature.enabled?(:diff_line_syntax_highlighting, project)
-      end
-      strong_memoize_attr :diff_line_syntax_highlighting?
 
       def blobs_too_large?
         return true if Gitlab::Highlight.too_large?(diff_file.old_blob&.size)

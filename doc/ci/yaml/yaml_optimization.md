@@ -21,7 +21,7 @@ files by using:
 - The [`extends` keyword](#use-extends-to-reuse-configuration-sections),
   which is more flexible and readable. You should use `extends` where possible.
 
-To create multiple similar jobs, but with different variable values, use [`parallel:matrix](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs).
+To create multiple similar jobs, but with different variable values, use [`parallel:matrix`](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs).
 
 ## Anchors
 

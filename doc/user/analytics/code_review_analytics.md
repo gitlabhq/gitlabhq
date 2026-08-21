@@ -13,12 +13,6 @@ title: Code review analytics
 
 {{< /details >}}
 
-{{< history >}}
-
-- Moved to GitLab Premium in 13.9.
-
-{{< /history >}}
-
 Code review analytics displays a table of open merge requests that have at least one non-author comment.
 The review time is the amount of time since the first comment by a non-author in a merge request.
 

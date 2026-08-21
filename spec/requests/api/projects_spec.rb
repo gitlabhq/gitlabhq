@@ -626,7 +626,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       context 'when external issue tracker is enabled' do
-        let!(:jira_integration) { create(:jira_integration, project: project) }
+        let_it_be(:jira_integration) { create(:jira_integration, project: project) }
 
         it 'includes open_issues_count' do
           get api(path, user)
@@ -661,7 +661,9 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       context 'and using archived' do
-        let!(:archived_project) { create(:project, creator_id: user.id, namespace: user.namespace, archived: true) }
+        let_it_be(:archived_project) do
+          create(:project, creator_id: user.id, namespace: user.namespace, archived: true)
+        end
 
         it 'returns archived projects' do
           get api('/projects?archived=true', user)
@@ -731,10 +733,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       context 'and using search and search_namespaces is true' do
-        let(:group) { create(:group) }
-        let!(:project_in_group) { create(:project, group: group) }
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project_in_group) { create(:project, group: group) }
 
-        before do
+        before_all do
           group.add_guest(user)
         end
 
@@ -897,13 +899,13 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       context 'and with all query parameters' do
-        let!(:project5) { create(:project, :public, path: 'gitlab5', namespace: create(:namespace)) }
-        let!(:project6) { create(:project, :public, namespace: user.namespace) }
-        let!(:project7) { create(:project, :public, path: 'gitlab7', namespace: user.namespace) }
-        let!(:project8) { create(:project, path: 'gitlab8', namespace: user.namespace) }
-        let!(:project9) { create(:project, :public, path: 'gitlab9') }
+        let_it_be(:project5) { create(:project, :public, path: 'gitlab5', namespace: create(:namespace)) }
+        let_it_be(:project6) { create(:project, :public, namespace: user.namespace) }
+        let_it_be(:project7) { create(:project, :public, path: 'gitlab7', namespace: user.namespace) }
+        let_it_be(:project8) { create(:project, path: 'gitlab8', namespace: user.namespace) }
+        let_it_be(:project9) { create(:project, :public, path: 'gitlab9') }
 
-        before do
+        before_all do
           [project5, project7, project8, project9].each do |project|
             user.users_star_projects.create!(project_id: project.id)
           end
@@ -3342,7 +3344,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       context "and the project has a private repository" do
-        let(:project) { create(:project, :public, :repository, :repository_private) }
+        let_it_be_with_reload(:project) { create(:project, :public, :repository, :repository_private) }
 
         it "does not include statistics if user is not a member" do
           get api(path, user), params: { statistics: true }
@@ -3500,11 +3502,11 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
 
         context 'nested group project' do
-          let(:group) { create(:group) }
-          let(:nested_group) { create(:group, parent: group) }
-          let(:project2) { create(:project, group: nested_group) }
+          let_it_be(:group) { create(:group) }
+          let_it_be(:nested_group) { create(:group, parent: group) }
+          let_it_be(:project2) { create(:project, group: nested_group) }
 
-          before do
+          before_all do
             project2.group.parent.add_owner(user)
           end
 
@@ -5632,7 +5634,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
     context 'when updating repository storage' do
       let(:unknown_storage) { 'new-storage' }
-      let(:new_project) { create(:project, :repository, namespace: user.namespace) }
+      let_it_be(:new_project) { create(:project, :repository, namespace: user.namespace) }
 
       context 'as a user' do
         it 'returns 200 but does not change repository_storage' do
@@ -6037,8 +6039,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
   describe 'GET /projects/:id/starrers' do
     let(:path) { "/projects/#{public_project.id}/starrers" }
-    let(:public_project) { create(:project, :public) }
-    let(:private_user) { create(:user, private_profile: true) }
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:private_user) { create(:user, private_profile: true) }
 
     shared_examples_for 'project starrers response' do
       it 'returns an array of starrers' do
@@ -6058,7 +6060,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
-    before do
+    before_all do
       user.users_star_projects.create!(project_id: public_project.id)
       private_user.users_star_projects.create!(project_id: public_project.id)
     end
@@ -6069,7 +6071,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         get api("/projects/#{public_project.id}/starrers", personal_access_token: pat)
       end
 
-      before do
+      before_all do
         public_project.add_developer(user)
       end
     end
@@ -6329,21 +6331,21 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
   end
 
   describe 'POST /projects/:id/fork' do
-    let(:project) do
+    let_it_be_with_reload(:project) do
       create(:project, :repository, creator: user, namespace: user.namespace)
     end
 
     let(:path) { "/projects/#{project.id}/fork" }
 
-    let(:project2) do
+    let_it_be(:project2) do
       create(:project, :repository, creator: user, namespace: user.namespace)
     end
 
-    let(:group) { create(:group, :public) }
-    let(:group2) { create(:group, name: 'group2_name') }
-    let(:group3) { create(:group, name: 'group3_name', parent: group2) }
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:group2) { create(:group, name: 'group2_name') }
+    let_it_be(:group3) { create(:group, name: 'group3_name', parent: group2) }
 
-    before do
+    before_all do
       group.add_guest(user2)
       group2.add_maintainer(user2)
       group3.add_owner(user2)

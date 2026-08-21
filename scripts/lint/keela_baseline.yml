@@ -528,7 +528,6 @@ methods:
   - experiment_configuration
 scopes:
   app/models/authn/iam_outbox.rb:
-  - l0_undelivered
   - l2_undelivered
   app/models/ci/build.rb:
   - with_no_runner_assigned

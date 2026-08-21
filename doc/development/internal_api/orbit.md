@@ -74,15 +74,16 @@ Use a GET command to download a tar.gz archive of the project repository at a gi
 GET /internal/orbit/project/:project_id/repository/archive
 ```
 
-| Attribute    | Type    | Required | Description                                                               |
-|:-------------|:--------|:---------|:--------------------------------------------------------------------------|
-| `project_id` | integer | yes      | ID of the project                                                         |
-| `ref`        | string  | no       | Git ref to archive (branch, tag, or SHA). Defaults to the default branch. |
+| Attribute           | Type    | Required | Description                                                               |
+|:--------------------|:--------|:---------|:--------------------------------------------------------------------------|
+| `project_id`        | integer | yes      | ID of the project                                                         |
+| `ref`               | string  | no       | Git ref to archive (branch, tag, or SHA). Defaults to the default branch. |
+| `include_lfs_blobs` | boolean | no       | Resolve Git LFS pointers to their object contents. Defaults to `true`.    |
 
 Example request:
 
 ```shell
-curl --header "Gitlab-Orbit-Api-Request: <json-web-token>" "https://gitlab.example.com/api/v4/internal/orbit/project/1/repository/archive?ref=main"
+curl --header "Gitlab-Orbit-Api-Request: <json-web-token>" "https://gitlab.example.com/api/v4/internal/orbit/project/1/repository/archive?ref=main&include_lfs_blobs=false"
 ```
 
 Example response:
@@ -92,6 +93,8 @@ Example response:
 ```
 
 The response body is a binary tar.gz archive streamed via Workhorse.
+
+`include_lfs_blobs` controls whether the archive includes LFS content.
 
 > [!note]
 > Calls to this endpoint trigger a `repository_download_operation`

@@ -12,6 +12,7 @@ module Authn
 
       included do
         include AfterCommitQueue
+        include EachBatch
 
         class_attribute :iam_outbox_entity_type
 
@@ -22,7 +23,9 @@ module Authn
 
       class_methods do
         def iam_replicable(entity_type:)
-          raise ArgumentError, 'entity_type must be a non-empty string' if entity_type.blank?
+          unless ::Authn::IamOutbox::ALLOWED_ENTITY_TYPES.include?(entity_type)
+            raise ArgumentError, "unknown entity_type: #{entity_type.inspect}"
+          end
 
           self.iam_outbox_entity_type = entity_type
         end
@@ -34,19 +37,35 @@ module Authn
 
           relation.each_batch do |batch|
             now = Time.current
-            rows = batch.select(:id, :organization_id).map do |record|
+            rows = batch.pluck(:id, :organization_id).map do |record_id, organization_id| # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- bounded by each_batch
               {
                 entity_type: iam_outbox_entity_type,
-                entity_id: record.id,
-                organization_id: record.organization_id,
+                entity_id: record_id,
+                organization_id: organization_id,
                 event_type: ::Authn::IamOutbox.event_types[:upsert],
                 payload: {},
                 created_at: now,
                 updated_at: now
               }
             end
+            result = ::Authn::IamOutbox.insert_all!(rows, returning: [:entity_id])
 
-            ::Authn::IamOutbox.insert_all!(rows)
+            enqueue_drains_after_commit(result.rows.flatten, :upsert)
+          end
+        end
+
+        # update_all bypasses callbacks, so we defer scheduling until the outermost
+        # transaction commits, ensuring rolled-back transfers enqueue nothing.
+        def enqueue_drains_after_commit(ids, event_type)
+          event_type = event_type.to_s
+          drain_args = ids.map { |id| [iam_outbox_entity_type, id, event_type] }
+
+          ::ActiveRecord.after_all_transactions_commit do
+            # rubocop:disable Scalability/BulkPerformWithContext -- Jobs inherit caller context; entity IDs provide traceability.
+            ::Authn::IamReplication::DrainWorker.bulk_perform_in(
+              ::Authn::IamReplication::DrainWorker::SCHEDULE_DELAY, drain_args
+            )
+            # rubocop:enable Scalability/BulkPerformWithContext
           end
         end
       end
@@ -86,9 +105,12 @@ module Authn
         run_after_commit { schedule_iam_outbox_drain(event_type) }
       end
 
-      # Enqueued once the drain worker lands (see gitlab-org/gitlab#602678):
-      #   DrainWorker.perform_in(delay, iam_outbox_entity_type, id, event_type.to_s)
-      def schedule_iam_outbox_drain(event_type); end
+      def schedule_iam_outbox_drain(event_type)
+        ::Authn::IamReplication::DrainWorker.perform_in(
+          ::Authn::IamReplication::DrainWorker::SCHEDULE_DELAY,
+          iam_outbox_entity_type, id, event_type.to_s
+        )
+      end
     end
   end
 end

@@ -23,9 +23,7 @@ module Gitlab
     delegate :===, :source, to: :regexp
 
     def initialize(pattern, multiline: false)
-      if multiline
-        pattern = "(?m)#{pattern}"
-      end
+      pattern = "(?m)#{pattern}" if multiline
 
       @regexp = RE2::Regexp.new(pattern, log_errors: false)
       @scan_regexp = initialize_scan_regexp

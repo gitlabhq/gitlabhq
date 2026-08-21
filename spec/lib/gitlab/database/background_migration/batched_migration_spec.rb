@@ -384,8 +384,8 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
 
     context 'when the migration has a last_job' do
-      let(:interval) { 2.minutes }
-      let(:batched_migration) { create(:batched_background_migration, interval: interval) }
+      let_it_be(:interval) { 2.minutes }
+      let_it_be_with_reload(:batched_migration) { create(:batched_background_migration, interval: interval) }
 
       context 'when the last_job is less than an interval old' do
         it 'returns false' do
@@ -477,7 +477,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '#next_min_value' do
-    let!(:batched_migration) { create(:batched_background_migration) }
+    let_it_be_with_reload(:batched_migration) { create(:batched_background_migration) }
 
     context 'when a previous job exists' do
       let!(:batched_job) { create(:batched_background_migration_job, batched_migration: batched_migration) }
@@ -539,7 +539,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '#retry_failed_jobs!' do
-    let(:batched_migration) { create(:batched_background_migration, status: 'failed') }
+    let_it_be_with_reload(:batched_migration) { create(:batched_background_migration, status: 'failed') }
     let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
 
     subject(:retry_failed_jobs) { batched_migration.retry_failed_jobs! }
@@ -767,8 +767,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
     context 'when there are enough jobs' do
       let_it_be(:number_of_jobs) { 10 }
-      let_it_be(:jobs) { create_list(:batched_background_migration_job, number_of_jobs, **common_attrs.merge(batched_migration: migration)) }
-      let!(:jobs) { create_list(:batched_background_migration_job, number_of_jobs, :succeeded, **common_attrs.merge(batched_migration: migration)) }
+      let_it_be(:jobs) { create_list(:batched_background_migration_job, number_of_jobs, :succeeded, **common_attrs.merge(batched_migration: migration)) }
 
       subject { migration.smoothed_time_efficiency(number_of_jobs: number_of_jobs) }
 
@@ -834,8 +833,8 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   describe '#optimize!' do
     subject(:optimize) { batched_migration.optimize! }
 
-    let(:batch_size) { 10_000 }
-    let(:batched_migration) { create(:batched_background_migration, batch_size: batch_size) }
+    let_it_be(:batch_size) { 10_000 }
+    let_it_be_with_reload(:batched_migration) { create(:batched_background_migration, batch_size: batch_size) }
 
     it 'does not update batch_size when efficiency is nil' do
       expect { optimize }.not_to change { batched_migration.reload.batch_size }
@@ -883,7 +882,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   describe '#on_hold?', :freeze_time do
     subject { migration.on_hold? }
 
-    let(:migration) { create(:batched_background_migration) }
+    let_it_be_with_reload(:migration) { create(:batched_background_migration) }
 
     it 'returns false if no on_hold_until is set' do
       migration.on_hold_until = nil
@@ -1149,7 +1148,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '.for_configuration' do
-    let!(:attributes) do
+    let_it_be(:attributes) do
       {
         job_class_name: 'MyJobClass',
         table_name: :projects,
@@ -1159,9 +1158,9 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       }
     end
 
-    let!(:migration) { create(:batched_background_migration, attributes) }
+    let_it_be(:migration) { create(:batched_background_migration, attributes) }
 
-    before do
+    before_all do
       create(:batched_background_migration, attributes.merge(job_class_name: 'OtherClass'))
       create(:batched_background_migration, attributes.merge(table_name: 'other_table'))
       create(:batched_background_migration, attributes.merge(column_name: 'other_column'))
@@ -1272,8 +1271,8 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '#health_context_tables' do
-    let(:job_class_name) { 'CopyColumnUsingBackgroundMigrationJob' }
-    let(:batched_migration) { create(:batched_background_migration, table_name: :users, job_class_name: job_class_name) }
+    let_it_be(:job_class_name) { 'CopyColumnUsingBackgroundMigrationJob' }
+    let_it_be(:batched_migration) { create(:batched_background_migration, table_name: :users, job_class_name: job_class_name) }
 
     context 'when tables to check for vacuum are not specified' do
       it 'defaults to [table_name]' do

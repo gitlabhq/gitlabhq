@@ -579,7 +579,7 @@ describe('WorkItemLabels component', () => {
         });
       });
 
-      describe('when "hide-create-view" event is emitted', () => {
+      describe('when `hide-create-view` event is emitted', () => {
         it('hides dropdown', async () => {
           expect(findDisclosureDropdown().exists()).toBe(true);
           expect(findDropdownContentsCreateView().exists()).toBe(true);
@@ -592,7 +592,7 @@ describe('WorkItemLabels component', () => {
         });
       });
 
-      describe('when "label-created" event is emitted', () => {
+      describe('when `label-created` event is emitted', () => {
         it('updates "createdLabelId" value and hides dropdown', async () => {
           expect(findWorkItemSidebarDropdownWidget().props('createdLabelId')).toBe(undefined);
           expect(findDisclosureDropdown().exists()).toBe(true);

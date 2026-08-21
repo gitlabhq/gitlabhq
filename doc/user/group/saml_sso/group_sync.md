@@ -224,6 +224,14 @@ To configure SAML Group Sync:
    ]
    ```
 
+   In this example, `groups_attribute` is a key of the provider hash, at the same level as
+   `name` and `label`, not inside `args`.
+   If it's inside `args`, group sync does not run.
+   Users still sign in and the SAML response still carries the groups, but GitLab changes no
+   memberships and logs no error.
+   For more information, see
+   [SAML group links exist but no memberships change](troubleshooting.md#saml-group-links-exist-but-no-memberships-change).
+
 {{< /tab >}}
 
 {{< /tabs >}}

@@ -19,5 +19,13 @@ module Authn
 
     scope :l0_undelivered, -> { where(l0_delivered_at: nil) }
     scope :l2_undelivered, -> { where(l2_delivered_at: nil) }
+
+    scope :l0_undelivered_lookup, ->(entity_type, entity_id, event_type) do
+      l0_undelivered.where(entity_type: entity_type, entity_id: entity_id, event_type: event_type)
+    end
+
+    def self.l0_undelivered_ids(entity_type, entity_id, event_type)
+      l0_undelivered_lookup(entity_type, entity_id, event_type).ids
+    end
   end
 end

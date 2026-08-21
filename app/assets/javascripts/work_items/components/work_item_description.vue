@@ -810,7 +810,7 @@ export default {
       :is-group="isGroup"
       :is-updating="isSubmitting"
       :without-heading-anchors="withoutHeadingAnchors"
-      @descriptionUpdated="handleDescriptionTextUpdated"
+      @description-updated="handleDescriptionTextUpdated"
     />
     <edited-at
       v-if="showEditedAt"

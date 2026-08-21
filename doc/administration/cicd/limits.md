@@ -326,17 +326,25 @@ To change this limit on your GitLab Self-Managed instance:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0 [with a feature flag](../feature_flags/_index.md) named `ci_enforce_throttle_pipelines_creation`. Disabled by default. Enabled on GitLab.com
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196545) in 18.3.
+- CI Lint rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/599486) in GitLab 19.2 [with a feature flag](../feature_flags/_index.md) named `ci_enforce_ci_lint_rate_limit`. Disabled by default.
 
 {{< /history >}}
 
 You can set limits so that users and processes can't request more than a certain number of pipelines each minute.
 These limits can help save resources and improve stability.
+Each limit resets after one minute.
 
-GitLab enforces two types of rate limits for pipeline creation:
+GitLab enforces the following rate limits in this section:
 
 - **Per project, commit, and user**: Limits pipelines created for the same combination of project,
   commit SHA, and user. Set to `0` (no limit) by default.
 - **Per user**: Limits total pipelines created by a user across all projects. Set to `0` (no limit) by default.
+- **Per user for CI lint requests**: Limits [CI lint](../../ci/yaml/lint.md) requests made by a user across all
+  projects. CI lint requests are similar to pipeline creation requests.
+
+On new installations, `ci_lint_limit_per_user` is set to `0` (no limit).
+On instances upgraded to GitLab 19.2, if `pipeline_limit_per_user` is already set to a value greater than `0`,
+`ci_lint_limit_per_user` is initialized to that same value.
 
 For example, if you set a per-user limit of `100`, and a user sends `101` pipeline creation requests
 to the [trigger API](../../ci/triggers/_index.md) within one minute across different projects,
@@ -345,6 +353,10 @@ the 101st request is blocked. Access to the endpoint is allowed again after one 
 These limits are not applied per IP address.
 
 Requests that exceed the limits are logged in the `application_json.log` file.
+
+> [!flag]
+> The `ci_lint_limit_per_user` limit is enforced only when the `ci_enforce_ci_lint_rate_limit` feature flag is enabled.
+> Until the flag is enabled, requests that exceed the limit are logged but not blocked.
 
 ### Set pipeline request limits
 
@@ -356,18 +368,21 @@ To limit the number of pipeline requests:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Network**.
-1. Expand **Pipelines Rate Limits**.
+1. Expand **Pipeline creation rate limits**.
    - Under **Max requests per minute per project, user, and commit**, enter a value greater than `0` to limit pipelines
      for the same project, commit, and user combination. Set to `0` for unlimited requests per minute.
    - Under **Max requests per minute per user**, enter a value greater than `0` to limit total pipelines created by each user.
      Set to `0` for unlimited requests per minute.
+   - Under **Maximum number of CI Lint requests for a user**, enter a value greater than `0` to limit CI lint requests
+     made by each user. Set to `0` for unlimited requests per minute.
 1. Select **Save changes**.
 
-Both rate limits are evaluated independently:
+The rate limits are evaluated independently:
 
 - A user creating multiple pipelines for the same commit SHA in a project is subject to the **per project, user, and commit** limit.
 - A user creating pipelines across different projects or commits is subject to the **per user** limit.
-- If either limit is exceeded, the pipeline creation request is blocked.
+- A user sending CI lint requests across projects is subject to the **per user for CI lint requests** limit.
+- If a limit is exceeded, the request is blocked.
 
 ## Limit downstream pipeline trigger rate
 

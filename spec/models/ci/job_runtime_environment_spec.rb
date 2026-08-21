@@ -78,14 +78,57 @@ RSpec.describe Ci::JobRuntimeEnvironment, feature_category: :runner_core do
     let_it_be(:runtime_environment) { create(:ci_runtime_environment) }
     let_it_be(:runner_manager) { create(:ci_runner_machine) }
 
-    context 'when a row for the runtime environment has a runner machine recorded' do
+    context 'when the feature flag is disabled for the project' do
+      let_it_be(:record) do
+        create(:ci_job_runtime_environment, runtime_environment: runtime_environment,
+          runner_machine_id: runner_manager.id)
+      end
+
+      before do
+        stub_feature_flags(ci_suspendable_environment_runner_routing: false)
+      end
+
+      it 'returns nil' do
+        expect(described_class.runner_machine_id_for(record.build)).to be_nil
+      end
+    end
+
+    context 'when the build has no job_runtime_environment' do
+      let_it_be(:build_without_environment) { create(:ci_build) }
+
+      it 'returns nil' do
+        expect(described_class.runner_machine_id_for(build_without_environment)).to be_nil
+      end
+    end
+
+    context 'when the build has a job_runtime_environment but no linked runtime_environment yet' do
+      let_it_be(:record) { create(:ci_job_runtime_environment, runtime_environment: nil, suspend_on_success: true) }
+
+      it 'returns nil' do
+        expect(described_class.runner_machine_id_for(record.build)).to be_nil
+      end
+    end
+
+    context "when the build's own job_runtime_environment has a runner machine recorded" do
       let_it_be(:record) do
         create(:ci_job_runtime_environment, runtime_environment: runtime_environment,
           runner_machine_id: runner_manager.id)
       end
 
       it 'returns that runner machine id' do
-        expect(described_class.runner_machine_id_for(runtime_environment.id)).to eq(runner_manager.id)
+        expect(described_class.runner_machine_id_for(record.build)).to eq(runner_manager.id)
+      end
+    end
+
+    context 'when a sibling job_runtime_environment on the same runtime environment has a runner machine recorded' do
+      let_it_be(:record) { create(:ci_job_runtime_environment, runtime_environment: runtime_environment) }
+      let_it_be(:sibling_record) do
+        create(:ci_job_runtime_environment, runtime_environment: runtime_environment,
+          runner_machine_id: runner_manager.id)
+      end
+
+      it 'returns the sibling runner machine id' do
+        expect(described_class.runner_machine_id_for(record.build)).to eq(runner_manager.id)
       end
     end
 
@@ -93,13 +136,7 @@ RSpec.describe Ci::JobRuntimeEnvironment, feature_category: :runner_core do
       let_it_be(:record) { create(:ci_job_runtime_environment, runtime_environment: runtime_environment) }
 
       it 'returns nil' do
-        expect(described_class.runner_machine_id_for(runtime_environment.id)).to be_nil
-      end
-    end
-
-    context 'when no row references the runtime environment at all' do
-      it 'returns nil' do
-        expect(described_class.runner_machine_id_for(non_existing_record_id)).to be_nil
+        expect(described_class.runner_machine_id_for(record.build)).to be_nil
       end
     end
   end

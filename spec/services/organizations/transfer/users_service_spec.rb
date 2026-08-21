@@ -735,24 +735,40 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
           expect { service.execute }.not_to change { group_app.reload.organization_id }
         end
 
-        context 'when IAM replication is enabled' do
-          before do
-            stub_feature_flags(iam_data_replication: true)
-          end
+        it 'records upsert outbox rows carrying the new organization for the moved applications',
+          :aggregate_failures do
+          app1 = create(:oauth_application, owner: user1, organization: old_organization)
+          app2 = create(:oauth_application, owner: user2, organization: old_organization)
 
-          it 'records upsert outbox rows carrying the new organization for the moved applications',
-            :aggregate_failures do
-            app1 = create(:oauth_application, owner: user1, organization: old_organization)
-            app2 = create(:oauth_application, owner: user2, organization: old_organization)
+          expect { service.execute }.to change {
+            Authn::IamOutbox.where(entity_id: [app1.id, app2.id], event_type: :upsert).count
+          }.by(2)
 
-            expect { service.execute }.to change {
-              Authn::IamOutbox.where(entity_id: [app1.id, app2.id], event_type: :upsert).count
-            }.by(2)
+          rows = Authn::IamOutbox.where(
+            entity_id: [app1.id, app2.id], event_type: :upsert, organization_id: new_organization.id
+          )
+          expect(rows).to all(have_attributes(entity_type: 'oauth_application', payload: {}))
+        end
 
-            rows = Authn::IamOutbox.where(
-              entity_id: [app1.id, app2.id], event_type: :upsert, organization_id: new_organization.id
-            )
-            expect(rows).to all(have_attributes(entity_type: 'oauth_application', payload: {}))
+        it 'schedules an upsert drain per moved application' do
+          app1 = create(:oauth_application, owner: user1, organization: old_organization)
+          app2 = create(:oauth_application, owner: user2, organization: old_organization)
+
+          expect(Authn::IamReplication::DrainWorker).to receive(:bulk_perform_in)
+            .with(Authn::IamReplication::DrainWorker::SCHEDULE_DELAY,
+              include(['oauth_application', app1.id, 'upsert'], ['oauth_application', app2.id, 'upsert']))
+
+          service.execute
+        end
+
+        it 'schedules no drain when the transfer rolls back' do
+          create(:oauth_application, owner: user1, organization: old_organization)
+
+          expect(Authn::IamReplication::DrainWorker).not_to receive(:bulk_perform_in)
+
+          ApplicationRecord.transaction do
+            service.execute
+            raise ActiveRecord::Rollback
           end
         end
 

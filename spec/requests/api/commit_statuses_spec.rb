@@ -220,7 +220,7 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
         end
 
         context 'when pipeline already exists for the specified sha' do
-          let!(:pipeline) { create(:ci_pipeline, project: project, sha: sha, ref: 'ref') }
+          let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: sha, ref: 'ref') }
           let(:params) { { state: 'pending' } }
 
           shared_examples_for 'creates a commit status for the existing pipeline with an external stage' do
@@ -365,7 +365,7 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
           end
 
           context 'when merge request exists for given branch' do
-            let!(:merge_request) do
+            let_it_be_with_reload(:merge_request) do
               create(:merge_request, source_project: project, head_pipeline_id: nil)
             end
 
@@ -592,8 +592,11 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
       end
 
       context 'when updating a protected ref' do
-        before do
+        before_all do
           create(:protected_branch, project: project, name: 'master')
+        end
+
+        before do
           post api(post_url, user), params: { state: 'running', ref: 'master' }
         end
 

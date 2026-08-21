@@ -291,6 +291,41 @@ the identity provider, but the attributes don't match the names in the OmniAuth 
 you must set `attribute_statements` in the SAML configuration to
 [map the attribute names in your SAML Response to the corresponding OmniAuth `info` hash names](../../../integration/saml.md#map-saml-response-attribute-names).
 
+### SAML group links exist but no memberships change
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+You might configure SAML group links and confirm that the SAML response carries the expected
+groups, but no membership is added or removed.
+Users sign in successfully, and neither the sign-in nor the logs report an error.
+
+This issue occurs when GitLab cannot resolve a `groups_attribute` value for the provider that
+authenticated the user.
+A common cause is placing `groups_attribute` inside the provider's `args` hash instead of at
+the provider level, as a sibling of `name` and `label`.
+When no value resolves, group sync does not run and reports nothing.
+
+To resolve this issue:
+
+1. Move `groups_attribute` to the provider level of the configuration. For an example, see
+   [Configure SAML Group Sync](group_sync.md#configure-saml-group-sync).
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Sign in again.
+1. Search `audit_json.log` for entries with `"meta.caller_id": "Auth::SamlGroupSyncWorker"`.
+   Group sync writes these entries when it changes membership.
+   If the entries are absent after a sign-in that should have changed membership, group sync
+   is not running.
+
 ## User sign in banner error messages
 
 ### Message: `SAML authentication failed: SAML NameID is missing from your SAML response.`

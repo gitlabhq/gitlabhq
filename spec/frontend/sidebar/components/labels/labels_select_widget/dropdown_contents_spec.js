@@ -12,6 +12,7 @@ import { stubComponent } from 'helpers/stub_component';
 import { mockLabels } from './mock_data';
 
 const showDropdown = jest.fn();
+const hideDropdown = jest.fn();
 const focusInput = jest.fn();
 
 const GlDropdownStub = {
@@ -24,7 +25,7 @@ const GlDropdownStub = {
   `,
   methods: {
     show: showDropdown,
-    hide: jest.fn(),
+    hide: hideDropdown,
   },
 };
 
@@ -122,6 +123,17 @@ describe('DropdownContent', () => {
     await nextTick();
 
     expect(wrapper.emitted('set-labels')).toEqual([[[updatedLabel]]]);
+  });
+
+  describe('when the header emits `close-dropdown`', () => {
+    beforeEach(() => {
+      createComponent();
+      findDropdownHeader().vm.$emit('close-dropdown');
+    });
+
+    it('hides the dropdown', () => {
+      expect(hideDropdown).toHaveBeenCalled();
+    });
   });
 
   it('renders header', () => {

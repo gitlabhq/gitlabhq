@@ -11,7 +11,7 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
   let(:conflict_resolution_path) { nil }
   let(:can_merge) { true }
   let(:content_sha) { 'abc123' }
-  let(:edit_path_base) { '/-/edit/feature-branch/path/to/file.rb?from_merge_request_iid=' }
+  let(:edit_path_base) { "/-/edit/feature-branch/#{diff_file.new_path}?from_merge_request_iid=" }
 
   before do
     allow(diff_file).to receive(:repository).and_return(repository)
@@ -21,7 +21,6 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
       iid: 123
     )
     allow(diff_file).to receive_messages(
-      new_path: 'path/to/file.rb',
       content_sha: content_sha,
       repository: repository,
       conflict: nil
@@ -106,7 +105,7 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
       file_data = Gitlab::Json.parse(diff_file_element['data-file-data'])
       expect(file_data['blob_raw_path']).to include('/raw/')
       expect(file_data['blob_raw_path']).to include(content_sha)
-      expect(file_data['blob_raw_path']).to include('path/to/file.rb')
+      expect(file_data['blob_raw_path']).to include(diff_file.new_path)
     end
 
     it 'merges externally-provided extra_file_data into file_data' do

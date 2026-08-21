@@ -269,56 +269,77 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
       expect(described_class.iam_outbox_entity_type).to eq('oauth_application')
     end
 
-    context 'when IAM replication is enabled' do
-      before do
-        stub_feature_flags(iam_data_replication: true)
+    context 'on create' do
+      it 'records an upsert row with an empty payload and the sharding key' do
+        app = create(:oauth_application)
+
+        row = Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id).sole
+
+        expect(row.payload).to eq({})
+        expect(row.entity_type).to eq('oauth_application')
+        expect(row.organization_id).to eq(app.organization_id)
       end
 
-      context 'on create' do
-        it 'records an upsert row with an empty payload and the sharding key' do
-          app = create(:oauth_application)
+      it 'schedules an upsert drain after create, keyed on the entity' do
+        expect(Authn::IamReplication::DrainWorker).to receive(:perform_in).with(
+          Authn::IamReplication::DrainWorker::SCHEDULE_DELAY, 'oauth_application', kind_of(Integer), 'upsert'
+        )
 
-          row = Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id).sole
+        create(:oauth_application)
+      end
+    end
 
-          expect(row.payload).to eq({})
-          expect(row.entity_type).to eq('oauth_application')
-          expect(row.organization_id).to eq(app.organization_id)
-        end
+    context 'on update' do
+      it 'records an upsert row' do
+        app = create(:oauth_application)
+
+        expect { app.update!(redirect_uri: 'https://example.com/new') }
+          .to change { Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id).count }.by(1)
       end
 
-      context 'on update' do
-        it 'records an upsert row' do
-          app = create(:oauth_application)
+      it 'schedules an upsert drain after update' do
+        app = create(:oauth_application)
 
-          expect { app.update!(redirect_uri: 'https://example.com/new') }
-            .to change { Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id).count }.by(1)
-        end
+        expect(Authn::IamReplication::DrainWorker).to receive(:perform_in).with(
+          Authn::IamReplication::DrainWorker::SCHEDULE_DELAY, 'oauth_application', app.id, 'upsert'
+        )
+
+        app.update!(redirect_uri: 'https://example.com/new')
+      end
+    end
+
+    context 'on destroy' do
+      it 'records a delete row carrying the uid' do
+        app = create(:oauth_application)
+
+        app.destroy!
+
+        row = Authn::IamOutbox.where(event_type: :delete, entity_id: app.id).sole
+
+        expect(row.payload).to eq({ 'uid' => app.uid })
+        expect(row.entity_type).to eq('oauth_application')
+        expect(row.organization_id).to eq(app.organization_id)
       end
 
-      context 'on destroy' do
-        it 'records a delete row carrying the uid' do
-          app = create(:oauth_application)
-          uid = app.uid
+      it 'schedules a delete drain after destroy' do
+        app = create(:oauth_application)
 
-          app.destroy!
+        expect(Authn::IamReplication::DrainWorker).to receive(:perform_in).with(
+          Authn::IamReplication::DrainWorker::SCHEDULE_DELAY, 'oauth_application', app.id, 'delete'
+        )
 
-          row = Authn::IamOutbox.where(event_type: :delete, entity_id: app.id).sole
-
-          expect(row.payload).to eq({ 'uid' => uid })
-          expect(row.entity_type).to eq('oauth_application')
-          expect(row.organization_id).to eq(app.organization_id)
-        end
+        app.destroy!
       end
+    end
 
-      context 'when the surrounding transaction rolls back' do
-        it 'records no outbox row' do
-          expect do
-            ApplicationRecord.transaction do
-              create(:oauth_application)
-              raise ActiveRecord::Rollback
-            end
-          end.not_to change { Authn::IamOutbox.count }
-        end
+    context 'when the surrounding transaction rolls back' do
+      it 'records no outbox row' do
+        expect do
+          ApplicationRecord.transaction do
+            create(:oauth_application)
+            raise ActiveRecord::Rollback
+          end
+        end.not_to change { Authn::IamOutbox.count }
       end
     end
 

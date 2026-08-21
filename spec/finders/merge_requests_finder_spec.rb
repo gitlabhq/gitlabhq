@@ -545,7 +545,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
       [:source_branch, :target_branch].each do |param|
         describe "#{param} parameter" do
-          let(:merge_requests) { create_list(:merge_request, 2, :unique_branches, source_project: project4, target_project: project4, author: user) }
+          let_it_be(:merge_requests) { create_list(:merge_request, 2, :unique_branches, source_project: project4, target_project: project4, author: user) }
           let(:attribute) { param }
 
           it_behaves_like 'scalar or array parameter'
@@ -668,11 +668,13 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         it 'returns the relevant merge requests' do
           deployment1 = create(
             :deployment,
+            deployable: nil,
             project: project_with_repo,
             sha: project_with_repo.commit.id
           )
           deployment2 = create(
             :deployment,
+            deployable: nil,
             project: project_with_repo,
             sha: project_with_repo.commit.id
           )
@@ -687,7 +689,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
         context 'when a deployment does not contain any merge requests' do
           it 'returns an empty result' do
-            params = { deployment_id: create(:deployment, project: project_with_repo, sha: project_with_repo.commit.sha).id }
+            params = { deployment_id: create(:deployment, deployable: nil, project: project_with_repo, sha: project_with_repo.commit.sha).id }
             merge_requests = described_class.new(user, params).execute
 
             expect(merge_requests).to be_empty
@@ -1072,7 +1074,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
       end
 
       context 'filtering by group milestone' do
-        let(:group_milestone) { create(:milestone, group: group) }
+        let_it_be(:group_milestone) { create(:milestone, group: group) }
 
         before do
           merge_request1.update!(milestone: group_milestone)
@@ -1204,7 +1206,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
       context 'filtering by created_at/updated_at' do
         let_it_be(:new_project) { create(:project, forked_from_project: project1) }
 
-        let!(:new_merge_request) do
+        let_it_be(:new_merge_request) do
           create(
             :merge_request,
             :simple,
@@ -1216,7 +1218,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           )
         end
 
-        let!(:old_merge_request) do
+        let_it_be(:old_merge_request) do
           create(
             :merge_request,
             :simple,
@@ -1471,11 +1473,11 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
     let(:merge_requests) { described_class.new(user, {}).execute }
 
-    let!(:mr_public) { create(:merge_request, source_project: public_project) }
-    let!(:mr_private) { create(:merge_request, source_project: private_project) }
-    let!(:mr_internal) { create(:merge_request, source_project: internal) }
-    let!(:mr_private_repo_access) { create(:merge_request, source_project: public_with_private_repo) }
-    let!(:mr_internal_private_repo_access) { create(:merge_request, source_project: internal_with_private_repo) }
+    let_it_be(:mr_public) { create(:merge_request, source_project: public_project) }
+    let_it_be(:mr_private) { create(:merge_request, source_project: private_project) }
+    let_it_be(:mr_internal) { create(:merge_request, source_project: internal) }
+    let_it_be(:mr_private_repo_access) { create(:merge_request, source_project: public_with_private_repo) }
+    let_it_be(:mr_internal_private_repo_access) { create(:merge_request, source_project: internal_with_private_repo) }
 
     context 'with admin user' do
       let_it_be_with_reload(:user) { create(:user, :admin) }

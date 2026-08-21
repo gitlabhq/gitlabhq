@@ -106,7 +106,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
     describe 'POST /api/v4/jobs/:id/artifacts/authorize' do
       it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api do
-        let(:job2) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
+        let_it_be(:job2) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
 
         def request
           authorize_artifacts_with_token_in_params(filesize: 100.megabytes.to_i)
@@ -317,7 +317,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       end
 
       it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api do
-        let(:job2) { create(:ci_build, :running, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
+        let_it_be(:job2) { create(:ci_build, :running, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
 
         def request
           upload_artifacts(fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'), headers)
@@ -369,10 +369,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         context 'when job has been erased' do
           let(:job) { create(:ci_build, erased_at: Time.now) }
-
-          before do
-            upload_artifacts(file_upload, headers)
-          end
 
           it 'responds with forbidden' do
             upload_artifacts(file_upload, headers)
@@ -970,7 +966,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       end
 
       it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api do
-        let(:job2) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
+        let_it_be_with_reload(:job2) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
 
         def request
           download_artifact
@@ -1064,7 +1060,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         context 'when using token belonging to the dependent job' do
           let!(:dependent_job) { create(:ci_build, :running, :dependent, user: user, pipeline: pipeline) }
-          let!(:job) { dependent_job.all_dependencies.first }
+          let(:job) { dependent_job.all_dependencies.first }
 
           let(:token) { dependent_job.token }
 
@@ -1081,14 +1077,13 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         context 'when using token belonging to another job created by another project member' do
           let!(:ci_build) { create(:ci_build, :running, :dependent, user: user, pipeline: pipeline) }
-          let!(:job) { ci_build.all_dependencies.first }
+          let(:job) { ci_build.all_dependencies.first }
 
-          let!(:another_dev) { create(:user) }
+          let_it_be(:another_dev) { create(:user, developer_of: project) }
 
           let(:token) { ci_build.token }
 
           before do
-            project.add_developer(another_dev)
             ci_build.update!(user: another_dev)
           end
 
@@ -1106,9 +1101,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         context 'when using a token from a cross pipeline build' do
           let!(:ci_build) { create(:ci_build, :pending, :dependent, user: user, project: project, pipeline: pipeline) }
-          let!(:job) { ci_build.all_dependencies.first }
+          let(:job) { ci_build.all_dependencies.first }
 
-          let!(:options) do
+          let(:options) do
             {
               cross_dependencies: [
                 {
@@ -1121,7 +1116,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             }
           end
 
-          let!(:cross_pipeline) { create(:ci_pipeline, project: project, child_of: pipeline) }
+          let_it_be(:cross_pipeline) { create(:ci_pipeline, project: project, child_of: pipeline) }
           let!(:cross_pipeline_build) { create(:ci_build, :running, project: project, user: user, options: options, pipeline: cross_pipeline) }
 
           let(:token) { cross_pipeline_build.token }
@@ -1135,9 +1130,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         context 'when using a token from an unrelated project' do
           let!(:ci_build) { create(:ci_build, :running, :dependent, user: user, project: project, pipeline: pipeline) }
-          let!(:job) { ci_build.all_dependencies.first }
+          let(:job) { ci_build.all_dependencies.first }
 
-          let!(:unrelated_ci_build) { create(:ci_build, :running, user: create(:user)) }
+          let_it_be(:unrelated_ci_build) { create(:ci_build, :running, user: create(:user)) }
           let(:token) { unrelated_ci_build.token }
 
           it 'responds with forbidden' do

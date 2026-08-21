@@ -121,7 +121,7 @@ GitLab assigns SARIF fields to fields that are compatible with GitLab according 
 | Severity              | See [Severity resolution](#severity-resolution)                                       | {{< no >}}  | Defaults to `medium` when no severity field is set.                                                                                           |
 | Primary identifier    | `result.ruleId` is matched to the corresponding value in `run.tool.driver.rules[].id` | {{< yes >}} | Findings without a `ruleId` are not added.                                                                                                    |
 | Secondary identifiers | `rule.properties.tags[]` and `rule.relationships[]`                                   | {{< no >}}  | Used to assign the report type.                                                                                                               |
-| Location              | `result.locations[0].physicalLocation`                                                | {{< yes >}} | Findings without a physical location are not added.                                                                                           |
+| Location              | `result.locations[0].physicalLocation`                                                | {{< yes >}} | Findings without a physical location are not added. Findings in the same file that share a `ruleId` and have no `region` collapse into one finding. See [deduplication and finding identity](#deduplication-and-finding-identity). |
 | Scanner name          | `run.tool.driver.name`                                                                | {{< yes >}} | Required for a [valid SARIF](https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/sarif-v2.1.0-errata01-os-complete.html#_Toc141790791) |
 | Scanner vendor        | `run.tool.driver.organization`, then `run.tool.driver.informationUri`                 | {{< no >}}  | First non-empty value is used                                                                                                                 |
 | Scanner version       | `run.tool.driver.version`, then `run.tool.driver.semanticVersion`                     | {{< no >}}  | First non-empty value is used                                                                                                                 |
@@ -224,6 +224,30 @@ the whole result is skipped and counted toward the [drop rate](#ingestion-behavi
 For GitLab Self-Managed instances, an administrator can change configurable limits
 through the [instance limits](../../../administration/instance_limits.md).
 
+## Deduplication and finding identity
+
+When GitLab ingests a SARIF report, it gives each finding a unique identity built from three
+components: the report type, the primary identifier fingerprint derived from the finding's `ruleId`,
+and the location fingerprint.
+For SARIF findings, the location fingerprint takes the form `file:startLine:endLine`.
+
+A SARIF `physicalLocation` can name a file through `artifactLocation.uri` without a `region`.
+When that happens, GitLab still ingests the finding and locates it to the whole file,
+with no start or end line.
+
+When two or more results share the same file and the same `ruleId`, and none of them carry a
+`region`, all three identity components match. The results resolve to the same rule, so they
+share a report type and a primary identifier fingerprint, and the location fingerprint falls
+back to the file path alone. GitLab computes the same identity for each result, keeps the
+first one, and discards the rest.
+
+Because the collision happens when GitLab assigns identity rather than when it skips
+ingestion, these discards do not count toward the [ingestion drop rate](#ingestion-behavior),
+and GitLab shows no warning.
+
+To avoid this collision, emit a `region` with at least a `startLine` so each finding in
+the same file gets its own location fingerprint.
+
 ## Known issues
 
 - SARIF findings assigned as SAST, dependency scanning, or secret detection are
@@ -286,3 +310,12 @@ scan = Security::Scan.find_by!(pipeline_id: <pipeline-id>, project_id: <project-
 scan.processing_warnings
 scan.processing_errors
 ```
+
+### Fewer findings than the SARIF report contains
+
+The vulnerability report might show fewer findings than your SARIF file contains, with no
+ingestion warning.
+
+This issue occurs when two or more results resolve to the same identity and GitLab keeps only
+the first one. For more information, see
+[deduplication and finding identity](#deduplication-and-finding-identity).

@@ -35958,7 +35958,13 @@ msgstr ""
 msgid "FoundationalFlow|Diagnose and fix issues in your GitLab CI/CD pipeline."
 msgstr ""
 
+msgid "FoundationalFlow|Draft a Why/How/What workplan for a work item and write it to the Workplan widget."
+msgstr ""
+
 msgid "FoundationalFlow|Fix CI/CD Pipeline"
+msgstr ""
+
+msgid "FoundationalFlow|Generate Workplan"
 msgstr ""
 
 msgid "FoundationalFlow|Migrate your Jenkins pipelines to GitLab CI/CD."
@@ -68080,6 +68086,9 @@ msgstr ""
 msgid "ScanProfiles|Scan all Git push events and block pushes with detected secrets."
 msgstr ""
 
+msgid "ScanProfiles|Scan profile details"
+msgstr ""
+
 msgid "ScanProfiles|Scan triggers"
 msgstr ""
 
@@ -81833,6 +81842,9 @@ msgstr ""
 msgid "This license has already expired."
 msgstr ""
 
+msgid "This limit is not enforced until the %{flag} feature flag is enabled."
+msgstr ""
+
 msgid "This link points to external content"
 msgstr ""
 
@@ -89049,6 +89061,9 @@ msgid "Vulnerability|Namespace"
 msgstr ""
 
 msgid "Vulnerability|Namespace:"
+msgstr ""
+
+msgid "Vulnerability|No available solution"
 msgstr ""
 
 msgid "Vulnerability|None"

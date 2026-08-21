@@ -164,6 +164,7 @@ In addition:
 - Do not link to [confidential issues](_index.md#confidential-or-restricted-access-links).
 - Do not link to the pricing page.
 - Do not include the subscription tier, unless it's changing from one tier to another.
+- Do not duplicate entries on multiple pages. Add the entry to the page that documents the feature that changed.
 
 #### Updated features
 
@@ -192,6 +193,18 @@ For features that move to another subscription tier, use `moved`:
 - [Moved](https://issue-link) from GitLab Ultimate to GitLab Premium in 11.8.
 - [Moved](https://issue-link) from GitLab Premium to GitLab Free in 12.0.
 ```
+
+#### Changed billing method
+
+For features that change from seat-based billing to usage-based billing with
+[GitLab Credits](../../../subscriptions/gitlab_credits.md), use `changed to usage-based billing`:
+
+```markdown
+- [Changed](https://issue-link) to usage-based billing in GitLab 19.0.
+```
+
+Add this entry only to the history for the feature.
+Do not add an entry to the GitLab Credits history, because the functionality of credits does not change when a feature starts to use them.
 
 #### Changed feature status
 

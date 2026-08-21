@@ -56,7 +56,6 @@ export default {
     'app/assets/javascripts/work_items/components/shared/work_item_namespace_listbox.vue',
     'app/assets/javascripts/work_items/components/work_item_actions.vue',
     'app/assets/javascripts/work_items/components/work_item_assignees.vue',
-    'app/assets/javascripts/work_items/components/work_item_description_rendered.vue',
     'app/assets/javascripts/work_items/components/work_item_detail.vue',
     'app/assets/javascripts/work_items/components/work_item_labels.vue',
     'app/assets/javascripts/work_items/components/work_item_milestone.vue',
@@ -64,10 +63,7 @@ export default {
     'ee/app/assets/javascripts/groups/settings/work_items/custom_status/status_form.vue',
     'ee/app/assets/javascripts/hand_raise_leads/hand_raise_lead/components/hand_raise_lead_button.vue',
     'ee/app/assets/javascripts/roadmap/components/roadmap_shell.vue',
-    'ee/app/assets/javascripts/sidebar/components/health_status/sidebar_health_status_widget.vue',
     'ee/app/assets/javascripts/test_case_show/components/test_case_show_root.vue',
-    'ee/app/assets/javascripts/work_items/components/work_item_iteration.vue',
-    'ee/app/assets/javascripts/work_items/components/work_item_status.vue',
   ],
   rules: {
     'vue/custom-event-name-casing': 'off',

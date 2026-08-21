@@ -93,7 +93,7 @@ export default {
       default: false,
     },
   },
-  emits: ['descriptionUpdated'],
+  emits: ['description-updated'],
   data() {
     return {
       childDescription: '',
@@ -243,7 +243,7 @@ export default {
               ...taskListSortableOptions,
               onUpdate: (event) => {
                 const description = convertDescriptionWithNewSort(this.descriptionText, event.to);
-                this.$emit('descriptionUpdated', description);
+                this.$emit('description-updated', description);
               },
             }),
           ),
@@ -354,24 +354,24 @@ export default {
         return;
       }
       const { newDescription } = deleteTaskListItem(this.descriptionText, sourcepos);
-      this.$emit('descriptionUpdated', newDescription);
+      this.$emit('description-updated', newDescription);
     },
     disableTaskListItem({ id, sourcepos }) {
       if (this.workItemId !== id) {
         return;
       }
       const { newDescription } = disableTaskListItem(this.descriptionText, sourcepos);
-      this.$emit('descriptionUpdated', newDescription);
+      this.$emit('description-updated', newDescription);
     },
     enableTaskListItem({ id, sourcepos }) {
       if (this.workItemId !== id) {
         return;
       }
       const { newDescription } = enableTaskListItem(this.descriptionText, sourcepos);
-      this.$emit('descriptionUpdated', newDescription);
+      this.$emit('description-updated', newDescription);
     },
     handleWorkItemCreated() {
-      this.$emit('descriptionUpdated', this.newDescription);
+      this.$emit('description-updated', this.newDescription);
     },
     toggleCheckboxes(event) {
       const { target } = event;
@@ -386,7 +386,7 @@ export default {
         });
         if (!replacement) return;
 
-        this.$emit('descriptionUpdated', replacement.newMarkdown);
+        this.$emit('description-updated', replacement.newMarkdown);
       }
     },
     truncateLongDescription() {

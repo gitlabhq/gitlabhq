@@ -233,7 +233,7 @@ export default {
       :work-item-type="workItemType"
       :full-path="fullPath"
       @error="$emit('error', $event)"
-      @statusUpdated="
+      @status-updated="
         $emit('attributes-updated', { type: $options.ListType.status, ids: [$event] })
       "
     />
@@ -313,7 +313,7 @@ export default {
       :work-item-iid="workItem.iid"
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
-      @iterationUpdated="
+      @iteration-updated="
         $emit('attributes-updated', { type: $options.ListType.iteration, ids: [$event] })
       "
     />

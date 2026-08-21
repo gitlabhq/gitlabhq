@@ -28,7 +28,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Set rate limits for package registry API requests that supersede the general user and IP rate limits.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/package_registry_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('rate_limits/api/package-registry.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render partial: 'network_rate_limits', locals: { anchor: 'js-packages-limits-settings', setting_fragment: 'packages_api' }
 
@@ -56,7 +56,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Configure specific limits for deprecated API requests that supersede the general user and IP rate limits.')
-    = link_to _('Which API requests are affected?'), help_page_path('administration/settings/deprecated_api_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Which API requests are affected?'), help_page_path('rate_limits/api/deprecated.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render partial: 'network_rate_limits', locals: { anchor: 'js-deprecated-limits-settings', setting_fragment: 'deprecated_api' }
 

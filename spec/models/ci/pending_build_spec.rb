@@ -268,6 +268,80 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
 
       expect(args).to include(:build, :project, :protected, :namespace, :tag_ids, :instance_runners_enabled)
     end
+
+    describe 'runner_machine_id resolution' do
+      let_it_be(:runner) { create(:ci_runner, :instance) }
+      let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+      let_it_be(:runtime_environment) { create(:ci_runtime_environment, project: project) }
+
+      context 'when the feature flag is disabled for the project' do
+        let_it_be(:job_runtime_environment) do
+          create(:ci_job_runtime_environment, build: build, runtime_environment: runtime_environment)
+        end
+
+        before do
+          stub_feature_flags(ci_suspendable_environment_runner_routing: false)
+        end
+
+        it 'does not include runner_machine_id in args' do
+          args = described_class.args_from_build(build)
+
+          expect(args).not_to have_key(:runner_machine_id)
+        end
+      end
+
+      context 'when the build has no job_runtime_environment' do
+        it 'does not include runner_machine_id in args' do
+          args = described_class.args_from_build(build)
+
+          expect(args).not_to have_key(:runner_machine_id)
+        end
+      end
+
+      context 'when the build has a job_runtime_environment but no linked runtime_environment yet' do
+        let_it_be_with_refind(:trigger_only_build) { create(:ci_build, :created, pipeline: pipeline) }
+        let_it_be(:job_runtime_environment_without_env) do
+          create(:ci_job_runtime_environment, build: trigger_only_build, runtime_environment: nil,
+            suspend_on_success: true)
+        end
+
+        it 'does not include runner_machine_id in args' do
+          args = described_class.args_from_build(trigger_only_build)
+
+          expect(args).not_to have_key(:runner_machine_id)
+        end
+      end
+
+      context 'when a sibling job_runtime_environment on the same runtime environment recorded a runner machine' do
+        let_it_be(:suspending_build) { create(:ci_build, pipeline: pipeline) }
+        let_it_be(:suspending_job_runtime_environment) do
+          create(:ci_job_runtime_environment, build: suspending_build, runtime_environment: runtime_environment,
+            runner_machine_id: runner_manager.id)
+        end
+
+        let_it_be(:job_runtime_environment) do
+          create(:ci_job_runtime_environment, build: build, runtime_environment: runtime_environment)
+        end
+
+        it 'includes runner_machine_id set to the recorded value' do
+          args = described_class.args_from_build(build)
+
+          expect(args[:runner_machine_id]).to eq(runner_manager.id)
+        end
+      end
+
+      context 'when no job_runtime_environment on the same runtime environment has recorded a runner machine yet' do
+        let_it_be(:job_runtime_environment) do
+          create(:ci_job_runtime_environment, build: build, runtime_environment: runtime_environment)
+        end
+
+        it 'does not include runner_machine_id in args' do
+          args = described_class.args_from_build(build)
+
+          expect(args).not_to have_key(:runner_machine_id)
+        end
+      end
+    end
   end
 
   describe '.namespace_transfer_params' do

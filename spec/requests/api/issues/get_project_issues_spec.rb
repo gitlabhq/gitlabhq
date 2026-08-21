@@ -200,10 +200,6 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when user is an inherited member from the group' do
-      let!(:open_issue) { create(:issue, project: group_project) }
-      let!(:confidential_issue) { create(:issue, :confidential, project: group_project) }
-      let!(:closed_issue) { create(:issue, state: :closed, project: group_project) }
-
       let!(:api_url) { "/projects/#{group_project.id}/issues" }
 
       context 'and group project is public and issues are private' do
@@ -211,12 +207,20 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           create(:project, :public, issues_access_level: ProjectFeature::PRIVATE, group: group)
         end
 
+        let_it_be(:open_issue) { create(:issue, project: group_project) }
+        let_it_be(:confidential_issue) { create(:issue, :confidential, project: group_project) }
+        let_it_be(:closed_issue) { create(:issue, state: :closed, project: group_project) }
+
         it_behaves_like 'returns project issues without confidential issues for guests'
         it_behaves_like 'returns all project issues for reporters'
       end
 
       context 'and group project is private' do
         let_it_be_with_reload(:group_project) { create(:project, :private, group: group) }
+
+        let_it_be(:open_issue) { create(:issue, project: group_project) }
+        let_it_be(:confidential_issue) { create(:issue, :confidential, project: group_project) }
+        let_it_be(:closed_issue) { create(:issue, state: :closed, project: group_project) }
 
         it_behaves_like 'returns project issues without confidential issues for guests'
         it_behaves_like 'returns all project issues for reporters'
@@ -340,16 +344,18 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'with labeled issues' do
-      let(:issue2) { create :issue, project: project }
-      let(:label_b) { create(:label, title: 'foo', project: project) }
-      let(:label_c) { create(:label, title: 'bar', project: project) }
+      let_it_be(:issue2) { create(:issue, project: project) }
+      let_it_be(:label_b) { create(:label, title: 'foo', project: project) }
+      let_it_be(:label_c) { create(:label, title: 'bar', project: project) }
 
-      before do
+      before_all do
         create(:label_link, label: label, target: issue2)
         create(:label_link, label: label_b, target: issue)
         create(:label_link, label: label_b, target: issue2)
         create(:label_link, label: label_c, target: issue)
+      end
 
+      before do
         get api('/issues', user), params: params
       end
 
@@ -480,7 +486,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'with 2 issues with same created_at' do
-        let!(:closed_issue2) do
+        let_it_be(:closed_issue2) do
           create :closed_issue,
             author: user,
             assignees: [user],
@@ -607,10 +613,10 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'filtering by assignee_username' do
-      let(:another_assignee) { create(:assignee) }
-      let!(:issue1) { create(:issue, author: user2, project: project, created_at: 3.days.ago) }
-      let!(:issue2) { create(:issue, author: user2, project: project, created_at: 2.days.ago) }
-      let!(:issue3) { create(:issue, author: user2, assignees: [assignee, another_assignee], project: project, created_at: 1.day.ago) }
+      let_it_be_with_reload(:another_assignee) { create(:assignee) }
+      let_it_be(:issue1) { create(:issue, author: user2, project: project, created_at: 3.days.ago) }
+      let_it_be(:issue2) { create(:issue, author: user2, project: project, created_at: 2.days.ago) }
+      let_it_be_with_reload(:issue3) { create(:issue, author: user2, assignees: [assignee, another_assignee], project: project, created_at: 1.day.ago) }
 
       it 'returns issues by assignee_username', :aggregate_failures do
         get api("/issues", user), params: { assignee_username: [assignee.username], scope: 'all' }
@@ -861,7 +867,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
     end
 
-    let!(:related_mr) { create_referencing_mr(user, project, issue) }
+    let_it_be(:related_mr) { create_referencing_mr(user, project, issue) }
 
     it_behaves_like 'authorizing granular token permissions', :read_issue_merge_request do
       let(:boundary_object) { project }
@@ -928,7 +934,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'GET /projects/:id/issues/:issue_iid/user_agent_detail' do
-    let!(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
+    let_it_be(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
 
     it_behaves_like 'GET request permissions for admin mode' do
       let(:path) { "/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail" }
@@ -981,7 +987,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'with a confidential note' do
-      let!(:note) do
+      let_it_be(:note) do
         create(
           :note,
           :confidential,
