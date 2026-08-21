@@ -10,7 +10,7 @@ class Projects::DeploymentsController < Projects::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def index
     deployments = environment.deployments.reorder(created_at: :desc)
-    deployments = deployments.where('created_at > ?', params[:after].to_time) if params[:after]&.to_time
+    deployments = deployments.where('created_at > ?', after_param.to_time) if after_param&.to_time
 
     render json: { deployments: DeploymentSerializer.new(project: project)
                                   .represent_concise(deployments) }
@@ -22,12 +22,24 @@ class Projects::DeploymentsController < Projects::ApplicationController
     # association could be used to fetch this record. However, because the
     # IID is defined at the project level, looking up via project is a more
     # efficient query as it can use the unique index on (project_id, iid).
-    @deployment = project.deployments.find_by_iid!(params[:id])
+    @deployment = project.deployments.find_by_iid!(id_param)
   end
 
   private
 
+  def after_param
+    params.permit(:after)[:after]
+  end
+
+  def id_param
+    params.permit(:id)[:id]
+  end
+
+  def environment_id_param
+    params.permit(:environment_id)[:environment_id]
+  end
+
   def environment
-    @environment ||= project.environments.find(params[:environment_id])
+    @environment ||= project.environments.find(environment_id_param)
   end
 end

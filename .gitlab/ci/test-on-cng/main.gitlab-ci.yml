@@ -102,6 +102,7 @@ include:
 .without-coverband:
   before_script:
     - export COVERBAND_ENABLED=false
+    - export BABEL_ENV=
     - !reference [.qa-install, before_script]
     - !reference [.cng-deploy-cmd, script]
     - bundle exec orchestrator metrics start --interval 1
@@ -120,6 +121,13 @@ build-cng-env:
     CNG_ACCESS_TOKEN: $CNG_MIRROR_ACCESS_TOKEN
     CNG_SKIP_REDUNDANT_JOBS: "true"
     GIT_STRATEGY: none
+  before_script:
+    # dotenv from needs outranks job variables, so pick the tag here
+    - |
+      if [[ "$BABEL_ENV" == "istanbul" ]]; then
+        export GLCI_ASSETS_IMAGE_TAG="$GLCI_ISTANBUL_ASSETS_IMAGE_TAG"
+      fi
+    - !reference [.build-cng-env, before_script]
   # when running in backport, override CNG_COMMIT so it defaults to release branch instead
   # this ensures images are built using same stable release branch in CNG repository
   # this is needed in case CNG repository backports some fixes related to specific release
@@ -221,6 +229,7 @@ cng-oauth:
     QA_GITHUB_OAUTH_APP_SECRET: $QA_GITHUB_OAUTH_APP_SECRET
   before_script:
     - export COVERBAND_ENABLED=false
+    - export BABEL_ENV=
     # Install 1Password CLI for GitHub 2FA authentication
     - |
       curl -sSfO https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
@@ -267,3 +276,7 @@ upload-test-runtime-data:
 export-code-paths-mapping:
   extends:
     - .export-code-paths-mapping
+
+export-frontend-code-paths-mapping:
+  extends:
+    - .export-frontend-code-paths-mapping

@@ -42,9 +42,10 @@ class Projects::UploadsController < Projects::ApplicationController
   def find_model
     return @project if @project
 
-    namespace = params[:namespace_id]
-    id = params[:project_id]
+    Project.find_by_full_path("#{project_path_params[:namespace_id]}/#{project_path_params[:project_id]}")
+  end
 
-    Project.find_by_full_path("#{namespace}/#{id}")
+  def project_path_params
+    params.permit(:namespace_id, :project_id)
   end
 end

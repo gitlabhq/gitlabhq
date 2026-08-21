@@ -437,6 +437,10 @@ To set a custom token prefix:
 1. In the **Instance token prefix** field, enter your custom prefix.
 1. Select **Save changes**.
 
+`gl` is a reserved prefix.
+Instances that saved their application settings before GitLab changed the default instance token prefix from `gl` to no prefix still have `gl` stored as the value.
+GitLab now treats a stored `gl` value the same as no prefix, so you cannot set the instance token prefix to `gl`.
+
 ## Limit the lifetime of access tokens
 
 {{< details >}}

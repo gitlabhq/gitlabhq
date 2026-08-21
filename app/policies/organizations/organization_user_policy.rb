@@ -15,7 +15,6 @@ module Organizations
     rule { can?(:update_organization) & ~last_owner }.policy do
       enable :update_organization_user
       enable :delete_organization_user
-      enable :delete_user
     end
   end
 end

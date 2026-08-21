@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Projects::ReleasesController < Projects::ApplicationController
+  ALLOWED_ORDER_BY_VALUES = %w[released_at].freeze
+
   # Authorize
   before_action :require_non_empty_project, except: [:index]
   before_action :release, only: %i[edit show update downloads]
@@ -48,13 +50,17 @@ class Projects::ReleasesController < Projects::ApplicationController
     query_parameters_except_order_by = request.query_parameters.except(:order_by)
 
     redirect_url = project_release_url(@project, @latest_tag)
-    redirect_url += "/#{params[:suffix_path]}" if params[:suffix_path]
+    redirect_url += "/#{suffix_path_param}" if suffix_path_param
     redirect_url += "?#{query_parameters_except_order_by.compact.to_param}" if query_parameters_except_order_by.present?
 
     redirect_to redirect_url
   end
 
   private
+
+  def suffix_path_param
+    params.permit(:suffix_path)[:suffix_path]
+  end
 
   def releases(params = {})
     ReleasesFinder.new(@project, current_user, params).execute
@@ -65,25 +71,33 @@ class Projects::ReleasesController < Projects::ApplicationController
   end
 
   def release
-    @release ||= project.releases.find_by_tag!(params[:tag])
+    @release ||= project.releases.find_by_tag!(tag_param)
   end
 
   def link
-    release.links.find_by_filepath!("/#{params[:filepath]}")
+    release.links.find_by_filepath!("/#{filepath_param}")
   end
 
-  # Default order_by is 'released_at', which is set in ReleasesFinder.
-  # Also if the passed order_by is invalid, we reject and default to 'released_at'.
+  def tag_param
+    params.permit(:tag)[:tag]
+  end
+
+  def filepath_param
+    params.permit(:filepath)[:filepath]
+  end
+
+  # An order_by outside ALLOWED_ORDER_BY_VALUES is dropped so the ReleasesFinder
+  # default ('released_at') applies.
+  def order_by_param
+    params.permit(:order_by)[:order_by].presence_in(ALLOWED_ORDER_BY_VALUES)
+  end
+
   def fetch_latest_tag
-    allowed_values = ['released_at']
-
-    params.reject! { |key, value| key.to_sym == :order_by && !allowed_values.any?(value) }
-
-    @latest_tag = releases(order_by: params[:order_by]).first&.tag
+    @latest_tag = releases(order_by: order_by_param).first&.tag
   end
 
   def validate_suffix_path
-    Gitlab::PathTraversal.check_path_traversal!(params[:suffix_path]) if params[:suffix_path]
+    Gitlab::PathTraversal.check_path_traversal!(suffix_path_param) if suffix_path_param
   end
 
   def internal_url?(redirect_url)

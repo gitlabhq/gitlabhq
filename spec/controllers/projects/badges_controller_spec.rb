@@ -203,6 +203,50 @@ RSpec.describe Projects::BadgesController do
     it_behaves_like 'renders badge irrespective of project access levels', action
   end
 
+  describe 'badge options taken from the request' do
+    before_all { project.add_maintainer(user) }
+
+    before do
+      sign_in(user)
+    end
+
+    it 'passes the coverage thresholds to the coverage badge' do
+      expect(Gitlab::Ci::Badge::Coverage::Report)
+        .to receive(:new).with(project, pipeline.ref, opts: hash_including(min_good: '90'))
+        .and_call_original
+
+      get :coverage, params: {
+        namespace_id: project.namespace.to_param, project_id: project, ref: pipeline.ref, min_good: 90
+      }, format: :svg
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'passes order_by to the release badge' do
+      expect(Gitlab::Ci::Badge::Release::LatestRelease)
+        .to receive(:new).with(project, user, opts: hash_including(order_by: 'released_at'))
+        .and_call_original
+
+      get :release, params: {
+        namespace_id: project.namespace.to_param, project_id: project, order_by: 'released_at'
+      }, format: :svg
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'passes the colours to the custom badge' do
+      expect(Gitlab::Ci::Badge::Custom::CustomBadge)
+        .to receive(:new).with(project, opts: hash_including(value_color: 'blue'))
+        .and_call_original
+
+      get :custom, params: {
+        namespace_id: project.namespace.to_param, project_id: project, value_color: 'blue'
+      }, format: :svg
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
   def get_badge(badge, args = {})
     params = {
       namespace_id: project.namespace.to_param,

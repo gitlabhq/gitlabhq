@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::PlansFinder do
+RSpec.describe Admin::PlansFinder, feature_category: :subscription_management do
   let_it_be(:premium_plan) { create(:plan, name: 'premium') }
   let_it_be(:ultimate_plan) { create(:plan, name: 'ultimate') }
 

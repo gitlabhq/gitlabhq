@@ -163,6 +163,19 @@ RSpec.describe Projects::AutocompleteSourcesController do
           .to raise_error(ActionController::ParameterMissing)
       end
 
+      it 'passes the search param to the participants service' do
+        expect(::Projects::ParticipantsService)
+          .to receive(:new).with(public_project, user, hash_including('search' => 'ali'))
+          .and_call_original
+
+        get :members, format: :json, params: {
+          namespace_id: group.path, project_id: public_project.path,
+          type: issue.class.name, type_id: issue.iid, search: 'ali'
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
       shared_examples 'all members are returned' do
         it 'does not return the all mention user' do
           get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type, type_id: issuable_iid }

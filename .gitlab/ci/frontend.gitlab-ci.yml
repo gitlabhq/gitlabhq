@@ -74,6 +74,34 @@ compile-production-assets as-if-foss:
     - .as-if-foss
     - .qa:rules:test-on-omnibus-ce:follow-up
 
+compile-production-assets istanbul:
+  extends:
+    - compile-production-assets
+    - .frontend:rules:compile-production-assets-istanbul
+  variables:
+    BABEL_ENV: "istanbul"
+    GLCI_ASSETS_TAG_ENV_FILE_PATH: "assets-tag-env-istanbul.env"
+    # Instrumented code is much bigger, so a default build exhausts the pod
+    NO_SOURCEMAPS: "true"
+    NO_COMPRESSION: "true"
+    NO_MINIFY: "true"
+  # The assets caches are shared with plain jobs, so instrumented output stays out
+  cache:
+    - !reference [.ruby-gems-cache]
+    - !reference [.node-modules-cache]
+  after_script:
+    - source scripts/utils.sh
+    - echo "GLCI_ISTANBUL_ASSETS_IMAGE_TAG=$(assets_image_tag)" > $GLCI_ASSETS_TAG_ENV_FILE_PATH
+  # Only the image consumes these assets, and instrumented ones are huge
+  artifacts:
+    name: instrumented-assets
+    expire_in: 7d
+    when: always
+    paths:
+      - ${WEBPACK_COMPILE_LOG_PATH}
+    reports:
+      dotenv: $GLCI_ASSETS_TAG_ENV_FILE_PATH
+
 compile-test-assets:
   extends:
     - .compile-assets-base

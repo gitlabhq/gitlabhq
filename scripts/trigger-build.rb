@@ -257,7 +257,7 @@ module Trigger
 
     def assets_tag_variable
       tag = ENV['GLCI_ASSETS_IMAGE_TAG']
-      return { 'GITLAB_ASSETS_TAG' => tag } unless tag.nil? || tag.empty?
+      return { 'GITLAB_ASSETS_TAG' => tag } unless tag.nil? || tag.empty? || tag.start_with?('$')
 
       logger.warn("No image tag found in GLCI_ASSETS_IMAGE_TAG environment variable, enabling asset compilation in CNG pipeline")
       { 'COMPILE_ASSETS' => 'true' }

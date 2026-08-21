@@ -11,7 +11,8 @@ section_end "install-deps"
 
 section_start "assets-compile" "Compiling frontend assets"
 
-if [[ -s "${GLCI_GITLAB_ASSETS_HASH_FILE}" ]]; then
+# The cached assets are never instrumented, so istanbul builds always recompile
+if [[ -s "${GLCI_GITLAB_ASSETS_HASH_FILE}" ]] && [[ "${BABEL_ENV}" != "istanbul" ]]; then
   echo "Cached assets found, skipping asset compilation!"
 else
   bin/rake gitlab:assets:compile

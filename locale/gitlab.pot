@@ -1364,6 +1364,9 @@ msgstr ""
 msgid "%{percent}%{percentSymbol} complete"
 msgstr ""
 
+msgid "%{permission} information"
+msgstr ""
+
 msgid "%{placeholder} is not a valid color mode"
 msgstr ""
 
@@ -1467,6 +1470,9 @@ msgid "%{resolvedDiscussionsCount} of %{resolvableDiscussionsCount} thread resol
 msgid_plural "%{resolvedDiscussionsCount} of %{resolvableDiscussionsCount} threads resolved"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "%{resource} information"
+msgstr ""
 
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
 msgstr ""
@@ -11960,6 +11966,9 @@ msgstr ""
 msgid "ArtifactRegistry|A permanent, unique identifier used across every Artifact Registry URL and client config file."
 msgstr ""
 
+msgid "ArtifactRegistry|A remote repository points to an external registry. Create a remote repository and connect it to multiple virtual repositories."
+msgstr ""
+
 msgid "ArtifactRegistry|A unified registry for artifacts across all projects and groups in your organization. To get started, choose a registry handle."
 msgstr ""
 
@@ -12110,9 +12119,6 @@ msgstr ""
 msgid "ArtifactRegistry|Could not authenticate with the Artifact Registry service."
 msgstr ""
 
-msgid "ArtifactRegistry|Create hosted repository"
-msgstr ""
-
 msgid "ArtifactRegistry|Create repository"
 msgstr ""
 
@@ -12161,6 +12167,9 @@ msgid "ArtifactRegistry|Edit hosted repository"
 msgstr ""
 
 msgid "ArtifactRegistry|Edit or clear your filters to see more repositories."
+msgstr ""
+
+msgid "ArtifactRegistry|Edit remote repository"
 msgstr ""
 
 msgid "ArtifactRegistry|Edit repository"
@@ -12255,10 +12264,13 @@ msgstr ""
 msgid "ArtifactRegistry|Name cannot be longer than %{maxLength} characters."
 msgstr ""
 
-msgid "ArtifactRegistry|Name is required."
+msgid "ArtifactRegistry|Name must use lowercase letters, digits, periods, underscores, and hyphens, and start and end with a letter or digit."
 msgstr ""
 
-msgid "ArtifactRegistry|Name must use lowercase letters, digits, periods, underscores, and hyphens, and start and end with a letter or digit."
+msgid "ArtifactRegistry|New hosted repository"
+msgstr ""
+
+msgid "ArtifactRegistry|New remote repository"
 msgstr ""
 
 msgid "ArtifactRegistry|New repository"
@@ -12338,6 +12350,9 @@ msgstr ""
 msgid "ArtifactRegistry|Remote"
 msgstr ""
 
+msgid "ArtifactRegistry|Remote repository"
+msgstr ""
+
 msgid "ArtifactRegistry|Repositories"
 msgstr ""
 
@@ -12348,6 +12363,12 @@ msgid "ArtifactRegistry|Repository URL copied to clipboard."
 msgstr ""
 
 msgid "ArtifactRegistry|Repository details"
+msgstr ""
+
+msgid "ArtifactRegistry|Repository name"
+msgstr ""
+
+msgid "ArtifactRegistry|Repository name is required."
 msgstr ""
 
 msgid "ArtifactRegistry|Repository setup"
@@ -96354,9 +96375,6 @@ msgid "my-awesome-group"
 msgstr ""
 
 msgid "my-channel"
-msgstr ""
-
-msgid "my-hosted-repository"
 msgstr ""
 
 msgid "my-topic"

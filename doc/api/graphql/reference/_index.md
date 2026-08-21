@@ -53315,7 +53315,6 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="organizationuserpermissions-adminorganization"></a>`adminOrganization` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_organization` on this resource. |
 | <a id="organizationuserpermissions-deleteorganizationuser"></a>`deleteOrganizationUser` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_organization_user` on this resource. |
-| <a id="organizationuserpermissions-deleteuser"></a>`deleteUser` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_user` on this resource. |
 
 ### `Package`
 

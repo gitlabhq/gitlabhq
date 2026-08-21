@@ -1833,6 +1833,10 @@
     # to avoid the side effect of "never" rules
     - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
+.frontend:rules:compile-production-assets-istanbul:
+  rules:
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
+
 .frontend:rules:compile-test-assets:
   rules:
     - if: '$ENABLE_COMPILE_TEST_ASSETS == "true"'
@@ -2343,6 +2347,13 @@
   CREATE_TEST_FAILURE_ISSUES: "true"
   PROCESS_TEST_RESULTS: "true"
 
+.qa:e2e-cng-schedule-variables: &qa-e2e-cng-schedule-variables
+  <<: *qa-e2e-test-schedule-variables
+  # Only the scheduled run needs the code paths mapping
+  COVERBAND_ENABLED: "true"
+  # Parallel processes share one coverage counter and corrupt it
+  QA_RUN_IN_PARALLEL: "false"
+
 .qa:rules:e2e-schedule-nightly:
   rules:
     - <<: *if-default-branch-schedule-nightly
@@ -2463,13 +2474,13 @@
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
     - !reference [".prevent-tier-1", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
-    - <<: *if-dot-com-gitlab-org-schedule
+    # Only the 2-hourly master run collects the frontend code paths mapping
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
       variables:
-        <<: *qa-e2e-test-schedule-variables
-        # Only the scheduled run needs the code paths mapping
-        COVERBAND_ENABLED: "true"
-        # Parallel processes share one coverage counter and corrupt it
-        QA_RUN_IN_PARALLEL: "false"
+        <<: *qa-e2e-cng-schedule-variables
+        BABEL_ENV: "istanbul"
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables: *qa-e2e-cng-schedule-variables
 
 .qa:rules:e2e:perf-on-cng:
   rules:

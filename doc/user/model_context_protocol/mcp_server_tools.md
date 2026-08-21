@@ -781,6 +781,51 @@ Example:
 Show me the work items in this saved view: <URL>
 ```
 
+## `save_work_item`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605852) in GitLab 19.4.
+
+{{< /history >}}
+
+Creates or updates a GitLab work item, such as an issue, task, or epic. Omit `work_item_iid`
+to create a new work item. Provide `work_item_iid` or a work item URL to update an existing
+one. The tool names `create_work_item` and `update_work_item` are aliases for this tool.
+
+| Parameter          | Type              | Required | Description |
+|--------------------|-------------------|----------|-------------|
+| `url`              | string            | No       | GitLab URL for the project, group, or work item. Provide exactly one of `url`, `project_id`, or `group_id`. |
+| `group_id`         | string            | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
+| `project_id`       | string            | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
+| `work_item_iid`    | integer           | No       | Internal ID of the work item to update. Omit to create a new work item. |
+| `title`            | string            | No       | Title of the work item. Required when creating a work item. |
+| `type_name`        | string            | No       | Work item type name, for example `Issue`, `Task`, or `Epic`. Required when creating a work item. Valid types depend on the namespace and license. |
+| `description`      | string            | No       | Description in GitLab Flavored Markdown. Maximum 1,048,576 characters. |
+| `assignee_ids`     | array of integers | No       | User IDs to assign to the work item. Maximum 100 items. |
+| `label_ids`        | array of strings  | No       | Label IDs or global IDs. Create only; on update use `add_label_ids` or `remove_label_ids`. Maximum 100 items. |
+| `add_label_ids`    | array of strings  | No       | Update only. Label IDs or global IDs to add. Maximum 100 items. |
+| `remove_label_ids` | array of strings  | No       | Update only. Label IDs or global IDs to remove. Maximum 100 items. |
+| `confidential`     | boolean           | No       | Sets the work item confidentiality. |
+| `start_date`       | string            | No       | Start date, in `YYYY-MM-DD` format. |
+| `due_date`         | string            | No       | Due date, in `YYYY-MM-DD` format. |
+| `state`            | string            | No       | Update only. `closed` closes the work item, `opened` reopens it. |
+| `parent_id`        | string            | No       | Global ID or numeric ID of the parent work item. |
+| `todo_action`      | string            | No       | Update only. `add` adds a to-do for the current user, `mark_as_done` marks to-dos as done. |
+| `todo_id`          | string            | No       | Update only. Global ID or numeric ID of the to-do. Omit to update all to-dos on the work item. |
+| `health_status`    | string            | No       | Health status. One of `onTrack`, `needsAttention`, or `atRisk`. Ultimate only. |
+| `weight`           | integer           | No       | Weight of the work item. Must be 0 or greater. Premium and Ultimate only. |
+| `clear_weight`     | boolean           | No       | Update only. Removes the weight. Takes precedence over `weight`. Premium and Ultimate only. |
+| `status_id`        | string            | No       | Global ID of the status to set. Premium and Ultimate only. |
+| `is_fixed`         | boolean           | No       | Whether start and due dates are fixed. When `false`, dates roll up from child items and `start_date` and `due_date` are ignored. Premium and Ultimate only. |
+| `agent_plan`       | string            | No       | Markdown content of the agent plan. Ultimate only. Requires the workplan feature. |
+
+Example:
+
+```plaintext
+Create a task "Update the onboarding guide" in project gitlab-org/gitlab and assign it to me
+```
+
 ## `search`
 
 {{< history >}}

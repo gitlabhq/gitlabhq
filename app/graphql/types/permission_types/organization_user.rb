@@ -5,7 +5,7 @@ module Types
     class OrganizationUser < BasePermissionType
       graphql_name 'OrganizationUserPermissions'
 
-      abilities :delete_organization_user, :delete_user, :admin_organization
+      abilities :delete_organization_user, :admin_organization
 
       def admin_organization
         Ability.allowed?(context[:current_user], :update_organization, object)

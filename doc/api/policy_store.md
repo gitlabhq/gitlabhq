@@ -226,6 +226,10 @@ Each entry has the following attributes:
 | `type`    | string         | Yes      | For a rule, one of the IDs returned by [List all rule kinds](#list-all-rule-kinds). For an action, one of the IDs returned by [List all actions](#list-all-actions). |
 | `value`   | string or hash | No       | What the entry acts on. A `custom` rule takes Rego source as a string. A `calendar` or `environment` rule takes a hash, as does every action. |
 
+An entry cannot be blank.
+A blank entry returns `400 Bad Request`, and the error names each blank position,
+for example `rules[0] is blank`.
+
 A request replaces the whole array.
 You cannot add or remove a single entry.
 

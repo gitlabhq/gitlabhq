@@ -29,11 +29,15 @@ module Projects
       end
 
       def evidence
-        release.evidences.find(params[:id])
+        release.evidences.find(id_param)
+      end
+
+      def id_param
+        params.permit(:id)[:id]
       end
 
       def tag_name
-        params[:tag]
+        params.permit(:tag)[:tag]
       end
     end
   end

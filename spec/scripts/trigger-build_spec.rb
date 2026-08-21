@@ -373,6 +373,17 @@ RSpec.describe Trigger, feature_category: :tooling do
             expect(subject.variables['GITLAB_ASSETS_TAG']).to be_nil
           end
         end
+
+        context 'when GLCI_ASSETS_IMAGE_TAG is an unexpanded variable reference' do
+          before do
+            stub_env('GLCI_ASSETS_IMAGE_TAG', '$GLCI_ISTANBUL_ASSETS_IMAGE_TAG')
+          end
+
+          it 'sets COMPILE_ASSETS to true' do
+            expect(subject.variables['COMPILE_ASSETS']).to eq('true')
+            expect(subject.variables['GITLAB_ASSETS_TAG']).to be_nil
+          end
+        end
       end
 
       describe "GITLAB_TAG" do

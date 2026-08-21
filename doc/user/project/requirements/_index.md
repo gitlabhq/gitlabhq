@@ -54,7 +54,7 @@ To create a requirement:
 1. Select **New requirement**.
 1. Enter a title and description and select **New requirement**.
 
-![requirement create view](img/requirement_create_v13_5.png)
+![The requirement form in a right-side panel, where you enter a title and description.](img/requirement_create_v13_5.png)
 
 You can see the newly created requirement at the top of the list, with the requirements
 list being sorted by creation date, in descending order.

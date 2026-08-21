@@ -17,6 +17,7 @@ export default {
   name: 'PersonalAccessTokenResourcesList',
   i18n: {
     toggleCategory: __('Toggle %{category} category'),
+    resourceInformation: __('%{resource} information'),
   },
   components: {
     GlButton,
@@ -93,6 +94,9 @@ export default {
     toggleCategoryLabel(category) {
       return sprintf(this.$options.i18n.toggleCategory, { category: category.name });
     },
+    resourceInformationLabel(resource) {
+      return sprintf(this.$options.i18n.resourceInformation, { resource: resource.name });
+    },
   },
 };
 </script>
@@ -140,13 +144,10 @@ export default {
                 :id="`${scope}-${resource.key}`"
                 name="information-o"
                 class="gl-cursor-pointer"
+                tabindex="0"
+                :aria-label="resourceInformationLabel(resource)"
               />
-              <gl-popover
-                :target="`${scope}-${resource.key}`"
-                triggers="focus"
-                no-fade
-                boundary="viewport"
-              >
+              <gl-popover :target="`${scope}-${resource.key}`" no-fade boundary="viewport">
                 {{ resource.description }}
               </gl-popover>
             </span>

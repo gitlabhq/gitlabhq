@@ -94,11 +94,16 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   end
 
   def update_params
-    params.fetch(:pages_domain, {}).permit(:user_provided_key, :user_provided_certificate, :auto_ssl_enabled)
+    params.permit(pages_domain: [:user_provided_key, :user_provided_certificate, :auto_ssl_enabled])
+      .fetch(:pages_domain, {})
+  end
+
+  def id_param
+    params.permit(:id)[:id]
   end
 
   def domain
-    @domain ||= @project.pages_domains.find_by_domain!(params[:id].to_s)
+    @domain ||= @project.pages_domains.find_by_domain!(id_param.to_s)
   end
 
   def domain_presenter

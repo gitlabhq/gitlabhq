@@ -142,10 +142,4 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
 
     it_behaves_like 'organization owner policy'
   end
-
-  context 'for delete_user policy' do
-    let_it_be(:user_policy) { :delete_user }
-
-    it_behaves_like 'organization owner policy'
-  end
 end

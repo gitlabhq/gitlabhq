@@ -59,6 +59,7 @@ module Mcp
         'list_wiki_pages' => ::Mcp::Tools::Wikis::ListWikiPagesService,
         'save_merge_request_review' => ::Mcp::Tools::MergeRequests::SaveMergeRequestReviewService,
         'save_pipeline' => ::Mcp::Tools::Pipelines::SavePipelineService,
+        'save_work_item' => ::Mcp::Tools::WorkItems::SaveWorkItemService,
         'search_labels' => ::Mcp::Tools::Labels::SearchService
       }.freeze
 

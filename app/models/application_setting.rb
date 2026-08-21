@@ -384,6 +384,15 @@ class ApplicationSetting < ApplicationRecord
     length: { maximum: 20, message: N_('is too long (maximum is %{count} characters)') },
     allow_blank: true
 
+  # In a previous iteration, the default token prefix was 'gl'. To prevent accidentally creating tokens in the form of
+  # 'gl-glpat', the prefix 'gl' is now reserved.
+  validates :instance_token_prefix,
+    exclusion: {
+      in: [Authn::TokenField::PrefixHelper::LEGACY_DEFAULT_PREFIX],
+      message: N_('is reserved and cannot be used')
+    },
+    if: :instance_token_prefix_changed?
+
   validates :commit_email_hostname, format: { with: /\A[^@]+\z/ }
 
   validates :archive_builds_in_seconds,

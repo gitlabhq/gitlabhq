@@ -3008,6 +3008,33 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
     end
   end
 
+  context 'with instance token prefix' do
+    it 'defaults to an empty string' do
+      expect(setting.instance_token_prefix).to eq('')
+    end
+
+    it { is_expected.to allow_value('', 'acme', 'STAGING').for(:instance_token_prefix) }
+    it { is_expected.not_to allow_value('gl').for(:instance_token_prefix) }
+    it { is_expected.not_to allow_value('has-hyphen').for(:instance_token_prefix) }
+    it { is_expected.not_to allow_value('a' * 21).for(:instance_token_prefix) }
+
+    it 'does not block saving other settings while the legacy "gl" value is still persisted' do
+      setting.save!(validate: false) if setting.new_record?
+      setting.update_column(:token_prefixes, setting.token_prefixes.merge('instance_token_prefix' => 'gl'))
+      setting.reload
+
+      expect(setting.instance_token_prefix).to eq('gl')
+      expect { setting.update!(home_page_url: 'https://example.com') }.not_to raise_error
+    end
+
+    it 'allows changing away from a persisted legacy "gl" value' do
+      setting.save!(validate: false) if setting.new_record?
+      setting.update_column(:token_prefixes, setting.token_prefixes.merge('instance_token_prefix' => 'gl'))
+
+      expect { setting.reload.update!(instance_token_prefix: 'acme') }.not_to raise_error
+    end
+  end
+
   describe '.personal_access_tokens_disabled?' do
     it 'is false' do
       expect(setting.personal_access_tokens_disabled?).to be(false)

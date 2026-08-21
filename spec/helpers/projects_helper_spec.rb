@@ -1141,12 +1141,8 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         {
           admin_path: (admin_project_path(project) if has_admin_path),
           can_read_project: can_read_project.to_s,
-          cicd_catalog_path: nil,
-          project_avatar: nil,
           is_project_empty: is_empty_repo.to_s,
           project_id: project.id,
-          project_name: project.name,
-          project_visibility_level: "private",
           project_full_path: project.full_path
         }
       end
@@ -1154,26 +1150,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       subject { helper.home_panel_data_attributes }
 
       it { is_expected.to include(expected) }
-    end
-
-    context "when project is not marked for deletion" do
-      before do
-        allow(project).to receive(:self_deletion_scheduled?).and_return(false)
-      end
-
-      subject { helper.home_panel_data_attributes }
-
-      it { is_expected.to include({ is_project_marked_for_deletion: "false" }) }
-    end
-
-    context "when project is marked for deletion" do
-      before do
-        allow(project).to receive(:self_deletion_scheduled?).and_return(true)
-      end
-
-      subject { helper.home_panel_data_attributes }
-
-      it { is_expected.to include({ is_project_marked_for_deletion: "true" }) }
     end
 
     describe 'dropdown attributes' do

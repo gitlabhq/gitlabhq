@@ -24,7 +24,6 @@ const initHomePanel = () => {
     adminPath,
     canReadProject,
     isProjectEmpty,
-    projectAvatar,
     projectId,
     projectFullPath,
 
@@ -54,20 +53,6 @@ const initHomePanel = () => {
     starCount,
     starred,
     starrersPath,
-
-    // Home Panel Heading
-    projectName,
-    projectVisibilityLevel,
-    isProjectMarkedForDeletion,
-
-    // Compliance Badge
-    complianceFrameworkBadgeColor,
-    complianceFrameworkBadgeName,
-    complianceFrameworkBadgeTitle,
-    hasComplianceFrameworkFeature,
-
-    // CI/CD Catalogue Badge
-    cicdCatalogPath,
   } = container.dataset;
 
   return initVueApp({
@@ -79,7 +64,6 @@ const initHomePanel = () => {
       adminPath,
       canReadProject: parseBoolean(canReadProject),
       isProjectEmpty: parseBoolean(isProjectEmpty),
-      projectAvatar,
       projectId: parseInt(projectId, 10),
       projectFullPath,
 
@@ -100,27 +84,12 @@ const initHomePanel = () => {
       emailsDisabled: parseBoolean(emailsDisabled),
       helpPagePath: notificationHelpPagePath,
       initialNotificationLevel: notificationLevel,
-      noFlip: true,
 
       // Star component
       signInPath,
       starCount: parseInt(starCount, 10) || 0,
       starred: parseBoolean(starred),
       starrersPath,
-
-      // Home Panel Heading
-      projectName,
-      projectVisibilityLevel,
-      isProjectMarkedForDeletion: parseBoolean(isProjectMarkedForDeletion),
-
-      // Compliance Badge
-      complianceFrameworkBadgeColor,
-      complianceFrameworkBadgeName,
-      complianceFrameworkBadgeTitle,
-      hasComplianceFrameworkFeature: parseBoolean(hasComplianceFrameworkFeature),
-
-      // CI/CD Catalogue Badge
-      cicdCatalogPath,
     },
     component: HomePanelApp,
     props: {

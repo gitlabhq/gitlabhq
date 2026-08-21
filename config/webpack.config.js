@@ -70,6 +70,7 @@ const INCREMENTAL_COMPILER_RECORD_HISTORY = IS_DEV_SERVER && !process.env.CI;
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT && process.env.WEBPACK_REPORT !== 'false';
 const WEBPACK_MEMORY_TEST =
   process.env.WEBPACK_MEMORY_TEST && process.env.WEBPACK_MEMORY_TEST !== 'false';
+const NO_MINIFY = process.env.NO_MINIFY && process.env.NO_MINIFY !== 'false';
 let NO_COMPRESSION = process.env.NO_COMPRESSION && process.env.NO_COMPRESSION !== 'false';
 let NO_SOURCEMAPS = process.env.NO_SOURCEMAPS && process.env.NO_SOURCEMAPS !== 'false';
 let NO_HASHED_CHUNKS = process.env.NO_HASHED_CHUNKS && process.env.NO_HASHED_CHUNKS !== 'false';
@@ -512,6 +513,8 @@ module.exports = {
   },
 
   optimization: {
+    // Terser spawns one worker per host CPU, outside the node heap limit
+    minimize: IS_PRODUCTION && !NO_MINIFY,
     // Replace 'hashed' with 'deterministic' in webpack 5
     moduleIds: 'hashed',
     chunkIds: 'named', // at least makes named chunks stable,
