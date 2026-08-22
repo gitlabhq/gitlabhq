@@ -3,12 +3,16 @@ query getMergeRequest(
   $fullPath: ID!
   $iid: String!
   $includeDiffs: Boolean = false
+  $includeDiffFiles: Boolean = false
+  $includeDiffPatches: Boolean = false
   $includeCommits: Boolean = false
   $includeNotes: Boolean = false
   $includePipelines: Boolean = false
   $includeDiscussions: Boolean = false
   $notesAfter: String
   $notesFirst: Int
+  $diffsAfter: String
+  $diffsFirst: Int
 ) {
   project(fullPath: $fullPath) {
     id
@@ -37,10 +41,29 @@ query getMergeRequest(
         changes
         fileCount
       }
-      diffStats @include(if: $includeDiffs) {
+      diffStats @include(if: $includeDiffFiles) {
         path
         additions
         deletions
+      }
+      diffs(first: $diffsFirst, after: $diffsAfter, expanded: true)
+        @include(if: $includeDiffPatches) {
+        nodes {
+          oldPath
+          newPath
+          aMode
+          bMode
+          newFile
+          renamedFile
+          deletedFile
+          collapsed
+          tooLarge
+          diff
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
       }
       commits(first: 100) @include(if: $includeCommits) {
         pageInfo {

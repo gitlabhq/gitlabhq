@@ -47,13 +47,6 @@ module Admin
     end
 
     def run_lfk_backlog_check
-      # Gate scheduling of this net-new worker so it is not enqueued from the web fleet before the
-      # Sidekiq fleet has been updated to know the class during a rolling deploy. Enable after rollout.
-      unless lfk_backlog_diagnostic_enabled?
-        return render json: { error: 'Loose foreign keys backlog diagnostic is not enabled' },
-          status: :service_unavailable
-      end
-
       run_check(:lfk_backlog)
     end
 
@@ -62,10 +55,6 @@ module Admin
     end
 
     private
-
-    def lfk_backlog_diagnostic_enabled?
-      Feature.enabled?(:loose_foreign_keys_backlog_diagnostic, :instance, type: :ops)
-    end
 
     def run_check(check_type)
       worker_class = WORKER_CONFIGS[check_type][:worker]

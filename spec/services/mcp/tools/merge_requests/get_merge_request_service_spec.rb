@@ -58,15 +58,35 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestService, feature_catego
           },
           include: {
             type: 'array',
-            description: 'Associated facets to fetch inline, one per call. diffs returns change ' \
-              'stats only (totals and per-file additions and deletions), not patch text: use the ' \
-              'get_merge_request_diffs tool for patch text and get_merge_request_conflicts for conflicts. ' \
-              'notes supports pagination (notes_after/notes_first).',
+            description: 'Associated facets to fetch inline, one per call. diffs returns aggregate change ' \
+              'stats and a per-file breakdown by default; set detail=full_patch for raw per-file patch ' \
+              'text or detail=none for summary counts only. For conflicts use the ' \
+              'get_merge_request_conflicts tool. notes supports pagination (notes_after/notes_first).',
             items: {
               type: 'string',
               enum: %w[diffs commits notes pipelines discussions]
             },
             maxItems: 1
+          },
+          detail: {
+            type: 'string',
+            description: 'Level of diff detail, applies only when diffs is in include. ' \
+              'none: summary counts only; stats: per-file additions and deletions (default); ' \
+              'full_patch: per-file patch text (raw diff), plus the per-file stats.',
+            enum: %w[none stats full_patch]
+          },
+          diffs_after: {
+            type: 'string',
+            description: 'Cursor for forward pagination of diffs. ' \
+              'Use pageInfo.endCursor from a previous response. ' \
+              'Applies only when diffs is in include and detail is full_patch.'
+          },
+          diffs_first: {
+            type: 'integer',
+            description: 'Number of files to return after the cursor (max 100). ' \
+              'Applies only when diffs is in include and detail is full_patch.',
+            minimum: 1,
+            maximum: 100
           },
           notes_after: {
             type: 'string',

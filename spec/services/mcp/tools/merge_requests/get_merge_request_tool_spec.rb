@@ -87,6 +87,65 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
       end
     end
 
+    context 'when diffs are requested without detail' do
+      let(:params) { super().merge(include: ['diffs']) }
+
+      it 'includes the diff summary and per-file breakdown but not patch text', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables[:includeDiffs]).to be(true)
+        expect(variables[:includeDiffFiles]).to be(true)
+        expect(variables[:includeDiffPatches]).to be(false)
+      end
+    end
+
+    context 'when diffs are requested with detail none' do
+      let(:params) { super().merge(include: ['diffs'], detail: 'none') }
+
+      it 'includes the diff summary but not the per-file breakdown', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables[:includeDiffs]).to be(true)
+        expect(variables[:includeDiffFiles]).to be(false)
+        expect(variables[:includeDiffPatches]).to be(false)
+      end
+    end
+
+    context 'when diffs are requested with detail stats' do
+      let(:params) { super().merge(include: ['diffs'], detail: 'stats') }
+
+      it 'includes both the diff summary and the per-file breakdown', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables[:includeDiffs]).to be(true)
+        expect(variables[:includeDiffFiles]).to be(true)
+        expect(variables[:includeDiffPatches]).to be(false)
+      end
+    end
+
+    context 'when diffs are requested with detail full_patch' do
+      let(:params) { super().merge(include: ['diffs'], detail: 'full_patch') }
+
+      it 'includes the summary, per-file breakdown, and patch text', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables[:includeDiffs]).to be(true)
+        expect(variables[:includeDiffFiles]).to be(true)
+        expect(variables[:includeDiffPatches]).to be(true)
+      end
+    end
+
+    context 'when detail full_patch is set but diffs are not included' do
+      let(:params) { super().merge(detail: 'full_patch') }
+
+      it 'does not enable patch text or the per-file breakdown', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables[:includeDiffFiles]).to be(false)
+        expect(variables[:includeDiffPatches]).to be(false)
+      end
+    end
+
     context 'when notes pagination parameters are provided' do
       let(:params) { super().merge(include: ['notes'], notes_after: 'cursor1', notes_first: 25) }
 
@@ -95,6 +154,17 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
 
         expect(variables[:notesAfter]).to eq('cursor1')
         expect(variables[:notesFirst]).to eq(25)
+      end
+    end
+
+    context 'when diffs pagination parameters are provided' do
+      let(:params) { super().merge(include: ['diffs'], detail: 'full_patch', diffs_after: 'cursor2', diffs_first: 10) }
+
+      it 'includes them in the GraphQL variables', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables[:diffsAfter]).to eq('cursor2')
+        expect(variables[:diffsFirst]).to eq(10)
       end
     end
   end
@@ -149,6 +219,22 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
         expect(result[:isError]).to be(false)
         expect(result[:structuredContent]['diffStatsSummary']).to have_key('fileCount')
         expect(result[:structuredContent]['diffStats']).to be_an(Array)
+      end
+    end
+
+    context 'when diffs are requested with detail full_patch' do
+      let(:params) { super().merge(include: ['diffs'], detail: 'full_patch') }
+
+      it 'includes per-file patch text', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+        nodes = result[:structuredContent].dig('diffs', 'nodes')
+
+        expect(nodes).to be_an(Array)
+        expect(nodes.first).to have_key('diff')
+        expect(nodes.map { |node| node['diff'] }.join).to include('@@')
+        expect(result[:structuredContent].dig('diffs', 'pageInfo')).to have_key('hasNextPage')
       end
     end
 
