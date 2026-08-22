@@ -294,7 +294,6 @@ variables:
   RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
   RSPEC_PROFILING_FOLDER_PATH: rspec/profiling
   RSPEC_AUTO_EXPLAIN_LOG_PATH: auto_explain/auto_explain.ndjson.gz
-  RUBYOPT: "--yjit"
   TMP_TEST_FOLDER: ${CI_PROJECT_DIR}/tmp/tests
   GLCI_CACHED_SERVICES_FOLDER: ${CI_PROJECT_DIR}/tmp/services
   GLCI_GITLAB_ASSETS_HASH_FILE: cached-assets-hash.txt

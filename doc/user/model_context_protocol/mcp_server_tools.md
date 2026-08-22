@@ -677,6 +677,40 @@ Examples:
   Delete pipeline 12345 in project gitlab-org/gitlab
   ```
 
+## `get_work_item`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605882) in GitLab 19.4.
+
+{{< /history >}}
+
+Retrieves a single work item (issue, epic, task, incident, objective, or key result) with its
+type, dates, assignees, labels, milestone, and parent. Optionally includes its notes or the
+merge requests related to it. Widgets the work item type does not support are omitted.
+
+| Parameter                       | Type    | Required | Description |
+|---------------------------------|---------|----------|-------------|
+| `url`                           | string  | No       | GitLab URL of the work item (a `/-/work_items/` URL). Provide this, or `work_item_iid` with `group_id` or `project_id`. |
+| `group_id`                      | string  | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
+| `project_id`                    | string  | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
+| `work_item_iid`                 | integer | No       | Internal ID of the work item. Required if `url` is missing. |
+| `include`                       | array   | No       | Associated data to return. One of `notes` or `related_merge_requests`, one facet per call. |
+| `related_merge_requests_first`  | integer | No       | Number of related merge requests to return. Default 20, maximum 100. |
+| `related_merge_requests_after`  | string  | No       | Cursor for forward pagination of related merge requests. |
+| `mr_page_size`                  | integer | No       | Deprecated: use `related_merge_requests_first` instead. |
+| `mr_pagination_cursor`          | string  | No       | Deprecated: use `related_merge_requests_after` instead. |
+
+The `notes` facet returns the first 100 notes. Use `get_workitem_notes` for full note
+pagination. The `related_merge_requests` facet is empty for group-level work items such
+as epics.
+
+Example:
+
+```plaintext
+Get issue 42 in project gitlab-org/gitlab with its related merge requests
+```
+
 ## `create_workitem_note`
 
 {{< history >}}

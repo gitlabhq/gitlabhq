@@ -52,6 +52,7 @@ module Mcp
         'get_repository_file' => ::Mcp::Tools::Repositories::GetRepositoryFileService,
         'get_pipeline' => ::Mcp::Tools::Pipelines::GetPipelineService,
         'get_saved_view_work_items' => ::Mcp::Tools::WorkItems::GetSavedViewWorkItemsService,
+        'get_work_item' => ::Mcp::Tools::WorkItems::GetWorkItemService,
         'get_workitem_notes' => ::Mcp::Tools::WorkItems::GetWorkItemNotesService,
         'get_work_item_types' => ::Mcp::Tools::WorkItems::GetWorkItemTypesService,
         'link_work_items' => ::Mcp::Tools::WorkItems::LinkWorkItemsService,

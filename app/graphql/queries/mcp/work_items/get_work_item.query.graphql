@@ -1,0 +1,131 @@
+# @feature_category: mcp_server
+query getWorkItem(
+  $id: WorkItemID!
+  $includeNotes: Boolean = false
+  $includeRelatedMergeRequests: Boolean = false
+  $relatedMergeRequestsFirst: Int
+  $relatedMergeRequestsAfter: String
+) {
+  workItem(id: $id) {
+    id
+    iid
+    title
+    description
+    state
+    confidential
+    createdAt
+    updatedAt
+    closedAt
+    webUrl
+    reference(full: true)
+    author {
+      id
+      name
+      username
+      webUrl
+    }
+    namespace {
+      id
+      fullPath
+    }
+    workItemType {
+      id
+      name
+    }
+    widgets {
+      type
+      ... on WorkItemWidgetAssignees {
+        assignees {
+          nodes {
+            id
+            name
+            username
+            webUrl
+          }
+        }
+      }
+      ... on WorkItemWidgetLabels {
+        labels {
+          nodes {
+            id
+            title
+            color
+            description
+          }
+        }
+      }
+      ... on WorkItemWidgetMilestone {
+        milestone {
+          id
+          title
+          dueDate
+          startDate
+        }
+      }
+      ... on WorkItemWidgetStartAndDueDate {
+        dueDate
+        startDate
+      }
+      ... on WorkItemWidgetHierarchy {
+        hasChildren
+        hasParent
+        parent {
+          id
+          iid
+          title
+          webUrl
+        }
+      }
+      ... on WorkItemWidgetNotes @include(if: $includeNotes) {
+        notes(first: 100) {
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+          count
+          nodes {
+            id
+            body
+            internal
+            system
+            systemNoteIconName
+            createdAt
+            updatedAt
+            author {
+              id
+              name
+              username
+              webUrl
+            }
+            discussion {
+              id
+            }
+          }
+        }
+      }
+      ... on WorkItemWidgetDevelopment @include(if: $includeRelatedMergeRequests) {
+        relatedMergeRequests(first: $relatedMergeRequestsFirst, after: $relatedMergeRequestsAfter) {
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+          nodes {
+            id
+            iid
+            title
+            state
+            draft
+            webUrl
+            createdAt
+            mergedAt
+            author {
+              id
+              name
+              username
+            }
+          }
+        }
+      }
+    }
+  }
+}
