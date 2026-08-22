@@ -56,18 +56,21 @@ describe('TransferModal', () => {
       });
     });
 
-    it('renders info alert with correct variant and title', () => {
-      expect(findAlert().props('variant')).toBe('info');
+    it('renders warning alert with correct variant and title', () => {
+      expect(findAlert().props('variant')).toBe('warning');
       expect(findAlert().props('title')).toContain('Transferring this project will:');
     });
 
     it('renders all alert list items', () => {
       const listItems = findAlert().findAll('li');
 
-      expect(listItems).toHaveLength(2);
+      expect(listItems).toHaveLength(3);
       expect(listItems.at(0).text()).toBe('Change its repository URL path.');
       expect(listItems.at(1).text()).toBe(
         'Change its visibility settings to match the new namespace.',
+      );
+      expect(listItems.at(2).text()).toBe(
+        'Permanently delete all secrets stored in GitLab Secrets Manager.',
       );
     });
 

@@ -253,6 +253,12 @@ Subscription restrictions:
 
 - Top-level groups that have a subscription on GitLab.com cannot be transferred. To make the transfer possible, the top-level group's subscription must be removed first. Then, the top-level group can be transferred as a subgroup to another top-level group.
 
+Secrets Manager restrictions:
+
+> [!warning]
+> All secrets in GitLab Secrets Manager for the group, its subgroups, and its projects are
+> [permanently deleted during the transfer](../../ci/secrets/secrets_manager/_index.md#transfer-of-a-project-or-group).
+
 ## Disable email notifications
 
 You can disable all email notifications related to the group, which includes its subgroups and projects.

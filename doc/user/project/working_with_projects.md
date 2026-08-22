@@ -583,6 +583,12 @@ For projects with a security policy:
 
 - The project must not have a security policy. If a security policy is assigned to the project, it is automatically unassigned during the transfer.
 
+For projects that use GitLab Secrets Manager:
+
+> [!warning]
+> All secrets in GitLab Secrets Manager for the group, its subgroups, and its projects are
+> [permanently deleted during the transfer](../../ci/secrets/secrets_manager/_index.md#transfer-of-a-project-or-group).
+
 For projects with name or path conflicts:
 
 - A project cannot be transferred if the destination namespace already contains a project

@@ -63,18 +63,21 @@ describe('TransferModal', () => {
       });
     });
 
-    it('renders info alert with correct variant and title', () => {
-      expect(findAlert().props('variant')).toBe('info');
+    it('renders warning alert with correct variant and title', () => {
+      expect(findAlert().props('variant')).toBe('warning');
       expect(findAlert().props('title')).toContain('Transferring this group will:');
     });
 
     it('renders all alert list items', () => {
       const listItems = findAlert().findAll('li');
 
-      expect(listItems).toHaveLength(2);
+      expect(listItems).toHaveLength(3);
       expect(listItems.at(0).text()).toBe('Change its repository URL paths.');
       expect(listItems.at(1).text()).toBe(
         'Change its visibility settings to match the new parent group.',
+      );
+      expect(listItems.at(2).text()).toBe(
+        'Permanently delete all secrets stored in GitLab Secrets Manager for this group, its subgroups, and its projects.',
       );
     });
 

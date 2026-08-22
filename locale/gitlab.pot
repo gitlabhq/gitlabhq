@@ -9820,6 +9820,9 @@ msgstr ""
 msgid "All required approvals must be given."
 msgstr ""
 
+msgid "All secrets stored in GitLab Secrets Manager are permanently deleted. %{link_start}Learn more.%{link_end}"
+msgstr ""
+
 msgid "All security policy violations must be resolved."
 msgstr ""
 
@@ -39577,6 +39580,9 @@ msgstr ""
 msgid "GroupSettings|Add additional webhook triggers for group access token expiration"
 msgstr ""
 
+msgid "GroupSettings|All secrets stored in GitLab Secrets Manager for this group, its subgroups, and its projects are permanently deleted. %{link_start}Learn more.%{link_end}"
+msgstr ""
+
 msgid "GroupSettings|Allow connection to GitLab"
 msgstr ""
 
@@ -51059,6 +51065,12 @@ msgid "NamespaceTransfer|Change its visibility settings to match the new namespa
 msgstr ""
 
 msgid "NamespaceTransfer|Change its visibility settings to match the new parent group."
+msgstr ""
+
+msgid "NamespaceTransfer|Permanently delete all secrets stored in GitLab Secrets Manager for this group, its subgroups, and its projects."
+msgstr ""
+
+msgid "NamespaceTransfer|Permanently delete all secrets stored in GitLab Secrets Manager."
 msgstr ""
 
 msgid "NamespaceTransfer|Select destination namespace"
