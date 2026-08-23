@@ -16,7 +16,6 @@ export default {
     'app/assets/javascripts/vue_shared/access_tokens/components/access_tokens.vue',
     'app/assets/javascripts/vue_shared/components/customizable_dashboard/extended_dashboard_panel.vue',
     'app/assets/javascripts/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue',
-    'app/assets/javascripts/vue_shared/components/markdown/markdown_editor.vue',
     'app/assets/javascripts/vue_shared/components/project_selector/project_selector.vue',
     'app/assets/javascripts/vue_shared/components/registry/registry_search.vue',
     'app/assets/javascripts/work_items/components/create_work_item.vue',

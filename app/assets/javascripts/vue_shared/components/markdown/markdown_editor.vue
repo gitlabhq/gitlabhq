@@ -415,6 +415,7 @@ export default {
       :storage-key="$options.EDITING_MODE_KEY"
       @input="onEditingModeRestored"
     />
+    <!-- eslint-disable vue/v-on-event-hyphenation -- GlAlert emits the camelCase `primaryAction` and `secondaryAction` events -->
     <gl-alert
       v-if="alert"
       class="gl-mb-4"
@@ -427,6 +428,7 @@ export default {
     >
       {{ alert.message }}
     </gl-alert>
+    <!-- eslint-enable vue/v-on-event-hyphenation -->
     <markdown-field
       v-if="!isContentEditorActive"
       ref="markdownField"
