@@ -14794,15 +14794,35 @@
             },
             {
               "name": "flowTrigger",
-              "description": "Trigger associated with the configured catalog item.",
+              "description": "Trigger associated with the configured catalog item. Deprecated in GitLab 19.4: Use `flowTriggers`.",
               "args": [],
               "type": {
                 "kind": "OBJECT",
                 "name": "AiFlowTriggerType",
                 "ofType": null
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use `flowTriggers`. Deprecated in GitLab 19.4."
+            },
+            {
+              "name": "flowTriggers",
+              "description": "Triggers associated with the configured catalog item. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AiFlowTriggerType",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "group",
@@ -89498,6 +89518,29 @@
             {
               "name": "BASE64",
               "description": "Base64 encoding.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "CommitOrder",
+          "description": "Ordering strategy for a list of commits. Defaults to reverse chronological when omitted.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "TOPO",
+              "description": "Topological order: children are shown before their parents.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DATE",
+              "description": "Date order: commits are shown strictly by commit date.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -361322,6 +361365,30 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "firstParent",
+                  "description": "Follow only the first parent of merge commits.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "order",
+                  "description": "Order the commits are returned in. Defaults to reverse chronological.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "CommitOrder",
                     "ofType": null
                   },
                   "defaultValue": null,

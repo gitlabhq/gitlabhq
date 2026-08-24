@@ -16,6 +16,7 @@ module Gitlab
       instrument_redis(payload)
       instrument_elasticsearch(payload)
       instrument_zoekt(payload)
+      instrument_openbao(payload)
       instrument_throttle(payload)
       instrument_active_record(payload)
       instrument_external_http(payload)
@@ -73,6 +74,17 @@ module Gitlab
 
       payload[:zoekt_calls] = zoekt_calls
       payload[:zoekt_duration_s] = Gitlab::Instrumentation::Zoekt.query_time
+    end
+
+    def instrument_openbao(payload)
+      # OpenBao is only reachable from EE, but nothing the instrumentation
+      # touches lives in EE.
+      openbao_calls = Gitlab::Instrumentation::Openbao.get_request_count
+
+      return if openbao_calls == 0
+
+      payload[:openbao_calls] = openbao_calls
+      payload[:openbao_duration_s] = Gitlab::Instrumentation::Openbao.query_time
     end
 
     def instrument_external_http(payload)

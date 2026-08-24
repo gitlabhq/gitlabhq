@@ -11,8 +11,6 @@ RSpec.describe 'projects/tags/index.html.haml', feature_category: :source_code_m
     create(:release, project: project, sha: git_tag.target_commit.sha, tag: 'v1.1.0')
   end
 
-  let(:pipeline) { create(:ci_pipeline, :success, project: project, ref: git_tag.name, sha: release.sha) }
-
   before do
     assign(:project, project)
     assign(:repository, project.repository)

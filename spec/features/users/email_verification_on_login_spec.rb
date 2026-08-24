@@ -6,7 +6,6 @@ RSpec.describe 'Email Verification On Login', :with_current_organization, :clean
   include EmailHelpers
 
   let(:user) { create(:user) }
-  let(:current_organization) { user.organization }
   let(:email_verification_required) { true }
 
   before do

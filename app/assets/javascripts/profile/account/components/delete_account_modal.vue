@@ -1,11 +1,12 @@
 <script>
-import { GlModal, GlSprintf } from '@gitlab/ui';
+import { GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { __, s__ } from '~/locale';
 
 export default {
   name: 'DeleteAccountModal',
   components: {
+    GlFormInput,
     GlModal,
     GlSprintf,
   },
@@ -117,20 +118,20 @@ Once you confirm %{strongStart}Delete account%{strongEnd}, your account cannot b
         </gl-sprintf>
       </p>
 
-      <input
+      <gl-form-input
         v-if="confirmWithPassword"
         v-model="enteredPassword"
         name="password"
-        class="form-control"
+        class="gl-w-full"
         type="password"
         data-testid="password-confirmation-field"
         aria-labelledby="input-label"
       />
-      <input
+      <gl-form-input
         v-else
         v-model="enteredUsername"
         name="username"
-        class="form-control"
+        class="gl-w-full"
         type="text"
         data-testid="username-confirmation-field"
         aria-labelledby="input-label"

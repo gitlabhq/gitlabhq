@@ -7,8 +7,6 @@ RSpec.describe 'admin/sessions/new.html.haml', feature_category: :system_access 
 
   let(:user) { create(:admin) }
 
-  let(:page) { rendered_html }
-
   before do
     disable_all_signin_methods
 
@@ -60,10 +58,6 @@ RSpec.describe 'admin/sessions/new.html.haml', feature_category: :system_access 
 
     context 'when step-up auth config is set' do
       let(:oidc_step_up_auth_options) { build(:omniauth_provider_config) }
-
-      let(:oidc_step_up_auth_options_without_params) do
-        build(:omniauth_provider_config, step_up_auth_params: nil)
-      end
 
       before do
         stub_omniauth_setting(enabled: true, providers: [oidc_step_up_auth_options])

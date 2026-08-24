@@ -9,7 +9,7 @@
     = render RapidDiffs::DiffFileHeaderComponent.new(diff_file:, additional_menu_items:) do |header_instance|
       - header_instance.with_before_file_menu do
         - if show_viewed_toggle?
-          .rd-viewed-toggle
+          .rd-viewed-toggle.has-tooltip{ title: viewed_checkbox_tooltip, data: { html: 'true' } }
             = render Pajamas::CheckboxTagComponent.new(name: viewed_checkbox_id, checkbox_options: { disabled: true, data: { click: 'toggleViewed', viewed_checkbox: '' } }) do |checkbox|
               - checkbox.with_label do
                 = _('Viewed')

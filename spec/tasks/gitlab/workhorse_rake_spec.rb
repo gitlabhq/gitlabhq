@@ -10,7 +10,6 @@ RSpec.describe 'gitlab:workhorse namespace rake task', :silence_stdout, feature_
   describe 'install' do
     let(:repo) { 'https://gitlab.com/gitlab-org/gitlab-workhorse.git' }
     let(:clone_path) { Dir.mktmpdir('gitlab:workhorse:install-rake-test') }
-    let(:workhorse_source) { Rails.root.join('workhorse').to_s }
 
     after do
       FileUtils.rm_rf(clone_path)

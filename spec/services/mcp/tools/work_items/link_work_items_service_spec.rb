@@ -13,7 +13,6 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsService, feature_category: :m
   let(:service) { described_class.new(name: 'link_work_items') }
   let(:request) { instance_double(ActionDispatch::Request) }
   let(:target_gid) { target_work_item.to_global_id.to_s }
-  let(:group_work_item_gid) { group_work_item.to_global_id.to_s }
 
   before_all do
     project.add_developer(user)

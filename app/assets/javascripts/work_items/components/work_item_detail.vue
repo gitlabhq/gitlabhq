@@ -206,12 +206,10 @@ export default {
     'add-child',
     'attributes-updated',
     'deleteWorkItem',
-    'promotedToObjective',
     'work-item-emoji-updated',
     'work-item-updated',
     'work-item-state-updated',
     'work-item-type-changed',
-    'workItemUpdated',
   ],
   data() {
     return {
@@ -677,16 +675,13 @@ export default {
         .then(
           ({
             data: {
-              workItemUpdate: { errors, workItem },
+              workItemUpdate: { errors },
             },
           }) => {
             if (errors?.length) {
               throw new Error(errors[0]);
             }
 
-            this.$emit('workItemUpdated', {
-              confidential: workItem?.confidential,
-            });
             toast(this.confidentialityToggledText);
           },
         )
@@ -1080,7 +1075,6 @@ export default {
               @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
               @toggleWorkItemConfidentiality="toggleConfidentiality"
               @error="updateError = $event"
-              @promotedToObjective="$emit('promotedToObjective', iid)"
               @work-item-state-updated="$emit('work-item-state-updated')"
               @work-item-type-changed="workItemTypeChanged"
               @toggleReportAbuseModal="toggleReportAbuseModal"

@@ -347,6 +347,28 @@ describe('Create work item component', () => {
     );
   });
 
+  describe('confidentiality', () => {
+    it('seeds the new work item as confidential when the confidential prop is set', async () => {
+      createComponent({ props: { confidential: true } });
+      await resolveAll();
+
+      expect(findConfidentialCheckbox().props('checked')).toBe(true);
+      expect(setNewWorkItemCache).toHaveBeenCalledWith(
+        expect.objectContaining({ confidential: true }),
+      );
+    });
+
+    it('does not seed the new work item as confidential by default', async () => {
+      createComponent();
+      await resolveAll();
+
+      expect(findConfidentialCheckbox().props('checked')).toBe(false);
+      expect(setNewWorkItemCache).toHaveBeenCalledWith(
+        expect.objectContaining({ confidential: false }),
+      );
+    });
+  });
+
   describe('When there is no work item type', () => {
     beforeEach(async () => {
       createComponent({ props: { preselectedWorkItemType: null } });

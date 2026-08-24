@@ -20,7 +20,6 @@ RSpec.describe Mutations::Ci::JobTokenScope::RemoveProject, feature_category: :c
     end
 
     let(:target_project_path) { target_project.full_path }
-    let(:links_relation) { Ci::JobToken::ProjectScopeLink.with_source(project).with_target(target_project) }
 
     subject do
       mutation.resolve(project_path: project.full_path, target_project_path: target_project_path)

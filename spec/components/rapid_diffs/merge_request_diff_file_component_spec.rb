@@ -147,6 +147,7 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
 
   describe 'viewed toggle' do
     let(:code_review_id) { 'abc123def456' }
+    let(:hint_tooltip) { "Viewed by me <kbd class='flat gl-ml-1' aria-hidden=true>v</kbd>" }
 
     before do
       allow(diff_file).to receive(:code_review_id).and_return(code_review_id)
@@ -157,6 +158,48 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
 
       expect(page).to have_css('[data-viewed-checkbox]')
       expect(page).to have_text('Viewed')
+    end
+
+    it 'renders the html shortcut-hint tooltip on the visible toggle wrapper' do
+      render_component
+
+      wrapper = page.find('.rd-viewed-toggle')
+      expect(wrapper[:class]).to include('has-tooltip')
+      expect(wrapper['data-html']).to eq('true')
+      expect(wrapper[:title]).to eq(hint_tooltip)
+    end
+
+    it 'does not put the tooltip on the hidden checkbox input' do
+      render_component
+
+      expect(page.find('[data-viewed-checkbox]')[:class]).not_to include('has-tooltip')
+      expect(page.find('[data-viewed-checkbox]')[:title]).to be_blank
+    end
+
+    context 'when the user has keyboard shortcuts disabled' do
+      let(:user) { build_stubbed(:user, keyboard_shortcuts_enabled: false) }
+
+      before do
+        allow(vc_test_controller).to receive(:current_user).and_return(user)
+      end
+
+      it 'renders a plain-text tooltip without the shortcut hint' do
+        render_component
+
+        expect(page.find('.rd-viewed-toggle')[:title]).to eq('Viewed by me')
+      end
+    end
+
+    context 'when there is no current user' do
+      before do
+        allow(vc_test_controller).to receive(:current_user).and_return(nil)
+      end
+
+      it 'renders the shortcut-hint tooltip' do
+        render_component
+
+        expect(page.find('.rd-viewed-toggle')[:title]).to eq(hint_tooltip)
+      end
     end
 
     it 'renders checkbox with correct id' do

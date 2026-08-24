@@ -184,6 +184,11 @@ export default {
       required: false,
       default: false,
     },
+    confidential: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     creationContext: {
       type: String,
       required: true,
@@ -294,6 +299,7 @@ export default {
     return {
       isTitleValid: true,
       isConfidential:
+        this.confidential ||
         Boolean(getParameterByName('vulnerability_id')) ||
         parseBoolean(getParameterByName('issue[confidential]')),
       isRelatedToItem: true,

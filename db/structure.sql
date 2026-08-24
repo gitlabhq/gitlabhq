@@ -4348,6 +4348,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_965022e69ca9() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "bulk_import_export_upload_uploads"
+  WHERE "bulk_import_export_upload_uploads"."id" = NEW."bulk_import_export_upload_upload_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_9699ea03bb37() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -16227,12 +16243,14 @@ CREATE TABLE bulk_import_export_upload_upload_states (
     verification_retry_at timestamp with time zone,
     verified_at timestamp with time zone,
     bulk_import_export_upload_upload_id bigint NOT NULL,
-    project_id bigint NOT NULL,
+    project_id bigint,
     verification_state smallint DEFAULT 0 NOT NULL,
     verification_retry_count smallint DEFAULT 0 NOT NULL,
     verification_checksum bytea,
     verification_failure text,
-    CONSTRAINT check_318f88ee90 CHECK ((char_length(verification_failure) <= 255))
+    namespace_id bigint,
+    CONSTRAINT check_318f88ee90 CHECK ((char_length(verification_failure) <= 255)),
+    CONSTRAINT check_edce9d32e7 CHECK ((num_nonnulls(namespace_id, project_id) = 1))
 );
 
 CREATE SEQUENCE bulk_import_export_upload_upload_states_id_seq
@@ -46960,6 +46978,8 @@ CREATE INDEX index_bulk_import_export_batches_on_group_id ON bulk_import_export_
 
 CREATE INDEX index_bulk_import_export_batches_on_project_id ON bulk_import_export_batches USING btree (project_id);
 
+CREATE INDEX index_bulk_import_export_upload_upload_states_on_namespace_id ON bulk_import_export_upload_upload_states USING btree (namespace_id);
+
 CREATE INDEX index_bulk_import_export_upload_upload_states_on_project_id ON bulk_import_export_upload_upload_states USING btree (project_id);
 
 CREATE INDEX index_bulk_import_export_uploads_on_export_id ON bulk_import_export_uploads USING btree (export_id);
@@ -56414,6 +56434,8 @@ CREATE TRIGGER trigger_951ac22c24d7 BEFORE INSERT OR UPDATE ON required_code_own
 
 CREATE TRIGGER trigger_96298f7da5d3 BEFORE INSERT OR UPDATE ON protected_branch_unprotect_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_96298f7da5d3();
 
+CREATE TRIGGER trigger_965022e69ca9 BEFORE INSERT OR UPDATE ON bulk_import_export_upload_upload_states FOR EACH ROW EXECUTE FUNCTION trigger_965022e69ca9();
+
 CREATE TRIGGER trigger_9699ea03bb37 BEFORE INSERT OR UPDATE ON related_epic_links FOR EACH ROW EXECUTE FUNCTION trigger_9699ea03bb37();
 
 CREATE TRIGGER trigger_96a76ee9f147 BEFORE INSERT OR UPDATE ON design_management_versions FOR EACH ROW EXECUTE FUNCTION trigger_96a76ee9f147();
@@ -58913,6 +58935,9 @@ ALTER TABLE ONLY merge_request_merge_schedules
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_a6963e8447 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY bulk_import_export_upload_upload_states
+    ADD CONSTRAINT fk_a6ed564b23 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cd_deployment_transitions
     ADD CONSTRAINT fk_a7149bdef2 FOREIGN KEY (deployment_id) REFERENCES cd_deployments(id) ON DELETE CASCADE;

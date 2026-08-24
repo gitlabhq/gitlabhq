@@ -1411,7 +1411,11 @@
   - 1
 - - vulnerabilities_process_group_archived_events
   - 1
+- - vulnerabilities_process_organization_transfer_event
+  - 1
 - - vulnerabilities_process_transfer_events
+  - 1
+- - vulnerabilities_reindex_project_vulnerabilities
   - 1
 - - vulnerabilities_remove_all_vulnerabilities
   - 1

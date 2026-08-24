@@ -10309,9 +10309,6 @@ msgstr ""
 msgid "An error in reporting in which a test result incorrectly indicates the presence of a vulnerability in a system when the vulnerability is not present."
 msgstr ""
 
-msgid "An error occured fetching failed jobs count"
-msgstr ""
-
 msgid "An error occured when subscribing to the comment temperature updates. Please try again."
 msgstr ""
 
@@ -10328,6 +10325,9 @@ msgid "An error occurred deleting the group. Please refresh the page to try agai
 msgstr ""
 
 msgid "An error occurred editing the blob"
+msgstr ""
+
+msgid "An error occurred fetching failed jobs count"
 msgstr ""
 
 msgid "An error occurred fetching the approval rules."
@@ -23272,6 +23272,9 @@ msgstr ""
 msgid "ContinuousDeployment|All types"
 msgstr ""
 
+msgid "ContinuousDeployment|Application"
+msgstr ""
+
 msgid "ContinuousDeployment|Application identity"
 msgstr ""
 
@@ -23389,6 +23392,9 @@ msgstr ""
 msgid "ContinuousDeployment|Deployed"
 msgstr ""
 
+msgid "ContinuousDeployment|Deployed applications"
+msgstr ""
+
 msgid "ContinuousDeployment|Deploying"
 msgstr ""
 
@@ -23462,6 +23468,9 @@ msgid "ContinuousDeployment|Failed to delete the link. Try again later."
 msgstr ""
 
 msgid "ContinuousDeployment|Failed to load GitLab agents. Refresh the page to try again."
+msgstr ""
+
+msgid "ContinuousDeployment|Failed to load deployed applications. Please try again later."
 msgstr ""
 
 msgid "ContinuousDeployment|Failed to load deployments. Reload to try again."
@@ -23561,6 +23570,9 @@ msgid "ContinuousDeployment|Name is required."
 msgstr ""
 
 msgid "ContinuousDeployment|New application"
+msgstr ""
+
+msgid "ContinuousDeployment|No applications are deployed to this environment."
 msgstr ""
 
 msgid "ContinuousDeployment|No applications match your filters"

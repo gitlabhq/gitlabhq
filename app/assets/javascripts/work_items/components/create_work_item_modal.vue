@@ -48,6 +48,11 @@ export default {
       required: false,
       default: false,
     },
+    confidential: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     creationContext: {
       type: String,
       required: true,
@@ -426,6 +431,7 @@ export default {
       <create-work-item
         :always-show-work-item-type-select="alwaysShowWorkItemTypeSelect"
         :creation-context="creationContext"
+        :confidential="confidential"
         :description="description"
         :full-path="fullPath"
         hide-form-title

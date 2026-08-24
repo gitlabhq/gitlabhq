@@ -20,7 +20,6 @@ RSpec.describe Mutations::Ci::JobTokenScope::RemoveGroup, feature_category: :con
     end
 
     let(:target_group_path) { target_group.full_path }
-    let(:links_relation) { Ci::JobToken::GroupScopeLink.with_source(project).with_target(target_group) }
 
     subject(:resolver) do
       mutation.resolve(project_path: project.full_path, target_group_path: target_group_path)

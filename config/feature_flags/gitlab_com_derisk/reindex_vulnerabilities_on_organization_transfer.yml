@@ -1,0 +1,10 @@
+---
+name: reindex_vulnerabilities_on_organization_transfer
+description: Re-indexes a transferred group's vulnerabilities in Elasticsearch when the group moves to a different organization, keeping the organization security dashboard scoping correct. Gated so enqueuing of the new worker only begins once it is fully deployed to Sidekiq.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605425
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250128
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/617186
+milestone: '19.4'
+group: group::vulnerability management
+type: gitlab_com_derisk
+default_enabled: false

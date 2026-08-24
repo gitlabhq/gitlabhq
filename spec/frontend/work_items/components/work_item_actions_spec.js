@@ -639,7 +639,6 @@ describe('WorkItemActions component', () => {
       it('promotes key result to objective', () => {
         expect(convertWorkItemMutationSuccessHandler).toHaveBeenCalled();
         expect($toast.show).toHaveBeenCalledWith('Promoted to objective.');
-        expect(wrapper.emitted('promotedToObjective')).toEqual([[]]);
       });
     });
 

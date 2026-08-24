@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'gitlab:git rake tasks', :silence_stdout do
-  let(:base_path) { 'tmp/tests/default_storage' }
   let!(:project) { create(:project, :repository) }
 
   before do

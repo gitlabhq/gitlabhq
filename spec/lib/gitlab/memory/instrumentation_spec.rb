@@ -34,8 +34,6 @@ RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :durability_me
   end
 
   describe '.with_memory_allocations' do
-    let(:ntimes) { 100 }
-
     subject do
       described_class.with_memory_allocations do
         Array.new(1000).map { '0' * 1000 }

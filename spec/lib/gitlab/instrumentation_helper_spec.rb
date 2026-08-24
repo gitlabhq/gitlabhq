@@ -92,6 +92,28 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
       end
     end
 
+    context 'when OpenBao calls are made' do
+      it 'adds the call count and duration to the payload' do
+        Gitlab::Instrumentation::Openbao.add_call(
+          duration: 0.25, path: 'sys/mounts/some_mount', method: :post, outcome: :success
+        )
+
+        subject
+
+        expect(payload[:openbao_calls]).to eq(1)
+        expect(payload[:openbao_duration_s]).to eq(0.25)
+      end
+    end
+
+    context 'when no OpenBao calls are made' do
+      it 'does not add the keys to the payload' do
+        subject
+
+        expect(payload).not_to have_key(:openbao_calls)
+        expect(payload).not_to have_key(:openbao_duration_s)
+      end
+    end
+
     context 'when LDAP requests are made' do
       let(:provider) { 'ldapmain' }
       let(:adapter) { Gitlab::Auth::Ldap::Adapter.new(provider) }

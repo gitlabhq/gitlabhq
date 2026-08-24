@@ -64,6 +64,7 @@ query getPipelineJobs($fullPath: ID!, $iid: ID!, $after: String) {
             readBuild
             readJobArtifacts
             updateBuild
+            cancelBuild
           }
         }
       }

@@ -503,6 +503,7 @@ module API
 
         result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute do |user|
           user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user
+          user.skip_enterprise_user_email_change_restrictions!
         end
 
         if result[:status] == :success

@@ -14,7 +14,6 @@ RSpec.describe Mutations::Ci::Runner::Update, feature_category: :runner_core do
   end
 
   let(:current_ctx) { { current_user: user } }
-  let(:mutated_runner) { response[:runner] }
 
   let(:mutation_params) do
     {

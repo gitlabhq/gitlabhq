@@ -247,6 +247,9 @@ export default {
     alwaysShowWorkItemTypeSelect() {
       return this.preselectedWorkItemType !== WORK_ITEM_TYPE_NAME_EPIC;
     },
+    inheritedConfidential() {
+      return this.queryVariables.confidential === true;
+    },
   },
   watch: {
     updatedWorkItem(workItem) {
@@ -848,6 +851,7 @@ export default {
       visible
       hide-button
       :always-show-work-item-type-select="alwaysShowWorkItemTypeSelect"
+      :confidential="inheritedConfidential"
       :creation-context="$options.CREATION_CONTEXT_BOARD"
       :full-path="rootPageFullPath"
       :is-group="queryVariables.isGroup"

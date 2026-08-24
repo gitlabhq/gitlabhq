@@ -1,4 +1,5 @@
-import { GlModal, GlSprintf } from '@gitlab/ui';
+import { GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import DeleteAccountModal from '~/profile/account/components/delete_account_modal.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
@@ -16,12 +17,13 @@ describe('DeleteAccountModal component', () => {
         confirmWithPassword,
         delayUserAccountSelfDeletion,
       },
-      stubs: { GlSprintf },
+      stubs: { GlFormInput: false, GlSprintf },
     });
   };
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findForm = () => wrapper.find('form');
+  const findConfirmationInput = () => wrapper.findComponent(GlFormInput);
   const findPasswordInput = () => wrapper.findByTestId('password-confirmation-field');
   const findUsernameInput = () => wrapper.findByTestId('username-confirmation-field');
 
@@ -74,7 +76,10 @@ describe('DeleteAccountModal component', () => {
       });
 
       describe('when the field has an invalid value', () => {
-        beforeEach(() => findExpectedField().setValue(invalidFieldValue));
+        beforeEach(async () => {
+          findConfirmationInput().vm.$emit('input', invalidFieldValue);
+          await nextTick();
+        });
 
         it('disables submit button', () => {
           expect(findModal().props('actionPrimary').attributes.disabled).toBe(true);
@@ -88,7 +93,10 @@ describe('DeleteAccountModal component', () => {
       });
 
       describe('when the field has a valid value', () => {
-        beforeEach(() => findExpectedField().setValue(validFieldValue));
+        beforeEach(async () => {
+          findConfirmationInput().vm.$emit('input', validFieldValue);
+          await nextTick();
+        });
 
         it('enables submit button', () => {
           expect(findModal().props('actionPrimary').attributes.disabled).toBe(false);

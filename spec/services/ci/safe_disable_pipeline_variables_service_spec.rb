@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Ci::SafeDisablePipelineVariablesService, feature_category: :pipeline_composition do
   include Ci::PipelineVariableHelpers
 
-  let(:log_output) { StringIO.new }
   let(:service) { described_class.new(current_user: current_user, group: parent_group) }
 
   describe '#execute' do

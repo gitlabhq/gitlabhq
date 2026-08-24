@@ -214,7 +214,6 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
     context 'when set_current_organization_from_session is disabled' do
       let(:params) { empty_params }
       let(:rack_env) { empty_rack_env }
-      let(:session_param) { session_with_org }
       let(:user_param) { user }
 
       before do

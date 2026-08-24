@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Namespaces::StatisticsRefresherService, '#execute', feature_category: :groups_and_projects do
   let(:group) { create(:group) }
   let(:subgroup) { create(:group, parent: group) }
-  let(:projects) { create_list(:project, 5, namespace: group) }
   let(:service) { described_class.new }
 
   context 'without a root storage statistics relation' do

@@ -364,7 +364,7 @@ describe('WorkItemDetail component', () => {
       expect(findWorkItemActions().props('updateInProgress')).toBe(true);
     });
 
-    it('emits workItemUpdated when mutation is successful', async () => {
+    it('shows a toast when mutation is successful', async () => {
       createComponent({ mutationHandler });
       await mockApollo.resolveAll();
 
@@ -374,7 +374,6 @@ describe('WorkItemDetail component', () => {
       await nextTick();
       expect(toast).toHaveBeenCalledWith('Confidentiality turned on.');
 
-      expect(wrapper.emitted('workItemUpdated')).toEqual([[{ confidential: true }]]);
       expect(mutationHandler).toHaveBeenCalledWith({
         input: {
           id: 'gid://gitlab/WorkItem/1',
@@ -391,7 +390,6 @@ describe('WorkItemDetail component', () => {
       findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
       await mockApollo.rejectMutation(updateWorkItemMutation, new Error(errorMessage));
 
-      expect(wrapper.emitted('workItemUpdated')).toBeUndefined();
       expect(findAlert().text()).toBe(errorMessage);
     });
   });

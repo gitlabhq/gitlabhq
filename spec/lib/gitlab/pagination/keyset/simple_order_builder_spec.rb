@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder,
   :unlimited_max_formatted_output_length,
   feature_category: :database do
-  let(:extraction_successful) { described_class.build(scope).last }
   let(:ordered_scope) do
     ordered_scope, success = described_class.build(scope)
     raise "Failed to extract order" unless success

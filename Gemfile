@@ -441,7 +441,7 @@ gem 'premailer-rails', '~> 1.12.0', feature_category: :notifications
 # Mobile push notifications via APNs (GitLab mobile app prototype)
 gem 'apnotic', '~> 1.8', require: false, feature_category: :notifications
 
-gem 'gitlab-labkit', '~> 4.4.1', feature_category: :error_budgets
+gem 'gitlab-labkit', '~> 4.5.0', feature_category: :error_budgets
 gem 'thrift', '~> 0.22.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # I18n

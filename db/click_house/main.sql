@@ -696,6 +696,50 @@ PRIMARY KEY version
 ORDER BY version
 SETTINGS index_granularity = 8192;
 
+CREATE TABLE siphon_ai_catalog_items
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `organization_id` Int64,
+    `project_id` Nullable(Int64),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `item_type` Int16,
+    `description` String,
+    `name` String,
+    `public` Bool DEFAULT false CODEC(ZSTD(1)),
+    `deleted_at` Nullable(DateTime64(6, 'UTC')),
+    `latest_version_id` Nullable(Int64),
+    `latest_released_version_id` Nullable(Int64),
+    `verification_level` Int16 DEFAULT 0,
+    `identifier` Nullable(String),
+    `foundational_flow_reference` Nullable(String),
+    `last_30_day_usage_count` Int64 DEFAULT 0,
+    `last_30_day_usage_count_updated_at` DateTime64(6, 'UTC') DEFAULT '1970-01-01 00:00:00',
+    `star_count` Int64 DEFAULT 0,
+    `visibility` Int16 DEFAULT 0,
+    `traversal_path` String DEFAULT multiIf(coalesce(organization_id, 0) != 0, dictGetOrDefault('organization_traversal_paths_dict', 'traversal_path', organization_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS index_granularity = 2048;
+
+CREATE TABLE siphon_ai_catalog_items_pg_pkey_ordered
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (id, traversal_path)
+ORDER BY (id, traversal_path)
+SETTINGS index_granularity = 1024;
+
 CREATE TABLE siphon_approvals
 (
     `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
@@ -4369,6 +4413,20 @@ SELECT
     namespaces_cte.deleted
 FROM cte
 INNER JOIN namespaces_cte ON namespaces_cte.id = cte.project_namespace_id;
+
+CREATE MATERIALIZED VIEW siphon_ai_catalog_items_pg_pkey_ordered_mv TO siphon_ai_catalog_items_pg_pkey_ordered
+(
+    `id` Int64,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_ai_catalog_items;
 
 CREATE MATERIALIZED VIEW siphon_ci_pipeline_metadata_pg_pkey_ordered_mv TO siphon_ci_pipeline_metadata_pg_pkey_ordered
 (

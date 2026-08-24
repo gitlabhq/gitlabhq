@@ -33788,7 +33788,8 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aicatalogitemconsumer-enabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates if the configuration item is enabled. |
-| <a id="aicatalogitemconsumer-flowtrigger"></a>`flowTrigger` | [`AiFlowTriggerType`](#aiflowtriggertype) | Trigger associated with the configured catalog item. |
+| <a id="aicatalogitemconsumer-flowtrigger"></a>`flowTrigger` {{< icon name="warning-solid" >}} | [`AiFlowTriggerType`](#aiflowtriggertype) | Deprecated in GitLab 19.4. Use `flowTriggers`. |
+| <a id="aicatalogitemconsumer-flowtriggers"></a>`flowTriggers` {{< icon name="warning-solid" >}} | [`[AiFlowTriggerType!]`](#aiflowtriggertype) | Introduced in GitLab 19.4. Status: Experiment. Triggers associated with the configured catalog item. |
 | <a id="aicatalogitemconsumer-group"></a>`group` | [`Group`](#group) | Group in which the catalog item is configured. |
 | <a id="aicatalogitemconsumer-id"></a>`id` | [`ID!`](#id) | ID of the configuration item. |
 | <a id="aicatalogitemconsumer-item"></a>`item` | [`AiCatalogItem`](#aicatalogitem) | Configuration catalog item. |
@@ -59315,6 +59316,8 @@ Arguments:
 | <a id="repository-commits-author"></a>`author` | [`String`](#string) | Name or email of the author. |
 | <a id="repository-commits-committedafter"></a>`committedAfter` | [`Time`](#time) | Commits created after an ISO8601 formatted time or date. |
 | <a id="repository-commits-committedbefore"></a>`committedBefore` | [`Time`](#time) | Commits created before an ISO8601 formatted time or date. |
+| <a id="repository-commits-firstparent"></a>`firstParent` | [`Boolean`](#boolean) | Follow only the first parent of merge commits. |
+| <a id="repository-commits-order"></a>`order` | [`CommitOrder`](#commitorder) | Order the commits are returned in. Defaults to reverse chronological. |
 | <a id="repository-commits-path"></a>`path` | [`String`](#string) | File path to filter commits by. |
 | <a id="repository-commits-query"></a>`query` | [`UntrustedRegexp`](#untrustedregexp) | Regular expression to filter the commits. |
 | <a id="repository-commits-ref"></a>`ref` | [`String!`](#string) | Branch or tag to search for commits. |
@@ -66969,6 +66972,15 @@ Mode of a commit action.
 | ----- | ----------- |
 | <a id="commitencoding-base64"></a>`BASE64` | Base64 encoding. |
 | <a id="commitencoding-text"></a>`TEXT` | Text encoding. |
+
+### `CommitOrder`
+
+Ordering strategy for a list of commits. Defaults to reverse chronological when omitted.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="commitorder-date"></a>`DATE` | Date order: commits are shown strictly by commit date. |
+| <a id="commitorder-topo"></a>`TOPO` | Topological order: children are shown before their parents. |
 
 ### `ComparableSecurityReportType`
 

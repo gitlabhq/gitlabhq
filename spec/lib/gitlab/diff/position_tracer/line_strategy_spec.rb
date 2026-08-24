@@ -252,18 +252,6 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_c
         )
       end
 
-      let(:delete_line_again_commit) do
-        move_line_again_commit
-
-        update_file(
-          branch_name,
-          new_file_name,
-          <<-CONTENT.strip_heredoc
-            AA
-          CONTENT
-        )
-      end
-
       context "when the file was created in the old diff" do
         context "when the file is created in the new diff" do
           context "when the position pointed at an added line in the old diff" do

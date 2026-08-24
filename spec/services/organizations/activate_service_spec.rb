@@ -107,6 +107,16 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
         expect(nested_project.reload.organization_id).to eq(organization.id)
         expect(nested_project.project_namespace.reload.organization_id).to eq(organization.id)
       end
+
+      # GroupsService must still publish here even though the top-level group already sits in the
+      # target org, so subscribers (e.g. the vulnerability re-index worker) are not silently skipped.
+      it 'publishes GroupTransferredEvent for the transferred group' do
+        expect { response }.to publish_event(Organizations::GroupTransferredEvent).with(
+          group_id: top_level_group.id,
+          old_organization_id: old_organization.id,
+          new_organization_id: organization.id
+        )
+      end
     end
 
     context 'when Organizations::Transfer::GroupsService returns a non-recoverable error' do

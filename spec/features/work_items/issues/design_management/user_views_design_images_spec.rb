@@ -9,7 +9,6 @@ RSpec.describe 'Users views raw design image files', feature_category: :design_m
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:design) { create(:design, :with_file, issue: issue, versions_count: 2) }
 
-  let(:newest_version) { design.versions.ordered.first }
   let(:oldest_version) { design.versions.ordered.last }
 
   before do

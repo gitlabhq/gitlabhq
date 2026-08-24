@@ -247,7 +247,9 @@ class Admin::UsersController < Admin::ApplicationController
 
     respond_to do |format|
       result = Users::UpdateService.new(current_user, user_params_with_pass.merge(user: user)).execute do |user|
-        prepare_user_for_update(user)
+        user.skip_reconfirmation!
+        user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user?
+        user.skip_enterprise_user_email_change_restrictions!
       end
 
       after_successful_update_hook(result[:user]) if result[:status] == :success
@@ -418,12 +420,6 @@ class Admin::UsersController < Admin::ApplicationController
       @impersonation_error_text =
         helpers.impersonation_error_text(user, impersonation_in_progress?)
     end
-  end
-
-  # method overridden in EE
-  def prepare_user_for_update(user)
-    user.skip_reconfirmation!
-    user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user?
   end
 
   # method overridden in EE

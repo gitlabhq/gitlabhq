@@ -3020,6 +3020,9 @@ class User < ApplicationRecord
     end
   end
 
+  # method overridden in EE
+  def skip_enterprise_user_email_change_restrictions!; end
+
   protected
 
   # override, from Devise::Validatable

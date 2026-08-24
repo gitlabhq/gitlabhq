@@ -14,7 +14,6 @@ RSpec.describe Projects::LfsPointers::LfsListService, feature_category: :source_
     ]
   end
 
-  let(:mock_lfs_changes) { instance_double(Gitlab::Git::LfsChanges) }
   let(:expected_hash) { { 'oid1' => 123, 'oid2' => 456 } }
 
   subject(:lfs_list_service) { described_class.new(project, user, { updated_revisions: updated_revisions }) }

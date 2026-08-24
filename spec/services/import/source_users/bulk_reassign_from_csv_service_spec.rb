@@ -41,12 +41,6 @@ RSpec.describe Import::SourceUsers::BulkReassignFromCsvService, feature_category
       create(:import_source_user, :pending_reassignment, namespace: group, source_user_identifier: 'alice_1')
     end
 
-    let(:import_source_users) do
-      [
-        source_user
-      ]
-    end
-
     subject(:execute_service) { service.execute }
 
     before do

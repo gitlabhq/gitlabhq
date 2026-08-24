@@ -64,7 +64,6 @@ RSpec.describe 'getting Alert Management Alert Issue', feature_category: :incide
 
   describe 'performance' do
     let(:first_n) { var('Int') }
-    let(:params) { { first: first_n } }
     let(:limited_query) { with_signature([first_n], query) }
 
     context 'with gitlab alert' do

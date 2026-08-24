@@ -10,7 +10,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
     let(:ref) { 'refs/heads/master' }
     let(:service)  { described_class.new(project, user, { ref: ref }) }
     let(:pipeline) { service.execute(:push).payload }
-    let(:file_location) { 'spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml' }
 
     let(:counters) do
       {

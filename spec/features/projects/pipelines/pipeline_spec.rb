@@ -1065,6 +1065,14 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
     context 'canceling jobs' do
       it { expect(page).not_to have_selector('.ci-canceled') }
 
+      it 'shows a cancel button for the running job' do
+        within_testid 'jobs-tab-table' do
+          within_testid 'jobs-table-row', text: build_running.name do
+            expect(page).to have_button('Cancel')
+          end
+        end
+      end
+
       context 'when canceling' do
         before do
           click_on 'Cancel pipeline'

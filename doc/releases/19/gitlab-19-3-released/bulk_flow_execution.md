@@ -3,7 +3,7 @@ title: Execute SAST false positive and vulnerability resolution flows in bulk
 tier: [ Ultimate ]
 offering: [ gitlab_com, self_managed ]
 stage: security_risk_management
-documentation_link: "../../../user/application_security/vulnerabilities/bulk_ai_flows"
+documentation_link: "../../../user/application_security/vulnerabilities/agentic_vulnerability_resolution"
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/21890
 categories: [ Vulnerability Management ]
 level: secondary

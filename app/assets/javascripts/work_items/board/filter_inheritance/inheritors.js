@@ -15,10 +15,9 @@ import searchMilestonesQuery from '../graphql/search_milestones.query.graphql';
  * fragment (keyed by widget type, e.g. `{ LABELS: { labels: { nodes } } }`), resolving
  * filter values (names/titles) to the full objects the widget draft needs.
  *
- * The available inheritors differ by edition (iteration, weight, … are EE-only), so this
- * list is supplied by an `ee_else_ce` module and consumed in `./index.js`. Add a new CE
- * inherited attribute by writing an inheritor and adding it to `FILTER_INHERITORS` here;
- * add an EE-only one in the EE counterpart — no board-component changes required.
+ * Available inheritors differ by edition, so the list lives behind `ee_else_ce` and is
+ * consumed in `./index.js`. Add a CE inheritor here; add an EE-only one in the EE
+ * counterpart — no board-component changes required.
  *
  * @typedef {Object} FilterInheritor
  * @property {string} widgetType - The widgets-draft key this inheritor owns (e.g. `LABELS`).
@@ -35,14 +34,15 @@ import searchMilestonesQuery from '../graphql/search_milestones.query.graphql';
 
 // apiFilterParams stores a single filtered value as a string and several as an array;
 // normalize to an array of the present values so inheritors can treat both the same way.
-export const toArray = (value) => (Array.isArray(value) ? value : [value].filter(Boolean));
+export const normalizeFilterValue = (value) =>
+  Array.isArray(value) ? value : [value].filter(Boolean);
 
 /** @type {FilterInheritor} */
 const labelsInheritor = {
   widgetType: WIDGET_TYPE_LABELS,
 
   async resolve({ apolloClient, fullPath, isGroup, filters }) {
-    const titles = toArray(filters?.labelName);
+    const titles = normalizeFilterValue(filters?.labelName);
     if (!titles.length) {
       return {};
     }
@@ -83,7 +83,7 @@ const assigneesInheritor = {
   widgetType: WIDGET_TYPE_ASSIGNEES,
 
   async resolve({ apolloClient, fullPath, isGroup, filters }) {
-    const usernames = toArray(filters?.assigneeUsernames);
+    const usernames = normalizeFilterValue(filters?.assigneeUsernames);
     if (!usernames.length) {
       return {};
     }
@@ -123,7 +123,7 @@ const milestoneInheritor = {
   widgetType: WIDGET_TYPE_MILESTONE,
 
   async resolve({ apolloClient, fullPath, isGroup, filters }) {
-    const [title] = toArray(filters?.milestoneTitle);
+    const [title] = normalizeFilterValue(filters?.milestoneTitle);
     if (!title) {
       return {};
     }

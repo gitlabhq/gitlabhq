@@ -6,8 +6,6 @@ RSpec.describe "UserSettings", type: :request, feature_category: :system_access 
   let(:user) { create(:user) }
 
   describe 'GET authentication_log' do
-    let(:auth_event) { create(:authentication_event, user: user) }
-
     it 'tracks search event', :snowplow do
       sign_in(user)
 

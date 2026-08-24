@@ -7,10 +7,6 @@ RSpec.describe 'User Settings > Personal access tokens', :with_current_organizat
   include Features::AccessTokenHelpers
 
   let(:user) { create(:user) }
-  let(:pat_create_service) do
-    instance_double('PersonalAccessTokens::CreateService',
-      execute: ServiceResponse.error(message: 'error', payload: { personal_access_token: PersonalAccessToken.new }))
-  end
 
   before do
     sign_in(user)

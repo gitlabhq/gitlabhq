@@ -40,8 +40,6 @@ RSpec.describe RateLimitedService, feature_category: :rate_limiting do
       let_it_be(:current_user) { create(:user) }
 
       let(:service) { instance_double(Issues::CreateService, container: project, current_user: current_user) }
-      let(:evaluated_scope) { [project, current_user] }
-      let(:evaluated_opts) { { scope: evaluated_scope, users_allowlist: %w[support-bot] } }
 
       context 'when rate limiting is not in effect' do
         let(:throttled) { false }

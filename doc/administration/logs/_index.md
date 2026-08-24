@@ -250,6 +250,12 @@ which correspond to:
 - `elasticsearch_timed_out_count`: Total number of calls to Elasticsearch that
   timed out and therefore returned partial results
 
+Requests that read or write secrets with the [GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md)
+additionally log `openbao_calls` and `openbao_duration_s`, which correspond to:
+
+- `openbao_calls`: Total number of calls to OpenBao
+- `openbao_duration_s`: Total time taken by OpenBao calls
+
 ActionCable connection and subscription events are also logged to this file and they follow the
 previous format. The `method`, `path`, and `format` fields are not applicable, and are always empty.
 The ActionCable connection or channel class is used as the `controller`.

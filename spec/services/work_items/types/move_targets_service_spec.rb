@@ -12,8 +12,6 @@ RSpec.describe WorkItems::Types::MoveTargetsService, feature_category: :team_pla
   let(:provider) { WorkItems::TypesFramework::Provider.new(source_project.project_namespace) }
   let(:issue_type) { provider.find_by_base_type(:issue) }
   let(:task_type) { provider.find_by_base_type(:task) }
-  let(:incident_type) { provider.find_by_base_type(:incident) }
-  let(:ticket_type) { provider.find_by_base_type(:ticket) }
 
   subject(:finder) do
     described_class.new(

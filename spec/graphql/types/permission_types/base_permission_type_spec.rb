@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Types::PermissionTypes::BasePermissionType do
-  let(:permitable) { double('permittable') }
-  let(:current_user) { build(:user) }
-  let(:context) { { current_user: current_user } }
-
   subject(:test_type) do
     Class.new(described_class) do
       graphql_name 'TestClass'

@@ -10,3 +10,4 @@ classes:
 gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
+  namespace_id: namespaces

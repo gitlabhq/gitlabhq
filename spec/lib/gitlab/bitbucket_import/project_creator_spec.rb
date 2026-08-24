@@ -21,7 +21,6 @@ RSpec.describe Gitlab::BitbucketImport::ProjectCreator, feature_category: :impor
 
   let(:namespace) { create(:group) }
   let(:token) { "asdasd12345" }
-  let(:secret) { "sekrettt" }
   let(:access_params) { { token: token } }
 
   before do

@@ -10,7 +10,6 @@ RSpec.describe Mutations::Boards::Update, feature_category: :planning_views do
   let_it_be(:board) { create(:board, project: project) }
 
   let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
-  let(:mutated_board) { subject[:board] }
 
   let(:mutation_params) do
     {

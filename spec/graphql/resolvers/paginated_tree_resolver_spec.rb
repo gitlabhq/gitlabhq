@@ -126,8 +126,6 @@ RSpec.describe Resolvers::PaginatedTreeResolver, feature_category: :source_code_
       end
 
       context 'when gitaly is not available' do
-        let(:request) { get :index, format: :html, params: { namespace_id: project.namespace, project_id: project } }
-
         it 'generates an unavailable error' do
           expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::BaseError) { subject }
           expect(subject.extensions).to eq(code: 'unavailable', gitaly_code: 14, service: 'git')
