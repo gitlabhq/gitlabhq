@@ -2375,8 +2375,9 @@ relevant information in your own words or link to the source.
 
 ## AI-generated content
 
-When you use AI tools to generate or assist with documentation, review the output carefully
-before you submit it. AI-generated content often has these problems:
+When you use AI tools to generate or assist with documentation, check the output carefully
+before you submit it for review. AI is designed to write convincingly but
+AI-generated content often has these problems:
 
 Repetition
 : Content that restates what has already been said on the page
@@ -2397,8 +2398,6 @@ Incorrect scope
 : A new page has been created for a concept or procedure when a suitable
   page already exists.
   Do not create a new page for a single concept, term, or procedure step.
-
-For more information, see [Review AI-generated content](../ai-instruction-files-documentation.md#review-ai-generated-content).
 
 ## Promising features in future versions
 

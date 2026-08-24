@@ -14358,7 +14358,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_7006a9228543"
+              "$ref": "#/components/schemas/RequestBody_a3f99c49163e"
   "/api/v4/admin/active_context/code/enabled_namespaces":
     put:
       operationId: putApiV4AdminActiveContextCodeEnabledNamespaces
@@ -19427,7 +19427,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_2dac44d324b8"
+              "$ref": "#/components/schemas/RequestBody_b5f7b529c5f4"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -100304,12 +100304,13 @@ components:
           type: integer
           description: Connection ID (defaults to active connection)
           nullable: true
-    RequestBody_7006a9228543:
+    RequestBody_a3f99c49163e:
       type: object
       properties:
         queue:
           type: string
-          description: Target queue name (e.g. retry_queue, code, code_backfill)
+          description: Target queue name (e.g. retry_queue, second_retry_queue, code,
+            code_backfill)
           nullable: true
       required:
       - queue
@@ -101420,7 +101421,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_2dac44d324b8:
+    RequestBody_b5f7b529c5f4:
       type: object
       properties:
         admin_mode:
@@ -102432,6 +102433,838 @@ components:
           description: Restrictions on the complexity of uploaded ED25519_SK keys.
             A value of -1 disables all ED25519_SK keys.
           nullable: true
+        allow_account_deletion:
+          type: string
+          description: Set to `true` to allow users to delete their accounts. Premium
+            and Ultimate only.
+          nullable: true
+        allow_application_default_credentials_for_offline_transfer:
+          type: string
+          description: Allow Google Cloud Application Default Credentials for offline
+            transfer. Even when enabled, only administrators can use these credentials,
+            and the bucket name must start with `gitlab-offline-transfer-`. Has no
+            effect on GitLab.com. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/602489)
+            in GitLab 19.3.
+          nullable: true
+        allow_bypass_placeholder_confirmation:
+          type: string
+          description: Skip confirmation when administrators reassign placeholder
+            users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/534330)
+            in GitLab 18.0.
+          nullable: true
+        allow_local_requests_from_system_hooks:
+          type: string
+          description: Allow requests to the local network from system hooks.
+          nullable: true
+        allow_local_requests_from_web_hooks_and_services:
+          type: string
+          description: Allow requests to the local network from webhooks and integrations.
+          nullable: true
+        allow_project_creation_for_guest_and_below:
+          type: string
+          description: Indicates whether users assigned up to the Guest role can create
+            groups and personal projects. Defaults to `true`.
+          nullable: true
+        allow_s3_compatible_storage_for_offline_transfer:
+          type: string
+          description: Allow S3-compatible object storage for offline transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579705)
+            in GitLab 18.9.
+          nullable: true
+        archive_builds_in_human_readable:
+          type: string
+          description: 'Set the duration for which the jobs are considered as old
+            and expired. After that time passes, the jobs are archived and no longer
+            able to be retried. Make it empty to never expire jobs. It has to be no
+            less than 1 day, for example: `15 days`, `1 month`, `2 years`.'
+          nullable: true
+        asciidoc_max_includes:
+          type: string
+          description: 'Maximum limit of AsciiDoc include directives being processed
+            in any one document. Default: 32. Maximum: 64.'
+          nullable: true
+        authorized_keys_enabled:
+          type: string
+          description: By default, the `authorized_keys` file supports Git over SSH
+            without additional configuration. GitLab can be optimized to authenticate
+            SSH keys via the database file. Only disable this if you have configured
+            your OpenSSH server to use the AuthorizedKeysCommand.
+          nullable: true
+        auto_accept_awarded_achievements:
+          type: string
+          description: 'If `true`, newly awarded achievements are accepted automatically
+            and appear on user profiles immediately. Does not affect achievements
+            awarded before this setting is enabled. Recipients can still hide any
+            achievement. Default value: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607750)
+            in GitLab 19.4.'
+          nullable: true
+        auto_devops_domain:
+          type: string
+          description: Specify a domain to use by default for every project's Auto
+            Review Apps and Auto Deploy stages.
+          nullable: true
+        auto_devops_enabled:
+          type: string
+          description: Enable Auto DevOps for projects by default. It automatically
+            builds, tests, and deploys applications based on a predefined CI/CD configuration.
+          nullable: true
+        bulk_import_max_download_file_size:
+          type: string
+          description: Maximum download file size when importing from source GitLab
+            instances by direct transfer.
+          nullable: true
+        can_create_group:
+          type: string
+          description: Indicates whether users can create top-level groups. Defaults
+            to `true`.
+          nullable: true
+        ci_delete_pipelines_in_seconds_limit_human_readable:
+          type: string
+          description: Maximum value that is allowed for configuring pipeline retention.
+            Defaults to `1 year`.
+          nullable: true
+        ci_max_total_yaml_size_bytes:
+          type: string
+          description: The maximum amount of memory, in bytes, that can be allocated
+            for the pipeline configuration, with all included YAML configuration files.
+          nullable: true
+        ci_partitions_in_seconds_limit:
+          type: string
+          description: The time window, in seconds, before new CI partitions are created
+            and the system switches to the next set of partitions. Must be between
+            1 month and 6 months. Default is 1 month (`2592000`). Write-only. Not
+            returned in GET responses. Deprecated in favor of `ci_partitions_in_seconds_limit_human_readable`
+            and is scheduled for removal in API v5.
+          nullable: true
+        ci_partitions_in_seconds_limit_human_readable:
+          type: string
+          description: The time window before new CI partitions are created and the
+            system switches to the next set of partitions. Must be between `1 month`
+            and `6 months`. Defaults to `1 month`.
+          nullable: true
+        commit_email_hostname:
+          type: string
+          description: Custom hostname (for private commit emails).
+          nullable: true
+        container_expiration_policies_enable_historic_entries:
+          type: string
+          description: Enable cleanup policies for all projects.
+          nullable: true
+        container_registry_cleanup_tags_service_max_list_size:
+          type: string
+          description: The maximum number of tags that can be deleted in a single
+            execution of cleanup policies.
+          nullable: true
+        container_registry_delete_tags_service_timeout:
+          type: string
+          description: The maximum time, in seconds, that the cleanup process can
+            take to delete a batch of tags for cleanup policies.
+          nullable: true
+        container_registry_expiration_policies_caching:
+          type: string
+          description: Caching during the execution of cleanup policies.
+          nullable: true
+        container_registry_expiration_policies_worker_capacity:
+          type: string
+          description: Number of workers for cleanup policies.
+          nullable: true
+        custom_http_clone_url_root:
+          type: string
+          description: Set a custom Git clone URL for HTTP(S).
+          nullable: true
+        default_branch_name:
+          type: string
+          description: Set the initial branch name for all projects in an instance.
+          nullable: true
+        default_dark_syntax_highlighting_theme:
+          type: string
+          description: Default dark mode syntax highlighting theme for users who are
+            new or not signed in. See [IDs of available themes](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/themes.rb#L16).
+          nullable: true
+        default_preferred_language:
+          type: string
+          description: Default preferred language for users who are not logged in.
+          nullable: true
+        default_syntax_highlighting_theme:
+          type: string
+          description: Default syntax highlighting theme for users who are new or
+            not signed in. See [IDs of available themes](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/themes.rb#L16).
+          nullable: true
+        delete_inactive_projects:
+          type: string
+          description: Enable dormant project deletion. Default is `false`.
+          nullable: true
+        deletion_adjourned_period:
+          type: string
+          description: Number of days to wait before deleting a project or group that
+            is marked for deletion. Value must be between `1` and `90`. Defaults to
+            `30`.
+          nullable: true
+        diff_max_commits:
+          type: string
+          description: Maximum number of diff commits per merge request.
+          nullable: true
+        diff_max_files:
+          type: string
+          description: Maximum files in a diff.
+          nullable: true
+        diff_max_lines:
+          type: string
+          description: Maximum lines in a diff.
+          nullable: true
+        diff_max_patch_bytes:
+          type: string
+          description: Maximum diff patch size, in bytes.
+          nullable: true
+        diff_max_versions:
+          type: string
+          description: Maximum number of diff versions per merge request.
+          nullable: true
+        disable_password_authentication_for_users_with_sso_identities:
+          type: string
+          description: Disable password authentication in the web interface for users
+            with an SSO identity. This does not affect Git operations over HTTP(S).
+            Default is `false`.
+          nullable: true
+        dns_rebinding_protection_enabled:
+          type: string
+          description: Enforce DNS-rebinding attack protection.
+          nullable: true
+        email_restrictions:
+          type: string
+          description: Regular expression that is checked against the email used during
+            registration.
+          nullable: true
+        email_restrictions_enabled:
+          type: string
+          description: Prevent new users from creating an account by email.
+          nullable: true
+        enforce_terms:
+          type: string
+          description: "(**If enabled, requires**: `terms`) Enforce application ToS
+            to all users."
+          nullable: true
+        external_auth_client_cert:
+          type: string
+          description: "(**If enabled, requires**: `external_auth_client_key`) The
+            certificate to use to authenticate with the external authorization service."
+          nullable: true
+        external_auth_client_key:
+          type: string
+          description: Private key for the certificate when authentication is required
+            for the external authorization service, this is encrypted when stored.
+          nullable: true
+        external_auth_client_key_pass:
+          type: string
+          description: Passphrase to use for the private key when authenticating with
+            the external service this is encrypted when stored.
+          nullable: true
+        external_authorization_service_default_label:
+          type: string
+          description: The default classification label to use when requesting authorization
+            and no classification label has been specified on the project.
+          nullable: true
+        external_authorization_service_enabled:
+          type: string
+          description: "(**If enabled, requires**: `external_authorization_service_default_label`,
+            `external_authorization_service_timeout`, and `external_authorization_service_url`)
+            Enable using an external authorization service for accessing projects."
+          nullable: true
+        external_authorization_service_timeout:
+          type: string
+          description: 'The timeout after which an authorization request is aborted,
+            in seconds. When a request times out, access is denied to the user. (min:
+            0.001, max: 10, step: 0.001).'
+          nullable: true
+        external_authorization_service_url:
+          type: string
+          description: URL to which authorization requests are directed.
+          nullable: true
+        external_pipeline_validation_service_timeout:
+          type: string
+          description: How long to wait for a response from the pipeline validation
+            service. Assumes `OK` if it times out.
+          nullable: true
+        external_pipeline_validation_service_token:
+          type: string
+          description: Optional. Token to include as the `X-Gitlab-Token` header in
+            requests to the URL in `external_pipeline_validation_service_url`.
+          nullable: true
+        external_pipeline_validation_service_url:
+          type: string
+          description: URL to use for pipeline validation requests.
+          nullable: true
+        failed_login_attempts_unlock_period_in_minutes:
+          type: string
+          description: Time period in minutes after which the user is unlocked when
+            maximum number of failed sign-in attempts reached.
+          nullable: true
+        first_day_of_week:
+          type: string
+          description: Start day of the week for calendar views and date pickers.
+            Valid values are `0` (default) for Sunday, `1` for Monday, and `6` for
+            Saturday.
+          nullable: true
+        gitlab_dedicated_instance:
+          type: string
+          description: Indicates whether the instance was provisioned for GitLab Dedicated.
+          nullable: true
+        gitlab_environment_toolkit_instance:
+          type: string
+          description: Indicates whether the instance was provisioned with the GitLab
+            Environment Toolkit for Service Ping reporting.
+          nullable: true
+        gitlab_product_usage_data_enabled:
+          type: string
+          description: Indicates if product usage data collection is enabled. When
+            the `GITLAB_PRODUCT_USAGE_DATA_ENABLED` environment variable is set, the
+            API returns the effective value from the environment variable.
+          nullable: true
+        gitlab_shell_operation_limit:
+          type: string
+          description: 'Maximum number of Git operations per minute a user can perform.
+            Default: `600`.'
+          nullable: true
+        hashed_storage_enabled:
+          type: string
+          description: 'Create new projects using hashed storage paths: Enable immutable,
+            hash-based paths and repository names to store repositories on disk. This
+            prevents repositories from having to be moved or renamed when the Project
+            URL changes and may improve disk I/O performance. (Always enabled in GitLab
+            versions 13.0 and later, configuration is scheduled for removal in 14.0)'
+          nullable: true
+        hide_third_party_offers:
+          type: string
+          description: Do not display offers from third parties in GitLab.
+          nullable: true
+        inactive_projects_delete_after_months:
+          type: string
+          description: If `delete_inactive_projects` is `true`, the time (in months)
+            to wait before deleting dormant projects. Default is `2`.
+          nullable: true
+        inactive_projects_min_size_mb:
+          type: string
+          description: If `delete_inactive_projects` is `true`, the minimum repository
+            size for projects to be checked for inactivity. Default is `0`.
+          nullable: true
+        inactive_projects_send_warning_email_after_months:
+          type: string
+          description: If `delete_inactive_projects` is `true`, sets the time (in
+            months) to wait before emailing Maintainers that the project is scheduled
+            to be deleted because it is dormant. Default is `1`.
+          nullable: true
+        inactive_resource_access_tokens_delete_after_days:
+          type: string
+          description: Specifies retention period for inactive project and group access
+            tokens. Default is `30`.
+          nullable: true
+        include_optional_metrics_in_service_ping:
+          type: string
+          description: Whether or not optional metrics are enabled in Service Ping.
+          nullable: true
+        keep_latest_artifact:
+          type: string
+          description: Prevent the deletion of the artifacts from the most recent
+            successful jobs, regardless of the expiry time. Enabled by default.
+          nullable: true
+        kroki_diagram_proxy_enabled:
+          type: string
+          description: Enable Kroki diagram proxy. Default is `false`.
+          nullable: true
+        kroki_formats:
+          type: string
+          description: 'Additional formats supported by the Kroki instance. Possible
+            values are `true` or `false` for formats `bpmn`, `blockdiag`, `excalidraw`,
+            and `mermaid` in the format `<format>: true` or `<format>: false`.'
+          nullable: true
+        lock_require_sha_for_merge:
+          type: string
+          description: Enforce the `require_sha_for_merge` setting for all groups
+            on the instance. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236732)
+            in GitLab 19.2.
+          nullable: true
+        max_http_decompressed_size:
+          type: string
+          description: Maximum allowed size in MiB for Gzip-compressed HTTP responses
+            from outbound requests after decompression. 0 for unlimited.
+          nullable: true
+        max_http_response_csv_structural_chars:
+          type: string
+          description: Maximum allowed object count in CSV HTTP responses from outbound
+            requests. Count is an estimate based on the number of `,`, `;`, `\t`,
+            and `\n` occurrences in the response. Introduced in GitLab 18.4.
+          nullable: true
+        max_http_response_json_depth:
+          type: string
+          description: Maximum allowed nesting depth in JSON HTTP responses from outbound
+            requests.
+          nullable: true
+        max_http_response_json_structural_chars:
+          type: string
+          description: Maximum allowed object count in JSON HTTP responses from outbound
+            requests. Count is an estimate based on the number of `:`, `,`, `{`, and
+            `[` occurrences in the response. Introduced in GitLab 18.4.
+          nullable: true
+        max_http_response_size_limit:
+          type: string
+          description: Maximum allowed size in MiB for HTTP responses from outbound
+            requests. 0 for unlimited. Applicable for integrations, importers, and
+            webhooks. Introduced in GitLab 18.4.
+          nullable: true
+        max_http_response_xml_structural_chars:
+          type: string
+          description: Maximum allowed object count in XML HTTP responses from outbound
+            requests. Count is an estimate based on the number of `<`, and `=` occurrences
+            in the response. Introduced in GitLab 18.4.
+          nullable: true
+        max_login_attempts:
+          type: string
+          description: Maximum number of sign-in attempts before locking out the user.
+          nullable: true
+        max_yaml_depth:
+          type: string
+          description: 'The maximum depth of nested CI/CD configuration added with
+            the `include` keyword. Default: `100`.'
+          nullable: true
+        max_yaml_size_bytes:
+          type: string
+          description: 'The maximum size in bytes of a single CI/CD configuration
+            file. Default: `2097152`.'
+          nullable: true
+        minimum_password_length:
+          type: string
+          description: Indicates whether passwords require a minimum length. Premium
+            and Ultimate only.
+          nullable: true
+        mirror_available:
+          type: string
+          description: Allow repository mirroring to configured by project Maintainers.
+            If disabled, only Administrators can configure repository mirroring.
+          nullable: true
+        notify_on_unknown_sign_in:
+          type: string
+          description: Enable sending notification if sign in from unknown IP address
+            happens.
+          nullable: true
+        offline_transfer_exports_enabled:
+          type: string
+          description: Enable exporting GitLab groups and projects by offline transfer.
+            [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/588971)
+            in GitLab 19.3.
+          nullable: true
+        offline_transfer_imports_enabled:
+          type: string
+          description: Enable importing GitLab groups and projects by offline transfer.
+            [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/588971)
+            in GitLab 19.3.
+          nullable: true
+        package_registry_allow_anyone_to_pull_option:
+          type: string
+          description: Enable to allow anyone to pull from package registry visible
+            and changeable.
+          nullable: true
+        package_registry_cleanup_policies_worker_capacity:
+          type: string
+          description: Number of workers assigned to the packages cleanup policies.
+          nullable: true
+        pages_domain_verification_enabled:
+          type: string
+          description: Require users to prove ownership of custom domains. Domain
+            verification is an essential security measure for public GitLab sites.
+            Users are required to demonstrate they control a domain before it is enabled.
+          nullable: true
+        pages_unique_domain_default_enabled:
+          type: string
+          description: Enable unique domains by default for Pages sites to avoid cookie
+            sharing between sites under a given namespace. Default is `true`.
+          nullable: true
+        plantuml_diagram_proxy_enabled:
+          type: string
+          description: Enable PlantUML diagram proxy. Default is `false`.
+          nullable: true
+        projects_api_rate_limit_unauthenticated:
+          type: string
+          description: 'Maximum number of requests per 10 minutes per IP address for
+            unauthenticated requests to the list all projects API. Default: 400. To
+            disable throttling, set to 0.'
+          nullable: true
+        protected_ci_variables:
+          type: string
+          description: CI/CD variables are protected by default.
+          nullable: true
+        rate_limiting_response_text:
+          type: string
+          description: When rate limiting is enabled via the `throttle_*` settings,
+            send this plain text response when a rate limit is exceeded. 'Retry later'
+            is sent if this is blank.
+          nullable: true
+        receive_max_input_size:
+          type: string
+          description: Maximum push size (MB).
+          nullable: true
+        relation_export_batch_size:
+          type: string
+          description: The size of each batch when exporting batched relations. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194607)
+            in GitLab 18.2.
+          nullable: true
+        remember_me_enabled:
+          type: string
+          description: Enable **Remember me** setting.
+          nullable: true
+        require_admin_two_factor_authentication:
+          type: string
+          description: Allow administrators to require 2FA for all administrators
+            on the instance.
+          nullable: true
+        require_email_verification_on_account_locked:
+          type: string
+          description: If `true`, all users on the instance must verify their identity
+            after suspicious sign-in activity is detected.
+          nullable: true
+        require_sha_for_merge:
+          type: string
+          description: Instance default that requires a valid commit `sha` for calls
+            to the merge a merge request endpoint. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236732)
+            in GitLab 19.2.
+          nullable: true
+        runner_jobs_endpoints_api_limit:
+          type: string
+          description: 'Maximum number of requests per minute per job token for requests
+            to `/jobs/*` requests to the runner jobs API endpoints. Default: 200.
+            To disable throttling, set to 0. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462537)
+            in GitLab 18.5.'
+          nullable: true
+        runner_jobs_patch_trace_api_limit:
+          type: string
+          description: 'Maximum number of requests per minute per runner token for
+            requests to the `PATCH /jobs/:id/trace` runner jobs API endpoint. Default:
+            2000. To disable throttling, set to 0. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462537)
+            in GitLab 18.5.'
+          nullable: true
+        runner_jobs_request_api_limit:
+          type: string
+          description: 'Maximum number of requests per minute per runner token for
+            requests to the `/jobs/request` runner jobs API endpoint. Default: 2000.
+            To disable throttling, set to 0. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462537)
+            in GitLab 18.5.'
+          nullable: true
+        search_rate_limit:
+          type: string
+          description: 'Maximum number of requests per minute for performing a search
+            while authenticated. Default: 30. To disable throttling, set to 0.'
+          nullable: true
+        search_rate_limit_unauthenticated:
+          type: string
+          description: 'Maximum number of requests per minute for performing a search
+            while unauthenticated. Default: 10. To disable throttling, set to 0.'
+          nullable: true
+        sidekiq_job_limiter_compression_threshold_bytes:
+          type: string
+          description: 'The threshold in bytes at which Sidekiq jobs are compressed
+            before being stored in Redis. Default: 100,000 bytes (100 KB).'
+          nullable: true
+        sidekiq_job_limiter_limit_bytes:
+          type: string
+          description: 'The threshold in bytes at which Sidekiq jobs are rejected.
+            Default: 0 bytes (doesn''t reject any job).'
+          nullable: true
+        sidekiq_job_limiter_mode:
+          type: string
+          description: "`track` or `compress`. Sets the behavior for Sidekiq job size
+            limits. Default: 'compress'."
+          nullable: true
+        sidekiq_timezone_override:
+          type: string
+          description: IANA timezone identifier (for example, `America/Chicago`) applied
+            to all Sidekiq cron jobs. When blank, no override is applied and cron
+            jobs use the Rails application timezone.
+          nullable: true
+        sign_in_restrictions:
+          type: string
+          description: Application sign in restrictions.
+          nullable: true
+        silent_admin_exports_enabled:
+          type: string
+          description: Enable Silent admin exports. Default is `false`.
+          nullable: true
+        silent_mode_enabled:
+          type: string
+          description: Enable Silent mode. Default is `false`.
+          nullable: true
+        snippet_size_limit:
+          type: string
+          description: 'Maximum snippet content size in **bytes**. Default: 52428800
+            Bytes (50 MB).'
+          nullable: true
+        snowplow_database_collector_hostname:
+          type: string
+          description: The Snowplow collector for database events hostname. (for example,
+            `db-snowplow.trx.gitlab.net`)
+          nullable: true
+        spam_check_api_key:
+          type: string
+          description: API key used by GitLab for accessing the Spam Check service
+            endpoint.
+          nullable: true
+        static_objects_external_storage_auth_token:
+          type: string
+          description: Authentication token for the external storage linked in `static_objects_external_storage_url`.
+          nullable: true
+        static_objects_external_storage_url:
+          type: string
+          description: URL to an external storage for repository static objects.
+          nullable: true
+        terms:
+          type: string
+          description: "(**Required by**: `enforce_terms`) Markdown content for the
+            ToS."
+          nullable: true
+        throttle_authenticated_api_enabled:
+          type: string
+          description: "(**If enabled, requires**: `throttle_authenticated_api_period_in_seconds`
+            and `throttle_authenticated_api_requests_per_period`) Enable authenticated
+            API request rate limit. Helps reduce request volume (for example, from
+            crawlers or abusive bots)."
+          nullable: true
+        throttle_authenticated_api_period_in_seconds:
+          type: string
+          description: Rate limit period (in seconds).
+          nullable: true
+        throttle_authenticated_api_requests_per_period:
+          type: string
+          description: Maximum requests per period per user.
+          nullable: true
+        throttle_authenticated_git_http_enabled:
+          type: string
+          description: 'If `true`, enforces the authenticated Git HTTP request rate
+            limit. Default value: `false`.'
+          nullable: true
+        throttle_authenticated_git_http_period_in_seconds:
+          type: string
+          description: 'Rate limit period in seconds. `throttle_authenticated_git_http_enabled`
+            must be `true`. Default value: `3600`.'
+          nullable: true
+        throttle_authenticated_git_http_requests_per_period:
+          type: string
+          description: 'Maximum requests per period per user. `throttle_authenticated_git_http_enabled`
+            must be `true`. Default value: `3600`.'
+          nullable: true
+        throttle_authenticated_packages_api_enabled:
+          type: string
+          description: "(**If enabled, requires**: `throttle_authenticated_packages_api_period_in_seconds`
+            and `throttle_authenticated_packages_api_requests_per_period`) Enable
+            authenticated API request rate limit. Helps reduce request volume (for
+            example, from crawlers or abusive bots)."
+          nullable: true
+        throttle_authenticated_packages_api_period_in_seconds:
+          type: string
+          description: Rate limit period (in seconds).
+          nullable: true
+        throttle_authenticated_packages_api_requests_per_period:
+          type: string
+          description: Maximum requests per period per user.
+          nullable: true
+        throttle_authenticated_web_enabled:
+          type: string
+          description: "(**If enabled, requires**: `throttle_authenticated_web_period_in_seconds`
+            and `throttle_authenticated_web_requests_per_period`) Enable authenticated
+            web request rate limit. Helps reduce request volume (for example, from
+            crawlers or abusive bots)."
+          nullable: true
+        throttle_authenticated_web_period_in_seconds:
+          type: string
+          description: Rate limit period (in seconds).
+          nullable: true
+        throttle_authenticated_web_requests_per_period:
+          type: string
+          description: Maximum requests per period per user.
+          nullable: true
+        throttle_unauthenticated_api_enabled:
+          type: string
+          description: "(**If enabled, requires**: `throttle_unauthenticated_api_period_in_seconds`
+            and `throttle_unauthenticated_api_requests_per_period`) Enable unauthenticated
+            API request rate limit. Helps reduce request volume (for example, from
+            crawlers or abusive bots)."
+          nullable: true
+        throttle_unauthenticated_api_period_in_seconds:
+          type: string
+          description: Rate limit period in seconds.
+          nullable: true
+        throttle_unauthenticated_api_requests_per_period:
+          type: string
+          description: Maximum requests per period per IP.
+          nullable: true
+        throttle_unauthenticated_enabled:
+          type: string
+          description: "([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/335300)
+            in GitLab 14.3. Use `throttle_unauthenticated_web_enabled` or `throttle_unauthenticated_api_enabled`
+            instead.) (**If enabled, requires**: `throttle_unauthenticated_period_in_seconds`
+            and `throttle_unauthenticated_requests_per_period`) Enable unauthenticated
+            web request rate limit. Helps reduce request volume (for example, from
+            crawlers or abusive bots)."
+          nullable: true
+        throttle_unauthenticated_git_http_enabled:
+          type: string
+          description: 'If `true`, enforces the unauthenticated Git HTTP request rate
+            limit. Default value: `false`.'
+          nullable: true
+        throttle_unauthenticated_git_http_period_in_seconds:
+          type: string
+          description: 'Rate limit period in seconds. `throttle_unauthenticated_git_http_enabled`
+            must be `true`. Default value: `3600`.'
+          nullable: true
+        throttle_unauthenticated_git_http_requests_per_period:
+          type: string
+          description: 'Maximum requests per period per IP. `throttle_unauthenticated_git_http_enabled`
+            must be `true`. Default value: `3600`.'
+          nullable: true
+        throttle_unauthenticated_packages_api_enabled:
+          type: string
+          description: "(**If enabled, requires**: `throttle_unauthenticated_packages_api_period_in_seconds`
+            and `throttle_unauthenticated_packages_api_requests_per_period`) Enable
+            unauthenticated API request rate limit. Helps reduce request volume (for
+            example, from crawlers or abusive bots)."
+          nullable: true
+        throttle_unauthenticated_packages_api_period_in_seconds:
+          type: string
+          description: Rate limit period (in seconds).
+          nullable: true
+        throttle_unauthenticated_packages_api_requests_per_period:
+          type: string
+          description: Maximum requests per period per user.
+          nullable: true
+        throttle_unauthenticated_period_in_seconds:
+          type: string
+          description: "([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/335300)
+            in GitLab 14.3. Use `throttle_unauthenticated_web_period_in_seconds` or
+            `throttle_unauthenticated_api_period_in_seconds` instead.) Rate limit
+            period in seconds."
+          nullable: true
+        throttle_unauthenticated_requests_per_period:
+          type: string
+          description: "([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/335300)
+            in GitLab 14.3. Use `throttle_unauthenticated_web_requests_per_period`
+            or `throttle_unauthenticated_api_requests_per_period` instead.) Maximum
+            requests per period per IP."
+          nullable: true
+        throttle_unauthenticated_web_enabled:
+          type: string
+          description: "(**If enabled, requires**: `throttle_unauthenticated_web_period_in_seconds`
+            and `throttle_unauthenticated_web_requests_per_period`) Enable unauthenticated
+            web request rate limit. Helps reduce request volume (for example, from
+            crawlers or abusive bots)."
+          nullable: true
+        throttle_unauthenticated_web_period_in_seconds:
+          type: string
+          description: Rate limit period in seconds.
+          nullable: true
+        throttle_unauthenticated_web_requests_per_period:
+          type: string
+          description: Maximum requests per period per IP.
+          nullable: true
+        time_tracking_limit_to_hours:
+          type: string
+          description: Limit display of time tracking units to hours. Default is `false`.
+          nullable: true
+        top_level_group_creation_enabled:
+          type: string
+          description: Allows a user to create top-level-groups. Default is `true`.
+          nullable: true
+        unique_ips_limit_enabled:
+          type: string
+          description: "(**If enabled, requires**: `unique_ips_limit_per_user` and
+            `unique_ips_limit_time_window`) Limit sign in from multiple IPs."
+          nullable: true
+        unique_ips_limit_per_user:
+          type: string
+          description: Maximum number of IPs per user.
+          nullable: true
+        unique_ips_limit_time_window:
+          type: string
+          description: How many seconds an IP is counted towards the limit.
+          nullable: true
+        update_runner_versions_enabled:
+          type: string
+          description: Fetch GitLab Runner release version data from GitLab.com.
+          nullable: true
+        use_clickhouse_for_analytics:
+          type: string
+          description: Enables ClickHouse as a data source for analytics reports.
+            ClickHouse must be configured for this setting to take effect. Available
+            on Premium and Ultimate only.
+          nullable: true
+        user_default_external:
+          type: string
+          description: Newly registered users are external by default.
+          nullable: true
+        user_default_internal_regex:
+          type: string
+          description: Specify an email address regex pattern to identify default
+            internal users.
+          nullable: true
+        user_defaults_to_private_profile:
+          type: string
+          description: Newly created users have private profile by default. Defaults
+            to `false`.
+          nullable: true
+        user_oauth_applications:
+          type: string
+          description: Allow users to register any application to use GitLab as an
+            OAuth provider. This setting does not affect group-level OAuth applications.
+          nullable: true
+        user_show_add_ssh_key_message:
+          type: string
+          description: When set to `false` disable the `You won't be able to pull
+            or push repositories via SSH until you add an SSH key to your profile`
+            warning shown to users with no uploaded SSH key.
+          nullable: true
+        users_api_limit_followers:
+          type: string
+          description: 'Maximum number of requests per minute, per user or IP address.
+            Default: 100. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054)
+            in GitLab 17.10.'
+          nullable: true
+        users_api_limit_following:
+          type: string
+          description: 'Maximum number of requests per minute, per user or IP address.
+            Default: 100. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054)
+            in GitLab 17.10.'
+          nullable: true
+        users_api_limit_gpg_key:
+          type: string
+          description: 'Maximum number of requests per minute, per user or IP address.
+            Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054)
+            in GitLab 17.10.'
+          nullable: true
+        users_api_limit_gpg_keys:
+          type: string
+          description: 'Maximum number of requests per minute, per user or IP address.
+            Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054)
+            in GitLab 17.10.'
+          nullable: true
+        users_api_limit_status:
+          type: string
+          description: 'Maximum number of requests per minute, per user or IP address.
+            Default: 240. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054)
+            in GitLab 17.10.'
+          nullable: true
+        version_check_enabled:
+          type: string
+          description: Let GitLab inform you when an update is available.
+          nullable: true
+        web_hook_event_resend_limit:
+          type: string
+          description: 'Maximum number of webhook event resend requests per minute,
+            per user, for a given project or group. Default: 5. Set to `0` to disable
+            limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587887)
+            in GitLab 19.3.'
+          nullable: true
+        web_hook_test_limit:
+          type: string
+          description: 'Maximum number of webhook test requests per minute, per user,
+            for a given project or group. Default: 5. Set to `0` to disable limits.
+            [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587887) in
+            GitLab 19.3.'
+          nullable: true
         elasticsearch_aws:
           type: boolean
           description: Enable support for AWS hosted elasticsearch
@@ -102756,76 +103589,257 @@ components:
           description: Route audit event streaming through NATS JetStream when the
             instance has NATS configured
           nullable: true
-        allow_local_requests_from_web_hooks_and_services:
+        allow_all_integrations:
           type: string
+          description: When `false`, only integrations in `allowed_integrations` are
+            allowed on the instance. Ultimate only.
           nullable: true
-        allow_local_requests_from_system_hooks:
+        allow_group_owners_to_manage_ldap:
           type: string
+          description: Set to `true` to allow group owners to manage LDAP. Premium
+            and Ultimate only.
+          nullable: true
+        allowed_integrations:
+          type: string
+          description: When `allow_all_integrations` is `false`, only integrations
+            in this list are allowed on the instance. Ultimate only.
+          nullable: true
+        automatic_purchased_storage_allocation:
+          type: string
+          description: Enabling this permits automatic allocation of purchased storage
+            in a namespace. Relevant only to EE distributions.
+          nullable: true
+        check_namespace_plan:
+          type: string
+          description: Enabling this makes only licensed EE features available to
+            projects if the project namespace's plan includes the feature or if the
+            project is public. Premium and Ultimate only.
+          nullable: true
+        delete_unconfirmed_users:
+          type: string
+          description: Specifies whether users who have not confirmed their email
+            should be deleted. Default is `false`. When set to `true`, unconfirmed
+            users are deleted after `unconfirmed_users_delete_after_days` days. GitLab
+            Self-Managed, Premium and Ultimate only.
+          nullable: true
+        disable_invite_members:
+          type: string
+          description: Disable invite members functionality for group.
+          nullable: true
+        elasticsearch_client_adapter:
+          type: string
+          description: The Faraday adapter used by the Elasticsearch Ruby Client.
+            Defaults to `typhoeus`. Possible values are `typhoeus` and `net_http`.
+            [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550805) in
+            GitLab 18.5. Premium and Ultimate only.
+          nullable: true
+        elasticsearch_indexed_field_length_limit:
+          type: string
+          description: Maximum size of text fields to index by Elasticsearch. 0 value
+            means no limit. This does not apply to repository and wiki indexing. Premium
+            and Ultimate only.
+          nullable: true
+        elasticsearch_indexed_file_size_limit_kb:
+          type: string
+          description: Maximum size of repository and wiki files that are indexed
+            by Elasticsearch. Premium and Ultimate only.
+          nullable: true
+        elasticsearch_max_bulk_concurrency:
+          type: string
+          description: Maximum concurrency of Elasticsearch bulk requests per indexing
+            operation. This only applies to repository indexing operations. Premium
+            and Ultimate only.
+          nullable: true
+        elasticsearch_max_bulk_size_mb:
+          type: string
+          description: Maximum size of Elasticsearch bulk indexing requests in MB.
+            This only applies to repository indexing operations. Premium and Ultimate
+            only.
+          nullable: true
+        elasticsearch_max_code_indexing_concurrency:
+          type: string
+          description: Maximum concurrency of Elasticsearch code indexing background
+            jobs. This only applies to repository indexing operations. Premium and
+            Ultimate only.
+          nullable: true
+        elasticsearch_replicas:
+          type: string
+          description: 'Number of replicas for Elasticsearch indices. Use an integer
+            to set all indices to the same value. Use an object to set per-index values.
+            For example: `{"gitlab-production": 1, "gitlab-production-notes": 2}`.
+            <br>When using an object, you must provide both `elasticsearch_shards`
+            and `elasticsearch_replicas` for each index. If either value is missing
+            for an index, that index is skipped. Premium and Ultimate only.'
+          nullable: true
+        elasticsearch_requeue_workers:
+          type: string
+          description: Enable automatic requeuing of indexing workers. This improves
+            non-code indexing throughput by enqueuing Sidekiq jobs until all documents
+            are processed. Premium and Ultimate only.
+          nullable: true
+        elasticsearch_retry_on_failure:
+          type: string
+          description: Maximum number of possible retries for Elasticsearch search
+            requests. Premium and Ultimate only.
+          nullable: true
+        elasticsearch_shards:
+          type: string
+          description: 'Number of shards for Elasticsearch indices. Use an integer
+            to set all indices to the same value. Use an object to set per-index values.
+            For example: `{"gitlab-production": 5, "gitlab-production-notes": 3}`.
+            <br>When using an object, you must provide both `elasticsearch_shards`
+            and `elasticsearch_replicas` for each index. If either value is missing
+            for an index, that index is skipped. Premium and Ultimate only.'
+          nullable: true
+        elasticsearch_worker_number_of_shards:
+          type: string
+          description: Number of indexing worker shards. This improves non-code indexing
+            throughput by enqueuing more parallel Sidekiq jobs. Default is `2`. Premium
+            and Ultimate only.
+          nullable: true
+        enforce_namespace_storage_limit:
+          type: string
+          description: Enabling this permits enforcement of namespace storage limits.
+          nullable: true
+        enforce_pipl_compliance:
+          type: string
+          description: Sets whether pipl compliance is enforced for the saas application
+            or not
+          nullable: true
+        geo_node_allowed_ips:
+          type: string
+          description: Comma-separated list of IPs and CIDRs of allowed secondary
+            nodes. For example, `1.1.1.1, 2.2.2.0/24`. GitLab Self-Managed, Premium
+            and Ultimate only.
+          nullable: true
+        geo_status_timeout:
+          type: string
+          description: The amount of seconds after which a request to get a secondary
+            node status times out. GitLab Self-Managed, Premium and Ultimate only.
+          nullable: true
+        globally_allowed_ips:
+          type: string
+          description: Comma-separated list of IP addresses and CIDRs always allowed
+            for inbound traffic. For example, `1.1.1.1, 2.2.2.0/24`.
+          nullable: true
+        group_secrets_limit:
+          type: string
+          description: 'Maximum number of secrets allowed per group in Secrets Manager.
+            Default: 500. To disable the limit, set to `0`. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219436)
+            in GitLab 18.9.'
+          nullable: true
+        lock_memberships_to_saml:
+          type: string
+          description: Enforce a global lock on SAML group memberships.
+          nullable: true
+        max_personal_access_token_lifetime:
+          type: string
+          description: Maximum allowable lifetime for access tokens in days. When
+            left blank, default value of 365 is applied. When set, value must be 365
+            or less. When changed, existing access tokens with an expiration date
+            beyond the maximum allowable lifetime are revoked. GitLab Self-Managed,
+            Ultimate only. In GitLab 17.6 or later, the maximum lifetime limit can
+            be [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901)
+            by enabling a feature flag named `buffered_token_expiration_limit`.
+          nullable: true
+        max_ssh_key_lifetime:
+          type: string
+          description: Maximum allowable lifetime for SSH keys in days. GitLab Self-Managed,
+            Ultimate only. In GitLab 17.6 or later, the maximum lifetime limit can
+            be [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901)
+            by enabling a feature flag named `buffered_token_expiration_limit`.
+          nullable: true
+        mirror_capacity_threshold:
+          type: string
+          description: Minimum capacity to be available before scheduling more mirrors
+            preemptively. Premium and Ultimate only.
+          nullable: true
+        mirror_max_capacity:
+          type: string
+          description: Maximum number of mirrors that can be synchronizing at the
+            same time. Premium and Ultimate only.
+          nullable: true
+        mirror_max_delay:
+          type: string
+          description: Maximum time (in minutes) between updates that a mirror can
+            have when scheduled to synchronize. Premium and Ultimate only.
+          nullable: true
+        package_metadata_purl_types:
+          type: string
+          description: List of package registry metadata to sync. See [the list](https://gitlab.com/gitlab-org/gitlab/-/blob/ace16c20d5da7c4928dd03fb139692638b557fe3/app/models/concerns/enums/package_metadata.rb#L5)
+            of the available values. GitLab Self-Managed, Ultimate only.
+          nullable: true
+        password_lowercase_required:
+          type: string
+          description: Indicates whether passwords require at least one lowercase
+            letter. Premium and Ultimate only.
+          nullable: true
+        password_number_required:
+          type: string
+          description: Indicates whether passwords require at least one number. Premium
+            and Ultimate only.
+          nullable: true
+        password_symbol_required:
+          type: string
+          description: Indicates whether passwords require at least one symbol character.
+            Premium and Ultimate only.
+          nullable: true
+        password_uppercase_required:
+          type: string
+          description: Indicates whether passwords require at least one uppercase
+            letter. Premium and Ultimate only.
+          nullable: true
+        project_secrets_limit:
+          type: string
+          description: 'Maximum number of secrets allowed per project in Secrets Manager.
+            Default: 100. To disable the limit, set to `0`. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219436)
+            in GitLab 18.9.'
+          nullable: true
+        scan_execution_policies_action_limit:
+          type: string
+          description: 'Maximum number of `actions` per scan execution policy. Default:
+            0. Maximum: 20'
+          nullable: true
+        scan_execution_policies_schedule_limit:
+          type: string
+          description: 'Maximum number of `type: schedule` rules per scan execution
+            policy. Default: 0. Maximum: 20'
+          nullable: true
+        secret_push_protection_available:
+          type: string
+          description: Allow projects to enable secret push protection. This does
+            not enable secret push protection. Ultimate only.
+          nullable: true
+        security_approval_policies_limit:
+          type: string
+          description: 'Maximum number of active merge request approval policies per
+            security policy project. Default: 5. Maximum: 20'
+          nullable: true
+        security_mr_report_cache_lifetime_minutes:
+          type: string
+          description: 'Number of minutes to cache security reports on merge requests
+            (10-60). Default: 10. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223399)
+            in GitLab 18.10.'
+          nullable: true
+        shared_runners_minutes:
+          type: string
+          description: Set the maximum number of compute minutes that a group can
+            use on instance runners per month. Premium and Ultimate only.
+          nullable: true
+        unconfirmed_users_delete_after_days:
+          type: string
+          description: Specifies how many days after account creation to delete users
+            who have not confirmed their email. Only applicable if `delete_unconfirmed_users`
+            is set to `true`. Must be `1` or greater. Default is `7`. GitLab Self-Managed,
+            Premium and Ultimate only.
           nullable: true
         allow_possible_spam:
-          type: string
-          nullable: true
-        dns_rebinding_protection_enabled:
-          type: string
-          nullable: true
-        archive_builds_in_human_readable:
-          type: string
-          nullable: true
-        static_objects_external_storage_auth_token:
-          type: string
-          nullable: true
-        static_objects_external_storage_url:
-          type: string
-          nullable: true
-        authorized_keys_enabled:
-          type: string
-          nullable: true
-        auto_devops_enabled:
-          type: string
-          nullable: true
-        auto_devops_domain:
-          type: string
-          nullable: true
-        allow_bypass_placeholder_confirmation:
-          type: string
-          nullable: true
-        ci_delete_pipelines_in_seconds_limit_human_readable:
-          type: string
-          nullable: true
-        ci_partitions_in_seconds_limit_human_readable:
           type: string
           nullable: true
         import_jobs_concurrency_limit:
           type: string
           nullable: true
-        container_expiration_policies_enable_historic_entries:
-          type: string
-          nullable: true
-        container_registry_expiration_policies_caching:
-          type: string
-          nullable: true
-        default_branch_name:
-          type: string
-          nullable: true
-        default_preferred_language:
-          type: string
-          nullable: true
-        default_syntax_highlighting_theme:
-          type: string
-          nullable: true
-        default_dark_syntax_highlighting_theme:
-          type: string
-          nullable: true
-        delete_inactive_projects:
-          type: string
-          nullable: true
-        deletion_adjourned_period:
-          type: string
-          nullable: true
         deny_all_requests_except_allowed:
-          type: string
-          nullable: true
-        disable_password_authentication_for_users_with_sso_identities:
           type: string
           nullable: true
         root_moved_permanently_redirection:
@@ -102846,55 +103860,13 @@ components:
         enforce_email_subaddress_restrictions:
           type: string
           nullable: true
-        require_email_verification_on_account_locked:
-          type: string
-          nullable: true
-        enforce_terms:
-          type: string
-          nullable: true
         error_tracking_enabled:
           type: string
           nullable: true
         error_tracking_api_url:
           type: string
           nullable: true
-        external_pipeline_validation_service_timeout:
-          type: string
-          nullable: true
-        external_pipeline_validation_service_token:
-          type: string
-          nullable: true
-        external_pipeline_validation_service_url:
-          type: string
-          nullable: true
-        failed_login_attempts_unlock_period_in_minutes:
-          type: string
-          nullable: true
-        first_day_of_week:
-          type: string
-          nullable: true
         force_pages_access_control:
-          type: string
-          nullable: true
-        hashed_storage_enabled:
-          type: string
-          nullable: true
-        hide_third_party_offers:
-          type: string
-          nullable: true
-        inactive_resource_access_tokens_delete_after_days:
-          type: string
-          nullable: true
-        inactive_projects_delete_after_months:
-          type: string
-          nullable: true
-        inactive_projects_min_size_mb:
-          type: string
-          nullable: true
-        inactive_projects_send_warning_email_after_months:
-          type: string
-          nullable: true
-        include_optional_metrics_in_service_ping:
           type: string
           nullable: true
         jira_connect_additional_audience_url:
@@ -102903,112 +103875,16 @@ components:
         math_rendering_limits_enabled:
           type: string
           nullable: true
-        require_sha_for_merge:
-          type: string
-          nullable: true
-        lock_require_sha_for_merge:
-          type: string
-          nullable: true
         max_artifacts_content_include_size:
-          type: string
-          nullable: true
-        max_http_decompressed_size:
-          type: string
-          nullable: true
-        max_http_response_size_limit:
-          type: string
-          nullable: true
-        max_http_response_json_depth:
-          type: string
-          nullable: true
-        max_http_response_json_structural_chars:
-          type: string
-          nullable: true
-        max_http_response_xml_structural_chars:
-          type: string
-          nullable: true
-        max_http_response_csv_structural_chars:
-          type: string
-          nullable: true
-        max_login_attempts:
-          type: string
-          nullable: true
-        max_yaml_size_bytes:
-          type: string
-          nullable: true
-        max_yaml_depth:
-          type: string
-          nullable: true
-        minimum_password_length:
-          type: string
-          nullable: true
-        mirror_available:
-          type: string
-          nullable: true
-        notify_on_unknown_sign_in:
           type: string
           nullable: true
         organization_cluster_agent_authorization_enabled:
           type: string
           nullable: true
-        pages_domain_verification_enabled:
-          type: string
-          nullable: true
-        pages_unique_domain_default_enabled:
-          type: string
-          nullable: true
         instance_token_prefix:
           type: string
           nullable: true
-        kroki_formats:
-          type: string
-          nullable: true
-        kroki_diagram_proxy_enabled:
-          type: string
-          nullable: true
-        plantuml_diagram_proxy_enabled:
-          type: string
-          nullable: true
         pages_extra_deployments_default_expiry_seconds:
-          type: string
-          nullable: true
-        receive_max_input_size:
-          type: string
-          nullable: true
-        require_admin_two_factor_authentication:
-          type: string
-          nullable: true
-        remember_me_enabled:
-          type: string
-          nullable: true
-        sign_in_restrictions:
-          type: string
-          nullable: true
-        silent_mode_enabled:
-          type: string
-          nullable: true
-        spam_check_api_key:
-          type: string
-          nullable: true
-        terms:
-          type: string
-          nullable: true
-        throttle_authenticated_api_enabled:
-          type: string
-          nullable: true
-        throttle_authenticated_api_period_in_seconds:
-          type: string
-          nullable: true
-        throttle_authenticated_api_requests_per_period:
-          type: string
-          nullable: true
-        throttle_authenticated_git_http_enabled:
-          type: string
-          nullable: true
-        throttle_authenticated_git_http_period_in_seconds:
-          type: string
-          nullable: true
-        throttle_authenticated_git_http_requests_per_period:
           type: string
           nullable: true
         throttle_authenticated_git_lfs_enabled:
@@ -103018,24 +103894,6 @@ components:
           type: string
           nullable: true
         throttle_authenticated_git_lfs_requests_per_period:
-          type: string
-          nullable: true
-        throttle_authenticated_web_enabled:
-          type: string
-          nullable: true
-        throttle_authenticated_web_period_in_seconds:
-          type: string
-          nullable: true
-        throttle_authenticated_web_requests_per_period:
-          type: string
-          nullable: true
-        throttle_authenticated_packages_api_enabled:
-          type: string
-          nullable: true
-        throttle_authenticated_packages_api_period_in_seconds:
-          type: string
-          nullable: true
-        throttle_authenticated_packages_api_requests_per_period:
           type: string
           nullable: true
         throttle_authenticated_files_api_enabled:
@@ -103056,33 +103914,6 @@ components:
         throttle_authenticated_deprecated_api_requests_per_period:
           type: string
           nullable: true
-        throttle_unauthenticated_api_enabled:
-          type: string
-          nullable: true
-        throttle_unauthenticated_api_period_in_seconds:
-          type: string
-          nullable: true
-        throttle_unauthenticated_api_requests_per_period:
-          type: string
-          nullable: true
-        throttle_unauthenticated_enabled:
-          type: string
-          nullable: true
-        throttle_unauthenticated_period_in_seconds:
-          type: string
-          nullable: true
-        throttle_unauthenticated_requests_per_period:
-          type: string
-          nullable: true
-        throttle_unauthenticated_packages_api_enabled:
-          type: string
-          nullable: true
-        throttle_unauthenticated_packages_api_period_in_seconds:
-          type: string
-          nullable: true
-        throttle_unauthenticated_packages_api_requests_per_period:
-          type: string
-          nullable: true
         throttle_unauthenticated_files_api_enabled:
           type: string
           nullable: true
@@ -103090,15 +103921,6 @@ components:
           type: string
           nullable: true
         throttle_unauthenticated_files_api_requests_per_period:
-          type: string
-          nullable: true
-        throttle_unauthenticated_git_http_enabled:
-          type: string
-          nullable: true
-        throttle_unauthenticated_git_http_period_in_seconds:
-          type: string
-          nullable: true
-        throttle_unauthenticated_git_http_requests_per_period:
           type: string
           nullable: true
         throttle_unauthenticated_deprecated_api_enabled:
@@ -103119,91 +103941,16 @@ components:
         throttle_protected_paths_requests_per_period:
           type: string
           nullable: true
-        top_level_group_creation_enabled:
-          type: string
-          nullable: true
         protected_paths_raw:
           type: string
           nullable: true
         protected_paths_for_get_request_raw:
           type: string
           nullable: true
-        time_tracking_limit_to_hours:
-          type: string
-          nullable: true
-        update_runner_versions_enabled:
-          type: string
-          nullable: true
-        unique_ips_limit_enabled:
-          type: string
-          nullable: true
-        unique_ips_limit_per_user:
-          type: string
-          nullable: true
-        unique_ips_limit_time_window:
-          type: string
-          nullable: true
         usage_ping_generation_enabled:
           type: string
           nullable: true
         usage_ping_features_enabled:
-          type: string
-          nullable: true
-        use_clickhouse_for_analytics:
-          type: string
-          nullable: true
-        user_default_external:
-          type: string
-          nullable: true
-        user_show_add_ssh_key_message:
-          type: string
-          nullable: true
-        user_default_internal_regex:
-          type: string
-          nullable: true
-        user_oauth_applications:
-          type: string
-          nullable: true
-        version_check_enabled:
-          type: string
-          nullable: true
-        diff_max_patch_bytes:
-          type: string
-          nullable: true
-        diff_max_files:
-          type: string
-          nullable: true
-        diff_max_lines:
-          type: string
-          nullable: true
-        diff_max_versions:
-          type: string
-          nullable: true
-        diff_max_commits:
-          type: string
-          nullable: true
-        commit_email_hostname:
-          type: string
-          nullable: true
-        protected_ci_variables:
-          type: string
-          nullable: true
-        snowplow_database_collector_hostname:
-          type: string
-          nullable: true
-        gitlab_product_usage_data_enabled:
-          type: string
-          nullable: true
-        custom_http_clone_url_root:
-          type: string
-          nullable: true
-        snippet_size_limit:
-          type: string
-          nullable: true
-        email_restrictions_enabled:
-          type: string
-          nullable: true
-        email_restrictions:
           type: string
           nullable: true
         project_create_limit:
@@ -103239,27 +103986,6 @@ components:
         group_download_export_limit:
           type: string
           nullable: true
-        container_registry_delete_tags_service_timeout:
-          type: string
-          nullable: true
-        rate_limiting_response_text:
-          type: string
-          nullable: true
-        package_registry_allow_anyone_to_pull_option:
-          type: string
-          nullable: true
-        package_registry_cleanup_policies_worker_capacity:
-          type: string
-          nullable: true
-        container_registry_expiration_policies_worker_capacity:
-          type: string
-          nullable: true
-        container_registry_cleanup_tags_service_max_list_size:
-          type: string
-          nullable: true
-        keep_latest_artifact:
-          type: string
-          nullable: true
         resource_access_token_notify_inherited:
           type: string
           nullable: true
@@ -103281,24 +104007,6 @@ components:
         sentry_clientside_traces_sample_rate:
           type: string
           nullable: true
-        sidekiq_job_limiter_mode:
-          type: string
-          nullable: true
-        sidekiq_job_limiter_compression_threshold_bytes:
-          type: string
-          nullable: true
-        sidekiq_job_limiter_limit_bytes:
-          type: string
-          nullable: true
-        sidekiq_timezone_override:
-          type: string
-          nullable: true
-        search_rate_limit:
-          type: string
-          nullable: true
-        search_rate_limit_unauthenticated:
-          type: string
-          nullable: true
         search_rate_limit_allowlist_raw:
           type: string
           nullable: true
@@ -103308,46 +104016,16 @@ components:
         invitation_flow_enforcement:
           type: string
           nullable: true
-        can_create_group:
-          type: string
-          nullable: true
         can_create_organization:
           type: string
           nullable: true
         concurrent_relation_export_limit:
           type: string
           nullable: true
-        relation_export_batch_size:
-          type: string
-          nullable: true
-        bulk_import_max_download_file_size:
-          type: string
-          nullable: true
-        silent_admin_exports_enabled:
-          type: string
-          nullable: true
         allow_contribution_mapping_to_admins:
           type: string
           nullable: true
-        allow_s3_compatible_storage_for_offline_transfer:
-          type: string
-          nullable: true
-        allow_application_default_credentials_for_offline_transfer:
-          type: string
-          nullable: true
-        offline_transfer_exports_enabled:
-          type: string
-          nullable: true
-        offline_transfer_imports_enabled:
-          type: string
-          nullable: true
-        user_defaults_to_private_profile:
-          type: string
-          nullable: true
         deactivation_email_additional_text:
-          type: string
-          nullable: true
-        projects_api_rate_limit_unauthenticated:
           type: string
           nullable: true
         group_api_limit:
@@ -103395,52 +104073,10 @@ components:
         user_starred_projects_api_limit:
           type: string
           nullable: true
-        users_api_limit_followers:
-          type: string
-          nullable: true
-        users_api_limit_following:
-          type: string
-          nullable: true
-        users_api_limit_status:
-          type: string
-          nullable: true
         users_api_limit_ssh_keys:
           type: string
           nullable: true
         users_api_limit_ssh_key:
-          type: string
-          nullable: true
-        users_api_limit_gpg_keys:
-          type: string
-          nullable: true
-        users_api_limit_gpg_key:
-          type: string
-          nullable: true
-        web_hook_event_resend_limit:
-          type: string
-          nullable: true
-        web_hook_test_limit:
-          type: string
-          nullable: true
-        gitlab_dedicated_instance:
-          type: string
-          nullable: true
-        gitlab_environment_toolkit_instance:
-          type: string
-          nullable: true
-        allow_account_deletion:
-          type: string
-          nullable: true
-        gitlab_shell_operation_limit:
-          type: string
-          nullable: true
-        ci_max_total_yaml_size_bytes:
-          type: string
-          nullable: true
-        allow_project_creation_for_guest_and_below:
-          type: string
-          nullable: true
-        asciidoc_max_includes:
           type: string
           nullable: true
         observability_backend_ssl_verification_enabled:
@@ -103485,15 +104121,6 @@ components:
         delay_user_account_self_deletion:
           type: string
           nullable: true
-        runner_jobs_request_api_limit:
-          type: string
-          nullable: true
-        runner_jobs_patch_trace_api_limit:
-          type: string
-          nullable: true
-        runner_jobs_endpoints_api_limit:
-          type: string
-          nullable: true
         background_operations_max_jobs:
           type: string
           nullable: true
@@ -103501,9 +104128,6 @@ components:
           type: string
           nullable: true
         granular_tokens_enforced_after:
-          type: string
-          nullable: true
-        auto_accept_awarded_achievements:
           type: string
           nullable: true
         deactivate_dormant_users:
@@ -103524,21 +104148,6 @@ components:
         dynamic_client_registration_enabled:
           type: string
           nullable: true
-        allow_all_integrations:
-          type: string
-          nullable: true
-        allowed_integrations:
-          type: string
-          nullable: true
-        allow_group_owners_to_manage_ldap:
-          type: string
-          nullable: true
-        automatic_purchased_storage_allocation:
-          type: string
-          nullable: true
-        check_namespace_plan:
-          type: string
-          nullable: true
         ci_cd_catalog_projects_allowlist:
           type: string
           nullable: true
@@ -103554,43 +104163,10 @@ components:
         elasticsearch_aws_role_arn:
           type: string
           nullable: true
-        elasticsearch_client_adapter:
-          type: string
-          nullable: true
         elasticsearch_client_request_timeout:
           type: string
           nullable: true
-        elasticsearch_indexed_field_length_limit:
-          type: string
-          nullable: true
-        elasticsearch_indexed_file_size_limit_kb:
-          type: string
-          nullable: true
         elasticsearch_indexing_timeout_minutes:
-          type: string
-          nullable: true
-        elasticsearch_requeue_workers:
-          type: string
-          nullable: true
-        elasticsearch_worker_number_of_shards:
-          type: string
-          nullable: true
-        elasticsearch_max_bulk_concurrency:
-          type: string
-          nullable: true
-        elasticsearch_max_bulk_size_mb:
-          type: string
-          nullable: true
-        elasticsearch_max_code_indexing_concurrency:
-          type: string
-          nullable: true
-        elasticsearch_retry_on_failure:
-          type: string
-          nullable: true
-        elasticsearch_replicas:
-          type: string
-          nullable: true
-        elasticsearch_shards:
           type: string
           nullable: true
         elasticsearch_analyzers_smartcn_enabled:
@@ -103608,31 +104184,13 @@ components:
         elasticsearch_code_scope:
           type: string
           nullable: true
-        enforce_namespace_storage_limit:
-          type: string
-          nullable: true
-        geo_node_allowed_ips:
-          type: string
-          nullable: true
-        geo_status_timeout:
-          type: string
-          nullable: true
         instance_level_ai_beta_features_enabled:
           type: string
           nullable: true
         lock_memberships_to_ldap:
           type: string
           nullable: true
-        lock_memberships_to_saml:
-          type: string
-          nullable: true
         lock_model_prompt_cache_enabled:
-          type: string
-          nullable: true
-        max_personal_access_token_lifetime:
-          type: string
-          nullable: true
-        max_ssh_key_lifetime:
           type: string
           nullable: true
         model_prompt_cache_enabled:
@@ -103650,9 +104208,6 @@ components:
         secret_detection_token_revocation_token:
           type: string
           nullable: true
-        shared_runners_minutes:
-          type: string
-          nullable: true
         throttle_incident_management_notification_enabled:
           type: string
           nullable: true
@@ -103660,9 +104215,6 @@ components:
           type: string
           nullable: true
         throttle_incident_management_notification_period_in_seconds:
-          type: string
-          nullable: true
-        package_metadata_purl_types:
           type: string
           nullable: true
         product_analytics_enabled:
@@ -103678,9 +104230,6 @@ components:
           type: string
           nullable: true
         cube_api_key:
-          type: string
-          nullable: true
-        security_approval_policies_limit:
           type: string
           nullable: true
         duo_availability:
@@ -103785,12 +104334,6 @@ components:
         duo_workflow_oauth_application_id:
           type: string
           nullable: true
-        scan_execution_policies_action_limit:
-          type: string
-          nullable: true
-        scan_execution_policies_schedule_limit:
-          type: string
-          nullable: true
         pipeline_execution_policies_per_configuration_limit:
           type: string
           nullable: true
@@ -103830,19 +104373,7 @@ components:
         elastic_migration_worker_enabled:
           type: string
           nullable: true
-        enforce_pipl_compliance:
-          type: string
-          nullable: true
         display_gitlab_credits_user_data:
-          type: string
-          nullable: true
-        project_secrets_limit:
-          type: string
-          nullable: true
-        group_secrets_limit:
-          type: string
-          nullable: true
-        security_mr_report_cache_lifetime_minutes:
           type: string
           nullable: true
         vac_project_ids_raw:
@@ -103851,73 +104382,7 @@ components:
         enable_member_promotion_management:
           type: string
           nullable: true
-        external_auth_client_cert:
-          type: string
-          nullable: true
-        external_auth_client_key:
-          type: string
-          nullable: true
-        external_auth_client_key_pass:
-          type: string
-          nullable: true
-        external_authorization_service_default_label:
-          type: string
-          nullable: true
-        external_authorization_service_enabled:
-          type: string
-          nullable: true
-        external_authorization_service_timeout:
-          type: string
-          nullable: true
-        external_authorization_service_url:
-          type: string
-          nullable: true
         allow_deploy_tokens_and_keys_with_external_authn:
-          type: string
-          nullable: true
-        ci_partitions_in_seconds_limit:
-          type: string
-          nullable: true
-        throttle_unauthenticated_web_enabled:
-          type: string
-          nullable: true
-        throttle_unauthenticated_web_period_in_seconds:
-          type: string
-          nullable: true
-        throttle_unauthenticated_web_requests_per_period:
-          type: string
-          nullable: true
-        mirror_max_capacity:
-          type: string
-          nullable: true
-        mirror_max_delay:
-          type: string
-          nullable: true
-        mirror_capacity_threshold:
-          type: string
-          nullable: true
-        password_number_required:
-          type: string
-          nullable: true
-        password_symbol_required:
-          type: string
-          nullable: true
-        password_uppercase_required:
-          type: string
-          nullable: true
-        password_lowercase_required:
-          type: string
-          nullable: true
-        delete_unconfirmed_users:
-          type: string
-          nullable: true
-        unconfirmed_users_delete_after_days:
-          type: string
-          nullable: true
-        secret_push_protection_available:
-          type: string
-          nullable: true
-        globally_allowed_ips:
           type: string
           nullable: true
         allow_top_level_group_owners_to_create_service_accounts:
@@ -103927,9 +104392,6 @@ components:
           type: string
           nullable: true
         dependency_scanning_sbom_scan_api_download_limit:
-          type: string
-          nullable: true
-        disable_invite_members:
           type: string
           nullable: true
     RequestBody_4d6a710f0d2d:

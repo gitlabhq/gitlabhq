@@ -23,7 +23,7 @@ class IdeController < ApplicationController
   track_internal_event :index, name: 'web_ide_viewed'
 
   def index
-    @fork_info = fork_info(project, params[:branch])
+    @fork_info = fork_info(project, permitted_params[:branch])
 
     @workbench_secret = generate_workbench_secret
 
@@ -41,10 +41,14 @@ class IdeController < ApplicationController
 
   private
 
+  def permitted_params
+    params.permit(:branch, :project_id)
+  end
+
   def authorize_read_project!
     return @project if @project
 
-    path = params[:project_id]
+    path = permitted_params[:project_id]
 
     @project = find_routable!(Project, path, request.fullpath, extra_authorization_proc: auth_proc)
   end
@@ -82,9 +86,10 @@ class IdeController < ApplicationController
   end
 
   def project
-    return unless params[:project_id].present?
+    project_id = permitted_params[:project_id]
+    return unless project_id.present?
 
-    Project.find_by_full_path(params[:project_id])
+    Project.find_by_full_path(project_id)
   end
   strong_memoize_attr :project
 

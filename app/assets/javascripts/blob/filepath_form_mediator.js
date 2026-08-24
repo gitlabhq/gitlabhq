@@ -4,13 +4,15 @@ import Api from '~/api';
 import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
-import mountFilepathForm from '~/blob/filepath_form';
 
 export default class FilepathFormMediator {
-  constructor({ editor, currentAction, projectId }) {
+  constructor({ editor, currentAction, projectId, mountFilepathForm }) {
     this.editor = editor;
     this.currentAction = currentAction;
     this.projectId = projectId;
+    // Passed in by blob_edit/edit_blob.js rather than imported here on purpose; see the
+    // note next to the import there before moving it.
+    this.mountFilepathForm = mountFilepathForm;
 
     this.initFilepathForm();
     this.initDomElements();
@@ -21,7 +23,10 @@ export default class FilepathFormMediator {
     const handleTemplateSelect = ({ template, type, clearSelectedTemplate, stopLoading }) => {
       this.selectTemplateFile(template, type, clearSelectedTemplate, stopLoading);
     };
-    mountFilepathForm({ action: this.currentAction, onTemplateSelected: handleTemplateSelect });
+    this.mountFilepathForm({
+      action: this.currentAction,
+      onTemplateSelected: handleTemplateSelect,
+    });
   }
 
   initDomElements() {

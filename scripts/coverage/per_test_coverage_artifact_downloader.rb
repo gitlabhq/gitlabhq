@@ -61,10 +61,12 @@ class PerTestCoverageArtifactDownloader
     @node_total = ENV.fetch('CI_NODE_TOTAL', '1').to_i
   end
 
-  # Returns 0 when every matching shard downloaded successfully, 1 otherwise.
-  # A missing child pipeline is treated as success-with-no-work (the empty-queue
-  # path copies skip.yml so the bridge runs a single no-op job and no shards
-  # exist).
+  # Returns 0 when every matching shard downloaded or was skipped as empty,
+  # 1 when any shard hit a real download error. A missing child pipeline is
+  # treated as success-with-no-work (the empty-queue path copies skip.yml so
+  # the bridge runs a single no-op job and no shards exist). A shard whose
+  # artifacts 404 on the API is skipped: the job ran but uploaded nothing,
+  # which is valid when a small weekday queue leaves a shard zero examples.
   def run
     child_pipeline_id = find_child_pipeline_id
     unless child_pipeline_id
@@ -90,19 +92,21 @@ class PerTestCoverageArtifactDownloader
 
     all_ok = true
     downloaded = 0
+    skipped = 0
     shards.each_slice(@batch_size) do |batch|
       batch.each do |job|
-        if download_artifacts(job['id'], job['name'])
-          downloaded += 1
-        else
-          all_ok = false
+        case download_artifacts(job['id'], job['name'])
+        when :downloaded then downloaded += 1
+        when :skipped then skipped += 1
+        else all_ok = false
         end
       end
       all_ok = false unless process_batch
     end
 
     puts "Per-test coverage: node #{@node_index}/#{@node_total} downloaded artifacts from " \
-      "#{downloaded}/#{shards.size} jobs in child pipeline #{child_pipeline_id}."
+      "#{downloaded}/#{shards.size} jobs (#{skipped} skipped: no artifacts) " \
+      "in child pipeline #{child_pipeline_id}."
 
     all_ok ? 0 : 1
   end
@@ -181,26 +185,39 @@ class PerTestCoverageArtifactDownloader
 
       case response
       when Net::HTTPSuccess
-        return extract(response.body, job_name, job_id)
+        return extract(response.body, job_name, job_id) ? :downloaded : :failed
       when Net::HTTPRedirection
         redirect_count += 1
         location = response['location']
         next_uri = resolve_redirect(uri, location)
         unless next_uri
           warn "Per-test coverage: malformed Location header #{location.inspect} for #{job_name} (#{job_id})"
-          return false
+          return :failed
         end
 
         uri = next_uri
+      when Net::HTTPNotFound
+        # Only the API's own 404 means the job uploaded no artifacts (an empty
+        # shard). A 404 from a redirect target (e.g. GCS) means artifacts were
+        # indexed but the blob is gone, so that stays a hard failure below.
+        if api_host_https?(uri)
+          puts "Per-test coverage: no artifacts for #{job_name} (#{job_id}); " \
+            "the shard produced no coverage output. Skipping."
+          return :skipped
+        end
+
+        warn "Per-test coverage: HTTP 404 downloading #{job_name} (#{job_id}) " \
+          "from #{uri.host}: #{response.body.to_s[0, 200]}"
+        return :failed
       else
         warn "Per-test coverage: HTTP #{response.code} downloading #{job_name} (#{job_id}): " \
           "#{response.body.to_s[0, 200]}"
-        return false
+        return :failed
       end
     end
 
     warn "Per-test coverage: too many redirects downloading #{job_name} (#{job_id})"
-    false
+    :failed
   end
 
   # Resolves a redirect target relative to the previous URI per RFC 7231 section 7.1.2.

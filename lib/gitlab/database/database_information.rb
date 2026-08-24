@@ -23,6 +23,27 @@ module Gitlab
       # must not be killed casually, so we flag it explicitly.
       ANTI_WRAPAROUND_MARKER = 'to prevent wraparound'
 
+      # Effective autovacuum-related GUCs to surface, read from pg_settings.
+      # vacuum_cost_limit is included because autovacuum_vacuum_cost_limit may inherit it
+      AUTOVACUUM_SETTING_NAMES = %w[
+        autovacuum
+        autovacuum_max_workers
+        autovacuum_naptime
+        autovacuum_vacuum_scale_factor
+        autovacuum_vacuum_threshold
+        autovacuum_analyze_scale_factor
+        autovacuum_analyze_threshold
+        autovacuum_vacuum_insert_scale_factor
+        autovacuum_vacuum_insert_threshold
+        autovacuum_vacuum_cost_delay
+        autovacuum_vacuum_cost_limit
+        vacuum_cost_limit
+        autovacuum_work_mem
+        maintenance_work_mem
+        autovacuum_freeze_max_age
+        autovacuum_multixact_freeze_max_age
+      ].freeze
+
       SCHEMAS_SQL = <<~SQL
         SELECT n.nspname AS name,
           (n.nspname = current_schema()) AS is_current,
@@ -90,6 +111,17 @@ module Gitlab
         ORDER BY v.pid
       SQL
 
+      # Effective autovacuum-related settings for the current backend. unit is
+      # returned alongside setting so the frontend can render memory/time values
+      # with their configured unit (e.g. "65536 kB"). Row order is irrelevant
+      # here: autovacuum_settings below re-orders the result to match
+      # AUTOVACUUM_SETTING_NAMES, which is the order the frontend renders in.
+      AUTOVACUUM_SETTINGS_SQL = <<~SQL
+        SELECT name, setting, unit
+        FROM pg_settings
+        WHERE name IN (%{names})
+      SQL
+
       def self.execute(database_names: DEFAULT_DATABASE_NAMES)
         new(database_names: database_names).execute
       end
@@ -131,7 +163,8 @@ module Gitlab
           search_path: search_path,
           schemas: schemas,
           findings: search_path_findings(search_path, schemas, schema_tables, current_user),
-          vacuums: collect_vacuums(connection)
+          vacuums: collect_vacuums(connection),
+          autovacuum_config: collect_autovacuum_config(connection)
         }
       rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, database_name: database_name)
@@ -298,6 +331,32 @@ module Gitlab
         return '' if connection.database_version < DEAD_TUPLE_AND_INDEX_PROGRESS_MINIMUM_VERSION
 
         ', v.max_dead_tuple_bytes, v.dead_tuple_bytes, v.indexes_total, v.indexes_processed'
+      end
+
+      # Read-only snapshot of the effective autovacuum configuration (global settings)
+      def collect_autovacuum_config(connection)
+        Gitlab::Database::LoadBalancing::SessionMap
+          .current(connection.load_balancer)
+          .use_primary do
+            { settings: autovacuum_settings(connection) }
+          end
+      end
+
+      def autovacuum_settings(connection)
+        names = AUTOVACUUM_SETTING_NAMES.map { |name| connection.quote(name) }.join(', ')
+        sql = format(AUTOVACUUM_SETTINGS_SQL, names: names)
+
+        rows = connection.select_all(sql).each_with_object({}) do |row, settings|
+          settings[row['name']] = { value: row['setting'], unit: row['unit'] }
+        end
+
+        # Re-key in AUTOVACUUM_SETTING_NAMES order so the frontend can render
+        # settings by simply iterating the hash, without its own copy of the
+        # name list. Settings absent on the running PostgreSQL version (rows
+        # won't have them) are skipped.
+        AUTOVACUUM_SETTING_NAMES.each_with_object({}) do |name, ordered|
+          ordered[name] = rows[name] if rows[name]
+        end
       end
     end
   end

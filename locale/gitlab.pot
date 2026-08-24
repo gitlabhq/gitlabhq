@@ -3475,9 +3475,6 @@ msgstr ""
 msgid "AICatalog|This %{itemType} is already enabled."
 msgstr ""
 
-msgid "AICatalog|This %{itemType} is private and can only be enabled in its managing project: %{projectName}. Duplicate the %{itemType} to use the same configuration in other projects."
-msgstr ""
-
 msgid "AICatalog|This %{itemType} was removed from the AI Catalog. You can still use it in this %{targetType}."
 msgstr ""
 
@@ -3518,6 +3515,9 @@ msgid "AICatalog|This key dashboard provides visibility into SDLC metrics in the
 msgstr ""
 
 msgid "AICatalog|This private %{itemType} is managed by %{projectName} and can't be enabled from this project."
+msgstr ""
+
+msgid "AICatalog|This private %{itemType} is managed by %{projectName}. You can enable it only in that project. Duplicate the %{itemType} to use the same configuration in other projects."
 msgstr ""
 
 msgid "AICatalog|This service account has no associated projects you can view. It might be used in projects that you can't view."
@@ -12586,6 +12586,9 @@ msgid_plural "Artifacts|Delete %d artifacts?"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Artifacts|Delete %{artifactName}"
+msgstr ""
+
 msgid "Artifacts|Delete %{name}?"
 msgstr ""
 
@@ -12593,6 +12596,9 @@ msgid "Artifacts|Delete artifact"
 msgstr ""
 
 msgid "Artifacts|Delete selected"
+msgstr ""
+
+msgid "Artifacts|Download %{artifactName}"
 msgstr ""
 
 msgid "Artifacts|Maximum selected artifacts limit reached"
@@ -26730,6 +26736,12 @@ msgstr ""
 msgid "DatabaseDiagnostics|%{milliseconds} ms"
 msgstr ""
 
+msgid "DatabaseDiagnostics|%{value} (effective: %{effective})"
+msgstr ""
+
+msgid "DatabaseDiagnostics|A cost delay of zero disables throttling, so autovacuum runs at full speed and can cause write storms and replication lag."
+msgstr ""
+
 msgid "DatabaseDiagnostics|An error occurred while starting diagnostics"
 msgstr ""
 
@@ -26737,6 +26749,12 @@ msgid "DatabaseDiagnostics|Anti-wraparound"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Autovacuum"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Autovacuum configuration"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Autovacuum is disabled. Dead tuples will not be reclaimed automatically, risking bloat and eventually transaction ID wraparound."
 msgstr ""
 
 msgid "DatabaseDiagnostics|Collation health check"
@@ -26778,6 +26796,15 @@ msgstr ""
 msgid "DatabaseDiagnostics|Detect database schema inconsistencies and structural issues."
 msgstr ""
 
+msgid "DatabaseDiagnostics|Disabled"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Effective autovacuum settings and per-table overrides for each database connection, with known-risky values flagged."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Effective settings"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Expected Owner"
 msgstr ""
 
@@ -26805,13 +26832,22 @@ msgstr ""
 msgid "DatabaseDiagnostics|Indexes processed"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Inherited"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Issues detected"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Last checked: %{timestamp}"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Learn more about PostgreSQL autovacuum and transaction ID wraparound."
+msgstr ""
+
 msgid "DatabaseDiagnostics|Long-running"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Low"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Manual VACUUM"
@@ -26835,6 +26871,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|More than one schema in the search path contains objects: %{schemas}. This can be intentional, but unqualified references resolve against the first match, so objects spread across schemas can resolve unexpectedly."
 msgstr ""
 
+msgid "DatabaseDiagnostics|No autovacuum settings could be read."
+msgstr ""
+
 msgid "DatabaseDiagnostics|No schema issues detected."
 msgstr ""
 
@@ -26842,6 +26881,12 @@ msgid "DatabaseDiagnostics|No vacuum operations are currently running."
 msgstr ""
 
 msgid "DatabaseDiagnostics|Not available"
+msgstr ""
+
+msgid "DatabaseDiagnostics|OK"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Only a few autovacuum workers are configured, which may be too few for a large or decomposed database fleet."
 msgstr ""
 
 msgid "DatabaseDiagnostics|Owner"
@@ -26889,10 +26934,22 @@ msgstr ""
 msgid "DatabaseDiagnostics|Sequences"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Setting"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Status"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Table"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Tables"
+msgstr ""
+
+msgid "DatabaseDiagnostics|The autovacuum_work_mem setting is unset and inherits maintenance_work_mem. Consider setting it explicitly to bound per-worker memory."
+msgstr ""
+
+msgid "DatabaseDiagnostics|The cost limit is at or near the conservative default, which is likely too low to keep up on modern storage."
 msgstr ""
 
 msgid "DatabaseDiagnostics|The database diagnostic job is taking longer than expected. You can check back later or try running it again."
@@ -26910,6 +26967,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|This vacuum is preventing transaction ID wraparound. It will not auto-cancel and must not be terminated casually, as doing so risks the database forcing a shutdown to protect against data loss."
 msgstr ""
 
+msgid "DatabaseDiagnostics|Throttling disabled"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Type"
 msgstr ""
 
@@ -26917,6 +26977,9 @@ msgid "DatabaseDiagnostics|Vacuum activity"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Vacuum information"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Value"
 msgstr ""
 
 msgid "DatadogIntegration|%{link_start}API key%{link_end} used for authentication with Datadog."
@@ -85165,6 +85228,9 @@ msgid "UsageBilling|Action"
 msgstr ""
 
 msgid "UsageBilling|Active users"
+msgstr ""
+
+msgid "UsageBilling|An error occurred while fetching credit cap data."
 msgstr ""
 
 msgid "UsageBilling|An error occurred while fetching data"

@@ -7,7 +7,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::SidekiqSharding::ScheduledEnq, :allow_unrouted_sidekiq_calls,
   feature_category: :scalability do
   it 'extends Sidekiq::Scheduled::Enq' do
-    expect(described_class <= ::Sidekiq::Scheduled::Enq).to eq(true)
+    expect(described_class <= ::Sidekiq::Scheduled::Enq).to be(true)
   end
 
   describe '#enqueue_jobs' do

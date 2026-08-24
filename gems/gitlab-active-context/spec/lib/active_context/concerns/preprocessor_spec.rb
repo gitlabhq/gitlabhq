@@ -281,7 +281,8 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
           queue_name: nil,
           preprocessor: nil,
           infinite_retry: false,
-          refs: ['ref:1', 'ref:2']
+          refs_count: 2,
+          refs_sample: ['ref:1', 'ref:2']
         )
       end
 
@@ -297,7 +298,28 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
             queue_name: 'test_queue',
             preprocessor: 'test_preprocessor',
             infinite_retry: false,
-            refs: ['ref:1', 'ref:2']
+            refs_count: 2,
+            refs_sample: ['ref:1', 'ref:2']
+          )
+        end
+      end
+
+      context 'when the batch is larger than the logged sample size' do
+        let(:refs) { Array.new(12) { |i| double("ref#{i}", serialize: "ref:#{i}") } }
+
+        it 'logs the full count and a capped sample' do
+          test_ref_class.with_batch_handling(refs) do
+            raise StandardError, "some error"
+          end
+
+          expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
+            instance_of(StandardError),
+            class_name: 'Class',
+            queue_name: nil,
+            preprocessor: nil,
+            infinite_retry: false,
+            refs_count: 12,
+            refs_sample: %w[ref:0 ref:1 ref:2 ref:3 ref:4 ref:5 ref:6 ref:7 ref:8 ref:9]
           )
         end
       end
@@ -321,7 +343,8 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
           queue_name: nil,
           preprocessor: nil,
           infinite_retry: true,
-          refs: ['ref:1', 'ref:2']
+          refs_count: 2,
+          refs_sample: ['ref:1', 'ref:2']
         )
       end
     end

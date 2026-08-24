@@ -152,27 +152,27 @@ RSpec.describe Gitlab::TemplateParser::AST::If do
 
   describe '#truthy?' do
     it 'returns true for a non-empty String' do
-      expect(described_class.new.truthy?('foo')).to eq(true)
+      expect(described_class.new.truthy?('foo')).to be(true)
     end
 
     it 'returns true for a non-empty Array' do
-      expect(described_class.new.truthy?([10])).to eq(true)
+      expect(described_class.new.truthy?([10])).to be(true)
     end
 
     it 'returns true for a Boolean true' do
-      expect(described_class.new.truthy?(true)).to eq(true)
+      expect(described_class.new.truthy?(true)).to be(true)
     end
 
     it 'returns false for an empty String' do
-      expect(described_class.new.truthy?('')).to eq(false)
+      expect(described_class.new.truthy?('')).to be(false)
     end
 
     it 'returns true for an empty Array' do
-      expect(described_class.new.truthy?([])).to eq(false)
+      expect(described_class.new.truthy?([])).to be(false)
     end
 
     it 'returns false for a Boolean false' do
-      expect(described_class.new.truthy?(false)).to eq(false)
+      expect(described_class.new.truthy?(false)).to be(false)
     end
   end
 end

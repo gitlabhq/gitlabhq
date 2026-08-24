@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
       end
 
       it 'holds the correct values', :aggregate_failures do
-        expect(json_data[:is_gitlab_team_member]).to eq(nil)
+        expect(json_data[:is_gitlab_team_member]).to be_nil
         expect(json_data[:project_id]).to eq(project_id)
         expect(json_data[:namespace_id]).to eq(namespace.id)
         expect(json_data[:ultimate_parent_namespace_id]).to eq(top_level_group.id)

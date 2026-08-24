@@ -24,7 +24,6 @@ export default {
     'app/assets/javascripts/content_editor/components/content_editor.vue',
     'app/assets/javascripts/diffs/components/app.vue',
     'app/assets/javascripts/diffs/components/diff_content.vue',
-    'app/assets/javascripts/filtered_search/components/recent_searches_dropdown_content.vue',
     'app/assets/javascripts/labels/components/promote_label_modal.vue',
     'app/assets/javascripts/merge_request_dashboard/components/app.vue',
     'app/assets/javascripts/notes/components/comment_form.vue',

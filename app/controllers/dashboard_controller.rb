@@ -73,7 +73,7 @@ class DashboardController < Dashboard::ApplicationController
 
   def load_events
     @events =
-      case params[:filter]
+      case event_params[:filter]
       when "your_projects", "projects", "starred"
         load_project_events
       when "followed"
@@ -90,24 +90,24 @@ class DashboardController < Dashboard::ApplicationController
       current_user,
       user,
       event_filter,
-      params,
+      event_params.slice(:limit, :offset),
       exclude_transferred_events: true
     ).execute
   end
 
   def load_project_events
     projects =
-      if params[:filter] == "starred"
+      if event_params[:filter] == "starred"
         ProjectsFinder.new(current_user: current_user, params: { starred: true }).execute
       else
         current_user.authorized_projects
       end
 
     finder_params = { filter: event_filter, transfer_options: { exclude_transferred_events: true } }
-    finder_params[:offset] = [params[:offset].to_i, 0].max
+    finder_params[:offset] = [event_params[:offset].to_i, 0].max
 
-    if params[:limit].present?
-      limit = params[:limit].to_i
+    if event_params[:limit].present?
+      limit = event_params[:limit].to_i
       finder_params[:limit] = limit if limit > 0
     end
 
@@ -117,18 +117,23 @@ class DashboardController < Dashboard::ApplicationController
       .map(&:present)
   end
 
+  def event_params
+    params.permit(:filter, :limit, :offset)
+  end
+  strong_memoize_attr :event_params
+
   def set_show_full_reference
     @show_full_reference = true
   end
 
   def check_filters_presence!
-    no_scalar_filters_set = finder_type.scalar_params.none? { |k| params[k].present? }
-    no_array_filters_set = finder_type.array_params.none? { |k, _| params[k].present? }
+    no_scalar_filters_set = finder_type.scalar_params.none? { |k| filter_params[k].present? }
+    no_array_filters_set = finder_type.array_params.none? { |k, _| filter_params[k].present? }
 
     # The `in` param is a modifier of `search`. If it's present while the `search`
     # param isn't, the finder won't use the `in` param. We consider this as a no
     # filter scenario.
-    no_search_filter_set = params[:in].present? && params[:search].blank?
+    no_search_filter_set = filter_params[:in].present? && filter_params[:search].blank?
 
     @no_filters_set = (no_scalar_filters_set && no_array_filters_set) || no_search_filter_set
 
@@ -142,6 +147,11 @@ class DashboardController < Dashboard::ApplicationController
       format.atom { head :bad_request }
     end
   end
+
+  def filter_params
+    params.permit(*finder_type.scalar_params, finder_type.array_params)
+  end
+  strong_memoize_attr :filter_params
 
   def redirect_to_work_items_dashboard(format: nil)
     format ||= request.format.symbol unless request.format.html?

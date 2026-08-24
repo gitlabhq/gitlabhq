@@ -66,10 +66,11 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
         allow(connection).to receive(:select_all)
           .with(described_class::SCHEMA_TABLES_SQL).and_return(schema_table_rows)
 
-        # These tests focus on search_path findings; vacuum collection shares
-        # collect_for_database but is exercised separately, so stub it out.
+        # These tests focus on search_path findings; vacuum and autovacuum
+        # config collection share collect_for_database but are exercised
+        # separately, so stub them out.
         allow_next_instance_of(described_class) do |info|
-          allow(info).to receive(:collect_vacuums).and_return([])
+          allow(info).to receive_messages(collect_vacuums: [], collect_autovacuum_config: {})
         end
       end
 
@@ -385,6 +386,12 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
         allow(connection).to receive(:select_all).and_call_original
         allow(connection).to receive(:select_all)
           .with(a_string_matching(/pg_stat_progress_vacuum/)).and_return(vacuum_rows)
+
+        # Keep this context focused on vacuum progress: stub the sibling
+        # autovacuum-config collection so its queries don't hit the real DB.
+        allow_next_instance_of(described_class) do |info|
+          allow(info).to receive(:collect_autovacuum_config).and_return({})
+        end
       end
 
       it 'maps each in-progress vacuum into a typed hash', :aggregate_failures do
@@ -478,6 +485,45 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
           expect(connection).not_to have_received(:select_all).with(a_string_matching(/v\.max_dead_tuple_bytes/))
           expect(connection).not_to have_received(:select_all).with(a_string_matching(/v\.delay_time/))
         end
+      end
+    end
+
+    context 'with autovacuum configuration' do
+      let(:connection) { Gitlab::Database.database_base_models['main'].connection }
+      let(:settings_rows) do
+        # Deliberately out of AUTOVACUUM_SETTING_NAMES order, to prove the
+        # collector re-orders rather than relying on the SQL row order.
+        [
+          { 'name' => 'maintenance_work_mem', 'setting' => '65536', 'unit' => 'kB' },
+          { 'name' => 'autovacuum', 'setting' => 'on', 'unit' => nil },
+          { 'name' => 'autovacuum_max_workers', 'setting' => '3', 'unit' => nil }
+        ]
+      end
+
+      subject(:config) { described_class.execute[:databases]['main'][:autovacuum_config] }
+
+      before do
+        allow(connection).to receive(:select_all).and_call_original
+        allow(connection).to receive(:select_all)
+          .with(a_string_matching(/FROM pg_settings/)).and_return(settings_rows)
+
+        # Keep this context focused on autovacuum config: stub the sibling
+        # vacuum-progress collection so its query doesn't hit the real DB.
+        allow_next_instance_of(described_class) do |info|
+          allow(info).to receive(:collect_vacuums).and_return([])
+        end
+      end
+
+      it 'maps effective settings into a name-keyed hash with value and unit' do
+        expect(config[:settings]).to eq(
+          'autovacuum' => { value: 'on', unit: nil },
+          'autovacuum_max_workers' => { value: '3', unit: nil },
+          'maintenance_work_mem' => { value: '65536', unit: 'kB' }
+        )
+      end
+
+      it 'orders settings to match AUTOVACUUM_SETTING_NAMES regardless of SQL row order' do
+        expect(config[:settings].keys).to eq(%w[autovacuum autovacuum_max_workers maintenance_work_mem])
       end
     end
 

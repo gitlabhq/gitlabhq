@@ -79,10 +79,10 @@ Embeddings for indexed content are generated asynchronously through a queue syst
 The `Ai::ActiveContext::BulkProcessWorker` is a cron job that runs every minute and processes embedding references from the queue.
 It fetches references, generates embeddings, and removes them from the queue.
 If the queue is not empty after processing, the worker re-enqueues itself to continue processing.
-If embedding generation fails, the references are moved to a retry queue.
-Items in the retry queue become visible for processing five minutes after they are pushed,
-so transient errors have time to clear before the retry.
-If the retry fails, the references are placed on a dead queue.
+If embedding generation fails, the references move through a chain of retry queues
+with increasing delays: 5 minutes, 30 minutes, 2 hours, and 8 hours.
+Each stage gives one retry, so transient errors have time to clear between attempts.
+References that fail every stage are placed on a dead queue.
 
 ### Query execution
 
@@ -358,6 +358,6 @@ Or through chatops (recommended):
 /chatops gitlab run active_context dead_queue replay --queue=retry_queue
 ```
 
-Valid queue values are `retry_queue`, `code`, and `code_backfill`. Use `retry_queue` to attempt
-processing once more before failing back to the dead queue. Use `code` to restart the full
-embedding pipeline from scratch.
+Valid queue values are `retry_queue`, `second_retry_queue`, `third_retry_queue`,
+`fourth_retry_queue`, `code`, and `code_backfill`. Use `retry_queue` to run items through
+the full retry chain again. Use `code` to restart the full embedding pipeline from scratch.

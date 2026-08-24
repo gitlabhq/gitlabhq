@@ -31,13 +31,13 @@ RSpec.describe Gitlab::SlashCommands::Run do
         .to receive(:available?)
         .and_return(true)
 
-      expect(described_class.available?(project)).to eq(true)
+      expect(described_class.available?(project)).to be(true)
     end
 
     it 'returns false when builds are disabled for the project' do
       project = double(:project, builds_enabled?: false)
 
-      expect(described_class.available?(project)).to eq(false)
+      expect(described_class.available?(project)).to be(false)
     end
   end
 
@@ -45,14 +45,14 @@ RSpec.describe Gitlab::SlashCommands::Run do
     it 'returns true when the user can create a pipeline' do
       project = create(:project)
 
-      expect(described_class.allowed?(project, project.creator)).to eq(true)
+      expect(described_class.allowed?(project, project.creator)).to be(true)
     end
 
     it 'returns false when the user can not create a pipeline' do
       project = create(:project)
       user = create(:user)
 
-      expect(described_class.allowed?(project, user)).to eq(false)
+      expect(described_class.allowed?(project, user)).to be(false)
     end
   end
 

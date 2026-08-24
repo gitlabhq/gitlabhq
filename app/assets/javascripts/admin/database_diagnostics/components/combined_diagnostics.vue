@@ -3,11 +3,13 @@ import CollationCheckerApp from './collation_checker_app.vue';
 import DatabaseInformationApp from './database_information_app.vue';
 import SchemaCheckerApp from './schema_checker_app.vue';
 import VacuumInformationApp from './vacuum_information_app.vue';
+import AutovacuumConfigApp from './autovacuum_config_app.vue';
 
 export default {
   name: 'CombinedDiagnostics',
   components: {
     VacuumInformationApp,
+    AutovacuumConfigApp,
     CollationCheckerApp,
     DatabaseInformationApp,
     SchemaCheckerApp,
@@ -22,6 +24,8 @@ export default {
     </section>
 
     <vacuum-information-app class="gl-mb-8" />
+
+    <autovacuum-config-app class="gl-mb-8" />
 
     <section class="gl-mb-8">
       <collation-checker-app />

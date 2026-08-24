@@ -31,6 +31,22 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template('topic')
         end
+
+        context 'with the "Filter by name" search box' do
+          let!(:matching_project) do
+            create(:project, :public, name: 'matching', namespace: namespace, topic_list: 'topic1')
+          end
+
+          let!(:other_project) do
+            create(:project, :public, name: 'unrelated', namespace: namespace, topic_list: 'topic1')
+          end
+
+          it 'filters the topic projects by the name param' do
+            get :topic, params: { topic_name: 'topic1', name: 'matching' }
+
+            expect(assigns(:projects)).to contain_exactly(matching_project)
+          end
+        end
       end
 
       context 'when current organization is not set' do

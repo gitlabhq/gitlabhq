@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Usage::EventSelectionRule, feature_category: :service_pin
       )
 
       expect(event_selection_rule.name).to eq('an_event')
-      expect(event_selection_rule.time_framed?).to eq(true)
+      expect(event_selection_rule.time_framed?).to be(true)
       expect(event_selection_rule.filter).to eq({ label: 'a_label' })
       expect(event_selection_rule.unique_identifier_name).to eq(:user)
     end
@@ -252,13 +252,13 @@ RSpec.describe Gitlab::Usage::EventSelectionRule, feature_category: :service_pin
     context 'when it has unique_identifier_name' do
       let(:unique_identifier_name) { 'user' }
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
 
     context 'when it has no unique_identifier_name' do
       let(:unique_identifier_name) { nil }
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
   end
 
@@ -276,13 +276,13 @@ RSpec.describe Gitlab::Usage::EventSelectionRule, feature_category: :service_pin
       context "with no additional_properties" do
         let(:additional_properties) { {} }
 
-        it { is_expected.to eq true }
+        it { is_expected.to be true }
       end
 
       context "with additional_properties" do
         let(:additional_properties) { { label: 'label1' } }
 
-        it { is_expected.to eq true }
+        it { is_expected.to be true }
       end
     end
 
@@ -292,19 +292,19 @@ RSpec.describe Gitlab::Usage::EventSelectionRule, feature_category: :service_pin
       context "with matching additional_properties" do
         let(:additional_properties) { { label: 'label1', proeprty: 'prop1' } }
 
-        it { is_expected.to eq true }
+        it { is_expected.to be true }
       end
 
       context "with not matching additional_properties" do
         let(:additional_properties) { { proeprty: 'prop1' } }
 
-        it { is_expected.to eq false }
+        it { is_expected.to be false }
       end
 
       context "with no additional_properties" do
         let(:additional_properties) { {} }
 
-        it { is_expected.to eq false }
+        it { is_expected.to be false }
       end
     end
   end

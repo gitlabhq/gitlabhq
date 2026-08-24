@@ -4,6 +4,7 @@ import { omit } from 'lodash-es';
 import { __, s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { InternalEvents } from '~/tracking';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import DraggableCompat from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
@@ -79,7 +80,7 @@ export default {
     delay: DRAG_DELAY,
     delayOnTouchOnly: true,
   },
-  mixins: [glFeatureFlagMixin(), GlToastMixin],
+  mixins: [glFeatureFlagMixin(), InternalEvents.mixin(), GlToastMixin],
   props: {
     rootPageFullPath: {
       type: String,
@@ -221,6 +222,9 @@ export default {
         this.renderedColumns = values;
       },
     },
+  },
+  mounted() {
+    this.trackEvent('view_work_item_board', { label: this.groupBy.property });
   },
   apollo: {
     workItemsGroupByVisibleGroups: {

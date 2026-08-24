@@ -1331,7 +1331,7 @@ Returns [`DuoSettings`](#duosettings).
 
 {{< /details >}}
 
-Other attempts at a turn in a Duo Agent Platform session, created when the user retried it. Always empty until branch reconstruction is released.
+The alternative branches to the provided user message. Multiple branches can be created when a user retries a message. Returns an empty list if the `dw_read_blobs_graphql` feature flag is disabled, or if the session does not store incremental checkpoints.
 
 Returns [`[DuoWorkflowBranch!]`](#duoworkflowbranch).
 
@@ -41908,7 +41908,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duomessage-additionalcontext"></a>`additionalContext` | [`[AiAdditionalContext!]`](#aiadditionalcontext) | Additional context items attached to the message. |
-| <a id="duomessage-alternativecount"></a>`alternativeCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Number of other versions of the turn, from the user retrying it, excluding the one shown. Set on the user message anchoring the turn, `0` when it has no alternatives. Returns `null` on every message, if the `dw_read_blobs_graphql` feature flag is disabled, or if the session does not store incremental checkpoints. |
+| <a id="duomessage-alternativecount"></a>`alternativeCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. The count of alternative branches for a user message -1 (the currently displayed branch). A thread can have multiple branches when a message is retried, and a new branch is created with the same parent_ts as the message being retried.Returns `null` on every message, if the `dw_read_blobs_graphql` feature flag is disabled, or if the session does not store incremental checkpoints. |
 | <a id="duomessage-componentname"></a>`componentName` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.0. Status: Experiment. Component name associated with the message. |
 | <a id="duomessage-content"></a>`content` | [`String!`](#string) | Content of the message. |
 | <a id="duomessage-correlationid"></a>`correlationId` | [`String`](#string) | Optional client-supplied identifier echoed back to correlate this message with the request that initiated it. |

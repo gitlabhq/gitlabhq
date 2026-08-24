@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveContext::BulkProcessQueue do
-  let(:queue) { instance_double('ActiveContext::Queue') }
+  let(:queue) { instance_double('ActiveContext::Queue', failure_queue: ActiveContext::RetryQueue) }
   let(:shard) { 0 }
   let(:redis) { instance_double(Redis) }
   let(:bulk_processor) { instance_double('ActiveContext::BulkProcessor') }
@@ -15,10 +15,13 @@ RSpec.describe ActiveContext::BulkProcessQueue do
     allow(ActiveContext::BulkProcessor).to receive(:new).and_return(bulk_processor)
     allow(ActiveContext::Config).to receive(:logger).and_return(logger)
     allow(ActiveContext::RetryQueue).to receive(:push)
+    allow(ActiveContext::SecondRetryQueue).to receive(:push)
+    allow(ActiveContext::ThirdRetryQueue).to receive(:push)
+    allow(ActiveContext::FourthRetryQueue).to receive(:push)
     allow(ActiveContext::DeadQueue).to receive(:push)
     allow(bulk_processor).to receive(:process)
     allow(bulk_processor).to receive(:flush).and_return([])
-    allow(queue).to receive(:preprocess_options).and_return({})
+    allow(queue).to receive_messages(preprocess_options: {}, queue_name: 'code')
   end
 
   describe '#process' do
@@ -34,6 +37,12 @@ RSpec.describe ActiveContext::BulkProcessQueue do
       allow(redis).to receive(:zremrangebyscore)
       allow(references).to receive(:group_by).and_return({ reference_class => references })
       allow(reference_class).to receive(:preprocess_references).and_return(preprocess_result)
+    end
+
+    it 'builds the bulk processor with the queue name' do
+      bulk_process_queue.process(redis)
+
+      expect(ActiveContext::BulkProcessor).to have_received(:new).with(queue_name: 'code')
     end
 
     it 'processes specs and flushes the bulk processor' do
@@ -80,18 +89,29 @@ RSpec.describe ActiveContext::BulkProcessQueue do
         expect(bulk_process_queue.process(redis)).to eq([2, 2])
       end
 
-      context 'when the queue is RetryQueue' do
-        let(:queue) { ActiveContext::RetryQueue }
-
-        it 'adds failures to the dead queue' do
-          combined_failures = ['preprocess_failed_ref'] + failures
-          expect(ActiveContext).to receive(:track!).with(combined_failures, queue: ActiveContext::DeadQueue)
-
-          bulk_process_queue.process(redis)
+      context 'when the queue is a retry chain stage' do
+        where(:stage, :next_stage) do
+          [
+            [ActiveContext::RetryQueue, ActiveContext::SecondRetryQueue],
+            [ActiveContext::SecondRetryQueue, ActiveContext::ThirdRetryQueue],
+            [ActiveContext::ThirdRetryQueue, ActiveContext::FourthRetryQueue],
+            [ActiveContext::FourthRetryQueue, ActiveContext::DeadQueue]
+          ]
         end
 
-        it 'returns the correct count of processed specs and failures' do
-          expect(bulk_process_queue.process(redis)).to eq([2, 2])
+        with_them do
+          let(:queue) { stage }
+
+          it 'adds failures to the next stage of the chain' do
+            combined_failures = ['preprocess_failed_ref'] + failures
+            expect(ActiveContext).to receive(:track!).with(combined_failures, queue: next_stage)
+
+            bulk_process_queue.process(redis)
+          end
+
+          it 'returns the correct count of processed specs and failures' do
+            expect(bulk_process_queue.process(redis)).to eq([2, 2])
+          end
         end
       end
     end

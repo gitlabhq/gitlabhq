@@ -34,6 +34,13 @@ module ActiveContext
           nil
         end
 
+        # Queue that receives this queue's failed items. The retry chain
+        # encodes the attempt count in the queue topology: each stage is
+        # one attempt.
+        def failure_queue
+          RetryQueue
+        end
+
         def number_of_shards
           raise NotImplementedError
         end

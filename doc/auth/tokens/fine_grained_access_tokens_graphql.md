@@ -645,6 +645,7 @@ Grants the ability to create, read, resume, and update duo workflows.
 | Read | User | Type | `DuoWorkflowWorkItemLink` |
 | Read | User | Field | `Note.duoCreatedSession` |
 | Read | User | Field | `Note.duoTriggeredSession` |
+| Read | User | Field | `Query.duoWorkflowBranches` |
 | Update | User | Mutation | `UpdateDuoWorkflowAgentPrivileges` |
 | Update | User | Mutation | `UpdateDuoWorkflowWebSearch` |
 

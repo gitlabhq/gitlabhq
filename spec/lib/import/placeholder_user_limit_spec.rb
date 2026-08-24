@@ -18,7 +18,7 @@ RSpec.describe Import::PlaceholderUserLimit, :clean_gitlab_redis_shared_state, f
     subject(:exceeded?) { instance.exceeded? }
 
     context 'when plan has no limit' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when plan has a limit' do
@@ -29,13 +29,13 @@ RSpec.describe Import::PlaceholderUserLimit, :clean_gitlab_redis_shared_state, f
       context 'when limit is 0 (unlimited)' do
         let(:limit) { 0 }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when placeholder user count does not exceed the limit' do
         let(:limit) { 2 }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
 
         it 'does not cache the result' do
           exceeded?
@@ -49,12 +49,12 @@ RSpec.describe Import::PlaceholderUserLimit, :clean_gitlab_redis_shared_state, f
       context 'when placeholder user count exceeds the limit' do
         let(:limit) { 1 }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
 
         it 'caches the result' do
           expect(Import::SourceUser).to receive(:namespace_placeholder_user_count).once.and_call_original
 
-          2.times { expect(described_class.new(namespace: namespace).exceeded?).to eq(true) }
+          2.times { expect(described_class.new(namespace: namespace).exceeded?).to be(true) }
 
           instance = described_class.new(namespace: namespace)
           cache_key = instance.send(:cache_key)

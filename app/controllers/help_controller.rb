@@ -23,7 +23,7 @@ class HelpController < ApplicationController
   end
 
   def show
-    @path = Rack::Utils.clean_path_info(params[:path])
+    @path = Rack::Utils.clean_path_info(permitted_params[:path])
 
     respond_to do |format|
       format.any(:markdown, :md, :html) do
@@ -37,7 +37,7 @@ class HelpController < ApplicationController
       # Allow access to specific media files in the doc folder
       format.any(:png, :gif, :jpeg, :mp4, :mp3) do
         # Note: We are purposefully NOT using `Rails.root.join` because of https://gitlab.com/gitlab-org/gitlab/-/issues/216028.
-        path = path_to_doc("#{@path}.#{params[:format]}")
+        path = path_to_doc("#{@path}.#{permitted_params[:format]}")
 
         if File.exist?(path)
           send_file(path, disposition: 'inline')
@@ -62,7 +62,7 @@ class HelpController < ApplicationController
   end
 
   def drawers
-    @clean_path = Rack::Utils.clean_path_info(params[:markdown_file])
+    @clean_path = Rack::Utils.clean_path_info(permitted_params[:markdown_file])
     @path = path_to_doc("#{@clean_path}.md")
 
     if File.exist?(@path)
@@ -73,6 +73,10 @@ class HelpController < ApplicationController
   end
 
   private
+
+  def permitted_params
+    params.permit(:path, :format, :markdown_file)
+  end
 
   # Remove YAML frontmatter so that it doesn't look weird
   helper_method :get_markdown_without_frontmatter

@@ -30,7 +30,6 @@ class Explore::ProjectsController < Explore::ApplicationController
 
     return render_404 unless @topic
 
-    params[:topic] = @topic.name
     @projects = load_projects
 
     respond_to do |format|
@@ -48,10 +47,13 @@ class Explore::ProjectsController < Explore::ApplicationController
     finder_params = {
       minimum_search_length: MIN_SEARCH_LENGTH,
       not_aimed_for_deletion: true,
-      current_organization: current_organization
+      current_organization: current_organization,
+      sort: @sort
     }
+    finder_params[:topic] = @topic.name if @topic
 
-    projects = ProjectsFinder.new(current_user: current_user, params: params.merge(finder_params)).execute
+    projects = ProjectsFinder.new(current_user: current_user, params: projects_finder_params.merge(finder_params))
+                              .execute
 
     projects = preload_associations(projects)
     projects = projects.page(pagination_params[:page]).without_count
@@ -59,23 +61,49 @@ class Explore::ProjectsController < Explore::ApplicationController
     prepare_projects_for_rendering(projects)
   end
 
+  # Keys read by ProjectsFinder; permitted here so raw params are not forwarded.
+  # :sort and :topic are injected in load_projects.
+  def projects_finder_params
+    params.permit(
+      :archived, :non_archived, :visibility_level, :personal, :starred, :name, :search,
+      :topic_id, :namespace_path, :min_access_level, :owned, :tag,
+      :include_pending_delete, :id_after, :id_before, :marked_for_deletion_on,
+      :aimed_for_deletion, :last_activity_after, :last_activity_before, :repository_storage,
+      :language_name, :with_issues_enabled, :with_merge_requests_enabled,
+      :active, :last_repository_check_failed, full_paths: []
+    )
+  end
+
   def load_topics
     @topics = Projects::TopicsFinder.new(
-      params: params.permit(:search),
+      params: topics_finder_params,
       organization_id: current_organization&.id
     ).execute.page(pagination_params[:page]).without_count
   end
 
   def load_topic
     topic_name = if Feature.enabled?(:explore_topics_cleaned_path)
-                   URI.decode_www_form_component(params[:topic_name])
+                   URI.decode_www_form_component(topic_params[:topic_name])
                  else
-                   params[:topic_name]
+                   topic_params[:topic_name]
                  end
 
     return unless current_organization
 
     @topic = Projects::Topic.in_organization(current_organization.id).find_by_name_case_insensitive(topic_name)
+  end
+
+  def topic_params
+    params.permit(:topic_name)
+  end
+
+  def topics_finder_params
+    params.permit(:search)
+  end
+
+  # Read by show_alert_if_search_is_disabled, which checks both keys.
+  def search_params
+    params.permit(:name, :search)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -85,8 +113,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def set_sorting
-    params[:sort] = set_sort_order
-    @sort = params[:sort]
+    @sort = set_sort_order
   end
 
   def default_sort_order
@@ -98,8 +125,8 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def show_alert_if_search_is_disabled
-    if current_user || (params[:name].blank? && params[:search].blank?) || !html_request? || Feature.disabled?(
-      :disable_anonymous_project_search, type: :ops)
+    if current_user || (search_params[:name].blank? && search_params[:search].blank?) || !html_request? ||
+        Feature.disabled?(:disable_anonymous_project_search, type: :ops)
       return
     end
 

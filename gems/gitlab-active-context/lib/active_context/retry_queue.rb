@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 
-# RetryQueue handles failed processing attempts by storing them for retry.
-# Items in this queue are processed once. If they fail again, they are moved to the DeadQueue.
-# Items only become visible for processing PROCESSING_DELAY after they are pushed, giving
-# transient errors (for example, AI Gateway timeouts) time to clear before the single retry.
+# RetryQueue is the first stage of the retry chain. Failed items move
+# through retry queues with increasing delays before they reach the
+# DeadQueue:
+#
+#   RetryQueue (5 min) -> SecondRetryQueue (30 min) ->
+#   ThirdRetryQueue (2 h) -> FourthRetryQueue (8 h) -> DeadQueue
+#
+# Each stage gives one retry. Items only become visible for processing
+# PROCESSING_DELAY after they are pushed, giving transient errors (for
+# example, AI Gateway timeouts) time to clear between attempts.
 
 module ActiveContext
   class RetryQueue
@@ -21,7 +27,11 @@ module ActiveContext
       end
 
       def processing_delay
-        PROCESSING_DELAY
+        self::PROCESSING_DELAY
+      end
+
+      def failure_queue
+        SecondRetryQueue
       end
     end
   end

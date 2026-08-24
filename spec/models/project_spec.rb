@@ -558,7 +558,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it_behaves_like 'member_namespace membership relationship'
     end
 
-    describe '#namespace_requesters setters', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
+    describe '#namespace_requesters setters' do
       let_it_be(:requested_at) { Time.current }
       let_it_be(:project) { create(:project) }
       let_it_be(:user) { create(:user) }
@@ -604,7 +604,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it_behaves_like 'share with group lock'
     end
 
-    describe '#namespace_members_and_requesters setters', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
+    describe '#namespace_members_and_requesters setters' do
       let_it_be(:requested_at) { Time.current }
       let_it_be(:project) { create(:project) }
       let_it_be(:user) { create(:user) }
@@ -2035,7 +2035,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
-    describe 'ci_cd_settings delegation', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
+    describe 'ci_cd_settings delegation' do
       include_examples 'ci_cd_settings delegation' do
         let(:attributes_with_prefix) do
           {
@@ -2982,7 +2982,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.reload.star_count).to eq(0)
     end
 
-    it 'does not count stars from blocked users', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
+    it 'does not count stars from blocked users' do
       user1 = create(:user)
       user2 = create(:user)
       project = create(:project, :public)
@@ -3304,10 +3304,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '.by_name' do
-    let_it_be(:project1) { create(:project, :small_repo, name: 'Project 1') }
-    let_it_be(:project2) { create(:project, :small_repo, name: 'Project 2') }
+    let_it_be(:project1) { create(:project, name: 'Project 1') }
+    let_it_be(:project2) { create(:project, name: 'Project 2') }
 
-    it 'includes correct projects', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
+    it 'includes correct projects' do
       expect(described_class.by_name(project1.name)).to eq([project1])
       expect(described_class.by_name(project2.name.chop)).to match_array([project1, project2])
     end
@@ -4027,7 +4027,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     # During migration, the onboarding_complete property can still be false,
     # but will be updated later. To account for that case, pages_show_onboarding?
     # should return false if `deployed` is true.
-    context "will return false if pages is deployed even if onboarding_complete is false", quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
+    context "will return false if pages is deployed even if onboarding_complete is false" do
       before do
         project.pages_metadatum.update_column(:onboarding_complete, false)
         create(:pages_deployment, project: project)
@@ -9194,7 +9194,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#access_request_approvers_to_be_notified', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
+  describe '#access_request_approvers_to_be_notified' do
     shared_examples 'returns active, non_invited, non_requested owners/maintainers of the project' do
       specify do
         maintainer = create(:project_member, :maintainer, source: project)
@@ -9283,7 +9283,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#closest_setting', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
+  describe '#closest_setting' do
     shared_examples_for 'fetching closest setting' do
       let!(:namespace) { create(:namespace) }
       let!(:project) { create(:project, namespace: namespace) }

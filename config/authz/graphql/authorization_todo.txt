@@ -567,7 +567,6 @@ type:DuoCodeSuggestionsAggregationResponse
 type:DuoCodeSuggestionsAggregationResponseDimensions
 type:DuoCodeSuggestionsAggregationScope
 type:DuoContextExclusionSettings
-type:DuoMessage
 type:DuoSettings
 type:DuoUsageEventsAggregationResponse
 type:DuoUsageEventsAggregationResponseDimensions

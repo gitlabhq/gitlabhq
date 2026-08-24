@@ -542,7 +542,6 @@ to configure other related settings. These requirements are in the `Required` co
 | `container_registry_token_expire_delay`                   | integer | no                           | Container registry token duration in minutes. |
 | `package_registry_cleanup_policies_worker_capacity`       | integer | no                           | Number of workers assigned to the packages cleanup policies. |
 | `updating_name_disabled_for_users`       | boolean          | no                                   | [Disable user profile name changes](../administration/settings/account_and_limit_settings.md#disable-user-profile-name-changes). |
-| `allow_account_deletion`                 | boolean          | no                                   | Enable [users to delete their accounts](../administration/settings/account_and_limit_settings.md#prevent-users-from-deleting-their-accounts). |
 | `deactivate_dormant_users`               | boolean          | no                                   | Enable [automatic deactivation of dormant users](../administration/moderate_users.md#automatically-deactivate-dormant-users). |
 | `deactivate_dormant_users_period`        | integer          | no                                   | Length of time (in days) after which a user is considered dormant. |
 | `decompress_archive_file_timeout`        | integer          | no                                   | Default timeout for decompressing archived files, in seconds. Set to 0 to disable timeouts. |

@@ -43,7 +43,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkerExecutionTrack
       track_execution_start
 
       Gitlab::Redis::QueuesMetadata.with do |c|
-        expect(c.hexists(tracking_hash, tracking_elem)).to eq(true)
+        expect(c.hexists(tracking_hash, tracking_elem)).to be(true)
       end
     end
 
@@ -56,7 +56,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkerExecutionTrack
         track_execution_start
 
         Gitlab::Redis::QueuesMetadata.with do |c|
-          expect(c.hexists(tracking_hash, tracking_elem)).to eq(false)
+          expect(c.hexists(tracking_hash, tracking_elem)).to be(false)
         end
       end
     end
@@ -83,9 +83,9 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkerExecutionTrack
 
       it 'exits early without writing to redis' do
         Gitlab::Redis::QueuesMetadata.with do |c|
-          expect(c.hexists(tracking_hash, tracking_elem)).to eq(true)
+          expect(c.hexists(tracking_hash, tracking_elem)).to be(true)
           track_execution_end
-          expect(c.hexists(tracking_hash, tracking_elem)).to eq(true)
+          expect(c.hexists(tracking_hash, tracking_elem)).to be(true)
         end
       end
     end

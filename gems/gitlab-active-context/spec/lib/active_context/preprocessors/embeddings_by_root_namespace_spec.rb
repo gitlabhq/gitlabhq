@@ -124,7 +124,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
         queue_name: nil,
         preprocessor: 'embeddings',
         infinite_retry: false,
-        refs: [ref1.serialize, ref3.serialize]
+        refs_count: 2,
+        refs_sample: [ref1.serialize, ref3.serialize]
       ).ordered
       expect(ActiveContext::Logger).to receive(:retryable_exception).with(
         instance_of(ArgumentError),
@@ -132,7 +133,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
         queue_name: nil,
         preprocessor: 'embeddings',
         infinite_retry: false,
-        refs: [ref2.serialize]
+        refs_count: 1,
+        refs_sample: [ref2.serialize]
       ).ordered
 
       result = preprocess_references
@@ -154,7 +156,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
           queue_name: nil,
           preprocessor: 'embeddings',
           infinite_retry: false,
-          refs: [ref1.serialize, ref3.serialize]
+          refs_count: 2,
+          refs_sample: [ref1.serialize, ref3.serialize]
         ).ordered
         expect(ActiveContext::Logger).to receive(:retryable_exception).with(
           instance_of(ArgumentError),
@@ -162,7 +165,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
           queue_name: nil,
           preprocessor: 'embeddings',
           infinite_retry: false,
-          refs: [ref2.serialize]
+          refs_count: 1,
+          refs_sample: [ref2.serialize]
         ).ordered
 
         preprocess_references
@@ -186,7 +190,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
             queue_name: 'test_queue',
             preprocessor: 'embeddings',
             infinite_retry: false,
-            refs: [ref1.serialize, ref3.serialize]
+            refs_count: 2,
+            refs_sample: [ref1.serialize, ref3.serialize]
           )
           expect(ActiveContext::Logger).to receive(:retryable_exception).with(
             instance_of(ArgumentError),
@@ -194,7 +199,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
             queue_name: 'test_queue',
             preprocessor: 'embeddings',
             infinite_retry: false,
-            refs: [ref2.serialize]
+            refs_count: 1,
+            refs_sample: [ref2.serialize]
           )
 
           preprocess_references
@@ -243,7 +249,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
             queue_name: nil,
             preprocessor: 'embeddings',
             infinite_retry: true,
-            refs: [ref1.serialize, ref3.serialize]
+            refs_count: 2,
+            refs_sample: [ref1.serialize, ref3.serialize]
           ).ordered
           expect(ActiveContext::Logger).to receive(:retryable_exception).with(
             instance_of(TestRateLimitError),
@@ -251,7 +258,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
             queue_name: nil,
             preprocessor: 'embeddings',
             infinite_retry: true,
-            refs: [ref2.serialize]
+            refs_count: 1,
+            refs_sample: [ref2.serialize]
           ).ordered
 
           result = preprocess_references
@@ -277,7 +285,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
           queue_name: nil,
           preprocessor: 'embeddings',
           infinite_retry: false,
-          refs: [ref2.serialize]
+          refs_count: 1,
+          refs_sample: [ref2.serialize]
         )
 
         result = preprocess_references

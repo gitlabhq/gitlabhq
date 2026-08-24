@@ -67,7 +67,8 @@ RSpec.describe ActiveContext::Preprocessors::Preload do
         queue_name: nil,
         preprocessor: nil,
         infinite_retry: false,
-        refs: anything
+        refs_count: 2,
+        refs_sample: anything
       )
 
       expect(preprocess_refs[:failed]).to match_array([reference_1, reference_2])

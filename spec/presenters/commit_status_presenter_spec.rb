@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CommitStatusPresenter do
+RSpec.describe CommitStatusPresenter, feature_category: :continuous_integration do
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, pipeline: pipeline) }

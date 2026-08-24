@@ -184,6 +184,27 @@ export const vacuumActivity = [
   },
 ];
 
+export const autovacuumConfig = {
+  settings: {
+    autovacuum: { value: 'on', unit: null },
+    autovacuum_max_workers: { value: '3', unit: null },
+    autovacuum_naptime: { value: '60', unit: 's' },
+    autovacuum_vacuum_scale_factor: { value: '0.2', unit: null },
+    autovacuum_vacuum_threshold: { value: '50', unit: null },
+    autovacuum_analyze_scale_factor: { value: '0.1', unit: null },
+    autovacuum_analyze_threshold: { value: '50', unit: null },
+    autovacuum_vacuum_insert_scale_factor: { value: '0.2', unit: null },
+    autovacuum_vacuum_insert_threshold: { value: '1000', unit: null },
+    autovacuum_vacuum_cost_delay: { value: '2', unit: 'ms' },
+    autovacuum_vacuum_cost_limit: { value: '-1', unit: null },
+    vacuum_cost_limit: { value: '200', unit: null },
+    autovacuum_work_mem: { value: '-1', unit: 'kB' },
+    maintenance_work_mem: { value: '65536', unit: 'kB' },
+    autovacuum_freeze_max_age: { value: '200000000', unit: null },
+    autovacuum_multixact_freeze_max_age: { value: '400000000', unit: null },
+  },
+};
+
 export const databaseInformationResults = {
   databases: {
     main: {
@@ -196,6 +217,7 @@ export const databaseInformationResults = {
       ],
       findings: [],
       vacuums: vacuumActivity,
+      autovacuum_config: autovacuumConfig,
     },
   },
 };

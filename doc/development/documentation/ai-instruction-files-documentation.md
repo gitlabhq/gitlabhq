@@ -68,20 +68,8 @@ do not need to reference them in your prompt. To get the best results:
 - Make changes locally only. Do not commit or push AI-generated content before
   you have reviewed and iterated on the output.
 
-## Review AI-generated content
-
-Before you request a review, check for the following known issues
-with AI-generated content:
-
-- Repetition: Content that restates what has already been said on the page
-  or in a linked topic.
-- Vague or unverifiable claims: Descriptions of how a feature works that
-  are not grounded in the codebase or existing documentation.
-  If you are unsure, Technical Writers can help identify a location
-  in the documentation.
-- Style guide adherence: Terms, grammar, and formatting that do not align with [the style guide](styleguide/_index.md).
-
-For more information, see [AI-generated content](styleguide/_index.md#ai-generated-content).
+Before you request a review, check the content to resolve [common quality issues](styleguide/_index.md#ai-generated-content)
+in AI-generated content.
 
 ## Update the review files
 
@@ -90,7 +78,7 @@ that agents follow, update the [documentation style guide](styleguide/_index.md)
 instead of the authoring and editing files. The `gitlab-ai-principles-distiller`
 automatically regenerates the following distilled documentation files from the style guide and the related documentation development pages they're distilled from:
 
-- `documentation.md`,
+- `documentation.md`
 - `documentation-topics.md`
 - `documentation-api.md`
 - `documentation-feature-lifecycle.md`
@@ -111,5 +99,5 @@ open a merge request to add guidance. When you add guidance, follow these princi
   provide an example: `Avoid marketing language. For example, do not use "powerful" or "seamless"`.
 - Test your changes. Start a new conversation and ensure the instruction is
   applied.
-- If you update an entry point such as `AGENTS.md`, conversations must be restarted
+- If you update an AI instruction file like `AGENTS.md`, conversations must be restarted
   for changes to take effect. Existing conversations do not pick up changes automatically.

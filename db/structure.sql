@@ -34662,6 +34662,7 @@ CREATE TABLE web_hooks (
     resource_deploy_token_events boolean DEFAULT false NOT NULL,
     filter jsonb DEFAULT '{}'::jsonb NOT NULL,
     signing_token jsonb,
+    duo_flow_callback_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1e4d5cbdc5 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_23a96ad211 CHECK ((char_length(description) <= 2048)),
     CONSTRAINT check_69ef76ee0c CHECK ((char_length(custom_webhook_template) <= 4096)),

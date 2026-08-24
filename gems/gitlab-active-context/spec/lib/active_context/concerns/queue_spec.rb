@@ -45,7 +45,7 @@ RSpec.describe ActiveContext::Concerns::Queue do
       mock_queue_class.register!
 
       expect(ActiveContext::Queues.queues).to include(mock_queue_class.redis_key)
-      expect(ActiveContext::Queues.raw_queues.size).to eq(3)
+      expect(ActiveContext::Queues.raw_queues.size).to eq(6)
       mock_queue_instances = ActiveContext::Queues.raw_queues.select { |q| q.is_a?(mock_queue_class) }
       expect(mock_queue_instances.size).to eq(2)
       expect(mock_queue_instances.all?(mock_queue_class)).to be true
@@ -441,6 +441,12 @@ RSpec.describe ActiveContext::Concerns::Queue do
   describe '.processing_delay' do
     it 'returns `nil` by default' do
       expect(mock_queue_class.processing_delay).to be_nil
+    end
+  end
+
+  describe '.failure_queue' do
+    it 'returns the first retry chain stage by default' do
+      expect(mock_queue_class.failure_queue).to eq(ActiveContext::RetryQueue)
     end
   end
 

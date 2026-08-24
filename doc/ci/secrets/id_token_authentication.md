@@ -245,3 +245,37 @@ Make sure that:
 - `aud` (audience) matches the expected audience (for example, the external service's URL).
 - `sub` (subject) is mapped in the service's Identity Provider settings.
 - `preferred_username` is not present by default in GitLab ID tokens.
+
+### Error: `ID token issuance is disabled`
+
+You might receive this error when a CI/CD job requests an ID token:
+
+```plaintext
+CI ID token issuance is disabled because this project's path was previously used by a different project.
+```
+
+GitLab blocks ID token issuance when the configured `sub` claim contains a `project_path` with a path that another
+project previously used.
+This restriction prevents a new project from inheriting external trust policies that belong to the
+previous project.
+
+To resolve the error, use the [projects API](../../api/projects.md#update-a-project) to set
+`ci_id_token_sub_claim_components` with `project_id` as the first value:
+
+```json
+{
+  "ci_id_token_sub_claim_components": ["project_id", "ref_type", "ref"]
+}
+```
+
+The resulting `sub` claim has this format:
+
+```plaintext
+project_id:<id>:ref_type:<type>:ref:<ref>
+```
+
+Update each external service trust policy to match the new subject.
+If the path history is unexpected, ask an instance administrator to review it.
+
+For cloud service trust policy guidance, see
+[Use the project ID as the subject](../cloud_services/_index.md#use-the-project-id-as-the-subject).

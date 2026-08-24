@@ -12,7 +12,7 @@ RSpec.describe Gitlab::VisibilityLevelChecker, feature_category: :permissions do
 
     context 'when visibility level is allowed' do
       it 'returns false with nil for visibility level' do
-        expect(result.restricted?).to eq(false)
+        expect(result.restricted?).to be(false)
         expect(result.visibility_level).to be_nil
       end
     end
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::VisibilityLevelChecker, feature_category: :permissions do
 
         context 'for non-admin user' do
           it 'returns true and visibility name' do
-            expect(result.restricted?).to eq(true)
+            expect(result.restricted?).to be(true)
             expect(result.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
           end
         end
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::VisibilityLevelChecker, feature_category: :permissions do
           let(:user) { create(:user, :admin) }
 
           it 'returns false and a nil visibility level' do
-            expect(result.restricted?).to eq(false)
+            expect(result.restricted?).to be(false)
             expect(result.visibility_level).to be_nil
           end
         end
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::VisibilityLevelChecker, feature_category: :permissions do
           let(:override_visibility) { 'public' }
 
           it 'returns true and visibility name' do
-            expect(result.restricted?).to eq(true)
+            expect(result.restricted?).to be(true)
             expect(result.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
           end
         end
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::VisibilityLevelChecker, feature_category: :permissions do
           let(:override_visibility) { 'publik' }
 
           it 'returns false with nil for visibility level' do
-            expect(result.restricted?).to eq(false)
+            expect(result.restricted?).to be(false)
             expect(result.visibility_level).to be_nil
           end
         end
@@ -79,7 +79,7 @@ RSpec.describe Gitlab::VisibilityLevelChecker, feature_category: :permissions do
           let(:override_params) { {} }
 
           it 'returns false with nil for visibility level' do
-            expect(result.restricted?).to eq(false)
+            expect(result.restricted?).to be(false)
             expect(result.visibility_level).to be_nil
           end
         end

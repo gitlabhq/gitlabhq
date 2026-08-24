@@ -236,7 +236,7 @@ export default class FilteredSearchManager {
     document.addEventListener('click', this.unselectEditTokensWrapper);
     document.addEventListener('click', this.removeInputContainerFocusWrapper);
     document.addEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
-    eventHub.$on('recentSearchesItemSelected', this.onrecentSearchesItemSelectedWrapper);
+    eventHub.$on('recent-searches-item-selected', this.onrecentSearchesItemSelectedWrapper);
 
     this.bindStateEvents();
   }
@@ -260,7 +260,7 @@ export default class FilteredSearchManager {
     document.removeEventListener('click', this.unselectEditTokensWrapper);
     document.removeEventListener('click', this.removeInputContainerFocusWrapper);
     document.removeEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
-    eventHub.$off('recentSearchesItemSelected', this.onrecentSearchesItemSelectedWrapper);
+    eventHub.$off('recent-searches-item-selected', this.onrecentSearchesItemSelectedWrapper);
 
     this.unbindStateEvents();
   }

@@ -1,0 +1,23 @@
+---
+key_path: counts.count_distinct_user_id_from_view_work_item_board
+description: Count of unique users that view the work item board, counting board sessions (including saved views opened directly in board mode) rather than deliberate switches to board view.
+product_group: planning_views
+product_categories:
+  - portfolio_management
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251240
+time_frame:
+  - 28d
+  - 7d
+data_source: internal_events
+data_category: optional
+tiers:
+  - free
+  - premium
+  - ultimate
+events:
+  - name: view_work_item_board
+    unique: user.id

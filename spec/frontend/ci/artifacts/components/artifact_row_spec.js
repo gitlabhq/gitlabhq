@@ -54,6 +54,36 @@ describe('ArtifactRow component', () => {
     });
   });
 
+  describe('accessible names', () => {
+    it('names the download button after the artifact', () => {
+      createComponent();
+
+      expect(findDownloadButton().attributes('aria-label')).toBe(`Download ${artifact.name}`);
+    });
+
+    it('names the delete button after the artifact', () => {
+      createComponent();
+
+      expect(findDeleteButton().attributes('aria-label')).toBe(`Delete ${artifact.name}`);
+    });
+
+    it('keeps the tooltips short', () => {
+      createComponent();
+
+      expect(findDownloadButton().attributes('title')).toBe('Download');
+      expect(findDeleteButton().attributes('title')).toBe('Delete');
+    });
+
+    it('renames the buttons when the artifact changes', async () => {
+      createComponent();
+
+      await wrapper.setProps({ artifact: { ...artifact, name: 'other_artifact.zip' } });
+
+      expect(findDownloadButton().attributes('aria-label')).toBe('Download other_artifact.zip');
+      expect(findDeleteButton().attributes('aria-label')).toBe('Delete other_artifact.zip');
+    });
+  });
+
   describe('delete button', () => {
     it('does not show when user does not have permission', () => {
       createComponent({ canDestroyArtifacts: false });

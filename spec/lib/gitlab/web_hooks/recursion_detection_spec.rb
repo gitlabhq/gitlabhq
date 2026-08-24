@@ -145,7 +145,7 @@ RSpec.describe Gitlab::WebHooks::RecursionDetection, :clean_gitlab_redis_shared_
     end
 
     it 'returns false if webhook should not be blocked' do
-      is_expected.to eq(false)
+      is_expected.to be(false)
     end
 
     context 'when the webhook has previously fired' do
@@ -154,7 +154,7 @@ RSpec.describe Gitlab::WebHooks::RecursionDetection, :clean_gitlab_redis_shared_
       end
 
       it 'returns true' do
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
 
       context 'when the request UUID changes again' do
@@ -163,7 +163,7 @@ RSpec.describe Gitlab::WebHooks::RecursionDetection, :clean_gitlab_redis_shared_
         end
 
         it 'returns false' do
-          is_expected.to eq(false)
+          is_expected.to be(false)
         end
       end
     end
@@ -180,7 +180,7 @@ RSpec.describe Gitlab::WebHooks::RecursionDetection, :clean_gitlab_redis_shared_
       end
 
       it 'returns true' do
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
 
       context 'when the request UUID changes again' do
@@ -189,7 +189,7 @@ RSpec.describe Gitlab::WebHooks::RecursionDetection, :clean_gitlab_redis_shared_
         end
 
         it 'returns false' do
-          is_expected.to eq(false)
+          is_expected.to be(false)
         end
       end
     end

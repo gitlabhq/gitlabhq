@@ -9,6 +9,7 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 import FilepathFormMediator from '~/blob/filepath_form_mediator';
+import mountFilepathForm from '~/blob/filepath_form';
 import { HTTP_STATUS_PAYLOAD_TOO_LARGE } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import Api from '~/api';
@@ -155,6 +156,10 @@ export default class EditBlob {
       currentAction,
       editor: this.editor,
       projectId,
+      // Injected rather than imported by the mediator. The Vue 3 build picks which files to
+      // convert by following imports out from the page entry and does not trace through the
+      // mediator, so importing the form there would leave it on Vue 2. Keep the import here.
+      mountFilepathForm,
     });
     this.initFilepathListeners();
   }

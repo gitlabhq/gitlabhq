@@ -47,8 +47,8 @@ describe('Recent Searches Dropdown Content', () => {
     beforeAll(() => {
       onRecentSearchesItemSelectedSpy = jest.fn();
       onRequestClearRecentSearchesSpy = jest.fn();
-      eventHub.$on('recentSearchesItemSelected', onRecentSearchesItemSelectedSpy);
-      eventHub.$on('requestClearRecentSearches', onRequestClearRecentSearchesSpy);
+      eventHub.$on('recent-searches-item-selected', onRecentSearchesItemSelectedSpy);
+      eventHub.$on('request-clear-recent-searches', onRequestClearRecentSearchesSpy);
     });
 
     beforeEach(() => {
@@ -63,8 +63,8 @@ describe('Recent Searches Dropdown Content', () => {
     });
 
     afterAll(() => {
-      eventHub.$off('recentSearchesItemSelected', onRecentSearchesItemSelectedSpy);
-      eventHub.$off('requestClearRecentSearchesSpy', onRequestClearRecentSearchesSpy);
+      eventHub.$off('recent-searches-item-selected', onRecentSearchesItemSelectedSpy);
+      eventHub.$off('request-clear-recent-searches', onRequestClearRecentSearchesSpy);
     });
 
     it('does not render a note about enabling local storage', () => {
@@ -83,13 +83,13 @@ describe('Recent Searches Dropdown Content', () => {
       expect(findDropdownItems().at(1).findAll('.js-dropdown-token')).toHaveLength(2);
     });
 
-    it('emits recentSearchesItemSelected on dropdown item click', () => {
+    it('emits `recent-searches-item-selected` on dropdown item click', () => {
       findDropdownItems().at(0).find('.js-dropdown-button').trigger('click');
 
       expect(onRecentSearchesItemSelectedSpy).toHaveBeenCalledWith('foo');
     });
 
-    it('emits requestClearRecentSearches on Clear resent searches button', () => {
+    it('emits `request-clear-recent-searches` on Clear resent searches button', () => {
       wrapper.findByTestId('clear-button').trigger('click');
 
       expect(onRequestClearRecentSearchesSpy).toHaveBeenCalled();

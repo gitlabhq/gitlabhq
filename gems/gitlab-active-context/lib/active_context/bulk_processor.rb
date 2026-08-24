@@ -2,11 +2,12 @@
 
 module ActiveContext
   class BulkProcessor
-    attr_reader :failures, :adapter
+    attr_reader :failures, :adapter, :queue_name
 
-    def initialize
+    def initialize(queue_name:)
       @failures = []
       @adapter = ActiveContext.adapter
+      @queue_name = queue_name
     end
 
     def process(ref)
@@ -41,7 +42,13 @@ module ActiveContext
       result = adapter.bulk
       adapter.process_bulk_errors(result)
     rescue StandardError => e
-      logger.error(message: 'bulk_exception', error_class: e.class.to_s, error_message: e.message)
+      logger.error(
+        message: 'bulk_exception',
+        error_class: e.class.to_s,
+        error_message: e.message,
+        queue_name: queue_name,
+        refs_count: adapter.all_refs.size
+      )
       adapter.all_refs
     end
 

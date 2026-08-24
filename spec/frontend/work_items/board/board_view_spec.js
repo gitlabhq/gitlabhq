@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import BoardView from '~/work_items/board/board_view.vue';
 import ColumnGroup from '~/work_items/board/components/column_group.vue';
@@ -108,6 +109,34 @@ describe('BoardView', () => {
 
       expect(Sentry.captureException).not.toHaveBeenCalled();
       expect(wrapper.emitted('set-error')).toBeUndefined();
+    });
+  });
+
+  describe('tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it('tracks the board being viewed on mount, labelled with the grouping attribute', async () => {
+      createComponent();
+      await waitForPromises();
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'view_work_item_board',
+        { label: 'status' },
+        undefined,
+      );
+    });
+
+    it('does not track again when props change', async () => {
+      createComponent();
+      await waitForPromises();
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      await wrapper.setProps({ collapsedGroups: ['status:1'] });
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
     });
   });
 

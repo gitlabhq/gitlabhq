@@ -208,7 +208,9 @@ class GraphqlController < ApplicationController
 
   def permitted_standalone_query_params
     params.permit(:query, :operationName, :remove_deprecated, variables: {}).tap do |permitted_params|
-      permitted_params[:variables] = params[:variables]
+      # GraphQL variables may be a JSON-encoded String, which `permit(variables: {})` would drop.
+      # Read the raw value to preserve both Hash and String forms.
+      permitted_params[:variables] = params[:variables] # rubocop:disable Rails/StrongParams -- see comment above
     end
   end
 
@@ -452,7 +454,7 @@ class GraphqlController < ApplicationController
   # #permitted_params itself calls #multiplex? to decide which permit set to use,
   # so reading #permitted_params here would create infinite recursion.
   def multiplex?
-    params[:_json].is_a?(Array)
+    params[:_json].is_a?(Array) # rubocop:disable Rails/StrongParams -- routing check, see comment above
   end
 
   def authorize_access_api!

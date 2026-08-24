@@ -10,8 +10,8 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues_metadata do
       key = described_class.key_for('123')
 
       with_redis do |redis|
-        expect(redis.exists?(key)).to eq(true)
-        expect(redis.ttl(key) > 0).to eq(true)
+        expect(redis.exists?(key)).to be(true)
+        expect(redis.ttl(key) > 0).to be(true)
         expect(redis.get(key)).to eq('1')
       end
     end
@@ -22,8 +22,8 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues_metadata do
       key = described_class.key_for('123')
 
       with_redis do |redis|
-        expect(redis.exists?(key)).to eq(true)
-        expect(redis.ttl(key) > described_class::DEFAULT_EXPIRATION).to eq(true)
+        expect(redis.exists?(key)).to be(true)
+        expect(redis.ttl(key) > described_class::DEFAULT_EXPIRATION).to be(true)
         expect(redis.get(key)).to eq('1')
       end
     end
@@ -34,7 +34,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues_metadata do
       key = described_class.key_for('123')
 
       with_redis do |redis|
-        expect(redis.exists?(key)).to eq(false)
+        expect(redis.exists?(key)).to be(false)
       end
     end
   end
@@ -47,7 +47,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues_metadata do
       key = described_class.key_for('123')
 
       with_redis do |redis|
-        expect(redis.exists?(key)).to eq(false)
+        expect(redis.exists?(key)).to be(false)
       end
     end
   end
@@ -60,8 +60,8 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues_metadata do
       key = described_class.key_for('123')
 
       with_redis do |redis|
-        expect(redis.exists?(key)).to eq(true)
-        expect(redis.ttl(key) > 5.minutes).to eq(true)
+        expect(redis.exists?(key)).to be(true)
+        expect(redis.ttl(key) > 5.minutes).to be(true)
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues_metadata do
       key = described_class.key_for('123')
 
       with_redis do |redis|
-        expect(redis.exists?(key)).to eq(false)
+        expect(redis.exists?(key)).to be(false)
         expect(redis.ttl(key)).to eq(-2)
       end
     end
@@ -79,13 +79,13 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues_metadata do
 
   describe '.all_completed?' do
     it 'returns true if all jobs have been completed' do
-      expect(described_class.all_completed?(%w[123])).to eq(true)
+      expect(described_class.all_completed?(%w[123])).to be(true)
     end
 
     it 'returns false if a job has not yet been completed' do
       described_class.set('123')
 
-      expect(described_class.all_completed?(%w[123 456])).to eq(false)
+      expect(described_class.all_completed?(%w[123 456])).to be(false)
     end
   end
 

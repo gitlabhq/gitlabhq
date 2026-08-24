@@ -1,0 +1,21 @@
+---
+description: Fires when the work item board component mounts, including when a saved view opens directly in board mode on page load, not just when a user toggles from the list view, so it counts board sessions rather than deliberate choices to use the board. In Community Edition the board always renders with no columns (grouping by status is EE only), so a CE event means the board was opened, not that it displayed any content.
+internal_events: true
+status: active
+action: view_work_item_board
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: The attribute the board is grouped by, currently only status. Note this differs from other work_item_* events, where label carries the work item type instead of a grouping attribute.
+product_group: planning_views
+product_categories:
+  - portfolio_management
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251240
+tiers:
+  - free
+  - premium
+  - ultimate

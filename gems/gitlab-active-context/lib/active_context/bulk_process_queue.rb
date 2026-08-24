@@ -123,7 +123,7 @@ module ActiveContext
     end
 
     def bulk_processor
-      @bulk_processor ||= ActiveContext::BulkProcessor.new
+      @bulk_processor ||= ActiveContext::BulkProcessor.new(queue_name: queue.queue_name)
     end
 
     def logger
@@ -135,10 +135,7 @@ module ActiveContext
     end
 
     def track_failures!(failures, retryable)
-      unless failures.empty?
-        target_queue = queue == RetryQueue ? DeadQueue : RetryQueue
-        ActiveContext.track!(failures, queue: target_queue)
-      end
+      ActiveContext.track!(failures, queue: queue.failure_queue) unless failures.empty?
 
       return if retryable.empty?
 

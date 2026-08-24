@@ -251,7 +251,9 @@ Prerequisites:
 
 - A personal access token with the `admin_mode`, `ai_features`, and `api` scopes.
 
-When embedding generation fails repeatedly, items are moved to the dead queue for manual intervention.
+When embedding generation fails, items move through a chain of retry queues with
+increasing delays (5 minutes, 30 minutes, 2 hours, and 8 hours). Items that fail
+every retry are moved to the dead queue for manual intervention.
 You can check the dead queue size in the `Embedding Queues` section of the
 [status Rake task](#check-semantic-code-search-status) output.
 
@@ -269,10 +271,10 @@ curl --request DELETE \
 
 To move dead queue items back into a processing queue for another attempt,
 use the `queue` parameter to specify the target.
-Valid values are `retry_queue`, `code`, and `code_backfill`.
+Valid values are `retry_queue`, `second_retry_queue`, `third_retry_queue`,
+`fourth_retry_queue`, `code`, and `code_backfill`.
 
-To attempt processing once more before potentially failing back to the dead queue,
-use `retry_queue`:
+To run items through the full retry chain again, use `retry_queue`:
 
 ```shell
 curl --request POST \

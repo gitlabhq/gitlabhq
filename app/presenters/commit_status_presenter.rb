@@ -55,7 +55,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     job_router_failure: 'The Job Router failed to run this job.',
     job_token_expired: 'The CI job token has expired. The job may have exceeded the maximum time limit.',
     id_token_burned_project_path: 'CI ID token issuance is disabled because this project\'s path was previously used by a different project. ' \
-      'To restore CI ID tokens, set `id_token_sub_claim_components` to start with `project_id` ' \
+      'To restore CI ID tokens, set `ci_id_token_sub_claim_components` to start with `project_id` ' \
       '(for example, `["project_id", "ref_type", "ref"]`) and update your cloud trust policy to match.'
   }.freeze
 
@@ -96,7 +96,11 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     {
       environment_creation_failure: help_page_path('ci/environments/_index.md', anchor: 'error-job-would-create-an-environment-with-an-invalid-parameter'),
       failed_outdated_deployment_job: help_page_path('ci/environments/deployment_safety.md', anchor: 'prevent-outdated-deployment-jobs'),
-      secrets_manager_access_denied: help_page_path('ci/secrets/secrets_manager/_index.md', anchor: 'error-namespace-does-not-have-access-to-gitlab-secrets-manager')
+      secrets_manager_access_denied: help_page_path('ci/secrets/secrets_manager/_index.md', anchor: 'error-namespace-does-not-have-access-to-gitlab-secrets-manager'),
+      id_token_burned_project_path: help_page_path(
+        'ci/secrets/id_token_authentication.md',
+        anchor: 'error-id-token-issuance-is-disabled'
+      )
     }.freeze
   end
 

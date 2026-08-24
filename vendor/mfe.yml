@@ -1,0 +1,6 @@
+# MFE version pins, applied by `rake gitlab:mfe:bake`. `sha` is the SHA256 of
+# the app's `{version}/manifest.json` bytes.
+apps:
+  - name: duo_chat
+    version: "0.4.0"
+    sha: edbd4dafca44d3bd90d8b6c8890fb2b6d5e8a2bb8c0365f63cee837d5d347072

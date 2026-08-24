@@ -4,6 +4,8 @@ import FilepathFormMediator from '~/blob/filepath_form_mediator';
 describe('Template Selector Mediator', () => {
   let input;
   let mediator;
+  let mountFilepathForm;
+  const currentAction = 'create';
   const editor = jest.fn().mockImplementationOnce(() => ({
     getValue: jest.fn().mockImplementation(() => {}),
   }))();
@@ -16,15 +18,45 @@ describe('Template Selector Mediator', () => {
       </div>
     `);
     input = document.querySelector('.js-file-path-name-input');
+    mountFilepathForm = jest.fn();
     mediator = new FilepathFormMediator({
       editor,
-      currentAction: jest.fn(),
+      currentAction,
       projectId: jest.fn(),
+      mountFilepathForm,
     });
   });
 
   afterEach(() => {
     resetHTMLFixture();
+  });
+
+  describe('initFilepathForm', () => {
+    it('mounts the injected filepath form with the current action', () => {
+      expect(mountFilepathForm).toHaveBeenCalledTimes(1);
+      expect(mountFilepathForm).toHaveBeenCalledWith({
+        action: currentAction,
+        onTemplateSelected: expect.any(Function),
+      });
+    });
+
+    it('delegates the template selection to selectTemplateFile', () => {
+      jest.spyOn(mediator, 'selectTemplateFile').mockImplementation(() => {});
+      const template = { key: 'Bash' };
+      const type = { type: 'gitlab_ci_ymls', name: '.gitlab-ci.yml' };
+      const clearSelectedTemplate = jest.fn();
+      const stopLoading = jest.fn();
+
+      const { onTemplateSelected } = mountFilepathForm.mock.calls[0][0];
+      onTemplateSelected({ template, type, clearSelectedTemplate, stopLoading });
+
+      expect(mediator.selectTemplateFile).toHaveBeenCalledWith(
+        template,
+        type,
+        clearSelectedTemplate,
+        stopLoading,
+      );
+    });
   });
 
   describe('setFilename', () => {

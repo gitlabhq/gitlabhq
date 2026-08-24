@@ -3,6 +3,10 @@
 module ActiveContext
   module Concerns
     module Preprocessor
+      # A batch can hold 1,000 refs. A log line with the full list can exceed
+      # log pipeline limits and get dropped. Log a sample instead.
+      LOGGED_REFS_SAMPLE_SIZE = 10
+
       def preprocessors
         @preprocessors ||= []
       end
@@ -96,31 +100,29 @@ module ActiveContext
 
           { successful: refs, failed: [], retryable: [] }
         rescue *infinite_retry_error_types => e
-          ::ActiveContext::Logger.retryable_exception(
-            e,
-            class_name: self.class.name,
-            queue_name: queue_name,
-            preprocessor: preprocessor,
-            infinite_retry: true,
-            refs: refs.map(&:serialize)
-          )
+          log_batch_failure(e, refs, queue_name: queue_name, preprocessor: preprocessor, infinite_retry: true)
 
           { successful: [], failed: [], retryable: refs }
         rescue *error_types => e
-          ::ActiveContext::Logger.retryable_exception(
-            e,
-            class_name: self.class.name,
-            queue_name: queue_name,
-            preprocessor: preprocessor,
-            infinite_retry: false,
-            refs: refs.map(&:serialize)
-          )
+          log_batch_failure(e, refs, queue_name: queue_name, preprocessor: preprocessor, infinite_retry: false)
 
           { successful: [], failed: refs, retryable: [] }
         end
       end
 
       private
+
+      def log_batch_failure(exception, refs, queue_name:, preprocessor:, infinite_retry:)
+        ::ActiveContext::Logger.retryable_exception(
+          exception,
+          class_name: self.class.name,
+          queue_name: queue_name,
+          preprocessor: preprocessor,
+          infinite_retry: infinite_retry,
+          refs_count: refs.count,
+          refs_sample: refs.first(LOGGED_REFS_SAMPLE_SIZE).map(&:serialize)
+        )
+      end
 
       def grouped_processing_result(grouped_refs)
         initial_result = { successful: [], failed: [], retryable: [] }

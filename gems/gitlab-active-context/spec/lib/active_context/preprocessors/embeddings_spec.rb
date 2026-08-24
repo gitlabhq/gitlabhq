@@ -471,7 +471,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
         queue_name: nil,
         preprocessor: 'embeddings',
         infinite_retry: false,
-        refs: [test_reference.serialize]
+        refs_count: 1,
+        refs_sample: [test_reference.serialize]
       )
 
       result = ActiveContext::Reference.preprocess_references([test_reference])
@@ -489,7 +490,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
           queue_name: nil,
           preprocessor: 'embeddings',
           infinite_retry: false,
-          refs: [test_reference.serialize]
+          refs_count: 1,
+          refs_sample: [test_reference.serialize]
         )
 
         ActiveContext::Reference.preprocess_references([test_reference], queue_name: 'test_queue')
@@ -517,7 +519,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
             queue_name: 'test_queue',
             preprocessor: 'embeddings',
             infinite_retry: false,
-            refs: [test_reference.serialize]
+            refs_count: 1,
+            refs_sample: [test_reference.serialize]
           )
 
           ActiveContext::Reference.preprocess_references([test_reference], queue_name: 'test_queue')

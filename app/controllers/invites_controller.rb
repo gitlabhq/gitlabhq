@@ -59,6 +59,10 @@ class InvitesController < ApplicationController
 
   private
 
+  def invite_params
+    params.permit(:id, :invite_type)
+  end
+
   def skip_invitation_prompt?
     !member? && current_user_matches_invite?
   end
@@ -73,7 +77,7 @@ class InvitesController < ApplicationController
   strong_memoize_attr :member?
 
   def member
-    @token = params[:id].to_s
+    @token = invite_params[:id].to_s
     Member.find_by_invite_token(@token)
   end
   strong_memoize_attr :member
@@ -110,7 +114,7 @@ class InvitesController < ApplicationController
   end
 
   def initial_invite_email?
-    params[:invite_type] == ::Members::InviteMailer::INITIAL_INVITE
+    invite_params[:invite_type] == ::Members::InviteMailer::INITIAL_INVITE
   end
 
   def sign_in_redirect_params

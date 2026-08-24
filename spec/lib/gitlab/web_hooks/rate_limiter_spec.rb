@@ -24,7 +24,7 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
       specify do
         expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
 
-        expect(rate_limit!(hook)).to eq(false)
+        expect(rate_limit!(hook)).to be(false)
       end
     end
 
@@ -63,8 +63,8 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
               .and_call_original
 
             freeze_time do
-              limit.times { expect(rate_limit!(hook)).to eq(false) }
-              expect(rate_limit!(hook)).to eq(true)
+              limit.times { expect(rate_limit!(hook)).to be(false) }
+              expect(rate_limit!(hook)).to be(true)
             end
           end
         end
@@ -81,8 +81,8 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
       end
 
       it 'forwards the caller threshold to labkit and blocks once it is exceeded', :aggregate_failures do
-        limit.times { expect(rate_limit!(project_hook)).to eq(false) }
-        expect(rate_limit!(project_hook)).to eq(true)
+        limit.times { expect(rate_limit!(project_hook)).to be(false) }
+        expect(rate_limit!(project_hook)).to be(true)
 
         namespace = project_hook.parent.root_namespace
         labkit_key = "labkit:rl:applimiter_web_hook_calls:limit_web_hook_calls_by_namespace" \
@@ -101,10 +101,10 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
           project: create(:project, namespace: project_hook.project.namespace)
         )
 
-        limit.times { expect(rate_limit!(project_hook)).to eq(false) }
-        expect(rate_limit!(project_hook)).to eq(true)
-        expect(rate_limit!(project_hook_in_same_namespace)).to eq(true)
-        expect(rate_limit!(project_hook_in_different_namespace)).to eq(false)
+        limit.times { expect(rate_limit!(project_hook)).to be(false) }
+        expect(rate_limit!(project_hook)).to be(true)
+        expect(rate_limit!(project_hook_in_same_namespace)).to be(true)
+        expect(rate_limit!(project_hook_in_different_namespace)).to be(false)
       end
     end
   end
@@ -116,7 +116,7 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
       where(:hook) { [ref(:project_hook), ref(:system_hook), ref(:integration_hook)] }
 
       with_them do
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
         where(:hook) { [ref(:project_hook), ref(:system_hook), ref(:integration_hook)] }
 
         with_them do
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
       end
 

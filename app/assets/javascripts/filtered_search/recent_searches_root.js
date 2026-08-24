@@ -17,11 +17,11 @@ class RecentSearchesRoot {
   bindEvents() {
     this.onRequestClearRecentSearchesWrapper = this.onRequestClearRecentSearches.bind(this);
 
-    eventHub.$on('requestClearRecentSearches', this.onRequestClearRecentSearchesWrapper);
+    eventHub.$on('request-clear-recent-searches', this.onRequestClearRecentSearchesWrapper);
   }
 
   unbindEvents() {
-    eventHub.$off('requestClearRecentSearches', this.onRequestClearRecentSearchesWrapper);
+    eventHub.$off('request-clear-recent-searches', this.onRequestClearRecentSearchesWrapper);
   }
 
   render() {

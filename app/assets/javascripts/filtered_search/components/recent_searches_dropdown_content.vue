@@ -56,13 +56,13 @@ export default {
   },
   methods: {
     onItemActivated(text) {
-      eventHub.$emit('recentSearchesItemSelected', text);
+      eventHub.$emit('recent-searches-item-selected', text);
     },
     onRequestClearRecentSearches(e) {
       // Stop the dropdown from closing
       e.stopPropagation();
 
-      eventHub.$emit('requestClearRecentSearches');
+      eventHub.$emit('request-clear-recent-searches');
     },
   },
 };

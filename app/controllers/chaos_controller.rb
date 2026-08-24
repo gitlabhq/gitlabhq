@@ -66,27 +66,31 @@ class ChaosController < BaseActionController
     ENV['GITLAB_CHAOS_SECRET']
   end
 
+  def chaos_params
+    params.permit(:token, :interval_s, :duration_s, :memory_mb, :async)
+  end
+
   def chaos_secret_request
-    request.headers["HTTP_X_CHAOS_SECRET"] || params[:token]
+    request.headers["HTTP_X_CHAOS_SECRET"] || chaos_params[:token]
   end
 
   def interval_s
-    interval_s = params[:interval_s] || 1
+    interval_s = chaos_params[:interval_s] || 1
     interval_s.to_f.seconds
   end
 
   def duration_s
-    duration_s = params[:duration_s] || 30
+    duration_s = chaos_params[:duration_s] || 30
     duration_s.to_i.seconds
   end
 
   def memory_mb
-    memory_mb = params[:memory_mb] || 100
+    memory_mb = chaos_params[:memory_mb] || 100
     memory_mb.to_i
   end
 
   def async
-    async = params[:async] || false
+    async = chaos_params[:async] || false
     Gitlab::Utils.to_boolean(async)
   end
 

@@ -94,6 +94,35 @@ RSpec.describe Mailgun::WebhooksController, feature_category: :team_planning do
     end
   end
 
+  context 'when logging a delivery failure' do
+    before do
+      allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+        .with(:permanent_email_failure, scope: 'alice@example.com').and_return(true)
+    end
+
+    let(:event_data) do
+      {
+        event: 'failed',
+        severity: 'permanent',
+        'delivery-status': { code: 605, message: 'Not delivering to previously bounced address' }
+      }
+    end
+
+    it 'forwards the nested delivery-status fields to the logger' do
+      expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(
+        hash_including(
+          event: 'email_delivery_failure',
+          failure_code: '605',
+          failure_message: 'Not delivering to previously bounced address'
+        )
+      )
+
+      post_request
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
   def standard_params
     {
       signature: valid_signature,

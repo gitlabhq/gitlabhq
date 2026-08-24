@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisMetric, :clean_git
       subject { Class.new(described_class).new(time_frame: nil, options: options) }
 
       it 'returns default availability' do
-        expect(subject.available?).to eq(true)
+        expect(subject.available?).to be(true)
       end
     end
 
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisMetric, :clean_git
       end
 
       it 'returns defined availability' do
-        expect(subject.available?).to eq(false)
+        expect(subject.available?).to be(false)
       end
     end
   end
