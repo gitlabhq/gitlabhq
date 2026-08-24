@@ -10,6 +10,7 @@ import NoteActions from '~/notes/components/note_actions.vue';
 import NoteBody from '~/notes/components/note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import issueNote from '~/notes/components/noteable_note.vue';
+import eventHub from '~/notes/event_hub';
 import { createAlert } from '~/alert';
 import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import { sprintf } from '~/locale';
@@ -515,6 +516,26 @@ describe('issue_note', () => {
         note: { ...note, isEditing: true },
       });
       expect(findNoteBody().props('isEditing')).toBe(true);
+    });
+
+    describe('when the notes event hub asks for edit mode', () => {
+      it('enters edit mode on `enter-edit-mode` for this note', async () => {
+        createWrapper();
+
+        eventHub.$emit('enter-edit-mode', { noteId: note.id });
+        await nextTick();
+
+        expect(findNoteBody().props('isEditing')).toBe(true);
+      });
+
+      it('ignores `enter-edit-mode` for another note', async () => {
+        createWrapper();
+
+        eventHub.$emit('enter-edit-mode', { noteId: `${note.id}-other` });
+        await nextTick();
+
+        expect(findNoteBody().props('isEditing')).toBe(false);
+      });
     });
 
     it('passes down restoreFromAutosave', () => {

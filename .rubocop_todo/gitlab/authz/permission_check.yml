@@ -697,7 +697,6 @@ Gitlab/Authz/PermissionCheck:
     - 'ee/app/views/projects/settings/repository/_protected_branches.html.haml'
     - 'ee/app/views/shared/_mirror_update_button.html.haml'
     - 'ee/app/views/shared/promotions/_promotion_link_project.html.haml'
-    - 'ee/app/workers/security/attributes/bulk_update_worker.rb'
     - 'ee/lib/api/clusters/agent_url_configurations.rb'
     - 'ee/lib/api/epic_issues.rb'
     - 'ee/lib/api/helpers/epics_helpers.rb'

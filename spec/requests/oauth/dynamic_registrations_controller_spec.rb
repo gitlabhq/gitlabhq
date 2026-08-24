@@ -54,12 +54,13 @@ RSpec.describe Oauth::DynamicRegistrationsController, :with_current_organization
         stub_application_setting(dynamic_client_registration_enabled: false)
       end
 
-      it 'returns forbidden with access_denied and does not create an application', :aggregate_failures do
+      it 'returns an actionable access_denied error and creates no application', :aggregate_failures do
         expect { create_registration }.not_to change { Authn::OauthApplication.count }
 
         expect(response).to have_gitlab_http_status(:forbidden)
         expect(response.parsed_body).to include('error' => 'access_denied')
-        expect(response.parsed_body['error_description']).to be_present
+        expect(response.parsed_body['error_description']).to include('disabled on this instance')
+        expect(response.parsed_body['error_description']).to include('reuse-a-single-oauth-application')
       end
     end
 

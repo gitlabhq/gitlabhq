@@ -39,7 +39,7 @@ export default {
       }
     },
     setFilter() {
-      notesEventHub.$emit('dropdownSelect', COMMENTS_ONLY_FILTER_VALUE, false);
+      notesEventHub.$emit('dropdown-select', COMMENTS_ONLY_FILTER_VALUE, false);
     },
     toggleTimeline(event) {
       event.currentTarget.blur();

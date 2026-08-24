@@ -123,10 +123,17 @@ module Oauth
     def check_dynamic_client_registration_enabled
       return if ::Gitlab::CurrentSettings.dynamic_client_registration_enabled?
 
+      docs_url = help_page_url(
+        'user/model_context_protocol/mcp_server.md',
+        anchor: 'reuse-a-single-oauth-application'
+      )
+
       # 403 (not 404) so clients can distinguish "disabled" from "endpoint does not exist" (RFC 7591).
       render json: {
         error: "access_denied",
-        error_description: "Dynamic client registration is disabled on this instance"
+        error_description: "Dynamic client registration is disabled on this instance. " \
+          "Create an OAuth application and configure your MCP client with its client " \
+          "ID: #{docs_url}"
       }, status: :forbidden
     end
   end

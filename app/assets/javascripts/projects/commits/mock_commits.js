@@ -32,24 +32,16 @@ export const mockCommits = [
           gpgKeyPrimaryKeyid: '2CEAFD2671262EC2',
           verificationStatus: 'UNKNOWN_KEY',
         },
-        pipelines: {
-          __typename: 'PipelineConnection',
-          edges: [
-            {
-              __typename: 'PipelineEdge',
-              node: {
-                __typename: 'Pipeline',
-                id: 'gid://gitlab/Ci::Pipeline/621',
-                detailedStatus: {
-                  __typename: 'DetailedStatus',
-                  id: 'failed-621-621',
-                  detailsPath: '/gitlab-org/gitlab-shell/-/pipelines/621',
-                  icon: 'status_failed',
-                  text: 'Failed',
-                },
-              },
-            },
-          ],
+        latestPipeline: {
+          __typename: 'Pipeline',
+          id: 'gid://gitlab/Ci::Pipeline/621',
+          detailedStatus: {
+            __typename: 'DetailedStatus',
+            id: 'failed-621-621',
+            detailsPath: '/gitlab-org/gitlab-shell/-/pipelines/621',
+            icon: 'status_failed',
+            text: 'Failed',
+          },
         },
         tag: {
           name: 'V1.2.3',
@@ -74,10 +66,7 @@ export const mockCommits = [
           'https://secure.gravatar.com/avatar/0234fd3e726423a4d0b21773b3f2ae487b04bfad5d299f8a6e50fe29ca55c667?s=80\u0026d=identicon',
         author: null,
         signature: null,
-        pipelines: {
-          __typename: 'PipelineConnection',
-          edges: [],
-        },
+        latestPipeline: null,
       },
     ],
   },
@@ -112,10 +101,7 @@ export const mockCommits = [
           email: 'jenniffer@kshlerin.us',
         },
         signature: null,
-        pipelines: {
-          __typename: 'PipelineConnection',
-          edges: [],
-        },
+        latestPipeline: null,
       },
     ],
   },

@@ -42,7 +42,7 @@ module Mcp
 
         def resource_not_found_error
           ::Mcp::Tools::Base::Response.error(
-            'Work item not found: it does not exist or you do not have access to it.'
+            'Work item not found or inaccessible.'
           )
         end
       end

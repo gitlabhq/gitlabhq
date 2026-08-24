@@ -35,15 +35,16 @@ module Admin
 
       override :set_current_organization
       def set_current_organization
-        return if ::Current.organization_assigned
-
-        # Admin area must only set current organization from path
-        organization = Gitlab::Current::Organization.new(
+        # Admin area must only set current organization from path - no user:,
+        # unlike CurrentOrganization#set_current_organization.
+        ::Current.organization_resolver ||= Gitlab::Current::Organization.new(
           params: organization_params,
           rack_env: request.env
-        ).organization
+        )
 
-        ::Current.organization = organization
+        return if ::Current.organization_assigned
+
+        ::Current.organization = ::Current.organization_resolver.organization
       end
     end
   end

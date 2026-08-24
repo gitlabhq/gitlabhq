@@ -362,6 +362,85 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
+  describe '#fork_repository' do
+    let_it_be(:target_group) { create(:group, maintainers: [user]) }
+
+    let(:tool_params) do
+      { name: 'fork_repository', arguments: { id: project.full_path, namespace_id: target_group.id } }
+    end
+
+    it 'forks the project into the target namespace', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      structured_content = json_response['result']['structuredContent']
+      expect(structured_content['forked_from_project']['id']).to eq(project.id)
+      expect(structured_content['namespace']['id']).to eq(target_group.id)
+      expect(structured_content['import_status']).to eq('scheduled')
+    end
+
+    context 'when the target namespace is given as a path' do
+      let(:tool_params) do
+        { name: 'fork_repository', arguments: { id: project.full_path, namespace_path: target_group.full_path } }
+      end
+
+      it 'forks the project into the target namespace', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        structured_content = json_response['result']['structuredContent']
+        expect(structured_content['forked_from_project']['id']).to eq(project.id)
+        expect(structured_content['namespace']['id']).to eq(target_group.id)
+      end
+    end
+
+    context 'when the target namespace already has a project with the same path' do
+      let_it_be(:existing_project) do
+        create(:project, name: project.name, path: project.path, namespace: target_group)
+      end
+
+      it 'returns a conflict error', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('has already been taken')
+      end
+    end
+
+    context 'when the project does not exist' do
+      let(:tool_params) do
+        { name: 'fork_repository', arguments: { id: non_existing_record_id } }
+      end
+
+      it 'returns a not found error', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('404 Project Not Found')
+      end
+    end
+
+    context 'when the user does not have create-project rights in the target namespace' do
+      let_it_be(:other_group) { create(:group, guests: [user]) }
+
+      let(:tool_params) do
+        { name: 'fork_repository', arguments: { id: project.full_path, namespace_id: other_group.id } }
+      end
+
+      it 'returns a not found error', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('404 Target Namespace Not Found')
+      end
+    end
+  end
+
   describe '#save_pipeline' do
     let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: :running) }
     let_it_be(:cancelable_build) { create(:ci_build, :running, pipeline: pipeline) }

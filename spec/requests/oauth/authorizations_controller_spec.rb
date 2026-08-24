@@ -453,4 +453,62 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
       end
     end
   end
+
+  describe 'missing client when dynamic client registration is disabled' do
+    let(:docs_anchor) { 'reuse-a-single-oauth-application' }
+    let(:params) do
+      {
+        client_id: client_id,
+        response_type: 'code',
+        scope: 'api',
+        redirect_uri: 'http://example.com',
+        state: SecureRandom.hex,
+        code_challenge: 'a-valid-code-challenge-that-is-long-enough-1234',
+        code_challenge_method: 'S256'
+      }
+    end
+
+    context 'when dynamic client registration is disabled' do
+      before do
+        stub_application_setting(dynamic_client_registration_enabled: false)
+      end
+
+      context 'and the client_id does not reference any application' do
+        let(:client_id) { 'this-client-id-does-not-exist' }
+
+        it 'renders an actionable error linking to the docs', :aggregate_failures do
+          get oauth_authorization_path
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/error')
+          expect(response.body).to include('dynamic client registration is disabled')
+          expect(response.body).to include(docs_anchor)
+        end
+      end
+
+      context 'and the client_id references an existing application' do
+        let(:client_id) { application.uid }
+
+        it 'does not render the custom error' do
+          get oauth_authorization_path
+
+          expect(response.body).not_to include(docs_anchor)
+        end
+      end
+    end
+
+    context 'when dynamic client registration is enabled' do
+      let(:client_id) { 'this-client-id-does-not-exist' }
+
+      before do
+        stub_application_setting(dynamic_client_registration_enabled: true)
+      end
+
+      it 'does not render the custom error' do
+        get oauth_authorization_path
+
+        expect(response.body).not_to include(docs_anchor)
+      end
+    end
+  end
 end

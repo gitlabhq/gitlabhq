@@ -368,94 +368,21 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
     end
   end
 
-  describe 'infinite retry error handling' do
+  describe 'rate limit error handling' do
     let(:rate_limit_error) { Class.new(StandardError) }
 
     before do
-      stub_const('TestRateLimitError', rate_limit_error)
+      allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(
+        rate_limit_error,
+        '429 Too Many Requests'
+      )
     end
 
-    context 'when an infinite_retry_error_type is set in apply_embeddings' do
-      let(:mock_reference_class) do
-        Class.new(Test::References::MockWithDatabaseRecord) do
-          add_preprocessor :embeddings do |refs|
-            apply_embeddings(
-              refs: refs,
-              content_method: :embedding_content,
-              infinite_retry_error_types: [TestRateLimitError]
-            )
-          end
+    it 'marks refs as failed so they move through the retry chain' do
+      result = ActiveContext::Reference.preprocess_references([test_reference])
 
-          def embedding_content
-            'content returned in reference method'
-          end
-        end
-      end
-
-      context 'when the raised error type is an infinite_retry_error_type' do
-        before do
-          allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(
-            rate_limit_error,
-            '429 Too Many Requests'
-          )
-        end
-
-        it 'catches the error and marks refs as retryable' do
-          result = ActiveContext::Reference.preprocess_references([test_reference])
-
-          expect(result[:successful]).to be_empty
-          expect(result[:failed]).to be_empty
-          expect(result[:retryable]).to eq([test_reference])
-        end
-      end
-
-      context 'when the raised error type is not an infinite_retry_error_type' do
-        before do
-          allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(ArgumentError, 'Invalid argument')
-        end
-
-        it 'catches non-infinite-retry errors as failed' do
-          result = ActiveContext::Reference.preprocess_references([test_reference])
-
-          expect(result[:successful]).to be_empty
-          expect(result[:failed]).to eq([test_reference])
-          expect(result[:retryable]).to be_empty
-        end
-      end
-    end
-
-    context 'when no infinite_retry_error_types are set' do
-      let(:mock_reference_class) do
-        Class.new(Test::References::MockWithDatabaseRecord) do
-          add_preprocessor :embeddings do |refs|
-            apply_embeddings(
-              refs: refs,
-              content_method: :embedding_content
-            )
-          end
-
-          def embedding_content
-            'content returned in reference method'
-          end
-        end
-      end
-
-      context 'when RateLimitError is raised' do
-        before do
-          allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(
-            rate_limit_error,
-            '429 Too Many Requests'
-          )
-        end
-
-        it 'does not perform infinite retries and marks refs as failed' do
-          result = ActiveContext::Reference.preprocess_references([test_reference])
-
-          expect(result[:successful]).to be_empty
-          expect(result[:failed]).to eq([test_reference])
-          expect(result[:retryable]).to be_empty
-        end
-      end
+      expect(result[:successful]).to be_empty
+      expect(result[:failed]).to eq([test_reference])
     end
   end
 
@@ -470,7 +397,6 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
         class_name: 'Class',
         queue_name: nil,
         preprocessor: 'embeddings',
-        infinite_retry: false,
         refs_count: 1,
         refs_sample: [test_reference.serialize]
       )
@@ -479,7 +405,6 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
 
       expect(result[:successful]).to be_empty
       expect(result[:failed]).to eq([test_reference])
-      expect(result[:retryable]).to be_empty
     end
 
     context 'when the queue_name is specified' do
@@ -489,7 +414,6 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
           class_name: 'Class',
           queue_name: nil,
           preprocessor: 'embeddings',
-          infinite_retry: false,
           refs_count: 1,
           refs_sample: [test_reference.serialize]
         )
@@ -518,7 +442,6 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
             class_name: 'Class',
             queue_name: 'test_queue',
             preprocessor: 'embeddings',
-            infinite_retry: false,
             refs_count: 1,
             refs_sample: [test_reference.serialize]
           )

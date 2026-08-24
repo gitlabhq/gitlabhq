@@ -362,7 +362,7 @@ export default {
         const lastNote = this.getCurrentUserLastNote;
 
         if (lastNote) {
-          eventHub.$emit('enterEditMode', {
+          eventHub.$emit('enter-edit-mode', {
             noteId: lastNote.id,
           });
         }

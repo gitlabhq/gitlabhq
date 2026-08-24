@@ -2,6 +2,7 @@
 
 module API
   class Projects < ::API::Base
+    include ::API::Concerns::McpAccess
     include PaginationParams
     include Helpers::CustomAttributes
     include APIGuard
@@ -12,6 +13,7 @@ module API
       authenticate_non_get!
     end
 
+    allow_mcp_access_create
     allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
     feature_category :groups_and_projects, %w[
@@ -638,6 +640,9 @@ module API
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
         optional :branches, type: String, desc: 'Branches to fork'
       end
+      route_setting :mcp, tool_name: :fork_repository,
+        params: [:id, :namespace_id, :namespace_path, :name, :path, :description, :visibility],
+        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project"
       route_setting :authorization, permissions: :create_fork, boundary_type: :project
       post ':id/fork', feature_category: :source_code_management do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20759')

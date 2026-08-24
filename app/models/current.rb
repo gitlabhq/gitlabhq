@@ -16,6 +16,11 @@ class Current < ActiveSupport::CurrentAttributes
 
   # watch background jobs need to reset on each job if using
   attribute :organization, :organization_assigned
+
+  # The Gitlab::Current::Organization resolver behind #organization - only
+  # ever set from a real HTTP request, unlike #organization itself.
+  attribute :organization_resolver
+
   attribute :data_context
   attribute :token_info
   attribute :granular_denied_permissions

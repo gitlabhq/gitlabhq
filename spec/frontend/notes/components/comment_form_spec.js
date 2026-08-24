@@ -349,7 +349,7 @@ describe('issue_comment_form component', () => {
           mountComponent({ mountFunction: mountExtended });
           jest.spyOn(eventHub, '$emit');
           await findMarkdownEditorTextarea().trigger('keydown.up');
-          expect(eventHub.$emit).toHaveBeenCalledWith('enterEditMode', { noteId });
+          expect(eventHub.$emit).toHaveBeenCalledWith('enter-edit-mode', { noteId });
         });
 
         describe('event enter', () => {

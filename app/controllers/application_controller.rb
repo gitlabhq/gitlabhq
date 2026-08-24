@@ -146,7 +146,9 @@ class ApplicationController < BaseActionController
     else
       store_location_for(:user, request.fullpath) unless request.xhr?
 
-      redirect_to new_user_session_path, notice: I18n.t('devise.failure.unauthenticated')
+      # The sign-in redirect must not inherit organization_path from a URL
+      # that's being treated as invalid or inaccessible.
+      redirect_to new_user_session_path(organization_path: nil), notice: I18n.t('devise.failure.unauthenticated')
     end
   end
 

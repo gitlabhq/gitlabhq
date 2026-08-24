@@ -12,10 +12,6 @@ const CONTEXT_ALIASES = {
   'portal-vue': path.join(COMPAT_DIR, 'portal_vue_vue3.js'),
   'vue-demi': 'vue-demi/lib/v3/index.mjs',
   vuedraggable: '@gitlab/vuedraggable-vue3/src/vuedraggable.js',
-  'vendor/vue-virtual-scroller': path.join(
-    ROOT,
-    'vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
-  ),
   'vue-virtual-scroll-list': path.join(
     ROOT,
     'app/assets/javascripts/vue_shared/vue_virtual_scroll_list_vue3.js',

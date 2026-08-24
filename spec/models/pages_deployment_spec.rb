@@ -295,6 +295,62 @@ RSpec.describe PagesDeployment, feature_category: :pages do
     end
   end
 
+  describe '#active?' do
+    it 'returns true when upload_ready is true and deleted_at is nil' do
+      deployment = build_stubbed(:pages_deployment, upload_ready: true, deleted_at: nil)
+      expect(deployment).to be_active
+    end
+
+    it 'returns false when deleted_at is set' do
+      deployment = build_stubbed(:pages_deployment, upload_ready: true, deleted_at: Time.zone.now)
+      expect(deployment).not_to be_active
+    end
+
+    it 'returns false when upload_ready is false' do
+      deployment = build_stubbed(:pages_deployment, upload_ready: false, deleted_at: nil)
+      expect(deployment).not_to be_active
+    end
+
+    it 'returns false when both upload_ready is false and deleted_at is set' do
+      deployment = build_stubbed(:pages_deployment, upload_ready: false, deleted_at: Time.zone.now)
+      expect(deployment).not_to be_active
+    end
+  end
+
+  describe '.inactive' do
+    it 'returns deployments with deleted_at set' do
+      deployment = create(:pages_deployment, project: project, deleted_at: Time.zone.now)
+      expect(described_class.inactive).to include(deployment)
+    end
+
+    it 'returns deployments with future deleted_at' do
+      deployment = create(:pages_deployment, project: project, deleted_at: 30.minutes.from_now)
+      expect(described_class.inactive).to include(deployment)
+    end
+
+    it 'returns deployments that are not upload ready' do
+      deployment = create(:pages_deployment, project: project)
+      deployment.update_column(:upload_ready, false)
+
+      expect(described_class.inactive).to include(deployment)
+      expect(described_class.active).not_to include(deployment)
+    end
+
+    it 'does not return active deployments' do
+      deployment = create(:pages_deployment, project: project)
+      expect(described_class.inactive).not_to include(deployment)
+    end
+
+    it 'is the complement of the active scope' do
+      active = create(:pages_deployment, project: project)
+      inactive_deleted = create(:pages_deployment, project: project, deleted_at: Time.zone.now)
+      inactive_future = create(:pages_deployment, project: project, deleted_at: 30.minutes.from_now)
+
+      expect(described_class.active).to contain_exactly(active)
+      expect(described_class.inactive).to contain_exactly(inactive_deleted, inactive_future)
+    end
+  end
+
   # Verify that calling deactivate on an instance sets the deleted_at value to now
   describe '.deactivate (instance method)' do
     it 'sets deleted_at to the current time', :freeze_time do

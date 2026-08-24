@@ -94,7 +94,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
 
     preprocessed_result = preprocess_references
 
-    expect(preprocessed_result).to eq({ successful: [ref1, ref3, ref2], failed: [], retryable: [] })
+    expect(preprocessed_result).to eq({ successful: [ref1, ref3, ref2], failed: [] })
 
     preprocessed_ref1 = preprocessed_result[:successful][0]
     expect(preprocessed_ref1.documents).to match_array([{
@@ -123,7 +123,6 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
         class_name: 'Class',
         queue_name: nil,
         preprocessor: 'embeddings',
-        infinite_retry: false,
         refs_count: 2,
         refs_sample: [ref1.serialize, ref3.serialize]
       ).ordered
@@ -132,7 +131,6 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
         class_name: 'Class',
         queue_name: nil,
         preprocessor: 'embeddings',
-        infinite_retry: false,
         refs_count: 1,
         refs_sample: [ref2.serialize]
       ).ordered
@@ -141,7 +139,6 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
 
       expect(result[:successful]).to be_empty
       expect(result[:failed]).to eq([ref1, ref3, ref2])
-      expect(result[:retryable]).to be_empty
     end
 
     context 'when the queue_name is specified' do
@@ -155,7 +152,6 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
           class_name: 'Class',
           queue_name: nil,
           preprocessor: 'embeddings',
-          infinite_retry: false,
           refs_count: 2,
           refs_sample: [ref1.serialize, ref3.serialize]
         ).ordered
@@ -164,7 +160,6 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
           class_name: 'Class',
           queue_name: nil,
           preprocessor: 'embeddings',
-          infinite_retry: false,
           refs_count: 1,
           refs_sample: [ref2.serialize]
         ).ordered
@@ -189,7 +184,6 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
             class_name: 'Class',
             queue_name: 'test_queue',
             preprocessor: 'embeddings',
-            infinite_retry: false,
             refs_count: 2,
             refs_sample: [ref1.serialize, ref3.serialize]
           )
@@ -198,75 +192,11 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
             class_name: 'Class',
             queue_name: 'test_queue',
             preprocessor: 'embeddings',
-            infinite_retry: false,
             refs_count: 1,
             refs_sample: [ref2.serialize]
           )
 
           preprocess_references
-        end
-      end
-    end
-
-    context 'when an infinite_retry_error_type is set' do
-      before do
-        stub_const('TestRateLimitError', rate_limit_error)
-      end
-
-      let(:rate_limit_error) { Class.new(StandardError) }
-
-      let(:mock_reference_class) do
-        Class.new(Test::References::MockWithWritableRootNamespace) do
-          add_preprocessor :embeddings do |refs|
-            apply_embeddings_by_root_namespace(
-              refs: refs,
-              infinite_retry_error_types: [TestRateLimitError]
-            )
-          end
-        end
-      end
-
-      it 'catches non-infinite-retry errors as failed' do
-        result = preprocess_references
-
-        expect(result[:successful]).to be_empty
-        expect(result[:failed]).to eq([ref1, ref3, ref2])
-        expect(result[:retryable]).to be_empty
-      end
-
-      context 'when the raised error type is an infinite_retry_error_type' do
-        before do
-          allow(mock_embedding_model).to receive(:generate_embeddings).and_raise(
-            rate_limit_error,
-            '429 Too Many Requests'
-          )
-        end
-
-        it 'sets the refs as retryable' do
-          expect(ActiveContext::Logger).to receive(:retryable_exception).with(
-            instance_of(TestRateLimitError),
-            class_name: 'Class',
-            queue_name: nil,
-            preprocessor: 'embeddings',
-            infinite_retry: true,
-            refs_count: 2,
-            refs_sample: [ref1.serialize, ref3.serialize]
-          ).ordered
-          expect(ActiveContext::Logger).to receive(:retryable_exception).with(
-            instance_of(TestRateLimitError),
-            class_name: 'Class',
-            queue_name: nil,
-            preprocessor: 'embeddings',
-            infinite_retry: true,
-            refs_count: 1,
-            refs_sample: [ref2.serialize]
-          ).ordered
-
-          result = preprocess_references
-
-          expect(result[:successful]).to be_empty
-          expect(result[:failed]).to be_empty
-          expect(result[:retryable]).to eq([ref1, ref3, ref2])
         end
       end
     end
@@ -284,7 +214,6 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
           class_name: 'Class',
           queue_name: nil,
           preprocessor: 'embeddings',
-          infinite_retry: false,
           refs_count: 1,
           refs_sample: [ref2.serialize]
         )
@@ -293,7 +222,6 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
 
         expect(result[:successful]).to eq([ref1, ref3])
         expect(result[:failed]).to eq([ref2])
-        expect(result[:retryable]).to be_empty
       end
     end
   end

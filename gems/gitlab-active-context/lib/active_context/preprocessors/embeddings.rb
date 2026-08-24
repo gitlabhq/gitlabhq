@@ -14,8 +14,7 @@ module ActiveContext
           content_field: :content,
           content_method: nil,
           remove_content: false,
-          next_model_only: false,
-          infinite_retry_error_types: []
+          next_model_only: false
         )
           grouped_processing_result(refs.group_by(&:root_namespace_id)) do |root_namespace_id, namespace_refs|
             generate_and_apply_embeddings_for_root_namespace(
@@ -25,8 +24,7 @@ module ActiveContext
               content_field: content_field,
               content_method: content_method,
               remove_content: remove_content,
-              next_model_only: next_model_only,
-              infinite_retry_error_types: infinite_retry_error_types
+              next_model_only: next_model_only
             )
           end
         end
@@ -37,8 +35,7 @@ module ActiveContext
           content_field: :content,
           content_method: nil,
           remove_content: false,
-          next_model_only: false,
-          infinite_retry_error_types: []
+          next_model_only: false
         )
           generate_and_apply_embeddings_for_root_namespace(
             refs: refs,
@@ -47,8 +44,7 @@ module ActiveContext
             content_field: content_field,
             content_method: content_method,
             remove_content: remove_content,
-            next_model_only: next_model_only,
-            infinite_retry_error_types: infinite_retry_error_types
+            next_model_only: next_model_only
           )
         end
 
@@ -61,14 +57,12 @@ module ActiveContext
           content_field: :content,
           content_method: nil,
           remove_content: false,
-          next_model_only: false,
-          infinite_retry_error_types: []
+          next_model_only: false
         )
           with_batch_handling(
             refs,
             queue_name: queue_name,
-            preprocessor: 'embeddings',
-            infinite_retry_error_types: infinite_retry_error_types) do
+            preprocessor: 'embeddings') do
             docs_to_process = refs.flat_map do |ref|
               models = ref.indexing_embedding_models(next_model_only: next_model_only)
 

@@ -1,3 +1,7 @@
 = render ::Layouts::PageHeadingComponent.new(_("An error has occurred"))
 %main{ :role => "main" }
-  %pre= @pre_auth.error_response.body[:error_description]
+  - if local_assigns[:error_description_override]
+    %p= error_description_override
+    %p= link_to error_description_docs_url, error_description_docs_url, target: '_blank', rel: 'noopener noreferrer', class: 'gl-break-anywhere'
+  - else
+    %pre.gl-whitespace-pre-wrap.gl-break-anywhere= @pre_auth.error_response.body[:error_description]

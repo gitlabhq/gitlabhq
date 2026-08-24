@@ -31,7 +31,6 @@ export default {
     'ee/app/assets/javascripts/compliance_dashboard/components/dashboard/components/status_chart.vue',
     'ee/app/assets/javascripts/dependencies/components/dependencies_actions.vue',
     'ee/app/assets/javascripts/geo_shared/list/components/geo_list_filtered_search_bar.vue',
-    'ee/app/assets/javascripts/insights/components/insights_chart.vue',
     'ee/app/assets/javascripts/logs/list/logs_list.vue',
     'ee/app/assets/javascripts/metrics/details/metrics_heatmap.vue',
     'ee/app/assets/javascripts/metrics/details/metrics_line_chart.vue',

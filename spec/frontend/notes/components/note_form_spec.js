@@ -17,7 +17,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
-import { noteableDataMock, notesDataMock, discussionMock } from '../mock_data';
+import { noteableDataMock, notesDataMock, discussionMock, userDataMock } from '../mock_data';
 
 jest.mock('~/lib/utils/autosave');
 
@@ -164,12 +164,26 @@ describe('issue_note_form component', () => {
       });
 
       describe('up', () => {
-        it('should ender edit mode', () => {
+        it('does not emit `enter-edit-mode` while the form still has content', () => {
           const eventHubSpy = jest.spyOn(notesEventHub, '$emit');
 
           textarea.trigger('keydown.up');
 
           expect(eventHubSpy).not.toHaveBeenCalled();
+        });
+
+        it('emits `enter-edit-mode` with your last note when the form is empty', () => {
+          const noteId = 42;
+          useNotes().userData = userDataMock;
+          createComponentWrapper({
+            noteBody: '',
+            discussion: { ...discussionMock, notes: [{ id: noteId, author: userDataMock }] },
+          });
+          const eventHubSpy = jest.spyOn(notesEventHub, '$emit');
+
+          textarea.trigger('keydown.up');
+
+          expect(eventHubSpy).toHaveBeenCalledWith('enter-edit-mode', { noteId });
         });
       });
 

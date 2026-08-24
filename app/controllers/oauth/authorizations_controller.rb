@@ -17,6 +17,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   before_action :verify_confirmed_email!, :verify_admin_allowed!
   # rubocop: disable Rails/LexicallyScopedActionFilter -- :create is defined in Doorkeeper::AuthorizationsController
   before_action :validate_pkce_for_dynamic_applications, only: [:new, :create]
+  before_action :explain_missing_dynamic_client, only: [:new, :create]
   after_action :audit_oauth_authorization, only: [:create]
   after_action :stamp_authorizing_user_on_dynamic_application, only: [:create]
   # rubocop: enable Rails/LexicallyScopedActionFilter
@@ -225,6 +226,24 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
       *::Gitlab::Auth::ADMIN_SCOPES, *::Gitlab::Auth::REPOSITORY_SCOPES,
       *::Gitlab::Auth::REGISTRY_SCOPES
     ) && !doorkeeper_application&.trusted?
+  end
+
+  def explain_missing_dynamic_client
+    return if ::Gitlab::CurrentSettings.dynamic_client_registration_enabled?
+    return if params.permit(:client_id)[:client_id].blank?
+    return if doorkeeper_application.present?
+
+    render "doorkeeper/authorizations/error", locals: {
+      error_description_override:
+        _("The OAuth client is not recognized. When dynamic client registration is " \
+          "disabled, clients registered that way are removed and new ones cannot " \
+          "register. Create an OAuth application and configure your MCP client with its " \
+          "client ID:"),
+      error_description_docs_url: help_page_url(
+        'user/model_context_protocol/mcp_server.md',
+        anchor: 'reuse-a-single-oauth-application'
+      )
+    }
   end
 
   def validate_pkce_for_dynamic_applications

@@ -249,6 +249,18 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
     end
   end
 
+  describe '.exists_for_uid?' do
+    let_it_be(:application) { create(:oauth_application) }
+
+    it 'returns true when an application has the given uid' do
+      expect(described_class.exists_for_uid?(application.uid)).to be(true)
+    end
+
+    it 'returns false when no application has the given uid' do
+      expect(described_class.exists_for_uid?('this-uid-does-not-exist')).to be(false)
+    end
+  end
+
   describe '.encode' do
     let(:raw_token) { 'my_secret_token_123' }
 

@@ -453,13 +453,18 @@ When an MCP client connects to the GitLab MCP server,
 it uses OAuth 2.0 Dynamic Client Registration (DCR)
 to create a new OAuth application on your GitLab instance.
 
-Reuse a pre-registered OAuth application to avoid the following issues with DCR:
+Whether you must reuse a single pre-registered OAuth application depends on the instance:
 
-- On GitLab Self-Managed and GitLab Dedicated, many users, or clients that connect repeatedly,
-  can create a large number of OAuth applications on the instance.
-- IP addresses rate-limit DCR requests to 10 registrations per hour. Users who share an
-  egress IP address, such as a corporate network or VPN, can exceed this limit and
-  fail to authenticate to the MCP server.
+- On instances where an administrator turns off DCR, you must reuse a pre-registered OAuth
+  application, because MCP clients cannot register applications automatically. For more information,
+  see [Turn off OAuth dynamic client registration](../../administration/settings/account_and_limit_settings.md#turn-off-oauth-dynamic-client-registration).
+- On all other instances, reusing a pre-registered OAuth application is optional. Reuse one to
+  avoid the following issues with DCR:
+  - On GitLab Self-Managed and GitLab Dedicated, many users, or clients that connect repeatedly,
+    can create a large number of OAuth applications on the instance.
+  - IP addresses rate-limit DCR requests to 10 registrations per hour. Users who share an
+    egress IP address, such as a corporate network or VPN, can exceed this limit and
+    fail to authenticate to the MCP server.
 
 Every user still authorizes with OAuth and receives their own access token. A shared application
 is the OAuth client identity, not a shared credential.

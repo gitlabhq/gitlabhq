@@ -297,7 +297,7 @@ export default {
         const lastNoteInDiscussion = this.getDiscussionCurrentUserLastNote(this.discussion);
 
         if (lastNoteInDiscussion) {
-          eventHub.$emit('enterEditMode', {
+          eventHub.$emit('enter-edit-mode', {
             noteId: lastNoteInDiscussion.id,
           });
         }

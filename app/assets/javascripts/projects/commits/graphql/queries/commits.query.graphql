@@ -64,17 +64,13 @@ query getCommitList(
               verificationStatus
             }
           }
-          pipelines(first: 1, ref: $pipelineRef) {
-            edges {
-              node {
-                id
-                detailedStatus {
-                  id
-                  detailsPath
-                  icon
-                  text
-                }
-              }
+          latestPipeline(ref: $pipelineRef) {
+            id
+            detailedStatus {
+              id
+              detailsPath
+              icon
+              text
             }
           }
         }

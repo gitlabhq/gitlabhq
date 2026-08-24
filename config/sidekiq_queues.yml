@@ -1143,8 +1143,6 @@
   - 1
 - - security_attributes_background_operation_bulk_update
   - 1
-- - security_attributes_bulk_update
-  - 1
 - - security_attributes_bulk_update_scheduler
   - 1
 - - security_attributes_cleanup_batch

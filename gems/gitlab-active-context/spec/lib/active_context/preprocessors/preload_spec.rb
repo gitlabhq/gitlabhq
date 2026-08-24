@@ -66,7 +66,6 @@ RSpec.describe ActiveContext::Preprocessors::Preload do
         class_name: 'Class',
         queue_name: nil,
         preprocessor: nil,
-        infinite_retry: false,
         refs_count: 2,
         refs_sample: anything
       )

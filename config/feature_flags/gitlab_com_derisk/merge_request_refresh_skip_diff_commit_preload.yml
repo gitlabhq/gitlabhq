@@ -1,0 +1,12 @@
+---
+name: merge_request_refresh_skip_diff_commit_preload
+description: Stops MergeRequests::RefreshService eagerly preloading the diff commit
+  graph for every open merge request targeting the pushed branch, since nothing on
+  that path reads it
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/618580
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251113
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/618580
+milestone: '19.3'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

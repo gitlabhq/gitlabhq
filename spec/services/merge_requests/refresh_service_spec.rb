@@ -568,6 +568,55 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         end
       end
 
+      context 'when open MRs target the branch' do
+        # Preloading the diff commit graph costs a scope evaluation per diff commit for
+        # every open merge request on the branch, and nothing on this path reads it.
+        context 'with merge_request_refresh_skip_diff_commit_preload enabled' do
+          it 'does not eagerly load the diff commit graph' do
+            expect(MergeRequest).not_to receive(:preload_latest_diff_commit)
+
+            service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          end
+        end
+
+        context 'with merge_request_refresh_skip_diff_commit_preload disabled' do
+          before do
+            stub_feature_flags(merge_request_refresh_skip_diff_commit_preload: false)
+          end
+
+          it 'still eagerly loads the diff commit graph' do
+            expect(MergeRequest).to receive(:preload_latest_diff_commit).and_call_original
+
+            service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          end
+        end
+
+        # Diffs created before GitLab 8.4 have no head_commit_sha, so diff_head_sha falls
+        # back to reading the commit rows. That fallback is the only consumer of the graph.
+        context 'and a diff predates the head_commit_sha column' do
+          before do
+            @merge_request.merge_request_diff.update_column(:head_commit_sha, nil)
+          end
+
+          [true, false].each do |flag_enabled|
+            context "with the preload skipped: #{flag_enabled}" do
+              before do
+                stub_feature_flags(merge_request_refresh_skip_diff_commit_preload: flag_enabled)
+              end
+
+              it 'still detects the merge request as manually merged' do
+                expect(@merge_request.merge_request_diff.reload[:head_commit_sha]).to be_nil
+
+                service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+                reload_mrs
+
+                expect(@merge_request).to be_merged
+              end
+            end
+          end
+        end
+      end
+
       context 'manual merge of source branch' do
         before do
           # Merge master -> feature branch

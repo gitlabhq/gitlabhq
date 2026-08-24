@@ -19,10 +19,7 @@ module Gitlab
         from_request || from_user || fallback_organization
       end
 
-      # The Organization a request's path/header names, if any - see
-      # https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/contexts/.
-      # Does not fall back to the User's home Organization or the default Organization -
-      # those are not what the request is about, see #from_user and Gitlab::Current::DataContext respectively.
+      # The Organization named by the request's path, namespace, or header, if any.
       def from_request
         from_params || from_headers
       end
@@ -55,6 +52,15 @@ module Gitlab
         ::Organizations::Organization.find_by_id_with_isolation_record(header_organization_id)
       end
 
+      # The Organization named by the URL's /o/:organization_path segment, if any.
+      def from_organization_params
+        path = params[:organization_path]
+        return if path.blank?
+
+        ::Organizations::Organization.find_by_path_with_isolation_record(path)
+      end
+      strong_memoize_attr :from_organization_params
+
       def from_user
         return unless user
 
@@ -80,13 +86,6 @@ module Gitlab
         ::Organizations::Organization.find_by_namespace_path_with_isolation_record(path)
       end
       strong_memoize_attr :from_group_params
-
-      def from_organization_params
-        path = params[:organization_path]
-        return if path.blank?
-
-        ::Organizations::Organization.find_by_path_with_isolation_record(path)
-      end
 
       def fallback_organization
         Gitlab::Organizations::FallbackOrganizationTracker.enable

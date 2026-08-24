@@ -33,10 +33,10 @@ export default {
       return this.commit.tags?.length > 1;
     },
     hasPipeline() {
-      return this.commit.pipelines?.edges?.length > 0;
+      return Boolean(this.commit.latestPipeline);
     },
     pipelineStatus() {
-      return this.commit.pipelines?.edges?.[0]?.node?.detailedStatus;
+      return this.commit.latestPipeline?.detailedStatus;
     },
   },
 };

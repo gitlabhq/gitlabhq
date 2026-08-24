@@ -12119,6 +12119,9 @@ msgstr ""
 msgid "ArtifactRegistry|Copy the sign-in command"
 msgstr ""
 
+msgid "ArtifactRegistry|Copy upstream URL"
+msgstr ""
+
 msgid "ArtifactRegistry|Could not authenticate with the Artifact Registry service."
 msgstr ""
 
@@ -12223,6 +12226,9 @@ msgid "ArtifactRegistry|Install"
 msgstr ""
 
 msgid "ArtifactRegistry|Install command:"
+msgstr ""
+
+msgid "ArtifactRegistry|Last downloaded"
 msgstr ""
 
 msgid "ArtifactRegistry|Last updated"
@@ -12480,6 +12486,9 @@ msgid "ArtifactRegistry|Unknown Artifact Registry role: %{role}."
 msgstr ""
 
 msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
+msgstr ""
+
+msgid "ArtifactRegistry|Upstream URL"
 msgstr ""
 
 msgid "ArtifactRegistry|Version"
@@ -30908,6 +30917,9 @@ msgid "DuoAgentsPlatform|Until your group enables it, agents and flows can't run
 msgstr ""
 
 msgid "DuoAgentsPlatform|Update merge request"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Updated %{timeago}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Verify my account"
@@ -80331,6 +80343,9 @@ msgid "The Mattermost token."
 msgstr ""
 
 msgid "The Microsoft Teams webhook (for example, `https://outlook.office.com/webhook/...`)."
+msgstr ""
+
+msgid "The OAuth client is not recognized. When dynamic client registration is disabled, clients registered that way are removed and new ones cannot register. Create an OAuth application and configure your MCP client with its client ID:"
 msgstr ""
 
 msgid "The Pivotal Tracker token."

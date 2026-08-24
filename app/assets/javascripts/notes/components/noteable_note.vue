@@ -274,7 +274,7 @@ export default {
         }
       : {};
 
-    eventHub.$on('enterEditMode', ({ noteId }) => {
+    eventHub.$on('enter-edit-mode', ({ noteId }) => {
       if (noteId === this.note.id) {
         this.isEditing = true;
         this.setSelectedCommentPositionHover();
