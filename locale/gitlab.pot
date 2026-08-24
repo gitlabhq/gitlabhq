@@ -60217,7 +60217,7 @@ msgstr ""
 msgid "Preferences|Dark color scheme"
 msgstr ""
 
-msgid "Preferences|Default GitLab Duo namespace"
+msgid "Preferences|Default GitLab Duo group"
 msgstr ""
 
 msgid "Preferences|Default text editor"
@@ -60260,9 +60260,6 @@ msgid "Preferences|For example: 30 minutes ago."
 msgstr ""
 
 msgid "Preferences|Homepage"
-msgstr ""
-
-msgid "Preferences|If you are assigned a GitLab Duo seat in multiple namespaces, you must select a default namespace."
 msgstr ""
 
 msgid "Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser."
@@ -60328,7 +60325,7 @@ msgstr ""
 msgid "Preferences|Select a billable Orbit namespace..."
 msgstr ""
 
-msgid "Preferences|Select a default Duo namespace..."
+msgid "Preferences|Select a group"
 msgstr ""
 
 msgid "Preferences|Select the accent color for the application interface."
@@ -60356,6 +60353,9 @@ msgid "Preferences|Tab width"
 msgstr ""
 
 msgid "Preferences|Theme"
+msgstr ""
+
+msgid "Preferences|This determines where your GitLab Duo usage is tracked."
 msgstr ""
 
 msgid "Preferences|This feature is experimental and translations are not yet complete."
@@ -61063,7 +61063,7 @@ msgstr ""
 msgid "Profiles|No designated account successor assigned."
 msgstr ""
 
-msgid "Profiles|No eligible namespaces available"
+msgid "Profiles|No eligible groups available"
 msgstr ""
 
 msgid "Profiles|No file chosen."
@@ -61306,7 +61306,7 @@ msgstr ""
 msgid "Profiles|You do not own any active scheduled pipelines."
 msgstr ""
 
-msgid "Profiles|You don't have access to any namespaces eligible for GitLab Duo."
+msgid "Profiles|You don't have access to any groups eligible for GitLab Duo."
 msgstr ""
 
 msgid "Profiles|You don't have access to delete this user."

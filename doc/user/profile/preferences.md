@@ -209,7 +209,7 @@ To set a default GitLab Duo namespace:
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
-1. From the **Default GitLab Duo namespace** dropdown list, select the namespace you want to set as your default.
+1. From the **Default GitLab Duo group** dropdown list, select the group you want to set as your default.
 1. Select **Save changes**.
 
 #### Namespace resolution in your local environment

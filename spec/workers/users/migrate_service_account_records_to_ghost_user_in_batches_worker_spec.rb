@@ -25,18 +25,6 @@ RSpec.describe Users::MigrateServiceAccountRecordsToGhostUserInBatchesWorker, fe
 
       worker.perform
     end
-
-    context 'when split_ghost_user_migration_queue_into_human_and_non_human FF is disabled' do
-      before do
-        stub_feature_flags(split_ghost_user_migration_queue_into_human_and_non_human: false)
-      end
-
-      it 'is no-op' do
-        expect(Users::MigrateRecordsToGhostUserInBatchesService).not_to receive(:new)
-
-        worker.perform
-      end
-    end
   end
 
   it_behaves_like 'an idempotent worker' do

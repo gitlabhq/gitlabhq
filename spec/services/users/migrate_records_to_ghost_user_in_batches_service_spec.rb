@@ -165,29 +165,5 @@ RSpec.describe Users::MigrateRecordsToGhostUserInBatchesService, feature_categor
           change { project_bot_migration.reload.consume_after }.to(1.hour.from_now + 30.seconds))
       end
     end
-
-    context 'when split_ghost_user_migration_queue_into_human_and_non_human FF is disabled' do
-      let(:service) { described_class.new(user_types: [:human, :service_account]) }
-
-      before do
-        stub_feature_flags(split_ghost_user_migration_queue_into_human_and_non_human: false)
-      end
-
-      it 'processes all migrations regardless user_types passed' do
-        expect(Users::MigrateRecordsToGhostUserService).to(
-          receive(:new).with(human_migration.user, human_migration.initiator_user, any_args)
-        ).and_call_original
-
-        expect(Users::MigrateRecordsToGhostUserService).to(
-          receive(:new).with(project_bot_migration.user, project_bot_migration.initiator_user, any_args)
-        ).and_call_original
-
-        expect(Users::MigrateRecordsToGhostUserService).to(
-          receive(:new).with(service_account_migration.user, service_account_migration.initiator_user, any_args)
-        ).and_call_original
-
-        service.execute
-      end
-    end
   end
 end
