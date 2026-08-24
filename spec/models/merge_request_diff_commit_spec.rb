@@ -249,6 +249,8 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
     end
 
     before do
+      stub_read_new_commits_table
+
       create(
         :diff_commit_without_metadata,
         merge_request_diff: merge_request_diff,
@@ -305,9 +307,9 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
       expect(result).to be_empty
     end
 
-    context 'when mr_diff_commits_read_new_table is disabled' do
+    context 'when reading from the legacy commits table' do
       before do
-        stub_feature_flags(mr_diff_commits_read_new_table: false)
+        stub_read_new_commits_table(false)
       end
 
       it 'returns commit shas from both metadata and diff commits' do
@@ -326,57 +328,75 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
         expect(result.size).to eq(1)
       end
     end
-
-    context 'when mr_diff_commits_project_id_pruning is disabled' do
-      before do
-        stub_feature_flags(mr_diff_commits_project_id_pruning: false)
-      end
-
-      it 'returns correct results' do
-        result = described_class
-          .for_merge_request_diff(merge_request_diff.id, project.id)
-          .commit_shas_from_metadata(project_id: project.id, limit: nil)
-
-        expect(result).to include('abc123')
-      end
-
-      it 'omits the project_id filter on merge_request_diff_commits' do
-        # When pruning is disabled, the caller passes no project_id to for_merge_request_diff,
-        # mirroring MergeRequestDiff#commit_shas_from_metadata's disabled-pruning code path.
-        expect do
-          described_class
-            .for_merge_request_diff(merge_request_diff.id)
-            .commit_shas_from_metadata(project_id: project.id, limit: nil)
-        end.to query_diff_commits_without_project_id
-      end
-    end
   end
 
-  describe '.project_id_pruning_enabled?' do
+  describe '.read_new_commits_table?' do
     let_it_be(:project) { create(:project) }
 
-    it 'returns true when all feature flags are enabled' do
-      expect(described_class.project_id_pruning_enabled?(project.id)).to be true
+    it 'is false while the table is not partitioned' do
+      expect(described_class.read_new_commits_table?(project.id)).to be false
     end
 
-    context 'when mr_diff_commits_project_id_pruning is disabled' do
-      before do
-        stub_feature_flags(mr_diff_commits_project_id_pruning: false)
-      end
+    it 'is true once the table is partitioned' do
+      allow(described_class).to receive(:commits_table_partitioned?).and_return(true)
 
-      it 'returns false' do
-        expect(described_class.project_id_pruning_enabled?(project.id)).to be false
+      expect(described_class.read_new_commits_table?(project.id)).to be true
+    end
+
+    it 'resolves the table from the catalog, since Rails caches the pre-swap columns' do
+      recorder = ActiveRecord::QueryRecorder.new { described_class.read_new_commits_table?(project.id) }
+
+      expect(recorder.log.join).to include('pg_partitioned_table')
+    end
+
+    it 'checks the catalog once per request' do
+      Gitlab::SafeRequestStore.ensure_request_store do
+        described_class.read_new_commits_table?(project.id)
+
+        recorder = ActiveRecord::QueryRecorder.new { described_class.read_new_commits_table?(project.id) }
+
+        expect(recorder.log.join).not_to include('pg_partitioned_table')
       end
     end
 
-    context 'when read_new_commits_table? returns false' do
+    context 'when mr_diff_commits_read_new_table is disabled' do
       before do
         stub_feature_flags(mr_diff_commits_read_new_table: false)
       end
 
-      it 'returns false' do
-        expect(described_class.project_id_pruning_enabled?(project.id)).to be false
+      it 'is false without checking the table' do
+        expect(described_class).not_to receive(:commits_table_partitioned?)
+
+        expect(described_class.read_new_commits_table?(project.id)).to be false
       end
+
+      # Disabling the flag once the table is swapped puts every query back on columns the
+      # partitioned table does not have, so it must not happen after the swap.
+      it 'is false even when the table is partitioned' do
+        allow(described_class).to receive(:commits_table_partitioned?).and_return(true)
+
+        expect(described_class.read_new_commits_table?(project.id)).to be false
+      end
+    end
+  end
+
+  describe '.read_new_commits_table_for_actor?' do
+    let_it_be(:group) { create(:group) }
+
+    before do
+      allow(described_class).to receive(:commits_table_partitioned?).and_return(true)
+    end
+
+    it 'accepts a non-Project actor, unlike .read_new_commits_table?' do
+      stub_feature_flags(mr_diff_commits_read_new_table: group)
+
+      expect(described_class.read_new_commits_table_for_actor?(group)).to be true
+    end
+
+    it 'is false for actors not included in the rollout' do
+      stub_feature_flags(mr_diff_commits_read_new_table: false)
+
+      expect(described_class.read_new_commits_table_for_actor?(group)).to be false
     end
   end
 

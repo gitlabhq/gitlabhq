@@ -518,6 +518,26 @@ RSpec.describe Trigger, feature_category: :tooling do
         it 'does not set DEBIAN_IMAGE or ALPINE_IMAGE so CNG variables.yml stays authoritative' do
           expect(subject.variables).not_to include("DEBIAN_IMAGE", "ALPINE_IMAGE")
         end
+
+        context 'with CONTAINER_VERSION_SUFFIX set' do
+          before do
+            stub_env('CONTAINER_VERSION_SUFFIX', 'project-path-istanbul')
+          end
+
+          it 'prefers the explicit suffix over the project path slug' do
+            expect(subject.variables).to include("CONTAINER_VERSION_SUFFIX" => "project-path-istanbul")
+          end
+        end
+
+        context 'with CONTAINER_VERSION_SUFFIX set to an empty string' do
+          before do
+            stub_env('CONTAINER_VERSION_SUFFIX', '')
+          end
+
+          it 'falls back to the project path slug' do
+            expect(subject.variables).to include("CONTAINER_VERSION_SUFFIX" => "project-path")
+          end
+        end
       end
 
       describe 'with skipping redundant jobs' do

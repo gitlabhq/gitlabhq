@@ -7,6 +7,10 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
   include RepoHelpers
 
+  before do
+    stub_read_new_commits_table
+  end
+
   let(:diff_with_commits) { create(:merge_request).merge_request_diff }
 
   describe 'validations' do
@@ -316,9 +320,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         .not_to query_diff_commits_without_project_id
     end
 
-    context 'when mr_diff_commits_read_new_table is disabled' do
+    context 'when reading from the legacy commits table' do
       before do
-        stub_feature_flags(mr_diff_commits_read_new_table: false)
+        stub_read_new_commits_table(false)
       end
 
       context 'with sha contained in diff commits' do
@@ -332,21 +336,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       it 'unions metadata results with matches from merge_request_diff_commits.sha' do
         expect(described_class.by_commit_sha(project, 'def456')).to eq([merge_request_diff])
       end
-    end
-
-    context 'when mr_diff_commits_project_id_pruning is disabled' do
-      let(:sha) { 'abc123' }
-
-      before do
-        stub_feature_flags(mr_diff_commits_project_id_pruning: false)
-      end
-
-      it 'returns correct results' do
-        expect(by_commit_sha).to eq([merge_request_diff])
-      end
 
       it 'omits the project_id filter on merge_request_diff_commits' do
-        expect { described_class.by_commit_sha(project.id, sha).load }
+        expect { described_class.by_commit_sha(project.id, 'abc123').load }
           .to query_diff_commits_without_project_id
       end
     end
@@ -1685,9 +1677,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       expect(recorder.log.first).to include('INNER JOIN LATERAL')
     end
 
-    context 'when mr_diff_commits_read_new_table is disabled' do
+    context 'when reading from the legacy commits table' do
       before do
-        stub_feature_flags(mr_diff_commits_read_new_table: false)
+        stub_read_new_commits_table(false)
       end
 
       shared_examples 'result with commit SHAs' do
@@ -1804,12 +1796,6 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           expect(shas_without_preload).not_to be_empty
           expect(shas_without_preload).to eq(shas_with_preload)
         end
-      end
-    end
-
-    context 'when mr_diff_commits_project_id_pruning is disabled' do
-      before do
-        stub_feature_flags(mr_diff_commits_project_id_pruning: false)
       end
 
       it 'returns commit SHAs without project_id partition pruning', :aggregate_failures do
@@ -1940,9 +1926,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         .not_to query_diff_commits_without_project_id
     end
 
-    context 'when mr_diff_commits_read_new_table is disabled' do
+    context 'when reading from the legacy commits table' do
       before do
-        stub_feature_flags(mr_diff_commits_read_new_table: false)
+        stub_read_new_commits_table(false)
       end
 
       shared_examples 'merge request diff with commit shas' do
@@ -2000,23 +1986,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
         it_behaves_like 'merge request diff with commit shas'
       end
-    end
-
-    context 'when mr_diff_commits_project_id_pruning is disabled' do
-      before do
-        stub_feature_flags(mr_diff_commits_project_id_pruning: false)
-      end
-
-      it 'returns true for a commit present in merge_request_commits_metadata' do
-        expect(merge_request_diff.includes_any_commits?(['abc123'])).to be(true)
-      end
-
-      it 'returns false for a commit only in merge_request_diff_commits' do
-        expect(merge_request_diff.includes_any_commits?(['def456'])).to be(false)
-      end
 
       it 'omits the project_id filter on merge_request_diff_commits' do
-        expect { merge_request_diff.includes_any_commits?(['abc123']) }
+        expect { merge_request_diff.includes_any_commits?(['def456']) }
           .to query_diff_commits_without_project_id
       end
     end
@@ -2071,9 +2043,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         expect(matched).to be_empty
       end
 
-      context 'when mr_diff_commits_read_new_table is disabled' do
+      context 'when reading from the legacy commits table' do
         before do
-          stub_feature_flags(mr_diff_commits_read_new_table: false)
+          stub_read_new_commits_table(false)
         end
 
         it 'falls back to the sha column and returns the diff' do
@@ -2355,9 +2327,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         diff.commits(load_from_gitaly: false)
       end
 
-      context 'when mr_diff_commits_read_new_table is disabled' do
+      context 'when reading from the legacy commits table' do
         before do
-          stub_feature_flags(mr_diff_commits_read_new_table: false)
+          stub_read_new_commits_table(false)
         end
 
         it 'passes read_new_commits_table: false to with_users' do
@@ -2546,33 +2518,17 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   describe '#read_new_commits_table?' do
-    let(:merge_request_diff) { build_stubbed(:merge_request_diff) }
+    let(:project_id) { non_existing_record_id }
+    let(:merge_request_diff) { build_stubbed(:merge_request_diff, project_id: project_id) }
 
-    context 'when merge_request has no target_project' do
-      before do
-        allow(merge_request_diff).to receive(:merge_request).and_return(nil)
-      end
+    # The decision itself is covered in MergeRequestDiffCommit; this only asserts the wiring.
+    it 'delegates to MergeRequestDiffCommit with the diff project' do
+      expect(MergeRequestDiffCommit)
+        .to receive(:read_new_commits_table?)
+        .with(project_id)
+        .and_return(true)
 
-      it { expect(merge_request_diff.read_new_commits_table?).to be false }
-    end
-
-    context 'when merge_request has a target_project' do
-      let(:project) { build_stubbed(:project) }
-      let(:merge_request) { build_stubbed(:merge_request, target_project: project) }
-
-      before do
-        allow(merge_request_diff).to receive(:merge_request).and_return(merge_request)
-      end
-
-      it { expect(merge_request_diff.read_new_commits_table?).to be true }
-
-      context 'when mr_diff_commits_read_new_table is disabled' do
-        before do
-          stub_feature_flags(mr_diff_commits_read_new_table: false)
-        end
-
-        it { expect(merge_request_diff.read_new_commits_table?).to be false }
-      end
+      expect(merge_request_diff.read_new_commits_table?).to be true
     end
   end
 

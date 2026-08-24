@@ -77,7 +77,9 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       let(:refresh_service) { service.new(project: @project, current_user: @user) }
 
       context 'query count' do
-        it 'does not execute a lot of queries' do
+        # :request_store is needed so MergeRequestDiffCommit.commits_table_partitioned?
+        # memoizes instead of re-querying pg_partitioned_table on every call.
+        it 'does not execute a lot of queries', :request_store do
           # Hardcoded the query limit since the queries can also be reduced even
           # if there are the same number of merge requests (e.g. by preloading
           # associations). This should also fail in case additional queries are
@@ -86,8 +88,13 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           # The limit is based on the number of queries executed at the current
           # state of the service. As we reduce the number of queries executed in
           # this service, the limit should be reduced as well.
-          expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
-            .not_to exceed_query_limit(225)
+          #
+          # :request_store also turns on Gitaly's N+1 call detector, which flags a
+          # pre-existing N+1 unrelated to what this example checks; allow it here.
+          Gitlab::GitalyClient.allow_n_plus_1_calls do
+            expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
+              .not_to exceed_query_limit(225)
+          end
         end
       end
 

@@ -546,6 +546,8 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="query-aichatcontextpresets-foundationalagentreference"></a>`foundationalAgentReference` | [`String`](#string) | Reference of the selected foundational chat agent. |
+| <a id="query-aichatcontextpresets-namespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace the user is acting on. |
 | <a id="query-aichatcontextpresets-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
 | <a id="query-aichatcontextpresets-questioncount"></a>`questionCount` | [`Int`](#int) | Number of questions for the default screen. |
 | <a id="query-aichatcontextpresets-resourceid"></a>`resourceId` | [`AiModelID`](#aimodelid) | Global ID of the resource from the current page. |

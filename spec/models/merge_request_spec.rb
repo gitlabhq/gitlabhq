@@ -7,6 +7,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   include ProjectForksHelper
   include ReactiveCachingHelpers
 
+  before do
+    stub_read_new_commits_table
+  end
+
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:namespace) { create_default(:namespace).freeze }
@@ -1553,7 +1557,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           # not in `merge_request_commits_metadata`. The metadata-only read path
           # (`mr_diff_commits_read_new_table`) is only enabled post-backfill, so
           # stub it off to exercise the legacy union fallback.
-          stub_feature_flags(mr_diff_commits_read_new_table: false)
+          stub_read_new_commits_table(false)
 
           commit.update!(sha: sha)
           commit.merge_request_commits_metadata.destroy!
@@ -4145,7 +4149,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         # `committer_id` column on `merge_request_diff_commits`. Once
         # `mr_diff_commits_read_new_table` is enabled the union with that
         # path is removed, so this case is exercised with the FF off.
-        stub_feature_flags(mr_diff_commits_read_new_table: false)
+        stub_read_new_commits_table(false)
       end
 
       it_behaves_like 'committer filtering matches expected'
@@ -4216,7 +4220,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         # Pre-backfill mixed state: one commit via metadata, one only via the
         # direct `committer_id` column. The union covering both paths only
         # exists with the FF off; post-backfill the direct path is dropped.
-        stub_feature_flags(mr_diff_commits_read_new_table: false)
+        stub_read_new_commits_table(false)
       end
 
       it_behaves_like 'committer filtering matches expected'
@@ -4321,7 +4325,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         subject.clear_memoization(:committer_ids_to_filter_from_approvers)
         subject.clear_memoization(:committers_to_filter_from_approvers)
         subject.clear_memoization(:committer_emails_from_diff)
-        subject.clear_memoization(:project_id_pruning_enabled?)
+        subject.clear_memoization(:read_new_commits_table?)
       end
 
       it 'includes the committer reachable via metadata' do
@@ -4342,10 +4346,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           .not_to query_diff_commits_without_project_id
       end
 
-      context 'when mr_diff_commits_project_id_pruning is disabled' do
+      context 'when reading from the legacy commits table' do
         before do
-          stub_feature_flags(mr_diff_commits_project_id_pruning: false)
-          subject.clear_memoization(:project_id_pruning_enabled?)
+          stub_read_new_commits_table(false)
+          subject.clear_memoization(:read_new_commits_table?)
         end
 
         it 'returns correct committers' do
@@ -10274,7 +10278,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     before do
       merge_request.clear_memoization(:read_new_commits_table?)
-      merge_request.clear_memoization(:project_id_pruning_enabled?)
     end
 
     it 'checks existence of commit by SHA from merge_request_commits_metadata table' do
@@ -10304,30 +10307,19 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(merge_request.commit_exists?(orphan_diff_commit.sha)).to be(false)
       end
 
-      context 'when mr_diff_commits_read_new_table is disabled' do
+      context 'when reading from the legacy commits table' do
         before do
-          stub_feature_flags(mr_diff_commits_read_new_table: false)
+          stub_read_new_commits_table(false)
         end
 
         it 'checks existence of commit by SHA from merge_request_diff_commits table' do
           expect(merge_request.commit_exists?(orphan_diff_commit.sha)).to be(true)
         end
-      end
-    end
 
-    context 'when mr_diff_commits_project_id_pruning is disabled' do
-      before do
-        stub_feature_flags(mr_diff_commits_project_id_pruning: false)
-        merge_request.clear_memoization(:project_id_pruning_enabled?)
-      end
-
-      it 'checks commit existence' do
-        expect(merge_request.commit_exists?(commits_metadata.sha)).to be(true)
-      end
-
-      it 'omits the project_id filter on merge_request_diff_commits' do
-        expect { merge_request.commit_exists?(commits_metadata.sha) }
-          .to query_diff_commits_without_project_id
+        it 'omits the project_id filter on merge_request_diff_commits' do
+          expect { merge_request.commit_exists?(commits_metadata.sha) }
+            .to query_diff_commits_without_project_id
+        end
       end
     end
   end
@@ -10358,7 +10350,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     before do
       merge_request.clear_memoization(:read_new_commits_table?)
-      merge_request.clear_memoization(:project_id_pruning_enabled?)
     end
 
     it 'returns only the SHAs that belong to the merge request' do
@@ -10423,9 +10414,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(merge_request.existing_commit_shas([orphan_diff_commit.sha])).to eq([])
       end
 
-      context 'when mr_diff_commits_read_new_table is disabled' do
+      context 'when reading from the legacy commits table' do
         before do
-          stub_feature_flags(mr_diff_commits_read_new_table: false)
+          stub_read_new_commits_table(false)
           merge_request.clear_memoization(:read_new_commits_table?)
         end
 
@@ -10474,23 +10465,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
               .to contain_exactly(orphan_diff_commit.sha, other_orphan_diff_commit.sha)
           end
         end
-      end
-    end
 
-    context 'when mr_diff_commits_project_id_pruning is disabled' do
-      before do
-        stub_feature_flags(mr_diff_commits_project_id_pruning: false)
-        merge_request.clear_memoization(:project_id_pruning_enabled?)
-      end
-
-      it 'returns the SHAs that belong to the merge request' do
-        expect(merge_request.existing_commit_shas([commits_metadata.sha, unknown_sha]))
-          .to contain_exactly(commits_metadata.sha)
-      end
-
-      it 'omits the project_id filter on merge_request_diff_commits' do
-        expect { merge_request.existing_commit_shas([commits_metadata.sha]) }
-          .to query_diff_commits_without_project_id
+        it 'omits the project_id filter on merge_request_diff_commits' do
+          expect { merge_request.existing_commit_shas([commits_metadata.sha]) }
+            .to query_diff_commits_without_project_id
+        end
       end
     end
   end

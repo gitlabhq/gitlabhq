@@ -46,6 +46,7 @@ more flexibility for complex cases.
    }
    ```
 
+1. Add suggested questions for the agent, as described in [Suggested questions](#suggested-questions).
 1. Update [user facing documentation](../../user/duo_agent_platform/agents/foundational_agents/_index.md).
 
 ### Using GitLab Duo Workflow Service
@@ -119,6 +120,7 @@ more flexibility for complex cases.
    end
    ```
 
+1. Add suggested questions for the agent, as described in [Suggested questions](#suggested-questions).
 1. Update [user facing documentation](../../user/duo_agent_platform/agents/foundational_agents/_index.md).
 
 Tips:
@@ -272,6 +274,54 @@ Choose the version increment based on the change:
 
 Without `flow_version`, GitLab Duo Workflow Service falls back to its default resolution.
 Consider potential breaking changes to older GitLab versions before changing an agent.
+
+## Suggested questions
+
+GitLab Duo chat shows suggested question chips on the empty chat screen. By default, these questions
+come from the current page URL (for example, a code page or a wiki page), or from the resource in
+context (an issue, merge request, epic, commit, or CI job). If neither applies, chat shows a generic
+list of questions.
+
+A foundational agent can override these questions. Add an optional `suggested_questions` array to the
+agent's entry in
+[`FoundationalChatAgentsDefinitions.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ai/foundational_chat_agents_definitions.rb):
+
+```ruby
+{
+  id: 2,
+  reference: 'foundational_pirate_agent',
+  version: 'v1',
+  flow_version: '^1.0.0',
+  name: 'Foundational Pirate Agent',
+  description: "A most important agent that speaks like a pirate",
+  suggested_questions: [
+    "How do I make my code more efficient, matey?",
+    "Which of my merge requests need review?",
+    "What treasure did my team ship last month?",
+    "Show me the bugs lurking in this project"
+  ]
+}
+```
+
+When a user selects the agent in chat, the frontend sends its `reference` value in the
+`foundationalAgentReference` argument of the `aiChatContextPresets` GraphQL query. The resolver
+resolves that reference through `Ai::FoundationalChatAgentsFinder`, so it only honours an agent the
+user could have selected, and returns that agent's `suggested_questions` instead of the URL-based or
+resource-based questions.
+
+If the agent's definition omits `suggested_questions`, or the array is empty, the usual URL and
+resource fallbacks apply unchanged. Each agent's owning team decides whether to add questions.
+
+Follow these guidelines when you write suggested questions:
+
+- The resolver samples `questionCount` questions at random from the array. Chat asks for 4. Define
+  more than 4, or the user sees the same questions every time, in a different order. Fewer than 4
+  means the empty state shows fewer chips.
+- Agent questions replace the URL-based and resource-based questions, so a question must make sense
+  with no page context. Avoid "this file", "this commit", and "this merge request".
+- Write questions as a real user would type them, in the first person. Keep each question under about
+  70 characters.
+- Only suggest a question the agent can act on with its tools.
 
 ## Context variables
 

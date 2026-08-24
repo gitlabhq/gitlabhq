@@ -36,8 +36,6 @@ export default {
     'app/assets/javascripts/search/results/components/blob_footer.vue',
     'app/assets/javascripts/sidebar/components/confidential/sidebar_confidentiality_widget.vue',
     'app/assets/javascripts/sidebar/components/labels/labels_select_vue/labels_select_root.vue',
-    'app/assets/javascripts/sidebar/components/subscriptions/subscriptions.vue',
-    'app/assets/javascripts/sidebar/components/todo_toggle/todo.vue',
     'app/assets/javascripts/vue_merge_request_widget/components/checks/rebase.vue',
     'app/assets/javascripts/vue_merge_request_widget/components/checks/unresolved_discussions.vue',
     'app/assets/javascripts/vue_merge_request_widget/components/deployment/deployment_actions.vue',

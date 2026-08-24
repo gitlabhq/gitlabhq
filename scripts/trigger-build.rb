@@ -373,10 +373,21 @@ module Trigger
     # @return [Hash]
     def default_build_vars
       @default_build_vars ||= {
-        "CONTAINER_VERSION_SUFFIX" => ENV.fetch("CI_PROJECT_PATH_SLUG", "upstream-trigger"),
+        "CONTAINER_VERSION_SUFFIX" => container_version_suffix,
         "CACHE_BUSTER" => "false",
         "ARCH_LIST" => ENV.fetch("ARCH_LIST", "amd64")
       }
+    end
+
+    # Suffix added to every container version this script works out
+    #
+    # The tag ignores which assets were baked into the image, so two builds of the same commit
+    # would otherwise share one image. A build that needs its own images sets this to stay apart.
+    #
+    # @return [String]
+    def container_version_suffix
+      Trigger.non_empty_variable_value("CONTAINER_VERSION_SUFFIX") ||
+        ENV.fetch("CI_PROJECT_PATH_SLUG", "upstream-trigger")
     end
 
     # Skip redundant build jobs by calculating if container images are already present in the registry

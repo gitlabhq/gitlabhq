@@ -24,7 +24,6 @@ export default {
     'app/assets/javascripts/work_items/components/work_item_description.vue',
     'app/assets/javascripts/work_items/components/work_item_detail.vue',
     'app/assets/javascripts/work_items/components/work_item_labels.vue',
-    'app/assets/javascripts/work_items/components/work_item_links/work_item_actions_split_button.vue',
     'app/assets/javascripts/work_items/components/work_item_notes.vue',
     'app/assets/javascripts/work_items/components/work_item_parent.vue',
     'app/assets/javascripts/work_items/pages/work_item_root.vue',

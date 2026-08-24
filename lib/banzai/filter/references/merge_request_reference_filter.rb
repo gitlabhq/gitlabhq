@@ -88,7 +88,7 @@ module Banzai
 
         def preloaded_all_commits(object)
           commits = object.all_commits
-          preloads = if Feature.enabled?(:mr_diff_commits_read_new_table, object.project)
+          preloads = if MergeRequestDiffCommit.read_new_commits_table?(object.target_project_id)
                        [{ merge_request_commits_metadata: [:commit_author, :committer] }]
                      else
                        [:commit_author, :committer, :merge_request_commits_metadata]

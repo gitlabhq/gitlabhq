@@ -126,6 +126,8 @@ build-cng-env:
     - |
       if [[ "$BABEL_ENV" == "istanbul" ]]; then
         export GLCI_ASSETS_IMAGE_TAG="$GLCI_ISTANBUL_ASSETS_IMAGE_TAG"
+        # image tags ignore which assets are inside, so keep these images separate
+        export CONTAINER_VERSION_SUFFIX="${CI_PROJECT_PATH_SLUG}-istanbul"
       fi
     - !reference [.build-cng-env, before_script]
   # when running in backport, override CNG_COMMIT so it defaults to release branch instead

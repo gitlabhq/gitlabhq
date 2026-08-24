@@ -40,7 +40,7 @@ class MergeRequestDiff < ApplicationRecord
   has_many :merge_request_diff_commits, ->(diff) {
     scope = order(:merge_request_diff_id, :relative_order)
 
-    if diff.project_id && MergeRequestDiffCommit.project_id_pruning_enabled?(diff.project_id)
+    if diff.project_id && MergeRequestDiffCommit.read_new_commits_table?(diff.project_id)
       scope = scope.where(project_id: diff.project_id)
     end
 
@@ -118,10 +118,8 @@ class MergeRequestDiff < ApplicationRecord
                        ).where(merge_request_commits_metadata: { sha: serialized_shas })
 
     if project_ids_list.all? { |id| MergeRequestDiffCommit.read_new_commits_table?(id) }
-      if project_ids_list.all? { |id| MergeRequestDiffCommit.project_id_pruning_enabled?(id) }
-        # `merge_request_diff_commits` is partitioned by `project_id` on the new table;
-        metadata_query = metadata_query.where(merge_request_diff_commits: { project_id: project_ids_list })
-      end
+      # `merge_request_diff_commits` is partitioned by `project_id` on the new table
+      metadata_query = metadata_query.where(merge_request_diff_commits: { project_id: project_ids_list })
 
       # `from_union` wraps the result in `FROM (...) merge_request_diffs`, which preserves
       # outer chain context like the `EXISTS` correlation in `MergeRequest.by_commit_sha`.
@@ -318,7 +316,7 @@ class MergeRequestDiff < ApplicationRecord
     relation = MergeRequestDiffCommit
       .where(merge_request_diff_id: diff_ids, merge_request_commits_metadata_id: metadata_ids)
 
-    relation = relation.where(project_id: project.id) if MergeRequestDiffCommit.project_id_pruning_enabled?(project.id)
+    relation = relation.where(project_id: project.id) if MergeRequestDiffCommit.read_new_commits_table?(project.id)
 
     # `distinct` gives a row per diff, not per matching commit, so the limit cannot
     # truncate: the distinct count never exceeds the candidates.
@@ -843,9 +841,9 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def read_new_commits_table?
-    return false unless merge_request&.target_project
+    return false unless project_id
 
-    Feature.enabled?(:mr_diff_commits_read_new_table, merge_request.target_project)
+    MergeRequestDiffCommit.read_new_commits_table?(project_id)
   end
   strong_memoize_attr :read_new_commits_table?
 
@@ -1188,7 +1186,7 @@ class MergeRequestDiff < ApplicationRecord
 
   def metadata_sha_exists?(shas)
     diff_commits_relation = MergeRequestDiffCommit.where(merge_request_diff_id: id)
-    if MergeRequestDiffCommit.project_id_pruning_enabled?(project_id)
+    if MergeRequestDiffCommit.read_new_commits_table?(project_id)
       diff_commits_relation = diff_commits_relation.where(project_id: project_id)
     end
 
@@ -1204,7 +1202,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def commit_shas_from_metadata(limit)
-    diff_commits_relation = if MergeRequestDiffCommit.project_id_pruning_enabled?(project_id)
+    diff_commits_relation = if MergeRequestDiffCommit.read_new_commits_table?(project_id)
                               MergeRequestDiffCommit.for_merge_request_diff(id, project_id)
                             else
                               MergeRequestDiffCommit.for_merge_request_diff(id)

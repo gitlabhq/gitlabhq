@@ -86,6 +86,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   # yields an ErrorResponse, so those are left untouched and we never
   # misattribute an authorization the user did not grant.
   def stamp_authorizing_user_on_dynamic_application
+    return if skip_dynamic_application_name_stamp?
     return unless performed? && authorize_response.is_a?(Doorkeeper::OAuth::CodeResponse)
     return unless current_user
 
@@ -94,6 +95,13 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     return if application.name.include?(DYNAMIC_APP_AUTHORIZED_BY)
 
     application.update(name: "#{application.name}#{DYNAMIC_APP_AUTHORIZED_BY}#{sanitized_authorizing_username}")
+  end
+
+  # Overridden in EE to skip stamping on GitLab.com, where MCP clients reuse a
+  # single dynamic OAuth application across users, making a per-user stamp
+  # misleading. Self-managed instances still stamp.
+  def skip_dynamic_application_name_stamp?
+    false
   end
 
   # GitLab usernames are already restricted to a safe character set, but we

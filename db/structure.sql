@@ -20561,6 +20561,7 @@ CREATE TABLE duo_workflows_workflows (
     web_search_enabled boolean DEFAULT false NOT NULL,
     trigger_source smallint DEFAULT 0 NOT NULL,
     trigger_flow_trigger_id bigint,
+    execution_mode smallint,
     CONSTRAINT check_1033e7a455 CHECK ((char_length(title) <= 40)),
     CONSTRAINT check_13bb5688db CHECK ((char_length(summary) <= 1024)),
     CONSTRAINT check_30ca07a4ef CHECK ((char_length(goal) <= 16384)),

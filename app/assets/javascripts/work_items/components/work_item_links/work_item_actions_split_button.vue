@@ -75,6 +75,7 @@ export default {
 </script>
 
 <template>
+  <!-- eslint-disable vue/v-on-event-hyphenation -- GlDisclosureDropdown emits the camelCase `beforeClose` event -->
   <gl-disclosure-dropdown
     v-gl-tooltip.top="buttonTooltipText"
     icon="plus"
@@ -109,4 +110,5 @@ export default {
       </span>
     </template>
   </gl-disclosure-dropdown>
+  <!-- eslint-enable vue/v-on-event-hyphenation -->
 </template>

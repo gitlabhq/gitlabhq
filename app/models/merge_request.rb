@@ -2458,7 +2458,7 @@ class MergeRequest < ApplicationRecord
       .where(merge_request_diff: merge_request_diffs.recent)
       .limit(10_000)
 
-    relation = relation.where(project_id: target_project_id) if project_id_pruning_enabled?
+    relation = relation.where(project_id: target_project_id) if read_new_commits_table?
 
     relation
   end
@@ -2959,7 +2959,7 @@ class MergeRequest < ApplicationRecord
         merge_request_diffs.where('merge_request_diffs.id = merge_request_diff_commits.merge_request_diff_id')
       )
 
-    diff_commits_subquery = diff_commits_subquery.where(project_id: target_project_id) if project_id_pruning_enabled?
+    diff_commits_subquery = diff_commits_subquery.where(project_id: target_project_id) if read_new_commits_table?
 
     # Data can be found in either table until backfill completes. First look for SHAs in table
     # `merge_request_commits_metadata`, then look for the ones we did not find in
@@ -2972,8 +2972,8 @@ class MergeRequest < ApplicationRecord
         .pluck(:sha)
     end
 
-    # We skip querying `merge_request_diff_commits` table when FF `mr_diff_commits_read_new_table` is enabled.
-    # This flag will only be enabled when new table is fully populated
+    # Once the table is swapped, the metadata lookup above is authoritative and there is
+    # no legacy `sha` column left to fall back to.
     return found_shas if read_new_commits_table?
 
     missing_shas = shas - found_shas
@@ -3201,7 +3201,7 @@ class MergeRequest < ApplicationRecord
       .where(dc[:merge_request_diff_id].eq(merge_request_diff.id))
       .where(u[:email].not_eq(nil))
 
-    query = query.where(dc[:project_id].eq(target_project_id)) if project_id_pruning_enabled?
+    query = query.where(dc[:project_id].eq(target_project_id)) if read_new_commits_table?
 
     query
   end
@@ -3457,14 +3457,9 @@ class MergeRequest < ApplicationRecord
   end
 
   def read_new_commits_table?
-    Feature.enabled?(:mr_diff_commits_read_new_table, project)
+    MergeRequestDiffCommit.read_new_commits_table?(target_project_id)
   end
   strong_memoize_attr :read_new_commits_table?
-
-  def project_id_pruning_enabled?
-    MergeRequestDiffCommit.project_id_pruning_enabled?(target_project_id)
-  end
-  strong_memoize_attr :project_id_pruning_enabled?
 end
 
 MergeRequest.prepend_mod_with('MergeRequest')

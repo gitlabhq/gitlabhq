@@ -1,7 +1,7 @@
 ---
 Gitlab/AvoidDefaultOrganization:
   Exclude:
-    - 'ee/app/graphql/resolvers/ai/foundational_chat_agents_resolver.rb'
+    - 'ee/app/finders/ai/foundational_chat_agents_finder.rb'
     - 'ee/app/helpers/ee/application_settings_helper.rb'
     - 'ee/app/presenters/admin/ai_configuration_presenter.rb'
     - 'ee/app/services/ee/application_settings/update_service.rb'

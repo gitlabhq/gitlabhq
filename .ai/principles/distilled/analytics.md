@@ -1,6 +1,6 @@
 ---
-source_checksum: 348ad3d1d84c3842
-distilled_at_sha: 4f780f45c07b4907c1d264bf0115130fb68c0c80
+source_checksum: a00fcbd490e70062
+distilled_at_sha: 829339e2e65aa85defcd3357097b75335668e334
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -10,6 +10,7 @@ distilled_at_sha: 4f780f45c07b4907c1d264bf0115130fb68c0c80
 
 ### Event Definitions
 
+- Use the [`gitlab_internal_events_cli` gem](https://gitlab.com/gitlab-org/analytics-section/product-analytics/analytics-cli#installation) to create event and metric definition files (`gem install gitlab_internal_events_cli && gem exec gitlab_internal_events_cli`); DO NOT create them manually.
 - Ensure every fired event has a corresponding definition file in `config/events` or `ee/config/events`.
 - Verify the [event definition file](https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/event_definition_guide/) is correct and complete.
 - DO NOT include sensitive information (per the [data classification standard](https://handbook.gitlab.com/handbook/security/data-classification-standard/)) in tracking parameters.

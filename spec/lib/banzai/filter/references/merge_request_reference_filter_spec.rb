@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_category: :code_review_workflow do
   include FilterSpecHelper
 
+  before do
+    stub_read_new_commits_table
+  end
+
   let(:project) { create(:project, :public) }
   let(:merge)   { create(:merge_request, source_project: project) }
 
@@ -389,9 +393,9 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_
       expect(metadata&.association(:committer)).to be_loaded
     end
 
-    context 'when mr_diff_commits_read_new_table is disabled' do
+    context 'when reading from the legacy commits table' do
       before do
-        stub_feature_flags(mr_diff_commits_read_new_table: false)
+        stub_read_new_commits_table(false)
       end
 
       it 'preloads commit_author and committer directly on diff commits' do

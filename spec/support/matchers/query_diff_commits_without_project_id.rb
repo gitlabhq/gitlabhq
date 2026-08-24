@@ -35,8 +35,10 @@ module DiffCommitsProjectIdPruningMatcher
     table_queries.reject { |q| has_table_qualified_project_id?(q) }
   end
 
+  # Leading parens are allowed because `Arel::Nodes::Union#to_sql` wraps its operands, so a
+  # union reads as `( (SELECT ...) UNION (SELECT ...) )` and would otherwise be skipped.
   def select_query?(query)
-    query.match?(/\A\s*(SELECT|WITH)\b/i)
+    query.match?(/\A[\s(]*(SELECT|WITH)\b/i)
   end
 
   def references_table?(query)

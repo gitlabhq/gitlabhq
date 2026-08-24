@@ -345986,6 +345986,30 @@
                   "defaultValue": null,
                   "isDeprecated": false,
                   "deprecationReason": null
+                },
+                {
+                  "name": "namespaceId",
+                  "description": "Global ID of the namespace the user is acting on.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "NamespaceID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "foundationalAgentReference",
+                  "description": "Reference of the selected foundational chat agent.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 }
               ],
               "type": {
