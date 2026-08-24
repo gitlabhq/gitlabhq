@@ -78,11 +78,14 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
       let(:stub) { instance_double(Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub) }
       let(:response) { instance_double(Gitlab::Agent::AutoFlow::Rpc::StartWorkflowResponse) }
 
+      let(:token_binding) { described_class.generate_workflow_token_binding }
+
       subject(:result) do
         client.start_workflow(
           idempotency_key: 'rollout-1',
           workflow_definition: "def main(w):\n    pass\n",
           namespace_id: 600956,
+          token_binding: token_binding,
           kwargs: { 'environment' => { 'id' => '42' } }
         )
       end
@@ -98,6 +101,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           expect(metadata).to eq('authorization' => 'bearer test-token', **feature_flags)
           expect(request.idempotency_key).to eq('rollout-1')
           expect(request.namespace_id).to eq(600956)
+          expect(request.token_binding).to eq(token_binding)
           expect(request.kwargs.map(&:name)).to eq(['environment'])
 
           key_value = request.kwargs.first.value.dict_value.key_values.first
@@ -108,6 +112,27 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
         end
 
         expect(result).to eq(response)
+      end
+    end
+
+    describe '.generate_workflow_token_binding' do
+      subject(:binding_value) { described_class.generate_workflow_token_binding }
+
+      # Relay refuses any other length outright, so a caller cannot discover this by
+      # trial and error at runtime.
+      it 'is the length Relay requires' do
+        expect(binding_value.bytesize).to eq(described_class::WORKFLOW_TOKEN_BINDING_BYTES)
+      end
+
+      # Callers persist it in an encrypted attribute, which serializes through JSON, so
+      # a value that is not plain ASCII would not survive the round trip.
+      it 'is ASCII, so it survives being stored encrypted' do
+        expect(binding_value).to match(/\A[0-9a-f]+\z/)
+        expect(binding_value.encoding).to eq(Encoding::US_ASCII).or eq(Encoding::UTF_8)
+      end
+
+      it 'is unguessable, so two rollouts never share one' do
+        expect(binding_value).not_to eq(described_class.generate_workflow_token_binding)
       end
     end
 

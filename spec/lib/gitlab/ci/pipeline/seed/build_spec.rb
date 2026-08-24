@@ -1712,7 +1712,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         end
 
         it "included? returns true" do
-          expect(subject.included?).to eq(true)
+          expect(subject.included?).to be(true)
         end
       end
     end

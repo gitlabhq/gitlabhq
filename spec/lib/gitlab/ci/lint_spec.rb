@@ -58,7 +58,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
         expect(build_job[:tag_list]).to eq([])
         expect(build_job[:environment]).to eq('staging')
         expect(build_job[:when]).to eq('manual')
-        expect(build_job[:allow_failure]).to eq(true)
+        expect(build_job[:allow_failure]).to be(true)
 
         rspec_job = subject.jobs.last
         expect(rspec_job[:name]).to eq('rspec')
@@ -69,7 +69,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
         expect(rspec_job[:tag_list]).to eq(['docker'])
         expect(rspec_job.fetch(:environment)).to be_nil
         expect(rspec_job[:when]).to eq('on_success')
-        expect(rspec_job[:allow_failure]).to eq(false)
+        expect(rspec_job[:allow_failure]).to be(false)
       end
     end
 
@@ -692,7 +692,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
         expect(build_job[:tag_list]).to eq([])
         expect(build_job[:environment]).to eq('staging')
         expect(build_job[:when]).to eq('manual')
-        expect(build_job[:allow_failure]).to eq(true)
+        expect(build_job[:allow_failure]).to be(true)
 
         rspec_job = subject.jobs.last
         expect(rspec_job[:name]).to eq('rspec')
@@ -703,7 +703,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
         expect(rspec_job[:tag_list]).to eq(['docker'])
         expect(rspec_job.fetch(:environment)).to be_nil
         expect(rspec_job[:when]).to eq('on_success')
-        expect(rspec_job[:allow_failure]).to eq(false)
+        expect(rspec_job[:allow_failure]).to be(false)
       end
     end
 

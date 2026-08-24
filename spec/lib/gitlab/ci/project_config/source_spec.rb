@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig::Source, feature_category: :pipeline_co
   describe '#internal_include_prepended?' do
     subject(:internal_include_prepended) { custom_config.internal_include_prepended? }
 
-    it { expect(internal_include_prepended).to eq(false) }
+    it { expect(internal_include_prepended).to be(false) }
   end
 
   describe '#inputs_for_pipeline_creation' do

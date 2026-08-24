@@ -734,23 +734,23 @@ describe('Merge requests list app', () => {
       expect(findBulkEditButton().exists()).toBe(false);
     });
 
-    it('emits "issuables:enableBulkEdit" event to legacy bulk edit class', async () => {
+    it('emits `enable-bulk-edit` event to legacy bulk edit class', async () => {
       createComponent({ provide: { canBulkUpdate: true }, mountFn: mountExtended });
       jest.spyOn(issuableEventHub, '$emit');
 
       findBulkEditButton().vm.$emit('click');
       await waitForPromises();
 
-      expect(issuableEventHub.$emit).toHaveBeenCalledWith('issuables:enableBulkEdit');
+      expect(issuableEventHub.$emit).toHaveBeenCalledWith('enable-bulk-edit');
     });
 
     describe.each([true, false])(
-      'when "issuables:toggleBulkEdit" event is received with payload `%s`',
+      'when `toggle-bulk-edit` event is received with payload `%s`',
       (isBulkEdit) => {
         beforeEach(() => {
           createComponent();
 
-          issuableEventHub.$emit('issuables:toggleBulkEdit', isBulkEdit);
+          issuableEventHub.$emit('toggle-bulk-edit', isBulkEdit);
         });
 
         it(`${isBulkEdit ? 'enables' : 'disables'} bulk edit`, () => {
@@ -765,12 +765,12 @@ describe('Merge requests list app', () => {
         jest.spyOn(issuableEventHub, '$emit');
       });
 
-      it('emits an "issuables:updateBulkEdit" event to the legacy bulk edit class', async () => {
+      it('emits an `update-bulk-edit` event to the legacy bulk edit class', async () => {
         findIssuableList().vm.$emit('update-legacy-bulk-edit');
 
         await nextTick();
 
-        expect(issuableEventHub.$emit).toHaveBeenCalledWith('issuables:updateBulkEdit');
+        expect(issuableEventHub.$emit).toHaveBeenCalledWith('update-bulk-edit');
       });
     });
   });

@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
       it 'sets the expected error' do
         expect(valid?).to be_falsy
         expect(external_file.errors).to contain_exactly(expected_error)
-        expect(external_file.content).to eq(nil)
+        expect(external_file.content).to be_nil
       end
     end
 

@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Equals, feature_categor
       end
 
       with_them do
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Equals, feature_categor
       end
 
       with_them do
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -79,7 +79,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Equals, feature_categor
         end
 
         with_them do
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
         end
       end
 
@@ -94,7 +94,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Equals, feature_categor
         end
 
         with_them do
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
       end
     end

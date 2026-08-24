@@ -579,7 +579,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable, feature_category: :pipeli
         it 'sets interruptible to the value' do
           entry.compose!(deps)
 
-          expect(entry.value[:interruptible]).to eq(true)
+          expect(entry.value[:interruptible]).to be(true)
         end
       end
     end

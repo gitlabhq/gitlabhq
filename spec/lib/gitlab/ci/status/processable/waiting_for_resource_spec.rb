@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Ci::Status::Processable::WaitingForResource, feature_cate
   subject { described_class.new(Gitlab::Ci::Status::Core.new(processable, user)) }
 
   it 'fabricates status with correct details' do
-    expect(subject.has_action?).to eq false
+    expect(subject.has_action?).to be false
   end
 
   context 'when resource is retained by a build' do
@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Ci::Status::Processable::WaitingForResource, feature_cate
     end
 
     it 'fabricates status with correct details' do
-      expect(subject.has_action?).to eq true
+      expect(subject.has_action?).to be true
       expect(subject.action_path).to include 'jobs'
     end
   end

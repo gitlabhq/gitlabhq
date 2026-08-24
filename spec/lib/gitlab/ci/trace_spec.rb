@@ -77,7 +77,7 @@ RSpec.describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state, factory_defa
         redis.exists?(cache_key)
       end
 
-      expect(result).to eq(true)
+      expect(result).to be(true)
     end
 
     it 'updates the expiry of gitlab:ci:trace:<job.id>:watched in redis', :clean_gitlab_redis_shared_state do

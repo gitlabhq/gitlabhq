@@ -58,13 +58,13 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
       describe '#allow_failure' do
         subject { entry.allow_failure }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       describe '#interruptible' do
         subject { entry.interruptible }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -500,7 +500,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
       end
 
       it 'does not set a default value' do
-        expect(entry.default).to eq(nil)
+        expect(entry.default).to be_nil
       end
 
       it 'does not add to provided configuration' do

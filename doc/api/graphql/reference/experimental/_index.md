@@ -34,5 +34,6 @@ interactively using the [GraphiQL explorer](../../getting_started.md#graphiql).
 {{< cards >}}
 
 - [Enums](enums.md)
+- [Scalars](scalars.md)
 
 {{< /cards >}}

@@ -13,11 +13,16 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
       value 'BAR', 'Bar value.'
     end
 
+    scalar_type = Class.new(::Types::BaseScalar) do
+      graphql_name 'GraphQLScalar'
+    end
+
     Class.new(GraphQL::Schema) do
       query(Class.new(::Types::BaseObject) do
         graphql_name 'Query'
 
         field :enum_field, enum_type
+        field :scalar_field, scalar_type
       end)
     end
   end
@@ -34,6 +39,18 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
 
       it 'contains all enum types in the schema' do
         expect(enums.map(&:name)).to contain_exactly('GraphQLEnum')
+      end
+    end
+
+    describe '@scalars' do
+      subject(:scalars) { result.scalars }
+
+      it 'contains an array of scalar types' do
+        expect(scalars).to all(be_a(Tooling::Graphql::Docs::Schema::Scalar))
+      end
+
+      it 'contains the custom scalar type in the schema' do
+        expect(scalars.map(&:name)).to include('GraphQLScalar')
       end
     end
   end

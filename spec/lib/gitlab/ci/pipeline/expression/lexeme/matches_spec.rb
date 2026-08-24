@@ -53,49 +53,49 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches, feature_catego
       let(:left_value)  { 'my-string' }
       let(:right_value) { Gitlab::UntrustedRegexp.new('something') }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when left and right match' do
       let(:left_value)  { 'my-awesome-string' }
       let(:right_value) { Gitlab::UntrustedRegexp.new('awesome.string$') }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when left is nil' do
       let(:left_value)  { nil }
       let(:right_value) { Gitlab::UntrustedRegexp.new('pattern') }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when right is nil' do
       let(:left_value)  { 'my-awesome-string' }
       let(:right_value) { nil }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when left and right are nil' do
       let(:left_value)  { nil }
       let(:right_value) { nil }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when left is an empty string' do
       let(:left_value)  { '' }
       let(:right_value) { Gitlab::UntrustedRegexp.new('pattern') }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when left and right are empty strings' do
       let(:left_value)  { '' }
       let(:right_value) { Gitlab::UntrustedRegexp.new('') }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when left is a multiline string and matches right' do
@@ -109,7 +109,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches, feature_catego
 
       let(:right_value) { Gitlab::UntrustedRegexp.new('text-string') }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when left is a multiline string and does not match right' do
@@ -123,7 +123,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches, feature_catego
 
       let(:right_value) { Gitlab::UntrustedRegexp.new('text-string') }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when a matching pattern uses regex flags' do
@@ -135,7 +135,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches, feature_catego
 
       let(:right_value) { Gitlab::UntrustedRegexp.new('(?i)awesome') }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when a non-matching pattern uses regex flags' do
@@ -147,7 +147,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches, feature_catego
 
       let(:right_value) { Gitlab::UntrustedRegexp.new('(?i)terrible') }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when right value is a regexp string' do
@@ -156,13 +156,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches, feature_catego
       context 'when matching' do
         let(:left_value) { 'abcde' }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when not matching' do
         let(:left_value) { 'dfg' }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end

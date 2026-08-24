@@ -262,7 +262,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
       let(:pipeline_config) { nil }
 
       it 'returns false' do
-        expect(subject.internal_include?).to eq(false)
+        expect(subject.internal_include?).to be(false)
       end
     end
   end

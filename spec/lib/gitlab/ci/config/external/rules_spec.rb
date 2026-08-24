@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
     subject(:result) { rules.evaluate(context).pass? }
 
     context 'when there is no rule' do
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     shared_examples 'with when: specified' do
@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
           rule_hashes.first[:when] = 'never'
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'with when: always' do
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
           rule_hashes.first[:when] = 'always'
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'with when: <invalid string>' do
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
           rule_hashes.first[:when] = nil
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
       context 'when the rule matches' do
         let(:context) { double(variables_hash: { 'MY_VAR' => 'hello' }) }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
 
         it_behaves_like 'with when: specified'
       end
@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
       context 'when the rule does not match' do
         let(:context) { double(variables_hash: { 'MY_VAR' => 'invalid' }) }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
       context 'when the file exists' do
         let(:context) { double(top_level_worktree_paths: ['file.txt']) }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
 
         it_behaves_like 'with when: specified'
       end
@@ -91,7 +91,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
       context 'when the file does not exist' do
         let(:context) { double(top_level_worktree_paths: ['README.md']) }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -106,7 +106,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
         end
 
         context 'when the file has changed' do
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
 
           it_behaves_like 'with when: specified'
         end
@@ -114,7 +114,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
         context 'when the file has not changed' do
           let(:changed_paths) { [instance_double(Gitlab::Git::ChangedPath, path: 'README.md')] }
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
       end
 
@@ -144,7 +144,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
         context 'when the file has changed compared to the given ref' do
           let(:rule_hashes) { [{ changes: { paths: ['file.txt'], compare_to: 'master' } }] }
 
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
 
           it_behaves_like 'with when: specified'
         end
@@ -152,7 +152,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
         context 'when the file has not changed compared to the given ref' do
           let(:rule_hashes) { [{ changes: { paths: ['file.txt'], compare_to: 'branch1' } }] }
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
 
         context 'when compare_to: is invalid' do

@@ -294,19 +294,19 @@ RSpec.describe Gitlab::Ci::CronParser, feature_category: :continuous_integration
     context 'when cron is valid' do
       let(:cron) { '* * * * *' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when cron is invalid' do
       let(:cron) { '*********' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when cron syntax is quoted' do
       let(:cron) { "'0 * * * *'" }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -316,19 +316,19 @@ RSpec.describe Gitlab::Ci::CronParser, feature_category: :continuous_integration
     context 'when cron is valid' do
       let(:cron_timezone) { 'Europe/Istanbul' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when cron is invalid' do
       let(:cron_timezone) { 'Invalid-zone' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when cron_timezone is ActiveSupport::TimeZone format' do
       let(:cron_timezone) { 'Eastern Time (US & Canada)' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -403,13 +403,13 @@ RSpec.describe Gitlab::Ci::CronParser, feature_category: :continuous_integration
     context 'when cron matches up' do
       let(:cron) { '0 1 2 3 *' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when cron does not match' do
       let(:cron) { '5 4 3 2 1' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

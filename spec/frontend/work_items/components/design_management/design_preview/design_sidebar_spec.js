@@ -196,10 +196,10 @@ describe('DesignSidebar', () => {
       expect(findResolvedCommentsToggle().props('visible')).toBe(false);
     });
 
-    it('emits toggleResolveComments event on resolve comments button click', async () => {
+    it('emits `toggle-resolved-comments` event on resolve comments button click', async () => {
       findResolvedCommentsToggle().vm.$emit('input', true);
       await nextTick();
-      expect(wrapper.emitted('toggleResolvedComments')).toHaveLength(1);
+      expect(wrapper.emitted('toggle-resolved-comments')).toHaveLength(1);
     });
 
     it('opens the accordion item when resolvedDiscussionsExpanded prop changes to true', async () => {
@@ -242,17 +242,17 @@ describe('DesignSidebar', () => {
       expect(wrapper.emitted('updateNoteError')).toEqual([['payload']]);
 
       findFirstDiscussion().vm.$emit('resolve-discussion-error', 'payload');
-      expect(wrapper.emitted('resolveDiscussionError')).toEqual([['payload']]);
+      expect(wrapper.emitted('resolve-discussion-error')).toEqual([['payload']]);
     });
 
     it('emits correct event on discussion resolve error', () => {
       findFirstDiscussion().vm.$emit('resolve-discussion-error', 'payload');
-      expect(wrapper.emitted('resolveDiscussionError')).toEqual([['payload']]);
+      expect(wrapper.emitted('resolve-discussion-error')).toEqual([['payload']]);
     });
 
     it('emits correct event on discussion delete note error', () => {
       findFirstDiscussion().vm.$emit('delete-note-error', 'payload');
-      expect(wrapper.emitted('deleteNoteError')).toEqual([['payload']]);
+      expect(wrapper.emitted('delete-note-error')).toEqual([['payload']]);
     });
 
     it('changes prop correctly on opening discussion form', async () => {

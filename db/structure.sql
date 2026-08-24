@@ -16890,6 +16890,25 @@ CREATE SEQUENCE cd_rollout_transitions_id_seq
 
 ALTER SEQUENCE cd_rollout_transitions_id_seq OWNED BY cd_rollout_transitions.id;
 
+CREATE TABLE cd_rollout_workflow_tokens (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    rollout_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    token_binding jsonb NOT NULL,
+    token jsonb
+);
+
+CREATE SEQUENCE cd_rollout_workflow_tokens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE cd_rollout_workflow_tokens_id_seq OWNED BY cd_rollout_workflow_tokens.id;
+
 CREATE TABLE cd_rollouts (
     id bigint NOT NULL,
     group_id bigint,
@@ -36648,6 +36667,8 @@ ALTER TABLE ONLY cd_rollout_steps ALTER COLUMN id SET DEFAULT nextval('cd_rollou
 
 ALTER TABLE ONLY cd_rollout_transitions ALTER COLUMN id SET DEFAULT nextval('cd_rollout_transitions_id_seq'::regclass);
 
+ALTER TABLE ONLY cd_rollout_workflow_tokens ALTER COLUMN id SET DEFAULT nextval('cd_rollout_workflow_tokens_id_seq'::regclass);
+
 ALTER TABLE ONLY cd_rollouts ALTER COLUMN id SET DEFAULT nextval('cd_rollouts_id_seq'::regclass);
 
 ALTER TABLE ONLY cd_service_environment_healths ALTER COLUMN id SET DEFAULT nextval('cd_service_environment_healths_id_seq'::regclass);
@@ -39719,6 +39740,9 @@ ALTER TABLE ONLY cd_rollout_steps
 
 ALTER TABLE ONLY cd_rollout_transitions
     ADD CONSTRAINT cd_rollout_transitions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY cd_rollout_workflow_tokens
+    ADD CONSTRAINT cd_rollout_workflow_tokens_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY cd_rollouts
     ADD CONSTRAINT cd_rollouts_pkey PRIMARY KEY (id);
@@ -46976,6 +47000,10 @@ CREATE UNIQUE INDEX index_cd_rollout_steps_on_rollout_id_and_path ON cd_rollout_
 CREATE INDEX index_cd_rollout_transitions_on_organization_id ON cd_rollout_transitions USING btree (organization_id);
 
 CREATE INDEX index_cd_rollout_transitions_on_rollout_id_and_created_at ON cd_rollout_transitions USING btree (rollout_id, created_at);
+
+CREATE INDEX index_cd_rollout_workflow_tokens_on_organization_id ON cd_rollout_workflow_tokens USING btree (organization_id);
+
+CREATE UNIQUE INDEX index_cd_rollout_workflow_tokens_on_rollout_id ON cd_rollout_workflow_tokens USING btree (rollout_id);
 
 CREATE INDEX index_cd_rollouts_on_application_flow_definition_id ON cd_rollouts USING btree (application_flow_definition_id);
 
@@ -58136,6 +58164,9 @@ ALTER TABLE ONLY security_finding_enrichments
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_755d734f25 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
 
+ALTER TABLE ONLY cd_rollout_workflow_tokens
+    ADD CONSTRAINT fk_756dea1a5a FOREIGN KEY (rollout_id) REFERENCES cd_rollouts(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY resource_link_events
     ADD CONSTRAINT fk_75961aea6b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -58210,6 +58241,9 @@ ALTER TABLE ONLY packages_maven_metadata
 
 ALTER TABLE ONLY project_relation_exports
     ADD CONSTRAINT fk_7a4d3d5c0f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY cd_rollout_workflow_tokens
+    ADD CONSTRAINT fk_7a5447c3ca FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_7a5553d60f FOREIGN KEY (label_id) REFERENCES labels(id) ON DELETE CASCADE;

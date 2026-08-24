@@ -21,12 +21,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
     let(:command) { described_class.new(dry_run: dry_run, origin_ref: project.default_branch_or_main) }
     let(:dry_run) { false }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context 'when dry_run is true' do
       let(:dry_run) { true }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -36,12 +36,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
     let(:command) { described_class.new(linting: linting) }
     let(:linting) { false }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context 'when linting is true' do
       let(:linting) { true }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -73,13 +73,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
     context 'when ref can be resolved' do
       let(:origin_ref) { 'master' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when ref cannot be resolved' do
       let(:origin_ref) { 'nonexistent' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -91,25 +91,25 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
     context 'for existing branch' do
       let(:origin_ref) { 'master' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'for fully described tag ref' do
       let(:origin_ref) { 'refs/tags/master' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'for fully described branch ref' do
       let(:origin_ref) { 'refs/heads/master' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'for invalid branch' do
       let(:origin_ref) { 'something' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -121,25 +121,25 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
     context 'for existing ref' do
       let(:origin_ref) { 'v1.0.0' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'for fully described tag ref' do
       let(:origin_ref) { 'refs/tags/v1.0.0' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'for fully described branch ref' do
       let(:origin_ref) { 'refs/heads/v1.0.0' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'for invalid ref' do
       let(:origin_ref) { 'something' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -155,13 +155,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
         project.repository.create_ref(project.repository.root_ref_sha, origin_ref)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'for branch ref' do
       let(:origin_ref) { 'refs/heads/some_branch' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -177,13 +177,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
         project.repository.create_ref(project.repository.root_ref_sha, origin_ref)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'for branch ref' do
       let(:origin_ref) { 'refs/heads/some_branch' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -361,7 +361,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
         expect_any_instance_of(Project).to receive(:protected_for?).with('refs/heads/master').and_return(true)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when a ref is unprotected' do
@@ -369,7 +369,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
         expect_any_instance_of(Project).to receive(:protected_for?).with('refs/heads/master').and_return(false)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -379,7 +379,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
     subject { command.ambiguous_ref? }
 
     context 'when ref is not ambiguous' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when ref is ambiguous' do
@@ -388,7 +388,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
         project.repository.add_branch(project.creator, 'ref', 'master')
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 

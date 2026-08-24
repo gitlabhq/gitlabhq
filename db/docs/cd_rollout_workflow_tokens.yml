@@ -1,0 +1,13 @@
+---
+table_name: cd_rollout_workflow_tokens
+classes:
+- Cd::RolloutWorkflowToken
+feature_categories:
+- continuous_delivery
+description: AutoFlow capabilities for a rollout's workflow, held apart from the rollout itself
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250402
+milestone: '19.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

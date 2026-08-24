@@ -63,6 +63,7 @@ cd_environments: no_work_needed
 cd_rollout_environments: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 cd_rollout_steps: https://gitlab.com/gitlab-org/gitlab/-/work_items/616252
 cd_rollout_transitions: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_rollout_workflow_tokens: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 cd_rollouts: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 cd_service_environment_healths: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 cd_services: https://gitlab.com/gitlab-org/gitlab/-/issues/611968

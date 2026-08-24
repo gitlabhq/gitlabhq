@@ -267,13 +267,13 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
     context 'when the other file has the same params' do
       let(:other_file) { test_class.new({ location: location, content: content }, ctx) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when the other file has not the same params' do
       let(:other_file) { test_class.new({ location: 'some/other/file', content: content }, ctx) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

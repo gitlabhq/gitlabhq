@@ -33,7 +33,25 @@ module Gitlab
       # Sentinel telling the request enumerator to stop forwarding acks.
       STREAM_CLOSED = :stream_closed
 
+      # Length Relay's StartWorkflowRequest.token_binding rule demands, exactly.
+      WORKFLOW_TOKEN_BINDING_BYTES = 64
+
       ConfigurationError = Class.new(StandardError)
+
+      # Mints a token binding for {start_workflow}. Kept here so every caller binds at the
+      # length Relay's schema demands rather than picking its own.
+      #
+      # Hex rather than raw bytes: callers persist this before submitting, and an
+      # encrypted attribute serializes through JSON, which raw bytes are not valid
+      # UTF-8 for. Hex is plain ASCII, so it stores and round-trips unchanged while
+      # still being exactly WORKFLOW_TOKEN_BINDING_BYTES on the wire. Relay treats the
+      # value as opaque bytes and only ever compares it, so the encoding is ours to
+      # pick; the entropy is half the length, which is 256 bits.
+      #
+      # @return [String] WORKFLOW_TOKEN_BINDING_BYTES ASCII hex characters.
+      def self.generate_workflow_token_binding
+        SecureRandom.hex(WORKFLOW_TOKEN_BINDING_BYTES / 2)
+      end
 
       def initialize
         raise ConfigurationError, 'GitLab KAS is not enabled' unless Gitlab::Kas.enabled?
@@ -306,12 +324,19 @@ module Gitlab
       #   (e.g. ["production", 3])
       # @param kwargs [Hash{String => Object}] named arguments bound to the workflow's main().
       #   (e.g. { "environment" => { "id" => "42" }, "version_set" => { "services" => [...] } })
-      # @return [Gitlab::Agent::AutoFlow::Rpc::StartWorkflowResponse]
-      def start_workflow(idempotency_key:, workflow_definition:, namespace_id:, args: [], kwargs: {})
+      # @param token_binding [String] WORKFLOW_TOKEN_BINDING_BYTES random ASCII characters that bind the
+      #   workflow's tokens to this caller. Relay hands the workflow's tokens to a later
+      #   submission under the same idempotency_key only if it presents this same value, so it
+      #   must be stored before the call and must not be derivable from anything a user
+      #   influences. Use {generate_workflow_token_binding}.
+      # @return [Gitlab::Agent::AutoFlow::Rpc::StartWorkflowResponse] carries workflow_key and
+      #   workflow_token; the latter is what the other AutoFlow RPCs require.
+      def start_workflow(idempotency_key:, workflow_definition:, namespace_id:, token_binding:, args: [], kwargs: {})
         request = Gitlab::Agent::AutoFlow::Rpc::StartWorkflowRequest.new(
           idempotency_key: idempotency_key,
           workflow_definition: workflow_definition,
           namespace_id: namespace_id,
+          token_binding: token_binding,
           args: Autoflow::ValueConverter.values(args),
           kwargs: Autoflow::ValueConverter.kwargs(kwargs)
         )

@@ -608,10 +608,10 @@ export default {
     this.autocompleteCache = new AutocompleteCache();
   },
   mounted() {
-    issuableEventHub.$on('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
+    issuableEventHub.$on('toggle-bulk-edit', this.toggleBulkEditSidebar);
   },
   beforeDestroy() {
-    issuableEventHub.$off('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
+    issuableEventHub.$off('toggle-bulk-edit', this.toggleBulkEditSidebar);
   },
   methods: {
     getBranchPath(branchType = 'other') {
@@ -813,13 +813,13 @@ export default {
         this.hasInitBulkEdit = true;
       }
 
-      issuableEventHub.$emit('issuables:enableBulkEdit');
+      issuableEventHub.$emit('enable-bulk-edit');
     },
     handleUpdateLegacyBulkEdit() {
       // If "select all" checkbox was checked, wait for all checkboxes
       // to be checked before updating IssuableBulkUpdateSidebar class
       this.$nextTick(() => {
-        issuableEventHub.$emit('issuables:updateBulkEdit');
+        issuableEventHub.$emit('update-bulk-edit');
       });
     },
     targetBranchTooltip(mergeRequest) {
