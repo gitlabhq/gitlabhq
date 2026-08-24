@@ -90,6 +90,8 @@ enabled_foundational_flow_check_results: no_work_needed
 fork_networks: supported
 govern_policies: https://gitlab.com/gitlab-org/gitlab/-/work_items/616253
 govern_policy_enforcements: https://gitlab.com/gitlab-org/gitlab/-/work_items/616254
+govern_policy_evaluations: https://gitlab.com/gitlab-org/gitlab/-/work_items/619206
+govern_policy_violations: https://gitlab.com/gitlab-org/gitlab/-/work_items/619207
 granular_scopes: supported
 group_type_ci_runner_machines: supported
 group_type_ci_runners: supported

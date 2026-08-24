@@ -51,6 +51,7 @@ mise.local.toml
 /config/redis.yml
 /config/unicorn.rb
 /config/puma.rb
+/config/puma_ipv6.rb
 /config/secrets.yml*
 /config/session_store.yml
 /config/sidekiq.yml

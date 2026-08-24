@@ -11,7 +11,7 @@ class RemoveOldCodeSuggestionsTables < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      CREATE TABLE code_suggestion_usages
+      CREATE TABLE IF NOT EXISTS code_suggestion_usages
       (
           `user_id` UInt64 DEFAULT 0,
           `event` UInt8 DEFAULT 0,
@@ -29,7 +29,7 @@ class RemoveOldCodeSuggestionsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE code_suggestion_daily_events
+      CREATE TABLE IF NOT EXISTS code_suggestion_daily_events
       (
           `user_id` UInt64 DEFAULT 0,
           `date` Date32 DEFAULT toDate(now64()),
@@ -43,7 +43,7 @@ class RemoveOldCodeSuggestionsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE code_suggestion_daily_events_new
+      CREATE TABLE IF NOT EXISTS code_suggestion_daily_events_new
       (
           `namespace_path` String DEFAULT '0/',
           `user_id` UInt64 DEFAULT 0,
@@ -60,7 +60,7 @@ class RemoveOldCodeSuggestionsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW code_suggestion_daily_events_mv TO code_suggestion_daily_events
+      CREATE MATERIALIZED VIEW IF NOT EXISTS code_suggestion_daily_events_mv TO code_suggestion_daily_events
       (
           `user_id` UInt64,
           `date` Date,
@@ -76,7 +76,7 @@ class RemoveOldCodeSuggestionsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW code_suggestion_daily_events_mv_new TO code_suggestion_daily_events_new
+      CREATE MATERIALIZED VIEW IF NOT EXISTS code_suggestion_daily_events_mv_new TO code_suggestion_daily_events_new
       (
           `namespace_path` String,
           `user_id` UInt64,

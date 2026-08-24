@@ -103,7 +103,7 @@ You can create a migration by creating a Ruby migration file in `db/click_house/
 class CreateIssues < ClickHouse::Migration
   def up
     execute <<~SQL
-      CREATE TABLE issues
+      CREATE TABLE IF NOT EXISTS issues
       (
         id UInt64 DEFAULT 0,
         title String DEFAULT ''
@@ -115,7 +115,7 @@ class CreateIssues < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      DROP TABLE sync_cursors
+      DROP TABLE IF EXISTS issues
     SQL
   end
 end

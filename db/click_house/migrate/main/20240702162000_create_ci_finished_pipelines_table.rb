@@ -3,7 +3,7 @@
 class CreateCiFinishedPipelinesTable < ClickHouse::Migration
   def up
     execute <<~SQL
-      CREATE TABLE ci_finished_pipelines
+      CREATE TABLE IF NOT EXISTS ci_finished_pipelines
       (
         `id` UInt64 DEFAULT 0,
         `project_id` UInt64 DEFAULT 0,

@@ -1368,6 +1368,12 @@ Migration/AsyncPostMigrateOnly:
     - db/**/*.rb
   EnforcedSince: 20240115115029
 
+Migration/ClickHouseIdempotentDdl:
+  Enabled: true
+  Include:
+    - 'db/click_house/migrate/**/*.rb'
+    - 'db/click_house/post_migrate/**/*.rb'
+
 Gitlab/RailsLogger:
   Exclude:
     - 'spec/**/*.rb'

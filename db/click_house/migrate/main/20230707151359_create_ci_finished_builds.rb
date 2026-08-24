@@ -41,7 +41,7 @@ class CreateCiFinishedBuilds < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      DROP TABLE ci_finished_builds
+      DROP TABLE IF EXISTS ci_finished_builds
     SQL
   end
 end

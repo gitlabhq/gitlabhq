@@ -21515,6 +21515,50 @@ CREATE SEQUENCE govern_policy_enforcements_id_seq
 
 ALTER SEQUENCE govern_policy_enforcements_id_seq OWNED BY govern_policy_enforcements.id;
 
+CREATE TABLE govern_policy_evaluations (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    govern_policy_id bigint NOT NULL,
+    project_id bigint,
+    environment_id bigint,
+    user_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    evaluated_at timestamp with time zone NOT NULL,
+    policy_version integer NOT NULL,
+    trigger_type smallint NOT NULL,
+    mode smallint NOT NULL,
+    verdict smallint NOT NULL
+);
+
+CREATE SEQUENCE govern_policy_evaluations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE govern_policy_evaluations_id_seq OWNED BY govern_policy_evaluations.id;
+
+CREATE TABLE govern_policy_violations (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    govern_policy_evaluation_id bigint NOT NULL,
+    govern_policy_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    details jsonb
+);
+
+CREATE SEQUENCE govern_policy_violations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE govern_policy_violations_id_seq OWNED BY govern_policy_violations.id;
+
 CREATE TABLE gpg_key_subkeys (
     id bigint NOT NULL,
     gpg_key_id bigint NOT NULL,
@@ -30787,7 +30831,8 @@ CREATE TABLE secrets_manager_namespace_enrollments (
     namespace_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    beta boolean DEFAULT true NOT NULL
+    beta boolean DEFAULT true NOT NULL,
+    disabled_at timestamp with time zone
 );
 
 CREATE SEQUENCE secrets_manager_namespace_enrollments_id_seq
@@ -37026,6 +37071,10 @@ ALTER TABLE ONLY govern_policies ALTER COLUMN id SET DEFAULT nextval('govern_pol
 
 ALTER TABLE ONLY govern_policy_enforcements ALTER COLUMN id SET DEFAULT nextval('govern_policy_enforcements_id_seq'::regclass);
 
+ALTER TABLE ONLY govern_policy_evaluations ALTER COLUMN id SET DEFAULT nextval('govern_policy_evaluations_id_seq'::regclass);
+
+ALTER TABLE ONLY govern_policy_violations ALTER COLUMN id SET DEFAULT nextval('govern_policy_violations_id_seq'::regclass);
+
 ALTER TABLE ONLY gpg_key_subkeys ALTER COLUMN id SET DEFAULT nextval('gpg_key_subkeys_id_seq'::regclass);
 
 ALTER TABLE ONLY gpg_keys ALTER COLUMN id SET DEFAULT nextval('gpg_keys_id_seq'::regclass);
@@ -40515,6 +40564,12 @@ ALTER TABLE ONLY govern_policies
 
 ALTER TABLE ONLY govern_policy_enforcements
     ADD CONSTRAINT govern_policy_enforcements_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY govern_policy_evaluations
+    ADD CONSTRAINT govern_policy_evaluations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY govern_policy_violations
+    ADD CONSTRAINT govern_policy_violations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY gpg_key_subkeys
     ADD CONSTRAINT gpg_key_subkeys_pkey PRIMARY KEY (id);
@@ -48129,6 +48184,18 @@ CREATE INDEX index_govern_policy_enforcements_on_govern_policy_id ON govern_poli
 CREATE INDEX index_govern_policy_enforcements_on_organization_id ON govern_policy_enforcements USING btree (organization_id);
 
 CREATE INDEX index_govern_policy_enforcements_on_project_id ON govern_policy_enforcements USING btree (project_id);
+
+CREATE INDEX index_govern_policy_evaluations_on_org_and_evaluated_at ON govern_policy_evaluations USING btree (organization_id, evaluated_at);
+
+CREATE INDEX index_govern_policy_evaluations_on_policy_and_evaluated_at ON govern_policy_evaluations USING btree (govern_policy_id, evaluated_at);
+
+CREATE INDEX index_govern_policy_evaluations_on_project_id ON govern_policy_evaluations USING btree (project_id);
+
+CREATE INDEX index_govern_policy_violations_on_evaluation_id ON govern_policy_violations USING btree (govern_policy_evaluation_id);
+
+CREATE INDEX index_govern_policy_violations_on_organization_id ON govern_policy_violations USING btree (organization_id);
+
+CREATE INDEX index_govern_policy_violations_on_policy_and_created_at ON govern_policy_violations USING btree (govern_policy_id, created_at);
 
 CREATE UNIQUE INDEX index_gpg_key_subkeys_on_fingerprint ON gpg_key_subkeys USING btree (fingerprint);
 
@@ -58093,6 +58160,9 @@ ALTER TABLE ONLY user_saved_views
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_71cce407f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY govern_policy_violations
+    ADD CONSTRAINT fk_71f0ac856a FOREIGN KEY (govern_policy_id) REFERENCES govern_policies(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_conan_package_references
     ADD CONSTRAINT fk_7210467bfc FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
@@ -60523,6 +60593,9 @@ ALTER TABLE ONLY clusters_kubernetes_namespaces
 ALTER TABLE ONLY epic_issues
     ADD CONSTRAINT fk_rails_4209981af6 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY govern_policy_violations
+    ADD CONSTRAINT fk_rails_422206d823 FOREIGN KEY (govern_policy_evaluation_id) REFERENCES govern_policy_evaluations(id) ON DELETE CASCADE;
+
 ALTER TABLE p_ai_active_context_code_enabled_namespaces
     ADD CONSTRAINT fk_rails_42b1b86224 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -60585,6 +60658,9 @@ ALTER TABLE ONLY merge_requests_closing_issues
 
 ALTER TABLE ONLY protected_environment_deploy_access_levels
     ADD CONSTRAINT fk_rails_45cc02a931 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY govern_policy_evaluations
+    ADD CONSTRAINT fk_rails_45f534eb6b FOREIGN KEY (govern_policy_id) REFERENCES govern_policies(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY namespace_secret_counts
     ADD CONSTRAINT fk_rails_46733a5656 FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

@@ -66,6 +66,7 @@ reloaders:
           "^/srv/gitlab/(?<file>lib/gitlab/puma_logging/json_formatter)": "./$file"
           "^/srv/gitlab/(?<file>lib/gitlab/puma/error_handler)": "./$file"
           "^/srv/gitlab/(?<file>config/environment)": "./$file"
+          "^/srv/gitlab/(?<file>config/puma_ipv6)": "./$file"
       network:
         outgoing:
           ignore_localhost: true

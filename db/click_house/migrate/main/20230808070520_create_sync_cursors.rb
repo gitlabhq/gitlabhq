@@ -17,7 +17,7 @@ class CreateSyncCursors < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      DROP TABLE sync_cursors
+      DROP TABLE IF EXISTS sync_cursors
     SQL
   end
 end

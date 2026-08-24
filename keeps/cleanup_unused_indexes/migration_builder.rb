@@ -22,7 +22,7 @@ module Keeps
       private
 
       def generate_migration_file(ctx)
-        migration_name = unique_migration_name_for(ctx[:name])
+        migration_name = unique_migration_name_for(ctx)
         generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name])
 
         migration_file = generator.invoke_all.first
@@ -36,11 +36,12 @@ module Keeps
 
       # Cop/FilenameLength caps migration filenames at 100 chars; the SHA
       # suffix disambiguates names that would otherwise truncate to the same.
-      def unique_migration_name_for(index_name)
-        base = "remove_unused_index_#{index_name}"
+      def unique_migration_name_for(ctx)
+        prefix = ctx[:async_removal] ? 'prepare_async_removal' : 'remove_unused_index'
+        base = "#{prefix}_#{ctx[:name]}"
         return base if base.length <= 80
 
-        suffix = Digest::SHA256.hexdigest(index_name)[0, 8]
+        suffix = Digest::SHA256.hexdigest(ctx[:name])[0, 8]
         "#{base[0, 80]}_#{suffix}"
       end
 
@@ -52,6 +53,8 @@ module Keeps
       end
 
       def migration_body_for(ctx)
+        return async_migration_body_for(ctx) if ctx[:async_removal]
+
         # to_sym.inspect produces :foo or :"odd-name", keeping the output
         # valid Ruby even when an index or table name needs quoting.
         <<~RUBY.strip
@@ -67,6 +70,26 @@ module Keeps
 
             def down
               add_concurrent_index(TABLE_NAME, COLUMN_NAMES, name: INDEX_NAME)
+            end
+        RUBY
+      end
+
+      # prepare_async_index_removal only inserts a queue row, so no
+      # disable_ddl_transaction! is needed. Only the first heredoc line is
+      # spliced at the replaced method's indentation, hence the two-space
+      # offset on every later line (same trick as the sync body).
+      def async_migration_body_for(ctx)
+        <<~RUBY.strip
+          TABLE_NAME = #{ctx[:tablename].to_sym.inspect}
+            INDEX_NAME = #{ctx[:name].to_sym.inspect}
+            COLUMN_NAMES = #{ctx[:columns].inspect}
+
+            def up
+              prepare_async_index_removal(TABLE_NAME, COLUMN_NAMES, name: INDEX_NAME)
+            end
+
+            def down
+              unprepare_async_index_by_name(TABLE_NAME, INDEX_NAME)
             end
         RUBY
       end

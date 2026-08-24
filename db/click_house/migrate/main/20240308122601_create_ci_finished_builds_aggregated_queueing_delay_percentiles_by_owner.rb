@@ -22,7 +22,7 @@ class CreateCiFinishedBuildsAggregatedQueueingDelayPercentilesByOwner < ClickHou
 
   def down
     execute <<~SQL
-      DROP TABLE #{TABLE_NAME}
+      DROP TABLE IF EXISTS #{TABLE_NAME}
     SQL
   end
 end

@@ -756,6 +756,66 @@ rspec:coverage:
         coverage_format: cobertura
         path: coverage/coverage-*.xml
 
+# Single writer for the "RSpec Test Result Summary" MR comment. Aggregates the
+# JSON reports of every rspec job so the comment describes the whole suite;
+# posting from each rspec job instead raced hundreds of writers against one note.
+# Also runs on master, which is where the baseline MRs diff against comes from.
+rspec:test-summary:
+  extends:
+    - .default-retry
+    - .with-ruby-slim-image
+    - .rails:rules:rspec-test-summary
+  stage: post-test
+  variables:
+    GIT_STRATEGY: "${CI_FETCH_REPO_GIT_STRATEGY}"
+  needs:
+    - job: clone-gitlab-repo
+      optional: true
+    # FOSS/EE jobs
+    - job: rspec:artifact-collector unit
+      optional: true
+    - job: rspec:artifact-collector part-a
+      optional: true
+    - job: rspec:artifact-collector part-b
+      optional: true
+    - job: rspec:artifact-collector unit single-redis
+      optional: true
+    - job: rspec:artifact-collector system single-redis
+      optional: true
+    - job: rspec:artifact-collector remainder single-redis
+      optional: true
+    - job: rspec:predictive artifact-collector
+      optional: true
+    # as-if-foss jobs
+    - job: rspec:artifact-collector as-if-foss
+      optional: true
+    # EE jobs
+    - job: rspec:artifact-collector ee unit single-redis
+      optional: true
+    - job: rspec:artifact-collector ee remainder single-redis
+      optional: true
+    - job: rspec:artifact-collector ee unit
+      optional: true
+    - job: rspec:artifact-collector ee remainder
+      optional: true
+    - job: rspec-ee:predictive artifact-collector
+      optional: true
+  script:
+    # Only stdlib is used, so no bundle install is needed.
+    - |
+      ruby scripts/post_rspec_test_summary.rb \
+        --job-name "${CI_JOB_NAME}" \
+        --report-glob "rspec/rspec-*.json" \
+        --baseline-path "rspec/summary-baseline.json" \
+        --artifact-path "rspec/summary-baseline.json" \
+        --job-url "${CI_JOB_URL}"
+  artifacts:
+    name: rspec-summary-baseline
+    expire_in: 31d
+    when: always
+    paths:
+      - rspec/summary-baseline.json
+
 rspec:undercoverage:
   extends:
     - .coverage-base

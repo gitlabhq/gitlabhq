@@ -8,10 +8,11 @@ require_relative '../lib/generators/post_deployment_migration/post_deployment_mi
 
 module Keeps
   # For each PostgreSQL index with no activity on GitLab.com, generates a
-  # post-deploy migration that removes it synchronously with
-  # `remove_concurrent_index_by_name` and yields a Change so the runner opens a
-  # merge request. For large tables the assignee should switch to asynchronous
-  # removal instead, per `doc/development/database/adding_database_indexes.md`.
+  # post-deploy migration and yields a Change so the runner opens a merge
+  # request. Small and medium tables get a synchronous
+  # `remove_concurrent_index_by_name` removal; tables sized `large` or
+  # `over_limit` in `db/docs` get a phase-1 `prepare_async_index_removal`
+  # instead, per `doc/development/database/adding_database_indexes.md`.
   #
   # Requires `GITLAB_GRAFANA_API_URL`, `GITLAB_GRAFANA_API_KEY`,
   # `GITLAB_GRAFANA_DATASOURCE_UID`. Optional `GITLAB_GRAFANA_ENV` selects the
@@ -47,6 +48,12 @@ module Keeps
     }.freeze
     private_constant :TABLE_SIZE_WEIGHT
 
+    # Synchronous removal on these table sizes can run for hours, block the
+    # deployment, and starve autovacuum, so they get a prepare_async_index_removal
+    # MR (phase 1 of doc/development/database/adding_database_indexes.md) instead.
+    ASYNC_REMOVAL_TABLE_SIZES = %w[large over_limit].freeze
+    private_constant :ASYNC_REMOVAL_TABLE_SIZES
+
     def each_identified_change
       unless grafana_query.available?
         raise "Grafana credentials missing; cannot detect unused indexes. " \
@@ -77,10 +84,12 @@ module Keeps
         built.digest_file
       ]
 
-      # The synchronous removal alters the schema, so apply it to regenerate
-      # db/structure.sql, then restore the test DB for the next change.
+      # Apply the migration to validate it, then restore the test DB for the
+      # next change. Only the synchronous removal alters the schema; async
+      # removal just queues the index in postgres_async_indexes, so
+      # db/structure.sql stays untouched.
       migrate
-      change.changed_files << Pathname.new('db').join('structure.sql').to_s
+      change.changed_files << Pathname.new('db').join('structure.sql').to_s unless ctx[:async_removal]
       reset_db
 
       build_change_details(change, ctx)
@@ -110,7 +119,12 @@ module Keeps
 
       return log_decision(index, 'skipped', 'supports a foreign key') if foreign_key_indexes.include?(index.identifier)
 
-      gitlab_schema = dictionary_entry(index.tablename).gitlab_schema
+      if async_removal_pending?(index.name)
+        return log_decision(index, 'skipped', 'already queued for async removal in db/post_migrate')
+      end
+
+      entry = dictionary_entry(index.tablename)
+      gitlab_schema = entry.gitlab_schema
 
       cluster_type = cluster_mapper.for_schema(gitlab_schema)
       unused = grafana_query.unused?(
@@ -138,7 +152,9 @@ module Keeps
         cluster_type: cluster_type,
         checked_at: Time.current.utc.iso8601,
         definition: index.definition,
-        columns: columns
+        columns: columns,
+        table_size: entry.table_size,
+        async_removal: ASYNC_REMOVAL_TABLE_SIZES.include?(entry.table_size)
       }
       change
     end
@@ -185,8 +201,23 @@ module Keeps
       @indexes_for_table[tablename] ||= test_db_connection.indexes(tablename)
     end
 
+    # A merged phase-1 (prepare_async_index_removal) migration leaves the index
+    # in structure.sql until the follow-up synchronous removal ships, so
+    # without this check the keep would re-propose the index on every run.
+    def async_removal_pending?(index_name)
+      async_removal_migration_sources.match?(/\b#{Regexp.escape(index_name)}\b/)
+    end
+
+    def async_removal_migration_sources
+      @async_removal_migration_sources ||= Dir.glob('db/post_migrate/*.rb').filter_map do |path|
+        content = File.read(path)
+        content if content.include?('prepare_async_index_removal')
+      end.join("\n")
+    end
+
     def build_change_details(change, ctx)
-      change.title = "Remove unused index #{ctx[:name]}".truncate(72)
+      prefix = ctx[:async_removal] ? 'Prepare async removal of' : 'Remove unused index'
+      change.title = "#{prefix} #{ctx[:name]}".truncate(72)
       change.changelog_type = 'other'
       change.labels = labels(ctx[:tablename])
       change.assignees = Array(pick_assignee(ctx[:tablename], change.identifiers))
@@ -197,11 +228,7 @@ module Keeps
       <<~MARKDOWN.chomp
         ## What does this MR do and why?
 
-        Remove the unused index `#{ctx[:schema]}.#{ctx[:name]}` on `#{ctx[:tablename]}`
-        with `remove_concurrent_index_by_name`. The index reported **zero scans**
-        over a #{MIMIR_LOOKBACK_DAYS}-day pre-filter window on the
-        `#{ctx[:cluster_type]}` Patroni cluster (query run at #{ctx[:checked_at]}).
-        Verify the 180-day chart below as confirmation before merging.
+        #{summary_for(ctx)}
 
         Definition:
 
@@ -209,15 +236,7 @@ module Keeps
         #{ctx[:definition]}
         ~~~
 
-        ## :warning: Large tables: remove asynchronously instead
-
-        This MR drops the index **synchronously**, which is fine for small and
-        medium tables. On a **large** table a synchronous removal can run for a
-        long time, block the deployment, and starve `autovacuum`. If
-        `#{ctx[:tablename]}` is a large table, do not merge this as-is: switch to
-        asynchronous removal (`prepare_async_index_removal` + a synchronous
-        follow-up) per
-        [Drop indexes asynchronously](https://docs.gitlab.com/development/database/adding_database_indexes/#drop-indexes-asynchronously).
+        #{removal_notes_for(ctx)}
 
         ## Required: verify the 180-day Grafana chart before merging
 
@@ -259,6 +278,62 @@ module Keeps
 
         The Keep will not propose this index again.
       MARKDOWN
+    end
+
+    def summary_for(ctx)
+      evidence = <<~MARKDOWN.chomp
+        The index reported **zero scans** over a #{MIMIR_LOOKBACK_DAYS}-day
+        pre-filter window on the `#{ctx[:cluster_type]}` Patroni cluster
+        (query run at #{ctx[:checked_at]}). Verify the 180-day chart below as
+        confirmation before merging.
+      MARKDOWN
+
+      if ctx[:async_removal]
+        <<~MARKDOWN.chomp
+          Schedule the unused index `#{ctx[:schema]}.#{ctx[:name]}` on `#{ctx[:tablename]}`
+          for asynchronous removal with `prepare_async_index_removal`. The table is
+          `#{ctx[:table_size]}` per its `db/docs` entry, where a synchronous drop could
+          run for hours, block the deployment, and starve `autovacuum`.
+          #{evidence}
+        MARKDOWN
+      else
+        <<~MARKDOWN.chomp
+          Remove the unused index `#{ctx[:schema]}.#{ctx[:name]}` on `#{ctx[:tablename]}`
+          with `remove_concurrent_index_by_name`. The table is `#{ctx[:table_size]}`
+          per its `db/docs` entry, so a synchronous drop is appropriate.
+          #{evidence}
+        MARKDOWN
+      end
+    end
+
+    def removal_notes_for(ctx)
+      if ctx[:async_removal]
+        <<~MARKDOWN.chomp
+          ## :warning: Async removal is phase 1 of 2
+
+          Merging this MR only queues the index in `postgres_async_indexes`; a
+          process that runs on weekends then drops it on GitLab.com. The index
+          stays in `db/structure.sql`, GitLab Self-Managed, and GitLab Dedicated
+          until a follow-up MR ships the synchronous removal, per
+          [Drop indexes asynchronously](https://docs.gitlab.com/development/database/adding_database_indexes/#drop-indexes-asynchronously).
+
+          After this MR is deployed and the index is gone from production, create
+          the follow-up
+          [synchronous removal issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Synchronous%20Database%20Index)
+          and mention it in a comment here. This keep does not open the follow-up
+          MR; it skips indexes that already have a pending async removal.
+        MARKDOWN
+      else
+        <<~MARKDOWN.chomp
+          ## :warning: Large tables: remove asynchronously instead
+
+          This MR drops the index **synchronously**, based on the `db/docs` table
+          size above. Sizes there can be stale: if `#{ctx[:tablename]}` is actually
+          a **large** table, do not merge this as-is. Switch to asynchronous
+          removal (`prepare_async_index_removal` + a synchronous follow-up) per
+          [Drop indexes asynchronously](https://docs.gitlab.com/development/database/adding_database_indexes/#drop-indexes-asynchronously).
+        MARKDOWN
+      end
     end
 
     def grafana_explore_url_for(ctx)

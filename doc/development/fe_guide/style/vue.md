@@ -105,6 +105,25 @@ Check the [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for mor
    consistent everywhere it is used. Tests can then assert on the public prop instead of on
    internal CSS classes.
 
+## Translated strings
+
+1. Put translation calls directly in the `<template>`. Move a string to `$options.i18n` only for a
+   specific reason, such as reusing it in both the template and a method.
+
+   ```html
+   // bad - a single-use string moved away from where it is rendered
+   <gl-button>{{ $options.i18n.buttonLabel }}</gl-button>
+
+   // good
+   <gl-button>{{ s__('Plan|Button label') }}</gl-button>
+   ```
+
+   The translation helpers are available in templates and in component JavaScript, and the `gettext`
+   extractor reads `<template>` blocks, so an inline string still reaches the `pot` file. For the
+   full list of cases that justify `$options.i18n`, see
+   [Vue single-file components](../../i18n/externalization.md#vue-single-file-components). For the
+   externalization helpers, see [Preparing a page for translation](../../i18n/externalization.md).
+
 ## Component `name` property
 
 Every Vue component should have a `name` property. Use PascalCase derived from the filename.

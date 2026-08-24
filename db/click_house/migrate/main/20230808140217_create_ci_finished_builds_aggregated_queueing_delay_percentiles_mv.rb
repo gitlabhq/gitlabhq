@@ -20,7 +20,7 @@ class CreateCiFinishedBuildsAggregatedQueueingDelayPercentilesMv < ClickHouse::M
 
   def down
     execute <<~SQL
-      DROP VIEW ci_finished_builds_aggregated_queueing_delay_percentiles_mv
+      DROP VIEW IF EXISTS ci_finished_builds_aggregated_queueing_delay_percentiles_mv
     SQL
   end
 end

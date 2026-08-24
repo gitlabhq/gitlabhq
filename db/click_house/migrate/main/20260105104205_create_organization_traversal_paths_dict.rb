@@ -35,6 +35,6 @@ class CreateOrganizationTraversalPathsDict < ClickHouse::Migration
   end
 
   def down
-    execute('DROP DICTIONARY organization_traversal_paths_dict')
+    execute('DROP DICTIONARY IF EXISTS organization_traversal_paths_dict')
   end
 end

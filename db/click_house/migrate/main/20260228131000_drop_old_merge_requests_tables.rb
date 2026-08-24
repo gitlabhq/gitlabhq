@@ -25,7 +25,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      CREATE TABLE hierarchy_merge_requests
+      CREATE TABLE IF NOT EXISTS hierarchy_merge_requests
       (
           `traversal_path` String,
           `id` Int64,
@@ -106,7 +106,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE siphon_merge_requests
+      CREATE TABLE IF NOT EXISTS siphon_merge_requests
       (
           `id` Int64,
           `target_branch` String,
@@ -163,7 +163,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE merge_request_label_links
+      CREATE TABLE IF NOT EXISTS merge_request_label_links
       (
           `id` Int64,
           `label_id` Int64,
@@ -180,7 +180,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE siphon_approvals
+      CREATE TABLE IF NOT EXISTS siphon_approvals
       (
           `id` Int64,
           `merge_request_id` Int64,
@@ -199,7 +199,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE siphon_merge_request_assignees
+      CREATE TABLE IF NOT EXISTS siphon_merge_request_assignees
       (
           `id` Int64,
           `user_id` Int64,
@@ -216,7 +216,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE siphon_merge_request_metrics
+      CREATE TABLE IF NOT EXISTS siphon_merge_request_metrics
       (
           `merge_request_id` Int64,
           `latest_build_started_at` Nullable(DateTime64(6, 'UTC')),
@@ -253,7 +253,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE siphon_label_links
+      CREATE TABLE IF NOT EXISTS siphon_label_links
       (
           `id` Int64,
           `label_id` Nullable(Int64),
@@ -272,7 +272,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE work_item_label_links
+      CREATE TABLE IF NOT EXISTS work_item_label_links
       (
           `id` Int64,
           `label_id` Int64,
@@ -289,7 +289,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE work_item_award_emoji_aggregations
+      CREATE TABLE IF NOT EXISTS work_item_award_emoji_aggregations
       (
           `work_item_id` Int64,
           `counts_by_emoji` Map(LowCardinality(String), UInt32),
@@ -304,7 +304,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE work_item_award_emoji_trigger
+      CREATE TABLE IF NOT EXISTS work_item_award_emoji_trigger
       (
           `work_item_id` Int64,
           `version` DateTime64(6, 'UTC') DEFAULT now(),
@@ -317,7 +317,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE work_item_award_emoji
+      CREATE TABLE IF NOT EXISTS work_item_award_emoji
       (
           `work_item_id` Int64,
           `id` Int64,
@@ -335,7 +335,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE TABLE siphon_award_emoji
+      CREATE TABLE IF NOT EXISTS siphon_award_emoji
       (
           `id` Int64,
           `name` LowCardinality(String),
@@ -356,7 +356,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW merge_request_label_links_mv TO merge_request_label_links
+      CREATE MATERIALIZED VIEW IF NOT EXISTS merge_request_label_links_mv TO merge_request_label_links
       (
           `id` Int64,
           `label_id` Nullable(Int64),
@@ -379,7 +379,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW work_item_label_links_mv TO work_item_label_links
+      CREATE MATERIALIZED VIEW IF NOT EXISTS work_item_label_links_mv TO work_item_label_links
       (
           `id` Int64,
           `label_id` Nullable(Int64),
@@ -402,7 +402,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW hierarchy_merge_requests_mv TO hierarchy_merge_requests
+      CREATE MATERIALIZED VIEW IF NOT EXISTS hierarchy_merge_requests_mv TO hierarchy_merge_requests
       (
           `traversal_path` String,
           `id` Int64,
@@ -687,7 +687,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW hierarchy_work_items_mv TO hierarchy_work_items
+      CREATE MATERIALIZED VIEW IF NOT EXISTS hierarchy_work_items_mv TO hierarchy_work_items
       (
           `traversal_path` String,
           `id` Int64,
@@ -863,7 +863,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW work_item_award_emoji_mv TO work_item_award_emoji
+      CREATE MATERIALIZED VIEW IF NOT EXISTS work_item_award_emoji_mv TO work_item_award_emoji
       (
           `work_item_id` Int64,
           `id` Int64,
@@ -888,7 +888,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW work_item_award_emoji_trigger_mv TO work_item_award_emoji_trigger
+      CREATE MATERIALIZED VIEW IF NOT EXISTS work_item_award_emoji_trigger_mv TO work_item_award_emoji_trigger
       (
           `work_item_id` Int64
       )
@@ -897,7 +897,7 @@ class DropOldMergeRequestsTables < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW work_item_award_emoji_aggregations_mv TO work_item_award_emoji_aggregations
+      CREATE MATERIALIZED VIEW IF NOT EXISTS work_item_award_emoji_aggregations_mv TO work_item_award_emoji_aggregations
       (
           `work_item_id` Int64,
           `counts_by_emoji` Map(LowCardinality(String), UInt32),

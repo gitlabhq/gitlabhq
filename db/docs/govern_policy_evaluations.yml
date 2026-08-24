@@ -1,0 +1,18 @@
+---
+table_name: govern_policy_evaluations
+classes:
+- Govern::PolicyEvaluation
+feature_categories:
+- security_policy_management
+description: Policy Store (Policies v2) experimental table recording one row per completed
+  policy evaluation, in every enforcement mode including audit. Snapshots the policy's
+  trigger, mode and version at evaluation time because policy rows are updated in place.
+  project_id, environment_id and user_id intentionally carry no foreign keys, per GOVERN-008,
+  so the store can be extracted as a standalone service; rows are audit-style records that
+  outlive those references.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250860
+milestone: '19.4'
+gitlab_schema: gitlab_sec
+sharding_key:
+  organization_id: organizations
+table_size: small

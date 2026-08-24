@@ -51,6 +51,10 @@ module Organizations
             "GitlabSubscriptions::AddOnPurchase",
             "GitlabSubscriptions::SeatAssignment",
             "GitlabSubscriptions::UserAddOnAssignment",
+            # Govern::PolicyEvaluation is an audit-style record sharded by its policy's
+            # organization; user_id is only the evaluation principal, so a user transfer
+            # must not move it.
+            "Govern::PolicyEvaluation",
             "Group", # migrated by a dedicated service
             "ImportFailure",
             "MemberRole",

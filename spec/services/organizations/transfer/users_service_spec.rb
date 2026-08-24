@@ -1048,6 +1048,7 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
               'GitlabSubscriptions::AddOnPurchase',
               'GitlabSubscriptions::SeatAssignment',
               'GitlabSubscriptions::UserAddOnAssignment',
+              'Govern::PolicyEvaluation',
               'Group',
               'ImportFailure',
               'MemberRole',

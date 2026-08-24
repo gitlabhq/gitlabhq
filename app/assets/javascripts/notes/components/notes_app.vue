@@ -267,7 +267,7 @@ export default {
       handler(isReady) {
         if (!isReady) return;
         this.$nextTick(() => {
-          window.mrTabs?.eventHub.$emit('NotesAppReady');
+          window.mrTabs?.eventHub.$emit('notes-app-ready');
           this.cleanup?.();
         });
       },

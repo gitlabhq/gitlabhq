@@ -59,7 +59,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/lib/ee/api/support/git_access_actor_spec.rb'
     - 'ee/spec/lib/ee/banzai/filter/sanitization_filter_spec.rb'
     - 'ee/spec/lib/ee/banzai/issuable_extractor_spec.rb'
-    - 'ee/spec/lib/ee/banzai/reference_parser/epic_parser_spec.rb'
     - 'ee/spec/lib/ee/banzai/reference_parser/vulnerability_parser_spec.rb'
     - 'ee/spec/lib/ee/event_filter_spec.rb'
     - 'ee/spec/lib/ee/feature_spec.rb'

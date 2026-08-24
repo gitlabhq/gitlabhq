@@ -37,7 +37,7 @@ class CreateUserAddOnAssignmentsHistoryWithMv < ClickHouse::Migration
     SQL
 
     execute <<~SQL
-      CREATE MATERIALIZED VIEW user_addon_assignments_history_mv TO user_addon_assignments_history AS
+      CREATE MATERIALIZED VIEW IF NOT EXISTS user_addon_assignments_history_mv TO user_addon_assignments_history AS
           SELECT
           item_id as assignment_id,
           namespace_path,

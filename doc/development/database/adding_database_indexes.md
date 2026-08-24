@@ -352,9 +352,16 @@ Both keeps do the following:
 - Skip indexes that support a foreign key and indexes on the
   [keep list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/keeps/cleanup_unused_indexes/index_keep_list.yml).
 - Open a merge request, labeled `automation:cleanup-unused-indexes`, with a post-deployment
-  migration that removes the index. For a partitioned index, the migration removes the parent
-  index with `remove_concurrent_partitioned_index_by_name`, which cascades to every partition.
-  Partitioned indexes have no asynchronous removal path.
+  migration:
+  - For tables whose `table_size` in `db/docs` is not `large` or `over_limit`, the migration
+    removes the index.
+  - For tables whose `table_size` in `db/docs` is `large` or `over_limit`, the migration instead
+    schedules the removal with `prepare_async_index_removal`, and the owning team handles the
+    follow-up synchronous removal described in
+    [Drop indexes asynchronously](#drop-indexes-asynchronously).
+  - For a partitioned index, the migration removes the parent index with
+    `remove_concurrent_partitioned_index_by_name`, which cascades to every partition. Partitioned
+    indexes have no asynchronous removal path.
 - Assign the merge request to a member of the team that owns the affected table, based on the
   table's `db/docs` dictionary entry, and fall back to a database team member if none can be found.
 

@@ -133,3 +133,14 @@ merge request pipelines. If your project does not use merge request pipelines fo
 causes only the dependency scanning job to appear in the merge request pipeline, while all other
 jobs run in a separate branch pipeline. To disable this behavior, see
 [Disable MR pipelines for dependency scanning](_index.md#disable-merge-request-pipelines-for-dependency-scanning).
+When the template is injected by a pipeline execution policy, check the policy context before
+changing the project CI/CD configuration. Pipeline execution policies run in isolation by default, so
+a project or group value of `AST_ENABLE_MR_PIPELINES: "false"` might not be available to the policy
+job. If the value is unavailable, the dependency scanning v2 template evaluates it as `null`, which is treated as
+enabled.
+
+To fix this, define `AST_ENABLE_MR_PIPELINES: "false"` in the policy CI/CD configuration when branch
+pipelines are required. If the value must come from a project or group, set
+`variables_override.allowed: false` in the policy and add `AST_ENABLE_MR_PIPELINES`
+to the `variables_override.exceptions` allowlist. When `allowed: true`, adding a variable
+to `exceptions` blocks it instead of allowing it.

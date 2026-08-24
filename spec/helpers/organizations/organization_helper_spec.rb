@@ -225,7 +225,6 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.organization_new_app_data)).to eq(
         {
-          'organizations_path' => '/o',
           'organizations_url' => 'http://test.host/o/',
           'preview_markdown_path' => '/o/-/preview_markdown'
         }
@@ -323,7 +322,6 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
           'base_path' => 'http://test.host/',
           'groups_and_projects_organization_path' =>
             "/o/#{organization.path}/-/groups_and_projects?display=groups",
-          'groups_organization_path' => "/o/#{organization.path}/-/groups",
           'available_visibility_levels' => [
             Gitlab::VisibilityLevel::PRIVATE,
             Gitlab::VisibilityLevel::INTERNAL,

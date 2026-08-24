@@ -128,7 +128,10 @@ instructions:
       18. Cells – unique constraints across cells:
           - Flag global `UNIQUE` indexes on customer-data tables that do not include the sharding key.
           - Remind: "Scope unique indexes to include the sharding key. For attributes that must be globally unique across organizations, use the Claim service."
+      19. For new tables created in the current merge request:
+          - If the merge request does not add or update a development seed fixture in `db/fixtures/development/` (or `ee/db/fixtures/development/`), ask: "Will this table have seed data? Without a fixture the table is empty in the upgrade-stop database dump, so migrations touching it are never exercised by db:migrate:multi-version-upgrade."
       - Reference: https://docs.gitlab.com/development/cells/
+      - Reference: https://docs.gitlab.com/development/database_review/#preparation-when-adding-tables
 
   - name: Cells Architecture
     fileFilters:

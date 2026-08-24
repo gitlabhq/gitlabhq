@@ -166,7 +166,7 @@ function handleJumpForBothPages(getDiscussion, ctx) {
   const discussion = getDiscussion();
 
   if (!isOverviewPage() && !discussion) {
-    window.mrTabs?.eventHub.$once('NotesAppReady', () => {
+    window.mrTabs?.eventHub.$once('notes-app-ready', () => {
       handleJumpForBothPages(getDiscussion, ctx);
     });
     window.mrTabs?.setCurrentAction('show');

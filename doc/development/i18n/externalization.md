@@ -271,23 +271,7 @@ In JavaScript files, declare a constant with the translation:
 const ORGANISATIONS_TITLE = __('Organisations');
 ```
 
-In Vue Single-File Components, you can define an `i18n` property in the component's `$options` object.
-
-```javascript
-<script>
-  export default {
-    i18n: {
-      buttonLabel: s__('Plan|Button Label')
-    }
-  },
-</script>
-
-<template>
-  <gl-button :aria-label="$options.i18n.buttonLabel">
-    {{ $options.i18n.buttonLabel }}
-  </gl-button>
-</template>
-```
+For Vue components, see [Vue single-file components](#vue-single-file-components).
 
 In modules, if we reuse the same translation in multiple files, we can add them to a `constants.js` or an `i18n.js` file and import those translations across the module. However, this adds yet another level of complexity to our codebase and thus should be used with caution.
 
@@ -310,6 +294,90 @@ expect(wrapper.text()).toBe(MyComponent.vm.i18n.buttonLabel);
 // Good. What we are expecting is very clear and there can be no surprises.
 expect(wrapper.text()).toBe('There was an error: Please refresh and hope for the best!');
 ```
+
+##### Vue single-file components
+
+In a Vue single-file component, put the translation call directly in the `<template>`. Do not move it
+into the component's `$options.i18n` object unless one of the reasons listed in this section applies.
+
+```javascript
+// Bad. A single-use string moved away from where it is rendered.
+<script>
+  export default {
+    i18n: {
+      buttonLabel: s__('Plan|Button label'),
+    },
+  };
+</script>
+
+<template>
+  <gl-button>{{ $options.i18n.buttonLabel }}</gl-button>
+</template>
+
+// Good.
+<template>
+  <gl-button>{{ s__('Plan|Button label') }}</gl-button>
+</template>
+```
+
+An inline string is readable where it is rendered, so there is no indirection to follow, and a
+refactor that deletes the markup cannot leave an orphaned `i18n` entry behind. For the general
+principle, see [Recommendations](#recommendations).
+
+The translation helpers work throughout a component, so inlining is not limited to the `<template>`:
+
+- In the `<template>`, call `__()`, `s__()`, `n__()`, and `sprintf()` directly. The `translate`
+  mixin provides them, so no import is needed. For more information, see [Vue files](#vue-files).
+- In component JavaScript, such as a method, a lifecycle hook, a `computed` property, or an Apollo
+  `error()` handler, call them as `this.__()` and `this.s__()`, or import them from `~/locale`.
+- In a prop `default` or `validator`, the component instance does not exist yet, so neither `this`
+  nor `$options.i18n` is reachable. Import the helper and call it directly.
+
+The `gettext` extractor parses `<template>` blocks, so inline strings still reach the `pot` file.
+`sprintf`, `n__`, and `GlSprintf` all work in a template too.
+
+Use `$options.i18n` or a constant when:
+
+- The same string is reused and a single source is worth the indirection, such as a string shown in
+  the template and also used in component JavaScript, or one that must stay identical across
+  several usages. Duplication alone is not a reason: two inline calls are fine, and as
+  [Recommendations](#recommendations) notes, DRY is not the only driver. Extract when keeping the
+  usages in sync matters, or when the count grows beyond a couple.
+- The string needs processing that does not belong in a template, such as `sanitize()` from
+  `~/lib/dompurify`.
+- The string is a value in a lookup map keyed by a state or enum value, because the key is only
+  known at runtime.
+- The string is shared by several components in the same module. For more information, see
+  [Shared translations](#shared-translations).
+
+The following example shows a string used in both the template and a method. A single entry keeps
+the two in sync:
+
+```javascript
+<script>
+  import { createAlert } from '~/alert';
+
+  export default {
+    i18n: {
+      saveError: s__('Plan|Could not save the plan'),
+    },
+    methods: {
+      onError() {
+        createAlert({ message: this.$options.i18n.saveError });
+      },
+    },
+  };
+</script>
+
+<template>
+  <gl-alert v-if="failed">{{ $options.i18n.saveError }}</gl-alert>
+</template>
+```
+
+For strings that depend on a count, see [pluralization in Vue](pluralization.md#in-vue).
+
+Apply this guidance to new and changed code. Existing `$options.i18n` usage does not have to be
+migrated on its own.
 
 ### Dynamic translations
 

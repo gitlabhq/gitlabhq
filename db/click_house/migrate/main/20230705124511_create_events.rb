@@ -24,7 +24,7 @@ class CreateEvents < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      DROP TABLE events
+      DROP TABLE IF EXISTS events
     SQL
   end
 end

@@ -3,7 +3,7 @@
 class CreateCiFinishedPipelinesDailyMv < ClickHouse::Migration
   def up
     execute <<~SQL
-      CREATE MATERIALIZED VIEW ci_finished_pipelines_daily_mv TO ci_finished_pipelines_daily
+      CREATE MATERIALIZED VIEW IF NOT EXISTS ci_finished_pipelines_daily_mv TO ci_finished_pipelines_daily
       AS SELECT
         path,
         status,
@@ -19,7 +19,7 @@ class CreateCiFinishedPipelinesDailyMv < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      DROP VIEW ci_finished_pipelines_daily_mv
+      DROP VIEW IF EXISTS ci_finished_pipelines_daily_mv
     SQL
   end
 end

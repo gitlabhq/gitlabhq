@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Issues, feature_category: :team_planning do
   let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:owner, freeze: false) { create(:owner) }
-  let(:user2)             { create(:user) }
+  let_it_be(:user2)       { create(:user) }
   let(:non_member)        { create(:user) }
   let_it_be(:guest, freeze: false)       { create(:user) }
   let_it_be(:author, freeze: false)      { create(:author) }
@@ -18,19 +18,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     create(:project, :public, creator_id: owner.id, namespace: owner.namespace, reporters: user, guests: guest)
   end
 
-  let!(:closed_issue) do
-    create :closed_issue,
-      author: user,
-      assignees: [user],
-      project: project,
-      state: :closed,
-      milestone: milestone,
-      created_at: generate(:past_time),
-      updated_at: 3.hours.ago,
-      closed_at: 1.hour.ago
-  end
-
-  let!(:confidential_issue) do
+  let_it_be(:confidential_issue) do
     create :issue,
       :confidential,
       project: project,
@@ -39,6 +27,8 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       created_at: generate(:past_time),
       updated_at: 2.hours.ago
   end
+
+  let_it_be(:milestone) { create(:milestone, title: '1.0.0', project: project) }
 
   let!(:issue) do
     create :issue,
@@ -57,13 +47,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   let!(:label_link) { create(:label_link, label: label, target: issue) }
-  let(:milestone) { create(:milestone, title: '1.0.0', project: project) }
 
   let_it_be(:empty_milestone, freeze: false) do
     create(:milestone, title: '2.0.0', project: project)
   end
 
-  let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
   let(:no_milestone_title) { 'None' }
   let(:any_milestone_title) { 'Any' }
   let(:updated_title) { 'updated title' }
@@ -180,7 +168,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid to update severity' do
-    let(:incident) { create(:incident, project: project, author: user) }
+    let_it_be_with_reload(:incident) { create(:incident, project: project, author: user) }
     let(:incident_path) { "/projects/#{project.id}/issues/#{incident.iid}" }
 
     it 'updates the severity of an incident', :aggregate_failures do
@@ -312,7 +300,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid to update labels' do
-    let!(:label) { create(:label, title: 'dummy', project: project) }
+    let_it_be(:label) { create(:label, title: 'dummy', project: project) }
     let!(:label_link) { create(:label_link, label: label, target: issue) }
 
     it 'adds relevant labels', :aggregate_failures do
@@ -323,7 +311,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'removes' do
-      let!(:label2) { create(:label, title: 'a-label', project: project) }
+      let_it_be(:label2) { create(:label, title: 'a-label', project: project) }
       let!(:label_link2) { create(:label_link, label: label2, target: issue) }
 
       it 'removes relevant labels', :aggregate_failures do

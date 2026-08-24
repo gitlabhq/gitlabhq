@@ -3,7 +3,7 @@
 class CreateWorkItemsMv < ClickHouse::Migration
   def up
     execute <<~SQL
-      CREATE MATERIALIZED VIEW work_items_mv
+      CREATE MATERIALIZED VIEW IF NOT EXISTS work_items_mv
       TO work_items
       AS
       WITH

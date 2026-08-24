@@ -243,7 +243,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
 
         context 'when shared runner requests job for project without shared_runners_enabled' do
-          let(:runner) { create(:ci_runner, :instance) }
+          let_it_be(:runner) { create(:ci_runner, :instance) }
 
           it_behaves_like 'no jobs available'
         end
@@ -583,7 +583,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
 
           context 'with run keyword' do
-            let(:job_definition) { create(:ci_job_definition, :with_step_and_script) }
+            let_it_be(:job_definition) { create(:ci_job_definition, :with_step_and_script) }
 
             context 'when job has run_steps' do
               let(:job) do
@@ -1432,9 +1432,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       describe 'routing via environment_key', feature_category: :runner_core do
         let_it_be(:resume_project) { create(:project, :repository, shared_runners_enabled: false) }
-        let(:resume_pipeline) { create(:ci_pipeline, project: resume_project) }
-        let(:correct_runner)  { create(:ci_runner, :project, projects: [resume_project]) }
-        let(:wrong_runner)    { create(:ci_runner, :project, projects: [resume_project]) }
+        let_it_be(:resume_pipeline) { create(:ci_pipeline, project: resume_project) }
+        let_it_be(:correct_runner)  { create(:ci_runner, :project, projects: [resume_project]) }
+        let_it_be(:wrong_runner)    { create(:ci_runner, :project, projects: [resume_project]) }
 
         let(:system_xid) { 's_testmachine01' }
         let(:env_key)    { "#{correct_runner.id}/#{system_xid}/executor-specific-data" }

@@ -577,6 +577,8 @@ Some examples of breaking changes are:
 - Changing the type of fields in the response. In a JSON response, this would be a change of any `Number`, `String`, `Boolean`, `Array`, or `Object` type to another type.
 - Adding a new **required** argument.
 - Changing authentication, authorization, or other header requirements.
+  This covers changes to what an endpoint requires, not changes that broaden what it accepts.
+  For the latter, see [what is not a breaking change](#what-is-not-a-breaking-change).
 - Changing [any status code](../api/rest/troubleshooting.md#status-codes) other than `500`.
 
 ## What is not a breaking change
@@ -584,6 +586,8 @@ Some examples of breaking changes are:
 Some examples of non-breaking changes:
 
 - Any additive change, such as adding endpoints, non-required arguments, fields, or enum values.
+- Adding support for an additional authentication method to an existing endpoint, such as [CI/CD job token](../ci/jobs/ci_job_token.md) authentication, including any resulting status code changes.
+  Requests that do not present the new credential type must be unaffected.
 - Changes to error messages.
 - Changes from a `500` status code to [any supported status code](../api/rest/troubleshooting.md#status-codes) (this is a bugfix).
 - Changes to the order of fields returned in a response.

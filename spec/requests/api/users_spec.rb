@@ -1194,7 +1194,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     context 'when rate limited' do
-      let(:current_user) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
       let(:path) { "/users/#{user.username}/status" }
       let(:request) { get api(path, current_user) }
 
@@ -1227,7 +1227,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'POST /users/:id/follow' do
-    let(:followee) { create(:user) }
+    let_it_be(:followee) { create(:user) }
     let(:path) { "/users/#{followee.id}/follow" }
 
     context 'on an unfollowed user' do
@@ -1286,7 +1286,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'POST /users/:id/unfollow' do
-    let(:followee) { create(:user) }
+    let_it_be(:followee) { create(:user) }
     let(:path) { "/users/#{followee.id}/unfollow" }
 
     context 'on a followed user' do
@@ -1320,7 +1320,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'GET /users/:id/followers' do
-    let(:follower) { create(:user) }
+    let_it_be(:follower) { create(:user) }
     let(:path) { "/users/#{user.id}/followers" }
 
     context 'for an anonymous user' do
@@ -1370,7 +1370,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     context 'when rate limited' do
-      let(:current_user) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
       context 'when user is authenticated' do
@@ -1448,7 +1448,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     context 'when rate limited' do
-      let(:current_user) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
       context 'when user is authenticated' do
@@ -2720,10 +2720,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'GET /users/:id/project_deploy_keys', feature_category: :continuous_delivery do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let(:path) { "/users/#{user.id}/project_deploy_keys" }
 
-    before do
+    before_all do
       project.add_maintainer(user)
 
       deploy_key = create(:deploy_key, user: user)
@@ -2757,10 +2757,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     context 'with multiple projects' do
-      let(:second_project) { create(:project) }
-      let(:second_user) { create(:user) }
+      let_it_be(:second_project) { create(:project) }
+      let_it_be(:second_user) { create(:user) }
 
-      before do
+      before_all do
         second_project.add_maintainer(second_user)
 
         deploy_key = create(:deploy_key, user: second_user)
@@ -2777,7 +2777,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       end
 
       context 'when there are common projects for user and current_user' do
-        before do
+        before_all do
           project.add_maintainer(second_user)
         end
 
@@ -2888,7 +2888,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     context 'when rate limited' do
-      let(:current_user) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
       context 'when user is authenticated' do
@@ -3002,7 +3002,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     context 'when rate limited' do
-      let(:current_user) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
       context 'when user is authenticated' do
@@ -3155,7 +3155,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     context 'when rate limited' do
-      let(:current_user) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
       context 'when user is authenticated' do
@@ -3220,7 +3220,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     context 'when rate limited' do
-      let(:current_user) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
       context 'when user is authenticated' do
@@ -3575,7 +3575,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     context "sole owner of a group" do
-      let!(:group) { create(:group, owners: user) }
+      let_it_be(:group) { create(:group, owners: user) }
 
       context "hard delete disabled" do
         it "does not delete user" do
@@ -3693,7 +3693,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       end
 
       context 'with admin' do
-        let(:admin_personal_access_token) { create(:personal_access_token, :admin_mode, user: admin).token }
+        let_it_be(:admin_personal_access_token) { create(:personal_access_token, :admin_mode, user: admin).token }
 
         context 'with personal access token' do
           it 'returns 403 without private token when sudo defined' do

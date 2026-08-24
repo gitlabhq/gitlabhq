@@ -515,6 +515,14 @@ govern_policy_enforcements:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+govern_policy_evaluations:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
+govern_policy_violations:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 group_push_rules:
   - table: namespaces
     column: group_id

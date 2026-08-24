@@ -7,7 +7,7 @@ class RemoveOldDuoChatTables < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      CREATE TABLE duo_chat_events_backup
+      CREATE TABLE IF NOT EXISTS duo_chat_events_backup
       (
           `user_id` UInt64 DEFAULT 0,
           `event` UInt8 DEFAULT 0,

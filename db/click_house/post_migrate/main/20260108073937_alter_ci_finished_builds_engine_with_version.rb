@@ -52,7 +52,7 @@ class AlterCiFinishedBuildsEngineWithVersion < ClickHouse::Migration
     settings += ", deduplicate_merge_projection_mode = 'rebuild'" if supports_deduplicate_merge_projection_mode?
 
     execute <<~SQL
-      CREATE TABLE ci_finished_builds_tmp AS ci_finished_builds
+      CREATE TABLE IF NOT EXISTS ci_finished_builds_tmp AS ci_finished_builds
         ENGINE = #{engine}
         PARTITION BY toYear(finished_at)
         ORDER BY (status, runner_type, project_id, finished_at, id)

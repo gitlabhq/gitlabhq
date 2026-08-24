@@ -146,7 +146,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/ee/api/entities/user_with_admin_spec.rb'
     - 'ee/spec/lib/ee/api/helpers/scim_pagination_spec.rb'
     - 'ee/spec/lib/ee/api/helpers_spec.rb'
-    - 'ee/spec/lib/ee/banzai/reference_parser/epic_parser_spec.rb'
     - 'ee/spec/lib/ee/banzai/reference_parser/vulnerability_parser_spec.rb'
     - 'ee/spec/lib/ee/bulk_imports/groups/stage_spec.rb'
     - 'ee/spec/lib/ee/bulk_imports/projects/stage_spec.rb'

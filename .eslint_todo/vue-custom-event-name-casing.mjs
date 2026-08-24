@@ -30,7 +30,6 @@ export default {
     'app/assets/javascripts/notes/components/comment_form.vue',
     'app/assets/javascripts/notes/components/discussion_filter_note.vue',
     'app/assets/javascripts/notes/components/note_form.vue',
-    'app/assets/javascripts/notes/components/notes_app.vue',
     'app/assets/javascripts/notes/components/timeline_toggle.vue',
     'app/assets/javascripts/pipeline_wizard/components/input_wrapper.vue',
     'app/assets/javascripts/search/results/components/blob_footer.vue',

@@ -249,6 +249,7 @@ CONFIG_FILES=(
   "config/secrets.yml"
   "config/initializers/smtp_settings.rb"
   "config/puma.rb"
+  "config/puma_ipv6.rb"
 )
 
 COPIED_FILES=()

@@ -27,9 +27,7 @@ module Organizations
     end
 
     def organization_new_app_data
-      {
-        organizations_path: organizations_path
-      }.merge(shared_new_settings_general_app_data).to_json
+      shared_new_settings_general_app_data.to_json
     end
 
     def organization_settings_general_app_data(organization)
@@ -60,7 +58,8 @@ module Organizations
 
     def organization_groups_new_app_data(organization)
       {
-        default_visibility_level: default_group_visibility
+        default_visibility_level: default_group_visibility,
+        groups_organization_path: groups_organization_path(organization)
       }.merge(shared_organization_groups_app_data(organization)).to_json
     end
 
@@ -135,7 +134,6 @@ module Organizations
         base_path: root_url,
         groups_and_projects_organization_path:
           groups_and_projects_organization_path(organization, { display: 'groups' }),
-        groups_organization_path: groups_organization_path(organization),
         available_visibility_levels: available_visibility_levels_for_group(organization),
         restricted_visibility_levels: restricted_visibility_levels,
         path_maxlength: ::Namespace::URL_MAX_LENGTH,

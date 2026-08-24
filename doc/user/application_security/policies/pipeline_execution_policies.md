@@ -482,6 +482,11 @@ implicitly. The executed pipeline contains only the jobs defined in the pipeline
 > run are the project's CI/CD jobs. If the project uses workflow rules that prevent project CI/CD jobs from running,
 > the only jobs that run are the pipeline execution policy jobs.
 
+This means that a project `workflow:rules` configuration that prevents the project pipeline from
+running does not prevent the policy pipeline from being created. If the policy includes
+`Dependency-Scanning.v2.gitlab-ci.yml`, the policy can still create the dependency scanning merge
+request pipeline according to the value available in the policy context.
+
 #### Stages injection
 
 The stages for the policy pipeline follow the usual CI/CD configuration.
@@ -817,6 +822,25 @@ compliance_job:
 > in a Git repository.
 
 By default, pipeline execution policies run in isolation, which means they do not apply any variables defined outside of the policy.
+This isolation also affects security scanning templates that use project or group CI/CD variables to
+choose a pipeline type. For example, when a pipeline execution policy injects
+`Dependency-Scanning.v2.gitlab-ci.yml`, the policy job does not automatically receive
+`AST_ENABLE_MR_PIPELINES` from the project or group. If the variable is unavailable, its value is
+`null`, and the dependency scanning v2 template treats `null` like `"true"`. As a result, the policy
+job can run in a merge request pipeline even when a project or group variable sets
+`AST_ENABLE_MR_PIPELINES: "false"`.
+
+To control this behavior, either define `AST_ENABLE_MR_PIPELINES` in the policy CI/CD configuration, or
+allow the variable through `variables_override`:
+
+```yaml
+variables_override:
+  allowed: false
+  exceptions:
+    - AST_ENABLE_MR_PIPELINES
+```
+
+When `allowed: true`, adding a variable to `exceptions` blocks it instead of allowing it, which is the opposite of the intended effect.
 
 When you enable the [`variables_override` setting](#variables_override-type) setting, pipeline execution policies can access the following user-defined variables:
 

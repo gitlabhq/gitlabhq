@@ -428,7 +428,7 @@ These variables can replace spec inputs and are also compatible with the beta `l
 
 | CI/CD variables                                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `AST_ENABLE_MR_PIPELINES`                      | Control whether dependency scanning job runs in MR or branch pipeline. Default: `"true"`. If your project does not use MR pipelines, disable this to avoid duplicate pipelines.                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `AST_ENABLE_MR_PIPELINES`                      | Control whether dependency scanning job runs in MR or branch pipeline. Default: `"true"`. If your project does not use MR pipelines, disable this to avoid duplicate pipelines. For jobs injected by a pipeline execution policy, see [disable merge request pipelines for dependency scanning](#disable-merge-request-pipelines-for-dependency-scanning).                                                                                                                                                                                       |
 | `ADDITIONAL_CA_CERT_BUNDLE`                    | CA certificate bundle to trust. The CA bundle provided here is added to the system's certificates and also used by other tools during the scanning process. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority).                                                                                                                                                                                                                                                                                                                                         |
 | `ANALYZER_ARTIFACT_DIR`                        | Directory where CycloneDX reports (SBOMs) are saved. Default `${CI_PROJECT_DIR}/sca-artifacts`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `DEPENDENCY_SCANNING_DISABLED`                 | When set to `"true"` or `"1"`, disables all dependency scanning jobs. Default: not set.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
@@ -467,6 +467,29 @@ merge request pipelines. If your project does not use merge request pipelines fo
 can cause two pipelines to run for each merge request, with other jobs running in a separate branch
 pipeline. To disable this behavior, set the spec input `enable_mr_pipelines: false` or CI/CD
 variable `AST_ENABLE_MR_PIPELINES: "false"`.
+
+If the template is injected by a [pipeline execution policy](../../policies/pipeline_execution_policies.md),
+you must set `AST_ENABLE_MR_PIPELINES` in the policy configuration. Pipeline execution policies
+[run in isolation by default](../../policies/pipeline_execution_policies.md#cicd-variables) and do not use
+variables from project or group CI/CD settings unless `variables_override` allows it. When the variable is not set in the policy, the
+template treats it the same as `"true"` and the job runs in merge request pipelines. A project
+`workflow:rules` configuration that stops the project pipeline does not stop the policy pipeline.
+
+To run the job in branch pipelines in every project the policy covers, set the variable in the
+policy CI/CD configuration:
+
+```yaml
+variables:
+  AST_ENABLE_MR_PIPELINES: "false"
+
+include:
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+```
+
+To use the project or group value instead, when the policy sets `variables_override.allowed: false`,
+add `AST_ENABLE_MR_PIPELINES` to the policy
+[`variables_override` exceptions](../../policies/pipeline_execution_policies.md#variables_override-type).
+When `allowed: true`, adding a variable to `exceptions` blocks it instead of allowing it.
 
 ### Skip the job when no supported file is present
 
