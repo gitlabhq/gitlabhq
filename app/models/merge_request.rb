@@ -1260,15 +1260,17 @@ class MergeRequest < ApplicationRecord
   end
 
   def changed_paths
-    if Feature.enabled?(:mr_changed_paths_net_diff, project) && diff_base_sha && diff_head_sha
+    if diff_base_sha && diff_head_sha
       return project.repository.find_changed_paths([Gitlab::Git::DiffTree.new(diff_base_sha, diff_head_sha)])
     end
 
+    # This may list extra files. Running a CI job we didn't need is safer
+    # than skipping one that should have run.
     project.repository.find_changed_paths(
       commit_shas(bypass_preloaded: true), merge_commit_diff_mode: :all_parents
     )
   end
-  request_cache(:changed_paths) { [id, diff_head_sha] }
+  request_cache(:changed_paths) { [id, diff_base_sha, diff_head_sha] }
 
   def new_paths
     diffs.diff_files.map(&:new_path)

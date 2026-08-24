@@ -46,6 +46,7 @@ const mockGroupByValuesQuery = gql`
 describe('WorkItemDisplaySettingsGroupBy', () => {
   let wrapper;
   let groupByValuesHandler;
+  let apolloProvider;
 
   const statuses = [buildStatus(1, 'Triage'), buildStatus(2, 'To do')];
   // getGroupId scopes the id to the status grouping: `status:<gid>`.
@@ -58,6 +59,9 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
   const findHideAll = () => wrapper.findByTestId('hide-all');
   const findToggles = () => wrapper.findAllComponents(GlToggle);
   const findNoGroupsFound = () => wrapper.findByTestId('no-groups-found');
+  const findGroupLimitHint = () => wrapper.findByTestId('group-limit-hint');
+  const readVisibleGroups = () =>
+    apolloProvider.clients.defaultClient.readQuery({ query: workItemsGroupByVisibleGroupsQuery });
 
   beforeEach(() => {
     groupByValuesHandler = jest.fn().mockResolvedValue({ data: { statuses } });
@@ -71,10 +75,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
   });
 
   const createComponent = ({ props = {}, visibleGroups = null } = {}) => {
-    const apolloProvider = createMockApollo(
-      [[mockGroupByValuesQuery, groupByValuesHandler]],
-      resolvers,
-    );
+    apolloProvider = createMockApollo([[mockGroupByValuesQuery, groupByValuesHandler]], resolvers);
     apolloProvider.clients.defaultClient.writeQuery({
       query: workItemsGroupByVisibleGroupsQuery,
       data: {
@@ -194,15 +195,37 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         await waitForPromises();
       });
 
-      it('persists the remaining visible groups', () => {
-        expect(persistMetadataPreference).toHaveBeenCalledWith({
-          apolloClient: expect.anything(),
-          namespace: 'group/full/path',
-          workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
-          userPreferencesOnly: false,
-          displaySettings: { visibleGroups: [groupId(statuses[0])] },
-          sort: 'CREATED_DESC',
+      it('updates the local visible-groups cache', () => {
+        expect(readVisibleGroups()).toMatchObject({
+          workItemsGroupByVisibleGroups: [groupId(statuses[0])],
         });
+      });
+
+      it('persists the visible groups as a user preference', () => {
+        expect(persistMetadataPreference).toHaveBeenCalledWith(
+          expect.objectContaining({
+            namespace: 'group/full/path',
+            sort: 'CREATED_DESC',
+            displaySettings: { visibleGroups: [groupId(statuses[0])] },
+          }),
+        );
+      });
+    });
+
+    describe('when persistence fails', () => {
+      const error = new Error('nope');
+
+      beforeEach(async () => {
+        persistMetadataPreference.mockRejectedValueOnce(error);
+        createComponent();
+        await waitForPromises();
+
+        findToggles().at(0).vm.$emit('change');
+        await waitForPromises();
+      });
+
+      it('surfaces an alert', () => {
+        expect(alertPreferenceError).toHaveBeenCalledWith(error);
       });
     });
 
@@ -218,33 +241,8 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         await waitForPromises();
       });
 
-      it('normalizes the persisted visible groups back to null', () => {
-        expect(persistMetadataPreference).toHaveBeenCalledWith(
-          expect.objectContaining({ displaySettings: { visibleGroups: null } }),
-        );
-      });
-    });
-
-    describe('when other display settings are already persisted', () => {
-      beforeEach(async () => {
-        createComponent({
-          props: { namespacePreferences: { hiddenMetadataKeys: ['labels'] } },
-        });
-        await waitForPromises();
-
-        findToggles().at(0).vm.$emit('change');
-        await waitForPromises();
-      });
-
-      it('preserves them alongside the visible groups', () => {
-        expect(persistMetadataPreference).toHaveBeenCalledWith(
-          expect.objectContaining({
-            displaySettings: {
-              hiddenMetadataKeys: ['labels'],
-              visibleGroups: [groupId(statuses[1])],
-            },
-          }),
-        );
+      it('normalizes the local visible-groups cache back to null', () => {
+        expect(readVisibleGroups()).toMatchObject({ workItemsGroupByVisibleGroups: null });
       });
     });
 
@@ -263,25 +261,26 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         ]);
       });
 
-      it('does not persist the preference', () => {
+      it('does not persist visible groups as a user preference', () => {
         expect(persistMetadataPreference).not.toHaveBeenCalled();
       });
-    });
 
-    describe('when persistence fails', () => {
-      const error = new Error('nope');
+      describe('when other display settings are already saved', () => {
+        beforeEach(async () => {
+          createComponent({
+            props: { isSavedView: true, namespacePreferences: { hiddenMetadataKeys: ['labels'] } },
+          });
+          await waitForPromises();
 
-      beforeEach(async () => {
-        persistMetadataPreference.mockRejectedValueOnce(error);
-        createComponent();
-        await waitForPromises();
+          findToggles().at(0).vm.$emit('change');
+          await waitForPromises();
+        });
 
-        findToggles().at(0).vm.$emit('change');
-        await waitForPromises();
-      });
-
-      it('surfaces an alert', () => {
-        expect(alertPreferenceError).toHaveBeenCalledWith(error);
+        it('preserves them alongside the visible groups in the emitted settings', () => {
+          expect(wrapper.emitted('update-settings')).toEqual([
+            [{ hiddenMetadataKeys: ['labels'], visibleGroups: [groupId(statuses[1])] }],
+          ]);
+        });
       });
     });
   });
@@ -319,12 +318,12 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
           await waitForPromises();
         });
 
-        it('computes the persisted visible groups against the full status set, not the filtered view', () => {
+        it('computes the local visible-groups cache against the full status set, not the filtered view', () => {
           // Only "Triage" is rendered while filtered, but toggling it off must
           // still leave "To do" (filtered out of view) recorded as visible.
-          expect(persistMetadataPreference).toHaveBeenCalledWith(
-            expect.objectContaining({ displaySettings: { visibleGroups: [groupId(statuses[1])] } }),
-          );
+          expect(readVisibleGroups()).toMatchObject({
+            workItemsGroupByVisibleGroups: [groupId(statuses[1])],
+          });
         });
       });
 
@@ -335,9 +334,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         });
 
         it('still hides every group, not just the filtered ones', () => {
-          expect(persistMetadataPreference).toHaveBeenCalledWith(
-            expect.objectContaining({ displaySettings: { visibleGroups: [] } }),
-          );
+          expect(readVisibleGroups()).toMatchObject({ workItemsGroupByVisibleGroups: [] });
         });
       });
     });
@@ -362,7 +359,17 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
   });
 
   describe('Hide all', () => {
-    it('persists an empty visibleGroups array', async () => {
+    it('updates the local visible-groups cache to an empty list', async () => {
+      createComponent();
+      await waitForPromises();
+
+      findHideAll().trigger('click');
+      await waitForPromises();
+
+      expect(readVisibleGroups()).toMatchObject({ workItemsGroupByVisibleGroups: [] });
+    });
+
+    it('persists the visible groups as a user preference', async () => {
       createComponent();
       await waitForPromises();
 
@@ -370,7 +377,10 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
       await waitForPromises();
 
       expect(persistMetadataPreference).toHaveBeenCalledWith(
-        expect.objectContaining({ displaySettings: { visibleGroups: [] } }),
+        expect.objectContaining({
+          namespace: 'group/full/path',
+          displaySettings: { visibleGroups: [] },
+        }),
       );
     });
 
@@ -385,6 +395,97 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
 
       it('does not persist again', () => {
         expect(persistMetadataPreference).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('group limit', () => {
+    // CE doesn't group by anything real yet (placeholder_strategy.js), so this reuses the
+    // status fixture just for its id/name shape — the limit logic doesn't care what a group is.
+    const buildGroupByValues = (count) =>
+      Array.from({ length: count }, (_, index) => buildStatus(index, `Group ${index}`));
+
+    describe('when there are more groups than a board can show', () => {
+      const manyValues = buildGroupByValues(26);
+
+      beforeEach(async () => {
+        groupByValuesHandler.mockResolvedValue({ data: { statuses: manyValues } });
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('turns every toggle off, so the user has to choose', () => {
+        expect(findToggles().wrappers.every((toggle) => toggle.props('value') === false)).toBe(
+          true,
+        );
+      });
+
+      it('says how many groups can be selected', () => {
+        expect(findGroupLimitHint().text()).toBe('Select up to 25 groups.');
+      });
+
+      it('updates the local visible-groups cache with only the group toggled on', async () => {
+        findToggles().at(3).vm.$emit('change');
+        await waitForPromises();
+
+        expect(readVisibleGroups()).toMatchObject({
+          workItemsGroupByVisibleGroups: [groupId(manyValues[3])],
+        });
+      });
+
+      it('persists only the group toggled on', async () => {
+        findToggles().at(3).vm.$emit('change');
+        await waitForPromises();
+
+        expect(persistMetadataPreference).toHaveBeenCalledWith(
+          expect.objectContaining({
+            namespace: 'group/full/path',
+            displaySettings: { visibleGroups: [groupId(manyValues[3])] },
+          }),
+        );
+      });
+
+      it('does not persist anything when Hide all is clicked, since it is already effectively empty', async () => {
+        findHideAll().trigger('click');
+        await waitForPromises();
+
+        expect(persistMetadataPreference).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the limit is reached', () => {
+      const manyValues = buildGroupByValues(30);
+      const shown = manyValues.slice(0, 25);
+
+      beforeEach(async () => {
+        groupByValuesHandler.mockResolvedValue({ data: { statuses: manyValues } });
+        createComponent({ visibleGroups: shown.map(groupId) });
+        await waitForPromises();
+      });
+
+      it('disables the toggles for the hidden groups', () => {
+        expect(findToggles().at(25).props('disabled')).toBe(true);
+      });
+
+      it('leaves the shown groups toggleable, so the user can swap one out', () => {
+        expect(findToggles().at(0).props('disabled')).toBe(false);
+      });
+    });
+
+    describe('when there are few enough groups to show them all', () => {
+      beforeEach(async () => {
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('renders no hint', () => {
+        expect(findGroupLimitHint().exists()).toBe(false);
+      });
+
+      it('leaves every toggle enabled', () => {
+        expect(findToggles().wrappers.every((toggle) => toggle.props('disabled') === false)).toBe(
+          true,
+        );
       });
     });
   });

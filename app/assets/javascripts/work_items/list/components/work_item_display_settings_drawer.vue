@@ -4,14 +4,16 @@ import { __, s__ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { groupingStrategyFor } from '~/work_items/board/grouping';
-import { VIEW_MODE_LIST, VIEW_MODE_BOARD } from '../../constants';
+import {
+  DISPLAY_SETTINGS_PAGE_GROUP_BY,
+  DISPLAY_SETTINGS_PAGE_ROOT,
+  VIEW_MODE_LIST,
+  VIEW_MODE_BOARD,
+} from '../../constants';
 import WorkItemDisplaySettingsSort from './work_item_display_settings_sort.vue';
 import WorkItemDisplaySettingsMetadata from './work_item_display_settings_metadata.vue';
 import WorkItemDisplaySettingsUserPreferences from './work_item_display_settings_user_preferences.vue';
 import WorkItemDisplaySettingsGroupBy from './work_item_display_settings_group_by.vue';
-
-const PAGE_ROOT = 'root';
-const PAGE_GROUP_BY = 'groupBy';
 
 export default {
   name: 'WorkItemDisplaySettingsDrawer',
@@ -31,8 +33,6 @@ export default {
     groupBy: s__('WorkItems|Group by'),
     goBack: __('Go back'),
   },
-  PAGE_ROOT,
-  PAGE_GROUP_BY,
   viewModeOptions: [
     {
       value: VIEW_MODE_LIST,
@@ -98,13 +98,13 @@ export default {
       required: false,
       default: false,
     },
+    page: {
+      type: String,
+      required: false,
+      default: DISPLAY_SETTINGS_PAGE_ROOT,
+    },
   },
-  emits: ['close', 'sort', 'update-settings', 'toggle-view-mode'],
-  data() {
-    return {
-      currentPage: PAGE_ROOT,
-    };
-  },
+  emits: ['close', 'sort', 'update-settings', 'toggle-view-mode', 'page-change'],
   computed: {
     hasSortOptions() {
       return this.viewMode !== VIEW_MODE_BOARD && this.sortOptions.length > 0;
@@ -113,20 +113,13 @@ export default {
       return Boolean(this.glFeatures.planningViewBoards);
     },
     isGroupByPage() {
-      return this.currentPage === PAGE_GROUP_BY;
+      return this.page === DISPLAY_SETTINGS_PAGE_GROUP_BY;
     },
     showGroupByRow() {
       return this.isPlanningViewBoardEnabled && this.viewMode === VIEW_MODE_BOARD;
     },
     groupByLabel() {
       return groupingStrategyFor('status')?.label ?? '';
-    },
-  },
-  watch: {
-    open(isOpen) {
-      if (!isOpen) {
-        this.currentPage = PAGE_ROOT;
-      }
     },
   },
   methods: {
@@ -143,10 +136,10 @@ export default {
       this.$emit('toggle-view-mode', newViewMode);
     },
     openGroupByPage() {
-      this.currentPage = PAGE_GROUP_BY;
+      this.$emit('page-change', DISPLAY_SETTINGS_PAGE_GROUP_BY);
     },
     backToRoot() {
-      this.currentPage = PAGE_ROOT;
+      this.$emit('page-change', DISPLAY_SETTINGS_PAGE_ROOT);
     },
   },
   DRAWER_Z_INDEX,

@@ -59989,13 +59989,13 @@ msgstr ""
 msgid "PolicyStore|The policy could not be updated. Try again."
 msgstr ""
 
-msgid "PolicyStore|This policy will be enabled for %{scope} in Audit mode. Events will be logged only."
+msgid "PolicyStore|This policy will be enabled for %{scope} in Audit mode. Events will be logged only. Actions will not be executed."
 msgstr ""
 
-msgid "PolicyStore|This policy will be enabled for %{scope} in Enforce mode. Violations will be blocked."
+msgid "PolicyStore|This policy will be enabled for %{scope} in Enforce mode. Actions will be executed."
 msgstr ""
 
-msgid "PolicyStore|This policy will be enabled for %{scope} in Warn mode. Users will see warnings but will not be blocked."
+msgid "PolicyStore|This policy will be enabled for %{scope} in Warn mode. Users will see warnings. Actions will not be executed."
 msgstr ""
 
 msgid "PolicyStore|This step is coming soon."
@@ -90661,6 +90661,15 @@ msgstr ""
 msgid "WorkItemBoard|An error occurred while fetching work items for this column."
 msgstr ""
 
+msgid "WorkItemBoard|Boards show up to %{maxGroups} groups at a time, choose groups to build your board."
+msgstr ""
+
+msgid "WorkItemBoard|Choose groups"
+msgstr ""
+
+msgid "WorkItemBoard|Choose which groups to show"
+msgstr ""
+
 msgid "WorkItemBoard|Column actions"
 msgstr ""
 
@@ -90836,6 +90845,9 @@ msgid "WorkItems|Search fields"
 msgstr ""
 
 msgid "WorkItems|Search groups"
+msgstr ""
+
+msgid "WorkItems|Select up to %{maxGroups} groups."
 msgstr ""
 
 msgid "WorkItems|Shown"

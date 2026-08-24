@@ -35055,6 +35055,18 @@ Fields:
 | <a id="approvalscanresultpolicy-name"></a>`name` | [`String!`](#string) | Represents the name of the policy. |
 | <a id="approvalscanresultpolicy-reporttype"></a>`reportType` | [`ApprovalReportType!`](#approvalreporttype) | Represents the report_type of the approval rule. |
 
+### `ArtifactRegistry`
+
+Artifact Registry an organization is activated for.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistry-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the registry was provisioned, presented as the active-since date. `null` when the status is `unknown`. |
+| <a id="artifactregistry-slug"></a>`slug` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Registry slug, Artifact Registry's immutable identifier for the namespace. `null` when the status is `unknown`. |
+| <a id="artifactregistry-status"></a>`status` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Status Artifact Registry returned, one of `active`, `suspended`, `disabled`, `blocked`, `deleted`, or `purged`, or `unknown` when the mapped namespace did not resolve. Deliberately a string rather than an enum so a status Artifact Registry adds within its API version reaches the response instead of raising. |
+
 ### `ArtifactRegistryMavenPackage`
 
 Maven package in an Artifact Registry repository.
@@ -36647,6 +36659,7 @@ Fields:
 | <a id="cdrollout-awaitingapproval"></a>`awaitingApproval` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Indicates whether the rollout has an open approval gate awaiting a decision, derived from its transition journal. |
 | <a id="cdrollout-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the rollout was created. |
 | <a id="cdrollout-finishedat"></a>`finishedAt` | [`Time`](#time) | Timestamp of when the rollout finished. |
+| <a id="cdrollout-gates"></a>`gates` {{< icon name="warning-solid" >}} | [`[CdRolloutGate!]`](#cdrolloutgate) | Introduced in GitLab 19.4. Status: Experiment. Approval gates recorded against the rollout, in the order they were opened, derived from its transition journal. |
 | <a id="cdrollout-id"></a>`id` | [`CdRolloutID!`](#cdrolloutid) | Global ID of the rollout. |
 | <a id="cdrollout-iid"></a>`iid` | [`Int!`](#int) | Internal ID of the rollout, unique and user-facing within its application. |
 | <a id="cdrollout-rolloutenvironments"></a>`rolloutEnvironments` {{< icon name="warning-solid" >}} | [`CdRolloutEnvironmentConnection`](#cdrolloutenvironmentconnection) | Introduced in GitLab 19.2. Status: Experiment. Rollout environments of the rollout. |
@@ -36677,6 +36690,22 @@ Fields:
 | <a id="cdrolloutenvironment-startedat"></a>`startedAt` | [`Time`](#time) | Timestamp of when the rollout environment started. |
 | <a id="cdrolloutenvironment-state"></a>`state` | [`CdRolloutEnvironmentState!`](#cdrolloutenvironmentstate) | State of the rollout environment. |
 | <a id="cdrolloutenvironment-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the rollout environment was last updated. |
+
+### `CdRolloutGate`
+
+Continuous deployment rollout approval gate, derived from its transition journal.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cdrolloutgate-id"></a>`id` | [`CdRolloutTransitionID!`](#cdrollouttransitionid) | Global ID of the transition that opened the gate. |
+| <a id="cdrolloutgate-name"></a>`name` | [`String`](#string) | Label of the gate, derived from the step it was opened for. |
+| <a id="cdrolloutgate-reason"></a>`reason` | [`String`](#string) | Reason given when the gate was resolved, if any. |
+| <a id="cdrolloutgate-resolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the gate was resolved, null while still pending. |
+| <a id="cdrolloutgate-resolvedby"></a>`resolvedBy` | [`UserCore`](#usercore) | User that resolved the gate, when the resolving principal identifies a user that still exists; null while pending or for other principal kinds. |
+| <a id="cdrolloutgate-state"></a>`state` | [`CdRolloutGateState!`](#cdrolloutgatestate) | State of the gate. |
+| <a id="cdrolloutgate-step"></a>`step` | [`CdRolloutStep`](#cdrolloutstep) | Rollout step the gate was opened for, null for a gate opened for a non-step reason. |
 
 ### `CdRolloutStep`
 
@@ -42238,6 +42267,7 @@ Fields:
 | <a id="duoworkflowevent-checkpointns"></a>`checkpointNs` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. LangGraph checkpoint namespace this checkpoint belongs to. Blank for the session's own top-level checkpoint lineage; this field only ever surfaces that lineage (via first_checkpoint/latest_checkpoint), never a nested subgraph invocation's own. |
 | <a id="duoworkflowevent-checkpointwrites"></a>`checkpointWrites` {{< icon name="warning-solid" >}} | [`[DuoWorkflowCheckpointWrite!]`](#duoworkflowcheckpointwrite) | Introduced in GitLab 19.3. Status: Experiment. Pending writes associated with the checkpoint, e.g. interrupts awaiting resumption. |
 | <a id="duoworkflowevent-compressedcheckpoint"></a>`compressedCheckpoint` | [`String`](#string) | Checkpoint of the event, zlib-compressed and Base64-encoded. |
+| <a id="duoworkflowevent-currentthread"></a>`currentThread` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.4. Status: Experiment. Compaction group this checkpoint belongs to. The writer bumps it on every compaction and resets it when its process restarts, so a client that resumes a session must read it back from here to keep numbering the groups correctly. |
 | <a id="duoworkflowevent-duomessages"></a>`duoMessages` | [`[DuoMessage!]`](#duomessage) | Messages from the ui_chat_log for the checkpoint. |
 | <a id="duoworkflowevent-errors"></a>`errors` | [`[String!]`](#string) | Message errors. |
 | <a id="duoworkflowevent-executionstatus"></a>`executionStatus` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 17.10. Status: Experiment. Granular status of the session's execution. |
@@ -52922,6 +52952,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="organization-analytics"></a>`analytics` {{< icon name="warning-solid" >}} | [`Analytics`](#analytics) | Introduced in GitLab 19.3. Status: Experiment. Analytics aggregation endpoints scoped to groups and projects of the organization. |
+| <a id="organization-artifactregistry"></a>`artifactRegistry` {{< icon name="warning-solid" >}} | [`ArtifactRegistry`](#artifactregistry) | Introduced in GitLab 19.4. Status: Experiment. Artifact Registry the organization is activated for. Returns `null` when the organization has no registry, or when the `artifact_registry_ui` feature flag is disabled. |
 | <a id="organization-avatarurl"></a>`avatarUrl` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 16.7. Status: Experiment. Avatar URL of the organization. |
 | <a id="organization-cdavailableagents"></a>`cdAvailableAgents` {{< icon name="warning-solid" >}} | [`ClusterAgentConnection`](#clusteragentconnection) | Introduced in GitLab 19.2. Status: Experiment. GitLab agents for Kubernetes available in the organization. |
 | <a id="organization-cdavailabledeploydrivers"></a>`cdAvailableDeployDrivers` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.2. Status: Experiment. Reference of continuous deployment deploy drivers available in the organization. |
@@ -66355,6 +66386,16 @@ State of a continuous deployment rollout environment.
 | <a id="cdrolloutenvironmentstate-in_progress"></a>`IN_PROGRESS` | Rollout environment is in progress. |
 | <a id="cdrolloutenvironmentstate-paused"></a>`PAUSED` | Rollout environment is paused. |
 | <a id="cdrolloutenvironmentstate-pending"></a>`PENDING` | Rollout environment is pending. |
+
+### `CdRolloutGateState`
+
+State of a continuous deployment rollout approval gate.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cdrolloutgatestate-approved"></a>`APPROVED` | Rollout gate is approved. |
+| <a id="cdrolloutgatestate-pending"></a>`PENDING` | Rollout gate is pending. |
+| <a id="cdrolloutgatestate-rejected"></a>`REJECTED` | Rollout gate is rejected. |
 
 ### `CdRolloutGateStatus`
 

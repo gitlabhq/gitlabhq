@@ -108,6 +108,7 @@ Select a flow to view its details.
 {{< history >}}
 
 - Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
+- GitLab flow builder [introduced](https://gitlab.com/groups/gitlab-org/editor-extensions/-/work_items/236) in GitLab for VS Code 6.87.0 during the GitLab 19.3 release, with a VS Code extension setting named `gitlab.featureFlags.flowBuilder`. Disabled by default. This is a [beta](../../../policy/development_stages_support.md) feature.
 
 {{< /history >}}
 
@@ -115,7 +116,10 @@ Select a flow to view its details.
 > The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
 > For more information, see the history.
 
-You can create a flow from a project, or by using the AI Catalog.
+The GitLab flow builder in VS Code is controlled by the VS Code extension setting `gitlab.featureFlags.flowBuilder`.
+For more information, see the history.
+
+You can create a flow from a project, with the AI Catalog, or with the GitLab flow builder in VS Code.
 
 > [!note]
 > You cannot define a custom flow to call a specific custom agent from a project
@@ -148,7 +152,7 @@ To create a flow:
 
 {{< /tab >}}
 
-{{< tab title="From the AI Catalog" >}}
+{{< tab title="AI Catalog" >}}
 
 1. In the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Flows** tab.
@@ -163,6 +167,47 @@ To create a flow:
 
       - For more information on the YAML syntax and schema, see [custom flow YAML schema](custom_flows_schema.md).
 1. Select **Create flow**.
+
+{{< /tab >}}
+
+{{< tab title="VS Code" >}}
+
+Prerequisites:
+
+- [Install and configure the GitLab for VS Code extension](../../../editor_extensions/visual_studio_code/setup.md).
+- Enable the `gitlab.featureFlags.flowBuilder` VS Code extension setting.
+- To run a flow: GitLab Duo Agent Platform must be turned on for the project, and you must have at least the Developer role.
+- To publish a flow to the AI Catalog: Have the Maintainer or Owner role for the managing project.
+
+> [!note]
+> When you publish a flow from the GitLab flow builder, only **Private** and **Public** visibility options are available.
+> The **Restricted** visibility option is available only when you create a flow from the GitLab UI.
+
+In VS Code, you can use the GitLab flow builder to create a custom flow.
+
+1. In your project, in VS Code, open a new YAML file.
+1. Whilst in the YAML file, select **Open GitLab Flow Builder**.
+1. Select the following components to build the flow. Complete the fields:
+   - **Agent**: runs multi-step reasoning with tool use and iterates until its goal is complete.
+   - **Tool**: runs a single specific tool with fixed inputs; deterministic, no LLM involved.
+   - **AI Task**: makes a single LLM call that produces one result (for example, summarize, classify, or draft).
+     Use **AI Task** instead of **Agent** when you need a single model response rather than multi-step work.
+     An Agent runs in a loop and can use tools; an AI Task makes one model call and returns one result.
+   - **Human Input**: pauses the flow and waits for user input or approval before continuing.
+1. Optional. Edit the YAML file to update the flow, and check the flow in the
+   GitLab flow builder.
+
+   > [!note]
+   > The flow YAML must comply with the [flow registry v1 specification](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/flow_registry/v1.md) syntax.
+1. To test your flow, select **Run**. In the **Execution Console**, select **Execute**.
+   Check the flow output, and update the flow as needed.
+1. Select **Save** or **Save as** to save the flow.
+1. To publish the flow to the AI Catalog, select **Publish** and complete the
+   fields.
+
+> [!note]
+> The GitLab flow builder can publish a flow to the AI Catalog, but enabling a flow in a project
+> and attaching triggers is done in the GitLab UI only.
 
 {{< /tab >}}
 
@@ -311,6 +356,10 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role for the project.
 
+{{< tabs >}}
+
+{{< tab title="GitLab UI" >}}
+
 To duplicate a flow:
 
 1. In the top bar, select **Search or go to** > **Explore**.
@@ -320,6 +369,21 @@ To duplicate a flow:
 1. Optional. Edit any fields you want to change.
 1. Select **Create flow**.
 
+{{< /tab >}}
+
+{{< tab title="VS Code" >}}
+
+There is no dedicated duplicate action in the GitLab flow builder.
+To create a copy of a flow, use **Save As**, which saves the open flow as a new file.
+You can also open a copied YAML file directly in the flow builder.
+
+> [!note]
+> Publishing a copy creates a new catalog item that is not linked to the original.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ## Edit a flow
 
 Edit a flow to change its configuration.
@@ -328,11 +392,30 @@ Prerequisites:
 
 - You must be a member of the managing project and have the Maintainer or Owner role.
 
+{{< tabs >}}
+
+{{< tab title="GitLab UI" >}}
+
 1. In the top bar, select **Search or go to** and find your group or project.
 1. Select **AI** > **Flows**.
 1. Select the flow you want to edit.
 1. In the upper-right corner, select **Edit**.
 1. Edit any fields you want to change, then select **Save changes**.
+
+{{< /tab >}}
+
+{{< tab title="VS Code" >}}
+
+1. In your project, in VS Code, open the flow's YAML file.
+1. Whilst in the YAML file, select **Open GitLab Flow Builder**.
+1. Edit the flow in the GitLab flow builder.
+1. To test your flow, select **Run**. In the **Execution console**, select **Execute**.
+   Check the flow output, and update the flow as needed.
+1. Select **Save** or **Save as** to save the flow.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Hide a flow
 

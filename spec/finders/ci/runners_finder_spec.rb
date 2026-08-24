@@ -403,9 +403,6 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
       let(:params) { {} }
 
       it 'raises Gitlab::Access::AccessDeniedError' do
-        create :ci_runner
-        create :ci_runner, :paused
-
         expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
       end
     end
@@ -432,9 +429,6 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
       let(:current_user) { nil }
 
       it 'raises Gitlab::Access::AccessDeniedError' do
-        create :ci_runner
-        create :ci_runner, :paused
-
         expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
       end
     end

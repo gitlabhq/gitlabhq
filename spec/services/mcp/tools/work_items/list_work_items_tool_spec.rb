@@ -218,7 +218,7 @@ RSpec.describe Mcp::Tools::WorkItems::ListWorkItemsTool, feature_category: :mcp_
       let(:tool) { described_class.new(current_user: non_member_user, params: arguments, version: '0.1.0') }
 
       it 'denies access' do
-        expect { result }.to raise_error(ArgumentError, /Access denied/)
+        expect { result }.to raise_error(StandardError, /not found or inaccessible/)
       end
     end
 

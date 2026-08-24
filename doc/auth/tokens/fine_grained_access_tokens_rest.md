@@ -2551,6 +2551,7 @@ Grants the ability to archive, create, delete, fork, read, share, transfer, and 
 | Fork | Project | `POST` | `/projects/:id/fork/:forked_from_id` |
 | Fork | Project | `DELETE` | `/projects/:id/fork` |
 | Read | Project | `GET` | `/projects/:id` |
+| Read | Project | `GET` | `/projects/:id/dependency_firewall/enablement` |
 | Read | Project | `GET` | `/projects/:id/forks` |
 | Read | Project | `GET` | `/projects/:id/groups` |
 | Read | Project | `GET` | `/projects/:id/invited_groups` |
@@ -3772,6 +3773,7 @@ feature is enabled.
 | Work Item: Read | `GET` | `/projects/:id/boards/:board_id` |
 | Work Item: Read | `GET` | `/projects/:id/boards/:board_id/lists` |
 | Work Item: Read | `GET` | `/projects/:id/boards/:board_id/lists/:list_id` |
+| Project: Read | `GET` | `/projects/:id/dependency_firewall/enablement` |
 | Package: Read | `GET` | `/projects/:id/dependency_proxy/packages/maven/*path/:file_name` |
 | Package: Read | `GET` | `/projects/:id/dependency_proxy/packages/npm/*package_name/-/*file_name` |
 | Deployment: Read | `GET` | `/projects/:id/deployments` |

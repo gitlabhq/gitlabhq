@@ -153,17 +153,7 @@ export default {
       default: '',
     },
   },
-  emits: [
-    'blur',
-    'change',
-    'enable-markdown-editor',
-    'focus',
-    'initialized',
-    'keydown',
-    'loading',
-    'loadingError',
-    'loadingSuccess',
-  ],
+  emits: ['blur', 'change', 'enable-markdown-editor', 'focus', 'initialized', 'keydown', 'loading'],
   data() {
     return {
       focused: false,
@@ -362,11 +352,9 @@ export default {
     },
     notifyLoadingSuccess() {
       this.isLoading = false;
-      this.$emit('loadingSuccess');
     },
-    notifyLoadingError(error) {
+    notifyLoadingError() {
       this.isLoading = false;
-      this.$emit('loadingError', error);
     },
     notifyChange() {
       this.latestMarkdown = this.contentEditor.getSerializedContent();

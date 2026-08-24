@@ -81,7 +81,7 @@ module Mcp
 
         def resource_not_found_error(resource)
           ::Mcp::Tools::Base::Response.error(
-            "#{resource} not found: it does not exist or you do not have access to it."
+            "#{resource} not found or inaccessible"
           )
         end
       end

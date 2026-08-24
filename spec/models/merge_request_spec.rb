@@ -3117,6 +3117,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         2.times { merge_request.changed_paths }
       end
+
+      it 'invalidates the cache when the diff_base_sha changes', :request_store do
+        expect(project.repository).to receive(:find_changed_paths).twice
+
+        2.times { merge_request.changed_paths }
+
+        allow(merge_request).to receive(:diff_base_sha).and_return('new_base_sha')
+
+        2.times { merge_request.changed_paths }
+      end
     end
 
     context 'when a file is added and then removed across commits within the MR', :request_store do
@@ -3141,55 +3151,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         expect(paths).to include('kept.txt')
         expect(paths).not_to include('reverted.txt')
-      end
-    end
-
-    context 'when the :mr_changed_paths_net_diff feature flag is disabled' do
-      before do
-        stub_feature_flags(mr_changed_paths_net_diff: false)
-      end
-
-      context 'when fetching paths from gitaly' do
-        let(:shas) { ['ade1c0b4b116209ed2a9958436b26f89085ec383'] }
-        let(:changed_paths) { [double(:changed_path, path: 'path.rb')] }
-        let(:merge_request) { build(:merge_request, id: 1, project: project) }
-
-        before do
-          allow(merge_request).to receive(:commit_shas).with(bypass_preloaded: true).and_return(shas)
-        end
-
-        it 'fetches the changed paths from gitaly using commit SHAs' do
-          expect(project.repository)
-            .to receive(:find_changed_paths).with(shas, merge_commit_diff_mode: :all_parents)
-            .once.and_return(changed_paths)
-
-          expect(merge_request.changed_paths).to eq(changed_paths)
-        end
-      end
-
-      context 'when a file is added and then removed across commits within the MR', :request_store do
-        let_it_be(:net_diff_project) { create(:project, :repository) }
-        let_it_be(:merge_request) do
-          user = net_diff_project.first_owner
-          repo = net_diff_project.repository
-
-          repo.create_file(user, 'kept.txt', 'keep',
-            message: 'Add kept file', branch_name: 'net-diff-source', start_branch_name: 'master')
-          repo.create_file(user, 'reverted.txt', 'temporary',
-            message: 'Add file that will be reverted', branch_name: 'net-diff-source')
-          repo.delete_file(user, 'reverted.txt',
-            message: 'Revert the temporary file', branch_name: 'net-diff-source')
-
-          create(:merge_request, source_project: net_diff_project, target_project: net_diff_project,
-            source_branch: 'net-diff-source', target_branch: 'master')
-        end
-
-        it 'returns the union of per-commit changes, including the reverted file' do
-          paths = merge_request.changed_paths.map(&:path)
-
-          expect(paths).to include('kept.txt')
-          expect(paths).to include('reverted.txt')
-        end
       end
     end
   end

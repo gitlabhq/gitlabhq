@@ -128,9 +128,9 @@ RSpec.describe Mcp::Tools::WorkItems::BaseTool, feature_category: :mcp_server do
       let_it_be(:private_project) { create(:project, :private) }
       let(:params) { { project_id: private_project.id.to_s, work_item_iid: 1 } }
 
-      it 'raises ArgumentError from authorization check' do
+      it 'raises a uniform not-found error indistinguishable from a missing project' do
         expect { tool.test_resolve_parent }
-          .to raise_error(ArgumentError, /Access denied/)
+          .to raise_error(StandardError, /not found or inaccessible/)
       end
     end
 
@@ -186,7 +186,7 @@ RSpec.describe Mcp::Tools::WorkItems::BaseTool, feature_category: :mcp_server do
 
       it 'raises ArgumentError' do
         expect { tool.test_resolve_work_item_id }
-          .to raise_error(ArgumentError, 'Work item #99999 not found')
+          .to raise_error(ArgumentError, 'Work item #99999 not found or inaccessible')
       end
     end
   end
@@ -277,9 +277,9 @@ RSpec.describe Mcp::Tools::WorkItems::BaseTool, feature_category: :mcp_server do
         let_it_be(:private_project) { create(:project, :private) }
         let(:params) { { project_id: private_project.id.to_s } }
 
-        it 'raises ArgumentError' do
+        it 'raises a uniform not-found error indistinguishable from a missing project' do
           expect { tool.send(:resolve_parent_from_id) }
-            .to raise_error(ArgumentError, /Access denied to project/)
+            .to raise_error(StandardError, /not found or inaccessible/)
         end
       end
     end
@@ -307,7 +307,7 @@ RSpec.describe Mcp::Tools::WorkItems::BaseTool, feature_category: :mcp_server do
 
         it 'raises ArgumentError' do
           expect { tool.send(:resolve_work_item_from_params) }
-            .to raise_error(ArgumentError, 'Work item #99999 not found')
+            .to raise_error(ArgumentError, 'Work item #99999 not found or inaccessible')
         end
       end
     end

@@ -415,6 +415,8 @@ tags:
 
     Retrieving the entry for a single table requires administrator access to the instance.
   x-displayName: Database dictionary
+- name: Dependency firewall
+  description: Operations related to dependency firewall.
 - name: Dependency management
   description: |-
     Use this API to retrieve a project's dependencies and to export

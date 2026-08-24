@@ -642,6 +642,10 @@ invocation.
 - `is_sessionless_user: false`: Marks as API/MCP request
 - Context is consistent across all mutations in a multi-mutation request
 
+For details on how `ResourceFinder` folds authorization into the DB lookup to prevent
+resource enumeration, see
+[Resource identification](_index.md#tool-naming-and-consolidation-conventions).
+
 ### Error Handling Strategy
 
 **Three Error Levels**:

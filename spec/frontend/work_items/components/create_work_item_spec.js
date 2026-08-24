@@ -461,7 +461,7 @@ describe('Create work item component', () => {
       });
       await resolveAll();
 
-      findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+      findGroupProjectSelector().vm.$emit('select-namespace', 'other-namespace/path');
       await nextTick();
       await resolveAll();
 
@@ -483,7 +483,7 @@ describe('Create work item component', () => {
         await setupGroupForm();
 
         await updateWorkItemTitle('Preserved title');
-        findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+        findGroupProjectSelector().vm.$emit('select-namespace', 'other-namespace/path');
         await nextTick();
         await resolveAll();
 
@@ -502,7 +502,7 @@ describe('Create work item component', () => {
         await nextTick();
         await waitForPromises();
 
-        findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+        findGroupProjectSelector().vm.$emit('select-namespace', 'other-namespace/path');
         await nextTick();
         await resolveAll();
 
@@ -533,7 +533,7 @@ describe('Create work item component', () => {
           await resolveAll();
 
           findGroupProjectSelector().vm.$emit(
-            'selectNamespace',
+            'select-namespace',
             namespaceObject.fullPath,
             namespaceObject,
           );
@@ -1616,7 +1616,7 @@ describe('Create work item component', () => {
         expect(localStorage.getItem).toHaveBeenCalledWith('freq-wi-type:full-path');
       });
       it('when selecting a different namespace', async () => {
-        findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
+        findGroupProjectSelector().vm.$emit('select-namespace', 'other-namespace/path');
         await nextTick();
         await resolveAll();
         expect(localStorage.getItem).toHaveBeenCalledWith('freq-wi-type:other-namespace/path');

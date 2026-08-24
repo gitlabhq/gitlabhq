@@ -402,11 +402,11 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
     context 'with access control' do
       let_it_be(:private_project) { create(:project, :private) }
 
-      it 'raises ArgumentError when user lacks access to project' do
+      it 'raises a uniform not-found error when user lacks access to project' do
         url = "https://gitlab.com/#{private_project.full_path}"
 
         expect { service.send(:resolve_parent_from_url, url) }
-          .to raise_error(ArgumentError, /Access denied to project/)
+          .to raise_error(StandardError, /not found or inaccessible/)
       end
     end
   end
@@ -447,11 +447,11 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
       let_it_be(:private_project) { create(:project, :private) }
       let(:private_work_item) { create(:work_item, :issue, project: private_project, iid: 1) }
 
-      it 'raises ArgumentError when user lacks access to parent' do
+      it 'raises a uniform not-found error when user lacks access to parent' do
         url = "https://gitlab.com/#{private_project.full_path}/-/work_items/#{private_work_item.iid}"
 
         expect { service.send(:resolve_work_item_from_url, url) }
-          .to raise_error(ArgumentError, /Access denied to project/)
+          .to raise_error(StandardError, /not found or inaccessible/)
       end
     end
   end

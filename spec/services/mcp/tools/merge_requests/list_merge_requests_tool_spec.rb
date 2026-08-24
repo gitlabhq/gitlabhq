@@ -267,8 +267,8 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsTool, feature_categor
       context 'when the caller is not a member' do
         let(:tool) { described_class.new(current_user: non_member, params: params) }
 
-        it 'denies access rather than listing its merge requests' do
-          expect { tool.execute }.to raise_error(ArgumentError, /Access denied to project/)
+        it 'raises the same error as for a missing project, preventing enumeration' do
+          expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
         end
       end
 

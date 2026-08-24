@@ -40,7 +40,8 @@ export default {
   },
   computed: {
     className() {
-      const baseClasses = [`position-${this.side}-0`, { 'is-dragging': this.isDragging }];
+      // eslint-disable-next-line @gitlab/tailwind-no-interpolation
+      const baseClasses = [`gl-${this.side}-0`, { 'is-dragging': this.isDragging }];
 
       if (this.customClass) {
         baseClasses.push(this.customClass);
@@ -113,7 +114,7 @@ export default {
   <div
     :class="className"
     :style="cursorStyle"
-    class="position-top-0 position-bottom-0 drag-handle !gl-absolute"
+    class="drag-handle gl-absolute gl-bottom-0 gl-top-0"
     @mousedown="startDrag"
     @dblclick="resetSize"
   >

@@ -162,10 +162,6 @@ describe('ContentEditor', () => {
         expect(findLoadingIndicator().exists()).toBe(false);
       });
 
-      it('emits loadingSuccess event', () => {
-        expect(wrapper.emitted('loadingSuccess')).toHaveLength(1);
-      });
-
       it('shows placeholder text', () => {
         expect(wrapper.text()).toContain('Enter some text here...');
       });
@@ -189,10 +185,6 @@ describe('ContentEditor', () => {
         await nextTick();
 
         expect(findLoadingIndicator().exists()).toBe(false);
-      });
-
-      it('emits loadingError event', () => {
-        expect(wrapper.emitted('loadingError')).toHaveLength(1);
       });
 
       it('displays error alert indicating that the content editor failed to load', () => {

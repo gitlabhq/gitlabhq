@@ -174,6 +174,13 @@ single `id`. They are different values (`iid`/`sha` is scoped to a project and i
 and IDs are supplied they are cross-validated and a mismatch raises an error. Work-item tools accept
 `group_id` or `project_id` in the same group.
 
+`ResourceFinder#find_project!` and `#find_group!` fold authorization into the DB lookup.
+If the record is missing **or** the caller lacks the required ability, both raise the same error:
+`"'<id>' not found or inaccessible"`. This prevents an authenticated caller from enumerating
+private projects or groups by comparing error strings. Do not add a separate authorization check
+after calling these finders. If you need a non-default ability, pass it with the `ability:` keyword:
+`find_project!(project_id, ability: :read_merge_request)`.
+
 **Optional parameters:** `Base::BaseService` treats an explicit `null` or `""` value for an
 optional parameter the same as an omitted key, so a caller that fills in every schema property
 still passes validation for an optional `enum` parameter.

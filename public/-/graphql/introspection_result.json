@@ -35605,6 +35605,57 @@
         },
         {
           "kind": "OBJECT",
+          "name": "ArtifactRegistry",
+          "description": "Artifact Registry an organization is activated for.",
+          "fields": [
+            {
+              "name": "createdAt",
+              "description": "Timestamp the registry was provisioned, presented as the active-since date. `null` when the status is `unknown`. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "slug",
+              "description": "Registry slug, Artifact Registry's immutable identifier for the namespace. `null` when the status is `unknown`. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "status",
+              "description": "Status Artifact Registry returned, one of `active`, `suspended`, `disabled`, `blocked`, `deleted`, or `purged`, or `unknown` when the mapped namespace did not resolve. Deliberately a string rather than an enum so a status Artifact Registry adds within its API version reaches the response instead of raising. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "ArtifactRegistryMavenPackage",
           "description": "Maven package in an Artifact Registry repository.",
           "fields": [
@@ -63442,6 +63493,26 @@
               "deprecationReason": null
             },
             {
+              "name": "gates",
+              "description": "Approval gates recorded against the rollout, in the order they were opened, derived from its transition journal. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "CdRolloutGate",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "id",
               "description": "Global ID of the rollout.",
               "args": [],
@@ -64327,6 +64398,109 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "CdRolloutGate",
+          "description": "Continuous deployment rollout approval gate, derived from its transition journal.",
+          "fields": [
+            {
+              "name": "id",
+              "description": "Global ID of the transition that opened the gate.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "CdRolloutTransitionID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "Label of the gate, derived from the step it was opened for.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "reason",
+              "description": "Reason given when the gate was resolved, if any.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "resolvedAt",
+              "description": "Timestamp of when the gate was resolved, null while still pending.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "resolvedBy",
+              "description": "User that resolved the gate, when the resolving principal identifies a user that still exists; null while pending or for other principal kinds.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "state",
+              "description": "State of the gate.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "CdRolloutGateState",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "step",
+              "description": "Rollout step the gate was opened for, null for a gate opened for a non-step reason.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CdRolloutStep",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "INPUT_OBJECT",
           "name": "CdRolloutGateResolveInput",
           "description": "Autogenerated input type of CdRolloutGateResolve",
@@ -64450,6 +64624,35 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "CdRolloutGateState",
+          "description": "State of a continuous deployment rollout approval gate.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "PENDING",
+              "description": "Rollout gate is pending.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "APPROVED",
+              "description": "Rollout gate is approved.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REJECTED",
+              "description": "Rollout gate is rejected.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -142194,6 +142397,22 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "currentThread",
+              "description": "Compaction group this checkpoint belongs to. The writer bumps it on every compaction and resets it when its process restarts, so a client that resumes a session must read it back from here to keep numbering the groups correctly. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "duoMessages",
@@ -284315,6 +284534,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "artifactRegistry",
+              "description": "Artifact Registry the organization is activated for. Returns `null` when the organization has no registry, or when the `artifact_registry_ui` feature flag is disabled. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ArtifactRegistry",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "artifactRegistryRepositories",

@@ -1,4 +1,9 @@
-import { isGroupVisible, toggleGroupVisibility } from '~/work_items/board/grouping/visibility';
+import {
+  effectiveVisibleGroups,
+  exceedsGroupLimit,
+  isGroupVisible,
+  toggleGroupVisibility,
+} from '~/work_items/board/grouping/visibility';
 
 describe('work_items/board/grouping/visibility', () => {
   const groupBy = { property: 'status' };
@@ -31,6 +36,37 @@ describe('work_items/board/grouping/visibility', () => {
 
       it('returns false for a value missing from the list', () => {
         expect(isGroupVisible(visibleGroups, groupBy, values[1])).toBe(false);
+      });
+    });
+  });
+
+  describe('exceedsGroupLimit', () => {
+    it.each`
+      groupCount | expected
+      ${0}       | ${false}
+      ${25}      | ${false}
+      ${26}      | ${true}
+    `('returns $expected for $groupCount groups', ({ groupCount, expected }) => {
+      expect(exceedsGroupLimit(groupCount)).toBe(expected);
+    });
+  });
+
+  describe('effectiveVisibleGroups', () => {
+    describe('when visibleGroups is null', () => {
+      it('stays null while the group count is within the limit', () => {
+        expect(effectiveVisibleGroups(null, 25)).toBeNull();
+      });
+
+      it('becomes an empty list once the group count passes the limit', () => {
+        expect(effectiveVisibleGroups(null, 26)).toEqual([]);
+      });
+    });
+
+    describe('when visibleGroups is an explicit list', () => {
+      it('returns the list unchanged whatever the group count', () => {
+        const visibleGroups = [groupId(values[0])];
+
+        expect(effectiveVisibleGroups(visibleGroups, 26)).toBe(visibleGroups);
       });
     });
   });

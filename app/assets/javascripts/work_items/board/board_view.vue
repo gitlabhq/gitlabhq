@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlToastMixin } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlLoadingIcon, GlToastMixin } from '@gitlab/ui';
 import { omit } from 'lodash-es';
 import { __, s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -28,7 +28,12 @@ import {
 } from '../utils';
 import updateBoardWorkItemMutation from './graphql/update_board_work_item.mutation.graphql';
 import { DEFAULT_GROUP_BY, groupingStrategyFor } from './grouping';
-import { SHOW_ALL_GROUPS, toggleGroupVisibility } from './grouping/visibility';
+import {
+  MAX_VISIBLE_GROUPS,
+  SHOW_ALL_GROUPS,
+  exceedsGroupLimit,
+  toggleGroupVisibility,
+} from './grouping/visibility';
 import { orderGroups, reorderGroupIds } from './grouping/ordering';
 import workItemsGroupByVisibleGroupsQuery from './grouping/graphql/client/visible_groups.query.graphql';
 import updateVisibleGroupsMutation from './grouping/graphql/client/update_visible_groups.mutation.graphql';
@@ -64,6 +69,8 @@ export default {
   CREATION_CONTEXT_BOARD,
   WORK_ITEM_CREATE_SOURCES,
   components: {
+    GlButton,
+    GlEmptyState,
     GlLoadingIcon,
     ColumnGroup,
     DraggableCompat,
@@ -81,6 +88,13 @@ export default {
     delayOnTouchOnly: true,
   },
   mixins: [glFeatureFlagMixin(), InternalEvents.mixin(), GlToastMixin],
+  i18n: {
+    groupSelectionTitle: s__('WorkItemBoard|Choose which groups to show'),
+    chooseGroups: s__('WorkItemBoard|Choose groups'),
+    groupSelectionPromptDescription: s__(
+      'WorkItemBoard|Boards show up to %{maxGroups} groups at a time, choose groups to build your board.',
+    ),
+  },
   props: {
     rootPageFullPath: {
       type: String,
@@ -143,6 +157,7 @@ export default {
     'reorder-groups',
     'hide-group',
     'work-item-created',
+    'open-group-by-settings',
   ],
   data() {
     return {
@@ -174,12 +189,33 @@ export default {
     isLoading() {
       return this.$apollo.queries.groupByValues.loading;
     },
-    // undefined (not null) omits the variable — Apollo treats null as a real value.
+    noGroupsSelected() {
+      return (
+        Array.isArray(this.workItemsGroupByVisibleGroups) &&
+        this.workItemsGroupByVisibleGroups.length === 0
+      );
+    },
+    // Returning undefined (not null) skips the ids variable, since Apollo treats null as a
+    // real filter. Skip it the same way when nothing's selected, so the fetch stays unfiltered
+    // and groupByValues still reports the true group count (see groupSelectionPromptDescription).
     idsToFetch() {
-      if (this.workItemsGroupByVisibleGroups === SHOW_ALL_GROUPS) return undefined;
+      if (this.workItemsGroupByVisibleGroups === SHOW_ALL_GROUPS || this.noGroupsSelected) {
+        return undefined;
+      }
       return this.workItemsGroupByVisibleGroups
         .map((groupId) => getGroupValueId({ groupBy: this.groupBy, groupId }))
         .filter((valueId) => valueId !== null);
+    },
+    tooManyGroups() {
+      return exceedsGroupLimit(this.groupByValues.length);
+    },
+    needsGroupSelection() {
+      return this.tooManyGroups || this.noGroupsSelected;
+    },
+    groupSelectionPromptDescription() {
+      return sprintf(this.$options.i18n.groupSelectionPromptDescription, {
+        maxGroups: MAX_VISIBLE_GROUPS,
+      });
     },
     columnQuery() {
       return boardColumnQuery(this.glFeatures);
@@ -236,7 +272,9 @@ export default {
     groupByValues() {
       return {
         query: this.strategy?.valuesQuery,
-        // Wait for hydration so the first fetch is already scoped, not fetch-then-refetch.
+        // Waits for hydration so the first fetch is already scoped, not fetch-then-refetch.
+        // It's safe to fetch everything when nothing's selected too, since columns don't
+        // render until a selection is made, so this can't render too many columns.
         skip() {
           return !this.strategy || !this.workItemsGroupByVisibleGroupsHydrated;
         },
@@ -751,6 +789,19 @@ export default {
     style="height: calc(100dvh - 220px - 2rem)"
   >
     <gl-loading-icon v-if="isLoading && groupByValues.length === 0" size="lg" class="gl-m-auto" />
+    <gl-empty-state
+      v-else-if="needsGroupSelection"
+      class="gl-m-auto"
+      :title="$options.i18n.groupSelectionTitle"
+      :description="groupSelectionPromptDescription"
+      data-testid="group-selection-prompt"
+    >
+      <template #actions>
+        <gl-button variant="confirm" @click="$emit('open-group-by-settings')">
+          {{ $options.i18n.chooseGroups }}
+        </gl-button>
+      </template>
+    </gl-empty-state>
     <draggable-compat
       v-else
       :value="renderedColumns"

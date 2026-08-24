@@ -1,6 +1,6 @@
 ---
-source_checksum: aa7fcd5a891ab119
-distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
+source_checksum: 4845cd0c10fbdae2
+distilled_at_sha: 829339e2e65aa85defcd3357097b75335668e334
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -180,6 +180,8 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 - DO NOT add availability details to tutorials, tier-comparison pages, `/development` pages, or `/solutions` pages.
 - DO NOT repeat tier, offering, or status in a subheading's badge when it matches the parent topic's badge.
 - Place history notes (`{{< history >}}` shortcode) after the details block and immediately after the heading; start each entry with `-` and link to the related issue, MR, or epic when possible.
+- Add a history entry only to the page for the feature that changed; DO NOT duplicate the entry on other pages.
+- When a feature changes from seat-based billing to usage-based billing with GitLab Credits, add a `Changed to usage-based billing` entry only to the feature's history; DO NOT add an entry to the GitLab Credits history.
 - Remove history items and inline version references that refer to unsupported GitLab versions (current major version and two previous major versions are supported); when a new major version is about to be released, create removal MRs in advance but merge them only during that milestone.
 - For tools released on their own schedule (e.g., editor extensions, CLI tools), include both the GitLab version and the tool version in history entries with a link to the tool's release page; nest tool version entries under the related instance history item when both change together, or use `during the GitLab X.Y release` phrasing when the change is tool-only.
 - For GitLab Duo features available with self-hosted models, use the `{{< collapsible title="Model information" >}}` shortcode; DO NOT state that a feature is unavailable on self-hosted models unless necessary, and if you must, use "Not available on GitLab Duo with self-hosted models" without a link.

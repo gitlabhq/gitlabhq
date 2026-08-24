@@ -16803,6 +16803,26 @@ CREATE SEQUENCE cd_environments_id_seq
 
 ALTER SEQUENCE cd_environments_id_seq OWNED BY cd_environments.id;
 
+CREATE TABLE cd_rollout_channel_tokens (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    rollout_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    channel_name text NOT NULL,
+    token jsonb NOT NULL,
+    CONSTRAINT check_c3804916de CHECK ((char_length(channel_name) <= 255))
+);
+
+CREATE SEQUENCE cd_rollout_channel_tokens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE cd_rollout_channel_tokens_id_seq OWNED BY cd_rollout_channel_tokens.id;
+
 CREATE TABLE cd_rollout_environments (
     id bigint NOT NULL,
     organization_id bigint NOT NULL,
@@ -16873,6 +16893,7 @@ CREATE TABLE cd_rollout_transitions (
     triggered_by text,
     principal text,
     on_behalf_of text,
+    rollout_step_id bigint,
     CONSTRAINT check_2d1ed89919 CHECK ((char_length(on_behalf_of) <= 255)),
     CONSTRAINT check_3707175af1 CHECK ((char_length(reason) <= 2000)),
     CONSTRAINT check_4e3a0df636 CHECK ((char_length(triggered_by) <= 255)),
@@ -36708,6 +36729,8 @@ ALTER TABLE ONLY cd_environment_driver_bindings ALTER COLUMN id SET DEFAULT next
 
 ALTER TABLE ONLY cd_environments ALTER COLUMN id SET DEFAULT nextval('cd_environments_id_seq'::regclass);
 
+ALTER TABLE ONLY cd_rollout_channel_tokens ALTER COLUMN id SET DEFAULT nextval('cd_rollout_channel_tokens_id_seq'::regclass);
+
 ALTER TABLE ONLY cd_rollout_environments ALTER COLUMN id SET DEFAULT nextval('cd_rollout_environments_id_seq'::regclass);
 
 ALTER TABLE ONLY cd_rollout_steps ALTER COLUMN id SET DEFAULT nextval('cd_rollout_steps_id_seq'::regclass);
@@ -39782,6 +39805,9 @@ ALTER TABLE ONLY cd_environment_driver_bindings
 
 ALTER TABLE ONLY cd_environments
     ADD CONSTRAINT cd_environments_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY cd_rollout_channel_tokens
+    ADD CONSTRAINT cd_rollout_channel_tokens_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY cd_rollout_environments
     ADD CONSTRAINT cd_rollout_environments_pkey PRIMARY KEY (id);
@@ -45618,6 +45644,8 @@ CREATE UNIQUE INDEX idx_namespace_settings_on_default_compliance_framework_id ON
 
 CREATE INDEX idx_namespace_settings_on_last_dormant_members_review_at ON namespace_settings USING btree (last_dormant_member_review_at) WHERE (remove_dormant_members = true);
 
+CREATE INDEX idx_namespace_settings_on_ns_id_where_ai_audit_storage_enabled ON namespace_settings USING btree (namespace_id) WHERE (ai_audit_events_storage_enabled = true);
+
 CREATE INDEX idx_namespace_state_propagations_on_namespace_id ON namespace_state_propagations USING btree (namespace_id);
 
 CREATE INDEX idx_namespace_state_propagations_on_status_created_at ON namespace_state_propagations USING btree (status, created_at);
@@ -45845,6 +45873,8 @@ CREATE INDEX idx_project_requirement_statuses_on_framework_id ON project_require
 CREATE INDEX idx_project_settings_on_duo_dep_bump_bc_enabled_by_id ON project_settings USING btree (duo_dependency_bump_breaking_changes_enabled_by_id);
 
 CREATE INDEX idx_project_settings_on_pep_bot_access_group_id ON project_settings USING btree (pipeline_execution_policy_bot_access_group_id);
+
+CREATE INDEX idx_project_settings_on_project_id_where_ai_audit_storage ON project_settings USING btree (project_id) WHERE (ai_audit_events_storage_enabled = true);
 
 CREATE UNIQUE INDEX idx_project_topic_uploads_on_id ON project_topic_uploads USING btree (id);
 
@@ -47038,6 +47068,10 @@ CREATE UNIQUE INDEX index_cd_env_driver_bindings_on_environment_id_and_version O
 
 CREATE INDEX index_cd_env_driver_bindings_on_organization_id ON cd_environment_driver_bindings USING btree (organization_id);
 
+CREATE INDEX index_cd_rollout_channel_tokens_on_organization_id ON cd_rollout_channel_tokens USING btree (organization_id);
+
+CREATE UNIQUE INDEX index_cd_rollout_channel_tokens_on_rollout_id_and_channel_name ON cd_rollout_channel_tokens USING btree (rollout_id, channel_name);
+
 CREATE INDEX index_cd_rollout_environments_on_driver_binding_id ON cd_rollout_environments USING btree (driver_binding_id);
 
 CREATE INDEX index_cd_rollout_environments_on_environment_id ON cd_rollout_environments USING btree (environment_id);
@@ -47057,6 +47091,8 @@ CREATE UNIQUE INDEX index_cd_rollout_steps_on_rollout_id_and_path ON cd_rollout_
 CREATE INDEX index_cd_rollout_transitions_on_organization_id ON cd_rollout_transitions USING btree (organization_id);
 
 CREATE INDEX index_cd_rollout_transitions_on_rollout_id_and_created_at ON cd_rollout_transitions USING btree (rollout_id, created_at);
+
+CREATE INDEX index_cd_rollout_transitions_on_rollout_step_id ON cd_rollout_transitions USING btree (rollout_step_id);
 
 CREATE INDEX index_cd_rollout_workflow_tokens_on_organization_id ON cd_rollout_workflow_tokens USING btree (organization_id);
 
@@ -58029,6 +58065,9 @@ ALTER TABLE ONLY approval_group_rules
 ALTER TABLE ONLY organization_detail_upload_states
     ADD CONSTRAINT fk_64983a3c33 FOREIGN KEY (organization_detail_upload_id) REFERENCES organization_detail_uploads(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cd_rollout_channel_tokens
+    ADD CONSTRAINT fk_64a3b62436 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ci_pipeline_chat_data
     ADD CONSTRAINT fk_64ebfab6b3_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -58632,6 +58671,9 @@ ALTER TABLE ONLY clusters_kubernetes_namespaces
 ALTER TABLE ONLY subscriptions
     ADD CONSTRAINT fk_933bdff476 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cd_rollout_channel_tokens
+    ADD CONSTRAINT fk_93c7b60be5 FOREIGN KEY (rollout_id) REFERENCES cd_rollouts(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY workspaces_agent_configs
     ADD CONSTRAINT fk_94660551c8 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
@@ -58790,6 +58832,9 @@ ALTER TABLE ONLY project_push_rules
 
 ALTER TABLE ONLY packages_rpm_metadata
     ADD CONSTRAINT fk_9f1814eb36 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY cd_rollout_transitions
+    ADD CONSTRAINT fk_9f7daf6476 FOREIGN KEY (rollout_step_id) REFERENCES cd_rollout_steps(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_9ffc86a3d9 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;

@@ -1,6 +1,6 @@
 ---
-source_checksum: 57e5080bbe7ec600
-distilled_at_sha: e2c2d99ca92022373f943f7b13d7697d7cffa9ce
+source_checksum: e7d1db38bb15c8fe
+distilled_at_sha: 829339e2e65aa85defcd3357097b75335668e334
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -32,6 +32,7 @@ distilled_at_sha: e2c2d99ca92022373f943f7b13d7697d7cffa9ce
 - Use domain-specific `reason:` symbols in `ServiceResponse.error` (e.g., `:job_not_retriable`, `:duplicate_package`); use Rails HTTP status symbols only for common failures like `:not_found` or `:forbidden`
 - Inherit from `BaseContainerService`, `BaseProjectService`, or `BaseGroupService` where appropriate
 - DO NOT put business logic that changes application state in objects that are not service classes (use finders or value objects for read-only operations)
+- Optionally include `Gitlab::Utils::Executable` to expose a class-level `execute` method when callers only need the result and not the service instance; the mixin is opt-in and `new` remains available for callers that need the instance itself
 
 ### Finders
 

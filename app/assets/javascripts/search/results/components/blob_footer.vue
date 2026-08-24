@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     toggleShowMore() {
-      eventHub.$emit('showMore', {
+      eventHub.$emit('show-more', {
         id: `${this.projectPath}:${this.filePath}`,
         state: (this.showMore = !this.showMore),
       });

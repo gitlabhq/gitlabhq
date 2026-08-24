@@ -6,7 +6,7 @@ import {
   GlSearchBoxByType,
   GlToggle,
 } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import {
   DEFAULT_GROUP_BY,
@@ -15,7 +15,10 @@ import {
   decorationIconStyle,
 } from '~/work_items/board/grouping';
 import {
+  MAX_VISIBLE_GROUPS,
   SHOW_ALL_GROUPS,
+  effectiveVisibleGroups,
+  exceedsGroupLimit,
   isGroupVisible as computeGroupVisible,
   toggleGroupVisibility as computeToggleGroupVisibility,
 } from '~/work_items/board/grouping/visibility';
@@ -87,6 +90,25 @@ export default {
     isLoading() {
       return this.$apollo.queries.groupByValues.loading;
     },
+    visibleGroups() {
+      return effectiveVisibleGroups(this.workItemsGroupByVisibleGroups, this.groupByValues.length);
+    },
+    shownCount() {
+      return this.visibleGroups === SHOW_ALL_GROUPS
+        ? this.groupByValues.length
+        : this.visibleGroups.length;
+    },
+    isAtGroupLimit() {
+      return this.shownCount >= MAX_VISIBLE_GROUPS;
+    },
+    showGroupLimitHint() {
+      return exceedsGroupLimit(this.groupByValues.length);
+    },
+    groupLimitHint() {
+      return sprintf(s__('WorkItems|Select up to %{maxGroups} groups.'), {
+        maxGroups: MAX_VISIBLE_GROUPS,
+      });
+    },
     groupByOptions() {
       return [{ text: this.strategy.label, value: this.strategy.property }];
     },
@@ -142,11 +164,11 @@ export default {
   },
   methods: {
     isGroupVisible(value) {
-      return computeGroupVisible(this.workItemsGroupByVisibleGroups, this.groupBy, value);
+      return computeGroupVisible(this.visibleGroups, this.groupBy, value);
     },
     async toggleGroupVisibility(value) {
       const next = computeToggleGroupVisibility({
-        visibleGroups: this.workItemsGroupByVisibleGroups,
+        visibleGroups: this.visibleGroups,
         groupBy: this.groupBy,
         value,
         allValues: this.groupByValues,
@@ -159,7 +181,7 @@ export default {
     },
     async hideAll() {
       // Everything is already hidden, so skip the redundant preference write.
-      if (this.workItemsGroupByVisibleGroups?.length === 0) return;
+      if (this.visibleGroups?.length === 0) return;
       await this.$apollo.mutate({
         mutation: updateVisibleGroupsMutation,
         variables: { visibleGroups: [] },
@@ -249,6 +271,13 @@ export default {
             {{ $options.i18n.hideAll }}
           </button>
         </div>
+        <p
+          v-if="showGroupLimitHint"
+          class="gl-mb-0 gl-mt-2 gl-text-sm gl-text-subtle"
+          data-testid="group-limit-hint"
+        >
+          {{ groupLimitHint }}
+        </p>
         <ul class="gl-m-0 gl-mt-2 gl-list-none gl-p-0" data-testid="group-by-values">
           <li
             v-for="row in decoratedGroupByValues"
@@ -258,6 +287,7 @@ export default {
             <gl-icon v-if="row.showIcon" :name="row.iconName" :style="row.iconStyle" />
             <gl-toggle
               :value="isGroupVisible(row.value)"
+              :disabled="isAtGroupLimit && !isGroupVisible(row.value)"
               :label="row.value.name"
               class="gl-w-full gl-justify-between"
               label-position="left"

@@ -60,6 +60,7 @@ cd_deployment_transitions: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 cd_deployments: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 cd_environment_driver_bindings: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 cd_environments: no_work_needed
+cd_rollout_channel_tokens: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 cd_rollout_environments: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 cd_rollout_steps: https://gitlab.com/gitlab-org/gitlab/-/work_items/616252
 cd_rollout_transitions: https://gitlab.com/gitlab-org/gitlab/-/issues/611968

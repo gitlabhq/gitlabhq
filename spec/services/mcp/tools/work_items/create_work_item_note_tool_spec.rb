@@ -124,7 +124,7 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemNoteTool, feature_category: 
 
       it 'raises ArgumentError' do
         expect { tool.build_variables }
-          .to raise_error(ArgumentError, 'Work item #99999 not found')
+          .to raise_error(ArgumentError, 'Work item #99999 not found or inaccessible')
       end
     end
 
@@ -138,9 +138,9 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemNoteTool, feature_category: 
         }
       end
 
-      it 'raises ArgumentError' do
+      it 'raises a uniform not-found error indistinguishable from a missing project' do
         expect { tool.build_variables }
-          .to raise_error(ArgumentError, /Access denied to project/)
+          .to raise_error(StandardError, /not found or inaccessible/)
       end
     end
   end
@@ -275,7 +275,7 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemNoteTool, feature_category: 
       let(:params) { { project_id: project.id.to_s, work_item_iid: 99999, body: 'Test' } }
 
       it 'raises error before executing GraphQL' do
-        expect { tool.execute }.to raise_error(ArgumentError, 'Work item #99999 not found')
+        expect { tool.execute }.to raise_error(ArgumentError, 'Work item #99999 not found or inaccessible')
       end
     end
 
@@ -284,8 +284,8 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemNoteTool, feature_category: 
       let_it_be(:private_work_item) { create(:work_item, :issue, project: private_project, iid: 1) }
       let(:params) { { project_id: private_project.id.to_s, work_item_iid: private_work_item.iid, body: 'Test' } }
 
-      it 'raises error before executing GraphQL' do
-        expect { tool.execute }.to raise_error(ArgumentError, /Access denied to project/)
+      it 'raises a uniform not-found error before executing GraphQL' do
+        expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
       end
     end
   end

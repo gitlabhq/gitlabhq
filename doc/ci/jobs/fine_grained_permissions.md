@@ -293,9 +293,10 @@ CI/CD job tokens can access the following REST API endpoints:
 | List all project issues | `GET /projects/:id/issues` | `READ_WORK_ITEMS` | Read |
 | Retrieve a project issue | `GET /projects/:id/issues/:issue_iid` | `READ_WORK_ITEMS` | Read |
 
-## Unavailable API endpoints
+## Endpoints without fine-grained permissions
 
-CI/CD job tokens cannot access the following endpoints:
+The following endpoints do not have fine-grained permissions. CI/CD job tokens can always access
+these endpoints, and the permissions on an allowlist entry do not restrict that access:
 
 | Permission | API endpoint |
 | ---------- | ------------ |
@@ -317,6 +318,7 @@ CI/CD job tokens cannot access the following endpoints:
 | Retrieve an authentication token | `GET /packages/conan/v1/users/authenticate` |
 | Verify authentication credentials | `GET /packages/conan/v1/users/check_credentials` |
 | NPM registry metadata endpoint | `GET /packages/npm/*package_name` |
+| Retrieve status of Dependency Firewall for a project | `GET /projects/:id/dependency_firewall/enablement` |
 | Search for a Conan package | `GET /projects/:id/packages/conan/v1/conans/search` |
 | Verify availability of a Conan repository | `GET /projects/:id/packages/conan/v1/ping` |
 | Retrieve an authentication token | `GET /projects/:id/packages/conan/v1/users/authenticate` |

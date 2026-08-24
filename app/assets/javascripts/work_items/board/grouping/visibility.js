@@ -3,9 +3,19 @@ import { getGroupId } from '../utils';
 // No visibility filter applied: every group shows.
 export const SHOW_ALL_GROUPS = null;
 
+// Each column runs its own query, so uncapped grouping means dozens of concurrent requests.
+export const MAX_VISIBLE_GROUPS = 25;
+
 // An unhydrated cache read gives `undefined`, so anything that isn't an
 // explicit list counts as unfiltered.
 const showAllGroups = (visibleGroups) => !Array.isArray(visibleGroups);
+
+export const exceedsGroupLimit = (groupCount) => groupCount > MAX_VISIBLE_GROUPS;
+
+// "Show all" only makes sense while there are few enough groups to show. Past the limit,
+// nothing shows until the user picks, so the board and the picker never disagree.
+export const effectiveVisibleGroups = (visibleGroups, totalGroupCount) =>
+  showAllGroups(visibleGroups) && exceedsGroupLimit(totalGroupCount) ? [] : visibleGroups;
 
 export const isGroupVisible = (visibleGroups, groupBy, value) =>
   showAllGroups(visibleGroups) || visibleGroups.includes(getGroupId({ groupBy, value }));

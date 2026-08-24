@@ -317,7 +317,8 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesTool, feature_category: :m
       let(:params) { { project_id: project.id.to_s, work_item_iid: non_existing_record_iid } }
 
       it 'raises error before executing GraphQL' do
-        expect { tool.execute }.to raise_error(ArgumentError, "Work item ##{non_existing_record_iid} not found")
+        expect { tool.execute }
+          .to raise_error(ArgumentError, "Work item ##{non_existing_record_iid} not found or inaccessible")
       end
     end
 
@@ -326,8 +327,8 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesTool, feature_category: :m
       let_it_be(:private_work_item) { create(:work_item, :issue, project: private_project, iid: 1) }
       let(:params) { { project_id: private_project.id.to_s, work_item_iid: private_work_item.iid } }
 
-      it 'raises error before executing GraphQL' do
-        expect { tool.execute }.to raise_error(ArgumentError, /Access denied to project/)
+      it 'raises a uniform not-found error before executing GraphQL' do
+        expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
       end
     end
   end

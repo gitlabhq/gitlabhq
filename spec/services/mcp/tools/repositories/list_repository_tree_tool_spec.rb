@@ -263,7 +263,7 @@ RSpec.describe Mcp::Tools::Repositories::ListRepositoryTreeTool, feature_categor
 
       context 'when the caller is not a member' do
         it 'uses the same wording as a missing project so existence cannot be inferred' do
-          expect { tool.execute }.to raise_error(::Gitlab::Access::AccessDeniedError, /not found or inaccessible/)
+          expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
         end
       end
 

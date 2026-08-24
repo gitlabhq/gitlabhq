@@ -1,0 +1,9 @@
+---
+name: agentic_analyzer_security_ingestion
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605465
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245055
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/606048
+milestone: '19.4'
+type: gitlab_com_derisk
+group: group::ai security
+default_enabled: false

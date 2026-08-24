@@ -67,8 +67,9 @@ CI/CD job tokens can access the following REST API endpoints:
 
 <%= allowed_endpoints[:categorized] %>
 
-## Unavailable API endpoints
+## Endpoints without fine-grained permissions
 
-CI/CD job tokens cannot access the following endpoints:
+The following endpoints do not have fine-grained permissions. CI/CD job tokens can always access
+these endpoints, and the permissions on an allowlist entry do not restrict that access:
 
 <%= allowed_endpoints[:unavailable] %>

@@ -95,7 +95,7 @@ module Mcp
 
         def resource_not_found_error
           ::Mcp::Tools::Base::Response.error(
-            'Project not found: it does not exist or you do not have access to it.'
+            'Project not found or inaccessible'
           )
         end
       end

@@ -794,17 +794,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           expect(pipeline).to be_persisted
           expect(build_names).to contain_exactly('changed-job')
         end
-
-        context 'when the :mr_changed_paths_net_diff feature flag is disabled' do
-          before do
-            stub_feature_flags(mr_changed_paths_net_diff: false)
-          end
-
-          it 'evaluates changes against the per-commit union, including reverted files' do
-            expect(pipeline).to be_persisted
-            expect(build_names).to contain_exactly('changed-job', 'revert-job')
-          end
-        end
       end
 
       context 'with paths and compare_to' do

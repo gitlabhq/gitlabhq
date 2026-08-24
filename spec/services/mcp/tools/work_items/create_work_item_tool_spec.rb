@@ -240,7 +240,7 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemTool, feature_category: :mcp
       let(:params) { { project_id: private_project.id.to_s, title: 'New item', type_name: 'Issue' } }
 
       it 'raises an error' do
-        expect { tool.execute }.to raise_error(ArgumentError, /Access denied to project/)
+        expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
       end
     end
   end

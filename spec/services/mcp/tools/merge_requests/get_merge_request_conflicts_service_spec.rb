@@ -488,11 +488,11 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestConflictsService, featu
         outsider_service.set_cred(current_user: outsider, access_token: oauth_token)
       end
 
-      it 'returns permission denied error' do
+      it 'returns a uniform not-found error indistinguishable from a missing project' do
         result = outsider_service.execute(params: { arguments: arguments })
 
         expect(result[:isError]).to be true
-        expect(result[:content].first[:text]).to include('does not have permission to read_merge_request')
+        expect(result[:content].first[:text]).to include('not found or inaccessible')
       end
     end
 

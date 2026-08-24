@@ -50,7 +50,8 @@ export default {
       return this.isLeftSide ? 'gl-text-right' : 'gl-text-left';
     },
     positionSideClass() {
-      return `position-${this.isLeftSide ? SIDES.right : SIDES.left}-0`;
+      // eslint-disable-next-line @gitlab/tailwind-no-interpolation
+      return `gl-${this.isLeftSide ? SIDES.right : SIDES.left}-0`;
     },
   },
 };

@@ -1058,6 +1058,52 @@ entry and paste the spreadsheet:
 
 ![Paste to Markdown table](img/markdown_paste_table_v12_7.png)
 
+### Sort tables
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239559) in GitLab 19.3 [with a feature flag](../administration/feature_flags/_index.md) named `markdown_sortable_table_columns`. Disabled by default. This feature is in [beta](../policy/development_stages_support.md).
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+In a rendered table, you can sort the rows by the values in a column.
+
+To sort a table:
+
+1. Select a column header.
+   The rows sort in ascending order, and an arrow in the header shows the sort direction.
+1. To sort in descending order, select the same column header again.
+
+To sort with a keyboard, move the focus to a column header and press <kbd>Enter</kbd> or
+<kbd>Space</kbd>.
+
+Sorting behavior:
+
+- Values sort alphabetically and are case-insensitive.
+- Numbers and dates sort as text, not by their numeric or chronological value.
+- Empty cells always sort to the bottom of the table, in both ascending and descending order.
+
+You can sort by only one column at a time.
+When you sort by a different column, the previous sort clears.
+To restore the original order of the rows, reload the page.
+
+Exclusions:
+
+- Tables with fewer than two rows of data or more than 1,000 rows.
+- [JSON tables](#json-tables).
+- Tables in the [rich text editor](rich_text_editor.md).
+
 ### JSON tables
 
 {{< history >}}

@@ -1,7 +1,7 @@
 ---
 name: gitlab-mcp-tool-builder
 description: "Build a new GraphQL-backed MCP server tool in gitlab-org/gitlab. Use when adding or scaffolding a GitLab Duo Agent Platform MCP tool that follows the app/services/mcp/tools/ *Tool + Graphql*Service pattern — covers GraphQL API discovery, the two-class-plus-registration build recipe, and gotchas. Keywords: MCP tool, MCP server, GraphQL tool, GitLab Duo Agent Platform."
-version: 1.6.2
+version: 1.7.0
 license: MIT
 compatibility: opencode
 metadata:
@@ -226,6 +226,16 @@ a convention (non-standard verb, second write tool on one resource).
   Ruby instead (in `resolve_*`, raising on zero-or-many), and keep the schema composition-free so
   the strictness guard survives. State the "exactly one of" rule once in the tool `description`,
   not in each property.
+- **`find_project!` / `find_group!` fold authorization in — "forbidden" and "missing" are indistinguishable.**
+  `ResourceFinder#find_project!` and `#find_group!` check `Ability.allowed?` after the DB lookup.
+  If the record is missing **or** the caller lacks the required ability, both raise the same
+  `"'<id>' not found or inaccessible"` `StandardError`. This is intentional: a distinct
+  `"Access denied"` message would let an authenticated caller enumerate private projects/groups
+  by comparing error strings. Do **not** add a separate authorization check after calling these
+  finders — the check is already inside them. If you need a non-default ability (e.g.
+  `:read_merge_request` instead of `:read_project`), pass it as `ability:`:
+  `find_project!(project_id, ability: :read_merge_request)`. The same uniform-error guarantee
+  applies regardless of which ability you pass.
 - **Don't hardcode a value list the schema already derives from a model.** GraphQL
   `enum`s are often generated from a model constant (e.g. `DuoWorkflowStatusGroup` is built
   from `Ai::DuoWorkflows::Workflow::GROUPED_STATUSES`). Derive your `input_schema` `enum`

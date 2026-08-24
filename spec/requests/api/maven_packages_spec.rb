@@ -367,7 +367,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         end
 
         context 'when package file has nil checksums' do
-          before do
+          before_all do
             # Simulate a package file with nil checksums (e.g., from incomplete upload or data corruption)
             package_file.update_columns(file_sha1: nil, file_md5: nil)
           end
@@ -695,7 +695,9 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       context 'with the duplicate packages in the two projects' do
         let_it_be(:recent_project) { create(:project, :private, namespace: group) }
 
-        let!(:package_dup) { create(:maven_package, project: recent_project, name: package.name, version: package.version) }
+        let_it_be(:package_dup) do
+          create(:maven_package, project: recent_project, name: package.name, version: package.version)
+        end
 
         before_all do
           group.add_guest(user)
@@ -718,13 +720,12 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
       context 'with a reporter from a subgroup accessing the root group' do
         let_it_be(:root_group) { create(:group, :private) }
-        let_it_be(:group) { create(:group, :private, parent: root_group) }
+        let_it_be(:group) { create(:group, :private, parent: root_group, reporters: user) }
 
         subject { download_file_with_token(file_name: package_file.file_name, request_headers: headers_with_token, group_id: root_group.id) }
 
         before_all do
           project.update!(namespace: group)
-          group.add_reporter(user)
         end
 
         it_behaves_like 'successfully returning the file'
@@ -766,11 +767,20 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       let_it_be(:project2) { create(:project, :private, group: sub_group2) }
       let_it_be(:project3) { create(:project, :private, group: sub_group1) }
       let_it_be(:package_name) { 'foo' }
-      let_it_be(:package1, freeze: false) { create(:maven_package, project: project1, name: package_name, version: nil) }
+      let_it_be(:package1, freeze: false) do
+        create(:maven_package, project: project1, name: package_name, version: nil)
+      end
+
       let_it_be(:package_file1) { create(:package_file, :xml, package: package1, file_name: 'maven-metadata.xml') }
-      let_it_be(:package2, freeze: false) { create(:maven_package, project: project2, name: package_name, version: nil) }
+      let_it_be(:package2, freeze: false) do
+        create(:maven_package, project: project2, name: package_name, version: nil)
+      end
+
       let_it_be(:package_file2) { create(:package_file, :xml, package: package2, file_name: 'maven-metadata.xml') }
-      let_it_be(:package3, freeze: false) { create(:maven_package, project: project3, name: package_name, version: nil) }
+      let_it_be(:package3, freeze: false) do
+        create(:maven_package, project: project3, name: package_name, version: nil)
+      end
+
       let_it_be(:package_file3) { create(:package_file, :xml, package: package3, file_name: 'maven-metadata.xml') }
 
       let(:maven_metadatum) { package3.maven_metadatum }
@@ -1380,7 +1390,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         let(:package_name) { package.name }
         let(:version) { package.version }
 
-        before do
+        before_all do
           package_settings.update!(maven_duplicates_allowed: false)
         end
 
@@ -1437,7 +1447,9 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         let(:file_upload) { fixture_file_upload('spec/fixtures/packages/maven/my-app-1.0-20180724.124855-1.pom.sha1') }
         let(:stored_sha1) { File.read(file_upload.path) }
 
-        let!(:sha1_package) { create(:maven_package, project: project, name: package_name, version: version) }
+        let!(:sha1_package) do
+          create(:maven_package, project: project, name: package_name, version: version)
+        end
 
         subject(:upload) { upload_file_with_token(params: params, file_extension: 'pom.sha1') }
 

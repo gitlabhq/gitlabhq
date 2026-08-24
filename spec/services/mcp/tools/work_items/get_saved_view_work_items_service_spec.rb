@@ -825,11 +825,11 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
         }
       end
 
-      it 'returns error response' do
+      it 'returns a uniform not-found error response' do
         result = service.execute(request: request, params: { arguments: params_arguments })
 
         expect(result[:isError]).to be(true)
-        expect(result[:content].first[:text]).to include('Access denied to group')
+        expect(result[:content].first[:text]).to include('not found or inaccessible')
       end
     end
 

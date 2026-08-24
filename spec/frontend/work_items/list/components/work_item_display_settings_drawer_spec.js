@@ -1,6 +1,11 @@
 import { GlDrawer, GlSegmentedControl } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { VIEW_MODE_LIST, VIEW_MODE_BOARD } from '~/work_items/constants';
+import {
+  DISPLAY_SETTINGS_PAGE_GROUP_BY,
+  DISPLAY_SETTINGS_PAGE_ROOT,
+  VIEW_MODE_LIST,
+  VIEW_MODE_BOARD,
+} from '~/work_items/constants';
 import WorkItemDisplaySettingsDrawer from '~/work_items/list/components/work_item_display_settings_drawer.vue';
 import WorkItemDisplaySettingsSort from '~/work_items/list/components/work_item_display_settings_sort.vue';
 import WorkItemDisplaySettingsMetadata from '~/work_items/list/components/work_item_display_settings_metadata.vue';
@@ -199,34 +204,57 @@ describe('WorkItemDisplaySettingsDrawer', () => {
       expect(findGroupByRow().text()).toContain('Status');
     });
 
-    it('navigates to the group by sub-page when the row is clicked', async () => {
-      createComponent({ props: { viewMode: VIEW_MODE_BOARD, fullPath: 'gitlab-org/gitlab' } });
+    it('emits page-change with groupBy when the row is clicked', async () => {
+      createComponent({ props: { viewMode: VIEW_MODE_BOARD } });
 
       await findGroupByRow().trigger('click');
 
-      expect(findTitle().text()).toBe('Group by');
-      expect(findGroupBy().props('fullPath')).toBe('gitlab-org/gitlab');
-      expect(findMetadata().exists()).toBe(false);
-      expect(findSort().exists()).toBe(false);
+      expect(wrapper.emitted('page-change')).toEqual([[DISPLAY_SETTINGS_PAGE_GROUP_BY]]);
     });
 
-    it('navigates back to the root page when the back button is clicked', async () => {
-      createComponent({ props: { viewMode: VIEW_MODE_BOARD } });
-      await findGroupByRow().trigger('click');
+    it('emits page-change with root when the back button is clicked', async () => {
+      createComponent({
+        props: { viewMode: VIEW_MODE_BOARD, page: DISPLAY_SETTINGS_PAGE_GROUP_BY },
+      });
 
       await findGroupByBackButton().vm.$emit('click');
 
-      expect(findTitle().text()).toBe('Display');
-      expect(findGroupBy().exists()).toBe(false);
+      expect(wrapper.emitted('page-change')).toEqual([[DISPLAY_SETTINGS_PAGE_ROOT]]);
     });
 
-    it('resets to the root page when the drawer closes', async () => {
-      createComponent({ props: { open: true, viewMode: VIEW_MODE_BOARD } });
-      await findGroupByRow().trigger('click');
+    describe('when the page prop is the group by page', () => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            viewMode: VIEW_MODE_BOARD,
+            fullPath: 'gitlab-org/gitlab',
+            page: DISPLAY_SETTINGS_PAGE_GROUP_BY,
+          },
+        });
+      });
 
-      await wrapper.setProps({ open: false });
+      it('renders the group by sub-page', () => {
+        expect(findTitle().text()).toBe('Group by');
+        expect(findGroupBy().props('fullPath')).toBe('gitlab-org/gitlab');
+        expect(findMetadata().exists()).toBe(false);
+        expect(findSort().exists()).toBe(false);
+      });
+    });
+
+    it('renders whichever page the page prop changes to, since the parent owns it', async () => {
+      createComponent({ props: { open: true, viewMode: VIEW_MODE_BOARD } });
 
       expect(findTitle().text()).toBe('Display');
+
+      await wrapper.setProps({ page: DISPLAY_SETTINGS_PAGE_GROUP_BY });
+
+      expect(findTitle().text()).toBe('Group by');
+      expect(findGroupBy().exists()).toBe(true);
+
+      await wrapper.setProps({ page: DISPLAY_SETTINGS_PAGE_ROOT });
+
+      expect(findTitle().text()).toBe('Display');
+      expect(findGroupBy().exists()).toBe(false);
     });
   });
 });

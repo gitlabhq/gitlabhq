@@ -13,6 +13,12 @@ Holds the **operation reference** and the **variable mapping**. Subclass of
   (This is what !240899 landed; the old "re-include Constants" step is gone.)
 - `include Mcp::Tools::Concerns::ResourceFinder` — when you resolve a
   project/group from a path/id (most tools do; gives `find_project!` and `find_group!`).
+  Both finders fold authorization into the lookup: if the record is missing **or** the
+  caller lacks the required ability, they raise the same `"'<id>' not found or inaccessible"`
+  `StandardError`. This prevents callers from enumerating private resources by comparing
+  error strings. Do **not** add a separate authorization check after calling these finders.
+  Pass a non-default ability with the `ability:` keyword if needed (e.g.
+  `find_project!(id, ability: :read_merge_request)`).
 - **URL parsing — two patterns depending on what the `url` points at:**
   - **Specific-resource URL** (e.g. a MR URL like `.../merge_requests/42`): use
     `::MergeRequest.link_reference_pattern.match(url)` directly — extracts `namespace`,

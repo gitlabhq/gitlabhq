@@ -344,6 +344,30 @@ module Gitlab
         stub_for(:autoflow).start_workflow(request, metadata: metadata)
       end
 
+      # Sends a message to a running AutoFlow workflow's channel on GitLab Relay.
+      #
+      # Fire-and-forget: a successful return means the message was accepted, not that the
+      # workflow has processed it -- the workflow only observes it on its next replay round.
+      #
+      # @param idempotency_key [String] caller-chosen key that deduplicates the submission;
+      #   retries must reuse the same key verbatim.
+      # @param channel_token [String] token identifying the target channel, taken from
+      #   `PostValueBody.channel_tokens`.
+      # @param value [Object] the decision payload, converted via {Autoflow::ValueConverter}.
+      #   Must not be a channel value; that invariant is enforced server-side, not here.
+      # @raise [GRPC::InvalidArgument] if the token is malformed, expired, or the wrong kind.
+      # @raise [GRPC::NotFound] if the workflow no longer exists.
+      # @return [Gitlab::Agent::AutoFlow::Rpc::SendToWorkflowChannelResponse]
+      def send_to_workflow_channel(idempotency_key:, channel_token:, value:)
+        request = Gitlab::Agent::AutoFlow::Rpc::SendToWorkflowChannelRequest.new(
+          idempotency_key: idempotency_key,
+          channel_token: channel_token,
+          value: Autoflow::ValueConverter.to_value(value)
+        )
+
+        stub_for(:autoflow).send_to_workflow_channel(request, metadata: metadata)
+      end
+
       private
 
       # Opens a single Subscribe stream and yields each received CloudEvent to the block, acking the

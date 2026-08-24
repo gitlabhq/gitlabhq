@@ -1,0 +1,13 @@
+---
+table_name: cd_rollout_channel_tokens
+classes:
+- Cd::RolloutChannelToken
+feature_categories:
+- continuous_delivery
+description: Persists a rollout's AutoFlow channel token, for pushing a human decision back into that channel later
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250854
+milestone: '19.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

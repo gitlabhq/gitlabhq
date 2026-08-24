@@ -175,7 +175,7 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
 
       it 'raises ArgumentError' do
         expect { tool.build_variables }
-          .to raise_error(ArgumentError, "Work item ##{non_existing_record_iid} not found")
+          .to raise_error(ArgumentError, "Work item ##{non_existing_record_iid} not found or inaccessible")
       end
     end
 
@@ -189,9 +189,9 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
         }
       end
 
-      it 'raises ArgumentError' do
+      it 'raises a uniform not-found error indistinguishable from a missing project' do
         expect { tool.build_variables }
-          .to raise_error(ArgumentError, /Access denied to project/)
+          .to raise_error(StandardError, /not found or inaccessible/)
       end
     end
   end
@@ -236,7 +236,8 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
       end
 
       it 'raises error before executing GraphQL' do
-        expect { tool.execute }.to raise_error(ArgumentError, "Work item ##{non_existing_record_iid} not found")
+        expect { tool.execute }
+          .to raise_error(ArgumentError, "Work item ##{non_existing_record_iid} not found or inaccessible")
       end
     end
 
@@ -250,8 +251,8 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
         }
       end
 
-      it 'raises error before executing GraphQL' do
-        expect { tool.execute }.to raise_error(ArgumentError, /Access denied to project/)
+      it 'raises a uniform not-found error before executing GraphQL' do
+        expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
       end
     end
   end

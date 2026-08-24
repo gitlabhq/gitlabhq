@@ -176,6 +176,8 @@ import {
   VIEW_CONTEXT,
   VIEW_MODE_LIST,
   VIEW_MODE_BOARD,
+  DISPLAY_SETTINGS_PAGE_ROOT,
+  DISPLAY_SETTINGS_PAGE_GROUP_BY,
 } from '../constants';
 
 const ListView = () => import('ee_else_ce/work_items/list/list_view.vue');
@@ -331,6 +333,7 @@ export default {
       currentWorkItemsCount: 0,
       currentWorkItemIds: [],
       isDisplayDrawerOpen: false,
+      displayDrawerPage: DISPLAY_SETTINGS_PAGE_ROOT,
       drawerTopOffset: '0px',
       boardUpdatedItem: null,
     };
@@ -1330,7 +1333,16 @@ export default {
       this.isStickyHeaderVisible = isVisible;
     },
     toggleDisplayDrawer() {
+      this.displayDrawerPage = DISPLAY_SETTINGS_PAGE_ROOT;
       this.isDisplayDrawerOpen = !this.isDisplayDrawerOpen;
+    },
+    openGroupByDisplaySettings() {
+      this.displayDrawerPage = DISPLAY_SETTINGS_PAGE_GROUP_BY;
+      this.isDisplayDrawerOpen = true;
+    },
+    closeDisplayDrawer() {
+      this.isDisplayDrawerOpen = false;
+      this.displayDrawerPage = DISPLAY_SETTINGS_PAGE_ROOT;
     },
     updateDrawerTopOffset() {
       // Keep the drawer in its original position on mobile
@@ -2421,9 +2433,11 @@ export default {
       @reorder-groups="handleReorderGroups"
       @hide-group="handleHideGroup"
       @work-item-created="handleBoardWorkItemCreated"
+      @open-group-by-settings="openGroupByDisplaySettings"
     />
     <work-item-display-settings-drawer
       :open="isDisplayDrawerOpen"
+      :page="displayDrawerPage"
       :header-height="drawerTopOffset"
       :view-mode="viewMode"
       :sort-options="drawerSortOptions"
@@ -2434,7 +2448,8 @@ export default {
       :is-service-desk-list="isServiceDeskList"
       :is-saved-view="isSavedView"
       :work-item-type-id="workItemTypeId"
-      @close="isDisplayDrawerOpen = false"
+      @close="closeDisplayDrawer"
+      @page-change="displayDrawerPage = $event"
       @sort="handleSort"
       @update-settings="handleLocalDisplayPreferencesUpdate"
       @toggle-view-mode="handleToggleViewMode"

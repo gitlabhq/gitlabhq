@@ -78,9 +78,7 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
         expect(processed[:isError]).to be(true)
         expect(processed[:content]).to be_an(Array)
         expect(processed[:content].first[:text]).to include(
-          'Project not found',
-          project.full_path,
-          'does not exist or you do not have access to it'
+          "Project '#{project.full_path}' not found or inaccessible"
         )
       end
     end
@@ -176,8 +174,7 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
 
         expect(error[:isError]).to be(true)
         expect(error[:content].first[:text]).to eq(
-          "Project not found: the provided project path " \
-            "\"#{project.full_path}\" does not exist or you do not have access to it."
+          "Project '#{project.full_path}' not found or inaccessible"
         )
       end
     end
@@ -190,8 +187,7 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
 
         expect(error[:isError]).to be(true)
         expect(error[:content].first[:text]).to eq(
-          "Group not found: the provided group path " \
-            "\"#{group.full_path}\" does not exist or you do not have access to it."
+          "Group '#{group.full_path}' not found or inaccessible"
         )
       end
     end
@@ -232,9 +228,7 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include(
-          'Project not found',
-          'non_existing_project',
-          'does not exist or you do not have access to it'
+          "Project 'non_existing_project' not found or inaccessible"
         )
       end
     end
@@ -277,9 +271,7 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
 
           expect(result[:isError]).to be(true)
           expect(result[:content].first[:text]).to include(
-            'Group not found',
-            'non_existing_group',
-            'does not exist or you do not have access to it'
+            "Group 'non_existing_group' not found or inaccessible"
           )
         end
       end

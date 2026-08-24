@@ -14,7 +14,6 @@ RSpec.describe Todos::AllowedTargetFilterService, feature_category: :team_planni
   let_it_be(:authorized_issue) { create(:issue, project: authorized_project) }
   let_it_be(:authorized_issue_todo) { create(:todo, project: authorized_project, target: authorized_issue, user: user) }
   let_it_be(:authorized_note) { create(:note, noteable: authorized_issue, project: authorized_project) }
-  let_it_be(:authorized_note_todo) { create(:todo, project: authorized_project, target: authorized_issue, note: authorized_note, user: user) }
   let_it_be(:confidential_issue) { create(:issue, :confidential, project: authorized_project) }
   let_it_be(:confidential_issue_todo) { create(:todo, project: authorized_project, target: confidential_issue, user: user) }
   let_it_be(:confidential_note) { create(:note, :confidential, noteable: confidential_issue, project: authorized_project) }

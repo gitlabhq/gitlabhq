@@ -91,7 +91,7 @@ RSpec.describe Mcp::Tools::Jobs::GetJobService, feature_category: :mcp_server do
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include(
-          'Job not found: it does not exist or you do not have access to it.'
+          'Job not found or inaccessible'
         )
       end
     end
@@ -135,7 +135,7 @@ RSpec.describe Mcp::Tools::Jobs::GetJobService, feature_category: :mcp_server do
 
           expect(result[:isError]).to be(true)
           expect(result[:content].first[:text]).to include(
-            'Job not found: it does not exist or you do not have access to it.'
+            'Job not found or inaccessible'
           )
         end
       end

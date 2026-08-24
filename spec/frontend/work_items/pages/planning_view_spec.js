@@ -3103,6 +3103,38 @@ describe('planning-view', () => {
         expect(findBoardView().props('preselectedWorkItemType')).toBe('Issue');
       });
 
+      describe('when the board asks for the group by settings', () => {
+        beforeEach(async () => {
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+
+          findBoardView().vm.$emit('open-group-by-settings');
+          await nextTick();
+        });
+
+        it('opens the drawer on the group by page', () => {
+          expect(findDisplaySettingsDrawer().props('open')).toBe(true);
+          expect(findDisplaySettingsDrawer().props('page')).toBe('groupBy');
+        });
+
+        it('goes back to the root page the next time the Display button is used', async () => {
+          findDisplaySettingsButton().vm.$emit('click');
+          await nextTick();
+
+          expect(findDisplaySettingsDrawer().props('page')).toBe('root');
+        });
+
+        it('re-opens the group by page after the drawer navigates itself back to root', async () => {
+          findDisplaySettingsDrawer().vm.$emit('page-change', 'root');
+          await nextTick();
+
+          findBoardView().vm.$emit('open-group-by-settings');
+          await nextTick();
+
+          expect(findDisplaySettingsDrawer().props('page')).toBe('groupBy');
+        });
+      });
+
       describe('when board card is selected', () => {
         it('opens the detail panel and marks the card active', async () => {
           const payload = { id: 'gid://gitlab/WorkItem/1', iid: '1' };
@@ -3436,14 +3468,14 @@ describe('planning-view', () => {
           expect(findBoardView().props('collapsedGroups')).toEqual([collapsedId]);
         });
 
-        describe('when visible groups are persisted', () => {
+        describe('when a visible groups preference exists', () => {
           beforeEach(async () => {
             await mountAllItemsBoard({
               mockPreferencesHandler: preferencesHandlerWith({ visibleGroups: [collapsedId] }),
             });
           });
 
-          it('hydrates the local visible-groups cache with them', () => {
+          it('hydrates the local visible-groups cache with the persisted selection', () => {
             expect(readVisibleGroups()).toEqual({
               workItemsGroupByVisibleGroups: [collapsedId],
               workItemsGroupByVisibleGroupsHydrated: true,

@@ -53,6 +53,7 @@ The following API resources are available in the project context:
 | [Debian distributions](packages/debian_project_distributions.md)               | `/projects/:id/debian_distributions` (also available for groups) |
 | [Debian packages](packages/debian.md)                                          | `/projects/:id/packages/debian` (also available for groups) |
 | [Dependencies](dependencies.md)                                                | `/projects/:id/dependencies` |
+| [Dependency Firewall](dependency_firewall.md)                                  | `/projects/:id/dependency_firewall` |
 | [Deploy keys](deploy_keys.md)                                                  | `/projects/:id/deploy_keys` (also available standalone) |
 | [Deploy tokens](deploy_tokens.md)                                              | `/projects/:id/deploy_tokens` (also available for groups and standalone) |
 | [Deployments](deployments.md)                                                  | `/projects/:id/deployments` |

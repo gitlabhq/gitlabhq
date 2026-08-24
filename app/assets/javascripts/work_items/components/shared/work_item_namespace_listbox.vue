@@ -19,7 +19,7 @@ export default {
   },
   model: {
     prop: 'selectedNamespacePath',
-    event: 'selectNamespace',
+    event: 'select-namespace',
   },
   props: {
     fullPath: {
@@ -55,7 +55,7 @@ export default {
       default: undefined,
     },
   },
-  emits: ['error', 'selectNamespace'],
+  emits: ['error', 'select-namespace'],
   data() {
     return {
       projects: [],
@@ -266,7 +266,7 @@ export default {
       const selectedNamespace = this.namespaceCache.find(
         (namespace) => namespace.fullPath === namespacePath,
       );
-      this.$emit('selectNamespace', namespacePath, selectedNamespace);
+      this.$emit('select-namespace', namespacePath, selectedNamespace);
     },
     async handleDropdownShow() {
       this.searchKey = '';

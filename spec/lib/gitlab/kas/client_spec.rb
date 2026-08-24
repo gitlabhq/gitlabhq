@@ -136,6 +136,50 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
       end
     end
 
+    describe '#send_to_workflow_channel' do
+      let(:stub) { instance_double(Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub) }
+      let(:response) { instance_double(Gitlab::Agent::AutoFlow::Rpc::SendToWorkflowChannelResponse) }
+
+      subject(:result) do
+        client.send_to_workflow_channel(
+          idempotency_key: 'decision-1',
+          channel_token: 'channel-token-abc',
+          value: { 'approved' => true }
+        )
+      end
+
+      before do
+        expect(Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
+          .and_return(stub)
+      end
+
+      it 'builds the request from plain arguments and returns the response' do
+        expect(stub).to receive(:send_to_workflow_channel) do |request, metadata:|
+          expect(metadata).to eq('authorization' => 'bearer test-token', **feature_flags)
+          expect(request.idempotency_key).to eq('decision-1')
+          expect(request.channel_token).to eq('channel-token-abc')
+
+          key_value = request.value.dict_value.key_values.first
+          expect(key_value.key.string_value).to eq('approved')
+          expect(key_value.val.bool_value).to be(true)
+
+          response
+        end
+
+        expect(result).to eq(response)
+      end
+
+      it 'propagates a permanent gRPC error from the stub' do
+        error = GRPC::InvalidArgument.new('bad channel token')
+
+        expect(stub).to receive(:send_to_workflow_channel).and_raise(error)
+
+        expect { result }.to raise_error(GRPC::InvalidArgument)
+        expect(client.send(:classify_grpc_error, error)).to eq(:raise)
+      end
+    end
+
     describe '#get_connected_agentks_by_agent_ids' do
       let(:stub) { instance_double(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub) }
       let(:request) { instance_double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentksByAgentIDsRequest) }

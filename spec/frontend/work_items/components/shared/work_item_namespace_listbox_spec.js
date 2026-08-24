@@ -123,7 +123,7 @@ describe('WorkItemNamespaceListbox', () => {
     await findDropdownItemFor(namespaceProjectsData[0].fullPath).trigger('click');
     await nextTick();
 
-    const emitted = wrapper.emitted('selectNamespace');
+    const emitted = wrapper.emitted('select-namespace');
 
     expect(emitted[0][0]).toBe(namespaceProjectsData[0].fullPath);
     expect(emitted[0][1]).toEqual(
@@ -154,7 +154,7 @@ describe('WorkItemNamespaceListbox', () => {
     await findRecentDropdownItemAt(1).trigger('click');
     await nextTick();
 
-    const emitted = wrapper.emitted('selectNamespace');
+    const emitted = wrapper.emitted('select-namespace');
     expect(emitted[0][0]).toBe(namespaceProjectsData[0].fullPath);
   });
 

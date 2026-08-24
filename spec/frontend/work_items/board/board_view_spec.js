@@ -43,6 +43,7 @@ describe('BoardView', () => {
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findColumnGroups = () => wrapper.findAllComponents(ColumnGroup);
+  const findGroupSelectionPrompt = () => wrapper.findComponentByTestId('group-selection-prompt');
 
   let apolloProvider;
 
@@ -248,6 +249,26 @@ describe('BoardView', () => {
           fullPath: 'full/path',
           ids: ['1', '2'],
         });
+      });
+    });
+
+    describe('when no group is visible', () => {
+      beforeEach(async () => {
+        createComponent({ visibleGroups: [] });
+        await waitForPromises();
+      });
+
+      it('still fetches the group values, unscoped, to learn the true total', () => {
+        expect(groupByValuesHandler).toHaveBeenCalledWith({
+          fullPath: 'full/path',
+          ids: undefined,
+        });
+      });
+
+      it('asks the user to choose groups', () => {
+        expect(findGroupSelectionPrompt().props('description')).toBe(
+          'Boards show up to 25 groups at a time, choose groups to build your board.',
+        );
       });
     });
   });

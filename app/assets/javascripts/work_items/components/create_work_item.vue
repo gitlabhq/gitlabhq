@@ -400,7 +400,7 @@ export default {
     isNamespaceTypeGroup() {
       // When user selects a namespace from the Namespace selector dropdown,
       // selectedNamespaceObject is set to the full namespace object within
-      // handleNamespaceSelect called via the dropdown's `selectNamespace`
+      // handleNamespaceSelect called via the dropdown's `select-namespace`
       // event.
       // We check __typename === 'Group' to reliably identify groups
       // as there's no other field that can represent a group correctly.
@@ -1274,7 +1274,7 @@ export default {
                 :limit-to-current-namespace="!allowAnyNamespace"
                 :projects-only="allowProjectsOnly"
                 toggle-id="create-work-item-namespace"
-                @selectNamespace="handleNamespaceSelect"
+                @select-namespace="handleNamespaceSelect"
               />
             </gl-form-group>
           </template>

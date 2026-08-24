@@ -887,7 +887,8 @@ lib/gitlab/checks/
 /doc/administration/consul.md @axil @eread
 /doc/administration/credentials_inventory.md @idurham
 /doc/administration/dedicated/ @lyspin
-/doc/administration/diff_limits.md @brendan777
+/doc/administration/dedicated/configure_instance/dedicated_self_hosted_models.md @ashrafkhamis
+/doc/administration/diff_limits.md @uchandran
 /doc/administration/docs_self_host.md @axil @eread
 /doc/administration/dormant_project_deletion.md @z_painter
 /doc/administration/duo_add_on_seat_management_with_ldap.md @lciutacu
@@ -937,7 +938,7 @@ lib/gitlab/checks/
 /doc/administration/polling.md @axil @eread
 /doc/administration/project_templates.md @brendan777
 /doc/administration/raketasks/ @axil @eread
-/doc/administration/raketasks/ai_catalog.md @fneill
+/doc/administration/raketasks/import_export_rake_tasks_troubleshooting.md @eread
 /doc/administration/raketasks/keep_around.md @eread
 /doc/administration/raketasks/ldap.md @idurham
 /doc/administration/raketasks/praefect.md @eread
@@ -954,30 +955,20 @@ lib/gitlab/checks/
 /doc/administration/restart_gitlab.md @axil @eread
 /doc/administration/review_abuse_reports.md @idurham
 /doc/administration/review_spam_logs.md @idurham
-/doc/administration/secrets_manager/ @marcel.amirault
 /doc/administration/semantic_code_search.md @ashrafkhamis
 /doc/administration/server_hooks.md @eread
 /doc/administration/settings/account_and_limit_settings.md @brendan777
 /doc/administration/settings/continuous_integration.md @lyspin
-/doc/administration/settings/deprecated_api_rate_limits.md @brendan777
 /doc/administration/settings/editor_extensions.md @jglassman1
 /doc/administration/settings/external_authorization.md @idurham
-/doc/administration/settings/files_api_rate_limits.md @brendan777
-/doc/administration/settings/git_http_rate_limits.md @brendan777
-/doc/administration/settings/git_lfs_rate_limits.md @brendan777
 /doc/administration/settings/gitaly_timeouts.md @eread
 /doc/administration/settings/import_and_export_settings.md @eread
 /doc/administration/settings/import_export_rate_limits.md @eread
 /doc/administration/settings/instance_template_repository.md @brendan777
-/doc/administration/settings/package_registry_rate_limits.md @z_painter
 /doc/administration/settings/push_event_activities_limit.md @brendan777
-/doc/administration/settings/rate_limit_on_groups_api.md @z_painter
-/doc/administration/settings/rate_limit_on_organizations_api.md @z_painter
-/doc/administration/settings/rate_limit_on_projects_api.md @z_painter
-/doc/administration/settings/rate_limit_on_users_api.md @idurham
-/doc/administration/settings/rate_limits_on_git_ssh_operations.md @brendan777
+/doc/administration/settings/rate-limit-on-webhook-operations.md @eread
 /doc/administration/settings/scim_setup.md @lciutacu
-/doc/administration/settings/sidekiq_job_limits.md @axil
+/doc/administration/settings/sidekiq.md @axil
 /doc/administration/settings/sign_in_restrictions.md @idurham
 /doc/administration/settings/sign_up_restrictions.md @idurham
 /doc/administration/settings/terraform_state_settings.md @rsarangadharan
@@ -1015,6 +1006,7 @@ lib/gitlab/checks/
 /doc/api/container_registry_protection_tag_rules.md @z_painter
 /doc/api/container_repository_protection_rules.md @z_painter
 /doc/api/container_virtual_registries.md @z_painter
+/doc/api/custom_attributes.md @idurham
 /doc/api/dependency_proxy.md @z_painter
 /doc/api/deploy_keys.md @rsarangadharan
 /doc/api/deploy_tokens.md @rsarangadharan
@@ -1121,6 +1113,7 @@ lib/gitlab/checks/
 /doc/api/scim.md @lciutacu
 /doc/api/search.md @ashrafkhamis
 /doc/api/search_admin.md @ashrafkhamis
+/doc/api/secrets_manager.md @marcel.amirault
 /doc/api/secure_files.md @marcel.amirault
 /doc/api/service_accounts.md @idurham
 /doc/api/settings.md @idurham
@@ -1196,7 +1189,6 @@ lib/gitlab/checks/
 /doc/development/advanced_search/ @gitlab-org/search-team/maintainers/advanced-framework
 /doc/development/agent_principles/ @gitlab-org/ai-powered
 /doc/development/ai_features/ @gitlab-org/ai-powered
-/doc/development/application_limits.md @gitlab-org/distribution
 /doc/development/application_slis/ @gitlab-org/search-team/maintainers/advanced-framework
 /doc/development/audit_event_guide/ @gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team @gitlab-org/govern/threat-insights-backend-team
 /doc/development/authentication.md @gitlab-org/software-supply-chain-security/authentication/approvers
@@ -1224,6 +1216,7 @@ lib/gitlab/checks/
 /doc/development/integrations/jenkins.md @gitlab-org/maintainers/cicd-verify
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
 /doc/development/logging.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/namespaces_state_propagation.md @abdwdd @alexpooley
 /doc/development/navigation_sidebar.md @gitlab-org/growth
 /doc/development/observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/omnibus.md @gitlab-org/distribution
@@ -1256,6 +1249,11 @@ lib/gitlab/checks/
 /doc/integration/zoekt/ @ashrafkhamis
 /doc/operations/ @rsarangadharan
 /doc/policy/ @axil @eread
+/doc/rate_limits/ @brendan777
+/doc/rate_limits/api/ @z_painter
+/doc/rate_limits/api/deprecated.md @brendan777
+/doc/rate_limits/api/repository-files.md @brendan777
+/doc/rate_limits/api/users.md @idurham
 /doc/security/ @idurham
 /doc/security/dedicated_for_government_secure_config_guide.md @lyspin
 /doc/security/dedicated_for_government_shared_responsibility_model.md @lyspin
@@ -1302,17 +1300,12 @@ lib/gitlab/checks/
 /doc/user/custom_roles/ @idurham
 /doc/user/discussions/ @uchandran
 /doc/user/duo_agent_platform/ @fneill
-/doc/user/duo_agent_platform/agents/foundational_agents/support_assistant.md @jglassman1
 /doc/user/duo_agent_platform/code_suggestions/ @uchandran
-/doc/user/duo_agent_platform/context.md @ashrafkhamis
-/doc/user/duo_agent_platform/customize/ @jglassman1
 /doc/user/duo_agent_platform/customize/review_instructions.md @uchandran
 /doc/user/duo_agent_platform/flows/claude-edit-v1-flow-registry.md @jglassman1
-/doc/user/duo_agent_platform/flows/custom_flows_schema.md @jglassman1
-/doc/user/duo_agent_platform/flows/foundational_flows/code_review.md @uchandran
+/doc/user/duo_agent_platform/flows/foundational_flows/code_review/ @uchandran
 /doc/user/duo_agent_platform/flows/foundational_flows/fix_pipeline.md @lyspin
 /doc/user/duo_agent_platform/model_selection.md @ashrafkhamis
-/doc/user/duo_agent_platform/onboarding.md @uchandran
 /doc/user/duo_agent_platform/turn_on_off.md @ashrafkhamis
 /doc/user/duo_amazon_q/ @ashrafkhamis
 /doc/user/enterprise_user/ @idurham
@@ -1322,10 +1315,10 @@ lib/gitlab/checks/
 /doc/user/get_started/get_started_managing_infrastructure.md @rsarangadharan
 /doc/user/get_started/get_started_projects.md @z_painter
 /doc/user/get_started/get_started_runner.md @rsarangadharan
-/doc/user/get_started/getting_started_gitlab_duo.md @ashrafkhamis
 /doc/user/gitlab_duo/ @ashrafkhamis
 /doc/user/gitlab_duo/code_review.md @uchandran
 /doc/user/gitlab_duo/customize_duo/ @uchandran
+/doc/user/gitlab_duo/feature_summary.md @uchandran
 /doc/user/gitlab_duo/model_context_protocol/ @fneill
 /doc/user/gitlab_duo/tutorials/ @gl-docsteam
 /doc/user/gitlab_duo_chat/ @jglassman1
@@ -1353,8 +1346,10 @@ lib/gitlab/checks/
 /doc/user/infrastructure/ @rsarangadharan
 /doc/user/infrastructure/clusters/manage/management_project_applications/ @rsarangadharan
 /doc/user/markdown.md @brendan777
+/doc/user/model_context_protocol/ @fneill
 /doc/user/namespace/ @z_painter
 /doc/user/operations_dashboard/ @rsarangadharan
+/doc/user/org_mode.md @brendan777
 /doc/user/organization/ @z_painter
 /doc/user/packages/ @z_painter
 /doc/user/permissions.md @idurham

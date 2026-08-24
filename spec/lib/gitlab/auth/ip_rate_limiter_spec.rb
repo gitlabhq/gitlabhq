@@ -15,6 +15,10 @@ RSpec.describe Gitlab::Auth::IpRateLimiter, :use_clean_rails_memory_store_cachin
     }
   end
 
+  # Both keys are written by Rack::Attack::Cache through Gitlab::RackAttack::Store.
+  # The counter is bucketed by wall-clock window, the ban is not.
+  let(:ban_key) { "cache:gitlab:rack::attack:allow2ban:ban:#{ip}" }
+
   subject(:rate_limiter) { described_class.new(ip) }
 
   before do
@@ -28,13 +32,47 @@ RSpec.describe Gitlab::Auth::IpRateLimiter, :use_clean_rails_memory_store_cachin
     rate_limiter.reset!
   end
 
+  def count_key
+    window = Time.now.to_i / options[:findtime].to_i
+    "cache:gitlab:rack::attack:#{window}:allow2ban:count:#{ip}"
+  end
+
+  def redis_ttl(key)
+    Gitlab::Redis::RateLimiting.with { |redis| redis.ttl(key) }
+  end
+
   describe '#register_fail!' do
-    it 'bans after 3 consecutive failures' do
+    it 'bans on the attempt that reaches maxretry', :aggregate_failures do
       expect(rate_limiter.banned?).to be_falsey
 
-      3.times { rate_limiter.register_fail! }
+      rate_limiter.register_fail!
+
+      expect(rate_limiter.banned?).to be_falsey
+
+      rate_limiter.register_fail!
 
       expect(rate_limiter.banned?).to be_truthy
+    end
+
+    it 'returns false on the attempt that writes the ban, true only afterwards', :aggregate_failures do
+      expect(rate_limiter.register_fail!).to be_falsey
+      expect(rate_limiter.register_fail!).to be_falsey
+      expect(rate_limiter.register_fail!).to be_truthy
+    end
+
+    # The ban gets bantime exactly. The counter cannot: Rack::Attack buckets it
+    # by wall clock and expires it at the end of the current bucket, so its TTL
+    # is anywhere in 1..findtime+1 depending on where in the window we landed.
+    it 'gives the counter a bucket-bounded TTL and the ban exactly bantime', :aggregate_failures do
+      freeze_time do
+        rate_limiter.register_fail!
+
+        expect(redis_ttl(count_key)).to be_between(1, options[:findtime].to_i + 1)
+
+        rate_limiter.register_fail!
+
+        expect(redis_ttl(ban_key)).to eq(options[:bantime].to_i)
+      end
     end
 
     shared_examples 'whitelisted IPs' do
@@ -66,11 +104,81 @@ RSpec.describe Gitlab::Auth::IpRateLimiter, :use_clean_rails_memory_store_cachin
     end
   end
 
-  shared_examples 'skips the rate limiter' do
-    it 'does not call Rack::Attack::Allow2Ban.reset!' do
-      expect(Rack::Attack::Allow2Ban).not_to receive(:reset!)
+  describe '#reset!' do
+    # Frozen because count_key is derived from the current wall-clock bucket:
+    # a rollover mid-example would assert against a different key than the one
+    # the failures wrote to.
+    it 'clears the ban and the failure counter', :aggregate_failures do
+      freeze_time do
+        2.times { rate_limiter.register_fail! }
+
+        expect(rate_limiter.banned?).to be_truthy
+
+        rate_limiter.reset!
+
+        expect(rate_limiter.banned?).to be_falsey
+        expect(redis_ttl(count_key)).to eq(-2)
+      end
+    end
+  end
+
+  describe 'ban metrics' do
+    let(:counter) { instance_double(Prometheus::Client::Counter, increment: nil) }
+
+    before do
+      allow(Gitlab::Metrics).to receive(:counter).and_call_original
+      allow(Gitlab::Metrics).to receive(:counter)
+        .with(:gitlab_rate_limiter_git_basic_auth_ban_events_total, anything, anything)
+        .and_return(counter)
+    end
+
+    it 'counts each failure, and the ban the last one creates', :aggregate_failures do
+      expect(counter).to receive(:increment).with(event: :failure).twice
+      expect(counter).to receive(:increment).with(event: :ban).once
+
+      2.times { rate_limiter.register_fail! }
+    end
+
+    it 'counts a request refused by an existing ban' do
+      2.times { rate_limiter.register_fail! }
+
+      expect(counter).to receive(:increment).with(event: :blocked)
+
+      rate_limiter.banned?
+    end
+
+    it 'counts a reset' do
+      expect(counter).to receive(:increment).with(event: :reset)
 
       rate_limiter.reset!
+    end
+
+    # Only reachable when another request banned the IP between this request's
+    # pre-auth check and its failure registration, which is also the only case
+    # that reaches the "threshold exceeded" auth log.
+    it 'counts a failure registered against an already banned IP' do
+      3.times { rate_limiter.register_fail! }
+
+      expect(counter).to receive(:increment).with(event: :already_banned)
+
+      rate_limiter.register_fail!
+    end
+  end
+
+  shared_examples 'skips the rate limiter' do
+    it 'does not call Rack::Attack::Allow2Ban.reset' do
+      expect(Rack::Attack::Allow2Ban).not_to receive(:reset)
+
+      rate_limiter.reset!
+    end
+
+    it 'does not emit ban metrics' do
+      expect(Gitlab::Metrics)
+        .not_to receive(:counter).with(:gitlab_rate_limiter_git_basic_auth_ban_events_total, anything, anything)
+
+      rate_limiter.reset!
+      rate_limiter.banned?
+      rate_limiter.register_fail!
     end
 
     it 'does not call Rack::Attack::Allow2Ban.banned?' do

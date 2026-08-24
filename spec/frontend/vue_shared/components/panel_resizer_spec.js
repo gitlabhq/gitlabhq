@@ -37,11 +37,11 @@ describe('Panel Resizer component', () => {
 
     expect(wrapper.element.tagName).toEqual('DIV');
     expect(wrapper.classes().sort()).toStrictEqual([
-      '!gl-absolute',
       'drag-handle',
-      'position-bottom-0',
-      'position-left-0',
-      'position-top-0',
+      'gl-absolute',
+      'gl-bottom-0',
+      'gl-left-0',
+      'gl-top-0',
     ]);
 
     expect(wrapper.element.getAttribute('style')).toBe('cursor: ew-resize;');
@@ -57,11 +57,11 @@ describe('Panel Resizer component', () => {
 
     expect(wrapper.element.tagName).toEqual('DIV');
     expect(wrapper.classes().sort()).toStrictEqual([
-      '!gl-absolute',
       'drag-handle',
-      'position-bottom-0',
-      'position-right-0',
-      'position-top-0',
+      'gl-absolute',
+      'gl-bottom-0',
+      'gl-right-0',
+      'gl-top-0',
     ]);
   });
 

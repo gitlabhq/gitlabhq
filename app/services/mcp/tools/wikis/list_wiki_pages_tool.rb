@@ -124,7 +124,7 @@ module Mcp
 
         def resource_not_found_error
           ::Mcp::Tools::Base::Response.error(
-            "#{container_type.to_s.capitalize} not found, or you do not have access to it."
+            "#{container_type.to_s.capitalize} not found or inaccessible"
           )
         end
       end

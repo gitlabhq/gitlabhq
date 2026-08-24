@@ -88,6 +88,8 @@ methods:
     - checkpoint_header_for: Called from the by_thread_ts endpoint in stacked follow-up MR (gitlab-org/gitlab!247134)
     - latest_checkpoint_header: Called from the trace path in stacked follow-up MR (gitlab-org/gitlab!247135)
     - reconstructed_channel_values: Called from the by_thread_ts endpoint and trace path in stacked follow-up MRs (gitlab-org/gitlab!247134, !247135)
+  ee/app/models/artifact_registry/namespace_mapping.rb:
+    - expire_registry_cache: Called from the activate, disable, and enable mutations landing in stacked follow-up MRs
   ee/app/models/cd/application_flow_definition.rb:
     - revert_to_previous_version: Will be called from the CD application flow definition revert API/mutation in a follow-up MR
   ee/app/models/ci/secrets/integration.rb:

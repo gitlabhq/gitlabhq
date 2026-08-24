@@ -11,7 +11,7 @@ module Mcp
         MAX_BYTE_LIMIT = ::Gitlab::Ci::Trace::Stream::LIMIT_SIZE
         MIN_BYTE_OFFSET = 0
         LOG_ALIAS = 'get_job_log'
-        NOT_FOUND = 'Job not found: it does not exist or you do not have access to it.'
+        NOT_FOUND = 'Job not found or inaccessible'
         LOG_FORBIDDEN = "Job log not accessible: you do not have permission to read this job's log."
 
         register_version '0.1.0', {
@@ -103,7 +103,6 @@ module Mcp
 
         def job
           project = find_project!(arguments[:id])
-          authorize_read_project!(project, arguments[:id])
 
           # The caller gives us a job ID only, so there is no partition_id to scope by. Same
           # lookup as `find_build!` in lib/api/helpers.rb, which backs GET /projects/:id/jobs/:job_id.
@@ -112,14 +111,6 @@ module Mcp
           # rubocop:enable Database/AvoidUnpartitionedCiRelations
         end
         strong_memoize_attr :job
-
-        # Reuse find_project!'s wording so a private project the user cannot read is
-        # indistinguishable from one that does not exist, preventing enumeration.
-        def authorize_read_project!(project, identifier)
-          return if ::Ability.allowed?(current_user, :read_project, project)
-
-          raise StandardError, "Project '#{identifier}' not found or inaccessible"
-        end
 
         # A caller who can read the job already knows it exists, so naming the real reason the
         # log is off limits leaks nothing. The REST trace endpoint answers 403 here too.
