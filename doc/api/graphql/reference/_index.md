@@ -66638,6 +66638,7 @@ Values for sorting CI/CD job analytics.
 | <a id="cijobfailurereason-downstream_bridge_project_not_found"></a>`DOWNSTREAM_BRIDGE_PROJECT_NOT_FOUND` | A job that failed due to downstream bridge project not found. |
 | <a id="cijobfailurereason-downstream_pipeline_creation_failed"></a>`DOWNSTREAM_PIPELINE_CREATION_FAILED` | A job that failed due to downstream pipeline creation failed. |
 | <a id="cijobfailurereason-downstream_project_trigger_resolved_to_empty"></a>`DOWNSTREAM_PROJECT_TRIGGER_RESOLVED_TO_EMPTY` | A job that failed due to downstream project trigger resolved to empty. |
+| <a id="cijobfailurereason-duo_workflow_connection_failure"></a>`DUO_WORKFLOW_CONNECTION_FAILURE` | A job that failed due to duo workflow connection failure. |
 | <a id="cijobfailurereason-duo_workflow_not_allowed"></a>`DUO_WORKFLOW_NOT_ALLOWED` | A job that failed due to duo workflow not allowed. |
 | <a id="cijobfailurereason-environment_creation_failure"></a>`ENVIRONMENT_CREATION_FAILURE` | A job that failed due to environment creation failure. |
 | <a id="cijobfailurereason-failed_outdated_deployment_job"></a>`FAILED_OUTDATED_DEPLOYMENT_JOB` | A job that failed due to failed outdated deployment job. |

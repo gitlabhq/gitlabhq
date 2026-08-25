@@ -20,6 +20,7 @@ title: Managing security configuration profiles
 - Dependency scanning profile [introduced](https://gitlab.com/groups/gitlab-org/-/epics/19952) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_scan_profiles_dependency_scanning`. Enabled by default.
 - Dependency scanning auto-remediation profile [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/604588) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_remediation_profiles`. Enabled by default.
 - Feature flag `security_scan_profiles_feature` removed in GitLab 19.4.
+- Feature flag `security_remediation_profiles` removed in GitLab 19.4.
 
 {{< /history >}}
 
@@ -95,11 +96,6 @@ When you enable the dependency scanning profile, your project's dependencies are
 When you enable the dependency scanning auto-remediation profile, GitLab opens merge requests
 that bump vulnerable dependencies to non-vulnerable versions. For more information about this
 capability, see [dependency scanning auto-remediation](../remediate/dependency_scanning_auto_remediation.md).
-
-Prerequisites:
-
-- The `security_remediation_profiles` [feature flag](../../../administration/feature_flags/_index.md)
-  must be enabled for the project's root namespace. This flag is enabled by default in GitLab 19.2.
 
 Use the [GitLab CLI](../../../editor_extensions/gitlab_cli/_index.md) (`glab`) to attach the
 profile to a project:

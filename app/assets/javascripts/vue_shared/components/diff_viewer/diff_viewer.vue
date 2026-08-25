@@ -1,6 +1,7 @@
 <script>
 import { diffViewerModes, diffModes } from '~/ide/constants';
 import { projectRawPath } from '~/lib/utils/path_helpers/repository';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DownloadDiffViewer from './viewers/download_diff_viewer.vue';
 import ImageDiffViewer from './viewers/image_diff_viewer.vue';
@@ -94,7 +95,11 @@ export default {
     buildRawPath(sha, path) {
       if (!this.projectPath) return '';
 
-      return projectRawPath(this.projectPath, `${sha}/${path}`);
+      // `projectRawPath` has a glob argument at the end which gets URL encoded by
+      // `app/assets/javascripts/lib/utils/path_helpers/core.js` if passed.
+      // In this case we want to do our own special encoding for the path so we append it to the end of
+      // the `projectRawPath` return value.
+      return joinPaths(projectRawPath(this.projectPath, sha), path);
     },
   },
 };

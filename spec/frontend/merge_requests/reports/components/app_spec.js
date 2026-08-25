@@ -71,7 +71,6 @@ describe('Merge request reports App component', () => {
     wrapper = shallowMountExtended(App, {
       router,
       provide: {
-        hasPolicies: false,
         projectPath: 'gitlab-org/gitlab',
         iid: '1',
       },

@@ -75680,6 +75680,12 @@
               "description": "A job that failed due to secrets manager access denied.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "DUO_WORKFLOW_CONNECTION_FAILURE",
+              "description": "A job that failed due to duo workflow connection failure.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

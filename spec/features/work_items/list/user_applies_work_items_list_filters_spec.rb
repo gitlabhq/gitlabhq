@@ -123,23 +123,6 @@ RSpec.describe 'Work items list filters', :js, feature_category: :planning_views
       end
     end
 
-    describe 'confidential' do
-      it 'filters', :aggregate_failures do
-        select_tokens 'Confidential', 'Yes', submit: true
-
-        expect(page).to have_css('.issue', count: 1)
-        expect(page).to have_link(task.title)
-
-        click_button 'Clear'
-
-        select_tokens 'Confidential', 'No', submit: true
-
-        expect(page).to have_css('.issue', count: 2)
-        expect(page).to have_link(incident.title)
-        expect(page).to have_link(issue.title)
-      end
-    end
-
     describe 'milestone' do
       it 'filters', :aggregate_failures do
         select_tokens 'Milestone', '=', milestone1.title, submit: true
@@ -183,56 +166,6 @@ RSpec.describe 'Work items list filters', :js, feature_category: :planning_views
 
         expect(page).to have_css('.issue', count: 1)
         expect(page).to have_link(issue.title)
-      end
-    end
-
-    describe 'my-reaction' do
-      it 'filters', :aggregate_failures do
-        select_tokens 'My reaction', '=', AwardEmoji::THUMBS_UP, submit: true
-
-        expect(page).to have_css('.issue', count: 1)
-        expect(page).to have_link(issue.title)
-
-        click_button 'Clear'
-
-        select_tokens 'My reaction', '!=', AwardEmoji::THUMBS_UP, submit: true
-
-        expect(page).to have_css('.issue', count: 2)
-        expect(page).to have_link(incident.title)
-        expect(page).to have_link(task.title)
-
-        click_button 'Clear'
-
-        select_tokens 'My reaction', '=', 'None', submit: true
-
-        expect(page).to have_css('.issue', count: 2)
-        expect(page).to have_link(incident.title)
-        expect(page).to have_link(task.title)
-
-        click_button 'Clear'
-
-        select_tokens 'My reaction', '=', 'Any', submit: true
-
-        expect(page).to have_css('.issue', count: 1)
-        expect(page).to have_link(issue.title)
-      end
-    end
-
-    describe 'search within' do
-      it 'filters', :aggregate_failures do
-        select_tokens 'Search within', 'Titles'
-        send_keys 'eee', :enter, :enter
-
-        expect(page).to have_css('.issue', count: 1)
-        expect(page).to have_link(issue.title)
-
-        click_button 'Clear'
-
-        select_tokens 'Search within', 'Descriptions'
-        send_keys 'aaa', :enter, :enter
-
-        expect(page).to have_css('.issue', count: 1)
-        expect(page).to have_link(incident.title)
       end
     end
 

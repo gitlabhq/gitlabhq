@@ -1,0 +1,82 @@
+- name: GitLab Secrets Manager now available on GitLab.com
+  description: |
+    Credential leaks often start the same way: a developer needs a secret, has no
+    good place to put it, and drops it into an over-scoped CI/CD variable or a
+    committed config file. GitLab Secrets Manager, now in Limited Availability
+    on GitLab.com, makes credentials more secure and keeps them in the same platform
+    that runs your pipelines.
+
+    Each secret is scoped to the job that needs it, based on environment, branch,
+    and branch protection, so a compromised credential can't reach more than it's
+    authorized to. Secrets Manager uses your existing group and project
+    permissions, so there's no separate access model to maintain. Every create,
+    update, and read is logged to your audit trail, so a leak investigation
+    doesn't mean stitching together logs from multiple systems.
+
+    GitLab Secrets Manager is an add-on billed through GitLab Credits. Start a free 30-day trial to explore all features. Learn more about billing and trials in the [billing documentation](../../../ci/secrets/secrets_manager/secrets_manager_billing.md).
+  stage: software_supply_chain_security
+  self-managed: false
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ci/secrets/secrets_manager/
+  published_at: 2026-08-20
+  release: "19.3"
+
+- name: Flow Creator foundational agent
+  description: |
+    You can now use the Flow Creator, a purpose-built foundational agent in the AI Catalog, to create custom flows for the GitLab Duo Agent Platform through a plain-language conversation.
+    With the Flow Creator, you describe what you want the flow to do, and the agent produces a complete, runnable flow YAML you can register and use immediately.
+    The agent can also help you debug existing flows and explain framework concepts.
+  stage: ai_catalog
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/agents/foundational_agents/flow_creator/
+  published_at: 2026-08-20
+  release: "19.3"
+
+- name: Execute SAST false positive and vulnerability resolution flows in bulk
+  description: 'In the Vulnerability Report, you can now select multiple vulnerabilities
+    and run SAST Vulnerability Resolution and SAST False Positive Analysis flows on
+    all of them at once.
+
+    '
+  stage: security_risk_management
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/vulnerabilities/bulk_ai_flows
+  published_at: 2026-08-20
+  release: "19.3"
+
+- name: GitLab Credits usage caps are generally available
+  description: 'On-demand usage can run up overage charges you didn''t plan for. Usage
+    caps for GitLab Credits are now generally available: set a subscription-level
+    cap on on-demand credits in Customers Portal, and set a default per-user cap or
+    per-user overrides with the GraphQL API. When consumption reaches a cap, features
+    that consume GitLab Credits, like GitLab Duo Agent Platform, are suspended until
+    the next billing period begins or an administrator adjusts the cap. Usage caps
+    were introduced in GitLab 18.11 behind the `budget_caps_graphql_api` feature flag.
+    In GitLab 19.3, the feature flag is removed.
+
+    '
+  stage: fulfillment
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/subscriptions/gitlab_credits/#usage-caps
+  published_at: 2026-08-20
+  release: "19.3"
+
+- name: Restricted visibility for custom agents and flows
+  description: |
+    You can now set custom agents and custom flows to **Restricted visibility** for every group, subgroup, and project in your top-level group.
+
+    Previously, you could only set a custom flow or agent to **Private** (one project only) or **Public** (visible to everyone on GitLab.com). When you set the visibility to **Restricted**, the flow or agent is visible to only groups, subgroups, and projects in your top-level group. This ensures that internal logic about your custom agents and flows are not shared outside your company or organization.
+  stage: ai_catalog
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/agents/custom/
+  published_at: 2026-08-20
+  release: "19.3"
