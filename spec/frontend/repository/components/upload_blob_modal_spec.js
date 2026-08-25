@@ -28,10 +28,6 @@ const initialProps = {
   path: NEW_PATH,
 };
 
-const $toast = {
-  show: jest.fn(),
-};
-
 describe('UploadBlobModal', () => {
   let wrapper;
   let mock;
@@ -52,7 +48,6 @@ describe('UploadBlobModal', () => {
             path: '',
           },
         },
-        $toast,
       },
     });
   };

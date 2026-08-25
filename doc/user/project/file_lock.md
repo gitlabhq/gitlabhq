@@ -58,36 +58,31 @@ default branch locks. For more information, see [roles and permissions](../permi
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519325) in GitLab 17.10 [with a feature flag](../../administration/feature_flags/_index.md) named `blob_overflow_menu`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/522993) in GitLab 18.1. Feature flag `blob_overflow_menu` removed.
+- Lock button [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545279) in GitLab 19.4 [with a feature flag](../../administration/feature_flags/_index.md) named `repository_lock_information`. Disabled by default.
 
 {{< /history >}}
 
-The method for locking depends on whether you're locking a file or directory:
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
-{{< tabs >}}
-
-{{< tab title="Lock a directory" >}}
+To lock a file or directory:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Go to the directory you want to lock.
+1. Go to the file or directory you want to lock.
 1. In the upper-right corner, select **Lock**.
-1. In the confirmation dialog, select **OK**.
+1. In the confirmation dialog, select **Lock**.
 
-To view the user who locked the directory, hover over the **Lock** icon.
+The button changes to **Locked**. To view who locked the file or directory and when,
+select **Locked**.
 
-{{< /tab >}}
+You cannot lock a directory if a file or directory inside it is already locked.
+You cannot unlock a directory if a parent directory is locked.
+In both cases, the button shows **Locked**, and the details explain the related lock.
+To view the locked file or directory, select **View lock**.
 
-{{< tab title="Lock a file" >}}
-
-1. In the top bar, select **Search or go to** and find your project.
-1. Go to the file you want to lock.
-1. In the upper-right corner, next to the filename, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Lock**.
-1. In the confirmation dialog, select **OK**.
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-If the lock option is not available or is disabled, you don't have the required permissions to lock the file or directory.
+If **Lock** is not displayed, you don't have the required permissions to lock the file or directory.
 
 ### View locked files
 
@@ -110,12 +105,13 @@ To remove a lock:
 
 {{< tabs >}}
 
-{{< tab title="From a file" >}}
+{{< tab title="From a file or directory" >}}
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Go to the file you want to unlock.
-1. Select **Unlock**.
-1. On the confirmation dialog, select **Unlock**.
+1. Go to the file or directory you want to unlock.
+1. Select **Locked**.
+1. Select **Unlock file** or **Unlock directory**.
+1. In the confirmation dialog, select **Unlock**.
 
 {{< /tab >}}
 

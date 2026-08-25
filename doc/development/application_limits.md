@@ -11,8 +11,16 @@ limits to GitLab.
 ## Documentation
 
 First of all, you have to gather information and decide which are the different
-limits that are set for the different GitLab tiers. Coordinate with others to [document](../administration/instance_limits.md)
+limits that are set for the different GitLab tiers. Coordinate with others to document
 and communicate those limits.
+
+Add the documentation to the page that matches the limit type:
+
+- [Plan limits and other instance-wide limits](../administration/instance_limits.md).
+- Rate limits that are:
+  - [Configurable in the **Admin** area](../rate_limits/_index.md#admin-area).
+  - [Configurable only with the API or the Rails console](../rate_limits/_index.md#api-and-rails-console).
+  - [Not configurable](../rate_limits/non_configurable.md).
 
 There is a guide about [introducing application limits](https://handbook.gitlab.com/handbook/product/product-processes/#introducing-application-limits).
 
@@ -211,6 +219,8 @@ the middleware level, this can be used at the controller or API level.
 
 See the `CheckRateLimit` concern for use in controllers. In other parts of the code
 the `Gitlab::ApplicationRateLimiter` module can be called directly.
+
+Be sure to [document the new limit](#documentation).
 
 ## Next rate limiting architecture
 

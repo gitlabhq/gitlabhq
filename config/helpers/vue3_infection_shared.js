@@ -136,6 +136,30 @@ function runInfectionScanner() {
  *   infectable (e.g. loader-injected packages in Webpack like core-js).
  * @returns {function(string): boolean}
  */
+/**
+ * Apply a Vite/webpack style alias list to a specifier, mirroring how
+ * `@rollup/plugin-alias` matches: exact or `/`-delimited prefix for string
+ * patterns, `String.replace` for regular expressions. First match wins.
+ *
+ * Vite applies `resolve.alias` before plugins that declare `enforce: 'pre'`, so
+ * a `CONTEXT_ALIASES` key that a global alias also matches reaches `resolveId`
+ * already expanded and no longer equals its key.
+ *
+ * @param {string} specifier
+ * @param {Array<{find: string|RegExp, replacement: string}>} aliasEntries
+ * @returns {string} the specifier with the first matching alias applied
+ */
+const applyAliasList = (specifier, aliasEntries) => {
+  for (const { find, replacement } of aliasEntries) {
+    if (find instanceof RegExp) {
+      if (find.test(specifier)) return specifier.replace(find, replacement);
+    } else if (specifier === find || specifier.startsWith(`${find}/`)) {
+      return `${replacement}${specifier.slice(find.length)}`;
+    }
+  }
+  return specifier;
+};
+
 const createIsInfectable = (scannerGraph, { shouldExclude, shouldBypass } = {}) => {
   return (id) => {
     const clean = stripQuery(id);
@@ -181,4 +205,5 @@ module.exports = {
   runInfectionScanner,
   createIsInfectable,
   logInfectionStats,
+  applyAliasList,
 };

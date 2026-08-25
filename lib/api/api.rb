@@ -249,6 +249,7 @@ module API
         mount ::API::AlertManagementAlerts
         mount ::API::Appearance
         mount ::API::Applications
+        mount ::API::Authn::Userinfo
         mount ::API::Avatar
         mount ::API::AwardEmoji
         mount ::API::Badges

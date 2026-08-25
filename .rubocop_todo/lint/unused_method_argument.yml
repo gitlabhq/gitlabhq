@@ -44,7 +44,6 @@ Lint/UnusedMethodArgument:
     - 'app/graphql/types/time_type.rb'
     - 'app/graphql/types/todoable_interface.rb'
     - 'app/graphql/types/user_interface.rb'
-    - 'app/graphql/types/work_item_id_type.rb'
     - 'app/helpers/admin/identities_helper.rb'
     - 'app/helpers/diff_helper.rb'
     - 'app/helpers/environment_helper.rb'

@@ -178,32 +178,77 @@ For more information, see [Organization data isolation](query_scoping.md).
 ## Organization routing
 
 Organization-scoped routes use the `/o/:organization_path/` pattern (for example, `/o/my-org/projects`).
-Always use regular, unscoped Rails URL helpers like `projects_path` and GitLab automatically routes based on `Current.organization`. This ensures switching between organization-scoped routes and global routes automatically.
+These URL helpers exist so a feature's views and links work globally and inside an organization, without maintaining two versions.
+Use regular, unscoped Rails URL helpers like `projects_path` and `project_issues_path(@project)`.
+The routing layer decides at call time whether to nest the generated URL under an organization path, or return the plain global URL.
 
 ```ruby
-# Recommended: Use global route helpers
-projects_path                    # Automatically becomes /o/my-org/projects if Current.organization is set
-project_issues_path(@project)    # Automatically becomes /o/my-org/namespace/project/-/issues
+projects_path                    # /projects, or /o/my-org/projects if the request resolves to organization my-org
+project_issues_path(@project)    # /namespace/project/-/issues, or /o/my-org/namespace/project/-/issues
 ```
 
-### How it works
+### Route pairing
 
-The organization URL helper system is implemented in [`Routing::OrganizationsHelper::MappedHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/helpers/routing/organizations_helper.rb). When routes are loaded, the system:
+The implementation lives in [`Routing::OrganizationsHelper::MappedHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/helpers/routing/organizations_helper.rb).
+When routes load, it:
 
-1. Scans all routes to find organization-scoped routes (those containing `/o/:organization_path`)
-1. Builds a mapping between global route names and organization route names
-1. Overrides standard Rails URL helpers (like `projects_path`, `groups_url`, etc.) to be organization-aware
-1. When `Current.organization` is present and the organization has scoped paths enabled, the helpers automatically use the organization-scoped version of the route
-1. Preserves the original `root_path` and `root_url` as `unscoped_root_path` and `unscoped_root_url`
+1. Scans all routes to find organization-scoped ones, those whose path includes `/o/:organization_path`.
+1. Pairs each organization-scoped route with a global route of the same name, by stripping the `organization_` or `organizations_` prefix from the organization route's name. For example, `organization_projects_path` pairs with `projects_path`. Only names present on both sides are paired.
+1. Overrides each paired global URL helper, both the `_path` and `_url` variant, so it can nest the generated URL or fall back to the plain global route.
+1. Preserves the original `root_url`, `root_path`, `group_canonical_url`, and `group_canonical_path` helpers as `unscoped_root_url`, `unscoped_root_path`, `unscoped_group_canonical_url`, and `unscoped_group_canonical_path`.
 
-This approach preserves organization context throughout the request lifecycle. For example, `GET /o/my-org/projects` routes to `ProjectsController#index` (same as `/projects`) with the organization context available via `Current.organization`.
+Route pairing relies on name convention alone, not on matching controller and action.
+As a result, an instance administrator whose home organization is isolated could get instance admin links incorrectly nested under their organization.
+The plan is to keep instance administrators from being members of isolated organizations, avoiding this case entirely.
 
-Use explicit organization helpers only when you need to generate a URL for a specific organization that differs from `Current.organization`, or when working outside the request layer (services, workers, Rake tasks) where `Current.organization` is not available:
+### `Current.data_context`
+
+`Current.data_context` identifies the data-isolation boundary for the current request: the single organization or user whose data the request is confined to, if any.
+It is set once per request by `CurrentDataContext#set_data_context` (`app/controllers/concerns/current_data_context.rb`).
+It wraps a `Gitlab::Current::DataContext` (`lib/gitlab/current/data_context.rb`), built from `organization: Current.organization_resolver.from_request` and `user: current_user`.
+
+`Current.organization` is always set, falling back to the default organization when none applies.
+`Current.data_context` only resolves to an organization when that organization is actually isolated.
+
+- `DataContext#type` returns `:organization` when an isolated organization applies, `:user` when a user is present but no organization is isolated, or `:nil` otherwise.
+- A non-isolated organization is never treated as a boundary (`Organization#isolated?` must be true).
+- If the current user's home organization is isolated, that organization is always the boundary, even when the request names a different organization.
+- The request's own organization (the one it names, for example through the URL) only becomes the boundary when the user side does not already claim one: no current user exists, or the current user's home organization is not isolated.
+
+For more information, see the [organization contexts design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/contexts/).
+
+### `Current.organization_resolver`
+
+`Current.organization_resolver` is a `Gitlab::Current::Organization` (`lib/gitlab/current/organization.rb`), set once per request by `CurrentOrganization#set_current_organization` (`app/controllers/concerns/current_organization.rb`).
+
+It exposes:
+
+- `from_organization_params`: the organization named by the `/o/:organization_path` segment of the current request's URL, if any.
+- `from_request`: `from_organization_params`, or the organization named by a group or project namespace in the URL parameters, or the organization named by the `X-GitLab-Organization-ID` header.
+- `organization`: `from_request`, or the organization of the current user, or the default organization.
+
+### Deciding which organization to nest under
+
+For each paired helper call, the organization path to nest under is decided in this order, stopping at the first step that applies:
+
+1. `Current.data_context`, if it resolves to organization context (its `type` is `:organization`). Use that organization's path.
+   This step is checked, and returns, before either of the following steps run.
+   It overrides even an explicit per-call override, because a user whose home organization is isolated, or an anchor organization that is itself isolated, has no existence outside that organization.
+1. An explicit `organization_path:` keyword argument passed to the helper call, only reached when step 1 does not apply.
+   Because this checks for the key's presence rather than its truthiness, passing `organization_path: nil` forces the plain global path, even though step 3 would otherwise nest it.
+1. The organization named by the current request's own URL, checked through `Current.organization_resolver.from_organization_params`. This only applies if the request's path itself already contains an `/o/:organization_path` segment.
+
+If none of these steps applies, the plain global route is used.
+
+### Explicit organization helpers
+
+Use explicit organization helpers outside the request layer, such as in services, workers, or Rake tasks, where the automatic resolution above does not apply.
+Also use them when a caller needs an organization other than the one automatic resolution would pick:
 
 ```ruby
-# Explicit organization helpers
-organization_projects_path(organization_path: 'my-org')           # /o/my-org/projects
-organization_project_issues_path(@project, organization_path: 'my-org')  # /o/my-org/namespace/project/-/issues
+organization_projects_path(organization_path: 'my-org')                 # /o/my-org/projects
+organization_project_issues_path(@project, organization_path: 'my-org') # /o/my-org/namespace/project/-/issues
+projects_path(organization_path: nil)                                   # /projects, even inside an organization-scoped request
 ```
 
 ### Routes not yet organization-scoped

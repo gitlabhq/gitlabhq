@@ -54,10 +54,6 @@ describe('PlaceholdersTable', () => {
   };
 
   const sourceUsersQueryHandler = jest.fn().mockResolvedValue(mockSourceUsersQueryResponse());
-  const $toast = {
-    show: jest.fn(),
-  };
-
   const GlTableStub = stubComponent(GlTable, {
     props: ['fields', 'items', 'busy'],
   });
@@ -79,7 +75,6 @@ describe('PlaceholdersTable', () => {
       provide: {
         group: mockGroup,
       },
-      mocks: { $toast },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },

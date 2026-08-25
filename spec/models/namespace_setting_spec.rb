@@ -31,6 +31,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
     subject(:setting) { described_class.new }
 
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
+    it { expect(setting.seat_assignment_model_enabled).to be(false) }
   end
 
   describe 'scopes' do

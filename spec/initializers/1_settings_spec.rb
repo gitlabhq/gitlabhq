@@ -448,6 +448,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         batched_background_migration_worker_sec_database
         batched_git_ref_updates_cleanup_scheduler_worker
         background_operation_environments_auto_delete
+        background_operation_merge_requests_clear_stale_cached_html
         bbo_users_delete_unconfirmed_secondary
         bulk_imports_stale_import_worker
         cells_schedule_claims_verification_worker

@@ -6658,6 +6658,21 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '#direct_groups_full_paths' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:groups) { create_list(:group, 3, guests: user) }
+
+    subject { user.direct_groups_full_paths }
+
+    it 'returns the full paths of all direct groups, unordered' do
+      is_expected.to match_array(groups.map(&:full_path))
+    end
+
+    it 'returns an empty array when the user has no direct groups' do
+      expect(create(:user).direct_groups_full_paths).to eq([])
+    end
+  end
+
   describe '#authorizations_for_projects' do
     let_it_be(:other) { create(:project) }
     let_it_be(:user) { create(:user) }

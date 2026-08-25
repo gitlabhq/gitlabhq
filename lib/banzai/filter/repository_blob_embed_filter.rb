@@ -25,8 +25,11 @@ module Banzai
 
       def call
         return doc unless Feature.enabled?(:blob_permalink_embed, project, type: :wip)
+        return doc if for_service_desk_email?
+        return doc if for_email? && !container_shows_diff_previews_in_email?
 
         embeds = collect_embeds
+        embeds.select! { |embed| embed[:target].show_diff_preview_in_email? } if for_email?
         return doc if embeds.empty?
 
         embeds.map! do |embed|
@@ -52,6 +55,19 @@ module Banzai
       end
 
       private
+
+      def for_email?
+        context[:for_email]
+      end
+
+      def for_service_desk_email?
+        context[:for_service_desk_email]
+      end
+
+      def container_shows_diff_previews_in_email?
+        container = project || group
+        container.nil? || container.show_diff_preview_in_email?
+      end
 
       # Returns up to EMBED_LIMIT authorized embeds, each a Hash of the target
       # project, the parsed permalink parts, and the `<a>` node to replace.
@@ -100,7 +116,8 @@ module Banzai
       # indexed by path lowercase.
       def targets_by_full_path(full_paths)
         Project.where_full_path_in(full_paths.uniq)
-          .preload(:project_feature, :group, :organization, namespace: :route)
+          .preload(:project_feature, :organization, :project_setting, namespace: :route,
+            group: :namespace_settings)
           .index_by { |target| target.full_path.downcase }
       end
 

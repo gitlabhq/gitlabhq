@@ -623,6 +623,7 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`seat_assignment_model_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250748) | Setting Seat Assignment Model enabled is updated | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/work_items/608055) | Group |
 | [`seat_control_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Seat control is updated | {{< yes >}} | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
 | [`group_minimal_access_role_adjusted_seat_limit`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233661) | A group member is assigned the Minimal Access role due to seat limit | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/580432) | Group |
 

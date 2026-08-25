@@ -6,7 +6,6 @@ RSpec.describe 'User browses a job', :js, feature_category: :continuous_integrat
   include Spec::Support::Helpers::ModalHelpers
 
   let(:user) { create(:user) }
-  let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
   let!(:build) { create(:ci_build, :success, :trace_artifact, :coverage, pipeline: pipeline) }

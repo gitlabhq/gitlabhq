@@ -34691,6 +34691,9 @@ msgstr ""
 msgid "Failed to connect to your device. Try again."
 msgstr ""
 
+msgid "Failed to copy source to clipboard"
+msgstr ""
+
 msgid "Failed to create a branch for this issue. Please try again."
 msgstr ""
 
@@ -41585,6 +41588,9 @@ msgid "IdentityVerification|Verification code sent to your secondary email addre
 msgstr ""
 
 msgid "IdentityVerification|Verification successful"
+msgstr ""
+
+msgid "IdentityVerification|Verify a payment method to continue."
 msgstr ""
 
 msgid "IdentityVerification|Verify code"
@@ -75192,7 +75198,13 @@ msgstr ""
 msgid "SecurityReports|Time period"
 msgstr ""
 
+msgid "SecurityReports|To create a merge request with Vulnerability Resolution, select at least one eligible SAST vulnerability."
+msgstr ""
+
 msgid "SecurityReports|To create the merge request privately, see %{linkStart}resolve a vulnerability privately%{linkEnd}."
+msgstr ""
+
+msgid "SecurityReports|To detect false positives, select at least one SAST vulnerability that is not already being analyzed."
 msgstr ""
 
 msgid "SecurityReports|To learn more about this CWE, view the %{linkStart}MITRE definition.%{linkEnd}"
@@ -78099,6 +78111,9 @@ msgid "Source branch will not be deleted."
 msgstr ""
 
 msgid "Source code (%{fileExtension})"
+msgstr ""
+
+msgid "Source copied to clipboard"
 msgstr ""
 
 msgid "Source is not available"
@@ -90817,6 +90832,9 @@ msgstr ""
 msgid "WorkItemDuoQuestion|Answer in your own words"
 msgstr ""
 
+msgid "WorkItemDuoQuestion|Include your answer"
+msgstr ""
+
 msgid "WorkItemDuoQuestion|Recommended"
 msgstr ""
 
@@ -90824,6 +90842,9 @@ msgid "WorkItemDuoQuestion|Send answer"
 msgstr ""
 
 msgid "WorkItemDuoQuestion|Something went wrong while sending your answer. Please try again."
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Submit"
 msgstr ""
 
 msgid "WorkItemDuoQuestion|Type your answer here…"

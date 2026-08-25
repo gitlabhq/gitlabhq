@@ -121,5 +121,9 @@ columns:
   default_expression: '0'
 - name: trigger_flow_trigger_id
   type: Nullable(Int64)
+- name: source_type
+  type: Nullable(Int16)
+- name: source_link
+  type: Nullable(String)
 - name: execution_mode
   type: Nullable(Int16)

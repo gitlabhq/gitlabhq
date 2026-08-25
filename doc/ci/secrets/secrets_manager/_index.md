@@ -31,26 +31,13 @@ Unlike CI/CD variables, which are always available to jobs by default, secrets m
 
 Use GitLab Secrets Manager to securely store and manage secrets and credentials for your projects and groups.
 
-For GitLab.com, you can start a 30-day trial to try GitLab Secrets Manager with trial credits.
-After the trial expires, GitLab Secrets Manager consumes GitLab credits.
-To avoid a service interruption, opt into on-demand billing for GitLab credits before the trial ends.
-For more information, see [GitLab Secrets Manager usage and billing](secrets_manager_billing.md).
-
-For GitLab Self-Managed, GitLab Secrets Manager is free during public beta.
-You will be notified before general availability to give you time to opt into on-demand billing for GitLab credits.
-
-For a click-through demo, see [GitLab Secrets Manager](https://click-through-demo-generator-27bd12.gitlab.io/demos/demo-20260506-094904/).
-<!-- Demo published on 2026-05-27 -->
-
 Share your feedback during the public beta in [feedback issue 598100](https://gitlab.com/gitlab-org/gitlab/-/work_items/598100).
 
 ## Enable GitLab Secrets Manager
 
 When Secrets Manager is enabled for a top-level group, it is also available to all subgroups and projects in that group.
 
-On GitLab Self-Managed, an administrator must first [install and enable GitLab Secrets Manager](../../../administration/secrets_manager/_index.md)
-for the instance. After Secrets Manager is installed and enabled, you can enable it
-for specific groups and projects on the instance.
+On GitLab Self-Managed, an administrator must first [install and enable GitLab Secrets Manager](../../../administration/secrets_manager/_index.md) for the instance. After Secrets Manager is installed and enabled, you can enable it for specific groups and projects on the instance.
 
 ### For GitLab.com
 
@@ -59,6 +46,9 @@ for specific groups and projects on the instance.
 Status: Limited Availability
 
 {{< /details >}}
+
+- You can start a 30-day trial to try GitLab Secrets Manager with temporary evaluation credits. After the trial expires, GitLab Secrets Manager starts consuming GitLab credits. To avoid a service interruption, purchase a monthly commitment pool of credits or enable on-demand billing before the trial ends. For more information, see [GitLab Secrets Manager usage and billing](secrets_manager_billing.md).
+- If you opted into the beta before August 21, 2026, your environment has a grace period with continued access until September 19, 2026. After the grace period, GitLab disables access. To continue access, start a trial before the grace period ends.
 
 Prerequisites:
 
@@ -75,6 +65,9 @@ Prerequisites:
 - Status: Beta
 
 {{< /details >}}
+
+> [!note]
+> GitLab Secrets Manager is free during public beta. GitLab notifies you before general availability, so that you have time to start a trial or opt into on-demand billing for GitLab Credits.
 
 #### For a project
 

@@ -7,7 +7,6 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
   include Features::TwoFactorHelpers
 
   context 'when signed in' do
-    let(:current_organization) { user.organization }
     let(:invalid_current_pwd_msg) { 'You must provide a valid current password.' }
 
     before do

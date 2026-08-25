@@ -29,7 +29,6 @@ describe('TokenAccess component', () => {
   const createMockApolloProvider = (requestHandlers) => {
     return createMockApollo(requestHandlers);
   };
-  const mockToastShow = jest.fn();
 
   const findGlTable = () => wrapper.findComponent(GlTableLite);
   const findAllTableRows = () => wrapper.findAllByTestId('auth-logs-table-row');
@@ -44,11 +43,6 @@ describe('TokenAccess component', () => {
         csvDownloadPath,
       },
       apolloProvider: createMockApolloProvider(requestHandlers),
-      mocks: {
-        $toast: {
-          show: mockToastShow,
-        },
-      },
       stubs: { CrudComponent },
     });
   };

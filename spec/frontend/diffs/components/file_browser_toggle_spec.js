@@ -24,19 +24,14 @@ Vue.use(PiniaVuePlugin);
 
 describe('FileBrowserToggle', () => {
   let wrapper;
-  let showToast;
 
   const findToggle = () => wrapper.findComponent(GlButton);
 
   const createComponent = ({ mountFn = shallowMount } = {}) => {
     const pinia = createTestingPinia();
     useFileBrowser();
-    showToast = jest.fn();
     wrapper = mountFn(FileBrowserToggle, {
       pinia,
-      mocks: {
-        $toast: { show: showToast },
-      },
     });
   };
 

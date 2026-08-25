@@ -47,7 +47,7 @@ class Explore::ProjectsController < Explore::ApplicationController
     finder_params = {
       minimum_search_length: MIN_SEARCH_LENGTH,
       not_aimed_for_deletion: true,
-      current_organization: current_organization,
+      organization: current_organization,
       sort: @sort
     }
     finder_params[:topic] = @topic.name if @topic

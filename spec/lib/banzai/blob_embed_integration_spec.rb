@@ -13,8 +13,8 @@ RSpec.describe 'Blob permalink embeds', :request_store, feature_category: :markd
   let(:anchor) { 'L3-6' }
   let(:permalink) { "#{Gitlab.config.gitlab.url}/#{project.full_path}/-/blob/#{sha}/#{path}##{anchor}" }
 
-  def render(markdown)
-    html = Banzai.render_and_post_process(markdown, project: project, current_user: user)
+  def render(markdown, context = {})
+    html = Banzai.render_and_post_process(markdown, { project: project, current_user: user }.merge(context))
     Nokogiri::HTML5.fragment(html)
   end
 
@@ -46,5 +46,42 @@ RSpec.describe 'Blob permalink embeds', :request_store, feature_category: :markd
 
     expect(result.at_css('.blob-embed')).to be_nil
     expect(result.at_css('a').text).to eq('see this bit')
+  end
+
+  context 'when rendering for email' do
+    it 'expands the permalink when the project includes diff previews in email' do
+      result = render("#{permalink}\n", pipeline: :email)
+
+      expect(result.at_css('.blob-embed')).to be_present
+    end
+
+    context 'when the project excludes diff previews from email' do
+      let_it_be(:project) do
+        create(:project, :repository, :public,
+          project_setting: create(:project_setting, show_diff_preview_in_email: false))
+      end
+
+      it 'leaves the permalink as a plain link', :aggregate_failures do
+        result = render("#{permalink}\n", pipeline: :email)
+
+        expect(result.at_css('.blob-embed')).to be_nil
+        expect(result.at_css('a')['href']).to eq(permalink)
+      end
+
+      it 'still expands the permalink outside of email' do
+        result = render("#{permalink}\n")
+
+        expect(result.at_css('.blob-embed')).to be_present
+      end
+    end
+  end
+
+  context 'when rendering for a Service Desk email' do
+    it 'leaves the permalink as a plain link', :aggregate_failures do
+      result = render("#{permalink}\n", pipeline: :service_desk_email)
+
+      expect(result.at_css('.blob-embed')).to be_nil
+      expect(result.at_css('a')['href']).to eq(permalink)
+    end
   end
 end

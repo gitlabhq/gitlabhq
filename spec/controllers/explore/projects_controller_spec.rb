@@ -61,6 +61,27 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
+      context 'when topic exists and projects belong to different organizations' do
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be(:topic) { create(:topic, name: 'topic1', organization: current_organization) }
+        let_it_be(:project_in_org) do
+          create(:project, :public, namespace: create(:namespace, organization: current_organization),
+            topic_list: 'topic1')
+        end
+
+        let_it_be(:project_outside_org) do
+          create(:project, :public, namespace: create(:namespace, organization: other_organization),
+            topic_list: 'topic1')
+        end
+
+        it 'only returns projects belonging to the current organization' do
+          get :topic, params: { topic_name: 'topic1' }
+
+          expect(assigns(:projects)).to include(project_in_org)
+          expect(assigns(:projects)).not_to include(project_outside_org)
+        end
+      end
     end
 
     describe 'GET #topic.atom' do

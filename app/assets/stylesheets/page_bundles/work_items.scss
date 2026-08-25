@@ -562,8 +562,52 @@ ul.content-list {
 // The workplan flow appends a machine-readable copy of its clarifying question
 // to the comment body, fenced as `json:duo-question`. Banzai renders it as a
 // normal code block, so we hide it and instead render a transformed question UI.
+// The copy button goes too: Banzai renders it as the block's sibling, so hiding only
+// the `pre` leaves a control offering to copy something nobody can see.
 // See https://gitlab.com/groups/gitlab-org/-/work_items/22772
 pre[data-lang-params='duo-question'] {
-  display: none;
+  &,
+  + copy-code {
+    display: none;
+  }
 }
 
+// `MultipleChoiceSelector` groups its items into one bordered box with dividers. A Duo
+// question shows them as separate cards instead, matching the single-select list, so the
+// grouping is undone here rather than by reaching into the checkbox from the template.
+// See https://gitlab.com/gitlab-org/gitlab/-/work_items/608852
+.multiple-choice-selector.duo-question-options {
+  @apply gl-border-none;
+
+  > div {
+    @apply gl-flex;
+    @apply gl-flex-col;
+    @apply gl-gap-3;
+  }
+
+  .help-text {
+    @apply gl-text-sm;
+    @apply gl-mt-1;
+    line-height: 1.5;
+  }
+
+  // The indicator is drawn as `label::before`, pinned to the top of that 16px line, so
+  // both halves of it move down to stay centred on the taller one.
+  // stylelint-disable-next-line gitlab/no-gl-class -- outranking GitLab UI's own selector
+  .gl-form-checkbox.custom-control .custom-control-input ~ .custom-control-label {
+    &::before,
+    &::after {
+      top: $gl-spacing-scale-1;
+    }
+  }
+
+  // Make individual items appear as separate cards, similar to single select
+  .multiple-choice-selector-item {
+    @apply gl-rounded-lg;
+    @apply gl-border-1;
+    @apply gl-border-solid;
+    @apply gl-border-default;
+    @apply gl-px-4;
+    @apply gl-py-3;
+  }
+}

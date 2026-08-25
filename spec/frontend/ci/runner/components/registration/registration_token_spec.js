@@ -5,7 +5,6 @@ import { mockRegistrationToken } from '../../mock_data';
 
 describe('RegistrationToken', () => {
   let wrapper;
-  const showToastMock = jest.fn();
 
   const findInputCopyToggleVisibility = () => wrapper.findComponent(InputCopyToggleVisibility);
 
@@ -17,11 +16,6 @@ describe('RegistrationToken', () => {
         ...props,
       },
       ...options,
-      mocks: {
-        $toast: {
-          show: showToastMock,
-        },
-      },
     });
   };
 

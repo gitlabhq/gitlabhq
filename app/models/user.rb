@@ -1691,6 +1691,22 @@ class User < ApplicationRecord
     groups.with_route.order_id_asc
   end
 
+  # Deliberately unbounded: shared by the OIDC groups_direct claim
+  # (config/initializers/doorkeeper_openid_connect.rb) and
+  # Authn::IamService::UserinfoClaimsBuilder, which must return the same
+  # complete group list for claim parity between the two (see
+  # spec/services/authn/iam_service/userinfo_claims_builder_parity_spec.rb).
+  # Callers needing frequency protection should rate-limit, not truncate.
+  #
+  # Intentionally kept identical to the pre-existing Doorkeeper query
+  # (map(&:full_path) with with_route, not pluck('routes.path')) to avoid
+  # any behavioral change to this claim.
+  def direct_groups_full_paths
+    groups.joins(:route).with_route
+      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
+      .map(&:full_path)
+  end
+
   def first_group_paths
     first_groups = direct_groups_with_route.take(FIRST_GROUP_PATHS_LIMIT + 1)
 

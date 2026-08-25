@@ -1108,6 +1108,8 @@ CREATE TABLE siphon_duo_workflows_workflows
     `web_search_enabled` Bool DEFAULT false,
     `trigger_source` Int16 DEFAULT 0,
     `trigger_flow_trigger_id` Nullable(Int64),
+    `source_type` Nullable(Int16),
+    `source_link` Nullable(String),
     `execution_mode` Nullable(Int16),
     INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1,
     PROJECTION pg_pkey_ordered

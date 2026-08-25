@@ -252,7 +252,8 @@ module Emails
 
       # Remove references etc. from description HTML because external participants
       # are no regular users and don't have permission to access them.
-      ::Banzai::Renderer.post_process(@work_item.description_html, {})
+      ::Banzai::Renderer.post_process(@work_item.description_html,
+        { for_email: true, for_service_desk_email: true })
     end
 
     def subject_base

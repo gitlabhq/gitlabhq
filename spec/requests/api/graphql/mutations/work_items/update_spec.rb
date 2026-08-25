@@ -781,8 +781,11 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
 
       let_it_be(:valid_parent) { create(:work_item, project: project) }
-      let_it_be(:valid_child1) { create(:work_item, :task, project: project, created_at: 5.minutes.ago) }
-      let_it_be(:valid_child2) { create(:work_item, :task, project: project, created_at: 5.minutes.from_now) }
+      let_it_be_with_reload(:valid_child1) { create(:work_item, :task, project: project, created_at: 5.minutes.ago) }
+      let_it_be_with_reload(:valid_child2) do
+        create(:work_item, :task, project: project, created_at: 5.minutes.from_now)
+      end
+
       let(:input_base) { { parentId: valid_parent.to_gid.to_s } }
       let(:child1_ref) { { adjacentWorkItemId: valid_child1.to_global_id.to_s } }
       let(:child2_ref) { { adjacentWorkItemId: valid_child2.to_global_id.to_s } }

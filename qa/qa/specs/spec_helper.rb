@@ -135,7 +135,16 @@ RSpec.configure do |config|
           "typeof window.__coveragePathsPersistence !== 'undefined'"
         )
 
-        Capybara.current_session.execute_script("window.__coveragePathsPersistence.update()") if has_persistence
+        if has_persistence
+          Capybara.current_session.execute_script("window.__coveragePathsPersistence.update()")
+
+          # getPaths accumulates executed files across every page the test visited
+          coverage_paths = Capybara.current_session.evaluate_script(
+            "window.__coveragePathsPersistence.getPaths()"
+          )
+        else
+          QA::Runtime::Logger.warn("Coverage persistence bundle missing, code paths not recorded")
+        end
 
         has_coverage = Capybara.current_session.evaluate_script(
           "typeof window.__coverage__ !== 'undefined' && window.__coverage__ !== null"
@@ -143,11 +152,12 @@ RSpec.configure do |config|
 
         if has_coverage
           full_coverage_data = Capybara.current_session.evaluate_script("window.__coverage__")
-          coverage_paths = Capybara.current_session.evaluate_script("Object.keys(window.__coverage__ || {})")
+          front_end_full_coverage_by_example[example.metadata[:location]] = full_coverage_data
+        end
 
+        if coverage_paths.present?
           example.metadata[:coverage_paths] = coverage_paths
           front_end_coverage_by_example[example.metadata[:location]] = coverage_paths
-          front_end_full_coverage_by_example[example.metadata[:location]] = full_coverage_data
         end
       rescue StandardError => e
         QA::Runtime::Logger.warn("Failed to collect coverage data: #{e.message}")

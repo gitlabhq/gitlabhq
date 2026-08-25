@@ -9,7 +9,6 @@ RSpec.describe 'Projects > Members > User requests access', :js, feature_categor
   let_it_be(:maintainer) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :public, :repository, maintainers: [maintainer]) }
 
-  let(:owner) { project.first_owner }
   let(:more_actions_dropdown) do
     find_by_testid('projects-list-item-actions')
   end

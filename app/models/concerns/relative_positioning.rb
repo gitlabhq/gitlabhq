@@ -230,13 +230,13 @@ module RelativePositioning
   # This method is used during rebalancing - override it to customise the update
   # logic:
   def update_relative_siblings(relation, range, delta)
-    # The column must be table-qualified: when the relation has joins, the
-    # updated table also appears in the FROM clause, so a bare column name is
-    # ambiguous.
+    # Only the range predicate uses the flag-aware column (Issue -> work_item_positions when
+    # the read flag is on) so it hits the positioning index; the SET still writes the model's
+    # own relative_position, table-qualified to disambiguate the joined table.
     position = self.class.arel_table[:relative_position]
 
     relation
-      .where(relative_position: range)
+      .where(self.class.relative_positioning_column(self).between(range))
       .update_all(relative_position: position + delta)
   end
 

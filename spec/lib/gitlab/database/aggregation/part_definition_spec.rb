@@ -6,7 +6,6 @@ RSpec.describe Gitlab::Database::Aggregation::PartDefinition, feature_category: 
   let(:name) { :test_part }
   let(:type) { :integer }
   let(:expression) { -> { 'COUNT(*)' } }
-  let(:secondary_expression) { -> { 'SUM(value)' } }
   let(:description) { 'Test part description' }
   let(:formatter) { ->(val) { val * 2 } }
 

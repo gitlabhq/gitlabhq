@@ -13,7 +13,8 @@ module Banzai
         super(context).merge(
           only_path: false,
           emailable_links: true,
-          no_sourcepos: true
+          no_sourcepos: true,
+          for_email: true
         )
       end
     end

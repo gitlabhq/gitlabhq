@@ -902,6 +902,42 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
     end
 
+    context 'items that are noteable, the email for a note holding a blob permalink' do
+      let_it_be(:embed_project) { create(:project, :repository, :public) }
+
+      let(:embed_issue) { create(:issue, project: embed_project) }
+      let(:permalink) do
+        "#{Gitlab.config.gitlab.url}/#{embed_project.full_path}" \
+          "/-/blob/#{embed_project.commit.sha}/files/ruby/popen.rb#L3-6"
+      end
+
+      let(:note) { create(:note_on_issue, noteable: embed_issue, project: embed_project, note: permalink) }
+
+      subject { described_class.note_issue_email(recipient.id, note.id) }
+
+      def email_body
+        Nokogiri::HTML5.fragment(subject.html_part.body.to_s)
+      end
+
+      it 'embeds the referenced lines' do
+        expect(email_body.at_css('.blob-embed')).to be_present
+      end
+
+      context 'when the project does not show diffs in emails' do
+        let_it_be(:embed_project) do
+          create(:project, :repository, :public,
+            project_setting: create(:project_setting, show_diff_preview_in_email: false))
+        end
+
+        it 'leaves the permalink as a plain link', :aggregate_failures do
+          fragment = email_body
+
+          expect(fragment.at_css('.blob-embed')).to be_nil
+          expect(fragment.at_css("a[href='#{permalink}']")).to be_present
+        end
+      end
+    end
+
     context 'items that are noteable, the email for a diff discussion note' do
       let_it_be(:note_author) { create(:user, name: 'author_name') }
 

@@ -15,7 +15,9 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     it 'has one `parent_link`' do
       is_expected.to have_one(:parent_link)
         .class_name('::WorkItems::ParentLink')
-        .with_foreign_key('work_item_id')
+        .inverse_of(:work_item)
+
+      expect(described_class.reflect_on_association(:parent_link).foreign_key).to eq('work_item_id')
     end
 
     it 'has many `work_item_children`' do

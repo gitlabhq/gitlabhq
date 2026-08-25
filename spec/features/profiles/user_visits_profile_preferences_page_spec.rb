@@ -6,7 +6,6 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
   include ListboxHelpers
 
   let(:user) { create(:user) }
-  let(:current_organization) { user.organization }
 
   before do
     sign_in(user)

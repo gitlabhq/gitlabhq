@@ -15,7 +15,6 @@ import { createNewMenuGroups, createNewMenuProjects } from '../mock_data';
 
 describe('CreateMenu component', () => {
   let wrapper;
-  const mockToast = jest.fn();
 
   const findGlDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findGlDisclosureDropdownGroups = () => wrapper.findAllComponents(GlDisclosureDropdownGroup);
@@ -47,16 +46,12 @@ describe('CreateMenu component', () => {
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
-      mocks: {
-        $toast: { show: mockToast },
-      },
     });
   };
 
   describe('default', () => {
     beforeEach(() => {
       createWrapper();
-      mockToast.mockReset();
     });
 
     it("sets the toggle's label", () => {

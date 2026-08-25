@@ -32,7 +32,6 @@ RSpec.describe Gitlab::Database::StatActivitySampler,
       ]
     end
 
-    let(:hash_key) { "gitlab:pg_stat_sampler:main:sidekiq:samples" }
     let(:lease_key) { "gitlab:exclusive_lease:#{sampler.instance_variable_get(:@lease_key)}" }
 
     before do

@@ -4012,6 +4012,7 @@ incompatible with personal access tokens.
 | `POST` | `/groups/:id/placeholder_reassignments/authorize` | Workhorse pre-authorization |
 | `POST` | `/groups/:id/uploads/authorize` | Workhorse pre-authorization |
 | `POST` | `/groups/import/authorize` | Workhorse pre-authorization |
+| `GET` | `/iam/userinfo` | IAM OAuth token |
 | `PUT` | `/integrations/jira_forge/installation` | GitLab for Jira (Forge) app token |
 | `POST` | `/integrations/jira_forge/installation/forge_token` | GitLab for Jira (Forge) app token |
 | `GET` | `/integrations/jira_forge/subscriptions` | GitLab for Jira (Forge) app token |

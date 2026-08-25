@@ -6,11 +6,6 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
   include RepoHelpers
   include ListboxHelpers
 
-  let(:fork_message) do
-    "You're not allowed to make changes to this project directly. "\
-    "A fork of this project has been created that you can make changes in, so you can submit a merge request."
-  end
-
   let_it_be(:project) { create(:project, :repository) }
   let(:tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
   let(:user) { project.first_owner }
@@ -319,7 +314,6 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
 
   context "when browsing a file with pathspec characters" do
     let(:filename) { ':wq' }
-    let(:newrev) { project.repository.commit('master').sha }
 
     before do
       create_file_in_repo(project, 'master', 'master', filename, 'Test file')

@@ -143,6 +143,8 @@ tags:
   x-displayName: Audit events
   externalDocs:
     url: https://docs.gitlab.com/api/audit_events/
+- name: Authn
+  description: Operations related to authn.
 - name: Avatars
   description: Use this API to retrieve and upload avatars for [users](https://docs.gitlab.com/user/profile/),
     [groups](https://docs.gitlab.com/user/group/), and [projects](https://docs.gitlab.com/user/project/).
@@ -76348,6 +76350,23 @@ paths:
           type: integer
           nullable: true
         in: query
+  "/api/v4/iam/userinfo":
+    get:
+      operationId: getApiV4IamUserinfo
+      summary: Return the OIDC ID-token claims for the caller identified by an IAM
+        OAuth token
+      description: Authenticates exclusively via an IAM-issued OAuth JWT and returns
+        the subset of OIDC claims documented as "Included in ID Token" in the OpenID
+        Connect provider docs
+      tags:
+      - Authn
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
   "/api/v4/applications":
     post:
       operationId: postApiV4Applications

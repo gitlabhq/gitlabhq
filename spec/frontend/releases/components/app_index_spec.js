@@ -50,7 +50,6 @@ describe('app_index.vue', () => {
   let singleRelease;
   let noReleases;
   let queryMock;
-  let toast;
 
   const createComponent = ({
     singleResponse = Promise.resolve(singleRelease),
@@ -66,8 +65,6 @@ describe('app_index.vue', () => {
       ],
     ];
     const apolloProvider = createMockApollo(handlers);
-
-    toast = jest.fn();
 
     wrapper = shallowMountExtended(ReleasesIndexApp, {
       apolloProvider,
@@ -86,9 +83,6 @@ describe('app_index.vue', () => {
             return getSlotFunction(this)({ isCiCdCatalogProject });
           },
         },
-      },
-      mocks: {
-        $toast: { show: toast },
       },
     });
   };
@@ -450,7 +444,7 @@ describe('app_index.vue', () => {
       await createComponent();
     });
 
-    it('shows a toast', () => {
+    it('shows a success alert', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: `Release ${release} has been successfully deleted.`,
         variant: VARIANT_SUCCESS,

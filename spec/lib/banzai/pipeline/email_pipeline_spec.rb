@@ -29,4 +29,10 @@ RSpec.describe Banzai::Pipeline::EmailPipeline, feature_category: :markdown do
       end
     end
   end
+
+  describe '.transform_context' do
+    it 'marks the render as being for email' do
+      expect(described_class.transform_context({})).to include(for_email: true)
+    end
+  end
 end

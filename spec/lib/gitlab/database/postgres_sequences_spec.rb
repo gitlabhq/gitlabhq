@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::PostgresSequence, type: :model, feature_category: :database do
   # PostgresSequence does not `behaves_like 'a postgres model'` because it does not correspond 1-1 with a single entry
   # in pg_class
-  let(:schema) { ActiveRecord::Base.connection.current_schema }
   let(:table_name) { '_test_table' }
   let(:table_name_without_sequence) { '_test_table_without_sequence' }
   let(:col_name) { :id }

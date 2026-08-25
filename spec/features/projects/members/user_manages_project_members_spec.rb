@@ -9,10 +9,8 @@ RSpec.describe 'Projects > Settings > User manages project members', :js, featur
 
   let(:group) { create(:group, name: 'OpenSource') }
   let(:project) { create(:project, :with_namespace_settings) }
-  let(:project2) { create(:project) }
   let(:user) { create(:user) }
   let(:user_dmitriy) { create(:user, name: 'Dmitriy') }
-  let(:user_mike) { create(:user, name: 'Mike') }
 
   before do
     project.add_maintainer(user)
