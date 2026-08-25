@@ -1424,6 +1424,50 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
         end
 
+        context 'with the request timeout for job assignment phases' do
+          # Rack::Timeout does not run in tests, so stand in for what it leaves
+          # in the Rack env.
+          def request_job_under_rack_timeout
+            post api('/jobs/request'),
+              params: { token: runner.token }.to_json,
+              headers: {
+                'User-Agent' => user_agent,
+                'Content-Type' => 'application/json',
+                ::Rack::Timeout::ENV_INFO_KEY => ::Rack::Timeout::RequestDetails.new(nil, nil, nil, 60)
+              }
+          end
+
+          it 'passes the timeout Rack::Timeout computed for the request' do
+            expect(::Ci::RegisterJobService).to receive(:new)
+              .with(anything, anything, request_timeout_at: a_kind_of(Float))
+              .and_call_original
+
+            request_job_under_rack_timeout
+          end
+
+          context 'when the ci_register_job_phase_timeouts feature flag is disabled' do
+            before do
+              stub_feature_flags(ci_register_job_phase_timeouts: false)
+            end
+
+            it 'leaves job assignment untimed' do
+              expect(::Ci::RegisterJobService).to receive(:new)
+                .with(anything, anything, request_timeout_at: nil)
+                .and_call_original
+
+              request_job_under_rack_timeout
+            end
+          end
+
+          it 'leaves job assignment untimed when Rack::Timeout enforces no timeout' do
+            expect(::Ci::RegisterJobService).to receive(:new)
+              .with(anything, anything, request_timeout_at: nil)
+              .and_call_original
+
+            request_job
+          end
+        end
+
         def request_job(token = runner.token, **params)
           new_params = params.merge(token: token, last_update: last_update)
           post api('/jobs/request'), params: new_params.to_json, headers: { 'User-Agent' => user_agent, 'Content-Type': 'application/json' }

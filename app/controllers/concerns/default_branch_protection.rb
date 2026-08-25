@@ -5,7 +5,7 @@ module DefaultBranchProtection
 
   def normalize_default_branch_params!(form_key)
     # The entity being configured will either be the instance or the group
-    entity_settings_params = params[form_key]
+    entity_settings_params = params.require(form_key)
 
     if Gitlab::Utils.to_boolean(entity_settings_params[:default_branch_protected]) == false
       entity_settings_params[:default_branch_protection_defaults] =
@@ -34,5 +34,8 @@ module DefaultBranchProtection
           entity_settings_params[:default_branch_protection_defaults][key],
           default: ::Gitlab::Access::BranchProtection.protected_fully[key])
     end
+  rescue ActionController::ParameterMissing
+    # `require` also raises for a present-but-empty hash, e.g. `{ group: {} }`.
+    nil
   end
 end

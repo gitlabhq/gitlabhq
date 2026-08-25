@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Editor Extensions
+stage: Agent Foundations
+group: Agent Developer
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Agent Skills
 ---
@@ -14,24 +14,26 @@ title: Agent Skills
 
 {{< history >}}
 
-- ワークスペースレベルのAgent SkillsのサポートはGitLab 18.10で[追加されました](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2951)。
+- プロジェクトレベルのAgent SkillsのサポートはGitLab 18.10で[追加](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2951)されました。
   - GitLab for VS Code 6.71.4に[導入](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.71.4)されました。
   - GitLab Duo CLI 8.73.0に[導入](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.73.0)されました。
-- ユーザーレベルのAgent SkillsのサポートがGitLab 19.0で[導入](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/3140)されました。
+- ユーザーレベルのAgent SkillsのサポートはGitLab 19.0で[導入](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/3140)されました。
   - GitLab Duo CLI 8.83.0で、[実験](../../../policy/development_stages_support.md#experiment)として[導入](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.83.0)されました。
 
 {{< /history >}}
 
-GitLab Duoは、[Agent Skills specification](https://agentskills.io/specification)をサポートしています。これはエージェントに新しい機能と専門知識を与えるための新しい仕様です。
+GitLab Duoは、[Agent Skills specification](https://agentskills.io/specification)をサポートしています。これはエージェントに新しい機能と専門知識を追加するための新しい仕様です。
 
-Agent Skillsを使用して、特定のフレームワークでテストを作成するなど、特定のタスクに対する特別な知識とワークフローをエージェントに与えます。エージェントは、タスクに遭遇すると関連するスキルを自動的に読み込み、作業中にその情報を使用します。
+Agent Skillsを使用して、特定のフレームワークでテストを作成するなど、特定のタスクに対する特別な知識とワークフローをエージェントに与えます。エージェントは、タスクに遭遇すると関連するスキルを自動的に読み込み、処理中にその情報を使用します。
 
 `SKILL.md`ファイルを指定すると、スキルはGitLab Duo Agent Platformおよびその仕様をサポートする他のすべてのAIツールで利用できるようになります。
 
 GitLab Duoで使用するAgent Skillsを指定します:
 
 - ローカル環境でのGitLab Duo Chat。
-- 基本フローおよびカスタムフロー。
+- 基盤となるフローとカスタムフロー（コードレビューフローを除く）。
+
+ユーザーレベルのスキルは、GitLab Duo CLIでのみ使用できます。
 
 ## GitLab DuoがAgent Skillsを使用する方法 {#how-gitlab-duo-uses-agent-skills}
 
@@ -39,21 +41,32 @@ GitLab Duoで使用するAgent Skillsを指定します:
 
 GitLab Duoにスキルを使用させるには、名前、ファイルパス、またはスラッシュコマンドで手動で指示することもできます。
 
+GitLab Duoは以下のタイプのスキルをサポートしています:
+
+| レベル                                                              | GitLab UI | エディタ拡張 | GitLab Duo CLI |
+|--------------------------------------------------------------------|-------------------------------|-------------------|----------------|
+| ユーザーレベル: すべてのプロジェクトに適用      | {{< no >}}                    | {{< no >}}        | {{< yes >}}    |
+| プロジェクトレベル: 特定のプロジェクトにのみ適用 | {{< yes >}} <sup>1</sup>                   | {{< yes >}}       | {{< yes >}}    |
+
+**補足説明**: 
+
+1. GitLab UIでは、基盤となるフローとカスタムフロー（コードレビューを除く）のみがプロジェクトレベルのスキルをサポートしています。GitLab Duo Chatは、GitLab UIではスキルをサポートしていません。
+
 ## GitLab DuoでAgent Skillsを使用する {#use-agent-skills-with-gitlab-duo}
 
 > [!note]
-> 既存の会話とワークフローは、新規または更新されたスキルに自動的にアクセスできません。新しい会話を開始するか、GitLab Duoに名前または相対パスでスキルを読み込むように依頼してください。
+> 既存の会話とフローは、新しいスキルや更新されたスキルに自動的にアクセスできません。新しい会話を開始するか、GitLab Duoに名前または相対パスでスキルを読み込むように依頼してください。
 
 ### 前提条件 {#prerequisites}
 
 - [Agent Platformの前提条件](../_index.md#prerequisites)を満たしてください。
 - ローカル環境でGitLab Duo Chatを使用する場合は、以下のいずれかをインストールして設定してください:
-  - ワークスペースレベルのスキル向け:
+  - プロジェクトレベルのスキルについて:
     - [GitLab for VS Code](../../../editor_extensions/visual_studio_code/setup.md) 6.71.4以降。
-    - [GitLab Duo CLI](../../gitlab_duo_cli/_index.md#set-up-the-gitlab-duo-cli) 8.73.0以降。
+    - [GitLab Duo CLI](../../gitlab_duo_cli/set_up.md) 8.73.0以降。
   - ユーザーレベルのスキル向け:
-    - [GitLab Duo CLI](../../gitlab_duo_cli/_index.md#set-up-the-gitlab-duo-cli) 8.83.0以降。
-- カスタムルールの場合は、executorから渡される`workspace_agent_skills`コンテキストにアクセスできるよう、フローの設定ファイルを更新します:
+    - [GitLab Duo CLI](../../gitlab_duo_cli/set_up.md) 8.83.0以降。
+- カスタムフローを持つプロジェクトレベルのスキルでは、フローの設定ファイルを更新して、executorから渡される`workspace_agent_skills`コンテキストにアクセスします:
 
   ```yaml
   components:
@@ -68,13 +81,23 @@ GitLab Duoにスキルを使用させるには、名前、ファイルパス、�
 
   `optional: true`を設定することで、ワークフローはエージェントスキルが存在しないケースを適切に処理します。エージェントは、追加のコンテキストの有無にかかわらず動作します。
 
-### ワークスペースレベルのスキルを作成する {#create-workspace-level-skills}
+### スキルを作成する {#create-skills}
 
-ワークスペースレベルのスキルは、特定のプロジェクトまたはワークスペースに適用されます。それらは、プロジェクトの`skills/<skill-name>/`ディレクトリにある`SKILL.md`ファイルで定義します。
+スキルはプロジェクトレベルまたはユーザーレベルで作成できます。
 
-ワークスペースレベルのスキルを作成するには:
+IDEでマルチルートワークスペースを使用している場合、ワークスペース内の各プロジェクトに対してプロジェクトレベルのスキルを作成できます。
 
-1. プロジェクトのワークスペースのルートに、`skills`ディレクトリを作成します。
+ユーザーレベルのスキルとプロジェクトレベルのスキルが同じ名前を共有する場合、プロジェクトレベルのスキルが優先されます。これにより、ユーザーレベルのスキルをプロジェクト固有のバージョンでオーバーライドできます。
+
+マルチルートワークスペースで複数のプロジェクトが同じ名前のスキルを定義している場合、GitLab Duoは最初に見つかったスキルを読み込みます。
+
+#### プロジェクトレベルのスキルを作成する {#create-project-level-skills}
+
+プロジェクトレベルのスキルは特定のプロジェクトに適用されます。それらは、プロジェクトの`skills/<skill-name>/`ディレクトリにある`SKILL.md`ファイルで定義します。
+
+プロジェクトレベルのスキルを作成するには:
+
+1. プロジェクトのルートに、`skills`ディレクトリを作成します。
 1. 新しいディレクトリ内に、特定のスキル用の別のディレクトリを作成します。スキル名をディレクトリ名として使用します。
 1. `SKILL.md`ファイルを作成し、以下の形式で手順を含めます。`name`および`description`のYAMLフロントマターフィールドは必須です。
 
@@ -87,7 +110,7 @@ GitLab Duoにスキルを使用させるには、名前、ファイルパス、�
    <your_instructions_and_context_for_the_skill>
    ```
 
-    例えば、`skills/cosign-blob/SKILL.md`で[cosignを使用してアーティファクトに署名する](../../../ci/yaml/signing_examples.md)スキルです:
+   例えば、`skills/cosign-blob/SKILL.md`で[cosignを使用してアーティファクトに署名する](../../../ci/yaml/signing_examples.md)スキルです:
 
     ````markdown
     ---
@@ -154,7 +177,7 @@ GitLab Duoにスキルを使用させるには、名前、ファイルパス、�
 1. ファイルを保存します。
 1. 新しい会話またはワークフローを開始します。エージェントのコンテキストの混乱を避けるため、`SKILL.md`ファイルを変更または追加するたびにこれを行う必要があります。
 
-### ユーザーレベルのスキルを作成する {#create-user-level-skills}
+#### ユーザーレベルのスキルを作成する {#create-user-level-skills}
 
 {{< details >}}
 
@@ -162,21 +185,23 @@ GitLab Duoにスキルを使用させるには、名前、ファイルパス、�
 
 {{< /details >}}
 
-ユーザーレベルのスキルは、すべてのプロジェクトに適用されます。それらは、次のいずれかのディレクトリにある`SKILL.md`ファイルで定義します:
+ユーザーレベルのスキルは、すべてのプロジェクトに適用されます。それらをホームディレクトリ内の`skills/<skill-name>/`ディレクトリにある`SKILL.md`ファイルで定義します。
 
-- ホームディレクトリ内のエージェントディレクトリ:
-  - LinuxまたはmacOSの場合、`~/.agents/skills/<skill_name>/SKILL.md`にあります。
-  - Windowsの場合、`%USERPROFILE%\.agents\skills\<skill_name>\SKILL.md`にあります。
-- GitLab Duoの設定ディレクトリ:
-  - LinuxまたはmacOSの場合、`~/.gitlab/duo/skills/<skill_name>/SKILL.md`にあります。
-  - Windowsの場合、`%APPDATA%\GitLab\duo\skills\<skill_name>\SKILL.md`にあります (例: `C:\Users\<username>\AppData\Roaming\GitLab\duo\skills\<skill_name>\SKILL.md`)。
+ユーザーレベルのスキルは、GitLab Duo CLIでのみ使用できます。
 
-以下の環境変数のいずれかを設定している場合、GitLab Duoの設定ディレクトリパスは異なります。`GLAB_CONFIG_DIR`が`XDG_CONFIG_HOME`よりも優先されます。
+##### ユーザーレベルのスキル用のディレクトリを作成する {#create-a-directory-for-user-level-skills}
 
-- `GLAB_CONFIG_DIR`の場合、`$GLAB_CONFIG_DIR/skills/<skill_name>/SKILL.md`にあります。
-- `XDG_CONFIG_HOME`の場合、`$XDG_CONFIG_HOME/gitlab/duo/skills/<skill_name>/SKILL.md`にあります。
+スキルディレクトリは以下のいずれかの場所に作成できます:
 
-ユーザーレベルのスキルとワークスペースレベルのスキルが同じ名前を共有する場合、ワークスペースレベルのスキルが優先されます。これにより、ユーザーレベルのスキルをプロジェクト固有のバージョンでオーバーライドできます。
+- スキルを他のGitLab Duoのカスタマイズファイルと一緒に保持するには:
+  - LinuxまたはmacOSの場合、`~/.gitlab/duo/skills/`にディレクトリを作成します。
+  - Windowsの場合、`%APPDATA%\GitLab\duo\skills\`にディレクトリを作成します。
+  - `GLAB_CONFIG_DIR`または`XDG_CONFIG_HOME`を設定している場合、`$GLAB_CONFIG_DIR/skills/`または`$XDG_CONFIG_HOME/gitlab/duo/skills/`を使用します。両方が設定されている場合、`GLAB_CONFIG_DIR`が優先されます。
+- Agent Skillsの仕様をサポートする他のAIツールとスキルを共有するには:
+  - LinuxまたはmacOSの場合、`~/.agents/skills/`にディレクトリを作成します。
+  - Windowsの場合、`%USERPROFILE%\.agents\skills\`にディレクトリを作成します。
+
+##### ユーザーレベルのスキルファイルを作成する {#create-a-user-level-skill-file}
 
 ユーザーレベルのスキルを作成するには:
 
@@ -208,12 +233,7 @@ GitLab Duoにスキルを使用させるには、名前、ファイルパス、�
    export GITLAB_ENABLE_GLOBAL_SKILLS=true
    ```
 
-1. サポートされているいずれかの場所にスキルディレクトリを作成します:
-
-   ```shell
-   mkdir -p ~/.agents/skills/<skill_name>
-   ```
-
+1. あなたの`skills`ディレクトリ内に、特定のスキル用の別のディレクトリを作成します。スキル名をディレクトリ名として使用します。例: `~/.gitlab/duo/skills/<skill_name>/`。
 1. `SKILL.md`ファイルを作成し、以下の形式で手順を含めます。`name`および`description`のYAMLフロントマターフィールドは必須です。
 
    ```markdown
@@ -227,7 +247,7 @@ GitLab Duoにスキルを使用させるには、名前、ファイルパス、�
 
 1. 新しい会話を開始します。このスキルはどのプロジェクトでも利用できます。
 
-### スラッシュコマンドとしてスキルを公開する {#expose-skills-as-slash-commands}
+#### スラッシュコマンドとしてスキルを公開する {#expose-skills-as-slash-commands}
 
 カスタムスラッシュコマンドとしてスキルを有効にするには、`SKILL.md`ファイルのYAMLフロントマターのメタデータに`slash-command: enabled`を追加します:
 
@@ -242,7 +262,7 @@ metadata:
 
 メタデータを追加すると、新しいセッションで`/<skill_name>`を使用して、GitLab Duoにスキルを使用するように指示できます。例: `/fix-bugs`。
 
-### スキルを手動で使用する {#use-a-skill-manually}
+### スキルを手動で使用する {#use-skills-manually}
 
 GitLab Duoに特定のスキルを使用させるには、以下のいずれかの方法を使用します:
 

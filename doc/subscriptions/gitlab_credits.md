@@ -24,6 +24,9 @@ title: GitLab Credits and usage billing
 GitLab Credits are the standardized consumption currency for usage-based billing.
 Credits are used for [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md),
 where each usage action consumes a number of credits.
+Credits are also used for [hosted runners for GitLab Dedicated](../administration/dedicated/hosted_runners.md),
+where running CI/CD jobs consumes credits.
+For rates, contact your account representative.
 
 [GitLab Duo Pro and Enterprise](subscription-add-ons.md#gitlab-duo-pro-and-enterprise) and their associated [GitLab Duo features](../user/gitlab_duo/feature_summary.md) are not billed based on usage and do not consume GitLab Credits.
 
@@ -122,6 +125,9 @@ GitLab Credits are consumed in the following order:
 1. Monthly Commitment Pool of credits is used after all included credits have been consumed.
 1. On-Demand credits are used after all other available credits
    (included credits and Monthly Commitment Pool, if applicable) are depleted and usage billing terms are signed.
+
+Other credit types, such as One-Time Charge credits, might apply to your subscription.
+For details, contact your account team.
 
 ## Temporary evaluation credits
 
@@ -349,7 +355,7 @@ The GitLab Secrets Manager also consumes Credits, but with [a different consumpt
 
 {{< details >}}
 
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -364,12 +370,14 @@ The GitLab Credits dashboard displays information about your usage of GitLab Cre
 Use the dashboard to monitor credit consumption, track trends, and identify usage patterns.
 
 To help you manage credit consumption, GitLab emails the following information to
-administrators and subscription owners:
+Customers Portal users linked to the billing account:
 
 - Monthly credit usage summaries
 - Notifications when credit usage thresholds are at 50%, 80%, and 100%
 
 You can access the dashboard in the Customers Portal and in GitLab.
+On GitLab Dedicated, the dashboard is available in the Customers Portal and to instance administrators.
+Group-level and personal credit usage views are available on GitLab.com only.
 
 > [!note]
 > Usage data is not displayed in real time.
@@ -420,7 +428,7 @@ The dashboard displays the following information:
 - **Total credit consumption**: Daily credit consumption over all products, displayed as a bar chart
 - **Usage by user**: Number of credits used by each user
 - **User drill-down view**: Individual usage events for each user, with links to GitLab Duo Agent Platform session details
-- **Usage by product**: Number of credits used and percentage of total credits for GitLab Duo Agent Platform and Secrets Manager
+- **Usage by product**: Number of credits used and percentage of total credits for GitLab Duo Agent Platform, Secrets Manager, and hosted runners
 
 > [!note]
 > While [GitLab Secrets Manager](../ci/secrets/secrets_manager/_index.md) is in beta,
@@ -587,6 +595,19 @@ no subscription-level on-demand GitLab Credits cap is enforced, and behavior fal
 existing billing behavior.
 
 You can use the GraphQL API to [view usage caps](../api/graphql/reference/_index.md#gitlabsubscriptionbudgetcaps) and set a [flat user-level cap](../api/graphql/reference/_index.md#mutationupsertflatusercap) or a [per-user override cap](../api/graphql/reference/_index.md#mutationupsertuserbudgetcapoverrides).
+
+#### Usage cap exemptions
+
+Some services are exempt from usage caps because interrupting them would break a critical part of your workflow.
+For example, [hosted runners for GitLab Dedicated](../administration/dedicated/hosted_runners.md) are exempt.
+A subscription or per-user cap does not stop CI/CD jobs from running, and jobs continue after the Monthly Commitment Pool is depleted.
+
+Usage by exempt services still draws from your credits in the usual order and still accrues On-Demand charges.
+Because caps do not apply, you can't use cap-based controls to limit this spend.
+Monitor consumption in the GitLab Credits dashboard instead.
+
+Exempt usage requires accepted usage billing terms, in the same way as any other On-Demand consumption.
+If you have not accepted usage billing terms and your available credits are depleted, GitLab denies further usage.
 
 ### Usage control status
 

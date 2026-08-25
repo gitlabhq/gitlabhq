@@ -145,8 +145,9 @@ module Admin
       @plans = Plan.all
     end
 
+    # Overridden in EE. GitLab Duo in Slack is an EE-only feature.
     def duo_enabled_for_manifest?
-      Feature.enabled?(:slack_duo_agent, current_user)
+      false
     end
 
     def disable_query_limiting

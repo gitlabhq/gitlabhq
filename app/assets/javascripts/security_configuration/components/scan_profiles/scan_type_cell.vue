@@ -11,7 +11,6 @@ import {
   SCAN_PROFILE_SCANNER_HEALTH_WARNING,
   EVENT_CLICK_SCAN_PROFILE_LEARN_MORE_LINK,
 } from '~/security_configuration/constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'ScanTypeCell',
@@ -21,16 +20,11 @@ export default {
     GlLink,
     GlSprintf,
   },
-  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin()],
   props: {
     scanType: {
       type: String,
       required: true,
-    },
-    isConfigured: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     status: {
       type: String,
@@ -47,28 +41,22 @@ export default {
       return SCAN_PROFILE_CATEGORIES[this.scanType] || {};
     },
     scanTypeBadgeClass() {
-      if (this.glFeatures.securityScanProfilesStatusIndicators) {
-        const classMap = {
-          [SCAN_PROFILE_SCANNER_HEALTH_ACTIVE]:
-            'gl-border-feedback-success gl-bg-status-success gl-text-status-success',
-          [SCAN_PROFILE_SCANNER_HEALTH_WARNING]:
-            'gl-border-feedback-warning gl-bg-status-warning gl-text-status-warning',
-          [SCAN_PROFILE_SCANNER_HEALTH_FAILED]:
-            'gl-border-feedback-danger gl-bg-status-danger gl-text-status-danger',
-          [SCAN_PROFILE_SCANNER_HEALTH_PENDING]:
-            'gl-border-strong gl-bg-status-neutral gl-text-strong',
-          [SCAN_PROFILE_SCANNER_HEALTH_STALE]:
-            'gl-border-strong gl-bg-status-neutral gl-text-strong',
-          [SCAN_PROFILE_SCANNER_HEALTH_UNCONFIGURED]:
-            'gl-border-dashed gl-border-strong gl-bg-default gl-text-strong',
-        };
-        return (
-          classMap[this.status] || 'gl-border-dashed gl-border-strong gl-bg-default gl-text-strong'
-        );
-      }
-      return this.isConfigured
-        ? 'gl-border-green-500 gl-bg-green-100 gl-text-green-800'
-        : 'gl-border-dashed gl-border-strong gl-bg-default gl-text-strong';
+      const classMap = {
+        [SCAN_PROFILE_SCANNER_HEALTH_ACTIVE]:
+          'gl-border-feedback-success gl-bg-status-success gl-text-status-success',
+        [SCAN_PROFILE_SCANNER_HEALTH_WARNING]:
+          'gl-border-feedback-warning gl-bg-status-warning gl-text-status-warning',
+        [SCAN_PROFILE_SCANNER_HEALTH_FAILED]:
+          'gl-border-feedback-danger gl-bg-status-danger gl-text-status-danger',
+        [SCAN_PROFILE_SCANNER_HEALTH_PENDING]:
+          'gl-border-strong gl-bg-status-neutral gl-text-strong',
+        [SCAN_PROFILE_SCANNER_HEALTH_STALE]: 'gl-border-strong gl-bg-status-neutral gl-text-strong',
+        [SCAN_PROFILE_SCANNER_HEALTH_UNCONFIGURED]:
+          'gl-border-dashed gl-border-strong gl-bg-default gl-text-strong',
+      };
+      return (
+        classMap[this.status] || 'gl-border-dashed gl-border-strong gl-bg-default gl-text-strong'
+      );
     },
   },
   EVENT_CLICK_SCAN_PROFILE_LEARN_MORE_LINK,

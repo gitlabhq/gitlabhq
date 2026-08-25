@@ -995,6 +995,175 @@ module Ci
           end
         end
 
+        context 'with a request timeout for job assignment phases' do
+          let!(:pending_job) do
+            create(:ci_build, :pending, :queued, pipeline: pipeline)
+          end
+
+          let(:request_time_left) { 60.seconds }
+          let(:request_timeout_at) { ::Gitlab::Metrics::System.monotonic_time + request_time_left }
+
+          subject(:result) do
+            described_class.new(project_runner, nil, request_timeout_at: request_timeout_at).execute.build
+          end
+
+          it 'gives each phase what remains of the timeout, less the unwind reserve' do
+            phase_budgets = []
+            allow(Timeout).to receive(:timeout).and_wrap_original do |original, period, *args, &blk|
+              error_class = args.first
+              phase_budgets << period if error_class.is_a?(Class) && error_class <= described_class::PhaseTimeoutError
+
+              original.call(period, *args, &blk)
+            end
+
+            expect(result).to eq(pending_job)
+
+            expect(phase_budgets.size).to eq(2)
+            expect(phase_budgets).to all(be > 0)
+            expect(phase_budgets).to all(be <= request_time_left - described_class::UNWIND_RESERVE)
+            expect(phase_budgets.last).to be < phase_budgets.first
+          end
+
+          context 'when a phase times out' do
+            let(:error_class) { described_class::PHASE_TIMEOUT_ERRORS.fetch(phase) }
+
+            before do
+              allow(Timeout).to receive(:timeout).and_call_original
+              allow(Timeout).to receive(:timeout)
+                .with(anything, error_class, a_string_including(phase.to_s))
+                .and_raise(error_class, "#{phase} timed out")
+            end
+
+            context 'in the pre-assign runner checks' do
+              let(:phase) { :pre_assign_runner_checks }
+
+              it 'drops the build with scheduler_failure without running it' do
+                expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+                  .with(an_instance_of(described_class::PreAssignRunnerChecksTimeoutError),
+                    a_hash_including(build_id: pending_job.id))
+                  .once
+
+                expect(result).to be_nil
+
+                pending_job.reload
+                expect(pending_job).to be_failed
+                expect(pending_job).to be_scheduler_failure
+                expect(pending_job.runner).to be_nil
+              end
+
+              it 'counts the timeout against the phase' do
+                allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+                counter = Gitlab::Ci::Queue::Metrics.queue_operations_total
+                allow(counter).to receive(:increment)
+
+                expect(counter).to receive(:increment)
+                  .with(operation: :queue_phase_timeout_pre_assign_runner_checks).once
+
+                result
+              end
+            end
+
+            context 'in the response rendering' do
+              let(:phase) { :present_build }
+
+              it 'drops the build with scheduler_failure and tracks the error' do
+                expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+                  .with(an_instance_of(described_class::PresentBuildTimeoutError),
+                    a_hash_including(build_id: pending_job.id))
+                  .once
+
+                expect(result).to be_nil
+
+                pending_job.reload
+                expect(pending_job).to be_failed
+                expect(pending_job).to be_scheduler_failure
+              end
+
+              it 'counts the timeout against the phase' do
+                allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+                counter = Gitlab::Ci::Queue::Metrics.queue_operations_total
+                allow(counter).to receive(:increment)
+
+                expect(counter).to receive(:increment)
+                  .with(operation: :queue_phase_timeout_present_build).once
+
+                result
+              end
+            end
+          end
+
+          context 'when the timeout leaves no room before any build is processed' do
+            let(:request_time_left) { described_class::UNWIND_RESERVE }
+
+            before do
+              allow(Timeout).to receive(:timeout).and_call_original
+            end
+
+            it 'stops the queue scan without dropping builds' do
+              expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+              expect(result).to be_nil
+
+              expect(pending_job.reload).to be_pending
+
+              expect(Timeout).not_to have_received(:timeout)
+                .with(anything, a_kind_of(Class), anything)
+            end
+          end
+
+          context 'when a build consumes the entire timeout' do
+            let!(:second_pending_job) do
+              create(:ci_build, :pending, :queued, pipeline: pipeline)
+            end
+
+            before do
+              # Shift the monotonic clock past the timeout while the first
+              # build's pre-assign checks run, as if a check stalled.
+              time_offset = 0
+              allow(::Gitlab::Metrics::System).to receive(:monotonic_time).and_wrap_original do |original|
+                original.call + time_offset
+              end
+
+              allow_next_instance_of(described_class) do |service|
+                allow(service).to receive(:pre_assign_runner_checks).and_wrap_original do |original|
+                  time_offset = request_time_left.to_f
+                  original.call
+                end
+              end
+            end
+
+            it 'drops only that build and leaves later candidates in the queue' do
+              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+                .with(an_instance_of(described_class::PresentBuildTimeoutError),
+                  a_hash_including(build_id: pending_job.id))
+                .once
+
+              expect(result).to be_nil
+
+              expect(pending_job.reload).to be_failed
+              expect(pending_job.reload).to be_scheduler_failure
+              expect(second_pending_job.reload).to be_pending
+            end
+          end
+
+          context 'without a request timeout' do
+            let(:request_timeout_at) { nil }
+
+            before do
+              allow(Timeout).to receive(:timeout).and_call_original
+            end
+
+            it 'does not apply timeouts and picks the build' do
+              expect(result).to eq(pending_job)
+
+              expect(Timeout).not_to have_received(:timeout)
+                .with(anything, a_kind_of(Class), anything)
+            end
+          end
+        end
+
         context 'when an exception is raised during a persistent ref creation' do
           before do
             allow_next_instance_of(Ci::PersistentRef) do |instance|

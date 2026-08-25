@@ -51,7 +51,9 @@ export default {
       <template #description>
         <slot name="description">
           <gl-sprintf :message="emptyStateDescription">
-            <template #organizationName>{{ organization.name }}</template>
+            <template #organizationName
+              ><span data-testid="organization-name">{{ organization.name }}</span></template
+            >
             <template #link="{ content }">
               <help-page-link href="/user/organization/_index.md">{{ content }}</help-page-link>
             </template>

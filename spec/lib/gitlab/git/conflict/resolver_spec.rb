@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::Conflict::Resolver do
+RSpec.describe Gitlab::Git::Conflict::Resolver, feature_category: :source_code_management do
   let(:repository) { instance_double(Gitlab::Git::Repository) }
   let(:our_commit_oid) { 'our-commit-oid' }
   let(:their_commit_oid) { 'their-commit-oid' }

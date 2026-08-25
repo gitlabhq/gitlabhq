@@ -19,7 +19,17 @@ module Import
     end
 
     def ci_cd_only?
-      %w[1 true].include?(params[:ci_cd_only])
+      %w[1 true].include?(ci_cd_only_param)
+    end
+
+    def ci_cd_only_param
+      params.permit(:ci_cd_only)[:ci_cd_only]
+    end
+
+    # Import::BaseController defines an identical helper, but this concern is also
+    # included by controllers that do not inherit from it.
+    def namespace_id_param
+      params.permit(:namespace_id)[:namespace_id]
     end
 
     def go_to_provider_for_permissions
@@ -87,7 +97,10 @@ module Import
     end
 
     def callback_import_url
-      public_send("users_import_#{provider_name}_callback_url", extra_import_params.merge({ namespace_id: params[:namespace_id] })) # rubocop:disable GitlabSecurity/PublicSend
+      callback_params = extra_import_params.merge({ namespace_id: namespace_id_param })
+      # rubocop:disable GitlabSecurity/PublicSend -- route helper name is derived from the provider
+      public_send("users_import_#{provider_name}_callback_url", callback_params)
+      # rubocop:enable GitlabSecurity/PublicSend
     end
 
     def extra_import_params

@@ -188,10 +188,10 @@ module NotesActions
 
     on_image = discussion.on_image?
 
-    if params[:view] == 'parallel' && !on_image
+    if notes_query_params[:view] == 'parallel' && !on_image
       template = "discussions/_parallel_diff_discussion"
       locals =
-        if params[:line_type] == 'old'
+        if notes_query_params[:line_type] == 'old'
           { discussions_left: [discussion], discussions_right: nil }
         else
           { discussions_left: nil, discussions_right: [discussion] }
@@ -227,17 +227,8 @@ module NotesActions
   end
 
   def create_note_params
-    params.require(:note).permit(
-      :type,
-      :note,
-      :line_code, # LegacyDiffNote
-      :position, # DiffNote
-      :confidential,
-      :internal
-    ).tap do |create_params|
-      create_params.merge!(
-        params.permit(:merge_request_diff_head_sha, :in_reply_to_discussion_id)
-      )
+    submitted_note_params.tap do |create_params|
+      create_params.merge!(note_context_params)
 
       # These params are also sent by the client but we need to set these based on
       # target_type and target_id because we're checking permissions based on that
@@ -249,11 +240,30 @@ module NotesActions
       when MergeRequest
         create_params[:noteable_id] = noteable.id
         # Notes on MergeRequest can have an extra `commit_id` context
-        create_params[:commit_id] = params.dig(:note, :commit_id)
+        create_params[:commit_id] = note_commit_id_param
       else
         create_params[:noteable_id] = noteable.id
       end
     end
+  end
+
+  def submitted_note_params
+    params.require(:note).permit(
+      :type,
+      :note,
+      :line_code, # LegacyDiffNote
+      :position, # DiffNote
+      :confidential,
+      :internal
+    )
+  end
+
+  def note_context_params
+    params.permit(:merge_request_diff_head_sha, :in_reply_to_discussion_id)
+  end
+
+  def note_commit_id_param
+    params.require(:note).permit(:commit_id)[:commit_id]
   end
 
   def update_note_params
@@ -289,7 +299,7 @@ module NotesActions
   strong_memoize_attr :last_fetched_at
 
   def notes_filter
-    current_user&.notes_filter_for(params[:target_type])
+    current_user&.notes_filter_for(notes_query_params[:target_type])
   end
 
   def notes_finder
@@ -313,7 +323,7 @@ module NotesActions
   def note_project
     return unless project
 
-    note_project_id = params[:note_project_id]
+    note_project_id = notes_query_params[:note_project_id]
 
     the_project =
       if note_project_id.present?
@@ -329,17 +339,21 @@ module NotesActions
   strong_memoize_attr :note_project
 
   def return_discussion?
-    Gitlab::Utils.to_boolean(params[:return_discussion])
+    Gitlab::Utils.to_boolean(notes_query_params[:return_discussion])
   end
 
   def use_note_serializer?
-    return false if params['html']
+    return false if notes_query_params['html']
 
     noteable.discussions_rendered_on_frontend?
   end
 
   def use_rapid_diffs_serializer?
-    Gitlab::Utils.to_boolean(params[:rapid_diffs])
+    Gitlab::Utils.to_boolean(notes_query_params[:rapid_diffs])
+  end
+
+  def notes_query_params
+    params.permit(:view, :line_type, :target_type, :note_project_id, :return_discussion, :html, :rapid_diffs)
   end
 
   def rapid_diffs_serializer_options

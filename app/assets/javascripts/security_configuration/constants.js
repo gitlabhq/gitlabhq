@@ -241,11 +241,9 @@ export const SCAN_PROFILE_PROMO_ITEMS = [
 
 export const SCAN_PROFILE_I18N = {
   noProfile: s__('SecurityProfiles|No profile applied'),
-  notConfigured: s__('SecurityProfiles|Unconfigured'),
   applyToEnable: s__('SecurityProfiles|Apply profile to enable'),
   awaitingFirstPipeline: s__('SecurityProfiles|Awaiting first pipeline'),
   coverageMayBeOutdated: s__('SecurityProfiles|Coverage may be outdated'),
-  active: s__('SecurityProfiles|Active'),
   profileHelpTitle: s__('SecurityProfiles|What are configuration profiles?'),
   profileHelpDescription: s__(
     'SecurityProfiles|Configuration profiles are reusable settings templates for security tools. Create and manage profiles once, then apply them to multiple projects to ensure consistent security coverage. %{linkStart}Learn more%{linkEnd}.',

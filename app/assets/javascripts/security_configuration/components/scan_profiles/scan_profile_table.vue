@@ -117,11 +117,7 @@ export default {
     </template>
 
     <template #cell(scanType)="{ item }">
-      <scan-type-cell
-        :scan-type="item.scanType"
-        :is-configured="item.isConfigured"
-        :status="item.status"
-      />
+      <scan-type-cell :scan-type="item.scanType" :status="item.status" />
     </template>
 
     <template #cell(name)="{ item }">

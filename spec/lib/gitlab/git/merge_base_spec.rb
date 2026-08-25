@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::MergeBase do
+RSpec.describe Gitlab::Git::MergeBase, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:repository) { project.repository }

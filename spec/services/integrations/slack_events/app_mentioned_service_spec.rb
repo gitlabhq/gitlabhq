@@ -242,9 +242,37 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
         end
       end
 
-      context 'when feature flag is enabled' do
+      context 'when experiment and beta Duo features are turned off' do
         before do
-          stub_feature_flags(slack_duo_agent: user)
+          stub_request(:post, reactions_add_url).to_return(status: 200, body: { ok: true }.to_json,
+            headers: { 'Content-Type' => 'application/json' })
+          stub_request(:post, post_ephemeral_url).to_return(status: 200, body: { ok: true }.to_json,
+            headers: { 'Content-Type' => 'application/json' })
+        end
+
+        it 'adds lock reaction and posts ephemeral experiment features message' do
+          is_expected.to be_success
+
+          expect(WebMock).to have_requested(:post, reactions_add_url).with(
+            body: hash_including('name' => 'lock', 'channel' => channel_id, 'timestamp' => message_ts)
+          )
+          expect(WebMock).to have_requested(:post, post_ephemeral_url).with(
+            body: hash_including(
+              'channel' => channel_id,
+              'user' => slack_user_id,
+              'text' => a_string_including(
+                'This feature requires experiment and beta GitLab Duo features to be turned on.'
+              )
+            )
+          )
+        end
+      end
+
+      context 'when experimental features are enabled' do
+        before do
+          allow_next_instance_of(described_class) do |service|
+            allow(service).to receive(:experiment_features_available?).and_return(true)
+          end
           allow_next_instance_of(ChatNames::FindUserService) do |service|
             allow(service).to receive(:execute).and_return(chat_name)
           end
@@ -293,6 +321,7 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
 
         it 'calls trigger_duo_flow and returns success' do
           expect_next_instance_of(described_class) do |service|
+            allow(service).to receive(:experiment_features_available?).and_return(true)
             expect(service).to receive(:trigger_duo_flow).with(user).and_call_original
           end
 
@@ -304,6 +333,7 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
 
           before do
             allow_next_instance_of(described_class) do |service|
+              allow(service).to receive(:experiment_features_available?).and_return(true)
               allow(service).to receive(:duo_workspace_namespace).with(user).and_return(duo_namespace)
             end
           end
@@ -311,6 +341,7 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
           shared_examples 'posts the privacy notice instead of triggering the flow' do
             it 'adds lock reaction and posts the ephemeral privacy notice with an acknowledge button' do
               expect_next_instance_of(described_class) do |service|
+                allow(service).to receive(:experiment_features_available?).and_return(true)
                 allow(service).to receive(:duo_workspace_namespace).with(user).and_return(duo_namespace)
                 expect(service).not_to receive(:trigger_duo_flow)
               end
@@ -461,6 +492,7 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
 
             it 'does not check the channel type and triggers the flow' do
               expect_next_instance_of(described_class) do |service|
+                allow(service).to receive(:experiment_features_available?).and_return(true)
                 allow(service).to receive(:duo_workspace_namespace).with(user).and_return(duo_namespace)
                 expect(service).to receive(:trigger_duo_flow).with(user).and_call_original
               end
@@ -474,6 +506,7 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
           context 'when the channel is public' do
             it 'triggers the flow without posting the notice' do
               expect_next_instance_of(described_class) do |service|
+                allow(service).to receive(:experiment_features_available?).and_return(true)
                 allow(service).to receive(:duo_workspace_namespace).with(user).and_return(duo_namespace)
                 expect(service).to receive(:trigger_duo_flow).with(user).and_call_original
               end
@@ -493,6 +526,7 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
 
             it 'skips the notice and lets trigger_duo_flow surface the real error' do
               expect_next_instance_of(described_class) do |service|
+                allow(service).to receive(:experiment_features_available?).and_return(true)
                 allow(service).to receive(:duo_workspace_namespace).with(user).and_return(nil)
                 expect(service).to receive(:trigger_duo_flow).with(user).and_call_original
               end
@@ -564,7 +598,9 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
 
         context 'when user does not have Duo Agent Platform access' do
           before do
-            stub_feature_flags(slack_duo_agent: user)
+            allow_next_instance_of(described_class) do |service|
+              allow(service).to receive(:experiment_features_available?).and_return(true)
+            end
             allow_next_instance_of(ChatNames::FindUserService) do |service|
               allow(service).to receive(:execute).and_return(chat_name)
             end

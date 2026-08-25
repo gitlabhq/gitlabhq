@@ -1,17 +1,10 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Use GitLab to facilitate Scrum'
 description: Sprints, backlog, user stories, and scrum lifecycle.
 ---
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
@@ -44,7 +37,7 @@ Projects will contain the issues and tasks that make up the actual work items fo
 ### Understanding the inheritance model in GitLab
 
 GitLab has a hierarchical structure where groups contain projects.
-Settings and configurations applied at the group level cascade down to child projects, so you can
+Settings and configurations applied to a group cascade down to child projects, so you can
 standardize labels, boards, and iterations across multiple projects:
 
 ```mermaid
@@ -126,9 +119,9 @@ To create a blank project:
 1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
-   - In the **Project name** field, enter the name of your project. See the
+   - In the **Project name** text box, enter the name of your project. See the
      [limitations on project names](../../user/reserved_names.md).
-   - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
+   - In the **Project slug** text box, enter the path to your project. The GitLab instance uses the
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
    - To modify the project's [viewing and access rights](../../user/public_access.md) for
@@ -154,9 +147,9 @@ To create each label:
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Manage** > **Labels**.
 1. Select **New label**.
-1. In the **Title** field, enter the name of the label. Start with `priority::now`.
+1. In the **Title** text box, enter the name of the label. Start with `priority::now`.
 1. Optional. Select a color by selecting from the available colors, or enter a hex color value for
-   a specific color in the **Background color** field.
+   a specific color in the **Background color** text box.
 1. Select **Create label**.
 
 Repeat these steps to create all the labels you'll need:
@@ -212,7 +205,7 @@ With your iteration cadence configured this way:
 - GitLab automatically creates four sprints in the future.
 - Incomplete issues from one sprint are automatically reassigned to the next sprint when the current sprint is closed.
 
-You can also disable **Automatic scheduling** and
+You can also turn off **Automatic scheduling** and
 [manually create and manage iterations](../../user/group/iterations/_index.md#create-an-iteration-manually) in your cadence.
 
 ## Managing your feature backlog
@@ -225,7 +218,7 @@ feature epic.
 ### Decide on a way to structure your work
 
 GitLab is extensible to support different flavors of backlog management.
-For this tutorial, we will structure our deliverables in the following way:
+This tutorial structures deliverables in the following way:
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -242,12 +235,12 @@ flowchart TD
   [job stories](https://medium.com/@umang.soni/moving-from-user-role-based-approach-to-problem-statement-based-approach-for-product-development-18b2d2395e5).
   - A story should provide tangible customer value, contain explicit acceptance criteria, and be small
     enough that an individual can complete it in one or two days.
-  - You should be able to complete four to ten stories as a team per sprint.
+  - As a team, you should complete four to ten stories per sprint.
 - While there are many strategies for splitting features, a great strategy is to
   [vertically slice](https://www.agilerant.info/vertical-slicing-to-boost-software-value/) stories
   into discrete, standalone stories a user must take to accomplish their goal.
 
-  While you might not be able to ship a single story to your customers, your team should be able to
+  While you might not ship a single story to your customers, your team can
   test and interact with each story by using a feature flag on production or in a staging environment.
   Not only does this help provide stakeholders visibility into the story's progress, but also is a
   mechanism to break down more complex features into approachable development goals.
@@ -348,7 +341,7 @@ Next, create a new epic in the `priority::now` list:
 
 When you complete this step, your board should look like this:
 
-![Example epic board](img/epic_board_demo_v16_9.png)
+![Example epic board.](img/epic_board_demo_v16_9.png)
 
 You can now use the **Release Planning** board to quickly build your backlog.
 
@@ -437,7 +430,7 @@ By this point in the tutorial, your **Backlog** board should look like this:
 
 In practice, you will use this board to sequence many stories into upcoming iterations.
 When your backlog grows, and you have dozens of stories spanning multiple features, it can be helpful
-to enable [**Group by epic**](../../user/project/issue_board.md#group-issues-in-swimlanes) so you can
+to turn on [**Group by epic**](../../user/project/issue_board.md#group-issues-in-swimlanes) so you can
 view stories related to their corresponding feature epic.
 When stories are grouped, it's easier to sequence them into upcoming sprints.
 
@@ -456,7 +449,7 @@ While discussing each issue:
 - Review and collaborate on the acceptance criteria.
   You can capture this in the issue's description by using checklists or list items.
 - Further [break down the story into tasks](../../user/tasks.md#create-a-task) for each implementation step.
-- Estimate the issue's story point effort or complexity and set this value in the issue's **Weight** field.
+- Estimate the issue's story point effort or complexity and set this value in the issue's **Weight** text box.
 - After the team is satisfied with the scope of the issue and agrees on the story point value,
   apply the `status::ready` label to the issue:
 
@@ -514,7 +507,7 @@ Provide all team members the appropriate time to contribute and collaborate.
    - Break down vertical slices (issues) into implementation steps (tasks).
 
 1. As each story discussion concludes, update the issue with any changes to the acceptance criteria
-   and set the story point value in the **Weight** field.
+   and set the story point value in the **Weight** text box.
 1. After the story is updated, add the `status::ready` label to each issue.
 1. Then, to signal the planning for that vertical slice has been completed,
    [resolve each discussion thread](../../user/discussions/_index.md#resolve-a-thread) in the planning issue.

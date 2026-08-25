@@ -33,93 +33,37 @@ constants:
   - MAX_MODELS_PER_PAGE
   app/helpers/users/callouts_helper.rb:
   - PAGES_MOVED_CALLOUT
-  app/models/ci/job_artifact.rb:
-  - STORE_COLUMN
-  app/models/ci/secure_file.rb:
-  - STORE_COLUMN
-  app/models/clusters/platforms/kubernetes.rb:
-  - IGNORED_CONNECTION_EXCEPTIONS
-  app/models/concerns/ci/artifactable.rb:
-  - STORE_COLUMN
-  app/models/concerns/import/has_import_source.rb:
-  - SOURCE_JIRA
-  - SOURCE_JIRA
   app/models/concerns/integrations/base/chat_notification.rb:
   - EVENT_ACTIONS
   app/models/concerns/namespaces/stateful.rb:
   - NON_PROPAGATED_STATES
   app/models/concerns/organizations/stateful.rb:
   - MAINTENANCE_BLOCKED_STATES
-  app/models/dependency_proxy/blob.rb:
-  - STORE_COLUMN
-  app/models/dependency_proxy/manifest.rb:
-  - STORE_COLUMN
   app/models/integrations/jira.rb:
   - PROJECTS_PER_PAGE
-  app/models/lfs_object.rb:
-  - STORE_COLUMN
-  app/models/merge_request_diff.rb:
-  - STORE_COLUMN
   app/models/namespace/aggregation_schedule.rb:
   - REDIS_SHARED_KEY
-  app/models/operations/feature_flags/strategy.rb:
-  - STRATEGY_DEFAULT
-  - STRATEGY_DEFAULT
   app/models/packages/event.rb:
   - EVENT_SCOPES
   - ORIGINATOR_TYPES
-  app/models/packages/helm/metadata_cache.rb:
-  - STORE_COLUMN
-  app/models/packages/npm/metadata_cache.rb:
-  - STORE_COLUMN
-  app/models/packages/nuget/symbol.rb:
-  - STORE_COLUMN
-  app/models/packages/package_file.rb:
-  - STORE_COLUMN
-  app/models/packages/rubygems/spec_file.rb:
-  - STORE_COLUMN
-  app/models/pages_deployment.rb:
-  - STORE_COLUMN
   app/models/project.rb:
   - STATISTICS_ATTRIBUTE
-  app/models/supply_chain/attestation.rb:
-  - STORE_COLUMN
-  app/models/terraform/state_version.rb:
-  - STORE_COLUMN
-  app/models/upload.rb:
-  - STORE_COLUMN
   app/models/wiki.rb:
   - TITLE_ORDER
   - CREATED_AT_ORDER
   app/services/authn/iam_service/jwt_validation_service.rb:
   - FEATURE_FLAG
-  app/services/ci/job_artifacts/create_service.rb:
-  - OBJECT_STORAGE_ERRORS
   app/services/ci/resource_groups/assign_resource_from_resource_group_service.rb:
   - RESPAWN_WAIT_TIME
   app/services/clusters/kubernetes.rb:
   - KNATIVE_SERVING_NAMESPACE
   - ISTIO_SYSTEM_NAMESPACE
-  app/services/jira/requests/base.rb:
-  - ALL_ERRORS
   app/services/mcp/tools/concerns/constants.rb:
   - ALL_TYPES
   app/services/packages/rpm/parse_package_service.rb:
   - CHANGELOGS_RPM_KEYS
   - REQUIREMENTS_RPM_KEYS
   - PROVIDES_RPM_KEYS
-  app/services/packages/rubygems/create_spec_files_service.rb:
-  - SPEC_FILE_NAME
-  - LATEST_SPEC_FILE_NAME
-  - PRERELEASE_SPEC_FILE_NAME
-  - SPEC_FILE_NAME
-  - LATEST_SPEC_FILE_NAME
-  - PRERELEASE_SPEC_FILE_NAME
-  app/services/service_desk/custom_email_verifications/create_service.rb:
-  - SMTP_HOST_ERRORS
-  app/validators/feature_flag_strategies_validator.rb:
-  - STRATEGY_DEFAULT
-  - STRATEGY_DEFAULT
   app/workers/authn/data_retention/oauth_access_grant_archive_worker.rb:
   - CUTOFF_INTERVAL
   ee/app/helpers/ee/geo_helper.rb:
@@ -140,12 +84,8 @@ constants:
   - DEFAULT_NAME_FOR_LICENSE_REPORT
   ee/app/models/concerns/push_ruleable.rb:
   - SETTINGS_WITH_GLOBAL_DEFAULT
-  ee/app/models/concerns/security/scan_result_policy.rb:
-  - LICENSE_FINDING
   ee/app/models/ee/ci/build.rb:
   - VALIDATE_SCHEMA_VARIABLE_NAME
-  ee/app/models/ee/lfs_object.rb:
-  - STORE_COLUMN
   ee/app/models/ee/namespace.rb:
   - LICENSE_PLANS_TO_NAMESPACE_PLANS
   ee/app/models/ee/user.rb:
@@ -186,11 +126,6 @@ constants:
   - ADDITIONAL_IMPORT_ASSOCIATIONS
   ee/lib/ai/tool_rules/registry.rb:
   - UNGOVERNED_TOOLS
-  ee/lib/api/orbit/data.rb:
-  - GRPC_CODE_HEADER
-  ee/lib/api/virtual_registries/packages/maven/endpoints.rb:
-  - SHA1_CHECKSUM_HEADER
-  - SHA1_CHECKSUM_HEADER
   ee/lib/ee.rb:
   - CUSTOMER_LICENSE_SUPPORT_URL
   ee/lib/ee/gitlab/background_migration/backfill_security_inventory_filters.rb:
@@ -215,19 +150,10 @@ constants:
   - DEFAULT_CONVERSATION_TYPE
   ee/lib/gitlab/nats/client.rb:
   - DEFAULT_FETCH_TIMEOUT
-  - MESSAGE_ID_HEADER
   ee/lib/gitlab/scim/base_provisioning_service.rb:
   - SKIP_EMAIL_CONFIRMATION
-  ee/lib/gitlab/search/client.rb:
-  - AUTHORIZATION_ERRORS
-  - TRANSPORT_ERRORS
-  ee/lib/gitlab/search/zoekt/client.rb:
-  - JWT_HEADER
-  - JWT_HEADER
   ee/lib/gitlab/spdx/catalogue_gateway.rb:
   - ONLINE_CATALOGUE_URL
-  ee/lib/gitlab/subscription_portal/clients/graphql.rb:
-  - RESCUABLE_HTTP_ERRORS
   ee/lib/search/cluster_health_check/elastic.rb:
   - DEFAULT_UTILIZATION
   ee/lib/secrets_management/acl_policy_path.rb:
@@ -237,34 +163,21 @@ constants:
   - CAP_PATCH
   - CAP_DELETE
   - CAP_LIST
-  ee/lib/secrets_management/secrets_manager_client.rb:
-  - KV_VALUE_FIELD
   ee/lib/security/scan_result_policies/policy_violation_comment.rb:
   - VIOLATIONS_DETECTED_TITLE
-  lib/api/generic_packages.rb:
-  - SHA256_CHECKSUM_HEADER
   lib/api/helpers.rb:
   - GITLAB_SHARED_SECRET_HEADER
-  lib/api/helpers/packages/maven.rb:
-  - SHA1_CHECKSUM_HEADER
   lib/api/projects.rb:
   - PROJECT_ATTACHMENT_SIZE_EXEMPT
   lib/api/work_items.rb:
   - GROUP_ONLY_FILTER_PARAMS
   - ALL_FIELDS
-  lib/authn/iam_service/grpc_client.rb:
-  - ROUTING_HEADER
   lib/authz/validation.rb:
   - COMMON_ACTIONS
   lib/banzai/filter/footnote_filter.rb:
   - FOOTNOTE_LI_REFERENCE_PATTERN
   - FOOTNOTE_LINK_REFERENCE_PATTERN
   - FOOTNOTE_LIMIT
-  lib/bulk_imports/network_error.rb:
-  - NO_SPACE_LEFT_EXCEPTION
-  - DECOMPRESSION_FAILURE_EXCEPTION
-  - NO_SPACE_LEFT_EXCEPTION
-  - DECOMPRESSION_FAILURE_EXCEPTION
   lib/bulk_imports/pipeline.rb:
   - CACHE_KEY_EXPIRATION
   - NDJSON_EXPORT_TIMEOUT
@@ -296,8 +209,6 @@ constants:
   - MIGRATION_CLASS_NAME
   lib/gitlab/database/postgres_hll/batch_distinct_counter.rb:
   - ERROR_RATE
-  lib/gitlab/email/receiver.rb:
-  - USER_ERRORS
   lib/gitlab/fips.rb:
   - OPENSSL_DIGESTS
   lib/gitlab/git/commit.rb:
@@ -307,9 +218,6 @@ constants:
   - EMPTY_REPOSITORY_CHECKSUM
   lib/gitlab/gitaly_client.rb:
   - GITALY_METADATA_FILENAME
-  lib/gitlab/graphql/deprecations/deprecation.rb:
-  - REASON_RENAMED
-  - REASON_RENAMED
   lib/gitlab/internal_events.rb:
   - SNOWPLOW_EMITTER_BUFFER_SIZE
   lib/gitlab/kubernetes/helm.rb:
@@ -336,76 +244,116 @@ constants:
   - MAILROOM_NAMESPACE
   lib/gitlab/sidekiq_config.rb:
   - JH_SIDEKIQ_QUEUES_PATH
-  lib/gitlab/sidekiq_middleware/size_limiter/validator.rb:
-  - TRACK_MODE
-  lib/gitlab/tracking/destinations/billing_oidc_token_source.rb:
-  - METADATA_FLAVOR_HEADER
-  lib/gitlab/usage/time_frame.rb:
-  - DEFAULT_TIMESTAMP_COLUMN
   lib/gitlab/utils/usage_data.rb:
   - DISTRIBUTED_HLL_FALLBACK
   lib/gitlab/vue3_migration.rb:
   - VUE3_MIGRATION_ALLOWED_STATUSES
   - VUE3_MIGRATION_ALLOWED_KEYS
-  lib/gitlab/web_hooks.rb:
-  - GITLAB_INSTANCE_HEADER
-  - GITLAB_UUID_HEADER
-  - WEBHOOK_ID_HEADER
-  - WEBHOOK_TIMESTAMP_HEADER
   lib/gitlab/wiki_pages.rb:
   - MAX_SIDEBAR_PAGES
   lib/gitlab/work_items/instrumentation/event_actions.rb:
   - SAVED_VIEW_VIEW
   lib/kramdown/parser/atlassian_document_format.rb:
   - CHILD_BLOCK_NODES
-  lib/observability/o11y_bff_session.rb:
-  - O11Y_ROLE_CLAIM
-  - O11Y_INSTANCE_CLAIM
-  - O11Y_ROLE_CLAIM
-  - O11Y_INSTANCE_CLAIM
   lib/tasks/gitlab/permissions/validate_task.rb:
   - JSON_SCHEMA_FILE
 delegations:
+  app/models/ci/build_trace.rb:
+  - build_complete?
   app/models/event.rb:
   - note_title
   - design_title
   app/models/merge_request.rb:
   - head_pipeline_builds_with_coverage
   app/models/namespace.rb:
+  - lock_math_rendering_limits_enabled?
   - web_based_commit_signing_enabled?
+  - lock_web_based_commit_signing_enabled?
+  - lock_require_sha_for_merge?
+  app/models/packages/conan/package.rb:
+  - conan_recipe_path
   app/models/packages/debian/package.rb:
   - distribution_codename
+  - distribution_suite
   app/models/packages/package_file.rb:
   - debian_file_type
+  - debian_component
+  - debian_architecture
   app/models/project.rb:
+  - runner_token_expiration_interval_human_readable
+  - runner_token_expiration_interval_human_readable
+  - ci_outbound_ci_outbound
   - separated_caches
+  - separated_caches
+  app/models/work_items/widgets/assignees.rb:
+  - assignees_by_name_and_id
+  ee/app/models/ai/feature_setting.rb:
+  - main_feature
+  ee/app/models/concerns/ai/model_selection/features_configurable.rb:
+  - main_feature
   ee/app/models/ee/merge_request.rb:
   - head_pipeline_sha
   - base_pipeline_sha
   ee/app/models/ee/user.rb:
   - enabled_zoekt?
+  - enabled_zoekt
+  - enabled_zoekt
   - policy_advanced_editor?
   ee/app/models/ee/vulnerability.rb:
   - scanner_name
   - vulnerability_read_dismissal_reason
+  ee/app/models/security/orchestration_policy_rule_schedule.rb:
+  - from_project?
   ee/app/models/vulnerabilities/finding.rb:
   - scanner_name
 methods:
+  app/helpers/avatars_helper.rb:
+  - avatar_without_link
+  - source_icon
+  app/helpers/routing/groups/members_helper.rb:
+  - group_members_url
+  - group_member_path
+  app/helpers/routing/pipeline_schedules_helper.rb:
+  - pipeline_schedule_path
   app/helpers/routing/projects/members_helper.rb:
+  - project_member_path
   - request_access_project_members_path
   - leave_project_members_path
   - approve_access_request_project_member_path
   - resend_invite_project_member_path
+  app/models/alert_management/alert.rb:
+  - prometheus?
+  app/models/app_config/kas_metadata.rb:
+  - self.declarative_policy_class
   app/models/application_setting_implementation.rb:
   - ensure_key_restrictions!
+  app/models/authz/boundary.rb:
+  - self.declarative_policy_class
+  app/models/blob_viewer/base.rb:
+  - self.auxiliary?
+  app/models/ci/build.rb:
+  - artifacts_expire_in
+  app/models/ci/job_artifact.rb:
+  - self.artifacts_size_for
+  - self.archived_trace_exists_for?
   app/models/ci/job_token/allowlist.rb:
   - project_link_traversal_ids
   - group_link_traversal_ids
   - bulk_add_groups!
+  app/models/ci/pipeline.rb:
+  - self.latest_status
+  - self.latest_successful_for_refs
+  - self.latest_running_for_ref
+  - self.latest_failed_for_ref
+  - self.latest_successful_ids_per_project
+  - parent?
   app/models/ci/runner.rb:
   - belongs_to_one_project?
   - fallback_owner_project
+  app/models/ci/tag.rb:
+  - self.find_or_create_with_like_by_name
   app/models/clusters/cluster.rb:
+  - self.has_one_cluster_application
   - platform_kubernetes_active?
   app/models/clusters/concerns/application_data.rb:
   - certificate_files
@@ -414,14 +362,30 @@ methods:
   - updateable?
   app/models/clusters/concerns/application_version.rb:
   - update_available?
+  app/models/commit_status.rb:
+  - self.locking_enabled?
+  - locking_enabled?
+  app/models/concerns/analytics/cycle_analytics/stageable.rb:
+  - default_stage?
+  app/models/concerns/blob_active_model.rb:
+  - declarative_policy_class
+  app/models/concerns/ci/has_ref.rb:
+  - ref_slug
   app/models/concerns/ci/metadatable.rb:
   - degenerate!
+  app/models/concerns/enums/ci/job_artifact.rb:
+  - self.internal_types
   app/models/concerns/has_check_constraints.rb:
   - clear_constraints_cache!
   app/models/concerns/integrations/base/harbor.rb:
   - supported_event_actions
   app/models/concerns/integrations/base/integration.rb:
+  - event_description
   - instance_exists_for?
+  app/models/concerns/issuable.rb:
+  - locking_enabled?
+  - locking_enabled?
+  - any_label
   app/models/concerns/mentionable.rb:
   - referenced_group_users
   app/models/concerns/namespaces/stateful/state_querying.rb:
@@ -443,34 +407,123 @@ methods:
   app/models/concerns/sha_attribute.rb:
   - load_schema!
   app/models/concerns/timebox.rb:
+  - self.declarative_policy_class
   - safe_title
+  app/models/concerns/transactions.rb:
+  - set_open_transactions_baseline
   app/models/concerns/use_sql_function_for_primary_key_lookups.rb:
   - _query_by_sql
   app/models/concerns/user_mention_behaviour.rb:
   - mentioned_groups
   - mentioned_projects
+  app/models/container_expiration_policy.rb:
+  - self.with_container_repositories
+  app/models/customer_relations/contact_state_counts.rb:
+  - self.declarative_policy_class
+  app/models/customer_relations/issue_contact.rb:
+  - self.delete_for_group
+  app/models/deployment.rb:
+  - self.find_successful_deployment!
+  app/models/environment.rb:
+  - self.for_id_and_slug
+  app/models/error_tracking/client_key.rb:
+  - self.find_by_public_key
   app/models/group.rb:
   - get_ids_by_ids_or_paths
   - blocked_owners
   - hierarchy_members_with_inactive
+  app/models/group_custom_attribute.rb:
+  - self.declarative_policy_class
+  app/models/group_group_link.rb:
+  - self.default_access
+  app/models/hooks/web_hook_log.rb:
+  - self.delete_batch_for
   app/models/import/source_user_placeholder_reference.rb:
   - aliased_composite_key
+  app/models/member.rb:
+  - self.seat_assignable_highest_access_level
+  - self.seat_assignable_highest_access_levels
+  - access_for_user_ids
+  app/models/merge_request_diff.rb:
+  - self.find_by_diff_refs
   app/models/namespace.rb:
   - any_project_with_pages_deployed?
   - saved_change_to_parent?
   - saved_change_to_path_or_parent?
+  app/models/namespace_setting.rb:
+  - self.declarative_policy_class
+  app/models/note.rb:
+  - award_emoji?
+  app/models/packages/conan/metadatum.rb:
+  - self.package_username_from
+  app/models/packages/conan/package_reference.rb:
+  - self.for_package_id_and_reference
+  app/models/packages/protection/rule.rb:
+  - self.for_delete_exists?
+  app/models/pages_deployment.rb:
+  - self.declarative_policy_class
+  app/models/pages_domain.rb:
+  - self.ids_for_project
+  app/models/plan.rb:
+  - self.names_for_ids
+  - self.ids_for_plan_name_uids
+  app/models/postgresql/replication_slot.rb:
+  - self.unused_slots_count
+  - self.slots_retained_bytes
   app/models/project.rb:
   - import_scheduled?
   - updating_remote_mirror?
   - issue_exists?
+  - items_for
   - enable_ci
   - valid_runners_token?
+  app/models/project_custom_attribute.rb:
+  - self.declarative_policy_class
+  app/models/project_group_link.rb:
+  - owner_access?
+  app/models/project_team.rb:
+  - guest?
+  - reporter?
+  - member_user_ids
+  app/models/projects/build_artifacts_size_refresh.rb:
+  - self.enqueue_refresh
+  app/models/protected_branch.rb:
+  - self.get_ids_by_name
+  app/models/remote_mirror.rb:
+  - update_failed?
+  app/models/user_custom_attribute.rb:
+  - declarative_policy_class
+  app/models/wiki_page/meta.rb:
+  - declarative_policy_class
+  ee/app/models/ai/catalog/mcp_server_block.rb:
+  - self.blocked_server_ids_for
+  ee/app/models/ai/model_selection/namespace_feature_setting.rb:
+  - self.with_non_default_code_completions
+  - self.any_non_default_for_duo_chat?
+  ee/app/models/ci/minutes/namespace_monthly_usage.rb:
+  - self.total_current_minutes_used
   ee/app/models/concerns/ai/user_authorizable.rb:
   - any_group_with_ai_available?
+  ee/app/models/concerns/geo/replicable_registry.rb:
+  - declarative_policy_class
   ee/app/models/concerns/security/pipeline_execution_schedule_policy.rb:
   - active_pipeline_execution_schedule_policies
   ee/app/models/concerns/security/scan_result_policy.rb:
   - applicable_scan_result_policies_with_real_index
+  ee/app/models/concerns/work_items/epic_as_work_item/delegated_association_methods.rb:
+  - load_target
+  ee/app/models/concerns/work_items/unified_associations/description_versions.rb:
+  - load_target
+  ee/app/models/concerns/work_items/unified_associations/events.rb:
+  - load_target
+  ee/app/models/concerns/work_items/unified_associations/notes_extension.rb:
+  - load_target
+  ee/app/models/concerns/work_items/unified_associations/resource_label_events.rb:
+  - load_target
+  ee/app/models/concerns/work_items/unified_associations/resource_state_events.rb:
+  - load_target
+  ee/app/models/concerns/work_items/unified_associations/subscriptions.rb:
+  - load_target
   ee/app/models/ee/ci/build.rb:
   - has_artifact?
   ee/app/models/ee/ci/pipeline.rb:
@@ -492,6 +545,7 @@ methods:
   - old_path_with_namespace_for
   - default_plan?
   - premium_trial_plan?
+  - ultimate_trial_paid_customer_plan?
   ee/app/models/ee/namespace_statistics.rb:
   - update_wiki_size
   ee/app/models/ee/project.rb:
@@ -499,9 +553,13 @@ methods:
   - search_by_visibility
   - group_ldap_synced?
   - upstream_projects_count
+  ee/app/models/ee/user.rb:
+  - send_confirmation_instructions
   ee/app/models/ee/user_preference.rb:
   - distinct_eligible_duo_add_on_assignments
   - no_eligible_duo_add_on_assignments?
+  ee/app/models/geo/base_registry.rb:
+  - self.has_create_events?
   ee/app/models/geo/container_repository_registry.rb:
   - pluck_container_repository_key
   ee/app/models/geo/tracking_base.rb:
@@ -513,18 +571,70 @@ methods:
   ee/app/models/geo_node_status.rb:
   - attribute_timestamp
   - attribute_timestamp=
+  ee/app/models/gitlab_subscriptions/add_on_purchase.rb:
+  - self.uniq_add_on_names
+  ee/app/models/gitlab_subscriptions/duo_core.rb:
+  - self.any_add_on_purchase_for_namespace?
+  ee/app/models/gitlab_subscriptions/duo_enterprise.rb:
+  - self.active_add_on_purchase_for_self_managed?
+  ee/app/models/gitlab_subscriptions/duo_pro.rb:
+  - self.add_on_purchase_for_namespace
+  ee/app/models/govern/policy.rb:
+  - self.evaluation_candidates
+  ee/app/models/license.rb:
+  - data_filename
   ee/app/models/members/member_role.rb:
+  - self.declarative_policy_class
   - customizable_permissions_exempt_from_consuming_seat
   ee/app/models/namespaces/storage/root_size.rb:
   - remaining_storage_size
+  ee/app/models/product_analytics/funnel.rb:
+  - self.names_within_project_repository
   ee/app/models/project_security_setting.rb:
   - set_validity_checks!
   ee/app/models/search/zoekt.rb:
   - index_in
   - delete_in
+  ee/app/models/secrets_management/base_secrets_manager.rb:
+  - self.internal_server_url
+  ee/app/models/security/category.rb:
+  - self.declarative_policy_class
   ee/app/models/security/orchestration_policy_configuration.rb:
   - compliance_framework_ids_with_policy_index
   - experiment_configuration
+  ee/app/models/security/orchestration_policy_rule_schedule.rb:
+  - for_agent?
+  ee/app/models/security/policy.rb:
+  - self.delete_by_ids
+  ee/app/models/security/scan_profile.rb:
+  - remediation?
+  ee/app/models/virtual_registries/cleanup/policy.rb:
+  - self.declarative_policy_class
+  ee/app/models/virtual_registries/container/cache/remote/entry.rb:
+  - self.declarative_policy_class
+  ee/app/models/virtual_registries/container/upstream.rb:
+  - self.declarative_policy_class
+  ee/app/models/virtual_registries/packages/maven/cache/local/entry.rb:
+  - self.declarative_policy_class
+  ee/app/models/virtual_registries/packages/maven/cache/remote/entry.rb:
+  - self.declarative_policy_class
+  ee/app/models/virtual_registries/packages/maven/local/upstream.rb:
+  - self.declarative_policy_class
+  ee/app/models/virtual_registries/packages/maven/upstream.rb:
+  - self.declarative_policy_class
+  ee/app/models/virtual_registries/packages/maven/upstream/rule.rb:
+  - self.declarative_policy_class
+  ee/app/models/virtual_registries/packages/npm/upstream.rb:
+  - self.declarative_policy_class
+  ee/app/models/virtual_registries/registry.rb:
+  - self.declarative_policy_class
+  ee/app/models/virtual_registries/registry_upstream.rb:
+  - self.declarative_policy_class
+  ee/app/models/virtual_registries/setting.rb:
+  - self.declarative_policy_class
+  ee/app/models/vulnerabilities/finding.rb:
+  - self.counted_by_severity
+  - self.undismissed
 scopes:
   app/models/authn/iam_outbox.rb:
   - l2_undelivered

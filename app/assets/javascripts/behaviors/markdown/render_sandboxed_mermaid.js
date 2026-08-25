@@ -35,6 +35,13 @@ const MAX_CHAINING_OF_LINKS_LIMIT = 30;
 export const BUFFER_IFRAME_HEIGHT = 10;
 export const SANDBOX_ATTRIBUTES = 'allow-scripts allow-popups';
 
+// Messages other than the height payload can also arrive
+// from the sandboxed iframe (such as those injected by Chrome for iOS).
+export function getIframeHeightFromMessage(data) {
+  const h = data?.h;
+  return Number.isFinite(h) ? h + BUFFER_IFRAME_HEIGHT : null;
+}
+
 const ALERT_CONTAINER_CLASS = 'mermaid-alert-container';
 export const LAZY_ALERT_SHOWN_CLASS = 'lazy-alert-shown';
 
@@ -133,8 +140,11 @@ function renderMermaidEl(el, source) {
       if (event.origin !== 'null' || event.source !== iframeEl.contentWindow) {
         return;
       }
-      const { h } = event.data;
-      iframeEl.height = `${h + BUFFER_IFRAME_HEIGHT}px`;
+      const height = getIframeHeightFromMessage(event.data);
+      if (height === null) {
+        return;
+      }
+      iframeEl.height = `${height}px`;
     },
     false,
   );

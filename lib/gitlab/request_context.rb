@@ -8,7 +8,7 @@ module Gitlab
     RequestDeadlineExceeded = Class.new(StandardError)
 
     attr_accessor :client_ip, :spam_params, :start_thread_cpu_time, :request_start_time, :thread_memory_allocations,
-      :gvl_local_timer_start, :gvl_global_timer_start, :request_start_monotonic_time
+      :gvl_local_timer_start, :gvl_global_timer_start, :request_start_monotonic_time, :request_timeout_at
 
     class << self
       def instance
@@ -24,6 +24,7 @@ module Gitlab
 
         instance.spam_params = ::Spam::SpamParams.new_from_request(request: request)
         instance.request_start_time = Gitlab::Metrics::System.real_time
+        instance.request_timeout_at = rack_timeout_at(request.env)
       end
 
       def start_thread_context
@@ -39,6 +40,19 @@ module Gitlab
 
         elapsed = Gitlab::Metrics::System.monotonic_time - start_time
         Gitlab::Utils.ms_to_round_sec(elapsed * 1000)
+      end
+
+      private
+
+      # The monotonic time at which Rack::Timeout will kill this request, or nil
+      # when it is not enforcing a timeout. Rack::Timeout shortens the timeout
+      # for a request that already waited in the web server's queue, so the
+      # value it computed is read here rather than assumed from the setting.
+      def rack_timeout_at(env)
+        info = env[::Rack::Timeout::ENV_INFO_KEY]
+        return unless info&.timeout
+
+        Gitlab::Metrics::System.monotonic_time + info.timeout - info.service.to_f
       end
     end
 

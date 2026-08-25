@@ -7259,6 +7259,9 @@ msgstr ""
 msgid "AdminUsers|An error occurred while fetching this user's contributions, and the request cannot return the number of issues, merge requests, groups, and projects linked to this user. If you proceed with deleting the user, all their contributions will still be deleted."
 msgstr ""
 
+msgid "AdminUsers|An error occurred while removing the user from the organization."
+msgstr ""
+
 msgid "AdminUsers|Approve"
 msgstr ""
 
@@ -7559,6 +7562,9 @@ msgstr ""
 msgid "AdminUsers|Rejected users:"
 msgstr ""
 
+msgid "AdminUsers|Remove user from the organization?"
+msgstr ""
+
 msgid "AdminUsers|Requires at least Maintainer role in specific groups and projects."
 msgstr ""
 
@@ -7685,6 +7691,9 @@ msgstr ""
 msgid "AdminUsers|User type"
 msgstr ""
 
+msgid "AdminUsers|User was successfully removed from the organization."
+msgstr ""
+
 msgid "AdminUsers|User will not be able to access git repositories"
 msgstr ""
 
@@ -7740,6 +7749,9 @@ msgid "AdminUsers|You are about to permanently delete the user %{username}. Issu
 msgstr ""
 
 msgid "AdminUsers|You are about to permanently delete the user %{username}. This will delete all issues, merge requests, groups, and projects linked to them. To avoid data loss, consider using the %{strongStart}Block user%{strongEnd} feature instead. After you %{strongStart}Delete user%{strongEnd}, you cannot undo this action or recover the data."
+msgstr ""
+
+msgid "AdminUsers|You are about to remove %{username} from the organization. They will also lose access to the groups and projects they are a member of within this organization."
 msgstr ""
 
 msgid "AdminUsers|You can always block their account again if needed."
@@ -11987,6 +11999,9 @@ msgstr ""
 msgid "ArtifactRegistry|Access is limited to members with explicit permissions only."
 msgstr ""
 
+msgid "ArtifactRegistry|Access token"
+msgstr ""
+
 msgid "ArtifactRegistry|Activation"
 msgstr ""
 
@@ -12038,6 +12053,9 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact Registry was enabled."
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact caching period"
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact list updated."
 msgstr ""
 
@@ -12063,6 +12081,9 @@ msgid "ArtifactRegistry|At least one revocation is required."
 msgstr ""
 
 msgid "ArtifactRegistry|Authenticate with a token in your %{codeStart}settings.xml%{codeEnd} file:"
+msgstr ""
+
+msgid "ArtifactRegistry|Authentication (optional)"
 msgstr ""
 
 msgid "ArtifactRegistry|Build tool"
@@ -12193,6 +12214,9 @@ msgstr ""
 msgid "ArtifactRegistry|Enable Artifact registry"
 msgstr ""
 
+msgid "ArtifactRegistry|Enter both a username and a token or password, or leave both empty to keep the stored credentials."
+msgstr ""
+
 msgid "ArtifactRegistry|Filter repositories"
 msgstr ""
 
@@ -12265,6 +12289,9 @@ msgid "ArtifactRegistry|Maven"
 msgstr ""
 
 msgid "ArtifactRegistry|Maven (settings.xml):"
+msgstr ""
+
+msgid "ArtifactRegistry|Metadata caching period"
 msgstr ""
 
 msgid "ArtifactRegistry|More actions for %{name}"
@@ -12404,6 +12431,9 @@ msgstr ""
 msgid "ArtifactRegistry|Repository setup"
 msgstr ""
 
+msgid "ArtifactRegistry|Repository was not found."
+msgstr ""
+
 msgid "ArtifactRegistry|Repository was successfully created."
 msgstr ""
 
@@ -12411,6 +12441,9 @@ msgid "ArtifactRegistry|Repository was successfully deleted."
 msgstr ""
 
 msgid "ArtifactRegistry|Repository was successfully updated."
+msgstr ""
+
+msgid "ArtifactRegistry|Required only if the upstream registry is private or rate-limited. Credentials are stored encrypted."
 msgstr ""
 
 msgid "ArtifactRegistry|Resource ID must be a valid UUIDv7."
@@ -12497,10 +12530,22 @@ msgstr ""
 msgid "ArtifactRegistry|This will affect all projects currently using this registry."
 msgstr ""
 
+msgid "ArtifactRegistry|Time in hours"
+msgstr ""
+
+msgid "ArtifactRegistry|Token or password"
+msgstr ""
+
 msgid "ArtifactRegistry|Type"
 msgstr ""
 
 msgid "ArtifactRegistry|Type the repository name below to confirm: %{phrase}"
+msgstr ""
+
+msgid "ArtifactRegistry|URL"
+msgstr ""
+
+msgid "ArtifactRegistry|URL is required."
 msgstr ""
 
 msgid "ArtifactRegistry|URL:"
@@ -12513,6 +12558,9 @@ msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
 msgstr ""
 
 msgid "ArtifactRegistry|Upstream URL"
+msgstr ""
+
+msgid "ArtifactRegistry|Username"
 msgstr ""
 
 msgid "ArtifactRegistry|Version"
@@ -12546,6 +12594,9 @@ msgid "ArtifactRegistry|You are not authorized to read these role assignments."
 msgstr ""
 
 msgid "ArtifactRegistry|You are not authorized to revoke this role on this resource."
+msgstr ""
+
+msgid "ArtifactRegistry|You can add GitLab-hosted repositories as upstreams. Use your GitLab username and a personal access token as the password."
 msgstr ""
 
 msgid "ArtifactRegistry|You cannot grant roles in another organization."
@@ -54908,6 +54959,9 @@ msgstr ""
 msgid "One or more groups require you to add 2FA to your account. Choose your preferred method below or review and leave groups to continue using your account."
 msgstr ""
 
+msgid "One or more groups require you to add 2FA to your account. Choose your preferred method below."
+msgstr ""
+
 msgid "One or more groups that you don't have access to."
 msgstr ""
 
@@ -59705,6 +59759,9 @@ msgid "PolicyStore|%{rule} is missing %{field}."
 msgstr ""
 
 msgid "PolicyStore|%{rule} needs at least one of: %{fields}."
+msgstr ""
+
+msgid "PolicyStore|A policy with this name already exists. Choose a different name."
 msgstr ""
 
 msgid "PolicyStore|Actions"
@@ -66294,6 +66351,9 @@ msgid "Review changes"
 msgstr ""
 
 msgid "Review discarded"
+msgstr ""
+
+msgid "Review groups"
 msgstr ""
 
 msgid "Review requested"
@@ -74278,9 +74338,6 @@ msgstr ""
 msgid "SecurityProfiles|Action unavailable"
 msgstr ""
 
-msgid "SecurityProfiles|Active"
-msgstr ""
-
 msgid "SecurityProfiles|Apply default profile"
 msgstr ""
 
@@ -74424,9 +74481,6 @@ msgid "SecurityProfiles|The job link failed to load. Please try again."
 msgstr ""
 
 msgid "SecurityProfiles|Troubleshoot failure"
-msgstr ""
-
-msgid "SecurityProfiles|Unconfigured"
 msgstr ""
 
 msgid "SecurityProfiles|View failed job #%{jobId}"
@@ -93192,9 +93246,6 @@ msgstr ""
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr ""
 
-msgid "You are the last owner"
-msgstr ""
-
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr ""
 
@@ -93451,6 +93502,9 @@ msgid "You cannot invite a new member to %{strong_start}%{group_name}%{strong_en
 msgstr ""
 
 msgid "You cannot invite a new member to %{strong_start}%{project_name}%{strong_end}. User invitations are disabled by the %{actor}."
+msgstr ""
+
+msgid "You cannot leave this group"
 msgstr ""
 
 msgid "You cannot lock this directory because \"%{path}\" inside it is locked."
@@ -95847,6 +95901,9 @@ msgid "is not linked to a SAML account or has an inactive SCIM identity. For inf
 msgstr ""
 
 msgid "is not one of"
+msgstr ""
+
+msgid "is not permitted for the seat type"
 msgstr ""
 
 msgid "is not valid YAML: %{message}"

@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Git::Patches::Patch do
+RSpec.describe Gitlab::Git::Patches::Patch, feature_category: :source_code_management do
   let(:patches_folder) { Rails.root.join('spec/fixtures/patchfiles') }
   let(:patch_content) do
     File.read(File.join(patches_folder, "0001-This-does-not-apply-to-the-feature-branch.patch"))

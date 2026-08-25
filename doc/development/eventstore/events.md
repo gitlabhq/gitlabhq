@@ -165,6 +165,7 @@ To find subscribers, search the subscription files under
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
 | `PackageMetadata::IngestedAdvisoryEvent` | `software_composition_analysis` | CE | Published once per advisory record after package security advisories are ingested. Only fires for advisories whose published_date is within the last 14 days (PUBLISHED_ADVISORY_INTERVAL); older advisories are ingested without an event. |
+| `PackageMetadata::IngestedMalwareAdvisoryEvent` | `software_composition_analysis` | EE | Published for each malware advisory ingested inside the CVS publication-age window, so continuous vulnerability scanning can scan it against existing SBOM occurrences. Mirrors PackageMetadata::IngestedAdvisoryEvent for the malware advisory path. |
 
 ## Packages
 

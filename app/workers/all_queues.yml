@@ -1798,16 +1798,6 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :github_importer
-- :name: github_importer:github_import_import_note
-  :worker_name: Gitlab::GithubImport::ImportNoteWorker
-  :feature_category: :importers
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
 - :name: github_importer:github_import_import_protected_branch
   :worker_name: Gitlab::GithubImport::ImportProtectedBranchWorker
   :feature_category: :importers
@@ -1824,36 +1814,6 @@
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
-- :name: github_importer:github_import_pull_requests_import_merged_by
-  :worker_name: Gitlab::GithubImport::PullRequests::ImportMergedByWorker
-  :feature_category: :importers
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
-- :name: github_importer:github_import_pull_requests_import_review
-  :worker_name: Gitlab::GithubImport::PullRequests::ImportReviewWorker
-  :feature_category: :importers
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
-- :name: github_importer:github_import_pull_requests_import_review_request
-  :worker_name: Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker
-  :feature_category: :importers
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :cpu
   :weight: 1
   :idempotent: false
   :tags: []
@@ -1948,16 +1908,6 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :github_importer
-- :name: github_importer:github_import_stage_import_notes
-  :worker_name: Gitlab::GithubImport::Stage::ImportNotesWorker
-  :feature_category: :importers
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_protected_branches
   :worker_name: Gitlab::GithubImport::Stage::ImportProtectedBranchesWorker
   :feature_category: :importers
@@ -1970,36 +1920,6 @@
   :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_pull_requests
   :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsWorker
-  :feature_category: :importers
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
-- :name: github_importer:github_import_stage_import_pull_requests_merged_by
-  :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsMergedByWorker
-  :feature_category: :importers
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
-- :name: github_importer:github_import_stage_import_pull_requests_review_requests
-  :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsReviewRequestsWorker
-  :feature_category: :importers
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :github_importer
-- :name: github_importer:github_import_stage_import_pull_requests_reviews
-  :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsReviewsWorker
   :feature_category: :importers
   :has_external_dependencies: false
   :urgency: :low

@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting GitLab for Slack app
 description: "Troubleshooting guide for the GitLab for Slack app. Covers common issues like missing projects and notification problems."
@@ -75,6 +75,7 @@ Use the message text to identify the cause and apply the fix.
 |---|---|---|
 | Lock emoji (🔒) and an authorization prompt | Your Slack account is not linked to a GitLab account. | Complete the authorization flow to link your Slack and GitLab accounts. |
 | `"You do not have access to this feature yet"` | The `slack_duo_agent` feature flag is not enabled for your account. | Ask an administrator to enable the feature flag for your user. |
+| `"This feature requires experiment and beta GitLab Duo features to be turned on"` | Experiment and beta GitLab Duo features are turned off. | Turn on [beta and experimental features](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features). On GitLab.com, this setting is for the top-level group. On GitLab Self-Managed and GitLab Dedicated, it is for the instance. |
 | `"This feature requires GitLab Duo Agent Platform"` | Your account does not have a GitLab Duo Agent Platform license. | Check your GitLab Duo entitlement with your administrator. |
 | `"Set your default Duo namespace in your preferences"` | Your GitLab account has no default Duo namespace configured. | Set a default Duo namespace in your GitLab preferences. On GitLab.com, you must have an active GitLab Duo add-on seat in the namespace. |
 | `"The Duo Developer flow is not enabled for your namespace"` | The foundational Duo flow is not enabled for your namespace. | Ask a group owner to enable the flow in GitLab Duo Agent Platform settings. |

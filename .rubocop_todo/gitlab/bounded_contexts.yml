@@ -2845,6 +2845,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/merge_request_block.rb'
     - 'ee/app/models/merge_request_diff_detail.rb'
     - 'ee/app/models/namespace_limit.rb'
+    - 'ee/app/events/package_metadata/ingested_malware_advisory_event.rb'
     - 'ee/app/models/package_metadata/advisory.rb'
     - 'ee/app/models/package_metadata/affected_package.rb'
     - 'ee/app/models/package_metadata/checkpoint.rb'

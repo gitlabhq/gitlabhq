@@ -6,5 +6,5 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592185
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225325
 milestone: '18.10'
 group: group::agent foundations
-type: wip
+type: beta
 default_enabled: false

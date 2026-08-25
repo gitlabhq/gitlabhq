@@ -43,23 +43,25 @@ module Integrations
         return ServiceResponse.success unless gitlab_user.can?(:use_slash_commands)
 
         unless Feature.enabled?(:slack_duo_agent, gitlab_user)
-          slack_api.add_reaction(channel: channel_id, name: 'lock', timestamp: message_ts)
-          slack_api.post_ephemeral(
-            channel: channel_id, user: slack_user_id,
-            text: 'You do not have access to this feature yet. ' \
-              "For more information, see #{DUO_SLACK_DOCS_URL}",
-            thread_ts: ephemeral_thread_ts
+          post_no_access_message(
+            'You do not have access to this feature yet. ' \
+              "For more information, see #{DUO_SLACK_DOCS_URL}"
+          )
+          return ServiceResponse.success
+        end
+
+        unless experiment_features_available?(gitlab_user)
+          post_no_access_message(
+            'This feature requires experiment and beta GitLab Duo features to be turned on. ' \
+              "For more information, see #{DUO_SLACK_DOCS_URL}"
           )
           return ServiceResponse.success
         end
 
         unless gitlab_user.allowed_to_use?(:duo_agent_platform)
-          slack_api.add_reaction(channel: channel_id, name: 'lock', timestamp: message_ts)
-          slack_api.post_ephemeral(
-            channel: channel_id, user: slack_user_id,
-            text: 'This feature requires GitLab Duo Agent Platform. ' \
-              "For more information, see #{DUO_SLACK_DOCS_URL}",
-            thread_ts: ephemeral_thread_ts
+          post_no_access_message(
+            'This feature requires GitLab Duo Agent Platform. ' \
+              "For more information, see #{DUO_SLACK_DOCS_URL}"
           )
           return ServiceResponse.success
         end
@@ -88,6 +90,18 @@ module Integrations
       # so the ephemeral is posted at the channel root (existing behaviour).
       def ephemeral_thread_ts
         thread_ts != message_ts ? thread_ts : nil
+      end
+
+      # Overridden in EE. GitLab Duo in Slack is an EE-only feature.
+      def experiment_features_available?(_gitlab_user)
+        false
+      end
+
+      def post_no_access_message(text)
+        slack_api.add_reaction(channel: channel_id, name: 'lock', timestamp: message_ts)
+        slack_api.post_ephemeral(
+          channel: channel_id, user: slack_user_id, text: text, thread_ts: ephemeral_thread_ts
+        )
       end
 
       def slack_installation

@@ -221,7 +221,6 @@ RSpec/VerifiedDoubleReference:
     - 'spec/workers/gitlab/github_import/attachments/import_release_worker_spec.rb'
     - 'spec/workers/gitlab/github_import/import_collaborator_worker_spec.rb'
     - 'spec/workers/gitlab/github_import/import_protected_branch_worker_spec.rb'
-    - 'spec/workers/gitlab/github_import/pull_requests/import_review_request_worker_spec.rb'
     - 'spec/workers/gitlab/github_import/stage/import_attachments_worker_spec.rb'
     - 'spec/workers/gitlab/github_import/stage/import_issue_events_worker_spec.rb'
     - 'spec/workers/gitlab/github_import/stage/import_protected_branches_worker_spec.rb'

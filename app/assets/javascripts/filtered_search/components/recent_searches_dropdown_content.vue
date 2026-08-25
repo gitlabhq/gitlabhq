@@ -84,6 +84,7 @@ export default {
       >
         <button
           type="button"
+          data-testid="filtered-search-history-dropdown-item"
           class="filtered-search-history-dropdown-item js-dropdown-button"
           @click="onItemActivated(item.text)"
         >

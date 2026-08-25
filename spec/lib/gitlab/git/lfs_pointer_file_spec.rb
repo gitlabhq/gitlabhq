@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Git::LfsPointerFile do
+RSpec.describe Gitlab::Git::LfsPointerFile, feature_category: :source_code_management do
   let(:data) { "1234\n" }
 
   subject { described_class.new(data) }

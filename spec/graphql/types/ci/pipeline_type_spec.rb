@@ -89,6 +89,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
         code_quality_report_summary
         compute_minutes
         duo_workflows
+        duo_workflow_links
       ]
     end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::CrossRepo do
+RSpec.describe Gitlab::Git::CrossRepo, feature_category: :source_code_management do
   let_it_be(:source_project) { create(:project, :repository) }
   let_it_be(:target_project) { create(:project, :repository) }
 

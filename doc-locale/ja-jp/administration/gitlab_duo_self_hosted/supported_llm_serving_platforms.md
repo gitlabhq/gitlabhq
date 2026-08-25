@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: サポートされているLLMサービスプラットフォーム。
 title: LLMプラットフォームを設定する
@@ -9,28 +9,29 @@ title: LLMプラットフォームを設定する
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- 提供形態: GitLab Self-Managed
+- 提供形態: GitLab Self-Managed、GitLab Dedicated for Government
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 17.1で`ai_custom_model`[フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/12972)されました。デフォルトでは無効になっています。
-- GitLab 17.6の[GitLab Self-Managedで有効](https://gitlab.com/groups/gitlab-org/-/epics/15176)になりました。
+- GitLab 17.1で`ai_custom_model`[機能フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/work_items/12972)されました。デフォルトでは無効になっています。
+- GitLab 17.6の[GitLab Self-Managedで有効](https://gitlab.com/groups/gitlab-org/-/work_items/15176)になりました。
 - GitLab 17.6以降、GitLab Duoアドオンが必須になりました。
 - 機能フラグ`ai_custom_model`は、GitLab 17.8で削除されました。
 - GitLab 17.9で一般提供になりました。
 - GitLab 18.0でPremiumを含むように変更されました。
+- GitLab 18.5の[GitLab Dedicated for Government](https://gitlab.com/gitlab-org/gitlab/-/issues/569874)で有効になりました。
 
 {{< /history >}}
 
-AIゲートウェイは、[LiteLLM](https://docs.litellm.ai/docs/providers)を通じて複数のLLMプロバイダーをサポートしています。各プラットフォームには、さまざまなニーズに対応できる独自の機能と利点があります。以下のドキュメントは、弊社が検証し、テストしたプロバイダーを要約しています。使用したいプラットフォームがこのドキュメントにない場合は、[プラットフォームリクエストイシュー（イシュー526144）](https://gitlab.com/gitlab-org/gitlab/-/issues/526144)でフィードバックをお寄せください。
+AIゲートウェイは、[LiteLLM](https://docs.litellm.ai/docs/providers)を通じて複数のLLMプロバイダーをサポートしています。各プラットフォームには、さまざまなニーズに対応できる独自の機能と利点があります。以下のドキュメントは、検証、テスト済みのプロバイダーを要約しています。使用したいプラットフォームがこのドキュメントにない場合は、[プラットフォームリクエストイシュー（イシュー526144）](https://gitlab.com/gitlab-org/gitlab/-/issues/526144)でフィードバックをお寄せください。
 
 ## 複数のモデルとプラットフォームを使用する {#use-multiple-models-and-platforms}
 
 同じGitLabインスタンスで複数のモデルとプラットフォームを使用できます。
 
-たとえば、ある機能でAzure OpenAIを使用し、別の機能でAWS Bedrock、またはvLLMで提供されるセルフホストモデルを使用するように設定できます。
+たとえば、ある機能がAzure OpenAIを使用するように設定し、別の機能がAWS BedrockまたはvLLMで提供されるセルフホストモデルを使用するように設定できます。
 
 このセットアップにより、各ユースケースに最適なモデルとプラットフォームを柔軟に選択できます。使用するモデルは、サポート対象かつ互換性のあるプラットフォームで提供されている必要があります。
 
@@ -42,9 +43,9 @@ AIゲートウェイは、[LiteLLM](https://docs.litellm.ai/docs/providers)を�
 
 vLLMをインストールするには、[vLLMインストールガイド](https://docs.vllm.ai/en/latest/getting_started/installation.html)を参照してください。[version v0.18.1](https://github.com/vllm-project/vllm/releases/tag/v0.18.1)以降をインストールする必要があります。
 
-vLLMでGPT OSS 120Bを提供する規範的なセットアップガイドについては、[Serve GPT OSS 120B with vLLM](vllm_gpt_oss_120b.md)を参照してください。
+vLLMでGPT OSS 120Bを提供する規範的なセットアップガイドについては、[vLLMでGPT OSS 120Bを提供する](vllm_gpt_oss_120b.md)を参照してください。
 
-#### エンドポイントURLの設定 {#configuring-the-endpoint-url}
+#### エンドポイントURLを設定する {#configuring-the-endpoint-url}
 
 GitLabでOpenAI API互換プラットフォーム（vLLMなど）のエンドポイントURLを設定する場合:
 
@@ -141,7 +142,7 @@ curl \
 本番環境でvLLMを実行する場合、`--disable-log-requests`フラグを使用してリクエストログを無効にすると、レイテンシーを大幅に削減できます。
 
 > [!note]
-> このフラグは、詳細なリクエストログを必要としない場合にのみ使用してください。
+> 詳細なリクエストの記録が不要な場合にのみ、このフラグを使用してください。
 
 リクエストログを無効にすると、特に高負荷時に冗長なログによって発生するオーバーヘッドが最小限に抑えられ、パフォーマンスレベルの向上に役立ちます。
 
@@ -155,32 +156,33 @@ vllm serve <path-to-model>/<model-version> \
 
 ## クラウドホスト型モデルのデプロイ {#cloud-hosted-model-deployments}
 
-GitLabは、以下のプロバイダーを検証し、テストしました。AIゲートウェイは、[LiteLLM](https://docs.litellm.ai/docs/providers)と互換性のあるLLMプロバイダーをサポートしています。
+GitLabは、以下のプロバイダーの検証およびテストを完了しています。AIゲートウェイは、[LiteLLM](https://docs.litellm.ai/docs/providers)と互換性のあるLLMプロバイダーをサポートしています。
 
 - [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
-- [Google Vertex AI](https://cloud.google.com/vertex-ai)
-- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
+- [Amazon Bedrock Mantle](#configure-amazon-bedrock-mantle)
+- [Gemini Enterprise Agent Platform](https://cloud.google.com/products/gemini-enterprise-agent-platform)
+- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard&pivots=azure-openai)
 - [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)
 - [OpenAI](https://developers.openai.com/api/docs/models)
 
 ### AWS Bedrockでの認証を設定する {#configure-authentication-with-aws-bedrock}
 
-AWS BedrockをAIゲートウェイで認証するためのいくつかの方法を使用できます。
+AWS BedrockをAIゲートウェイで認証するには、いくつかの方法を使用できます。
 
 前提条件: 
 
 - モデルは、最初に実行されたときにBedrockで自動的に有効になります。詳細については、[Bedrockモデルアクセス](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html)を参照してください。
 - 適切なIAM権限でAWS認証情報が設定されていることを確認してください。
 
-#### Amazon EKSとHelm Chart (推奨) {#amazon-eks-with-helm-chart-recommended}
+#### Amazon EKSとHelm Chart（推奨） {#amazon-eks-with-helm-chart-recommended}
 
-静的認証情報を保存せずに、AWS Bedrockへの認証のために、AIゲートウェイのポッドにIRSA (IAM Roles forサービスアカウント) を使用します。
+AWS Bedrockを認証するためにAIゲートウェイのポッドにIRSA（サービスアカウントのIAMロール）を使用します。セキュアな静的認証情報は使用しません。
 
 Amazon EKSをIRSAで認証すると、AIゲートウェイはIRSAロールから一時的な認証情報を自動的に取得します。
 
 IRSAを使用してAmazon EKSを認証するには:
 
-1. Bedrockモデルへのアクセスを許可するIAMポリシーを作成します。より高いセキュリティが必要な場合は、これを特定のモデルにスコープできます:
+1. Bedrockモデルへのアクセスを許可するIAMポリシーを作成します。より高いセキュリティが必要な場合は、これを特定のモデルに制限できます:
 
    ```json
    {
@@ -205,7 +207,7 @@ IRSAを使用してAmazon EKSを認証するには:
      --description "Bedrock access for AI Gateway"
    ```
 
-1. オプション。より厳格なアクセス制御のために、ワイルドカードリソースを特定のモデルのAmazon Resource Name (ARN) に置き換えます。これにより、GitLabの設定が変更されても、承認されたモデルのみがアクセスできるようになります。利用可能なモデルのARNについては、[Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html)を参照してください。
+1. オプション。より厳格なアクセス制御には、ワイルドカードリソースを特定のモデルのAmazon Resource Name（ARN）に置き換えます。これにより、GitLabの設定が変更されても、承認されたモデルのみがアクセスできるようになります。利用可能なモデルのARNについては、[Amazon BedrockモデルのID](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)を参照してください。
 
    ```json
    "Resource": [
@@ -215,13 +217,13 @@ IRSAを使用してAmazon EKSを認証するには:
    ```
 
    > [!note]
-   > 一部のモデルは異なるARN形式を使用する場合があります。たとえば、新しいモデルでは、基盤モデルのARNに加えて、推論プロファイルのARNが必要になる場合があります。特定のモデルのARN形式を確認するには、[Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html)を参照してください。
+   > 一部のモデルでは、異なるARN形式を使用する場合があります。たとえば、新しいモデルでは、基盤モデルのARNに加えて、推論プロファイルのARNが必要になる場合があります。特定のモデルのARN形式を確認するには、[Amazon BedrockモデルのID](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)を参照してください。
 
 1. Amazon EKSサービスアカウントが使用する信頼ポリシーを持つIAMロールを作成します。次の値を置き換えます:
 
-   - `YOUR_ACCOUNT_ID`: お客様のAWSアカウントID。
-   - `REGION`: お客様のAmazon EKSクラスターリージョン（例: `us-east-1`）。
-   - `YOUR_OIDC_ID`: お客様のAmazon EKSクラスターのOIDCプロバイダーID。
+   - `YOUR_ACCOUNT_ID`: AWSアカウントID。
+   - `REGION`: Amazon EKSクラスターリージョン（例: `us-east-1`）。
+   - `YOUR_OIDC_ID`: Amazon EKSクラスターのOIDCプロバイダーID。
    - `NAMESPACE`: AIゲートウェイがデプロイされているKubernetesネームスペース。
 
    ```json
@@ -370,21 +372,85 @@ docker run -d \
   # ... other configuration
 ```
 
-VPCエンドポイントの場合、形式は次のとおりです: `https://vpce-{vpc-endpoint-id}-{service-name}.{region}.vpce.amazonaws.com`
+VPCエンドポイントの場合、次の形式を使用します: `https://vpce-{vpc-endpoint-id}-{service-name}.{region}.vpce.amazonaws.com`
 
-### Google Vertex AIでの認証を設定する {#configure-authentication-with-google-vertex-ai}
+#### Bedrockガードレール {#bedrock-guardrails}
 
-Google Vertex AIのモデルを使用するには、AIゲートウェイインスタンスを認証する必要があります。以下のいずれかのメカニズムを使用できます:
+{{< history >}}
+
+- GitLab 19.0で[導入](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/4715)されました。
+
+{{< /history >}}
+
+Amazon Bedrockガードレールを使用して、Bedrockモデルのリクエストに対する安全性とプライバシー制御を提供できます。
+
+これらのガードレールを適用するには、`AIGW_BEDROCK_GUARDRAIL_CONFIG`環境変数の値を、以下のフィールドを含むJSONオブジェクトに設定します:
+
+| フィールド                 | 説明 |
+|-----------------------|-------------|
+| `guardrailIdentifier` | AWSアカウント内のガードレールのID。単純なID（`abc123`）または完全なARN（`arn:aws:bedrock:us-east-1:123456789012:guardrail/abc123`）を使用できます。 |
+| `guardrailVersion`    | 適用するガードレールのバージョン。`1`に設定します。 |
+| `trace`               | レスポンスにトレース情報を含めるかどうか。`enabled`または`disabled`に設定できます。 |
+
+> [!note]
+> ガードレールがリクエストをブロックした場合、ユーザーに返されるメッセージは、GitLabが提供するメッセージではなく、AWS Bedrockのガードレールで設定されたカスタムブロックメッセージです。ユーザーが適切なガイダンスを受けられるように、AWSコンソールでガードレールのブロックされたメッセージングを設定してください。
+
+Helmデプロイの場合、環境変数を次のように設定します:
+
+```yaml
+extraEnvironmentVariables:
+  - name: AIGW_BEDROCK_GUARDRAIL_CONFIG
+    value: '{"guardrailIdentifier": "<guardrail_id>", "guardrailVersion": "1", "trace": "disabled"}'
+```
+
+Dockerデプロイの場合:
+
+```shell
+docker run -d \
+  -e AIGW_BEDROCK_GUARDRAIL_CONFIG='{"guardrailIdentifier": "<guardrail_id>", "guardrailVersion": "1", "trace": "disabled"}' \
+  # ... other configuration
+```
+
+詳細については、[Amazon Bedrock Guardrails](https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html)を参照してください。
+
+### Amazon Bedrock Mantleを設定する {#configure-amazon-bedrock-mantle}
+
+{{< details >}}
+
+- ステータス: ベータ版
+
+{{< /details >}}
+
+{{< history >}}
+
+- GitLab 19.3で[導入](https://gitlab.com/groups/gitlab-org/-/epics/22787)された[ベータ](../../policy/development_stages_support.md#beta)版です。
+
+{{< /history >}}
+
+[Amazon Bedrock Mantle](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-mantle.html)は、AWSのOpenAI API互換推論サービスです。Amazon Bedrock Mantleを、他のOpenAI互換エンドポイントと同様にAPIプラットフォームで設定します。
+
+Amazon Bedrock MantleでGPT OSS 120Bのみが検証され、サポートされています。
+
+Amazon Bedrock Mantleモデルを設定するには、次の値を持つ[セルフホストモデルを追加](configure_duo_features.md#add-a-self-hosted-model)します:
+
+- **モデルファミリー**については、モデルに一致するファミリーを選択します。GPT OSS 120Bの場合は、**GPT**を選択します。
+- **エンドポイント**については、`https://bedrock-mantle.<region>.api.aws/v1`の形式でリージョンエンドポイントを入力します（例: `https://bedrock-mantle.us-east-1.api.aws/v1`）。
+- **モデル識別子**については、`bedrock_mantle/`プレフィックスを使用します（例: `bedrock_mantle/openai.gpt-oss-120b`）。
+- **APIキー**については、Amazon Bedrock MantleのAPIキーを入力します。詳細については、[AWS Bedrock API key](#aws-bedrock-api-keys)を参照してください。
+
+### Gemini Enterprise Agent Platformで認証を設定する {#configure-authentication-with-gemini-enterprise-agent-platform}
+
+Gemini Enterprise Agent Platformのモデルを使用するには、AIゲートウェイのインスタンスを認証する必要があります。以下のいずれかのメカニズムを使用できます:
 
 - Dockerコンテナの起動時に環境変数をエクスポートします。これを行うには、AIゲートウェイコンテナの実行時に以下の環境変数を設定します:
 
   ```shell
   GOOGLE_APPLICATION_CREDENTIALS=/path/to/application_default_credentials.json
   VERTEXAI_PROJECT=<gcp-project-id>
-  VERTEXAI_LOCATION=global
+  VERTEXAI_LOCATION=global # or any specific location, e.g., "europe-west1"
   ```
 
-- Google Vertex AIへのアクセスのために、AIゲートウェイコンテナをCloud Runで実行し、[Cloud Runサービスアカウント](https://docs.litellm.ai/docs/providers/vertex#using-gcp-service-account)を使用します。
+- Google Cloud RunでAIゲートウェイコンテナを実行し、Gemini Enterprise Agent Platformへのアクセスには[Cloud Runサービスアカウント](https://docs.litellm.ai/docs/providers/vertex#using-gcp-service-account)を使用します。
 
 ## 関連トピック {#related-topics}
 
@@ -395,4 +461,4 @@ Google Vertex AIのモデルを使用するには、AIゲートウェイイン�
 - 設定情報については、以下のドキュメントを参照してください:
   - [Anthropic APIの概要](https://platform.claude.com/docs/en/api/overview)
   - [OpenAI APIの概要](https://developers.openai.com/api/docs)
-  - [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)
+  - [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/working-with-models?tabs=powershell)

@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to assign multiple people to a single issue in GitLab to clarify ownership, improve collaboration, and track shared responsibilities in large teams.
 title: Multiple assignees for issues

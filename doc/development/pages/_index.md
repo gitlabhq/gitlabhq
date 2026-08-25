@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 description: Configuration and contribution guidelines.
 title: Contribute to GitLab Pages development

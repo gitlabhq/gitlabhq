@@ -71,6 +71,30 @@ Ensure:
   used [optimizations](../api_graphql_styleguide.md#optimizations) to remove N+1s whenever possible.
 - You use [laziness](../api_graphql_styleguide.md#laziness) appropriately.
 
+### Frontend GraphQL fragment changes
+
+Apply this section when an MR changes a `.graphql` file under `app/assets/`, `ee/app/assets/`,
+or `app/graphql/queries/`. Check the following for N+1 query risk.
+
+- Trace the query depth when a fragment adds a new nested association. For example, a
+  `checkpoints` selection inside a `workflow` selection inside a list of `workflows`. Follow the
+  full query path from the root field. Confirm each level is either paginated or batch-loaded.
+- Watch for list-of-lists patterns. A fragment used on a list type that also fetches a sub-list
+  is a strong N+1 signal. For example, sessions to workflows to checkpoints. Each parent record
+  issues a separate query for its children, unless the resolver batches the loads.
+- **Blocker:** Check for backend batch-loading on the new field. Look for `BatchLoader::GraphQL`
+  in the resolver or type. Also check whether the parent resolver includes `LooksAhead` with a
+  `preloads` or `unconditional_includes` entry for the field. If neither is present, the MR must
+  add batch-loading before it merges.
+- **Blocker:** Check for `QueryRecorder` coverage in the matching request spec. Find the spec
+  under `spec/requests/api/graphql/` or `ee/spec/requests/api/graphql/` that mirrors the resolver
+  path. Look for an assertion such as `expect { ... }.not_to exceed_query_limit(N)` that covers
+  the new field. Confirm the fixture creates more than one parent record, because a single
+  record does not expose an N+1. If the assertion or the multi-record fixture is missing, the MR
+  must add or fix the spec before it merges.
+- Use the performance bar or `development.log` locally to spot unexpected query counts before
+  opening the MR.
+
 ### Use appropriate types
 
 For example:

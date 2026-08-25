@@ -1,8 +1,9 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Stand-ups, retrospectives, and velocity
+description: Run daily stand-ups and retrospectives, then track story points, velocity, and volatility to forecast sprint delivery.
+title: 'Tutorial: Facilitate stand-ups, retrospectives, and velocity tracking'
 ---
 
 <!-- vale gitlab_base.FutureTense = NO -->
@@ -15,7 +16,7 @@ facilitate the following common Scrum ceremonies in both co-located and distribu
 - Story points
 - Velocity and volatility
 
-This page builds on the concepts and workflows from the [introductory Scrum tutorial](_index.md).
+This tutorial builds on the concepts and workflows from the [introductory Scrum tutorial](_index.md).
 If you haven't completed that tutorial, you should do so before you go further.
 
 ## Daily stand-ups
@@ -46,7 +47,7 @@ Each team member should answer these three questions:
 To facilitate an asynchronous stand-up in GitLab, you have a few different options:
 
 - In your team's chat tool: Use automation to report stand-ups from each team member.
-  We use [Geekbot](https://geekbot.com/) internally at GitLab.
+  GitLab uses [Geekbot](https://geekbot.com/) internally.
 - In GitLab:
 
   1. Create an issue titled **Stand-up** and add it to the current iteration.
@@ -98,7 +99,7 @@ To identify the relative complexity and effort necessary to complete a story, yo
 Story points can also help you identify and discuss trade-offs in scope and implementation during
 the planning process.
 
-In GitLab, teams capture story points using the **weight** field in an issue or task.
+In GitLab, teams capture story points by using the **Weight** text box in an issue or task.
 You can set weights on stories (issues) or tasks depending on your estimation strategy.
 
 ### Deciding the value of story points
@@ -141,7 +142,7 @@ Knowing your team's volatility is significant in helping you understand how pred
 completing stories from one iteration to another.
 One of the most critical areas to focus on improving is lowering your team's volatility.
 
-In the following sections, we look at two teams that each completed the same number of story points
+The following sections look at two teams that each completed the same number of story points
 over nine iterations.
 You'll see how lower volatility provides more predictability in forecasting future team performance,
 ultimately empowering teams to set better expectations with stakeholders.
@@ -154,7 +155,7 @@ and volatility in a spreadsheet like the following:
 
 ![Spreadsheet showing a Scrum team's velocity and volatility tracker.](img/velocity_chart_v17_3.png)
 
-In this example, we use Google Sheets.
+This example uses Google Sheets.
 You might need to adapt the formulas to your preferred spreadsheet software.
 
 To create such a spreadsheet, create and populate the following columns.
@@ -167,7 +168,7 @@ To calculate current velocity and volatility:
   - The number in the first cell is the same as in the **Story Points Completed** column.
   - All other cells show the average number of story points delivered over several previous
     sprints.
-    In this example, we use up to four.
+    This example uses up to four.
   - For example, the `C10` cell has the following formula: `=AVERAGE(B7:B10)`.
 - **Volatility**:
   - Calculate the standard deviation among the number of story points delivered in previous sprints
@@ -227,9 +228,9 @@ The first example is a team with high volatility over the last nine sprints:
 | 8         | 6                      | 9.25     | 46%        |
 | 9         | 8                      | 9.75     | 40%        |
 
-Assuming the team has 200 points left in their backlog, we can use their current velocity and volatility to predict the worst, expected, and best-case scenarios for how many more sprints until they complete the backlog.
+Assuming the team has 200 points left in their backlog, you can use their current velocity and volatility to predict the worst, expected, and best-case scenarios for how many more sprints until they complete the backlog.
 
-![High volatility forecast chart showing wide gap between best and worst case scenarios](img/high_volatility_v17_3.png)
+![High volatility forecast chart showing wide gap between best and worst case scenarios.](img/high_volatility_v17_3.png)
 
 The team will deliver the backlog:
 
@@ -261,7 +262,7 @@ Like the previous team, this one had the same ending velocity but a much lower v
 With the same backlog size of 200 story points, this team has much more confidence in communicating
 a more realistic and predictable timeline for completing the backlog:
 
-![Low volatility forecast chart showing narrow gap between scenarios](img/low_volatility_v17_3.png)
+![Low volatility forecast chart showing narrow gap between scenarios.](img/low_volatility_v17_3.png)
 
 Both teams completed the same number of story points.
 However, the team with the lower volatility can communicate a delivery window of 28 to 32 sprints

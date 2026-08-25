@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Product Planning
+group: Portfolio Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Epic Links API (deprecated)
 description: Review the GitLab API documentation for Epic Links. Discover how to programmatically manage, create, and remove parent and child epic relationships efficiently.

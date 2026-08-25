@@ -165,6 +165,49 @@ describe('Mermaid diagrams renderer', () => {
     });
   });
 
+  describe('height messages from the sandboxed iframe', () => {
+    const findIframe = () => document.querySelector('iframe[src*="/-/sandbox/mermaid"]');
+
+    const postMessageFromIframe = (data) => {
+      window.dispatchEvent(
+        new MessageEvent('message', {
+          data,
+          origin: 'null',
+          source: findIframe().contentWindow,
+        }),
+      );
+    };
+
+    beforeEach(() => {
+      setHTMLFixture('<pre><code class="js-render-mermaid">graph LR</code></pre>');
+      renderDiagrams();
+    });
+
+    it('sets the iframe height from a valid message', () => {
+      expect(findIframe().height).toBe('');
+
+      postMessageFromIframe({ h: 500, w: 800 });
+
+      expect(findIframe().height).toBe('510px');
+    });
+
+    it.each`
+      description                              | data
+      ${'no h (the ack Chrome for iOS posts)'} | ${{ command: 'registerAsChildFrameAck', remoteFrameId: '4547d9da50e1d06103b42b3e2a64ee86' }}
+      ${'a numeric-string h'}                  | ${{ h: '999' }}
+      ${'a null h'}                            | ${{ h: null }}
+      ${'an empty-string h'}                   | ${{ h: '' }}
+      ${'an undefined payload'}                | ${undefined}
+    `('ignores a message with $description', ({ data }) => {
+      expect(findIframe().height).toBe('');
+
+      postMessageFromIframe({ h: 500, w: 800 });
+      postMessageFromIframe(data);
+
+      expect(findIframe().height).toBe('510px');
+    });
+  });
+
   describe('resize handling', () => {
     it('adds a resize listener when rendering a diagram', () => {
       setHTMLFixture('<pre><code class="js-render-mermaid">graph LR</code></pre>');

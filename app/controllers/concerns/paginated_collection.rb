@@ -5,6 +5,14 @@ module PaginatedCollection
 
   private
 
+  def page_param
+    params.permit(:page)[:page]
+  end
+
+  def collection_sort_param
+    params.permit(:sort)[:sort]
+  end
+
   def redirect_out_of_range(collection, total_pages = collection.total_pages)
     return false if total_pages == 0
 
@@ -18,10 +26,10 @@ module PaginatedCollection
   def paginate_for_collection(collection, row_count:)
     row_count = request.format.atom? ? -1 : row_count
 
-    paginated = collection.page(params[:page])
+    paginated = collection.page(page_param)
 
     # manual / relative_position sorting allows for 100 items on the page
-    paginated = paginated.per(100) if params[:sort] == 'relative_position'
+    paginated = paginated.per(100) if collection_sort_param == 'relative_position'
     paginated = paginated.without_count if row_count == -1
 
     {
@@ -34,7 +42,7 @@ module PaginatedCollection
     limit = relation.limit_value.to_f
 
     return 1 if limit == 0
-    return (params[:page] || 1).to_i + 1 if row_count == -1
+    return (page_param || 1).to_i + 1 if row_count == -1
 
     (row_count.to_f / limit).ceil
   end

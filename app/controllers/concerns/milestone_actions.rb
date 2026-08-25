@@ -9,7 +9,7 @@ module MilestoneActions
       format.json do
         render json: tabs_json("shared/milestones/_issues_tab", {
           issues: @milestone.milestone_issues(current_user), # rubocop:disable Gitlab/ModuleWithInstanceVariables
-          show_project_name: Gitlab::Utils.to_boolean(params[:show_project_name])
+          show_project_name: Gitlab::Utils.to_boolean(show_project_name_param)
         })
       end
     end
@@ -21,7 +21,7 @@ module MilestoneActions
       format.json do
         render json: tabs_json("shared/milestones/_merge_requests_tab", {
           merge_requests: @milestone.merge_requests_visible_to_user(current_user).preload_milestoneish_associations, # rubocop:disable Gitlab/ModuleWithInstanceVariables
-          show_project_name: Gitlab::Utils.to_boolean(params[:show_project_name])
+          show_project_name: Gitlab::Utils.to_boolean(show_project_name_param)
         })
       end
     end
@@ -56,6 +56,10 @@ module MilestoneActions
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   private
+
+  def show_project_name_param
+    params.permit(:show_project_name)[:show_project_name]
+  end
 
   def tabs_json(partial, data = {})
     {

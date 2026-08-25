@@ -386,6 +386,8 @@ ci_pipelines: &pipeline_definition
 - project_mirror
 - workload
 - sbom_occurrence_refs
+- duo_workflow_links
+- linked_duo_workflows
 pipeline_metadata:
 - pipeline
 ci_refs:

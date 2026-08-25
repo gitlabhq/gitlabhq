@@ -194,7 +194,7 @@ module IntegrationsHelper
   end
 
   def add_to_slack_link(parent, slack_app_id)
-    duo_enabled = Feature.enabled?(:slack_duo_agent, current_user)
+    duo_enabled = slack_duo_agent_available?(current_user)
 
     query = {
       scope: SlackIntegration.scopes_for(duo_enabled: duo_enabled).join(','),
@@ -252,6 +252,11 @@ module IntegrationsHelper
   extend self
 
   private
+
+  # Overridden in EE. GitLab Duo in Slack is an EE-only feature.
+  def slack_duo_agent_available?(_user)
+    false
+  end
 
   def add_to_slack_link_redirect_url(parent)
     case parent

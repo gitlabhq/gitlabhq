@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Git::Util do
+RSpec.describe Gitlab::Git::Util, feature_category: :source_code_management do
   describe '#count_lines' do
     [
       ["", 0],

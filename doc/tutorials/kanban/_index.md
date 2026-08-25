@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Use GitLab to facilitate Kanban'
 description: Work in progress, flow, and distribution.
@@ -56,7 +56,7 @@ After you've created your labels, the next step is to create a Kanban board:
 
 Congrats, you now have a Kanban board. You can now create new issues in each list, drag and drop issues from one workflow step to another, and assign issues to team members.
 
-Optionally, you can enable [work in progress (WIP) limits](../../user/project/issue_board.md#work-in-progress-limits) for each label list on your board.
+Optionally, you can turn on [work in progress (WIP) limits](../../user/project/issue_board.md#work-in-progress-limits) for each label list on your board.
 To do so:
 
 1. Select the **Edit list settings** gear icon in the upper right of a label list.
@@ -70,7 +70,7 @@ A "work in progress limit" cut line will also be visible in the list to visually
 
 Kanban traditionally uses Cumulative Flow Diagrams to visualize load and help identify bottlenecks.
 In GitLab, this can be accomplished with [Value Stream Analytics (VSA)](../../user/group/value_stream_analytics/_index.md).
-Next, we'll create a custom VSA report that matches your Kanban workflow.
+Next, create a custom VSA report that matches your Kanban workflow.
 
 ### Visualize flow
 
@@ -79,7 +79,7 @@ To visualize flow:
 1. In the top bar, select **Search or go to** and find your group or project.
 1. In the side navigation, select **Analyze** > **Value stream analytics**.
 1. Select the **Value stream** drop down in the upper left of the page, then select **New Value Stream**.
-1. Enter the desired name for the VSA report, then select the **Create from a template** option.
+1. Enter the desired name for the VSA report, then select **Create from a template**.
 1. Enter **To do** for the stage name.
 1. For the start event, select **Issue label added**, then select the **status::to do** label.
 1. For the end event, select **Issue label removed**, then select the **status::to do** label.

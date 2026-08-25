@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: AIゲートウェイと言語モデルを自社環境でホストします。
 title: セルフホストモデル
@@ -9,18 +9,19 @@ title: セルフホストモデル
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- 提供形態: GitLab Self-Managed
+- 提供形態: GitLab Self-Managed、GitLab Dedicated for Government
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 17.1で`ai_custom_model`[フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/12972)されました。デフォルトでは無効になっています。
-- GitLab 17.6の[GitLab Self-Managedで有効](https://gitlab.com/groups/gitlab-org/-/epics/15176)になりました。
+- GitLab 17.1で`ai_custom_model`[機能フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/work_items/12972)されました。デフォルトでは無効になっています。
+- GitLab 17.6の[GitLab Self-Managedで有効](https://gitlab.com/groups/gitlab-org/-/work_items/15176)になりました。
 - GitLab 17.6以降、GitLab Duoアドオンが必須になりました。
 - 機能フラグ`ai_custom_model`は、GitLab 17.8で削除されました。
 - GitLab 17.9で一般提供になりました。
 - GitLab 18.0でPremiumを含むように変更されました。
+- GitLab 18.5の[GitLab Dedicated for Government](https://gitlab.com/gitlab-org/gitlab/-/issues/569874)で有効になりました。
 - GitLab 18.8のオフラインライセンスでは、GitLab Duo Agent Platform Self-Hostedアドオンが必須になりました
 - GitLab 18.9のオンラインライセンスでは、GitLab Duo Agent Platformの機能の利用状況に応じた課金に変更されました
 
@@ -36,7 +37,7 @@ title: セルフホストモデル
 
 オンプレミス型モデル、またはGitLab Duo Agent Platform内のプライベートクラウドでホストされるモデルには、GitLab Duo Agent Platform Self-Hostedを使用します。
 
-オフラインライセンスをお持ちのお客様の場合、価格設定はシートベースで、[GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md#gitlab-duo-agent-platform-self-hosted)アドオンが必要です。
+オフラインライセンスをお持ちのお客様は、GitLab Duoのエンタープライズライセンス契約に基づいて請求が行われ、[GitLab Duo Agent Platformセルフホスト型](../../subscriptions/subscription-add-ons.md#gitlab-duo-agent-platform-self-hosted)アドオンが必要です。
 
 オンラインライセンスをお持ちのお客様の場合、請求は[使用量課金](../../subscriptions/gitlab_credits.md)です。ハイブリッドデプロイメントでは、GitLabが管理するモデルも使用できます。
 
@@ -79,15 +80,50 @@ GitLab Duo Self-HostedでGitLab Duo機能を使用するには、GitLab Duo Ente
 | [GitLab DuoとSDLCのトレンドダッシュボード](../../user/analytics/duo_and_sdlc_trends.md)                                                    | GitLab 17.9以降   | ベータ版                |
 | [コードレビューサマリー](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)                              | GitLab 18.1.2以降 | 実験的機能          |
 
+## Agent Platformのインターネット接続要件 {#internet-connectivity-requirements-for-the-agent-platform}
+
+インターネット接続の要件は、お使いのサブスクリプションがオンラインライセンスかオフラインライセンスかによって異なります。
+
+お使いのサブスクリプションがオンラインライセンスの場合、使用量課金には送信インターネット接続が必要です。お使いのファイアウォールまたはネットワークポリシーが以下のコンポーネントのいずれかをブロックすると、使用量課金は失敗し、GitLab Duo Agent Platformの機能を使用できません。
+
+お使いのサブスクリプションがオフラインライセンスの場合、お使いのインスタンスは以下のコンポーネントに接続しません。使用量課金ではなく、エンタープライズライセンス契約に基づいて請求が行われます。詳細については、[オフラインデプロイ](offline_deployment.md)を参照してください。
+
+| コンポーネント | エンドポイント | ポート | 目的 |
+|-----------|----------|------|---------|
+| CustomersDot | `customers.gitlab.com` | `443` | ライセンスとサブスクリプションの情報を同期させます。 |
+| クラウドAIゲートウェイ | `cloud.gitlab.com` | `443` | Agent Platform機能の使用量クォータチェックを実行します。 |
+| クラウドGitLab Duoワークフローサービス<sup>1</sup> | `duo-workflow-svc.runway.gitlab.net` | `443` | GitLab Duo Agent Platform機能の使用量課金メタデータを送信します。 |
+
+**補足説明**: 
+
+1. HTTP/2が必要です。
+
+これらのコンポーネントには請求メタデータのみが送信されます。プロンプト、コード入力、およびモデルの応答は、お客様のネットワーク外には送信されません。送信されるデータの種類については、[データ送信](#data-transmission)を参照してください。
+
 ## データ転送 {#data-transmission}
 
-次の請求メタデータがGitLabに使用量課金のために送信されます:
+以下の請求メタデータが、使用量課金のためにJSONオブジェクトでGitLabに送信されます:
 
-- 匿名化されたインスタンスID
-- 呼び出し回数
+- インスタンスID
 - ユーザーID
+- 呼び出し回数
+- タイムスタンプ
 
-推論データ（codeコード入力、モデルプロンプト、モデル応答を含む）は、顧客ネットワークから外に出ることはありません。
+例: 
+
+```json
+{
+  "InstanceId": "ccbb3949-9836-471c-b2nb-32a38e8cca99",
+  "GlobalUserId": "KWDTe17sGSADiAzEGJ6IuL1D7RAzsXqa2wun3aX1YuA=",
+  "Quantity": 1,
+  "Timestamp": "2026-05-04 18:04:30.969000000"
+}
+```
+
+> [!note]
+> `GlobalUserId`は、決定論的でありながら非特定化された識別子です。`GlobalUserId`は、GitLabコード内で、インスタンスIDおよびユーザーIDからSHA-256を用いて生成されます。お客様がルックアップを構築すれば、特定のユーザーにマップし直すことが可能です。
+
+コード入力、モデルプロンプト、モデル応答を含む推論データは、顧客のネットワーク外に送信されることはありません。
 
 GitLabは、顧客がどのモデルまたはモデルプロバイダーを使用しているかを捕捉しません。
 
@@ -125,7 +161,7 @@ GitLabは、顧客がどのモデルまたはモデルプロバイダーを使�
 
 {{< history >}}
 
-- GitLab 18.3で`ai_self_hosted_vendored_features`[機能フラグ](../feature_flags/_index.md)とともに[ベータ版](../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/groups/gitlab-org/-/epics/17192)されました。デフォルトでは無効になっています。
+- GitLab 18.3で`ai_self_hosted_vendored_features`[機能フラグ](../feature_flags/_index.md)とともに[ベータ版](../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/groups/gitlab-org/-/work_items/17192)されました。デフォルトでは無効になっています。
 - GitLab 18.7で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214030)になりました。
 - GitLab 18.9で一般提供になりました。機能フラグ`ai_self_hosted_vendored_features`は[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595)されました。
 
@@ -139,7 +175,7 @@ GitLabは、顧客がどのモデルまたはモデルプロバイダーを使�
 - GitLabがキュレーションしたモデルを優先する特定の機能には、GitLab管理のベンダーモデルを使用する。
 
 > [!note]
-> 機能がGitLab管理モデルを使用するように設定されている場合:
+> 機能がGitLabマネージドモデルを使用するように設定されている場合:
 >
 > - これらの機能へのすべての呼び出しは、セルフホストAIゲートウェイではなく、GitLabでホストされているAIゲートウェイを使用します。
 > - これらの機能にはインターネット接続が必要です。
@@ -147,14 +183,14 @@ GitLabは、顧客がどのモデルまたはモデルプロバイダーを使�
 
 #### GitLab管理モデル {#gitlab-managed-models}
 
-GitLab管理モデルを使用すると、インフラストラクチャをセルフホストすることなくAIモデルに接続できます。これらのモデルは、GitLabによって完全に管理されます。
+インフラストラクチャをセルフホストする必要なく、GitLabマネージドモデルを使用してAIモデルに接続します。これらのモデルは、GitLabによって完全に管理されます。
 
 AIネイティブ機能で使用するデフォルトのGitLabモデルを選択できます。デフォルトモデルの場合、GitLabは可用性、品質、信頼性に基づいて最適なモデルを使用します。機能に使用されるモデルは、予告なく変更される場合があります。
 
-特定のGitLab管理モデルを選択すると、その機能のすべてのリクエストはそのモデルのみを使用します。モデルが利用できなくなった場合、AIゲートウェイへのリクエストは失敗し、別のモデルが選択されるまで、ユーザーはその機能を使用できません。
+特定のGitLabマネージドモデルを選択すると、その機能に対するすべてのリクエストがそのモデルのみを使用します。モデルが利用できなくなった場合、AIゲートウェイへのリクエストは失敗し、別のモデルが選択されるまで、ユーザーはその機能を使用できません。
 
 > [!note]
-> GitLab管理モデルを使用するように機能を設定する場合:
+> 機能をGitLabマネージドモデルを使用するように設定する場合:
 >
 > - これらの機能への呼び出しは、セルフホストAIゲートウェイではなく、GitLabでホストされているAIゲートウェイを使用します。
 > - これらの機能にはインターネット接続が必要です。
@@ -180,20 +216,19 @@ GitLab.com AIゲートウェイはデフォルトのEnterprise提供であり、
 
 詳細については、[GitLab.com AIゲートウェイ構成図](configuration_types.md#gitlabcom-ai-gateway)を参照してください。
 
-このインフラストラクチャをセットアップするには、[GitLab Self-ManagedインスタンスでGitLab Duoを設定する方法](../gitlab_duo/configure/gitlab_self_managed.md)を参照してください。
+このインフラストラクチャをセットアップするには、[GitLab Self-ManagedインスタンスでGitLab Duoを設定する方法](../gitlab_duo/configure/_index.md)を参照してください。
 
-## プライベートインフラストラクチャをセットアップする {#set-up-a-private-infrastructure}
+## プライベートインフラストラクチャのセットアップ {#set-up-private-infrastructure}
 
 オフラインライセンスをお持ちの場合は、完全にプライベートなインフラストラクチャをセットアップできます:
 
 1. 大規模言語モデル（LLM）サービスインフラストラクチャをインストールします。
 
-   - GitLabは、vLLM、AWS Bedrock、およびAzure OpenAIなど、LLMの提供とホスティングのためのさまざまなプラットフォームをサポートしています。各プラットフォームの詳細については、[サポートされているLLMプラットフォームのドキュメント](supported_llm_serving_platforms.md)を参照してください。
-
-   - GitLabは、特定の機能とハードウェア要件を備えたサポート対象モデルのマトリックスを提供しています。詳細については、[サポートされているモデルとハードウェア要件](supported_models_and_hardware_requirements.md)を参照してください。
+   - [サポートされているLLMプラットフォーム](supported_llm_serving_platforms.md)をレビューして、vLLM、AWS Bedrock、Azure OpenAIなどのサービングおよびホスティングプラットフォームを選択してください。
+   - [サポートされているモデルとハードウェア要件](supported_models_and_hardware_requirements.md)を確認して、モデルとハードウェアの選択を確定してください。
 
 1. [AIゲートウェイをインストール](../../install/install_ai_gateway.md)してGitLab Duo機能にアクセスします。
-1. [セルフホストモデルを使用する機能についてGitLabインスタンスを設定します](configure_duo_features.md)。
+1. セルフホストモデルを使用するように[GitLabインスタンスを設定](configure_duo_features.md)します。
 1. システムのパフォーマンスを追跡および管理するには、[ロギングを有効](logging.md)にします。
 
 ## 関連トピック {#related-topics}

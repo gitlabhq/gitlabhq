@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Knowledge
+group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use Org mode files in your GitLab project, and understand Org mode syntax.
 title: Org mode

@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const { loadVue3Migrations, rolloutEntries } = require('../helpers/vue3_migration_loader');
+const { VUE3_MIGRATION_FILENAME } = require('../helpers/vue3_migration_file_validation');
 
 const PLUGIN_NAME = 'Vue3MigrationManifestPlugin';
 
@@ -22,6 +23,18 @@ const createWebpackRawSource = (source) => {
 };
 
 /**
+ * Rollout entries whose `<entry>.vue3` sibling was not built.
+ *
+ * Entries absent from this build are skipped: `loadVue3Migrations` globs CE, EE
+ * and JH regardless of flavour, so a local `FOSS_ONLY` build with `ee/` still on
+ * disk sees YAMLs for entries it never generates. Builds that ship remove `ee/`.
+ */
+const missingVue3Entries = (compilation, entries) =>
+  Object.keys(entries).filter(
+    (entry) => compilation.entrypoints.has(entry) && !compilation.entrypoints.has(`${entry}.vue3`),
+  );
+
+/**
  * Webpack plugin that emits the Vue 3 migration runtime manifest.
  *
  * Packaged builds (Omnibus) strip `app/assets` from the Rails app, so the
@@ -37,6 +50,11 @@ const createWebpackRawSource = (source) => {
  * `migrated` pages build Vue 3 under the original entry name and need no
  * runtime metadata. The file is emitted even when empty (`{}`) — its
  * presence is the contract the Ruby side verifies.
+ *
+ * The plugin also fails the build when a `rollout` entry has no `<entry>.vue3`
+ * bundle. `WebpackHelper` falls back to the Vue 2 entry in that case, which
+ * keeps the page working but is indistinguishable from a successful rollout,
+ * since both bundles render the same UI.
  */
 class Vue3MigrationManifestPlugin {
   constructor({ filename }) {
@@ -45,7 +63,8 @@ class Vue3MigrationManifestPlugin {
 
   apply(compiler) {
     compiler.hooks.emit.tap(PLUGIN_NAME, (compilation) => {
-      const contents = `${JSON.stringify(rolloutEntries(loadVue3Migrations()), null, 2)}\n`;
+      const entries = rolloutEntries(loadVue3Migrations());
+      const contents = `${JSON.stringify(entries, null, 2)}\n`;
       const source = createWebpackRawSource(contents);
 
       const asset = compilation.getAsset(this._filename);
@@ -53,6 +72,19 @@ class Vue3MigrationManifestPlugin {
         compilation.updateAsset(this._filename, source);
       } else {
         compilation.emitAsset(this._filename, source);
+      }
+
+      const missing = missingVue3Entries(compilation, entries);
+      if (missing.length > 0) {
+        compilation.errors.push(
+          new Error(
+            `[vue3-migration] No Vue 3 bundle was built for these rollout entries:\n` +
+              `${missing.map((entry) => `  - ${entry}.vue3`).join('\n')}\n` +
+              `Rails would silently serve Vue 2 for these pages while their feature flag is on.\n` +
+              `Entries are generated when the bundler config loads, so restart the dev server ` +
+              `if you just added a ${VUE3_MIGRATION_FILENAME}.`,
+          ),
+        );
       }
     });
   }

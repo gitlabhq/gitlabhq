@@ -42,16 +42,20 @@ module Integrations
     end
 
     def handle_oauth_error
-      return unless params[:error] == 'access_denied'
+      return unless slack_oauth_params[:error] == 'access_denied'
 
       flash[:alert] = s_('SlackIntegration|Access request canceled')
       redirect_to_integration_page
     end
 
     def check_oauth_state
-      render_403 unless valid_authenticity_token?(session, params[:state])
+      render_403 unless valid_authenticity_token?(session, slack_oauth_params[:state])
 
       true
+    end
+
+    def slack_oauth_params
+      params.permit(:error, :state)
     end
   end
 end

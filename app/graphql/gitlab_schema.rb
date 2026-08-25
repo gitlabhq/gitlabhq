@@ -39,6 +39,11 @@ class GitlabSchema < GraphQL::Schema
 
   complexity_cost_calculation_mode(:legacy)
 
+  # Hands spec-invalid queries to .legacy_invalid_return_type_conflicts instead of
+  # logging a deprecation warning for every one of them.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/586994
+  allow_legacy_invalid_return_type_conflicts true
+
   disable_introspection_entry_points if Rails.env.production?
   class << self
     def multiplex(queries, **kwargs)
@@ -54,6 +59,30 @@ class GitlabSchema < GraphQL::Schema
       end
 
       super(queries, **kwargs)
+    end
+
+    # Called when a query gives one response key two different types, which the
+    # GraphQL specification forbids. Returning nil keeps the query running, as it
+    # does today; the counter keeps the remaining offenders visible without logging
+    # a warning per request. See https://gitlab.com/gitlab-org/gitlab/-/issues/586994
+    def legacy_invalid_return_type_conflicts(query, type1, type2, node1, _node2)
+      return_type_conflicts_counter.increment(
+        types: [type1.to_type_signature, type2.to_type_signature].sort.join(' vs '),
+        # Both nodes are grouped under one response key, so either name identifies the
+        # conflict. Uses the schema field name rather than the response key, which a
+        # client can alias to anything and would make the label unbounded.
+        field: node1.name,
+        operation: ::Gitlab::Graphql::KnownOperations.default.from_query(query).name
+      )
+
+      nil
+    end
+
+    def return_type_conflicts_counter
+      @return_type_conflicts_counter ||= Gitlab::Metrics.counter(
+        :gitlab_graphql_return_type_conflicts_total,
+        'Number of GraphQL queries selecting mismatched types for the same response key'
+      )
     end
 
     def get_type(type_name, *other_args)

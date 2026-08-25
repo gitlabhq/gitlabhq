@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::RawDiffChange do
+RSpec.describe Gitlab::Git::RawDiffChange, feature_category: :source_code_management do
   let(:raw_change) { nil }
   let(:change) { described_class.new(raw_change) }
 

@@ -287,7 +287,6 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     end
 
     it 'returns the endpoint URL with all needed params' do
-      stub_feature_flags(slack_duo_agent: false)
       expect(helper).to receive(:slack_auth_project_settings_slack_url).and_return('http://redirect')
       expect(slack_link).to include('&state=a%20token')
       expect(slack_link).to start_with(Integrations::SlackInstallation::BaseService::SLACK_AUTHORIZE_URL)
@@ -300,26 +299,10 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
       )
     end
 
-    context 'when the slack_duo_agent flag is disabled' do
-      before do
-        stub_feature_flags(slack_duo_agent: false)
-        allow(helper).to receive(:slack_auth_project_settings_slack_url).and_return('http://redirect')
-      end
+    it 'requests the base SCOPES' do
+      allow(helper).to receive(:slack_auth_project_settings_slack_url).and_return('http://redirect')
 
-      it 'requests the base SCOPES' do
-        expect(query).to include('scope' => SlackIntegration::SCOPES.join(','))
-      end
-    end
-
-    context 'when the slack_duo_agent flag is enabled for current_user' do
-      before do
-        stub_feature_flags(slack_duo_agent: true)
-        allow(helper).to receive(:slack_auth_project_settings_slack_url).and_return('http://redirect')
-      end
-
-      it 'requests the DUO_SCOPES' do
-        expect(query).to include('scope' => SlackIntegration::DUO_SCOPES.join(','))
-      end
+      expect(query).to include('scope' => SlackIntegration::SCOPES.join(','))
     end
 
     context 'when passed a group' do

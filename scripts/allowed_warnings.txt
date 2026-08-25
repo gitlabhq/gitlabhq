@@ -25,3 +25,8 @@ warning: IO::Buffer is experimental and both the Ruby and C interface may change
 # entries once the gems stop using it.
 DEPRECATION WARNING: ActiveSupport::Configurable is deprecated without replacement, and will be removed in Rails 8\.2\.
 You can emulate the previous behavior with `class_attribute`\.
+
+# Rails 8.0 emits this deprecation when the app uses load_defaults 7.2 (our current setting).
+# The correct fix is to set config.active_support.to_time_preserves_timezone = :zone, which
+# will be done as part of the Rails 8 upgrade. Suppress the warning until then.
+DEPRECATION WARNING: `to_time` will always preserve the full timezone rather than offset of the receiver in Rails 8\.1\.

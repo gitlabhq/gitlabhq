@@ -88,6 +88,43 @@ RSpec.describe 'graphql queries', feature_category: :api do
   ]
   # rubocop:enable Layout/LineLength
 
+  # Selecting one response key with two different types violates the GraphQL
+  # specification. GitlabSchema lets these queries run (see
+  # GitlabSchema.legacy_invalid_return_type_conflicts), so this guard stops new ones
+  # from being added. To fix a query, give each type its own response key with an
+  # alias, then remove it from this list.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/586994
+  # rubocop:disable Layout/LineLength -- GraphQL query paths can exceed the line length limit
+  queries_with_return_type_conflicts = %w[
+    app/assets/javascripts/admin/projects/index/graphql/queries/admin_projects.query.graphql
+    app/assets/javascripts/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql
+    app/assets/javascripts/graphql_shared/queries/workspace_autocomplete_users.query.graphql
+    app/assets/javascripts/graphql_shared/subscriptions/work_item_dates.subscription.graphql
+    app/assets/javascripts/homepage/graphql/queries/recently_viewed_items.query.graphql
+    app/assets/javascripts/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql
+    app/assets/javascripts/packages_and_registries/package_registry/graphql/queries/get_package_metadata.query.graphql
+    app/assets/javascripts/work_items/graphql/create_work_item.mutation.graphql
+    app/assets/javascripts/work_items/graphql/namespace_work_item_types.query.graphql
+    app/assets/javascripts/work_items/graphql/update_work_item.mutation.graphql
+    app/assets/javascripts/work_items/graphql/work_item_by_id.query.graphql
+    app/assets/javascripts/work_items/graphql/work_item_by_iid.query.graphql
+    app/assets/javascripts/work_items/graphql/work_item_convert.mutation.graphql
+    app/assets/javascripts/work_items/graphql/work_item_updated.subscription.graphql
+    ee/app/assets/javascripts/ai/catalog/graphql/queries/ai_catalog_custom_and_foundational_items.query.graphql
+    ee/app/assets/javascripts/compliance_dashboard/graphql/compliance_requirement_controls.query.graphql
+    ee/app/assets/javascripts/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql
+    ee/app/assets/javascripts/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql
+    ee/app/assets/javascripts/graphql_shared/subscriptions/issuable_weight.subscription.graphql
+    ee/app/assets/javascripts/homepage/graphql/queries/recently_viewed_items.query.graphql
+    ee/app/assets/javascripts/rapid_diffs/graphql/get_mr_sast_report.query.graphql
+    ee/app/assets/javascripts/security_dashboard/graphql/queries/security_report_finding.query.graphql
+    ee/app/assets/javascripts/usage_quotas/pipelines/admin/graphql/queries/dedicated_instance_usage_by_month.query.graphql
+    ee/app/assets/javascripts/usage_quotas/pipelines/admin/graphql/queries/dedicated_instance_usage_by_year.query.graphql
+    ee/app/assets/javascripts/usage_quotas/usage_billing/users/show/graphql/get_user_subscription_usage_events.query.graphql
+    ee/app/assets/javascripts/work_items/graphql/update_work_item_custom_fields.mutation.graphql
+  ]
+  # rubocop:enable Layout/LineLength
+
   Gitlab::Graphql::Queries.all.each do |definition| # rubocop:disable Rails/FindEach -- Not an ActiveRecord relation
     relative_path = definition.file.delete_prefix("#{Rails.root}/") # rubocop:disable Rails/FilePath -- Can't be used to append '/'
 
@@ -96,6 +133,29 @@ RSpec.describe 'graphql queries', feature_category: :api do
         skip if !Gitlab.ee? && foss_queries_using_ee_fields.include?(relative_path)
 
         expect(definition).to be_a_valid_graphql_query
+      end
+
+      context 'with return type conflicts' do
+        before do
+          # Turn the conflicts into validation errors so they can be detected here, while
+          # production keeps running them.
+          allow(GitlabSchema).to receive(:legacy_invalid_return_type_conflicts)
+            .and_return(:return_validation_error)
+        end
+
+        # This test case fails if:
+        # 1. The query has a return type conflict
+        # 2. The query's .graphql file is not in queries_with_return_type_conflicts
+        it 'gives each response key a single type' do
+          skip 'known conflict, tracked in queries_with_return_type_conflicts' if
+            queries_with_return_type_conflicts.include?(relative_path)
+
+          conflicts = definition.validate(GitlabSchema).second.select do |error|
+            error.is_a?(GraphQL::StaticValidation::FieldsWillMergeError) && error.kind == :return_type
+          end
+
+          expect(conflicts.map(&:message)).to be_empty
+        end
       end
     end
   end
@@ -147,6 +207,43 @@ RSpec.describe 'graphql queries', feature_category: :api do
           complexity = query_complexity_with_typename(definition.text, { "useWorkItemFeatures" => true })
 
           expect(complexity).to be <= GitlabSchema::ADMIN_MAX_COMPLEXITY
+        end
+      end
+    end
+  end
+
+  describe 'return type conflicts exceptions list' do
+    let(:fragments) { Gitlab::Graphql::Queries::Fragments.new(Rails.root) }
+
+    before do
+      # Turn the conflicts into validation errors so they can be detected here, while
+      # production keeps running them.
+      allow(GitlabSchema).to receive(:legacy_invalid_return_type_conflicts)
+        .and_return(:return_validation_error)
+    end
+
+    # Checks that each entry in queries_with_return_type_conflicts has an existing
+    # file and still conflicts. Prevents having dead entries in
+    # queries_with_return_type_conflicts, and forces fixed queries out of it.
+    #
+    # EE-only: FOSS has no ee/ directory, so the ee/ entries have no file there, and the
+    # conflicts only surface against the EE schema.
+    queries_with_return_type_conflicts.each do |file|
+      describe "known conflict #{file}", if: Gitlab.ee? do
+        it 'references an existing file' do
+          # Remove the file from the list to pass this test.
+          expect(File.exist?(Rails.root.join(file))).to be(true)
+        end
+
+        it 'has not been fixed yet' do
+          # Remove the file from the list to pass this test.
+          definition = Gitlab::Graphql::Queries::Definition.new(Rails.root.join(file).to_s, fragments)
+
+          conflicts = definition.validate(GitlabSchema).second.select do |error|
+            error.is_a?(GraphQL::StaticValidation::FieldsWillMergeError) && error.kind == :return_type
+          end
+
+          expect(conflicts).not_to be_empty
         end
       end
     end

@@ -23,7 +23,7 @@ title: サービスデスクを設定する
 プロジェクトでサービスデスクを有効にするには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **サービスデスク**を展開します。
 1. **サービスデスクを有効にする**切替をオンにします。
 1. オプション。フィールドに入力します。
@@ -50,14 +50,6 @@ title: サービスデスクを設定する
 - GitLabインスタンスで[Akismetを有効](../../../integration/akismet.md)にして、このサービスにスパムチェックを追加します。ブロックされていないメールスパムにより、多くのスパムイシューが作成される可能性があります。
 
 ## 外部参加者へのメールをカスタマイズする {#customize-emails-sent-to-external-participants}
-
-{{< history >}}
-
-- `UNSUBSCRIBE_URL`、`SYSTEM_HEADER`、`SYSTEM_FOOTER`、および`ADDITIONAL_TEXT`プレースホルダーがGitLab 15.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/285512)されました。
-- `%{ISSUE_DESCRIPTION}`がGitLab 16.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/223751)されました。
-- `%{ISSUE_URL}`はGitLab 16.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/408793)されました。
-
-{{< /history >}}
 
 外部参加者には、次の場合にメールが送信されます:
 
@@ -94,7 +86,7 @@ title: サービスデスクを設定する
 
 {{< /history >}}
 
-[外部参加者](external_participants.md)がチケットに追加されると、GitLabは**new participant email**を送信して、彼らが会話に参加していることを知らせます。追加の設定がない場合、GitLabはデフォルトの新規参加者メールを送信します。
+[外部参加者](external_participants.md)がチケットに追加されると、GitLabは**新規参加者メール**を送信して、彼らが会話に参加していることを知らせます。追加の設定がない場合、GitLabはデフォルトの新規参加者メールを送信します。
 
 カスタム新規参加者メールテンプレートを作成するには:
 
@@ -103,7 +95,7 @@ title: サービスデスクを設定する
 
 ### 新規メモメール {#new-note-email}
 
-サービスデスクチケットに新しい公開コメントがある場合、GitLabは**new note email**を送信します。追加の設定がない場合、GitLabはコメントの内容を送信します。
+サービスデスクチケットに新しい公開コメントがある場合、GitLabは**新規ノートメール**を送信します。追加の設定がない場合、GitLabはコメントの内容を送信します。
 
 メールのブランドを維持するために、カスタム新規メモメールテンプレートを作成できます。これを行うには、次の手順に従います。
 
@@ -119,19 +111,13 @@ title: サービスデスクを設定する
 
 {{< /details >}}
 
-{{< history >}}
-
-- GitLab 15.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/344819)されました。
-
-{{< /history >}}
-
-インスタンス管理者は、GitLabインスタンスにヘッダー、フッター、または追加テキストを追加し、それらをGitLabから送信されるすべてのメールに適用できます。カスタム`thank_you.md`、`new_participant.md`、または`new_note.md`を使用している場合は、このコンテンツを含めるために、テンプレートに`%{SYSTEM_HEADER}`、`%{SYSTEM_FOOTER}`、または`%{ADDITIONAL_TEXT}`を追加してください。
+インスタンスの管理者は、GitLabのインスタンスにヘッダー、フッターGitLabから送信されるすべてのメールに適用できます。カスタムの`thank_you.md`、`new_participant.md`、または`new_note.md`を使用している場合は、このコンテンツを含めるために、`%{SYSTEM_HEADER}`、`%{SYSTEM_FOOTER}`、または`%{ADDITIONAL_TEXT}`をテンプレートに追加してください。
 
 詳細については、[システムヘッダーとフッターメッセージ](../../../administration/appearance.md#add-system-header-and-footer-messages)および[カスタム追加テキスト](../../../administration/settings/email.md#custom-additional-text)を参照してください。
 
 ## サービスデスクチケットにカスタムテンプレートを使用する {#use-a-custom-template-for-service-desk-tickets}
 
-新しいサービスデスクチケットの説明ごとに、1つの[説明テンプレート](../description_templates.md#create-a-description-template)を**per project**に選択して追加できます。
+**プロジェクトごと**に1つの[説明テンプレート](../description_templates.md#create-a-description-template)を選択して、新しいサービスデスクチケットのすべての説明に追加できます。
 
 説明テンプレートはさまざまなレベルで設定できます:
 
@@ -148,7 +134,7 @@ title: サービスデスクを設定する
 サービスデスクでカスタム説明テンプレートを使用するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **サービスデスク**を展開します。
 1. ドロップダウンリストの**全てのサービスデスクのイシューに追加するテンプレート**から、テンプレートを検索または選択します。
 
@@ -156,7 +142,7 @@ title: サービスデスクを設定する
 
 舞台裏では、サービスデスクは特別なサポートボットユーザーがチケットを作成することで機能します。このユーザーは、[請求対象ユーザー](../../../subscriptions/manage_seats.md#criteria-for-non-billable-users)ではないため、ライセンス制限数にはカウントされません。
 
-GitLab 16.0および以前では、サービスデスクメールから生成されたコメントは、`GitLab Support Bot`を作成者として表示します。In [GitLab 16.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/226995)では、これらのコメントはメールを送信したユーザーのメールを表示します。この機能は、GitLab 16.1および以降で作成されたコメントにのみ適用されます。
+サービスデスクのメールから生成されたコメントには、メールを送信したユーザーのメールアドレスが表示されます。
 
 ### サポートボットの表示名を変更する {#change-the-support-bots-display-name}
 
@@ -165,7 +151,7 @@ GitLab 16.0および以前では、サービスデスクメールから生成さ
 カスタムメール表示名を編集するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **サービスデスク**を展開します。
 1. **メールの表示名**の下に、新しい名前を入力します。
 1. **変更を保存**を選択します。
@@ -191,18 +177,12 @@ GitLab 16.0および以前では、サービスデスクメールから生成さ
 この設定を無効にするには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **サービスデスク**を展開します。
 1. **デフォルトでは、新規チケットは非公開です**チェックボックスをオフにします。
 1. **変更を保存**を選択します。
 
 ## 外部参加者がコメントした場合にチケットを再オープンする {#reopen-tickets-when-an-external-participant-comments}
-
-{{< history >}}
-
-- GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/8549)
-
-{{< /history >}}
 
 外部参加者がメールでチケットに新しいコメントを追加した場合に、閉じたチケットを再オープンするようにGitLabを設定できます。これにより、チケットの割り当て先が言及された内部コメントも追加され、彼らのためのTo-Doアイテムが作成されます。
 
@@ -216,9 +196,9 @@ GitLab 16.0および以前では、サービスデスクメールから生成さ
 この設定を有効にするには、次の手順に従います: 
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **サービスデスク**を展開します。
-1. **Reopen issues on a new note from an external participant**チェックボックスを選択します。
+1. **外部参加者が新しいノートを追加した際にイシューを再オープンする**チェックボックスを選択します。
 1. **変更を保存**を選択します。
 
 ## カスタムメールアドレス {#custom-email-address}
@@ -228,16 +208,6 @@ GitLab 16.0および以前では、サービスデスクメールから生成さ
 - ステータス: ベータ版
 
 {{< /details >}}
-
-{{< history >}}
-
-- GitLab 16.3で`service_desk_custom_email`[フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/329990)されました。デフォルトでは無効になっています。
-- GitLab.comおよびGitLab Self-ManagedでGitLab 16.4に[有効化](https://gitlab.com/gitlab-org/gitlab/-/issues/387003)されました。
-- SMTP認証方法を選択する機能がGitLab 16.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/429680)されました。
-- GitLab 16.7で[機能フラグ`service_desk_custom_email`が削除](https://gitlab.com/gitlab-org/gitlab/-/issues/387003)されました。
-- GitLab Self-ManagedのSMTPホストに対してローカルネットワークがGitLab 16.7で[許可](https://gitlab.com/gitlab-org/gitlab/-/issues/435206)されました。
-
-{{< /history >}}
 
 サポート通信の送信者として表示されるカスタムメールアドレスを設定します。ブランドアイデンティティを維持し、認識しているドメインでサポートリクエスタに信頼を植え付けます。
 
@@ -257,7 +227,7 @@ GitLab 16.0および以前では、サービスデスクメールから生成さ
 - サービスプロバイダーはサブアドレッシングをサポートしている必要があります。メールアドレスは、ローカル部分（`@`の前のすべて）とドメイン部分で構成されます。
 
   メールサブアドレッシングを使用すると、ローカル部分に`+`記号とその後に任意のテキストを追加することで、メールアドレスの一意のバリエーションを作成できます。`support@example.com`のメールアドレスが与えられた場合、`support+1@example.com`にメールを送信してサブアドレッシングがサポートされているかどうかを確認してください。このメールはメールボックスに表示されるはずです。
-- SMTP認証情報を持っていること（理想的にはアプリパスワードを使用する必要があります）。ユーザー名とパスワードは、Advanced Encryption Standard (AES) を使用して256ビットキーでデータベースに保存されます。
+- SMTP認証情報を持っていること（理想的にはアプリパスワードを使用する必要があります）。ユーザー名とパスワードは、Advanced Encryption Standard（AES）を使用して256ビットキーでデータベースに保存されます。
 - **SMTPホスト**は、GitLabインスタンスのネットワーク（GitLab Self-Managedの場合）またはパブリックインターネット（GitLab.comの場合）から解決可能である必要があります。
 - プロジェクトのメンテナーまたはオーナーロールが必要です。
 - サービスデスクがプロジェクト用に設定されている必要があります。
@@ -267,11 +237,11 @@ GitLab 16.0および以前では、サービスデスクメールから生成さ
 自身のメールアドレスを使用してサービスデスクメールを送信する場合、カスタムメールアドレスを設定および検証します。
 
 > [!warning]
-> メール転送を設定する際は、カスタムメールフォームの**メールを転送するためのサービスデスクのメールアドレス**フィールドにあるアドレス（`incoming+...`アドレス）を使用してください。サービスデスクの設定ページ上部にあるエイリアスアドレス（`contact-project+...`）には転送しないでください。エイリアスアドレスへの転送は、`Incorrect forwarding target`の検証失敗を引き起こします。
+> メール転送を設定する際は、カスタムメールフォームの**メールを転送するためのサービスデスクのメールアドレス**フィールドに表示されているアドレス（`incoming+...`アドレス）を使用してください。サービスデスクの設定ページ上部にあるエイリアスアドレス（`contact-project+...`）には転送しないでください。エイリアスアドレスへの転送は、`Incorrect forwarding target`の検証失敗を引き起こします。
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
-1. **サービスデスク**を展開するして、**カスタムメールアドレスを設定**セクションを見つけます。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
+1. **サービスデスク**を展開して、**カスタムメールアドレスを設定**セクションを見つけます。
 1. **メールを転送するためのサービスデスクのメールアドレス**フィールドからメールアドレスをコピーします。これは、転送先として使用する必要がある`incoming+...`メールアドレスです。
 1. ご使用のメールプロバイダー（例: GmailまたはMicrosoft 365）で、カスタムメールアドレスから前のステップでコピーしたアドレスへのメール転送を設定します。
 1. GitLabに戻り、残りのフィールドに入力してください。
@@ -351,19 +321,19 @@ or you need to explicitly set an authentication method.
 
 カスタムメールアドレスが検証された後、管理者はカスタムメールアドレスでサービスデスクメールの送信を有効または無効にできます。
 
-カスタムメールアドレスを**enable**にするには:
+カスタムメールアドレスを**有効**にするには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **サービスデスク**を展開します。
-1. **Enable custom email**切替をオンにします。外部参加者へのサービスデスクメールは、SMTP認証情報を使用して送信されます。
+1. **カスタムメールを有効化**切替をオンにします。外部参加者へのサービスデスクメールは、SMTP認証情報を使用して送信されます。
 
-カスタムメールアドレスを**disable**にするには:
+カスタムメールアドレスを**無効**にするには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **サービスデスク**を展開します。
-1. **Enable custom email**切替をオフにします。メール転送を設定したため、カスタムメールアドレスへのメールは引き続き処理され、プロジェクトのサービスデスクチケットとして表示されます。
+1. **カスタムメールを有効化**切替をオフにします。メール転送を設定したため、カスタムメールアドレスへのメールは引き続き処理され、プロジェクトのサービスデスクチケットとして表示されます。
 
    外部参加者へのサービスデスクメールは、GitLabインスタンスのデフォルト送信メール設定を使用して送信されるようになりました。
 
@@ -411,7 +381,7 @@ Google Workspaceで:
 GitLabで、次の手順を実行します。
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **サービスデスク**を展開します。
 1. **メールを転送するためのサービスデスクのメールアドレス**の下のメールアドレスをメモします。
 
@@ -425,7 +395,7 @@ Google Workspaceで:
 
 GitLabで、次の手順を実行します。
 
-1. **Plan** > **作業アイテム**を選択し、**タイプ** = **Issue**でフィルタリングします。Googleからの確認メールから新しいイシューが作成されるのを待ちます。
+1. **計画** > **作業アイテム**を選択し、**タイプ** = **イシュー**でフィルタリングします。Googleからの確認メールから新しいイシューが作成されるのを待ちます。
 1. そのイシューを選択し、確認コードをメモします。
 1. オプション。イシューを削除します。
 
@@ -442,8 +412,8 @@ Google Workspaceで:
 GitLabで、次の手順を実行します。
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
-1. **サービスデスク**を展開するして、カスタムメール設定を見つけます。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
+1. **サービスデスク**を展開して、カスタムメール設定を見つけます。
 1. フィールドに入力します:
    - **カスタムメールアドレス**: あなたのカスタムメールアドレス。
    - **SMTPホスト**: `smtp.gmail.com`。
@@ -454,7 +424,7 @@ GitLabで、次の手順を実行します。
 1. **接続の保存とテスト**を選択します。
 1. [検証プロセス](#verification)の後、カスタムメールアドレスを[有効](#enable-or-disable-the-custom-email-address)にできるはずです。
 
-### 独自のドメインでMicrosoft 365 (Exchange Online) を使用する {#use-microsoft-365-exchange-online-with-your-own-domain}
+### 独自のドメインでMicrosoft 365（Exchange Online）を使用する {#use-microsoft-365-exchange-online-with-your-own-domain}
 
 {{< history >}}
 
@@ -462,7 +432,7 @@ GitLabで、次の手順を実行します。
 
 {{< /history >}}
 
-独自のドメインでMicrosoft 365 (Exchange) を使用する場合、サービスデスク用にカスタムメールアドレスを設定します。
+独自のドメインでMicrosoft 365（Exchange）を使用する場合、サービスデスク用にカスタムメールアドレスを設定します。
 
 前提条件: 
 
@@ -482,16 +452,16 @@ Microsoft 365でカスタムサービスデスクメールアドレスを設定�
 [Microsoft 365管理センター](https://admin.microsoft.com/Adminportal/Home#/homepage)で:
 
 1. 使用したいカスタムメールアドレスの新しいアカウントを作成します（例: `support@example.com`）。
-   1. **ユーザー**セクションを展開するして、メニューから**アクティブユーザー**を選択します。
+   1. **Users**セクションを展開して、メニューから**Active users**を選択します。
    1. **Add a user**を選択し、画面の指示に従います。
 1. Microsoft Entra（旧称Active Directory）で、アカウントの2要素認証を有効にします。
 1. [ユーザーがアプリパスワードを作成できるようにします](https://learn.microsoft.com/en-us/entra/identity/authentication/howto-mfa-app-passwords)。
 1. アカウントで**Authenticated SMTP**を有効にします。
    1. リストからアカウントを選択します。
    1. ドロワーで**Mail**を選択します。
-   1. **Email apps**の下で**Manage email apps**を選択します。
-   1. **Authenticated SMTP**をチェックし、**変更を保存**を選択します。
-1. 全体的なExchange Online設定によっては、以下のものを設定する必要がある場合があります:
+   1. **Email apps**で**Manage email apps**を選択します。
+   1. **Authenticated SMTP**をチェックし、**Save changes**を選択します。
+1. 全体的なExchange Online設定によっては、以下の設定が必要になる場合があります:
    1. Azure Cloud Shellを使用してSMTPクライアント認証を許可します:
 
       ```powershell
@@ -539,7 +509,7 @@ Microsoft 365でカスタムサービスデスクメールアドレスを設定�
 GitLabで、次の手順を実行します。
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **サービスデスク**を展開します。
 1. サブアドレス部分なしで、**メールを転送するためのサービスデスクのメールアドレス**の下のメールアドレスをメモします。
 
@@ -550,14 +520,14 @@ GitLabで、次の手順を実行します。
 [Microsoft 365管理センター](https://admin.microsoft.com/Adminportal/Home#/homepage)で:
 
 <!-- vale gitlab_base.SubstitutionWarning = NO -->
-1. **ユーザー**セクションを展開するして、メニューから**アクティブユーザー**を選択します。
+1. **Users**セクションを展開して、メニューから**Active users**を選択します。
 <!-- vale gitlab_base.SubstitutionWarning = YES -->
 1. リストからカスタムメールに使用するアカウントを選択します。
 1. ドロワーで**Mail**を選択します。
 1. **Email forwarding**の下で**Manage email forwarding**を選択します。
 1. **Forward all emails sent to this mailbox**をチェックします。
 1. カスタムメールフォームの**Forwarding email address**に、サブアドレス部分なしでサービスデスクアドレスを入力します。
-1. **変更を保存**を選択します。
+1. **Save changes**を選択します。
 
 次に、サービスデスクで使用するために[Microsoft 365アカウントを使用してカスタムメールアドレスを設定](#configure-custom-email-address-using-a-microsoft-365-account)します。
 
@@ -566,8 +536,8 @@ GitLabで、次の手順を実行します。
 GitLabで、次の手順を実行します。
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
-1. **サービスデスク**を展開するして、カスタムメール設定を見つけます。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
+1. **サービスデスク**を展開して、カスタムメール設定を見つけます。
 1. フィールドに入力します:
    - **カスタムメールアドレス**: あなたのカスタムメールアドレス。
    - **SMTPホスト**: `smtp.office365.com`。
@@ -598,7 +568,7 @@ GitLabで、次の手順を実行します。
 ### サービスデスクエイリアスメールを設定する {#configure-service-desk-alias-email}
 
 > [!note]
-> GitLab.comでは、カスタムメールボックスが`contact-project+%{key}@incoming.gitlab.com`をメールアドレスとして既に設定されています。プロジェクト設定で[カスタムサフィックス](#configure-a-suffix-for-service-desk-alias-email)を設定することは引き続き可能です。
+> GitLab.comでは、`contact-project+%{key}@incoming.gitlab.com`をメールアドレスとしてカスタムメールボックスがすでに構成されています。プロジェクト設定で[カスタムサフィックス](#configure-a-suffix-for-service-desk-alias-email)を設定することは引き続き可能です。
 
 サービスデスクは、デフォルトで[受信メール](../../../administration/incoming_email.md)設定を使用します。ただし、サービスデスク用に個別のメールアドレスを使用するには、プロジェクト設定で`service_desk_email`を[カスタムサフィックス](#configure-a-suffix-for-service-desk-alias-email)で設定します。
 
@@ -612,9 +582,6 @@ IMAPでサービスデスクのカスタムメールボックスを設定する�
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
-
-> [!note]
-> GitLab 15.3および以降では、サービスデスクはSidekiqジョブをエンキューする代わりに、デフォルトで`webhook`（内部APIコール）を使用します。GitLab 15.3を実行しているLinuxパッケージインストールで`webhook`を使用するには、シークレットファイルを生成する必要があります。詳細については、[マージリクエスト5927](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5927)を参照してください。GitLab 15.4では、Linuxパッケージの再設定によりこのシークレットファイルが自動的に生成されるため、シークレットファイルの設定は必要ありません。詳細については、[イシュー1462](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1462)を参照してください。
 
 ```ruby
 gitlab_rails['service_desk_email_enabled'] = true
@@ -659,12 +626,6 @@ service_desk_email:
 設定オプションは、[受信メール](../../../administration/incoming_email.md#set-it-up)を設定する場合と同じです。
 
 #### 暗号化された認証情報を使用する {#use-encrypted-credentials}
-
-{{< history >}}
-
-- GitLab 15.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279)されました。
-
-{{< /history >}}
 
 サービスデスクメール認証情報を設定ファイルにプレーンテキストで保存する代わりに、受信メール認証情報に暗号化されたファイルを使用することもできます。
 
@@ -796,12 +757,6 @@ Kubernetesシークレットを使用してサービスデスクメールパス�
 {{< /tabs >}}
 
 #### Microsoft Graph {#microsoft-graph}
-
-{{< history >}}
-
-- GitLab 15.11で[自己コンパイル（ソース）インストール向けに導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116494)。
-
-{{< /history >}}
 
 `service_desk_email`は、IMAPの代わりにMicrosoft Graph APIを使用してMicrosoft Exchange Onlineメールボックスを読み取るように設定できます。Microsoft Graph用のOAuth 2.0アプリケーションを[受信メールと同じ方法](../../../administration/incoming_email.md#microsoft-graph)で設定します。
 
@@ -1028,7 +983,7 @@ Microsoft Cloud for US Governmentまたは[その他のAzureデプロイ](https:
 - [サービスデスクエイリアスメールを設定](#configure-service-desk-alias-email)している必要があります。
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **一般**を選択します。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **サービスデスク**を展開します。
 1. **メールアドレスのサフィックス**の下に、使用するサフィックスを入力します。
 1. **変更を保存**を選択します。
@@ -1038,7 +993,7 @@ Microsoft Cloud for US Governmentまたは[その他のAzureデプロイ](https:
 - メールアドレスサフィックスが`support`に設定されています。
 - サービスデスクメールアドレスは`contact+%{key}@example.com`に設定されています。
 
-このプロジェクトのサービスデスクメールアドレスは: `contact+mygroup-myproject-support@example.com`です。The [受信メール](../../../administration/incoming_email.md) address still works.
+このプロジェクトのサービスデスクメールアドレスは: `contact+mygroup-myproject-support@example.com`です。[受信メール](../../../administration/incoming_email.md)アドレスは引き続き使用できます。
 
 カスタムサフィックスを設定しない場合、プロジェクトの識別にデフォルトのプロジェクト識別が使用されます。
 
@@ -1048,7 +1003,7 @@ Microsoft Cloud for US Governmentまたは[その他のAzureデプロイ](https:
 
 GitLabは、`mail_room`と呼ばれる別のプロセスを使用して、`incoming_email`および`service_desk_email`のメールボックスから新しい未読メールをインジェストします。
 
-### Helmチャート (Kubernetes) {#helm-chart-kubernetes}
+### Helmチャート（Kubernetes） {#helm-chart-kubernetes}
 
 [GitLab Helmチャート](https://docs.gitlab.com/charts/)は複数のサブチャートで構成されており、その1つが[Mailroomサブチャート](https://docs.gitlab.com/charts/charts/gitlab/mailroom/)です。[`incoming_email`の共通設定](https://docs.gitlab.com/charts/installation/command-line-options/#incoming-email-configuration)と[`service_desk_email`の共通設定](https://docs.gitlab.com/charts/installation/command-line-options/#service-desk-email-configuration)を設定します。
 
@@ -1085,7 +1040,7 @@ GitLabは、`mail_room`と呼ばれる別のプロセスを使用して、`incom
    {{< /tabs >}}
 
 1. GitLabは、`mail_room`からGitLabアプリケーションにメールを転送する2つの方法を提供します。各メール設定に対して`delivery_method`を個別に設定できます:
-   1. 推奨: `webhook`（GitLab 15.3および以降のデフォルト）は、メールペイロードをAPI POSTリクエストとともにGitLabアプリケーションに送信します。共有トークンを使用して認証するします。この方法を選択する場合、`mail_room`プロセスがAPIエンドポイントにアクセスでき、共有トークンをすべてのアプリケーションノードに配布できることを確認してください。
+   1. 推奨（デフォルト）: `webhook`はメールのペイロードをAPI POSTリクエストでGitLabアプリケーションに送信します。共有トークンを使用して認証します。この方法を選択する場合、`mail_room`プロセスがAPIエンドポイントにアクセスでき、共有トークンをすべてのアプリケーションノードに配布できることを確認してください。
 
       {{< tabs >}}
 
@@ -1169,3 +1124,38 @@ GitLabは、`mail_room`と呼ばれる別のプロセスを使用して、`incom
    ```
 
 1. 変更を有効にするために、このノードで[GitLabを再構成](../../../administration/restart_gitlab.md)します。
+
+## 複数のプロジェクトでサービスデスクをオフにする {#turn-off-service-desk-for-multiple-projects}
+
+サービスデスクをネームスペース内の多くのプロジェクトでオフにするには、[API](../../../api/projects.md#turn-off-service-desk-for-multiple-projects)を使用するか、GitLab Self-Managedでは[Railsコンソール](../../../administration/operations/rails_console.md#starting-a-rails-console-session)を使用します。
+
+グループまたはネームスペース内のプロジェクトに対してサービスデスクをオフにした後、以下のことが適用されます:
+
+- プロジェクトメンバーはサービスデスクを再びオンにできます。
+- 以降に作成するプロジェクトは、サービスデスクがデフォルトでアクティブに設定されます。
+
+> [!warning]
+> データを変更するコマンドは、正しく実行されない場合や適切な条件下でない場合に損傷を引き起こす可能性があります。最初にテスト環境でコマンドを実行し、復元できるバックアップインスタンスを準備してください。
+
+ネームスペース内のすべてのプロジェクトでサービスデスクをオフにするには、次のコマンドを実行します。`my-namespace`をグループまたは個人のネームスペースの完全なパスに置き換えます。
+
+```ruby
+namespace = Namespace.find_by_full_path!('my-namespace')
+scope = namespace.is_a?(Group) ? namespace.all_projects : namespace.projects
+
+scope.where(service_desk_enabled: true).each_batch(of: 100) do |batch|
+  batch.update_all(service_desk_enabled: false)
+end
+```
+
+一部のプロジェクトでサービスデスクをアクティブのままにするには、それらのプロジェクトIDを除外するには、:
+
+```ruby
+keep_ids = [42, 1337]
+namespace = Namespace.find_by_full_path!('my-namespace')
+scope = namespace.is_a?(Group) ? namespace.all_projects : namespace.projects
+
+scope.where(service_desk_enabled: true).where.not(id: keep_ids).each_batch(of: 100) do |batch|
+  batch.update_all(service_desk_enabled: false)
+end
+```

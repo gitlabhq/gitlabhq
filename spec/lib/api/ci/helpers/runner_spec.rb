@@ -399,6 +399,51 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
     end
   end
 
+  describe '#set_current_organization_from_job' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+    subject(:set_current_organization) { helper.send(:set_current_organization_from_job, job) }
+
+    context 'with a job' do
+      let_it_be(:job, freeze: true) { create(:ci_build, pipeline: pipeline) }
+
+      it 'sets Current.organization to the job project organization' do
+        set_current_organization
+
+        expect(Current.organization).to eq(Organizations::Organization.find(project.organization_id))
+        expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => project.organization_id)
+      end
+    end
+
+    context 'when the job project has been deleted' do
+      let(:job) { build_stubbed(:ci_build) }
+
+      before do
+        allow(job).to receive(:project).and_return(nil)
+      end
+
+      it 'does not set Current.organization' do
+        set_current_organization
+
+        expect(Current.organization_assigned).to be_falsey
+      end
+    end
+
+    context 'when Current.organization is already assigned' do
+      let_it_be(:job, freeze: true) { create(:ci_build, pipeline: pipeline) }
+      let_it_be(:other_organization, freeze: true) { create(:organization) }
+
+      before do
+        Current.organization = other_organization
+      end
+
+      it 'does not overwrite the existing organization' do
+        expect { set_current_organization }.not_to change { Current.organization }
+      end
+    end
+  end
+
   describe '#check_if_backoff_required!' do
     subject { helper.check_if_backoff_required! }
 

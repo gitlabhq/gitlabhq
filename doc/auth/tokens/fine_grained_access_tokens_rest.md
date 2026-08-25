@@ -2807,6 +2807,7 @@ Grants the ability to create, delete, read, and update repositories.
 | Read | Project | `GET` | `/projects/:id/repository/changelog` |
 | Read | Project | `GET` | `/projects/:id/repository/compare` |
 | Read | Project | `GET` | `/projects/:id/repository/contributors` |
+| Read | Project | `GET` | `/projects/:id/repository/diff_stats` |
 | Read | Project | `GET` | `/projects/:id/repository/files/:file_path` |
 | Read | Project | `GET` | `/projects/:id/repository/files/:file_path/blame` |
 | Read | Project | `GET` | `/projects/:id/repository/files/:file_path/raw` |
@@ -3919,6 +3920,7 @@ feature is enabled.
 | Commit: Read | `GET` | `/projects/:id/repository/commits/:sha/statuses` |
 | Repository: Read | `GET` | `/projects/:id/repository/compare` |
 | Repository: Read | `GET` | `/projects/:id/repository/contributors` |
+| Repository: Read | `GET` | `/projects/:id/repository/diff_stats` |
 | Commit: Read | `GET` | `/projects/:id/repository/diverging_commits` |
 | Repository: Read | `GET` | `/projects/:id/repository/files/:file_path` |
 | Repository: Read | `HEAD` | `/projects/:id/repository/files/:file_path` |

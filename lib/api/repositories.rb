@@ -416,10 +416,11 @@ module API
         end
       end
 
-      # Unlike the other repository endpoints, batch blob retrieval and diverging
-      # commit counts require an authenticated user: the per-user rate limiter cannot
-      # protect against anonymous abuse on public projects. Authenticate in a `before`
-      # block so unauthenticated requests are rejected before parameter validation runs.
+      # Unlike the other repository endpoints, batch blob retrieval, diverging
+      # commit counts and diff stats require an authenticated user: the per-user rate
+      # limiter cannot protect against anonymous abuse on public projects. Authenticate
+      # in a `before` block so unauthenticated requests are rejected before parameter
+      # validation runs.
       namespace do
         before { authenticate! }
 
@@ -496,6 +497,40 @@ module API
 
         rescue Gitlab::Git::CommandError
           render_api_error!('Invalid from or to ref', 400)
+        end
+
+        desc 'Get diff statistics between two commits' do
+          detail 'Returns the number of added and deleted lines for every file that differs between two refs.'
+          success code: 200, model: Entities::DiffStat, is_array: true
+          failure [{ code: 400, message: 'Bad request' }, { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' }, { code: 404, message: 'Not found' },
+            { code: 429, message: 'Too many requests' }]
+          tags ['repositories']
+        end
+        params do
+          requires :from, type: String, desc: 'The commit SHA or branch/tag to compare from', limit: 255,
+            documentation: { example: 'main' }
+          requires :to, type: String, desc: 'The commit SHA or branch/tag to compare to', limit: 255,
+            documentation: { example: 'feature' }
+          use :pagination
+        end
+        route_setting :authorization, permissions: :read_repository_comparison, boundary_type: :project
+        route_setting :lifecycle, :beta
+        get ':id/repository/diff_stats', urgency: :low do
+          not_found! unless Feature.enabled?(:repository_diff_stats_api, user_project)
+
+          check_rate_limit!(:project_repositories_diff_stats, scope: [current_user, user_project])
+
+          from_commit = user_project.repository.commit(params[:from])
+          to_commit = user_project.repository.commit(params[:to])
+
+          not_found!('From ref and To ref') unless from_commit || to_commit
+          not_found!('From ref') unless from_commit
+          not_found!('To ref') unless to_commit
+
+          stats = user_project.repository.diff_stats(from_commit.sha, to_commit.sha)
+
+          present paginate(::Kaminari.paginate_array(stats.to_a)), with: Entities::DiffStat
         end
       end
 

@@ -2,6 +2,9 @@ import Vue from 'vue';
 import RecentSearchesDropdownContent from './components/recent_searches_dropdown_content.vue';
 import eventHub from './event_hub';
 
+// Legacy filtered-search engine, superseded by
+// ~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue. New pages should use
+// that Vue component instead of this class.
 class RecentSearchesRoot {
   constructor(recentSearchesStore, recentSearchesService, wrapperElement) {
     this.store = recentSearchesStore;
@@ -10,27 +13,36 @@ class RecentSearchesRoot {
   }
 
   init() {
-    this.bindEvents();
     this.render();
   }
 
-  bindEvents() {
-    this.onRequestClearRecentSearchesWrapper = this.onRequestClearRecentSearches.bind(this);
-
-    eventHub.$on('request-clear-recent-searches', this.onRequestClearRecentSearchesWrapper);
-  }
-
-  unbindEvents() {
-    eventHub.$off('request-clear-recent-searches', this.onRequestClearRecentSearchesWrapper);
-  }
-
   render() {
-    const { state } = this.store;
+    const { store, service } = this;
+    const { state } = store;
+
     this.vm = new Vue({
       el: this.wrapperElement,
       name: 'RecentSearchesDropdownContentRoot',
       data() {
-        return state;
+        return { ...state };
+      },
+      created() {
+        eventHub.$on('recent-searches-updated', this.onRecentSearchesUpdated);
+        eventHub.$on('request-clear-recent-searches', this.onRequestClearRecentSearches);
+      },
+      beforeDestroy() {
+        eventHub.$off('recent-searches-updated', this.onRecentSearchesUpdated);
+        eventHub.$off('request-clear-recent-searches', this.onRequestClearRecentSearches);
+      },
+      methods: {
+        onRecentSearchesUpdated(searches) {
+          this.recentSearches = searches;
+        },
+        onRequestClearRecentSearches() {
+          const resultantSearches = store.setRecentSearches([]);
+          service.save(resultantSearches);
+          this.recentSearches = resultantSearches;
+        },
       },
       render(h) {
         return h(RecentSearchesDropdownContent, {
@@ -44,13 +56,7 @@ class RecentSearchesRoot {
     });
   }
 
-  onRequestClearRecentSearches() {
-    const resultantSearches = this.store.setRecentSearches([]);
-    this.service.save(resultantSearches);
-  }
-
   destroy() {
-    this.unbindEvents();
     if (this.vm) {
       this.vm.$destroy();
     }

@@ -4,13 +4,16 @@ const ModalStub = {
   data() {
     return {
       showWasCalled: false,
+      hideWasCalled: false,
     };
   },
   methods: {
     show() {
       this.showWasCalled = true;
     },
-    hide() {},
+    hide() {
+      this.hideWasCalled = true;
+    },
   },
   render(h) {
     const children = [this.$slots.default, this.$slots['modal-footer']]

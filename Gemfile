@@ -576,7 +576,7 @@ group :development, :test do
 
   gem 'gitlab-styles', '~> 14.1', feature_category: :tooling, require: false
   gem 'haml_lint', '~> 0.75', feature_category: :tooling, require: false
-  gem 'keela', '~> 0.3', feature_category: :tooling, require: false
+  gem 'keela', '~> 0.4.1', feature_category: :tooling, require: false
 
   # Benchmarking & profiling
   gem 'benchmark-ips', '~> 2.14.0', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839

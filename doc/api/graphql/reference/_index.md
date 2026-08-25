@@ -21959,6 +21959,29 @@ Fields:
 | <a id="approvalprojectruleedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="approvalprojectruleedge-node"></a>`node` | [`ApprovalProjectRule`](#approvalprojectrule) | The item at the end of the edge. |
 
+#### `ArtifactRegistryImageConnection`
+
+The connection type for [`ArtifactRegistryImage`](#artifactregistryimage).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryimageconnection-edges"></a>`edges` | [`[ArtifactRegistryImageEdge]`](#artifactregistryimageedge) | A list of edges. |
+| <a id="artifactregistryimageconnection-nodes"></a>`nodes` | [`[ArtifactRegistryImage]`](#artifactregistryimage) | A list of nodes. |
+| <a id="artifactregistryimageconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ArtifactRegistryImageEdge`
+
+The edge type for [`ArtifactRegistryImage`](#artifactregistryimage).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryimageedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="artifactregistryimageedge-node"></a>`node` | [`ArtifactRegistryImage`](#artifactregistryimage) | The item at the end of the edge. |
+
 #### `ArtifactRegistryPackageConnection`
 
 The connection type for [`ArtifactRegistryPackage`](#artifactregistrypackage).
@@ -25998,6 +26021,29 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="duoworkflownotelinkedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="duoworkflownotelinkedge-node"></a>`node` | [`DuoWorkflowNoteLink`](#duoworkflownotelink) | The item at the end of the edge. |
+
+#### `DuoWorkflowPipelineLinkConnection`
+
+The connection type for [`DuoWorkflowPipelineLink`](#duoworkflowpipelinelink).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowpipelinelinkconnection-edges"></a>`edges` | [`[DuoWorkflowPipelineLinkEdge]`](#duoworkflowpipelinelinkedge) | A list of edges. |
+| <a id="duoworkflowpipelinelinkconnection-nodes"></a>`nodes` | [`[DuoWorkflowPipelineLink]`](#duoworkflowpipelinelink) | A list of nodes. |
+| <a id="duoworkflowpipelinelinkconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DuoWorkflowPipelineLinkEdge`
+
+The edge type for [`DuoWorkflowPipelineLink`](#duoworkflowpipelinelink).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowpipelinelinkedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="duoworkflowpipelinelinkedge-node"></a>`node` | [`DuoWorkflowPipelineLink`](#duoworkflowpipelinelink) | The item at the end of the edge. |
 
 #### `DuoWorkflowSessionArtifactConnection`
 
@@ -35068,6 +35114,17 @@ Fields:
 | <a id="artifactregistry-slug"></a>`slug` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Registry slug, Artifact Registry's immutable identifier for the namespace. `null` when the status is `unknown`. |
 | <a id="artifactregistry-status"></a>`status` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Status Artifact Registry returned, one of `active`, `suspended`, `disabled`, `blocked`, `deleted`, or `purged`, or `unknown` when the mapped namespace did not resolve. Deliberately a string rather than an enum so a status Artifact Registry adds within its API version reaches the response instead of raising. |
 
+### `ArtifactRegistryImage`
+
+Image in an Artifact Registry repository.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryimage-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the image in Artifact Registry. |
+| <a id="artifactregistryimage-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Name of the image. |
+
 ### `ArtifactRegistryMavenPackage`
 
 Maven package in an Artifact Registry repository.
@@ -35117,7 +35174,7 @@ Fields:
 
 ### `ArtifactRegistryRepositoryDetails`
 
-Repository in Artifact Registry, with the packages it holds.
+Repository in Artifact Registry, with the packages or images it holds.
 
 Fields:
 
@@ -35129,6 +35186,7 @@ Fields:
 | <a id="artifactregistryrepositorydetails-description"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Human-readable description of the repository. Null when unset. |
 | <a id="artifactregistryrepositorydetails-downloadscount"></a>`downloadsCount` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Number of artifact downloads from the repository. Buffered, so it can lag. |
 | <a id="artifactregistryrepositorydetails-format"></a>`format` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryFormat!`](#artifactregistryrepositoryformat) | Introduced in GitLab 19.3. Status: Experiment. Package format the repository holds. |
+| <a id="artifactregistryrepositorydetails-images"></a>`images` {{< icon name="warning-solid" >}} | [`ArtifactRegistryImageConnection`](#artifactregistryimageconnection) | Introduced in GitLab 19.4. Status: Experiment. Images the repository holds. Can be selected once per operation, so one operation reads images for one repository. Returns `null` for a repository holding packages and for a repository that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. |
 | <a id="artifactregistryrepositorydetails-kind"></a>`kind` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryKind!`](#artifactregistryrepositorykind) | Introduced in GitLab 19.3. Status: Experiment. How the repository sources its artifacts. |
 | <a id="artifactregistryrepositorydetails-lastupdatedat"></a>`lastUpdatedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.3. Status: Experiment. Time the repository content last changed. Null when the content never changed. |
 | <a id="artifactregistryrepositorydetails-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Name of the repository, unique within its namespace. |
@@ -42161,6 +42219,22 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="duoworkflow-notelinks-linktype"></a>`linkType` | [`DuoWorkflowNoteLinkType`](#duoworkflownotelinktype) | Filter links by their link type. |
 
+##### `DuoWorkflow.pipelineLinks`
+
+Pipelines linked to the session.
+
+Returns [`DuoWorkflowPipelineLinkConnection`](#duoworkflowpipelinelinkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflow-pipelinelinks-linktype"></a>`linkType` | [`DuoWorkflowPipelineLinkType`](#duoworkflowpipelinelinktype) | Filter links by their link type. |
+
 ##### `DuoWorkflow.toolCallApprovalMatch`
 
 {{< details >}}
@@ -42326,6 +42400,19 @@ Fields:
 | <a id="duoworkflowpermissions-readduoworkflow"></a>`readDuoWorkflow` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_duo_workflow` on this resource. |
 | <a id="duoworkflowpermissions-resumeduoworkflow"></a>`resumeDuoWorkflow` | [`Boolean!`](#boolean) | If `true`, the user can perform `resume_duo_workflow` on this resource. |
 | <a id="duoworkflowpermissions-updateduoworkflow"></a>`updateDuoWorkflow` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_duo_workflow` on this resource. |
+
+### `DuoWorkflowPipelineLink`
+
+Link between a GitLab Duo Agent Platform session and a pipeline.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowpipelinelink-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the link was created. |
+| <a id="duoworkflowpipelinelink-linktype"></a>`linkType` | [`DuoWorkflowPipelineLinkType!`](#duoworkflowpipelinelinktype) | How the pipeline relates to the session. |
+| <a id="duoworkflowpipelinelink-pipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Linked pipeline. |
+| <a id="duoworkflowpipelinelink-workflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Linked GitLab Duo Agent Platform session. |
 
 ### `DuoWorkflowSessionArtifact`
 
@@ -54132,6 +54219,22 @@ Fields:
 | <a id="pipeline-yamlerrors"></a>`yamlErrors` | [`Boolean!`](#boolean) | If the pipeline has YAML errors. |
 
 #### Fields with arguments
+
+##### `Pipeline.duoWorkflowLinks`
+
+GitLab Duo Agent Platform sessions linked to the pipeline.
+
+Returns [`DuoWorkflowPipelineLinkConnection`](#duoworkflowpipelinelinkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipeline-duoworkflowlinks-linktype"></a>`linkType` | [`DuoWorkflowPipelineLinkType`](#duoworkflowpipelinelinktype) | Filter links by their link type. |
 
 ##### `Pipeline.job`
 
@@ -67706,6 +67809,14 @@ Type of link between a GitLab Duo Agent Platform session and a note.
 | ----- | ----------- |
 | <a id="duoworkflownotelinktype-created"></a>`CREATED` | Link of type `created` between a session and a note. |
 | <a id="duoworkflownotelinktype-triggered"></a>`TRIGGERED` | Link of type `triggered` between a session and a note. |
+
+### `DuoWorkflowPipelineLinkType`
+
+Type of link between a GitLab Duo Agent Platform session and a pipeline.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="duoworkflowpipelinelinktype-source"></a>`SOURCE` | Link of type `source` between a session and a pipeline. |
 
 ### `DuoWorkflowStatus`
 

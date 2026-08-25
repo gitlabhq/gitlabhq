@@ -33,6 +33,9 @@ import RecentSearchesRoot from './recent_searches_root';
 import RecentSearchesService from './services/recent_searches_service';
 import RecentSearchesStore from './stores/recent_searches_store';
 
+// Legacy filtered-search engine, superseded by
+// ~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue. New pages should use
+// that Vue component instead of this class.
 export default class FilteredSearchManager {
   constructor({
     page,
@@ -116,6 +119,7 @@ export default class FilteredSearchManager {
           this.recentSearchesStore.state.recentSearches.concat(searches),
         );
         this.recentSearchesService.save(resultantSearches);
+        eventHub.$emit('recent-searches-updated', resultantSearches);
       });
 
     if (this.filteredSearchInput) {
@@ -571,6 +575,7 @@ export default class FilteredSearchManager {
         if (searchQuery.length > 0) {
           const resultantSearches = this.recentSearchesStore.addRecentSearch(searchQuery);
           this.recentSearchesService.save(resultantSearches);
+          eventHub.$emit('recent-searches-updated', resultantSearches);
         }
       })
       .catch(() => {

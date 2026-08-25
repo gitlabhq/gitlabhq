@@ -171,8 +171,12 @@ module CreatesCommit
     # as the target branch in the same project,
     # we don't want to create a merge request.
     # FIXME: We should use either 1 or true, not both.
-    ActiveModel::Type::Boolean.new.cast(params[:create_merge_request]) &&
+    ActiveModel::Type::Boolean.new.cast(create_merge_request_param) &&
       (@different_project || @start_branch != @branch_name) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  end
+
+  def create_merge_request_param
+    params.permit(:create_merge_request)[:create_merge_request]
   end
 
   def branch_name_or_ref

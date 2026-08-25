@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab for Slack app
 description: "Configure the GitLab for Slack app to use slash commands, receive notifications, and interact with GitLab Duo from your Slack workspace."
@@ -141,6 +141,7 @@ For example, you can ask GitLab Duo to do the following:
 ### Prerequisites
 
 - [Turn on the GitLab Duo Agent Platform](../../duo_agent_platform/turn_on_off.md#turn-gitlab-duo-agent-platform-on-or-off).
+- [Turn on beta and experimental features](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 - Link a Slack account to your GitLab account.
   If your accounts are not linked, GitLab sends you a message
   with a link to authorize the connection on first mention.

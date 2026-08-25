@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::AttributesAtRefParser do
+RSpec.describe Gitlab::Git::AttributesAtRefParser, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
 

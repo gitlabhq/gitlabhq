@@ -74,6 +74,8 @@ module API
 
           @runner = result.payload[:runner]
           if @runner.persisted?
+            set_current_organization_from_runner(@runner)
+
             present @runner, with: Entities::Ci::RunnerRegistrationDetails
           else
             render_validation_error!(@runner)

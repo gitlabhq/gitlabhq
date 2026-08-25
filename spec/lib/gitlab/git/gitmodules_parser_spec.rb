@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Git::GitmodulesParser do
+RSpec.describe Gitlab::Git::GitmodulesParser, feature_category: :source_code_management do
   it 'parses a .gitmodules file correctly' do
     data = <<~GITMODULES
       [submodule "vendor/libgit2"]

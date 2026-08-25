@@ -8,7 +8,7 @@ module IssuableCollectionsAction
   included do
     before_action :check_search_rate_limit!,
       only: [:issues, :merge_requests, :search_merge_requests, :work_items, :work_items_calendar],
-      if: -> { params[:search].present? }
+      if: -> { search_param.present? }
   end
 
   def issues
@@ -48,6 +48,10 @@ module IssuableCollectionsAction
 
   private
 
+  def search_param
+    params.permit(:search)[:search]
+  end
+
   def sorting_field
     case action_name
     when 'issues', 'work_items'
@@ -77,7 +81,7 @@ module IssuableCollectionsAction
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def render_merge_requests
-    @merge_requests = issuables_collection.page(params[:page])
+    @merge_requests = issuables_collection.page(page_param)
 
     @issuable_meta_data = Gitlab::IssuableMetadata.new(current_user, @merge_requests).data
   rescue ActiveRecord::QueryCanceled => exception # rubocop:disable Database/RescueQueryCanceled
@@ -89,7 +93,7 @@ module IssuableCollectionsAction
   def render_issues_atom_feed
     @issues = issuables_collection
               .non_archived
-              .page(params[:page])
+              .page(page_param)
 
     @issuable_meta_data = Gitlab::IssuableMetadata.new(current_user, @issues).data
 

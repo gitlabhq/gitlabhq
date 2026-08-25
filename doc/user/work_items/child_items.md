@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Product Planning
+group: Portfolio Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: "Use child items to connect and track relationships between work items in GitLab."
 title: Child items

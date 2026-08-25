@@ -122,7 +122,13 @@ module LfsRequest
   end
 
   def objects
-    @objects ||= (params[:objects] || []).to_a
+    @objects ||= (objects_param || []).to_a
+  end
+
+  # Mirrors the Git LFS batch request shape. permit returns copies, and the LFS API
+  # controller mutates these in place (:actions, :authenticated, :error) before rendering.
+  def objects_param
+    params.permit(objects: [:oid, :size])[:objects]
   end
 
   def objects_oids

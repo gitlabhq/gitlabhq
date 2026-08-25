@@ -46,9 +46,10 @@ you with a collection of metrics, ratings, and charts for the vulnerabilities de
 
 ### Prerequisites
 
-To view the security dashboard for a project or a group you must have:
+To view the security dashboard for a project, a group, or an organization, you must have:
 
 - The Developer role or higher for the group or project.
+- The Owner role for the organization.
 - At least one [security scanner](../detect/_index.md) configured in your project.
 - A successful security scan performed on the [default branch](../../project/repository/branches/default.md) of your project.
 - At least one detected vulnerability in the project.
@@ -60,11 +61,17 @@ To view the security dashboard for a project or a group you must have:
 
 ### Viewing the security dashboard
 
+{{< history >}}
+
+- Organization security dashboard [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245508) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `organization_security_dashboard`. Disabled by default.
+
+{{< /history >}}
+
 The security dashboard shows filterable charts and panels built with data from vulnerabilities detected in the default branch. Charts and panels include only open (needs triage or confirmed status) vulnerabilities and exclude those that are no longer detected.
 
-You can view a security dashboard for a project or a group. Each dashboard provides a unique viewpoint into your security posture.
+You can view a security dashboard for a project, a group, or an organization. Each dashboard provides a unique viewpoint into your security posture.
 
-Both dashboards include:
+All three dashboards include:
 
 - [Charts](#charts)
   - [Vulnerabilities over time](#vulnerabilities-over-time)
@@ -72,13 +79,18 @@ Both dashboards include:
   - [Risk score](#risk-score-panel)
   - [Vulnerabilities by age](#vulnerabilities-by-age)
   - [Top 10 CWEs](#top-10-cwes)
-  - [SAST triage and remediation funnel](#sast-triage-and-remediation-funnel)
 - [Filter the entire dashboard](#filter-the-entire-dashboard)
-- [Export as PDF](#export-as-pdf)
 
-To view a security dashboard:
+The [SAST triage and remediation funnel](#sast-triage-and-remediation-funnel) chart and the [Export as PDF](#export-as-pdf) option are available only on project and group dashboards.
 
-1. In the top bar, select **Search or go to** and find your project.
+To view the project or group security dashboard:
+
+1. In the top bar, select **Search or go to** and find your project or group.
+1. In the left sidebar, select **Secure** > **Security dashboard**.
+
+To view the organization security dashboard:
+
+1. In the top bar, select **Search or go to** and find your organization.
 1. In the left sidebar, select **Secure** > **Security dashboard**.
 
 ### Project security dashboard
@@ -109,13 +121,40 @@ supplies the following:
 - The [**Top 10 CWEs**](#top-10-cwes) chart, which shows the 10 most common CWEs.
 - The [**SAST triage and remediation funnel**](#sast-triage-and-remediation-funnel) chart, which shows how critical and high SAST vulnerabilities progress from detection to fix, including the stages handled by GitLab Duo.
 
+### Organization security dashboard
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245508) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `organization_security_dashboard`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+The organization security dashboard provides an overview of vulnerabilities found in the default
+branches of all projects in the organization. The dashboard includes:
+
+- [Vulnerabilities over time](#vulnerabilities-over-time): A chart with up to 90 days of history.
+- [Severity panels](#vulnerability-severity-panel): Panels that show open vulnerabilities by severity.
+- [Risk score](#risk-score-panel): A panel that shows total risk and the risk for each project.
+- [Vulnerabilities by age](#vulnerabilities-by-age): A chart that groups open vulnerabilities by age.
+- [Top 10 CWEs](#top-10-cwes): A chart that shows the 10 most common CWEs.
+
+> [!note]
+> The [SAST triage and remediation funnel](#sast-triage-and-remediation-funnel) chart and the
+> [Export as PDF](#export-as-pdf) option are not available on the organization security
+> dashboard.
+
 ### Charts
 
 Security dashboards include several charts that help you understand and act on vulnerabilities in your projects and groups.
 
 #### Vulnerabilities over time
 
-The **Vulnerabilities over time** chart is available on both project and group dashboards. It shows the open vulnerabilities trends over 30, 60, or 90-day periods. The default range is 30 days. GitLab retains vulnerability data for 365 days.
+The **Vulnerabilities over time** chart is available on project, group, and organization dashboards. It shows the open vulnerabilities trends over 30-day, 60-day, or 90-day periods. The default range is 30 days. GitLab retains vulnerability data for 365 days.
 
 Use the chart to identify when vulnerabilities were introduced and how they change over time.
 
@@ -192,7 +231,7 @@ Risk scores are calculated from multiple factors, including:
 
 {{< /history >}}
 
-The **Vulnerabilities by age** chart is available on group and project dashboards. It shows the distribution of unresolved vulnerabilities based on the amount of time since they were first detected. You can group vulnerabilities by severity or by report type, helping you identify where remediation activities may be needed.
+The **Vulnerabilities by age** chart is available on project, group, and organization dashboards. It shows the distribution of unresolved vulnerabilities based on the amount of time after they were first detected. You can group vulnerabilities by severity or by report type, helping you identify where remediation activities may be needed.
 
 To view details:
 
@@ -213,7 +252,7 @@ To view details:
 
 {{< /history >}}
 
-The **Top 10 CWEs** chart is available on group and project dashboards. It shows the 10 most common CWE identifiers associated with the open vulnerabilities in the group or project.
+The **Top 10 CWEs** chart is available on project, group, and organization dashboards. It shows the 10 most common CWE identifiers associated with the open vulnerabilities in the project, group, or organization.
 
 To view details:
 
@@ -267,7 +306,7 @@ You can filter results at two levels:
 Available dashboard filters include:
 
 - **Report type**: Filter by scanner, including SAST, DAST, dependency scanning, and others.
-- **Project**: Limit results to specific projects. Available only for group security dashboards.
+- **Project**: Limit results to specific projects. Available on group and organization security dashboards.
 
 On the group security dashboard, you can also filter by:
 

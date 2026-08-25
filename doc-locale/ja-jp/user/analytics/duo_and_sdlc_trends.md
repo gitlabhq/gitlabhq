@@ -15,7 +15,7 @@ title: GitLab DuoとSDLCのトレンド
 
 {{< history >}}
 
-- GitLab 16.11で`ai_impact_analytics_dashboard`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/443696)されました。デフォルトでは無効になっています。
+- GitLab 16.11で[機能フラグ](../../administration/feature_flags/_index.md) `ai_impact_analytics_dashboard`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/443696)されました。デフォルトでは無効になっています。
 - GitLab 17.2で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/451873)になりました。機能フラグ`ai_impact_analytics_dashboard`は削除されました。
 - GitLab 17.6で、GitLab Duoアドオンが必須となりました。
 - 18.2でGitLab UltimateからGitLab Premiumに移行しました。
@@ -35,11 +35,18 @@ GitLab DuoとSDLCのトレンドを使用して、次のことを行えます:
 - GitLab Duoの導入過程におけるSDLCトレンドの追跡: プロジェクトまたはグループにおけるGitLab Duoの使用トレンドが、マージまでの平均時間やCI/CDの統計など、他の重要な生産性メトリクスにどのように影響しているかを確認できます。GitLab Duoの使用状況メトリクスは、当月を含む過去6か月間分が表示されます。
 - GitLab Duo機能の導入状況の監視: 過去30日間におけるプロジェクトまたはグループでのシートおよび機能の使用状況を追跡します。
 
+次の表は、GitLab DuoとSDLCのメトリクスの可用性を示しています:
+
+| 機能 | GitLab Duo ProまたはEnterpriseが必要です | [ClickHouse](../../integration/clickhouse.md)が必要です |
+|---------|:-----------------------:|:-------------------:|
+| GitLab DuoとSDLCのトレンドダッシュボード | {{< yes >}} | {{< yes >}} |
+| `AiMetrics`API | {{< yes >}} | {{< yes >}} |
+| `AiUserMetrics`API | {{< yes >}} | {{< yes >}} |
+| `AiUsageData`API | {{< no >}} | {{< no >}}（PostgreSQLのみ） |
+
 ライセンスの使用状況を最適化する方法については、[GitLab Duoアドオン](../../subscriptions/subscription-add-ons.md)を参照してください。
 
 GitLab DuoとSDLCのトレンドの詳細については、ブログ記事[Developing GitLab Duo: AI impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/)を参照してください。
-
-クリックスルーデモについては、[GitLab DuoおよびSDLCのトレンドの製品ツアー](https://gitlab.navattic.com/ai-impact)をご覧ください。
 
 <i class="fa-youtube-play" aria-hidden="true"></i> 概要については、[GitLab Duo AIインパクトダッシュボードに関する動画](https://youtu.be/FxSWX64aUOE?si=7Yfc6xHm63c3BRwn)を参照してください。
 <!-- Video published on 2025-03-06 -->
@@ -48,23 +55,27 @@ GitLab DuoとSDLCのトレンドの詳細については、ブログ記事[Devel
 
 {{< history >}}
 
-- GitLab Duo Chatのメトリクスは、GitLab 18.10で[GitLab Duo Agentic Chat sessions](https://gitlab.com/gitlab-org/gitlab/-/issues/587301)にGitLab Duo Agentic Chatセッションに置き換えられました。
+- GitLab 18.10でGitLab Duo Chat使用状況メトリクスは、GitLab Duo Agentic Chatセッションに[置き換えられました](https://gitlab.com/gitlab-org/gitlab/-/issues/587301)。
 - 割り当てられたGitLab Duoのシートエンゲージメントメトリクスは、GitLab 18.10で[置き換えられました](https://gitlab.com/gitlab-org/gitlab/-/work_items/587298)。
 - GitLab Duoのコード提案利用メトリクスは、GitLab 18.10で[割合](https://gitlab.com/gitlab-org/gitlab/-/work_items/592813)から絶対ユーザー数に変更されました。
-- コード提案の採用率メトリクスは、GitLab 18.11で[GitLab Duoエージェント/フローユーザー](https://gitlab.com/gitlab-org/gitlab/-/work_items/587300)に置き換えられました。
+- GitLab 18.11でコード提案の採用率メトリクスが[GitLab Duoエージェント/フローのユーザー](https://gitlab.com/gitlab-org/gitlab/-/work_items/587300)に置き換えられました。
+- トレンドインジケーターはGitLab 19.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/590535)されました。
+- コード提案ユーザーメトリクスは、GitLab 19.0で[GitLab Duoのパワーユーザー](https://gitlab.com/gitlab-org/gitlab/-/work_items/587299)に置き換えられました。
+- GitLab Duo機能を使用しているパイプラインメトリクスはGitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/587308)されました。
 
 {{< /history >}}
 
-- **GitLab Duo users**: 過去30日間に少なくとも1つのGitLab DuoまたはGitLab Duo Agent Platform機能を使用したユーザー数。
-- **コード提案のユーザー**: 過去30日間にコード提案を使用したユーザー数。コード提案のメトリクス算出にあたって、GitLabはコードエディタの拡張機能からのみデータを収集します。
-- **GitLab Duo agent/flow users**: 過去30日間に少なくとも1つのGitLab Duoエージェントまたはフローを使用したユーザー数。
-- **GitLab Duo Agent chat sessions**: 過去30日間にGitLab Duo Agent Platformで開始されたチャットセッションの数。
+- **GitLab Duoユーザー**: 過去30日間に少なくとも1つのGitLab DuoまたはGitLab Duo Agent Platform機能を使用したユーザー数。
+- **GitLab Duoのパワーユーザー**: 過去30日間に3つ以上のGitLab Duo機能を使用したユーザー数。
+- **GitLab Duo Agent/フローのユーザー**: 過去30日間に少なくとも1つのGitLab Duoエージェントまたはフローを使用したユーザー数。
+- **GitLab Duo Agentチャットセッション**: 過去30日間にGitLab Duo Agent Platformで開始されたチャットセッションの数。
+- **GitLab Duo機能を使用しているパイプライン**: 過去30日間の実行中に1つ以上のGitLab Duo機能を使用したCI/CDパイプラインの割合。
 
 ## メトリクスのトレンド {#metric-trends}
 
 **メトリクスのトレンド**テーブルには、過去6か月間のメトリクスが表示され、月次の値、過去6か月間の変化率、トレンドを示すスパークラインも示されます。
 
-変更の割合は、利用可能な統計の最初の完全な月と、当月を除いた最後の完了した月を比較したものです。
+メトリクスには、以前の期間と比較した変化率を示すトレンドインジケーターが表示されます。以前の期間に利用可能なデータがない場合、変化率は**なし**と表示されます。
 
 緑色の値はプラスの変化を、赤色の値はマイナスの変化を示します。値の横にあるアイコンは、上昇傾向{{< icon name="trend-up" >}}または下降傾向{{< icon name="trend-down" >}}を示します。
 
@@ -74,7 +85,7 @@ GitLab DuoとSDLCのトレンドの詳細については、ブログ記事[Devel
 
 {{< history >}}
 
-- GitLab Duo根本原因分析の使用は、GitLab 18.1で、`duo_rca_usage_rate`という名前の[フラグとともに](../../administration/feature_flags/_index.md) [導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/513252)。デフォルトでは無効になっています。
+- 根本原因分析の利用状況は、GitLab 18.1で[機能フラグ](../../administration/feature_flags/_index.md) `duo_rca_usage_rate`とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/513252)されました。デフォルトでは無効になっています。
 - GitLab Duo根本原因分析の使用は、GitLab 18.3で[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/543987)になりました。
 - GitLab Duo根本原因分析の使用は、GitLab 18.4で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/556726)されました。機能フラグ`duo_rca_usage_rate`は削除されました。
 - GitLab Duo機能の使用は、GitLab 18.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207562)されました。
@@ -111,6 +122,19 @@ GitLab DuoとSDLCのトレンドの詳細については、ブログ記事[Devel
 - **期間の中央値**: パイプライン実行期間の中央値（分）。
 - **成功率**: 正常に完了したパイプライン実行の割合。
 - **失敗率**: 失敗して完了したパイプライン実行の割合。
+
+## パイプラインによるGitLab Duo Agent Platformの使用 {#pipelines-using-gitlab-duo-agent-platform}
+
+{{< history >}}
+
+- GitLab 19.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/587303)されました。
+
+{{< /history >}}
+
+**GitLab Duo Agent Platformを使用するパイプライン**チャートには、過去180日間に実行されたパイプライン数の月別の集計結果が表示されます。チャートには次の項目が表示されます:
+
+- **エージェントプラットフォームで**: GitLab Duo Agent Platformによってトリガーされたパイプラインの数。
+- **All pipelines**: ネームスペースで実行されたパイプラインの総数。
 
 ## 言語別のGitLab Duoコード提案の採用状況 {#gitlab-duo-code-suggestions-acceptance-by-language}
 
@@ -165,7 +189,7 @@ GitLab DuoとSDLCのトレンドの詳細については、ブログ記事[Devel
 
 {{< /history >}}
 
-**GitLab Duo Code Review requests by role**チャートには、過去180日間のコードレビューリクエストの数が月ごとに集計されて表示されます。チャートには次の項目が表示されます:
+**ロール別のGitLab Duoコードレビューリクエスト数**チャートには、過去180日間のコードレビューリクエストの数が月ごとに集計されて表示されます。チャートには次の項目が表示されます:
 
 - **作成者によるレビューリクエスト数**: マージリクエストの作成者によって行われたコードレビューリクエストの数。これには、プロジェクト設定を通じて自動的にリクエストされたコードレビューと、作成者がマージリクエスト内で手動でリクエストしたコードレビューが含まれます。
 - **作成者以外によるレビューリクエスト数**: マージリクエストの作成者以外のユーザーによって行われたコードレビューリクエストの数。たとえば、レビュアーがGitLab Duoに対してマージリクエストの変更内容をレビューするよう依頼した場合が該当します。
@@ -180,16 +204,32 @@ GitLab DuoとSDLCのトレンドの詳細については、ブログ記事[Devel
 
 {{< /history >}}
 
-**GitLab Duo Code Review comments sentiment**チャートは、過去180日間のコードレビューコメントのセンチメントを、ポジティブ (👍) およびネガティブ (👎) のリアクション率で表示します。チャートには次の項目が表示されます:
+**GitLab Duo Codeコードレビューコメントのセンチメント**チャートには、過去180日間におけるコードレビューコメントのセンチメントが、肯定的（👍）および否定的（👎）のリアクション率として表示されますチャートには次の項目が表示されます:
 
-- **承認率**: ポジティブ (👍) なリアクションを受け取ったコードレビューコメントの割合。
-- **不承認率**: ネガティブ (👎) なリアクションを受け取ったコードレビューコメントの割合。
+- **承認率**: ポジティブ（👍）なリアクションを受け取ったコードレビューコメントの割合。
+- **不承認率**: ネガティブ（👎）なリアクションを受け取ったコードレビューコメントの割合。
 
 分析結果を解釈する際は、次の点に注意してください:
 
 - ネガティビティバイアスが生じることが予想されます。ユーザーは問題を指摘する傾向がありますが、提案を採用する場合でも、良い提案に対してリアクションを付けることはめったにありません。
 - リアクション率が低いのが一般的です。コードの品質が向上しているか、レビューがより迅速に完了しているかに注目してください。
 - 不承認（👎）率の上昇は問題の兆候です。不承認率が安定または低下している場合は、GitLab Duoコードレビューが健全に導入されていることを示しています。
+
+## 機能別のGitLab Duo継続利用ユーザー {#returning-gitlab-duo-users-by-feature}
+
+{{< history >}}
+
+- GitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/576752)されました。
+
+{{< /history >}}
+
+**機能別のGitLab Duo継続利用ユーザー**チャートは、各GitLab Duo機能について過去180日間の保持率を表示します: コード提案、GitLab Duo Chat、根本原因分析、およびGitLab Duoコードレビュー。
+
+選択した機能と期間について表示するには、ポイントにカーソルを合わせると:
+
+- **Retention rate**: 選択した期間において、以前の期間からその機能を再度使用するユーザーの割合。選択した期間の戻りユーザー数を以前の期間のユーザー数で割って算出されます。
+
+チャートは、選択した日付範囲の2番目の期間から開始されます。比較対象となる以前の期間がないため、最初の期間には保持率は表示されません。
 
 ## ユーザー別のGitLab Duoメトリクス {#gitlab-duo-metrics-by-user}
 
@@ -201,10 +241,11 @@ GitLab DuoとSDLCのトレンドの詳細については、ブログ記事[Devel
 
 ユーザーメトリクステーブルには、過去30日間にわたるさまざまなGitLab Duo機能の使用状況がユーザーごとに表示されます。
 
-- **ユーザー別のGitLab Duoコード提案の使用状況**: 採用されたコード提案の数と、コード提案の採用率。
-- **ユーザー別のGitLab Duoコードレビューの使用状況**: マージリクエストの作成者としてGitLab Duoにリクエストしたコードレビューの数、およびコードレビューコメントに対するリアクション（:thumbsup:と:thumbsdown:）の数。
+- **ユーザー別のGitLab Duoコード提案使用量**: 採用されたコード提案の数と、コード提案の採用率。
+- **ユーザー別のGitLab Duoコードレビュー使用量**: マージリクエストの作成者としてGitLab Duoにリクエストしたコードレビューの数、およびコードレビューコメントに対するリアクション（:thumbsup:と:thumbsdown:）の数。
 - **ユーザー別のGitLab Duo根本原因分析の使用状況**: GitLab Duoによるトラブルシューティングリクエストの数。
 - **ユーザー別のGitLab Duo使用状況**: ユーザーが行ったGitLab Duoイベントの数。
+- **ユーザー別のフロー使用量**: ユーザーが特定のフローをトリガーする回数。
 
 ## GitLab DuoとSDLCのトレンドを表示する {#view-gitlab-duo-and-sdlc-trends}
 
@@ -216,7 +257,7 @@ GitLab DuoとSDLCのトレンドの詳細については、ブログ記事[Devel
 - GitLab Self-Managedの場合、[コントリビュート分析用のClickHouse](../group/contribution_analytics/_index.md#contribution-analytics-with-clickhouse)を設定する必要があります。
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトまたはグループを見つけます。
-1. **分析** > **分析ダッシュボード**を選択します。
+1. 左側のサイドバーで、**分析** > **分析ダッシュボード**を選択します。
 1. **GitLab DuoとSDLCのトレンド**を選択します。
 
 GitLab DuoとSDLCのメトリクスは、`AiMetrics`、`AiUserMetrics`、`AiUsageData`の[GraphQL API](../../api/graphql/duo_and_sdlc_trends.md)を使用して取得することもできます。

@@ -1551,6 +1551,57 @@ export function handleMyFeatureOperation({ operationName, variables, res, ctx })
 }
 ```
 
+### Fixture variants
+
+Recorded fixtures provide the base response for a GraphQL query.
+To test a different response shape such as an error, an empty list, or a flipped flag, you declare named variants instead of editing handlers.
+
+Place a variant file at `ee/spec/frontend/msw_integration/<feature>/fixture_variants/<query>.js`.
+It calls `defineFixtureVariants({ query, variants })` as its default export.
+`query` is the camelCase GraphQL operation name.
+`variants` maps UPPER_SNAKE_CASE keys to fixtures.
+`BASE` is required and is served by default.
+
+Build variants with three transform helpers from `fixture_utils.js`.
+Each helper deep-clones its input and returns a new fixture, so you never clone or mutate the import.
+`setFixtureData(fixture, lookupKey, value)` sets the first matching key found in a depth-first walk of `data`.
+`setFixtureErrors(fixture, ['message'])` sets `errors` and clears `data`.
+`setFixtureItemsCount({ fixture, lookupKey, itemCount })` resizes a connection's `nodes` array under `lookupKey`, which is the connection key rather than `nodes`.
+
+```javascript
+import base from 'test_fixtures/graphql/work_items/integration/get_work_items_full.query.graphql.json';
+import { defineFixtureVariants } from '../../fixture_variant_schema';
+import { setFixtureItemsCount } from '../../fixture_utils';
+
+export default defineFixtureVariants({
+  query: 'getWorkItemsFullEE',
+  variants: {
+    BASE: base,
+    EMPTY: setFixtureItemsCount({ fixture: base, lookupKey: 'workItems', itemCount: 0 }),
+  },
+});
+```
+
+In a test, activate a variant with `setQueryVariant('operationName', 'VARIANT_KEY')` imported from `ee_jest/msw_integration/setup_utils`.
+The active variant resets to `BASE` automatically in `afterEach`.
+
+```javascript
+import { setQueryVariant } from 'ee_jest/msw_integration/setup_utils';
+
+it('renders the empty state', async () => {
+  setQueryVariant('getWorkItemsFullEE', 'EMPTY');
+  // mount and assert
+});
+```
+
+The feature handler serves the active variant by calling `getActiveVariant('operationName')` and falls back to its default fixture when none is active.
+
+Generate a manifest of every registered query and its variant keys with `yarn msw:variants`.
+It writes a keys-only JSON file to `tmp/tests/frontend/msw_variants.manifest.json`.
+The manifest is not committed.
+It is regenerated on demand and has no maintenance cost.
+Read it to discover which variants exist for which queries.
+
 ### Assert Apollo cache integrity
 
 Use the request-tracking utilities in `operation_helpers.js` to verify that a

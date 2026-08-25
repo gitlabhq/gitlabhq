@@ -1,13 +1,14 @@
 ---
-stage: AI-powered
-group: Workflow Catalog
+stage: Agent Foundations
+group: AI Catalog
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: 中央のAIカタログからエージェントとフローを見つけ、有効にし、管理します。
 title: AIカタログ
 ---
 
 {{< details >}}
 
-- プラン: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom)、Premium、Ultimate
+- プラン: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier)、Premium、Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
@@ -20,12 +21,12 @@ title: AIカタログ
 
 {{< history >}}
 
-- GitLab 18.5で`global_ai_catalog`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/549914)されました。GitLab.comで[実験的機能](../../policy/development_stages_support.md)として有効になりました。
+- GitLab 18.5で`global_ai_catalog`[機能フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/549914)されました。GitLab.comで[実験的機能](../../policy/development_stages_support.md)として有効になりました。
 - GitLab 18.6で外部エージェントのサポートが`ai_catalog_third_party_flows`フラグとともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207610)されました。GitLab.comで[実験的機能](../../policy/development_stages_support.md)として有効になりました。
 - GitLab 18.7でベータ版に[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/568176)されました。
 - GitLab 18.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273)になりました。
 - 機能フラグ`global_ai_catalog`は18.10で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223135)されました。
-- GitLab 18.10でGitLab.comのFreeティアでGitLabクレジットとともに利用可能です。
+- GitLab 18.10で、GitLab.comのFreeプランにおいてGitLabクレジットを使用して利用できるようになりました。
 
 {{< /history >}}
 
@@ -47,7 +48,9 @@ AIカタログを使用すると、次のことが可能です:
 
 前提条件: 
 
-- [前提条件](_index.md#prerequisites)を満たしている必要があります。
+- [GitLab Duo Agent Platformの前提条件](_index.md#prerequisites)を満たしている。
+- [Agent Platformをオンにする](turn_on_off.md#turn-gitlab-duo-agent-platform-on-or-off)。
+- GitLab Self-Managedで、[GitLab Duoをインスタンスでオンにする](turn_on_off.md#for-an-instance)。
 - AIカタログからエージェントやフローを有効にするには:
   - グループでは、メンテナーまたはオーナーロールが必要です。
   - プロジェクトでは、メンテナーまたはオーナーロールが必要です。
@@ -57,10 +60,9 @@ AIカタログを表示するには、次のいずれかの方法があります
 - トップバーを使用する:
   1. 上部のバーで、**検索または移動先** > **検索**を選択します。
   1. **AIカタログ**を選択します。
-
 - GitLab Duoサイドバーを使用する:
   1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-  1. GitLab Duoサイドバーで、**GitLab Duo AIカタログ** ({{< icon name="tanuki-ai" >}}) を選択します。
+  1. GitLab Duoサイドバーで、**GitLab Duo AIカタログ**（{{< icon name="tanuki-ai" >}}）を選択します。
 
 エージェントのリストが表示されます。
 
@@ -130,9 +132,9 @@ GitLab 18.10より前に、エージェントまたはフローをそのマネ�
 エージェントまたはフローの現在のバージョンを確認するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトまたはグループを見つけます。
-1. 左サイドバーで、いずれかを選択します:
-   - **自動化** > **エージェント**
-   - **自動化** > **フロー**
+1. 左側のサイドバーで、いずれかを選択します:
+   - **AI** > **エージェント**
+   - **AI** > **フロー**
 1. エージェントまたはフローを選択すると、その詳細を確認できます。
 
 詳細ページには、以下が表示されます:
@@ -150,11 +152,51 @@ GitLab 18.10より前に、エージェントまたはフローをそのマネ�
 グループまたはプロジェクトでエージェントまたはフローの最新バージョンを使用するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトまたはグループを見つけます。
-1. 左サイドバーで、いずれかを選択します:
-   - **自動化** > **エージェント**
-   - **自動化** > **フロー**
+1. 左側のサイドバーで、いずれかを選択します:
+   - **AI** > **エージェント**
+   - **AI** > **フロー**
 1. 更新するエージェントまたはフローを選択します。
 1. 最新バージョンの内容を入念に確認します。更新するには、**最新バージョンを表示** > **`<x.y.z>`に更新**を選択します。
+
+## AIカタログをグループ階層に制限する {#restrict-the-ai-catalog-to-a-group-hierarchy}
+
+{{< details >}}
+
+- 提供形態: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- GitLab 19.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/594617)されました。
+
+{{< /history >}}
+
+トップレベルグループでは、AIカタログを制限して、そのグループ階層内のプロジェクトではユーザーが次のみを表示、有効化、実行できるように設定できます:
+
+- 基本エージェントとフローはGitLabによって管理されます。
+- 同じトップレベルグループ階層内のプロジェクトが所有する公開エージェントとフロー。
+- プロジェクト自体が所有するプライベートなエージェントとフロー。
+
+階層外のプロジェクトが所有するエージェントとフローは次のとおりです:
+
+- AIカタログから非表示になります。
+- 有効化がブロックされます。
+- プロジェクトが以前に有効にしていた場合でも、実行がブロックされます。
+
+この設定はトップレベルグループでのみ設定できます。この設定は、その階層内のすべてのプロジェクトに適用されます。この設定の変更は監査ログに記録されます。
+
+前提条件: 
+
+- トップレベルグループのオーナーロールが必要です。
+
+グループ階層にAIカタログを制限するには:
+
+1. 上部のバーで**検索または移動先**を選択して、トップレベルグループを見つけます。
+1. **設定** > **GitLab Duo**を選択します。
+1. **設定の変更**を選択します。
+1. **データとプライバシー**セクションで、**AIカタログ**の下にある**AIカタログをこのグループに制限する**チェックボックスを選択します。
+1. **変更を保存**を選択します。
 
 ## 関連トピック {#related-topics}
 

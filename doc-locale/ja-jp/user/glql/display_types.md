@@ -14,7 +14,7 @@ title: GLQL表示タイプ
 
 {{< history >}}
 
-- GitLab 17.4で`glql_integration`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/14767)されました。デフォルトでは無効になっています。
+- [GitLab](https://gitlab.com/groups/gitlab-org/-/work_items/14767) 17.4で、`glql_integration`という機能フラグとともに[導入](../../administration/feature_flags/_index.md)されました。デフォルトでは無効になっています。
 - GitLab 18.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/554870)になりました。機能フラグ`glql_integration`は削除されました。
 
 {{< /history >}}
@@ -39,7 +39,9 @@ title: GLQL表示タイプ
 | ----------------------------- | --------------- | ----------- |
 | シングル統計 | `stat`          | 集約された単一のメトリクスが大きな値として表示されます。 |
 | 縦棒チャート | `columnChart`   | 定義されたディメンションによってカテゴリー間でメトリクスを比較するチャート。 |
+| 棒チャート | `barChart` | ディメンションで定義されたカテゴリ全体のメトリクスを比較する水平チャートです。 |
 | 折れ線チャート     | `lineChart`     | 1つ以上のメトリクスをディメンションにわたる線としてプロットし、トレンドを示すチャート。 |
+| エリアチャート     | `areaChart`     | トレンドとボリュームを示すために、1つ以上のメトリクスを塗りつぶされたエリアとしてディメンション上にチャートとしてプロットするチャートです。 |
 
 ## テーブル {#table}
 
@@ -101,7 +103,7 @@ query: type = Issue AND project = "gitlab-org/gitlab" AND assignee = currentUser
 
 {{< history >}}
 
-- GitLab 19.2で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241395)。
+- GitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241395)されました。
 
 {{< /history >}}
 
@@ -132,7 +134,7 @@ metrics: totalCount
 
 {{< history >}}
 
-- GitLab 19.1で[導入](https://gitlab.com/groups/gitlab-org/-/epics/21212)されました。
+- GitLab 19.1で[導入](https://gitlab.com/groups/gitlab-org/-/work_items/21212)されました。
 
 {{< /history >}}
 
@@ -146,8 +148,8 @@ metrics: totalCount
 
 ディメンションとメトリクスの数がチャートのレンダリング方法を決定します:
 
-- 1つ以上のメトリクスを持つ1つのディメンションは、各メトリクスの列をプロットします。これらの列をスタックするには、`displayConfig`の下に`stacked: true`を設定します。
-- 1つのメトリクスを持つ2つのディメンションは、2番目のディメンションでグループ化された積み重ね縦棒チャートをプロットします。2つのディメンションでは、1つのメトリクスのみを使用できます。
+- 1つ以上のメトリクスを持つ1つのディメンションは、各メトリクスの列をプロットします。これらの列をスタックするには、`displayConfig`の下に`stacked: true`を設定します。単一のメトリクスの場合、`stacked`は表示に影響しません。
+- 1つのメトリクスを持つ2つのディメンションは、2番目のディメンションでグループ化された積み重ね縦棒チャートをプロットします。2つのディメンションがある場合、使用できるメトリクスは1つのみで、GitLabは`displayConfig.stacked`を無視します。
 
 ### 例 {#example-4}
 
@@ -177,6 +179,55 @@ metrics: acceptedCount, rejectedCount
 ```
 ````
 
+## 棒チャート {#bar-chart}
+
+{{< history >}}
+
+- GitLab 19.2で[導入](https://gitlab.com/groups/gitlab-org/-/work_items/21212)されました。
+
+{{< /history >}}
+
+棒チャートは、[アナリティクスモード](_index.md#analytics-mode)からの集計データを水平棒として可視化します。棒チャートは、特にカテゴリラベルが長い場合に、ディメンションで定義されたカテゴリ全体のメトリクスを比較するのに使用します。
+
+棒チャートには以下が必要です:
+
+- アナリティクスモード。`mode: analytics`で設定します。
+- 結果をグループ化するための1つまたは2つの`dimensions`。
+- プロットするメトリクスが少なくとも1つ（`metrics`パラメータを使用）。
+
+ディメンションとメトリクスの数がチャートのレンダリング方法を決定します:
+
+- 1つ以上のメトリクスを持つ1つのディメンションは、メトリクスごとに棒をプロットします。これらの棒をスタックするには、`displayConfig`の下で`stacked: true`を設定します。単一のメトリクスの場合、`stacked`は表示に影響しません。
+- 1つのメトリクスを持つ2つのディメンションは、2番目のディメンションでグループ化されたスタックされた棒チャートをプロットします。2つのディメンションがある場合、使用できるメトリクスは1つのみで、GitLabは`displayConfig.stacked`を無視します。
+
+### 例 {#example-5}
+
+過去30日間の言語ごとのコード提案の使用状況を棒チャートとして表示するには:
+
+````yaml
+```glql
+display: barChart
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: language
+metrics: totalCount
+```
+````
+
+メトリクスを並べてプロットするのではなく、単一の棒にスタックするには:
+
+````yaml
+```glql
+display: barChart
+displayConfig:
+  stacked: true
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: language
+metrics: acceptedCount, rejectedCount
+```
+````
+
 ## 折れ線チャート {#line-chart}
 
 {{< history >}}
@@ -193,7 +244,7 @@ metrics: acceptedCount, rejectedCount
 - X軸に正確に1つの`dimension`。
 - プロットする`metric`が少なくとも1つ。各メトリクスは個別の線としてレンダリングされます。
 
-### 例 {#example-5}
+### 例 {#example-6}
 
 過去30日間のコード提案の使用状況を言語別に折れ線チャートとして、総提案数に1本、承認された提案数に1本の線を表示するには:
 
@@ -204,6 +255,55 @@ mode: analytics
 query: type = CodeSuggestion and timestamp >= -30d
 dimensions: language
 metrics: totalCount, acceptedCount
+```
+````
+
+## エリアチャート {#area-chart}
+
+{{< history >}}
+
+- GitLab 19.3で[導入](https://gitlab.com/gitlab-org/glql/-/work_items/103)されました。
+
+{{< /history >}}
+
+エリアチャートは、[アナリティクスモード](_index.md#analytics-mode)からの集計データを1つ以上の塗りつぶされたエリアとして可視化します。エリアチャートは、時間などディメンション全体のメトリクスがどのように変化するかを示し、トレンドの背後にあるボリュームを強調するのに使用します。
+
+エリアチャートには以下が必要です:
+
+- アナリティクスモード。`mode: analytics`で設定します。
+- 結果をグループ化するための1つまたは2つの`dimensions`。
+- プロットするメトリクスが少なくとも1つ（`metrics`パラメータを使用）。
+
+ディメンションとメトリクスの数がチャートのレンダリング方法を決定します:
+
+- 1つ以上のメトリクスを持つ1つのディメンションは、メトリクスごとにエリアをプロットします。エリアは半透明の塗りつぶしでオーバーラップします。代わりにエリアを累計的にスタックするには、`displayConfig`の下で`stacked: true`を設定します。単一のメトリクスの場合、`stacked`は表示に影響しません。
+- 1つのメトリクスを持つ2つのディメンションは、2番目のディメンションでグループ化されたスタックされたエリアチャートをプロットします。2つのディメンションがある場合、使用できるメトリクスは1つのみで、GitLabは`displayConfig.stacked`を無視します。
+
+### 例 {#example-7}
+
+過去30日間に表示および承諾されたコード提案をオーバーラップするエリアとして表示するには:
+
+````yaml
+```glql
+display: areaChart
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: timestamp
+metrics: shownCount, acceptedCount
+```
+````
+
+代わりにメトリクスを累計的にスタックするには:
+
+````yaml
+```glql
+display: areaChart
+displayConfig:
+  stacked: true
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: timestamp
+metrics: shownCount, acceptedCount
 ```
 ````
 

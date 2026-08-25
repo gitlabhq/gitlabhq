@@ -18,13 +18,12 @@ const baseClasses =
 describe('ScanTypeCell', () => {
   let wrapper;
 
-  const createComponent = (props = {}, glFeatures = {}) => {
+  const createComponent = (props = {}) => {
     wrapper = mountExtended(ScanTypeCell, {
       propsData: {
         scanType: 'SAST',
         ...props,
       },
-      provide: { glFeatures },
     });
   };
 
@@ -47,46 +46,19 @@ describe('ScanTypeCell', () => {
       expect(findDisplayName().text()).toBe('Static application security testing (SAST)');
     });
 
-    describe('with securityScanProfilesStatusIndicators feature flag', () => {
-      it.each`
-        status                                      | statusClasses
-        ${SCAN_PROFILE_SCANNER_HEALTH_ACTIVE}       | ${['gl-border-feedback-success', 'gl-bg-status-success', 'gl-text-status-success']}
-        ${SCAN_PROFILE_SCANNER_HEALTH_WARNING}      | ${['gl-border-feedback-warning', 'gl-bg-status-warning', 'gl-text-status-warning']}
-        ${SCAN_PROFILE_SCANNER_HEALTH_FAILED}       | ${['gl-border-feedback-danger', 'gl-bg-status-danger', 'gl-text-status-danger']}
-        ${SCAN_PROFILE_SCANNER_HEALTH_PENDING}      | ${['gl-border-strong', 'gl-bg-status-neutral', 'gl-text-strong']}
-        ${SCAN_PROFILE_SCANNER_HEALTH_STALE}        | ${['gl-border-strong', 'gl-bg-status-neutral', 'gl-text-strong']}
-        ${SCAN_PROFILE_SCANNER_HEALTH_UNCONFIGURED} | ${['gl-border-dashed', 'gl-border-strong', 'gl-bg-default', 'gl-text-strong']}
-        ${null}                                     | ${['gl-border-dashed', 'gl-border-strong', 'gl-bg-default', 'gl-text-strong']}
-      `('applies correct styling for "$status" status', ({ status, statusClasses }) => {
-        createComponent({ status }, { securityScanProfilesStatusIndicators: true });
+    it.each`
+      status                                      | statusClasses
+      ${SCAN_PROFILE_SCANNER_HEALTH_ACTIVE}       | ${['gl-border-feedback-success', 'gl-bg-status-success', 'gl-text-status-success']}
+      ${SCAN_PROFILE_SCANNER_HEALTH_WARNING}      | ${['gl-border-feedback-warning', 'gl-bg-status-warning', 'gl-text-status-warning']}
+      ${SCAN_PROFILE_SCANNER_HEALTH_FAILED}       | ${['gl-border-feedback-danger', 'gl-bg-status-danger', 'gl-text-status-danger']}
+      ${SCAN_PROFILE_SCANNER_HEALTH_PENDING}      | ${['gl-border-strong', 'gl-bg-status-neutral', 'gl-text-strong']}
+      ${SCAN_PROFILE_SCANNER_HEALTH_STALE}        | ${['gl-border-strong', 'gl-bg-status-neutral', 'gl-text-strong']}
+      ${SCAN_PROFILE_SCANNER_HEALTH_UNCONFIGURED} | ${['gl-border-dashed', 'gl-border-strong', 'gl-bg-default', 'gl-text-strong']}
+      ${null}                                     | ${['gl-border-dashed', 'gl-border-strong', 'gl-bg-default', 'gl-text-strong']}
+    `('applies correct styling for "$status" status', ({ status, statusClasses }) => {
+      createComponent({ status });
 
-        expect(findBadge().classes()).toEqual([...baseClasses, ...statusClasses]);
-      });
-    });
-
-    describe('when securityScanProfilesStatusIndicators feature flag is off', () => {
-      it('returns configured classes when item is configured', () => {
-        createComponent({ isConfigured: true }, { securityScanProfilesStatusIndicators: false });
-
-        expect(findBadge().classes()).toEqual([
-          ...baseClasses,
-          'gl-border-green-500',
-          'gl-bg-green-100',
-          'gl-text-green-800',
-        ]);
-      });
-
-      it('returns unconfigured classes when item is not configured', () => {
-        createComponent({ isConfigured: false }, { securityScanProfilesStatusIndicators: false });
-
-        expect(findBadge().classes()).toEqual([
-          ...baseClasses,
-          'gl-border-dashed',
-          'gl-border-strong',
-          'gl-bg-default',
-          'gl-text-strong',
-        ]);
-      });
+      expect(findBadge().classes()).toEqual([...baseClasses, ...statusClasses]);
     });
   });
 

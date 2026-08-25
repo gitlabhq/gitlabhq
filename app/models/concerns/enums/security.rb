@@ -52,12 +52,12 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       dependency_scanning: 4
     }.freeze
 
-    AUTO_RESOLVE_SCAN_PROFILE_TYPES = {
+    REMEDIATION_SCAN_PROFILE_TYPES = {
       dependency_scanning_post_processing: 20,
-      auto_resolve: 30
+      triage_and_remediation: 30
     }.freeze
 
-    SECURITY_PROFILE_TYPES = SCAN_PROFILES_TYPES.merge(AUTO_RESOLVE_SCAN_PROFILE_TYPES).freeze
+    SECURITY_PROFILE_TYPES = SCAN_PROFILES_TYPES.merge(REMEDIATION_SCAN_PROFILE_TYPES).freeze
 
     SCAN_PROFILE_STATUSES = {
       not_configured: 0,
@@ -66,7 +66,7 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       warning: 3
     }.freeze
 
-    AUTO_RESOLVE_SCAN_PROFILE_TRIGGER_TYPES = {
+    REMEDIATION_SCAN_PROFILE_TRIGGER_TYPES = {
       sast_false_positive: 10,
       sast_vulnerability_resolution: 11,
       secret_detection_false_positive: 12,
@@ -78,7 +78,7 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       merge_request_pipeline: 1,
       git_push_event: 2,
       sbom_ingested: 3
-    }.merge(AUTO_RESOLVE_SCAN_PROFILE_TRIGGER_TYPES).freeze
+    }.merge(REMEDIATION_SCAN_PROFILE_TRIGGER_TYPES).freeze
 
     DEFAULT_CONFIGURATION_SOURCE = :sbom
 
@@ -130,8 +130,8 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       SCAN_PROFILES_TYPES
     end
 
-    def self.auto_resolve_scan_profile_types
-      AUTO_RESOLVE_SCAN_PROFILE_TYPES
+    def self.remediation_scan_profile_types
+      REMEDIATION_SCAN_PROFILE_TYPES
     end
 
     def self.security_profile_types
@@ -146,8 +146,8 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       SCAN_PROFILE_TRIGGER_TYPES
     end
 
-    def self.auto_resolve_scan_profile_trigger_types
-      AUTO_RESOLVE_SCAN_PROFILE_TRIGGER_TYPES
+    def self.remediation_scan_profile_trigger_types
+      REMEDIATION_SCAN_PROFILE_TRIGGER_TYPES
     end
   end
 end

@@ -438,6 +438,9 @@ principles:
     file_filters:
       - 'app/graphql/**/*.rb'
       - 'ee/app/graphql/**/*.rb'
+      - 'app/graphql/queries/**/*.graphql'
+      - 'app/assets/javascripts/**/*.graphql'
+      - 'ee/app/assets/javascripts/**/*.graphql'
     sources:
       - path: doc/development/api_graphql_styleguide.md
         url: https://docs.gitlab.com/development/api_graphql_styleguide/

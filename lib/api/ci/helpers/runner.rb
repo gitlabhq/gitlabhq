@@ -136,6 +136,8 @@ module API
           # remove this because it will be embedded in `Ci::AuthJobFinder`.
           ::Gitlab::Auth::Identity.link_from_job(job)
 
+          set_current_organization_from_job(job)
+
           # Only some requests (like updating the job or patching the trace) should trigger
           # runner heartbeat. Operations like artifacts uploading are executed in context of
           # the running job and in the job environment, which in many cases will cause the IP
@@ -161,6 +163,8 @@ module API
           forbidden! unless current_job
           forbidden! unless can?(current_user, :read_build, current_job)
           forbidden! unless current_authenticated_job
+
+          set_current_organization_from_job(current_job)
         end
 
         # current_job is queried by URL :id param with no authentication
@@ -253,6 +257,16 @@ module API
           return if runner.nil? || runner.instance_type?
 
           ::Current.organization = ::Organizations::Organization.find_by_id_with_isolation_record(runner.organization_id)
+        end
+
+        # Job-token requests carry no runner token, so set_current_organization_from_runner
+        # is a no-op for them; derive the organization from the authenticated job instead.
+        def set_current_organization_from_job(job)
+          return if ::Current.organization_assigned
+          return if job.project.nil?
+
+          ::Current.organization =
+            ::Organizations::Organization.find_by_id_with_isolation_record(job.project.organization_id)
         end
         # rubocop:enable Gitlab/AvoidCurrentOrganization
 

@@ -4,7 +4,7 @@ module RendersBlob
   extend ActiveSupport::Concern
 
   def blob_viewer_json(blob)
-    viewer = case params[:viewer]
+    viewer = case blob_viewer_params[:viewer]
              when 'rich' then blob.rich_viewer
              when 'auxiliary' then blob.auxiliary_viewer
              when 'none' then nil
@@ -30,8 +30,14 @@ module RendersBlob
   end
 
   def conditionally_expand_blobs(blobs)
-    return unless params[:expanded] == 'true'
+    return unless blob_viewer_params[:expanded] == 'true'
 
     blobs.each(&:expand!)
+  end
+
+  private
+
+  def blob_viewer_params
+    params.permit(:viewer, :expanded)
   end
 end

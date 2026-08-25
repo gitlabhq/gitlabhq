@@ -122,6 +122,58 @@ RSpec.describe WebpackHelper, feature_category: :tooling do
         expect(output).to include('pages.projects.jobs.show.js')
         expect(output).not_to include('.vue3.js')
       end
+
+      it 'tracks the fallback so the no-op rollout is detectable' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          an_instance_of(Gitlab::Webpack::Manifest::AssetMissingError),
+          vue3_entrypoint: 'pages.projects.jobs.show.vue3'
+        )
+
+        helper.webpack_controller_bundle_tags
+      end
+
+      context 'on a second request in the same process' do
+        let(:served_entries) { ['pages.projects.jobs.show', 'default'] }
+
+        it 'reports once rather than per request' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).once
+
+          2.times { helper.webpack_controller_bundle_tags }
+        end
+      end
+    end
+
+    context 'when the page has no bundle in this build' do
+      # An EE-only page in a FOSS build: the YAML is still on disk, so the entry
+      # resolves to `.vue3`, but neither bundle was compiled.
+      let(:served_entries) { ['pages.projects'] }
+
+      before do
+        allow(Gitlab::Vue3Migration).to receive(:entrypoint_for).and_call_original
+        allow(Gitlab::Vue3Migration).to receive(:entrypoint_for)
+          .with('pages.projects.jobs.show', current_user: user)
+          .and_return('pages.projects.jobs.show.vue3')
+      end
+
+      it 'walks up to the ancestor entry without tracking', :aggregate_failures do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        expect(helper.webpack_controller_bundle_tags).to include('pages.projects.js')
+      end
+    end
+
+    context 'when a route segment has no bundle at all' do
+      let(:served_entries) { ['pages.projects'] }
+
+      before do
+        allow(Gitlab::Vue3Migration).to receive(:entrypoint_for) { |name, **| name }
+      end
+
+      it 'walks up to the ancestor entry without tracking', :aggregate_failures do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        expect(helper.webpack_controller_bundle_tags).to include('pages.projects.js')
+      end
     end
   end
 end

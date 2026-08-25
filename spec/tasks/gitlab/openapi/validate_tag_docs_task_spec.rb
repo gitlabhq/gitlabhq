@@ -40,6 +40,7 @@ RSpec.describe Tasks::Gitlab::Openapi::ValidateTagDocsTask, feature_category: :a
     # The stand-ins declare the methods stubbed below so the doubles stay verified.
     stub_const('Grape::API::Instance', Class.new)
     stub_const('API::Base', Class.new { def self.descendants; end })
+    stub_const('API::API', Class.new)
     allow(::API::Base).to receive(:descendants).and_return([api_class])
 
     stub_const('Gitlab::GrapeOpenapi', Module.new { def self.configuration; end })

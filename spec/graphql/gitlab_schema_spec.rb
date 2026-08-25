@@ -35,6 +35,33 @@ RSpec.describe GitlabSchema do
     expect(described_class.validate_timeout).to eq(0.5.seconds)
   end
 
+  it 'handles return type conflicts itself instead of logging a deprecation warning',
+    feature_category: :api do
+    expect(described_class.allow_legacy_invalid_return_type_conflicts).to be(true)
+  end
+
+  describe '.legacy_invalid_return_type_conflicts', :prometheus, feature_category: :api do
+    let(:query) { GraphQL::Query.new(described_class, '{ currentUser { id } }') }
+    let(:node) { GraphQL::Language::Nodes::Field.new(name: 'value') }
+
+    subject(:handle_conflict) do
+      described_class.legacy_invalid_return_type_conflicts(
+        query, GraphQL::Types::Float, GraphQL::Types::String, node, node
+      )
+    end
+
+    it 'lets the query run' do
+      expect(handle_conflict).to be_nil
+    end
+
+    it 'counts the conflict' do
+      expect(described_class.return_type_conflicts_counter)
+        .to receive(:increment).with(types: 'Float vs String', field: 'value', operation: 'unknown')
+
+      handle_conflict
+    end
+  end
+
   describe '.execute' do
     describe 'setting query `max_complexity` and `max_depth`' do
       subject(:result) { described_class.execute('query', **kwargs).query }

@@ -2,15 +2,19 @@
 
 module ContinueParams
   include InternalRedirect
+  include Gitlab::Utils::StrongMemoize
   extend ActiveSupport::Concern
 
   def continue_params
-    continue_params = params[:continue]
-    return {} unless continue_params
+    return {} unless continue_param
 
-    continue_params = continue_params.permit(:to, :notice, :notice_now)
-    continue_params[:to] = safe_redirect_path(continue_params[:to])
-
-    continue_params
+    continue_param.merge(to: safe_redirect_path(continue_param[:to]))
   end
+
+  private
+
+  def continue_param
+    params.permit(continue: [:to, :notice, :notice_now])[:continue]
+  end
+  strong_memoize_attr :continue_param
 end

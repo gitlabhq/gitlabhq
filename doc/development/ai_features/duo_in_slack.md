@@ -24,10 +24,10 @@ To test the feature locally, you must:
   [Configure runners to execute flows](../../user/duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows).
 - A Slack workspace where you are an administrator. Use a
   [Slack developer sandbox](#use-a-slack-developer-sandbox), not the GitLab workspace.
-- The `slack_duo_agent` [feature flag](../feature_flags/_index.md) enabled globally:
+- Experiment and beta GitLab Duo features turned on. In a GDK, this is the instance-level setting:
 
   ```ruby
-  Feature.enable(:slack_duo_agent)
+  ApplicationSetting.current.update!(instance_level_ai_beta_features_enabled: true)
   ```
 
 - A [default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace)

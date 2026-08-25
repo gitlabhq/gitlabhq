@@ -1,26 +1,20 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Set up a project with scoped labels and an issue board so stakeholders can submit, vote on, and triage ideas.
 title: 'Tutorial: Set up a project for idea management'
 ---
-
-{{< details >}}
-
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
 Idea management refers to the collection, organization, evaluation, and implementation of ideas
-within an organization or community.
+in an organization or community.
 Ideas can originate from various stakeholders, such as employees, customers, or partners.
 
 A separate idea backlog allows the team to capture and prioritize potential concepts and suggestions
 before they're fully fleshed out.
-Having this separate backlog enables efficient management of raw ideas.
+Having this separate backlog makes raw ideas easier to manage.
 It does so without cluttering the main backlog with unrefined or not validated concepts.
 
 In this tutorial, you'll learn how to set up a GitLab project for idea management.
@@ -111,9 +105,9 @@ To create each label:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Manage** > **Labels**.
 1. Select **New label**.
-1. In the **Title** field, enter the name of the label. Start with `status::in review`.
+1. In the **Title** text box, enter the name of the label. Start with `status::in review`.
 1. Optional. Select a color by selecting from the available colors, or enter a hex color value for
-   a specific color in the **Background color** field.
+   a specific color in the **Background color** text box.
 1. Select **Create label**.
 
 Repeat these steps to create all the labels you'll need:
@@ -145,7 +139,7 @@ To set up your issue board:
 
 For now, the lists in your board should be empty. Next, you'll populate them with some issues.
 
-![Idea status board](img/blank_idea_board_v16_10.png)
+![Idea status board.](img/blank_idea_board_v16_10.png)
 
 ## Stakeholders submit and vote on ideas
 
@@ -176,7 +170,7 @@ Stakeholders can also upvote an existing idea to signal that they are interested
 
 Try it out by dragging some issues from the **Open** list to one of the label lists to set the workflow status.
 
-![Idea issue board with example issues](img/populated_idea_board_v16_10.png)
+![Idea issue board with example issues.](img/populated_idea_board_v16_10.png)
 
 ## Next steps
 

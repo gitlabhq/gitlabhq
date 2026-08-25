@@ -21,7 +21,7 @@ Load the following instruction files based on your current task:
 
 These apply to every task without needing a trigger:
 
-- **Minimal fix** — apply the smallest change that solves the problem; do not expand scope across layers unless each layer is genuinely load-bearing
+- **Minimal fix** — apply the smallest change that fixes the root cause rather than the symptom; no refactors, cleanups, or unrelated improvements, and no edits outside the repo you were pointed at — if the real fix requires either, say so and explain why instead of doing it silently.
 - **Security fixes** — treat an issue as requiring a special security fix when the issue is confidential, has the `~security` label, and does NOT have the `~security-fix-in-public` label. When all three hold, DO NOT push to `gitlab-org/gitlab` (or any canonical repo); follow .ai/security-fixes.md
 - **Comment discipline** — cap comments at 1-3 lines and only add one when the why is non-obvious, like an invariant, a gotcha, or a tradeoff; delete comments that just restate the code, by default, not only when asked to trim
 - **Prose via subagent** — on a high-capability model, write human-facing prose (comments, MR/issue text, docs) via a mid-tier model subagent instead of typing it inline, since high-capability models tend to produce dense, jargon-heavy prose; brief it with the facts and constraints, then check its output for accuracy; on a mid-tier model, just write it directly

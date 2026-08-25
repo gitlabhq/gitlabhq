@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::LfsChanges do
+RSpec.describe Gitlab::Git::LfsChanges, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:newrevs) { ['54fcc214b94e78d7a41a9a8fe6d87a5e59500e51'] }

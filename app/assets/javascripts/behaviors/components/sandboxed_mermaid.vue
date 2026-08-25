@@ -1,6 +1,7 @@
 <script>
 import {
   getSandboxFrameSrc,
+  getIframeHeightFromMessage,
   BUFFER_IFRAME_HEIGHT,
   SANDBOX_ATTRIBUTES,
 } from '../markdown/render_sandboxed_mermaid';
@@ -39,9 +40,16 @@ export default {
     onPostMessage(event) {
       const container = this.$refs.diagramContainer;
 
-      if (event.source === container?.contentWindow) {
-        this.iframeHeight = Number(event.data.h) + BUFFER_IFRAME_HEIGHT;
+      if (event.source !== container?.contentWindow) {
+        return;
       }
+
+      const height = getIframeHeightFromMessage(event.data);
+      if (height === null) {
+        return;
+      }
+
+      this.iframeHeight = height;
     },
 
     updateDiagram() {

@@ -261,7 +261,13 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
           visit profile_two_factor_auth_path
           expect_user_cannot_visit_group_path_without_enabling_2fa(group_name)
 
-          click_link _('Leave group')
+          accept_gl_confirm(
+            format(s_('GroupsTree|Are you sure you want to leave "%{fullName}"?'),
+              fullName: group_require_2fa.full_name),
+            button_text: _('Leave group')
+          ) do
+            click_link _('Leave group')
+          end
 
           expect(page).to have_current_path(dashboard_groups_path, ignore_query: true)
           expect(page).to have_content(
@@ -425,7 +431,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
       expect(page).to have_content('One or more groups require you to add 2FA to your account')
       find('summary', text: _('Review and leave groups')).click
       within_testid('two-factor-groups-notification') do
-        expect(page).to have_link(group_name)
+        expect(page).to have_text(group_name)
       end
     end
   end

@@ -53,7 +53,10 @@ module API
 
           new_update = current_runner.ensure_runner_queue_value
 
-          ::Ci::RegisterJobService.new(current_runner, current_runner_manager).execute(runner_params).tap do |result|
+          service = ::Ci::RegisterJobService.new(
+            current_runner, current_runner_manager, request_timeout_at: job_assignment_timeout_at)
+
+          service.execute(runner_params).tap do |result|
             unless result.valid?
               # We received a build that is invalid due to a concurrency conflict
               ::Gitlab::Metrics.add_event(:build_invalid)
@@ -68,6 +71,16 @@ module API
 
             ::Gitlab::Metrics.add_event(:build_found)
           end
+        end
+
+        # The monotonic time by which job assignment has to be finished. Nil
+        # leaves it untimed, which is what happens outside a request and while
+        # the flag is off.
+        def job_assignment_timeout_at
+          return unless ::Feature.enabled?(
+            :ci_register_job_phase_timeouts, :current_request, type: :gitlab_com_derisk)
+
+          ::Gitlab::RequestContext.instance.request_timeout_at
         end
       end
     end

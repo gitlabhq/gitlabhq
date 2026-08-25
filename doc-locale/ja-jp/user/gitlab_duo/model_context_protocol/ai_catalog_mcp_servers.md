@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Workflow Catalog
+stage: Agent Foundations
+group: AI Catalog
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: AIカタログのカスタムエージェントを外部データソースおよびサードパーティサービスにMCPサーバーを使用して接続します。
 title: AIカタログ内のMCPサーバー
@@ -9,14 +9,14 @@ title: AIカタログ内のMCPサーバー
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed
 - ステータス: 実験的機能
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 18.10で、`ai_catalog_mcp_servers`[フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/590708)されました。デフォルトでは無効になっています。
+- GitLab 18.10で`ai_catalog_mcp_servers`[機能フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/590708)されました。デフォルトでは無効になっています。
 
 {{< /history >}}
 
@@ -41,6 +41,7 @@ AIカタログのMCPサーバーで、次のことができます:
 - [GitLab Duo Agent Platformの前提条件](../../duo_agent_platform/_index.md#prerequisites)を満たしていること。
 - GitLab.comでは、トップレベルグループのメンバーであり、[GitLab Duo実験およびベータ機能を有効にしている](../turn_on_off.md#on-gitlabcom-2)必要があります。
 - GitLab Self-Managedでは、お使いのインスタンスで[GitLab Duo実験およびベータ機能が有効になっている](../turn_on_off.md#on-gitlab-self-managed-2)必要があります。
+- GitLab Self-Managedで、管理者が`mcp_client` [機能フラグ](../../../administration/feature_flags/_index.md)を有効にしていること。
 - MCPサーバーは次のいずれかである必要があります:
   - 審査済みまたはパートナーのMCPサーバー。不特定のURLは許可されません。
   - リモートMCPサーバー。
@@ -64,7 +65,7 @@ GitLab Self-ManagedとGitLab Dedicatedでは、インスタンスの管理者が
 
 AIカタログにMCPサーバーを追加するには:
 
-1. 左サイドバーで、**検索または移動先**を選択し、グループを見つけます。
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。
 1. **ビルド** > **AIカタログ**を選択します。
 1. **MCP**タブを選択します。
 1. **新しいMCPサーバー**を選択します。
@@ -100,7 +101,7 @@ GitLab Self-ManagedとGitLab Dedicatedでは、インスタンスの管理者が
 
 MCPサーバーを編集するには:
 
-1. 左サイドバーで、**検索または移動先**を選択し、グループを見つけます。
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。
 1. **ビルド** > **AIカタログ**を選択します。
 1. **MCP**タブを選択します。
 1. 編集したいMCPサーバーを選択します。
@@ -112,7 +113,7 @@ MCPサーバーを編集するには:
 
 カスタムエージェントにMCPサーバーを接続するには:
 
-1. 左サイドバーで、**検索または移動先**を選択し、グループを見つけます。
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。
 1. **ビルド** > **AIカタログ**を選択します。
 1. **エージェント**タブを選択します。
 1. 設定したいエージェントを選択し、**編集**を選択します。
@@ -127,7 +128,7 @@ MCPサーバーを編集するには:
 
 カスタムエージェントに接続されているMCPサーバーを表示するには:
 
-1. 左サイドバーで、**検索または移動先**を選択し、グループを見つけます。
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。
 1. **ビルド** > **AIカタログ**を選択します。
 1. **エージェント**タブを選択します。
 1. エージェントを選択します。
@@ -146,7 +147,7 @@ MCPサーバーを編集するには:
 
 切断後も、既存のカスタムエージェントのチャットは、MCPサーバーからすでに取得されたコンテンツを参照できます。しかし、エージェントは新しいコンテンツをフェッチすることや、アクションを実行することはできなくなります。
 
-1. 左サイドバーで、**検索または移動先**を選択し、グループを見つけます。
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。
 1. **ビルド** > **AIカタログ**を選択します。
 1. **MCP**タブを選択します。
 1. 切断したいMCPサーバーで、**切断**を選択します。
@@ -163,7 +164,7 @@ MCPサーバーを編集するには:
 
 グループレベルまたはプロジェクトレベルでMCPサーバーを表示するには:
 
-1. 左サイドバーで**検索または移動先**を選択し、グループまたはプロジェクトを検索します。
+1. 左側のサイドバーで**検索または移動先**を選択し、グループまたはプロジェクトを検索します。
 1. **AI** > **MCPサーバー**を選択します。
 
 まだ認証していないOAuth対応サーバーの場合は、**接続**オプションが表示されます。
@@ -172,7 +173,7 @@ MCPサーバーを編集するには:
 
 OAuth対応のMCPサーバーで認証するには:
 
-1. 左サイドバーで**検索または移動先**を選択し、グループまたはプロジェクトを検索します。
+1. 左側のサイドバーで**検索または移動先**を選択し、グループまたはプロジェクトを検索します。
 1. **AI** > **MCPサーバー**を選択します。
 1. MCPサーバーを見つけて**接続**を選択します。
 1. MCPサーバーの認可ページで認可リクエストを確認して承認します。
@@ -228,4 +229,41 @@ Context7 MCPは、最新のバージョン固有のドキュメントとコー�
 
 ## 関連トピック {#related-topics}
 
-- [GitLab MCPサーバー](mcp_server.md)
+- [GitLab MCPサーバー](../../model_context_protocol/mcp_server.md)
+
+## トラブルシューティング {#troubleshooting}
+
+AIカタログでMCPサーバーを操作する際に、以下のイシューが発生する可能性があります。
+
+### 送信リクエストの制限によるMCPサーバーのイシュー {#mcp-server-issues-due-to-outbound-request-restrictions}
+
+{{< details >}}
+
+- 提供形態: GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
+
+GitLabは、MCPサーバーのURLを、Webhookやインテグレーションなどの他の送信リクエストを検証するのと同じ方法で検証します。お使いのGitLab Self-Managedインスタンスが[送信リクエスト](../../../security/webhooks.md)を制限している場合、URL自体が有効であっても、MCPサーバーの追加、編集、または接続が失敗する可能性があります。
+
+このイシューを解決する方法は、MCPサービスがホストされている場所によって異なります。
+
+詳細なトラブルシューティング情報については、[送信リクエストをフィルタリングする](../../../security/webhooks.md#troubleshooting)を参照してください。
+
+#### 公開MCPサーバー {#public-mcp-server}
+
+公開MCPサーバーは、審査済みのサーバーまたはパートナーサーバー、あるいはインターネット経由でアクセス可能な独自のサーバーのいずれかです。
+
+お使いのインスタンスが[許可リストにあるもの以外のすべての送信リクエストをブロックする](../../../security/webhooks.md#filter-requests)場合、インスタンス管理者にMCPサーバーのドメインまたはIPアドレスを[送信リクエスト許可リスト](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains)に追加するよう依頼してください。
+
+お使いのインスタンスがこれを実行しない場合、それ以上の対応は不要です。
+
+#### 内部またはローカルネットワーク上のMCPサーバー {#internal-or-local-mcp-server}
+
+内部またはローカルネットワーク上のMCPサーバーは、`localhost`上で実行されているサーバー、またはプライベートローカルネットワーク上のサーバーです。
+
+デフォルトでは、GitLabはサーバーサイドリクエスト偽造から保護するため、ローカルおよびプライベートローカルネットワークアドレスへのリクエストをブロックします。
+
+リクエストを許可するには、インスタンス管理者に次のいずれかを実行するよう依頼してください:
+
+- [Webhookとインテグレーションからのローカルネットワークへのリクエストを許可](../../../security/webhooks.md#allow-requests-to-the-local-network-from-webhooks-and-integrations)します。これにより、MCPサーバーだけでなく、すべてのローカルおよびプライベートローカルネットワークアドレスへのリクエストが許可されます。
+- MCPサーバーのドメインまたはIPアドレス（必要に応じてポートも）のみを送信リクエスト許可リストに追加します。このオプションは、ローカルネットワーク全体へのアクセスを開放しないため、より制限的です。

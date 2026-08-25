@@ -9,7 +9,9 @@ import * as urlUtils from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PromoteLabelModal from '~/labels/components/promote_label_modal.vue';
-import eventHub from '~/labels/event_hub';
+import { createAlert } from '~/alert';
+
+jest.mock('~/alert');
 
 describe('Promote label modal', () => {
   let wrapper;
@@ -59,10 +61,6 @@ describe('Promote label modal', () => {
   });
 
   describe('When requesting a label promotion', () => {
-    beforeEach(() => {
-      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-    });
-
     it('calls promote api with right params', async () => {
       const getParameterByNameSpy = jest.spyOn(urlUtils, 'getParameterByName').mockReturnValue('2');
 
@@ -77,21 +75,13 @@ describe('Promote label modal', () => {
 
     it('redirects when a label is promoted', async () => {
       const responseURL = `${TEST_HOST}/dummy/endpoint`;
+      const visitUrlSpy = jest.spyOn(urlUtils, 'visitUrl').mockImplementation(() => {});
       axiosMock.onPost(labelMockData.url).reply(HTTP_STATUS_OK, { url: responseURL });
 
       findModal().vm.$emit('primary');
-
-      expect(eventHub.$emit).toHaveBeenCalledWith(
-        'promoteLabelModal.requestStarted',
-        labelMockData.url,
-      );
-
       await waitForPromises();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
-        labelUrl: labelMockData.url,
-        successful: true,
-      });
+      expect(visitUrlSpy).toHaveBeenCalledWith(responseURL);
     });
 
     it('displays an error if promoting a label failed', async () => {
@@ -105,10 +95,7 @@ describe('Promote label modal', () => {
 
       await waitForPromises();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
-        labelUrl: labelMockData.url,
-        successful: false,
-      });
+      expect(createAlert).toHaveBeenCalledWith({ message: expect.any(Error) });
     });
   });
 });

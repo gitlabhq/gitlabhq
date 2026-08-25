@@ -25,7 +25,7 @@ module IssuableActions
       end
 
       format.json do
-        render json: serializer.represent(issuable, serializer: params[:serializer],
+        render json: serializer.represent(issuable, serializer: issuable_action_params[:serializer],
           scope_validator: ::Gitlab::Auth::ScopeValidator.new(!!sessionless_user?, request_authenticator),
           granular_token: request_authenticator.granular_access_token?)
       end
@@ -112,7 +112,7 @@ module IssuableActions
   end
 
   def check_destroy_confirmation!
-    return true if params[:destroy_confirm]
+    return true if issuable_action_params[:destroy_confirm]
 
     error_message = "Destroy confirmation not provided for #{issuable.human_class_name}"
     exception = RuntimeError.new(error_message)
@@ -169,17 +169,21 @@ module IssuableActions
 
   private
 
+  def issuable_action_params
+    params.permit(:serializer, :destroy_confirm, :notes_filter, :persist_filter, :cursor, :per_page)
+  end
+
   def notes_filter
-    notes_filter_param = params[:notes_filter]&.to_i
+    requested_filter = issuable_action_params[:notes_filter]&.to_i
 
     # GitLab Geo does not expect database UPDATE or INSERT statements to happen
     # on GET requests.
     # This is just a fail-safe in case notes_filter is sent via GET request in GitLab Geo.
     # In some cases, we also force the filter to not be persisted with the `persist_filter` param
-    if Gitlab::Database.read_only? || params[:persist_filter] == 'false'
-      notes_filter_param || current_user&.notes_filter_for(issuable)
+    if Gitlab::Database.read_only? || issuable_action_params[:persist_filter] == 'false'
+      requested_filter || current_user&.notes_filter_for(issuable)
     else
-      current_user&.set_notes_filter(notes_filter_param, issuable) || notes_filter_param
+      current_user&.set_notes_filter(requested_filter, issuable) || requested_filter
     end
   end
   strong_memoize_attr :notes_filter
@@ -230,9 +234,11 @@ module IssuableActions
   end
 
   def bulk_update_params
-    clean_bulk_update_params(
-      params.require(:update).permit(bulk_update_permitted_keys)
-    )
+    clean_bulk_update_params(requested_bulk_update_params)
+  end
+
+  def requested_bulk_update_params
+    params.require(:update).permit(bulk_update_permitted_keys)
   end
 
   def clean_bulk_update_params(permitted_params)
@@ -295,8 +301,8 @@ module IssuableActions
   def finder_params_for_issuable
     {
       notes_filter: notes_filter,
-      cursor: params[:cursor],
-      per_page: params[:per_page]
+      cursor: issuable_action_params[:cursor],
+      per_page: issuable_action_params[:per_page]
     }
   end
 end

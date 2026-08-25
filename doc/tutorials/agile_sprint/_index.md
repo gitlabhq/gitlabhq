@@ -1,7 +1,8 @@
 ---
 stage: Plan
-group: Project Management
+group: Work Items
 info: For assistance with this tutorial, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
+description: Set up groups, iteration cadences, scoped labels, epics, and issue boards to run an Agile iteration in GitLab.
 title: 'Tutorial: Use GitLab to run an Agile iteration'
 ---
 
@@ -23,7 +24,7 @@ After you've created these core components, you can begin running your iteration
 
 ## Create a group
 
-Iteration cadences are created at the group level, so start by
+Iteration cadences are created for a group, so start by
 [creating one](../../user/group/_index.md#create-a-group) if you don't have one already.
 
 You use groups to manage one or more related projects at the same time.
@@ -45,7 +46,7 @@ Iteration cadences contain the individual, sequential iteration timeboxes for pl
 on your issues.
 
 When creating an iteration cadence, you can decide whether to automatically manage the iterations or
-disable the automated scheduling to
+turn off the automated scheduling to
 [manually manage the iterations](../../user/group/iterations/_index.md#create-an-iteration-manually).
 
 Similar to membership, iterations cascade down your group, subgroup, and project hierarchy. If your team has multiple groups and projects, create the iteration cadence in the top-most shared group:
@@ -65,8 +66,8 @@ graph TD
 
 You should also [create scoped labels](../../user/project/labels.md) in the same group where you created
 your iteration cadence. Labels help you
-organize your epics, issues, and merge requests, as well as help you
-to visualize the flow of issues in boards. For example, you can use scoped labels like
+organize your epics, issues, and merge requests, and
+visualize the flow of issues in boards. For example, you can use scoped labels like
 `workflow::planning`, `workflow::ready for development`, `workflow::in development`, and `workflow::complete`
 to indicate the status of an issue. You can also leverage scoped labels to denote the type of issue
 or epic such as `type::feature`, `type::defect`, and `type::maintenance`.
@@ -81,7 +82,7 @@ Add labels to each as needed.
 ## Create an issue board
 
 [Issue boards](../../user/project/issue_board.md) help you plan your upcoming iterations or visualize
-the workflow of the iteration currently in progress. List columns can be created based on label,
+the workflow of the iteration in progress. List columns can be created based on label,
 assignee, iteration, or milestone. You can also filter the board by multiple attributes and group
 issues by their epic.
 

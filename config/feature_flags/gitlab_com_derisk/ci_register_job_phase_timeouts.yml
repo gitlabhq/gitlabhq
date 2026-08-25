@@ -1,0 +1,13 @@
+---
+name: ci_register_job_phase_timeouts
+description: Time out the read-only phases of job assignment in RegisterJobService
+  (pre-assign runner checks and response rendering) before Rack::Timeout kills the
+  request, so slow builds are dropped with scheduler_failure instead of blocking
+  the queue or being left running with no runner attached
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/591467
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250498
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/616466
+milestone: "19.4"
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

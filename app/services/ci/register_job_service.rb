@@ -11,6 +11,24 @@ module Ci
 
     TEMPORARY_LOCK_TIMEOUT = 3.seconds
 
+    # Held back from the request timeout so that a phase timing out still
+    # leaves time to drop the build, which auto-retries it synchronously in an
+    # after-commit hook, and to answer the runner.
+    UNWIND_RESERVE = 10.seconds
+
+    # Raised when a read-only phase of job assignment takes too long. A
+    # StandardError so the rescue in `process_build` can fail the build,
+    # unlike Rack::Timeout's Exception-based error. One subclass per phase, so
+    # metrics and error tracking distinguish where the budget ran out.
+    PhaseTimeoutError = Class.new(StandardError)
+    PreAssignRunnerChecksTimeoutError = Class.new(PhaseTimeoutError)
+    PresentBuildTimeoutError = Class.new(PhaseTimeoutError)
+
+    PHASE_TIMEOUT_ERRORS = {
+      pre_assign_runner_checks: PreAssignRunnerChecksTimeoutError,
+      present_build: PresentBuildTimeoutError
+    }.freeze
+
     Result = Struct.new(:build, :build_json, :build_presented, :valid?)
 
     class ResultFactory
@@ -44,7 +62,10 @@ module Ci
     # affect 5% of the worst case scenarios.
     MAX_QUEUE_DEPTH = 45
 
-    def initialize(runner, runner_manager)
+    # request_timeout_at is the monotonic time by which this request has to be
+    # finished. Without one, the read-only phases run untimed.
+    def initialize(runner, runner_manager, request_timeout_at: nil)
+      @phase_timeout_at = request_timeout_at - UNWIND_RESERVE if request_timeout_at
       @runner = runner
       @runner_manager = runner_manager
       @metrics = ::Gitlab::Ci::Queue::Metrics.new(runner)
@@ -97,6 +118,17 @@ module Ci
 
         if depth > max_queue_depth
           @metrics.increment_queue_operation(:queue_depth_limit)
+
+          valid = false
+
+          break
+        end
+
+        # An earlier build may have consumed the request time budget. Stop
+        # scanning instead of raising at phase entry, which would drop this
+        # build through no fault of its own.
+        if @phase_timeout_at && remaining_time_budget <= 0
+          @metrics.increment_queue_operation(:queue_time_budget_exhausted)
 
           valid = false
 
@@ -314,8 +346,36 @@ module Ci
 
     def present_build_with_instrumentation!(build, queue_size:, queue_depth:)
       @logger.instrument(:process_build_present_build) do
-        present_build!(build, queue_size: queue_size, queue_depth: queue_depth)
+        with_phase_timeout(:present_build) do
+          present_build!(build, queue_size: queue_size, queue_depth: queue_depth)
+        end
       end
+    end
+
+    # A build whose variables are slow to evaluate can hold the request until
+    # Rack::Timeout kills it with an error that bypasses `rescue
+    # StandardError`, blocking the queue and, after the transition to
+    # `running`, leaving the build with no runner attached. Timing out early
+    # instead lets the rescue in `process_build` drop the build with
+    # `scheduler_failure`. Only read-only work may run inside the timed
+    # block, so that the interrupt cannot abort a state transition.
+    def with_phase_timeout(phase, &blk)
+      return yield unless @phase_timeout_at
+
+      error_class = PHASE_TIMEOUT_ERRORS.fetch(phase)
+      remaining = remaining_time_budget
+
+      raise error_class, "#{phase} started with no request time budget remaining" if remaining <= 0
+
+      Timeout.timeout(remaining, error_class, "#{phase} exceeded the remaining request time budget", &blk)
+    rescue PhaseTimeoutError
+      @metrics.increment_queue_operation(:"queue_phase_timeout_#{phase}")
+
+      raise
+    end
+
+    def remaining_time_budget
+      @phase_timeout_at - ::Gitlab::Metrics::System.monotonic_time
     end
 
     # Force variables evaluation to occur now
@@ -366,7 +426,9 @@ module Ci
       build.runner_session_attributes = params[:session] if params[:session].present?
 
       failure_reason, _ = @logger.instrument(:assign_runner_failure_reason) do
-        pre_assign_runner_checks.find { |_, check| check.call(build, params) }
+        with_phase_timeout(:pre_assign_runner_checks) do
+          pre_assign_runner_checks.find { |_, check| check.call(build, params) }
+        end
       end
 
       # Persisting the runner assignment changes `runner_id`, which would
