@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache, feature_category: :continuous_integration do
   let_it_be(:build) { create(:ci_build, :running) }
 
   before do
@@ -320,6 +320,156 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
 
       it_behaves_like 'sets'
     end
+
+    context 'when the trace ends with a newline-free segment spanning many buffers' do
+      let(:progress) { "\rprogress 1%\rprogress 2%\rprogress 3%" }
+      let(:data) { "first line\n#{progress}" }
+
+      let(:stream) do
+        described_class.new do
+          StringIO.new(data)
+        end
+      end
+
+      before do
+        stub_const('Gitlab::Ci::Trace::Stream::BUFFER_SIZE', 5)
+      end
+
+      it 'returns the whole segment as the last line' do
+        expect(stream.raw(last_lines: 1)).to eq(progress)
+      end
+
+      it 'returns all lines' do
+        expect(stream.raw(last_lines: 10)).to eq(data)
+      end
+
+      it 'truncates the segment to max_size' do
+        result = stream.raw(last_lines: 1, max_size: 10)
+
+        expect(result.bytes).to eq(data.bytes.last(10))
+      end
+    end
+
+    context 'when the trace begins with a newline-free segment spanning many buffers' do
+      let(:progress) { "\rprogress 1%\rprogress 2%\rprogress 3%" }
+      let(:data) { "#{progress}\nlast line" }
+
+      let(:stream) do
+        described_class.new do
+          StringIO.new(data)
+        end
+      end
+
+      before do
+        stub_const('Gitlab::Ci::Trace::Stream::BUFFER_SIZE', 5)
+      end
+
+      it 'returns the last line' do
+        expect(stream.raw(last_lines: 1)).to eq('last line')
+      end
+
+      it 'returns the segment and the last line' do
+        expect(stream.raw(last_lines: 2)).to eq(data)
+      end
+    end
+
+    context 'when newlines fall on buffer boundaries' do
+      let(:data) { "abc\ndef\nghi" }
+
+      let(:stream) do
+        described_class.new do
+          StringIO.new(data)
+        end
+      end
+
+      before do
+        stub_const('Gitlab::Ci::Trace::Stream::BUFFER_SIZE', 4)
+      end
+
+      it 'preserves line boundaries', :aggregate_failures do
+        expect(stream.raw(last_lines: 1)).to eq("ghi")
+        expect(stream.raw(last_lines: 2)).to eq("def\nghi")
+        expect(stream.raw(last_lines: 3)).to eq(data)
+      end
+    end
+
+    context 'when the trace has CRLF line endings' do
+      let(:data) { "win 1\r\nwin 2\r\nwin 3" }
+
+      let(:stream) do
+        described_class.new do
+          StringIO.new(data)
+        end
+      end
+
+      before do
+        stub_const('Gitlab::Ci::Trace::Stream::BUFFER_SIZE', 4)
+      end
+
+      it 'keeps the carriage return attached to its line' do
+        expect(stream.raw(last_lines: 2)).to eq("win 2\r\nwin 3")
+      end
+    end
+
+    context 'when the trace is empty' do
+      let(:stream) do
+        described_class.new do
+          StringIO.new('')
+        end
+      end
+
+      it 'returns an empty string' do
+        expect(stream.raw(last_lines: 2)).to eq('')
+      end
+    end
+
+    context 'with adversarial line structures' do
+      def stream_for(data)
+        described_class.new { StringIO.new(data) }
+      end
+
+      before do
+        stub_const('Gitlab::Ci::Trace::Stream::BUFFER_SIZE', 4)
+      end
+
+      let(:corpus) do
+        [
+          "\n",
+          "\n\n\n\n\n",
+          "no newline",
+          "trailing\n",
+          "\nleading",
+          "a\n\nb\n\n\nc",
+          "#{'x' * 9}\n#{'y' * 9}",
+          "\r\r\r\n\r\r"
+        ]
+      end
+
+      it 'reconstructs the trace exactly', :aggregate_failures do
+        corpus.each do |data|
+          expect(stream_for(data).raw(last_lines: 100)).to eq(data)
+        end
+      end
+
+      it 'returns exactly the last N lines', :aggregate_failures do
+        corpus.each do |data|
+          (1..4).each do |n|
+            expect(stream_for(data).raw(last_lines: n)).to eq(data.lines.last(n).join)
+          end
+        end
+      end
+
+      it 'returns exactly the last max_size bytes', :aggregate_failures do
+        corpus.each do |data|
+          caps = [1, 2, data.bytesize - 1, data.bytesize, data.bytesize + 1].select(&:positive?)
+          caps.each do |max_size|
+            result = stream_for(data).raw(last_lines: 100, max_size: max_size)
+
+            expect(result.bytes).to eq(data.bytes.last(max_size))
+          end
+        end
+      end
+    end
   end
 
   describe '#html' do
@@ -481,6 +631,13 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
         it { is_expected.to eq('100') }
       end
 
+      context 'match before a long newline-free segment' do
+        let(:data) { "Coverage (98.29%) covered\n" + ("\rprogress 42%   " * 2000) }
+        let(:regex) { '\(\d+.\d+\%\) covered' }
+
+        it { is_expected.to eq('98.29') }
+      end
+
       context 'empty regex' do
         let(:data) { 'foo' }
         let(:regex) { '' }
@@ -524,6 +681,34 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
             chunked_io.seek(0, IO::SEEK_SET)
           end
         end
+      end
+
+      it_behaves_like 'extract_coverages'
+    end
+
+    context 'when stream is HttpIO' do
+      include HttpIOHelpers
+
+      let(:url) { 'http://trace.example.com/trace.txt' }
+
+      let(:tempfile) do
+        Tempfile.new('trace').tap do |file|
+          file.binmode
+          file.write(data)
+          file.close
+        end
+      end
+
+      let(:stream) do
+        stub_remote_url_206(url, tempfile.path)
+
+        described_class.new do
+          Gitlab::HttpIO.new(url, data.bytesize)
+        end
+      end
+
+      after do
+        tempfile.unlink
       end
 
       it_behaves_like 'extract_coverages'
