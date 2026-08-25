@@ -858,6 +858,15 @@ table being converted, but in general it's done in the following steps:
       - Names of the `bigint` indexes created using `add_bigint_column_indexes` helper can be retrieved by calling
         `bigint_index_name` from `Gitlab::Database::MigrationHelpers::ConvertToBigint` module.
    1. Remove old foreign keys (if still present) and rename new ones ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L74)).
+1. Remove the temporary foreign keys created against the conversion columns, using `tmp_foreign_key_name` from the
+   `Gitlab::Database::MigrationHelpers::ConvertToBigint` module to get their names.
+   Remove foreign keys before indexes, because a live foreign key with no supporting index
+   makes deletes from the referenced table time out. For more information, see
+   [Indexes](foreign_keys.md#indexes).
+   Put each foreign key removal in its own migration, so one removal failing to acquire its lock does
+   not block the others ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/fb670dc88ce4175ca209aaaa27065031eda34a79/db/post_migrate/20260102015630_drop_tmp_bigint_indexes_and_fks_on_merge_requests_stage_two.rb)).
+1. Remove the temporary indexes created against the conversion columns, using `bigint_index_name` from the
+   `Gitlab::Database::MigrationHelpers::ConvertToBigint` module to get their names.
 
 See example [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66088), and [migration](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb).
 

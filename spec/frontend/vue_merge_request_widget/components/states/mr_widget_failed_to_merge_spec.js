@@ -79,7 +79,7 @@ describe('MRWidgetFailedToMerge', () => {
     it('should disable polling', () => {
       createComponent();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('DisablePolling');
+      expect(eventHub.$emit).toHaveBeenCalledWith('disable-polling');
     });
   });
 
@@ -93,8 +93,8 @@ describe('MRWidgetFailedToMerge', () => {
         wrapper.vm.refresh();
 
         expect(wrapper.vm.isRefreshing).toBe(true);
-        expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
-        expect(eventHub.$emit).toHaveBeenCalledWith('EnablePolling');
+        expect(eventHub.$emit).toHaveBeenCalledWith('mr-widget-update-requested');
+        expect(eventHub.$emit).toHaveBeenCalledWith('enable-polling');
       });
     });
 

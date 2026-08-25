@@ -40,7 +40,7 @@ describe('MRWidgetAutoMergeFailed', () => {
     jest.spyOn(eventHub, '$emit');
     findButton().vm.$emit('click');
 
-    expect(eventHub.$emit.mock.calls[0][0]).toBe('MRWidgetUpdateRequested');
+    expect(eventHub.$emit.mock.calls[0][0]).toBe('mr-widget-update-requested');
 
     await nextTick();
 

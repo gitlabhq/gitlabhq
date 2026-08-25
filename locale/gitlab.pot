@@ -12249,6 +12249,12 @@ msgstr ""
 msgid "ArtifactRegistry|Lowercase letters, numbers, hyphens (-), and underscores (_) only. The repository name cannot be changed after creation."
 msgstr ""
 
+msgid "ArtifactRegistry|Manually published"
+msgstr ""
+
+msgid "ArtifactRegistry|Manually published by %{author}"
+msgstr ""
+
 msgid "ArtifactRegistry|Maven"
 msgstr ""
 
@@ -12330,6 +12336,15 @@ msgid "ArtifactRegistry|Publish your first package to get started."
 msgstr ""
 
 msgid "ArtifactRegistry|Published"
+msgstr ""
+
+msgid "ArtifactRegistry|Published by %{author}"
+msgstr ""
+
+msgid "ArtifactRegistry|Published to %{project}"
+msgstr ""
+
+msgid "ArtifactRegistry|Published to %{project} by %{author}"
 msgstr ""
 
 msgid "ArtifactRegistry|Pull an image:"
@@ -12417,6 +12432,9 @@ msgid "ArtifactRegistry|Signature for %{digest}"
 msgstr ""
 
 msgid "ArtifactRegistry|Size"
+msgstr ""
+
+msgid "ArtifactRegistry|Source"
 msgstr ""
 
 msgid "ArtifactRegistry|Team documentation / READMEs:"
@@ -59725,6 +59743,9 @@ msgstr ""
 msgid "PolicyStore|Comma-separated environment names this rule applies to. At least one name or tier is required."
 msgstr ""
 
+msgid "PolicyStore|Compiled policy Rego"
+msgstr ""
+
 msgid "PolicyStore|Compiled scope Rego"
 msgstr ""
 
@@ -59735,6 +59756,9 @@ msgid "PolicyStore|Create a policy to enforce rules for deployments across your 
 msgstr ""
 
 msgid "PolicyStore|Create new policy"
+msgstr ""
+
+msgid "PolicyStore|Created %{timeAgo}"
 msgstr ""
 
 msgid "PolicyStore|Custom"
@@ -59914,6 +59938,9 @@ msgstr ""
 msgid "PolicyStore|Projects to exempt from this policy"
 msgstr ""
 
+msgid "PolicyStore|Read-only Rego the store compiled from the rules. The policy engine evaluates this single program when the trigger fires."
+msgstr ""
+
 msgid "PolicyStore|Read-only Rego the store compiled from the scope. The policy engine evaluates this program to decide where the policy applies."
 msgstr ""
 
@@ -60037,7 +60064,13 @@ msgstr ""
 msgid "PolicyStore|Untitled policy"
 msgstr ""
 
+msgid "PolicyStore|Updated %{timeAgo}"
+msgstr ""
+
 msgid "PolicyStore|Validate deployment prerequisites"
+msgstr ""
+
+msgid "PolicyStore|Version %{version}"
 msgstr ""
 
 msgid "PolicyStore|View projects"
@@ -94254,6 +94287,9 @@ msgid "Your private namespace is over %{link_start}the %{free_limit} user limit%
 msgstr ""
 
 msgid "Your private namespace is over %{link_start}the %{free_limit} user limit%{link_end}. To remove the read-only state, an Owner can reduce the number of users in the namespace to %{free_limit} or fewer, make the namespace public, or upgrade to a paid tier. If you need more time, you can start a free %{duration}-day Ultimate trial or re-trial (available %{retrial_window} days after your last trial started) to get unlimited users. %{seat_usage_link_start}View your seat usage%{seat_usage_link_end} to see who counts toward the limit across your namespace."
+msgstr ""
+
+msgid "Your private namespace is over %{link_start}the %{free_limit} user limit%{link_end}. To remove the read-only state, an Owner can upgrade to a paid tier. For a limited time, you can start a Premium subscription for %{promo_price} per user per month instead of %{regular_price}. Alternatively, reduce the number of users in the namespace to %{free_limit} or fewer, make the namespace public, or start a free %{duration}-day Ultimate trial to give yourself more time. %{seat_usage_link_start}View your seat usage%{seat_usage_link_end} to see who counts toward the limit across your namespace."
 msgstr ""
 
 msgid "Your project %{project_name} has been marked for deletion and will be removed in %{days}."

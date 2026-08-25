@@ -15,7 +15,11 @@ module Projects
       end
 
       def integration
-        @integration ||= @project.find_or_initialize_integration(params[:integration_id])
+        @integration ||= @project.find_or_initialize_integration(integration_id_param)
+      end
+
+      def integration_id_param
+        params.permit(:integration_id)[:integration_id]
       end
 
       override :hook

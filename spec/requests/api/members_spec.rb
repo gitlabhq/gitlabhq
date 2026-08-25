@@ -337,6 +337,89 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
+
+    context 'two_factor_enabled field' do
+      let_it_be(:member_with_2fa) { create(:user, :two_factor) }
+
+      before_all do
+        group.add_developer(member_with_2fa)
+      end
+
+      # 'maintainer' is in fact an owner of the group!
+      it 'is exposed to group owners', :aggregate_failures do
+        get api("/groups/#{group.id}/members", maintainer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        member_data = json_response.find { |m| m['id'] == member_with_2fa.id }
+        expect(member_data).to include('two_factor_enabled' => true)
+      end
+
+      context 'when requester is an admin' do
+        let_it_be(:admin) { create(:admin) }
+
+        it 'is exposed with admin mode enabled', :aggregate_failures do
+          get api("/groups/#{group.id}/members", admin, admin_mode: true)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          member_data = json_response.find { |m| m['id'] == member_with_2fa.id }
+          expect(member_data).to include('two_factor_enabled' => true)
+        end
+
+        it 'is not exposed with admin mode disabled', :aggregate_failures do
+          get api("/groups/#{group.id}/members", admin, admin_mode: false)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          json_response.each do |m|
+            expect(m).not_to have_key('two_factor_enabled')
+          end
+        end
+      end
+    end
+
+    it 'exposes two_factor_enabled as false for members without 2FA when requester is an owner', :aggregate_failures do
+      get api("/groups/#{group.id}/members", maintainer)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      member_without_2fa = json_response.find { |m| m['id'] == maintainer.id }
+      expect(member_without_2fa).to include('two_factor_enabled' => false)
+    end
+
+    it 'is not exposed to non-owners' do
+      get api("/groups/#{group.id}/members", developer)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      json_response.each do |m|
+        expect(m).not_to have_key('two_factor_enabled')
+      end
+    end
+
+    it 'is not exposed for project members' do
+      get api("/projects/#{project.id}/members", maintainer)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      json_response.each do |m|
+        expect(m).not_to have_key('two_factor_enabled')
+      end
+    end
+
+    context 'with inherited members' do
+      let_it_be(:inherited_member_with_2fa) { create(:user, :two_factor) }
+      let_it_be(:child_group_owner) { create(:user) }
+
+      before_all do
+        parent_group.add_developer(inherited_member_with_2fa)
+        nested_group.add_owner(child_group_owner)
+      end
+
+      it 'is exposed to owners of the queried child group for inherited members on the /all endpoint',
+        :aggregate_failures do
+        get api("/groups/#{nested_group.id}/members/all", child_group_owner)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        member_data = json_response.find { |m| m['id'] == inherited_member_with_2fa.id }
+        expect(member_data).to include('two_factor_enabled' => true)
+      end
+    end
   end
 
   describe 'GET /:source_type/:id/members(/all)/:user_id' do
@@ -510,6 +593,22 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
       it 'subgroup member cannot get parent group members list' do
         get api("/groups/#{group.id}/members/all/#{maintainer.id}", developer)
         expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'two_factor_enabled field' do
+      let_it_be(:member_with_2fa) { create(:user, :two_factor) }
+
+      before_all do
+        group.add_developer(member_with_2fa)
+      end
+
+      # 'maintainer' is in fact an owner of the group!
+      it 'is exposed to group owners', :aggregate_failures do
+        get api("/groups/#{group.id}/members/#{member_with_2fa.id}", maintainer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include('two_factor_enabled' => true)
       end
     end
   end

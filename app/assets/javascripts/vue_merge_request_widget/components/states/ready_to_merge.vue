@@ -384,12 +384,12 @@ export default {
   },
   mounted() {
     eventHub.$on('ApprovalUpdated', this.updateGraphqlState);
-    eventHub.$on('MRWidgetUpdateRequested', this.updateGraphqlState);
+    eventHub.$on('mr-widget-update-requested', this.updateGraphqlState);
     eventHub.$on('mr.discussion.updated', this.updateGraphqlState);
   },
   beforeDestroy() {
     eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
-    eventHub.$off('MRWidgetUpdateRequested', this.updateGraphqlState);
+    eventHub.$off('mr-widget-update-requested', this.updateGraphqlState);
     eventHub.$off('mr.discussion.updated', this.updateGraphqlState);
     eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
 
@@ -467,12 +467,12 @@ export default {
             data.status === MERGE_HOOK_VALIDATION_ERROR_STATUS;
 
           if (AUTO_MERGE_STRATEGIES.includes(data.status)) {
-            eventHub.$emit('MRWidgetUpdateRequested');
+            eventHub.$emit('mr-widget-update-requested');
             this.mr.transitionStateMachine({ transition: AUTO_MERGE });
           } else if (data.status === MERGE_SUCCESS_STATUS) {
             this.mr.transitionStateMachine({ transition: MERGING });
           } else if (hasError) {
-            eventHub.$emit('FailedToMerge', data.merge_error);
+            eventHub.$emit('failed-to-merge', data.merge_error);
             this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
           }
 
@@ -512,7 +512,7 @@ export default {
     },
     initiateRemoveSourceBranchPolling() {
       // We need to show source branch is being removed spinner in another component
-      eventHub.$emit('SetBranchRemoveFlag', [true]);
+      eventHub.$emit('set-branch-remove-flag', [true]);
 
       simplePoll((continuePolling, stopPolling) => {
         this.handleRemoveBranchPolling(continuePolling, stopPolling);
@@ -529,8 +529,8 @@ export default {
             continuePolling();
           } else {
             // Branch is removed. Update widget, stop polling and hide the spinner
-            eventHub.$emit('MRWidgetUpdateRequested', () => {
-              eventHub.$emit('SetBranchRemoveFlag', [false]);
+            eventHub.$emit('mr-widget-update-requested', () => {
+              eventHub.$emit('set-branch-remove-flag', [false]);
             });
             stopPolling();
           }

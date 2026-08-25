@@ -12,7 +12,6 @@ RSpec.describe Repositories::TreeFinder, feature_category: :source_code_manageme
   let(:tree_finder) { described_class.new(project, params) }
   let(:params) { {} }
   let(:first_page_ids) { tree_finder.execute.map(&:id) }
-  let(:second_page_token) { first_page_ids.last }
 
   describe "#execute" do
     subject { tree_finder.execute(gitaly_pagination: true) }

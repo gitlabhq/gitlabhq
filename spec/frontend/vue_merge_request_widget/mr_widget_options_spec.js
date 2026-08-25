@@ -351,7 +351,7 @@ describe('MrWidgetOptions', () => {
           const callback = jest.fn();
           await createComponent({ updatedMrData });
           await waitForPromises();
-          eventHub.$emit('MRWidgetUpdateRequested', callback);
+          eventHub.$emit('mr-widget-update-requested', callback);
           await waitForPromises();
           expect(callback).toHaveBeenCalled();
         });
@@ -362,7 +362,7 @@ describe('MrWidgetOptions', () => {
           await createComponent({
             updatedMrData: { gitlabLogo: logoFilename, ci_status: 'failed', title: '<test>' },
           });
-          eventHub.$emit('MRWidgetUpdateRequested');
+          eventHub.$emit('mr-widget-update-requested');
           await waitForPromises();
           expect(notify.notifyMe).toHaveBeenCalledWith(
             `Pipeline passed`,
@@ -382,7 +382,7 @@ describe('MrWidgetOptions', () => {
               },
             },
           });
-          eventHub.$emit('MRWidgetUpdateRequested');
+          eventHub.$emit('mr-widget-update-requested');
           expect(mockSetData).toHaveBeenCalled();
         });
       });
@@ -414,7 +414,7 @@ describe('MrWidgetOptions', () => {
         it('should fetch deployments', async () => {
           expect(findPipelineContainer().props('mr').deployments).toHaveLength(0);
           expect(findMergedPipelineContainer().exists()).toBe(false);
-          eventHub.$emit('FetchDeployments', {});
+          eventHub.$emit('fetch-deployments', {});
           await waitForPromises();
           expect(findPipelineContainer().props('isPostMerge')).toBe(false);
           expect(findMergedPipelineContainer().exists()).toBe(false);
@@ -432,7 +432,7 @@ describe('MrWidgetOptions', () => {
         });
 
         it('should fetch content of Cherry Pick and Revert modals', async () => {
-          eventHub.$emit('FetchActionsContent');
+          eventHub.$emit('fetch-actions-content');
           await waitForPromises();
           expect(document.body.textContent).toContain(innerHTML);
           expect(document.dispatchEvent).toHaveBeenCalledWith(
@@ -449,38 +449,38 @@ describe('MrWidgetOptions', () => {
           await createComponent();
         });
 
-        it('refetches when "MRWidgetUpdateRequested" event is emitted', async () => {
+        it('refetches when the `mr-widget-update-requested` event is emitted', async () => {
           expect(stateQueryHandler).toHaveBeenCalledTimes(1);
-          eventHub.$emit('MRWidgetUpdateRequested', () => {});
+          eventHub.$emit('mr-widget-update-requested', () => {});
           await waitForPromises();
           expect(stateQueryHandler).toHaveBeenCalledTimes(2);
         });
 
-        it('refetches when "MRWidgetRebaseSuccess" event is emitted', async () => {
+        it('refetches when the `mr-widget-rebase-success` event is emitted', async () => {
           expect(stateQueryHandler).toHaveBeenCalledTimes(1);
-          eventHub.$emit('MRWidgetRebaseSuccess', () => {});
+          eventHub.$emit('mr-widget-rebase-success', () => {});
           await waitForPromises();
           expect(stateQueryHandler).toHaveBeenCalledTimes(2);
         });
 
-        it('should bind to SetBranchRemoveFlag', () => {
+        it('should bind to `set-branch-remove-flag`', () => {
           expect(findPipelineContainer().props('mr')).toMatchObject({
             isRemovingSourceBranch: false,
           });
-          eventHub.$emit('SetBranchRemoveFlag', [true]);
+          eventHub.$emit('set-branch-remove-flag', [true]);
           expect(findPipelineContainer().props('mr')).toMatchObject({
             isRemovingSourceBranch: true,
           });
         });
 
-        it('should bind to FailedToMerge', async () => {
+        it('should bind to `failed-to-merge`', async () => {
           expect(findAlertMessage().exists()).toBe(false);
           const props = findPipelineContainer().props('mr');
           expect(props.state).toBe('merged');
           // Due to Vue 2 and 3 differences in handling props we must check for both undefined and null
           expect(props.mergeError == null).toBe(true);
           const mergeError = 'Something bad happened!';
-          await eventHub.$emit('FailedToMerge', mergeError);
+          await eventHub.$emit('failed-to-merge', mergeError);
 
           expect(findAlertMessage().exists()).toBe(true);
           expect(findAlertMessage().text()).toBe(`${mergeError}. Try again.`);
@@ -554,7 +554,7 @@ describe('MrWidgetOptions', () => {
         describe('when pipeline has not passed', () => {
           it('should not call notifyMe if the status has not changed', async () => {
             await createComponent({ updatedMrData: { ci_status: undefined } });
-            await eventHub.$emit('MRWidgetUpdateRequested');
+            await eventHub.$emit('mr-widget-update-requested');
             expect(notify.notifyMe).not.toHaveBeenCalled();
           });
 
@@ -615,7 +615,7 @@ describe('MrWidgetOptions', () => {
           describe('external event control', () => {
             describe('enablePolling', () => {
               it('enables the Apollo query polling using the event hub', async () => {
-                eventHub.$emit('EnablePolling');
+                eventHub.$emit('enable-polling');
 
                 expect(stateQueryHandler).toHaveBeenCalled();
                 jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF + 100);
@@ -632,7 +632,7 @@ describe('MrWidgetOptions', () => {
               it('disables the Apollo query polling using the event hub', () => {
                 expect(stateQueryHandler).toHaveBeenCalledTimes(1);
 
-                eventHub.$emit('DisablePolling');
+                eventHub.$emit('disable-polling');
                 jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF);
 
                 expect(stateQueryHandler).toHaveBeenCalledTimes(1); // no additional polling after a real interval timeout
@@ -752,7 +752,7 @@ describe('MrWidgetOptions', () => {
       createComponent();
 
       await waitForPromises();
-      eventHub.$emit('FailedToMerge', maliciousError);
+      eventHub.$emit('failed-to-merge', maliciousError);
       await nextTick();
 
       expect(findMergeError().text()).toContain(maliciousError);

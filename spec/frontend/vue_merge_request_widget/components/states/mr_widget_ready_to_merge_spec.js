@@ -447,7 +447,7 @@ describe('ReadyToMerge', () => {
 
       await waitForPromises();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
+      expect(eventHub.$emit).toHaveBeenCalledWith('mr-widget-update-requested');
       expect(eventHub.$emit).toHaveBeenCalledWith('StateMachineValueChanged', {
         transition: 'start-auto-merge',
       });
@@ -545,7 +545,7 @@ describe('ReadyToMerge', () => {
 
       await waitForPromises();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('FailedToMerge', undefined);
+      expect(eventHub.$emit).toHaveBeenCalledWith('failed-to-merge', undefined);
 
       const params = service.merge.mock.calls[0][0];
 
@@ -604,7 +604,7 @@ describe('ReadyToMerge', () => {
 
       wrapper.vm.initiateRemoveSourceBranchPolling();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('SetBranchRemoveFlag', [true]);
+      expect(eventHub.$emit).toHaveBeenCalledWith('set-branch-remove-flag', [true]);
       expect(simplePoll).toHaveBeenCalled();
     });
   });
@@ -640,11 +640,11 @@ describe('ReadyToMerge', () => {
 
       const args = eventHub.$emit.mock.calls[0];
 
-      expect(args[0]).toEqual('MRWidgetUpdateRequested');
+      expect(args[0]).toEqual('mr-widget-update-requested');
       expect(args[1]).toBeDefined();
       args[1]();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('SetBranchRemoveFlag', [false]);
+      expect(eventHub.$emit).toHaveBeenCalledWith('set-branch-remove-flag', [false]);
 
       expect(cpc).toBe(false);
       expect(spc).toBe(true);

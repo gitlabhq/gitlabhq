@@ -5,8 +5,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/qa/fabricate_usage'
 
 RSpec.describe RuboCop::Cop::QA::FabricateUsage, feature_category: :quality_management do
-  let(:source_file) { 'qa/qa/specs/spec.rb' }
-
   it 'registers an offense when using fabricate_via_api! for a valid resource' do
     expect_offense(<<~RUBY)
       Resource::Project.fabricate_via_api! do |project|

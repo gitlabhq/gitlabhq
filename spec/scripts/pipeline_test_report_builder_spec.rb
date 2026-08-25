@@ -4,7 +4,6 @@ require 'fast_spec_helper'
 require_relative '../../scripts/pipeline_test_report_builder'
 
 RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
-  let(:report_file) { 'spec/fixtures/scripts/test_report.json' }
   let(:output_file_path) { 'tmp/previous_test_results/output_file.json' }
   let(:options) do
     described_class::DEFAULT_OPTIONS.merge(

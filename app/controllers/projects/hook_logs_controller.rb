@@ -10,7 +10,11 @@ class Projects::HookLogsController < Projects::ApplicationController
   private
 
   def hook
-    @hook ||= @project.hooks.find(params[:hook_id])
+    @hook ||= @project.hooks.find(hook_id_param)
+  end
+
+  def hook_id_param
+    params.permit(:hook_id)[:hook_id]
   end
 
   def after_retry_redirect_path

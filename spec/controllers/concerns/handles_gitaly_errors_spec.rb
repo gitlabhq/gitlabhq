@@ -3,17 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe HandlesGitalyErrors, feature_category: :source_code_management do
-  let(:gitaly_errors) do
-    {
-      index: Gitlab::Git::CommandError,
-      show: Gitlab::Git::CommandTimedOut,
-      grpc_unavailable: GRPC::Unavailable,
-      grpc_deadline: GRPC::DeadlineExceeded,
-      grpc_resource_exhausted: GRPC::ResourceExhausted,
-      resource_exhausted_error: Gitlab::Git::ResourceExhaustedError
-    }
-  end
-
   controller(ApplicationController) do
     include HandlesGitalyErrors
 

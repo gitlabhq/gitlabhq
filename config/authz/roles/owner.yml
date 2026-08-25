@@ -162,6 +162,7 @@ group:
   - read_service_account
   - read_statistics
   - read_subscription_usage
+  - read_two_factor_member
   - read_usage_quotas
   - read_web_hook
   - register_group_runners

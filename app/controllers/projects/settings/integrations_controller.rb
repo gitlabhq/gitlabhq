@@ -77,8 +77,12 @@ module Projects
 
       private
 
+      def permitted_params
+        params.permit(:id, :event, :redirect_to, :page)
+      end
+
       def redirect_path
-        safe_redirect_path(params[:redirect_to]).presence ||
+        safe_redirect_path(permitted_params[:redirect_to]).presence ||
           edit_project_settings_integration_path(project, integration)
       end
 
@@ -94,7 +98,8 @@ module Projects
           }
         end
 
-        result = ::Integrations::Test::ProjectService.new(integration, current_user, params[:event]).execute
+        test_service = ::Integrations::Test::ProjectService.new(integration, current_user, permitted_params[:event])
+        result = test_service.execute
 
         unless result[:success]
           return {
@@ -124,7 +129,7 @@ module Projects
       end
 
       def integration
-        @integration ||= project.find_or_initialize_integration(params[:id])
+        @integration ||= project.find_or_initialize_integration(permitted_params[:id])
       end
 
       def default_integration
@@ -134,7 +139,10 @@ module Projects
       def web_hook_logs
         return unless integration.try(:service_hook).present?
 
-        @web_hook_logs ||= integration.service_hook.web_hook_logs.recent.page(params[:page]).without_count
+        @web_hook_logs ||= integration.service_hook.web_hook_logs
+                                      .recent
+                                      .page(permitted_params[:page])
+                                      .without_count
       end
 
       def ensure_integration_enabled

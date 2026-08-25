@@ -381,12 +381,12 @@ module MergeRequestsHelper
     link_to branch,
       branch_path,
       title: branch_title,
-      class: 'ref-container gl-inline-block gl-truncate gl-max-w-26 gl-ml-2 gl-shrink-0'
+      class: 'ref-container gl-inline-block gl-truncate gl-ml-2 gl-flex-[0_999_auto] !gl-min-w-[6ch]'
   end
 
   def merge_request_header(merge_request)
     link_to_author = link_to_member(merge_request.author, size: 24, extra_class: 'gl-font-bold gl-mr-2', avatar: false)
-    target_branch_class = "ref-container gl-inline-block gl-truncate gl-max-w-26 gl-shrink-0"
+    target_branch_class = "ref-container gl-inline-block gl-truncate gl-flex-initial"
     copy_action_description = _('Copy branch name')
     copy_action_shortcut = 'b'
     copy_button_title = "#{copy_action_description} <kbd class='flat gl-ml-2' " \

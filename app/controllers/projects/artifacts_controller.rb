@@ -40,11 +40,11 @@ class Projects::ArtifactsController < Projects::ApplicationController
     log_artifacts_filesize(artifact_file.model)
     audit_download(build, artifact_file.filename)
 
-    send_upload(artifact_file, attachment: artifact_file.filename, proxy: params[:proxy])
+    send_upload(artifact_file, attachment: artifact_file.filename, proxy: permitted_params[:proxy])
   end
 
   def browse
-    @path = params[:path]
+    @path = permitted_params[:path]
     directory = @path ? "#{@path}/" : ''
     @entry = build.artifacts_metadata_entry(directory)
 
@@ -64,7 +64,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
     if blob.external_link?(build)
       if Gitlab::CurrentSettings.enable_artifact_external_redirect_warning_page
-        redirect_to external_file_project_job_artifacts_path(@project, @build, path: params[:path])
+        redirect_to external_file_project_job_artifacts_path(@project, @build, path: permitted_params[:path])
       else
         redirect_to blob.external_url(build)
       end
@@ -85,7 +85,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
     return render_404 unless zip_artifact?
     return render_404 unless artifact_file
 
-    path = Gitlab::Ci::Build::Artifacts::Path.new(params[:path])
+    path = Gitlab::Ci::Build::Artifacts::Path.new(permitted_params[:path])
 
     send_artifacts_entry(artifact_file, path)
   end
@@ -114,11 +114,12 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def extract_ref_name_and_path
-    return unless params[:ref_name_and_path]
+    ref_name_and_path = permitted_params[:ref_name_and_path]
+    return unless ref_name_and_path
 
     ref_extractor = ExtractsRef::RefExtractor.new(@project, {})
 
-    @ref_name, @path = ref_extractor.extract_ref(params[:ref_name_and_path])
+    @ref_name, @path = ref_extractor.extract_ref(ref_name_and_path)
   end
 
   def artifacts_params
@@ -138,32 +139,35 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def artifact
     @artifact ||=
-      project.job_artifacts.find(params[:id])
+      project.job_artifacts.find(permitted_params[:id])
   end
 
   def build_from_id
-    project.builds.find_by_id(params[:job_id]) if params[:job_id]
+    job_id = permitted_params[:job_id]
+    project.builds.find_by_id(job_id) if job_id
   end
 
   def build_from_sha
-    return if params[:job].blank?
+    job = permitted_params[:job]
+    return if job.blank?
     return unless @ref_name
 
     commit = project.commit(@ref_name)
     return unless commit
 
-    project.latest_successful_build_for_sha(params[:job], commit.id)
+    project.latest_successful_build_for_sha(job, commit.id)
   end
 
   def build_from_ref
-    return if params[:job].blank?
+    job = permitted_params[:job]
+    return if job.blank?
     return unless @ref_name
 
-    project.latest_successful_build_for_ref(params[:job], @ref_name)
+    project.latest_successful_build_for_ref(job, @ref_name)
   end
 
   def job_artifact
-    @job_artifact ||= build&.artifact_for_type(params[:file_type] || :archive)
+    @job_artifact ||= build&.artifact_for_type(permitted_params[:file_type] || :archive)
   end
 
   def artifact_file
@@ -172,25 +176,29 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def zip_artifact?
     types = HashWithIndifferentAccess.new(Enums::Ci::JobArtifact.type_and_format_pairs)
-    file_type = params[:file_type] || :archive
+    file_type = permitted_params[:file_type] || :archive
 
     types[file_type] == :zip
   end
 
   def entry
-    @entry = build.artifacts_metadata_entry(params[:path])
+    @entry = build.artifacts_metadata_entry(permitted_params[:path])
 
     render_404 unless @entry.exists?
   end
 
   def authorize_read_build_trace!
-    return unless params[:file_type] == 'trace'
+    return unless permitted_params[:file_type] == 'trace'
 
     super
   end
 
   def authorize_read_job_artifacts!
     access_denied! unless can?(current_user, :read_job_artifacts, job_artifact)
+  end
+
+  def permitted_params
+    @permitted_params ||= params.permit(:path, :ref_name_and_path, :job, :job_id, :file_type, :id, :proxy)
   end
 end
 

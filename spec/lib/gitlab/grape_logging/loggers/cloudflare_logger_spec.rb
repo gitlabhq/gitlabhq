@@ -7,7 +7,6 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::CloudflareLogger do
 
   describe "#parameters" do
     let(:mock_request) { ActionDispatch::Request.new({}) }
-    let(:start_time) { Time.new(2018, 01, 01) }
 
     describe 'with no Cloudflare headers' do
       it 'returns an empty hash' do

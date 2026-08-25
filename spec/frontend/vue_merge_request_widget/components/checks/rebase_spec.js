@@ -324,7 +324,7 @@ describe('Merge request merge checks rebase component', () => {
       // Wait for the eventHub to be called
       await nextTick();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetRebaseSuccess');
+      expect(eventHub.$emit).toHaveBeenCalledWith('mr-widget-rebase-success');
       expect(toast).toHaveBeenCalledWith('Rebase completed');
     });
   });

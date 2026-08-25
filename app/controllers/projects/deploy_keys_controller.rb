@@ -77,7 +77,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def enable
-    key = Projects::EnableDeployKeyService.new(@project, current_user, params).execute
+    key = Projects::EnableDeployKeyService.new(@project, current_user, enable_deploy_key_params).execute
 
     return render_404 unless key
 
@@ -88,7 +88,8 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def disable
-    deploy_key_project = Projects::DisableDeployKeyService.new(@project, current_user, params).execute
+    deploy_key_project =
+      Projects::DisableDeployKeyService.new(@project, current_user, deploy_key_params).execute
 
     return render_404 unless deploy_key_project
 
@@ -101,7 +102,19 @@ class Projects::DeployKeysController < Projects::ApplicationController
   protected
 
   def deploy_key
-    @deploy_key ||= DeployKey.find(params[:id])
+    @deploy_key ||= DeployKey.find(deploy_key_params[:id])
+  end
+
+  def deploy_key_params
+    params.permit(:id)
+  end
+
+  def enable_deploy_key_params
+    params.permit(:key_id, :id)
+  end
+
+  def deploy_keys_finder_params
+    params.permit(:search, :in)
   end
 
   def deploy_keys_project
@@ -141,8 +154,8 @@ class Projects::DeployKeysController < Projects::ApplicationController
   def find_keys(filter:)
     finder_params = {
       filter: filter,
-      search: params[:search],
-      in: params[:in]
+      search: deploy_keys_finder_params[:search],
+      in: deploy_keys_finder_params[:in]
     }.compact
 
     DeployKeys::DeployKeysFinder.new(project, current_user, finder_params).execute

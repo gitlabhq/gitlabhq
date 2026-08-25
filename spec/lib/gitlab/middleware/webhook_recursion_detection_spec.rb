@@ -7,7 +7,6 @@ require 'gitlab/safe_request_store'
 
 RSpec.describe Gitlab::Middleware::WebhookRecursionDetection do
   let(:app) { double(:app) }
-  let(:middleware) { described_class.new(app) }
   let(:env) { Rack::MockRequest.env_for("/").merge(headers) }
 
   around do |example|

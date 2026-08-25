@@ -6,7 +6,6 @@ RSpec.describe Autocomplete::MoveToProjectFinder do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
-  let(:no_access_project) { create(:project) }
   let(:guest_project) { create(:project) }
   let(:reporter_project) { create(:project, name: 'name') }
   let(:developer_project) { create(:project, name: 'name2') }

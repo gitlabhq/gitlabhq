@@ -250,7 +250,7 @@ module Gitlab
 
           return unless has_loose_foreign_key?(partition.table)
 
-          track_record_deletions_override_table_name(partition_identifier, partition.table)
+          track_record_deletions_for_partition(partition_identifier, partition.table)
         end
 
         def parent_table_has_loose_foreign_key?

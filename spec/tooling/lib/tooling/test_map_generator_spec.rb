@@ -50,8 +50,6 @@ RSpec.describe Tooling::TestMapGenerator do
       YAML
     end
 
-    let(:pathname) { instance_double(Pathname) }
-
     before do
       stub_file_read('yaml1.yml', content: yaml1)
       stub_file_read('yaml2.yml', content: yaml2)

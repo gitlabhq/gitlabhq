@@ -5,8 +5,6 @@ require 'rspec-parameterized'
 require_relative '../../../../rubocop/cop/capybara/testid_finders'
 
 RSpec.describe RuboCop::Cop::Capybara::TestidFinders, feature_category: :shared do
-  let(:source_file) { 'spec/features/foo_spec.rb' }
-
   describe 'good examples' do
     where(:code) do
       [

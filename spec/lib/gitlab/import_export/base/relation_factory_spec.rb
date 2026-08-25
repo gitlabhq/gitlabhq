@@ -8,7 +8,6 @@ RSpec.describe Gitlab::ImportExport::Base::RelationFactory, feature_category: :i
   let(:members_mapper) { double('members_mapper').as_null_object }
   let(:relation_sym) { :project_snippets }
   let(:relation_hash) { {} }
-  let(:excluded_keys) { [] }
   let(:import_source) { Import::SOURCE_DIRECT_TRANSFER }
   let(:original_users_map) { nil }
 

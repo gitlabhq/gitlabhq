@@ -76,7 +76,7 @@ export default {
         .cancelAutomaticMerge()
         .then((res) => res.data)
         .then(() => {
-          eventHub.$emit('MRWidgetUpdateRequested');
+          eventHub.$emit('mr-widget-update-requested');
         })
         .catch(() => {
           this.isCancellingAutoMerge = false;

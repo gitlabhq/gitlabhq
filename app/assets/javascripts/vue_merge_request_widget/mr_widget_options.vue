@@ -513,26 +513,26 @@ export default {
       }
     },
     bindEventHubListeners() {
-      eventHub.$on('MRWidgetUpdateRequested', this.refetchState);
-      eventHub.$on('MRWidgetRebaseSuccess', this.checkRebasedStatus);
-      eventHub.$on('SetBranchRemoveFlag', this.setIsRemovingSourceBranch);
-      eventHub.$on('FailedToMerge', this.setMergeError);
+      eventHub.$on('mr-widget-update-requested', this.refetchState);
+      eventHub.$on('mr-widget-rebase-success', this.checkRebasedStatus);
+      eventHub.$on('set-branch-remove-flag', this.setIsRemovingSourceBranch);
+      eventHub.$on('failed-to-merge', this.setMergeError);
       eventHub.$on('UpdateWidgetData', this.setMrData);
-      eventHub.$on('FetchActionsContent', this.fetchActionsContent);
-      eventHub.$on('EnablePolling', this.resumePolling);
-      eventHub.$on('DisablePolling', this.stopPolling);
-      eventHub.$on('FetchDeployments', this.onFetchDeployments);
+      eventHub.$on('fetch-actions-content', this.fetchActionsContent);
+      eventHub.$on('enable-polling', this.resumePolling);
+      eventHub.$on('disable-polling', this.stopPolling);
+      eventHub.$on('fetch-deployments', this.onFetchDeployments);
     },
     unbindEventListeners() {
-      eventHub.$off('MRWidgetUpdateRequested', this.refetchState);
-      eventHub.$off('MRWidgetRebaseSuccess', this.checkRebasedStatus);
-      eventHub.$off('SetBranchRemoveFlag', this.setIsRemovingSourceBranch);
-      eventHub.$off('FailedToMerge', this.setMergeError);
+      eventHub.$off('mr-widget-update-requested', this.refetchState);
+      eventHub.$off('mr-widget-rebase-success', this.checkRebasedStatus);
+      eventHub.$off('set-branch-remove-flag', this.setIsRemovingSourceBranch);
+      eventHub.$off('failed-to-merge', this.setMergeError);
       eventHub.$off('UpdateWidgetData', this.setMrData);
-      eventHub.$off('FetchActionsContent', this.fetchActionsContent);
-      eventHub.$off('EnablePolling', this.resumePolling);
-      eventHub.$off('DisablePolling', this.stopPolling);
-      eventHub.$off('FetchDeployments', this.onFetchDeployments);
+      eventHub.$off('fetch-actions-content', this.fetchActionsContent);
+      eventHub.$off('enable-polling', this.resumePolling);
+      eventHub.$off('disable-polling', this.stopPolling);
+      eventHub.$off('fetch-deployments', this.onFetchDeployments);
       eventHub.$off('mr.discussion.updated', this.refetchState);
     },
     apolloStateQueryMaxPollingInterval() {

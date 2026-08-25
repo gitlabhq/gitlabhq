@@ -285,6 +285,13 @@ class TrackWorkloadDeletions < Gitlab::Database::Migration[2.3]
 end
 ```
 
+New partitions receive their own trigger automatically when they are created.
+The trigger matches the parent table's current trigger form.
+If the parent trigger routes deleted records by sharding key, new partitions are created with a
+routing trigger whose targets are resolved from the parent table's `db/docs` sharding keys at
+creation time.
+Otherwise new partitions keep recording to the cell-local table.
+
 #### On tables without an `id` column
 
 The default tracking helpers (`track_record_deletions` and `track_record_deletions_override_table_name`)

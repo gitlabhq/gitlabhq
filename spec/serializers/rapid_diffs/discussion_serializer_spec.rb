@@ -45,7 +45,6 @@ RSpec.describe RapidDiffs::DiscussionSerializer, feature_category: :source_code_
 
   describe '#represent' do
     let(:discussion) { instance_double(Discussion, id: 1, reply_id: 'reply-1') }
-    let(:entity_instance) { instance_double(RapidDiffs::DiscussionEntity) }
     let(:expected_result) { { 'id' => 1, 'reply_id' => 'reply-1' } }
 
     before do

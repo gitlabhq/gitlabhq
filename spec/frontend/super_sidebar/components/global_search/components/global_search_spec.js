@@ -1,4 +1,9 @@
-import { GlModal, GlSearchBoxByType } from '@gitlab/ui';
+import {
+  GlModal,
+  GlSearchBoxByType,
+  GlDisclosureDropdownGroup,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -341,6 +346,53 @@ describe('GlobalSearchModal', () => {
 
         it('shows scoped search', () => {
           expect(findGlobalSearchScopedItems().exists()).toBe(true);
+        });
+      });
+
+      describe('when the first result item starts with a non-element node', () => {
+        let command;
+
+        beforeEach(() => {
+          createComponent({
+            initialState: { search: '>', commandChar: '>' },
+            mockGetters: {
+              ...defaultMockGetters,
+              isCommandMode: () => true,
+            },
+            stubs: {
+              GlDisclosureDropdownGroup,
+              GlDisclosureDropdownItem,
+              CommandPaletteItems: {
+                name: 'CommandPaletteItems',
+                components: { GlDisclosureDropdownGroup },
+                template: `
+                  <gl-disclosure-dropdown-group
+                    :group="{ name: 'group', items: [{ text: 'Command', href: '#' }] }"
+                    bordered
+                  />
+                `,
+              },
+            },
+          });
+
+          command = wrapper.findByTestId('disclosure-dropdown-item').element.firstElementChild;
+        });
+
+        it('highlights the first command element when items update', () => {
+          findCommandPaletteItems().vm.$emit('updated');
+
+          expect(command.classList.contains('!gl-bg-strong')).toBe(true);
+        });
+
+        it('clicks the first command element on submit', () => {
+          const clickSpy = jest.spyOn(command, 'click');
+
+          findGlobalSearchInput().vm.$emit(
+            'keydown',
+            new KeyboardEvent('keydown', { code: ENTER_KEY }),
+          );
+
+          expect(clickSpy).toHaveBeenCalled();
         });
       });
     });

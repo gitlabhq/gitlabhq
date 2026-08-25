@@ -155,7 +155,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
         await waitForPromises();
 
         expect(wrapper.vm.isCancellingAutoMerge).toBe(true);
-        expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
+        expect(eventHub.$emit).toHaveBeenCalledWith('mr-widget-update-requested');
       });
     });
   });

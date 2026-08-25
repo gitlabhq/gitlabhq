@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_category: :database do
   include ActiveSupport::Testing::TimeHelpers
   include Database::PartitioningHelpers
+  include Database::TriggerHelpers
   include ExclusiveLeaseHelpers
   include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
   using RSpec::Parameterized::TableSyntax
@@ -151,6 +152,58 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         partitions.each do |partition|
           partition_name = partition.first
           expect(trigger_exists?(partition_name, record_deletion_trigger_name(partition_name), Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to be(true)
+        end
+      end
+    end
+
+    context 'when the partitioned table routes deleted records by sharding keys' do
+      # Three targets, one with source different from the target column, mirroring the richest
+      # real case (clusters: group_id routes to namespace_id).
+      let(:sharding_key_targets) do
+        [
+          { table: 'loose_foreign_keys_project_deleted_records', column: 'project_id', source: 'project_id' },
+          { table: 'loose_foreign_keys_namespace_deleted_records', column: 'namespace_id', source: 'group_id' },
+          { table: 'loose_foreign_keys_organization_deleted_records', column: 'organization_id',
+            source: 'organization_id' }
+        ]
+      end
+
+      let(:targets_json) { sharding_key_targets.to_json }
+
+      before do
+        my_model.table_name = partitioned_table_name
+        create_partitioned_table(connection, partitioned_table_name)
+
+        connection.execute(<<~SQL)
+          ALTER TABLE #{partitioned_table_name}
+            ADD COLUMN project_id bigint,
+            ADD COLUMN group_id bigint,
+            ADD COLUMN organization_id bigint;
+
+          CREATE TRIGGER #{record_deletion_trigger_name(partitioned_table_name)}
+          AFTER DELETE ON #{partitioned_table_name} REFERENCING OLD TABLE AS old_table
+          FOR EACH STATEMENT
+          EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('#{partitioned_table_name}', '#{targets_json}');
+        SQL
+
+        allow_next_instance_of(described_class) do |manager|
+          allow(manager).to receive(:sharding_keys_for).and_return(sharding_key_targets)
+        end
+      end
+
+      it 'attaches routed LFK triggers on the newly created partitions' do
+        expect { sync_partitions }.to change {
+          find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA).size
+        }.from(0)
+
+        partitions = find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)
+        partitions.each do |partition|
+          partition_name = partition.first
+          action_statement = find_trigger_def(partition_name, record_deletion_trigger_name(partition_name))['action_statement']
+
+          expect(action_statement).to include('insert_into_loose_foreign_keys_deleted_records_override_table')
+          expect(action_statement).to include("'#{partitioned_table_name}'")
+          expect(action_statement).to include(targets_json)
         end
       end
     end

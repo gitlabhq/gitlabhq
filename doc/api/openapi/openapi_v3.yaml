@@ -92360,6 +92360,8 @@ components:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
         expires_at:
           type: string
+        two_factor_enabled:
+          type: boolean
         group_saml_identity:
           "$ref": "#/components/schemas/APIEntitiesIdentity"
         group_scim_identity:

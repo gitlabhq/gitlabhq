@@ -47,7 +47,7 @@ export default {
   methods: {
     refreshWidget() {
       this.isRefreshing = true;
-      eventHub.$emit('MRWidgetUpdateRequested', () => {
+      eventHub.$emit('mr-widget-update-requested', () => {
         this.isRefreshing = false;
       });
     },

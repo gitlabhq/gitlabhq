@@ -79,8 +79,9 @@ module API
         GroupMembersFinder.new(group, current_user).execute(include_relations: [:inherited, :direct, :shared_from_groups])
       end
 
-      def present_members(members)
-        present members, with: Entities::Member, current_user: current_user, show_seat_info: params[:show_seat_info]
+      def present_members(members, source: nil)
+        MembersPreloader.new(Array.wrap(members)).preload_all
+        present members, with: Entities::Member, current_user: current_user, source: source, show_seat_info: params[:show_seat_info]
       end
 
       def present_member_invitations(invitations)
@@ -92,7 +93,7 @@ module API
           .new(members, source: source, current_user: current_user)
           .execute
 
-        present_members members
+        present_members members, source: source
       end
 
       def add_single_member(create_service_params)

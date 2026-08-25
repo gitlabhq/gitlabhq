@@ -1,0 +1,3 @@
+---
+name: read_two_factor_member
+description: Grants the ability to read the two-factor authentication status of a member

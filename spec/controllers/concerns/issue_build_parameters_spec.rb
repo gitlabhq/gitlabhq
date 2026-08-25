@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe IssueBuildParameters, feature_category: :team_planning do
   let(:user) { instance_double(User) }
   let(:project) { instance_double(Project, group: nil, licensed_feature_available?: false) }
-  let(:vulnerability) { instance_double(Vulnerability) }
 
   let(:controller_class) do
     Class.new do

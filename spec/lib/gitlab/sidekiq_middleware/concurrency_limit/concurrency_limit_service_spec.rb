@@ -21,13 +21,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
       'meta.project' => 'gitlab-org/gitlab' }
   end
 
-  let(:stored_context) do
-    {
-      "#{Gitlab::ApplicationContext::LOG_KEY}.project" => 'gitlab-org/gitlab',
-      "correlation_id" => 'context_correlation_id'
-    }
-  end
-
   let(:job) { { 'class' => worker_class_name, 'args' => [1, 2] } }
 
   subject(:service) { described_class.new(worker_class_name) }

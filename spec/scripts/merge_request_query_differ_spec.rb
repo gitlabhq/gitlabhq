@@ -9,17 +9,7 @@ RSpec.describe MergeRequestQueryDiffer, feature_category: :tooling do
   let(:logger) { instance_double(Logger) }
   let(:sql_fingerprint_extractor) { instance_double(SQLFingerprintExtractor) }
 
-  let(:file_content) do
-    %(
-      {"fingerprint":"def456","normalized":"SELECT * FROM projects WHERE user_id = $1"}
-      {"normalized":"SELECT * FROM issues"}
-      invalid json line,
-      {"fingerprint":"abc123","normalized":"SELECT * FROM users WHERE id = $1"}
-    )
-  end
-
   let(:empty_file) { Tempfile.new(%w[mr_auto_explain.ndjson]) }
-  let(:temp_file) { Tempfile.new(%w[mr_auto_explain.ndjson]) }
 
   before do
     allow(Logger).to receive(:new).and_return(logger)

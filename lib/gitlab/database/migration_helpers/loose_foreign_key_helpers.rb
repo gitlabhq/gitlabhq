@@ -65,6 +65,23 @@ module Gitlab
           trigger_exists?(table, record_deletion_trigger_name(table))
         end
 
+        # Whether the partitioned parent's LFK trigger already routes deleted records by
+        # sharding key. Partitioned tables always use the override-table trigger function:
+        # argument 1 is the parent table name, argument 2 the routing targets when present.
+        def partitioned_record_deletions_routed_by_sharding_keys?(parent_table)
+          record_deletion_trigger_nargs(parent_table).to_i >= 2
+        end
+
+        # Installs on a partition the trigger form its parent currently uses, so partitions
+        # of a routed parent route as well and everything else keeps the cell-local form.
+        def track_record_deletions_for_partition(partition_identifier, parent_table)
+          if partitioned_record_deletions_routed_by_sharding_keys?(parent_table)
+            track_record_deletions_override_table_name_with_sharding_keys(partition_identifier, parent_table)
+          else
+            track_record_deletions_override_table_name(partition_identifier, parent_table)
+          end
+        end
+
         def track_record_deletions_with_custom_column(
           table, column:, parent_table: nil,
           function_name: nil, trigger_name: nil)
@@ -168,6 +185,16 @@ module Gitlab
         def record_deletion_trigger_name(table)
           table_name = table.to_s.split('.').last
           "#{table_name}_loose_fk_trigger"
+        end
+
+        def record_deletion_trigger_nargs(table)
+          connection.select_value(<<~SQL.squish)
+            SELECT pg_trigger.tgnargs
+            FROM pg_trigger
+            WHERE pg_trigger.tgrelid = to_regclass(#{connection.quote(table.to_s)})
+              AND pg_trigger.tgname = #{connection.quote(record_deletion_trigger_name(table))}
+              AND NOT pg_trigger.tgisinternal
+          SQL
         end
 
         def validate_column_uniqueness!(table, column)

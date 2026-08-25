@@ -60,7 +60,7 @@ export default {
   },
 
   created() {
-    eventHub.$emit('DisablePolling');
+    eventHub.$emit('disable-polling');
   },
 
   beforeDestroy() {
@@ -72,8 +72,8 @@ export default {
   methods: {
     refresh() {
       this.isRefreshing = true;
-      eventHub.$emit('MRWidgetUpdateRequested');
-      eventHub.$emit('EnablePolling');
+      eventHub.$emit('mr-widget-update-requested');
+      eventHub.$emit('enable-polling');
     },
     updateTimer() {
       this.timer -= 1;

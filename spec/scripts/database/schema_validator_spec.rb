@@ -25,8 +25,6 @@ RSpec.describe SchemaValidator, feature_category: :database do
     context 'when schema changes are introduced with migrations' do
       let(:committed_migrations) { ['20211006103122_my_migration.rb'] }
       let(:schema_changes) { 'db/structure.sql' }
-      let(:command) { 'git diff db/structure.sql -- db/structure.sql' }
-      let(:base_message) { 'db/structure.sql was changed, and no migrations were added' }
 
       before do
         allow(validator).to receive(:die)

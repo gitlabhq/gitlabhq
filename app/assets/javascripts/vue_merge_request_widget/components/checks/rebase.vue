@@ -156,7 +156,7 @@ export default {
               toast(__('Rebase completed'));
             }
 
-            eventHub.$emit('MRWidgetRebaseSuccess');
+            eventHub.$emit('mr-widget-rebase-success');
             stopPolling();
           }
         })

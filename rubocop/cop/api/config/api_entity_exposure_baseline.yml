@@ -626,6 +626,7 @@ lib/api/entities/member.rb:
   - created_at
   - created_by
   - expires_at
+  - two_factor_enabled
   - user
 lib/api/entities/merge_request_basic.rb:
   usage_radius: 21

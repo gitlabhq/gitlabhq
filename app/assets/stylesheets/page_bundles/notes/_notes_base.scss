@@ -220,6 +220,7 @@
       padding: 0 $gl-padding-8 $gl-padding-8;
 
       .note-text {
+        @apply gl-clearfix;
         word-wrap: break-word;
       }
 

@@ -184,8 +184,8 @@ describe('DeploymentAction component', () => {
                   );
                 });
 
-                it('emits the FetchDeployments event', () => {
-                  expect(eventHub.$emit).toHaveBeenCalledWith('FetchDeployments');
+                it('emits the `fetch-deployments` event', () => {
+                  expect(eventHub.$emit).toHaveBeenCalledWith('fetch-deployments');
                 });
               });
 
@@ -206,8 +206,8 @@ describe('DeploymentAction component', () => {
                   });
                 });
 
-                it('emits the FetchDeployments event', () => {
-                  expect(eventHub.$emit).toHaveBeenCalledWith('FetchDeployments');
+                it('emits the `fetch-deployments` event', () => {
+                  expect(eventHub.$emit).toHaveBeenCalledWith('fetch-deployments');
                 });
               });
             });
@@ -301,8 +301,8 @@ describe('DeploymentAction component', () => {
             );
           });
 
-          it('emits the FetchDeployments event', () => {
-            expect(eventHub.$emit).toHaveBeenCalledWith('FetchDeployments');
+          it('emits the `fetch-deployments` event', () => {
+            expect(eventHub.$emit).toHaveBeenCalledWith('fetch-deployments');
           });
         });
 
@@ -323,8 +323,8 @@ describe('DeploymentAction component', () => {
             });
           });
 
-          it('emits the FetchDeployments event', () => {
-            expect(eventHub.$emit).toHaveBeenCalledWith('FetchDeployments');
+          it('emits the `fetch-deployments` event', () => {
+            expect(eventHub.$emit).toHaveBeenCalledWith('fetch-deployments');
           });
         });
       });
