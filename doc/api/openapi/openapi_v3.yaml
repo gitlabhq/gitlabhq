@@ -20193,6 +20193,42 @@ paths:
           nullable: true
         in: query
   "/api/v4/projects/{id}/service_accounts/{user_id}":
+    get:
+      operationId: getApiV4ProjectsIdServiceAccountsUserId
+      summary: Get a single project service account
+      description: Gets a specified service account in a specified project.
+      tags:
+      - Service accounts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesServiceAccount"
+        '400':
+          description: 400 Bad request
+        '401':
+          description: 401 Unauthorized
+        '403':
+          description: 403 Forbidden
+        '404':
+          description: 404 User not found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      - name: user_id
+        required: true
+        description: The ID of the service account
+        schema:
+          type: integer
+        in: path
     delete:
       operationId: deleteApiV4ProjectsIdServiceAccountsUserId
       summary: Delete a project service account
@@ -23091,6 +23127,42 @@ paths:
           nullable: true
         in: query
   "/api/v4/groups/{id}/service_accounts/{user_id}":
+    get:
+      operationId: getApiV4GroupsIdServiceAccountsUserId
+      summary: Get a single group service account
+      description: Gets a specified service account in a specified group.
+      tags:
+      - Service accounts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesServiceAccount"
+        '400':
+          description: 400 Bad request
+        '401':
+          description: 401 Unauthorized
+        '403':
+          description: 403 Forbidden
+        '404':
+          description: 404 User not found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the group
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      - name: user_id
+        required: true
+        description: The ID of the service account
+        schema:
+          type: integer
+        in: path
     delete:
       operationId: deleteApiV4GroupsIdServiceAccountsUserId
       summary: Delete a group service account
@@ -40289,7 +40361,8 @@ paths:
       summary: Create an organization
       description: Creates an organization. This feature was introduced in GitLab
         17.5. This feature is behind the `allow_organization_creation` feature flag.
-        In GitLab 18.3, the feature flag changed to `organization_switching`.
+        In GitLab 18.3, the feature flag changed to `organization_switching`. In GitLab
+        19.4, the feature flag changed to `org_stage_experimental`.
       tags:
       - Organizations
       responses:

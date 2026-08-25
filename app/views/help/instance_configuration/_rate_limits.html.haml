@@ -6,7 +6,7 @@
     %li= link_to _('Users API rate limits'), '#users-api-rate-limits'
     %li= link_to _('Groups API rate limits'), '#groups-api-rate-limits'
     %li= link_to _('Projects API rate limits'), '#projects-api-rate-limits'
-    - if Feature.enabled?(:organization_switching, current_user)
+    - if Organizations::Release.enabled?(:org_creation, current_user)
       %li= link_to _('Organizations API rate limits'), '#organizations-api-rate-limits'
 
 - content_for :settings_content do
@@ -119,7 +119,7 @@
           = render 'help/instance_configuration/rate_limit_row', title: 'GET /users/:user_id/starred_projects', rate_limit: rate_limits[:user_starred_projects_api]
           = render 'help/instance_configuration/rate_limit_row', title: 'GET /projects/:id/members/all', rate_limit: rate_limits[:project_members_api]
 
-    - if Feature.enabled?(:organization_switching, current_user)
+    - if Organizations::Release.enabled?(:org_creation, current_user)
       %h2#organizations-api-rate-limits= _('Organizations API rate limits')
       %p
         = _('Rate limits for specific Organizations API endpoints.')

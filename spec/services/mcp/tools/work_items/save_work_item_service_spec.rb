@@ -66,7 +66,7 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
             },
             work_item_iid: {
               type: 'integer',
-              description: 'Internal ID of the work item to update. Omit to create a new work item.'
+              description: 'Positive internal ID of the work item to update. Omit to create a new work item.'
             },
             title: {
               type: 'string',
@@ -169,6 +169,69 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
         expect(result[:structuredContent]['type']).to eq('Issue')
         expect(result[:structuredContent]['title']).to eq('Created via MCP')
         expect(result[:structuredContent]['state']).to eq('OPEN')
+      end
+    end
+
+    context 'with a zero work_item_iid from a zero-filling client' do
+      let(:params) do
+        {
+          arguments: {
+            project_id: project.id.to_s, work_item_iid: 0, url: '',
+            title: 'Created despite zero iid', type_name: 'Issue'
+          }
+        }
+      end
+
+      it 'routes to the create tool and creates the work item', :aggregate_failures do
+        # Blank strings are stripped by BaseService#reject_omitted_arguments before dispatch.
+        expect(Mcp::Tools::WorkItems::CreateWorkItemTool).to receive(:new).with(
+          current_user: user,
+          params: params[:arguments].except(:url),
+          version: '0.1.0'
+        ).and_call_original
+
+        result = nil
+
+        expect { result = service.execute(request: request, params: params) }
+          .to change { WorkItem.count }.by(1)
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]['title']).to eq('Created despite zero iid')
+      end
+
+      context 'when the iid is negative' do
+        let(:params) do
+          { arguments: { project_id: project.id.to_s, work_item_iid: -1, title: 'Negative iid', type_name: 'Issue' } }
+        end
+
+        it 'also routes to the create tool' do
+          expect(Mcp::Tools::WorkItems::CreateWorkItemTool).to receive(:new).and_call_original
+
+          expect { service.execute(request: request, params: params) }
+            .to change { WorkItem.count }.by(1)
+        end
+      end
+    end
+
+    context 'with a zero work_item_iid and zero-filled update-only params' do
+      let(:params) do
+        {
+          arguments: {
+            project_id: project.id.to_s, work_item_iid: 0, title: 'Zero-filled', type_name: 'Issue',
+            state: 'opened', todo_id: '', add_label_ids: [], remove_label_ids: []
+          }
+        }
+      end
+
+      it 'fails on the create path with a self-correcting message', :aggregate_failures do
+        result = nil
+
+        expect { result = service.execute(request: request, params: params) }
+          .not_to change { WorkItem.count }
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text])
+          .to eq('Validation error: state can only be used when updating (provide work_item_iid)')
       end
     end
 

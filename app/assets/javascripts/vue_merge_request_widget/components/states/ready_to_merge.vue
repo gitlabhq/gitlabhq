@@ -280,7 +280,7 @@ export default {
     },
     mergeButtonText() {
       if (this.autoMergeStrategiesPending) {
-        return s__('mrWidget|Checking merge options…');
+        return s__('mrWidget|Checking if auto-merge is available…');
       }
       if (this.isMergingImmediately) {
         return __('Merge in progress');

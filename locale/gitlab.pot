@@ -277,8 +277,18 @@ msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d decision captured"
+msgid_plural "%d decisions captured"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d draft hidden"
 msgid_plural "%d drafts hidden"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d entry"
+msgid_plural "%d entries"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -2962,12 +2972,6 @@ msgstr ""
 msgid "AICatalog|Enabling external agents is turned off. Contact an administrator to change this."
 msgstr ""
 
-msgid "AICatalog|Enabling this agent creates a service account, which combines with a user role into a composite identity. The agent can access all projects that either the service account or the user role can access."
-msgstr ""
-
-msgid "AICatalog|Enabling this flow creates a service account, which combines with a user role into a composite identity. The flow can access all projects that either the service account or the user role can access."
-msgstr ""
-
 msgid "AICatalog|Excessive resource usage"
 msgstr ""
 
@@ -3158,9 +3162,6 @@ msgid "AICatalog|Is visible to everyone, including users outside your organizati
 msgstr ""
 
 msgid "AICatalog|Item must have a current latest released version to restore."
-msgstr ""
-
-msgid "AICatalog|Learn more about composite identity."
 msgstr ""
 
 msgid "AICatalog|Learn more about foundational agents"
@@ -3499,6 +3500,15 @@ msgstr ""
 msgid "AICatalog|This agent specializes in... It can help you with... Best suited for..."
 msgstr ""
 
+msgid "AICatalog|This agent uses a service account with the %{linkStart}Developer role%{linkEnd} by default, forming a %{ciStart}composite identity%{ciEnd} with the user who triggers it, so only the more restrictive role applies. The service account can also access all other projects it is a member of. Change its role from the members page."
+msgstr ""
+
+msgid "AICatalog|This agent uses a service account with the %{linkStart}Developer role%{linkEnd} by default. Event-triggered runs form a %{ciStart}composite identity%{ciEnd} with the user who triggers them, so only the more restrictive role applies. Scheduled runs have no triggering user, so only the service account's role applies. The service account can also access all other projects it is a member of. Change its role from the members page."
+msgstr ""
+
+msgid "AICatalog|This agent uses a service account with the %{linkStart}Developer role%{linkEnd} by default. Scheduled runs have no triggering user, so only the service account's role applies. The service account can also access all other projects it is a member of. Change its role from the members page."
+msgstr ""
+
 msgid "AICatalog|This catalog contains third-party content that may be subject to additional terms. GitLab does not control or assume liability for third-party content."
 msgstr ""
 
@@ -3509,6 +3519,15 @@ msgid "AICatalog|This flow can be viewed only by members of this project, or by 
 msgstr ""
 
 msgid "AICatalog|This flow specializes in... It can help you with... Best suited for..."
+msgstr ""
+
+msgid "AICatalog|This flow uses a service account with the %{linkStart}Developer role%{linkEnd} by default, forming a %{ciStart}composite identity%{ciEnd} with the user who triggers it, so only the more restrictive role applies. The service account can also access all other projects it is a member of. Change its role from the members page."
+msgstr ""
+
+msgid "AICatalog|This flow uses a service account with the %{linkStart}Developer role%{linkEnd} by default. Event-triggered runs form a %{ciStart}composite identity%{ciEnd} with the user who triggers them, so only the more restrictive role applies. Scheduled runs have no triggering user, so only the service account's role applies. The service account can also access all other projects it is a member of. Change its role from the members page."
+msgstr ""
+
+msgid "AICatalog|This flow uses a service account with the %{linkStart}Developer role%{linkEnd} by default. Scheduled runs have no triggering user, so only the service account's role applies. The service account can also access all other projects it is a member of. Change its role from the members page."
 msgstr ""
 
 msgid "AICatalog|This key dashboard provides visibility into SDLC metrics in the context of AI adoption for projects and groups. %{linkStart}Learn more%{linkEnd}"
@@ -8310,6 +8329,9 @@ msgstr ""
 msgid "AiGovernance|Active"
 msgstr ""
 
+msgid "AiGovernance|All agents"
+msgstr ""
+
 msgid "AiGovernance|Allow"
 msgstr ""
 
@@ -8340,6 +8362,9 @@ msgstr ""
 msgid "AiGovernance|Category"
 msgstr ""
 
+msgid "AiGovernance|Connected"
+msgstr ""
+
 msgid "AiGovernance|Connection"
 msgstr ""
 
@@ -8347,6 +8372,9 @@ msgid "AiGovernance|Control how your AI-powered features are used."
 msgstr ""
 
 msgid "AiGovernance|Could not load group-level rules. Restriction enforcement may be incomplete."
+msgstr ""
+
+msgid "AiGovernance|DAP"
 msgstr ""
 
 msgid "AiGovernance|Dashboard"
@@ -8432,6 +8460,24 @@ msgstr ""
 
 msgid "AiGovernance|Set at the group level. Projects can only apply stricter rules."
 msgstr ""
+
+msgid "AiGovernance|Show"
+msgstr ""
+
+msgid "AiGovernance|Showing %d Connected agent in the last 7 days"
+msgid_plural "AiGovernance|Showing %d Connected agents in the last 7 days"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "AiGovernance|Showing %d DAP agent in the last 7 days"
+msgid_plural "AiGovernance|Showing %d DAP agents in the last 7 days"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "AiGovernance|Showing all %d agent in the last 7 days"
+msgid_plural "AiGovernance|Showing all %d agents in the last 7 days"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "AiGovernance|Source"
 msgstr ""
@@ -16176,6 +16222,9 @@ msgid "CHANGELOG"
 msgstr ""
 
 msgid "CI Lint"
+msgstr ""
+
+msgid "CI catalog bundles"
 msgstr ""
 
 msgid "CI configuration validated, including all configuration added with the %{codeStart}include%{codeEnd} keyword. %{link}"
@@ -26892,6 +26941,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|Dead tuples"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Deferred"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Delay time"
 msgstr ""
 
@@ -26902,6 +26954,9 @@ msgid "DatabaseDiagnostics|Detect collation-related index corruption issues that
 msgstr ""
 
 msgid "DatabaseDiagnostics|Detect database schema inconsistencies and structural issues."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Detect loose foreign key deleted records that are not being cleaned up. A growing backlog, especially an old one, can eventually break database migrations."
 msgstr ""
 
 msgid "DatabaseDiagnostics|Disabled"
@@ -26955,6 +27010,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|Long-running"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Loose foreign keys cleanup backlog"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Low"
 msgstr ""
 
@@ -26982,6 +27040,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|No autovacuum settings could be read."
 msgstr ""
 
+msgid "DatabaseDiagnostics|No pending cleanup backlog detected."
+msgstr ""
+
 msgid "DatabaseDiagnostics|No schema issues detected."
 msgstr ""
 
@@ -26994,6 +27055,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|OK"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Oldest pending"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Only a few autovacuum workers are configured, which may be too few for a large or decomposed database fleet."
 msgstr ""
 
@@ -27003,10 +27067,19 @@ msgstr ""
 msgid "DatabaseDiagnostics|Ownership issues"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Parent table"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Pending records"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Phase"
 msgstr ""
 
 msgid "DatabaseDiagnostics|PostgreSQL configuration and metadata for each database connection."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Run backlog check"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Run collation check"
@@ -30490,6 +30563,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|%{event}: %{conditions}"
 msgstr ""
 
+msgid "DuoAgentsPlatform|%{role} role"
+msgstr ""
+
 msgid "DuoAgentsPlatform|(editing)"
 msgstr ""
 
@@ -30530,6 +30606,9 @@ msgid "DuoAgentsPlatform|Already set up"
 msgstr ""
 
 msgid "DuoAgentsPlatform|An error occurred while fetching flows configured for this project."
+msgstr ""
+
+msgid "DuoAgentsPlatform|An error occurred while fetching service account roles."
 msgstr ""
 
 msgid "DuoAgentsPlatform|An error occurred while fetching users."
@@ -30856,6 +30935,12 @@ msgstr ""
 msgid "DuoAgentsPlatform|Save changes"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Scheduled triggers do not use composite identity. They run with only the service account's permissions."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Scheduled triggers do not use composite identity. They run with the service account's %{linkStart}%{role} role%{linkEnd} on this project."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Search"
 msgstr ""
 
@@ -30962,6 +31047,9 @@ msgid "DuoAgentsPlatform|The Agent Platform isn't enabled for this project yet"
 msgstr ""
 
 msgid "DuoAgentsPlatform|The Agent Platform isn't enabled for this project yet. Here's what your group needs to do, and what you can already start on."
+msgstr ""
+
+msgid "DuoAgentsPlatform|The service account has the %{linkStart}%{role} role%{linkEnd} on this project."
 msgstr ""
 
 msgid "DuoAgentsPlatform|The trigger could not be created. Try again."
@@ -56028,7 +56116,13 @@ msgstr ""
 msgid "Organizations API rate limits"
 msgstr ""
 
+msgid "Organization|%{invited} of %{total} users invited."
+msgstr ""
+
 msgid "Organization|%{linkStart}Organizations%{linkEnd} are a top-level container to hold your groups and projects."
+msgstr ""
+
+msgid "Organization|%{name}: %{message}"
 msgstr ""
 
 msgid "Organization|%{organizationName} is your organization's home. %{linkStart}Learn more%{linkEnd}."
@@ -56103,7 +56197,13 @@ msgstr ""
 msgid "Organization|An error occurred updating your organization. Please try again."
 msgstr ""
 
+msgid "Organization|An error occurred while adding users to the organization. Please try again."
+msgstr ""
+
 msgid "Organization|Assign top-level groups"
+msgstr ""
+
+msgid "Organization|Cancel"
 msgstr ""
 
 msgid "Organization|Cannot delete the default organization"
@@ -56148,6 +56248,12 @@ msgstr ""
 msgid "Organization|Drop groups here"
 msgstr ""
 
+msgid "Organization|Email addresses or GitLab usernames"
+msgstr ""
+
+msgid "Organization|Enter an email address or GitLab username."
+msgstr ""
+
 msgid "Organization|Get started with organizations"
 msgstr ""
 
@@ -56164,6 +56270,12 @@ msgid "Organization|If you proceed with this change you will lose your owner per
 msgstr ""
 
 msgid "Organization|Internal - The organization can be accessed by any signed in user except external users."
+msgstr ""
+
+msgid "Organization|Invite"
+msgstr ""
+
+msgid "Organization|Invite organization user"
 msgstr ""
 
 msgid "Organization|Learn how Organizations work"
@@ -56329,6 +56441,9 @@ msgstr ""
 msgid "Organization|Switch organizations"
 msgstr ""
 
+msgid "Organization|The following users could not be invited:"
+msgstr ""
+
 msgid "Organization|This group will become internal to match the Organization's visibility."
 msgstr ""
 
@@ -56351,6 +56466,12 @@ msgid "Organization|Update your organization name, description, and avatar. %{li
 msgstr ""
 
 msgid "Organization|User"
+msgstr ""
+
+msgid "Organization|User type"
+msgstr ""
+
+msgid "Organization|Users were successfully added to the organization."
 msgstr ""
 
 msgid "Organization|View all"
@@ -56378,6 +56499,9 @@ msgid "Organization|You have %{boldStart}%{count}%{boldEnd} other top-level grou
 msgid_plural "Organization|You have %{boldStart}%{count}%{boldEnd} other top-level groups. Drag unassigned groups to your organization, or leave the structure as is. Unassigned groups will not be included in the organization."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Organization|You're inviting users to the %{strongStart}%{name}%{strongEnd} organization."
+msgstr ""
 
 msgid "Organization|my-organization"
 msgstr ""
@@ -75402,6 +75526,9 @@ msgstr ""
 msgid "SecurityScanProfile|is not allowed for %{scan_type} scan profiles"
 msgstr ""
 
+msgid "SecurityScanProfile|is reserved for GitLab-recommended scan profiles."
+msgstr ""
+
 msgid "SecurityTrackedRefs|%{selectedRefsCount} refs selected of %{availableSpots} spots available"
 msgstr ""
 
@@ -90934,13 +91061,43 @@ msgstr ""
 msgid "WorkItemCustomField|Use on"
 msgstr ""
 
+msgid "WorkItemDecisionLog|Context"
+msgstr ""
+
 msgid "WorkItemDecisionLog|Decision log"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Decisions show up here once an open question gets answered or a comment is marked as a decision. Each one keeps the background behind it and a link back to where it was made."
 msgstr ""
 
+msgid "WorkItemDecisionLog|Hide context"
+msgstr ""
+
 msgid "WorkItemDecisionLog|No decisions yet"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Recorded from a thread on this work item"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Recorded manually on this work item"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Show context"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Something went wrong when fetching the decision log. Please try again."
+msgstr ""
+
+msgid "WorkItemDecisionLog|Suggested answer to an open question raised by %{author}"
+msgstr ""
+
+msgid "WorkItemDecisionLog|View comment"
+msgstr ""
+
+msgid "WorkItemDecisionLog|View decision log"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Why"
 msgstr ""
 
 msgid "WorkItemDuoQuestion|An answer is required to submit"
@@ -96260,10 +96417,10 @@ msgstr ""
 msgid "mrWidget|Cannot merge until %{mergeAfter}"
 msgstr ""
 
-msgid "mrWidget|Checking if merge request can be merged…"
+msgid "mrWidget|Checking if auto-merge is available…"
 msgstr ""
 
-msgid "mrWidget|Checking merge options…"
+msgid "mrWidget|Checking if merge request can be merged…"
 msgstr ""
 
 msgid "mrWidget|Cherry-pick"

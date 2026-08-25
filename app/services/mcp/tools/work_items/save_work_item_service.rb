@@ -14,7 +14,8 @@ module Mcp
           description: <<~DESC.strip,
             Create or update a GitLab work item, such as an issue, task, or epic.
             Omit work_item_iid to create a new work item; provide work_item_iid or a
-            work item URL to update an existing one.
+            work item URL to update an existing one. Send only the fields you intend
+            to set, and omit the rest.
           DESC
           annotations: {
             readOnlyHint: false,
@@ -38,7 +39,7 @@ module Mcp
               },
               work_item_iid: {
                 type: 'integer',
-                description: 'Internal ID of the work item to update. Omit to create a new work item.'
+                description: 'Positive internal ID of the work item to update. Omit to create a new work item.'
               },
               title: {
                 type: 'string',
@@ -146,7 +147,9 @@ module Mcp
         end
 
         def update?(arguments)
-          arguments[:work_item_iid].present? || arguments[:url].to_s.match?(UPDATE_INTENT_URL)
+          # Not present?: integer 0 is Rails-present, but zero-filling clients
+          # send work_item_iid: 0 meaning "unset", and iids start at 1.
+          arguments[:work_item_iid].to_i > 0 || arguments[:url].to_s.match?(UPDATE_INTENT_URL)
         end
       end
     end

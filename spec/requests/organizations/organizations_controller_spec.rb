@@ -286,11 +286,11 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
     context 'when on GitLab.com', :saas do
       it_behaves_like 'controller action that requires authentication by any user'
 
-      context 'when user is signed in and `organization_switching` feature flag is disabled' do
+      context 'when user is signed in and `org_creation` release flag is disabled' do
         let_it_be(:user) { create(:user) }
 
         before do
-          stub_feature_flags(organization_switching: false)
+          stub_organization_release(org_creation: false)
           sign_in(user)
         end
 

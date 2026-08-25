@@ -325,7 +325,7 @@ describe('ReadyToMerge', () => {
 
       expect(findMergeButton().props('loading')).toBe(true);
       expect(findMergeButton().props('disabled')).toBe(true);
-      expect(findMergeButton().text()).toBe('Checking merge options…');
+      expect(findMergeButton().text()).toBe('Checking if auto-merge is available…');
     });
 
     it('enables the auto-merge action once strategies arrive from the poll', async () => {

@@ -58,6 +58,7 @@ module Mcp
         'link_work_items' => ::Mcp::Tools::WorkItems::LinkWorkItemsService,
         'list_merge_requests' => ::Mcp::Tools::MergeRequests::ListMergeRequestsService,
         'list_repository_tree' => ::Mcp::Tools::Repositories::ListRepositoryTreeService,
+        'list_project_members' => ::Mcp::Tools::Projects::ListProjectMembersService,
         'list_wiki_pages' => ::Mcp::Tools::Wikis::ListWikiPagesService,
         'list_work_items' => ::Mcp::Tools::WorkItems::ListWorkItemsService,
         'save_merge_request_review' => ::Mcp::Tools::MergeRequests::SaveMergeRequestReviewService,
@@ -101,6 +102,12 @@ module Mcp
         raise ToolNotFoundError, name
       end
 
+      def resolve_alias(name)
+        return name if tools.key?(name)
+
+        alias_map[name] || name
+      end
+
       private
 
       def get_custom_tool(name, version)
@@ -140,10 +147,6 @@ module Mcp
         raise VersionNotFoundError.new(name, version, [tool_version]) if version && version != tool_version
 
         tool
-      end
-
-      def resolve_alias(name)
-        alias_map[name] || name
       end
 
       def build_alias_map

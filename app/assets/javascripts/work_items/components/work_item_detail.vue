@@ -1196,6 +1196,7 @@ export default {
             :parent-iteration="workItemIteration"
             :parent-milestone="workItemMilestone"
             :active-child-item-id="activeChildItemId"
+            :active-panel="activePanel"
             :can-update="canUpdate"
             :can-update-children="canUpdateChildren"
             :confidential="workItem.confidential"
@@ -1214,6 +1215,7 @@ export default {
             :work-item-type="workItem.workItemType.name"
             :can-admin-work-item-link="canAdminWorkItemLink"
             :active-child-item-id="activeChildItemId"
+            :active-panel="activePanel"
             :has-blocked-work-items-feature="hasBlockedWorkItemsFeature"
             contextual-view-enabled
             @show-modal="openContextualView"

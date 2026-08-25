@@ -51,6 +51,7 @@ describe('Work Item Note Actions', () => {
     isAuthorContributor = false,
     maxAccessLevelOfAuthor = '',
     projectName = 'Project name',
+    duoSessionId = null,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemNoteActions, {
       propsData: {
@@ -67,9 +68,14 @@ describe('Work Item Note Actions', () => {
         isAuthorContributor,
         maxAccessLevelOfAuthor,
         projectName,
+        duoSessionId,
       },
       stubs: {
         EmojiPicker,
+        ViewSessionButton: stubComponent({
+          name: 'ViewSessionButton',
+          props: { sessionId: { type: Number, required: true } },
+        }),
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
           methods: { close: showSpy },
         }),
@@ -271,6 +277,34 @@ describe('Work Item Note Actions', () => {
 
       expect(wrapper.emitted('report-abuse')).toEqual([[]]);
       expect(showSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('view session button', () => {
+    const findViewSessionButton = () => wrapper.findComponent({ name: 'ViewSessionButton' });
+
+    describe('when the note has no linked session', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render the view session button', () => {
+        expect(findViewSessionButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when the note has a linked session', () => {
+      beforeEach(() => {
+        createComponent({ duoSessionId: 42 });
+      });
+
+      it('renders the view session button', () => {
+        expect(findViewSessionButton().exists()).toBe(true);
+      });
+
+      it('passes the session id to the view session button', () => {
+        expect(findViewSessionButton().props('sessionId')).toBe(42);
+      });
     });
   });
 

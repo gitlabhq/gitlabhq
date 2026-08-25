@@ -740,6 +740,20 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
     end
   end
 
+  describe '.throttled_error_message' do
+    it 'returns the shared rate limit error message' do
+      expect(described_class.throttled_error_message)
+        .to eq('This endpoint has been requested too many times. Try again later.')
+    end
+
+    it 'translates at call time, not at load time' do
+      Gitlab::I18n.with_locale('es') do
+        expect(described_class.throttled_error_message)
+          .to eq(_('This endpoint has been requested too many times. Try again later.'))
+      end
+    end
+  end
+
   describe '.log_request' do
     let(:token_prefix) { Gitlab::ApplicationSettingFetcher.current_application_settings.personal_access_token_prefix }
     let(:token_string) { "#{token_prefix}PAT1234" }

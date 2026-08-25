@@ -254,6 +254,9 @@ export default {
     isWorkItemConfidential() {
       return this.workItem.confidential;
     },
+    duoCreatedSessionId() {
+      return getIdFromGraphQLId(this.note.duoCreatedSession?.id);
+    },
   },
   mounted() {
     gfmEventHub.$on('edit-note', this.handleEditNote);
@@ -478,6 +481,7 @@ export default {
               :is-resolved="isDiscussionResolved"
               :is-resolving="isResolving"
               :resolved-by="resolvedBy"
+              :duo-session-id="duoCreatedSessionId"
               @start-replying="showReplyForm"
               @start-editing="startEditing"
               @resolve="$emit('resolve')"

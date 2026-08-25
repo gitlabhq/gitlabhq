@@ -145,7 +145,7 @@ module Nav
         )
       end
 
-      if Feature.enabled?(:organization_switching, current_user) &&
+      if ::Organizations::Release.enabled?(:org_creation, current_user) &&
           ui_for_organizations_enabled? &&
           current_user.can?(:create_organization)
         menu_items.push(

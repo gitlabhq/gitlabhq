@@ -303,11 +303,7 @@ RSpec.describe 'Environment', feature_category: :environment_management do
       expect(page).to have_button('Stop')
     end
 
-    it 'user deletes the branch with running environment', :js,
-      quarantine: {
-        issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43917',
-        type: :flaky
-      } do
+    it 'user deletes the branch with running environment', :js do
       visit project_branches_filtered_path(project, state: 'all', search: 'feature')
 
       remove_branch_with_hooks(project, user, 'feature') do
@@ -336,7 +332,17 @@ RSpec.describe 'Environment', feature_category: :environment_management do
 
       yield
 
-      Git::BranchPushService.new(project, user, params).execute
+      # Playing the stop action's manual job updates `p_ci_builds` (`gitlab_ci`), and
+      # `Ci::Deployable` defers the matching `Environment`/`Deployment` sync
+      # (`gitlab_main_org`) to `run_after_commit` so the two stay in separate production
+      # transactions. RSpec's transactional fixtures fire `after_commit` callbacks without
+      # a real commit, so both writes land in this example's single wrapping transaction,
+      # which the cross-database query analyzer then flags as a violation.
+      allow_cross_database_modification_within_transaction(
+        url: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/622190'
+      ) do
+        Git::BranchPushService.new(project, user, params).execute
+      end
     end
   end
 

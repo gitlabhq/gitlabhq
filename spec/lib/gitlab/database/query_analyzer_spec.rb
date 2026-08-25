@@ -265,6 +265,24 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
       end
     end
 
+    it 'passes type_casted_binds and returned_values to the analyzer' do
+      returned_values = { fields: %w[id], values: [[42]] }
+
+      expect(analyzer).to receive(:analyze) do |parsed|
+        expect(parsed.type_casted_binds).to eq(['gitlab'])
+        expect(parsed.returned_values).to eq(returned_values)
+      end
+
+      described_class.instance.within do
+        ApplicationRecord.load_balancer.read_write do |connection|
+          described_class.instance.send(
+            :process_sql, 'INSERT INTO projects (name) VALUES ($1) RETURNING "id"', connection, 'insert', false,
+            type_casted_binds: ['gitlab'], returned_values: returned_values
+          )
+        end
+      end
+    end
+
     def process_sql(sql, event_name = 'load')
       described_class.instance.within do
         ApplicationRecord.load_balancer.read_write do |connection|
@@ -291,6 +309,24 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
       expect(PgQuery).to receive(:normalize).once.and_call_original
       expect(parsed.sql).not_to be_nil
       expect(parsed.sql).to eq('SELECT $1 FROM projects')
+    end
+
+    describe '#type_casted_binds' do
+      it 'returns nil when no binds were given' do
+        expect(parsed.type_casted_binds).to be_nil
+      end
+
+      it 'returns the binds when given as an array' do
+        parsed = described_class.new(raw, connection, event_name, cached, type_casted_binds: [1, 'foo'])
+
+        expect(parsed.type_casted_binds).to eq([1, 'foo'])
+      end
+
+      it 'resolves the binds when given as a callable' do
+        parsed = described_class.new(raw, connection, event_name, cached, type_casted_binds: -> { [1, 'foo'] })
+
+        expect(parsed.type_casted_binds).to eq([1, 'foo'])
+      end
     end
 
     context 'when SQL is invalid' do

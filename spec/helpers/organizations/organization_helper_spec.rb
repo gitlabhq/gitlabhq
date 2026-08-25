@@ -60,9 +60,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
         end
       end
 
-      context 'when organization_switching feature flag is disabled' do
+      context 'when org_creation release flag is disabled' do
         before do
-          stub_feature_flags(organization_switching: false)
+          stub_organization_release(org_creation: false)
         end
 
         it 'returns false for can_create_organization' do

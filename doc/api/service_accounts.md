@@ -263,6 +263,54 @@ Example response:
 ]
 ```
 
+### Retrieve a group service account
+
+Retrieves a single service account in a specified group.
+
+```plaintext
+GET /groups/:id/service_accounts/:user_id
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+| --------- | ----------------- | -------- | ----------- |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `user_id` | integer           | yes      | The ID of the service account. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute           | Type    | Description |
+| ------------------- | ------- | ----------- |
+| `email`             | string  | Email address of the service account. |
+| `id`                | integer | ID of the service account. |
+| `name`              | string  | Name of the service account. |
+| `public_email`      | string  | Public email address of the service account. |
+| `unconfirmed_email` | string  | Email address awaiting confirmation. Returned only when a confirmation is pending. |
+| `username`          | string  | Username of the service account. |
+
+Returns `404 Not Found` if the service account does not exist in the group, and `400 Bad Request` if the user
+exists in the group but is not a service account.
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/345/service_accounts/57"
+```
+
+Example response:
+
+```json
+{
+  "id": 57,
+  "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
+  "name": "Service account user",
+  "email": "service_account_group_345_6018816a18e515214e0c34c2b33523fc@noreply.gitlab.example.com"
+}
+```
+
 ### Create a group service account
 
 {{< history >}}
@@ -643,6 +691,53 @@ Example response:
     "unconfirmed_email": "custom_email@example.com"
   }
 ]
+```
+
+### Retrieve a project service account
+
+Retrieves a single service account in a specified project.
+
+```plaintext
+GET /projects/:id/service_accounts/:user_id
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+| --------- | ----------------- | -------- | ----------- |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the target project](rest/_index.md#namespaced-paths). |
+| `user_id` | integer           | yes      | The ID of the service account. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute           | Type    | Description |
+| ------------------- | ------- | ----------- |
+| `email`             | string  | Email address of the service account. |
+| `id`                | integer | ID of the service account. |
+| `name`              | string  | Name of the service account. |
+| `public_email`      | string  | Public email address of the service account. |
+| `unconfirmed_email` | string  | Email address awaiting confirmation. Returned only when a confirmation is pending. |
+| `username`          | string  | Username of the service account. |
+
+Returns `404 Not Found` if the service account does not exist in the project.
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/345/service_accounts/57"
+```
+
+Example response:
+
+```json
+{
+  "id": 57,
+  "username": "service_account_project_345_6018816a18e515214e0c34c2b33523fc",
+  "name": "Service account user",
+  "email": "service_account_project_345_6018816a18e515214e0c34c2b33523fc@noreply.gitlab.example.com"
+}
 ```
 
 ### Create a project service account

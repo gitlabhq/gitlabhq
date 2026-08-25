@@ -14,7 +14,7 @@ import {
   mockWorkItemDiscussion,
   mockToggleResolveDiscussionResponse,
   mockWorkItemNotesResponseWithComments,
-} from 'jest/work_items/mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
 
 const mockWorkItemNotesWidgetResponseWithComments =

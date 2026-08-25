@@ -231,6 +231,96 @@ RSpec.describe API::GroupServiceAccounts, :with_current_organization, :aggregate
     end
   end
 
+  describe "GET /groups/:id/service_accounts/:user_id" do
+    let(:group_id) { group.id }
+    let!(:service_account_user) { create(:user, :service_account, provisioned_by_group: group) }
+    let(:path) { "/groups/#{group_id}/service_accounts/#{service_account_user.id}" }
+
+    subject(:perform_request) { get api(path, current_user, admin_mode: true) }
+
+    context 'when current user is an admin', :enable_admin_mode do
+      let(:current_user) { admin }
+
+      it 'returns the service account user' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(service_account_user.id)
+        expect(json_response['username']).to eq(service_account_user.username)
+        expect(json_response.keys).to match_array(%w[id name username email public_email])
+      end
+
+      context 'when target user is not a service account' do
+        let!(:regular_user) { create(:user, provisioned_by_group: group) }
+        let(:path) { "/groups/#{group_id}/service_accounts/#{regular_user.id}" }
+
+        it 'returns bad_request' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to include('User is not of type Service Account')
+        end
+      end
+
+      context 'when the service account belongs to another group' do
+        let!(:service_account_user) { create(:user, :service_account, provisioned_by_group: create(:group)) }
+
+        it 'returns 404' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      it 'returns 404 for a non-existing user' do
+        get api("/groups/#{group_id}/service_accounts/#{non_existing_record_id}", current_user, admin_mode: true)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns 400 for an invalid user ID' do
+        get api("/groups/#{group_id}/service_accounts/ASDF", current_user, admin_mode: true)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'when the group does not exist' do
+      let(:group_id) { non_existing_record_id }
+      let(:current_user) { admin }
+
+      it 'returns 404' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when current user is not a group owner' do
+      let(:current_user) { create(:user, maintainer_of: group) }
+
+      it 'returns 403' do
+        get api(path, current_user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when not authenticated' do
+      it 'returns 401' do
+        get api(path)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_service_account do
+      let(:user) { admin }
+      let(:boundary_object) { group }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
+  end
+
   describe "PATCH /groups/:id/service_accounts/:user_id" do
     let(:group_id) { group.id }
     let!(:service_account_user) { create(:user, :service_account, provisioned_by_group: group) }

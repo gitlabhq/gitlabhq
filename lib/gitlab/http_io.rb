@@ -15,7 +15,7 @@ module Gitlab
     KEEP_ALIVE_TIMEOUT = 30
 
     # Net::HTTP's current default, set explicitly because the reconnect
-    # behavior documented in #persistent_chunk_response depends on it. Not
+    # behavior documented in #fetch_chunk_response depends on it. Not
     # raised: Net::HTTP retries read timeouts, so each extra retry adds another
     # read timeout to the worst case for a single chunk.
     MAX_RETRIES = 1
@@ -35,7 +35,6 @@ module Gitlab
       @uri = URI(url)
       @size = size
       @tell = 0
-      @use_persistent_connection = Feature.enabled?(:http_io_persistent_connections, Feature.current_request)
       @cache_previous_chunk = Feature.enabled?(:http_io_previous_chunk_cache, Feature.current_request)
     end
 
@@ -199,22 +198,12 @@ module Gitlab
       @chunk[chunk_offset..BUFFER_SIZE]
     end
 
-    def fetch_chunk_response
-      if @use_persistent_connection
-        persistent_chunk_response
-      else
-        Net::HTTP.start(uri.hostname, uri.port, proxy_from_env: true, use_ssl: use_ssl?) do |http|
-          http.request(request)
-        end
-      end
-    end
-
     # Net::HTTP transparently reconnects and retries the (idempotent) GET once
     # if the server dropped the keep-alive connection between chunks. It also
     # closes the socket before re-raising a transport error, and reconnects on
     # finding a closed socket, so the memoized session self-heals rather than
     # staying wedged after a failed read.
-    def persistent_chunk_response
+    def fetch_chunk_response
       http_session.request(request)
     rescue EOFError => e
       # ignore_eof: false (see #http_session) turns a connection that dies

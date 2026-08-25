@@ -2,15 +2,18 @@
 
 RSpec.describe Gitlab::PolicyStore do
   let(:repository) { instance_double(Gitlab::PolicyStore::Ports::PolicyRepository) }
+  let(:evaluation_recorder) { instance_double(Gitlab::PolicyStore::Ports::EvaluationRecorder) }
 
   after do
     described_class.reset_configuration!
   end
 
   describe 'default configuration' do
-    it 'uses the in-memory adapter' do
+    it 'uses the in-memory adapters' do
       expect(described_class.configuration.repository)
         .to be_a(Gitlab::PolicyStore::Adapters::InMemoryPolicyRepository)
+      expect(described_class.configuration.evaluation_recorder)
+        .to be_a(Gitlab::PolicyStore::Adapters::InMemoryEvaluationRecorder)
     end
   end
 
@@ -41,7 +44,7 @@ RSpec.describe Gitlab::PolicyStore do
   context 'with an injected repository' do
     before do
       allow(described_class).to receive(:configuration)
-        .and_return(Gitlab::PolicyStore::Configuration.new(repository))
+        .and_return(Gitlab::PolicyStore::Configuration.new(repository, evaluation_recorder))
     end
 
     describe '#create' do
@@ -78,6 +81,16 @@ RSpec.describe Gitlab::PolicyStore do
         allow(repository).to receive(:delete).with(1).and_return(nil)
 
         expect(described_class.delete(1)).to be_nil
+      end
+    end
+
+    describe '#record_evaluation' do
+      it 'delegates to the configured evaluation recorder' do
+        attributes = { policy_id: 1, verdict: 'deny' }
+        evaluation = instance_double(Gitlab::PolicyStore::Evaluation)
+        allow(evaluation_recorder).to receive(:record).with(attributes).and_return(evaluation)
+
+        expect(described_class.record_evaluation(attributes)).to eq(evaluation)
       end
     end
 

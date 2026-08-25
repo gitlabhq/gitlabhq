@@ -10590,6 +10590,43 @@ Fields:
 | <a id="mutation-googlecloudloggingconfigurationupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-googlecloudloggingconfigurationupdate-googlecloudloggingconfiguration"></a>`googleCloudLoggingConfiguration` | [`GoogleCloudLoggingConfigurationType`](#googlecloudloggingconfigurationtype) | configuration updated. |
 
+### `Mutation.governPolicyCreate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Creates a policy in the policy store for an organization.
+
+Input type: `GovernPolicyCreateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-governpolicycreate-actions"></a>`actions` | [`[JSON!]`](#json) | Actions the policy takes. No more than 1000 actions. |
+| <a id="mutation-governpolicycreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-governpolicycreate-description"></a>`description` | [`String`](#string) | Description of the policy. |
+| <a id="mutation-governpolicycreate-lifecyclestate"></a>`lifecycleState` | [`String`](#string) | Lifecycle state of the policy. |
+| <a id="mutation-governpolicycreate-mode"></a>`mode` | [`String`](#string) | Enforcement mode of the policy. |
+| <a id="mutation-governpolicycreate-name"></a>`name` | [`String!`](#string) | Name of the policy. |
+| <a id="mutation-governpolicycreate-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | Global ID of the organization to create the policy in. |
+| <a id="mutation-governpolicycreate-policyscope"></a>`policyScope` | [`JSON`](#json) | Authored scope of the policy. Mutually exclusive with scopeRego. |
+| <a id="mutation-governpolicycreate-rules"></a>`rules` | [`[JSON!]!`](#json) | Rules of the policy, at least one. No more than 1000 rules. |
+| <a id="mutation-governpolicycreate-scoperego"></a>`scopeRego` | [`String`](#string) | Rego expression scoping the policy. Mutually exclusive with policyScope. |
+| <a id="mutation-governpolicycreate-triggertype"></a>`triggerType` | [`String!`](#string) | Trigger the policy responds to. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-governpolicycreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-governpolicycreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-governpolicycreate-policy"></a>`policy` | [`GovernPolicy`](#governpolicy) | Policy created in the policy store. |
+
 ### `Mutation.groupAuditEventStreamingDestinationsCreate`
 
 {{< details >}}
@@ -40442,6 +40479,7 @@ Fields:
 | <a id="customizabledashboard-status"></a>`status` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.0. Status: Experiment. Status of the dashboard. |
 | <a id="customizabledashboard-title"></a>`title` | [`String`](#string) | Title of the dashboard. |
 | <a id="customizabledashboard-userdefined"></a>`userDefined` | [`Boolean!`](#boolean) | Indicates whether the dashboard is user-defined or provided by GitLab. |
+| <a id="customizabledashboard-views"></a>`views` {{< icon name="warning-solid" >}} | [`[CustomizableDashboardView!]`](#customizabledashboardview) | Introduced in GitLab 19.4. Status: Experiment. Views the user can switch between on the dashboard, each with its own panels. |
 
 ### `CustomizableDashboardPanel`
 
@@ -40480,6 +40518,17 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="customizabledashboardpanelview-text"></a>`text` | [`String`](#string) | Label shown in the segmented control for the view. |
 | <a id="customizabledashboardpanelview-visualization"></a>`visualization` | [`CustomizableDashboardVisualization`](#customizabledashboardvisualization) | Visualization rendered when the view is selected. |
+
+### `CustomizableDashboardView`
+
+Represents a view that can be selected within a customizable dashboard.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizabledashboardview-panels"></a>`panels` | [`CustomizableDashboardPanelConnection`](#customizabledashboardpanelconnection) | Panels shown when the view is selected. (see [Connections](#connections)) |
+| <a id="customizabledashboardview-title"></a>`title` | [`String`](#string) | Title of the view. |
 
 ### `CustomizableDashboardVisualization`
 

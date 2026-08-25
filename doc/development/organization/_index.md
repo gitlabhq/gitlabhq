@@ -263,7 +263,9 @@ Some routes are not currently available under the organization scope:
 Enable the following feature flags to test organizations:
 
 - `ui_for_organizations`
-- `organization_switching`
+- `org_stage_experimental`, which enables the Experimental-stage organization flags, such as `org_creation`
+
+For more information on organization flags, see the [organizations release process](../organizations/release_process.md).
 
 When making features organization-aware, pay special attention to areas where cross-organization data leakage could occur.
 Examples include:

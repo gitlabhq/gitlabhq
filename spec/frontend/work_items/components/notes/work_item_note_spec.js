@@ -317,6 +317,50 @@ end`;
       });
     });
 
+    describe('Duo Agent Platform session', () => {
+      describe('when the note has no session', () => {
+        beforeEach(async () => {
+          createComponent();
+          await waitForPromises();
+        });
+
+        it('passes no session id', () => {
+          expect(findNoteActions().props('duoSessionId')).toBe(null);
+        });
+      });
+
+      describe('when the session field is absent', () => {
+        beforeEach(async () => {
+          const { duoCreatedSession, ...noteWithoutSessionField } = mockWorkItemCommentNote;
+          createComponent({ note: noteWithoutSessionField });
+          await waitForPromises();
+        });
+
+        it('passes no session id', () => {
+          expect(findNoteActions().props('duoSessionId')).toBe(null);
+        });
+      });
+
+      describe('when the note has a session', () => {
+        beforeEach(async () => {
+          createComponent({
+            note: {
+              ...mockWorkItemCommentNote,
+              duoCreatedSession: {
+                id: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
+                __typename: 'DuoWorkflow',
+              },
+            },
+          });
+          await waitForPromises();
+        });
+
+        it('passes the numeric session id', () => {
+          expect(findNoteActions().props('duoSessionId')).toBe(42);
+        });
+      });
+    });
+
     describe('comment threads', () => {
       beforeEach(() => {
         createComponent();

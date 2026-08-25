@@ -1,0 +1,5 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Details of a Govern policy violation. Deliberately permissive until the Policy Engine decision format is finalized; the size limit on the validator is the real bound.",
+  "type": "object"
+}

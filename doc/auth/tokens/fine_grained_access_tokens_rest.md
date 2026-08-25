@@ -3430,7 +3430,9 @@ Grants the ability to create, delete, read, and update service accounts.
 | Delete | Project | `DELETE` | `/projects/:id/service_accounts/:user_id` |
 | Delete | Group | `DELETE` | `/groups/:id/service_accounts/:user_id` |
 | Read | Project | `GET` | `/projects/:id/service_accounts` |
+| Read | Project | `GET` | `/projects/:id/service_accounts/:user_id` |
 | Read | Group | `GET` | `/groups/:id/service_accounts` |
+| Read | Group | `GET` | `/groups/:id/service_accounts/:user_id` |
 | Read | Instance | `GET` | `/service_accounts` |
 | Update | Project | `PATCH` | `/projects/:id/service_accounts/:user_id` |
 | Update | Group | `PATCH` | `/groups/:id/service_accounts/:user_id` |

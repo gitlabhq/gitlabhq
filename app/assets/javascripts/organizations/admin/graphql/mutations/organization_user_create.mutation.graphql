@@ -1,0 +1,6 @@
+# @feature_category: organization
+mutation organizationUserCreate($input: OrganizationUserCreateInput!) {
+  organizationUserCreate(input: $input) {
+    errors
+  }
+}

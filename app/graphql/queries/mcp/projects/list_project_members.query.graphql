@@ -1,0 +1,31 @@
+# @feature_category: mcp_server
+query listProjectMembers(
+  $fullPath: ID!
+  $search: String
+  $relations: [ProjectMemberRelation!]
+  $first: Int
+  $after: String
+) {
+  project(fullPath: $fullPath) {
+    id
+    projectMembers(search: $search, relations: $relations, first: $first, after: $after) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      nodes {
+        id
+        expiresAt
+        accessLevel {
+          integerValue
+          humanAccess
+        }
+        user {
+          id
+          username
+          name
+        }
+      }
+    }
+  }
+}

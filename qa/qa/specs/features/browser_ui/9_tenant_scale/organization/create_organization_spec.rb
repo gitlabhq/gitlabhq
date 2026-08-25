@@ -10,7 +10,7 @@ module QA
       issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24032'
     },
     feature_flag: {
-      name: [:ui_for_organizations, :organization_switching],
+      name: [:ui_for_organizations, :org_stage_experimental],
       scope: :global
     } do
     describe 'Organization' do
@@ -18,9 +18,9 @@ module QA
 
       around do |example|
         Runtime::Feature.enable(:ui_for_organizations)
-        Runtime::Feature.enable(:organization_switching)
+        Runtime::Feature.enable(:org_stage_experimental)
         example.run
-        Runtime::Feature.disable(:organization_switching)
+        Runtime::Feature.disable(:org_stage_experimental)
         Runtime::Feature.disable(:ui_for_organizations)
       end
 

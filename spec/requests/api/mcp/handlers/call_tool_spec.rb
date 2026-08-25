@@ -896,6 +896,65 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
+  describe '#list_project_members' do
+    let_it_be(:inherited_developer) { create(:user, developer_of: group) }
+
+    let(:tool_params) do
+      { name: 'list_project_members', arguments: { project_id: project.full_path } }
+    end
+
+    it 'returns the direct project members with their roles', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+
+      items = json_response['result']['structuredContent']['items']
+      expect(items.pluck('username')).to contain_exactly(user.username)
+      expect(items.first).to include(
+        'id' => user.id,
+        'name' => user.name,
+        'access_level' => Gitlab::Access::MAINTAINER,
+        'access_level_name' => 'Maintainer',
+        'expires_at' => nil
+      )
+    end
+
+    context 'when include_inherited is true' do
+      let(:tool_params) do
+        { name: 'list_project_members', arguments: { project_id: project.full_path, include_inherited: true } }
+      end
+
+      it 'also returns members inherited from the parent group' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['items'].pluck('username'))
+          .to include(inherited_developer.username)
+      end
+    end
+
+    context 'when the caller cannot see the project' do
+      let_it_be(:other_project) { create(:project, :private) }
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) do
+        create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp])
+      end
+
+      let(:tool_params) do
+        { name: 'list_project_members', arguments: { project_id: other_project.full_path } }
+      end
+
+      it 'returns a non-leaky not found error', :aggregate_failures do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('not found or inaccessible')
+      end
+    end
+  end
+
   describe '#add_branch' do
     let(:tool_params) do
       { name: 'add_branch', arguments: { project_id: project.full_path, branch: 'my-feature', ref: 'master' } }

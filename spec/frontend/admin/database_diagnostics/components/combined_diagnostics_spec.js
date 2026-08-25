@@ -5,6 +5,7 @@ import AutovacuumConfigApp from '~/admin/database_diagnostics/components/autovac
 import CollationCheckerApp from '~/admin/database_diagnostics/components/collation_checker_app.vue';
 import DatabaseInformationApp from '~/admin/database_diagnostics/components/database_information_app.vue';
 import SchemaCheckerApp from '~/admin/database_diagnostics/components/schema_checker_app.vue';
+import LooseForeignKeysBacklogCheckerApp from '~/admin/database_diagnostics/components/loose_foreign_keys_backlog_checker_app.vue';
 
 describe('CombinedDiagnostics component', () => {
   let wrapper;
@@ -18,6 +19,7 @@ describe('CombinedDiagnostics component', () => {
   const findAutovacuumConfig = () => wrapper.findComponent(AutovacuumConfigApp);
   const findCollationChecker = () => wrapper.findComponent(CollationCheckerApp);
   const findSchemaChecker = () => wrapper.findComponent(SchemaCheckerApp);
+  const findLfkBacklogChecker = () => wrapper.findComponent(LooseForeignKeysBacklogCheckerApp);
 
   beforeEach(() => {
     createComponent();
@@ -29,6 +31,7 @@ describe('CombinedDiagnostics component', () => {
     expect(findAutovacuumConfig().exists()).toBe(true);
     expect(findCollationChecker().exists()).toBe(true);
     expect(findSchemaChecker().exists()).toBe(true);
+    expect(findLfkBacklogChecker().exists()).toBe(true);
   });
 
   it('renders the sections in order: database info, vacuum, autovacuum config, then the checkers', () => {
@@ -39,6 +42,7 @@ describe('CombinedDiagnostics component', () => {
       AutovacuumConfigApp,
       CollationCheckerApp,
       SchemaCheckerApp,
+      LooseForeignKeysBacklogCheckerApp,
     ].map((component) => allElements.indexOf(wrapper.findComponent(component).element));
 
     expect(positions).toEqual([...positions].sort((a, b) => a - b));

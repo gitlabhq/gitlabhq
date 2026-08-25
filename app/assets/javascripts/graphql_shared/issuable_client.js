@@ -24,6 +24,7 @@ import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/grap
 import { SHOW_ALL_GROUPS } from '~/work_items/board/grouping/visibility';
 import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
 import { restWorkItemsResolver } from 'ee_else_ce/work_items/list/graphql/rest/work_items_rest_resolver';
+import { decisionLogStubResolvers } from 'ee_else_ce/work_items/components/decision_log/graphql/stub_resolvers';
 import { preserveDetailsState } from '~/work_items/utils';
 import {
   linkedItems,
@@ -623,11 +624,14 @@ export const config = {
 };
 
 const restWorkItemsResolvers = window.gon?.features?.workItemRestApiFrontendUsers
-  ? { Query: { restWorkItems: restWorkItemsResolver } }
+  ? { restWorkItems: restWorkItemsResolver }
   : {};
 
 export const resolvers = {
-  ...restWorkItemsResolvers,
+  Query: {
+    ...restWorkItemsResolvers,
+    ...decisionLogStubResolvers.Query,
+  },
   Mutation: {
     updateIssueState: (_, { issueType = undefined, isDirty = false }, { cache }) => {
       const sourceData = cache.readQuery({ query: getIssueStateQuery });

@@ -73,9 +73,9 @@ RSpec.describe API::Organizations, feature_category: :organization do
       end
     end
 
-    context 'when feature flag is disabled' do
+    context 'when release flag is disabled' do
       before do
-        stub_feature_flags(organization_switching: false)
+        stub_organization_release(org_creation: false)
       end
 
       it 'returns forbidden' do

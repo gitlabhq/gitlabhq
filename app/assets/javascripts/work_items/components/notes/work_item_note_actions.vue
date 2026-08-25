@@ -35,6 +35,9 @@ export default {
     GlDisclosureDropdownGroup,
     ReplyButton,
     UserAccessRoleBadge,
+    ViewSessionButton: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/view_session_button.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -128,6 +131,11 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+    duoSessionId: {
+      type: Number,
+      required: false,
+      default: null,
     },
   },
   emits: [
@@ -246,6 +254,11 @@ export default {
     >
       {{ __('Contributor') }}
     </user-access-role-badge>
+    <view-session-button
+      v-if="duoSessionId"
+      :session-id="duoSessionId"
+      class="note-action-button"
+    />
     <gl-button
       v-if="canResolve"
       ref="resolveButton"

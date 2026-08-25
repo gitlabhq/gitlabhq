@@ -344,7 +344,7 @@ To filter by using a regular expression:
 For example, to exclude the `main` branch, use:
 
 ```plaintext
-\b(?:m(?!ain\b)|ma(?!in\b)|mai(?!n\b)|[a-l]|[n-z])\w*|\b\w{1,3}\b|\W+
+^(?:.{0,3}|.{5,}|[^m].*|m[^a].*|ma[^i].*|mai[^n].*)$
 ```
 
 ### Configure webhooks to support mutual TLS

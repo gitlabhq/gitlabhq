@@ -372,6 +372,18 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
       end
     end
 
+    context 'when name matches both a canonical tool and an alias' do
+      before do
+        allow(manager).to receive(:alias_map).and_return('search' => 'get_mcp_server_version')
+      end
+
+      it 'returns the canonical tool without consulting the alias map' do
+        tool = manager.get_tool(name: 'search')
+
+        expect(tool).to be_a(Mcp::Tools::Search::SearchService)
+      end
+    end
+
     describe 'semantic search tool' do
       let(:semantic_search_app) { instance_double(Grape::Endpoint) }
       let(:semantic_search_route) { instance_double(Grape::Router::Route, app: semantic_search_app) }
@@ -430,6 +442,37 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
       expect(offenders).to be_empty,
         "tool_aliases on an aggregated route is silently ignored; declare the alias on the " \
           "aggregator class's self.tool_aliases instead. Offending routes: #{offenders}"
+    end
+  end
+
+  describe 'alias uniqueness invariants' do
+    let(:manager) { described_class.new }
+
+    it 'has no alias that collides with a canonical tool name' do
+      collisions = manager.alias_map.keys & manager.tools.keys
+
+      expect(collisions).to be_empty,
+        "Alias(es) #{collisions.inspect} collide with canonical tool names"
+    end
+
+    it 'has no duplicate aliases pointing to different tools' do
+      seen = {}
+      duplicates = []
+
+      manager.tools.each do |tool_name, tool|
+        next unless tool.respond_to?(:tool_aliases)
+
+        tool.tool_aliases.each do |alias_name|
+          if seen.key?(alias_name)
+            duplicates << alias_name
+          else
+            seen[alias_name] = tool_name
+          end
+        end
+      end
+
+      expect(duplicates).to be_empty,
+        "Alias(es) #{duplicates.inspect} are defined by multiple tools"
     end
   end
 end

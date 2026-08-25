@@ -14,7 +14,7 @@ import {
   mockAwardEmojiThumbsDown,
   mockWorkItemNotesResponseWithComments,
   workItemResponseFactory,
-} from '../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 function getWorkItem(data) {
   return data.namespace.workItem;

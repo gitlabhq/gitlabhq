@@ -61,18 +61,18 @@ RSpec.describe Mutations::Organizations::Create, feature_category: :organization
     end
   end
 
-  context 'when `organization_switching` FF is disabled', :saas do
+  context 'when `org_creation` feature is disabled', :saas do
     let(:current_user) { user }
 
     before do
-      stub_feature_flags(organization_switching: false)
+      stub_organization_release(org_creation: false)
     end
 
     it 'returns an error' do
       create_organization
 
       expect(mutation_response).to include(
-        'errors' => ['Feature flag `organization_switching` is not enabled for this user.']
+        'errors' => ['Organization creation is not enabled for this user.']
       )
     end
 

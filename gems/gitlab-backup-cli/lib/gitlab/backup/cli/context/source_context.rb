@@ -15,6 +15,7 @@ module Gitlab
           DEFAULT_JOBS_ARTIFACTS_PATH = 'artifacts'
           DEFAULT_SECURE_FILES_PATH = 'ci_secure_files'
           DEFAULT_AGENT_PLAN_CONTENT_PATH = 'agent_plan_content'
+          DEFAULT_CI_CATALOG_BUNDLES_PATH = 'ci_catalog_bundles'
           DEFAULT_CI_LFS_PATH = 'lfs-objects'
           DEFAULT_PACKAGES = 'packages'
           DEFAULT_PAGES = 'pages'
@@ -60,6 +61,14 @@ module Gitlab
           def agent_plan_content_path
             path = gitlab_config.dig(env, 'agent_plan_content', 'storage_path') ||
               gitlab_shared_path.join(DEFAULT_AGENT_PLAN_CONTENT_PATH)
+
+            absolute_path(path)
+          end
+
+          # CI Catalog bundles basepath
+          def ci_catalog_bundles_path
+            path = gitlab_config.dig(env, 'ci_catalog_bundles', 'storage_path') ||
+              gitlab_shared_path.join(DEFAULT_CI_CATALOG_BUNDLES_PATH)
 
             absolute_path(path)
           end

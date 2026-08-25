@@ -207,13 +207,13 @@ To configure custom instructions, see [customize review instructions for GitLab 
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/506537) automatic reviews for projects to a UI setting in GitLab 18.0.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554070) automatic reviews for groups and instances in GitLab 18.4 as a [beta](../../../../../policy/development_stages_support.md#beta) [with a feature flag](../../../../../administration/feature_flags/_index.md) named `cascading_auto_duo_code_review_settings`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554070) automatic reviews for groups in GitLab 18.4 as a [beta](../../../../../policy/development_stages_support.md#beta) [with a feature flag](../../../../../administration/feature_flags/_index.md) named `cascading_auto_duo_code_review_settings`. Disabled by default.
 - Feature flag `cascading_auto_duo_code_review_settings` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213240) in GitLab 18.7.
 - Automatic reviews for groups and applications [turned on by default](https://gitlab.com/gitlab-org/gitlab/-/work_items/592822) for new GitLab Duo trials on GitLab.com in GitLab 19.1.
 
 {{< /history >}}
 
-Automatic reviews from GitLab Duo ensure that all merge requests in your project, group, or instance
+Automatic reviews from GitLab Duo ensure that all merge requests in your project or group,
 receive an initial review.
 
 When a user creates a merge request, GitLab Duo automatically reviews it unless:
@@ -258,23 +258,6 @@ To turn on automatic reviews for a group:
 1. Select **Save changes**.
 
 Settings cascade from group to project. More specific settings override broader ones.
-
-{{< /tab >}}
-
-{{< tab title="Instance" >}}
-
-Prerequisites:
-
-- Administrator access
-
-To turn on automatic reviews for an instance:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **General**.
-1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
-1. Select **Save changes**.
-
-Settings cascade from instance to group to project. More specific settings override broader ones.
 
 {{< /tab >}}
 

@@ -215,7 +215,7 @@ RSpec.describe Backup::Options, feature_category: :backup_restore do
   describe '#extract_skippables!' do
     let(:skippable_field) do
       'tar,remote,db,uploads,builds,artifacts,lfs,terraform_state,registry,pages,repositories,packages,' \
-        'ci_secure_files,agent_plan_content'
+        'ci_secure_files,agent_plan_content,ci_catalog_bundles'
     end
 
     context 'for skippable operations' do
@@ -288,12 +288,18 @@ RSpec.describe Backup::Options, feature_category: :backup_restore do
           options.extract_skippables!(skippable_field)
         end.to change { options.skippable_tasks.agent_plan_content }.to(true)
       end
+
+      it 'parses skippable ci_catalog_bundles input' do
+        expect do
+          options.extract_skippables!(skippable_field)
+        end.to change { options.skippable_tasks.ci_catalog_bundles }.to(true)
+      end
     end
   end
 
   describe '#skip_task?' do
     tasks = %w[db uploads builds artifacts lfs terraform_state registry pages repositories packages ci_secure_files
-      agent_plan_content]
+      agent_plan_content ci_catalog_bundles]
 
     tasks.each do |task_name|
       it "returns true when task #{task_name} is skipped" do

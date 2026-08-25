@@ -281,3 +281,37 @@ export const multiDatabaseResults = {
     },
   },
 };
+
+export const lfkBacklogResults = {
+  metadata: {
+    last_run_at: '2025-07-23T10:00:00Z',
+  },
+  connections: {
+    main: [
+      {
+        parent_table: 'public.projects',
+        pending_records: 100000,
+        capped: true,
+        oldest_pending_age_seconds: 50000000,
+        deferred_records: 0,
+      },
+      {
+        parent_table: 'public.users',
+        pending_records: 28282,
+        capped: false,
+        oldest_pending_age_seconds: 3600000,
+        deferred_records: 1,
+      },
+    ],
+    ci: [],
+  },
+};
+
+export const lfkNoBacklogResults = {
+  metadata: {
+    last_run_at: '2025-07-23T10:00:00Z',
+  },
+  connections: {
+    main: [],
+  },
+};

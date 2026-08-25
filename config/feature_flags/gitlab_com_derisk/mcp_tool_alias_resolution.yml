@@ -1,0 +1,10 @@
+---
+name: mcp_tool_alias_resolution
+description: When enabled, stored agent tool names that match a renamed MCP tool alias are resolved to the canonical name so the agent continues to receive the tool after a rename.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/606029
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249839
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/621885
+milestone: '19.4'
+group: group::agent execution
+type: gitlab_com_derisk
+default_enabled: false

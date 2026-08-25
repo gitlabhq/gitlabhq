@@ -14,18 +14,18 @@ Each path is expected to move into the
 
 | Entry point | Current gate |
 |--------------|--------------|
-| [New organization form](#new-organization-form) | `organization_switching` feature flag and the `:create_organization` ability |
-| [GraphQL mutation](#graphql-mutation) | The `:create_organization` ability only |
-| [REST API](#rest-api) | `organization_switching` feature flag, the `:create_organization` ability, and a rate limit |
+| [New organization form](#new-organization-form) | `org_creation` organization flag and the `:create_organization` ability |
+| [GraphQL mutation](#graphql-mutation) | `org_creation` organization flag and the `:create_organization` ability |
+| [REST API](#rest-api) | `org_creation` organization flag, the `:create_organization` ability, and a rate limit |
 | [Top-level group backfill and confirm](#top-level-group-backfill-and-confirm-ops) | ChatOps production access to two ops feature flags |
-| [Create organization from group settings](#create-organization-from-group-settings) | `create_org_from_group_settings` release flag, `:create_organization` ability, and `:admin_group` ability. |
+| [Create organization from group settings](#create-organization-from-group-settings) | `create_org_from_group_settings` organization flag, `:create_organization` ability, and `:admin_group` ability. |
 
 ### New organization form
 
 The "New organization" form (`Organizations::OrganizationsController#new`), its navigation entry
 (`Nav::NewDropdownHelper`), and the "New" control on the organization list and the admin
 organization list (`Organizations::OrganizationHelper#shared_organization_index_app_data`) all
-check the `organization_switching` feature flag and the `:create_organization` ability.
+check the `org_creation` organization flag and the `:create_organization` ability.
 
 Only the form enforces this, on the server, through `authorize_create_organization!`.
 The navigation entry and the "New" control are visibility only, not enforcement.
@@ -41,7 +41,7 @@ self-serve flow entirely.
 
 ### REST API
 
-`POST /organizations` (`lib/api/organizations.rb`) checks the `organization_switching` feature
+`POST /organizations` (`lib/api/organizations.rb`) checks the `org_creation` organization
 flag, the `:create_organization` ability, and a rate limit, then calls
 `Organizations::CreateService`, which checks the ability again.
 This path is independent of the self-serve flow, and reachable with a personal access token.
@@ -65,7 +65,7 @@ Access is gated only by who can run ChatOps commands in production.
 ### Create organization from group settings
 
 This is the self-serve process for onboarding beta customers.
-It is gated behind the `create_org_from_group_settings` release flag which supports the group actor.
+It is gated behind the `create_org_from_group_settings` organization flag which supports the group actor.
 This allows a group owner to create and confirm an organization for their TLG from Settings -> General -> Advanced.
 This is how the flow works:
 

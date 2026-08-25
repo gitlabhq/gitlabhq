@@ -525,6 +525,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'AuditEvents::AuditEventStreamingWorker' => 3,
         'AuditEvents::AiAuditEventStreamingWorker' => 3,
         'Ai::DuoWorkflows::ProcessAuditEventsWorker' => 9,
+        'Ai::Messaging::CallbackWorker' => 3,
         'Vulnerabilities::TriggerFalsePositiveDetectionWorkflowWorker' => 10,
         'Vulnerabilities::TriggerResolutionWorkflowWorker' => 10,
         'Vulnerabilities::TriggerSecretDetectionFalsePositiveDetectionWorkflowWorker' => 10,

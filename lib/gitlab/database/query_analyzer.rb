@@ -13,14 +13,25 @@ module Gitlab
       class Parsed
         include Gitlab::Utils::StrongMemoize
 
-        attr_reader :raw, :connection, :event_name, :error
+        attr_reader :raw, :connection, :event_name, :error, :duration, :returned_values
 
-        def initialize(raw, connection, event_name, cached)
+        # duration - query execution time in milliseconds, when known
+        def initialize(
+          raw, connection, event_name, cached, duration = nil, type_casted_binds: nil, returned_values: nil)
           @raw = raw
           @connection = connection
           @event_name = normalize_event_name(event_name)
           @cached = cached
+          @duration = duration
+          @type_casted_binds = type_casted_binds
+          @returned_values = returned_values
           @error = nil
+        end
+
+        # The payload may carry binds as a lazy callable (see
+        # ActiveRecord::LogSubscriber); resolve them only when asked for.
+        def type_casted_binds
+          @type_casted_binds.respond_to?(:call) ? @type_casted_binds.call : @type_casted_binds
         end
 
         # Returns true if the query was using the ActiveRecord Query Cache
@@ -81,7 +92,10 @@ module Gitlab
               event.payload[:sql],
               event.payload[:connection],
               event.payload[:name].to_s,
-              event.payload[:cached]
+              event.payload[:cached],
+              event.duration,
+              type_casted_binds: event.payload[:type_casted_binds],
+              returned_values: event.payload[:returned_values]
             )
           end
         end
@@ -133,11 +147,15 @@ module Gitlab
         Thread.current[:query_analyzer_enabled_analyzers] ||= []
       end
 
-      def process_sql(sql, connection, event_name, cached = false)
+      def process_sql(
+        sql, connection, event_name, cached = false, duration = nil, type_casted_binds: nil, returned_values: nil)
         analyzers = enabled_analyzers
         return unless analyzers&.any?
 
-        parsed = Parsed.new(sql, connection, event_name, cached)
+        parsed = Parsed.new(
+          sql, connection, event_name, cached, duration,
+          type_casted_binds: type_casted_binds, returned_values: returned_values
+        )
 
         analyzers.each do |analyzer|
           next if analyzer.skip_cached?(parsed)

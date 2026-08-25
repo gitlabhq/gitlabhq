@@ -98,6 +98,29 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
+        desc 'Get a single project service account' do
+          detail 'Gets a specified service account in a specified project.'
+          success Entities::ServiceAccount
+          failure [
+            { code: 400, message: '400 Bad request' },
+            { code: 401, message: '401 Unauthorized' },
+            { code: 403, message: '403 Forbidden' },
+            { code: 404, message: '404 User not found' }
+          ]
+          tags ['service_accounts']
+        end
+
+        params do
+          requires :user_id, type: Integer, desc: 'The ID of the service account'
+        end
+
+        route_setting :authorization, permissions: :read_service_account, boundary_type: :project
+        get ":user_id" do
+          validate_service_account
+
+          present service_account, with: Entities::ServiceAccount, current_user: current_user
+        end
+
         desc 'Delete a project service account' do
           detail 'Deletes a specified project service account. Available only for project Owners, Maintainers, ' \
             'and administrators.'

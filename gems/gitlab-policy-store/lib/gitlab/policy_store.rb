@@ -10,18 +10,23 @@ require_relative "policy_store/scope_transpiler"
 require_relative "policy_store/rego_package"
 require_relative "policy_store/rule_transpiler"
 require_relative "policy_store/rule_program_merger"
+require_relative "policy_store/violation"
+require_relative "policy_store/evaluation"
 require_relative "policy_store/ports/policy_repository"
+require_relative "policy_store/ports/evaluation_recorder"
 require_relative "policy_store/adapters/in_memory_policy_repository"
+require_relative "policy_store/adapters/in_memory_evaluation_recorder"
 require_relative "policy_store/configuration"
 
 module Gitlab
   # Public facade for the Policy Store component.
   #
   # This is the ONLY entry point callers should use. Everything behind it is
-  # internal. All persistence goes through an injectable repository (a
-  # Gitlab::PolicyStore::Ports::PolicyRepository), so the in-monolith
-  # backend used today can be swapped for a remote service later without
-  # changing any caller.
+  # internal. All persistence goes through injectable ports (a
+  # Gitlab::PolicyStore::Ports::PolicyRepository for policies, a
+  # Gitlab::PolicyStore::Ports::EvaluationRecorder for evaluation results), so
+  # the in-monolith backends used today can be swapped for a remote service
+  # later without changing any caller.
   module PolicyStore
     # Domain errors are defined here so callers never need to rescue persistence-
     # or transport-specific exceptions across the component boundary.
@@ -35,7 +40,10 @@ module Gitlab
       end
 
       def configuration
-        @configuration ||= Configuration.new(Adapters::InMemoryPolicyRepository.new)
+        @configuration ||= Configuration.new(
+          Adapters::InMemoryPolicyRepository.new,
+          Adapters::InMemoryEvaluationRecorder.new
+        )
       end
 
       # Discards the configured repository, and with it any state the in-memory
@@ -63,6 +71,10 @@ module Gitlab
 
       def list(organization_id:, trigger_type: nil)
         configuration.repository.list(organization_id: organization_id, trigger_type: trigger_type)
+      end
+
+      def record_evaluation(attributes)
+        configuration.evaluation_recorder.record(attributes)
       end
     end
   end

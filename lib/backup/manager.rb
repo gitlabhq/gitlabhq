@@ -131,6 +131,8 @@ module Backup
         Backup::Tasks::CiSecureFiles.id => Backup::Tasks::CiSecureFiles.new(progress: progress, options: options),
         Backup::Tasks::AgentPlanContent.id =>
           Backup::Tasks::AgentPlanContent.new(progress: progress, options: options),
+        Backup::Tasks::CiCatalogBundles.id =>
+          Backup::Tasks::CiCatalogBundles.new(progress: progress, options: options),
         Backup::Tasks::ExternalDiffs.id => Backup::Tasks::ExternalDiffs.new(progress: progress, options: options)
       }.freeze
     end

@@ -393,6 +393,37 @@ Example:
 Review merge request 42 in project gitlab-org/gitlab and leave your findings as diff comments with a summary
 ```
 
+## `list_project_members`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251379) in GitLab 19.4.
+
+{{< /history >}}
+
+Lists the members of a GitLab project with their role and access level.
+
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `project_id`        | string  | Yes      | Full path or numeric ID of the project (for example, `gitlab-org/gitlab` or `278964`). |
+| `include_inherited` | boolean | No       | Also return members who inherit their role from a parent group or a subgroup of the project. Defaults to `false`. |
+| `query`             | string  | No       | Return only members whose name or username contains this text. |
+| `first`             | integer | No       | Number of members to return for forward pagination (default 20, maximum 100). |
+| `after`             | string  | No       | Cursor for forward pagination. |
+
+For each member, the response returns the user ID, username, name, numeric `access_level`,
+the matching `access_level_name` (for example, `Maintainer`), and the membership `expires_at` date.
+Members who were invited by email but have not accepted their invitation yet are not returned.
+
+Each call returns a single page of results.
+If more pages exist, the response `metadata` includes an `end_cursor` you can pass as `after` to fetch the next page.
+
+Example:
+
+```plaintext
+Who are the maintainers of gitlab-org/gitlab?
+```
+
 ## `add_branch`
 
 {{< history >}}
@@ -842,14 +873,15 @@ Show me the work items in this saved view: <URL>
 
 Creates or updates a GitLab work item, such as an issue, task, or epic. Omit `work_item_iid`
 to create a new work item. Provide `work_item_iid` or a work item URL to update an existing
-one. The tool names `create_work_item` and `update_work_item` are aliases for this tool.
+one. Send only the fields you intend to set, and omit the rest. The tool names
+`create_work_item` and `update_work_item` are aliases for this tool.
 
 | Parameter          | Type              | Required | Description |
 |--------------------|-------------------|----------|-------------|
 | `url`              | string            | No       | GitLab URL for the project, group, or work item. Provide exactly one of `url`, `project_id`, or `group_id`. |
 | `group_id`         | string            | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
 | `project_id`       | string            | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
-| `work_item_iid`    | integer           | No       | Internal ID of the work item to update. Omit to create a new work item. |
+| `work_item_iid`    | integer           | No       | Positive internal ID of the work item to update. Omit to create a new work item. |
 | `title`            | string            | No       | Title of the work item. Required when creating a work item. |
 | `type_name`        | string            | No       | Work item type name, for example `Issue`, `Task`, or `Epic`. Required when creating a work item. Valid types depend on the namespace and license. |
 | `description`      | string            | No       | Description in GitLab Flavored Markdown. Maximum 1,048,576 characters. |

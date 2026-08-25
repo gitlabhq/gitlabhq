@@ -11,6 +11,14 @@ module Gitlab
 
     class << self
       include ::Gitlab::Utils::StrongMemoize
+
+      # The error message shown to users when a request is throttled. Defined as a
+      # method (rather than a constant) so the translation is evaluated at request
+      # time, when the user's locale is known, instead of once at class-load time.
+      def throttled_error_message
+        _('This endpoint has been requested too many times. Try again later.')
+      end
+
       # Increments the given key and returns true if the action should
       # be throttled.
       #
