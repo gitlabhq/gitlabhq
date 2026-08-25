@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.1.7 (2026-08-25)
+
+### Fixed (3 changes)
+
+- [Avoid unbounded preload in any_merge_request rules sync](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5e317db82450b7079e1ea7f3f4bc03d2e0ae6d50) **GitLab Enterprise Edition**
+- [Fix infinite loop parsing errored SARIF security reports](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2fd4a017e61a6620fad034e28375f90249f8e66f) **GitLab Enterprise Edition**
+- [Preserve email reply content after lone bullet lines](https://gitlab.com/gitlab-org/security/gitlab/-/commit/484c9c8151e7801eddd1316974d5fc5d62dcc4d5)
+
+### Security (7 changes)
+
+- [Fix Compliance Framework Cross-Namespace Assignment on self-managed instances](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ce321b9fa713e4d395e3a49b36acac364e932248) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6501))
+- [Reject overflow username length in SCIM and OAuth sign-in](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a6296c6f251008052fe0517b2d09ab3c381af34d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6587))
+- [Prevent Sidekiq exhaustion via unbounded import jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5a7c834e031a9a9b6ef2bb829ddadfadcd9f0166) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6584))
+- [Ignore Claude project settings in Claude agent](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5bf44e76d56615fb16df4f702fb67e69e5e00177) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6602))
+- [Check :update_approvers before resetting MR approval rules](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bee97bc87e9d272ae2d984d93be5dc909dda268d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6562))
+- [Prevent policy job needs from resolving to untrusted jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e52bb993d1ae66325f7b867a848f550d3884955c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6595))
+- [Enforce protected environment check on terminal websocket auth](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b26c7559776c7833d2f03fa2ab0bb4ba2492e520) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6590))
+
 ## 19.1.6 (2026-08-14)
 
 No changes.
