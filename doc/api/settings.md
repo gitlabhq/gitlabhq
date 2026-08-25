@@ -169,6 +169,7 @@ Example response:
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
+  "import_jobs_concurrency_limit": 100,
   "silent_admin_exports_enabled": false,
   "top_level_group_creation_enabled": true,
   "disable_invite_members": false,
@@ -404,6 +405,7 @@ Example response:
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
+  "import_jobs_concurrency_limit": 100,
   "silent_admin_exports_enabled": false,
   "enforce_pipl_compliance": true
 }
@@ -530,6 +532,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `concurrent_github_import_jobs_limit`    | integer          | no                                   | Maximum number of simultaneous import jobs for the GitHub importer. Default is 1000. |
 | `concurrent_bitbucket_import_jobs_limit` | integer          | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Cloud importer. Default is 100. |
 | `concurrent_bitbucket_server_import_jobs_limit` | integer   | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Server importer. Default is 100. |
+| `import_jobs_concurrency_limit`          | integer          | no                                   | Maximum number of concurrently running jobs for each import worker type (project and group file base import, Direct Transfer, and GitHub, Bitbucket Cloud, and Bitbucket Server importer stages). Applied independently per worker type. Default is 100. Introduced in GitLab 19.1 |
 | `commit_email_hostname`                  | string           | no                                   | Custom hostname (for private commit emails). |
 | `container_expiration_policies_enable_historic_entries`   | boolean | no                           | Enable [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#enable-the-cleanup-policy) for all projects. |
 | `container_registry_cleanup_tags_service_max_list_size`   | integer | no                           | The maximum number of tags that can be deleted in a single execution of [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
