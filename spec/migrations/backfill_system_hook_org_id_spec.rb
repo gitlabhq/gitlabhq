@@ -11,20 +11,8 @@ RSpec.describe BackfillSystemHookOrgId, feature_category: :webhooks do
   let(:organization_default) { organizations.create!(name: 'Default', path: 'default') }
   let(:organization_custom) { organizations.create!(name: 'Custom', path: 'custom') }
   let(:first_organization) { organizations.all.first }
-  let(:last_organization) { organizations.all.last }
   let(:organization_default_id) { organization_default.id }
   let(:organization_custom_id) { organization_custom.id }
-
-  let(:hook_params) do
-    {
-      created_at: Time.current,
-      updated_at: Time.current,
-      push_events: true,
-      issues_events: false,
-      merge_requests_events: false,
-      tag_push_events: false
-    }
-  end
 
   before do
     ApplicationRecord.connection.execute(

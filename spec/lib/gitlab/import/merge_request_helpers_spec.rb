@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper, feature_categ
     context 'when merge request does not exist' do
       it 'returns a new object' do
         expect(subject.first).not_to be_nil
-        expect(subject.second).to eq(false)
+        expect(subject.second).to be(false)
       end
 
       it 'does load all existing objects' do
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper, feature_categ
         expect(MergeRequest).to receive(:allocate).once.and_call_original
 
         expect(subject.first).not_to be_nil
-        expect(subject.second).to eq(false)
+        expect(subject.second).to be(false)
       end
     end
 
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper, feature_categ
 
       it 'returns an existing object' do
         expect(subject.first).not_to be_nil
-        expect(subject.second).to eq(true)
+        expect(subject.second).to be(true)
       end
     end
 

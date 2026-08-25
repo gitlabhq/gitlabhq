@@ -20,7 +20,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::VariablesInstanceSeeder, feature_category:
 
       ci_variable = Ci::InstanceVariable.last
 
-      expect(ci_variable.key.include?('INSTANCE_VAR_')).to eq true
+      expect(ci_variable.key.include?('INSTANCE_VAR_')).to be true
     end
 
     it 'creates instance-level CI variables with custom arguments' do
@@ -30,7 +30,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::VariablesInstanceSeeder, feature_category:
 
       ci_variable = Ci::InstanceVariable.last
 
-      expect(ci_variable.key.include?('STAGING_')).to eq true
+      expect(ci_variable.key.include?('STAGING_')).to be true
     end
 
     it 'skips CI variable creation if CI variable already exists' do

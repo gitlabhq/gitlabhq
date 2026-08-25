@@ -355,7 +355,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/ci/trace/remote_checksum_spec.rb'
     - 'spec/lib/gitlab/ci/trace/stream_spec.rb'
     - 'spec/lib/gitlab/ci/variables/builder_spec.rb'
-    - 'spec/lib/gitlab/cleanup/orphan_lfs_file_references_spec.rb'
     - 'spec/lib/gitlab/cleanup/project_uploads_spec.rb'
     - 'spec/lib/gitlab/cleanup/remote_uploads_spec.rb'
     - 'spec/lib/gitlab/cluster/rack_timeout_observer_spec.rb'

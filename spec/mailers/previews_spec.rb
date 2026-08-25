@@ -27,8 +27,6 @@ RSpec.describe 'Mailer previews', :with_trial_types, feature_category: :shared d
     create(:import_source_user, :awaiting_approval, :with_reassigned_by_user, namespace: group, reassign_to_user: user)
   end
 
-  let(:expected_kind) { [Mail::Message, ActionMailer::MessageDelivery] }
-
   let(:pending_failures) do
     {
       'NotifyPreview#note_merge_request_email_for_diff_discussion' =>

@@ -116,8 +116,6 @@ RSpec.describe API::Entities::Group, feature_category: :groups_and_projects do
     end
 
     with_them do
-      let(:params) { { archived: archived } }
-
       subject(:json) { described_class.new(group).as_json[:archived] }
 
       it { is_expected.to eq(result) }

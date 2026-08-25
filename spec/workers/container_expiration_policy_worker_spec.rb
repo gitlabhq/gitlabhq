@@ -6,7 +6,6 @@ RSpec.describe ContainerExpirationPolicyWorker, feature_category: :container_reg
   include ExclusiveLeaseHelpers
 
   let(:worker) { described_class.new }
-  let(:started_at) { nil }
 
   describe '#perform' do
     subject { worker.perform }

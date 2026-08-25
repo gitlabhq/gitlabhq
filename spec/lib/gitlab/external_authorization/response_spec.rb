@@ -33,7 +33,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Response do
     it 'returns nil when there was no body' do
       expect(http_response).to receive(:body).and_return('')
 
-      expect(response.reason).to eq(nil)
+      expect(response.reason).to be_nil
     end
   end
 

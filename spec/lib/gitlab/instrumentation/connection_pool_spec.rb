@@ -20,8 +20,6 @@ RSpec.describe Gitlab::Instrumentation::ConnectionPool, feature_category: :redis
   subject(:checkout_pool) { pool.checkout }
 
   describe '.checkout' do
-    let(:size_gauge_double) { instance_double(::Prometheus::Client::Gauge) }
-
     context 'when tracking for the first time' do
       it 'initialises gauges' do
         expect(::Gitlab::Metrics).to receive(:gauge).with(*size_gauge_args).and_call_original

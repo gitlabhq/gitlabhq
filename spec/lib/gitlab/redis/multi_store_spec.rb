@@ -1261,8 +1261,8 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           multi_store.with_borrowed_connection do
             multi_store.ping
 
-            expect(multi_store.primary_store).not_to eq(nil)
-            expect(multi_store.secondary_store).not_to eq(nil)
+            expect(multi_store.primary_store).not_to be_nil
+            expect(multi_store.secondary_store).not_to be_nil
             expect(multi_store.primary_store).to be_instance_of(Redis::Store)
             expect(multi_store.secondary_store).to be_instance_of(Redis::Store)
           end

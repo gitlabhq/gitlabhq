@@ -20,8 +20,8 @@ RSpec.describe Gitlab::Graphql::TypeNameDeprecations do
 
   describe '.deprecated?' do
     it 'returns a boolean to signal if model name has a deprecation', :aggregate_failures do
-      expect(described_class.deprecated?('Foo::Model')).to eq(true)
-      expect(described_class.deprecated?('Qux::Model')).to eq(false)
+      expect(described_class.deprecated?('Foo::Model')).to be(true)
+      expect(described_class.deprecated?('Qux::Model')).to be(false)
     end
   end
 

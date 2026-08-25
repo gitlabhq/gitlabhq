@@ -358,6 +358,314 @@ done <"$PKG_METADATA_DOWNLOADS_OUTPUT_FILE"
 echo "All objects saved to $PKG_METADATA_DIR"
 ```
 
+### Download GitLab malware advisories
+
+{{< details >}}
+
+- Tier: Ultimate
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/20876) in GitLab 19.3 [with flags](../../administration/feature_flags/_index.md) named `sync_malware_advisories` and `ingest_malware_advisories`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249740) in GitLab 19.3.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+> Besides Ultimate, this feature is available to Premium customers with the dependency firewall add-on.
+
+[GitLab malware advisories](../../user/application_security/gitlab_advisory_database/_index.md#gitlab-malware-advisories) cover known malicious packages found in package registries.
+Unlike the license and advisory exports, they are distributed by an authenticated GitLab service, so an offline instance cannot download them itself.
+Instead, you download them on a machine with internet access and copy them to the offline instance.
+The download script exchanges your license key for a token that is valid for three days.
+That machine needs a copy of your license file, but does not need access to the offline instance.
+
+Prerequisites:
+
+- Administrator access.
+- An offline license. A legacy license file does not work: the token request fails with `Invalid cloud license` and the script stops. The **Admin** area dashboard shows your license type under **License overview**.
+- On the machine with internet access, cURL, jq 1.6 or later, and outbound access to `customers.gitlab.com`, `pmdb-dist-svc.runway.gitlab.net`, and `storage.googleapis.com`. The distribution service is on the `gitlab.net` domain, so an allowlist limited to `gitlab.com` cannot reach it.
+- On the offline instance, rsync.
+
+To get an offline license, you must receive an [opt-out exemption of cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#offline-cloud-licensing), which requires approval.
+For more details, contact your GitLab sales representative.
+If you already have an offline license, you can download the file again from the [Customers Portal](https://customers.gitlab.com).
+
+These steps apply to Linux package installations.
+In Kubernetes installations the advisories must be on a volume that the Sidekiq pods read, which is tracked in [issue 561085](https://gitlab.com/gitlab-org/gitlab/-/issues/561085).
+
+> [!warning]
+> In Docker installations the Rails directory is not on a mounted volume.
+> Bind mount `vendor/package_metadata` before you copy the advisories, or they are lost when you upgrade the container.
+
+The following is an example of how the advisories can be downloaded using cURL and jq.
+
+```shell
+#!/bin/bash
+
+set -euo pipefail
+
+CDOT_URL="${CDOT_URL:-https://customers.gitlab.com}"
+PDS_URL="${PDS_URL:-https://pmdb-dist-svc.runway.gitlab.net}"
+
+if [ $# -lt 4 ]; then
+  echo "Usage: download_malware_advisories.sh <license_file> <gitlab_version> <output_dir> <registry>..."
+  echo "Pass the package registries to download, or 'all' for every supported registry."
+  exit 1
+fi
+
+LICENSE_FILE=$1
+GITLAB_VERSION=$2
+OUTPUT_DIR=$3
+shift 3
+REQUESTED_REGISTRIES="$*"
+
+if [ -z "$OUTPUT_DIR" ]; then
+  echo "output_dir must not be empty"
+  exit 1
+fi
+
+if [ ! -r "$LICENSE_FILE" ]; then
+  echo "Cannot read $LICENSE_FILE"
+  exit 1
+fi
+
+REQUEST_FILE="$(mktemp)"
+RESPONSE_FILE="$(mktemp)"
+SHARDS_FILE="$(mktemp)"
+HEADER_FILE="$(mktemp)"
+trap 'rm -f "$REQUEST_FILE" "$RESPONSE_FILE" "$SHARDS_FILE" "$HEADER_FILE"' EXIT
+chmod 600 "$HEADER_FILE"
+
+# Exchange the license key for a Cloud Connector token.
+GRAPHQL_QUERY='query($licenseKey: String!, $gitlabVersion: String!) {
+  cloudConnectorAccess(licenseKey: $licenseKey, gitlabVersion: $gitlabVersion) {
+    serviceToken { token }
+  }
+}'
+
+jq --null-input --arg query "$GRAPHQL_QUERY" --rawfile licenseKey "$LICENSE_FILE" \
+  --arg gitlabVersion "$GITLAB_VERSION" \
+  '{query: $query, variables: {licenseKey: $licenseKey, gitlabVersion: $gitlabVersion}}' >"$REQUEST_FILE"
+
+HTTP_STATUS="$(curl --silent --show-error --request POST "$CDOT_URL/graphql" \
+  --header 'Content-Type: application/json' --data @"$REQUEST_FILE" \
+  --output "$RESPONSE_FILE" --write-out '%{http_code}')"
+
+if [ "$HTTP_STATUS" != "200" ]; then
+  echo "Token request to $CDOT_URL failed with HTTP $HTTP_STATUS"
+  head -c 500 "$RESPONSE_FILE"
+  exit 1
+fi
+
+TOKEN="$(jq --raw-output '.data.cloudConnectorAccess.serviceToken.token // empty' "$RESPONSE_FILE")"
+
+if [ -z "$TOKEN" ]; then
+  echo "No token in the response from $CDOT_URL"
+  jq --raw-output '.errors[]?.message // empty' "$RESPONSE_FILE"
+  exit 1
+fi
+
+# The distribution service requires X-Gitlab-Instance-Id to equal the token's
+# subject claim and X-Gitlab-Realm to equal its realm claim. Both are in the
+# payload, which is the second dot-separated segment of the token.
+CLAIMS="$(printf '%s' "$TOKEN" |
+  jq --raw-input 'split(".")[1] | gsub("-"; "+") | gsub("_"; "/") | @base64d | fromjson')"
+
+INSTANCE_ID="$(jq --raw-output '.sub // empty' <<<"$CLAIMS")"
+REALM="$(jq --raw-output '.gitlab_realm // empty' <<<"$CLAIMS")"
+
+if [ -z "$INSTANCE_ID" ] || [ -z "$REALM" ]; then
+  echo "The token is missing its subject or realm claim"
+  exit 1
+fi
+
+# Pass the headers through a file so the token never appears in a process
+# list. It is readable there by any local user for the download's duration.
+{
+  printf 'header = "Authorization: Bearer %s"\n' "$TOKEN"
+  printf 'header = "X-Gitlab-Instance-Id: %s"\n' "$INSTANCE_ID"
+  printf 'header = "X-Gitlab-Realm: %s"\n' "$REALM"
+} >"$HEADER_FILE"
+
+# Writes the response body to $2 and returns the HTTP status.
+advisories_request() {
+  curl --silent --show-error --config "$HEADER_FILE" \
+    --output "$2" --write-out '%{http_code}' "$1"
+}
+
+HTTP_STATUS="$(advisories_request "$PDS_URL/v1/malware/advisories/supported" "$RESPONSE_FILE")"
+
+if [ "$HTTP_STATUS" != "200" ]; then
+  echo "Request for the supported package registries failed with HTTP $HTTP_STATUS"
+  head -c 500 "$RESPONSE_FILE"
+  exit 1
+fi
+
+SUPPORTED="$(jq --raw-output '.registries[]' "$RESPONSE_FILE")"
+SKIPPED=""
+
+if [ -z "$SUPPORTED" ]; then
+  echo "No package registries are available"
+  exit 1
+fi
+
+echo "Available package registries: $(echo "$SUPPORTED" | tr '\n' ' ')"
+
+# Disable filename expansion so a registry name is never treated as a glob.
+set -f
+
+if [ "$REQUESTED_REGISTRIES" = "all" ]; then
+  REGISTRIES="$SUPPORTED"
+else
+  REGISTRIES="$REQUESTED_REGISTRIES"
+
+  for REGISTRY in $REGISTRIES; do
+    if ! grep --quiet --fixed-strings --line-regexp "$REGISTRY" <<<"$SUPPORTED"; then
+      echo "$REGISTRY is not a supported package registry"
+      exit 1
+    fi
+  done
+fi
+
+for REGISTRY in $REGISTRIES; do
+  HTTP_STATUS="$(advisories_request "$PDS_URL/v1/malware/advisories/all?purl_type=$REGISTRY" "$RESPONSE_FILE")"
+
+  # A pending snapshot is the only skippable outcome. Every other 503 is
+  # transient, and treating it as "no data" would delete a registry that the
+  # instance already has.
+  if [ "$HTTP_STATUS" = "503" ]; then
+    # A 503 from in front of the service has no JSON body, so keep the reason
+    # empty rather than letting jq abort the script.
+    REASON="$(jq --raw-output '.reason // empty' "$RESPONSE_FILE" 2>/dev/null || true)"
+
+    if [ "$REASON" = "snapshot_not_yet_published" ]; then
+      echo "Skipping $REGISTRY, no snapshot is published yet"
+      SKIPPED="$SKIPPED $REGISTRY"
+      continue
+    fi
+
+    echo "Request for $REGISTRY failed with HTTP 503, try again later ($REASON)"
+    exit 1
+  fi
+
+  if [ "$HTTP_STATUS" != "200" ]; then
+    echo "Request for $REGISTRY failed with HTTP $HTTP_STATUS"
+    head -c 500 "$RESPONSE_FILE"
+    exit 1
+  fi
+
+  UNTIL="$(jq --raw-output '.until // empty' "$RESPONSE_FILE")"
+
+  if [ -z "$UNTIL" ]; then
+    echo "The response for $REGISTRY has no snapshot timestamp"
+    exit 1
+  fi
+  DATASET_DIR="$OUTPUT_DIR/v3/$REGISTRY/full_dataset"
+
+  # Skip the download when this snapshot is already on disk. Every archive in a
+  # snapshot shares one `until`, so an unchanged value means no archive changed.
+  if [ -r "$DATASET_DIR/checkpoint.json" ] &&
+    [ "$(jq --raw-output '.until // empty' "$DATASET_DIR/checkpoint.json" 2>/dev/null)" = "$UNTIL" ]; then
+    echo "Skipping $REGISTRY, snapshot $UNTIL is already downloaded"
+    continue
+  fi
+
+  # Remove any previous snapshot. GitLab reads every archive in this directory,
+  # so archives left over from an earlier snapshot would be imported alongside
+  # the new ones, restoring advisories that were withdrawn since.
+  rm -rf "$DATASET_DIR"
+  mkdir -p "$DATASET_DIR"
+
+  jq --raw-output '.shards[] | [.shard, .signed_url] | @tsv' "$RESPONSE_FILE" >"$SHARDS_FILE"
+
+  while IFS=$'\t' read -r SHARD URL; do
+    echo "Downloading $REGISTRY archive $SHARD"
+    curl --fail --silent --show-error --location --output "$DATASET_DIR/$SHARD.tar.zst.part" "$URL"
+    mv "$DATASET_DIR/$SHARD.tar.zst.part" "$DATASET_DIR/$SHARD.tar.zst"
+  done <"$SHARDS_FILE"
+
+  # Write the checkpoint last. GitLab ignores a directory that has no
+  # checkpoint, so an interrupted download is never imported as a snapshot.
+  jq --null-input --argjson until "$UNTIL" '{until: $until}' >"$DATASET_DIR/checkpoint.json"
+done
+
+set +f
+
+if [ -n "$SKIPPED" ]; then
+  echo "Warning: no snapshot is published yet for:$SKIPPED"
+  echo "The downloaded registries are complete and safe to copy. Run the script again later to pick up the rest."
+fi
+
+echo "Advisories saved to $OUTPUT_DIR"
+```
+
+To download the malware advisories:
+
+1. On the offline instance, find the GitLab version.
+
+   ```shell
+   sudo gitlab-rails runner 'puts Gitlab::VERSION'
+   ```
+
+1. On the machine with internet access, save the preceding script as `download_malware_advisories.sh` and make it executable.
+
+   ```shell
+   chmod +x download_malware_advisories.sh
+   ```
+
+1. Run the script with your license file, the GitLab version from the first step, a directory to write to, and the package registries to download.
+   Pass the registries whose types are enabled in [admin settings](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync), or `all` for every supported registry.
+
+   ```shell
+   ./download_malware_advisories.sh ./Gitlab.gitlab-license 19.3.0-ee ./malware_advisories npm pypi
+   ```
+
+   The script creates one directory per package registry.
+
+   ```plaintext
+   malware_advisories/
+   └── v3/
+       └── npm/
+           └── full_dataset/
+               ├── 00.tar.zst
+               ├── 01.tar.zst
+               ├── ...
+               ├── 3f.tar.zst
+               └── checkpoint.json
+   ```
+
+   The number of archives is set per registry and read from `checkpoint.json`, up to a maximum of 64 named `00` through `3f`.
+   Some of them contain no advisories, which is expected.
+
+1. Transfer the output directory to the offline instance.
+
+1. On the offline instance, find the root of the GitLab Rails directory, then copy the advisories into place and update the permissions.
+
+   ```shell
+   export GITLAB_RAILS_ROOT_DIR="$(sudo gitlab-rails runner 'puts Rails.root.to_s')"
+   echo $GITLAB_RAILS_ROOT_DIR
+   sudo mkdir -p "$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/malware_advisories"
+   sudo rsync --recursive --delete ./malware_advisories/ "$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/malware_advisories/"
+   sudo chmod -R 755 "$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/"
+   ```
+
+The `PackageMetadata::MalwareAdvisoriesSyncWorker` cron job runs every five minutes and imports the advisories on its next run.
+On GitLab Self-Managed the job adds an offset of up to five minutes to spread load across instances, so the import can start up to ten minutes after you copy the files.
+Only the package registry types enabled in [admin settings](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) are imported, so the instance can hold data for registries it never imports.
+
+Repeat this procedure to update the advisories.
+Each run downloads a complete snapshot rather than a set of changes.
+`rsync --delete` is required so that archives from an earlier snapshot are not imported alongside the new ones.
+Reuse the same output directory on every run: `rsync --delete` removes any registry that is missing from it, including registries that were skipped because their snapshot is not published yet.
+
+When the snapshot on the service matches the one already in the output directory, the script skips the download for that registry.
+Running it on a schedule therefore costs one small request per registry until a new snapshot is published.
+
 ### Automatic synchronization
 
 Your GitLab instance is synchronized [regularly](https://gitlab.com/gitlab-org/gitlab/-/blob/63a187d47f6da353ba4514650bbbbeb99c356325/config/initializers/1_settings.rb#L840-842) with the contents of the `package_metadata` directory.
@@ -440,3 +748,73 @@ The [`sidekiq`](../../administration/logs/_index.md#sidekiq-logs) logs will show
 
 - For licenses: `PackageMetadata::LicensesSyncWorker`
 - For advisories: `PackageMetadata::AdvisoriesSyncWorker`
+
+#### Missing malware advisory data
+
+If malware advisories are missing after you copy them to the instance, the sync job either did not find the directory or found nothing new to import.
+Both outcomes are silent, so work through the following checks rather than looking for an error.
+
+##### Confirm enabled package registry types for malware advisories
+
+Only the package registry types enabled in [admin settings](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) are imported.
+A registry you copied but did not enable is never read, and nothing is logged.
+
+##### Confirm GitLab detects the offline directory
+
+GitLab reads malware advisories from disk when the vendor directory exists, and from the distribution service when it does not.
+You can check if GitLab recognizes the file path in the [Rails console](../../administration/operations/rails_console.md):
+
+- `sudo gitlab-rails runner "puts File.exist?(PackageMetadata::SyncConfiguration::Location::MALWARE_ADVISORIES_PATH)"`
+
+If the command returns `false`, GitLab is not able to find the expected path.
+All folders and files in the path must have `755` permissions.
+In Kubernetes installations, run the command in a pod that mounts the same volume as Sidekiq, otherwise the result does not reflect what the sync job reads.
+
+##### Confirm the malware advisory file structure
+
+Directories are named for the package registry identifier rather than the package type.
+These identifiers are not always the same: `gem` advisories are stored under `rubygem`, `golang` under `go`, and `composer` under `packagist`.
+A directory named for the package type is ignored, and no error is logged.
+
+Each `full_dataset` directory must also contain a `checkpoint.json`.
+GitLab ignores a directory that has no checkpoint, which prevents an interrupted download from being imported.
+
+##### Verify malware advisory data
+
+After a sync job is successfully run, malware advisories should be populated.
+You can confirm by counting the advisories in the [Rails console](../../administration/operations/rails_console.md):
+
+- `sudo gitlab-rails runner "puts \"Malware advisory model has #{PackageMetadata::MalwareAdvisory.count} advisories\""`
+
+Checkpoint data should also exist for the package registries you copied:
+
+- `sudo gitlab-rails runner "puts PackageMetadata::Checkpoint.where(data_type: 'malware_advisories').pluck(:purl_type, :sequence).to_h"`
+
+A snapshot is imported only if it is newer than the recorded checkpoint, so copying the same snapshot a second time has no effect.
+
+##### Malware advisory logs
+
+Events associated with the malware advisory sync are logged in
+[`application_json.log`](../../administration/logs/_index.md#application_jsonlog) with `INFO` severity.
+The class is `PackageMetadata::MalwareAdvisorySyncService` for the sync itself, and
+`PackageMetadata::MalwareAdvisoryIngestionService` for the import.
+The sync runs in Sidekiq, so in Kubernetes installations these events are on the Sidekiq pods under the
+`subcomponent="application_json"` key, not the Webservice pods.
+
+The [`sidekiq`](../../administration/logs/_index.md#sidekiq-logs) logs show any errors that occurred, logged for the
+`PackageMetadata::MalwareAdvisoriesSyncWorker` class.
+
+Each registry logs a `started` and a `completed` event per run.
+A `completed` event with `files_ingested: 0` means the run found nothing to import.
+The `storage_type` field on that event tells you which case you are in: `offline` means GitLab read the vendor directory, and `pds` means it did not find the directory and tried the distribution service instead.
+On Kubernetes this field is more reliable than the preceding `File.exist?` check, because it comes from the process that runs the sync.
+
+If no `PackageMetadata::MalwareAdvisorySyncService` events appear at all, look for a `PackageMetadata::MalwareAdvisoriesSyncWorker` event with `DEBUG` severity.
+It names the reason the run did not start, such as a disabled `sync_malware_advisories` feature flag.
+
+A `Malware advisory upsert skipped: ingest_malware_advisories disabled` event means the `ingest_malware_advisories` feature flag is off.
+The sync reads the files on every run but writes nothing, and the checkpoint does not advance.
+
+A first import of a large registry can run for several minutes, and the cron fires again every five minutes while it does.
+Each overlapping run logs `Cannot obtain an exclusive lease. There must be another instance already in execution.` to `application_json.log` with `ERROR` severity and then exits.
+The lease is what stops two syncs running at once, so these events are expected during a long import and do not mean the sync failed.

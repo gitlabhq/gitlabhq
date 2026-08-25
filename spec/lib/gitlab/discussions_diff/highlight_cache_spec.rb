@@ -85,7 +85,7 @@ RSpec.describe Gitlab::DiscussionsDiff::HighlightCache, :clean_gitlab_redis_cach
 
       expect(found.size).to eq(2)
 
-      expect(found.first).to eq(nil)
+      expect(found.first).to be_nil
       expect(found.second.size).to eq(2)
       expect(found.second).to all(be_a(Gitlab::Diff::Line))
     end

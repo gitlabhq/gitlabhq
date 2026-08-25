@@ -62,7 +62,6 @@ Performance/MapCompact:
     - 'haml_lint/linter/no_plain_nodes.rb'
     - 'lib/api/entities/feature.rb'
     - 'lib/api/helpers/common_helpers.rb'
-    - 'lib/atlassian/jira_connect/client.rb'
     - 'lib/atlassian/jira_connect/serializers/feature_flag_entity.rb'
     - 'lib/banzai/filter/references/design_reference_filter.rb'
     - 'lib/banzai/reference_parser/issuable_parser.rb'

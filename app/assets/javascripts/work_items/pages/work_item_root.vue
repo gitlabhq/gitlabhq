@@ -77,7 +77,7 @@ export default {
     <work-item-detail
       :work-item-full-path="rootPageFullPath"
       :work-item-iid="iid"
-      @deleteWorkItem="deleteWorkItem($event)"
+      @delete-work-item="deleteWorkItem($event)"
     />
   </div>
 </template>

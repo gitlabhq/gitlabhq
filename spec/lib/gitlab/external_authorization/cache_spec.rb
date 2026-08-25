@@ -29,7 +29,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Cache, :clean_gitlab_redis_cache d
 
         access, reason, refreshed_at = cache.load
 
-        expect(access).to eq(false)
+        expect(access).to be(false)
         expect(reason).to eq('Access denied for now')
         expect(refreshed_at).to be_within(1.second).of(Time.zone.now)
       end

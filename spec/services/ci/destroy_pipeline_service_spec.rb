@@ -149,6 +149,20 @@ RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integ
         expect { response }.to raise_error(Gitlab::Access::AccessDeniedError)
       end
     end
+
+    context 'when user is an instance administrator' do
+      let(:user) { create(:admin) }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it_behaves_like 'pipeline destruction service'
+      end
+
+      context 'when admin mode is disabled' do
+        it 'raises an exception' do
+          expect { response }.to raise_error(Gitlab::Access::AccessDeniedError)
+        end
+      end
+    end
   end
 
   describe '#unsafe_execute' do

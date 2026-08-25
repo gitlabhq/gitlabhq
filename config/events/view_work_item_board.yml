@@ -12,7 +12,7 @@ additional_properties:
     description: The attribute the board is grouped by, currently only status. Note this differs from other work_item_* events, where label carries the work item type instead of a grouping attribute.
 product_group: planning_views
 product_categories:
-  - portfolio_management
+  - planning_views
 milestone: '19.4'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251240
 tiers:

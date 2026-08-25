@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection d
       let(:prev_cursor) { nil }
 
       it 'returns nil' do
-        expect(connection.start_cursor).to eq(nil)
+        expect(connection.start_cursor).to be_nil
       end
     end
   end
@@ -75,21 +75,21 @@ RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection d
       let(:next_cursor) { nil }
 
       it 'returns nil' do
-        expect(connection.end_cursor).to eq(nil)
+        expect(connection.end_cursor).to be_nil
       end
     end
   end
 
   describe '#has_next_page' do
     it 'returns true when there is a end cursor' do
-      expect(connection.has_next_page).to eq(true)
+      expect(connection.has_next_page).to be(true)
     end
 
     context 'there is no end cursor' do
       let(:next_cursor) { nil }
 
       it 'returns false' do
-        expect(connection.has_next_page).to eq(false)
+        expect(connection.has_next_page).to be(false)
       end
     end
 
@@ -98,7 +98,7 @@ RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection d
         let(:has_next_page_value) { true }
 
         it 'returns true regardless of cursor presence' do
-          expect(connection.has_next_page).to eq(true)
+          expect(connection.has_next_page).to be(true)
         end
       end
 
@@ -106,7 +106,7 @@ RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection d
         let(:has_next_page_value) { false }
 
         it 'returns false even when cursor is present' do
-          expect(connection.has_next_page).to eq(false)
+          expect(connection.has_next_page).to be(false)
           expect(connection.end_cursor).to eq(next_cursor)
         end
       end
@@ -115,7 +115,7 @@ RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection d
         let(:has_next_page_value) { nil }
 
         it 'falls back to cursor presence check' do
-          expect(connection.has_next_page).to eq(true)
+          expect(connection.has_next_page).to be(true)
         end
       end
     end
@@ -123,14 +123,14 @@ RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection d
 
   describe '#has_previous_page' do
     it 'returns true when there is a start cursor' do
-      expect(connection.has_previous_page).to eq(true)
+      expect(connection.has_previous_page).to be(true)
     end
 
     context 'there is no start cursor' do
       let(:prev_cursor) { nil }
 
       it 'returns false' do
-        expect(connection.has_previous_page).to eq(false)
+        expect(connection.has_previous_page).to be(false)
       end
     end
 
@@ -139,7 +139,7 @@ RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection d
         let(:has_previous_page_value) { true }
 
         it 'returns true regardless of cursor presence' do
-          expect(connection.has_previous_page).to eq(true)
+          expect(connection.has_previous_page).to be(true)
         end
       end
 
@@ -147,7 +147,7 @@ RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection d
         let(:has_previous_page_value) { false }
 
         it 'returns false even when cursor is present' do
-          expect(connection.has_previous_page).to eq(false)
+          expect(connection.has_previous_page).to be(false)
           expect(connection.start_cursor).to eq(prev_cursor)
         end
       end
@@ -156,7 +156,7 @@ RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection d
         let(:has_previous_page_value) { nil }
 
         it 'falls back to cursor presence check' do
-          expect(connection.has_previous_page).to eq(true)
+          expect(connection.has_previous_page).to be(true)
         end
       end
     end

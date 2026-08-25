@@ -148,7 +148,7 @@ RSpec.describe Gitlab::QueryLimiting::Transaction, feature_category: :database d
     it 'returns true in a test environment' do
       transaction = described_class.new
 
-      expect(transaction.raise_error?).to eq(true)
+      expect(transaction.raise_error?).to be(true)
     end
 
     it 'returns false in a production environment' do
@@ -156,7 +156,7 @@ RSpec.describe Gitlab::QueryLimiting::Transaction, feature_category: :database d
 
       stub_rails_env('production')
 
-      expect(transaction.raise_error?).to eq(false)
+      expect(transaction.raise_error?).to be(false)
     end
   end
 
@@ -164,14 +164,14 @@ RSpec.describe Gitlab::QueryLimiting::Transaction, feature_category: :database d
     it 'returns false when the threshold is not exceeded' do
       transaction = described_class.new
 
-      expect(transaction.threshold_exceeded?).to eq(false)
+      expect(transaction.threshold_exceeded?).to be(false)
     end
 
     it 'returns true when the threshold is exceeded' do
       transaction = described_class.new
       transaction.count = described_class.default_threshold + 1
 
-      expect(transaction.threshold_exceeded?).to eq(true)
+      expect(transaction.threshold_exceeded?).to be(true)
     end
   end
 

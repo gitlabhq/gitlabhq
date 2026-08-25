@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Harbor::Query do
         let(:params) { { page: 1 } }
 
         it 'initialize successfully' do
-          expect(query.valid?).to eq(true)
+          expect(query.valid?).to be(true)
         end
       end
 
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Harbor::Query do
         let(:params) { { page: -1 } }
 
         it 'initialize failed' do
-          expect(query.valid?).to eq(false)
+          expect(query.valid?).to be(false)
         end
       end
     end
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Harbor::Query do
         let(:params) { { limit: 1 } }
 
         it 'initialize successfully' do
-          expect(query.valid?).to eq(true)
+          expect(query.valid?).to be(true)
         end
       end
 
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Harbor::Query do
           let(:params) { { limit: -1 } }
 
           it 'initialize failed' do
-            expect(query.valid?).to eq(false)
+            expect(query.valid?).to be(false)
           end
         end
 
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Harbor::Query do
           let(:params) { { limit: 26 } }
 
           it 'initialize failed' do
-            expect(query.valid?).to eq(false)
+            expect(query.valid?).to be(false)
           end
         end
       end
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Harbor::Query do
         let(:params) { { repository_id: 'test' } }
 
         it 'initialize successfully' do
-          expect(query.valid?).to eq(true)
+          expect(query.valid?).to be(true)
         end
       end
 
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Harbor::Query do
         let(:params) { { repository_id: 'test@@' } }
 
         it 'initialize failed' do
-          expect(query.valid?).to eq(false)
+          expect(query.valid?).to be(false)
         end
       end
     end
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::Harbor::Query do
         let(:params) { { artifact_id: 'test' } }
 
         it 'initialize successfully' do
-          expect(query.valid?).to eq(true)
+          expect(query.valid?).to be(true)
         end
       end
 
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Harbor::Query do
         let(:params) { { artifact_id: 'test@@' } }
 
         it 'initialize failed' do
-          expect(query.valid?).to eq(false)
+          expect(query.valid?).to be(false)
         end
       end
     end
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::Harbor::Query do
         let(:params) { { sort: 'creation_time desc' } }
 
         it 'initialize successfully' do
-          expect(query.valid?).to eq(true)
+          expect(query.valid?).to be(true)
         end
       end
 
@@ -107,7 +107,7 @@ RSpec.describe Gitlab::Harbor::Query do
         let(:params) { { sort: 'blabla desc' } }
 
         it 'initialize failed' do
-          expect(query.valid?).to eq(false)
+          expect(query.valid?).to be(false)
         end
       end
     end
@@ -163,7 +163,7 @@ RSpec.describe Gitlab::Harbor::Query do
       let(:params) { { search: 'name=bu', sort: 'blabla desc', limit: 20, page: 3 } }
 
       it 'ignores invalid sort params' do
-        expect(query.valid?).to eq(false)
+        expect(query.valid?).to be(false)
       end
     end
 
@@ -234,7 +234,7 @@ RSpec.describe Gitlab::Harbor::Query do
       let(:params) { { search: 'tags=1', repository_id: 'jihuprivate', sort: 'blabla desc', limit: 20, page: 3 } }
 
       it 'ignores invalid sort params' do
-        expect(query.valid?).to eq(false)
+        expect(query.valid?).to be(false)
       end
     end
 
@@ -327,7 +327,7 @@ RSpec.describe Gitlab::Harbor::Query do
       let(:params) { { repository_id: 'jihuprivate', artifact_id: 'test', sort: 'blabla desc', limit: 20, page: 3 } }
 
       it 'ignores invalid sort params' do
-        expect(query.valid?).to eq(false)
+        expect(query.valid?).to be(false)
       end
     end
 

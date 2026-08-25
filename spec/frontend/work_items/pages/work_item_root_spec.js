@@ -58,14 +58,14 @@ describe('Work items root component', () => {
     });
   });
 
-  it('deletes work item when deleteWorkItem event emitted', async () => {
+  it('deletes work item when delete-work-item event emitted', async () => {
     const deleteWorkItemHandler = jest.fn().mockResolvedValue(deleteWorkItemResponse);
 
     createComponent({
       deleteWorkItemHandler,
     });
 
-    findWorkItemDetail().vm.$emit('deleteWorkItem', { workItemType: 'task', workItemId: '1' });
+    findWorkItemDetail().vm.$emit('delete-work-item', { workItemType: 'task', workItemId: '1' });
 
     await waitForPromises();
 
@@ -85,7 +85,7 @@ describe('Work items root component', () => {
       deleteWorkItemHandler,
     });
 
-    findWorkItemDetail().vm.$emit('deleteWorkItem', { workItemType: 'task', workItemId: '1' });
+    findWorkItemDetail().vm.$emit('delete-work-item', { workItemType: 'task', workItemId: '1' });
 
     await waitForPromises();
 

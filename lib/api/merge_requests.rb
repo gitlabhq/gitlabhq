@@ -418,7 +418,8 @@ module API
         use :optional_params
       end
       route_setting :mcp, tool_name: :create_merge_request, params: Helpers::MergeRequestsHelpers.create_merge_request_mcp_params,
-        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project"
+        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project",
+        aggregators: [::Mcp::Tools::MergeRequests::SaveMergeRequestService]
       route_setting :authorization, permissions: :create_merge_request, boundary_type: :project
       post ":id/merge_requests", feature_category: :code_review_workflow, urgency: :low do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20770')
@@ -817,6 +818,9 @@ module API
         use :optional_params
         at_least_one_of(*::API::MergeRequests.update_params_at_least_one_of)
       end
+      route_setting :mcp, tool_name: :update_merge_request, params: Helpers::MergeRequestsHelpers.update_merge_request_mcp_params,
+        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "merge request",
+        aggregators: [::Mcp::Tools::MergeRequests::SaveMergeRequestService]
       route_setting :authorization, permissions: :update_merge_request, boundary_type: :project
       put ':id/merge_requests/:merge_request_iid', feature_category: :code_review_workflow, urgency: :low do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20772')

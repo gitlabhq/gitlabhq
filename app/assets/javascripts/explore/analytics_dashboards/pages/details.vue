@@ -1,16 +1,18 @@
 <script>
 import { computed } from 'vue';
-import { GlDashboardLayout, GlEmptyState, GlTabs, GlTab } from '@gitlab/ui';
+import { GlButton, GlDashboardLayout, GlEmptyState, GlTabs, GlTab } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DashboardFilters from '../components/dashboard_filters.vue';
 import DashboardLoader from '../components/dashboard_loader.vue';
+import { DATE_RANGE_OPTION_LAST_30_DAYS } from '../components/constants';
 
 export default {
   name: 'ExploreAnalyticsDashboardDetails',
   components: {
+    GlButton,
     GlDashboardLayout,
     GlEmptyState,
     GlTabs,
@@ -25,6 +27,8 @@ export default {
     noNamespaceDescription: s__(
       'AnalyticsDashboards|Choose a group or project above to see this dashboard.',
     ),
+    reset: s__('AnalyticsDashboards|Reset'),
+    resetLabel: s__('AnalyticsDashboards|Reset filters'),
   },
   // Provided as computed refs — options-API inject captures the value once
   // at setup, so plain values/getters won't propagate filter changes to panels.
@@ -51,17 +55,32 @@ export default {
       selectedGroup: null,
       selectedProject: null,
       activeViewIndex: 0,
+      filtersKey: 0,
+      dashboardFilterConfig: null,
     };
   },
   computed: {
     hasNamespace() {
       return Boolean(this.selectedGroup || this.selectedProject);
     },
+    // A selected namespace always counts. The date range always has a value,
+    // so it only counts when it differs from the configured default.
+    hasActiveFilters() {
+      const { dateRangeOption } = this.filters;
+      const defaultDateRange =
+        this.dashboardFilterConfig?.dateRange?.defaultOption ?? DATE_RANGE_OPTION_LAST_30_DAYS;
+
+      return Boolean(
+        this.hasNamespace || (dateRangeOption && dateRangeOption !== defaultDateRange),
+      );
+    },
   },
   methods: {
     // Set the active tab from the `view` query param on load. Default to the
     // first view if the query param wasn't included, or has an invalid index.
     onDashboardLoaded({ config }) {
+      this.dashboardFilterConfig = config.filters;
+
       const viewParam = getParameterByName('view');
       const viewIndex = (config.views ?? []).findIndex((_, index) => `${index}` === viewParam);
 
@@ -112,6 +131,13 @@ export default {
         projects: [],
       };
     },
+    resetFilters() {
+      this.filters = {};
+      this.selectedGroup = null;
+      this.selectedProject = null;
+      // The controls own their selection, so remount them to clear it.
+      this.filtersKey += 1;
+    },
   },
 };
 </script>
@@ -148,12 +174,25 @@ export default {
             <gl-tab v-for="(view, index) in config.views" :key="index" :title="view.title" />
           </gl-tabs>
           <dashboard-filters
+            :key="filtersKey"
             :group-namespace="selectedGroup?.fullPath || ''"
             :dashboard-filters="config.filters"
             @set-date-range="setDateRangeFilter"
             @set-projects="setProjectsFilter"
             @set-groups="setGroupsFilter"
           />
+          <!-- Outside the filter bar so the remount above cannot destroy it mid-click. -->
+          <gl-button
+            category="secondary"
+            icon="retry"
+            class="gl-mb-5 gl-basis-full md:gl-basis-auto md:gl-self-end"
+            :aria-label="$options.i18n.resetLabel"
+            :disabled="!hasActiveFilters"
+            data-testid="dashboard-filters-reset"
+            @click="resetFilters"
+          >
+            {{ $options.i18n.reset }}
+          </gl-button>
         </template>
 
         <template #panel="{ panel }">

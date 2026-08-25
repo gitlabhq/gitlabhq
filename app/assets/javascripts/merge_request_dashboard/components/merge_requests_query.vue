@@ -200,10 +200,10 @@ export default normalizeRender({
     },
   },
   mounted() {
-    eventHub.$on('refetch.mergeRequests', this.refetchMergeRequests);
+    eventHub.$on('refetch-merge-requests', this.refetchMergeRequests);
   },
   beforeDestroy() {
-    eventHub.$off('refetch.mergeRequests', this.refetchMergeRequests);
+    eventHub.$off('refetch-merge-requests', this.refetchMergeRequests);
   },
   methods: {
     refetchMergeRequests(type) {

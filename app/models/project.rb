@@ -3679,8 +3679,12 @@ class Project < ApplicationRecord
     group&.allow_iframes_in_markdown_feature_flag_enabled? || Feature.enabled?(:allow_iframes_in_markdown, self, type: :wip)
   end
 
-  def sscs_malware_detection_feature_flag_enabled?
-    group&.sscs_malware_detection_feature_flag_enabled? || Feature.enabled?(:sscs_malware_detection, type: :wip)
+  def vulnerability_malware_detection_feature_flag_enabled?
+    group&.vulnerability_malware_detection_feature_flag_enabled? || Feature.enabled?(:vulnerability_malware_detection, self, type: :beta)
+  end
+
+  def dependency_malware_detection_feature_flag_enabled?
+    group&.dependency_malware_detection_feature_flag_enabled? || Feature.enabled?(:dependency_malware_detection, self, type: :beta)
   end
 
   def use_work_item_url?

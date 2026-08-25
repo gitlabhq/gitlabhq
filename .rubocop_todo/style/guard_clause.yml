@@ -315,7 +315,6 @@ Style/GuardClause:
     - 'lib/gitlab/ci/config/entry/job.rb'
     - 'lib/gitlab/ci/config/entry/processable.rb'
     - 'lib/gitlab/ci/config/extendable/entry.rb'
-    - 'lib/gitlab/ci/config/external/file/base.rb'
     - 'lib/gitlab/ci/config/external/file/remote.rb'
     - 'lib/gitlab/ci/config/external/file/template.rb'
     - 'lib/gitlab/ci/parsers/coverage/documents/cobertura_document.rb'

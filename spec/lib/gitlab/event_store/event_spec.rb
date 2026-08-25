@@ -51,11 +51,11 @@ RSpec.describe Gitlab::EventStore::Event, feature_category: :service_ping do
         end
 
         it 'validates schema' do
-          expect(event_class.json_schema_valid).to eq(nil)
+          expect(event_class.json_schema_valid).to be_nil
 
           event
 
-          expect(event_class.json_schema_valid).to eq(true)
+          expect(event_class.json_schema_valid).to be(true)
         end
       end
 
@@ -92,11 +92,11 @@ RSpec.describe Gitlab::EventStore::Event, feature_category: :service_ping do
         end
 
         it 'raises an error' do
-          expect(event_class.json_schema_valid).to eq(nil)
+          expect(event_class.json_schema_valid).to be_nil
 
           expect { event }.to raise_error(Gitlab::EventStore::InvalidEvent, 'Schema for event TestEvent is invalid')
 
-          expect(event_class.json_schema_valid).to eq(false)
+          expect(event_class.json_schema_valid).to be(false)
         end
 
         it 'does not store JSON schema on subclass' do

@@ -37,8 +37,8 @@ GitLab malware advisories (GLAM) are separate from the GLAD advisories described
 GitLab automatically synchronizes these advisories to your GitLab instance in the background.
 
 > [!note]
-> This synchronization is not available in [offline environments](../offline_deployments/_index.md).
-> Support is proposed in [issue 594758](https://gitlab.com/gitlab-org/gitlab/-/work_items/594758).
+> In [offline environments](../offline_deployments/_index.md), GitLab cannot synchronize these advisories automatically.
+> Instead, you [download them on a machine with internet access](../../../topics/offline/quick_start_guide.md#download-gitlab-malware-advisories) and copy them to the instance.
 
 These advisories are used by the dependency firewall rules to block malicious packages during CI/CD runs.
 

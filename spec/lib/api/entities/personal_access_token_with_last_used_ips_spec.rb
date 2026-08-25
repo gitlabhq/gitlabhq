@@ -37,5 +37,42 @@ RSpec.describe API::Entities::PersonalAccessTokenWithLastUsedIps, feature_catego
         end
       end
     end
+
+    context 'when the token has more than the stored limit of IPs' do
+      let_it_be(:token) { create(:personal_access_token, user: user) }
+
+      before do
+        7.times do |i|
+          create(:personal_access_token_last_used_ip,
+            personal_access_token: token, ip_address: "192.0.2.#{i}", created_at: i.minutes.ago
+          )
+        end
+      end
+
+      it 'exposes only the 5 most recent IPs' do
+        expect(entity_json[:last_used_ips].map(&:to_s))
+          .to match_array(%w[192.0.2.0 192.0.2.1 192.0.2.2 192.0.2.3 192.0.2.4])
+      end
+    end
+
+    context 'when the token has duplicate IPs' do
+      let_it_be(:token) { create(:personal_access_token, user: user) }
+
+      before do
+        create(:personal_access_token_last_used_ip,
+          personal_access_token: token, ip_address: '192.0.2.1', created_at: 2.minutes.ago
+        )
+        create(:personal_access_token_last_used_ip,
+          personal_access_token: token, ip_address: '192.0.2.1', created_at: 1.minute.ago
+        )
+        create(:personal_access_token_last_used_ip,
+          personal_access_token: token, ip_address: '192.0.2.2', created_at: 3.minutes.ago
+        )
+      end
+
+      it 'exposes each IP only once' do
+        expect(entity_json[:last_used_ips].map(&:to_s)).to contain_exactly('192.0.2.1', '192.0.2.2')
+      end
+    end
   end
 end

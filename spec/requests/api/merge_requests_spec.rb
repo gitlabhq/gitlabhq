@@ -3603,6 +3603,16 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let(:entity) { merge_request }
     end
 
+    describe 'mcp route setting' do
+      subject do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
+          params: { title: 'Updated title' }
+      end
+
+      it_behaves_like 'an endpoint with mcp route setting', :update_merge_request,
+        expected_params: API::Helpers::MergeRequestsHelpers.update_merge_request_mcp_params, status: :ok
+    end
+
     context 'when only assignee_ids are provided' do
       let(:params) do
         {

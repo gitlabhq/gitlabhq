@@ -1426,6 +1426,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         end
       end
     end
+
+    # The project is private, so an actor who cannot see it gets 404 rather than 403.
+    it_behaves_like 'DELETE request permissions for admin mode' do
+      let(:path) { "/projects/#{project.id}/pipelines/#{pipeline.id}" }
+      let(:success_status_code) { :no_content }
+      let(:failed_status_code) { :not_found }
+    end
   end
 
   describe 'PUT /projects/:id/pipelines/:pipeline_id/name' do

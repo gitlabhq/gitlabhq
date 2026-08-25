@@ -220,10 +220,11 @@ module MergeRequestsHelper
     }
   end
 
-  def mr_compare_form_data(_, merge_request)
+  def mr_compare_form_data(merge_request)
     {
       source_branch_url: project_new_merge_request_branch_from_path(merge_request.source_project),
-      target_branch_url: project_new_merge_request_branch_to_path(merge_request.source_project)
+      target_branch_url: project_new_merge_request_branch_to_path(merge_request.source_project),
+      target_project_full_path: merge_request.target_project.full_path
     }
   end
 

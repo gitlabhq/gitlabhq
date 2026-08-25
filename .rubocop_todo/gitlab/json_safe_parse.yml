@@ -113,7 +113,6 @@ Gitlab/JsonSafeParse:
     - 'ee/spec/helpers/ee/operations_helper_spec.rb'
     - 'ee/spec/helpers/ee/organizations/organization_helper_spec.rb'
     - 'ee/spec/helpers/ee/projects/pipeline_helper_spec.rb'
-    - 'ee/spec/helpers/ee/projects/project_members_helper_spec.rb'
     - 'ee/spec/helpers/groups/security_features_helper_spec.rb'
     - 'ee/spec/helpers/projects/learn_gitlab_helper_spec.rb'
     - 'ee/spec/helpers/projects_helper_spec.rb'

@@ -108,7 +108,7 @@ RSpec.describe Gitlab::RackAttack::Store, :clean_gitlab_redis_rate_limiting, fea
         allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
       end
 
-      it { expect(subject).to eq(nil) }
+      it { expect(subject).to be_nil }
     end
   end
 end

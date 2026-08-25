@@ -5,14 +5,6 @@ require 'fast_spec_helper'
 RSpec.describe WebIde::ExtensionMarketplaceOptIn, feature_category: :web_ide do
   using RSpec::Parameterized::TableSyntax
 
-  let(:user_class) do
-    stub_const("User", Struct.new(
-      :extensions_marketplace_opt_in_status,
-      :extensions_marketplace_opt_in_url,
-      keyword_init: true
-    ))
-  end
-
   let(:user) do
     User.new(
       extensions_marketplace_opt_in_status: opt_in_status,

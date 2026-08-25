@@ -234,7 +234,7 @@ describe('WorkItemDetailPanel', () => {
   describe('when deleting work item', () => {
     it('calls deleteWorkItemMutation', () => {
       createComponent({ open: true });
-      findWorkItem().vm.$emit('deleteWorkItem', { workItemId: '1' });
+      findWorkItem().vm.$emit('delete-work-item', { workItemId: '1' });
 
       expect(deleteWorkItemMutationHandler).toHaveBeenCalledWith({
         input: { id: '1' },
@@ -243,7 +243,7 @@ describe('WorkItemDetailPanel', () => {
 
     it('emits `work-item-deleted` event when on successful mutation', async () => {
       createComponent({ open: true });
-      findWorkItem().vm.$emit('deleteWorkItem', { workItemId: '1' });
+      findWorkItem().vm.$emit('delete-work-item', { workItemId: '1' });
 
       await waitForPromises();
 
@@ -254,7 +254,7 @@ describe('WorkItemDetailPanel', () => {
       deleteWorkItemMutationHandler.mockRejectedValue('Houston, we have a problem');
 
       createComponent({ open: true });
-      findWorkItem().vm.$emit('deleteWorkItem', { workItemId: '1' });
+      findWorkItem().vm.$emit('delete-work-item', { workItemId: '1' });
 
       await waitForPromises();
 

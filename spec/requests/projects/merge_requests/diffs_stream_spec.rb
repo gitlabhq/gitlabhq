@@ -74,6 +74,12 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
         go
       end
 
+      it 'sets a low request urgency' do
+        go
+
+        expect(response).to have_request_urgency(:low)
+      end
+
       it 'renders merge request diff file component' do
         expect_any_instance_of(::RapidDiffs::MergeRequestDiffFileComponent) do |component|
           expect(component).to receive(:render_in).and_call_original

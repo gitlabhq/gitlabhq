@@ -418,12 +418,12 @@ describe('WorkItemActions component', () => {
       },
     );
 
-    it('emits `toggleWorkItemConfidentiality` event when clicked', () => {
+    it('emits `toggle-work-item-confidentiality` event when clicked', () => {
       createComponent();
 
       findConfidentialityToggleButton().vm.$emit('action');
 
-      expect(wrapper.emitted('toggleWorkItemConfidentiality')[0]).toEqual([true]);
+      expect(wrapper.emitted('toggle-work-item-confidentiality')[0]).toEqual([true]);
     });
 
     it('does not render when canUpdateMetadata is false', () => {
@@ -472,7 +472,7 @@ describe('WorkItemActions component', () => {
 
       findModal().vm.$emit('ok');
 
-      expect(wrapper.emitted('deleteWorkItem')).toEqual([[]]);
+      expect(wrapper.emitted('delete-work-item')).toEqual([[]]);
     });
 
     it('does not render when canDelete is false', () => {
@@ -738,7 +738,7 @@ describe('WorkItemActions component', () => {
       findReportAbuseButton().vm.$emit('action');
       await nextTick();
 
-      expect(wrapper.emitted('toggleReportAbuseModal')).toEqual([[true]]);
+      expect(wrapper.emitted('toggle-report-abuse-modal')).toEqual([[true]]);
     });
   });
 
@@ -988,7 +988,7 @@ describe('WorkItemActions component', () => {
 
       findTruncationToggle().vm.$emit('action');
 
-      expect(wrapper.emitted('toggleTruncationEnabled')).toEqual([[]]);
+      expect(wrapper.emitted('toggle-truncation-enabled')).toEqual([[]]);
     });
 
     it('toggles sidebar visibility', () => {

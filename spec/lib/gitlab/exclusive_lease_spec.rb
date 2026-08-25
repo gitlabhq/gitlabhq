@@ -10,7 +10,7 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store,
     it 'cannot obtain twice before the lease has expired' do
       lease = described_class.new(unique_key, timeout: 3600)
       expect(lease.try_obtain).to be_present
-      expect(lease.try_obtain).to eq(false)
+      expect(lease.try_obtain).to be(false)
     end
 
     it 'can obtain after the lease has expired' do
@@ -153,7 +153,7 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store,
       it 'releases the held lease' do
         uuid = lease.try_obtain
         expect(uuid).to be_present
-        expect(new_lease(unique_key).try_obtain).to eq(false)
+        expect(new_lease(unique_key).try_obtain).to be(false)
 
         cancel_lease(uuid)
 
@@ -217,13 +217,13 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store,
       lease = described_class.new(unique_key, timeout: 3600)
       lease.try_obtain
 
-      expect(lease.exists?).to eq(true)
+      expect(lease.exists?).to be(true)
     end
 
     it 'returns false for a lease that does not exist' do
       lease = described_class.new(unique_key, timeout: 3600)
 
-      expect(lease.exists?).to eq(false)
+      expect(lease.exists?).to be(false)
     end
   end
 
@@ -244,7 +244,7 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store,
       lease = described_class.new('kittens', timeout: 100)
       lease.try_obtain
 
-      expect(lease.ttl <= 100).to eq(true)
+      expect(lease.ttl <= 100).to be(true)
     end
 
     it 'returns nil when the lease does not exist' do
@@ -337,7 +337,7 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store,
       lease = described_class.new(unique_key, timeout: 3600)
       lease.try_obtain
 
-      expect(lease.same_uuid?).to eq(true)
+      expect(lease.same_uuid?).to be(true)
     end
 
     it 'returns false for a lease that does not exist' do
@@ -345,7 +345,7 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store,
 
       lease = described_class.new(unique_key, timeout: 3600)
 
-      expect(lease.same_uuid?).to eq(false)
+      expect(lease.same_uuid?).to be(false)
     end
   end
 end

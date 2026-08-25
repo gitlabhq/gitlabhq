@@ -8,7 +8,6 @@ RSpec.describe Pages::DeactivateMrDeploymentsWorker, feature_category: :pages do
   describe '#perform' do
     let(:merge_request) { create(:merge_request) }
     let(:pipeline_1) { create(:ci_pipeline, merge_request: merge_request) }
-    let(:pipeline_2) { create(:ci_pipeline, merge_request: merge_request) }
 
     context 'when MR does not have a Pages Build' do
       it 'does not raise an error' do
@@ -18,7 +17,6 @@ RSpec.describe Pages::DeactivateMrDeploymentsWorker, feature_category: :pages do
 
     context 'when MR does have a Pages Build' do
       let(:build_1) { create(:ci_build, pipeline: pipeline_1) }
-      let(:build_2) { create(:ci_build, pipeline: pipeline_2) }
 
       context 'with a path_prefix' do
         it 'deactivates the deployment', :freeze_time do

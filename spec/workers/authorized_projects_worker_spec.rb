@@ -17,5 +17,10 @@ RSpec.describe AuthorizedProjectsWorker, feature_category: :permissions do
     expect(described_class.get_worker_resource_boundary).to eq(:cpu)
   end
 
+  it 'defers on database health signal for project_authorizations' do
+    expect(described_class.database_health_check_attrs).to include(
+      { gitlab_schema: :gitlab_main, tables: [:project_authorizations], delay_by: 1.minute })
+  end
+
   it_behaves_like "refreshes user's project authorizations"
 end

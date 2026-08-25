@@ -3,9 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_sessions do
-  let(:default_session_id) { '6919a6f1bb119dd7396fadc38fd18d0d' }
-  let(:additional_session_id) { '7919a6f1bb119dd7396fadc38fd18d0d' }
-
   subject { new_anonymous_session }
 
   def new_anonymous_session

@@ -242,13 +242,13 @@ export default {
     },
   },
   emits: [
-    'deleteWorkItem',
+    'delete-work-item',
     'dropdown-show',
     'error',
-    'toggleReportAbuseModal',
+    'toggle-report-abuse-modal',
     'toggle-sidebar',
-    'toggleTruncationEnabled',
-    'toggleWorkItemConfidentiality',
+    'toggle-truncation-enabled',
+    'toggle-work-item-confidentiality',
     'work-item-created',
     'work-item-state-updated',
     'work-item-type-changed',
@@ -449,7 +449,7 @@ export default {
     },
     async handleToggleWorkItemConfidentiality() {
       this.track('click_toggle_work_item_confidentiality');
-      this.$emit('toggleWorkItemConfidentiality', !this.isConfidential);
+      this.$emit('toggle-work-item-confidentiality', !this.isConfidential);
 
       await nextTick();
 
@@ -467,7 +467,7 @@ export default {
     },
     handleDeleteWorkItem() {
       this.track('click_delete_work_item');
-      this.$emit('deleteWorkItem');
+      this.$emit('delete-work-item');
     },
     handleCancelDeleteWorkItem({ trigger }) {
       if (trigger !== 'ok') {
@@ -602,7 +602,7 @@ export default {
       this.$emit('error', error);
     },
     handleToggleReportAbuseModal() {
-      this.$emit('toggleReportAbuseModal', true);
+      this.$emit('toggle-report-abuse-modal', true);
       this.closeDropdown();
     },
     showChangeTypeModal() {
@@ -817,7 +817,7 @@ export default {
         <gl-disclosure-dropdown-item
           class="gl-flex gl-w-full gl-justify-end"
           data-testid="truncation-toggle-action"
-          @action="$emit('toggleTruncationEnabled')"
+          @action="$emit('toggle-truncation-enabled')"
         >
           <template #list-item>
             <gl-toggle

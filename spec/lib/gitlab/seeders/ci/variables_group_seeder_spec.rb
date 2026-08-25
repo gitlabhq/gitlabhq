@@ -39,7 +39,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::VariablesGroupSeeder, feature_category: :p
 
       ci_variable = group.reload.variables.last
 
-      expect(ci_variable.key.include?('GROUP_VAR_')).to eq true
+      expect(ci_variable.key.include?('GROUP_VAR_')).to be true
       expect(ci_variable.environment_scope).to eq '*'
     end
 
@@ -50,7 +50,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::VariablesGroupSeeder, feature_category: :p
 
       ci_variable = group.reload.variables.last
 
-      expect(ci_variable.key.include?('STAGING_')).to eq true
+      expect(ci_variable.key.include?('STAGING_')).to be true
       expect(ci_variable.environment_scope).to eq 'staging'
     end
 

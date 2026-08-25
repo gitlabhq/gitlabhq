@@ -205,7 +205,7 @@ export default {
   emits: [
     'add-child',
     'attributes-updated',
-    'deleteWorkItem',
+    'delete-work-item',
     'work-item-emoji-updated',
     'work-item-updated',
     'work-item-state-updated',
@@ -1072,15 +1072,17 @@ export default {
               v-if="workItemPresent"
               v-bind="workItemActionProps"
               :update-in-progress="updateInProgress"
-              @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
-              @toggleWorkItemConfidentiality="toggleConfidentiality"
+              @delete-work-item="
+                $emit('delete-work-item', { workItemType, workItemId: workItem.id })
+              "
+              @toggle-work-item-confidentiality="toggleConfidentiality"
               @error="updateError = $event"
               @work-item-state-updated="$emit('work-item-state-updated')"
               @work-item-type-changed="workItemTypeChanged"
-              @toggleReportAbuseModal="toggleReportAbuseModal"
+              @toggle-report-abuse-modal="toggleReportAbuseModal"
               @work-item-created="handleWorkItemCreated"
               @toggle-sidebar="handleToggleSidebar"
-              @toggleTruncationEnabled="handleTruncationEnabled"
+              @toggle-truncation-enabled="handleTruncationEnabled"
             />
           </panel-actions-portal>
         </template>
@@ -1251,7 +1253,7 @@ export default {
             :parent-id="parentWorkItemId"
             :hide-fullscreen-markdown-button="isDetailPanel"
             @error="updateError = $event"
-            @openReportAbuse="openReportAbuseModal"
+            @open-report-abuse="openReportAbuseModal"
             @start-editing="isAddingNotes = true"
             @stop-editing="isAddingNotes = false"
             @focus="isAddingNotes = true"

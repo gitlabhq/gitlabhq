@@ -37,7 +37,7 @@ RSpec.describe Resolvers::Ci::ProjectPipelineResolver, feature_category: :contin
   it 'resolves pipeline for the passed iid' do
     expect(Ci::PipelinesFinder)
       .to receive(:new)
-      .with(project, current_user, { iids: [project_pipeline_1.iid.to_s], sort: :asc })
+      .with(project, current_user, iids: [project_pipeline_1.iid.to_s])
       .and_call_original
 
     result = batch_sync do
@@ -45,25 +45,6 @@ RSpec.describe Resolvers::Ci::ProjectPipelineResolver, feature_category: :contin
     end
 
     expect(result).to eq(project_pipeline_1)
-  end
-
-  context 'with FF single_pipeline_for_resolver disabled' do
-    before do
-      stub_feature_flags(single_pipeline_for_resolver: false)
-    end
-
-    it 'resolves pipeline for the passed iid' do
-      expect(Ci::PipelinesFinder)
-        .to receive(:new)
-        .with(project, current_user, { iids: [project_pipeline_1.iid.to_s] })
-        .and_call_original
-
-      result = batch_sync do
-        resolve_pipeline(project, { iid: project_pipeline_1.iid.to_s })
-      end
-
-      expect(result).to eq(project_pipeline_1)
-    end
   end
 
   it 'resolves pipeline for the passed sha' do

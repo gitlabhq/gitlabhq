@@ -293,7 +293,6 @@ export default {
         :full-path="activeItemFullPath"
         :include-filterable-flags="false"
       >
-        <!-- eslint-disable vue/custom-event-name-casing, vue/v-on-event-hyphenation-->
         <work-item-detail
           :key="activeItem.iid"
           :work-item-iid="activeItem.iid"
@@ -301,12 +300,11 @@ export default {
           :is-board="isBoard"
           is-detail-panel
           class="work-item-detail-panel-content"
-          @deleteWorkItem="deleteWorkItem"
+          @delete-work-item="deleteWorkItem"
           @work-item-updated="handleWorkItemUpdated"
           @work-item-type-changed="$emit('work-item-type-changed', $event)"
           v-on="glListeners()"
         />
-        <!-- eslint-enable vue/custom-event-name-casing, vue/v-on-event-hyphenation -->
       </work-item-metadata-provider>
     </dynamic-panel>
   </mounting-portal>

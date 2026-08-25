@@ -35929,6 +35929,46 @@
           "description": "Repository in Artifact Registry.",
           "fields": [
             {
+              "name": "artifactsCount",
+              "description": "Number of artifacts the repository holds. Buffered, so it can lag. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "BigInt",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "createdAt",
+              "description": "Timestamp of when the repository was created. Null when the time is unknown. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "createdBy",
+              "description": "User who created the repository. Null when the creator is unknown or no longer exists. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "description",
               "description": "Human-readable description of the repository. Null when unset. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [],
@@ -36047,6 +36087,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "updatedBy",
+              "description": "User who last changed the repository. Null when the editor is unknown or no longer exists. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "visibility",
@@ -36371,6 +36423,46 @@
           "description": "Repository in Artifact Registry, with the packages it holds.",
           "fields": [
             {
+              "name": "artifactsCount",
+              "description": "Number of artifacts the repository holds. Buffered, so it can lag. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "BigInt",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "createdAt",
+              "description": "Timestamp of when the repository was created. Null when the time is unknown. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "createdBy",
+              "description": "User who created the repository. Null when the creator is unknown or no longer exists. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "description",
               "description": "Human-readable description of the repository. Null when unset. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [],
@@ -36550,6 +36642,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "updatedBy",
+              "description": "User who last changed the repository. Null when the editor is unknown or no longer exists. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "visibility",
@@ -102430,7 +102534,7 @@
             },
             {
               "name": "malware",
-              "description": "Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified (regardless of add-on status). Returns `false` when the SSCS add-on is active and the package is not a malware package. Returns `null` when the add-on is not active. Introduced in GitLab 19.0: Status: Experiment.",
+              "description": "Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the namespace. Introduced in GitLab 19.0: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -125392,7 +125496,7 @@
             },
             {
               "name": "malware",
-              "description": "Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified (regardless of add-on status). Returns `false` when the SSCS add-on is active and the package is not a malware package. Returns `null` when the add-on is not active. Introduced in GitLab 19.1: Status: Experiment.",
+              "description": "Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the project. Introduced in GitLab 19.1: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -125675,7 +125779,7 @@
             },
             {
               "name": "malware",
-              "description": "Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified (regardless of add-on status). Returns `false` when the SSCS add-on is active and the package is not a malware package. Returns `null` when the add-on is not active. Introduced in GitLab 19.1: Status: Experiment.",
+              "description": "Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the project. Introduced in GitLab 19.1: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -126555,7 +126659,7 @@
             },
             {
               "name": "malware",
-              "description": "Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified (regardless of add-on status). Returns `false` when the SSCS add-on is active and the package is not a malware package. Returns `null` when the add-on is not active. Introduced in GitLab 19.1: Status: Experiment.",
+              "description": "Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the project. Introduced in GitLab 19.1: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -296834,7 +296938,7 @@
             },
             {
               "name": "lastUsedIps",
-              "description": "IP addresses where the personal access token was recently used.",
+              "description": "Five most recent unique IP addresses that authenticated with the personal access token.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -422456,7 +422560,7 @@
             },
             {
               "name": "malware",
-              "description": "Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified (regardless of add-on status). Returns `false` when the SSCS add-on is active and the package is not a malware package. Returns `null` when the add-on is not active. Introduced in GitLab 19.0: Status: Experiment.",
+              "description": "Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the namespace. Introduced in GitLab 19.0: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",

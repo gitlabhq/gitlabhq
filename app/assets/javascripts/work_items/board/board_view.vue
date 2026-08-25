@@ -726,6 +726,8 @@ export default {
         input.moveAfterId = moveAfterId;
       }
 
+      const moveKind = valueChanged ? 'column' : 'position';
+
       this.moveInProgress = true;
       const indicatorTimer = setTimeout(() => {
         this.showMoveInProgressIndicator = true;
@@ -768,12 +770,15 @@ export default {
           throw new Error(data.workItemUpdate.errors.join(', '));
         }
 
+        this.trackEvent('move_card_on_work_item_board', { label: moveKind });
+
         if (valueChanged) {
           this.$toast.show(
             sprintf(I18N_MOVE_SUCCESS, { reference: node.reference, targetGroup: toValue.name }),
           );
         }
       } catch (error) {
+        this.trackEvent('fail_card_move_on_work_item_board', { label: moveKind });
         this.$toast.show(I18N_MOVE_ERROR);
         Sentry.captureException(error);
       } finally {

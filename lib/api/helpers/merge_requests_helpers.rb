@@ -163,7 +163,16 @@ module API
       def self.create_merge_request_mcp_params
         [
           :id, :title, :source_branch, :target_branch, :target_project_id,
-          :assignee_ids, :reviewer_ids, :description, :labels, :milestone_id, :milestone
+          :assignee_ids, :reviewer_ids, :description, :labels, :milestone_id, :milestone,
+          :remove_source_branch, :squash
+        ]
+      end
+
+      def self.update_merge_request_mcp_params
+        [
+          :id, :merge_request_iid, :title, :description, :target_branch, :state_event,
+          :labels, :add_labels, :remove_labels, :assignee_ids, :reviewer_ids, :milestone_id, :milestone,
+          :remove_source_branch, :squash, :discussion_locked, :allow_collaboration
         ]
       end
 

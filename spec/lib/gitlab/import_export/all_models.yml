@@ -232,6 +232,7 @@ merge_requests:
 - merge_request_context_commit_diff_files
 - merge_request_stage_events
 - merge_schedule
+- risk_assessment
 - events
 - merge_request_issues
 - merge_request_closing_issues

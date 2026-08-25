@@ -51,6 +51,25 @@ RSpec.describe Ci::PipelinePolicy, :models, :request_store, :use_clean_rails_red
       it { is_expected.to be_allowed(:update_pipeline) }
       it { is_expected.to be_allowed(:cancel_pipeline) }
     end
+
+    context 'when the user is an instance administrator', :enable_admin_mode do
+      let_it_be(:user) { create(:admin) }
+
+      context 'and the branch is protected' do
+        let_it_be(:protected_branch) do
+          create(:protected_branch, name: pipeline.ref, project: project)
+        end
+
+        it { is_expected.not_to be_allowed(:update_pipeline) }
+        it { is_expected.not_to be_allowed(:cancel_pipeline) }
+        it { is_expected.to be_allowed(:destroy_pipeline) }
+      end
+
+      context 'and the branch is not protected' do
+        it { is_expected.to be_allowed(:update_pipeline) }
+        it { is_expected.to be_allowed(:cancel_pipeline) }
+      end
+    end
   end
 
   describe 'archived rules' do
@@ -149,6 +168,18 @@ RSpec.describe Ci::PipelinePolicy, :models, :request_store, :use_clean_rails_red
 
     context 'when user is not owner' do
       it { is_expected.not_to be_allowed(:destroy_pipeline) }
+    end
+
+    context 'when the user is an instance administrator' do
+      let_it_be(:user) { create(:admin) }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:destroy_pipeline) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.not_to be_allowed(:destroy_pipeline) }
+      end
     end
   end
 

@@ -5,28 +5,28 @@ require 'spec_helper'
 RSpec.describe Gitlab::QueryLimiting, :request_store, feature_category: :database do
   describe '.enabled_for_env?' do
     it 'returns true in a test environment' do
-      expect(described_class.enabled_for_env?).to eq(true)
+      expect(described_class.enabled_for_env?).to be(true)
     end
 
     it 'returns true in a development environment' do
       stub_rails_env('development')
       stub_rails_env('development')
 
-      expect(described_class.enabled_for_env?).to eq(true)
+      expect(described_class.enabled_for_env?).to be(true)
     end
 
     it 'returns false on GitLab.com' do
       stub_rails_env('production')
       allow(Gitlab).to receive(:com?).and_return(true)
 
-      expect(described_class.enabled_for_env?).to eq(false)
+      expect(described_class.enabled_for_env?).to be(false)
     end
 
     it 'returns false in a non GitLab.com' do
       allow(Gitlab).to receive(:com?).and_return(false)
       stub_rails_env('production')
 
-      expect(described_class.enabled_for_env?).to eq(false)
+      expect(described_class.enabled_for_env?).to be(false)
     end
   end
 

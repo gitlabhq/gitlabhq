@@ -15,7 +15,7 @@ Three questions the agent must answer **from the contract alone**:
      internal jargon.
    - Description says *what it does* **and** *when to use it*, and disambiguates from
      near-neighbors (MR notes vs work-item notes). One or two sentences; no
-     implementation leakage (no `GitlabSchema`, no class names).
+     implementation leakage (no `GitlabSchema`, no class names). No trailing full stop.
 
 2. **What do I pass?** — *input_schema*
    - Param names are domain terms an agent can fill from a user request (`project_id`,

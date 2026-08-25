@@ -12,7 +12,6 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :wit
   let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
-  let(:tmpdir) { Dir.mktmpdir }
   let(:extra) { {} }
   let(:project_attributes) do
     {

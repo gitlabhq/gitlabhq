@@ -1,4 +1,4 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlEmptyState } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -12,6 +12,7 @@ import axios from '~/lib/utils/axios_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import { captureMessage } from '~/sentry/sentry_browser_wrapper';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from 'ee_else_ce/blob/components/blob_header.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
@@ -54,6 +55,7 @@ jest.mock('~/lib/utils/url_utility');
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/blob/line_highlighter');
 jest.mock('~/alert');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 let wrapper;
 let blobInfoMockResolver;
@@ -166,6 +168,7 @@ const execImmediately = (callback) => {
 
 describe('Blob content viewer component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findBlobHeader = () => wrapper.findComponent(BlobHeader);
   const findBlobContent = () => wrapper.findComponent(BlobContent);
   const findCodeIntelligence = () => wrapper.findComponent(CodeIntelligence);
@@ -184,6 +187,90 @@ describe('Blob content viewer component', () => {
     createComponent();
 
     expect(findLoadingIcon().exists()).toBe(true);
+  });
+
+  it('does not render an empty state when the blob loads successfully', async () => {
+    await createComponent();
+
+    expect(findEmptyState().exists()).toBe(false);
+  });
+
+  describe('when the query returns no blob', () => {
+    beforeEach(() => createComponent({ blob: null }));
+
+    it('does not report to Sentry', () => {
+      expect(captureMessage).not.toHaveBeenCalled();
+    });
+
+    it('renders a "File not found" empty state with a link to browse the repository', () => {
+      expect(findEmptyState().props()).toMatchObject({
+        title: 'File not found',
+        description:
+          'The file may have been moved, renamed, or deleted, or the link may be out of date.',
+        primaryButtonText: 'Browse files',
+        primaryButtonLink: '/some/path',
+      });
+    });
+
+    it('renders neither the blob header nor the blob content', () => {
+      expect(findBlobHeader().exists()).toBe(false);
+      expect(findBlobContent().exists()).toBe(false);
+    });
+  });
+
+  describe('when the blob has no viewers', () => {
+    beforeEach(() =>
+      createComponent({ blob: { ...simpleViewerMock, simpleViewer: null, richViewer: null } }),
+    );
+
+    it('does not render the blob header nor the blob content', () => {
+      expect(findBlobHeader().exists()).toBe(false);
+      expect(findBlobContent().exists()).toBe(false);
+    });
+
+    it('does not fall back to the legacy viewer or show an error alert', () => {
+      expect(mockAxios.history.get).toHaveLength(0);
+      expect(createAlert).not.toHaveBeenCalled();
+    });
+
+    it('renders an "Unable to display file" empty state without a browse link', () => {
+      expect(findEmptyState().props()).toMatchObject({
+        title: 'Unable to display file',
+        description: 'An error occurred while displaying the file. Try reloading the page.',
+        primaryButtonText: null,
+        primaryButtonLink: null,
+      });
+    });
+
+    it('reports an info-level message to Sentry', () => {
+      expect(captureMessage).toHaveBeenCalledWith(
+        'Blob exists but has no simpleViewer or richViewer',
+        {
+          level: 'info',
+          tags: { vue_component: 'BlobContentViewer' },
+          extra: {
+            projectPath: propsMock.projectPath,
+            filePath: propsMock.path,
+            ref: 'default-ref',
+          },
+        },
+      );
+    });
+
+    describe('when the reload button is clicked', () => {
+      beforeEach(async () => {
+        await createComponent(
+          { blob: { ...simpleViewerMock, simpleViewer: null, richViewer: null } },
+          mount,
+        );
+
+        await wrapper.findByTestId('reload-page-button').trigger('click');
+      });
+
+      it('reloads the page', () => {
+        expect(urlUtility.refreshCurrentPage).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('simple viewer', () => {

@@ -17,7 +17,6 @@ RSpec.describe ::API::Entities::Issue, feature_category: :team_planning do
     let(:option_addons) { { include_subscribed: false } }
     let(:issue) { build_stubbed(:issue, project: project, service_desk_reply_to: email) }
     let(:email) { 'creator@example.com' }
-    let(:role) { :developer }
 
     subject { json[:service_desk_reply_to] }
 

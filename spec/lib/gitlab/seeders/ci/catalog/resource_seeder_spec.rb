@@ -72,7 +72,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::Catalog::ResourceSeeder, feature_category:
       it 'does not add a catalog resource' do
         expect { seed }.to change { Project.count }.by(seed_count)
 
-        expect(group.projects.all?(&:catalog_resource)).to eq false
+        expect(group.projects.all?(&:catalog_resource)).to be false
       end
     end
 
@@ -125,7 +125,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::Catalog::ResourceSeeder, feature_category:
     it 'creates projects with CI catalog resources' do
       expect { seed }.to change { Project.count }.by(seed_count)
 
-      expect(group.projects.all?(&:catalog_resource)).to eq true
+      expect(group.projects.all?(&:catalog_resource)).to be true
     end
   end
 end

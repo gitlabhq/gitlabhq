@@ -10,7 +10,6 @@ RSpec/RepeatedExampleGroupBody:
     - 'ee/spec/requests/api/graphql/mutations/compliance_management/frameworks/update_spec.rb'
     - 'ee/spec/services/app_sec/dast/profiles/create_associations_service_spec.rb'
     - 'spec/controllers/groups/registry/repositories_controller_spec.rb'
-    - 'spec/controllers/projects/registry/repositories_controller_spec.rb'
     - 'spec/features/projects/commit/cherry_pick_spec.rb'
     - 'spec/features/work_items/issues/new/spam_akismet_issue_creation_spec.rb'
     - 'spec/helpers/gitlab_routing_helper_spec.rb'

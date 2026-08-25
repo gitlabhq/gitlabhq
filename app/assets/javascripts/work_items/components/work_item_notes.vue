@@ -140,7 +140,7 @@ export default {
       default: false,
     },
   },
-  emits: ['blur', 'error', 'focus', 'openReportAbuse', 'start-editing', 'stop-editing'],
+  emits: ['blur', 'error', 'focus', 'open-report-abuse', 'start-editing', 'stop-editing'],
   data() {
     return {
       isLoadingMore: false,
@@ -519,7 +519,7 @@ export default {
       this.discussionFilter = filterValue;
     },
     reportAbuse(isOpen, reply = {}) {
-      this.$emit('openReportAbuse', reply);
+      this.$emit('open-report-abuse', reply);
     },
     noteId(note) {
       return getIdFromGraphQLId(note.id);

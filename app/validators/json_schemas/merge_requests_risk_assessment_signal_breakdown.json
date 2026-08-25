@@ -1,0 +1,5 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Schema for the signal_breakdown attribute of MergeRequests::RiskAssessment",
+  "type": "array"
+}

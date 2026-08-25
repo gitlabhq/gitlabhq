@@ -8,7 +8,6 @@ RSpec.describe ReQueueBuildsMetadataMigrationForSelfManaged, migration: :gitlab_
 
   let(:pipelines_table) { table(:p_ci_pipelines, primary_key: :id, database: :ci) }
   let(:builds_table) { table(:p_ci_builds, primary_key: :id, database: :ci) }
-  let(:builds_metadata_table) { table(:p_ci_builds_metadata, primary_key: :id, database: :ci) }
   let(:pipeline_a) { pipelines_table.create!(partition_id: 100, project_id: 1) }
   let(:pipeline_b) { pipelines_table.create!(partition_id: 101, project_id: 2) }
 

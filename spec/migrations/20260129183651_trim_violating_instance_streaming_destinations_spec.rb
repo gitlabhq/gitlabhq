@@ -7,8 +7,6 @@ RSpec.describe TrimViolatingInstanceStreamingDestinations, migration: :gitlab_ma
   let(:namespaces) { table(:namespaces) }
   let(:organizations) { table(:organizations) }
 
-  let(:organization) { organizations.create!(name: 'Test Org', path: 'test-org') }
-
   let(:gcp_config) do
     {
       'googleProjectIdName' => 'valid-project-id',

@@ -5,9 +5,6 @@ require 'spec_helper'
 RSpec.describe Ci::StatusHelper do
   include IconsHelper
 
-  let(:success_commit) { double("Ci::Pipeline", status: 'success') }
-  let(:failed_commit) { double("Ci::Pipeline", status: 'failed') }
-
   describe "#render_ci_icon" do
     subject { helper.render_ci_icon("success") }
 

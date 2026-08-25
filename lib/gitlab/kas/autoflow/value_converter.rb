@@ -22,6 +22,13 @@ module Gitlab
           end
           alias_method :to_s, :inspect
           alias_method :as_json, :inspect
+
+          # Needed for from_value(to_value(x)) == x round-trip specs; not used
+          # for anything security-sensitive (the redacted value never appears).
+          def ==(other)
+            other.is_a?(SensitiveString) && value == other.value
+          end
+          alias_method :eql?, :==
         end
 
         module_function
@@ -77,6 +84,44 @@ module Gitlab
 
         def value(**kwargs)
           ::Gitlab::Agent::Autoflow::Value.new(**kwargs)
+        end
+
+        # Reverse of #to_value. Only handles the oneof variants #to_value produces
+        # (string_value, sensitive_string, integer_value, float_value, bool_value,
+        # none_value, list_value, dict_value); the others (bytes_value, channel_value,
+        # timestamp_value, ...) aren't emitted by Rails today and have no Ruby
+        # counterpart yet.
+        # @param value [Gitlab::Agent::Autoflow::Value]
+        # @return [Object] plain Ruby value
+        def from_value(value)
+          case value.kind
+          when :string_value
+            value.string_value
+          when :sensitive_string
+            sensitive_string(value.sensitive_string.value)
+          when :integer_value
+            value.integer_value
+          when :float_value
+            value.float_value
+          when :bool_value
+            value.bool_value
+          when :none_value
+            nil
+          when :list_value
+            from_values(value.list_value.values)
+          when :dict_value
+            value.dict_value.key_values.to_h { |kv| [from_value(kv.key), from_value(kv.val)] }
+          when nil
+            raise ArgumentError, 'AutoFlow value oneof is not set'
+          else
+            raise ArgumentError, "unsupported AutoFlow value oneof: #{value.kind}"
+          end
+        end
+
+        # @param values [Array<Gitlab::Agent::Autoflow::Value>]
+        # @return [Array<Object>]
+        def from_values(values)
+          values.map { |value| from_value(value) }
         end
       end
     end

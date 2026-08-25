@@ -50,8 +50,6 @@ RSpec.describe Backup::Dump::Postgres, feature_category: :backup_restore do
     end
 
     context 'when COMPRESS_CMD is set to tee' do
-      let(:tee_pid) { spawn('tee', in: pipes[0], out: [dump_file_name, 'w', 0o600]) }
-
       before do
         stub_env('COMPRESS_CMD', 'tee')
       end

@@ -38,32 +38,35 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   const findViewsTabs = () => wrapper.findComponent(GlTabs);
   const findViewTabs = () => wrapper.findAllComponents(GlTab);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findResetButton = () => wrapper.findComponentByTestId('dashboard-filters-reset');
 
   const selectGroup = async (group = { id: 1, fullPath: 'gitlab-org' }) => {
     findDashboardFilters().vm.$emit('set-groups', [group]);
     await waitForPromises();
   };
 
-  describe('dashboard filters', () => {
-    const dashboardLoaderSlotStub = {
-      template: `
-        <div>
-          <slot name="dashboard" :config="{ panels: [] }" :cell-height="undefined" :min-cell-height="undefined" :has-panels="false" />
-        </div>
-      `,
-    };
+  const filtersLoaderStub = {
+    template: `
+      <div>
+        <slot name="dashboard" :config="{ panels: [] }" :cell-height="undefined" :min-cell-height="undefined" :has-panels="false" />
+      </div>
+    `,
+  };
 
-    const filtersSlotStub = {
-      props: ['filters'],
-      template: '<div><slot name="filters" /></div>',
-    };
+  const filtersLayoutStub = {
+    props: ['filters'],
+    template: '<div><slot name="filters" /></div>',
+  };
 
-    beforeEach(async () => {
-      createComponent({
-        stubs: { DashboardLoader: dashboardLoaderSlotStub, GlDashboardLayout: filtersSlotStub },
-      });
-      await waitForPromises();
+  const createWithFilters = async () => {
+    createComponent({
+      stubs: { DashboardLoader: filtersLoaderStub, GlDashboardLayout: filtersLayoutStub },
     });
+    await waitForPromises();
+  };
+
+  describe('dashboard filters', () => {
+    beforeEach(() => createWithFilters());
 
     it('passes an empty groupNamespace to dashboard-filters by default', () => {
       expect(findDashboardFilters().props('groupNamespace')).toBe('');
@@ -133,6 +136,85 @@ describe('ExploreAnalyticsDashboardDetails', () => {
 
       it('passes the date range to the dashboard layout filters', () => {
         expect(findDashboardLayout().props('filters')).toMatchObject(dateRange);
+      });
+    });
+  });
+
+  describe('resetting filters', () => {
+    const group = { id: 1, fullPath: 'gitlab-org' };
+
+    it('renders a disabled reset button', async () => {
+      await createWithFilters();
+
+      expect(findResetButton().text()).toBe('Reset');
+      expect(findResetButton().attributes('aria-label')).toBe('Reset filters');
+      expect(findResetButton().props('disabled')).toBe(true);
+    });
+
+    it.each([
+      ['set-groups', [group]],
+      ['set-projects', [{ id: 2, fullPath: 'gitlab-org/gitlab' }]],
+      ['set-date-range', { dateRangeOption: '7d' }],
+    ])('enables the reset button after dashboard-filters emits %s', async (event, payload) => {
+      await createWithFilters();
+
+      findDashboardFilters().vm.$emit(event, payload);
+      await waitForPromises();
+
+      expect(findResetButton().props('disabled')).toBe(false);
+    });
+
+    it('keeps the reset button disabled for the configured default date range', async () => {
+      await createWithFilters();
+
+      findDashboardFilters().vm.$emit('set-date-range', { dateRangeOption: '30d' });
+      await waitForPromises();
+
+      expect(findResetButton().props('disabled')).toBe(true);
+    });
+
+    it('disables the reset button again when the selected group is cleared', async () => {
+      await createWithFilters();
+
+      await selectGroup(group);
+      findDashboardFilters().vm.$emit('set-groups', []);
+      await waitForPromises();
+
+      expect(findResetButton().props('disabled')).toBe(true);
+    });
+
+    describe('when the reset button is clicked', () => {
+      let buttonBefore;
+      let filtersBefore;
+
+      beforeEach(async () => {
+        await createWithFilters();
+
+        await selectGroup(group);
+        findDashboardFilters().vm.$emit('set-date-range', { dateRangeOption: '7d' });
+        await waitForPromises();
+
+        buttonBefore = findResetButton().element;
+        filtersBefore = findDashboardFilters().element;
+
+        findResetButton().vm.$emit('click');
+        await waitForPromises();
+      });
+
+      it('clears the group namespace passed to the filter bar', () => {
+        expect(findDashboardFilters().props('groupNamespace')).toBe('');
+      });
+
+      it('disables the reset button', () => {
+        expect(findResetButton().props('disabled')).toBe(true);
+      });
+
+      it('remounts the filter bar', () => {
+        expect(findDashboardFilters().element).not.toBe(filtersBefore);
+      });
+
+      it('keeps the reset button mounted', () => {
+        expect(findResetButton().element).toBe(buttonBefore);
       });
     });
   });
@@ -213,6 +295,18 @@ describe('ExploreAnalyticsDashboardDetails', () => {
         expect(findViewsTabs().props('syncActiveTabWithQueryParams')).toBe(true);
         expect(findViewsTabs().props('queryParamName')).toBe('view');
       });
+
+      // Resetting clears the namespace, so the layout drops its panels. The
+      // tab selection is what must survive.
+      it('keeps the active view when the filters are reset', async () => {
+        findViewsTabs().vm.$emit('input', 1);
+        await waitForPromises();
+
+        findResetButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(findViewsTabs().props('value')).toBe(1);
+      });
     });
 
     describe('when the URL contains a view query param', () => {
@@ -280,7 +374,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     });
   });
 
-  describe('when no group or project is selected', () => {
+  describe('empty state', () => {
     const panels = [{ id: 'panel-1', title: 'Overview panel' }];
 
     const emptyStateSlotStub = {
@@ -309,7 +403,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       await waitForPromises();
     });
 
-    it('renders the empty state', () => {
+    it('renders when no group or project is selected', () => {
       expect(findEmptyState().props('title')).toBe('Select a group or project');
     });
 
@@ -348,6 +442,19 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       beforeEach(async () => {
         await selectGroup();
         findDashboardFilters().vm.$emit('set-groups', []);
+        await waitForPromises();
+      });
+
+      it('returns to the empty state', () => {
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findDashboardLayout().props('config').panels).toEqual([]);
+      });
+    });
+
+    describe('when the filters are reset', () => {
+      beforeEach(async () => {
+        await selectGroup();
+        findResetButton().vm.$emit('click');
         await waitForPromises();
       });
 

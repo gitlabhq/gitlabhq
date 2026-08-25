@@ -1646,4 +1646,20 @@ describe('FeatureLibraryModal', () => {
       });
     });
   });
+
+  describe('destroy', () => {
+    it('cancels a pending reveal animation frame', () => {
+      createWrapper();
+      const cancelSpy = jest.spyOn(window, 'cancelAnimationFrame');
+
+      wrapper.vm.renderLimit = 0;
+      wrapper.vm.revealRemainingItems();
+      const scheduledFrameId = wrapper.vm.revealFrameId;
+      expect(scheduledFrameId).not.toBeNull();
+
+      wrapper.destroy();
+
+      expect(cancelSpy).toHaveBeenCalledWith(scheduledFrameId);
+    });
+  });
 });

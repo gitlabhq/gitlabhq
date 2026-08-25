@@ -358,7 +358,7 @@ describe('WorkItemDetail component', () => {
       createComponent({ mutationHandler });
       await mockApollo.resolveAll();
 
-      findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      findWorkItemActions().vm.$emit('toggle-work-item-confidentiality', true);
       await nextTick();
 
       expect(findWorkItemActions().props('updateInProgress')).toBe(true);
@@ -368,7 +368,7 @@ describe('WorkItemDetail component', () => {
       createComponent({ mutationHandler });
       await mockApollo.resolveAll();
 
-      findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      findWorkItemActions().vm.$emit('toggle-work-item-confidentiality', true);
       await mockApollo.resolveMutation(updateWorkItemMutation);
 
       await nextTick();
@@ -387,7 +387,7 @@ describe('WorkItemDetail component', () => {
       createComponent({ mutationHandler: jest.fn() });
       await mockApollo.resolveAll();
 
-      findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      findWorkItemActions().vm.$emit('toggle-work-item-confidentiality', true);
       await mockApollo.rejectMutation(updateWorkItemMutation, new Error(errorMessage));
 
       expect(findAlert().text()).toBe(errorMessage);
@@ -886,8 +886,8 @@ describe('WorkItemDetail component', () => {
       expect(findWorkItemAbuseModal().exists()).toBe(false);
     });
 
-    it('should be visible when the work item actions button emits `toggleReportAbuseModal` event', async () => {
-      findWorkItemActions().vm.$emit('toggleReportAbuseModal', true);
+    it('should be visible when the work item actions button emits `toggle-report-abuse-modal` event', async () => {
+      findWorkItemActions().vm.$emit('toggle-report-abuse-modal', true);
       await nextTick();
 
       expect(findWorkItemAbuseModal().exists()).toBe(true);
@@ -1389,7 +1389,7 @@ describe('WorkItemDetail component', () => {
       it('tracks when truncation setting is toggled', async () => {
         const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-        findWorkItemActions().vm.$emit('toggleTruncationEnabled');
+        findWorkItemActions().vm.$emit('toggle-truncation-enabled');
         await nextTick();
 
         expect(trackEventSpy).toHaveBeenCalledWith(
@@ -1400,7 +1400,7 @@ describe('WorkItemDetail component', () => {
           undefined,
         );
 
-        findWorkItemActions().vm.$emit('toggleTruncationEnabled');
+        findWorkItemActions().vm.$emit('toggle-truncation-enabled');
         await nextTick();
 
         expect(trackEventSpy).toHaveBeenCalledWith(

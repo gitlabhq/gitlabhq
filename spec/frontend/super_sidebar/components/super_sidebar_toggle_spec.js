@@ -159,4 +159,18 @@ describe('SuperSidebarToggle component', () => {
       expect(findButton().props('icon')).toBe('hamburger');
     });
   });
+
+  describe('destroy', () => {
+    it('stops responding to bv::tooltip::show after destroy', () => {
+      createWrapper({ type: 'expand' });
+      const { $root, $el } = wrapper.vm;
+
+      wrapper.destroy();
+
+      const bvEvent = { target: $el, preventDefault: jest.fn() };
+      $root.$emit('bv::tooltip::show', bvEvent);
+
+      expect(bvEvent.preventDefault).not.toHaveBeenCalled();
+    });
+  });
 });

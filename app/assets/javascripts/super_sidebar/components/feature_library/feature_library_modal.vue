@@ -264,7 +264,7 @@ export default {
       return '';
     },
   },
-  beforeUnmount() {
+  beforeDestroy() {
     this.cancelReveal();
   },
   methods: {

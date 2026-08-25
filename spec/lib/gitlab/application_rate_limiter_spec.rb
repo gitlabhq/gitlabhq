@@ -676,10 +676,6 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       context 'when the bypass header is set' do
         before do
           allow(Gitlab::Throttle).to receive(:bypass_header).and_return('SOME_HEADER')
-          # Pin the enabled state explicitly rather than relying on ops flags
-          # defaulting to enabled in the test env, so a future default change
-          # can't silently stop exercising this path.
-          stub_feature_flags(rate_limiting_rule_bypass_header: true)
         end
 
         it 'skips rate limit if set to "1"' do
@@ -717,21 +713,6 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
           count_after = Gitlab::Redis::RateLimiting.with { |r| r.get(redis_key) }
 
           expect(count_after).to eq(count_before)
-        end
-
-        context 'when :rate_limiting_rule_bypass_header is disabled' do
-          before do
-            stub_feature_flags(rate_limiting_rule_bypass_header: false)
-          end
-
-          it 'keeps the legacy short-circuit: returns false and never reaches labkit', :aggregate_failures do
-            allow(request).to receive(:get_header).with(Gitlab::Throttle.bypass_header).and_return('1')
-
-            expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run!)
-            expect(subject).not_to receive(:log_request)
-
-            expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(false)
-          end
         end
       end
     end

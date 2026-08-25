@@ -31,7 +31,7 @@ RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
     it { expect(data[:build_finished_at_iso]).to eq(ci_build.finished_at.iso8601) }
     it { expect(data[:build_duration]).to eq(ci_build.duration) }
     it { expect(data[:build_queued_duration]).to eq(ci_build.queued_duration) }
-    it { expect(data[:build_allow_failure]).to eq(false) }
+    it { expect(data[:build_allow_failure]).to be(false) }
     it { expect(data[:build_failure_reason]).to eq(ci_build.failure_reason) }
     it { expect(data[:project_id]).to eq(ci_build.project.id) }
     it { expect(data[:project_name]).to eq(ci_build.project.full_name) }

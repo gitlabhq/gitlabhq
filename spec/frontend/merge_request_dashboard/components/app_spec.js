@@ -202,7 +202,7 @@ describe('Merge requests app component', () => {
   });
 
   describe('subscription updates', () => {
-    it('emits refetch.mergeRequests with assignedMergeRequests when current user is an assignee', async () => {
+    it('emits `refetch-merge-requests` with assignedMergeRequests when current user is an assignee', async () => {
       createComponent();
 
       await waitForPromises();
@@ -224,14 +224,17 @@ describe('Merge requests app component', () => {
         },
       });
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('refetch.mergeRequests', 'assignedMergeRequests');
       expect(eventHub.$emit).toHaveBeenCalledWith(
-        'refetch.mergeRequests',
+        'refetch-merge-requests',
+        'assignedMergeRequests',
+      );
+      expect(eventHub.$emit).toHaveBeenCalledWith(
+        'refetch-merge-requests',
         'authorOrAssigneeMergeRequests',
       );
     });
 
-    it('emits refetch.mergeRequests with assignedMergeRequests when current user is a reviewer', async () => {
+    it('emits `refetch-merge-requests` with assignedMergeRequests when current user is a reviewer', async () => {
       createComponent();
 
       await waitForPromises();
@@ -254,7 +257,7 @@ describe('Merge requests app component', () => {
       });
 
       expect(eventHub.$emit).toHaveBeenCalledWith(
-        'refetch.mergeRequests',
+        'refetch-merge-requests',
         'reviewRequestedMergeRequests',
       );
     });

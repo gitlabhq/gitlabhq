@@ -3,7 +3,7 @@ key_path: counts.count_distinct_user_id_from_view_work_item_board
 description: Count of unique users that view the work item board, counting board sessions (including saved views opened directly in board mode) rather than deliberate switches to board view.
 product_group: planning_views
 product_categories:
-  - portfolio_management
+  - planning_views
 performance_indicator_type: []
 value_type: number
 status: active

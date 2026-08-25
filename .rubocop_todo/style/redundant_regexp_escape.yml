@@ -21,7 +21,6 @@ Style/RedundantRegexpEscape:
     - 'app/uploaders/file_uploader.rb'
     - 'config/initializers/wikicloth_redos_patch.rb'
     - 'config/routes.rb'
-    - 'config/routes/admin.rb'
     - 'config/routes/group.rb'
     - 'config/routes/project.rb'
     - 'config/routes/snippets.rb'

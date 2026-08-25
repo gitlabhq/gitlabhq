@@ -168,14 +168,14 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
       import_source_user = create(:import_source_user)
       placeholder_user = described_class.new(import_source_user).execute
 
-      expect(described_class.placeholder_email?(placeholder_user.email)).to eq(true)
+      expect(described_class.placeholder_email?(placeholder_user.email)).to be(true)
     end
 
     it "matches the emails created for placeholders users when source username and name are missing" do
       import_source_user = create(:import_source_user, source_username: nil, source_name: nil)
       placeholder_user = described_class.new(import_source_user).execute
 
-      expect(described_class.placeholder_email?(placeholder_user.email)).to eq(true)
+      expect(described_class.placeholder_email?(placeholder_user.email)).to be(true)
     end
 
     where(:email, :expected_match) do
@@ -197,7 +197,7 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
       with_them do
         it "matches the legacy emails format for placeholder users" do
           email = "#{import_type}_5c34ae6b9_1@#{Settings.gitlab.host}"
-          expect(described_class.placeholder_email?(email)).to eq(true)
+          expect(described_class.placeholder_email?(email)).to be(true)
         end
       end
     end

@@ -44,7 +44,6 @@ Style/NumericLiteralPrefix:
     - 'spec/lib/gitlab/puma_logging/json_formatter_spec.rb'
     - 'spec/lib/gitlab/relative_positioning/range_spec.rb'
     - 'spec/metrics_server/metrics_server_spec.rb'
-    - 'spec/models/issue_spec.rb'
     - 'spec/models/personal_access_token_spec.rb'
     - 'spec/requests/api/personal_access_tokens_spec.rb'
     - 'spec/support/import_export/export_file_helper.rb'

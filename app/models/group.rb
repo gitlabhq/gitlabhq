@@ -1162,8 +1162,12 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:allow_iframes_in_markdown, type: :wip)
   end
 
-  def sscs_malware_detection_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:sscs_malware_detection, type: :wip)
+  def vulnerability_malware_detection_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:vulnerability_malware_detection, type: :beta)
+  end
+
+  def dependency_malware_detection_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:dependency_malware_detection, type: :beta)
   end
 
   def use_work_item_url?

@@ -1,6 +1,7 @@
 <script>
 import { GlForm, GlFormInputGroup, GlFormGroup, GlModal, GlToastMixin } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
+import { findTargetBranch } from 'ee_else_ce/merge_requests/utils/branch_finder';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/vue_shared/components/ref/constants';
@@ -180,6 +181,11 @@ export default {
     newForkPath() {
       return newProjectForkPath(this.workItemFullPath);
     },
+    projectFullPath() {
+      return this.isConfidentialWorkItem
+        ? confidentialMergeRequestState.selectedProject.pathWithNamespace
+        : this.workItemFullPath;
+    },
   },
   watch: {
     showModal(newVal, oldVal) {
@@ -213,15 +219,13 @@ export default {
         this.branchName = suggested_branch_name;
         /* eslint-enable camelcase */
         this.refName = this.defaultBranch;
+
+        this.fetchTargetBranch(this.branchName);
       }
     },
     async createBranch() {
       try {
-        const endpoint = createBranchMRApiPathHelper.createBranch(
-          this.isConfidentialWorkItem
-            ? confidentialMergeRequestState.selectedProject.pathWithNamespace
-            : this.workItemFullPath,
-        );
+        const endpoint = createBranchMRApiPathHelper.createBranch(this.projectFullPath);
 
         this.creatingBranch = true;
 
@@ -258,9 +262,7 @@ export default {
     async createMergeRequest() {
       await this.createBranch();
       const path = createBranchMRApiPathHelper.createMR({
-        fullPath: this.isConfidentialWorkItem
-          ? confidentialMergeRequestState.selectedProject.pathWithNamespace
-          : this.workItemFullPath,
+        fullPath: this.projectFullPath,
         workItemIid: this.workItemIid,
         sourceBranch: this.branchName,
         targetBranch: this.refName,
@@ -288,9 +290,7 @@ export default {
       this.refCancelToken = axios.CancelToken.source();
 
       const refsPath = createBranchMRApiPathHelper.getRefs({
-        fullPath: this.isConfidentialWorkItem
-          ? confidentialMergeRequestState.selectedProject.pathWithNamespace
-          : this.workItemFullPath,
+        fullPath: this.projectFullPath,
       });
 
       axios
@@ -316,7 +316,25 @@ export default {
           this.checkingBranchValidity = false;
         });
     },
+    async fetchTargetBranch(branchName) {
+      if (this.showBranchFlow) return;
+
+      this.targetBranchCancelToken?.cancel();
+      this.targetBranchCancelToken = axios.CancelToken.source();
+
+      const targetBranchName = await findTargetBranch(
+        this.workItemFullPath,
+        branchName,
+        this.targetBranchCancelToken.token,
+      );
+
+      if (targetBranchName && branchName === this.branchName) {
+        this.refName = targetBranchName;
+      }
+    },
     checkBranchValidity: debounce(function debouncedCheckBranchValidity(refValue) {
+      this.fetchTargetBranch(refValue);
+
       return this.fetchRefs(refValue);
     }, 250),
     hideModal() {

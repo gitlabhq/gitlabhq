@@ -6,7 +6,6 @@ RSpec.describe Projects::FinalizeProjectStatisticsRefreshWorker, feature_categor
   let_it_be(:record) { create(:project_build_artifacts_size_refresh, :finalizing) }
 
   describe '#perform' do
-    let(:attribute) { record.class.counter_attributes.first }
     let(:worker) { described_class.new }
 
     subject { worker.perform(record.class.name, record.id) }

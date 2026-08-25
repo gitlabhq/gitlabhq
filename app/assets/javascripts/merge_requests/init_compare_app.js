@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { observable } from '~/lib/utils/observable';
-import { findTargetBranch } from 'ee_else_ce/pages/projects/merge_requests/creations/new/branch_finder';
+import { findTargetBranch } from 'ee_else_ce/merge_requests/utils/branch_finder';
 
 import CompareApp from '~/merge_requests/components/compare_app.vue';
 import { __ } from '~/locale';
@@ -74,14 +74,17 @@ export function initCompareApp() {
     },
     methods: {
       async selectedBranch(branchName) {
-        const targetBranchName = await findTargetBranch(branchName);
+        sourceBranch.value = branchName;
+        sourceBranch.text = branchName;
+
+        const targetBranchName = await findTargetBranch(
+          compareEl.dataset.targetProjectFullPath,
+          branchName,
+        );
 
         if (targetBranchName) {
           targetBranch.name = targetBranchName;
         }
-
-        sourceBranch.value = branchName;
-        sourceBranch.text = branchName;
       },
     },
     render(h) {

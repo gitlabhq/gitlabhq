@@ -179,7 +179,7 @@ describe('Merge requests query component', () => {
 
       await waitForPromises();
 
-      eventHub.$emit('refetch.mergeRequests', 'reviewRequestedMergeRequests');
+      eventHub.$emit('refetch-merge-requests', 'reviewRequestedMergeRequests');
 
       await waitForPromises();
 
@@ -192,7 +192,7 @@ describe('Merge requests query component', () => {
 
       await waitForPromises();
 
-      eventHub.$emit('refetch.mergeRequests', 'assignedMergeRequests');
+      eventHub.$emit('refetch-merge-requests', 'assignedMergeRequests');
 
       await waitForPromises();
 

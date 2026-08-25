@@ -130,7 +130,7 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter, feature_category: :shared do
     describe '#needs_rewrite?' do
       subject { rewriter.needs_rewrite? }
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
   end
 

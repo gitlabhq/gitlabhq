@@ -540,6 +540,51 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
+  describe '#recent_used_ips' do
+    let(:token) { create(:personal_access_token) }
+
+    subject(:recent_ips) { token.recent_used_ips.map(&:to_s) }
+
+    def add_ip(ip_address, created_at)
+      create(:personal_access_token_last_used_ip,
+        personal_access_token: token, ip_address: ip_address, created_at: created_at
+      )
+    end
+
+    context 'when the token has more than the stored limit of IPs' do
+      before do
+        7.times { |i| add_ip("192.0.2.#{i}", i.minutes.ago) }
+      end
+
+      it 'returns only the 5 most recent IPs' do
+        expect(recent_ips).to match_array(%w[192.0.2.0 192.0.2.1 192.0.2.2 192.0.2.3 192.0.2.4])
+      end
+    end
+
+    context 'when an IP address repeats' do
+      before do
+        add_ip('192.0.2.1', 3.minutes.ago)
+        add_ip('192.0.2.1', 1.minute.ago)
+        add_ip('192.0.2.2', 2.minutes.ago)
+      end
+
+      it 'returns each IP once, keeping the most recent occurrence' do
+        expect(recent_ips).to contain_exactly('192.0.2.1', '192.0.2.2')
+      end
+    end
+
+    context 'when the token has fewer than the stored limit of IPs' do
+      before do
+        add_ip('192.0.2.1', 2.minutes.ago)
+        add_ip('192.0.2.2', 1.minute.ago)
+      end
+
+      it 'returns all the IPs' do
+        expect(recent_ips).to contain_exactly('192.0.2.1', '192.0.2.2')
+      end
+    end
+  end
+
   describe '#revoke!' do
     let(:active_personal_access_token) { create(:personal_access_token) }
 

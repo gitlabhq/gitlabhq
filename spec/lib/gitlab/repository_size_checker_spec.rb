@@ -21,7 +21,7 @@ RSpec.describe Gitlab::RepositorySizeChecker do
   describe '#enabled?' do
     context 'when enabled' do
       it 'returns true' do
-        expect(subject.enabled?).to eq(true)
+        expect(subject.enabled?).to be(true)
       end
     end
 
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::RepositorySizeChecker do
       let(:limit) { 0 }
 
       it 'returns false' do
-        expect(subject.enabled?).to eq(false)
+        expect(subject.enabled?).to be(false)
       end
     end
   end
@@ -39,11 +39,11 @@ RSpec.describe Gitlab::RepositorySizeChecker do
     let(:project) { double }
 
     it 'returns true when changes go over' do
-      expect(subject.changes_will_exceed_size_limit?(2.megabytes, project)).to eq(true)
+      expect(subject.changes_will_exceed_size_limit?(2.megabytes, project)).to be(true)
     end
 
     it 'returns false when changes do not go over' do
-      expect(subject.changes_will_exceed_size_limit?(1.megabyte, project)).to eq(false)
+      expect(subject.changes_will_exceed_size_limit?(1.megabyte, project)).to be(false)
     end
   end
 
@@ -58,7 +58,7 @@ RSpec.describe Gitlab::RepositorySizeChecker do
 
   describe '#additional_repo_storage_available?' do
     it 'returns false' do
-      expect(subject.additional_repo_storage_available?).to eq(false)
+      expect(subject.additional_repo_storage_available?).to be(false)
     end
   end
 end

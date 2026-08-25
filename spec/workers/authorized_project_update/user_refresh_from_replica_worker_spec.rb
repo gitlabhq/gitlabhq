@@ -21,6 +21,11 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshFromReplicaWorker, feature_ca
       { if_deduplicated: :reschedule_once, including_scheduled: true })
   end
 
+  it 'defers on database health signal for project_authorizations' do
+    expect(described_class.database_health_check_attrs).to include(
+      { gitlab_schema: :gitlab_main, tables: [:project_authorizations], delay_by: 5.minutes })
+  end
+
   it_behaves_like 'an idempotent worker' do
     let(:job_args) { user.id }
   end

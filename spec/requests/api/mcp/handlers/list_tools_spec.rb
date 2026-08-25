@@ -60,8 +60,8 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         # write, non-destructive
         'add_branch' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'create_issue' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'create_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'create_merge_request_note' => { 'readOnlyHint' => false, 'destructiveHint' => false },
+        'save_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'create_workitem_note' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'fork_repository' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'link_work_items' => { 'readOnlyHint' => false, 'destructiveHint' => false },
@@ -117,6 +117,23 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
       expect(api_tool_names).not_to be_empty, 'No MCP-enabled API routes were discovered'
       expect(surfaced_names).to include(*api_tool_names)
+    end
+
+    it 'only lists save_merge_request params that its routes actually declare', :aggregate_failures do
+      save_mr_routes = ::API::API.routes.select do |route|
+        route.app.route_setting(:mcp)&.dig(:aggregators)&.include?(::Mcp::Tools::MergeRequests::SaveMergeRequestService)
+      end
+
+      expect(save_mr_routes.size).to eq(2), 'Expected save_merge_request to aggregate the create and update routes'
+
+      save_mr_routes.each do |route|
+        settings = route.app.route_setting(:mcp)
+        stale = settings[:params].map(&:to_s) - route.params.keys.map(&:to_s)
+
+        expect(stale).to be_empty,
+          "MCP tool '#{settings[:tool_name]}' lists params not declared on its route: #{stale.inspect}. " \
+            "Update the tool's mcp params list to match the route params."
+      end
     end
 
     it 'validates all array parameters have proper JSON Schema structure with items property' do

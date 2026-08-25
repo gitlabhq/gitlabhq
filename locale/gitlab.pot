@@ -10875,6 +10875,12 @@ msgstr ""
 msgid "AnalyticsDashboards|Query required"
 msgstr ""
 
+msgid "AnalyticsDashboards|Reset"
+msgstr ""
+
+msgid "AnalyticsDashboards|Reset filters"
+msgstr ""
+
 msgid "AnalyticsDashboards|Root Cause Analysis"
 msgstr ""
 
@@ -14638,10 +14644,16 @@ msgstr ""
 msgid "Blob"
 msgstr ""
 
+msgid "BlobViewer|An error occurred while displaying the file. Try reloading the page."
+msgstr ""
+
 msgid "BlobViewer|Copy contents"
 msgstr ""
 
 msgid "BlobViewer|Download as Markdown"
+msgstr ""
+
+msgid "BlobViewer|File not found"
 msgstr ""
 
 msgid "BlobViewer|If you delete the file, it will be removed from the branch %{branch}."
@@ -14656,7 +14668,13 @@ msgstr ""
 msgid "BlobViewer|The file could not be displayed because it is too large."
 msgstr ""
 
+msgid "BlobViewer|The file may have been moved, renamed, or deleted, or the link may be out of date."
+msgstr ""
+
 msgid "BlobViewer|This file will still take up space in your LFS storage. %{linkStart}How do I remove tracked objects from Git LFS?%{linkEnd}"
+msgstr ""
+
+msgid "BlobViewer|Unable to display file"
 msgstr ""
 
 msgid "BlobViewer|View on %{environmentName}"
@@ -59680,6 +59698,15 @@ msgstr ""
 msgid "PolicyRuleMultiSelect|Select all"
 msgstr ""
 
+msgid "PolicyStore|%{field} in %{rule} must open with %{statement}."
+msgstr ""
+
+msgid "PolicyStore|%{rule} is missing %{field}."
+msgstr ""
+
+msgid "PolicyStore|%{rule} needs at least one of: %{fields}."
+msgstr ""
+
 msgid "PolicyStore|Actions"
 msgstr ""
 
@@ -59756,6 +59783,9 @@ msgid "PolicyStore|Compiled policy Rego"
 msgstr ""
 
 msgid "PolicyStore|Compiled scope Rego"
+msgstr ""
+
+msgid "PolicyStore|Complete the policy before saving"
 msgstr ""
 
 msgid "PolicyStore|Continue editing"
@@ -85308,16 +85338,19 @@ msgstr ""
 msgid "UsageBilling|Active users"
 msgstr ""
 
-msgid "UsageBilling|An error occurred while fetching credit cap data."
+msgid "UsageBilling|An error occurred while fetching data"
 msgstr ""
 
-msgid "UsageBilling|An error occurred while fetching data"
+msgid "UsageBilling|An error occurred while fetching data."
 msgstr ""
 
 msgid "UsageBilling|An error occurred while fetching events list"
 msgstr ""
 
 msgid "UsageBilling|An error occurred while fetching usage data"
+msgstr ""
+
+msgid "UsageBilling|Applies to every user in this namespace unless an override replaces it."
 msgstr ""
 
 msgid "UsageBilling|Automated flow"
@@ -85397,10 +85430,28 @@ msgstr ""
 msgid "UsageBilling|Edit your search and try again."
 msgstr ""
 
+msgid "UsageBilling|Enforce cap"
+msgstr ""
+
 msgid "UsageBilling|Explore GitLab Duo"
 msgstr ""
 
 msgid "UsageBilling|Filter by product"
+msgstr ""
+
+msgid "UsageBilling|Flat cap"
+msgstr ""
+
+msgid "UsageBilling|Flat cap amount in credits"
+msgstr ""
+
+msgid "UsageBilling|Flat cap disabled"
+msgstr ""
+
+msgid "UsageBilling|Flat cap enabled"
+msgstr ""
+
+msgid "UsageBilling|Flat per-user cap"
 msgstr ""
 
 msgid "UsageBilling|GitLab Credits"
@@ -85505,6 +85556,9 @@ msgstr ""
 msgid "UsageBilling|Peak day usage"
 msgstr ""
 
+msgid "UsageBilling|Per user, per month. Resets on the 1st."
+msgstr ""
+
 msgid "UsageBilling|Product"
 msgstr ""
 
@@ -85533,6 +85587,9 @@ msgid "UsageBilling|Shared pool of credits available to all users in the subscri
 msgstr ""
 
 msgid "UsageBilling|Sorting by total credits used displays only users with prior credit usage."
+msgstr ""
+
+msgid "UsageBilling|Status"
 msgstr ""
 
 msgid "UsageBilling|This dashboard displays usage of all GitLab Duo Agent Platform features, including non-billable beta and experiment features. For billable usage only, view the %{linkStart}dashboard in Customers Portal%{linkEnd}."
@@ -85600,6 +85657,9 @@ msgstr ""
 msgid "UsageBilling|User"
 msgstr ""
 
+msgid "UsageBilling|When off, usage is tracked but not blocked."
+msgstr ""
+
 msgid "UsageBilling|You are currently using temporary evaluation credits to access GitLab Duo features. Your subscription's included credits for users will be available after your evaluation ends. If you have access to the %{linkStart}Customers Portal%{linkEnd}, you can view your usage breakdown, remaining balance, and some usage details."
 msgstr ""
 
@@ -85616,6 +85676,9 @@ msgid "UsageBilling|Your GitLab Credits usage"
 msgstr ""
 
 msgid "UsageBilling|Your GitLab evaluation credits are active"
+msgstr ""
+
+msgid "UsageBilling|credits"
 msgstr ""
 
 msgid "UsageBilling|in selected date range"

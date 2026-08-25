@@ -42,12 +42,7 @@ module Resolvers
           end
         elsif iid
           BatchLoader::GraphQL.for(iid).batch(key: project) do |iids, loader|
-            # This is a temporary workaround for some customers until
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/545167 is addressed
-            args = { iids: iids }
-            args[:sort] = :asc if Feature.enabled?(:single_pipeline_for_resolver, project)
-
-            finder = ::Ci::PipelinesFinder.new(project, current_user, args)
+            finder = ::Ci::PipelinesFinder.new(project, current_user, iids: iids)
 
             apply_lookahead(finder.execute).each { |pipeline| loader.call(pipeline.iid.to_s, pipeline) }
           end

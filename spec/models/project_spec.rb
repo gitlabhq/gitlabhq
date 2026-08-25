@@ -10499,6 +10499,26 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#vulnerability_malware_detection_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it_behaves_like 'checks parent group and self feature flag' do
+      let(:feature_flag_method) { :vulnerability_malware_detection_feature_flag_enabled? }
+      let(:feature_flag) { :vulnerability_malware_detection }
+      let(:subject_project) { group_project }
+    end
+  end
+
+  describe '#dependency_malware_detection_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it_behaves_like 'checks parent group and self feature flag' do
+      let(:feature_flag_method) { :dependency_malware_detection_feature_flag_enabled? }
+      let(:feature_flag) { :dependency_malware_detection }
+      let(:subject_project) { group_project }
+    end
+  end
+
   describe 'serialization' do
     let(:object) { build(:project) }
 

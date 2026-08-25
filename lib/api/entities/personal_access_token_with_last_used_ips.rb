@@ -12,8 +12,8 @@ module API
             'once per minute per token.',
           is_array: true,
           example: ['127.0.0.1', '127.0.0.2', '127.0.0.3']
-        } do |personal_access_token|
-        personal_access_token.last_used_ips.map(&:ip_address)
+        } do |personal_access_token| # rubocop:disable Style/SymbolProc -- block form keeps the documentation type visible to API/EntityFieldType
+        personal_access_token.recent_used_ips
       end
 
       expose :granular_scopes, using: ::API::Entities::PersonalAccessTokenGranularScope,

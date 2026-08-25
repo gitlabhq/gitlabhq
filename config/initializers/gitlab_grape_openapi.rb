@@ -4,7 +4,7 @@ Gitlab::GrapeOpenapi.configure do |config|
   config.info = Gitlab::GrapeOpenapi::Models::Info.new(
     title: 'GitLab REST API',
     description: 'GitLab REST API used to interact with a GitLab installation.',
-    version: 'v4',
+    version: Gitlab.current_milestone,
     terms_of_service: 'https://handbook.gitlab.com/handbook/legal/api-terms/',
     license: {
       name: 'CC BY-SA 4.0',

@@ -46,13 +46,13 @@ RSpec.describe Gitlab::Seeder, feature_category: :tooling do
     end
 
     it 'disables mail deliveries' do
-      expect(ActionMailer::Base.perform_deliveries).to eq(true)
+      expect(ActionMailer::Base.perform_deliveries).to be(true)
 
       described_class.quiet do
-        expect(ActionMailer::Base.perform_deliveries).to eq(false)
+        expect(ActionMailer::Base.perform_deliveries).to be(false)
       end
 
-      expect(ActionMailer::Base.perform_deliveries).to eq(true)
+      expect(ActionMailer::Base.perform_deliveries).to be(true)
     end
 
     it 'disables new note notifications' do
@@ -65,7 +65,7 @@ RSpec.describe Gitlab::Seeder, feature_category: :tooling do
       notification_service.new_note(note)
 
       described_class.quiet do
-        expect(notification_service.new_note(note)).to eq(nil)
+        expect(notification_service.new_note(note)).to be_nil
       end
 
       notification_service.new_note(note)

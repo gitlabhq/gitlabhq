@@ -3,6 +3,7 @@ import { GlForm, GlModal, GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
+import { findTargetBranch as findTargetBranchMock } from 'ee_else_ce/merge_requests/utils/branch_finder';
 import axios from '~/lib/utils/axios_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -16,6 +17,9 @@ import ProjectFormGroup from '~/confidential_merge_request/components/project_fo
 import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 
 jest.mock('~/alert');
+jest.mock('ee_else_ce/merge_requests/utils/branch_finder', () => ({
+  findTargetBranch: jest.fn(),
+}));
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
@@ -338,6 +342,77 @@ describe('CreateBranchMergeRequestModal', () => {
           expect(visitUrl).toHaveBeenCalledWith(
             '/fullPath-fork-new/-/merge_requests/new?merge_request%5Bissue_iid%5D=1&merge_request%5Bsource_branch%5D=suggested_branch_name%23with_hash&merge_request%5Btarget_branch%5D=master',
           );
+        });
+      });
+
+      describe('branch targets', () => {
+        it('does not look up a branch target in the branch flow', async () => {
+          createWrapper({ showBranchFlow: true });
+          await waitForPromises();
+
+          expect(findTargetBranchMock).not.toHaveBeenCalled();
+        });
+
+        it('sets the target branch to the branch target of the suggested branch name', async () => {
+          findTargetBranchMock.mockResolvedValue('release');
+
+          createWrapper({ showBranchFlow: false });
+          await waitForPromises();
+
+          expect(findTargetBranchMock).toHaveBeenCalledWith(
+            'fullPath',
+            'suggested_branch_name#with_hash',
+            expect.anything(),
+          );
+          expect(findRefSelector().props('value')).toBe('release');
+        });
+
+        it('looks up the branch target of the work item project for a confidential work item', async () => {
+          createWrapper({ showBranchFlow: false, isConfidentialWorkItem: true });
+          await waitForPromises();
+
+          expect(findTargetBranchMock).toHaveBeenCalledWith(
+            'fullPath',
+            'suggested_branch_name#with_hash',
+            expect.anything(),
+          );
+        });
+
+        it('keeps the selected target branch when no branch target is returned', async () => {
+          findTargetBranchMock.mockResolvedValue(null);
+
+          createWrapper({ showBranchFlow: false });
+          await waitForPromises();
+
+          findRefSelector().vm.$emit('input', 'release/1.0');
+          findTargetBranch().vm.$emit('input', 'my-source-branch');
+          await waitForPromises();
+
+          expect(findTargetBranchMock).toHaveBeenCalledWith(
+            'fullPath',
+            'my-source-branch',
+            expect.anything(),
+          );
+          expect(findRefSelector().props('value')).toBe('release/1.0');
+        });
+
+        it('discards a branch target for a branch name that has since changed', async () => {
+          const resolvers = [];
+          findTargetBranchMock.mockImplementation(
+            () =>
+              new Promise((resolve) => {
+                resolvers.push(resolve);
+              }),
+          );
+
+          createWrapper({ showBranchFlow: false });
+          await waitForPromises();
+
+          findTargetBranch().vm.$emit('input', 'my-source-branch');
+          resolvers[0]('release');
+          await waitForPromises();
+
+          expect(findRefSelector().props('value')).toBe('master');
         });
       });
     });

@@ -32,7 +32,6 @@ module Gitlab
       #     incremented but the current throttled state will be returned.
       # @param bypass_header [String, nil] Optional. Raw bypass header value,
       #     matched by a synthetic :skip rule (equal to '1') for visibility.
-      #     Not flag-gated here; only #throttled_request? checks the rollout flag.
       #
       # @return [Boolean] Whether or not a request should be throttled
       def throttled?(
@@ -111,15 +110,9 @@ module Gitlab
       #
       # @return [Boolean] Whether or not a request should be throttled
       #
-      # :rate_limiting_rule_bypass_header off keeps the legacy behavior
-      # (immediate false); on, bypass traffic reaches labkit's synthetic
-      # :skip rule instead, making bypass volume observable via calls_total.
       def throttled_request?(request, current_user, key, scope:, **options)
         header_name = ::Gitlab::Throttle.bypass_header
         bypass_header = request.get_header(header_name) if header_name.present?
-
-        return false if bypass_header == ::Gitlab::Throttle::BYPASS_HEADER_VALUE &&
-          !Feature.enabled?(:rate_limiting_rule_bypass_header, Feature.current_request, type: :ops)
 
         # Only add :bypass_header when there's an actual value to report, so
         # calls without one keep the exact pre-existing argument shape (callers

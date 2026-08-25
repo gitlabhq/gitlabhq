@@ -157,11 +157,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           created_at: timed_out_build.timeout.seconds.ago)
       end
 
+      let!(:completed_running_builds) do
+        described_class.completed_statuses.map do |status|
+          create(:ci_running_build, build: create(:ci_build, status, timeout: 600))
+        end
+      end
+
       let(:build) { create(:ci_build, :running, timeout: 600) }
       let(:timed_out_build) { create(:ci_build, :running, timeout: 300) }
 
       it 'only fetches the timed out builds' do
         expect(described_class.not_timed_out_running_builds.pluck(:id)).to contain_exactly(build.id)
+      end
+
+      it 'excludes completed builds that still have a running build entry' do
+        expect(described_class.not_timed_out_running_builds.pluck(:id))
+          .not_to include(*completed_running_builds.map(&:build_id))
       end
     end
 

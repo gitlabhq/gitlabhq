@@ -4392,6 +4392,20 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#vulnerability_malware_detection_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :vulnerability_malware_detection }
+      let(:feature_flag_method) { :vulnerability_malware_detection_feature_flag_enabled? }
+    end
+  end
+
+  describe '#dependency_malware_detection_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :dependency_malware_detection }
+      let(:feature_flag_method) { :dependency_malware_detection_feature_flag_enabled? }
+    end
+  end
+
   describe '#supports_lock_on_merge?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :enforce_locked_labels_on_merge }

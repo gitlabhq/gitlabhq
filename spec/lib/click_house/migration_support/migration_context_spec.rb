@@ -53,8 +53,6 @@ RSpec.describe ClickHouse::MigrationSupport::MigrationContext,
       end
 
       context 'when a migration is already running' do
-        let(:migration_name) { 'create_some_table' }
-
         before do
           stub_exclusive_lease_taken(lease_key)
         end

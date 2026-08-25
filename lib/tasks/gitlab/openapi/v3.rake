@@ -44,9 +44,36 @@ namespace :gitlab do
           "(override with OPENAPI_SIMULATE_SAAS=true|false)"
 
         generated_document = Tasks::Gitlab::Openapi::V3Document.render
+        committed_document = File.read("doc/api/openapi/openapi_v3.yaml")
 
-        current_doc = Digest::SHA512.hexdigest(File.read("doc/api/openapi/openapi_v3.yaml"))
-        generated_doc = Digest::SHA512.hexdigest(generated_document)
+        milestone = /\A\d+\.\d+\z/
+
+        # release-tools rewrites VERSION on stable branches at every release tag, so each
+        # document's info.version is checked for shape only, never against the other's.
+        # Located via the YAML node tree so indentation cannot affect it.
+        # Checked on the committed document too: the exclusion below would hide a hand-edited value.
+        info_version_line = ->(document, source) do
+          info = YAML.parse(document).children&.first&.children&.each_slice(2)
+                     &.find { |key, _| key.respond_to?(:value) && key.value == 'info' }&.last
+          abort "#{source}: cannot find the info section" unless info
+
+          key, value = info.children.each_slice(2).find { |k, _| k.value == 'version' }
+          abort "#{source}: info.version is missing" unless key
+
+          unless value.value.match?(milestone)
+            abort "#{source}: info.version must be a MAJOR.MINOR milestone such as 19.3, found: #{value.value.inspect}"
+          end
+
+          key.start_line
+        end
+
+        committed_line = info_version_line.call(committed_document, 'committed')
+        generated_line = info_version_line.call(generated_document, 'generated')
+
+        without_info_version = ->(document, line) { document.lines.tap { |l| l.delete_at(line) }.join }
+
+        current_doc = Digest::SHA512.hexdigest(without_info_version.call(committed_document, committed_line))
+        generated_doc = Digest::SHA512.hexdigest(without_info_version.call(generated_document, generated_line))
 
         if current_doc == generated_doc
           puts "OpenAPI v3 documentation is up to date"
@@ -59,7 +86,12 @@ namespace :gitlab do
           puts heading
 
           if ENV["OPENAPI_CHECK_DEBUG"] == "true"
-            File.write("doc/api/openapi/openapi_v3.yaml.generated", generated_document)
+            # Carry over the committed info.version so the excluded field cannot appear as a
+            # difference here and send readers after the wrong cause.
+            debug_lines = generated_document.lines
+            debug_lines[generated_line] = committed_document.lines[committed_line]
+
+            File.write("doc/api/openapi/openapi_v3.yaml.generated", debug_lines.join)
             sh "diff -u doc/api/openapi/openapi_v3.yaml doc/api/openapi/openapi_v3.yaml.generated"
           end
 

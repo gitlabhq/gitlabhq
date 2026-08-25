@@ -5,6 +5,8 @@ module Projects
     class DiffsStreamController < Projects::MergeRequests::ApplicationController
       include RapidDiffs::StreamingResource
 
+      urgency :low, [:diffs_stream]
+
       private
 
       def diff_file_component(diff_file)

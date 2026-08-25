@@ -20,13 +20,13 @@ RSpec.describe Gitlab::PrometheusClient do
     it 'returns true when status code is 200 and healthy response body' do
       stub_request(:get, subject.health_url).to_return(status: 200, body: described_class::HEALTHY_RESPONSE)
 
-      expect(subject.healthy?).to eq(true)
+      expect(subject.healthy?).to be(true)
     end
 
     it 'returns false when status code is 200 and unhealthy response body' do
       stub_request(:get, subject.health_url).to_return(status: 200, body: '')
 
-      expect(subject.healthy?).to eq(false)
+      expect(subject.healthy?).to be(false)
     end
 
     it 'raises error when status code not 200' do
@@ -40,14 +40,14 @@ RSpec.describe Gitlab::PrometheusClient do
     it 'returns true when status code is 200' do
       stub_request(:get, subject.ready_url).to_return(status: 200, body: 'Prometheus is Ready.\n')
 
-      expect(subject.ready?).to eq(true)
+      expect(subject.ready?).to be(true)
     end
 
     it 'returns false when status code is not 200' do
       [503, 500].each do |code|
         stub_request(:get, subject.ready_url).to_return(status: code, body: 'Service Unavailable')
 
-        expect(subject.ready?).to eq(false)
+        expect(subject.ready?).to be(false)
       end
     end
 

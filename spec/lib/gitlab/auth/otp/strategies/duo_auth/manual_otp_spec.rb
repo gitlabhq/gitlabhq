@@ -15,8 +15,6 @@ RSpec.describe Gitlab::Auth::Otp::Strategies::DuoAuth::ManualOtp, feature_catego
   let(:integration_key) { 'int3gr4t1on' }
   let(:secret_key) { 's3cr3t' }
   let(:duo_response_builder) { Struct.new(:body) }
-  let(:response_status) { 200 }
-  let(:duo_auth_url) { "https://#{hostname}/auth/v2/auth/" }
   let(:params) do
     { username: user.username,
       factor: "passcode",

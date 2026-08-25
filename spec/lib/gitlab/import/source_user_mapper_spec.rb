@@ -296,7 +296,7 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
       it 'does not cache the created source user' do
         source_user = find_or_create_source_user
 
-        expect(Gitlab::SafeRequestStore[:source_user_cache][source_user.source_user_identifier]).to eq(nil)
+        expect(Gitlab::SafeRequestStore[:source_user_cache][source_user.source_user_identifier]).to be_nil
       end
     end
   end

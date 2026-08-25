@@ -15,7 +15,7 @@ info:
   title: GitLab REST API
   description: GitLab REST API used to interact with a GitLab installation.
   termsOfService: https://handbook.gitlab.com/handbook/legal/api-terms/
-  version: v4
+  version: '19.3'
   license:
     name: CC BY-SA 4.0
     url: https://gitlab.com/gitlab-org/gitlab/-/blob/master/LICENSE
@@ -2153,11 +2153,11 @@ paths:
         in: path
         example: 1
       requestBody:
-        required: true
+        required: false
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_af2d93c7f7ea"
+              "$ref": "#/components/schemas/RequestBody_2d9be0e2518e"
   "/api/v4/jobs/{id}/sbom_scans/authorize":
     post:
       operationId: postApiV4JobsIdSbomScansAuthorize
@@ -78877,8 +78877,7 @@ components:
         malware:
           type: boolean
           description: 'Malware status: true if a GLAM identifier is present, false
-            if the SSCS add-on is active but none found, null if the SSCS add-on is
-            inactive.'
+            otherwise. Omitted when malware detection is not enabled for the project.'
     APIEntitiesProjectAlias:
       type: object
       properties:
@@ -96112,15 +96111,13 @@ components:
       required:
       - started_on
       - expires_on
-    RequestBody_af2d93c7f7ea:
+    RequestBody_2d9be0e2518e:
       type: object
       properties:
         topic:
           type: string
-          enum:
-          - com.gitlab.cd.deployment
           description: The event topic
-          minLength: 1
+          nullable: true
         type:
           type: string
           description: The event type
@@ -96166,10 +96163,32 @@ components:
               nullable: true
               maxLength: 2000
           nullable: true
-      required:
-      - topic
-      - type
-      - data
+        value:
+          type: object
+          description: AutoFlow Value (protojson), decoded into the same topic/type/data
+            shape as `data` above
+          nullable: true
+        channel_tokens:
+          type: array
+          description: AutoFlow channels opened alongside this event, for posting
+            a value back into them later
+          items:
+            type: object
+            properties:
+              channel_name:
+                type: string
+                description: Name of the AutoFlow channel
+                nullable: true
+                maxLength: 255
+              token:
+                type: string
+                description: Token used to post a value into the channel
+                nullable: true
+                maxLength: 4096
+            required:
+            - channel_name
+            - token
+          nullable: true
     RequestBody_c172efdc6039:
       type: object
       properties:
