@@ -1144,6 +1144,35 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
         expect(gl_user.username).to eq('opie.the_opossum')
       end
     end
+
+    context 'when username is at the maximum length' do
+      let(:info_hash) do
+        {
+          nickname: 'a' * 255,
+          name: 'Test Name',
+          email: 'admin@othermail.com'
+        }
+      end
+
+      it 'creates a valid user' do
+        expect(gl_user).to be_valid
+        expect(gl_user.username).to eq('a' * 255)
+      end
+    end
+
+    context 'when username exceeds the maximum length' do
+      let(:info_hash) do
+        {
+          nickname: 'a' * 256,
+          name: 'Test Name',
+          email: 'admin@othermail.com'
+        }
+      end
+
+      it 'raises UsernameTooLongError' do
+        expect { gl_user }.to raise_error(Gitlab::Auth::OAuth::User::UsernameTooLongError)
+      end
+    end
   end
 
   describe 'updating email with sync profile' do

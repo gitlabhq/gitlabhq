@@ -19,6 +19,8 @@ module Gitlab
 
         sidekiq_options status_expiration: Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION
 
+        concurrency_limit -> { Gitlab::CurrentSettings.import_jobs_concurrency_limit }
+
         sidekiq_retries_exhausted do |msg, e|
           Gitlab::Import::ImportFailureService.track(
             project_id: msg['args'][0],

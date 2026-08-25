@@ -27,6 +27,7 @@ module Gitlab
         SigninDisabledForProviderError = Class.new(StandardError)
         IdentityWithUntrustedExternUidError = Class.new(StandardError)
         UnknownAttributeMappingError = Class.new(StandardError)
+        UsernameTooLongError = Class.new(StandardError)
         # Raised when a new-user INSERT would be attempted while the owning
         # Organization is in read_only_initialization or read_only state.
         # Existing-user sign-ins (timestamp updates) are not affected.
@@ -267,7 +268,7 @@ module Gitlab
           name ||= auth_hash.name
           email ||= auth_hash.email
 
-          valid_username = sanitize_username(username)
+          valid_username = sanitize_username!(username)
 
           {
             name: name.strip.presence || valid_username,
@@ -280,7 +281,9 @@ module Gitlab
           }
         end
 
-        def sanitize_username(username)
+        def sanitize_username!(username)
+          raise UsernameTooLongError if username.to_s.length > ::User::MAX_USERNAME_LENGTH
+
           ExternalUsernameSanitizer.new(username).sanitize
         end
 
