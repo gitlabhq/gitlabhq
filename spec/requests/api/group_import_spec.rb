@@ -26,7 +26,7 @@ RSpec.describe API::GroupImport, :with_current_organization, feature_category: :
     FileUtils.rm_rf(export_path, secure: true)
   end
 
-  describe 'POST /groups/import' do
+  describe 'POST /groups/import', :disable_rate_limiter do
     let(:file_upload) { fixture_file_upload(file) }
     let(:base_params) do
       {
@@ -273,6 +273,21 @@ RSpec.describe API::GroupImport, :with_current_organization, feature_category: :
             expect(group.children.count).to eq(1)
           end
         end
+      end
+    end
+
+    context 'when request exceeds the rate limit' do
+      before do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+      end
+
+      it 'prevents users from importing groups' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(json_response['message']['error']).to eq(
+          'This endpoint has been requested too many times. Try again later.'
+        )
       end
     end
 
