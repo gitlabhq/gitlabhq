@@ -338,7 +338,7 @@ module Gitlab
         request.first_parent = !!params[:first_parent]
 
         if params[:commit_message_patterns]
-          request.commit_message_patterns += Array.wrap(params[:commit_message_patterns])
+          request.commit_message_patterns += encode_repeated(Array.wrap(params[:commit_message_patterns]))
         end
 
         request.author = encode_binary(params[:author]) if params[:author]

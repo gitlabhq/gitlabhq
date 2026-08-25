@@ -840,7 +840,9 @@ variables_override:
     - AST_ENABLE_MR_PIPELINES
 ```
 
-When `allowed: true`, adding a variable to `exceptions` blocks it instead of allowing it, which is the opposite of the intended effect.
+Setting `allowed: false` blocks all project and group variables except those listed in
+`exceptions`. Setting `allowed: true` instead reverses this, which means listing a variable in
+`exceptions` blocks it rather than allowing it.
 
 When you enable the [`variables_override` setting](#variables_override-type) setting, pipeline execution policies can access the following user-defined variables:
 

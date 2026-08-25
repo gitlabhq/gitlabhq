@@ -133,14 +133,12 @@ merge request pipelines. If your project does not use merge request pipelines fo
 causes only the dependency scanning job to appear in the merge request pipeline, while all other
 jobs run in a separate branch pipeline. To disable this behavior, see
 [Disable MR pipelines for dependency scanning](_index.md#disable-merge-request-pipelines-for-dependency-scanning).
-When the template is injected by a pipeline execution policy, check the policy context before
-changing the project CI/CD configuration. Pipeline execution policies run in isolation by default, so
-a project or group value of `AST_ENABLE_MR_PIPELINES: "false"` might not be available to the policy
-job. If the value is unavailable, the dependency scanning v2 template evaluates it as `null`, which is treated as
-enabled.
 
-To fix this, define `AST_ENABLE_MR_PIPELINES: "false"` in the policy CI/CD configuration when branch
-pipelines are required. If the value must come from a project or group, set
-`variables_override.allowed: false` in the policy and add `AST_ENABLE_MR_PIPELINES`
-to the `variables_override.exceptions` allowlist. When `allowed: true`, adding a variable
-to `exceptions` blocks it instead of allowing it.
+If the template is injected by a pipeline execution policy, this issue occurs even when a project
+or group variable sets `AST_ENABLE_MR_PIPELINES: "false"`. Pipeline execution policies run in
+isolation by default, so the policy job doesn't receive that value. An unset variable defaults to
+`"true"`, and the job runs in merge request pipelines regardless of the project or group setting.
+
+The workaround is to set `AST_ENABLE_MR_PIPELINES: "false"` directly in the policy CI/CD
+configuration. For more information, including how to use the project or group value instead, see
+[CI/CD variables](../../policies/pipeline_execution_policies.md#cicd-variables).

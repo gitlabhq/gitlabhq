@@ -1076,6 +1076,22 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       end
     end
 
+    context 'with non-ASCII commit message patterns' do
+      before do
+        ::Gitlab::GitalyClient.clear_stubs!
+      end
+
+      it 'encodes the patterns as binary' do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_commits) do |request, _options|
+            expect(request.commit_message_patterns).to eq([Gitlab::EncodingHelper.encode_binary('허용')])
+          end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
+        end
+
+        client.list_commits('master', { commit_message_patterns: '허용' })
+      end
+    end
+
     context 'with literal_pathspec' do
       before do
         ::Gitlab::GitalyClient.clear_stubs!

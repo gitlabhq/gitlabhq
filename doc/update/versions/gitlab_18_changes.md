@@ -1287,8 +1287,15 @@ secret false positive detection for the group.
 ### Compiled per-job config is subject to a 1 MiB size limit
 
 - Affects: All installation methods
-- Affected versions: 18.11.x
+- Affected versions:
+
+  | Release | Affected patch releases | Fixed patch level |
+  | ------- | ----------------------- | ----------------- |
+  | 18.11   | 18.11.x                 | Not fixed         |
+  | 19.0    | 19.0.0 to 19.0.5         | 19.0.6            |
+  | 19.1    | 19.1.0 to 19.1.3         | 19.1.4            |
+  | 19.2    | 19.2.0 to 19.2.1         | 19.2.2            |
 
 A [change to enforce JSON schema validation also now enforces a 1 MiB size limit of the compiled per-job config](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218219). When a job's compiled config (its options, YAML variables, tokens, secrets, etc.) exceeds this limit, pipeline creation fails with: `Failed to persist the pipeline: Validation failed: Config is too large. Maximum size allowed is 1 MiB`. The workaround is to reduce the size of the job's config to be less than 1 MiB.
 
-In GitLab 19, [the size limit is configurable](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241962) using the `ci_max_total_yaml_size_bytes` application setting.
+After upgrading to a fixed version, [the size limit is configurable](../../administration/cicd/limits.md#maximum-size-of-the-entire-cicd-configuration) using the `ci_max_total_yaml_size_bytes` application setting.

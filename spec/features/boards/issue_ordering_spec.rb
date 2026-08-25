@@ -30,7 +30,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
 
     it 'has un-ordered issue as last issue' do
       page.within(find('[data-testid="board-list"]:nth-child(2)')) do
-        expect(all('.board-card').last).to have_content(issue4.title)
+        expect(page).to have_selector('.board-card:last-child', text: issue4.title)
       end
     end
 
@@ -40,7 +40,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
       wait_for_requests
 
       page.within(find('[data-testid="board-list"]:nth-child(2)')) do
-        expect(first('.board-card')).to have_content(issue4.title)
+        expect(page).to have_selector('.board-card:first-child', text: issue4.title)
       end
     end
   end
@@ -61,7 +61,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
       wait_for_requests
 
       page.within(find('[data-testid="board-list"]:nth-child(3)')) do
-        first, second, third = all('.board-card').to_a
+        first, second, third = all('.board-card', count: 3).to_a
 
         expect(first).to have_content(issue7.title)
         expect(second).to have_content(issue8.title)
@@ -83,7 +83,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
 
       wait_for_requests
 
-      expect(first('.board-card')).to have_content(issue2.title)
+      expect(page).to have_selector('.board-card:first-child', text: issue2.title)
     end
 
     it 'moves from middle to bottom' do
@@ -91,7 +91,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
 
       wait_for_requests
 
-      expect(all('.board-card').last).to have_content(issue2.title)
+      expect(page).to have_selector('.board-card:last-child', text: issue2.title)
     end
 
     it 'moves from top to bottom' do
@@ -99,7 +99,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
 
       wait_for_requests
 
-      expect(all('.board-card').last).to have_content(issue3.title)
+      expect(page).to have_selector('.board-card:last-child', text: issue3.title)
     end
 
     it 'moves from bottom to top' do
@@ -107,7 +107,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
 
       wait_for_requests
 
-      expect(first('.board-card')).to have_content(issue1.title)
+      expect(page).to have_selector('.board-card:first-child', text: issue1.title)
     end
 
     it 'moves from top to middle' do
@@ -115,7 +115,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
 
       wait_for_requests
 
-      expect(first('.board-card')).to have_content(issue2.title)
+      expect(page).to have_selector('.board-card:first-child', text: issue2.title)
     end
 
     it 'moves from bottom to middle' do
@@ -123,7 +123,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
 
       wait_for_requests
 
-      expect(all('.board-card').last).to have_content(issue2.title)
+      expect(page).to have_selector('.board-card:last-child', text: issue2.title)
     end
   end
 
@@ -200,18 +200,18 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
       expect(all('.board')[2]).to have_selector('.board-card', count: 4)
 
       page.within(all('.board')[2]) do
-        expect(first('.board-card')).to have_content(issue3.title)
+        expect(page).to have_selector('.board-card:first-child', text: issue3.title)
       end
     end
 
     it 'moves to bottom of another list' do
-      lists = all('.board-list')
+      lists = all('.board-list', minimum: 3)
       from_list = lists.at(1)
-      from_item = from_list.all('.board-card').at(0)
+      from_item = from_list.all('.board-card', minimum: 1).at(0)
       to_list = lists.at(2)
 
       # drag to the footer of the last card to ensure from_item is dropped below
-      to_item = to_list.all('.board-card').last.find('.board-card-footer')
+      to_item = to_list.all('.board-card', minimum: 3).last.find('.board-card-footer')
 
       from_item.drag_to(to_item)
 
@@ -221,7 +221,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
       expect(all('.board')[2]).to have_selector('.board-card', count: 4)
 
       page.within(all('.board')[2]) do
-        expect(all('.board-card').last).to have_content(issue3.title)
+        expect(page).to have_selector('.board-card:last-child', text: issue3.title)
       end
     end
 
@@ -234,18 +234,18 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
       expect(all('.board')[2]).to have_selector('.board-card', count: 4)
 
       page.within(all('.board')[2]) do
-        expect(all('.board-card')[1]).to have_content(issue3.title)
+        expect(page).to have_selector('.board-card:nth-child(2)', text: issue3.title)
       end
     end
   end
 
   def drag(selector: '.board-list', list_from_index: 1, from_index: 0, to_index: 0, list_to_index: 1)
-    lists = all(selector)
+    lists = all(selector, minimum: [list_from_index, list_to_index].max + 1)
     from_list = lists.at(list_from_index)
-    from_item = from_list.all('.board-card').at(from_index)
+    from_item = from_list.all('.board-card', minimum: from_index + 1).at(from_index)
     to_list = lists.at(list_to_index)
 
-    to_item = to_list.all('.board-card').at(to_index)
+    to_item = to_list.all('.board-card', minimum: to_index + 1).at(to_index)
 
     from_item.drag_to(to_item)
   end

@@ -30679,6 +30679,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Identity Verification required"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Identity verification is required to use GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "DuoAgentsPlatform|List comments"
 msgstr ""
 

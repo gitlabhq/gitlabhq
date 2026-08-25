@@ -469,11 +469,11 @@ pipeline. To disable this behavior, set the spec input `enable_mr_pipelines: fal
 variable `AST_ENABLE_MR_PIPELINES: "false"`.
 
 If the template is injected by a [pipeline execution policy](../../policies/pipeline_execution_policies.md),
-you must set `AST_ENABLE_MR_PIPELINES` in the policy configuration. Pipeline execution policies
-[run in isolation by default](../../policies/pipeline_execution_policies.md#cicd-variables) and do not use
-variables from project or group CI/CD settings unless `variables_override` allows it. When the variable is not set in the policy, the
-template treats it the same as `"true"` and the job runs in merge request pipelines. A project
-`workflow:rules` configuration that stops the project pipeline does not stop the policy pipeline.
+set `AST_ENABLE_MR_PIPELINES` in the policy CI/CD configuration instead of the project or group
+settings. Pipeline execution policies run in isolation by default and don't apply variables from
+project or group settings unless `variables_override` allows it. An unset variable in the policy
+defaults to `"true"`, so the job runs in merge request pipelines unless you set it explicitly. A
+project `workflow:rules` configuration does not stop this behavior either.
 
 To run the job in branch pipelines in every project the policy covers, set the variable in the
 policy CI/CD configuration:
@@ -486,10 +486,8 @@ include:
   - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
 ```
 
-To use the project or group value instead, when the policy sets `variables_override.allowed: false`,
-add `AST_ENABLE_MR_PIPELINES` to the policy
-[`variables_override` exceptions](../../policies/pipeline_execution_policies.md#variables_override-type).
-When `allowed: true`, adding a variable to `exceptions` blocks it instead of allowing it.
+To use the project or group value instead, see
+[variables in pipeline execution policies](../../policies/pipeline_execution_policies.md#cicd-variables).
 
 ### Skip the job when no supported file is present
 

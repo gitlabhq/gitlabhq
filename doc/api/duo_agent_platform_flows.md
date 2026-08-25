@@ -80,6 +80,16 @@ attributes:
 | `workload.id` | string | ID of the workload. |
 | `workload.message` | string | Status message for the workload. |
 
+If the user must complete [identity verification](../security/identity_verification.md) before they can use
+GitLab Duo Agent Platform, GitLab returns [`403 Forbidden`](rest/troubleshooting.md#status-codes) with a
+`message`:
+
+```json
+{
+  "message": "403 Forbidden - Identity verification is required to use GitLab Duo Agent Platform"
+}
+```
+
 ### Look up the consumer ID
 
 Before you can use `ai_catalog_item_consumer_id`, you must use the GraphQL API to retrieve the ID from the [AI Catalog](../user/duo_agent_platform/ai_catalog.md).
@@ -342,6 +352,16 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) with:
 - **Content-Type**: `application/x-ndjson`
 - **Body**: One JSON object per line, each representing a `ui_chat_log` entry.
   Returns an empty body if the workflow has no checkpoints or no `ui_chat_log` entries.
+
+If the user must complete [identity verification](../security/identity_verification.md) before they can use
+GitLab Duo Agent Platform, GitLab returns [`403 Forbidden`](rest/troubleshooting.md#status-codes) with a
+`message`:
+
+```json
+{
+  "message": "403 Forbidden - Identity verification is required to use GitLab Duo Agent Platform"
+}
+```
 
 Example request:
 
