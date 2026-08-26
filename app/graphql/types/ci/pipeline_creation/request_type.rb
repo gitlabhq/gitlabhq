@@ -9,8 +9,11 @@ module Types
 
         description 'Information about an asynchronous pipeline creation request'
 
+        # Without hash_key, this field calls BaseObject#id, which raises because
+        # the object here is a JSON hash parsed from Redis, with no to_global_id.
         field :id, GraphQL::Types::String,
           null: true,
+          hash_key: 'id',
           description: 'Unique ID of the pipeline creation request.'
 
         field :status, StatusEnum,

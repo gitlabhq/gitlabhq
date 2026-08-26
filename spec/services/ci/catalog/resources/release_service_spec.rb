@@ -59,7 +59,7 @@ RSpec.describe Ci::Catalog::Resources::ReleaseService, feature_category: :pipeli
         expect(version.catalog_resource.project).to eq(project)
         expect(version.components.count).to eq(1)
         expect(version.components.first.name).to eq('hello-component')
-        expect(version.components.first.spec).to eq({ 'inputs' => { 'hello' => nil } })
+        expect(version.components.first.spec).to eq({ 'inputs' => { 'hello' => nil }, 'inputs_order' => ['hello'] })
       end
 
       context 'when the user does not have permission to publish a version' do

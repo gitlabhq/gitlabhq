@@ -30,9 +30,75 @@ RSpec.describe Ci::Catalog::Resources::Versions::BuildComponentsService, feature
       expect(components.map(&:spec)).to contain_exactly(
         {},
         {},
-        { 'inputs' => { 'website' => nil } },
-        { 'inputs' => { 'environment' => nil } }
+        { 'inputs' => { 'website' => nil }, 'inputs_order' => ['website'] },
+        { 'inputs' => { 'environment' => nil }, 'inputs_order' => ['environment'] }
       )
+    end
+
+    context 'when a spec has multiple inputs' do
+      let(:components_data) do
+        [
+          {
+            name: 'deploy',
+            spec: {
+              'inputs' => {
+                'bazbazbaz' => nil,
+                'foo' => { 'default' => 'production', 'description' => 'Where to deploy' },
+                'barbar' => { 'type' => 'array' }
+              }
+            },
+            component_type: 'template'
+          }
+        ]
+      end
+
+      it 'records the order of the inputs and leaves their configuration untouched' do
+        expect(execute).to be_success
+
+        expect(execute.payload.first.spec).to eq(
+          'inputs' => {
+            'bazbazbaz' => nil,
+            'foo' => { 'default' => 'production', 'description' => 'Where to deploy' },
+            'barbar' => { 'type' => 'array' }
+          },
+          'inputs_order' => %w[bazbazbaz foo barbar]
+        )
+      end
+    end
+
+    context 'when a spec already contains inputs_order' do
+      let(:components_data) do
+        [
+          {
+            name: 'deploy',
+            spec: {
+              'inputs' => { 'bazbazbaz' => nil, 'foo' => nil },
+              'inputs_order' => ['made-up']
+            },
+            component_type: 'template'
+          }
+        ]
+      end
+
+      it 'replaces the value with the server-computed order' do
+        expect(execute).to be_success
+
+        expect(execute.payload.first.spec['inputs_order']).to eq(%w[bazbazbaz foo])
+      end
+    end
+
+    context 'when a spec contains inputs_order but inputs is not a hash' do
+      let(:components_data) do
+        [
+          { name: 'deploy', spec: { 'inputs_order' => ['made-up'] }, component_type: 'template' }
+        ]
+      end
+
+      it 'drops inputs_order' do
+        expect(execute).to be_success
+
+        expect(execute.payload.first.spec).to eq({})
+      end
     end
 
     context 'when there are more than 100 components' do
@@ -128,9 +194,47 @@ RSpec.describe Ci::Catalog::Resources::Versions::BuildComponentsService, feature
       expect(components.map(&:spec)).to contain_exactly(
         {},
         {},
-        { 'inputs' => { 'website' => nil } },
-        { 'inputs' => { 'environment' => nil } }
+        { 'inputs' => { 'website' => nil }, 'inputs_order' => ['website'] },
+        { 'inputs' => { 'environment' => nil }, 'inputs_order' => ['environment'] }
       )
+    end
+
+    context 'when a spec has multiple inputs' do
+      let(:files) do
+        {
+          'templates/deploy.yml' =>
+            "spec:\n inputs:\n  bazbazbaz:\n  foo:\n   default: production\n  barbar:\n   type: array\n---\n" \
+            'image: alpine'
+        }
+      end
+
+      it 'records the order of the inputs and leaves their configuration untouched' do
+        expect(execute).to be_success
+
+        expect(execute.payload.first.spec).to eq(
+          'inputs' => {
+            'bazbazbaz' => nil,
+            'foo' => { 'default' => 'production' },
+            'barbar' => { 'type' => 'array' }
+          },
+          'inputs_order' => %w[bazbazbaz foo barbar]
+        )
+      end
+    end
+
+    context 'when a spec already contains inputs_order' do
+      let(:files) do
+        {
+          'templates/deploy.yml' =>
+            "spec:\n inputs:\n  bazbazbaz:\n  foo:\n inputs_order:\n  - made-up\n---\nimage: alpine"
+        }
+      end
+
+      it 'replaces the value with the server-computed order' do
+        expect(execute).to be_success
+
+        expect(execute.payload.first.spec['inputs_order']).to eq(%w[bazbazbaz foo])
+      end
     end
 
     context 'when there are more than 100 components' do

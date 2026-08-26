@@ -73,12 +73,12 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
         expect(components[1].version).to eq(version)
         expect(components[2].name).to eq('secret-detection')
         expect(components[2].project).to eq(version.project)
-        expect(components[2].spec).to eq({ 'inputs' => { 'website' => nil } })
+        expect(components[2].spec).to eq({ 'inputs' => { 'website' => nil }, 'inputs_order' => ['website'] })
         expect(components[2].catalog_resource).to eq(version.catalog_resource)
         expect(components[2].version).to eq(version)
         expect(components[3].name).to eq('template')
         expect(components[3].project).to eq(version.project)
-        expect(components[3].spec).to eq({ 'inputs' => { 'environment' => nil } })
+        expect(components[3].spec).to eq({ 'inputs' => { 'environment' => nil }, 'inputs_order' => ['environment'] })
         expect(components[3].catalog_resource).to eq(version.catalog_resource)
         expect(components[3].version).to eq(version)
       end
@@ -268,12 +268,16 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
         expect(project.ci_components.second.version).to eq(version)
         expect(project.ci_components.third.name).to eq('secret-detection')
         expect(project.ci_components.third.project).to eq(version.project)
-        expect(project.ci_components.third.spec).to eq({ 'inputs' => { 'website' => nil } })
+        expect(project.ci_components.third.spec).to eq(
+          { 'inputs' => { 'website' => nil }, 'inputs_order' => ['website'] }
+        )
         expect(project.ci_components.third.catalog_resource).to eq(version.catalog_resource)
         expect(project.ci_components.third.version).to eq(version)
         expect(project.ci_components.fourth.name).to eq('template')
         expect(project.ci_components.fourth.project).to eq(version.project)
-        expect(project.ci_components.fourth.spec).to eq({ 'inputs' => { 'environment' => nil } })
+        expect(project.ci_components.fourth.spec).to eq(
+          { 'inputs' => { 'environment' => nil }, 'inputs_order' => ['environment'] }
+        )
         expect(project.ci_components.fourth.catalog_resource).to eq(version.catalog_resource)
         expect(project.ci_components.fourth.version).to eq(version)
       end

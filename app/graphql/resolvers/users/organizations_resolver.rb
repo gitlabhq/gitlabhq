@@ -2,17 +2,11 @@
 
 module Resolvers
   module Users
-    class OrganizationsResolver < BaseResolver
-      include Gitlab::Graphql::Authorize::AuthorizeResource
-
+    class OrganizationsResolver < ::Resolvers::Organizations::OrganizationsResolver
       type Types::Organizations::OrganizationType.connection_type, null: true
 
       authorize :read_user_organizations
       authorizes_object!
-
-      argument :search, GraphQL::Types::String,
-        required: false,
-        description: 'Search query, which can be for the organization name or a path.'
 
       argument :solo_owned, GraphQL::Types::Boolean,
         required: false,

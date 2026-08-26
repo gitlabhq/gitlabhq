@@ -107,4 +107,23 @@ RSpec.describe Packages::Nuget::Package, type: :model, feature_category: :packag
 
     it { is_expected.to eq(normalized_version) }
   end
+
+  describe '.installable_statuses' do
+    it 'excludes deprecated because it does not apply to NuGet' do
+      expect(described_class.installable_statuses).to contain_exactly(:default, :hidden)
+    end
+  end
+
+  describe '.installable' do
+    let_it_be(:default_package) { create(:nuget_package, :default) }
+    let_it_be(:hidden_package) { create(:nuget_package, :hidden) }
+    let_it_be(:deprecated_package) { create(:nuget_package, :deprecated) }
+
+    subject { described_class.installable }
+
+    it 'includes default and hidden packages but not deprecated', :aggregate_failures do
+      is_expected.to include(default_package, hidden_package)
+      is_expected.not_to include(deprecated_package)
+    end
+  end
 end

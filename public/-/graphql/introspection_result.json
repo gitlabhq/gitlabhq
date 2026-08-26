@@ -5283,6 +5283,30 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "excludeDefault",
+                  "description": "Excludes the Default organization from results. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+                },
+                {
+                  "name": "state",
+                  "description": "Filter organizations by state. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OrganizationState",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+                },
+                {
                   "name": "soloOwned",
                   "description": "When true, returns only organizations solely owned by the user.",
                   "type": {
@@ -46567,6 +46591,30 @@
                   "defaultValue": null,
                   "isDeprecated": false,
                   "deprecationReason": null
+                },
+                {
+                  "name": "excludeDefault",
+                  "description": "Excludes the Default organization from results. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+                },
+                {
+                  "name": "state",
+                  "description": "Filter organizations by state. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OrganizationState",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
                 },
                 {
                   "name": "soloOwned",
@@ -111174,6 +111222,30 @@
                   "defaultValue": null,
                   "isDeprecated": false,
                   "deprecationReason": null
+                },
+                {
+                  "name": "excludeDefault",
+                  "description": "Excludes the Default organization from results. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+                },
+                {
+                  "name": "state",
+                  "description": "Filter organizations by state. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OrganizationState",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
                 },
                 {
                   "name": "soloOwned",
@@ -227580,6 +227652,30 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "excludeDefault",
+                  "description": "Excludes the Default organization from results. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+                },
+                {
+                  "name": "state",
+                  "description": "Filter organizations by state. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OrganizationState",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+                },
+                {
                   "name": "soloOwned",
                   "description": "When true, returns only organizations solely owned by the user.",
                   "type": {
@@ -232097,6 +232193,30 @@
                   "defaultValue": null,
                   "isDeprecated": false,
                   "deprecationReason": null
+                },
+                {
+                  "name": "excludeDefault",
+                  "description": "Excludes the Default organization from results. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+                },
+                {
+                  "name": "state",
+                  "description": "Filter organizations by state. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OrganizationState",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
                 },
                 {
                   "name": "soloOwned",
@@ -238145,6 +238265,30 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "excludeDefault",
+                  "description": "Excludes the Default organization from results. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+                },
+                {
+                  "name": "state",
+                  "description": "Filter organizations by state. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OrganizationState",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+                },
+                {
                   "name": "soloOwned",
                   "description": "When true, returns only organizations solely owned by the user.",
                   "type": {
@@ -243108,6 +243252,30 @@
                   "defaultValue": null,
                   "isDeprecated": false,
                   "deprecationReason": null
+                },
+                {
+                  "name": "excludeDefault",
+                  "description": "Excludes the Default organization from results. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+                },
+                {
+                  "name": "state",
+                  "description": "Filter organizations by state. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OrganizationState",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
                 },
                 {
                   "name": "soloOwned",
@@ -406667,6 +406835,30 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "excludeDefault",
+                  "description": "Excludes the Default organization from results. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+                },
+                {
+                  "name": "state",
+                  "description": "Filter organizations by state. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OrganizationState",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+                },
+                {
                   "name": "soloOwned",
                   "description": "When true, returns only organizations solely owned by the user.",
                   "type": {
@@ -412959,6 +413151,30 @@
                   "defaultValue": null,
                   "isDeprecated": false,
                   "deprecationReason": null
+                },
+                {
+                  "name": "excludeDefault",
+                  "description": "Excludes the Default organization from results. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+                },
+                {
+                  "name": "state",
+                  "description": "Filter organizations by state. Introduced in GitLab 19.1: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OrganizationState",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
                 },
                 {
                   "name": "soloOwned",

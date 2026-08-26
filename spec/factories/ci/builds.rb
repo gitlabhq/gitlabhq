@@ -460,6 +460,12 @@ FactoryBot.define do
       end
     end
 
+    trait :test_reports_with_three_testsuites do
+      after(:build) do |build|
+        build.job_artifacts << build(:ci_job_artifact, :junit_with_three_testsuites, job: build)
+      end
+    end
+
     trait :accessibility_reports do
       after(:build) do |build|
         build.job_artifacts << build(:ci_job_artifact, :accessibility, job: build)

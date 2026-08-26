@@ -54,19 +54,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Process, feature_category: :
         expect(pipeline.failure_reason).to eq('filtered_by_rules')
         expect(pipeline.errors.full_messages).to include(a_string_including('would have been empty'))
       end
-
-      context 'when the ci_skip_pipelines_with_fully_filtered_includes flag is disabled' do
-        before do
-          stub_feature_flags(ci_skip_pipelines_with_fully_filtered_includes: false)
-        end
-
-        it 'falls back to config_error', :aggregate_failures do
-          perform
-
-          expect(pipeline.failure_reason).to eq('config_error')
-          expect(pipeline.errors.full_messages).to include(a_string_including('at least one visible job'))
-        end
-      end
     end
 
     context 'when config genuinely has no jobs and no includes' do

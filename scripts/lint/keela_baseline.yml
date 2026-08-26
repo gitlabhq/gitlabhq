@@ -698,8 +698,6 @@ scopes:
   app/models/packages/dependency_link.rb:
   - with_dependency_type
   - includes_dependency
-  app/models/packages/npm/metadatum.rb:
-  - package_id_in
   app/models/packages/nuget/package.rb:
   - without_nuget_temporary_name
   app/models/packages/package.rb:

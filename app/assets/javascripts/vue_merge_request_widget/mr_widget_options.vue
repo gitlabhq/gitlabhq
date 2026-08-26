@@ -24,7 +24,6 @@ import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue
 import CheckingState from './components/states/mr_widget_checking.vue';
 import PreparingState from './components/states/mr_widget_preparing.vue';
 import ClosedState from './components/states/mr_widget_closed.vue';
-import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
 import MergedState from './components/states/mr_widget_merged.vue';
 import MergingState from './components/states/mr_widget_merging.vue';
 import MissingBranchState from './components/states/mr_widget_missing_branch.vue';
@@ -60,7 +59,6 @@ export default {
     MrWidgetMerged: MergedState,
     MrWidgetClosed: ClosedState,
     MrWidgetMerging: MergingState,
-    MrWidgetFailedToMerge: FailedToMerge,
     MrWidgetArchived: ArchivedState,
     MrWidgetNothingToMerge: NothingToMergeState,
     MrWidgetMissingBranch: MissingBranchState,
@@ -500,7 +498,6 @@ export default {
       this.mr.isRemovingSourceBranch = value;
     },
     setMergeError(mergeError) {
-      this.mr.state = 'failedToMerge';
       this.mr.mergeError = mergeError;
     },
     setMrData(data) {
@@ -519,8 +516,6 @@ export default {
       eventHub.$on('failed-to-merge', this.setMergeError);
       eventHub.$on('UpdateWidgetData', this.setMrData);
       eventHub.$on('fetch-actions-content', this.fetchActionsContent);
-      eventHub.$on('enable-polling', this.resumePolling);
-      eventHub.$on('disable-polling', this.stopPolling);
       eventHub.$on('fetch-deployments', this.onFetchDeployments);
     },
     unbindEventListeners() {
@@ -530,8 +525,6 @@ export default {
       eventHub.$off('failed-to-merge', this.setMergeError);
       eventHub.$off('UpdateWidgetData', this.setMrData);
       eventHub.$off('fetch-actions-content', this.fetchActionsContent);
-      eventHub.$off('enable-polling', this.resumePolling);
-      eventHub.$off('disable-polling', this.stopPolling);
       eventHub.$off('fetch-deployments', this.onFetchDeployments);
       eventHub.$off('mr.discussion.updated', this.refetchState);
     },

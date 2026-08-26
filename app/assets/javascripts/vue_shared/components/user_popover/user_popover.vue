@@ -227,42 +227,58 @@ export default {
           <circle cx="32" cy="32" r="32" />
         </gl-skeleton-loader>
       </div>
-      <gl-avatar-labeled
+      <div
         v-else
-        :size="64"
-        :src="user.avatarUrl"
-        :label="user.name"
-        :sub-label="username"
-        class="gl-w-full gl-break-anywhere"
+        class="gl-relative gl-leading-0"
+        :class="{ 'gl-mb-3': !isBusy, 'gl-mb-5': isBusy }"
       >
-        <template v-if="isBlocked">
-          <span class="gl-mt-4 gl-italic">{{ $options.I18N_USER_BLOCKED }}</span>
-        </template>
-        <template v-else>
-          <gl-button
-            v-if="shouldRenderToggleFollowButton"
-            class="gl-mt-3 gl-self-start"
-            :variant="toggleFollowButtonVariant"
-            :loading="toggleFollowLoading"
-            size="small"
-            data-testid="toggle-follow-button"
-            @click="toggleFollow"
-            >{{ toggleFollowButtonText }}</gl-button
-          >
-        </template>
+        <gl-avatar-labeled
+          :size="64"
+          :src="user.avatarUrl"
+          :label="user.name"
+          :sub-label="username"
+          class="gl-w-full gl-break-anywhere"
+        >
+          <template v-if="isBlocked">
+            <span class="gl-mt-4 gl-italic">{{ $options.I18N_USER_BLOCKED }}</span>
+          </template>
+          <template v-else>
+            <gl-button
+              v-if="shouldRenderToggleFollowButton"
+              class="gl-mt-3 gl-self-start"
+              :variant="toggleFollowButtonVariant"
+              :loading="toggleFollowLoading"
+              size="small"
+              data-testid="toggle-follow-button"
+              @click="toggleFollow"
+              >{{ toggleFollowButtonText }}</gl-button
+            >
+          </template>
 
-        <template #meta>
-          <span
-            v-if="hasPronouns"
-            class="gl-p-1 gl-text-sm gl-font-normal gl-text-subtle"
-            data-testid="user-popover-pronouns"
-            >({{ user.pronouns }})</span
+          <template #meta>
+            <span
+              v-if="hasPronouns"
+              class="gl-p-1 gl-text-sm gl-font-normal gl-text-subtle"
+              data-testid="user-popover-pronouns"
+              >({{ user.pronouns }})</span
+            >
+          </template>
+        </gl-avatar-labeled>
+        <!-- The wrapper's height tracks the label column, not the avatar, so the
+             badge anchors inside this avatar-sized box (4rem, same as :size="64") -->
+        <div
+          v-if="isBusy"
+          class="gl-pointer-events-none gl-absolute gl-left-0 gl-top-0 gl-h-11 gl-w-11"
+        >
+          <gl-badge
+            variant="warning"
+            class="gl-border gl-absolute gl-bottom-0 gl-left-1/2 -gl-translate-x-1/2 gl-translate-y-1/2 gl-border-white"
+            data-testid="user-popover-busy-badge"
           >
-          <gl-badge v-if="isBusy" variant="warning" class="gl-ml-1">
             {{ $options.I18N_USER_BUSY }}
           </gl-badge>
-        </template>
-      </gl-avatar-labeled>
+        </div>
+      </div>
     </div>
     <div class="gl-mt-2 gl-w-full gl-break-anywhere">
       <template v-if="userIsLoading">

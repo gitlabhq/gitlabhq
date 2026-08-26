@@ -7,10 +7,20 @@ query getCurrentUserOrganizations(
   $last: Int
   $before: String
   $after: String
+  $excludeDefault: Boolean = false
+  $state: OrganizationState = null
 ) {
   currentUser {
     id
-    organizations(search: $search, first: $first, last: $last, before: $before, after: $after) {
+    organizations(
+      search: $search
+      first: $first
+      last: $last
+      before: $before
+      after: $after
+      excludeDefault: $excludeDefault
+      state: $state
+    ) {
       nodes {
         ...Organization
       }

@@ -33113,8 +33113,10 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="addonuser-organizations-excludedefault"></a>`excludeDefault` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Excludes the Default organization from results. |
 | <a id="addonuser-organizations-search"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="addonuser-organizations-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+| <a id="addonuser-organizations-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrganizationState`](#organizationstate) | Introduced in GitLab 19.1. Status: Experiment. Filter organizations by state. |
 
 ##### `AddOnUser.personalAccessTokens`
 
@@ -35706,8 +35708,10 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="autocompleteduser-organizations-excludedefault"></a>`excludeDefault` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Excludes the Default organization from results. |
 | <a id="autocompleteduser-organizations-search"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="autocompleteduser-organizations-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+| <a id="autocompleteduser-organizations-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrganizationState`](#organizationstate) | Introduced in GitLab 19.1. Status: Experiment. Filter organizations by state. |
 
 ##### `AutocompletedUser.personalAccessTokens`
 
@@ -39974,8 +39978,10 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="currentuser-organizations-excludedefault"></a>`excludeDefault` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Excludes the Default organization from results. |
 | <a id="currentuser-organizations-search"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="currentuser-organizations-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+| <a id="currentuser-organizations-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrganizationState`](#organizationstate) | Introduced in GitLab 19.1. Status: Experiment. Filter organizations by state. |
 
 ##### `CurrentUser.personalAccessTokens`
 
@@ -49808,8 +49814,10 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestassignee-organizations-excludedefault"></a>`excludeDefault` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Excludes the Default organization from results. |
 | <a id="mergerequestassignee-organizations-search"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="mergerequestassignee-organizations-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+| <a id="mergerequestassignee-organizations-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrganizationState`](#organizationstate) | Introduced in GitLab 19.1. Status: Experiment. Filter organizations by state. |
 
 ##### `MergeRequestAssignee.personalAccessTokens`
 
@@ -50287,8 +50295,10 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestauthor-organizations-excludedefault"></a>`excludeDefault` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Excludes the Default organization from results. |
 | <a id="mergerequestauthor-organizations-search"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="mergerequestauthor-organizations-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+| <a id="mergerequestauthor-organizations-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrganizationState`](#organizationstate) | Introduced in GitLab 19.1. Status: Experiment. Filter organizations by state. |
 
 ##### `MergeRequestAuthor.personalAccessTokens`
 
@@ -50842,8 +50852,10 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestparticipant-organizations-excludedefault"></a>`excludeDefault` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Excludes the Default organization from results. |
 | <a id="mergerequestparticipant-organizations-search"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="mergerequestparticipant-organizations-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+| <a id="mergerequestparticipant-organizations-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrganizationState`](#organizationstate) | Introduced in GitLab 19.1. Status: Experiment. Filter organizations by state. |
 
 ##### `MergeRequestParticipant.personalAccessTokens`
 
@@ -51340,8 +51352,10 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestreviewer-organizations-excludedefault"></a>`excludeDefault` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Excludes the Default organization from results. |
 | <a id="mergerequestreviewer-organizations-search"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="mergerequestreviewer-organizations-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+| <a id="mergerequestreviewer-organizations-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrganizationState`](#organizationstate) | Introduced in GitLab 19.1. Status: Experiment. Filter organizations by state. |
 
 ##### `MergeRequestReviewer.personalAccessTokens`
 
@@ -61945,8 +61959,10 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="usercore-organizations-excludedefault"></a>`excludeDefault` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Excludes the Default organization from results. |
 | <a id="usercore-organizations-search"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="usercore-organizations-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+| <a id="usercore-organizations-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrganizationState`](#organizationstate) | Introduced in GitLab 19.1. Status: Experiment. Filter organizations by state. |
 
 ##### `UserCore.personalAccessTokens`
 
@@ -75073,8 +75089,10 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="user-organizations-excludedefault"></a>`excludeDefault` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Excludes the Default organization from results. |
 | <a id="user-organizations-search"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="user-organizations-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+| <a id="user-organizations-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrganizationState`](#organizationstate) | Introduced in GitLab 19.1. Status: Experiment. Filter organizations by state. |
 
 ###### `User.personalAccessTokens`
 

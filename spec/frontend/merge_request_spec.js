@@ -8,11 +8,39 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_CONFLICT, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MergeRequest from '~/merge_request';
+import { EVENT_MR_TITLE_UPDATED } from '~/merge_requests/constants';
 
 jest.mock('~/alert');
+jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('MergeRequest', () => {
   const test = {};
+
+  describe('toggleDraftStatus', () => {
+    it('dispatches EVENT_MR_TITLE_UPDATED with the new title', () => {
+      const listener = jest.fn();
+      document.addEventListener(EVENT_MR_TITLE_UPDATED, listener);
+
+      MergeRequest.toggleDraftStatus('New title', true);
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({ detail: { title: 'New title' } }),
+      );
+
+      document.removeEventListener(EVENT_MR_TITLE_UPDATED, listener);
+    });
+
+    it('updates the CSS-driven sticky title element', () => {
+      setHTMLFixture('<a class="merge-request-sticky-title">Draft: Old title</a>');
+
+      MergeRequest.toggleDraftStatus('New title', true);
+
+      expect(document.querySelector('.merge-request-sticky-title').textContent).toBe('New title');
+
+      resetHTMLFixture();
+    });
+  });
+
   describe('task lists', () => {
     let mock;
 

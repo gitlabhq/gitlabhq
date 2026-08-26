@@ -52,6 +52,30 @@ RSpec.describe Ci::Catalog::Resources::Component, type: :model, feature_category
       end
     end
 
+    context 'when `spec` contains a valid `inputs_order`' do
+      it 'returns no errors' do
+        component.spec = {
+          inputs: { website: nil, environment: nil },
+          inputs_order: %w[website environment]
+        }
+
+        expect(component).to be_valid
+      end
+    end
+
+    context 'when `spec` contains an `inputs_order` that is not an array of strings' do
+      it 'returns errors' do
+        component.spec = { inputs: { website: nil }, inputs_order: ['website', 1] }
+
+        aggregate_failures do
+          expect(component).to be_invalid
+          expect(component.errors.full_messages).to contain_exactly(
+            'Spec must be a valid json schema'
+          )
+        end
+      end
+    end
+
     context 'when `spec` is invalid' do
       it 'returns errors' do
         component.spec = { not_inputs: { boo: '' } }
@@ -76,6 +100,64 @@ RSpec.describe Ci::Catalog::Resources::Component, type: :model, feature_category
 
         expect(component.include_path).to eq(expected_path)
         expect(Gitlab.config.gitlab.server_fqdn).not_to be_nil
+      end
+    end
+  end
+
+  describe '#ordered_inputs' do
+    # The input names are deliberately neither in `inputs` order nor in length order, so that the
+    # assertions fail if `inputs_order` is not applied.
+    let(:inputs) do
+      {
+        'stage' => { 'default' => 'test' },
+        'environment' => { 'description' => 'Deployment target' },
+        'n' => { 'type' => 'number' }
+      }
+    end
+
+    let(:component) { build(:ci_catalog_resource_component, spec: spec) }
+
+    context 'when `spec` contains `inputs_order`' do
+      let(:spec) { { 'inputs' => inputs, 'inputs_order' => %w[environment n stage] } }
+
+      it 'returns the inputs in the recorded order' do
+        expect(component.ordered_inputs.keys).to eq(%w[environment n stage])
+      end
+
+      it 'returns each input with its configuration' do
+        expect(component.ordered_inputs['environment']).to eq({ 'description' => 'Deployment target' })
+      end
+    end
+
+    context 'when `inputs_order` omits an input' do
+      let(:spec) { { 'inputs' => inputs, 'inputs_order' => %w[environment stage] } }
+
+      it 'returns the omitted input last' do
+        expect(component.ordered_inputs.keys).to eq(%w[environment stage n])
+      end
+    end
+
+    context 'when `inputs_order` contains an input that no longer exists' do
+      let(:spec) { { 'inputs' => inputs, 'inputs_order' => %w[environment removed n stage] } }
+
+      it 'ignores the unknown input' do
+        expect(component.ordered_inputs.keys).to eq(%w[environment n stage])
+      end
+    end
+
+    context 'when `spec` does not contain `inputs_order`' do
+      let(:spec) { { 'inputs' => inputs } }
+
+      it 'returns all the inputs' do
+        expect(component.ordered_inputs.keys).to match_array(%w[stage environment n])
+      end
+    end
+
+    context 'when `spec` does not contain `inputs`' do
+      let(:spec) { { 'description' => 'A component without inputs' } }
+
+      it 'returns no inputs' do
+        expect(component.ordered_inputs).to be_empty
       end
     end
   end

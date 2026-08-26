@@ -102,8 +102,8 @@ RSpec.describe API::Ci::Catalog, feature_category: :pipeline_composition do
         expect(components.map(&:name)).to match_array(%w[hello-component world-component])
         expect(components.map(&:spec)).to match_array(
           [
-            { 'inputs' => { 'hello' => nil } },
-            { 'inputs' => { 'world' => { 'default' => 'abc' } } }
+            { 'inputs' => { 'hello' => nil }, 'inputs_order' => ['hello'] },
+            { 'inputs' => { 'world' => { 'default' => 'abc' } }, 'inputs_order' => ['world'] }
           ]
         )
         expect(components.map(&:component_type)).to all(eq('template'))

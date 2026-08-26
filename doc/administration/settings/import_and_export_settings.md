@@ -262,9 +262,26 @@ To modify the maximum file size for imports in GitLab:
 This setting applies only to repositories
 [imported from a GitLab export file](../../user/project/settings/import_export.md#import-a-project-and-its-data).
 
-If you choose a size larger than the configured value for the web server,
-you may receive errors. See the [troubleshooting section](account_and_limit_settings.md#troubleshooting) for more
-details.
+This setting only controls the limit enforced by GitLab itself.
+Any HTTP proxy or load balancer in front of GitLab enforces its own,
+independent request size limit, which you must configure separately.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+Adjust the bundled NGINX `client_max_body_size` setting.
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+Adjust the Ingress controller or Gateway API configuration,
+depending on which one your deployment uses.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 For GitLab.com repository size limits, read [accounts and limit settings](../../user/gitlab_com/_index.md#account-and-limit-settings).
 

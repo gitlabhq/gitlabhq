@@ -14,7 +14,6 @@ import { setFaviconOverlay } from '~/lib/utils/favicon';
 import notify from '~/lib/utils/notify';
 import SmartInterval from '~/smart_interval';
 import { STATUS_CLOSED, STATUS_OPEN, STATUS_MERGED } from '~/issues/constants';
-import { STATE_QUERY_POLLING_INTERVAL_BACKOFF } from '~/vue_merge_request_widget/constants';
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
@@ -484,10 +483,7 @@ describe('MrWidgetOptions', () => {
 
           expect(findAlertMessage().exists()).toBe(true);
           expect(findAlertMessage().text()).toBe(`${mergeError}. Try again.`);
-          expect(findPipelineContainer().props('mr')).toMatchObject({
-            mergeError,
-            state: 'failedToMerge',
-          });
+          expect(findPipelineContainer().props('mr')).toMatchObject({ mergeError });
         });
 
         it('should bind to UpdateWidgetData', () => {
@@ -609,34 +605,6 @@ describe('MrWidgetOptions', () => {
                 }),
               );
               expect(stateQueryHandler).toHaveBeenCalledTimes(1);
-            });
-          });
-
-          describe('external event control', () => {
-            describe('enablePolling', () => {
-              it('enables the Apollo query polling using the event hub', async () => {
-                eventHub.$emit('enable-polling');
-
-                expect(stateQueryHandler).toHaveBeenCalled();
-                jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF + 100);
-
-                await waitForPromises();
-
-                expect(mockCheckStatus).toHaveBeenCalled();
-                expect(mockSetData).toHaveBeenCalledWith(data, undefined);
-                expect(stateQueryHandler).toHaveBeenCalledTimes(2);
-              });
-            });
-
-            describe('disablePolling', () => {
-              it('disables the Apollo query polling using the event hub', () => {
-                expect(stateQueryHandler).toHaveBeenCalledTimes(1);
-
-                eventHub.$emit('disable-polling');
-                jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF);
-
-                expect(stateQueryHandler).toHaveBeenCalledTimes(1); // no additional polling after a real interval timeout
-              });
             });
           });
         });

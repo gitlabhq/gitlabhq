@@ -160,7 +160,7 @@ module Gitlab
               end
             end
 
-            signature_algorithms.map do |algorithm, values|
+            signature_algorithms.filter_map do |algorithm, values|
               value = values.join('|')
               signature = ::Gitlab::Ci::Reports::Security::FindingSignature.new(
                 algorithm_type: algorithm,
@@ -169,7 +169,7 @@ module Gitlab
               )
 
               signature if signature.valid?
-            end.compact
+            end
           end
 
           def create_scan
@@ -225,7 +225,7 @@ module Gitlab
           def create_identifiers(identifiers)
             return [] unless identifiers.is_a?(Array)
 
-            identifiers.map { |identifier| create_identifier(identifier) }.compact
+            identifiers.filter_map { |identifier| create_identifier(identifier) }
           end
 
           def create_identifier(identifier)
@@ -242,7 +242,7 @@ module Gitlab
           def create_flags(flags)
             return [] unless flags.is_a?(Array)
 
-            flags.map { |flag| create_flag(flag) }.compact
+            flags.filter_map { |flag| create_flag(flag) }
           end
 
           def create_flag(flag)
@@ -254,7 +254,7 @@ module Gitlab
           def create_links(links)
             return [] unless links.is_a?(Array)
 
-            links.map { |link| create_link(link) }.compact
+            links.filter_map { |link| create_link(link) }
           end
 
           def create_link(link)

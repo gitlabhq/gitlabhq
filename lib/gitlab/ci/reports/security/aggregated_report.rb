@@ -15,7 +15,7 @@ module Gitlab
           end
 
           def created_at
-            @reports.map(&:created_at).compact.min
+            @reports.filter_map(&:created_at).min
           end
         end
       end

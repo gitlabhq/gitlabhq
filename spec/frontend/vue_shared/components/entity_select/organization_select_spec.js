@@ -187,6 +187,8 @@ describe('OrganizationSelect', () => {
         search: '',
         after: pageInfoMultiplePages.endCursor,
         first: DEFAULT_PER_PAGE,
+        excludeDefault: false,
+        state: null,
       });
       expect(findListbox().props('infiniteScroll')).toBe(false);
     });
@@ -208,6 +210,8 @@ describe('OrganizationSelect', () => {
         search: searchTerm,
         after: null,
         first: DEFAULT_PER_PAGE,
+        excludeDefault: false,
+        state: null,
       });
     });
   });

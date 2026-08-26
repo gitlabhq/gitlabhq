@@ -29,6 +29,12 @@
         }
       }
     },
+    "inputs_order": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "component": {
       "type": "array",
       "items": {

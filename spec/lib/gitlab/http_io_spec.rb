@@ -436,30 +436,6 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
 
       expect(a_request(:get, url)).to have_been_made.times(chunk_count)
     end
-
-    it 'reads the same bytes as it does without the cache' do
-      cached = read_backward(described_class.new(url, size))
-
-      stub_feature_flags(http_io_previous_chunk_cache: false)
-      uncached = read_backward(described_class.new(url, size))
-
-      expect(cached).to eq(file_body)
-      expect(uncached).to eq(cached)
-    end
-
-    context 'when http_io_previous_chunk_cache is disabled' do
-      before do
-        stub_feature_flags(http_io_previous_chunk_cache: false)
-      end
-
-      it 'refetches both chunks at every boundary crossing' do
-        expect(read_backward(http_io)).to eq(file_body)
-
-        # The straddling step refetches the lower chunk and then the upper one
-        # it just evicted; the following step refetches the lower one again.
-        expect(a_request(:get, url)).to have_been_made.times(chunk_count + (2 * boundaries))
-      end
-    end
   end
 
   describe '#readline' do

@@ -9,6 +9,7 @@ import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import axios from './lib/utils/axios_utils';
 import { addDelimiter } from './lib/utils/text_utility';
 import { getParameterValues, setUrlParams } from './lib/utils/url_utility';
+import { EVENT_MR_TITLE_UPDATED } from './merge_requests/constants';
 import MergeRequestTabs from './merge_request_tabs';
 import TaskList from './task_list';
 
@@ -157,6 +158,12 @@ MergeRequest.toggleDraftStatus = function (title, isReady) {
     titleEl.textContent = title;
     document.title = title;
   }
+
+  const cssStickyTitleEl = document.querySelector('.merge-request-sticky-title');
+  if (cssStickyTitleEl) {
+    cssStickyTitleEl.textContent = title;
+  }
+  document.dispatchEvent(new CustomEvent(EVENT_MR_TITLE_UPDATED, { detail: { title } }));
 
   const draftToggles = document.querySelectorAll('.js-draft-toggle-button');
 

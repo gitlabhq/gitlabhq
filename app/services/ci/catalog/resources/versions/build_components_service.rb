@@ -88,7 +88,7 @@ module Ci
             component = Ci::Catalog::Resources::Component.new(
               name: metadata[:name],
               project: version.project,
-              spec: metadata[:spec],
+              spec: spec_with_inputs_order(metadata[:spec]),
               component_type: metadata[:component_type],
               version: version,
               catalog_resource: version.catalog_resource,
@@ -102,6 +102,24 @@ module Ci
             # In Rails 7.1, we'll have a better way to handle this error; https://github.com/rails/rails/pull/49100
             # Ci::Catalog::Resources::Component: `enum resource_type: { template: 1 }, validate: true`
             error(e.message)
+          end
+
+          # `spec` is a `jsonb` column. Postgres reorders object keys by length, so the
+          # YAML order of `spec:inputs:` is lost. Record that order in `inputs_order`,
+          # because `jsonb` keeps the order of array elements. See issue #550261.
+          #
+          # `inputs_order` is server-owned. A value from the author is always replaced.
+          # Keys are stringified, because the spec is symbol-keyed when it comes from
+          # `Gitlab::Ci::Config::Yaml::Loader`, and string-keyed when it comes from
+          # passed-in component data.
+          def spec_with_inputs_order(spec)
+            return spec unless spec.is_a?(Hash)
+
+            spec = spec.deep_stringify_keys
+            inputs = spec['inputs']
+            return spec.except('inputs_order') unless inputs.is_a?(Hash)
+
+            spec.merge('inputs_order' => inputs.keys)
           end
 
           def error(message)

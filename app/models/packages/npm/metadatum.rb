@@ -13,8 +13,6 @@ class Packages::Npm::Metadatum < ApplicationRecord
   validates :package_json, json_schema: { filename: "npm_package_json" }
   validate :ensure_package_json_size
 
-  scope :package_id_in, ->(package_ids) { where(package_id: package_ids) }
-
   private
 
   def ensure_package_json_size

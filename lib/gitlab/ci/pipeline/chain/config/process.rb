@@ -48,9 +48,7 @@ module Gitlab
             private
 
             def empty_because_includes_filtered?(result)
-              Feature.enabled?(:ci_skip_pipelines_with_fully_filtered_includes, project) &&
-                result.only_no_visible_jobs_error? &&
-                result.any_includes_fully_filtered_by_rules?
+              result.only_no_visible_jobs_error? && result.any_includes_fully_filtered_by_rules?
             end
 
             def yaml_processor_opts

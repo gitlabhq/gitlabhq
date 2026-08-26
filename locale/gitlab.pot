@@ -2792,10 +2792,10 @@ msgstr ""
 msgid "AICatalog|Configuration is required."
 msgstr ""
 
-msgid "AICatalog|Configure automation triggers"
+msgid "AICatalog|Connect"
 msgstr ""
 
-msgid "AICatalog|Connect"
+msgid "AICatalog|Connect MCP servers to extend agent tooling"
 msgstr ""
 
 msgid "AICatalog|Connect Model Context Protocol servers to extend this agent with external tools and data sources."
@@ -6919,6 +6919,9 @@ msgid "AdminSettings|None (disabled)"
 msgstr ""
 
 msgid "AdminSettings|OAuth dynamic client registration"
+msgstr ""
+
+msgid "AdminSettings|Only effective when remote storage is enabled. Set to 0 for no size limit. Your HTTP proxy or load balancer may enforce a separate limit. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "AdminSettings|Only enable search after installing the plugin, enabling indexing, and recreating the index."
@@ -12301,6 +12304,9 @@ msgstr ""
 msgid "ArtifactRegistry|Install"
 msgstr ""
 
+msgid "ArtifactRegistry|Install by version"
+msgstr ""
+
 msgid "ArtifactRegistry|Install command:"
 msgstr ""
 
@@ -12427,6 +12433,9 @@ msgid "ArtifactRegistry|Published to %{project} by %{author}"
 msgstr ""
 
 msgid "ArtifactRegistry|Pull an image:"
+msgstr ""
+
+msgid "ArtifactRegistry|Pull command for %{version}"
 msgstr ""
 
 msgid "ArtifactRegistry|Push an image:"
@@ -12616,6 +12625,9 @@ msgid "ArtifactRegistry|Version list for %{name} updated."
 msgstr ""
 
 msgid "ArtifactRegistry|Versions"
+msgstr ""
+
+msgid "ArtifactRegistry|View pull command"
 msgstr ""
 
 msgid "ArtifactRegistry|View setup instructions"
@@ -55119,9 +55131,6 @@ msgstr ""
 msgid "Only admin custom roles can be assigned"
 msgstr ""
 
-msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
-msgstr ""
-
 msgid "Only include features new to your current subscription tier."
 msgstr ""
 
@@ -64846,11 +64855,6 @@ msgstr ""
 
 msgid "Refresh the page to view sync status"
 msgstr ""
-
-msgid "Refreshing in a second to show the updated status…"
-msgid_plural "Refreshing in %d seconds to show the updated status…"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Refreshing…"
 msgstr ""
@@ -96337,9 +96341,6 @@ msgid_plural "mrWidget|%{dangerStart}%{count} rules can't be approved%{dangerEnd
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "mrWidget|%{mergeError}."
-msgstr ""
-
 msgid "mrWidget|%{mergeError}. Try again."
 msgstr ""
 
@@ -96469,9 +96470,6 @@ msgstr[1] ""
 msgid "mrWidget|Merge blocked: all required approvals must be given."
 msgstr ""
 
-msgid "mrWidget|Merge failed."
-msgstr ""
-
 msgid "mrWidget|Merge request pipeline has passed, but a security policy requires all pipelines to succeed. Another pipeline for this commit has failed. %{linkStart}View policies%{linkEnd}"
 msgstr ""
 
@@ -96500,12 +96498,6 @@ msgid "mrWidget|Rebase without pipeline"
 msgstr ""
 
 msgid "mrWidget|Refresh"
-msgstr ""
-
-msgid "mrWidget|Refresh now"
-msgstr ""
-
-msgid "mrWidget|Refreshing now"
 msgstr ""
 
 msgid "mrWidget|Remove from merge train"

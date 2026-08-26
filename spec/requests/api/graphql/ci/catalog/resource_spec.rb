@@ -272,6 +272,55 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
     end
   end
 
+  describe 'querying the order of component inputs' do
+    let_it_be(:version, freeze: false) do
+      create(:release, :with_catalog_resource_version, project: project).catalog_resource_version
+    end
+
+    let_it_be(:component, freeze: false) do
+      # `jsonb` reorders object keys by length, so this order only survives through `inputs_order`.
+      input_names = %w[thisisaverylonginput stage environment n]
+
+      create(:ci_catalog_resource_component,
+        version: version,
+        spec: { inputs: input_names.index_with(nil), inputs_order: input_names }
+      )
+    end
+
+    let(:query) do
+      <<~GQL
+        query {
+          ciCatalogResource(id: "#{resource.to_global_id}") {
+            versions {
+              nodes {
+                components {
+                  nodes {
+                    id
+                    inputs {
+                      name
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      GQL
+    end
+
+    it 'returns the inputs in the recorded order' do
+      post_query
+
+      queried_component = graphql_data_at(:ciCatalogResource, :versions, :nodes)
+        .flat_map { |version_node| version_node.dig('components', 'nodes') }
+        .find { |node| node['id'] == component.to_global_id.to_s }
+
+      expect(queried_component['inputs'].pluck('name')).to eq(
+        %w[thisisaverylonginput stage environment n]
+      )
+    end
+  end
+
   describe 'versions' do
     before_all do
       project.repository.create_branch('branch_v2', project.default_branch)

@@ -264,6 +264,9 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
       render_component
 
       expect(page).to have_selector('[data-new-discussion-toggle][data-click="newDiscussion"][hidden]', visible: :all)
+
+      tooltip_title = 'Add a comment to this line or drag for multiple lines'
+      expect(page).to have_selector(".rd-new-discussion-toggle.has-tooltip[title='#{tooltip_title}']", visible: :all)
     end
   end
 

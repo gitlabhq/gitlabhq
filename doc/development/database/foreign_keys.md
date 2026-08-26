@@ -348,7 +348,7 @@ validating a foreign key:
 
 ### Removing foreign keys
 
-This operation does not require downtime.
+This operation does not require downtime. The removal should take place in a post-deployment migration, particularly if the affected table is large, to avoid [lock contention issues](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/29560).
 
 #### Removing foreign keys from partitioned tables
 

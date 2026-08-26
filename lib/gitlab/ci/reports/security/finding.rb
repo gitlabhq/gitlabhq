@@ -156,7 +156,7 @@ module Gitlab
           end
 
           def remediation_byte_offsets
-            remediations.map(&:byte_offsets).compact
+            remediations.filter_map(&:byte_offsets)
           end
 
           def raw_metadata

@@ -8,6 +8,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { mapState } from 'pinia';
+import { escape } from 'lodash-es';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
@@ -29,6 +30,7 @@ import { badgeState } from '~/merge_requests/badge_state';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useNotes } from '~/notes/store/legacy_notes';
 import titleSubscription from '../queries/title.subscription.graphql';
+import { EVENT_MR_TITLE_UPDATED } from '../constants';
 
 export default {
   name: 'StickyHeader',
@@ -158,12 +160,21 @@ export default {
       }
     },
   },
+  mounted() {
+    document.addEventListener(EVENT_MR_TITLE_UPDATED, this.handleTitleUpdated);
+  },
+  beforeDestroy() {
+    document.removeEventListener(EVENT_MR_TITLE_UPDATED, this.handleTitleUpdated);
+  },
   methods: {
     setStickyHeaderVisible(val) {
       this.isStickyHeaderVisible = val;
     },
     visitTab(e) {
       window.mrTabs?.clickTab(e);
+    },
+    handleTitleUpdated({ detail: { title } }) {
+      this.titleHtml = escape(title);
     },
   },
   titleInLinkSafeHtmlConfig,
@@ -196,6 +207,7 @@ export default {
           <a
             v-safe-html:[$options.titleInLinkSafeHtmlConfig]="titleHtml"
             href="#top"
+            data-testid="sticky-header-title"
             class="gl-my-0 gl-ml-1 gl-mr-2 gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-font-bold gl-text-default"
           ></a>
           <div class="gl-flex gl-items-center">

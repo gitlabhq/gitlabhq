@@ -53,6 +53,9 @@ module API
               desc: 'Number of bytes received (from client) during the git operation.'
             optional :key_id, type: Integer,
               desc: 'ID of the SSH key used for authentication. Present when a deploy key authenticates via SSH.'
+            optional :identifier, type: String,
+              desc: 'GL_ID of the actor performing the git operation, such as `user-1` or `deploy-token-1`.
+              Sent by Workhorse for HTTP operations and takes precedence over `username` when resolving the actor.'
             optional :username, type: String,
               desc: 'Username of the user performing the git operation.'
             optional :namespace_path, type: String,
