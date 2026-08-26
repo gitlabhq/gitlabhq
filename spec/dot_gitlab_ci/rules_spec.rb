@@ -288,5 +288,18 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         expect(jest_files - backstage_files).to be_empty
       end
     end
+
+    describe '.rails:rules:rspec-test-summary' do
+      # Must use *code-backstage-spec-patterns (not *code-backstage-patterns) so
+      # the summary job is scheduled for spec-only MRs - the exact case where it
+      # is most useful. See https://gitlab.com/gitlab-org/gitlab/-/issues/622058
+      it 'uses code-backstage-spec-patterns so it triggers on spec-only MRs' do
+        summary_rule = config['.rails:rules:rspec-test-summary']
+        default_refs_rule = summary_rule['rules'].find { |r| r.is_a?(Hash) && r['changes'] }
+        spec_patterns = config['.code-backstage-spec-patterns']
+
+        expect(default_refs_rule['changes']).to eq(spec_patterns)
+      end
+    end
   end
 end

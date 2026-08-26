@@ -130,11 +130,20 @@ For example, project A can add project B to project A's allowlist. CI/CD jobs
 in project B (the "allowed project") can now use CI/CD job tokens to
 authenticate API calls to access project A.
 
+When you add a group to the allowlist, the entry gives access to every project in that group,
+and its subgroups at any depth. GitLab evaluates the match each time a job uses the token,
+so projects added to a group later are included without changing the allowlist.
+
+For example, project A adds the group `example-group` to its allowlist. Jobs in
+`example-group/team-b/project-c` can then use a job token to access project A, as can jobs
+in any project created under `example-group` afterwards.
+
 Prerequisites:
 
 - You must have the Maintainer or Owner role for the current project. If the allowed project
   is internal or private, you must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role in that project.
-- You must not have more than 200 groups and projects added to the allowlist.
+- You must not have more than 200 groups on the allowlist, and not more than 200 projects.
+  The two limits are counted separately.
 
 To add a group or project to the allowlist:
 

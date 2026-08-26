@@ -6,6 +6,10 @@ module Mutations
       class Destroy < ::Mutations::SavedReplies::Destroy
         graphql_name 'SavedReplyDestroy'
 
+        authorize_granular_token permissions: :delete_saved_reply,
+          boundary: :user,
+          boundary_type: :user
+
         field :saved_reply, ::Types::Users::SavedReplyType,
           null: true,
           description: 'Saved reply after mutation.'

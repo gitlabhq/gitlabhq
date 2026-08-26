@@ -23,6 +23,17 @@ RSpec.describe 'Adding an AwardEmoji', feature_category: :shared do
     graphql_mutation_response(:award_emoji_add)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_award_emoji do
+    let(:user) { create(:user, developer_of: project) }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(:award_emoji_add,
+        { awardable_id: GitlabSchema.id_from_object(awardable).to_s, name: emoji_name }, 'errors')
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   shared_examples 'a mutation that does not create an AwardEmoji' do
     specify do
       expect do

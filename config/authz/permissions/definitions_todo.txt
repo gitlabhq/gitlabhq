@@ -142,7 +142,6 @@ admin_work_item_lifecycle
 admin_work_item_link
 assign_default_duo_group
 audit_event_definitions
-award_achievement
 award_emoji
 ban_group_member
 block_pipl_user
@@ -178,7 +177,6 @@ create_build_terminal
 create_container_image
 create_container_registry_protection_immutable_tag_rule
 create_coverage_fuzzing_corpus
-create_custom_emoji
 create_environment_terminal
 create_epic_tree_relation
 create_external_issue_link
@@ -212,7 +210,6 @@ create_sentry_issue
 create_subgroup
 create_task
 create_test_case
-create_timelog
 create_virtual_registry
 create_vulnerability_feedback
 create_vulnerability_state_transition
@@ -221,7 +218,6 @@ daily_statistics
 decline_terms
 delete_admin_role
 delete_conversation_thread
-delete_custom_emoji
 delete_group_link
 delete_group_stage
 delete_o11y_settings
@@ -648,7 +644,6 @@ update_sentry_issue
 update_subscription
 update_subscription_limit
 update_timelog
-update_user_achievement
 update_virtual_registry
 update_vulnerability
 update_vulnerability_feedback

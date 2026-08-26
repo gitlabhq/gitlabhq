@@ -1,0 +1,9 @@
+---
+name: award_achievement
+description: Grants the ability to award achievements to users
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - award_achievement

@@ -5,6 +5,12 @@ module Mutations
     class Toggle < Base
       graphql_name 'AwardEmojiToggle'
 
+      authorize_granular_token permissions: [:create_award_emoji, :delete_award_emoji],
+        boundaries: [
+          { boundary_argument: :awardable_id, boundary: :resource_parent, boundary_type: :project },
+          { boundary_argument: :awardable_id, boundary: :resource_parent, boundary_type: :group }
+        ]
+
       field :toggled_on, GraphQL::Types::Boolean,
         null: false,
         description: 'Indicates the status of the emoji. ' \

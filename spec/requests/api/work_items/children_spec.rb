@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private, reporters: user) }
-  let_it_be(:parent_work_item) { create(:work_item, :issue, project: project) }
+  let_it_be_with_reload(:parent_work_item) { create(:work_item, :issue, project: project) }
 
   let_it_be(:first_child) { create(:work_item, :task, project: project, title: 'First child') }
   let_it_be(:second_child) { create(:work_item, :task, project: project, title: 'Second child') }
@@ -289,5 +289,64 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
     end
 
     it_behaves_like 'detach child work item endpoint'
+  end
+
+  shared_context 'for reorder child work item' do
+    let_it_be(:unauthorized_user) { create(:user, guest_of: project) }
+    let_it_be(:non_sibling_work_item) { create(:work_item, :task, project: project) }
+
+    let_it_be(:unreadable_sibling_work_item) do
+      other_project = create(:project, :private)
+      work_item = create(:work_item, :task, project: other_project)
+      create(:parent_link, work_item: work_item, work_item_parent: parent_work_item, relative_position: 400)
+      work_item
+    end
+
+    let_it_be(:cross_boundary_sibling_work_item) do
+      other_project = create(:project, :private, reporters: user)
+      work_item = create(:work_item, :task, project: other_project, title: 'Cross-boundary child')
+      create(:parent_link, work_item: work_item, work_item_parent: parent_work_item, relative_position: 500)
+      work_item
+    end
+  end
+
+  describe 'PUT /projects/:id/-/work_items/:work_item_iid/children/:child_id' do
+    include_context 'for reorder child work item'
+
+    let(:path_for) do
+      ->(work_item_iid:, child_id:) { "/projects/#{project.id}/-/work_items/#{work_item_iid}/children/#{child_id}" }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_work_item, expected_success_status: :ok do
+      let(:boundary_object) { project }
+      let(:api_request_path) { path_for.call(work_item_iid: parent_work_item.iid, child_id: second_child.id) }
+      let(:request) do
+        put api(api_request_path, personal_access_token: pat), params: { move_before_id: first_child.id }
+      end
+    end
+
+    it_behaves_like 'reorder child work item endpoint'
+  end
+
+  describe 'PUT /namespaces/:id/-/work_items/:work_item_iid/children/:child_id' do
+    include_context 'for reorder child work item'
+
+    let(:project_namespace) { CGI.escape(project.project_namespace.full_path) }
+
+    let(:path_for) do
+      ->(work_item_iid:, child_id:) {
+        "/namespaces/#{project_namespace}/-/work_items/#{work_item_iid}/children/#{child_id}"
+      }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_work_item, expected_success_status: :ok do
+      let(:boundary_object) { project }
+      let(:api_request_path) { path_for.call(work_item_iid: parent_work_item.iid, child_id: second_child.id) }
+      let(:request) do
+        put api(api_request_path, personal_access_token: pat), params: { move_before_id: first_child.id }
+      end
+    end
+
+    it_behaves_like 'reorder child work item endpoint'
   end
 end

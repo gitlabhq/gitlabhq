@@ -5,6 +5,10 @@ module Mutations
     class UpdateUserAchievementPriorities < BaseMutation
       graphql_name 'UserAchievementPrioritiesUpdate'
 
+      authorize_granular_token permissions: :update_user_achievement,
+        boundary: :user,
+        boundary_type: :user
+
       field :user_achievements,
         [::Types::Achievements::UserAchievementType],
         null: false,

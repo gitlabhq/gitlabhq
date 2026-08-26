@@ -48,6 +48,21 @@ RSpec.describe 'DeleteUserCustomAttribute', feature_category: :user_profile do
   context 'when user is an admin', :enable_admin_mode do
     let(:current_user) { admin }
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_custom_attribute do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:mutation) do
+        graphql_mutation(:delete_user_custom_attribute,
+          { user_id: target_user.to_global_id.to_s, key: key }, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+
+      before do
+        create(:user_custom_attribute, user: target_user, key: key, value: 'engineering')
+      end
+    end
+
     context 'when custom attribute exists' do
       let!(:custom_attribute) do
         create(:user_custom_attribute, user: target_user, key: 'department', value: 'engineering')

@@ -5,6 +5,12 @@ module Mutations
     class Remove < Base
       graphql_name 'AwardEmojiRemove'
 
+      authorize_granular_token permissions: :delete_award_emoji,
+        boundaries: [
+          { boundary_argument: :awardable_id, boundary: :resource_parent, boundary_type: :project },
+          { boundary_argument: :awardable_id, boundary: :resource_parent, boundary_type: :group }
+        ]
+
       def resolve(args)
         awardable = authorized_find!(id: args[:awardable_id])
 

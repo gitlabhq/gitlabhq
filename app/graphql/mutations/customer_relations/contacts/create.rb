@@ -6,6 +6,10 @@ module Mutations
       class Create < Base
         graphql_name 'CustomerRelationsContactCreate'
 
+        authorize_granular_token permissions: :create_crm_contact,
+          boundary_argument: :group_id,
+          boundary_type: :group
+
         include Gitlab::Graphql::Authorize::AuthorizeResource
 
         argument :group_id, ::Types::GlobalIDType[::Group],

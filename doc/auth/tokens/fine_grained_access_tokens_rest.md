@@ -2441,6 +2441,8 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Project | `POST` | `/projects/:id/milestones/:milestone_id/promote` |
 | Update | Project | `PATCH` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Update | Project | `PATCH` | `/projects/:id/-/work_items/:work_item_iid` |
+| Update | Project | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
+| Update | Project | `PUT` | `/projects/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Project | `PUT` | `/projects/:id/boards/:board_id` |
 | Update | Project | `PUT` | `/projects/:id/boards/:board_id/lists/:list_id` |
 | Update | Project | `PUT` | `/projects/:id/issues/:issue_iid` |
@@ -2462,6 +2464,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid` |
 | Update | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id` |
 | Update | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/issues/:epic_issue_id` |
+| Update | Group | `PUT` | `/groups/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `PUT` | `/groups/:id/boards/:board_id` |
 | Update | Group | `PUT` | `/groups/:id/boards/:board_id/lists/:list_id` |
 | Update | Group | `PUT` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id` |
@@ -2469,6 +2472,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Group | `PUT` | `/groups/:id/epics/:noteable_id/notes/:note_id` |
 | Update | Group | `PUT` | `/groups/:id/milestones/:milestone_id` |
 | Update | Group | `PUT` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
+| Update | Group | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
 
@@ -3621,7 +3625,7 @@ Grants the ability to create and read offline exports.
 
 #### Placeholder Reassignment
 
-Grants the ability to create and read placeholder reassignments.
+Grants the ability to create, read, and update placeholder reassignments.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |

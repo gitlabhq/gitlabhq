@@ -30,6 +30,11 @@ module Mutations
 
       authorize :admin_achievement
 
+      authorize_granular_token permissions: :update_achievement,
+        boundary_argument: :achievement_id,
+        boundary: :namespace,
+        boundary_type: :group
+
       def resolve(args)
         achievement = authorized_find!(id: args[:achievement_id])
 

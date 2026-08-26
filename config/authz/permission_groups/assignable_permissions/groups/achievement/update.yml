@@ -1,0 +1,12 @@
+---
+name: update_achievement
+description: Grants the ability to update achievements, including the visibility
+  and order of achievements on the user's own profile
+boundaries:
+  - group
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - update_achievement
+  - update_user_achievement

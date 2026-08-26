@@ -24,6 +24,24 @@ module API
           render_api_error!(CHILD_NOT_FOUND_MESSAGE, 404)
         end
 
+        def find_sibling_work_item!(parent_work_item, child_id)
+          sibling_work_item = parent_work_item.work_item_children.find_by_id(child_id)
+
+          return sibling_work_item if sibling_work_item
+
+          render_api_error!(CHILD_NOT_FOUND_MESSAGE, 404)
+        end
+
+        # Used for a sibling that is only read (e.g. the reorder anchor), not linked/admin'd,
+        # so unlike find_sibling_work_item! this also enforces the current user can see it.
+        def find_readable_sibling_work_item!(parent_work_item, child_id)
+          sibling_work_item = find_sibling_work_item!(parent_work_item, child_id)
+
+          return sibling_work_item if can?(current_user, :read_work_item, sibling_work_item)
+
+          render_api_error!(CHILD_NOT_FOUND_MESSAGE, 404)
+        end
+
         def resolve_namespace_resource_parent!(resource_parent_id)
           namespace = find_namespace_by_path!(resource_parent_id.to_s, allow_project_namespaces: true)
           not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)

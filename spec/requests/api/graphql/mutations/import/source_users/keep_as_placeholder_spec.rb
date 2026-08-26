@@ -47,6 +47,12 @@ RSpec.describe 'Keep as placeholder an import source user', feature_category: :i
       expect(import_source_user['status']).to eq('KEEP_AS_PLACEHOLDER')
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_placeholder_reassignment do
+      let(:user) { current_user }
+      let(:boundary_object) { group }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when setting as keep_as_placeholder fails' do
       let(:import_source_user) { create(:import_source_user, :completed, namespace: group) }
 

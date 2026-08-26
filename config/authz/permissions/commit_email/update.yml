@@ -1,0 +1,3 @@
+---
+name: update_commit_email
+description: Grants the ability to set the commit email used for a namespace

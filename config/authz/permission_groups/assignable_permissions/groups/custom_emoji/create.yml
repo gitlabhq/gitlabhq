@@ -1,0 +1,9 @@
+---
+name: create_custom_emoji
+description: Grants the ability to create custom emoji
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - create_custom_emoji

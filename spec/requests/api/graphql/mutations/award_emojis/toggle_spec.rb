@@ -37,6 +37,18 @@ RSpec.describe 'Toggling an AwardEmoji', feature_category: :shared do
     create(:award_emoji, name: emoji_name, awardable: awardable, user: user)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL',
+    [:create_award_emoji, :delete_award_emoji] do
+    let(:user) { create(:user, developer_of: project) }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(:award_emoji_toggle,
+        { awardable_id: GitlabSchema.id_from_object(awardable).to_s, name: emoji_name }, 'errors')
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when the user has permission' do
     before_all do
       group.add_developer(current_user)

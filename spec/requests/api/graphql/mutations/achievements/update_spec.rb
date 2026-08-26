@@ -22,6 +22,15 @@ RSpec.describe Mutations::Achievements::Update, feature_category: :user_profile 
     graphql_mutation_response(:achievements_update)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_achievement do
+    let(:user) { maintainer }
+    let(:boundary_object) { group }
+    # Drop the avatar upload so the mutation can be posted as a regular
+    # GraphQL request instead of a multipart upload request.
+    let(:params) { { achievement_id: achievement_id, name: 'GitLab' } }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when the user does not have permission' do
     let(:current_user) { developer }
 

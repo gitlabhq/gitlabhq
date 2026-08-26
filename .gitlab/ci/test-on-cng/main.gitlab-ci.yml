@@ -96,7 +96,8 @@ include:
 
 .with-coverband-arg:
   variables:
-    EXTRA_DEPLOY_VALUES: --env COVERBAND_ENABLED=${COVERBAND_ENABLED}
+    # the layout reads BABEL_ENV at runtime to load coverage_persistence
+    EXTRA_DEPLOY_VALUES: --env COVERBAND_ENABLED=${COVERBAND_ENABLED} --env BABEL_ENV=${BABEL_ENV}
 
 # pipeline variables outrank job variables, so export it instead
 .without-coverband:

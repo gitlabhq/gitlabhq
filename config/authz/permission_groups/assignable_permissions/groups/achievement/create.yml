@@ -1,0 +1,9 @@
+---
+name: create_achievement
+description: Grants the ability to create achievements
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - create_achievement

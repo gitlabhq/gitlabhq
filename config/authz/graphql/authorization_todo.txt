@@ -3,11 +3,6 @@
 #
 # These should have `authorize_granular_token` directives added over time.
 # Do not add new entries to this file -- instead, add authorization for new mutations and types.
-mutation:AchievementsAward
-mutation:AchievementsCreate
-mutation:AchievementsDelete
-mutation:AchievementsRevoke
-mutation:AchievementsUpdate
 mutation:AdminClearDuoAvailability
 mutation:AdminSetDuoAvailability
 mutation:AiAction
@@ -47,9 +42,6 @@ mutation:ArtifactRegistryRoleRevoke
 mutation:AscpComponentCreate
 mutation:AscpScanCreate
 mutation:AscpSecurityContextCreate
-mutation:AwardEmojiAdd
-mutation:AwardEmojiRemove
-mutation:AwardEmojiToggle
 mutation:BoardEpicCreate
 mutation:BoardListCreate
 mutation:BoardListUpdateLimitMetrics
@@ -67,7 +59,6 @@ mutation:ContainerCacheEntryDelete
 mutation:CorpusCreate
 mutation:CreateAnnotation
 mutation:CreateBoard
-mutation:CreateCustomEmoji
 mutation:CreateEpic
 mutation:CreateIteration
 mutation:CreateRequirement
@@ -76,10 +67,6 @@ mutation:CustomFieldArchive
 mutation:CustomFieldCreate
 mutation:CustomFieldUnarchive
 mutation:CustomFieldUpdate
-mutation:CustomerRelationsContactCreate
-mutation:CustomerRelationsContactUpdate
-mutation:CustomerRelationsOrganizationCreate
-mutation:CustomerRelationsOrganizationUpdate
 mutation:DastOnDemandScanCreate
 mutation:DastProfileCreate
 mutation:DastProfileDelete
@@ -97,10 +84,8 @@ mutation:DastSiteValidationRevoke
 mutation:DeleteAnnotation
 mutation:DeleteConversationThread
 mutation:DeleteDuoWorkflowsWorkflow
-mutation:DeleteUserCustomAttribute
 mutation:DestroyBoard
 mutation:DestroyBoardList
-mutation:DestroyCustomEmoji
 mutation:DestroyEpicBoard
 mutation:DestroyPackages
 mutation:DevfileValidate
@@ -118,9 +103,6 @@ mutation:EpicMoveList
 mutation:EpicSetSubscription
 mutation:EpicTreeReorder
 mutation:ExportRequirements
-mutation:GroupSavedReplyCreate
-mutation:GroupSavedReplyDestroy
-mutation:GroupSavedReplyUpdate
 mutation:GroupSecretCreate
 mutation:GroupSecretDelete
 mutation:GroupSecretUpdate
@@ -128,13 +110,7 @@ mutation:GroupSecretsManagerDeprovision
 mutation:GroupSecretsManagerInitialize
 mutation:GroupSecretsPermissionDelete
 mutation:GroupSecretsPermissionUpdate
-mutation:ImportSourceUserCancelReassignment
-mutation:ImportSourceUserKeepAllAsPlaceholder
-mutation:ImportSourceUserKeepAsPlaceholder
 mutation:ImportSourceUserReassign
-mutation:ImportSourceUserResendNotification
-mutation:ImportSourceUserRetryFailedReassignment
-mutation:ImportSourceUserUndoKeepAsPlaceholder
 mutation:InstanceSecretsManagerEnroll
 mutation:InstanceSecretsManagerUnenroll
 mutation:IssueMoveList
@@ -149,9 +125,6 @@ mutation:NamespaceCiCdSettingsUpdate
 mutation:NamespaceSecretsManagerEnroll
 mutation:NamespaceSecretsManagerUnenroll
 mutation:PipelineExecutionSchedulePolicyTestRun
-mutation:ProjectSavedReplyCreate
-mutation:ProjectSavedReplyDestroy
-mutation:ProjectSavedReplyUpdate
 mutation:ProjectSecretCreate
 mutation:ProjectSecretDelete
 mutation:ProjectSecretUpdate
@@ -171,9 +144,6 @@ mutation:ResyncSecurityPolicies
 mutation:RunnerBulkPause
 mutation:RunnersExportUsage
 mutation:RunnersRegistrationTokenReset
-mutation:SavedReplyCreate
-mutation:SavedReplyDestroy
-mutation:SavedReplyUpdate
 mutation:ScanExecutionPolicyCommit
 mutation:SecretPermissionDelete
 mutation:SecretPermissionUpdate
@@ -201,8 +171,6 @@ mutation:SetLicenseScanningForCyclonedx
 mutation:SetPreReceiveSecretDetection
 mutation:SetSecretPushProtection
 mutation:SetValidityChecks
-mutation:TimelogCreate
-mutation:TimelogDelete
 mutation:UpdateBoard
 mutation:UpdateBoardEpicUserPreferences
 mutation:UpdateBoardList
@@ -210,13 +178,6 @@ mutation:UpdateDuoWorkflowToolCallApprovals
 mutation:UpdateEpic
 mutation:UpdateEpicBoardList
 mutation:UpdateRequirement
-mutation:UserAchievementPrioritiesUpdate
-mutation:UserAchievementsDelete
-mutation:UserAchievementsUpdate
-mutation:UserCalloutCreate
-mutation:UserCustomAttributeSet
-mutation:UserGroupCalloutCreate
-mutation:UserSetNamespaceCommitEmail
 mutation:VulnerabilitiesDismiss
 mutation:VulnerabilitiesRemoveAllFromProject
 mutation:WorkItemAddLinkedItems

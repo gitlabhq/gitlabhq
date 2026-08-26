@@ -698,6 +698,21 @@ Grants the ability to update knowledge graph settings.
 
 ### Groups resources
 
+#### Achievement
+
+Grants the ability to award, create, delete, revoke, and update achievements.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Award | Group | Mutation | `AchievementsAward` |
+| Create | Group | Mutation | `AchievementsCreate` |
+| Delete | Group | Mutation | `AchievementsDelete` |
+| Delete | Group | Mutation | `UserAchievementsDelete` |
+| Revoke | Group | Mutation | `AchievementsRevoke` |
+| Update | Group | Mutation | `AchievementsUpdate` |
+| Update | User | Mutation | `UserAchievementPrioritiesUpdate` |
+| Update | User | Mutation | `UserAchievementsUpdate` |
+
 #### Admin Member Role
 
 Grants the ability to create, delete, read, and update admin member roles.
@@ -708,6 +723,23 @@ Grants the ability to create, delete, read, and update admin member roles.
 | Delete | Instance | Mutation | `MemberRoleAdminDelete` |
 | Read | Instance | Type | `AdminMemberRole` |
 | Update | Instance | Mutation | `MemberRoleAdminUpdate` |
+
+#### Commit Email
+
+Grants the ability to update commit emails.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | User | Mutation | `UserSetNamespaceCommitEmail` |
+
+#### Custom Emoji
+
+Grants the ability to create and delete custom emojis.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `CreateCustomEmoji` |
+| Delete | Group | Mutation | `DestroyCustomEmoji` |
 
 #### Group
 
@@ -776,6 +808,15 @@ Grants the ability to create, delete, merge, read, and update topics.
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Read | Instance | Type | `Topic` |
+
+#### UI Notification
+
+Grants the ability to dismiss UI notifications.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Dismiss | Group | Mutation | `UserGroupCalloutCreate` |
+| Dismiss | User | Mutation | `UserCalloutCreate` |
 
 ### Integrations resources
 
@@ -874,6 +915,24 @@ Grants the ability to create, delete, and update timeline events.
 | Create | Project | Mutation | `TimelineEventTagCreate` |
 | Delete | Project | Mutation | `TimelineEventDestroy` |
 | Update | Project | Mutation | `TimelineEventUpdate` |
+
+### Note resources
+
+#### Saved Reply
+
+Grants the ability to create, delete, and update saved replies.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `ProjectSavedReplyCreate` |
+| Create | Group | Mutation | `GroupSavedReplyCreate` |
+| Create | User | Mutation | `SavedReplyCreate` |
+| Delete | Project | Mutation | `ProjectSavedReplyDestroy` |
+| Delete | Group | Mutation | `GroupSavedReplyDestroy` |
+| Delete | User | Mutation | `SavedReplyDestroy` |
+| Update | Project | Mutation | `ProjectSavedReplyUpdate` |
+| Update | Group | Mutation | `GroupSavedReplyUpdate` |
+| Update | User | Mutation | `SavedReplyUpdate` |
 
 ### Notifications resources
 
@@ -1140,6 +1199,39 @@ Grants the ability to create, delete, read, and update model versions.
 
 ### Project Planning resources
 
+#### Award Emoji
+
+Grants the ability to create and delete award emojis.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `AwardEmojiAdd` |
+| Create <sup>1</sup> | Project | Mutation | `AwardEmojiToggle` |
+| Create | Group | Mutation | `AwardEmojiAdd` |
+| Create <sup>1</sup> | Group | Mutation | `AwardEmojiToggle` |
+| Delete | Project | Mutation | `AwardEmojiRemove` |
+| Delete | Group | Mutation | `AwardEmojiRemove` |
+
+<sup>1</sup> Also requires the `Delete Award Emoji` permission.
+
+#### CRM Contact
+
+Grants the ability to create and update CRM contacts.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `CustomerRelationsContactCreate` |
+| Update | Group | Mutation | `CustomerRelationsContactUpdate` |
+
+#### CRM Organization
+
+Grants the ability to create and update CRM organizations.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `CustomerRelationsOrganizationCreate` |
+| Update | Group | Mutation | `CustomerRelationsOrganizationUpdate` |
+
 #### Custom Attribute
 
 Grants the ability to delete, read, and update custom attributes.
@@ -1148,8 +1240,10 @@ Grants the ability to delete, read, and update custom attributes.
 | ------ | ------ | ---- | ---- |
 | Delete | Project | Mutation | `DeleteProjectCustomAttribute` |
 | Delete | Group | Mutation | `DeleteGroupCustomAttribute` |
+| Delete | Instance | Mutation | `DeleteUserCustomAttribute` |
 | Update | Project | Mutation | `ProjectCustomAttributeSet` |
 | Update | Group | Mutation | `SetGroupCustomAttribute` |
+| Update | Instance | Mutation | `UserCustomAttributeSet` |
 
 #### Design
 
@@ -1174,6 +1268,16 @@ Grants the ability to create, delete, promote, read, subscribe, and update label
 | Read | Group | Type | `Label` |
 | Update | Project | Mutation | `LabelUpdate` |
 | Update | Group | Mutation | `LabelUpdate` |
+
+#### Timelog
+
+Grants the ability to create and delete timelogs.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `TimelogCreate` |
+| Create | Group | Mutation | `TimelogCreate` |
+| Delete | Project | Mutation | `TimelogDelete` |
 
 #### Work Item
 
@@ -1564,6 +1668,21 @@ Grants the ability to activate, approve, ban, block, create, deactivate, delete,
 | Read | User | Type | `MergeRequestParticipant` |
 | Read | User | Type | `MergeRequestReviewer` |
 | Read | User | Type | `UserCore` |
+
+### System Migration resources
+
+#### Placeholder Reassignment
+
+Grants the ability to create, read, and update placeholder reassignments.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Group | Mutation | `ImportSourceUserCancelReassignment` |
+| Update | Group | Mutation | `ImportSourceUserKeepAllAsPlaceholder` |
+| Update | Group | Mutation | `ImportSourceUserKeepAsPlaceholder` |
+| Update | Group | Mutation | `ImportSourceUserResendNotification` |
+| Update | Group | Mutation | `ImportSourceUserRetryFailedReassignment` |
+| Update | Group | Mutation | `ImportSourceUserUndoKeepAsPlaceholder` |
 
 ### Value Stream resources
 

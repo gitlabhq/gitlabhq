@@ -62,7 +62,7 @@ module API
               notifications_allow_participant_fallback: true,
               status: status
           else
-            render_api_error!(Array(result[:message]).join(', '), result[:http_status] || :unprocessable_entity)
+            render_api_error_from_response(result)
           end
         end
 
@@ -72,15 +72,15 @@ module API
           end
         end
 
-        def render_child_response(result, work_item)
+        def render_child_response(result, work_item, status_code:)
           if result[:status] == :success
-            status :created
+            status status_code
             present work_item,
               with: Entities::WorkItemBasic,
               current_user: current_user,
               notifications_allow_participant_fallback: true
           else
-            render_api_error!(Array(result[:message]).join(', '), result[:http_status] || :unprocessable_entity)
+            render_api_error_from_response(result)
           end
         end
 
@@ -223,6 +223,10 @@ module API
             .reject(&:blank?)
             .filter_map { |value| available_keys[value] }
             .uniq
+        end
+
+        def render_api_error_from_response(response)
+          render_api_error!(Array(response[:message]).join(', '), response[:http_status] || :unprocessable_entity)
         end
       end
     end

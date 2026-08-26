@@ -18,6 +18,13 @@ RSpec.describe 'Create a user callout', feature_category: :navigation do
   let(:mutation) { graphql_mutation(:userCalloutCreate, input) }
   let(:mutation_response) { graphql_mutation_response(:userCalloutCreate) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :dismiss_ui_notification do
+    let(:user) { current_user }
+    let(:boundary_object) { :user }
+    let(:mutation) { graphql_mutation(:userCalloutCreate, input, 'errors') }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'creates user callout' do
     freeze_time do
       post_graphql_mutation(mutation, current_user: current_user)

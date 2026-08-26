@@ -1,0 +1,9 @@
+---
+name: update_commit_email
+description: Grants the ability to set the commit email used for a namespace
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - update_commit_email

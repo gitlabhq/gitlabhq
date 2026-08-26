@@ -18,6 +18,17 @@ RSpec.describe 'Deletion of custom emoji', feature_category: :shared do
     graphql_mutation(:destroy_custom_emoji, variables)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_custom_emoji do
+    let(:user) { create(:user, owner_of: group) }
+    let(:boundary_object) { group }
+    let(:target_custom_emoji) { create(:custom_emoji, group: group, creator: user) }
+    let(:mutation) do
+      graphql_mutation(:destroy_custom_emoji, { id: GitlabSchema.id_from_object(target_custom_emoji).to_s }, 'errors')
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   shared_examples 'does not delete custom emoji' do
     it 'does not change count' do
       expect { post_graphql_mutation(mutation, current_user: current_user) }.not_to change { CustomEmoji.count }

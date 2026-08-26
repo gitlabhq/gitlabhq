@@ -6,6 +6,11 @@ module Mutations
       class Update < Base
         graphql_name 'CustomerRelationsContactUpdate'
 
+        authorize_granular_token permissions: :update_crm_contact,
+          boundary_argument: :id,
+          boundary: :group,
+          boundary_type: :group
+
         argument :id, ::Types::GlobalIDType[::CustomerRelations::Contact],
           required: true,
           description: 'Global ID of the contact.'

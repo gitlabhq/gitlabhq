@@ -27,6 +27,12 @@ module Mutations
 
       authorize :create_timelog
 
+      authorize_granular_token permissions: :create_timelog,
+        boundaries: [
+          { boundary_argument: :issuable_id, boundary: :resource_parent, boundary_type: :project },
+          { boundary_argument: :issuable_id, boundary: :resource_parent, boundary_type: :group }
+        ]
+
       def resolve(issuable_id:, time_spent:, summary:, **args)
         return { timelog: nil, errors: [_('Time spent must start with a number.')] } unless time_spent.match?(/\A\d/)
 

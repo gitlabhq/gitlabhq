@@ -6,6 +6,11 @@ module Mutations
       class Update < Mutations::BaseMutation
         graphql_name 'CustomerRelationsOrganizationUpdate'
 
+        authorize_granular_token permissions: :update_crm_organization,
+          boundary_argument: :id,
+          boundary: :group,
+          boundary_type: :group
+
         include ResolvesIds
 
         authorize :admin_crm_organization

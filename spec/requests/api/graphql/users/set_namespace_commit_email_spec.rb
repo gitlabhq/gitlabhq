@@ -38,6 +38,17 @@ RSpec.describe 'Setting namespace commit email', feature_category: :user_profile
     graphql_mutation_response(:user_set_namespace_commit_email)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_commit_email do
+    let(:user) { current_user }
+    let(:boundary_object) { :user }
+    let(:mutation) do
+      graphql_mutation(:user_set_namespace_commit_email,
+        { namespace_id: namespace_id, email_id: email_id }, 'errors')
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   shared_examples 'success' do
     it 'creates a namespace commit email' do
       post_graphql_mutation(mutation, current_user: current_user)
