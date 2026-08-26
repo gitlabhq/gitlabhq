@@ -151,6 +151,85 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
         end
       end
 
+      context 'when a token holds more than the cap (as accumulated in production)' do
+        let(:current_ip_address) { '123.12.123.9' }
+
+        before do
+          allow(Gitlab::IpAddressState).to receive(:current).and_return(current_ip_address)
+
+          1.upto(7) do |i|
+            personal_access_token.last_used_ips << Authn::PersonalAccessTokenLastUsedIp.new(
+              organization: personal_access_token.organization,
+              ip_address: "127.0.0.#{i}", created_at: i.days.ago)
+          end
+        end
+
+        it 'trims down to the cap in one shot, keeping the most recent ips' do
+          service_execution
+
+          expect(personal_access_token.last_used_ips.count).to eq(described_class::NUM_IPS_TO_STORE)
+          expect(
+            Authn::PersonalAccessTokenLastUsedIp
+              .where(personal_access_token_id: personal_access_token.id, ip_address: current_ip_address)
+              .exists?
+          ).to be_truthy
+        end
+
+        # Regression: the trim must not depend on a separate count read. That read
+        # ran inside `without_sticky_writes` and could be served by a replica
+        # lagging the just-appended row, undercount, and skip the trim.
+        it 'trims without a separate count read' do
+          recorder = ActiveRecord::QueryRecorder.new { service_execution }
+          ip_table_queries = recorder.log.grep(/personal_access_token_last_used_ips/)
+
+          expect(ip_table_queries).to include(a_string_matching(/\ADELETE FROM/))
+          expect(ip_table_queries).not_to include(a_string_matching(/SELECT COUNT\(/i))
+        end
+      end
+
+      context 'when a token already holds duplicate IPs' do
+        let(:current_ip_address) { '203.0.113.99' }
+
+        before do
+          allow(Gitlab::IpAddressState).to receive(:current).and_return(current_ip_address)
+
+          # Two IPs recorded twice (an old and a newer occurrence each), plus four
+          # more unique IPs, so the token holds duplicates and exceeds the cap.
+          [
+            ['10.0.0.1', 10.days.ago],
+            ['10.0.0.1', 1.day.ago],
+            ['10.0.0.2', 9.days.ago],
+            ['10.0.0.2', 2.days.ago],
+            ['10.0.0.3', 3.days.ago],
+            ['10.0.0.4', 4.days.ago],
+            ['10.0.0.5', 5.days.ago],
+            ['10.0.0.6', 6.days.ago]
+          ].each do |ip, created_at|
+            personal_access_token.last_used_ips << Authn::PersonalAccessTokenLastUsedIp.new(
+              organization: personal_access_token.organization,
+              ip_address: ip, created_at: created_at)
+          end
+        end
+
+        it 'keeps only the most recent occurrence of each IP, capped at NUM_IPS_TO_STORE unique IPs' do
+          service_execution
+
+          rows = Authn::PersonalAccessTokenLastUsedIp.where(personal_access_token_id: personal_access_token.id)
+
+          # No duplicates remain and the cap holds.
+          expect(rows.count).to eq(described_class::NUM_IPS_TO_STORE)
+          expect(rows.distinct.count(:ip_address)).to eq(described_class::NUM_IPS_TO_STORE)
+
+          # The five most recent distinct IPs survive; the two oldest are dropped.
+          expect(rows.pluck(:ip_address).map(&:to_s))
+            .to match_array([current_ip_address, '10.0.0.1', '10.0.0.2', '10.0.0.3', '10.0.0.4'])
+
+          # The surviving 10.0.0.1 row is its newest occurrence, not the stale one.
+          surviving = rows.find_by(ip_address: '10.0.0.1')
+          expect(surviving.created_at).to be_within(1.second).of(1.day.ago)
+        end
+      end
+
       it 'obtains an exclusive lease before updating' do
         Gitlab::Redis::SharedState.with do |redis|
           expect(redis).to receive(:set).with(

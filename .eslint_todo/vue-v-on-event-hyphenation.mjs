@@ -6,7 +6,6 @@ export default {
     'app/assets/javascripts/ci/catalog/components/cells/two_source_browse.vue',
     'app/assets/javascripts/ci/catalog/components/list/catalog_search.vue',
     'app/assets/javascripts/credentials/components/credentials_filter_sort_app.vue',
-    'app/assets/javascripts/diffs/components/app.vue',
     'app/assets/javascripts/environments/environment_details/components/deployment_history.vue',
     'app/assets/javascripts/groups_projects/components/filtered_search_and_sort.vue',
     'app/assets/javascripts/ide/components/oauth_application_callout.vue',

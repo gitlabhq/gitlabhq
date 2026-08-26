@@ -633,7 +633,7 @@ export default {
       }
 
       if (!this.isNotesFetched) {
-        notesEventHub.$emit('fetchNotesData');
+        notesEventHub.$emit('fetch-notes-data');
       }
     },
     setDiscussions() {
@@ -862,6 +862,7 @@ export default {
         />
         <div class="gl-col-md-auto diff-files-holder gl-px-5">
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />
+          <!-- eslint-disable vue/v-on-event-hyphenation -- GlAlert emits the camelCase `primaryAction` event -->
           <gl-alert
             v-if="isBatchLoadingError"
             variant="danger"
@@ -871,6 +872,7 @@ export default {
           >
             {{ gitalyErrorMessage || __("Error: Couldn't load some or all of the changes.") }}
           </gl-alert>
+          <!-- eslint-enable vue/v-on-event-hyphenation -->
           <div v-if="isBatchLoading && !isBatchLoadingError" class="loading">
             <gl-loading-icon size="lg" />
           </div>

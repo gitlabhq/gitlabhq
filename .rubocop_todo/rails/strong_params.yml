@@ -3,7 +3,6 @@
 Rails/StrongParams:
   Exclude:
     - 'app/controllers/concerns/oauth_applications.rb'
-    - 'app/controllers/concerns/params_backward_compatibility.rb'
     - 'app/controllers/groups/autocomplete_sources_controller.rb'
     - 'app/controllers/groups/children_controller.rb'
     - 'app/controllers/groups/deploy_tokens_controller.rb'

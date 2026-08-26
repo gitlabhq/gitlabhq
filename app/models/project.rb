@@ -154,6 +154,7 @@ class Project < ApplicationRecord
 
   after_validation :check_pending_delete
 
+  before_save :ensure_project_namespace_in_sync # in case validation is skipped
   before_save :ensure_runners_token
 
   after_create -> { create_or_load_association(:project_feature) }

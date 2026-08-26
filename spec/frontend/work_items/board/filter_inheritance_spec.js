@@ -2,6 +2,7 @@ import { resolveInheritedWidgetsDraft } from '~/work_items/board/filter_inherita
 import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
 import searchMilestonesQuery from '~/work_items/board/graphql/search_milestones.query.graphql';
+import inheritedParentQuery from '~/work_items/board/graphql/inherited_parent.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -360,6 +361,92 @@ describe('board filter inheritance', () => {
         fullPath,
         isGroup: false,
         filters: { milestoneTitle: 'Sprint 1' },
+      });
+
+      expect(result).toEqual({});
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe('parent', () => {
+    const epicId = 'gid://gitlab/WorkItem/7';
+    const epic = {
+      __typename: 'WorkItem',
+      id: epicId,
+      iid: '7',
+      title: 'Roadmap',
+      titleHtml: 'Roadmap',
+      webUrl: '/groups/group/-/work_items/7',
+      confidential: false,
+      namespace: {
+        __typename: 'Group',
+        id: 'gid://gitlab/Group/1',
+        fullPath: 'group',
+      },
+      workItemType: {
+        __typename: 'WorkItemType',
+        id: 'gid://gitlab/WorkItems::Type/6',
+        name: 'Epic',
+        iconName: 'issue-type-epic',
+      },
+    };
+
+    const parentResponse = (workItem) => ({ data: { workItem } });
+
+    it('returns an empty draft and runs no query when no parent filter is active', async () => {
+      const apolloClient = createClient();
+
+      const result = await resolveInheritedWidgetsDraft({
+        apolloClient,
+        fullPath,
+        isGroup: false,
+        filters: {},
+      });
+
+      expect(result).toEqual({});
+      expect(apolloClient.query).not.toHaveBeenCalled();
+    });
+
+    it('resolves the filtered parent id into a hierarchy widget in the create flow', async () => {
+      const apolloClient = createClient(() => Promise.resolve(parentResponse(epic)));
+
+      const result = await resolveInheritedWidgetsDraft({
+        apolloClient,
+        fullPath,
+        isGroup: false,
+        filters: { hierarchyFilters: { parentIds: [epicId], includeDescendantWorkItems: true } },
+      });
+
+      expect(apolloClient.query).toHaveBeenCalledWith({
+        query: inheritedParentQuery,
+        variables: { id: epicId },
+      });
+      expect(result).toEqual({ HIERARCHY: { parent: epic } });
+    });
+
+    it('ignores a wildcard parent filter', async () => {
+      const apolloClient = createClient();
+
+      const result = await resolveInheritedWidgetsDraft({
+        apolloClient,
+        fullPath,
+        isGroup: false,
+        filters: { hierarchyFilters: { parentWildcardId: 'NONE' } },
+      });
+
+      expect(result).toEqual({});
+      expect(apolloClient.query).not.toHaveBeenCalled();
+    });
+
+    it('captures the error and yields an empty draft when the query fails', async () => {
+      const error = new Error('error');
+      const apolloClient = createClient(() => Promise.reject(error));
+
+      const result = await resolveInheritedWidgetsDraft({
+        apolloClient,
+        fullPath,
+        isGroup: false,
+        filters: { hierarchyFilters: { parentIds: [epicId] } },
       });
 
       expect(result).toEqual({});

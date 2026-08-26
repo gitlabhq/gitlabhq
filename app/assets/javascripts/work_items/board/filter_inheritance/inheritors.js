@@ -1,12 +1,14 @@
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
   WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_MILESTONE,
 } from '~/work_items/constants';
 import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
 import searchMilestonesQuery from '../graphql/search_milestones.query.graphql';
+import inheritedParentQuery from '../graphql/inherited_parent.query.graphql';
 
 /**
  * When you create a work item from a board column, it should pick up both the
@@ -141,4 +143,29 @@ const milestoneInheritor = {
   },
 };
 
-export const FILTER_INHERITORS = [labelsInheritor, assigneesInheritor, milestoneInheritor];
+/** @type {FilterInheritor} */
+const parentInheritor = {
+  widgetType: WIDGET_TYPE_HIERARCHY,
+
+  async resolve({ apolloClient, filters }) {
+    const [id] = normalizeFilterValue(filters?.hierarchyFilters?.parentIds);
+    if (!id) {
+      return {};
+    }
+
+    const { data } = await apolloClient.query({
+      query: inheritedParentQuery,
+      variables: { id },
+    });
+
+    const parent = data?.workItem;
+    return parent ? { [WIDGET_TYPE_HIERARCHY]: { parent } } : {};
+  },
+};
+
+export const FILTER_INHERITORS = [
+  labelsInheritor,
+  assigneesInheritor,
+  milestoneInheritor,
+  parentInheritor,
+];

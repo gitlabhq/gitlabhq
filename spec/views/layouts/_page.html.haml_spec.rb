@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/_page', feature_category: :geo_replication do
+RSpec.describe 'layouts/_page', :with_current_organization, feature_category: :geo_replication do
   let(:user) { build_stubbed(:user) }
 
   before do

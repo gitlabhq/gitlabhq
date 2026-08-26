@@ -354,10 +354,66 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
           project.save!
         end
 
-        it 'returns an error', :aggregate_failures do
+        it 'returns an error without a reason', :aggregate_failures do
           expect(result[:status]).to eq :error
           expect(result[:message])
             .to eq('The merge request has no changes to merge after rebasing onto the target branch')
+          expect(result.reason).to be_nil
+        end
+      end
+
+      # These contexts intentionally run the real Gitaly RPCs: the conflict
+      # classification matches Gitaly's message text, so they fail if that
+      # wording ever changes.
+      context 'when the source conflicts with the first parent ref' do
+        let(:source_branch) { 'conflict-source' }
+        let(:first_parent_ref) { 'conflict-target' }
+
+        before_all do
+          project.repository.add_branch(user, 'conflict-source', project.default_branch_or_main)
+          project.repository.add_branch(user, 'conflict-target', project.default_branch_or_main)
+
+          project.repository.update_file(
+            user,
+            'README.md',
+            'source side',
+            message: 'Source side change',
+            branch_name: 'conflict-source'
+          )
+
+          project.repository.update_file(
+            user,
+            'README.md',
+            'target side',
+            message: 'Target side change',
+            branch_name: 'conflict-target'
+          )
+        end
+
+        context 'with a fast-forward project (conflict raised by the rebase RPC)' do
+          before do
+            project.merge_method = :ff
+            project.save!
+          end
+
+          it 'returns an error with the rebase conflict reason', :aggregate_failures do
+            expect(result[:status]).to eq :error
+            expect(result.reason).to eq(described_class::REBASE_CONFLICT)
+          end
+        end
+
+        context 'with a merged commit project (no rebase step, merge-to-ref failure)' do
+          before do
+            project.merge_method = :merge
+            project.save!
+          end
+
+          # UserMergeToRef reports one generic message for all failures, so a
+          # conflict there is deliberately not classified.
+          it 'returns an error without a reason', :aggregate_failures do
+            expect(result[:status]).to eq :error
+            expect(result.reason).to be_nil
+          end
         end
       end
 

@@ -30617,6 +30617,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Agent session"
 msgstr ""
 
+msgid "DuoAgentsPlatform|All"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Already set up"
 msgstr ""
 
@@ -30857,6 +30860,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Modify plan"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Needs a decision"
+msgstr ""
+
 msgid "DuoAgentsPlatform|New agent sessions will appear here."
 msgstr ""
 
@@ -30879,6 +30885,9 @@ msgid "DuoAgentsPlatform|No runner is available to this project. You can still p
 msgstr ""
 
 msgid "DuoAgentsPlatform|No triggers yet"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Nothing needs you right now"
 msgstr ""
 
 msgid "DuoAgentsPlatform|On a schedule"
@@ -30969,6 +30978,9 @@ msgid "DuoAgentsPlatform|Search issues"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Security Agent"
+msgstr ""
+
+msgid "DuoAgentsPlatform|See what’s running"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select a service account"
@@ -31149,6 +31161,9 @@ msgid "DuoAgentsPlatform|You do not have permission to cancel this session."
 msgstr ""
 
 msgid "DuoAgentsPlatform|You don't have permission to use GitLab Duo Agent Platform in this %{namespaceType}. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Your agents are grinding away. The moment one of them wants a decision, it lands here."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Your project environment is healthy"
@@ -56294,6 +56309,9 @@ msgid "Organization|Learn how Organizations work"
 msgstr ""
 
 msgid "Organization|Manage"
+msgstr ""
+
+msgid "Organization|Manage organization"
 msgstr ""
 
 msgid "Organization|My organization"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/group', feature_category: :groups_and_projects do
+RSpec.describe 'layouts/group', :with_current_organization, feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group) } # rubocop:todo RSpec/FactoryBot/AvoidCreate
   let(:invite_member) { true }
   let(:user) { build_stubbed(:user) }

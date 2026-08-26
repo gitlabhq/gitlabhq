@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/profile' do
+RSpec.describe 'layouts/profile', :with_current_organization do
   let(:user) { create(:user) }
 
   before do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/application' do
+RSpec.describe 'layouts/application', :with_current_organization do
   context 'when user is signed in' do
     let(:user) { create(:user) }
 

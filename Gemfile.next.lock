@@ -640,9 +640,6 @@ GEM
     dotenv (2.7.6)
     drb (2.2.3)
     dry-cli (1.0.0)
-    dry-configurable (1.4.0)
-      dry-core (~> 1.0)
-      zeitwerk (~> 2.6)
     dry-core (1.1.0)
       concurrent-ruby (~> 1.0)
       logger
@@ -1109,9 +1106,8 @@ GEM
       signet (>= 0.16, < 2.a)
     gpgme (2.0.26)
       mini_portile2 (~> 2.7)
-    grape (3.2.1)
-      activesupport (>= 7.2)
-      dry-configurable
+    grape (2.4.0)
+      activesupport (>= 6.1)
       dry-types (>= 1.1)
       mustermann-grape (~> 1.1.0)
       rack (>= 2)
@@ -2578,7 +2574,7 @@ DEPENDENCIES
   google-protobuf (>= 3.25, < 5.0)
   googleauth (~> 1.14)
   gpgme (~> 2.0.24)
-  grape (~> 3.2)
+  grape (~> 2.4)
   grape-entity (~> 1.1.0)
   grape-path-helpers (~> 2.1)
   grape-swagger (~> 2.1.4)
@@ -2947,7 +2943,6 @@ CHECKSUMS
   dotenv (2.7.6) sha256=2451ed5e8e43776d7a787e51d6f8903b98e446146c7ad143d5678cc2c409d547
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
   dry-cli (1.0.0) sha256=28ead169f872954dd08910eb8ead59cf86cd18b4aab321e8eeefe945749569f0
-  dry-configurable (1.4.0) sha256=e35d1b5f3c081753ef361f564919db79000f32cfa6f20ee3a3ba5921b41b73ce
   dry-core (1.1.0) sha256=0903821a9707649a7da545a2cd88e20f3a663ab1c5288abd7f914fa7751ab195
   dry-inflector (1.2.0) sha256=22f5d0b50fd57074ae57e2ca17e3b300e57564c218269dcf82ff3e42d3f38f2e
   dry-logic (1.6.0) sha256=da6fedbc0f90fc41f9b0cc7e6f05f5d529d1efaef6c8dcc8e0733f685745cea2
@@ -3122,7 +3117,7 @@ CHECKSUMS
   googleapis-common-protos-types (1.23.0) sha256=992e740a523794d9fc5f29a504465d8fc737aaa16c930fe7228e3346860faf0a
   googleauth (1.14.0) sha256=62e7de11791890c3d3dc70582dfd9ab5516530e4e4f56d96451fd62c76475149
   gpgme (2.0.26) sha256=1aebfd2eb83b745341e6f416f318597568af5ad4d7d1f55bfab4f1078123abaa
-  grape (3.2.1) sha256=448072f55904e5a4dca2e3781f0a373942514be65402cafb6177f5bc73db1b94
+  grape (2.4.0) sha256=3d59673e80f11d49ba86270b78344e5348dc057b318c2bbc1c01f3532f9b6aec
   grape-entity (1.1.0) sha256=ab6a1004e57791834e8497d5e85a3c101b72144d8ca31462a26e6d0a380c3d89
   grape-path-helpers (2.1.0) sha256=908155cdc6e33fbca28bd44b4e1467d904fe36b45ef61bee62b7bfa28f5c7726
   grape-swagger (2.1.4) sha256=3279351bebafbca24e0331b9f7c6dbfefb262042a1f3d224ed41cf2be4aee35b

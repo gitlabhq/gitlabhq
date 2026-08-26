@@ -73,16 +73,29 @@ module PersonalAccessTokens
         organization: @personal_access_token.organization,
         ip_address: Gitlab::IpAddressState.current)
 
-      ip_count = @personal_access_token.last_used_ips.where(
-        personal_access_token_id: @personal_access_token.id).count
+      # Keep the NUM_IPS_TO_STORE most recent *distinct* IPs, then delete the
+      # rest in a single DELETE whose subquery runs on the primary. The
+      # DISTINCT ON collapses duplicate IPs to their newest row first, so a
+      # token that accumulated repeat IPs self-heals down to unique addresses on
+      # its next append. This must not depend on a separate count read: this
+      # block runs inside `without_sticky_writes`, so a `.count` here can be
+      # served by a replica that lags the row just appended above, undercount,
+      # and wrongly skip the trim (the cause of tokens accumulating more than
+      # NUM_IPS_TO_STORE IPs).
+      newest_per_ip = @personal_access_token.last_used_ips
+        .select(
+          'DISTINCT ON (ip_address) ' \
+            'personal_access_token_last_used_ips.id, personal_access_token_last_used_ips.created_at'
+        )
+        .order('ip_address ASC, created_at DESC, id DESC')
 
-      return unless ip_count > NUM_IPS_TO_STORE
+      ids_to_keep = Authn::PersonalAccessTokenLastUsedIp
+        .from(newest_per_ip, :personal_access_token_last_used_ips)
+        .order('created_at DESC, id DESC')
+        .limit(NUM_IPS_TO_STORE)
+        .select(:id)
 
-      @personal_access_token
-        .last_used_ips
-        .order(created_at: :asc)
-        .limit(ip_count - NUM_IPS_TO_STORE)
-        .delete_all
+      @personal_access_token.last_used_ips.where.not(id: ids_to_keep).delete_all
     end
 
     strong_memoize_attr def last_used_ip_exists?

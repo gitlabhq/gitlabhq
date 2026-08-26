@@ -209,12 +209,19 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
           expect(strategy.execute_git_merge!).to eq({ commit_sha: '1234' })
         end
 
-        context 'and the create ref service returns an error' do
+        context 'and the create ref service returns a rebase conflict error' do
           let(:create_ref_service_response) do
-            instance_double(ServiceResponse, error?: true, message: 'rebase collapsed', payload: { commit_sha: '11' })
+            instance_double(
+              ServiceResponse,
+              error?: true,
+              message: '9:failed to rebase deadbeef on cafe1234 while preparing ' \
+                'refs/mr/1/rebase_on_merge due to conflict',
+              reason: MergeRequests::CreateRefService::REBASE_CONFLICT,
+              payload: { commit_sha: '11' }
+            )
           end
 
-          it 'raises a strategy error and does not attempt the fast-forward merge' do
+          it 'raises an actionable strategy error and does not attempt the fast-forward merge' do
             expect_next_instance_of(MergeRequests::CreateRefService) do |instance|
               expect(instance).to receive(:execute).and_return(create_ref_service_response)
             end
@@ -222,7 +229,34 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
             expect(merge_request.target_project.repository).not_to receive(:ff_merge)
 
             expect { strategy.execute_git_merge! }
-              .to raise_error(MergeRequests::MergeStrategies::StrategyError, 'rebase collapsed')
+              .to raise_error(
+                MergeRequests::MergeStrategies::StrategyError,
+                'Automatic rebase before merge failed because the source branch conflicts ' \
+                  'with the target branch. Rebase the source branch manually and resolve the conflicts.'
+              )
+          end
+        end
+
+        context 'and the create ref service returns a non-conflict error' do
+          let(:create_ref_service_response) do
+            instance_double(
+              ServiceResponse,
+              error?: true,
+              message: '9:some internal gitaly failure',
+              reason: nil,
+              payload: {}
+            )
+          end
+
+          it 'raises a non-strategy error so the generic merge error is shown' do
+            expect_next_instance_of(MergeRequests::CreateRefService) do |instance|
+              expect(instance).to receive(:execute).and_return(create_ref_service_response)
+            end
+
+            expect(merge_request.target_project.repository).not_to receive(:ff_merge)
+
+            expect { strategy.execute_git_merge! }
+              .to raise_error(RuntimeError, '9:some internal gitaly failure')
           end
         end
 

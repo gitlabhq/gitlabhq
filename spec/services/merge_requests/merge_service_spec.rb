@@ -737,6 +737,25 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         )
       end
 
+      it 'logs and saves the strategy message if the merge strategy fails during the git merge' do
+        error_message = 'Automatic rebase before merge failed: there are conflicting files'
+
+        allow_next_instance_of(MergeRequests::MergeStrategies::FromSourceBranch) do |strategy|
+          allow(strategy).to receive(:execute_git_merge!)
+            .and_raise(MergeRequests::MergeStrategies::StrategyError, error_message)
+        end
+
+        service.execute(merge_request)
+
+        expect(merge_request.merge_error).to eq(error_message)
+        expect(Gitlab::AppLogger).to have_received(:error).with(
+          hash_including(
+            merge_request_info: merge_request.to_reference(full: true),
+            message: a_string_matching(error_message)
+          )
+        )
+      end
+
       it 'logs and saves error if user is not authorized' do
         stub_exclusive_lease
 

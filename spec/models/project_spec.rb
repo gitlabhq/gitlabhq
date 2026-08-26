@@ -427,6 +427,25 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
           expect(project.reload.project_namespace).to be_in_sync_with_project(project)
         end
+
+        it 'syncs changed attributes even when validation is skipped' do
+          project.assign_attributes(name: "New project name", path: "new_project_path")
+          project.save!(validate: false)
+
+          expect(project.reload.project_namespace).to be_in_sync_with_project(project)
+        end
+
+        it 'syncs namespace_id to the project namespace parent_id and traversal_ids when validation is skipped' do
+          new_parent = create(:group)
+
+          project.assign_attributes(namespace_id: new_parent.id)
+          project.save!(validate: false)
+
+          project_namespace = project.reload.project_namespace
+          expect(project_namespace).to be_in_sync_with_project(project)
+          expect(project_namespace.parent_id).to eq(new_parent.id)
+          expect(project_namespace.traversal_ids).to match_array([*new_parent.traversal_ids, project_namespace.id])
+        end
       end
     end
 

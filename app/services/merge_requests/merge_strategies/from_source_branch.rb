@@ -46,7 +46,15 @@ module MergeRequests
             merge_params: merge_params
           ).execute
 
-          raise_error(create_ref_result.message) if create_ref_result.error?
+          if create_ref_result.error?
+            unless create_ref_result.reason == MergeRequests::CreateRefService::REBASE_CONFLICT
+              # Non-conflict failures keep the generic widget message; the raw message is only logged
+              raise create_ref_result.message
+            end
+
+            raise_error('Automatic rebase before merge failed because the source branch conflicts ' \
+              'with the target branch. Rebase the source branch manually and resolve the conflicts.')
+          end
 
           payload = create_ref_result.payload
 
