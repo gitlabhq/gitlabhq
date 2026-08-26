@@ -88795,6 +88795,9 @@ msgstr ""
 msgid "Vulnerability|Namespace:"
 msgstr ""
 
+msgid "Vulnerability|No available solution"
+msgstr ""
+
 msgid "Vulnerability|None"
 msgstr ""
 
