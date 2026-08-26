@@ -4,8 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::CleanupService, feature_category: :gitaly do
   let(:project) { create(:project) }
-  let(:storage_name) { project.repository_storage }
-  let(:relative_path) { project.disk_path + '.git' }
   let(:client) { described_class.new(project.repository) }
 
   describe '#apply_bfg_object_map_stream' do

@@ -7,6 +7,30 @@ RSpec.describe Gitlab::Database, feature_category: :database do
     stub_const('MigrationTest', Class.new { include Gitlab::Database })
   end
 
+  describe '.clear_memoization!' do
+    it 'clears memoized variables' do
+      memos = %i[
+        @all_database_connections
+        @all_gitlab_schemas
+        @database_base_models
+        @database_base_models_with_gitlab_shared
+        @database_base_models_using_load_balancing
+        @gitlab_base_models
+        @schemas_to_base_models
+      ]
+
+      memos.each do |m|
+        described_class.instance_variable_set(m, 'value')
+      end
+
+      described_class.clear_memoization!
+
+      memos.each do |m|
+        expect(described_class.instance_variable_get(m)).to be_nil
+      end
+    end
+  end
+
   describe 'EXTRA_SCHEMAS' do
     it 'contains only schemas starting with gitlab_ prefix' do
       described_class::EXTRA_SCHEMAS.each do |schema|

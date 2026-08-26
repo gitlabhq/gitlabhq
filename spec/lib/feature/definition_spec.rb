@@ -310,7 +310,7 @@ RSpec.describe Feature::Definition, feature_category: :feature_flags do
 
       context 'when default_enabled is true' do
         it 'returns the value from the definition' do
-          expect(subject).to eq(true)
+          expect(subject).to be(true)
         end
       end
 
@@ -322,7 +322,7 @@ RSpec.describe Feature::Definition, feature_category: :feature_flags do
         end
 
         it 'returns the value from the definition' do
-          expect(subject).to eq(false)
+          expect(subject).to be(false)
         end
       end
     end
@@ -355,7 +355,7 @@ RSpec.describe Feature::Definition, feature_category: :feature_flags do
           end
 
           it 'returns false' do
-            expect(subject).to eq(false)
+            expect(subject).to be(false)
           end
         end
       end

@@ -396,6 +396,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_catego
       def force_patch_the_trace
         2.times { patch_the_trace('') }
       end
+
+      it_behaves_like 'an API request enforcing organization maintenance mode' do
+        let_it_be_with_reload(:organization) { create(:organization) }
+        let_it_be(:group) { create(:group, organization: organization) }
+        let(:success_status) { :accepted }
+
+        def request
+          patch api("/jobs/#{job.id}/trace"), params: ' appended', headers: headers_with_range
+        end
+      end
     end
   end
 end

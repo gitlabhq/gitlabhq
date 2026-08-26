@@ -524,7 +524,7 @@ Preconfigured values are used for the following CI/CD variables in any project o
 execution policy is enforced. Only policies can override these values. Group or project CI/CD variables cannot override these variables:
 
 ```plaintext
-DS_EXCLUDED_PATHS: spec, test, tests, tmp
+DS_EXCLUDED_PATHS: '**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git'
 SAST_EXCLUDED_PATHS: spec, test, tests, tmp
 SECRET_DETECTION_EXCLUDED_PATHS: ''
 SECRET_DETECTION_HISTORIC_SCAN: false

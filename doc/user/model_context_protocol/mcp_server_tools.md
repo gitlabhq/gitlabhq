@@ -367,6 +367,12 @@ exactly one operation, selected with the `method` parameter:
 | `resolve_discussion` | Resolves or unresolves a discussion. |
 | `submit_review`      | Posts multiple diff comments and an optional summary in one call. |
 | `post_duo_review`    | Asks GitLab Duo to review the merge request. Requires GitLab Duo Code Review. |
+| `approve`            | Approves the merge request. Already-approved calls succeed with status `already_approved`. |
+| `unapprove`          | Removes your approval. Calls without a prior approval succeed with status `not_approved`. |
+
+Responses from `post_duo_review`, `approve`, and `unapprove` include the merge request's
+current `diff_head_sha`, so you can tell whether a standing approval or review still covers
+the latest commits.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
@@ -386,6 +392,7 @@ exactly one operation, selected with the `method` parameter:
 | `verdict`           | string  | No       | For `submit_review`, an overall verdict prefixed to the summary note. |
 | `summary`           | string  | No       | For `submit_review`, a summary note posted after the diff comments. |
 | `summary_internal`  | boolean | No       | For `submit_review`, marks the summary note as internal. |
+| `sha`               | string  | No       | For `approve`, a head SHA guard. When given and it no longer matches the merge request head, the approval is refused. Pass the full 40-character `diff_head_sha` returned by `get_merge_request`. |
 
 Example:
 

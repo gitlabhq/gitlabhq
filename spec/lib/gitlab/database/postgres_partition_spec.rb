@@ -48,11 +48,90 @@ RSpec.describe Gitlab::Database::PostgresPartition, type: :model, feature_catego
     describe '.with_list_constraint' do
       subject(:with_list_constraint) do
         described_class
-          .with_parent_tables(Ci::Partitionable.registered_models.map(&:table_name))
+          .with_parent_tables(parent_tables)
           .with_list_constraint(partition_id)
       end
 
-      context 'when condition matches' do
+      let(:parent_tables) { [parent_table] }
+      let(:parent_table) { '_test_list_partitioned_table' }
+      let(:partition_name) { '_test_list_partition_102' }
+      let(:multi_partition_name) { '_test_list_partition_200_202' }
+
+      shared_examples 'matching a list partition bound' do
+        before do
+          ActiveRecord::Base.connection.execute(<<~SQL)
+            CREATE TABLE public.#{parent_table} (
+              partition_id #{partition_key_type} NOT NULL,
+              PRIMARY KEY (partition_id)
+            ) PARTITION BY LIST (partition_id);
+
+            CREATE TABLE #{schema}.#{partition_name}
+              PARTITION OF public.#{parent_table} FOR VALUES IN (102);
+
+            CREATE TABLE #{schema}.#{multi_partition_name}
+              PARTITION OF public.#{parent_table} FOR VALUES IN (200, 201, 202);
+          SQL
+        end
+
+        context 'when condition matches' do
+          let(:partition_id) { '102' }
+
+          it 'returns the partitions containing the match' do
+            results = with_list_constraint
+
+            expect(results.map(&:name)).to contain_exactly(partition_name)
+          end
+        end
+
+        context 'when condition does not match' do
+          where(:partition_id) { [non_existing_record_id, 10, 2, 1020] }
+
+          with_them do
+            it 'returns an empty relation' do
+              expect(with_list_constraint).to be_empty
+            end
+          end
+        end
+
+        context 'when the bound covers several values' do
+          it 'returns the partition for each value it covers', :aggregate_failures do
+            [200, 201, 202].each do |value|
+              results = described_class.with_parent_tables(parent_tables).with_list_constraint(value)
+
+              expect(results.map(&:name)).to contain_exactly(multi_partition_name)
+            end
+          end
+
+          context 'when the value falls outside the bound' do
+            let(:partition_id) { 203 }
+
+            it 'returns an empty relation' do
+              expect(with_list_constraint).to be_empty
+            end
+          end
+        end
+      end
+
+      context 'when the partition key is an integer' do
+        let(:partition_key_type) { 'integer' }
+
+        it_behaves_like 'matching a list partition bound'
+      end
+
+      context 'when the partition key is a smallint' do
+        let(:partition_key_type) { 'smallint' }
+
+        it_behaves_like 'matching a list partition bound'
+      end
+
+      context 'when the partition key is a bigint' do
+        let(:partition_key_type) { 'bigint' }
+
+        it_behaves_like 'matching a list partition bound'
+      end
+
+      context 'when the parent tables are registered with Ci::Partitionable' do
+        let(:parent_tables) { Ci::Partitionable.registered_models.map(&:table_name) }
         let(:partition_id) { '102' }
         let(:expected_size) { Ci::Partitionable.registered_models.size }
 
@@ -60,14 +139,6 @@ RSpec.describe Gitlab::Database::PostgresPartition, type: :model, feature_catego
           results = with_list_constraint
 
           expect(results.size).to eq(expected_size)
-        end
-      end
-
-      context 'when condition does not match' do
-        let(:partition_id) { non_existing_record_id }
-
-        it 'returns an empty relation' do
-          expect(with_list_constraint).to be_empty
         end
       end
     end

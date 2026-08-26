@@ -386,6 +386,23 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
       end
 
+      it_behaves_like 'an API request enforcing organization maintenance mode' do
+        let_it_be_with_reload(:organization) { create(:organization) }
+        let_it_be(:group) { create(:group, organization: organization) }
+        let_it_be(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
+        let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
+        let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+        let_it_be_with_reload(:job) do
+          create(:ci_build, :pending, :trace_live, pipeline: pipeline, project: project, runner_id: runner.id)
+        end
+
+        let(:success_status) { :ok }
+
+        def request
+          update_job(state: 'success')
+        end
+      end
+
       def update_job(job_id = job.id, token = job.token, **params)
         put api("/jobs/#{job_id}"), params: params.merge(token: token)
       end

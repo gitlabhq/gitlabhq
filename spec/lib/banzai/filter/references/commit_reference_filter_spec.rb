@@ -6,6 +6,8 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
   include FilterSpecHelper
 
   let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:namespace) { create(:namespace) }
+  let_it_be(:project2) { create(:project, :public, :small_repo, namespace: namespace) }
 
   let(:commit) { project.commit }
 
@@ -121,7 +123,7 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
     end
 
     context "in merge request context" do
-      let(:noteable) { create(:merge_request, target_project: project, source_project: project) }
+      let_it_be(:noteable) { create(:merge_request, target_project: project, source_project: project) }
       let(:commit) { noteable.commits.first }
 
       it 'handles merge request contextual commit references' do
@@ -145,8 +147,7 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
       end
 
       it 'does not look up SHAs referenced in other projects' do
-        other_project = create(:project, :public, :repository)
-        other_reference = "#{other_project.full_path}@#{other_project.commit.id}"
+        other_reference = "#{project2.full_path}@#{project2.commit.id}"
 
         expect(noteable).to receive(:existing_commit_shas).with([commit.id]).and_call_original
 
@@ -167,8 +168,6 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
   end
 
   context 'cross-project / cross-namespace complete reference' do
-    let(:namespace) { create(:namespace) }
-    let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
     let(:reference) { "#{project2.full_path}@#{commit.short_id}" }
 
@@ -220,61 +219,57 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
     end
   end
 
-  context 'cross-project / same-namespace complete reference' do
-    let(:namespace) { create(:namespace) }
-    let(:project)   { create(:project, namespace: namespace) }
-    let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
-    let(:commit)    { project2.commit }
-    let(:reference) { "#{project2.full_path}@#{commit.short_id}" }
+  context 'for a cross-project reference in the same namespace' do
+    let_it_be(:project) { create(:project, namespace: namespace) }
 
-    it 'link has valid text' do
-      doc = reference_filter("See (#{reference}.)")
+    let(:commit) { project2.commit }
 
-      expect(doc.css('a').first.text).to eql("#{project2.path}@#{commit.short_id}")
+    context 'with a complete reference' do
+      let(:reference) { "#{project2.full_path}@#{commit.short_id}" }
+
+      it 'link has valid text' do
+        doc = reference_filter("See (#{reference}.)")
+
+        expect(doc.css('a').first.text).to eql("#{project2.path}@#{commit.short_id}")
+      end
+
+      it 'has valid text' do
+        doc = reference_filter("See (#{reference}.)")
+
+        expect(doc.text).to eql("See (#{project2.path}@#{commit.short_id}.)")
+      end
+
+      it 'ignores invalid commit IDs on the referenced project' do
+        act = "Committed #{invalidate_reference(reference)}"
+
+        expect(reference_filter(act).to_html).to include act
+      end
     end
 
-    it 'has valid text' do
-      doc = reference_filter("See (#{reference}.)")
+    context 'with a shorthand reference' do
+      let(:reference) { "#{project2.path}@#{commit.short_id}" }
 
-      expect(doc.text).to eql("See (#{project2.path}@#{commit.short_id}.)")
-    end
+      it 'link has valid text' do
+        doc = reference_filter("See (#{reference}.)")
 
-    it 'ignores invalid commit IDs on the referenced project' do
-      act = "Committed #{invalidate_reference(reference)}"
+        expect(doc.css('a').first.text).to eql("#{project2.path}@#{commit.short_id}")
+      end
 
-      expect(reference_filter(act).to_html).to include act
-    end
-  end
+      it 'has valid text' do
+        doc = reference_filter("See (#{reference}.)")
 
-  context 'cross-project shorthand reference' do
-    let(:namespace) { create(:namespace) }
-    let(:project)   { create(:project, namespace: namespace) }
-    let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
-    let(:commit)    { project2.commit }
-    let(:reference) { "#{project2.full_path}@#{commit.short_id}" }
+        expect(doc.text).to eql("See (#{project2.path}@#{commit.short_id}.)")
+      end
 
-    it 'link has valid text' do
-      doc = reference_filter("See (#{reference}.)")
+      it 'ignores invalid commit IDs on the referenced project' do
+        act = "Committed #{invalidate_reference(reference)}"
 
-      expect(doc.css('a').first.text).to eql("#{project2.path}@#{commit.short_id}")
-    end
-
-    it 'has valid text' do
-      doc = reference_filter("See (#{reference}.)")
-
-      expect(doc.text).to eql("See (#{project2.path}@#{commit.short_id}.)")
-    end
-
-    it 'ignores invalid commit IDs on the referenced project' do
-      act = "Committed #{invalidate_reference(reference)}"
-
-      expect(reference_filter(act).to_html).to include act
+        expect(reference_filter(act).to_html).to include act
+      end
     end
   end
 
   context 'cross-project URL reference' do
-    let(:namespace) { create(:namespace) }
-    let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
     let(:reference) { urls.project_commit_url(project2, commit.id) }
 
@@ -298,8 +293,6 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
   end
 
   context 'URL reference for a commit patch' do
-    let(:namespace) { create(:namespace) }
-    let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
     let(:link)      { urls.project_commit_url(project2, commit.id) }
     let(:extension) { '.patch' }
@@ -329,7 +322,7 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
   end
 
   context 'group context' do
-    let(:context) { { project: nil, group: create(:group) } }
+    let(:context) { { project: nil, group: build_stubbed(:group) } }
 
     it 'ignores internal references' do
       act = "See #{commit.id}"
@@ -357,10 +350,8 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
   end
 
   context 'checking N+1' do
-    let(:namespace2)        { create(:namespace) }
     let(:namespace3)        { create(:namespace) }
-    let(:project2)          { create(:project, :public, :repository, namespace: namespace2) }
-    let(:project3)          { create(:project, :public, :repository, namespace: namespace3) }
+    let(:project3)          { create(:project, :public, :small_repo, namespace: namespace3) }
     let(:commit2)           { project2.commit }
     let(:commit3)           { project3.commit }
     let(:commit_reference)  { commit.to_reference }

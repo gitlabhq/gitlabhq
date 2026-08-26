@@ -504,20 +504,20 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
           let(:accessed_path) { '/v2/group1/dependency_proxy/containers/alpine/manifests/latest' }
 
           it { is_expected.to eq(dependency_proxy_user) } if user_type == :user
-          it { is_expected.to eq(nil) } if user_type == :no_user
+          it { is_expected.to be_nil } if user_type == :no_user
         end
 
         context 'with pulling a blob' do
           let(:accessed_path) { '/v2/group1/dependency_proxy/containers/alpine/blobs/sha256:a0d0a0d46f8b52473982a3c466318f479767577551a53ffc9074c9fa7035982e' }
 
           it { is_expected.to eq(dependency_proxy_user) } if user_type == :user
-          it { is_expected.to eq(nil) } if user_type == :no_user
+          it { is_expected.to be_nil } if user_type == :no_user
         end
 
         context 'with any other path' do
           let(:accessed_path) { '/foo/bar' }
 
-          it { is_expected.to eq(nil) }
+          it { is_expected.to be_nil }
         end
       end
 
@@ -549,7 +549,7 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
 
         it 'returns nil' do
           travel_to(Time.zone.now + Auth::ContainerProxyAuthenticationService.token_expire_at + 1.minute) do
-            expect(find_sessionless_user).to eq(nil)
+            expect(find_sessionless_user).to be_nil
           end
         end
       end

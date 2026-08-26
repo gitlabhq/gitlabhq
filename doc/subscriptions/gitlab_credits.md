@@ -22,11 +22,8 @@ title: GitLab Credits and usage billing
 {{< /history >}}
 
 GitLab Credits are the standardized consumption currency for usage-based billing.
-Credits are used for [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md),
-where each usage action consumes a number of credits.
-Credits are also used for [hosted runners for GitLab Dedicated](../administration/dedicated/hosted_runners.md),
-where running CI/CD jobs consumes credits.
-For rates, contact your account representative.
+Credits are used for [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md) and some non-agentic [features](#features),
+where each usage action consumes a number of credits. Credit-based capabilities include:
 
 [GitLab Duo Pro and Enterprise](subscription-add-ons.md#gitlab-duo-pro-and-enterprise) and their associated [GitLab Duo features](../user/gitlab_duo/feature_summary.md) are not billed based on usage and do not consume GitLab Credits.
 
@@ -108,8 +105,8 @@ or directly in the GitLab Credits dashboard in the Customers Portal.
 By accepting usage billing terms, you agree to pay for all On-Demand charges already accrued
 in the current monthly billing period, and any On-Demand charges incurred going forward.
 
-If you haven't accepted usage billing terms, you can't use GitLab Duo Agent Platform and consume On-Demand credits.
-You can regain access to GitLab Duo Agent Platform by either purchasing
+If you haven't accepted usage billing terms, you can't use credit-based features and consume On-Demand credits.
+You can regain access to credit-based features by either purchasing
 a monthly commitment or accepting the usage billing terms.
 
 For example, a subscription has a monthly commitment of 50 credits per month.
@@ -132,7 +129,7 @@ For details, contact your account team.
 ## Temporary evaluation credits
 
 If you have not purchased the Monthly Commitment Pool or accepted the usage billing terms for On-Demand credits,
-you can request a free temporary pool of credits to evaluate GitLab Duo Agent Platform features.
+you can request a free temporary pool of credits to evaluate credit-based features.
 
 Credits are allocated based on the number of users you request for the evaluation,
 and added to a shared pool for those users.
@@ -413,7 +410,7 @@ The dashboard displays summary cards of key metrics:
 {{< /history >}}
 
 > [!note]
-> This dashboard displays usage of all GitLab Duo Agent Platform features, including non-billable
+> This dashboard displays usage of all credit-based features, including non-billable
 > beta and experiment features. To view billable usage only, go to the Customers Portal.
 >
 > Some pre-release features, such as the Security Review Flow, are billable and subject to
@@ -427,8 +424,8 @@ The dashboard displays the following information:
 - **Organization usage**: Total credit usage, active users, daily credit average, and peak day usage across your GitLab instance or group
 - **Total credit consumption**: Daily credit consumption over all products, displayed as a bar chart
 - **Usage by user**: Number of credits used by each user
-- **User drill-down view**: Individual usage events for each user, with links to GitLab Duo Agent Platform session details
-- **Usage by product**: Number of credits used and percentage of total credits for GitLab Duo Agent Platform, Secrets Manager, and hosted runners
+- **User drill-down view**: Individual usage events for each user, with links to session details for each credit-based feature
+- **Usage by product**: Number of credits used and percentage of total credits for credit-based features
 
 > [!note]
 > While [GitLab Secrets Manager](../ci/secrets/secrets_manager/_index.md) is in beta,
@@ -519,7 +516,7 @@ and [instances](../administration/settings/visibility_and_access_controls.md#dis
 
 You can set a monthly GitLab Credits cap at the subscription and user level to prevent
 unexpected overage charges. When credit consumption reaches the configured cap,
-access to features that consume GitLab Credits (for example, GitLab Duo Agent Platform)
+access to credit-based features
 is automatically suspended until the next billing period begins,
 or until an administrator adjusts or disables the cap.
 
@@ -532,7 +529,7 @@ The following cap types are available:
 | Per-user override | A specific user's total usage, including their included credits. Overrides the flat cap. A user can therefore consume up to whichever is larger: their included allocation, or their cap. | All | GraphQL API |
 
 When on-demand usage in the current billing period reaches or exceeds the configured cap,
-all Agent Platform features (Duo Chat, Code Suggestions, Flows, and Agents)
+all credit-based features
 are suspended for all users on that subscription or instance, and GitLab sends an email notification to billing account managers. For user-level caps,
 only the individual user who reached their cap is suspended.
 
@@ -620,7 +617,7 @@ If you have not accepted usage billing terms and your available credits are depl
 When per-user credit caps are enabled, the **Usage by user** tab on the
 GitLab Credits dashboard displays a **Usage control status** column.
 This column shows whether each user can access
-[GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md) features
+credit-based features
 or is blocked because they reached their credit cap.
 
 The **Usage control status** column displays the status **Blocked** only when GitLab enforces the cap against the user.
@@ -648,7 +645,7 @@ To unblock a user, either:
   subject to an individual cap.
 
 After you update the cap, the user's status changes to **Regular** and they
-can use GitLab Duo Agent Platform features again.
+can use credit-based features again.
 
 ### View user credit usage details
 

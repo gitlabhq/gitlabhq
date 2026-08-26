@@ -30,8 +30,9 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
           'replies within an existing discussion; create_diff_note comments on a specific diff line; ' \
           'resolve_discussion resolves or unresolves a discussion; submit_review posts multiple diff ' \
           'comments plus an optional summary in one call; post_duo_review asks GitLab Duo to review ' \
-          'the merge request. Identify the merge request by url, or by project_id and ' \
-          'merge_request_iid. Each parameter below names the methods that use it.'
+          'the merge request; approve records your approval (pass sha to avoid approving stale ' \
+          'content); unapprove removes your approval. Identify the merge request by url, or by ' \
+          'project_id and merge_request_iid. Each parameter below names the methods that use it.'
       )
     end
 
@@ -60,7 +61,7 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
           method: {
             type: 'string',
             enum: %w[create_note reply_discussion create_diff_note resolve_discussion
-              submit_review post_duo_review],
+              submit_review post_duo_review approve unapprove],
             description: 'The write operation to perform. Fill only the parameters listed for the ' \
               'chosen method; other parameters are rejected.'
           },
@@ -153,6 +154,12 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
           summary_internal: {
             type: 'boolean',
             description: 'Mark the summary note as internal (submit_review). Default is false.'
+          },
+          sha: {
+            type: 'string',
+            description: 'Head SHA guard (approve). When given and it no longer matches the merge ' \
+              'request head, the approval is refused. Pass the full 40-character diff_head_sha ' \
+              'returned by get_merge_request.'
           }
         },
         required: %w[method]
@@ -407,6 +414,150 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
         result = service.execute(request: request, params: params)
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('diff is not ready')
+      end
+    end
+
+    context 'with method approve' do
+      let(:params) { { arguments: identification.merge(method: 'approve') } }
+
+      it 'approves the merge request', :aggregate_failures do
+        result = service.execute(request: request, params: params)
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]['method']).to eq('approve')
+        expect(result[:structuredContent]['status']).to eq('approved')
+        expect(result[:structuredContent]['merge_request_url']).to include(merge_request.to_param)
+        expect(result[:structuredContent]['diff_head_sha']).to eq(merge_request.diff_head_sha)
+        expect(merge_request.reset.approved_by?(user)).to be(true)
+      end
+
+      it 'approves when the given sha matches the merge request head', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: identification.merge(method: 'approve', sha: merge_request.diff_head_sha) }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(merge_request.reset.approved_by?(user)).to be(true)
+      end
+
+      it 'refuses to approve on a stale sha', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: identification.merge(method: 'approve', sha: 'stale-sha') }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text])
+          .to include("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}")
+        expect(merge_request.reset.approved_by?(user)).to be(false)
+      end
+
+      it 'succeeds without creating a second approval when already approved', :aggregate_failures do
+        create(:approval, merge_request: merge_request, user: user)
+
+        result = nil
+        expect { result = service.execute(request: request, params: params) }
+          .not_to change { merge_request.approvals.count }
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]['status']).to eq('already_approved')
+      end
+
+      it 'reports already_approved even when the given sha is stale', :aggregate_failures do
+        create(:approval, merge_request: merge_request, user: user)
+
+        result = service.execute(
+          request: request,
+          params: { arguments: identification.merge(method: 'approve', sha: 'stale-sha') }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]['status']).to eq('already_approved')
+      end
+
+      it 'rejects a user who cannot approve', :aggregate_failures do
+        service.set_cred(current_user: create(:user))
+
+        result = service.execute(request: request, params: params)
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include('not allowed to approve')
+      end
+
+      it 'rejects approving a merged merge request', :aggregate_failures do
+        merged = create(:merge_request, :merged, source_project: project, source_branch: 'markdown')
+
+        result = service.execute(
+          request: request,
+          params: { arguments: { project_id: project.id.to_s, merge_request_iid: merged.iid, method: 'approve' } }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include('already merged')
+      end
+    end
+
+    context 'with method unapprove' do
+      let(:params) { { arguments: identification.merge(method: 'unapprove') } }
+
+      it 'removes the approval and leaves a system note', :aggregate_failures do
+        create(:approval, merge_request: merge_request, user: user)
+
+        result = service.execute(request: request, params: params)
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]['method']).to eq('unapprove')
+        expect(result[:structuredContent]['status']).to eq('unapproved')
+        expect(merge_request.reset.approved_by?(user)).to be(false)
+        expect(merge_request.notes.system.last.note).to include('unapproved')
+      end
+
+      it 'refuses to remove a standing approval after the merge request is merged', :aggregate_failures do
+        merged = create(:merge_request, :merged, source_project: project, source_branch: 'markdown')
+        create(:approval, merge_request: merged, user: user)
+
+        result = service.execute(
+          request: request,
+          params: { arguments: { project_id: project.id.to_s, merge_request_iid: merged.iid, method: 'unapprove' } }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to eq('Cannot unapprove: the merge request is already merged.')
+        expect(merged.reset.approved_by?(user)).to be(true)
+      end
+
+      it 'refuses to remove an approval while the merge request is locked', :aggregate_failures do
+        locked = create(:merge_request, :locked, source_project: project, source_branch: 'markdown')
+        create(:approval, merge_request: locked, user: user)
+
+        result = service.execute(
+          request: request,
+          params: { arguments: { project_id: project.id.to_s, merge_request_iid: locked.iid, method: 'unapprove' } }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text])
+          .to eq('Cannot unapprove: the merge request is locked by an in-flight merge.')
+        expect(locked.reset.approved_by?(user)).to be(true)
+      end
+
+      it 'succeeds as a no-op when the user has not approved', :aggregate_failures do
+        result = service.execute(request: request, params: params)
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]['status']).to eq('not_approved')
+        expect(merge_request.reset.approved_by?(user)).to be(false)
+      end
+
+      it 'rejects a user who cannot approve', :aggregate_failures do
+        create(:approval, merge_request: merge_request, user: user)
+        service.set_cred(current_user: create(:user))
+
+        result = service.execute(request: request, params: params)
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include('not allowed to unapprove')
       end
     end
 

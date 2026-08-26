@@ -12,14 +12,14 @@ RSpec.describe ClickHouse::Models::Ci::FinishedPipelinesDaily, feature_category:
       let(:from_time) { 1.second.after(366.days.ago) }
       let(:to_time) { Time.current }
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
 
     context 'with time window of 367 days' do
       let(:from_time) { 367.days.ago }
       let(:to_time) { Time.current }
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
   end
 

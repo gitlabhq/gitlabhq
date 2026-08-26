@@ -16,7 +16,9 @@ module Mcp
           'create_diff_note' => { required: %i[body], optional: %i[old_path new_path old_line new_line] },
           'resolve_discussion' => { required: %i[discussion_id resolved], optional: [] },
           'submit_review' => { required: %i[comments], optional: %i[verdict summary summary_internal] },
-          'post_duo_review' => { required: [], optional: [] }
+          'post_duo_review' => { required: [], optional: [] },
+          'approve' => { required: [], optional: %i[sha] },
+          'unapprove' => { required: [], optional: [] }
         }.freeze
 
         MAX_REVIEW_COMMENTS = 20
@@ -27,8 +29,9 @@ module Mcp
             'replies within an existing discussion; create_diff_note comments on a specific diff line; ' \
             'resolve_discussion resolves or unresolves a discussion; submit_review posts multiple diff ' \
             'comments plus an optional summary in one call; post_duo_review asks GitLab Duo to review ' \
-            'the merge request. Identify the merge request by url, or by project_id and ' \
-            'merge_request_iid. Each parameter below names the methods that use it.',
+            'the merge request; approve records your approval (pass sha to avoid approving stale ' \
+            'content); unapprove removes your approval. Identify the merge request by url, or by ' \
+            'project_id and merge_request_iid. Each parameter below names the methods that use it.',
           annotations: {
             readOnlyHint: false,
             destructiveHint: false
@@ -51,7 +54,7 @@ module Mcp
               method: {
                 type: 'string',
                 enum: %w[create_note reply_discussion create_diff_note resolve_discussion
-                  submit_review post_duo_review],
+                  submit_review post_duo_review approve unapprove],
                 description: 'The write operation to perform. Fill only the parameters listed for the ' \
                   'chosen method; other parameters are rejected.'
               },
@@ -144,6 +147,12 @@ module Mcp
               summary_internal: {
                 type: 'boolean',
                 description: 'Mark the summary note as internal (submit_review). Default is false.'
+              },
+              sha: {
+                type: 'string',
+                description: 'Head SHA guard (approve). When given and it no longer matches the merge ' \
+                  'request head, the approval is refused. Pass the full 40-character diff_head_sha ' \
+                  'returned by get_merge_request.'
               }
             },
             required: %w[method]
@@ -164,6 +173,10 @@ module Mcp
             perform_submit_review(arguments)
           when 'post_duo_review'
             perform_post_duo_review(arguments)
+          when 'approve'
+            perform_approve(arguments)
+          when 'unapprove'
+            perform_unapprove(arguments)
           else
             execute_graphql_tool(arguments)
           end
@@ -195,6 +208,95 @@ module Mcp
           return if extra.none?
 
           raise ArgumentError, "Parameters not valid for method '#{method}': #{extra.join(', ')}"
+        end
+
+        def perform_approve(arguments)
+          merge_request = resolve_merge_request!(arguments)
+
+          # Idempotency before the sha guard: a retry with a cached, now-stale sha must
+          # report the standing approval, not fail. The guard only protects new approvals.
+          if merge_request.approved_by?(current_user)
+            return method_response(merge_request, 'approve', 'already_approved')
+          end
+
+          check_approval_sha!(merge_request, arguments[:sha])
+
+          ::MergeRequests::ApprovalService
+            .new(project: merge_request.project, current_user: current_user)
+            .execute(merge_request)
+
+          # ApprovalService returns nil on every failure and can report success on a raced
+          # save, so the merge request state is the only trustworthy outcome signal.
+          return method_response(merge_request, 'approve', 'approved') if
+            merge_request.reset.approved_by?(current_user)
+
+          ::Mcp::Tools::Base::Response.error(approve_failure_message(merge_request))
+        end
+
+        def perform_unapprove(arguments)
+          merge_request = resolve_merge_request!(arguments)
+
+          # RemoveApprovalService performs no permission check; mirror the REST endpoint,
+          # which authorizes :approve_merge_request before calling it.
+          unless current_user.can?(:approve_merge_request, merge_request)
+            return ::Mcp::Tools::Base::Response.error('You are not allowed to unapprove this merge request.')
+          end
+
+          unless merge_request.approved_by?(current_user)
+            return method_response(merge_request, 'unapprove', 'not_approved')
+          end
+
+          ::MergeRequests::RemoveApprovalService
+            .new(project: merge_request.project, current_user: current_user)
+            .execute(merge_request)
+
+          return method_response(merge_request, 'unapprove', 'unapproved') unless
+            merge_request.reset.approved_by?(current_user)
+
+          ::Mcp::Tools::Base::Response.error(unapprove_failure_message(merge_request))
+        end
+
+        def check_approval_sha!(merge_request, sha)
+          return if sha.blank? || merge_request.diff_head_sha == sha
+
+          raise ArgumentError, "SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}"
+        end
+
+        def approve_failure_message(merge_request)
+          return 'Cannot approve: the merge request is already merged.' if merge_request.merged?
+
+          unless current_user.can?(:approve_merge_request, merge_request)
+            return 'You are not allowed to approve this merge request.'
+          end
+
+          unless merge_request.eligible_for_approval_by?(current_user)
+            return 'You cannot approve this merge request (for example, the project may not ' \
+              'allow authors or committers to approve).'
+          end
+
+          "Approval was rejected by this instance's approval settings (for example a password " \
+            'or SAML re-authentication requirement), which this tool does not support.'
+        end
+
+        def unapprove_failure_message(merge_request)
+          return 'Cannot unapprove: the merge request is already merged.' if merge_request.merged?
+          return 'Cannot unapprove: the merge request is locked by an in-flight merge.' if merge_request.locked?
+
+          'The approval could not be removed.'
+        end
+
+        # diff_head_sha lets the agent tell whether a standing approval or review
+        # still covers the latest commits, since idempotent echoes skip the sha guard.
+        def method_response(merge_request, method, status)
+          structured_content = {
+            'method' => method,
+            'status' => status,
+            'merge_request_url' => ::Gitlab::UrlBuilder.build(merge_request),
+            'diff_head_sha' => merge_request.diff_head_sha
+          }
+
+          formatted_content = [{ type: 'text', text: Gitlab::Json.dump(structured_content) }]
+          ::Mcp::Tools::Base::Response.success(formatted_content, structured_content)
         end
 
         def perform_submit_review(arguments)

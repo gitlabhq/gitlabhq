@@ -8,14 +8,14 @@ RSpec.describe Gitlab::Auth::Saml::Config do
   describe '.enabled?' do
     subject { described_class.enabled? }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context 'when SAML is enabled' do
       before do
         stub_basic_saml_config
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 

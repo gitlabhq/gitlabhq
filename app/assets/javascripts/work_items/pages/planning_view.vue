@@ -489,6 +489,13 @@ export default {
         if (!this.isSavedView) {
           if (!planningViewAllItemsFilters.value) {
             this.sortKey = sortKey;
+            const persistedViewMode =
+              data?.currentUser?.workItemPreferences?.displaySettings?.viewMode;
+            const isPersistedBoardModeUnavailable =
+              persistedViewMode === VIEW_MODE_BOARD && !this.isPlanningViewBoardEnabled;
+            if (persistedViewMode && !isPersistedBoardModeUnavailable) {
+              this.viewMode = persistedViewMode;
+            }
             // Sync default sort to URL on fresh load so the URL always reflects current state.
             // Guard against overwriting existing params (e.g. sv_limit_id on redirect from saved view).
             if (!Object.keys(this.$route.query).length) {
@@ -1332,9 +1339,13 @@ export default {
       this.viewMode = newViewMode;
       if (this.isSavedView) {
         this.persistSavedViewDraft();
-      } else {
-        this.saveSessionFilters(this.filterTokens);
+        return;
       }
+      this.saveSessionFilters(this.filterTokens);
+      this.persistNamespaceDisplaySettings({
+        ...this.namespacePreferences,
+        viewMode: newViewMode,
+      });
     },
     handleSetActiveItem(item) {
       this.activeItem = item;

@@ -6,7 +6,6 @@ RSpec.describe SupplyChain::AttestationUploader, feature_category: :artifact_sec
   subject { supply_chain_attestation.file }
 
   let(:supply_chain_attestation) { create(:supply_chain_attestation) }
-  let(:sample_file) { fixture_file('supply_chain/attestation.json') }
 
   before do
     stub_uploads_object_storage(described_class)

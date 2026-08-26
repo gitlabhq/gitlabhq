@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Auth::Saml::AuthHash, feature_category: :system_access do
       let(:raw_info_attr) { {} }
 
       it 'is false' do
-        expect(saml_auth_hash.azure_group_overage_claim?).to eq(false)
+        expect(saml_auth_hash.azure_group_overage_claim?).to be(false)
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Auth::Saml::AuthHash, feature_category: :system_access do
       end
 
       it 'is true' do
-        expect(saml_auth_hash.azure_group_overage_claim?).to eq(true)
+        expect(saml_auth_hash.azure_group_overage_claim?).to be(true)
       end
     end
   end

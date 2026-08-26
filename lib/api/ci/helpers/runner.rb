@@ -257,6 +257,8 @@ module API
           return if runner.nil? || runner.instance_type?
 
           ::Current.organization = ::Organizations::Organization.find_by_id_with_isolation_record(runner.organization_id)
+
+          check_organization_maintenance_mode!
         end
 
         # Job-token requests carry no runner token, so set_current_organization_from_runner
@@ -267,6 +269,8 @@ module API
 
           ::Current.organization =
             ::Organizations::Organization.find_by_id_with_isolation_record(job.project.organization_id)
+
+          check_organization_maintenance_mode!
         end
         # rubocop:enable Gitlab/AvoidCurrentOrganization
 

@@ -86,37 +86,6 @@ RSpec.describe Ci::Tag, feature_category: :continuous_integration do
     end
   end
 
-  describe '.find_or_create_with_like_by_name' do
-    let(:tag_name) { 'tag' }
-
-    subject(:find_or_create) { described_class.find_or_create_with_like_by_name(tag_name) }
-
-    it 'creates a tag' do
-      expect { find_or_create }.to change { described_class.count }.by(1)
-    end
-
-    it 'returns the Tag record' do
-      result = find_or_create
-
-      expect(result).to be_an_instance_of(described_class)
-      expect(result.name).to eq(tag_name)
-    end
-
-    context 'when tag already exists' do
-      let_it_be(:tag) { create(:ci_tag, name: 'tag') }
-
-      it 'does not create new tag' do
-        expect { find_or_create }.not_to change { described_class.count }
-      end
-
-      it 'returns the Tag record' do
-        result = find_or_create
-
-        expect(result.name).to eq(tag_name)
-      end
-    end
-  end
-
   describe '#==' do
     let(:tag) { tags.first }
 

@@ -37,8 +37,10 @@ module Gitlab
         where(parent_identifier: parent_identifiers).order(:name)
       end
 
-      scope :with_list_constraint, ->(condition) do
-        where(sanitize_sql_for_conditions(['condition LIKE ?', "FOR VALUES IN (%'#{condition.to_i}'%)"]))
+      # Postgres quotes the bound literal for a bigint or smallint key but not for an
+      # integer one, so we match the value as a whole word rather than assume one form.
+      scope :with_list_constraint, ->(value) do
+        where(sanitize_sql_for_conditions(['condition ~ ?', "^FOR VALUES IN \\(.*\\m#{value.to_i}\\M"]))
       end
 
       scope :above_threshold, ->(threshold) do

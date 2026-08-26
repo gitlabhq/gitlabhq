@@ -350,8 +350,6 @@ methods:
   app/models/ci/runner.rb:
   - belongs_to_one_project?
   - fallback_owner_project
-  app/models/ci/tag.rb:
-  - self.find_or_create_with_like_by_name
   app/models/clusters/cluster.rb:
   - self.has_one_cluster_application
   - platform_kubernetes_active?

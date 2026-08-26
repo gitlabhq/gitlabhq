@@ -191,7 +191,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/ci/reports/license_scanning/reports_comparer_spec.rb'
     - 'ee/spec/lib/gitlab/ci/reports/metrics/report_spec.rb'
     - 'ee/spec/lib/gitlab/ci/reports/metrics/reports_comparer_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/reports/security/finding_spec.rb'
     - 'ee/spec/lib/gitlab/ci/reports/security/locations/container_scanning_spec.rb'
     - 'ee/spec/lib/gitlab/code_owners/file_spec.rb'
     - 'ee/spec/lib/gitlab/code_owners_spec.rb'

@@ -275,8 +275,6 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
     let(:repr_class) { double(:representation) }
     let(:worker_class) { double(:worker) }
     let(:object) { double(:object) }
-    let(:batch_size) { 1000 }
-    let(:batch_delay) { 1.minute }
 
     before do
       allow(importer).to receive(:representation_class).and_return(repr_class)

@@ -63,16 +63,18 @@ describe('TopicsTokenSelector', () => {
   const findSelectedTokensText = () =>
     wrapper.findAllComponents(GlToken).wrappers.map((w) => w.text());
 
-  const setTokenSelectorInputValue = (value) => {
+  const setTokenSelectorInputValue = async (value) => {
     const tokenSelectorInput = findTokenSelectorInput();
 
     tokenSelectorInput.element.value = value;
-    return tokenSelectorInput.trigger('input');
+    await tokenSelectorInput.trigger('input');
+    await waitForPromises();
   };
 
-  const tokenSelectorTriggerEnter = (event) => {
+  const tokenSelectorTriggerEnter = async (event) => {
     const tokenSelectorInput = findTokenSelectorInput();
-    tokenSelectorInput.trigger('keydown.enter', event);
+    await tokenSelectorInput.trigger('keydown.enter', event);
+    await waitForPromises();
   };
 
   beforeEach(() => {

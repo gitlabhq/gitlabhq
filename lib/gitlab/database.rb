@@ -58,6 +58,16 @@ module Gitlab
     MAX_INDEXES_ALLOWED_PER_TABLE = 15
     MAX_INDEX_NAME_LENGTH = 63
 
+    def self.clear_memoization!
+      @all_database_connections = nil
+      @all_gitlab_schemas = nil
+      @database_base_models = nil
+      @database_base_models_with_gitlab_shared = nil
+      @database_base_models_using_load_balancing = nil
+      @gitlab_base_models = nil
+      @schemas_to_base_models = nil
+    end
+
     def self.all_database_connection_files
       Dir.glob(Rails.root.join("db/database_connections/*.yaml"))
     end

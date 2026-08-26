@@ -47,7 +47,7 @@ RSpec.describe Gitlab::APIAuthentication::TokenResolver, feature_category: :syst
 
     shared_examples 'an anoymous request' do
       it 'returns nil' do
-        expect(resolve).to eq(nil)
+        expect(resolve).to be_nil
       end
     end
 

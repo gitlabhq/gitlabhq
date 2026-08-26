@@ -2322,9 +2322,9 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     context 'when namespace is a group' do
       let_it_be_with_reload(:namespace) { create(:group) }
       let_it_be(:child) { create(:group, parent: namespace) }
-      let_it_be(:project1) { create(:project_empty_repo, namespace: namespace) }
-      let_it_be(:project2) { create(:project_empty_repo, namespace: child) }
-      let_it_be(:other_project) { create(:project_empty_repo) }
+      let_it_be(:project1) { create(:project, namespace: namespace) }
+      let_it_be(:project2) { create(:project, namespace: child) }
+      let_it_be(:other_project) { create(:project) }
 
       before do
         reload_models(namespace, child)
@@ -2338,7 +2338,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let_it_be(:user) { create(:user) }
       let_it_be(:user_namespace) { create(:namespace, owner: user) }
       let_it_be(:project) { create(:project, namespace: user_namespace) }
-      let_it_be(:other_project) { create(:project_empty_repo) }
+      let_it_be(:other_project) { create(:project) }
 
       before do
         reload_models(user_namespace)
@@ -2348,16 +2348,13 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#all_projects_except_soft_deleted', quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43947',
-    type: :flaky
-  } do
+  describe '#all_projects_except_soft_deleted' do
     context 'when namespace is a group' do
       let_it_be_with_reload(:namespace) { create(:group) }
       let_it_be(:child) { create(:group, parent: namespace) }
-      let_it_be(:project1) { create(:project_empty_repo, namespace: namespace) }
-      let_it_be(:project2) { create(:project_empty_repo, namespace: child) }
-      let_it_be(:other_project) { create(:project_empty_repo) }
+      let_it_be(:project1) { create(:project, namespace: namespace) }
+      let_it_be(:project2) { create(:project, namespace: child) }
+      let_it_be(:other_project) { create(:project) }
 
       before do
         reload_models(namespace, child)
@@ -2381,7 +2378,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let_it_be(:user) { create(:user) }
       let_it_be(:user_namespace) { create(:namespace, owner: user) }
       let_it_be(:project) { create(:project, namespace: user_namespace) }
-      let_it_be(:other_project) { create(:project_empty_repo) }
+      let_it_be(:other_project) { create(:project) }
 
       before do
         reload_models(user_namespace)
@@ -2432,10 +2429,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#all_projects', quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43947',
-    type: :flaky
-  } do
+  describe '#all_projects' do
     include_examples '#all_projects'
 
     # Using #self_and_descendant instead of #self_and_descendant_ids can produce

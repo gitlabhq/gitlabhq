@@ -185,8 +185,11 @@ module API
       error!(e.message, e.status, e.headers || {})
     end
 
+    # Grape's error middleware accepts only a Rack::Response or an error hash here, and it reformats
+    # the hash: `error!` would wrap the body in JSON and add a JSON content type, while `redirect`
+    # returns a String it rejects. This keeps the bare-string body the original `rack_response` built.
     rescue_from MovedPermanentlyError do |e|
-      rack_response(e.message, 301, { 'Location' => e.location_url })
+      Rack::Response.new([e.message], 301, { 'Location' => e.location_url })
     end
 
     rescue_from Gitlab::Auth::TooManyIps do

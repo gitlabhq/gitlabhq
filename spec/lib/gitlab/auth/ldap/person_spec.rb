@@ -67,7 +67,7 @@ RSpec.describe Gitlab::Auth::Ldap::Person do
 
       expect(ldap_attributes).to include('dn', 'uid', 'cn', 'mail')
       expect(ldap_attributes).to be_present
-      expect(ldap_attributes.uniq!).to eq(nil)
+      expect(ldap_attributes.uniq!).to be_nil
     end
   end
 

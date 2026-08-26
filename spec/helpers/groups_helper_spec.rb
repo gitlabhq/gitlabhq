@@ -22,8 +22,9 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#group_lfs_status' do
+    let_it_be(:creator) { create(:user) }
     let_it_be_with_reload(:group) { create(:group) }
-    let_it_be_with_reload(:project) { create(:project, namespace_id: group.id) }
+    let_it_be_with_reload(:project) { create(:project, namespace: group, creator: creator) }
 
     before do
       allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
@@ -46,7 +47,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     context 'more than one project in group' do
-      let_it_be_with_reload(:another_project) { create(:project, namespace_id: group.id) }
+      let_it_be(:another_project) { create(:project, namespace: group, creator: creator) }
 
       context 'LFS enabled in group' do
         before do
@@ -83,7 +84,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#push_group_breadcrumbs' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:group) { create(:group) }
     let_it_be(:nested_group) { create(:group, parent: group) }
     let_it_be(:deep_nested_group) { create(:group, parent: nested_group) }
     let_it_be(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
@@ -112,12 +113,12 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe '#share_with_group_lock_help_text' do
     context 'traversal queries' do
-      let_it_be_with_reload(:root_group) { create(:group) }
-      let_it_be_with_reload(:subgroup) { create(:group, parent: root_group) }
-      let_it_be_with_reload(:sub_subgroup) { create(:group, parent: subgroup) }
       let_it_be(:root_owner) { create(:user) }
       let_it_be(:sub_owner) { create(:user) }
       let_it_be(:sub_sub_owner) { create(:user) }
+      let_it_be_with_reload(:root_group) { create(:group, owners: root_owner) }
+      let_it_be_with_reload(:subgroup) { create(:group, parent: root_group, owners: sub_owner) }
+      let_it_be_with_reload(:sub_subgroup) { create(:group, parent: subgroup, owners: sub_sub_owner) }
 
       let(:possible_help_texts) do
         {
@@ -144,12 +145,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       end
 
       subject { helper.share_with_group_lock_help_text(sub_subgroup) }
-
-      before_all do
-        root_group.add_owner(root_owner)
-        subgroup.add_owner(sub_owner)
-        sub_subgroup.add_owner(sub_sub_owner)
-      end
 
       shared_examples 'correct ancestor order' do
         # rubocop:disable Layout/SpaceBeforeComma
@@ -217,9 +212,9 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#can_disable_group_emails?' do
-    let_it_be(:current_user) { create(:user) }
-    let_it_be(:group, freeze: false) { create(:group, name: 'group') }
-    let_it_be(:subgroup) { create(:group, name: 'subgroup', parent: group) }
+    let(:current_user) { build_stubbed(:user) }
+    let(:group) { build_stubbed(:group, name: 'group') }
+    let(:subgroup) { build_stubbed(:group, name: 'subgroup', parent: group) }
 
     before do
       allow(helper).to receive(:current_user) { current_user }
@@ -257,16 +252,17 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#can_set_group_diff_preview_in_email?' do
-    let_it_be(:group, freeze: false) { create(:group, name: 'group') }
-    let_it_be(:subgroup) { create(:group, name: 'subgroup', parent: group) }
+    let_it_be(:group_owner) { create(:user) }
+    let_it_be(:group_maintainer) { create(:user) }
 
-    let_it_be(:current_user) { create(:user) }
-    let_it_be(:group_owner)  { create(:group_member, :owner, group: group, user: create(:user)).user }
-    let_it_be(:group_maintainer) { create(:group_member, :maintainer, group: group, user: create(:user)).user }
-
-    before do
-      group.update_attribute(:show_diff_preview_in_email, true)
+    let_it_be_with_reload(:group) do
+      create(:group, name: 'group', owners: group_owner, maintainers: group_maintainer)
     end
+
+    # `build_stubbed` keeps `subgroup.parent` as the same object as `group`, so the stub below holds.
+    let(:subgroup) { build_stubbed(:group, name: 'subgroup', parent: group) }
+
+    let(:current_user) { build_stubbed(:user) }
 
     it 'returns true for an owner of the group' do
       allow(helper).to receive(:current_user) { group_owner }
@@ -289,7 +285,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     context 'respects the settings of a parent group' do
       context 'when a parent group has disabled diff previews' do
         before do
-          group.update_attribute(:show_diff_preview_in_email, false)
+          allow(group).to receive(:show_diff_preview_in_email?).and_return(false)
         end
 
         it 'returns false for all users' do
@@ -307,8 +303,8 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#can_update_default_branch_protection?' do
-    let_it_be(:current_user) { create(:user) }
-    let_it_be(:group, freeze: false) { create(:group) }
+    let(:current_user) { build_stubbed(:user) }
+    let(:group) { build_stubbed(:group) }
 
     subject { helper.can_update_default_branch_protection?(group) }
 
@@ -363,13 +359,11 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe '#render_setting_to_allow_project_access_token_creation?' do
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:parent) { create(:group) }
-    let_it_be(:group, freeze: false) { create(:group, parent: parent) }
+    let_it_be(:parent) { create(:group, owners: current_user) }
+    let_it_be(:group) { create(:group, parent: parent) }
 
     before do
       allow(helper).to receive(:current_user) { current_user }
-      parent.add_owner(current_user)
-      group.add_owner(current_user)
     end
 
     it 'returns true if group is root' do
@@ -381,41 +375,40 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#can_admin_group_member?' do
-    let_it_be(:user, freeze: false) { create(:user) }
-    let_it_be(:group, freeze: false) { create(:group) }
+  describe 'group member permission helpers' do
+    let_it_be_with_reload(:user) { create(:user) }
+    let_it_be_with_reload(:group) { create(:group) }
 
     before do
       allow(helper).to receive(:current_user) { user }
     end
 
-    it 'returns true when current_user can admin members' do
-      group.add_owner(user)
+    describe '#can_admin_group_member?' do
+      subject { helper.can_admin_group_member?(group) }
 
-      expect(helper.can_admin_group_member?(group)).to be(true)
+      it { is_expected.to be(false) }
+
+      context 'when current_user can admin members' do
+        before_all do
+          group.add_owner(user)
+        end
+
+        it { is_expected.to be(true) }
+      end
     end
 
-    it 'returns false when current_user can not admin members' do
-      expect(helper.can_admin_group_member?(group)).to be(false)
-    end
-  end
+    describe '#can_invite_group_member?' do
+      subject { helper.can_invite_group_member?(group) }
 
-  describe '#can_invite_group_member?' do
-    let_it_be(:user, freeze: false) { create(:user) }
-    let_it_be(:group, freeze: false) { create(:group) }
+      it { is_expected.to be(false) }
 
-    before do
-      allow(helper).to receive(:current_user) { user }
-    end
+      context 'when current_user can invite members' do
+        before_all do
+          group.add_owner(user)
+        end
 
-    it 'returns true when current_user can invite members' do
-      group.add_owner(user)
-
-      expect(helper.can_invite_group_member?(group)).to be(true)
-    end
-
-    it 'returns false when current_user can not invite members' do
-      expect(helper.can_invite_group_member?(group)).to be(false)
+        it { is_expected.to be(true) }
+      end
     end
   end
 
@@ -431,6 +424,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     let_it_be(:group) { build(:group, name: name) }
     let_it_be(:subgroup) { build(:group, parent: group) }
 
+    # `current_user` is required by the EE override of `subgroup_creation_data`.
     before do
       allow(helper).to receive(:current_user) { user }
     end
@@ -475,9 +469,10 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#groups_show_app_data' do
-    let_it_be(:group, freeze: false) { create(:group) }
-    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:initial_sort) { 'created_asc' }
+
+    let(:group) { build_stubbed(:group) }
+    let(:user) { build_stubbed(:user) }
 
     before do
       allow(helper).to receive(:current_user).and_return(user)
@@ -504,6 +499,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe '#show_group_readme?' do
     let_it_be_with_refind(:group) { create(:group, :public) }
+    let_it_be(:readme_author) { create(:user) }
     let_it_be(:current_user) { nil }
 
     before do
@@ -511,20 +507,20 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     context 'when project is public' do
-      let_it_be(:project) { create(:project, :public, :readme, group: group, path: 'gitlab-profile') }
+      let_it_be(:project) do
+        create(:project, :public, :readme, group: group, path: 'gitlab-profile', creator: readme_author)
+      end
 
       it { expect(helper.show_group_readme?(group)).to be(true) }
     end
 
     context 'when project is private' do
-      let_it_be(:project) { create(:project, :private, :readme, group: group, path: 'gitlab-profile') }
+      let_it_be(:project) do
+        create(:project, :private, :readme, group: group, path: 'gitlab-profile', creator: readme_author)
+      end
 
       context 'when user can see the project' do
-        let_it_be(:current_user) { create(:user) }
-
-        before do
-          project.add_developer(current_user)
-        end
+        let_it_be(:current_user) { create(:user, developer_of: project) }
 
         it { expect(helper.show_group_readme?(group)).to be(true) }
       end
@@ -536,7 +532,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#group_archive_settings_app_data' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group) }
 
     subject { helper.group_archive_settings_app_data(group) }
 
@@ -603,7 +599,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     context "instance setting is blank" do
-      let(:instance_setting) { nil }
+      let(:instance_setting) { '' }
 
       it { is_expected.to contain_exactly([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
     end
@@ -624,7 +620,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   describe '#new_custom_emoji_path' do
     subject { helper.new_custom_emoji_path(group) }
 
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group) }
 
     context 'with nil group' do
       let(:group) { nil }
@@ -634,17 +630,17 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     context 'with current_user who has no permissions' do
       before do
-        allow(helper).to receive(:current_user).and_return(create(:user))
+        allow(helper).to receive(:current_user).and_return(build_stubbed(:user))
       end
 
       it { is_expected.to be_nil }
     end
 
     context 'with current_user who has permissions' do
+      let_it_be(:owner) { create(:user, owner_of: group) }
+
       before do
-        user = create(:user)
-        group.add_owner(user)
-        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:current_user).and_return(owner)
       end
 
       it { is_expected.to eq(new_group_custom_emoji_path(group)) }
@@ -652,14 +648,14 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#show_prevent_inviting_groups_outside_hierarchy_setting?' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let(:group) { build_stubbed(:group) }
 
     it 'returns true for a root group' do
       expect(helper.show_prevent_inviting_groups_outside_hierarchy_setting?(group)).to be(true)
     end
 
     it 'returns false for a subgroup' do
-      subgroup = create(:group, parent: group)
+      subgroup = build_stubbed(:group, parent: group)
 
       expect(helper.show_prevent_inviting_groups_outside_hierarchy_setting?(subgroup)).to be(false)
     end
@@ -667,7 +663,8 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe '#groups_list_with_filtered_search_app_data' do
     let_it_be(:endpoint) { '/groups' }
-    let_it_be(:user, freeze: false) { create(:user) }
+
+    let(:user) { build_stubbed(:user) }
 
     before do
       allow(helper).to receive(:current_user).and_return(user)
@@ -687,14 +684,12 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#group_merge_requests' do
-    let_it_be(:user, freeze: false) { create(:user) }
-    let_it_be(:group, freeze: false) { create(:group) }
-    let_it_be(:project) { create(:project, namespace: group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group, owners: user) }
+    let_it_be(:project) { create(:project, namespace: group, creator: user) }
     let_it_be(:merge_request) { create(:merge_request, :simple, source_project: project, target_project: project) }
 
     before do
-      group.add_owner(user)
-
       allow(helper).to receive(:current_user).and_return(user)
     end
 
@@ -706,8 +701,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   describe '#step_up_auth_provider_options_for_select' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:group, freeze: false) { create(:group) }
-    let_it_be(:current_user) { create(:user, owner_of: group) }
+    let(:current_user) { build_stubbed(:user) }
 
     let(:omniauth_provider_oidc) do
       build(:omniauth_provider_config, :with_namespace_scope)
@@ -740,7 +734,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#group_more_action_data' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be_with_reload(:group) { create(:group, :public) }
 
     before do
@@ -765,7 +759,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
       context 'when user cannot request access' do
         before do
-          group.update!(request_access_enabled: false)
+          allow(group).to receive(:request_access_enabled).and_return(false)
         end
 
         specify { expect(result[:can_request_access]).to eq('false') }
@@ -773,7 +767,9 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     context 'when user has existing access request' do
-      let_it_be(:access_request, freeze: false) { create(:group_member, :guest, :access_request, group: group, user: user) }
+      let_it_be_with_reload(:access_request) do
+        create(:group_member, :guest, :access_request, group: group, user: user)
+      end
 
       specify { expect(result[:can_request_access]).to eq('false') }
 
@@ -831,7 +827,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     context 'when the group is a subgroup' do
-      let_it_be(:subgroup) { create(:group, parent: group, organization: unconfirmed_organization) }
+      let(:subgroup) { build_stubbed(:group, parent: group, organization: unconfirmed_organization) }
 
       subject(:can_create_organization) { helper.can_create_organization_from_group_settings?(subgroup) }
 

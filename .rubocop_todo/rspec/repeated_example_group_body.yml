@@ -1,7 +1,6 @@
 ---
 RSpec/RepeatedExampleGroupBody:
   Exclude:
-    - 'ee/spec/lib/banzai/filter/references/vulnerability_reference_filters_spec.rb'
     - 'ee/spec/lib/gitlab/geo_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'
     - 'ee/spec/models/geo/deleted_project_spec.rb'
@@ -11,11 +10,7 @@ RSpec/RepeatedExampleGroupBody:
     - 'spec/controllers/groups/registry/repositories_controller_spec.rb'
     - 'spec/features/projects/commit/cherry_pick_spec.rb'
     - 'spec/features/work_items/issues/new/spam_akismet_issue_creation_spec.rb'
-    - 'spec/helpers/gitlab_routing_helper_spec.rb'
-    - 'spec/helpers/groups_helper_spec.rb'
     - 'spec/lib/api/entities/application_setting_spec.rb'
-    - 'spec/lib/banzai/filter/references/commit_reference_filter_spec.rb'
-    - 'spec/lib/gitlab/blob_helper_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/release_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/seed/build_spec.rb'
     - 'spec/lib/gitlab/database/migrations/batched_background_migration_helpers_spec.rb'

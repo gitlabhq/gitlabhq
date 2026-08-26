@@ -3228,7 +3228,9 @@ describe('planning-view', () => {
         findDisplaySettingsDrawer().vm.$emit('sort', RELATIVE_POSITION_ASC);
         await waitForPromises();
 
-        expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
+        expect(userPreferenceMutationHandler).not.toHaveBeenCalledWith(
+          expect.objectContaining({ sort: RELATIVE_POSITION_ASC }),
+        );
 
         // The list sort is preserved so it is restored on exit.
         findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
@@ -3267,6 +3269,50 @@ describe('planning-view', () => {
         expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_BOARD);
         expect(findBoardView().exists()).toBe(true);
         expect(findListView().exists()).toBe(false);
+      });
+
+      it('persists the view mode to the namespace preferences', async () => {
+        const mutationHandler = userPrefUpdateHandlerWith({ viewMode: VIEW_MODE_BOARD });
+        await mountComponent({
+          provide: { glFeatures: { planningViewBoards: true } },
+          stubs: {
+            WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+            BoardView: boardViewStub,
+          },
+          userPreferenceMutationResponse: mutationHandler,
+        });
+
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+
+        expect(mutationHandler).toHaveBeenCalledWith({
+          namespace: 'full/path',
+          displaySettings: { viewMode: VIEW_MODE_BOARD },
+        });
+      });
+
+      it('restores the persisted board view mode with no session state, as after a reload', async () => {
+        resetPlanningViewState();
+        await mountComponent({
+          provide: { glFeatures: { planningViewBoards: true } },
+          stubs: {
+            WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+            BoardView: boardViewStub,
+          },
+          mockPreferencesHandler: preferencesHandlerWith({ viewMode: VIEW_MODE_BOARD }),
+        });
+
+        expect(findBoardView().exists()).toBe(true);
+        expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_BOARD);
+      });
+
+      it('falls back to list when the persisted view mode is board but the flag is off', async () => {
+        resetPlanningViewState();
+        await mountComponent({
+          mockPreferencesHandler: preferencesHandlerWith({ viewMode: VIEW_MODE_BOARD }),
+        });
+
+        expect(findListView().exists()).toBe(true);
       });
 
       describe('when creating a new saved view in board mode', () => {
@@ -3543,7 +3589,7 @@ describe('planning-view', () => {
         it('persists a newly collapsed column, merged with existing display settings', async () => {
           const mutationHandler = userPrefUpdateHandlerWith({
             hiddenMetadataKeys: ['labels'],
-            collapsedGroups: [collapsedId],
+            viewMode: VIEW_MODE_BOARD,
           });
           await mountAllItemsBoard({
             mockPreferencesHandler: preferencesHandlerWith({ hiddenMetadataKeys: ['labels'] }),
@@ -3557,13 +3603,17 @@ describe('planning-view', () => {
             namespace: 'full/path',
             displaySettings: {
               hiddenMetadataKeys: ['labels'],
+              viewMode: VIEW_MODE_BOARD,
               collapsedGroups: [collapsedId],
             },
           });
         });
 
         it('removes a column from collapsed columns when toggled again', async () => {
-          const mutationHandler = userPrefUpdateHandlerWith({ collapsedGroups: [] });
+          const mutationHandler = userPrefUpdateHandlerWith({
+            collapsedGroups: [collapsedId],
+            viewMode: VIEW_MODE_BOARD,
+          });
           await mountAllItemsBoard({
             mockPreferencesHandler: preferencesHandlerWith({ collapsedGroups: [collapsedId] }),
             userPreferenceMutationResponse: mutationHandler,
@@ -3574,7 +3624,7 @@ describe('planning-view', () => {
 
           expect(mutationHandler).toHaveBeenCalledWith({
             namespace: 'full/path',
-            displaySettings: { collapsedGroups: [] },
+            displaySettings: { collapsedGroups: [], viewMode: VIEW_MODE_BOARD },
           });
         });
 

@@ -3259,6 +3259,11 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           url = response.headers['Location']
           expect(url).to start_with("#{::Settings.gitlab.url}/api/v4/projects/#{project.id}")
           expect(CGI.parse(URI(url).query)).to include({ 'license' => ['true'] })
+
+          # The body stays a bare string and the response keeps no JSON content type, unlike the
+          # other error handlers which format through `error!`. Changing either is a breaking change.
+          expect(response.body).to eq("#{::API::API::MovedPermanentlyError::MSG_PREFIX} #{url}")
+          expect(response.media_type).to be_nil
         end
 
         context 'when a user do not have access' do

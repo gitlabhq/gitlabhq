@@ -19,10 +19,6 @@ module Ci
       list.map { |name| named(name) }.reduce(:or)
     end
 
-    def self.find_or_create_with_like_by_name(name)
-      find_or_create_all_with_like_by_name([name]).first
-    end
-
     def self.find_or_create_all_with_like_by_name(*list)
       list = Array(list).flatten
 

@@ -309,6 +309,7 @@ describe('Package Files', () => {
         const first = findAllRowCheckboxes().at(0);
 
         await first.find('input').setChecked(true);
+        await waitForPromises();
 
         expect(findDeleteSelectedButton().props('disabled')).toBe(false);
       });
@@ -324,10 +325,12 @@ describe('Package Files', () => {
           expect(getChecked()).toHaveLength(0);
 
           await findCheckAllCheckbox().setChecked(true);
+          await waitForPromises();
 
           expect(getChecked()).toHaveLength(files.length);
 
           await findCheckAllCheckbox().setChecked(false);
+          await waitForPromises();
 
           expect(getChecked()).toHaveLength(0);
         });
@@ -369,6 +372,7 @@ describe('Package Files', () => {
         const first = findAllRowCheckboxes().at(0);
 
         await first.find('input').setChecked(true);
+        await waitForPromises();
 
         await findDeleteSelectedButton().trigger('click');
 
@@ -384,6 +388,7 @@ describe('Package Files', () => {
         await waitForPromises();
 
         await findCheckAllCheckbox().setChecked(true);
+        await waitForPromises();
 
         await findDeleteSelectedButton().trigger('click');
 
@@ -415,6 +420,7 @@ describe('Package Files', () => {
             const first = findAllRowCheckboxes().at(0);
 
             await first.find('input').setChecked(true);
+            await waitForPromises();
 
             await findDeleteSelectedButton().trigger('click');
 
@@ -441,6 +447,7 @@ describe('Package Files', () => {
             await waitForPromises();
 
             await findCheckAllCheckbox().setChecked(true);
+            await waitForPromises();
 
             await findDeleteSelectedButton().trigger('click');
 
@@ -475,6 +482,7 @@ describe('Package Files', () => {
             const first = findAllRowCheckboxes().at(0);
 
             await first.find('input').setChecked(true);
+            await waitForPromises();
 
             await findDeleteSelectedButton().trigger('click');
 
@@ -500,6 +508,7 @@ describe('Package Files', () => {
             await waitForPromises();
 
             await findCheckAllCheckbox().setChecked(true);
+            await waitForPromises();
 
             await findDeleteSelectedButton().trigger('click');
 
@@ -601,6 +610,7 @@ describe('Package Files', () => {
       const first = findAllRowCheckboxes().at(0);
 
       await first.find('input').setChecked(true);
+      await waitForPromises();
 
       await findDeleteSelectedButton().trigger('click');
 
@@ -694,6 +704,7 @@ describe('Package Files', () => {
   describe('deleting multiple files', () => {
     const doDeleteFiles = async () => {
       await findCheckAllCheckbox().setChecked(true);
+      await waitForPromises();
 
       await findDeleteSelectedButton().trigger('click');
 

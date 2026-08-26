@@ -20,7 +20,6 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
   end
 
   let(:logger) { instance_spy(Gitlab::AuditJsonLogger) }
-  let(:app_logger) { instance_spy(Gitlab::AppLogger) }
 
   subject(:auditor) { described_class }
 

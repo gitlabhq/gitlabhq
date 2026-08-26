@@ -121,35 +121,21 @@ If this does not work, the error might be because of a known issue with GitLab D
 
 ## Check if GitLab can make a request to the model
 
-From the GitLab Rails console, verify that GitLab can make a request to the model
-by running:
+From the GitLab Rails console, verify that GitLab can connect to your self-hosted
+model by running:
 
 ```ruby
-model_name = "<your_model_name>"
-model_endpoint = "<your_model_endpoint>"
-model_api_key = "<your_model_api_key>"
-body = {:prompt_components=>[{:type=>"prompt", :metadata=>{:source=>"GitLab EE", :version=>"17.3.0"}, :payload=>{:content=>[{:role=>:user, :content=>"Hello"}], :provider=>:litellm, :model=>model_name, :model_endpoint=>model_endpoint, :model_api_key=>model_api_key}}]}
-ai_gateway_url = ApplicationSetting.current.ai_gateway_url # Verify that the AI Gateway URL is set in the database
-client = Gitlab::Llm::AiGateway::Client.new(User.find_by_id(1), unit_primitive_name: :self_hosted_models)
-client.complete(url: "#{ai_gateway_url}/v1/chat/agent", body: body)
+self_hosted_model = Ai::SelfHostedModel.find_by(name: "<your_model_name>")
+user = User.find_by_id(1)
+Gitlab::Llm::AiGateway::SelfHostedModels::ConnectionTester.new(user, self_hosted_model).execute
 ```
 
-This should return a response from the model in the format:
-
-```ruby
-{"response"=> "<Model response>",
- "metadata"=>
-  {"provider"=>"litellm",
-   "model"=>"<>",
-   "timestamp"=>1723448920}}
-```
+If GitLab can reach the model, the command returns `nil`. Otherwise, it returns a
+string that describes the error.
 
 If that is not the case, this might mean one of the following:
 
-- The user might not have access to Code Suggestions. To resolve,
-  [check if a user can request Code Suggestions](#check-if-a-user-can-request-code-suggestions).
 - The GitLab environment variables are not configured correctly. To resolve, [check that the GitLab environment variables are set up correctly](#check-that-the-ai-gateway-environment-variables-are-set-up-correctly).
-- The GitLab instance is not configured to use self-hosted models. To resolve, [check if the GitLab instance is configured to use self-hosted models](#check-if-gitlab-instance-is-configured-to-use-self-hosted-models).
 - The AI Gateway is not reachable. To resolve, [check if GitLab can make an HTTP request to the AI Gateway](#check-if-gitlab-can-make-an-http-request-to-the-ai-gateway).
 - When the LLM server is installed on the same instance as the AI Gateway container, local requests may not work. To resolve, [allow local requests from the Docker container](#llm-server-is-not-available-inside-the-ai-gateway-container).
 
@@ -220,27 +206,28 @@ If the response is not `200`, this means either of the following:
 
 ## Check if the AI Gateway can make a request to the model
 
-From the AI Gateway container, make an HTTP request to the AI Gateway API for a
-Code Suggestion. Replace:
+From the AI Gateway container, make an HTTP request to the AI Gateway API to check
+the self-hosted model connection. Replace:
 
-- `<your_model_name>` with the name of the model you are using. For example `mistral` or `codegemma`.
+- `<your_model_name>` with the model family of the model you are using. For example `mistral` or `codegemma`.
+- `<your_model_identifier>` with the identifier of your model deployment. For example `custom_openai/mistral:instruct`.
 - `<your_model_endpoint>` with the endpoint where the model is hosted.
 
 ```shell
 docker exec -it <ai-gateway-container> sh
-curl --request POST "http://localhost:5052/v1/chat/agent" \
+curl --request POST "http://localhost:5052/v1/prompts/model_configuration%2Fcheck" \
      --header 'accept: application/json' \
      --header 'Content-Type: application/json' \
-     --data '{ "prompt_components": [ { "type": "string", "metadata": { "source": "string", "version": "string" }, "payload": { "content": "Hello", "provider": "litellm", "model": "<your_model_name>", "model_endpoint": "<your_model_endpoint>" } } ], "stream": false }'
+     --data '{ "stream": false, "inputs": {}, "model_metadata": { "name": "<your_model_name>", "identifier": "<your_model_identifier>", "endpoint": "<your_model_endpoint>", "provider": "openai" } }'
 ```
 
 If the request fails, the:
 
 - AI Gateway might not be configured properly to use self-hosted models. To resolve this,
-  [check that the AI Gateway URL is set up correctly](#check-that-the-ai-gateway-url-is-set-up-correctly).
+  [check that the AI Gateway environment variables are set up correctly](#check-that-the-ai-gateway-environment-variables-are-set-up-correctly).
 - AI Gateway might not be able to access the model. To resolve,
   [check if the model is reachable from the AI Gateway](#check-if-the-model-is-reachable-from-ai-gateway).
-- Model name or endpoint might be incorrect. Check the values, and correct them
+- Model endpoint might be incorrect. Check the value, and correct it
   if necessary.
 
 ## Check if AI Gateway can process requests

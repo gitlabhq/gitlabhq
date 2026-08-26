@@ -9,10 +9,6 @@ RSpec.describe 'environments routing' do
     create(:environment, project: project, name: 'staging-1.0/review')
   end
 
-  let(:environments_route) do
-    "#{project.full_path}/-/environments/"
-  end
-
   describe 'routing environment folders' do
     context 'when using JSON format' do
       it 'correctly matches environment name and JSON format' do

@@ -366,10 +366,6 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
         { inline_input: 'inline', external_input: 'external' }
       end
 
-      let(:external_inputs) do
-        { inputs: { external_input: { default: 'external_value' } } }
-      end
-
       before do
         allow_next_instance_of(Gitlab::Ci::Config::External::Header::Processor) do |processor|
           allow(processor).to receive(:perform).and_return(

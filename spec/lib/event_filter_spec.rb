@@ -179,15 +179,15 @@ RSpec.describe EventFilter do
     let(:event_filter) { described_class.new(described_class::TEAM) }
 
     it 'returns false if filter does not include the given key' do
-      expect(event_filter.active?('foo')).to eq(false)
+      expect(event_filter.active?('foo')).to be(false)
     end
 
     it 'returns false if the given key is nil' do
-      expect(event_filter.active?(nil)).to eq(false)
+      expect(event_filter.active?(nil)).to be(false)
     end
 
     it 'returns true if filter does not include the given key' do
-      expect(event_filter.active?(described_class::TEAM)).to eq(true)
+      expect(event_filter.active?(described_class::TEAM)).to be(true)
     end
   end
 end

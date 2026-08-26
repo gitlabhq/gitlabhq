@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
   let(:helper) do
     Class.new do
+      include API::Helpers
       include API::Ci::Helpers::Runner
       include Gitlab::RackLoadBalancingHelpers
     end.new

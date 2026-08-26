@@ -576,8 +576,6 @@ export const getNewWorkItemSharedCache = ({
       __typename: 'WorkItemWidgetProgress',
     },
     agentPlan: {
-      content: null,
-      contentHtml: null,
       __typename: 'WorkItemWidgetAgentPlan',
     },
     customFields: {

@@ -87,7 +87,7 @@ RSpec.describe ExtractsRef::RefExtractor, feature_category: :source_code_managem
     context 'when ref_type is nil' do
       let(:ref_type) { nil }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'when ref_type is heads' do
@@ -105,7 +105,7 @@ RSpec.describe ExtractsRef::RefExtractor, feature_category: :source_code_managem
     context 'when ref_type is invalid' do
       let(:ref_type) { 'invalid' }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
   end
 

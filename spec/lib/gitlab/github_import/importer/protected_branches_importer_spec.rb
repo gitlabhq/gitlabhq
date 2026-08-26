@@ -165,8 +165,6 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter, featur
     # when user has no admin rights on repo
     let(:unknown_protection_branch) { branch_struct.new(name: 'development', protection: nil) }
 
-    let(:page_counter) { instance_double(Gitlab::Import::PageCounter) }
-
     before do
       allow(client).to receive(:branches).with(project.import_source)
         .and_return([protected_branch, second_protected_branch, unprotected_branch, unknown_protection_branch])

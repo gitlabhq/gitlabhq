@@ -11,6 +11,7 @@
 - :background_operation
 - :block
 - :broken_storage
+- :capture_snowplow_events
 - :capybara_ignore_server_errors
 - :ci_config_validation
 - :clean_gitlab_redis_buffered_counter

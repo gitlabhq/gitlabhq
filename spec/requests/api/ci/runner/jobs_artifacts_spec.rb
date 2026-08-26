@@ -22,6 +22,18 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   let(:file_upload) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
   let(:file_upload2) { fixture_file_upload('spec/fixtures/dk.png', 'image/gif') }
 
+  shared_context 'with a job in a maintenance organization' do
+    let_it_be_with_reload(:organization) { create(:organization) }
+    let_it_be(:group) { create(:group, organization: organization) }
+    let_it_be(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
+    let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+    let_it_be(:user) { create(:user, developer_of: project) }
+    let_it_be_with_reload(:job) do
+      create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id)
+    end
+  end
+
   context 'job artifact endpoints' do
     before do
       stub_application_setting(ci_job_live_trace_enabled: true)
@@ -302,6 +314,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       def authorize_artifacts_with_token_in_headers(params = {}, request_headers = headers_with_token, target_job = job)
         authorize_artifacts(params, request_headers, target_job)
+      end
+
+      it_behaves_like 'an API request enforcing organization maintenance mode' do
+        include_context 'with a job in a maintenance organization'
+
+        let(:success_status) { :ok }
+
+        def request
+          authorize_artifacts_with_token_in_headers(filesize: 100)
+        end
       end
     end
 
@@ -943,6 +965,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           send_rewritten_field: true
         )
       end
+
+      it_behaves_like 'an API request enforcing organization maintenance mode' do
+        include_context 'with a job in a maintenance organization'
+
+        let(:success_status) { :created }
+
+        def request
+          upload_artifacts(file_upload, headers_with_token)
+        end
+      end
     end
 
     describe 'GET /api/v4/jobs/:id/artifacts' do
@@ -1188,6 +1220,21 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         job.reload
 
         get api("/jobs/#{job.id}/artifacts"), params: params, headers: request_headers
+      end
+
+      it_behaves_like 'an API request enforcing organization maintenance mode' do
+        include_context 'with a job in a maintenance organization'
+
+        let_it_be_with_reload(:job) do
+          create(:ci_build, :artifacts, :pending, user: user, project: project, pipeline: pipeline,
+            runner_id: runner.id)
+        end
+
+        let(:success_status) { :ok }
+
+        def request
+          get api("/jobs/#{job.id}/artifacts"), params: { token: job.token }, headers: headers
+        end
       end
     end
   end

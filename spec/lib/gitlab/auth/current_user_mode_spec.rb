@@ -141,7 +141,7 @@ RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store, feature_category: 
         it 'returns false' do
           current_user_mode.request_admin_mode!
 
-          expect(current_user_mode.enable_admin_mode!(password: user.password)).to eq(false)
+          expect(current_user_mode.enable_admin_mode!(password: user.password)).to be(false)
         end
       end
     end

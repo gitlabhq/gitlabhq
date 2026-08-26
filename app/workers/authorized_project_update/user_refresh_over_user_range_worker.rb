@@ -22,8 +22,6 @@ module AuthorizedProjectUpdate
 
     data_consistency :delayed
 
-    defer_on_database_health_signal :gitlab_main, [:project_authorizations], 5.minutes
-
     idempotent!
 
     def perform(start_user_id, end_user_id)

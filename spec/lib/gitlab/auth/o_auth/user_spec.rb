@@ -58,7 +58,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
 
     context 'when user does not exist for given uid and provider' do
       it 'returns nil' do
-        expect(described_class.find_by_uid_and_provider('unknown-uid', provider)).to eq nil
+        expect(described_class.find_by_uid_and_provider('unknown-uid', provider)).to be_nil
       end
     end
 

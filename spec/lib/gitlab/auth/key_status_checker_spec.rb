@@ -16,25 +16,25 @@ RSpec.describe Gitlab::Auth::KeyStatusChecker, feature_category: :system_access 
     context 'for an expired key' do
       let(:key) { expired_key }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'for a key expiring in the next 7 days' do
       let(:key) { expiring_soon_key }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'for a key expiring after the next 7 days' do
       let(:key) { expires_in_future_key }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'for a key that never expires' do
       let(:key) { never_expires_key }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

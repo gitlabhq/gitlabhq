@@ -22,21 +22,21 @@ RSpec.describe Gitlab::Auth::Saml::OriginValidator do
     it 'returns false if InResponseTo is not present' do
       saml_response = instance_double(OneLogin::RubySaml::Response, in_response_to: nil)
 
-      expect(validator.gitlab_initiated?(saml_response)).to eq(false)
+      expect(validator.gitlab_initiated?(saml_response)).to be(false)
     end
 
     it 'returns false if InResponseTo does not match stored value' do
       saml_response = instance_double(OneLogin::RubySaml::Response, in_response_to: "abc")
       allow(session).to receive(:[]).with('last_authn_request_id').and_return('123')
 
-      expect(validator.gitlab_initiated?(saml_response)).to eq(false)
+      expect(validator.gitlab_initiated?(saml_response)).to be(false)
     end
 
     it 'returns true if InResponseTo matches stored value' do
       saml_response = instance_double(OneLogin::RubySaml::Response, in_response_to: "123")
       allow(session).to receive(:[]).with('last_authn_request_id').and_return('123')
 
-      expect(validator.gitlab_initiated?(saml_response)).to eq(true)
+      expect(validator.gitlab_initiated?(saml_response)).to be(true)
     end
   end
 end

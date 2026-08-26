@@ -37,14 +37,14 @@ RSpec.describe ClickHouse::MigrationSupport::ExclusiveLock, feature_category: :d
     end
 
     it 'registers worker for a limited period of time', :freeze_time, :aggregate_failures do
-      expect(described_class.active_sidekiq_workers?).to eq false
+      expect(described_class.active_sidekiq_workers?).to be false
 
       described_class.register_running_worker(worker_class, 'test') do
-        expect(described_class.active_sidekiq_workers?).to eq true
+        expect(described_class.active_sidekiq_workers?).to be true
         travel 9.seconds
-        expect(described_class.active_sidekiq_workers?).to eq true
+        expect(described_class.active_sidekiq_workers?).to be true
         travel 2.seconds
-        expect(described_class.active_sidekiq_workers?).to eq false
+        expect(described_class.active_sidekiq_workers?).to be false
       end
     end
 
@@ -113,12 +113,12 @@ RSpec.describe ClickHouse::MigrationSupport::ExclusiveLock, feature_category: :d
   describe '.pause_workers?' do
     subject(:pause_workers?) { described_class.pause_workers? }
 
-    it { is_expected.to eq false }
+    it { is_expected.to be false }
 
     context 'with lock taken' do
       let!(:lease) { stub_exclusive_lease_taken(described_class::MIGRATION_LEASE_KEY) }
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
   end
 
@@ -196,12 +196,12 @@ RSpec.describe ClickHouse::MigrationSupport::ExclusiveLock, feature_category: :d
     subject(:active_sidekiq_workers) { described_class.active_sidekiq_workers? }
 
     it 'returns false when no workers are registered' do
-      is_expected.to eq false
+      is_expected.to be false
     end
 
     it 'returns true when workers are registered' do
       described_class.register_running_worker(worker_class, 'test') do
-        is_expected.to eq true
+        is_expected.to be true
       end
     end
 

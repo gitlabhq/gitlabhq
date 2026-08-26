@@ -7,8 +7,6 @@ RSpec.describe Gitlab::WorkItems::Instrumentation::TrackingService, feature_cate
   let_it_be(:project) { create(:project, developers: user) }
   let_it_be(:work_item) { create(:work_item, project: project) }
 
-  let(:other_user) { create(:user) }
-
   let(:service) { described_class.new(**service_params) }
   let(:service_params) { base_params.merge(additional_params) }
   let(:base_params) { { work_item: work_item, current_user: user } }

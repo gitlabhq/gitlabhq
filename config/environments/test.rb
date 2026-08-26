@@ -6,6 +6,7 @@ require 'gitlab/testing/robots_blocker_middleware'
 require 'gitlab/testing/request_inspector_middleware'
 require 'gitlab/testing/clear_process_memory_cache_middleware'
 require 'gitlab/testing/action_cable_blocker'
+require 'gitlab/testing/snowplow_collector_middleware'
 require 'gitlab/utils/all'
 
 Rails.application.configure do
@@ -14,6 +15,7 @@ Rails.application.configure do
   config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::RobotsBlockerMiddleware)
   config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::RequestInspectorMiddleware)
   config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::ClearProcessMemoryCacheMiddleware)
+  config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::SnowplowCollectorMiddleware)
   config.middleware.insert_before(ActionDispatch::Cookies, Gitlab::Middleware::StripCookies, paths: [%r{^/assets/}])
 
   Gitlab::Testing::ActionCableBlocker.install

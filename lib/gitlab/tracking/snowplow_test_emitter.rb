@@ -9,6 +9,8 @@ module Gitlab
       # This allows event tracking to work normally without making actual HTTP calls
       override :send_requests
       def send_requests(events)
+        ::Gitlab::Testing::SnowplowEvents.record(events.map(&:dup))
+
         events.size
       end
     end

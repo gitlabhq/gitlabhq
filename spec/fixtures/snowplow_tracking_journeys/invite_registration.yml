@@ -1,0 +1,38 @@
+---
+description: |
+  Events a user emits when registering from a group invitation, from clicking the invite
+  through to landing on the group page. Removing an entry here stops that step of the funnel
+  being measured.
+
+events:
+  - category: InvitesController
+    action: join_clicked
+    label: invite_email
+
+  - category: RegistrationsController
+    action: render_registration_page
+    label: invite_registration
+
+  - category: registrations:new
+    action: register
+    label: invite_registration
+
+  - category: RegistrationsController
+    action: accepted
+    label: invite_email
+
+  - category: RegistrationsController
+    action: create_user
+    label: invited
+
+  - category: RegistrationsController
+    action: successfully_submitted_form
+    label: invite_registration
+
+  - category: registrations:invite_welcome:show
+    action: render
+    label: invite_registration
+
+  - category: registrations:invite_welcome:update
+    action: successfully_submitted_form
+    label: invite_registration

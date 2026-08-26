@@ -12,7 +12,6 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::JacocoDocument,
   describe '#parse!' do
     let(:coverage_report) { Gitlab::Ci::Reports::CoverageReport.new }
     let(:modified_files) { %w[src/main/org/acme/AnotherResource.java src/main/org/acme/ExampleResource.java] }
-    let(:project_path) { 'root/someproject' }
     let(:xml) { fixture_file_upload(Rails.root.join('spec/fixtures/jacoco/coverage.xml'), 'text/xml') }
 
     it 'parses the file' do

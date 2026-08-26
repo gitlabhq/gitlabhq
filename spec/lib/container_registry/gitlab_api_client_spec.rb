@@ -628,13 +628,13 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
         stub_repository_details(path, sizing: :self_with_descendants, status_code: 404, respond_with: response)
       end
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'with the registry disabled' do
       let(:registry_enabled) { false }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'with a nil path' do
@@ -646,7 +646,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
         stub_repository_details(path, sizing: :self_with_descendants, status_code: 401, respond_with: response)
       end
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'with uppercase path' do
@@ -698,16 +698,16 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       it 'returns nil when path is invalid' do
         registry_path = ContainerRegistry::Path.new('invalid')
         expect(ContainerRegistry::Path).to receive(:new).with(path).and_return(registry_path)
-        expect(registry_path.valid?).to eq(false)
+        expect(registry_path.valid?).to be(false)
 
-        expect(subject).to eq(nil)
+        expect(subject).to be_nil
       end
 
       it 'returns nil when there is no container_repository matching the path' do
         expect(ContainerRegistry::Path).to receive(:new).with(path).and_call_original
         expect(ContainerRepository).to receive(:find_by_path).and_return(nil)
 
-        expect(subject).to eq(nil)
+        expect(subject).to be_nil
       end
     end
 
@@ -731,7 +731,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
         stub_sub_repositories_with_tag(path, page_size: 1, status_code: 404, respond_with: {})
       end
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'with uppercase path' do

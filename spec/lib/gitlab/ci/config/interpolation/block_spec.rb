@@ -28,7 +28,6 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Block, feature_category: :pipe
   describe 'when functions are specified in the block' do
     let(:function_string1) { 'truncate(1,5)' }
     let(:data) { "inputs.data | #{function_string1}" }
-    let(:access_value) { 'abcdef' }
 
     it 'returns the modified value' do
       expect(subject).to be_valid
