@@ -77,6 +77,8 @@
   - 1
 - - ai_duo_workflows_code_review_timeout
   - 1
+- - ai_duo_workflows_fetch_namespace_session_credits
+  - 1
 - - ai_duo_workflows_generate_workflow_summary
   - 1
 - - ai_duo_workflows_generate_workflow_title

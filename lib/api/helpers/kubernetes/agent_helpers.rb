@@ -28,6 +28,7 @@ module API
           unauthorized! unless agent_token
 
           set_current_organization_from_agent(agent)
+          check_organization_maintenance_mode!
 
           ::Clusters::AgentTokens::TrackUsageService.new(agent_token).execute
         end

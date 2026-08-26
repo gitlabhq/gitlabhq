@@ -1373,6 +1373,14 @@ Grants the ability to approve, create, delete, merge, read, subscribe, and updat
 | Update | Project | Mutation | `MergeRequestSetReviewers` |
 | Update | Project | Mutation | `MergeRequestUpdate` |
 
+#### Merge Request Saved View
+
+Grants the ability to read merge request saved views.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | User | Type | `MergeRequestSavedView` |
+
 #### Path Lock
 
 Grants the ability to create path locks.

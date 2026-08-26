@@ -539,6 +539,28 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         )
       end
     end
+
+    context 'when the agent organization is in maintenance mode' do
+      let_it_be_with_reload(:organization) { create(:organization) }
+      let_it_be(:project) { create(:project, organization: organization) }
+      let_it_be(:agent_token) do
+        create(:cluster_agent_token, agent: create(:cluster_agent, project: project))
+      end
+
+      before do
+        organization.start_maintenance(maintenance_reason: 'migration')
+        organization.confirm_maintenance
+      end
+
+      it 'blocks the request with service unavailable and a Retry-After header', :aggregate_failures do
+        send_request(headers: agent_token_headers)
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+        expect(json_response['message'])
+          .to eq(_('This organization is temporarily unavailable due to maintenance.'))
+        expect(response.headers['Retry-After']).to eq('60')
+      end
+    end
   end
 
   describe 'GET /internal/kubernetes/verify_project_access' do
@@ -611,6 +633,69 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         let(:project_id) { non_existing_record_id }
 
         it_behaves_like 'access is denied'
+      end
+    end
+
+    context 'when the agent organization is in maintenance mode' do
+      let_it_be_with_reload(:organization) { create(:organization) }
+      let_it_be(:project) { create(:project, :public, organization: organization) }
+      let_it_be(:agent_token) do
+        create(:cluster_agent_token, agent: create(:cluster_agent, project: project))
+      end
+
+      let(:project_id) { project.id }
+
+      context 'for a time-bounded maintenance reason' do
+        before do
+          organization.start_maintenance(maintenance_reason: 'migration')
+          organization.confirm_maintenance
+        end
+
+        it 'blocks the request with service unavailable and a Retry-After header', :aggregate_failures do
+          send_request(params: { id: project_id }, headers: agent_token_headers)
+
+          expect(response).to have_gitlab_http_status(:service_unavailable)
+          expect(json_response['message'])
+            .to eq(_('This organization is temporarily unavailable due to maintenance.'))
+          expect(response.headers['Retry-After']).to eq('60')
+        end
+      end
+
+      context 'for an indefinite maintenance reason' do
+        before do
+          organization.start_maintenance(maintenance_reason: 'legal')
+          organization.confirm_maintenance
+        end
+
+        it 'blocks the request with forbidden and no Retry-After header', :aggregate_failures do
+          send_request(params: { id: project_id }, headers: agent_token_headers)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to include(_('This organization is unavailable.'))
+          expect(response.headers['Retry-After']).to be_nil
+        end
+      end
+
+      context 'when the organization is active' do
+        it 'allows the request' do
+          send_request(params: { id: project_id }, headers: agent_token_headers)
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      context 'when enforcement is disabled' do
+        before do
+          organization.start_maintenance(maintenance_reason: 'migration')
+          organization.confirm_maintenance
+          stub_feature_flags(organization_maintenance_enforcement: false)
+        end
+
+        it 'allows the request' do
+          send_request(params: { id: project_id }, headers: agent_token_headers)
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
       end
     end
   end

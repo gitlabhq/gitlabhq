@@ -26,7 +26,7 @@ abuse_report_uploads: https://gitlab.com/gitlab-org/gitlab/-/work_items/616249
 abuse_report_user_mentions: https://gitlab.com/gitlab-org/gitlab/-/work_items/616250
 abuse_reports: supported
 admin_roles: no_work_needed
-agent_organization_authorizations: https://gitlab.com/gitlab-org/gitlab/-/issues/611975
+agent_organization_authorizations: supported
 ai_catalog_item_stars: supported
 ai_catalog_item_version_dependencies: https://gitlab.com/gitlab-org/gitlab/-/work_items/616251
 ai_catalog_item_versions: supported
@@ -51,7 +51,7 @@ bulk_import_entities: no_work_needed
 bulk_import_failures: no_work_needed
 bulk_import_trackers: no_work_needed
 bulk_imports: supported
-burned_project_routes: https://gitlab.com/gitlab-org/gitlab/-/issues/611975
+burned_project_routes: supported
 cd_application_flow_definitions: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 cd_application_links: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 cd_applications: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
@@ -133,7 +133,7 @@ personal_access_token_granular_scopes: supported
 personal_access_token_last_used_ips: https://gitlab.com/gitlab-org/gitlab/-/issues/611962
 personal_access_tokens: supported
 personal_snippet_upload_states: https://gitlab.com/gitlab-org/gitlab/-/issues/611963
-pool_repositories: https://gitlab.com/gitlab-org/gitlab/-/work_items/616235
+pool_repositories: no_work_needed
 project_topic_upload_states: https://gitlab.com/gitlab-org/gitlab/-/work_items/616255
 project_topic_uploads: no_work_needed
 project_type_ci_runner_machines: supported

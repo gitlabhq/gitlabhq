@@ -106,6 +106,19 @@ RSpec.describe API::Projects, :with_current_organization, :without_current_organ
       it_behaves_like 'a maintenance mode organization blocked request'
     end
 
+    describe 'deploy token authentication' do
+      let_it_be(:deploy_token) do
+        create(:deploy_token, projects: [project], read_package_registry: true)
+      end
+
+      let(:request) do
+        get api("/projects/#{project.id}/packages/pypi/simple"),
+          headers: { 'Deploy-Token' => deploy_token.token }
+      end
+
+      it_behaves_like 'a maintenance mode organization blocked request'
+    end
+
     context 'when the organization is in maintenance mode for an indefinite reason' do
       let_it_be_with_reload(:indefinite_organization) { create(:organization) }
       let_it_be(:indefinite_user) { create(:user, organization: indefinite_organization) }

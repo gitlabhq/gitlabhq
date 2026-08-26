@@ -1676,72 +1676,83 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION table_sync_function_3f39f64fc3() RETURNS trigger
+CREATE FUNCTION table_sync_function_3f39f64fc3_reverse() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
 IF (TG_OP = 'DELETE') THEN
-  DELETE FROM merge_request_diff_files_99208b8fac where "merge_request_diff_id" = OLD."merge_request_diff_id" AND "relative_order" = OLD."relative_order";
+  DELETE FROM merge_request_diff_files_archived
+  WHERE "merge_request_diff_id" = OLD."merge_request_diff_id"
+    AND "relative_order" = OLD."relative_order";
 ELSIF (TG_OP = 'UPDATE') THEN
-  UPDATE merge_request_diff_files_99208b8fac
-  SET "new_file" = NEW."new_file",
-    "renamed_file" = NEW."renamed_file",
-    "deleted_file" = NEW."deleted_file",
-    "too_large" = NEW."too_large",
-    "a_mode" = NEW."a_mode",
-    "b_mode" = NEW."b_mode",
-    "new_path" = NULLIF(NEW."new_path", NEW."old_path"),
-    "old_path" = NEW."old_path",
-    "diff" = NEW."diff",
-    "binary" = NEW."binary",
-    "external_diff_offset" = NEW."external_diff_offset",
-    "external_diff_size" = NEW."external_diff_size",
-    "generated" = NEW."generated",
-    "encoded_file_path" = NEW."encoded_file_path",
-    "project_id" = COALESCE(NEW."project_id", (SELECT mrd.project_id FROM merge_request_diffs mrd WHERE mrd.id = NEW."merge_request_diff_id"))
-  WHERE merge_request_diff_files_99208b8fac."merge_request_diff_id" = NEW."merge_request_diff_id" AND merge_request_diff_files_99208b8fac."relative_order" = NEW."relative_order";
+  IF NEW."merge_request_diff_id" <= 2147483647 THEN
+    UPDATE merge_request_diff_files_archived
+    SET "new_file" = NEW."new_file",
+      "renamed_file" = NEW."renamed_file",
+      "deleted_file" = NEW."deleted_file",
+      "too_large" = NEW."too_large",
+      "a_mode" = NEW."a_mode",
+      "b_mode" = NEW."b_mode",
+      "new_path" = NULLIF(NEW."new_path", NEW."old_path"),
+      "old_path" = NEW."old_path",
+      "diff" = NEW."diff",
+      "binary" = NEW."binary",
+      "external_diff_offset" = NEW."external_diff_offset",
+      "external_diff_size" = NEW."external_diff_size",
+      "generated" = NEW."generated",
+      "encoded_file_path" = NEW."encoded_file_path",
+      "project_id" = NEW."project_id"
+    WHERE merge_request_diff_files_archived."merge_request_diff_id" = NEW."merge_request_diff_id"
+      AND merge_request_diff_files_archived."relative_order" = NEW."relative_order";
+  END IF;
 ELSIF (TG_OP = 'INSERT') THEN
-  INSERT INTO merge_request_diff_files_99208b8fac ("new_file",
-    "renamed_file",
-    "deleted_file",
-    "too_large",
-    "a_mode",
-    "b_mode",
-    "new_path",
-    "old_path",
-    "diff",
-    "binary",
-    "external_diff_offset",
-    "external_diff_size",
-    "generated",
-    "encoded_file_path",
-    "project_id",
-    "merge_request_diff_id",
-    "relative_order")
-  VALUES (NEW."new_file",
-    NEW."renamed_file",
-    NEW."deleted_file",
-    NEW."too_large",
-    NEW."a_mode",
-    NEW."b_mode",
-    NULLIF(NEW."new_path", NEW."old_path"),
-    NEW."old_path",
-    NEW."diff",
-    NEW."binary",
-    NEW."external_diff_offset",
-    NEW."external_diff_size",
-    NEW."generated",
-    NEW."encoded_file_path",
-    COALESCE(NEW."project_id", (SELECT mrd.project_id FROM merge_request_diffs mrd WHERE mrd.id = NEW."merge_request_diff_id")),
-    NEW."merge_request_diff_id",
-    NEW."relative_order");
+  IF NEW."merge_request_diff_id" <= 2147483647 THEN
+    INSERT INTO merge_request_diff_files_archived (
+      "merge_request_diff_id",
+      "relative_order",
+      "new_file",
+      "renamed_file",
+      "deleted_file",
+      "too_large",
+      "a_mode",
+      "b_mode",
+      "new_path",
+      "old_path",
+      "diff",
+      "binary",
+      "external_diff_offset",
+      "external_diff_size",
+      "generated",
+      "encoded_file_path",
+      "project_id"
+    )
+    VALUES (
+      NEW."merge_request_diff_id",
+      NEW."relative_order",
+      NEW."new_file",
+      NEW."renamed_file",
+      NEW."deleted_file",
+      NEW."too_large",
+      NEW."a_mode",
+      NEW."b_mode",
+      NULLIF(NEW."new_path", NEW."old_path"),
+      NEW."old_path",
+      NEW."diff",
+      NEW."binary",
+      NEW."external_diff_offset",
+      NEW."external_diff_size",
+      NEW."generated",
+      NEW."encoded_file_path",
+      NEW."project_id"
+    )
+    ON CONFLICT ("merge_request_diff_id", "relative_order") DO NOTHING;
+  END IF;
 END IF;
+
 RETURN NULL;
 
 END
 $$;
-
-COMMENT ON FUNCTION table_sync_function_3f39f64fc3() IS 'Partitioning migration: table sync for merge_request_diff_files table';
 
 CREATE FUNCTION timestamp_coalesce(t1 timestamp with time zone, t2 anyelement) RETURNS timestamp without time zone
     LANGUAGE plpgsql IMMUTABLE
@@ -6844,28 +6855,6 @@ CREATE TABLE merge_request_diff_commits_b5377a7a34 (
     trailers jsonb DEFAULT '{}'::jsonb
 )
 PARTITION BY RANGE (project_id);
-
-CREATE TABLE merge_request_diff_files_99208b8fac (
-    new_file boolean NOT NULL,
-    renamed_file boolean NOT NULL,
-    deleted_file boolean NOT NULL,
-    too_large boolean NOT NULL,
-    a_mode character varying NOT NULL,
-    b_mode character varying NOT NULL,
-    new_path text,
-    old_path text NOT NULL,
-    diff text,
-    "binary" boolean,
-    external_diff_offset integer,
-    external_diff_size integer,
-    generated boolean,
-    encoded_file_path boolean DEFAULT false NOT NULL,
-    project_id bigint,
-    merge_request_diff_id bigint NOT NULL,
-    relative_order integer NOT NULL,
-    CONSTRAINT check_87c184d62f CHECK ((project_id IS NOT NULL))
-)
-PARTITION BY RANGE (merge_request_diff_id);
 
 CREATE TABLE merge_requests_merge_data (
     merge_request_id bigint NOT NULL,
@@ -24120,6 +24109,28 @@ CREATE SEQUENCE merge_request_diff_details_merge_request_diff_id_seq
 ALTER SEQUENCE merge_request_diff_details_merge_request_diff_id_seq OWNED BY merge_request_diff_details.merge_request_diff_id;
 
 CREATE TABLE merge_request_diff_files (
+    new_file boolean NOT NULL,
+    renamed_file boolean NOT NULL,
+    deleted_file boolean NOT NULL,
+    too_large boolean NOT NULL,
+    a_mode character varying NOT NULL,
+    b_mode character varying NOT NULL,
+    new_path text,
+    old_path text NOT NULL,
+    diff text,
+    "binary" boolean,
+    external_diff_offset integer,
+    external_diff_size integer,
+    generated boolean,
+    encoded_file_path boolean DEFAULT false NOT NULL,
+    project_id bigint,
+    merge_request_diff_id bigint NOT NULL,
+    relative_order integer NOT NULL,
+    CONSTRAINT check_87c184d62f CHECK ((project_id IS NOT NULL))
+)
+PARTITION BY RANGE (merge_request_diff_id);
+
+CREATE TABLE merge_request_diff_files_archived (
     merge_request_diff_id bigint NOT NULL,
     relative_order integer NOT NULL,
     new_file boolean NOT NULL,
@@ -40992,8 +41003,8 @@ ALTER TABLE ONLY merge_request_diff_commits
 ALTER TABLE ONLY merge_request_diff_details
     ADD CONSTRAINT merge_request_diff_details_pkey PRIMARY KEY (merge_request_diff_id);
 
-ALTER TABLE ONLY merge_request_diff_files_99208b8fac
-    ADD CONSTRAINT merge_request_diff_files_99208b8fac_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
+ALTER TABLE ONLY merge_request_diff_files_archived
+    ADD CONSTRAINT merge_request_diff_files_archived_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
 
 ALTER TABLE ONLY merge_request_diff_files
     ADD CONSTRAINT merge_request_diff_files_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
@@ -47028,6 +47039,8 @@ CREATE INDEX index_bulk_imports_on_user_id ON bulk_imports USING btree (user_id)
 
 CREATE UNIQUE INDEX index_burned_project_routes_on_org_id_lower_path ON burned_project_routes USING btree (organization_id, lower(path));
 
+CREATE INDEX index_burned_project_routes_on_org_id_lower_path_pattern ON burned_project_routes USING btree (organization_id, lower(path) text_pattern_ops);
+
 CREATE INDEX index_ca_enabled_incomplete_aggregation_stages_on_last_run_at ON analytics_cycle_analytics_stage_aggregations USING btree (last_run_at NULLS FIRST) WHERE ((last_completed_at IS NULL) AND (enabled = true));
 
 CREATE UNIQUE INDEX index_cargo_metadata_on_project_normalized_name_version ON packages_cargo_metadata USING btree (project_id, normalized_name, normalized_version);
@@ -49012,11 +49025,11 @@ CREATE INDEX index_merge_request_diff_details_on_verification_state ON merge_req
 
 CREATE INDEX index_merge_request_diff_details_pending_verification ON merge_request_diff_details USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
-CREATE INDEX index_merge_request_diff_files_99208b8fac_on_mr_diff_id ON ONLY merge_request_diff_files_99208b8fac USING btree (merge_request_diff_id);
+CREATE INDEX index_merge_request_diff_files_99208b8fac_on_mr_diff_id ON ONLY merge_request_diff_files USING btree (merge_request_diff_id);
 
-CREATE INDEX index_merge_request_diff_files_99208b8fac_on_project_id ON ONLY merge_request_diff_files_99208b8fac USING btree (project_id);
+CREATE INDEX index_merge_request_diff_files_99208b8fac_on_project_id ON ONLY merge_request_diff_files USING btree (project_id);
 
-CREATE INDEX index_merge_request_diff_files_on_project_id ON merge_request_diff_files USING btree (project_id);
+CREATE INDEX index_merge_request_diff_files_on_project_id ON merge_request_diff_files_archived USING btree (project_id);
 
 CREATE INDEX index_merge_request_diffs_by_id_partial ON merge_request_diffs USING btree (id) WHERE ((files_count > 0) AND ((NOT stored_externally) OR (stored_externally IS NULL)));
 
@@ -56108,7 +56121,7 @@ CREATE TRIGGER table_sync_trigger_57c8465cd7_delete AFTER DELETE ON merge_reques
 
 CREATE TRIGGER table_sync_trigger_57c8465cd7_insert AFTER INSERT ON merge_request_diff_commits REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION table_sync_function_0992e728d3_insert();
 
-CREATE TRIGGER table_sync_trigger_cd362c20e2 AFTER INSERT OR DELETE OR UPDATE ON merge_request_diff_files FOR EACH ROW EXECUTE FUNCTION table_sync_function_3f39f64fc3();
+CREATE TRIGGER table_sync_trigger_cd362c20e2_reverse AFTER INSERT OR DELETE OR UPDATE ON merge_request_diff_files FOR EACH ROW EXECUTE FUNCTION table_sync_function_3f39f64fc3_reverse();
 
 CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
@@ -56957,7 +56970,7 @@ ALTER TABLE ONLY vulnerability_detection_transitions
 ALTER TABLE ONLY approval_project_rules_users
     ADD CONSTRAINT fk_0dfcd9e339 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY merge_request_diff_files
+ALTER TABLE ONLY merge_request_diff_files_archived
     ADD CONSTRAINT fk_0e3ba01603 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY security_policy_project_links
@@ -60803,7 +60816,7 @@ ALTER TABLE ONLY packages_debian_publications
 ALTER TABLE merge_requests_merge_data
     ADD CONSTRAINT fk_rails_4fd2676ef4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY merge_request_diff_files
+ALTER TABLE ONLY merge_request_diff_files_archived
     ADD CONSTRAINT fk_rails_501aa0a391 FOREIGN KEY (merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_iteration_events
@@ -61117,6 +61130,9 @@ ALTER TABLE ONLY project_compliance_framework_settings
 
 ALTER TABLE ONLY users_security_dashboard_projects
     ADD CONSTRAINT fk_rails_6f6cf8e66e FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE merge_request_diff_files
+    ADD CONSTRAINT fk_rails_6fff895059 FOREIGN KEY (merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_dashboards_pointers
     ADD CONSTRAINT fk_rails_7027b7eaa9 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -62137,6 +62153,9 @@ ALTER TABLE virtual_registries_packages_maven_cache_remote_entries
 
 ALTER TABLE ONLY snippet_statistics
     ADD CONSTRAINT fk_rails_ebc283ccf1 FOREIGN KEY (snippet_id) REFERENCES snippets(id) ON DELETE CASCADE;
+
+ALTER TABLE merge_request_diff_files
+    ADD CONSTRAINT fk_rails_ebcce501f5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY slack_integrations_scopes
     ADD CONSTRAINT fk_rails_ece1eb6772 FOREIGN KEY (slack_integration_id) REFERENCES slack_integrations(id) ON DELETE CASCADE;

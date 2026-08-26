@@ -24,6 +24,13 @@ export default {
       required: false,
       default: false,
     },
+    // Declared as a prop (rather than left in $attrs) and forwarded explicitly
+    // below, so it does not leak into WorkItemSidebarWidget's own $attrs.
+    dataTestid: {
+      type: String,
+      required: false,
+      default: null,
+    },
     dropdownLabel: {
       type: String,
       required: true,
@@ -219,6 +226,7 @@ export default {
 <template>
   <work-item-sidebar-widget
     :can-update="canUpdate"
+    :data-testid="dataTestid"
     :is-editing="isEditing"
     :is-updating="updateInProgress"
     :tooltip-text="tooltipText"

@@ -50,6 +50,7 @@ Gitlab::Application.config.to_prepare do
       ProjectDailyStatistic,
       Users::GroupVisit,
       Users::ProjectVisit,
+      MergeRequestDiffFile,
       MergeRequest::CommitsMetadata,
       WebHookLog,
       MergeRequests::GeneratedRefCommit,
@@ -131,17 +132,9 @@ Gitlab::Application.config.to_prepare do
       ])
   end
 
-  # Enable partition management for the backfill table during merge_request_diff_files
-  # partitioning. This way new partitions will be created as the trigger syncs new
-  # rows across to this table.
   # rubocop:disable Database/AvoidIntRangePartitioning -- legacy usage
   Gitlab::Database::Partitioning.register_tables(
     [
-      {
-        limit_connection_names: %i[main],
-        table_name: 'merge_request_diff_files_99208b8fac',
-        partitioned_column: :merge_request_diff_id, strategy: :int_range, partition_size: 200_000_000
-      },
       {
         limit_connection_names: %i[main],
         table_name: 'merge_request_diff_commits_b5377a7a34',

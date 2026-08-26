@@ -621,6 +621,9 @@ export default {
     initialLoadWasFiltered() {
       return this.filterTokens.length > 0;
     },
+    hasActiveFilters() {
+      return !isEmpty(this.apiFilterParams);
+    },
     workItemTotalStateCount() {
       if (this.workItemsCount === null) {
         return '';
@@ -2425,6 +2428,7 @@ export default {
       :active-item="activeItem"
       :detail-panel-enabled="workItemDetailPanelEnabled"
       :updated-work-item="boardUpdatedItem"
+      :has-active-filters="hasActiveFilters"
       :preselected-work-item-type="preselectedWorkItemType"
       :can-create-work-item="showProjectNewWorkItem"
       @set-error="($evt) => (error = $evt)"

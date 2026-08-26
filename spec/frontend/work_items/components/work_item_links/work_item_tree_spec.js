@@ -7,6 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { createAlert } from '~/alert';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
@@ -42,6 +43,7 @@ import {
 } from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 Vue.use(VueApollo);
 
@@ -588,15 +590,38 @@ describe('WorkItemTree', () => {
     });
 
     // A contextual panel puts its own key in `show`, which is not an encoded child reference.
-    it.each(['workplan', 'decision-log'])(
-      'does not emit `select-child` event when the URL requests the %s panel',
-      async (panel) => {
-        setWindowLocation(`?show=${panel}`);
-        await createComponent();
+    describe.each(['work-item-detail', 'agent-plan', 'decision-log'])(
+      'when the URL requests the %s panel',
+      (panel) => {
+        beforeEach(async () => {
+          setWindowLocation(`?show=${panel}`);
+          await createComponent();
+        });
 
-        expect(wrapper.emitted('select-child')).toBeUndefined();
+        it('does not emit `select-child` event', () => {
+          expect(wrapper.emitted('select-child')).toBeUndefined();
+        });
+
+        it('does not report an error', () => {
+          expect(Sentry.captureException).not.toHaveBeenCalled();
+        });
       },
     );
+
+    describe('when the URL holds neither a panel key nor an encoded child reference', () => {
+      beforeEach(async () => {
+        setWindowLocation('?show=not-a-panel');
+        await createComponent();
+      });
+
+      it('does not emit `select-child` event', () => {
+        expect(wrapper.emitted('select-child')).toBeUndefined();
+      });
+
+      it('reports the error', () => {
+        expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error));
+      });
+    });
 
     it('emits `select-child` event with child work item id on window `popstate` event', async () => {
       const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));

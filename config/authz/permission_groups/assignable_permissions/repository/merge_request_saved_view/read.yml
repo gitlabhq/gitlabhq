@@ -1,0 +1,9 @@
+---
+name: read_merge_request_saved_view
+description: Grants the ability to read merge request saved views
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_saved_view

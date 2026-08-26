@@ -11,7 +11,7 @@ RSpec.describe GitlabSchema.types['CurrentUser'], feature_category: :user_profil
 
   it 'contains attributes related to a user' do
     expected_fields = %w[
-      id runners web_url web_path
+      id runners web_url web_path merge_request_saved_views
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

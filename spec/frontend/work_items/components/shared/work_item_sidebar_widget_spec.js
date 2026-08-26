@@ -10,13 +10,14 @@ describe('WorkItemSidebarWidget component', () => {
   const findApplyButton = () => wrapper.findComponentByTestId('apply-button');
   const findEditButton = () => wrapper.findComponentByTestId('edit-button');
 
-  const createComponent = ({ canUpdate = false, isUpdating = false, tooltipText } = {}) => {
+  const createComponent = ({ canUpdate = false, isUpdating = false, tooltipText, attrs } = {}) => {
     wrapper = shallowMountExtended(WorkItemSidebarWidget, {
       propsData: {
         canUpdate,
         isUpdating,
         tooltipText,
       },
+      attrs,
       slots: {
         title: 'Title',
         content: 'Content',
@@ -153,6 +154,27 @@ describe('WorkItemSidebarWidget component', () => {
 
       expect(findEditButton().exists()).toBe(true);
       expect(wrapper.text()).toContain('Content');
+    });
+  });
+
+  describe('data-testid', () => {
+    // Guard against a regression where data-testid falls through into $attrs.
+    // BootstrapVue copies those attrs onto tooltip elements, creating duplicate
+    // test IDs outside the widget and causing flaky Capybara scopes. Asserting on
+    // the rendered root alone is not enough: attribute fallthrough satisfies it
+    // whether or not the prop works. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251822
+    it('binds it to the root element as a prop, keeping it out of $attrs', () => {
+      createComponent({ attrs: { 'data-testid': 'work-item-due-dates' } });
+
+      expect(wrapper.find('section').attributes('data-testid')).toBe('work-item-due-dates');
+      expect(wrapper.props('dataTestid')).toBe('work-item-due-dates');
+      expect(wrapper.vm.$attrs).not.toHaveProperty('data-testid');
+    });
+
+    it('is absent from the root element when not passed', () => {
+      createComponent();
+
+      expect(wrapper.find('section').attributes('data-testid')).toBeUndefined();
     });
   });
 

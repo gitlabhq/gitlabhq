@@ -85,51 +85,46 @@ describe('DbVacuumSection component', () => {
 
       expect(tables).toEqual(['public.beta', 'public.alpha', 'public.zebra']);
     });
+  });
 
-    it('renders delay_time when present and a fallback when null', () => {
-      expect(findRows().at(0).text()).toContain('12.5 ms');
-      expect(findRows().at(1).text()).toContain('Not available');
-    });
-
-    it.each([null, undefined])(
-      'renders a fallback for index progress and dead tuples when the value is %s',
-      (value) => {
+  describe('delay_time formatting', () => {
+    describe('when delay_time is present', () => {
+      beforeEach(() => {
         createComponent({
-          vacuums: [
-            {
-              ...vacuumActivity[0],
-              indexes_total: value,
-              indexes_processed: value,
-              max_dead_tuple_bytes: value,
-              dead_tuple_bytes: value,
-            },
-          ],
+          vacuums: [{ ...vacuumActivity[0], delay_time: 12.5 }],
         });
-
-        const rowText = findRows().at(0).text();
-        expect(rowText).toContain('Not available');
-        expect(rowText).not.toContain('3 / 5');
-        expect(rowText).not.toContain('1.91 MiB');
-      },
-    );
-
-    it('treats zero as a real value, not a missing one', () => {
-      createComponent({
-        vacuums: [
-          {
-            ...vacuumActivity[0],
-            indexes_total: 0,
-            indexes_processed: 0,
-            dead_tuple_bytes: 0,
-            delay_time: 0,
-          },
-        ],
       });
 
-      const rowText = findRows().at(0).text();
-      expect(rowText).not.toContain('Not available');
-      expect(rowText).toContain('0 / 0');
-      expect(rowText).toContain('0 ms');
+      it('renders the value in ms', () => {
+        expect(findRows().at(0).text()).toContain('12.5 ms');
+      });
+    });
+
+    describe.each([null, undefined])('when delay_time is %p', (delayTime) => {
+      beforeEach(() => {
+        createComponent({
+          vacuums: [{ ...vacuumActivity[0], delay_time: delayTime }],
+        });
+      });
+
+      it('renders the fallback', () => {
+        expect(findRows().at(0).text()).toContain('Not available');
+      });
+    });
+
+    describe('when delay_time is zero', () => {
+      beforeEach(() => {
+        createComponent({
+          vacuums: [{ ...vacuumActivity[0], delay_time: 0 }],
+        });
+      });
+
+      it('treats it as a real value, not a missing one', () => {
+        const rowText = findRows().at(0).text();
+
+        expect(rowText).not.toContain('Not available');
+        expect(rowText).toContain('0 ms');
+      });
     });
   });
 

@@ -149,6 +149,11 @@ export default {
       required: false,
       default: false,
     },
+    hasActiveFilters: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: [
     'set-error',
@@ -253,7 +258,7 @@ export default {
   },
   watch: {
     updatedWorkItem(workItem) {
-      this.moveCardToMatchingColumn(workItem);
+      this.syncCardWithBoard(workItem);
     },
     orderedGroupByValues: {
       immediate: true,
@@ -587,6 +592,123 @@ export default {
         toColumn: matchingColumn,
         index: 0,
         patchCard: (draftNode) => this.strategy.patchCard(draftNode, matchingColumn),
+      });
+    },
+    syncCardWithBoard(workItem) {
+      if (!workItem?.id || !this.strategy?.itemValueId) {
+        return;
+      }
+
+      if (this.hasActiveFilters) {
+        this.reconcileFilteredCard(workItem);
+        return;
+      }
+
+      this.moveCardToMatchingColumn(workItem);
+    },
+    // Fetches the item scoped to a column's filters so the server decides whether it
+    // still matches the board. Returns the node when it matches, null when it's
+    // excluded (or absent), and undefined when the check itself failed — so the caller
+    // can tell a confirmed "no longer matches" apart from a transient error.
+    async fetchColumnItem(workItem, column) {
+      try {
+        const { data } = await this.$apollo.getClient().query({
+          query: this.columnQuery,
+          variables: { ...this.columnVariables(column), iid: workItem.iid, firstPageSize: 1 },
+          fetchPolicy: 'no-cache',
+        });
+        return data?.namespace?.workItems?.nodes?.[0] ?? null;
+      } catch (error) {
+        Sentry.captureException(error);
+        return undefined;
+      }
+    },
+    async reconcileFilteredCard(workItem) {
+      const workItemId = workItem.id;
+      const { cache } = this.$apollo.getClient();
+      const query = this.columnQuery;
+
+      const currentColumn = this.groupByValues.find((column) =>
+        readWorkItemFromColumn({
+          cache,
+          query,
+          variables: this.columnVariables(column),
+          workItemId,
+        }),
+      );
+
+      const matchingColumn = this.valueById(this.strategy.itemValueId(workItem));
+      const validWorkItem = matchingColumn
+        ? await this.fetchColumnItem(workItem, matchingColumn)
+        : null;
+
+      // The filter check failed (undefined) rather than confirming an exclusion; leave
+      // the board as-is instead of dropping a still-valid card.
+      if (validWorkItem === undefined) {
+        return;
+      }
+
+      // A newer update arrived while we were fetching (the watcher only fires on a new
+      // prop reference); let its reconcile win rather than applying this stale result.
+      if (this.updatedWorkItem !== workItem) {
+        return;
+      }
+
+      if (!validWorkItem) {
+        if (currentColumn) {
+          this.removeCardFromColumn(workItemId, currentColumn);
+        }
+        return;
+      }
+
+      // Matches the filters but isn't on the board (e.g. re-added after being filtered out).
+      if (!currentColumn) {
+        this.addCardToColumn(validWorkItem, matchingColumn);
+        return;
+      }
+
+      if (currentColumn.id === matchingColumn.id) {
+        return;
+      }
+
+      this.moveWorkItemBetweenColumns({
+        cache,
+        workItemId,
+        node: validWorkItem,
+        fromColumn: currentColumn,
+        toColumn: matchingColumn,
+        index: 0,
+      });
+    },
+    removeCardFromColumn(workItemId, column) {
+      const { cache } = this.$apollo.getClient();
+      removeWorkItemFromColumn({
+        cache,
+        query: this.columnQuery,
+        variables: this.columnVariables(column),
+        workItemId,
+      });
+      adjustWorkItemCountInColumn({
+        cache,
+        query: getWorkItemsCountOnlyQuery,
+        variables: this.columnCountVariables(column),
+        delta: -1,
+      });
+    },
+    addCardToColumn(node, column) {
+      const { cache } = this.$apollo.getClient();
+      addWorkItemToColumn({
+        cache,
+        query: this.columnQuery,
+        variables: this.columnVariables(column),
+        workItem: node,
+        index: 0,
+      });
+      adjustWorkItemCountInColumn({
+        cache,
+        query: getWorkItemsCountOnlyQuery,
+        variables: this.columnCountVariables(column),
+        delta: 1,
       });
     },
     onDragStart(workItem) {

@@ -22,9 +22,38 @@ module LfsRequest
   included do
     before_action :require_lfs_enabled!
     before_action :lfs_check_access!
+    before_action :check_organization_maintenance_mode!
   end
 
   private
+
+  def check_organization_maintenance_mode!
+    return unless container.respond_to?(:organization)
+
+    organization = container.organization
+    return unless organization&.maintenance_enforced?
+
+    render_organization_maintenance_mode_error(organization)
+  end
+
+  def render_organization_maintenance_mode_error(organization)
+    if organization.maintenance_time_bounded?
+      response.headers['Retry-After'] =
+        Organizations::Organization::MAINTENANCE_MODE_RETRY_AFTER_SECONDS.to_s
+      status = :service_unavailable
+    else
+      status = :forbidden
+    end
+
+    render(
+      json: {
+        message: organization.maintenance_message,
+        documentation_url: help_url
+      },
+      content_type: CONTENT_TYPE,
+      status: status
+    )
+  end
 
   def require_lfs_enabled!
     return if Gitlab.config.lfs.enabled

@@ -76,6 +76,7 @@ module Organizations
       def perform_transfer
         transfer_namespaces_and_projects
         transfer_topics
+        transfer_infrastructure
         schedule_ci_runners_transfer
         publish_event
       end
@@ -134,6 +135,53 @@ module Organizations
           new_organization: new_organization
         ).execute
       end
+
+      def transfer_infrastructure
+        transfer_burned_project_routes
+        transfer_agent_organization_authorizations
+      end
+
+      # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
+      def transfer_burned_project_routes
+        path_prefix = "#{group.full_path.downcase}/"
+        like_pattern = "#{Authn::BurnedProjectRoute.sanitize_sql_like(path_prefix)}%"
+        path_scope = ->(relation) { relation.where("LOWER(path) LIKE ?", like_pattern) }
+
+        conflicting_paths = path_scope.call(
+          Authn::BurnedProjectRoute.where(organization_id: new_organization.id)
+        ).select("LOWER(path)")
+
+        # Delete source-org burns that conflict with the target org - the target-org
+        # row already protects the path. The surviving row's project_id may differ;
+        # see https://gitlab.com/gitlab-org/gitlab/-/work_items/616401
+        path_scope.call(
+          Authn::BurnedProjectRoute.where(organization_id: old_organization.id)
+        ).where("LOWER(path) IN (?)", conflicting_paths)
+          .each_batch(of: ORGANIZATION_ID_UPDATE_BATCH_SIZE) { |batch| batch.delete_all }
+
+        update_organization_id_for(Authn::BurnedProjectRoute, &path_scope)
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
+
+      # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
+      def transfer_agent_organization_authorizations
+        descendant_agents = Clusters::Agent
+          .joins(project: :namespace)
+          .where("namespaces.traversal_ids @> ARRAY[?]::bigint[]", group.id)
+          .where("cluster_agents.id = agent_organization_authorizations.agent_id")
+
+        update_organization_id_for(
+          Clusters::Agents::Authorizations::CiAccess::OrganizationAuthorization
+        ) do |relation|
+          relation.where_exists(descendant_agents)
+        end
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
+
+      def projects
+        Project.in_namespace(group.self_and_descendant_ids(skope: Namespace))
+      end
+      strong_memoize_attr :projects
 
       # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
       def schedule_pool_repository_disconnections(batch)

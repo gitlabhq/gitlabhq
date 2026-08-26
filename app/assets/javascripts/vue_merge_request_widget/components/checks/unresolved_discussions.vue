@@ -22,7 +22,7 @@ export default {
         {
           text: s__('mrWidget|Go to first open thread'),
           category: 'default',
-          onClick: () => notesEventHub.$emit('jumpToFirstUnresolvedDiscussion'),
+          onClick: () => notesEventHub.$emit('jump-to-first-unresolved-discussion'),
         },
       ];
     },

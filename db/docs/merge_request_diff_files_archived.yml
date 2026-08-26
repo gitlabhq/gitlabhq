@@ -1,0 +1,13 @@
+---
+table_name: merge_request_diff_files_archived
+classes: []
+feature_categories:
+- code_review_workflow
+description: |
+  Archived copy of merge_request_diff_files table retained after partitioning swap.
+  This table is kept in sync via database triggers during the transition period.
+  It will be removed in a future milestone once the partitioned table is fully validated.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241924
+milestone: '19.3'
+gitlab_schema: gitlab_main_org
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/422771

@@ -326,6 +326,222 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         it_behaves_like 'generates batched transfer queries'
       end
 
+      context 'for burned project routes' do
+        it 'updates organization_id for burned routes of transferred projects' do
+          burned_route = create(:burned_project_route, :owned_by_project, project: project)
+
+          result = service.execute
+
+          expect(result).to be_success
+          expect(burned_route.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'updates organization_id for burned routes in subgroups' do
+          burned_route = create(:burned_project_route, :owned_by_project, project: subgroup_project)
+
+          result = service.execute
+
+          expect(result).to be_success
+          expect(burned_route.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not match sibling groups whose path differs only in the escaped character' do
+          group.update!(path: 'my_group')
+          decoy_group = create(:group, organization: old_organization, path: 'myXgroup')
+          decoy_project = create(:project, namespace: decoy_group, organization: old_organization)
+          decoy_burn = create(:burned_project_route,
+            organization: old_organization,
+            path: "#{decoy_group.full_path}/some-project",
+            project_id: decoy_project.id
+          )
+
+          service.execute
+
+          expect(decoy_burn.reload.organization_id).to eq(old_organization.id)
+        end
+
+        it 'matches burned routes case-insensitively against the group path' do
+          group.update!(path: 'MixedCase-Group')
+          burned_route = create(:burned_project_route,
+            organization: old_organization,
+            path: "#{group.reload.full_path}/Some-Project",
+            project_id: project.id
+          )
+
+          service.execute
+
+          expect(burned_route.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'updates burned routes for deleted projects (tombstones) whose path is under the group' do
+          tombstone = create(:burned_project_route,
+            organization: old_organization,
+            path: "#{group.full_path}/deleted-project",
+            project_id: non_existing_record_id
+          )
+
+          result = service.execute
+
+          expect(result).to be_success
+
+          expect(tombstone.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update burned routes whose path is outside the group even if project_id matches' do
+          external_burn = create(:burned_project_route,
+            organization: old_organization,
+            path: 'some-other-namespace/old-project',
+            project_id: project.id
+          )
+
+          service.execute
+
+          expect(external_burn.reload.organization_id).to eq(old_organization.id)
+        end
+
+        it 'does not update burned routes belonging to other groups in the same org' do
+          other_group = create(:group, organization: old_organization)
+          other_project = create(:project, namespace: other_group, organization: old_organization)
+          other_route = create(:burned_project_route, :owned_by_project, project: other_project)
+
+          service.execute
+
+          expect(other_route.reload.organization_id).to eq(old_organization.id)
+        end
+
+        it 'does not update burned routes belonging to an unrelated organization' do
+          unrelated_organization = create(:organization)
+          unrelated_project = create(:project, organization: unrelated_organization)
+          unrelated_route = create(:burned_project_route, :owned_by_project, project: unrelated_project)
+
+          service.execute
+
+          expect(unrelated_route.reload.organization_id).to eq(unrelated_organization.id)
+        end
+
+        it 'deletes source-org burn and keeps target-org burn when both exist for the same path' do
+          path = project.full_path
+          old_burn = create(:burned_project_route, organization: old_organization, path: path, project_id: project.id)
+          new_burn = create(:burned_project_route, organization: new_organization, path: path, project_id: project.id)
+
+          service.execute
+
+          expect { old_burn.reload }.to raise_error(ActiveRecord::RecordNotFound)
+          expect(new_burn.reload.organization_id).to eq(new_organization.id)
+        end
+
+        context 'when batching burned route transfers' do
+          include_context 'with transfer batch size of 1'
+
+          let_it_be(:batch_burned_routes) do
+            Array.new(3) do |i|
+              create(:burned_project_route,
+                organization: old_organization,
+                path: "#{group.full_path}/batch-route-#{i}",
+                project_id: project.id
+              )
+            end
+          end
+
+          let(:execute_service) { service.execute }
+          let(:expected_batch_queries) do
+            { 'burned_project_routes' => 3 }
+          end
+
+          it 'transfers across multiple batches and removes conflicts' do
+            conflicting_old = Array.new(3) do |i|
+              p = "#{group.full_path}/conflict-#{i}"
+              create(:burned_project_route, organization: old_organization, path: p, project_id: project.id)
+            end
+            conflicting_new = conflicting_old.map do |route|
+              create(:burned_project_route, organization: new_organization, path: route.path, project_id: project.id)
+            end
+
+            unique_routes = Array.new(3) do |i|
+              create(:burned_project_route,
+                organization: old_organization,
+                path: "#{group.full_path}/unique-#{i}",
+                project_id: project.id
+              )
+            end
+
+            service.execute
+
+            conflicting_old.each { |r| expect { r.reload }.to raise_error(ActiveRecord::RecordNotFound) }
+            conflicting_new.each { |r| expect(r.reload.organization_id).to eq(new_organization.id) }
+            unique_routes.each { |r| expect(r.reload.organization_id).to eq(new_organization.id) }
+          end
+
+          it_behaves_like 'generates batched transfer queries'
+        end
+      end
+
+      context 'for agent organization authorizations' do
+        it 'updates organization_id for agent authorizations linked to transferred projects' do
+          agent = create(:cluster_agent, project: project)
+          auth = create(:agent_ci_access_organization_authorization, agent: agent)
+
+          service.execute
+
+          expect(auth.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'updates organization_id for agent authorizations in subgroups' do
+          agent = create(:cluster_agent, project: subgroup_project)
+          auth = create(:agent_ci_access_organization_authorization, agent: agent)
+
+          service.execute
+
+          expect(auth.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update agent authorizations belonging to other projects' do
+          other_group = create(:group, organization: old_organization)
+          other_project = create(:project, namespace: other_group, organization: old_organization)
+          agent = create(:cluster_agent, project: other_project)
+          auth = create(:agent_ci_access_organization_authorization, agent: agent)
+
+          service.execute
+
+          expect(auth.reload.organization_id).to eq(old_organization.id)
+        end
+
+        it 'does not update agent authorizations belonging to an unrelated organization' do
+          unrelated_organization = create(:organization)
+          unrelated_project = create(:project, organization: unrelated_organization)
+          agent = create(:cluster_agent, project: unrelated_project)
+          auth = create(:agent_ci_access_organization_authorization, agent: agent)
+
+          service.execute
+
+          expect(auth.reload.organization_id).to eq(unrelated_organization.id)
+        end
+
+        context 'when batching updates' do
+          include_context 'with transfer batch size of 1'
+
+          let_it_be(:batch_agent_auths) do
+            Array.new(3) do
+              agent = create(:cluster_agent, project: project)
+              create(:agent_ci_access_organization_authorization, agent: agent)
+            end
+          end
+
+          let(:execute_service) { service.execute }
+          let(:expected_batch_queries) do
+            { 'agent_organization_authorizations' => 3 }
+          end
+
+          it 'processes all records across multiple batches' do
+            service.execute
+
+            batch_agent_auths.each { |a| expect(a.reload.organization_id).to eq(new_organization.id) }
+          end
+
+          it_behaves_like 'generates batched transfer queries'
+        end
+      end
+
       context 'when transferring topics' do
         let!(:old_topic) { create(:topic, name: 'rails', organization: old_organization) }
         let!(:project_topic) { create(:project_topic, project: project, topic: old_topic) }

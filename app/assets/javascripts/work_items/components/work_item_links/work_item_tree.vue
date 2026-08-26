@@ -6,6 +6,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
   FORM_TYPES,
   CHILD_ITEMS_ANCHOR,
@@ -18,6 +19,7 @@ import {
   WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_COLLAPSED,
   WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_EXPANDED,
   METADATA_KEYS,
+  CONTEXTUAL_PANEL_KEYS,
 } from '../../constants';
 import {
   findHierarchyWidget,
@@ -390,11 +392,15 @@ export default {
       }
 
       // `show` is shared with the contextual panels, which store a plain panel key rather than
-      // an encoded child reference. Ignore any value that is not ours to decode.
+      // an encoded child reference. Those keys are expected; anything else that fails to
+      // decode is a real error.
       let params;
       try {
         params = JSON.parse(atob(queryParam));
-      } catch {
+      } catch (error) {
+        if (!CONTEXTUAL_PANEL_KEYS.includes(queryParam)) {
+          Sentry.captureException(error);
+        }
         return;
       }
 

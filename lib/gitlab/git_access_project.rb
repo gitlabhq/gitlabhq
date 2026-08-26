@@ -55,6 +55,8 @@ module Gitlab
       return unless receive_pack? && changes == ANY && authentication_abilities.include?(:push_code)
       return unless user&.can?(:create_projects, namespace)
 
+      enforce_organization_maintenance!(namespace.organization)
+
       project_params = {
         path: project_path,
         namespace_id: namespace.id,

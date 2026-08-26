@@ -28031,6 +28031,29 @@ Fields:
 | <a id="mergerequestrevieweredge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="mergerequestrevieweredge-node"></a>`node` | [`MergeRequestReviewer`](#mergerequestreviewer) | The item at the end of the edge. |
 
+#### `MergeRequestSavedViewConnection`
+
+The connection type for [`MergeRequestSavedView`](#mergerequestsavedview).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestsavedviewconnection-edges"></a>`edges` | [`[MergeRequestSavedViewEdge]`](#mergerequestsavedviewedge) | A list of edges. |
+| <a id="mergerequestsavedviewconnection-nodes"></a>`nodes` | [`[MergeRequestSavedView]`](#mergerequestsavedview) | A list of nodes. |
+| <a id="mergerequestsavedviewconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `MergeRequestSavedViewEdge`
+
+The edge type for [`MergeRequestSavedView`](#mergerequestsavedview).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestsavedviewedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mergerequestsavedviewedge-node"></a>`node` | [`MergeRequestSavedView`](#mergerequestsavedview) | The item at the end of the edge. |
+
 #### `MergeRequestWorkItemRelationConnection`
 
 The connection type for [`MergeRequestWorkItemRelation`](#mergerequestworkitemrelation).
@@ -39700,6 +39723,7 @@ Fields:
 | <a id="currentuser-lastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="currentuser-linkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="currentuser-location"></a>`location` | [`String`](#string) | Location of the user. |
+| <a id="currentuser-mergerequestsavedviews"></a>`mergeRequestSavedViews` {{< icon name="warning-solid" >}} | [`MergeRequestSavedViewConnection`](#mergerequestsavedviewconnection) | Introduced in GitLab 19.4. Status: Experiment. Saved views on the merge request dashboard for the current user. Returns an empty result if the `mr_dashboard_saved_views` feature flag is disabled. |
 | <a id="currentuser-name"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
 | <a id="currentuser-namespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="currentuser-namespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
@@ -42479,6 +42503,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="duoworkflowsessionartifact-auditevents"></a>`auditEvents` | [`AiAuditEventConnection`](#aiauditeventconnection) | Audit events recorded for the session. Readable with `read_agent_artifacts` on the parent group or project; does not require access to the underlying workflow. (see [Connections](#connections)) |
 | <a id="duoworkflowsessionartifact-auditeventscount"></a>`auditEventsCount` | [`Int!`](#int) | Number of audit events recorded for the session. |
+| <a id="duoworkflowsessionartifact-creditsused"></a>`creditsUsed` {{< icon name="warning-solid" >}} | [`Float`](#float) | Introduced in GitLab 19.4. Status: Experiment. Total GitLab Credits consumed by the session. Readable with `read_agent_artifacts` on the parent group or project. Requires ClickHouse to be configured for analytics; ingestion is gated by the `duo_workflow_session_credits_ingestion` feature flag. Null until credit data has been ingested for the session, including sessions that failed before ingestion. |
 | <a id="duoworkflowsessionartifact-downloadpath"></a>`downloadPath` | [`String`](#string) | Path to download the session artifact as a JSON file. |
 | <a id="duoworkflowsessionartifact-id"></a>`id` | [`ID!`](#id) | Global ID of the session, as an `Ai::DuoWorkflows::Workflow`. |
 | <a id="duoworkflowsessionartifact-project"></a>`project` | [`Project`](#project) | Project the session belongs to. |
@@ -51580,6 +51605,30 @@ Arguments:
 | <a id="mergerequestreviewer-workspaces-ids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="mergerequestreviewer-workspaces-includeactualstates"></a>`includeActualStates` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Deprecated in GitLab 16.7. Use actual_states instead. |
 | <a id="mergerequestreviewer-workspaces-projectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
+
+### `MergeRequestSavedView`
+
+Saved view on the merge request dashboard.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestsavedview-filters"></a>`filters` | [`JSON!`](#json) | Merge request filters stored in the saved view. |
+| <a id="mergerequestsavedview-id"></a>`id` | [`MergeRequestsSavedViewID!`](#mergerequestssavedviewid) | Global ID of the saved view. |
+| <a id="mergerequestsavedview-name"></a>`name` | [`String!`](#string) | Name of the saved view. |
+| <a id="mergerequestsavedview-userpermissions"></a>`userPermissions` | [`MergeRequestSavedViewPermissions!`](#mergerequestsavedviewpermissions) | Permissions for the current user on the resource. |
+
+### `MergeRequestSavedViewPermissions`
+
+Check permissions for the current user on a merge request saved view.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestsavedviewpermissions-deletesavedview"></a>`deleteSavedView` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_saved_view` on this resource. |
+| <a id="mergerequestsavedviewpermissions-updatesavedview"></a>`updateSavedView` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_saved_view` on this resource. |
 
 ### `MergeRequestWorkItemRelation`
 
@@ -72802,6 +72851,12 @@ An example `MergeRequestsClosingIssuesID` is: `"gid://gitlab/MergeRequestsClosin
 A `MergeRequestsExternalStatusCheckID` is a global ID. It is encoded as a string.
 
 An example `MergeRequestsExternalStatusCheckID` is: `"gid://gitlab/MergeRequests::ExternalStatusCheck/1"`.
+
+### `MergeRequestsSavedViewID`
+
+A `MergeRequestsSavedViewID` is a global ID. It is encoded as a string.
+
+An example `MergeRequestsSavedViewID` is: `"gid://gitlab/MergeRequests::SavedView/1"`.
 
 ### `MergeTrainsCarID`
 

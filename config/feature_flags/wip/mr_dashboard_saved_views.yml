@@ -1,0 +1,10 @@
+---
+name: mr_dashboard_saved_views
+description: Enables the saved views API for the merge request dashboard
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247106
+rollout_issue_url:
+milestone: '19.4'
+group: group::code review
+type: wip
+default_enabled: false

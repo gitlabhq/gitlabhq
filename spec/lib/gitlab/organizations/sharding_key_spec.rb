@@ -11,8 +11,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     %w[
       audit_events
       merge_request_diff_commits
-      merge_request_diff_files
-      merge_request_diff_files_99208b8fac
+      merge_request_diff_files_archived
     ]
   end
 

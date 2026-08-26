@@ -23307,6 +23307,9 @@ msgstr ""
 msgid "Content parsed with %{link}."
 msgstr ""
 
+msgid "ContentEditor|Open source file"
+msgstr ""
+
 msgid "ContentEditor|Text style"
 msgstr ""
 

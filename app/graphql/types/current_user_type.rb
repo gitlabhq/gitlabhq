@@ -10,6 +10,12 @@ module Types
       resolver: Resolvers::MergeRequests::AssigneeOrReviewerMergeRequestsResolver,
       description: 'Merge requests the current user is an assignee or a reviewer of.'
 
+    field :merge_request_saved_views,
+      resolver: Resolvers::MergeRequests::SavedViewsResolver,
+      description: 'Saved views on the merge request dashboard for the current user. ' \
+        'Returns an empty result if the `mr_dashboard_saved_views` feature flag is disabled.',
+      experiment: { milestone: '19.4' }
+
     field :recently_viewed_issues,
       resolver: Resolvers::Users::RecentlyViewedIssuesResolver,
       description: 'Most-recently viewed issues for the current user.',

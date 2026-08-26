@@ -17,6 +17,7 @@ import htmlMark from './serializer/html_mark';
 import iframe from './serializer/iframe';
 import image from './serializer/image';
 import audio from './serializer/audio';
+import blobEmbed from './serializer/blob_embed';
 import drawioDiagram from './serializer/drawio_diagram';
 import video from './serializer/video';
 import blockquote from './serializer/blockquote';
@@ -75,6 +76,7 @@ const defaultSerializerConfig = {
     [extensions.Alert.name]: alert,
     [extensions.AlertTitle.name]: alertTitle,
     [extensions.Audio.name]: audio,
+    [extensions.BlobEmbed.name]: blobEmbed,
     [extensions.Blockquote.name]: blockquote,
     [extensions.BulletList.name]: bulletList,
     [extensions.CodeBlockHighlight.name]: codeBlock,

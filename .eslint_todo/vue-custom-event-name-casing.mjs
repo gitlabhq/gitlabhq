@@ -28,7 +28,6 @@ export default {
     'app/assets/javascripts/pipeline_wizard/components/input_wrapper.vue',
     'app/assets/javascripts/sidebar/components/confidential/sidebar_confidentiality_widget.vue',
     'app/assets/javascripts/sidebar/components/labels/labels_select_vue/labels_select_root.vue',
-    'app/assets/javascripts/vue_merge_request_widget/components/checks/unresolved_discussions.vue',
     'app/assets/javascripts/vue_shared/components/markdown/markdown_editor.vue',
     'app/assets/javascripts/work_items/components/design_management/design_preview/design_sidebar.vue',
     'app/assets/javascripts/work_items/components/notes/work_item_add_note.vue',

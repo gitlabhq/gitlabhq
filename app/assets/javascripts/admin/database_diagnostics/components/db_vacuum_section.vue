@@ -155,20 +155,11 @@ export default {
       </template>
 
       <template #cell(indexProgress)="{ item }">
-        <span v-if="!item.indexes_total && item.indexes_total !== 0" class="gl-text-subtle">
-          {{ $options.i18n.notAvailable }}
-        </span>
-        <span v-else>{{ item.indexes_processed }} / {{ item.indexes_total }}</span>
+        {{ item.indexes_processed }} / {{ item.indexes_total }}
       </template>
 
       <template #cell(deadTuples)="{ item }">
-        <span v-if="!item.dead_tuple_bytes && item.dead_tuple_bytes !== 0" class="gl-text-subtle">
-          {{ $options.i18n.notAvailable }}
-        </span>
-        <span v-else
-          >{{ formatBytes(item.dead_tuple_bytes) }} /
-          {{ formatBytes(item.max_dead_tuple_bytes) }}</span
-        >
+        {{ formatBytes(item.dead_tuple_bytes) }} / {{ formatBytes(item.max_dead_tuple_bytes) }}
       </template>
 
       <template #cell(indexVacuumCount)="{ item }">
@@ -187,7 +178,7 @@ export default {
       </template>
 
       <template #cell(delayTime)="{ item }">
-        <span v-if="!item.delay_time && item.delay_time !== 0" class="gl-text-subtle">
+        <span v-if="item.delay_time == null" class="gl-text-subtle">
           {{ $options.i18n.notAvailable }}
         </span>
         <span v-else>{{ formatDelay(item.delay_time) }}</span>

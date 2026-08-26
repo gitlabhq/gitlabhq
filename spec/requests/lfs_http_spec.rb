@@ -779,6 +779,116 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
         end
       end
 
+      describe 'when the project organization is in maintenance mode' do
+        let_it_be_with_reload(:organization) { create(:organization) }
+        let_it_be_with_reload(:project) { create(:project, :empty_repo, organization: organization) }
+
+        before do
+          project.add_maintainer(user)
+        end
+
+        context 'with a time-bounded maintenance reason' do
+          before do
+            organization.start_maintenance(maintenance_reason: 'migration')
+            organization.confirm_maintenance
+          end
+
+          shared_examples 'blocked with a 503' do
+            it_behaves_like 'LFS http expected response code and message' do
+              let(:response_code) { 503 }
+              let(:response_headers) { { 'Retry-After' => '60' } }
+              let(:message) { 'This organization is temporarily unavailable due to maintenance.' }
+            end
+          end
+
+          context 'when downloading via batch' do
+            before do
+              post_lfs_json(batch_url(project), download_body(sample_object), headers)
+            end
+
+            it_behaves_like 'blocked with a 503'
+          end
+
+          context 'when uploading via batch' do
+            before do
+              post_lfs_json(batch_url(project), upload_body(sample_object), headers)
+            end
+
+            it_behaves_like 'blocked with a 503'
+          end
+
+          context 'when downloading an object' do
+            before do
+              get(objects_url(project, sample_oid), params: {}, headers: headers)
+            end
+
+            it_behaves_like 'blocked with a 503'
+          end
+        end
+
+        context 'with an indefinite maintenance reason' do
+          before do
+            organization.start_maintenance(maintenance_reason: 'legal')
+            organization.confirm_maintenance
+
+            post_lfs_json(batch_url(project), download_body(sample_object), headers)
+          end
+
+          it_behaves_like 'LFS http expected response code and message' do
+            let(:response_code) { 403 }
+            let(:message) { 'This organization is unavailable.' }
+          end
+        end
+
+        context 'when the feature flag is disabled' do
+          before do
+            organization.start_maintenance(maintenance_reason: 'migration')
+            organization.confirm_maintenance
+            stub_feature_flags(organization_maintenance_enforcement: false)
+
+            post_lfs_json(batch_url(project), download_body(sample_object), headers)
+          end
+
+          it_behaves_like 'LFS http 200 response'
+        end
+
+        context 'when the requester has no access to the project' do
+          let_it_be(:other_user) { create(:user) }
+
+          let(:authorization) do
+            ActionController::HttpAuthentication::Basic.encode_credentials(other_user.username, other_user.password)
+          end
+
+          before do
+            project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+            organization.start_maintenance(maintenance_reason: 'migration')
+            organization.confirm_maintenance
+
+            post_lfs_json(batch_url(project), download_body(sample_object), headers)
+          end
+
+          it 'does not disclose the maintenance status' do
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(json_response['message']).not_to include('maintenance')
+          end
+        end
+
+        context 'when using the deprecated API' do
+          before do
+            organization.start_maintenance(maintenance_reason: 'migration')
+            organization.confirm_maintenance
+
+            get(File.join("#{project.http_url_to_repo}/info/lfs/objects/", sample_oid), params: {}, headers: headers)
+          end
+
+          it 'is not affected by maintenance mode enforcement' do
+            expect(response).to have_gitlab_http_status(:not_implemented)
+            expect(json_response['message'])
+              .to eq('Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.')
+          end
+        end
+      end
+
       describe 'when pushing a LFS object' do
         let(:include_workhorse_jwt_header) { true }
 
