@@ -296,6 +296,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_disabled_provider
   rescue Gitlab::Auth::OAuth::User::SignupDisabledError
     handle_signup_error
+  rescue Gitlab::Auth::OAuth::User::UsernameTooLongError
+    handle_username_too_long_error
   rescue SignUpFromRestrictedCountyError
     handle_signup_from_restricted_country_error
   end
@@ -414,6 +416,16 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def handle_disabled_provider
     label = Gitlab::Auth::OAuth::Provider.label_for(oauth['provider'])
     flash[:alert] = safe_format(_("Signing in using %{label} has been disabled"), label: label)
+
+    redirect_to new_user_session_path
+  end
+
+  def handle_username_too_long_error
+    flash[:alert] = format(
+      _('The username provided by your identity provider is too long (maximum %{max_length} characters). ' \
+        'Contact your administrator.'),
+      max_length: ::User::MAX_USERNAME_LENGTH
+    )
 
     redirect_to new_user_session_path
   end

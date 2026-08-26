@@ -22,6 +22,8 @@ module BulkImports
     worker_resource_boundary :memory
     idempotent!
 
+    concurrency_limit -> { Gitlab::CurrentSettings.import_jobs_concurrency_limit }
+
     version 2
 
     sidekiq_retries_exhausted do |job, exception|

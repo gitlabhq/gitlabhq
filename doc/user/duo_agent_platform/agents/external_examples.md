@@ -71,7 +71,7 @@ commands:
   - export ANTHROPIC_BASE_URL="https://cloud.gitlab.com/ai/v1/proxy/anthropic"
   - echo "Running claude"
   - |
-    claude --allowedTools="Bash(glab:*),Bash(git:*)" --permission-mode acceptEdits --verbose --output-format stream-json -p "
+    claude --allowedTools="Bash(glab:*),Bash(git:*)" --permission-mode acceptEdits --setting-sources '' --verbose --output-format stream-json -p "
     You are an AI assistant helping with GitLab operations.
 
     Context: $AI_FLOW_CONTEXT

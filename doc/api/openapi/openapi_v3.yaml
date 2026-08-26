@@ -53416,6 +53416,8 @@ paths:
           description: Forbidden
         '400':
           description: Bad request
+        '429':
+          description: Too many requests
         '503':
           description: Service unavailable
       requestBody:
