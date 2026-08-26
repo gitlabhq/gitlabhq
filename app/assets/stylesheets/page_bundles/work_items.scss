@@ -572,36 +572,42 @@ pre[data-lang-params='duo-question'] {
   }
 }
 
-// `MultipleChoiceSelector` groups its items into one bordered box with dividers. A Duo
-// question shows them as separate cards instead, matching the single-select list, so the
-// grouping is undone here rather than by reaching into the checkbox from the template.
+// `MultipleChoiceSelector` groups its items into one bordered box, while a Duo question
+// shows them as separate cards. Only what has to outrank the component lives here.
 // See https://gitlab.com/gitlab-org/gitlab/-/work_items/608852
 .multiple-choice-selector.duo-question-options {
   @apply gl-border-none;
 
+  // The items sit inside the checkbox group, so that is what stacks them.
   > div {
     @apply gl-flex;
     @apply gl-flex-col;
     @apply gl-gap-3;
   }
 
+  // Matches the single-select list's description.
   .help-text {
     @apply gl-text-sm;
     @apply gl-mt-1;
     line-height: 1.5;
   }
 
-  // The indicator is drawn as `label::before`, pinned to the top of that 16px line, so
-  // both halves of it move down to stay centred on the taller one.
-  // stylelint-disable-next-line gitlab/no-gl-class -- outranking GitLab UI's own selector
-  .gl-form-checkbox.custom-control .custom-control-input ~ .custom-control-label {
+  .custom-control {
+    @apply gl-grow;
+  }
+
+  .custom-control-label {
+    line-height: 1.5;
+  }
+
+  // The box is drawn as `label::before`, pinned to the top of the line, not centred.
+  .custom-control.custom-checkbox .custom-control-label {
     &::before,
     &::after {
       top: $gl-spacing-scale-1;
     }
   }
 
-  // Make individual items appear as separate cards, similar to single select
   .multiple-choice-selector-item {
     @apply gl-rounded-lg;
     @apply gl-border-1;
@@ -609,5 +615,13 @@ pre[data-lang-params='duo-question'] {
     @apply gl-border-default;
     @apply gl-px-4;
     @apply gl-py-3;
+  }
+
+  // Checking an item squares off the corners it shares with a checked neighbour and
+  // pulls it over their borders. All three classes are named to outrank those rules.
+  .multiple-choice-selector-item.duo-question-option.is-checked {
+    @apply gl-rounded-lg;
+    @apply gl-m-0;
+    @apply gl-shadow-none;
   }
 }

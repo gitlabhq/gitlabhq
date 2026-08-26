@@ -57,7 +57,7 @@ The protected tag (or wildcard) displays in the **Protected tags** list.
 
 To set the members of a group or subgroup as Allowed to create protected tags:
 
-1. In the left sidebar, select **Search or go** to and find your project.
+1. In the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Protected tags**.
 1. Add groups to the following field:
@@ -130,7 +130,7 @@ matching the wildcard. For example:
 Two different wildcards can potentially match the same tag. For example,
 `*-stable` and `production-*` would both match a `production-stable` tag.
 In that case, if _any_ of these protected tags have a setting like
-**Allowed to create**, then `production-stable` also inherit this setting.
+**Allowed to create**, then `production-stable` also inherits this setting.
 
 If you select a protected tag's name, GitLab displays a list of
 all matching tags.

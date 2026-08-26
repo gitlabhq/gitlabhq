@@ -20,7 +20,7 @@ title: Bidirectional mirroring
 {{< /history >}}
 
 > [!warning]
-> Bidirectional mirroring may cause conflicts.
+> Bidirectional mirroring might cause conflicts.
 
 Bidirectional [mirroring](_index.md) configures two repositories to both pull from,
 and push to, each other. There is no guarantee that either repository can update
@@ -143,7 +143,7 @@ fi
 
 This sample has a few limitations:
 
-- It may not work for your use case without modification:
+- It might not work for your use case without modification:
   - It doesn't regard different types of authentication mechanisms for the mirror.
   - It doesn't work with forced updates (rewriting history).
   - Only branches that match the `allowlist` patterns are proxy pushed.

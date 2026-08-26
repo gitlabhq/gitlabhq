@@ -2,17 +2,8 @@
 # Cop supports --autocorrect.
 Style/AccessorGrouping:
   Exclude:
-    - 'app/finders/template_finder.rb'
-    - 'app/models/concerns/importable.rb'
-    - 'app/models/design_management/design_at_version.rb'
-    - 'app/models/integrations/chat_message/alert_message.rb'
-    - 'app/models/integrations/chat_message/base_message.rb'
     - 'app/models/integrations/chat_message/deployment_message.rb'
-    - 'app/models/integrations/chat_message/issue_message.rb'
-    - 'app/models/integrations/chat_message/merge_message.rb'
-    - 'app/models/integrations/chat_message/note_message.rb'
     - 'app/models/integrations/chat_message/pipeline_message.rb'
-    - 'app/models/integrations/chat_message/push_message.rb'
     - 'app/models/integrations/chat_message/wiki_page_message.rb'
     - 'app/models/project.rb'
     - 'app/services/deployments/update_environment_service.rb'

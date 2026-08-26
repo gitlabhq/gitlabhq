@@ -160,10 +160,6 @@ html {
   }
 }
 
-.ai-panel {
-  @apply lg:gl-ml-3; // Margin between static/dynamic panel and ai-panel
-}
-
 .ai-navigation-rail {
   @apply gl-flex;
   @apply gl-flex-1;
@@ -195,7 +191,11 @@ html {
   }
 
   .ai-panel {
-    @apply gl-ml-0;
+    @apply gl-border-l-transparent;
+    @apply dark:gl-border-l-subtle;
+    @apply gl-rounded-xl;
+    @apply gl-shadow-sm;
+    clip-path: none;
   }
 
   // Hiding all other panels when DAP is maximized

@@ -189,8 +189,8 @@
   /**
    * Panel shadow override
    */
-  .paneled-view,
-  .paneled-view-portal {
+  .panels-container,
+  .ai-panel {
     @apply gl-shadow-sm;
   }
 

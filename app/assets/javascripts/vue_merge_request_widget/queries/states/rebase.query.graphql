@@ -5,13 +5,11 @@ query rebaseQuery($projectPath: ID!, $iid: String!) {
     mergeRequest(iid: $iid) {
       id
       rebaseInProgress
-      pipelines(first: 1) {
-        nodes {
+      headPipeline {
+        id
+        project {
           id
-          project {
-            id
-            fullPath
-          }
+          fullPath
         }
       }
     }

@@ -80,7 +80,7 @@ export default {
       return this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath;
     },
     isLatestPipelineCreatedInTargetProject() {
-      const latestPipeline = this.mergeRequest.pipelines.nodes[0];
+      const latestPipeline = this.mergeRequest.headPipeline;
 
       return latestPipeline?.project?.fullPath === this.mr.targetProjectFullPath;
     },

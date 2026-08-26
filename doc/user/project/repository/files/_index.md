@@ -31,7 +31,7 @@ to improve readability:
 
 ### Supported markup languages
 
-If your file has one of the these file extensions, GitLab renders the contents of the file's
+If your file has one of these file extensions, GitLab renders the contents of the file's
 [markup language](https://en.wikipedia.org/wiki/Lightweight_markup_language) in the UI.
 
 | Markup language                                              | Extensions |
@@ -85,7 +85,7 @@ The priority order for automatic rendering is:
 
 The first file found in each category (in alphabetical order) is selected, with
 previewable files taking precedence over plain text files. For example, if
-multiple READMEs are available GitLab renders them in the following order:
+multiple READMEs are available, GitLab renders them in the following order:
 
 1. `README.adoc`
 1. `README.md`

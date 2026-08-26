@@ -36,6 +36,49 @@ Example:
 What version of the GitLab MCP server am I connected to?
 ```
 
+## `add_commit`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605876) in GitLab 19.3.
+
+{{< /history >}}
+
+Adds a commit with one or more file actions to a branch in a single call.
+
+| Parameter        | Type             | Required | Description |
+|------------------|------------------|----------|-------------|
+| `commit_message` | string           | Yes      | Commit message. |
+| `actions`        | array of objects | Yes      | File actions to commit as a single batch. |
+| `branch`         | string           | Yes      | Name of the branch to commit into. |
+| `project_id`     | string           | No       | ID or path of the project. Required if `url` is not provided. |
+| `url`            | string           | No       | GitLab URL of the project. Required if `project_id` is not provided. |
+| `start_branch`   | string           | No       | Name of the branch to start the new branch from. Required when `branch` does not exist. |
+
+Each object in `actions` accepts the following fields:
+
+| Field              | Type    | Required | Description |
+|--------------------|---------|----------|-------------|
+| `action`           | string  | Yes      | The action to perform: `create`, `update`, `delete`, `move`, or `chmod`. |
+| `file_path`        | string  | Yes      | Full path to the file. |
+| `content`          | string  | No       | File content. Used by `create`, `update`, and `move`. Mutually exclusive with `old_str` and `new_str`. |
+| `old_str`          | string  | No       | Existing text to replace in an `update` action. Requires `new_str`. |
+| `new_str`          | string  | No       | Replacement text for `old_str` in an `update` action. |
+| `previous_path`    | string  | No       | Original file path. Required for `move`. |
+| `encoding`         | string  | No       | Encoding of `content`: `text` or `base64`. Default is `text`. |
+| `last_commit_id`   | string  | No       | Last known commit ID for the file, used for optimistic concurrency. |
+| `execute_filemode` | boolean | No       | Whether the file is executable. Required for `chmod`. |
+
+Partial edits replace exactly one occurrence of `old_str`. If it occurs more than once, provide more surrounding
+context. Partial edits read the complete file on the server and are subject to the 20 MB GraphQL blob request limit.
+
+Example:
+
+```plaintext
+In project gitlab-org/gitlab, create README.md on branch "docs-update"
+with the content "# New title" and commit message "Add README"
+```
+
 ## `create_issue`
 
 {{< history >}}

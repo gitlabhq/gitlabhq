@@ -579,7 +579,7 @@ Clone the work item to a given group or project.
 - The clone fails if the resolved type is disabled in the target namespace
   (archived, admin-disabled, or not visible in the destination context).
 - When cloning to the same namespace, the `[type:...]` argument is validated
-  but no conversion is performed; the clone keeps the source work item type.
+  but no conversion is performed. The clone keeps the source work item type.
 - Basic type conversion between built-in types (for example, `Issue`, `Task`,
   `Incident`) is available on all tiers.
 - Custom work item types and per-namespace type visibility are Premium and
@@ -1109,7 +1109,7 @@ Merge the changes.
 
 **Additional details**:
 
-- Depending on the project setting, this may be [when the pipeline succeeds](merge_requests/auto_merge.md), or adding to a [merge train](../../ci/pipelines/merge_trains.md).
+- Depending on the project setting, this might be [when the pipeline succeeds](merge_requests/auto_merge.md), or adding to a [merge train](../../ci/pipelines/merge_trains.md).
 
 ### `milestone`
 
@@ -1195,7 +1195,7 @@ Move the work item to another group or project.
 - The move fails if the resolved type is disabled in the target namespace
   (archived, admin-disabled, or not visible in the destination context).
 - When moving to the same namespace, the `[type:...]` argument is validated
-  but no conversion is performed; the work item keeps its existing type.
+  but no conversion is performed. The work item keeps its existing type.
 - Basic type conversion between built-in types (for example, `Issue`, `Task`,
   `Incident`) is available on all tiers.
 - Custom work item types and per-namespace type visibility are Premium and

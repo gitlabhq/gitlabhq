@@ -71,6 +71,7 @@ Grants the ability to create, delete, read, and update policies in the policy st
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Create | Instance | Mutation | `GovernPolicyCreate` |
+| Delete | Instance | Mutation | `GovernPolicyDelete` |
 | Read | Instance | Type | `GovernPolicy` |
 
 #### Secrets Manager

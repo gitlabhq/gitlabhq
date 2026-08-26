@@ -68,6 +68,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'save_merge_request_review' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'save_work_item' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         # write, destructive
+        'add_commit' => { 'readOnlyHint' => false, 'destructiveHint' => true },
         'manage_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
         'save_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
         # read-only

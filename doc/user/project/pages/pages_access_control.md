@@ -49,7 +49,7 @@ For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v
      - **Only project members**: Only project members can browse the website.
      - **Everyone with access**: Everyone, both logged into and logged out of GitLab, can browse the website, no matter their project membership.
 
-1. Select **Save changes**. Your changes may not take effect immediately. GitLab Pages uses
+1. Select **Save changes**. Your changes might not take effect immediately. GitLab Pages uses
    a caching mechanism for efficiency. Your changes may not take effect until that cache is
    invalidated, which usually takes less than a minute.
 

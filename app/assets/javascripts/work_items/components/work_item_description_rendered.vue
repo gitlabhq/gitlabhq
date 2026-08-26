@@ -93,7 +93,7 @@ export default {
       default: false,
     },
   },
-  emits: ['description-updated'],
+  emits: ['description-updated', 'task-item-toggled'],
   data() {
     return {
       childDescription: '',
@@ -377,16 +377,29 @@ export default {
       const { target } = event;
 
       if (isCheckbox(target)) {
+        const { checked } = target;
+
         target.disabled = true;
 
         const replacement = toggleCheckbox({
           rawMarkdown: this.descriptionText,
-          checkboxChecked: target.checked,
+          checkboxChecked: checked,
           target,
         });
         if (!replacement) return;
 
-        this.$emit('description-updated', replacement.newMarkdown);
+        if (this.glFeatures.workItemsTaskListToggle) {
+          this.$emit('task-item-toggled', {
+            checked,
+            lineSource: replacement.oldLine,
+            lineSourcepos: replacement.sourcepos,
+            revert: () => {
+              target.checked = !checked;
+            },
+          });
+        } else {
+          this.$emit('description-updated', replacement.newMarkdown);
+        }
       }
     },
     truncateLongDescription() {

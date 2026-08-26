@@ -14,6 +14,14 @@ RSpec.shared_examples 'a policy repository' do
     -1
   end
 
+  def custom_rego_of(merged_bytesize)
+    declaration = "#{Gitlab::PolicyStore::RegoPackage::RULE_PRELUDE}\n"
+    empty_comment_line = "# \n"
+    padding = 'p' * (merged_bytesize - declaration.bytesize - empty_comment_line.bytesize)
+
+    "#{declaration}# #{padding}\n"
+  end
+
   def attributes
     {
       organization_id: organization_id,
@@ -196,6 +204,14 @@ RSpec.shared_examples 'a policy repository' do
         .to raise_error(Gitlab::PolicyStore::ValidationError, /taken/i)
     end
 
+    it 'reports a name conflict before merging the rules, for the same reason' do
+      repository.create(attributes)
+      stub_const("#{port}::MAX_COMPILED_RULES_BYTES", 100)
+
+      expect { repository.create(attributes.merge(rules: [{ 'type' => 'custom', 'value' => custom_rego_of(200) }])) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /taken/i)
+    end
+
     it 'names the offending index when a later rule fails to compile' do
       mixed = [
         { 'type' => 'environment', 'value' => { 'tiers' => ['production'] } },
@@ -228,6 +244,56 @@ RSpec.shared_examples 'a policy repository' do
         expect { repository.create(attributes.merge(attribute => 'a' * (limit + 1))) }
           .to raise_error(Gitlab::PolicyStore::ValidationError, /#{attribute.to_s.tr('_', '.')}/i)
       end
+    end
+
+    it 'raises ValidationError when a policy compiles to more than the engine evaluates' do
+      stub_const("#{port}::MAX_COMPILED_RULES_BYTES", 100)
+
+      expect { repository.create(attributes) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError,
+          /rules compile to \d+ bytes, over the maximum of 100 bytes/)
+    end
+
+    it 'raises ValidationError when no rule is oversized alone but the merged program is',
+      :aggregate_failures do
+      stub_const("#{port}::MAX_COMPILED_RULES_BYTES", 100)
+      rule = { 'type' => 'custom', 'value' => custom_rego_of(60) }
+
+      expect(repository.create(attributes.merge(rules: [rule]))).to be_a(Gitlab::PolicyStore::Policy)
+      expect { repository.create(attributes.merge(name: 'Paired rules', rules: [rule, rule])) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError,
+          /rules compile to 101 bytes, over the maximum of 100 bytes/)
+    end
+
+    # A sum that subtracts one declaration per rule still measures this wrong, because
+    # `strip_declaration` drops the whole line and a trailing comment rides along with it.
+    it 'measures the module the merger builds rather than summing the compiled rules' do
+      merged_program = "package governance\nallow := true\n"
+      stub_const("#{port}::MAX_COMPILED_RULES_BYTES", merged_program.bytesize)
+      commented_declaration = [{ 'type' => 'custom', 'value' => "package governance # note\nallow := true\n" }]
+
+      policy = repository.create(attributes.merge(rules: commented_declaration))
+
+      expect(Gitlab::PolicyStore::RuleProgramMerger.new(policy.rules).merge).to eq(merged_program)
+    end
+
+    it 'accepts rules whose merged program is exactly at the maximum' do
+      stub_const("#{port}::MAX_COMPILED_RULES_BYTES", 100)
+      at_maximum = [{ 'type' => 'custom', 'value' => custom_rego_of(100) }]
+
+      policy = repository.create(attributes.merge(rules: at_maximum))
+
+      expect(Gitlab::PolicyStore::RuleProgramMerger.new(policy.rules).merge.bytesize).to eq(100)
+    end
+
+    it 'counts bytes rather than characters, matching what the engine measures' do
+      stub_const("#{port}::MAX_COMPILED_RULES_BYTES", 100)
+      # 82 characters, 142 bytes, so a character count would let this through.
+      multibyte = [{ 'type' => 'custom', 'value' => "package governance\n# #{'é' * 60}\n" }]
+
+      expect { repository.create(attributes.merge(rules: multibyte)) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError,
+          /rules compile to 142 bytes, over the maximum of 100 bytes/)
     end
 
     it 'accepts a scope_rego at exactly the limit' do
@@ -396,6 +462,41 @@ RSpec.shared_examples 'a policy repository' do
 
       expect { repository.update(created.id, rules: { 'rules' => [{ 'type' => 'custom' }] }) }
         .to raise_error(Gitlab::PolicyStore::ValidationError, /rules must be an array/)
+    end
+
+    it 'raises ValidationError when an update compiles to more than the engine evaluates' do
+      created = repository.create(attributes)
+      stub_const("#{port}::MAX_COMPILED_RULES_BYTES", 100)
+
+      staging = [{ 'type' => 'environment', 'value' => { 'tiers' => %w[staging] } }]
+
+      expect { repository.update(created.id, rules: staging) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError,
+          /rules compile to \d+ bytes, over the maximum of 100 bytes/)
+    end
+
+    it 'still renames a policy whose stored rules already exceed a lowered maximum', :aggregate_failures do
+      created = repository.create(attributes)
+      stub_const("#{port}::MAX_COMPILED_RULES_BYTES", 100)
+
+      expect(Gitlab::PolicyStore::RuleProgramMerger.new(created.rules).merge.bytesize).to be > 100
+      expect(repository.update(created.id, name: 'Renamed policy').name).to eq('Renamed policy')
+    end
+
+    it 'accepts a replacement whose merged program is exactly at the maximum' do
+      created = repository.create(attributes)
+      stub_const("#{port}::MAX_COMPILED_RULES_BYTES", 100)
+      at_maximum = [{ 'type' => 'custom', 'value' => custom_rego_of(100) }]
+
+      updated = repository.update(created.id, rules: at_maximum)
+
+      expect(Gitlab::PolicyStore::RuleProgramMerger.new(updated.rules).merge.bytesize).to eq(100)
+    end
+
+    it 'clears the rules of a policy, since an empty program is nothing for the engine to size' do
+      created = repository.create(attributes)
+
+      expect(repository.update(created.id, rules: []).rules).to eq([])
     end
 
     it 'leaves a compiled rule alone when an update touches nothing but name' do

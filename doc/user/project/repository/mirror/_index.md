@@ -19,7 +19,7 @@ serves as the source. Branches, tags, and commits are synced automatically.
 Several mirroring methods exist:
 
 - [Push](push.md): Mirror a repository from GitLab to another location.
-- [Pull](pull.md): Mirror a repository from another location. Available in the Premium and Ultimate tier.
+- [Pull](pull.md): Mirror a repository from another location. Available in the Premium and Ultimate tiers.
 - [Bidirectional](bidirectional.md) mirroring is also available, but can cause conflicts.
 
 Mirror a repository when:
@@ -31,7 +31,7 @@ Mirror a repository when:
 - Your GitLab instance is private, but you want to open-source some projects.
 - You migrated to GitLab, but the canonical version of your project is somewhere else.
   Configure your GitLab repository as a [pull mirror](pull.md) of the other project.
-  Your GitLab repository pulls copies of the commits, tags, and branches of project.
+  Your GitLab repository pulls copies of the commits, tags, and branches of the project.
   They become available to use on GitLab.
 
 The following is not supported:
@@ -241,7 +241,7 @@ $ cat /etc/ssh/ssh_host*pub | ssh-keygen -E md5 -l -f -
 2048 MD5:3f:72:be:3d:62:03:5c:62:83:e8:6e:14:34:3a:85:1d root@example.com (RSA)
 ```
 
-Older versions of SSH may require you to remove `-E md5` from the command.
+Older versions of SSH might require you to remove `-E md5` from the command.
 
 ## Related topics
 

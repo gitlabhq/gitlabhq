@@ -169,7 +169,7 @@ When you [rename a user](../../profile/_index.md#change-your-username),
   work after a rename.
 - The redirects are available as long as the original path is not claimed by
   another group, user, or project.
-- [API redirects](../../../api/rest/_index.md#redirects) may need to be followed explicitly.
+- [API redirects](../../../api/rest/_index.md#redirects) might need to be followed explicitly.
 
 After you change a path, you must update the existing URL in the following resources:
 

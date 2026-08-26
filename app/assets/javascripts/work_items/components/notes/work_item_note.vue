@@ -534,6 +534,7 @@ export default {
               :discussion-id="discussionId"
               :replies="replies"
               :is-discussion-resolved="isDiscussionResolved"
+              :is-discussion-resolvable="isDiscussionResolvable"
               @error="$emit('error', $event)"
             />
           </div>

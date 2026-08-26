@@ -21,7 +21,6 @@ export default {
     'app/assets/javascripts/ci/common/private/jobs_filtered_search/app.vue',
     'app/assets/javascripts/ci/job_token_access/components/token_access_table.vue',
     'app/assets/javascripts/ci/jobs_page/components/job_cells/actions_cell.vue',
-    'app/assets/javascripts/diffs/components/diff_content.vue',
     'app/assets/javascripts/notes/components/comment_form.vue',
     'app/assets/javascripts/notes/components/note_form.vue',
     'app/assets/javascripts/pipeline_wizard/components/input_wrapper.vue',

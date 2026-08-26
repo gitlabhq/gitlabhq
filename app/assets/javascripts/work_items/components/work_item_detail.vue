@@ -780,6 +780,39 @@ export default {
       this.draftData = {};
       this.editMode = false;
     },
+    async toggleWorkItemTaskListItem({ checked, lineSource, lineSourcepos, revert }) {
+      this.updateInProgress = true;
+      try {
+        const {
+          data: { workItemUpdate },
+        } = await this.$apollo.mutate({
+          mutation: updateWorkItemMutation,
+          variables: {
+            input: {
+              id: this.workItem.id,
+              descriptionWidget: {
+                taskListToggle: { checked, lineSource, lineSourcepos },
+              },
+            },
+            useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
+          },
+        });
+
+        if (workItemUpdate.errors?.length) {
+          this.updateError = workItemUpdate.errors.join('\n');
+        }
+
+        if (!workItemUpdate.workItem) {
+          revert();
+        }
+      } catch (error) {
+        revert();
+        this.updateError = i18n.updateError;
+        Sentry.captureException(error);
+      } finally {
+        this.updateInProgress = false;
+      }
+    },
     isValidDesignUpload(files) {
       if (!this.canAddDesign) return false;
 
@@ -1299,6 +1332,7 @@ export default {
                   @update-work-item="updateWorkItem"
                   @update-draft="updateDraft('description', $event)"
                   @cancel-editing="cancelEditing"
+                  @task-item-toggled="toggleWorkItemTaskListItem"
                   @error="updateError = $event"
                 />
                 <div class="gl-mt-3 gl-flex gl-flex-wrap gl-justify-between gl-gap-5">

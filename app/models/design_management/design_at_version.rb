@@ -8,8 +8,7 @@ module DesignManagement
     include GlobalID::Identification
     include Gitlab::Utils::StrongMemoize
 
-    attr_reader :version
-    attr_reader :design
+    attr_reader :version, :design
 
     validates :version, presence: true
     validates :design, presence: true

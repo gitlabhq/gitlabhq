@@ -14,6 +14,7 @@ import { ENTER_KEY } from '~/lib/utils/keys';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import WorkItemCloseConfirmModal from '~/work_items/components/work_item_close_confirm_modal.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
+import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import WorkItemDescriptionTemplatesListbox from '~/work_items/components/work_item_description_template_listbox.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -52,6 +53,7 @@ describe('WorkItemDescription', () => {
   const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
   const findForm = () => wrapper.findComponent(GlForm);
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
+  const findRenderedDescription = () => wrapper.findComponent(WorkItemDescriptionRendered);
   const findEditedAt = () => wrapper.findComponent(EditedAt);
   const findConflictsAlert = () => wrapper.findComponent(GlAlert);
   const findConflictedDescription = () => wrapper.findByTestId('conflicted-description');
@@ -184,6 +186,17 @@ describe('WorkItemDescription', () => {
 
     await waitForPromises();
   };
+
+  describe('checkbox toggling', () => {
+    it('re-emits task-item-toggled from the rendered description', async () => {
+      await createComponent();
+
+      const payload = { checked: true, lineSource: '- [ ] todo', lineSourcepos: '1:1-1:10' };
+      findRenderedDescription().vm.$emit('task-item-toggled', payload);
+
+      expect(wrapper.emitted('task-item-toggled')).toEqual([[payload]]);
+    });
+  });
 
   describe('editing description', () => {
     it('passes correct autocompletion data, preview markdown sources, enables quick actions and table of contents', async () => {

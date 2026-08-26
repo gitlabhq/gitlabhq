@@ -2137,12 +2137,7 @@ export default {
           await this.$nextTick();
         }
 
-        // Board column counts live in their own cache entries, so evicting single work items
-        // would leave them stale — fall back to refetching everything there.
-        const needsListRefetch =
-          hasVisibleUpdate ||
-          (created.length > 0 && canShowNewItems) ||
-          (visibleDeleted.length > 0 && this.isBoardView);
+        const needsListRefetch = hasVisibleUpdate || (created.length > 0 && canShowNewItems);
 
         if (needsListRefetch) {
           this.refetchItems({ refetchCounts: true });
@@ -2154,9 +2149,12 @@ export default {
           cache.gc();
         }
 
-        // A change we ignored can still move the state counts, and the payload does not say
-        // which fields changed, so the counts are always refreshed.
-        this.$apollo.queries.workItemsCount.refetch();
+        // A change we ignored can still move the counts, and the payload doesn't say which
+        // fields changed, so counts always refresh. Using `refetchQueries` instead of a single
+        // query's `.refetch()` also catches every board column's own count query.
+        this.$apollo.provider.defaultClient.refetchQueries({
+          include: [getWorkItemsCountOnlyQuery],
+        });
         if (created.length > 0 || deleted.length > 0) {
           this.$apollo.queries.hasWorkItems.refetch();
         }

@@ -394,9 +394,9 @@ To enable force pushes on branches that are already protected:
 
 For a protected branch, you can require at least one approval by a [code owner](../../codeowners/_index.md).
 If a branch is protected by multiple rules, code owner approval is required if
-**Required approval from code owners** enabled.
+**Required approval from code owners** is enabled.
 
-To protect a new branch and enable Code Owner's approval:
+To protect a new branch and enable Code Owner approval:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Repository**.
@@ -408,7 +408,7 @@ To protect a new branch and enable Code Owner's approval:
 1. Select **Save changes**.
 1. Turn on the **Require approval from code owners** toggle.
 
-To enable Code Owner's approval on branches that are already protected:
+To enable Code Owner approval on branches that are already protected:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Repository**.
@@ -521,7 +521,7 @@ You cannot delete protected branches with local Git commands or third-party Git 
 
 ## Policy enforcement
 
-For security and compliance, you may implement a [merge request approval policy](../../../application_security/policies/merge_request_approval_policies.md#approval_settings) which affects settings otherwise defined in your instance, group, or projects. Policies may affect users ability to unprotect or delete branches, push or force push.
+For security and compliance, you may implement a [merge request approval policy](../../../application_security/policies/merge_request_approval_policies.md#approval_settings) which affects settings otherwise defined in your instance, group, or projects. Policies might affect users' ability to unprotect or delete branches, push or force push.
 
 ## Related topics
 

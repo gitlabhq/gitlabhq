@@ -17225,9 +17225,6 @@ msgstr ""
 msgid "ChatMessage|in %{project_link}"
 msgstr ""
 
-msgid "Check"
-msgstr ""
-
 msgid "Check again"
 msgstr ""
 
@@ -21297,9 +21294,6 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Adjust permissions to control who can push directly to the default branch."
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|All attached frameworks"
-msgstr ""
-
 msgid "ComplianceStandardsAdherence|At least one approval"
 msgstr ""
 
@@ -21325,9 +21319,6 @@ msgid "ComplianceStandardsAdherence|Change your project visibility settings to c
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Change your project visibility to private or internal as per security requirements."
-msgstr ""
-
-msgid "ComplianceStandardsAdherence|Check"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Checks"
@@ -21478,9 +21469,6 @@ msgid "ComplianceStandardsAdherence|DAST scanner is configured in the pipeline c
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|DAST scanner is not configured in the pipeline configuration for the default branch."
-msgstr ""
-
-msgid "ComplianceStandardsAdherence|Date since last status change"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Default branch protected"
@@ -21747,9 +21735,6 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Failed controls: %{failed}"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Failure reason"
-msgstr ""
-
 msgid "ComplianceStandardsAdherence|Filter by"
 msgstr ""
 
@@ -21855,9 +21840,6 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Merge requests require code owner approval"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|More information"
-msgstr ""
-
 msgid "ComplianceStandardsAdherence|More members than admins"
 msgstr ""
 
@@ -21877,9 +21859,6 @@ msgid "ComplianceStandardsAdherence|No rule is configured to require two approva
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|None"
-msgstr ""
-
-msgid "ComplianceStandardsAdherence|Other compliance frameworks applied to %{linkStart}%{projectName}%{linkEnd}"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Package Hunter no findings untriaged"
@@ -22122,9 +22101,6 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Stale branch cleanup enabled"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Standard"
-msgstr ""
-
 msgid "ComplianceStandardsAdherence|Standards"
 msgstr ""
 
@@ -22140,13 +22116,7 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Strict Permission for Repository"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Success reason"
-msgstr ""
-
 msgid "ComplianceStandardsAdherence|Terraform enabled"
-msgstr ""
-
-msgid "ComplianceStandardsAdherence|The following features help satisfy this requirement."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|This control has passed successfully. No action is required."
@@ -22183,9 +22153,6 @@ msgid "ComplianceStandardsAdherence|User-defined CI/CD variables restricted to m
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|View details"
-msgstr ""
-
-msgid "ComplianceStandardsAdherence|View details (fix available)"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Vulnerabilities SLO days over threshold"
@@ -23393,6 +23360,9 @@ msgstr ""
 msgid "ContinuousDeployment|+ Add another service"
 msgstr ""
 
+msgid "ContinuousDeployment|+ Add artifact"
+msgstr ""
+
 msgid "ContinuousDeployment|+ Add service"
 msgstr ""
 
@@ -23468,16 +23438,16 @@ msgstr ""
 msgid "ContinuousDeployment|Artifact URL"
 msgstr ""
 
-msgid "ContinuousDeployment|Artifact URL is required."
+msgid "ContinuousDeployment|Artifact details must not be empty."
 msgstr ""
 
 msgid "ContinuousDeployment|Artifact name"
 msgstr ""
 
-msgid "ContinuousDeployment|Artifact name is required."
+msgid "ContinuousDeployment|Artifact source"
 msgstr ""
 
-msgid "ContinuousDeployment|Artifact source"
+msgid "ContinuousDeployment|Artifacts"
 msgstr ""
 
 msgid "ContinuousDeployment|Available"
@@ -23630,9 +23600,6 @@ msgstr ""
 msgid "ContinuousDeployment|Failed to load GitLab agents. Refresh the page to try again."
 msgstr ""
 
-msgid "ContinuousDeployment|Failed to load deployed applications. Please try again later."
-msgstr ""
-
 msgid "ContinuousDeployment|Failed to load deployments. Reload to try again."
 msgstr ""
 
@@ -23721,6 +23688,9 @@ msgid "ContinuousDeployment|Links"
 msgstr ""
 
 msgid "ContinuousDeployment|List view"
+msgstr ""
+
+msgid "ContinuousDeployment|Name (e.g. api-gateway)"
 msgstr ""
 
 msgid "ContinuousDeployment|Name cannot exceed %{maxLength} characters."
@@ -23939,6 +23909,9 @@ msgstr ""
 msgid "ContinuousDeployment|URL"
 msgstr ""
 
+msgid "ContinuousDeployment|URL (e.g. registry.example.com/acme/api-gateway)"
+msgstr ""
+
 msgid "ContinuousDeployment|Unknown"
 msgstr ""
 
@@ -23955,9 +23928,6 @@ msgid "ContinuousDeployment|e.g. acme-platform"
 msgstr ""
 
 msgid "ContinuousDeployment|e.g. api-gateway"
-msgstr ""
-
-msgid "ContinuousDeployment|e.g. registry.example.com/acme/api-gateway"
 msgstr ""
 
 msgid "Contribute to GitLab"
@@ -34775,9 +34745,6 @@ msgid "Facebook"
 msgstr ""
 
 msgid "Factually incorrect"
-msgstr ""
-
-msgid "Fail"
 msgstr ""
 
 msgid "Failed"
@@ -81136,6 +81103,9 @@ msgid "The page could not be displayed because it timed out."
 msgstr ""
 
 msgid "The parent directory \"%{path}\" is locked. To unlock this directory, unlock \"%{path}\"."
+msgstr ""
+
+msgid "The parent directory \"%{path}\" is locked. To unlock this file, unlock \"%{path}\"."
 msgstr ""
 
 msgid "The parent group is archived. This group and its data are %{strong_open}read-only%{strong_close}."

@@ -16,6 +16,12 @@ module Gitlab
           scope_rego: 4096
         }.freeze
 
+        # Mirrors `MAX_POLICY_REGO_BYTES`, which bounds the single module a policy's rules are
+        # merged into. It lives in another repository and can change there without anything
+        # here noticing, so nothing catches drift automatically:
+        # https://gitlab.com/gitlab-org/auth/glaz/-/blob/main/crates/glaz-govern/src/evaluator.rs
+        MAX_COMPILED_RULES_BYTES = 64 * 1024
+
         COMPILED_TEXT_ATTRIBUTES = [:scope_rego].freeze
         private_constant :COMPILED_TEXT_ATTRIBUTES
 
@@ -49,8 +55,9 @@ module Gitlab
         #   IMMUTABLE_ATTRIBUTES are accepted and dropped, so every policy starts at version 1
         # @return [Gitlab::PolicyStore::Policy] the created policy
         # @raise [Gitlab::PolicyStore::ValidationError] if the policy is invalid, its name is
-        #   taken, an attribute is outside CREATABLE_ATTRIBUTES and IMMUTABLE_ATTRIBUTES, or
-        #   one of NON_NULLABLE_ATTRIBUTES is explicitly nil
+        #   taken, an attribute is outside CREATABLE_ATTRIBUTES and IMMUTABLE_ATTRIBUTES,
+        #   one of NON_NULLABLE_ATTRIBUTES is explicitly nil, or its rules merge into a
+        #   module larger than MAX_COMPILED_RULES_BYTES
         def create(_attributes)
           raise NotImplementedError
         end
@@ -64,8 +71,9 @@ module Gitlab
         # @raise [Gitlab::PolicyStore::NotFound] if the policy does not exist
         # @raise [Gitlab::PolicyStore::ValidationError] if the result is invalid, its name is
         #   taken, an attribute is outside UPDATABLE_ATTRIBUTES and IMMUTABLE_ATTRIBUTES, one of
-        #   IDENTITY_ATTRIBUTES differs from the stored policy, or one of
-        #   NON_NULLABLE_ATTRIBUTES is explicitly nil
+        #   IDENTITY_ATTRIBUTES differs from the stored policy, one of
+        #   NON_NULLABLE_ATTRIBUTES is explicitly nil, or replacement rules merge into a
+        #   module larger than MAX_COMPILED_RULES_BYTES
         def update(_id, _attributes)
           raise NotImplementedError
         end
@@ -247,7 +255,19 @@ module Gitlab
             rule.merge('rego' => RuleTranspiler.new(rule, rule_index: index).transpile)
           end
 
+          validate_merged_program_size!(compiled)
+
           attributes.merge(rules: compiled)
+        end
+
+        def validate_merged_program_size!(compiled_rules)
+          return if compiled_rules.empty?
+
+          merged_program_bytesize = RuleProgramMerger.new(compiled_rules).merge.bytesize
+          return if merged_program_bytesize <= MAX_COMPILED_RULES_BYTES
+
+          raise PolicyStore::ValidationError,
+            "rules compile to #{merged_program_bytesize} bytes, over the maximum of #{MAX_COMPILED_RULES_BYTES} bytes"
         end
       end
     end

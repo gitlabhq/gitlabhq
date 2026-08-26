@@ -4119,7 +4119,7 @@ describe('planning-view', () => {
         expect(findDetailPanel().props('activeItem')).toBeNull();
       });
 
-      it('reloads everything in board view, where column counts are cached separately', async () => {
+      it('removes just that work item in board view too, refreshing counts instead of the list', async () => {
         await mountWithSubscription({
           provide: { glFeatures: { planningViewBoards: true } },
           stubs: { BoardView: BoardViewStub },
@@ -4129,11 +4129,14 @@ describe('planning-view', () => {
 
         cacheWorkItem(cachedWorkItemId);
         const evictSpy = jest.spyOn(getCache(), 'evict');
+        const initialCallCount = defaultCountsOnlyHandler.mock.calls.length;
 
         emitChange(cachedWorkItemId, 'DELETED');
         await flushChanges();
 
-        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+        expect(evictSpy).toHaveBeenCalledWith({ id: `WorkItem:${cachedWorkItemId}` });
+        expect(evictedFields(evictSpy)).toEqual([]);
+        expect(defaultCountsOnlyHandler.mock.calls.length).toBeGreaterThan(initialCallCount);
       });
     });
 

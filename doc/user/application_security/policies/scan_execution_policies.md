@@ -223,11 +223,11 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 | `branches` <sup>1</sup> | `array` of `string` | true if `branch_type` field does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). For compatibility with merge request approval policies, you should target all branches to include the scans in the feature branch and default branch |
 | `branch_type` <sup>1</sup> | `string` | true if `branches` field does not exist | `default`, `protected`, `all`, `target_default` <sup>2</sup>, or `target_protected` <sup>2</sup> | The types of branches the given policy applies to. |
 | `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
-| `pipeline_sources` <sup>2</sup> | `array` of `string` | false | `api`, `chat`, `external`, `external_pull_request_event`, `merge_request_event` <sup>3</sup>, `pipeline`, `push` <sup>3</sup>, `schedule`, `trigger`, `unknown`, `web` | The pipeline source that determines when the scan execution job triggers. See the [documentation](../../../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable) for more information. |
+| `pipeline_sources` <sup>2</sup> | `object` | false | `api`, `chat`, `external`, `external_pull_request_event`, `merge_request_event` <sup>3</sup>, `pipeline`, `push` <sup>3</sup>, `schedule`, `trigger`, `unknown`, `web` | An object with an `including` key set to an array of pipeline sources that determine when the scan execution job triggers. For more information, see [`CI_PIPELINE_SOURCE` predefined variable](../../../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable). |
 
 1. You must specify either `branches` or `branch_type`, but not both.
 1. Some options are only available with the `flexible_scan_execution` feature flag enabled. See the history for details.
-1. When the `branch_type` options `target_default` or `target_protected` are specified, the `pipeline_sources` field supports only the `merge_request_event` and `push` fields.
+1. When the `branch_type` options `target_default` or `target_protected` are specified, the `pipeline_sources:including` field supports only the `merge_request_event` and `push` fields.
 
 ## `schedule` rule type
 

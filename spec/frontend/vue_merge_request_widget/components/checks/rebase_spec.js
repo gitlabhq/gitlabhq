@@ -15,19 +15,17 @@ jest.mock('~/vue_shared/plugins/global_toast');
 let wrapper;
 const showMock = jest.fn();
 
-const mockPipelineNodes = [
-  {
-    id: '1',
-    project: {
-      id: '2',
-      fullPath: 'user/forked',
-    },
+const mockHeadPipeline = {
+  id: '1',
+  project: {
+    id: '2',
+    fullPath: 'user/forked',
   },
-];
+};
 
 const mockQueryHandler = ({
   rebaseInProgress = false,
-  nodes = mockPipelineNodes,
+  headPipeline = mockHeadPipeline,
   allowMergeOnSkippedPipeline = true,
 } = {}) =>
   jest.fn().mockResolvedValue({
@@ -41,9 +39,7 @@ const mockQueryHandler = ({
         mergeRequest: {
           id: '2',
           rebaseInProgress,
-          pipelines: {
-            nodes,
-          },
+          headPipeline,
         },
       },
     },
@@ -355,9 +351,7 @@ describe('Merge request merge checks rebase component', () => {
             mergeRequest: {
               id: '2',
               rebaseInProgress: false,
-              pipelines: {
-                nodes: mockPipelineNodes,
-              },
+              headPipeline: mockHeadPipeline,
             },
           },
         },

@@ -101,7 +101,7 @@ For a full list of options, see the
 
 CI/CD jobs that use the `release` keyword use a script that falls back to using `release-cli`
 if the required `glab` version is not available on the runner. The fallback logic
-is a safe-guard to ensure that projects that have not yet migrated to use `glab` CLI
+is a safeguard to ensure that projects that have not yet migrated to use `glab` CLI
 can continue working.
 
 This fallback is [scheduled to be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/537919)

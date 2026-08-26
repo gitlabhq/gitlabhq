@@ -145,7 +145,7 @@ you might write something like:
 ...
 ```
 
-AI is non-deterministic, so you may not get the same suggestion every time with the same input.
+AI is non-deterministic, so you might not get the same suggestion every time with the same input.
 To generate quality code, write clear, descriptive, specific tasks.
 
 For use cases and best practices, follow the [GitLab Duo examples documentation](../../../gitlab_duo/use_cases.md).

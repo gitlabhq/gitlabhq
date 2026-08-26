@@ -51,7 +51,7 @@ With this example configuration, Git maintains all `.xhtml` files in the reposit
 encoding in the local tree, but converts to and from UTF-8 when committing into the repository. GitLab
 renders the files accurately as it only sees correctly encoded UTF-8.
 
-If applying this configuration to an existing repository, files may need to be touched and recommitted
+If applying this configuration to an existing repository, files might need to be touched and recommitted
 if the local copy has the correct encoding but the repository does not. This can
 be performed for the whole repository by running `git add --renormalize .`.
 

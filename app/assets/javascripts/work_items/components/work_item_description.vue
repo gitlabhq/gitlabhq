@@ -141,7 +141,14 @@ export default {
       default: true,
     },
   },
-  emits: ['cancel-create', 'cancel-editing', 'error', 'update-draft', 'update-work-item'],
+  emits: [
+    'cancel-create',
+    'cancel-editing',
+    'task-item-toggled',
+    'error',
+    'update-draft',
+    'update-work-item',
+  ],
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
     return {
@@ -811,6 +818,7 @@ export default {
       :is-updating="isSubmitting"
       :without-heading-anchors="withoutHeadingAnchors"
       @description-updated="handleDescriptionTextUpdated"
+      @task-item-toggled="$emit('task-item-toggled', $event)"
     />
     <edited-at
       v-if="showEditedAt"

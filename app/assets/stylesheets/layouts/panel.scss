@@ -10,10 +10,6 @@
   @apply gl-overflow-clip;
   @apply gl-bg-default;
   @apply gl-p-0;
-
-  @media (forced-colors: active) {
-    border: 1px solid;
-  }
 }
 
 .paneled-view,
@@ -22,7 +18,6 @@
   @apply gl-flex-1;
   @apply gl-flex-col;
   @apply gl-h-full;
-  @apply gl-rounded-xl;
 }
 
 // Dynamic panel portal
@@ -36,6 +31,45 @@
   > .vue-portal-target {
     flex: 1;
     min-height: 0;
+  }
+}
+
+// Single-surface treatment: the content panels render as one card, with
+// inner borders instead of per-panel cards. Placed after the base panel
+// blocks so the equal-specificity overrides win by source order.
+.panels-container {
+  @apply gl-bg-default;
+  @apply gl-rounded-xl;
+  @apply gl-overflow-clip;
+  @apply gl-border-1;
+  @apply gl-border-solid;
+  @apply gl-border-transparent;
+  @apply dark:gl-border-subtle;
+}
+
+// stylelint-disable-next-line gitlab/no-has -- targeting directly the AI panel
+.panels-container:has(+ .ai-panels > div > .ai-panel) {
+  @apply lg:gl-rounded-r-none;
+  @apply lg:gl-border-r-0;
+}
+
+.paneled-view-portal {
+  @apply sm:gl-border-l;
+}
+
+.ai-panel {
+  @apply gl-rounded-xl;
+  @apply gl-border-1;
+  @apply gl-border-solid;
+  @apply gl-border-transparent;
+  @apply dark:gl-border-default;
+  @apply dark:lg:gl-border-subtle;
+  @apply lg:gl-border-l-default;
+  @apply lg:gl-rounded-l-none;
+
+  @include media-breakpoint-up(lg) {
+    // Hides shadow from left side where panels meet
+    clip-path: inset(-0.5rem -0.5rem -0.5rem 0);
   }
 }
 
@@ -53,10 +87,6 @@
   @apply gl-rounded-t-lg;
   z-index: $panel-header-inner-z-index;
   min-height: $panel-header-inner-height;
-
-  @media (forced-colors: active) {
-    border-bottom: 1px solid;
-  }
 }
 
 .panel-header-inner-text {

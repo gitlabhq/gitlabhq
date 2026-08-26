@@ -14,6 +14,7 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
 
     # Stub the GRAPHQL_TOOLS with GraphQL tools
     graphql_tools = {
+      'add_commit' => Mcp::Tools::Repositories::AddCommitService,
       'create_workitem_note' => Mcp::Tools::WorkItems::CreateWorkItemNoteService
     }
     stub_const("#{described_class}::GRAPHQL_TOOLS", graphql_tools)
@@ -35,7 +36,8 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
 
         expect(manager.tools.keys).to contain_exactly(
           'get_mcp_server_version',
-          'create_workitem_note'
+          'create_workitem_note',
+          'add_commit'
         )
       end
     end
@@ -65,9 +67,10 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
           'create_user' => api_tool1,
           'delete_user' => api_tool2,
           'get_mcp_server_version' => be_a(Mcp::Tools::GetServerVersionService),
-          'create_workitem_note' => be_a(Mcp::Tools::WorkItems::CreateWorkItemNoteService)
+          'create_workitem_note' => be_a(Mcp::Tools::WorkItems::CreateWorkItemNoteService),
+          'add_commit' => be_a(Mcp::Tools::Repositories::AddCommitService)
         )
-        expect(manager.tools.size).to eq(4)
+        expect(manager.tools.size).to eq(5)
       end
 
       it 'converts tool_name symbols to strings' do
@@ -202,9 +205,10 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
         expect(manager.tools).to include(
           'valid_tool' => api_tool1,
           'get_mcp_server_version' => be_a(Mcp::Tools::GetServerVersionService),
-          'create_workitem_note' => be_a(Mcp::Tools::WorkItems::CreateWorkItemNoteService)
+          'create_workitem_note' => be_a(Mcp::Tools::WorkItems::CreateWorkItemNoteService),
+          'add_commit' => be_a(Mcp::Tools::Repositories::AddCommitService)
         )
-        expect(manager.tools.size).to eq(3)
+        expect(manager.tools.size).to eq(4)
         expect(Mcp::Tools::Base::ApiTool).to have_received(:new).once.with(name: 'valid_tool', route: route1)
         expect(Mcp::Tools::Base::ApiTool).not_to have_received(:new).with('route2', route2)
         expect(Mcp::Tools::Base::ApiTool).not_to have_received(:new).with('route3', route3)

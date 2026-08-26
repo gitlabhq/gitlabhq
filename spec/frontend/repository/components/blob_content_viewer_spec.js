@@ -533,13 +533,16 @@ describe('Blob content viewer component', () => {
           await createComponent({ blob: viewer });
         };
 
-        it('emits showBlobInteractionZones for text files', async () => {
+        it('emits `show-blob-interaction-zones` for text files', async () => {
           await setup(simpleViewerMock, 'simple');
 
-          expect(eventHub.$emit).toHaveBeenCalledWith('showBlobInteractionZones', 'some_file.js');
+          expect(eventHub.$emit).toHaveBeenCalledWith(
+            'show-blob-interaction-zones',
+            'some_file.js',
+          );
         });
 
-        it('does not emit showBlobInteractionZones non-text files', async () => {
+        it('does not emit `show-blob-interaction-zones` non-text files', async () => {
           await setup(richViewerMock, 'rich');
 
           expect(eventHub.$emit).not.toHaveBeenCalled();

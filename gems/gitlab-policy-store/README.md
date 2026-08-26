@@ -184,17 +184,17 @@ Gitlab::PolicyStore::RuleTranspiler.new(
 # => "package governance\n\n# rule 0: environment\n\nviolation contains ..."
 ```
 
-Four properties of that compilation, each of which a caller has to work with:
+Five properties of that compilation, each of which a caller has to work with:
 
 - **One rule in, one program out.** Each entry's `rego` carries its own `package` line,
   so `rules` is stored per rule rather than as one program per policy, and `custom` is
-  stored as authored rather than reformatted. A combined per-policy module is still
-  reachable, by keeping the first `package governance` line and stripping it from the
-  rest. Doing that in the API serialization layer is under discussion, because
-  evaluating one module per policy is measurably cheaper than one per rule. A violation
-  the transpiler emits carries its `rule_index` so that attribution survives a merge,
-  since `violation` is a set and two rules emitting identical objects would deduplicate.
-  A `custom` program is stored as authored, so only its author can do the same for it.
+  stored as authored rather than reformatted. `RuleProgramMerger` combines them into one
+  per-policy module, keeping a single `package governance` line and stripping it from
+  every rule. That module is what the API exposes as `policy_rego`, and what a write
+  supplying `rules` is measured against. A violation the transpiler emits carries its
+  `rule_index` so that attribution survives a merge, since `violation` is a set and two
+  rules emitting identical objects would deduplicate. A `custom` program is stored as
+  authored, so only its author can do the same for it.
 - **A policy still fires when any one of its rules fires**, but that OR belongs to
   whoever evaluates the programs, whether it runs each separately and concatenates the
   violations or evaluates one merged module. This is the reverse of scope compilation,
@@ -208,8 +208,11 @@ Four properties of that compilation, each of which a caller has to work with:
   program declaring a package other than `governance`, which the Policy Engine would query
   and find nothing in. Compilation is what stops such a policy from being stored, on create
   and on update alike. Skipping any of them would let a policy save, look enforcing, and
-  enforce nothing. An empty `rules` array is not one of these cases: it compiles to nothing
-  and saves.
+  enforce nothing. An empty `rules` array is not one of these cases: it compiles to
+  nothing and saves.
+- **Rules whose merged module exceeds `MAX_COMPILED_RULES_BYTES` are refused too**, for a
+  different reason: the Policy Engine would not load a module that large, so accepting one
+  would defer the failure to evaluation.
 
 `Rules::ALL` advertises `calendar` as authorable, but no emitter for it has landed yet, so
 a `calendar` rule is refused as an unsupported type for now. Its emitter, and the

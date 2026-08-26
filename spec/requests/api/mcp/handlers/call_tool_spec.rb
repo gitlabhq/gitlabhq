@@ -1146,5 +1146,38 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
     end
   end
+
+  describe '#add_commit' do
+    let_it_be(:guest) { create(:user) }
+    let_it_be(:guest_access_token) { create(:oauth_access_token, user: guest, scopes: [:mcp]) }
+
+    let(:tool_params) do
+      {
+        name: 'add_commit',
+        arguments: {
+          project_id: project.full_path,
+          branch: project.default_branch,
+          commit_message: 'Add MCP test file',
+          actions: [{ action: 'create', file_path: 'mcp-test.txt', content: 'Test content' }]
+        }
+      }
+    end
+
+    before_all do
+      project.add_guest(guest)
+    end
+
+    it 'returns an error when the user cannot push code' do
+      expect do
+        post api('/mcp', guest, oauth_access_token: guest_access_token), params: params, as: :json
+      end.not_to change { project.repository.commit_count }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_truthy
+      expect(json_response['result']['content'].first['text']).to include(
+        "does not exist or you don't have permission to perform this action"
+      )
+    end
+  end
 end
 # rubocop:enable RSpec/SpecFilePathFormat

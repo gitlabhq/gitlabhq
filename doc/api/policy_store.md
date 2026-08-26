@@ -19,6 +19,7 @@ title: Policy store API
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606971) in GitLab 19.3 [with a feature flag](../administration/feature_flags/_index.md) named `security_policies_v2`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/604367) to persist policies to the database instead of per-process memory in GitLab 19.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/616505) to add the `policy_rego` response attribute in GitLab 19.4.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/612905) to reject rules that compile to a Rego module larger than 65536 bytes in GitLab 19.4.
 
 {{< /history >}}
 
@@ -372,7 +373,7 @@ Supported attributes:
 | ----------------- | ------- | -------- | ----------- |
 | `id`              | integer | Yes      | ID of the organization. |
 | `name`            | string  | Yes      | Name of the policy. Maximum 255 characters. Must be unique in the organization. |
-| `rules`           | array   | Yes      | Rules of the policy. At least one entry is required. |
+| `rules`           | array   | Yes      | Rules of the policy. At least one entry is required. Rejected when the entries compile to a Rego module larger than 65536 bytes. That module is returned as `policy_rego`. |
 | `trigger_type`    | string  | Yes      | Trigger the policy responds to. One of the IDs returned by [List all triggers](#list-all-triggers). |
 | `actions`         | array   | No       | Actions the policy takes. |
 | `description`     | string  | No       | Description of the policy. Maximum 4096 characters. |
@@ -383,8 +384,13 @@ Supported attributes:
 
 If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the
 [policy attributes](#response-attributes).
-Returns `400 Bad Request` when an attribute is invalid, both scope forms are supplied, or the
-name is already taken in the organization.
+The following conditions return `400 Bad Request`:
+
+- An attribute is invalid.
+- Both scope forms are supplied.
+- The name is already taken in the organization.
+- A compiled `scope_rego` exceeds 4096 characters.
+- The `rules` compile to more than 65536 bytes of Rego.
 
 Example request:
 
@@ -448,7 +454,7 @@ Supported attributes:
 | `mode`            | string  | No       | One of `audit`, `warn`, or `enforce`. |
 | `name`            | string  | No       | Name of the policy. Maximum 255 characters. Must be unique in the organization. |
 | `policy_scope`    | object  | No       | Structured scope of the policy. Cannot be combined with a non-empty `scope_rego`. Rejected when it compiles to more than 4096 characters of Rego. |
-| `rules`           | array   | No       | Rules of the policy. Replaces the stored rules. |
+| `rules`           | array   | No       | Rules of the policy. Replaces the stored rules. Rejected when the entries compile to a Rego module larger than 65536 bytes. That module is returned as `policy_rego`. |
 | `scope_rego`      | string  | No       | Scope of the policy, authored as Rego. Maximum 4096 characters. Send an empty value to retire an authored program and recompile from `policy_scope`. |
 | `trigger_type`    | string  | No       | Trigger the policy responds to. One of the IDs returned by [List all triggers](#list-all-triggers). |
 
@@ -458,9 +464,14 @@ A `scope_rego` that was authored directly is left as it is.
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the
 [policy attributes](#response-attributes).
-Returns `400 Bad Request` when an attribute is invalid, both scope forms are supplied, the new
-name is already taken in the organization, or a recompiled `scope_rego` exceeds 4096
-characters.
+The following conditions return `400 Bad Request`:
+
+- No attribute to change is supplied.
+- An attribute is invalid.
+- Both scope forms are supplied.
+- The new name is already taken in the organization.
+- A recompiled `scope_rego` exceeds 4096 characters.
+- The replacement `rules` compile to more than 65536 bytes of Rego.
 
 Example request:
 

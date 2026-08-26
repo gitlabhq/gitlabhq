@@ -3,12 +3,7 @@
 module Integrations
   module ChatMessage
     class AlertMessage < BaseMessage
-      attr_reader :title
-      attr_reader :alert_url
-      attr_reader :severity
-      attr_reader :events
-      attr_reader :status
-      attr_reader :started_at
+      attr_reader :title, :alert_url, :severity, :events, :status, :started_at
 
       def initialize(params)
         @project_name = params[:project_name] || params.dig(:project, :path_with_namespace)

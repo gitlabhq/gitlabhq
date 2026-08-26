@@ -40,6 +40,7 @@ describe('WorkItemDescriptionRendered', () => {
     workItemType = 'ISSUE',
     withoutHeadingAnchors = false,
     enableTruncation = true,
+    workItemsTaskListToggle = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDescriptionRendered, {
       propsData: {
@@ -51,6 +52,9 @@ describe('WorkItemDescriptionRendered', () => {
         workItemType,
         withoutHeadingAnchors,
         enableTruncation,
+      },
+      provide: {
+        glFeatures: { workItemsTaskListToggle },
       },
       stubs: {
         CreateWorkItemModal,
@@ -207,7 +211,7 @@ describe('WorkItemDescriptionRendered', () => {
   });
 
   describe('with checkboxes', () => {
-    beforeEach(() => {
+    const createCheckboxComponent = (options = {}) => {
       createComponent({
         canEdit: true,
         workItemDescription: {
@@ -219,37 +223,102 @@ describe('WorkItemDescriptionRendered', () => {
 <input class="task-list-item-checkbox" type="checkbox"> todo 2</li>
 </ul>`,
         },
+        ...options,
       });
 
       jest.spyOn(wrapper.vm, 'createTaskListItemActions').mockReturnValue({});
+    };
+
+    describe.each([false, true])('with workItemsTaskListToggle %s', (workItemsTaskListToggle) => {
+      beforeEach(() => {
+        createCheckboxComponent({ workItemsTaskListToggle });
+      });
+
+      it('disables checkbox while updating', async () => {
+        findCheckboxAtIndex(1).setChecked();
+
+        await nextTick();
+
+        expect(findCheckboxAtIndex(1).attributes().disabled).toBeDefined();
+      });
+
+      it('re-enables checkboxes once updating is done', async () => {
+        await wrapper.setProps({ isUpdating: true });
+
+        expect(findCheckboxAtIndex(1).attributes().disabled).toBeDefined();
+
+        await wrapper.setProps({ isUpdating: false });
+
+        expect(findCheckboxAtIndex(1).attributes().disabled).toBeUndefined();
+      });
     });
 
-    it('checks unchecked checkbox', async () => {
-      findCheckboxAtIndex(1).setChecked();
+    describe('when workItemsTaskListToggle is disabled', () => {
+      beforeEach(() => {
+        createCheckboxComponent();
+      });
 
-      await nextTick();
+      it('checks unchecked checkbox', async () => {
+        findCheckboxAtIndex(1).setChecked();
 
-      const updatedDescription = `- [x] todo 1\n- [x] todo 2`;
-      expect(wrapper.emitted('description-updated')).toEqual([[updatedDescription]]);
-      expect(findReadMore().exists()).toBe(false);
+        await nextTick();
+
+        const updatedDescription = `- [x] todo 1\n- [x] todo 2`;
+        expect(wrapper.emitted('description-updated')).toEqual([[updatedDescription]]);
+        expect(findReadMore().exists()).toBe(false);
+      });
+
+      it('unchecks checked checkbox', async () => {
+        findCheckboxAtIndex(0).setChecked(false);
+
+        await nextTick();
+
+        const updatedDescription = `- [ ] todo 1\n- [ ] todo 2`;
+        expect(wrapper.emitted('description-updated')).toEqual([[updatedDescription]]);
+        expect(findReadMore().exists()).toBe(false);
+      });
     });
 
-    it('disables checkbox while updating', async () => {
-      findCheckboxAtIndex(1).setChecked();
+    describe('when workItemsTaskListToggle is enabled', () => {
+      beforeEach(() => {
+        createCheckboxComponent({ workItemsTaskListToggle: true });
+      });
 
-      await nextTick();
+      it('emits task-item-toggled with a line locator instead of the full description', async () => {
+        findCheckboxAtIndex(1).setChecked();
 
-      expect(findCheckboxAtIndex(1).attributes().disabled).toBeDefined();
-    });
+        await nextTick();
 
-    it('unchecks checked checkbox', async () => {
-      findCheckboxAtIndex(0).setChecked(false);
+        expect(wrapper.emitted('task-item-toggled')).toEqual([
+          [
+            {
+              checked: true,
+              lineSource: '- [ ] todo 2',
+              lineSourcepos: '2:1-2:15',
+              revert: expect.any(Function),
+            },
+          ],
+        ]);
+        expect(wrapper.emitted('description-updated')).toBeUndefined();
+      });
 
-      await nextTick();
+      it('emits task-item-toggled when unchecking a checked checkbox', async () => {
+        findCheckboxAtIndex(0).setChecked(false);
 
-      const updatedDescription = `- [ ] todo 1\n- [ ] todo 2`;
-      expect(wrapper.emitted('description-updated')).toEqual([[updatedDescription]]);
-      expect(findReadMore().exists()).toBe(false);
+        await nextTick();
+
+        expect(wrapper.emitted('task-item-toggled')).toEqual([
+          [
+            {
+              checked: false,
+              lineSource: '- [x] todo 1',
+              lineSourcepos: '1:1-2:15',
+              revert: expect.any(Function),
+            },
+          ],
+        ]);
+        expect(wrapper.emitted('description-updated')).toBeUndefined();
+      });
     });
   });
 

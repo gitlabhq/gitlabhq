@@ -55,13 +55,7 @@ export default {
       required: true,
     },
   },
-  emits: [
-    'delete-note-error',
-    'onDesignDiscussionError',
-    'resolve-discussion-error',
-    'toggle-resolved-comments',
-    'updateNoteError',
-  ],
+  emits: ['delete-note-error', 'resolve-discussion-error', 'toggle-resolved-comments'],
   data() {
     return {
       discussionWithOpenForm: '',
@@ -181,8 +175,6 @@ export default {
             :resolved-discussions-expanded="resolvedDiscussionsExpanded"
             :discussion-with-open-form="discussionWithOpenForm"
             data-testid="unresolved-discussion"
-            @create-note-error="$emit('onDesignDiscussionError', $event)"
-            @update-note-error="$emit('updateNoteError', $event)"
             @delete-note-error="$emit('delete-note-error', $event)"
             @resolve-discussion-error="$emit('resolve-discussion-error', $event)"
             @update-active-discussion="updateActiveDesignDiscussion(discussion)"
@@ -207,8 +199,6 @@ export default {
                 :resolved-discussions-expanded="resolvedDiscussionsExpanded"
                 :discussion-with-open-form="discussionWithOpenForm"
                 data-testid="resolved-discussion"
-                @error="$emit('onDesignDiscussionError', $event)"
-                @update-note-error="$emit('updateNoteError', $event)"
                 @delete-note-error="$emit('delete-note-error', $event)"
                 @update-active-discussion="updateActiveDesignDiscussion(discussion)"
                 @open-form="updateDiscussionWithOpenForm"

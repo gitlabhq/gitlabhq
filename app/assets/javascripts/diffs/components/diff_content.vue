@@ -132,7 +132,7 @@ export default {
   },
   updated() {
     this.$nextTick(() => {
-      eventHub.$emit('showBlobInteractionZones', this.diffFile.new_path);
+      eventHub.$emit('show-blob-interaction-zones', this.diffFile.new_path);
     });
   },
   methods: {

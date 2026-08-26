@@ -112,7 +112,7 @@ To update your fork from the GitLab UI:
    - If your fork contains no merge conflicts, you can select **Create merge request**
      to propose pushing your changes to the upstream project, **Update fork**
      to pull changes down to your fork, or both. The type of changes in your fork
-     determine which actions are appropriate.
+     determines which actions are appropriate.
    - If your fork contains merge conflicts, GitLab shows a step-by-step guide to update
      your fork from the command line.
 

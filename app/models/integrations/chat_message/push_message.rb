@@ -3,11 +3,7 @@
 module Integrations
   module ChatMessage
     class PushMessage < BaseMessage
-      attr_reader :after
-      attr_reader :before
-      attr_reader :commits
-      attr_reader :ref
-      attr_reader :ref_type
+      attr_reader :after, :before, :commits, :ref, :ref_type
 
       def initialize(params)
         super

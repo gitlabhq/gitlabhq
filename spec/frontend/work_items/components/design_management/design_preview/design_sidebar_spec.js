@@ -232,15 +232,7 @@ describe('DesignSidebar', () => {
       );
     });
 
-    it('emits correct event on discussion create note error', () => {
-      findFirstDiscussion().vm.$emit('create-note-error', 'payload');
-      expect(wrapper.emitted('onDesignDiscussionError')).toEqual([['payload']]);
-    });
-
-    it('emits correct event on discussion update note error', () => {
-      findFirstDiscussion().vm.$emit('update-note-error', 'payload');
-      expect(wrapper.emitted('updateNoteError')).toEqual([['payload']]);
-
+    it('emits `resolve-discussion-error` when a discussion fails to resolve', () => {
       findFirstDiscussion().vm.$emit('resolve-discussion-error', 'payload');
       expect(wrapper.emitted('resolve-discussion-error')).toEqual([['payload']]);
     });

@@ -3,12 +3,7 @@
 module Integrations
   module ChatMessage
     class MergeMessage < BaseMessage
-      attr_reader :merge_request_iid
-      attr_reader :source_branch
-      attr_reader :target_branch
-      attr_reader :action
-      attr_reader :state
-      attr_reader :title
+      attr_reader :merge_request_iid, :source_branch, :target_branch, :action, :state, :title
 
       def initialize(params)
         super

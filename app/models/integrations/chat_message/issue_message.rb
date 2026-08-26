@@ -3,14 +3,7 @@
 module Integrations
   module ChatMessage
     class IssueMessage < BaseMessage
-      attr_reader :title
-      attr_reader :issue_iid
-      attr_reader :issue_url
-      attr_reader :action
-      attr_reader :state
-      attr_reader :description
-      attr_reader :object_kind
-      attr_reader :type
+      attr_reader :title, :issue_iid, :issue_url, :action, :state, :description, :object_kind, :type
 
       def initialize(params)
         super

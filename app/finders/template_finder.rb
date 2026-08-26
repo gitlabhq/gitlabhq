@@ -33,9 +33,7 @@ class TemplateFinder
     end
   end
 
-  attr_reader :type, :project, :params
-
-  attr_reader :vendored_templates
+  attr_reader :type, :project, :params, :vendored_templates
   private :vendored_templates
 
   def initialize(type, project, params = {})

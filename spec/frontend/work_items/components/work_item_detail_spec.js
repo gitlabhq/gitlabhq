@@ -443,6 +443,102 @@ describe('WorkItemDetail component', () => {
 
       expect(clearDraftSpy).not.toHaveBeenCalled();
     });
+
+    describe('task list item toggling', () => {
+      const taskListToggle = {
+        checked: true,
+        lineSource: '- [ ] todo 2',
+        lineSourcepos: '2:1-2:15',
+      };
+
+      let revert;
+
+      const emitTaskItemToggled = () =>
+        findWorkItemDescription().vm.$emit('task-item-toggled', { ...taskListToggle, revert });
+
+      const toggleTaskItem = async (mutationHandler) => {
+        createComponent({ mutationHandler });
+        await mockApollo.resolveAll();
+
+        emitTaskItemToggled();
+        await mockApollo.resolveMutation(updateWorkItemMutation);
+      };
+
+      beforeEach(() => {
+        revert = jest.fn();
+      });
+
+      describe('when the mutation succeeds', () => {
+        let mutationHandler;
+
+        beforeEach(async () => {
+          mutationHandler = jest.fn().mockReturnValue({
+            data: {
+              workItemUpdate: {
+                workItem: workItemByIidQueryResponse.data.namespace.workItem,
+                errors: [],
+              },
+            },
+          });
+
+          await toggleTaskItem(mutationHandler);
+        });
+
+        it('sends only the task list toggle in the mutation input', () => {
+          expect(mutationHandler).toHaveBeenCalledWith({
+            input: {
+              id: 'gid://gitlab/WorkItem/1',
+              descriptionWidget: { taskListToggle },
+            },
+            useWorkItemFeatures: false,
+          });
+        });
+      });
+
+      describe('when the mutation reports a conflict', () => {
+        const conflictMessage = 'Someone edited this issue at the same time you did.';
+
+        beforeEach(async () => {
+          await toggleTaskItem(
+            jest.fn().mockReturnValue({
+              data: {
+                workItemUpdate: {
+                  workItem: workItemByIidQueryResponse.data.namespace.workItem,
+                  errors: [conflictMessage],
+                },
+              },
+            }),
+          );
+        });
+
+        it('shows an alert', () => {
+          expect(findAlert().text()).toBe(conflictMessage);
+        });
+
+        it('does not revert the checkbox', () => {
+          expect(revert).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('when the response has no work item to resync from', () => {
+        beforeEach(async () => {
+          await toggleTaskItem(
+            jest.fn().mockReturnValue({
+              data: {
+                workItemUpdate: {
+                  workItem: null,
+                  errors: ['Description is too long (maximum is 1048576 characters)'],
+                },
+              },
+            }),
+          );
+        });
+
+        it('reverts the checkbox', () => {
+          expect(revert).toHaveBeenCalled();
+        });
+      });
+    });
   });
 
   describe('ancestors widget', () => {

@@ -49,7 +49,7 @@ If GitLab has access to the cloud server, try
 
 ## Authentication troubleshooting
 
-The problem might be driven to the recent changes in authentication,
+The problem might be driven by the recent changes in authentication,
 specifically the token system. To resolve the issue:
 
 1. Remove the existing personal access token from your GitLab account settings.
