@@ -260,6 +260,29 @@ To modify the maximum decompressed file size for imports in GitLab:
 1. Expand **Import and export settings**.
 1. Set another value for **Timeout for decompressing archived files (seconds)**.
 
+## Maximum number of concurrent import jobs across the instance
+
+{{< history >}}
+
+- Introduced in GitLab 19.1.
+
+{{< /history >}}
+
+Every import job holds a Sidekiq thread for its entire duration. The workers that
+orchestrate an import (file-based project and group imports, direct transfer, and the
+stage jobs for the GitHub, Bitbucket Cloud, and Bitbucket Server importers) can run for a
+long time, so if too many run at once they can occupy the whole Sidekiq thread pool and
+block other background work.
+
+The `import_jobs_concurrency_limit` setting caps how many of these long-running jobs run
+at the same time. The limit applies independently to each worker type, not as a
+single shared total. Jobs beyond a worker type's limit wait until a running job of that
+type finishes.
+
+The default is `100` concurrent jobs per worker type. To change it, send an API request
+to `/api/v4/application/settings` with `import_jobs_concurrency_limit`. For more
+information, see the [application settings API](../../api/settings.md).
+
 ## Maximum number of simultaneous import jobs
 
 {{< history >}}
@@ -268,21 +291,27 @@ To modify the maximum decompressed file size for imports in GitLab:
 
 {{< /history >}}
 
-You can specify the maximum number of import jobs that are executed simultaneously for:
+Within a single project import, you can cap how many child jobs (for example, one job per issue or pull request) an
+importer schedules at the same time. Use this to control how many jobs a single import schedules concurrently. It
+applies to:
 
 - [GitHub importer](../../user/project/import/github.md)
 - [Bitbucket Cloud importer](../../user/import/bitbucket_cloud.md)
 - [Bitbucket Server importer](../../user/import/bitbucket_server.md)
 
-The job limit is not applied when importing merge requests because there is a hard-coded limit for merge requests to
-avoid overloading servers.
+This is separate from [`import_jobs_concurrency_limit`](#maximum-number-of-concurrent-import-jobs-across-the-instance):
+that setting caps the long-running orchestration and stage workers across the whole instance, but independently per
+worker type, whereas this setting caps the short-lived child jobs inside a single import. Because child jobs finish
+quickly, their defaults are much higher.
+
+The job limit is not applied when importing merge requests, because a hard-coded limit for merge requests already
+avoids overloading servers.
 
 The default job limit is:
 
-- For the GitHub importer, 1000.
-- For the Bitbucket Cloud and Bitbucket Server importer, 100. The Bitbucket importers have a low default limit because
-  we haven't yet determined a good default limit. Instance administrators should experiment with
-  a higher limit.
+- GitHub importer: 1000.
+- Bitbucket Cloud and Bitbucket Server importers: 100. The Bitbucket importers have a low default because a good
+  default hasn't been determined yet. Instance administrators should experiment with a higher limit.
 
 To modify this setting:
 

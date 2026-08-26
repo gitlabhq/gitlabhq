@@ -78251,6 +78251,9 @@ msgstr ""
 msgid "The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"
 msgstr ""
 
+msgid "The username provided by your identity provider is too long (maximum %{max_length} characters). Contact your administrator."
+msgstr ""
+
 msgid "The value must be a valid JSON array format: [1,2,3] or [{\"key\": \"value\"}]"
 msgstr ""
 
@@ -84095,6 +84098,9 @@ msgid "Username (optional)"
 msgstr ""
 
 msgid "Username and Password"
+msgstr ""
+
+msgid "Username cannot be longer than %{max_length} characters."
 msgstr ""
 
 msgid "Username for administrator account."

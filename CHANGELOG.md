@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.2.5 (2026-08-25)
+
+### Fixed (2 changes)
+
+- [Fix infinite loop parsing errored SARIF security reports](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8f97e3d059af34a182761afe83ae9d1eb3b9c77a) **GitLab Enterprise Edition**
+- [Preserve email reply content after lone bullet lines](https://gitlab.com/gitlab-org/security/gitlab/-/commit/084287b841982d5c3c7a3ec2f8c00e95b0a20dfb)
+
+### Security (7 changes)
+
+- [Fix Compliance Framework Cross-Namespace Assignment on self-managed instances](https://gitlab.com/gitlab-org/security/gitlab/-/commit/01b689ef634a9e6f5a59f6dc3bf73921d78cd578) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6500))
+- [Reject overflow username length in SCIM and OAuth sign-in](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7e6c7b5f251d0ce9469a06317e318eb6d3a8575c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6586))
+- [Prevent Sidekiq exhaustion via unbounded import jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/832d937a54e16a7a5e45361efe05b3542c36b83f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6582))
+- [Ignore Claude project settings in Claude agent](https://gitlab.com/gitlab-org/security/gitlab/-/commit/178b5e75af6b1721e5a7a5382afc80f14e758587) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6601))
+- [Check :update_approvers before resetting MR approval rules](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f69a355c34bd38ec6c51c69d38ef852aff9408d4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6561))
+- [Prevent policy job needs from resolving to untrusted jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f71592dae5e74da162304b43d7b4a7106a8fa883) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6594))
+- [Enforce protected environment check on terminal websocket auth](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bf7c3e1802e6723f9ad75b1b44eb23cbed77ab2b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6589))
+
 ## 19.2.4 (2026-08-14)
 
 No changes.
