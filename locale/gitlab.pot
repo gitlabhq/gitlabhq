@@ -60743,7 +60743,7 @@ msgstr ""
 msgid "Preferences|When enabled, you can choose which Orbit-powered features to use below. Turning this off disables all Orbit features."
 msgstr ""
 
-msgid "Preferences|When you type a colon (:) in a description or comment box, a list of matching emoji is suggested."
+msgid "Preferences|When you type a colon (:) in a description or comment box, matching emoji are suggested."
 msgstr ""
 
 msgid "Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} creates a new line indented the same as the previous line."
@@ -75257,6 +75257,9 @@ msgstr ""
 msgid "SecurityReports|Run SAST False Positive Detection"
 msgstr ""
 
+msgid "SecurityReports|Running on all eligible vulnerabilities"
+msgstr ""
+
 msgid "SecurityReports|SAST triage and remediation funnel"
 msgstr ""
 
@@ -75279,6 +75282,9 @@ msgid "SecurityReports|Select a ref"
 msgstr ""
 
 msgid "SecurityReports|Select action"
+msgstr ""
+
+msgid "SecurityReports|Select all eligible vulnerabilities"
 msgstr ""
 
 msgid "SecurityReports|Select dismissal reason"
@@ -75318,10 +75324,16 @@ msgid_plural "SecurityReports|Started SAST false positive detection for %{count}
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "SecurityReports|Started SAST false positive detection for all eligible vulnerabilities."
+msgstr ""
+
 msgid "SecurityReports|Started Vulnerability Resolution for %{count} vulnerability."
 msgid_plural "SecurityReports|Started Vulnerability Resolution for %{count} vulnerabilities."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "SecurityReports|Started Vulnerability Resolution for all eligible vulnerabilities."
+msgstr ""
 
 msgid "SecurityReports|Starting 2025-05-15, we will gradually migrate vulnerabilities that have not been updated in the last 12 months to the vulnerability archive. Archived vulnerabilities are stored for 3 years before deletion. To access the archive, on the left sidebar, select Secure &gt; Security Configuration &gt; Vulnerability Management."
 msgstr ""
@@ -75450,6 +75462,9 @@ msgid "SecurityReports|Undo dismiss"
 msgstr ""
 
 msgid "SecurityReports|Use AI to create a merge request with a proposed fix."
+msgstr ""
+
+msgid "SecurityReports|Use selected rows instead"
 msgstr ""
 
 msgid "SecurityReports|VR available"
@@ -81320,6 +81335,9 @@ msgid "The user you are trying to approve is not pending approval"
 msgstr ""
 
 msgid "The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"
+msgstr ""
+
+msgid "The username provided by your identity provider is too long (maximum %{max_length} characters). Contact your administrator."
 msgstr ""
 
 msgid "The value must be a valid JSON array format: [1,2,3] or [{\"key\": \"value\"}]"
@@ -87286,6 +87304,9 @@ msgid "Username (optional)"
 msgstr ""
 
 msgid "Username and Password"
+msgstr ""
+
+msgid "Username cannot be longer than %{max_length} characters."
 msgstr ""
 
 msgid "Username for administrator account."

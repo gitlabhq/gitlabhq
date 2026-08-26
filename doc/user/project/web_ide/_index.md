@@ -182,7 +182,7 @@ To commit changes in the Web IDE:
 To commit and force push your changes:
 
 1. Select the action button menu or select the ellipsis ({{< icon name="ellipsis_h" >}}).
-1. Select **Commit and Force push**.
+1. Select **Commit and force push**.
 
 > [!warning]
 > This action overwrites the remote history of the current branch. Use with caution.
@@ -192,7 +192,7 @@ To commit and force push your changes:
 To amend the last commit and force push:
 
 1. Select the action button menu or select the ellipsis ({{< icon name="ellipsis_h" >}}).
-1. Select **Amend commit and Force push**.
+1. Select **Amend commit and force push**.
 
 This updates the last commit and force pushes it to the remote repository. Use this to fix recent commits without creating new ones.
 
@@ -341,17 +341,17 @@ To uninstall an extension in the Web IDE:
 
 ### Extension setup
 
-Web IDE extensions may require additional configuration to work with your projects.
+Web IDE extensions might require additional configuration to work with your projects.
 
 #### Use Vim keybindings
 
 Use Vim keybindings to navigate and edit text using keyboard shortcuts from the Vim text editor.
-With the Extensions Marketplace, you can add Vim keybindings to the Web IDE.
+With the Extension Marketplace, you can add Vim keybindings to the Web IDE.
 
 To enable Vim keybindings, install the [Vim](https://open-vsx.org/extension/vscodevim/vim)
 extension. For more information, see [install an extension](#install-an-extension).
 
-#### AsciiDoc Support
+#### AsciiDoc support
 
 The [AsciiDoc](https://open-vsx.org/extension/asciidoctor/asciidoctor-vscode) extension provides live preview, syntax highlighting, and snippets for AsciiDoc files in the Web IDE. To use AsciiDoc markup preview in the Web IDE, you must install the AsciiDoc extension. For more information, see [install an extension](#install-an-extension).
 

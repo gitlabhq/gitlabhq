@@ -382,6 +382,16 @@ describe.each`
       expect(findPaginationControls().exists()).toBe(exists);
     });
   });
+
+  it('emits page-info with the query pageInfo, so the parent can tell whether page 1 is genuinely on screen', async () => {
+    mountComponent({ useRestApi });
+    await waitForPromises();
+
+    expect(wrapper.emitted('page-info')[0][0]).toMatchObject({
+      hasNextPage: true,
+      hasPreviousPage: false,
+    });
+  });
 });
 
 describe.each`

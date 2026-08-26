@@ -35,7 +35,7 @@ By default, only users with the Maintainer role can merge changes into a
 protected branch.
 
 - Advantages:
-  - Fewer projects means less clutter.
+  - Fewer projects mean less clutter.
   - Developers need to consider only one remote repository.
 - Disadvantages:
   - Manual setup of protected branch required for each new project.

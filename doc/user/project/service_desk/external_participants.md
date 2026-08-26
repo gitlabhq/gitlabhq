@@ -34,7 +34,7 @@ That usually is the email address from the `From` header of the initial email th
 
 ### Add external participants from the `Cc` header
 
-By default GitLab only adds the sender of the email that creates the Service Desk ticket as an external participant.
+By default, GitLab only adds the sender of the email that creates the Service Desk ticket as an external participant.
 
 You can configure GitLab to also add all email addresses from the `Cc` header to the Service Desk ticket.
 This works for the initial email and all replies to the [`thank_you` email](configure.md#customize-emails-sent-to-external-participants).
@@ -152,7 +152,7 @@ To add an external participant to an issue or ticket:
 
 1. Go to the issue or ticket.
 1. Add a comment that contains only the quick action `/add_email user@example.com`.
-   You can chain up to 6 email addresses. For example `/add_email user@example.com user2@example.com`
+   You can chain up to 6 email addresses. For example, `/add_email user@example.com user2@example.com`
 
 You should see a success message and a new system note with the email address.
 
@@ -181,6 +181,6 @@ To remove an existing external participant from an issue or ticket:
 
 1. Go to the issue or ticket.
 1. Add a comment that contains only the quick action `/remove_email user@example.com`.
-   You can chain up to 6 email addresses. For example `/remove_email user@example.com user2@example.com`
+   You can chain up to 6 email addresses. For example, `/remove_email user@example.com user2@example.com`
 
 You should see a success message and a new system note with the email address.

@@ -45,7 +45,7 @@ Use file exports to:
 - For merge requests, only the latest diff is preserved during import or export.
   After importing or exporting a project, only the latest diff version and the latest pipeline in merge requests are visible.
 - Imported milestones with titles [matching existing milestones](../milestones/_index.md#milestone-title-rules) within the
-  destination namespace will have titles updated upon import. The new title will be appended with a unique suffix, e.g. `18.0` will become `18.0
+  destination namespace will have titles updated upon import. The new title will be appended with a unique suffix. For example, `18.0` will become `18.0
   (imported-3d-1770206299)`. To avoid this, rename the milestone in the source group or project before initiating a direct transfer.
 
 ## Migrate projects by uploading an export file
@@ -55,7 +55,7 @@ then imported into another GitLab instance.
 
 ### Preserving user contributions
 
-The requirements for preserving user contribution depends on whether you're migrating to GitLab.com
+The requirements for preserving user contributions depend on whether you're migrating to GitLab.com
 or to a GitLab Self-Managed instance.
 
 #### When migrating from GitLab Self-Managed to GitLab.com
@@ -154,7 +154,7 @@ To enable file exports as an import source for the destination instance:
 You can export projects from the Community Edition to the Enterprise Edition
 and vice versa, assuming [compatibility](#compatibility) is met.
 
-If you're exporting a project from the Enterprise Edition to the Community Edition, you may lose
+If you're exporting a project from the Enterprise Edition to the Community Edition, you might lose
 data that is retained only in the Enterprise Edition. For more information, see
 [reverting from EE to CE](../../../update/convert_to_ee/revert.md).
 
@@ -279,7 +279,7 @@ You can import a project and its data. The amount of data you can import depends
 
 > [!warning]
 > Only import projects from sources you trust. If you import a project from an untrusted source, it
-> may be possible for an attacker to steal your sensitive data.
+> might be possible for an attacker to steal your sensitive data.
 
 #### Prerequisites
 
@@ -385,7 +385,7 @@ Using file exports, you can:
 
 GitLab maps user contributions correctly when an admin access token is used to perform the import. GitLab does not map
 user contributions correctly when you are importing from a GitLab Self-Managed instance to GitLab.com. Correct mapping of user
-contributions when importing from a GitLab Self-Managed instance to GitLab.com can be preserved with paid involvement of
+contributions when importing from a GitLab Self-Managed instance to GitLab.com can be preserved with paid involvement of the
 Professional Services team.
 
 ### Additional information
@@ -397,7 +397,7 @@ Professional Services team.
 - If imported into a parent group, a subgroup inherits the same level of visibility unless otherwise restricted.
 - You can export groups from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/)
   and vice versa. The Enterprise Edition retains some group data that isn't part of the Community Edition. If you're
-  exporting a group from the Enterprise Edition to the Community Edition, you may lose this data. For more information,
+  exporting a group from the Enterprise Edition to the Community Edition, you might lose this data. For more information,
   see [reverting from EE to CE](../../../update/convert_to_ee/revert.md).
 
 The maximum import file size depends on whether you import to GitLab Self-Managed or GitLab.com:
@@ -433,8 +433,8 @@ for your version of GitLab to check which items can be imported to the destinati
 Group items that are exported include:
 
 - Milestones
-- Group Labels (without associated label priorities)
-- Boards and Board Lists
+- Group labels (without associated label priorities)
+- Boards and board lists
 - Badges
 - Subgroups (including all the aforementioned data)
 - Epics
@@ -489,7 +489,7 @@ To import the group:
 
 To help avoid abuse, by default, users are rate limited to:
 
-| Request Type    | Limit |
+| Request type    | Limit |
 |-----------------|-------|
 | Export          | 6 groups per minute |
 | Download export | 1 download per group per minute |
@@ -501,4 +501,4 @@ To help avoid abuse, by default, users are rate limited to:
 - [Project import and export administration Rake tasks](../../../administration/raketasks/project_import_export.md)
 - [Migrating GitLab groups](../../group/import/_index.md)
 - [Group import and export API](../../../api/group_import_export.md)
-- [Migrate groups by direct transfer](../../group/import/_index.md).
+- [Migrate groups by direct transfer](../../group/import/_index.md)

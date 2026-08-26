@@ -99,7 +99,7 @@ Meanwhile:
   dkim=fail (signature did not verify) ... arc=fail
   ```
 
-  The exact wording of the failure message may vary depending on the specific email system or tools in use.
+  The exact wording of the failure message might vary depending on the specific email system or tools in use.
   Also see [this article on DKIM failures](https://automatedemailwarmup.com/blog/dkim-fail/) for more
   information and potential solutions.
 

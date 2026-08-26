@@ -81,7 +81,7 @@ a downstream fork.
 
 Prerequisites:
 
-- You must have a role for the project that allows you to edit merge requests, and add
+- You must have a role for the project that allows you to edit merge requests and add
   code to the repository.
 - Your project must use the [merge commit](methods/_index.md#merge-commit) method,
   which is set in the project's **Settings** > **Merge requests**.

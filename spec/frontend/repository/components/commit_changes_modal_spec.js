@@ -413,6 +413,13 @@ describe('CommitChangesModal', () => {
       expect(findError().text()).toBe(error);
     });
 
+    it('preserves newlines in multi-line error messages', () => {
+      const longErrorMessage = 'Line one\nLine two\nLine three';
+      createComponent({ props: { error: longErrorMessage } });
+      expect(findError().element.textContent).toBe(longErrorMessage);
+      expect(findError().classes()).toContain('gl-whitespace-pre-line');
+    });
+
     it('does not display error message when error prop is null', () => {
       createComponent({ props: { error: null } });
 

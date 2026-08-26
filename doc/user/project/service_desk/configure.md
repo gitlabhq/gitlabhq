@@ -81,9 +81,9 @@ content specific to the Service Desk ticket or your GitLab instance.
 | `%{ISSUE_ID}`          | {{< yes >}}               | {{< yes >}} | Ticket IID. |
 | `%{ISSUE_PATH}`        | {{< yes >}}               | {{< yes >}} | Project path appended with the ticket IID. |
 | `%{ISSUE_URL}`         | {{< yes >}}               | {{< yes >}} | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default). |
-| `%{ISSUE_DESCRIPTION}` | {{< yes >}}               | {{< yes >}} | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify ticket descriptions or your team is aware of the template design. |
+| `%{ISSUE_DESCRIPTION}` | {{< yes >}}               | {{< yes >}} | Ticket description. If a user has edited the description, it might contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify ticket descriptions or your team is aware of the template design. |
 | `%{UNSUBSCRIBE_URL}`   | {{< yes >}}               | {{< yes >}} | Unsubscribe URL. Learn how to [unsubscribe as an external participant](external_participants.md#unsubscribing-from-notification-emails) and [use unsubscribe headers in notification emails from GitLab](../../profile/notifications.md#using-an-email-client-or-other-software). |
-| `%{NOTE_TEXT}`         | {{< no >}}                | {{< yes >}} | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the external participants may never see the updates on their Service Desk ticket. |
+| `%{NOTE_TEXT}`         | {{< no >}}                | {{< yes >}} | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the external participants might never see the updates on their Service Desk ticket. |
 
 ### Thank you email
 
@@ -171,7 +171,7 @@ To use a custom description template with Service Desk:
 
 Behind the scenes, Service Desk works by the special Support Bot user creating tickets.
 This user isn't a [billable user](../../../subscriptions/manage_seats.md#criteria-for-non-billable-users),
-so it does not count toward the license limit count.
+so it does not count toward the license limit.
 
 Comments generated from Service Desk emails show the email of the user who sent the email.
 
@@ -259,7 +259,7 @@ in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416637).
 
 ### Prerequisites
 
-You can use one custom email address for Service Desk per project and it must be unique across the instance.
+You can use one custom email address for Service Desk per project, and it must be unique across the instance.
 
 The custom email address you want to use must meet all of the following requirements:
 
@@ -268,7 +268,7 @@ The custom email address you want to use must meet all of the following requirem
 - Your service provider must support sub-addressing. An email address consists of a local part (everything before `@`) and a
   domain part.
 
-  With email sub-addressing you can create unique variations of an email address by adding a `+` symbol followed
+  With email sub-addressing, you can create unique variations of an email address by adding a `+` symbol followed
   by any text to the local part. Given the email address `support@example.com`, check whether sub-addressing is supported by
   sending an email to `support+1@example.com`. This email should appear in your mailbox.
 - You have SMTP credentials (ideally, you should use an app password).
@@ -318,9 +318,9 @@ Typically the process takes only a few minutes.
 
 To cancel verification at any time or if it fails, select **Reset custom email**.
 The settings page updates accordingly and reflects the current state of the verification.
-The SMTP credentials are deleted and you can start the configuration again.
+The SMTP credentials are deleted, and you can start the configuration again.
 
-On failure and success all project owners and the user who triggered the verification process receive a
+On failure and success, all project owners and the user who triggered the verification process receive a
 notification email with the verification result.
 If the verification failed, the email also contains details of the reason.
 
@@ -329,7 +329,7 @@ You can now enable sending Service Desk emails with the custom email address.
 
 #### Troubleshooting your configuration
 
-When configuring a custom email you might encounter the following issues.
+When configuring a custom email, you might encounter the following issues.
 
 ##### Invalid credentials
 
@@ -402,7 +402,7 @@ To **disable** the custom email address:
 1. Expand **Service Desk**.
 1. Turn off the **Enable custom email** toggle.
    Because you set up email forwarding, emails to your custom email address continue to be processed and
-   appear as Service Desk Tickets in your project.
+   appear as Service Desk tickets in your project.
 
    Service Desk emails to external participants are now sent using the GitLab instance's default outgoing
    email configuration.
@@ -491,7 +491,7 @@ to use with Service Desk.
 In GitLab:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Settings** > **General**
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Service Desk** and find the custom email settings.
 1. Complete the fields:
    - **Custom email address**: Your custom email address.
@@ -499,8 +499,8 @@ In GitLab:
    - **SMTP port**: `587`.
    - **SMTP username**: Prefilled with the custom email address.
    - **SMTP password**: The app password you previously created for the custom email account.
-   - **SMTP authentication method**: Let GitLab select a server-supported method (recommended)
-1. Select **Save and test connection**
+   - **SMTP authentication method**: Let GitLab select a server-supported method (recommended).
+1. Select **Save and test connection**.
 1. After the [verification process](#verification) you should be able to
    [enable the custom email address](#enable-or-disable-the-custom-email-address).
 
@@ -637,15 +637,15 @@ In GitLab:
    - **SMTP port**: `587`.
    - **SMTP username**: Prefilled with the custom email address.
    - **SMTP password**: The app password you previously created for the custom email account.
-   - **SMTP authentication method**: Login
-1. Select **Save and test connection**
+   - **SMTP authentication method**: Login.
+1. Select **Save and test connection**.
 1. After the [verification process](#verification) you should be able to
    [enable the custom email address](#enable-or-disable-the-custom-email-address).
 
 ### Known issues
 
-- Some service providers don't allow SMTP connections any more.
-  Often you can enable them on a per user basis and create an app password.
+- Some service providers don't allow SMTP connections anymore.
+  Often you can enable them on a per-user basis and create an app password.
 
 ## Use an additional Service Desk alias email
 

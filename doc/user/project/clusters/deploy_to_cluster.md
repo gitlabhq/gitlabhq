@@ -141,7 +141,7 @@ Reasons for failure include:
   `environment:name` set, the Kubernetes credentials are not passed to it.
 
 > [!note]
-> Project-level clusters upgraded from GitLab 12.0 or older may be configured
+> Project-level clusters upgraded from GitLab 12.0 or older might be configured
 > in a way that causes this error. Ensure you clear the
 > [GitLab-managed cluster](gitlab_managed_clusters.md) option if you want to manage
 > namespaces and service accounts yourself.

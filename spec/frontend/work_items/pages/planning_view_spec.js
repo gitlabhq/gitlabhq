@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import MockAdapter from 'axios-mock-adapter';
 import { GlAlert, GlIntersectionObserver } from '@gitlab/ui';
+import { createMockSubscription } from 'mock-apollo-client';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 
@@ -85,6 +86,8 @@ import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_v
 import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
+import namespaceWorkItemChangesSubscription from '~/work_items/list/graphql/namespace_work_item_changes.subscription.graphql';
+import workItemIdFragment from '~/work_items/graphql/work_item_id.fragment.graphql';
 
 import { saveSavedView, getFilterTokens } from 'ee_else_ce/work_items/list/utils';
 
@@ -262,6 +265,8 @@ const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal)
 const findEmptyStateWithoutAnyIssues = () => wrapper.findComponent(EmptyStateWithoutAnyIssues);
 const findEmptyStateWithAnyIssues = () => wrapper.findComponent(EmptyStateWithAnyIssues);
 const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
+
+const getCache = () => apolloProvider.defaultClient.cache;
 
 const RELEASES_ENDPOINT = '/test/project/-/releases.json';
 
@@ -1292,7 +1297,6 @@ describe('planning-view', () => {
       const filterTokens = [
         { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
       ];
-      const getCache = () => wrapper.vm.$apollo.provider.defaultClient.cache;
 
       it('reloads the list by evicting the cached work items, even though the filter is unchanged', async () => {
         await mountComponent();
@@ -3942,6 +3946,285 @@ describe('planning-view', () => {
           url: '/work_items',
           replace: true,
         });
+      });
+    });
+  });
+
+  describe('realtime work item changes', () => {
+    const cachedWorkItemId = 'gid://gitlab/WorkItem/1';
+    const uncachedWorkItemId = 'gid://gitlab/WorkItem/2';
+    const cursor = btoa(JSON.stringify({ created_at: '2025-12-14 17:09:52.000000000 +0000' }));
+    const BoardViewStub = { name: 'BoardView', template: '<div />' };
+
+    let subscription;
+    let subscriptionHandler;
+
+    // `debounce` is mocked to run synchronously by default, which would hide the coalescing this
+    // block is about.
+    beforeEach(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = 500;
+    });
+
+    afterEach(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
+    });
+
+    const mountWithSubscription = async ({ provide = {}, ...options } = {}) => {
+      subscription = createMockSubscription();
+      subscriptionHandler = jest.fn(() => subscription);
+
+      await mountComponent({
+        ...options,
+        provide: {
+          ...provide,
+          glFeatures: {
+            workItemsRealtime: true,
+            ...provide.glFeatures,
+          },
+        },
+        additionalHandlers: [[namespaceWorkItemChangesSubscription, subscriptionHandler]],
+      });
+    };
+
+    // Normalising the work item is what marks it as possibly on screen.
+    const cacheWorkItem = (id) => {
+      getCache().writeFragment({
+        id: `WorkItem:${id}`,
+        fragment: workItemIdFragment,
+        data: { __typename: 'WorkItem', id },
+      });
+    };
+
+    const emitChange = (workItemId, action) => {
+      subscription.next({ data: { namespaceWorkItemChanges: { workItemId, action } } });
+    };
+
+    const flushChanges = async () => {
+      jest.advanceTimersByTime(500);
+      await waitForPromises();
+    };
+
+    const evictedFields = (evictSpy) =>
+      evictSpy.mock.calls.map(([{ fieldName }]) => fieldName).filter(Boolean);
+
+    describe('when a work item that is not in the cache changes', () => {
+      it('does not reload the list', async () => {
+        await mountWithSubscription();
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(evictSpy).not.toHaveBeenCalled();
+      });
+
+      it('still refreshes the counts, because the change can move them', async () => {
+        await mountWithSubscription();
+        const initialCallCount = defaultCountsOnlyHandler.mock.calls.length;
+
+        emitChange(uncachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(defaultCountsOnlyHandler.mock.calls.length).toBeGreaterThan(initialCallCount);
+      });
+    });
+
+    describe('when a work item in the cache is updated', () => {
+      it('reloads the list', async () => {
+        await mountWithSubscription();
+        cacheWorkItem(cachedWorkItemId);
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(cachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+    });
+
+    describe('when a work item in the cache is deleted', () => {
+      it('removes just that work item, without reloading the list', async () => {
+        await mountWithSubscription();
+        cacheWorkItem(cachedWorkItemId);
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(cachedWorkItemId, 'DELETED');
+        await flushChanges();
+
+        expect(evictSpy).toHaveBeenCalledWith({ id: `WorkItem:${cachedWorkItemId}` });
+        expect(evictedFields(evictSpy)).toEqual([]);
+      });
+
+      it('closes the drawer when the deleted work item was open in it', async () => {
+        await mountWithSubscription();
+        cacheWorkItem(cachedWorkItemId);
+
+        findListView().vm.$emit('set-active-item', { id: cachedWorkItemId, iid: '1' });
+        await nextTick();
+        expect(findDetailPanel().props('open')).toBe(true);
+
+        emitChange(cachedWorkItemId, 'DELETED');
+        await flushChanges();
+
+        expect(findDetailPanel().props('activeItem')).toBeNull();
+      });
+
+      it('reloads everything in board view, where column counts are cached separately', async () => {
+        await mountWithSubscription({
+          provide: { glFeatures: { planningViewBoards: true } },
+          stubs: { BoardView: BoardViewStub },
+        });
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+
+        cacheWorkItem(cachedWorkItemId);
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(cachedWorkItemId, 'DELETED');
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+    });
+
+    describe('when a work item is created', () => {
+      it('reloads the list on the first page', async () => {
+        await mountWithSubscription();
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+
+      it('does not reload the list when the user has paginated past the first page', async () => {
+        setWindowLocation(`?page_after=${cursor}`);
+        await mountWithSubscription();
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(evictSpy).not.toHaveBeenCalled();
+      });
+
+      it('reloads the list when the creation is followed by an update in the same window', async () => {
+        await mountWithSubscription();
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        emitChange(uncachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+
+      it('reloads the list when the user paged back to page 1, even though beforeCursor is still set', async () => {
+        await mountWithSubscription();
+        // Mirrors list_view's handlePreviousPage + the pageInfo it reports once back on page 1.
+        findListView().vm.$emit('set-page-params', {
+          beforeCursor: 'startCursor',
+          lastPageSize: 20,
+        });
+        findListView().vm.$emit('page-info', { hasPreviousPage: false, hasNextPage: true });
+        await nextTick();
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+    });
+
+    describe('when several changes arrive in quick succession', () => {
+      it('reloads the list once', async () => {
+        await mountWithSubscription();
+        cacheWorkItem(cachedWorkItemId);
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(cachedWorkItemId, 'UPDATED');
+        emitChange(uncachedWorkItemId, 'CREATED');
+        emitChange(cachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+    });
+
+    it('does not act on changes that arrive just before the component is destroyed', async () => {
+      await mountWithSubscription();
+      cacheWorkItem(cachedWorkItemId);
+      const evictSpy = jest.spyOn(getCache(), 'evict');
+
+      emitChange(cachedWorkItemId, 'UPDATED');
+      wrapper.destroy();
+      jest.advanceTimersByTime(500);
+      await waitForPromises();
+
+      expect(evictSpy).not.toHaveBeenCalled();
+    });
+
+    it('reports a subscription error to Sentry', async () => {
+      await mountWithSubscription();
+      const error = new Error('subscription failed');
+
+      subscription.error(error);
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+    });
+
+    describe('when the workItemsRealtime feature flag is off', () => {
+      it('never subscribes to namespace work item changes', async () => {
+        await mountWithSubscription({ provide: { glFeatures: { workItemsRealtime: false } } });
+        await flushChanges();
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the user is not logged in', () => {
+      it('never subscribes to namespace work item changes', async () => {
+        await mountWithSubscription({ isLoggedInValue: false });
+        await flushChanges();
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('reconnecting after a dropped websocket connection', () => {
+      it('reloads the list', async () => {
+        await mountWithSubscription();
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        document.dispatchEvent(new CustomEvent('actioncable:reconnected'));
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+
+      it('does nothing when the workItemsRealtime feature flag is off', async () => {
+        await mountWithSubscription({ provide: { glFeatures: { workItemsRealtime: false } } });
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        document.dispatchEvent(new CustomEvent('actioncable:reconnected'));
+        await flushChanges();
+
+        expect(evictSpy).not.toHaveBeenCalled();
+      });
+
+      it('does not act on a reconnect that arrives just before the component is destroyed', async () => {
+        await mountWithSubscription();
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        document.dispatchEvent(new CustomEvent('actioncable:reconnected'));
+        wrapper.destroy();
+        jest.advanceTimersByTime(500);
+        await waitForPromises();
+
+        expect(evictSpy).not.toHaveBeenCalled();
       });
     });
   });

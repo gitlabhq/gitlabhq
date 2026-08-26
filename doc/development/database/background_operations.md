@@ -6,8 +6,8 @@ title: Background operations
 ---
 
 > [!warning]
-> This framework is in the initial rollout phase, please reach out to
-> `#g_database_architecture` Slack channel while adopting it.
+> This framework is in the initial rollout phase. Reach out to
+> the `#g_database_architecture` Slack channel while adopting it.
 
 Background operations provide a framework for performing large-scale
 data operations on GitLab databases. Unlike
@@ -89,7 +89,7 @@ The worker tables are list-partitioned for lock-free concurrent execution.
 A partial unique index on unfinished statuses prevents duplicate operations
 with the same configuration.
 
-Older partitions (> 14 days) get dropped automatically once all their workers in them get completed.
+Older partitions (> 14 days) get dropped automatically once all their workers get completed.
 
 ### Cells compatibility
 
@@ -98,11 +98,11 @@ Background operations are stored in 2 different tables to have appropriate shard
 #### Organization specific
 
 Organization specific operations should be enqueued to `background_operation_workers`.
-It requires `organization_id` and `user_id` and are created on-demand only by `non-admin` users.
+It requires `organization_id` and `user_id`, and these are created on-demand only by `non-admin` users.
 
 The organization sharding key can be set using `Current.organization` while [enqueuing](https://gitlab.com/gitlab-org/gitlab/blob/5a25a0d0f7f151fe5e523dd0465f9447a6676ab4/lib/gitlab/database/background_operation/queueable.rb).
 
-User triggered actions performing large data operations within their organization are good candidates for this.
+User-triggered actions performing large data operations within their organization are good candidates for this.
 
 Example:
 
@@ -111,12 +111,12 @@ Example:
 #### Cell local
 
 `background_operation_workers_cell_local` stores cell-local operations without
-organization context. Since these are not associated to an organization, it has `gitlab_shared_cell_local` schema and
+organization context. Since these are not associated with an organization, it has a `gitlab_shared_cell_local` schema and
 will not be transferred while migrating organizations to new cells.
 
 These records are created only by recurring cron jobs.
 
-Operations (eg: recurring cron jobs) dealing with large data across organizations are good candidates for cell local workers.
+Operations (for example, recurring cron jobs) dealing with large data across organizations are good candidates for cell local workers.
 
 Examples:
 
@@ -127,7 +127,7 @@ Examples:
 The same split applies to the jobs tables (`background_operation_jobs` and
 `background_operation_jobs_cell_local`).
 
-Please see [how-to](#how-to) sections for more details on how to create these BO workers.
+See the [how-to](#how-to) sections for more details on how to create these BO workers.
 
 #### What happens when organizations migrate to a new cell
 
@@ -141,7 +141,7 @@ in the source cell, moved (since they have the corresponding sharding key) and t
 
 **Cell local:**
 
-When the organization enters the maintenance mode, background operations scheduler will be paused (using the [FF](https://gitlab.com/gitlab-org/gitlab/blob/c90095a440e72fbf6801f44c1a5cdfbad991cb9a/app/workers/database/background_operation/base_scheduler_worker.rb#L14)) and the queue will be drained in the source cell.
+When the organization enters maintenance mode, the background operations scheduler will be paused (using the [FF](https://gitlab.com/gitlab-org/gitlab/blob/c90095a440e72fbf6801f44c1a5cdfbad991cb9a/app/workers/database/background_operation/base_scheduler_worker.rb#L14)) and the queue will be drained in the source cell.
 It will be resumed post migration in both source and the target cell.
 
 Since cell-local workers are created only from recurring cronjobs ([work_items/603423](https://gitlab.com/gitlab-org/gitlab/-/work_items/603423)), upcoming cronjobs will handle the unprocessed data in the target cell.
@@ -210,7 +210,7 @@ and [isolation constraints](batched_background_migrations.md#isolation) as BBM.
 ### Schedule via cron (recurring operations)
 
 Use cron scheduling for operations that must run indefinitely on a fixed
-interval - for example, purging expired data every hour.
+interval. For example, purging expired data every hour.
 
 #### 1. Define the operation class
 
@@ -275,7 +275,7 @@ Configuration fields:
 
 ### Schedule via enqueue (on-demand operations)
 
-Use `.enqueue` for operations triggered programmatically - for example, a bulk
+Use `.enqueue` for operations triggered programmatically. For example, a bulk
 cleanup initiated by application logic or a service.
 
 ```ruby
@@ -299,7 +299,7 @@ Parameters:
   When omitted, the framework resumes from the previous operation's last
   cursor or falls back to `MIN(column)`.
 - `user`: The user initiating the operation.
-- `organization`: Since this is a user triggered action, `Current.organization` will already be available and that has to
+- `organization`: Since this is a user-triggered action, `Current.organization` will already be available and that has to
   be passed along.
 
 The framework automatically checks for duplicates, estimates

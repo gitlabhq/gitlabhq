@@ -338,5 +338,5 @@ For more information, see
 [multiple branches containing the same commit](../repository/branches/_index.md#multiple-branches-containing-the-same-commit).
 
 > [!note]
-> In some cases, GitLab may show `merged manually` instead of `Merged with !<merge_request_id>`.
+> In some cases, GitLab might show `merged manually` instead of `Merged with !<merge_request_id>`.
 > For more information, see [issue 456426](https://gitlab.com/gitlab-org/gitlab/-/issues/456426).

@@ -93,11 +93,11 @@ export default {
     },
     headerReference() {
       const path = this.activeItemFullPath.substring(this.activeItemFullPath.lastIndexOf('/') + 1);
-      return `${path}#${this.activeItem.iid}`;
+      return `${path}#${this.activeItem?.iid}`;
     },
     itemWebUrl() {
       // eslint-disable-next-line local-rules/no-web-url
-      return this.activeItem.webPath || this.activeItem.webUrl;
+      return this.activeItem?.webPath || this.activeItem?.webUrl;
     },
     itemAbsoluteUrl() {
       return relativePathToAbsolute(this.itemWebUrl, getBaseURL());
@@ -221,7 +221,7 @@ export default {
       if (!isClickedOutside) {
         document
           .getElementById(
-            `listItem-${this.activeItemFullPath}/${getIdFromGraphQLId(this.activeItem.id)}`,
+            `listItem-${this.activeItemFullPath}/${getIdFromGraphQLId(this.activeItem?.id)}`,
           )
           ?.focus();
       }

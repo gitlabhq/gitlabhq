@@ -27,7 +27,7 @@ if performed using a regular Rails migration.
 
 - Batched background migrations should be used when migrating data in
   [high-traffic tables](../migration_style_guide.md#high-traffic-tables).
-- Batched background migrations may also be used when executing numerous single-row queries
+- Batched background migrations might also be used when executing numerous single-row queries
   for every item on a large dataset. Typically, for single-record patterns, runtime is
   largely dependent on the size of the dataset. Split the dataset accordingly,
   and put it into background migrations.
@@ -65,9 +65,9 @@ in the directory `lib/gitlab/background_migration/`.
 
 Batched background migrations are picked from the queue in the order they are enqueued. Multiple migrations are fetched
 and executed in parallel, as long as they are in active state and do not target the same database table.
-The default number of migrations processed in parallel is 2, for GitLab.com this limit is configured to 4.
+The default number of migrations processed in parallel is 2. For GitLab.com, this limit is configured to 4.
 Once a migration is picked for execution, a job is created for the specific batch. After each job execution, the migration's
-batch size may be increased or decreased, based on the performance of the last 20 jobs.
+batch size might be increased or decreased, based on the performance of the last 20 jobs.
 
 ```plantuml
 @startuml
@@ -407,8 +407,8 @@ Here is an example scenario:
 
 - 17.3 and 17.5 are required stops.
 - In 17.1 the batched background migration is queued.
-- In 17.4 the migration may be finalized, provided that it's completed in GitLab.com.
-- In 17.6 the code related to the migration may be deleted.
+- In 17.4, the migration might be finalized, provided that it's completed in GitLab.com.
+- In 17.6, the code related to the migration might be deleted.
 
 There are two strategies for deleting batched background migration code:
 
@@ -535,7 +535,7 @@ finalized_by: # leave empty until the requeued migration is finalized
 A batched background migration in running state can be stopped and removed for several reasons:
 
 - When the migration is no longer relevant or required as the product use case changed.
-- The migration has to be superseded with another migration with a different logic.
+- The migration has to be superseded with another migration with different logic.
 
 To stop and remove an in-progress batched background migration, you must:
 
@@ -680,7 +680,7 @@ end
 
 ### Configure tables to check for vacuum
 
-By default, batched background migrations are paused when autovacuum is running on the table being iterated over (the table specified in `queue_batched_background_migration`). However, background migrations don't always write to the table they iterate on. In these cases, it doesn't make sense to pause the migration due to vacuum activity on the iteration table.
+By default, batched background migrations are paused when autovacuum is running on the table being iterated over (the table specified in `queue_batched_background_migration`). However, background migrations don't always write to the table they iterate over. In these cases, it doesn't make sense to pause the migration due to vacuum activity on the iteration table.
 
 Use the `tables_to_check_for_vacuum` class method to explicitly specify which tables should be checked for vacuum activity. When vacuum is detected on any of the specified tables, the migration is paused.
 
@@ -739,11 +739,11 @@ If `tables_to_check_for_vacuum` is not specified, the migration defaults to chec
 
 ### Access data for multiple databases
 
-Background migration contrary to regular migrations does have access to multiple databases
+Background migrations, unlike regular migrations, have access to multiple databases
 and can be used to efficiently access and update data across them. To properly indicate
-a database to be used it is desired to create an ActiveRecord model inline in the migration code.
-Such model should use a correct [`ApplicationRecord`](multiple_databases.md#gitlab-schema)
-depending on which database the table is located. As such usage of `ActiveRecord::Base`
+a database to be used, it is desired to create an ActiveRecord model inline in the migration code.
+Such a model should use the correct [`ApplicationRecord`](multiple_databases.md#gitlab-schema)
+depending on which database the table is located. As such, usage of `ActiveRecord::Base`
 is disallowed as it does not explicitly describe a database to be used to access a given table.
 
 ```ruby
@@ -1026,9 +1026,9 @@ See [MR !221430](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221430) f
 **Trade-offs**:
 
 - Views bypass autovacuum throttling (could cause table bloat), but WAL throttling still applies
-- Only use when necessary (e.g., migration would take 7+ months)
+- Only use when necessary (for example, migration would take 7+ months)
 - Reduces migration time from months to weeks by utilizing all available workers
-- Saturates worker slots for one table, which may delay other migrations queued for the
+- Saturates worker slots for one table, which might delay other migrations queued for the
   same database during the same period
 - Requires pre-calculated view boundaries from production data, making it impractical for
   self-managed deployments
@@ -1042,7 +1042,7 @@ See [MR !221430](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221430) f
 
 It's possible to estimate how long a BBM takes to complete. GitLab already provides an estimation through the `db:gitlabcom-database-testing` pipeline.
 This estimation is built based on sampling production data in a test environment and represents the max time that the migration could take and, not necessarily,
-the actual time that the migration takes. In certain scenarios, estimations provided by the `db:gitlabcom-database-testing` pipeline may not be enough to
+the actual time that the migration takes. In certain scenarios, estimations provided by the `db:gitlabcom-database-testing` pipeline might not be enough to
 calculate all the singularities around the records being migrated, making further calculations necessary. As it made necessary, the formula
 `interval * number of records / max batch size` can be used to determine an approximate estimation of how long the migration takes.
 Where `interval` and `max batch size` refer to options defined for the job, and the `total tuple count` is the number of records to be migrated.
@@ -1077,7 +1077,7 @@ To migrate the data from column `foo` (containing a big JSON blob) to column `ba
    1. Deploy code so that the application starts using the new column and stops to update new records.
    1. Remove the old column.
 
-Bumping the [import/export version](../../user/project/settings/import_export.md) may
+Bumping the [import/export version](../../user/project/settings/import_export.md) might
 be required, if importing a project from a prior version of GitLab requires the
 data to be in the new format.
 
@@ -1096,7 +1096,7 @@ creation.
 > [!note]
 > Only [database maintainers](https://gitlab.com/groups/gitlab-org/maintainers/database/-/group_members?with_inherited_permissions=exclude) can view the database testing pipeline artifacts. Ask one for help if you need to use this method.
 
-Let's assume that a batched background migration failed on a particular batch on GitLab.com and you want to figure out which query failed and why. At the moment, we don't have a good way to retrieve query information (especially the query parameters) and rerunning the entire migration with more logging would be a long process.
+Let's assume that a batched background migration failed on a particular batch on GitLab.com and you want to figure out which query failed and why. At the moment, we don't have a good way to retrieve query information (especially the query parameters), and rerunning the entire migration with more logging would be a long process.
 
 Fortunately you can leverage our [database migration pipeline](database_migration_pipeline.md) to rerun a particular batch with additional logging and/or fix to see if it solves the problem.
 
@@ -1260,7 +1260,7 @@ and prepare for the migration:
 - Describe what the migration does to customers' data and what table it iterates through.
 - Document the timeline and finalization.
   Link to an issue when finalization is not yet known.
-  When known (even in a future date) update the existing upgrade note with the actual release containing the finalization.
+  When known (even at a future date), update the existing upgrade note with the actual release containing the finalization.
 - Describe preparation steps before upgrading.
   When applicable, recommend best practices and settings to have in place.
 - Provide tools to estimate migration duration (SQL queries or Rails console commands).
@@ -1388,7 +1388,7 @@ Output example:
 ![Output of the ChatOps command to resume a specific batched background migration using MIGRATION_ID.](img/resume_v15_4.png)
 
 > [!note]
-> You can resume only `active` batched background migrations
+> You can resume only `active` batched background migrations.
 
 ### Enable or disable background migrations
 
@@ -1466,7 +1466,7 @@ Remember that `before` and `after` RSpec hooks
 migrate your database down and up. These hooks can result in other batched background
 migrations being called. Using `spy` test doubles with
 `have_received` is encouraged, instead of using regular test doubles, because
-your expectations defined in a `it` block can conflict with what is
+your expectations defined in an `it` block can conflict with what is
 called in RSpec hooks. Refer to [issue #35351](https://gitlab.com/gitlab-org/gitlab/-/issues/18839)
 for more details.
 
@@ -1477,11 +1477,11 @@ for more details.
 1. Confirm the tests you write are not false positives.
 1. If the data being migrated is critical and cannot be lost, the
    clean-up migration must also check the final state of the data before completing.
-1. Discuss the numbers with a database specialist. The migration may add
+1. Discuss the numbers with a database specialist. The migration might add
    more pressure on DB than you expect. Measure on staging,
    or ask someone to measure on production.
 1. Know how much time is required to run the batched background migration.
-1. Be careful when silently rescuing exceptions inside job classes. This may lead to
+1. Be careful when silently rescuing exceptions inside job classes. This might lead to
    jobs being marked as successful, even in a failure scenario.
 
    ```ruby

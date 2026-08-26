@@ -8,7 +8,7 @@ title: Loose foreign keys
 ## Problem statement
 
 In relational databases (including PostgreSQL), foreign keys provide a way to link
-two database tables together, and ensure data-consistency between them. In GitLab,
+two database tables together, and ensure data consistency between them. In GitLab,
 [foreign keys](foreign_keys.md) are a vital part of the database design process.
 Most of our database tables have foreign keys.
 
@@ -23,7 +23,7 @@ Example:
 - Database "CI": `ci_pipelines` table
 
 A project can have many pipelines. When a project is deleted, the associated `ci_pipeline` (via the
-`project_id` column) records must be also deleted.
+`project_id` column) records must also be deleted.
 
 With a multi-database setup, this cannot be achieved with foreign keys.
 
@@ -133,7 +133,7 @@ scripts/decomposition/generate-loose-foreign-key -c ci_job_token_project_scope_l
 
 To match the exact name of a table or columns, you can make use of the regular expressions
 position anchors `^` and `$`. For example, this command matches only the
-foreign keys on the `events` table only, but not on the table
+foreign keys on the `events` table, but not on the table
 `incident_management_timeline_events`.
 
 ```shell
@@ -425,7 +425,7 @@ class UnTrackProjectRecordChanges < Gitlab::Database::Migration[2.3]
 end
 ```
 
-With the trigger removal, we prevent further records to be inserted in the `loose_foreign_keys_deleted_records`
+With the trigger removal, we prevent further records from being inserted in the `loose_foreign_keys_deleted_records`
 table. However, there is still a chance for having leftover pending records in the table. These records
 must be removed with an inline data migration.
 
@@ -609,7 +609,7 @@ occurrence has disappeared too.
 
 When rendering the vulnerability occurrences on the vulnerability page we could
 try to load the corresponding pipeline and choose to skip displaying that
-occurrence if pipeline is not found.
+occurrence if the pipeline is not found.
 
 ### The deleted parent record is needed to render a view and causes a `500` error
 
@@ -630,7 +630,7 @@ of a vulnerability. However, when rendering the occurrence we try to load, for e
 
 When rendering the vulnerability occurrences on the vulnerability page we could
 try to load the corresponding pipeline and choose to skip displaying that
-occurrence if pipeline is not found.
+occurrence if the pipeline is not found.
 
 ### The deleted parent record is accessed in a Sidekiq worker and causes a failed job
 
@@ -651,7 +651,7 @@ it executes `occurrence.pipeline.created_at`.
 
 When looping through the vulnerability occurrences in the Sidekiq worker, we
 could try to load the corresponding pipeline and choose to skip processing that
-occurrence if pipeline is not found.
+occurrence if the pipeline is not found.
 
 ## Architecture
 
@@ -665,7 +665,7 @@ The feature is invoked by worker classes, primarily the [`LooseForeignKeys::Clea
   at a time. For example, the cleanup worker for the main database runs every two minutes.
 
 To avoid lock contention and the processing of the same database rows, the worker does not run
-parallel. This behavior is ensured with a Redis lock.
+in parallel. This behavior is ensured with a Redis lock.
 
 **Record cleanup procedure**:
 
@@ -769,7 +769,7 @@ Partitions: gitlab_partitions_dynamic.loose_foreign_keys_deleted_records_84 FOR 
 
 The `partition` column controls the insert direction, the `partition` value determines which
 partition gets the deleted rows inserted via the trigger. Notice that the default value of
-the `partition` table matches with the value of the list partition (84). In `INSERT` query
+the `partition` column matches with the value of the list partition (84). In `INSERT` query
 within the trigger the value of the `partition` is omitted, the trigger always relies on the
 default value of the column.
 
@@ -979,9 +979,9 @@ Steps to diagnose the problem:
 Possible solutions:
 
 - Short-term: increase the batch sizes.
-- Long-term: invoke the worker more frequently. Parallelize the worker
+- Long-term: invoke the worker more frequently. Parallelize the worker.
 
-For a one-time fix, we can run the cleanup worker several times from the rails console. The worker
+For a one-time fix, we can run the cleanup worker several times from the Rails console. The worker
 can run in parallel. However, this can introduce lock contention and it could increase the worker
 runtime.
 
@@ -999,7 +999,7 @@ When the cleanup is done, the older partitions are automatically detached by the
 
 When adding a new partition, the default value of the `partition` column is also updated. This is
 a schema change that is executed in the same transaction as the new partition creation. It's highly
-unlikely that the `partition` column goes outdated.
+unlikely that the `partition` column becomes outdated.
 
 However, if this happens then this can cause application-wide incidents because the `partition`
 value points to a partition that doesn't exist. Symptom: deletion of records from tables where the

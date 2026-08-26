@@ -156,7 +156,7 @@ Additionally:
   `domain.com` to your GitLab Pages site. Use an `A` record instead.
 - Do not add any special chars after the default Pages
   domain. For example, do not point `subdomain.domain.com` to
-  or `namespace.gitlab.io/`. Some domain hosting providers may request a trailing dot (`namespace.gitlab.io.`).
+  or `namespace.gitlab.io/`. Some domain hosting providers might request a trailing dot (`namespace.gitlab.io.`).
 - [Changed](https://about.gitlab.com/blog/gcp-move-update/#gitlab-pages-and-custom-domains) GitLab Pages IP on GitLab.com
   from `52.167.214.135` to `35.185.44.232` in 2018.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/214718) IPv6 support
@@ -183,12 +183,12 @@ Additionally:
 
 - Domain verification is **required for GitLab.com users**.
   For GitLab Self-Managed, your GitLab administrator has the option
-  to [disabled custom domain verification](../../../../administration/pages/_index.md#custom-domain-verification).
-- [DNS propagation may take some time (up to 24 hours)](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/),
+  to [disable custom domain verification](../../../../administration/pages/_index.md#custom-domain-verification).
+- [DNS propagation might take some time (up to 24 hours)](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/),
   although it's usually a matter of minutes to complete. Until it does, verification
   fails, and attempts to visit your domain result in a 404.
 - After your domain is verified, leave the verification record
-  in place. Your domain is periodically reverified, and may be
+  in place. Your domain is periodically reverified, and might be
   disabled if the record is removed.
 
 ## Add more domain aliases

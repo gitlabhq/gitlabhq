@@ -259,7 +259,7 @@ To remove a member from a project:
    **Also unassign this user from related issues and merge requests** checkbox.
 1. To prevent leaks of sensitive information from private projects, verify the
    member has not forked the private repository or created webhooks. Existing forks continue to receive
-   changes from the upstream project, and webhooks continue to receive updates. You may also want to configure your project
+   changes from the upstream project, and webhooks continue to receive updates. You might also want to configure your project
    to prevent projects in a group
    [from being forked outside their group](../../group/access_and_permissions.md#prevent-project-forking-outside-group).
 1. Select **Remove member**.

@@ -20,7 +20,7 @@ In particular, the `command.cpu_time_ms` field can indicate how
 much CPU is being taken up by clones and fetches.
 
 In most cases, the bulk of server load is generated from `git-pack-objects`
-processes, which is initiated during clones and fetches. Monorepos are often very busy
+processes, which are initiated during clones and fetches. Monorepos are often very busy
 and CI/CD systems send a lot of clone and fetch commands to the server.
 
 High CPU utilization is a common cause of slow performance.
@@ -66,7 +66,7 @@ a monorepo.
 
 Monorepos are often both large and busy. This leads to two effects. Firstly,
 monorepos are pushed to often and have lots of CI jobs running. There can be
-times when write operations such as deleting a branch fails a proxy call to the
+times when write operations such as deleting a branch fail a proxy call to the
 secondary nodes. This triggers a replication job in Gitaly Cluster (Praefect) so that
 the secondary node will catch up eventually.
 

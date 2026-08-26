@@ -307,7 +307,7 @@ Administrator access on the GitLab server is required for these steps.
 
 ### Increase the number of Sidekiq workers
 
-For large projects it may take a while to import all data. To reduce the time necessary, you can increase the number of
+For large projects, it might take a while to import all data. To reduce the time necessary, you can increase the number of
 Sidekiq workers that process the following queues:
 
 - `github_importer`
@@ -315,15 +315,15 @@ Sidekiq workers that process the following queues:
 
 For an optimal experience, it's recommended to have at least 4 Sidekiq processes (each running a number of threads equal
 to the number of CPU cores) that only process these queues. It's also recommended that these processes run on separate
-servers. For 4 servers with 8 cores this means you can import up to 32 objects (for example, issues) in parallel.
+servers. For 4 servers with 8 cores, this means you can import up to 32 objects (for example, issues) in parallel.
 
 Reducing the time spent in cloning a repository can be done by increasing network throughput, CPU capacity, and disk
-performance (by using high performance SSDs, for example) of the disks that store the Git repositories (for your GitLab instance).
+performance (by using high-performance SSDs, for example) of the disks that store the Git repositories (for your GitLab instance).
 Increasing the number of Sidekiq workers does not reduce the time spent cloning repositories.
 
 ### Enable GitHub OAuth using a GitHub Enterprise Cloud OAuth App
 
-If you belong to a [GitHub Enterprise Cloud organization](https://docs.github.com/en/enterprise-cloud@latest/get-started/onboarding) you can configure GitLab Self-Managed to obtain a higher [GitHub API rate limit](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28#primary-rate-limit-for-authenticated-users).
+If you belong to a [GitHub Enterprise Cloud organization](https://docs.github.com/en/enterprise-cloud@latest/get-started/onboarding), you can configure GitLab Self-Managed to obtain a higher [GitHub API rate limit](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28#primary-rate-limit-for-authenticated-users).
 
 GitHub API requests are usually subject to a rate limit of 5,000 requests per hour. Using the steps below, you obtain a higher 15,000 requests per hour rate limit, resulting in a faster overall import time.
 

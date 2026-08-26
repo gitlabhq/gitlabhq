@@ -16,7 +16,7 @@ description: Acceptance criteria, requirements test reports, and CSV import.
 With requirements, you can set criteria to check your products against. They can be based on users,
 stakeholders, system, software, or anything else you find important to capture.
 
-A requirement is an artifact in GitLab which describes the specific behavior of your product.
+A requirement is an artifact in GitLab that describes the specific behavior of your product.
 Requirements are long-lived and don't disappear unless manually cleared.
 
 If an industry standard requires that your application has a certain feature or behavior, you can

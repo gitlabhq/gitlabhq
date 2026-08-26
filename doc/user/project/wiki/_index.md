@@ -68,7 +68,7 @@ to be used as your wiki's home page. To create it:
 1. In the left sidebar, select **Plan** > **Wiki**.
 1. Select **Create your first page**.
 1. Optional. Change the **Title** of the home page.
-1. GitLab requires this first page to have path `home`. The page on this
+1. GitLab requires this first page to have the path `home`. The page on this
    path serves as the front page for your wiki.
 1. Optional. Select **Edit page options** ({{< icon name="chevron-down" >}}) to:
    - Change the **Path** of the page. By default, the path is generated from the title.
@@ -186,7 +186,7 @@ Prerequisites:
 ### Create or edit wiki pages locally
 
 Wikis are based on Git repositories, so you can clone them locally and edit
-them like you would do with every other Git repository. To clone a wiki repository
+them as you would do with every other Git repository. To clone a wiki repository
 locally:
 
 1. In the top bar, select **Search or go to** and find your project or group.
@@ -218,7 +218,7 @@ a page is also its title. Certain characters in the filename have a special mean
 - Spaces are converted into hyphens when storing a page.
 - Hyphens (`-`) are converted back into spaces when displaying a page.
 - Slashes (`/`) are used as path separators, and can't be displayed in titles. If you
-  create a file with title containing `/` characters, GitLab creates all the subdirectories
+  create a file with a title containing `/` characters, GitLab creates all the subdirectories
   needed to build that path. For example, a title of `docs/my-page` creates a wiki
   page with a path `/wikis/docs/my-page`.
 
@@ -245,7 +245,7 @@ problem, the GitLab web interface and API enforce these limits:
 Non-ASCII characters take up more than one byte.
 
 While you can still create files locally that exceed these limits, your teammates
-may not be able to check out the wiki locally afterward.
+might not be able to check out the wiki locally afterward.
 
 ## Edit a wiki page
 
@@ -345,7 +345,7 @@ Prerequisites:
 
 In GitLab 17.1 and later, when you move or rename a page, a redirect is
 automatically set up from the old page to the new page. A list of redirects
-is stored in the `.gitlab/redirects.yml` file in the Wiki repository.
+is stored in the `.gitlab/redirects.yml` file in the wiki repository.
 
 Prerequisites:
 
@@ -375,7 +375,7 @@ A PDF of the wiki page is created.
 
 ## Creating diagrams in the wiki using Draw.io
 
-With the diagrams.net integration, you can create and embed SVG diagrams on wiki pages! The diagram editor is available in both the plain text editor and the rich text editor.
+With the diagrams.net integration, you can create and embed SVG diagrams on wiki pages. The diagram editor is available in both the plain text editor and the rich text editor.
 
 On GitLab.com, this integration is enabled for all users and does not require any additional configuration.
 
@@ -409,7 +409,7 @@ Prerequisites:
 The template path is generated from the title and cannot be edited. To rename a template,
 change its title. The title is stored only as part of the path, so applying the template
 to a page does not insert any title metadata into the page content. To create nested
-templates, use "/" as a path separator in the title.
+templates, use `/` as a path separator in the title.
 
 Templates of a particular format can only be applied to pages of the same format.
 For example, Markdown templates only apply to Markdown pages.
@@ -425,7 +425,7 @@ Prerequisites:
 
 1. In the **Content** section, select the **Choose a template** dropdown list.
 1. Select a template from the list. If the page already has some content, a warning displays
-   indicating that the existing content will be overridden.
+   indicating that the existing content will be overwritten.
 1. Select **Apply template**.
 
 ### Restore a page template to a previous version
@@ -472,7 +472,7 @@ You can subscribe to specific wiki pages to receive notifications when someone:
 ### Subscribe to a wiki page
 
 1. Open the wiki page you want to follow.
-1. In the upper-right corner, next to the **Edit**, select the bell icon ({{< icon name="notifications" >}}).
+1. In the upper-right corner, next to **Edit**, select the bell icon ({{< icon name="notifications" >}}).
 1. Select the bell icon ({{< icon name="notifications-off" >}}) again to unsubscribe.
 
 When you change your subscription status, GitLab shows a confirmation message:
@@ -576,7 +576,7 @@ Prerequisites:
 
 - You must have the Developer, Maintainer, or Owner role.
 
-This process creates a wiki page named `_sidebar` which fully
+This process creates a wiki page named `_sidebar` that fully
 replaces the default sidebar navigation:
 
 1. In the top bar, select **Search or go to** and find your project or group.
@@ -731,7 +731,7 @@ line of your Apache configuration to ensure your page slugs render correctly.
 > This operation deletes all data in the wiki.
 >
 > Any command that changes data directly could be damaging if not run correctly, or under the
-> right conditions. We highly recommend running them in a test environment with a backup of the
+> right conditions. We highly recommend running it in a test environment with a backup of the
 > instance ready to be restored, just in case.
 
 To clear all data from a project wiki and recreate it in a blank state:

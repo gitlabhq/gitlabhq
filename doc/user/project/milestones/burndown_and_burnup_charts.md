@@ -119,7 +119,7 @@ full history. For each day, a legacy burndown chart takes the number of open iss
 created that day, and subtracts the number of issues closed that day.
 Issues that were created and assigned a milestone before its start date (and remain open as of the
 start date) are considered as having been opened on the start date.
-Therefore, when the milestone start date is changed, the number of opened issues on each day may
+Therefore, when the milestone start date is changed, the number of opened issues on each day might
 change.
 Reopened issues are considered as having been opened on the day after they were last closed.
 

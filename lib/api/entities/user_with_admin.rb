@@ -6,6 +6,7 @@ module API
       expose :admin?, as: :is_admin
       expose :note
       expose :namespace_id
+      expose :provisioned_by_project_id
       expose :created_by, with: UserBasic
     end
   end

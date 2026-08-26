@@ -64,6 +64,14 @@ Grants the ability to read dependencies.
 | ------ | ------ | ------ | ---- |
 | Read | Project | `GET` | `/projects/:id/dependencies` |
 
+#### Dependency Firewall Evaluation
+
+Grants the ability to create dependency firewall evaluations.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Project | `POST` | `/projects/:id/dependency_firewall/evaluate` |
+
 #### Dependency List Export
 
 Grants the ability to create and read dependency list exports.

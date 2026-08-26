@@ -104,7 +104,7 @@ use is for site verification.
 
 Example:
 
-- `example.com`=> `TXT` => `"google-site-verification=6P08Ow5E-8Q0m6vQ7FMAqAYIDprkVV8fUf_7hZ4Qvc8"`
+- `example.com` => `TXT` => `"google-site-verification=6P08Ow5E-8Q0m6vQ7FMAqAYIDprkVV8fUf_7hZ4Qvc8"`
 
 This way, you can verify the ownership for that domain name.
 
@@ -116,4 +116,4 @@ You can have one DNS record or more than one combined:
 - `example.com` => `AAAA` => `2001:db8::1`
 - `www` => `CNAME` => `example.com`
 - `MX` => `mail.example.com`
-- `example.com`=> `TXT` => `"google-site-verification=6P08Ow5E-8Q0m6vQ7FMAqAYIDprkVV8fUf_7hZ4Qvc8"`
+- `example.com` => `TXT` => `"google-site-verification=6P08Ow5E-8Q0m6vQ7FMAqAYIDprkVV8fUf_7hZ4Qvc8"`

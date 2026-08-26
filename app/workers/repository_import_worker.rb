@@ -15,6 +15,8 @@ class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
   sidekiq_options status_expiration: Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION
   worker_resource_boundary :memory
 
+  concurrency_limit -> { Gitlab::CurrentSettings.import_jobs_concurrency_limit }
+
   sidekiq_interruptions_exhausted do |job|
     new.perform_failure(job['args'].first)
   end

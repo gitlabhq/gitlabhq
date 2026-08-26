@@ -36,7 +36,7 @@ tail /var/log/gitlab/gitlab-rails/importer.log
 ## Project fails to import due to mismatch
 
 If the [instance runners enablement](../../../ci/runners/runners_scope.md#enable-instance-runners-for-a-project)
-does not match between the exported project, and the project import, the project fails to import.
+does not match between the exported project and the project import, the project fails to import.
 Review [issue 276930](https://gitlab.com/gitlab-org/gitlab/-/issues/276930), and either:
 
 - Ensure instance runners are enabled in both the source and destination projects.
@@ -119,7 +119,7 @@ reduce the repository size for another import attempt:
 1. Update the imported repository's
    [branch protection rules](../repository/branches/protected.md) and
    its [default branch](../repository/branches/default.md), and
-   delete the temporary, `smaller-tmp-main` branch, and
+   delete the temporary `smaller-tmp-main` branch, and
    the local, temporary data.
 
 ### Workaround option 2
@@ -129,7 +129,7 @@ reduce the repository size for another import attempt:
 
 Rather than attempting to push all changes at once, this workaround:
 
-- Separates the project import from the Git Repository import
+- Separates the project import from the Git repository import
 - Incrementally pushes the repository to GitLab
 
 1. Make a local clone of the repository to migrate. In a later step, you push this clone outside of
@@ -140,7 +140,7 @@ Rather than attempting to push all changes at once, this workaround:
    tar -czvf new_export.tar.gz --exclude='project.bundle' @old_export.tar.gz
    ```
 
-1. Import the export without a Git repository. It asks you to confirm to import without a
+1. Import the export without a Git repository. It asks you to confirm that you want to import without a
    repository.
 1. Save this bash script as a file and run it after adding the appropriate origin.
 
@@ -279,7 +279,7 @@ Some migrations can time out with the error: `PG::QueryCanceled: ERROR: cancelin
 One way to avoid this problem is to have the migration batch size reduced. This makes a migration less likely to time
 out, but makes migrations slower.
 
-To have the batch sized reduced, you must have a feature flag enabled. For more information, see
+To have the batch size reduced, you must have a feature flag enabled. For more information, see
 [issue 456948](https://gitlab.com/gitlab-org/gitlab/-/issues/456948).
 
 ## Error: `JSON exceeds 50 MB limit`
@@ -334,7 +334,7 @@ SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS = 3000000
 SIDEKIQ_MEMORY_KILLER_GRACE_TIME = 900
 ```
 
-An import status `started`, and the following Sidekiq logs signal a memory issue:
+An import status of `started`, and the following Sidekiq logs signal a memory issue:
 
 ```shell
 WARN: Work still in progress <struct with JID>
@@ -392,7 +392,7 @@ Marked stuck import jobs as failed. JIDs: xyz
 
 [Slow JSON](https://gitlab.com/gitlab-org/gitlab/-/issues/25251) loading/dumping models from the database:
 
-- [split the worker](https://gitlab.com/gitlab-org/gitlab/-/issues/25252)
+- [Split the worker](https://gitlab.com/gitlab-org/gitlab/-/issues/25252)
 - Batch export
 - Optimize SQL
 - Move away from `ActiveRecord` callbacks (difficult)
@@ -400,5 +400,5 @@ Marked stuck import jobs as failed. JIDs: xyz
 High memory usage (see also some [analysis](https://gitlab.com/gitlab-org/gitlab/-/issues/18857)):
 
 - DB Commit sweet spot that uses less memory
-- [Netflix Fast JSON API](https://github.com/Netflix/fast_jsonapi) may help
+- [Netflix Fast JSON API](https://github.com/Netflix/fast_jsonapi) might help
 - Batch reading/writing to disk and any SQL

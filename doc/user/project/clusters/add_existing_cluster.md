@@ -200,7 +200,7 @@ To add a Kubernetes cluster to your project, group, or instance:
         you're using a secret with broader permissions, like the secret from `default`.
       - You should not use `default` as the project namespace.
       - If you or someone created a secret specifically for the project, usually
-        with limited permissions, the secret's namespace and project namespace may
+        with limited permissions, the secret's namespace and project namespace might
         be the same.
 
 1. Select the **Add Kubernetes cluster** button.
@@ -222,7 +222,7 @@ integration to work properly.
 > Disabling RBAC means that any application running in the cluster,
 > or user who can authenticate to the cluster, has full API access. This is a
 > [security concern](../../infrastructure/clusters/connect/_index.md#security-implications-for-clusters-connected-with-certificates),
-> and may not be desirable.
+> and might not be desirable.
 
 To effectively disable RBAC, global permissions can be applied granting full access:
 
@@ -249,7 +249,7 @@ Ensure you're properly pasting the service token. Some shells may add a line bre
 service token, making it invalid. Ensure that there are no line breaks by
 pasting your token into an editor and removing any additional spaces.
 
-You may also experience this error if your certificate is not valid. To check that your certificate's
+You might also experience this error if your certificate is not valid. To check that your certificate's
 subject alternative names contain the correct domain for your cluster's API, run this command:
 
 ```shell

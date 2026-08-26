@@ -44,11 +44,11 @@ all of the arguments that `in_batches` supports. You should always use
 ## Iterating over non-unique columns
 
 You should not use the `each_batch` method with a non-unique column (in the context of the relation) as it
-[may result in an infinite loop](https://gitlab.com/gitlab-org/gitlab/-/issues/285097).
+[might result in an infinite loop](https://gitlab.com/gitlab-org/gitlab/-/issues/285097).
 Additionally, the inconsistent batch sizes cause performance issues when you
 iterate over non-unique columns. Even when you apply a max batch size
 when iterating over an attribute, there's no guarantee that the resulting
-batches don't surpass it. The following snippet demonstrates this situation
+batches don't surpass it. The following snippet demonstrates this situation:
 when you attempt to select
 `Ci::Build` entries for users with `id` between `1` and `10,000`, the database returns
 `1 215 178` matching rows.
@@ -90,7 +90,7 @@ The technique provides stable performance between the batches regardless of the 
 The `relation` object returns an ActiveRecord scope where only the given `column` is available.
 Other columns are not loaded.
 
-The underlying database queries use recursive CTEs, which adds extra overhead. We therefore advise to use
+The underlying database queries use recursive CTEs, which adds extra overhead. We therefore advise using
 smaller batch sizes than those used for a standard `each_batch` iteration.
 
 ## Column definition
@@ -108,7 +108,7 @@ The query above iterates over the project creators and prints them out without d
 
 > [!note]
 > In case the column is not unique (no unique index definition), calling the `distinct` method on
-> the relation is necessary. Using not unique column without `distinct` may result in `each_batch`
+> the relation is necessary. Using not unique column without `distinct` might result in `each_batch`
 > falling into an endless loop as described in following
 > [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/285097).
 
@@ -248,7 +248,7 @@ SELECT "users"."id" FROM "users" WHERE "users"."sign_in_count" = 0 ORDER BY "use
 ```
 
 Selecting only the `id` column and ordering by `id` forces the database to use the
-index on the `id` (primary key index) column however, we also have an extra condition on the
+index on the `id` (primary key index) column. However, we also have an extra condition on the
 `sign_in_count` column. The column is not part of the index, so the database needs to look into
 the actual table to find the first matching row.
 
@@ -352,7 +352,7 @@ timeouts. The filter (`sign_in_count: 0`) is applied on the `relation` where the
 constrained (range). The number of rows is limited.
 
 Slow iteration generally takes more time to finish. The iteration count is higher and
-one iteration could yield fewer records than the batch size. Iterations may even yield
+one iteration could yield fewer records than the batch size. Iterations might even yield
 0 records. This is not an optimal solution. However, in some cases (especially when
 dealing with large tables) this is the only viable option.
 
@@ -461,8 +461,8 @@ using a bitmap index lookup with the index on the `confidential` column is a bet
 execute the query. This can cause an unexpectedly high amount of rows to be read and the
 query could time out.
 
-Problem: we know for sure that the relation is returning maximum `BATCH_SIZE` of records
-however, the planner does not know this.
+Problem: we know for sure that the relation is returning maximum `BATCH_SIZE` of records.
+However, the planner does not know this.
 
 Common table expression (CTE) trick to force the range query to execute first:
 

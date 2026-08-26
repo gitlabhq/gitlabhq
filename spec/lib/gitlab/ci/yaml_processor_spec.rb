@@ -1094,7 +1094,7 @@ module Gitlab
           context "in default context" do
             let(:config) do
               {
-                after_script: ["after_script"],
+                default: { after_script: ["after_script"] },
                 test: { script: ["script"] }
               }
             end

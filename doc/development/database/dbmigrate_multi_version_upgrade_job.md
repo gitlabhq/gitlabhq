@@ -7,7 +7,7 @@ title: db:migrate:multi-version-upgrade job
 
 This job runs on the test stage of a merge request pipeline. It validates that migrations pass
 for multi-version upgrade from the latest [required upgrade stop](../../update/upgrade_paths.md)
-to the author's working branch. It achieves it by running `gitlab:db:configure` against a PostgreSQL
+to the author's working branch. It achieves this by running `gitlab:db:configure` against a PostgreSQL
 dump created from the latest known [GitLab version stop](../../update/upgrade_paths.md) with test data.
 
 The database dump is generated and maintained with [PostgreSQL Dump Generator](https://gitlab.com/gitlab-org/quality/pg-dump-generator).
@@ -30,9 +30,9 @@ For a real-life example, refer to
 
 #### Broken master
 
-When a new required upgrade stop is added (every three or four milestones), it triggers the build of a new PostgreSQL Dump.
+When a new required upgrade stop is added (every three or four milestones), it triggers the build of a new PostgreSQL dump.
 In some cases, this might cause the `db:migrate:multi-version-upgrade` job to fail in the `master` pipeline.
-For example, if new additional tables are seeded, it helps detect migration errors that might have been missed in older dumps without these seeded tables.
+For example, if additional tables are seeded, it helps detect migration errors that might have been missed in older dumps without these seeded tables.
 
 Workflow for the [broken master](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) case:
 
@@ -42,7 +42,7 @@ Workflow for the [broken master](https://handbook.gitlab.com/handbook/engineerin
    - If the team isn't available, post about it in the `#database` Slack channel
 1. While a fix or revert is being worked on, the `master` pipeline can be unblocked by disabling the job temporarily by setting `DISABLE_DB_MULTI_VERSION_UPGRADE=true` in [CI/CD Settings page](https://gitlab.com/gitlab-org/gitlab/-/settings/ci_cd)
    - When disabling the job, announce it in the `#master-broken` Slack channel
-1. Add a note to [job stability tracking issue#458402](https://gitlab.com/gitlab-org/gitlab/-/issues/458402)
+1. Add a note to [job stability tracking issue #458402](https://gitlab.com/gitlab-org/gitlab/-/issues/458402)
 1. Reinstate the job by removing `DISABLE_DB_MULTI_VERSION_UPGRADE` from CI/CD Settings
 
 ### Database import failures

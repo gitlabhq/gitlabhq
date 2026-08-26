@@ -169,7 +169,7 @@ To disable fetching:
 
 If the Go module is located under a private subgroup like
 `gitlab.com/namespace/subgroup/go-module`, then the Git authentication doesn't work.
-It happens, because `go get` makes an unauthenticated request to discover
+It happens because `go get` makes an unauthenticated request to discover
 the repository path.
 Without authentication, GitLab responds with
 `gitlab.com/namespace/subgroup.git` to prevent a security risk of exposing
@@ -180,7 +180,7 @@ You can [configure Go authentication](#authenticate-go-requests-to-private-proje
 
 ### Workaround: use `.git` in the module name
 
-There is a way to skip `go get` request and force Go to use a Git authentication
+There is a way to skip a `go get` request and force Go to use Git authentication
 directly, but it requires a modification of the module name. [From Go documentation](https://go.dev/ref/mod#vcs-find):
 
 > If the module path has a VCS qualifier (one of `.bzr`, `.fossil`, `.git`, `.hg`, `.svn`)
@@ -192,7 +192,7 @@ directly, but it requires a modification of the module name. [From Go documentat
 
 1. Go to `go.mod` of the Go module in a private subgroup.
 1. Add `.git` to the module name.
-   For example, rename`module gitlab.com/namespace/subgroup/go-module` to `module gitlab.com/namespace/subgroup/go-module.git`.
+   For example, rename `module gitlab.com/namespace/subgroup/go-module` to `module gitlab.com/namespace/subgroup/go-module.git`.
 1. Commit and push this change.
 1. Visit Go projects that depend on this module and adjust their `import` calls.
    For example, `import gitlab.com/namespace/subgroup/go-module.git`.

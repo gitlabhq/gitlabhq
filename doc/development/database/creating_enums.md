@@ -25,7 +25,7 @@ end
 
 ## All of the key/value pairs should be defined in FOSS
 
-**Summary**: All enums need to be defined in FOSS, if a model is also part of the FOSS.
+**Summary**: All enums need to be defined in FOSS, if a model is also part of FOSS.
 
 ```ruby
 class Model < ApplicationRecord
@@ -73,7 +73,7 @@ module EE
 end
 ```
 
-This works as-is, however, it has a couple of downsides:
+This works as-is. However, it has a couple of downsides:
 
 - Someone could define a key/value pair in EE that is **conflicted** with a value defined in FOSS.
   For example, define `job_activity_limit_exceeded: 1` in `EE::Enums::Pipeline`.
@@ -83,7 +83,7 @@ This works as-is, however, it has a couple of downsides:
   which might be impossible if you cannot recover the original value.
 
 Also, you might observe a workaround for this concern by setting an offset in the `EE` module's values.
-For example, this example sets `1000` as the offset:
+For example, this sets `1000` as the offset:
 
 ```ruby
 module EE
@@ -98,12 +98,12 @@ module EE
 end
 ```
 
-This seems to work as a workaround, however, this approach has some downsides:
+This seems to work as a workaround. However, this approach has some downsides:
 
 - Features could move from EE to FOSS or vice versa. Therefore, the offset might be mixed between FOSS and EE in the future.
   For example, when you move `job_activity_limit_exceeded` to FOSS, you see `{ unknown_failure: 0, config_error: 1, job_activity_limit_exceeded: 1_000 }`.
 - The integer column for the `enum` is likely created as `SMALLINT`.
-  Therefore, you need to be careful of that the offset doesn't exceed the maximum value of 2 bytes integer.
+  Therefore, you need to be careful that the offset doesn't exceed the maximum value of a 2-byte integer.
 
 As a conclusion, you should define all of the key/value pairs in FOSS.
 For example, you can write the following code in the above case:

@@ -228,7 +228,7 @@ Unable to fetch branches list, please close the form and try again
 ```
 
 An unexpected response was received from the branches retrieval API.
-As suggested, you should close the form and reopen again or refresh the page. This error should be temporary, although
+As suggested, you should close the form and reopen it, or refresh the page. This error should be temporary, although
 if it persists, check the [GitLab status page](https://status.gitlab.com/) to see if there is a wider outage.
 
 ### Failed to load status checks

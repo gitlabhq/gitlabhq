@@ -181,7 +181,7 @@ when `disconnect_timeout` is reached for stale connections.
 ### `max_replica_pools`
 
 When `max_replica_pools` is set, the `Sampler` class limits how many replicas each GitLab process
-connects to. This only applies to service discovery - static host lists always connect to all
+connects to. This only applies to service discovery. Static host lists always connect to all
 configured hosts.
 
 The sampler selects replicas deterministically per process using a consistent seed, distributing
@@ -192,7 +192,7 @@ the sampler logs which replicas were excluded.
 
 GitLab uses one of two SQL queries to determine the current write LSN, controlled by the
 `USE_NEW_LOAD_BALANCER_QUERY` environment variable (default: `true`). The default query handles
-standbys with active replication slots correctly; the legacy query uses
+standbys with active replication slots correctly. The legacy query uses
 `pg_current_wal_insert_lsn()` unconditionally. See `LoadBalancer#query_for_location` in
 `lib/gitlab/database/load_balancing/load_balancer.rb` for the implementation.
 

@@ -154,7 +154,7 @@ Embedded views automatically update when data changes, providing real-time visib
 without leaving the wiki.
 
 > [!note]
-> Embedded views have performance considerations. Large queries may time out or be rate-limited.
+> Embedded views have performance considerations. Large queries might time out or be rate-limited.
 > If you encounter timeouts, reduce the scope of your query by adding more filters or reducing the `limit` parameter.
 
 ### Basic embedded view syntax
@@ -260,10 +260,10 @@ Create a connected documentation flow throughout your sprint:
 
 #### Pre-sprint planning
 
-1. Requirements gathering: Document detailed requirements in wiki
-1. Epic creation: Create epics that reference wiki specifications
-1. Story breakdown: Link issues to relevant wiki documentation
-1. Estimation notes: Document estimation reasoning in wiki
+1. Requirements gathering: Document detailed requirements in wiki.
+1. Epic creation: Create epics that reference wiki specifications.
+1. Story breakdown: Link issues to relevant wiki documentation.
+1. Estimation notes: Document estimation reasoning in wiki.
 
 #### During sprint
 

@@ -209,7 +209,7 @@ possible to migrate GitLab from every previous version.
 
 In some cases you might want to bypass this check. For example, if you were on a version
 of GitLab schema later than the `MIN_SCHEMA_VERSION`, and then rolled back
-to an older migration, from before. In this case, to migrate forward again,
+to an older migration from before. In this case, to migrate forward again,
 you should set the `SKIP_SCHEMA_VERSION_CHECK` environment variable.
 
 ```shell

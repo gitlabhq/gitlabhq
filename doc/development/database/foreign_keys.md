@@ -16,8 +16,8 @@ older tables, where we didn't have the framework support to ensure consistency o
 These data inconsistencies can cause unexpected application behavior or bugs.
 
 When creating tables that reference records from other tables, an FK should be added to maintain data integrity.
-And when adding an association to a model you must also add a foreign key. Also on
-adding a foreign key you must always add an [index](#indexes) first.
+And when adding an association to a model, you must also add a foreign key. Also, when
+adding a foreign key, you must always add an [index](#indexes) first.
 
 For example, say you have the following model:
 
@@ -34,7 +34,7 @@ user), instead of Rails having to do this.
 
 ## Avoiding downtime and migration failures
 
-Adding a foreign key has two parts to it
+Adding a foreign key has two parts to it:
 
 1. Adding the FK column and the constraint.
 1. Validating the added constraint to maintain data integrity.
@@ -53,7 +53,7 @@ stricter lock and blocking other operations on the tables for a longer time.
 ### On a new column
 
 If you have a new (without many records) table, either of the following approaches can be used. If you need
-to add two foreign keys, please split them in different migrations, to avoid locking more than one table in the same migration.
+to add two foreign keys, split them into different migrations to avoid locking more than one table in the same migration.
 
 1. add_reference(... foreign_key: true)
 1. add_column(...) and add_foreign_key(...) in the same transaction.
@@ -70,7 +70,7 @@ Adding a foreign key to an existing database column requires database structure 
 
 Adding an FK constraint to an existing column is a multi-milestone process:
 
-1. `N.M`: Add a `NOT VALID` FK constraint to the column, it will also ensure there are no inconsistent records created or updated.
+1. `N.M`: Add a `NOT VALID` FK constraint to the column. This also ensures there are no inconsistent records created or updated.
 1. `N.M`: Add a data migration, to fix or clean up existing records.
    1. This can be a regular or post deployment migration if the migration queries lie within the [timing guidelines](query_performance.md).
    1. If not, this has to be done in a [batched background migration](batched_background_migrations.md).
@@ -83,10 +83,10 @@ Adding an FK constraint to an existing column is a multi-milestone process:
 > Adding a foreign-key constraint to either an existing or a new column
 > needs an index on the column.
 >
-> If the index was added [asynchronously](adding_database_indexes.md#create-indexes-asynchronously), we should wait till
+> If the index was added [asynchronously](adding_database_indexes.md#create-indexes-asynchronously), we should wait until
 > the index gets added in the `structure.sql`.
 
-This is **required** for all foreign-keys, for example, to support efficient cascading
+This is **required** for all foreign keys, for example, to support efficient cascading
 deleting: when a lot of rows in a table get deleted, the referenced records need
 to be deleted too. The database has to look for corresponding records in the
 referenced table. Without an index, this results in a sequential scan on the
@@ -205,7 +205,7 @@ end
 
 > [!note]
 > The MR that adds this data migration should have ~data-deletion label applied.
-> Refer [preparation-when-adding-data-migrations](../database_review.md#preparation-when-adding-data-migrations) for more information.
+> Refer to [preparation-when-adding-data-migrations](../database_review.md#preparation-when-adding-data-migrations) for more information.
 
 #### Validate the foreign key
 
@@ -300,7 +300,7 @@ After the foreign key is valid on the production database, create a second
 merge request that validates the foreign key synchronously. The schema changes
 must be updated and committed to `structure.sql` in this second merge request.
 The synchronous migration results in a no-op on GitLab.com, but you should still
-add the migration as expected for other installations. The below block
+add the migration as expected for other installations. The following block
 demonstrates how to create the second migration for the previous
 asynchronous example.
 
@@ -352,7 +352,7 @@ This operation does not require downtime. The removal should take place in a pos
 
 #### Removing foreign keys from partitioned tables
 
-When working with partitioned tables, use the `remove_partitioned_foreign_key` helper method instead of the regular `remove_foreign_key` method. This is necessary because `remove_foreign_key` doesn't remove foreign keys on partitions when the partitioned table doesn't have the validated foreign key yet. That happens when the `validate: false` option was set during the foreign key creation on partitioned table.
+When working with partitioned tables, use the `remove_partitioned_foreign_key` helper method instead of the regular `remove_foreign_key` method. This is necessary because `remove_foreign_key` doesn't remove foreign keys on partitions when the partitioned table doesn't have the validated foreign key yet. That happens when the `validate: false` option was set during the foreign key creation on the partitioned table.
 
 The `remove_partitioned_foreign_key` method removes foreign keys from both the partitioned table and all its partitions:
 
@@ -397,7 +397,7 @@ When adding a new foreign key, you should define it as `bigint`.
 Even if the referenced table has an `integer` primary key type,
 you must reference the new foreign key as `bigint`. As we are
 migrating all primary keys to `bigint`, using `bigint` foreign keys
-saves time, and requires fewer steps, when migrating the parent table
+saves time and requires fewer steps when migrating the parent table
 to `bigint` primary keys.
 
 ## `reverse_lock_order`
@@ -445,7 +445,7 @@ Both transactions are stuck waiting for each other to finish and they both
 time out. Migration transaction retries usually handle this, but the
 application code might also time out and cause errors for users. If this
 application code runs frequently, the migration can constantly time out
-and users may regularly get errors.
+and users might regularly get errors.
 
 ### Removing foreign keys
 
@@ -461,7 +461,7 @@ to prevent this.
 
 In rare cases where the foreign key points from a parent table to a child
 table (for example, `merge_requests.latest_merge_request_diff_id` referencing
-`merge_request_diffs.id`), the default lock order may not be optimal.
+`merge_request_diffs.id`), the default lock order might not be optimal.
 You can opt out by setting `reverse_lock_order: false` explicitly.
 
 ## Updating foreign keys in migrations
@@ -471,7 +471,7 @@ but updating the constraint condition. For example, moving from
 `ON DELETE CASCADE` to `ON DELETE SET NULL` or vice-versa.
 
 PostgreSQL does not prevent you from adding overlapping foreign keys. It
-honors the most recently added constraint. This allows us to replace foreign keys without
+honors the most recently added constraint. This means we can replace foreign keys without
 ever losing foreign key protection on a column.
 
 To replace a foreign key:
@@ -523,21 +523,21 @@ this should be set to `CASCADE`.
 
 ## Indexes
 
-When adding a foreign key in PostgreSQL the column is not indexed automatically,
-thus you must also add a concurrent index. Indexes are required for all foreign
+When adding a foreign key in PostgreSQL, the column is not indexed automatically.
+Thus, you must also add a concurrent index. Indexes are required for all foreign
 keys and they must be added before the foreign key. This can mean that they are
 an earlier step in the same migration or they are added in an earlier migration
 than the migration adding the foreign key. For the same reasons, foreign keys
 must be removed before removing indexes supporting these foreign keys.
 
-Without an index on the foreign key it forces Postgres to do a full table scan
+Without an index on the foreign key, it forces PostgreSQL to do a full table scan
 every time a record is deleted from the referenced table. In the past this has
 led to incidents where deleting `projects` and `namespaces` times out.
 
-It is also ok to have a composite index which covers this foreign key so long
-as the foreign key is in the first position of the composite index. For example
-if you have a foreign key `project_id` then it is OK to have a composite index
-like `BTREE (project_id, user_id)` but it is not OK to have an index like
+It is also OK to have a composite index which covers this foreign key so long
+as the foreign key is in the first position of the composite index. For example,
+if you have a foreign key `project_id`, then it is OK to have a composite index
+like `BTREE (project_id, user_id)`, but it is not OK to have an index like
 `BTREE (user_id, project_id)`. The latter does not allow efficient lookups by
 `project_id` alone and therefore would not prevent the cascade deletes from
 timing out. Partial indexes like `BTREE (project_id) WHERE user_id IS NULL`
@@ -546,9 +546,9 @@ for the foreign key.
 
 ## Naming foreign keys
 
-By default Ruby on Rails uses the `_id` suffix for foreign keys. So we should
+By default, Ruby on Rails uses the `_id` suffix for foreign keys. So we should
 only use this suffix for associations between two tables. If you want to
-reference an ID on a third party platform the `_xid` suffix is recommended.
+reference an ID on a third-party platform, the `_xid` suffix is recommended.
 
 The spec `spec/db/schema_spec.rb` tests if all columns with the `_id` suffix
 have a foreign key constraint. If that spec fails, add the column to
@@ -556,7 +556,7 @@ have a foreign key constraint. If that spec fails, add the column to
 
 1. The column references another table, such as when the two tables belong to
    [GitLab schemas](multiple_databases.md#gitlab-schema) that don't
-   allow Foreign Keys between them.
+   allow foreign keys between them.
 1. The foreign key is replaced by a [Loose Foreign Key](loose_foreign_keys.md) for performance reasons.
 1. The column represents a [polymorphic relationship](polymorphic_associations.md). Note that polymorphic associations should not be used.
 1. The column is not meant to reference another table. For example, it's common to have `partition_id`
@@ -583,13 +583,13 @@ specialist first.
 You should also not define any `before_destroy` or `after_destroy` callbacks on
 your models unless absolutely required and only when approved by database
 specialists. For example, if each row in a table has a corresponding file on a
-file system it may be tempting to add an `after_destroy` hook. This however
-introduces non database logic to a model, and means we can no longer rely on
-foreign keys to remove the data as this would result in the file system data
-being left behind. In such a case you should use a service class instead that
-takes care of removing non database data.
+file system, it might be tempting to add an `after_destroy` hook. This, however,
+introduces non-database logic to a model, and means we can no longer rely on
+foreign keys to remove the data, as this would result in the file system data
+being left behind. In such a case, you should use a service class instead that
+takes care of removing non-database data.
 
-In cases where the relation spans multiple databases you have even
+In cases where the relation spans multiple databases, you have even
 further problems using `dependent: :destroy` or the above hooks. You can
 read more about alternatives at
 [Avoid `dependent: :nullify` and `dependent: :destroy` across databases](multiple_databases.md#avoid-dependent-nullify-and-dependent-destroy-across-databases).
@@ -608,7 +608,7 @@ class UserConfig < ActiveRecord::Base
 end
 ```
 
-In these cases, there may be an opportunity to remove the unnecessary `id`
+In these cases, there might be an opportunity to remove the unnecessary `id`
 column on the associated table, `user_config.id` in this example. Instead,
 the originating table ID can be used as the primary key for the associated
 table:

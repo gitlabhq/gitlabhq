@@ -60,7 +60,7 @@ Event.create!(action: :closed, target: issue)
 
 ### Database table structure
 
-The `events` table uses [polymorphic association](https://guides.rubyonrails.org/association_basics.html#polymorphic-associations) to allow associating different database tables (issues, merge requests, etc.) with a record. A simplified database structure:
+The `events` table uses [polymorphic association](https://guides.rubyonrails.org/association_basics.html#polymorphic-associations) to allow associating different database tables (issues, merge requests, and so on) with a record. A simplified database structure:
 
 ```sql
    Column    |           Type            | Nullable |              Default               | Storage  |
@@ -79,7 +79,7 @@ The `events` table uses [polymorphic association](https://guides.rubyonrails.org
 
 Some unexpected characteristics due to the evolving database design:
 
-- The `project_id` and the `group_id` columns are mutually exclusive, internally we call them resource parent.
+- The `project_id` and the `group_id` columns are mutually exclusive. Internally, we call them the resource parent.
   - Example 1: for an issue opened event, the `project_id` field is populated.
   - Example 2: for an epic-related event, the `group_id` field is populated (epic is always part of a group).
 - The `target_id` and `target_type` column pair identifies the target record.
@@ -89,18 +89,18 @@ Some unexpected characteristics due to the evolving database design:
 
 ### Database record modifications
 
-Most of the data is written once however, we cannot say that the table is append-only. A few use cases where actual row updates and deletions happen:
+Most of the data is written once. However, we cannot say that the table is append-only. A few use cases where actual row updates and deletions happen:
 
 - Fingerprint-based update for certain Wiki page records.
-- When user or an associated resource is deleted, the event rows are also deleted.
+- When a user or an associated resource is deleted, the event rows are also deleted.
   - The deletion of the associated `events` records happens in batches.
 
 ### Current performance problems
 
 - The table uses significant disk space.
-- Adding new events may significantly increase the database record count.
+- Adding new events might significantly increase the database record count.
 - Implementing data pruning logic is difficult.
-- Time-range-based aggregations are not performant enough, some features may break due to slow database queries.
+- Time-range-based aggregations are not performant enough, some features might break due to slow database queries.
 
 ### Example queries
 
@@ -177,7 +177,7 @@ Assuming that the creation of `events` record is an integral part of the system,
 
 Rather than sending data to ClickHouse on event creation time, we would move this processing in the background by iterating over the `events` table and sending the newly created database rows.
 
-By keeping track of which records have been sent over ClickHouse, we could incrementally send data.
+By keeping track of which records have been sent to ClickHouse, we could incrementally send data.
 
 ```ruby
 last_updated_at = SyncProcess.last_updated_at

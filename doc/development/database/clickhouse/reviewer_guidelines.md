@@ -107,7 +107,7 @@ ORDER BY (path, created_at, author_id, id);
 
 **Performance validation steps:**
 
-- Test with representative parameters (e.g., `namespace_path='9970/'`, date range for one month).
+- Test with representative parameters (for example, `namespace_path='9970/'`, date range for one month).
 - Run the query and note elapsed time and rows read:
 
   ```plaintext
@@ -149,7 +149,7 @@ For example: `185/72937` granules mean only a small subset of the table was scan
 - The query consistently exceeds **5-10 seconds** execution time.
 - The query will be frequently executed.
 
-Ensure performance validation uses real-world (or synthetic) data from large namespaces (e.g., `gitlab-org` or `gitlab-org/gitlab`).
+Ensure performance validation uses real-world (or synthetic) data from large namespaces (for example, `gitlab-org` or `gitlab-org/gitlab`).
 
 ## New materialized views review
 
@@ -157,12 +157,12 @@ Make sure the materialized view is created with the `POPULATE` keyword or has a 
 
 ## Table Engine Specific Behavior
 
-With the **MergeTree** family, the *primary key* (i.e., `ORDER BY`) defines the sort/index, not a uniqueness constraint. Rows with the same primary-key values can coexist. If your ingestion pipeline may produce duplicates or updates, you must handle them at read time (or pick an engine that collapses versions).
+With the **MergeTree** family, the *primary key* (that is, `ORDER BY`) defines the sort/index, not a uniqueness constraint. Rows with the same primary-key values can coexist. If your ingestion pipeline might produce duplicates or updates, you must handle them at read time (or pick an engine that collapses versions).
 
 ### `MergeTree` engine
 
 - **No automatic deduplication.**
-- Use when data is strictly append-only and duplicates cannot occur (e.g., immutable event logs).
+- Use when data is strictly append-only and duplicates cannot occur (for example, immutable event logs).
 
 ```sql
 CREATE TABLE events

@@ -125,7 +125,7 @@ Valid entries for `n` are integers `≥ 1`. `[1]` is optional because it is the 
 
 > [!warning]
 > [Issue 384881](https://gitlab.com/gitlab-org/gitlab/-/issues/385881) proposes changes
-> to the behavior of this setting. Do not intentionally set invalid values. They may
+> to the behavior of this setting. Do not intentionally set invalid values. They might
 > become valid in the future and cause unexpected behavior.
 
 To require multiple approvals from Code Owners:

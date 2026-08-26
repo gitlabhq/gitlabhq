@@ -220,7 +220,7 @@ If you get a "table not found" error, ensure:
 
 1. You've declared the table using `tables :table_name` at the class level
 1. The table exists in the schema version specified in your spec
-1. You're using the correct database (`:main`, `:ci`, etc.)
+1. You're using the correct database (`:main`, `:ci`, and so on)
 1. The migration metadata is set correctly
 
 ### Primary Key Issues

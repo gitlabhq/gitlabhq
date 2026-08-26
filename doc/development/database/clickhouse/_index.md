@@ -42,7 +42,7 @@ ClickHouse also offers ["Dictionaries"](https://clickhouse.com/docs/en/sql-refer
 
 ## Data types & Partitioning
 
-ClickHouse offers SQL-compatible [data types](https://clickhouse.com/docs/en/sql-reference/data-types) and few specialized data types like:
+ClickHouse offers SQL-compatible [data types](https://clickhouse.com/docs/en/sql-reference/data-types) and a few specialized data types like:
 
 - [`LowCardinality`](https://clickhouse.com/docs/en/sql-reference/data-types/lowcardinality)
 - [UUID](https://clickhouse.com/docs/en/sql-reference/data-types/uuid)
@@ -62,9 +62,9 @@ Sharding is a feature that allows splitting the data into multiple ClickHouse no
 
 See [the ClickHouse documentation](https://clickhouse.com/docs/en/engines/table-engines/special/distributed) and this section on [replication and sharding](https://clickhouse.com/docs/en/architecture/replication#replication-and-sharding-configuration). ClickHouse can use either Zookeeper or its own compatible API via a component called [ClickHouse Keeper](https://clickhouse.com/docs/en/operations/clickhouse-keeper) to maintain consensus.
 
-After nodes are set up, they can become invisible from the Clients and both write and read queries can be issued to any node.
+After nodes are set up, they can become invisible from the clients and both write and read queries can be issued to any node.
 
-In most cases, clusters usually start with a fixed number of nodes(~ shards). [Rebalancing shards](https://clickhouse.com/docs/en/guides/sre/scaling-clusters) is operationally heavy and requires rigorous testing.
+In most cases, clusters usually start with a fixed number of nodes (~ shards). [Rebalancing shards](https://clickhouse.com/docs/en/guides/sre/scaling-clusters) is operationally heavy and requires rigorous testing.
 
 Replication is supported by MergeTree Table engine, see the [replication section](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/replication) in documentation for details on how to define them.
 ClickHouse relies on a distributed coordination component (either Zookeeper or ClickHouse Keeper) to track the participating nodes in the quorum. Replication is asynchronous and multi-leader. Inserts can be issued to any node and they can appear on other nodes with some latency. If desired, stickiness to a specific node can be used to make sure that reads observe the latest written data.
@@ -73,7 +73,7 @@ ClickHouse relies on a distributed coordination component (either Zookeeper or C
 
 One of the defining features of ClickHouse is materialized views. Functionally they resemble insert triggers for ClickHouse.
 
-We recommended reading the [views](https://clickhouse.com/docs/en/sql-reference/statements/create/view#materialized-view) section from the official documentation to get a better understanding of how they work.
+We recommend reading the [views](https://clickhouse.com/docs/en/sql-reference/statements/create/view#materialized-view) section from the official documentation to get a better understanding of how they work.
 
 Quoting the [documentation](https://clickhouse.com/docs/en/sql-reference/statements/create/view#materialized-view):
 

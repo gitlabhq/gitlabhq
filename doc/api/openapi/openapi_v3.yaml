@@ -57392,6 +57392,8 @@ paths:
           description: Forbidden
         '400':
           description: Bad request
+        '429':
+          description: Too many requests
         '503':
           description: Service unavailable
       requestBody:
@@ -85768,6 +85770,8 @@ components:
         note:
           type: string
         namespace_id:
+          type: string
+        provisioned_by_project_id:
           type: string
         created_by:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"

@@ -1,0 +1,5 @@
+# Not spread into any query; read directly via `cache.readFragment` to check cache membership.
+# eslint-disable-next-line @graphql-eslint/no-unused-fragments
+fragment WorkItemId on WorkItem {
+  id
+}

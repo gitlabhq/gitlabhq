@@ -25,7 +25,7 @@ Milestone 1:
 1. Add model-level uniqueness validation to reduce the likelihood of duplicates (if not present already).
 1. Add a transaction-level [advisory lock](https://www.postgresql.org/docs/16/explicit-locking.html#ADVISORY-LOCKS) to prevent creating duplicate records.
 
-The second step on its own will not prevent duplicate records, see the [Rails guides](https://guides.rubyonrails.org/active_record_validations.html#uniqueness) for more information.
+The second step on its own will not prevent duplicate records. See the [Rails guides](https://guides.rubyonrails.org/active_record_validations.html#uniqueness) for more information.
 
 Post-migration for creating the index:
 

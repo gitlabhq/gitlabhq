@@ -21,7 +21,7 @@ When the pipeline starts, a bot notifies you with a comment in the merge request
 When it finishes, the comment gets updated with the test results.
 
 The comment contains testing information for both the `main` and `ci` databases.
-Each database tested has four sections which are described below.
+Each database tested has four sections, which are described below.
 
 ## Summary
 
@@ -45,7 +45,7 @@ The next section of the comment contains detailed information for each migration
 
 Occasionally, a migration shows a +8.00 KiB size increase, even if the migration was not
 expected to result in a size increase. Completing any migration adds a row to the
-`schema_migrations` table, which may require a new disk page to be created.
+`schema_migrations` table, which might require a new disk page to be created.
 If a new disk page is created, the size of the database will grow by exactly 8 KiB.
 
 ## Background migration details

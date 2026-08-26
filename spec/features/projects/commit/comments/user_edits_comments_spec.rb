@@ -52,8 +52,16 @@ RSpec.describe "User edits a comment on a commit", :js, feature_category: :sourc
       expect(page).to have_selector('li.task-list-item', count: 2)
       expect(page).to have_selector('li.task-list-item input[checked]', count: 0)
 
-      all('.task-list-item-checkbox').each(&:click)
-      wait_for_requests
+      # Checkboxes are rendered disabled and only enabled once TaskList JS initialises.
+      # Clicking a disabled checkbox raises nothing and silently does not toggle it, so
+      # wait for the enabled state before clicking.
+      all('li.task-list-item.enabled .task-list-item-checkbox', count: 2).each(&:click)
+
+      # The toggle produces no visible change until the page is reloaded, so there is no
+      # end-state to assert on before navigating.
+      wait_for('both task list toggles to persist', polling_interval: 0.1) do
+        Note.where(project: project, commit_id: sample_commit.id).all? { |note| note.note.include?('[x]') }
+      end
 
       visit(project_commit_path(project, sample_commit.id))
 

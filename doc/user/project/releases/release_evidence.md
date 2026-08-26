@@ -165,7 +165,7 @@ If the pipeline ran successfully, when you create your release, the `rspec.xml` 
 release evidence.
 
 If you [schedule release evidence collection](#schedule-release-evidence-collection),
-some artifacts may already be expired by the time of evidence collection. To avoid this you can use
+some artifacts might already be expired by the time of evidence collection. To avoid this, you can use
 the [`artifacts:expire_in`](../../../ci/yaml/_index.md#artifactsexpire_in)
 keyword. For more information, see [issue 222351](https://gitlab.com/gitlab-org/gitlab/-/issues/222351).
 

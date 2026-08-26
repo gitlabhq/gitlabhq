@@ -20,7 +20,7 @@ import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_NAMESPACE } from '~/graphql_shared/constants';
+import { evictNamespaceWorkItems } from '~/work_items/list/graphql/cache_updates';
 import { STATUS_OPEN } from '~/issues/constants';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
@@ -186,6 +186,7 @@ export default {
     'set-checked-issuable-ids',
     'set-page-params',
     'set-page-size',
+    'page-info',
     'select-item',
     'set-active-item',
     'work-items-changed',
@@ -329,26 +330,13 @@ export default {
     },
     handleListDataResults(data) {
       this.pageInfo = getWorkItemsConnection(data, this.useRestApi)?.pageInfo ?? {};
+      this.$emit('page-info', this.pageInfo);
       this.namespaceId = data?.namespace?.id;
 
       if (data?.namespace) {
         this.$emit('namespace-data-loaded', { namespaceName: data.namespace.name, data });
       }
       this.isInitialLoadComplete = true;
-    },
-    handleEvictCache() {
-      const { cache } = this.$apollo.provider.defaultClient;
-
-      cache.evict({
-        id: cache.identify({ __typename: TYPENAME_NAMESPACE, id: this.namespaceId }),
-        fieldName: 'workItems',
-      });
-
-      if (this.useRestApi) {
-        cache.evict({ fieldName: 'restWorkItems' });
-      }
-
-      cache.gc();
     },
     checkDetailPanelParams() {
       const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
@@ -505,7 +493,9 @@ export default {
       if (refetchCounts) {
         this.$emit('refetch-data', 'counts');
       }
-      this.handleEvictCache();
+      evictNamespaceWorkItems(this.$apollo.provider.defaultClient.cache, this.namespaceId, {
+        useRestApi: this.useRestApi,
+      });
     },
     isDirectChildOfWorkItem(workItem) {
       if (!workItem) {

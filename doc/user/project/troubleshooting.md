@@ -26,7 +26,7 @@ projects = Project.find_by_sql("SELECT * FROM projects WHERE name LIKE '%ject'")
 
 ## Clear a project's or repository's cache
 
-If a project or repository has been updated but the state is not reflected in the UI, you may need to clear the project's or repository's cache.
+If a project or repository has been updated but the state is not reflected in the UI, you might need to clear the project's or repository's cache.
 You can do so through [a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session) and one of the following:
 
 > [!warning]
@@ -115,7 +115,7 @@ project.deletion_error
 ## Toggle a feature for all projects within a group
 
 While toggling a feature in a project can be done through the [projects API](../../api/projects.md),
-you may need to do this for a large number of projects.
+you might need to do this for a large number of projects.
 
 To toggle a specific feature, you can [start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session)
 and run the following function:

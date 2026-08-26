@@ -1,7 +1,6 @@
 ---
 RSpec/RepeatedExampleGroupBody:
   Exclude:
-    - 'ee/spec/controllers/ee/groups_controller_spec.rb'
     - 'ee/spec/lib/banzai/filter/references/vulnerability_reference_filters_spec.rb'
     - 'ee/spec/lib/gitlab/geo_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'
@@ -19,7 +18,6 @@ RSpec/RepeatedExampleGroupBody:
     - 'spec/lib/gitlab/blob_helper_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/release_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/seed/build_spec.rb'
-    - 'spec/lib/gitlab/ci/yaml_processor_spec.rb'
     - 'spec/lib/gitlab/database/migrations/batched_background_migration_helpers_spec.rb'
     - 'spec/lib/gitlab/import_export/project/sample/relation_factory_spec.rb'
     - 'spec/lib/gitlab/lfs/client_spec.rb'
@@ -31,10 +29,7 @@ RSpec/RepeatedExampleGroupBody:
     - 'spec/services/boards/lists/update_service_spec.rb'
     - 'spec/services/ci/create_web_ide_terminal_service_spec.rb'
     - 'spec/services/ci/pipeline_artifacts/create_code_quality_mr_diff_report_service_spec.rb'
-    - 'spec/services/merge_requests/create_service_spec.rb'
-    - 'spec/services/merge_requests/mergeability/check_base_service_spec.rb'
     - 'spec/services/packages/maven/metadata/sync_service_spec.rb'
     - 'spec/services/projects/group_links/destroy_service_spec.rb'
-    - 'spec/support/shared_examples/requests/api/repository_storage_moves_shared_examples.rb'
     - 'spec/support/shared_examples/services/boards/lists_create_service_shared_examples.rb'
     - 'spec/support/shared_examples/services/container_registry_auth_service_shared_examples.rb'

@@ -6,7 +6,7 @@ import {
   GlIntersectionObserver,
   GlToastMixin,
 } from '@gitlab/ui';
-import { isEmpty, isEqual } from 'lodash-es';
+import { debounce, isEmpty, isEqual } from 'lodash-es';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from '~/lib/utils/axios_utils';
 import { s__, __, n__, formatNumber, sprintf } from '~/locale';
@@ -14,7 +14,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { InternalEvents } from '~/tracking';
 import { createAlert, VARIANT_INFO } from '~/alert';
-import { TYPENAME_USER, TYPENAME_NAMESPACE } from '~/graphql_shared/constants';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import {
   STATUS_ALL,
@@ -149,6 +149,14 @@ import updateVisibleGroupsMutation from '~/work_items/board/grouping/graphql/cli
 import { buildInitialViewState } from '~/work_items/list/saved_view_config';
 
 import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
+import namespaceWorkItemChangesSubscription from '../list/graphql/namespace_work_item_changes.subscription.graphql';
+import {
+  evictNamespaceWorkItems,
+  evictWorkItem,
+  groupWorkItemChanges,
+  isWorkItemCached,
+  mergeWorkItemChangeAction,
+} from '../list/graphql/cache_updates';
 
 import SavedViewsNotFoundModal from '../list/components/work_items_saved_views_not_found_modal.vue';
 import SavedViewsLimitWarningModal from '../list/components/work_items_saved_views_limit_warning_modal.vue';
@@ -202,6 +210,10 @@ const WorkItemParentToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/work_item_parent_token.vue');
 const WorkItemTypeToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/work_item_type_token.vue');
+
+// Coalesces a burst of events into one refetch. For work item changes this also outlasts the
+// backend's broadcast rate limit (50/minute per namespace), so a steady stream can't starve it.
+const REALTIME_DEBOUNCE_MS = 500;
 
 export default {
   issuableListTabs,
@@ -307,6 +319,7 @@ export default {
       workItemsCount: 0,
       hasWorkItems: false,
       pageParams: {},
+      listPageInfo: {},
       state: STATUS_OPEN,
       pageSize: DEFAULT_PAGE_SIZE,
       savedView: null,
@@ -370,7 +383,9 @@ export default {
         return data?.namespace?.workItems.nodes.length > 0 || false;
       },
       result({ data }) {
-        this.namespaceId = data.namespace?.id;
+        const namespaceId = data.namespace?.id;
+        this.namespaceId = namespaceId;
+        this.subscribeToWorkItemChanges(namespaceId);
       },
       error(error) {
         this.error = s__('WorkItem|An error occurred while getting work item counts.');
@@ -503,6 +518,12 @@ export default {
     },
     isBoardView() {
       return this.viewMode === VIEW_MODE_BOARD && this.isPlanningViewBoardEnabled;
+    },
+    // `afterCursor` alone answers forward pagination. Backward pagination needs `hasPreviousPage`
+    // too: paging next then back to page 1 leaves a real `beforeCursor` set (see
+    // list_view.vue's handlePreviousPage), which would otherwise read as "not page 1".
+    isViewingFirstPage() {
+      return !this.pageParams.afterCursor && !this.listPageInfo.hasPreviousPage;
     },
     detailPanelViewContext() {
       return this.isBoardView ? VIEW_CONTEXT.drawerBoard : VIEW_CONTEXT.drawerList;
@@ -1239,10 +1260,16 @@ export default {
     if (this.$route.query.sv_not_found) {
       this.showSavedViewNotFoundModal = true;
     }
+
+    document.addEventListener('actioncable:reconnected', this.debouncedRefetchAfterReconnect);
   },
   beforeDestroy() {
     setPageDefaultWidth();
     this.unbindDrawerOffsetListeners();
+    this.debouncedProcessWorkItemChanges.cancel();
+    document.removeEventListener('actioncable:reconnected', this.debouncedRefetchAfterReconnect);
+    this.debouncedRefetchAfterReconnect.cancel();
+    this.workItemChangesSubscription?.unsubscribe();
   },
 
   created() {
@@ -1268,6 +1295,16 @@ export default {
     if (!this.isLoggedIn) {
       this.preferencesLoaded = true;
     }
+    this.pendingWorkItemChanges = new Map();
+    this.workItemChangesSubscription = null;
+    this.debouncedProcessWorkItemChanges = debounce(
+      this.processWorkItemChanges,
+      REALTIME_DEBOUNCE_MS,
+    );
+    this.debouncedRefetchAfterReconnect = debounce(
+      this.refetchAfterReconnect,
+      REALTIME_DEBOUNCE_MS,
+    );
   },
 
   methods: {
@@ -2028,16 +2065,100 @@ export default {
         this.handleEvictCache();
       }
     },
-    handleEvictCache() {
-      const { cache } = this.$apollo.provider.defaultClient;
-      cache.evict({
-        id: cache.identify({ __typename: TYPENAME_NAMESPACE, id: this.namespaceId }),
-        fieldName: 'workItems',
-      });
-      if (this.useRestApi) {
-        cache.evict({ fieldName: 'restWorkItems' });
+    subscribeToWorkItemChanges(namespaceId) {
+      if (
+        this.workItemChangesSubscription ||
+        !namespaceId ||
+        !this.glFeatures.workItemsRealtime ||
+        !this.isLoggedIn
+      ) {
+        return;
       }
-      cache.gc();
+
+      this.workItemChangesSubscription = this.$apollo
+        .subscribe({
+          query: namespaceWorkItemChangesSubscription,
+          variables: { namespaceId },
+        })
+        .subscribe({
+          next: ({ data }) => this.recordWorkItemChange(data?.namespaceWorkItemChanges),
+          error: (error) => Sentry.captureException(error),
+        });
+    },
+    // A reconnect doesn't replay what was missed while disconnected, so the list can look live
+    // but be stale. Reload everything rather than working out what changed.
+    refetchAfterReconnect() {
+      if (!this.glFeatures.workItemsRealtime) {
+        return;
+      }
+
+      this.refetchItems({ refetchCounts: true });
+    },
+    // Events arrive for every work item in the namespace and its descendants, so a bulk edit can
+    // fire many changes at once — buffer them and process together instead of one at a time.
+    recordWorkItemChange(change) {
+      if (!change?.workItemId) {
+        return;
+      }
+
+      const { workItemId, action } = change;
+      this.pendingWorkItemChanges.set(
+        workItemId,
+        mergeWorkItemChangeAction(this.pendingWorkItemChanges.get(workItemId), action),
+      );
+      this.debouncedProcessWorkItemChanges();
+    },
+    async processWorkItemChanges() {
+      try {
+        const changes = new Map(this.pendingWorkItemChanges);
+        this.pendingWorkItemChanges.clear();
+
+        const { created, updated, deleted } = groupWorkItemChanges(changes);
+        const { cache } = this.$apollo.provider.defaultClient;
+
+        const visibleDeleted = deleted.filter((id) => isWorkItemCached(cache, id));
+        const hasVisibleUpdate = updated.some((id) => isWorkItemCached(cache, id));
+        // Boards don't show one page at a time — they join every page together, so a new item
+        // could always end up visible there.
+        const canShowNewItems = this.isBoardView || this.isViewingFirstPage;
+
+        // Close the drawer before evicting, otherwise its query reads an incomplete work item.
+        if (this.activeItem && visibleDeleted.includes(this.activeItem.id)) {
+          this.activeItem = null;
+          await this.$nextTick();
+        }
+
+        // Board column counts live in their own cache entries, so evicting single work items
+        // would leave them stale — fall back to refetching everything there.
+        const needsListRefetch =
+          hasVisibleUpdate ||
+          (created.length > 0 && canShowNewItems) ||
+          (visibleDeleted.length > 0 && this.isBoardView);
+
+        if (needsListRefetch) {
+          this.refetchItems({ refetchCounts: true });
+          return;
+        }
+
+        if (visibleDeleted.length > 0) {
+          visibleDeleted.forEach((id) => evictWorkItem(cache, id));
+          cache.gc();
+        }
+
+        // A change we ignored can still move the state counts, and the payload does not say
+        // which fields changed, so the counts are always refreshed.
+        this.$apollo.queries.workItemsCount.refetch();
+        if (created.length > 0 || deleted.length > 0) {
+          this.$apollo.queries.hasWorkItems.refetch();
+        }
+      } catch (error) {
+        Sentry.captureException(error);
+      }
+    },
+    handleEvictCache() {
+      evictNamespaceWorkItems(this.$apollo.provider.defaultClient.cache, this.namespaceId, {
+        useRestApi: this.useRestApi,
+      });
     },
   },
 };
@@ -2346,6 +2467,7 @@ export default {
       @update-tokens="($evt) => (filterTokens = $evt)"
       @set-checked-issuable-ids="($evt) => (checkedIssuableIds = $evt)"
       @set-page-params="handleSetPageParams"
+      @page-info="($evt) => (listPageInfo = $evt)"
       @set-page-size="($evt) => (pageSize = $evt)"
       @select-item="handleSetActiveItem"
       @set-active-item="handleSetActiveItem"

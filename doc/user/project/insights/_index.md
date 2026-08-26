@@ -388,7 +388,7 @@ The `period_field` is automatically set to:
 
 > [!note]
 > Until [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/26911) is resolved,
-> you may see `created_at` in place of `merged_at`. `created_at` is used instead.
+> you might see `created_at` in place of `merged_at`. `created_at` is used instead.
 
 ##### `DORA` query parameters
 

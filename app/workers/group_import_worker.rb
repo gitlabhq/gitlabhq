@@ -8,6 +8,8 @@ class GroupImportWorker # rubocop:disable Scalability/IdempotentWorker
   sidekiq_options retry: false, dead: false
   feature_category :importers
 
+  concurrency_limit -> { Gitlab::CurrentSettings.import_jobs_concurrency_limit }
+
   def perform(user_id, group_id)
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464675', new_threshold: 225)
 

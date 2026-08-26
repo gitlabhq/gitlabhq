@@ -16,7 +16,7 @@ This document gives a high-level overview of how to develop features using Click
 
 1. Install ClickHouse locally as described in [ClickHouse installation documentation](https://clickhouse.com/docs/en/install). If you use QuickInstall it will be installed in current directory, if you use Homebrew it will be installed to `/opt/homebrew/bin/clickhouse`
 1. Add ClickHouse section to your `gdk.yml`. See [`gdk.example.yml`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/gdk.example.yml)
-1. Adjust the `gdk.yml` ClickHouse configuration file to point to your local ClickHouse installation and local data storage. E.g.
+1. Adjust the `gdk.yml` ClickHouse configuration file to point to your local ClickHouse installation and local data storage. For example:
 
    ```yaml
    clickhouse:

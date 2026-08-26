@@ -55,7 +55,7 @@ Prerequisites:
 
 To create a Service Desk ticket from the UI:
 
-1. [Create an issue](../issues/create_issues.md)
+1. [Create an issue](../issues/create_issues.md).
 1. Add a comment that contains only the quick action `/convert_to_ticket user@example.com`.
    You should see a comment from the [GitLab Support Bot](configure.md#support-bot-user).
 1. Reload the page so the UI reflects the type change.
@@ -69,7 +69,7 @@ For an overview, see [create Service Desk tickets in the UI and API (GitLab 16.1
 
 For responders to the ticket, everything works just like GitLab issues.
 GitLab displays a familiar-looking ticket tracker where responders can see
-tickets created through customer support requests, and filter or interact with them.
+tickets created through customer support requests and filter or interact with them.
 
 ![Service Desk ticket tracker](img/service_desk_issue_tracker_v16_10.png)
 

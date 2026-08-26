@@ -531,6 +531,9 @@ describe('Board list component', () => {
       },
     }));
 
+    await resolveQuery(listQuery);
+    await resolveQuery(listIssuesQuery);
+
     expect(wrapper.findComponent(BoardNewIssue).exists()).toBe(true);
     wrapper.findComponent(BoardNewIssue).vm.$emit('add-new-issue', { title: 'Foo' });
 

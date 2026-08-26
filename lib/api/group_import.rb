@@ -55,6 +55,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 403, message: 'Forbidden' },
           { code: 400, message: 'Bad request' },
+          { code: 429, message: 'Too many requests' },
           { code: 503, message: 'Service unavailable' }
         ]
         consumes ['multipart/form-data']
@@ -71,6 +72,7 @@ module API
       post 'import' do
         authorize_create_group!
         require_gitlab_workhorse!
+        check_rate_limit! :group_import, scope: current_user
         validate_file!
 
         group_params = {

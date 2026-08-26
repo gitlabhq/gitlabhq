@@ -198,6 +198,10 @@
   }
 }
 
+.ai-panel-content-inner {
+  scrollbar-gutter: auto;
+}
+
 /* stylelint-disable-next-line gitlab/no-gl-class -- scoped to a specific panel-content use */
 .page-with-panels .gl-drawer {
   width: min(calc(100% - var(--gl-spacing-scale-6)), 400px);

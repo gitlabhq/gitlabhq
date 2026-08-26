@@ -28,7 +28,7 @@ end
 
 This library adds a single method to ActiveRecord relations: [`#keyset_paginate`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/active_record_keyset_pagination.rb).
 
-This is similar in spirit (but not in implementation) to Kaminari's `paginate` method.
+This is similar in spirit (but not in implementation) to the `paginate` method in Kaminari.
 
 Keyset pagination works without any configuration for simple ActiveRecord queries:
 
@@ -65,7 +65,7 @@ The paginator object has the following methods:
 - `cursor_for_previous_page` - Encoded values as `String` for requesting the previous page (can be `nil`).
 - `cursor_for_first_page` - Encoded values as `String` for requesting the first page.
 - `cursor_for_last_page` - Encoded values as `String` for requesting the last page.
-- The paginator objects includes the `Enumerable` module and delegates the enumerable functionality to the `records` method/array.
+- The paginator object includes the `Enumerable` module and delegates the enumerable functionality to the `records` method/array.
 
 Example for getting the first and the second page:
 
@@ -79,7 +79,7 @@ cursor = paginator.cursor_for_next_page # encoded column attributes for the next
 paginator = Project.order(:name).keyset_paginate(cursor: cursor).records # loading the next page
 ```
 
-Because keyset pagination does not support page numbers, we are restricted to go to the following pages:
+Because keyset pagination does not support page numbers, we are restricted to going to the following pages:
 
 - Next page
 - Previous page
@@ -181,7 +181,7 @@ ORDER BY "issues"."created_at" DESC NULLS LAST, "issues"."id" DESC
 LIMIT 20
 ```
 
-`OR` queries are difficult to optimize in PostgreSQL, we generally advise using [`UNION` queries](../sql.md#use-unions) instead. The keyset pagination library can generate efficient `UNION` when multiple columns are present in the `ORDER BY` clause. This is triggered when we specify the `use_union_optimization: true` option in the options passed to `Relation#keyset_paginate`.
+`OR` queries are difficult to optimize in PostgreSQL. We generally advise using [`UNION` queries](../sql.md#use-unions) instead. The keyset pagination library can generate efficient `UNION` when multiple columns are present in the `ORDER BY` clause. This is triggered when we specify the `use_union_optimization: true` option in the options passed to `Relation#keyset_paginate`.
 
 Example:
 
@@ -207,7 +207,7 @@ configuration is necessary:
 - Function-based ordering.
 - Ordering with a custom tie-breaker column, like `iid`.
 
-These order objects can be defined in the model classes as standard ActiveRecord scopes, there is no special behavior that prevents using these scopes elsewhere (Kaminari, background jobs).
+These order objects can be defined in the model classes as standard ActiveRecord scopes. There is no special behavior that prevents using these scopes elsewhere (Kaminari, background jobs).
 
 ### `NULLS LAST` ordering
 
@@ -222,7 +222,7 @@ scope.keyset_paginate # raises: Gitlab::Pagination::Keyset::UnsupportedScopeOrde
 
 The `keyset_paginate` method raises an error because the order value on the query is a custom SQL string and not an [`Arel`](https://www.rubydoc.info/gems/arel) AST node. The keyset library cannot automatically infer configuration values from these kinds of queries.
 
-To make keyset pagination work, we must configure custom order objects, to do so, we must
+To make keyset pagination work, we must configure custom order objects. To do so, we must
 collect information about the order columns:
 
 - `relative_position` can have duplicated values because no unique index is present.

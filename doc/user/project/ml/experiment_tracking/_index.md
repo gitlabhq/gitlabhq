@@ -54,7 +54,7 @@ Some example parameters:
 
 ## Track new experiments and runs
 
-Experiment and trials can only be tracked through the
+Experiments and trials can only be tracked through the
 [MLflow](https://www.mlflow.org/docs/latest/tracking.html) client compatibility.
 See [MLflow client compatibility](mlflow_client.md) for more information
 on how to use GitLab as a backend for the MLflow Client.

@@ -97,8 +97,8 @@ From this page, you can perform the following actions:
   > [!note]
   > GitLab periodically updates token usage information when the token performs a Git operation or
   > authenticates an operation with the [REST](../../../api/rest/_index.md) or
-  > [GraphQL](../../../api/graphql/_index.md) API. Token usage times are updated every 10 minutes,
-  > token usage IP addresses update every minute.
+  > [GraphQL](../../../api/graphql/_index.md) API. Token usage times are updated every 10 minutes.
+  > Token usage IP addresses update every minute.
 
 To view your project access tokens:
 

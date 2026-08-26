@@ -57,7 +57,7 @@ Several tables have already been split in this way. For example:
 
 - `search_data` is split from `issues`.
 - `project_pages_metadata` is split from `projects`.
-- `merge_request_diff_details` is split from `merge_request_diffs`
+- `merge_request_diff_details` is split from `merge_request_diffs`.
 
 ## Data model trade-offs
 
@@ -68,7 +68,7 @@ Why is this a problem?
 
 - Many of these columns are included in indexes, which leads to index write amplification.
   When the number of indexes on the table is more than 16, it affects query planning,
-  and may lead to [light-weight lock (LWLock) contention](https://gitlab.com/groups/gitlab-org/-/work_items/11543).
+  and might lead to [light-weight lock (LWLock) contention](https://gitlab.com/groups/gitlab-org/-/work_items/11543).
 - Updates in PostgreSQL are implemented as a combination of delete and insert. This means that each column,
   even if rarely used, is copied over and over again, on each update. This affects the amount of generated
   write ahead log (WAL).
@@ -89,7 +89,7 @@ of this should be weighed against the benefits of the vertical table split.
 
 There is a very good episode on this topic on the [PostgresFM](https://postgres.fm) podcast,
 where @NikolayS of [PostgresAI](https://postgres.ai/) and @michristofides of [PgMustard](https://www.pgmustard.com/)
-discuss this topic in more depth - <https://postgres.fm/episodes/data-model-trade-offs>.
+discuss this topic in more depth: <https://postgres.fm/episodes/data-model-trade-offs>.
 
 ### Example
 
@@ -97,15 +97,15 @@ Let's look at the `users` table, which as of the time of writing has 75 columns.
 We can see a few groups of columns that match the above criteria, and are good candidates
 for extraction:
 
-- OTP related columns, like `encrypted_otp_secret`, `otp_secret_expires_at`, etc.
+- OTP-related columns, like `encrypted_otp_secret`, `otp_secret_expires_at`, and so on.
   There are few of these columns, and once populated they should not be updated often (if at all).
 - Columns related to email confirmation - `confirmation_token`, `confirmation_sent_at`,
   and `confirmed_at`. Once populated these are most likely never updated.
 - Timestamps like `password_expires_at`, `last_credential_check_at`, and `admin_email_unsubscribed_at`.
-  Such columns are either updated very often, or not at all. It will be better if they are in a separate table.
+  Such columns are either updated very often, or not at all. It would be better if they were in a separate table.
 - Various tokens (and columns related to them), like `unlock_token`, `incoming_email_token`, and `feed_token`.
 
-Let's focus on `users.incoming_email_token` - every user on GitLab.com has one set, and this token is rarely updated.
+Let's focus on `users.incoming_email_token`: every user on GitLab.com has one set, and this token is rarely updated.
 
 In order to extract it from `users` into a new table, we'll have to do the following:
 

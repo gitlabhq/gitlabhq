@@ -17,7 +17,7 @@ Database reviewers are domain experts who have substantial experience with datab
 
 A database review is required whenever an application update [touches the database](../database_review.md#general-process).
 
-The database reviewer is tasked with reviewing the database specific updates and
+The database reviewer is tasked with reviewing the database-specific updates and
 making sure that any queries or modifications perform without issues
 at the scale of GitLab.com.
 
@@ -44,12 +44,12 @@ to their profile YAML file:
    [Database Team's Engineering Manager](https://handbook.gitlab.com/handbook/engineering/data-engineering/database-excellence/database-frameworks/).
 
 After the `team.yml` update is merged, the [Reviewer roulette](../code_review.md#reviewer-roulette)
-may recommend you as a database reviewer.
+might recommend you as a database reviewer.
 
 ## Resources for database reviewers
 
 As a database reviewer, join the internal `#database` Slack channel and ask questions or discuss
-database related issues with other database reviewers and maintainers.
+database-related issues with other database reviewers and maintainers.
 
 Get familiar with using [Database Lab from postgres.ai](database_lab.md), a bot that
 provides developers with their own clone of the production database.
@@ -69,14 +69,14 @@ topics and use cases. The most frequently required during database reviewing are
 - [Migrations style guide](../migration_style_guide.md) for creating safe SQL migrations.
 - [Avoiding downtime in migrations](avoiding_downtime_in_migrations.md).
 - [SQL guidelines](../sql.md) for working with SQL queries.
-- [Guidelines for JiHu contributions with database migrations](https://handbook.gitlab.com/handbook/ceo/office-of-the-ceo/jihu-support/jihu-database-change-process/)
+- [Guidelines for JiHu contributions with database migrations](https://handbook.gitlab.com/handbook/ceo/office-of-the-ceo/jihu-support/jihu-database-change-process/).
 
 ## How to apply to become a database maintainer
 
 Becoming a database maintainer uses the same process as the other projects.
 [Follow the general process documented here](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#how-to-become-a-project-maintainer).
 
-For database specific requirements, see [`Project maintainer process for gitlab-database`](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#project-maintainer-process-for-gitlab-database)
+For database-specific requirements, see [`Project maintainer process for gitlab-database`](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#project-maintainer-process-for-gitlab-database).
 
 ## What to do if you feel overwhelmed
 

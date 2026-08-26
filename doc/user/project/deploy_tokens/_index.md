@@ -95,7 +95,7 @@ CI/CD variables are available only to immediate child projects of the group.
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-Deploy tokens expire on the date you define at 00:00 AM UTC.
+Deploy tokens expire on the date you define at 00:00 UTC.
 
 GitLab checks every day at 01:00 AM UTC for deploy tokens that are about to expire.
 Project owners and maintainers are notified by email 60, 30, and 7 days before these tokens expire.

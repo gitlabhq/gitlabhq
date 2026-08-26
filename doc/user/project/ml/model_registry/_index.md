@@ -89,7 +89,7 @@ To delete a model and all its associated versions:
 1. Find the model you want to delete.
 1. In the rightmost column, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and **Delete model**.
 
-Alternatively you can delete models from the model details page:
+Alternatively, you can delete models from the model details page:
 
 1. In the left sidebar, select **Deploy** > **Model registry**.
 1. Find the model you want to delete.
@@ -108,7 +108,7 @@ To delete a model version:
 1. Find the model version you want to delete.
 1. In the rightmost column, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and **Delete version**.
 
-Alternatively you can delete models from the model version details page:
+Alternatively, you can delete models from the model version details page:
 
 1. In the left sidebar, select **Deploy** > **Model registry**.
 1. Find the model with a version you want to delete.

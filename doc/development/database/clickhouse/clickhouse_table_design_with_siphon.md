@@ -195,7 +195,7 @@ The updated configuration triggers Siphon to perform two actions:
 1. **Continuous Replication:** Capture all subsequent record changes in real-time via logical replication and apply them to the `siphon_labels` table.
 
 > [!note]
-> Depending on the table size, the initial data snapshot may take several minutes or hours to complete.
+> Depending on the table size, the initial data snapshot might take several minutes or hours to complete.
 
 You can inspect the table from rails console:
 
@@ -211,7 +211,7 @@ SELECT * FROM siphon_labels;
 
 ## Hierarchy Denormalization Examples
 
-One of the biggest challenges at GitLab is querying data in the Namespace/Group hierarchy in PostgreSQL. Oftentimes, this is not efficiently possible, and a database query may time out when querying a larger data range.
+One of the biggest challenges at GitLab is querying data in the Namespace/Group hierarchy in PostgreSQL. Oftentimes, this is not efficiently possible, and a database query might time out when querying a larger data range.
 
 There has been [extensive research](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/data_insights_platform_hierarchical_data_retrieval_optimization/) regarding hierarchy-based lookups in ClickHouse, and there are several approaches to making these possible with Siphon and ClickHouse.
 
@@ -251,7 +251,7 @@ Look up `traversal_path` for an `organizations.id` value:
 SELECT dictGet('organization_traversal_paths_dict', 'traversal_path', 1); -- "main" organization id
 ```
 
-These dictionaries allow mostly `O(1)` access for looking up `traversal_path` values. Keep in mind that the returned data is cached and may not always be consistent. See the [Consistency Guarantees](#consistency-guarantees) section later in this document.
+These dictionaries allow mostly `O(1)` access for looking up `traversal_path` values. Keep in mind that the returned data is cached and might not always be consistent. See the [Consistency Guarantees](#consistency-guarantees) section later in this document.
 
 ### Create a Hierarchy-Lookup Optimized Table
 
@@ -371,7 +371,7 @@ WHERE _siphon_deleted = false
 
 Siphon tables use the [ReplacingMergeTree](https://clickhouse.com/docs/guides/replacing-merge-tree) table engine. Unlike PostgreSQL, ClickHouse does not enforce uniqueness constraints at the time of insertion for performance reasons. Instead, the engine merges rows with the same primary key in the background.
 
-Because this merge is asynchronous, queries may return multiple versions of the same row. To handle this, always apply query-time deduplication:
+Because this merge is asynchronous, queries might return multiple versions of the same row. To handle this, always apply query-time deduplication:
 
 - Group By the primary key.
 - Use `argMax(column, _siphon_replicated_at)` to select the latest value.
@@ -383,7 +383,7 @@ When writing queries against Siphon tables, always think about how to deduplicat
 SELECT title, id FROM labels ORDER BY title LIMIT 5
 ```
 
-The query above is not deduplicated and it may return duplicated rows, one way of deduplicating the query is the following:
+The query above is not deduplicated and it might return duplicated rows, one way of deduplicating the query is the following:
 
 ```sql
 SELECT title, id
@@ -418,7 +418,7 @@ ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 
 The GitLab PostgreSQL schema is optimized for normalized, transactional workloads. However, ClickHouse performance scales best with **denormalized** (wide) tables. While ClickHouse supports `JOINs`, they are computationally expensive. As a rule of thumb, **if a JOIN more than triples your query I/O, you should denormalize at ingestion time.**
 
-This strategy is ideal for enrichment where relationships are `1:1` or `1:N` (where `N` is small, e.g., < 500 rows), such as adding **Assignee** and **Reviewer** data directly to a **Merge Request** record.
+This strategy is ideal for enrichment where relationships are `1:1` or `1:N` (where `N` is small, for example, < 500 rows), such as adding **Assignee** and **Reviewer** data directly to a **Merge Request** record.
 
 #### High-Level Overview
 
@@ -694,18 +694,18 @@ arrayExists(x -> x.1 = 73 AND x.2 = 3, reviewers);
 ```
 
 > [!note]
-> Array data types may add extra overhead during parsing and filtering. When denormalized data is a simple list of IDs without associated state, a delimited string field (e.g., `'/user_id1/user_id2/'`) combined with `hasSubstr` can offer higher performance.
+> Array data types might add extra overhead during parsing and filtering. When denormalized data is a simple list of IDs without associated state, a delimited string field (for example, `'/user_id1/user_id2/'`) combined with `hasSubstr` can offer higher performance.
 
 ### Consistency Guarantees
 
 With all denormalizations, there are trade-offs. The Siphon-based hierarchy denormalization provides the following consistency guarantees under normal operation (assuming that the `namespaces` and `projects` tables have finished their initial data snapshot):
 
-- Records in hierarchy-denormalized tables will be inserted, updated, and deleted correctly even when the column on which the hierarchy lookup is based has changed (e.g., `namespace_id` was updated).
+- Records in hierarchy-denormalized tables will be inserted, updated, and deleted correctly even when the column on which the hierarchy lookup is based has changed (for example, `namespace_id` was updated).
   - **Note:** If the hierarchy lookup column (`namespace_id`) is a sharding key, these columns never change in PostgreSQL by design.
-- When one of the namespace record references in the `traversal_path` changes (e.g., a subgroup/project is moved or deleted):
+- When one of the namespace record references in the `traversal_path` changes (for example, a subgroup/project is moved or deleted):
   - Eventual consistency is enforced via periodical consistency check jobs. The system aims to resolve these consistency issues in 5 minutes for large tables (note: this is to be implemented within [this issue](https://gitlab.com/gitlab-org/analytics-section/siphon/-/work_items/160)).
 
-In development, consistency issues may appear more often as record creation may happen very close to the project or group creation. In these cases, the eventual consistency enforcement should resolve the problems in seconds or minutes (configurable).
+In development, consistency issues might appear more often as record creation might happen very close to the project or group creation. In these cases, the eventual consistency enforcement should resolve the problems in seconds or minutes (configurable).
 
 ## Table Partitioning
 
@@ -728,7 +728,7 @@ When Siphon performs an initial snapshot of a PostgreSQL table, data is often re
 
 You should only consider more granular partitioning (such as monthly) if the following conditions are met:
 
-1. The PostgreSQL source table follows the same partitioning logic. Siphon snapshots each PostgreSQL partition individually, which naturally keeps the data blocks within ClickHouse's limits.
+1. The PostgreSQL source table follows the same partitioning logic. Siphon snapshots each PostgreSQL partition individually, which naturally keeps the data blocks within ClickHouse limits.
 1. The data volume is exceptionally high, justifying the management overhead of more partitions.
 
 ## Working in Cells Environment

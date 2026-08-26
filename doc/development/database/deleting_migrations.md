@@ -8,27 +8,27 @@ title: Delete existing migrations
 When removing existing migrations from the GitLab project, you have to take into account
 the possibility of the migration having already been included in past releases or in the current release, and thus already executed on GitLab.com and/or in GitLab Self-Managed instances.
 
-Because of it, it's not possible to delete existing migrations, as that could lead to:
+Because of this, it's not possible to delete existing migrations, as that could lead to:
 
 - Schema inconsistency, as changes introduced into the database were not rolled back properly.
-- Leaving a record on the `schema_versions` table, that points out to migration that no longer exists on the codebase.
+- Leaving a record on the `schema_versions` table that points to a migration that no longer exists in the codebase.
 
-Instead of deleting we can opt for disabling the migration.
+Instead of deleting, we can opt for disabling the migration.
 
-## Pre-requisites to disable a migration
+## Prerequisites to disable a migration
 
 Migrations can be disabled if:
 
 - They caused a timeout or general issue on GitLab.com.
 - They are obsoleted, for example, changes are not necessary due to a feature change.
-- Migration is a data migration only, that is, the migration does not change the database schema.
+- The migration is a data migration only, that is, the migration does not change the database schema.
 
 ## How to disable a data migration?
 
 In order to disable a migration, the following steps apply to all types of migrations:
 
 1. Turn the migration into a no-op by removing the code inside `#up`, `#down`
-   or `#perform` methods, and adding `# no-op` comment instead.
+   or `#perform` methods, and adding a `# no-op` comment instead.
 1. Add a comment explaining why the code is gone.
 
 Disabling migrations requires explicit approval of a Database Maintainer.

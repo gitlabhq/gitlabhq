@@ -98,7 +98,7 @@ The workaround is to check that the group or user has been invited to the projec
 
 ## `CODEOWNERS` not updated when user or group names change
 
-When a user or group change their names, the `CODEOWNERS` isn't automatically updated with the new names.
+When a user or group changes their names, the `CODEOWNERS` isn't automatically updated with the new names.
 To enter the new names, you must edit the file.
 
 Organizations using SAML SSO can [set usernames](../../../integration/saml.md#set-a-username) to

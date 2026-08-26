@@ -158,7 +158,7 @@ ORDER BY (project_id, merged_at, id);
 ```
 
 Similarly to the [activity data example](gitlab_activity_data.md), we use the
-`ReplacingMergeTree` engine. Several columns of the merge request record may change,
+`ReplacingMergeTree` engine. Several columns of the merge request record might change,
 so keeping the table up-to-date is important.
 
 The database table is ordered by the `project_id, merged_at, id` columns. This ordering
@@ -325,7 +325,7 @@ The problem with this approach is that the number of banned users could increase
 
 #### Idea 2: replicate the `banned_users` table
 
-Assuming that the `banned_users table` doesn't grow to millions of rows, we could
+Assuming that the `banned_users` table doesn't grow to millions of rows, we could
 attempt to periodically sync the whole table to ClickHouse. With this approach,
 a mostly consistent `banned_users` table could be used in the ClickHouse database query:
 

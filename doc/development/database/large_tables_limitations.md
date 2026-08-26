@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Large tables limitations
 ---
 
-GitLab enforces some limitations on large database tables schema changes to improve manageability for both GitLab and its customers. The list of tables subject to these limitations is defined in [`rubocop/rubocop-migrations.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml).
+GitLab enforces some limitations on schema changes for large database tables to improve manageability for both GitLab and its customers. The list of tables subject to these limitations is defined in [`rubocop/rubocop-migrations.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml).
 
 ## Table size restrictions
 
@@ -13,9 +13,9 @@ The following limitations apply to table schema changes on GitLab.com:
 
 | Limitation | Maximum size after the action (including indexes and column size) |
 | ------ | ------------------------------- |
-| Can not add an index | 50 GB |
-| Can not add a column with foreign key | 50 GB |
-| Can not add a new column | 100 GB |
+| Cannot add an index | 50 GB |
+| Cannot add a column with foreign key | 50 GB |
+| Cannot add a new column | 100 GB |
 
 These limitations align with our goal to maintain [all tables under 100 GB](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/database_size_limits/) for improved [stability and performance](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/database_size_limits/#motivation-gitlabcom-stability-and-performance).
 
@@ -103,19 +103,19 @@ When a table becomes too large for new columns, create a new table with a `has_o
 
 Benefits of this approach:
 
-1. Keeps the main table narrower, reducing data load from PostgreSQL
-1. Creates an efficient narrow table for specific queries
-1. Allows selective population of the new table as needed
+1. Keeps the main table narrower, reducing data load from PostgreSQL.
+1. Creates an efficient narrow table for specific queries.
+1. Allows selective population of the new table as needed.
 
 This approach is particularly effective when:
 
-- The new column applies to a subset of the main table
-- Only specific queries need the new data
+- The new column applies to a subset of the main table.
+- Only specific queries need the new data.
 
-Disadvantages
+Disadvantages:
 
-1. More tables may result in more "joins" which will complicate queries
-1. Queries with multiple joins may end up being hard to optimize
+1. More tables might result in more "joins" which will complicate queries.
+1. Queries with multiple joins might end up being hard to optimize.
 
 ## Related links
 

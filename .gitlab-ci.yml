@@ -36,7 +36,7 @@ default:
 
 .next-ruby-variables: &next-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_NEXT}"
-  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_3"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_4"
 
 .default-merge-request-variables: &default-merge-request-variables
   NO_SOURCEMAPS: "true"

@@ -17,7 +17,7 @@ In large teams with shared ownership, it can be difficult
 to track who is working on an issue, who's already done, or who hasn't started yet.
 
 You can add multiple [assignees](managing_issues.md#assignees) to an issue, making it easier to
-track, and making clearer who is accountable for it.
+track, and making it clearer who is accountable for it.
 
 Multiple assignees for issues make collaboration smoother,
 and allow shared responsibilities to be clearly displayed.

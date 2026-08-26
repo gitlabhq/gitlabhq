@@ -37,7 +37,7 @@ One of these issues might be occurring:
    - Turn off the [**Block command line pushes that expose my email**](https://github.com/settings/emails)
      setting.
 1. Your repository exceeds the GitHub file size limit of 100 MB. To fix this problem,
-   check the file size limit configured for on GitHub, and consider using
+   check the file size limit configured on GitHub, and consider using
    [Git Large File Storage (LFS)](https://git-lfs.com/) to manage large files.
 
 ## Deadline Exceeded
@@ -145,7 +145,7 @@ Pipelines might not run for multiple reasons:
   [is not displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/346630)
   when checking the project afterwards.
 
-  When mirroring is set up using [CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/_index.md)
+  When mirroring is set up using [CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/_index.md),
   this setting is enabled by default. If repository mirroring is manually reconfigured, triggering pipelines
   is off by default and this could be why pipelines stop running.
 - [`rules`](../../../../ci/yaml/_index.md#rules) configuration prevents any jobs from
@@ -163,7 +163,7 @@ When this occurs, mirroring jobs start and complete quickly, but they neither
 fail nor succeed. They also do not leave a clear log. To check for this problem:
 
 1. Enter the [Rails console](../../../../administration/operations/rails_console.md)
-   and check Redis' mirroring capacity:
+   and check Redis mirroring capacity:
 
    ```ruby
    current = Gitlab::Redis::SharedState.with { |redis| redis.scard('MIRROR_PULL_CAPACITY') }.to_i
@@ -293,7 +293,7 @@ When this happens, the option to allow mirroring on the UI is disabled.
 
 An administrator can check to confirm that GitLab Silent Mode is disabled.
 
-When mirroring fails due to Silent Mode the following are the debug steps:
+When mirroring fails due to Silent Mode, the following are the debug steps:
 
 - [Triggering the mirror using the API](pull.md#trigger-pipelines-for-mirror-updates) shows: `The project is not mirrored`.
 - If pull or push mirror was already set up but there are no further updates on the mirrored repository,
@@ -383,7 +383,7 @@ This error occurs when the source and destination repositories use different obj
 For example:
 
 - The source repository uses SHA-1.
-- The destination repository uses SHA-256 or vice versa
+- The destination repository uses SHA-256 or vice versa.
 
 To resolve this issue, recreate the destination repository with the same object format as the
 source repository, then configure mirroring again.

@@ -15,7 +15,7 @@ title: GitLab Pages Let's Encrypt certificates
 
 The GitLab Pages integration with Let's Encrypt (LE) allows you
 to use LE certificates for your Pages website with custom domains
-without the hassle of having to issue and update them yourself;
+without the hassle of having to issue and update them yourself.
 GitLab does it for you, out-of-the-box.
 
 [Let's Encrypt](https://letsencrypt.org) is a free, automated, and

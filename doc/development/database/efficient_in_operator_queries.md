@@ -121,7 +121,7 @@ at a faster rate than the `namespaces` and the `projects` records.
 
 This problem affects most of our group-level features where records are listed
 in a specific order, such as group-level issues, merge requests pages, and APIs.
-For very large groups the database queries can easily time out, causing HTTP 500 errors.
+For very large groups, the database queries can easily time out, causing HTTP 500 errors.
 
 ## Optimizing ordered `IN` queries
 
@@ -384,7 +384,7 @@ To address this concern, we could define another index:
 
 Adding more indexes to the `issues` table could significantly affect the performance of
 the `UPDATE` queries. In this case, it's better to rely on the original query. It means that if we
-want to use the optimization for the unfiltered page we need to add extra logic in the application code:
+want to use the optimization for the unfiltered page, we need to add extra logic in the application code:
 
 ```ruby
 if optimization_possible? # no extra params or params covered with the same index as the ORDER BY clause
@@ -592,7 +592,7 @@ SELECT EXTRACT('epoch' FROM epics.closed_at - epics.created_at) FROM epics
 ```
 
 The query above returns the duration in seconds (`double precision`) between the two timestamp
-columns in seconds. To order the records by this expression, you must reference it
+columns. To order the records by this expression, you must reference it
 in the `ORDER BY` clause:
 
 ```sql
@@ -649,7 +649,7 @@ CREATE INDEX index_epics_on_duration ON epics USING btree (group_id, EXTRACT(EPO
 
 Notice that the `finder_query` parameter is not used. The query only returns the `ORDER BY` columns
 which are the `duration_in_seconds` (calculated column) and the `id` columns. This is a limitation
-of the feature, defining the `finder_query` with calculated `ORDER BY` expressions is not supported.
+of the feature. Defining the `finder_query` with calculated `ORDER BY` expressions is not supported.
 To get the complete database records, an extra query can be invoked by the returned `id` column:
 
 ```ruby
@@ -743,7 +743,7 @@ end
 ```
 
 > [!note]
-> The query loads complete database rows from the disk. This may cause increased I/O and slower
+> The query loads complete database rows from the disk. This might cause increased I/O and slower
 > database queries. Depending on the use case, the primary key is often only
 > needed for the batch query to invoke additional statements. For example, `UPDATE` or `DELETE`. The
 > `id` column is included in the `ORDER BY` columns (`created_at` and `id`) and is already
@@ -910,10 +910,10 @@ Here's an outline of the steps we take in the recursive CTE query
 (expressing the steps in SQL is non-trivial but is explained next):
 
 1. Sort the initial `resultset` according to the `ORDER BY` clause.
-1. Pick the top cursor to fetch the record, this is our first record. In the example,
+1. Pick the top cursor to fetch the record. This is our first record. In the example,
    this cursor would be (`2020-01-05`, `3`) for `project_id=9`.
 1. We can use (`2020-01-05`, `3`) to fetch the next issue respecting the `ORDER BY` clause
-   `project_id=9` filter. This produces an updated `resultset`.
+   and `project_id=9` filter. This produces an updated `resultset`.
 
    | `project_ids` | `created_at_values` | `id_values` |
    | ------------- | ------------------- | ----------- |
@@ -926,10 +926,10 @@ Here's an outline of the steps we take in the recursive CTE query
 
 ### Initializing the recursive CTE query
 
-For the initial recursive query, we need to produce exactly one row, we call this the
+For the initial recursive query, we need to produce exactly one row. We call this the
 initializer query (`initializer_query`).
 
-Use `ARRAY_AGG` function to compact the initial result set into a single row
+Use the `ARRAY_AGG` function to compact the initial result set into a single row
 and use the row as the initial value for the recursive CTE query:
 
 Example initializer row:
@@ -1010,7 +1010,7 @@ we have a temporary table with the next cursor values:
 As the final step, we need to produce a new row by manipulating the initializer row
 (`data_collector_query` method). Two things happen here:
 
-- Read the full row from the DB and return it in the `records` columns. (`result_collector_columns`
+- Read the full row from the DB and return it in the `records` column. (`result_collector_columns`
   method)
 - Replace the cursor values at the current position with the results from the keyset query.
 
@@ -1079,14 +1079,14 @@ Optimized `IN` query:
 | project lookup query     | 500                     | 0                        | 0                     |
 | issue lookup query       | 519                     | 20                       | 10 000                |
 
-The group and project queries are not using sorting, the necessary columns are read from database
+The group and project queries are not using sorting. The necessary columns are read from database
 indexes. These values are accessed frequently so it's very likely that most of the data is
-in the PostgreSQL's buffer cache.
+in the PostgreSQL buffer cache.
 
 The optimized `IN` query reads maximum 519 entries (cursor values) from the index:
 
 - 500 index-only scans for populating the arrays for each project. The cursor values of the first
-  record is here.
+  record are here.
 - Maximum 19 additional index-only scans for the consecutive records.
 
 The optimized `IN` query sorts the array (cursor values per project array) 20 times, which

@@ -641,11 +641,15 @@ export const resolvers = {
       cache.writeQuery({ query: getIssueStateQuery, data });
     },
     setActiveBoardItem(_, { boardItem, listId }, { cache }) {
+      // activeBoardItem is queried with the full Issue fragment, so writing a boardItem-less
+      // (e.g. { listId }) object here would leave those fields missing rather than null.
+      const activeBoardItem = boardItem ? { ...boardItem, listId } : null;
+
       cache.writeQuery({
         query: activeBoardItemQuery,
-        data: { activeBoardItem: { ...boardItem, listId } },
+        data: { activeBoardItem },
       });
-      return { ...boardItem, listId };
+      return activeBoardItem;
     },
     setError(_, { error }, { cache }) {
       cache.writeQuery({

@@ -151,7 +151,7 @@
       .form-group
         = f.gitlab_ui_checkbox_component :emoji_autocomplete_enabled,
           s_('Preferences|Enable emoji autocomplete'),
-          help_text: s_('Preferences|When you type a colon (:) in a description or comment box, a list of matching emoji is suggested.')
+          help_text: s_('Preferences|When you type a colon (:) in a description or comment box, matching emoji are suggested.')
       .form-group
         = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
         = f.number_field :tab_width,

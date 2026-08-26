@@ -54,7 +54,7 @@ and [can be downloaded](../repository/_index.md#download-repository-source-code)
 
 ### Links
 
-A link is a URL which can point to whatever you like: documentation, built
+A link is a URL that can point to whatever you like: documentation, built
 binaries, or other related materials. These can be both internal and external
 links from your GitLab instance.
 The URL must use one of the schemes `http`, `https`, or `ftp`.
@@ -98,10 +98,10 @@ This asset has a direct link of:
 https://gitlab.com/gitlab-org/gitlab-runner/-/releases/v16.9.0-rc2/downloads/binaries/gitlab-runner-linux-amd64
 ```
 
-The physical location of the asset can change at any time and the direct link remains unchanged.
+The physical location of the asset can change at any time, and the direct link remains unchanged.
 
 If the release is private, you need to provide a personal access token with either `api` or `read_api` scopes using
-a `private_token` query parameter or a `HTTP_PRIVATE_TOKEN` header when making the request. For example:
+a `private_token` query parameter or an `HTTP_PRIVATE_TOKEN` header when making the request. For example:
 
 ```shell
 curl --location --output filename "https://gitlab.example.com/my-group/my-project/-/releases/myrelease/downloads/<path-to-file>?private_token=<your_access_token>"
@@ -138,7 +138,7 @@ This asset has a direct link of:
 https://gitlab.com/gitlab-org/gitlab-runner/-/releases/permalink/latest/downloads/binaries/gitlab-runner-linux-amd64
 ```
 
-#### Link Types
+#### Link types
 
 The four types of links are "Runbook," "Package," "Image," and "Other."
 The `link_type` parameter accepts one of the following four values:
@@ -148,7 +148,7 @@ The `link_type` parameter accepts one of the following four values:
 - `image`
 - `other` (default)
 
-This field has no effect on the URL and it's only used for visual purposes in the Releases page of your project.
+This field has no effect on the URL, and it's only used for visual purposes in the Releases page of your project.
 
 #### Use a generic package for attaching binaries
 
@@ -215,7 +215,7 @@ release:
         --assets-links="[{\"name\":\"${DARWIN_AMD64_BINARY}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${DARWIN_AMD64_BINARY}\"},{\"name\":\"${LINUX_AMD64_BINARY}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_AMD64_BINARY}\"}]"
 ```
 
-PowerShell users may need to escape the double quote `"` inside a JSON
+PowerShell users might need to escape the double quote `"` inside a JSON
 string with a `` ` `` (back tick) for `--assets-link` and `ConvertTo-Json`
 before passing on to the `release-cli`.
 For example:

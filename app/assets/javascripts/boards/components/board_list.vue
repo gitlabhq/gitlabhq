@@ -750,6 +750,10 @@ export default {
       this.addItemToListInProgress = true;
       let issuable;
       try {
+        // boardListItems must be loaded before we read boardListItems[0] below, otherwise
+        // moveAfterId is silently omitted and the new item is persisted without a relative_position.
+        await this.waitForListToLoad();
+
         await this.$apollo.mutate({
           mutation: listIssuablesQueries[this.issuableType].createMutation,
           variables: {
@@ -807,6 +811,23 @@ export default {
           this.setActiveWorkItem(issuable);
         }
       }
+    },
+    waitForListToLoad() {
+      if (!this.$apollo.queries.currentList.loading) {
+        return Promise.resolve();
+      }
+
+      return new Promise((resolve) => {
+        const unwatch = this.$watch(
+          () => this.$apollo.queries.currentList.loading,
+          (isLoading) => {
+            if (!isLoading) {
+              unwatch();
+              resolve();
+            }
+          },
+        );
+      });
     },
     setActiveWorkItem(boardItem) {
       this.$apollo.mutate({

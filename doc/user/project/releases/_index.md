@@ -363,7 +363,7 @@ deploy_to_production:
 
 This configuration blocks deployment jobs conditionally and maintains pipeline continuity. When a freeze period is defined, the job fails and the pipeline can proceed without deployment. Manual deployment is possible after the freeze period.
 
-This approach offers deployment control during critical maintenance, and ensures the uninterrupted flow of the CI/CD pipeline.
+This approach offers deployment control during critical maintenance and ensures the uninterrupted flow of the CI/CD pipeline.
 
 To set a deploy freeze window in the UI, complete these steps:
 
@@ -393,7 +393,7 @@ For more information, see [Deployment safety](../../../ci/environments/deploymen
   have read and download access to the project releases.
   This includes associated Git-tag-names, release description, and author information of the releases.
   However, other repository-related information, such as [source code](release_fields.md#source-code) and
-  [release evidence](release_evidence.md) are redacted.
+  [release evidence](release_evidence.md) is redacted.
 
 ### Publish releases without giving access to source code
 

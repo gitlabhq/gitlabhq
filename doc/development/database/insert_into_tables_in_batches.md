@@ -101,7 +101,7 @@ performance impact this might have on your code. There is a trade-off between th
 > This parameter applies only to `bulk_insert!`. If you intend to update existing
 > records, use `bulk_upsert!` instead.
 
-It may happen that some records you are trying to insert already exist, which would result in
+It might happen that some records you are trying to insert already exist, which would result in
 primary key conflicts. There are two ways to address this problem: failing fast by raising an
 error or skipping duplicate records. The default behavior of `bulk_insert!` is to fail fast
 and raise an `ActiveRecord::RecordNotUnique` error.
@@ -127,7 +127,7 @@ safe and you `include BulkInsertSafe` the application fails with an error.
 
 ### `BulkInsertSafe` versus `InsertAll`
 
-Internally, `BulkInsertSafe` is based on `InsertAll`, and you may wonder when to choose
+Internally, `BulkInsertSafe` is based on `InsertAll`, and you might wonder when to choose
 the former over the latter. To help you make the decision,
 the key differences between these classes are listed in the table below.
 
@@ -151,7 +151,7 @@ owner = OwnerModel.new(owned_relations: array_of_owned_relations)
 owner.save!
 ```
 
-This issues a single `INSERT`, and transaction, for every record in `owned_relations`, which is inefficient if
+This issues a single `INSERT` and transaction for every record in `owned_relations`, which is inefficient if
 `array_of_owned_relations` is large. To remedy this, the `BulkInsertableAssociations` concern can be
 used to declare that the owner defines associations that are safe for bulk insertion:
 
@@ -189,4 +189,4 @@ There are a few restrictions to how these APIs can be used:
 
 Moreover, input data should either be limited to around 1000 records at most,
 or already batched prior to calling bulk insert. The `INSERT` statement runs in a single
-transaction, so for large amounts of records it may negatively affect database stability.
+transaction, so for large amounts of records it might negatively affect database stability.

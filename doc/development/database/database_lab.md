@@ -131,7 +131,7 @@ does the following:
 
 #### Making schema changes
 
-Sometimes when testing queries, a contributor may realize that the query needs an index
+Sometimes when testing queries, a contributor might realize that the query needs an index
 or other schema change to make added queries more performant. To test the query, run the `exec` command.
 For example, running this command:
 
@@ -158,7 +158,7 @@ Caveats:
   [`ci_builds`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/docs/ci_builds.yml#L14),
   use `gitlab-production-ci`.
 - Database Lab typically has a small delay of a few hours. If more up-to-date information
-  is required, you can instead request access to a replica [via Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Database_Console_via_Teleport.md)
+  is required, you can instead request access to a replica [via Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Database_Console_via_Teleport.md).
 
 For example: `\d index_design_management_designs_on_project_id` produces:
 
@@ -224,7 +224,7 @@ Host *.gitlab-db-lab.internal
 
 #### Manual access through the Postgres.ai instances page
 
-Team members with [`psql` access](#access-database-lab-engine), can gain direct access
+Team members with [`psql` access](#access-database-lab-engine) can gain direct access
 to a clone via `psql`. Access to `psql` enables you to see data, not just metadata.
 
 To connect to a clone using `psql`:
@@ -236,7 +236,7 @@ To connect to a clone using `psql`:
       Clones are removed after 12 hours.
 1. In the **Clone details** page of the Postgres.ai web interface, copy and run
    the command to start SSH port forwarding for the clone.
-    1. You may notice that it's suggested to run the command with the `-N` flag, meaning no shell will be started,
+    1. You might notice that it's suggested to run the command with the `-N` flag, meaning no shell will be started,
        so you should not expect any output if it runs successfully.
     1. Optionally, you can add `LogLevel DEBUG3` to your `~/.ssh/config`
        to output detailed debugging information.
@@ -245,7 +245,7 @@ To connect to a clone using `psql`:
 1. In the **Clone details** page of the Postgres.ai web interface, copy and run the `psql` connection string.
    Use the password provided at setup and set the `dbname` to `gitlabhq_dblab` (or check what databases are available by using `psql -l` with the same query string but `dbname=postgres`).
 
-After you connect, use clone like you would any `psql` console in production, but with
+After you connect, use the clone like you would any `psql` console in production, but with
 the added benefit and safety of an isolated writeable environment.
 
 #### Simplified access through `pgai` Ruby gem

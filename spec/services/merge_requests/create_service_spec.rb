@@ -667,9 +667,8 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
       end
 
       context 'when user can not access target project' do
-        before do
-          target_project.add_developer(user2)
-          target_project.add_maintainer(user)
+        before_all do
+          project.add_developer(user)
         end
 
         it 'raises an error' do

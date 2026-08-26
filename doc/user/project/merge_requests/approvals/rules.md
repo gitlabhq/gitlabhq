@@ -339,7 +339,7 @@ like `@group-name`, only direct members of eligible groups can provide approvals
 You can add a group of users as approvers. All direct members of this group
 can approve the rule. Inherited members cannot approve the rule.
 
-Typically the group is a subgroup in your top-level namespace, unless you are
+Typically, the group is a subgroup in your top-level namespace, unless you are
 collaborating with an external group. If you are collaborating with another group
 and want to use members of that group as approvers, you can either:
 
@@ -376,9 +376,9 @@ For more information about this validation error, read
 
 ### Groups need explicit or inherited Developer role on a project
 
-A group created to handle approvals may be created in a different area of the
+A group created to handle approvals might be created in a different area of the
 project hierarchy than the project requiring review. If this happens, members of the
-group may not have permission to approve the merge request as they do not have access to it.
+group might not have permission to approve the merge request as they do not have access to it.
 
 For example:
 
