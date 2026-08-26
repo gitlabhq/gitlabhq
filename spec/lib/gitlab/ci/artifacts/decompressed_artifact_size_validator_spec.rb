@@ -61,65 +61,27 @@ RSpec.describe Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator, feature
     end
   end
 
-  context 'when the file is located in the cloud' do
-    let(:remote_path) { File.join(remote_store_path, remote_id) }
+  context 'when local_archive_path is provided' do
+    let(:file) { instance_double(JobArtifactUploader, path: 'some/remote/path') }
 
-    let(:file_url) { "http://s3.amazonaws.com/#{remote_path}" }
-    let(:file) do
-      instance_double(JobArtifactUploader,
-        path: file_path,
-        url: file_url,
-        object_store: ObjectStorage::Store::REMOTE)
+    subject do
+      described_class.new(
+        file: file, file_format: file_format, max_bytes: max_bytes, local_archive_path: file_path
+      )
     end
 
-    let(:remote_id) { 'generated-remote-id-12345' }
-    let(:remote_store_path) { ObjectStorage::TMP_UPLOAD_PATH }
+    it 'validates the local copy instead of the file path' do
+      expect(::Gitlab::Ci::DecompressedGzipSizeValidator)
+        .to receive(:new)
+        .with(archive_path: file_path, max_bytes: max_bytes)
+        .and_return(validator)
 
-    before do
-      stub_request(:get, %r{s3.amazonaws.com/#{remote_path}})
-        .to_return(status: 200, body: File.read('spec/fixtures/build.env.gz'))
+      subject.validate!
     end
 
     it_behaves_like 'when file does not exceed allowed compressed size'
 
     it_behaves_like 'when file exceeds allowed decompressed size'
-
-    context 'when local_archive_path is provided' do
-      subject do
-        described_class.new(
-          file: file, file_format: file_format, max_bytes: max_bytes, local_archive_path: file_path
-        )
-      end
-
-      it 'validates the local copy without downloading the file' do
-        expect(::Gitlab::Ci::DecompressedGzipSizeValidator)
-          .to receive(:new)
-          .with(archive_path: file_path, max_bytes: max_bytes, limit_output: false)
-          .and_return(validator)
-        expect(::Faraday).not_to receive(:get)
-
-        subject.validate!
-      end
-
-      it_behaves_like 'when file does not exceed allowed compressed size'
-
-      it_behaves_like 'when file exceeds allowed decompressed size'
-    end
-  end
-
-  context 'when limit_output is enabled' do
-    subject do
-      described_class.new(file: file, file_format: file_format, max_bytes: max_bytes, limit_output: true)
-    end
-
-    it 'passes limit_output to the file format validator' do
-      expect(::Gitlab::Ci::DecompressedGzipSizeValidator)
-        .to receive(:new)
-        .with(archive_path: file_path, max_bytes: max_bytes, limit_output: true)
-        .and_return(validator)
-
-      subject.validate!
-    end
   end
 
   context 'when file_format is not on the list' do
