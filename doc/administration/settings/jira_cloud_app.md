@@ -2,6 +2,7 @@
 stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Install and configure the GitLab for Jira Cloud app on a GitLab Self-Managed instance, including OAuth setup.
 title: GitLab for Jira Cloud app administration
 ---
 
@@ -205,7 +206,7 @@ under your own Atlassian developer account, pointed at your GitLab Self-Managed 
     1. Set up an internet-facing [reverse proxy](#using-a-reverse-proxy) in front of your GitLab Self-Managed instance.
     1. Configure the reverse proxy to allow inbound connections from Jira Cloud.
     1. Ensure your GitLab Self-Managed instance can still make the outbound connections described previously.
-- Fully air-gapped instances cannot use the integration. The outbound path to `*.atlassian.net` is required for the development panel and other Jira-side surfaces.
+- Instances in an offline environment cannot use the integration. The outbound path to `*.atlassian.net` is required for the development panel and other Jira-side surfaces.
 - The Jira user that installs and configures the app must meet certain [requirements](#jira-user-requirements).
 - An Atlassian developer account and an [Atlassian API token](https://id.atlassian.com/manage-profile/security/api-tokens) for the Forge CLI.
 - A machine with [Node.js 22 LTS](https://nodejs.org/), the [Forge CLI](https://developer.atlassian.com/platform/forge/getting-started/), `envsubst`, `git`, and `curl`.
@@ -260,12 +261,12 @@ To publish a private copy of the GitLab for Jira Cloud Forge app and install it 
    if you lose it, you must re-register the app, which forces all installed Jira sites to re-install.
 
 For step-by-step instructions, manual `forge` commands, troubleshooting, and the upgrade workflow, see the
-[Self-managed install guide](https://gitlab.com/gitlab-org/gitlab-jira-forge/-/blob/main/docs/self-managed-install.md)
+[GitLab Self-Managed install guide](https://gitlab.com/gitlab-org/gitlab-jira-forge/-/blob/main/docs/self-managed-install.md)
 in the `gitlab-jira-forge` repository.
 
 After the app is registered, set its Forge app ID in GitLab so that inbound Forge tokens are verified:
 
-1. Copy the `APP_ID` value (an `ari:cloud:ecosystem::app/<uuid>` ARI) from `.env.self-managed`.
+1. Copy the `APP_ID` value (an `ari:cloud:ecosystem::app/<uuid>` Atlassian Resource Identifier, or ARI) from `.env.self-managed`.
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
@@ -285,7 +286,7 @@ To pull upstream manifest changes into your private Forge app, re-run the wrappe
 The script fast-forwards the local clone, regenerates the manifest, and redeploys the app.
 For more information about minor and major version upgrades, see
 [Upgrading](https://gitlab.com/gitlab-org/gitlab-jira-forge/-/blob/main/docs/self-managed-install.md#upgrading)
-in the self-managed install guide.
+in the GitLab Self-Managed install guide.
 
 ## Connect multiple GitLab instances
 
@@ -300,7 +301,7 @@ Prerequisites:
 For GitLab.com + GitLab Self-Managed:
 
 - On GitLab.com: Use the Atlassian Marketplace installation.
-- On GitLab Self-managed instances: Install the app manually.
+- On GitLab Self-Managed instances: Install the app manually.
 
 For multiple GitLab Self-Managed instances:
 
@@ -386,7 +387,7 @@ Jira sends GitLab.com a JWT token. GitLab.com handles the request by verifying t
 
 GitLab does not share an access token with Jira. However, users must authenticate through OAuth to configure the app.
 
-An access token is retrieved through a [PKCE](https://www.rfc-editor.org/rfc/rfc7636) OAuth flow and stored only on the client side.
+An access token is retrieved through a [Proof Key for Code Exchange (PKCE)](https://www.rfc-editor.org/rfc/rfc7636) OAuth flow and stored only on the client side.
 The app frontend that initializes the OAuth flow is a JavaScript application that's loaded from GitLab through an iframe on Jira.
 
 The OAuth application must have the `api` scope, which grants complete read and write access to the API.
@@ -418,7 +419,7 @@ that cannot be accessed directly from the internet, keep the following in mind:
   For more information, see [issue 434085](https://gitlab.com/gitlab-org/gitlab/-/issues/434085).
 - To secure the reverse proxy on the public internet, allow inbound traffic from
   [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections) only.
-- If you use a rewrite or subfilter with your proxy, ensure the proxy
+- If you use a `rewrite` or `sub_filter` directive with your proxy, ensure the proxy
   does not rewrite or replace the `gitlab-jira-connect-${host}` app key.
   Otherwise, you might get a [`Failed to link group`](jira_cloud_app_troubleshooting.md#error-failed-to-link-group) error.
 - When you select [**Create branch**](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/#Create-feature-branches) in the Jira development panel,

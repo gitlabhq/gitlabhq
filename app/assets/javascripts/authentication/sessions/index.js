@@ -1,6 +1,31 @@
 import Vue from 'vue';
 import { s__ } from '~/locale';
+import PasskeyAuthentication from './components/passkey_authentication.vue';
 import SessionExpireModal from './components/session_expire_modal.vue';
+
+export const initPasskeyAuthentication = () => {
+  const el = document.getElementById('js-passkey-authentication');
+
+  if (!el) {
+    return false;
+  }
+
+  const { path, rememberMe } = el.dataset;
+
+  return new Vue({
+    el,
+    name: 'PasskeyRoot',
+    render(createElement) {
+      return createElement(PasskeyAuthentication, {
+        props: {
+          path,
+          rememberMe,
+          webauthnParams: JSON.parse(gon.webauthn.options),
+        },
+      });
+    },
+  });
+};
 
 export const initExpireSessionModal = () => {
   const el = document.getElementById('js-session-expire-modal');

@@ -79,7 +79,7 @@ describe('work_items/board/grouping/visibility', () => {
             visibleGroups: null,
             groupBy,
             value: values[1],
-            allValues: values,
+            allGroups: values,
           }),
         ).toEqual([groupId(values[0]), groupId(values[2])]);
       });
@@ -93,7 +93,7 @@ describe('work_items/board/grouping/visibility', () => {
           visibleGroups: null,
           groupBy,
           value: values[1],
-          allValues: values,
+          allGroups: values,
         });
       });
 
@@ -103,7 +103,7 @@ describe('work_items/board/grouping/visibility', () => {
             visibleGroups: afterFirstToggle,
             groupBy,
             value: values[1],
-            allValues: values,
+            allGroups: values,
           }),
         ).toBeNull();
       });
@@ -118,14 +118,14 @@ describe('work_items/board/grouping/visibility', () => {
             visibleGroups: [groupId(values[0])],
             groupBy,
             value: values[1],
-            allValues: values,
+            allGroups: values,
           }),
         ).toEqual([groupId(values[0]), groupId(values[1])]);
       });
 
       it('removes a visible value from the list', () => {
         expect(
-          toggleGroupVisibility({ visibleGroups, groupBy, value: values[0], allValues: values }),
+          toggleGroupVisibility({ visibleGroups, groupBy, value: values[0], allGroups: values }),
         ).toEqual([groupId(values[1])]);
       });
 
@@ -135,7 +135,7 @@ describe('work_items/board/grouping/visibility', () => {
             visibleGroups: [groupId(values[0])],
             groupBy,
             value: values[0],
-            allValues: values,
+            allGroups: values,
           }),
         ).toEqual([]);
       });

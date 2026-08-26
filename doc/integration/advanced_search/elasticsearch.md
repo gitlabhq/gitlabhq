@@ -1044,6 +1044,7 @@ When performing a search, the GitLab index uses the following scopes:
 |------------------|------------------------|
 | `commits`        | Commit data            |
 | `projects`       | Project data (default) |
+| `groups`         | Group data             |
 | `blobs`          | Code                   |
 | `work_items`     | Work item data         |
 | `merge_requests` | Merge request data     |

@@ -289,7 +289,7 @@ You can migrate existing components to dashboard visualizations. To do this,
 wrap your existing component in a new visualization that provides the component with the
 required context and data. See [`dora_performers_score.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/dora_performers_score.vue) as an example.
 
-As an upgrade path, your component may fetch its own data internally.
+As an upgrade path, your component might fetch its own data internally.
 But you should ensure to plan how to migrate your visualization to use the shared analytics data sources method.
 See [`value_stream.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/value_stream.js) as an example.
 
@@ -299,7 +299,7 @@ While developing new visualizations we can use [feature flags](../feature_flags/
 
 The [`from_data`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/panel.rb) method builds the panel objects for a dashboard. Using the `filter_map` method, we can add a condition to skip rendering panels that include the visualization we are developing.
 
-For example, here we have added the `enable_usage_overview_visualization` feature flag and can check it's current state to determine whether panels using the `usage_overview` visualization should be rendered:
+For example, here we have added the `enable_usage_overview_visualization` feature flag and can check its current state to determine whether panels using the `usage_overview` visualization should be rendered:
 
 ```ruby
 panel_yaml.filter_map do |panel|

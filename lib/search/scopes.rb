@@ -31,9 +31,17 @@ module Search
           group: %i[advanced basic]
         }
       },
+      groups: {
+        label: -> { _('Groups') },
+        sort: 2,
+        availability: {
+          global: %i[advanced basic],
+          group: %i[advanced basic]
+        }
+      },
       blobs: {
         label: -> { _('Code') },
-        sort: 2,
+        sort: 3,
         availability: {
           global: %i[zoekt advanced],
           group: %i[zoekt advanced],
@@ -42,7 +50,7 @@ module Search
       },
       work_items: {
         label: -> { _('Work items') },
-        sort: 3,
+        sort: 4,
         availability: {
           global: %i[advanced basic],
           group: %i[advanced basic],

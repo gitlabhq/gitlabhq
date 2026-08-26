@@ -34971,6 +34971,7 @@ Arguments:
 | <a id="analytics-pipelines-startedatfrom"></a>`startedAtFrom` | [`Time`](#time) | Filter by pipeline start timestamp. Start of the range. |
 | <a id="analytics-pipelines-startedatto"></a>`startedAtTo` | [`Time`](#time) | Filter by pipeline start timestamp. End of the range. |
 | <a id="analytics-pipelines-status"></a>`status` | [`[String!]`](#string) | Filter by one or many pipeline statuses. |
+| <a id="analytics-pipelines-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
 
 ### `AnalyzerGroupStatusType`
 
@@ -35146,6 +35147,7 @@ Fields:
 | <a id="approvalrule-invalid"></a>`invalid` | [`Boolean`](#boolean) | Indicates if the rule is invalid and cannot be approved. |
 | <a id="approvalrule-name"></a>`name` | [`String`](#string) | Name of the rule. |
 | <a id="approvalrule-overridden"></a>`overridden` | [`Boolean`](#boolean) | Indicates if the rule was overridden for the merge request. |
+| <a id="approvalrule-patterns"></a>`patterns` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.4. Status: Experiment. CODEOWNERS patterns grouped into this rule. Returns null when the rule is not a grouped Code Owner rule. |
 | <a id="approvalrule-scanresultpolicies"></a>`scanResultPolicies` | [`[ApprovalScanResultPolicy!]`](#approvalscanresultpolicy) | List of scan result policies associated with the rule. |
 | <a id="approvalrule-section"></a>`section` | [`String`](#string) | Named section of the Code Owners file that the rule applies to. |
 | <a id="approvalrule-sourcerule"></a>`sourceRule` | [`ApprovalRule`](#approvalrule) | Source rule used to create the rule. |
@@ -35212,6 +35214,22 @@ Fields:
 | <a id="artifactregistrynpmpackage-scope"></a>`scope` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. npm scope of the package. Null for an unscoped package. |
 | <a id="artifactregistrynpmpackage-versionscount"></a>`versionsCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.3. Status: Experiment. Number of versions of the package. Buffered, so it can lag the version list. |
 
+### `ArtifactRegistryRemoteSettings`
+
+Upstream configuration of a remote Artifact Registry repository.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryremotesettings-cachevalidityhours"></a>`cacheValidityHours` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. Revalidation window for cached artifacts, in hours. Zero means cached artifacts never revalidate. |
+| <a id="artifactregistryremotesettings-hascredentials"></a>`hasCredentials` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Indicates upstream credentials are stored. Reported in place of the credentials themselves, which are write-only and exposed by no field. |
+| <a id="artifactregistryremotesettings-lasthealthcheckedat"></a>`lastHealthCheckedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp of the most recent health probe of the upstream. Null until the first probe. |
+| <a id="artifactregistryremotesettings-lasthealthstatus"></a>`lastHealthStatus` {{< icon name="warning-solid" >}} | [`ArtifactRegistryHealthStatus`](#artifactregistryhealthstatus) | Introduced in GitLab 19.4. Status: Experiment. Health verdict the most recent probe of the upstream stored. `UNKNOWN` before the first probe, and for a status this schema does not recognize. |
+| <a id="artifactregistryremotesettings-metadatacachevalidityhours"></a>`metadataCacheValidityHours` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. Revalidation window for cached metadata, in hours. Null for a format that caches no metadata, such as Docker and OCI. |
+| <a id="artifactregistryremotesettings-snapshotmetadataalwaysrevalidate"></a>`snapshotMetadataAlwaysRevalidate` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Indicates snapshot metadata revalidates on every read instead of on the metadata window. Null for a format without snapshot metadata, so non-null only for Maven. |
+| <a id="artifactregistryremotesettings-url"></a>`url` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Base URL of the upstream registry, in the canonical form Artifact Registry stores. |
+
 ### `ArtifactRegistryRepository`
 
 Repository in Artifact Registry.
@@ -35229,7 +35247,7 @@ Fields:
 | <a id="artifactregistryrepository-kind"></a>`kind` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryKind!`](#artifactregistryrepositorykind) | Introduced in GitLab 19.3. Status: Experiment. How the repository sources its artifacts. |
 | <a id="artifactregistryrepository-lastupdatedat"></a>`lastUpdatedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.3. Status: Experiment. Time the repository content last changed. Null when the content never changed. |
 | <a id="artifactregistryrepository-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Name of the repository, unique within its namespace. |
-| <a id="artifactregistryrepository-settings"></a>`settings` {{< icon name="warning-solid" >}} | [`JSON!`](#json) | Introduced in GitLab 19.3. Status: Experiment. Kind-specific configuration, discriminated by format and kind. Empty for hosted repositories. |
+| <a id="artifactregistryrepository-settings"></a>`settings` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRemoteSettings`](#artifactregistryremotesettings) | Introduced in GitLab 19.3. Status: Experiment. Upstream configuration Artifact Registry returned for the repository. Null when it returned none, so null on a hosted or virtual repository. |
 | <a id="artifactregistryrepository-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Storage the repository occupies, in bytes. Buffered, so it can lag. |
 | <a id="artifactregistryrepository-updatedby"></a>`updatedBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who last changed the repository. Null when the editor is unknown or no longer exists. |
 | <a id="artifactregistryrepository-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryVisibility!`](#artifactregistryrepositoryvisibility) | Introduced in GitLab 19.3. Status: Experiment. Who can read the repository. |
@@ -35253,7 +35271,7 @@ Fields:
 | <a id="artifactregistryrepositorydetails-lastupdatedat"></a>`lastUpdatedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.3. Status: Experiment. Time the repository content last changed. Null when the content never changed. |
 | <a id="artifactregistryrepositorydetails-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Name of the repository, unique within its namespace. |
 | <a id="artifactregistryrepositorydetails-packages"></a>`packages` {{< icon name="warning-solid" >}} | [`ArtifactRegistryPackageConnection`](#artifactregistrypackageconnection) | Introduced in GitLab 19.3. Status: Experiment. Packages the repository holds, ordered by name. Can be selected once per operation, so one operation reads packages for one repository. Returns `null` for a repository holding images, for a repository that is gone, and when Artifact Registry rejects the read. |
-| <a id="artifactregistryrepositorydetails-settings"></a>`settings` {{< icon name="warning-solid" >}} | [`JSON!`](#json) | Introduced in GitLab 19.3. Status: Experiment. Kind-specific configuration, discriminated by format and kind. Empty for hosted repositories. |
+| <a id="artifactregistryrepositorydetails-settings"></a>`settings` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRemoteSettings`](#artifactregistryremotesettings) | Introduced in GitLab 19.3. Status: Experiment. Upstream configuration Artifact Registry returned for the repository. Null when it returned none, so null on a hosted or virtual repository. |
 | <a id="artifactregistryrepositorydetails-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Storage the repository occupies, in bytes. Buffered, so it can lag. |
 | <a id="artifactregistryrepositorydetails-updatedby"></a>`updatedBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who last changed the repository. Null when the editor is unknown or no longer exists. |
 | <a id="artifactregistryrepositorydetails-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryVisibility!`](#artifactregistryrepositoryvisibility) | Introduced in GitLab 19.3. Status: Experiment. Who can read the repository. |
@@ -49295,6 +49313,8 @@ Fields:
 | <a id="mergerequest-duodependencybumpbreakingchangesavailable"></a>`duoDependencyBumpBreakingChangesAvailable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.2. Status: Experiment. Indicates whether the GitLab Duo resolve dependency bump breaking changes flow can be triggered for the merge request. |
 | <a id="mergerequest-duoworkflows"></a>`duoWorkflows` {{< icon name="warning-solid" >}} | [`DuoWorkflowConnection`](#duoworkflowconnection) | Introduced in GitLab 18.10. Status: Experiment. Duo Workflow sessions associated with the merge request. |
 | <a id="mergerequest-forceremovesourcebranch"></a>`forceRemoveSourceBranch` | [`Boolean`](#boolean) | Indicates if the project settings will lead to source branch deletion after merge. |
+| <a id="mergerequest-groupedapprovalsleft"></a>`groupedApprovalsLeft` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. Number of approvals left, counting Code Owner rules that share a section and approvers as a single rule. |
+| <a id="mergerequest-groupedapprovalsrequired"></a>`groupedApprovalsRequired` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. Number of approvals required, counting Code Owner rules that share a section and approvers as a single rule. |
 | <a id="mergerequest-hasci"></a>`hasCi` | [`Boolean!`](#boolean) | Indicates if the merge request has CI. |
 | <a id="mergerequest-hassecurityreports"></a>`hasSecurityReports` | [`Boolean!`](#boolean) | Indicates if the source branch has any security reports. |
 | <a id="mergerequest-headpipeline"></a>`headPipeline` | [`Pipeline`](#pipeline) | Pipeline running on the branch HEAD of the merge request. |
@@ -53310,6 +53330,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="organization-cdenvironments-applicationid"></a>`applicationId` | [`CdApplicationID`](#cdapplicationid) | Filter environments to those where the application has services deployed. |
 | <a id="organization-cdenvironments-search"></a>`search` | [`String`](#string) | Search environments by name or description. |
 | <a id="organization-cdenvironments-tier"></a>`tier` | [`CdEnvironmentTier`](#cdenvironmenttier) | Filter environments by tier. |
 
@@ -54877,6 +54898,7 @@ Fields:
 | <a id="pipelinesaggregationresponsedimensions-ref"></a>`ref` | [`String`](#string) | Pipeline ref. |
 | <a id="pipelinesaggregationresponsedimensions-source"></a>`source` | [`String`](#string) | Pipeline source. |
 | <a id="pipelinesaggregationresponsedimensions-status"></a>`status` | [`String`](#string) | Pipeline status. |
+| <a id="pipelinesaggregationresponsedimensions-user"></a>`user` | [`UserCore`](#usercore) | User who triggered the pipeline. |
 
 #### Fields with arguments
 
@@ -66367,6 +66389,16 @@ The kind of an approval rule.
 | <a id="approvalruletype-code_owner"></a>`CODE_OWNER` | A `code_owner` approval rule. |
 | <a id="approvalruletype-regular"></a>`REGULAR` | A `regular` approval rule. |
 | <a id="approvalruletype-report_approver"></a>`REPORT_APPROVER` | A `report_approver` approval rule. |
+
+### `ArtifactRegistryHealthStatus`
+
+Stored health verdict for a remote Artifact Registry repository upstream.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="artifactregistryhealthstatus-healthy"></a>`HEALTHY` | Most recent probe reached the upstream. |
+| <a id="artifactregistryhealthstatus-unhealthy"></a>`UNHEALTHY` | Consecutive probe failures reached the threshold Artifact Registry sets. |
+| <a id="artifactregistryhealthstatus-unknown"></a>`UNKNOWN` | No health probe has recorded a result yet, or Artifact Registry reported a status this schema does not recognize. |
 
 ### `ArtifactRegistryRepositoryFormat`
 

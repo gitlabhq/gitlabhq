@@ -2,7 +2,7 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
-title: Strings and the Text data type
+title: Strings and the text data type
 ---
 
 When adding new columns to store strings or other textual information:
@@ -35,7 +35,7 @@ validations and index creation while it allows reads and writes).
 
 > [!note]
 > Don't use text columns for `encrypts` attributes. Use a
-> [`:jsonb` column](../migration_style_guide.md#encrypted-attributes) instead
+> [`:jsonb` column](../migration_style_guide.md#encrypted-attributes) instead.
 
 ## Create a new table with text columns
 
@@ -63,7 +63,7 @@ end
 Adding a column to an existing table requires an exclusive lock for that table. Even though that lock
 is held for a brief amount of time, the time `add_column` needs to complete its execution can vary
 depending on how frequently the table is accessed. For example, acquiring an exclusive lock for a very
-frequently accessed table may take minutes in GitLab.com and requires the use of `with_lock_retries`.
+frequently accessed table might take minutes in GitLab.com and requires the use of `with_lock_retries`.
 
 When adding a text limit, transactions must be disabled with `disable_ddl_transaction!`. This means adding the column is not rolled back
 in case the migration fails afterwards. An attempt to re-run the migration will raise an error because of the already existing column.
@@ -180,7 +180,7 @@ a database error.
 Adding or removing a constraint to an existing attribute requires that any application changes are
 deployed first,
 otherwise servers still in the old version of the application
-[may try to update the attribute with invalid values](../multi_version_compatibility.md#ci-artifact-uploads-were-failing).
+[might try to update the attribute with invalid values](../multi_version_compatibility.md#ci-artifact-uploads-were-failing).
 For these reasons, `add_text_limit` should run in a post-deployment migration.
 
 Still in our example, for the 13.0 milestone (current), consider that the following validation
@@ -253,8 +253,8 @@ end
 ```
 
 To keep this guide short, we skipped the definition of the background migration and only
-provided a high level example of the post-deployment migration that is used to schedule the batches.
-You can find more information in the guide about [batched background migrations](batched_background_migrations.md)
+provided a high-level example of the post-deployment migration that is used to schedule the batches.
+You can find more information in the guide about [batched background migrations](batched_background_migrations.md).
 
 #### Validate the text limit (next release)
 
@@ -305,7 +305,7 @@ If you have to clean up a text column for a really [large table](https://gitlab.
 it needs an additional [batched background migration cleaning up](batched_background_migrations.md#cleaning-up-a-batched-background-migration)
 in the release after adding the data migration.
 
-In that rare case you need 3 releases end-to-end:
+In that rare case, you need 3 releases end-to-end:
 
 1. Release `N.M` - Add the text limit and the background migration to fix the existing records.
 1. Release `N.M+1` - Cleanup the background migration.

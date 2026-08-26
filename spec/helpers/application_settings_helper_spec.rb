@@ -685,7 +685,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       # Extract values (second element of each pair), excluding the first "system default"
       values = options[1..].map(&:last)
 
-      expected_order = %w[projects blobs work_items merge_requests wiki_blobs commits notes milestones
+      expected_order = %w[projects groups blobs work_items merge_requests wiki_blobs commits notes milestones
         users snippet_titles]
 
       expect(values).to eq(expected_order)

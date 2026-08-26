@@ -2,8 +2,8 @@ import produce from 'immer';
 import { cloneDeep } from 'lodash-es';
 import { getWorkItemsConnection } from '~/work_items/utils';
 
-// Deep snapshot of the moved card so it can be reinserted into the target column;
-// null when the column or item is absent.
+// Clones the card so we have our own copy to reinsert into the target column,
+// instead of a reference into the cache we're about to remove it from.
 export const readWorkItemFromColumn = ({ cache, query, variables, workItemId, useRestApi }) => {
   const data = cache.readQuery({ query, variables });
   const node = getWorkItemsConnection(data, useRestApi)?.nodes?.find(
@@ -12,14 +12,15 @@ export const readWorkItemFromColumn = ({ cache, query, variables, workItemId, us
   return node ? cloneDeep(node) : null;
 };
 
-// Pre-move snapshot of a column's ordered work items; empty when the column is
-// absent from the cache. Used to compute relative-position ids for a move.
+// Snapshot of a column's order before a move, used to work out the
+// moveBeforeId/moveAfterId for the card landing there.
 export const readWorkItemsFromColumn = ({ cache, query, variables, useRestApi }) => {
   const data = cache.readQuery({ query, variables });
   return getWorkItemsConnection(data, useRestApi)?.nodes ?? [];
 };
 
-// No-op on a missing cache entry, so a move still works when a sibling column is unloaded.
+// A column can be missing from the cache if it's collapsed or hasn't loaded
+// yet. When that happens we just do nothing, so the move still succeeds.
 export const removeWorkItemFromColumn = ({ cache, query, variables, workItemId, useRestApi }) => {
   cache.updateQuery({ query, variables }, (sourceData) => {
     if (!getWorkItemsConnection(sourceData, useRestApi)) {
@@ -36,9 +37,9 @@ export const removeWorkItemFromColumn = ({ cache, query, variables, workItemId, 
   });
 };
 
-// Inserts at index and runs the optional `patchCard` callback on the inserted
-// (cloned) node so its grouped attribute matches the target column during the
-// optimistic window. No-op on a missing cache entry.
+// Inserts the card at `index`. `patchCard`, if given, runs on the inserted
+// clone so its grouped attribute (e.g. status) already matches the target
+// column while the mutation is still in flight.
 export const addWorkItemToColumn = ({
   cache,
   query,
@@ -69,8 +70,8 @@ export const addWorkItemToColumn = ({
   });
 };
 
-// Adjusts a column's total count (the count-only query lives in its own cache entry,
-// so card-move updates to the connection don't touch it). No-op on a missing entry.
+// The count-only query has its own cache entry, separate from the list query,
+// so moving a card doesn't update the count for free — we have to do it here.
 export const adjustWorkItemCountInColumn = ({ cache, query, variables, delta }) => {
   cache.updateQuery({ query, variables }, (sourceData) => {
     const connection = sourceData?.namespace?.workItems;

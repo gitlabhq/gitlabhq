@@ -64,3 +64,17 @@
     }
   }
 }
+
+// Table scroll shadows are high-contrast and would bleed through the translucent
+// .description-more gradient, so suppress them while the description is truncated.
+.work-item-description .truncated {
+  .gl-table-shadow-overlay::before,
+  .gl-table-shadow-overlay::after {
+    display: none;
+  }
+
+  .gl-table-shadow {
+    animation: none;
+    box-shadow: none;
+  }
+}

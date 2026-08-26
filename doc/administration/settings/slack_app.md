@@ -19,7 +19,7 @@ description: "Administer, configure, and troubleshoot the GitLab for Slack app o
 The GitLab for Slack app distributed through the Slack App Directory only works with GitLab.com.
 On GitLab Self-Managed, you can create your own copy of the GitLab for Slack app from a [manifest file](https://api.slack.com/reference/manifests#creating_apps) and configure your instance.
 
-The app is a private one-time copy installed in your Slack workspace only and not distributed through the Slack App Directory. To have the [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md) on your GitLab Self-Managed instance, you must enable the integration.
+The app is a private one-time copy installed in your Slack workspace only and not distributed through the Slack App Directory. To have the [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md) on your GitLab Self-Managed instance, you must turn on the integration.
 
 ## Create a GitLab for Slack app
 
@@ -64,8 +64,6 @@ After you've [created a GitLab for Slack app](#create-a-gitlab-for-slack-app), y
 
 {{< history >}}
 
-- Installation for a specific instance [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a feature flag](../feature_flags/_index.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147820) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175803) in GitLab 17.8. Feature flag `gitlab_for_slack_app_instance_and_group_level` removed.
 
 {{< /history >}}
@@ -120,17 +118,17 @@ To update your copy of the GitLab for Slack app:
 
 ## Connectivity requirements
 
-To enable the GitLab for Slack app functionality, your network must allow inbound and outbound connections between GitLab and Slack.
+To turn on the GitLab for Slack app functionality, your network must allow inbound and outbound connections between GitLab and Slack.
 
-- For [Slack notifications](../../user/project/integrations/gitlab_slack_application.md#slack-notifications), the GitLab instance must be able to send requests to `https://slack.com`.
-- For [Slash commands](../../user/project/integrations/gitlab_slack_application.md#slash-commands) and other features, the GitLab instance must be able to receive requests from `https://slack.com`.
+- For [Slack notifications](../../user/project/integrations/gitlab_slack_application.md#slack-notifications), the GitLab instance must be allowed to send requests to `https://slack.com`.
+- For [Slash commands](../../user/project/integrations/gitlab_slack_application.md#slash-commands) and other features, the GitLab instance must be allowed to receive requests from `https://slack.com`.
 
 ## Enable support for multiple workspaces
 
 By default, you can [install the GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md#install-the-gitlab-for-slack-app) in only one Slack workspace.
 An administrator selects this workspace when they [create a GitLab for Slack app](#create-a-gitlab-for-slack-app).
 
-To enable support for multiple Slack workspaces, you must configure the GitLab for Slack app
+To turn on support for multiple Slack workspaces, you must configure the GitLab for Slack app
 as an [unlisted distributed app](https://api.slack.com/distribution#unlisted-distributed-apps).
 An unlisted distributed app:
 

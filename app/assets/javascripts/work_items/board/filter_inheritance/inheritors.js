@@ -9,11 +9,12 @@ import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_us
 import searchMilestonesQuery from '../graphql/search_milestones.query.graphql';
 
 /**
- * A new work item created from a board column inherits both the column's grouping
- * (handled by the grouping strategy's `newItemDraft`) and the board's active filters.
- * Each "inheritor" here maps one filterable attribute to a new-work-item widgets-draft
- * fragment (keyed by widget type, e.g. `{ LABELS: { labels: { nodes } } }`), resolving
- * filter values (names/titles) to the full objects the widget draft needs.
+ * When you create a work item from a board column, it should pick up both the
+ * column's grouping (the grouping strategy's `newItemDraft` handles that) and
+ * the board's active filters. Each "inheritor" below owns one filterable
+ * attribute: it takes the filter's raw values (names/titles) and turns them
+ * into the full objects the new-item widgets draft needs, keyed by widget
+ * type (e.g. `{ LABELS: { labels: { nodes } } }`).
  *
  * Available inheritors differ by edition, so the list lives behind `ee_else_ce` and is
  * consumed in `./index.js`. Add a CE inheritor here; add an EE-only one in the EE
@@ -47,10 +48,11 @@ const labelsInheritor = {
       return {};
     }
 
-    // Resolve each title to a full label object; the filter only carries titles, but the
-    // widget draft needs `{ id, title, color, textColor }`. Query per title so resolution
-    // does not depend on how many labels the namespace has. allSettled so one failed lookup
-    // drops only that label, not every label that resolved.
+    // The filter only gives us label titles, but the widget draft needs full
+    // label objects (`{ id, title, color, textColor }`). Query per title so
+    // this works the same no matter how many labels the namespace has. Using
+    // `allSettled` means one failed lookup only drops that label, not every
+    // label that resolved.
     const results = await Promise.allSettled(
       titles.map((title) =>
         apolloClient.query({

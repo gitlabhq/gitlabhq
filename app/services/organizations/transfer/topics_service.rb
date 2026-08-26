@@ -40,7 +40,7 @@ module Organizations
       def old_topics
         project_topics = Projects::ProjectTopic.joins(project: :namespace)
           .where("project_topics.topic_id = topics.id")
-          .where("namespaces.traversal_ids @> ARRAY[?]::bigint[]", group.id)
+          .where("namespaces.traversal_ids @> '{?}'", group.id)
 
         Projects::Topic
           .where(organization_id: old_organization.id)

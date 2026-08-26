@@ -35,8 +35,8 @@ describe('BoardView', () => {
 
   const groupByValuesHandler = jest.fn();
   const gateDataHandler = jest.fn();
-  // The column-values and gate queries differ by edition (a placeholder in CE,
-  // the status queries in EE), so take them from the strategy the board actually uses.
+  // CE and EE use different queries here (CE has a placeholder, EE has the real
+  // status queries), so pull them from whichever strategy the board actually resolves.
   const { valuesQuery: groupByValuesQuery, gateQuery } = groupingStrategyFor('status');
 
   const queryVariables = { state: 'opened', sort: 'CREATED_DESC' };
@@ -86,9 +86,8 @@ describe('BoardView', () => {
     gateDataHandler.mockResolvedValue(buildWorkItemTypesResponse());
   });
 
-  // Statuses are an EE-only field, so grouping by status produces no columns in
-  // CE (the placeholder strategy extracts none), and the board degrades
-  // gracefully.
+  // Statuses don't exist in CE, so the placeholder strategy extracts no values
+  // and the board just renders no columns. That's correct behavior, not a bug.
   describe('grouping by status', () => {
     it('renders no column groups', async () => {
       createComponent();

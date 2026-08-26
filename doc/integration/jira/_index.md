@@ -2,6 +2,7 @@
 stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Compare the Jira issues integration and the Jira development panel to choose how GitLab connects with Jira.
 title: Jira
 ---
 

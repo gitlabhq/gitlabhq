@@ -135,7 +135,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'loose_foreign_keys_organization_deleted_records.organization_id',
       'loose_foreign_keys_namespace_deleted_records.namespace_id',
       'loose_foreign_keys_project_deleted_records.project_id',
-      'loose_foreign_keys_user_deleted_records.user_id'
+      'loose_foreign_keys_user_deleted_records.user_id',
+      'ai_flow_schedules.project_id' # LFK already present on ai_flow_triggers and cascade delete via ai_flow_trigger_id
     ]
   end
 

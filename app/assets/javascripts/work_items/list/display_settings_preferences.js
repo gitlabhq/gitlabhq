@@ -10,9 +10,9 @@ import {
   VIEW_MODE_BOARD,
 } from '~/work_items/constants';
 
-// Shared helpers for persisting work item list display settings. These wrap the Apollo mutations
-// and the getUserWorkItemsPreferences cache update so the drawer sub-components and planning_view
-// don't each re-implement the same optimistic-response / cache.updateQuery plumbing.
+// Helpers for saving work item list display settings. Saving a setting always means running
+// the same Apollo mutation and updating the cache the same way, so this module does that once
+// instead of the drawer sub-components and planning_view each writing their own copy.
 
 export const alertPreferenceError = (error) =>
   createAlert({

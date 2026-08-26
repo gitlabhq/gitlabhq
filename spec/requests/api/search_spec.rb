@@ -241,7 +241,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
     end
 
     context 'with correct params' do
-      [:issues, :work_items, :merge_requests, :projects, :milestones, :users, :snippet_titles].each do |scope|
+      [:projects, :issues, :work_items, :merge_requests, :milestones, :users, :snippet_titles].each do |scope|
         context "with correct params for scope #{scope}" do
           it_behaves_like 'internal event tracking' do
             let(:event) { 'perform_search' }
@@ -771,6 +771,21 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         it_behaves_like 'pagination', scope: :projects
 
         it_behaves_like 'apdex recorded', scope: 'projects', level: 'group'
+      end
+
+      context 'for groups scope' do
+        let_it_be(:subgroup) { create(:group, :public, parent: group, name: 'awesome subgroup') }
+
+        before do
+          get api(endpoint, user), params: { scope: 'groups', search: 'awesome' }
+        end
+
+        it 'returns the matching descendant groups' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('id')).to contain_exactly(subgroup.id)
+        end
+
+        it_behaves_like 'apdex recorded', scope: 'groups', level: 'group'
       end
 
       context 'for issues scope' do

@@ -48,6 +48,8 @@ module Search
       case scope_key
       when :projects
         project.nil?
+      when :groups
+        show_groups_search_tab?
       when :blobs
         show_code_search_tab?
       when :work_items
@@ -76,6 +78,10 @@ module Search
       return false unless can?(user, :read_users_list)
 
       project.nil? && (group.present? || ::Gitlab::CurrentSettings.global_search_users_enabled?)
+    end
+
+    def show_groups_search_tab?
+      project.nil? && ::Search::ScopeHandlers::Groups.available?(user)
     end
 
     def show_code_search_tab?

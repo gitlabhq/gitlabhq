@@ -2,6 +2,7 @@
 stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Resolve issue linking and comment permission errors with the Jira issues integration.
 title: Troubleshooting Jira issues integration
 ---
 
@@ -32,7 +33,7 @@ If GitLab cannot comment on a Jira issue, ensure the Jira user you created for t
 - Post comments on a Jira issue.
 - Transition the Jira issue.
 
-When the [GitLab issue tracker](../external-issue-tracker.md) is disabled, Jira issue references and comments do not work.
+When the [GitLab issue tracker](../external-issue-tracker.md) is turned off, Jira issue references and comments do not work.
 If you [restrict IP addresses for Jira access](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), ensure you add your GitLab Self-Managed IP addresses or [GitLab IP addresses](../../user/gitlab_com/_index.md#ip-range) to the allowlist in Jira.
 
 For the root cause, check the [`integrations_json.log`](../../administration/logs/_index.md#integrations_jsonlog) file. When GitLab tries to comment on a Jira issue, an `Error sending message` log entry might appear.
@@ -130,7 +131,7 @@ To resolve this issue, sign in to your Jira instance and complete the CAPTCHA.
 In GitLab 19.0 and earlier, the Jira issues integration might not work for an imported project.
 For more information, see [issue 341571](https://gitlab.com/gitlab-org/gitlab/-/issues/341571).
 
-To resolve this issue, disable and then re-enable the integration.
+To resolve this issue, turn the integration off and then on again.
 
 ## Error: `certificate verify failed`
 
@@ -165,7 +166,7 @@ To resolve this issue, see
 
 ### Change all projects on an instance
 
-To change all Jira projects to use instance-level integration settings:
+To change all Jira projects to use the integration settings for the instance:
 
 1. In a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session), run the following:
 
@@ -185,11 +186,11 @@ To change all Jira projects to use instance-level integration settings:
    end
    ```
 
-1. Modify and save the instance-level integration from the UI to propagate the changes to all group-level and project-level integrations.
+1. Modify and save the integration for the instance from the UI to propagate the changes to all group and project integrations.
 
 ### Change all projects in a group
 
-To change all Jira projects in a group (and its subgroups) to use group-level integration settings:
+To change all Jira projects in a group (and its subgroups) to use the integration settings for the group:
 
 - In a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session), run the following:
 
@@ -264,7 +265,7 @@ Check [`production.log`](../../administration/logs/_index.md#productionlog) to s
 :NoMethodError (undefined method 'duedate' for #<JIRA::Resource::Issue:0x00007f406d7b3180>)
 ```
 
-If that's the case, ensure the **Due date** field is [visible for issues](https://confluence.atlassian.com/jirakb/due-date-field-is-missing-189431917.html) in the integrated Jira project.
+If that's the case, ensure the **Due date** text box is [visible for issues](https://confluence.atlassian.com/jirakb/due-date-field-is-missing-189431917.html) in the integrated Jira project.
 
 ### Error: `An error occurred while requesting data from Jira`
 

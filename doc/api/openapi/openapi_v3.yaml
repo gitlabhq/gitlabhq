@@ -29813,6 +29813,7 @@ paths:
           - commits
           - notes
           - projects
+          - groups
           - issues
           - work_items
           - merge_requests
@@ -29957,6 +29958,7 @@ paths:
           - commits
           - notes
           - projects
+          - groups
           - issues
           - work_items
           - merge_requests

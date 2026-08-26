@@ -208,7 +208,7 @@ Keep in mind that some statistics are per-loop averages, while others are total 
 | Buffers Shared Dirtied | total value      |
 | Buffers Shared Written | total value      |
 | I/O Read Time          | total value      |
-| I/O Read Write         | total value      |
+| I/O Write Time         | total value      |
 
 For example:
 
@@ -240,8 +240,8 @@ retrieving lots of rows, so it's best to avoid these for large tables.
 ### Index Only Scan
 
 A scan on an index that did not require fetching anything from the table. In
-certain cases an index only scan may still fetch data from the table, in this
-case the node includes a `Heap Fetches:` statistic.
+certain cases an index only scan might still fetch data from the table. In this
+case, the node includes a `Heap Fetches:` statistic.
 
 ### Index Scan
 
@@ -415,7 +415,7 @@ CREATE INDEX CONCURRENTLY twitter_test ON users (twitter);
 We told PostgreSQL to index all possible values of the `twitter` column,
 even empty strings. Our query in turn uses `WHERE twitter != ''`. This means
 that the index does improve things, as we don't need to do a sequential scan,
-but we may still encounter empty strings. This means PostgreSQL _has_ to apply a
+but we might still encounter empty strings. This means PostgreSQL _has_ to apply a
 Filter on the index results to get rid of those values.
 
 Fortunately, we can improve this even further using "partial indexes". Partial
@@ -451,9 +451,9 @@ this works is that now PostgreSQL no longer needs to apply a `Filter`, as the
 index only contains `twitter` values that are not empty.
 
 Keep in mind that you shouldn't just add partial indexes every time you want to
-optimize a query. Every index has to be updated for every write, and they may
+optimize a query. Every index has to be updated for every write, and they might
 require quite a bit of space, depending on the amount of indexed data. As a
-result, first check if there are any existing indexes you may be able to reuse.
+result, first check if there are any existing indexes you might be able to reuse.
 If there aren't any, check if you can perhaps slightly change an existing one to
 fit both the existing and new queries. Only add a new index if none of the
 existing indexes can be used in any way.
@@ -467,7 +467,7 @@ result, so, during optimization, look at the number of buffers used (read and hi
 and work on reducing these numbers. Reduced timing is the consequence of reduced
 buffer numbers. [Database Lab Engine](#database-lab-engine) guarantees that the plan is structurally
 identical to production (and overall number of buffers is the same as on production),
-but a difference in cache state and I/O speed may lead to different timings.
+but a difference in cache state and I/O speed might lead to different timings.
 
 ## Queries that can't be optimized
 
@@ -501,7 +501,7 @@ Filter: (visibility_level = ANY ('{0,20}'::integer[]))
 Rows Removed by Filter: 65677
 ```
 
-Looking at the number of rows removed by the filter, we may be tempted to add an
+Looking at the number of rows removed by the filter, we might be tempted to add an
 index on `projects.visibility_level` to somehow turn this Sequential scan +
 filter into an index-only scan.
 
@@ -509,7 +509,7 @@ Unfortunately, doing so is unlikely to improve anything. Contrary to what some
 might believe, an index being present _does not guarantee_ that PostgreSQL
 actually uses it. For example, when doing a `SELECT * FROM projects` it is much
 cheaper to just scan the entire table, instead of using an index and then
-fetching data from the table. In such cases PostgreSQL may decide to not use an
+fetching data from the table. In such cases, PostgreSQL might decide to not use an
 index.
 
 Second, let's think for a moment what our query does: it gets all projects with
@@ -541,7 +541,7 @@ So no matter what we do, this query retrieves 98% of the entire table. Since
 most time is spent doing exactly that, there isn't really much we can do to
 improve this query, other than _not_ running it at all.
 
-What is important here is that while some may recommend straight up adding an
+What is important here is that while some might recommend straight up adding an
 index the moment you see a sequential scan, it is _much more important_ to first
 understand what your query does, how much data it retrieves, and so on. After
 all, you cannot optimize something you do not understand.
@@ -691,7 +691,7 @@ As a general guideline, aim for a query that:
    does not use a `LIMIT` to limit the number of returned rows. Filters can
    usually be removed by adding a (partial) index.
 
-These are _guidelines_ and not hard requirements, as different needs may require
+These are _guidelines_ and not hard requirements, as different needs might require
 different queries. The only _rule_ is that you _must always measure_ your query
 (preferably using a production-like database) using `EXPLAIN (ANALYZE, BUFFERS)`
 and related tools such as:
@@ -760,7 +760,7 @@ The web interface comes with the following execution plan visualizers included:
 - [PEV2](https://github.com/dalibo/pev2)
 - [FlameGraph](https://github.com/mgartner/pg_flame)
 
-#### Tips & Tricks
+#### Tips and tricks
 
 The database connection is now maintained during your whole session, so you can use `exec set ...` for any session variables (such as `enable_seqscan` or `work_mem`). These settings are applied to all subsequent commands until you reset them. For example you can disable parallel queries with
 

@@ -1,41 +1,13 @@
 ---
-stage: Plan
-group: Work Items
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Rate limits on note creation
+redirect_to: '../../rate_limits/content_creation.md'
+remove_date: '2026-11-25'
 ---
 
-{{< details >}}
+<!-- markdownlint-disable -->
 
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+This document was moved to [another location](../../rate_limits/content_creation.md).
 
-{{< /details >}}
-
-You can configure the per-user rate limit for requests to the note creation endpoint.
-
-Prerequisites:
-
-- Administrator access.
-
-To change the note creation rate limit:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **Network**.
-1. Expand **Notes rate limit**.
-1. In the **Maximum requests per minute** box, enter the new value.
-1. Optional. In the **Users to exclude from the rate limit** box, list users allowed to exceed the limit.
-1. Select **Save changes**.
-
-This limit is:
-
-- Applied independently per user.
-- Not applied per IP address.
-
-The default value is `300`.
-
-Requests over the rate limit are logged into the `auth.log` file.
-
-For example, if you set a limit of 300, requests using the
-[`Projects::NotesController#create`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/projects/notes_controller.rb)
-action exceeding a rate of 300 per minute are blocked. Access to the endpoint is allowed after one minute.
+<!-- This redirect file can be deleted after <2026-11-25>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/development/documentation/redirects -->

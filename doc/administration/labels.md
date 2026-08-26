@@ -29,4 +29,4 @@ Labels created in the **Admin** area are automatically added to new projects.
 They are not available to new groups.
 Updating or adding labels in the **Admin** area does not modify labels in existing projects.
 
-![Admin Area with default label set, proposal, and regression.](img/admin_labels_v17_0.png)
+![Admin area with default label set, proposal, and regression.](img/admin_labels_v17_0.png)

@@ -77,9 +77,9 @@ export default {
   emits: ['set-active-item'],
   computed: {
     reference() {
-      // Items that live in the board's own namespace are shortened to `#iid`;
-      // items from a different namespace (e.g. on a group board) keep the full
-      // reference so their project is identifiable.
+      // An item in the board's own namespace just shows as `#iid`. An item from
+      // somewhere else (e.g. a different project on a group board) keeps its
+      // full reference, so you can still tell which project it's from.
       return getDisplayReference(this.rootPageFullPath, this.item.reference);
     },
     isActive() {
@@ -268,7 +268,7 @@ export default {
           text-size="sm"
           :health-status="healthStatus"
         />
-        <!-- eslint-disable local-rules/vue-no-web-url -- WorkItemRelationshipIcons builds an absolute "view all linked items" link from this URL, so it needs webUrl rather than the relative webPath. -->
+        <!-- eslint-disable local-rules/vue-no-web-url -- WorkItemRelationshipIcons needs the full webUrl (not the relative webPath) to build the "view all linked items" link. -->
         <work-item-relationship-icons
           v-if="showRelationshipIcons"
           :work-item-type="item.workItemType.name"

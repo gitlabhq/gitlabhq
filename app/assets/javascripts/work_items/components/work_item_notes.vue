@@ -630,7 +630,7 @@ export default {
             @start-editing="$emit('start-editing')"
             @stop-editing="$emit('stop-editing')"
             @error="$emit('error', $event)"
-            @updateCount="updateDiscussionsCount"
+            @update-count="updateDiscussionsCount"
           />
         </ul>
       </div>
@@ -685,7 +685,7 @@ export default {
             @error="$emit('error', $event)"
             @focus="$emit('focus')"
             @blur="$emit('blur')"
-            @updateCount="updateDiscussionsCount"
+            @update-count="updateDiscussionsCount"
           />
         </ul>
       </div>

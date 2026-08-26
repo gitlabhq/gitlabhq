@@ -66,9 +66,9 @@ describe.each([
     sort: 'CREATED_DESC',
   };
 
-  // ColumnGroup is attribute-agnostic; it only reads `columnFilter` and
-  // `headerDecoration` off the strategy, so a small generic fixture stands in
-  // for a real (EE-only) grouping strategy.
+  // ColumnGroup doesn't care which attribute it's grouped by — it only reads
+  // `columnFilter` and `headerDecoration` off the strategy — so this small
+  // generic fixture can stand in for a real (EE-only) grouping strategy.
   const mockStrategy = {
     columnFilter: (value) => ({ status: { name: value.name } }),
     headerDecoration: (value) => ({ type: 'icon', name: value.iconName, color: value.color }),
@@ -188,8 +188,6 @@ describe.each([
       await waitForPromises();
 
       expect(findColumnHeader().props('collapsed')).toBe(true);
-      // The card list is not rendered while collapsed, so retained cards can't be surfaced
-      // when the column is dragged. The body div (its id) stays in the DOM for aria-controls.
       expect(findDraggable().exists()).toBe(false);
       expect(wrapper.classes()).toEqual(expect.arrayContaining(['gl-w-8', 'gl-self-start']));
       expect(wrapper.classes()).not.toContain('gl-h-full');
@@ -623,10 +621,10 @@ describe.each([
   });
 
   describe('drag and drop after pagination', () => {
-    // The drag-and-drop cache updates in board_view.vue key off the initial-page
-    // variables (boardColumnQueryVariables) — the same entry fetchMore merges
-    // subsequent pages into. After loading a second page these tests run the real
-    // cache helpers against that key to prove the move lands on the merged column.
+    // board_view.vue's cache updates key off the initial-page variables
+    // (boardColumnQueryVariables) — the same entry fetchMore merges later pages
+    // into. These tests load a second page, then run the real cache helpers
+    // against that key to prove a move still lands correctly on the merged column.
     const columnVariables = () =>
       boardColumnQueryVariables({
         rootPageFullPath: 'full/path',
@@ -640,7 +638,6 @@ describe.each([
       return connection.nodes.map((node) => node.id);
     };
 
-    // nodes 1 and 2 in the first page, nodes 3 and 4 in the second page.
     beforeEach(async () => {
       queryHandler.mockResolvedValueOnce(
         buildResponse([buildWorkItemNode(1), buildWorkItemNode(2)], {

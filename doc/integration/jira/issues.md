@@ -2,6 +2,7 @@
 stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Reference and link Jira issues from GitLab commits, issues, and merge requests, and require linked issues before merging.
 title: Jira issue management
 ---
 
@@ -63,14 +64,14 @@ You can [disable comments](#disable-comments-on-jira-issues) on issues.
 {{< /details >}}
 
 With this integration, you can prevent merge requests from being merged if they do not refer to a Jira issue.
-To enable this feature:
+To turn on this feature:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **Merge checks** section, select **Require an associated issue from Jira**.
 1. Select **Save**.
 
-After you enable this feature, a merge request that doesn't reference an associated
+After you turn on this feature, a merge request that doesn't reference an associated
 Jira issue can't be merged. The merge request displays the message
 **To merge, a Jira issue key must be mentioned in the title or description**.
 
@@ -169,7 +170,7 @@ this setting:
 
 1. Refer to the [Configure GitLab](configure.md) instructions.
 1. Select the **Enable Jira transitions** checkbox.
-1. Select the **Move to Done** option.
+1. Select **Move to Done**.
 
 ## Custom issue transitions
 
@@ -189,7 +190,7 @@ For advanced workflows, you can specify custom Jira transition IDs:
    even if the status you're changing to is the same.
 1. Refer to the [Configure GitLab](configure.md) instructions.
 1. Select the **Enable Jira transitions** setting.
-1. Select the **Custom transitions** option.
+1. Select **Custom transitions**.
 1. Enter your transition IDs in the text field. If you insert multiple transition IDs
    (separated by `,` or `;`), the issue is moved to each state, one after another, in the
    order you specify. If a transition fails, the sequence is aborted.

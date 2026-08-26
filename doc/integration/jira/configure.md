@@ -2,6 +2,7 @@
 stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Connect GitLab projects to a Jira Cloud, Data Center, or Server instance to view and manage Jira issues.
 title: Jira issues integration
 ---
 
@@ -26,7 +27,6 @@ The supported Jira versions are `6.x`, `7.x`, `8.x`, `9.x`, and `10.x`.
 
 {{< history >}}
 
-- **Jira issues** and **Jira issues for vulnerabilities** sections [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a feature flag](../../administration/feature_flags/_index.md) named `jira_multiple_project_keys`. Disabled by default.
 - **Jira issues** and **Jira issues for vulnerabilities** sections [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151753) in GitLab 17.0. Feature flag `jira_multiple_project_keys` removed.
 - **Enable Jira issues** checkbox [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149055) to **View Jira issues** in GitLab 17.0.
 - **Enable Jira issue creation from vulnerabilities** checkbox [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149055) to **Create Jira issues for vulnerabilities** in GitLab 17.0.
@@ -48,14 +48,14 @@ Prerequisites:
   - To use a **Jira Cloud service account**, you must have a Jira Cloud service account and a scoped
     API token for that service account. For more information, see
     [manage API tokens for service accounts](https://support.atlassian.com/user-management/docs/manage-api-tokens-for-service-accounts/#Create-an-API-token-with-scopes).
-  - If you've enabled
+  - If you've turned on
     [IP allowlists](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), add the
     [GitLab.com IP range](../../user/gitlab_com/_index.md#ip-range) to the allowlist to [view Jira issues](#view-jira-issues) in GitLab.
 - **For Jira Data Center or Jira Server**, you must have one of the following:
   - [Jira username and password](jira_server_configuration.md).
   - Jira personal access token.
 
-You can enable the Jira issues integration by configuring your project settings in GitLab.
+You can turn on the Jira issues integration by configuring your project settings in GitLab.
 You can also configure the integration for a specific
 [group](../../user/project/integrations/_index.md#manage-group-default-settings-for-a-project-integration) or an entire
 [instance](../../administration/settings/project_integration_management.md#configure-default-settings-for-an-integration)
@@ -123,12 +123,12 @@ To configure your project settings in GitLab:
    1. Select the **Create Jira issues for vulnerabilities** checkbox.
 
       > [!note]
-      > You can enable this setting only for individual projects and groups.
+      > You can turn on this setting only for individual projects and groups.
 
    1. Enter a Jira project key.
    1. Select **Fetch issue types for this project key** ({{< icon name="retry" >}}),
       then select the type of Jira issues to create.
-   1. Optional. Select the **Customize Jira issues** checkbox to be able to review, modify, or add details
+   1. Optional. Select the **Customize Jira issues** checkbox to review, modify, or add details
       to a Jira issue when it's created for a vulnerability.
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
@@ -143,7 +143,6 @@ To configure your project settings in GitLab:
 
 {{< history >}}
 
-- Viewing issues from multiple Jira projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a feature flag](../../administration/feature_flags/_index.md) named `jira_multiple_project_keys`. Disabled by default.
 - Viewing issues from multiple Jira projects [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151753) in GitLab 17.0. Feature flag `jira_multiple_project_keys` removed.
 
 {{< /history >}}
@@ -153,7 +152,7 @@ Prerequisites:
 - Ensure the Jira issues integration is [configured](#configure-the-integration)
   and the **View Jira issues** checkbox is selected.
 
-You can enable Jira issues for a specific group or project, but you can view the issues in GitLab projects only.
+You can turn on Jira issues for a specific group or project, but you can view the issues in GitLab projects only.
 To view issues from one or more Jira projects in a GitLab project:
 
 1. In the top bar, select **Search or go to** and find your project.
@@ -180,7 +179,6 @@ Issues are grouped into the following tabs based on their
 
 {{< history >}}
 
-- Filtering Jira issues by project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a feature flag](../../administration/feature_flags/_index.md) named `jira_multiple_project_keys`. Disabled by default.
 - Filtering Jira issues by project [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151753) in GitLab 17.0. Feature flag `jira_multiple_project_keys` removed.
 
 {{< /history >}}
@@ -245,26 +243,26 @@ To configure Jira verification:
    - **Check issue exists**: Verifies that the Jira issue referenced in the commit message exists in Jira.
    - **Check assignee**: Verifies that the committer is the assignee of the Jira issue referenced in the commit message.
    - **Check issue status**: Verifies that the Jira issue referenced in the commit message has one of the allowed statuses.
-   - **Allowed statuses**: A comma-separated list of allowed Jira issue statuses (for example, `Ready, In Progress, Review`). This field is only available when **Check issue status** is enabled.
+   - **Allowed statuses**: A comma-separated list of allowed Jira issue statuses (for example, `Ready, In Progress, Review`). This text box is only available when **Check issue status** is selected.
 1. Select **Save changes**.
 
 When a user attempts to push changes that don't meet the verification criteria, GitLab displays an error message indicating why the push was rejected.
 
 ### Example error messages
 
-- If a referenced Jira issue doesn't exist (when **Check issue exists** is enabled):
+- If a referenced Jira issue doesn't exist (when **Check issue exists** is selected):
 
   ```plaintext
   Jira issue PROJECT-123 does not exist.
   ```
 
-- If a referenced Jira issue isn't assigned to the committer (when **Check assignee** is enabled):
+- If a referenced Jira issue isn't assigned to the committer (when **Check assignee** is selected):
 
   ```plaintext
   Jira issue PROJECT-123 is not assigned to you. It is assigned to Jane Doe.
   ```
 
-- If a referenced Jira issue has a status that's not in the allowed list (when **Check issue status** is enabled):
+- If a referenced Jira issue has a status that's not in the allowed list (when **Check issue status** is selected):
 
   ```plaintext
   Jira issue PROJECT-123 has status 'Done', which is not in the list of allowed statuses: Ready, In Progress, Review.
@@ -308,7 +306,7 @@ To create a Jira issue for a vulnerability:
 1. Select the vulnerability's description.
 1. Select **Create Jira issue**.
 
-   If the [**Customize Jira issues**](#configure-the-integration) setting is selected, you will be redirected to the issue creation form on your Jira instance, pre-filled with vulnerability data. You can review, modify, or add details before creating the Jira issue.
+   If the [**Customize Jira issues**](#configure-the-integration) setting is selected, you are redirected to the issue creation form on your Jira instance, pre-filled with vulnerability data. You can review, modify, or add details before creating the Jira issue.
 
 The issue is created in the target Jira project with information from the vulnerability report.
 

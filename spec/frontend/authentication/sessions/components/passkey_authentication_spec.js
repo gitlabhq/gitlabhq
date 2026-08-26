@@ -1,10 +1,9 @@
-import { GlLoadingIcon } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/alert';
-import PasskeyAuthentication from '~/authentication/webauthn/components/passkey_authentication.vue';
-import MockWebAuthnDevice from '../mock_webauthn_device';
-import { useMockNavigatorCredentials } from '../util';
+import PasskeyAuthentication from '~/authentication/sessions/components/passkey_authentication.vue';
+import MockWebAuthnDevice from '../../webauthn/mock_webauthn_device';
+import { useMockNavigatorCredentials } from '../../webauthn/util';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
@@ -24,7 +23,6 @@ const createComponent = (propsData = {}) => {
     propsData: {
       path: '/users/passkeys/sign_in',
       rememberMe: '1',
-      signInPath: '/',
       webauthnParams:
         // we need some valid base64 for base64ToBuffer
         // so we use "YQ==" = base64("a")
@@ -46,14 +44,44 @@ describe('PasskeyAuthentication', () => {
   let submitSpy;
 
   const findBackButton = () => wrapper.findComponentByTestId('passkey-authentication-back');
-  const findPending = () => wrapper.findByTestId('passkey-authentication-pending');
+  const findIllustration = () => wrapper.find('img');
   const findRetryButton = () => wrapper.findComponentByTestId('passkey-authentication-try-again');
-  const findSpinner = () => wrapper.findComponent(GlLoadingIcon);
-  const findSuccess = () => wrapper.findByTestId('passkey-authentication-success');
+  const findStatus = () => wrapper.findByTestId('passkey-authentication-status');
+  const findTitle = () => wrapper.find('h1');
+  const findTroubleshootLink = () => wrapper.findByTestId('passkey-authentication-troubleshoot');
 
   beforeEach(() => {
     webAuthnDevice = new MockWebAuthnDevice();
     submitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit');
+  });
+
+  describe('layout', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders the illustration as decorative', () => {
+      expect(findIllustration().attributes('alt')).toBe('');
+    });
+
+    it('renders the title as the page heading', () => {
+      expect(findTitle().text()).toBe('Sign in with passkey');
+    });
+
+    it('renders the description', () => {
+      expect(wrapper.text()).toContain(
+        'Follow the instructions on your browser or password manager to continue. Insert your physical key, if you have any.',
+      );
+    });
+
+    it('links to the passkey troubleshooting documentation', () => {
+      expect(findTroubleshootLink().attributes('href')).toBe('/help/auth/passkeys#troubleshooting');
+      expect(findTroubleshootLink().text()).toBe('Troubleshoot passkey');
+    });
+
+    it('shows a back button', () => {
+      expect(findBackButton().props()).toMatchObject({ block: true, href: '/users/sign_in' });
+    });
   });
 
   describe('when passkeys are not supported', () => {
@@ -78,16 +106,13 @@ describe('PasskeyAuthentication', () => {
       });
     });
 
-    it('shows a retry button', () => {
-      expect(findRetryButton().props()).toMatchObject({ block: true });
+    it('shows an enabled retry button', () => {
+      expect(findRetryButton().props()).toMatchObject({ block: true, variant: 'confirm' });
+      expect(findRetryButton().attributes('aria-disabled')).toBeUndefined();
     });
 
-    it('shows a back button', () => {
-      expect(findBackButton().props()).toMatchObject({
-        block: true,
-        href: '/',
-        variant: 'confirm',
-      });
+    it('shows no status message', () => {
+      expect(findStatus().text()).toBe('');
     });
   });
 
@@ -98,15 +123,14 @@ describe('PasskeyAuthentication', () => {
 
     describe('when in pending state', () => {
       it('shows a message', () => {
-        expect(findPending().text()).toMatchInterpolatedText(
+        expect(findStatus().text()).toMatchInterpolatedText(
           "Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now.",
         );
       });
 
-      it('shows a spinner', () => {
-        const spinner = findSpinner();
-        expect(spinner.props()).toMatchObject({ size: 'md' });
-        expect(spinner.attributes('class')).toContain('gl-my-5');
+      it('keeps the retry button focusable but inert', () => {
+        expect(findRetryButton().attributes('aria-disabled')).toBe('true');
+        expect(findRetryButton().attributes('disabled')).toBeUndefined();
       });
     });
 
@@ -117,13 +141,11 @@ describe('PasskeyAuthentication', () => {
       });
 
       it('shows a message', () => {
-        expect(findSuccess().text()).toBe('We heard back from your device. Authenticating...');
+        expect(findStatus().text()).toBe('We heard back from your device. Authenticating...');
       });
 
-      it('shows a spinner', () => {
-        const spinner = findSpinner();
-        expect(spinner.props()).toMatchObject({ size: 'md' });
-        expect(spinner.attributes('class')).toContain('gl-my-5');
+      it('keeps the retry button inert while the form submits', () => {
+        expect(findRetryButton().attributes('aria-disabled')).toBe('true');
       });
 
       it('submits the form', () => {
@@ -157,11 +179,17 @@ describe('PasskeyAuthentication', () => {
         });
       });
 
+      it('shows no status message', () => {
+        expect(findStatus().text()).toBe('');
+      });
+
       it('allows retrying authentication after an error', async () => {
         findRetryButton().trigger('click');
         await waitForPromises();
 
-        expect(findPending().exists()).toBe(true);
+        expect(findStatus().text()).toMatchInterpolatedText(
+          "Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now.",
+        );
       });
 
       it('shows a back button', () => {

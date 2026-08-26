@@ -10,6 +10,7 @@ import {
   SCOPE_MERGE_REQUESTS,
   SCOPE_BLOB,
   SCOPE_PROJECTS,
+  SCOPE_GROUPS,
   SCOPE_NOTES,
   SCOPE_COMMITS,
   SCOPE_MILESTONES,
@@ -22,6 +23,7 @@ import IssuesFilters from './issues_filters.vue';
 import MergeRequestsFilters from './merge_requests_filters.vue';
 import BlobsFilters from './blobs_filters.vue';
 import ProjectsFilters from './projects_filters.vue';
+import GroupsFilters from './groups_filters.vue';
 import NotesFilters from './notes_filters.vue';
 import CommitsFilters from './commits_filters.vue';
 import MilestonesFilters from './milestones_filters.vue';
@@ -38,6 +40,7 @@ export default {
     MergeRequestsFilters,
     BlobsFilters,
     ProjectsFilters,
+    GroupsFilters,
     NotesFilters,
     WikiBlobsFilters,
     ScopeSidebarNavigation,
@@ -69,6 +72,9 @@ export default {
     },
     showProjectsFilters() {
       return this.currentScope === SCOPE_PROJECTS;
+    },
+    showGroupsFilters() {
+      return this.currentScope === SCOPE_GROUPS;
     },
     showNotesFilters() {
       return this.currentScope === SCOPE_NOTES;
@@ -114,6 +120,7 @@ export default {
       <merge-requests-filters v-if="showMergeRequestFilters" />
       <blobs-filters v-if="showBlobFilters" />
       <projects-filters v-if="showProjectsFilters" />
+      <groups-filters v-if="showGroupsFilters" />
       <notes-filters v-if="showNotesFilters" />
       <commits-filters v-if="showCommitsFilters" />
       <milestones-filters v-if="showMilestonesFilters" />

@@ -45,10 +45,9 @@ describe('board cache_updates', () => {
     };
   };
 
-  // The list helpers read/write different cache paths depending on the query in
-  // use: `restWorkItems` when the REST @client field backs the board, or
-  // `namespace.workItems` for the GraphQL query. Callers signal which path via
-  // `useRestApi`, so we exercise both here.
+  // The list helpers read from a different cache path depending on the query: `restWorkItems`
+  // for the REST-backed board, `namespace.workItems` for the GraphQL one. `useRestApi` says
+  // which, so we run every test below against both paths.
   describe.each([
     {
       label: 'when useRestApi is true (top-level restWorkItems path)',

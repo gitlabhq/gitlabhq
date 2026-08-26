@@ -1,9 +1,10 @@
 import { s__ } from '~/locale';
 import getBoardNamespaceQuery from '../graphql/get_board_namespace.query.graphql';
 
-// Temporary placeholder so `groupBy: status` resolves to a strategy in CE, where
-// statuses (and therefore grouping) don't exist — the board renders no columns
-// rather than erroring. Remove once CE-available groupings exist.
+// CE has no statuses, so there's nothing real to group by yet. This stands in
+// for a status strategy so `groupBy: status` still resolves to something, and
+// the board just renders no columns instead of erroring. Remove once CE gets
+// a real grouping to use.
 /** @type {import('./index').GroupingStrategy} */
 export const placeholderStrategy = {
   property: 'status',

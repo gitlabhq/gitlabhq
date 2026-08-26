@@ -175,6 +175,12 @@ html {
   @apply gl-h-[var(--ai-navigation-rail-size)];
   @apply lg:gl-h-full;
   @apply lg:gl-w-[var(--ai-navigation-rail-size)];
+
+  .gl-nav-item.selected::before {
+    @apply -gl-bottom-[6px];
+    @apply lg:gl-bottom-2;
+    @apply lg:-gl-right-[6px];
+  }
 }
 
 // When the AI panel is maximized

@@ -97,6 +97,7 @@ Group permissions for [group features](group/_index.md):
 | ------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
 | Browse group                                                                                |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | [Search](search/_index.md) projects in group                                                |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) subgroups in group                                               |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | View group [audit events](compliance/audit_events.md) <sup>1</sup>                          |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
 | Create project in group <sup>2</sup>                                                        |       |         |          |                  |     ✓     |     ✓      |   ✓   |
 | Create subgroup <sup>3</sup>                                                                |       |         |          |                  |           |     ✓      |   ✓   |

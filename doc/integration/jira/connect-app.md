@@ -2,6 +2,7 @@
 stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Install the GitLab for Jira Cloud app on GitLab.com to sync groups and projects with Jira Cloud in real time.
 title: GitLab for Jira Cloud app
 ---
 
@@ -95,7 +96,7 @@ To configure the GitLab for Jira Cloud app:
 <!-- markdownlint-disable MD044 -->
 
 1. In Jira, select the horizontal ellipsis ({{< icon name="ellipsis_h" >}}) beside **Apps** and select **Manage your apps**.
-1. Navigate to the app using one of these methods:
+1. Go to the app by using one of these methods:
 
    - For instances with centralized app management:
 
@@ -134,8 +135,8 @@ After you link to a GitLab group:
 
 - Data is synced to Jira for all projects in that group. The initial data sync happens in batches of 20 projects per minute.
   For groups with many projects, the data sync for some projects is delayed.
-- A GitLab for Jira Cloud app integration is automatically enabled for the group, and all subgroups or projects in that group.
-  The integration allows you to [configure Jira Service Management](#configure-jira-service-management).
+- A GitLab for Jira Cloud app integration is automatically turned on for the group, and all subgroups or projects in that group.
+  With the integration, you can [configure Jira Service Management](#configure-jira-service-management).
 
 ## Configure Jira Service Management
 
@@ -157,9 +158,9 @@ Prerequisites:
 You can connect GitLab to your IT service project to track your deployments.
 
 Configuration happens in GitLab, in the GitLab for
-Jira Cloud app integration. The integration is enabled for a group, its subgroups, and projects in GitLab after a [GitLab group has been linked](#configure-the-gitlab-for-jira-cloud-app).
+Jira Cloud app integration. The integration is turned on for a group, its subgroups, and projects in GitLab after a [GitLab group has been linked](#configure-the-gitlab-for-jira-cloud-app).
 
-Enabling and disabling the GitLab for Jira Cloud app integration happens entirely automatically through group linking,
+The GitLab for Jira Cloud app integration turns on and off automatically through group linking,
 and not through the GitLab integrations form or API.
 
 In Jira Service Management:
@@ -171,9 +172,9 @@ In GitLab:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Integrations**.
-1. Select **GitLab for Jira Cloud app**. If the integration is disabled, first [link a GitLab group](#configure-the-gitlab-for-jira-cloud-app)
-   which enables the GitLab for Jira Cloud app integration for the group, its subgroups, and projects.
-1. In the **Service ID** field, enter the service ID that you want to map into this project. To use multiple service IDs,
+1. Select **GitLab for Jira Cloud app**. If the integration is turned off, first [link a GitLab group](#configure-the-gitlab-for-jira-cloud-app)
+   which turns on the GitLab for Jira Cloud app integration for the group, its subgroups, and projects.
+1. In the **Service ID** text box, enter the service ID that you want to map into this project. To use multiple service IDs,
    add a comma between each service ID.
 
 You can map up to 100 services.
@@ -219,7 +220,7 @@ To create the service account token:
 
 #### Enable deployment gating
 
-To enable deployment gating:
+To turn on deployment gating:
 
 - In GitLab:
 
@@ -227,7 +228,7 @@ To enable deployment gating:
   1. Select **Settings** > **Integrations**.
   1. Select **GitLab for Jira Cloud app**.
   1. Under **Deployment gating**, select the **Enable deployment gating** checkbox.
-  1. In the **Environment tiers** text box, enter the names of the environments you want to enable deployment gating for.
+  1. In the **Environment tiers** text box, enter the names of the environments you want to turn on deployment gating for.
      You can enter multiple environment names separated by commas (for example, `production, staging, testing, development`).
      Use lowercase letters only.
   1. Select **Save changes**.

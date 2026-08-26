@@ -87,7 +87,7 @@ To import Jira issues to a GitLab project:
 To import your Jira issue data from a CSV file into your GitLab project:
 
 1. Export your Jira data:
-   1. Log in to your Jira instance and go to the project you want to migrate.
+   1. Sign in to your Jira instance and go to the project you want to migrate.
    1. Export the project data as a CSV file.
    1. Edit your CSV file to match the [column names required for the GitLab CSV importer](../../project/issues/csv_import.md).
       - Only `title`, `description`, `due_date`, and `milestone` are imported.
@@ -153,7 +153,7 @@ Banzai.render(text, pipeline: :adf_commonmark, project: project)
 
 ## Related topics
 
-- [Import and export settings](../../../administration/settings/import_and_export_settings.md).
-- [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md).
-- [Running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md).
-- [Processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).
+- [Import and export settings](../../../administration/settings/import_and_export_settings.md)
+- [Sidekiq configuration for imports](../../../administration/sidekiq/configuration_for_imports.md)
+- [Running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md)
+- [Processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md)

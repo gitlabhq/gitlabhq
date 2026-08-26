@@ -2,6 +2,7 @@
 stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Resolve installation, sign-in, and data sync errors when administering the GitLab for Jira Cloud app.
 title: Troubleshooting GitLab for Jira Cloud app administration
 ---
 
@@ -43,13 +44,13 @@ The app "gitlab-jira-connect-gitlab.com" could not be installed as a local app a
 The app host returned HTTP response code 401 when we tried to contact it during installation. Please try again later or contact the app vendor.
 ```
 
-To resolve this issue, disable the **Jira Connect Proxy URL** setting.
+To resolve this issue, turn off the **Jira Connect Proxy URL** setting.
 
 Prerequisites:
 
 - Administrator access.
 
-To disable the **Jira Connect Proxy URL** setting:
+To turn off the **Jira Connect Proxy URL** setting:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **General**.
@@ -100,14 +101,14 @@ Depending on how you installed the app, you might want to check the following:
 
   1. In Jira, select the horizontal ellipsis ({{< icon name="ellipsis_h" >}}) beside **Apps** and select **Manage your apps**.
 
-  1. Navigate to the app using one of these methods:
+  1. Go to the app by using one of these methods:
 
-     **For instances with centralized app management:**
+     **For instances with centralized app management**:
 
      1. If you see "App management has moved to Administration", select **Take me there**. Otherwise follow the **For instances with legacy app management** instructions below.
      1. In the **Installed apps** tab, locate the **GitLab for Jira (gitlab.com)** app, select the horizontal ellipsis ({{< icon name="ellipsis_h" >}}) and then select **Get started**.
 
-     **For instances with legacy app management:**
+     **For instances with legacy app management**:
 
      1. Locate the **GitLab for Jira (gitlab.com)** app, select the chevron ({{< icon name="chevron-right" >}}) and then select **Get started**.
 
@@ -210,10 +211,10 @@ To locate the relevant log entries in Kibana, either:
   `json.meta.caller_id: JiraConnect::InstallationsController#update`, `NOT json.status: 200`
   and `json.correlation_id: <X-Request-Id>`. This should return two log entries.
 
-- If you have the self-managed URL for the customer:
+- If you have the GitLab Self-Managed URL for the customer:
   1. The [Kibana](https://log.gprd.gitlab.net/app/r/s/QVsD4) logs should be filtered for
      `json.meta.caller_id: JiraConnect::InstallationsController#update`, `NOT json.status: 200`
-     and `json.params.value: {"instance_url"=>"https://gitlab.example.com"}`. The self-managed URL
+     and `json.params.value: {"instance_url"=>"https://gitlab.example.com"}`. The GitLab Self-Managed URL
      must not have a leading slash. This should return one of the log entries.
   1. Add the `json.correlation_id` to the filter.
   1. Remove the `json.params.value` filter. This should return the other log entry.
@@ -256,7 +257,7 @@ For the second log, you might have one of the following scenarios:
       ```
 
   - If `json.jira_status_code` is `404 Not Found` and `json.jira_body` contains the HTML of a typical GitLab 404 page, confirm that the
-    [integration allowlist](project_integration_management.md#integration-allowlist) on the self-managed instance allows the GitLab for Jira Cloud app.
+    [integration allowlist](project_integration_management.md#integration-allowlist) on the GitLab Self-Managed instance allows the GitLab for Jira Cloud app.
 
 - Scenario 2:
   - `json.exception.class` and `json.exception.message` are present.
@@ -299,7 +300,7 @@ group:
 For more information about Jira user requirements, see
 [Jira user requirements](jira_cloud_app.md#jira-user-requirements).
 
-GitLab cannot use Jira's permissions API to check administrator status directly
+GitLab cannot use the Jira permissions API to check administrator status directly
 due to OAuth scope limitations. For more context, see
 [issue #420687](https://gitlab.com/gitlab-org/gitlab/-/issues/420687)
 and
@@ -319,7 +320,7 @@ This error can be returned for multiple reasons.
   To resolve this issue, ensure the Jira user that installs and configures the app
   meets certain [requirements](jira_cloud_app.md#jira-user-requirements).
 
-- This error might also occur if you use a rewrite or subfilter with a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy).
+- This error might also occur if you use a `rewrite` or `sub_filter` directive with a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy).
   The app key used in requests contains part of the server hostname, which some reverse proxy filters might capture.
   The app key in Atlassian and GitLab must match for authentication to work correctly.
 

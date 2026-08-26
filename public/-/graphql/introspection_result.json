@@ -32755,6 +32755,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "userId",
+                  "description": "Filter by one or many user Global IDs",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "startedAtFrom",
                   "description": "Filter by pipeline start timestamp. Start of the range.",
                   "type": {
@@ -35195,6 +35215,26 @@
               "deprecationReason": null
             },
             {
+              "name": "patterns",
+              "description": "CODEOWNERS patterns grouped into this rule. Returns null when the rule is not a grouped Code Owner rule. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "scanResultPolicies",
               "description": "List of scan result policies associated with the rule.",
               "args": [],
@@ -35699,6 +35739,35 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "ArtifactRegistryHealthStatus",
+          "description": "Stored health verdict for a remote Artifact Registry repository upstream.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "UNKNOWN",
+              "description": "No health probe has recorded a result yet, or Artifact Registry reported a status this schema does not recognize.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HEALTHY",
+              "description": "Most recent probe reached the upstream.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UNHEALTHY",
+              "description": "Consecutive probe failures reached the threshold Artifact Registry sets.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "ArtifactRegistryImage",
           "description": "Image in an Artifact Registry repository.",
@@ -36090,6 +36159,101 @@
         },
         {
           "kind": "OBJECT",
+          "name": "ArtifactRegistryRemoteSettings",
+          "description": "Upstream configuration of a remote Artifact Registry repository.",
+          "fields": [
+            {
+              "name": "cacheValidityHours",
+              "description": "Revalidation window for cached artifacts, in hours. Zero means cached artifacts never revalidate. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "hasCredentials",
+              "description": "Indicates upstream credentials are stored. Reported in place of the credentials themselves, which are write-only and exposed by no field. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "lastHealthCheckedAt",
+              "description": "Timestamp of the most recent health probe of the upstream. Null until the first probe. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "lastHealthStatus",
+              "description": "Health verdict the most recent probe of the upstream stored. `UNKNOWN` before the first probe, and for a status this schema does not recognize. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ArtifactRegistryHealthStatus",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "metadataCacheValidityHours",
+              "description": "Revalidation window for cached metadata, in hours. Null for a format that caches no metadata, such as Docker and OCI. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "snapshotMetadataAlwaysRevalidate",
+              "description": "Indicates snapshot metadata revalidates on every read instead of on the metadata window. Null for a format without snapshot metadata, so non-null only for Maven. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "url",
+              "description": "Base URL of the upstream registry, in the canonical form Artifact Registry stores. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "ArtifactRegistryRepository",
           "description": "Repository in Artifact Registry.",
           "fields": [
@@ -36223,16 +36387,12 @@
             },
             {
               "name": "settings",
-              "description": "Kind-specific configuration, discriminated by format and kind. Empty for hosted repositories. Introduced in GitLab 19.3: Status: Experiment.",
+              "description": "Upstream configuration Artifact Registry returned for the repository. Null when it returned none, so null on a hosted or virtual repository. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "JSON",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "ArtifactRegistryRemoteSettings",
+                "ofType": null
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
@@ -36839,16 +36999,12 @@
             },
             {
               "name": "settings",
-              "description": "Kind-specific configuration, discriminated by format and kind. Empty for hosted repositories. Introduced in GitLab 19.3: Status: Experiment.",
+              "description": "Upstream configuration Artifact Registry returned for the repository. Null when it returned none, so null on a hosted or virtual repository. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "JSON",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "ArtifactRegistryRemoteSettings",
+                "ofType": null
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
@@ -223340,6 +223496,30 @@
               "deprecationReason": null
             },
             {
+              "name": "groupedApprovalsLeft",
+              "description": "Number of approvals left, counting Code Owner rules that share a section and approvers as a single rule. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "groupedApprovalsRequired",
+              "description": "Number of approvals required, counting Code Owner rules that share a section and approvers as a single rule. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "hasCi",
               "description": "Indicates if the merge request has CI.",
               "args": [],
@@ -286410,6 +286590,18 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "applicationId",
+                  "description": "Filter environments to those where the application has services deployed.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "CdApplicationID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -307827,6 +308019,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "user",
+              "description": "User who triggered the pipeline",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
                 "ofType": null
               },
               "isDeprecated": false,

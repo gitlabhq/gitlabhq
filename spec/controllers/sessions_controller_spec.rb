@@ -1137,6 +1137,17 @@ RSpec.describe SessionsController, feature_category: :system_access do
     end
   end
 
+  describe '#new_passkey' do
+    render_views
+
+    it 'renders the passkey prompt on the devise_empty layout' do
+      post :new_passkey
+
+      expect(response).to render_template('devise/sessions/passkeys')
+      expect(response).to render_template(layout: 'layouts/devise_empty')
+    end
+  end
+
   describe '#audit_event_name_for_authentication_method' do
     let(:controller) { described_class.new }
 

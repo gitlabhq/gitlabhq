@@ -30,11 +30,9 @@ export default {
     'app/assets/javascripts/sidebar/components/labels/labels_select_vue/labels_select_root.vue',
     'app/assets/javascripts/vue_shared/components/markdown/markdown_editor.vue',
     'app/assets/javascripts/work_items/components/design_management/design_preview/design_sidebar.vue',
-    'app/assets/javascripts/work_items/components/notes/work_item_add_note.vue',
     'app/assets/javascripts/work_items/components/work_item_detail.vue',
     'ee/app/assets/javascripts/groups/settings/work_items/custom_status/status_form.vue',
     'ee/app/assets/javascripts/hand_raise_leads/hand_raise_lead/components/hand_raise_lead_button.vue',
-    'ee/app/assets/javascripts/roadmap/components/roadmap_shell.vue',
     'ee/app/assets/javascripts/test_case_show/components/test_case_show_root.vue',
   ],
   rules: {

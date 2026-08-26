@@ -58,7 +58,7 @@ describe('Work items root component', () => {
     });
   });
 
-  it('deletes work item when delete-work-item event emitted', async () => {
+  it('deletes work item when `delete-work-item` event emitted', async () => {
     const deleteWorkItemHandler = jest.fn().mockResolvedValue(deleteWorkItemResponse);
 
     createComponent({

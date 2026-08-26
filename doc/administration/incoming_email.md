@@ -65,7 +65,7 @@ receives all email messages addressed to the domain that do not match any addres
 exist on the mail server.
 
 Catch-all mailboxes support the same features as
-email sub-addressing, but email sub-addressing remains our recommendation so that you
+email sub-addressing, but you should still use email sub-addressing so that you
 can reserve your catch-all mailbox for other purposes.
 
 ### Dedicated email address
@@ -126,7 +126,7 @@ and [allowed less secure apps to access the account](https://support.google.com/
 or [turn-on 2-step validation](https://support.google.com/accounts/answer/185839)
 and use [an application password](https://support.google.com/mail/answer/185833).
 
-If you want to use Office 365, and two-factor authentication is enabled, make sure
+If you want to use Office 365, and two-factor authentication is turned on, make sure
 you're using an
 [app password](https://support.microsoft.com/en-US/accounts-billing/work-school/create-app-passwords-for-your-work-or-school-account)
 instead of the regular password for the mailbox.
@@ -154,7 +154,7 @@ merge request on the project owned by the attacker, allowing them to select the
 confirmation link and validate their account on your company's private Slack
 instance.
 
-We recommend receiving incoming email on a subdomain, such as
+You should receive incoming email on a subdomain, such as
 `incoming.hooli.com`, and ensuring that you do not employ any services that
 authenticate solely based on access to an email domain such as `*.hooli.com.`
 Alternatively, use a dedicated domain for GitLab email communications such as
@@ -176,7 +176,7 @@ This applies even if you have [enforced two-factor authentication](../security/t
 
 ### Linux package installations
 
-1. Find the `incoming_email` section in `/etc/gitlab/gitlab.rb`, enable the feature
+1. Find the `incoming_email` section in `/etc/gitlab/gitlab.rb`, turn on the feature
    and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
 
 1. Reconfigure GitLab for the changes to take effect:
@@ -214,7 +214,7 @@ Reply by email should now be working.
    > [!note]
    > This step is necessary to avoid thread deadlocks and to support the latest MailRoom features.
 
-1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature
+1. Find the `incoming_email` section in `config/gitlab.yml`, turn on the feature
    and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
 
 If you use systemd units to manage GitLab:
@@ -261,7 +261,7 @@ If you use systemd units to manage GitLab:
 
 If you use the SysV init script to manage GitLab:
 
-1. Enable `mail_room` in the init script at `/etc/default/gitlab`:
+1. Turn on `mail_room` in the init script at `/etc/default/gitlab`:
 
    ```shell
    sudo mkdir -p /etc/default
@@ -467,7 +467,7 @@ incoming_email:
 
 #### Microsoft Exchange Server
 
-Example configurations for Microsoft Exchange Server with IMAP enabled. Because
+Example configurations for Microsoft Exchange Server with IMAP turned on. Because
 Exchange does not support sub-addressing, only two options exist:
 
 - [Catch-all mailbox](#catch-all-mailbox) (recommended for Exchange-only)
@@ -609,20 +609,20 @@ incoming_email:
 
 #### Microsoft Office 365
 
-Example configurations for Microsoft Office 365 with IMAP enabled.
+Example configurations for Microsoft Office 365 with IMAP turned on.
 
 ##### Sub-addressing mailbox
 
 > [!note]
 > As of September 2020 sub-addressing support
 > [has been added to Office 365](https://support.microsoft.com/en-us/office/uservoice-pages-430e1a78-e016-472a-a10f-dc2a3df3450a). This feature is not
-> enabled by default, and must be enabled through PowerShell.
+> turned on by default, and must be turned on through PowerShell.
 
-This series of PowerShell commands enables [sub-addressing](#email-sub-addressing)
+This series of PowerShell commands turns on [sub-addressing](#email-sub-addressing)
 at the organization level in Office 365. This allows all mailboxes in the organization
 to receive sub-addressed mail.
 
-To enable sub-addressing:
+To turn on sub-addressing:
 
 1. Download and install the `ExchangeOnlineManagement` module from the [PowerShell gallery](https://www.powershellgallery.com/packages/ExchangeOnlineManagement/3.7.1).
 1. In PowerShell, run the following commands:
@@ -833,7 +833,7 @@ For MailRoom to work as a service account, the application you create
 in Azure Active Directory requires that you set the `Mail.ReadWrite` property
 to read/write mail in all mailboxes.
 
-To mitigate security concerns, we recommend configuring an application access
+To mitigate security concerns, you should configure an application access
 policy which limits the mailbox access for all accounts, as described in
 [Microsoft documentation](https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac).
 
@@ -888,7 +888,7 @@ use an encrypted file for the incoming email credentials.
 
 Prerequisites:
 
-- To use encrypted credentials, you must first enable the
+- To use encrypted credentials, you must first turn on the
   [encrypted configuration](encrypted_configuration.md).
 
 The supported configuration items for the encrypted file are:

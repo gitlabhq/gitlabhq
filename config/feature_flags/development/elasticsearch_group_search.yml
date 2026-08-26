@@ -1,0 +1,8 @@
+---
+name: elasticsearch_group_search
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249760
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/607018
+milestone: '19.4'
+type: development
+group: group::global search
+default_enabled: false

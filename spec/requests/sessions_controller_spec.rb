@@ -233,7 +233,7 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
     context 'with .passwordless_passkey_params' do
       before do
         allow_next_instance_of(described_class) do |instance|
-          allow(instance).to receive(:render).with('devise/sessions/passkeys')
+          allow(instance).to receive(:render)
         end
       end
 

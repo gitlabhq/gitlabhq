@@ -208,7 +208,7 @@ Rate limits also improve the security of your application.
 
 You can make changes to your default rate limits from the **Admin** area. For more information about configuration, see the [**Admin** area page](../rate_limits/_index.md#configuration-options).
 
-- Define [issues rate limits](settings/rate_limit_on_issues_creation.md) to set a maximum number of issue creation requests per minute, per user.
+- Define [content creation rate limits](../rate_limits/content_creation.md) to set a maximum number of issue creation requests per minute, per user.
 - Enforce [user and IP rate limits](settings/user_and_ip_rate_limits.md) for unauthenticated web requests.
 - Review the [rate limit on raw endpoints](settings/rate_limits_on_raw_endpoints.md). The default setting is 300 requests per minute for raw file access.
 - Review the [import/export rate limits](settings/import_export_rate_limits.md) of the six active defaults.

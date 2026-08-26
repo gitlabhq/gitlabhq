@@ -34,6 +34,11 @@ module Organizations
       def execute
         return ServiceResponse.error(message: transfer_error, reason: transfer_error_reason) unless can_transfer?
 
+        # Capture log fields before the transaction. If the transfer fails, the
+        # transaction is aborted and any DB read (e.g. group.full_path) would raise
+        # PG::InFailedSqlTransaction during error logging.
+        capture_log_context
+
         Group.transaction do
           perform_transfer
         end
@@ -232,17 +237,22 @@ module Organizations
         log_transfer(error_message)
       end
 
+      def capture_log_context
+        @log_context = {
+          group_path: group.full_path,
+          group_id: group.id,
+          new_organization_path: new_organization&.full_path,
+          new_organization_id: new_organization&.id
+        }
+      end
+
       def log_transfer(error_message = nil)
         action = error_message.nil? ? "was" : "was not"
 
-        log_payload = {
+        log_payload = (@log_context || {}).merge(
           message: "Group #{action} transferred to a new organization",
-          group_path: @group.full_path,
-          group_id: @group.id,
-          new_organization_path: new_organization&.full_path,
-          new_organization_id: new_organization&.id,
           error_message: error_message
-        }
+        )
 
         if error_message.nil?
           ::Gitlab::AppLogger.info(log_payload)

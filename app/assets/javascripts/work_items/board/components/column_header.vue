@@ -31,8 +31,8 @@ export default {
       type: Object,
       required: true,
     },
-    // Grouping-strategy descriptor of how to render this column's value, e.g.
-    // `{ type: 'icon', name, color }`. See board/grouping/index.js.
+    // How to render this column's value, e.g. `{ type: 'icon', name, color }`.
+    // Comes from the grouping strategy — see board/grouping/index.js.
     decoration: {
       type: Object,
       required: true,
@@ -113,8 +113,8 @@ export default {
       }
 
       // `move-column` carries a delta (columns to shift by): -1 = left, +1 = right.
-      // A delta keeps board_view's handler position-agnostic and leaves room to
-      // add larger jumps (e.g. move to start/end) later without new event types.
+      // Sending a delta instead of a target index means board_view's handler
+      // doesn't need to know where the column actually is.
       return [
         {
           text: this.$options.i18n.moveLeft,

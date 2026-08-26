@@ -37,7 +37,7 @@ GET /search
 
 | Attribute          | Type             | Required | Description                                                                                                                                                                                                    |
 |--------------------|------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `scope`            | string           | Yes      | The scope to search in. Values include `projects`, `issues`, `work_items`, `merge_requests`, `milestones`, `snippet_titles`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.               |
+| `scope`            | string           | Yes      | The scope to search in. Values include `projects`, `groups`, `issues`, `work_items`, `merge_requests`, `milestones`, `snippet_titles`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.               |
 | `search`           | string           | Yes      | The search term.                                                                                                                                                                                               |
 | `search_type`      | string           | No       | The search type to use. Values include `basic`, `advanced`, and `zoekt`.                                                                                                                                       |
 | `confidential`     | boolean          | No       | Filter by confidentiality. Supports `issues` and `work_items` scopes; other scopes are ignored.                                                                                                                                  |
@@ -82,6 +82,36 @@ Example response:
     "star_count": 0,
     "forks_count": 0,
     "last_activity_at": "2018-01-31T09:56:30.902Z"
+  }
+]
+```
+
+### Scope: `groups`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249760) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `elasticsearch_group_search`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this scope is controlled by a feature flag.
+> For more information, see the history.
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=groups&search=flight"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 3,
+    "web_url": "http://localhost:3000/groups/flightjs",
+    "name": "Flightjs"
   }
 ]
 ```
@@ -582,7 +612,7 @@ GET /groups/:id/search
 | Attribute          | Type              | Required | Description                                                                                                                                                                                                    |
 |--------------------|-------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`               | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group.                                                                                                                                    |
-| `scope`            | string            | Yes      | The scope to search in. Values include `projects`, `issues`, `work_items`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.                                 |
+| `scope`            | string            | Yes      | The scope to search in. Values include `projects`, `groups`, `issues`, `work_items`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.                                 |
 | `search`           | string            | Yes      | The search term.                                                                                                                                                                                               |
 | `search_type`      | string            | No       | The search type to use. Values include `basic`, `advanced`, and `zoekt`.                                                                                                                                       |
 | `confidential`     | boolean           | No       | Filter by confidentiality. Supports `issues` and `work_items` scopes; other scopes are ignored.                                                                                                                                  |
@@ -629,6 +659,38 @@ Example response:
     "star_count": 0,
     "forks_count": 0,
     "last_activity_at": "2018-01-31T09:56:30.902Z"
+  }
+]
+```
+
+### Scope: `groups`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249760) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `elasticsearch_group_search`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this scope is controlled by a feature flag.
+> For more information, see the history.
+
+This scope returns the subgroups of the specified group, not the group itself.
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/search?scope=groups&search=flight"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 8,
+    "web_url": "http://localhost:3000/groups/flightjs/flight-crew",
+    "name": "Flight Crew"
   }
 ]
 ```

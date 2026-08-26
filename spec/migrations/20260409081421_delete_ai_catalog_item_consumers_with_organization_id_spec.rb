@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DeleteAiCatalogItemConsumersWithOrganizationId, feature_category: :workflow_catalog do
+RSpec.describe DeleteAiCatalogItemConsumersWithOrganizationId, feature_category: :ai_catalog_curation do
   let(:migration) { described_class.new }
   let(:organizations) { table(:organizations) }
   let(:namespaces) { table(:namespaces) }

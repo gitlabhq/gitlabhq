@@ -174,13 +174,13 @@ export default {
       createColumnValue: null,
       workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS,
       workItemsGroupByVisibleGroupsHydrated: false,
-      // Column value ids the in-flight dragged item may not be dropped into.
+      // Columns the dragged item can't be dropped into.
       invalidValueIds: [],
-      // Locks dragging while a move mutation is in flight so a second drop can't
-      // compute before/after ids against a stale, not-yet-persisted order.
+      // Lock dragging while a move is saving, so the next drop doesn't land based
+      // on an order the server hasn't saved yet.
       moveInProgress: false,
-      // Only shown once the lock above has been held for longer than
-      // MOVE_IN_PROGRESS_INDICATOR_DELAY, so quick moves don't flash the columns.
+      // Only true once the lock above has been held longer than
+      // MOVE_IN_PROGRESS_INDICATOR_DELAY, so a quick move doesn't flash the columns grey.
       showMoveInProgressIndicator: false,
     };
   },
@@ -228,15 +228,14 @@ export default {
     useRestApi() {
       return this.glFeatures.workItemRestApiFrontendUsers;
     },
-    // Relative position is only meaningful under Manual sort; any other sort would
-    // immediately override a reorder, so we don't persist position then.
+    // Relative position only means anything under Manual sort — any other sort
+    // would immediately override a reorder, so we don't bother persisting it then.
     isManualSort() {
       return this.queryVariables.sort === RELATIVE_POSITION_ASC;
     },
-    // The fetch is already scoped to the selected groups, so no client-side filtering
-    // is needed here — just apply the persisted column order. Reconciling on read:
-    // unknown/new groups fall to the end in default order, stale ids are ignored
-    // (see `grouping/ordering.js`).
+    // Already scoped to the selected groups server-side, so just apply the
+    // persisted column order (grouping/ordering.js sends new groups to the end
+    // and drops stale ids).
     orderedGroupByValues() {
       return orderGroups({
         groupOrder: this.groupOrder,
@@ -244,7 +243,6 @@ export default {
         values: this.groupByValues,
       });
     },
-    // Reordering needs a user who can persist it and more than one column to move.
     canReorderColumns() {
       return this.canManageColumns && this.orderedGroupByValues.length > 1;
     },
@@ -303,8 +301,9 @@ export default {
     },
     gateData() {
       return {
-        // A function so a falsy value here doesn't make vue-apollo treat this whole
-        // options object as the query document; `skip` below is what gates the fetch.
+        // This has to be a function. If we just put a possibly-falsy value here,
+        // vue-apollo would treat this whole options object as the query document
+        // instead. `skip` below is what actually decides whether to fetch.
         query() {
           return this.strategy?.gateQuery;
         },
@@ -325,9 +324,9 @@ export default {
     groupId(value) {
       return getGroupId({ groupBy: this.groupBy, value });
     },
-    // Pre-populates the new work item's widgets draft with the column's grouped attribute
-    // (e.g. status) and the board's active filters (e.g. labels), then opens the create
-    // modal for that column.
+    // Fills in the new item's draft with the column's grouped attribute (e.g.
+    // status) and the board's active filters (e.g. labels), then opens the
+    // create modal for that column.
     async handleCreateItem(value) {
       const draftKey = getNewWorkItemWidgetsAutoSaveKey({
         fullPath: this.rootPageFullPath,
@@ -343,8 +342,8 @@ export default {
       updateDraft(
         draftKey,
         JSON.stringify({
-          // Drop previously-inherited widgets first: the draft is shared across board views,
-          // so a filter that is no longer active must not linger from an earlier seeding.
+          // Drop whatever was inherited last time first. The draft is shared across
+          // board views, so a filter that's no longer active shouldn't linger.
           ...omit(draft, INHERITED_WIDGET_TYPES),
           ...(this.strategy?.newItemDraft(value) ?? {}),
           ...inheritedFilters,
@@ -359,8 +358,9 @@ export default {
         return;
       }
 
-      // The item's grouping decides which column it belongs to but it can differ from the
-      // clicked column if the user changed the grouped attribute (e.g. status) in the creation modal.
+      // The item's grouped attribute decides which column it actually belongs to,
+      // which can differ from the clicked column if the user changed it (e.g.
+      // status) while filling in the creation modal.
       const valueId = this.strategy?.itemValueId?.(workItem);
       const targetColumn = (valueId && this.valueById(valueId)) || clickedColumn;
 
@@ -473,9 +473,9 @@ export default {
         },
       });
     },
-    // Opens the detail panel for the item in the `show` param.
-    // Each column loads separately, so we run this whenever one resolves. We don't clear
-    // the param when the item is missing as it may still load in another column.
+    // Each column loads separately, so this runs every time one resolves. If the
+    // item isn't in this batch we leave the param alone, since it may still turn
+    // up in another column.
     checkDetailPanelParams(workItems) {
       const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
       if (!queryParam) {
@@ -507,7 +507,6 @@ export default {
         columnFilter: this.strategy.columnFilter(value),
       });
     },
-    // Shared method to move the card and adjust the work item count
     moveWorkItemBetweenColumns({
       cache,
       workItemId,
@@ -744,8 +743,8 @@ export default {
     onColumnMove({ oldIndex, newIndex }) {
       this.moveColumn(oldIndex, newIndex);
     },
-    // `delta` is how many positions to shift by (-1 left, +1 right). moveColumn
-    // ignores an out-of-range target, so edge columns are safe.
+    // `delta` is how many positions to shift by: -1 for left, +1 for right.
+    // moveColumn ignores an out-of-range target, so this is safe on edge columns.
     onColumnShift({ value, delta }) {
       const oldIndex = this.renderedColumns.findIndex((column) => column.id === value.id);
       if (oldIndex === -1) {
@@ -758,7 +757,7 @@ export default {
         visibleGroups: this.workItemsGroupByVisibleGroups,
         groupBy: this.groupBy,
         value,
-        allValues: this.groupByValues,
+        allGroups: this.groupByValues,
       });
 
       try {
@@ -795,7 +794,6 @@ export default {
         return;
       }
 
-      // Columns are grouped values, so an unchanged value means a same-column reorder.
       const valueChanged = fromValueId !== toValueId;
 
       const { cache } = this.$apollo.getClient();
@@ -803,8 +801,9 @@ export default {
       const fromVariables = this.columnVariables(fromValue);
       const toVariables = this.columnVariables(toValue);
 
-      // Relative position comes from the target column's pre-move order so the
-      // before/after ids match where the card lands. Only computed under Manual sort.
+      // We read the target column's order before the move so the before/after
+      // ids line up with where the card actually lands. Only relevant under
+      // Manual sort — other sorts don't let you persist a position.
       const { moveBeforeId, moveAfterId } = this.isManualSort
         ? getMovePositionIds({
             nodes: readWorkItemsFromColumn({
@@ -819,13 +818,12 @@ export default {
           })
         : {};
 
-      // Nothing to persist: dropped back in place with no value or position change.
       if (!valueChanged && !moveBeforeId && !moveAfterId) {
         return;
       }
 
-      // Snapshot the moved card so the cache update can reinsert it into the target
-      // column (with the new value) on both the optimistic and the confirmed pass.
+      // Snapshot the card now so the cache update below can reinsert it into the
+      // target column on both the optimistic pass and the confirmed one.
       const node = readWorkItemFromColumn({
         cache,
         query,
@@ -855,9 +853,11 @@ export default {
         this.showMoveInProgressIndicator = true;
       }, MOVE_IN_PROGRESS_INDICATOR_DELAY);
       try {
-        // Apollo runs `update` optimistically, then again on the server result; a
-        // failure discards the optimistic layer and snaps the card back. We reinsert
-        // the cached `node` (it has the display fields) rather than the id-only payload.
+        // Apollo calls `update` twice: once straight away with our optimistic
+        // response, then again once the server replies. If the mutation fails,
+        // the optimistic change is rolled back and the card snaps back on its own.
+        // We reinsert the `node` we snapshotted earlier (it has all the display
+        // fields) rather than the id-only payload the mutation actually returns.
         const { data } = await this.$apollo.mutate({
           mutation: updateBoardWorkItemMutation,
           variables: { input },

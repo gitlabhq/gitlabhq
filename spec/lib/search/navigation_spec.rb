@@ -45,7 +45,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
       )
 
       expect(tabs[:blobs]).to include(
-        sort: 2,
+        sort: 3,
         label: 'Code',
         condition: false,
         data: { testid: 'code-tab' }
@@ -91,6 +91,32 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
       with_them do
         it 'data item condition is set correctly' do
           expect(tabs[:projects][:condition]).to eq(condition)
+        end
+      end
+    end
+
+    context 'for groups tab' do
+      where(:project, :group, :condition) do
+        nil | nil | true
+        nil | ref(:group_double) | true
+        ref(:project_double) | nil | false
+      end
+
+      with_them do
+        it 'data item condition is set correctly' do
+          expect(tabs[:groups][:condition]).to eq(condition)
+        end
+      end
+
+      context 'when the elasticsearch_group_search feature flag is disabled' do
+        let(:project) { nil }
+
+        before do
+          stub_feature_flags(elasticsearch_group_search: false)
+        end
+
+        it 'hides the tab' do
+          expect(tabs[:groups][:condition]).to be(false)
         end
       end
     end

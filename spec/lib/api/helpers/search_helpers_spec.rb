@@ -6,24 +6,27 @@ RSpec.describe API::Helpers::SearchHelpers, feature_category: :global_search do
   describe '.global_search_scopes' do
     it 'for CE returns the expected scopes', unless: Gitlab.ee? do
       expect(described_class.global_search_scopes)
-        .to match_array(%w[projects issues work_items merge_requests milestones snippet_titles users])
+        .to match_array(%w[projects groups issues work_items merge_requests milestones snippet_titles users])
     end
 
     it 'for EE returns the expected scopes', if: Gitlab.ee? do
       expect(described_class.global_search_scopes).to match_array(
-        %w[wiki_blobs blobs commits notes projects issues work_items merge_requests milestones snippet_titles users])
+        %w[wiki_blobs blobs commits notes projects groups issues work_items merge_requests milestones
+          snippet_titles users]
+      )
     end
   end
 
   describe '.group_search_scopes' do
     it 'for CE returns the expected scopes', unless: Gitlab.ee? do
       expect(described_class.group_search_scopes)
-        .to match_array(%w[projects issues work_items merge_requests milestones users])
+        .to match_array(%w[projects groups issues work_items merge_requests milestones users])
     end
 
     it 'for EE returns the expected scopes', if: Gitlab.ee? do
       expect(described_class.group_search_scopes)
-        .to match_array(%w[wiki_blobs blobs commits notes projects issues work_items merge_requests milestones users])
+        .to match_array(%w[wiki_blobs blobs commits notes projects groups issues work_items merge_requests
+          milestones users])
     end
   end
 

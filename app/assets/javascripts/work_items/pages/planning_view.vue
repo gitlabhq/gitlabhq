@@ -528,9 +528,9 @@ export default {
     detailPanelViewContext() {
       return this.isBoardView ? VIEW_CONTEXT.drawerBoard : VIEW_CONTEXT.drawerList;
     },
-    // The board only supports Manual ordering, so it always reads/displays Manual sort
-    // regardless of the list's sort. We override here rather than mutating sortKey, so the
-    // list restores the user's sort on return and their preference is never overwritten.
+    // The board can only be sorted manually, so it always shows Manual sort here,
+    // no matter what sort the list is actually using. We only override the display,
+    // not this.sortKey itself, so switching back to list view restores the user's real sort.
     effectiveSortKey() {
       return this.isBoardView ? RELATIVE_POSITION_ASC : this.sortKey;
     },
@@ -1162,11 +1162,9 @@ export default {
         this.restoreViewDraft();
       }
     },
-    // Ensures the local visibility cache is seeded with the saved view's visibleGroups.
-    // Held off until preferencesLoaded, since visibleGroups reads `{}` (i.e. "no
-    // selection") before displaySettings has actually resolved — writing that early
-    // would tell board_view the selection is known when it isn't, and it would fetch
-    // unscoped before this settles.
+    // Seed the local visibility cache once preferencesLoaded is true. Until then, visibleGroups
+    // reads as `{}` just because it hasn't loaded yet, not because nothing is selected — writing
+    // it early would make board_view fetch everything unscoped too soon.
     visibleGroups(visibleGroups) {
       if (this.preferencesLoaded) {
         this.syncVisibleGroupsToCache(visibleGroups);
@@ -1525,9 +1523,9 @@ export default {
 
       this.sortKey = draft.sortKey;
       this.localDisplaySettings = draft.displaySettings;
-      // A genuinely inaccessible board saved view is already redirected to "not found" by
-      // the savedView query result handler, so an unavailable board draft here means the
-      // persisted view itself is a list view with a stale/invalid draft view mode.
+      // If the board itself were unavailable we'd already have been redirected to "not found"
+      // earlier. So getting here with an unavailable board draft means the saved view is
+      // actually a list view with some stale, invalid board draft data left over.
       this.viewMode = isDraftBoardModeUnavailable ? VIEW_MODE_LIST : draft.viewMode;
     },
     handleClickTab(state) {

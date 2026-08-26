@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe SanitizeAiCatalogItemDefinitions, migration: :gitlab_main, feature_category: :workflow_catalog do
+RSpec.describe SanitizeAiCatalogItemDefinitions, migration: :gitlab_main, feature_category: :ai_catalog_curation do
   let(:ai_catalog_items) { table(:ai_catalog_items) }
   let(:ai_catalog_item_versions) { table(:ai_catalog_item_versions) }
   let(:namespaces) { table(:namespaces) }
@@ -72,7 +72,7 @@ RSpec.describe SanitizeAiCatalogItemDefinitions, migration: :gitlab_main, featur
     }.from(safe_definition)
   end
 
-  describe 'DANGEROUS_CHARS regex', feature_category: :workflow_catalog, migration: false do
+  describe 'DANGEROUS_CHARS regex', feature_category: :ai_catalog_curation, migration: false do
     using RSpec::Parameterized::TableSyntax
 
     subject(:regex) { described_class::DANGEROUS_CHARS }

@@ -297,6 +297,26 @@ RSpec.describe Organizations::Transfer::TopicsService, :aggregate_failures, feat
       end
     end
 
+    context 'when the group is deeply nested (multi-element traversal_ids)' do
+      # traversal_ids is a bigint[] column. The old_topics query compares it with
+      # a literal array via @>; guards against an integer[] vs bigint[] type
+      # mismatch (PG::UndefinedFunction) on the traversal_ids containment check.
+      let!(:deep_subgroup) { create(:group, parent: topic_subgroup) }
+      let!(:deep_project) { create(:project, namespace: deep_subgroup) }
+      let!(:deep_topic) { create(:topic, name: 'nested', organization: old_organization) }
+      let!(:deep_project_topic) do
+        create(:project_topic, project: deep_project, topic: deep_topic)
+      end
+
+      it 'executes the traversal_ids query and repoints the topic without a type error' do
+        expect { service.execute }.not_to raise_error
+
+        new_topic = Projects::Topic.find_by(organization_id: new_organization.id, name: 'nested')
+        expect(new_topic).to be_present
+        expect(deep_project_topic.reload.topic_id).to eq(new_topic.id)
+      end
+    end
+
     context 'when name matches existing topic in target org with different slug' do
       let!(:old_topic) do
         create(:topic, name: 'rails', organization: old_organization, slug: 'rails-old')

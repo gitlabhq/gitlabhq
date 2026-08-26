@@ -29,6 +29,14 @@ module Search
     end
     strong_memoize_attr :projects
 
+    def allowed_scopes
+      Search::Scopes.available_for_context(
+        context: :group,
+        container: group,
+        requested_search_type: params[:search_type]
+      )
+    end
+
     private
 
     def searched_container

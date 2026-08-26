@@ -14,7 +14,7 @@ This guide outlines best practices and implementation details for syntax highlig
 
 The source code viewer uses this dual approach to ensure broad language support and optimal performance when viewing files in the repository.
 
-## Components Overview
+## Components overview
 
 The syntax highlighting implementation consists of several key components:
 
@@ -23,24 +23,24 @@ The syntax highlighting implementation consists of several key components:
 - `highlight_mixin.js`: Manages the highlighting process and WebWorker communication
 - `highlight_utils.js`: Provides utilities for content chunking and processing
 
-## Performance Principles
+## Performance principles
 
 ### Display content as quickly as possible
 
 We optimize the display of content through a staged rendering approach:
 
-1. Immediately render the first 70 lines in plaintext (without highlighting)
-1. Request the WebWorker to highlight the first 70 lines
-1. Request the WebWorker to highlight the entire file
+1. Immediately render the first 70 lines in plaintext (without highlighting).
+1. Request the WebWorker to highlight the first 70 lines.
+1. Request the WebWorker to highlight the entire file.
 
 ### Maintain optimal browser performance
 
 To maintain optimal browser performance:
 
-- Use a WebWorker for the highlighting task so that it doesn't block the main thread
-- Break highlighted content into chunks and render them as the user scrolls using the [IntersectionObserver API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
+- Use a WebWorker for the highlighting task so that it doesn't block the main thread.
+- Break highlighted content into chunks and render them as the user scrolls using the [IntersectionObserver API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API).
 
-## Adding Syntax Highlighting Support
+## Adding syntax highlighting support
 
 You can add syntax highlighting support for new languages by:
 
@@ -49,7 +49,7 @@ You can add syntax highlighting support for new languages by:
 
 The method you choose depends on whether the language already has a Highlight.js compatible definition available.
 
-### For Languages with Third-Party Definitions
+### For languages with third-party definitions
 
 We can add third-party dependencies to our [`package.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/package.json) and import the dependency in [`highlight_js_language_loader`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/content_editor/services/highlight_js_language_loader.js#L260).
 
@@ -84,7 +84,7 @@ if (name.endsWith('.gleam')) {
 }
 ```
 
-### For Languages Without Existing Definitions
+### For languages without existing definitions
 
 New language definitions can be added to our codebase under [`~/vue_shared/components/source_viewer/languages/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/vue_shared/components/source_viewer/languages/).
 

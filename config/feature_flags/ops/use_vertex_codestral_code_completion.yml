@@ -1,0 +1,10 @@
+---
+name: use_vertex_codestral_code_completion
+description: Serve Vertex-hosted Codestral 25.08 as the code completion default instead of Fireworks-hosted Codestral 25.08.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/614058
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251313
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/619299
+milestone: '19.4'
+group: group::ai coding
+type: ops
+default_enabled: false

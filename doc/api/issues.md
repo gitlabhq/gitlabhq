@@ -1192,7 +1192,7 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ### Rate limits
 
 To help avoid abuse, users can be limited to a specific number of `Create` requests per minute.
-For more information, see [rate limits on issue and epic creation](../administration/settings/rate_limit_on_issues_creation.md).
+For more information, see [content creation rate limits](../rate_limits/content_creation.md).
 
 ## Update an issue
 

@@ -2,8 +2,8 @@ import { getAdaptiveStatusColor } from '~/lib/utils/color_utils';
 import { strategies } from 'ee_else_ce/work_items/board/grouping/strategies';
 
 /**
- * One column's value: an `id` and `name` plus any attribute-specific fields the
- * strategy's `headerDecoration` reads (e.g. `iconName`, `color` for status).
+ * One column's value: an `id` and `name`, plus whatever extra fields the
+ * strategy's `headerDecoration` needs (e.g. `iconName`, `color` for status).
  *
  * @typedef {Object} GroupingValue
  * @property {string} id
@@ -11,7 +11,7 @@ import { strategies } from 'ee_else_ce/work_items/board/grouping/strategies';
  */
 
 /**
- * How a column header renders its value.
+ * How a column header should render its value.
  *
  * @typedef {Object} HeaderDecoration
  * @property {'icon'|'none'} type
@@ -20,52 +20,39 @@ import { strategies } from 'ee_else_ce/work_items/board/grouping/strategies';
  */
 
 /**
- * A board grouping strategy. The work items board groups work items into columns
- * by an attribute (today only `status`; assignee/label/milestone/… in future).
- * Each field isolates one attribute-specific decision, keeping `board_view` and
- * `column_group` attribute-agnostic — so a new attribute is added by writing a
- * strategy and adding it to the `strategies` list, with no board-component changes.
+ * A board grouping strategy. The board splits work items into columns by one
+ * attribute (right now just `status`). Each field below handles one
+ * attribute-specific piece of that, so `board_view` and `column_group` don't
+ * need to know or care which attribute they're grouped by. To support a new
+ * attribute, write a strategy and add it to the `strategies` list.
  *
  * @typedef {Object} GroupingStrategy
  * @property {string} property - The `groupBy` property it handles, e.g. 'status'.
  * @property {string} label - Human-readable name for this dimension, e.g. 'Status'.
  * @property {Object} valuesQuery - GraphQL query listing the values that become columns.
- * @property {(data: Object) => GroupingValue[]} extractValues - Pulls the column values from the query result.
- * @property {(value: GroupingValue) => Object} columnFilter - work-items query variables that filter a column, e.g. `{ status: { name } }`.
- * @property {(item: Object) => (string|null)} itemValueId - the column value id a work item belongs to, or null when it belongs to no column. Used to move a card to the correct column when the grouped attribute is changed in a side panel.
- * @property {(value: GroupingValue) => Object} moveInput - workItemUpdate input fragment that moves an item into the column, e.g. `{ statusWidget: { status } }`.
- * @property {(value: GroupingValue) => Object} newItemDraft - new-work-item widgets-draft fragment that pre-populates the grouped attribute when creating an item in the column, keyed by widget type, e.g. `{ STATUS: { status } }`. Read by `setNewWorkItemCache` when the create modal opens.
- * @property {(node: Object, value: GroupingValue) => void} patchCard - Mutates the cloned card in place so its attribute matches the target column optimistically.
- * @property {(value: GroupingValue) => HeaderDecoration} headerDecoration - How the column header renders the value.
- * @property {Object} [gateQuery] - Optional GraphQL query for drag-eligibility data. Omit to allow all drops.
- * @property {(data: Object) => *} [extractGateData] - Pulls gate data (e.g. a lookup map) from the `gateQuery` result.
- * @property {(args: { item: Object, value: GroupingValue, gateData: * }) => boolean} [isDropAllowed] - Whether the dragged work item `item` may be dropped into `value`'s column. Omit to allow all drops.
+ * @property {(data: Object) => GroupingValue[]} extractValues - Pulls the column values out of the query result.
+ * @property {(value: GroupingValue) => Object} columnFilter - Query variables that filter to one column, e.g. `{ status: { name } }`.
+ * @property {(item: Object) => (string|null)} itemValueId - Which column value a work item belongs to, or null if none. Used to move a card to the right column when its grouped attribute changes in a side panel.
+ * @property {(value: GroupingValue) => Object} moveInput - workItemUpdate input that moves an item into the column, e.g. `{ statusWidget: { status } }`.
+ * @property {(value: GroupingValue) => Object} newItemDraft - Widgets-draft fragment that pre-fills the grouped attribute when creating an item in this column, e.g. `{ STATUS: { status } }`. Read by `setNewWorkItemCache` when the create modal opens.
+ * @property {(node: Object, value: GroupingValue) => void} patchCard - Mutates the cloned card in place so it matches the target column while the move is still in flight.
+ * @property {(value: GroupingValue) => HeaderDecoration} headerDecoration - How the column header should render the value.
+ * @property {Object} [gateQuery] - Optional GraphQL query for drag-eligibility data. Omit to allow every drop.
+ * @property {(data: Object) => *} [extractGateData] - Pulls the gate data (e.g. a lookup map) out of the `gateQuery` result.
+ * @property {(args: { item: Object, value: GroupingValue, gateData: * }) => boolean} [isDropAllowed] - Whether `item` can be dropped into `value`'s column. Omit to allow every drop.
  */
 
-// Only grouping supported so far; not yet user-selectable.
 export const DEFAULT_GROUP_BY = { property: 'status' };
 
-// The available strategies differ by edition (status is EE-only), so the list
-// is supplied by an `ee_else_ce` module and keyed by property here.
+// Status grouping is EE-only, so which strategies exist depends on edition.
+// The `ee_else_ce` module supplies the list; we just key it by property here.
 /** @type {Object<string, GroupingStrategy>} */
 const STRATEGIES = Object.fromEntries(strategies.map((strategy) => [strategy.property, strategy]));
 
-/**
- * @param {string} property
- * @returns {GroupingStrategy|null} The strategy for the groupBy property, or null when unsupported.
- */
 export const groupingStrategyFor = (property) => STRATEGIES[property] ?? null;
 
-/**
- * @param {HeaderDecoration} decoration
- * @returns {boolean} Whether the decoration should render an icon.
- */
 export const hasDecorationIcon = (decoration) =>
   decoration.type === 'icon' && Boolean(decoration.name);
 
-/**
- * @param {HeaderDecoration} decoration
- * @returns {Object} Inline style for the decoration icon, adapted for dark mode.
- */
 export const decorationIconStyle = (decoration) =>
   decoration.color ? { color: getAdaptiveStatusColor(decoration.color) } : {};

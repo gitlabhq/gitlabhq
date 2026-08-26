@@ -317,8 +317,10 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
     #   - doc/development/application_limits.md
     #   - https://gitlab.com/gitlab-org/gitlab/-/work_items/600205
     let_it_be(:unexposed_columns) do
+      # ai_flow_schedules: exposure deferred to https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250809
       %w[
         active_versioned_pages_deployments_limit_by_namespace
+        ai_flow_schedules
         audit_events_amazon_s3_configurations
         ci_daily_pipeline_schedule_triggers
         ci_job_annotations_num

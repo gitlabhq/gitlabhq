@@ -243,6 +243,21 @@ $command-palette-spacing: px-to-rem(14px);
     }
   }
 
+  // Ensure selected styles on parent GlNavItem when flyout menu is open
+  .gl-nav-item {
+    &.with-mouse-over-flyout {
+      color: var(--gl-nav-item-foreground-color-hover);
+      background-color: var(--gl-nav-item-background-color-hover);
+    }
+
+    &.selected {
+      &.with-mouse-over-flyout {
+        color: var(--gl-nav-item-selected-foreground-color-hover);
+        background-color: var(--gl-nav-item-selected-background-color-hover);
+      }
+    }
+  }
+
   .nav-flyout-menu {
     z-index: $super-sidebar-nav-flayout-menu-z-index;
     @include gl-prefers-reduced-motion-transition;

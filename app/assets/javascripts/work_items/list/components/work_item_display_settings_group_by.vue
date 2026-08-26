@@ -171,7 +171,7 @@ export default {
         visibleGroups: this.visibleGroups,
         groupBy: this.groupBy,
         value,
-        allValues: this.groupByValues,
+        allGroups: this.groupByValues,
       });
       await this.$apollo.mutate({
         mutation: updateVisibleGroupsMutation,

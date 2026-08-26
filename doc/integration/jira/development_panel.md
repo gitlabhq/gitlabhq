@@ -2,6 +2,7 @@
 stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: View GitLab merge requests, branches, and commits for a Jira issue directly in the Jira development panel.
 title: Jira development panel
 ---
 
@@ -25,8 +26,8 @@ For an overview, see [Jira development panel integration](https://www.youtube.co
 
 {{< history >}}
 
-- Ability to delete branches [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148712) in GitLab 17.1 [with a feature flag](../../administration/feature_flags/_index.md) named `jira_connect_remove_branches`. Disabled by default.
-- Ability to delete branches made [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158224) in GitLab 17.2. Feature flag `jira_connect_remove_branches` removed.
+- Branch deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148712) in GitLab 17.1 [with a feature flag](../../administration/feature_flags/_index.md) named `jira_connect_remove_branches`. Disabled by default.
+- Branch deletion [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158224) in GitLab 17.2. Feature flag `jira_connect_remove_branches` removed.
 
 {{< /history >}}
 

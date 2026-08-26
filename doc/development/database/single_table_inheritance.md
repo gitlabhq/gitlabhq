@@ -2,7 +2,7 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
-title: Single Table Inheritance
+title: Single table inheritance
 ---
 
 **Summary**: Don't design new tables using Single Table Inheritance (STI). For existing tables that use STI as a pattern, avoid adding new types, and consider splitting them into separate tables.
@@ -10,7 +10,7 @@ title: Single Table Inheritance
 STI is a database design pattern where a single table stores
 different types of records. These records have a subset of shared columns and another column
 that instructs the application which object that record should be represented by.
-This can be used to for example store two different types of SSH keys in the same
+This can be used to, for example, store two different types of SSH keys in the same
 table. ActiveRecord makes use of it and provides some features that make STI usage
 more convenient.
 
@@ -67,7 +67,7 @@ If your table already has a `*_type`, new classes for the different types can be
 
 Whenever a model is used in a migration, single table inheritance should be disabled.
 Due to the way Rails loads associations (even in migrations), failing to disable STI
-could result in loading unexpected code or associations which may cause unintended
+could result in loading unexpected code or associations which might cause unintended
 side effects or failures during upgrades.
 
 ```ruby

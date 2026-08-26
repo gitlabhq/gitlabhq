@@ -6,17 +6,17 @@ export const BOARD_DND_GROUP = 'work-item-board';
 // Class applied to each draggable card so the load-more row stays fixed.
 export const BOARD_CARD_CLASS = 'js-board-card';
 
-// Separate sortablejs group for column reordering so columns and cards never
-// interact (a card can't be dropped into the column strip, or vice versa).
+// Separate sortablejs group for column reordering, so columns and cards can
+// never be dropped into each other's lists.
 export const BOARD_COLUMN_DND_GROUP = 'work-item-board-columns';
 
-// Class marking each draggable column, and the header grip that must be grabbed
-// to start a column drag (so dragging a card inside a column doesn't move it).
+// Class marking each draggable column, and the header grip you have to grab to
+// start dragging it (so dragging a card inside the column doesn't move the column).
 export const BOARD_COLUMN_CLASS = 'js-board-column';
 export const BOARD_COLUMN_DRAG_HANDLE_CLASS = 'js-board-column-drag-handle';
 
-// Interactive header controls (e.g. the column actions menu) that must not start
-// a column drag even though they live inside the drag handle.
+// Header controls (like the column actions menu) that live inside the drag
+// handle but shouldn't trigger a column drag when clicked.
 export const BOARD_COLUMN_NO_DRAG_CLASS = 'js-board-column-no-drag';
 
 export const I18N_MOVE_ERROR = s__(

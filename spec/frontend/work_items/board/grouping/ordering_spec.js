@@ -32,7 +32,7 @@ describe('work_items/board/grouping/ordering', () => {
     });
 
     it('appends groups absent from groupOrder after the ordered ones, in default order', () => {
-      // Only c and a are ordered; b (e.g. a newly-added status) falls to the end.
+      // groupOrder only mentions c and a; b is like a newly-added status, so it falls to the end.
       const groupOrder = [groupId(values[2]), groupId(values[0])];
 
       expect(orderGroups({ groupOrder, groupBy, values })).toEqual([

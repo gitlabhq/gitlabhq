@@ -127,3 +127,5 @@ columns:
   type: Nullable(String)
 - name: execution_mode
   type: Nullable(Int16)
+- name: trigger_flow_schedule_id
+  type: Nullable(Int64)

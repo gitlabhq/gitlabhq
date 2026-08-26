@@ -2,6 +2,7 @@
 stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Resolve access, session token, and SSL or TLS connection errors with the Jira DVCS connector.
 title: Troubleshooting Jira DVCS connector
 ---
 
@@ -88,7 +89,7 @@ Potential resolutions:
    the query string.
 1. If `scope=api` is missing from the URL, edit the
    [GitLab account configuration](https://confluence.atlassian.com/adminjiraserver/linking-gitlab-accounts-1027142272.html#LinkingGitLabaccounts-InGitLab). Review
-   the **Scopes** field and ensure the `api` checkbox is selected.
+   the **Scopes** section and ensure the `api` checkbox is selected.
 
 ## Error: `410 Gone`
 
@@ -121,15 +122,15 @@ Failed to execute request [https://gitlab.com/api/v4/projects/:id/merge_requests
 {"message":"403 Forbidden"}
 ```
 
-If you get a `403 Forbidden` error, this project might have some [GitLab features disabled](../../../user/project/settings/_index.md#configure-project-features-and-permissions).
-In the previous example, the merge requests feature is disabled.
+If you get a `403 Forbidden` error, this project might have some [GitLab features turned off](../../../user/project/settings/_index.md#configure-project-features-and-permissions).
+In the previous example, the merge requests feature is turned off.
 
-To resolve the issue, enable the relevant feature:
+To resolve the issue, turn on the relevant feature:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
-1. Use the toggles to enable the features as needed.
+1. Use the toggles to turn on the features as needed.
 
 ## Find webhook logs in a DVCS-linked project
 

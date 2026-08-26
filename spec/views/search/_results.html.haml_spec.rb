@@ -158,4 +158,17 @@ RSpec.describe 'search/_results', :with_current_organization, feature_category: 
       end
     end
   end
+
+  context 'when searching groups' do
+    let_it_be(:group) { create(:group, name: 'foo-group') }
+
+    let(:scope) { 'groups' }
+    let(:search_objects) { Group.page(1).per(2) }
+
+    it 'renders the group list' do
+      render
+
+      expect(rendered).to have_link(group.full_name, href: group_path(group))
+    end
+  end
 end

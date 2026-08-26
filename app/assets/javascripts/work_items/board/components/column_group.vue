@@ -18,9 +18,7 @@ import WorkItemCardSkeleton from './work_item_card_skeleton.vue';
 
 export default {
   name: 'ColumnGroup',
-  // Number of ghost cards shown while loading the initial page or paginating.
   skeletonCount: 3,
-  // `draggable` is scoped to the card class so the load-more row stays fixed.
   sortableOptions: {
     ...defaultSortableOptions,
     draggable: `.${BOARD_CARD_CLASS}`,
@@ -170,10 +168,11 @@ export default {
       return this.strategy.headerDecoration(this.value);
     },
     groupConfig() {
-      // Shared group so cards drag between columns. `put` is an allowlist of the
-      // card group (not `true`, which in sortablejs accepts *any* group — that let
-      // a dragged column drop into a card list). `false` makes THIS column reject
-      // incoming drops (a status the dragged type can't take) while others accept.
+      // sortablejs's `put` decides which groups are allowed to drop cards into
+      // this list. Setting it to `true` sounds harmless, but sortablejs reads
+      // that as "accept literally anything". So we only allow this column's
+      // own card group in, and set `put: false` here to reject drops the
+      // strategy has flagged as invalid for this item.
       return { name: BOARD_DND_GROUP, put: this.dropDisabled ? false : [BOARD_DND_GROUP] };
     },
     countQueryVariables() {
@@ -218,8 +217,9 @@ export default {
           return this.queryVariables;
         },
         error(error) {
-          // Pagination failures are surfaced inline by fetchNextPage so that
-          // already-loaded items stay visible; only the initial load replaces the column.
+          // If pagination fails, fetchNextPage shows the error inline and keeps
+          // whatever already loaded on screen. Only the initial load replaces the
+          // whole column with an error state.
           if (this.fetchNextPageInProgress) {
             return;
           }
@@ -342,9 +342,10 @@ export default {
       >
         {{ error }}
       </p>
-      <!-- Rendered whenever expanded (outside the error state) so an empty column stays a drop
-      target. Skipped while collapsed so retained cards aren't surfaced when the column is dragged;
-      the body div (and its id) stays in the DOM via v-show so the header's aria-controls resolves. -->
+      <!-- Rendered whenever the column is expanded, even if empty, so it stays a valid
+      drop target. Not rendered while collapsed, so dragging the column doesn't drag its
+      cards along with it. The wrapper div stays in the DOM either way (via v-show) so
+      the header's aria-controls keeps pointing at a real element. -->
       <draggable-compat
         v-else-if="!collapsed"
         :value="workItems"

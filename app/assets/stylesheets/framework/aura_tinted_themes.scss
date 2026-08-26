@@ -1,3 +1,52 @@
+/**
+ * Temporary overrides to GlNavItem for existing theme styles
+ */
+:root:not(.aura-tinted-themes) {
+  --gl-nav-item-selected-font-weight: var(--gl-font-weight-normal);
+  --gl-nav-item-foreground-color-default: var(--gl-text-color-default);
+  --gl-nav-item-background-color-default: transparent;
+  --gl-nav-item-foreground-color-hover: var(--gl-nav-item-foreground-color-default);
+  --gl-nav-item-background-color-hover: var(--gl-color-alpha-dark-6);
+  --gl-nav-item-foreground-color-focus: var(--gl-nav-item-foreground-color-hover);
+  --gl-nav-item-background-color-focus: var(--gl-nav-item-background-color-hover);
+  --gl-nav-item-foreground-color-active: var(--gl-nav-item-foreground-color-focus);
+  --gl-nav-item-background-color-active: var(--gl-nav-item-background-color-focus);
+
+  --gl-nav-item-selected-foreground-color-default: hsl(from var(--super-sidebar-theme-accent-color) h calc(s - 20) 20);
+  --gl-nav-item-selected-background-color-default: hsla(from var(--super-sidebar-theme-accent-color) h s l / 16%);
+  --gl-nav-item-selected-foreground-color-hover: var(--gl-text-color-default);
+  --gl-nav-item-selected-background-color-hover: var(--gl-color-alpha-dark-6);
+  --gl-nav-item-selected-foreground-color-focus: var(--gl-nav-item-selected-foreground-color-hover);
+  --gl-nav-item-selected-background-color-focus: var(--gl-nav-item-selected-background-color-hover);
+  --gl-nav-item-selected-foreground-color-active: var(--gl-nav-item-selected-foreground-color-focus);
+  --gl-nav-item-selected-background-color-active: var(--gl-nav-item-selected-background-color-focus);
+
+  // Explicitly hide GlNavItem selected indicator
+  .gl-nav-item.selected::before {
+    content: none;
+  }
+}
+
+:root:not(.aura-tinted-themes).gl-dark {
+  --gl-nav-item-foreground-color-default: var(--gl-text-color-default);
+  --gl-nav-item-background-color-default: transparent;
+  --gl-nav-item-foreground-color-hover: var(--gl-nav-item-foreground-color-default);
+  --gl-nav-item-background-color-hover: var(--gl-color-alpha-light-8);
+  --gl-nav-item-foreground-color-focus: var(--gl-nav-item-foreground-color-hover);
+  --gl-nav-item-background-color-focus: var(--gl-nav-item-background-color-hover);
+  --gl-nav-item-foreground-color-active: var(--gl-nav-item-foreground-color-focus);
+  --gl-nav-item-background-color-active: var(--gl-nav-item-background-color-focus);
+
+  --gl-nav-item-selected-foreground-color-default: hsl(from var(--super-sidebar-theme-accent-color) h s 88);
+  --gl-nav-item-selected-background-color-default: hsla(from var(--super-sidebar-theme-accent-color) h s calc(l + 20) / 25%);
+  --gl-nav-item-selected-foreground-color-hover: var(--gl-text-color-default);
+  --gl-nav-item-selected-background-color-hover: var(--gl-color-alpha-light-8);
+  --gl-nav-item-selected-foreground-color-focus: var(--gl-nav-item-selected-foreground-color-hover);
+  --gl-nav-item-selected-background-color-focus: var(--gl-nav-item-selected-background-color-hover);
+  --gl-nav-item-selected-foreground-color-active: var(--gl-nav-item-selected-foreground-color-focus);
+  --gl-nav-item-selected-background-color-active: var(--gl-nav-item-selected-background-color-focus);
+}
+
 :root.aura-tinted-themes {
   /**
    * Warm base neutrals
@@ -151,97 +200,6 @@
    */
   .content-panels.is-focused {
     background-color: var(--gl-application-chrome-background-color);
-  }
-
-  /**
-   * GlNavItem design token updates
-   */
-  --gl-nav-item-border-radius: var(--gl-action-border-radius);
-  --gl-nav-item-font-size: var(--gl-font-size-300);
-  --gl-nav-item-font-weight: 425;
-  --gl-nav-item-selected-font-weight: var(--gl-font-weight-bold);
-
-  --gl-nav-item-foreground-color-default: var(--gl-color-neutral-600);
-  --gl-nav-item-background-color-default: var(--gl-color-alpha-0);
-  --gl-nav-item-foreground-color-hover: var(--gl-color-neutral-950);
-  --gl-nav-item-background-color-hover: var(--gl-color-neutral-100);
-  --gl-nav-item-foreground-color-focus: var(--gl-nav-item-foreground-color-hover);
-  --gl-nav-item-background-color-focus: var(--gl-nav-item-background-color-hover);
-  --gl-nav-item-foreground-color-active: var(--gl-nav-item-foreground-color-focus);
-  --gl-nav-item-background-color-active: var(--gl-color-neutral-200);
-
-  --gl-nav-item-selected-foreground-color-default: var(--gl-color-neutral-950);
-  --gl-nav-item-selected-background-color-default: var(--gl-color-neutral-100);
-  --gl-nav-item-selected-foreground-color-hover: var(--gl-nav-item-foreground-color-hover);
-  --gl-nav-item-selected-background-color-hover: var(--gl-nav-item-background-color-hover);
-  --gl-nav-item-selected-foreground-color-focus: var(--gl-nav-item-foreground-color-focus);
-  --gl-nav-item-selected-background-color-focus: var(--gl-nav-item-background-color-focus);
-  --gl-nav-item-selected-foreground-color-active: var(--gl-nav-item-foreground-color-active);
-  --gl-nav-item-selected-background-color-active: var(--gl-nav-item-background-color-active);
-
-  &.gl-dark {
-    --gl-nav-item-foreground-color-default: var(--gl-color-neutral-200);
-    --gl-nav-item-background-color-default: var(--gl-color-alpha-0);
-    --gl-nav-item-foreground-color-hover: var(--gl-color-neutral-0);
-    --gl-nav-item-background-color-hover: var(--gl-color-neutral-900);
-    --gl-nav-item-foreground-color-focus: var(--gl-nav-item-foreground-color-hover);
-    --gl-nav-item-background-color-focus: var(--gl-nav-item-background-color-hover);
-    --gl-nav-item-foreground-color-active: var(--gl-nav-item-foreground-color-focus);
-    --gl-nav-item-background-color-active: var(--gl-color-neutral-950);
-
-    --gl-nav-item-selected-foreground-color-default: var(--gl-color-neutral-0);
-    --gl-nav-item-selected-background-color-default: var(--gl-color-neutral-900);
-    --gl-nav-item-selected-foreground-color-hover: var(--gl-nav-item-foreground-color-hover);
-    --gl-nav-item-selected-background-color-hover: var(--gl-nav-item-background-color-hover);
-    --gl-nav-item-selected-foreground-color-focus: var(--gl-nav-item-foreground-color-focus);
-    --gl-nav-item-selected-background-color-focus: var(--gl-nav-item-background-color-focus);
-    --gl-nav-item-selected-foreground-color-active: var(--gl-nav-item-foreground-color-active);
-    --gl-nav-item-selected-background-color-active: var(--gl-nav-item-background-color-active);
-  }
-
-  .gl-nav-item {
-    &.selected {
-      font-weight: var(--gl-nav-item-selected-font-weight);
-    }
-  }
-
-  // Selected indicator
-  .super-sidebar {
-    .gl-nav-item.selected::before {
-      @apply gl-absolute;
-      @apply -gl-left-3;
-      @apply gl-w-1;
-      @apply gl-top-2;
-      @apply gl-bottom-2;
-      @apply gl-rounded-r-default;
-      content: '';
-      background-color: currentColor;
-    }
-  }
-
-  .ai-navigation-rail {
-    .gl-nav-item {
-      @apply gl-text-strong;
-    }
-
-    .gl-nav-item.selected::before {
-      @apply gl-absolute;
-      @apply gl-h-1;
-      @apply gl-left-2;
-      @apply gl-right-2;
-      @apply -gl-bottom-[6px];
-      @apply gl-rounded-t-default;
-      @apply lg:gl-h-auto;
-      @apply lg:gl-w-1;
-      @apply lg:gl-left-auto;
-      @apply lg:-gl-right-[6px];
-      @apply lg:gl-top-2;
-      @apply lg:gl-bottom-2;
-      @apply lg:gl-rounded-l-default;
-      @apply lg:gl-rounded-tr-none;
-      content: '';
-      background-color: currentColor;
-    }
   }
 
   /**

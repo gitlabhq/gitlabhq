@@ -145,8 +145,8 @@ sbom_component_versions: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
 sbom_components: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
 sbom_source_packages: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
 sbom_sources: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
-scim_oauth_access_tokens: https://gitlab.com/gitlab-org/gitlab/-/issues/611959
-security_policy_settings: https://gitlab.com/gitlab-org/gitlab/-/issues/611959
+scim_oauth_access_tokens: supported
+security_policy_settings: https://gitlab.com/gitlab-org/gitlab/-/issues/621726
 slack_api_scopes: https://gitlab.com/gitlab-org/gitlab/-/issues/611960
 slack_integrations: no_work_needed
 slack_integrations_scopes: no_work_needed
@@ -164,7 +164,7 @@ subscription_user_add_on_assignment_versions: supported
 subscription_user_add_on_assignments: supported
 todos: supported
 topics: supported
-upcoming_reconciliations: https://gitlab.com/gitlab-org/gitlab/-/issues/611959
+upcoming_reconciliations: supported
 user_agent_details: https://gitlab.com/gitlab-org/gitlab/-/issues/611967
 user_upload_states: https://gitlab.com/gitlab-org/gitlab/-/issues/611963
 user_uploads: https://gitlab.com/gitlab-org/gitlab/-/issues/611963

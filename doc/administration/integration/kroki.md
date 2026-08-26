@@ -3,6 +3,7 @@ stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
+description: Turn on the Kroki integration to render diagrams as code in AsciiDoc, Markdown, reStructuredText, and Textile files.
 title: Kroki
 ---
 
@@ -14,7 +15,7 @@ title: Kroki
 {{< /details >}}
 
 With the [Kroki](https://kroki.io) integration,
-you can create diagrams-as-code within AsciiDoc, Markdown, reStructuredText, and Textile.
+you can create diagrams-as-code in AsciiDoc, Markdown, reStructuredText, and Textile.
 
 ## Enable Kroki in GitLab
 
@@ -22,11 +23,11 @@ Prerequisites:
 
 - Administrator access.
 
-To enable the Kroki integration:
+To turn on the Kroki integration:
 
 1. In the upper-right corner, select **Admin**.
 1. Go to **Settings** > **General**.
-1. Expand the **Kroki** section.
+1. Expand **Kroki**.
 1. Select the **Enable Kroki** checkbox.
 1. Enter the **Kroki URL**, for example, `https://kroki.io`.
 
@@ -35,7 +36,7 @@ use the [diagram proxy](diagram_proxy.md).
 
 ## Kroki server
 
-When you enable Kroki, GitLab sends diagrams to an instance of Kroki to display them as images.
+When you turn on Kroki, GitLab sends diagrams to an instance of Kroki to display them as images.
 You can use the free public cloud instance `https://kroki.io` or you can [install Kroki](https://docs.kroki.io/kroki/setup/install/)
 on your own infrastructure.
 After you've installed Kroki, make sure to update the **Kroki URL** in the settings to point to your instance.
@@ -54,7 +55,7 @@ docker run -d --name kroki -p 8080:8000 yuzutech/kroki
 The **Kroki URL** is the hostname of the server running the container.
 
 The [`yuzutech/kroki`](https://hub.docker.com/r/yuzutech/kroki) Docker image supports most diagram
-types out of the box. For a complete list, see the [Kroki installation docs](https://docs.kroki.io/kroki/setup/install/#_the_kroki_container).
+types out of the box. For a complete list, see the [Kroki installation documentation](https://docs.kroki.io/kroki/setup/install/#_the_kroki_container).
 
 Supported diagram types include:
 
@@ -83,7 +84,7 @@ read the [Kroki installation](https://docs.kroki.io/kroki/setup/install/#_images
 
 ## Create diagrams
 
-With Kroki integration enabled and configured, you can start adding diagrams to
+With the Kroki integration turned on and configured, you can start adding diagrams to
 your AsciiDoc or Markdown documentation using delimited blocks:
 
 - **Markdown**

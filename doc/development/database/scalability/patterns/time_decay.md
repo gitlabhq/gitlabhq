@@ -17,19 +17,19 @@ less important. This means we can also move old data to a bit less durable (less
 or even delete the data, in extreme cases.
 
 Those effects are usually tied to product or application semantics. They can vary in the degree
-that older data are accessed, and how useful or required older data are to the users or the
+that older data is accessed, and how useful or required older data is to the users or the
 application.
 
 Let's first consider entities with no inherent time-related bias for their data.
 
-A record for a user or a project may be equally important and frequently accessed, regardless of when
+A record for a user or a project might be equally important and frequently accessed, regardless of when
 it was created. We cannot predict by using a user's `id` or `created_at` how often the related
 record is accessed or updated.
 
 On the other hand, a good example for datasets with extreme time-decay effects are logs and time
 series data, such as events recording user actions.
 
-Most of the time, that type of data may have no business use after a couple of days or weeks, and
+Most of the time, that type of data might have no business use after a couple of days or weeks, and
 quickly become less important even from a data analysis perspective. They represent a snapshot that
 quickly becomes less and less relevant to the current state of the application, until at
 some point it has no real value.
@@ -71,7 +71,7 @@ There can be many such dimensions, but we focus only on the creation date as it 
 the most commonly used, and the one that we can control and optimize against. It:
 
 - Is immutable.
-- Is set when the record is created
+- Is set when the record is created.
 - Can be tied to physically clustering the records, without having to move them around.
 
 It's important to add that even if time-decay data are not accessed that way by the application by
@@ -79,7 +79,7 @@ default, you can make the vast majority of the queries explicitly filter the dat
 a way. **Time decay data without such a time-decay related access method are of no use from an optimization perspective, as there is no way to set and follow a scaling pattern.**
 
 We are not restricting the definition to data that are always accessed using a time-decay related
-access method, as there may be some outlier operations. These may be necessary and we can accept
+access method, as there might be some outlier operations. These might be necessary and we can accept
 them not scaling, if the rest of the access methods can scale. An example:
 an administrator accessing all past events of a specific type, while all other operations only access
 a maximum of a month of events, restricted to 6 months in the past.
@@ -89,7 +89,7 @@ a maximum of a month of events, restricted to 6 months in the past.
 The third characteristic of time-decay data is that their **time-decay status does not change**.
 Once they are considered "old", they cannot switch back to "new" or relevant again.
 
-This definition may sound trivial, but we have to be able to make operations over "old" data **more**
+This definition might sound trivial, but we have to be able to make operations over "old" data **more**
 expensive (for example, by archiving or moving them to less expensive storage) without having to worry about
 the repercussions of switching back to being relevant and having important application operations
 underperforming.
@@ -108,16 +108,16 @@ slightly different approaches available is **whether we want to keep the old dat
 #### (optional) Extended definition of time-decay data
 
 As a side note, if we extend the aforementioned definitions to access patterns that restrict access
-to a well defined subset of the data based on a clustering attribute, we could use the time-decay
+to a well-defined subset of the data based on a clustering attribute, we could use the time-decay
 scaling patterns for many other types of data.
 
 As an example, consider data that are only accessed while they are labeled as active, like To-Dos
-not marked as done, pipelines for unmerged merge requests (or a similar not time based constraint), etc.
+not marked as done, pipelines for unmerged merge requests, or a similar non-time-based constraint.
 In this case, instead of using a time dimension to define the decay, we use a categorical dimension
 (that is, one that uses a finite set of values) to define the subset of interest. As long as that
 subset is small compared to the overall size of the dataset, we could use the same approach.
 
-Similarly, we may define data as old based both on a time dimension and additional status attributes,
+Similarly, we might define data as old based both on a time dimension and additional status attributes,
 such as CI pipelines that failed more than 6 months ago.
 
 ## Time-decay data strategies
@@ -128,11 +128,11 @@ This is the acceptable best practice for addressing time-decay data from a pure 
 You can find more information on table partitioning for PostgreSQL in the
 [documentation page for table partitioning](https://www.postgresql.org/docs/16/ddl-partitioning.html).
 
-Partitioning by date intervals (for example, month, year) allows us to create much smaller tables
+Partitioning by date intervals (for example, month, year) means we can create much smaller tables
 (partitions) for each date interval and only access the most recent partitions for any
 application-related operation.
 
-We have to set the partitioning key based on the date interval of interest, which may depend on two
+We have to set the partitioning key based on the date interval of interest, which might depend on two
 factors:
 
 1. **How far back in time do we need to access data for**?
@@ -144,7 +144,7 @@ factors:
    would include too many unnecessary records in each partition, as is the case for `web_hook_logs`.
 1. **How large are the partitions created**?
    The major purpose of partitioning is accessing tables that are as small as possible. If they get too
-   large by themselves, queries start underperforming. We may have to re-partition (split) them
+   large by themselves, queries start underperforming. We might have to re-partition (split) them
    in even smaller partitions.
 
 The perfect partitioning scheme keeps **all queries over a dataset almost always over a single partition**,
@@ -200,32 +200,32 @@ unless there are strong reasons not to.
 ### Move old data outside of the database
 
 In most cases, we consider old data as valuable, so we do not want to prune them. If at the same
-time, they are not required for any database related operations (for example, directly accessed or used in
+time, they are not required for any database-related operations (for example, directly accessed or used in
 joins and other types of queries), we can move them outside of the database.
 
-That does not mean that they are not directly accessible by users through the application; we could
+That does not mean that they are not directly accessible by users through the application. We could
 move data outside the database and use other storage engines or access types for them, similarly to
 offloading metadata but only for the case of old data.
 
 In the simplest use case we can provide fast and direct access to recent data, while allowing users
 to download an archive with older data. This is an option evaluated in the `audit_events` use case.
-Depending on the country and industry, audit events may have a very long retention period, while
+Depending on the country and industry, audit events might have a very long retention period, while
 only the past months of data are actively accessed through GitLab interface.
 
-Additional use cases may include exporting data to a data warehouse or other types of data stores as
-they may be better suited for processing that type of data. An example can be JSON logs that we
-sometimes store in tables: loading such data into a BigQuery or a columnar store like Redshift may
+Additional use cases might include exporting data to a data warehouse or other types of data stores as
+they might be better suited for processing that type of data. An example can be JSON logs that we
+sometimes store in tables: loading such data into a BigQuery or a columnar store like Redshift might
 be better for analyzing/querying the data.
 
 We might consider a number of strategies for moving data outside of the database:
 
-1. Streaming this type of data into logs and then move them to secondary storage options
-   or load them to other types of data stores directly (as CSV/JSON data).
+1. Streaming this type of data into logs and then moving them to secondary storage options
+   or loading them to other types of data stores directly (as CSV/JSON data).
 1. Creating an ETL process that exports the data to CSV, uploads them to object storage,
    drops this data from the database, and then loads the CSV into a different data store.
 1. Loading the data in the background by using the API provided by the data store.
 
-This may not be a viable solution for large datasets. As long as bulk uploading using files is an
+This might not be a viable solution for large datasets. As long as bulk uploading using files is an
 option, it should outperform API calls.
 
 ## Use cases
@@ -237,7 +237,7 @@ Related epic: [Partitioning: `web_hook_logs` table](https://gitlab.com/groups/gi
 The important characteristics of `web_hook_logs` are the following:
 
 1. Size of the dataset: it is a really large table. At the moment we decided to
-   partition it (`2021-03-01`), it had roughly 527M records and a total size of roughly 1 TB
+   partition it (`2021-03-01`), it had roughly 527M records and a total size of roughly 1 TB.
 
    - Table: `web_hook_logs`
    - Rows: approximately 527M
@@ -253,7 +253,7 @@ The important characteristics of `web_hook_logs` are the following:
 Additionally, we were at the time trying to prune the data by using a background worker
 (`PruneWebHookLogsWorker`), which could not [keep up with the rate of inserts](https://gitlab.com/gitlab-org/gitlab/-/issues/256088).
 
-As a result, in March 2021 there were still not deleted records since July 2020 and the table was
+As a result, in March 2021 there were still records that had not been deleted since July 2020 and the table was
 increasing in size by more than 2 million records per day instead of staying at a more or less
 stable size.
 
@@ -280,7 +280,7 @@ The process required follows:
 
    It required 15 days and 7.6 hours to complete that process.
 1. One milestone after the initial partitioning starts, clean up after the background migration
-   used to backfill and finish executing any remaining jobs, retry failed jobs, etc.
+   used to backfill and finish executing any remaining jobs, and retry failed jobs.
 
    [MR with all the necessary details](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57580)
 1. Add any remaining foreign keys and secondary indexes to the partitioned table. This brings
@@ -329,18 +329,18 @@ In addition, `audit_events` is a write-heavy table with very few reads (queries)
 very simple schema, not connected with the rest of the database (no incoming or outgoing FK
 constraints) and with only two indexes defined over it.
 
-The latter was important at the time as not having Foreign Key constraints meant that we could
+The latter was important at the time as not having foreign key constraints meant that we could
 partition it while we were still in PostgreSQL 11. *This is not a concern any more now that we have
 moved to PostgreSQL 12 as a required default, as can be seen for the `web_hook_logs` use case above.*
 
 The migrations and steps required for partitioning the `audit_events` are similar to
 the ones described in the previous sub-section for `web_hook_logs`. There is no retention
 strategy defined for `audit_events` at the moment, so there is no pruning strategy
-implemented over it, but we may implement an archiving solution in the future.
+implemented over it, but we might implement an archiving solution in the future.
 
 What's interesting on the case of `audit_events` is the discussion on the necessary steps that we
-had to follow to implement the UI/UX Changes needed to
-[encourage optimal querying of the partitioned](https://gitlab.com/gitlab-org/gitlab/-/issues/223260).
+had to follow to implement the UI/UX changes needed to
+[encourage optimal querying of the partitioned table](https://gitlab.com/gitlab-org/gitlab/-/issues/223260).
 It can be used as a starting point on the changes required on the application level
 to align all access patterns with a specific time-decay related access method.
 

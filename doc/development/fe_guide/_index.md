@@ -97,7 +97,7 @@ GitLab is now a large, enterprise-grade software and it often requires complex c
 - Writing loosely coupled components that can be easily added or removed from our codebase.
 - Remove older technologies or pattern that we deem are no longer acceptable.
 
-By focusing on these aspects, we aim to allow engineers to contain complexity in well defined boundaries and quickly share them with their peers.
+By focusing on these aspects, we aim to allow engineers to contain complexity in well-defined boundaries and quickly share them with their peers.
 
 ### Goals
 
@@ -107,7 +107,7 @@ Now that our values have been defined, we can base our goals on these values and
 - Minimal page reloads when interacting with the UI
 - [Have as few Vue applications per page as possible](vue.md#avoid-multiple-vue-applications-on-the-page)
 - Leverage [Ruby ViewComponents](view_component.md) for simple pages and avoid Vue overhead when possible
-- [Migrate away from VueX](migrating_from_vuex.md), but more urgently **stop using Apollo and VueX together**
+- [Migrate away from Vuex](migrating_from_vuex.md), but more urgently **stop using Apollo and Vuex together**
 - Remove jQuery from our codebase
 - Add a visual testing framework
 - Reduce CSS bundle size to a minimum

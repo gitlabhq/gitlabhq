@@ -57727,13 +57727,19 @@ msgstr ""
 msgid "PasskeyAuthentication|Back to sign-in"
 msgstr ""
 
+msgid "PasskeyAuthentication|Follow the instructions on your browser or password manager to continue. Insert your physical key, if you have any."
+msgstr ""
+
+msgid "PasskeyAuthentication|Having trouble signing in? %{linkStart}Troubleshoot passkey%{linkEnd}"
+msgstr ""
+
 msgid "PasskeyAuthentication|Passkey"
 msgstr ""
 
 msgid "PasskeyAuthentication|Passkeys only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
-msgid "PasskeyAuthentication|Sign in with passkeys"
+msgid "PasskeyAuthentication|Sign in with passkey"
 msgstr ""
 
 msgid "PasskeyAuthentication|We heard back from your device. Authenticating..."
@@ -69466,6 +69472,11 @@ msgstr[1] ""
 
 msgid "SearchResults|epic"
 msgid_plural "SearchResults|epics"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SearchResults|group"
+msgid_plural "SearchResults|groups"
 msgstr[0] ""
 msgstr[1] ""
 

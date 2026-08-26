@@ -71,7 +71,7 @@ To provide markup with accessible names, ensure every:
 - `figure` has `figcaption` as its first child.
 - `table` has `caption` as its first child.
 
-Remember that an [`alt` attribute](#images-with-accessible-names) should not be longer than approximately 150 characters. While there's no official guidelines on the length, some screen readers will not read longer strings inside the `alt` attribute.
+Remember that an [`alt` attribute](#images-with-accessible-names) should not be longer than approximately 150 characters. While there are no official guidelines on the length, some screen readers will not read longer strings inside the `alt` attribute.
 
 An accessible name can be provided in multiple ways and is decided with [accessible name calculation](https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/#name_calculation). Here is the simplified order of different techniques taking precedence:
 

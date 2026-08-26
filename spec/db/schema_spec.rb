@@ -34,6 +34,7 @@ RSpec.describe 'Database schema',
       ai_audit_events: %w[author_id workflow_id cloud_event_id],
       ai_usage_events: %w[user_id],
       ai_events_counts: %w[user_id namespace_id],
+      ai_flow_schedules: %w[project_id],
       application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
         eks_access_key_id],
       ascp_component_dependencies: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
@@ -122,7 +123,8 @@ RSpec.describe 'Database schema',
       deploy_keys_projects: %w[deploy_key_id],
       deployments: %w[deployable_id user_id],
       draft_notes: %w[discussion_id commit_id],
-      duo_workflows_workflows: %w[trigger_flow_trigger_id], # No FK to preserve attribution when the trigger is deleted
+      # No FK to preserve attribution when the trigger/schedule is deleted
+      duo_workflows_workflows: %w[trigger_flow_trigger_id trigger_flow_schedule_id],
       epics: %w[updated_by_id last_edited_by_id state_id],
       events: %w[target_id],
       forked_project_links: %w[forked_from_project_id],

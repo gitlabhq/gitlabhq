@@ -158,7 +158,7 @@ RSpec.describe Search::Scopes, feature_category: :global_search do
       it 'returns scopes available for group search with basic' do
         scopes = described_class.available_for_context(context: :group, requested_search_type: :basic)
 
-        expect(scopes).to include('work_items', 'merge_requests', 'milestones', 'projects', 'users')
+        expect(scopes).to include('work_items', 'merge_requests', 'milestones', 'projects', 'groups', 'users')
         expect(scopes).not_to include('blobs', 'commits', 'notes', 'snippet_titles', 'wiki_blobs')
       end
     end
@@ -180,14 +180,18 @@ RSpec.describe Search::Scopes, feature_category: :global_search do
       it 'includes scopes available for basic search when advanced search type is requested in CE' do
         scopes = described_class.available_for_context(context: :global, requested_search_type: :advanced)
         # In CE, when advanced is requested, fall back to basic search scopes
-        expect(scopes).to include('merge_requests', 'milestones', 'projects', 'snippet_titles', 'users', 'work_items')
+        expect(scopes).to include(
+          'projects', 'groups', 'work_items', 'merge_requests', 'milestones', 'users', 'snippet_titles'
+        )
         expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
       end
 
       it 'includes scopes available for basic search when zoekt search type is requested in CE' do
         scopes = described_class.available_for_context(context: :global, requested_search_type: :zoekt)
         # In CE, when zoekt is requested, fall back to basic search scopes
-        expect(scopes).to include('merge_requests', 'milestones', 'projects', 'snippet_titles', 'users', 'work_items')
+        expect(scopes).to include(
+          'projects', 'groups', 'work_items', 'merge_requests', 'milestones', 'users', 'snippet_titles'
+        )
         expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
       end
     end

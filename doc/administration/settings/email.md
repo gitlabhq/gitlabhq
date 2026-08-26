@@ -3,6 +3,7 @@ stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
+description: Customize email notification content, including the logo, author name display, and multipart format.
 title: Email
 ---
 
@@ -29,7 +30,7 @@ The logo in the header of some emails can be customized. See the [logo customiza
 {{< /details >}}
 
 By default, GitLab overrides the email address in notification emails with the email address
-of the issue, merge request, or comment author. Enable this setting to include the author's email
+of the issue, merge request, or comment author. Turn on this setting to include the author's email
 address in the body of the email instead.
 
 Prerequisites:
@@ -55,12 +56,12 @@ To include the author's email address in the email body:
 
 GitLab can send email in multipart format (HTML and plain text) or plain text only.
 
-To enable multipart email:
+To turn on multipart email:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Preferences**.
 1. Expand **Email**.
-1. Select **Enable multipart email**.
+1. Select the **Enable multipart emails** checkbox.
 1. Select **Save changes**.
 
 ## Custom hostname for private commit emails
@@ -80,7 +81,7 @@ To change the hostname used in private commit emails:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Preferences**.
 1. Expand **Email**.
-1. Enter the desired hostname in the **Custom hostname (for private commit emails)** field.
+1. Enter the desired hostname in the **Custom hostname (for private commit emails)** text box.
 1. Select **Save changes**.
 
 > [!note]
@@ -105,14 +106,14 @@ To add additional text to emails:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Preferences**.
 1. Expand **Email**.
-1. Enter your text in the **Additional text** field.
+1. In **Additional text**, enter your message.
 1. Select **Save changes**.
 
 ## User deactivation emails
 
 GitLab sends email notifications to users when their account has been deactivated.
 
-To disable these notifications:
+To turn off these notifications:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Preferences**.
@@ -131,7 +132,7 @@ To add additional text to deactivation emails:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Preferences**.
 1. Expand **Email**.
-1. Enter your text in the **Additional text for deactivation email** field.
+1. In the **Additional text for deactivation email** text box, enter your message.
 1. Select **Save changes**.
 
 ## Group and project access token expiry emails to inherited members
@@ -149,12 +150,12 @@ In GitLab 17.7 and later, the following inherited group and project members can 
 - For groups, members who inherit the Owner role for those groups.
 - For projects, project members who inherit the Maintainer or Owner role for projects that belong to those groups.
 
-To enable token expiration emails to inherited group and project members:
+To turn on token expiration emails to inherited group and project members:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Preferences**.
 1. Expand **Email**.
-1. Under **Expiry notification emails about group and project access tokens should be sent to:**, select **All direct and inherited members of the group or project**.
+1. Under **Expiry notification emails about group and project access tokens should be sent to**, select **All direct and inherited members of the group or project**.
 1. Select the **Enforce this setting for all groups on this instance** checkbox.
 1. Select **Save changes**.
 

@@ -114,6 +114,8 @@ module SearchHelper
       ns_('SearchResults|comment', 'SearchResults|comments', count)
     when 'projects'
       ns_('SearchResults|project', 'SearchResults|projects', count)
+    when 'groups'
+      ns_('SearchResults|group', 'SearchResults|groups', count)
     when 'snippet_titles'
       ns_('SearchResults|snippet', 'SearchResults|snippets', count)
     when 'users'

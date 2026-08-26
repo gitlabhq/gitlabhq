@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddGitLabManagedToDotComFoundationalExternalAgents, migration: :gitlab_main, feature_category: :workflow_catalog do
+RSpec.describe AddGitLabManagedToDotComFoundationalExternalAgents, migration: :gitlab_main, feature_category: :ai_catalog_curation do
   let(:organizations) { table(:organizations) }
   let(:ai_catalog_items) { table(:ai_catalog_items) }
 

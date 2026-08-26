@@ -1,26 +1,15 @@
 import { getGroupId } from '../utils';
 
-// Column order is persisted as its own `groupOrder` array in `displaySettings`,
-// separate from `visibleGroups`/`collapsedGroups`, because order is an
-// independent concern from visibility and collapse:
-//   - `visibleGroups` is null when every group is shown, so it carries no order
-//     to piggyback on — you must be able to reorder a board with no visibility
-//     filter set at all.
-//   - hiding/showing or collapsing a column shouldn't disturb the saved order.
-// Since board columns are derived live from the namespace (statuses today), the
-// stored order and the live set can drift; the functions below reconcile the two
-// rather than treating either as authoritative — see orderGroups for the rules.
+// Column order lives in its own `groupOrder` array, separate from `visibleGroups`/
+// `collapsedGroups` — `visibleGroups` is null when everything is shown, so it can't
+// double as a place to store order, and hiding a column shouldn't reorder it.
+//
+// Columns come from the namespace live (statuses today), so the stored order
+// can drift out of sync with the real set over time. The functions below
+// reconcile the two rather than trusting either one blindly.
 
-// Applies a persisted `groupOrder` (an array of group identifiers from
-// `displaySettings`) to the live list of group values, reconciling on read:
-//
-//   - groups present in `groupOrder` keep that relative order,
-//   - groups absent from `groupOrder` (e.g. a newly-added status) are appended
-//     after them in their incoming default order,
-//   - identifiers in `groupOrder` that no longer match a value are ignored.
-//
-// This means the stored order never has to be rewritten when the underlying
-// groups change — it degrades gracefully as statuses are added/removed/renamed.
+// Groups already in `groupOrder` keep that relative order; anything else keeps
+// its incoming order and goes to the end.
 export const orderGroups = ({ groupOrder = [], groupBy, values = [] }) => {
   if (!Array.isArray(groupOrder) || groupOrder.length === 0) {
     return values;
@@ -42,19 +31,9 @@ export const orderGroups = ({ groupOrder = [], groupBy, values = [] }) => {
   return [...known, ...unknown];
 };
 
-// Produces the `groupOrder` to persist after the visible columns have been
-// reordered. Merges the new visible order back into `currentOrder` (the
-// previously stored order) so that columns hidden at reorder time keep their
-// stored position instead of being pushed to the end:
-//   - each slot in `currentOrder` holding a visible column takes the next id
-//     from the new visible order,
-//   - every other slot in `currentOrder` — a hidden column, or one that no
-//     longer exists — stays put. We can't tell those two apart here, since
-//     `visibleValues` is the only list of live groups we have once the
-//     values fetch is scoped to what's visible. That's fine: `orderGroups`
-//     already drops an id with no matching value when it reads this order
-//     back, so a stale id costs nothing and a hidden id is preserved,
-//   - visible columns absent from `currentOrder` (newly added) come last.
+// Works out the new `groupOrder` to save after reordering the visible columns. Slots the
+// new order back into `currentOrder` so a hidden column keeps its stored spot — orderGroups
+// drops stale ids later, so this doesn't need to tell hidden and stale apart.
 export const reorderGroupIds = ({ visibleValues, groupBy, currentOrder = [] }) => {
   const visibleIds = visibleValues.map((value) => getGroupId({ groupBy, value }));
   const visibleSet = new Set(visibleIds);

@@ -2,6 +2,7 @@
 stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Configure a Camo asset proxy server to prevent external images and media from exposing user IP addresses.
 title: Proxying assets
 ---
 
@@ -27,7 +28,7 @@ GitLab can be configured to use an asset proxy server when requesting external i
 issues and comments. This helps ensure that malicious images do not expose the user's IP address
 when they are fetched.
 
-We currently recommend using [cactus/go-camo](https://github.com/cactus/go-camo#how-it-works)
+You should use [cactus/go-camo](https://github.com/cactus/go-camo#how-it-works)
 as it supports proxying video and audio, and is more configurable.
 
 ## Installing Camo server
@@ -58,18 +59,18 @@ To install a Camo server as an asset proxy:
 
    | Attribute                | Description                                                                                                                          |
    |:-------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|
-   | `asset_proxy_enabled`    | Enable proxying of assets. If enabled, requires: `asset_proxy_url`.                                                                  |
+   | `asset_proxy_enabled`    | Turn on proxying of assets. If turned on, requires: `asset_proxy_url`.                                                                |
    | `asset_proxy_secret_key` | Shared secret with the asset proxy server.                                                                                           |
    | `asset_proxy_url`        | URL of the asset proxy server.                                                                                                       |
-   | `asset_proxy_whitelist`  | (Deprecated: Use `asset_proxy_allowlist` instead) Assets that match these domains are NOT proxied. Wildcards allowed. Your GitLab installation URL is automatically allowed.         |
-   | `asset_proxy_allowlist`  | Assets that match these domains are NOT proxied. Wildcards allowed. Your GitLab installation URL is automatically allowed.         |
+   | `asset_proxy_whitelist`  | (Deprecated: Use `asset_proxy_allowlist` instead) Assets that match these domains are not proxied. Wildcards allowed. Your GitLab installation URL is automatically allowed.         |
+   | `asset_proxy_allowlist`  | Assets that match these domains are not proxied. Wildcards allowed. Your GitLab installation URL is automatically allowed.         |
 
 1. Restart the server for the changes to take effect. Each time you change any values for the asset
    proxy, you need to restart the server.
 
 ## Using the Camo server
 
-Once the Camo server is running and you've enabled the GitLab settings, any image, video, or audio that
+After the Camo server is running and you turn on the GitLab settings, any image, video, or audio that
 references an external source is proxied to the Camo server.
 
 For example, the following is a link to an image in Markdown:

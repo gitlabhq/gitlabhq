@@ -58,13 +58,13 @@ For different file types:
 ## Linting for accessibility defects
 
 You can enable linting for accessibility defects with a free VS Code plugin - [axe Accessibility Linter](https://marketplace.visualstudio.com/items?itemName=deque-systems.vscode-axe-linter).
-We strongly recommend that to everyone contributing to GitLab that use VS Code.
+We strongly recommend this to everyone contributing to GitLab who uses VS Code.
 
 To enable linting:
 
-1. Open VS Code editor
-1. Go to Extensions
-1. Search for "axe Accessibility Linter" and install the plugin
+1. Open VS Code editor.
+1. Go to Extensions.
+1. Search for "axe Accessibility Linter" and install the plugin.
 
 The GitLab repository includes `axe-linter.yml` configuration that maps Pajamas Design System components to native HTML elements, significantly increasing linter coverage.
 
@@ -72,13 +72,13 @@ The GitLab repository includes `axe-linter.yml` configuration that maps Pajamas 
 
 [Storybook tests](storybook_tests.md) use axe-playwright to automatically test Vue components for accessibility violations.
 
-Component's tests run in CI on any Vue or JavaScript file change and block merges when it finds violations. However, it only tests components that have Storybook entries and they need to be up-to-date.
+Component tests run in CI on any Vue or JavaScript file change and block merges when they find violations. However, it only tests components that have Storybook entries and they need to be up-to-date.
 
 ## Feature testing
 
 [Feature tests](feature_tests.md) with `axe-core-gem` provide the most comprehensive accessibility testing by validating complete user experiences.
 
-They cover all our frontend architecture (HAML, Vue, JS) and allow checks at any step of a user journey. Though they may be resource heavy.
+They cover all our frontend architecture (HAML, Vue, JS) and allow checks at any step of a user journey, though they might be resource heavy.
 
 ## Browser extensions
 

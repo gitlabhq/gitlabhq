@@ -49,16 +49,15 @@ Rails console.
 You can set these rate limits in the **Admin** area of your instance:
 
 - [API rate limits](api/_index.md)
-- [Import/Export rate limits](../administration/settings/import_export_rate_limits.md)
-- [Issue rate limits](../administration/settings/rate_limit_on_issues_creation.md)
-- [Note rate limits](../administration/settings/rate_limit_on_notes_creation.md)
+- [Content creation rate limits](content_creation.md)
+- [Git operations rate limits](git.md)
+- [GitLab Pages rate limits](../administration/pages/_index.md#rate-limits)
+- [Import and export rate limits](../administration/settings/import_export_rate_limits.md)
+- [Incident management rate limits](../administration/settings/incident_management_rate_limits.md)
+- [Pipeline creation rate limits](../administration/cicd/limits.md#pipeline-creation-rate-limits)
 - [Protected paths](../administration/settings/protected_paths.md)
 - [Raw endpoints rate limits](../administration/settings/rate_limits_on_raw_endpoints.md)
 - [User and IP rate limits](../administration/settings/user_and_ip_rate_limits.md)
-- [Rate limits on Git operations](git.md)
-- [GitLab Pages rate limits](../administration/pages/_index.md#rate-limits)
-- [Pipeline rate limits](../administration/cicd/limits.md#pipeline-creation-rate-limits)
-- [Incident management rate limits](../administration/settings/incident_management_rate_limits.md)
 - [Webhook operations rate limits](../administration/settings/rate-limit-on-webhook-operations.md)
 
 ### API and Rails console

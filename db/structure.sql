@@ -13139,6 +13139,36 @@ CREATE SEQUENCE ai_feature_settings_id_seq
 
 ALTER SEQUENCE ai_feature_settings_id_seq OWNED BY ai_feature_settings.id;
 
+CREATE TABLE ai_flow_schedules (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    ai_flow_trigger_id bigint NOT NULL,
+    next_run_at timestamp with time zone,
+    last_run_at timestamp with time zone,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    consecutive_failure_count smallint DEFAULT 0 NOT NULL,
+    last_run_status smallint,
+    active boolean DEFAULT true NOT NULL,
+    cron text NOT NULL,
+    cron_timezone text NOT NULL,
+    last_run_error text,
+    description text NOT NULL,
+    CONSTRAINT check_75e1d8e04a CHECK ((char_length(cron) <= 255)),
+    CONSTRAINT check_a107d3c003 CHECK ((char_length(last_run_error) <= 1024)),
+    CONSTRAINT check_abad4b026d CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_d178a86e7f CHECK ((char_length(cron_timezone) <= 255))
+);
+
+CREATE SEQUENCE ai_flow_schedules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_flow_schedules_id_seq OWNED BY ai_flow_schedules.id;
+
 CREATE TABLE ai_flow_triggers (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -16818,6 +16848,7 @@ CREATE TABLE cd_rollout_channel_tokens (
     updated_at timestamp with time zone NOT NULL,
     channel_name text NOT NULL,
     token jsonb NOT NULL,
+    rollout_step_id bigint,
     CONSTRAINT check_c3804916de CHECK ((char_length(channel_name) <= 255))
 );
 
@@ -20592,6 +20623,7 @@ CREATE TABLE duo_workflows_workflows (
     execution_mode smallint,
     source_type smallint,
     source_link text,
+    trigger_flow_schedule_id bigint,
     CONSTRAINT check_1033e7a455 CHECK ((char_length(title) <= 40)),
     CONSTRAINT check_13bb5688db CHECK ((char_length(summary) <= 1024)),
     CONSTRAINT check_30ca07a4ef CHECK ((char_length(goal) <= 16384)),
@@ -27773,7 +27805,8 @@ CREATE TABLE plan_limits (
     cargo_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL,
     plan_name_uid smallint,
     ci_max_artifact_size_sarif integer DEFAULT 10 NOT NULL,
-    max_pipelines_per_merge_train smallint DEFAULT 20 NOT NULL
+    max_pipelines_per_merge_train smallint DEFAULT 20 NOT NULL,
+    ai_flow_schedules integer DEFAULT 10 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -36520,6 +36553,8 @@ ALTER TABLE ONLY ai_events_counts ALTER COLUMN id SET DEFAULT nextval('ai_events
 
 ALTER TABLE ONLY ai_feature_settings ALTER COLUMN id SET DEFAULT nextval('ai_feature_settings_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_flow_schedules ALTER COLUMN id SET DEFAULT nextval('ai_flow_schedules_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_flow_triggers ALTER COLUMN id SET DEFAULT nextval('ai_flow_triggers_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_instance_accessible_entity_rules ALTER COLUMN id SET DEFAULT nextval('ai_instance_accessible_entity_rules_id_seq'::regclass);
@@ -39382,6 +39417,9 @@ ALTER TABLE ONLY ai_events_counts
 
 ALTER TABLE ONLY ai_feature_settings
     ADD CONSTRAINT ai_feature_settings_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_flow_schedules
+    ADD CONSTRAINT ai_flow_schedules_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_flow_triggers
     ADD CONSTRAINT ai_flow_triggers_pkey PRIMARY KEY (id);
@@ -46509,6 +46547,12 @@ CREATE INDEX index_ai_feature_settings_on_ai_self_hosted_model_id ON ai_feature_
 
 CREATE UNIQUE INDEX index_ai_feature_settings_on_feature ON ai_feature_settings USING btree (feature);
 
+CREATE INDEX index_ai_flow_schedules_on_ai_flow_trigger_id ON ai_flow_schedules USING btree (ai_flow_trigger_id);
+
+CREATE INDEX index_ai_flow_schedules_on_next_run_at_and_id_active ON ai_flow_schedules USING btree (next_run_at, id) WHERE (active = true);
+
+CREATE INDEX index_ai_flow_schedules_on_project_id ON ai_flow_schedules USING btree (project_id);
+
 CREATE INDEX index_ai_flow_triggers_on_ai_catalog_item_consumer_id ON ai_flow_triggers USING btree (ai_catalog_item_consumer_id);
 
 CREATE INDEX index_ai_flow_triggers_on_project_id ON ai_flow_triggers USING btree (project_id);
@@ -47108,6 +47152,8 @@ CREATE INDEX index_cd_env_driver_bindings_on_organization_id ON cd_environment_d
 CREATE INDEX index_cd_rollout_channel_tokens_on_organization_id ON cd_rollout_channel_tokens USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_cd_rollout_channel_tokens_on_rollout_id_and_channel_name ON cd_rollout_channel_tokens USING btree (rollout_id, channel_name);
+
+CREATE INDEX index_cd_rollout_channel_tokens_on_rollout_step_id ON cd_rollout_channel_tokens USING btree (rollout_step_id);
 
 CREATE INDEX index_cd_rollout_environments_on_driver_binding_id ON cd_rollout_environments USING btree (driver_binding_id);
 
@@ -58008,6 +58054,9 @@ ALTER TABLE ONLY csv_issue_imports
 ALTER TABLE ONLY cd_version_sets
     ADD CONSTRAINT fk_5e1f7c4094 FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY ai_flow_schedules
+    ADD CONSTRAINT fk_5e3b25ebf2 FOREIGN KEY (ai_flow_trigger_id) REFERENCES ai_flow_triggers(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY abuse_events
     ADD CONSTRAINT fk_5e51d70fab FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -59498,6 +59547,9 @@ ALTER TABLE ONLY user_admin_roles
 
 ALTER TABLE ONLY resource_iteration_events
     ADD CONSTRAINT fk_d405f1c11a FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY cd_rollout_channel_tokens
+    ADD CONSTRAINT fk_d42ca501ad FOREIGN KEY (rollout_step_id) REFERENCES cd_rollout_steps(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_d4e29af7d7_p FOREIGN KEY (source_partition_id, source_pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

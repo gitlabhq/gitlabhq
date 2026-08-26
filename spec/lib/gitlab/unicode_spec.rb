@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Unicode do
     end
   end
 
-  describe 'DANGEROUS_CHARS regex', feature_category: :workflow_catalog do
+  describe 'DANGEROUS_CHARS regex', feature_category: :ai_catalog_curation do
     subject(:regex) { described_class::DANGEROUS_CHARS }
 
     describe 'detects dangerous characters' do

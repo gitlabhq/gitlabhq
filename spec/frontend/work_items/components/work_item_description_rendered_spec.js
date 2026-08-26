@@ -83,6 +83,10 @@ describe('WorkItemDescriptionRendered', () => {
       expect(findReadMore().exists()).toBe(true);
     });
 
+    it('applies truncated class to description content', () => {
+      expect(findDescription().classes()).toContain('truncated');
+    });
+
     it('tracks untruncate action', async () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
@@ -97,19 +101,21 @@ describe('WorkItemDescriptionRendered', () => {
   });
 
   describe('without truncation', () => {
-    it('does not show the untruncate action', () => {
+    beforeEach(() => {
       createComponent({
         workItemDescription: {
           description: 'This is a long description',
           descriptionHtml: '<p>This is a long description</p>',
         },
-        mockComputed: {
-          isTruncated() {
-            return false;
-          },
-        },
       });
+    });
+
+    it('does not show the untruncate action', () => {
       expect(findReadMore().exists()).toBe(false);
+    });
+
+    it('does not apply truncated class to description content', () => {
+      expect(findDescription().classes()).not.toContain('truncated');
     });
   });
 

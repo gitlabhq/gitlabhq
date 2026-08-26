@@ -35,7 +35,7 @@ module AuthenticatesWithTwoFactor
     add_gon_variables
     setup_passkey_authentication
 
-    render 'devise/sessions/passkeys'
+    render 'devise/sessions/passkeys', layout: 'devise_empty'
   end
 
   def handle_locked_user(user)

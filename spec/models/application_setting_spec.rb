@@ -928,8 +928,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
       end
 
       it 'allows valid scopes' do
-        %w[blobs commits merge_requests milestones projects snippet_titles users wiki_blobs work_items
-          notes].each do |scope|
+        %w[projects groups blobs work_items merge_requests wiki_blobs commits notes milestones users
+          snippet_titles].each do |scope|
           setting.default_search_scope = scope
 
           expect(setting).to be_valid, "expected #{scope} to be valid"

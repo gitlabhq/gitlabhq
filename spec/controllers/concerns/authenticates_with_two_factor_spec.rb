@@ -56,7 +56,7 @@ RSpec.describe AuthenticatesWithTwoFactor, :aggregate_failures, feature_category
     end
 
     before do
-      allow(controller).to receive(:render).with('devise/sessions/passkeys')
+      allow(controller).to receive(:render)
     end
 
     context 'when a device_response is present' do

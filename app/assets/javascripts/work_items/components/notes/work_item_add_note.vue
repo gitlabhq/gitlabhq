@@ -155,7 +155,7 @@ export default {
     'start-editing',
     'start-replying',
     'stop-editing',
-    'updateCount',
+    'update-count',
   ],
   data() {
     return {
@@ -384,7 +384,7 @@ export default {
     },
     onNoteUpdate(cache, { data }) {
       this.addDiscussionToCache(cache, data.createNote.note);
-      this.$emit('updateCount', 1);
+      this.$emit('update-count', 1);
       const numErrors = data?.createNote?.errors?.length;
 
       if (numErrors) {

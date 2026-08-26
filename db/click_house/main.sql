@@ -1145,6 +1145,7 @@ CREATE TABLE siphon_duo_workflows_workflows
     `source_type` Nullable(Int16),
     `source_link` Nullable(String),
     `execution_mode` Nullable(Int16),
+    `trigger_flow_schedule_id` Nullable(Int64),
     INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1,
     PROJECTION pg_pkey_ordered
     (

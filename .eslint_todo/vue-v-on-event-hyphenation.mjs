@@ -21,7 +21,6 @@ export default {
     'app/assets/javascripts/work_items/components/work_item_attributes_wrapper.vue',
     'app/assets/javascripts/work_items/components/work_item_description.vue',
     'app/assets/javascripts/work_items/components/work_item_detail.vue',
-    'app/assets/javascripts/work_items/components/work_item_notes.vue',
     'ee/app/assets/javascripts/analytics/cycle_analytics/components/value_stream_aggregating_warning.vue',
     'ee/app/assets/javascripts/analytics/productivity_analytics/components/app.vue',
     'ee/app/assets/javascripts/compliance_dashboard/components/dashboard/components/status_chart.vue',
