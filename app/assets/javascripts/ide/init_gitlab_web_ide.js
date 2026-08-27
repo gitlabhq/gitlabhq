@@ -3,6 +3,7 @@ import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_
 import csrf from '~/lib/utils/csrf';
 import Tracking from '~/tracking';
 import { getLineRangeFromHash } from '~/lib/utils/url_utility';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
   getBaseConfig,
   getOAuthConfig,
@@ -13,6 +14,27 @@ import {
 } from './lib/gitlab_web_ide';
 import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from './constants';
 import { renderWebIdeError } from './render_web_ide_error';
+
+// This module imports no Vue, so it acts as a barrier that stops the page
+// entrypoint's Vue 3 infection from reaching the error app below it. Ask for the
+// Vue 3 copy explicitly instead, keeping it behind the flag so the build-time
+// `?vue3` suffix cannot leak Vue 3 to users with the flag off.
+// Remove with vue3_migrate_web_ide: https://gitlab.com/gitlab-org/gitlab/-/work_items/618744
+const resolveRenderWebIdeError = async () => {
+  if (!gon.features?.vue3MigrateWebIde) {
+    return renderWebIdeError;
+  }
+
+  try {
+    const vue3Module = await import('./render_web_ide_error?vue3');
+
+    return vue3Module.renderWebIdeError;
+  } catch (error) {
+    Sentry.captureException(error);
+
+    return renderWebIdeError;
+  }
+};
 
 const getMRTargetProject = () => {
   const url = new URL(window.location.href);
@@ -105,6 +127,8 @@ export const initGitlabWebIDE = async (el) => {
 
     container.show();
   } catch (error) {
-    renderWebIdeError({ error, signOutPath });
+    const render = await resolveRenderWebIdeError();
+
+    render({ error, signOutPath });
   }
 };

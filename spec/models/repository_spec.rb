@@ -5206,6 +5206,14 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it { is_expected.to be_a_kind_of(Blob) }
     end
 
+    context 'when the default branch name starts with a dash' do
+      before do
+        allow(project).to receive(:default_branch).and_return('-foo')
+      end
+
+      it { is_expected.to be_nil }
+    end
+
     it { is_expected.to be_nil }
   end
 

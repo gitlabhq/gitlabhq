@@ -151,11 +151,11 @@ The following table lists the valid `objects` that can be used:
 
 Within each object type, three parameters can be defined:
 
-| Setting          | Required?              | Description                         |
-|------------------|------------------------|-------------------------------------|
-| `bucket`         | {{< icon name="check-circle" >}} Yes\* | Bucket name for the object type. Not required if `enabled` is set to `false`. |
-| `enabled`        | {{< icon name="dotted-circle" >}} No | Overrides the [common parameter](#configure-the-common-parameters).     |
-| `proxy_download` | {{< icon name="dotted-circle" >}} No | Overrides the [common parameter](#configure-the-common-parameters).     |
+| Setting          | Required?   | Description |
+|------------------|-------------|-------------|
+| `bucket`         | {{< yes >}} | Bucket name for the object type. Not required if `enabled` is set to `false`. |
+| `enabled`        | {{< no >}}  | Overrides the [common parameter](#configure-the-common-parameters). |
+| `proxy_download` | {{< no >}}  | Overrides the [common parameter](#configure-the-common-parameters). |
 
 For an example, see how to [use the consolidated form and Amazon S3](#full-example-using-the-consolidated-form-and-amazon-s3).
 
@@ -195,19 +195,19 @@ supported by the consolidated form, refer to the following guides:
 
 | Object storage type | Supported by consolidated form? |
 |---------------------|------------------------------------------|
-| [Backups](backup_restore/backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) | {{< icon name="dotted-circle" >}} No |
-| [Container registry](packages/container_registry.md#use-object-storage) (optional feature) | {{< icon name="dotted-circle" >}} No |
-| [Mattermost](https://docs.mattermost.com/configure/file-storage-configuration-settings.html)| {{< icon name="dotted-circle" >}} No |
-| [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale/#distributed-runners-caching) (optional for improved performance) | {{< icon name="dotted-circle" >}} No |
-| [Secure Files](cicd/secure_files.md#using-object-storage) | {{< icon name="check-circle" >}} Yes |
-| [Job artifacts](cicd/job_artifacts.md#using-object-storage) including archived job logs | {{< icon name="check-circle" >}} Yes |
-| [LFS objects](lfs/_index.md#storing-lfs-objects-in-remote-object-storage) | {{< icon name="check-circle" >}} Yes |
-| [Uploads](uploads.md#using-object-storage) | {{< icon name="check-circle" >}} Yes |
-| [Merge request diffs](merge_request_diffs.md#using-object-storage) | {{< icon name="check-circle" >}} Yes |
-| [Packages](packages/_index.md#migrate-packages-between-object-storage-and-local-storage) (optional feature) | {{< icon name="check-circle" >}} Yes |
-| [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) | {{< icon name="check-circle" >}} Yes |
-| [Terraform state files](terraform_state.md#using-object-storage) | {{< icon name="check-circle" >}} Yes |
-| [Pages content](pages/_index.md#object-storage-settings) | {{< icon name="check-circle" >}} Yes |
+| [Backups](backup_restore/backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) | {{< no >}} |
+| [Container registry](packages/container_registry.md#use-object-storage) (optional feature) | {{< no >}} |
+| [Mattermost](https://docs.mattermost.com/configure/file-storage-configuration-settings.html)| {{< no >}} |
+| [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale/#distributed-runners-caching) (optional for improved performance) | {{< no >}} |
+| [Secure Files](cicd/secure_files.md#using-object-storage) | {{< yes >}} |
+| [Job artifacts](cicd/job_artifacts.md#using-object-storage) including archived job logs | {{< yes >}} |
+| [LFS objects](lfs/_index.md#storing-lfs-objects-in-remote-object-storage) | {{< yes >}} |
+| [Uploads](uploads.md#using-object-storage) | {{< yes >}} |
+| [Merge request diffs](merge_request_diffs.md#using-object-storage) | {{< yes >}} |
+| [Packages](packages/_index.md#migrate-packages-between-object-storage-and-local-storage) (optional feature) | {{< yes >}} |
+| [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) | {{< yes >}} |
+| [Terraform state files](terraform_state.md#using-object-storage) | {{< yes >}} |
+| [Pages content](pages/_index.md#object-storage-settings) | {{< yes >}} |
 
 ## Configure the connection settings
 

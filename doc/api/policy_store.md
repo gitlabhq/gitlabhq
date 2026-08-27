@@ -21,6 +21,7 @@ title: Policy store API
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/616505) to add the `policy_rego` response attribute in GitLab 19.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/612905) to reject rules that compile to a Rego module larger than 65536 bytes in GitLab 19.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/623359) to add the `scope_dimensions` response attribute in GitLab 19.4.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/612905) to limit `rules` and `actions` to 5 entries each, and each entry to 4096 bytes, in GitLab 19.4.
 
 {{< /history >}}
 
@@ -240,6 +241,10 @@ An entry cannot be blank.
 A blank entry returns `400 Bad Request`, and the error names each blank position,
 for example `rules[0] is blank`.
 
+Each array accepts at most 5 entries, and each entry cannot serialize to more than 4096 bytes.
+Exceeding either limit returns `400 Bad Request`. An oversized entry names each offending
+position, for example `rules has an entry exceeding maximum size of 4096 bytes at 0`.
+
 A request replaces the whole array.
 You cannot add or remove a single entry.
 
@@ -385,9 +390,9 @@ Supported attributes:
 | ----------------- | ------- | -------- | ----------- |
 | `id`              | integer | Yes      | ID of the organization. |
 | `name`            | string  | Yes      | Name of the policy. Maximum 255 characters. Must be unique in the organization. |
-| `rules`           | array   | Yes      | Rules of the policy. At least one entry is required. Rejected when the entries compile to a Rego module larger than 65536 bytes. That module is returned as `policy_rego`. |
+| `rules`           | array   | Yes      | Rules of the policy. At least one entry is required, up to 5. Each entry must serialize to at most 4096 bytes. Rejected when the entries compile to a Rego module larger than 65536 bytes. That module is returned as `policy_rego`. |
 | `trigger_type`    | string  | Yes      | Trigger the policy responds to. One of the IDs returned by [List all triggers](#list-all-triggers). |
-| `actions`         | array   | No       | Actions the policy takes. |
+| `actions`         | array   | No       | Actions the policy takes. Up to 5 entries. Each entry must serialize to at most 4096 bytes. |
 | `description`     | string  | No       | Description of the policy. Maximum 4096 characters. |
 | `lifecycle_state` | string  | No       | Either `active` or `disabled`. Defaults to `active`. |
 | `mode`            | string  | No       | One of `audit`, `warn`, or `enforce`. Defaults to `enforce`. |
@@ -403,6 +408,8 @@ The following conditions return `400 Bad Request`:
 - The name is already taken in the organization.
 - A compiled `scope_rego` exceeds 4096 characters.
 - The `rules` compile to more than 65536 bytes of Rego.
+- `rules` or `actions` carries more than 5 entries.
+- An entry in `rules` or `actions` serializes to more than 4096 bytes.
 
 Example request:
 
@@ -461,13 +468,13 @@ Supported attributes:
 | ----------------- | ------- | -------- | ----------- |
 | `id`              | integer | Yes      | ID of the organization. |
 | `policy_id`       | integer | Yes      | ID of the policy. |
-| `actions`         | array   | No       | Actions the policy takes. Replaces the stored actions. |
+| `actions`         | array   | No       | Actions the policy takes. Replaces the stored actions, up to 5 entries. Each entry must serialize to at most 4096 bytes. |
 | `description`     | string  | No       | Description of the policy. Maximum 4096 characters. |
 | `lifecycle_state` | string  | No       | Either `active` or `disabled`. |
 | `mode`            | string  | No       | One of `audit`, `warn`, or `enforce`. |
 | `name`            | string  | No       | Name of the policy. Maximum 255 characters. Must be unique in the organization. |
 | `policy_scope`    | object  | No       | Structured scope of the policy. Cannot be combined with a non-empty `scope_rego`. Rejected when it compiles to more than 4096 characters of Rego. |
-| `rules`           | array   | No       | Rules of the policy. Replaces the stored rules. Rejected when the entries compile to a Rego module larger than 65536 bytes. That module is returned as `policy_rego`. |
+| `rules`           | array   | No       | Rules of the policy. Replaces the stored rules, up to 5 entries. Each entry must serialize to at most 4096 bytes. Rejected when the entries compile to a Rego module larger than 65536 bytes. That module is returned as `policy_rego`. |
 | `scope_rego`      | string  | No       | Scope of the policy, authored as Rego. Maximum 4096 characters. Send an empty value to retire an authored program and recompile from `policy_scope`. |
 | `trigger_type`    | string  | No       | Trigger the policy responds to. One of the IDs returned by [List all triggers](#list-all-triggers). |
 
@@ -485,6 +492,8 @@ The following conditions return `400 Bad Request`:
 - The new name is already taken in the organization.
 - A recompiled `scope_rego` exceeds 4096 characters.
 - The replacement `rules` compile to more than 65536 bytes of Rego.
+- The replacement `rules` or `actions` carries more than 5 entries.
+- An entry in the replacement `rules` or `actions` serializes to more than 4096 bytes.
 
 Example request:
 

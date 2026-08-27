@@ -14,6 +14,7 @@ class IdeController < ApplicationController
   before_action do
     push_frontend_feature_flag(:build_service_proxy)
     push_frontend_feature_flag(:reject_unsigned_commits_by_gitlab)
+    push_frontend_feature_flag(:vue3_migrate_web_ide, current_user)
   end
 
   feature_category :web_ide

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 module Gitlab
   module PolicyStore
     module Ports
@@ -24,6 +26,21 @@ module Gitlab
 
         COMPILED_TEXT_ATTRIBUTES = [:scope_rego].freeze
         private_constant :COMPILED_TEXT_ATTRIBUTES
+
+        COMPILED_RULE_KEY = 'rego'
+        private_constant :COMPILED_RULE_KEY
+
+        # A v1 approval policy allows five rules (`maxItems` in
+        # `ee/app/validators/json_schemas/security_orchestration_policy.json`), so a
+        # v2 policy allows the same rather than a figure picked for this component.
+        ENTRY_COUNT_LIMITS = {
+          rules: 5,
+          actions: 5
+        }.freeze
+
+        # A custom rule's value is Rego source, like `scope_rego`, so it takes the same
+        # limit, measured over the serialized entry to cover a configuration hash too.
+        ENTRY_SIZE_LIMIT = TEXT_LIMITS[:scope_rego]
 
         UPDATABLE_ATTRIBUTES = %i[
           name description trigger_type rules actions policy_scope scope_rego mode lifecycle_state
@@ -181,6 +198,43 @@ module Gitlab
           validate_text_limits!(attributes, TEXT_LIMITS.slice(*COMPILED_TEXT_ATTRIBUTES))
         end
 
+        def validate_entry_limits!(attributes)
+          ENTRY_COUNT_LIMITS.each do |attribute, limit|
+            entries = attributes[attribute]
+            next unless entries.is_a?(Array)
+
+            validate_entry_count!(attribute, entries, limit)
+            validate_entry_sizes!(attribute, entries)
+          end
+        end
+
+        def validate_entry_count!(attribute, entries, limit)
+          return if entries.size <= limit
+
+          raise PolicyStore::ValidationError,
+            "#{attribute} exceeds maximum of #{limit} entries"
+        end
+
+        def validate_entry_sizes!(attribute, entries)
+          oversized = entries.each_index.select do |index|
+            authored_bytesize_of(attribute, entries[index]) > ENTRY_SIZE_LIMIT
+          end
+          return if oversized.empty?
+
+          raise PolicyStore::ValidationError,
+            "#{attribute} has an entry exceeding maximum size of #{ENTRY_SIZE_LIMIT} bytes " \
+              "at #{oversized.join(', ')}"
+        end
+
+        # Only a `rules` entry ever carries a compiled `rego` key, added by `with_compiled_rules`.
+        # Excluding it for `actions` too would let an oversized `rego` there escape the limit.
+        def authored_bytesize_of(attribute, entry)
+          return JSON.generate(entry).bytesize unless entry.is_a?(Hash)
+          return JSON.generate(entry).bytesize unless attribute == :rules
+
+          JSON.generate(entry.reject { |key, _value| key.to_s == COMPILED_RULE_KEY }).bytesize
+        end
+
         def validate_text_limits!(attributes, limits = TEXT_LIMITS)
           limits.each do |attribute, limit|
             value = attributes[attribute]
@@ -261,7 +315,7 @@ module Gitlab
           end
 
           compiled = rules.each_with_index.map do |rule, index|
-            rule.merge('rego' => RuleTranspiler.new(rule, rule_index: index).transpile)
+            rule.merge(COMPILED_RULE_KEY => RuleTranspiler.new(rule, rule_index: index).transpile)
           end
 
           validate_merged_program_size!(compiled)

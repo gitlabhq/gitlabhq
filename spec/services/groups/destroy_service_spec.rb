@@ -5,17 +5,12 @@ require 'spec_helper'
 RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
-  let!(:user)         { create(:user) }
-  let!(:group)        { create(:group, :deletion_scheduled) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let!(:group)        { create(:group, :deletion_scheduled, owners: user) }
   let!(:nested_group) { create(:group, parent: group) }
   let!(:project)      { create(:project, :repository, :legacy_storage, namespace: group) }
-  let!(:notification_setting) { create(:notification_setting, source: group) }
   let(:remove_path)  { group.path + "+#{group.id}+deleted" }
   let(:removed_repo) { Gitlab::Git::Repository.new(project.repository_storage, remove_path, nil, nil) }
-
-  before do
-    group.add_member(user, Gitlab::Access::OWNER)
-  end
 
   def destroy_group(group, user, async)
     if async
@@ -27,6 +22,8 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
 
   shared_examples 'group destruction' do |async|
     context 'database records', :sidekiq_might_not_need_inline do
+      let!(:notification_setting) { create(:notification_setting, source: group) }
+
       before do
         destroy_group(group, user, async)
       end
@@ -308,7 +305,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
   end
 
   context 'when user does not have authorization to delete the group' do
-    let(:unauthorized_user) { create(:user) }
+    let_it_be(:unauthorized_user) { create(:user) }
 
     it 'returns an unauthorized error response and does not mark deletion in progress' do
       expect(group).not_to be_member(unauthorized_user)
@@ -373,16 +370,11 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
     end
 
     context 'for shared groups across different hierarchies' do
-      let(:group1) { create(:group, :private) }
-      let(:group2) { create(:group, :private) }
+      let_it_be(:group1_user) { create(:user) }
+      let_it_be(:group2_user) { create(:user) }
 
-      let(:group1_user) { create(:user) }
-      let(:group2_user) { create(:user) }
-
-      before do
-        group1.add_member(group1_user, Gitlab::Access::OWNER)
-        group2.add_member(group2_user, Gitlab::Access::OWNER)
-      end
+      let(:group1) { create(:group, :private, owners: group1_user) }
+      let(:group2) { create(:group, :private, owners: group2_user) }
 
       context 'when a project is shared' do
         # group1
@@ -460,12 +452,10 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
           # group3 is invited to group2, and thus has access to group1_project
           # via group2's share link. When group2 is deleted, we need to make
           # sure that group3's access to group1_project is also removed.
-          let(:group3) { create(:group, :private) }
-          let(:group3_user) { create(:user) }
+          let_it_be(:group3_user) { create(:user) }
+          let_it_be(:group3) { create(:group, :private, owners: group3_user) }
 
           before do
-            group3.add_member(group3_user, Gitlab::Access::OWNER)
-
             create(:group_group_link, shared_group: group2, shared_with_group: group3)
             group3.refresh_members_authorized_projects
           end
@@ -607,9 +597,9 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
     #  `- shared_with_group
     #       `- project (via group_group_link)
     context 'for shared groups in the same group hierarchy' do
+      let_it_be(:shared_with_group_user) { create(:user) }
       let(:shared_group) { group }
       let(:shared_with_group) { nested_group }
-      let!(:shared_with_group_user) { create(:user) }
 
       before do
         shared_with_group.add_member(shared_with_group_user, Gitlab::Access::MAINTAINER)

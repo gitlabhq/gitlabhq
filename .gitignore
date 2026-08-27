@@ -155,3 +155,6 @@ CLAUDE.local.md
 
 # Optional local RuboCop override (see .rubocop.yml inherit_from)
 /.rubocop.local.yml
+
+# Local worktree copy list for worktrunk / Claude Code worktrees
+/.worktreeinclude

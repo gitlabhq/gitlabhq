@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import settingsPanel from './components/settings_panel.vue';
 
@@ -21,7 +21,6 @@ export function initProjectPermissionsSettings() {
 
   const {
     additionalInformation,
-    cascadingSettingsData,
     confirmButtonText,
     confirmDangerMessage,
     htmlConfirmationMessage,
@@ -30,23 +29,12 @@ export function initProjectPermissionsSettings() {
     phrase: confirmationPhrase,
   } = mountPoint.dataset;
 
-  let cascadingSettingsDataParsed;
-
-  try {
-    cascadingSettingsDataParsed = convertObjectPropsToCamelCase(JSON.parse(cascadingSettingsData), {
-      deep: true,
-    });
-  } catch {
-    cascadingSettingsDataParsed = null;
-  }
-
   return initVueApp({
     el: mountPoint,
     name: 'ProjectPermissionsRoot',
     apolloProvider,
     provide: {
       additionalInformation,
-      cascadingSettingsData: cascadingSettingsDataParsed,
       confirmDangerMessage,
       confirmButtonText,
       htmlConfirmationMessage: parseBoolean(htmlConfirmationMessage),

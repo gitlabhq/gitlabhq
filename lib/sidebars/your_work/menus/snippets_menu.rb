@@ -6,7 +6,7 @@ module Sidebars
       class SnippetsMenu < ::Sidebars::Menu
         override :link
         def link
-          dashboard_snippets_path
+          dashboard_snippets_path(organization_path: nil)
         end
 
         override :title

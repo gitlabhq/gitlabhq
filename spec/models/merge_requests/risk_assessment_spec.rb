@@ -124,4 +124,33 @@ RSpec.describe MergeRequests::RiskAssessment, feature_category: :duo_code_review
       end
     end
   end
+
+  describe '#tier' do
+    it 'is always nil until the scoring function and tier thresholds exist' do
+      risk_assessment = build(:merge_requests_risk_assessment, score: 90)
+
+      expect(risk_assessment.tier).to be_nil
+    end
+  end
+
+  describe '#stale?' do
+    let(:merge_request) { build(:merge_request) }
+    let(:risk_assessment) { build(:merge_requests_risk_assessment, merge_request: merge_request) }
+
+    context 'when diff_sha matches the merge request head' do
+      it 'returns false' do
+        risk_assessment.diff_sha = merge_request.diff_head_sha
+
+        expect(risk_assessment).not_to be_stale
+      end
+    end
+
+    context 'when diff_sha does not match the merge request head' do
+      it 'returns true' do
+        risk_assessment.diff_sha = Digest::SHA1.hexdigest(SecureRandom.hex) # rubocop:disable Fips/SHA1 -- test data
+
+        expect(risk_assessment).to be_stale
+      end
+    end
+  end
 end

@@ -27,20 +27,20 @@ You can configure GitLab to send notifications to a Pumble channel:
 
 Prerequisites:
 
-- Administrator access for instance enablement.
-- The Owner role for group enablement.
-- The Maintainer or Owner role for project enablement.
+- Administrator access to turn on the integration for an instance.
+- The Owner role to turn on the integration for a group.
+- The Maintainer or Owner role to turn on the integration for a project.
 
 After you have a webhook URL for your Pumble channel, configure GitLab to send
 notifications:
 
-1. To enable the integration for your group or project:
+1. To turn on the integration for your group or project:
    1. In your group or project, in the left sidebar, select **Settings** > **Integrations**.
-1. To enable the integration for your instance:
+1. To turn on the integration for your instance:
    1. In the upper-right corner, select **Admin**.
    1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select the **Pumble** integration.
-1. Ensure that the **Active** toggle is enabled.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Select the checkboxes corresponding to the GitLab events you want to receive in Pumble.
 1. Paste the **Webhook** URL for the Pumble channel.
 1. Configure the remaining options.

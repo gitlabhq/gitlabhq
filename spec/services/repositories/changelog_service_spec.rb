@@ -4,12 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Repositories::ChangelogService, feature_category: :source_code_management do
   describe '#execute' do
-    let!(:project) { create(:project, :empty_repo) }
+    let_it_be(:author1) { create(:user) }
+    let_it_be(:author2) { create(:user) }
+    let!(:project) { create(:project, :empty_repo, maintainers: [author1, author2]) }
     let!(:creator) { project.creator }
-    let!(:author1) { create(:user) }
-    let!(:author2) { create(:user) }
-    let!(:mr1) { create(:merge_request, :merged, target_project: project) }
-    let!(:mr2) { create(:merge_request, :merged, target_project: project) }
 
     # The range of commits ignores the first commit, but includes the last
     # commit. To ensure both the commits below are included, we must create an
@@ -27,8 +25,6 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
     end
 
     let!(:sha2) do
-      project.add_maintainer(author1)
-
       create_commit(
         project,
         author1,
@@ -38,8 +34,6 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
     end
 
     let!(:sha3) do
-      project.add_maintainer(author2)
-
       create_commit(
         project,
         author2,
@@ -57,30 +51,46 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
       )
     end
 
-    let!(:commit1) { project.commit(sha2) }
-    let!(:commit2) { project.commit(sha3) }
-    let!(:commit3) { project.commit(sha4) }
-
     let(:commit_to_changelog) { true }
 
-    it 'generates and commits a changelog section' do
-      allow(MergeRequest::CommitsMetadata)
-        .to receive(:oldest_merge_request_id_per_commit)
-        .with(project.id, [commit2.id, commit1.id])
-        .and_return(
-          [
-            { sha: sha2, merge_request_id: mr1.id },
-            { sha: sha3, merge_request_id: mr2.id }
-          ])
+    context 'when MRs exist' do
+      let(:mr1) { create(:merge_request, :merged, target_project: project) }
+      let(:mr2) { create(:merge_request, :merged, target_project: project) }
 
-      service = described_class
-        .new(project, creator, version: '1.0.0', from: sha1, to: sha3)
+      before do
+        allow(MergeRequest::CommitsMetadata)
+          .to receive(:oldest_merge_request_id_per_commit)
+          .with(project.id, [sha3, sha2])
+          .and_return(
+            [
+              { sha: sha2, merge_request_id: mr1.id },
+              { sha: sha3, merge_request_id: mr2.id }
+            ])
+      end
 
-      recorder = ActiveRecord::QueryRecorder.new { service.execute(commit_to_changelog: commit_to_changelog) }
-      changelog = project.repository.blob_at('master', 'CHANGELOG.md')&.data
+      it 'generates and commits a changelog section' do
+        service = described_class
+          .new(project, creator, version: '1.0.0', from: sha1, to: sha3)
 
-      expect(recorder.count).to eq(14)
-      expect(changelog).to include('Title 1', 'Title 2')
+        recorder = ActiveRecord::QueryRecorder.new { service.execute(commit_to_changelog: commit_to_changelog) }
+        changelog = project.repository.blob_at('master', 'CHANGELOG.md')&.data
+
+        expect(recorder.count).to eq(14)
+        expect(changelog).to include('Title 1', 'Title 2')
+      end
+
+      context 'with commit_to_changelog: false' do
+        let(:commit_to_changelog) { false }
+
+        it 'generates changelog section' do
+          service = described_class
+            .new(project, creator, version: '1.0.0', from: sha1, to: sha3)
+
+          changelog = service.execute(commit_to_changelog: commit_to_changelog)
+
+          expect(changelog).to include('Title 1', 'Title 2')
+        end
+      end
     end
 
     it "ignores a commit when it's both added and reverted in the same range" do
@@ -127,28 +137,6 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
       changelog = project.repository.blob_at('master', 'CHANGELOG.md')&.data
 
       expect(changelog).to include('Title 1', 'Title 2', 'Title 3')
-    end
-
-    describe 'with commit_to_changelog: false' do
-      let(:commit_to_changelog) { false }
-
-      it 'generates changelog section' do
-        allow(MergeRequest::CommitsMetadata)
-          .to receive(:oldest_merge_request_id_per_commit)
-          .with(project.id, [commit2.id, commit1.id])
-          .and_return(
-            [
-              { sha: sha2, merge_request_id: mr1.id },
-              { sha: sha3, merge_request_id: mr2.id }
-            ])
-
-        service = described_class
-          .new(project, creator, version: '1.0.0', from: sha1, to: sha3)
-
-        changelog = service.execute(commit_to_changelog: commit_to_changelog)
-
-        expect(changelog).to include('Title 1', 'Title 2')
-      end
     end
 
     context 'with queries count check' do

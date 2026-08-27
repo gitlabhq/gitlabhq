@@ -271,4 +271,20 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
         .to eq(42)
     end
   end
+
+  describe '#parallel_import_batch' do
+    it 'reads the batch size from the pull-request-specific application setting' do
+      stub_application_setting(concurrent_pull_request_import_jobs_limit: 25)
+
+      importer = described_class.new(project, client)
+
+      expect(importer.parallel_import_batch).to eq({ size: 25, delay: 1.minute })
+    end
+
+    it 'defaults to 200 when the setting has not been overridden' do
+      importer = described_class.new(project, client)
+
+      expect(importer.parallel_import_batch).to eq({ size: 200, delay: 1.minute })
+    end
+  end
 end

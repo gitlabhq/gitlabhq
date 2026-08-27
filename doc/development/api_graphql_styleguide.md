@@ -469,9 +469,9 @@ This is summarized in the following table:
 
 | Field purpose | Use `GraphQL::Types::ID`? |
 |---------------|---------------------------|
-| Full path | {{< icon name="check-circle" >}} Yes |
-| Database ID | {{< icon name="dotted-circle" >}} No |
-| IID | {{< icon name="dotted-circle" >}} No |
+| Full path     | {{< yes >}}               |
+| Database ID   | {{< no >}}                |
+| IID           | {{< no >}}                |
 
 ### `markdown_field`
 

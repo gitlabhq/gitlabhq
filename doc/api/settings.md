@@ -170,6 +170,7 @@ Example response:
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
+  "concurrent_pull_request_import_jobs_limit": 200,
   "import_jobs_concurrency_limit": 100,
   "silent_admin_exports_enabled": false,
   "top_level_group_creation_enabled": true,
@@ -407,6 +408,7 @@ Example response:
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
+  "concurrent_pull_request_import_jobs_limit": 200,
   "import_jobs_concurrency_limit": 100,
   "silent_admin_exports_enabled": false,
   "enforce_pipl_compliance": true
@@ -471,6 +473,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `built_in_project_templates_enabled` and `lock_built_in_project_templates_enabled` [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/593623) in GitLab 19.2. Feature flag `use_built_in_project_templates_enabled` removed.
 - `require_sha_for_merge` and `lock_require_sha_for_merge` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236732) in GitLab 19.2.
 - `sidekiq_timezone_override` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244922) in GitLab 19.2.
+- `concurrent_pull_request_import_jobs_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251353) in GitLab 19.4, replacing hardcoded limits for the Bitbucket Server (50) and GitHub (200) importers with a unified default of 200.
 
 {{< /history >}}
 
@@ -535,6 +538,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `concurrent_github_import_jobs_limit`    | integer          | no                                   | Maximum number of simultaneous import jobs for the GitHub importer. Default is 1000. |
 | `concurrent_bitbucket_import_jobs_limit` | integer          | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Cloud importer. Default is 100. |
 | `concurrent_bitbucket_server_import_jobs_limit` | integer   | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Server importer. Default is 100. |
+| `concurrent_pull_request_import_jobs_limit` | integer | no                                         | Maximum number of simultaneous pull request import jobs for the GitHub, Bitbucket Cloud, and Bitbucket Server importers. Default is 200. |
 | `import_jobs_concurrency_limit`          | integer          | no                                   | Maximum number of concurrently running jobs for each import worker type (project and group file base import, Direct Transfer, and GitHub, Bitbucket Cloud, and Bitbucket Server importer stages). Applied independently per worker type. Default is 100. Introduced in GitLab 19.1 |
 | `commit_email_hostname`                  | string           | no                                   | Custom hostname (for private commit emails). |
 | `container_expiration_policies_enable_historic_entries`   | boolean | no                           | Enable [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#enable-the-cleanup-policy) for all projects. |

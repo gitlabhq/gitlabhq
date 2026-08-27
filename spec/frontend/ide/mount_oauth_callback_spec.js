@@ -88,5 +88,20 @@ describe('~/ide/mount_oauth_callback', () => {
       // eslint-disable-next-line no-console
       expect(console.error).toHaveBeenCalledWith(mockError);
     });
+
+    // Jest strips the `?vue3` query, so the dynamic import resolves to the same
+    // mock as the static one. This asserts the flag-on branch is taken and still
+    // renders; which Vue version it gets is a bundler concern, verified manually.
+    describe('when vue3MigrateWebIde is enabled', () => {
+      beforeEach(() => {
+        gon.features = { vue3MigrateWebIde: true };
+      });
+
+      it('displays an alert', async () => {
+        await mountOAuthCallback();
+
+        expect(createAlert).toHaveBeenCalledTimes(1);
+      });
+    });
   });
 });

@@ -1,0 +1,14 @@
+---
+table_name: merge_request_diff_commits_archived
+classes:
+- MergeRequestDiffCommit
+feature_categories:
+- code_review_workflow
+description: Commit related information within a merge request diff (from before table
+  partitioning). Kept as a safety net during swap for new partitioned table merge_request_diff_commits_b5377a7a34.
+  Table will be dropped once swap is confirmed as stable.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12527
+milestone: '9.4'
+gitlab_schema: gitlab_main_org
+sharding_key_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/18350
+table_size: over_limit

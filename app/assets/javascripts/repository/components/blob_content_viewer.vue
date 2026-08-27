@@ -402,11 +402,17 @@ export default {
       }
     },
     handleViewerChanged(newViewer) {
-      this.setShowBlame(false);
+      this.showBlame = false;
       this.switchViewer(newViewer);
       const plain = newViewer === SIMPLE_BLOB_VIEWER ? '1' : '0';
-      if (this.$route?.query?.plain === plain) return;
-      this.$router.push({ path: this.$route.path, query: { ...this.$route.query, plain } });
+      const { blame, ...queryWithoutBlame } = this.$route?.query || {};
+      if (!blame && queryWithoutBlame.plain === plain) return;
+      this.$router.push({
+        path: this.$route.path,
+        query: { ...queryWithoutBlame, plain },
+        // A line hash forces the simple viewer on load, so drop it when switching to rich
+        hash: newViewer === SIMPLE_BLOB_VIEWER ? window.location.hash : '',
+      });
     },
     isIdeTarget(target) {
       return target === 'ide';
@@ -430,15 +436,15 @@ export default {
     handleToggleBlame() {
       this.switchViewer(SIMPLE_BLOB_VIEWER);
 
-      if (this.$route?.query?.plain === '0') {
-        // If the user is not viewing plain code and clicks the blame button, we always want to show blame info
-        // For instance, when viewing the rendered version of a Markdown file
+      if (!this.showBlame) {
         this.setShowBlame(true);
       } else {
-        this.setShowBlame(!this.showBlame);
+        // Flipping showBlame makes blob_header emit viewer-changed;
+        // handleViewerChanged then owns the single navigation that strips the blame param
+        this.showBlame = false;
       }
     },
-    setShowBlame(showBlame) {
+    setShowBlame(showBlame, hash = window.location.hash) {
       if (showBlame) this.collapseForBlame();
       this.showBlame = showBlame;
       const { blame, ...queryWithoutBlame } = this.$route?.query || {};
@@ -451,17 +457,12 @@ export default {
       this.$router.push({
         path: this.$route.path,
         query,
-        hash: window.location.hash,
+        hash,
       });
     },
     activateInlineBlame(lineNumber) {
-      if (!this.showBlame) {
-        this.handleToggleBlame();
-      }
-      this.$router.replace({
-        ...this.$route,
-        hash: `#L${lineNumber}`,
-      });
+      this.switchViewer(SIMPLE_BLOB_VIEWER);
+      this.setShowBlame(true, `#L${lineNumber}`);
       this.$nextTick(() => {
         this.$refs.blobViewerComponent?.selectLine?.();
       });

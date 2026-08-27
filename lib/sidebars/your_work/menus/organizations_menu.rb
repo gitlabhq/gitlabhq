@@ -6,7 +6,7 @@ module Sidebars
       class OrganizationsMenu < ::Sidebars::Menu
         override :link
         def link
-          organizations_path
+          organizations_path(organization_path: nil)
         end
 
         override :title

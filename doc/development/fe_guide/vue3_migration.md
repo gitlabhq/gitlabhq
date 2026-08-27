@@ -117,6 +117,12 @@ If Vite fails to start:
 
 ## Compatibility changes
 
+The changes below are the ones this migration hits most often, not the whole surface. An app can
+break on anything it imports, so treat this list as a starting point rather than a checklist. The
+libraries aliased in `config/helpers/context_aliases_shared.js`, such as `vuex`, `vue-router`,
+`vue-apollo`, `portal-vue`, `vuedraggable`, and the virtual scrollers, run through a Vue 3 shim and
+are the most sensitive to a migration.
+
 ### Vue filters
 
 **Why**
@@ -402,7 +408,8 @@ runtime: `document.querySelectorAll('[data-gitlab-vue3-app]')`.
 1. Verify that the console shows
    `[gitlab] [V] Using Vue.js 3 (with @vue/compat) for <your app name>`.
 1. Verify that `document.querySelectorAll('[data-gitlab-vue3-app]')` returns your app.
-1. **Verify the app works correctly locally**.
+1. **Verify the app works correctly locally**. To turn that check into evidence a reviewer can
+   watch, see [Record the verification as a video](#record-the-verification-as-a-video).
 1. Open an MR with your changes and get them merged!
 1. Proceed with the feature flag rollout with the `user` actor.
 1. Upon removing the feature flag, change the YAML to `status: migrated` and
@@ -473,11 +480,215 @@ page entrypoint.
 1. Verify that the console shows
    `[gitlab] [V] Using Vue.js 3 (with @vue/compat) for <your app name>`.
 1. Verify that `document.querySelectorAll('[data-gitlab-vue3-app]')` returns your app.
-1. **Verify the app works correctly locally**.
+1. **Verify the app works correctly locally**, and record the walkthrough as evidence for the
+   reviewer.
 1. Open an MR with your changes and get them merged.
 1. Proceed with the feature flag rollout with the `user` actor.
 1. Upon removing the feature flag, import `~/my_app?vue3` directly and delete both the conditional
    and the Vue 2 import.
+
+### Record the verification as a video
+
+Both options end with the same manual step: check that the app still works under Vue 3. Unit tests
+mount a component in isolation, so regressions that need a browser survive a green suite, and an MR
+that states "verified locally" leaves the reviewer nothing to look at. Have an AI agent walk the app
+in a browser, record the session, and attach the video to your MR.
+
+> [!warning]
+> The agent drives a real browser with your signed-in session, so every interaction it performs is
+> a real write. It can create, change, and delete data. Record against seeded data in your local
+> GDK only, never against a shared or production environment, and tell the agent which records it
+> may touch. A separate browser profile (`--user-data-dir`) isolates the session and its cookies,
+> but it does not limit what the agent can change in the application. If you need that guarantee,
+> record against a disposable GDK.
+
+#### Playwright Record MCP
+
+[Playwright Record MCP](https://gitlab.com/jotolo_gl/playwright-record-mcp) is a Model Context
+Protocol (MCP) server that gives an agent Playwright browser tools (`browser_navigate`,
+`browser_click`, `browser_type`, `browser_snapshot`, and others), records the session, and exports
+it as an H.264 `.mp4`.
+
+To install it, ask your agent to follow the README section
+**Instructions for AI agents (autonomous install)**. That section covers the prerequisites
+(Node.js 18 or later, `ffmpeg`), the clone, `npx playwright install chromium`, and the MCP client
+registration. Restart your MCP client afterwards, because the server is not available in the
+session that installed it.
+
+#### Suggested workflow
+
+1. List the interactions the app supports, and derive the list from the component templates and
+   their specs instead of from memory. Each interaction is one step in the recording: form
+   submissions, filters, dropdowns, dialogs, dragging, pagination, empty states, and error
+   states.
+1. Prepare the stage before you record: the project, the records, and the states the checklist
+   needs. Doing this yourself keeps setup out of the video and keeps the agent from improvising
+   fixtures against your GDK. The seeders in `lib/gitlab/seeders/` cover common cases. You can
+   delegate the setup, but hand the agent an explicit list, run it as its own step before the
+   recording, and read what it created.
+1. Ask the agent to run the list twice: once with the feature flag disabled, and once with it
+   enabled. The Vue 2 pass is the baseline. A step that fails in both passes is an existing bug,
+   not a migration regression.
+1. Confirm that the second pass ran under Vue 3. Serving Vue 2 raises no error, so a mistake in the
+   feature flag or in a `?vue3` import produces a video of the Vue 2 app. Pin the engine notice to
+   the overlay with `--console-overlay-pin "Using Vue.js"`, and the video carries that proof
+   itself. `browser_console_messages` reports the same lines if you want them in the run log.
+1. Call `browser_video_save` with an `.mp4` filename as the last step. It closes the browser to
+   finalize the video, so no other browser tool works afterwards. One session produces one video,
+   so each pass needs its own session.
+1. Attach the `.mp4` to your MR, together with the list of steps, and describe any difference
+   between the two passes. With the [`glab` CLI](https://gitlab.com/gitlab-org/cli) installed, the
+   agent can also do this itself. It uploads the file:
+
+   ```shell
+   glab api projects/<project-id-or-path>/uploads -X POST --form "file=@vue3-my-app.mp4"
+   ```
+
+   The response holds a `markdown` field. The agent puts that snippet in the MR description with
+   `glab mr update <mr-id> --description ...`, or in a comment with `glab mr note <mr-id>`.
+
+#### Show the console in the recording
+
+Some Vue 3 regressions never reach the screen. A `@vue/compat` deprecation warning, or an error
+thrown inside a handler that leaves the UI unchanged, exists only in the console. The previous step
+catches these with `browser_console_messages`, but a reviewer cannot see a console in a video.
+
+To carry the console in the video, add the overlay flags to the server arguments:
+
+```shell
+claude mcp add -s user playwright-record -- \
+  node "$HOME/playwright-record-mcp/cli.js" \
+  --record-video --video-dir "$HOME/playwright-record-mcp/mcp_videos" \
+  --video-size 1280x800 --video-speed 1.5 \
+  --console-overlay --console-overlay-pin "Using Vue.js"
+```
+
+Every console error and warning, every uncaught error, and every rejected promise is then painted
+into a panel at the bottom right of the page, which the recording captures. The panel holds the
+last eight messages, newest first, and survives navigation, so the reviewer reads the console as
+the walkthrough runs. Because these are server flags, no instruction to the agent is needed.
+
+Three options shape what the panel shows. Each one implies `--console-overlay`, so a pin on its own
+is enough.
+
+The panel covers what the application logs through `console`, plus uncaught errors and rejected
+promises. Messages that the browser writes itself, for example a failed request, do not pass
+through `console`, so they stay out of the panel. Read those from `browser_console_messages` and
+`browser_network_requests`.
+
+#### Starter prompt
+
+Copy the following prompt to your agent to verify a migration end to end in a real browser, with
+the recording as evidence. Adapt the details, such as the app name, the feature flag, and the
+seeded data, before you run it.
+
+<details>
+<summary><strong>Starter prompt for your agent</strong></summary>
+
+````markdown
+You are verifying a Vue 2 to Vue 3 (`@vue/compat`) migration for a Vue app, in a real browser,
+with a recorded video as evidence.
+
+Fill these in before you run this prompt:
+
+- GDK URL: `http://gdk.test:3000`
+- Feature flag: `<vue3_migrate_my_app>`
+- Page that mounts the app: `<path>`
+- Sign-in: the username and password of a local GDK account.
+- Project or records to use: `<what I already prepared for you>`
+
+Only ever use a local GDK account. Never pass me credentials for a shared or production
+environment.
+
+Follow these steps in order.
+
+Constraints:
+
+- You drive a real browser against my local GDK, signed in as a real user. Every interaction is a
+  real write, so stay on the records I named above and tell me anything you changed.
+- Do not modify application code to make a step pass. Report the failure instead.
+- Do not create projects, users, or fixtures, and do not run seeders or migrations. Verify against
+  what I prepared. If the checklist needs a record that does not exist, or the environment errors
+  on you, stop and tell me. A broken local environment is not a migration finding.
+- Record with the console overlay on, so the video carries the console instead of a separate log.
+  The server needs these arguments, and each overlay option implies `--console-overlay`:
+
+  ```shell
+  --record-video --video-size 1280x800 --video-speed 1.5 \
+    --console-overlay --console-overlay-pin "Using Vue.js"
+  ```
+
+  If the panel is too noisy to read, narrow it with `--console-overlay-match <regex>`. If you need
+  a level that the default does not paint, name it with `--console-overlay-levels error,warn,log`.
+  Prefer these options over filtering the output yourself. You cannot restart the server, so tell
+  me when a flag has to change and wait.
+- Use the `playwright-record` MCP server for all browser actions: `browser_navigate`,
+  `browser_click`, `browser_type`, `browser_hover`, `browser_drag`, `browser_select_option`,
+  `browser_press_key`, `browser_snapshot`, `browser_wait`, `browser_console_messages`,
+  `browser_network_requests`, `browser_video_save`. It cannot evaluate arbitrary JavaScript, so
+  read state from `browser_snapshot` and `browser_console_messages`, not from the DOM.
+
+1. Read the code before you touch a browser. Work out from the diff and the component source what
+   the app does: which components sit in the migrated dependency tree, every `$emit` and every
+   `v-on` or `@` listener, the `emits:` declarations, props with default factory functions, scoped
+   slots, `v-model` usage, Vue Router usage, and anything the Vue 3 migration is known to break.
+   Read the component's Jest specs too. They enumerate the behavior, and they show which covered
+   behavior a browser walkthrough does not reach.
+
+   Then read the compatibility changes in the migration guide,
+   <https://docs.gitlab.com/development/fe_guide/vue3_migration/#compatibility-changes>, and check
+   the app against each one. That list is a starting point, not the whole surface: look for
+   anything else the app depends on. Pay attention to the libraries aliased in
+   `config/helpers/context_aliases_shared.js`, because they run through a Vue 3 shim, and give the
+   ones this app imports their own checklist entries.
+
+1. Build an explicit checklist of interactions from that reading, and share it with me before you
+   run anything, so I can correct it. Group it into:
+   - Main features: the app's primary user flows.
+   - Event and emit paths: each emitted event and the observable result its listener produces.
+   - Edge cases: empty state, error state, loading state, permission-restricted state, long or
+     truncated content, and keyboard-only interaction.
+
+1. Sign in at `<GDK URL>/users/sign_in` with the credentials above, as your first browser action
+   in every session. The GitLab session cookie does not survive a browser restart, so each
+   recorded session signs in again. The sign-in form is itself a Vue app, so read a fresh
+   `browser_snapshot` before each field: typing into one field re-renders the form and stales the
+   reference to the other.
+
+1. Confirm the page runs under Vue 3 before you verify anything. The pin keeps every
+   `[gitlab] [V] Using Vue.js 3` line on screen for the whole recording, one per app root that
+   started, so the video states which engine ran. Read that pinned block from `browser_snapshot`.
+   If your app is missing from it, stop and report it. A walkthrough on Vue 2 proves nothing about
+   the migration.
+
+1. Run the checklist twice, in two separate recorded sessions: once with the feature flag off
+   (Vue 2 baseline) and once with it on (Vue 3). A step that fails in both is an existing bug, not
+   a migration regression.
+
+1. For every interaction, assert an observable result, not just that the click happened. Examples:
+   text that appears or changes, a row count, a URL query parameter, a request in
+   `browser_network_requests`, an element that appears or disappears in `browser_snapshot`. If the
+   handler for an event produces nothing observable on the page, call it out as unverifiable from
+   the browser. Do not report it as passing.
+
+1. Read the overlay after each step. Treat any error or `@vue/compat` warning that appears in the
+   Vue 3 pass but not in the Vue 2 pass as a migration regression. `browser_console_messages` holds
+   the full log for your report, including the messages the panel clipped.
+
+1. Call `browser_video_save` with an `.mp4` filename as your last call in each session. It closes
+   the browser to finalize the video, so no browser tool works after it. Then report the checklist
+   with a pass or fail for each item, the console difference between the two passes, anything you
+   could not verify from the browser, and the video path for each session. If `glab` is installed,
+   upload the videos and attach them to the merge request.
+````
+
+</details>
+
+#### Caveats
+
+- A video shows that the interactions the agent performed work at that commit. It is not a test:
+  nothing replays it against later changes. Keep covering fixed behavior with Jest specs.
+- Recordings have no audio, so `--video-speed 1.5` shortens the clip without losing detail.
 
 ## Common migration issues
 

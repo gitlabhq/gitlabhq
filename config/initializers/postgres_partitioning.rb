@@ -136,6 +136,19 @@ Gitlab::Application.config.to_prepare do
   # rubocop:disable Database/AvoidIntRangePartitioning -- legacy usage
   Gitlab::Database::Partitioning.register_tables(
     [
+      # Both names are registered because only one of them is the partitioned table at any time.
+      # On GitLab.com, the SwapMergeRequestDiffCommitsTable post-deployment migration renames
+      # merge_request_diff_commits_b5377a7a34 to merge_request_diff_commits. Registering both covers
+      # the window between this code deploying and that migration running: PartitionManager#sync_partitions
+      # skips the name that is not partitioned.
+      {
+        limit_connection_names: %i[main],
+        table_name: 'merge_request_diff_commits',
+        partitioned_column: :project_id,
+        strategy: :int_range,
+        partition_size: 2_000_000,
+        sequence_name: 'projects_id_seq'
+      },
       {
         limit_connection_names: %i[main],
         table_name: 'merge_request_diff_commits_b5377a7a34',

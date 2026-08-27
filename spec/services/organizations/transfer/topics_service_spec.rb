@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe Organizations::Transfer::TopicsService, :aggregate_failures, feature_category: :organization do
   let_it_be(:old_organization) { create(:organization) }
   let_it_be(:new_organization) { create(:organization) }
-  let_it_be_with_refind(:group) { create(:group, organization: old_organization) }
+  let_it_be(:group) { create(:group, organization: old_organization) }
 
-  let!(:topic_project) { create(:project, namespace: group) }
-  let!(:topic_subgroup) { create(:group, parent: group) }
-  let!(:topic_subgroup_project) do
+  let_it_be(:topic_project) { create(:project, namespace: group) }
+  let_it_be(:topic_subgroup) { create(:group, parent: group) }
+  let_it_be(:topic_subgroup_project) do
     create(:project, namespace: topic_subgroup)
   end
 
@@ -87,15 +87,15 @@ RSpec.describe Organizations::Transfer::TopicsService, :aggregate_failures, feat
     end
 
     context 'when counter caches need updating' do
-      let!(:old_topic) do
+      let_it_be_with_reload(:old_topic) do
         create(:topic, name: 'go', organization: old_organization)
       end
 
-      let!(:public_project) do
+      let_it_be(:public_project) do
         create(:project, :public, namespace: group, organization: old_organization)
       end
 
-      before do
+      before_all do
         create(:project_topic, project: topic_project, topic: old_topic)
         create(:project_topic, project: public_project, topic: old_topic)
         old_topic.update_columns(total_projects_count: 2, non_private_projects_count: 1)
@@ -107,8 +107,10 @@ RSpec.describe Organizations::Transfer::TopicsService, :aggregate_failures, feat
         new_topic = Projects::Topic.find_by(organization_id: new_organization.id, name: 'go')
         expect(new_topic.total_projects_count).to eq(2)
         expect(new_topic.non_private_projects_count).to eq(1)
-        expect(old_topic.reload.total_projects_count).to eq(0)
-        expect(old_topic.reload.non_private_projects_count).to eq(0)
+
+        old_topic.reload
+        expect(old_topic.total_projects_count).to eq(0)
+        expect(old_topic.non_private_projects_count).to eq(0)
       end
 
       context 'with multiple topics across mixed visibility projects' do
@@ -136,13 +138,15 @@ RSpec.describe Organizations::Transfer::TopicsService, :aggregate_failures, feat
           new_go = Projects::Topic.find_by(organization_id: new_organization.id, name: 'go')
           new_rust = Projects::Topic.find_by(organization_id: new_organization.id, name: 'rust')
 
-          expect(old_topic.reload.total_projects_count).to eq(0)
-          expect(old_topic.reload.non_private_projects_count).to eq(0)
+          old_topic.reload
+          expect(old_topic.total_projects_count).to eq(0)
+          expect(old_topic.non_private_projects_count).to eq(0)
           expect(new_go.total_projects_count).to eq(3)
           expect(new_go.non_private_projects_count).to eq(2)
 
-          expect(second_topic.reload.total_projects_count).to eq(0)
-          expect(second_topic.reload.non_private_projects_count).to eq(0)
+          second_topic.reload
+          expect(second_topic.total_projects_count).to eq(0)
+          expect(second_topic.non_private_projects_count).to eq(0)
           expect(new_rust.total_projects_count).to eq(3)
           expect(new_rust.non_private_projects_count).to eq(2)
         end
@@ -168,10 +172,13 @@ RSpec.describe Organizations::Transfer::TopicsService, :aggregate_failures, feat
         it 'accounts for deleted duplicates in old topic counters and moves non-duplicates to new topic' do
           service.execute
 
-          expect(second_topic.reload.total_projects_count).to eq(0)
-          expect(second_topic.reload.non_private_projects_count).to eq(0)
-          expect(existing_swift.reload.total_projects_count).to eq(2)
-          expect(existing_swift.reload.non_private_projects_count).to eq(1)
+          second_topic.reload
+          expect(second_topic.total_projects_count).to eq(0)
+          expect(second_topic.non_private_projects_count).to eq(0)
+
+          existing_swift.reload
+          expect(existing_swift.total_projects_count).to eq(2)
+          expect(existing_swift.non_private_projects_count).to eq(1)
         end
       end
 
@@ -192,8 +199,10 @@ RSpec.describe Organizations::Transfer::TopicsService, :aggregate_failures, feat
           new_topic = Projects::Topic.find_by(organization_id: new_organization.id, name: 'private-only')
           expect(new_topic.total_projects_count).to eq(2)
           expect(new_topic.non_private_projects_count).to eq(0)
-          expect(private_topic.reload.total_projects_count).to eq(0)
-          expect(private_topic.reload.non_private_projects_count).to eq(0)
+
+          private_topic.reload
+          expect(private_topic.total_projects_count).to eq(0)
+          expect(private_topic.non_private_projects_count).to eq(0)
         end
       end
 
@@ -212,10 +221,12 @@ RSpec.describe Organizations::Transfer::TopicsService, :aggregate_failures, feat
           service.execute
 
           new_topic = Projects::Topic.find_by(organization_id: new_organization.id, name: 'go')
-          expect(old_topic.reload.total_projects_count).to eq(1)
-          expect(old_topic.reload.non_private_projects_count).to eq(1)
           expect(new_topic.total_projects_count).to eq(2)
           expect(new_topic.non_private_projects_count).to eq(1)
+
+          old_topic.reload
+          expect(old_topic.total_projects_count).to eq(1)
+          expect(old_topic.non_private_projects_count).to eq(1)
         end
       end
     end
@@ -233,7 +244,7 @@ RSpec.describe Organizations::Transfer::TopicsService, :aggregate_failures, feat
       it 'repoints both project_topics and creates only one new topic' do
         service.execute
 
-        new_topics = Projects::Topic.where(organization_id: new_organization.id, name: 'docker')
+        new_topics = Projects::Topic.where(organization_id: new_organization.id, name: 'docker').to_a
         expect(new_topics.count).to eq(1)
 
         new_topic = new_topics.first

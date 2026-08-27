@@ -235,6 +235,7 @@
     "swagger-client": "^3.37.2",
     "swagger-ui-dist": "^5.32.4",
     "swc-plugin-coverage-instrument": "0.0.32",
+    "textarea-caret": "^3.1.0",
     "thread-loader": "^3.0.4",
     "three": "^0.143.0",
     "timeago.js": "^4.0.2",

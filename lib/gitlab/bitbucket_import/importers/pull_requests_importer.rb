@@ -40,10 +40,10 @@ module Gitlab
           object[:iid]
         end
 
-        # To avoid overloading Gitaly, we use a smaller limit for pull requests than the one defined in the
-        # application settings.
+        # To avoid overloading Gitaly, pull request import concurrency is controlled by its own
+        # setting, separate from the general Bitbucket Cloud import jobs limit.
         def concurrent_import_jobs_limit
-          100
+          Gitlab::CurrentSettings.concurrent_pull_request_import_jobs_limit
         end
       end
     end

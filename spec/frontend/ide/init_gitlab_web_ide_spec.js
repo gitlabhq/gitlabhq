@@ -315,7 +315,9 @@ describe('ide/init_gitlab_web_ide', () => {
       createSubject();
     });
 
-    it('shows alert', () => {
+    it('shows alert', async () => {
+      await waitForPromises();
+
       expect(start).toHaveBeenCalledTimes(1);
       expect(renderWebIdeError).toHaveBeenCalledTimes(1);
       expect(renderWebIdeError).toHaveBeenCalledWith({
@@ -324,6 +326,40 @@ describe('ide/init_gitlab_web_ide', () => {
       });
     });
   });
+
+  // Jest strips the `?vue3` query, so the dynamic import resolves to the same
+  // mock as the static one. These assert the flag-on branch is taken and still
+  // renders; which Vue version it gets is a bundler concern, verified manually.
+  describe.each(['on start error', 'on ready error'])(
+    'with vue3MigrateWebIde enabled, %s',
+    (scenario) => {
+      const mockError = new Error('error');
+
+      beforeEach(() => {
+        gon.features = { vue3MigrateWebIde: true };
+
+        if (scenario === 'on start error') {
+          jest.mocked(start).mockImplementationOnce(() => {
+            throw mockError;
+          });
+        } else {
+          jest.mocked(start).mockResolvedValue({ ready: Promise.reject(mockError) });
+        }
+
+        createSubject();
+      });
+
+      it('shows alert', async () => {
+        await waitForPromises();
+
+        expect(renderWebIdeError).toHaveBeenCalledTimes(1);
+        expect(renderWebIdeError).toHaveBeenCalledWith({
+          error: mockError,
+          signOutPath: TEST_SIGN_OUT_PATH,
+        });
+      });
+    },
+  );
 
   describe('on ready error', () => {
     const mockError = new Error('error');

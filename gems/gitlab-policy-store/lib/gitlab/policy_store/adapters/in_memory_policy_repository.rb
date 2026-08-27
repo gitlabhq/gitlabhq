@@ -17,6 +17,7 @@ module Gitlab
           normalized = creatable_attributes(attributes)
           validate_required_attributes!(normalized)
           validate_authored_text_limits!(normalized)
+          validate_entry_limits!(normalized)
           validate_name_available!(normalized)
           normalized = with_compiled_scope(normalized)
           normalized = with_compiled_rules(normalized)
@@ -34,6 +35,7 @@ module Gitlab
           authored = existing.to_h.merge(changes)
           validate_required_attributes!(authored)
           validate_authored_text_limits!(authored)
+          validate_entry_limits!(changes)
           validate_name_available!(authored, excluding_id: id)
 
           scoped = with_updated_scope(existing.to_h, changes)

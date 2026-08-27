@@ -6,7 +6,7 @@ module Sidebars
       class ProjectsMenu < ::Sidebars::Menu
         override :link
         def link
-          dashboard_projects_path
+          dashboard_projects_path(organization_path: nil)
         end
 
         override :title

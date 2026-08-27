@@ -307,9 +307,18 @@ describe('Blob content viewer component', () => {
         expect(findSourceViewer().props('showBlame')).toBe(true);
 
         await router.replace({ path: '/', query: { blame: '1' } }); // Simulate the route update
+        mockRouterPush.mockClear();
         await triggerBlame();
+        // The real header reacts to showBlameInfo turning off by emitting viewer-changed
+        findBlobHeader().vm.$emit('viewer-changed', SIMPLE_BLOB_VIEWER);
+        await nextTick();
 
-        expect(mockRouterPush).toHaveBeenCalledWith({ path: '/', query: {}, hash: '' });
+        expect(mockRouterPush).toHaveBeenCalledTimes(1);
+        expect(mockRouterPush).toHaveBeenCalledWith({
+          path: '/',
+          query: { plain: '1' },
+          hash: '',
+        });
         expect(findSourceViewer().props('showBlame')).toBe(false);
       });
 
@@ -327,13 +336,46 @@ describe('Blob content viewer component', () => {
         });
 
         await router.replace({ path: '/', query: { blame: '1' }, hash: '#L42' });
+        mockRouterPush.mockClear();
         await triggerBlame();
+        findBlobHeader().vm.$emit('viewer-changed', SIMPLE_BLOB_VIEWER);
+        await nextTick();
 
+        expect(mockRouterPush).toHaveBeenCalledTimes(1);
         expect(mockRouterPush).toHaveBeenCalledWith({
           path: '/',
-          query: {},
+          query: { plain: '1' },
           hash: '#L42',
         });
+      });
+
+      it('opens blame with the line number hash in a single navigation when a line link is clicked', async () => {
+        const ViewerWithLineLink = {
+          name: 'ViewerWithLineLink',
+          inject: ['blameActions'],
+          props: ['showBlame'],
+          render(h) {
+            return h('button', {
+              attrs: { 'data-testid': 'line-link' },
+              on: { click: () => this.blameActions.activateInlineBlame(42) },
+            });
+          },
+        };
+        loadViewer.mockReturnValueOnce(ViewerWithLineLink);
+        await createComponent(
+          { blob: simpleViewerMock, inject: { highlightWorker, hasRevsFile: false } },
+          mount,
+        );
+
+        await wrapper.findByTestId('line-link').trigger('click');
+
+        expect(mockRouterPush).toHaveBeenCalledTimes(1);
+        expect(mockRouterPush).toHaveBeenCalledWith({
+          path: '/',
+          query: { blame: '1' },
+          hash: '#L42',
+        });
+        expect(wrapper.findComponent(ViewerWithLineLink).props('showBlame')).toBe(true);
       });
 
       it('hides the blame when route changes', async () => {
@@ -360,13 +402,26 @@ describe('Blob content viewer component', () => {
       });
 
       describe('when viewing rich content', () => {
-        it('always shows the blame when clicking on the blame button', async () => {
+        it('shows the blame when clicking on the blame button', async () => {
           loadViewer.mockReturnValueOnce(SourceViewer);
-          const query = { plain: '0', blame: '1' };
-          await createComponent({ blob: simpleViewerMock }, shallowMount, { query });
+          await createComponent({
+            blob: simpleViewerMock,
+            urlParams: { path: '/', query: { plain: '0' } },
+          });
           await triggerBlame();
 
           expect(findSourceViewer().props('showBlame')).toBe(true);
+        });
+
+        it('hides the blame when clicking on the blame button while blame is open', async () => {
+          loadViewer.mockReturnValueOnce(SourceViewer).mockReturnValueOnce(SourceViewer);
+          await createComponent({
+            blob: simpleViewerMock,
+            urlParams: { path: '/', query: { plain: '0', blame: '1' } },
+          });
+          await triggerBlame();
+
+          expect(findSourceViewer().props('showBlame')).toBe(false);
         });
       });
 
@@ -630,6 +685,24 @@ describe('Blob content viewer component', () => {
         query: {
           plain: '1',
         },
+        hash: window.location.hash,
+      });
+    });
+
+    it('drops the line hash when switching to the rich viewer', async () => {
+      await createComponent({ blob: richViewerMock });
+      await router.replace('/mock_path');
+      window.location.hash = '#L42';
+
+      findBlobHeader().vm.$emit('viewer-changed', RICH_BLOB_VIEWER);
+      await nextTick();
+
+      expect(mockRouterPush).toHaveBeenCalledWith({
+        path: '/mock_path',
+        query: {
+          plain: '0',
+        },
+        hash: '',
       });
     });
   });

@@ -6627,7 +6627,6 @@
 - './spec/services/ci/drop_pipeline_service_spec.rb'
 - './spec/services/ci/expire_pipeline_cache_service_spec.rb'
 - './spec/services/ci/external_pull_requests/create_pipeline_service_spec.rb'
-- './spec/services/ci/find_exposed_artifacts_service_spec.rb'
 - './spec/services/ci/generate_codequality_mr_diff_report_service_spec.rb'
 - './spec/services/ci/generate_coverage_reports_service_spec.rb'
 - './spec/services/ci/generate_kubeconfig_service_spec.rb'

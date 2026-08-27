@@ -38,5 +38,16 @@ module MergeRequests
       json_schema: { filename: 'merge_requests_risk_assessment_signal_breakdown', size_limit: 64.kilobytes }
 
     populate_sharding_key :project_id, source: :merge_request
+
+    # Placeholder until https://gitlab.com/gitlab-org/gitlab/-/work_items/609301
+    # adds the real scoring function and tier thresholds. Always nil for now,
+    # consistent with score never being set either.
+    def tier
+      nil
+    end
+
+    def stale?
+      diff_sha != merge_request.diff_head_sha
+    end
   end
 end

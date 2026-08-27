@@ -723,10 +723,6 @@ RSpec.describe UsersHelper, feature_category: :user_management do
 
     subject(:data) { helper.user_activity_calendar_data(user) }
 
-    it 'returns the username' do
-      expect(data[:username]).to eq(user.username)
-    end
-
     it 'returns the utc offset for the user timezone', time_travel_to: '2020-01-01 00:00:00 +0000' do
       expect(data[:utc_offset]).to eq(-5.hours.to_i)
     end

@@ -6,7 +6,7 @@ module Sidebars
       class ActivityMenu < ::Sidebars::Menu
         override :link
         def link
-          activity_dashboard_path
+          activity_dashboard_path(organization_path: nil)
         end
 
         override :title

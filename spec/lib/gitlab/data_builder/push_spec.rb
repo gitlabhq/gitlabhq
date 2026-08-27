@@ -227,7 +227,7 @@ RSpec.describe Gitlab::DataBuilder::Push, feature_category: :webhooks do
     it { expect(data[:user_id]).to eq(user.id) }
     it { expect(data[:user_name]).to eq(user.name) }
     it { expect(data[:user_username]).to eq(user.username) }
-    it { expect(data[:user_email]).to eq(user.public_email) }
+    it { expect(data[:user_email]).to eq(user.webhook_email) }
     it { expect(data[:user_avatar]).to eq(user.avatar_url) }
     it { expect(data[:project_id]).to eq(project.id) }
     it { expect(data[:project]).to be_a(Hash) }
@@ -240,6 +240,27 @@ RSpec.describe Gitlab::DataBuilder::Push, feature_category: :webhooks do
     it 'does not raise an error when given nil commits' do
       expect { described_class.build(project: spy, user: spy, ref: 'refs/tags/v1.1.0', commits: nil) }
         .not_to raise_error
+    end
+
+    context 'when the user has no visible public email' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:user_trait_or_attrs) do
+        [
+          [{ public_email: '' }],
+          [{ traits: [:project_bot] }]
+        ]
+      end
+
+      with_them do
+        let(:user) do
+          attrs = user_trait_or_attrs.except(:traits)
+          traits = user_trait_or_attrs[:traits] || []
+          build(:user, *traits, **attrs)
+        end
+
+        it { expect(data[:user_email]).to eq(_('[REDACTED]')) }
+      end
     end
   end
 

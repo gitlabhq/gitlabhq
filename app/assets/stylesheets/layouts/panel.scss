@@ -138,6 +138,17 @@
   @apply gl-pb-3;
 }
 
+// Compensate for the hidden, breadcrumb-free panel header
+// See `page_breadcrumbs_in_top_bar` feature flag
+.static-panel--headerless .panel-content {
+  @apply gl-mt-3;
+
+  // Hide sticky header helper
+  .panel-content-inner::before {
+    @apply gl-hidden;
+  }
+}
+
 .panel-content-inner {
   @apply gl-flex-1;
   @apply gl-overflow-x-hidden;

@@ -122,6 +122,7 @@ GraphQL/GraphqlName:
     - 'ee/app/graphql/types/geo/replication_state_enum.rb'
     - 'ee/app/graphql/types/geo/verification_state_enum.rb'
     - 'ee/app/graphql/types/gitlab_subscriptions/preview_billable_user_change_type.rb'
+    - 'ee/app/graphql/types/merge_requests/risk_classification/tier_enum.rb'
     - 'ee/app/graphql/types/protected_environments/authorizable_type.rb'
     - 'ee/app/graphql/types/sbom/license_type.rb'
     - 'ee/app/graphql/types/sbom/location_type.rb'

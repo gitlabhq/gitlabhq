@@ -55,6 +55,31 @@ RSpec.describe Layouts::StaticPanelComponent, feature_category: :design_system d
 
       expect(page).to have_css('.paneled-view.js-paneled-view')
     end
+
+    context 'when page_breadcrumbs_in_top_bar_feature_flag is true' do
+      it 'adds the static-panel--headerless class' do
+        render_inline described_class.new(page_breadcrumbs_in_top_bar_feature_flag: true)
+
+        expect(page).to have_css('.static-panel.static-panel--headerless')
+      end
+
+      it 'merges the class from html_options with the static-panel--headerless class' do
+        render_inline described_class.new(
+          html_options: { class: 'custom-class' },
+          page_breadcrumbs_in_top_bar_feature_flag: true
+        )
+
+        expect(page).to have_css('.static-panel.static-panel--headerless.custom-class')
+      end
+    end
+
+    context 'when page_breadcrumbs_in_top_bar_feature_flag is false' do
+      it 'does not add the static-panel--headerless class' do
+        render_inline described_class.new(page_breadcrumbs_in_top_bar_feature_flag: false)
+
+        expect(page).not_to have_css('.static-panel--headerless')
+      end
+    end
   end
 
   describe 'actions portal target' do

@@ -97,31 +97,31 @@ the included services:
 - The `logrotate` service built into GitLab [manages all other logs](https://docs.gitlab.com/omnibus/settings/logs/#logrotate).
   Their archived versions are compressed into `<original-name>.<number>.gz` files.
 
-| Log type                                        | Managed by logrotate    | Managed by svlogd/runit |
-|:------------------------------------------------|:------------------------|:------------------------|
-| [Alertmanager logs](#alertmanager-logs)         | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Consul logs](#consul-logs)                     | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [crond logs](#crond-logs)                       | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Gitaly](#gitaly-logs)                          | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
-| [GitLab Exporter for Linux package installations](#gitlab-exporter-logs) | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [GitLab Pages logs](#pages-logs)                | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
-| GitLab Rails                                    | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No  |
-| [GitLab Shell logs](#gitlab-shelllog)           | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No  |
-| [Grafana logs](#grafana-logs)                   | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [LogRotate logs](#logrotate-logs)               | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Mailroom](#mail_room_jsonlog-default)          | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
-| [NGINX](#nginx-logs)                            | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
-| [Patroni logs](#patroni-logs)                   | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [PgBouncer logs](#pgbouncer-logs)               | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [PostgreSQL logs](#postgresql-logs)             | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Praefect logs](#praefect-logs)                 | {{< icon name="dotted-circle" >}} Yes | {{< icon name="check-circle" >}} Yes  |
-| [Prometheus logs](#prometheus-logs)             | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Puma](#puma-logs)                              | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
-| [Redis logs](#redis-logs)                       | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Registry logs](#registry-logs)                 | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Sentinel logs](#sentinel-logs)                 | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Sidekiq logs](#sidekiq-logs)                   | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
-| [Workhorse logs](#workhorse-logs)               | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
+| Log type                                                                 | Managed by logrotate | Managed by svlogd/runit |
+|:-------------------------------------------------------------------------|:---------------------|:------------------------|
+| [Alertmanager logs](#alertmanager-logs)                                  | {{< no >}}           | {{< yes >}} |
+| [Consul logs](#consul-logs)                                              | {{< no >}}           | {{< yes >}} |
+| [crond logs](#crond-logs)                                                | {{< no >}}           | {{< yes >}} |
+| [Gitaly](#gitaly-logs)                                                   | {{< yes >}}          | {{< yes >}} |
+| [GitLab Exporter for Linux package installations](#gitlab-exporter-logs) | {{< no >}}           | {{< yes >}} |
+| [GitLab Pages logs](#pages-logs)                                         | {{< yes >}}          | {{< yes >}} |
+| GitLab Rails                                                             | {{< yes >}}          | {{< no >}}  |
+| [GitLab Shell logs](#gitlab-shelllog)                                    | {{< yes >}}          | {{< no >}}  |
+| [Grafana logs](#grafana-logs)                                            | {{< no >}}           | {{< yes >}} |
+| [LogRotate logs](#logrotate-logs)                                        | {{< no >}}           | {{< yes >}} |
+| [Mailroom](#mail_room_jsonlog-default)                                   | {{< yes >}}          | {{< yes >}} |
+| [NGINX](#nginx-logs)                                                     | {{< yes >}}          | {{< yes >}} |
+| [Patroni logs](#patroni-logs)                                            | {{< no >}}           | {{< yes >}} |
+| [PgBouncer logs](#pgbouncer-logs)                                        | {{< no >}}           | {{< yes >}} |
+| [PostgreSQL logs](#postgresql-logs)                                      | {{< no >}}           | {{< yes >}} |
+| [Praefect logs](#praefect-logs)                                          | {{< yes >}}          | {{< yes >}} |
+| [Prometheus logs](#prometheus-logs)                                      | {{< no >}}           | {{< yes >}} |
+| [Puma](#puma-logs)                                                       | {{< yes >}}          | {{< yes >}} |
+| [Redis logs](#redis-logs)                                                | {{< no >}}           | {{< yes >}} |
+| [Registry logs](#registry-logs)                                          | {{< no >}}           | {{< yes >}} |
+| [Sentinel logs](#sentinel-logs)                                          | {{< no >}}           | {{< yes >}} |
+| [Sidekiq logs](#sidekiq-logs)                                            | {{< no >}}           | {{< yes >}} |
+| [Workhorse logs](#workhorse-logs)                                        | {{< yes >}}          | {{< yes >}} |
 
 For more information on the services that generate these logs, see the [GitLab architecture overview](../../development/architecture.md).
 

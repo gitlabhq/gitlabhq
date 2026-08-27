@@ -376,11 +376,7 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
 
   describe 'Loose Foreign Key sharding key coverage' do
     # PENDING: Remove tables from this list as sharding keys are added
-    let(:pending_exceptions) do
-      %w[
-        merge_request_diff_commits
-      ]
-    end
+    let(:pending_exceptions) { [] }
 
     let(:tables_requiring_sharding_keys) do
       definitions.flat_map { |definition| [definition.to_table, definition.from_table] }

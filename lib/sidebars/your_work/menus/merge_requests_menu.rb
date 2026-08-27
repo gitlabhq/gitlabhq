@@ -9,7 +9,7 @@ module Sidebars
 
         override :link
         def link
-          merge_requests_dashboard_path
+          merge_requests_dashboard_path(organization_path: nil)
         end
 
         override :title

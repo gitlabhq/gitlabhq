@@ -7,7 +7,7 @@ module Sidebars
       class ImportHistoryMenu < ::Sidebars::Menu
         override :link
         def link
-          history_import_bulk_imports_path
+          history_import_bulk_imports_path(organization_path: nil)
         end
 
         override :title

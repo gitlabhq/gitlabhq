@@ -16,8 +16,8 @@ description: "Configure the Microsoft Teams integration to receive notifications
 You can integrate Microsoft Teams notifications with GitLab and display notifications about GitLab projects
 in Microsoft Teams. To integrate the services, you must:
 
-1. [Configure Microsoft Teams](#configure-microsoft-teams) to enable a webhook
-   to listen for changes.
+1. [Configure Microsoft Teams](#configure-microsoft-teams) to add a webhook
+   that listens for changes.
 1. [Configure your GitLab project](#configure-your-gitlab-project) to push notifications
    to the Microsoft Teams webhook.
 
@@ -96,8 +96,8 @@ GitLab to send the notifications:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **Microsoft Teams notifications**.
-1. To enable the integration, select **Active**.
-1. In the **Trigger** section, select the checkbox next to each event to enable it:
+1. To turn on the integration, select **Active**.
+1. In the **Trigger** section, select the checkbox next to each event you want:
    - Push
    - Issue
    - Confidential issue
@@ -109,9 +109,9 @@ GitLab to send the notifications:
    - Wiki page
 1. In **Webhook**, paste the URL you copied when you created a Power Automate or
    custom workflow.
-1. Optional. If you enable the pipeline trigger, select the
+1. Optional. If you select the pipeline trigger, select the
    **Notify only broken pipelines** checkbox to push notifications only when pipelines break.
-1. Optional. If you enable the pipeline trigger, select the
+1. Optional. If you select the pipeline trigger, select the
    **Notify only when status changes** checkbox to send notifications only when the pipeline status for the ref changes.
 1. Select the branches you want to send notifications for.
 1. Select **Save changes**.

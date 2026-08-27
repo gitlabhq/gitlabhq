@@ -49407,6 +49407,7 @@ Fields:
 | <a id="mergerequest-commits"></a>`commits` | [`CommitConnection`](#commitconnection) | Merge request commits. (see [Connections](#connections)) |
 | <a id="mergerequest-commitswithoutmergecommits"></a>`commitsWithoutMergeCommits` | [`CommitConnection`](#commitconnection) | Merge request commits excluding merge commits. (see [Connections](#connections)) |
 | <a id="mergerequest-committers"></a>`committers` | [`UserCoreConnection`](#usercoreconnection) | Users who have added commits to the merge request. (see [Connections](#connections)) |
+| <a id="mergerequest-conflictfiles"></a>`conflictFiles` {{< icon name="warning-solid" >}} | [`[MergeRequestConflict!]`](#mergerequestconflict) | Introduced in GitLab 19.4. Status: Experiment. Files with conflicts that prevent the merge request from being merged, including raw Git conflict markers. Null unless the merge request cannot be merged and the current user can push to the source branch. This field can only be resolved once per request. |
 | <a id="mergerequest-conflicts"></a>`conflicts` | [`Boolean!`](#boolean) | Indicates if the merge request has conflicts. |
 | <a id="mergerequest-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the merge request was created. |
 | <a id="mergerequest-defaultmergecommitmessage"></a>`defaultMergeCommitMessage` | [`String`](#string) | Default merge commit message of the merge request. |
@@ -49469,6 +49470,7 @@ Fields:
 | <a id="mergerequest-resolveddiscussionscount"></a>`resolvedDiscussionsCount` | [`Int`](#int) | Number of user discussions that are resolved in the merge request. |
 | <a id="mergerequest-retargeted"></a>`retargeted` | [`Boolean`](#boolean) | Indicates if merge request was retargeted. |
 | <a id="mergerequest-reviewers"></a>`reviewers` | [`MergeRequestReviewerConnection`](#mergerequestreviewerconnection) | Users from whom a review has been requested. (see [Connections](#connections)) |
+| <a id="mergerequest-riskassessment"></a>`riskAssessment` {{< icon name="warning-solid" >}} | [`MergeRequestRiskAssessment`](#mergerequestriskassessment) | Introduced in GitLab 19.4. Status: Experiment. Risk classification for the merge request. Ultimate only. |
 | <a id="mergerequest-securityautofix"></a>`securityAutoFix` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Deprecated in GitLab 16.11. Security Auto Fix experiment feature was removed. It was always hidden behind `security_auto_fix` feature flag. |
 | <a id="mergerequest-securityreportsuptodateontargetbranch"></a>`securityReportsUpToDateOnTargetBranch` | [`Boolean!`](#boolean) | Indicates if the target branch security reports are out of date. |
 | <a id="mergerequest-shouldberebased"></a>`shouldBeRebased` | [`Boolean!`](#boolean) | Indicates if the merge request will be rebased. |
@@ -50681,6 +50683,18 @@ Arguments:
 | <a id="mergerequestauthor-workspaces-includeactualstates"></a>`includeActualStates` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Deprecated in GitLab 16.7. Use actual_states instead. |
 | <a id="mergerequestauthor-workspaces-projectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
+### `MergeRequestConflict`
+
+File with conflicts in a merge request that cannot be merged.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestconflict-content"></a>`content` | [`String`](#string) | Raw content of the conflicting file, including Git conflict markers. Returns null for files with unsupported encodings (binary, non-UTF-8). |
+| <a id="mergerequestconflict-ourpath"></a>`ourPath` | [`String`](#string) | Path of the conflicting file on the source branch. |
+| <a id="mergerequestconflict-theirpath"></a>`theirPath` | [`String`](#string) | Path of the conflicting file on the target branch. |
+
 ### `MergeRequestDiff`
 
 A diff version of a merge request.
@@ -51737,6 +51751,36 @@ Arguments:
 | <a id="mergerequestreviewer-workspaces-ids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="mergerequestreviewer-workspaces-includeactualstates"></a>`includeActualStates` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Deprecated in GitLab 16.7. Use actual_states instead. |
 | <a id="mergerequestreviewer-workspaces-projectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
+
+### `MergeRequestRiskAssessment`
+
+Risk classification for a merge request.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestriskassessment-assessedat"></a>`assessedAt` | [`Time`](#time) | When the classification completed. |
+| <a id="mergerequestriskassessment-confidence"></a>`confidence` | [`Int`](#int) | Confidence in the score, from 0 to 100. Derived from how much of the change could be measured and whether the signals agreed. |
+| <a id="mergerequestriskassessment-domaintags"></a>`domainTags` | [`[String!]!`](#string) | Risk domains the change touches, used to route specialist review. |
+| <a id="mergerequestriskassessment-missingsignals"></a>`missingSignals` | [`[String!]!`](#string) | Signals that could not be measured, which is why confidence may be low. |
+| <a id="mergerequestriskassessment-rationale"></a>`rationale` | [`String`](#string) | Plain-language explanation of the assessment. |
+| <a id="mergerequestriskassessment-score"></a>`score` | [`Int`](#int) | Risk score from 0 to 100. Null until the classification completes. |
+| <a id="mergerequestriskassessment-signalbreakdown"></a>`signalBreakdown` | [`[MergeRequestRiskSignalContribution!]!`](#mergerequestrisksignalcontribution) | What each signal contributed to the score. |
+| <a id="mergerequestriskassessment-stale"></a>`stale` | [`Boolean!`](#boolean) | Whether the merge request has changed since it was classified. Classification runs once, so this is a notice rather than a trigger to re-run. |
+| <a id="mergerequestriskassessment-tier"></a>`tier` | [`MergeRequestRiskTier`](#mergerequestrisktier) | Tier derived from the score. Null until the scoring function and tier thresholds exist. |
+
+### `MergeRequestRiskSignalContribution`
+
+Contribution a single signal made to a merge request risk score.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestrisksignalcontribution-contribution"></a>`contribution` | [`Float!`](#float) | Points the signal added to the overall score. |
+| <a id="mergerequestrisksignalcontribution-detail"></a>`detail` | [`String`](#string) | Human-readable explanation of the contribution. |
+| <a id="mergerequestrisksignalcontribution-signal"></a>`signal` | [`String!`](#string) | Name of the signal or claim that contributed. |
 
 ### `MergeRequestSavedView`
 
@@ -69355,6 +69399,17 @@ State of a review of a GitLab merge request.
 | <a id="mergerequestreviewstate-review_started"></a>`REVIEW_STARTED` | Merge request reviewer has started a review. |
 | <a id="mergerequestreviewstate-unapproved"></a>`UNAPPROVED` | Merge request reviewer removed their approval of the changes. |
 | <a id="mergerequestreviewstate-unreviewed"></a>`UNREVIEWED` | Awaiting review from merge request reviewer. |
+
+### `MergeRequestRiskTier`
+
+Risk tier derived from a merge request risk score.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="mergerequestrisktier-critical"></a>`CRITICAL` | Critical risk. |
+| <a id="mergerequestrisktier-high"></a>`HIGH` | High risk. |
+| <a id="mergerequestrisktier-low"></a>`LOW` | Low risk. |
+| <a id="mergerequestrisktier-medium"></a>`MEDIUM` | Medium risk. |
 
 ### `MergeRequestSort`
 

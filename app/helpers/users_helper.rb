@@ -247,7 +247,6 @@ module UsersHelper
 
   def user_activity_calendar_data(user)
     {
-      username: user.username,
       utc_offset: local_timezone_instance(user.timezone).now.utc_offset
     }
   end

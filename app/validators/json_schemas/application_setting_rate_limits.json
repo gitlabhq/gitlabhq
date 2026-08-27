@@ -24,6 +24,11 @@
       "minimum": 1,
       "description": "Maximum number of simultaneous import jobs for Bitbucket Server importer."
     },
+    "concurrent_pull_request_import_jobs_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum number of simultaneous pull request import jobs for the GitHub, Bitbucket Cloud, and Bitbucket Server importers."
+    },
     "concurrent_github_import_jobs_limit": {
       "type": "integer",
       "minimum": 1,

@@ -239,6 +239,18 @@ module Types
       description: 'Indicates if auto merge is enabled for the merge request.'
     field :commit_count, GraphQL::Types::Int, null: true, method: :commits_count,
       description: 'Number of commits in the merge request.'
+    field :conflict_files,
+      [Types::MergeRequests::ConflictType],
+      null: true,
+      calls_gitaly: true,
+      resolver: Resolvers::MergeRequests::ConflictsResolver,
+      experiment: { milestone: '19.4' },
+      description: 'Files with conflicts that prevent the merge request from being merged, ' \
+        'including raw Git conflict markers. Null unless the merge request cannot be merged ' \
+        'and the current user can push to the source branch. This field can only be resolved ' \
+        'once per request.' do
+      extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+    end
     field :conflicts, GraphQL::Types::Boolean, null: false, method: :cannot_be_merged?,
       description: 'Indicates if the merge request has conflicts.'
     field :milestone, Types::MilestoneType, null: true,

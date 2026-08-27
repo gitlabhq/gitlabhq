@@ -74,10 +74,10 @@ module Gitlab
           { state: 'all', sort: 'created', direction: 'asc' }
         end
 
-        # To avoid overloading Gitaly, we use a smaller limit for pull requests than the one defined in the
-        # application settings.
+        # To avoid overloading Gitaly, pull request import concurrency is controlled by its own
+        # setting, separate from the general GitHub import jobs limit.
         def parallel_import_batch
-          { size: 200, delay: 1.minute }
+          { size: Gitlab::CurrentSettings.concurrent_pull_request_import_jobs_limit, delay: 1.minute }
         end
 
         def repository_updates_counter

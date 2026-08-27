@@ -390,6 +390,15 @@ Use the policy editor to create, edit, and delete policies:
    If you are a project owner and a security policy project is not associated with this project,
    a security policy project is created and linked to this project when the merge request is created.
 
+> [!warning]
+> GitLab synchronizes policy changes only when you merge a merge request into the security policy
+> project.
+> If you edit the `policy.yml` file directly, for example with a Git commit, the Commits API, or
+> an automated script, and push the change to the default branch without a merge request, GitLab
+> does not synchronize the policy.
+> To ensure your changes take effect, use the policy editor, or open and merge a merge request for
+> any direct edits to `policy.yml`.
+
 ### Standard and advanced editor layouts
 
 {{< history >}}

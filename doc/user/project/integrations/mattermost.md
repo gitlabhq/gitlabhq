@@ -32,14 +32,14 @@ in Mattermost:
 1. Save it and copy the **Webhook URL** that is needed for GitLab.
 
 Incoming Webhooks might be blocked on your Mattermost instance. Ask your Mattermost administrator
-to enable them on:
+to turn them on in:
 
 - **Mattermost System Console** > **Integrations** > **Integration Management** in Mattermost
   versions 5.12 and later.
 - **Mattermost System Console** > **Integrations** > **Custom Integrations** in Mattermost
   versions 5.11 and earlier.
 
-Display name override is not enabled by default. You need to ask your administrator to enable it on that same section.
+Display name override is turned off by default. Ask your administrator to turn it on in that same section.
 
 ## Configure GitLab to send notifications to Mattermost
 
@@ -57,9 +57,9 @@ to send the notifications:
      `http://mattermost.example/hooks/5xo…`.
    - **Username**: Optional. The username shown in messages sent to Mattermost.
      To change the bot's username, provide a value.
-   - **Notify only broken pipelines**: If you enable the **Pipeline** event, and you want
+   - **Notify only broken pipelines**: If you select the **Pipeline** event, and you want
      notifications about failed pipelines only.
-   - **Notify only when status changes**: If you enable the **Pipeline** event and you want
+   - **Notify only when status changes**: If you select the **Pipeline** event and you want
      notifications only when the pipeline status for the ref changes.
    - **Branches for which notifications are to be sent**: The branches to send notifications for.
    - **Labels to be notified**: Optional. Labels required for the issue or merge request

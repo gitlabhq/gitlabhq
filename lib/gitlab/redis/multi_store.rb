@@ -100,6 +100,7 @@ module Gitlab
         incr
         incrby
         incrbyfloat
+        lrem
         ltrim
         mapped_hmset
         pfadd

@@ -51,7 +51,7 @@ RSpec.describe Ci::FindExposedArtifactsService, feature_category: :job_artifacts
       end
     end
 
-    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
     subject { described_class.new(project, user).for_pipeline(pipeline) }
 

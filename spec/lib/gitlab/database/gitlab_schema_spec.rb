@@ -76,6 +76,12 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
           %w[ci_builds_views_100 ci_builds_views_102]
         end
 
+        # Tables created by a migration that only runs on GitLab.com (guarded by
+        # `Gitlab.com_except_jh?`), so they're absent from structure.sql.
+        let(:gitlab_com_only_tables) do
+          %w[merge_request_diff_commits_archived]
+        end
+
         db_infos.to_h { |db_info| [db_info.name, db_info.connection_class] }
           .compact.each do |db_config_name, connection_class|
           context "validates '#{db_config_name}' using '#{connection_class}'" do
@@ -93,7 +99,8 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
             end
 
             it 'non-existing data sources are removed' do
-              extra_data_sources = tables_for_gitlab_schemas.keys.to_set - data_sources - dynamic_views
+              extra_data_sources = tables_for_gitlab_schemas.keys.to_set - data_sources - dynamic_views -
+                gitlab_com_only_tables
 
               expect(extra_data_sources).to be_empty, \
                 "Extra table/view(s) #{extra_data_sources.to_a} found in " \

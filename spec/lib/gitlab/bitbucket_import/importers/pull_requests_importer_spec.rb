@@ -70,4 +70,18 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsImporter, :clean_
       end
     end
   end
+
+  describe '#concurrent_import_jobs_limit' do
+    let_it_be(:project) { create(:project) }
+
+    it 'reads the pull-request-specific application setting' do
+      stub_application_setting(concurrent_pull_request_import_jobs_limit: 25)
+
+      expect(importer.send(:concurrent_import_jobs_limit)).to eq(25)
+    end
+
+    it 'defaults to 200 when the setting has not been overridden' do
+      expect(importer.send(:concurrent_import_jobs_limit)).to eq(200)
+    end
+  end
 end

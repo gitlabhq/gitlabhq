@@ -154,11 +154,13 @@ If a secret is already present in a file and not part of the changes, it is not 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/604787) in GitLab 19.3.
+- Blocked push event [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/601632) in GitLab 19.4.
 
 {{< /history >}}
 
 [Audit events](../../../compliance/audit_event_types.md#secret-detection) are logged when:
 
+- Secret push protection blocks a push because it detects a secret in the changes.
 - Secret push protection is skipped because a push contains [too many changed paths](#push-size-threshold).
 - Secret push protection is skipped because a push [changes too many lines](#push-size-threshold).
 - Secret push protection scan timeout occurs and GitLab accepts the push.

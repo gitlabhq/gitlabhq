@@ -25,7 +25,7 @@ with your GitLab user so that any command you run in Slack is run by your linked
 Prerequisites:
 
 - You must have the [appropriate permissions to add apps to your Slack workspace](https://slack.com/help/articles/202035138-Add-apps-to-your-Slack-workspace).
-- On GitLab Self-Managed, an administrator must [enable the integration](../../../administration/settings/slack_app.md).
+- On GitLab Self-Managed, an administrator must [turn on the integration](../../../administration/settings/slack_app.md).
 
 The GitLab for Slack app uses
 [granular permissions](https://medium.com/slack-developer-blog/more-precision-less-restrictions-a3550006f9c3).
@@ -35,8 +35,6 @@ Although functionality has not changed, you should [reinstall the app](#reinstal
 
 {{< history >}}
 
-- Installation at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147820) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175803) in GitLab 17.8. Feature flag `gitlab_for_slack_app_instance_and_group_level` removed.
 
 {{< /history >}}
@@ -54,10 +52,11 @@ To install the GitLab for Slack app from the project or group settings:
       [enable support for multiple workspaces](../../../administration/settings/slack_app.md#enable-support-for-multiple-workspaces) for the dropdown list to appear.
    1. Select **Allow**.
 
-When you install the app at the group level, the integration is also enabled for all subgroups and
-projects in the group that don't already have the integration configured. Subgroups and projects
-that already have the integration configured are not affected, but can choose to use the inherited
-settings at any time. For more information, see [group-level integration management](_index.md#manage-group-default-settings-for-a-project-integration).
+When you install the app for a group, the integration is also turned on for all subgroups and
+projects in the group that don't already have the integration configured.
+Subgroups and projects that already have the integration configured are not affected,
+but can use the inherited settings at any time.
+For more information, see [manage group default settings for a project integration](_index.md#manage-group-default-settings-for-a-project-integration).
 Each project gets a project-specific alias based on its project path, which you can use in
 [slash commands](#slash-commands).
 
@@ -319,8 +318,6 @@ The following GitLab events can trigger notifications in Slack:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147820) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175803) in GitLab 17.8. Feature flag `gitlab_for_slack_app_instance_and_group_level` removed.
 
 {{< /history >}}

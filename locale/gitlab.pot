@@ -25253,6 +25253,9 @@ msgstr ""
 msgid "Critical - S1"
 msgstr ""
 
+msgid "Critical risk."
+msgstr ""
+
 msgid "Critical vulnerabilities present"
 msgstr ""
 
@@ -30423,6 +30426,9 @@ msgid "DuoAgenticChat|Starting the session. Please wait"
 msgstr ""
 
 msgid "DuoAgenticChat|Steps to turn on GitLab Duo"
+msgstr ""
+
+msgid "DuoAgenticChat|Summarize and compact this conversation"
 msgstr ""
 
 msgid "DuoAgenticChat|Talk to sales"
@@ -40959,6 +40965,9 @@ msgstr ""
 msgid "High or unknown vulnerabilities present"
 msgstr ""
 
+msgid "High risk."
+msgstr ""
+
 msgid "Highest role:"
 msgstr ""
 
@@ -47295,6 +47304,9 @@ msgstr ""
 msgid "Low - S4"
 msgstr ""
 
+msgid "Low risk."
+msgstr ""
+
 msgid "Low vulnerabilities present"
 msgstr ""
 
@@ -48250,6 +48262,9 @@ msgid "Measured in bytes of code. Excludes generated and vendored code."
 msgstr ""
 
 msgid "Medium - S3"
+msgstr ""
+
+msgid "Medium risk."
 msgstr ""
 
 msgid "Medium timeout"
@@ -69544,6 +69559,9 @@ msgstr ""
 msgid "Secret push protection"
 msgstr ""
 
+msgid "Secret push protection blocked the push."
+msgstr ""
+
 msgid "Secret push protection encountered a ruleset parse or compile error."
 msgstr ""
 
@@ -77770,6 +77788,9 @@ msgid "Slack|To start using notifications, %{startMarkup}enable the GitLab for S
 msgstr ""
 
 msgid "Slack|To start using slash commands, connect your GitLab account."
+msgstr ""
+
+msgid "Slash commands"
 msgstr ""
 
 msgid "Slice multiplier"

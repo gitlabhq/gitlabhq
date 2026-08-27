@@ -6,7 +6,7 @@ module Sidebars # rubocop:disable Gitlab/BoundedContexts -- This has to be named
       class HomepageMenu < ::Sidebars::Menu
         override :link
         def link
-          home_dashboard_path
+          home_dashboard_path(organization_path: nil)
         end
 
         override :title

@@ -131,7 +131,7 @@ more information, scan through the issue descriptions.
   you can gain some idea of what aspects of the proposed changes need your attention.
 
   In this example, both Thomas and Nick are reviewers. Thomas has not yet reviewed
-  ({{< icon name="dotted-circle" >}}) the merge request. Nick has reviewed and approved ({{< icon name="check-circle" >}}):
+  ({{< no >}}) the merge request. Nick has reviewed and approved ({{< yes >}}):
 
   ![The Reviewers section of a merge request, listing 2 reviewers](img/reviewer_list_v17_0.png)
 

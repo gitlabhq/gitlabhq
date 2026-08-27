@@ -22,6 +22,20 @@ RSpec.shared_examples 'a policy repository' do
     "#{declaration}# #{padding}\n"
   end
 
+  def rule_packed_to_the_entry_limit
+    names = []
+
+    loop do
+      candidate = names + [format('environment-%04d', names.length)]
+      break if JSON.generate({ 'type' => 'environment', 'value' => { 'names' => candidate } }).bytesize >
+        Gitlab::PolicyStore::Ports::PolicyRepository::ENTRY_SIZE_LIMIT
+
+      names = candidate
+    end
+
+    { 'type' => 'environment', 'value' => { 'names' => names } }
+  end
+
   def attributes
     {
       organization_id: organization_id,
@@ -246,6 +260,58 @@ RSpec.shared_examples 'a policy repository' do
       end
     end
 
+    port::ENTRY_COUNT_LIMITS.each do |attribute, limit|
+      it "raises ValidationError when #{attribute} carries more than #{limit} entries" do
+        too_many = Array.new(limit + 1) { { 'type' => 'custom' } }
+
+        expect { repository.create(attributes.merge(attribute => too_many)) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /#{attribute} exceeds maximum of #{limit} entries/)
+      end
+
+      it "accepts #{attribute} at exactly #{limit} entries" do
+        at_limit = Array.new(limit) { |index| { 'type' => 'custom', 'value' => "package governance\n\n# #{index}\n" } }
+
+        expect(repository.create(attributes.merge(attribute => at_limit)).to_h[attribute].size).to eq(limit)
+      end
+
+      it "raises ValidationError when an #{attribute} entry serializes past the size limit" do
+        oversized = [{ 'type' => 'custom', 'value' => 'p' * port::ENTRY_SIZE_LIMIT }]
+
+        expect { repository.create(attributes.merge(attribute => oversized)) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError,
+            /#{attribute} has an entry exceeding maximum size of #{port::ENTRY_SIZE_LIMIT} bytes at 0/)
+      end
+
+      it "measures #{attribute} entries in bytes, which is what the limit downstream counts" do
+        multibyte = 'é' * (port::ENTRY_SIZE_LIMIT - 100)
+        oversized = [{ 'type' => 'custom', 'value' => "package governance\n\n# #{multibyte}\n" }]
+
+        expect(JSON.generate(oversized.first).length).to be <= port::ENTRY_SIZE_LIMIT
+        expect { repository.create(attributes.merge(attribute => oversized)) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /#{attribute} has an entry exceeding maximum size/)
+      end
+
+      it "names every oversized #{attribute} position together" do
+        oversized = [
+          { 'type' => 'custom', 'value' => 'p' * port::ENTRY_SIZE_LIMIT },
+          { 'type' => 'custom', 'value' => 'small' },
+          { 'type' => 'custom', 'value' => 'p' * port::ENTRY_SIZE_LIMIT }
+        ]
+
+        expect { repository.create(attributes.merge(attribute => oversized)) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError,
+            /#{attribute} has an entry exceeding maximum size of #{port::ENTRY_SIZE_LIMIT} bytes at 0, 2/)
+      end
+    end
+
+    it "measures an actions entry's own rego key, since only rules ever have one compiled onto them" do
+      oversized = [{ 'type' => 'block', 'rego' => 'p' * port::ENTRY_SIZE_LIMIT }]
+
+      expect { repository.create(attributes.merge(actions: oversized)) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError,
+          /actions has an entry exceeding maximum size of #{port::ENTRY_SIZE_LIMIT} bytes at 0/o)
+    end
+
     it 'raises ValidationError when a policy compiles to more than the engine evaluates' do
       stub_const("#{port}::MAX_COMPILED_RULES_BYTES", 100)
 
@@ -294,6 +360,18 @@ RSpec.shared_examples 'a policy repository' do
       expect { repository.create(attributes.merge(rules: multibyte)) }
         .to raise_error(Gitlab::PolicyStore::ValidationError,
           /rules compile to 142 bytes, over the maximum of 100 bytes/)
+    end
+
+    # The entry bounds already hold a policy well inside the engine's cap, so this fails
+    # the moment either is raised far enough to stop being true.
+    it 'keeps a policy at every entry bound inside what the engine evaluates', :aggregate_failures do
+      packed = Array.new(port::ENTRY_COUNT_LIMITS[:rules]) { rule_packed_to_the_entry_limit }
+
+      compiled_bytes = repository.create(attributes.merge(rules: packed))
+        .rules.sum { |rule| rule['rego'].bytesize }
+
+      expect(compiled_bytes).to be > port::ENTRY_SIZE_LIMIT * port::ENTRY_COUNT_LIMITS[:rules]
+      expect(compiled_bytes).to be <= port::MAX_COMPILED_RULES_BYTES
     end
 
     it 'accepts a scope_rego at exactly the limit' do
@@ -462,6 +540,36 @@ RSpec.shared_examples 'a policy repository' do
 
       expect { repository.update(created.id, rules: { 'rules' => [{ 'type' => 'custom' }] }) }
         .to raise_error(Gitlab::PolicyStore::ValidationError, /rules must be an array/)
+    end
+
+    port::ENTRY_COUNT_LIMITS.each do |attribute, limit|
+      it "raises ValidationError when an update pushes #{attribute} past #{limit} entries" do
+        created = repository.create(attributes)
+        too_many = Array.new(limit + 1) { { 'type' => 'custom' } }
+
+        expect { repository.update(created.id, attribute => too_many) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /#{attribute} exceeds maximum of/)
+      end
+
+      it "still renames a policy whose stored #{attribute} already exceed a lowered maximum" do
+        at_limit = Array.new(limit) { |index| { 'type' => 'custom', 'value' => "package governance\n\n# #{index}\n" } }
+        created = repository.create(attributes.merge(attribute => at_limit))
+        stub_const("#{port}::ENTRY_COUNT_LIMITS", port::ENTRY_COUNT_LIMITS.merge(attribute => limit - 1))
+
+        expect(repository.update(created.id, name: 'Renamed policy').name).to eq('Renamed policy')
+      end
+    end
+
+    # A stored rule carries the program compiled from it, so measuring the whole entry
+    # here would refuse every later update to a rule `create` accepted.
+    it 'measures a rule as authored, so a compiled program cannot lock a policy out of updates',
+      :aggregate_failures do
+      names = Array.new(95) { |index| format('environment-%04d', index) }
+      created = repository.create(attributes.merge(rules: [{ 'type' => 'environment',
+                                                             'value' => { 'names' => names } }]))
+
+      expect(JSON.generate(created.rules.first).bytesize).to be > port::ENTRY_SIZE_LIMIT
+      expect(repository.update(created.id, name: 'Renamed policy').name).to eq('Renamed policy')
     end
 
     it 'raises ValidationError when an update compiles to more than the engine evaluates' do

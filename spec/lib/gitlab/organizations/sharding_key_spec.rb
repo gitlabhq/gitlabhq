@@ -10,8 +10,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   let(:allowed_to_be_missing_sharding_key) do
     %w[
       audit_events
-      merge_request_diff_commits
       merge_request_diff_files_archived
+      merge_request_diff_commits_archived
     ]
   end
 
@@ -29,6 +29,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       web_hook_logs_daily.organization_id
       web_hook_logs_daily.group_id
       web_hook_logs_daily.project_id
+      merge_request_diff_commits.project_id
       push_rules.project_id
     ]
   end
@@ -63,6 +64,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'ci_deleted_objects.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_test_balancing_assignments.project_id', # No LFK needed: daily partitions are dropped after 30 days
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
+      # No direct FK/LFK on project_id: LFK already present on merge_request_diff_id, which cascades deletes
+      'merge_request_diff_commits.project_id',
       'ci_pipeline_chat_data.project_id',
       'p_ci_pipeline_variables.project_id',
       'ci_pipeline_messages.project_id',

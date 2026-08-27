@@ -31,7 +31,7 @@ You need to set up an irker daemon. To do so:
    git clone https://gitlab.com/esr/irker.git
    ```
 
-1. Run the Python script named `irkerd`. This is the gateway script.
+1. Run the Python script named `irkerd`. The script is the gateway.
    It acts both as an IRC client, for sending messages to an IRC server,
    and as a TCP server, for receiving messages from the GitLab service.
 
@@ -49,7 +49,7 @@ need to follow the first steps of the next section.
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **irker (IRC gateway)**.
-1. Ensure that the **Active** toggle is enabled.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Optional. Under **Server host**, enter the server host address where `irkerd` runs. If empty,
    it defaults to `localhost`.
 1. Optional. Under **Server port**, enter the server port of `irkerd`. If empty, it defaults to `6659`.
@@ -63,7 +63,7 @@ need to follow the first steps of the next section.
 
 ## Enter irker recipients
 
-If you left the **Default IRC URI** field empty, enter recipients as a full URI:
+If you left the **Default IRC URI** text box empty, enter recipients as a full URI:
 `irc[s]://irc.network.net[:port]/#channel`. If you entered a default IRC URI there, you can use just
 channel or user names.
 
@@ -75,5 +75,5 @@ To send messages:
   with the channel password instead of `thesecretpassword`. For example, `chan?key=hunter2`.
   Do not put the `#` sign in front of the channel name. If you do, irker tries to join a
   channel named `#chan?key=password` and so it can leak the channel password through the
-  `/whois` IRC command. This is due to a long-standing irker bug.
+  `/whois` IRC command. A long-standing irker bug causes this behavior.
 - In a user query, add `,isnick` after the user name. For example, `UserSmith,isnick`.

@@ -60,6 +60,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         commit_email_hostname: "users.noreply.#{Gitlab.config.gitlab.host}",
         concurrent_bitbucket_import_jobs_limit: 100,
         concurrent_bitbucket_server_import_jobs_limit: 100,
+        concurrent_pull_request_import_jobs_limit: 200,
         concurrent_github_import_jobs_limit: 1000,
         concurrent_relation_batch_export_limit: 8,
         concurrent_relation_export_limit: 25,
@@ -738,6 +739,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           code_suggestions_api_rate_limit
           concurrent_bitbucket_import_jobs_limit
           concurrent_bitbucket_server_import_jobs_limit
+          concurrent_pull_request_import_jobs_limit
           concurrent_github_import_jobs_limit
           concurrent_relation_export_limit
           container_registry_token_expire_delay

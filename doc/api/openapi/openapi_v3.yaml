@@ -15,7 +15,7 @@ info:
   title: GitLab REST API
   description: GitLab REST API used to interact with a GitLab installation.
   termsOfService: https://handbook.gitlab.com/handbook/legal/api-terms/
-  version: '19.3'
+  version: '19.4'
   license:
     name: CC BY-SA 4.0
     url: https://gitlab.com/gitlab-org/gitlab/-/blob/master/LICENSE
@@ -19433,7 +19433,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_b5f7b529c5f4"
+              "$ref": "#/components/schemas/RequestBody_e380d60bb8e3"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -86569,6 +86569,8 @@ components:
           type: string
         concurrent_bitbucket_server_import_jobs_limit:
           type: string
+        concurrent_pull_request_import_jobs_limit:
+          type: string
         import_jobs_concurrency_limit:
           type: string
         container_expiration_policies_enable_historic_entries:
@@ -101631,7 +101633,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_b5f7b529c5f4:
+    RequestBody_e380d60bb8e3:
       type: object
       properties:
         admin_mode:
@@ -102456,6 +102458,11 @@ components:
           type: integer
           description: Bitbucket Server Importer maximum number of simultaneous import
             jobs
+          nullable: true
+        concurrent_pull_request_import_jobs_limit:
+          type: integer
+          description: Maximum number of simultaneous pull request import jobs for
+            the GitHub, Bitbucket Cloud, and Bitbucket Server importers
           nullable: true
         allow_runner_registration_token:
           type: boolean
