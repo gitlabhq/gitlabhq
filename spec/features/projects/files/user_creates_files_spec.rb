@@ -47,7 +47,7 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
         find('.add-to-tree').click
         click_link('New file')
 
-        expect(page).to have_selector('.file-editor')
+        expect(page).to have_selector('.file-editor', wait: 10)
         expect(page).to have_content(fork_message)
         expect(page).to have_content('New file')
         expect(page).to have_button('Commit changes')
@@ -231,7 +231,7 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
       it 'creates and commits a new file in forked project' do
         message = "GitLab will create a branch in your fork and start a merge request."
 
-        expect(page).to have_selector('.file-editor')
+        expect(page).to have_selector('.file-editor', wait: 10)
 
         editor_set_value(file_content)
         fill_in(:file_name, with: file_name)

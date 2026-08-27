@@ -52301,6 +52301,7 @@ Fields:
 | <a id="namespace-totalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
 | <a id="namespace-userpermissions"></a>`userPermissions` | [`NamespacePermissions!`](#namespacepermissions) | Permissions for the current user on the resource. |
 | <a id="namespace-visibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
+| <a id="namespace-webpath"></a>`webPath` | [`String`](#string) | Path of the namespace relative to the instance root. |
 | <a id="namespace-weburl"></a>`webUrl` | [`String`](#string) | URL of the namespace. |
 | <a id="namespace-workitemsettings"></a>`workItemSettings` {{< icon name="warning-solid" >}} | [`WorkItemSettings`](#workitemsettings) | Introduced in GitLab 19.0. Status: Experiment. Work item settings for the namespace. |
 

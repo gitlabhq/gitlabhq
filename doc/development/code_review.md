@@ -277,6 +277,13 @@ To find a domain expert:
 The [Danger bot](dangerbot.md) picks a reviewer and maintainer for each codebase area your MR
 touches. Override the suggestion if you know a better fit.
 
+We're running an experiment to evaluate whether the Reviewer column in the roulette suggestion
+table is still useful. For a portion of merge requests, controlled by a CI/CD variable, Danger
+hides the Reviewer column and shows only the Category and Maintainer columns. If your MR is
+affected, you can still find a reviewer using the Review Workload Dashboard linked above. Each MR
+in the experiment is tagged with a `roulette-experiment::reviewer-column-hidden` or
+`roulette-experiment::reviewer-column-shown` label so the outcome can be measured.
+
 The roulette skips people whose status contains `OOO`, `PTO`, `Parental Leave`, `Friends and
 Family`, or `Conference`, or who are at review capacity (set via a number status emoji: 2️⃣-5️⃣).
 

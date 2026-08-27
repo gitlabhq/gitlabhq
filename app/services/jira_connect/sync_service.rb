@@ -11,16 +11,11 @@ module JiraConnect
     def execute(**args)
       preload_reviewers_for_merge_requests(args[:merge_requests]) if args.key?(:merge_requests)
 
-      JiraConnectInstallation.for_project(project).flat_map do |installation|
-        client = if installation.forge_direct?
-                   Atlassian::Forge::SystemTokenClient.new(
-                     installation.jira_api_base_url, installation.forge_system_token
-                   )
-                 else
-                   Atlassian::JiraConnect::Client.new(installation.base_url, installation.shared_secret)
-                 end
+      syncable, skipped = JiraConnectInstallation.for_project(project).partition(&:client_configured?)
+      skipped.each { |installation| log_skipped(installation) }
 
-        responses = client.send_info(project: project, **args)
+      syncable.flat_map do |installation|
+        responses = installation.client.send_info(project: project, **args)
 
         responses.each { |r| log_response(r) }
       end
@@ -29,6 +24,16 @@ module JiraConnect
     private
 
     attr_accessor :project
+
+    def log_skipped(installation)
+      logger.error(
+        message: 'skipped jira dev_info sync: installation has no usable credentials',
+        integration: 'JiraConnect',
+        project_id: project.id,
+        project_path: project.full_path,
+        jira_connect_installation_id: installation.id
+      )
+    end
 
     def log_response(response)
       message = {

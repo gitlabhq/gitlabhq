@@ -322,6 +322,8 @@ module QA
         end
       end
 
+      # Default for new projects is `no_one_allowed`. A trigger job passes forwarded variables to a
+      # multi-project downstream pipeline as pipeline variables, so that project needs at least `developer`.
       def change_pipeline_variables_minimum_override_role(new_role)
         response = put(request_url(api_put_path), ci_pipeline_variables_minimum_override_role: new_role)
 

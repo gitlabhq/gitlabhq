@@ -4,9 +4,9 @@ module Gitlab
   module Ci
     module Catalog
       module Bundle
-        # Object-store keys are case-sensitive, so a segment is downcased only where
-        # the database's unique index is under `lower()`. Downcasing `component_name`
-        # or `semver` would collide two distinct rows onto one key.
+        # Object-store keys are case-sensitive. The natural key columns are stored
+        # lowercase, but `component_name` and `semver` are not: downcasing either
+        # would collide two distinct rows onto one key.
         class ObjectKey
           PREFIX = 'catalog/bundles'
 

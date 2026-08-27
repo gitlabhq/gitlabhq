@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', feature_category: :pipeline_composition,
-    quarantine: {
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424903',
-      type: :bug
-    } do
+  RSpec.describe 'Verify', feature_category: :pipeline_composition do
     describe 'Pipeline with file variables and downstream pipelines' do
-      let(:random_string) { Faker::Alphanumeric.alphanumeric(number: 8) }
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let!(:upstream_project) { create(:project, name: 'upstream-project-with-file-variables') }
       let!(:downstream_project) { create(:project, name: 'downstream-project') }
@@ -24,6 +19,18 @@ module QA
           project: downstream_project,
           name: "#{executor}-downstream",
           tags: [executor])
+      end
+
+      let(:upstream_pipeline) do
+        create(:pipeline, project: upstream_project, id: upstream_project.latest_pipeline[:id])
+      end
+
+      let(:child_pipeline) do
+        create(:pipeline, project: upstream_project, id: downstream_pipeline_id('trigger_child'))
+      end
+
+      let(:downstream_project_pipeline) do
+        create(:pipeline, project: downstream_project, id: downstream_pipeline_id('trigger_downstream_project'))
       end
 
       let(:upstream_project_files) do
@@ -103,12 +110,14 @@ module QA
       end
 
       before do
+        downstream_project.change_pipeline_variables_minimum_override_role('developer')
+
         add_file_variables_to_upstream_project
         add_ci_file(downstream_project, downstream_project_file)
         add_ci_file(upstream_project, upstream_project_files)
         Support::Waiter.wait_until(message: 'Wait for first pipeline creation') { upstream_project.pipelines.present? }
 
-        wait_for_pipelines_to_finish
+        wait_for_pipelines_to_succeed
       end
 
       after do
@@ -118,39 +127,31 @@ module QA
       it(
         'creates variable with file path in downstream pipelines and can read file variable content'
       ) do
-        child_echo_job = create(:job, project: upstream_project,
-          id: upstream_project.job_by_name('child_job_echo')[:id])
-
-        child_cat_job = create(:job, project: upstream_project, id: upstream_project.job_by_name('child_job_cat')[:id])
-
-        downstream_project_echo_job = create(:job,
-          project: downstream_project,
-          id: downstream_project.job_by_name('downstream_job_echo')[:id])
-
-        downstream_project_cat_job = create(:job,
-          project: downstream_project,
-          id: downstream_project.job_by_name('downstream_job_cat')[:id])
+        child_echo_job = job_from(child_pipeline, 'child_job_echo')
+        child_cat_job = job_from(child_pipeline, 'child_job_cat')
+        downstream_project_echo_job = job_from(downstream_project_pipeline, 'downstream_job_echo')
+        downstream_project_cat_job = job_from(downstream_project_pipeline, 'downstream_job_cat')
 
         aggregate_failures do
           trace = child_echo_job.trace
-          expect(trace).to include('run something -f', "#{upstream_project.name}.tmp/TEST_PROJECT_FILE")
-          expect(trace).to include('docker run --tlscacert=', "#{upstream_project.name}.tmp/DOCKER_CA_CERT")
-          expect(trace).to include('run --output=', "#{upstream_project.name}.tmp/DOCKER_CA_CERT.crt")
-          expect(trace).to include('Will read private key from', "#{upstream_project.name}.tmp/TEST_PROJECT_FILE")
+          expect(trace).to match(expanded_path('run something -f', upstream_project, 'TEST_PROJECT_FILE'))
+          expect(trace).to match(expanded_path('docker run --tlscacert=', upstream_project, 'DOCKER_CA_CERT'))
+          expect(trace).to match(expanded_path('run --output=', upstream_project, 'DOCKER_CA_CERT.crt'))
+          expect(trace).to match(expanded_path('Will read private key from', upstream_project, 'TEST_PROJECT_FILE'))
 
           trace = child_cat_job.trace
-          expect(trace).to have_content('hello, this is test')
-          expect(trace).to have_content('This is secret')
+          expect(trace).to include('hello, this is test')
+          expect(trace).to include('This is secret')
 
           trace = downstream_project_echo_job.trace
-          expect(trace).to include('run something -f', "#{downstream_project.name}.tmp/TEST_PROJECT_FILE")
-          expect(trace).to include('docker run --tlscacert=', "#{downstream_project.name}.tmp/DOCKER_CA_CERT")
-          expect(trace).to include('run --output=', "#{downstream_project.name}.tmp/DOCKER_CA_CERT.crt")
-          expect(trace).to include('Will read private key from', "#{downstream_project.name}.tmp/TEST_PROJECT_FILE")
+          expect(trace).to match(expanded_path('run something -f', downstream_project, 'TEST_PROJECT_FILE'))
+          expect(trace).to match(expanded_path('docker run --tlscacert=', downstream_project, 'DOCKER_CA_CERT'))
+          expect(trace).to match(expanded_path('run --output=', downstream_project, 'DOCKER_CA_CERT.crt'))
+          expect(trace).to match(expanded_path('Will read private key from', downstream_project, 'TEST_PROJECT_FILE'))
 
           trace = downstream_project_cat_job.trace
-          expect(trace).to have_content('hello, this is test')
-          expect(trace).to have_content('This is secret')
+          expect(trace).to include('hello, this is test')
+          expect(trace).to include('This is secret')
         end
       end
 
@@ -169,31 +170,59 @@ module QA
         create(:commit, project: project, commit_message: 'Add CI files to project', actions: files)
       end
 
-      def wait_for_pipelines_to_finish
-        Support::Waiter.wait_until(max_duration: 300, sleep_interval: 10) do
-          upstream_pipeline.status == 'success' &&
-            child_pipeline.status == 'success' &&
-            downstream_project_pipeline.status == 'success'
+      def wait_for_pipelines_to_succeed
+        {
+          'child' => child_pipeline,
+          'downstream project' => downstream_project_pipeline,
+          'upstream' => upstream_pipeline
+        }.each do |name, pipeline|
+          Support::Waiter.wait_until(
+            max_duration: 300,
+            sleep_interval: 5,
+            message: "Wait for #{name} pipeline to finish: #{pipeline.web_url}"
+          ) { pipeline.finished? }
+
+          next if pipeline.status == 'success'
+
+          raise "Expected #{name} pipeline to succeed, got '#{pipeline.status}': #{pipeline.web_url}"
         end
       end
 
-      # Fetch upstream project's parent pipeline
-      def upstream_pipeline
-        create(:pipeline, project: upstream_project, id: upstream_project.latest_pipeline[:id])
+      def downstream_pipeline_id(bridge_name)
+        bridge = nil
+
+        Support::Waiter.wait_until(
+          max_duration: 120,
+          sleep_interval: 5,
+          raise_on_failure: false,
+          retry_on_exception: true,
+          message: "Wait for bridge '#{bridge_name}' to create a downstream pipeline"
+        ) do
+          bridge = upstream_pipeline.pipeline_bridges.find { |candidate| candidate[:name] == bridge_name }
+          bridge&.dig(:downstream_pipeline, :id)
+        end
+
+        raise "Bridge '#{bridge_name}' not found on pipeline #{upstream_pipeline.web_url}" unless bridge
+
+        downstream_id = bridge.dig(:downstream_pipeline, :id)
+        return downstream_id if downstream_id
+
+        raise "Bridge '#{bridge_name}' (job #{bridge[:id]}) created no downstream pipeline. " \
+          "Bridge status: '#{bridge[:status]}', failure reason: #{bridge[:failure_reason].inspect}. " \
+          "The bridge job page on #{upstream_pipeline.web_url} shows why the downstream pipeline was rejected."
       end
 
-      # Fetch upstream project's child pipeline
-      def child_pipeline
-        create(:pipeline,
-          project: upstream_project,
-          id: upstream_pipeline.downstream_pipeline_id(bridge_name: 'trigger_child'))
+      # Scoped to the pipeline, so the extra pipeline from the `.gitlab-ci.yml` commit is not picked up.
+      def job_from(pipeline, job_name)
+        job = pipeline.jobs.find { |candidate| candidate[:name] == job_name }
+        raise "Job '#{job_name}' not found in pipeline #{pipeline.web_url}" unless job
+
+        create(:job, project: pipeline.project, id: job[:id])
       end
 
-      # Fetch downstream project's pipeline
-      def downstream_project_pipeline
-        create(:pipeline,
-          project: downstream_project,
-          id: upstream_pipeline.downstream_pipeline_id(bridge_name: 'trigger_downstream_project'))
+      # Matches the expanded file variable path next to the text it was expanded into
+      def expanded_path(prefix, project, file_name)
+        %r{#{Regexp.escape(prefix)}[ \t]*\S*#{Regexp.escape(project.name)}\.tmp/#{Regexp.escape(file_name)}}
       end
     end
   end

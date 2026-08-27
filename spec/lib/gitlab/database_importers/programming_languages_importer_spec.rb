@@ -4,6 +4,18 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::DatabaseImporters::ProgrammingLanguagesImporter,
   feature_category: :source_code_management do
+  describe 'vendor/languages.yml' do
+    it 'has unique language IDs' do
+      languages = YAML.safe_load_file(Rails.root.join('vendor/languages.yml'))
+      duplicate_language_ids = languages
+        .group_by { |_name, attributes| attributes['language_id'] }
+        .select { |_language_id, definitions| definitions.many? }
+        .transform_values { |definitions| definitions.map(&:first) }
+
+      expect(duplicate_language_ids).to be_empty
+    end
+  end
+
   describe '.import' do
     subject(:import_languages) { described_class.import }
 

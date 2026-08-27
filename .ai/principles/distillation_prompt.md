@@ -267,6 +267,16 @@ adds those wrappers automatically.
        rule 18). "The full SSOT contains more detail than the item states"
        is NOT, by itself, a changed rule: a concise item that correctly
        captures the rule is complete even when the source elaborates.
+       When this run combines guidance currently represented by separate
+       checklist items — for example, by stating that an existing default or
+       setup satisfies part of another requirement — merge those items so the
+       new relationship is explicit. Do this even when each prior item remains
+       independently true and the underlying facts remain elsewhere in the
+       SSOT; the newly stated relationship is changed guidance, not enrichment.
+       Example: if separate prior items say "test both states" and "the enabled
+       state is the default," and the changed SSOT now says the default setup
+       fulfills the enabled-state test requirement, merge that relationship
+       into the testing item rather than preserving both prior items verbatim.
        Examples:
        - SSOT now mandates a generator over manual steps:
          - STALE: "Create the YAML definition manually in `config/foo/`"
@@ -403,12 +413,14 @@ adds those wrappers automatically.
     full source" is necessary but NOT sufficient; the governing lines must
     have changed this run. If you cannot run the diff, or cannot tie a
     proposed edit to a this-run source change, keep the prior line exactly.
-
     This gate is **bidirectional**: "keep the prior line exactly" applies ONLY
     to items whose governing source lines did NOT change this run — it NEVER
     licenses ignoring a line the SSOT added or changed this run, which must
     still produce an add or revise (rule 16a). Silently dropping it is a
-    capture defect, not diff discipline.
+    capture defect, not diff discipline. When a changed governing sentence
+    combines guidance currently split across checklist items, that relationship
+    is a governing-source change under rule 16b; merge the items rather than
+    preserving each independently true prior item.
 
     When in doubt whether a change is required by the SSOT or merely
     stylistic, leave the prior item untouched. A reviewer should be able to

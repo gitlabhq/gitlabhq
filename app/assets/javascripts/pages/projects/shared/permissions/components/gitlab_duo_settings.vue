@@ -1,6 +1,7 @@
 <script>
 import { GlToggle, GlLink, GlButton, GlCard, GlSprintf } from '@gitlab/ui';
 import DuoDependencyBumpProfileModal from 'ee_component/pages/projects/shared/permissions/components/duo_dependency_bump_profile_modal.vue';
+import DuoReadinessAgentConfigRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_agent_config_row.vue';
 import DuoReadinessPlatformRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_platform_row.vue';
 import DuoReadinessRunnerRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_runner_row.vue';
 import DuoOrbitRow from 'ee_component/pages/projects/shared/permissions/components/duo_orbit_row.vue';
@@ -47,6 +48,7 @@ export default {
     DuoReadinessRow,
     DuoReadinessPlatformRow,
     DuoReadinessRunnerRow,
+    DuoReadinessAgentConfigRow,
     DuoLocalSetupSection,
     DuoOrbitRow,
     DuoMcpRow,
@@ -561,6 +563,11 @@ export default {
           :readiness="duoReadiness"
           :flow-execution-enabled="effectiveFlowExecutionEnabled"
           :project-full-path="projectFullPath"
+        />
+
+        <duo-readiness-agent-config-row
+          :readiness="duoReadiness"
+          :flow-execution-enabled="effectiveFlowExecutionEnabled"
         />
       </div>
 

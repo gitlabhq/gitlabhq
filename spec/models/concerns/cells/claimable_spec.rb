@@ -494,6 +494,10 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
   end
 
   describe '#cells_claims_metadata' do
+    before do
+      stub_config_cell(enabled: true)
+    end
+
     it 'returns an array of metadata for each registered attribute' do
       metadata = instance.cells_claims_metadata
 
@@ -529,6 +533,26 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       it 'excludes empty string values' do
         instance.path = ''
 
+        expect(instance.cells_claims_metadata).to be_empty
+      end
+    end
+
+    context 'when the attribute feature flag is disabled' do
+      before do
+        stub_feature_flags(cells_claims_organizations: false)
+      end
+
+      it 'excludes the attribute' do
+        expect(instance.cells_claims_metadata).to be_empty
+      end
+    end
+
+    context 'when the cell is disabled' do
+      before do
+        stub_config_cell(enabled: false)
+      end
+
+      it 'excludes the attribute' do
         expect(instance.cells_claims_metadata).to be_empty
       end
     end

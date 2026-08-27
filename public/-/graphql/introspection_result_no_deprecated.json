@@ -139418,6 +139418,18 @@
               "deprecationReason": null
             },
             {
+              "name": "webPath",
+              "description": "Path of the namespace relative to the instance root.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "webUrl",
               "description": "URL of the namespace.",
               "args": [],

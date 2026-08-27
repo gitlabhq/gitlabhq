@@ -36,6 +36,15 @@ module Cells
           return { created: 0, destroyed: 0, over_time: false, last_id: nil }
         end
 
+        if enabled_claim_types.empty?
+          Gitlab::AppLogger.warn(
+            class: self.class.name,
+            message: "#{model.name} has no enabled claim attributes, skipping verification",
+            feature_category: :cell
+          )
+          return { created: 0, destroyed: 0, over_time: false, last_id: nil }
+        end
+
         reconcile_claims
 
         {
@@ -49,6 +58,12 @@ module Cells
       private
 
       attr_reader :runtime_limiter
+
+      def enabled_claim_types
+        @enabled_claim_types ||= model.cells_claims_attributes.filter_map do |attribute, config|
+          config[:type] if model.cells_claims_enabled_for_attribute?(attribute)
+        end
+      end
 
       def reconcile_claims
         start_id = @start_id
@@ -126,7 +141,7 @@ module Cells
         Retriable.retriable(on: GRPC_RETRIABLE_ERRORS, tries: GRPC_RETRIES, base_interval: GRPC_RETRY_BASE_INTERVAL) do
           claim_service.list_records(
             source_type: model.cells_claims_source_type,
-            claim_types: model.cells_claims_attributes.values.pluck(:type), # rubocop:disable Database/AvoidUsingPluckWithoutLimit,CodeReuse/ActiveRecord -- not an ActiveRecord relation
+            claim_types: enabled_claim_types,
             source_id_gt: start_id_bytes,
             source_id_lte: end_id_bytes,
             deadline: grpc_deadline

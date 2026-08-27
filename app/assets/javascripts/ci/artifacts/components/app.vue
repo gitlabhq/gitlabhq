@@ -1,7 +1,7 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import PageHeading from '~/vue_shared/components/page_heading.vue';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import getBuildArtifactsSizeQuery from '../graphql/queries/get_build_artifacts_size.query.graphql';
 import {
   PAGE_TITLE,
@@ -15,8 +15,8 @@ export default {
   name: 'ArtifactsApp',
   components: {
     GlSkeletonLoader,
+    IndexLayout,
     JobArtifactsTable,
-    PageHeading,
   },
   inject: ['projectPath'],
   apollo: {
@@ -58,21 +58,19 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <page-heading :heading="$options.i18n.PAGE_TITLE">
-      <template #description>
-        <span data-testid="build-artifacts-size">
-          <gl-skeleton-loader v-if="isLoading" :lines="1" />
-          <template v-else>
-            <strong>{{ $options.i18n.TOTAL_ARTIFACTS_SIZE }}</strong>
-            <span v-if="buildArtifactsSize !== null">{{ humanReadableArtifactsSize }}</span>
-            <span v-else>{{ $options.i18n.SIZE_UNKNOWN }}</span>
-            <strong> {{ $options.i18n.TOTAL_ARTIFACTS_COUNT }}</strong>
-            <span>{{ totalArtifactCount }}</span>
-          </template>
-        </span>
-      </template>
-    </page-heading>
+  <index-layout :heading="$options.i18n.PAGE_TITLE">
+    <template #description>
+      <span data-testid="build-artifacts-size">
+        <gl-skeleton-loader v-if="isLoading" :lines="1" />
+        <template v-else>
+          <strong>{{ $options.i18n.TOTAL_ARTIFACTS_SIZE }}</strong>
+          <span v-if="buildArtifactsSize !== null">{{ humanReadableArtifactsSize }}</span>
+          <span v-else>{{ $options.i18n.SIZE_UNKNOWN }}</span>
+          <strong> {{ $options.i18n.TOTAL_ARTIFACTS_COUNT }}</strong>
+          <span>{{ totalArtifactCount }}</span>
+        </template>
+      </span>
+    </template>
     <job-artifacts-table @artifact-count-update="handleArtifactCountUpdate" />
-  </div>
+  </index-layout>
 </template>

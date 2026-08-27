@@ -40,7 +40,9 @@ Consider whether the attribute is:
 ## Rollout lifecycle
 
 Claiming a new attribute requires two phases. Each phase has its own
-feature flag and serves a distinct purpose.
+feature flag and serves a distinct purpose. The per-attribute
+`feature_flag:` gates both phases: live claiming skips a disabled
+attribute, and so does verification.
 
 ### Phase 1: Live request claiming
 
@@ -75,6 +77,10 @@ After the backfill completes, the verification service continues to run
 on a cron schedule. It reconciles local records with Topology Service
 claims to detect and correct drift, such as missing claims, orphaned
 claims, or changed values.
+
+The service only reconciles attributes that are currently enabled. An
+attribute still behind its `feature_flag:` is skipped by backfill and
+drift correction, the same as it is by live claiming.
 
 For details on verification, see
 [Verification and backfilling](#verification-and-backfilling).
@@ -261,6 +267,9 @@ the per-attribute `feature_flag:` and delete the flag's YAML file. After removal
 only `Gitlab.config.cell.enabled` controls claiming, as
 `cells_claims_enabled_for_attribute?` returns `true` when no `feature_flag` is
 set. See [`Cells::Claimable`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/cells/claimable.rb).
+
+Because the same flag gates verification, removing it also starts backfill
+and drift correction for the attribute, in addition to live claiming.
 
 For an example of this cleanup, see [merge request 240942](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240942),
 which removed the `cells_claims_service_desk_settings` flag from `ServiceDeskSetting`.
@@ -528,6 +537,11 @@ two purposes:
   creates them.
 - **Ongoing consistency:** After backfilling, the service continues to run
   on a cron schedule to detect and correct drift.
+
+The service only reconciles attributes where `cells_claims_enabled_for_attribute?`
+is `true`. If every attribute of a model is disabled, the service logs a
+warning and skips the model. Claims already written for an attribute that is
+later disabled are left in place. They are not fetched or destroyed.
 
 ### How verification works
 

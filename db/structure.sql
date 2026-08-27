@@ -16534,6 +16534,7 @@ CREATE TABLE catalog_bundled_resource_versions (
     semver_prerelease text,
     readme text,
     readme_html text,
+    cached_markdown_version integer,
     CONSTRAINT check_82c917cc60 CHECK ((char_length(semver_prerelease) <= 255))
 );
 
@@ -23456,8 +23457,10 @@ CREATE TABLE jira_connect_installations (
     jira_api_base_url text,
     encrypted_forge_system_token text,
     encrypted_forge_system_token_iv text,
+    forge_installation_xid text,
     CONSTRAINT check_063517862b CHECK ((char_length(cloud_id) <= 255)),
     CONSTRAINT check_1fc8a8132b CHECK ((char_length(jira_api_base_url) <= 512)),
+    CONSTRAINT check_290e4c5650 CHECK ((char_length(forge_installation_xid) <= 255)),
     CONSTRAINT check_4c6abed669 CHECK ((char_length(instance_url) <= 255)),
     CONSTRAINT check_5c01235545 CHECK ((char_length(encrypted_forge_system_token) <= 8192)),
     CONSTRAINT check_dc0d039821 CHECK ((organization_id IS NOT NULL)),
@@ -31993,7 +31996,7 @@ CREATE TABLE subscription_add_on_purchases (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    subscription_add_on_id bigint NOT NULL,
+    subscription_add_on_id bigint,
     namespace_id bigint,
     quantity integer NOT NULL,
     expires_on date NOT NULL,
@@ -46126,8 +46129,6 @@ CREATE INDEX idx_subaoa_versions_on_org_id_purchase_id_and_id ON subscription_us
 
 CREATE INDEX idx_subscription_add_on_purchases_on_started_on_and_expires_on ON subscription_add_on_purchases USING btree (started_at, expires_on);
 
-CREATE INDEX idx_subscription_add_on_purchases_on_subscription_add_on_id ON subscription_add_on_purchases USING btree (subscription_add_on_id);
-
 CREATE INDEX idx_subscription_seat_assignments_namespace_last_activity_on ON subscription_seat_assignments USING btree (namespace_id, last_activity_on, created_at);
 
 CREATE UNIQUE INDEX idx_terraform_state_protection_rules_on_project_id_state_name ON terraform_state_protection_rules USING btree (project_id, state_name);
@@ -46441,10 +46442,6 @@ CREATE UNIQUE INDEX index_active_context_connections_single_active ON ai_active_
 CREATE UNIQUE INDEX index_activity_pub_releases_sub_on_project_id_inbox_url ON activity_pub_releases_subscriptions USING btree (project_id, lower(subscriber_inbox_url));
 
 CREATE UNIQUE INDEX index_activity_pub_releases_sub_on_project_id_sub_url ON activity_pub_releases_subscriptions USING btree (project_id, lower(subscriber_url));
-
-CREATE UNIQUE INDEX index_add_on_purchases_on_add_on_id_and_namespace_id_not_null ON subscription_add_on_purchases USING btree (subscription_add_on_id, namespace_id) WHERE (namespace_id IS NOT NULL);
-
-CREATE UNIQUE INDEX index_add_on_purchases_on_add_on_id_and_namespace_id_null ON subscription_add_on_purchases USING btree (subscription_add_on_id) WHERE (namespace_id IS NULL);
 
 CREATE UNIQUE INDEX index_add_on_purchases_on_add_on_uid_and_namespace_id_not_null ON subscription_add_on_purchases USING btree (subscription_add_on_uid, namespace_id) NULLS NOT DISTINCT WHERE (subscription_add_on_uid IS NOT NULL);
 
@@ -48815,6 +48812,8 @@ CREATE INDEX index_issues_on_work_item_type_id_namespace_id_created_at_state ON 
 CREATE INDEX index_issues_on_work_item_type_id_project_id_created_at_state ON issues USING btree (work_item_type_id, project_id, created_at, state_id);
 
 CREATE INDEX index_iterations_cadences_on_group_id ON iterations_cadences USING btree (group_id);
+
+CREATE UNIQUE INDEX index_jira_connect_installations_on_forge_installation_xid ON jira_connect_installations USING btree (forge_installation_xid) WHERE (forge_installation_xid IS NOT NULL);
 
 CREATE INDEX index_jira_connect_installations_on_instance_url ON jira_connect_installations USING btree (instance_url);
 
@@ -57736,9 +57735,6 @@ ALTER TABLE ONLY security_pipeline_execution_policy_config_links
 
 ALTER TABLE ONLY vulnerability_reads
     ADD CONSTRAINT fk_40ff14947c FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY subscription_add_on_purchases
-    ADD CONSTRAINT fk_410004d68b FOREIGN KEY (subscription_add_on_id) REFERENCES subscription_add_ons(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY duo_workflows_workflow_work_items
     ADD CONSTRAINT fk_410c403c45 FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;

@@ -20,6 +20,7 @@ import FeatureLibraryItem from '~/super_sidebar/components/feature_library/featu
 import {
   EVENT_OPEN_FEATURE_LIBRARY_MODAL,
   EVENT_SEARCH_FEATURES_IN_FEATURE_LIBRARY_MODAL,
+  EVENT_CLICK_CATEGORY_FILTER_IN_FEATURE_LIBRARY_MODAL,
   EVENT_PIN_ITEM_IN_FEATURE_LIBRARY_MODAL,
   EVENT_UNPIN_ITEM_IN_FEATURE_LIBRARY_MODAL,
   EVENT_NAVIGATE_TO_FEATURE_FROM_FEATURE_LIBRARY_MODAL,
@@ -116,8 +117,8 @@ describe('FeatureLibraryModal', () => {
     mockAxios.restore();
   });
 
-  const focusInput = jest.fn();
   const hideModal = jest.fn();
+  const focusInput = jest.fn();
   const focusItem = jest.fn();
 
   const createWrapper = ({
@@ -163,6 +164,13 @@ describe('FeatureLibraryModal', () => {
   const findScrollArea = () => wrapper.findByTestId('feature-library-scroll-area');
   const findGrid = () => wrapper.findByTestId('feature-library-grid');
   const findSectionGrid = () => wrapper.findByTestId('feature-library-section-grid');
+  const findCategoryFilters = () =>
+    wrapper.findAllComponentsByTestId('feature-library-category-filter');
+  const findCategoryFilterLabels = () => findCategoryFilters().wrappers.map((w) => w.text());
+  const selectCategory = async (label) => {
+    const button = findCategoryFilters().wrappers.find((w) => w.text() === label);
+    await button.vm.$emit('click');
+  };
   const findFeedbackLink = () => wrapper.findComponent(GlLink);
   const findGeminiButton = () => wrapper.findComponentByTestId('search-with-gemini-button');
   const findGeminiSection = () => wrapper.findByTestId('gemini-results-grid');
@@ -422,6 +430,14 @@ describe('FeatureLibraryModal', () => {
         await emitSearch('repo');
 
         expect(findGrid().exists()).toBe(false);
+        expect(findLoadingIcon().exists()).toBe(true);
+      });
+
+      it('does not flash the grouped browsing view while the endpoint is in flight', async () => {
+        mockAxios.onGet(SEARCH_URL).reply(() => new Promise(() => {}));
+        await emitSearch('repo');
+
+        expect(findSectionToggles()).toHaveLength(0);
         expect(findLoadingIcon().exists()).toBe(true);
       });
 
@@ -987,6 +1003,22 @@ describe('FeatureLibraryModal', () => {
       });
     });
 
+    describe('when a category filter is active', () => {
+      beforeEach(async () => {
+        await selectCategory('Code');
+        await emitSearch('repo');
+        await waitForPromises();
+        // 'boards' (plan_menu) is outside the selected 'Code' category.
+        mockAiSearch({ ids: ['boards'], ai_search_available: true });
+        await clickGeminiSearch();
+      });
+
+      it('excludes Gemini suggestions outside the selected category', () => {
+        const geminiIds = findGeminiItems().wrappers.map((w) => w.props('item').id);
+        expect(geminiIds).not.toContain('boards');
+      });
+    });
+
     describe('when Gemini returns no results', () => {
       describe('and the main search also has no results', () => {
         it('shows only the Gemini empty state, not the generic empty state', async () => {
@@ -1376,10 +1408,6 @@ describe('FeatureLibraryModal', () => {
       it('focuses the first displayed result on Enter, without navigating or closing the modal', () => {
         pressEnter();
 
-        // Assert identity, not just that some item was focused: focusItem is
-        // one shared mock across every stubbed item, and $refs.searchResultItems[0]
-        // (Vue 2 v-for ref array registration order) isn't guaranteed to track
-        // the current filteredItems order, so this also guards the ref-ordering fix.
         expect(focusItem).toHaveBeenCalled();
         expect(focusItem.mock.contexts[0].item.id).toBe('boards');
         expect(visitUrl).not.toHaveBeenCalled();
@@ -1471,11 +1499,7 @@ describe('FeatureLibraryModal', () => {
         await waitForPromises();
       });
 
-      it('delegates to focus(), which intentionally no-ops for link-less items, rather than navigating', () => {
-        // The no-op here is intentional: a link-less item isn't navigable, so
-        // there's nothing to focus into for that row. The modal itself
-        // doesn't special-case this — FeatureLibraryItem#focus() is a no-op
-        // when there's no title link to focus (see feature_library_item_spec.js).
+      it('delegates to focus(), which no-ops for link-less items, rather than navigating', () => {
         pressEnter();
 
         expect(focusItem).toHaveBeenCalled();
@@ -1540,6 +1564,27 @@ describe('FeatureLibraryModal', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
       findModal().vm.$emit('shown');
       expect(trackEventSpy).toHaveBeenCalledWith(EVENT_OPEN_FEATURE_LIBRARY_MODAL, {}, CATEGORY);
+    });
+
+    it('tracks selecting a category, labelled with the category id', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      await selectCategory('Plan');
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_CLICK_CATEGORY_FILTER_IN_FEATURE_LIBRARY_MODAL,
+        { label: 'plan_menu' },
+        CATEGORY,
+      );
+    });
+
+    it('tracks clearing the category back to "All", labelled "all"', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      await selectCategory('Plan');
+      await selectCategory('Plan');
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_CLICK_CATEGORY_FILTER_IN_FEATURE_LIBRARY_MODAL,
+        { label: 'all' },
+        CATEGORY,
+      );
     });
 
     it('tracks pinning an item, labelled with the item id', () => {
@@ -1660,6 +1705,127 @@ describe('FeatureLibraryModal', () => {
       wrapper.destroy();
 
       expect(cancelSpy).toHaveBeenCalledWith(scheduledFrameId);
+    });
+  });
+
+  describe('category filters', () => {
+    beforeEach(() => createWrapper());
+
+    it('renders an "All" button plus one button per catalog section, excluding settings', () => {
+      expect(findCategoryFilterLabels()).toEqual(['All', 'Plan', 'Code', 'Manage']);
+    });
+
+    it('selects "All" by default', () => {
+      const allButton = findCategoryFilters().at(0);
+      expect(allButton.props('selected')).toBe(true);
+    });
+
+    it('lets the filter row scroll horizontally instead of wrapping', () => {
+      expect(wrapper.findByTestId('feature-library-category-filters').classes()).toContain(
+        'gl-overflow-x-auto',
+      );
+    });
+
+    describe('when a category button is selected', () => {
+      beforeEach(() => selectCategory('Plan'));
+
+      it('marks the selected category button as pressed', () => {
+        const planButton = findCategoryFilters().wrappers.find((w) => w.text() === 'Plan');
+        expect(planButton.props('selected')).toBe(true);
+        expect(planButton.attributes('aria-pressed')).toBe('true');
+      });
+
+      it('deselects the "All" button', () => {
+        expect(findCategoryFilters().at(0).props('selected')).toBe(false);
+      });
+
+      it('scopes the flat grid to that category', () => {
+        expect(findGrid().exists()).toBe(true);
+        expect(findItemIds()).toEqual(['project_issue_list', 'boards', 'milestones']);
+      });
+
+      it('drops the collapsible section headers while filtered', () => {
+        expect(findSectionToggles()).toHaveLength(0);
+      });
+
+      it('announces the active category and result count via a live region', () => {
+        const status = wrapper.findByTestId('feature-library-category-status');
+        expect(status.attributes('aria-live')).toBe('polite');
+        expect(status.text()).toBe('Showing 3 features in Plan');
+      });
+    });
+
+    describe('when no category filter is active', () => {
+      beforeEach(() => createWrapper());
+
+      it('leaves the category status live region empty', () => {
+        expect(wrapper.findByTestId('feature-library-category-status').text()).toBe('');
+      });
+    });
+
+    describe('when a category filter and a text query are both active', () => {
+      beforeEach(async () => {
+        mockSearch();
+        await selectCategory('Plan');
+        await emitSearch('board');
+        await waitForPromises();
+      });
+
+      it('restricts search results to the selected category', () => {
+        expect(findItemIds()).toEqual(['boards']);
+      });
+    });
+
+    describe('when the selected category button is clicked again', () => {
+      beforeEach(async () => {
+        await selectCategory('Plan');
+        await selectCategory('Plan');
+      });
+
+      it('clears the filter back to "All"', () => {
+        expect(findCategoryFilters().at(0).props('selected')).toBe(true);
+      });
+
+      it('restores the grouped section view', () => {
+        expect(findSectionTitles()).toEqual(['Plan', 'Code', 'Manage']);
+      });
+    });
+
+    describe('when "All" is selected after a category', () => {
+      beforeEach(async () => {
+        await selectCategory('Plan');
+        await selectCategory('All');
+      });
+
+      it('restores the grouped section view', () => {
+        expect(findCategoryFilters().at(0).props('selected')).toBe(true);
+        expect(findSectionTitles()).toEqual(['Plan', 'Code', 'Manage']);
+      });
+    });
+
+    describe('when a category has no matches', () => {
+      beforeEach(async () => {
+        mockSearch();
+        await selectCategory('Code');
+        await emitSearch('zzznomatch');
+        await waitForPromises();
+      });
+
+      it('shows the empty state', () => {
+        expect(findEmptyState().exists()).toBe(true);
+      });
+    });
+
+    describe('on modal hide', () => {
+      it('resets the selected category back to "All"', async () => {
+        await selectCategory('Plan');
+        expect(findCategoryFilters().at(0).props('selected')).toBe(false);
+
+        findModal().vm.$emit('hidden');
+        await nextTick();
+
+        expect(findCategoryFilters().at(0).props('selected')).toBe(true);
+      });
     });
   });
 });

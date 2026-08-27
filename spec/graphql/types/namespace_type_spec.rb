@@ -16,7 +16,7 @@ RSpec.describe GitlabSchema.types['Namespace'], feature_category: :shared do
       timelog_categories achievements work_item pages_deployments import_source_users work_item_types
       work_items_widgets sidebar work_item_description_templates ci_cd_settings avatar_url link_paths
       metadata licensed_features available_features merge_requests_enabled saved_views subscribed_saved_view_limit
-      can_push_initial_commit
+      can_push_initial_commit web_path
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -31,10 +31,29 @@ RSpec.describe GitlabSchema.types['Namespace'], feature_category: :shared do
   end
 
   describe 'fields with :ai_workflows scope' do
-    %w[id name description fullPath projects workItem workItems webUrl workItemTypes rootNamespace].each do |field_name|
+    %w[id name description fullPath projects workItem workItems webUrl webPath
+      workItemTypes rootNamespace].each do |field_name|
       it "includes :ai_workflows scope for the #{field_name} field" do
         field = described_class.fields[field_name]
         expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+      end
+    end
+  end
+
+  describe '#web_path' do
+    let_it_be(:group) { create(:group) }
+
+    subject { resolve_field(:web_path, group) }
+
+    it 'returns the path of the namespace relative to the instance root' do
+      is_expected.to eq("/groups/#{group.full_path}")
+    end
+
+    context 'with a subgroup' do
+      let_it_be(:subgroup) { create(:group, parent: group) }
+
+      it 'includes the full nested path' do
+        expect(resolve_field(:web_path, subgroup)).to eq("/groups/#{subgroup.full_path}")
       end
     end
   end

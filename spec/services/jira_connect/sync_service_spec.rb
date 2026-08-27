@@ -102,4 +102,37 @@ RSpec.describe JiraConnect::SyncService, feature_category: :integrations do
       described_class.new(direct_project).execute(commits: [])
     end
   end
+
+  describe '#execute when an installation has no usable credentials' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:unusable) { create(:jira_connect_installation, :forge, jira_api_base_url: nil, forge_system_token: nil) }
+    let_it_be(:connect_installation) { create(:jira_connect_installation) }
+
+    before do
+      create(:jira_connect_subscription, namespace: project.namespace, installation: unusable)
+      create(:jira_connect_subscription, namespace: project.namespace, installation: connect_installation)
+    end
+
+    it 'skips it, logs it, and still syncs the other installations' do
+      expect(Gitlab::IntegrationsLogger).to receive(:error).with(
+        {
+          message: 'skipped jira dev_info sync: installation has no usable credentials',
+          integration: 'JiraConnect',
+          project_id: project.id,
+          project_path: project.full_path,
+          jira_connect_installation_id: unusable.id
+        }
+      )
+
+      expect_next_instance_of(
+        Atlassian::JiraConnect::Client, connect_installation.base_url, connect_installation.shared_secret
+      ) do |client|
+        expect(client).to receive(:send_info).and_return([{ status: 'success' }])
+      end
+
+      allow(Gitlab::IntegrationsLogger).to receive(:info)
+
+      described_class.new(project).execute(commits: [])
+    end
+  end
 end

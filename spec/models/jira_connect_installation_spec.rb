@@ -238,4 +238,85 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
     it { is_expected.to allow_value('https://api.atlassian.com/ex/jira/cloud-xyz').for(:jira_api_base_url) }
     it { is_expected.not_to allow_value('not/a/url').for(:jira_api_base_url) }
   end
+
+  describe '#forge?' do
+    it 'is false for a Connect installation' do
+      expect(build(:jira_connect_installation).forge?).to be(false)
+    end
+
+    it 'is true for a native Forge installation (installation id, no client_key)' do
+      expect(build(:jira_connect_installation, :forge).forge?).to be(true)
+    end
+
+    it 'is false for a Connect-on-Forge installation (client_key present)' do
+      installation = build(:jira_connect_installation,
+        forge_installation_xid: 'ari:cloud:ecosystem::installation/0a3a7799-53ae-4a5b-9e7e-03338980abb5',
+        cloud_id: 'cloud-1',
+        jira_api_base_url: 'https://api.atlassian.com/ex/jira/c', forge_system_token: 'tok')
+
+      expect(installation.forge?).to be(false)
+    end
+  end
+
+  describe 'native Forge installation validations' do
+    subject(:installation) { build(:jira_connect_installation, :forge) }
+
+    it { is_expected.to be_valid }
+    it { is_expected.to validate_presence_of(:cloud_id) }
+    it { is_expected.to validate_uniqueness_of(:forge_installation_xid) }
+
+    it 'accepts the Forge installation ARI and rejects anything else' do
+      expect(installation).to allow_value('ari:cloud:ecosystem::installation/0a3a7799-53ae-4a5b-9e7e-03338980abb5')
+        .for(:forge_installation_xid)
+
+      expect(installation).not_to allow_value('0a3a7799-53ae-4a5b-9e7e-03338980abb5').for(:forge_installation_xid)
+      expect(installation).not_to allow_value('ari:cloud:ecosystem::installation/not-a-uuid')
+        .for(:forge_installation_xid)
+      expect(installation).not_to allow_value('ari:cloud:ecosystem::installation/0A3A7799-53AE-4A5B-9E7E-03338980ABB5')
+        .for(:forge_installation_xid)
+      expect(installation).not_to allow_value('ari:cloud:ecosystem::app/0a3a7799-53ae-4a5b-9e7e-03338980abb5')
+        .for(:forge_installation_xid)
+    end
+
+    it 'stays valid when the app clears the apiBaseUrl and system token' do
+      installation.assign_attributes(jira_api_base_url: nil, forge_system_token: nil)
+
+      expect(installation).to be_valid
+      expect(installation.forge_direct?).to be(false)
+    end
+
+    it 'allows two installations for the same Jira site' do
+      existing = create(:jira_connect_installation, :forge)
+      installation.assign_attributes(cloud_id: existing.cloud_id, organization: existing.organization)
+
+      expect(installation).to be_valid
+    end
+
+    it 'does not require Connect credentials' do
+      installation.assign_attributes(client_key: nil, shared_secret: nil, base_url: nil)
+
+      expect(installation).to be_valid
+    end
+  end
+
+  describe '#client' do
+    it 'returns the Connect client for a Connect installation' do
+      expect(build(:jira_connect_installation).client).to be_an_instance_of(Atlassian::JiraConnect::Client)
+    end
+
+    it 'returns the Forge system-token client once forge_direct?' do
+      expect(build(:jira_connect_installation, :forge).client).to be_an_instance_of(Atlassian::Forge::SystemTokenClient)
+    end
+  end
+
+  describe '#client_configured?' do
+    it { expect(build(:jira_connect_installation)).to be_client_configured }
+    it { expect(build(:jira_connect_installation, :forge)).to be_client_configured }
+
+    it 'is false for a native Forge install without an apiBaseUrl or system token' do
+      installation = build(:jira_connect_installation, :forge, jira_api_base_url: nil, forge_system_token: nil)
+
+      expect(installation).not_to be_client_configured
+    end
+  end
 end

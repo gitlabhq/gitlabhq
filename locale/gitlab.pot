@@ -12093,6 +12093,9 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact Registry is not available for this organization"
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact Registry is not available for this organization."
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact Registry returned an error."
 msgstr ""
 
@@ -12505,6 +12508,9 @@ msgid "ArtifactRegistry|Required only if the upstream registry is private or rat
 msgstr ""
 
 msgid "ArtifactRegistry|Resource ID must be a valid UUIDv7."
+msgstr ""
+
+msgid "ArtifactRegistry|Resource could not be found."
 msgstr ""
 
 msgid "ArtifactRegistry|Revocation %{number} on resource %{resource_id}: %{message}"
@@ -29881,10 +29887,16 @@ msgstr ""
 msgid "DuoAgentPlatform|%{text} by %{name}"
 msgstr ""
 
+msgid "DuoAgentPlatform|.gitlab/duo/agent-config.yml is on the default branch."
+msgstr ""
+
 msgid "DuoAgentPlatform|A knowledge graph that helps agents reason across your whole project."
 msgstr ""
 
 msgid "DuoAgentPlatform|A knowledge graph that helps agents reason across your whole project. Only a Group Owner can turn it on."
+msgstr ""
+
+msgid "DuoAgentPlatform|A merge request adding the file is open. Agents use it once it merges."
 msgstr ""
 
 msgid "DuoAgentPlatform|A runner is available and picking up jobs."
@@ -29905,6 +29917,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Agent Platform"
 msgstr ""
 
+msgid "DuoAgentPlatform|Agent configuration file"
+msgstr ""
+
 msgid "DuoAgentPlatform|Agent reasoning"
 msgstr ""
 
@@ -29918,6 +29933,9 @@ msgid "DuoAgentPlatform|Agents cannot run here until everything below is in plac
 msgstr ""
 
 msgid "DuoAgentPlatform|Agents get repo-wide context."
+msgstr ""
+
+msgid "DuoAgentPlatform|Agents run without it, but in a generic container that may not have your project tooling."
 msgstr ""
 
 msgid "DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project."
@@ -30005,6 +30023,12 @@ msgid "DuoAgentPlatform|Flow"
 msgstr ""
 
 msgid "DuoAgentPlatform|Foundational GitLab Duo Flows"
+msgstr ""
+
+msgid "DuoAgentPlatform|Generate"
+msgstr ""
+
+msgid "DuoAgentPlatform|Generating the file. The session opens a merge request when it finishes."
 msgstr ""
 
 msgid "DuoAgentPlatform|Get the extension"
@@ -30148,6 +30172,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Something went wrong saving Duo Agent Platform settings"
 msgstr ""
 
+msgid "DuoAgentPlatform|Something went wrong while generating the configuration file."
+msgstr ""
+
 msgid "DuoAgentPlatform|Something went wrong while turning on GitLab Orbit."
 msgstr ""
 
@@ -30193,10 +30220,19 @@ msgstr ""
 msgid "DuoAgentPlatform|View details"
 msgstr ""
 
+msgid "DuoAgentPlatform|View file"
+msgstr ""
+
+msgid "DuoAgentPlatform|View merge request"
+msgstr ""
+
 msgid "DuoAgentPlatform|View runners"
 msgstr ""
 
 msgid "DuoAgentPlatform|View servers"
+msgstr ""
+
+msgid "DuoAgentPlatform|View session"
 msgstr ""
 
 msgid "DuoAgenticChat|%{count} character over limit."
@@ -35479,7 +35515,13 @@ msgstr ""
 msgid "FeatureFlag|User List"
 msgstr ""
 
+msgid "FeatureLibrary|All"
+msgstr ""
+
 msgid "FeatureLibrary|Can't find what you're looking for? Search with AI"
+msgstr ""
+
+msgid "FeatureLibrary|Filter features by category"
 msgstr ""
 
 msgid "FeatureLibrary|Gemini couldn't find a matching feature. Try different keywords."
@@ -35526,6 +35568,11 @@ msgstr ""
 
 msgid "FeatureLibrary|Share feedback about this feature library"
 msgstr ""
+
+msgid "FeatureLibrary|Showing %{count} feature in %{category}"
+msgid_plural "FeatureLibrary|Showing %{count} features in %{category}"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "FeatureLibrary|Something went wrong searching with Gemini. Try again."
 msgstr ""
@@ -64721,9 +64768,6 @@ msgstr ""
 msgid "Read less"
 msgstr ""
 
-msgid "Read metadata"
-msgstr ""
-
 msgid "Read more"
 msgstr ""
 
@@ -64731,9 +64775,6 @@ msgid "Read more at %{link_to_promo}."
 msgstr ""
 
 msgid "Read their documentation."
-msgstr ""
-
-msgid "Read value"
 msgstr ""
 
 msgid "Ready to get started with GitLab? Follow these steps to get familiar with us:"
@@ -69759,6 +69800,9 @@ msgstr ""
 msgid "SecretsManagerPermissions|Can read the metadata of secrets but not the secret values."
 msgstr ""
 
+msgid "SecretsManagerPermissions|Delete"
+msgstr ""
+
 msgid "SecretsManagerPermissions|Enable secrets manager for this group"
 msgstr ""
 
@@ -69781,6 +69825,12 @@ msgid "SecretsManagerPermissions|Group names must start and end with letters or 
 msgstr ""
 
 msgid "SecretsManagerPermissions|Permissions for secrets manager removed."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Read metadata"
+msgstr ""
+
+msgid "SecretsManagerPermissions|Read value"
 msgstr ""
 
 msgid "SecretsManagerPermissions|Remove secrets manager permissions?"
@@ -69817,6 +69867,9 @@ msgid "SecretsManagerPermissions|Store secrets in the secrets manager, which can
 msgstr ""
 
 msgid "SecretsManagerPermissions|The full path to the group to add. For example, %{example}."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Write"
 msgstr ""
 
 msgid "SecretsManagerTrial|%{creditsRemaining}%% of credits left in secrets manager trial"

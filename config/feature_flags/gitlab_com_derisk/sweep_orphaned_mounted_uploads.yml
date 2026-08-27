@@ -1,0 +1,10 @@
+---
+name: sweep_orphaned_mounted_uploads
+description: Deletes Upload rows and files that carrierwave leaves behind when the model owning a mounted upload is destroyed.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/602881
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251124
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/621779
+milestone: '19.4'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false
