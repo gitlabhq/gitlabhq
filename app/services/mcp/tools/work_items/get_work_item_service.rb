@@ -16,7 +16,7 @@ module Mcp
             properties: {
               url: {
                 type: 'string',
-                description: 'GitLab URL of the work item (a /-/work_items/ URL). ' \
+                description: 'GitLab URL of the work item (a /-/work_items/, /-/issues/, or /-/epics/ URL). ' \
                   'Provide this, or work_item_iid with group_id or project_id.'
               },
               group_id: {

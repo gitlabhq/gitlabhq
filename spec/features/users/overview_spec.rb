@@ -37,7 +37,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
 
       it 'does not show any entries in the list of activities' do
         page.within('.activities-block') do
-          expect(page).to have_selector('.loading', visible: :hidden)
+          expect(page).to have_selector('.js-overview-loading', visible: :hidden)
           expect(page).to have_content('Join or create a group to start contributing by commenting on issues or submitting merge requests!')
           expect(page).not_to have_selector('.event-item')
         end

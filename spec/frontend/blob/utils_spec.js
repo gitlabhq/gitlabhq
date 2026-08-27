@@ -113,6 +113,19 @@ describe('Blob utilities', () => {
     });
   });
 
+  describe('hasMarkdownExtension', () => {
+    it.each`
+      path           | result
+      ${'README.md'} | ${true}
+      ${'README.MD'} | ${true}
+      ${'markdown'}  | ${false}
+      ${'file.rb'}   | ${false}
+      ${undefined}   | ${false}
+    `('returns $result for $path', ({ path, result }) => {
+      expect(utils.hasMarkdownExtension(path)).toBe(result);
+    });
+  });
+
   describe('shortcircuitPermalinkButton', () => {
     let permalinkElement;
 

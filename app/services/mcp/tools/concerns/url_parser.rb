@@ -20,7 +20,7 @@ module Mcp
           strong_memoize_attr :relative_url_root_regex
         end
 
-        WORK_ITEM_URL_PATTERN = %r{\A/?(?:groups/)?(?<path>\S*)/-/work_items/(?<id>\d+)\z}
+        WORK_ITEM_URL_PATTERN = %r{\A/?(?:groups/)?(?<path>\S*)/-/(?<segment>work_items|issues|epics)/(?<id>\d+)\z}
 
         BLOB_URL_PATTERN = %r{\A(?<project_path>.+?)/-/(?:blob|raw|blame)/(?<id>.+)\z}
 
@@ -57,20 +57,39 @@ module Mcp
           end
         end
 
-        # Parse work item URL
+        # Parse work item URL. Issues and epics are work items, so their URL forms
+        # resolve through the same parent + iid lookup.
         # Examples:
         #   https://gitlab.com/namespace/project/-/work_items/42
+        #   https://gitlab.com/namespace/project/-/issues/42
         #   https://gitlab.com/groups/namespace/group/-/work_items/42
+        #   https://gitlab.com/groups/namespace/group/-/epics/42
         def parse_work_item_url(url)
           path = extract_path_from_url(url)
           match = path.match(WORK_ITEM_URL_PATTERN)
 
-          raise ArgumentError, "Invalid work item URL format. Expected: .../-/work_items/<iid>" unless match
+          unless match
+            raise ArgumentError, 'Invalid work item URL format. ' \
+              'Expected: .../-/work_items/<iid>, .../-/issues/<iid>, or .../-/epics/<iid>'
+          end
 
           parent_path = match[:path]
           parent_type = path.start_with?('groups/') ? :group : :project
+          validate_segment_context!(match[:segment], parent_type)
 
           { parent_type: parent_type, parent_path: parent_path, work_item_iid: match[:id].to_i }
+        end
+
+        # Issue URLs only exist on projects and epic URLs only on groups; accepting
+        # the crossed forms would resolve whatever work item shares the iid in the
+        # wrong parent instead of failing fast.
+        def validate_segment_context!(segment, parent_type)
+          crossed = (segment == 'issues' && parent_type == :group) ||
+            (segment == 'epics' && parent_type == :project)
+          return unless crossed
+
+          raise ArgumentError, 'Invalid work item URL format. Issue URLs belong to projects ' \
+            'and epic URLs belong to groups.'
         end
 
         def parse_blob_url(url)

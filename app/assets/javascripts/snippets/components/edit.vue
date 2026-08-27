@@ -247,6 +247,7 @@ export default {
       <snippet-blob-actions-edit
         :init-blobs="blobs"
         :is-valid="!shouldShowBlobsErrors"
+        :markdown-preview-path="markdownPreviewPath"
         @actions="updateActions"
       />
 

@@ -824,7 +824,7 @@ merge requests related to it. Widgets the work item type does not support are om
 
 | Parameter                       | Type    | Required | Description |
 |---------------------------------|---------|----------|-------------|
-| `url`                           | string  | No       | GitLab URL of the work item (a `/-/work_items/` URL). Provide this, or `work_item_iid` with `group_id` or `project_id`. |
+| `url`                           | string  | No       | GitLab URL of the work item (a `/-/work_items/`, `/-/issues/`, or `/-/epics/` URL). Provide this, or `work_item_iid` with `group_id` or `project_id`. |
 | `group_id`                      | string  | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
 | `project_id`                    | string  | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
 | `work_item_iid`                 | integer | No       | Internal ID of the work item. Required if `url` is missing. |

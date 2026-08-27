@@ -181,7 +181,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/ci/minutes/cached_quota_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/consumption_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/cost_factor_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/minutes/pipeline_consumption_spec.rb'
     - 'ee/spec/lib/gitlab/ci/parsers/license_compliance/license_scanning_spec.rb'
     - 'ee/spec/lib/gitlab/ci/parsers/metrics/generic_spec.rb'
     - 'ee/spec/lib/gitlab/ci/pipeline/chain/create_cross_database_associations_spec.rb'

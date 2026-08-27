@@ -2,13 +2,13 @@
 import { GlButton, GlButtonGroup, GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { setUrlParams, relativePathToAbsolute, getBaseURL } from '~/lib/utils/url_utility';
+import { hasMarkdownExtension } from '../utils';
 import {
   BTN_COPY_CONTENTS_TITLE,
   BTN_DOWNLOAD_TITLE,
   BTN_DOWNLOAD_AS_MARKDOWN_TITLE,
   BTN_DOWNLOAD_AS_PDF_TITLE,
   BTN_RAW_TITLE,
-  MARKDOWN_EXTENSIONS,
   RICH_BLOB_VIEWER,
   SIMPLE_BLOB_VIEWER,
 } from './constants';
@@ -109,10 +109,7 @@ export default {
       return this.fileType?.includes('pdf');
     },
     isMarkdownFile() {
-      if (!this.rawPath) return false;
-      const pathWithoutQuery = this.rawPath.split('?')[0];
-      const ext = pathWithoutQuery.split('.').pop()?.toLowerCase();
-      return MARKDOWN_EXTENSIONS.includes(ext);
+      return hasMarkdownExtension(this.rawPath?.split('?')[0]);
     },
     showDownloadDropdown() {
       return !this.isEmpty && this.canDownloadCode && this.isMarkdownFile;

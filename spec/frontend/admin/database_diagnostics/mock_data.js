@@ -216,6 +216,8 @@ export const databaseInformationResults = {
         { name: 'gitlab_partitions_static', current: false, owner: 'postgres' },
       ],
       findings: [],
+      severity: null,
+      counts: {},
       vacuums: vacuumActivity,
       autovacuum_config: autovacuumConfig,
     },
@@ -240,6 +242,8 @@ export const databaseInformationWithFindings = {
           message: 'The search path differs from the expected default of "$user", public.',
         },
       ],
+      severity: 'error',
+      counts: { error: 1, warning: 1 },
     },
   },
 };

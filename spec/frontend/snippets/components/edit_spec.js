@@ -198,6 +198,10 @@ describe('Snippet Edit app', () => {
       expect(findBlobActions().exists()).toBe(true);
     });
 
+    it('passes markdownPreviewPath to SnippetBlobActionsEdit', () => {
+      expect(findBlobActions().props('markdownPreviewPath')).toBe('http://preview.foo.bar');
+    });
+
     it('should hide loader', () => {
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
     });

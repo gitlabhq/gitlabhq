@@ -299,7 +299,7 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text])
-          .to eq('Validation error: Invalid work item URL format. Expected: .../-/work_items/<iid>')
+          .to eq('Validation error: Work item #42 not found or inaccessible')
       end
     end
 

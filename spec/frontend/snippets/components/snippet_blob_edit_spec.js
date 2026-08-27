@@ -10,6 +10,8 @@ import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/h
 import { joinPaths } from '~/lib/utils/url_utility';
 import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
+import { EDITOR_READY_EVENT } from '~/editor/constants';
+import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_editor_markdown_livepreview_ext';
 
 jest.mock('~/alert');
 
@@ -34,6 +36,8 @@ const TEST_BLOB_LOADED = {
   isLoaded: true,
 };
 
+const TEST_MARKDOWN_PREVIEW_PATH = '/snippets/preview_markdown';
+
 describe('Snippet Blob Edit component', () => {
   let wrapper;
   let axiosMock;
@@ -42,6 +46,7 @@ describe('Snippet Blob Edit component', () => {
     wrapper = shallowMount(SnippetBlobEdit, {
       propsData: {
         blob: TEST_BLOB,
+        markdownPreviewPath: TEST_MARKDOWN_PREVIEW_PATH,
         ...props,
       },
     });
@@ -190,6 +195,39 @@ describe('Snippet Blob Edit component', () => {
           }),
         );
       }
+    });
+  });
+
+  describe('markdown preview', () => {
+    let useSpy;
+
+    const emitEditorReady = async () => {
+      useSpy = jest.fn();
+      findContent().vm.$emit(EDITOR_READY_EVENT, { detail: { instance: { use: useSpy } } });
+      await waitForPromises();
+    };
+
+    it('registers the markdown preview extension for a markdown file', async () => {
+      createComponent({
+        blob: { ...TEST_BLOB_LOADED, path: 'README.md' },
+      });
+
+      await emitEditorReady();
+
+      expect(useSpy).toHaveBeenCalledWith({
+        definition: EditorMarkdownPreviewExtension,
+        setupOptions: { previewMarkdownPath: TEST_MARKDOWN_PREVIEW_PATH },
+      });
+    });
+
+    it('does not register the extension for a non-markdown file', async () => {
+      createComponent({
+        blob: { ...TEST_BLOB_LOADED, path: 'script.rb' },
+      });
+
+      await emitEditorReady();
+
+      expect(useSpy).not.toHaveBeenCalled();
     });
   });
 });

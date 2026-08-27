@@ -32,6 +32,7 @@ import {
   WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_NOTIFICATIONS,
+  WIDGET_TYPE_AGENT_PLAN,
 } from 'ee_else_ce/work_items/constants';
 import {
   findCurrentUserTodosWidget,
@@ -576,6 +577,8 @@ export const getNewWorkItemSharedCache = ({
       __typename: 'WorkItemWidgetProgress',
     },
     agentPlan: {
+      ...widgetDefinitionsHash[WIDGET_TYPE_AGENT_PLAN],
+      type: WIDGET_TYPE_AGENT_PLAN,
       __typename: 'WorkItemWidgetAgentPlan',
     },
     customFields: {

@@ -7,6 +7,9 @@ import { getBaseURL, joinPaths } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
 import { SNIPPET_BLOB_CONTENT_FETCH_ERROR } from '~/snippets/constants';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
+import { EDITOR_READY_EVENT } from '~/editor/constants';
+import { BLOB_EDITOR_ERROR } from '~/blob_edit/constants';
+import { hasMarkdownExtension } from '~/blob/utils';
 
 export default {
   name: 'SnippetBlobEdit',
@@ -31,11 +34,18 @@ export default {
       required: false,
       default: true,
     },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
+    },
   },
   emits: ['blob-updated', 'delete'],
   computed: {
     inputId() {
       return `${this.blob.id}_file_path`;
+    },
+    isMarkdown() {
+      return hasMarkdownExtension(this.blob.path);
     },
   },
   mounted() {
@@ -44,6 +54,23 @@ export default {
     }
   },
   methods: {
+    async onEditorReady({ detail: { instance } }) {
+      if (!this.isMarkdown) {
+        return;
+      }
+
+      try {
+        const { EditorMarkdownPreviewExtension } =
+          await import('~/editor/extensions/source_editor_markdown_livepreview_ext');
+
+        instance.use({
+          definition: EditorMarkdownPreviewExtension,
+          setupOptions: { previewMarkdownPath: this.markdownPreviewPath },
+        });
+      } catch (e) {
+        createAlert({ message: `${BLOB_EDITOR_ERROR}: ${e}` });
+      }
+    },
     onDelete() {
       this.$emit('delete');
     },
@@ -69,6 +96,7 @@ export default {
       createAlert({ message: sprintf(SNIPPET_BLOB_CONTENT_FETCH_ERROR, { err }) });
     },
   },
+  readyEvent: EDITOR_READY_EVENT,
 };
 </script>
 <template>
@@ -93,6 +121,7 @@ export default {
       :value="blob.content"
       :file-global-id="blob.id"
       :file-name="blob.path"
+      @[$options.readyEvent]="onEditorReady"
       @input="notifyAboutUpdates({ content: $event })"
     />
   </div>

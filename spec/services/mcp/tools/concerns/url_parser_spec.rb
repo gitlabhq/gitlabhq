@@ -170,6 +170,17 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
           work_item_iid: 999
         })
       end
+
+      it 'parses project issue URL' do
+        url = 'https://gitlab.com/namespace/project/-/issues/42'
+        result = service.send(:parse_work_item_url, url)
+
+        expect(result).to eq({
+          parent_type: :project,
+          parent_path: 'namespace/project',
+          work_item_iid: 42
+        })
+      end
     end
 
     context 'with valid group work item URLs' do
@@ -194,11 +205,36 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
           work_item_iid: 456
         })
       end
+
+      it 'parses group epic URL' do
+        url = 'https://gitlab.com/groups/namespace/group/-/epics/123'
+        result = service.send(:parse_work_item_url, url)
+
+        expect(result).to eq({
+          parent_type: :group,
+          parent_path: 'namespace/group',
+          work_item_iid: 123
+        })
+      end
     end
 
     context 'with invalid URLs' do
-      it 'raises ArgumentError for missing work_items segment' do
-        url = 'https://gitlab.com/namespace/project/-/issues/42'
+      it 'raises ArgumentError for an epic segment on a project URL' do
+        url = 'https://gitlab.com/namespace/project/-/epics/42'
+
+        expect { service.send(:parse_work_item_url, url) }
+          .to raise_error(ArgumentError, /Invalid work item URL format/)
+      end
+
+      it 'raises ArgumentError for an issue segment on a group URL' do
+        url = 'https://gitlab.com/groups/namespace/group/-/issues/42'
+
+        expect { service.send(:parse_work_item_url, url) }
+          .to raise_error(ArgumentError, /Invalid work item URL format/)
+      end
+
+      it 'raises ArgumentError for a non-work-item resource segment' do
+        url = 'https://gitlab.com/namespace/project/-/merge_requests/42'
 
         expect { service.send(:parse_work_item_url, url) }
           .to raise_error(ArgumentError, /Invalid work item URL format/)
@@ -415,6 +451,13 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
     context 'with valid project work item URL' do
       it 'resolves work item and returns global ID' do
         url = "https://gitlab.com/#{project.full_path}/-/work_items/#{work_item.iid}"
+        result = service.send(:resolve_work_item_from_url, url)
+
+        expect(result).to eq(work_item.to_global_id.to_s)
+      end
+
+      it 'resolves the same work item through its issue URL' do
+        url = "https://gitlab.com/#{project.full_path}/-/issues/#{work_item.iid}"
         result = service.send(:resolve_work_item_from_url, url)
 
         expect(result).to eq(work_item.to_global_id.to_s)

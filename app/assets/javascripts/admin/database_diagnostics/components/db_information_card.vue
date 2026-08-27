@@ -8,11 +8,6 @@ const SEVERITY_VARIANTS = {
   warning: 'warning',
 };
 
-const SEVERITY_ORDER = {
-  error: 0,
-  warning: 1,
-};
-
 export default {
   name: 'DbInformationCard',
   components: { GlAlert, GlBadge, GlButton, GlCard, GlIcon, GlSprintf, DbSchemasSection },
@@ -32,26 +27,21 @@ export default {
     };
   },
   computed: {
+    // Ordered and scored by Checks::SchemaResolution.
     findings() {
-      return [...(this.payload.findings || [])].sort(
-        (a, b) =>
-          (SEVERITY_ORDER[a.severity] ?? Number.MAX_SAFE_INTEGER) -
-          (SEVERITY_ORDER[b.severity] ?? Number.MAX_SAFE_INTEGER),
-      );
-    },
-    highestSeverity() {
-      if (this.findings.some((finding) => finding.severity === 'error')) return 'error';
-      if (this.findings.some((finding) => finding.severity === 'warning')) return 'warning';
-      return null;
+      return this.payload.findings || [];
     },
     // Green when there are no findings; otherwise reflects the worst severity.
+    isError() {
+      return this.payload.severity === 'error';
+    },
     statusIcon() {
-      if (this.highestSeverity === 'error') return { name: 'error', variant: 'danger' };
-      if (this.highestSeverity === 'warning') return { name: 'warning', variant: 'warning' };
+      if (this.isError) return { name: 'error', variant: 'danger' };
+      if (this.payload.severity === 'warning') return { name: 'warning', variant: 'warning' };
       return { name: 'check-circle-filled', variant: 'success' };
     },
     badgeVariant() {
-      return this.highestSeverity === 'error' ? 'danger' : 'warning';
+      return this.isError ? 'danger' : 'warning';
     },
     ariaControlsId() {
       return `search-path-details-${this.dbName}`;

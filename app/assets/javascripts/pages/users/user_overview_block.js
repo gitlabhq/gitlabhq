@@ -16,7 +16,7 @@ export default class UserOverviewBlock {
 
   loadData() {
     const containerEl = document.querySelector(this.container);
-    const loadingEl = containerEl.querySelector(`.loading`);
+    const loadingEl = containerEl.querySelector(`.js-overview-loading`);
 
     loadingEl.classList.remove('hide');
 
@@ -36,7 +36,7 @@ export default class UserOverviewBlock {
     // eslint-disable-next-line no-unsanitized/property
     contentList.innerHTML += html;
 
-    const loadingEl = containerEl.querySelector('.loading');
+    const loadingEl = containerEl.querySelector('.js-overview-loading');
 
     if (count && count > 0) {
       containerEl.querySelector('.js-view-all').classList.remove('hide');

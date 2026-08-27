@@ -58,4 +58,9 @@ export function shortcircuitPermalinkButton() {
   });
 }
 
+const MARKDOWN_EXTENSIONS = ['md', 'markdown', 'mkd', 'mkdn', 'mdown', 'rmd'];
+
+export const hasMarkdownExtension = (path) =>
+  MARKDOWN_EXTENSIONS.some((ext) => path?.toLowerCase().endsWith(`.${ext}`));
+
 export default () => ({});

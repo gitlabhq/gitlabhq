@@ -23,6 +23,10 @@ export default {
       required: false,
       default: true,
     },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
+    },
   },
   emits: ['actions'],
   data() {
@@ -158,6 +162,7 @@ export default {
         :class="{ 'gl-mt-3': index > 0 }"
         :blob="blobs[blobId]"
         :can-delete="canDelete"
+        :markdown-preview-path="markdownPreviewPath"
         @blob-updated="updateBlob(blobId, $event)"
         @delete="deleteBlob(blobId)"
       />

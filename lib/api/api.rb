@@ -414,6 +414,7 @@ module API
         mount ::API::WorkItems::LinkedResources
         mount ::API::WorkItems::AwardEmoji
         mount ::API::WorkItems::ClosingMergeRequests
+        mount ::API::WorkItems::RelatedBranches
         mount ::API::WorkItems::RelatedMergeRequests
         mount ::API::WorkItems::CurrentUserTodos
         mount ::API::WorkItems::Notes
