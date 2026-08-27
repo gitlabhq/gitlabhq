@@ -4,8 +4,6 @@ module Mcp
   module Tools
     module WorkItems
       class GetWorkItemTool < BaseTool
-        DEFAULT_RELATED_MERGE_REQUESTS_PAGE_SIZE = 20
-
         register_version VERSIONS[:v0_1_0], {
           operation_name: 'workItem',
           graphql_operation: load_graphql('work_items/get_work_item.query.graphql')
@@ -21,7 +19,7 @@ module Mcp
             # The canonical params win over the deprecated aliases kept for
             # callers of the replaced DAP tool.
             relatedMergeRequestsFirst: params[:related_merge_requests_first] ||
-              params[:mr_page_size] || DEFAULT_RELATED_MERGE_REQUESTS_PAGE_SIZE,
+              params[:mr_page_size] || Mcp::Tools::Concerns::CursorPagination::DEFAULT_PAGE_SIZE,
             relatedMergeRequestsAfter: params[:related_merge_requests_after] || params[:mr_pagination_cursor]
           }.compact
         end

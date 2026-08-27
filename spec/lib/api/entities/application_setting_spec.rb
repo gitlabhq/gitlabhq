@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::ApplicationSetting, feature_category: :shared do
-  let_it_be_with_reload(:application_setting) { create(:application_setting) }
-
-  let_it_be(:default_organization) { create(:organization) }
+  let(:application_setting) { build_stubbed(:application_setting) }
+  let(:default_organization) { build_stubbed(:organization) }
 
   before do
     allow(::Organizations::Organization).to receive(:default_organization).and_return(default_organization)
@@ -27,7 +26,7 @@ RSpec.describe API::Entities::ApplicationSetting, feature_category: :shared do
     end
 
     context 'when housekeeping_bitmaps_enabled db column is true' do
-      let(:housekeeping_bitmaps_enabled) { false }
+      let(:housekeeping_bitmaps_enabled) { true }
 
       it 'returns true' do
         expect(subject[:housekeeping_bitmaps_enabled]).to eq(true)

@@ -3,7 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/pipeline_wizard/components/step.vue',
     'app/assets/javascripts/work_items/components/work_item_attributes_wrapper.vue',
     'app/assets/javascripts/work_items/components/work_item_description.vue',
   ],

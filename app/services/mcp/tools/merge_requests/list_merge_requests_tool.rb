@@ -6,6 +6,7 @@ module Mcp
       class ListMergeRequestsTool < Mcp::Tools::Base::GraphqlTool
         include Mcp::Tools::Concerns::ResourceFinder
         include Mcp::Tools::Concerns::UrlParser
+        include Mcp::Tools::Concerns::CursorPagination
 
         PARENT_PARAMS = %i[url project_id].freeze
 
@@ -26,7 +27,7 @@ module Mcp
             milestoneTitle: params[:milestone],
             labelName: split_labels(params[:labels]),
             search: params[:search],
-            first: params[:first] || 20,
+            first: paginated_first,
             after: params[:after]
           }.compact
         end

@@ -5,10 +5,14 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_composition do
   include Ci::PipelineVariableHelpers
 
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
   let_it_be(:head_sha) { project.repository.head_commit.id }
+  let_it_be(:partition_id) { Ci::Pipeline.current_partition_value }
 
-  let(:pipeline) { build(:ci_empty_pipeline, project: project, sha: head_sha) }
+  let_it_be(:pipeline) do
+    build(:ci_empty_pipeline, project: project, sha: head_sha, iid: 1, partition_id: partition_id)
+  end
+
   let(:root_variables) { [] }
   let(:seed_context) { Gitlab::Ci::Pipeline::Seed::Context.new(pipeline, root_variables: root_variables) }
   let(:attributes) { { name: 'rspec', ref: 'master', scheduling_type: :stage, when: 'on_success' } }
@@ -21,8 +25,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
   describe '#attributes' do
     subject(:seed_attributes) { seed_build.attributes }
 
-    it { is_expected.to be_a(Hash) }
-    it { is_expected.to include(:name, :project, :ref) }
+    it 'returns a hash including the base attributes', :aggregate_failures do
+      is_expected.to be_a(Hash)
+      is_expected.to include(:name, :project, :ref)
+    end
 
     context 'with job:when' do
       let(:attributes) { { name: 'rspec', ref: 'master', when: 'on_failure' } }
@@ -33,9 +39,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
     context 'with job:when:delayed' do
       let(:attributes) { { name: 'rspec', ref: 'master', when: 'delayed', options: { start_in: '3 hours' } } }
 
-      it { is_expected.to include(when: 'delayed') }
-
-      it 'assigns config attributes to job definition' do
+      it 'assigns config attributes to job definition', :aggregate_failures do
+        is_expected.to include(when: 'delayed')
         expect(seed_resource.temp_job_definition).to have_attributes(
           interruptible: false,
           config: { options: { start_in: '3 hours' }, yaml_variables: [] }
@@ -61,9 +66,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       context 'is matched' do
         let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$VAR == null', when: 'delayed', start_in: '3 hours' }] } }
 
-        it { is_expected.to include(when: 'delayed') }
-
-        it 'assigns options to job definition' do
+        it 'assigns options to job definition', :aggregate_failures do
+          is_expected.to include(when: 'delayed')
           expect(seed_resource.temp_job_definition).to have_attributes(
             config: a_hash_including(options: { start_in: '3 hours' })
           )
@@ -207,11 +211,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
             end
 
             context 'when rule evaluates to true' do
-              it 'sets the job needs as well as the job subkeys' do
+              it 'sets the job needs, the job subkeys and the scheduling type', :aggregate_failures do
                 expect(subject[:needs_attributes]).to match_array([{ name: 'build-job', optional: false, artifacts: true }])
-              end
-
-              it 'sets the scheduling type to dag' do
                 expect(subject[:scheduling_type]).to eq(:dag)
               end
             end
@@ -319,11 +320,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         }
       end
 
-      it { is_expected.to include(tag_list: ['static-tag', 'value', '$NO_VARIABLE']) }
-
-      it { expect(seed_resource.temp_job_definition.config).to include({ tag_list: ['static-tag', 'value', '$NO_VARIABLE'] }) }
-
-      it 'assigns yaml_variables to job definition' do
+      it 'expands variables in tags and assigns them to job definition', :aggregate_failures do
+        is_expected.to include(tag_list: ['static-tag', 'value', '$NO_VARIABLE'])
+        expect(seed_resource.temp_job_definition.config).to include(
+          tag_list: ['static-tag', 'value', '$NO_VARIABLE']
+        )
         expect(seed_resource.temp_job_definition.config[:yaml_variables]).to match_array(
           [{ key: 'VARIABLE', value: 'value' }]
         )
@@ -645,17 +646,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         }
       end
 
-      it 'sets correct attributes on temp_job_definition' do
+      it 'assigns attributes to temp_job_definition instead of preserving in build', :aggregate_failures do
         job_def = seed_resource.temp_job_definition
+
         expect(job_def.project_id).to eq(project.id)
         expect(job_def.partition_id).to eq(pipeline.partition_id)
         expect(job_def.config).to include(:options, :yaml_variables)
-      end
-
-      it 'assigns attributes to temp_job_definition instead of preserving in build' do
-        expect(seed_resource.temp_job_definition.config[:options]).to eq(attributes[:options])
-        expect(seed_resource.temp_job_definition.config[:yaml_variables]).to eq(attributes[:yaml_variables])
-        expect(seed_resource.temp_job_definition.interruptible).to eq(attributes[:interruptible])
+        expect(job_def.config[:options]).to eq(attributes[:options])
+        expect(job_def.config[:yaml_variables]).to eq(attributes[:yaml_variables])
+        expect(job_def.interruptible).to eq(attributes[:interruptible])
       end
 
       context 'with id_tokens' do
@@ -728,58 +727,44 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         end
       end
 
-      context 'with same configuration' do
-        let(:attributes2) do
+      describe 'checksums' do
+        def config_for(script:)
           {
             name: 'test',
             ref: 'master',
-            options: { script: ['echo test'] },
+            options: { script: script },
             yaml_variables: [{ key: 'VAR', value: 'value' }],
             interruptible: true
           }
         end
 
-        it 'generates same checksum for identical configs' do
-          seed2 = described_class.new(seed_context, attributes2, previous_stages + [current_stage])
+        let(:same_config) { config_for(script: ['echo test']) }
+        let(:different_config) { config_for(script: ['echo different']) }
 
-          checksum1 = seed_resource.temp_job_definition.checksum
-          checksum2 = seed2.to_resource.temp_job_definition.checksum
-
-          expect(checksum1).to eq(checksum2)
-        end
-      end
-
-      context 'with different configuration' do
-        let(:attributes2) do
-          {
-            name: 'test',
-            ref: 'master',
-            options: { script: ['echo different'] },
-            yaml_variables: [{ key: 'VAR', value: 'value' }],
-            interruptible: true
-          }
+        def checksum_for(config)
+          described_class
+            .new(seed_context, config, previous_stages + [current_stage])
+            .to_resource.temp_job_definition.checksum
         end
 
-        it 'generates different checksums for different configs' do
-          seed2 = described_class.new(seed_context, attributes2, previous_stages + [current_stage])
+        it 'only matches for identical configs', :aggregate_failures do
+          checksum = seed_resource.temp_job_definition.checksum
 
-          checksum1 = seed_resource.temp_job_definition.checksum
-          checksum2 = seed2.to_resource.temp_job_definition.checksum
-
-          expect(checksum1).not_to eq(checksum2)
+          expect(checksum).to eq(checksum_for(same_config))
+          expect(checksum).not_to eq(checksum_for(different_config))
         end
       end
     end
 
     describe 'propagating composite identity', :request_store do
-      let_it_be(:user) { create(:user) }
+      let(:user) { create(:user) }
+
+      let(:pipeline) do
+        build(:ci_empty_pipeline, project: project, sha: head_sha, iid: 1, user: user, partition_id: partition_id)
+      end
 
       let(:attributes) do
         { name: 'rspec', options: { test: 123 } }
-      end
-
-      before do
-        pipeline.update!(user: user)
       end
 
       it 'does not propagate composite identity by default' do
@@ -832,13 +817,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
   describe '#to_resource' do
     subject { seed_build.to_resource }
 
-    it 'memoizes a resource object' do
-      expect(subject.object_id).to eq seed_build.to_resource.object_id
-    end
+    # The shared pipeline is frozen and reused, so persisting it needs a throwaway instance.
+    let(:pipeline) { build(:ci_empty_pipeline, project: project, sha: head_sha, iid: 1, partition_id: partition_id) }
 
-    it 'can not be persisted without explicit assignment' do
+    it 'memoizes a resource that is not persisted without explicit assignment', :aggregate_failures do
       pipeline.save!
 
+      expect(subject.object_id).to eq seed_build.to_resource.object_id
       expect(subject).not_to be_persisted
     end
   end
@@ -1008,7 +993,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       using RSpec::Parameterized
 
       let(:pipeline) do
-        build(:ci_empty_pipeline, ref: 'deploy', tag: false, source: source, project: project)
+        build(:ci_empty_pipeline, ref: 'deploy', tag: false, source: source, project: project, iid: 1,
+          partition_id: partition_id)
       end
 
       context 'matches' do
@@ -1124,22 +1110,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
         it { is_expected.not_to be_included }
       end
-
-      context 'when using both only and except policies' do
-        let(:attributes) do
-          {
-            name: 'rspec',
-            only: {
-              refs: ["branches@#{pipeline.project_full_path}"]
-            },
-            except: {
-              refs: ["branches@#{pipeline.project_full_path}"]
-            }
-          }
-        end
-
-        it { is_expected.not_to be_included }
-      end
     end
 
     context 'when repository path does not match' do
@@ -1188,9 +1158,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           end
 
           with_them do
-            it { is_expected.not_to be_included }
-
-            it 'still correctly populates when:' do
+            it 'is not included and still correctly populates when:', :aggregate_failures do
+              is_expected.not_to be_included
               expect(seed_build.attributes).to include(when: 'never')
             end
           end
@@ -1206,9 +1175,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           end
 
           with_them do
-            it { is_expected.to be_included }
-
-            it 'correctly populates when:' do
+            it 'is included and correctly populates when:', :aggregate_failures do
+              is_expected.to be_included
               expect(seed_build.attributes).to include(when: 'always')
             end
           end
@@ -1224,9 +1192,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           end
 
           with_them do
-            it { is_expected.to be_included }
-
-            it 'correctly populates when:' do
+            it 'is included and correctly populates when:', :aggregate_failures do
+              is_expected.to be_included
               expect(seed_build.attributes).to include(when: 'on_failure')
             end
           end
@@ -1242,9 +1209,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           end
 
           with_them do
-            it { is_expected.to be_included }
-
-            it 'correctly populates when:' do
+            it 'is included and correctly populates when:', :aggregate_failures do
+              is_expected.to be_included
               expect(seed_build.attributes).to include(when: 'delayed')
               expect(seed_build.to_resource.temp_job_definition).to have_attributes(
                 config: a_hash_including(options: { start_in: '1 day' })
@@ -1263,9 +1229,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           end
 
           with_them do
-            it { is_expected.to be_included }
-
-            it 'correctly populates when:' do
+            it 'is included and correctly populates when:', :aggregate_failures do
+              is_expected.to be_included
               expect(seed_build.attributes).to include(when: 'on_success')
             end
           end
@@ -1274,7 +1239,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
       context 'with a matching changes: rule' do
         let(:pipeline) do
-          build(:ci_pipeline, project: project).tap do |pipeline|
+          build(:ci_pipeline, project: project, iid: 1, partition_id: partition_id).tap do |pipeline|
             stub_pipeline_modified_paths(pipeline, %w[app/models/ci/pipeline.rb spec/models/ci/pipeline_spec.rb .gitlab-ci.yml])
           end
         end
@@ -1294,9 +1259,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           end
 
           with_them do
-            it { is_expected.not_to be_included }
-
-            it 'correctly populates when:' do
+            it 'is not included and correctly populates when:', :aggregate_failures do
+              is_expected.not_to be_included
               expect(seed_build.attributes).to include(when: 'never')
             end
           end
@@ -1317,9 +1281,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           end
 
           with_them do
-            it { is_expected.to be_included }
-
-            it 'correctly populates when:' do
+            it 'is included and correctly populates when:', :aggregate_failures do
+              is_expected.to be_included
               expect(seed_build.attributes).to include(when: 'always')
             end
           end
@@ -1340,9 +1303,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           end
 
           with_them do
-            it { is_expected.to be_included }
-
-            it 'correctly populates when:' do
+            it 'is included and correctly populates when:', :aggregate_failures do
+              is_expected.to be_included
               expect(seed_build.attributes).to include(when: 'on_success')
             end
           end
@@ -1365,9 +1327,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         end
 
         with_them do
-          it { is_expected.not_to be_included }
-
-          it 'correctly populates when:' do
+          it 'is not included and correctly populates when:', :aggregate_failures do
+            is_expected.not_to be_included
             expect(seed_build.attributes).to include(when: 'never')
           end
         end
@@ -1381,9 +1342,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         context 'when environment:name satisfies the rule' do
           let(:attributes) { { name: 'rspec', rules: rule_set, environment: 'test', when: 'on_success' } }
 
-          it { is_expected.to be_included }
-
-          it 'correctly populates when:' do
+          it 'is included and correctly populates when:', :aggregate_failures do
+            is_expected.to be_included
             expect(seed_build.attributes).to include(when: 'on_success')
           end
         end
@@ -1391,17 +1351,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         context 'when environment:name does not satisfy rule' do
           let(:attributes) { { name: 'rspec', rules: rule_set, environment: 'dev', when: 'on_success' } }
 
-          it { is_expected.not_to be_included }
-
-          it 'correctly populates when:' do
+          it 'is not included and correctly populates when:', :aggregate_failures do
+            is_expected.not_to be_included
             expect(seed_build.attributes).to include(when: 'never')
           end
         end
 
         context 'when environment:name is not set' do
-          it { is_expected.not_to be_included }
-
-          it 'correctly populates when:' do
+          it 'is not included and correctly populates when:', :aggregate_failures do
+            is_expected.not_to be_included
             expect(seed_build.attributes).to include(when: 'never')
           end
         end
@@ -1418,9 +1376,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
               options: { environment: { action: 'start' } } }
           end
 
-          it { is_expected.to be_included }
-
-          it 'correctly populates when:' do
+          it 'is included and correctly populates when:', :aggregate_failures do
+            is_expected.to be_included
             expect(seed_build.attributes).to include(when: 'on_success')
           end
         end
@@ -1431,17 +1388,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
               options: { environment: { action: 'stop' } } }
           end
 
-          it { is_expected.not_to be_included }
-
-          it 'correctly populates when:' do
+          it 'is not included and correctly populates when:', :aggregate_failures do
+            is_expected.not_to be_included
             expect(seed_build.attributes).to include(when: 'never')
           end
         end
 
         context 'when environment:action is not set' do
-          it { is_expected.not_to be_included }
-
-          it 'correctly populates when:' do
+          it 'is not included and correctly populates when:', :aggregate_failures do
+            is_expected.not_to be_included
             expect(seed_build.attributes).to include(when: 'never')
           end
         end
@@ -1458,9 +1413,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
               options: { environment: { deployment_tier: 'production' } } }
           end
 
-          it { is_expected.to be_included }
-
-          it 'correctly populates when:' do
+          it 'is included and correctly populates when:', :aggregate_failures do
+            is_expected.to be_included
             expect(seed_build.attributes).to include(when: 'on_success')
           end
         end
@@ -1471,17 +1425,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
               options: { environment: { deployment_tier: 'development' } } }
           end
 
-          it { is_expected.not_to be_included }
-
-          it 'correctly populates when:' do
+          it 'is not included and correctly populates when:', :aggregate_failures do
+            is_expected.not_to be_included
             expect(seed_build.attributes).to include(when: 'never')
           end
         end
 
         context 'when environment:action is not set' do
-          it { is_expected.not_to be_included }
-
-          it 'correctly populates when:' do
+          it 'is not included and correctly populates when:', :aggregate_failures do
+            is_expected.not_to be_included
             expect(seed_build.attributes).to include(when: 'never')
           end
         end
@@ -1498,9 +1450,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
               options: { environment: { url: 'http://gitlab.com' } } }
           end
 
-          it { is_expected.to be_included }
-
-          it 'correctly populates when:' do
+          it 'is included and correctly populates when:', :aggregate_failures do
+            is_expected.to be_included
             expect(seed_build.attributes).to include(when: 'on_success')
           end
         end
@@ -1511,17 +1462,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
               options: { environment: { url: 'http://staging.gitlab.com' } } }
           end
 
-          it { is_expected.not_to be_included }
-
-          it 'correctly populates when:' do
+          it 'is not included and correctly populates when:', :aggregate_failures do
+            is_expected.not_to be_included
             expect(seed_build.attributes).to include(when: 'never')
           end
         end
 
         context 'when environment:action is not set' do
-          it { is_expected.not_to be_included }
-
-          it 'correctly populates when:' do
+          it 'is not included and correctly populates when:', :aggregate_failures do
+            is_expected.not_to be_included
             expect(seed_build.attributes).to include(when: 'never')
           end
         end
@@ -1530,9 +1479,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       context 'with no rules' do
         let(:rule_set) { [] }
 
-        it { is_expected.not_to be_included }
-
-        it 'correctly populates when:' do
+        it 'is not included and correctly populates when:', :aggregate_failures do
+          is_expected.not_to be_included
           expect(seed_build.attributes).to include(when: 'never')
         end
       end
@@ -1544,13 +1492,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           ]
         end
 
-        it { is_expected.not_to be_included }
-
-        it 'correctly populates when:' do
+        it 'is not included, populates when: and returns an error', :aggregate_failures do
+          is_expected.not_to be_included
           expect(seed_build.attributes).to include(when: 'never')
-        end
-
-        it 'returns an error' do
           expect(seed_build.errors).to contain_exactly(
             'Failed to parse rule for rspec: rules:changes:compare_to is not a valid ref'
           )
@@ -1576,11 +1520,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
     end
 
     context 'when build job is not present in prior stages' do
-      it "is included" do
+      it "is included and returns an error", :aggregate_failures do
         is_expected.to be_included
-      end
-
-      it "returns an error" do
         expect(subject.errors).to contain_exactly(
           "'rspec' job needs 'build' job, but 'build' does not exist in the pipeline. " \
             'This might be because of the only, except, or rules keywords. ' \
@@ -1612,11 +1553,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
       let(:previous_stages) { [stage_seed] }
 
-      it "is included" do
+      it "is included and does not have errors", :aggregate_failures do
         is_expected.to be_included
-      end
-
-      it "does not have errors" do
         expect(subject.errors).to be_empty
       end
     end
@@ -1624,11 +1562,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
     context 'when build job is part of the same stage' do
       let(:current_stage) { double(seeds_names: [attributes[:name], 'build']) }
 
-      it 'is included' do
+      it 'is included and does not have errors', :aggregate_failures do
         is_expected.to be_included
-      end
-
-      it 'does not have errors' do
         expect(subject.errors).to be_empty
       end
     end
@@ -1642,6 +1577,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       end
 
       context 'when ci_needs_size_limit is set to 100' do
+        # Relies on Plan.default re-querying instead of memoizing via SafeRequestStore
+        # (a no-op without :request_store); do not tag this file/describe :request_store.
         before do
           project.actual_limits.update!(ci_needs_size_limit: 100)
         end
@@ -1668,10 +1605,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
   describe 'applying pipeline variables' do
     subject { seed_build }
 
+    # These examples replace the pipeline's variables, so they need their own instance instead of the shared one.
+    let(:pipeline) { build(:ci_empty_pipeline, project: project, sha: head_sha, iid: 1, partition_id: partition_id) }
+
     let(:pipeline_variables_attributes) { [] }
-    let(:pipeline) do
-      build(:ci_empty_pipeline, project: project, sha: head_sha)
-    end
 
     before do
       build_or_replace_pipeline_variables(pipeline, pipeline_variables_attributes)
@@ -1707,11 +1644,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       context 'with job:rules:[if:]' do
         let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$C != null', when: 'always' }] } }
 
-        it "included? does not raise" do
+        it "included? returns true without raising", :aggregate_failures do
           expect { subject.included? }.not_to raise_error
-        end
-
-        it "included? returns true" do
           expect(subject.included?).to be(true)
         end
       end

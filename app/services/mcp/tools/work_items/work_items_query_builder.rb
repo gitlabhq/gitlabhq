@@ -6,7 +6,6 @@ module Mcp
       # Composes the namespace.workItems query and variables shared by the work-item list tools.
       class WorkItemsQueryBuilder
         COMPOSITE_FILTERS = %w[not or].freeze
-        DEFAULT_PAGE_SIZE = 20
         QUERY_NAMES = { full: 'GetWorkItemsFull', compact: 'GetWorkItemsCompact' }.freeze
 
         class << self
@@ -179,7 +178,7 @@ module Mcp
             variables[:excludeProjects] = false
             variables[:excludeGroupWorkItems] = false
 
-            variables[:firstPageSize] = first || DEFAULT_PAGE_SIZE
+            variables[:firstPageSize] = first || Mcp::Tools::Concerns::CursorPagination::DEFAULT_PAGE_SIZE
             variables[:afterCursor] = after if after
 
             [variables.compact, unsupported_filters]

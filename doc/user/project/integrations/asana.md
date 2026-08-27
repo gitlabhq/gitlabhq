@@ -20,9 +20,10 @@ description: Configure the Asana integration to add commit messages as comments 
 {{< /history >}}
 
 The Asana integration adds commit messages as comments to Asana tasks.
-Once enabled, commit messages are checked for Asana task URLs (for example,
-`https://app.asana.com/1/12345/project/67890/task/987654`) or task IDs starting with `#`
-(for example, `#987654`). Every task ID found gets the commit comment added to it.
+After you turn on the integration, commit messages are checked for Asana task URLs
+(for example, `https://app.asana.com/1/12345/project/67890/task/987654`) or task IDs
+starting with `#` (for example, `#987654`).
+Every task ID found gets the commit comment added to it.
 
 You can also close a task with a message containing: `fix #123456`.
 You can use either of these words:
@@ -48,7 +49,7 @@ Complete these steps in GitLab:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **Asana**.
-1. Ensure that the **Active** toggle is enabled.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Paste the token you generated in Asana.
 1. Optional. To restrict this setting to specific branches, list them in the **Restrict to branch**
    field, separated with commas.

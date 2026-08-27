@@ -81,7 +81,7 @@ export default {
       required: true,
     },
   },
-  emits: ['close-dropdown', 'set-labels'],
+  emits: ['set-labels'],
   data() {
     return {
       showDropdownContentsCreateView: false,
@@ -166,7 +166,6 @@ export default {
       this.$emit('set-labels', this.localSelectedLabels);
     },
     handleDropdownHide() {
-      this.$emit('close-dropdown');
       if (!this.isSidebar) {
         this.setLabels();
       }

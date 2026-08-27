@@ -1,6 +1,6 @@
 ---
-source_checksum: e424af22aa225d38
-distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
+source_checksum: 84eba7174fc3af23
+distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -36,6 +36,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 
 - Use a cache with a default TTL of 24 hours to prevent duplicate database queries and API calls.
 - Equip workers that loop over collections with a progress pointer so they can resume after interruption (by ID tracking or page counter).
+- Implement `defer_on_database_health_signal` on write-heavy workers to avoid saturating the database (note: a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429871#note_1738917399) currently prevents its use).
 - Enforce limits on worker concurrency to avoid saturating resources (see the Bitbucket `ParallelScheduling` class for an example).
 - Test importers at scale on a staging environment, especially when implementing new functionality or enabling a feature flag.
 

@@ -3,6 +3,7 @@ stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Linear
+description: Configure the Linear integration to link a GitLab project to a Linear workspace and reference Linear issues in GitLab.
 ---
 
 {{< details >}}
@@ -20,7 +21,7 @@ title: Linear
 
 You can use [Linear](https://linear.app/) as an
 [external issue tracker](../../../integration/external-issue-tracker.md).
-To enable the Linear integration in a project:
+To turn on the Linear integration in a project:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Integrations**.
@@ -33,16 +34,18 @@ To enable the Linear integration in a project:
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
-After you have configured and enabled Linear, you see the Linear link on the GitLab project pages,
-which takes you to your Linear workspace.
+After you configure and turn on Linear, a link appears on the GitLab project pages.
+The link directs you to your Linear workspace.
 
 For example, this is a configuration for a workspace named `example`:
 
 - Workspace URL: `https://linear.app/example`
 
-You can also disable [GitLab internal issue tracking](../issues/_index.md) in this project.
-For more information about the steps and consequences of disabling GitLab issues, see
-Configure project [visibility](../../public_access.md#change-project-visibility), [features, and permissions](../settings/_index.md#configure-project-features-and-permissions).
+You can also turn off [GitLab internal issue tracking](../issues/_index.md) in this project.
+For more information about the steps and consequences of turning off GitLab issues, see:
+
+- [Change project visibility](../../public_access.md#change-project-visibility).
+- [Configure project features and permissions](../settings/_index.md#configure-project-features-and-permissions).
 
 ## Reference Linear issues in GitLab
 

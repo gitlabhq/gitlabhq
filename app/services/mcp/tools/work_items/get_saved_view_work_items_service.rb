@@ -30,17 +30,7 @@ module Mcp
                   'The global ID of the saved view (format: gid://gitlab/WorkItems::SavedViews::SavedView/<id>).'
               },
 
-              # Pagination parameters
-              after: {
-                type: 'string',
-                description: 'Cursor for forward pagination. Use endCursor from previous response.'
-              },
-              first: {
-                type: 'integer',
-                description: 'Number of work items to return (forward pagination, max 100)',
-                minimum: 1,
-                maximum: 100
-              }
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(items: 'work items')
             },
             required: [
               'saved_view_id'

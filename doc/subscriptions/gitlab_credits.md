@@ -48,6 +48,39 @@ For a click-through demo, see [GitLab Credits](https://gitlab.navattic.com/credi
 
 For information about credit pricing, see [GitLab pricing](https://about.gitlab.com/pricing/).
 
+## For the Free tier
+
+{{< details >}}
+
+- Tier: Free
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20165) in GitLab 18.10 for GitLab.com.
+- Enabled on GitLab Self-Managed in GitLab 19.0.
+
+{{< /history >}}
+
+Users on the Free tier can purchase a Monthly Commitment Pool of GitLab Credits for their instance or group namespace. This provides access to a set of [GitLab Duo Agent Platform features](../user/duo_agent_platform/_index.md), without needing a Premium or Ultimate subscription.
+
+On-demand usage for Free namespaces is capped at $25,000 for each calendar month. Upon reaching this limit, on-demand usage is automatically turned off and resets at the beginning of the following month.
+
+## Temporary evaluation credits
+
+If you have not purchased the Monthly Commitment Pool or accepted the usage billing terms for On-Demand credits,
+you can request a free temporary pool of credits to evaluate credit-based features.
+
+Credits are allocated based on the number of users you request for the evaluation,
+and added to a shared pool for those users.
+Credits are valid for 30 days, and cannot be used after they expire.
+
+To request credits, [contact the Sales team](https://about.gitlab.com/sales/).
+
+If you're on the Free tier and want to try credits, you can start an [Ultimate trial](free_trials.md).
+
 ## Included credits
 
 Included credits are allocated to all users on a Premium or Ultimate tier.
@@ -125,39 +158,6 @@ GitLab Credits are consumed in the following order:
 
 Other credit types, such as One-Time Charge credits, might apply to your subscription.
 For details, contact your account team.
-
-## Temporary evaluation credits
-
-If you have not purchased the Monthly Commitment Pool or accepted the usage billing terms for On-Demand credits,
-you can request a free temporary pool of credits to evaluate credit-based features.
-
-Credits are allocated based on the number of users you request for the evaluation,
-and added to a shared pool for those users.
-Credits are valid for 30 days, and cannot be used after they expire.
-
-To request credits, [contact the Sales team](https://about.gitlab.com/sales/).
-
-If you're on the Free tier and want to try credits, you can start an [Ultimate trial](free_trials.md).
-
-## For the Free tier
-
-{{< details >}}
-
-- Tier: Free
-- Offering: GitLab.com, GitLab Self-Managed
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20165) in GitLab 18.10 for GitLab.com.
-- Enabled on GitLab Self-Managed in GitLab 19.0.
-
-{{< /history >}}
-
-Users on the Free tier can purchase a Monthly Commitment Pool of GitLab Credits for their instance or group namespace. This provides access to a set of [GitLab Duo Agent Platform features](../user/duo_agent_platform/_index.md), without needing a Premium or Ultimate subscription.
-
-On-demand usage for Free namespaces is capped at $25,000 for each calendar month. Upon reaching this limit, on-demand usage is automatically turned off and resets at the beginning of the following month.
 
 ## Buy GitLab Credits
 

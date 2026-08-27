@@ -5,8 +5,7 @@ module Mcp
     module Wikis
       class ListWikiPagesTool < Mcp::Tools::Base::GraphqlTool
         include Mcp::Tools::Concerns::ResourceFinder
-
-        DEFAULT_PAGE_SIZE = 20
+        include Mcp::Tools::Concerns::CursorPagination
 
         PROJECT_QUERY = load_graphql('wikis/list_project_wiki_pages.query.graphql')
 
@@ -25,7 +24,7 @@ module Mcp
         def build_variables
           {
             fullPath: full_path,
-            first: params[:first] || DEFAULT_PAGE_SIZE,
+            first: paginated_first,
             after: params[:after]
           }.compact
         end

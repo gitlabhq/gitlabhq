@@ -35,10 +35,10 @@ module Mcp
                 type: 'boolean',
                 description: 'When true, lists entries of all subdirectories recursively. Defaults to false.'
               },
-              after: {
-                type: 'string',
-                description: 'Cursor for forward pagination. Use endCursor from the previous response.'
-              }
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
+                items: 'entries',
+                params: %i[after]
+              )
             }
           },
           annotations: {

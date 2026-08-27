@@ -60,6 +60,12 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
       it_behaves_like 'verified signature'
     end
 
+    context 'when verified primary and committer emails differ only by case' do
+      let(:committer_email) { 'SSH-Commit-Test@example.com' }
+
+      it_behaves_like 'verified signature'
+    end
+
     context 'when using an RSA key' do
       let(:public_key_text) do
         <<~KEY.delete("\n")
@@ -269,6 +275,18 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
       end
     end
 
+    context 'when unconfirmed secondary and committer emails differ only by case' do
+      let(:committer_email) { 'Unconfirmed-Secondary@example.com' }
+
+      before do
+        create(:email, user: user, email: committer_email.downcase, confirmed_at: nil)
+      end
+
+      it 'reports same_user_different_email status' do
+        expect(signature.verification_status).to eq(:same_user_different_email)
+      end
+    end
+
     context 'when committer email is a confirmed secondary email of the key owner' do
       let(:committer_email) { 'confirmed-secondary@example.com' }
 
@@ -277,6 +295,28 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
       end
 
       it_behaves_like 'verified signature'
+    end
+
+    context 'when confirmed secondary and committer emails differ only by case' do
+      let(:committer_email) { 'Confirmed-Secondary@example.com' }
+
+      before do
+        create(:email, :confirmed, user: user, email: committer_email.downcase)
+      end
+
+      it_behaves_like 'verified signature'
+    end
+
+    context 'when committer email only matches via full Unicode case folding' do
+      let(:committer_email) { 'SS@example.com' }
+
+      before do
+        create(:email, :confirmed, user: user, email: 'ß@example.com')
+      end
+
+      it 'reports other_user status' do
+        expect(signature.verification_status).to eq(:other_user)
+      end
     end
 
     context 'when committer email is the private commit email of the key owner' do

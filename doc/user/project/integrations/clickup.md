@@ -3,6 +3,7 @@ stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: ClickUp
+description: Configure the ClickUp integration to link a GitLab project to ClickUp and reference ClickUp issues in merge requests and commits.
 ---
 
 {{< details >}}
@@ -14,7 +15,7 @@ title: ClickUp
 
 You can use [ClickUp](https://clickup.com/) as an
 [external issue tracker](../../../integration/external-issue-tracker.md).
-To enable the ClickUp integration in a project:
+To turn on the ClickUp integration in a project:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Integrations**.
@@ -29,17 +30,19 @@ To enable the ClickUp integration in a project:
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
-After you have configured and enabled ClickUp, you see the ClickUp link on the GitLab project pages,
-which takes you to your ClickUp project.
+After you configure and turn on ClickUp, a link appears on the GitLab project pages.
+The link directs you to your ClickUp project.
 
 For example, this is a configuration for a project named `gitlab-ci`:
 
 - Project URL: `https://app.clickup.com/1234567`
 - Issue URL: `https://app.clickup.com/t/1234567/:id`
 
-You can also disable [GitLab internal issue tracking](../issues/_index.md) in this project.
-For more information about the steps and consequences of disabling GitLab issues, see
-Configure project [visibility](../../public_access.md#change-project-visibility), [features, and permissions](../settings/_index.md#configure-project-features-and-permissions).
+You can also turn off [GitLab internal issue tracking](../issues/_index.md) in this project.
+For more information about the steps and consequences of turning off GitLab issues, see:
+
+- [Change project visibility](../../public_access.md#change-project-visibility).
+- [Configure project features and permissions](../settings/_index.md#configure-project-features-and-permissions).
 
 ## Reference ClickUp issues in GitLab
 
@@ -56,8 +59,8 @@ You can reference your ClickUp issues using:
 In links, the `CU-` part is ignored and it links to the global URL of the issue. When a custom
 prefix is used in a ClickUp list, the prefix part is part of the link.
 
-We suggest using the `CU-` format (`CU-<ID>`) if you have both internal and external issue
-trackers enabled. If you use the shorter format, and an issue with the same ID exists in the
+Use the `CU-` format (`CU-<ID>`) if you have both internal and external issue
+trackers turned on. If you use the shorter format, and an issue with the same ID exists in the
 internal issue tracker, the internal issue is linked.
 
 For [Custom Task IDs](https://help.clickup.com/hc/en-us/sections/17044579323671-Custom-Task-IDs),

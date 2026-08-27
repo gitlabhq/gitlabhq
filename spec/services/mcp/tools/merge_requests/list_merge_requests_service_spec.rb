@@ -99,11 +99,13 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsService, feature_cate
           },
           after: {
             type: 'string',
-            description: 'Cursor for forward pagination. Use endCursor from the previous response.'
+            description: 'Cursor for forward pagination of merge requests. ' \
+              'Use pageInfo.endCursor from a previous response.'
           },
           first: {
             type: 'integer',
-            description: 'Number of merge requests to return (forward pagination, default 20, max 100).',
+            description: 'Number of merge requests to return after the cursor (forward pagination). ' \
+              'Default 20, max 100.',
             minimum: 1,
             maximum: 100
           }

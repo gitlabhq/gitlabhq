@@ -16,7 +16,7 @@ require 'spec_helper'
 # resolution), each with the cohort flag in both states.
 RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_limiting, feature_category: :rate_limiting do
   let(:aid) { 'shadow-spec-app-id' }
-  let(:labkit_key) { "labkit:rl:rack_request:product_analytics_collector:aid:#{aid}" }
+  let(:labkit_key) { "labkit:rl:{rack_request:product_analytics_collector:aid:#{aid}}" }
 
   def labkit_count
     Gitlab::Redis::RateLimiting.with { |redis| redis.get(labkit_key) }.to_i
@@ -26,7 +26,7 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
   # request produced, so the assertion need not know the request IP or user id.
   def labkit_count_for(rule)
     Gitlab::Redis::RateLimiting.with do |redis|
-      redis.scan_each(match: "labkit:rl:rack_request:#{rule}:*").sum { |key| redis.get(key).to_i }
+      redis.scan_each(match: "labkit:rl:{rack_request:#{rule}:*").sum { |key| redis.get(key).to_i }
     end
   end
 

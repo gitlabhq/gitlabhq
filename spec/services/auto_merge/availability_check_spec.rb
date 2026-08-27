@@ -29,6 +29,15 @@ RSpec.describe AutoMerge::AvailabilityCheck, feature_category: :shared do
       expect(response.unsuccessful_check).to eq('failed')
     end
 
+    it 'creates an error response with unsuccessful_check_explanation' do
+      response = described_class.error(
+        unavailable_reason: :forbidden,
+        unsuccessful_check_explanation: 'The pipeline must succeed.'
+      )
+
+      expect(response.unsuccessful_check_explanation).to eq('The pipeline must succeed.')
+    end
+
     context 'without an unavailable reason' do
       it 'returns the default error' do
         response = described_class.error
@@ -65,19 +74,20 @@ RSpec.describe AutoMerge::AvailabilityCheck, feature_category: :shared do
     end
 
     context 'when mergeability_checks_failed' do
-      it 'renders unknown check if unsuccessful_check is nil' do
+      it 'falls back to a generic message when there is no explanation' do
         check = described_class.error(unavailable_reason: :mergeability_checks_failed)
-        expect(check.abort_message).to eq(
-          AutoMerge::AvailabilityCheck::ABORT_REASONS[:mergeability_checks_failed].call(nil)
-        )
+
+        expect(check.abort_message).to eq('the merge request cannot be merged. A mergeability check failed.')
       end
 
-      it 'interpolates the unsuccessful_check value in the message' do
-        failed_check = :failed_check
-        check = described_class.error(unavailable_reason: :mergeability_checks_failed, unsuccessful_check: failed_check)
-        expect(check.abort_message).to eq(
-          AutoMerge::AvailabilityCheck::ABORT_REASONS[:mergeability_checks_failed].call(failed_check)
+      it 'renders the explanation of the check that failed' do
+        check = described_class.error(
+          unavailable_reason: :mergeability_checks_failed,
+          unsuccessful_check: :ci_must_pass,
+          unsuccessful_check_explanation: 'The pipeline must succeed.'
         )
+
+        expect(check.abort_message).to eq('the merge request cannot be merged. The pipeline must succeed.')
       end
     end
   end

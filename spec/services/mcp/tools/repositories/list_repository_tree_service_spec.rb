@@ -61,7 +61,8 @@ RSpec.describe Mcp::Tools::Repositories::ListRepositoryTreeService, feature_cate
           },
           after: {
             type: 'string',
-            description: 'Cursor for forward pagination. Use endCursor from the previous response.'
+            description: 'Cursor for forward pagination of entries. ' \
+              'Use pageInfo.endCursor from a previous response.'
           }
         }
       })

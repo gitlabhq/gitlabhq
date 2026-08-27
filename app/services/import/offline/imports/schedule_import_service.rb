@@ -18,6 +18,7 @@ module Import
         def execute
           update_bulk_import
           create_entities(bulk_import)
+          cache_source_ghost_user_id
 
           ::Import::BulkImports::EphemeralData.new(bulk_import.id).enable_importer_user_mapping
           BulkImportWorker.perform_async(bulk_import.id)
@@ -66,6 +67,13 @@ module Import
               destination_namespace: entity_params[:destination_namespace]
             )
           end
+        end
+
+        def cache_source_ghost_user_id
+          ::BulkImports::SourceInternalUserFinder.cache_ghost_user_id(
+            bulk_import.id,
+            metadata[:source_ghost_user_id]
+          )
         end
 
         def track_access_level(entity_params)

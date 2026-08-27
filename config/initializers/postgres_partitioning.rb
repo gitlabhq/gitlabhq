@@ -69,6 +69,7 @@ Gitlab::Application.config.to_prepare do
         Security::Finding,
         Analytics::ValueStreamDashboard::Count,
         Ci::FinishedBuildChSyncEvent,
+        Ci::TestBalancing::Assignment,
         Search::Zoekt::Task,
         Ai::EventsCount,
         Ai::UsageEvent,

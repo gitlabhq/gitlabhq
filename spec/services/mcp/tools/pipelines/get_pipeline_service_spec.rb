@@ -64,12 +64,13 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineService, feature_category: :mcp
             type: 'integer',
             minimum: 1,
             maximum: 100,
-            description: 'Number of items to return for the selected include facet. Default is 20, max 100.'
+            description: 'Number of items for the selected include facet to return after the cursor ' \
+              '(forward pagination). Default 20, max 100.'
           },
           after: {
             type: 'string',
-            description: 'Cursor for forward pagination of the selected include facet. ' \
-              "Use the previous response's page_info.end_cursor."
+            description: 'Cursor for forward pagination of items for the selected include facet. ' \
+              'Use page_info.end_cursor from a previous response.'
           }
         },
         required: %w[id pipeline_id]

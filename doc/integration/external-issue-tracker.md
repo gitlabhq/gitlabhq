@@ -3,6 +3,7 @@ stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: External issue trackers
+description: Configure an external issue tracker for a GitLab project to reference and link issues from tools like Bugzilla or YouTrack.
 ---
 
 {{< details >}}
@@ -29,7 +30,7 @@ References are displayed as issue links.
 
 ## Disable the GitLab issue tracker
 
-To disable work items for a project, including the GitLab issue tracker:
+To turn off work items for a project, including the GitLab issue tracker:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **General**.
@@ -37,7 +38,7 @@ To disable work items for a project, including the GitLab issue tracker:
 1. Under **Work items**, turn off the toggle.
 1. Select **Save changes**.
 
-After you disable the work items setting, **Work items** is not visible in the left sidebar.
+After you turn off the work items setting, **Work items** is not visible in the left sidebar.
 If you've configured an [external issue tracker](#configure-an-external-issue-tracker), it remains in the left sidebar.
 
 ## Configure an external issue tracker

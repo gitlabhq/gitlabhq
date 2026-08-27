@@ -4,8 +4,8 @@ module AutoMerge # rubocop:disable Gitlab/BoundedContexts -- Existing module
   class AvailabilityCheck
     ABORT_REASONS = {
       forbidden: 'they do not have permission to merge the merge request.',
-      mergeability_checks_failed: ->(check) {
-        "the merge request cannot be merged. Failed mergeability check: #{check || 'unknown'}"
+      mergeability_checks_failed: ->(explanation) {
+        "the merge request cannot be merged. #{explanation || 'A mergeability check failed.'}"
       },
       merge_trains_disabled: 'merge trains are disabled for this project.',
       missing_diff_head_pipeline: 'the pipeline associated with this merge request is missing or out of sync.',
@@ -21,22 +21,24 @@ module AutoMerge # rubocop:disable Gitlab/BoundedContexts -- Existing module
       )
     end
 
-    def self.error(unavailable_reason: :default, unsuccessful_check: nil)
+    def self.error(unavailable_reason: :default, unsuccessful_check: nil, unsuccessful_check_explanation: nil)
       new(
         status: :unavailable,
         unavailable_reason: unavailable_reason,
-        unsuccessful_check: unsuccessful_check
+        unsuccessful_check: unsuccessful_check,
+        unsuccessful_check_explanation: unsuccessful_check_explanation
       )
     end
 
-    attr_reader :status, :unavailable_reason, :unsuccessful_check
+    attr_reader :status, :unavailable_reason, :unsuccessful_check, :unsuccessful_check_explanation
 
-    def initialize(status:, unavailable_reason: nil, unsuccessful_check: nil)
+    def initialize(status:, unavailable_reason: nil, unsuccessful_check: nil, unsuccessful_check_explanation: nil)
       raise ArgumentError, "Invalid status" unless VALID_STATUSES.include?(status)
 
       self.status = status
       self.unavailable_reason = unavailable_reason
       self.unsuccessful_check = unsuccessful_check
+      self.unsuccessful_check_explanation = unsuccessful_check_explanation
     end
 
     def available?
@@ -45,11 +47,11 @@ module AutoMerge # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
     def abort_message
       message = ABORT_REASONS[unavailable_reason] || ABORT_REASONS[:default]
-      message.respond_to?(:call) ? message.call(unsuccessful_check) : message
+      message.respond_to?(:call) ? message.call(unsuccessful_check_explanation) : message
     end
 
     private
 
-    attr_writer :status, :unavailable_reason, :unsuccessful_check
+    attr_writer :status, :unavailable_reason, :unsuccessful_check, :unsuccessful_check_explanation
   end
 end

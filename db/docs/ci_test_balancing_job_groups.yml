@@ -1,0 +1,15 @@
+---
+table_name: ci_test_balancing_job_groups
+classes:
+- Ci::TestBalancing::JobGroup
+feature_categories:
+- code_testing
+description: CI job group names derived from the arbitrary CI job name for parallel test balancing, per project.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248189
+milestone: '19.4'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects
+table_size: small
+notes: Cleaned up on project deletion via a loose foreign key. last_seen_at allows garbage collection of
+  old records that are well past the assignment retention window.

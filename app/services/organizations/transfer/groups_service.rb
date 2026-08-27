@@ -8,6 +8,7 @@ module Organizations
 
       TransferError = Class.new(StandardError)
       BATCH_SIZE = 50
+      SLACK_SCOPE_BATCH_LIMIT = 1_000
 
       def initialize(group:, new_organization:, current_user:)
         @group = group
@@ -81,6 +82,7 @@ module Organizations
       def perform_transfer
         transfer_namespaces_and_projects
         transfer_topics
+        transfer_slack_api_scopes
         transfer_infrastructure
         schedule_ci_runners_transfer
         publish_event
@@ -140,6 +142,47 @@ module Organizations
           new_organization: new_organization
         ).execute
       end
+
+      # rubocop:disable CodeReuse/ActiveRecord -- scoped queries for duplication transfer
+      def transfer_slack_api_scopes
+        namespace_ids = group.self_and_descendant_ids(skope: Namespace)
+
+        group_scope_ids = Integrations::SlackWorkspace::IntegrationApiScope
+          .where(group_id: namespace_ids)
+          .distinct
+          .limit(SLACK_SCOPE_BATCH_LIMIT)
+          .pluck(:slack_api_scope_id)
+
+        project_scope_ids = Integrations::SlackWorkspace::IntegrationApiScope
+          .where(project_id: group.all_projects)
+          .distinct
+          .limit(SLACK_SCOPE_BATCH_LIMIT)
+          .pluck(:slack_api_scope_id)
+
+        all_scope_ids = group_scope_ids | project_scope_ids
+
+        old_scopes = Integrations::SlackWorkspace::ApiScope
+          .where(id: all_scope_ids, organization_id: old_organization.id)
+
+        old_scope_names = old_scopes.map(&:name)
+        new_scopes = Integrations::SlackWorkspace::ApiScope
+          .find_or_initialize_by_names(old_scope_names, organization_id: new_organization.id)
+
+        name_to_new_id = new_scopes.index_by(&:name).transform_values(&:id)
+
+        old_scopes.each do |old_scope|
+          new_id = name_to_new_id[old_scope.name]
+
+          Integrations::SlackWorkspace::IntegrationApiScope
+            .where(group_id: namespace_ids, slack_api_scope_id: old_scope.id)
+            .update_all(slack_api_scope_id: new_id)
+
+          Integrations::SlackWorkspace::IntegrationApiScope
+            .where(project_id: group.all_projects, slack_api_scope_id: old_scope.id)
+            .update_all(slack_api_scope_id: new_id)
+        end
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
 
       def transfer_infrastructure
         transfer_burned_project_routes

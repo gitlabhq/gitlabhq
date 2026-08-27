@@ -23,26 +23,11 @@ module Mcp
                 type: 'integer',
                 description: 'Internal ID of the merge request. Required if url is not provided.'
               },
-              after: {
-                type: 'string',
-                description: 'Cursor for forward pagination. Use endCursor from previous response.'
-              },
-              before: {
-                type: 'string',
-                description: 'Cursor for backward pagination. Use startCursor from previous response.'
-              },
-              first: {
-                type: 'integer',
-                description: 'Number of notes to return after the cursor (forward pagination, max 100)',
-                minimum: 1,
-                maximum: 100
-              },
-              last: {
-                type: 'integer',
-                description: 'Number of notes to return before the cursor (backward pagination, max 100)',
-                minimum: 1,
-                maximum: 100
-              }
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
+                items: 'notes',
+                params: %i[first last after before],
+                default_page_size: nil
+              )
             }
           },
           annotations: {

@@ -43,23 +43,15 @@ module Mcp
                   'pagination. related_merge_requests paginates with the parameters below and is ' \
                   'empty for group-level work items such as epics.'
               },
-              related_merge_requests_first: {
-                type: 'integer',
-                minimum: 1,
-                maximum: 100,
-                description: 'Number of related merge requests to return. Default 20, max 100. ' \
-                  'Applies only when related_merge_requests is in include.'
-              },
-              related_merge_requests_after: {
-                type: 'string',
-                description: 'Cursor for forward pagination of related merge requests. Use ' \
-                  'endCursor from the previous response. Applies only when ' \
-                  'related_merge_requests is in include.'
-              },
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
+                items: 'related merge requests',
+                prefix: 'related_merge_requests_',
+                applies_to: 'related_merge_requests is in include'
+              ),
               mr_page_size: {
                 type: 'integer',
-                minimum: 1,
-                maximum: 100,
+                minimum: Mcp::Tools::Concerns::CursorPagination::MIN_PAGE_SIZE,
+                maximum: Mcp::Tools::Concerns::CursorPagination::MAX_PAGE_SIZE,
                 description: 'DEPRECATED: use related_merge_requests_first instead.'
               },
               mr_pagination_cursor: {

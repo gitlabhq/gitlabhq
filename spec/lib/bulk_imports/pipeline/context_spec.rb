@@ -154,24 +154,35 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
   end
 
   describe '#source_ghost_user_id' do
-    let(:source_internal_user_finder) { instance_double(BulkImports::SourceInternalUserFinder) }
-
-    before do
-      allow(BulkImports::SourceInternalUserFinder).to receive(:new)
-        .with(bulk_import.configuration)
-        .and_return(source_internal_user_finder)
-    end
-
     it 'returns the ghost user ID' do
-      expect(source_internal_user_finder).to receive(:cached_ghost_user_id).and_return('10')
+      expect(BulkImports::SourceInternalUserFinder).to receive(:cached_ghost_user_id)
+        .with(bulk_import.id)
+        .and_return('10')
 
       expect(subject.source_ghost_user_id).to eq('10')
     end
 
     it 'memoizes the result' do
-      expect(source_internal_user_finder).to receive(:cached_ghost_user_id).once.and_return('10')
+      expect(BulkImports::SourceInternalUserFinder).to receive(:cached_ghost_user_id)
+        .with(bulk_import.id)
+        .once
+        .and_return('10')
 
       2.times { subject.source_ghost_user_id }
+    end
+
+    context 'when offline' do
+      before do
+        entity.update!(bulk_import: offline_bulk_import)
+      end
+
+      it 'returns the cached ghost user ID without source configuration' do
+        expect(BulkImports::SourceInternalUserFinder).to receive(:cached_ghost_user_id)
+          .with(offline_bulk_import.id)
+          .and_return('10')
+
+        expect(subject.source_ghost_user_id).to eq('10')
+      end
     end
   end
 

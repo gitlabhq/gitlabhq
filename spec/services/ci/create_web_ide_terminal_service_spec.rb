@@ -3,41 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Ci::CreateWebIdeTerminalService, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo, create_tag: 'v1.0.0') }
   let_it_be(:user) { create(:user) }
 
   let(:ref) { 'master' }
 
   describe '#execute' do
     subject { described_class.new(project, user, ref: ref).execute }
-
-    context 'for maintainer' do
-      shared_examples 'be successful' do
-        it 'returns a success with pipeline object' do
-          is_expected.to include(status: :success)
-
-          expect(subject[:pipeline]).to be_a(Ci::Pipeline)
-          expect(subject[:pipeline]).to be_persisted
-          expect(subject[:pipeline].stages.count).to eq(1)
-          expect(subject[:pipeline].builds.count).to eq(1)
-        end
-
-        it 'calls ensure_project_iid explicitly' do
-          expect_next_instance_of(Ci::Pipeline) do |instance|
-            expect(instance).to receive(:ensure_project_iid!).twice
-          end
-          subject
-        end
-
-        it 'increments the metrics' do
-          expect(::Gitlab::Ci::Pipeline::Metrics.pipelines_created_counter)
-            .to receive(:increment)
-            .with({ partition_id: instance_of(Integer), source: :webide })
-
-          subject
-        end
-      end
-    end
 
     context 'error handling' do
       shared_examples 'having an error' do |message|
@@ -54,7 +26,7 @@ RSpec.describe Ci::CreateWebIdeTerminalService, feature_category: :continuous_in
       end
 
       context 'when user is developer' do
-        before do
+        before_all do
           project.add_developer(user)
         end
 
@@ -62,7 +34,7 @@ RSpec.describe Ci::CreateWebIdeTerminalService, feature_category: :continuous_in
       end
 
       context 'when user is maintainer' do
-        before do
+        before_all do
           project.add_maintainer(user)
         end
 
@@ -79,12 +51,6 @@ RSpec.describe Ci::CreateWebIdeTerminalService, feature_category: :continuous_in
         end
 
         context 'when ref is a tag' do
-          let(:ref) { 'v1.0.0' }
-
-          it_behaves_like 'having an error', 'Ref needs to be a branch'
-        end
-
-        context 'when terminal config is missing' do
           let(:ref) { 'v1.0.0' }
 
           it_behaves_like 'having an error', 'Ref needs to be a branch'

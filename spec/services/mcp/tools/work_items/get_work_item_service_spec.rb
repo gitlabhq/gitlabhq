@@ -71,14 +71,15 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemService, feature_category: :mcp
               type: 'integer',
               minimum: 1,
               maximum: 100,
-              description: 'Number of related merge requests to return. Default 20, max 100. ' \
+              description: 'Number of related merge requests to return after the cursor ' \
+                '(forward pagination). Default 20, max 100. ' \
                 'Applies only when related_merge_requests is in include.'
             },
             related_merge_requests_after: {
               type: 'string',
-              description: 'Cursor for forward pagination of related merge requests. Use ' \
-                'endCursor from the previous response. Applies only when ' \
-                'related_merge_requests is in include.'
+              description: 'Cursor for forward pagination of related merge requests. ' \
+                'Use pageInfo.endCursor from a previous response. ' \
+                'Applies only when related_merge_requests is in include.'
             },
             mr_page_size: {
               type: 'integer',

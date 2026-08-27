@@ -342,6 +342,14 @@ ci_subscriptions_projects:
   - table: users
     column: author_id
     on_delete: async_delete
+ci_test_balancing_job_groups:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+ci_test_balancing_test_splits:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 ci_triggers:
   - table: users
     column: owner_id

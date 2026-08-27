@@ -86,7 +86,11 @@ var (
 	)
 )
 
-const channelPrefix = "workhorse:notifications:"
+const (
+	channelPrefix = "workhorse:notifications:"
+	// Keep this small because delSubscription holds kw.mu during Unsubscribe; Redis latency may prevent completion.
+	subscriptionCleanupTimeout = 100 * time.Millisecond
+)
 
 func countAction(action string) { TotalActions.WithLabelValues(action).Add(1) }
 
@@ -252,6 +256,9 @@ func (kw *KeyWatcher) addSubscription(ctx context.Context, key string, notify ch
 }
 
 func (kw *KeyWatcher) delSubscription(ctx context.Context, key string, notify chan string) {
+	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), subscriptionCleanupTimeout)
+	defer cancel()
+
 	kw.mu.Lock()
 	defer kw.mu.Unlock()
 
@@ -318,6 +325,9 @@ func (kw *KeyWatcher) WatchKey(ctx context.Context, key, value string, timeout t
 	if errors.Is(err, redis.Nil) {
 		currentValue = ""
 	} else if err != nil {
+		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+			return WatchKeyStatusNoChange, nil
+		}
 		return WatchKeyStatusNoChange, fmt.Errorf("keywatcher: redis GET: %v", err)
 	}
 	if currentValue != value {

@@ -59,11 +59,13 @@ RSpec.describe Mcp::Tools::Wikis::ListWikiPagesService, feature_category: :mcp_s
               type: 'integer',
               minimum: 1,
               maximum: 100,
-              description: 'Number of wiki pages to return after the cursor (forward pagination, max 100)'
+              description: 'Number of wiki pages to return after the cursor (forward pagination). ' \
+                'Default 20, max 100.'
             },
             after: {
               type: 'string',
-              description: 'Cursor for forward pagination. Use endCursor from previous response.'
+              description: 'Cursor for forward pagination of wiki pages. ' \
+                'Use pageInfo.endCursor from a previous response.'
             }
           }
         }

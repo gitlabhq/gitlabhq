@@ -133,11 +133,13 @@ RSpec.describe Mcp::Tools::WorkItems::ListWorkItemsService, feature_category: :m
               type: 'integer',
               minimum: 1,
               maximum: 100,
-              description: 'Number of work items to return. Default 20, max 100.'
+              description: 'Number of work items to return after the cursor (forward pagination). ' \
+                'Default 20, max 100.'
             },
             after: {
               type: 'string',
-              description: 'Cursor for forward pagination. Use endCursor from the previous response.'
+              description: 'Cursor for forward pagination of work items. ' \
+                'Use pageInfo.endCursor from a previous response.'
             }
           }
         }

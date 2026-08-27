@@ -2,7 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe "Group manages runners in runner list", :freeze_time, :js, feature_category: :fleet_visibility do
+RSpec.describe "Group manages runners in runner list", :freeze_time, :js, feature_category: :fleet_visibility,
+  quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/44287',
+    type: :flaky
+  } do
   include Spec::Support::Helpers::ModalHelpers
   include Features::RunnersHelpers
 

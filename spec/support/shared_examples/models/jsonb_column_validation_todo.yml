@@ -22,6 +22,7 @@
 - GitlabSubscriptions::UserAddOnAssignmentVersion#object
 - Govern::Policy#actions
 - Govern::Policy#policy_scope
+- Govern::Policy#scope_dimensions
 - Operations::FeatureFlags::Strategy#parameters
 - Packages::Composer::Metadatum#composer_json
 - Packages::Composer::Package#composer_json

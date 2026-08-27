@@ -77,13 +77,13 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestService, feature_catego
           },
           diffs_after: {
             type: 'string',
-            description: 'Cursor for forward pagination of diffs. ' \
+            description: 'Cursor for forward pagination of files. ' \
               'Use pageInfo.endCursor from a previous response. ' \
               'Applies only when diffs is in include and detail is full_patch.'
           },
           diffs_first: {
             type: 'integer',
-            description: 'Number of files to return after the cursor (max 100). ' \
+            description: 'Number of files to return after the cursor (forward pagination). Max 100. ' \
               'Applies only when diffs is in include and detail is full_patch.',
             minimum: 1,
             maximum: 100
@@ -91,11 +91,11 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestService, feature_catego
           notes_after: {
             type: 'string',
             description: 'Cursor for forward pagination of notes. ' \
-              'Use endCursor from a previous response. Applies only when notes is in include.'
+              'Use pageInfo.endCursor from a previous response. Applies only when notes is in include.'
           },
           notes_first: {
             type: 'integer',
-            description: 'Number of notes to return after the cursor (max 100). ' \
+            description: 'Number of notes to return after the cursor (forward pagination). Max 100. ' \
               'Applies only when notes is in include.',
             minimum: 1,
             maximum: 100

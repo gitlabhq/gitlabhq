@@ -44,31 +44,18 @@ module Mcp
                   'full_patch: per-file patch text (raw diff), plus the per-file stats.',
                 enum: %w[none stats full_patch]
               },
-              diffs_after: {
-                type: 'string',
-                description: 'Cursor for forward pagination of diffs. ' \
-                  'Use pageInfo.endCursor from a previous response. ' \
-                  'Applies only when diffs is in include and detail is full_patch.'
-              },
-              diffs_first: {
-                type: 'integer',
-                description: 'Number of files to return after the cursor (max 100). ' \
-                  'Applies only when diffs is in include and detail is full_patch.',
-                minimum: 1,
-                maximum: 100
-              },
-              notes_after: {
-                type: 'string',
-                description: 'Cursor for forward pagination of notes. ' \
-                  'Use endCursor from a previous response. Applies only when notes is in include.'
-              },
-              notes_first: {
-                type: 'integer',
-                description: 'Number of notes to return after the cursor (max 100). ' \
-                  'Applies only when notes is in include.',
-                minimum: 1,
-                maximum: 100
-              }
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
+                items: 'files',
+                prefix: 'diffs_',
+                applies_to: 'diffs is in include and detail is full_patch',
+                default_page_size: nil
+              ),
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
+                items: 'notes',
+                prefix: 'notes_',
+                applies_to: 'notes is in include',
+                default_page_size: nil
+              )
             }
           },
           annotations: {

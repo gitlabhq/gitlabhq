@@ -20,16 +20,7 @@ module Mcp
                 type: 'string',
                 description: 'ID or path of the group. Required if project_id is not provided.'
               },
-              first: {
-                type: 'integer',
-                minimum: 1,
-                maximum: 100,
-                description: 'Number of wiki pages to return after the cursor (forward pagination, max 100)'
-              },
-              after: {
-                type: 'string',
-                description: 'Cursor for forward pagination. Use endCursor from previous response.'
-              }
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(items: 'wiki pages')
             }
           }
         }

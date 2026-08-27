@@ -20,6 +20,7 @@ title: Policy store API
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/604367) to persist policies to the database instead of per-process memory in GitLab 19.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/616505) to add the `policy_rego` response attribute in GitLab 19.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/612905) to reject rules that compile to a Rego module larger than 65536 bytes in GitLab 19.4.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/623359) to add the `scope_dimensions` response attribute in GitLab 19.4.
 
 {{< /history >}}
 
@@ -176,6 +177,14 @@ program that applies to every project.
 `policy_scope` is `null` when the Rego was authored directly, because a hand-written program
 has no structured form.
 
+`scope_dimensions` lists the dotted context paths, such as `compliance_frameworks` or
+`project.id`, that `scope_rego` reads to decide whether the policy applies. GitLab derives
+this list, so it ignores any value you send for the attribute. This value is always an
+array, empty when the policy is unscoped, unless `scope_rego` was authored directly instead
+of compiled from `policy_scope`. In that case, GitLab cannot derive the paths from a
+hand-written program, so `scope_dimensions` is `null`, meaning the paths are not known
+rather than empty.
+
 #### Policy scope structure
 
 `policy_scope` holds one or more criteria, and `match_mode` controls how they combine.
@@ -256,6 +265,7 @@ The policy endpoints return the following attributes:
 | `policy_rego`     | string          | The policy's rules, compiled to a single Rego module. `null` for a policy with no rules. |
 | `policy_scope`    | object          | Structured scope of the policy, or `null` when the Rego was authored directly. |
 | `rules`           | array           | Rules of the policy. |
+| `scope_dimensions`| array           | Dotted context paths `scope_rego` reads to decide whether the policy applies. GitLab derives this value, so it ignores any value you send for it. `null` when `scope_rego` was authored directly, otherwise an array, empty when the policy is unscoped. |
 | `scope_rego`      | string          | Compiled scope of the policy, as Rego. |
 | `trigger_type`    | string          | Trigger the policy responds to. |
 | `updated_at`      | string          | Date and time the policy was last changed. |
@@ -302,6 +312,7 @@ Example response:
     "policy_rego": "package governance\n",
     "actions": [{ "type": "block" }],
     "policy_scope": null,
+    "scope_dimensions": [],
     "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
     "mode": "enforce",
     "lifecycle_state": "active",
@@ -351,6 +362,7 @@ Example response:
   "policy_rego": "package governance\n",
   "actions": [{ "type": "block" }],
   "policy_scope": null,
+  "scope_dimensions": [],
   "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
   "mode": "enforce",
   "lifecycle_state": "active",
@@ -422,6 +434,7 @@ Example response:
   "policy_rego": "package governance\n",
   "actions": [{ "type": "block" }],
   "policy_scope": { "compliance_frameworks": [{ "id": 5 }] },
+  "scope_dimensions": ["compliance_frameworks"],
   "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
   "mode": "enforce",
   "lifecycle_state": "active",
@@ -496,6 +509,7 @@ Example response:
   "policy_rego": "package governance\n",
   "actions": [{ "type": "block" }],
   "policy_scope": null,
+  "scope_dimensions": [],
   "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
   "mode": "enforce",
   "lifecycle_state": "active",

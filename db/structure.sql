@@ -6662,6 +6662,17 @@ CREATE TABLE p_ci_stages (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE ci_test_balancing_assignments (
+    pipeline_created_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    pipeline_id bigint NOT NULL,
+    job_group_id bigint NOT NULL,
+    test_split_id bigint NOT NULL,
+    expected_duration double precision,
+    node_index integer NOT NULL
+)
+PARTITION BY RANGE (pipeline_created_at);
+
 CREATE TABLE p_ci_workload_variable_inclusions (
     id bigint NOT NULL,
     workload_id bigint,
@@ -18332,6 +18343,40 @@ CREATE SEQUENCE ci_subscriptions_projects_id_seq
 
 ALTER SEQUENCE ci_subscriptions_projects_id_seq OWNED BY ci_subscriptions_projects.id;
 
+CREATE TABLE ci_test_balancing_job_groups (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    last_seen_at timestamp with time zone DEFAULT now() NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_9122c62b6a CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE ci_test_balancing_job_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_test_balancing_job_groups_id_seq OWNED BY ci_test_balancing_job_groups.id;
+
+CREATE TABLE ci_test_balancing_test_splits (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    last_seen_at timestamp with time zone DEFAULT now() NOT NULL,
+    path text NOT NULL,
+    CONSTRAINT check_1501e720f8 CHECK ((char_length(path) <= 1024))
+);
+
+CREATE SEQUENCE ci_test_balancing_test_splits_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_test_balancing_test_splits_id_seq OWNED BY ci_test_balancing_test_splits.id;
+
 CREATE TABLE ci_triggers (
     id bigint NOT NULL,
     created_at timestamp without time zone,
@@ -21566,6 +21611,7 @@ CREATE TABLE govern_policies (
     policy_scope jsonb,
     rules jsonb DEFAULT '[]'::jsonb NOT NULL,
     actions jsonb DEFAULT '[]'::jsonb NOT NULL,
+    scope_dimensions jsonb,
     CONSTRAINT check_26b266355c CHECK ((char_length(description) <= 4096)),
     CONSTRAINT check_6ed8686a5b CHECK ((char_length(scope_rego) <= 4096)),
     CONSTRAINT check_dc911ab262 CHECK ((char_length(name) <= 255)),
@@ -36872,6 +36918,10 @@ ALTER TABLE ONLY ci_sources_projects ALTER COLUMN id SET DEFAULT nextval('ci_sou
 
 ALTER TABLE ONLY ci_subscriptions_projects ALTER COLUMN id SET DEFAULT nextval('ci_subscriptions_projects_id_seq'::regclass);
 
+ALTER TABLE ONLY ci_test_balancing_job_groups ALTER COLUMN id SET DEFAULT nextval('ci_test_balancing_job_groups_id_seq'::regclass);
+
+ALTER TABLE ONLY ci_test_balancing_test_splits ALTER COLUMN id SET DEFAULT nextval('ci_test_balancing_test_splits_id_seq'::regclass);
+
 ALTER TABLE ONLY ci_triggers ALTER COLUMN id SET DEFAULT nextval('ci_triggers_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_unit_test_failures ALTER COLUMN id SET DEFAULT nextval('ci_unit_test_failures_id_seq'::regclass);
@@ -40171,6 +40221,15 @@ ALTER TABLE ONLY ci_sources_projects
 
 ALTER TABLE ONLY ci_subscriptions_projects
     ADD CONSTRAINT ci_subscriptions_projects_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_test_balancing_assignments
+    ADD CONSTRAINT ci_test_balancing_assignments_pkey PRIMARY KEY (pipeline_created_at, pipeline_id, job_group_id, test_split_id);
+
+ALTER TABLE ONLY ci_test_balancing_job_groups
+    ADD CONSTRAINT ci_test_balancing_job_groups_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_test_balancing_test_splits
+    ADD CONSTRAINT ci_test_balancing_test_splits_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_triggers
     ADD CONSTRAINT ci_triggers_pkey PRIMARY KEY (id);
@@ -47454,6 +47513,12 @@ CREATE INDEX index_ci_subscriptions_projects_author_id ON ci_subscriptions_proje
 CREATE INDEX index_ci_subscriptions_projects_on_upstream_project_id ON ci_subscriptions_projects USING btree (upstream_project_id);
 
 CREATE UNIQUE INDEX index_ci_subscriptions_projects_unique_subscription ON ci_subscriptions_projects USING btree (downstream_project_id, upstream_project_id);
+
+CREATE INDEX index_ci_test_balancing_claimed_tests ON ONLY ci_test_balancing_assignments USING btree (pipeline_id, job_group_id, node_index);
+
+CREATE UNIQUE INDEX index_ci_test_balancing_job_groups_on_project_id_and_name ON ci_test_balancing_job_groups USING btree (project_id, name);
+
+CREATE UNIQUE INDEX index_ci_test_balancing_test_splits_on_project_id_and_path ON ci_test_balancing_test_splits USING btree (project_id, path);
 
 CREATE INDEX index_ci_triggers_on_expires_at ON ci_triggers USING btree (expires_at);
 

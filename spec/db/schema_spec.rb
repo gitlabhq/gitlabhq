@@ -90,6 +90,7 @@ RSpec.describe 'Database schema',
       ci_pipeline_schedule_variables: %w[project_id],
       ci_pipelines_config: %w[partition_id project_id],
       ci_secure_file_states: %w[project_id],
+      ci_test_balancing_assignments: %w[project_id pipeline_id test_split_id job_group_id], # No FKs needed as rows are dropped after retention period
       ci_unit_test_failures: %w[project_id],
       ci_resources: %w[project_id],
       p_ci_pipelines: %w[partition_id trigger_id],

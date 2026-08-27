@@ -40,14 +40,14 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
   end
 
   describe '.abort_auto_merge' do
-    subject { service.abort_auto_merge('merge request was closed') }
+    subject { service.abort_auto_merge('the merge request was closed') }
 
     it_behaves_like 'a system note' do
       let(:action) { 'merge' }
     end
 
     it "posts the 'abort auto merge' system note" do
-      expect(subject.note).to eq "aborted the automatic merge because merge request was closed"
+      expect(subject.note).to eq "aborted the automatic merge because the merge request was closed"
     end
 
     context "when reason is upcased" do

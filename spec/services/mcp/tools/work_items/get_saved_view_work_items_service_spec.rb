@@ -56,11 +56,13 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
             },
             after: {
               type: 'string',
-              description: 'Cursor for forward pagination. Use endCursor from previous response.'
+              description: 'Cursor for forward pagination of work items. ' \
+                'Use pageInfo.endCursor from a previous response.'
             },
             first: {
               type: 'integer',
-              description: 'Number of work items to return (forward pagination, max 100)',
+              description: 'Number of work items to return after the cursor (forward pagination). ' \
+                'Default 20, max 100.',
               minimum: 1,
               maximum: 100
             }

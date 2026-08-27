@@ -68,13 +68,13 @@ RSpec.describe Mcp::Tools::Commits::GetCommitService, feature_category: :mcp_ser
           },
           notes_after: {
             type: 'string',
-            description: 'Cursor for forward pagination of notes. Use endCursor from a previous ' \
-              'response. Applies only when "notes" is in include.'
+            description: 'Cursor for forward pagination of notes. ' \
+              'Use pageInfo.endCursor from a previous response. Applies only when notes is in include.'
           },
           notes_first: {
             type: 'integer',
-            description: 'Number of notes to return after the cursor (max 100). ' \
-              'Applies only when "notes" is in include.',
+            description: 'Number of notes to return after the cursor (forward pagination). Max 100. ' \
+              'Applies only when notes is in include.',
             minimum: 1,
             maximum: 100
           }

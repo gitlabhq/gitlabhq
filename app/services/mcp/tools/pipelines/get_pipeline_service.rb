@@ -40,18 +40,10 @@ module Mcp
                 description: 'Filters the jobs facet by status (for example, failed). ' \
                   'Only applies when include is jobs.'
               },
-              first: {
-                type: 'integer',
-                minimum: 1,
-                maximum: GetPipelineTool::MAX_FIRST,
-                description: 'Number of items to return for the selected include facet. ' \
-                  "Default is #{GetPipelineTool::DEFAULT_FIRST}, max #{GetPipelineTool::MAX_FIRST}."
-              },
-              after: {
-                type: 'string',
-                description: 'Cursor for forward pagination of the selected include facet. ' \
-                  'Use the previous response\'s page_info.end_cursor.'
-              }
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
+                items: 'items for the selected include facet',
+                cursor_style: :snake_case
+              )
             },
             required: %w[id pipeline_id]
           }

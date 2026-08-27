@@ -568,6 +568,120 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           end
         end
       end
+
+      context 'for slack api scope transfers' do
+        let_it_be(:slack_scope) do
+          create(:slack_integration, :group, :all_features_supported, group: group)
+            .slack_api_scopes.first
+        end
+
+        let_it_be(:slack_integration) { SlackIntegration.find_by(group_id: group.id) }
+
+        it 'duplicates scope records into the new org and repoints the join table' do
+          old_scope_id = slack_scope.id
+          old_scope_name = slack_scope.name
+
+          service.execute
+
+          new_scope = Integrations::SlackWorkspace::ApiScope.find_by(
+            organization_id: new_organization.id, name: old_scope_name
+          )
+
+          expect(new_scope).to be_present
+          expect(new_scope.id).not_to eq(old_scope_id)
+
+          repointed_ids = slack_integration.reload.slack_integrations_scopes.pluck(:slack_api_scope_id)
+          expect(repointed_ids).to all(satisfy { |id|
+            Integrations::SlackWorkspace::ApiScope.find(id).organization_id == new_organization.id
+          })
+        end
+
+        it 'does not modify the original scope record' do
+          expect { service.execute }.not_to change { slack_scope.reload.organization_id }
+        end
+
+        context 'when matching scopes already exist in the new org' do
+          before do
+            scope_names = slack_integration.slack_api_scopes.pluck(:name)
+            Integrations::SlackWorkspace::ApiScope.find_or_initialize_by_names(
+              scope_names, organization_id: new_organization.id
+            )
+          end
+
+          it 'repoints to existing scopes without creating duplicates' do
+            expect { service.execute }.not_to change {
+              Integrations::SlackWorkspace::ApiScope.where(organization_id: new_organization.id).count
+            }
+          end
+        end
+
+        context 'when scope is referenced by a project integration' do
+          let_it_be(:project_slack) do
+            create(:slack_integration, :project, :all_features_supported,
+              project: create(:project, namespace: group, organization: old_organization)
+            )
+          end
+
+          it 'repoints project-level scopes to the new org' do
+            service.execute
+
+            repointed_ids = project_slack.reload.slack_integrations_scopes.pluck(:slack_api_scope_id)
+            expect(repointed_ids).to all(satisfy { |id|
+              Integrations::SlackWorkspace::ApiScope.find(id).organization_id == new_organization.id
+            })
+          end
+        end
+
+        context 'when multiple scopes are transferred' do
+          let_it_be(:second_slack_integration) do
+            create(:slack_integration, :group, :all_features_supported,
+              group: create(:group, parent: group, organization: old_organization)
+            )
+          end
+
+          it 'repoints all scope references across multiple integrations' do
+            all_old_scope_ids = (slack_integration.slack_integrations_scopes.pluck(:slack_api_scope_id) +
+              second_slack_integration.slack_integrations_scopes.pluck(:slack_api_scope_id)).uniq
+
+            service.execute
+
+            [slack_integration, second_slack_integration].each do |si|
+              repointed_ids = si.reload.slack_integrations_scopes.pluck(:slack_api_scope_id)
+
+              expect(repointed_ids).to all(satisfy { |id|
+                Integrations::SlackWorkspace::ApiScope.find(id).organization_id == new_organization.id
+              })
+            end
+
+            new_scope_names = Integrations::SlackWorkspace::ApiScope
+              .where(organization_id: new_organization.id)
+              .pluck(:name)
+
+            old_scope_names = Integrations::SlackWorkspace::ApiScope
+              .where(id: all_old_scope_ids)
+              .pluck(:name)
+
+            expect(new_scope_names).to match_array(old_scope_names)
+          end
+        end
+
+        context 'when scope is referenced by a group outside the transfer' do
+          let_it_be(:other_group) { create(:group, organization: old_organization) }
+          let_it_be(:other_slack) do
+            create(:slack_integration, :group, :all_features_supported, group: other_group)
+          end
+
+          it 'does not repoint scopes outside the transferred hierarchy' do
+            service.execute
+
+            repointed_ids = other_slack.reload.slack_integrations_scopes.pluck(:slack_api_scope_id)
+
+            expect(repointed_ids).to all(satisfy { |id|
+              Integrations::SlackWorkspace::ApiScope.find(id).organization_id == old_organization.id
+            })
+          end
+        end
+      end
     end
 
     context 'when group is not root' do
@@ -924,6 +1038,23 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
         it_behaves_like "rolls back organization_id updates" do
           let(:records) { [fork_network] }
+        end
+      end
+
+      context 'with slack api scope duplication' do
+        let_it_be(:slack_integration) do
+          create(:slack_integration, :group, :all_features_supported, group: group)
+        end
+
+        it 'rolls back duplicated scopes and repointed join table rows' do
+          original_scope_ids = slack_integration.slack_integrations_scopes.pluck(:slack_api_scope_id)
+
+          expect { service.execute }.not_to change {
+            Integrations::SlackWorkspace::ApiScope.where(organization_id: new_organization.id).count
+          }
+
+          expect(slack_integration.reload.slack_integrations_scopes.pluck(:slack_api_scope_id))
+            .to match_array(original_scope_ids)
         end
       end
 

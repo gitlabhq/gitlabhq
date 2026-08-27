@@ -1,9 +1,0 @@
----
-name: elasticsearch_migrations_type_class
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248674
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/601950
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608185
-milestone: '19.3'
-type: development
-group: group::global search
-default_enabled: false

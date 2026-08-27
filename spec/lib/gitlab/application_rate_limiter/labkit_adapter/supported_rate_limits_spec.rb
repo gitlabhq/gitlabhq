@@ -141,7 +141,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimit
         expect(result.rule.name).to eq('users_get_by_id_bypass')
 
         count = Gitlab::Redis::RateLimiting.with do |r|
-          r.get("labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}")
+          r.get("labkit:rl:{applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}}")
         end
         expect(count.to_i).to eq(1) # unchanged by the bypassed peek
       end

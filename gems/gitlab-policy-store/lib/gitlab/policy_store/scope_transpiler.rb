@@ -41,6 +41,12 @@ module Gitlab
         "#{PACKAGE}\n\n#{scope_block}\n"
       end
 
+      def scope_dimensions
+        return [] if unscoped?
+
+        (included_condition_entries + excluded_condition_entries).map { |entry| entry[:path] }.uniq
+      end
+
       private
 
       attr_reader :policy_scope, :policy_name
@@ -97,60 +103,78 @@ module Gitlab
       end
 
       def included_conditions
-        conditions = []
+        included_condition_entries.map { |entry| entry[:lines] }
+      end
+
+      def excluded_conditions
+        excluded_condition_entries.map { |entry| entry[:lines] }
+      end
+
+      def included_condition_entries
+        entries = []
 
         if emit?(compliance_frameworks, :including)
-          conditions << ["some framework_id in input.compliance_frameworks",
-            "framework_id in #{rego_set(compliance_frameworks[:ids])}"]
+          entries << { path: "compliance_frameworks", lines: ["some framework_id in input.compliance_frameworks",
+            "framework_id in #{rego_set(compliance_frameworks[:ids])}"] }
         end
 
         included_projects = projects[:including]
 
         if emit?(included_projects, :including)
-          conditions << ["input.project.id in #{rego_set(included_projects[:ids])}"]
+          entries << { path: "project.id", lines: ["input.project.id in #{rego_set(included_projects[:ids])}"] }
         end
 
         included_groups = groups[:including]
 
         if emit?(included_groups, :including)
-          conditions << ["some group_id in input.groups", "group_id in #{rego_set(included_groups[:ids])}"]
+          entries << { path: "groups",
+            lines: ["some group_id in input.groups", "group_id in #{rego_set(included_groups[:ids])}"] }
         end
 
-        conditions.concat(attribute_conditions(:including))
+        entries.concat(attribute_condition_entries(:including))
       end
 
-      def excluded_conditions
-        conditions = []
+      def excluded_condition_entries
+        entries = []
 
         excluded_projects = projects[:excluding]
 
         if emit?(excluded_projects, :excluding)
-          conditions << ["input.project.id in #{rego_set(excluded_projects[:ids])}"]
+          entries << { path: "project.id", lines: ["input.project.id in #{rego_set(excluded_projects[:ids])}"] }
         end
 
-        conditions << ["input.project.personal == true"] if projects[:exclude_personal]
-        conditions << ["input.project.archived == true"] if projects[:exclude_archived]
+        if projects[:exclude_personal]
+          entries << { path: "project.personal", lines: ["input.project.personal == true"] }
+        end
+
+        if projects[:exclude_archived]
+          entries << { path: "project.archived", lines: ["input.project.archived == true"] }
+        end
 
         excluded_groups = groups[:excluding]
 
         if emit?(excluded_groups, :excluding)
-          conditions << ["some group_id in input.groups", "group_id in #{rego_set(excluded_groups[:ids])}"]
+          entries << { path: "groups",
+            lines: ["some group_id in input.groups", "group_id in #{rego_set(excluded_groups[:ids])}"] }
         end
 
-        conditions.concat(attribute_conditions(:excluding))
+        entries.concat(attribute_condition_entries(:excluding))
       end
 
-      def attribute_conditions(direction)
+      def attribute_condition_entries(direction)
         ATTRIBUTE_DIMENSIONS.filter_map do |attribute|
           criterion = dimensions[attribute[:key]][direction]
           next unless emit?(criterion, direction)
 
           loop_variable = attribute[:loop_variable]
 
-          [
-            "some #{loop_variable} in input.security_attributes.#{attribute[:field]}",
-            "#{loop_variable} in #{rego_set(criterion[:ids])}"
-          ]
+          {
+            path: "security_attributes.#{attribute[:field]}",
+            lines: [
+              "some #{loop_variable} in input.security_attributes.#{attribute[:field]}",
+              "#{loop_variable} in #{rego_set(criterion[:ids])}"
+            ]
+          }
         end
       end
 

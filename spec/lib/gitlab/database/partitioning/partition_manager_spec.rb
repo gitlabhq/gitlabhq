@@ -311,22 +311,121 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       sync_partitions
     end
 
-    it 'logs an error if the partitions are not detachable' do
-      allow(Gitlab::Database::PostgresForeignKey).to receive(:by_referenced_table_identifier).with("public._test_foo")
-        .and_return([double(name: "fk_1", constrained_table_identifier: "public.constrainted_table_1")])
+    context 'when only one of the partitions is detachable' do
+      let(:blocker) do
+        Gitlab::Database::Partitioning::DetachEligibility::Blocker.new(
+          reason: :referencing_foreign_key, level: :warn, details: {}
+        )
+      end
 
-      expect(Gitlab::AppLogger).to receive(:error).with(
-        {
-          message: "Failed to create / detach partition(s)",
-          connection_name: "main",
-          exception_class: Gitlab::Database::Partitioning::PartitionManager::UnsafeToDetachPartitionError,
-          exception_message:
-            "Cannot detach foo1, it would block while checking foreign key fk_1 on public.constrainted_table_1",
-          table_name: :_test_foo
-        }
-      )
+      before do
+        allow(Gitlab::Database::Partitioning::DetachEligibility).to receive(:new) do |partition, **|
+          instance_double(
+            Gitlab::Database::Partitioning::DetachEligibility,
+            detachable?: partition == extra_partitions.first,
+            blocker: blocker
+          )
+        end
+      end
 
-      sync_partitions
+      it 'detaches the detachable one and keeps its cleanup record' do
+        sync_partitions
+
+        expect(Postgresql::DetachedPartition.pluck(:table_name)).to contain_exactly('foo1')
+      end
+    end
+
+    context 'when the eligibility check hits a database error' do
+      before do
+        allow_next_instances_of(Gitlab::Database::Partitioning::DetachEligibility, extra_partitions.size) do |check|
+          allow(check).to receive(:detachable?).and_raise(ActiveRecord::StatementInvalid, 'statement timeout')
+        end
+      end
+
+      it 'does not detach the partitions' do
+        expect { sync_partitions }.not_to change { Postgresql::DetachedPartition.count }
+      end
+
+      it 'logs the error against each partition' do
+        allow(Gitlab::AppLogger).to receive(:error)
+
+        extra_partitions.each do |partition|
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including(
+              message: 'Deferred detaching partition',
+              deferral_reason: :database_error,
+              exception_message: /statement timeout/,
+              partition_name: partition.partition_name
+            )
+          )
+        end
+
+        sync_partitions
+      end
+    end
+
+    context 'when a partition is not detachable' do
+      let(:blocker_level) { :warn }
+      let(:blocker) do
+        Gitlab::Database::Partitioning::DetachEligibility::Blocker.new(
+          reason: :referencing_foreign_key, level: blocker_level,
+          details: { referencing_table: 'public._test_bar', foreign_key_name: 'fk_test_referencing' }
+        )
+      end
+
+      before do
+        allow_next_instances_of(Gitlab::Database::Partitioning::DetachEligibility, extra_partitions.size) do |check|
+          allow(check).to receive_messages(detachable?: false, blocker: blocker)
+        end
+      end
+
+      it 'defers every partition without opening a transaction' do
+        expect(Gitlab::Database::Partitioning::WithPartitioningLockRetries).not_to receive(:new)
+
+        expect { sync_partitions }.not_to change { Postgresql::DetachedPartition.count }
+      end
+
+      it 'logs each deferral with the details of its blocker' do
+        allow(Gitlab::AppLogger).to receive(:warn)
+
+        extra_partitions.each do |partition|
+          expect(Gitlab::AppLogger).to receive(:warn).with({
+            message: 'Deferred detaching partition',
+            deferral_reason: :referencing_foreign_key,
+            partition_name: partition.partition_name,
+            table_name: table,
+            connection_name: 'main',
+            referencing_table: 'public._test_bar',
+            foreign_key_name: 'fk_test_referencing'
+          })
+        end
+
+        sync_partitions
+      end
+
+      context 'when the blocker asks for another log level' do
+        where(:blocker_level, :log_method) do
+          :info  | :info
+          :error | :error
+        end
+
+        with_them do
+          it 'logs the deferrals at that level' do
+            allow(Gitlab::AppLogger).to receive(log_method)
+
+            extra_partitions.each do |partition|
+              expect(Gitlab::AppLogger).to receive(log_method).with(
+                hash_including(
+                  deferral_reason: :referencing_foreign_key,
+                  partition_name: partition.partition_name
+                )
+              )
+            end
+
+            sync_partitions
+          end
+        end
+      end
     end
   end
 

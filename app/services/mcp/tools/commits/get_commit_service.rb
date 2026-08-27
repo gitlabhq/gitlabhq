@@ -42,18 +42,12 @@ module Mcp
                   'Defaults to "stats".',
                 enum: %w[stats full_patch]
               },
-              notes_after: {
-                type: 'string',
-                description: 'Cursor for forward pagination of notes. Use endCursor from a previous ' \
-                  'response. Applies only when "notes" is in include.'
-              },
-              notes_first: {
-                type: 'integer',
-                description: 'Number of notes to return after the cursor (max 100). ' \
-                  'Applies only when "notes" is in include.',
-                minimum: 1,
-                maximum: 100
-              }
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
+                items: 'notes',
+                prefix: 'notes_',
+                applies_to: 'notes is in include',
+                default_page_size: nil
+              )
             }
           },
           annotations: {

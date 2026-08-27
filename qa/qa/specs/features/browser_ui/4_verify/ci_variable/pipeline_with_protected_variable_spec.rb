@@ -38,9 +38,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'exposes variable on protected branch',
-        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/28297',
-                      type: 'flaky' } do
+      it 'exposes variable on protected branch' do
         [developer, maintainer].each do |user|
           branch = "#{protected_branch}-#{user.id}"
           create_protected_branch(branch_name: branch)
@@ -53,12 +51,9 @@ module QA
         end
       end
 
-      it 'does not expose variable on unprotected branch', :smoke,
-        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/28297',
-                      type: 'flaky' } do
+      it 'does not expose variable on unprotected branch', :smoke do
         [developer, maintainer].each do |user|
-          branch = "#{unprotected_branch}-#{user.id}"
-          user_create_merge_request(user.api_client, source_branch: branch)
+          branch = user_create_merge_request(user.api_client, branch_prefix: "#{unprotected_branch}-#{user.id}")
           go_to_pipeline_job_as(user, source_branch: branch)
           Page::Project::Job::Show.perform do |show|
             show.wait_until(max_duration: 10) { show.output.present? }
@@ -74,8 +69,13 @@ module QA
       end
 
       def create_protected_branch(branch_name:)
+        # Create the branch here rather than letting the protected branch resource do it.
+        # It would use the commits API, then wait for a push event that is not always emitted.
+        create(:branch, project: project, name: branch_name)
+
         # Using default setups, which allows access for developer and maintainer
-        protected_branch = create(:protected_branch, branch_name: branch_name, project: project)
+        protected_branch = create(:protected_branch, branch_name: branch_name, project: project,
+          new_branch: false)
 
         # Wait for the protected branch to be fully effective
         Support::Retrier.retry_until(
@@ -109,7 +109,10 @@ module QA
         end
       end
 
-      def user_create_merge_request(api_client, source_branch:)
+      # Returns the source branch that was actually used.
+      def user_create_merge_request(api_client, branch_prefix:)
+        source_branch = nil
+
         # Retry is needed due to delays with project authorization updates
         # Long term solution to accessing the status of a project authorization update
         # has been proposed in https://gitlab.com/gitlab-org/gitlab/-/issues/393369
@@ -119,6 +122,10 @@ module QA
           message: "MR fabrication failed after retry",
           retry_on_exception: true
         ) do
+          # Fabrication creates the source branch, so a retry reusing the name always
+          # fails with "A branch called ... already exists" and can never recover.
+          source_branch = "#{branch_prefix}-#{SecureRandom.hex(4)}"
+
           create(:merge_request,
             api_client: api_client,
             project: project,
@@ -128,6 +135,8 @@ module QA
             file_name: Faker::File.unique.file_name,
             file_content: Faker::Lorem.sentence)
         end
+
+        source_branch
       end
 
       def go_to_pipeline_job_as(user, source_branch:)

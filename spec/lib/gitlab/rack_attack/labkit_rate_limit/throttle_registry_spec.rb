@@ -103,6 +103,19 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry, feature_ca
       end
     end
 
+    it 'checks the path regex last, so cheap gates can rule a throttle out first' do
+      # Labkit tests a match with Hash#all?, which walks the conditions in insertion
+      # order and stops at the first false one. Every fact is already computed, so a
+      # boolean or presence gate costs a comparison while a path regex on a deep
+      # namespace is the expensive part. Ordering is therefore free performance, and
+      # this pins it so a later edit does not quietly give it back (see #29581).
+      (described_class.all.values.map(&:match) + described_class.skip_matches.values).each do |match|
+        next unless match.key?(:path)
+
+        expect(match.keys.last).to eq(:path)
+      end
+    end
+
     it 'references only facts that ClassifiedRequest produces' do
       # The middleware matches each throttle's :match against the facts
       # ClassifiedRequest builds, so a typo'd or renamed fact key would silently

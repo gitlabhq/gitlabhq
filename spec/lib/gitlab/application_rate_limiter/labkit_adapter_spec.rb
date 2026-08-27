@@ -64,7 +64,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
         described_class.run!(:users_get_by_id, scope: user)
 
         count = Gitlab::Redis::RateLimiting.with do |r|
-          r.get("labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}")
+          r.get("labkit:rl:{applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}}")
         end
 
         expect(count.to_i).to eq(2)
@@ -130,7 +130,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
         described_class.run!(:users_get_by_id, scope: user, context: { bypass_header: '1' })
 
         count = Gitlab::Redis::RateLimiting.with do |r|
-          r.get("labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}")
+          r.get("labkit:rl:{applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}}")
         end
 
         expect(count).to be_nil
@@ -147,7 +147,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
         expect(result).to be(false)
 
         count = Gitlab::Redis::RateLimiting.with do |r|
-          r.get("labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}")
+          r.get("labkit:rl:{applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}}")
         end
         expect(count.to_i).to eq(2) # the bypassed call did not add a third increment
       end
@@ -159,7 +159,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
         described_class.run!(:users_get_by_id, scope: { user: user })
 
         count = Gitlab::Redis::RateLimiting.with do |r|
-          r.get("labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}")
+          r.get("labkit:rl:{applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}}")
         end
 
         expect(count.to_i).to eq(2)
@@ -214,7 +214,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
         described_class.run!(:notes_create, scope: [user])
 
         count = Gitlab::Redis::RateLimiting.with do |r|
-          r.get("labkit:rl:applimiter_notes_create:limit_notes_by_user:user:#{user.id}")
+          r.get("labkit:rl:{applimiter_notes_create:limit_notes_by_user:user:#{user.id}}")
         end
 
         expect(count.to_i).to eq(2)
@@ -225,8 +225,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       it 'writes the count under the expected labkit key' do
         described_class.run!(:pipelines_create, scope: [project, user, 'abc123'])
 
-        expected_key = "labkit:rl:applimiter_pipelines_create:limit_pipelines_by_project_user_sha" \
-          ":project:#{project.id}:user:#{user.id}:sha:abc123"
+        expected_key = "labkit:rl:{applimiter_pipelines_create:limit_pipelines_by_project_user_sha" \
+          ":project:#{project.id}:user:#{user.id}:sha:abc123}"
         count = Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }
 
         expect(count.to_i).to eq(1)
@@ -235,8 +235,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       it "fills missing characteristic values with the '_unknown_' sentinel" do
         described_class.run!(:search_rate_limit, scope: [user])
 
-        expected_key = "labkit:rl:applimiter_search_rate_limit:limit_searches_by_user_scope" \
-          ":user:#{user.id}:search_scope:_unknown_"
+        expected_key = "labkit:rl:{applimiter_search_rate_limit:limit_searches_by_user_scope" \
+          ":user:#{user.id}:search_scope:_unknown_}"
         count = Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }
 
         expect(count.to_i).to eq(1)
@@ -250,10 +250,10 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
         described_class.run!(:web_hook_test, scope: [project, user])
         described_class.run!(:web_hook_test, scope: [group, user])
 
-        project_key = "labkit:rl:applimiter_web_hook_test:limit_web_hook_tests_by_parent_user" \
-          ":project:#{project.id}:group:_unknown_:user:#{user.id}"
-        group_key = "labkit:rl:applimiter_web_hook_test:limit_web_hook_tests_by_parent_user" \
-          ":project:_unknown_:group:#{group.id}:user:#{user.id}"
+        project_key = "labkit:rl:{applimiter_web_hook_test:limit_web_hook_tests_by_parent_user" \
+          ":project:#{project.id}:group:_unknown_:user:#{user.id}}"
+        group_key = "labkit:rl:{applimiter_web_hook_test:limit_web_hook_tests_by_parent_user" \
+          ":project:_unknown_:group:#{group.id}:user:#{user.id}}"
 
         Gitlab::Redis::RateLimiting.with do |r|
           expect(r.get(project_key).to_i).to eq(1)
@@ -266,8 +266,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       it 'routes a User scope to the user characteristic' do
         described_class.run!(:expanded_diff_files, scope: user)
 
-        expected_key = "labkit:rl:applimiter_expanded_diff_files:limit_expanded_diff_files_by_user_or_ip" \
-          ":user:#{user.id}:ip:_unknown_"
+        expected_key = "labkit:rl:{applimiter_expanded_diff_files:limit_expanded_diff_files_by_user_or_ip" \
+          ":user:#{user.id}:ip:_unknown_}"
         count = Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }
 
         expect(count.to_i).to eq(1)
@@ -276,8 +276,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       it 'routes a String scope to the ip characteristic' do
         described_class.run!(:expanded_diff_files, scope: '203.0.113.7')
 
-        expected_key = "labkit:rl:applimiter_expanded_diff_files:limit_expanded_diff_files_by_user_or_ip" \
-          ":user:_unknown_:ip:203.0.113.7"
+        expected_key = "labkit:rl:{applimiter_expanded_diff_files:limit_expanded_diff_files_by_user_or_ip" \
+          ":user:_unknown_:ip:203.0.113.7}"
         count = Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }
 
         expect(count.to_i).to eq(1)
@@ -290,9 +290,9 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       it 'routes a DeployKey to :key via is_a?, not into a primitive slot' do
         described_class.run!(:gitlab_shell_operation, scope: [:upload, 'group/project', deploy_key])
 
-        expected_key = "labkit:rl:applimiter_gitlab_shell_operation" \
+        expected_key = "labkit:rl:{applimiter_gitlab_shell_operation" \
           ":limit_gitlab_shell_operations_by_action_project_actor" \
-          ":action:upload:repo_path:group/project:user:_unknown_:key:#{deploy_key.id}:ip:_unknown_"
+          ":action:upload:repo_path:group/project:user:_unknown_:key:#{deploy_key.id}:ip:_unknown_}"
         count = Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }
 
         expect(count.to_i).to eq(1)
@@ -314,12 +314,12 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
         described_class.run!(:gitlab_shell_operation, scope: [action, repo_path, '203.0.113.10'])
         described_class.run!(:gitlab_shell_operation, scope: [action, repo_path, '203.0.113.11'])
 
-        ip_a_key = "labkit:rl:applimiter_gitlab_shell_operation" \
+        ip_a_key = "labkit:rl:{applimiter_gitlab_shell_operation" \
           ":limit_gitlab_shell_operations_by_action_project_actor" \
-          ":action:#{action}:repo_path:#{repo_path}:user:_unknown_:key:_unknown_:ip:203.0.113.10"
-        ip_b_key = "labkit:rl:applimiter_gitlab_shell_operation" \
+          ":action:#{action}:repo_path:#{repo_path}:user:_unknown_:key:_unknown_:ip:203.0.113.10}"
+        ip_b_key = "labkit:rl:{applimiter_gitlab_shell_operation" \
           ":limit_gitlab_shell_operations_by_action_project_actor" \
-          ":action:#{action}:repo_path:#{repo_path}:user:_unknown_:key:_unknown_:ip:203.0.113.11"
+          ":action:#{action}:repo_path:#{repo_path}:user:_unknown_:key:_unknown_:ip:203.0.113.11}"
 
         Gitlab::Redis::RateLimiting.with do |r|
           expect(r.get(ip_a_key).to_i).to eq(1), 'expected a per-IP counter for 203.0.113.10'
@@ -353,7 +353,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       end
 
       let(:set_key) do
-        "labkit:rl:applimiter_distinct_downloads:limit_distinct_downloads_by_user:user:#{user.id}"
+        "labkit:rl:{applimiter_distinct_downloads:limit_distinct_downloads_by_user:user:#{user.id}}"
       end
 
       before do
@@ -417,8 +417,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       it 'routes the first AR instance and discards subsequent same-class instances' do
         described_class.run!(:users_get_by_id, scope: [user_a, user_b])
 
-        first_key  = "labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user_a.id}"
-        second_key = "labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user_b.id}"
+        first_key  = "labkit:rl:{applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user_a.id}}"
+        second_key = "labkit:rl:{applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user_b.id}}"
 
         Gitlab::Redis::RateLimiting.with do |r|
           expect(r.get(first_key).to_i).to eq(1)
@@ -431,7 +431,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       let_it_be(:namespace) { create(:namespace) }
 
       let(:expected_key) do
-        "labkit:rl:applimiter_web_hook_calls:limit_web_hook_calls_by_namespace:namespace:#{namespace.id}"
+        "labkit:rl:{applimiter_web_hook_calls:limit_web_hook_calls_by_namespace:namespace:#{namespace.id}}"
       end
 
       it 'increments the namespace-keyed labkit counter' do
@@ -458,7 +458,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
         group = create(:group)
         described_class.run!(:web_hook_calls, scope: group, context: { threshold: 10 })
 
-        group_key = "labkit:rl:applimiter_web_hook_calls:limit_web_hook_calls_by_namespace:namespace:#{group.id}"
+        group_key = "labkit:rl:{applimiter_web_hook_calls:limit_web_hook_calls_by_namespace:namespace:#{group.id}}"
         count = Gitlab::Redis::RateLimiting.with { |r| r.get(group_key) }
         expect(count.to_i).to eq(1)
       end
@@ -466,8 +466,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
 
     context 'with a cost-mode key (main_db_duration_limit_per_worker)' do
       let(:expected_key) do
-        "labkit:rl:applimiter_main_db_duration_limit_per_worker:limit_main_db_duration_per_worker" \
-          ":worker_name:SomeWorker"
+        "labkit:rl:{applimiter_main_db_duration_limit_per_worker:limit_main_db_duration_per_worker" \
+          ":worker_name:SomeWorker}"
       end
 
       def labkit_cost
@@ -544,8 +544,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
 
         described_class.run!(:pipelines_create, scope: [project, user, 'registry-period-sha'])
 
-        labkit_key = "labkit:rl:applimiter_pipelines_create:limit_pipelines_by_project_user_sha" \
-          ":project:#{project.id}:user:#{user.id}:sha:registry-period-sha"
+        labkit_key = "labkit:rl:{applimiter_pipelines_create:limit_pipelines_by_project_user_sha" \
+          ":project:#{project.id}:user:#{user.id}:sha:registry-period-sha}"
         ttl = Gitlab::Redis::RateLimiting.with { |r| r.ttl(labkit_key) }
 
         expect(ttl).to be_between(1, 1.minute).inclusive
@@ -557,7 +557,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
     it 'does not increment the labkit counter on a fresh key' do
       expect(described_class.run_peek!(:glql, scope: 'sha-abc123')).to be(false)
 
-      labkit_key = "labkit:rl:applimiter_glql:limit_glql_queries_by_query_sha:query_sha:sha-abc123"
+      labkit_key = "labkit:rl:{applimiter_glql:limit_glql_queries_by_query_sha:query_sha:sha-abc123}"
       count = Gitlab::Redis::RateLimiting.with { |r| r.get(labkit_key) }
 
       expect(count).to be_nil
@@ -568,7 +568,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       described_class.run!(:glql, scope: 'sha-abc123')
       described_class.run_peek!(:glql, scope: 'sha-abc123')
 
-      labkit_key = "labkit:rl:applimiter_glql:limit_glql_queries_by_query_sha:query_sha:sha-abc123"
+      labkit_key = "labkit:rl:{applimiter_glql:limit_glql_queries_by_query_sha:query_sha:sha-abc123}"
       count = Gitlab::Redis::RateLimiting.with { |r| r.get(labkit_key) }
 
       expect(count.to_i).to eq(2)
@@ -585,7 +585,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       let_it_be(:namespace) { create(:namespace) }
 
       let(:expected_key) do
-        "labkit:rl:applimiter_web_hook_calls:limit_web_hook_calls_by_namespace:namespace:#{namespace.id}"
+        "labkit:rl:{applimiter_web_hook_calls:limit_web_hook_calls_by_namespace:namespace:#{namespace.id}}"
       end
 
       it 'does not increment the counter' do

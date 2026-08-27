@@ -62,16 +62,7 @@ module Mcp
                 description: 'Search query matched against merge request title and description.'
               },
 
-              after: {
-                type: 'string',
-                description: 'Cursor for forward pagination. Use endCursor from the previous response.'
-              },
-              first: {
-                type: 'integer',
-                description: 'Number of merge requests to return (forward pagination, default 20, max 100).',
-                minimum: 1,
-                maximum: 100
-              }
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(items: 'merge requests')
             }
           },
           annotations: {

@@ -3,6 +3,7 @@ stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Pivotal Tracker
+description: Configure the Pivotal Tracker integration to add commit messages as comments to Pivotal Tracker stories and close stories from commits.
 ---
 
 {{< details >}}
@@ -14,8 +15,9 @@ title: Pivotal Tracker
 
 The Pivotal Tracker integration adds commit messages as comments to Pivotal Tracker stories.
 
-Once enabled, commit messages are checked for square brackets containing a hash mark followed by
-the story ID (for example, `[#555]`). Every story ID found gets the commit comment added to it.
+After you turn on the integration, commit messages are checked for square brackets
+containing a hash mark followed by the story ID (for example, `[#555]`).
+Every story ID found gets the commit comment added to it.
 
 You can also close a story with a message containing: `fix [#555]`.
 You can use any of these words:
@@ -45,7 +47,7 @@ Complete these steps in GitLab:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **Pivotal Tracker**.
-1. Ensure that the **Active** toggle is enabled.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Paste the token you generated in Pivotal Tracker.
 1. Optional. To restrict this setting to specific branches, list them in the **Restrict to branch**
    field, separated with commas.

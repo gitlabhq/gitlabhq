@@ -41,6 +41,14 @@ background_operation_environments_auto_delete:
     table_name: "environments"
     column_name: "id"
 
+background_operation_merge_requests_clear_old_merged_cached_html:
+  class: Database::BackgroundOperation::CronEnqueueWorker
+  cron: "45 2 1 3,6,9,12 *"
+  args:
+    job_class_name: "MergeRequestsClearOldMergedCachedHtml"
+    table_name: "merge_requests"
+    column_name: "id"
+
 background_operation_merge_requests_clear_stale_cached_html:
   class: Database::BackgroundOperation::CronEnqueueWorker
   cron: "30 3 1,15 * *"

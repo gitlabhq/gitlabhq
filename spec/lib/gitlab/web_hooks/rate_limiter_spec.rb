@@ -85,8 +85,8 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
         expect(rate_limit!(project_hook)).to be(true)
 
         namespace = project_hook.parent.root_namespace
-        labkit_key = "labkit:rl:applimiter_web_hook_calls:limit_web_hook_calls_by_namespace" \
-          ":namespace:#{namespace.id}"
+        labkit_key = "labkit:rl:{applimiter_web_hook_calls:limit_web_hook_calls_by_namespace" \
+          ":namespace:#{namespace.id}}"
         count = Gitlab::Redis::RateLimiting.with { |r| r.get(labkit_key) }
 
         expect(count.to_i).to eq(limit + 1)

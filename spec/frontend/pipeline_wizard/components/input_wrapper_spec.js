@@ -42,6 +42,12 @@ describe('Pipeline Wizard -- Input Wrapper', () => {
       expect(wrapper.emitted()['update:compiled']).toEqual([[expected]]);
     });
 
+    it('will emit a before-update-compiled event if child emits an input event', async () => {
+      await inputChild.vm.$emit('input', inputValue);
+
+      expect(wrapper.emitted('before-update-compiled')).toEqual([[]]);
+    });
+
     it('will emit a highlight event with the correct path if child emits an input event', async () => {
       await inputChild.vm.$emit('input', inputValue);
       const expected = ['foo', 'some'];

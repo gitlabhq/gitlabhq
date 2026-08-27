@@ -1,6 +1,6 @@
 ---
-source_checksum: 05ce0c53005089b5
-distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
+source_checksum: 2b99e86c6ac7594d
+distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -12,7 +12,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 
 ### Semantic HTML
 
-- Prefer semantic HTML elements over `div`/`span` with ARIA roles (e.g., use `<button>` not `<div role="button">`, `<a>` not `<div role="link">`)
+- Prefer semantic HTML elements over `div`/`span` with ARIA roles (e.g., use `<button>` not `<div>`, `<a>` not `<div>`)
 - DO NOT use `role` attributes when a native HTML element with the equivalent implicit role exists
 - Replace `div`/`span` elements with semantic equivalents like `p`, `button`, `time`, `article`, `ol`/`ul`, `table`, etc.
 - Ensure heading levels are not skipped and are nested correctly
@@ -69,6 +69,14 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - Use axe DevTools browser extension during code review to validate accessibility on any page
 - For Vue/JS files: apply linting + Storybook tests + feature tests
 - For HAML files: apply feature tests + browser extension (linting not supported)
+- Place accessibility feature specs under `spec/features/accessibility/<stage>/<feature>/`, named after the E2E test case they follow (e.g., `add_new_branch_rule_spec.rb`)
+- Use the `be_axe_clean` matcher for accessibility assertions; scope to `#content-body` for full-page tests or to a specific section selector for partial-page tests
+- DO NOT use `wait_for_requests` before an axe scan — wait for a page-specific element that represents the rendered state instead
+- Activate hidden regions (inactive menus, dialogs) before running `be_axe_clean` — axe does not scan hidden regions automatically
+- Add `be_axe_clean` assertions for both the empty state and the default view when a view has an empty state
+- Add `be_axe_clean` assertions after significant page structure changes (e.g., a dialog opens or a new section renders)
+- Use `with_minimum_impact` (with a required non-blank `because:` argument linking a tracking issue) only when bootstrapping coverage on an existing area; remove or tighten the threshold once critical violations are resolved
+- Use `.skipping :'link-in-text-block'` to suppress the known `link-in-text-block` violation until the design system fixes it in `GlLink` (tracked in design.gitlab.com issue 1444)
 
 ## Authoritative sources
 
@@ -76,3 +84,5 @@ For the full picture, see:
 
 - doc/development/fe_guide/accessibility/_index.md
 - doc/development/fe_guide/accessibility/best_practices.md
+- doc/development/fe_guide/accessibility/feature_tests.md
+

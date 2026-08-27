@@ -147,7 +147,7 @@ sbom_source_packages: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
 sbom_sources: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
 scim_oauth_access_tokens: supported
 security_policy_settings: https://gitlab.com/gitlab-org/gitlab/-/issues/621726
-slack_api_scopes: https://gitlab.com/gitlab-org/gitlab/-/issues/611960
+slack_api_scopes: supported
 slack_integrations: no_work_needed
 slack_integrations_scopes: no_work_needed
 snippet_repositories: supported

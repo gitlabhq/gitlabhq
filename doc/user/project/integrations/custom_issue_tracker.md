@@ -3,6 +3,7 @@ stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Custom issue tracker
+description: Configure a custom issue tracker integration to link a GitLab project to an issue tracker that has no built-in integration.
 ---
 
 {{< details >}}
@@ -15,16 +16,16 @@ title: Custom issue tracker
 You can integrate an [external issue tracker](../../../integration/external-issue-tracker.md)
 with GitLab. If your preferred issue tracker is not listed in the
 [integrations list](../../../integration/external-issue-tracker.md#configure-an-external-issue-tracker),
-you can enable a custom issue tracker.
+you can turn on a custom issue tracker.
 
-After you enable the custom issue tracker, a link to the issue tracker displays
+After you turn on the custom issue tracker, a link to the issue tracker appears
 in the left sidebar in your project.
 
-![Custom issue tracker link](img/custom_issue_tracker_v18_3.png)
+![Custom issue tracker link in the left sidebar of a project.](img/custom_issue_tracker_v18_3.png)
 
 ## Enable a custom issue tracker
 
-To enable a custom issue tracker in a project:
+To turn on a custom issue tracker in a project:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Integrations**.
@@ -56,6 +57,6 @@ You can reference issues in a custom issue tracker using:
 
 The `<PROJECT>` part is ignored in links, which always point to the address specified in **Issue URL**.
 
-We suggest using the longer format (`<PROJECT>-<ID>`) if you have both internal and external issue
-trackers enabled. If you use the shorter format, and an issue with the same ID exists in the
+Use the longer format (`<PROJECT>-<ID>`) if you have both internal and external issue
+trackers turned on. If you use the shorter format, and an issue with the same ID exists in the
 internal issue tracker, the internal issue is linked.

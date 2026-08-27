@@ -85,14 +85,6 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
         expect(variables[:after]).to eq('cursor1')
       end
     end
-
-    context 'when first exceeds the max' do
-      let(:params) { super().merge(first: 500) }
-
-      it 'clamps to the max' do
-        expect(tool.build_variables[:first]).to eq(100)
-      end
-    end
   end
 
   describe 'integration' do

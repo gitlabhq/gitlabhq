@@ -7,8 +7,6 @@ module Gitlab
         include ::Gitlab::Utils::StrongMemoize
         include ::Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
-        UnsafeToDetachPartitionError = Class.new(StandardError)
-
         LEASE_TIMEOUT = 1.hour
         STATEMENT_TIMEOUT = 1.hour
         MANAGEMENT_LEASE_KEY = 'database_partition_management_%s'
@@ -120,17 +118,18 @@ module Gitlab
         end
 
         def detach(partitions)
+          detachable = partitions.select { |p| detachable?(p) }
+          return if detachable.empty?
+
           # with_lock_retries starts a requires_new transaction most of the time, but not on the last iteration
           with_lock_retries do
             connection.transaction(requires_new: false) do # so we open a transaction here if not already in progress
-              partitions.each { |p| detach_one_partition(p) }
+              detachable.each { |p| detach_one_partition(p) }
             end
           end
         end
 
         def detach_one_partition(partition)
-          assert_partition_detachable!(partition)
-
           schedule_detached_partition_cleanup(partition)
 
           connection.execute partition.to_detach_sql
@@ -143,12 +142,33 @@ module Gitlab
           )
         end
 
-        def assert_partition_detachable!(partition)
-          parent_table_identifier = "#{connection.current_schema}.#{partition.table}"
+        def detachable?(partition)
+          check = DetachEligibility.new(partition, connection: connection)
+          return true if check.detachable?
 
-          if (example_fk = PostgresForeignKey.by_referenced_table_identifier(parent_table_identifier).first)
-            raise UnsafeToDetachPartitionError, "Cannot detach #{partition.partition_name}, it would block while " \
-              "checking foreign key #{example_fk.name} on #{example_fk.constrained_table_identifier}"
+          log_deferred_detach(partition, check.blocker)
+          false
+        rescue ActiveRecord::StatementInvalid => e
+          log_deferred_detach(partition, DetachEligibility::Blocker.new(
+            reason: :database_error, level: :error, details: { exception_message: e.message }
+          ))
+          false
+        end
+
+        def log_deferred_detach(partition, blocker)
+          payload = {
+            message: 'Deferred detaching partition',
+            deferral_reason: blocker.reason,
+            partition_name: partition.partition_name,
+            table_name: partition.table,
+            connection_name: @connection_name,
+            **blocker.details
+          }
+
+          case blocker.level
+          when :warn then Gitlab::AppLogger.warn(payload)
+          when :error then Gitlab::AppLogger.error(payload)
+          else Gitlab::AppLogger.info(payload)
           end
         end
 

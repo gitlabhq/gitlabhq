@@ -380,15 +380,28 @@ To configure merge train enforcement:
 
 ### Merge request dropped from the merge train
 
-If a merge request becomes unmergeable while a merge train pipeline is running,
-the merge train drops your merge request automatically. Common causes include:
+A merge request is dropped from the merge train automatically
+if it can no longer be merged while the pipeline is running.
+Common causes include:
 
-- Changing the merge request to a [draft](../../user/project/merge_requests/drafts.md).
-- A merge conflict.
+- The merge train pipeline did not succeed.
+- The merge request was marked as a [draft](../../user/project/merge_requests/drafts.md).
+- The merge request was closed.
+- The source branch was updated.
+- The merge request did not pass all merge checks, such as a merge conflict.
+- The changes in the merge request could not be combined with changes in earlier merge requests on the train.
+- The merge did not complete in time.
+- An unexpected error occurred.
 
-You can find the reason the merge request was dropped from the merge train in the system
-notes. Check the **Activity** section in the **Overview** tab for a message similar to:
+To find out why the merge request was dropped, check the **Activity** section in the **Overview** tab for a message similar to:
 `User removed this merge request from the merge train because ...`
+
+| System note text | What it means | What to do |
+|-------------------|----------------|------------|
+| `the merge could not be completed. Merge request is not mergeable. Explanation: The pipeline must succeed.` | A merge check failed. "Merge request is not mergeable" doesn't say why. The real reason is after "Explanation:". A merge conflict is one example. | Fix the cause, then add the merge request to the merge train again. |
+| `the merge train pipeline could not be prepared: Failed to create merge commit for source_sha ... and target_sha ...` | The changes could not be combined with changes in earlier merge requests on the train. The cause is usually a conflict with another merge request. | Rebase the source branch on the target branch, resolve the conflicts, then add the merge request to the merge train again. |
+| `an unexpected error occurred. Correlation ID: <id>` | An unexpected error occurred while merging. | Give the correlation ID to your administrator or GitLab Support, then add the merge request to the merge train again. |
+| `the merge did not complete in time. [Learn more](...)` | The merge started but got stuck before finishing, usually because of a background failure. The stuck state was detected and the merge request was dropped. | Add the merge request to the merge train again. If this keeps happening, contact your administrator or GitLab Support. |
 
 ### Cannot use auto-merge
 

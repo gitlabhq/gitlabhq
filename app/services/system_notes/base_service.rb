@@ -30,6 +30,15 @@ module SystemNotes
       @url_helpers ||= Gitlab::Routing.url_helpers
     end
 
+    # Reasons are spliced into sentences such as "... because #{reason}", and they
+    # are produced all over the codebase, so some start with a capital letter. Note
+    # bodies are persisted in English, so downcasing the first one is locale-safe.
+    def format_reason(reason)
+      return if reason.blank?
+
+      reason.sub(/\A./, &:downcase)
+    end
+
     def handle_container_type(container)
       case container
       when Project, Namespaces::ProjectNamespace

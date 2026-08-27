@@ -30,7 +30,7 @@ In particular, note:
   - Have a "Consistent history of sending a high volume of mail from your domain
     (order of hundred emails a day minimum to Gmail) for a few weeks at least".
   - Have a very low rate of spam complaints from users.
-- Emails must be authenticated via DKIM or SPF.
+- Emails must be authenticated with DKIM or SPF.
 - Before sending the final form (**Gmail Schema Whitelist Request**), you must
   send a real email from your production server. This means that you must find
   a way to send this email from the email address you are registering. You can

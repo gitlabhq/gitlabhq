@@ -22,6 +22,7 @@ RSpec.shared_examples 'a policy repository reconciling scope forms' do
       expect(policy.scope_rego).to include('framework_id in {5}')
       expect(policy.scope_rego).to include('match_mode: all')
       expect(policy.scope_rego).not_to eq(program_compiled_for({ policy_scope: nil }, policy.name))
+      expect(policy.scope_dimensions).to eq(['compliance_frameworks'])
     end
 
     it 'preserves an authored scope_rego instead of compiling one' do
@@ -30,10 +31,11 @@ RSpec.shared_examples 'a policy repository reconciling scope forms' do
       expect(policy.scope_rego).to eq(authored_scope_rego)
     end
 
-    it 'clears policy_scope when scope_rego is authored, so the two cannot disagree' do
+    it 'clears policy_scope when scope_rego is authored, so the two cannot disagree', :aggregate_failures do
       policy = repository.create(attributes.merge(scope_rego: authored_scope_rego))
 
       expect(policy.policy_scope).to be_nil
+      expect(policy.scope_dimensions).to be_nil
     end
 
     it 'compiles an applies-to-all scope_rego when the policy has no scope', :aggregate_failures do
@@ -41,6 +43,13 @@ RSpec.shared_examples 'a policy repository reconciling scope forms' do
 
       expect(policy.scope_rego).to include('no policy_scope: applies to all projects')
       expect(policy.scope_rego).to eq(program_compiled_for({ policy_scope: nil }, policy.name))
+      expect(policy.scope_dimensions).to eq([])
+    end
+
+    it 'ignores a caller-supplied scope_dimensions, since it is derived and not authored' do
+      policy = repository.create(compiled_attributes.merge(scope_dimensions: ['injected']))
+
+      expect(policy.scope_dimensions).to eq(['compliance_frameworks'])
     end
 
     it 'compiles from policy_scope when scope_rego is only whitespace, rather than storing it' do
@@ -71,6 +80,15 @@ RSpec.shared_examples 'a policy repository reconciling scope forms' do
       expect(updated.scope_rego).to include('framework_id in {7}')
       expect(updated.scope_rego).to eq(program_compiled_for({ policy_scope: narrower_policy_scope }, created.name))
       expect(updated.policy_scope).to eq(narrower_policy_scope)
+      expect(updated.scope_dimensions).to eq(['compliance_frameworks'])
+    end
+
+    it 'recomputes scope_dimensions when policy_scope changes to a different set of dimensions' do
+      created = repository.create(compiled_attributes)
+
+      updated = repository.update(created.id, policy_scope: { 'groups' => { 'including' => [{ 'id' => 3 }] } })
+
+      expect(updated.scope_dimensions).to eq(['groups'])
     end
 
     it 'clears policy_scope when scope_rego is authored', :aggregate_failures do
@@ -80,6 +98,7 @@ RSpec.shared_examples 'a policy repository reconciling scope forms' do
 
       expect(updated.scope_rego).to eq(authored_scope_rego)
       expect(updated.policy_scope).to be_nil
+      expect(updated.scope_dimensions).to be_nil
     end
 
     it 'keeps only the authored program when both scope forms are supplied', :aggregate_failures do
@@ -90,6 +109,7 @@ RSpec.shared_examples 'a policy repository reconciling scope forms' do
 
       expect(updated.scope_rego).to eq(authored_scope_rego)
       expect(updated.policy_scope).to be_nil
+      expect(updated.scope_dimensions).to be_nil
     end
 
     it 'recompiles from policy_scope when scope_rego is blanked', :aggregate_failures do
@@ -99,6 +119,7 @@ RSpec.shared_examples 'a policy repository reconciling scope forms' do
 
       expect(updated.policy_scope).to eq(created.policy_scope)
       expect(updated.scope_rego).to eq(created.scope_rego)
+      expect(updated.scope_dimensions).to eq(created.scope_dimensions)
     end
 
     it 'treats a whitespace-only scope_rego as blanked, not as an authored program', :aggregate_failures do
@@ -117,6 +138,7 @@ RSpec.shared_examples 'a policy repository reconciling scope forms' do
 
       expect(updated.policy_scope).to be_nil
       expect(updated.scope_rego).to eq(program_compiled_for({ policy_scope: nil }, created.name))
+      expect(updated.scope_dimensions).to eq([])
     end
 
     it 'applies everywhere when an authored scope_rego is blanked, because nothing is left to compile',

@@ -30242,9 +30242,6 @@ msgstr ""
 msgid "DuoAgenticChat|Chat could not be loaded"
 msgstr ""
 
-msgid "DuoAgenticChat|Chat history"
-msgstr ""
-
 msgid "DuoAgenticChat|Chat prompt input"
 msgstr ""
 
@@ -32184,7 +32181,7 @@ msgstr ""
 msgid "DuoSlack|This feedback helps us improve Duo. We'll share your feedback and the related session with GitLab."
 msgstr ""
 
-msgid "DuoSlack|View session in GitLab"
+msgid "DuoSlack|View your session in GitLab (only visible to you)"
 msgstr ""
 
 msgid "DuoSlack|What did you expect to happen?"
@@ -85558,6 +85555,9 @@ msgstr ""
 msgid "UsageBilling|An error occurred while fetching usage data"
 msgstr ""
 
+msgid "UsageBilling|An error occurred while saving flat cap."
+msgstr ""
+
 msgid "UsageBilling|Applies to every user in this namespace unless an override replaces it."
 msgstr ""
 
@@ -85657,6 +85657,9 @@ msgid "UsageBilling|Flat cap disabled"
 msgstr ""
 
 msgid "UsageBilling|Flat cap enabled"
+msgstr ""
+
+msgid "UsageBilling|Flat cap saved."
 msgstr ""
 
 msgid "UsageBilling|Flat per-user cap"
@@ -85780,6 +85783,9 @@ msgid "UsageBilling|Read the documentation"
 msgstr ""
 
 msgid "UsageBilling|Regular usage"
+msgstr ""
+
+msgid "UsageBilling|Save"
 msgstr ""
 
 msgid "UsageBilling|Save on GitLab Credits with monthly commitment"

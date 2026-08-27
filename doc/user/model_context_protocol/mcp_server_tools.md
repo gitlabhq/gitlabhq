@@ -613,7 +613,7 @@ Retrieves a pipeline, and optionally its jobs, downstream pipelines, or bridge (
 | `include`     | array   | No       | Facet to include alongside the pipeline, one per call: `jobs`, `downstream_pipelines`, or `bridge_jobs`. |
 | `job_status`  | string  | No       | Filters the `jobs` facet by status (for example, `failed`). Only applies when `include` is `jobs`. |
 | `first`       | integer | No       | Number of items to return for the selected `include` facet. Default is `20`, maximum is `100`. |
-| `after`       | string  | No       | Cursor for forward pagination of the selected `include` facet. Use the previous response's `page_info.end_cursor`. |
+| `after`       | string  | No       | Cursor for forward pagination of the selected `include` facet. Use `page_info.end_cursor` from a previous response. |
 
 A bridge job's `downstream_pipeline` is omitted (`null`) both when the trigger job hasn't
 triggered a downstream pipeline yet, and when you don't have access to that pipeline.

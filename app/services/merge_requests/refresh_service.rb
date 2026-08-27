@@ -331,7 +331,7 @@ module MergeRequests
 
         next unless merge_request.should_be_rebased?
 
-        abort_auto_merge_with_todo(merge_request, 'target branch was updated')
+        abort_auto_merge_with_todo(merge_request, 'the target branch was updated.')
       end
     end
 

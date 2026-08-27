@@ -7,6 +7,10 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
     File.read(File.expand_path("../../fixtures/scope/#{name}/policy.rego", __dir__))
   end
 
+  def fixture_dimensions(name)
+    JSON.parse(File.read(File.expand_path("../../fixtures/scope/#{name}/dimensions.json", __dir__)))
+  end
+
   def transpile_including(*entries)
     described_class.new({ "projects" => { "including" => entries } }, policy_name: "P").transpile
   end
@@ -22,36 +26,40 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
     # matching would let them drift unnoticed.
     context "with golden fixtures" do
       it "regenerates no_scope byte-for-byte" do
-        rego = described_class.new(nil, policy_name: "Applies everywhere").transpile
+        transpiler = described_class.new(nil, policy_name: "Applies everywhere")
 
-        expect(rego).to eq(fixture_rego("no_scope"))
+        expect(transpiler.transpile).to eq(fixture_rego("no_scope"))
+        expect(transpiler.scope_dimensions).to eq(fixture_dimensions("no_scope"))
       end
 
       it "regenerates applies_framework byte-for-byte" do
-        rego = described_class.new(
+        transpiler = described_class.new(
           { compliance_frameworks: [{ id: 5 }], projects: { excluding: [{ type: "archived" }] } },
           policy_name: "Scoped to compliance framework 5"
-        ).transpile
+        )
 
-        expect(rego).to eq(fixture_rego("applies_framework"))
+        expect(transpiler.transpile).to eq(fixture_rego("applies_framework"))
+        expect(transpiler.scope_dimensions).to eq(fixture_dimensions("applies_framework"))
       end
 
       it "regenerates groups_any byte-for-byte" do
-        rego = described_class.new(
+        transpiler = described_class.new(
           { match_mode: "any", groups: { including: [{ id: 10 }] }, business_impact: { including: [{ id: 1 }] } },
           policy_name: "Scoped to groups (any)"
-        ).transpile
+        )
 
-        expect(rego).to eq(fixture_rego("groups_any"))
+        expect(transpiler.transpile).to eq(fixture_rego("groups_any"))
+        expect(transpiler.scope_dimensions).to eq(fixture_dimensions("groups_any"))
       end
 
       it "regenerates excluded_archived byte-for-byte" do
-        rego = described_class.new(
+        transpiler = described_class.new(
           { projects: { excluding: [{ type: "archived" }] } },
           policy_name: "Excluding archived projects"
-        ).transpile
+        )
 
-        expect(rego).to eq(fixture_rego("excluded_archived"))
+        expect(transpiler.transpile).to eq(fixture_rego("excluded_archived"))
+        expect(transpiler.scope_dimensions).to eq(fixture_dimensions("excluded_archived"))
       end
     end
 
@@ -382,6 +390,52 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
 
         expect(rego).to include('A \"quoted\"\nname')
       end
+    end
+  end
+
+  describe "#scope_dimensions" do
+    it "returns an empty array for an unscoped policy" do
+      dimensions = described_class.new(nil, policy_name: "P").scope_dimensions
+
+      expect(dimensions).to eq([])
+    end
+
+    it "emits a path once when both an inclusion and an exclusion reference it" do
+      dimensions = described_class.new(
+        { projects: { including: [{ id: 1 }], excluding: [{ id: 2 }] } }, policy_name: "P"
+      ).scope_dimensions
+
+      expect(dimensions).to eq(["project.id"])
+    end
+
+    it "includes a path for a declared inclusion that names no id" do
+      dimensions = described_class.new({ compliance_frameworks: [{}] }, policy_name: "P").scope_dimensions
+
+      expect(dimensions).to eq(["compliance_frameworks"])
+    end
+
+    it "omits a criterion that was not declared" do
+      dimensions = described_class.new({ compliance_frameworks: [] }, policy_name: "P").scope_dimensions
+
+      expect(dimensions).to eq([])
+    end
+
+    it "lists every dimension the compiled program reads, inclusion and exclusion alike" do
+      dimensions = described_class.new(
+        {
+          compliance_frameworks: [{ id: 5 }],
+          groups: { excluding: [{ id: 9 }] },
+          business_unit: { including: [{ id: 1 }] },
+          exposure: { excluding: [{ id: 2 }] },
+          projects: { excluding: [{ type: "personal" }] }
+        },
+        policy_name: "P"
+      ).scope_dimensions
+
+      expect(dimensions).to contain_exactly(
+        "compliance_frameworks", "groups", "security_attributes.business_unit",
+        "security_attributes.exposure", "project.personal"
+      )
     end
   end
 end

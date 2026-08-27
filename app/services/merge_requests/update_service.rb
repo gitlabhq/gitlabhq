@@ -245,7 +245,7 @@ module MergeRequests
         refresh_pipelines_on_merge_requests(merge_request, allow_duplicate: true)
       end
 
-      abort_auto_merge(merge_request, 'target branch was changed')
+      abort_auto_merge(merge_request, 'the target branch was changed.')
     end
 
     def handle_draft_status_change(merge_request, changed_fields)

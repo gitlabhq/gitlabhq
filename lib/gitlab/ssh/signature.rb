@@ -112,14 +112,23 @@ module Gitlab
 
         # Includes unconfirmed emails so we can distinguish between
         # a different user and the same user with an unverified email.
-        key_owner.email == committer_email ||
-          key_owner.private_commit_email == committer_email ||
-          key_owner.emails.any? { |e| e.email == committer_email }
+        matches_committer_email?(key_owner.email) ||
+          matches_committer_email?(key_owner.private_commit_email) ||
+          key_owner.emails.any? { |email| matches_committer_email?(email.email) }
       end
 
       def signed_by_user_email_verified?
-        signed_by_key.user.verified_emails.include?(committer_email)
+        signed_by_key.user.verified_emails.any? { |email| matches_committer_email?(email) }
       end
+
+      def matches_committer_email?(email)
+        email.downcase == normalized_committer_email
+      end
+
+      def normalized_committer_email
+        committer_email.downcase
+      end
+      strong_memoize_attr :normalized_committer_email
 
       def signature
         return unless @signature_text.present?

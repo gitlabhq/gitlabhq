@@ -30,8 +30,12 @@ module Gitlab
         ].freeze
 
         # Accepted by `create` and `update` and dropped, so a caller may hand a whole
-        # policy back without stripping it first.
-        IMMUTABLE_ATTRIBUTES = %i[id version organization_id namespace_id created_at updated_at].freeze
+        # policy back without stripping it first. `scope_dimensions` belongs here rather
+        # than in CREATABLE/UPDATABLE_ATTRIBUTES because it is derived from `policy_scope`,
+        # never authored directly.
+        IMMUTABLE_ATTRIBUTES = %i[
+          id version organization_id namespace_id created_at updated_at scope_dimensions
+        ].freeze
 
         # The subset of IMMUTABLE_ATTRIBUTES `update` will not silently ignore, because
         # a differing value there reads as a request to re-home the policy rather than
@@ -201,10 +205,15 @@ module Gitlab
         # directly clears it: there is no structured form of a hand-written
         # program, and keeping a stale one would let the two describe different
         # sets of projects.
+        #
+        # `scope_dimensions` is derived from `policy_scope` alongside `scope_rego`, so it is
+        # cleared the same way: a hand-authored program carries no structured scope to derive
+        # paths from, and `nil` (not `[]`) says that, since `[]` means "reads nothing".
         def with_compiled_scope(attributes)
-          return attributes.merge(policy_scope: nil) unless blank?(attributes[:scope_rego])
+          return attributes.merge(policy_scope: nil, scope_dimensions: nil) unless blank?(attributes[:scope_rego])
 
-          attributes.merge(scope_rego: compiled_scope_rego(attributes[:policy_scope], policy_name: attributes[:name]))
+          transpiler = ScopeTranspiler.new(attributes[:policy_scope], policy_name: attributes[:name])
+          attributes.merge(scope_rego: transpiler.transpile, scope_dimensions: transpiler.scope_dimensions)
         end
 
         def with_updated_scope(stored, changes)

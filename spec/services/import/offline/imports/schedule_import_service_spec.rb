@@ -13,6 +13,7 @@ RSpec.describe Import::Offline::Imports::ScheduleImportService, :aggregate_failu
         instance_enterprise: true,
         export_prefix: "export_2025-09-18_1hrwkrv",
         source_hostname: "https://offline-environment-gitlab.example.com",
+        source_ghost_user_id: 123,
         batched: true,
         entities_mapping:
           {
@@ -59,6 +60,15 @@ RSpec.describe Import::Offline::Imports::ScheduleImportService, :aggregate_failu
 
     it 'enqueues BulkImportWorker' do
       expect(BulkImportWorker).to receive(:perform_async).with(bulk_import.id)
+
+      service.execute
+    end
+
+    it 'caches the source ghost user ID before enqueuing BulkImportWorker' do
+      expect(BulkImports::SourceInternalUserFinder).to receive(:cache_ghost_user_id)
+        .with(bulk_import.id, fake_metadata[:source_ghost_user_id])
+        .ordered
+      expect(BulkImportWorker).to receive(:perform_async).with(bulk_import.id).ordered
 
       service.execute
     end

@@ -23,7 +23,6 @@ export default {
     'app/assets/javascripts/ci/jobs_page/components/job_cells/actions_cell.vue',
     'app/assets/javascripts/notes/components/comment_form.vue',
     'app/assets/javascripts/notes/components/note_form.vue',
-    'app/assets/javascripts/pipeline_wizard/components/input_wrapper.vue',
     'app/assets/javascripts/sidebar/components/confidential/sidebar_confidentiality_widget.vue',
     'app/assets/javascripts/sidebar/components/labels/labels_select_vue/labels_select_root.vue',
     'app/assets/javascripts/vue_shared/components/markdown/markdown_editor.vue',

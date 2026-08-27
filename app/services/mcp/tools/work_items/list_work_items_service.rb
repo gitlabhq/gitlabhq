@@ -105,16 +105,7 @@ module Mcp
                 enum: SORT_VALUES,
                 description: 'Sort order. Default is CREATED_DESC.'
               },
-              first: {
-                type: 'integer',
-                minimum: 1,
-                maximum: 100,
-                description: 'Number of work items to return. Default 20, max 100.'
-              },
-              after: {
-                type: 'string',
-                description: 'Cursor for forward pagination. Use endCursor from the previous response.'
-              }
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(items: 'work items')
             }
           },
           annotations: {

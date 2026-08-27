@@ -159,7 +159,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
     it "does not let the always-present :bypass_header key affect the real rule's Redis key" do
       subject.throttled?(:test_action, scope: [user, project])
 
-      expected_key = "labkit:rl:applimiter_test_action:limit_test_action:user:#{user.id}:project:#{project.id}"
+      expected_key = "labkit:rl:{applimiter_test_action:limit_test_action:user:#{user.id}:project:#{project.id}}"
       count = Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }
 
       expect(count.to_i).to eq(1)
@@ -705,7 +705,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         it 'does not increment the real rate-limit counter when bypassed' do
           allow(request).to receive(:get_header).with(Gitlab::Throttle.bypass_header).and_return('1')
 
-          redis_key = "labkit:rl:applimiter_test_action:limit_test_action:user:#{user.id}:project:_unknown_"
+          redis_key = "labkit:rl:{applimiter_test_action:limit_test_action:user:#{user.id}:project:_unknown_}"
           count_before = Gitlab::Redis::RateLimiting.with { |r| r.get(redis_key) }
 
           subject.throttled_request?(request, user, :test_action, scope: [user])

@@ -1,6 +1,6 @@
 ---
-source_checksum: 859f4898d452fb1a
-distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
+source_checksum: 6c13487585a5b5f2
+distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -25,6 +25,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - DO NOT use `<style>` tags in Vue components; use Tailwind CSS utility classes or page-specific CSS instead
 - Parse non-scalar values (e.g., booleans) during Vue app instantiation using helpers like `parseBoolean`
 - Set a `name` property on every Vue component using PascalCase derived from the filename; for generic filenames (`app.vue`, `index.vue`) prefix with directory context to ensure uniqueness; add an `EE` suffix to EE components that share a name with a CE component
+- Prefer semantic props that describe intent over generic pass-through CSS class props (e.g., use `:truncate-username="true"` instead of `:username-css-classes="'gl-truncate'"`)
 
 ### State Management
 
@@ -52,6 +53,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 
 ### JavaScript Style
 
+- Use an accurately scoped `data-*` attribute set when the relevant initializer has completed as a readiness signal for feature-test synchronization; DO NOT use timer-based classes (e.g., `page-initialised`) as completion signals
 - DO NOT use `forEach` when mutating data; use `map`, `reduce`, or `filter` instead
 - Use an object parameter when a function has more than 3 parameters
 - DO NOT use classes solely to bind DOM events; use a function instead
@@ -110,8 +112,8 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - Place translations close to where they are used
 - Prefer `__()` / `s__()` calls over module-level constants (e.g., `const MY_STRING = __('...')`)
 - DO NOT import translation constants into specs
+- Put translation calls directly in the `<template>`; move a string to `$options.i18n` only for a specific reason (e.g., the same string is reused in both the template and a method, needs processing like `sanitize()`, is a value in a runtime-keyed lookup map, or is shared across several components in the same module)
 - For translations used more than once in a Vue SFC, define them in the component's `$options.i18n` object rather than as a module-level constant
-- Extract translation strings to a static `i18n` object on the Vue component (e.g., `$options.i18n.myString`) instead of inlining `s__()` / `__()` calls directly in `<template>`
 
 ### Vue Testing
 
@@ -156,3 +158,4 @@ For the full picture, see:
 - doc/development/fe_guide/pinia.md
 - doc/development/fe_guide/axios.md
 - doc/development/i18n/externalization.md
+
