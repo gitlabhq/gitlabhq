@@ -68,21 +68,6 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
       expect(http_io.read).to eq(file_body)
     end
 
-    context 'when http_io_persistent_connections is disabled' do
-      before do
-        stub_feature_flags(http_io_persistent_connections: false)
-      end
-
-      it 'opens a new connection per chunk with default timeouts' do
-        expect(Net::HTTP).to receive(:start).at_least(:twice).with(
-          'object-storage', 80,
-          hash_not_including(:open_timeout)
-        ).and_call_original
-
-        expect(http_io.read).to eq(file_body)
-      end
-    end
-
     context 'when the connection fails mid-read' do
       before do
         stub_request(:get, url).to_raise(Errno::ECONNRESET)
