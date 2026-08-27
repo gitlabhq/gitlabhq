@@ -167,6 +167,23 @@ use `$CI_COMMIT_REF_SLUG` instead of `$CI_COMMIT_REF_NAME` to ensure proper arti
 
 Variables are expanded before globs.
 
+### With upload conditions
+
+By default, artifacts are uploaded only when the job succeeds (`on_success`). Use
+`artifacts:when: on_failure` to upload only when the job fails, or `artifacts:when: always`
+to upload regardless of job status.
+
+For example, to save the build log only when the build fails:
+
+```yaml
+build:
+  script: make build > build.log 2>&1
+  artifacts:
+    when: on_failure
+    paths:
+      - build.log
+```
+
 ## Fetching artifacts
 
 By default, jobs fetch all artifacts from jobs defined in previous stages. These artifacts

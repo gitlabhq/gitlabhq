@@ -42,7 +42,7 @@ end
 ```
 
 In some cases, the query count might change slightly between runs for unrelated reasons.
-In this case you might need to test
+In this case, you might need to test
 `issue_same_number_of_queries_as(control).with_threshold(acceptable_change)`,
 but this should be avoided if possible.
 
@@ -68,7 +68,7 @@ Each component serves a specific purpose:
 
 - `:request_store`: Enables `Gitlab::SafeRequestStore`, which caches data in memory for the duration of a request.
   This is enabled in production but disabled by default in tests.
-  Without it, you may get false results.
+  Without it, you might get false results.
 - `:use_sql_query_cache`: Enables the SQL query cache that is already active in production.
 - `skip_cached: false`: Counts ALL queries including cached ones. This catches N+1 queries that might be masked by caching.
 - `issue_same_number_of_queries_as`: Fails if the query count increases OR decreases unexpectedly (bidirectional).
@@ -95,7 +95,7 @@ This could lead to false successes where subsequent "requests" could have querie
 ### Never trust a test you haven't seen fail
 
 Before you add a test for N+1 queries, you should first verify that the test fails without your change.
-This is because the test may be broken, or the test may be passing for the wrong reasons.
+This is because the test might be broken, or the test might be passing for the wrong reasons.
 
 To verify your test:
 
@@ -212,7 +212,7 @@ result.min { |a, b| a.second <=> b.second }
 # => ["with preload(:package)", 2]
 ```
 
-This approach allows you to quickly test and compare different query strategies during development, helping you choose the most efficient implementation before writing your tests and code.
+Use this approach to quickly test and compare different query strategies during development. It helps you choose the most efficient implementation before writing your tests and code.
 
 ## See also
 

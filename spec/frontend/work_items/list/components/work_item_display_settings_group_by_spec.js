@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { createAlert } from '~/alert';
 import { resolvers } from '~/graphql_shared/issuable_client';
 import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
@@ -487,6 +488,70 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
           true,
         );
       });
+    });
+  });
+
+  describe('tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it('tracks hiding a single group', async () => {
+      createComponent();
+      await waitForPromises();
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findToggles().at(1).vm.$emit('change');
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'configure_columns_on_work_item_board',
+        { label: 'hide_group' },
+        undefined,
+      );
+    });
+
+    it('tracks showing a single group', async () => {
+      createComponent({ visibleGroups: [groupId(statuses[0])] });
+      await waitForPromises();
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findToggles().at(1).vm.$emit('change');
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'configure_columns_on_work_item_board',
+        { label: 'show_group' },
+        undefined,
+      );
+    });
+
+    it('tracks hiding all groups', async () => {
+      createComponent();
+      await waitForPromises();
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findHideAll().trigger('click');
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'configure_columns_on_work_item_board',
+        { label: 'hide_all_groups' },
+        undefined,
+      );
+    });
+
+    it('tracks nothing when Hide all is used and every group is already hidden', async () => {
+      createComponent({ visibleGroups: [] });
+      await waitForPromises();
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findHideAll().trigger('click');
+      await waitForPromises();
+
+      expect(trackEventSpy).not.toHaveBeenCalledWith(
+        'configure_columns_on_work_item_board',
+        expect.anything(),
+        undefined,
+      );
     });
   });
 });

@@ -77,7 +77,7 @@ describe('content_editor/components/content_editor_alert', () => {
     createWrapper();
     eventHub.$emit(ALERT_EVENT, { message, action, actionLabel });
     await nextTick();
-    findErrorAlert().vm.$emit('primaryAction');
+    findErrorAlert().vm.$emit('primary-action');
     await nextTick();
 
     expect(action).toHaveBeenCalled();

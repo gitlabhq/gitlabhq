@@ -176,7 +176,7 @@ describe('AccessTokens', () => {
   it('sets the sorting and fetches tokens when sorting option is changed', () => {
     createComponent();
     expect(store.fetchTokens).toHaveBeenCalledTimes(1);
-    findSorting().vm.$emit('sortByChange', 'name');
+    findSorting().vm.$emit('sort-by-change', 'name');
 
     expect($router.push).toHaveBeenCalledWith({ query: { page: 1, sort: 'expires_asc' } });
     expect(store.setSorting).toHaveBeenCalledWith(expect.objectContaining({ value: 'name' }));
@@ -187,7 +187,7 @@ describe('AccessTokens', () => {
     createComponent();
     expect(store.fetchTokens).toHaveBeenCalledTimes(1);
     store.sorting = { value: 'name', isAsc: true };
-    findSorting().vm.$emit('sortDirectionChange', false);
+    findSorting().vm.$emit('sort-direction-change', false);
 
     expect($router.push).toHaveBeenCalledWith({ query: { page: 1, sort: 'name_asc' } });
     expect(store.setSorting).toHaveBeenCalledWith(expect.objectContaining({ isAsc: false }));

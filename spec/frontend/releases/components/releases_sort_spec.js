@@ -46,9 +46,9 @@ describe('releases_sort.vue', () => {
     });
   });
 
-  const clickReleasedDateItem = () => findSorting().vm.$emit('sortByChange', RELEASED_AT);
-  const clickCreatedDateItem = () => findSorting().vm.$emit('sortByChange', CREATED_AT);
-  const clickSortDirectionButton = () => findSorting().vm.$emit('sortDirectionChange');
+  const clickReleasedDateItem = () => findSorting().vm.$emit('sort-by-change', RELEASED_AT);
+  const clickCreatedDateItem = () => findSorting().vm.$emit('sort-by-change', CREATED_AT);
+  const clickSortDirectionButton = () => findSorting().vm.$emit('sort-direction-change');
 
   const releasedAtDropdownItemDescription = 'released at dropdown item';
   const createdAtDropdownItemDescription = 'created at dropdown item';

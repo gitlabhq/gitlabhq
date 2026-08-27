@@ -137,8 +137,8 @@ export default {
     :actions-toggle-text="__('Actions')"
     :border-color-class="borderColor"
     :body-content-class="bodyContentClasses"
-    @dropdownOpen="dropdownOpen = true"
-    @dropdownClosed="dropdownOpen = false"
+    @dropdown-open="dropdownOpen = true"
+    @dropdown-closed="dropdownOpen = false"
   >
     <template v-if="glSlots().body" #body>
       <slot name="body"></slot>

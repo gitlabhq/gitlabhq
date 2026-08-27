@@ -1,0 +1,21 @@
+---
+description: 'Fires when a user changes which columns are shown on the work item planning board or changes their order, covering five actions carried in label: show_group and hide_group for toggling a single column, hide_all_groups for the "Hide all" action, and reorder_drag or reorder_menu depending on how a column was moved. The hide_group action covers both the display settings toggle and the "Hide list" action in the column header menu. It does not fire when "Hide all" is used but every column is already hidden, or when a reorder resolves to no change, such as the same index or a move off the end of the row. The column or status name is never sent, because status names are customer-defined data.'
+internal_events: true
+status: active
+action: configure_columns_on_work_item_board
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: 'Indicates the column configuration action: show_group when a single column is toggled back on, hide_group when a single column is hidden from either the display settings or the column header menu, hide_all_groups when the "Hide all" action is used, reorder_drag when a column is moved by dragging its header, or reorder_menu when a column is moved with the move-left/move-right menu action. The column or status name itself is never sent, since status names are customer-defined data. Unlike other work_item_* events, where label carries the work item type, here it carries the configuration action instead.'
+product_group: planning_views
+product_categories:
+  - planning_views
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251537
+tiers:
+  - free
+  - premium
+  - ultimate

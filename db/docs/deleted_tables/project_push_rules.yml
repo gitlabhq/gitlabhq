@@ -12,3 +12,5 @@ gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250405
+removed_in_milestone: '19.4'

@@ -7,7 +7,7 @@ title: Post Deployment Migrations
 
 Post deployment migrations are regular Rails migrations that can optionally be
 executed after a deployment. By default these migrations are executed alongside
-the other migrations, but this would require a downtime. To skip these migrations you must set the
+the other migrations, but this would require downtime. To skip these migrations, you must set the
 environment variable `SKIP_POST_DEPLOYMENT_MIGRATIONS` to a non-empty value
 when running `rake db:migrate`.
 
@@ -29,7 +29,7 @@ For GitLab.com, these migrations are executed on a daily basis at the discretion
 release managers through the
 [post-deploy migration pipeline](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/database-migrations/post-deploy-migration/readme.md).
 
-## Deployment Integration
+## Deployment integration
 
 Say you're using Chef for deploying new versions of GitLab and you'd like to run
 post deployment migrations after deploying a new version. Let's assume you
@@ -48,7 +48,7 @@ The process is similar for other deployment techniques: first you would deploy
 with the environment variable set, then you re-deploy a single
 server but with the variable _unset_.
 
-## Creating Migrations
+## Creating migrations
 
 To create a post deployment migration you can use the following Rails generator:
 
@@ -59,7 +59,7 @@ bundle exec rails g post_deployment_migration migration_name_here
 This generates the migration file in `db/post_migrate`. These migrations
 behave exactly like regular Rails migrations.
 
-## Use Cases
+## Use cases
 
 Post deployment migrations can be used to perform migrations that mutate state
 that an existing version of GitLab depends on. For example, say you want to

@@ -189,7 +189,7 @@ describe('Inline edit form component', () => {
 
           await nextTick();
 
-          findAlert().vm.$emit('secondaryAction');
+          findAlert().vm.$emit('secondary-action');
         });
 
         it('hides the warning alert', () => {

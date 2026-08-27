@@ -78,14 +78,14 @@ Consider the next release as "Release N.M+1".
 - The helper renames the sequence and the indexes. Sometimes it diverges from the standard Rails convention
   when naming indexes, so there is a possibility that not all indexes are properly renamed. After running
   the migration locally, check if there are inconsistently named indexes (`db/structure.sql`). Those can be
-  renamed manually in a separate migration, which can be also part of the release M.N+1.
+  renamed manually in a separate migration, which can also be part of the release N.M+1.
 - Foreign key columns might still contain the old table name. For smaller tables, follow our
-  [standard column rename process](avoiding_downtime_in_migrations.md#renaming-columns)
+  [standard column rename process](avoiding_downtime_in_migrations.md#renaming-columns).
 - Avoid renaming database tables which are used with triggers.
 - Table modifications (add or remove columns) are not allowed during the rename process. Make sure that all changes to the table happen before the rename migration is started (or in the next release).
 - As the index names might change, verify that the model does not use bulk insert
   (for example, `insert_all` and `upsert_all`) with the `unique_by: index_name` option.
-  Renaming an index while using these methods may break functionality.
+  Renaming an index while using these methods might break functionality.
 - For tables with composite primary keys: The database view does not preserve composite primary key metadata. Explicitly set `self.primary_key` in the model before deploying the rename migration:
 
 ```ruby

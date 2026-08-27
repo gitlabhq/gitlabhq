@@ -225,17 +225,15 @@ export default {
         </ul>
       </template>
       <template #comments>
-        <!-- eslint-disable vue/v-on-event-hyphenation -- GlAlert emits the camelCase `primaryAction` event -->
         <gl-alert
           v-if="loadingFailed"
           :dismissible="false"
           variant="danger"
           :primary-button-text="$options.i18n.retryText"
-          @primaryAction="wikiPageData.refetch()"
+          @primary-action="wikiPageData.refetch()"
         >
           {{ $options.i18n.loadingFailedErrText }}
         </gl-alert>
-        <!-- eslint-enable vue/v-on-event-hyphenation -->
         <ul v-else id="notes-list" class="notes main-notes-list timeline">
           <template v-for="discussion in sortedDiscussions">
             <skeleton-note

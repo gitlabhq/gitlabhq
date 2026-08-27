@@ -32622,6 +32622,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "authorId",
+                  "description": "Filter by one or many author Global IDs",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "createdAtFrom",
                   "description": "Filter by merge request creation timestamp. Start of the range.",
                   "type": {
@@ -248386,6 +248406,18 @@
           "name": "MergeRequestsAggregationResponseDimensions",
           "description": "Response dimensions for `MergeRequests` aggregation engine",
           "fields": [
+            {
+              "name": "author",
+              "description": "Merge request author",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "createdAt",
               "description": "Merge request creation time",

@@ -8,6 +8,7 @@ import {
 } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
+import { InternalEvents } from '~/tracking';
 import {
   DEFAULT_GROUP_BY,
   groupingStrategyFor,
@@ -35,6 +36,7 @@ export default {
     GlSearchBoxByType,
     GlToggle,
   },
+  mixins: [InternalEvents.mixin()],
   i18n: {
     groupBy: s__('WorkItems|Group by'),
     sort: s__('WorkItems|Sort'),
@@ -167,6 +169,7 @@ export default {
       return computeGroupVisible(this.visibleGroups, this.groupBy, value);
     },
     async toggleGroupVisibility(value) {
+      const wasVisible = this.isGroupVisible(value);
       const next = computeToggleGroupVisibility({
         visibleGroups: this.visibleGroups,
         groupBy: this.groupBy,
@@ -177,6 +180,9 @@ export default {
         mutation: updateVisibleGroupsMutation,
         variables: { visibleGroups: next },
       });
+      this.trackEvent('configure_columns_on_work_item_board', {
+        label: wasVisible ? 'hide_group' : 'show_group',
+      });
       this.persist(next);
     },
     async hideAll() {
@@ -186,6 +192,7 @@ export default {
         mutation: updateVisibleGroupsMutation,
         variables: { visibleGroups: [] },
       });
+      this.trackEvent('configure_columns_on_work_item_board', { label: 'hide_all_groups' });
       this.persist([]);
     },
     async persist(visibleGroups) {

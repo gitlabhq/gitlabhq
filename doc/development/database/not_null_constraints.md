@@ -59,7 +59,7 @@ end
 Adding `NOT NULL` to existing database columns usually requires multiple steps split into at least two
 different releases. If your table is small enough that you don't need to
 use a background migration, you can include all these in the same merge
-request. We recommend to use separate migrations to reduce
+request. We recommend using separate migrations to reduce
 transaction durations.
 
 The steps required are:
@@ -69,7 +69,7 @@ The steps required are:
    1. Ensure $ATTRIBUTE value is being set at the application level.
       1. If the attribute has a default value, add the default value to the model so the default value is set for new records.
       1. Update all places in the code where the attribute would be set to `nil`, if any, for new and existing records. Note that
-         using ActiveRecord callbacks such as `before_save` and `before_validation` may not be sufficient, as some processes
+         using ActiveRecord callbacks such as `before_save` and `before_validation` might not be sufficient, as some processes
          skip these callbacks. `update_column`, `update_columns`, and bulk operations such as `insert_all` and `update_all` are some
          examples of methods to look out for.
    1. Add a post-deployment migration to fix the existing records.
@@ -384,7 +384,7 @@ scheduled after the background migration has completed, which could be several r
      ```
 
 For these cases, consult the database team early in the update cycle. The `NOT NULL`
-constraint may not be required or other options could exist that do not affect really large
+constraint might not be required or other options could exist that do not affect really large
 or frequently accessed tables.
 
 ## `NOT NULL` constraints for multiple columns
@@ -458,7 +458,7 @@ CREATE TABLE labels (
 Dropping a `NOT NULL` constraint from an existing database column requires a multistep migration process:
 
 1. A schema migration to drop the `NOT NULL` constraint.
-1. A separate data migration to ensure data integrity after a potential rollback. This migration may:
+1. A separate data migration to ensure data integrity after a potential rollback. This migration might:
    - Remove invalid records.
    - Update invalid records with a default value.
 

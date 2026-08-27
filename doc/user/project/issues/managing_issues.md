@@ -149,6 +149,14 @@ When you move an issue, it's closed and copied to the target project.
 The original issue is not deleted. A [system note](../system_notes.md), which indicates
 where it came from and went to, is added to both issues.
 
+GitLab also copies files attached to the issue's description or comments to the target
+project. Because [uploaded files are scoped to a project](../../../security/user_file_uploads.md),
+GitLab creates each copy with a new URL secret in the target project:
+
+- Direct links to the original attachment URLs return a `404` error.
+- The copied files are listed in the target project's
+  [Markdown uploads](../../../api/project_markdown_uploads.md), not the source project's.
+
 Be careful when moving an issue to a project with different access rules. Before moving the issue, make sure it does not contain sensitive data.
 
 Prerequisites:

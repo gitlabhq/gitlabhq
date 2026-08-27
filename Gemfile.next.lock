@@ -606,10 +606,10 @@ GEM
       ruby-statistics (>= 4.0.1)
       ruby2_keywords
       thor (>= 0.19, < 2)
-    devfile (0.5.4)
-    devfile (0.5.4-aarch64-linux)
-    devfile (0.5.4-arm64-darwin)
-    devfile (0.5.4-x86_64-linux)
+    devfile (0.5.5)
+    devfile (0.5.5-aarch64-linux)
+    devfile (0.5.5-arm64-darwin)
+    devfile (0.5.5-x86_64-linux)
     device_detector (1.1.3)
     devise (4.9.4)
       bcrypt (~> 3.0)
@@ -2467,7 +2467,7 @@ DEPENDENCIES
   debug (~> 1.11.0)
   declarative_policy (~> 2.1.0)
   derailed_benchmarks
-  devfile (~> 0.5.4)
+  devfile (~> 0.5.5)
   device_detector
   devise (~> 4.9.3)
   devise-pbkdf2-encryptable (~> 0.0.0)!
@@ -2923,10 +2923,10 @@ CHECKSUMS
   declarative (0.0.20) sha256=8021dd6cb17ab2b61233c56903d3f5a259c5cf43c80ff332d447d395b17d9ff9
   declarative_policy (2.1.0) sha256=f9ab705da726174bde97785c319311a4abf6143c07862f882bd8bc1b69361eea
   derailed_benchmarks (2.2.1) sha256=654280664fded41c9cd8fc27fc0fcfaf096023afab90eb4ac1185ba70c5d4439
-  devfile (0.5.4) sha256=c559bbb23275b5cf1bb67bd49fc2810105a53cfbcd841b216d551a4fa7391862
-  devfile (0.5.4-aarch64-linux) sha256=264cf8d9762d78558c8c6136fb7ba0ffd147476e3eb4583e7e6327837da87314
-  devfile (0.5.4-arm64-darwin) sha256=c2e26e234e5bfddbd8cac4169faefb2401f7b2d2b5a976785e01afea6822a90f
-  devfile (0.5.4-x86_64-linux) sha256=3e86982457e90531539ec1f1bc477e8412b4ef838ee4251c398f48931afb11f3
+  devfile (0.5.5) sha256=b719be258d19919a696295178121d55b9724a7873f0f1162ace8f3b21a7bc993
+  devfile (0.5.5-aarch64-linux) sha256=c6c5800c852ad2f496aa313d921269995c5f2678dd452e0fceacfcc9315be6b2
+  devfile (0.5.5-arm64-darwin) sha256=72d3f593df22dbe8aba14f0928e8cf5ee8d856ee2b250e8b3273bf562a84048f
+  devfile (0.5.5-x86_64-linux) sha256=ca904f99decbfa045a4331d6daf22bc4a8310912bdee4475e1426c97c748bf3e
   device_detector (1.1.3) sha256=c5fe3fe42cab2e8aa01f193b2074b8bb1510373ce47127206f28c7dea75a9c79
   devise (4.9.4) sha256=920042fe5e704c548aa4eb65ebdd65980b83ffae67feb32c697206bfd975a7f8
   devise-pbkdf2-encryptable (0.0.0)

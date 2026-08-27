@@ -270,7 +270,7 @@ describe('CreateBranchMergeRequestModal', () => {
         jest.spyOn(axios, 'post');
         mock
           .onPost('/fullPath/-/branches')
-          .reply(HTTP_STATUS_OK, { data: { url: 'http://test.com/branch' } });
+          .reply(HTTP_STATUS_OK, { name: 'target_mr', url: 'http://test.com/branch' });
 
         findRefSelector().vm.$emit('input', 'source_mr');
         findTargetBranch().vm.$emit('input', 'target_mr');
@@ -292,6 +292,35 @@ describe('CreateBranchMergeRequestModal', () => {
 
         expect(visitUrl).toHaveBeenCalledWith(
           '/fullPath/-/merge_requests/new?merge_request%5Bissue_iid%5D=1&merge_request%5Bsource_branch%5D=target_mr&merge_request%5Btarget_branch%5D=source_mr',
+        );
+      });
+
+      it('uses the branch name returned by branch creation, not a later suggestion', async () => {
+        // Mount with the modal closed so opening it re-runs init() via the showModal watcher.
+        createWrapper({ showBranchFlow: false, showModal: false });
+        await waitForPromises();
+
+        jest.spyOn(axios, 'post');
+        // Branch creation returns the branch that was actually created.
+        mock.onPost('/fullPath/-/branches').reply(HTTP_STATUS_OK, {
+          name: 'suggested_branch_name#with_hash',
+          url: 'http://test.com/branch',
+        });
+
+        // Opening the modal triggers another init(); by then the branch exists, so the
+        // endpoint returns a suffixed suggestion that must not be used for the MR.
+        mock.onGet('/fullPath/-/issues/1/can_create_branch').reply(HTTP_STATUS_OK, {
+          can_create_branch: true,
+          suggested_branch_name: 'suggested_branch_name#with_hash-2',
+        });
+
+        wrapper.setProps({ showModal: true });
+        firePrimaryEvent();
+        await waitForPromises();
+        await nextTick();
+
+        expect(visitUrl).toHaveBeenCalledWith(
+          '/fullPath/-/merge_requests/new?merge_request%5Bissue_iid%5D=1&merge_request%5Bsource_branch%5D=suggested_branch_name%23with_hash&merge_request%5Btarget_branch%5D=master',
         );
       });
 
@@ -320,9 +349,10 @@ describe('CreateBranchMergeRequestModal', () => {
 
         it('replaces the create branch and create merge request paths with forkPath with passing of work item project id', async () => {
           jest.spyOn(axios, 'post');
-          mock
-            .onPost('/fullPath/-/branches')
-            .reply(HTTP_STATUS_OK, { data: { url: 'http://test.com/branch' } });
+          mock.onPost('/fullPath-fork-new/-/branches').reply(HTTP_STATUS_OK, {
+            name: 'suggested_branch_name#with_hash',
+            url: 'http://test.com/branch',
+          });
 
           firePrimaryEvent();
           await waitForPromises();

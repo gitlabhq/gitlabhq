@@ -196,7 +196,7 @@ describe('ContentEditor', () => {
       describe('when clicking the retry button in the loading error alert and loading succeeds', () => {
         beforeEach(async () => {
           renderMarkdown.mockResolvedValueOnce({ body: 'hello markdown' });
-          await wrapper.findComponent(GlAlert).vm.$emit('primaryAction');
+          await wrapper.findComponent(GlAlert).vm.$emit('primary-action');
         });
 
         it('hides the loading error alert', () => {

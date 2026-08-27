@@ -1147,7 +1147,7 @@ export default {
               class="gl-mb-3"
               variant="warning"
               :primary-button-text="__('Refresh')"
-              @primaryAction="$apollo.queries.workItem.refetch()"
+              @primary-action="$apollo.queries.workItem.refetch()"
               @dismiss="refetchError = null"
             >
               {{ refetchError }}

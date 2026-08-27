@@ -241,6 +241,14 @@ database migrations. On the deploy node:
       ```
 
 1. Upgrade GitLab by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
+1. Verify that database migrations have completed successfully, by running:
+
+   ```shell 
+   sudo gitlab-rake db:migrate:status
+   ```
+
+   Do not upgrade the remaining Rails nodes until all migrations are finished.
+   
 1. If you modified `gitlab.rb` on the deploy node to bypass PgBouncer:
    1. Update `gitlab.rb` on the deploy node. Change `gitlab_rails['db_host']`
       and `gitlab_rails['db_port']` back to your PgBouncer settings.

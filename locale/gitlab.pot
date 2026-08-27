@@ -12147,6 +12147,9 @@ msgstr ""
 msgid "ArtifactRegistry|Client configuration files"
 msgstr ""
 
+msgid "ArtifactRegistry|Columns"
+msgstr ""
+
 msgid "ArtifactRegistry|Control artifact registry access for this organization. When enabled, all projects and groups have access to a unified registry."
 msgstr ""
 

@@ -346,7 +346,10 @@ because one or more LLM calls are made to answer the question.
 One conversation window can include multiple messages, and so multiple billable requests.
 The pricing depends on the selected model.
 
-The GitLab Secrets Manager also consumes Credits, but with [a different consumption model](../ci/secrets/secrets_manager/secrets_manager_billing.md).
+The following features also consume credits, but with a different consumption model:
+
+- [GitLab Secrets Manager](../ci/secrets/secrets_manager/secrets_manager_billing.md)
+- [Hosted runners for GitLab Dedicated](../administration/dedicated/hosted_runners.md#usage-cap-exemptions)
 
 ## GitLab Credits dashboard
 
@@ -592,19 +595,6 @@ no subscription-level on-demand GitLab Credits cap is enforced, and behavior fal
 existing billing behavior.
 
 You can use the GraphQL API to [view usage caps](../api/graphql/reference/_index.md#gitlabsubscriptionbudgetcaps) and set a [flat user-level cap](../api/graphql/reference/_index.md#mutationupsertflatusercap) or a [per-user override cap](../api/graphql/reference/_index.md#mutationupsertuserbudgetcapoverrides).
-
-#### Usage cap exemptions
-
-Some services are exempt from usage caps because interrupting them would break a critical part of your workflow.
-For example, [hosted runners for GitLab Dedicated](../administration/dedicated/hosted_runners.md) are exempt.
-A subscription or per-user cap does not stop CI/CD jobs from running, and jobs continue after the Monthly Commitment Pool is depleted.
-
-Usage by exempt services still draws from your credits in the usual order and still accrues On-Demand charges.
-Because caps do not apply, you can't use cap-based controls to limit this spend.
-Monitor consumption in the GitLab Credits dashboard instead.
-
-Exempt usage requires accepted usage billing terms, in the same way as any other On-Demand consumption.
-If you have not accepted usage billing terms and your available credits are depleted, GitLab denies further usage.
 
 ### Usage control status
 

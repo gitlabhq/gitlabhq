@@ -13,9 +13,9 @@ The timeline detailed in this document serves as a roadmap for our PostgreSQL up
 
 The following sections detail the specific responsibilities assigned to each team, along with the recommended sequence of activities. This framework will serve as the standard operating procedure for all future PostgreSQL version upgrades.
 
-## Timeline and Team Responsibilities
+## Timeline and team responsibilities
 
-### January: Team Awareness and Preparation
+### January: Team awareness and preparation
 
 **Owner: All Cross-functional Teams**
 
@@ -25,11 +25,11 @@ Teams: [Database Operations Team](https://handbook.gitlab.com/handbook/engineeri
 
 This foundational phase initiates the mobilization of resources, with all teams conducting strategic planning for the forthcoming PostgreSQL version implementation.
 
-Team Tasks: All teams to prepare their work and to allocate team resources for the upcoming PostgreSQL update.
+Team Tasks: All teams should prepare their work and allocate team resources for the upcoming PostgreSQL update.
 
 ### February-April: GitLab.com Platform Compatibility Assurance
 
-#### Strategic Upgrade Cycle Planning
+#### Strategic upgrade cycle planning
 
 Analyze and propose the new PostgreSQL version for [GitLab](https://gitlab.com/).
 
@@ -37,9 +37,9 @@ Analyze and propose the new PostgreSQL version for [GitLab](https://gitlab.com/)
 
 Team Tasks:
 
-1. Formulate a high-level summary of the implementation strategy;
-1. Document the purpose and expected benefits for GitLab in the upgrade epic, following the [New Project template](https://gitlab.com/gitlab-com/gl-infra/data-access/team/-/blob/main/.gitlab/issue_templates/New_Project.md);
-1. Invite stakeholders and cross-functional teams to collaborate and comment directly in the Epic;
+1. Formulate a high-level summary of the implementation strategy.
+1. Document the purpose and expected benefits for GitLab in the upgrade epic, following the [New Project template](https://gitlab.com/gitlab-com/gl-infra/data-access/team/-/blob/main/.gitlab/issue_templates/New_Project.md).
+1. Invite stakeholders and cross-functional teams to collaborate and comment directly in the Epic.
 
 #### PostgreSQL test compatibility and performance
 
@@ -49,10 +49,10 @@ Ensure the compatibility of [GitLab.com](https://gitlab.com) to the new proposed
 
 Team Tasks:
 
-1. Integrate the new PostgreSQL version into nightly specs;
-1. Ensure the compatibility with the new PostgreSQL version;
-1. Document and communicate PostgreSQL inconsistencies, technical findings, and nightly specs results through an issue linked to the upgrade epic;
-1. Document and communicate to cross-functional teams that comprehensive testing confirms GitLab is fully functional with the new PostgreSQL version in the upgrade epic;
+1. Integrate the new PostgreSQL version into nightly specs.
+1. Ensure the compatibility with the new PostgreSQL version.
+1. Document and communicate PostgreSQL inconsistencies, technical findings, and nightly specs results through an issue linked to the upgrade epic.
+1. Document and communicate to cross-functional teams that comprehensive testing confirms GitLab is fully functional with the new PostgreSQL version in the upgrade epic.
 
 #### Cloud managed PostgreSQL test compatibility
 
@@ -62,17 +62,17 @@ Ensure the compatibility of [GitLab Dedicated](https://about.gitlab.com/dedicate
 
 Team Tasks:
 
-1. Review available RDS and CloudSQL upgrade documentation for the stable supported PostgreSQL version;
-1. Test the upgrade with the current stable PostgreSQL version for AWS and GPC;
-1. Document the rollout schedule and customer communication plan. Link the rollout schedule in the upgrade epic;
+1. Review available RDS and CloudSQL upgrade documentation for the stable supported PostgreSQL version.
+1. Test the upgrade with the current stable PostgreSQL version for AWS and GCP.
+1. Document the rollout schedule and customer communication plan. Link the rollout schedule in the upgrade epic.
 
-#### Geo Upgrade Preparation
+#### Geo upgrade preparation
 
 **Owner: Geo Team**
 
-Team Tasks: Verify the upgrade procedure for the new PostgreSQL version on Geo installations;
+Team Tasks: Verify the upgrade procedure for the new PostgreSQL version on Geo installations.
 
-### May-July: Bundled Postgres Compatibility Assurance
+### May-July: Bundled PostgreSQL compatibility assurance
 
 Validates the bundled PostgreSQL upgrade based on [GitLab.com](https://gitlab.com) production-stable version. This usually happens on a major release only, around May every year.
 
@@ -82,8 +82,8 @@ Validates the bundled PostgreSQL upgrade based on [GitLab.com](https://gitlab.co
 
 Team Tasks:
 
-1. Conduct deployment-specific testing to ensure PostgreSQL compatibility with Docker, Kubernetes, and Omnibus
-1. Test auto-upgrade paths thoroughly;
+1. Conduct deployment-specific testing to ensure PostgreSQL compatibility with Docker, Kubernetes, and Omnibus.
+1. Test auto-upgrade paths thoroughly.
 
 #### Provide optional support for bundled PostgreSQL upgrade
 
@@ -91,10 +91,10 @@ Team Tasks:
 
 Team Tasks:
 
-1. Document the upgrade procedures for different deployment methods in the installation guide;
-1. Existing installations will gain access to a validated upgrade pathway via the `pg-upgrade` utility tool, allowing for planned and controlled PostgreSQL upgrades;
+1. Document the upgrade procedures for different deployment methods in the installation guide.
+1. Existing installations will gain access to a validated upgrade pathway via the `pg-upgrade` utility tool, allowing for planned and controlled PostgreSQL upgrades.
 
-### August-October: Pre-prod Preparation and GitLab.com Upgrade
+### August-October: Pre-prod preparation and GitLab.com upgrade
 
 Upgrade [GitLab.com](https://gitlab.com) environments.
 
@@ -102,12 +102,12 @@ Upgrade [GitLab.com](https://gitlab.com) environments.
 
 Team Tasks:
 
-1. Configure the [Database upgrade DDL lock](database_upgrade_ddl_lock.md) to prevent DDL operations from conflicting with the upgrade process;
-1. Upgrade two STG databases and two PRD databases, typically CI + SEC or Registry. The specific databases may vary from year to year;
-1. Upgrade the remaining two STG databases and two PRD databases. The specific databases may vary from year to year;
-1. Communicate to cross-functional teams that GitLab has successfully transitioned to a new PostgreSQL version;
+1. Configure the [Database upgrade DDL lock](database_upgrade_ddl_lock.md) to prevent DDL operations from conflicting with the upgrade process.
+1. Upgrade two STG databases and two PRD databases, typically CI + SEC or Registry. The specific databases might vary from year to year.
+1. Upgrade the remaining two STG databases and two PRD databases. The specific databases might vary from year to year.
+1. Communicate to cross-functional teams that GitLab has successfully transitioned to a new PostgreSQL version.
 
-### November-January: Stable Release Integration
+### November-January: Stable release integration
 
 Proceed with updating the tooling based on the stable production version of [GitLab.com](https://gitlab.com).
 
@@ -117,7 +117,7 @@ This upgrade migrates customers to the new PostgreSQL version, thereby discontin
 
 **Owner: Build Team**
 
-Team Tasks: Auto-upgrade the PostgreSQL version for non-high availability environments;
+Team Tasks: Auto-upgrade the PostgreSQL version for non-high availability environments.
 
 #### Make the new version of bundled PostgreSQL as default
 
@@ -125,9 +125,9 @@ Team Tasks: Auto-upgrade the PostgreSQL version for non-high availability enviro
 
 Team Tasks:
 
-1. The stable bundled PostgreSQL version will become the default database version for all new installations;
-1. Monitor customer adoption and address any issues that arise;
-1. Document any related issues in the upgrade epic;
+1. The stable bundled PostgreSQL version will become the default database version for all new installations.
+1. Monitor customer adoption and address any issues that arise.
+1. Document any related issues in the upgrade epic.
 
 #### Cloud managed PostgreSQL update
 
@@ -137,6 +137,6 @@ Proceed with [GitLab Dedicated](https://about.gitlab.com/dedicated/) cloud-manag
 
 Team Tasks:
 
-1. Upgrade UATs: USPubSec and Commercial Dedicated environments upgraded;
-1. Upgrade production tenants: Production USPubSec and Commercial Dedicated environments upgraded;
-1. Code cleanup and Post Rollout: Update the default PostgreSQL version for Instrumentor;
+1. Upgrade UATs: USPubSec and Commercial Dedicated environments upgraded.
+1. Upgrade production tenants: Production USPubSec and Commercial Dedicated environments upgraded.
+1. Code cleanup and Post Rollout: Update the default PostgreSQL version for Instrumentor.

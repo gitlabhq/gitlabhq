@@ -302,8 +302,8 @@ export default {
         :sort-options="sortItems"
         :sort-by="selectedSort"
         :is-ascending="isAscending"
-        @sortByChange="onSortSelect"
-        @sortDirectionChange="onSortDirectionToggle"
+        @sort-by-change="onSortSelect"
+        @sort-direction-change="onSortDirectionToggle"
       />
     </div>
 

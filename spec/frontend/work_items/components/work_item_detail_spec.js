@@ -1594,7 +1594,7 @@ describe('WorkItemDetail component', () => {
 
     it('hides refetch alert on successful refetch', async () => {
       successHandler.mockReturnValueOnce(workItemByIidQueryResponse);
-      findRefetchAlert().findComponent(GlAlert).vm.$emit('primaryAction');
+      findRefetchAlert().findComponent(GlAlert).vm.$emit('primary-action');
       await mockApollo.resolveAll();
 
       expect(findRefetchAlert().exists()).toBe(false);

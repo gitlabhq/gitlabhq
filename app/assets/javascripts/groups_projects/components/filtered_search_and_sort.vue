@@ -143,8 +143,8 @@ export default {
           :is-ascending="isAscending"
           :sort-options="sortOptions"
           :sort-by="activeSortOption.value"
-          @sortDirectionChange="$emit('sort-direction-change', $event)"
-          @sortByChange="$emit('sort-by-change', $event)"
+          @sort-direction-change="$emit('sort-direction-change', $event)"
+          @sort-by-change="$emit('sort-by-change', $event)"
         />
       </div>
     </div>

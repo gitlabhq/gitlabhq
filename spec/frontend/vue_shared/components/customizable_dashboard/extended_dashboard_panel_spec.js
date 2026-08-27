@@ -221,9 +221,9 @@ describe('ExtendedDashboardPanel', () => {
       });
 
       it.each`
-        eventName           | alertPopoverShown
-        ${`dropdownOpen`}   | ${false}
-        ${`dropdownClosed`} | ${true}
+        eventName            | alertPopoverShown
+        ${`dropdown-open`}   | ${false}
+        ${`dropdown-closed`} | ${true}
       `(
         'when the dropdown event $eventName is emitted, the alert popover is $alertPopoverShown',
         async ({ eventName, alertPopoverShown }) => {

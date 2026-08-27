@@ -311,8 +311,8 @@ the model to use for conversations.
 If you open a previous chat from the chat history and continue that conversation,
 Chat uses the model that you previously selected.
 
-If you select a new model when in an existing conversation, Chat creates a new
-conversation.
+If you select a new model when in an existing conversation, Chat continues the
+current conversation with the newly selected model.
 
 Prerequisites:
 

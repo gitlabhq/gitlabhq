@@ -1,0 +1,29 @@
+# Canonical .frontend-test-base, shared by the main frontend pipeline
+# (.gitlab/ci/frontend.gitlab-ci.yml) and the per-test-coverage jest child
+# pipeline (.gitlab/ci/per_test_coverage/jest_test_base.gitlab-ci.yml).
+#
+# This file defines the base only. Whichever pipeline includes it must also
+# provide .default-retry, .with-ci-node-image, .default-before_script, and
+# .yarn-cache, which live in global.gitlab-ci.yml and ci-images.gitlab-ci.yml.
+# The main pipeline gets those from its top-level wildcard include; the jest
+# child includes them explicitly.
+.frontend-test-base:
+  extends:
+    - .default-retry
+    - .with-ci-node-image
+  variables:
+    # Disable warnings in browserslist which can break on backports
+    # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
+    BROWSERSLIST_IGNORE_OLD_DATA: "true"
+    USE_BUNDLE_INSTALL: "false"
+    SETUP_DB: "false"
+    GLCI_TEST_METRICS_RUN_TYPE: frontend-jest-tests
+  before_script:
+    - !reference [.default-before_script, before_script]
+    - yarn_install_script
+  stage: test-frontend
+  cache:
+    - !reference [.yarn-cache, cache]
+  needs:
+    - job: compile-fe-islands
+      optional: true

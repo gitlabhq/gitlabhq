@@ -26,7 +26,7 @@ padding, and only next `name` is being stored. Therefore, in this case, 8 bytes
 are spent for storing a 4-byte integer.
 
 The space between rows is also subject to alignment padding. The `user_id`
-column takes only 4 bytes, and on a 64-bit platform, 4 zeroes are added for
+column takes only 4 bytes, and on a 64-bit platform, 4 zeros are added for
 alignment padding, to allow storing the next row beginning with the "clear" word.
 
 As a result, the actual size of each column would be (omitting variable length
@@ -75,9 +75,9 @@ platform and 8 bytes for a 64-bit platform.
 | `date`             | 4 bytes                              | 1 word     |
 
 A "variable" size means the actual size depends on the value being stored. If
-PostgreSQL determines this can be embedded directly into a row it may do so, but
-for very large values it stores the data externally and store a pointer (of
-1 word in size) in the column. Because of this variable sized columns should
+PostgreSQL determines this can be embedded directly into a row, it might do so, but
+for very large values it stores the data externally and stores a pointer (of
+1 word in size) in the column. Because of this, variable sized columns should
 always be at the end of a table.
 
 ## Real Example
@@ -145,7 +145,7 @@ This would produce the following chunks:
 | variable   | `data`                 |
 
 Here we only need 40 bytes per row excluding the variable sized data and 24-byte
-tuple header. 8 bytes being saved may not sound like much, but for tables as
+tuple header. 8 bytes being saved might not sound like much, but for tables as
 large as the `events` table it does begin to matter. For example, when storing
 80 000 000 rows this translates to a space saving of at least 610 MB, all by
 just changing the order of a few columns.

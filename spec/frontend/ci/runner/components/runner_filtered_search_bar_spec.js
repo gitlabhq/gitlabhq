@@ -212,7 +212,7 @@ describe('RunnerList', () => {
   });
 
   it('when the user sets a sorting method, the "search" is emitted with the sort', () => {
-    findGlSorting().vm.$emit('sortByChange', 2);
+    findGlSorting().vm.$emit('sort-by-change', 2);
 
     expectToHaveLastEmittedInput({
       runnerType: null,

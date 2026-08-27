@@ -715,7 +715,7 @@ export default {
         .filter((value) => !this.isDropAllowed({ item: workItem, value }))
         .map((value) => value.id);
     },
-    moveColumn(oldIndex, newIndex) {
+    moveColumn(oldIndex, newIndex, reorderLabel) {
       if (
         oldIndex == null ||
         newIndex == null ||
@@ -725,6 +725,8 @@ export default {
       ) {
         return;
       }
+
+      this.trackEvent('configure_columns_on_work_item_board', { label: reorderLabel });
 
       const reordered = [...this.renderedColumns];
       const [moved] = reordered.splice(oldIndex, 1);
@@ -741,7 +743,7 @@ export default {
       );
     },
     onColumnMove({ oldIndex, newIndex }) {
-      this.moveColumn(oldIndex, newIndex);
+      this.moveColumn(oldIndex, newIndex, 'reorder_drag');
     },
     // `delta` is how many positions to shift by: -1 for left, +1 for right.
     // moveColumn ignores an out-of-range target, so this is safe on edge columns.
@@ -750,7 +752,7 @@ export default {
       if (oldIndex === -1) {
         return;
       }
-      this.moveColumn(oldIndex, oldIndex + delta);
+      this.moveColumn(oldIndex, oldIndex + delta, 'reorder_menu');
     },
     async onColumnHide(value) {
       const visibleGroups = toggleGroupVisibility({
@@ -772,6 +774,8 @@ export default {
         Sentry.captureException(error);
         return;
       }
+
+      this.trackEvent('configure_columns_on_work_item_board', { label: 'hide_group' });
 
       this.$emit('hide-group', visibleGroups);
     },

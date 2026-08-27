@@ -19,7 +19,7 @@ When ordering the columns it's advised to order by distinct columns only. Consid
 
 If we order by `created_at`, the result would likely depend on how the records are located on the disk.
 
-Using the tie-breaker column is advised when the data is exposed via a well defined interface and its consumed
+Using the tie-breaker column is advised when the data is exposed via a well-defined interface and it's consumed
 by an automated process, such as an API. Without the tie-breaker column, the order of the rows could change
 (data is re-imported) which could cause problems that are hard to debug, such as:
 
@@ -89,7 +89,7 @@ Execution plan:
 
 As you can see the query read 22 rows using the same index. The database compared the 20th, 21st, and 22nd values of the `created_at` column and determined that the 22nd value differs, so checking the next record is not needed. In this example the 20th and 21st column values had the same `created_at` value.
 
-Incremental sorting works well with timestamp columns where duplicated values are unlikely hence the incremental sorting will perform badly or won't be used at all when the column has very few distinct values (like an enum).
+Incremental sorting works well with timestamp columns where duplicated values are unlikely, hence the incremental sorting will perform badly or won't be used at all when the column has very few distinct values (like an enum).
 
 As an example, when incremental sorting is disabled, the database reads all merge requests records by the author and sorts data in memory.
 
@@ -131,7 +131,7 @@ With PostgreSQL version 11, the planner first looks up all issues matching the `
 
 For performance reasons, we should avoid mixing columns from different tables when specifying the `ORDER BY` clause.
 
-In this particular case there is no simple way (like index creation) to improve the query. We might think that changing the `issues.id` column to `issue_metrics.issue_id` helps. However, this likely makes the query perform worse because it might force the database to process all rows in the `issue_metrics` table.
+In this particular case, there is no simple way (like index creation) to improve the query. We might think that changing the `issues.id` column to `issue_metrics.issue_id` helps. However, this likely makes the query perform worse because it might force the database to process all rows in the `issue_metrics` table.
 
 One idea to address this problem is denormalization. Adding the `project_id` column to the `issue_metrics` table makes the filtering and sorting efficient:
 
@@ -176,7 +176,7 @@ Unfortunately, there is no efficient way to sort and paginate on the group level
 
 Things get worse when group level actually means group and its subgroups. To load the first page, the database looks up the group hierarchy, finds all projects, and then looks up all issues.
 
-The main reason behind the inefficient queries on the group level is the way our database schema is designed; our core domain models are associated with a project, and projects are associated with groups. This doesn't mean that the database structure is bad, it's just in a well-normalized form that is not optimized for efficient group level queries. We might need to look into denormalization in the long term.
+The main reason behind the inefficient queries on the group level is the way our database schema is designed; our core domain models are associated with a project, and projects are associated with groups. This doesn't mean that the database structure is bad. It's just in a well-normalized form that is not optimized for efficient group level queries. We might need to look into denormalization in the long term.
 
 Example: List issues in a group
 

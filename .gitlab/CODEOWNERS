@@ -321,6 +321,7 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @tkuah
 /.gitlab/ci/
 /.gitlab/ci/docs.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/technical-writing/tw-docops @gitlab-org/tw-leadership
 /.gitlab/ci/frontend.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/maintainers/frontend
+/.gitlab/ci/frontend/ @gl-dx/pipeline-maintainers @gitlab-org/maintainers/frontend
 /.gitlab/ci/test-on-omnibus/ @gl-dx/pipeline-maintainers @gl-dx/maintainers
 /.gitlab/ci/qa.gitlab-ci.yml @gl-dx/pipeline-maintainers @gl-dx/maintainers
 /.gitlab/ci/qa-common/ @gl-dx/pipeline-maintainers @gl-dx/maintainers

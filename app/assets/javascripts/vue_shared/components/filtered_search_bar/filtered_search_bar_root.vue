@@ -449,8 +449,8 @@ export default {
         dropdown-toggle-class="gl-grow"
         dropdown-class="gl-grow"
         :sort-direction-toggle-class="mergedSortDirectionToggleClass"
-        @sortByChange="handleSortByChange"
-        @sortDirectionChange="handleSortDirectionChange"
+        @sort-by-change="handleSortByChange"
+        @sort-direction-change="handleSortDirectionChange"
       />
     </div>
   </div>

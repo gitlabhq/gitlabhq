@@ -51,7 +51,7 @@ For the MVC version, consider the following:
 - Reduce the number of sort options to the minimum.
 - Reduce the number of filters (dropdown list, search bar) to the minimum.
 
-To make sorting and pagination efficient, for each sort option we need at least two database indexes (ascending, descending order). If we add filter options (by state or by author), we might need more indexes to maintain good performance. Indexes are not free, they can significantly affect the `UPDATE` query timings.
+To make sorting and pagination efficient, for each sort option we need at least two database indexes (ascending, descending order). If we add filter options (by state or by author), we might need more indexes to maintain good performance. Indexes are not free. They can significantly affect the `UPDATE` query timings.
 
 It's not possible to make all filter and sort combinations performant, so we should try optimizing the performance by usage patterns.
 
@@ -144,7 +144,7 @@ To fix this we need the following index:
 CREATE INDEX index_on_issues_project_id ON issues (project_id, id);
 ```
 
-By making the `id` column part of the index, the previous query reads maximum 20 rows. The query performs well regardless of the number of issues within a project. So with this change, we've also improved the initial page load (when the user loads the issue page).
+By making the `id` column part of the index, the previous query reads a maximum of 20 rows. The query performs well regardless of the number of issues within a project. So with this change, we've also improved the initial page load (when the user loads the issue page).
 
 > [!note]
 > Here we're leveraging the ordered property of the b-tree database index. Values in the index are sorted so reading 20 rows does not require further sorting.
@@ -167,7 +167,7 @@ In this case, the count query is not executed and the pagination no longer rende
 
 When we paginate over a large dataset, we might notice that the response time gets slower and slower. This is due to the `OFFSET` clause that seeks through the rows and skips N rows.
 
-From the user point of view, this might not be always noticeable. As the user paginates forward, the previous rows might be still in the buffer cache of the database. If the user shares the link with someone else and it's opened after a few minutes or hours, the response time might be significantly higher or it would even time out.
+From the user's point of view, this might not always be noticeable. As the user paginates forward, the previous rows might be still in the buffer cache of the database. If the user shares the link with someone else and it's opened after a few minutes or hours, the response time might be significantly higher or it would even time out.
 
 When requesting a large page number, the database needs to read `PAGE * PAGE_SIZE` rows. This makes offset pagination **unsuitable for large database tables**. However, with an [optimization technique](offset_pagination_optimization.md) the overall performance of the database queries can be slightly improved.
 
@@ -217,9 +217,9 @@ We can argue that a typical user does not visit these pages. However, API users 
 
 ### Keyset pagination
 
-Keyset pagination addresses the performance concerns of "skipping" previous rows when requesting a large page. However, it's not a drop-in replacement for offset-based pagination. When moving an API endpoint from offset-based pagination to keyset-based pagination, both must be supported. Removing one type of pagination entirely is a [breaking changes](../../update/terminology.md#breaking-change).
+Keyset pagination addresses the performance concerns of "skipping" previous rows when requesting a large page. However, it's not a drop-in replacement for offset-based pagination. When moving an API endpoint from offset-based pagination to keyset-based pagination, both must be supported. Removing one type of pagination entirely is a [breaking change](../../update/terminology.md#breaking-change).
 
-Keyset pagination used in both the [GraphQL API](../graphql_guide/pagination.md#keyset-pagination) and the [REST API](../../api/rest/_index.md#keyset-based-pagination).
+Keyset pagination is used in both the [GraphQL API](../graphql_guide/pagination.md#keyset-pagination) and the [REST API](../../api/rest/_index.md#keyset-based-pagination).
 
 Consider the following `issues` table:
 

@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_milestones
+description: Enables Vue 3 in compatibility mode for the milestones pages
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608109
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251249
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/623749
+milestone: '19.4'
+group: group::work items
+type: beta
+default_enabled: false

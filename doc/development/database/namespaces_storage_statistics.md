@@ -36,7 +36,7 @@ it increases the transaction's length.
 
 Because of all of the above, we can't apply the same pattern to store
 and update the namespaces statistics, as the `namespaces` table is one
-of the largest tables on GitLab.com. Therefore we needed to find a performant and
+of the largest tables on GitLab.com. Therefore, we needed to find a performant and
 alternative method.
 
 ## Attempts
@@ -70,7 +70,7 @@ REFRESH MATERIALIZED VIEW root_namespace_storage_statistics;
 
 While this implied a single query update (and probably a fast one), it has some downsides:
 
-- Materialized views syntax varies from PostgreSQL and MySQL. While this feature was worked on, MySQL was still supported by GitLab.
+- Materialized views syntax varies between PostgreSQL and MySQL. While this feature was worked on, MySQL was still supported by GitLab.
 - Rails does not have native support for materialized views. We'd need to use a specialized gem to take care of the management of the database views, which implies additional work.
 
 ### Attempt B: An update through a CTE
@@ -156,10 +156,10 @@ but we refresh them through Sidekiq jobs and in different transactions:
 1. Create a second table (`namespace_aggregation_schedules`) with two columns `id` and `namespace_id`.
 1. Whenever the statistics of a project changes, insert a row into `namespace_aggregation_schedules`
    - We don't insert a new row if there's already one related to the root namespace.
-   - Keeping in mind the length of the transaction that involves updating `project_statistics`(<https://gitlab.com/gitlab-org/gitlab/-/issues/29070>), the insertion should be done in a different transaction and through a Sidekiq Job.
+   - Keeping in mind the length of the transaction that involves updating `project_statistics` (<https://gitlab.com/gitlab-org/gitlab/-/issues/29070>), the insertion should be done in a different transaction and through a Sidekiq Job.
 1. After inserting the row, we schedule another worker to be executed asynchronously at two different moments:
-   - One enqueued for immediate execution and another one scheduled in `1.5h` hours.
-   - We only schedule the jobs, if we can obtain a `1.5h` lease on Redis on a key based on the root namespace ID.
+   - One enqueued for immediate execution and another one scheduled in `1.5h`.
+   - We only schedule the jobs if we can obtain a `1.5h` lease on Redis on a key based on the root namespace ID.
    - If we can't obtain the lease, it indicates there's another aggregation already in progress, or scheduled in no more than `1.5h`.
 1. This worker will:
    - Update the root namespace storage statistics by querying all the namespaces through a service.
@@ -189,4 +189,4 @@ All the details regarding this use case can be found on:
 - Merge request with the implementation: <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28996>
 
 Performance of the namespace storage statistics was measured in staging and production (GitLab.com). All results were posted
-on <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64092>: No problem has been reported so far.
+on <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64092>. No problem has been reported so far.

@@ -189,7 +189,7 @@ import {
 } from '../constants';
 
 const ListView = () => import('ee_else_ce/work_items/list/list_view.vue');
-const BoardView = () => import('ee_else_ce/work_items/board/board_view.vue');
+const BoardView = () => import('~/work_items/board/board_view.vue');
 const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
@@ -1336,6 +1336,7 @@ export default {
       }
     },
     handleToggleViewMode(newViewMode) {
+      this.trackEvent('switch_view_mode_on_work_item_planning_view', { label: newViewMode });
       this.viewMode = newViewMode;
       if (this.isSavedView) {
         this.persistSavedViewDraft();

@@ -30,7 +30,7 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 | `gitlab_main_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_ci` | All CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`) | |
 | `gitlab_ci_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
-| `gitlab_geo` | All Geo tables that are being stored in the `geo:` database (for example, like `project_registry`, `secondary_usage_data`) | |
+| `gitlab_geo` | All Geo tables that are being stored in the `geo:` database (for example, `project_registry`, `secondary_usage_data`) | |
 | `gitlab_internal` | All internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`) | |
 | `gitlab_pm` | All tables that store `package_metadata`| It is an alias for `gitlab_main`, to be replaced with `gitlab_sec` |
 | `gitlab_sec` | All Security and Vulnerability feature tables stored in the `sec:` database | |
@@ -39,7 +39,7 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 | `gitlab_shared_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_shared_org` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 
-More schemas to be introduced with additional decomposed databases
+More schemas to be introduced with additional decomposed databases.
 
 The usage of schema enforces the base class to be used:
 
@@ -155,15 +155,15 @@ real examples:
 - <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66714>
 - <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66503>
 
-There may be more examples where the code is used, but we can evaluate
+There might be more examples where the code is used, but we can evaluate
 if we need it or if the feature should behave this way.
 Before complicating things by adding new columns and tables,
 consider if you can simplify the solution and still meet the requirements.
 One case being evaluated involves changing how certain `UsageData` is
 calculated to remove a join query in
 <https://gitlab.com/gitlab-org/gitlab/-/issues/336170>. This is a good candidate
-to evaluate, because `UsageData` is not critical to users and it may be possible
-to get a similarly useful metric with a simpler approach. Alternatively we may
+to evaluate, because `UsageData` is not critical to users and it might be possible
+to get a similarly useful metric with a simpler approach. Alternatively we might
 find that nobody is using these metrics, so we can remove them.
 
 ##### Use `preload` instead of `includes`
@@ -257,7 +257,7 @@ User.find_by(id: allowed_user_id)
 You can see an example where this was used in
 <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126856>
 
-Sometimes it might seem easy to convert a join into a `pluck` but often this
+Sometimes it might seem easy to convert a join into a `pluck`, but often this
 results in loading an unbounded amount of ids into memory and then
 re-serializing those in a following query back to Postgres. These cases do not
 scale and we recommend attempting one of the other options. It might seem like a
@@ -316,17 +316,17 @@ This also improves performance because you don't need to join through an extra
 table.
 
 You can see this approach implemented in
-<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66963> . This MR also
+<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66963>. This MR also
 de-normalizes `pipeline_id` to fix a similar query.
 
 ##### De-normalize into an extra table
 
 Sometimes the previous de-normalization (adding an extra column) doesn't work for
-your specific case. This may be due to the fact that your data is not 1:1, or
+your specific case. This might be due to the fact that your data is not 1:1, or
 because the table you're adding to is already too wide (for example, the `projects`
 table shouldn't have more columns added).
 
-In this case you may decide to just store the extra data in a separate table.
+In this case, you might decide to just store the extra data in a separate table.
 
 One example where this approach is being used was to implement the
 `Project.with_code_coverage` scope. This scope was essentially used to narrow
@@ -353,14 +353,14 @@ inner join projects_with_ci_feature_usage on projects_with_ci_feature_usage.proj
 where projects_with_ci_feature_usage.ci_feature = 'code_coverage'
 ```
 
-The above example uses as a text column for simplicity but we should probably
+The above example uses a text column for simplicity, but we should probably
 use an [enum](creating_enums.md) to save space.
 
-The downside of this new design is that this may need to be
+The downside of this new design is that this might need to be
 updated (removed if the `ci_daily_build_group_report_results` is deleted).
-Depending on your domain, however, this may not be necessary because deletes are
+Depending on your domain, however, this might not be necessary because deletes are
 edge cases or impossible, or because the user impact of seeing the project on the
-list page may not be problematic. It's also possible to implement the
+list page might not be problematic. It's also possible to implement the
 logic to delete these rows if or whenever necessary in your domain.
 
 Finally, this de-normalization and new query also improve performance because
@@ -375,7 +375,7 @@ sometimes can be solved by adding
 This is a Rails feature which we
 [backported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66400). We
 also extended the feature to allow a lambda syntax for enabling `disable_joins`
-with a feature flag. If you use this feature we encourage using a feature flag
+with a feature flag. If you use this feature, we encourage using a feature flag
 as it mitigates risk if there is some serious performance regression.
 
 You can see an example where this was used in
@@ -391,7 +391,7 @@ each one is limited in some way. You can tell by either a `LIMIT 1` clause or
 by `WHERE` clause that is limiting based on a unique column. Any unbounded
 intermediate dataset could lead to loading too many IDs into memory.
 
-An example where you may see very poor performance is the following
+An example where you might see very poor performance is the following
 hypothetical code:
 
 ```ruby
@@ -536,7 +536,7 @@ end
 ```
 
 > [!warning]
-> Overriding an association can have unintended consequences and may even lead to data loss, as we noticed in [issue 424307](https://gitlab.com/gitlab-org/gitlab/-/issues/424307). Do not override existing ActiveRecord associations to mark a cross-join as allowed, as in the example below.
+> Overriding an association can have unintended consequences and might even lead to data loss, as we noticed in [issue 424307](https://gitlab.com/gitlab-org/gitlab/-/issues/424307). Do not override existing ActiveRecord associations to mark a cross-join as allowed, as in the example below.
 
 ```ruby
 class Group < Namespace
@@ -662,13 +662,13 @@ for advice.
 
 ##### Avoid `dependent: :nullify` and `dependent: :destroy` across databases
 
-There may be cases where we want to use `dependent: :nullify` or `dependent: :destroy`
+There might be cases where we want to use `dependent: :nullify` or `dependent: :destroy`
 across databases. This is technically possible, but it's problematic because
 these hooks run in the context of an outer transaction from the call to
 `#destroy`, which creates a cross-database transaction and we are trying to
 avoid that. Cross-database transactions caused this way could lead to confusing
 outcomes when we switch to decomposed, because now you have some queries
-happening outside the transaction and they may be partially applied while the
+happening outside the transaction and they might be partially applied while the
 outer transaction fails, which could lead to surprising bugs.
 
 For non-trivial objects that need to clean up data outside the

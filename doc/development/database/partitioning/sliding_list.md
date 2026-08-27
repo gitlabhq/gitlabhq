@@ -20,7 +20,7 @@ can be safely removed once their data has been processed or is no longer needed 
 
 ### Register the Model for partition management
 
-On `Gitlab.com` partitions are not created on application startup, they are created by the _PartitionManagementWorker_,
+On `GitLab.com`, partitions are not created on application startup. They are created by the _PartitionManagementWorker_,
 which executes several times per day. The model that uses sliding list partitioning should also be added in
 `Gitlab::Database::Partitioning.register_models` for the PartitionManagementWorker to handle them.
 

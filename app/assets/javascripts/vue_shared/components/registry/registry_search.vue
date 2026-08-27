@@ -150,8 +150,8 @@ export default {
       :sort-direction-tool-tip="sortDirectionData.tooltip"
       :sort-options="sortOptions"
       :sort-by="sorting.orderBy"
-      @sortDirectionChange="onDirectionChange"
-      @sortByChange="onSortItemClick"
+      @sort-direction-change="onDirectionChange"
+      @sort-by-change="onSortItemClick"
     />
   </div>
 </template>

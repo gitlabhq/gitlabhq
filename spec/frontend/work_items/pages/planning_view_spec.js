@@ -3250,6 +3250,38 @@ describe('planning-view', () => {
         expect(findDisplaySettingsDrawer().props('viewMode')).toBe('list');
       });
 
+      describe('tracking', () => {
+        const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+        it('tracks switching to board view', async () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'switch_view_mode_on_work_item_planning_view',
+            { label: 'board' },
+            undefined,
+          );
+        });
+
+        it('tracks switching back to list view', async () => {
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+          await waitForPromises();
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'switch_view_mode_on_work_item_planning_view',
+            { label: 'list' },
+            undefined,
+          );
+        });
+      });
+
       it('persists view mode for All Items', async () => {
         findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();

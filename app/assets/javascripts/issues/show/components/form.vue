@@ -158,7 +158,6 @@ export default {
 <template>
   <form data-testid="issuable-form" class="gl-mt-1">
     <locked-warning v-if="showLockedWarning" :issuable-type="issuableType" />
-    <!-- eslint-disable vue/v-on-event-hyphenation -- GlAlert emits camelCase primaryAction/secondaryAction events -->
     <gl-alert
       v-if="showOutdatedDescriptionWarning"
       class="gl-mb-5"
@@ -166,15 +165,14 @@ export default {
       :primary-button-text="__('Keep')"
       :secondary-button-text="__('Discard')"
       :dismissible="false"
-      @primaryAction="keepAutosave"
-      @secondaryAction="discardAutosave"
+      @primary-action="keepAutosave"
+      @secondary-action="discardAutosave"
       >{{
         __(
           'The comment you are editing has been changed by another user. Would you like to keep your changes and overwrite the new description or discard your changes?',
         )
       }}</gl-alert
     >
-    <!-- eslint-enable vue/v-on-event-hyphenation -->
     <div class="row gl-mb-3">
       <div class="gl-col-12">
         <issuable-title-field ref="title" v-model="formData.title" @input="updateTitleDraft" />

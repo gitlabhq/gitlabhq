@@ -1,0 +1,21 @@
+---
+description: Fires when a user switches the work item planning view between list mode and board mode using the view mode toggle in the display settings drawer. The label is the mode being switched to, either list or board, and this only fires for deliberate switches through the toggle, not when a page loads directly into board mode. Because of this, the list direction is the only signal available for users who try the board and switch back, which matters for gauging adoption during the beta.
+internal_events: true
+status: active
+action: switch_view_mode_on_work_item_planning_view
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: 'The view mode being switched to: list or board.'
+product_group: planning_views
+product_categories:
+  - planning_views
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251537
+tiers:
+  - free
+  - premium
+  - ultimate

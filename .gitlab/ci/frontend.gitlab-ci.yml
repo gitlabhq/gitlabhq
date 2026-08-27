@@ -1,3 +1,6 @@
+include:
+  - local: .gitlab/ci/frontend/test-base.gitlab-ci.yml
+
 .with-fixtures-needs:
   needs:
     - "rspec-all frontend_fixture"
@@ -277,27 +280,6 @@ upload-graphql-schema-dump:
   script:
     - source scripts/gitlab_component_helpers.sh
     - create_and_upload_graphql_schema_package
-
-.frontend-test-base:
-  extends:
-    - .default-retry
-    - .with-ci-node-image
-  variables:
-    # Disable warnings in browserslist which can break on backports
-    # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
-    BROWSERSLIST_IGNORE_OLD_DATA: "true"
-    USE_BUNDLE_INSTALL: "false"
-    SETUP_DB: "false"
-    GLCI_TEST_METRICS_RUN_TYPE: frontend-jest-tests
-  before_script:
-    - !reference [.default-before_script, before_script]
-    - yarn_install_script
-  stage: test-frontend
-  cache:
-    - !reference [.yarn-cache, cache]
-  needs:
-    - job: compile-fe-islands
-      optional: true
 
 jest-build-cache:
   extends:

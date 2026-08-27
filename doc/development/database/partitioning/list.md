@@ -123,7 +123,7 @@ end
 The `on_update: :cascade` option is mandatory if we want the partitioning column
 to be updated. This will cascade the update to all dependent rows. Without
 specifying it, updating the partition column on the target table would
-result in a `Key is still referenced from table ...` error and updating the
+result in a `Key is still referenced from table ...` error, and updating the
 partition column on the source table would raise a
 `Key is not present in table ...` error.
 

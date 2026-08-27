@@ -477,8 +477,8 @@ export default {
         :sort-options="$options.SORT_OPTIONS"
         :sort-by="sortBy"
         :is-ascending="isAscending"
-        @sortByChange="onSortByChange"
-        @sortDirectionChange="onDirectionChange"
+        @sort-by-change="onSortByChange"
+        @sort-direction-change="onDirectionChange"
       />
     </div>
   </div>

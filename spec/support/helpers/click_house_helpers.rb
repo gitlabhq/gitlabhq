@@ -67,6 +67,7 @@ module ClickHouseHelpers
         description: '',
         merge_jid: '',
         target_project_id: project&.id || 0,
+        author_id: data[:author_id],
         state_id: data.fetch(:state_id, MergeRequest.available_states[:opened]),
         created_at: data[:created_at],
         updated_at: data.fetch(:updated_at, data[:created_at]),

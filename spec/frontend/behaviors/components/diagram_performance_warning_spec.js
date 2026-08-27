@@ -29,7 +29,7 @@ describe('DiagramPerformanceWarning component', () => {
   });
 
   it('emits event when accepting alert', () => {
-    findAlert().vm.$emit('primaryAction');
+    findAlert().vm.$emit('primary-action');
 
     expect(wrapper.emitted('show-image')).toEqual([[]]);
   });

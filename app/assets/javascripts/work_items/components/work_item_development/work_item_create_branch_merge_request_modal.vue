@@ -248,6 +248,8 @@ export default {
         });
 
         this.$emit('hide-modal');
+
+        return data.name;
       } catch {
         createAlert({
           message: sprintf(
@@ -255,16 +257,21 @@ export default {
             { workItemType: lowercaseWorkItemType(this.workItemType) },
           ),
         });
+
+        return null;
       } finally {
         this.creatingBranch = false;
       }
     },
     async createMergeRequest() {
-      await this.createBranch();
+      // Prefer the branch name returned by the server (the branch actually created); fall
+      // back to the requested name so a later init() cannot repoint the MR at a stale name.
+      const createdBranch = await this.createBranch();
+      const sourceBranch = createdBranch || this.branchName;
       const path = createBranchMRApiPathHelper.createMR({
         fullPath: this.projectFullPath,
         workItemIid: this.workItemIid,
-        sourceBranch: this.branchName,
+        sourceBranch,
         targetBranch: this.refName,
       });
 

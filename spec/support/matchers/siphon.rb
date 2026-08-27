@@ -146,9 +146,6 @@ RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_nam
 
     @errors = []
     replication_targets = Array(content['replication_targets'])
-    if replication_targets.size > 1
-      @errors << "expected exactly 0 or 1 replication target, got #{replication_targets.size}"
-    end
 
     target = replication_targets.first
     if target['name'] != 'clickhouse_main'

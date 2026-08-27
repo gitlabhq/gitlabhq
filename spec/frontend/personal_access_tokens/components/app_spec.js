@@ -286,7 +286,7 @@ describe('PersonalAccessTokensApp', () => {
   describe('sorting', () => {
     it('updates sort value when changed', async () => {
       await waitForPromises();
-      await findSorting().vm.$emit('sortByChange', 'name');
+      await findSorting().vm.$emit('sort-by-change', 'name');
 
       expect(mockQueryHandler).toHaveBeenCalledWith({
         id: 'gid://gitlab/User/123',
@@ -307,7 +307,7 @@ describe('PersonalAccessTokensApp', () => {
 
     it('updates sort direction when changed', async () => {
       await waitForPromises();
-      await findSorting().vm.$emit('sortDirectionChange', false);
+      await findSorting().vm.$emit('sort-direction-change', false);
 
       expect(mockQueryHandler).toHaveBeenCalledWith({
         id: 'gid://gitlab/User/123',
@@ -423,13 +423,13 @@ describe('PersonalAccessTokensApp', () => {
       });
 
       it('resets pagination when sort column changes', async () => {
-        await findSorting().vm.$emit('sortByChange', 'name');
+        await findSorting().vm.$emit('sort-by-change', 'name');
 
         expectResetPagination();
       });
 
       it('resets pagination when sort direction changes', async () => {
-        await findSorting().vm.$emit('sortDirectionChange', false);
+        await findSorting().vm.$emit('sort-direction-change', false);
 
         expectResetPagination();
       });

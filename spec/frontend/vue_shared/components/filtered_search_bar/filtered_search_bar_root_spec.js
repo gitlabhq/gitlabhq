@@ -98,7 +98,7 @@ describe('FilteredSearchBarRoot', () => {
       });
 
       it('emits an event with the selectedSortOption provided by default', async () => {
-        findGlSorting().vm.$emit('sortByChange', mockSortOptions[1].id);
+        findGlSorting().vm.$emit('sort-by-change', mockSortOptions[1].id);
         await nextTick();
 
         expect(wrapper.emitted('on-sort')[0]).toEqual([
@@ -107,7 +107,7 @@ describe('FilteredSearchBarRoot', () => {
       });
 
       it('emits an event with the selectedSortDirection provided by default', async () => {
-        findGlSorting().vm.$emit('sortDirectionChange', true);
+        findGlSorting().vm.$emit('sort-direction-change', true);
         await nextTick();
 
         expect(wrapper.emitted('on-sort')[0]).toEqual([mockSortOptions[0].sortDirection.ascending]);
@@ -154,7 +154,7 @@ describe('FilteredSearchBarRoot', () => {
       });
 
       it('renders `sort-lowest` ascending icon when the sort button is clicked', async () => {
-        findGlSorting().vm.$emit('sortDirectionChange', true);
+        findGlSorting().vm.$emit('sort-direction-change', true);
         await nextTick();
 
         expect(findGlSorting().props('isAscending')).toBe(true);
@@ -253,7 +253,7 @@ describe('FilteredSearchBarRoot', () => {
       it('emits component event `on-sort` with selected sort by value', async () => {
         createComponent({ propsData: { sortOptions: mockSortOptions } });
 
-        findGlSorting().vm.$emit('sortByChange', mockSortOptions[1].id);
+        findGlSorting().vm.$emit('sort-by-change', mockSortOptions[1].id);
         await nextTick();
 
         expect(wrapper.vm.selectedSortOption).toEqual(mockSortOptions[1]);
@@ -276,14 +276,14 @@ describe('FilteredSearchBarRoot', () => {
       it('sets sort direction to be opposite of its current value', async () => {
         expect(findGlSorting().props('isAscending')).toBe(false);
 
-        findGlSorting().vm.$emit('sortDirectionChange', true);
+        findGlSorting().vm.$emit('sort-direction-change', true);
         await nextTick();
 
         expect(findGlSorting().props('isAscending')).toBe(true);
       });
 
       it('emits component event `on-sort` with opposite of currently selected sort by value', () => {
-        findGlSorting().vm.$emit('sortDirectionChange', true);
+        findGlSorting().vm.$emit('sort-direction-change', true);
 
         expect(wrapper.emitted('on-sort')[0]).toEqual([mockSortOptions[0].sortDirection.ascending]);
       });
