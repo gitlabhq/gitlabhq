@@ -35,7 +35,6 @@ module Gitlab
       @uri = URI(url)
       @size = size
       @tell = 0
-      @cache_previous_chunk = Feature.enabled?(:http_io_previous_chunk_cache, Feature.current_request)
     end
 
     def close
@@ -251,7 +250,6 @@ module Gitlab
     # crossing back to a single request. Forward reads never revisit a chunk,
     # so they are unaffected either way.
     def restore_previous_chunk
-      return false unless @cache_previous_chunk
       return false unless @previous_chunk_range&.include?(tell)
 
       @chunk, @previous_chunk = @previous_chunk, @chunk
@@ -261,8 +259,6 @@ module Gitlab
     end
 
     def retain_current_chunk
-      return unless @cache_previous_chunk
-
       @previous_chunk = @chunk
       @previous_chunk_range = @chunk_range
     end
