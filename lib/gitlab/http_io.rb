@@ -170,7 +170,9 @@ module Gitlab
     end
 
     def get_chunk
-      unless in_range?
+      unless in_range? || restore_previous_chunk
+        retain_current_chunk
+
         response = fetch_chunk_response
 
         raise FailedToGetChunkError, "Unexpected response code: #{response.code}" unless response.code == '200' || response.code == '206'
@@ -236,6 +238,29 @@ module Gitlab
 
     def use_ssl?
       uri.scheme == 'https'
+    end
+
+    # Reads that walk backwards step in units much smaller than BUFFER_SIZE
+    # (Gitlab::Ci::Trace::Stream#read_backward uses 4KB), so a step straddling
+    # a chunk boundary asks for the lower chunk, then the upper one to finish
+    # the step, then the lower one again for the next step. With a single
+    # cached chunk each of those is a request, so a backward pass costs three
+    # times the requests and bytes of a forward one. Keeping the chunk we just
+    # moved away from - the one such a pass asks for next - brings a boundary
+    # crossing back to a single request. Forward reads never revisit a chunk,
+    # so they are unaffected either way.
+    def restore_previous_chunk
+      return false unless @previous_chunk_range&.include?(tell)
+
+      @chunk, @previous_chunk = @previous_chunk, @chunk
+      @chunk_range, @previous_chunk_range = @previous_chunk_range, @chunk_range
+
+      true
+    end
+
+    def retain_current_chunk
+      @previous_chunk = @chunk
+      @previous_chunk_range = @chunk_range
     end
 
     def request
