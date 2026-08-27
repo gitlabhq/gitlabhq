@@ -52,7 +52,7 @@ Configure project [visibility](../../public_access.md#change-project-visibility)
 You can reference issues in Bugzilla using:
 
 - `#<ID>`, where `<ID>` is a number (for example, `#143`).
-- `<PROJECT>-<ID>` (for example `API_32-143`) where:
+- `<PROJECT>-<ID>` (for example, `API_32-143`) where:
   - `<PROJECT>` starts with a capital letter, followed by capital letters, numbers, or underscores.
   - `<ID>` is a number.
 

@@ -169,7 +169,7 @@ After the job succeeds, browse your repository to see code intelligence informat
 
    ![Code intelligence](img/code_intelligence_v17_0.png)
 
-1. Select the item to learn more information about it.
+1. Select the item to learn more about it.
 
 ## Find references
 

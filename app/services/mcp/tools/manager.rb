@@ -43,6 +43,7 @@ module Mcp
       }.freeze
 
       GRAPHQL_TOOLS = {
+        'accept_merge_request' => ::Mcp::Tools::MergeRequests::AcceptMergeRequestService,
         'add_branch' => ::Mcp::Tools::Repositories::Branches::AddBranchService,
         'add_commit' => ::Mcp::Tools::Repositories::AddCommitService,
         'create_merge_request_note' => ::Mcp::Tools::MergeRequests::CreateMergeRequestNoteService,
@@ -57,6 +58,7 @@ module Mcp
         'get_workitem_notes' => ::Mcp::Tools::WorkItems::GetWorkItemNotesService,
         'get_work_item_types' => ::Mcp::Tools::WorkItems::GetWorkItemTypesService,
         'link_work_items' => ::Mcp::Tools::WorkItems::LinkWorkItemsService,
+        'list_commits' => ::Mcp::Tools::Commits::ListCommitsService,
         'list_merge_requests' => ::Mcp::Tools::MergeRequests::ListMergeRequestsService,
         'list_repository_tree' => ::Mcp::Tools::Repositories::ListRepositoryTreeService,
         'list_project_members' => ::Mcp::Tools::Projects::ListProjectMembersService,

@@ -44,7 +44,7 @@ To create an API token:
 
 1. Sign in to your GitGuardian account.
 1. Go to the **API** section in the sidebar.
-1. In the API section sidebar go to **Personal access tokens** page.
+1. In the API section sidebar, go to the **Personal access tokens** page.
 1. Select **Create token**. The token creation dialog opens.
 1. Provide your token information:
    - Give your API token a meaningful name to identify its purpose.
@@ -56,7 +56,7 @@ To create an API token:
 1. After you've generated a token, copy it to your clipboard.
    This token is sensitive information, so keep it secure.
 
-Now you have successfully created a GitGuardian API token that you can use to for our integration.
+Now you have successfully created a GitGuardian API token that you can use for our integration.
 
 ## Set up the GitGuardian integration for your project
 
@@ -118,7 +118,7 @@ When working with the GitGuardian integration, you might encounter the following
 
 You might get an HTTP `500` error.
 
-This issue occurs for when requests time out for commits with a lot of changed files.
+This issue occurs when requests time out for commits with a lot of changed files.
 
 If this issue happens when you change more than 50 files in a commit:
 
@@ -129,7 +129,7 @@ If this issue happens when you change more than 50 files in a commit:
 
 You might get an HTTP `400` error that states `Filename: ensure this value has at most 256 characters`.
 
-This issue occurs when some of the changed files you are pushing in that commit have the filename (not the path) longer then 256 characters.
+This issue occurs when some of the changed files you are pushing in that commit have the filename (not the path) longer than 256 characters.
 
 The workaround is to shorten the filename if possible.
 For example, if the filename cannot be shortened because it was automatically

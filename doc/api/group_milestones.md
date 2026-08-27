@@ -2,6 +2,7 @@
 stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: REST API to create, manage, and delete group milestones.
 title: Group milestones API
 ---
 
@@ -45,8 +46,8 @@ Parameters:
 | `state`                     | string | no | Return only `active` or `closed` milestones. |
 | `title`                     | string | no | Return only the milestones having the given `title` (case-sensitive). |
 | `search`                    | string | no | Return only milestones with a title or description matching the provided string (case-insensitive). |
-| `search_title`              | string | no | Return only milestones with a title matching the provided string (case-insensitive). Multiple terms can be provided, separated by an escaped space, either `+` or `%20`, and will be ANDed together. Example: `17.4+17.5` will match substrings `17.4` and `17.5` (in any order). |
-| `include_parent_milestones` | boolean | no | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/433298) in GitLab 16.7. Use `include_ancestors` instead. |
+| `search_title`              | string | no | Return only milestones with a title matching the provided string (case-insensitive). To search for multiple terms, separate them with an escaped space, either `+` or `%20`. Results must match all terms. For example, `17.4+17.5` matches the substrings `17.4` and `17.5` in any order. |
+| `include_parent_milestones` | boolean | no | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/433298). Use `include_ancestors` instead. |
 | `include_ancestors`         | boolean | no | Include milestones for all parent groups. |
 | `include_descendants`       | boolean | no | Include milestones for the group and its descendants. |
 | `updated_before`            | datetime | no | Return only milestones updated before the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
@@ -165,7 +166,7 @@ Parameters:
 | `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `milestone_id` | integer | yes | The ID of a group milestone |
 
-Currently, this API endpoint doesn't return issues from any subgroups.
+This API endpoint doesn't return issues from any subgroups.
 If you want to get all the milestones' issues, you can instead use the
 [List issues API](issues.md#list-all-issues) and filter for a
 particular milestone (for example, `GET /issues?milestone=1.0.0&state=opened`).

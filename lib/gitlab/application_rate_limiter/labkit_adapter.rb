@@ -227,5 +227,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::ApplicationRateLimiter::LabkitAdapter.prepend_mod

@@ -43,7 +43,7 @@ To manage the group default settings for a project integration:
 1. Select **Save changes**.
 
 > [!warning]
-> This may affect all or most of the subgroups and projects belonging to the group. Review the details below.
+> This might affect all or most of the subgroups and projects belonging to the group. Review the details below.
 
 If this is the first time you are setting up group settings for an integration:
 

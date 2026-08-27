@@ -4,6 +4,9 @@ import { pinia } from '~/pinia/instance';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import FileBrowserToggle from '~/diffs/components/file_browser_toggle.vue';
 import { useMainContainer } from '~/pinia/global_stores/main_container';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keysFor, MR_FOCUS_FILE_BROWSER } from '~/behaviors/shortcuts/keybindings';
+import { Mousetrap } from '~/lib/mousetrap';
 import { useApp } from '~/rapid_diffs/stores/app';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
@@ -28,6 +31,22 @@ function addFileLinks(diffFiles) {
 const loadFileBrowserData = async (diffFilesEndpoint, shouldSort) => {
   const { data } = await axios.get(diffFilesEndpoint);
   useFileBrowser().setTreeData(addFileLinks(data.diff_files), shouldSort);
+};
+
+const bindFocusShortcut = () => {
+  const focusFileBrowser = () => {
+    const store = useFileBrowser();
+
+    if (useMainContainer().isCompact) {
+      store.setFileBrowserDrawerVisibility(true);
+    } else {
+      store.setFileBrowserVisibility(true);
+    }
+
+    store.requestSearchFocus();
+  };
+
+  Mousetrap.bind(keysFor(MR_FOCUS_FILE_BROWSER), focusFileBrowser);
 };
 
 const initToggle = (el) => {
@@ -60,7 +79,7 @@ const initToggle = (el) => {
     render(h) {
       if (!this.visible) return null;
 
-      return h(FileBrowserToggle);
+      return h(FileBrowserToggle, { props: { bindFocusShortcut: false } });
     },
   });
 };
@@ -100,6 +119,7 @@ const initBrowserComponent = async (el, shouldSort) => {
 
 export async function initFileBrowser({ toggleTarget, browserTarget, appData }) {
   initToggle(toggleTarget);
+  if (!keyboardShortcutsDisabled()) bindFocusShortcut();
   useFileBrowser().initTreeList();
   await loadFileBrowserData(appData.diffFilesEndpoint, appData.shouldSortMetadataFiles);
   initBrowserComponent(browserTarget, appData.shouldSortMetadataFiles);

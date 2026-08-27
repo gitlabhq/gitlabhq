@@ -18,7 +18,7 @@ Through a step-by-step form, GitLab:
 - Generates a custom CI/CD configuration based on your project setup.
 - Creates a `.gitlab-ci.yml` file configured for GitLab Pages deployments.
 - Submits the changes through a merge request for your review.
-- Deploys your website automatically when the merge request is committed.
+- Deploys your website automatically when the merge request is merged.
 
 This guide explains how to use the Pages UI to deploy a static site or framework-based application.
 

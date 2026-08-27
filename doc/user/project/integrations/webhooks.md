@@ -140,9 +140,9 @@ both the authenticity and integrity of the received payload.
 GitLab webhook delivery follows the [Standard Webhooks](https://www.standardwebhooks.com/)
 specification. Every webhook request includes the `webhook-id` and `webhook-timestamp` headers.
 When a signing token is configured, GitLab also includes the `webhook-signature` header with the
-HMAC-SHA256 signature. Each signature has the format `v1,{base64_signature}`. The header may
+HMAC-SHA256 signature. Each signature has the format `v1,{base64_signature}`. The header might
 contain multiple space-separated signatures. GitLab currently sends one signature, but this
-may change in the future. The signature is computed over the string
+might change in the future. The signature is computed over the string
 `{message_id}.{timestamp}.{body}`, where:
 
 - `{message_id}` is the value of the `webhook-id` header.
@@ -638,7 +638,7 @@ GitLab includes the following headers in webhook requests to your endpoint.
 
 | Header                   | Description                                                                                                                                                     | Example |
 |:-------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------|
-| `Idempotency-Key`        | Unique ID consistent across webhook retries. Available for legacy reasons; prefer `webhook-id`.                                                                 | `"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"` |
+| `Idempotency-Key`        | Unique ID consistent across webhook retries. Available for legacy reasons. Prefer `webhook-id`.                                                                 | `"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"` |
 | `User-Agent`             | User agent in the format `"Gitlab/<VERSION>"`.                                                                                                                  | `"GitLab/15.5.0-pre"` |
 | `webhook-id`             | Unique message ID consistent across webhook retries. Equal to `Idempotency-Key`.                                                                                | `"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"` |
 | `webhook-signature`      | Space-separated list of HMAC-SHA256 signatures, each in the format `v1,{base64_signature}`. Included only when a [signing token](#signing-tokens) is configured. | `"v1,abc123def456=="` |

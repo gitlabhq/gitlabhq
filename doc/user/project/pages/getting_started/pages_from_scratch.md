@@ -212,7 +212,7 @@ The following sections show other options you can add to your CI/CD file.
 
 ### Deploy specific branches to a Pages site
 
-You may want to deploy to a Pages site only from specific branches.
+You might want to deploy to a Pages site only from specific branches.
 
 First, add a `workflow` section to force the pipeline to run only when changes are
 pushed to branches:
@@ -336,7 +336,7 @@ To avoid duplicating the same `before_script` commands in every job, you can add
 to the default section.
 
 In the example, `gem install bundler` and `bundle install` were running
-for both jobs, `pages` and `test`.
+for both jobs, `create-pages` and `test`.
 
 Move these commands to the `default` section:
 

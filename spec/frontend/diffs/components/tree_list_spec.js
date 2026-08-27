@@ -1,6 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
+import { GlSearchBoxByType } from '@gitlab/ui';
 import TreeList from '~/diffs/components/tree_list.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import { stubComponent } from 'helpers/stub_component';
@@ -38,6 +39,7 @@ describe('Diffs tree list component', () => {
               '<div><template v-for="item in items"><slot :item="item"></slot></template></div>',
           },
         ),
+        GlSearchBoxByType: stubComponent(GlSearchBoxByType, { methods: { focusInput: jest.fn() } }),
         ...stubs,
       },
     });
@@ -80,6 +82,25 @@ describe('Diffs tree list component', () => {
     beforeEach(() => {
       setupFilesInState();
       createComponent();
+    });
+
+    describe('search focus', () => {
+      it('focuses the search input when a focus request is made', async () => {
+        const focusInput = jest.fn();
+        createComponent(
+          {},
+          {
+            stubs: {
+              GlSearchBoxByType: stubComponent(GlSearchBoxByType, { methods: { focusInput } }),
+            },
+          },
+        );
+
+        useFileBrowser().requestSearchFocus();
+        await nextTick();
+
+        expect(focusInput).toHaveBeenCalled();
+      });
     });
 
     describe('search by file extension', () => {

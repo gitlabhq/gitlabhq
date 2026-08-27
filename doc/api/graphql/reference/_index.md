@@ -55252,6 +55252,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="policystore-policies-ids"></a>`ids` {{< icon name="warning-solid" >}} | [`[Int!]`](#int) | Introduced in GitLab 19.4. Status: Experiment. Return only the policies with these IDs. Unknown IDs are ignored; an empty list returns no policies. Maximum is 1000 IDs. |
 | <a id="policystore-policies-triggertype"></a>`triggerType` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Return only the policies that respond to this trigger. Valid values are the ids in the policy store triggers catalog. |
 
 ### `PolicyStoreAction`

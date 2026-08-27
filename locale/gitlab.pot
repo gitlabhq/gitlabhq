@@ -51482,6 +51482,9 @@ msgstr ""
 msgid "Navigation|Pin %{title}"
 msgstr ""
 
+msgid "Navigation|Pin frequently used features for quick access."
+msgstr ""
+
 msgid "Navigation|Pin item"
 msgstr ""
 
@@ -51513,9 +51516,6 @@ msgid "Navigation|View all my groups"
 msgstr ""
 
 msgid "Navigation|View all my projects"
-msgstr ""
-
-msgid "Navigation|Your pinned items appear here."
 msgstr ""
 
 msgid "Navigation|Your work"

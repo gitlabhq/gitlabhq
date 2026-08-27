@@ -6856,6 +6856,28 @@ CREATE TABLE merge_request_diff_commits_b5377a7a34 (
 )
 PARTITION BY RANGE (project_id);
 
+CREATE TABLE merge_request_diff_files (
+    new_file boolean NOT NULL,
+    renamed_file boolean NOT NULL,
+    deleted_file boolean NOT NULL,
+    too_large boolean NOT NULL,
+    a_mode character varying NOT NULL,
+    b_mode character varying NOT NULL,
+    new_path text,
+    old_path text NOT NULL,
+    diff text,
+    "binary" boolean,
+    external_diff_offset integer,
+    external_diff_size integer,
+    generated boolean,
+    encoded_file_path boolean DEFAULT false NOT NULL,
+    project_id bigint,
+    merge_request_diff_id bigint NOT NULL,
+    relative_order integer NOT NULL,
+    CONSTRAINT check_87c184d62f CHECK ((project_id IS NOT NULL))
+)
+PARTITION BY RANGE (merge_request_diff_id);
+
 CREATE TABLE merge_requests_merge_data (
     merge_request_id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -24139,28 +24161,6 @@ CREATE SEQUENCE merge_request_diff_details_merge_request_diff_id_seq
     CACHE 1;
 
 ALTER SEQUENCE merge_request_diff_details_merge_request_diff_id_seq OWNED BY merge_request_diff_details.merge_request_diff_id;
-
-CREATE TABLE merge_request_diff_files (
-    new_file boolean NOT NULL,
-    renamed_file boolean NOT NULL,
-    deleted_file boolean NOT NULL,
-    too_large boolean NOT NULL,
-    a_mode character varying NOT NULL,
-    b_mode character varying NOT NULL,
-    new_path text,
-    old_path text NOT NULL,
-    diff text,
-    "binary" boolean,
-    external_diff_offset integer,
-    external_diff_size integer,
-    generated boolean,
-    encoded_file_path boolean DEFAULT false NOT NULL,
-    project_id bigint,
-    merge_request_diff_id bigint NOT NULL,
-    relative_order integer NOT NULL,
-    CONSTRAINT check_87c184d62f CHECK ((project_id IS NOT NULL))
-)
-PARTITION BY RANGE (merge_request_diff_id);
 
 CREATE TABLE merge_request_diff_files_archived (
     merge_request_diff_id bigint NOT NULL,

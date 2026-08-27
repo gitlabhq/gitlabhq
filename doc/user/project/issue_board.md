@@ -30,7 +30,7 @@ Issue boards:
 - Visualize workload and progress across your entire process.
 
 Your issues appear as cards in vertical lists, organized by their assigned
-[labels](labels.md), [milestones](#milestone-lists), [iterations](#iteration-lists), [assignees](#assignee-lists) or [status](#status-lists).
+[labels](labels.md), [milestones](#milestone-lists), [iterations](#iteration-lists), [assignees](#assignee-lists), or [status](#status-lists).
 
 Add metadata to your issues, then create the corresponding list for your existing issues.
 When you're ready, you can drag your issue cards from one list to another.
@@ -157,7 +157,7 @@ list consisting of issues represented by cards.
 
 A **list** is a column on the issue board that displays issues matching certain attributes.
 In addition to the default "Open" and "Closed" lists, each additional list shows issues matching
-your chosen label, assignee, or milestone. On the top of each list you can see the number of issues
+your chosen label, assignee, or milestone. At the top of each list you can see the number of issues
 that belong to it. Types of lists include:
 
 - **Open** (default): all open issues that do not belong to one of the other lists.
@@ -169,7 +169,7 @@ that belong to it. Types of lists include:
 - [**Iteration list**](#iteration-lists): all open issues for an iteration.
 - [**Status list**](#status-lists): all issues having a status.
 
-A **Card** is a box on a list, and it represents an issue. You can drag cards from one list to
+A **card** is a box on a list, and it represents an issue. You can drag cards from one list to
 another to change their label, assignee, or milestone. The information you can see on a
 card includes:
 
@@ -241,7 +241,7 @@ advanced functionality is present in [higher tiers only](https://about.gitlab.co
 An issue board can be associated with a [milestone](milestones/_index.md),
 [labels](labels.md), assignee, weight, and current [iteration](../group/iterations/_index.md),
 which automatically filter the board issues accordingly.
-This allows you to create unique boards according to your team's need.
+This allows you to create unique boards according to your team's needs.
 
 ![Create scoped board](img/issue_board_creation_v17_1.png)
 
@@ -483,7 +483,7 @@ Prerequisites:
 
 To set a WIP limit for a list, in an issue board:
 
-1. On the top of the list you want to edit, select **Edit list settings** ({{< icon name="settings" >}}).
+1. At the top of the list you want to edit, select **Edit list settings** ({{< icon name="settings" >}}).
    The list settings sidebar opens on the right.
 1. Next to **Work in progress limit**, select **Edit**.
 1. Choose the limit type from the dropdown list:
@@ -582,7 +582,7 @@ The new list is inserted at the right end of the lists, before **Closed**.
 ### Remove a list
 
 Removing a list doesn't have any effect on issues and labels, as it's just the
-list view that's removed. You can always create it again later if you need.
+list view that's removed. You can always create it again later if you need to.
 
 Prerequisites:
 
@@ -590,7 +590,7 @@ Prerequisites:
 
 To remove a list from an issue board:
 
-1. On the top of the list you want to remove, select **Edit list settings** ({{< icon name="settings" >}}).
+1. At the top of the list you want to remove, select **Edit list settings** ({{< icon name="settings" >}}).
    The list settings sidebar opens on the right.
 1. Select **Remove list**.
 1. On the confirmation dialog, select **Remove list** again.
@@ -726,7 +726,7 @@ A few things to remember:
 - Lists are populated with issues automatically if the issues are labeled.
 - Selecting the issue title inside a card takes you to that issue.
 - Selecting a label inside a card quickly filters the entire issue board
-  and show only the issues from all lists that have that label.
+  and shows only the issues from all lists that have that label.
 - When an issue is moved from a status list to an open list, the default open status is applied.
   Similarly, when it's moved to a closed list, the default closed status is applied.
 - For performance and visibility reasons, each list shows the first 20 issues
@@ -738,14 +738,14 @@ A few things to remember:
 ### `There was a problem fetching users` on group issue board when filtering by Author or Assignee
 
 If you get a banner with `There was a problem fetching users` error when filtering by author or assignee on
-group issue board, make sure that you are added as a member to the current group.
+a group issue board, make sure that you are added as a member to the current group.
 Non-members do not have permission to list group members when filtering by author or assignee on issue boards.
 
 To fix this error, you should add all of your users to the top-level group with the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 
 ### Use Rails console to fix issue boards not loading and timing out
 
-If you see issue board not loading and timing out in UI, use Rails console to call the Issue Rebalancing service to fix it:
+If you see an issue board not loading and timing out in the UI, use the Rails console to call the Issue Rebalancing service to fix it:
 
 1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Run these commands:

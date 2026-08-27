@@ -100,7 +100,7 @@ To apply a template:
 
 1. Create or edit an issue, work item, or a merge request.
 1. Select the **Choose a template** dropdown list.
-1. If the **Description** text box hasn't been empty, to confirm, select **Apply template**.
+1. If the **Description** text box isn't empty, select **Apply template** to confirm.
 1. Select **Save changes**.
 
 When you select a description template, its content is copied to the description text box.

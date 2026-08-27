@@ -29,7 +29,6 @@ export default {
     'app/assets/javascripts/vue_shared/components/markdown/markdown_editor.vue',
     'app/assets/javascripts/work_items/components/design_management/design_preview/design_sidebar.vue',
     'app/assets/javascripts/work_items/components/work_item_detail.vue',
-    'ee/app/assets/javascripts/hand_raise_leads/hand_raise_lead/components/hand_raise_lead_button.vue',
     'ee/app/assets/javascripts/test_case_show/components/test_case_show_root.vue',
   ],
   rules: {

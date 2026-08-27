@@ -45,7 +45,7 @@ To connect a new or existing pipeline in AWS CodePipeline with GitLab.com, first
 1. The browser returns to the connections console page. In the **Create GitLab connection** section, the new connection is shown in **Connection name**.
 1. Select **Connect to GitLab**. After the connection is created successfully, a success banner displays. The connection details are shown on the **Connection settings** page.
 
-Now you've connected AWS CodeSuite to GitLab.com, you can create or edit a pipeline in AWS CodePipeline that leverages your GitLab projects.
+Now that you've connected AWS CodeSuite to GitLab.com, you can create or edit a pipeline in AWS CodePipeline that leverages your GitLab projects.
 
 1. Sign in to the [AWS CodePipeline console](https://console.aws.amazon.com/codesuite/codepipeline/start).
 1. Create or edit a pipeline:

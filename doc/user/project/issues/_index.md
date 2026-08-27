@@ -57,8 +57,7 @@ To learn how the GitLab Strategic Marketing department uses GitLab issues with [
 We have changed how issues look by migrating them to a unified framework for work items to better
 meet the product needs of our Agile Planning offering.
 
-For more information, see [epic 9290](https://gitlab.com/groups/gitlab-org/-/work_items/9290) and the [new Agile planning experience in GitLab](https://about.gitlab.com/blog/first-look-the-new-agile-planning-experience-in-gitlab/) blog post.
-(June 2024).
+For more information, see [epic 9290](https://gitlab.com/groups/gitlab-org/-/work_items/9290) and the [new Agile planning experience in GitLab](https://about.gitlab.com/blog/first-look-the-new-agile-planning-experience-in-gitlab/) blog post (June 2024).
 
 If you run into any issues while trying out this change, you can use the
 [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523713) to provide more details.

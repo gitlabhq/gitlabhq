@@ -35,8 +35,10 @@ After you configure and enable YouTrack, a link appears on the GitLab
 project pages. This link takes you to the appropriate YouTrack project.
 
 You can also disable [GitLab internal issue tracking](../issues/_index.md) in this project.
-For more information about the steps and consequences of disabling GitLab issues, see
-Configure project [visibility](../../public_access.md#change-project-visibility), [features, and permissions](../settings/_index.md#configure-project-features-and-permissions).
+For more information about the steps and consequences of disabling GitLab issues, see:
+
+- [Change project visibility](../../public_access.md#change-project-visibility).
+- [Configure project features and permissions](../settings/_index.md#configure-project-features-and-permissions).
 
 ## Reference YouTrack issues in GitLab
 

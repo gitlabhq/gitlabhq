@@ -297,7 +297,7 @@ A merge request is created.
 
 > [!warning]
 > The email address is unique for each user and should be kept private.
-> Anyone with access to the email address can use it create merge requests and
+> Anyone with access to the email address can use it to create merge requests and
 > issues as if they were you.
 > If you suspect this private email address was shared or leaked,
 > [reset the token](../../../security/tokens/_index.md#reset-an-incoming-email-token) immediately.

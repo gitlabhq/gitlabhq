@@ -81,7 +81,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
       it 'shows the Pinned section as expanded by default' do
         within '#super-sidebar' do
-          expect(page).to have_content 'Your pinned items appear here.'
+          expect(page).to have_content 'Pin frequently used features for quick access.'
         end
       end
 
@@ -89,11 +89,11 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
         within '#super-sidebar' do
           click_on 'Pinned'
           visit project_path(project)
-          expect(page).not_to have_content 'Your pinned items appear here.'
+          expect(page).not_to have_content 'Pin frequently used features for quick access.'
 
           click_on 'Pinned'
           visit project_path(project)
-          expect(page).to have_content 'Your pinned items appear here.'
+          expect(page).to have_content 'Pin frequently used features for quick access.'
         end
       end
     end

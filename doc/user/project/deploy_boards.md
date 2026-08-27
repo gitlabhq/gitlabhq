@@ -101,7 +101,7 @@ To display the deploy boards for a specific [environment](../../ci/environments/
    and `app.gitlab.com/app: $CI_PROJECT_PATH_SLUG` are applied to the
    deployments, replica sets, and pods, where `$CI_ENVIRONMENT_SLUG` and
    `$CI_PROJECT_PATH_SLUG` are the values of the CI/CD variables. GitLab uses these variables to
-   lookup the proper environment in a cluster/namespace which may have more
+   look up the proper environment in a cluster/namespace which might have more
    than one. These resources should be contained in the namespace defined in
    the Kubernetes service setting. You can use an [Auto deploy](../../topics/autodevops/stages.md#auto-deploy) `.gitlab-ci.yml`
    template which has predefined stages and commands to use, and automatically

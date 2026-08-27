@@ -12,7 +12,7 @@ title: Associate a Zoom meeting with an issue
 
 {{< /details >}}
 
-To communicate synchronously for incidents management,
+To communicate synchronously for incident management,
 you can associate a Zoom meeting with an issue.
 After you start a Zoom call for a fire-fight, you need a way to
 associate the conference call with an issue. This is so that your

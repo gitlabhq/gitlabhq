@@ -140,7 +140,7 @@ If you set an out of range value, GitLab automatically adjusts it to the default
 ## Project badges
 
 Badges can be added to a project by Maintainers or Owners, and are visible on the project's **Overview** page.
-If you find that you have to add the same badges to several projects, you may want to add them at the [group level](#group-badges).
+If you find that you have to add the same badges to several projects, you might want to add them at the [group level](#group-badges).
 
 ### Example project badge: Pipeline Status
 
@@ -260,7 +260,7 @@ Pipeline, coverage, release, and custom badges can be rendered in different styl
 
 #### Key text
 
-The text for the left side on the badge can be customize. For example, to differentiate between multiple coverage jobs that run in the same pipeline.
+The text for the left side on the badge can be customized. For example, to differentiate between multiple coverage jobs that run in the same pipeline.
 
 Customize the badge key text by adding the `key_text=custom_text` parameter to the URL:
 

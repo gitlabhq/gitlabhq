@@ -84,7 +84,7 @@ into three tabs:
 ![The 'Returned to you' section of the Active tab, showing a table with information about three merge requests.](img/homepage_rows_v17_9.png)
 
 - **Status**: The current status of the merge request.
-- **Title**: Important metadata about the issue, including:
+- **Title**: Important metadata about the merge request, including:
   - The merge request title.
   - The assignee's avatar.
   - The number of files and lines added and removed (`+` / `-`).

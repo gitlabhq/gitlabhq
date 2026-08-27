@@ -441,6 +441,55 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
+  describe '#accept_merge_request' do
+    let_it_be(:merge_project) { create(:project, :repository, group: group, maintainers: [user]) }
+
+    let(:merge_request) { create(:merge_request, source_project: merge_project) }
+
+    context 'when merging immediately', :sidekiq_inline do
+      let(:tool_params) do
+        {
+          name: 'accept_merge_request',
+          arguments: {
+            project_id: merge_project.full_path,
+            merge_request_iid: merge_request.iid,
+            sha: merge_request.diff_head_sha
+          }
+        }
+      end
+
+      it 'merges the merge request' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['structuredContent']['status']).to eq('merging')
+        expect(merge_request.reload).to be_merged
+      end
+    end
+
+    context 'when the sha is stale' do
+      let(:tool_params) do
+        {
+          name: 'accept_merge_request',
+          arguments: {
+            project_id: merge_project.full_path,
+            merge_request_iid: merge_request.iid,
+            sha: 'deadbeef'
+          }
+        }
+      end
+
+      it 'refuses the merge' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be(true)
+        expect(merge_request.reload).not_to be_merged
+      end
+    end
+  end
+
   describe '#save_pipeline' do
     let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: :running) }
     let_it_be(:cancelable_build) { create(:ci_build, :running, pipeline: pipeline) }

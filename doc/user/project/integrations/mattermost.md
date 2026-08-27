@@ -28,18 +28,18 @@ in Mattermost:
 1. Sign in to your Mattermost instance.
 1. [Enable incoming webhooks](https://docs.mattermost.com/configure/integrations-configuration-settings.html#enable-incoming-webhooks).
 1. [Add an incoming webhook](https://developers.mattermost.com/integrate/webhooks/incoming/#create-an-incoming-webhook).
-1. Choose a display name, description, and channel, those can be overridden on GitLab.
+1. Choose a display name, description, and channel. These can be overridden on GitLab.
 1. Save it and copy the **Webhook URL** that is needed for GitLab.
 
 Incoming Webhooks might be blocked on your Mattermost instance. Ask your Mattermost administrator
-to enable it on:
+to enable them on:
 
 - **Mattermost System Console** > **Integrations** > **Integration Management** in Mattermost
   versions 5.12 and later.
 - **Mattermost System Console** > **Integrations** > **Custom Integrations** in Mattermost
   versions 5.11 and earlier.
 
-Display name override is not enabled by default, you need to ask your administrator to enable it on that same section.
+Display name override is not enabled by default. You need to ask your administrator to enable it on that same section.
 
 ## Configure GitLab to send notifications to Mattermost
 

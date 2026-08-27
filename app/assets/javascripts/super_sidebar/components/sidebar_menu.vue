@@ -50,6 +50,7 @@ export default {
     browseMoreFeatures: __('More features'),
     pinAdded: s__('Navigation|%{title} added to pinned items'),
     pinRemoved: s__('Navigation|%{title} removed from pinned items'),
+    emptyPinsHint: s__('Navigation|Pin frequently used features for quick access.'),
   },
   inject: {
     currentPath: {},
@@ -222,6 +223,9 @@ export default {
     },
     showFeatureLibrary() {
       return this.isPinnablePanel && this.panelType !== 'organization';
+    },
+    showEmptyPinsHint() {
+      return !this.showUnpinnedItems && this.pinnedItems.length === 0 && !this.isIconOnly;
     },
     sectionsToRender() {
       if (!this.showUnpinnedItems) {
@@ -434,8 +438,29 @@ export default {
       @pin-remove="destroyPin"
       @pin-reorder="movePin"
     />
+    <div
+      v-if="showEmptyPinsHint"
+      class="gl-rounded-lg gl-border-1 gl-border-dashed gl-border-strong gl-p-2"
+      data-testid="empty-pins-hint"
+    >
+      <p class="gl-mb-2 gl-px-3 gl-pt-1 gl-text-sm gl-text-subtle">
+        {{ $options.i18n.emptyPinsHint }}
+      </p>
+      <gl-nav-item
+        v-if="showFeatureLibrary"
+        ref="featureLibraryTrigger"
+        v-gl-modal="$options.modalId"
+        :aria-label="$options.i18n.browseMoreFeatures"
+        :class="{ 'feature-library-shimmer': shimmerActive }"
+        data-testid="feature-library-trigger"
+        icon="applications"
+        @click="dismissShimmerCallout"
+      >
+        {{ $options.i18n.browseMoreFeatures }}
+      </gl-nav-item>
+    </div>
     <gl-nav-item
-      v-if="showFeatureLibrary"
+      v-else-if="showFeatureLibrary"
       ref="featureLibraryTrigger"
       v-gl-modal="$options.modalId"
       v-gl-tooltip.right.viewport="isIconOnly ? $options.i18n.browseMoreFeatures : ''"

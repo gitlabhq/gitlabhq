@@ -86,6 +86,21 @@ You can also turn flow execution on or off to control whether
 features that consume compute minutes can run in the GitLab UI.
 These features include external agents, foundational flows, and custom flows.
 
+These settings control the flows that run in GitLab, for example a flow you start
+from an issue or a merge request.
+
+These settings do not control a flow that you run yourself, either in an IDE or in a
+[GitLab Duo CLI](../../../gitlab_duo_cli/_index.md) session. In those sessions, you can run
+a foundational flow when:
+
+- [GitLab Duo Agent Platform is available](../../turn_on_off.md) for the project or group.
+- The flow is available for your subscription tier. Beta flows also require
+  [experiment and beta features](../../turn_on_off.md#turn-on-beta-and-experimental-features)
+  to be turned on.
+
+For example, if you turn off a foundational flow, you can no longer run that flow in GitLab,
+but users can still run it in an IDE or a GitLab Duo CLI session.
+
 ### On GitLab.com
 
 {{< tabs >}}

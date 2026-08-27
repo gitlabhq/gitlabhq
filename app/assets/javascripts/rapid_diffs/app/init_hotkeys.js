@@ -102,7 +102,7 @@ export function toggleDiffViewType() {
   store.updateViewType(nextViewType);
 }
 
-export function initHotkeys() {
+export function initHotkeys({ mergeRequestShortcuts = true } = {}) {
   if (keyboardShortcutsDisabled()) return () => {};
 
   const nav = createFileNavigation();
@@ -110,11 +110,15 @@ export function initHotkeys() {
   const bindings = [
     [keysFor(MR_NEXT_FILE_IN_DIFF), () => nav.jumpToFile(+1)],
     [keysFor(MR_PREVIOUS_FILE_IN_DIFF), () => nav.jumpToFile(-1)],
-    [keysFor(MR_COMMITS_NEXT_COMMIT), () => navigateCommit('next')],
-    [keysFor(MR_COMMITS_PREVIOUS_COMMIT), () => navigateCommit('previous')],
-    [keysFor(MR_TOGGLE_REVIEW), () => toggleFileReview(nav.getCurrentFile())],
     [keysFor(MR_TOGGLE_DIFF_VIEW_TYPE), () => toggleDiffViewType()],
     [keysFor(ISSUABLE_COMMENT_OR_REPLY), () => quoteReply()],
+    ...(mergeRequestShortcuts
+      ? [
+          [keysFor(MR_COMMITS_NEXT_COMMIT), () => navigateCommit('next')],
+          [keysFor(MR_COMMITS_PREVIOUS_COMMIT), () => navigateCommit('previous')],
+          [keysFor(MR_TOGGLE_REVIEW), () => toggleFileReview(nav.getCurrentFile())],
+        ]
+      : []),
   ];
 
   bindings.forEach(([keys, handler]) => Mousetrap.bind(keys, handler));

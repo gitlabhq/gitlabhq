@@ -169,7 +169,7 @@ Tag events are triggered when you create or delete tags in the repository.
 
 This hook is not executed if a single push includes changes for more than three
 tags by default. This limit is controlled by the `push_event_hooks_limit` setting
-(default: `3`), which applies to both tags and branches. When exceeded,no webhooks
+(default: `3`), which applies to both tags and branches. When exceeded, no webhooks
 are triggered at all for that push event.
 
 For GitLab Self-Managed instances, administrators can modify this limit using the
@@ -1109,7 +1109,7 @@ and include more fields in the payload:
   - `approvals_reset_on_push`: The project has enabled **Reset approvals on push**, and new commits were pushed.
   - `code_owner_approvals_reset_on_push`: The project has enabled **Selective code owner removals**,
     and Code Owner approvals were reset due to changes in files matching CODEOWNERS rules.
-- `object_attributes.action`: For approval reset events, value is:
+- `object_attributes.action`: For approval reset events, the value is:
   - `unapproved` when the merge request changes from approved to not approved.
   - `unapproval` when an approval is removed without changing the overall approval status.
 
@@ -2840,7 +2840,7 @@ Payload example:
 
 {{< /history >}}
 
-Access token expiry events trigger before an [access tokens](../../../security/tokens/_index.md) expires.
+Access token expiry events trigger before an [access token](../../../security/tokens/_index.md) expires.
 These events trigger:
 
 - Seven days before the token expires
@@ -2931,7 +2931,7 @@ Payload example for group:
 Deploy token expiry events trigger before a [deploy token](../../../security/tokens/_index.md) expires.
 These events trigger:
 
-- 7 days before the token expires.
+- Seven days before the token expires.
 - 30 days before the token expires.
 - 60 days before the token expires.
 

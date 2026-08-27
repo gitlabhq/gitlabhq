@@ -158,7 +158,7 @@ To find subscribers, search the subscription files under
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
 | `Organizations::ConfirmedEvent` | `organization` | CE | Published when an organization transitions from `unconfirmed` to `confirmed`. Emitted by Organizations::ConfirmService after the state transition is committed. Not published if the confirmation fails or is rolled back. |
-| `Organizations::GroupTransferredEvent` | `organization` | CE | Published when a root group is transferred to a different organization. Fired once for the transferred group only - subscribers are responsible for traversing descendants if needed. Published via run_after_commit_or_now inside the transfer transaction, so it is never emitted on rollback. |
+| `Organizations::GroupTransferredEvent` | `organization` | CE | Published when a root group is transferred to a different organization. Fired once for the transferred group only - subscribers are responsible for traversing descendants if needed, and must not assume descendant namespaces or projects have moved yet. Published by Organizations::Transfer::TopLevelGroupService, which moves the root group row only, and by Organizations::Transfer::GroupsService, which moves the root group and its descendants. Not emitted when the surrounding transaction is rolled back, and not published when the group already belongs to the target organization. The Organizations::ConfirmService path emits it twice for the same root group, once per service, so subscribers must be idempotent. |
 
 ## Package Metadata
 

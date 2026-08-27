@@ -41,6 +41,41 @@ RSpec.describe Organizations::ConfirmService, feature_category: :organization do
           .with(organization_id: organization.id)
       end
 
+      it 'does not publish a GroupTransferredEvent for groups already in the organization' do
+        expect { response }.to not_publish_event(Organizations::GroupTransferredEvent)
+      end
+
+      context 'when a group is transferred in from another organization' do
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be_with_reload(:external_group) do
+          create(:group, organization: other_organization, owners: user)
+        end
+
+        let(:group_ids) { [external_group.id] }
+
+        it 'publishes a GroupTransferredEvent once the transaction commits' do
+          expect { response }.to publish_event(Organizations::GroupTransferredEvent).with(
+            group_id: external_group.id,
+            old_organization_id: other_organization.id,
+            new_organization_id: organization.id
+          )
+        end
+
+        context 'when the organization fails to confirm after the group is transferred' do
+          # Pass the object so the service operates on this instance and the stub applies.
+          let(:params) { { organization: organization, group_ids: group_ids } }
+
+          before do
+            allow(organization).to receive(:confirmed?).and_return(false)
+          end
+
+          it 'rolls back the transfer without publishing a GroupTransferredEvent' do
+            expect { response }.to not_publish_event(Organizations::GroupTransferredEvent)
+            expect(external_group.reload.organization_id).to eq(other_organization.id)
+          end
+        end
+      end
+
       context 'when group_ids is not provided' do
         let(:params) { { organization_id: organization_id } }
 

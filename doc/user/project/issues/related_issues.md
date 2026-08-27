@@ -68,7 +68,7 @@ For more information, see [crosslinking issues](crosslinking_issues.md).
 ## Remove a linked issue
 
 In the **Linked items** section of an issue, select the remove button ({{< icon name="close" >}}) on the
-right-side of each issue token to remove.
+right side of each issue token to remove.
 
 Due to the bi-directional relationship, the relationship no longer appears in either issue.
 

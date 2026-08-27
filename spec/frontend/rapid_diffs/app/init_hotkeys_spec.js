@@ -5,6 +5,7 @@ import {
   MR_NEXT_FILE_IN_DIFF,
   MR_PREVIOUS_FILE_IN_DIFF,
   MR_COMMITS_NEXT_COMMIT,
+  MR_COMMITS_PREVIOUS_COMMIT,
   MR_TOGGLE_REVIEW,
   MR_TOGGLE_DIFF_VIEW_TYPE,
   ISSUABLE_COMMENT_OR_REPLY,
@@ -373,6 +374,95 @@ describe('initHotkeys', () => {
       Mousetrap.trigger(keysFor(ISSUABLE_COMMENT_OR_REPLY)[0]);
 
       expect(listener).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('when merge request shortcuts are disabled', () => {
+    let container;
+
+    beforeEach(() => {
+      teardown = initHotkeys({ mergeRequestShortcuts: false });
+    });
+
+    afterEach(() => {
+      window.getSelection().removeAllRanges();
+      container?.remove();
+      container = null;
+    });
+
+    it('does not register the next commit shortcut', () => {
+      useMergeRequestVersions().setCommit({ next_commit_id: 'abc123' });
+
+      Mousetrap.trigger(keysFor(MR_COMMITS_NEXT_COMMIT)[0]);
+
+      expect(visitUrl).not.toHaveBeenCalled();
+    });
+
+    it('does not register the previous commit shortcut', () => {
+      useMergeRequestVersions().setCommit({ prev_commit_id: 'def456' });
+
+      Mousetrap.trigger(keysFor(MR_COMMITS_PREVIOUS_COMMIT)[0]);
+
+      expect(visitUrl).not.toHaveBeenCalled();
+    });
+
+    it('does not register the toggle review shortcut', () => {
+      const file = {
+        data: { codeReviewId: 'review-123' },
+        diffElement: document.createElement('div'),
+        trigger: jest.fn(),
+      };
+      jest.spyOn(DiffFile, 'getAll').mockReturnValue([file]);
+
+      Mousetrap.trigger(keysFor(MR_TOGGLE_REVIEW)[0]);
+
+      expect(file.trigger).not.toHaveBeenCalled();
+    });
+
+    it('still registers file navigation', () => {
+      const files = [{ selectFile: jest.fn() }, { selectFile: jest.fn() }];
+      jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
+
+      Mousetrap.trigger(keysFor(MR_NEXT_FILE_IN_DIFF)[0]);
+
+      expect(files[1].selectFile).toHaveBeenCalled();
+    });
+
+    it('still registers backward file navigation', () => {
+      const files = [{ selectFile: jest.fn() }, { selectFile: jest.fn() }];
+      jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
+
+      Mousetrap.trigger(keysFor(MR_NEXT_FILE_IN_DIFF)[0]);
+      Mousetrap.trigger(keysFor(MR_PREVIOUS_FILE_IN_DIFF)[0]);
+
+      expect(files[0].selectFile).toHaveBeenCalled();
+    });
+
+    it('still registers quote reply', () => {
+      container = document.createElement('div');
+      container.classList.add('js-discussion-container');
+      container.textContent = 'a comment';
+      document.body.appendChild(container);
+      const listener = jest.fn();
+      container.addEventListener('quoteReply', listener);
+      const range = document.createRange();
+      range.selectNodeContents(container);
+      window.getSelection().addRange(range);
+
+      Mousetrap.trigger(keysFor(ISSUABLE_COMMENT_OR_REPLY)[0]);
+
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    it('still registers the diff view type toggle', () => {
+      const updateViewType = jest
+        .spyOn(useDiffsView(), 'updateViewType')
+        .mockImplementation(() => {});
+      useDiffsView().viewType = INLINE_DIFF_VIEW_TYPE;
+
+      Mousetrap.trigger(keysFor(MR_TOGGLE_DIFF_VIEW_TYPE)[0]);
+
+      expect(updateViewType).toHaveBeenCalledWith(PARALLEL_DIFF_VIEW_TYPE);
     });
   });
 

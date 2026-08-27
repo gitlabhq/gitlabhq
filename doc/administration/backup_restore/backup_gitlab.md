@@ -542,7 +542,7 @@ Depending on your installation type, slightly different components can be skippe
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-<!-- source: <https://gitlab.com/gitlab-org/build/CNG/-/blob/068e146db915efcd875414e04403410b71a2e70c/gitlab-toolbox/scripts/bin/backup-utility#L19> -->
+<!-- source: <https://gitlab.com/gitlab-org/build/CNG/-/blob/f65c53cbadfd5d123a4ddeaed297eb2a2034a5cd/gitlab-toolbox/scripts/bin/backup-utility#L19> -->
 
 - `db` (database)
 - `repositories` (Git repositories data, including wikis)
@@ -555,6 +555,7 @@ Depending on your installation type, slightly different components can be skippe
 - `packages` (Package registry)
 - `ci_secure_files` (Project-level Secure Files)
 - `agent_plan_content` (Agent plan content for work items)
+- `ci_catalog_bundles` (CI catalog component bundles)
 - `external_diffs` (Merge request diffs)
 
 {{< /tab >}}
@@ -823,7 +824,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 ```shell
-REPOSITORIES_PATHS=group-a SKIP_REPOSITORIES_PATHS=group-a/project_a2 backup-utility --skip db,registry,uploads,artifacts,lfs,packages,external_diffs,terraform_state,ci_secure_files,agent_plan_content,pages
+REPOSITORIES_PATHS=group-a SKIP_REPOSITORIES_PATHS=group-a/project_a2 backup-utility --skip db,registry,uploads,artifacts,lfs,packages,external_diffs,terraform_state,ci_secure_files,agent_plan_content,ci_catalog_bundles,pages
 ```
 
 {{< /tab >}}

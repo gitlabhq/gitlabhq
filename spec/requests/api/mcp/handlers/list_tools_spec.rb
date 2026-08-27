@@ -68,6 +68,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'save_merge_request_review' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'save_work_item' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         # write, destructive
+        'accept_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => true },
         'add_commit' => { 'readOnlyHint' => false, 'destructiveHint' => true },
         'manage_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
         'save_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
@@ -89,6 +90,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'get_work_item' => { 'readOnlyHint' => true },
         'get_work_item_types' => { 'readOnlyHint' => true },
         'get_workitem_notes' => { 'readOnlyHint' => true },
+        'list_commits' => { 'readOnlyHint' => true },
         'list_merge_requests' => { 'readOnlyHint' => true },
         'list_project_members' => { 'readOnlyHint' => true },
         'list_pipelines' => { 'readOnlyHint' => true },

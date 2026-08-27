@@ -73,7 +73,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
   def initialize(options)
     options.reverse_merge!(DEFAULT_OPTIONS)
 
-    super(options)
+    super
   end
 
   def validate_each(record, attribute, value)

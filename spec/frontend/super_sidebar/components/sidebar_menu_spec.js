@@ -1215,6 +1215,51 @@ describe('Sidebar Menu', () => {
       expect(findPinnedSection().exists()).toBe(true);
       expect(wrapper.findByTestId('feature-library-trigger').exists()).toBe(true);
     });
+
+    describe('empty pins hint', () => {
+      const findEmptyPinsHint = () => wrapper.findByTestId('empty-pins-hint');
+
+      it('groups the hint and feature library trigger in a bordered box when nothing is pinned', () => {
+        createWrapper({
+          items: menuItems,
+          pinnedItemIds: [],
+          panelType: 'project',
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+        });
+
+        expect(findEmptyPinsHint().exists()).toBe(true);
+
+        const trigger = wrapper.findByTestId('feature-library-trigger');
+        expect(trigger.exists()).toBe(true);
+        expect(findEmptyPinsHint().element.contains(trigger.element)).toBe(true);
+      });
+
+      it.each`
+        scenario                | pinnedItemIds | panelType
+        ${'items are pinned'}   | ${[21]}       | ${'project'}
+        ${'unpinned are shown'} | ${[]}         | ${'your_work'}
+      `('does not render the grouped hint when $scenario', ({ pinnedItemIds, panelType }) => {
+        createWrapper({
+          items: menuItems,
+          pinnedItemIds,
+          panelType,
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+        });
+
+        expect(findEmptyPinsHint().exists()).toBe(false);
+      });
+
+      it('does not render the grouped hint when the sidebar is collapsed to icons only', () => {
+        createWrapper({
+          items: menuItems,
+          pinnedItemIds: [],
+          panelType: 'project',
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true }, isIconOnly: true },
+        });
+
+        expect(findEmptyPinsHint().exists()).toBe(false);
+      });
+    });
   });
 
   describe('Current page nav item', () => {

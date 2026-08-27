@@ -2,6 +2,7 @@
 stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: REST API to retrieve iterations from a project's ancestor groups.
 title: Project iterations API
 ---
 
@@ -16,7 +17,7 @@ Use this API to access [project iterations](../user/group/iterations/_index.md).
 
 For group iterations, use the [group iterations API](group_iterations.md).
 
-We no longer have project-level iterations, but you can use this endpoint to fetch the iterations of the project's ancestor groups.
+Projects do not have their own iterations. Use this endpoint to list the iterations of a project's ancestor groups.
 
 ## List all project iterations
 

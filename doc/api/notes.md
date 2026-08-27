@@ -2,6 +2,7 @@
 stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: REST API to manage comments on issues, merge requests, snippets, epics, and wikis.
 title: Notes API
 ---
 
@@ -222,7 +223,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Snippets
 
-The Snippets Notes API is intended for project-level snippets, and not for personal snippets.
+The Snippets Notes API is intended for project snippets, not personal snippets.
 
 ### List all snippet notes
 

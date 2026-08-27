@@ -94,7 +94,7 @@ class AuditEvent < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options).tap do |json|
+    super.tap do |json|
       json['ip_address'] = ip_address.to_s
     end
   end

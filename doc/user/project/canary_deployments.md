@@ -39,7 +39,7 @@ want to make sure the performance stays the same, or improves. Developers need
 to be careful when using canaries with user-facing changes, because by default,
 requests from the same user are randomly distributed between canary and
 non-canary pods, which could result in confusion or even errors. If needed, you
-may want to consider
+might want to consider
 [setting `service.spec.sessionAffinity` to `ClientIP` in your Kubernetes service definitions](https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies),
 but that is beyond the scope of this document.
 
@@ -91,7 +91,7 @@ Any other track label is considered `canary` (temporary).
 This allows GitLab to discover whether a deployment is stable or canary (temporary).
 
 After you configure the deploy boards, and the pipeline runs at least once,
-Go to the environments page under **Pipelines** > **Environments**.
+go to the environments page under **Pipelines** > **Environments**.
 As the pipeline executes, deploy boards clearly mark canary pods, enabling
 quick and clear insight into the status of each environment and deployment.
 
@@ -133,7 +133,7 @@ Here's an example using [GraphiQL](../../api/graphql/getting_started.md#graphiql
    mutation {
      environmentsCanaryIngressUpdate(input:{
        id: "gid://gitlab/Environment/29",              # Your Environment ID. You can get the ID from the URL of the environment page.
-       weight: 45                                      # The new traffic weight. for example, If you set `45`, 45% of traffic goes to a canary deployment and 55% of traffic goes to a stable deployment.
+       weight: 45                                      # The new traffic weight. For example, if you set `45`, 45% of traffic goes to a canary deployment and 55% of traffic goes to a stable deployment.
      }) {
        errors
      }

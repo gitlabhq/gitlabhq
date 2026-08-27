@@ -24,17 +24,19 @@ describe('PinnedSection component', () => {
 
   const findToggle = () => wrapper.find('button');
 
-  const createWrapper = ({ stubs = { Draggable: true }, ...props } = {}) => {
+  const createWrapper = ({ stubs = { Draggable: true }, provide = {}, ...props } = {}) => {
     wrapper = mountExtended(PinnedSection, {
       propsData: {
         items: [{ id: 'pin1', title: 'Pin 1', href: '/page1' }],
         ...props,
       },
+      provide,
       stubs,
     });
   };
 
   const findList = () => wrapper.findByTestId('pinned-nav-items');
+  const findEmptyHint = () => wrapper.findByText('Pin frequently used features for quick access.');
 
   describe('expanded', () => {
     describe('when cookie is not set', () => {
@@ -211,6 +213,38 @@ describe('PinnedSection component', () => {
 
       it('does not mark nav items as being in the pinned section', () => {
         expect(wrapper.findComponent(NavItem).props('isInPinnedSection')).toBe(false);
+      });
+    });
+  });
+
+  describe('when there are no pinned items', () => {
+    describe('by default', () => {
+      beforeEach(() => {
+        createWrapper({ items: [] });
+      });
+
+      it('shows the empty hint', () => {
+        expect(findEmptyHint().exists()).toBe(true);
+      });
+    });
+
+    describe('when headerless (unpinned items are hidden)', () => {
+      beforeEach(() => {
+        createWrapper({ items: [], headerless: true });
+      });
+
+      it('does not show the empty hint', () => {
+        expect(findEmptyHint().exists()).toBe(false);
+      });
+    });
+
+    describe('when the sidebar is collapsed to icons only', () => {
+      beforeEach(() => {
+        createWrapper({ items: [], provide: { isIconOnly: true } });
+      });
+
+      it('does not show the empty hint', () => {
+        expect(findEmptyHint().exists()).toBe(false);
       });
     });
   });

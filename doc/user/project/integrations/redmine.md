@@ -16,7 +16,7 @@ Prerequisites:
 
 - You must [disable GitLab internal issue tracking](../../../integration/external-issue-tracker.md#disable-the-gitlab-issue-tracker) in the project.
   For more information about the steps and consequences of disabling
-  GitLab issues, see [change project visibility](../../public_access.md#change-project-visibility), and
+  GitLab issues, see [change project visibility](../../public_access.md#change-project-visibility) and
   [configure project features and permissions](../settings/_index.md#configure-project-features-and-permissions).
 
 You can use [Redmine](https://www.redmine.org/) as an
@@ -65,5 +65,5 @@ You can reference your Redmine issues using:
 In links, the `<PROJECT>` part is ignored, and they always point to the address specified in **Issue URL**.
 
 We suggest using the longer format (`<PROJECT>-<ID>`) if you have both internal and external issue
-trackers enabled. If you use the shorter format, and an issue with the same ID exists in the
+trackers enabled. If you use the shorter format and an issue with the same ID exists in the
 internal issue tracker, the internal issue is linked.

@@ -77,7 +77,7 @@ For example, if the unique ID is `f85695`, the last example is
 The following examples show how Pages domains work.
 
 > [!note]
-> The following examples imply you disabled the **Use unique domain** setting. If you did not, refer to the previous table, replacing `example.io` by `gitlab.io`.
+> The following examples imply you disabled the **Use unique domain** setting. If you did not, refer to the previous table, replacing `example.io` with `gitlab.io`.
 
 ### Project website examples
 
@@ -97,7 +97,7 @@ The following examples show how Pages domains work.
   GitLab Pages for this project, the site is available at
   `https://engineering.gitlab.io/docs/workflows`.
 
-### User and Group website examples
+### User and group website examples
 
 - Under your username, `john`, you created a project called
   `john.gitlab.io`. Your project URL is `https://gitlab.com/john/john.gitlab.io`.

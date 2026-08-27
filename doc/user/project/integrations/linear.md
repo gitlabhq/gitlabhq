@@ -28,7 +28,7 @@ To enable the Linear integration in a project:
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Fill in the required fields:
 
-   - **Workspace URL**: The URL to the Linear Workspace project to link to this GitLab project.
+   - **Workspace URL**: The URL to the Linear workspace project to link to this GitLab project.
 
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
@@ -49,5 +49,5 @@ Configure project [visibility](../../public_access.md#change-project-visibility)
 You can reference your Linear issues using:
 
 - `<TEAM>-<ID>`, for example `API-123`, where:
-  - `<TEAM>` is a team identifier
+  - `<TEAM>` is a team identifier.
   - `<ID>` is a number.

@@ -45,8 +45,8 @@ Configure project [visibility](../../public_access.md#change-project-visibility)
 
 You can reference your ClickUp issues using:
 
-- `#<ID>`, where `<ID>` is a alphanumerical string (example `#8wrtcd932`).
-- `CU-<ID>`, where `<ID>` is a alphanumerical string (example `CU-8wrtcd932`).
+- `#<ID>`, where `<ID>` is an alphanumerical string (example `#8wrtcd932`).
+- `CU-<ID>`, where `<ID>` is an alphanumerical string (example `CU-8wrtcd932`).
 - `<PROJECT>-<ID>`, for example `API_32-143`, where:
   - `<PROJECT>` is a ClickUp list custom prefix ID.
   - `<ID>` is a number.

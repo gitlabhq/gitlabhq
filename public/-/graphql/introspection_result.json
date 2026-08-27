@@ -310774,6 +310774,26 @@
                   "defaultValue": null,
                   "isDeprecated": true,
                   "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+                },
+                {
+                  "name": "ids",
+                  "description": "Return only the policies with these IDs. Unknown IDs are ignored; an empty list returns no policies. Maximum is 1000 IDs. Introduced in GitLab 19.4: Status: Experiment.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "Int",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
                 }
               ],
               "type": {
@@ -459360,7 +459380,7 @@
         },
         {
           "name": "gl_introduced",
-          "description": "Marks a field as introduced in a specific version. Fields with a version higher than the current one will return null.",
+          "description": "Marks a field as introduced in a specific version. Fields tagged with the current milestone or a later one return null when the field is absent from the schema.",
           "locations": [
             "FIELD",
             "INLINE_FRAGMENT"

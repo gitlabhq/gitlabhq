@@ -13,12 +13,6 @@ title: Issue links API
 
 {{< /details >}}
 
-{{< history >}}
-
-- The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) to GitLab Free in 13.4.
-
-{{< /history >}}
-
 Use this API to manage [issue links](../user/project/issues/related_issues.md).
 
 ## List all issue links
@@ -78,7 +72,6 @@ Parameters:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88228) in GitLab 15.1.
 - `id` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585093) in GitLab 18.9.
 
 {{< /history >}}

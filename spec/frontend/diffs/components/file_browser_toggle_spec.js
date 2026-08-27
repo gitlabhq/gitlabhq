@@ -13,7 +13,6 @@ import {
 import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { Mousetrap } from '~/lib/mousetrap';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import { setHTMLFixture } from 'helpers/fixtures';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_disabled');
 
@@ -98,20 +97,18 @@ describe('FileBrowserToggle', () => {
     });
 
     describe('focus', () => {
-      it('focuses search field on shortcut trigger', async () => {
-        setHTMLFixture(`<input id="diff-tree-search">`);
+      it('requests search focus on shortcut trigger', () => {
         createComponent();
         Mousetrap.trigger(focusHotkeys[0]);
-        await nextTick();
         expect(useFileBrowser().setFileBrowserVisibility).toHaveBeenCalledWith(true);
-        expect(document.activeElement).toBe(document.querySelector('#diff-tree-search'));
+        expect(useFileBrowser().requestSearchFocus).toHaveBeenCalled();
       });
 
       it('does not focus on shortcut trigger after component is destroyed', () => {
         createComponent();
         wrapper.destroy();
         Mousetrap.trigger(focusHotkeys[0]);
-        expect(useFileBrowser().setFileBrowserVisibility).not.toHaveBeenCalled();
+        expect(useFileBrowser().requestSearchFocus).not.toHaveBeenCalled();
       });
     });
   });

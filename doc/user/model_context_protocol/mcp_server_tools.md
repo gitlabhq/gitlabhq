@@ -474,6 +474,41 @@ Example:
 Who are the maintainers of gitlab-org/gitlab?
 ```
 
+## `accept_merge_request`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/617968) in GitLab 19.4.
+
+{{< /history >}}
+
+Merges a merge request, or schedules it to merge automatically. Without `strategy`, the merge
+starts immediately and completes asynchronously. With `strategy`, auto-merge is armed and the
+merge request merges once its checks pass. To approve a merge request instead, use the
+`save_merge_request_review` tool.
+
+Calls against a merge request that is already merged succeed with status `already_merged`,
+and calls with a `strategy` against a merge request that is already scheduled succeed with
+status `already_scheduled`.
+
+| Parameter                     | Type    | Required | Description |
+|-------------------------------|---------|----------|-------------|
+| `url`                         | string  | No       | GitLab URL of the merge request. Provide this, or `project_id` and `merge_request_iid`. |
+| `project_id`                  | string  | No       | ID or path of the project. Required if `url` is missing. |
+| `merge_request_iid`           | integer | No       | Internal ID of the merge request. Required if `url` is missing. |
+| `sha`                         | string  | Yes      | Head SHA guard. When it no longer matches the merge request head, the merge is refused. Pass the `diff_head_sha` returned by `get_merge_request`. |
+| `strategy`                    | string  | No       | Auto-merge strategy, for example `merge_when_checks_pass`. When given, arms auto-merge instead of merging immediately. |
+| `squash`                      | boolean | No       | Squash the commits into a single commit on merge. |
+| `commit_message`              | string  | No       | Custom merge commit message. |
+| `squash_commit_message`       | string  | No       | Custom squash commit message. Applies when `squash` is `true`. |
+| `should_remove_source_branch` | boolean | No       | Remove the source branch after merging. |
+
+Example:
+
+```plaintext
+Merge merge request 42 in project gitlab-org/gitlab once its checks pass, and remove the source branch
+```
+
 ## `add_branch`
 
 {{< history >}}

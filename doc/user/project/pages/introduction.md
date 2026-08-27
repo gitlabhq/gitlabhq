@@ -39,8 +39,8 @@ If you are using [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlabcom) to hos
 
 - The domain name for GitLab Pages on GitLab.com is `gitlab.io`.
 - Custom domains and TLS support are enabled.
-- Instance runners are enabled by default, provided for free and can be used to
-  build your website. If you want you can still bring your own runner.
+- Instance runners are enabled by default, provided for free, and can be used to
+  build your website. If you want, you can still bring your own runner.
 
 ## Example projects
 
@@ -50,7 +50,7 @@ Visit the [GitLab Pages group](https://gitlab.com/groups/pages) for a complete l
 
 You can provide your own `403` and `404` error pages by creating `403.html` and
 `404.html` files in the root of the `public/` directory. Usually this is
-the root directory of your project, but that may differ
+the root directory of your project, but that might differ
 depending on your static generator configuration.
 
 In the case of `404.html`, there are different scenarios. For example:
@@ -356,7 +356,7 @@ For a list of known issues, see the GitLab [public issue tracker](https://gitlab
 
 This problem most likely results from a missing `index.html` file in the public directory. If after deploying a Pages site
 a 404 is encountered, confirm that the public directory contains an `index.html` file. If the file contains a different name
-such as `test.html`, the Pages site can still be accessed, but the full path would be needed. For example: `https//group-name.pages.example.com/project-slug/test.html`.
+such as `test.html`, the Pages site can still be accessed, but the full path would be needed. For example: `https://group-name.pages.example.com/project-slug/test.html`.
 
 The contents of the public directory can be confirmed by [browsing the artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts) from the latest pipeline.
 

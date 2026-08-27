@@ -466,14 +466,14 @@ For example, filtering by the `platform::*` label returns issues that have `plat
 `platform::Android`, or `platform::Linux` labels.
 
 > [!note]
-> Filtering by scoped labels not available on the issues or merge requests dashboard pages.
+> Filtering by scoped labels is not available on the issues or merge requests dashboard pages.
 
 ### Scoped labels examples
 
 **Example 1**. Updating issue priority:
 
 1. You decide that an issue is of low priority, and assign it the `priority::low` label.
-1. After more review, you realize the issue's priority is higher increased, and you assign it the
+1. After more review, you realize the issue's priority is higher, and you assign it the
    `priority::high` label.
 1. Because an issue shouldn't have two priority labels at the same time, GitLab removes the
    `priority::low` label.
@@ -487,7 +487,7 @@ You create three labels:
 - `platform::Android`
 - `platform::Linux`
 
-If you assign any of these labels to an issue automatically removes any other existing label that
+If you assign any of these labels to an issue, it automatically removes any other existing label that
 starts with `platform::`.
 
 **Example 3**. You can use scoped labels to represent the workflow states of your teams.
@@ -499,7 +499,7 @@ Suppose you have the following labels:
 - `workflow::deployed`
 
 If an issue already has the label `workflow::development` and a developer wants to show that the
-issue is now under review, they assign the `workflow::review`, and the `workflow::development` label
+issue is now under review, they assign the `workflow::review` label, and the `workflow::development` label
 is removed.
 
 The same happens when you move issues across label lists in an
