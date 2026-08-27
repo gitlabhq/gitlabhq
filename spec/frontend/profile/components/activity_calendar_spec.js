@@ -1,6 +1,12 @@
+import { GlAlert } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ActivityCalendar from '~/profile/components/activity_calendar.vue';
 import { useFakeDate } from 'helpers/fake_date';
+import AjaxCache from '~/lib/utils/ajax_cache';
+
+jest.mock('~/lib/utils/ajax_cache');
 
 describe('ActivityCalendar', () => {
   let wrapper;
@@ -9,6 +15,7 @@ describe('ActivityCalendar', () => {
   useFakeDate(2026, 7, 5);
 
   const defaultProvide = {
+    username: 'root',
     utcOffset: 0,
   };
 
@@ -17,6 +24,9 @@ describe('ActivityCalendar', () => {
       provide: {
         ...defaultProvide,
         ...provide,
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
@@ -43,9 +53,12 @@ describe('ActivityCalendar', () => {
   const findDayLabels = () => wrapper.findAllByTestId('day-label');
   const findRenderedMonthLabels = () =>
     findMonthLabels().wrappers.filter((label) => label.text() !== '');
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const getCellTooltip = (cell) => getBinding(cell.element, 'gl-tooltip').value;
 
   beforeEach(() => {
     gon.first_day_of_week = 0;
+    AjaxCache.retrieve.mockResolvedValue({});
   });
 
   afterEach(() => {
@@ -295,6 +308,115 @@ describe('ActivityCalendar', () => {
           expect(label.attributes('aria-hidden')).toBeUndefined();
         }
       });
+    });
+  });
+
+  describe('fetching contributions', () => {
+    it('requests the calendar data using the user calendar path helper', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(AjaxCache.retrieve).toHaveBeenCalledWith('/users/root/calendar.json');
+    });
+
+    it('marks the calendar as busy while loading and not busy once loaded', async () => {
+      createComponent();
+      expect(findCalendar().attributes('aria-busy')).toBe('true');
+
+      await waitForPromises();
+      expect(findCalendar().attributes('aria-busy')).not.toBe('true');
+    });
+  });
+
+  describe('displaying contributions', () => {
+    // Today's date is stubbed to 2026-08-05 at top of spec
+    describe.each`
+      contributionCount | date            | expectedCellIndex | expectedLevel | expectedAriaLabel                                | expectedTooltip
+      ${0}              | ${'2025-08-05'} | ${2}              | ${0}          | ${'No contributions on Tuesday, August 5, 2025'} | ${'No contributions<br /><span class="gl-text-neutral-300">Tuesday, August 5, 2025</span>'}
+      ${1}              | ${'2025-08-05'} | ${2}              | ${1}          | ${'1 contribution on Tuesday, August 5, 2025'}   | ${'1 contribution<br /><span class="gl-text-neutral-300">Tuesday, August 5, 2025</span>'}
+      ${9}              | ${'2025-08-05'} | ${2}              | ${1}          | ${'9 contributions on Tuesday, August 5, 2025'}  | ${'9 contributions<br /><span class="gl-text-neutral-300">Tuesday, August 5, 2025</span>'}
+      ${10}             | ${'2025-08-05'} | ${2}              | ${2}          | ${'10 contributions on Tuesday, August 5, 2025'} | ${'10 contributions<br /><span class="gl-text-neutral-300">Tuesday, August 5, 2025</span>'}
+      ${19}             | ${'2025-08-05'} | ${2}              | ${2}          | ${'19 contributions on Tuesday, August 5, 2025'} | ${'19 contributions<br /><span class="gl-text-neutral-300">Tuesday, August 5, 2025</span>'}
+      ${20}             | ${'2025-08-05'} | ${2}              | ${3}          | ${'20 contributions on Tuesday, August 5, 2025'} | ${'20 contributions<br /><span class="gl-text-neutral-300">Tuesday, August 5, 2025</span>'}
+      ${29}             | ${'2025-08-05'} | ${2}              | ${3}          | ${'29 contributions on Tuesday, August 5, 2025'} | ${'29 contributions<br /><span class="gl-text-neutral-300">Tuesday, August 5, 2025</span>'}
+      ${30}             | ${'2025-08-05'} | ${2}              | ${4}          | ${'30 contributions on Tuesday, August 5, 2025'} | ${'30 contributions<br /><span class="gl-text-neutral-300">Tuesday, August 5, 2025</span>'}
+      ${39}             | ${'2025-08-05'} | ${2}              | ${4}          | ${'39 contributions on Tuesday, August 5, 2025'} | ${'39 contributions<br /><span class="gl-text-neutral-300">Tuesday, August 5, 2025</span>'}
+    `(
+      'when contribution count is $contributionCount and date is $date',
+      ({
+        contributionCount,
+        date,
+        expectedCellIndex,
+        expectedLevel,
+        expectedAriaLabel,
+        expectedTooltip,
+      }) => {
+        beforeEach(async () => {
+          AjaxCache.retrieve.mockResolvedValue({ [date]: contributionCount });
+          createComponent();
+          await waitForPromises();
+        });
+
+        it(`renders cell with expected level of ${expectedLevel}`, () => {
+          expect(findCells().at(expectedCellIndex).classes()).toContain(
+            `user-contribution-graph-cell-${expectedLevel}`,
+          );
+        });
+
+        it(`renders cell with expected aria-label of ${expectedAriaLabel}`, () => {
+          expect(findCells().at(expectedCellIndex).attributes('aria-label')).toBe(
+            expectedAriaLabel,
+          );
+        });
+
+        it(`renders cell with expected tooltip of ${expectedTooltip}`, () => {
+          expect(getCellTooltip(findCells().at(expectedCellIndex))).toBe(expectedTooltip);
+        });
+      },
+    );
+  });
+
+  describe('legend', () => {
+    it.each`
+      index | level | title
+      ${0}  | ${0}  | ${'No contributions'}
+      ${1}  | ${1}  | ${'1-9 contributions'}
+      ${2}  | ${2}  | ${'10-19 contributions'}
+      ${3}  | ${3}  | ${'20-29 contributions'}
+      ${4}  | ${4}  | ${'30+ contributions'}
+    `('renders the level $level swatch with the $title tooltip', ({ index, level, title }) => {
+      createComponent();
+
+      const swatches = wrapper.findAllByTestId('legend-cell');
+      expect(swatches).toHaveLength(5);
+
+      const swatch = swatches.at(index);
+      expect(swatch.classes()).toContain(`user-contribution-graph-cell-${level}`);
+      expect(getCellTooltip(swatch)).toBe(title);
+      expect(swatch.attributes('aria-label')).toBe(title);
+    });
+  });
+
+  describe('error handling', () => {
+    it('shows a retry alert when the request fails', async () => {
+      AjaxCache.retrieve.mockRejectedValue(new Error('boom'));
+      createComponent();
+      await waitForPromises();
+
+      expect(findAlert().exists()).toBe(true);
+      expect(findAlert().props('primaryButtonText')).toBe('Retry');
+    });
+
+    it('retries fetching when the alert primary action is triggered', async () => {
+      AjaxCache.retrieve.mockRejectedValueOnce(new Error('boom')).mockResolvedValueOnce({});
+      createComponent();
+      await waitForPromises();
+
+      findAlert().vm.$emit('primaryAction');
+      await waitForPromises();
+
+      expect(findAlert().exists()).toBe(false);
+      expect(AjaxCache.retrieve).toHaveBeenCalledTimes(2);
     });
   });
 });

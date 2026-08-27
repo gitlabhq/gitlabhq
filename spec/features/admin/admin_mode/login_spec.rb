@@ -7,6 +7,28 @@ RSpec.describe 'Admin mode login', :with_current_organization, feature_category:
   include UserLoginHelper
   include LdapHelpers
 
+  describe 'entering admin mode from a non-admin page', :js do
+    let(:user) { create(:admin) }
+    let(:current_organization) { user.organization }
+
+    before do
+      sign_in(user)
+    end
+
+    it 'lands on the admin dashboard instead of returning to the non-admin page' do
+      visit explore_projects_path
+
+      find_by_testid('user-menu-toggle').click
+      click_link s_('CurrentUser|Enter Admin Mode')
+
+      fill_in 'user_password', with: user.password
+      click_button _('Enter admin mode')
+
+      expect(page).to have_content(_('Admin mode is active'))
+      expect(page).to have_current_path(admin_root_path, ignore_query: true)
+    end
+  end
+
   describe 'with two-factor authentication', :js do
     def enter_code(code)
       fill_in 'user_otp_attempt', with: code

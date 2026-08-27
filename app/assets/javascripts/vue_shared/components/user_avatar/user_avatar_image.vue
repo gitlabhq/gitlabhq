@@ -22,6 +22,7 @@ import defaultAvatarUrl from 'images/no_avatar.png';
 import { __ } from '~/locale';
 import { placeholderImage } from '~/lazy_loader';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
+import { appendWidthToAvatarUrl } from './utils';
 
 export default {
   name: 'UserAvatarImage',
@@ -77,11 +78,8 @@ export default {
     // we provide an empty string when we use it inside user avatar link.
     // In both cases we should render the defaultAvatarUrl
     sanitizedSource() {
-      let baseSrc = this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
-      // Only adds the width to the URL if its not a base64 data image
-      if (!(baseSrc.indexOf('data:') === 0) && !baseSrc.includes('?'))
-        baseSrc += `?width=${this.maximumSize}`;
-      return baseSrc;
+      const baseSrc = this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
+      return appendWidthToAvatarUrl(baseSrc, this.maximumSize);
     },
     maximumSize() {
       if (isObject(this.size)) {

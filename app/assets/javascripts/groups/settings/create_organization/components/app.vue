@@ -17,6 +17,10 @@ export default {
       type: String,
       required: true,
     },
+    groupOrganization: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -43,6 +47,7 @@ export default {
       v-model="showReconciliationModal"
       :group-full-path="groupFullPath"
       :group-gid="groupGid"
+      :group-organization="groupOrganization"
     />
   </div>
 </template>

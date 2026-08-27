@@ -133,6 +133,8 @@
   - 1
 - - audit_events_audit_event_streaming
   - 1
+- - audit_events_streaming_nats_partition_consumer
+  - 1
 - - audit_events_user_impersonation_event_create
   - 1
 - - auth_saml_group_sync

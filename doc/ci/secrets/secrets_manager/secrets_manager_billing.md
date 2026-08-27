@@ -47,7 +47,7 @@ Credits are consumed for secrets storage and operations based on these rates:
 | Stored secrets | One secret, monthly | 1       | Credit consumption is prorated daily, based on how long a secret exists. For example, two secrets stored for half a month consumes one credit. |
 | Secret reads   | 2,500 reads       | 1       | Secret read operations across all secrets. Includes retrieving secrets with a CI/CD job, the Secrets Manager API, or integrations (ESO, Terraform, OpenBao CLI). |
 
-View and manage credit usage in the [GitLab Credits dashboard](../../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard).
+View and manage credit usage in the [GitLab Credits dashboard](../../../subscriptions/gitlab_credits_dashboard.md).
 
 ### In CI/CD jobs
 

@@ -65,7 +65,7 @@ module Avatarable
 
     # Cache this avatar path only within the request because avatars in
     # object storage may be generated with time-limited, signed URLs.
-    key = "#{self.class.name}:#{self.id}:#{only_path}:#{size}"
+    key = "#{self.class.name}:#{self.id}:#{only_path}:#{size}:#{try(:updated_at).to_i}"
     Gitlab::SafeRequestStore[key] ||= uncached_avatar_path(only_path: only_path, size: size)
   end
 
@@ -75,7 +75,7 @@ module Avatarable
     asset_host = ActionController::Base.asset_host
     use_asset_host = asset_host.present?
     use_authentication = respond_to?(:public?) && !public?
-    query_params = size&.nonzero? ? "?width=#{size}" : ""
+    query_params = avatar_query_params(size)
 
     # Avatars for private and internal groups and projects require authentication to be viewed,
     # which means they can only be served by Rails, on the regular GitLab host.
@@ -105,6 +105,14 @@ module Avatarable
   end
 
   private
+
+  def avatar_query_params(size)
+    params = {}
+    params[:width] = size if size&.nonzero?
+    params[:v] = updated_at.to_i if respond_to?(:updated_at) && updated_at.present?
+
+    params.any? ? "?#{params.to_query}" : ""
+  end
 
   def retrieve_upload_from_batch(identifier)
     BatchLoader.for(identifier: identifier, model: self)

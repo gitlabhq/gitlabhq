@@ -14,12 +14,12 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
 
     it 'prefers the user to retrieve the avatar_url' do
       expect(helper.avatar_icon_for(user, email).to_s)
-        .to eq(user.avatar.url)
+        .to eq(user.avatar_url)
     end
 
     it 'falls back to email lookup if no user given' do
       expect(helper.avatar_icon_for(nil, email).to_s)
-        .to eq(another_user.avatar.url)
+        .to eq(another_user.avatar_url)
     end
   end
 
@@ -32,7 +32,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
       context 'using an email' do
         context 'when there is a matching user' do
           it 'returns a relative URL for the avatar' do
-            expect(subject).to eq(user.avatar.url)
+            expect(subject).to eq(user.avatar_url)
           end
         end
 
@@ -48,7 +48,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
           it 'returns a relative URL for the avatar' do
             avatar = helper.avatar_icon_for_email(user.commit_email, by_commit_email: true).to_s
 
-            expect(avatar).to eq(user.avatar.url)
+            expect(avatar).to eq(user.avatar_url)
           end
         end
 
@@ -85,8 +85,8 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
     it "caches the request" do
       expect(User).to receive(:with_public_email).once.and_call_original
 
-      expect(helper.avatar_icon_for_email(user.email).to_s).to eq(user.avatar.url)
-      expect(helper.avatar_icon_for_email(user.email).to_s).to eq(user.avatar.url)
+      expect(helper.avatar_icon_for_email(user.email).to_s).to eq(user.avatar_url)
+      expect(helper.avatar_icon_for_email(user.email).to_s).to eq(user.avatar_url)
     end
   end
 
@@ -113,7 +113,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
 
         it 'returns the user avatar when the user is passed' do
           expect(helper.avatar_icon_for_user(user, current_user: viewing_user).to_s)
-            .to eq(user.avatar.url)
+            .to eq(user.avatar_url)
         end
       end
     end
@@ -121,7 +121,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
     context 'with a user object passed' do
       it 'returns a relative URL for the avatar' do
         expect(helper.avatar_icon_for_user(user).to_s)
-          .to eq(user.avatar.url)
+          .to eq(user.avatar_url)
       end
 
       context 'when the user is blocked' do

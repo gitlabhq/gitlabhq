@@ -185,6 +185,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               expect(response).to have_gitlab_http_status(:ok)
               expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
               expect(json_response['TempPath']).to eq(JobArtifactUploader.workhorse_local_upload_path)
+              expect(json_response).not_to have_key('LocalTempPath')
               expect(json_response['RemoteObject']).to be_nil
               expect(json_response['MaximumSize']).not_to be_nil
             end
@@ -206,6 +207,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 expect(response).to have_gitlab_http_status(:ok)
                 expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
                 expect(json_response).not_to have_key('TempPath')
+                expect(json_response['LocalTempPath']).to eq(Dir.tmpdir)
                 expect(json_response['RemoteObject']).to have_key('ID')
                 expect(json_response['RemoteObject']).to have_key('GetURL')
                 expect(json_response['RemoteObject']).to have_key('StoreURL')

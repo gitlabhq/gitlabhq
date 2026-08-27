@@ -820,7 +820,7 @@ Prerequisites:
 - You must be a group Owner.
 - The group you are viewing data for must be a top-level group.
 
-To display user data on the [GitLab Credits dashboard](../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard):
+To display user data on the [GitLab Credits dashboard](../../subscriptions/gitlab_credits_dashboard.md):
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **General**.

@@ -1815,7 +1815,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       )
 
       project_id = json_response['id']
-      expect(json_response['avatar_url']).to eq("http://localhost/uploads/-/system/project/avatar/#{project_id}/banana_sample.gif")
+      expect(json_response['avatar_url']).to start_with("http://localhost/uploads/-/system/project/avatar/#{project_id}/banana_sample.gif")
     end
 
     it 'sets a project as not allowing outdated diff discussions to automatically resolve' do
@@ -5273,9 +5273,9 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
           aggregate_failures "testing response" do
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['avatar_url']).to eq('http://localhost/uploads/' \
-                                                      '-/system/project/avatar/' \
-                                                      "#{project3.id}/banana_sample.gif")
+            expect(json_response['avatar_url']).to start_with('http://localhost/uploads/' \
+                                                       '-/system/project/avatar/' \
+                                                       "#{project3.id}/banana_sample.gif")
           end
         end
 
@@ -5289,9 +5289,9 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
           aggregate_failures "testing response" do
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['avatar_url']).to eq('http://localhost/uploads/' \
-                                                      '-/system/project/avatar/' \
-                                                      "#{project_with_avatar.id}/rails_sample.png")
+            expect(json_response['avatar_url']).to start_with('http://localhost/uploads/' \
+                                                       '-/system/project/avatar/' \
+                                                       "#{project_with_avatar.id}/rails_sample.png")
           end
         end
 
@@ -5306,9 +5306,9 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           aggregate_failures "testing response" do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['description']).to eq('changed description')
-            expect(json_response['avatar_url']).to eq('http://localhost/uploads/' \
-                                                      '-/system/project/avatar/' \
-                                                      "#{project_with_avatar.id}/banana_sample.gif")
+            expect(json_response['avatar_url']).to start_with('http://localhost/uploads/' \
+                                                       '-/system/project/avatar/' \
+                                                       "#{project_with_avatar.id}/banana_sample.gif")
           end
         end
 

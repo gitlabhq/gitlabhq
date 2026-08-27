@@ -46,6 +46,16 @@ export const DATE_TIME_FULL_FORMAT = 'asDateTimeFull';
 export const DATE_TIME_FULL_WITH_WEEKDAY_FORMAT = 'asDateTimeFullWithWeekday';
 
 /**
+ * Format a Date with the help of {@link DateTimeFormat.asDateFullWithWeekday}
+ *
+ * Note: In case you can use localeDateFormat.asDateFullWithWeekday directly, please do that.
+ *
+ * @example
+ * localeDateFormat[DATE_FULL_WITH_WEEKDAY_FORMAT].format(date) // returns 'Sunday, July 6, 2020'
+ */
+export const DATE_FULL_WITH_WEEKDAY_FORMAT = 'asDateFullWithWeekday';
+
+/**
  * Format a Date with the help of {@link DateTimeFormat.asDate}
  *
  * Note: In case you can use localeDateFormat.asDate directly, please do that.
@@ -95,6 +105,7 @@ export const DATE_TIME_FORMATS = [
   DATE_WITH_TIME_AND_TIMEZONE_FORMAT,
   DATE_TIME_FULL_FORMAT,
   DATE_TIME_FULL_WITH_WEEKDAY_FORMAT,
+  DATE_FULL_WITH_WEEKDAY_FORMAT,
   DATE_ONLY_FORMAT,
   DATE_WITHOUT_YEAR_FORMAT,
   TIME_ONLY_FORMAT,
@@ -227,6 +238,31 @@ class DateTimeFormat {
         second: 'numeric',
         timeZoneName: 'short',
         hourCycle: DateTimeFormat.#hourCycle,
+      })
+    );
+  }
+
+  /**
+   * Locale aware formatter to a complete date time, including the day of the week.
+   *
+   * Use this formatter for tooltips where the day of week adds useful context.
+   * Use {@link DateTimeFormat.asDateTimeFull} if you don't need to show the day of the week.
+   *
+   * @example
+   * // en-US: returns something like Friday, July 6, 2020
+   * // en-GB: returns something like Friday, 6 July 2020
+   * localeDateFormat.asDateFullWithWeekday.format(date)
+   *
+   * @returns {DateTimeFormatter}
+   */
+  get asDateFullWithWeekday() {
+    return (
+      this.#formatters[DATE_FULL_WITH_WEEKDAY_FORMAT] ||
+      this.#createFormatter(DATE_FULL_WITH_WEEKDAY_FORMAT, {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
       })
     );
   }

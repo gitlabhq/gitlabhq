@@ -81,13 +81,13 @@ Before you roll out the Agent Platform to the majority of your users, ask a smal
 - They can run the Code Review Flow on a test merge request.
 - They can run other foundational flows available on your subscription.
 
-After these users have run some flows, you should also check the [Credits Dashboard](../../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard) to confirm credit usage.
+After these users have run some flows, you should also check the [Credits Dashboard](../../../subscriptions/gitlab_credits_dashboard.md) to confirm credit usage.
 
 ## Billing
 
 After you change your subscription from GitLab Duo Pro or Enterprise to usage billing, you are charged based on [credit usage](../../../subscriptions/gitlab_credits.md) instead of seats.
 
-To track your team's credit usage and to set usage caps, use the [Credits Dashboard](../../../subscriptions/gitlab_credits.md#view-the-gitlab-credits-dashboard).
+To track your team's credit usage and to set usage caps, use the [Credits Dashboard](../../../subscriptions/gitlab_credits_dashboard.md).
 
 ## Common issues during transition
 
@@ -111,7 +111,7 @@ When you first transition your instance to the Agent Platform, you might encount
 
 - [GitLab Duo Agent Platform](_index.md)
 - [Troubleshooting the GitLab Duo Agent Platform](../../../user/duo_agent_platform/troubleshooting.md)
-- [Usage caps](../../../subscriptions/gitlab_credits.md#usage-caps)
+- [Usage caps](../../../subscriptions/gitlab_credits_dashboard.md#usage-caps)
 - [Self-Hosted models](../../gitlab_duo_self_hosted/_index.md)
 - [GitLab University: GitLab Duo Agent Platform for administrators](https://university.gitlab.com/learning-paths/gitlab-duo-agent-platform-for-admins)
 - [GitLab University: GitLab Duo Agent Platform setup](https://university.gitlab.com/courses/gitlab-duo-agent-platform-setup)

@@ -462,3 +462,10 @@
       Lead-rated; pre-approved per handbook 'Using open source software'.
     :versions: []
     :when: 2026-04-23 09:27:48.285066000 Z
+- - :license
+  - pg_ash
+  - Apache 2.0
+  - :who: Niko Belokolodov <nbelokolodov@gitlab.com>
+    :why: pg_ash is added as a vendored script and not checked by automatic testing
+    :versions: []
+    :when: 2026-08-12 03:41:57.777426000 Z

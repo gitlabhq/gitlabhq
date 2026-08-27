@@ -155,7 +155,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
   end
 
   describe '#group_settings_create_organization_app_data' do
-    let_it_be(:group) { build_stubbed(:group, path: 'foo-bar') }
+    let_it_be(:group) { build_stubbed(:group, path: 'foo-bar', organization: organization) }
 
     it 'returns expected json' do
       expect(
@@ -165,7 +165,14 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
       ).to eq(
         {
           'group_full_path' => group.full_path,
-          'group_gid' => "gid://gitlab/Group/#{group.id}"
+          'group_gid' => "gid://gitlab/Group/#{group.id}",
+          'group_organization' => {
+            'id' => "gid://gitlab/Organizations::Organization/#{organization.id}",
+            'name' => organization.name,
+            'path' => organization.path,
+            'visibility' => organization.visibility,
+            'avatar_url' => organization.avatar_url
+          }
         }
       )
     end

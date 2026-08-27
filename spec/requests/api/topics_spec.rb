@@ -168,7 +168,7 @@ RSpec.describe API::Topics, :aggregate_failures, :with_current_organization, fea
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['description']).to eq('my description...')
-        expect(json_response['avatar_url']).to end_with('dk.png')
+        expect(json_response['avatar_url']).to start_with("http://localhost/uploads/-/system/projects/topic/avatar/#{json_response['id']}/dk.png")
       end
 
       it 'returns 400 if name is missing' do
@@ -244,7 +244,7 @@ RSpec.describe API::Topics, :aggregate_failures, :with_current_organization, fea
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['description']).to eq('my description...')
-        expect(json_response['avatar_url']).to end_with('dk.png')
+        expect(json_response['avatar_url']).to start_with("http://localhost/uploads/-/system/projects/topic/avatar/#{topic_3.id}/dk.png")
       end
 
       it 'keeps avatar when updating other fields' do

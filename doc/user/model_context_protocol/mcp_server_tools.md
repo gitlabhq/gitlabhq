@@ -739,11 +739,12 @@ List all failed pipelines on the main branch for project gitlab-org/gitlab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605855) in GitLab 19.3.
+- `update` action [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/619469) in GitLab 19.4.
 
 {{< /history >}}
 
-Runs, retries, or cancels a CI/CD pipeline in a GitLab project. To update pipeline metadata or
-delete a pipeline, use the `manage_pipeline` tool instead. To list pipelines, use the
+Runs, retries, cancels, or renames a CI/CD pipeline in a GitLab project. To delete a
+pipeline, use the `manage_pipeline` tool instead. To list pipelines, use the
 `list_pipelines` tool instead.
 
 | Parameter     | Type    | Required    | Description |
@@ -751,8 +752,9 @@ delete a pipeline, use the `manage_pipeline` tool instead. To list pipelines, us
 | `url`         | string  | No          | GitLab URL of the project. Used only to create a pipeline. Provide this, or `project_id`. |
 | `project_id`  | string  | No          | ID or full path of the project. Used only to create a pipeline. Provide this, or `url`. |
 | `pipeline_id` | integer | No          | ID of an existing pipeline to target. When set, requires `action`. Omit to create a new pipeline. |
-| `action`      | string  | No          | Lifecycle action to perform on `pipeline_id`: `retry` or `cancel`. Required when `pipeline_id` is set. |
+| `action`      | string  | No          | Lifecycle action to perform on `pipeline_id`: `retry`, `cancel`, or `update`. Required when `pipeline_id` is set. |
 | `ref`         | string  | No          | Branch or tag name. Required to create a pipeline (when `pipeline_id` is absent). |
+| `name`        | string  | No          | New pipeline name. Required for `action: "update"`. |
 | `variables`   | array   | No          | Pipeline variables in array format (`[{key, value, variable_type}]`). |
 | `inputs`      | hash    | No          | Pipeline input parameters as key-value pairs. |
 
@@ -774,6 +776,12 @@ Examples:
 
   ```plaintext
   Cancel pipeline 12345 in project gitlab-org/gitlab
+  ```
+
+- Rename a pipeline:
+
+  ```plaintext
+  Rename pipeline 12345 to "Nightly security scan" in project gitlab-org/gitlab
   ```
 
 ## `manage_pipeline`

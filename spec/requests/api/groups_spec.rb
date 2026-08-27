@@ -38,9 +38,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         make_upload_request
 
         group_id = json_response['id']
-        expect(json_response['avatar_url']).to eq('http://localhost/uploads/' \
-                                                  '-/system/group/avatar/' \
-                                                  "#{group_id}/banana_sample.gif")
+        expect(json_response['avatar_url']).to start_with('http://localhost/uploads/' \
+                                                   '-/system/group/avatar/' \
+                                                   "#{group_id}/banana_sample.gif")
       end
     end
 
@@ -1281,7 +1281,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['shared_projects'].length).to eq(0)
         expect(json_response['default_branch_protection']).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
         expect(json_response['default_branch_protection_defaults']).to eq(::Gitlab::Access::BranchProtection.protected_after_initial_push.stringify_keys)
-        expect(json_response['avatar_url']).to end_with('dk.png')
+        expect(json_response['avatar_url']).to start_with("http://localhost/uploads/-/system/group/avatar/#{group1.id}/dk.png")
         expect(json_response['math_rendering_limits_enabled']).to be(false)
         expect(json_response['lock_math_rendering_limits_enabled']).to be(true)
         expect(json_response['step_up_auth_required_oauth_provider']).to be_nil

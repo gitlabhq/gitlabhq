@@ -743,6 +743,9 @@ msgstr ""
 msgid "%{component} is not an allowed sub claim component"
 msgstr ""
 
+msgid "%{contributions} on %{date}"
+msgstr ""
+
 msgid "%{cores} cores"
 msgstr ""
 
@@ -9923,9 +9926,6 @@ msgstr ""
 msgid "Allow %{strongOpen}%{provider}%{strongClose} to sign you in?"
 msgstr ""
 
-msgid "Allow Policy Store experiment for groups"
-msgstr ""
-
 msgid "Allow access to members of the following group"
 msgstr ""
 
@@ -12030,6 +12030,12 @@ msgstr ""
 msgid "ArtifactRegistry|%{date} by %{user}"
 msgstr ""
 
+msgid "ArtifactRegistry|%{verdict}. Last verified: %{time}"
+msgstr ""
+
+msgid "ArtifactRegistry|%{verdict}. Last verified: not yet checked"
+msgstr ""
+
 msgid "ArtifactRegistry|A hosted repository directly hosts artifacts. You can publish artifacts to and pull them from a hosted repository."
 msgstr ""
 
@@ -12153,6 +12159,12 @@ msgstr ""
 msgid "ArtifactRegistry|Columns"
 msgstr ""
 
+msgid "ArtifactRegistry|Connection"
+msgstr ""
+
+msgid "ArtifactRegistry|Connection successful."
+msgstr ""
+
 msgid "ArtifactRegistry|Control artifact registry access for this organization. When enabled, all projects and groups have access to a unified registry."
 msgstr ""
 
@@ -12272,6 +12284,9 @@ msgstr ""
 msgid "ArtifactRegistry|Enter both a username and a token or password, or leave both empty to keep the stored credentials."
 msgstr ""
 
+msgid "ArtifactRegistry|Failed to connect. Check the URL and credentials."
+msgstr ""
+
 msgid "ArtifactRegistry|Filter repositories"
 msgstr ""
 
@@ -12288,6 +12303,9 @@ msgid "ArtifactRegistry|Gradle (Kotlin)"
 msgstr ""
 
 msgid "ArtifactRegistry|Handle has already been taken."
+msgstr ""
+
+msgid "ArtifactRegistry|Healthy"
 msgstr ""
 
 msgid "ArtifactRegistry|Hosted"
@@ -12320,6 +12338,12 @@ msgid "ArtifactRegistry|Last downloaded"
 msgstr ""
 
 msgid "ArtifactRegistry|Last updated"
+msgstr ""
+
+msgid "ArtifactRegistry|Last verified: %{time}"
+msgstr ""
+
+msgid "ArtifactRegistry|Last verified: not yet checked"
 msgstr ""
 
 msgid "ArtifactRegistry|Loading artifact details."
@@ -12380,6 +12404,9 @@ msgid "ArtifactRegistry|New remote repository"
 msgstr ""
 
 msgid "ArtifactRegistry|New repository"
+msgstr ""
+
+msgid "ArtifactRegistry|No connection information available."
 msgstr ""
 
 msgid "ArtifactRegistry|No repositories"
@@ -12543,10 +12570,25 @@ msgstr ""
 msgid "ArtifactRegistry|Team documentation / READMEs:"
 msgstr ""
 
+msgid "ArtifactRegistry|Test"
+msgstr ""
+
+msgid "ArtifactRegistry|Test upstream connection"
+msgstr ""
+
+msgid "ArtifactRegistry|Testing"
+msgstr ""
+
+msgid "ArtifactRegistry|Testing upstream connection"
+msgstr ""
+
 msgid "ArtifactRegistry|The Artifact Registry service did not respond in time."
 msgstr ""
 
 msgid "ArtifactRegistry|The Artifact Registry service is unavailable."
+msgstr ""
+
+msgid "ArtifactRegistry|The Artifact Registry service is unavailable. Please try again."
 msgstr ""
 
 msgid "ArtifactRegistry|The format cannot be changed after the repository is created."
@@ -12615,6 +12657,12 @@ msgstr ""
 msgid "ArtifactRegistry|URL:"
 msgstr ""
 
+msgid "ArtifactRegistry|Unhealthy"
+msgstr ""
+
+msgid "ArtifactRegistry|Unknown"
+msgstr ""
+
 msgid "ArtifactRegistry|Unknown Artifact Registry role: %{role}."
 msgstr ""
 
@@ -12622,6 +12670,9 @@ msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
 msgstr ""
 
 msgid "ArtifactRegistry|Upstream URL"
+msgstr ""
+
+msgid "ArtifactRegistry|Upstream responded with %{status}"
 msgstr ""
 
 msgid "ArtifactRegistry|Username"
@@ -23366,16 +23417,10 @@ msgstr[1] ""
 msgid "ContinuousDeployment|%{environmentsCount} of %{totalEnvironmentsCount} environments"
 msgstr ""
 
-msgid "ContinuousDeployment|+ Add another service"
-msgstr ""
-
 msgid "ContinuousDeployment|+ Add artifact"
 msgstr ""
 
 msgid "ContinuousDeployment|+ Add service"
-msgstr ""
-
-msgid "ContinuousDeployment|A short name and description."
 msgstr ""
 
 msgid "ContinuousDeployment|A short name and the tier it represents."
@@ -23516,7 +23561,7 @@ msgstr ""
 msgid "ContinuousDeployment|Dashboard"
 msgstr ""
 
-msgid "ContinuousDeployment|Declare the topology of your application — services, environments, integrations — and Deploy will orchestrate rollouts for it."
+msgid "ContinuousDeployment|Declare your application's topology — its services and their artifacts. Where each service deploys is configured later, per environment."
 msgstr ""
 
 msgid "ContinuousDeployment|Degradation detected"
@@ -23559,9 +23604,6 @@ msgid "ContinuousDeployment|Docs"
 msgstr ""
 
 msgid "ContinuousDeployment|Edit"
-msgstr ""
-
-msgid "ContinuousDeployment|Edit service"
 msgstr ""
 
 msgid "ContinuousDeployment|Enter a valid URL that starts with http:// or https://"
@@ -23747,7 +23789,7 @@ msgstr ""
 msgid "ContinuousDeployment|No services match your filter."
 msgstr ""
 
-msgid "ContinuousDeployment|No services yet. Add at least one — a service is the deployable unit (Git repo with K8s manifests, or a container image)."
+msgid "ContinuousDeployment|No services yet — add at least one."
 msgstr ""
 
 msgid "ContinuousDeployment|No versions recorded."
@@ -23888,7 +23930,7 @@ msgstr ""
 msgid "ContinuousDeployment|The cluster that backs this environment. Deploy connects through a GitLab Agent — no cluster endpoint required."
 msgstr ""
 
-msgid "ContinuousDeployment|The deployable units. Each service has its own deployment strategy."
+msgid "ContinuousDeployment|The deployable units. A service produces one or more artifacts (container images)."
 msgstr ""
 
 msgid "ContinuousDeployment|The environment may have been removed or you may not have access to it."
@@ -32981,6 +33023,9 @@ msgstr ""
 msgid "Enable searching"
 msgstr ""
 
+msgid "Enable the Policy Store experiment"
+msgstr ""
+
 msgid "Enable to allow %{docs_link_start}Device authorization grant flow%{docs_link_end}."
 msgstr ""
 
@@ -40030,9 +40075,6 @@ msgstr ""
 msgid "GroupSettings|Enable JWT format for the CI_JOB_TOKEN variable. When disabled, it uses the legacy database format."
 msgstr ""
 
-msgid "GroupSettings|Enable Policy Store experiment"
-msgstr ""
-
 msgid "GroupSettings|Enable built-in project templates"
 msgstr ""
 
@@ -40283,9 +40325,6 @@ msgid "GroupSettings|When disabled, members cannot use runner registration token
 msgstr ""
 
 msgid "GroupSettings|When enabled, enterprise users in this group can create personal snippets. When disabled, enterprise users will be restricted from creating snippets in their personal namespace."
-msgstr ""
-
-msgid "GroupSettings|When enabled, this group can use the experimental Policy Store. It cannot be enabled while the group has security policies configured."
 msgstr ""
 
 msgid "GroupSettings|When selected, built-in templates appear in the template selector."
@@ -46797,6 +46836,9 @@ msgstr ""
 msgid "Legacy license"
 msgstr ""
 
+msgid "Less"
+msgstr ""
+
 msgid "Less Details"
 msgstr ""
 
@@ -50878,6 +50920,9 @@ msgid "Monthly"
 msgstr ""
 
 msgid "Months"
+msgstr ""
+
+msgid "More"
 msgstr ""
 
 msgid "More Details"
@@ -56223,6 +56268,9 @@ msgstr ""
 msgid "Organization|An error occurred creating an organization. Please try again."
 msgstr ""
 
+msgid "Organization|An error occurred creating your organization. Please reload the page and try again."
+msgstr ""
+
 msgid "Organization|An error occurred deleting the project. Please refresh the page to try again."
 msgstr ""
 
@@ -56245,6 +56293,9 @@ msgid "Organization|An error occurred loading the projects. Please refresh the p
 msgstr ""
 
 msgid "Organization|An error occurred loading user organizations. Please refresh the page to try again."
+msgstr ""
+
+msgid "Organization|An error occurred transferring groups into your organization. Please reload the page and try again."
 msgstr ""
 
 msgid "Organization|An error occurred updating the organization role. Please try again."
@@ -81737,6 +81788,9 @@ msgstr ""
 msgid "There was an error loading related feature flags"
 msgstr ""
 
+msgid "There was an error loading the user's activity calendar."
+msgstr ""
+
 msgid "There was an error loading users activity calendar."
 msgstr ""
 
@@ -90596,13 +90650,13 @@ msgstr ""
 msgid "When enabled, cleanup policies execute faster but put more load on Redis."
 msgstr ""
 
-msgid "When enabled, group owners can opt in to the experimental Policy Store, provided their group has no existing security policies."
-msgstr ""
-
 msgid "When enabled, it will send 301 Moved Permanently instead of 302 if you want web crawlers to index a different site such as the Home Page URL."
 msgstr ""
 
 msgid "When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces."
+msgstr ""
+
+msgid "When enabled, the experimental Policy Store becomes available at the organization level. Groups that already opted in keep their group-level access."
 msgstr ""
 
 msgid "When enabled, users can embed YouTube videos, Figma designs, and other external content."

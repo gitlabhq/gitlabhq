@@ -39584,6 +39584,12 @@ Fields:
 
 Response dimensions for `Contributions` aggregation engine.
 
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="contributionsaggregationresponsedimensions-author"></a>`author` | [`UserCore`](#usercore) | Contribution author. |
+
 #### Fields with arguments
 
 ##### `ContributionsAggregationResponseDimensions.createdAt`

@@ -2,7 +2,12 @@ import { nextTick } from 'vue';
 import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
-import { LAYER_VIEW, STAGE_VIEW } from '~/ci/pipeline_details/graph/constants';
+import {
+  DOWNSTREAM,
+  LAYER_VIEW,
+  STAGE_VIEW,
+  UPSTREAM,
+} from '~/ci/pipeline_details/graph/constants';
 import PipelineGraph from '~/ci/pipeline_details/graph/components/graph_component.vue';
 import JobItem from '~/ci/pipeline_details/graph/components/job_item.vue';
 import LinkedPipelinesColumn from '~/ci/pipeline_details/graph/components/linked_pipelines_column.vue';
@@ -161,6 +166,21 @@ describe('graph component', () => {
 
     it('should provide user permissions', () => {
       expect(findLinkedColumns().at(0).props('userPermissions')).toEqual(userPermissions);
+    });
+
+    describe('when a job is hovered', () => {
+      const findColumnByType = (type) =>
+        findLinkedColumns().wrappers.find((column) => column.props('type') === type);
+
+      beforeEach(async () => {
+        findStageColumns().at(0).vm.$emit('job-hover', 'trigger_job');
+        await nextTick();
+      });
+
+      it('passes the hovered job name to the downstream column only', () => {
+        expect(findColumnByType(DOWNSTREAM).props('jobHovered')).toBe('trigger_job');
+        expect(findColumnByType(UPSTREAM).props('jobHovered')).toBe('');
+      });
     });
   });
 

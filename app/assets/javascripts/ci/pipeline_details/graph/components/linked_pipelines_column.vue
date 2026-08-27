@@ -32,6 +32,11 @@ export default {
       required: true,
       validator: validateConfigPaths,
     },
+    jobHovered: {
+      type: String,
+      required: false,
+      default: '',
+    },
     linkedPipelines: {
       type: Array,
       required: true,
@@ -232,6 +237,7 @@ export default {
         >
           <linked-pipeline
             :is-loading="isLoadingPipeline(pipeline.id)"
+            :job-hovered="jobHovered"
             :pipeline="pipeline"
             :type="type"
             :expanded="isExpanded(pipeline.id)"

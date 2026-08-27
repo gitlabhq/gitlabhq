@@ -282,6 +282,7 @@ export default {
             v-if="showDownstreamPipelines"
             class="@sm/panel:gl-ml-3"
             :config-paths="configPaths"
+            :job-hovered="hoveredJobName"
             :linked-pipelines="downstreamPipelines"
             :column-title="__('Downstream')"
             :skip-retry-modal="skipRetryModal"

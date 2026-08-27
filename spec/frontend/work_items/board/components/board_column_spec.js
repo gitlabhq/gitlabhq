@@ -8,7 +8,7 @@ import getBoardWorkItemsQuery from 'ee_else_ce/work_items/board/graphql/get_boar
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import DraggableCompat from '~/lib/utils/vue3compat/draggable_compat.vue';
-import ColumnGroup from '~/work_items/board/components/column_group.vue';
+import BoardColumn from '~/work_items/board/components/board_column.vue';
 import ColumnHeader from '~/work_items/board/components/column_header.vue';
 import WorkItemCard from '~/work_items/board/components/work_item_card.vue';
 import WorkItemCardSkeleton from '~/work_items/board/components/work_item_card_skeleton.vue';
@@ -45,7 +45,7 @@ describe.each([
     glFeatures: { workItemRestApiFrontendUsers: false },
     useRestApi: false,
   },
-])('ColumnGroup with $label', ({ query, buildResponse, glFeatures, useRestApi }) => {
+])('BoardColumn with $label', ({ query, buildResponse, glFeatures, useRestApi }) => {
   let wrapper;
   let apolloProvider;
 
@@ -66,11 +66,11 @@ describe.each([
     sort: 'CREATED_DESC',
   };
 
-  // ColumnGroup doesn't care which attribute it's grouped by — it only reads
-  // `columnFilter` and `headerDecoration` off the strategy — so this small
+  // BoardColumn doesn't care which attribute it's grouped by — it only reads
+  // `groupFilter` and `headerDecoration` off the strategy — so this small
   // generic fixture can stand in for a real (EE-only) grouping strategy.
   const mockStrategy = {
-    columnFilter: (value) => ({ status: { name: value.name } }),
+    groupFilter: (value) => ({ status: { name: value.name } }),
     headerDecoration: (value) => ({ type: 'icon', name: value.iconName, color: value.color }),
   };
 
@@ -80,7 +80,7 @@ describe.each([
       [getWorkItemsCountOnlyQuery, countQueryHandler],
     ]);
 
-    wrapper = shallowMountExtended(ColumnGroup, {
+    wrapper = shallowMountExtended(BoardColumn, {
       apolloProvider,
       provide: {
         glFeatures,
@@ -321,7 +321,7 @@ describe.each([
         put: ['work-item-board'],
       });
       expect(findDraggable().attributes('tag')).toBe('ul');
-      expect(findDraggable().attributes('data-group-value-id')).toBe(mockStatus.id);
+      expect(findDraggable().attributes('data-column-value-id')).toBe(mockStatus.id);
     });
 
     it('emits card-move with the drag event when a card is dropped', () => {
@@ -422,10 +422,10 @@ describe.each([
       );
     });
 
-    it('uses the strategy columnFilter for the grouped value variables', async () => {
+    it('uses the strategy groupFilter for the grouped value variables', async () => {
       const strategy = {
         ...mockStrategy,
-        columnFilter: () => ({ customGroup: { name: 'Custom' } }),
+        groupFilter: () => ({ customGroup: { name: 'Custom' } }),
       };
       createComponent({ props: { strategy } });
       await waitForPromises();
@@ -629,7 +629,7 @@ describe.each([
       boardColumnQueryVariables({
         rootPageFullPath: 'full/path',
         baseQueryVariables,
-        columnFilter: mockStrategy.columnFilter(mockStatus),
+        groupFilter: mockStrategy.groupFilter(mockStatus),
       });
     const cachedNodeIds = () => {
       const { cache } = apolloProvider.defaultClient;
@@ -671,7 +671,7 @@ describe.each([
     });
 
     it('keeps the paginated column a drop target keyed by its value id', () => {
-      expect(findDraggable().attributes('data-group-value-id')).toBe(mockStatus.id);
+      expect(findDraggable().attributes('data-column-value-id')).toBe(mockStatus.id);
     });
 
     it('removes a card on a later page', () => {

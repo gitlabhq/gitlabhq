@@ -1,24 +1,33 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import MockAdapter from 'axios-mock-adapter';
 import { GlButton, GlSprintf, GlModal } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import { createAlert } from '~/alert';
+import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_CREATED, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { createOrganizationFromGroupPath } from '~/lib/utils/path_helpers/group';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_GROUP } from '~/graphql_shared/constants';
+import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
 import { DEFAULT_ORGANIZATION_GID } from '~/organizations/shared/constants';
 import ReconciliationModal from '~/groups/settings/create_organization/components/modal.vue';
 import SkeletonLoader from '~/groups/settings/create_organization/components/skeleton_loader.vue';
 import groupsQuery from '~/groups/settings/create_organization/graphql/queries/groups.query.graphql';
+import transferGroupsAndConfirmOrganizationMutation from '~/groups/settings/create_organization/graphql/mutations/transfer_groups_and_confirm_organization.mutation.graphql';
 import Step1 from '~/groups/settings/create_organization/components/steps/step_1.vue';
 import Step2 from '~/groups/settings/create_organization/components/steps/step_2.vue';
 import Step3 from '~/groups/settings/create_organization/components/steps/step_3.vue';
 import {
   groupsQueryResponse,
   groupsQueryResponseWithoutDefaultOrgGroups,
+  mockGroup,
   mockDefaultOrganization,
+  mockDefaultGroupOrganization,
+  mockBackfilledGroupOrganization,
+  mockBackfilledOrganization,
   mockNewOrganization,
   mockOrganizations,
 } from './mock_data';
@@ -30,13 +39,35 @@ Vue.use(VueApollo);
 describe('OrganizationReconciliationModal', () => {
   let wrapper;
   let mockApollo;
+  let axiosMock;
 
   const defaultPropsData = {
     groupFullPath: 'mock-group',
-    groupGid: convertToGraphQLId(TYPENAME_GROUP, 1),
+    groupGid: mockGroup.id,
+    groupOrganization: mockDefaultGroupOrganization,
   };
 
+  // `POST create_organization_from_group` in step 3 serializes the ID as an integer, so the
+  // component has to convert it before handing it to the mutation.
+  const createdOrganizationId = 2;
+  const createdOrganizationGid = convertToGraphQLId(TYPE_ORGANIZATION, createdOrganizationId);
+  const createOrganizationPath = createOrganizationFromGroupPath(defaultPropsData.groupFullPath);
+
+  const alertContainerSelector = '.js-organization-reconciliation-modal-alert-container';
+
   const successHandler = jest.fn().mockResolvedValue(groupsQueryResponse);
+  const confirmMutationHandler = jest.fn().mockResolvedValue({
+    data: {
+      organizationConfirm: {
+        organization: {
+          id: createdOrganizationGid,
+          __typename: 'Organization',
+        },
+        errors: [],
+        __typename: 'OrganizationConfirmPayload',
+      },
+    },
+  });
   const GlModalStub = stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE });
 
   const hideAndShowModal = async () => {
@@ -45,8 +76,15 @@ describe('OrganizationReconciliationModal', () => {
     await waitForPromises();
   };
 
-  const createComponent = ({ props = {}, handler = successHandler } = {}) => {
-    mockApollo = createMockApollo([[groupsQuery, handler]]);
+  const createComponent = ({
+    props = {},
+    handler = successHandler,
+    mutationHandler = confirmMutationHandler,
+  } = {}) => {
+    mockApollo = createMockApollo([
+      [groupsQuery, handler],
+      [transferGroupsAndConfirmOrganizationMutation, mutationHandler],
+    ]);
 
     wrapper = shallowMount(ReconciliationModal, {
       apolloProvider: mockApollo,
@@ -67,7 +105,15 @@ describe('OrganizationReconciliationModal', () => {
     await waitForPromises();
   };
 
+  beforeEach(() => {
+    axiosMock = new MockAdapter(axios);
+    axiosMock
+      .onPost(createOrganizationPath)
+      .reply(HTTP_STATUS_CREATED, { id: createdOrganizationId });
+  });
+
   afterEach(() => {
+    axiosMock.restore();
     mockApollo = null;
   });
 
@@ -186,6 +232,7 @@ describe('OrganizationReconciliationModal', () => {
           message: 'An error occurred fetching organizations. Please try again.',
           error,
           captureError: true,
+          containerSelector: alertContainerSelector,
         });
       });
 
@@ -193,6 +240,28 @@ describe('OrganizationReconciliationModal', () => {
         expect(findSkeletonLoader().exists()).toBe(false);
         expect(findStep1().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('when the group is still in the default organization', () => {
+    beforeEach(async () => {
+      await createComponentAndLoad();
+    });
+
+    it('renders a placeholder organization built from the group', () => {
+      expect(findStep1().props('organization')).toEqual(mockNewOrganization);
+    });
+  });
+
+  describe('when the group has already been backfilled into its own organization', () => {
+    beforeEach(async () => {
+      await createComponentAndLoad({
+        props: { groupOrganization: mockBackfilledGroupOrganization },
+      });
+    });
+
+    it("renders the group's existing organization", () => {
+      expect(findStep1().props('organization')).toEqual(mockBackfilledOrganization);
     });
   });
 
@@ -323,40 +392,249 @@ describe('OrganizationReconciliationModal', () => {
     });
 
     describe('step 3', () => {
+      const goToStep3 = async () => {
+        findNextButton().vm.$emit('click');
+        await nextTick();
+
+        findNextButton().vm.$emit('click');
+        await nextTick();
+      };
+
       beforeEach(async () => {
         await createComponentAndLoad();
-
-        findNextButton().vm.$emit('click');
-        await nextTick();
-
-        findNextButton().vm.$emit('click');
-        await nextTick();
       });
 
-      it('renders step 3 component', () => {
+      it('renders step 3 component', async () => {
+        await goToStep3();
         expect(findStep3().exists()).toBe(true);
       });
 
-      it('displays step progress text', () => {
+      it('displays step progress text', async () => {
+        await goToStep3();
         expect(findModal().text()).toContain('Step 3 / 3');
       });
 
-      it('renders confirm text for next button', () => {
+      it('renders confirm text for next button', async () => {
+        await goToStep3();
         expect(findNextButton().text()).toBe('Confirm');
       });
 
-      it('next button does nothing and stays on step 3', async () => {
-        findNextButton().vm.$emit('click');
-        await nextTick();
-
-        expect(wrapper.findComponent(Step3).exists()).toBe(true);
-      });
-
       it('prev button returns to step 2', async () => {
+        await goToStep3();
+
         findPrevButton().vm.$emit('click');
         await nextTick();
 
         expect(wrapper.findComponent(Step2).exists()).toBe(true);
+      });
+
+      describe('confirming', () => {
+        const createErrorMessage =
+          'An error occurred creating your organization. Please reload the page and try again.';
+        const confirmErrorMessage =
+          'An error occurred transferring groups into your organization. Please reload the page and try again.';
+
+        const moveGroupToOrganization = async (organization) => {
+          findStep2().vm.$emit('update', [
+            { ...organization, groups: { nodes: [...organization.groups.nodes, groupToMove] } },
+            { ...mockDefaultOrganization, groups: { nodes: [] } },
+          ]);
+
+          await nextTick();
+        };
+
+        const goToStep3AndConfirm = async () => {
+          findNextButton().vm.$emit('click');
+          await nextTick();
+
+          await moveGroupToOrganization(findStep2().props('organizations')[0]);
+
+          findNextButton().vm.$emit('click');
+          await nextTick();
+
+          findNextButton().vm.$emit('click');
+          await waitForPromises();
+        };
+
+        describe('when the group is still in the default organization', () => {
+          beforeEach(async () => {
+            await createComponentAndLoad();
+            await goToStep3AndConfirm();
+          });
+
+          it('creates the organization from the group', () => {
+            expect(axiosMock.history.post).toHaveLength(1);
+            expect(axiosMock.history.post[0].url).toBe(createOrganizationPath);
+          });
+
+          it('transfers the moved groups to the created organization and confirms it', () => {
+            expect(confirmMutationHandler).toHaveBeenCalledWith({
+              organizationId: createdOrganizationGid,
+              groupIds: [groupToMove.id],
+            });
+          });
+
+          it('does not call createAlert', () => {
+            expect(createAlert).not.toHaveBeenCalled();
+          });
+        });
+
+        describe('when the group has already been backfilled into its own organization', () => {
+          beforeEach(async () => {
+            await createComponentAndLoad({
+              props: { groupOrganization: mockBackfilledGroupOrganization },
+            });
+            await goToStep3AndConfirm();
+          });
+
+          it('does not create a new organization', () => {
+            expect(axiosMock.history.post).toHaveLength(0);
+          });
+
+          it("transfers the moved groups to the group's organization and confirms it", () => {
+            expect(confirmMutationHandler).toHaveBeenCalledWith({
+              organizationId: mockBackfilledGroupOrganization.id,
+              groupIds: [groupToMove.id],
+            });
+          });
+        });
+
+        describe('when no groups have been moved', () => {
+          beforeEach(async () => {
+            await createComponentAndLoad();
+
+            findNextButton().vm.$emit('click');
+            await nextTick();
+
+            findNextButton().vm.$emit('click');
+            await nextTick();
+
+            findNextButton().vm.$emit('click');
+            await waitForPromises();
+          });
+
+          it('confirms the organization without transferring any groups', () => {
+            expect(confirmMutationHandler).toHaveBeenCalledWith({
+              organizationId: createdOrganizationGid,
+              groupIds: [],
+            });
+          });
+
+          it('does not include the current group', () => {
+            expect(confirmMutationHandler).not.toHaveBeenCalledWith(
+              expect.objectContaining({ groupIds: [mockGroup.id] }),
+            );
+          });
+        });
+
+        describe('loading state', () => {
+          beforeEach(async () => {
+            await createComponentAndLoad();
+
+            findNextButton().vm.$emit('click');
+            await nextTick();
+
+            findNextButton().vm.$emit('click');
+            await nextTick();
+          });
+
+          it('is not loading before confirming', () => {
+            expect(findNextButton().props('loading')).toBe(false);
+          });
+
+          it('loads while confirming and stops once done', async () => {
+            findNextButton().vm.$emit('click');
+            await nextTick();
+
+            expect(findNextButton().props('loading')).toBe(true);
+
+            await waitForPromises();
+
+            expect(findNextButton().props('loading')).toBe(false);
+          });
+        });
+
+        describe('when creating the organization fails', () => {
+          beforeEach(async () => {
+            axiosMock.onPost(createOrganizationPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+
+            await createComponentAndLoad();
+            await goToStep3AndConfirm();
+          });
+
+          it('calls createAlert', () => {
+            expect(createAlert).toHaveBeenCalledWith({
+              message: createErrorMessage,
+              error: expect.any(Error),
+              captureError: true,
+              containerSelector: alertContainerSelector,
+            });
+          });
+
+          it('does not confirm the organization', () => {
+            expect(confirmMutationHandler).not.toHaveBeenCalled();
+          });
+
+          it('stops loading the next button', () => {
+            expect(findNextButton().props('loading')).toBe(false);
+          });
+        });
+
+        describe('when confirming the organization fails', () => {
+          const error = new Error();
+
+          beforeEach(async () => {
+            await createComponentAndLoad({
+              mutationHandler: jest.fn().mockRejectedValue(error),
+            });
+            await goToStep3AndConfirm();
+          });
+
+          it('calls createAlert', () => {
+            expect(createAlert).toHaveBeenCalledWith({
+              message: confirmErrorMessage,
+              error,
+              captureError: true,
+              containerSelector: alertContainerSelector,
+            });
+          });
+
+          it('stops loading the next button', () => {
+            expect(findNextButton().props('loading')).toBe(false);
+          });
+        });
+
+        describe('when confirming the organization responds with errors', () => {
+          const errors = ['Insufficient permissions', 'One or more groups could not be found'];
+
+          beforeEach(async () => {
+            await createComponentAndLoad({
+              mutationHandler: jest.fn().mockResolvedValue({
+                data: {
+                  organizationConfirm: {
+                    organization: null,
+                    errors,
+                    __typename: 'OrganizationConfirmPayload',
+                  },
+                },
+              }),
+            });
+            await goToStep3AndConfirm();
+          });
+
+          it('calls createAlert with the returned errors', () => {
+            expect(createAlert).toHaveBeenCalledWith({
+              message: confirmErrorMessage,
+              error: new Error(errors.join(', ')),
+              captureError: true,
+              containerSelector: alertContainerSelector,
+            });
+          });
+
+          it('stops loading the next button', () => {
+            expect(findNextButton().props('loading')).toBe(false);
+          });
+        });
       });
     });
 

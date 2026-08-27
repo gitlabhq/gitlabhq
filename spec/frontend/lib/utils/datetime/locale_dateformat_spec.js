@@ -128,6 +128,29 @@ describe('localeDateFormat (en-US)', () => {
     });
   });
 
+  describe('#asDateFullWithWeekday', () => {
+    it('exposes a working date formatter', () => {
+      expectDateString(localeDateFormat.asDateFullWithWeekday.format(date)).toBe(
+        'Saturday, July 9, 1983',
+      );
+      expectDateString(localeDateFormat.asDateFullWithWeekday.format(nextYear)).toBe(
+        'Tuesday, January 10, 1984',
+      );
+    });
+
+    it('exposes a working date range formatter', () => {
+      expectDateString(localeDateFormat.asDateFullWithWeekday.formatRange(date, nextYear)).toBe(
+        'Saturday, July 9, 1983 – Tuesday, January 10, 1984',
+      );
+      expectDateString(localeDateFormat.asDateFullWithWeekday.formatRange(date, sameMonth)).toBe(
+        'Saturday, July 9 – Tuesday, July 12, 1983',
+      );
+      expectDateString(localeDateFormat.asDateFullWithWeekday.formatRange(date, sameDay)).toBe(
+        'Saturday, July 9, 1983',
+      );
+    });
+  });
+
   describe('#asDate', () => {
     it('exposes a working date formatter', () => {
       expectDateString(localeDateFormat.asDate.format(date)).toBe('Jul 9, 1983');

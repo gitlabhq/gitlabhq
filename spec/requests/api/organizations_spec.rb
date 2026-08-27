@@ -16,7 +16,7 @@ RSpec.describe API::Organizations, feature_category: :organization do
 
         organization_id = json_response['id']
         avatar_url = "http://localhost/uploads/-/system/organizations/organization_detail/avatar/#{organization_id}/banana_sample.gif"
-        expect(json_response['avatar_url']).to eq(avatar_url)
+        expect(json_response['avatar_url']).to start_with(avatar_url)
       end
     end
 

@@ -12,7 +12,9 @@ export const initGroupSettingsCreateOrganizations = () => {
   const {
     dataset: { appData },
   } = el;
-  const { groupFullPath, groupGid } = convertObjectPropsToCamelCase(JSON.parse(appData));
+  const { groupFullPath, groupGid, groupOrganization } = convertObjectPropsToCamelCase(
+    JSON.parse(appData),
+  );
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -23,7 +25,9 @@ export const initGroupSettingsCreateOrganizations = () => {
     name: 'GroupSettingsCreateOrganizationRoot',
     apolloProvider,
     render(createElement) {
-      return createElement(GroupSettingsCreateOrganization, { props: { groupFullPath, groupGid } });
+      return createElement(GroupSettingsCreateOrganization, {
+        props: { groupFullPath, groupGid, groupOrganization },
+      });
     },
   });
 };

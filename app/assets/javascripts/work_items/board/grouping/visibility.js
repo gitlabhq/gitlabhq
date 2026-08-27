@@ -1,4 +1,4 @@
-import { getGroupId } from '../utils';
+import { getGroupId } from './identity';
 
 // No filter applied: every group is shown.
 export const SHOW_ALL_GROUPS = null;

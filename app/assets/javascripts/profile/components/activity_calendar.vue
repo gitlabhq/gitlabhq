@@ -1,12 +1,17 @@
 <script>
 import { times, constant, chunk } from 'lodash-es';
-import { __, s__ } from '~/locale';
+import { GlAlert, GlTooltipDirective } from '@gitlab/ui';
+import { __, n__, s__, sprintf } from '~/locale';
 import { getMonthNames } from '~/lib/utils/datetime/date_format_utility';
-import { FIRST_DAY_OF_WEEK_CHOICES } from '~/contribution_events/constants';
+import { CONTRIB_LEGENDS, FIRST_DAY_OF_WEEK_CHOICES } from '~/contribution_events/constants';
+import AjaxCache from '~/lib/utils/ajax_cache';
+import { userCalendarPath } from '~/lib/utils/path_helpers/user';
 import {
   getCurrentDateAtOffset,
   nMonthsBefore,
   getDatesInRange,
+  localeDateFormat,
+  toISODateFormat,
 } from '~/lib/utils/datetime_utility';
 import { CALENDAR_PERIOD_12_MONTHS } from '../constants';
 
@@ -18,18 +23,41 @@ export default {
   i18n: {
     activityHeading: s__('UserProfile|Activity'),
     calendarLabel: __('Contribution activity calendar'),
+    errorAlertTitle: __("There was an error loading the user's activity calendar."),
+    retry: __('Retry'),
+    calendarHint: __('Issues, merge requests, pushes, and comments.'),
+    legendLess: __('Less'),
+    legendMore: __('More'),
     monday: s__('DayTitle|M'),
     wednesday: s__('DayTitle|W'),
     friday: s__('DayTitle|F'),
     saturday: s__('DayTitle|S'),
     sunday: s__('DayTitle|S'),
   },
+  contribLegends: CONTRIB_LEGENDS,
+  components: {
+    GlAlert,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   inject: {
+    username: { required: true },
     utcOffset: { required: true },
+  },
+  data() {
+    return {
+      isLoading: true,
+      hasError: false,
+      timestamps: {},
+    };
   },
   computed: {
     firstDayOfWeek() {
       return gon.first_day_of_week;
+    },
+    userCalendarPath() {
+      return userCalendarPath({ username: this.username, format: 'json' });
     },
     calendarData() {
       const { startDate, endDate } = this.calendarRange;
@@ -133,13 +161,68 @@ export default {
       ];
     },
   },
+  mounted() {
+    this.loadActivityCalendar();
+  },
   methods: {
+    async loadActivityCalendar() {
+      this.isLoading = true;
+      this.hasError = false;
+
+      try {
+        this.timestamps = await AjaxCache.retrieve(this.userCalendarPath);
+
+        // Scroll to the end to show the most recent activity.
+        await this.$nextTick();
+        this.scrollToEnd();
+      } catch {
+        this.hasError = true;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    dayCount(day) {
+      return this.timestamps[toISODateFormat(day)] || 0;
+    },
+    getLevelFromContributions(count) {
+      return CONTRIB_LEGENDS.findLast(({ min }) => count >= min)?.level ?? 0;
+    },
     contributionCellClass(day) {
       if (day === null) {
         return null;
       }
 
-      return 'user-contribution-graph-cell-0';
+      return `user-contribution-graph-cell-${this.getLevelFromContributions(this.dayCount(day))}`;
+    },
+    getContributionText(day) {
+      const count = this.dayCount(day);
+
+      return count > 0 ? n__('%d contribution', '%d contributions', count) : __('No contributions');
+    },
+    getCellTooltip(day) {
+      if (!day) {
+        return '';
+      }
+
+      const dateText = localeDateFormat.asDateFullWithWeekday.format(day);
+
+      return `${this.getContributionText(day)}<br /><span class="gl-text-neutral-300">${dateText}</span>`;
+    },
+    getAriaLabel(day) {
+      if (!day) {
+        return '';
+      }
+
+      return sprintf(__('%{contributions} on %{date}'), {
+        contributions: this.getContributionText(day),
+        date: localeDateFormat.asDateFullWithWeekday.format(day),
+      });
+    },
+    scrollToEnd() {
+      const wrapper = this.$refs.calendarWrapper;
+      if (wrapper) {
+        wrapper.scrollLeft = wrapper.scrollWidth;
+      }
     },
   },
 };
@@ -151,9 +234,26 @@ export default {
       <h2 class="gl-heading-3 !gl-mb-3 !gl-mt-2">{{ $options.i18n.activityHeading }}</h2>
     </div>
 
-    <div class="contrib-calendar-wrapper gl-mx-auto gl-w-full gl-overflow-x-auto gl-pb-5 gl-pr-3">
+    <!-- GlAlert emits the camelCase primaryAction event, so the hyphenated
+         listener would never fire -->
+    <!-- eslint-disable vue/v-on-event-hyphenation -->
+    <gl-alert
+      v-if="hasError"
+      :title="$options.i18n.errorAlertTitle"
+      :dismissible="false"
+      variant="danger"
+      :primary-button-text="$options.i18n.retry"
+      @primaryAction="loadActivityCalendar"
+    />
+    <!-- eslint-enable vue/v-on-event-hyphenation -->
+    <div
+      v-else
+      ref="calendarWrapper"
+      class="contrib-calendar-wrapper gl-mx-auto gl-w-full gl-overflow-x-auto gl-pb-5 gl-pr-3"
+    >
       <div
         class="contrib-calendar gl-grid gl-w-full gl-min-w-10 gl-grid-flow-col gl-items-stretch gl-gap-1"
+        :aria-busy="isLoading"
         data-testid="contrib-calendar"
         role="group"
         :aria-label="$options.i18n.calendarLabel"
@@ -185,16 +285,46 @@ export default {
           >
             {{ week.monthLabel }}
           </div>
-          <div
+          <!-- Empty padding cells render as plain divs so they are not
+               focusable like the button cells for real days -->
+          <component
+            :is="day ? 'button' : 'div'"
             v-for="(day, dayIndex) in week.days"
             :key="`cell-${weekIndex}-${dayIndex}`"
-            class="user-contribution-graph-cell gl-aspect-square gl-border-transparent"
+            v-gl-tooltip.html="getCellTooltip(day)"
+            :type="day ? 'button' : null"
+            class="user-contribution-graph-cell gl-aspect-square gl-border-transparent gl-p-0"
             :class="contributionCellClass(day)"
+            :style="{ '--contrib-fade-delay': `${(calendarData.length - weekIndex) * 12}ms` }"
+            :aria-label="getAriaLabel(day)"
             :aria-hidden="day ? null : 'true'"
             data-testid="user-contrib-cell"
-          ></div>
+          />
         </template>
       </div>
+    </div>
+    <div v-if="!hasError" class="gl-mb-0 gl-mt-2 gl-flex gl-items-start gl-justify-between">
+      <!-- Legend -->
+      <div class="gl-flex gl-items-center gl-gap-2 gl-text-sm">
+        <span class="gl-text-sm gl-text-subtle">{{ $options.i18n.legendLess }}</span>
+        <div class="gl-flex gl-gap-1">
+          <span
+            v-for="legend in $options.contribLegends"
+            :key="legend.level"
+            v-gl-tooltip="legend.title"
+            :class="`user-contribution-graph-cell-${legend.level}`"
+            class="contrib-legend-cell gl-inline-block gl-h-4 gl-w-4"
+            role="img"
+            :aria-label="legend.title"
+            data-testid="legend-cell"
+          ></span>
+        </div>
+        <span class="gl-text-sm gl-text-subtle">{{ $options.i18n.legendMore }}</span>
+      </div>
+      <!-- Hint text -->
+      <p class="gl-mb-0 gl-text-right gl-text-sm gl-text-subtle">
+        {{ $options.i18n.calendarHint }}
+      </p>
     </div>
   </div>
 </template>

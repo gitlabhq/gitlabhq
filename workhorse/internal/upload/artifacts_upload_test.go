@@ -339,3 +339,53 @@ func TestInvalidLsifFileProcessing(t *testing.T) {
 	response := testUploadArtifacts(t, s.writer.FormDataContentType(), s.url, s.buffer)
 	require.Equal(t, http.StatusInternalServerError, response.Code)
 }
+
+// TestLocalTempDirPrecedence verifies generateMetadataFromZip writes metadata.gz to the
+// directory LocalTempDir() returns. Direct-upload cases need a remote archive the
+// objectstore stub cannot serve, so api.TestResponseLocalTempDir covers those.
+// See https://gitlab.com/gitlab-org/gitlab/-/issues/593294
+func TestLocalTempDirPrecedence(t *testing.T) {
+	createZipAndUpload := func(t *testing.T, authResponse *api.Response, metadataPathChecker func(t *testing.T, metadataPath string)) {
+		t.Helper()
+
+		ts := testArtifactsUploadServer(t, authResponse, func(_ http.ResponseWriter, r *http.Request) {
+			metadataPath := r.FormValue("metadata.path")
+			assert.NotEmpty(t, metadataPath, "metadata.path should be set")
+			metadataPathChecker(t, metadataPath)
+		})
+
+		var buffer bytes.Buffer
+		writer := multipart.NewWriter(&buffer)
+		fileWriter, err := writer.CreateFormFile("file", "my.file")
+		require.NoError(t, err)
+
+		archive := zip.NewWriter(fileWriter)
+		f, err := archive.Create("test.file")
+		require.NoError(t, err)
+		_, err = f.Write([]byte("test content"))
+		require.NoError(t, err)
+		require.NoError(t, archive.Close())
+		require.NoError(t, writer.Close())
+
+		qs := fmt.Sprintf("?%s=%s", ArtifactFormatKey, ArtifactFormatZip)
+		response := testUploadArtifacts(t, writer.FormDataContentType(), ts.URL+Path+qs, &buffer)
+		assert.Equal(t, http.StatusOK, response.Code)
+		testhelper.RequireResponseHeader(t, response, MetadataHeaderKey, MetadataHeaderPresent)
+	}
+
+	t.Run("TempPath takes precedence over LocalTempPath", func(t *testing.T) {
+		tempDir := t.TempDir()
+		localTempDir := t.TempDir()
+
+		authResponse := &api.Response{
+			TempPath:      tempDir,
+			LocalTempPath: localTempDir,
+		}
+
+		createZipAndUpload(t, authResponse, func(t *testing.T, metadataPath string) {
+			t.Helper()
+			assert.Contains(t, metadataPath, tempDir,
+				"metadata.gz should be written to TempPath, not LocalTempPath")
+		})
+	})
+}

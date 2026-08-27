@@ -197,7 +197,7 @@ pre-push:
         if [ "$UNUSED_CODE_LINTER" = "legacy" ]; then
           scripts/lint/unused_methods.rb {files}
         else
-          bundle exec keela --quiet
+          bundle exec keela
         fi
     validate-fast-spec-helper:
       tags: backend test

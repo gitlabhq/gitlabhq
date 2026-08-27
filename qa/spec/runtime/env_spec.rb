@@ -11,27 +11,27 @@ RSpec.describe QA::Runtime::Env do
     context 'when there is an env variable set' do
       it 'returns false when variable is falsey or unsupported' do
         stub_env(env_key, 'false')
-        expect(described_class.public_send(method, *param)).to eq(false)
+        expect(described_class.public_send(method, *param)).to be(false)
 
         stub_env(env_key, 'no')
-        expect(described_class.public_send(method, *param)).to eq(false)
+        expect(described_class.public_send(method, *param)).to be(false)
 
         stub_env(env_key, '0')
-        expect(described_class.public_send(method, *param)).to eq(false)
+        expect(described_class.public_send(method, *param)).to be(false)
 
         stub_env(env_key, 'anything')
-        expect(described_class.public_send(method, *param)).to eq(false)
+        expect(described_class.public_send(method, *param)).to be(false)
       end
 
       it 'returns true when variable set to truthy' do
         stub_env(env_key, 'true')
-        expect(described_class.public_send(method, *param)).to eq(true)
+        expect(described_class.public_send(method, *param)).to be(true)
 
         stub_env(env_key, '1')
-        expect(described_class.public_send(method, *param)).to eq(true)
+        expect(described_class.public_send(method, *param)).to be(true)
 
         stub_env(env_key, 'yes')
-        expect(described_class.public_send(method, *param)).to eq(true)
+        expect(described_class.public_send(method, *param)).to be(true)
       end
     end
 

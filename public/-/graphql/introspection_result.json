@@ -101822,6 +101822,18 @@
           "description": "Response dimensions for `Contributions` aggregation engine",
           "fields": [
             {
+              "name": "author",
+              "description": "Contribution author",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "createdAt",
               "description": "Contribution timestamp",
               "args": [

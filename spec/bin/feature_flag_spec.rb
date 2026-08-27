@@ -245,7 +245,7 @@ RSpec.describe 'bin/feature-flag', feature_category: :feature_flags do
         it 'reads ee from stdin', :aggregate_failures do
           expect(Readline).to receive(:readline).and_return(ee)
           expect do
-            expect(described_class.read_ee).to eq(true)
+            expect(described_class.read_ee).to be(true)
           end.to output(/Is this an EE only feature/).to_stdout
         end
       end

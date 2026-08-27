@@ -159,6 +159,37 @@ describe('Linked pipeline', () => {
       });
     });
 
+    describe('highlighting when the trigger job is hovered', () => {
+      const hoverClass = 'gl-shadow-x0-y0-b3-s1-blue-500';
+
+      it.each`
+        scenario                        | type          | jobHovered                     | sourceJob                 | highlighted
+        ${'trigger job is hovered'}     | ${DOWNSTREAM} | ${mockPipeline.sourceJob.name} | ${mockPipeline.sourceJob} | ${true}
+        ${'another job is hovered'}     | ${DOWNSTREAM} | ${'another-job'}               | ${mockPipeline.sourceJob} | ${false}
+        ${'no job is hovered'}          | ${DOWNSTREAM} | ${''}                          | ${mockPipeline.sourceJob} | ${false}
+        ${'pipeline has no source job'} | ${DOWNSTREAM} | ${''}                          | ${null}                   | ${false}
+        ${'pipeline is upstream'}       | ${UPSTREAM}   | ${mockPipeline.sourceJob.name} | ${mockPipeline.sourceJob} | ${false}
+      `(
+        '$scenario: highlighted is $highlighted',
+        ({ type, jobHovered, sourceJob, highlighted }) => {
+          createComponent({
+            propsData: {
+              ...downstreamProps,
+              type,
+              jobHovered,
+              pipeline: { ...mockPipeline, sourceJob },
+            },
+          });
+
+          if (highlighted) {
+            expect(findLinkedPipeline().classes()).toContain(hoverClass);
+          } else {
+            expect(findLinkedPipeline().classes()).not.toContain(hoverClass);
+          }
+        },
+      );
+    });
+
     describe('card title/popover', () => {
       it.each`
         name                    | pipelineProps                | expectedTitle                                                     | shouldContain                                                                          | shouldNotContain

@@ -27,7 +27,7 @@ import {
   getWorkItemsConnection,
 } from '../utils';
 import updateBoardWorkItemMutation from './graphql/update_board_work_item.mutation.graphql';
-import { DEFAULT_GROUP_BY, groupingStrategyFor } from './grouping';
+import { DEFAULT_GROUP_BY, groupingStrategyFor, getGroupId, getGroupValueId } from './grouping';
 import {
   MAX_VISIBLE_GROUPS,
   SHOW_ALL_GROUPS,
@@ -41,8 +41,6 @@ import {
   boardColumnQuery,
   boardColumnQueryVariables,
   boardColumnCountVariables,
-  getGroupId,
-  getGroupValueId,
   getMovePositionIds,
 } from './utils';
 import {
@@ -62,7 +60,7 @@ import {
   BOARD_COLUMN_NO_DRAG_CLASS,
 } from './constants';
 import { INHERITED_WIDGET_TYPES, resolveInheritedWidgetsDraft } from './filter_inheritance';
-import ColumnGroup from './components/column_group.vue';
+import BoardColumn from './components/board_column.vue';
 
 export default {
   name: 'BoardView',
@@ -72,7 +70,7 @@ export default {
     GlButton,
     GlEmptyState,
     GlLoadingIcon,
-    ColumnGroup,
+    BoardColumn,
     DraggableCompat,
     CreateWorkItemModal,
   },
@@ -166,7 +164,7 @@ export default {
   ],
   data() {
     return {
-      groupByValues: [],
+      groupValues: [],
       gateData: null,
       renderedColumns: [],
       // The column value a new item targets; also gates the create modal's
@@ -192,7 +190,7 @@ export default {
       return groupingStrategyFor(this.groupBy.property);
     },
     isLoading() {
-      return this.$apollo.queries.groupByValues.loading;
+      return this.$apollo.queries.groupValues.loading;
     },
     noGroupsSelected() {
       return (
@@ -202,7 +200,7 @@ export default {
     },
     // Returning undefined (not null) skips the ids variable, since Apollo treats null as a
     // real filter. Skip it the same way when nothing's selected, so the fetch stays unfiltered
-    // and groupByValues still reports the true group count (see groupSelectionPromptDescription).
+    // and groupValues still reports the true group count (see groupSelectionPromptDescription).
     idsToFetch() {
       if (this.workItemsGroupByVisibleGroups === SHOW_ALL_GROUPS || this.noGroupsSelected) {
         return undefined;
@@ -212,7 +210,7 @@ export default {
         .filter((valueId) => valueId !== null);
     },
     tooManyGroups() {
-      return exceedsGroupLimit(this.groupByValues.length);
+      return exceedsGroupLimit(this.groupValues.length);
     },
     needsGroupSelection() {
       return this.tooManyGroups || this.noGroupsSelected;
@@ -236,15 +234,15 @@ export default {
     // Already scoped to the selected groups server-side, so just apply the
     // persisted column order (grouping/ordering.js sends new groups to the end
     // and drops stale ids).
-    orderedGroupByValues() {
+    orderedGroupValues() {
       return orderGroups({
         groupOrder: this.groupOrder,
         groupBy: this.groupBy,
-        values: this.groupByValues,
+        values: this.groupValues,
       });
     },
     canReorderColumns() {
-      return this.canManageColumns && this.orderedGroupByValues.length > 1;
+      return this.canManageColumns && this.orderedGroupValues.length > 1;
     },
     // Epics are a fixed type on their board, so the type selector is hidden there.
     alwaysShowWorkItemTypeSelect() {
@@ -258,7 +256,7 @@ export default {
     updatedWorkItem(workItem) {
       this.syncCardWithBoard(workItem);
     },
-    orderedGroupByValues: {
+    orderedGroupValues: {
       immediate: true,
       handler(values) {
         this.renderedColumns = values;
@@ -275,7 +273,7 @@ export default {
     workItemsGroupByVisibleGroupsHydrated: {
       query: workItemsGroupByVisibleGroupsQuery,
     },
-    groupByValues() {
+    groupValues() {
       return {
         query: this.strategy?.valuesQuery,
         // Waits for hydration so the first fetch is already scoped, not fetch-then-refetch.
@@ -491,20 +489,20 @@ export default {
       return this.collapsedGroups.includes(this.groupId(value));
     },
     valueById(valueId) {
-      return this.groupByValues.find(({ id }) => id === valueId) ?? null;
+      return this.groupValues.find(({ id }) => id === valueId) ?? null;
     },
     columnVariables(value) {
       return boardColumnQueryVariables({
         rootPageFullPath: this.rootPageFullPath,
         baseQueryVariables: this.queryVariables,
-        columnFilter: this.strategy.columnFilter(value),
+        groupFilter: this.strategy.groupFilter(value),
       });
     },
     columnCountVariables(value) {
       return boardColumnCountVariables({
         rootPageFullPath: this.rootPageFullPath,
         baseQueryVariables: this.queryVariables,
-        columnFilter: this.strategy.columnFilter(value),
+        groupFilter: this.strategy.groupFilter(value),
       });
     },
     moveWorkItemBetweenColumns({
@@ -561,11 +559,11 @@ export default {
       const { cache } = this.$apollo.getClient();
       const query = this.columnQuery;
 
-      const currentColumn = this.groupByValues.find((column) =>
+      const currentColumn = this.groupValues.find((value) =>
         readWorkItemFromColumn({
           cache,
           query,
-          variables: this.columnVariables(column),
+          variables: this.columnVariables(value),
           workItemId,
           useRestApi: this.useRestApi,
         }),
@@ -627,7 +625,7 @@ export default {
       const { cache } = this.$apollo.getClient();
       const query = this.columnQuery;
 
-      const currentColumn = this.groupByValues.find((column) =>
+      const currentColumn = this.groupValues.find((column) =>
         readWorkItemFromColumn({
           cache,
           query,
@@ -711,7 +709,7 @@ export default {
       });
     },
     onDragStart(workItem) {
-      this.invalidValueIds = this.groupByValues
+      this.invalidValueIds = this.groupValues
         .filter((value) => !this.isDropAllowed({ item: workItem, value }))
         .map((value) => value.id);
     },
@@ -759,7 +757,7 @@ export default {
         visibleGroups: this.workItemsGroupByVisibleGroups,
         groupBy: this.groupBy,
         value,
-        allGroups: this.groupByValues,
+        allGroups: this.groupValues,
       });
 
       try {
@@ -784,8 +782,8 @@ export default {
     },
     async onCardMove({ from, to, item, oldIndex, newIndex }) {
       this.invalidValueIds = [];
-      const fromValueId = from?.dataset?.groupValueId;
-      const toValueId = to?.dataset?.groupValueId;
+      const fromValueId = from?.dataset?.columnValueId;
+      const toValueId = to?.dataset?.columnValueId;
       const workItemId = item?.dataset?.workItemId;
 
       if (!fromValueId || !toValueId || !workItemId) {
@@ -922,7 +920,7 @@ export default {
     class="gl-flex gl-w-full gl-overflow-x-auto gl-py-5"
     style="height: calc(100dvh - 220px - 2rem)"
   >
-    <gl-loading-icon v-if="isLoading && groupByValues.length === 0" size="lg" class="gl-m-auto" />
+    <gl-loading-icon v-if="isLoading && groupValues.length === 0" size="lg" class="gl-m-auto" />
     <gl-empty-state
       v-else-if="needsGroupSelection"
       class="gl-m-auto"
@@ -947,7 +945,7 @@ export default {
       :disabled="!canReorderColumns"
       @end="onColumnMove"
     >
-      <column-group
+      <board-column
         v-for="(value, index) in renderedColumns"
         :key="value.id"
         :class="$options.columnClass"

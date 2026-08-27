@@ -76,6 +76,34 @@ describe('User Avatar Image Component', () => {
 
       expect(findAvatar().attributes('data-src')).toBe(`${PROVIDED_PROPS.imgSrc}?width=${128}`);
     });
+
+    it('should append width with & when src already has query params', () => {
+      const srcWithQuery = 'myavatarurl.com?v=123';
+      wrapper = shallowMount(UserAvatarImage, {
+        propsData: {
+          ...PROVIDED_PROPS,
+          imgSrc: srcWithQuery,
+          lazy: true,
+        },
+      });
+
+      expect(findAvatar().attributes('data-src')).toBe(
+        `${srcWithQuery}&width=${PROVIDED_PROPS.size * 2}`,
+      );
+    });
+
+    it('should not append width when src already has a width parameter', () => {
+      const srcWithWidth = 'myavatarurl.com?width=32&v=123';
+      wrapper = shallowMount(UserAvatarImage, {
+        propsData: {
+          ...PROVIDED_PROPS,
+          imgSrc: srcWithWidth,
+          lazy: true,
+        },
+      });
+
+      expect(findAvatar().attributes('data-src')).toBe(srcWithWidth);
+    });
   });
 
   describe('Initialization without src', () => {

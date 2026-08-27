@@ -214,7 +214,7 @@ RSpec.describe QA::Support::Repeater do
                   travel(max_attempts.seconds)
                   false
                 end
-              ).to eq(false)
+              ).to be(false)
               expect(loop_counter).to eq(1)
             end
           end

@@ -86,6 +86,14 @@ describe('Linked Pipelines Column', () => {
     });
   });
 
+  describe('job hover', () => {
+    it('passes the hovered job name to the linked pipelines', () => {
+      createComponentWithApollo({ props: { jobHovered: 'trigger_job' } });
+
+      expect(findLinkedPipelineElements().at(0).props('jobHovered')).toBe('trigger_job');
+    });
+  });
+
   describe('click action', () => {
     const clickExpandButton = async () => {
       await findExpandButton().trigger('click');

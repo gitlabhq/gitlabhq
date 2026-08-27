@@ -22,7 +22,10 @@ module Organizations
     def group_settings_create_organization_app_data(group)
       {
         group_full_path: group.full_path,
-        group_gid: group.to_global_id
+        group_gid: group.to_global_id,
+        group_organization: group.organization.slice(
+          :name, :path, :visibility, :avatar_url
+        ).merge({ id: group.organization.to_global_id })
       }.to_json
     end
 

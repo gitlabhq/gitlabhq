@@ -2057,7 +2057,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/events/namespace_settings/ai_related_settings_changed_event.rb'
     - 'ee/app/finders/app_sec/fuzzing/coverage/corpuses_finder.rb'
     - 'ee/app/finders/approval_rules/group_finder.rb'
-    - 'ee/app/finders/audit_event_finder.rb'
     - 'ee/app/finders/auth/group_saml_identity_finder.rb'
     - 'ee/app/finders/auth/provisioned_users_finder.rb'
     - 'ee/app/finders/autocomplete/group_subgroups_finder.rb'

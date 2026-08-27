@@ -4,6 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import ReconciliationModal from '~/groups/settings/create_organization/components/modal.vue';
+import { mockDefaultGroupOrganization } from './mock_data';
 
 describe('GroupSettingsCreateOrganization', () => {
   let wrapper;
@@ -11,6 +12,7 @@ describe('GroupSettingsCreateOrganization', () => {
   const defaultPropsData = {
     groupFullPath: 'mock-group',
     groupGid: convertToGraphQLId(TYPENAME_GROUP, 1),
+    groupOrganization: mockDefaultGroupOrganization,
   };
 
   const createComponent = () => {

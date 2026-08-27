@@ -7,45 +7,20 @@ import { DEFAULT_PAGE_SIZE_BOARD_COLUMN } from '~/work_items/constants';
 export const boardColumnQuery = (glFeatures) =>
   glFeatures.workItemRestApiFrontendUsers ? getWorkItemsRestQuery : getBoardWorkItemsQuery;
 
-// These group-identity helpers talk about "groups" rather than "columns"
-// because board columns are just one view built on top of grouping.
-
-// Placeholder id for the "no value" group, for groupings that have one (like
-// "No label" or "Unassigned"). Status always has a value, so there's no
-// "No status" group — GROUP_NONE just gives every grouping a consistent way
-// to represent "this item has nothing for this attribute".
-export const GROUP_NONE = 'none';
-
-// Identifies which grouping dimension a group belongs to. Adds a sub-key when
-// the dimension itself takes a parameter (e.g. a specific custom field).
-export const getGroupKey = (groupBy) =>
-  groupBy.key ? `${groupBy.property}.${groupBy.key}` : groupBy.property;
-
-// Unique id for one group within its grouping, used as the key for storing
-// per-group state (collapse, visibility, order) in `displaySettings`.
-export const getGroupId = ({ groupBy, value }) =>
-  `${getGroupKey(groupBy)}:${value?.id ?? GROUP_NONE}`;
-
-// Inverse of `getGroupId`; returns null for `GROUP_NONE` since it isn't a real fetchable id.
-export const getGroupValueId = ({ groupBy, groupId }) => {
-  const valueId = groupId.slice(`${getGroupKey(groupBy)}:`.length);
-  return valueId === GROUP_NONE ? null : valueId;
-};
-
 // Variables for the first, non-paginated page. `fetchMore` merges later pages
 // into whatever cache entry these variables point to, so the drag-and-drop
 // cache updates have to build the exact same variables to land on that entry.
-// The grouping strategy supplies `columnFilter` (e.g. `{ status: { name } }`),
-// so this works the same no matter which attribute the board is grouped by.
+// The grouping strategy supplies `groupFilter` (e.g. `{ status: { name } }`),
+// so this stays agnostic to which attribute the board is grouped by.
 export const boardColumnQueryVariables = ({
   rootPageFullPath,
   baseQueryVariables,
-  columnFilter,
+  groupFilter,
 }) => ({
   fullPath: rootPageFullPath,
   ...baseQueryVariables,
   firstPageSize: DEFAULT_PAGE_SIZE_BOARD_COLUMN,
-  ...columnFilter, // spread last, so it wins if a base variable uses the same key
+  ...groupFilter, // spread last, so it wins if a base variable uses the same key
 });
 
 // The count query is a separate query document, so it lives in its own cache

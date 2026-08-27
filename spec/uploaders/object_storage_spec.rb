@@ -623,6 +623,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
 
           expect(subject[:TempPath]).to start_with(uploader_class.root)
           expect(subject[:TempPath]).to include(described_class::TMP_UPLOAD_PATH)
+          expect(subject).not_to have_key(:LocalTempPath)
         end
       end
     end
@@ -642,6 +643,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
           expect(subject[:RemoteObject][:DeleteURL]).to include(upload_path)
           expect(subject[:RemoteObject][:StoreURL]).to include(upload_path)
           expect(subject[:RemoteObject][:SkipDelete]).to be(false)
+          expect(subject[:LocalTempPath]).to eq(Dir.tmpdir)
 
           ::Gitlab::Redis::SharedState.with do |redis|
             expect(redis.hlen(ObjectStorage::PendingDirectUpload::KEY)).to be_zero

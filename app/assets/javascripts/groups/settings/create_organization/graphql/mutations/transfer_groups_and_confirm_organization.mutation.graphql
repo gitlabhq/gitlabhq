@@ -1,0 +1,13 @@
+# @feature_category: organization
+
+mutation transferGroupsAndConfirmOrganization(
+  $organizationId: OrganizationsOrganizationID!
+  $groupIds: [GroupID!]
+) {
+  organizationConfirm(input: { id: $organizationId, groups: $groupIds }) {
+    organization {
+      id
+    }
+    errors
+  }
+}

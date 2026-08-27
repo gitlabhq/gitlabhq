@@ -1,4 +1,4 @@
-import { getGroupId } from '../utils';
+import { getGroupId } from './identity';
 
 // Column order lives in its own `groupOrder` array, separate from `visibleGroups`/
 // `collapsedGroups` — `visibleGroups` is null when everything is shown, so it can't

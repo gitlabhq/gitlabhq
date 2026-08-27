@@ -173,8 +173,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/analytics/cycle_analytics/summary/stage_time_summary_spec.rb'
     - 'ee/spec/lib/gitlab/analytics/cycle_analytics/summary/time_to_restore_service_spec.rb'
     - 'ee/spec/lib/gitlab/audit/events/preloader_spec.rb'
-    - 'ee/spec/lib/gitlab/audit/levels/group_spec.rb'
-    - 'ee/spec/lib/gitlab/audit/levels/instance_spec.rb'
     - 'ee/spec/lib/gitlab/checks/changes_access_spec.rb'
     - 'ee/spec/lib/gitlab/checks/diff_check_spec.rb'
     - 'ee/spec/lib/gitlab/ci/config/required/processor_spec.rb'

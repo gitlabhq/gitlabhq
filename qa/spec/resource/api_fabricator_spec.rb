@@ -318,7 +318,7 @@ RSpec.describe QA::Resource::ApiFabricator do
       it 'returns true' do
         expect(subject).to receive(:get).with(request.url, args).and_return(response)
 
-        expect(subject.exists?(**args)).to eq(true)
+        expect(subject.exists?(**args)).to be(true)
       end
     end
 
@@ -328,7 +328,7 @@ RSpec.describe QA::Resource::ApiFabricator do
       it 'returns false' do
         expect(subject).to receive(:get).with(request.url, args).and_return(response)
 
-        expect(subject.exists?(**args)).to eq(false)
+        expect(subject.exists?(**args)).to be(false)
       end
     end
   end

@@ -1,9 +1,11 @@
 import { getAdaptiveStatusColor } from '~/lib/utils/color_utils';
 import { strategies } from 'ee_else_ce/work_items/board/grouping/strategies';
 
+export { GROUP_NONE, getGroupKey, getGroupId, getGroupValueId } from './identity';
+
 /**
- * One column's value: an `id` and `name`, plus whatever extra fields the
- * strategy's `headerDecoration` needs (e.g. `iconName`, `color` for status).
+ * One value within a grouping: an `id` and `name`, plus whatever extra fields
+ * the strategy's `headerDecoration` needs (e.g. `iconName`, `color` for status).
  *
  * @typedef {Object} GroupingValue
  * @property {string} id
@@ -11,7 +13,7 @@ import { strategies } from 'ee_else_ce/work_items/board/grouping/strategies';
  */
 
 /**
- * How a column header should render its value.
+ * How a group should be rendered wherever it's shown (a board column header today).
  *
  * @typedef {Object} HeaderDecoration
  * @property {'icon'|'none'} type
@@ -20,26 +22,27 @@ import { strategies } from 'ee_else_ce/work_items/board/grouping/strategies';
  */
 
 /**
- * A board grouping strategy. The board splits work items into columns by one
- * attribute (right now just `status`). Each field below handles one
- * attribute-specific piece of that, so `board_view` and `column_group` don't
- * need to know or care which attribute they're grouped by. To support a new
- * attribute, write a strategy and add it to the `strategies` list.
+ * A grouping strategy. This splits work items into groups by one attribute
+ * (right now just `status`). Each field below handles one attribute-specific
+ * piece of that, so a consumer of this contract — today that's `board_view`
+ * and `board_column`, rendering groups as board columns — doesn't need to
+ * know or care which attribute it's grouped by. To support a new attribute,
+ * write a strategy and add it to the `strategies` list.
  *
  * @typedef {Object} GroupingStrategy
  * @property {string} property - The `groupBy` property it handles, e.g. 'status'.
  * @property {string} label - Human-readable name for this dimension, e.g. 'Status'.
- * @property {Object} valuesQuery - GraphQL query listing the values that become columns.
- * @property {(data: Object) => GroupingValue[]} extractValues - Pulls the column values out of the query result.
- * @property {(value: GroupingValue) => Object} columnFilter - Query variables that filter to one column, e.g. `{ status: { name } }`.
- * @property {(item: Object) => (string|null)} itemValueId - Which column value a work item belongs to, or null if none. Used to move a card to the right column when its grouped attribute changes in a side panel.
- * @property {(value: GroupingValue) => Object} moveInput - workItemUpdate input that moves an item into the column, e.g. `{ statusWidget: { status } }`.
- * @property {(value: GroupingValue) => Object} newItemDraft - Widgets-draft fragment that pre-fills the grouped attribute when creating an item in this column, e.g. `{ STATUS: { status } }`. Read by `setNewWorkItemCache` when the create modal opens.
- * @property {(node: Object, value: GroupingValue) => void} patchCard - Mutates the cloned card in place so it matches the target column while the move is still in flight.
- * @property {(value: GroupingValue) => HeaderDecoration} headerDecoration - How the column header should render the value.
+ * @property {Object} valuesQuery - GraphQL query listing the values to group by.
+ * @property {(data: Object) => GroupingValue[]} extractValues - Pulls the grouping values out of the query result.
+ * @property {(value: GroupingValue) => Object} groupFilter - Query variables that filter down to one group, e.g. `{ status: { name } }`.
+ * @property {(item: Object) => (string|null)} itemValueId - Which group value a work item belongs to, or null if none. Used to move a card to the right group when its grouped attribute changes in a side panel.
+ * @property {(value: GroupingValue) => Object} moveInput - workItemUpdate input that moves an item into the group, e.g. `{ statusWidget: { status } }`.
+ * @property {(value: GroupingValue) => Object} newItemDraft - Widgets-draft fragment that pre-fills the grouped attribute when creating an item in this group, e.g. `{ STATUS: { status } }`. Read by `setNewWorkItemCache` when the create modal opens.
+ * @property {(node: Object, value: GroupingValue) => void} patchCard - Mutates the cloned card in place so it matches the target group while the move is still in flight.
+ * @property {(value: GroupingValue) => HeaderDecoration} headerDecoration - How the group should be rendered.
  * @property {Object} [gateQuery] - Optional GraphQL query for drag-eligibility data. Omit to allow every drop.
  * @property {(data: Object) => *} [extractGateData] - Pulls the gate data (e.g. a lookup map) out of the `gateQuery` result.
- * @property {(args: { item: Object, value: GroupingValue, gateData: * }) => boolean} [isDropAllowed] - Whether `item` can be dropped into `value`'s column. Omit to allow every drop.
+ * @property {(args: { item: Object, value: GroupingValue, gateData: * }) => boolean} [isDropAllowed] - Whether `item` can be dropped into `value`'s group. Omit to allow every drop.
  */
 
 export const DEFAULT_GROUP_BY = { property: 'status' };

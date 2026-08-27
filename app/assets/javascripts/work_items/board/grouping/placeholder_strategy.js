@@ -11,7 +11,7 @@ export const placeholderStrategy = {
   label: s__('WorkItems|Status'),
   valuesQuery: getBoardNamespaceQuery,
   extractValues: () => [],
-  columnFilter: () => ({}),
+  groupFilter: () => ({}),
   moveInput: () => ({}),
   newItemDraft: () => ({}),
   patchCard: () => {},

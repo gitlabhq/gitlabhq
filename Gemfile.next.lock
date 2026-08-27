@@ -430,7 +430,7 @@ GEM
     aws-sdk-cloudformation (1.154.0)
       aws-sdk-core (~> 3, >= 3.248.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-core (3.252.0)
+    aws-sdk-core (3.254.1)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -441,8 +441,8 @@ GEM
     aws-sdk-kms (1.76.0)
       aws-sdk-core (~> 3, >= 3.188.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.226.0)
-      aws-sdk-core (~> 3, >= 3.248.0)
+    aws-sdk-s3 (1.229.0)
+      aws-sdk-core (~> 3, >= 3.254.1)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
     aws-sdk-ses (1.101.0)
@@ -2435,8 +2435,8 @@ DEPENDENCIES
   auto_freeze!
   aws-actionmailer-ses (~> 1)
   aws-sdk-cloudformation (~> 1)
-  aws-sdk-core (~> 3.252.0)
-  aws-sdk-s3 (~> 1.226.0)
+  aws-sdk-core (~> 3.254.0)
+  aws-sdk-s3 (~> 1.229.0)
   axe-core-rspec (~> 4.12.0)
   babosa (~> 2.0)
   base32 (~> 0.3.0)
@@ -2849,9 +2849,9 @@ CHECKSUMS
   aws-eventstream (1.3.0) sha256=f1434cc03ab2248756eb02cfa45e900e59a061d7fbdc4a9fd82a5dd23d796d3f
   aws-partitions (1.1001.0) sha256=2979f3317d3a757508d35d0f322839f422cbc8459589b7cc4a3889d0085a8307
   aws-sdk-cloudformation (1.154.0) sha256=2cf4cf05ce5f7fa5f7a7105efa0e3d026ff8d31a2abb90eec6af3fdb04682cf2
-  aws-sdk-core (3.252.0) sha256=09c042cbfc2acf2239441cc9b982ebab2a999bed2ef6bdc51849e7b3d6e48a1c
+  aws-sdk-core (3.254.1) sha256=518089e32134c3478cd4ec63d07fb966546a45e9e4cbf5f80d2cf16d5699d29b
   aws-sdk-kms (1.76.0) sha256=e7f75013cba9ba357144f66bbc600631c192e2cda9dd572794be239654e2cf49
-  aws-sdk-s3 (1.226.0) sha256=e599f431e006ec9b92c61ee0f14d3f658a1f6c8a1d623d2160be927ac958e2bf
+  aws-sdk-s3 (1.229.0) sha256=7dd11a111875b3505d2ec0a0a383a6aab6c1badb3d4e94e7fbb958a24451f596
   aws-sdk-ses (1.101.0) sha256=e570c9f0805d4ac423da0a2641395fdb0f58039edbc50e592041bee1cf2d2620
   aws-sdk-sesv2 (1.102.0) sha256=eb8a7101d28fb383a4db1aa4b2840eea895a4eb85612923c5c29f1d6879111bc
   aws-sigv4 (1.9.1) sha256=7753e320c39f80f82f9e0883b30de0e7b99e756adbaedc80c50b6ad59d49c379

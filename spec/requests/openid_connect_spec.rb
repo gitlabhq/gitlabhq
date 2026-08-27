@@ -41,7 +41,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
       'email_verified' => true,
       'website' => 'https://example.com',
       'profile' => 'http://localhost/alice',
-      'picture' => "http://localhost/uploads/-/system/user/avatar/#{user.id}/dk.png",
+      'picture' => start_with("http://localhost/uploads/-/system/user/avatar/#{user.id}/dk.png"),
       'groups' => kind_of(Array),
       'https://gitlab.org/claims/groups/owner' => kind_of(Array),
       'https://gitlab.org/claims/groups/maintainer' => kind_of(Array),

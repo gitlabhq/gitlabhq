@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -281,4 +282,39 @@ func TestDuoWorkflowWithServerCapabilities(t *testing.T) {
 	require.Equal(t, []string{"advanced_search"}, duoWorkflow.ServerCapabilities)
 	require.True(t, duoWorkflow.LockConcurrentFlow)
 	require.NotNil(t, duoWorkflow.Service)
+}
+
+func TestResponseLocalTempDir(t *testing.T) {
+	tmpDir := t.TempDir()
+	otherDir := t.TempDir()
+
+	testCases := []struct {
+		desc     string
+		response Response
+		expected string
+	}{
+		{
+			desc:     "TempPath wins over LocalTempPath",
+			response: Response{TempPath: tmpDir, LocalTempPath: otherDir},
+			expected: tmpDir,
+		},
+		{
+			desc:     "LocalTempPath used when TempPath is empty",
+			response: Response{LocalTempPath: tmpDir},
+			expected: tmpDir,
+		},
+		{
+			desc:     "falls back to os.TempDir when both are empty",
+			response: Response{},
+			expected: os.TempDir(),
+		},
+	}
+
+	// Response holds a sync.Mutex via gitalypb.Repository, so range by index to avoid copying it.
+	for i := range testCases {
+		tc := &testCases[i]
+		t.Run(tc.desc, func(t *testing.T) {
+			require.Equal(t, tc.expected, tc.response.LocalTempDir())
+		})
+	}
 }

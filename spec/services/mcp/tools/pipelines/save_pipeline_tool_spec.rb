@@ -45,7 +45,7 @@ RSpec.describe Mcp::Tools::Pipelines::SavePipelineTool, feature_category: :mcp_s
 
       it 'raises an error' do
         expect { tool.build_variables }
-          .to raise_error(ArgumentError, 'Provide action: "retry" or "cancel" when pipeline_id is set')
+          .to raise_error(ArgumentError, 'Provide action: "retry", "cancel", or "update" when pipeline_id is set')
       end
     end
 

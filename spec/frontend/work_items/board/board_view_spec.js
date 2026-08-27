@@ -7,7 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import BoardView from '~/work_items/board/board_view.vue';
-import ColumnGroup from '~/work_items/board/components/column_group.vue';
+import BoardColumn from '~/work_items/board/components/board_column.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import * as grouping from '~/work_items/board/grouping';
 import { addWorkItemToColumn } from '~/work_items/board/graphql/cache_updates';
@@ -33,16 +33,16 @@ Vue.use(VueApollo);
 describe('BoardView', () => {
   let wrapper;
 
-  const groupByValuesHandler = jest.fn();
+  const groupValuesHandler = jest.fn();
   const gateDataHandler = jest.fn();
   // CE and EE use different queries here (CE has a placeholder, EE has the real
   // status queries), so pull them from whichever strategy the board actually resolves.
-  const { valuesQuery: groupByValuesQuery, gateQuery } = groupingStrategyFor('status');
+  const { valuesQuery: groupValuesQuery, gateQuery } = groupingStrategyFor('status');
 
   const queryVariables = { state: 'opened', sort: 'CREATED_DESC' };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findColumnGroups = () => wrapper.findAllComponents(ColumnGroup);
+  const findBoardColumns = () => wrapper.findAllComponents(BoardColumn);
   const findGroupSelectionPrompt = () => wrapper.findComponentByTestId('group-selection-prompt');
 
   let apolloProvider;
@@ -54,7 +54,7 @@ describe('BoardView', () => {
     handlers = [],
   } = {}) => {
     apolloProvider = createMockApollo([
-      [groupByValuesQuery, groupByValuesHandler],
+      [groupValuesQuery, groupValuesHandler],
       ...(gateQuery ? [[gateQuery, gateDataHandler]] : []),
       ...handlers,
     ]);
@@ -82,7 +82,7 @@ describe('BoardView', () => {
   };
 
   beforeEach(() => {
-    groupByValuesHandler.mockResolvedValue(buildNamespaceStatusesResponse([]));
+    groupValuesHandler.mockResolvedValue(buildNamespaceStatusesResponse([]));
     gateDataHandler.mockResolvedValue(buildWorkItemTypesResponse());
   });
 
@@ -93,7 +93,7 @@ describe('BoardView', () => {
       createComponent();
       await waitForPromises();
 
-      expect(findColumnGroups()).toHaveLength(0);
+      expect(findBoardColumns()).toHaveLength(0);
     });
 
     it('renders no loading icon once settled', async () => {
@@ -144,7 +144,7 @@ describe('BoardView', () => {
     const createdWorkItem = buildWorkItemNode(42);
 
     const requestCreate = async () => {
-      wrapper.findComponent(ColumnGroup).vm.$emit('create-item', mockStatus);
+      wrapper.findComponent(BoardColumn).vm.$emit('create-item', mockStatus);
       await waitForPromises();
       wrapper.findComponent(CreateWorkItemModal).vm.$emit('work-item-created', createdWorkItem);
       await waitForPromises();
@@ -153,16 +153,16 @@ describe('BoardView', () => {
     beforeEach(() => {
       jest.spyOn(grouping, 'groupingStrategyFor').mockReturnValue({
         property: 'status',
-        valuesQuery: groupByValuesQuery,
+        valuesQuery: groupValuesQuery,
         extractValues: () => [mockStatus],
-        columnFilter: (value) => ({ status: { name: value.name } }),
+        groupFilter: (value) => ({ status: { name: value.name } }),
         headerDecoration: () => ({ type: 'none' }),
         moveInput: () => ({}),
         newItemDraft: () => ({}),
         patchCard: () => {},
         itemValueId: () => mockStatus.id,
       });
-      groupByValuesHandler.mockResolvedValue(buildNamespaceStatusesResponse([mockStatus]));
+      groupValuesHandler.mockResolvedValue(buildNamespaceStatusesResponse([mockStatus]));
     });
 
     it('inserts the created item using the REST query when the flag is enabled', async () => {
@@ -203,7 +203,7 @@ describe('BoardView', () => {
   describe('fetch scoping', () => {
     describe('when the store has not hydrated', () => {
       beforeEach(() => {
-        const scopedApolloProvider = createMockApollo([[groupByValuesQuery, groupByValuesHandler]]);
+        const scopedApolloProvider = createMockApollo([[groupValuesQuery, groupValuesHandler]]);
         scopedApolloProvider.clients.defaultClient.writeQuery({
           query: workItemsGroupByVisibleGroupsQuery,
           data: {
@@ -219,7 +219,7 @@ describe('BoardView', () => {
       });
 
       it('does not fetch the group values', () => {
-        expect(groupByValuesHandler).not.toHaveBeenCalled();
+        expect(groupValuesHandler).not.toHaveBeenCalled();
       });
     });
 
@@ -230,7 +230,7 @@ describe('BoardView', () => {
       });
 
       it('omits ids, fetching everything', () => {
-        expect(groupByValuesHandler).toHaveBeenCalledWith({
+        expect(groupValuesHandler).toHaveBeenCalledWith({
           fullPath: 'full/path',
           ids: undefined,
         });
@@ -244,7 +244,7 @@ describe('BoardView', () => {
       });
 
       it('fetches only the visible ids', () => {
-        expect(groupByValuesHandler).toHaveBeenCalledWith({
+        expect(groupValuesHandler).toHaveBeenCalledWith({
           fullPath: 'full/path',
           ids: ['1', '2'],
         });
@@ -258,7 +258,7 @@ describe('BoardView', () => {
       });
 
       it('still fetches the group values, unscoped, to learn the true total', () => {
-        expect(groupByValuesHandler).toHaveBeenCalledWith({
+        expect(groupValuesHandler).toHaveBeenCalledWith({
           fullPath: 'full/path',
           ids: undefined,
         });

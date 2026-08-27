@@ -212,6 +212,7 @@ module ObjectStorage
               use_final_store_path: use_final_store_path,
               final_store_path_config: final_store_path_config
             )
+            hash[:LocalTempPath] = Dir.tmpdir
           else
             hash[:TempPath] = workhorse_local_upload_path
           end

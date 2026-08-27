@@ -992,6 +992,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                     it_behaves_like 'a valid response' do
                       it 'responds with status 200, location of LFS remote store and object details' do
                         expect(json_response).not_to have_key('TempPath')
+                        expect(json_response['LocalTempPath']).to eq(Dir.tmpdir)
                         expect(json_response['RemoteObject']).to have_key('ID')
                         expect(json_response['RemoteObject']).to have_key('GetURL')
                         expect(json_response['RemoteObject']).to have_key('StoreURL')

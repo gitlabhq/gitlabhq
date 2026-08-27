@@ -17,7 +17,7 @@ import WorkItemCard from './work_item_card.vue';
 import WorkItemCardSkeleton from './work_item_card_skeleton.vue';
 
 export default {
-  name: 'ColumnGroup',
+  name: 'BoardColumn',
   skeletonCount: 3,
   sortableOptions: {
     ...defaultSortableOptions,
@@ -161,7 +161,7 @@ export default {
       return boardColumnQueryVariables({
         rootPageFullPath: this.rootPageFullPath,
         baseQueryVariables: this.baseQueryVariables,
-        columnFilter: this.strategy.columnFilter(this.value),
+        groupFilter: this.strategy.groupFilter(this.value),
       });
     },
     decoration() {
@@ -179,7 +179,7 @@ export default {
       return boardColumnCountVariables({
         rootPageFullPath: this.rootPageFullPath,
         baseQueryVariables: this.baseQueryVariables,
-        columnFilter: this.strategy.columnFilter(this.value),
+        groupFilter: this.strategy.groupFilter(this.value),
       });
     },
     columnClasses() {
@@ -351,7 +351,7 @@ export default {
         :value="workItems"
         item-key="id"
         tag="ul"
-        :data-group-value-id="value.id"
+        :data-column-value-id="value.id"
         v-bind="$options.sortableOptions"
         :group="groupConfig"
         :disabled="dragDisabled"

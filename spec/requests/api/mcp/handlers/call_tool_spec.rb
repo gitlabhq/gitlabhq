@@ -540,6 +540,28 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
     end
 
+    context 'when renaming a pipeline' do
+      let(:tool_params) do
+        {
+          name: 'save_pipeline',
+          arguments: {
+            pipeline_id: pipeline.id,
+            action: 'update',
+            name: 'Nightly build'
+          }
+        }
+      end
+
+      it 'renames the pipeline', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['structuredContent']['name']).to eq('Nightly build')
+        expect(pipeline.reload.name).to eq('Nightly build')
+      end
+    end
+
     context 'when retrying a pipeline' do
       let(:failed_pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: :failed) }
       let!(:failed_build) { create(:ci_build, :failed, :retryable, pipeline: failed_pipeline) }
@@ -593,7 +615,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['result']['isError']).to be_truthy
           expect(json_response['result']['content'].first['text']).to include(
-            'Provide action: "retry" or "cancel" when pipeline_id is set'
+            'Provide action: "retry", "cancel", or "update" when pipeline_id is set'
           )
         end
       end

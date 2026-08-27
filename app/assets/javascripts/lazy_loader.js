@@ -1,4 +1,5 @@
 import { debounce, throttle } from 'lodash-es';
+import { appendWidthToAvatarUrl } from '~/vue_shared/components/user_avatar/utils';
 
 export const placeholderImage =
   'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
@@ -159,11 +160,10 @@ export default class LazyLoader {
     if (img.dataset.src) {
       img.setAttribute('loading', 'lazy');
       let imgUrl = img.dataset.src;
-      // Only adding width + height for avatars for now
       // eslint-disable-next-line @gitlab/no-hardcoded-urls -- URL substring pattern check to detect avatar image paths, not a navigational URL
-      if (imgUrl.indexOf('/avatar/') > -1 && imgUrl.indexOf('?') === -1) {
+      if (imgUrl.indexOf('/avatar/') > -1) {
         const targetWidth = img.getAttribute('width') || img.width;
-        imgUrl += `?width=${targetWidth}`;
+        imgUrl = appendWidthToAvatarUrl(imgUrl, targetWidth);
       }
       img.setAttribute('src', imgUrl);
       // eslint-disable-next-line no-param-reassign
