@@ -16,6 +16,139 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
     subject { http_io.close }
 
     it { is_expected.to be_nil }
+
+    context 'when a persistent connection is open' do
+      before do
+        stub_remote_url_206(url, file_path)
+        set_smaller_buffer_size_than(size)
+        http_io.read(1)
+      end
+
+      it 'finishes the session', :aggregate_failures do
+        session = http_io.send(:http_session)
+        expect(session).to be_started
+
+        http_io.close
+
+        expect(session).not_to be_started
+        expect(http_io.instance_variable_get(:@http_session)).to be_nil
+      end
+
+      context 'when the session has already been torn down' do
+        it 'does not raise and resets the session to nil', :aggregate_failures do
+          session = http_io.send(:http_session)
+          allow(session).to receive(:finish).and_raise(IOError)
+
+          expect { http_io.close }.not_to raise_error
+          expect(http_io.instance_variable_get(:@http_session)).to be_nil
+        end
+      end
+    end
+  end
+
+  describe 'connection handling' do
+    before do
+      stub_remote_url_206(url, file_path)
+      set_smaller_buffer_size_than(size)
+    end
+
+    it 'reuses a single connection configured for keep-alive and explicit timeouts' do
+      # Net::HTTP.start ignores option keys that do not name a setter, so a
+      # typo would silently fall back to the default. Assert on every option.
+      expect(Net::HTTP).to receive(:start).once.with(
+        'object-storage', 80,
+        hash_including(
+          **Gitlab::HTTP::DEFAULT_TIMEOUT_OPTIONS,
+          ignore_eof: false,
+          keep_alive_timeout: described_class::KEEP_ALIVE_TIMEOUT,
+          max_retries: described_class::MAX_RETRIES
+        )
+      ).and_call_original
+
+      expect(http_io.read).to eq(file_body)
+    end
+
+    context 'when the connection fails mid-read' do
+      before do
+        stub_request(:get, url).to_raise(Errno::ECONNRESET)
+      end
+
+      it 'surfaces the error instead of returning a truncated read' do
+        expect { http_io.read }.to raise_error(Errno::ECONNRESET)
+      end
+    end
+  end
+
+  describe 'connection lifecycle against a real keep-alive server' do
+    let(:server) { HttpIOHelpers::RangeRequestServer.new(file_body) }
+    let(:url) { "http://127.0.0.1:#{server.port}/trace" }
+
+    before do
+      set_smaller_buffer_size_than(size)
+    end
+
+    after do
+      server.stop
+    end
+
+    it 'reads all chunks over a single connection', :aggregate_failures do
+      expect(http_io.read).to eq(file_body)
+
+      expect(server.responses).to be > 1
+      expect(server.accepts).to eq(1)
+    end
+
+    context 'when the server drops the connection after every response' do
+      let(:server) { HttpIOHelpers::RangeRequestServer.new(file_body, drop_connection_after: 1) }
+
+      it 'reconnects transparently and returns the full body', :aggregate_failures do
+        expect(http_io.read).to eq(file_body)
+
+        expect(server.responses).to be > 1
+        expect(server.accepts).to eq(server.responses)
+      end
+    end
+
+    context 'when the server fails persistently and then recovers' do
+      it 'surfaces the error, then a retried read on the same object succeeds', :aggregate_failures do
+        server.fail_next_requests(2)
+
+        expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError)
+
+        http_io.seek(0)
+        expect(http_io.read).to eq(file_body)
+
+        # initial connection + Net::HTTP internal retry + fresh connection
+        # for the successful read
+        expect(server.accepts).to eq(3)
+      end
+    end
+
+    context 'when the connection dies mid-body' do
+      it 'discards the partial body, retries transparently and returns correct data', :aggregate_failures do
+        server.truncate_next_responses(1)
+
+        expect(http_io.read).to eq(file_body)
+
+        # initial connection + reconnect for the retried chunk
+        expect(server.accepts).to eq(2)
+      end
+
+      context 'when the truncation persists' do
+        it 'surfaces the error, then a retried read on the same object succeeds', :aggregate_failures do
+          server.truncate_next_responses(2)
+
+          expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError)
+
+          http_io.seek(0)
+          expect(http_io.read).to eq(file_body)
+
+          # initial connection + Net::HTTP internal retry + fresh connection
+          # for the successful read
+          expect(server.accepts).to eq(3)
+        end
+      end
+    end
   end
 
   describe '#binmode' do
