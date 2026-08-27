@@ -16,7 +16,7 @@ title: Dependency Firewall API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/617465) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `dependency_firewall_phase1`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/23242) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `dependency_firewall_phase1`. Disabled by default.
 
 {{< /history >}}
 
@@ -120,4 +120,98 @@ the `JOB-TOKEN` header:
 curl --request GET \
   --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
   --url "https://gitlab.example.com/api/v4/projects/1/dependency_firewall/enablement"
+```
+
+## Evaluate a package against Dependency Firewall policies for a project
+
+Evaluates a single package against the Dependency Firewall policies for a specified project.
+
+This endpoint accepts a personal access token, project access token, group access token,
+OAuth token, or [CI/CD job token](../ci/jobs/ci_job_token.md). A job token from a project
+outside the target project's job token scope is refused with a `403 Forbidden` status code.
+Deploy tokens are not supported.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+- You must have permission to read packages in the project.
+
+```plaintext
+POST /projects/:id/dependency_firewall/evaluate
+```
+
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `ecosystem` | string            | yes      | Package ecosystem. One of `maven`, `npm`, `pypi`, or `gem`. |
+| `name`      | string            | yes      | Package name, maximum 255 characters. For `maven`, use the `groupId:artifactId` form, for example `com.example:trivial-lib`. For `pypi`, names are normalized according to PEP 503 before evaluation, so `Flask_Login` and `flask-login` are equivalent. |
+| `version`   | string            | yes      | Package version, maximum 255 characters. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response
+attributes:
+
+| Attribute | Type   | Description |
+|-----------|--------|-------------|
+| `outcome` | string | Evaluation outcome. One of `allowed`, `warned`, or `blocked`. |
+| `reason`  | string | Message describing why the package was warned or blocked. Names the matching policy. `null` when `outcome` is `allowed`. |
+
+The `outcome` attribute has one of the following values:
+
+- `allowed`: No policy rule matched the package. A project with the Dependency Firewall enabled
+  but no policy linked to it always returns `allowed`. An `allowed` outcome is not an assertion
+  that GitLab holds vulnerability or license data for the package. A package that is absent from
+  the package metadata database is also allowed.
+- `warned`: A policy rule matched the package, and the matching policy is in warn mode.
+- `blocked`: A policy rule matched the package, and the matching policy is in enforce mode.
+
+This endpoint can also return the following status codes:
+
+| Status code | Code | Description |
+|-------------|------|-------------|
+| `400` | None | `name` or `version` is blank, or `ecosystem` is not one of the accepted values. |
+| `401` | None | The request was not authenticated. |
+| `403` | None | The authenticated user cannot read packages in the project, or the request used a job token from outside the project's job token scope. |
+| `404` | None | The project does not exist, the authenticated user has no access to it, or the `dependency_firewall_phase1` feature flag is disabled. |
+| `422` | `dependency_firewall_not_enforced` | The Dependency Firewall is not enabled for the project. |
+| `429` | None | The rate limit for this endpoint was exceeded. The limit is scoped to the combination of project and user. |
+| `503` | `dependency_firewall_evaluation_failed` | A package metadata lookup did not complete. Block the fetch. |
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/1/dependency_firewall/evaluate" \
+  --data '{"ecosystem": "npm", "name": "lodash", "version": "4.17.15"}'
+```
+
+Example response:
+
+```json
+{
+  "outcome": "blocked",
+  "reason": "Package 'lodash' violates 'deny-mit' policy"
+}
+```
+
+Example response for a project that has the Dependency Firewall enabled but no policy linked to it:
+
+```json
+{
+  "outcome": "allowed",
+  "reason": null
+}
+```
+
+From a pipeline job, authenticate with a [CI/CD job token](../ci/jobs/ci_job_token.md):
+
+```shell
+curl --request POST \
+  --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/1/dependency_firewall/evaluate" \
+  --data '{"ecosystem": "npm", "name": "lodash", "version": "4.17.15"}'
 ```

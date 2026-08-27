@@ -50,11 +50,6 @@ export default {
   router: new VueRouter({
     routes,
   }),
-  provide() {
-    return {
-      mlflowTrackingUrl: this.mlflowTrackingUrl,
-    };
-  },
   props: {
     experiment: {
       type: Object,
@@ -79,11 +74,6 @@ export default {
     emptyStateSvgPath: {
       type: String,
       required: true,
-    },
-    mlflowTrackingUrl: {
-      type: String,
-      required: false,
-      default: '',
     },
     canWriteModelExperiments: {
       type: Boolean,

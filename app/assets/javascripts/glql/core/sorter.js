@@ -42,8 +42,13 @@ function valueByFieldName(fieldValue, fieldName) {
       return healthStatuses[fieldValue];
     case 'state':
       return states[fieldValue];
-    case 'status':
-      return statusCategories[fieldValue.category];
+    case 'status': {
+      // Pipeline/CiJob statuses are plain strings; fall through to the string fallback
+      if (typeof fieldValue !== 'object') return null;
+      const categoryWeight = statusCategories[fieldValue.category] ?? 99;
+      // Zero-pad so string comparison matches numeric order, then append lowercased name for case-insensitive tie-breaking
+      return `${String(categoryWeight).padStart(2, '0')}_${(fieldValue.name ?? '').toLowerCase()}`;
+    }
     case 'milestone':
     case 'iteration':
       return new Date(fieldValue.dueDate);

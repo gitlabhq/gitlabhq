@@ -26,7 +26,6 @@ export const initShowExperiment = () => {
     params,
     pageInfo,
     emptyStateSvgPath,
-    mlflowTrackingUrl,
     canWriteModelExperiments,
   } = el.dataset;
 
@@ -37,7 +36,6 @@ export const initShowExperiment = () => {
     paramNames: JSON.parse(params),
     pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
     emptyStateSvgPath,
-    mlflowTrackingUrl,
     canWriteModelExperiments: Boolean(canWriteModelExperiments),
   };
 

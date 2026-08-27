@@ -128,6 +128,9 @@ module Pajamas
 
       attributes['disabled'] = 'disabled' if @disabled || @loading
       attributes['aria-disabled'] = true if @disabled || @loading
+      # `disabled` is not valid on `<a>`, so browsers ignore it and the link stays
+      # focusable. Take it out of the tab order the way GlButton does.
+      attributes['tabindex'] = '-1' if link? && !form? && (@disabled || @loading)
       attributes['type'] = @type unless @href
       attributes['rel'] = safe_rel_for_target_blank if link? && @target == '_blank'
 

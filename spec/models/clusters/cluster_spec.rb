@@ -1277,36 +1277,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
   end
 
-  describe '#platform_kubernetes_active?' do
-    subject(:platform_kubernetes_active?) { cluster.platform_kubernetes_active? }
-
-    before do
-      allow(cluster).to receive(:platform_kubernetes).and_return(platform_kubernetes)
-    end
-
-    context 'without platform_kubernetes' do
-      let(:platform_kubernetes) {}
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'with platform_kubernetes' do
-      let(:platform_kubernetes) { instance_double(Clusters::Platforms::Kubernetes, active?: active?) }
-
-      context 'with active? set to true' do
-        let(:active?) { true }
-
-        it { is_expected.to be(true) }
-      end
-
-      context 'with active? set to false' do
-        let(:active?) { false }
-
-        it { is_expected.to be(false) }
-      end
-    end
-  end
-
   describe '#platform_kubernetes_rbac?' do
     subject(:platform_kubernetes_rbac?) { cluster.platform_kubernetes_rbac? }
 

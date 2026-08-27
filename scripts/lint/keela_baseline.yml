@@ -352,7 +352,6 @@ methods:
   - fallback_owner_project
   app/models/clusters/cluster.rb:
   - self.has_one_cluster_application
-  - platform_kubernetes_active?
   app/models/clusters/concerns/application_data.rb:
   - certificate_files
   app/models/clusters/concerns/application_status.rb:

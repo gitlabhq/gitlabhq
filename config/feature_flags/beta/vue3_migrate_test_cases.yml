@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_test_cases
+description: Enables Vue 3 in compatibility mode for the test cases pages
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/23089
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250772
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/618078
+milestone: '19.4'
+group: group::portfolio planning
+type: beta
+default_enabled: false

@@ -79,7 +79,6 @@ export default {
       maxAllowedFileSize: this.maxAllowedFileSize,
       latestVersion: this.latestVersion,
       markdownPreviewPath: this.markdownPreviewPath,
-      editModelPath: this.editModelPath,
       createModelVersionPath: this.createModelVersionPath,
       modelGid: this.modelGid,
     };

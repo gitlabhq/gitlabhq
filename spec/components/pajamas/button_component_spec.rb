@@ -251,6 +251,24 @@ RSpec.describe Pajamas::ButtonComponent, type: :component, feature_category: :de
   context 'when button component renders a button' do
     include_examples 'basic button behavior'
 
+    describe 'disabled' do
+      let(:options) { { disabled: true } }
+
+      it 'relies on the native attribute and does not set tabindex' do
+        expect(page).to have_css "button[disabled]"
+        expect(page).not_to have_css "button[tabindex]"
+      end
+    end
+
+    describe 'loading' do
+      let(:options) { { loading: true } }
+
+      it 'relies on the native attribute and does not set tabindex' do
+        expect(page).to have_css "button[disabled]"
+        expect(page).not_to have_css "button[tabindex]"
+      end
+    end
+
     describe 'type' do
       context 'with defaults' do
         it 'has type "button"' do
@@ -298,6 +316,17 @@ RSpec.describe Pajamas::ButtonComponent, type: :component, feature_category: :de
 
         it 'adds the params to the form as hidden inputs' do
           expect(page).to have_css "input[name='some_param'][value='true']", visible: :hidden
+        end
+      end
+
+      context 'when disabled' do
+        let(:options) do
+          { href: 'some_post/path', method: :post, form: true, disabled: true }
+        end
+
+        it 'relies on the native attribute and does not set tabindex' do
+          expect(page).to have_css "button[disabled]"
+          expect(page).not_to have_css "button[tabindex]"
         end
       end
     end
@@ -353,6 +382,44 @@ RSpec.describe Pajamas::ButtonComponent, type: :component, feature_category: :de
       with_them do
         it 'has the correct data-method attribute' do
           expect(page).to have_css "a[data-method='#{method}']"
+        end
+      end
+    end
+
+    # `disabled` is not a valid attribute on `<a>`, so tabindex is what actually
+    # keeps the link out of the tab order.
+    describe 'tab order when inactive' do
+      context 'with defaults (not disabled)' do
+        let(:options) { { href: 'https://gitlab.com' } }
+
+        it 'stays in the tab order' do
+          expect(page).not_to have_css "a[tabindex]"
+        end
+      end
+
+      context 'when disabled' do
+        let(:options) { { href: 'https://gitlab.com', disabled: true } }
+
+        it 'is removed from the tab order' do
+          expect(page).to have_css "a[aria-disabled='true'][tabindex='-1']"
+        end
+      end
+
+      context 'when loading' do
+        let(:options) { { href: 'https://gitlab.com', loading: true } }
+
+        it 'is removed from the tab order' do
+          expect(page).to have_css "a[aria-disabled='true'][tabindex='-1']"
+        end
+      end
+
+      context 'when disabled and the caller supplies a tabindex' do
+        let(:options) do
+          { href: 'https://gitlab.com', disabled: true, button_options: { tabindex: '0' } }
+        end
+
+        it 'overrides the given tabindex' do
+          expect(page).to have_css "a[tabindex='-1']"
         end
       end
     end

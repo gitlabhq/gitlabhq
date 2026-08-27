@@ -78,7 +78,6 @@ export default {
       projectPath: this.projectPath,
       canWriteModelRegistry: this.canWriteModelRegistry,
       importPath: this.importPath,
-      versionName: this.versionName,
       maxAllowedFileSize: this.maxAllowedFileSize,
       markdownPreviewPath: this.markdownPreviewPath,
     };
