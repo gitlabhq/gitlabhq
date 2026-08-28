@@ -91,6 +91,16 @@ RSpec.shared_examples 'a policy repository reconciling scope forms' do
       expect(updated.scope_dimensions).to eq(['groups'])
     end
 
+    it 'keeps a compiled scope through an update that does not touch it', :aggregate_failures do
+      created = repository.create(compiled_attributes)
+
+      updated = repository.update(created.id, description: 'Rewritten')
+
+      expect(updated.policy_scope).to eq(created.policy_scope)
+      expect(updated.scope_rego).to eq(created.scope_rego)
+      expect(updated.scope_dimensions).to eq(created.scope_dimensions)
+    end
+
     it 'clears policy_scope when scope_rego is authored', :aggregate_failures do
       created = repository.create(compiled_attributes)
 

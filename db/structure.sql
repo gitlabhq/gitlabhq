@@ -49678,8 +49678,6 @@ CREATE INDEX index_p_ci_build_names_on_project_id_and_build_id ON ONLY p_ci_buil
 
 CREATE INDEX index_p_ci_build_names_on_search_vector ON ONLY p_ci_build_names USING gin (search_vector);
 
-CREATE INDEX index_p_ci_build_sources_on_pipeline_source ON ONLY p_ci_build_sources USING btree (pipeline_source);
-
 CREATE INDEX index_p_ci_build_sources_on_project_id_and_build_id ON ONLY p_ci_build_sources USING btree (project_id, build_id);
 
 CREATE INDEX index_p_ci_build_sources_on_search_columns ON ONLY p_ci_build_sources USING btree (project_id, source, build_id, partition_id);

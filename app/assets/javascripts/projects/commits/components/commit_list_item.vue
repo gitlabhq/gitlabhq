@@ -141,14 +141,13 @@ export default {
           <div class="gl-flex">
             <!-- Prevent the description toggle -->
             <gl-link
+              v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
               :href="commit.webPath"
               class="gl-inline-block gl-min-w-0 gl-max-w-full gl-font-bold gl-text-default hover:gl-text-default @md/panel:gl-truncate"
               data-testid="commit-title-link"
               :title="commit.title"
               @click.stop
-            >
-              {{ commit.title }}
-            </gl-link>
+            />
           </div>
           <div
             class="gl-text-wrap gl-pb-2 gl-text-sm gl-font-normal !gl-text-subtle @md/panel:gl-pb-0"
@@ -207,7 +206,7 @@ export default {
           :is-collapsed="isCollapsed"
           :loading="isLoadingDescription"
           :anchor-id="anchorId"
-          :accessible-label="commit.titleHtml"
+          :accessible-label="commit.title"
           size="medium"
           @click="onClick"
         />

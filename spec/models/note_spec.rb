@@ -588,6 +588,95 @@ RSpec.describe Note, feature_category: :team_planning do
       end
     end
 
+    describe 'single sharding key validation' do
+      let_it_be(:issue) { create(:issue) }
+      let_it_be(:organization) { create(:organization) }
+
+      let(:error_message) { 'Exactly one of namespace_id, project_id, organization_id must be present' }
+
+      it 'rejects a note carrying both project_id and organization_id', :aggregate_failures do
+        note = build(:note, noteable: issue, project: issue.project, organization_id: organization.id)
+
+        expect(note).not_to be_valid
+        expect(note.errors.full_messages).to include(error_message)
+      end
+
+      it 'rejects a note carrying both namespace_id and organization_id', :aggregate_failures do
+        note = build(:note, noteable: issue, project: nil,
+          namespace_id: issue.project.project_namespace_id, organization_id: organization.id)
+
+        expect(note).not_to be_valid
+        expect(note.errors.full_messages).to include(error_message)
+      end
+
+      it 'accepts a project-keyed note' do
+        expect(build(:note, noteable: issue, project: issue.project)).to be_valid
+      end
+
+      it 'accepts a note whose namespace_id is repaired away by the callback' do
+        note = build(:note, noteable: issue, project: issue.project,
+          namespace_id: issue.project.project_namespace_id)
+
+        expect(note).to be_valid
+      end
+
+      it 'accepts an organization-keyed personal snippet note' do
+        expect(build(:note, noteable: create(:personal_snippet), project: nil)).to be_valid
+      end
+
+      context 'with a pre-existing multi-key row' do
+        let_it_be_with_reload(:note) do
+          create(:note, noteable: issue, project: issue.project).tap do |record|
+            record.update_columns(
+              namespace_id: issue.project.project_namespace_id,
+              organization_id: organization.id
+            )
+          end
+        end
+
+        it 'still saves when the write does not touch a sharding key' do
+          record = described_class.find(note.id)
+
+          expect(record.update(note: 'edited')).to be(true)
+        end
+
+        it 'still saves when validation runs twice on the same instance' do
+          record = described_class.find(note.id)
+          record.note = 'edited'
+
+          expect(record.valid?).to be(true)
+          expect(record.save).to be(true)
+        end
+
+        it 'rejects the write when the caller assigns a sharding key', :aggregate_failures do
+          record = described_class.find(note.id)
+          record.organization_id = create(:organization).id
+
+          expect(record).not_to be_valid
+          expect(record.errors.full_messages).to include(error_message)
+        end
+
+        it 'accepts the write when the caller reduces it to a single key' do
+          record = described_class.find(note.id)
+          record.namespace_id = nil
+          record.organization_id = nil
+
+          expect(record).to be_valid
+        end
+      end
+
+      context 'when an update introduces a second sharding key' do
+        let_it_be_with_reload(:single_key_note) { create(:note, noteable: issue, project: issue.project) }
+
+        it 'rejects the write', :aggregate_failures do
+          single_key_note.organization_id = organization.id
+
+          expect(single_key_note).not_to be_valid
+          expect(single_key_note.errors.full_messages).to include(error_message)
+        end
+      end
+    end
+
     describe '#save_markdown' do
       let_it_be(:merge_request) { create(:merge_request) }
 

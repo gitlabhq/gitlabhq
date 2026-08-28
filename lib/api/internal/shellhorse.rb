@@ -72,14 +72,6 @@ module API
               break response_with_status(code: 200, success: false, message: "No git audit event needed")
             end
 
-            check_result = access_check_result
-            break check_result if unsuccessful_response?(check_result)
-
-            unless check_result.is_a?(::Gitlab::GitAccessResult::Success)
-              break response_with_status(code: 500, success: false,
-                message: ::API::Helpers::InternalHelpers::UNKNOWN_CHECK_RESULT_ERROR)
-            end
-
             audit_message = {
               protocol: params[:protocol],
               action: params[:action],

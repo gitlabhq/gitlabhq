@@ -41,7 +41,8 @@ RSpec.describe Gitlab::Import::Errors, feature_category: :importers do
           "Project does not match noteable project",
           "User can't be blank",
           "Name is not a valid emoji name",
-          "Exactly one of namespace, organization must be present"
+          "Exactly one of namespace, organization must be present",
+          "Exactly one of namespace_id, project_id, organization_id must be present"
         )
     end
   end

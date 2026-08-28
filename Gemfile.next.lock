@@ -407,7 +407,7 @@ GEM
     asciidoctor-plantuml (0.0.16)
       asciidoctor (>= 2.0.17, < 3.0.0)
     ast (2.4.3)
-    async (2.39.0)
+    async (2.42.0)
       console (~> 1.29)
       fiber-annotation
       io-event (~> 1.11)
@@ -2429,7 +2429,7 @@ DEPENDENCIES
   asciidoctor-include-ext (~> 0.4.0)
   asciidoctor-kroki (~> 0.10.0)
   asciidoctor-plantuml (~> 0.0.16)
-  async (~> 2.39.0)
+  async (~> 2.42.0)
   atlassian-jwt (~> 0.2.1)
   attr_encrypted (~> 4.2)
   auto_freeze!
@@ -2838,7 +2838,7 @@ CHECKSUMS
   asciidoctor-kroki (0.10.0) sha256=8e4225d88f120e2e7b5d3f5ddb67c5e69496d7344a16c57db5036ac900123062
   asciidoctor-plantuml (0.0.16) sha256=407e47cd1186ded5ccc75f0c812e5524c26c571d542247c5132abb8f47bd1793
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
-  async (2.39.0) sha256=df18730073f2bbb45788077dfa20cb365ecc1b9453969f44de6796b5191a00aa
+  async (2.42.0) sha256=536078293b8c95d5b5679fa01bf7d2458bcc65cd46dec2c4cb3580feaeb965c6
   atlassian-jwt (0.2.1) sha256=2fd2d87418773f2e140c038cb22e049069708aff2bd0a423a7e1740574e97823
   attr_encrypted (4.2.0) sha256=7e5c80159e6e38ed40dc4e2e65c4f57234fe1f376bddc40c8b773bfb9b81ad51
   attr_required (1.0.2) sha256=f0ebfc56b35e874f4d0ae799066dbc1f81efefe2364ca3803dc9ea6a4de6cb99

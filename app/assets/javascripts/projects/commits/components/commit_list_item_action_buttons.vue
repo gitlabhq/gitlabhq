@@ -76,7 +76,7 @@ export default {
       :is-collapsed="isCollapsed"
       :loading="isLoading"
       :anchor-id="anchorId"
-      :accessible-label="commit.titleHtml"
+      :accessible-label="commit.title"
       @click="$emit('click')"
     />
   </div>
