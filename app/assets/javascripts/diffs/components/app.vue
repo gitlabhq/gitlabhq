@@ -498,8 +498,8 @@ export default {
       notesEventHub.$once('fetchDiffData', this.fetchData);
       notesEventHub.$on('refetchDiffData', this.refetchDiffData);
       notesEventHub.$on('fetchedNotesData', this.rereadNoteHash);
-      notesEventHub.$on('noteFormAddToReview', this.handleReviewTracking);
-      notesEventHub.$on('noteFormStartReview', this.handleReviewTracking);
+      notesEventHub.$on('note-form-add-to-review', this.handleReviewTracking);
+      notesEventHub.$on('note-form-start-review', this.handleReviewTracking);
       diffsEventHub.$on('diffFilesModified', this.setDiscussions);
       diffsEventHub.$on('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$on('set-file-active', this.setFileActive);
@@ -511,8 +511,8 @@ export default {
       diffsEventHub.$off(EVT_MR_PREPARED, this.fetchData);
       diffsEventHub.$off('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$off('diffFilesModified', this.setDiscussions);
-      notesEventHub.$off('noteFormStartReview', this.handleReviewTracking);
-      notesEventHub.$off('noteFormAddToReview', this.handleReviewTracking);
+      notesEventHub.$off('note-form-start-review', this.handleReviewTracking);
+      notesEventHub.$off('note-form-add-to-review', this.handleReviewTracking);
       notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
@@ -767,8 +767,8 @@ export default {
     },
     handleReviewTracking(event) {
       const trackingTypes = {
-        noteFormStartReview: 'merge_request_click_start_review_on_changes_tab',
-        noteFormAddToReview: 'merge_request_click_add_to_review_on_changes_tab',
+        'note-form-start-review': 'merge_request_click_start_review_on_changes_tab',
+        'note-form-add-to-review': 'merge_request_click_add_to_review_on_changes_tab',
       };
 
       if (this.shouldShow && trackingTypes[event.name]) {

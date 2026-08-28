@@ -3,6 +3,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { GlButton, GlSprintf, GlLink, GlFormCheckbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
@@ -137,7 +138,7 @@ describe('NoteForm', () => {
         'keydown',
         new KeyboardEvent('keydown', { key: ENTER_KEY, shiftKey, metaKey, ctrlKey }),
       );
-      await nextTick();
+      await waitForPromises();
       expect(defaultProps.saveNote).toHaveBeenCalledWith('edit', false);
       expect(trackSavedUsingEditor).toHaveBeenCalledWith(
         true,
@@ -364,6 +365,20 @@ describe('NoteForm', () => {
       });
     });
 
+    it.each`
+      rejection                                                                             | message
+      ${undefined}                                                                          | ${COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK}
+      ${{ status: HTTP_STATUS_UNPROCESSABLE_ENTITY, data: { errors: 'Note is too long' } }} | ${'Comment could not be submitted: note is too long.'}
+    `('shows an alert when the save rejects with $rejection', async ({ rejection, message }) => {
+      const saveNote = jest.fn().mockRejectedValue(rejection);
+      createComponent({ saveNote, noteBody: 'test' });
+
+      findSaveButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith(expect.objectContaining({ message: [message] }));
+    });
+
     it('shows default error when no specific error message', async () => {
       const saveNote = jest.fn().mockRejectedValue({ response: null });
       createComponent({ saveNote, noteBody: 'test' });
@@ -382,6 +397,19 @@ describe('NoteForm', () => {
 
   describe('draft review support', () => {
     const saveDraft = jest.fn().mockResolvedValue();
+    const editorStub = {
+      MarkdownEditor: stubComponent(MarkdownEditor, {
+        template: '<div></div>',
+        computed: {
+          isContentEditorActive: () => false,
+        },
+      }),
+    };
+    const pressCmdEnter = () =>
+      findEditor().vm.$emit(
+        'keydown',
+        new KeyboardEvent('keydown', { key: ENTER_KEY, metaKey: true }),
+      );
 
     const findAddToReviewButton = () => wrapper.findComponentByTestId('add-to-review-button');
     const findCommentButton = () => wrapper.findComponentByTestId('reply-comment-button');
@@ -461,6 +489,45 @@ describe('NoteForm', () => {
         await nextTick();
         expect(saveDraft).toHaveBeenCalledWith('draft text', false);
         expect(defaultProps.saveNote).not.toHaveBeenCalled();
+      });
+
+      it.each(['saveNote', 'saveDraft'])(
+        'keeps the text and the autosave draft when %s fails on cmd+enter',
+        async (handler) => {
+          const rejecting = jest.fn().mockRejectedValue({ response: null });
+          createComponent(
+            { noteBody: 'draft text', autosaveKey: 'key', [handler]: rejecting },
+            undefined,
+            editorStub,
+          );
+
+          pressCmdEnter();
+          await waitForPromises();
+
+          expect(rejecting).toHaveBeenCalledWith('draft text', false);
+          expect(findEditor().props('value')).toBe('draft text');
+          expect(clearDraft).not.toHaveBeenCalled();
+          expect(findEditor().props('disabled')).toBe(false);
+        },
+      );
+
+      it('submits once when cmd+enter is pressed twice during a request', async () => {
+        let resolveSave;
+        const pendingSave = jest.fn(
+          () =>
+            new Promise((resolve) => {
+              resolveSave = resolve;
+            }),
+        );
+        createComponent({ saveDraft: pendingSave, noteBody: 'draft text' }, undefined, editorStub);
+
+        pressCmdEnter();
+        await nextTick();
+        pressCmdEnter();
+        resolveSave();
+        await waitForPromises();
+
+        expect(pendingSave).toHaveBeenCalledTimes(1);
       });
 
       it('shows alert on draft save failure', async () => {

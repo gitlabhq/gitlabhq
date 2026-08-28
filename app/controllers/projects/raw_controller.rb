@@ -23,7 +23,7 @@ class Projects::RawController < Projects::ApplicationController
   def show
     @blob = @repository.blob_at(ref, @path, limit: Gitlab::Git::Blob::LFS_POINTER_MAX_SIZE)
 
-    send_blob(@repository, @blob, inline: (params[:inline] != 'false'), allow_caching:
+    send_blob(@repository, @blob, inline: (params.permit(:inline)[:inline] != 'false'), allow_caching:
 ::Users::Anonymous.can?(:read_code, @project))
   end
 

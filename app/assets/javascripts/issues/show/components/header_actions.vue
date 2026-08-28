@@ -226,10 +226,10 @@ export default {
     },
   },
   created() {
-    eventHub.$on('toggle.issuable.state', this.toggleIssueState);
+    eventHub.$on('toggle-issuable-state', this.toggleIssueState);
   },
   beforeDestroy() {
-    eventHub.$off('toggle.issuable.state', this.toggleIssueState);
+    eventHub.$off('toggle-issuable-state', this.toggleIssueState);
   },
   methods: {
     ...mapActions(['toggleStateButtonLoading']),

@@ -11,7 +11,6 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { createAlert } from '~/alert';
 
-import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -243,17 +242,13 @@ describe('NoteableNote', () => {
       expect(wrapper.emitted('cancel-editing')).toStrictEqual([[]]);
     });
 
-    it('shows alert on API failure', async () => {
+    it('propagates API failure to the form', async () => {
       store.saveNote.mockRejectedValue(new Error('fail'));
 
       createComponent({ note: createNote({ isEditing: true }) });
-      await findNoteBody().props('saveNote')(noteText);
 
-      expect(createAlert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: UPDATE_COMMENT_FORM.defaultError,
-        }),
-      );
+      await expect(findNoteBody().props('saveNote')(noteText)).rejects.toThrow('fail');
+      expect(wrapper.emitted('cancel-editing')).toBe(undefined);
     });
   });
 

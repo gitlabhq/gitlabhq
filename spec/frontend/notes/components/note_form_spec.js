@@ -364,8 +364,8 @@ describe('issue_note_form component', () => {
 
         findAddToStartReviewButton().trigger('click');
 
-        expect(notesEventHub.$emit).toHaveBeenCalledWith('noteFormAddToReview', {
-          name: 'noteFormAddToReview',
+        expect(notesEventHub.$emit).toHaveBeenCalledWith('note-form-add-to-review', {
+          name: 'note-form-add-to-review',
         });
       });
 
@@ -378,8 +378,8 @@ describe('issue_note_form component', () => {
 
         findAddToStartReviewButton().trigger('click');
 
-        expect(notesEventHub.$emit).toHaveBeenCalledWith('noteFormStartReview', {
-          name: 'noteFormStartReview',
+        expect(notesEventHub.$emit).toHaveBeenCalledWith('note-form-start-review', {
+          name: 'note-form-start-review',
         });
       });
     });

@@ -113,8 +113,10 @@ module Resolvers
       end
     end
 
+    # Resolver-backed fields compute their complexity from `resolver_complexity` and the
+    # connection multiplier, so we return `nil` rather than a number here.
     def self.complexity
-      0
+      nil
     end
 
     def self.resolver_complexity(args, child_complexity:)

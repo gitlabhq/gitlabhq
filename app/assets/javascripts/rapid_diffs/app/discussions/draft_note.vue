@@ -4,7 +4,6 @@ import { gfm } from '~/vue_shared/directives/gfm';
 import { __ } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { createAlert } from '~/alert';
-import { updateNoteErrorMessage } from '~/notes/utils';
 import NoteHeader from './note_header.vue';
 import NoteBody from './note_body.vue';
 
@@ -59,11 +58,6 @@ export default {
       try {
         await this.store.updateDraft({ note: this.draft, noteText });
         this.store.setEditingMode(this.draft, false);
-      } catch (error) {
-        createAlert({
-          message: updateNoteErrorMessage(error),
-          parent: this.$el,
-        });
       } finally {
         this.isSaving = false;
       }

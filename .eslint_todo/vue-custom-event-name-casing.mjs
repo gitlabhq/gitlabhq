@@ -3,7 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/notes/components/comment_form.vue',
     'app/assets/javascripts/work_items/components/design_management/design_preview/design_sidebar.vue',
     'ee/app/assets/javascripts/test_case_show/components/test_case_show_root.vue',
   ],

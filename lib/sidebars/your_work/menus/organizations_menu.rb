@@ -22,7 +22,7 @@ module Sidebars
         override :render?
         def render?
           return false unless context.current_user
-          return false unless Feature.enabled?(:ui_for_organizations, context.current_user)
+          return false unless ::Organizations::Release.enabled?(:your_work_sidebar_org_menu_item, context.current_user)
 
           return context.current_user.has_active_non_default_organization? if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- use Gitlab.com? for now to keep simple. May refactor to SaaS feature in the future
 

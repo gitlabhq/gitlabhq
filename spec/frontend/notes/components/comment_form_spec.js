@@ -265,9 +265,9 @@ describe('issue_comment_form component', () => {
       it('should toggle issue state when no note', async () => {
         mountComponent({ mountFunction: mountExtended });
         jest.spyOn(eventHub, '$emit');
-        expect(eventHub.$emit).not.toHaveBeenCalledWith('toggle.issuable.state');
+        expect(eventHub.$emit).not.toHaveBeenCalledWith('toggle-issuable-state');
         await findCloseReopenButton().trigger('click');
-        expect(eventHub.$emit).toHaveBeenCalledWith('toggle.issuable.state');
+        expect(eventHub.$emit).toHaveBeenCalledWith('toggle-issuable-state');
       });
 
       it('should disable action button while submitting', async () => {
@@ -409,8 +409,8 @@ describe('issue_comment_form component', () => {
 
               await waitForPromises();
 
-              expect(eventHub.$emit).toHaveBeenCalledWith('noteFormAddToReview', {
-                name: 'noteFormAddToReview',
+              expect(eventHub.$emit).toHaveBeenCalledWith('note-form-add-to-review', {
+                name: 'note-form-add-to-review',
               });
             });
 
@@ -572,7 +572,7 @@ describe('issue_comment_form component', () => {
 
             findCloseReopenButton().trigger('click');
 
-            expect(eventHub.$emit).toHaveBeenCalledWith('toggle.issuable.state');
+            expect(eventHub.$emit).toHaveBeenCalledWith('toggle-issuable-state');
           });
         });
 

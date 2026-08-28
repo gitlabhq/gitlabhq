@@ -11,6 +11,8 @@ module Types
         ::Types::WorkItems::WidgetTypeEnum,
         null: true,
         description: 'Widget type.',
+        # Resolved from the already-loaded widget, so it costs nothing to return.
+        complexity: 0,
         scopes: [:api, :read_api, :ai_workflows]
 
       # Whenever a new widget is added make sure to update the spec to avoid N + 1 queries in

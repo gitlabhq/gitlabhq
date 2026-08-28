@@ -183,6 +183,21 @@ describe('SingleDimensionColumnChart', () => {
     });
   });
 
+  describe('with 1 metric and stacked=true', () => {
+    beforeEach(() => {
+      createComponent({ stacked: true });
+    });
+
+    it('renders GlColumnChart, since a single series has nothing to stack against', () => {
+      expect(findColumnChart().exists()).toBe(true);
+      expect(findStackedChart().exists()).toBe(false);
+    });
+
+    it('labels the y-axis with the metric name', () => {
+      expect(findColumnChart().props('yAxisTitle')).toBe('Total count');
+    });
+  });
+
   describe('with 2 metrics and stacked=true', () => {
     beforeEach(() => {
       createComponent({ metrics: [TOTAL_COUNT, ACCEPTANCE_RATE], stacked: true });

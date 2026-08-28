@@ -22851,7 +22851,7 @@
           "fields": [
             {
               "name": "agents",
-              "description": "Distinct AI agents with sessions in the timeframe.",
+              "description": "Distinct AI agent instances with sessions in the timeframe. Chat conversations are not counted.",
               "args": [],
               "type": {
                 "kind": "OBJECT",
@@ -22863,7 +22863,7 @@
             },
             {
               "name": "sessions",
-              "description": "AI agent sessions in the timeframe.",
+              "description": "AI sessions in the timeframe, including Duo Chat conversations.",
               "args": [],
               "type": {
                 "kind": "OBJECT",

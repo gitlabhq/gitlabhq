@@ -3,6 +3,7 @@ import { Emitter } from 'monaco-editor';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import EditBlob from '~/blob_edit/edit_blob';
+import { BLOB_EDITOR_ERROR } from '~/blob_edit/constants';
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import { FileTemplateExtension } from '~/editor/extensions/source_editor_file_template_ext';
 import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markdown_ext';
@@ -11,6 +12,7 @@ import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_edito
 import { ToolbarExtension } from '~/editor/extensions/source_editor_toolbar_ext';
 import SourceEditor from '~/editor/source_editor';
 import axios from '~/lib/utils/axios_utils';
+import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 import { TEST_HOST } from 'helpers/test_constants';
 import {
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
@@ -31,6 +33,7 @@ jest.mock('~/editor/extensions/source_editor_markdown_livepreview_ext');
 jest.mock('~/editor/extensions/source_editor_toolbar_ext');
 jest.mock('~/editor/extensions/source_editor_security_policy_schema_ext');
 jest.mock('~/lib/utils/url_utility');
+jest.mock('~/lib/utils/text_markdown');
 jest.mock('~/alert');
 jest.mock('~/vue_shared/utils/dynamic_height', () => ({
   createDynamicHeightManager: jest.fn().mockReturnValue({
@@ -61,18 +64,19 @@ describe('Blob Editing', () => {
   const unuseMock = jest.fn();
   const valueMock = 'test value';
   const getValueMock = jest.fn().mockReturnValue('test value');
-  const emitter = new Emitter();
+  let emitter;
   const mockInstance = {
     use: useMock,
     unuse: unuseMock,
     setValue: jest.fn(),
     getValue: getValueMock,
     focus: jest.fn(),
-    onDidChangeModelLanguage: emitter.event,
     updateModelLanguage: jest.fn(),
   };
 
   beforeEach(() => {
+    emitter = new Emitter();
+    mockInstance.onDidChangeModelLanguage = emitter.event;
     mock = new MockAdapter(axios);
     setHTMLFixture(`
       <div class="js-edit-mode-pane"></div>
@@ -139,32 +143,138 @@ describe('Blob Editing', () => {
   });
 
   describe('Markdown', () => {
+    const countMarkdownExtensionLoads = () =>
+      useMock.mock.calls.filter(
+        ([extensions]) =>
+          Array.isArray(extensions) &&
+          extensions.some(({ definition }) => definition === EditorMarkdownExtension),
+      ).length;
+
     it('does not load MarkdownExtensions by default', async () => {
       await initEditor();
+      expect(countMarkdownExtensionLoads()).toBe(0);
       expect(EditorMarkdownExtension).not.toHaveBeenCalled();
       expect(EditorMarkdownPreviewExtension).not.toHaveBeenCalled();
     });
 
     it('loads MarkdownExtension only for the markdown files', async () => {
       await initEditor({ isMarkdown: true });
-      expect(useMock).toHaveBeenCalledTimes(2);
-      expect(useMock.mock.calls[1]).toEqual([markdownExtensions]);
+      expect(countMarkdownExtensionLoads()).toBe(1);
+      expect(useMock).toHaveBeenCalledWith(markdownExtensions);
     });
 
     it('correctly handles switching from markdown and un-uses markdown extensions', async () => {
       await initEditor({ isMarkdown: true });
-      expect(unuseMock).not.toHaveBeenCalled();
+      expect(countMarkdownExtensionLoads()).toBe(1);
       await emitter.fire({ newLanguage: 'plaintext', oldLanguage: 'markdown' });
       expect(unuseMock).toHaveBeenCalledWith(markdownExtensions);
     });
 
     it('correctly handles switching from non-markdown to markdown extensions', async () => {
-      const mdSpy = jest.fn();
       await initEditor();
-      blobInstance.fetchMarkdownExtension = mdSpy;
-      expect(mdSpy).not.toHaveBeenCalled();
+      expect(countMarkdownExtensionLoads()).toBe(0);
       await emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
-      expect(mdSpy).toHaveBeenCalled();
+      await waitForPromises();
+      expect(countMarkdownExtensionLoads()).toBe(1);
+    });
+
+    it('does not load markdown extensions again when they are already loaded', async () => {
+      const loadSpy = jest.spyOn(EditBlob.prototype, 'loadMarkdownExtensions');
+      await initEditor({ isMarkdown: true });
+      expect(countMarkdownExtensionLoads()).toBe(1);
+      expect(addEditorMarkdownListeners).toHaveBeenCalledTimes(1);
+
+      await emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+      await waitForPromises();
+
+      expect(loadSpy).toHaveBeenCalledTimes(1);
+      expect(countMarkdownExtensionLoads()).toBe(1);
+      expect(addEditorMarkdownListeners).toHaveBeenCalledTimes(1);
+    });
+
+    it('reloads markdown extensions after they have been unloaded', async () => {
+      await initEditor({ isMarkdown: true });
+      expect(countMarkdownExtensionLoads()).toBe(1);
+
+      await emitter.fire({ newLanguage: 'plaintext', oldLanguage: 'markdown' });
+      await emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+      await waitForPromises();
+
+      expect(countMarkdownExtensionLoads()).toBe(2);
+    });
+
+    it('does not start a second load while one is in progress', async () => {
+      const loadSpy = jest.spyOn(EditBlob.prototype, 'loadMarkdownExtensions');
+      await initEditor();
+      expect(countMarkdownExtensionLoads()).toBe(0);
+
+      // Fire twice without waiting, so the second event arrives while
+      // the first load is still in progress.
+      emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+      emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+      await waitForPromises();
+
+      expect(loadSpy).toHaveBeenCalledTimes(1);
+      expect(countMarkdownExtensionLoads()).toBe(1);
+    });
+
+    it('does not use markdown extensions when switched away during load, and reloads them after', async () => {
+      await initEditor();
+
+      // Switch to markdown and away again without waiting,
+      // so the second event arrives while the extensions are still loading.
+      emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+      emitter.fire({ newLanguage: 'plaintext', oldLanguage: 'markdown' });
+      await waitForPromises();
+
+      expect(unuseMock).not.toHaveBeenCalled();
+      expect(addEditorMarkdownListeners).not.toHaveBeenCalled();
+      expect(countMarkdownExtensionLoads()).toBe(0);
+
+      // Switching back after the stale load was skipped loads them again.
+      await emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+      await waitForPromises();
+
+      expect(countMarkdownExtensionLoads()).toBe(1);
+    });
+
+    it('uses markdown extensions only once when switched back to markdown during load', async () => {
+      await initEditor();
+
+      // Switch to markdown, away, and back again without waiting,
+      // so both loads are in progress at the same time.
+      emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+      emitter.fire({ newLanguage: 'plaintext', oldLanguage: 'markdown' });
+      emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+      await waitForPromises();
+
+      expect(countMarkdownExtensionLoads()).toBe(1);
+    });
+
+    // Verified via addEditorMarkdownListeners: use() calls are recorded
+    // even when they throw, so countMarkdownExtensionLoads cannot
+    // distinguish a failed load from a successful one.
+    it('recovers after a failed load', async () => {
+      await initEditor();
+      useMock.mockImplementationOnce(() => {
+        throw new Error('loading failed');
+      });
+
+      await emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledTimes(1);
+      expect(createAlert).toHaveBeenCalledWith({
+        message: BLOB_EDITOR_ERROR,
+        error: expect.any(Error),
+        captureError: true,
+      });
+      expect(addEditorMarkdownListeners).not.toHaveBeenCalled();
+
+      await emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+      await waitForPromises();
+
+      expect(addEditorMarkdownListeners).toHaveBeenCalledTimes(1);
     });
   });
 

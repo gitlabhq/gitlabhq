@@ -151,7 +151,9 @@ module Types
     end
 
     def field_complexity(resolver_class, current)
-      return current if current.present? && current > 0
+      # `complexity: 0` marks a field as free, for pure accessors over data the parent
+      # already loaded.
+      return current if current.present? && current >= 0
 
       if resolver_class
         field_resolver_complexity

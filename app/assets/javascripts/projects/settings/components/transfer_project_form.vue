@@ -23,11 +23,19 @@ export default {
       required: false,
       default: true,
     },
+    targetFormId: {
+      type: String,
+      required: true,
+    },
+    targetHiddenInputId: {
+      type: String,
+      required: true,
+    },
   },
-  emits: ['confirm', 'select-transfer-location'],
   data() {
     return {
       selectedTransferLocation: null,
+      confirmLoading: false,
     };
   },
 
@@ -37,12 +45,27 @@ export default {
     },
   },
   watch: {
-    selectedTransferLocation(selectedTransferLocation) {
-      this.$emit('select-transfer-location', selectedTransferLocation.id);
+    selectedTransferLocation({ id }) {
+      const hiddenInput = document.getElementById(this.targetHiddenInputId);
+      if (hiddenInput) hiddenInput.value = id;
     },
   },
   methods: {
     getTransferLocations,
+    onConfirm(event) {
+      const form = document.getElementById(this.targetFormId);
+      if (!form) return;
+
+      // Keep the modal open with the confirm button in its loading state while
+      // the synchronous form submit runs; the transfer can take a while.
+      event?.preventDefault();
+      this.confirmLoading = true;
+      try {
+        form.submit();
+      } catch {
+        this.confirmLoading = false;
+      }
+    },
   },
 };
 </script>
@@ -58,8 +81,9 @@ export default {
       :disabled="!hasSelectedNamespace"
       :phrase="confirmationPhrase"
       :button-text="confirmButtonText"
+      :confirm-loading="confirmLoading"
       button-testid="transfer-project-button"
-      @confirm="$emit('confirm')"
+      @confirm="onConfirm"
     />
   </div>
 </template>

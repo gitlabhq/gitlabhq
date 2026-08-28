@@ -41,6 +41,11 @@ export default {
       required: false,
       default: 'danger',
     },
+    confirmLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['confirm'],
   modalId: CONFIRM_DANGER_MODAL_ID,
@@ -59,7 +64,8 @@ export default {
     <confirm-danger-modal
       :modal-id="$options.modalId"
       :phrase="phrase"
-      @confirm="$emit('confirm')"
+      :confirm-loading="confirmLoading"
+      @confirm="$emit('confirm', $event)"
     />
   </div>
 </template>

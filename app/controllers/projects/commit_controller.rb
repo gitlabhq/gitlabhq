@@ -192,6 +192,11 @@ class Projects::CommitController < Projects::ApplicationController
 
   private
 
+  # Keys RapidDiffs::BasePresenter reads; :line drives linked-line unfolding.
+  def rapid_diffs_request_params
+    params.permit(:old_path, :new_path, :file_path, :line)
+  end
+
   def rapid_diffs_presenter
     return if @commit.nil?
 
@@ -199,7 +204,7 @@ class Projects::CommitController < Projects::ApplicationController
       @commit,
       diff_view: diff_view,
       diff_options: commit_diff_options,
-      request_params: params,
+      request_params: rapid_diffs_request_params,
       current_user: current_user,
       environment: define_environment
     )
@@ -239,7 +244,7 @@ class Projects::CommitController < Projects::ApplicationController
       :note,
       position: [:old_path, :new_path, :old_line, :new_line, :position_type, :x, :y, :width, :height]
     ).tap do |create_params|
-      enrich_note_params(create_params, params[:in_reply_to_discussion_id])
+      enrich_note_params(create_params, params.permit(:in_reply_to_discussion_id)[:in_reply_to_discussion_id])
     end
   end
 
@@ -281,7 +286,7 @@ class Projects::CommitController < Projects::ApplicationController
 
   def commit_diff_options
     opts = diff_options
-    opts[:ignore_whitespace_change] = true if params[:format] == 'diff'
+    opts[:ignore_whitespace_change] = true if params.permit(:format)[:format] == 'diff'
     opts[:use_extra_viewer_as_main] = false
     opts
   end

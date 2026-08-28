@@ -92468,6 +92468,9 @@ msgstr ""
 msgid "WorkItem|Pink"
 msgstr ""
 
+msgid "WorkItem|Plan"
+msgstr ""
+
 msgid "WorkItem|Please provide a name for the lifecycle."
 msgstr ""
 
@@ -92724,6 +92727,9 @@ msgid "WorkItem|Something went wrong while copying the %{workItemType} reference
 msgstr ""
 
 msgid "WorkItem|Something went wrong while creating the view"
+msgstr ""
+
+msgid "WorkItem|Something went wrong while enabling planning for this item. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while fetching items. Please try again."

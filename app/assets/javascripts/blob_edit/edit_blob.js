@@ -29,7 +29,20 @@ export default class EditBlob {
     this.initSoftWrap();
   }
 
-  async fetchMarkdownExtension() {
+  installMarkdownExtensions() {
+    this.markdownExtensionsPromise ??= this.loadMarkdownExtensions();
+    return this.markdownExtensionsPromise;
+  }
+
+  uninstallMarkdownExtensions() {
+    if (this.markdownExtensions) {
+      this.editor.unuse(this.markdownExtensions);
+      this.markdownExtensions = null;
+    }
+    this.markdownExtensionsPromise = null;
+  }
+
+  async loadMarkdownExtensions() {
     try {
       const [
         { EditorMarkdownExtension: MarkdownExtension },
@@ -38,6 +51,14 @@ export default class EditBlob {
         import('~/editor/extensions/source_editor_markdown_ext'),
         import('~/editor/extensions/source_editor_markdown_livepreview_ext'),
       ]);
+
+      // The file may have been renamed away from markdown
+      // while the extensions were loading (cache cleared),
+      // or renamed back so that another load has already installed them.
+      if (!this.markdownExtensionsPromise || this.markdownExtensions) {
+        return;
+      }
+
       this.markdownExtensions = this.editor.use([
         { definition: MarkdownExtension },
         {
@@ -45,12 +66,17 @@ export default class EditBlob {
           setupOptions: { previewMarkdownPath: this.options.previewMarkdownPath },
         },
       ]);
+      addEditorMarkdownListeners(this.editor);
     } catch (e) {
-      createAlert({
-        message: `${BLOB_EDITOR_ERROR}: ${e}`,
-      });
+      // No load identity check: the promise seen here is not from a load that
+      // could still succeed. Loads of the same chunks share one in-flight request
+      // and fail together, and this rejection handler (microtask) runs before
+      // any rename event (macrotask) can start a newer load.
+      if (this.markdownExtensionsPromise) {
+        createAlert({ message: BLOB_EDITOR_ERROR, error: e, captureError: true });
+        this.markdownExtensionsPromise = null;
+      }
     }
-    addEditorMarkdownListeners(this.editor);
   }
 
   async fetchSecurityPolicyExtension(projectPath) {
@@ -100,7 +126,7 @@ export default class EditBlob {
     ]);
 
     if (this.isMarkdown) {
-      this.fetchMarkdownExtension();
+      this.installMarkdownExtensions();
     }
 
     if (this.options.filePath === '.gitlab/security-policies/policy.yml') {
@@ -131,9 +157,9 @@ export default class EditBlob {
     // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneCodeEditor.html#onDidChangeModelLanguage
     this.editor.onDidChangeModelLanguage(({ newLanguage = '', oldLanguage = '' }) => {
       if (newLanguage === 'markdown') {
-        this.fetchMarkdownExtension();
+        this.installMarkdownExtensions();
       } else if (oldLanguage === 'markdown') {
-        this.editor.unuse(this.markdownExtensions);
+        this.uninstallMarkdownExtensions();
       }
     });
   }

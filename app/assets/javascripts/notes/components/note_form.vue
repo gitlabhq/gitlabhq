@@ -370,7 +370,7 @@ export default {
       );
     },
     handleAddToReview({ shouldMeasureTemperature = true } = {}) {
-      const clickType = this.hasDrafts ? 'noteFormAddToReview' : 'noteFormStartReview';
+      const clickType = this.hasDrafts ? 'note-form-add-to-review' : 'note-form-start-review';
       // check if draft should resolve thread
       const shouldResolve =
         (this.discussionResolved && !this.isUnresolving) ||

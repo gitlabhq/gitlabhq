@@ -4,9 +4,6 @@ import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue'
 import BaseImageDiffOverlay from '~/diffs/components/base_image_diff_overlay.vue';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
 import { clearDraft } from '~/lib/utils/autosave';
-import { createAlert } from '~/alert';
-import { sprintf } from '~/locale';
-import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
 
 export default {
   name: 'ImageDiffViewerWithDiscussions',
@@ -65,32 +62,21 @@ export default {
       this.commentForm = { noteBody: this.commentForm ? this.commentForm.noteBody : '', ...data };
     },
     async saveNote(noteBody) {
-      try {
-        await this.store.createImageDiscussion({
-          position: {
-            ...this.diffRefs,
-            old_path: this.oldPath,
-            new_path: this.newPath,
-            position_type: 'image',
-            width: this.commentForm.width,
-            height: this.commentForm.height,
-            x: this.commentForm.x,
-            y: this.commentForm.y,
-          },
-          noteBody,
-        });
-        clearDraft(this.autosaveKey);
-        this.commentForm = null;
-      } catch (e) {
-        const reason = e.response?.data?.errors;
-        const errorMessage = reason
-          ? sprintf(SAVING_THE_COMMENT_FAILED, { reason })
-          : SOMETHING_WENT_WRONG;
-        createAlert({
-          message: errorMessage,
-          parent: this.$refs.formRoot,
-        });
-      }
+      await this.store.createImageDiscussion({
+        position: {
+          ...this.diffRefs,
+          old_path: this.oldPath,
+          new_path: this.newPath,
+          position_type: 'image',
+          width: this.commentForm.width,
+          height: this.commentForm.height,
+          x: this.commentForm.x,
+          y: this.commentForm.y,
+        },
+        noteBody,
+      });
+      clearDraft(this.autosaveKey);
+      this.commentForm = null;
     },
   },
 };
@@ -114,7 +100,7 @@ export default {
       </template>
     </image-viewer>
     <diff-discussions :discussions="discussions" counter-badge-visible />
-    <div v-if="commentForm" ref="formRoot" class="gl-px-5 gl-py-4">
+    <div v-if="commentForm" class="gl-px-5 gl-py-4">
       <note-form
         :autosave-key="autosaveKey"
         autofocus

@@ -40,7 +40,14 @@ describe('Confirm Danger Modal', () => {
     expect(findModalProps()).toMatchObject({
       modalId,
       phrase,
+      confirmLoading: false,
     });
+  });
+
+  it('passes `confirmLoading` prop to the modal', () => {
+    wrapper = createComponent({ confirmLoading: true });
+
+    expect(findModalProps()).toMatchObject({ confirmLoading: true });
   });
 
   it('will disable the button if `disabled=true`', () => {
@@ -59,11 +66,12 @@ describe('Confirm Danger Modal', () => {
     expect(findBtn().attributes('variant')).toBe(buttonVariant);
   });
 
-  it('will emit `confirm` when the modal confirms', () => {
+  it('will emit `confirm` with the modal event when the modal confirms', () => {
     expect(wrapper.emitted('confirm')).toBeUndefined();
 
-    findModal().vm.$emit('confirm');
+    const modalEvent = { preventDefault: jest.fn() };
+    findModal().vm.$emit('confirm', modalEvent);
 
-    expect(wrapper.emitted('confirm')).not.toBeUndefined();
+    expect(wrapper.emitted('confirm')).toEqual([[modalEvent]]);
   });
 });

@@ -47,3 +47,6 @@ flags:
   - name: create_org_from_group_settings
     description: Create an organization for a top-level group from the group settings.
     stage: experimental
+  - name: your_work_sidebar_org_menu_item
+    description: Shows `Organizations` menu item in the `Your work` sidebar.
+    stage: beta

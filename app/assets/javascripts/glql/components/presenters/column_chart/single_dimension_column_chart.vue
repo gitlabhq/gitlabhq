@@ -43,9 +43,10 @@ export default {
   },
   computed: {
     // GlColumnChart renders 1 metric (single series) or 2 metrics on a dual y-axis.
-    // 3+ metrics, or stacking, go through GlStackedColumnChart on a single axis.
+    // 3+ metrics, or stacking 2+, go through GlStackedColumnChart on a single axis.
+    // One metric has nothing to stack against, and would gain an unwanted legend.
     useSingleAxisChart() {
-      return this.stacked || this.metrics.length > 2;
+      return (this.stacked && this.metrics.length > 1) || this.metrics.length > 2;
     },
     primaryBars() {
       return buildSeries(this.data.nodes, this.dimension, this.metrics[0]);

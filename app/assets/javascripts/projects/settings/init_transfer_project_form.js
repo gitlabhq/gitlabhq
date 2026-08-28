@@ -15,8 +15,8 @@ export default () => {
 
   const {
     projectId: resourceId,
-    targetFormId = null,
-    targetHiddenInputId = null,
+    targetFormId,
+    targetHiddenInputId,
     buttonText: confirmButtonText = '',
     phrase: confirmationPhrase = '',
     confirmDangerMessage = '',
@@ -41,16 +41,8 @@ export default () => {
       confirmButtonText,
       confirmationPhrase,
       showUserTransferLocations: parseBoolean(showUserTransferLocations),
-    },
-    events: {
-      'select-transfer-location': (id) => {
-        if (targetHiddenInputId && document.getElementById(targetHiddenInputId)) {
-          document.getElementById(targetHiddenInputId).value = id;
-        }
-      },
-      confirm: () => {
-        if (targetFormId) document.getElementById(targetFormId)?.submit();
-      },
+      targetFormId,
+      targetHiddenInputId,
     },
   });
 };

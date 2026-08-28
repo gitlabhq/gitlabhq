@@ -1,14 +1,20 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { GlButton } from '@gitlab/ui';
+import { stubComponent } from 'helpers/stub_component';
 import DraftNote from '~/rapid_diffs/app/discussions/draft_note.vue';
 import NoteHeader from '~/rapid_diffs/app/discussions/note_header.vue';
 import NoteBody from '~/rapid_diffs/app/discussions/note_body.vue';
+import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import { clearDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { createAlert } from '~/alert';
 import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/alert');
+jest.mock('~/lib/utils/autosave');
 
 describe('DraftNote', () => {
   let wrapper;
@@ -125,12 +131,36 @@ describe('DraftNote', () => {
       expect(store.setEditingMode).toHaveBeenCalledWith(draft, false);
     });
 
-    it('shows alert on save failure', async () => {
+    it('propagates save failure to the form', async () => {
       store.updateDraft.mockRejectedValue(new Error('fail'));
       createComponent(createDraft({ isEditing: true }));
-      await wrapper.findComponent(NoteBody).props('saveNote')('text');
 
-      expect(createAlert).toHaveBeenCalled();
+      await expect(wrapper.findComponent(NoteBody).props('saveNote')('text')).rejects.toThrow(
+        'fail',
+      );
+      expect(store.setEditingMode).not.toHaveBeenCalled();
+    });
+
+    it('keeps the edited text and the autosave draft when the save fails', async () => {
+      store.updateDraft.mockRejectedValue({ response: null });
+      wrapper = mount(DraftNote, {
+        propsData: { draft: createDraft({ id: '1', isEditing: true, note: 'original text' }) },
+        provide: {
+          store,
+          endpoints: { previewMarkdown: '/preview', markdownDocs: '/docs' },
+          noteableType: 'MergeRequest',
+        },
+        stubs: { MarkdownEditor: stubComponent(MarkdownEditor, { template: '<div></div>' }) },
+      });
+      const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
+
+      findMarkdownEditor().vm.$emit('input', 'edited text');
+      await nextTick();
+      wrapper.findComponent(NoteForm).find('[data-testid="reply-comment-button"]').trigger('click');
+      await waitForPromises();
+
+      expect(findMarkdownEditor().props('value')).toBe('edited text');
+      expect(clearDraft).not.toHaveBeenCalled();
     });
 
     it('cancels editing via store', () => {

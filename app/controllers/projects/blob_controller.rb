@@ -97,7 +97,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def update
-    @path = params[:file_path] if params[:file_path].present?
+    @path = permitted_params[:file_path] if permitted_params[:file_path].present?
 
     create_commit(
       Files::UpdateService, success_path: -> { after_edit_path },
@@ -112,7 +112,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def preview
-    @content = params[:content]
+    @content = permitted_params[:content]
 
     if @content.bytesize >= MAX_PREVIEW_CONTENT
       return render json: { errors: ["Preview content too large"] }, status: :payload_too_large
@@ -181,6 +181,15 @@ class Projects::BlobController < Projects::ApplicationController
 
   private
 
+  # Kept separate from the pre-existing diff_params/diff_lines_params, which are passed
+  # whole to Blobs::UnfoldPresenter and so must keep their exact key sets.
+  def permitted_params
+    params.permit(
+      :branch_name, :commit_message, :content, :encoding, :file, :file_name, :file_path,
+      :from_merge_request_iid, :full, :id, :last_commit_sha, :offset, :since, :to
+    )
+  end
+
   attr_reader :branch_name
 
   def blob
@@ -222,7 +231,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def assign_blob_vars
     ref_extractor = ExtractsRef::RefExtractor.new(@project, {})
-    @id = params[:id]
+    @id = permitted_params[:id]
 
     @ref, @path = ref_extractor.extract_ref(@id)
   rescue InvalidPathError
@@ -234,7 +243,7 @@ class Projects::BlobController < Projects::ApplicationController
     from_merge_request = MergeRequestsFinder.new(
       current_user,
       project_id: @project.id
-    ).find_by(iid: params[:from_merge_request_iid])
+    ).find_by(iid: permitted_params[:from_merge_request_iid])
 
     if from_merge_request && @branch_name == @ref
       diffs_project_merge_request_path(from_merge_request.target_project, from_merge_request) +
@@ -255,42 +264,43 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def editor_variables
-    @branch_name = params[:branch_name]
+    @branch_name = permitted_params[:branch_name]
 
     @file_path = fetch_file_path
 
-    params[:content] = params[:file] if params[:file].present?
+    # rubocop:disable Rails/StrongParams -- in-place mutation; strong params syntax would write to a copy
+    params[:content] = permitted_params[:file] if permitted_params[:file].present?
+    # rubocop:enable Rails/StrongParams
 
     @commit_params = {
       file_path: @file_path,
-      commit_message: params[:commit_message],
+      commit_message: permitted_params[:commit_message],
       previous_path: @path,
-      file_content: params[:content],
-      file_content_encoding: params[:encoding],
-      last_commit_sha: params[:last_commit_sha]
+      file_content: permitted_params[:content],
+      file_content_encoding: permitted_params[:encoding],
+      last_commit_sha: permitted_params[:last_commit_sha]
     }
   end
 
   def fetch_file_path
-    file_params = params.permit(:file, :file_name, :file_path)
-
     if action_name.to_s == 'create'
-      file_name = file_params[:file].present? ? file_params[:file].original_filename : file_params[:file_name]
+      uploaded_file = permitted_params[:file]
+      file_name = uploaded_file.present? ? uploaded_file.original_filename : permitted_params[:file_name]
 
       return if file_name.nil?
 
       return File.join(@path, file_name)
     end
 
-    return file_params[:file_path] if file_params[:file_path].present?
+    return permitted_params[:file_path] if permitted_params[:file_path].present?
 
     @path
   end
 
   def validate_diff_params
-    return if params[:full]
+    return if permitted_params[:full]
 
-    head :ok if [:since, :to, :offset].any? { |key| params[key].blank? }
+    head :ok if [:since, :to, :offset].any? { |key| permitted_params[key].blank? }
   end
 
   def set_last_commit_sha

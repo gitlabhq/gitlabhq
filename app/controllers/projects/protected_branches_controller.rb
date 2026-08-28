@@ -22,7 +22,7 @@ class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
   end
 
   def load_protected_ref
-    @protected_ref = @project.protected_branches.find(params[:id])
+    @protected_ref = @project.protected_branches.find(params.permit(:id)[:id])
   end
 
   def access_levels

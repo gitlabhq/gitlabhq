@@ -140,6 +140,25 @@ RSpec.describe Projects::RepositoriesController, feature_category: :source_code_
         expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
       end
 
+      it 'assigns append_sha from the request' do
+        get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master', append_sha: 'true' },
+          format: 'zip'
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:append_sha)).to eq('true')
+      end
+
+      it 'passes the path param through to the archive' do
+        expect(Gitlab::Workhorse).to receive(:send_git_archive)
+          .with(anything, a_hash_including(path: 'files'))
+          .and_call_original
+
+        get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master', path: 'files' },
+          format: 'zip'
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
       it 'prioritizes the id param over the ref param when both are specified' do
         get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'feature', ref: 'feature_conflict' }, format: 'zip'
 

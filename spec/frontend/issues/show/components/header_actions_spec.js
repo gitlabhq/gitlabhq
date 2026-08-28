@@ -470,11 +470,11 @@ describe('HeaderActions component', () => {
     });
   });
 
-  describe('when `toggle.issuable.state` event is emitted', () => {
+  describe('when `toggle-issuable-state` event is emitted', () => {
     it('invokes a method to toggle the issue state', () => {
       wrapper = mountComponent();
 
-      eventHub.$emit('toggle.issuable.state');
+      eventHub.$emit('toggle-issuable-state');
 
       expect(updateIssueMutationResponseHandler).toHaveBeenCalledWith({
         input: {

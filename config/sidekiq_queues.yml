@@ -77,6 +77,8 @@
   - 1
 - - ai_duo_workflows_code_review_publish_comments
   - 1
+- - ai_duo_workflows_code_review_start_review
+  - 1
 - - ai_duo_workflows_code_review_timeout
   - 1
 - - ai_duo_workflows_fetch_namespace_session_credits

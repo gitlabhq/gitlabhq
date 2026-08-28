@@ -249,13 +249,23 @@ distillation runs. To force the first generation, either:
 
 ### A distillation produced wrong or noisy rules
 
-Open a merge request that:
+When the sync merge request is still open, commit the correction to its branch,
+so the fix lands in the same review as the distillation that caused it:
 
-- Tightens the wording in the source documentation, or
-- Adds a baseline file at `.ai/principles/baselines/<slug>.md` that contains
-  the rule you want the agent to follow.
+- Correct `.ai/principles/distilled/<slug>.md` when the source documentation is
+  already clear. Treat the correction as a stopgap and call it out in the merge
+  request, so reviewers know a hand edit sits among generated content. Leave the
+  generated front matter unchanged, because its checksum drives drift detection.
+- Tighten the wording in the source documentation when the distiller could
+  misinterpret it.
+- Add a baseline file at `.ai/principles/baselines/<slug>.md`. For the criteria,
+  see [When to add a baseline rule](#when-to-add-a-baseline-rule).
 
-The next sync run picks up the change.
+A correction to the distilled file fixes that file alone. A truthful correction
+survives future distillations.
+
+When no sync merge request is open, open your own merge request with the same
+changes.
 
 ### I need to revert a bad distillation
 

@@ -291,7 +291,7 @@ export default {
 
         this.note = ''; // Empty textarea while being requested. Repopulate in catch
         if (isDraft) {
-          eventHub.$emit('noteFormAddToReview', { name: 'noteFormAddToReview' });
+          eventHub.$emit('note-form-add-to-review', { name: 'note-form-add-to-review' });
         }
 
         trackSavedUsingEditor(
@@ -333,7 +333,7 @@ export default {
       if (this.isIssue) {
         // We want to invoke the close/reopen logic in the issue header
         // since that is where the blocked-by issues modal logic is also defined
-        eventHub.$emit('toggle.issuable.state');
+        eventHub.$emit('toggle-issuable-state');
         return;
       }
 

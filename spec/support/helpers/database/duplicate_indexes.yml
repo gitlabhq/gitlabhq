@@ -12,9 +12,6 @@ design_management_designs_versions:
   design_management_designs_versions_uniqueness:
   - index_design_management_designs_versions_on_design_id
 duo_workflows_workflows:
-  index_duo_workflows_workflows_project_environment_created_at:
-  - index_duo_workflows_workflows_on_project_id
-duo_workflows_workflows:
   index_duo_workflows_on_user_id_and_updated_at:
   - index_duo_workflows_workflows_on_user_id
 error_tracking_errors:

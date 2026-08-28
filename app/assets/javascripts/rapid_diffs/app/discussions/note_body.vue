@@ -2,6 +2,7 @@
 import { gfm } from '~/vue_shared/directives/gfm';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, sprintf } from '~/locale';
+import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import NoteAttachment from '~/notes/components/note_attachment.vue';
 import NoteEditedText from '~/notes/components/note_edited_text.vue';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
@@ -52,7 +53,7 @@ export default {
     saveNoteErrorMessages: {
       type: Object,
       required: false,
-      default: null,
+      default: () => UPDATE_COMMENT_FORM,
     },
     isFirstNote: {
       type: Boolean,

@@ -48032,11 +48032,9 @@ CREATE INDEX index_duo_workflows_workflows_on_issue_id ON duo_workflows_workflow
 
 CREATE INDEX index_duo_workflows_workflows_on_merge_request_id ON duo_workflows_workflows USING btree (merge_request_id);
 
-CREATE INDEX index_duo_workflows_workflows_on_namespace_id ON duo_workflows_workflows USING btree (namespace_id);
+CREATE INDEX index_duo_workflows_workflows_on_namespace_created_at ON duo_workflows_workflows USING btree (namespace_id, created_at DESC) WHERE (namespace_id IS NOT NULL);
 
-CREATE INDEX index_duo_workflows_workflows_on_namespace_id_created_at ON duo_workflows_workflows USING btree (namespace_id, created_at DESC) WHERE (workflow_definition <> 'chat'::text);
-
-CREATE INDEX index_duo_workflows_workflows_on_project_id ON duo_workflows_workflows USING btree (project_id);
+CREATE INDEX index_duo_workflows_workflows_on_project_created_at ON duo_workflows_workflows USING btree (project_id, created_at DESC) WHERE (project_id IS NOT NULL);
 
 CREATE UNIQUE INDEX index_duo_workflows_workflows_on_project_user_idempotency_key ON duo_workflows_workflows USING btree (project_id, user_id, idempotency_key) WHERE ((idempotency_key IS NOT NULL) AND (project_id IS NOT NULL));
 
@@ -48827,6 +48825,8 @@ CREATE INDEX index_job_artifact_states_failed_verification ON ci_job_artifact_st
 CREATE INDEX index_job_artifact_states_needs_verification ON ci_job_artifact_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
 
 CREATE INDEX index_job_artifact_states_pending_verification ON ci_job_artifact_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
+CREATE INDEX index_job_artifact_states_reverification ON ci_job_artifact_states USING btree (verified_at) WHERE (verification_state = 2);
 
 CREATE UNIQUE INDEX index_job_environments_on_ci_job_id_and_environment_id ON job_environments USING btree (ci_job_id, environment_id);
 

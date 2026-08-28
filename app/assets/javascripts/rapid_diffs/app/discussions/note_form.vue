@@ -173,12 +173,12 @@ export default {
       this.$emit('cancel', shouldConfirm && this.noteBody !== this.editedNoteBody);
     },
     handleKeySubmit(forceUpdate = false) {
+      if (this.isSubmitting) return;
       if (this.saveDraft && !forceUpdate) {
         this.handleDraftSubmit();
       } else {
         this.handleUpdate();
       }
-      this.editedNoteBody = '';
     },
     newResolvedState() {
       return (
@@ -203,7 +203,7 @@ export default {
         clearDraft(this.autosaveKey);
       } catch (error) {
         createAlert({
-          message: getNoteFormErrorMessages(error.response, this.saveNoteErrorMessages),
+          message: getNoteFormErrorMessages(error?.response ?? error, this.saveNoteErrorMessages),
           parent: this.$el,
           error,
         });
@@ -225,7 +225,7 @@ export default {
         clearDraft(this.autosaveKey);
       } catch (error) {
         createAlert({
-          message: getNoteFormErrorMessages(error.response, this.saveNoteErrorMessages),
+          message: getNoteFormErrorMessages(error?.response ?? error, this.saveNoteErrorMessages),
           parent: this.$el,
           error,
         });

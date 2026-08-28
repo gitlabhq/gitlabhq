@@ -280,8 +280,8 @@ export default {
       parentElement.addEventListener('toggleAward', this.handleAward);
     }
 
-    eventHub.$on('noteFormAddToReview', this.handleReviewTracking);
-    eventHub.$on('noteFormStartReview', this.handleReviewTracking);
+    eventHub.$on('note-form-add-to-review', this.handleReviewTracking);
+    eventHub.$on('note-form-start-review', this.handleReviewTracking);
 
     window.addEventListener('hashchange', this.handleHashChanged);
 
@@ -300,8 +300,8 @@ export default {
   beforeDestroy() {
     window.removeEventListener('hashchange', this.handleHashChanged);
     eventHub.$off('notesApp.updateIssuableConfidentiality', this.setConfidentiality);
-    eventHub.$off('noteFormStartReview', this.handleReviewTracking);
-    eventHub.$off('noteFormAddToReview', this.handleReviewTracking);
+    eventHub.$off('note-form-start-review', this.handleReviewTracking);
+    eventHub.$off('note-form-add-to-review', this.handleReviewTracking);
     Mousetrap.unbind(keysFor(ISSUABLE_COMMENT_OR_REPLY));
     const { parentElement } = this.$el;
     if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
@@ -381,8 +381,8 @@ export default {
     },
     handleReviewTracking(event) {
       const types = {
-        noteFormStartReview: 'merge_request_click_start_review_on_overview_tab',
-        noteFormAddToReview: 'merge_request_click_add_to_review_on_overview_tab',
+        'note-form-start-review': 'merge_request_click_start_review_on_overview_tab',
+        'note-form-add-to-review': 'merge_request_click_add_to_review_on_overview_tab',
       };
 
       if (this.shouldShow && window.mrTabs && types[event.name]) {

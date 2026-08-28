@@ -1,11 +1,9 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { __, s__, sprintf } from '~/locale';
+import { __, s__ } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { clearDraft } from '~/lib/utils/autosave';
-import { createAlert } from '~/alert';
-import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
 import LineRangeHeadline from './line_range_headline.vue';
 import NoteForm from './note_form.vue';
 
@@ -101,40 +99,18 @@ export default {
       this.store.startLineRangeEditing(this.discussion);
     },
     async saveNote(noteBody) {
-      try {
-        await this.store.createLineDiscussion({
-          discussion: this.discussion,
-          noteBody,
-          showWhitespace: this.showWhitespace,
-        });
-      } catch (e) {
-        const reason = e.response?.data?.errors;
-        const errorMessage = reason
-          ? sprintf(SAVING_THE_COMMENT_FAILED, { reason })
-          : SOMETHING_WENT_WRONG;
-        createAlert({
-          message: errorMessage,
-          parent: this.$refs.root,
-        });
-      }
+      await this.store.createLineDiscussion({
+        discussion: this.discussion,
+        noteBody,
+        showWhitespace: this.showWhitespace,
+      });
     },
     async saveDraft(noteBody) {
-      try {
-        await this.store.createDraftLineDiscussion({
-          discussion: this.discussion,
-          noteBody,
-          showWhitespace: this.showWhitespace,
-        });
-      } catch (e) {
-        const reason = e.response?.data?.errors;
-        const errorMessage = reason
-          ? sprintf(SAVING_THE_COMMENT_FAILED, { reason })
-          : SOMETHING_WENT_WRONG;
-        createAlert({
-          message: errorMessage,
-          parent: this.$refs.root,
-        });
-      }
+      await this.store.createDraftLineDiscussion({
+        discussion: this.discussion,
+        noteBody,
+        showWhitespace: this.showWhitespace,
+      });
     },
   },
 };
@@ -142,7 +118,6 @@ export default {
 
 <template>
   <div
-    ref="root"
     class="gl-rounded-[var(--content-border-radius)] gl-bg-subtle gl-px-4 gl-py-4"
     :data-discussion-id="discussion.id"
   >

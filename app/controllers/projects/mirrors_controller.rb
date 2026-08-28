@@ -49,7 +49,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def update_now
-    if params[:sync_remote]
+    if sync_remote_param
       project.update_remote_mirrors
       flash[:notice] = _("The remote repository is being updated...")
     end
@@ -58,7 +58,11 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def ssh_host_keys
-    lookup = SshHostKey.new(project: project, url: params[:ssh_url], compare_host_keys: params[:compare_host_keys])
+    lookup = SshHostKey.new(
+      project: project,
+      url: ssh_host_keys_params[:ssh_url],
+      compare_host_keys: ssh_host_keys_params[:compare_host_keys]
+    )
 
     if lookup.error.present?
       # Failed to read keys
@@ -74,6 +78,15 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   private
+
+  # Also read by the EE override of #update_now.
+  def sync_remote_param
+    params.permit(:sync_remote)[:sync_remote]
+  end
+
+  def ssh_host_keys_params
+    params.permit(:ssh_url, :compare_host_keys)
+  end
 
   def push_mirror_create_or_destroy?
     push_mirror_create? || push_mirror_destroy?

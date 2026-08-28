@@ -8,8 +8,6 @@ import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { __, sprintf } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { isCurrentUser } from '~/lib/utils/common_utils';
-import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
-import { updateNoteErrorMessage } from '~/notes/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import NoteActions from './note_actions.vue';
@@ -19,7 +17,6 @@ import TimelineEntryItem from './timeline_entry_item.vue';
 
 export default {
   name: 'NoteableNote',
-  UPDATE_COMMENT_FORM,
   components: {
     NoteHeader,
     NoteActions,
@@ -187,11 +184,6 @@ export default {
       try {
         await this.store.saveNote(this.note, noteText);
         this.$emit('cancel-editing');
-      } catch (error) {
-        createAlert({
-          message: updateNoteErrorMessage(error),
-          parent: this.$el,
-        });
       } finally {
         this.isSaving = false;
       }
@@ -337,7 +329,6 @@ export default {
             :autosave-key="autosaveKey"
             :restore-from-autosave="restoreFromAutosave"
             :save-note="saveNote"
-            :save-note-error-messages="$options.UPDATE_COMMENT_FORM"
             :is-first-note="isFirstNote"
             @cancel-editing="onCancelEditing"
             @input="$emit('note-edited', $event)"

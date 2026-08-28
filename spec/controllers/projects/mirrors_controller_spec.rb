@@ -301,8 +301,19 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
       end
     end
 
-    def do_get(project, url = 'ssh://example.com')
-      get :ssh_host_keys, params: { namespace_id: project.namespace, project_id: project, ssh_url: url }
+    context 'when compare_host_keys is given' do
+      it 'passes it to SshHostKey' do
+        expect(SshHostKey).to receive(:new)
+          .with(hash_including(compare_host_keys: 'true'))
+          .and_call_original
+
+        do_get(project, 'ssh://example.com', compare_host_keys: 'true')
+      end
+    end
+
+    def do_get(project, url = 'ssh://example.com', extra_params = {})
+      get :ssh_host_keys,
+        params: { namespace_id: project.namespace, project_id: project, ssh_url: url }.merge(extra_params)
     end
   end
 

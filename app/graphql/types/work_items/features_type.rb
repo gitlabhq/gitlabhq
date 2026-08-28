@@ -18,6 +18,10 @@ module Types
         field widget_type,
           ::Types::WorkItems::WidgetInterface.type_mappings[widget_class],
           null: true,
+          # Pure accessor over the work item's already-loaded widgets. Charging for each one
+          # double-counts against the `widgets` union it replaces, where analysis only charges
+          # the most expensive branch.
+          complexity: 0,
           scopes: [:api, :read_api, :ai_workflows],
           description: "#{widget_type.to_s.humanize} widget of the work item. " \
             "Returns `null` if the widget is not available for the work item."

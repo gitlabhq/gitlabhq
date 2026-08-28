@@ -235,6 +235,25 @@ RSpec.describe Projects::TagsController, feature_category: :source_code_manageme
       expect(project.repository.find_tag('1.0')).to be_present
     end
 
+    context 'when a message is given' do
+      subject(:request) do
+        post(:create, params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          tag_name: '1.0',
+          ref: 'master',
+          message: 'Release 1.0'
+        })
+      end
+
+      it 'creates an annotated tag with that message' do
+        request
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(project.repository.find_tag('1.0').message).to eq('Release 1.0')
+      end
+    end
+
     # TODO: remove this with the release creation moved to it's own form https://gitlab.com/gitlab-org/gitlab/-/issues/214245
     context 'when release description is set' do
       let(:release_description) { 'some release description' }

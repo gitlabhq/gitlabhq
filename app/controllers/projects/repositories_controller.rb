@@ -53,6 +53,10 @@ class Projects::RepositoriesController < Projects::ApplicationController
 
   private
 
+  def permitted_params
+    params.permit(:append_sha, :format, :id, :path, :ref)
+  end
+
   def ref
     @fully_qualified_ref || @ref
   end
@@ -60,8 +64,8 @@ class Projects::RepositoriesController < Projects::ApplicationController
   def repo_params
     @repo_params ||= {
       ref: ref,
-      path: params[:path],
-      format: params[:format],
+      path: permitted_params[:path],
+      format: permitted_params[:format],
       append_sha: @append_sha,
       ref_type: @ref_type
     }
@@ -117,7 +121,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def assign_append_sha
-    @append_sha = params[:append_sha]
+    @append_sha = permitted_params[:append_sha]
 
     if @ref
       shortname = "#{@project.path}-#{@ref.tr('/', '-')}"
@@ -126,10 +130,10 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def assign_archive_vars
-    if params[:id]
-      @ref, @filename = extract_ref_and_filename(params[:id])
+    if permitted_params[:id]
+      @ref, @filename = extract_ref_and_filename(permitted_params[:id])
     else
-      @ref = params[:ref]
+      @ref = permitted_params[:ref]
       @filename = nil
     end
   rescue InvalidPathError

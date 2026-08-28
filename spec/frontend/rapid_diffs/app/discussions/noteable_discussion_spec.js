@@ -7,7 +7,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { createAlert } from '~/alert';
-import { COMMENT_FORM } from '~/notes/i18n';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
@@ -284,32 +283,12 @@ describe('NoteableDiscussion', () => {
       expect(store.replyToDiscussion).not.toHaveBeenCalled();
     });
 
-    it('shows alert when save fails', async () => {
-      store.replyToDiscussion.mockRejectedValue({
-        response: { data: {}, status: 500 },
-      });
-      createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
-
-      await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-
-      expect(createAlert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK,
-        }),
-      );
-      expect(wrapper.emitted('stop-replying')).toBe(undefined);
-    });
-
-    it('shows generic alert when save fails without a response', async () => {
+    it('propagates save failure and keeps the form open', async () => {
       store.replyToDiscussion.mockRejectedValue(new Error('fail'));
       createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
 
-      await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-
-      expect(createAlert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK,
-        }),
+      await expect(wrapper.findComponent(NoteForm).props('saveNote')('test note')).rejects.toThrow(
+        'fail',
       );
       expect(wrapper.emitted('stop-replying')).toBe(undefined);
     });
@@ -397,29 +376,15 @@ describe('NoteableDiscussion', () => {
         expect(store.addDraftToDiscussion).not.toHaveBeenCalled();
       });
 
-      it('shows alert when draft save fails', async () => {
-        store.addDraftToDiscussion.mockRejectedValue({
-          response: { data: {}, status: 500 },
-        });
-        createComponent({
-          props: { discussion: createDiscussion({ isReplying: true }) },
-        });
-        await wrapper.findComponent(NoteForm).props('saveDraft')('draft text');
-        expect(createAlert).toHaveBeenCalled();
-        expect(wrapper.emitted('stop-replying')).toBe(undefined);
-      });
-
-      it('shows generic alert when draft save fails without a response', async () => {
+      it('propagates draft save failure and keeps the form open', async () => {
         store.addDraftToDiscussion.mockRejectedValue(new Error('fail'));
         createComponent({
           props: { discussion: createDiscussion({ isReplying: true }) },
         });
-        await wrapper.findComponent(NoteForm).props('saveDraft')('draft text');
-        expect(createAlert).toHaveBeenCalledWith(
-          expect.objectContaining({
-            message: COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK,
-          }),
-        );
+
+        await expect(
+          wrapper.findComponent(NoteForm).props('saveDraft')('draft text'),
+        ).rejects.toThrow('fail');
         expect(wrapper.emitted('stop-replying')).toBe(undefined);
       });
 

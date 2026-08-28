@@ -579,6 +579,7 @@ export const getNewWorkItemSharedCache = ({
     agentPlan: {
       ...widgetDefinitionsHash[WIDGET_TYPE_AGENT_PLAN],
       type: WIDGET_TYPE_AGENT_PLAN,
+      aiPlanningEnabled: false,
       __typename: 'WorkItemWidgetAgentPlan',
     },
     customFields: {

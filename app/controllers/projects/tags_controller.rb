@@ -46,7 +46,7 @@ class Projects::TagsController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def show
-    @tag = @repository.find_tag(params[:id])
+    @tag = @repository.find_tag(id_param)
 
     return render_404 unless @tag
 
@@ -60,19 +60,19 @@ class Projects::TagsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def create
-    # TODO: remove this with the release creation moved to it's own form https://gitlab.com/gitlab-org/gitlab/-/issues/214245
     evidence_pipeline = find_evidence_pipeline
+    tag_params = tag_create_params
 
     result = ::Tags::CreateService.new(@project, current_user)
-      .execute(params[:tag_name], params[:ref], params[:message])
+      .execute(tag_params[:tag_name], tag_params[:ref], tag_params[:message])
 
     if result[:status] == :success
       # TODO: remove this with the release creation moved to it's own form https://gitlab.com/gitlab-org/gitlab/-/issues/214245
-      if params[:release_description].present?
+      if tag_params[:release_description].present?
         release_params = {
-          tag: params[:tag_name],
-          name: params[:tag_name],
-          description: params[:release_description],
+          tag: tag_params[:tag_name],
+          name: tag_params[:tag_name],
+          description: tag_params[:release_description],
           evidence_pipeline: evidence_pipeline
         }
 
@@ -86,21 +86,21 @@ class Projects::TagsController < Projects::ApplicationController
       redirect_to project_tag_path(@project, @tag.name)
     else
       @error = result[:message]
-      @message = params[:message]
-      @release_description = params[:release_description]
+      @message = tag_params[:message]
+      @release_description = tag_params[:release_description]
       render action: 'new'
     end
   end
 
   def destroy
-    result = ::Tags::DestroyService.new(project, current_user).execute(params[:id])
+    result = ::Tags::DestroyService.new(project, current_user).execute(id_param)
 
     flash_type = result[:status] == :error ? :alert : :notice
     flash[flash_type] = result[:message]
 
     # When deleting from an individual tag's show page, redirect to index to avoid 404
     # otherwise, redirect to pre-sorted list or the default tags list
-    if request.referer&.include?(project_tag_path(@project, params[:id]))
+    if request.referer&.include?(project_tag_path(@project, id_param))
       redirect_to project_tags_path(@project), status: :see_other
     else
       redirect_back_or_default(default: project_tags_path(@project), options: { status: :see_other })
@@ -109,9 +109,17 @@ class Projects::TagsController < Projects::ApplicationController
 
   private
 
+  def id_param
+    params.permit(:id)[:id]
+  end
+
+  def tag_create_params
+    params.permit(:tag_name, :ref, :message, :release_description)
+  end
+
   # TODO: remove this with the release creation moved to it's own form https://gitlab.com/gitlab-org/gitlab/-/issues/214245
   def find_evidence_pipeline
-    evidence_pipeline_sha = @project.repository.commit(params[:ref])&.sha
+    evidence_pipeline_sha = @project.repository.commit(params.permit(:ref)[:ref])&.sha
     return unless evidence_pipeline_sha
 
     @project.ci_pipelines.for_sha(evidence_pipeline_sha).last
