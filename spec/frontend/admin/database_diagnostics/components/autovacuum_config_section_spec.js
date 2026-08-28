@@ -18,19 +18,18 @@ describe('AutovacuumConfigSection component', () => {
     return row.findAll('td').at(1).text();
   };
 
-  // Settings with every flaggable value moved to a healthy value.
   const healthyConfig = {
     ...autovacuumConfig,
-    settings: {
-      ...autovacuumConfig.settings,
-      autovacuum_vacuum_cost_limit: { value: '2000', unit: null },
-      autovacuum_work_mem: { value: '1048576', unit: 'kB' },
-    },
+    findings: [],
+    severity: null,
+    counts: {},
   };
 
-  const configWithSettings = (settings) => ({
+  const configWithFinding = (finding) => ({
     ...autovacuumConfig,
-    settings: { ...autovacuumConfig.settings, ...settings },
+    findings: [finding],
+    severity: finding.severity,
+    counts: { [finding.severity]: 1 },
   });
 
   const createComponent = ({ config = autovacuumConfig } = {}) => {
@@ -45,7 +44,7 @@ describe('AutovacuumConfigSection component', () => {
       await expandSettings();
     });
 
-    it('renders a row per known setting present in the config', () => {
+    it('renders a row per setting supplied by the backend', () => {
       expect(wrapper.findAll('tbody tr').at(0).text()).toContain('autovacuum');
       expect(wrapper.text()).toContain('autovacuum_freeze_max_age');
     });
@@ -58,73 +57,52 @@ describe('AutovacuumConfigSection component', () => {
       expect(findRowValue('autovacuum_work_mem')).toBe('-1');
     });
 
-    it('flags fewer workers than the default as low', async () => {
-      createComponent({
-        config: configWithSettings({ autovacuum_max_workers: { value: '2', unit: null } }),
-      });
-      await expandSettings();
-
-      expect(findStatus('autovacuum_max_workers').text()).toBe('Low');
-    });
-
-    it('does not flag the default worker count', () => {
-      expect(findStatus('autovacuum_max_workers').exists()).toBe(false);
-      expect(wrapper.findByTestId('status-ok-autovacuum_max_workers').text()).toBe('OK');
-    });
-
-    it('flags an inherited cost limit at the default as low', () => {
-      expect(findStatus('autovacuum_vacuum_cost_limit').text()).toBe('Low');
-    });
-
-    it('shows the effective value next to an inherited cost limit', () => {
+    it('shows the resolved value the backend annotated on an inherited cost limit', () => {
       expect(findRowValue('autovacuum_vacuum_cost_limit')).toBe('-1 (effective: 200)');
     });
 
-    it('does not flag an inherited cost limit when vacuum_cost_limit is raised', async () => {
-      createComponent({
-        config: configWithSettings({ vacuum_cost_limit: { value: '2000', unit: null } }),
-      });
-      await expandSettings();
+    it.each`
+      code                                | severity     | settingName                       | label
+      ${'autovacuum_disabled'}            | ${'error'}   | ${'autovacuum'}                   | ${'Disabled'}
+      ${'autovacuum_throttling_disabled'} | ${'error'}   | ${'autovacuum_vacuum_cost_delay'} | ${'Throttling disabled'}
+      ${'autovacuum_max_workers_low'}     | ${'warning'} | ${'autovacuum_max_workers'}       | ${'Low'}
+      ${'autovacuum_cost_limit_low'}      | ${'warning'} | ${'autovacuum_vacuum_cost_limit'} | ${'Low'}
+      ${'autovacuum_work_mem_inherited'}  | ${'warning'} | ${'autovacuum_work_mem'}          | ${'Inherited'}
+    `(
+      'labels a $code finding "$label" on its setting row',
+      async ({ code, severity, settingName, label }) => {
+        createComponent({
+          config: configWithFinding({
+            severity,
+            code,
+            setting_name: settingName,
+            message: 'Explanation from the backend.',
+          }),
+        });
+        await expandSettings();
 
-      expect(findStatus('autovacuum_vacuum_cost_limit').exists()).toBe(false);
-      expect(findRowValue('autovacuum_vacuum_cost_limit')).toBe('-1 (effective: 2000)');
-    });
+        expect(findStatus(settingName).text()).toBe(label);
+        expect(findStatus(settingName).attributes('title')).toBe('Explanation from the backend.');
+      },
+    );
 
-    it('does not flag an explicit cost limit above the default', async () => {
+    it('falls back to a severity label for an unknown finding code', async () => {
       createComponent({
-        config: configWithSettings({
-          autovacuum_vacuum_cost_limit: { value: '2000', unit: null },
+        config: configWithFinding({
+          severity: 'warning',
+          code: 'some_new_backend_check',
+          setting_name: 'autovacuum_naptime',
+          message: 'New check.',
         }),
       });
       await expandSettings();
 
-      expect(findStatus('autovacuum_vacuum_cost_limit').exists()).toBe(false);
-      expect(findRowValue('autovacuum_vacuum_cost_limit')).toBe('2000');
+      expect(findStatus('autovacuum_naptime').text()).toBe('Warning');
     });
 
-    it('flags an unset work_mem as inherited', () => {
-      expect(findStatus('autovacuum_work_mem').text()).toBe('Inherited');
-    });
-
-    it('shows an OK badge for a healthy setting', () => {
+    it('shows an OK badge for a setting without a finding', () => {
       expect(findStatus('autovacuum_naptime').exists()).toBe(false);
       expect(wrapper.findByTestId('status-ok-autovacuum_naptime').text()).toBe('OK');
-    });
-
-    it('flags autovacuum_vacuum_cost_delay = 0 as throttling disabled', async () => {
-      createComponent({
-        config: configWithSettings({ autovacuum_vacuum_cost_delay: { value: '0', unit: 'ms' } }),
-      });
-      await expandSettings();
-
-      expect(findStatus('autovacuum_vacuum_cost_delay').text()).toBe('Throttling disabled');
-    });
-
-    it('flags autovacuum globally off as disabled', async () => {
-      createComponent({ config: configWithSettings({ autovacuum: { value: 'off', unit: null } }) });
-      await expandSettings();
-
-      expect(findStatus('autovacuum').text()).toBe('Disabled');
     });
 
     it('renders an empty state without a status icon or toggle when no settings could be read', () => {
@@ -154,22 +132,27 @@ describe('AutovacuumConfigSection component', () => {
       expect(findSettingsDetails().props('visible')).toBe(false);
     });
 
-    it('shows a warning icon and the flagged count when settings have warnings', () => {
+    it('shows a warning icon and the flagged count when the check reported warnings', () => {
       createComponent();
 
       expect(findStatusIcon().props('name')).toBe('warning');
       expect(wrapper.findByTestId('settings-flagged-count').text()).toBe('2');
     });
 
-    it('shows a danger icon when a setting is critical', () => {
+    it('shows a danger icon when the check reported an error', () => {
       createComponent({
-        config: configWithSettings({ autovacuum_vacuum_cost_delay: { value: '0', unit: 'ms' } }),
+        config: configWithFinding({
+          severity: 'error',
+          code: 'autovacuum_disabled',
+          setting_name: 'autovacuum',
+          message: 'Autovacuum is disabled.',
+        }),
       });
 
       expect(findStatusIcon().props('name')).toBe('error');
     });
 
-    it('shows a green tick and no count when all settings are healthy', () => {
+    it('shows a green tick and no count when the check reported nothing', () => {
       createComponent({ config: healthyConfig });
 
       expect(findStatusIcon().props('name')).toBe('check-circle-filled');

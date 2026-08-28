@@ -153,16 +153,17 @@ export const stripWhitespaceFromQuery = (url, path) => {
 
 const acs = [];
 
-let pendingApolloMutations = 0;
+let pendingApolloNonDedupedOperations = 0;
 
-// ### Why track pendingApolloMutations, but calculate pendingApolloRequests?
+// ### Why count some operations in a link, but calculate pendingApolloRequests?
 //
 // In Apollo 2, we had a single link for counting operations.
 //
 // With Apollo 3, the `forward().map(...)` of deduped queries is never called.
 // So, we resorted to calculating the sum of `inFlightLinkObservables?.size`.
-// However! Mutations don't use `inFLightLinkObservables`, but since they are likely
-// not deduped we can count them...
+// However! Mutations and queries that opt out of deduplication (their context
+// has `forceFetch`) don't use `inFlightLinkObservables`, so we count them in a
+// link: unlike deduped queries, they reach the link chain exactly once each.
 //
 // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55062#note_838943715
 // https://www.apollographql.com/docs/react/v2/networking/network-layer/#query-deduplication
@@ -170,7 +171,7 @@ Object.defineProperty(window, 'pendingApolloRequests', {
   get() {
     return acs.reduce(
       (sum, ac) => sum + (ac?.queryManager?.inFlightLinkObservables?.size || 0),
-      pendingApolloMutations,
+      pendingApolloNonDedupedOperations,
     );
   },
 });
@@ -278,15 +279,18 @@ function createApolloClient(resolvers = {}, config = {}) {
   const hasMutation = (operation) =>
     (operation?.query?.definitions || []).some((x) => x.operation === 'mutation');
 
-  const mutationCounterLink = getOperationFinishedLink({
+  const isNonDedupedOperation = (operation) =>
+    hasMutation(operation) || Boolean(operation.getContext().forceFetch);
+
+  const operationCounterLink = getOperationFinishedLink({
     started: (operation) => {
-      if (hasMutation(operation)) {
-        pendingApolloMutations += 1;
+      if (isNonDedupedOperation(operation)) {
+        pendingApolloNonDedupedOperations += 1;
       }
     },
     finished: (operation) => {
-      if (hasMutation(operation)) {
-        pendingApolloMutations -= 1;
+      if (isNonDedupedOperation(operation)) {
+        pendingApolloNonDedupedOperations -= 1;
       }
     },
   });
@@ -302,7 +306,7 @@ function createApolloClient(resolvers = {}, config = {}) {
         getInstrumentationLink(),
         sentryBreadcrumbLink,
         correlationIdLink,
-        mutationCounterLink,
+        operationCounterLink,
         performanceBarLink,
         new StartupJSLink(),
         apolloCaptchaLink,

@@ -214,7 +214,7 @@ module Gitlab
           # adds a verified_geo_request skip for the JWT-gated geo requests, which cannot
           # be a path matcher.
           def skip_matches
-            request = ::Gitlab::RackAttack::Request
+            request = ::Gitlab::RateLimit::RequestClassification
 
             {
               'skip_internal_api' => { requester_id: nil, runner_id: nil, path: request::API_INTERNAL_PATH_REGEX },
@@ -228,7 +228,7 @@ module Gitlab
           private
 
           def build_meta
-            request = ::Gitlab::RackAttack::Request
+            request = ::Gitlab::RateLimit::RequestClassification
             api = request::API_PATH_REGEX
             files = request::FILES_PATH_REGEX
             packages = ::Gitlab::Regex::Packages::API_PATH_REGEX

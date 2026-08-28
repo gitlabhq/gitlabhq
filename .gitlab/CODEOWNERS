@@ -2457,3 +2457,83 @@ frontend/**/geo_* @zcuddy
 # Ensure database sharding requirements are followed - See https://docs.gitlab.com/development/organization/sharding/
 [Database Sharding] @gitlab-com/gl-infra/tenant-scale/transport/backend-engineers @tkuah @tskorupa-gl @chen-gitlab @dblessing @alexpooley @rutgerwessels
 /spec/lib/gitlab/organizations/sharding_key_spec.rb
+
+[Webhooks] @gitlab-com/create-team/import
+
+# Models & concerns
+/app/models/concerns/triggerable_hooks.rb
+/app/models/concerns/web_hooks/
+/app/models/hooks/
+/app/policies/web_hook_log_policy.rb
+/ee/app/models/concerns/ee/web_hooks/
+/ee/app/models/hooks/
+
+# Services & test hooks
+/app/services/merge_requests/refresh/web_hooks_service.rb
+/app/services/test_hooks/
+/app/services/web_hook_service.rb
+/app/services/web_hooks/
+/ee/app/services/ee/web_hooks/
+/ee/app/services/test_hooks/
+
+# Payload builders
+/ee/lib/ee/gitlab/hook_data/
+/lib/gitlab/hook_data/
+
+# HTTP delivery & rate limiting
+/config/initializers/webhook_recursion_detection.rb
+/ee/lib/ee/gitlab/web_hooks/
+/lib/gitlab/middleware/webhook_recursion_detection.rb
+/lib/gitlab/web_hooks.rb
+/lib/gitlab/web_hooks/
+
+# Workers
+/app/workers/merge_requests/refresh/web_hooks_worker.rb
+/app/workers/web_hook_worker.rb
+/app/workers/web_hooks/
+
+# Controllers
+/app/controllers/admin/hook_logs_controller.rb
+/app/controllers/admin/hooks_controller.rb
+/app/controllers/concerns/web_hooks/
+/app/controllers/projects/hook_logs_controller.rb
+/app/controllers/projects/hooks_controller.rb
+/ee/app/controllers/groups/hook_logs_controller.rb
+/ee/app/controllers/groups/hooks_controller.rb
+
+# GraphQL
+/app/graphql/resolvers/web_hooks/
+/app/graphql/types/web_hooks/
+/ee/app/graphql/ee/types/web_hooks/
+/ee/app/graphql/resolvers/web_hooks/
+/ee/app/graphql/types/web_hooks/
+
+# Finders, helpers, validators, presenters
+/app/finders/web_hooks/
+/app/helpers/web_hooks/
+/app/presenters/web_hook_log_presenter.rb
+/app/validators/web_hooks/
+/ee/app/helpers/ee/web_hooks/
+/ee/app/presenters/web_hooks/
+
+# Views
+/app/views/admin/application_settings/_web_hook_limits.html.haml
+/app/views/admin/hooks/
+/app/views/projects/hooks/
+/app/views/shared/web_hooks/
+/ee/app/views/groups/hooks/
+/ee/app/views/shared/web_hooks/
+
+# API
+/ee/lib/ee/api/hooks/
+/lib/api/entities/hook.rb
+/lib/api/entities/project_hook.rb
+/lib/api/entities/retry_webhook_event.rb
+/lib/api/entities/web_hook_log.rb
+/lib/api/helpers/web_hooks_helpers.rb
+/lib/api/hooks/
+/lib/api/project_hooks.rb
+/lib/api/system_hooks.rb
+
+# Rake tasks
+/lib/tasks/gitlab/web_hook.rake

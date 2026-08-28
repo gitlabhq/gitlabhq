@@ -2157,7 +2157,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_2d9be0e2518e"
+              "$ref": "#/components/schemas/RequestBody_a8c515dc1a08"
   "/api/v4/jobs/{id}/sbom_scans/authorize":
     post:
       operationId: postApiV4JobsIdSbomScansAuthorize
@@ -4824,12 +4824,12 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/APIEntitiesSamlGroupLink"
+        '400':
+          description: Failed to delete SamlGroupLink record
         '404':
           description: Not found
         '422':
           description: Multiple links found, provider parameter required
-        '400':
-          description: Bad Request
       parameters:
       - name: id
         required: true
@@ -96279,7 +96279,7 @@ components:
       required:
       - started_on
       - expires_on
-    RequestBody_2d9be0e2518e:
+    RequestBody_a8c515dc1a08:
       type: object
       properties:
         topic:
@@ -96330,6 +96330,17 @@ components:
               description: Failure detail, present on step_failed and service_failed
               nullable: true
               maxLength: 2000
+            reason:
+              type: string
+              description: Human-readable prompt, present on approval_requested
+              nullable: true
+              maxLength: 2000
+            reply:
+              type: string
+              description: Name of the AutoFlow channel to post the approval decision
+                back into, present on approval_requested
+              nullable: true
+              maxLength: 255
           nullable: true
         value:
           type: object

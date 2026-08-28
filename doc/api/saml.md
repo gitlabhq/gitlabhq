@@ -362,4 +362,6 @@ curl --request DELETE \
 
 If successful, returns [`204`](rest/troubleshooting.md#status-codes) status code without any response body.
 
+If unsuccessful, returns [`400`](rest/troubleshooting.md#status-codes) status code with an error message in the response body.
+
 If multiple SAML group links exist with the same name but different providers, and no `provider` parameter is specified, returns [`422`](rest/troubleshooting.md#status-codes) with an error message indicating that the `provider` parameter is required to disambiguate.

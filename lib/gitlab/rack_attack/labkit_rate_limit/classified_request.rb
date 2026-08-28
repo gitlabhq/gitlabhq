@@ -4,13 +4,14 @@ module Gitlab
   module RackAttack
     module LabkitRateLimit
       # A request that classifies itself for Labkit::RateLimit independently of
-      # Rack::Attack. It is the same shape as Rack::Attack::Request (a Rack::Request
-      # with Gitlab::RackAttack::Request mixed in), so the low-level request
-      # primitives (logical_path, frontend_request?, unauthenticated?,
-      # authenticated_identifier, ...) and the auth path behave identically to the
-      # legacy stack, but it carries no dependency on the Rack::Attack gem. It does
-      # not call throttled_identifer: the requester discriminator is computed here
-      # from the auth primitive and exposed as explicit (id, type) facts.
+      # Rack::Attack. It is a Rack::Request with the shared
+      # Gitlab::RateLimit::RequestClassification primitives (logical_path,
+      # frontend_request?, authenticated_identifier, ...) mixed in - the same
+      # primitives the legacy Gitlab::RackAttack::Request predicates build on, so
+      # the auth path behaves identically to the legacy stack, with no dependency
+      # on Rack::Attack. It does not call the legacy throttled_identifer: the
+      # requester discriminator is computed here from the auth primitive and
+      # exposed as explicit (id, type) facts.
       #
       # #labkit_facts exposes the request as a flat context the Labkit rules match
       # on (see Limiters / ThrottleRegistry). It deliberately does not call the
@@ -38,7 +39,7 @@ module Gitlab
       # and the auth-method-dependent runner-jobs condition.
       class ClassifiedRequest < ::Rack::Request
         include ::Gitlab::Utils::StrongMemoize
-        include ::Gitlab::RackAttack::Request
+        include ::Gitlab::RateLimit::RequestClassification
 
         def labkit_facts
           identity_facts.merge(classification_facts.transform_values { |value| !!value })
@@ -49,7 +50,7 @@ module Gitlab
         # Identity / discriminator and matcher-input values. Never coerced: a rule
         # counts by the identity values and the path/method matchers compare them as
         # String. `path` is the logical path (relative-URL-root prefix stripped, as
-        # Gitlab::RackAttack::Request#matches? does), so the registry path regexes
+        # RequestClassification#matches? does), so the registry path regexes
         # match correctly on a self-managed install mounted under a relative URL.
         #
         # The requester is resolved once with the widest format list ([:api, :rss,
@@ -75,8 +76,8 @@ module Gitlab
         end
 
         # The requester discriminator as an explicit { id:, type: } pair, computed
-        # without Gitlab::RackAttack::Request#throttled_identifer so this classifier
-        # carries no dependency on the throttle-identifier-string method. It reuses
+        # without the legacy Gitlab::RackAttack::Request#throttled_identifer so this
+        # classifier carries no dependency on the throttle-identifier-string method. It reuses
         # the lower-level auth primitive #authenticated_identifier (a pure auth
         # lookup with no throttle semantics and no side effects).
         #
@@ -187,7 +188,7 @@ module Gitlab
         # post? and get_request_protected_path? with get?; here each registry rule's own
         # `method:` gate provides that pairing, so the fact is only read against the
         # list its rule's method selected. protected_paths / protected_paths_for_get_request
-        # and matches_protected_path? come from the Gitlab::RackAttack::Request mixin.
+        # and matches_protected_path? come from the RequestClassification mixin.
         def protected_path?
           matches_protected_path?(get? ? protected_paths_for_get_request : protected_paths)
         end

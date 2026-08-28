@@ -196,13 +196,29 @@ export const autovacuumConfig = {
     autovacuum_vacuum_insert_scale_factor: { value: '0.2', unit: null },
     autovacuum_vacuum_insert_threshold: { value: '1000', unit: null },
     autovacuum_vacuum_cost_delay: { value: '2', unit: 'ms' },
-    autovacuum_vacuum_cost_limit: { value: '-1', unit: null },
+    autovacuum_vacuum_cost_limit: { value: '-1', unit: null, effective_value: '200' },
     vacuum_cost_limit: { value: '200', unit: null },
     autovacuum_work_mem: { value: '-1', unit: 'kB' },
     maintenance_work_mem: { value: '65536', unit: 'kB' },
     autovacuum_freeze_max_age: { value: '200000000', unit: null },
     autovacuum_multixact_freeze_max_age: { value: '400000000', unit: null },
   },
+  findings: [
+    {
+      severity: 'warning',
+      code: 'autovacuum_cost_limit_low',
+      setting_name: 'autovacuum_vacuum_cost_limit',
+      message: 'The cost limit is at or near the conservative default.',
+    },
+    {
+      severity: 'warning',
+      code: 'autovacuum_work_mem_inherited',
+      setting_name: 'autovacuum_work_mem',
+      message: 'The autovacuum_work_mem setting is unset and inherits maintenance_work_mem.',
+    },
+  ],
+  severity: 'warning',
+  counts: { warning: 2 },
 };
 
 export const databaseInformationResults = {

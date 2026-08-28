@@ -254,26 +254,24 @@ SCIM group synchronization works with SAML group links to manage group membershi
 
 SCIM is a one-directional protocol: changes flow from your identity provider to GitLab. If you make changes to SAML group links in GitLab (such as adding or removing them), your identity provider has no way to detect these changes through SCIM.
 
-### Known limitation of new group links
+### SAML group link and SCIM group association
 
 When your identity provider first provisions a SCIM group (through `POST /Groups`), GitLab associates the SCIM group ID with all existing SAML group links that have a matching group name.
-However, if you add new SAML group links with the same group name after the initial provisioning,
-the new group links are not automatically associated with the SCIM group ID.
-This means SCIM membership updates from your identity provider do not affect users in the newly added group links.
+When you create new SAML group links with the same group name,
+GitLab inherits the existing SCIM group ID onto the new SAML group link automatically.
 
-Support for improvements is proposed in [issue 582729](https://gitlab.com/gitlab-org/gitlab/-/issues/582729).
-
-> [!note]
-> To ensure all group links are associated with the SCIM group from the start,
-> you should configure all SAML group links before setting up SCIM group provisioning in your identity provider.
-
-If you need to add group links after the initial provisioning, you can re-provision the SCIM group in your identity provider by deleting the SCIM group provisioning (not the IdP group itself), then recreating it.
-This action re-associates all current SAML group links with the SCIM group.
-For more information, refer to your identity provider's documentation for managing SCIM group provisioning.
+#### Deleting SAML group links
 
 If you delete a SAML group link in GitLab, members of that group through that link remain in the group.
 However, SCIM no longer manages their membership in that group because the group link has been removed.
 If needed, you can manually [remove members from the group](../../user/group/_index.md#remove-a-member-from-the-group).
+
+If you delete all SAML group links associated with a SCIM group:
+
+- GitLab clears the SCIM membership cache for that group.
+- Your identity provider receives a `404 Group not found` response on its next sync cycle.
+
+To resume SCIM group synchronization, create a new SAML group link and trigger a SCIM sync for the group in your identity provider.
 
 ### Configure group synchronization in your identity provider
 

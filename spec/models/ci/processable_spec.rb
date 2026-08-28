@@ -597,4 +597,58 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       expect(subject.run_steps).to eq([])
     end
   end
+
+  describe '.with_interruptible_true' do
+    let_it_be(:interruptible_build) do
+      create(:ci_build, :interruptible, project: project, pipeline: pipeline)
+    end
+
+    let_it_be(:non_interruptible_build) do
+      create(:ci_build, project: project, pipeline: pipeline)
+    end
+
+    subject(:relation) { described_class.with_interruptible_true }
+
+    it 'returns builds with an interruptible job definition' do
+      expect(relation).to include(interruptible_build)
+      expect(relation).not_to include(non_interruptible_build)
+    end
+
+    it 'emits the correlated partition equality twice: in the inner join ON and the WHERE' do
+      sql = relation.to_sql
+      correlated_equality =
+        %("p_ci_job_definition_instances"."partition_id" = "p_ci_builds"."partition_id")
+
+      # This is important because it blocks the NOT EXISTS-to-join pull-up and prevents
+      # the plan from flipping to many seq scans.
+      expect(sql.scan(correlated_equality).size).to eq(2)
+    end
+  end
+
+  describe '.with_interruptible_false' do
+    let_it_be(:interruptible_build) do
+      create(:ci_build, :interruptible, project: project, pipeline: pipeline)
+    end
+
+    let_it_be(:non_interruptible_build) do
+      create(:ci_build, project: project, pipeline: pipeline)
+    end
+
+    subject(:relation) { described_class.with_interruptible_false }
+
+    it 'returns builds without an interruptible job definition' do
+      expect(relation).to include(non_interruptible_build)
+      expect(relation).not_to include(interruptible_build)
+    end
+
+    it 'emits the correlated partition equality twice: in the inner join ON and the WHERE' do
+      sql = relation.to_sql
+      correlated_equality =
+        %("p_ci_job_definition_instances"."partition_id" = "p_ci_builds"."partition_id")
+
+      # This is important because it blocks the NOT EXISTS-to-join pull-up and prevents
+      # the plan from flipping to many seq scans.
+      expect(sql.scan(correlated_equality).size).to eq(2)
+    end
+  end
 end

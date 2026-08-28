@@ -2773,6 +2773,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         get api(route, personal_access_token: pat)
       end
     end
+
+    it_behaves_like 'enforcing job token policies', :read_repositories,
+      allow_public_access_for_enabled_project_features: [:repository] do
+      let(:request) do
+        get api(route), params: { job_token: target_job.token }
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/commits/:sha' do

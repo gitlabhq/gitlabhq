@@ -216,7 +216,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/insights/finders/issuable_finder_spec.rb'
     - 'ee/spec/lib/gitlab/insights/project_insights_config_spec.rb'
     - 'ee/spec/lib/gitlab/insights/reducers/count_per_label_reducer_spec.rb'
-    - 'ee/spec/lib/gitlab/insights/reducers/label_count_per_period_reducer_spec.rb'
     - 'ee/spec/lib/gitlab/insights/serializers/chartjs/line_serializer_spec.rb'
     - 'ee/spec/lib/gitlab/insights/serializers/chartjs/multi_series_serializer_spec.rb'
     - 'ee/spec/lib/gitlab/insights/validators/params_validator_spec.rb'

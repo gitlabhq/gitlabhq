@@ -82,10 +82,10 @@ To the right of each project and group you can select a notification level:
 |-----------------|-------------|
 | **Global**      | Your default global settings apply. |
 | **Watch**       | Receive notifications for most activity. |
-| **Participate** | Receive notifications for threads you have participated in. |
-| **On mention**  | Receive notifications when you are [mentioned](../discussions/_index.md#mentions) in a comment. |
+| **Participate** | Receive notifications for items you [participate in](#who-receives-notifications). |
+| **On mention**  | Receive notifications when someone [mentions](../discussions/_index.md#mentions) you in a description or a comment. |
 | **Disabled**    | Receive no notifications. |
-| **Custom**      | Same as **Participate**, plus any additional notification events you select. |
+| **Custom**      | Receive notifications for items you [participate in](#who-receives-notifications), plus the [issue, merge request, and epic events](#issue-merge-request-and-epic-events) or [pipeline events](#cicd-pipeline-events) you select. Some events are sent only if you select them, even if you participate. |
 
 ### Notification scope
 

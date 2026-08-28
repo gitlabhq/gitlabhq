@@ -94,8 +94,6 @@ RSpec.describe 'Database schema',
       ci_unit_test_failures: %w[project_id],
       ci_resources: %w[project_id],
       p_ci_pipelines: %w[partition_id trigger_id],
-      # Table is unused and awaiting removal in a later milestone
-      ci_build_runtime_environments: %w[build_id partition_id runtime_environment_id runner_machine_id project_id],
       p_ci_job_runtime_environments: %w[partition_id runtime_environment_id], # runtime_environment_id is a bare pointer that may dangle after the runtime env partition is dropped
       p_ci_runner_machine_builds: %w[project_id],
       ci_pending_builds: %w[runner_machine_id], # runner_machine_id has no FK: ci_runner_machines is gitlab_ci_cell_local, a different schema from gitlab_ci; cross-schema FKs are disallowed

@@ -86,11 +86,12 @@ module Gitlab
           ::Gitlab::Agent::Autoflow::Value.new(**kwargs)
         end
 
-        # Reverse of #to_value. Only handles the oneof variants #to_value produces
+        # Reverse of #to_value. Handles the oneof variants #to_value produces
         # (string_value, sensitive_string, integer_value, float_value, bool_value,
-        # none_value, list_value, dict_value); the others (bytes_value, channel_value,
-        # timestamp_value, ...) aren't emitted by Rails today and have no Ruby
-        # counterpart yet.
+        # none_value, list_value, dict_value) plus channel_value, which only ever
+        # arrives from AutoFlow (e.g. a com.gitlab.cd.approval_requested reply
+        # channel), never emitted by Rails. The rest (bytes_value, timestamp_value,
+        # ...) still aren't emitted by Rails today and have no Ruby counterpart yet.
         # @param value [Gitlab::Agent::Autoflow::Value]
         # @return [Object] plain Ruby value
         def from_value(value)
@@ -111,6 +112,8 @@ module Gitlab
             from_values(value.list_value.values)
           when :dict_value
             value.dict_value.key_values.to_h { |kv| [from_value(kv.key), from_value(kv.val)] }
+          when :channel_value
+            value.channel_value.name
           when nil
             raise ArgumentError, 'AutoFlow value oneof is not set'
           else

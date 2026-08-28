@@ -77,7 +77,7 @@ gem 'logger', '~> 1.7.0', feature_category: :shared # rubocop:todo Gemfile/Missi
 
 # Authorization
 gem 'declarative_policy', '~> 2.1.0', feature_category: :permissions
-gem 'gitlab-glaz', '~> 0.0.3', feature_category: :permissions
+gem 'gitlab-glaz', '~> 1.1.0', feature_category: :permissions
 
 # For source code paths mapping
 gem 'coverband', '6.2.2', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839

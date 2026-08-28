@@ -863,19 +863,19 @@ GEM
       mime-types
       net-http-persistent (~> 4.0)
       nokogiri (~> 1, >= 1.10.8)
-    gitlab-glaz (0.0.3)
+    gitlab-glaz (1.1.0)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
-    gitlab-glaz (0.0.3-aarch64-linux-gnu)
+    gitlab-glaz (1.1.0-aarch64-linux-gnu)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
-    gitlab-glaz (0.0.3-arm64-darwin)
+    gitlab-glaz (1.1.0-arm64-darwin)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
-    gitlab-glaz (0.0.3-x86_64-darwin)
+    gitlab-glaz (1.1.0-x86_64-darwin)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
-    gitlab-glaz (0.0.3-x86_64-linux-gnu)
+    gitlab-glaz (1.1.0-x86_64-linux-gnu)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
     gitlab-glfm-markdown (0.0.42)
@@ -1077,22 +1077,22 @@ GEM
       gapic-common (>= 0.20.0, < 2.a)
       google-cloud-errors (~> 1.0)
     google-logging-utils (0.1.0)
-    google-protobuf (4.35.1)
+    google-protobuf (4.36.0)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.1-aarch64-linux-gnu)
+    google-protobuf (4.36.0-aarch64-linux-gnu)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.1-arm64-darwin)
+    google-protobuf (4.36.0-arm64-darwin)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.1-x86-linux-gnu)
+    google-protobuf (4.36.0-x86-linux-gnu)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.1-x86_64-darwin)
+    google-protobuf (4.36.0-x86_64-darwin)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.1-x86_64-linux-gnu)
+    google-protobuf (4.36.0-x86_64-linux-gnu)
       bigdecimal
       rake (~> 13.3)
     googleapis-common-protos (1.7.0)
@@ -1917,7 +1917,7 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rb_sys (0.9.128)
+    rb_sys (0.9.130)
       rake-compiler-dock (= 1.12.0)
     rbs (3.9.5)
       logger
@@ -2531,7 +2531,7 @@ DEPENDENCIES
   gitlab-email_handler!
   gitlab-experiment (~> 2.0.0)
   gitlab-fog-azure-rm (~> 2.5.0)
-  gitlab-glaz (~> 0.0.3)
+  gitlab-glaz (~> 1.1.0)
   gitlab-glfm-markdown (~> 0.0.42)
   gitlab-grape-openapi (~> 0.3.0)
   gitlab-housekeeper!
@@ -3043,11 +3043,11 @@ CHECKSUMS
   gitlab-email_handler (0.1.0)
   gitlab-experiment (2.0.0) sha256=05183dee7ddad1ef183de43c2c330e57a1457f679744c19c61f637e1135d3c76
   gitlab-fog-azure-rm (2.5.0) sha256=f10fd3f6667925e4ce97cea2fa707b926320c7b7fa06978788e2f452ee7f4db0
-  gitlab-glaz (0.0.3) sha256=f484a1eaf28849d7c19cccf2dabc2ee045c7c9fd870af0d4974a638593634829
-  gitlab-glaz (0.0.3-aarch64-linux-gnu) sha256=68f1e940294d2bfef97aad376ab151c8eaf7f821a9b467a3cf04646c577e8de9
-  gitlab-glaz (0.0.3-arm64-darwin) sha256=f04aac78729dc7a98675a63ab871d574c9122ec3d31bc062be9a4d973e54a306
-  gitlab-glaz (0.0.3-x86_64-darwin) sha256=895f6559a0d7a3ed464895908591c35ea83899bce05e5fae68306766c8fb0efa
-  gitlab-glaz (0.0.3-x86_64-linux-gnu) sha256=202d013e388a7303115b13d9537fcff8ee8256a395fae0fcb66c6f0ac5d2f538
+  gitlab-glaz (1.1.0) sha256=ee328b12c6bd7f030faa62bcd3fbdaca78273ef126e31c438a9fe5f6f17319a2
+  gitlab-glaz (1.1.0-aarch64-linux-gnu) sha256=89195fba971e841a16a87171219de47687a6f7694c4991d0f5a9d7a85882d32b
+  gitlab-glaz (1.1.0-arm64-darwin) sha256=58689eadd3b366530aaeba8e0935f2f9b89dc7a3a005a44cbff31c1d0f70ade9
+  gitlab-glaz (1.1.0-x86_64-darwin) sha256=7959dfd56c2d1e9a156aed1e1cd80d380c3a312cc796793110bbb64ab78823a8
+  gitlab-glaz (1.1.0-x86_64-linux-gnu) sha256=e72429dd1546b85b1f6ec0097adf89ae632ba51969e8f115fb7564ca0c7e139d
   gitlab-glfm-markdown (0.0.42) sha256=90c793d500becf7e0b6abe09d5eb25518900ed7c9ebd4e4d87bb495ad0f838a6
   gitlab-glfm-markdown (0.0.42-aarch64-linux-gnu) sha256=f49f4503b13845792045854bcf77437d2fb1a0fe7140b247024da5139dcca7ae
   gitlab-glfm-markdown (0.0.42-arm64-darwin) sha256=a662bb2da6a1040e63868dd247ac1c580c9638554a9ec958059fa1eec264a01f
@@ -3114,12 +3114,12 @@ CHECKSUMS
   google-cloud-storage_transfer (1.2.0) sha256=132901f50889e02a0d378e6117c6408cbfc4fdbd15c9d31fabec4f4189ef1658
   google-cloud-storage_transfer-v1 (0.8.0) sha256=9dbef80275db556e046bb24139ca6559affe641d1e38b2537b8caaf2f8896176
   google-logging-utils (0.1.0) sha256=70950b1e49314273cf2e167adb47b62af7917a4691b580da7e9be67b9205fcd5
-  google-protobuf (4.35.1) sha256=a3a6471331d918f58dfa4d014a8f6286f0af2cf4840216bde52fcf2ea3fe3726
-  google-protobuf (4.35.1-aarch64-linux-gnu) sha256=50ca44d0eeff3f8475e630a1accdd974256f3510694d574e2c9d6119ea8bc9e1
-  google-protobuf (4.35.1-arm64-darwin) sha256=d9c957df04fa89c749fa9a72a7b383eb4296efc9b2303dc6fd6fbe39c698ad6b
-  google-protobuf (4.35.1-x86-linux-gnu) sha256=cc7492566b27ad8b5dfa3a7b6f9b11e905050cc53c2fa8ff22de375a9e7a70fb
-  google-protobuf (4.35.1-x86_64-darwin) sha256=66b62b4df00931018a692806df66393efa960d6d2b7da69735187249f950d3ee
-  google-protobuf (4.35.1-x86_64-linux-gnu) sha256=c786439087512a3fbd199e9897d265b855f951d4027e218ea55e858d45969edd
+  google-protobuf (4.36.0) sha256=2132fb002366b85a57fbb796333e2cb1f969126e05f9af32149709ba3fd397b5
+  google-protobuf (4.36.0-aarch64-linux-gnu) sha256=3fa22004853b83297d8ad4ca5c9adc8aea5e6da7b4caadf5577cb9da3eefe63f
+  google-protobuf (4.36.0-arm64-darwin) sha256=be182aac1cf55ccbbd27ec5a94d5b012069075f5c879d65423d33e6b2dec86f5
+  google-protobuf (4.36.0-x86-linux-gnu) sha256=34c327aaf29e51db012e537cce9d2e38359d9ec96cb4a699eaf47231db6020ab
+  google-protobuf (4.36.0-x86_64-darwin) sha256=6cb938760546ee5ce57d04ed358ea10d0278b6f1ddea35e100c278f429afc25b
+  google-protobuf (4.36.0-x86_64-linux-gnu) sha256=8c253f7cb7647cdf1f54fc3f215e151206b5159e03d74fe29b8599264903de2b
   googleapis-common-protos (1.7.0) sha256=b684c0b9e1800c6bb89ad64e0dcabb377a01a31ff7aec1bfebd26c183b2c9241
   googleapis-common-protos-types (1.23.0) sha256=992e740a523794d9fc5f29a504465d8fc737aaa16c930fe7228e3346860faf0a
   googleauth (1.14.0) sha256=62e7de11791890c3d3dc70582dfd9ab5516530e4e4f56d96451fd62c76475149
@@ -3421,7 +3421,7 @@ CHECKSUMS
   rake-compiler-dock (1.12.0) sha256=f13205c2738f3d2053afcd03491a9e4541b22a59a0bfc53fc8bc883bd8188023
   rb-fsevent (0.11.2) sha256=43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe
   rb-inotify (0.10.1) sha256=050062d4f31d307cca52c3f6a7f4b946df8de25fc4bd373e1a5142e41034a7ca
-  rb_sys (0.9.128) sha256=9ab81f4d6d4e1895de18762232362d1264475aa7035756b50441e442130538fd
+  rb_sys (0.9.130) sha256=7d486d99c1da02635515deaf9860fc5aea90bb4ab2589b2deec7fdc7d3548615
   rbs (3.9.5) sha256=eabaaf60aee84e38cbf94839c6e1b9cd145c7295fc3cc0e88c92e4069b1119b0
   rbtrace (0.5.3) sha256=c432292f305d9ab12fd47d9722e0d5210d983758a951fe6107c36cc955cb923f
   rchardet (1.8.0) sha256=693acd5253d5ade81a51940697955f6dd4bb2f0d245bda76a8e23deec70a52c7

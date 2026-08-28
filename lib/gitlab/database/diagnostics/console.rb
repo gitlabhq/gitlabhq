@@ -8,7 +8,7 @@ module Gitlab
         UNAVAILABLE = 'unavailable'
         FAILED = 'failed'
 
-        VIEWS = [Views::SchemaResolution].freeze
+        VIEWS = [Views::SchemaResolution, Views::AutovacuumSettings].freeze
 
         def self.run(database_names:, output: $stdout)
           Runner.new(database_names: database_names, output: output).run

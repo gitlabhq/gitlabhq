@@ -495,7 +495,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/language_data.rb'
     - 'lib/gitlab/lets_encrypt/client.rb'
     - 'lib/gitlab/prometheus_client.rb'
-    - 'lib/gitlab/rack_attack/request.rb'
     - 'lib/gitlab/redis/multi_store.rb'
     - 'lib/gitlab/relative_positioning/ending_at.rb'
     - 'lib/gitlab/relative_positioning/item_context.rb'

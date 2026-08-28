@@ -17236,16 +17236,6 @@ CREATE TABLE ci_build_report_results (
     partition_id bigint NOT NULL
 );
 
-CREATE TABLE ci_build_runtime_environments (
-    build_id bigint NOT NULL,
-    partition_id bigint NOT NULL,
-    runtime_environment_id bigint,
-    runner_machine_id bigint,
-    project_id bigint NOT NULL,
-    suspend_on_success boolean DEFAULT false NOT NULL,
-    suspend_on_failure boolean DEFAULT false NOT NULL
-);
-
 CREATE TABLE ci_build_trace_chunks (
     id bigint NOT NULL,
     chunk_index integer NOT NULL,
@@ -20695,8 +20685,8 @@ CREATE TABLE duo_workflows_workflows (
     trigger_flow_schedule_id bigint,
     CONSTRAINT check_1033e7a455 CHECK ((char_length(title) <= 40)),
     CONSTRAINT check_13bb5688db CHECK ((char_length(summary) <= 1024)),
-    CONSTRAINT check_30ca07a4ef CHECK ((char_length(goal) <= 16384)),
     CONSTRAINT check_3a9162f1ae CHECK ((char_length(image) <= 2048)),
+    CONSTRAINT check_6b3ca83ad7 CHECK ((char_length(goal) <= 65536)),
     CONSTRAINT check_6d4d79a907 CHECK ((char_length(flow_metadata_json) <= 1024)),
     CONSTRAINT check_733b5742d3 CHECK ((char_length(agent_type) <= 50)),
     CONSTRAINT check_73884a5839 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
@@ -40064,9 +40054,6 @@ ALTER TABLE ONLY ci_build_pending_states
 ALTER TABLE ONLY ci_build_report_results
     ADD CONSTRAINT ci_build_report_results_pkey PRIMARY KEY (build_id, partition_id);
 
-ALTER TABLE ONLY ci_build_runtime_environments
-    ADD CONSTRAINT ci_build_runtime_environments_pkey PRIMARY KEY (build_id, partition_id);
-
 ALTER TABLE ONLY ci_build_trace_chunks
     ADD CONSTRAINT ci_build_trace_chunks_pkey PRIMARY KEY (id);
 
@@ -47270,12 +47257,6 @@ CREATE UNIQUE INDEX index_ci_build_pending_states_on_build_id ON ci_build_pendin
 CREATE INDEX index_ci_build_pending_states_on_project_id ON ci_build_pending_states USING btree (project_id);
 
 CREATE INDEX index_ci_build_report_results_on_project_id ON ci_build_report_results USING btree (project_id);
-
-CREATE INDEX index_ci_build_runtime_envs_on_project_id ON ci_build_runtime_environments USING btree (project_id);
-
-CREATE INDEX index_ci_build_runtime_envs_on_runner_machine_id ON ci_build_runtime_environments USING btree (runner_machine_id);
-
-CREATE INDEX index_ci_build_runtime_envs_on_runtime_environment_id ON ci_build_runtime_environments USING btree (runtime_environment_id);
 
 CREATE UNIQUE INDEX index_ci_build_trace_chunks_on_build_id_and_chunk_index ON ci_build_trace_chunks USING btree (build_id, chunk_index);
 

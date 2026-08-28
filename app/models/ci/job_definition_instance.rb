@@ -31,5 +31,22 @@ module Ci
       where(arel_table[:job_id].eq(Ci::Processable.arel_table[:id]))
       .where(arel_table[:partition_id].eq(Ci::Processable.arel_table[:partition_id]))
     end
+
+    # This scope is for use inside nested NOT EXISTS subqueries and adds the partition
+    # equality predicate to the ON of the INNER JOIN. This is necessary to prevent the
+    # planner from pulling the anti-join subquery up and flattening it with the outer
+    # relation, which produces a very costly plan involving many seq scans.
+    scope :joins_job_definition_scoped_by_job_partition, -> do
+      instances = arel_table
+      definitions = Ci::JobDefinition.arel_table
+      outer_job = Ci::Processable.arel_table
+
+      on_conditions =
+        definitions[:id].eq(instances[:job_definition_id])
+          .and(definitions[:partition_id].eq(instances[:partition_id]))
+          .and(instances[:partition_id].eq(outer_job[:partition_id]))
+
+      joins(instances.join(definitions).on(on_conditions).join_sources)
+    end
   end
 end

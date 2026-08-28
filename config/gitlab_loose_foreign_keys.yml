@@ -149,17 +149,6 @@ ci_build_report_results:
   - table: projects
     column: project_id
     on_delete: async_delete
-ci_build_runtime_environments:
-  - table: p_ci_builds
-    column: build_id
-    on_delete: async_delete
-    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
-  - table: ci_runner_machines
-    column: runner_machine_id
-    on_delete: async_nullify
-  - table: projects
-    column: project_id
-    on_delete: async_delete
 ci_daily_build_group_report_results:
   - table: namespaces
     column: group_id

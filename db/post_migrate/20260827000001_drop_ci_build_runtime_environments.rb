@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-class CreateCiBuildRuntimeEnvironments < Gitlab::Database::Migration[2.3]
-  milestone '19.2'
+class DropCiBuildRuntimeEnvironments < Gitlab::Database::Migration[2.3]
+  milestone '19.4'
 
   def up
-    options = {
-      if_not_exists: true,
-      primary_key: [:build_id, :partition_id]
-    }.freeze
+    drop_table :ci_build_runtime_environments, if_exists: true
+  end
 
-    # rubocop:disable Migration/EnsureFactoryForTable -- factory removed with the model; table dropped in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252197
-    create_table(:ci_build_runtime_environments, **options) do |t|
+  def down
+    return if table_exists?(:ci_build_runtime_environments)
+
+    create_table(:ci_build_runtime_environments, primary_key: [:build_id, :partition_id]) do |t|
       t.bigint :build_id, null: false
       t.bigint :partition_id, null: false
       t.bigint :runtime_environment_id
@@ -23,10 +23,5 @@ class CreateCiBuildRuntimeEnvironments < Gitlab::Database::Migration[2.3]
       t.index :runner_machine_id, name: 'index_ci_build_runtime_envs_on_runner_machine_id'
       t.index :project_id, name: 'index_ci_build_runtime_envs_on_project_id'
     end
-    # rubocop:enable Migration/EnsureFactoryForTable
-  end
-
-  def down
-    drop_table :ci_build_runtime_environments
   end
 end

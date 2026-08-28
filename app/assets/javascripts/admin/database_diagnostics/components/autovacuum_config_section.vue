@@ -12,11 +12,10 @@ import { uniqueId } from 'lodash-es';
 import { s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
-// Thresholds for flagging risky autovacuum configuration. Worker counts are
-// only flagged below the PostgreSQL default of 3, since most instances run
-// with the default and warning on it would be noise.
-const MAX_WORKERS_WARN_THRESHOLD = 3;
-const DEFAULT_COST_LIMIT = 200;
+const SEVERITY_VARIANTS = {
+  error: 'danger',
+  warning: 'warning',
+};
 
 const WRAPAROUND_DOCS_URL = helpPagePath('administration/troubleshooting/postgresql', {
   anchor: 'database-is-not-accepting-commands-to-avoid-wraparound-data-loss',
@@ -42,96 +41,54 @@ export default {
     settings() {
       return this.config.settings || {};
     },
+    findings() {
+      return this.config.findings || [];
+    },
+    findingsBySetting() {
+      return Object.fromEntries(this.findings.map((finding) => [finding.setting_name, finding]));
+    },
     hasSettings() {
       return Object.keys(this.settings).length > 0;
     },
     // Settings are already in the desired reading order and filtered to known
-    // GUCs by the backend (see AUTOVACUUM_SETTING_NAMES in database_information.rb).
+    // GUCs by the backend.
     settingRows() {
       return Object.keys(this.settings).map((name) => ({
         name,
         value: this.displayValue(name),
-        warning: this.settingWarning(name),
+        finding: this.findingsBySetting[name],
       }));
     },
-    flaggedSettings() {
-      return this.settingRows.filter((row) => row.warning);
-    },
-    // null when every surfaced setting is healthy; otherwise the worst severity
-    // among them, so the folded header can summarise the state at a glance.
-    highestSeverity() {
-      if (this.flaggedSettings.some((row) => row.warning.variant === 'danger')) return 'error';
-      if (this.flaggedSettings.length) return 'warning';
-      return null;
-    },
-    // Green tick when nothing is flagged, mirroring the search path panel.
     statusIcon() {
-      if (this.highestSeverity === 'error') return { name: 'error', variant: 'danger' };
-      if (this.highestSeverity === 'warning') return { name: 'warning', variant: 'warning' };
+      if (this.config.severity === 'error') return { name: 'error', variant: 'danger' };
+      if (this.config.severity === 'warning') return { name: 'warning', variant: 'warning' };
       return { name: 'check-circle-filled', variant: 'success' };
     },
     badgeVariant() {
-      return this.highestSeverity === 'error' ? 'danger' : 'warning';
+      return this.config.severity === 'error' ? 'danger' : 'warning';
     },
   },
   methods: {
-    rawValue(name) {
-      return this.settings[name]?.value;
-    },
-    numericValue(name) {
-      return Number(this.rawValue(name));
-    },
     displayValue(name) {
-      const { value, unit } = this.settings[name];
+      const { value, unit, effective_value: effective } = this.settings[name];
 
-      // Show the resolved cost limit next to the -1 sentinel so the value cell
-      // matches the status badge, which is computed from the effective limit.
-      if (name === 'autovacuum_vacuum_cost_limit' && value === '-1') {
-        const effective = this.effectiveCostLimit();
-
-        if (Number.isFinite(effective)) {
-          return sprintf(this.$options.i18n.effectiveValue, { value, effective });
-        }
+      if (effective) {
+        return sprintf(this.$options.i18n.effectiveValue, { value, effective });
       }
 
       // -1 is PostgreSQL's "not set" sentinel (e.g. autovacuum_work_mem), so
       // appending the unit would render a confusing "-1 kB".
       return unit && value !== '-1' ? `${value} ${unit}` : value;
     },
-    // autovacuum_vacuum_cost_limit = -1 means "inherit vacuum_cost_limit", so
-    // resolve it before judging whether the effective limit is near the default.
-    effectiveCostLimit() {
-      const limit = this.numericValue('autovacuum_vacuum_cost_limit');
-
-      return limit === -1 ? this.numericValue('vacuum_cost_limit') : limit;
+    findingLabel(finding) {
+      return (
+        this.$options.findingLabels[finding.code] ||
+        this.$options.severityLabels[finding.severity] ||
+        this.$options.severityLabels.warning
+      );
     },
-    settingWarning(name) {
-      const { i18n } = this.$options;
-
-      switch (name) {
-        case 'autovacuum':
-          return this.rawValue(name) === 'off'
-            ? { variant: 'danger', label: i18n.disabled, hint: i18n.autovacuumOffHint }
-            : null;
-        case 'autovacuum_vacuum_cost_delay':
-          return this.numericValue(name) === 0
-            ? { variant: 'danger', label: i18n.throttlingOff, hint: i18n.costDelayZeroHint }
-            : null;
-        case 'autovacuum_max_workers':
-          return this.numericValue(name) < MAX_WORKERS_WARN_THRESHOLD
-            ? { variant: 'warning', label: i18n.low, hint: i18n.maxWorkersHint }
-            : null;
-        case 'autovacuum_vacuum_cost_limit':
-          return this.effectiveCostLimit() <= DEFAULT_COST_LIMIT
-            ? { variant: 'warning', label: i18n.low, hint: i18n.costLimitHint }
-            : null;
-        case 'autovacuum_work_mem':
-          return this.rawValue(name) === '-1'
-            ? { variant: 'warning', label: i18n.inherited, hint: i18n.workMemHint }
-            : null;
-        default:
-          return null;
-      }
+    findingVariant(finding) {
+      return SEVERITY_VARIANTS[finding.severity] || 'warning';
     },
     toggleSettings() {
       this.settingsExpanded = !this.settingsExpanded;
@@ -143,6 +100,19 @@ export default {
     { key: 'status', label: s__('DatabaseDiagnostics|Status') },
   ],
   wraparoundDocsUrl: WRAPAROUND_DOCS_URL,
+  // Short badge labels per backend finding code; the finding message itself is
+  // shown as the tooltip.
+  findingLabels: {
+    autovacuum_disabled: s__('DatabaseDiagnostics|Disabled'),
+    autovacuum_throttling_disabled: s__('DatabaseDiagnostics|Throttling disabled'),
+    autovacuum_max_workers_low: s__('DatabaseDiagnostics|Low'),
+    autovacuum_cost_limit_low: s__('DatabaseDiagnostics|Low'),
+    autovacuum_work_mem_inherited: s__('DatabaseDiagnostics|Inherited'),
+  },
+  severityLabels: {
+    error: s__('DatabaseDiagnostics|Error'),
+    warning: s__('DatabaseDiagnostics|Warning'),
+  },
   i18n: {
     settingsTitle: s__('DatabaseDiagnostics|Effective settings'),
     effectiveValue: s__('DatabaseDiagnostics|%{value} (effective: %{effective})'),
@@ -152,25 +122,6 @@ export default {
       'DatabaseDiagnostics|Learn more about PostgreSQL autovacuum and transaction ID wraparound.',
     ),
     ok: s__('DatabaseDiagnostics|OK'),
-    disabled: s__('DatabaseDiagnostics|Disabled'),
-    throttlingOff: s__('DatabaseDiagnostics|Throttling disabled'),
-    low: s__('DatabaseDiagnostics|Low'),
-    inherited: s__('DatabaseDiagnostics|Inherited'),
-    autovacuumOffHint: s__(
-      'DatabaseDiagnostics|Autovacuum is disabled. Dead tuples will not be reclaimed automatically, risking bloat and eventually transaction ID wraparound.',
-    ),
-    costDelayZeroHint: s__(
-      'DatabaseDiagnostics|A cost delay of zero disables throttling, so autovacuum runs at full speed and can cause write storms and replication lag.',
-    ),
-    maxWorkersHint: s__(
-      'DatabaseDiagnostics|Only a few autovacuum workers are configured, which may be too few for a large or decomposed database fleet.',
-    ),
-    costLimitHint: s__(
-      'DatabaseDiagnostics|The cost limit is at or near the conservative default, which is likely too low to keep up on modern storage.',
-    ),
-    workMemHint: s__(
-      'DatabaseDiagnostics|The autovacuum_work_mem setting is unset and inherits maintenance_work_mem. Consider setting it explicitly to bound per-worker memory.',
-    ),
   },
 };
 </script>
@@ -183,11 +134,11 @@ export default {
         <gl-icon v-if="hasSettings" v-bind="statusIcon" data-testid="settings-status-icon" />
         <h4 class="gl-heading-5 !gl-mb-0">{{ $options.i18n.settingsTitle }}</h4>
         <gl-badge
-          v-if="flaggedSettings.length"
+          v-if="findings.length"
           :variant="badgeVariant"
           data-testid="settings-flagged-count"
         >
-          {{ flaggedSettings.length }}
+          {{ findings.length }}
         </gl-badge>
       </div>
 
@@ -225,14 +176,14 @@ export default {
 
         <template #cell(status)="{ item }">
           <gl-badge
-            v-if="item.warning"
+            v-if="item.finding"
             v-gl-tooltip
-            :variant="item.warning.variant"
+            :variant="findingVariant(item.finding)"
             icon="warning"
-            :title="item.warning.hint"
+            :title="item.finding.message"
             :data-testid="`status-${item.name}`"
           >
-            {{ item.warning.label }}
+            {{ findingLabel(item.finding) }}
           </gl-badge>
           <gl-badge v-else variant="success" :data-testid="`status-ok-${item.name}`">{{
             $options.i18n.ok

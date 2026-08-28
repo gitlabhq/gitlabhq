@@ -609,7 +609,10 @@ module API
         optional :type, type: String, values: %w[branch tag all], default: 'all', desc: 'Scope'
         use :pagination
       end
-      route_setting :authorization, permissions: :read_commit_ref, boundary_type: :project
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, permissions: :read_commit_ref, boundary_type: :project,
+        job_token_policies: :read_repositories,
+        allow_public_access_for_enabled_project_features: :repository
       get ':id/repository/commits/:sha/refs', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS, urgency: :low do
         commit = user_project.commit(params[:sha])
         not_found!('Commit') unless commit

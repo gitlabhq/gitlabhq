@@ -163,24 +163,11 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
     end
 
     context 'with autovacuum configuration' do
-      let(:connection) { Gitlab::Database.database_base_models['main'].connection }
-      let(:settings_rows) do
-        # Deliberately out of AUTOVACUUM_SETTING_NAMES order, to prove the
-        # collector re-orders rather than relying on the SQL row order.
-        [
-          { 'name' => 'maintenance_work_mem', 'setting' => '65536', 'unit' => 'kB' },
-          { 'name' => 'autovacuum', 'setting' => 'on', 'unit' => nil },
-          { 'name' => 'autovacuum_max_workers', 'setting' => '3', 'unit' => nil }
-        ]
-      end
+      let(:check_result) { { settings: {}, findings: [], severity: nil, counts: {} } }
 
       subject(:config) { described_class.execute[:databases]['main'][:autovacuum_config] }
 
       before do
-        allow(connection).to receive(:select_all).and_call_original
-        allow(connection).to receive(:select_all)
-          .with(a_string_matching(/FROM pg_settings/)).and_return(settings_rows)
-
         # Keep this context focused on autovacuum config: stub the sibling
         # vacuum-progress collection so its query doesn't hit the real DB.
         allow_next_instance_of(described_class) do |info|
@@ -188,16 +175,12 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
         end
       end
 
-      it 'maps effective settings into a name-keyed hash with value and unit' do
-        expect(config[:settings]).to eq(
-          'autovacuum' => { value: 'on', unit: nil },
-          'autovacuum_max_workers' => { value: '3', unit: nil },
-          'maintenance_work_mem' => { value: '65536', unit: 'kB' }
-        )
-      end
+      it 'embeds the autovacuum settings check result' do
+        expect_next_instance_of(Gitlab::Database::Diagnostics::Checks::AutovacuumSettings) do |check|
+          expect(check).to receive(:execute).and_return(check_result)
+        end
 
-      it 'orders settings to match AUTOVACUUM_SETTING_NAMES regardless of SQL row order' do
-        expect(config[:settings].keys).to eq(%w[autovacuum autovacuum_max_workers maintenance_work_mem])
+        expect(config).to eq(check_result)
       end
     end
 
