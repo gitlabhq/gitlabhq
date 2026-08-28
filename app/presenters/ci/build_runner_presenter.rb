@@ -100,13 +100,15 @@ module Ci
     end
 
     def suspend_options
-      opts = options[:suspend_options]
-      return unless opts.present?
+      return unless ::Feature.enabled?(:ci_suspendable_environment_runner_routing, project, type: :gitlab_com_derisk)
+
+      job_runtime_environment = self.job_runtime_environment
+      return unless job_runtime_environment
 
       {
-        suspend_on_success: opts[:suspend_on_success] || false,
-        suspend_on_failure: opts[:suspend_on_failure] || false,
-        environment_key: opts[:environment_key]
+        suspend_on_success: job_runtime_environment.suspend_on_success,
+        suspend_on_failure: job_runtime_environment.suspend_on_failure,
+        environment_key: job_runtime_environment.runtime_environment&.environment_key
       }.compact
     end
 

@@ -1,0 +1,22 @@
+# @feature_category: code_review_workflow
+query reviewDrawer($projectPath: ID!, $iid: String!) {
+  project(fullPath: $projectPath) {
+    id
+    mergeRequest(iid: $iid) {
+      id
+      allowsMultipleReviewers
+      author {
+        id
+      }
+      userPermissions {
+        canApprove
+        updateMergeRequest
+      }
+      reviewers {
+        nodes {
+          id
+        }
+      }
+    }
+  }
+}

@@ -173,11 +173,11 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def each_build(params, &blk)
-      queue = Ci::Queue::BuildQueueService.new(runner)
+      queue = Ci::Queue::BuildQueueService.new(runner, runner_manager)
       builds = queue.build_candidates.limit(MAX_QUEUE_DEPTH + 1)
 
-      build_and_partition_ids = retrieve_queue(-> { queue.execute(builds) })
-      size = build_and_partition_ids.size
+      build_partition_and_project_ids = retrieve_queue(-> { queue.execute(builds) })
+      size = build_partition_and_project_ids.size
       queue_size = if size > MAX_QUEUE_DEPTH
                      queue.build_candidates.count
                    else
@@ -186,8 +186,16 @@ module Ci
 
       @metrics.observe_queue_size(-> { queue_size }, @runner.runner_type)
 
-      build_and_partition_ids.each do |build_id, partition_id|
-        yield Ci::Build.find_by!(partition_id: partition_id, id: build_id), queue_size
+      build_partition_and_project_ids.each do |build_id, partition_id, project_id|
+        build = if ::Feature.enabled?(:ci_suspendable_environment_runner_routing, ::Project.actor_from_id(project_id),
+          type: :gitlab_com_derisk)
+                  Ci::Build.preload(job_runtime_environment: :runtime_environment)
+                    .find_by!(partition_id: partition_id, id: build_id)
+                else
+                  Ci::Build.find_by!(partition_id: partition_id, id: build_id)
+                end
+
+        yield build, queue_size
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord

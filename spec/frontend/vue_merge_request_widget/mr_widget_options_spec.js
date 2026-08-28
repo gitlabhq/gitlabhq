@@ -462,16 +462,6 @@ describe('MrWidgetOptions', () => {
           expect(stateQueryHandler).toHaveBeenCalledTimes(2);
         });
 
-        it('should bind to `set-branch-remove-flag`', () => {
-          expect(findPipelineContainer().props('mr')).toMatchObject({
-            isRemovingSourceBranch: false,
-          });
-          eventHub.$emit('set-branch-remove-flag', [true]);
-          expect(findPipelineContainer().props('mr')).toMatchObject({
-            isRemovingSourceBranch: true,
-          });
-        });
-
         it('should bind to `failed-to-merge`', async () => {
           expect(findAlertMessage().exists()).toBe(false);
           const props = findPipelineContainer().props('mr');

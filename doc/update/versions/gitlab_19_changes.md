@@ -44,6 +44,7 @@ apply only to that method. All other items apply to all installation methods.
 Before upgrading to GitLab 19.2, review the following:
 
 - [19.2.0] - [GitLab Duo Self-Hosted AI Gateway URLs cleared after upgrade](#gitlab-duo-self-hosted-ai-gateway-urls-cleared-after-upgrade) (Linux package)
+- [19.2.0] - [New groups require SHA parameter for merge requests API calls](#new-groups-require-sha-parameter-for-merge-requests-api-calls)
 
 ### Upgrade to 19.0
 
@@ -90,6 +91,27 @@ If you have already upgraded to 19.2.0 and are affected, restore the correct
 AI Gateway endpoint URLs in **Admin area** > **GitLab Duo** > **Configuration** > **Service endpoints**
 and save the changes.
 For more information, see [issue 606458](https://gitlab.com/gitlab-org/gitlab/-/work_items/606458).
+
+### New groups require SHA parameter for merge requests API calls
+
+- Affects: All installation methods
+- Affected versions: 19.2.0
+
+GitLab 19.2 introduces the `require_sha_for_merge` setting at the group and instance level.
+When enabled, the [merge a merge request](../../api/merge_requests.md#merge-a-merge-request)
+API endpoint rejects calls that do not include a valid commit `sha` parameter.
+
+Groups created after upgrading to GitLab 19.2 have `require_sha_for_merge` enabled by
+default, unless the setting is locked by the instance or an ancestor group using `lock_require_sha_for_merge`. If the setting is locked, the new group inherits the
+locked value instead. Existing groups are not affected.
+
+After you update to 19.2, if your automation or API clients call the merge endpoint without a `sha` parameter, those
+clients will fail for all new groups unless you disable the requirement and lock the setting.
+
+To disable this
+requirement for all new groups, set `require_sha_for_merge` to `false` and enable
+`lock_require_sha_for_merge`
+through the [application settings API](../../api/settings.md#available-settings).
 
 ### Container registry metadata database enabled by default in prefer mode
 

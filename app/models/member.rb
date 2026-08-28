@@ -137,6 +137,9 @@ class Member < ApplicationRecord
   end
 
   scope :for_users, ->(user_ids) { where(user_id: user_ids) }
+  scope :in_organization, ->(organization) do
+    joins(:member_namespace).merge(Namespace.in_organization(organization))
+  end
 
   scope :count_by_access_level, ->(column_name = nil) do
     group(:access_level).count(column_name)

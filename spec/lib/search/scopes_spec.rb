@@ -176,6 +176,25 @@ RSpec.describe Search::Scopes, feature_category: :global_search do
       end
     end
 
+    context 'when global search is disabled for the groups scope' do
+      before do
+        stub_application_setting(global_search_groups_enabled: false)
+      end
+
+      it 'excludes groups from available global scopes' do
+        scopes = described_class.available_for_context(context: :global, requested_search_type: :basic)
+
+        expect(scopes).to include('projects', 'work_items', 'users')
+        expect(scopes).not_to include('groups')
+      end
+
+      it 'still includes groups for group context' do
+        scopes = described_class.available_for_context(context: :group, requested_search_type: :basic)
+
+        expect(scopes).to include('groups')
+      end
+    end
+
     context 'when requested_search_type is not basic or blank', unless: Gitlab.ee? do
       it 'includes scopes available for basic search when advanced search type is requested in CE' do
         scopes = described_class.available_for_context(context: :global, requested_search_type: :advanced)

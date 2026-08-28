@@ -40,6 +40,20 @@ module Ci
         end
       end
 
+      context 'when ci_suspendable_environment_runner_routing is disabled for the project' do
+        let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+        before do
+          stub_feature_flags(ci_suspendable_environment_runner_routing: false)
+        end
+
+        it 'still picks the build without eager loading job_runtime_environment' do
+          expect(Ci::Build).not_to receive(:preload)
+
+          expect(execute.build).to eq(pending_job)
+        end
+      end
+
       context 'when queue size exceeds MAX_QUEUE_DEPTH' do
         let_it_be(:runner) { create(:ci_runner, :instance) }
         let_it_be_with_reload(:pending_job_1) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
@@ -407,8 +421,14 @@ module Ci
             let!(:build1_project3) { create(:ci_build, :pending, :queued, pipeline: pipeline3) }
 
             it 'picks builds one-by-one' do
-              expect(Ci::Build).to receive(:find_by!).with(partition_id: pending_job.partition_id, id: pending_job.id)
-                .and_call_original
+              allow(Ci::Build).to receive(:preload).with(job_runtime_environment: :runtime_environment).and_wrap_original do |method, *args|
+                relation = method.call(*args)
+
+                expect(relation).to receive(:find_by!)
+                  .with(partition_id: pending_job.partition_id, id: pending_job.id).and_call_original
+
+                relation
+              end
 
               expect(build_on(shared_runner)).to eq(build1_project1)
             end
@@ -872,7 +892,11 @@ module Ci
               before do
                 pipeline.unlocked!
                 allow(pending_job).to receive(:drop!).and_raise(ActiveRecord::StaleObjectError.new(pending_job, :drop!))
-                allow(Ci::Build).to receive(:find_by!).and_return(pending_job)
+                allow(Ci::Build).to receive(:preload).with(job_runtime_environment: :runtime_environment).and_wrap_original do |method, *args|
+                  relation = method.call(*args)
+                  allow(relation).to receive(:find_by!).and_return(pending_job)
+                  relation
+                end
               end
 
               it 'does not drop nor pick' do
@@ -964,7 +988,11 @@ module Ci
 
           it 'drops the build and logs the failure' do
             allow(pending_job).to receive(:run!).and_raise(RuntimeError, 'scheduler error')
-            allow(Ci::Build).to receive(:find_by!).and_return(pending_job)
+            allow(Ci::Build).to receive(:preload).with(job_runtime_environment: :runtime_environment).and_wrap_original do |method, *args|
+              relation = method.call(*args)
+              allow(relation).to receive(:find_by!).and_return(pending_job)
+              relation
+            end
 
             expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
               .with(anything, a_hash_including(build_id: pending_job.id))
@@ -979,7 +1007,11 @@ module Ci
 
           context 'when the build transitions to running and fails on post-commit' do
             it 'transitions to scheduler_failure status and clears runtime_metadata' do
-              allow(Ci::Build).to receive(:find_by!).and_return(pending_job)
+              allow(Ci::Build).to receive(:preload).with(job_runtime_environment: :runtime_environment).and_wrap_original do |method, *args|
+                relation = method.call(*args)
+                allow(relation).to receive(:find_by!).and_return(pending_job)
+                relation
+              end
               allow(pending_job).to receive(:execute_hooks).and_raise(RuntimeError, 'scheduler error')
               expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
                                                  .with(anything, a_hash_including(build_id: pending_job.id))
@@ -1775,6 +1807,51 @@ module Ci
 
         it 'skips routing check and allows any runner to pick the build' do
           expect(build_on(project_runner)).to eq(pending_job)
+        end
+      end
+    end
+
+    describe 'routing via ci_pending_builds.runner_machine_id' do
+      # Use a dedicated project/pipeline so the outer pending_build (different project) does not
+      # compete with our pending_job for the same project_runner.
+      let_it_be(:resume_project) { create(:project, shared_runners_enabled: false) }
+      let_it_be(:resume_pipeline) { create(:ci_empty_pipeline, project: resume_project) }
+      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [resume_project]) }
+      let_it_be(:runner_manager) { create(:ci_runner_machine, runner: project_runner) }
+      let_it_be(:other_runner_manager) { create(:ci_runner_machine, runner: project_runner) }
+
+      let(:routed_machine_id) { nil }
+      let(:pending_job) do
+        create(:ci_build, :pending, pipeline: resume_pipeline)
+      end
+
+      let!(:pending_build) do
+        create(:ci_pending_build, build: pending_job, project: resume_project, runner_machine_id: routed_machine_id)
+      end
+
+      def build_on(runner, manager)
+        described_class.new(runner, manager).execute.build
+      end
+
+      context 'when the build is not routed to any machine' do
+        it 'is picked up regardless of which runner_manager polls' do
+          expect(build_on(project_runner, runner_manager)).to eq(pending_job)
+        end
+      end
+
+      context 'when the build is routed to this runner_manager' do
+        let(:routed_machine_id) { runner_manager.id }
+
+        it 'is picked up by the matching runner_manager' do
+          expect(build_on(project_runner, runner_manager)).to eq(pending_job)
+        end
+
+        it 'is not picked up by a different runner_manager' do
+          expect(build_on(project_runner, other_runner_manager)).to be_nil
+        end
+
+        it 'is not picked up when polling without a runner_manager' do
+          expect(build_on(project_runner, nil)).to be_nil
         end
       end
     end

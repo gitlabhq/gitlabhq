@@ -204,19 +204,46 @@ Five properties of that compilation, each of which a caller has to work with:
   `violation[{}]`). GOVERN-006 specifies `gitlab.policy` for policy evaluation;
   nothing written so far uses it, and reconciling the two is tracked separately.
 - **A rule type with no emitter raises `ValidationError`**, as does a rule that could
-  only compile to something inert: an environment rule matching on nothing, or a `custom`
-  program declaring a package other than `governance`, which the Policy Engine would query
-  and find nothing in. Compilation is what stops such a policy from being stored, on create
-  and on update alike. Skipping any of them would let a policy save, look enforcing, and
-  enforce nothing. An empty `rules` array is not one of these cases: it compiles to
-  nothing and saves.
+  only compile to something inert: a freeze window with no tiers, an environment rule
+  matching on nothing, or a `custom` program declaring a package other than `governance`,
+  which the Policy Engine would query and find nothing in. Compilation is what stops such
+  a policy from being stored, on create and on update alike. Skipping any of them would
+  let a policy save, look enforcing, and enforce nothing. An empty `rules` array is not
+  one of these cases: it compiles to nothing and saves.
 - **Rules whose merged module exceeds `MAX_COMPILED_RULES_BYTES` are refused too**, for a
   different reason: the Policy Engine would not load a module that large, so accepting one
   would defer the failure to evaluation.
 
-`Rules::ALL` advertises `calendar` as authorable, but no emitter for it has landed yet, so
-a `calendar` rule is refused as an unsupported type for now. Its emitter, and the
-timestamp normalization freeze windows need, are tracked separately.
+Timestamps in a `calendar` rule are normalized to UTC before being emitted, because the
+generated program compares them as strings. An authored bound would otherwise sort by its
+wall-clock digits rather than by the instant it denotes. Compared as a string,
+`2026-12-24T00:00:00+01:00` behaves as though it were `2026-12-24T00:00:00Z`, an hour
+after the `2026-12-23T23:00:00Z` it actually means, so the window would silently begin an
+hour late. Normalizing every bound to `YYYY-MM-DDTHH:MM:SSZ` leaves them all fixed-width
+and single-zone, so lexicographic order is chronological order. A window carrying no
+offset at all is rejected, since `Time.iso8601` would read it as local time and the same
+policy would then compile differently on different hosts. A bound carrying a non-zero
+fraction of a second is rejected for a similar reason: keeping the fraction breaks the
+ordering, because `.` sorts before `Z`, and dropping it moves the boundary by up to a
+second without saying so. A zero fraction compiles, since dropping that changes no
+instant. A bound naming a date or time that does not exist is refused rather than read
+leniently, because `Time.iso8601` rolls an out-of-range component forward and would
+otherwise compile June 31 as July 1. The accepted shape is pinned to a four-digit year, so
+every emitted bound is the same width and orders against every other.
+
+That normalization covers the authored half of the comparison only. The other half,
+`input.evaluated_at`, arrives at evaluation time and has to be the literal `Z` form with no
+fractional part (`2026-08-02T14:07:33Z`, the form the
+[deployment context](https://gitlab.com/gitlab-org/gitlab/-/work_items/607786) declares).
+The emitted program compares these as strings, so any other spelling sorts wrongly even
+when it means the same instant: against a window starting `2026-12-24T00:00:00Z`, both
+`2026-12-24T00:00:00+00:00` and `2026-12-24T00:00:00.000Z` denote that exact start and
+neither matches it. Against the same window, an `evaluated_at` of
+`2026-12-23T23:30:00-01:00` is inside it and does not match, and one of
+`2026-12-24T01:00:00+02:00` is outside it and does. Worse, an `evaluated_at` that is
+absent, `null`, a number, or an object produces no violation and no error, because Rego
+orders across types, so the freeze window never fires at all. Neither the transpiler nor
+the emitted program can tell. Whoever calls the engine owns that contract.
 
 ## Repository Contract
 

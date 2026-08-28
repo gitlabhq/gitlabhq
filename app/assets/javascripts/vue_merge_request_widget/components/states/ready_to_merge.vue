@@ -20,7 +20,6 @@ import { fetchPolicies } from '~/lib/graphql';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
-import simplePoll from '~/lib/utils/simple_poll';
 import { __, s__, n__, sprintf } from '~/locale';
 import SmartInterval from '~/smart_interval';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -509,37 +508,6 @@ export default {
     },
     onMergeWithFailedPipelineConfirmation() {
       this.handleMergeButtonClick(false, true, true);
-    },
-    initiateRemoveSourceBranchPolling() {
-      // We need to show source branch is being removed spinner in another component
-      eventHub.$emit('set-branch-remove-flag', [true]);
-
-      simplePoll((continuePolling, stopPolling) => {
-        this.handleRemoveBranchPolling(continuePolling, stopPolling);
-      });
-    },
-    handleRemoveBranchPolling(continuePolling, stopPolling) {
-      this.service
-        .poll()
-        .then((res) => res.data)
-        .then((data) => {
-          // If source branch exists then we should continue polling
-          // because removing a source branch is a background task and takes time
-          if (data.source_branch_exists) {
-            continuePolling();
-          } else {
-            // Branch is removed. Update widget, stop polling and hide the spinner
-            eventHub.$emit('mr-widget-update-requested', () => {
-              eventHub.$emit('set-branch-remove-flag', [false]);
-            });
-            stopPolling();
-          }
-        })
-        .catch(() => {
-          createAlert({
-            message: __('Something went wrong while deleting the source branch. Please try again.'),
-          });
-        });
     },
     setCommitMessage(val) {
       this.commitMessage = val;

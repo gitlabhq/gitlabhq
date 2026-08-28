@@ -20,6 +20,10 @@
       "type": "boolean",
       "description": "Enable global search for users"
     },
+    "global_search_groups_enabled": {
+      "type": "boolean",
+      "description": "Enable global search for groups"
+    },
     "global_search_block_anonymous_searches_enabled": {
       "type": "boolean",
       "description": "Enable blocking of anonymous global search requests"

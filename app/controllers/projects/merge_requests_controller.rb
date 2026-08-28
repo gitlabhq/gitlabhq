@@ -43,6 +43,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:rapid_diffs_on_mr_show, current_user, type: :beta)
     push_frontend_feature_flag(:explicit_mr_work_item_relations, project)
+    push_frontend_feature_flag(:assign_reviewer_on_review_submission, project)
     gon.push({ rapid_diffs_page_enabled: rapid_diffs_page_enabled? })
   end
 

@@ -56,56 +56,56 @@ GitLab Duoは、マージリクエストのライフサイクル全体を通じ�
 
 データ使用: ソースブランチのヘッドとターゲットブランチ間の変更差分が、大規模言語モデルに送信されます。
 
-## GitLab Duoを使用してコードレビューをする {#use-gitlab-duo-to-review-your-code}
+## GitLab Duoを使用してコードをレビューする {#use-gitlab-duo-to-review-your-code}
 
 GitLab Duoは、マージリクエストをレビューし、潜在的なエラーを検出したり、標準への適合性に関するフィードバックを提供します。
 
-GitLab Duoにレビューをリクエストすると、アドオンに基づいて2つのコードレビュー機能のいずれかが自動的に実行されます。グループのオーナーロールを持つユーザーは、すべてのユーザーに対してどの機能が実行されるかを設定できます。
+GitLab Duoにレビューをリクエストすると、使用しているアドオンに応じて、2つのコードレビュー機能のいずれかが自動的に実行されます。グループのオーナーロールを持つユーザーは、すべてのユーザーに対してどちらの機能を実行するかを設定できます。
 
-| 詳細              | [コードレビューフロー](../../duo_agent_platform/flows/foundational_flows/code_review.md) | [GitLab Duoコードレビュー](../../gitlab_duo/code_review.md) |
+| 詳細              | [コードレビューフロー](../../duo_agent_platform/flows/foundational_flows/code_review/_index.md) | [GitLab Duoコードレビュー](../../gitlab_duo/code_review.md) |
 |---------------------|--------------------------------------------------------------------------------------|-----------------------------------------------------------|
 | レビュアー            | `@GitLabDuo`                                                                         | `@GitLabDuo`                                              |
 | タイプ                | エージェント型                                                                              | 非エージェント型                                               |
 | 必須アドオン     | なし。GitLabクレジットを使用します。                                                           | GitLab Duo Enterprise                                     |
-| コンテキスト認識   | リポジトリ構造とファイル間の依存関係の理解の強化           | マージリクエストと、その中のファイルの差分に焦点を当てています |
-| 分析            | 多段階のエージェント型推論                                                         | シングルパス                                               |
+| コンテキスト認識   | リポジトリ構造とファイル間の依存関係をより高度に理解           | マージリクエストと、その中のファイルの差分に重点を置く |
+| 分析            | 複数ステップのエージェント型推論                                                         | 単一パス                                               |
 | セッション作成    | {{< yes >}}                                                                          | {{< no >}}                                                |
 | 自動レビュー   | {{< yes >}}                                                                          | {{< yes >}}                                               |
 | カスタム指示 | {{< yes >}}                                                                          | {{< yes >}}                                               |
 | カスタムコメント     | {{< yes >}}                                                                          | {{< yes >}}                                               |
 
-### どのレビュー機能が実行されるかを決定する {#determine-which-review-feature-runs}
+### 実行するレビュー機能を決定する {#determine-which-review-feature-runs}
 
-デフォルトでは、GitLabが実行するコードレビュー機能は、レビューを開始するユーザーによって異なります。
+デフォルトでは、GitLabが実行するコードレビュー機能は、レビューを開始したユーザーによって決まります。
 
-| レビュートリガー                          | 開始ユーザー                      |
+| レビューのトリガー                          | 開始ユーザー                      |
 |-----------------------------------------|--------------------------------------|
-| 手動でレビューがリクエストされた場合               | レビューをリクエストしたユーザー。    |
-| マージリクエストが作成された場合（ドラフトではない）     | マージリクエストの作成者。            |
-| ドラフトのマージリクエストが準備完了としてマークされた場合     | マージリクエストの作成者。            |
+| レビューを手動でリクエスト               | レビューをリクエストしたユーザー。    |
+| マージリクエストを作成（ドラフトではない）     | マージリクエストの作成者。            |
+| ドラフトのマージリクエストを準備完了としてマーク     | マージリクエストの作成者。            |
 
-開始ユーザーがGitLab Duo Enterpriseシートを持っている場合、GitLab Duoコードレビューが実行されます。そうでない場合、コードレビューフローが実行されます。両方の機能が同じプロジェクトで実行できます。
+開始ユーザーにGitLab Duo Enterpriseシートが割り当てられている場合、GitLab Duoコードレビューが実行されます。割り当てられていない場合、コードレビューフローが実行されます。同じプロジェクトで両方の機能を実行できます。
 
-グループのオーナーロールを持つユーザーは、シートタイプに関わらず、[すべてのレビューがコードレビューフローを使用するように設定できます](#turn-on-code-review-flow-for-gitlab-duo-enterprise-seats)。コードレビューフローが実行されると、GitLabクレジットの使用量は開始ユーザーに帰属します。
+グループのオーナーロールを持つユーザーは、シートの種類に関係なく、[すべてのレビューでコードレビューフローを使用するように設定](#turn-on-code-review-flow-for-gitlab-duo-enterprise-seats)できます。コードレビューフローが実行された場合、GitLabクレジットの使用量は開始ユーザーに帰属します。
 
-どの機能がレビューを実行するかを判断するには、マージリクエストの活動フィードを確認します。Code Review Flowは、実行時にレビューセッションを開始します。レビューセッションが表示されない場合、GitLab Duoコードレビューがレビューを実行します。
+レビューを実行した機能を確認するには、マージリクエストのアクティビティフィードを確認します。コードレビューフローが実行されると、レビューセッションが開始されます。レビューセッションが表示されない場合は、GitLab Duoコードレビューによってレビューが実行されています。
 
-![GitLab Duoによって開始されたレビューセッションを示すマージリクエストの活動フィード。](img/gitlab_duo_code_review_flow_session_v18_10.png)
+![GitLab Duoによって開始されたレビューセッションが表示されているマージリクエストのアクティビティフィード。](img/gitlab_duo_code_review_flow_session_v18_10.png)
 
-レビューが完了した後、[プロジェクトのセッション](../../duo_agent_platform/sessions/_index.md#view-sessions-for-your-project)でCode Review Flowセッションを検索することもできます。
+レビューの完了後、[プロジェクトのセッション](../../duo_agent_platform/sessions/_index.md#view-sessions-for-your-project)でコードレビューフローセッションを確認することもできます。
 
-#### GitLab Duo Enterpriseシートのコードレビューフローをオンにする {#turn-on-code-review-flow-for-gitlab-duo-enterprise-seats}
+#### GitLab Duo Enterpriseシートでコードレビューフローをオンにする {#turn-on-code-review-flow-for-gitlab-duo-enterprise-seats}
 
 {{< history >}}
 
-- GitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240432)され、[機能フラグ](../../../administration/feature_flags/_index.md) `duo_code_review_dap_routing_consent_enabled`という名前です。デフォルトでは有効になっています。
-- GitLab 19.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/602689)されました。機能フラグ`duo_code_review_dap_routing_consent_enabled`は削除されました。
+- GitLab 19.2で`duo_code_review_dap_routing_consent_enabled`[機能フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240432)されました。デフォルトでは有効になっています。
+- GitLab 19.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/602689)になりました。機能フラグ`duo_code_review_dap_routing_consent_enabled`は削除されました。
 
 {{< /history >}}
 
-GitLab Duo Enterpriseシートの所有者がGitLabクレジットを消費する機能を使用しないようにするため、彼らが開始するすべてのコードレビューは、デフォルトでGitLab Duoコードレビューを使用します。この動作は、オーナーロールを持つユーザーがグループに対してコードレビューフローを有効にした場合でも発生します。
+GitLab Duo Enterpriseシートの所有者がGitLabクレジットを消費する機能を使用しないようにするため、これらのユーザーが開始するすべてのコードレビューでは、デフォルトでGitLab Duoコードレビューを使用します。この動作は、オーナーロールを持つユーザーがグループに対してコードレビューフローをオンにしている場合でも適用されます。
 
-このデフォルトを変更し、ユーザーのシートに関わらず、すべてのコードレビューがコードレビューフローを使用するように設定できます。
+このデフォルトを変更して、ユーザーのシートに関係なく、すべてのコードレビューでコードレビューフローを使用するように設定できます。
 
 GitLab Duo Enterpriseシートのデフォルトのコードレビュー機能をオーバーライドするには:
 
@@ -116,36 +116,36 @@ GitLab Duo Enterpriseシートのデフォルトのコードレビュー機能�
 前提条件: 
 
 - トップレベルグループのオーナーロール。
-- [コードレビューフロー](../../duo_agent_platform/flows/foundational_flows/code_review.md#prerequisites)が有効になっており、トップレベルグループに対して正しく設定されていること。
+- トップレベルグループに対して[コードレビューフロー](../../duo_agent_platform/flows/foundational_flows/code_review/_index.md#prerequisites)がオンになっており、正しく設定されている。
 
 1. 上部のバーで**検索または移動先**を選択して、トップレベルグループを見つけます。
 1. **設定** > **GitLab Duo**を選択します。
 1. **設定の変更**を選択します。
-1. **フローの実行** > **基本フローを許可**で、**コードレビューのフロー**チェックボックスをオフにしてから、もう一度選択します。
-1. 確認ダイアログで、**Enable Code Review Flow**を選択します。
+1. **フローの実行** > **基本フローを許可**で、**コードレビューフロー**チェックボックスをオフにしてから、もう一度オンにします。
+1. 確認ダイアログで、**コードレビューフローを有効にする**を選択します。
 
 {{< /tab >}}
 
-{{< tab title="GitLab Self-Managed and GitLab Dedicated" >}}
+{{< tab title="GitLab Self-ManagedおよびGitLab Dedicated" >}}
 
 前提条件: 
 
-- グループのメンテナーまたはオーナーロールを持つユーザー。
-- [コードレビューフロー](../../duo_agent_platform/flows/foundational_flows/code_review.md#prerequisites)が有効になっており、インスタンスに対して正しく設定されていること。
+- グループのメンテナーまたはオーナーのロール。
+- インスタンスに対して[コードレビューフロー](../../duo_agent_platform/flows/foundational_flows/code_review/_index.md#prerequisites)がオンになっており、正しく設定されている。
 
 1. 上部のバーで、**検索または移動先**を選択して、グループまたはサブグループを見つけます。
 1. **設定** > **一般**を選択します。
 1. **GitLab Duoの機能**を展開します。
-1. **フローの実行**で、**コードレビューのフロー**チェックボックスをオフにし、**変更を保存**を選択します。
-1. もう一度**GitLab Duoの機能**を展開し、**フローの実行**で、**コードレビューのフロー**チェックボックスを選択します。
-1. 確認ダイアログで、**Enable Code Review Flow**を選択します。
+1. **フローの実行**で、**コードレビューフロー**チェックボックスをオフにし、**変更を保存**を選択します。
+1. もう一度**GitLab Duoの機能**を展開し、**フローの実行**で、**コードレビューフロー**チェックボックスをオンにします。
+1. 確認ダイアログで、**コードレビューフローを有効にする**を選択します。
 1. **変更を保存**を選択します。
 
 {{< /tab >}}
 
 {{< /tabs >}}
 
-コードレビューフローがグループ内のすべてのコードレビューで実行され、GitLabクレジットを消費します。すべてのレビューをGitLab Duoコードレビューに戻すには、コードレビューフローをオフにしてください。
+これで、グループ内のすべてのコードレビューでコードレビューフローが実行され、GitLabクレジットが消費されます。すべてのレビューをGitLab Duoコードレビューに戻すには、コードレビューフローをオフにします。
 
 ## GitLab Duoでディスカッションを解決する {#resolve-a-discussion-with-gitlab-duo}
 
@@ -153,39 +153,42 @@ GitLab Duo Enterpriseシートのデフォルトのコードレビュー機能�
 
 - プラン: Premium、Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
-- ステータス: ベータ版
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/600990)された[ベータ](../../../policy/development_stages_support.md)版で、[機能フラグ](../../../administration/feature_flags/_index.md) `resolve_discussion_with_duo`という名前です。デフォルトでは有効になっています。
+- GitLab 19.2で`resolve_discussion_with_duo`[機能フラグ](../../../administration/feature_flags/_index.md)とともに[ベータ版](../../../policy/development_stages_support.md)として[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/600990)されました。デフォルトでは有効になっています。
+- GitLab 19.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/603482)になりました。
 
 {{< /history >}}
 
-GitLab Duoを使用して、マージリクエストのレビューのディスカッションを解決する。
+> [!flag]
+> この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
 
-GitLab Duoにディスカッションを解決するよう依頼すると、レビューコメントと周囲のコードを読み込み、ソースブランチでリクエストされた変更を行い、その変更をコミットしてプッシュします。その後、GitLab Duoは変更の要約とともにディスカッションに返信し、スレッドを解決します。
+GitLab Duoを使用して、マージリクエストのレビューディスカッションを解決します。
 
-この機能は、[GitLab Duo Agent Platform](../../duo_agent_platform/_index.md)上のデベロッパーフローを使用します。
+GitLab Duoにディスカッションの解決を依頼すると、レビューコメントとその周辺のコードを読み取り、ソースブランチにリクエストされた変更を加えて、その変更をコミットおよびプッシュします。その後、GitLab Duoは変更のサマリーをディスカッションに返信し、スレッドを解決します。
+
+この機能では、[GitLab Duo Agent Platform](../../duo_agent_platform/_index.md)のデベロッパーフローを使用します。
 
 前提条件: 
 
 - プロジェクトのデベロッパー、メンテナー、またはオーナーロール。
 - [GitLab Duo Agent Platformの前提条件](../../duo_agent_platform/_index.md#prerequisites)。
-- **基本フローを許可**と**デベロッパー**が[トップレベルグループに対して有効になっていること。](../../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off)
-- [サービスアカウントを許可するようにプッシュルールが設定されていること](../../duo_agent_platform/troubleshooting.md#configure-push-rules-to-allow-a-service-account)。
-- [独自のRunnerが設定されている](../../duo_agent_platform/flows/execution.md#configure-runners-to-execute-flows)、または[GitLabホスト型Runnerがプロジェクトで有効になっている](../../../ci/runners/hosted_runners/_index.md)こと。
+- [トップレベルグループ](../../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off)で、**基本フローを許可**と**デベロッパー**を有効にしている。
+- [サービスアカウントを許可するようにプッシュルールを設定している](../../duo_agent_platform/troubleshooting.md#configure-push-rules-to-allow-a-service-account)。
+- [独自のRunnerを設定](../../duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows)しているか、プロジェクトで[GitLabホストRunner](../../../ci/runners/hosted_runners/_index.md)をオンにしている。
 
 GitLab Duoでディスカッションを解決するには:
 
 1. マージリクエストで、未解決のディスカッションに移動します。
-1. **スレッドを解決にする**の横にある**その他の解決オプション**（{{< icon name="chevron-down" >}}）を選択します。
+1. **スレッドを解決**の横にある**その他の解決オプション**（{{< icon name="chevron-down" >}}）を選択します。
 1. **GitLab Duoで解決**を選択します。
 
-GitLab Duoが開始するセッションは、[プロジェクトのセッション](../../duo_agent_platform/sessions/_index.md#view-sessions-for-your-project)で追跡することができます。
+GitLab Duoによってセッションが開始されます。このセッションは、[プロジェクトのセッション](../../duo_agent_platform/sessions/_index.md#view-sessions-for-your-project)で追跡できます。
 
-## コードレビューを要約する {#summarize-a-code-review}
+## コードレビューのサマリーを生成する {#summarize-a-code-review}
 
 {{< details >}}
 
@@ -250,7 +253,7 @@ GitLab Duoが開始するセッションは、[プロジェクトのセッショ
 
 {{< history >}}
 
-- GitLab 16.2で[導入](https://gitlab.com/groups/gitlab-org/-/epics/10453)された[実験](../../../policy/development_stages_support.md#experiment)機能で、[機能フラグ](../../../administration/feature_flags/_index.md) `generate_commit_message_flag`という名前です。デフォルトでは無効になっています。
+- GitLab 16.2で`generate_commit_message_flag`[機能フラグ](../../../administration/feature_flags/_index.md)とともに[実験的機能](../../../policy/development_stages_support.md#experiment)として[導入](https://gitlab.com/groups/gitlab-org/-/epics/10453)されました。デフォルトでは無効になっています。
 - 機能フラグ`generate_commit_message_flag`は、GitLab 17.2で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158339)になっています。
 - 機能フラグ`generate_commit_message_flag`は、GitLab 17.7で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173262)されました。
 - GitLab 18.0でPremiumを含むように変更されました。
@@ -278,7 +281,7 @@ GitLab Duoが開始するセッションは、[プロジェクトのセッショ
 
 - [GitLab Duoの可用性を制御する](../../gitlab_duo/turn_on_off.md)
 - [GitLab Duo機能すべて](../../gitlab_duo/_index.md)
-- [GitLab Duoでマージコンフリクトを解決する](../../project/merge_requests/conflicts.md#resolve-conflicts-with-gitlab-duo)
+- [GitLab Duoでマージコンフリクトを解決する](conflicts.md#resolve-conflicts-with-gitlab-duo)
 
 ## トラブルシューティング {#troubleshooting}
 

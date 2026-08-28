@@ -8,7 +8,6 @@ import { InternalEvents } from '~/tracking';
 import { dashboardTodosPath } from '~/lib/utils/path_helpers/dashboard';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
-  TABS_INDICES,
   TODO_ACTION_TYPE_BUILD_FAILED,
   TODO_ACTION_TYPE_DIRECTLY_ADDRESSED,
   TODO_ACTION_TYPE_ASSIGNED,
@@ -77,7 +76,6 @@ export default {
   mixins: [InternalEvents.mixin()],
   provide() {
     return {
-      currentTab: TABS_INDICES.pending,
       currentTime: new Date(),
       currentUserId: computed(() => this.currentUserId),
     };

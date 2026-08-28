@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI Coding
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: マージコンフリクトを理解し、Gitプロジェクトでそれらを修正する方法を学びます。
@@ -43,7 +43,7 @@ Gitがユーザーによる決定を必要とするコンフリクトを検出�
 
 コンフリクトしているファイルが次の条件を満たす場合、GitLabのUIでマージコンフリクトを解決できます。
 
-- バイナリではないテキストファイルである。
+- バイナリではないテキストファイルです。
 - コンフリクトマーカーが追加された状態で、サイズが200 KB未満である。
 - UTF-8互換のエンコードを使用している。
 - コンフリクトマーカーが含まれていない。
@@ -55,9 +55,49 @@ Gitがユーザーによる決定を必要とするコンフリクトを検出�
 
 GitLabは、ユーザーインターフェースで[解決できるコンフリクト](#conflicts-you-can-resolve-in-the-user-interface)を表示します。次の方法でもコンフリクトを解決できます。
 
+- GitLab Duo: 自動エンドツーエンドのコンフリクト解決に最適です。
 - インタラクティブモード: 保持する行のバージョンを選択するだけで済むコンフリクトに最適です。
 - インラインエディタ: 手動編集で変更点を組み合わせる必要がある複雑なコンフリクトに適しています。
 - コマンドライン: 複雑なコンフリクトを完全に制御できます。詳細については、[コマンドラインから競合を解決する](../../../topics/git/git_rebase.md#resolve-conflicts-from-the-command-line)を参照してください。
+
+### GitLab Duoでコンフリクトを解決 {#resolve-conflicts-with-gitlab-duo}
+
+{{< details >}}
+
+- プラン: Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- GitLab 19.0で`mr_ai_resolve_conflicts`[機能フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235919)されました。デフォルトでは有効になっています。
+- GitLab 19.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/596465)になりました。
+- 機能フラグ`mr_ai_resolve_conflicts`はGitLab 19.4で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251062/)。
+
+{{< /history >}}
+
+GitLab Duoは、自律的にマージコンフリクトを分析し、競合するファイルを編集し、コミットを作成し、ソースブランチにプッシュできます。
+
+前提条件: 
+
+- デベロッパー、メンテナー、またはオーナーロール。
+- ソースブランチへのプッシュアクセス。
+- [GitLab Duo Agent Platformの前提条件](../../duo_agent_platform/_index.md#prerequisites)。
+- コンフリクトのあるマージリクエストのうち、[UIで解決できるもの](#conflicts-you-can-resolve-in-the-user-interface)。
+
+GitLab Duoでコンフリクトを解決するには:
+
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 左サイドバーで、**コード** > **マージリクエスト**を選択し、マージリクエストを見つけてください。
+1. **概要**を選択します。
+1. マージコンフリクトの詳細を見つけ、GitLab Duoにコンフリクトを解決するよう指示します:
+   - マージリクエストレポートセクションで、**コンフリクトを解決**を選択し、次に**GitLab Duoで解決**を選択します。
+   - マージウィジェットで、コンフリクトチェック行を見つけ、**GitLab Duoで解決**を選択します。
+
+GitLab Duoはコンフリクトを分析し、それらを解決し、変更をコミットし、ソースブランチにプッシュします。完了すると、GitLab Duoはマージリクエストにサマリーコメントを投稿します。
+
+GitLab Duoはブランチ保護ルールを尊重し、保護ブランチに強制プッシュしません。
 
 ### インタラクティブモード {#interactive-mode}
 
@@ -106,7 +146,7 @@ CI/CDパイプラインの問題をトラブルシューティングするには
 
 ### GitLab UIでのリベース {#rebase-in-the-gitlab-ui}
 
-GitLab UIからリベースをトリガーするには、[`/rebase`クイックアクション](../quick_actions.md#rebase)、またはマージリクエストウィジェットのリベースオプションを使用します。
+GitLab UIからリベースをトリガーするには、[`/rebase`クイックアクション](../quick_actions.md#rebase)またはマージリクエストウィジェットのリベースオプションを使用します。
 
 前提条件: 
 
@@ -125,7 +165,7 @@ GitLab UIからマージリクエストのブランチをリベースするに�
 GitLabは、スケジュールを設定し、デフォルトブランチに対してブランチのリベースを実行します。GitLabは、完了したリベースをシステムノートとして表示します。
 
 > [!note]
-> もしGitLab UIを通じて行われたコミットに対してコミット署名を構成している場合、Webコミットは[UIを通じてリベースされた際に](../repository/signed_commits/web_commits.md#web-commits-become-unsigned-after-rebase)コミット署名を失います。
+> GitLab UIを通じて行われたコミットのコミット署名を設定している場合、Webコミットは[UIを通じてリベースされると](../repository/signed_commits/web_commits.md#web-commits-become-unsigned-after-rebase)、そのコミット署名を失います。
 
 ## 関連トピック {#related-topics}
 

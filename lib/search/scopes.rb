@@ -143,7 +143,8 @@ module Search
       'work_items' => :global_search_work_items_enabled?,
       'merge_requests' => :global_search_merge_requests_enabled?,
       'snippet_titles' => :global_search_snippet_titles_enabled?,
-      'users' => :global_search_users_enabled?
+      'users' => :global_search_users_enabled?,
+      'groups' => :global_search_groups_enabled?
     }.freeze
 
     class << self

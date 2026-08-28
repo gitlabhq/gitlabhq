@@ -366,6 +366,8 @@ Settings.registry['notifications'] ||= []
 #
 Settings['artifact_registry'] ||= {}
 Settings.artifact_registry['api_url'] ||= 'http://localhost:8080' if Rails.env.development? || Rails.env.test?
+Settings.artifact_registry['service_token'] ||= {}
+Settings.artifact_registry.service_token['secret_file'] ||= nil
 
 #
 # Error Reporting and Logging with Sentry

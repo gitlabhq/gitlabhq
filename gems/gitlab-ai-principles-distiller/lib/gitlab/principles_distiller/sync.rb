@@ -494,9 +494,9 @@ module Gitlab
             next
           end
 
-          updated = Diff.reduce_noise(current, updated) if current
-
           config = manifest.principle_config(name)
+
+          updated = Diff.reduce_noise(current, updated, source_text: principle_source_text(config)) if current
 
           # Assemble the full body (header + prerequisite note + sources footer) BEFORE the meaningful? gate.
           # `current` is read from disk with its footer intact (strip_frontmatter removes only the YAML), so comparing
@@ -522,10 +522,16 @@ module Gitlab
         [contents, failed]
       end
 
-      # Builds the full distilled body: auto-generated header, optional prerequisite note, the distilled checklist, and
-      # the authoritative sources footer.
-      # Matches what read_principles_file returns for an already-published file (sans YAML frontmatter), so the result
-      # can be compared against `current` by Diff.meaningful?.
+      # Concatenate SSOT sources and the baseline for inline-code verification.
+      def principle_source_text(config)
+        text = manifest.config_source_paths(config)
+          .filter_map { |path| manifest.read_repo_file(path) }
+          .join("\n")
+
+        text unless text.empty?
+      end
+
+      # Build the complete body so Diff.meaningful? compares symmetric inputs.
       def assemble_distilled_body(updated, config, name, header)
         note = manifest.prerequisite_note(name)
 

@@ -6,6 +6,8 @@ import { DEFAULT_ORGANIZATION_GID } from '~/organizations/shared/constants';
 import { isDefaultOrganization } from '~/organizations/shared/utils';
 import axios from '~/lib/utils/axios_utils';
 import { createOrganizationFromGroupPath } from '~/lib/utils/path_helpers/group';
+import { rootPath } from '~/lib/utils/path_helpers/routes';
+import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
@@ -201,6 +203,8 @@ export default {
         if (errors.length) {
           throw new Error(errors.join(', '));
         }
+
+        return true;
       } catch (error) {
         createAlert({
           message: s__(
@@ -210,6 +214,8 @@ export default {
           captureError: true,
           containerSelector: `.${this.$options.alertContainerSelector}`,
         });
+
+        return false;
       }
     },
     async onNext() {
@@ -227,8 +233,23 @@ export default {
         return;
       }
 
-      await this.transferGroupsAndConfirmOrganization(organizationId);
-      this.nextButtonLoading = false;
+      const isSuccessful = await this.transferGroupsAndConfirmOrganization(organizationId);
+
+      if (!isSuccessful) {
+        this.nextButtonLoading = false;
+
+        return;
+      }
+
+      visitUrlWithAlerts(rootPath(), [
+        {
+          id: 'organization-successfully-created-from-group-settings',
+          message: s__(
+            'Organization|Groups, projects, and users are being transferred into your organization. You will receive an email when your organization is ready.',
+          ),
+          variant: 'success',
+        },
+      ]);
     },
     onPrev() {
       if (this.isFirstStep) {

@@ -75,6 +75,35 @@ RSpec.describe Pajamas::ButtonComponent, type: :component, feature_category: :de
       end
     end
 
+    describe 'accessible_disabled' do
+      context 'when set to true' do
+        let(:options) { { disabled: true, accessible_disabled: true } }
+
+        it 'drops the native disabled attribute but stays aria-disabled' do
+          expect(page).to have_css ".disabled[aria-disabled]"
+          expect(page).not_to have_css "[disabled]"
+        end
+      end
+
+      context 'when set to true without disabled' do
+        let(:options) { { accessible_disabled: true } }
+
+        it 'has no disabled state at all' do
+          expect(page).not_to have_css ".disabled"
+          expect(page).not_to have_css "[aria-disabled]"
+        end
+      end
+
+      context 'when set to true while loading' do
+        let(:options) { { loading: true, accessible_disabled: true } }
+
+        it 'drops the native disabled attribute but stays aria-disabled' do
+          expect(page).to have_css ".disabled[aria-disabled]"
+          expect(page).not_to have_css "[disabled]"
+        end
+      end
+    end
+
     describe 'loading' do
       context 'with defaults (false)' do
         it 'is not disabled' do

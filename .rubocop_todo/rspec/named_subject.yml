@@ -206,7 +206,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/git_access_wiki_spec.rb'
     - 'ee/spec/lib/gitlab/git_audit_event_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/aggregations/epics/epic_node_spec.rb'
-    - 'ee/spec/lib/gitlab/graphql/aggregations/epics/lazy_epic_aggregate_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/loaders/bulk_epic_aggregate_loader_spec.rb'
     - 'ee/spec/lib/gitlab/import_export/group/group_and_descendants_repo_restorer_spec.rb'
     - 'ee/spec/lib/gitlab/import_export/group/group_and_descendants_repo_saver_spec.rb'

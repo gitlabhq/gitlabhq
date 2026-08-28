@@ -8,7 +8,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import TodosWidget from '~/homepage/components/todos_widget.vue';
 import TodoItem from '~/todos/components/todo_item.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
-import { TABS_INDICES } from '~/todos/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import BaseWidget from '~/homepage/components/base_widget.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
@@ -296,7 +295,6 @@ describe('TodosWidget', () => {
 
       const provided = wrapper.vm.$options.provide.call(wrapper.vm);
 
-      expect(provided.currentTab).toBe(TABS_INDICES.pending);
       expect(provided.currentTime).toBeInstanceOf(Date);
       expect(provided.currentUserId).toBeDefined();
     });

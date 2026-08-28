@@ -152,42 +152,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Release do
       end
     end
 
-    context "when value includes 'released_at' keyword" do
-      let(:config) do
-        {
-          tag_name: 'v0.06',
-          description: "./release_changelog.txt",
-          name: "Release $CI_TAG_NAME",
-          released_at: '2019-03-15T08:00:00Z'
-        }
-      end
-
-      it_behaves_like 'a valid entry'
-    end
-
-    context "when value includes 'milestones' keyword" do
-      let(:config) do
-        {
-          tag_name: 'v0.06',
-          description: "./release_changelog.txt",
-          name: "Release $CI_TAG_NAME",
-          milestones: milestones
-        }
-      end
-
-      context 'for an array of milestones' do
-        let(:milestones) { %w[m1 m2 m3] }
-
-        it_behaves_like 'a valid entry'
-      end
-
-      context 'for a single milestone' do
-        let(:milestones) { 'm1' }
-
-        it_behaves_like 'a valid entry'
-      end
-    end
-
     context "when value includes 'tag_message' keyword" do
       let(:config) do
         {

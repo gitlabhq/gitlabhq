@@ -36452,6 +36452,53 @@
           "possibleTypes": null
         },
         {
+          "kind": "INPUT_OBJECT",
+          "name": "ArtifactRegistryRemoteCredentialsInput",
+          "description": "Upstream credentials for a remote Artifact Registry repository. Write-only: no field returns them.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "username",
+              "description": "Username for the upstream. Maven and the container formats only; pair it with a password. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "password",
+              "description": "Password for the upstream. Maven and the container formats only; pair it with a username. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "authToken",
+              "description": "Bearer token for the upstream. npm only. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "ArtifactRegistryRemoteSettings",
           "description": "Upstream configuration of a remote Artifact Registry repository.",
@@ -36463,6 +36510,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "credentialsCleared",
+              "description": "Indicates the update that returned this repository cleared the stored upstream credentials. Null on any other response. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               },
               "isDeprecated": true,
@@ -36543,6 +36602,77 @@
           ],
           "inputFields": null,
           "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "ArtifactRegistryRemoteSettingsInput",
+          "description": "Writable upstream configuration of a remote Artifact Registry repository.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "url",
+              "description": "Base URL of the upstream registry, at most 1024 characters. Changing it resets the health fields, evicts the cached artifacts, and clears the stored credentials unless the same request supplies new ones. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "cacheValidityHours",
+              "description": "Revalidation window for cached artifacts, in hours. Between 0 and 32767, where 0 means cached artifacts never revalidate. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "metadataCacheValidityHours",
+              "description": "Revalidation window for cached metadata, in hours. Between 1 and 32767, so metadata always revalidates on a schedule. Maven and npm only; other formats reject it. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "snapshotMetadataAlwaysRevalidate",
+              "description": "Whether snapshot metadata revalidates on every read instead of on the metadata window. Maven only; other formats reject it. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "credentials",
+              "description": "Upstream credentials. Omit to leave the stored ones unchanged, supply an object to replace them, or, on an update, supply null to clear them. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "ArtifactRegistryRemoteCredentialsInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            }
+          ],
+          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },
@@ -36817,6 +36947,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "settings",
+              "description": "Upstream configuration. Required on a remote repository create, rejected on any other kind. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "ArtifactRegistryRemoteSettingsInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "name",
@@ -37532,6 +37674,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "settings",
+              "description": "Upstream configuration. Required on a remote repository create, rejected on any other kind. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "ArtifactRegistryRemoteSettingsInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "name",
@@ -256192,7 +256346,7 @@
             },
             {
               "name": "artifactRegistryRepositoryUpdate",
-              "description": "Updates a repository in Artifact Registry. Introduced in GitLab 19.3: Status: Experiment.",
+              "description": "Updates a repository in Artifact Registry. Artifact Registry writes the metadata fields and the settings in separate transactions, metadata first, so a failed update can leave a visibility or description change applied while the settings did not change. Re-sending the same mutation converges. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [
                 {
                   "name": "input",
@@ -297558,7 +297712,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "BigInt",
                 "ofType": null
               },
               "isDeprecated": false,

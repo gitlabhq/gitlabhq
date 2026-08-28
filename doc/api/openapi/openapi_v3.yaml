@@ -3060,6 +3060,32 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/RequestBody_8129788813d5"
+  "/api/v4/ai/duo_workflows/tools/risk_classification/results":
+    post:
+      operationId: postApiV4AiDuoWorkflowsToolsRiskClassificationResults
+      summary: Submit risk classification results for a merge request
+      description: Submits the categorical claims and summary produced by the risk
+        classification tool.
+      tags:
+      - GitLab Duo workflows
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Validation failed
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_01e586919b93"
+      x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/code_review/add_comments":
     post:
       operationId: postApiV4AiDuoWorkflowsCodeReviewAddComments
@@ -19433,7 +19459,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_e380d60bb8e3"
+              "$ref": "#/components/schemas/RequestBody_19b41658b54d"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -87315,6 +87341,8 @@ components:
           type: string
         global_search_users_enabled:
           type: string
+        global_search_groups_enabled:
+          type: string
         global_search_work_items_enabled:
           type: string
         global_search_merge_requests_enabled:
@@ -96869,6 +96897,61 @@ components:
           nullable: true
       required:
       - events
+    RequestBody_01e586919b93:
+      type: object
+      properties:
+        project_id:
+          type: string
+          description: The ID or path of the project
+          nullable: true
+        merge_request_iid:
+          type: integer
+          description: The IID of the merge request
+          nullable: true
+        diff_sha:
+          type: string
+          description: The full SHA of the diff revision the claims were assessed
+            against
+          pattern: "^[0-9a-f]{40}$"
+          nullable: true
+        claims:
+          type: array
+          description: Categorical claims about the merge request
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the claim, for example touches_auth
+                pattern: "^[a-z0-9_]+$"
+                nullable: true
+                maxLength: 64
+              value:
+                type: string
+                description: Categorical answer, for example true, false, or behavioral.
+                  Never a score.
+                nullable: true
+                maxLength: 256
+              evidence:
+                type: string
+                description: Where the claim was observed, as a path:line reference
+                nullable: true
+                maxLength: 256
+            required:
+            - name
+            - value
+          nullable: true
+        summary:
+          type: string
+          description: Plain-language explanation of the change and where its risk
+            lies
+          nullable: true
+          maxLength: 2048
+      required:
+      - project_id
+      - merge_request_iid
+      - diff_sha
+      - claims
     RequestBody_9983fc9d3604:
       type: object
       properties:
@@ -101644,7 +101727,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_e380d60bb8e3:
+    RequestBody_19b41658b54d:
       type: object
       properties:
         admin_mode:
@@ -104314,6 +104397,9 @@ components:
           type: string
           nullable: true
         global_search_users_enabled:
+          type: string
+          nullable: true
+        global_search_groups_enabled:
           type: string
           nullable: true
         global_search_work_items_enabled:

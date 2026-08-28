@@ -114,6 +114,8 @@ class SearchService
       ::Gitlab::CurrentSettings.global_search_snippet_titles_enabled?
     when 'users'
       ::Gitlab::CurrentSettings.global_search_users_enabled?
+    when 'groups'
+      ::Gitlab::CurrentSettings.global_search_groups_enabled?
     else
       true
     end

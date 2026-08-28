@@ -83,6 +83,45 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
       end
     end
 
+    context 'when the tool returns a response-level error' do
+      let(:error_result) do
+        {
+          content: [{ type: 'text', text: 'Validation error: labels is invalid' }],
+          structuredContent: {},
+          isError: true
+        }
+      end
+
+      before do
+        allow(manager).to receive(:get_tool).with(name: tool_name).and_return(tool)
+        allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::CustomService).and_return(false)
+        allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::GraphqlService).and_return(false)
+        allow(tool).to receive(:execute).and_return(error_result)
+      end
+
+      it 'returns the error result without raising' do
+        result = handler.invoke(request, params, current_user)
+
+        expect(result).to eq(error_result)
+      end
+
+      it 'logs the tool call as a failure with the error message', :aggregate_failures do
+        handler.invoke(request, params, current_user)
+
+        expect(logger).to have_received(:conditional_info).with(
+          current_user,
+          hash_including(
+            tool_name: tool_name,
+            tool_status: 'fail',
+            ::Labkit::Fields::ERROR_TYPE => 'API::Mcp::Handlers::CallTool::ToolResponseError',
+            expanded: hash_including(
+              ::Labkit::Fields::ERROR_MESSAGE => 'Validation error: labels is invalid'
+            )
+          )
+        )
+      end
+    end
+
     context 'when tool is a custom service' do
       let(:custom_tool) { instance_double(Mcp::Tools::Base::CustomService) }
 

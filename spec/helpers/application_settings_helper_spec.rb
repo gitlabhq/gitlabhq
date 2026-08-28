@@ -151,6 +151,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       expected_fields = %i[
         global_search_snippet_titles_enabled
         global_search_users_enabled
+        global_search_groups_enabled
         global_search_work_items_enabled
         global_search_merge_requests_enabled
         global_search_block_anonymous_searches_enabled
@@ -562,6 +563,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       application_setting.global_search_users_enabled = false
       application_setting.global_search_snippet_titles_enabled = true
       application_setting.global_search_block_anonymous_searches_enabled = true
+      application_setting.global_search_groups_enabled = true
       helper.instance_variable_set(:@application_setting, application_setting)
     end
 
@@ -574,6 +576,22 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
         expect(result[3]).not_to have_checked_field('Show merge requests in global search results', with: 1)
         expect(result[4]).to have_checked_field('Show snippets in global search results', with: 1)
         expect(result[5]).not_to have_checked_field('Show users in global search results', with: 1)
+        expect(result[6]).to have_checked_field('Show groups in global search results', with: 1)
+      end
+    end
+
+    context 'when the elasticsearch_group_search feature flag is disabled' do
+      before do
+        stub_feature_flags(elasticsearch_group_search: false)
+      end
+
+      it 'does not render the groups checkbox' do
+        helper.gitlab_ui_form_for(application_setting, url: search_admin_application_settings_path) do |form|
+          result = helper.global_search_settings_checkboxes(form)
+
+          expect(result.size).to eq(6)
+          expect(result.join).not_to include('Show groups in global search results')
+        end
       end
     end
   end

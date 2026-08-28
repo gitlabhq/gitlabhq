@@ -34,6 +34,107 @@ RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :cod
       it_behaves_like 'failed service execution'
     end
 
+    describe 'reviewer does not exist' do
+      let_it_be_with_reload(:non_reviewer) { create(:user) }
+      let(:service) { described_class.new(project: project, current_user: non_reviewer) }
+      let(:state) { 'reviewed' }
+
+      before_all do
+        merge_request.project.add_developer(non_reviewer)
+      end
+
+      context 'when the assign_reviewer_on_review_submission feature flag is disabled' do
+        before do
+          stub_feature_flags(assign_reviewer_on_review_submission: false)
+        end
+
+        it 'returns an error and does not create a reviewer', :aggregate_failures do
+          expect { result }.not_to change { merge_request.merge_request_reviewers.count }
+          expect(result[:status]).to eq :error
+          expect(result[:message]).to eq 'Reviewer not found'
+        end
+      end
+
+      context 'when the merge request does not allow multiple reviewers' do
+        before do
+          allow(merge_request).to receive(:allows_multiple_reviewers?).and_return(false)
+        end
+
+        context 'and a different reviewer is already assigned' do
+          it 'does not add the submitter and returns an error', :aggregate_failures do
+            result = nil
+
+            expect { result = service.execute(merge_request, 'reviewed') }
+              .not_to change { merge_request.merge_request_reviewers.count }
+
+            expect(merge_request.find_reviewer(non_reviewer)).to be_nil
+            expect(result[:status]).to eq :error
+            expect(result[:message]).to eq 'Reviewer not found'
+          end
+        end
+
+        context 'and no reviewer is assigned yet' do
+          let_it_be_with_reload(:mr_without_reviewers) { create(:merge_request) }
+          let(:service) { described_class.new(project: mr_without_reviewers.project, current_user: non_reviewer) }
+
+          before do
+            allow(mr_without_reviewers).to receive(:allows_multiple_reviewers?).and_return(false)
+            mr_without_reviewers.project.add_developer(non_reviewer)
+          end
+
+          it 'adds the submitter as the single reviewer' do
+            expect { service.execute(mr_without_reviewers, 'reviewed') }
+              .to change { mr_without_reviewers.merge_request_reviewers.where(user_id: non_reviewer.id).count }.by(1)
+          end
+        end
+      end
+
+      context 'when the state is an automatic transition' do
+        where(:automatic_state) do
+          %w[review_started unreviewed].map { |reviewer_state| [reviewer_state] }
+        end
+
+        with_them do
+          it 'does not create a reviewer and returns an error', :aggregate_failures do
+            result = nil
+
+            expect { result = service.execute(merge_request, automatic_state) }
+              .not_to change { merge_request.merge_request_reviewers.count }
+
+            expect(result[:status]).to eq :error
+          end
+        end
+      end
+
+      context 'when the user revokes an approval (unapproved)' do
+        it 'does not auto-assign the submitter as a reviewer', :aggregate_failures do
+          result = nil
+
+          expect { result = service.execute(merge_request, 'unapproved') }
+            .not_to change { merge_request.merge_request_reviewers.count }
+
+          expect(result[:status]).to eq :error
+        end
+      end
+
+      context 'when the submitter is the merge request author' do
+        # No reviewers assigned, so only the author check prevents the assignment.
+        let_it_be_with_reload(:authored_mr) { create(:merge_request) }
+        let(:service) { described_class.new(project: authored_mr.project, current_user: authored_mr.author) }
+
+        before do
+          authored_mr.project.add_developer(authored_mr.author)
+        end
+
+        it 'does not add the author as a reviewer of their own merge request', :aggregate_failures do
+          expect { service.execute(authored_mr, 'reviewed') }
+            .not_to change { authored_mr.merge_request_reviewers.count }
+
+          expect(authored_mr.find_reviewer(authored_mr.author)).to be_nil
+        end
+      end
+    end
+
     describe 'reviewer exists' do
       it 'returns success' do
         expect(result[:status]).to eq :success

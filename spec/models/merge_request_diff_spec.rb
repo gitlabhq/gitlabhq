@@ -198,6 +198,49 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
   end
 
+  describe '.ordinal_for' do
+    let_it_be(:merge_request) { create(:merge_request) }
+    let_it_be(:sha) { Digest::SHA1.hexdigest(SecureRandom.hex) }
+    let_it_be(:diff) { create(:merge_request_diff, merge_request: merge_request, head_commit_sha: sha) }
+
+    subject(:ordinal_for) { merge_request.merge_request_diffs.ordinal_for(sha) }
+
+    it "returns the diff's id" do
+      expect(ordinal_for).to eq(diff.id)
+    end
+
+    it 'orders a later revision above an earlier one' do
+      later_sha = Digest::SHA1.hexdigest(SecureRandom.hex)
+      create(:merge_request_diff, merge_request: merge_request, head_commit_sha: later_sha)
+
+      expect(merge_request.merge_request_diffs.ordinal_for(later_sha)).to be > ordinal_for
+    end
+
+    it 'returns nil for a sha with no diff' do
+      unknown_sha = Digest::SHA1.hexdigest(SecureRandom.hex)
+
+      expect(merge_request.merge_request_diffs.ordinal_for(unknown_sha)).to be_nil
+    end
+
+    context 'when the same sha has been pushed more than once' do
+      it 'returns the newest row, so a force-push back to it counts as current' do
+        intermediate_sha = Digest::SHA1.hexdigest(SecureRandom.hex)
+        create(:merge_request_diff, merge_request: merge_request, head_commit_sha: intermediate_sha)
+        repushed = create(:merge_request_diff, merge_request: merge_request, head_commit_sha: sha)
+
+        expect(merge_request.merge_request_diffs.ordinal_for(sha)).to eq(repushed.id)
+        expect(merge_request.merge_request_diffs.ordinal_for(sha))
+          .to be > merge_request.merge_request_diffs.ordinal_for(intermediate_sha)
+      end
+    end
+
+    it 'is scoped to the relation it is called on' do
+      other_merge_request = create(:merge_request)
+
+      expect(other_merge_request.merge_request_diffs.ordinal_for(sha)).to be_nil
+    end
+  end
+
   describe '.by_commit_sha' do
     include ProjectForksHelper
 

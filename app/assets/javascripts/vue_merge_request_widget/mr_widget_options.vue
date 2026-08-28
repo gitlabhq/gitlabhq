@@ -494,9 +494,6 @@ export default {
     checkRebasedStatus(cb) {
       this.checkStatus(cb, true);
     },
-    setIsRemovingSourceBranch([value]) {
-      this.mr.isRemovingSourceBranch = value;
-    },
     setMergeError(mergeError) {
       this.mr.mergeError = mergeError;
     },
@@ -512,7 +509,6 @@ export default {
     bindEventHubListeners() {
       eventHub.$on('mr-widget-update-requested', this.refetchState);
       eventHub.$on('mr-widget-rebase-success', this.checkRebasedStatus);
-      eventHub.$on('set-branch-remove-flag', this.setIsRemovingSourceBranch);
       eventHub.$on('failed-to-merge', this.setMergeError);
       eventHub.$on('UpdateWidgetData', this.setMrData);
       eventHub.$on('fetch-actions-content', this.fetchActionsContent);
@@ -521,7 +517,6 @@ export default {
     unbindEventListeners() {
       eventHub.$off('mr-widget-update-requested', this.refetchState);
       eventHub.$off('mr-widget-rebase-success', this.checkRebasedStatus);
-      eventHub.$off('set-branch-remove-flag', this.setIsRemovingSourceBranch);
       eventHub.$off('failed-to-merge', this.setMergeError);
       eventHub.$off('UpdateWidgetData', this.setMrData);
       eventHub.$off('fetch-actions-content', this.fetchActionsContent);

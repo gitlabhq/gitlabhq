@@ -59,12 +59,6 @@ export default {
             stopPolling();
 
             fetchUserCounts();
-
-            // If user checked remove source branch and we didn't remove the branch yet
-            // we should start another polling for source branch remove process
-            if (this.removeSourceBranch && data.source_branch_exists) {
-              this.initiateRemoveSourceBranchPolling();
-            }
           } else if (data.merge_error) {
             eventHub.$emit('failed-to-merge', data.merge_error);
             this.mr.transitionStateMachine({ transition: MERGE_FAILURE });

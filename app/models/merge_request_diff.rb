@@ -273,6 +273,16 @@ class MergeRequestDiff < ApplicationRecord
     find_by(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)
   end
 
+  # Orders a revision within the scoped diffs, for callers comparing which of two
+  # head SHAs came later. Rows are ordered by id, as `recent` already assumes.
+  #
+  # The newest row wins: a force-push back to an earlier SHA creates a fresh row
+  # for it, and that SHA is then the current revision, not the superseded one.
+  # Returns nil when the SHA has no row here.
+  def self.ordinal_for(head_commit_sha)
+    by_head_commit_sha(head_commit_sha).maximum(:id)
+  end
+
   # Batched counterpart to #includes_any_commits?: the Set of `merge_request_diffs.id`
   # values containing at least one of `shas`. Resolving the shas once and matching
   # every diff in the same query makes the cost independent of the diff count,

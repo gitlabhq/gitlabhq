@@ -25,7 +25,7 @@ title: LLMプラットフォームを設定する
 
 {{< /history >}}
 
-AIゲートウェイは、[LiteLLM](https://docs.litellm.ai/docs/providers)を通じて複数のLLMプロバイダーをサポートしています。各プラットフォームには、さまざまなニーズに対応できる独自の機能と利点があります。以下のドキュメントは、検証、テスト済みのプロバイダーを要約しています。使用したいプラットフォームがこのドキュメントにない場合は、[プラットフォームリクエストイシュー（イシュー526144）](https://gitlab.com/gitlab-org/gitlab/-/issues/526144)でフィードバックをお寄せください。
+AIゲートウェイは、[LiteLLM](https://docs.litellm.ai/docs/providers)を通じて複数のLLMプロバイダーをサポートしています。各プラットフォームには、さまざまなニーズに対応できる独自の機能と利点があります。次のドキュメントでは、検証およびテスト済みのプロバイダーについてまとめています。使用したいプラットフォームがこのドキュメントにない場合は、[プラットフォームリクエストイシュー（イシュー526144）](https://gitlab.com/gitlab-org/gitlab/-/issues/526144)でフィードバックをお寄せください。
 
 ## 複数のモデルとプラットフォームを使用する {#use-multiple-models-and-platforms}
 
@@ -207,7 +207,7 @@ IRSAを使用してAmazon EKSを認証するには:
      --description "Bedrock access for AI Gateway"
    ```
 
-1. オプション。より厳格なアクセス制御には、ワイルドカードリソースを特定のモデルのAmazon Resource Name（ARN）に置き換えます。これにより、GitLabの設定が変更されても、承認されたモデルのみがアクセスできるようになります。利用可能なモデルのARNについては、[Amazon BedrockモデルのID](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)を参照してください。
+1. オプション。より厳格なアクセス制御には、ワイルドカードリソースを特定のモデルのAmazon Resource Name (ARN) に置き換えます。これにより、GitLabの設定が変更されても、承認されたモデルのみがアクセスできるようになります。利用可能なモデルのARNについては、[Amazon BedrockモデルのID](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)を参照してください。
 
    ```json
    "Resource": [
@@ -217,7 +217,7 @@ IRSAを使用してAmazon EKSを認証するには:
    ```
 
    > [!note]
-   > 一部のモデルでは、異なるARN形式を使用する場合があります。たとえば、新しいモデルでは、基盤モデルのARNに加えて、推論プロファイルのARNが必要になる場合があります。特定のモデルのARN形式を確認するには、[Amazon BedrockモデルのID](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)を参照してください。
+   > 一部のモデルでは、異なるARN形式を使用する場合があります。たとえば、新しいモデルでは、基盤モデルのARNに加えて、推論プロファイルのARNが必要になる場合があります。ご使用のモデルのARN形式を確認するには、[Amazon BedrockモデルID](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)を参照してください。
 
 1. Amazon EKSサービスアカウントが使用する信頼ポリシーを持つIAMロールを作成します。次の値を置き換えます:
 

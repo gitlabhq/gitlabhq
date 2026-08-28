@@ -1,0 +1,10 @@
+---
+name: assign_reviewer_on_review_submission
+description: When a user who is not already a reviewer submits a review, add them as a reviewer of the merge request.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583470
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250880
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/624015
+milestone: '19.4'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

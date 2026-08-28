@@ -3983,6 +3983,7 @@ incompatible with personal access tokens.
 | `POST` | `/ai/duo_workflows/code_review/add_comments` | AI workflows OAuth token |
 | `GET` | `/ai/duo_workflows/code_review/custom_instructions` | AI workflows OAuth token |
 | `POST` | `/ai/duo_workflows/revoke_token` | AI workflows OAuth token |
+| `POST` | `/ai/duo_workflows/tools/risk_classification/results` | AI workflows OAuth token |
 | `GET` | `/ai/duo_workflows/workflows/:id` | AI workflows OAuth token |
 | `PATCH` | `/ai/duo_workflows/workflows/:id` | AI workflows OAuth token |
 | `POST` | `/ai/duo_workflows/workflows/:id/audit_events` | AI Workflows OAuth token |

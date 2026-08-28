@@ -918,6 +918,7 @@ class ApplicationSetting < ApplicationRecord
     global_search_merge_requests_enabled: [:boolean, { default: true }],
     global_search_snippet_titles_enabled: [:boolean, { default: true }],
     global_search_users_enabled: [:boolean, { default: true }],
+    global_search_groups_enabled: [:boolean, { default: true }],
     global_search_block_anonymous_searches_enabled: [:boolean, { default: false }],
     anonymous_searches_allowed: [:boolean, { default: true }],
     default_search_scope: [:string, { default: SEARCH_SCOPE_SYSTEM_DEFAULT }]

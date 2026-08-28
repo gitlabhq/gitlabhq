@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "json"
+require "time"
 
 module Gitlab
   module PolicyStore
@@ -8,6 +9,20 @@ module Gitlab
     # Rego program in the `package governance` namespace exposing `violation`.
     class RuleTranspiler
       include RegoPackage
+
+      AUTHORED_WALL_CLOCK_FORMAT = "%Y-%m-%dT%H:%M:%S"
+
+      EMITTED_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+      EMITTED_TIMESTAMP_PATTERN = /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z\z/
+
+      # Anchored at both ends, so a bound `Time.iso8601` would read leniently is refused as
+      # the wrong shape rather than reaching a later guard with a message about its meaning.
+      # Case-insensitive because RFC 3339 lets both the separator and the `Z` be lowercase.
+      AUTHORED_INSTANT_PATTERN = /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})\z/i
+
+      # A refusal has to cost less than the parse it prevents, and `Time.iso8601` accepts
+      # a year of any width.
+      MAX_AUTHORED_TIMESTAMP_LENGTH = 64
 
       # Nothing bounds the size of an authored rule, so a refusal names a value only
       # up to this much of it.
@@ -24,6 +39,7 @@ module Gitlab
         case rule_type
         when "custom" then custom_program
         when "environment" then program(environment_statements)
+        when "calendar" then program(calendar_statements)
         else invalid!("unsupported rule type #{reported_value(source['type'])}")
         end
       end
@@ -95,6 +111,116 @@ module Gitlab
         "violation contains {\"msg\": msg, \"details\": #{details}} if {\n#{indent(conditions)}\n}"
       end
 
+      def calendar_statements
+        invalid!("calendar rule requires at least one window") if windows.empty?
+
+        [violation_rule(details: calendar_details, conditions: calendar_conditions)]
+      end
+
+      def calendar_details
+        %({"rule_index": #{rule_index}, "window": freeze_window.name})
+      end
+
+      # The window is bound with `:=` rather than by `some freeze_window in`, because `some`
+      # requires that its name be undeclared, so a `custom` rule declaring `freeze_window`
+      # at package level fails the whole merged `violation` query under Regorus 0.11. The
+      # window array itself is inlined here rather than named at package level, which two
+      # merged calendar rules would redeclare.
+      def calendar_conditions
+        [
+          "freeze_window := #{freeze_windows_literal}[_]",
+          "input.environment.tier in freeze_window.tiers",
+          "input.evaluated_at >= freeze_window.starts_at",
+          "input.evaluated_at < freeze_window.ends_at",
+          'msg := sprintf("deployment blocked by freeze window %s (%s to %s)", ' \
+            '[freeze_window.name, freeze_window.starts_at, freeze_window.ends_at])'
+        ]
+      end
+
+      def freeze_windows_literal
+        entries = windows.map { |window| "\t\t#{window_literal(window)}," }
+
+        "[\n#{entries.join("\n")}\n\t]"
+      end
+
+      def window_literal(window)
+        %({"name": #{rego_string(window[:name])}, "tiers": #{rego_array(window[:tiers])}, ) +
+          %("starts_at": #{rego_string(window[:starts_at])}, "ends_at": #{rego_string(window[:ends_at])}})
+      end
+
+      def windows
+        @windows ||= authored_windows.each_with_index.map { |window, index| normalized_window(window, index) }
+      end
+
+      def authored_windows
+        configuration["windows"].is_a?(Array) ? configuration["windows"] : []
+      end
+
+      def normalized_window(window, index)
+        invalid!("calendar window #{index} must be an object") unless window.is_a?(Hash)
+
+        name = window["name"]
+        invalid!("calendar window #{index} requires a name") if unusable_string?(name)
+
+        tiers = sorted_unique_strings_from(window["tiers"])
+        invalid!("calendar window #{reported_value(name)} requires at least one tier") if tiers.empty?
+
+        starts_at = normalized_timestamp(window["starts_at"], field: "starts_at", window_name: name)
+        ends_at = normalized_timestamp(window["ends_at"], field: "ends_at", window_name: name)
+        invalid!("calendar window #{reported_value(name)} ends before it starts") unless starts_at < ends_at
+
+        { name: name, tiers: tiers, starts_at: starts_at, ends_at: ends_at }
+      end
+
+      def normalized_timestamp(raw_value, field:, window_name:)
+        parsed = parsed_timestamp(raw_value, field: field, window_name: window_name)
+
+        # `Time.iso8601` rolls an out-of-range component forward, so June 31 parses as
+        # July 1 and a window authored for it would silently start a day late. Compared
+        # case-insensitively, since RFC 3339 lets the separator be authored lowercase.
+        unless raw_value.downcase.start_with?(parsed.strftime(AUTHORED_WALL_CLOCK_FORMAT).downcase)
+          invalid!("calendar window #{reported_value(window_name)} #{field} names a date or time that " \
+            "does not exist: #{reported_value(raw_value)}")
+        end
+
+        unless parsed.subsec.zero?
+          invalid!("calendar window #{reported_value(window_name)} #{field} carries sub-second precision " \
+            "the emitted comparison cannot represent: #{reported_value(raw_value)}")
+        end
+
+        emitted = parsed.getutc.strftime(EMITTED_TIMESTAMP_FORMAT)
+        return emitted if EMITTED_TIMESTAMP_PATTERN.match?(emitted)
+
+        invalid!("calendar window #{reported_value(window_name)} #{field} is outside the range the emitted " \
+          "comparison can order: #{reported_value(raw_value)}")
+      end
+
+      def parsed_timestamp(raw_value, field:, window_name:)
+        invalid!("calendar window #{reported_value(window_name)} requires #{field}") unless raw_value.is_a?(String)
+
+        if raw_value.length > MAX_AUTHORED_TIMESTAMP_LENGTH
+          invalid!("calendar window #{reported_value(window_name)} #{field} is longer than any instant: " \
+            "#{reported_value(raw_value)}")
+        end
+
+        # The `Encoding::CompatibilityError` from matching an ASCII pattern against this is
+        # not an `ArgumentError`, so the rescue below cannot turn it into a refusal.
+        unless raw_value.ascii_only?
+          invalid!("calendar window #{reported_value(window_name)} #{field} must be ASCII to be an " \
+            "ISO 8601 instant, not #{raw_value.encoding}")
+        end
+
+        unless AUTHORED_INSTANT_PATTERN.match?(raw_value)
+          invalid!("calendar window #{reported_value(window_name)} #{field} must be an RFC 3339 instant " \
+            "such as `2026-12-24T00:00:00Z`: #{reported_value(raw_value)}")
+        end
+
+        Time.iso8601(raw_value)
+      rescue ArgumentError
+        invalid!("calendar window #{reported_value(window_name)} has an unparsable #{field}: " \
+          "#{reported_value(raw_value)}")
+      end
+
       def source
         @source ||= JsonValue.deep_stringify(rule)
       end
@@ -122,7 +248,15 @@ module Gitlab
       end
 
       def rego_set(members)
-        "{#{members.map { |member| rego_string(member) }.join(', ')}}"
+        "{#{rego_strings(members)}}"
+      end
+
+      def rego_array(members)
+        "[#{rego_strings(members)}]"
+      end
+
+      def rego_strings(members)
+        members.map { |member| rego_string(member) }.join(", ")
       end
 
       # `valid_encoding?` is true for a binary string carrying high bytes, so the

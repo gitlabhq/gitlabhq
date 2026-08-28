@@ -27,7 +27,6 @@ useMockLocationHelper();
 
 const MOCK_DATA = {
   iid: 1,
-  isRemovingSourceBranch: false,
   canRemoveSourceBranch: false,
   sourceBranchRemoved: true,
   metrics: {
@@ -237,22 +236,6 @@ describe('MRWidgetClosed', () => {
         wrapper = createComponent({
           shallow: false,
           props: { mr: { ...MOCK_DATA, canRemoveSourceBranch: false, sourceBranchRemoved: false } },
-        });
-
-        expect(findDeleteBranchButton(wrapper)).toBe(undefined);
-      });
-
-      it('is not displayed when isRemovingSourceBranch is true', () => {
-        wrapper = createComponent({
-          shallow: false,
-          props: {
-            mr: {
-              ...MOCK_DATA,
-              canRemoveSourceBranch: true,
-              sourceBranchRemoved: false,
-              isRemovingSourceBranch: true,
-            },
-          },
         });
 
         expect(findDeleteBranchButton(wrapper)).toBe(undefined);

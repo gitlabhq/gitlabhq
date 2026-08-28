@@ -163,7 +163,12 @@ RSpec.describe Groups::Registry::RepositoriesController, feature_category: :cont
   end
 
   context 'GET #show' do
-    it_behaves_like 'renders correctly'
+    it 'renders the index page, for frontend routing on page refresh', :snowplow do
+      get :show, params: { group_id: group, id: 'any-repository', format: :html }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect_no_snowplow_event
+    end
   end
 
   def create_project_with_repo(group)

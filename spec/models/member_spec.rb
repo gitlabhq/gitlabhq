@@ -273,6 +273,23 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.in_organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:group) { create(:group, organization: organization) }
+      let_it_be(:other_group) { create(:group, organization: other_organization) }
+      let_it_be(:member) { create(:group_member, group: group) }
+      let_it_be(:other_member) { create(:group_member, group: other_group) }
+
+      it 'returns members belonging to the given organization' do
+        expect(described_class.in_organization(organization)).to contain_exactly(member)
+      end
+
+      it 'does not return members outside the given organization' do
+        expect(described_class.in_organization(organization)).not_to include(other_member)
+      end
+    end
+
     describe 'hierarchy related scopes' do
       let_it_be(:root_ancestor) { create(:group) }
       let_it_be(:project) { create(:project, group: root_ancestor) }

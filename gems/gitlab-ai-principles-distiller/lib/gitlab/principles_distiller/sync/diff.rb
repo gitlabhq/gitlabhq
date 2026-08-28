@@ -17,10 +17,9 @@ module Gitlab
             .rstrip.then { |s| "#{s}\n" }
         end
 
-        # Per-section line matching: new lines that closely match an old line (>= MATCH_THRESHOLD word overlap) keep the
-        # old wording.
-        # Sections only in old are dropped; sections only in new are kept.
-        def reduce_noise(old_content, new_content)
+        # Close rephrases keep the old wording. Old-only sections are dropped; new-only sections are kept.
+        # New inline-code spans must exist in the SSOT.
+        def reduce_noise(old_content, new_content, source_text: nil)
           old_sections = parse_sections(old_content)
           new_sections = parse_sections(new_content)
 
@@ -40,10 +39,7 @@ module Gitlab
             in_fence = false
 
             new_lines.each do |new_line|
-              # Fenced code blocks are verbatim by nature: never collapse a fence
-              # delimiter or any line inside a fence to prior wording, so exact
-              # code content (and any changes to it) always survives. This also
-              # sidesteps treating fence delimiters as inline-code spans.
+              # Keep fenced content verbatim and exclude fence delimiters from inline-code matching.
               if fence_delimiter?(new_line)
                 in_fence = !in_fence
                 result_lines << new_line
@@ -57,7 +53,7 @@ module Gitlab
 
               best_match, best_score = find_best_match(new_line, old_pool)
 
-              if best_score >= MATCH_THRESHOLD && same_code_tokens?(new_line, best_match)
+              if best_score >= MATCH_THRESHOLD && revert_to_prior_wording?(new_line, best_match, source_text)
                 result_lines << best_match
                 old_pool.delete_at(old_pool.index(best_match))
               else
@@ -133,6 +129,29 @@ module Gitlab
           return false if tokens_a.nil? || tokens_b.nil?
 
           tokens_a == tokens_b
+        end
+
+        def revert_to_prior_wording?(new_line, old_line, source_text)
+          same_code_tokens?(new_line, old_line) || fabricated_code_spans?(new_line, old_line, source_text)
+        end
+
+        # Reject introduced code spans that are absent from the SSOT.
+        def fabricated_code_spans?(new_line, old_line, source_text)
+          return false if source_text.nil?
+
+          new_tokens = code_tokens(new_line)
+          old_tokens = code_tokens(old_line)
+          return false if new_tokens.nil? || old_tokens.nil?
+
+          introduced = new_tokens - old_tokens
+          return false if introduced.empty?
+
+          introduced.any? { |token| !source_span?(source_text, token.delete_prefix('`').delete_suffix('`')) }
+        end
+
+        # Avoid matching truncated spans such as `<!--` inside `<!---`.
+        def source_span?(source_text, span)
+          source_text.match?(/(?<![\w-])#{Regexp.escape(span)}(?![\w-])/)
         end
 
         # Extracts single-backtick inline-code spans, which cover essentially all

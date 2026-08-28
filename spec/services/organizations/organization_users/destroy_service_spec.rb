@@ -79,6 +79,58 @@ RSpec.describe Organizations::OrganizationUsers::DestroyService, feature_categor
         end
       end
 
+      context 'when the user has a membership in a group or project in the organization' do
+        let!(:organization_user) do
+          create(:organization_user, :without_common_organization, organization: organization)
+        end
+
+        before do
+          add_membership_to(organization_user)
+        end
+
+        it 'returns an error for a group membership' do
+          group = create(:group, organization: organization)
+          group.add_developer(organization_user.user)
+
+          expect { response }.not_to change { Organizations::OrganizationUser.count }
+
+          expect(response).to be_error
+          expect(response.reason).to eq(:has_memberships)
+          expect(response.message).to match_array(
+            [_('You cannot remove a user from an organization while they are a member of groups ' \
+              'or projects in the organization')]
+          )
+        end
+
+        it 'returns an error for a project membership' do
+          project = create(:project, organization: organization)
+          project.add_developer(organization_user.user)
+
+          expect { response }.not_to change { Organizations::OrganizationUser.count }
+
+          expect(response).to be_error
+          expect(response.reason).to eq(:has_memberships)
+        end
+
+        it 'deletes the organization user when the membership is in another organization' do
+          group = create(:group, organization: other_organization)
+          group.add_developer(organization_user.user)
+
+          expect { response }.to change { Organizations::OrganizationUser.count }.by(-1)
+
+          expect(response).to be_success
+        end
+
+        it 'deletes the organization user when the membership is a pending access request' do
+          group = create(:group, organization: organization)
+          create(:group_member, :access_request, group: group, user: organization_user.user)
+
+          expect { response }.to change { Organizations::OrganizationUser.count }.by(-1)
+
+          expect(response).to be_success
+        end
+      end
+
       context 'when the organization is the home organization of the organization user' do
         let!(:organization_user) do
           create(:organization_user, :without_common_organization, organization: organization)

@@ -20,6 +20,10 @@ RSpec.shared_examples 'board lists create service' do
     end
 
     context 'when board lists has the done list' do
+      before do
+        create_list(list_type: :closed, position: nil, label: nil)
+      end
+
       it 'creates a new list at beginning of the list' do
         response = service.execute(board)
 

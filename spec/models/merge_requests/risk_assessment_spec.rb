@@ -8,8 +8,125 @@ RSpec.describe MergeRequests::RiskAssessment, feature_category: :duo_code_review
     it { is_expected.to have_many(:risk_outcomes).class_name('MergeRequests::RiskOutcome') }
   end
 
-  describe 'enums' do
-    it { is_expected.to define_enum_for(:status).with_values(pending: 0, completed: 1, failed: 2) }
+  describe 'state machine' do
+    let_it_be(:merge_request) { create(:merge_request) }
+    let_it_be(:earlier_diff) do
+      create(:merge_request_diff, merge_request: merge_request,
+        head_commit_sha: Digest::SHA1.hexdigest(SecureRandom.hex)) # rubocop:disable Fips/SHA1 -- test data
+    end
+
+    let_it_be(:later_diff) do
+      earlier_diff
+      create(:merge_request_diff, merge_request: merge_request,
+        head_commit_sha: Digest::SHA1.hexdigest(SecureRandom.hex)) # rubocop:disable Fips/SHA1 -- test data
+    end
+
+    describe '#refresh' do
+      let(:diff_sha) { earlier_diff.head_commit_sha }
+      let(:classification) { { 'claims' => {}, 'summary' => 'Looks fine.' } }
+      let(:risk_assessment) do
+        create(:merge_requests_risk_assessment, merge_request: merge_request, diff_sha: diff_sha)
+      end
+
+      it 'transitions to queued and passes the event args to the risk score calculation' do
+        expect(risk_assessment).to receive(:enqueue_risk_score_calculation).with(diff_sha, classification)
+
+        risk_assessment.refresh(diff_sha, classification)
+
+        expect(risk_assessment).to be_queued
+      end
+
+      it 'leaves diff_sha and classification for the enqueued job to write' do
+        original_diff_sha = risk_assessment.diff_sha
+
+        risk_assessment.refresh(later_diff.head_commit_sha, classification)
+
+        expect(risk_assessment.diff_sha).to eq(original_diff_sha)
+        expect(risk_assessment.classification).to eq({})
+      end
+
+      %i[pending queued complete].each do |from_state|
+        context "when the assessment is #{from_state}" do
+          let(:risk_assessment) do
+            create(:merge_requests_risk_assessment, from_state, merge_request: merge_request, diff_sha: diff_sha)
+          end
+
+          it 'transitions to queued and enqueues the risk score calculation' do
+            expect(risk_assessment).to receive(:enqueue_risk_score_calculation).with(diff_sha, classification)
+
+            expect(risk_assessment.refresh(diff_sha, classification)).to be(true)
+            expect(risk_assessment).to be_queued
+          end
+        end
+      end
+
+      context 'when the assessment is stale' do
+        let(:risk_assessment) do
+          create(:merge_requests_risk_assessment, :stale, merge_request: merge_request, diff_sha: diff_sha)
+        end
+
+        it 'does not transition or enqueue the risk score calculation' do
+          expect(risk_assessment).not_to receive(:enqueue_risk_score_calculation)
+
+          expect(risk_assessment.refresh(diff_sha, classification)).to be(false)
+          expect(risk_assessment).to be_stale
+        end
+      end
+
+      context 'when the incoming revision is older than the current one' do
+        let(:risk_assessment) do
+          create(:merge_requests_risk_assessment, merge_request: merge_request,
+            diff_sha: later_diff.head_commit_sha)
+        end
+
+        it 'is refused by the guard, so nothing is enqueued' do
+          expect(risk_assessment).not_to receive(:enqueue_risk_score_calculation)
+
+          expect(risk_assessment.refresh(earlier_diff.head_commit_sha, classification)).to be(false)
+          expect(risk_assessment).to be_pending
+        end
+      end
+    end
+
+    describe '#refreshable_for?' do
+      let(:risk_assessment) do
+        create(:merge_requests_risk_assessment, merge_request: merge_request,
+          diff_sha: earlier_diff.head_commit_sha)
+      end
+
+      it 'accepts a later revision' do
+        expect(risk_assessment.refreshable_for?(later_diff.head_commit_sha)).to be(true)
+      end
+
+      it 'accepts the same revision, so a retried submission still lands' do
+        expect(risk_assessment.refreshable_for?(earlier_diff.head_commit_sha)).to be(true)
+      end
+
+      it 'refuses an earlier revision' do
+        risk_assessment.update!(diff_sha: later_diff.head_commit_sha)
+
+        expect(risk_assessment.refreshable_for?(earlier_diff.head_commit_sha)).to be(false)
+      end
+
+      it 'refuses a revision that is not in the merge request history' do
+        unknown_sha = Digest::SHA1.hexdigest(SecureRandom.hex) # rubocop:disable Fips/SHA1 -- test data
+
+        expect(risk_assessment.refreshable_for?(unknown_sha)).to be(false)
+      end
+
+      it 'fails open when the current diff_sha no longer resolves to a revision' do
+        risk_assessment.update!(diff_sha: Digest::SHA1.hexdigest(SecureRandom.hex)) # rubocop:disable Fips/SHA1 -- pruned diff
+
+        expect(risk_assessment.refreshable_for?(earlier_diff.head_commit_sha)).to be(true)
+      end
+
+      it 'accepts a revision that was force-pushed back to, since it is current again' do
+        risk_assessment.update!(diff_sha: later_diff.head_commit_sha)
+        create(:merge_request_diff, merge_request: merge_request, head_commit_sha: earlier_diff.head_commit_sha)
+
+        expect(risk_assessment.refreshable_for?(earlier_diff.head_commit_sha)).to be(true)
+      end
+    end
   end
 
   describe 'sharding key' do
@@ -130,27 +247,6 @@ RSpec.describe MergeRequests::RiskAssessment, feature_category: :duo_code_review
       risk_assessment = build(:merge_requests_risk_assessment, score: 90)
 
       expect(risk_assessment.tier).to be_nil
-    end
-  end
-
-  describe '#stale?' do
-    let(:merge_request) { build(:merge_request) }
-    let(:risk_assessment) { build(:merge_requests_risk_assessment, merge_request: merge_request) }
-
-    context 'when diff_sha matches the merge request head' do
-      it 'returns false' do
-        risk_assessment.diff_sha = merge_request.diff_head_sha
-
-        expect(risk_assessment).not_to be_stale
-      end
-    end
-
-    context 'when diff_sha does not match the merge request head' do
-      it 'returns true' do
-        risk_assessment.diff_sha = Digest::SHA1.hexdigest(SecureRandom.hex) # rubocop:disable Fips/SHA1 -- test data
-
-        expect(risk_assessment).to be_stale
-      end
     end
   end
 end

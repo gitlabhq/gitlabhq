@@ -500,6 +500,8 @@ RSpec.describe SearchService, :with_current_organization, feature_category: :glo
       'snippet_titles' | :global_search_snippet_titles_enabled | true  | true
       'users'          | :global_search_users_enabled          | false | false
       'users'          | :global_search_users_enabled          | true  | true
+      'groups'         | :global_search_groups_enabled         | false | false
+      'groups'         | :global_search_groups_enabled         | true  | true
       'random'         | :random                               | nil   | true
     end
 

@@ -635,14 +635,35 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
   describe '#suspend_options' do
     subject(:suspend_options) { presenter.suspend_options }
 
-    context 'when no suspend options are set' do
+    context 'when the build has no job_runtime_environment' do
       let(:build) { build_stubbed(:ci_build) }
 
       it { is_expected.to be_nil }
     end
 
+    context 'when ci_suspendable_environment_runner_routing is disabled for the project' do
+      let(:build) { build_stubbed(:ci_build) }
+
+      before do
+        stub_feature_flags(ci_suspendable_environment_runner_routing: false)
+        allow(build).to receive(:job_runtime_environment).and_return(
+          build_stubbed(:ci_job_runtime_environment, build: build, suspend_on_success: true,
+            suspend_on_failure: false, runtime_environment: nil)
+        )
+      end
+
+      it { is_expected.to be_nil }
+    end
+
     context 'when suspend_on_success is set' do
-      let(:build) { build_stubbed(:ci_build, options: { suspend_options: { suspend_on_success: true } }) }
+      let(:build) { build_stubbed(:ci_build) }
+
+      before do
+        allow(build).to receive(:job_runtime_environment).and_return(
+          build_stubbed(:ci_job_runtime_environment, build: build, suspend_on_success: true,
+            suspend_on_failure: false, runtime_environment: nil)
+        )
+      end
 
       it 'returns suspend options' do
         expect(suspend_options).to eq(
@@ -653,7 +674,14 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     end
 
     context 'when suspend_on_failure is set' do
-      let(:build) { build_stubbed(:ci_build, options: { suspend_options: { suspend_on_failure: true } }) }
+      let(:build) { build_stubbed(:ci_build) }
+
+      before do
+        allow(build).to receive(:job_runtime_environment).and_return(
+          build_stubbed(:ci_job_runtime_environment, build: build, suspend_on_success: false,
+            suspend_on_failure: true, runtime_environment: nil)
+        )
+      end
 
       it 'returns suspend options' do
         expect(suspend_options).to eq(
@@ -663,9 +691,17 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
       end
     end
 
-    context 'when environment_key is set' do
-      let(:build) do
-        build_stubbed(:ci_build, options: { suspend_options: { environment_key: 'runner-1/executor-specific-data' } })
+    context 'when environment_key is set via the linked runtime environment' do
+      let(:build) { build_stubbed(:ci_build) }
+      let(:runtime_environment) do
+        build_stubbed(:ci_runtime_environment, environment_key: 'runner-1/executor-specific-data')
+      end
+
+      before do
+        allow(build).to receive(:job_runtime_environment).and_return(
+          build_stubbed(:ci_job_runtime_environment, build: build, suspend_on_success: false,
+            suspend_on_failure: false, runtime_environment: runtime_environment)
+        )
       end
 
       it 'returns suspend options with environment_key' do
@@ -678,14 +714,16 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     end
 
     context 'when all options are set' do
-      let(:build) do
-        build_stubbed(:ci_build, options: {
-          suspend_options: {
-            suspend_on_success: true,
-            suspend_on_failure: true,
-            environment_key: 'runner-1/executor-specific-data'
-          }
-        })
+      let(:build) { build_stubbed(:ci_build) }
+      let(:runtime_environment) do
+        build_stubbed(:ci_runtime_environment, environment_key: 'runner-1/executor-specific-data')
+      end
+
+      before do
+        allow(build).to receive(:job_runtime_environment).and_return(
+          build_stubbed(:ci_job_runtime_environment, build: build, suspend_on_success: true,
+            suspend_on_failure: true, runtime_environment: runtime_environment)
+        )
       end
 
       it 'returns all suspend options' do

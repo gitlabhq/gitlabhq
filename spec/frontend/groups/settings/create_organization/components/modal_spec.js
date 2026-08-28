@@ -10,6 +10,7 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_CREATED, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { createOrganizationFromGroupPath } from '~/lib/utils/path_helpers/group';
+import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
 import { DEFAULT_ORGANIZATION_GID } from '~/organizations/shared/constants';
@@ -33,6 +34,10 @@ import {
 } from './mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrlWithAlerts: jest.fn(),
+}));
 
 Vue.use(VueApollo);
 
@@ -477,6 +482,17 @@ describe('OrganizationReconciliationModal', () => {
           it('does not call createAlert', () => {
             expect(createAlert).not.toHaveBeenCalled();
           });
+
+          it('redirects to the root path with a success alert', () => {
+            expect(visitUrlWithAlerts).toHaveBeenCalledWith('/', [
+              {
+                id: 'organization-successfully-created-from-group-settings',
+                message:
+                  'Groups, projects, and users are being transferred into your organization. You will receive an email when your organization is ready.',
+                variant: 'success',
+              },
+            ]);
+          });
         });
 
         describe('when the group has already been backfilled into its own organization', () => {
@@ -542,7 +558,7 @@ describe('OrganizationReconciliationModal', () => {
             expect(findNextButton().props('loading')).toBe(false);
           });
 
-          it('loads while confirming and stops once done', async () => {
+          it('keeps loading while redirecting', async () => {
             findNextButton().vm.$emit('click');
             await nextTick();
 
@@ -550,7 +566,7 @@ describe('OrganizationReconciliationModal', () => {
 
             await waitForPromises();
 
-            expect(findNextButton().props('loading')).toBe(false);
+            expect(findNextButton().props('loading')).toBe(true);
           });
         });
 
@@ -578,6 +594,10 @@ describe('OrganizationReconciliationModal', () => {
           it('stops loading the next button', () => {
             expect(findNextButton().props('loading')).toBe(false);
           });
+
+          it('does not redirect', () => {
+            expect(visitUrlWithAlerts).not.toHaveBeenCalled();
+          });
         });
 
         describe('when confirming the organization fails', () => {
@@ -601,6 +621,10 @@ describe('OrganizationReconciliationModal', () => {
 
           it('stops loading the next button', () => {
             expect(findNextButton().props('loading')).toBe(false);
+          });
+
+          it('does not redirect', () => {
+            expect(visitUrlWithAlerts).not.toHaveBeenCalled();
           });
         });
 
@@ -633,6 +657,10 @@ describe('OrganizationReconciliationModal', () => {
 
           it('stops loading the next button', () => {
             expect(findNextButton().props('loading')).toBe(false);
+          });
+
+          it('does not redirect', () => {
+            expect(visitUrlWithAlerts).not.toHaveBeenCalled();
           });
         });
       });

@@ -3469,7 +3469,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
 
       it 'sends additional properties to internal tracking' do
-        merge_request.reviewers << developer
+        # /approve may already auto-add the approver as a reviewer, so avoid a duplicate.
+        merge_request.reviewers << developer unless merge_request.reviewers.reload.include?(developer)
 
         expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
           .to receive(:track_unique_action)

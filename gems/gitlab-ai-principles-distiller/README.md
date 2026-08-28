@@ -14,7 +14,7 @@ repository for the full operator-facing flow.
    and (with `distill --push`) opens an MR via the REST API. Each per-team MR pings the
   people who changed the SSOT docs since the last distillation (resolved via a
   GraphQL `commits` query, so private and secondary emails match too), assigns
-  up to three of them as reviewers, and falls back to one available `owner_team`
+  up to four of the most recent contributors as reviewers, and falls back to one available `owner_team`
   member when no author resolves. Approval still routes to `owner_team` via
   CODEOWNERS.
 - `gitlab-ai-principles-distiller-provision-flow` — idempotent provisioner for

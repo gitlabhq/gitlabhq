@@ -12308,9 +12308,6 @@ msgstr ""
 msgid "ArtifactRegistry|Gradle (Kotlin)"
 msgstr ""
 
-msgid "ArtifactRegistry|Handle has already been taken."
-msgstr ""
-
 msgid "ArtifactRegistry|Healthy"
 msgstr ""
 
@@ -56448,6 +56445,9 @@ msgstr ""
 msgid "Organization|Group is already in an organization."
 msgstr ""
 
+msgid "Organization|Groups, projects, and users are being transferred into your organization. You will receive an email when your organization is ready."
+msgstr ""
+
 msgid "Organization|Help improve Organizations"
 msgstr ""
 
@@ -66720,6 +66720,15 @@ msgid "RightSidebar|Copy email address"
 msgstr ""
 
 msgid "RightSidebar|Issue email"
+msgstr ""
+
+msgid "RiskClassification|Risk assessment cannot be refreshed while %{status}."
+msgstr ""
+
+msgid "RiskClassification|diff_sha %{diff_sha} does not match any known revision of this merge request."
+msgstr ""
+
+msgid "RiskClassification|diff_sha %{diff_sha} is older than the assessment's current diff_sha %{current_diff_sha}."
 msgstr ""
 
 msgid "Roadmap"
@@ -77446,6 +77455,9 @@ msgstr ""
 msgid "Show group milestones"
 msgstr ""
 
+msgid "Show groups in global search results"
+msgstr ""
+
 msgid "Show labels"
 msgstr ""
 
@@ -78168,9 +78180,6 @@ msgid "Something went wrong while creating a requirement."
 msgstr ""
 
 msgid "Something went wrong while deleting description changes. Please try again."
-msgstr ""
-
-msgid "Something went wrong while deleting the source branch. Please try again."
 msgstr ""
 
 msgid "Something went wrong while deleting your note. Please try again."
@@ -93903,6 +93912,9 @@ msgstr ""
 msgid "You cannot play this scheduled pipeline at the moment. Please wait a minute."
 msgstr ""
 
+msgid "You cannot remove a user from an organization while they are a member of groups or projects in the organization"
+msgstr ""
+
 msgid "You cannot rename an environment after it's created."
 msgstr ""
 
@@ -94279,6 +94291,9 @@ msgid "You successfully declined the invitation"
 msgstr ""
 
 msgid "You tried to fork %{link_to_the_project} but it failed for the following reason:"
+msgstr ""
+
+msgid "You will be added as a reviewer."
 msgstr ""
 
 msgid "You will be redirected to %{strong_start}%{domain}%{strong_end} after authorizing."
@@ -96991,6 +97006,9 @@ msgid "must belong to the same compliance requirement."
 msgstr ""
 
 msgid "must belong to the same namespace."
+msgstr ""
+
+msgid "must belong to the same organization"
 msgstr ""
 
 msgid "must belong to the same organization."

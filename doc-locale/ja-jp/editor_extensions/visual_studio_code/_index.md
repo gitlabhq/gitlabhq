@@ -51,7 +51,7 @@ VS CodeでGitLabプロジェクトを表示すると、拡張機能は現在の�
 
 1. Visual Studio Codeで、**設定** > **Extensions**に移動します。
 1. **GitLab（`gitlab.com`）**が発行した**GitLab**を検索します。
-1. **Extension: GitLab**から、**Update to {later version}** を選択します。
+1. **Extension: GitLab**から、**Update to {later version}**を選択します。
 1. オプション。今後自動更新を有効にするには、**Auto-Update**を選択します。
 
 ## プレリリースバージョンをインストールする {#install-the-pre-release-version}
@@ -67,7 +67,7 @@ GitLabは、拡張機能のプレリリースビルドをVS Code拡張機能マ�
 ## GitLab Duoのステータスを確認 {#check-gitlab-duo-status}
 
 1. Visual Studio Codeの画面下部のステータスバーで、GitLabアイコン（{{< icon name="tanuki" >}}）を選択します。
-1. VS Codeの検索ボックスの下にメニューが開き、GitLab for VS Code拡張機能がステータスを表示します。エラーがある場合は **Status:** の横に表示されます。
+1. VS Codeの検索ボックスの下にメニューが開き、GitLab for VS Code拡張機能がステータスを表示します。エラーがある場合は**Status:**の横に表示されます。
 
 GitLab Duo Non-Agentic Chatの場合は、チャットの[ステータス](../../user/gitlab_duo_chat/_index.md#check-the-status-of-chat)も確認できます。
 

@@ -863,6 +863,10 @@ production: &base
   artifact_registry:
     # api_url: https://artifact-registry.example.com # internal address of the Artifact Registry API
 
+    # File that contains the secret token for authenticating with the Artifact Registry internal API.
+    # service_token:
+    #   secret_file: /etc/gitlab/artifact-registry/.gitlab_artifact_registry_secret
+
   ## Error Reporting and Logging with Sentry
   sentry:
     # enabled: false

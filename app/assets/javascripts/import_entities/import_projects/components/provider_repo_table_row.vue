@@ -272,6 +272,7 @@ export default {
       <gl-modal
         v-if="showMembershipsWarning"
         v-model="showMembershipsModal"
+        modal-id="import-projects-namespace-warning"
         :title="
           s__('ImportProjects|Are you sure you want to import the project to a personal namespace?')
         "

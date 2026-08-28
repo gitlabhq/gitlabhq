@@ -27,9 +27,8 @@ module Organizations
             payload: { failed: validation_errors })
         end
 
-        # `update_all` below neither refreshes these records nor fires callbacks, so capture the
-        # source organizations up front rather than depending on that implementation detail.
-        original_organization_ids = groups.to_h { |group| [group.id, group.organization_id] }
+        # The event payload needs each group's pre-transfer organization, so snapshot it here.
+        original_organizations_by_group_id = groups.to_h { |group| [group.id, group.organization_id] }
 
         transferred_ids = []
 
@@ -46,7 +45,7 @@ module Organizations
 
         groups.each { |group| log_transfer_success(group) }
 
-        publish_transferred_events(original_organization_ids.slice(*transferred_ids))
+        publish_transferred_events(original_organizations_by_group_id)
 
         ServiceResponse.success(payload: { succeeded: transferred_ids, failed: {} })
       end
@@ -57,8 +56,8 @@ module Organizations
 
       # Only the root group row moves here. Descendants follow later via
       # Organizations::Transfer::GroupsService, which publishes its own event.
-      def publish_transferred_events(source_organization_ids)
-        events = source_organization_ids.filter_map do |group_id, old_organization_id|
+      def publish_transferred_events(organizations_by_group_id)
+        events = organizations_by_group_id.filter_map do |group_id, old_organization_id|
           next if old_organization_id == new_organization.id
 
           Organizations::GroupTransferredEvent.new(data: {

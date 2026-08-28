@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'time'
+
 module Gitlab
   module PrinciplesDistiller
     class Sync
@@ -16,7 +18,7 @@ module Gitlab
         # 13 aliases is the empirical ceiling, so batching at 10 fits a 15-source principle like `backend-ruby`.
         AUTHOR_LOOKUP_BATCH_SIZE = 10
         AUTHOR_LOOKUP_PAGE_SIZE = 100
-        MAX_SSOT_AUTHORS = 3
+        MAX_SSOT_AUTHORS = 4
         OWNER_TEAM_PAGE_SIZE = 100
         OWNER_TEAM_MAX_PAGES = 5
 
@@ -47,8 +49,13 @@ module Gitlab
         # Best-effort: a GraphQL failure logs and contributes no authors rather than failing the MR.
         def ssot_authors(affected_entries)
           affected_entries.values.flat_map { |entry| ssot_authors_for_entry(entry) }
-            .uniq { |author| author[:username] }
+            .group_by { |author| author[:username] }
+            .values
+            # Undated authors sort last because nil.to_i is zero.
+            .map { |authors| authors.max_by { |author| author[:authored_at].to_i } }
+            .sort_by { |author| [-author[:authored_at].to_i, author[:username]] }
             .first(MAX_SSOT_AUTHORS)
+            .map { |author| author.except(:authored_at) }
         end
 
         # Resolves one available owner-team member when no SSOT author can be found.
@@ -175,7 +182,7 @@ module Gitlab
 
           paths.each_slice(AUTHOR_LOOKUP_BATCH_SIZE).flat_map do |batch|
             pingable_authors_for_paths(commit_range, batch)
-          end.uniq
+          end
         end
 
         # One GraphQL round trip per path batch, each an aliased `commits` field, to stay under the complexity limit.
@@ -203,12 +210,12 @@ module Gitlab
           repository = data.dig('project', 'repository') || {}
           aliases.flat_map do |alias_name, path|
             pingable_authors_from_commits(repository[alias_name], path)
-          end.uniq
+          end
         end
 
         def commits_alias_fragment(alias_name)
           "#{alias_name}: commits(ref: $range, path: $path_#{alias_name}, first: #{AUTHOR_LOOKUP_PAGE_SIZE}) " \
-            '{ nodes { author { id username bot } } pageInfo { hasNextPage } }'
+            '{ nodes { authoredDate author { id username bot } } pageInfo { hasNextPage } }'
         end
 
         # Extracts pingable authors from one `commits` connection: drops unlinked commits, bots, and deny-listed users.
@@ -239,8 +246,14 @@ module Gitlab
               id = nil
             end
 
-            { username: username, id: id&.to_i }
+            { username: username, id: id&.to_i, authored_at: parse_authored_at(node['authoredDate']) }
           end
+        end
+
+        def parse_authored_at(authored_date)
+          Time.iso8601(authored_date) if authored_date
+        rescue ArgumentError, TypeError
+          nil
         end
       end
     end

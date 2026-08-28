@@ -8930,12 +8930,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it { is_expected.to be_git_objects_poolable }
     end
-
-    context 'when objects are poolable' do
-      let(:project) { create(:project, :repository, :public) }
-
-      it { is_expected.to be_git_objects_poolable }
-    end
   end
 
   describe '#swap_pool_repository!' do

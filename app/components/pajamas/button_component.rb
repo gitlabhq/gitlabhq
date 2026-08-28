@@ -39,6 +39,9 @@ module Pajamas
     # @param [Symbol] size
     # @param [Symbol] type
     # @param [Boolean] disabled
+    # @param [Boolean] accessible_disabled Renders aria-disabled without the native
+    #   disabled attribute so the control stays focusable. Only affects buttons;
+    #   native disabled is ignored on links.
     # @param [Boolean] loading
     # @param [Boolean] block
     # @param [Boolean] label
@@ -57,6 +60,7 @@ module Pajamas
       size: :medium,
       type: :button,
       disabled: false,
+      accessible_disabled: false,
       loading: false,
       block: false,
       label: false,
@@ -75,6 +79,7 @@ module Pajamas
       @size = filter_attribute(size.to_sym, SIZE_OPTIONS)
       @type = filter_attribute(type.to_sym, TYPE_OPTIONS, default: :button)
       @disabled = disabled
+      @accessible_disabled = accessible_disabled
       @loading = loading
       @block = block
       @label = label
@@ -123,10 +128,16 @@ module Pajamas
       @href.present? && @form.present?
     end
 
+    # Opting out of the native attribute keeps the button focusable, but nothing
+    # stops it activating. The call site owns preventing that.
+    def native_disabled?
+      (@loading || @disabled) && !@accessible_disabled
+    end
+
     def base_attributes
       attributes = {}
 
-      attributes['disabled'] = 'disabled' if @disabled || @loading
+      attributes['disabled'] = 'disabled' if native_disabled?
       attributes['aria-disabled'] = true if @disabled || @loading
       # `disabled` is not valid on `<a>`, so browsers ignore it and the link stays
       # focusable. Take it out of the tab order the way GlButton does.

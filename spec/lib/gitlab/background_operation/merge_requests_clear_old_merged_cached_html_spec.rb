@@ -85,8 +85,7 @@ RSpec.describe Gitlab::BackgroundOperation::MergeRequestsClearOldMergedCachedHtm
   end
 
   it 'clears only the rows inside the sub-batch it was handed' do
-    # All four are past the cutoff, so `scope_to` batches all four; every other one is
-    # below the target version, so only half of each window can be cleared.
+    # Every other row is below the target version, so only half of each window clears.
     2.times do
       create_merge_request(merged_at: old_merge)
       create_merge_request(merged_at: old_merge, cached_markdown_version: target_version - 1)
@@ -98,16 +97,16 @@ RSpec.describe Gitlab::BackgroundOperation::MergeRequestsClearOldMergedCachedHtm
     expect(operation_run.batch_metrics.affected_rows[:update_all]).to eq([1, 1])
   end
 
-  it 'never hands an ineligible row to a sub-batch' do
+  it 'iterates the whole table, filtering inside each sub-batch' do
     create_merge_request(merged_at: old_merge)
     5.times { create_merge_request(merged_at: recent_merge) }
 
     operation_run = operation
     operation_run.perform
 
-    # `scope_to` filters the batch boundary queries, so the recent rows are skipped by
-    # the iteration itself: one sub-batch runs, not three.
-    expect(operation_run.batch_metrics.affected_rows[:update_all]).to eq([1])
+    # Batching is unscoped, so all six rows are visited: three sub-batches run and the
+    # two made up of recent merges clear nothing.
+    expect(operation_run.batch_metrics.affected_rows[:update_all]).to eq([1, 0, 0])
   end
 
   it 'converges after a first pass, leaving nothing to rewrite', :aggregate_failures do

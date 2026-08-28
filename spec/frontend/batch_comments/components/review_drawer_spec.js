@@ -18,7 +18,7 @@ import { useBatchComments } from '~/batch_comments/store';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
-import userCanApproveQuery from '~/batch_comments/queries/can_approve.query.graphql';
+import reviewDrawerQuery from '~/batch_comments/queries/review_drawer.query.graphql';
 import toast from '~/vue_shared/plugins/global_toast';
 
 jest.mock('~/vue_shared/plugins/global_toast');
@@ -46,6 +46,7 @@ describe('ReviewDrawer', () => {
       .findAllComponents(GlModal)
       .wrappers.find((modal) => modal.props('modalId') === 'discard-review-modal');
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
+  const findAssignReviewerHint = () => wrapper.findByTestId('assign-reviewer-hint');
 
   const submitForm = async () => {
     await findPlaceholderField().vm.$emit('focus');
@@ -55,10 +56,17 @@ describe('ReviewDrawer', () => {
     await findForm().vm.$emit('submit', { preventDefault: jest.fn() });
   };
 
-  const createComponent = ({ canApprove = true } = {}) => {
+  const createComponent = ({
+    canApprove = true,
+    canUpdate = true,
+    reviewers = [],
+    allowsMultipleReviewers = true,
+    author = { id: 'gid://gitlab/User/99' },
+    glFeatures = {},
+  } = {}) => {
     const requestHandlers = [
       [
-        userCanApproveQuery,
+        reviewDrawerQuery,
         () =>
           Promise.resolve({
             data: {
@@ -66,8 +74,14 @@ describe('ReviewDrawer', () => {
                 id: 1,
                 mergeRequest: {
                   id: 1,
+                  allowsMultipleReviewers,
+                  author,
                   userPermissions: {
                     canApprove,
+                    updateMergeRequest: canUpdate,
+                  },
+                  reviewers: {
+                    nodes: reviewers,
                   },
                 },
               },
@@ -81,6 +95,7 @@ describe('ReviewDrawer', () => {
     wrapper = mountExtended(ReviewDrawer, {
       pinia,
       apolloProvider,
+      provide: { glFeatures },
     });
   };
 
@@ -121,6 +136,101 @@ describe('ReviewDrawer', () => {
       useBatchComments().drawerOpened = true;
       createComponent();
       expect(findDrawerHeading().text()).toBe(heading);
+    });
+  });
+
+  describe('assign reviewer hint', () => {
+    beforeEach(() => {
+      useNotes().userData = { id: 1 };
+      useBatchComments().drawerOpened = true;
+    });
+
+    it('shows the hint when the flag is on and the current user is not a reviewer', async () => {
+      createComponent({
+        glFeatures: { assignReviewerOnReviewSubmission: true },
+        reviewers: [{ id: 'gid://gitlab/User/2' }],
+      });
+      await waitForPromises();
+
+      expect(findAssignReviewerHint().exists()).toBe(true);
+      expect(findAssignReviewerHint().text()).toBe('You will be added as a reviewer.');
+    });
+
+    it('does not show the hint until the reviewers query resolves', async () => {
+      createComponent({
+        glFeatures: { assignReviewerOnReviewSubmission: true },
+        reviewers: [{ id: 'gid://gitlab/User/2' }],
+      });
+
+      expect(findAssignReviewerHint().exists()).toBe(false);
+
+      await waitForPromises();
+
+      expect(findAssignReviewerHint().exists()).toBe(true);
+    });
+
+    it('hides the hint when the current user is already a reviewer', async () => {
+      createComponent({
+        glFeatures: { assignReviewerOnReviewSubmission: true },
+        reviewers: [{ id: 'gid://gitlab/User/1' }],
+      });
+      await waitForPromises();
+
+      expect(findAssignReviewerHint().exists()).toBe(false);
+    });
+
+    it('hides the hint when the flag is off', async () => {
+      createComponent({
+        glFeatures: { assignReviewerOnReviewSubmission: false },
+        reviewers: [{ id: 'gid://gitlab/User/2' }],
+      });
+      await waitForPromises();
+
+      expect(findAssignReviewerHint().exists()).toBe(false);
+    });
+
+    it('hides the hint when multiple reviewers are not allowed and one is already assigned', async () => {
+      createComponent({
+        glFeatures: { assignReviewerOnReviewSubmission: true },
+        allowsMultipleReviewers: false,
+        reviewers: [{ id: 'gid://gitlab/User/2' }],
+      });
+      await waitForPromises();
+
+      expect(findAssignReviewerHint().exists()).toBe(false);
+    });
+
+    it('shows the hint when multiple reviewers are not allowed but none is assigned yet', async () => {
+      createComponent({
+        glFeatures: { assignReviewerOnReviewSubmission: true },
+        allowsMultipleReviewers: false,
+        reviewers: [],
+      });
+      await waitForPromises();
+
+      expect(findAssignReviewerHint().exists()).toBe(true);
+    });
+
+    it('hides the hint when the current user is the merge request author', async () => {
+      createComponent({
+        glFeatures: { assignReviewerOnReviewSubmission: true },
+        author: { id: 'gid://gitlab/User/1' },
+        reviewers: [],
+      });
+      await waitForPromises();
+
+      expect(findAssignReviewerHint().exists()).toBe(false);
+    });
+
+    it('hides the hint when the user cannot update the merge request', async () => {
+      createComponent({
+        glFeatures: { assignReviewerOnReviewSubmission: true },
+        canUpdate: false,
+        reviewers: [],
+      });
+      await waitForPromises();
+
+      expect(findAssignReviewerHint().exists()).toBe(false);
     });
   });
 

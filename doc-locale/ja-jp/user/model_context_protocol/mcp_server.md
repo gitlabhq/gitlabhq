@@ -47,11 +47,11 @@ GitLab MCPサーバーは、[OAuth 2.0 Dynamic Client Registration](https://tool
 ## 前提条件 {#prerequisites}
 
 - GitLab Duoの利用可能性を**常にオン**または**デフォルトでオン**に設定します:
-  - GitLab.comでは、[トップレベルグループの場合](../../user/gitlab_duo/turn_on_off.md#for-a-top-level-group)。
-  - GitLab Self-ManagedおよびGitLab Dedicatedでは、[インスタンスの場合](../../user/gitlab_duo/turn_on_off.md#for-an-instance)。
+  - GitLab.comでは、[トップレベルグループの場合](../gitlab_duo/turn_on_off.md#for-a-top-level-group)。
+  - GitLab Self-ManagedおよびGitLab Dedicatedでは、[インスタンスの場合](../gitlab_duo/turn_on_off.md#for-an-instance)。
 - ベータ版機能と実験的機能を有効にします:
-  - GitLab.comでは、[トップレベルグループの場合](../../user/gitlab_duo/turn_on_off.md#on-gitlabcom-2)。
-  - GitLab Self-ManagedおよびGitLab Dedicatedでは、[インスタンスの場合](../../user/gitlab_duo/turn_on_off.md#on-gitlab-self-managed-2)。
+  - GitLab.comでは、[トップレベルグループの場合](../gitlab_duo/turn_on_off.md#on-gitlabcom-2)。
+  - GitLab Self-ManagedおよびGitLab Dedicatedでは、[インスタンスの場合](../gitlab_duo/turn_on_off.md#on-gitlab-self-managed-2)。
 - MCPサーバーへのアクセスを許可します:
   - GitLab.comでは、[トップレベルグループの場合](../group/access_and_permissions.md#allow-access-to-the-mcp-server)。
   - GitLab Self-ManagedおよびGitLab Dedicatedでは、[インスタンスの場合](../../administration/settings/visibility_and_access_controls.md#allow-access-to-the-mcp-server)。
@@ -339,7 +339,7 @@ OpenAI Codexは、追加の依存関係なしに直接接続するためにHTTP�
      - GitLab.comでは、`gitlab.com`。
 
    ```shell
-   codex mcp add --url "https://<gitlab.example.com>/api/v4/mcp" GitLab
+   codex mcp add GitLab --url "https://<gitlab.example.com>/api/v4/mcp"
    ```
 
 1. `~/.codex/config.toml`を編集し、`[features]`セクションで`rmcp_client`機能フラグを有効にします。
@@ -411,40 +411,44 @@ ZedでGitLab MCPサーバーを設定するには:
 
 ## 単一のOAuthアプリケーションを再利用する {#reuse-a-single-oauth-application}
 
-{{< details >}}
-
-- 提供形態: GitLab Self-Managed、GitLab Dedicated
-
-{{< /details >}}
-
 {{< history >}}
 
-- UIを介したOAuthアプリケーションの作成がGitLab 19.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245979)されました。
+- OAuthアプリケーションの作成は、管理者UIを通じて[GitLab](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245979) 19.3で導入されました。
+- OAuthアプリケーションの作成は、グループおよびユーザーUIを通じて[GitLab](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247698) 19.3で導入されました。
 
 {{< /history >}}
 
-MCPクライアントがGitLab MCPサーバーに接続すると、OAuth 2.0 Dynamic Client Registration（DCR）を使用して、GitLabインスタンスに新しいOAuthアプリケーションを作成します。多数のユーザーまたは頻繁な再接続がある環境では、これによりインスタンス上に多数のOAuthアプリケーションが作成される可能性があります。
+MCPクライアントがGitLab MCPサーバーに接続すると、OAuth 2.0 Dynamic Client Registration（DCR）を使用して、GitLabインスタンスに新しいOAuthアプリケーションを作成します。
 
-多数のOAuthアプリケーションを避けるには、単一の共有OAuthアプリケーションを作成し、そのクライアントIDをユーザーに提供します。
+以下のDCRに関する問題を回避するために、事前登録済みのOAuthアプリケーションを再利用します:
 
-ユーザーがこのクライアントIDでMCPクライアントを設定すると、すべての接続が新しいOAuthアプリケーションを作成する代わりに、同じOAuthアプリケーションを再利用します。
+- GitLab Self-ManagedおよびGitLab Dedicatedでは、多数のユーザー、または繰り返し接続するクライアントが、インスタンス上に大量のOAuthアプリケーションを作成する可能性があります。
+- IPアドレスは、DCRのリクエストを1時間あたり10件の登録にレート制限します。企業のネットワークやVPNなど、エグレスIPアドレスを共有しているユーザーは、この制限を超過し、MCPサーバーへの認証に失敗する可能性があります。
 
-ユーザーが共有された`clientId`で認証すると、GitLabは同じ設定を持つどのユーザーからの後続の認証に対しても同じOAuthアプリケーションを再利用します。ユーザーはOAuthで認可し、独自のアクセストークンを受け取ります。共有アプリケーションはOAuthクライアントの識別情報であり、共有認証情報ではありません。
+すべてのユーザーはOAuthで引き続き認証を行い、独自のアクセストークンを受け取ります。共有アプリケーションはOAuthクライアントIDであり、共有クレデンシャルではありません。
+
+再利用するユーザーに応じて、以下のスコープのいずれかでOAuthアプリケーションを作成します:
+
+- インスタンス: インスタンス上のすべてのユーザーが共有します。
+- グループ: グループのメンバーが共有します。
+- ユーザー: ユーザー自身のアカウント用です。
 
 前提条件: 
 
-- 管理者である必要があります。
 - 以下をサポートするMCPクライアント:
   - 事前設定済みのOAuth認証情報
   - 設定内の`clientId`フィールド
+- インスタンス用にアプリケーションを作成する場合、管理者アクセス権限が必要です。
+- グループ用にアプリケーションを作成する場合、そのグループのオーナーロールが必要です。
 
-1. 右上隅で、**管理者**を選択します。
-1. 左サイドバーで、**アプリケーション** > **新しいアプリケーション**を選択します。
-1. フィールドに入力します。**mcp**スコープを選択し、**非公開**チェックボックスをクリアします。
-1. **アプリケーションを保存**を選択します。
-1. アプリケーションIDをユーザーに提供します。これは、ユーザーがMCPクライアントで設定する`clientId`です。設定キーはクライアントによって異なりますが、通常、GitLab MCPサーバーのOAuth設定では`clientId`または`client_id`という名前です。これは通常、`mcp.json`ファイル内にあります。
+OAuthアプリケーションを作成するには:
 
-[REST API](../../api/applications.md#create-an-application)を使用してアプリケーションを作成することもできます。
+1. [インスタンス](../../integration/oauth_provider.md#create-an-instance-wide-application)、[グループ](../../integration/oauth_provider.md#create-a-group-owned-application)、または[ユーザー](../../integration/oauth_provider.md#create-a-user-owned-application)用にOAuthアプリケーションを作成します。
+1. スコープでは、**mcp**を選択し、**非公開**チェックボックスをオフにします。
+1. アプリケーションを保存します。
+1. アプリケーションIDを使用してMCPクライアントを設定するか、アプリケーションを再利用するユーザーにアプリケーションIDを提供します。アプリケーションIDは`clientId`です。設定キーはクライアントによって異なりますが、通常、GitLab MCPサーバーのOAuth設定では`clientId`または`client_id`と名付けられ、ほとんどの場合`mcp.json`ファイルにあります。
+
+インスタンスおよびユーザーアプリケーションの場合、[REST API](../../api/applications.md#create-an-application)を使用してアプリケーションを作成することもできます。グループ所有のアプリケーションにはREST APIが存在しないため、グループUIを使用する必要があります。
 
 > [!note]
 > OAuthアプリケーションに登録されたリダイレクトURIは、MCPクライアントがOAuthフロー中に送信するリダイレクトURIと完全に一致する必要があります。クライアントのドキュメントで、使用するリダイレクトURIを確認してください。単一の共有OAuthアプリケーションは、異なるリダイレクトURIを使用するMCPクライアントにサービスを提供できません。ユーザーが異なるリダイレクトURIを使用するMCPクライアントを使用している場合は、クライアントタイプごとに個別の共有OAuthアプリケーションを作成してください。

@@ -79,7 +79,7 @@ module ApplicationSettingsHelper
   end
 
   def global_search_settings_checkboxes(form)
-    [
+    checkboxes = [
       form.gitlab_ui_checkbox_component(
         :anonymous_searches_allowed,
         _("Allow unauthenticated users to use search"),
@@ -115,6 +115,16 @@ module ApplicationSettingsHelper
         checkbox_options: { checked: @application_setting.global_search_users_enabled, multiple: false }
       )
     ]
+
+    if ::Feature.enabled?(:elasticsearch_group_search, current_user)
+      checkboxes << form.gitlab_ui_checkbox_component(
+        :global_search_groups_enabled,
+        _("Show groups in global search results"),
+        checkbox_options: { checked: @application_setting.global_search_groups_enabled, multiple: false }
+      )
+    end
+
+    checkboxes
   end
 
   def default_search_scope_options_for_select
@@ -680,6 +690,7 @@ module ApplicationSettingsHelper
       :show_migrate_from_jenkins_banner,
       :global_search_snippet_titles_enabled,
       :global_search_users_enabled,
+      :global_search_groups_enabled,
       :global_search_work_items_enabled,
       :global_search_merge_requests_enabled,
       :global_search_block_anonymous_searches_enabled,

@@ -539,17 +539,6 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
         end
       end
     end
-
-    context 'when within transaction' do
-      before do
-        allow(migration).to receive(:transaction_open?).and_return(true)
-      end
-
-      it 'does raise an exception' do
-        expect { migration.finalize_batched_background_migration(job_class_name: 'MyJobClass', table_name: :projects, column_name: :id, job_arguments: []) }
-          .to raise_error(/`finalize_batched_background_migration` cannot be run inside a transaction./)
-      end
-    end
   end
 
   describe '#delete_batched_background_migration' do

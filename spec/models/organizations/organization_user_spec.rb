@@ -223,18 +223,9 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
         create(:organization_user, :owner, organization_id: organization_id, user_id: user_id)
       end
 
-      it 'returns existing record without access_level change' do
+      it 'does not change the existing record access_level' do
         expect { create_organization_record }.not_to change { described_class.count }
         expect(organization.owner?(user)).to be(true)
-      end
-
-      context 'with race condition handling of already existing record' do
-        it 'performs the upsert without error' do
-          expect(described_class).to receive(:find_by).and_return(nil)
-
-          expect { create_organization_record }.not_to change { described_class.count }
-          expect(organization.owner?(user)).to be(true)
-        end
       end
     end
 

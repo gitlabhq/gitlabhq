@@ -9320,6 +9320,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#find_or_create_reviewer' do
+    let_it_be_with_reload(:reviewer_merge_request) { create(:merge_request) }
+    let_it_be(:user) { create(:user) }
+
+    it 'creates the reviewer when none exists' do
+      expect { reviewer_merge_request.find_or_create_reviewer(user) }
+        .to change { reviewer_merge_request.merge_request_reviewers.where(user_id: user.id).count }.by(1)
+    end
+
+    it 'returns the existing reviewer without creating a duplicate', :aggregate_failures do
+      existing = reviewer_merge_request.merge_request_reviewers.create!(user_id: user.id)
+
+      expect { expect(reviewer_merge_request.find_or_create_reviewer(user)).to eq(existing) }
+        .not_to change { reviewer_merge_request.merge_request_reviewers.count }
+    end
+  end
+
   describe '#recent_diff_head_shas' do
     let_it_be(:merge_request_with_diffs) do
       params = {

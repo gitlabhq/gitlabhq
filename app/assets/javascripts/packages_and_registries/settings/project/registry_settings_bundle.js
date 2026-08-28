@@ -18,7 +18,6 @@ export default () => {
     projectPath,
     adminSettingsPath,
     cleanupSettingsPath,
-    tagsRegexHelpPagePath,
     helpPagePath,
     isContainerRegistryMetadataDatabaseEnabled,
     showContainerRegistrySettings,
@@ -36,7 +35,6 @@ export default () => {
       projectPath,
       adminSettingsPath,
       cleanupSettingsPath,
-      tagsRegexHelpPagePath,
       helpPagePath,
       isContainerRegistryMetadataDatabaseEnabled: parseBoolean(
         isContainerRegistryMetadataDatabaseEnabled,

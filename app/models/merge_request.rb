@@ -2750,6 +2750,12 @@ class MergeRequest < ApplicationRecord
     merge_request_reviewers.find_by(user_id: user.id)
   end
 
+  def find_or_create_reviewer(user)
+    merge_request_reviewers.find_or_create_by(user_id: user.id)
+  rescue ActiveRecord::RecordNotUnique
+    merge_request_reviewers.find_by(user_id: user.id)
+  end
+
   def merge_request_reviewers_with(user_ids)
     merge_request_reviewers.where(user_id: user_ids)
   end

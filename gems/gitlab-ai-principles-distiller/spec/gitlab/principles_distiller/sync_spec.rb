@@ -10,6 +10,27 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
   let(:tmpdir) { mktmpdir }
   let(:sync) { described_class.new }
 
+  describe '.principle_source_text' do
+    let(:config) do
+      {
+        'sources' => [{ 'path' => 'doc/source.md' }],
+        'baseline' => '.ai/principles/baselines/example.md'
+      }
+    end
+
+    it 'concatenates the readable sources and baseline' do
+      allow(sync.manifest).to receive(:read_repo_file).and_return('source', 'baseline')
+
+      expect(sync.send(:principle_source_text, config)).to eq("source\nbaseline")
+    end
+
+    it 'returns nil when none of the source files are readable' do
+      allow(sync.manifest).to receive(:read_repo_file).and_return(nil)
+
+      expect(sync.send(:principle_source_text, config)).to be_nil
+    end
+  end
+
   describe '.distill_and_write_principles' do
     let(:principles_dir) { File.join(tmpdir, '.ai/principles/distilled') }
     let(:manifest) do

@@ -40,14 +40,6 @@ RSpec.describe 'Cherry-pick Commits', :js, feature_category: :source_code_manage
       end
     end
 
-    context 'when cherry-picking a merge commit' do
-      specify do
-        cherry_pick_commit
-
-        expect(page).to have_content('The commit has been successfully cherry-picked into master.')
-      end
-    end
-
     context 'when cherry-picking a commit that was previously cherry-picked' do
       specify do
         cherry_pick_commit

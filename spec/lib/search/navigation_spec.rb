@@ -108,6 +108,30 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
         end
       end
 
+      context 'when the global_search_groups_enabled setting is disabled' do
+        before do
+          stub_application_setting(global_search_groups_enabled: false)
+        end
+
+        context 'for global search' do
+          let(:project) { nil }
+          let(:group) { nil }
+
+          it 'hides the tab' do
+            expect(tabs[:groups][:condition]).to be(false)
+          end
+        end
+
+        context 'for group search' do
+          let(:project) { nil }
+          let(:group) { group_double }
+
+          it 'still shows the tab' do
+            expect(tabs[:groups][:condition]).to be(true)
+          end
+        end
+      end
+
       context 'when the elasticsearch_group_search feature flag is disabled' do
         let(:project) { nil }
 

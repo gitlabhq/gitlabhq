@@ -23,6 +23,17 @@ module Mcp
           }
         end
 
+        def self.error?(result)
+          result.is_a?(Hash) && result[:isError]
+        end
+
+        def self.error_message(result)
+          content = result[:content]
+          return unless content.is_a?(Array)
+
+          content.filter_map { |c| c[:text] }.join(', ').presence
+        end
+
         def self.format_text(item)
           (item.is_a?(Hash) && item['web_url']) || item.map { |key, value| "#{key.to_s.humanize}: #{value}" }.join("\n")
         end

@@ -277,7 +277,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     end
   end
 
-  context 'detaching partitions (mocked)' do
+  context 'detaching partitions' do
     subject(:sync_partitions) { manager.sync_partitions }
 
     let(:manager) { described_class.new(model) }
@@ -296,7 +296,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     end
 
     before do
-      create_partitioned_table(connection, table)
+      create_parent_table
 
       allow(connection).to receive(:table_exists?).and_call_original
       allow(connection).to receive(:table_exists?).with(table).and_return(true)
@@ -305,34 +305,14 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       stub_exclusive_lease(described_class::MANAGEMENT_LEASE_KEY % table, timeout: described_class::LEASE_TIMEOUT)
     end
 
+    def create_parent_table
+      create_partitioned_table(connection, table)
+    end
+
     it 'detaches each extra partition' do
       extra_partitions.each { |p| expect(manager).to receive(:detach_one_partition).with(p) }
 
       sync_partitions
-    end
-
-    context 'when only one of the partitions is detachable' do
-      let(:blocker) do
-        Gitlab::Database::Partitioning::DetachEligibility::Blocker.new(
-          reason: :referencing_foreign_key, level: :warn, details: {}
-        )
-      end
-
-      before do
-        allow(Gitlab::Database::Partitioning::DetachEligibility).to receive(:new) do |partition, **|
-          instance_double(
-            Gitlab::Database::Partitioning::DetachEligibility,
-            detachable?: partition == extra_partitions.first,
-            blocker: blocker
-          )
-        end
-      end
-
-      it 'detaches the detachable one and keeps its cleanup record' do
-        sync_partitions
-
-        expect(Postgresql::DetachedPartition.pluck(:table_name)).to contain_exactly('foo1')
-      end
     end
 
     context 'when the eligibility check hits a database error' do
@@ -368,7 +348,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       let(:blocker_level) { :warn }
       let(:blocker) do
         Gitlab::Database::Partitioning::DetachEligibility::Blocker.new(
-          reason: :referencing_foreign_key, level: blocker_level,
+          reason: :referencing_table_cannot_prune, level: blocker_level,
           details: { referencing_table: 'public._test_bar', foreign_key_name: 'fk_test_referencing' }
         )
       end
@@ -391,7 +371,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         extra_partitions.each do |partition|
           expect(Gitlab::AppLogger).to receive(:warn).with({
             message: 'Deferred detaching partition',
-            deferral_reason: :referencing_foreign_key,
+            deferral_reason: :referencing_table_cannot_prune,
             partition_name: partition.partition_name,
             table_name: table,
             connection_name: 'main',
@@ -416,7 +396,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
             extra_partitions.each do |partition|
               expect(Gitlab::AppLogger).to receive(log_method).with(
                 hash_including(
-                  deferral_reason: :referencing_foreign_key,
+                  deferral_reason: :referencing_table_cannot_prune,
                   partition_name: partition.partition_name
                 )
               )
@@ -425,6 +405,64 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
             sync_partitions
           end
         end
+      end
+    end
+
+    # End-to-end safety net: everything above stubs the check, and the reasons themselves are covered
+    # in detach_eligibility_spec.rb
+    context 'when a partitioned table references the parent table' do
+      let(:table) { :_test_gitlab_main_referenced_parent }
+      let(:referencing_table) { :_test_gitlab_main_referencing_parent }
+      let(:dynamic_schema) { Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA }
+
+      let(:extra_partitions) do
+        [100, 101].map do |partition_id|
+          Gitlab::Database::Partitioning::MultipleNumericListPartition.new(
+            table, [partition_id], partition_name: "#{table}_#{partition_id}"
+          )
+        end
+      end
+
+      # The referencing table is partitioned on the same key and has nothing detached, so the two
+      # partitions differ only in whether their counterpart is still attached: 101's is, 100's is not
+      def create_parent_table
+        connection.execute(<<~SQL)
+          CREATE TABLE #{table} (
+            partition_id bigint NOT NULL,
+            id bigserial NOT NULL,
+            PRIMARY KEY (partition_id, id)
+          ) PARTITION BY LIST (partition_id);
+
+          CREATE TABLE #{dynamic_schema}.#{table}_100
+            PARTITION OF #{table} FOR VALUES IN (100);
+
+          CREATE TABLE #{dynamic_schema}.#{table}_101
+            PARTITION OF #{table} FOR VALUES IN (101);
+
+          CREATE TABLE #{referencing_table} (
+            partition_id bigint NOT NULL,
+            id bigserial NOT NULL,
+            referenced_id bigint NOT NULL,
+            PRIMARY KEY (partition_id, id),
+            CONSTRAINT fk_test_referencing FOREIGN KEY (partition_id, referenced_id)
+              REFERENCES #{table} (partition_id, id)
+          ) PARTITION BY LIST (partition_id);
+
+          CREATE TABLE #{dynamic_schema}.#{referencing_table}_101
+            PARTITION OF #{referencing_table} FOR VALUES IN (101);
+        SQL
+      end
+
+      it 'detaches only the partition that satisfies every condition' do
+        sync_partitions
+
+        expect(find_partitions(table).flatten).to contain_exactly("#{table}_101")
+      end
+
+      it 'keeps the cleanup record of the partition it detached' do
+        sync_partitions
+
+        expect(Postgresql::DetachedPartition.pluck(:table_name)).to contain_exactly("#{table}_100")
       end
     end
   end

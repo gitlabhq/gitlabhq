@@ -420,6 +420,31 @@ RSpec.describe '1_settings', feature_category: :settings do
     end
   end
 
+  describe 'Artifact Registry configuration' do
+    context 'with default configuration' do
+      before do
+        stub_config(artifact_registry: {})
+        load_settings
+      end
+
+      it { expect(Settings.artifact_registry.service_token.secret_file).to be_nil }
+    end
+
+    context 'with custom configuration' do
+      before do
+        stub_config(artifact_registry: {
+          service_token: { secret_file: '/etc/gitlab/artifact-registry/.gitlab_artifact_registry_secret' }
+        })
+        load_settings
+      end
+
+      it 'reads secret_file from config' do
+        expect(Settings.artifact_registry.service_token.secret_file)
+          .to eq('/etc/gitlab/artifact-registry/.gitlab_artifact_registry_secret')
+      end
+    end
+  end
+
   describe 'cron jobs', unless: Gitlab.ee? do
     around do |example|
       Gitlab::SidekiqConfig::CronJobs.reset!

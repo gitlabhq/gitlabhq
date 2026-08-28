@@ -149,6 +149,45 @@ RSpec.describe Mcp::Tools::Base::Response, feature_category: :mcp_server do
     end
   end
 
+  describe '.error?' do
+    it 'returns true for an error response' do
+      result = described_class.error('Something went wrong')
+
+      expect(described_class.error?(result)).to be true
+    end
+
+    it 'returns false for a success response' do
+      result = described_class.success([{ type: 'text', text: 'OK' }])
+
+      expect(described_class.error?(result)).to be false
+    end
+
+    it 'returns false for a non-hash value' do
+      expect(described_class.error?(nil)).to be false
+      expect(described_class.error?('string')).to be false
+    end
+  end
+
+  describe '.error_message' do
+    it 'extracts the text from an error response' do
+      result = described_class.error('Validation error: labels is invalid')
+
+      expect(described_class.error_message(result)).to eq('Validation error: labels is invalid')
+    end
+
+    it 'returns nil when content has no text entries' do
+      result = { content: [], isError: true }
+
+      expect(described_class.error_message(result)).to be_nil
+    end
+
+    it 'returns nil when content is not an array' do
+      result = { content: 'not an array', isError: true }
+
+      expect(described_class.error_message(result)).to be_nil
+    end
+  end
+
   describe '.format_text' do
     context 'when item is a hash with a web_url' do
       it 'returns the web_url value' do
