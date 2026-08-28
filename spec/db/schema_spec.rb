@@ -199,6 +199,7 @@ RSpec.describe 'Database schema',
       project_error_tracking_settings: %w[sentry_project_id],
       project_statistics: %w[namespace_id],
       projects: %w[mirror_user_id],
+      push_rules: %w[organization_id], # Legacy column; org rules live in organization_push_rules. Column drop tracked in gitlab-org/gitlab#623433
       redirect_routes: %w[source_id],
       repository_languages: %w[programming_language_id language_id],
       routes: %w[source_id],

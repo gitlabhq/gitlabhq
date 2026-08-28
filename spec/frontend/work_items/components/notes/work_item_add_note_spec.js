@@ -203,7 +203,7 @@ describe('Work item add note', () => {
         expect(clearDraft).toHaveBeenCalledWith('gid://gitlab/WorkItem/1-comment');
       });
 
-      it('emits error when mutation returns error', async () => {
+      it('shows the error inline when mutation returns error', async () => {
         const error = 'eror';
         await createComponent({
           isEditing: true,
@@ -218,10 +218,10 @@ describe('Work item add note', () => {
         });
         await waitForPromises();
 
-        expect(wrapper.emitted('error')).toEqual([[error]]);
+        expect(findErrorAlert().text()).toBe(error);
       });
 
-      it('emits error when mutation fails', async () => {
+      it('shows the error inline when mutation fails', async () => {
         const error = 'eror';
 
         await createComponent({
@@ -235,7 +235,25 @@ describe('Work item add note', () => {
         });
         await waitForPromises();
 
-        expect(wrapper.emitted('error')).toEqual([[error]]);
+        expect(findErrorAlert().text()).toBe(error);
+      });
+
+      it('emits `replied` to clear the reply placeholder when mutation returns error', async () => {
+        const error = 'eror';
+        await createComponent({
+          isEditing: true,
+          mutationHandler: jest
+            .fn()
+            .mockResolvedValue(createWorkItemNoteResponse({ errors: [error] })),
+        });
+
+        findCommentForm().vm.$emit('submit-form', {
+          commentText: 'updated desc',
+          isNoteInternal: isInternalComment,
+        });
+        await waitForPromises();
+
+        expect(wrapper.emitted('replied')).toEqual([[]]);
       });
 
       it('ignores errors when mutation returns additional information as errors for quick actions', async () => {

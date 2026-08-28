@@ -117,7 +117,6 @@ RSpec.configure do |config|
   # Auto-include organization URL helpers for spec types that need organization-scoped paths.
   # Feature specs are excluded: they drive the app through Capybara rather than the get/post helpers
   # this context relies on, so the request-capture stub can never resolve an organization there.
-  # Instead they use 'with unscoped Organization paths for feature specs' (see current_organization_context).
   [:request, :controller].each do |spec_type|
     config.define_derived_metadata(type: spec_type) do |metadata|
       metadata[:with_organization_url_helpers] = true

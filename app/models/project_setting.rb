@@ -12,8 +12,7 @@ class ProjectSetting < ApplicationRecord
 
   cells_claims_scope { where.not(pages_unique_domain: nil) }
 
-  cells_claims_attribute :pages_unique_domain, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_PAGES_UNIQUE_DOMAIN,
-    feature_flag: :cells_claims_project_settings_pages_unique_domains
+  cells_claims_attribute :pages_unique_domain, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_PAGES_UNIQUE_DOMAIN
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::PROJECT, subject_key: :project_id
 

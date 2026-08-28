@@ -10,8 +10,14 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
   let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:label_assigned) { create(:label, project: project, title: 'verisimilitude') }
   let_it_be(:label_unassigned) { create(:label, project: project, title: 'syzygy') }
-  let_it_be_with_reload(:issue) { create(:issue, project: project, author: user, assignees: [user], labels: [label_assigned]) }
-  let_it_be(:issue_with_milestones) { create(:issue, project: project_with_milestones, author: user, assignees: [user]) }
+  let_it_be_with_reload(:issue) do
+    create(:issue, project: project, author: user, assignees: [user], labels: [label_assigned])
+  end
+
+  let_it_be(:issue_with_milestones) do
+    create(:issue, project: project_with_milestones, author: user, assignees: [user])
+  end
+
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:milestones) { create_list(:milestone, 3, project: project_with_milestones) }
 

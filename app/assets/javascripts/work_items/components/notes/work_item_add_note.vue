@@ -299,7 +299,7 @@ export default {
           },
           update: this.onNoteUpdate,
         });
-        const { errorMessages, messages } = data.createNote.quickActionsStatus;
+        const { errorMessages, messages } = data.createNote.quickActionsStatus ?? {};
 
         this.errorMessages = errorMessages?.join(' ');
         this.messages = messages?.join(' ');
@@ -313,7 +313,8 @@ export default {
           messages,
         });
       } catch (error) {
-        this.$emit('error', error.message);
+        this.errorMessages = error.message;
+        this.$emit('replied');
         Sentry.captureException(error);
       } finally {
         this.isSubmitting = false;

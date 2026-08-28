@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Authn::IamDataAccessService, feature_category: :system_access do
+  using RSpec::Parameterized::TableSyntax
+
   describe '.grpc_address' do
     subject(:grpc_address) { described_class.grpc_address }
 
@@ -13,13 +15,11 @@ RSpec.describe Authn::IamDataAccessService, feature_category: :system_access do
         })
       end
 
-      it 'returns tls:// address in non-development environment' do
-        allow(Rails.env).to receive(:development?).and_return(false)
-
-        expect(grpc_address).to eq('tls://iam.example.com:5005')
+      it 'returns the host and port with no scheme' do
+        expect(grpc_address).to eq('iam.example.com:5005')
       end
 
-      it 'returns plain address in development environment' do
+      it 'does not depend on the Rails environment' do
         allow(Rails.env).to receive(:development?).and_return(true)
 
         expect(grpc_address).to eq('iam.example.com:5005')
@@ -66,6 +66,27 @@ RSpec.describe Authn::IamDataAccessService, feature_category: :system_access do
           described_class::ConfigurationError, 'IAM data access gRPC service is not configured'
         )
       end
+    end
+  end
+
+  describe '.grpc_secure?' do
+    subject(:grpc_secure?) { described_class.grpc_secure? }
+
+    where(:secure, :expected) do
+      true    | true
+      false   | false
+      nil     | true
+      'false' | true
+    end
+
+    with_them do
+      before do
+        stub_config(iam_data_access_service: {
+          grpc: { host: 'iam.example.com', port: 5005, secure: secure }
+        })
+      end
+
+      it { is_expected.to be(expected) }
     end
   end
 

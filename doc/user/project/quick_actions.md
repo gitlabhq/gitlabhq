@@ -963,6 +963,43 @@ Set the health status.
 
 - For more information, see [health status](issues/managing_issues.md#health-status).
 
+### `internal_note`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/553068) in GitLab 19.4.
+
+{{< /history >}}
+
+Make a comment an internal note.
+
+**Availability**:
+
+- Epic
+- Incident
+- Issue
+- Merge request
+- Task
+- Ticket
+- Objective
+- Key Result
+
+**Examples**:
+
+- Make a comment an internal note:
+
+  ```plaintext
+  This is an internal comment.
+  /internal_note
+  ```
+
+**Additional details**:
+
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role.
+- You can't use `/internal_note` in a description, as a reply in a non-internal discussion, or when editing an existing comment.
+- You can't convert internal notes to regular comments.
+- For more information, see [internal notes](../discussions/_index.md#add-an-internal-note).
+
 ### `iteration`
 
 Set the iteration.

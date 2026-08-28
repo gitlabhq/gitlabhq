@@ -204,6 +204,9 @@ class IssuableBaseService < ::BaseContainerService
     # Avoid a description already set on an issuable to be overwritten by a nil
     params[:description] = description if description && description != target_description
 
+    # `/internal_note` only applies to comments; strip and ignore it in descriptions.
+    command_params.delete(:internal_note)
+
     params.merge!(command_params)
   end
 

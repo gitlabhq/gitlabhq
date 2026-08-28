@@ -39,8 +39,8 @@ class User < ApplicationRecord
   include Users::EmailOtpEnrollment
   include Cells::Claimable
 
-  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USER_ID, feature_flag: :cells_claims_users
-  cells_claims_attribute :username, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USERNAME, feature_flag: :cells_claims_users
+  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USER_ID
+  cells_claims_attribute :username, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USERNAME
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 

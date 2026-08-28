@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -14,17 +14,20 @@ import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
  * - URL helper: `jira_connect_base_url`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const jiraConnectBasePath = /*#__PURE__*/ (...args) => {
   const _organizationJiraConnectBasePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _jiraConnectBasePath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationJiraConnectBasePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationJiraConnectBasePath(organizationPath, ...routeArgs);
   }
 
-  return _jiraConnectBasePath(...args);
+  return _jiraConnectBasePath(...routeArgs);
 };
 
 /**
@@ -36,17 +39,20 @@ export const jiraConnectBasePath = /*#__PURE__*/ (...args) => {
  * - controller#action: `jira_connect/app_descriptor#show`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const jiraConnectAppDescriptorPath = /*#__PURE__*/ (...args) => {
   const _organizationJiraConnectAppDescriptorPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"app_descriptor"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _jiraConnectAppDescriptorPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"app_descriptor"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationJiraConnectAppDescriptorPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationJiraConnectAppDescriptorPath(organizationPath, ...routeArgs);
   }
 
-  return _jiraConnectAppDescriptorPath(...args);
+  return _jiraConnectAppDescriptorPath(...routeArgs);
 };
 
 /**
@@ -58,17 +64,20 @@ export const jiraConnectAppDescriptorPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `jira_connect/events#installed`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const jiraConnectEventsInstalledPath = /*#__PURE__*/ (...args) => {
   const _organizationJiraConnectEventsInstalledPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"events"],[2,[7,"/"],[2,[6,"installed"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _jiraConnectEventsInstalledPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"events"],[2,[7,"/"],[2,[6,"installed"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationJiraConnectEventsInstalledPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationJiraConnectEventsInstalledPath(organizationPath, ...routeArgs);
   }
 
-  return _jiraConnectEventsInstalledPath(...args);
+  return _jiraConnectEventsInstalledPath(...routeArgs);
 };
 
 /**
@@ -80,17 +89,20 @@ export const jiraConnectEventsInstalledPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `jira_connect/events#uninstalled`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const jiraConnectEventsUninstalledPath = /*#__PURE__*/ (...args) => {
   const _organizationJiraConnectEventsUninstalledPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"events"],[2,[7,"/"],[2,[6,"uninstalled"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _jiraConnectEventsUninstalledPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"events"],[2,[7,"/"],[2,[6,"uninstalled"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationJiraConnectEventsUninstalledPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationJiraConnectEventsUninstalledPath(organizationPath, ...routeArgs);
   }
 
-  return _jiraConnectEventsUninstalledPath(...args);
+  return _jiraConnectEventsUninstalledPath(...routeArgs);
 };
 
 /**
@@ -102,17 +114,20 @@ export const jiraConnectEventsUninstalledPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `jira_connect/subscriptions#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const jiraConnectSubscriptionsPath = /*#__PURE__*/ (...args) => {
   const _organizationJiraConnectSubscriptionsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"subscriptions"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _jiraConnectSubscriptionsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"subscriptions"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationJiraConnectSubscriptionsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationJiraConnectSubscriptionsPath(organizationPath, ...routeArgs);
   }
 
-  return _jiraConnectSubscriptionsPath(...args);
+  return _jiraConnectSubscriptionsPath(...routeArgs);
 };
 
 /**
@@ -125,17 +140,20 @@ export const jiraConnectSubscriptionsPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const jiraConnectSubscriptionPath = /*#__PURE__*/ (...args) => {
   const _organizationJiraConnectSubscriptionPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"subscriptions"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _jiraConnectSubscriptionPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"subscriptions"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationJiraConnectSubscriptionPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationJiraConnectSubscriptionPath(organizationPath, ...routeArgs);
   }
 
-  return _jiraConnectSubscriptionPath(...args);
+  return _jiraConnectSubscriptionPath(...routeArgs);
 };
 
 /**
@@ -147,17 +165,20 @@ export const jiraConnectSubscriptionPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `jira_connect/branches#route`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const routeJiraConnectBranchesPath = /*#__PURE__*/ (...args) => {
   const _routeOrganizationJiraConnectBranchesPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"branches"],[2,[7,"/"],[2,[6,"route"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _routeJiraConnectBranchesPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"branches"],[2,[7,"/"],[2,[6,"route"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _routeOrganizationJiraConnectBranchesPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _routeOrganizationJiraConnectBranchesPath(organizationPath, ...routeArgs);
   }
 
-  return _routeJiraConnectBranchesPath(...args);
+  return _routeJiraConnectBranchesPath(...routeArgs);
 };
 
 /**
@@ -169,17 +190,20 @@ export const routeJiraConnectBranchesPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `jira_connect/branches#new`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const newJiraConnectBranchPath = /*#__PURE__*/ (...args) => {
   const _newOrganizationJiraConnectBranchPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"branches"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _newJiraConnectBranchPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"branches"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _newOrganizationJiraConnectBranchPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _newOrganizationJiraConnectBranchPath(organizationPath, ...routeArgs);
   }
 
-  return _newJiraConnectBranchPath(...args);
+  return _newJiraConnectBranchPath(...routeArgs);
 };
 
 /**
@@ -192,17 +216,20 @@ export const newJiraConnectBranchPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const jiraConnectPublicKeyPath = /*#__PURE__*/ (...args) => {
   const _organizationJiraConnectPublicKeyPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"public_keys"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _jiraConnectPublicKeyPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"public_keys"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationJiraConnectPublicKeyPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationJiraConnectPublicKeyPath(organizationPath, ...routeArgs);
   }
 
-  return _jiraConnectPublicKeyPath(...args);
+  return _jiraConnectPublicKeyPath(...routeArgs);
 };
 
 /**
@@ -214,17 +241,20 @@ export const jiraConnectPublicKeyPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `jira_connect/workspaces#search`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const searchJiraConnectWorkspacesPath = /*#__PURE__*/ (...args) => {
   const _searchOrganizationJiraConnectWorkspacesPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"workspaces"],[2,[7,"/"],[2,[6,"search"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _searchJiraConnectWorkspacesPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"workspaces"],[2,[7,"/"],[2,[6,"search"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _searchOrganizationJiraConnectWorkspacesPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _searchOrganizationJiraConnectWorkspacesPath(organizationPath, ...routeArgs);
   }
 
-  return _searchJiraConnectWorkspacesPath(...args);
+  return _searchJiraConnectWorkspacesPath(...routeArgs);
 };
 
 /**
@@ -236,17 +266,20 @@ export const searchJiraConnectWorkspacesPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `jira_connect/repositories#search`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const searchJiraConnectRepositoriesPath = /*#__PURE__*/ (...args) => {
   const _searchOrganizationJiraConnectRepositoriesPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"repositories"],[2,[7,"/"],[2,[6,"search"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _searchJiraConnectRepositoriesPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"repositories"],[2,[7,"/"],[2,[6,"search"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _searchOrganizationJiraConnectRepositoriesPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _searchOrganizationJiraConnectRepositoriesPath(organizationPath, ...routeArgs);
   }
 
-  return _searchJiraConnectRepositoriesPath(...args);
+  return _searchJiraConnectRepositoriesPath(...routeArgs);
 };
 
 /**
@@ -258,17 +291,20 @@ export const searchJiraConnectRepositoriesPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `jira_connect/repositories#associate`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const associateJiraConnectRepositoriesPath = /*#__PURE__*/ (...args) => {
   const _associateOrganizationJiraConnectRepositoriesPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"repositories"],[2,[7,"/"],[2,[6,"associate"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _associateJiraConnectRepositoriesPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"repositories"],[2,[7,"/"],[2,[6,"associate"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _associateOrganizationJiraConnectRepositoriesPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _associateOrganizationJiraConnectRepositoriesPath(organizationPath, ...routeArgs);
   }
 
-  return _associateJiraConnectRepositoriesPath(...args);
+  return _associateJiraConnectRepositoriesPath(...routeArgs);
 };
 
 /**
@@ -280,17 +316,20 @@ export const associateJiraConnectRepositoriesPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `jira_connect/installations#update`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const jiraConnectInstallationsPath = /*#__PURE__*/ (...args) => {
   const _organizationJiraConnectInstallationsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"installations"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _jiraConnectInstallationsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"installations"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationJiraConnectInstallationsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationJiraConnectInstallationsPath(organizationPath, ...routeArgs);
   }
 
-  return _jiraConnectInstallationsPath(...args);
+  return _jiraConnectInstallationsPath(...routeArgs);
 };
 
 /**
@@ -302,17 +341,20 @@ export const jiraConnectInstallationsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `jira_connect/oauth_callbacks#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const jiraConnectOauthCallbacksPath = /*#__PURE__*/ (...args) => {
   const _organizationJiraConnectOauthCallbacksPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"oauth_callbacks"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _jiraConnectOauthCallbacksPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"oauth_callbacks"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationJiraConnectOauthCallbacksPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationJiraConnectOauthCallbacksPath(organizationPath, ...routeArgs);
   }
 
-  return _jiraConnectOauthCallbacksPath(...args);
+  return _jiraConnectOauthCallbacksPath(...routeArgs);
 };
 
 /**
@@ -324,16 +366,19 @@ export const jiraConnectOauthCallbacksPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `jira_connect/oauth_application_ids#show`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const jiraConnectOauthApplicationIdPath = /*#__PURE__*/ (...args) => {
   const _organizationJiraConnectOauthApplicationIdPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"oauth_application_id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _jiraConnectOauthApplicationIdPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"jira_connect"],[2,[7,"/"],[2,[6,"oauth_application_id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationJiraConnectOauthApplicationIdPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationJiraConnectOauthApplicationIdPath(organizationPath, ...routeArgs);
   }
 
-  return _jiraConnectOauthApplicationIdPath(...args);
+  return _jiraConnectOauthApplicationIdPath(...routeArgs);
 };
 

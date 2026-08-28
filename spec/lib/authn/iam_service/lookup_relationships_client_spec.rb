@@ -17,6 +17,7 @@ RSpec.describe Authn::IamService::LookupRelationshipsClient, feature_category: :
   before do
     allow(Authn::IamDataAccessService).to receive_messages(
       grpc_address: 'localhost:5005',
+      grpc_secure?: false,
       secret: iam_secret
     )
     allow(::Gitlab::Iam::Lookup::V1::LookupService::Stub).to receive(:new).and_return(lookup_stub)
@@ -150,12 +151,61 @@ RSpec.describe Authn::IamService::LookupRelationshipsClient, feature_category: :
     end
   end
 
-  describe 'insecure channel guard' do
-    it 'refuses an insecure channel outside development and test' do
-      allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
-      allow(Authn::IamDataAccessService).to receive(:grpc_address).and_return('localhost:5005')
+  describe 'channel transport' do
+    let(:tls_credentials) { instance_double(GRPC::Core::ChannelCredentials) }
+    let(:insecure_log) { a_hash_including(message: 'Using an insecure IAM gRPC channel', address: 'iam.test:5005') }
 
-      expect { lookup }.to raise_error(Authn::IamService::BaseClient::InsecureChannelError)
+    before do
+      Authn::IamService::BaseClient::LOGGED_INSECURE_ENDPOINTS.clear
+
+      allow(Authn::IamDataAccessService).to receive(:grpc_address).and_return('iam.test:5005')
+      allow(::Gitlab::X509::Certificate).to receive(:ca_certs_bundle).and_return('cert-data')
+      allow(GRPC::Core::ChannelCredentials).to receive(:new).with('cert-data').and_return(tls_credentials)
+      allow(Gitlab::AppLogger).to receive(:info)
+    end
+
+    context 'when the data access service is secure' do
+      before do
+        allow(Authn::IamDataAccessService).to receive(:grpc_secure?).and_return(true)
+      end
+
+      it 'builds the stub with TLS credentials' do
+        lookup
+
+        expect(::Gitlab::Iam::Lookup::V1::LookupService::Stub)
+          .to have_received(:new).with('iam.test:5005', tls_credentials, any_args)
+      end
+
+      it 'does not log a plain text endpoint' do
+        lookup
+
+        expect(Gitlab::AppLogger).not_to have_received(:info).with(insecure_log)
+      end
+    end
+
+    context 'when the data access service is not secure' do
+      before do
+        allow(Authn::IamDataAccessService).to receive(:grpc_secure?).and_return(false)
+      end
+
+      it 'builds the stub with a plain text channel' do
+        lookup
+
+        expect(::Gitlab::Iam::Lookup::V1::LookupService::Stub)
+          .to have_received(:new).with('iam.test:5005', :this_channel_is_insecure, any_args)
+      end
+
+      it 'logs the plain text endpoint' do
+        lookup
+
+        expect(Gitlab::AppLogger).to have_received(:info).with(insecure_log).once
+      end
+
+      it 'logs the endpoint only once per process' do
+        3.times { lookup }
+
+        expect(Gitlab::AppLogger).to have_received(:info).with(insecure_log).once
+      end
     end
   end
 end

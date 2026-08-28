@@ -102,9 +102,9 @@ module Gitlab
           end
 
           def create_findings
-            if report_data["vulnerabilities"]
-              report_data["vulnerabilities"].each { |finding| create_finding(finding) }
-            end
+            return unless report_data["vulnerabilities"]
+
+            report_data["vulnerabilities"].each { |finding| create_finding(finding) }
           end
 
           def create_finding(data, remediations = [])

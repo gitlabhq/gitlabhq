@@ -108,6 +108,15 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         let(:updated_issuable) { update_work_item[:work_item] }
       end
 
+      context 'with the /internal_note quick action' do
+        let(:opts) { { description: "Updated description\n/internal_note" } }
+
+        it 'strips the quick action from the description and ignores it', :aggregate_failures do
+          expect(update_work_item[:status]).to eq(:success)
+          expect(update_work_item[:work_item].description).to eq('Updated description')
+        end
+      end
+
       context 'when work item labels, assignees & milestone widgets are disabled' do
         before do
           stub_work_item_widget(work_item, labels: false, assignees: false, milestone: false)
@@ -143,7 +152,8 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
       it 'triggers issuable_title_updated graphql subscription' do
         expect(GraphqlTriggers).to receive(:issuable_title_updated).with(work_item).and_call_original
-        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).to receive(:track_work_item_title_changed_action).with(author: current_user)
+        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter)
+          .to receive(:track_work_item_title_changed_action).with(author: current_user)
         # During the work item transition we also want to track work items as issues
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_title_changed_action)
         expect(update_work_item[:status]).to eq(:success)
@@ -180,7 +190,8 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
       it 'does not trigger issuable_title_updated graphql subscription' do
         expect(GraphqlTriggers).not_to receive(:issuable_title_updated)
-        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).not_to receive(:track_work_item_title_changed_action)
+        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter)
+          .not_to receive(:track_work_item_title_changed_action)
         expect(update_work_item[:status]).to eq(:success)
       end
 
@@ -202,7 +213,8 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         ]
 
       it 'tracks users updating work item dates' do
-        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).to receive(:track_work_item_date_changed_action).with(author: current_user)
+        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter)
+          .to receive(:track_work_item_date_changed_action).with(author: current_user)
 
         update_work_item
       end
@@ -575,8 +587,13 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       end
 
       context 'for current user todos widget' do
-        let_it_be(:user_todo, freeze: false) { create(:todo, target: work_item, user: developer, project: project, state: :pending) }
-        let_it_be(:other_todo, freeze: false) { create(:todo, target: work_item, user: create(:user), project: project, state: :pending) }
+        let_it_be(:user_todo, freeze: false) do
+          create(:todo, target: work_item, user: developer, project: project, state: :pending)
+        end
+
+        let_it_be(:other_todo, freeze: false) do
+          create(:todo, target: work_item, user: create(:user), project: project, state: :pending)
+        end
 
         include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
           attributes: %w[
@@ -634,7 +651,9 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         let_it_be(:assignee, freeze: false) { create(:user, developer_of: project) }
         # Use a fresh work item to ensure updated_by_id is not already set to current_user
         # from a prior test, which would prevent Rails from detecting the change.
-        let_it_be_with_refind(:work_item) { create(:work_item, project: project, assignees: [developer], updated_by: nil) }
+        let_it_be_with_refind(:work_item) do
+          create(:work_item, project: project, assignees: [developer], updated_by: nil)
+        end
 
         it 'updates assignees of the work item' do
           expect do
@@ -680,7 +699,8 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           ]
 
         it 'tracks users updating work item labels' do
-          expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).to receive(:track_work_item_labels_changed_action).with(author: current_user)
+          expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter)
+            .to receive(:track_work_item_labels_changed_action).with(author: current_user)
 
           update_work_item
         end
@@ -708,7 +728,8 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       context 'when labels are not changed' do
         shared_examples 'work item update that does not track label updates' do
           it 'does not track users updating work item labels' do
-            expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).not_to receive(:track_work_item_labels_changed_action)
+            expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter)
+              .not_to receive(:track_work_item_labels_changed_action)
 
             update_work_item
           end

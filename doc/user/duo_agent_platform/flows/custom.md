@@ -220,12 +220,9 @@ The flow appears in the AI Catalog.
 {{< history >}}
 
 - Enabling a public flow for multiple projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/600526) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_bulk_item_consumer_create`. Enabled by default.
+- Feature flag `ai_catalog_bulk_item_consumer_create` removed in GitLab 19.4.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Enable a flow to trigger it from an issue, merge request, or discussion.
 

@@ -14,7 +14,9 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   let_it_be(:label)     { create(:label, project: project) }
   let_it_be(:label2)    { create(:label, project: project) }
   let_it_be(:issue, freeze: false) { create(:issue, project: project, assignees: [user], milestone: milestone) }
-  let_it_be(:confidential_issue) { create(:issue, project: project, assignees: [user], milestone: milestone, confidential: true) }
+  let_it_be(:confidential_issue) do
+    create(:issue, project: project, assignees: [user], milestone: milestone, confidential: true)
+  end
 
   let(:current_user) { user }
 
@@ -295,11 +297,14 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
       expect(page).to have_field('Description', with: 'description from template')
     end
 
-    it 'fills the description from the issue[description] query parameter and shows an alert to replace the description with the template from issuable_template' do
-      visit new_project_issue_path(project, issuable_template: 'test_template', issue: { description: 'description from query parameter' })
+    it 'fills the description from the issue[description] query parameter and shows an alert to replace the ' \
+      'description with the template from issuable_template' do
+      visit new_project_issue_path(project, issuable_template: 'test_template',
+        issue: { description: 'description from query parameter' })
 
       expect(page).to have_field('Description', with: 'description from query parameter')
-      expect(page).to have_text('Applying a template will replace the existing description. Any changes you have made will be lost.')
+      expect(page).to have_text('Applying a template will replace the existing description. ' \
+        'Any changes you have made will be lost.')
       expect(page).to have_button('Apply template')
     end
   end

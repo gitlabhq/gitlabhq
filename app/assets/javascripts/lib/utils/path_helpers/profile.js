@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -14,17 +14,20 @@ import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
  * - URL helper: `audit_log_profile_url`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const auditLogProfilePath = /*#__PURE__*/ (...args) => {
   const _auditLogOrganizationProfilePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"audit_log"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _auditLogProfilePath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"audit_log"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _auditLogOrganizationProfilePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _auditLogOrganizationProfilePath(organizationPath, ...routeArgs);
   }
 
-  return _auditLogProfilePath(...args);
+  return _auditLogProfilePath(...routeArgs);
 };
 
 /**
@@ -35,17 +38,20 @@ export const auditLogProfilePath = /*#__PURE__*/ (...args) => {
  * - URL helper: `applications_profile_url`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const applicationsProfilePath = /*#__PURE__*/ (...args) => {
   const _applicationsOrganizationProfilePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"applications"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _applicationsProfilePath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"applications"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _applicationsOrganizationProfilePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _applicationsOrganizationProfilePath(organizationPath, ...routeArgs);
   }
 
-  return _applicationsProfilePath(...args);
+  return _applicationsProfilePath(...routeArgs);
 };
 
 /**
@@ -57,17 +63,20 @@ export const applicationsProfilePath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles#reset_incoming_email_token`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const resetIncomingEmailTokenProfilePath = /*#__PURE__*/ (...args) => {
   const _resetIncomingEmailTokenOrganizationProfilePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"reset_incoming_email_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _resetIncomingEmailTokenProfilePath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"reset_incoming_email_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _resetIncomingEmailTokenOrganizationProfilePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _resetIncomingEmailTokenOrganizationProfilePath(organizationPath, ...routeArgs);
   }
 
-  return _resetIncomingEmailTokenProfilePath(...args);
+  return _resetIncomingEmailTokenProfilePath(...routeArgs);
 };
 
 /**
@@ -79,17 +88,20 @@ export const resetIncomingEmailTokenProfilePath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles#reset_feed_token`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const resetFeedTokenProfilePath = /*#__PURE__*/ (...args) => {
   const _resetFeedTokenOrganizationProfilePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"reset_feed_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _resetFeedTokenProfilePath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"reset_feed_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _resetFeedTokenOrganizationProfilePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _resetFeedTokenOrganizationProfilePath(organizationPath, ...routeArgs);
   }
 
-  return _resetFeedTokenProfilePath(...args);
+  return _resetFeedTokenProfilePath(...routeArgs);
 };
 
 /**
@@ -101,17 +113,20 @@ export const resetFeedTokenProfilePath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles#reset_static_object_token`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const resetStaticObjectTokenProfilePath = /*#__PURE__*/ (...args) => {
   const _resetStaticObjectTokenOrganizationProfilePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"reset_static_object_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _resetStaticObjectTokenProfilePath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"reset_static_object_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _resetStaticObjectTokenOrganizationProfilePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _resetStaticObjectTokenOrganizationProfilePath(organizationPath, ...routeArgs);
   }
 
-  return _resetStaticObjectTokenProfilePath(...args);
+  return _resetStaticObjectTokenProfilePath(...routeArgs);
 };
 
 /**
@@ -123,17 +138,20 @@ export const resetStaticObjectTokenProfilePath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles#update_username`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const updateUsernameProfilePath = /*#__PURE__*/ (...args) => {
   const _updateUsernameOrganizationProfilePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"update_username"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _updateUsernameProfilePath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"update_username"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _updateUsernameOrganizationProfilePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _updateUsernameOrganizationProfilePath(organizationPath, ...routeArgs);
   }
 
-  return _updateUsernameProfilePath(...args);
+  return _updateUsernameProfilePath(...routeArgs);
 };
 
 /**
@@ -145,17 +163,20 @@ export const updateUsernameProfilePath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/accounts#unlink`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const unlinkProfileAccountPath = /*#__PURE__*/ (...args) => {
   const _unlinkOrganizationProfileAccountPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"account"],[2,[7,"/"],[2,[6,"unlink"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _unlinkProfileAccountPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"account"],[2,[7,"/"],[2,[6,"unlink"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _unlinkOrganizationProfileAccountPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _unlinkOrganizationProfileAccountPath(organizationPath, ...routeArgs);
   }
 
-  return _unlinkProfileAccountPath(...args);
+  return _unlinkProfileAccountPath(...routeArgs);
 };
 
 /**
@@ -167,17 +188,20 @@ export const unlinkProfileAccountPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/accounts#generate_support_pin`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const generateSupportPinProfileAccountPath = /*#__PURE__*/ (...args) => {
   const _generateSupportPinOrganizationProfileAccountPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"account"],[2,[7,"/"],[2,[6,"generate_support_pin"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _generateSupportPinProfileAccountPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"account"],[2,[7,"/"],[2,[6,"generate_support_pin"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _generateSupportPinOrganizationProfileAccountPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _generateSupportPinOrganizationProfileAccountPath(organizationPath, ...routeArgs);
   }
 
-  return _generateSupportPinProfileAccountPath(...args);
+  return _generateSupportPinProfileAccountPath(...routeArgs);
 };
 
 /**
@@ -189,17 +213,20 @@ export const generateSupportPinProfileAccountPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/accounts#show`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const profileAccountPath = /*#__PURE__*/ (...args) => {
   const _organizationProfileAccountPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"account"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _profileAccountPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"account"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationProfileAccountPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationProfileAccountPath(organizationPath, ...routeArgs);
   }
 
-  return _profileAccountPath(...args);
+  return _profileAccountPath(...routeArgs);
 };
 
 /**
@@ -212,17 +239,20 @@ export const profileAccountPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const profileGroupNotificationsPath = /*#__PURE__*/ (...args) => {
   const _organizationProfileGroupNotificationsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[2,[6,"notifications"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
   const _profileGroupNotificationsPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[2,[6,"notifications"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationProfileGroupNotificationsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationProfileGroupNotificationsPath(organizationPath, ...routeArgs);
   }
 
-  return _profileGroupNotificationsPath(...args);
+  return _profileGroupNotificationsPath(...routeArgs);
 };
 
 /**
@@ -234,17 +264,20 @@ export const profileGroupNotificationsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/notifications#show`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const profileNotificationsPath = /*#__PURE__*/ (...args) => {
   const _organizationProfileNotificationsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"notifications"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _profileNotificationsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"notifications"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationProfileNotificationsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationProfileNotificationsPath(organizationPath, ...routeArgs);
   }
 
-  return _profileNotificationsPath(...args);
+  return _profileNotificationsPath(...routeArgs);
 };
 
 /**
@@ -256,17 +289,20 @@ export const profileNotificationsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/slacks#slack_link`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const slackLinkProfileSlackPath = /*#__PURE__*/ (...args) => {
   const _slackLinkOrganizationProfileSlackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"slack"],[2,[7,"/"],[2,[6,"slack_link"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _slackLinkProfileSlackPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"slack"],[2,[7,"/"],[2,[6,"slack_link"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _slackLinkOrganizationProfileSlackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _slackLinkOrganizationProfileSlackPath(organizationPath, ...routeArgs);
   }
 
-  return _slackLinkProfileSlackPath(...args);
+  return _slackLinkProfileSlackPath(...routeArgs);
 };
 
 /**
@@ -278,17 +314,20 @@ export const slackLinkProfileSlackPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/slacks#edit`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const editProfileSlackPath = /*#__PURE__*/ (...args) => {
   const _editOrganizationProfileSlackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"slack"],[2,[7,"/"],[2,[6,"edit"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _editProfileSlackPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"slack"],[2,[7,"/"],[2,[6,"edit"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _editOrganizationProfileSlackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _editOrganizationProfileSlackPath(organizationPath, ...routeArgs);
   }
 
-  return _editProfileSlackPath(...args);
+  return _editProfileSlackPath(...routeArgs);
 };
 
 /**
@@ -300,17 +339,20 @@ export const editProfileSlackPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/preferences#show`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const profilePreferencesPath = /*#__PURE__*/ (...args) => {
   const _organizationProfilePreferencesPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"preferences"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _profilePreferencesPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"preferences"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationProfilePreferencesPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationProfilePreferencesPath(organizationPath, ...routeArgs);
   }
 
-  return _profilePreferencesPath(...args);
+  return _profilePreferencesPath(...routeArgs);
 };
 
 /**
@@ -322,17 +364,20 @@ export const profilePreferencesPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/comment_templates#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const profileCommentTemplatesPath = /*#__PURE__*/ (...args) => {
   const _organizationProfileCommentTemplatesPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"comment_templates"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _profileCommentTemplatesPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"comment_templates"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationProfileCommentTemplatesPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationProfileCommentTemplatesPath(organizationPath, ...routeArgs);
   }
 
-  return _profileCommentTemplatesPath(...args);
+  return _profileCommentTemplatesPath(...routeArgs);
 };
 
 /**
@@ -345,17 +390,20 @@ export const profileCommentTemplatesPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const profileCommentTemplatePath = /*#__PURE__*/ (...args) => {
   const _organizationProfileCommentTemplatePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"comment_templates"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _profileCommentTemplatePath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"comment_templates"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationProfileCommentTemplatePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationProfileCommentTemplatePath(organizationPath, ...routeArgs);
   }
 
-  return _profileCommentTemplatePath(...args);
+  return _profileCommentTemplatePath(...routeArgs);
 };
 
 /**
@@ -368,17 +416,20 @@ export const profileCommentTemplatePath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const resendConfirmationInstructionsProfileEmailPath = /*#__PURE__*/ (...args) => {
   const _resendConfirmationInstructionsOrganizationProfileEmailPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"emails"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"resend_confirmation_instructions"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
   const _resendConfirmationInstructionsProfileEmailPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"emails"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"resend_confirmation_instructions"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _resendConfirmationInstructionsOrganizationProfileEmailPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _resendConfirmationInstructionsOrganizationProfileEmailPath(organizationPath, ...routeArgs);
   }
 
-  return _resendConfirmationInstructionsProfileEmailPath(...args);
+  return _resendConfirmationInstructionsProfileEmailPath(...routeArgs);
 };
 
 /**
@@ -390,17 +441,20 @@ export const resendConfirmationInstructionsProfileEmailPath = /*#__PURE__*/ (...
  * - controller#action: `profiles/emails#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const profileEmailsPath = /*#__PURE__*/ (...args) => {
   const _organizationProfileEmailsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"emails"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _profileEmailsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"emails"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationProfileEmailsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationProfileEmailsPath(organizationPath, ...routeArgs);
   }
 
-  return _profileEmailsPath(...args);
+  return _profileEmailsPath(...routeArgs);
 };
 
 /**
@@ -413,17 +467,20 @@ export const profileEmailsPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const profileEmailPath = /*#__PURE__*/ (...args) => {
   const _organizationProfileEmailPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"emails"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _profileEmailPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"emails"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationProfileEmailPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationProfileEmailPath(organizationPath, ...routeArgs);
   }
 
-  return _profileEmailPath(...args);
+  return _profileEmailPath(...routeArgs);
 };
 
 /**
@@ -435,17 +492,20 @@ export const profileEmailPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/avatars#destroy`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const profileAvatarPath = /*#__PURE__*/ (...args) => {
   const _organizationProfileAvatarPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"avatar"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _profileAvatarPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"avatar"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationProfileAvatarPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationProfileAvatarPath(organizationPath, ...routeArgs);
   }
 
-  return _profileAvatarPath(...args);
+  return _profileAvatarPath(...routeArgs);
 };
 
 /**
@@ -456,17 +516,20 @@ export const profileAvatarPath = /*#__PURE__*/ (...args) => {
  * - URL helper: `chat_names_profile_url`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const chatNamesProfilePath = /*#__PURE__*/ (...args) => {
   const _chatNamesOrganizationProfilePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"chat_names"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _chatNamesProfilePath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"chat_names"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _chatNamesOrganizationProfilePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _chatNamesOrganizationProfilePath(organizationPath, ...routeArgs);
   }
 
-  return _chatNamesProfilePath(...args);
+  return _chatNamesProfilePath(...routeArgs);
 };
 
 /**
@@ -477,17 +540,20 @@ export const chatNamesProfilePath = /*#__PURE__*/ (...args) => {
  * - URL helper: `chat_names_new_profile_url`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const chatNamesNewProfilePath = /*#__PURE__*/ (...args) => {
   const _chatNamesNewOrganizationProfilePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"chat_names"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _chatNamesNewProfilePath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"chat_names"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _chatNamesNewOrganizationProfilePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _chatNamesNewOrganizationProfilePath(organizationPath, ...routeArgs);
   }
 
-  return _chatNamesNewProfilePath(...args);
+  return _chatNamesNewProfilePath(...routeArgs);
 };
 
 /**
@@ -499,17 +565,20 @@ export const chatNamesNewProfilePath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/two_factor_auths#codes`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const codesProfileTwoFactorAuthPath = /*#__PURE__*/ (...args) => {
   const _codesOrganizationProfileTwoFactorAuthPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"two_factor_auth"],[2,[7,"/"],[2,[6,"codes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _codesProfileTwoFactorAuthPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"two_factor_auth"],[2,[7,"/"],[2,[6,"codes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _codesOrganizationProfileTwoFactorAuthPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _codesOrganizationProfileTwoFactorAuthPath(organizationPath, ...routeArgs);
   }
 
-  return _codesProfileTwoFactorAuthPath(...args);
+  return _codesProfileTwoFactorAuthPath(...routeArgs);
 };
 
 /**
@@ -521,17 +590,20 @@ export const codesProfileTwoFactorAuthPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/two_factor_auths#skip`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const skipProfileTwoFactorAuthPath = /*#__PURE__*/ (...args) => {
   const _skipOrganizationProfileTwoFactorAuthPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"two_factor_auth"],[2,[7,"/"],[2,[6,"skip"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _skipProfileTwoFactorAuthPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"two_factor_auth"],[2,[7,"/"],[2,[6,"skip"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _skipOrganizationProfileTwoFactorAuthPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _skipOrganizationProfileTwoFactorAuthPath(organizationPath, ...routeArgs);
   }
 
-  return _skipProfileTwoFactorAuthPath(...args);
+  return _skipProfileTwoFactorAuthPath(...routeArgs);
 };
 
 /**
@@ -543,17 +615,20 @@ export const skipProfileTwoFactorAuthPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/two_factor_auths#create_webauthn`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const createWebauthnProfileTwoFactorAuthPath = /*#__PURE__*/ (...args) => {
   const _createWebauthnOrganizationProfileTwoFactorAuthPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"two_factor_auth"],[2,[7,"/"],[2,[6,"create_webauthn"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _createWebauthnProfileTwoFactorAuthPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"two_factor_auth"],[2,[7,"/"],[2,[6,"create_webauthn"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _createWebauthnOrganizationProfileTwoFactorAuthPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _createWebauthnOrganizationProfileTwoFactorAuthPath(organizationPath, ...routeArgs);
   }
 
-  return _createWebauthnProfileTwoFactorAuthPath(...args);
+  return _createWebauthnProfileTwoFactorAuthPath(...routeArgs);
 };
 
 /**
@@ -565,17 +640,20 @@ export const createWebauthnProfileTwoFactorAuthPath = /*#__PURE__*/ (...args) =>
  * - controller#action: `profiles/two_factor_auths#destroy_otp`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const destroyOtpProfileTwoFactorAuthPath = /*#__PURE__*/ (...args) => {
   const _destroyOtpOrganizationProfileTwoFactorAuthPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"two_factor_auth"],[2,[7,"/"],[2,[6,"destroy_otp"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _destroyOtpProfileTwoFactorAuthPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"two_factor_auth"],[2,[7,"/"],[2,[6,"destroy_otp"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _destroyOtpOrganizationProfileTwoFactorAuthPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _destroyOtpOrganizationProfileTwoFactorAuthPath(organizationPath, ...routeArgs);
   }
 
-  return _destroyOtpProfileTwoFactorAuthPath(...args);
+  return _destroyOtpProfileTwoFactorAuthPath(...routeArgs);
 };
 
 /**
@@ -588,17 +666,20 @@ export const destroyOtpProfileTwoFactorAuthPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const destroyWebauthnProfileTwoFactorAuthPath = /*#__PURE__*/ (...args) => {
   const _destroyWebauthnOrganizationProfileTwoFactorAuthPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"two_factor_auth"],[2,[7,"/"],[2,[6,"destroy_webauthn"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
   const _destroyWebauthnProfileTwoFactorAuthPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"two_factor_auth"],[2,[7,"/"],[2,[6,"destroy_webauthn"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _destroyWebauthnOrganizationProfileTwoFactorAuthPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _destroyWebauthnOrganizationProfileTwoFactorAuthPath(organizationPath, ...routeArgs);
   }
 
-  return _destroyWebauthnProfileTwoFactorAuthPath(...args);
+  return _destroyWebauthnProfileTwoFactorAuthPath(...routeArgs);
 };
 
 /**
@@ -610,17 +691,20 @@ export const destroyWebauthnProfileTwoFactorAuthPath = /*#__PURE__*/ (...args) =
  * - controller#action: `profiles/two_factor_auths#show`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const profileTwoFactorAuthPath = /*#__PURE__*/ (...args) => {
   const _organizationProfileTwoFactorAuthPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"two_factor_auth"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _profileTwoFactorAuthPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"two_factor_auth"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationProfileTwoFactorAuthPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationProfileTwoFactorAuthPath(organizationPath, ...routeArgs);
   }
 
-  return _profileTwoFactorAuthPath(...args);
+  return _profileTwoFactorAuthPath(...routeArgs);
 };
 
 /**
@@ -632,17 +716,20 @@ export const profileTwoFactorAuthPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/passkeys#create`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const profilePasskeysPath = /*#__PURE__*/ (...args) => {
   const _organizationProfilePasskeysPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"passkeys"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _profilePasskeysPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"passkeys"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationProfilePasskeysPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationProfilePasskeysPath(organizationPath, ...routeArgs);
   }
 
-  return _profilePasskeysPath(...args);
+  return _profilePasskeysPath(...routeArgs);
 };
 
 /**
@@ -654,17 +741,20 @@ export const profilePasskeysPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `profiles/passkeys#new`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const newProfilePasskeyPath = /*#__PURE__*/ (...args) => {
   const _newOrganizationProfilePasskeyPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"passkeys"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _newProfilePasskeyPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"passkeys"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _newOrganizationProfilePasskeyPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _newOrganizationProfilePasskeyPath(organizationPath, ...routeArgs);
   }
 
-  return _newProfilePasskeyPath(...args);
+  return _newProfilePasskeyPath(...routeArgs);
 };
 
 /**
@@ -677,16 +767,19 @@ export const newProfilePasskeyPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const profilePasskeyPath = /*#__PURE__*/ (...args) => {
   const _organizationProfilePasskeyPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"passkeys"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _profilePasskeyPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[2,[6,"passkeys"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationProfilePasskeyPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationProfilePasskeyPath(organizationPath, ...routeArgs);
   }
 
-  return _profilePasskeyPath(...args);
+  return _profilePasskeyPath(...routeArgs);
 };
 

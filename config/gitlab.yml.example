@@ -918,9 +918,11 @@ production: &base
     #   port: 8084
 
     # IAM auth service gRPC endpoint (reserved for future use)
+    # Defaults to true; set false only on a trusted network.
     # grpc:
     #   host: localhost
     #   port: 8085
+    #   secure: true
 
     # Expected JWT audience claim
     # jwt_audience: gitlab-rails
@@ -933,9 +935,11 @@ production: &base
     # secret_file: /etc/gitlab/iam-data-access/.gitlab_iam_data_access_secret
 
     # IAM data access service gRPC endpoint
+    # Defaults to true; set false only on a trusted network.
     # grpc:
     #   host: localhost
     #   port: 5005
+    #   secure: true
 
   ## LDAP settings
   # You can test connections and inspect a sample of the LDAP users with login

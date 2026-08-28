@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Authn::IamAuthService, feature_category: :system_access do
+  using RSpec::Parameterized::TableSyntax
+
   describe '.enabled?' do
     it 'returns the enabled setting from config' do
       stub_config(iam_auth_service: { enabled: false, http: {}, grpc: {}, jwt_audience: 'gitlab-rails' })
@@ -22,13 +24,11 @@ RSpec.describe Authn::IamAuthService, feature_category: :system_access do
         })
       end
 
-      it 'returns tls:// address in non-development environment' do
-        allow(Rails.env).to receive(:development?).and_return(false)
-
-        expect(grpc_address).to eq('tls://iam.example.com:5444')
+      it 'returns the host and port with no scheme' do
+        expect(grpc_address).to eq('iam.example.com:5444')
       end
 
-      it 'returns plain address in development environment' do
+      it 'does not depend on the Rails environment' do
         allow(Rails.env).to receive(:development?).and_return(true)
 
         expect(grpc_address).to eq('iam.example.com:5444')
@@ -152,6 +152,28 @@ RSpec.describe Authn::IamAuthService, feature_category: :system_access do
                                       jwt_issuer: 'https://iam.example.com' })
 
       expect(described_class.jwt_issuer).to eq('https://iam.example.com')
+    end
+  end
+
+  describe '.grpc_secure?' do
+    subject(:grpc_secure?) { described_class.grpc_secure? }
+
+    where(:secure, :expected) do
+      true    | true
+      false   | false
+      nil     | true
+      'false' | true
+    end
+
+    with_them do
+      before do
+        stub_config(iam_auth_service: {
+          enabled: true,
+          grpc: { host: 'iam.example.com', port: 5444, secure: secure }
+        })
+      end
+
+      it { is_expected.to be(expected) }
     end
   end
 

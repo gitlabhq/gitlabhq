@@ -24,6 +24,8 @@ module Notes
       # only, there is no need be create a note!
 
       execute_quick_actions(note) do |only_commands|
+        next if note.errors.present?
+
         note.check_for_spam(action: :create, user: current_user) if check_for_spam?(only_commands)
 
         after_commit(note) unless importing
@@ -75,9 +77,29 @@ module Notes
       only_commands = content.empty?
       note.note = content
 
+      # Handle /internal_note quick action - applies to the note itself, not the noteable
+      if update_params.delete(:internal_note)
+        return yield(false) unless internal_note_valid?(note)
+
+        note.confidential = true
+      end
+
       yield(only_commands)
 
       do_commands(note, update_params, message, command_names, only_commands)
+    end
+
+    def internal_note_valid?(note)
+      if note.note.blank?
+        note.errors.add(:base, _('Cannot make an empty comment internal'))
+        return false
+      end
+
+      return true if note.start_of_discussion?
+      return true if note.discussion.first_note.confidential?
+
+      note.errors.add(:base, _('Cannot make this reply internal unless the thread is already internal'))
+      false
     end
 
     def quick_actions_supported?(note)

@@ -25,7 +25,8 @@ RSpec.describe 'Filter work items', :js, feature_category: :planning_views do
     create(:issue, project: project, author: user2, title: "Bug report 2")
 
     create(:issue, project: project, author: user,  title: "issue by assignee", milestone: milestone, assignees: [user])
-    create(:issue, project: project, author: user,  title: "issue by assignee with searchTerm", milestone: milestone, assignees: [user])
+    create(:issue, project: project, author: user,  title: "issue by assignee with searchTerm", milestone: milestone,
+      assignees: [user])
 
     create(:labeled_issue,
       title: "Bug 2",
@@ -59,7 +60,8 @@ RSpec.describe 'Filter work items', :js, feature_category: :planning_views do
 
   it 'filters by all available tokens' do
     search_term = 'issue'
-    select_tokens 'Assignee', '=', user.username, 'Author', '=', user.username, 'Label', '=', caps_sensitive_label.title, 'Milestone', '=', milestone.title
+    select_tokens 'Assignee', '=', user.username, 'Author', '=', user.username, 'Label', '=',
+      caps_sensitive_label.title, 'Milestone', '=', milestone.title
     send_keys search_term, :enter, :enter
 
     expect_assignee_token(user.name)
@@ -205,7 +207,8 @@ RSpec.describe 'Filter work items', :js, feature_category: :planning_views do
     context 'label with multiple words' do
       it 'special characters', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3935' do
         special_multiple_label = create(:label, project: project, title: "Utmost |mp0rt@nce")
-        special_multiple_issue = create(:issue, title: "Issue with special character multiple words label", project: project)
+        special_multiple_issue = create(:issue, title: "Issue with special character multiple words label",
+          project: project)
         special_multiple_issue.labels << special_multiple_label
 
         select_tokens 'Label', '=', special_multiple_label.title, submit: true
@@ -260,7 +263,8 @@ RSpec.describe 'Filter work items', :js, feature_category: :planning_views do
     context 'multiple labels with other filters' do
       it 'filters issues by searched label, label2, author, assignee, milestone and text' do
         search_term = 'bug'
-        select_tokens 'Label', '=', bug_label.title, 'Label', '=', caps_sensitive_label.title, 'Author', '=', user.username, 'Assignee', '=', user.username, 'Milestone', '=', milestone.title
+        select_tokens 'Label', '=', bug_label.title, 'Label', '=', caps_sensitive_label.title, 'Author', '=',
+          user.username, 'Assignee', '=', user.username, 'Milestone', '=', milestone.title
         send_keys search_term, :enter, :enter
 
         expect_label_token(bug_label.title)
@@ -274,7 +278,8 @@ RSpec.describe 'Filter work items', :js, feature_category: :planning_views do
 
       it 'filters issues by searched label, label2, author, assignee, not included in a milestone' do
         search_term = 'bug'
-        select_tokens 'Label', '=', bug_label.title, 'Label', '=', caps_sensitive_label.title, 'Author', '=', user.username, 'Assignee', '=', user.username, 'Milestone', '!=', milestone.title
+        select_tokens 'Label', '=', bug_label.title, 'Label', '=', caps_sensitive_label.title, 'Author', '=',
+          user.username, 'Assignee', '=', user.username, 'Milestone', '!=', milestone.title
         send_keys search_term, :enter, :enter
 
         expect_label_token(bug_label.title)
@@ -476,7 +481,8 @@ RSpec.describe 'Filter work items', :js, feature_category: :planning_views do
     end
 
     context 'searched text with other filters' do
-      it 'filters issues by searched text, author, text, assignee, text, label1, text, label2, text, milestone and text' do
+      it 'filters issues by searched text, author, text, assignee, text, label1, text, label2, text, milestone ' \
+        'and text' do
         click_filtered_search_bar
         send_keys 'bug', :enter
         select_tokens 'Author', '=', user.username

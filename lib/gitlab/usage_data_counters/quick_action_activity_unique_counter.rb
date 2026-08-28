@@ -10,6 +10,7 @@ module Gitlab
           add_email_multiple
           add_email_single
           convert_to_ticket
+          internal_note
           remove_email_multiple
           remove_email_single
           q

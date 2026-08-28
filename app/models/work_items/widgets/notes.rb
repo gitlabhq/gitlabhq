@@ -9,7 +9,7 @@ module WorkItems
       delegate_missing_to :work_item
 
       def self.quick_action_commands
-        [:lock, :unlock]
+        [:lock, :unlock, :internal_note]
       end
 
       def self.quick_action_params

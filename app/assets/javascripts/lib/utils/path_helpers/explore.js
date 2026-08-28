@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -15,17 +15,20 @@ import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
  * - controller#action: `explore/projects#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const activeExploreProjectsPath = /*#__PURE__*/ (...args) => {
   const _activeOrganizationExploreProjectsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"projects"],[2,[7,"/"],[2,[6,"active"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _activeExploreProjectsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"projects"],[2,[7,"/"],[2,[6,"active"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _activeOrganizationExploreProjectsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _activeOrganizationExploreProjectsPath(organizationPath, ...routeArgs);
   }
 
-  return _activeExploreProjectsPath(...args);
+  return _activeExploreProjectsPath(...routeArgs);
 };
 
 /**
@@ -37,17 +40,20 @@ export const activeExploreProjectsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `explore/projects#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const inactiveExploreProjectsPath = /*#__PURE__*/ (...args) => {
   const _inactiveOrganizationExploreProjectsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"projects"],[2,[7,"/"],[2,[6,"inactive"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _inactiveExploreProjectsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"projects"],[2,[7,"/"],[2,[6,"inactive"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _inactiveOrganizationExploreProjectsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _inactiveOrganizationExploreProjectsPath(organizationPath, ...routeArgs);
   }
 
-  return _inactiveExploreProjectsPath(...args);
+  return _inactiveExploreProjectsPath(...routeArgs);
 };
 
 /**
@@ -59,17 +65,20 @@ export const inactiveExploreProjectsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `explore/projects#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const allExploreProjectsPath = /*#__PURE__*/ (...args) => {
   const _allOrganizationExploreProjectsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"projects"],[2,[7,"/"],[2,[6,"all"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _allExploreProjectsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"projects"],[2,[7,"/"],[2,[6,"all"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _allOrganizationExploreProjectsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _allOrganizationExploreProjectsPath(organizationPath, ...routeArgs);
   }
 
-  return _allExploreProjectsPath(...args);
+  return _allExploreProjectsPath(...routeArgs);
 };
 
 /**
@@ -81,17 +90,20 @@ export const allExploreProjectsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `explore/projects#topics`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const topicsExploreProjectsPath = /*#__PURE__*/ (...args) => {
   const _topicsOrganizationExploreProjectsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"projects"],[2,[7,"/"],[2,[6,"topics"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _topicsExploreProjectsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"projects"],[2,[7,"/"],[2,[6,"topics"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _topicsOrganizationExploreProjectsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _topicsOrganizationExploreProjectsPath(organizationPath, ...routeArgs);
   }
 
-  return _topicsExploreProjectsPath(...args);
+  return _topicsExploreProjectsPath(...routeArgs);
 };
 
 /**
@@ -104,17 +116,20 @@ export const topicsExploreProjectsPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} topicName
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const topicExploreProjectsPath = /*#__PURE__*/ (...args) => {
   const _topicOrganizationExploreProjectsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"topic_name":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"projects"],[2,[7,"/"],[2,[6,"topics"],[2,[7,"/"],[2,[3,"topic_name"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _topicExploreProjectsPath = /*#__PURE__*/ __jsr.r({"topic_name":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"projects"],[2,[7,"/"],[2,[6,"topics"],[2,[7,"/"],[2,[3,"topic_name"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _topicOrganizationExploreProjectsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _topicOrganizationExploreProjectsPath(organizationPath, ...routeArgs);
   }
 
-  return _topicExploreProjectsPath(...args);
+  return _topicExploreProjectsPath(...routeArgs);
 };
 
 /**
@@ -126,17 +141,20 @@ export const topicExploreProjectsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `explore/projects#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const exploreProjectsPath = /*#__PURE__*/ (...args) => {
   const _organizationExploreProjectsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"projects"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _exploreProjectsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"projects"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationExploreProjectsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationExploreProjectsPath(organizationPath, ...routeArgs);
   }
 
-  return _exploreProjectsPath(...args);
+  return _exploreProjectsPath(...routeArgs);
 };
 
 /**
@@ -148,17 +166,20 @@ export const exploreProjectsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `explore/groups#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const activeExploreGroupsPath = /*#__PURE__*/ (...args) => {
   const _activeOrganizationExploreGroupsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[6,"active"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _activeExploreGroupsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[6,"active"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _activeOrganizationExploreGroupsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _activeOrganizationExploreGroupsPath(organizationPath, ...routeArgs);
   }
 
-  return _activeExploreGroupsPath(...args);
+  return _activeExploreGroupsPath(...routeArgs);
 };
 
 /**
@@ -170,17 +191,20 @@ export const activeExploreGroupsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `explore/groups#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const inactiveExploreGroupsPath = /*#__PURE__*/ (...args) => {
   const _inactiveOrganizationExploreGroupsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[6,"inactive"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _inactiveExploreGroupsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[6,"inactive"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _inactiveOrganizationExploreGroupsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _inactiveOrganizationExploreGroupsPath(organizationPath, ...routeArgs);
   }
 
-  return _inactiveExploreGroupsPath(...args);
+  return _inactiveExploreGroupsPath(...routeArgs);
 };
 
 /**
@@ -192,17 +216,20 @@ export const inactiveExploreGroupsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `explore/groups#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const exploreGroupsPath = /*#__PURE__*/ (...args) => {
   const _organizationExploreGroupsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"groups"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _exploreGroupsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"groups"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationExploreGroupsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationExploreGroupsPath(organizationPath, ...routeArgs);
   }
 
-  return _exploreGroupsPath(...args);
+  return _exploreGroupsPath(...routeArgs);
 };
 
 /**
@@ -214,17 +241,20 @@ export const exploreGroupsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `explore/catalog#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const exploreCatalogIndexPath = /*#__PURE__*/ (...args) => {
   const _organizationExploreCatalogIndexPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"catalog"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _exploreCatalogIndexPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"catalog"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationExploreCatalogIndexPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationExploreCatalogIndexPath(organizationPath, ...routeArgs);
   }
 
-  return _exploreCatalogIndexPath(...args);
+  return _exploreCatalogIndexPath(...routeArgs);
 };
 
 /**
@@ -236,17 +266,20 @@ export const exploreCatalogIndexPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `explore/catalog#cells`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const exploreCatalogCellsPath = /*#__PURE__*/ (...args) => {
   const _organizationExploreCatalogCellsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"catalog"],[2,[7,"/"],[2,[6,"cells"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _exploreCatalogCellsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"catalog"],[2,[7,"/"],[2,[6,"cells"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationExploreCatalogCellsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationExploreCatalogCellsPath(organizationPath, ...routeArgs);
   }
 
-  return _exploreCatalogCellsPath(...args);
+  return _exploreCatalogCellsPath(...routeArgs);
 };
 
 /**
@@ -259,17 +292,20 @@ export const exploreCatalogCellsPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} fullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const exploreCatalogPath = /*#__PURE__*/ (...args) => {
   const _organizationExploreCatalogPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"full_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"catalog"],[2,[7,"/"],[2,[5,[3,"full_path"]],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _exploreCatalogPath = /*#__PURE__*/ __jsr.r({"full_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"catalog"],[2,[7,"/"],[2,[5,[3,"full_path"]],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationExploreCatalogPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationExploreCatalogPath(organizationPath, ...routeArgs);
   }
 
-  return _exploreCatalogPath(...args);
+  return _exploreCatalogPath(...routeArgs);
 };
 
 /**
@@ -281,17 +317,20 @@ export const exploreCatalogPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `explore/snippets#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const exploreSnippetsPath = /*#__PURE__*/ (...args) => {
   const _organizationExploreSnippetsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"snippets"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _exploreSnippetsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"snippets"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationExploreSnippetsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationExploreSnippetsPath(organizationPath, ...routeArgs);
   }
 
-  return _exploreSnippetsPath(...args);
+  return _exploreSnippetsPath(...routeArgs);
 };
 
 /**
@@ -303,17 +342,20 @@ export const exploreSnippetsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `explore/projects#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const exploreRootPath = /*#__PURE__*/ (...args) => {
   const _organizationExploreRootPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
   const _exploreRootPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"explore"],[1,[2,[8,"."],[3,"format"]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationExploreRootPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationExploreRootPath(organizationPath, ...routeArgs);
   }
 
-  return _exploreRootPath(...args);
+  return _exploreRootPath(...routeArgs);
 };
 
 /**
@@ -325,17 +367,20 @@ export const exploreRootPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `explore/projects#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const publicPath = /*#__PURE__*/ (...args) => {
   const _organizationPublicPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"public"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
   const _publicPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"public"],[1,[2,[8,"."],[3,"format"]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationPublicPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationPublicPath(organizationPath, ...routeArgs);
   }
 
-  return _publicPath(...args);
+  return _publicPath(...routeArgs);
 };
 
 /**
@@ -347,16 +392,19 @@ export const publicPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `explore/projects#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const publicProjectsPath = /*#__PURE__*/ (...args) => {
   const _organizationPublicProjectsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"public"],[2,[7,"/"],[2,[6,"projects"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _publicProjectsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"public"],[2,[7,"/"],[2,[6,"projects"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationPublicProjectsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationPublicProjectsPath(organizationPath, ...routeArgs);
   }
 
-  return _publicProjectsPath(...args);
+  return _publicProjectsPath(...routeArgs);
 };
 

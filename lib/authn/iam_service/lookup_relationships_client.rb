@@ -54,10 +54,13 @@ module Authn
 
       def client
         # Address + transport config is owned by the IAM data access service
-        # (Authn::IamDataAccessService). It returns a tls://-prefixed address
-        # outside development.
+        # (Authn::IamDataAccessService).
         build_stub(::Gitlab::Iam::Lookup::V1::LookupService::Stub, ::Authn::IamDataAccessService.grpc_address,
           timeout: TIMEOUT_SECONDS)
+      end
+
+      def secure_transport?
+        ::Authn::IamDataAccessService.grpc_secure?
       end
     end
   end

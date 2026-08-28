@@ -18,7 +18,8 @@ RSpec.describe Gitlab::JsRoutes, feature_category: :tooling do
         expect(File).to exist(File.join(expected_base_path, 'utils.js'))
 
         file_contents = File.read(file_path)
-        expect(file_contents).to include("export const hasOrganizationScopedPaths")
+        expect(file_contents).to include("const isOptionsObject")
+        expect(file_contents).to include("export const resolveOrganizationScope")
         expect(file_contents).to include("export const splitProjectFullPath")
       end
 
@@ -37,7 +38,7 @@ RSpec.describe Gitlab::JsRoutes, feature_category: :tooling do
           file_contents = File.read(file_path)
           expect(file_contents).to include("import { __jsr } from '~/lib/utils/path_helpers/core';")
           expect(file_contents).to include(
-            "import { hasOrganizationScopedPaths, splitProjectFullPath } from '~/lib/utils/path_helpers/utils';"
+            "import { resolveOrganizationScope, splitProjectFullPath } from '~/lib/utils/path_helpers/utils';"
           )
           expect(file_contents).to include(
             "export const projectPreviewMarkdownPath = /*#__PURE__*/ (projectFullPath, ...args) => {"
@@ -51,12 +52,13 @@ RSpec.describe Gitlab::JsRoutes, feature_category: :tooling do
           expect(file_contents).to include(
             <<-JS
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectPreviewMarkdownPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectPreviewMarkdownPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectPreviewMarkdownPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectPreviewMarkdownPath(namespacePath, projectPath, ...routeArgs);
             JS
           )
         end
@@ -68,7 +70,7 @@ RSpec.describe Gitlab::JsRoutes, feature_category: :tooling do
           file_contents = File.read(file_path)
           expect(file_contents).to include("import { __jsr } from '~/lib/utils/path_helpers/core';")
           expect(file_contents).to include(
-            "import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';"
+            "import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';"
           )
           expect(file_contents).to include(
             "export const editGroupPath = /*#__PURE__*/ (...args) => {"
@@ -81,11 +83,13 @@ RSpec.describe Gitlab::JsRoutes, feature_category: :tooling do
           )
           expect(file_contents).to include(
             <<-JS
-  if (hasOrganizationScopedPaths()) {
-    return _organizationEditGroupPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationEditGroupPath(organizationPath, ...routeArgs);
   }
 
-  return _editGroupPath(...args);
+  return _editGroupPath(...routeArgs);
             JS
           )
         end
@@ -100,13 +104,31 @@ RSpec.describe Gitlab::JsRoutes, feature_category: :tooling do
           expect(file_contents).to include(" * - controller#action: `projects#preview_markdown`")
         end
 
+        it 'documents organizationPath as an options key on organization scoped helpers' do
+          file_contents = File.read(File.join(expected_base_path, 'group.js'))
+
+          expect(file_contents).to include(
+            <<-JS
+ * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
+ * @returns {string} route path
+            JS
+          )
+        end
+
+        it 'does not document organizationPath on helpers without an organization scoped counterpart' do
+          file_contents = File.read(File.join(expected_base_path, 'organizations.js'))
+
+          expect(file_contents).not_to include('options.organizationPath')
+        end
+
         it 'generates organizations path helpers as unscoped' do
           file_path = File.join(expected_base_path, 'organizations.js')
           expect(File).to exist(file_path)
 
           file_contents = File.read(file_path)
           expect(file_contents).to include("import { __jsr } from '~/lib/utils/path_helpers/core';")
-          expect(file_contents).not_to include('hasOrganizationScopedPaths')
+          expect(file_contents).not_to include('resolveOrganizationScope')
           expect(file_contents).not_to include('splitProjectFullPath')
           expect(file_contents).to include(
             "export const organizationPath = /*#__PURE__*/ __jsr.r("

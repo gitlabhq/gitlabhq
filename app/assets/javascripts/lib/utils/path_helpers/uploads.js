@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -19,17 +19,20 @@ import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
  * @param {any} id
  * @param {any} filename
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const appearanceUploadPath = /*#__PURE__*/ (...args) => {
   const _organizationAppearanceUploadPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"model":{"r":true},"mounted_as":{"r":true},"id":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"uploads"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"system"],[2,[7,"/"],[2,[3,"model"],[2,[7,"/"],[2,[3,"mounted_as"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[3,"filename"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]]]);
   const _appearanceUploadPath = /*#__PURE__*/ __jsr.r({"model":{"r":true},"mounted_as":{"r":true},"id":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"uploads"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"system"],[2,[7,"/"],[2,[3,"model"],[2,[7,"/"],[2,[3,"mounted_as"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[3,"filename"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationAppearanceUploadPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationAppearanceUploadPath(organizationPath, ...routeArgs);
   }
 
-  return _appearanceUploadPath(...args);
+  return _appearanceUploadPath(...routeArgs);
 };
 
 /**
@@ -42,17 +45,20 @@ export const appearanceUploadPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} model
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const uploadPath = /*#__PURE__*/ (...args) => {
   const _organizationUploadPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"model":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"uploads"],[2,[7,"/"],[2,[3,"model"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _uploadPath = /*#__PURE__*/ __jsr.r({"model":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"uploads"],[2,[7,"/"],[2,[3,"model"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationUploadPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationUploadPath(organizationPath, ...routeArgs);
   }
 
-  return _uploadPath(...args);
+  return _uploadPath(...routeArgs);
 };
 
 /**
@@ -68,17 +74,20 @@ export const uploadPath = /*#__PURE__*/ (...args) => {
  * @param {any} id
  * @param {any} filename
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const alertMetricImageUploadPath = /*#__PURE__*/ (...args) => {
   const _organizationAlertMetricImageUploadPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"model":{"r":true},"mounted_as":{"r":true},"id":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"uploads"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"system"],[2,[7,"/"],[2,[3,"model"],[2,[7,"/"],[2,[3,"mounted_as"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[3,"filename"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]]]);
   const _alertMetricImageUploadPath = /*#__PURE__*/ __jsr.r({"model":{"r":true},"mounted_as":{"r":true},"id":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"uploads"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"system"],[2,[7,"/"],[2,[3,"model"],[2,[7,"/"],[2,[3,"mounted_as"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[3,"filename"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationAlertMetricImageUploadPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationAlertMetricImageUploadPath(organizationPath, ...routeArgs);
   }
 
-  return _alertMetricImageUploadPath(...args);
+  return _alertMetricImageUploadPath(...routeArgs);
 };
 
 /**
@@ -94,16 +103,19 @@ export const alertMetricImageUploadPath = /*#__PURE__*/ (...args) => {
  * @param {any} id
  * @param {any} filename
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const abuseReportScreenshotPath = /*#__PURE__*/ (...args) => {
   const _organizationAbuseReportScreenshotPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"model":{"r":true},"mounted_as":{"r":true},"id":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"uploads"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"system"],[2,[7,"/"],[2,[3,"model"],[2,[7,"/"],[2,[3,"mounted_as"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[3,"filename"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]]]);
   const _abuseReportScreenshotPath = /*#__PURE__*/ __jsr.r({"model":{"r":true},"mounted_as":{"r":true},"id":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"uploads"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"system"],[2,[7,"/"],[2,[3,"model"],[2,[7,"/"],[2,[3,"mounted_as"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[3,"filename"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationAbuseReportScreenshotPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationAbuseReportScreenshotPath(organizationPath, ...routeArgs);
   }
 
-  return _abuseReportScreenshotPath(...args);
+  return _abuseReportScreenshotPath(...routeArgs);
 };
 

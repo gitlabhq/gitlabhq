@@ -130,8 +130,9 @@ To improve the review:
 - Split the merge request into smaller merge requests.
 - [Exclude context](../../../context.md#exclude-context-from-gitlab-duo) for files that are not
   relevant to the review.
-- Ask a Maintainer or Owner to
-  [select a different model](../../../model_selection.md) using the **Agentic Code Review** setting.
+- Ask a group Owner or instance administrator to select a different model for
+  [GitLab.com](../../../model_selection.md#select-a-model-for-a-feature)
+  or [GitLab Self-Managed and GitLab Dedicated](../../../../../administration/gitlab_duo/model_selection.md#select-a-model-for-code-review-flow).
 
 ## Configuration diagnostic script
 

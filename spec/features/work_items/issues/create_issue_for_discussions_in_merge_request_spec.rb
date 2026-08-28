@@ -9,7 +9,8 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
   let!(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 
   def resolve_all_discussions_link_selector(title: "")
-    url = new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id)
+    url = new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid,
+      merge_request_id: merge_request.id)
 
     if title.empty?
       %(a[href="#{url}"])
@@ -29,7 +30,9 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
       within_testid('discussions-counter-text') do
         click_button 'Thread options'
 
-        expect(page).to have_link(_("Resolve all with new issue"), href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id))
+        expect(page).to have_link(_("Resolve all with new issue"),
+          href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid,
+            merge_request_id: merge_request.id))
       end
     end
 
@@ -50,7 +53,9 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
 
       it 'creates an issue' do
         click_button 'Thread options'
-        send_keys :down, :down, :enter # Select "Resolve all with new issue". For some reason, there's a glitch on CI which prevents us from clicking it normally
+        # Select "Resolve all with new issue". For some reason, there's a glitch on CI which prevents us from
+        # clicking it normally
+        send_keys :down, :down, :enter
 
         expect(find_field('Title').value).to include(merge_request.title)
         expect(find_field('Description').value).to include(discussion.first_note.note)

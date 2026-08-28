@@ -47,7 +47,9 @@ RSpec.describe WorkItems::CreateAndLinkService, feature_category: :portfolio_man
   end
 
   describe '#execute' do
-    subject(:service_result) { described_class.new(project: project, current_user: user, params: params, link_params: link_params).execute }
+    subject(:service_result) do
+      described_class.new(project: project, current_user: user, params: params, link_params: link_params).execute
+    end
 
     context 'when work item params are valid' do
       it { is_expected.to be_success }

@@ -12,13 +12,4 @@ RSpec.describe 'Claim for PagesDomain', feature_category: :cell do
   it_behaves_like 'updating existing claims' do
     let(:transform_attributes) { { domain: "updated-#{subject.domain}" } }
   end
-
-  context 'when claims feature is disabled' do
-    before do
-      stub_feature_flags(cells_claims_pages_domains: false)
-    end
-
-    it_behaves_like 'not creating claims'
-    it_behaves_like 'not deleting claims'
-  end
 end

@@ -193,7 +193,7 @@ RSpec.describe Routes::RenameDescendantsService, feature_category: :groups_and_p
           allow(Route).to receive(:cells_claims_attributes).and_return({
             path: {
               type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ROUTE,
-              feature_flag: :cells_claims_routes,
+              feature_flag: nil,
               if: ->(_record) { true }
             }
           })

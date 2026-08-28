@@ -871,6 +871,34 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
     end
 
+    shared_examples 'internal_note command' do
+      it 'sets the internal update if content contains /internal_note' do
+        _, updates, _ = service.execute(content, issuable)
+
+        expect(updates).to eq(internal_note: true)
+      end
+
+      it 'returns the internal note message' do
+        _, _, message = service.execute(content, issuable)
+
+        expect(message).to eq(_('Made this comment an internal note.'))
+      end
+
+      context 'when the user cannot mark notes as internal' do
+        let(:service) { described_class.new(container: project, current_user: create(:user)) }
+
+        it 'does not set the internal update' do
+          _, updates, _ = service.execute(content, issuable)
+
+          expect(updates).to be_empty
+        end
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :internal_note))
+        end
+      end
+    end
+
     shared_examples 'approve command unavailable' do
       it 'is not part of the available commands' do
         expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :approve))
@@ -1943,6 +1971,42 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           let(:content) { '/confidential' }
           let(:issuable) { build(:issue, project: project) }
         end
+      end
+    end
+
+    context '/internal_note' do
+      it_behaves_like 'internal_note command' do
+        let(:content) { '/internal_note' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'internal_note command' do
+        let_it_be(:work_item, freeze: false) { create(:work_item, project: project) }
+        let(:content) { '/internal_note' }
+        let(:issuable) { work_item }
+      end
+
+      it_behaves_like 'internal_note command' do
+        let(:content) { '/internal_note' }
+        let(:issuable) { merge_request }
+      end
+
+      it_behaves_like 'internal_note command' do
+        let_it_be(:task, freeze: false) { create(:work_item, :task, project: project) }
+        let(:content) { '/internal_note' }
+        let(:issuable) { task }
+      end
+
+      it_behaves_like 'internal_note command' do
+        let_it_be(:incident, freeze: false) { create(:work_item, :incident, project: project) }
+        let(:content) { '/internal_note' }
+        let(:issuable) { incident }
+      end
+
+      it_behaves_like 'internal_note command' do
+        let_it_be(:ticket, freeze: false) { create(:work_item, :ticket, project: project) }
+        let(:content) { '/internal_note' }
+        let(:issuable) { ticket }
       end
     end
 

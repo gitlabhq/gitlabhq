@@ -72,6 +72,7 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
     before do
       allow(Authn::IamDataAccessService).to receive_messages(
         grpc_address: 'localhost:5005',
+        grpc_secure?: false,
         secret: iam_secret
       )
       allow(::Gitlab::Iam::Update::V1::UpdateService::Stub).to receive(:new).and_return(update_stub)
@@ -178,6 +179,7 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
     before do
       allow(Authn::IamDataAccessService).to receive_messages(
         grpc_address: 'localhost:5005',
+        grpc_secure?: false,
         secret: iam_secret
       )
       allow(::Gitlab::Iam::Update::V1::UpdateService::Stub).to receive(:new).and_return(update_stub)
@@ -229,13 +231,36 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
     end
   end
 
-  describe 'insecure channel guard' do
-    it 'refuses an insecure channel outside development and test' do
-      allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
-      allow(Authn::IamDataAccessService).to receive(:grpc_address).and_return('localhost:5005')
+  describe 'channel transport' do
+    let(:tls_credentials) { instance_double(GRPC::Core::ChannelCredentials) }
 
-      expect { client.grant_roles([], organization_uuid: organization_uuid, token: 'tok') }
-        .to raise_error(Authn::IamService::BaseClient::InsecureChannelError)
+    before do
+      allow(Authn::IamDataAccessService).to receive_messages(
+        grpc_address: 'iam.test:5005',
+        secret: iam_secret
+      )
+      allow(::Gitlab::X509::Certificate).to receive(:ca_certs_bundle).and_return('cert-data')
+      allow(GRPC::Core::ChannelCredentials).to receive(:new).with('cert-data').and_return(tls_credentials)
+      allow(::Gitlab::Iam::Update::V1::UpdateService::Stub).to receive(:new).and_return(update_stub)
+      allow(update_stub).to receive(:write_relationships).and_return(write_response)
+    end
+
+    it 'builds the stub with TLS credentials when the data access service is secure' do
+      allow(Authn::IamDataAccessService).to receive(:grpc_secure?).and_return(true)
+
+      client.grant_roles([], organization_uuid: organization_uuid, token: 'tok')
+
+      expect(::Gitlab::Iam::Update::V1::UpdateService::Stub)
+        .to have_received(:new).with('iam.test:5005', tls_credentials, any_args)
+    end
+
+    it 'builds the stub with a plain text channel when the data access service is not secure' do
+      allow(Authn::IamDataAccessService).to receive(:grpc_secure?).and_return(false)
+
+      client.grant_roles([], organization_uuid: organization_uuid, token: 'tok')
+
+      expect(::Gitlab::Iam::Update::V1::UpdateService::Stub)
+        .to have_received(:new).with('iam.test:5005', :this_channel_is_insecure, any_args)
     end
   end
 end

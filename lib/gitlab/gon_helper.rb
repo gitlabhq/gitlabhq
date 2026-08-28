@@ -76,12 +76,8 @@ module Gitlab
 
       gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
 
-      if current_organization && ui_for_organizations_enabled?
-        gon.current_organization = current_organization.slice(:id, :name, :path, :full_path, :web_url, :avatar_url)
-          .merge({ has_scoped_paths: current_organization.scoped_paths? })
-      end
-
       add_gon_user_specific
+      add_gon_organization_specific
       add_gon_feature_flags
     end
 
@@ -101,6 +97,17 @@ module Gitlab
       return unless current_user.user_preference
 
       gon.text_editor = current_user.user_preference.text_editor
+    end
+
+    def add_gon_organization_specific
+      return unless ui_for_organizations_enabled?
+
+      gon.organization_path = ::Current.organization_resolver&.from_organization_params&.path
+      gon.data_context_organization_path = data_context_organization_path
+
+      return unless current_organization
+
+      gon.current_organization = current_organization.slice(:id, :name, :path, :full_path, :web_url, :avatar_url)
     end
 
     # Initialize gon.features with any flags that should be
@@ -214,6 +221,13 @@ module Gitlab
       Organizations::FallbackOrganizationTracker.without_tracking { ::Current.organization }
     end
     # rubocop:enable Gitlab/AvoidCurrentOrganization
+
+    def data_context_organization_path
+      data_context = ::Current.data_context
+      return unless data_context&.type == :organization
+
+      data_context.context.path
+    end
   end
 end
 

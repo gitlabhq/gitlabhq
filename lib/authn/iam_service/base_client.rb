@@ -3,19 +3,19 @@
 module Authn
   module IamService
     # Shared transport for IAM gRPC clients. Builds a stub for a given service
-    # and selects channel credentials from the address scheme (tls:// vs plaintext).
+    # and selects channel credentials from that service's `secure` setting.
     #
     # Subclasses own the service-specific address, stub class, timeout, metadata,
     # and error handling. This base holds only the transport that is identical
     # across IAM clients.
     class BaseClient
-      InsecureChannelError = Class.new(StandardError)
+      LOGGED_INSECURE_ENDPOINTS = Concurrent::Set.new
 
       private
 
       def build_stub(stub_class, address, timeout:)
         stub_class.new(
-          strip_scheme(address),
+          address,
           channel_credentials(address),
           interceptors: [
             Labkit::Correlation::GRPC::ClientInterceptor.instance,
@@ -33,28 +33,27 @@ module Authn
         raise NotImplementedError, "#{self.class} must implement #service_token_credentials"
       end
 
-      def channel_credentials(address)
-        uri = URI(address)
-
-        return GRPC::Core::ChannelCredentials.new(::Gitlab::X509::Certificate.ca_certs_bundle) if uri.scheme == 'tls'
-
-        insecure_channel
-      rescue URI::InvalidURIError
-        insecure_channel
+      # Subclasses must override this to report their service's `secure` setting.
+      def secure_transport?
+        raise NotImplementedError, "#{self.class} must implement #secure_transport?"
       end
 
-      # A plaintext channel is only acceptable in development and test. Outside
-      # those, refuse rather than silently talking to IAM without TLS.
-      def insecure_channel
-        unless Gitlab.dev_or_test_env?
-          raise InsecureChannelError, 'Refusing to use an insecure IAM gRPC channel outside development and test'
-        end
+      def channel_credentials(address)
+        return GRPC::Core::ChannelCredentials.new(::Gitlab::X509::Certificate.ca_certs_bundle) if secure_transport?
+
+        log_insecure_channel(address)
 
         :this_channel_is_insecure
       end
 
-      def strip_scheme(address)
-        address.sub(%r{^tcp://|^tls://}, '')
+      def log_insecure_channel(address)
+        return unless LOGGED_INSECURE_ENDPOINTS.add?(address)
+
+        Gitlab::AppLogger.info(
+          message: 'Using an insecure IAM gRPC channel',
+          Labkit::Fields::CLASS_NAME => self.class.name,
+          address: address
+        )
       end
     end
   end

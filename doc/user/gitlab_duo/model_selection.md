@@ -14,7 +14,10 @@ title: GitLab Duo AI models
 
 {{< /details >}}
 
-Every GitLab Duo feature uses a default model. GitLab might update default models to optimize performance. You can select a different model for a feature, which persists until you change it.
+Every GitLab Duo feature uses a default model. GitLab might update default models to optimize performance.
+Model changes come from the GitLab AI Gateway and take effect regardless of your GitLab version.
+
+You can select a different model for a feature, which persists until you change it.
 
 ## Default models
 
@@ -109,6 +112,9 @@ The following tables list the models you can select for each feature.
 You can select a model for a feature in a top-level group. The model that you select
 applies to that feature for all child groups and projects.
 
+To set a model for an instance on GitLab Self-Managed or GitLab Dedicated, see
+[model selection](../../administration/gitlab_duo/model_selection.md).
+
 Prerequisites:
 
 - You have the Owner role for the group.
@@ -119,9 +125,9 @@ To select a model for a feature:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **GitLab Duo**.
-1. Select **Configure features**.
-1. For the feature you want to configure, select a model from the dropdown list.
-1. Optional. To apply the model to all features in the section, select **Apply to all**.
+1. Under **Model selection**, select **Manage models**.
+1. Find the feature you want to configure and select a model from the dropdown list.
+1. Optional. To apply the model to all features in a section, select **Apply to all**.
 
 ### Selecting the right model
 

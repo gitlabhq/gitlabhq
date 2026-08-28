@@ -12,7 +12,7 @@
         anchor: 'install-the-gitlab-for-jira-cloud-app-manually'),
         title: _('More information')
   - c.with_body do
-    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-jira-connect-application-id-settings'), html: { class: 'fieldset-form', id: 'jira-connect-application-id-settings' } do |f|
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-jira_connect-settings'), html: { class: 'fieldset-form', id: 'jira-connect-application-id-settings' } do |f|
       = form_errors(@application_setting)
       .gl-form-group
         = f.label :jira_connect_application_key, s_('JiraConnect|Jira Connect Application ID'), class: 'label-bold'

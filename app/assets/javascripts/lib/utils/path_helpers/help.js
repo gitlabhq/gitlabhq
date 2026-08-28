@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -15,17 +15,20 @@ import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
  * - controller#action: `help#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const helpPath = /*#__PURE__*/ (...args) => {
   const _organizationHelpPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"help"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
   const _helpPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"help"],[1,[2,[8,"."],[3,"format"]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationHelpPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationHelpPath(organizationPath, ...routeArgs);
   }
 
-  return _helpPath(...args);
+  return _helpPath(...routeArgs);
 };
 
 /**
@@ -37,17 +40,20 @@ export const helpPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `help#shortcuts`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const helpShortcutsPath = /*#__PURE__*/ (...args) => {
   const _organizationHelpShortcutsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"help"],[2,[7,"/"],[2,[6,"shortcuts"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _helpShortcutsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"help"],[2,[7,"/"],[2,[6,"shortcuts"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationHelpShortcutsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationHelpShortcutsPath(organizationPath, ...routeArgs);
   }
 
-  return _helpShortcutsPath(...args);
+  return _helpShortcutsPath(...routeArgs);
 };
 
 /**
@@ -59,17 +65,20 @@ export const helpShortcutsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `help#instance_configuration`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const helpInstanceConfigurationPath = /*#__PURE__*/ (...args) => {
   const _organizationHelpInstanceConfigurationPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"help"],[2,[7,"/"],[2,[6,"instance_configuration"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _helpInstanceConfigurationPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"help"],[2,[7,"/"],[2,[6,"instance_configuration"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationHelpInstanceConfigurationPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationHelpInstanceConfigurationPath(organizationPath, ...routeArgs);
   }
 
-  return _helpInstanceConfigurationPath(...args);
+  return _helpInstanceConfigurationPath(...routeArgs);
 };
 
 /**
@@ -81,17 +90,20 @@ export const helpInstanceConfigurationPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `help#redirect_to_docs`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const helpDocsPath = /*#__PURE__*/ (...args) => {
   const _organizationHelpDocsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"help"],[2,[7,"/"],[2,[6,"docs"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _helpDocsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"help"],[2,[7,"/"],[2,[6,"docs"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationHelpDocsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationHelpDocsPath(organizationPath, ...routeArgs);
   }
 
-  return _helpDocsPath(...args);
+  return _helpDocsPath(...routeArgs);
 };
 
 /**
@@ -104,16 +116,19 @@ export const helpDocsPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} path
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const helpPagePath = /*#__PURE__*/ (...args) => {
   const _organizationHelpPagePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"help"],[2,[7,"/"],[2,[5,[3,"path"]],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _helpPagePath = /*#__PURE__*/ __jsr.r({"path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"help"],[2,[7,"/"],[2,[5,[3,"path"]],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationHelpPagePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationHelpPagePath(organizationPath, ...routeArgs);
   }
 
-  return _helpPagePath(...args);
+  return _helpPagePath(...routeArgs);
 };
 

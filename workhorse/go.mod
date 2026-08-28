@@ -27,9 +27,9 @@ require (
 	github.com/prometheus/client_golang v1.23.2
 	github.com/redis/go-redis/v9 v9.22.0
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
-	github.com/sirupsen/logrus v1.10.1
+	github.com/sirupsen/logrus v1.10.2
 	github.com/sony/gobreaker/v2 v2.4.0
-	github.com/stretchr/testify v1.12.0
+	github.com/stretchr/testify v1.12.1
 	gitlab.com/gitlab-org/gitaly/v18 v18.9.2
 	gitlab.com/gitlab-org/labkit v1.64.11
 	gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20260812224451-4ea26b59f939
@@ -44,7 +44,10 @@ require (
 
 require github.com/go-json-experiment/json v0.0.0-20260213210345-44df1a37e875
 
-require go.shabbyrobe.org/gocovmerge v0.0.0-20230507111327-fa4f82cfbf4d // indirect
+require (
+	go.shabbyrobe.org/gocovmerge v0.0.0-20230507111327-fa4f82cfbf4d // indirect
+	go.yaml.in/yaml/v3 v3.0.5 // indirect
+)
 
 require (
 	cel.dev/expr v0.25.1 // indirect

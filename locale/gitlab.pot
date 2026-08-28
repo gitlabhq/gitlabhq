@@ -16892,6 +16892,9 @@ msgstr ""
 msgid "Cannot be merged automatically"
 msgstr ""
 
+msgid "Cannot convert existing comment to an internal note"
+msgstr ""
+
 msgid "Cannot create an immutable tag rule from a protection rule"
 msgstr ""
 
@@ -16940,10 +16943,16 @@ msgstr ""
 msgid "Cannot load the diagram into the diagrams.net editor"
 msgstr ""
 
+msgid "Cannot make an empty comment internal"
+msgstr ""
+
 msgid "Cannot make the epic confidential if it contains non-confidential child epics"
 msgstr ""
 
 msgid "Cannot make the epic confidential if it contains non-confidential issues"
+msgstr ""
+
+msgid "Cannot make this reply internal unless the thread is already internal"
 msgstr ""
 
 msgid "Cannot mark the %{work_item_type} as duplicate of itself."
@@ -23429,6 +23438,9 @@ msgstr[1] ""
 msgid "ContinuousDeployment|%{environmentsCount} of %{totalEnvironmentsCount} environments"
 msgstr ""
 
+msgid "ContinuousDeployment|%{step} failed"
+msgstr ""
+
 msgid "ContinuousDeployment|+ Add artifact"
 msgstr ""
 
@@ -23925,6 +23937,9 @@ msgid "ContinuousDeployment|Staging"
 msgstr ""
 
 msgid "ContinuousDeployment|Status"
+msgstr ""
+
+msgid "ContinuousDeployment|Step failed"
 msgstr ""
 
 msgid "ContinuousDeployment|Succeeded"
@@ -47468,6 +47483,9 @@ msgstr ""
 msgid "Made this %{type} confidential."
 msgstr ""
 
+msgid "Made this comment an internal note."
+msgstr ""
+
 msgid "Mailgun"
 msgstr ""
 
@@ -47516,7 +47534,13 @@ msgstr ""
 msgid "Make sure you trust %{strong_start}%{client_name}%{strong_end} before authorizing."
 msgstr ""
 
+msgid "Make this comment an internal note"
+msgstr ""
+
 msgid "Makes this %{type} confidential."
+msgstr ""
+
+msgid "Makes this comment an internal note. This action cannot be undone."
 msgstr ""
 
 msgid "Malformed .git-blame-ignore-revs"
@@ -70634,6 +70658,9 @@ msgstr ""
 msgid "SecurityConfiguration|An error occurred while enabling profile-based scanning."
 msgstr ""
 
+msgid "SecurityConfiguration|An error occurred while fetching subgroups and projects. Please try again."
+msgstr ""
+
 msgid "SecurityConfiguration|Apply configuration"
 msgstr ""
 
@@ -87997,6 +88024,9 @@ msgid "View file @ "
 msgstr ""
 
 msgid "View file @ %{commitSha}"
+msgstr ""
+
+msgid "View group"
 msgstr ""
 
 msgid "View group in admin area"

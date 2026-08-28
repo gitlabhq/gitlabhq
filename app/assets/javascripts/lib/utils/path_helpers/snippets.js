@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -16,17 +16,20 @@ import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const rawSnippetPath = /*#__PURE__*/ (...args) => {
   const _rawOrganizationSnippetPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"raw"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _rawSnippetPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"raw"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _rawOrganizationSnippetPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _rawOrganizationSnippetPath(organizationPath, ...routeArgs);
   }
 
-  return _rawSnippetPath(...args);
+  return _rawSnippetPath(...routeArgs);
 };
 
 /**
@@ -39,17 +42,20 @@ export const rawSnippetPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const markAsSpamSnippetPath = /*#__PURE__*/ (...args) => {
   const _markAsSpamOrganizationSnippetPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"mark_as_spam"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _markAsSpamSnippetPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"mark_as_spam"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _markAsSpamOrganizationSnippetPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _markAsSpamOrganizationSnippetPath(organizationPath, ...routeArgs);
   }
 
-  return _markAsSpamSnippetPath(...args);
+  return _markAsSpamSnippetPath(...routeArgs);
 };
 
 /**
@@ -61,17 +67,20 @@ export const markAsSpamSnippetPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `snippets#preview_markdown`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const previewMarkdownSnippetsPath = /*#__PURE__*/ (...args) => {
   const _previewMarkdownOrganizationSnippetsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[6,"preview_markdown"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _previewMarkdownSnippetsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[6,"preview_markdown"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _previewMarkdownOrganizationSnippetsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _previewMarkdownOrganizationSnippetsPath(organizationPath, ...routeArgs);
   }
 
-  return _previewMarkdownSnippetsPath(...args);
+  return _previewMarkdownSnippetsPath(...routeArgs);
 };
 
 /**
@@ -84,17 +93,20 @@ export const previewMarkdownSnippetsPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} snippetId
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const snippetNotesPath = /*#__PURE__*/ (...args) => {
   const _organizationSnippetNotesPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"snippet_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"snippet_id"],[2,[7,"/"],[2,[6,"notes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _snippetNotesPath = /*#__PURE__*/ __jsr.r({"snippet_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"snippet_id"],[2,[7,"/"],[2,[6,"notes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationSnippetNotesPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationSnippetNotesPath(organizationPath, ...routeArgs);
   }
 
-  return _snippetNotesPath(...args);
+  return _snippetNotesPath(...routeArgs);
 };
 
 /**
@@ -108,17 +120,20 @@ export const snippetNotesPath = /*#__PURE__*/ (...args) => {
  * @param {any} snippetId
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const snippetNotePath = /*#__PURE__*/ (...args) => {
   const _organizationSnippetNotePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"snippet_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"snippet_id"],[2,[7,"/"],[2,[6,"notes"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
   const _snippetNotePath = /*#__PURE__*/ __jsr.r({"snippet_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"snippet_id"],[2,[7,"/"],[2,[6,"notes"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationSnippetNotePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationSnippetNotePath(organizationPath, ...routeArgs);
   }
 
-  return _snippetNotePath(...args);
+  return _snippetNotePath(...routeArgs);
 };
 
 /**
@@ -130,17 +145,20 @@ export const snippetNotePath = /*#__PURE__*/ (...args) => {
  * - controller#action: `snippets#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const snippetsPath = /*#__PURE__*/ (...args) => {
   const _organizationSnippetsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _snippetsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationSnippetsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationSnippetsPath(organizationPath, ...routeArgs);
   }
 
-  return _snippetsPath(...args);
+  return _snippetsPath(...routeArgs);
 };
 
 /**
@@ -152,17 +170,20 @@ export const snippetsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `snippets#new`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const newSnippetPath = /*#__PURE__*/ (...args) => {
   const _newOrganizationSnippetPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _newSnippetPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _newOrganizationSnippetPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _newOrganizationSnippetPath(organizationPath, ...routeArgs);
   }
 
-  return _newSnippetPath(...args);
+  return _newSnippetPath(...routeArgs);
 };
 
 /**
@@ -175,17 +196,20 @@ export const newSnippetPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const editSnippetPath = /*#__PURE__*/ (...args) => {
   const _editOrganizationSnippetPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"edit"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _editSnippetPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"edit"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _editOrganizationSnippetPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _editOrganizationSnippetPath(organizationPath, ...routeArgs);
   }
 
-  return _editSnippetPath(...args);
+  return _editSnippetPath(...routeArgs);
 };
 
 /**
@@ -198,17 +222,20 @@ export const editSnippetPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const snippetPath = /*#__PURE__*/ (...args) => {
   const _organizationSnippetPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _snippetPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationSnippetPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationSnippetPath(organizationPath, ...routeArgs);
   }
 
-  return _snippetPath(...args);
+  return _snippetPath(...routeArgs);
 };
 
 /**
@@ -223,16 +250,19 @@ export const snippetPath = /*#__PURE__*/ (...args) => {
  * @param {any} ref
  * @param {any} path
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const snippetBlobRawPath = /*#__PURE__*/ (...args) => {
   const _organizationSnippetBlobRawPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"snippet_id":{"r":true},"ref":{"r":true},"path":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"snippet_id"],[2,[7,"/"],[2,[6,"raw"],[2,[7,"/"],[2,[3,"ref"],[2,[7,"/"],[5,[3,"path"]]]]]]]]]]]]]]]]]);
   const _snippetBlobRawPath = /*#__PURE__*/ __jsr.r({"snippet_id":{"r":true},"ref":{"r":true},"path":{"r":true}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"snippets"],[2,[7,"/"],[2,[3,"snippet_id"],[2,[7,"/"],[2,[6,"raw"],[2,[7,"/"],[2,[3,"ref"],[2,[7,"/"],[5,[3,"path"]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationSnippetBlobRawPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationSnippetBlobRawPath(organizationPath, ...routeArgs);
   }
 
-  return _snippetBlobRawPath(...args);
+  return _snippetBlobRawPath(...routeArgs);
 };
 

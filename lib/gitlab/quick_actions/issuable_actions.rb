@@ -259,6 +259,15 @@ module Gitlab
           @execution_message[:confidential] = confidential_execution_message
         end
 
+        desc { _("Make this comment an internal note") }
+        explanation { _("Makes this comment an internal note. This action cannot be undone.") }
+        execution_message { _("Made this comment an internal note.") }
+        types ::Issuable
+        condition { current_user.can?(:mark_note_as_internal, quick_action_target) }
+        command :internal_note do
+          @updates[:internal_note] = true
+        end
+
         private
 
         def find_severity(severity_param)

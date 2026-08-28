@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -14,16 +14,19 @@ import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
  * - URL helper: `sidekiq_url`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const sidekiqPath = /*#__PURE__*/ (...args) => {
   const _organizationSidekiqPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[6,"sidekiq"]]]]]]]]);
   const _sidekiqPath = /*#__PURE__*/ __jsr.r({}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[6,"sidekiq"]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationSidekiqPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationSidekiqPath(organizationPath, ...routeArgs);
   }
 
-  return _sidekiqPath(...args);
+  return _sidekiqPath(...routeArgs);
 };
 

@@ -38,6 +38,12 @@ export default {
     userCounts() {
       return userCounts;
     },
+    mergeRequestsDashboardPath() {
+      return mergeRequestsDashboardPath({ organizationPath: null });
+    },
+    dashboardTodosPath() {
+      return dashboardTodosPath({ organizationPath: null });
+    },
   },
   created() {
     Object.assign(userCounts, this.sidebarData.user_counts);
@@ -58,10 +64,9 @@ export default {
     issuesPathWithUser() {
       return issuesDashboardPath({
         assignee_username: this.sidebarData.username,
+        organizationPath: null,
       });
     },
-    dashboardTodosPath,
-    mergeRequestsDashboardPath,
   },
 };
 </script>
@@ -85,7 +90,7 @@ export default {
         v-gl-tooltip.bottom="$options.i18n.mergeRequests"
         class="js-merge-request-dashboard-shortcut gl-w-full"
         icon="merge-request"
-        :href="mergeRequestsDashboardPath()"
+        :href="mergeRequestsDashboardPath"
         :count="userCounts.total_merge_requests"
         :label="$options.i18n.mergeRequests"
         data-testid="merge-requests-shortcut-button"
@@ -99,7 +104,7 @@ export default {
       class="shortcuts-todos js-todos-count gl-basis-1/3"
       icon="todo-done"
       :count="userCounts.todos"
-      :href="dashboardTodosPath()"
+      :href="dashboardTodosPath"
       :label="$options.i18n.todoList"
       data-testid="todos-shortcut-button"
       data-track-action="click_link"

@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -15,17 +15,20 @@ import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
  * - controller#action: `import/alicloud#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const usersImportAlicloudCallbackPath = /*#__PURE__*/ (...args) => {
   const _organizationUsersImportAlicloudCallbackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"alicloud"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
   const _usersImportAlicloudCallbackPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"alicloud"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationUsersImportAlicloudCallbackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationUsersImportAlicloudCallbackPath(organizationPath, ...routeArgs);
   }
 
-  return _usersImportAlicloudCallbackPath(...args);
+  return _usersImportAlicloudCallbackPath(...routeArgs);
 };
 
 /**
@@ -37,17 +40,20 @@ export const usersImportAlicloudCallbackPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/github#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const usersImportGithubCallbackPath = /*#__PURE__*/ (...args) => {
   const _organizationUsersImportGithubCallbackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
   const _usersImportGithubCallbackPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationUsersImportGithubCallbackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationUsersImportGithubCallbackPath(organizationPath, ...routeArgs);
   }
 
-  return _usersImportGithubCallbackPath(...args);
+  return _usersImportGithubCallbackPath(...routeArgs);
 };
 
 /**
@@ -59,17 +65,20 @@ export const usersImportGithubCallbackPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bitbucket#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const usersImportBitbucketCallbackPath = /*#__PURE__*/ (...args) => {
   const _organizationUsersImportBitbucketCallbackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
   const _usersImportBitbucketCallbackPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationUsersImportBitbucketCallbackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationUsersImportBitbucketCallbackPath(organizationPath, ...routeArgs);
   }
 
-  return _usersImportBitbucketCallbackPath(...args);
+  return _usersImportBitbucketCallbackPath(...routeArgs);
 };
 
 /**
@@ -81,17 +90,20 @@ export const usersImportBitbucketCallbackPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/gitlab#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const usersImportGitlabCallbackPath = /*#__PURE__*/ (...args) => {
   const _organizationUsersImportGitlabCallbackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitlab"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
   const _usersImportGitlabCallbackPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitlab"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationUsersImportGitlabCallbackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationUsersImportGitlabCallbackPath(organizationPath, ...routeArgs);
   }
 
-  return _usersImportGitlabCallbackPath(...args);
+  return _usersImportGitlabCallbackPath(...routeArgs);
 };
 
 /**
@@ -103,17 +115,20 @@ export const usersImportGitlabCallbackPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/google_oauth2#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const usersImportGoogleOauth2CallbackPath = /*#__PURE__*/ (...args) => {
   const _organizationUsersImportGoogleOauth2CallbackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"google_oauth2"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
   const _usersImportGoogleOauth2CallbackPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"google_oauth2"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationUsersImportGoogleOauth2CallbackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationUsersImportGoogleOauth2CallbackPath(organizationPath, ...routeArgs);
   }
 
-  return _usersImportGoogleOauth2CallbackPath(...args);
+  return _usersImportGoogleOauth2CallbackPath(...routeArgs);
 };
 
 /**
@@ -125,17 +140,20 @@ export const usersImportGoogleOauth2CallbackPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/jwt#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const usersImportJwtCallbackPath = /*#__PURE__*/ (...args) => {
   const _organizationUsersImportJwtCallbackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"jwt"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
   const _usersImportJwtCallbackPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"jwt"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationUsersImportJwtCallbackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationUsersImportJwtCallbackPath(organizationPath, ...routeArgs);
   }
 
-  return _usersImportJwtCallbackPath(...args);
+  return _usersImportJwtCallbackPath(...routeArgs);
 };
 
 /**
@@ -147,17 +165,20 @@ export const usersImportJwtCallbackPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/auth0#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const usersImportAuth0CallbackPath = /*#__PURE__*/ (...args) => {
   const _organizationUsersImportAuth0CallbackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"auth0"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
   const _usersImportAuth0CallbackPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"auth0"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationUsersImportAuth0CallbackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationUsersImportAuth0CallbackPath(organizationPath, ...routeArgs);
   }
 
-  return _usersImportAuth0CallbackPath(...args);
+  return _usersImportAuth0CallbackPath(...routeArgs);
 };
 
 /**
@@ -169,17 +190,20 @@ export const usersImportAuth0CallbackPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/salesforce#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const usersImportSalesforceCallbackPath = /*#__PURE__*/ (...args) => {
   const _organizationUsersImportSalesforceCallbackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"salesforce"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
   const _usersImportSalesforceCallbackPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"salesforce"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationUsersImportSalesforceCallbackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationUsersImportSalesforceCallbackPath(organizationPath, ...routeArgs);
   }
 
-  return _usersImportSalesforceCallbackPath(...args);
+  return _usersImportSalesforceCallbackPath(...routeArgs);
 };
 
 /**
@@ -191,17 +215,20 @@ export const usersImportSalesforceCallbackPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/atlassian_oauth2#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const usersImportAtlassianOauth2CallbackPath = /*#__PURE__*/ (...args) => {
   const _organizationUsersImportAtlassianOauth2CallbackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"atlassian_oauth2"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
   const _usersImportAtlassianOauth2CallbackPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"atlassian_oauth2"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationUsersImportAtlassianOauth2CallbackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationUsersImportAtlassianOauth2CallbackPath(organizationPath, ...routeArgs);
   }
 
-  return _usersImportAtlassianOauth2CallbackPath(...args);
+  return _usersImportAtlassianOauth2CallbackPath(...routeArgs);
 };
 
 /**
@@ -213,17 +240,20 @@ export const usersImportAtlassianOauth2CallbackPath = /*#__PURE__*/ (...args) =>
  * - controller#action: `import/openid_connect#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const usersImportOpenidConnectCallbackPath = /*#__PURE__*/ (...args) => {
   const _organizationUsersImportOpenidConnectCallbackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"openid_connect"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
   const _usersImportOpenidConnectCallbackPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"openid_connect"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationUsersImportOpenidConnectCallbackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationUsersImportOpenidConnectCallbackPath(organizationPath, ...routeArgs);
   }
 
-  return _usersImportOpenidConnectCallbackPath(...args);
+  return _usersImportOpenidConnectCallbackPath(...routeArgs);
 };
 
 /**
@@ -235,17 +265,20 @@ export const usersImportOpenidConnectCallbackPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/group_saml#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const usersImportGroupSamlCallbackPath = /*#__PURE__*/ (...args) => {
   const _organizationUsersImportGroupSamlCallbackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"group_saml"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
   const _usersImportGroupSamlCallbackPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"auth"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"group_saml"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationUsersImportGroupSamlCallbackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationUsersImportGroupSamlCallbackPath(organizationPath, ...routeArgs);
   }
 
-  return _usersImportGroupSamlCallbackPath(...args);
+  return _usersImportGroupSamlCallbackPath(...routeArgs);
 };
 
 /**
@@ -257,17 +290,20 @@ export const usersImportGroupSamlCallbackPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/history#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importHistoryIndexPath = /*#__PURE__*/ (...args) => {
   const _organizationImportHistoryIndexPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"history"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _importHistoryIndexPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"history"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportHistoryIndexPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportHistoryIndexPath(organizationPath, ...routeArgs);
   }
 
-  return _importHistoryIndexPath(...args);
+  return _importHistoryIndexPath(...routeArgs);
 };
 
 /**
@@ -279,17 +315,20 @@ export const importHistoryIndexPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/url#validate`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const validateImportUrlPath = /*#__PURE__*/ (...args) => {
   const _validateOrganizationImportUrlPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"url"],[2,[7,"/"],[2,[6,"validate"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _validateImportUrlPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"url"],[2,[7,"/"],[2,[6,"validate"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _validateOrganizationImportUrlPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _validateOrganizationImportUrlPath(organizationPath, ...routeArgs);
   }
 
-  return _validateImportUrlPath(...args);
+  return _validateImportUrlPath(...routeArgs);
 };
 
 /**
@@ -301,17 +340,20 @@ export const validateImportUrlPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/url#new`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const newImportUrlPath = /*#__PURE__*/ (...args) => {
   const _newOrganizationImportUrlPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"url"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _newImportUrlPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"url"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _newOrganizationImportUrlPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _newOrganizationImportUrlPath(organizationPath, ...routeArgs);
   }
 
-  return _newImportUrlPath(...args);
+  return _newImportUrlPath(...routeArgs);
 };
 
 /**
@@ -323,17 +365,20 @@ export const newImportUrlPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/github#personal_access_token`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const personalAccessTokenImportGithubPath = /*#__PURE__*/ (...args) => {
   const _personalAccessTokenOrganizationImportGithubPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"personal_access_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _personalAccessTokenImportGithubPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"personal_access_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _personalAccessTokenOrganizationImportGithubPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _personalAccessTokenOrganizationImportGithubPath(organizationPath, ...routeArgs);
   }
 
-  return _personalAccessTokenImportGithubPath(...args);
+  return _personalAccessTokenImportGithubPath(...routeArgs);
 };
 
 /**
@@ -345,17 +390,20 @@ export const personalAccessTokenImportGithubPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/github#status`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const statusImportGithubPath = /*#__PURE__*/ (...args) => {
   const _statusOrganizationImportGithubPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _statusImportGithubPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _statusOrganizationImportGithubPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _statusOrganizationImportGithubPath(organizationPath, ...routeArgs);
   }
 
-  return _statusImportGithubPath(...args);
+  return _statusImportGithubPath(...routeArgs);
 };
 
 /**
@@ -367,17 +415,20 @@ export const statusImportGithubPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/github#details`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const detailsImportGithubPath = /*#__PURE__*/ (...args) => {
   const _detailsOrganizationImportGithubPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"details"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _detailsImportGithubPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"details"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _detailsOrganizationImportGithubPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _detailsOrganizationImportGithubPath(organizationPath, ...routeArgs);
   }
 
-  return _detailsImportGithubPath(...args);
+  return _detailsImportGithubPath(...routeArgs);
 };
 
 /**
@@ -389,17 +440,20 @@ export const detailsImportGithubPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/github#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const callbackImportGithubPath = /*#__PURE__*/ (...args) => {
   const _callbackOrganizationImportGithubPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _callbackImportGithubPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _callbackOrganizationImportGithubPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _callbackOrganizationImportGithubPath(organizationPath, ...routeArgs);
   }
 
-  return _callbackImportGithubPath(...args);
+  return _callbackImportGithubPath(...routeArgs);
 };
 
 /**
@@ -411,17 +465,20 @@ export const callbackImportGithubPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/github#realtime_changes`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const realtimeChangesImportGithubPath = /*#__PURE__*/ (...args) => {
   const _realtimeChangesOrganizationImportGithubPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _realtimeChangesImportGithubPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _realtimeChangesOrganizationImportGithubPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _realtimeChangesOrganizationImportGithubPath(organizationPath, ...routeArgs);
   }
 
-  return _realtimeChangesImportGithubPath(...args);
+  return _realtimeChangesImportGithubPath(...routeArgs);
 };
 
 /**
@@ -433,17 +490,20 @@ export const realtimeChangesImportGithubPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/github#failures`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const failuresImportGithubPath = /*#__PURE__*/ (...args) => {
   const _failuresOrganizationImportGithubPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"failures"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _failuresImportGithubPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"failures"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _failuresOrganizationImportGithubPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _failuresOrganizationImportGithubPath(organizationPath, ...routeArgs);
   }
 
-  return _failuresImportGithubPath(...args);
+  return _failuresImportGithubPath(...routeArgs);
 };
 
 /**
@@ -455,17 +515,20 @@ export const failuresImportGithubPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/github#cancel`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const cancelImportGithubPath = /*#__PURE__*/ (...args) => {
   const _cancelOrganizationImportGithubPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"cancel"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _cancelImportGithubPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"cancel"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _cancelOrganizationImportGithubPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _cancelOrganizationImportGithubPath(organizationPath, ...routeArgs);
   }
 
-  return _cancelImportGithubPath(...args);
+  return _cancelImportGithubPath(...routeArgs);
 };
 
 /**
@@ -477,17 +540,20 @@ export const cancelImportGithubPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/github#cancel_all`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const cancelAllImportGithubPath = /*#__PURE__*/ (...args) => {
   const _cancelAllOrganizationImportGithubPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"cancel_all"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _cancelAllImportGithubPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"cancel_all"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _cancelAllOrganizationImportGithubPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _cancelAllOrganizationImportGithubPath(organizationPath, ...routeArgs);
   }
 
-  return _cancelAllImportGithubPath(...args);
+  return _cancelAllImportGithubPath(...routeArgs);
 };
 
 /**
@@ -499,17 +565,20 @@ export const cancelAllImportGithubPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/github#counts`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const countsImportGithubPath = /*#__PURE__*/ (...args) => {
   const _countsOrganizationImportGithubPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"counts"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _countsImportGithubPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"counts"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _countsOrganizationImportGithubPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _countsOrganizationImportGithubPath(organizationPath, ...routeArgs);
   }
 
-  return _countsImportGithubPath(...args);
+  return _countsImportGithubPath(...routeArgs);
 };
 
 /**
@@ -521,17 +590,20 @@ export const countsImportGithubPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/github#new`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const newImportGithubPath = /*#__PURE__*/ (...args) => {
   const _newOrganizationImportGithubPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _newImportGithubPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _newOrganizationImportGithubPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _newOrganizationImportGithubPath(organizationPath, ...routeArgs);
   }
 
-  return _newImportGithubPath(...args);
+  return _newImportGithubPath(...routeArgs);
 };
 
 /**
@@ -543,17 +615,20 @@ export const newImportGithubPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/github#create`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importGithubPath = /*#__PURE__*/ (...args) => {
   const _organizationImportGithubPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _importGithubPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportGithubPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportGithubPath(organizationPath, ...routeArgs);
   }
 
-  return _importGithubPath(...args);
+  return _importGithubPath(...routeArgs);
 };
 
 /**
@@ -565,17 +640,20 @@ export const importGithubPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/gitea#personal_access_token`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const personalAccessTokenImportGiteaPath = /*#__PURE__*/ (...args) => {
   const _personalAccessTokenOrganizationImportGiteaPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitea"],[2,[7,"/"],[2,[6,"personal_access_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _personalAccessTokenImportGiteaPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitea"],[2,[7,"/"],[2,[6,"personal_access_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _personalAccessTokenOrganizationImportGiteaPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _personalAccessTokenOrganizationImportGiteaPath(organizationPath, ...routeArgs);
   }
 
-  return _personalAccessTokenImportGiteaPath(...args);
+  return _personalAccessTokenImportGiteaPath(...routeArgs);
 };
 
 /**
@@ -587,17 +665,20 @@ export const personalAccessTokenImportGiteaPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/gitea#status`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const statusImportGiteaPath = /*#__PURE__*/ (...args) => {
   const _statusOrganizationImportGiteaPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitea"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _statusImportGiteaPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitea"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _statusOrganizationImportGiteaPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _statusOrganizationImportGiteaPath(organizationPath, ...routeArgs);
   }
 
-  return _statusImportGiteaPath(...args);
+  return _statusImportGiteaPath(...routeArgs);
 };
 
 /**
@@ -609,17 +690,20 @@ export const statusImportGiteaPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/gitea#realtime_changes`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const realtimeChangesImportGiteaPath = /*#__PURE__*/ (...args) => {
   const _realtimeChangesOrganizationImportGiteaPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitea"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _realtimeChangesImportGiteaPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitea"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _realtimeChangesOrganizationImportGiteaPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _realtimeChangesOrganizationImportGiteaPath(organizationPath, ...routeArgs);
   }
 
-  return _realtimeChangesImportGiteaPath(...args);
+  return _realtimeChangesImportGiteaPath(...routeArgs);
 };
 
 /**
@@ -631,17 +715,20 @@ export const realtimeChangesImportGiteaPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/gitea#new`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const newImportGiteaPath = /*#__PURE__*/ (...args) => {
   const _newOrganizationImportGiteaPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitea"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _newImportGiteaPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitea"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _newOrganizationImportGiteaPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _newOrganizationImportGiteaPath(organizationPath, ...routeArgs);
   }
 
-  return _newImportGiteaPath(...args);
+  return _newImportGiteaPath(...routeArgs);
 };
 
 /**
@@ -653,17 +740,20 @@ export const newImportGiteaPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/gitea#create`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importGiteaPath = /*#__PURE__*/ (...args) => {
   const _organizationImportGiteaPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitea"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _importGiteaPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitea"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportGiteaPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportGiteaPath(organizationPath, ...routeArgs);
   }
 
-  return _importGiteaPath(...args);
+  return _importGiteaPath(...routeArgs);
 };
 
 /**
@@ -675,17 +765,20 @@ export const importGiteaPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bitbucket#status`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const statusImportBitbucketPath = /*#__PURE__*/ (...args) => {
   const _statusOrganizationImportBitbucketPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _statusImportBitbucketPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _statusOrganizationImportBitbucketPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _statusOrganizationImportBitbucketPath(organizationPath, ...routeArgs);
   }
 
-  return _statusImportBitbucketPath(...args);
+  return _statusImportBitbucketPath(...routeArgs);
 };
 
 /**
@@ -697,17 +790,20 @@ export const statusImportBitbucketPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bitbucket#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const callbackImportBitbucketPath = /*#__PURE__*/ (...args) => {
   const _callbackOrganizationImportBitbucketPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _callbackImportBitbucketPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _callbackOrganizationImportBitbucketPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _callbackOrganizationImportBitbucketPath(organizationPath, ...routeArgs);
   }
 
-  return _callbackImportBitbucketPath(...args);
+  return _callbackImportBitbucketPath(...routeArgs);
 };
 
 /**
@@ -719,17 +815,20 @@ export const callbackImportBitbucketPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bitbucket#realtime_changes`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const realtimeChangesImportBitbucketPath = /*#__PURE__*/ (...args) => {
   const _realtimeChangesOrganizationImportBitbucketPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _realtimeChangesImportBitbucketPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _realtimeChangesOrganizationImportBitbucketPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _realtimeChangesOrganizationImportBitbucketPath(organizationPath, ...routeArgs);
   }
 
-  return _realtimeChangesImportBitbucketPath(...args);
+  return _realtimeChangesImportBitbucketPath(...routeArgs);
 };
 
 /**
@@ -741,17 +840,20 @@ export const realtimeChangesImportBitbucketPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bitbucket#create`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importBitbucketPath = /*#__PURE__*/ (...args) => {
   const _organizationImportBitbucketPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _importBitbucketPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportBitbucketPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportBitbucketPath(organizationPath, ...routeArgs);
   }
 
-  return _importBitbucketPath(...args);
+  return _importBitbucketPath(...routeArgs);
 };
 
 /**
@@ -763,17 +865,20 @@ export const importBitbucketPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bitbucket_server#configure`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const configureImportBitbucketServerPath = /*#__PURE__*/ (...args) => {
   const _configureOrganizationImportBitbucketServerPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket_server"],[2,[7,"/"],[2,[6,"configure"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _configureImportBitbucketServerPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket_server"],[2,[7,"/"],[2,[6,"configure"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _configureOrganizationImportBitbucketServerPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _configureOrganizationImportBitbucketServerPath(organizationPath, ...routeArgs);
   }
 
-  return _configureImportBitbucketServerPath(...args);
+  return _configureImportBitbucketServerPath(...routeArgs);
 };
 
 /**
@@ -785,17 +890,20 @@ export const configureImportBitbucketServerPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bitbucket_server#status`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const statusImportBitbucketServerPath = /*#__PURE__*/ (...args) => {
   const _statusOrganizationImportBitbucketServerPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket_server"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _statusImportBitbucketServerPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket_server"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _statusOrganizationImportBitbucketServerPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _statusOrganizationImportBitbucketServerPath(organizationPath, ...routeArgs);
   }
 
-  return _statusImportBitbucketServerPath(...args);
+  return _statusImportBitbucketServerPath(...routeArgs);
 };
 
 /**
@@ -807,17 +915,20 @@ export const statusImportBitbucketServerPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bitbucket_server#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const callbackImportBitbucketServerPath = /*#__PURE__*/ (...args) => {
   const _callbackOrganizationImportBitbucketServerPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket_server"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _callbackImportBitbucketServerPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket_server"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _callbackOrganizationImportBitbucketServerPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _callbackOrganizationImportBitbucketServerPath(organizationPath, ...routeArgs);
   }
 
-  return _callbackImportBitbucketServerPath(...args);
+  return _callbackImportBitbucketServerPath(...routeArgs);
 };
 
 /**
@@ -829,17 +940,20 @@ export const callbackImportBitbucketServerPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bitbucket_server#realtime_changes`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const realtimeChangesImportBitbucketServerPath = /*#__PURE__*/ (...args) => {
   const _realtimeChangesOrganizationImportBitbucketServerPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket_server"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _realtimeChangesImportBitbucketServerPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket_server"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _realtimeChangesOrganizationImportBitbucketServerPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _realtimeChangesOrganizationImportBitbucketServerPath(organizationPath, ...routeArgs);
   }
 
-  return _realtimeChangesImportBitbucketServerPath(...args);
+  return _realtimeChangesImportBitbucketServerPath(...routeArgs);
 };
 
 /**
@@ -851,17 +965,20 @@ export const realtimeChangesImportBitbucketServerPath = /*#__PURE__*/ (...args) 
  * - controller#action: `import/bitbucket_server#new`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const newImportBitbucketServerPath = /*#__PURE__*/ (...args) => {
   const _newOrganizationImportBitbucketServerPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket_server"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _newImportBitbucketServerPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket_server"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _newOrganizationImportBitbucketServerPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _newOrganizationImportBitbucketServerPath(organizationPath, ...routeArgs);
   }
 
-  return _newImportBitbucketServerPath(...args);
+  return _newImportBitbucketServerPath(...routeArgs);
 };
 
 /**
@@ -873,17 +990,20 @@ export const newImportBitbucketServerPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bitbucket_server#create`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importBitbucketServerPath = /*#__PURE__*/ (...args) => {
   const _organizationImportBitbucketServerPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket_server"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _importBitbucketServerPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bitbucket_server"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportBitbucketServerPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportBitbucketServerPath(organizationPath, ...routeArgs);
   }
 
-  return _importBitbucketServerPath(...args);
+  return _importBitbucketServerPath(...routeArgs);
 };
 
 /**
@@ -895,17 +1015,20 @@ export const importBitbucketServerPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/fogbugz#status`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const statusImportFogbugzPath = /*#__PURE__*/ (...args) => {
   const _statusOrganizationImportFogbugzPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _statusImportFogbugzPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _statusOrganizationImportFogbugzPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _statusOrganizationImportFogbugzPath(organizationPath, ...routeArgs);
   }
 
-  return _statusImportFogbugzPath(...args);
+  return _statusImportFogbugzPath(...routeArgs);
 };
 
 /**
@@ -917,17 +1040,20 @@ export const statusImportFogbugzPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/fogbugz#callback`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const callbackImportFogbugzPath = /*#__PURE__*/ (...args) => {
   const _callbackOrganizationImportFogbugzPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _callbackImportFogbugzPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[2,[7,"/"],[2,[6,"callback"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _callbackOrganizationImportFogbugzPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _callbackOrganizationImportFogbugzPath(organizationPath, ...routeArgs);
   }
 
-  return _callbackImportFogbugzPath(...args);
+  return _callbackImportFogbugzPath(...routeArgs);
 };
 
 /**
@@ -939,17 +1065,20 @@ export const callbackImportFogbugzPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/fogbugz#realtime_changes`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const realtimeChangesImportFogbugzPath = /*#__PURE__*/ (...args) => {
   const _realtimeChangesOrganizationImportFogbugzPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _realtimeChangesImportFogbugzPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _realtimeChangesOrganizationImportFogbugzPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _realtimeChangesOrganizationImportFogbugzPath(organizationPath, ...routeArgs);
   }
 
-  return _realtimeChangesImportFogbugzPath(...args);
+  return _realtimeChangesImportFogbugzPath(...routeArgs);
 };
 
 /**
@@ -961,17 +1090,20 @@ export const realtimeChangesImportFogbugzPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/fogbugz#new_user_map`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const newUserMapImportFogbugzPath = /*#__PURE__*/ (...args) => {
   const _newUserMapOrganizationImportFogbugzPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[2,[7,"/"],[2,[6,"user_map"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _newUserMapImportFogbugzPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[2,[7,"/"],[2,[6,"user_map"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _newUserMapOrganizationImportFogbugzPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _newUserMapOrganizationImportFogbugzPath(organizationPath, ...routeArgs);
   }
 
-  return _newUserMapImportFogbugzPath(...args);
+  return _newUserMapImportFogbugzPath(...routeArgs);
 };
 
 /**
@@ -983,17 +1115,20 @@ export const newUserMapImportFogbugzPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/fogbugz#create_user_map`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const createUserMapImportFogbugzPath = /*#__PURE__*/ (...args) => {
   const _createUserMapOrganizationImportFogbugzPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[2,[7,"/"],[2,[6,"user_map"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _createUserMapImportFogbugzPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[2,[7,"/"],[2,[6,"user_map"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _createUserMapOrganizationImportFogbugzPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _createUserMapOrganizationImportFogbugzPath(organizationPath, ...routeArgs);
   }
 
-  return _createUserMapImportFogbugzPath(...args);
+  return _createUserMapImportFogbugzPath(...routeArgs);
 };
 
 /**
@@ -1005,17 +1140,20 @@ export const createUserMapImportFogbugzPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/fogbugz#new`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const newImportFogbugzPath = /*#__PURE__*/ (...args) => {
   const _newOrganizationImportFogbugzPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _newImportFogbugzPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _newOrganizationImportFogbugzPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _newOrganizationImportFogbugzPath(organizationPath, ...routeArgs);
   }
 
-  return _newImportFogbugzPath(...args);
+  return _newImportFogbugzPath(...routeArgs);
 };
 
 /**
@@ -1027,17 +1165,20 @@ export const newImportFogbugzPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/fogbugz#create`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importFogbugzPath = /*#__PURE__*/ (...args) => {
   const _organizationImportFogbugzPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _importFogbugzPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"fogbugz"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportFogbugzPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportFogbugzPath(organizationPath, ...routeArgs);
   }
 
-  return _importFogbugzPath(...args);
+  return _importFogbugzPath(...routeArgs);
 };
 
 /**
@@ -1049,17 +1190,20 @@ export const importFogbugzPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/gitlab_projects#create`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importGitlabProjectPath = /*#__PURE__*/ (...args) => {
   const _organizationImportGitlabProjectPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitlab_project"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _importGitlabProjectPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitlab_project"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportGitlabProjectPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportGitlabProjectPath(organizationPath, ...routeArgs);
   }
 
-  return _importGitlabProjectPath(...args);
+  return _importGitlabProjectPath(...routeArgs);
 };
 
 /**
@@ -1071,17 +1215,20 @@ export const importGitlabProjectPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/gitlab_projects#authorize`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const authorizeImportGitlabProjectPath = /*#__PURE__*/ (...args) => {
   const _authorizeOrganizationImportGitlabProjectPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitlab_project"],[2,[7,"/"],[2,[6,"authorize"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _authorizeImportGitlabProjectPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitlab_project"],[2,[7,"/"],[2,[6,"authorize"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _authorizeOrganizationImportGitlabProjectPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _authorizeOrganizationImportGitlabProjectPath(organizationPath, ...routeArgs);
   }
 
-  return _authorizeImportGitlabProjectPath(...args);
+  return _authorizeImportGitlabProjectPath(...routeArgs);
 };
 
 /**
@@ -1093,17 +1240,20 @@ export const authorizeImportGitlabProjectPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/gitlab_projects#new`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const newImportGitlabProjectPath = /*#__PURE__*/ (...args) => {
   const _newOrganizationImportGitlabProjectPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitlab_project"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _newImportGitlabProjectPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitlab_project"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _newOrganizationImportGitlabProjectPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _newOrganizationImportGitlabProjectPath(organizationPath, ...routeArgs);
   }
 
-  return _newImportGitlabProjectPath(...args);
+  return _newImportGitlabProjectPath(...routeArgs);
 };
 
 /**
@@ -1115,17 +1265,20 @@ export const newImportGitlabProjectPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/gitlab_groups#authorize`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const authorizeImportGitlabGroupPath = /*#__PURE__*/ (...args) => {
   const _authorizeOrganizationImportGitlabGroupPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitlab_group"],[2,[7,"/"],[2,[6,"authorize"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _authorizeImportGitlabGroupPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitlab_group"],[2,[7,"/"],[2,[6,"authorize"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _authorizeOrganizationImportGitlabGroupPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _authorizeOrganizationImportGitlabGroupPath(organizationPath, ...routeArgs);
   }
 
-  return _authorizeImportGitlabGroupPath(...args);
+  return _authorizeImportGitlabGroupPath(...routeArgs);
 };
 
 /**
@@ -1137,17 +1290,20 @@ export const authorizeImportGitlabGroupPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/gitlab_groups#create`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importGitlabGroupPath = /*#__PURE__*/ (...args) => {
   const _organizationImportGitlabGroupPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitlab_group"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _importGitlabGroupPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"gitlab_group"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportGitlabGroupPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportGitlabGroupPath(organizationPath, ...routeArgs);
   }
 
-  return _importGitlabGroupPath(...args);
+  return _importGitlabGroupPath(...routeArgs);
 };
 
 /**
@@ -1159,17 +1315,20 @@ export const importGitlabGroupPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/github_groups#status`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const statusImportGithubGroupPath = /*#__PURE__*/ (...args) => {
   const _statusOrganizationImportGithubGroupPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github_group"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _statusImportGithubGroupPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"github_group"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _statusOrganizationImportGithubGroupPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _statusOrganizationImportGithubGroupPath(organizationPath, ...routeArgs);
   }
 
-  return _statusImportGithubGroupPath(...args);
+  return _statusImportGithubGroupPath(...routeArgs);
 };
 
 /**
@@ -1181,17 +1340,20 @@ export const statusImportGithubGroupPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bulk_imports#configure`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const configureImportBulkImportsPath = /*#__PURE__*/ (...args) => {
   const _configureOrganizationImportBulkImportsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[2,[7,"/"],[2,[6,"configure"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _configureImportBulkImportsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[2,[7,"/"],[2,[6,"configure"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _configureOrganizationImportBulkImportsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _configureOrganizationImportBulkImportsPath(organizationPath, ...routeArgs);
   }
 
-  return _configureImportBulkImportsPath(...args);
+  return _configureImportBulkImportsPath(...routeArgs);
 };
 
 /**
@@ -1203,17 +1365,20 @@ export const configureImportBulkImportsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bulk_imports#status`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const statusImportBulkImportsPath = /*#__PURE__*/ (...args) => {
   const _statusOrganizationImportBulkImportsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _statusImportBulkImportsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _statusOrganizationImportBulkImportsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _statusOrganizationImportBulkImportsPath(organizationPath, ...routeArgs);
   }
 
-  return _statusImportBulkImportsPath(...args);
+  return _statusImportBulkImportsPath(...routeArgs);
 };
 
 /**
@@ -1225,17 +1390,20 @@ export const statusImportBulkImportsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bulk_imports#realtime_changes`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const realtimeChangesImportBulkImportsPath = /*#__PURE__*/ (...args) => {
   const _realtimeChangesOrganizationImportBulkImportsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _realtimeChangesImportBulkImportsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _realtimeChangesOrganizationImportBulkImportsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _realtimeChangesOrganizationImportBulkImportsPath(organizationPath, ...routeArgs);
   }
 
-  return _realtimeChangesImportBulkImportsPath(...args);
+  return _realtimeChangesImportBulkImportsPath(...routeArgs);
 };
 
 /**
@@ -1247,17 +1415,20 @@ export const realtimeChangesImportBulkImportsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bulk_imports#history`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const historyImportBulkImportsPath = /*#__PURE__*/ (...args) => {
   const _historyOrganizationImportBulkImportsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[2,[7,"/"],[2,[6,"history"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _historyImportBulkImportsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[2,[7,"/"],[2,[6,"history"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _historyOrganizationImportBulkImportsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _historyOrganizationImportBulkImportsPath(organizationPath, ...routeArgs);
   }
 
-  return _historyImportBulkImportsPath(...args);
+  return _historyImportBulkImportsPath(...routeArgs);
 };
 
 /**
@@ -1269,17 +1440,20 @@ export const historyImportBulkImportsPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/bulk_imports#create`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importBulkImportsPath = /*#__PURE__*/ (...args) => {
   const _organizationImportBulkImportsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _importBulkImportsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportBulkImportsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportBulkImportsPath(organizationPath, ...routeArgs);
   }
 
-  return _importBulkImportsPath(...args);
+  return _importBulkImportsPath(...routeArgs);
 };
 
 /**
@@ -1292,17 +1466,20 @@ export const importBulkImportsPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const historyImportBulkImportPath = /*#__PURE__*/ (...args) => {
   const _historyOrganizationImportBulkImportPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"history"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _historyImportBulkImportPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"history"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _historyOrganizationImportBulkImportPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _historyOrganizationImportBulkImportPath(organizationPath, ...routeArgs);
   }
 
-  return _historyImportBulkImportPath(...args);
+  return _historyImportBulkImportPath(...routeArgs);
 };
 
 /**
@@ -1316,17 +1493,20 @@ export const historyImportBulkImportPath = /*#__PURE__*/ (...args) => {
  * @param {any} id
  * @param {any} entityId
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const failuresImportBulkImportPath = /*#__PURE__*/ (...args) => {
   const _failuresOrganizationImportBulkImportPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"entity_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"history"],[2,[7,"/"],[2,[3,"entity_id"],[2,[7,"/"],[2,[6,"failures"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
   const _failuresImportBulkImportPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"entity_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"bulk_imports"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"history"],[2,[7,"/"],[2,[3,"entity_id"],[2,[7,"/"],[2,[6,"failures"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _failuresOrganizationImportBulkImportPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _failuresOrganizationImportBulkImportPath(organizationPath, ...routeArgs);
   }
 
-  return _failuresImportBulkImportPath(...args);
+  return _failuresImportBulkImportPath(...routeArgs);
 };
 
 /**
@@ -1338,17 +1518,20 @@ export const failuresImportBulkImportPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/offline#show`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importOfflinePath = /*#__PURE__*/ (...args) => {
   const _organizationImportOfflinePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"offline"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _importOfflinePath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"offline"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportOfflinePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportOfflinePath(organizationPath, ...routeArgs);
   }
 
-  return _importOfflinePath(...args);
+  return _importOfflinePath(...routeArgs);
 };
 
 /**
@@ -1360,17 +1543,20 @@ export const importOfflinePath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/offline/export#history`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const historyImportOfflineExportPath = /*#__PURE__*/ (...args) => {
   const _historyOrganizationImportOfflineExportPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"offline"],[2,[7,"/"],[2,[6,"export"],[2,[7,"/"],[2,[6,"history"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _historyImportOfflineExportPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"offline"],[2,[7,"/"],[2,[6,"export"],[2,[7,"/"],[2,[6,"history"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _historyOrganizationImportOfflineExportPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _historyOrganizationImportOfflineExportPath(organizationPath, ...routeArgs);
   }
 
-  return _historyImportOfflineExportPath(...args);
+  return _historyImportOfflineExportPath(...routeArgs);
 };
 
 /**
@@ -1382,17 +1568,20 @@ export const historyImportOfflineExportPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/offline/export#show`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importOfflineExportPath = /*#__PURE__*/ (...args) => {
   const _organizationImportOfflineExportPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"offline"],[2,[7,"/"],[2,[6,"export"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _importOfflineExportPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"offline"],[2,[7,"/"],[2,[6,"export"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportOfflineExportPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportOfflineExportPath(organizationPath, ...routeArgs);
   }
 
-  return _importOfflineExportPath(...args);
+  return _importOfflineExportPath(...routeArgs);
 };
 
 /**
@@ -1404,17 +1593,20 @@ export const importOfflineExportPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/offline/import#history`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const historyImportOfflineImportPath = /*#__PURE__*/ (...args) => {
   const _historyOrganizationImportOfflineImportPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"offline"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"history"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _historyImportOfflineImportPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"offline"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"history"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _historyOrganizationImportOfflineImportPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _historyOrganizationImportOfflineImportPath(organizationPath, ...routeArgs);
   }
 
-  return _historyImportOfflineImportPath(...args);
+  return _historyImportOfflineImportPath(...routeArgs);
 };
 
 /**
@@ -1426,17 +1618,20 @@ export const historyImportOfflineImportPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/offline/import#show`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importOfflineImportPath = /*#__PURE__*/ (...args) => {
   const _organizationImportOfflineImportPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"offline"],[2,[7,"/"],[2,[6,"import"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _importOfflineImportPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"offline"],[2,[7,"/"],[2,[6,"import"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportOfflineImportPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportOfflineImportPath(organizationPath, ...routeArgs);
   }
 
-  return _importOfflineImportPath(...args);
+  return _importOfflineImportPath(...routeArgs);
 };
 
 /**
@@ -1448,17 +1643,20 @@ export const importOfflineImportPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/manifest#status`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const statusImportManifestPath = /*#__PURE__*/ (...args) => {
   const _statusOrganizationImportManifestPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"manifest"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _statusImportManifestPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"manifest"],[2,[7,"/"],[2,[6,"status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _statusOrganizationImportManifestPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _statusOrganizationImportManifestPath(organizationPath, ...routeArgs);
   }
 
-  return _statusImportManifestPath(...args);
+  return _statusImportManifestPath(...routeArgs);
 };
 
 /**
@@ -1470,17 +1668,20 @@ export const statusImportManifestPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/manifest#realtime_changes`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const realtimeChangesImportManifestPath = /*#__PURE__*/ (...args) => {
   const _realtimeChangesOrganizationImportManifestPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"manifest"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _realtimeChangesImportManifestPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"manifest"],[2,[7,"/"],[2,[6,"realtime_changes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _realtimeChangesOrganizationImportManifestPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _realtimeChangesOrganizationImportManifestPath(organizationPath, ...routeArgs);
   }
 
-  return _realtimeChangesImportManifestPath(...args);
+  return _realtimeChangesImportManifestPath(...routeArgs);
 };
 
 /**
@@ -1492,17 +1693,20 @@ export const realtimeChangesImportManifestPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/manifest#upload`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const uploadImportManifestPath = /*#__PURE__*/ (...args) => {
   const _uploadOrganizationImportManifestPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"manifest"],[2,[7,"/"],[2,[6,"upload"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _uploadImportManifestPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"manifest"],[2,[7,"/"],[2,[6,"upload"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _uploadOrganizationImportManifestPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _uploadOrganizationImportManifestPath(organizationPath, ...routeArgs);
   }
 
-  return _uploadImportManifestPath(...args);
+  return _uploadImportManifestPath(...routeArgs);
 };
 
 /**
@@ -1514,17 +1718,20 @@ export const uploadImportManifestPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/manifest#new`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const newImportManifestPath = /*#__PURE__*/ (...args) => {
   const _newOrganizationImportManifestPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"manifest"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _newImportManifestPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"manifest"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _newOrganizationImportManifestPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _newOrganizationImportManifestPath(organizationPath, ...routeArgs);
   }
 
-  return _newImportManifestPath(...args);
+  return _newImportManifestPath(...routeArgs);
 };
 
 /**
@@ -1536,17 +1743,20 @@ export const newImportManifestPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `import/manifest#create`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importManifestPath = /*#__PURE__*/ (...args) => {
   const _organizationImportManifestPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"manifest"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
   const _importManifestPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"manifest"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportManifestPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportManifestPath(organizationPath, ...routeArgs);
   }
 
-  return _importManifestPath(...args);
+  return _importManifestPath(...routeArgs);
 };
 
 /**
@@ -1560,17 +1770,20 @@ export const importManifestPath = /*#__PURE__*/ (...args) => {
  * @param {any} namespaceId
  * @param {any} reassignmentToken
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const namespacedShowImportSourceUsersPath = /*#__PURE__*/ (...args) => {
   const _namespacedShowOrganizationImportSourceUsersPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"namespace_id":{"r":true},"reassignment_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"source_users"],[2,[7,"/"],[2,[3,"namespace_id"],[2,[7,"/"],[2,[3,"reassignment_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _namespacedShowImportSourceUsersPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"reassignment_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"source_users"],[2,[7,"/"],[2,[3,"namespace_id"],[2,[7,"/"],[2,[3,"reassignment_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _namespacedShowOrganizationImportSourceUsersPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _namespacedShowOrganizationImportSourceUsersPath(organizationPath, ...routeArgs);
   }
 
-  return _namespacedShowImportSourceUsersPath(...args);
+  return _namespacedShowImportSourceUsersPath(...routeArgs);
 };
 
 /**
@@ -1584,17 +1797,20 @@ export const namespacedShowImportSourceUsersPath = /*#__PURE__*/ (...args) => {
  * @param {any} namespaceId
  * @param {any} reassignmentToken
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const namespacedAcceptImportSourceUsersPath = /*#__PURE__*/ (...args) => {
   const _namespacedAcceptOrganizationImportSourceUsersPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"namespace_id":{"r":true},"reassignment_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"source_users"],[2,[7,"/"],[2,[3,"namespace_id"],[2,[7,"/"],[2,[3,"reassignment_token"],[2,[7,"/"],[2,[6,"accept"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
   const _namespacedAcceptImportSourceUsersPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"reassignment_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"source_users"],[2,[7,"/"],[2,[3,"namespace_id"],[2,[7,"/"],[2,[3,"reassignment_token"],[2,[7,"/"],[2,[6,"accept"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _namespacedAcceptOrganizationImportSourceUsersPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _namespacedAcceptOrganizationImportSourceUsersPath(organizationPath, ...routeArgs);
   }
 
-  return _namespacedAcceptImportSourceUsersPath(...args);
+  return _namespacedAcceptImportSourceUsersPath(...routeArgs);
 };
 
 /**
@@ -1608,17 +1824,20 @@ export const namespacedAcceptImportSourceUsersPath = /*#__PURE__*/ (...args) => 
  * @param {any} namespaceId
  * @param {any} reassignmentToken
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const namespacedDeclineImportSourceUsersPath = /*#__PURE__*/ (...args) => {
   const _namespacedDeclineOrganizationImportSourceUsersPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"namespace_id":{"r":true},"reassignment_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"source_users"],[2,[7,"/"],[2,[3,"namespace_id"],[2,[7,"/"],[2,[3,"reassignment_token"],[2,[7,"/"],[2,[6,"decline"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
   const _namespacedDeclineImportSourceUsersPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"reassignment_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"source_users"],[2,[7,"/"],[2,[3,"namespace_id"],[2,[7,"/"],[2,[3,"reassignment_token"],[2,[7,"/"],[2,[6,"decline"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _namespacedDeclineOrganizationImportSourceUsersPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _namespacedDeclineOrganizationImportSourceUsersPath(organizationPath, ...routeArgs);
   }
 
-  return _namespacedDeclineImportSourceUsersPath(...args);
+  return _namespacedDeclineImportSourceUsersPath(...routeArgs);
 };
 
 /**
@@ -1631,17 +1850,20 @@ export const namespacedDeclineImportSourceUsersPath = /*#__PURE__*/ (...args) =>
  *
  * @param {any} reassignmentToken
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const importSourceUserPath = /*#__PURE__*/ (...args) => {
   const _organizationImportSourceUserPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"reassignment_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"source_users"],[2,[7,"/"],[2,[3,"reassignment_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _importSourceUserPath = /*#__PURE__*/ __jsr.r({"reassignment_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"source_users"],[2,[7,"/"],[2,[3,"reassignment_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationImportSourceUserPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationImportSourceUserPath(organizationPath, ...routeArgs);
   }
 
-  return _importSourceUserPath(...args);
+  return _importSourceUserPath(...routeArgs);
 };
 
 /**
@@ -1654,17 +1876,20 @@ export const importSourceUserPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} reassignmentToken
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const acceptImportSourceUserPath = /*#__PURE__*/ (...args) => {
   const _acceptOrganizationImportSourceUserPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"reassignment_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"source_users"],[2,[7,"/"],[2,[3,"reassignment_token"],[2,[7,"/"],[2,[6,"accept"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _acceptImportSourceUserPath = /*#__PURE__*/ __jsr.r({"reassignment_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"source_users"],[2,[7,"/"],[2,[3,"reassignment_token"],[2,[7,"/"],[2,[6,"accept"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _acceptOrganizationImportSourceUserPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _acceptOrganizationImportSourceUserPath(organizationPath, ...routeArgs);
   }
 
-  return _acceptImportSourceUserPath(...args);
+  return _acceptImportSourceUserPath(...routeArgs);
 };
 
 /**
@@ -1677,16 +1902,19 @@ export const acceptImportSourceUserPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} reassignmentToken
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const declineImportSourceUserPath = /*#__PURE__*/ (...args) => {
   const _declineOrganizationImportSourceUserPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"reassignment_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"source_users"],[2,[7,"/"],[2,[3,"reassignment_token"],[2,[7,"/"],[2,[6,"decline"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _declineImportSourceUserPath = /*#__PURE__*/ __jsr.r({"reassignment_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"import"],[2,[7,"/"],[2,[6,"source_users"],[2,[7,"/"],[2,[3,"reassignment_token"],[2,[7,"/"],[2,[6,"decline"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _declineOrganizationImportSourceUserPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _declineOrganizationImportSourceUserPath(organizationPath, ...routeArgs);
   }
 
-  return _declineImportSourceUserPath(...args);
+  return _declineImportSourceUserPath(...routeArgs);
 };
 

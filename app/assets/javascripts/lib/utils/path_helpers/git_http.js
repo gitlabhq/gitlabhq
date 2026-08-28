@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -17,17 +17,20 @@ import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
  * @param {any} geoNodeId
  * @param {any} repositoryPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const infoRefsPath = /*#__PURE__*/ (...args) => {
   const _organizationInfoRefsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[6,"refs"]]]]]]]]]]]]]]]]);
   const _infoRefsPath = /*#__PURE__*/ __jsr.r({"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[6,"refs"]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationInfoRefsPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationInfoRefsPath(organizationPath, ...routeArgs);
   }
 
-  return _infoRefsPath(...args);
+  return _infoRefsPath(...routeArgs);
 };
 
 /**
@@ -41,17 +44,20 @@ export const infoRefsPath = /*#__PURE__*/ (...args) => {
  * @param {any} geoNodeId
  * @param {any} repositoryPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const gitUploadPackPath = /*#__PURE__*/ (...args) => {
   const _organizationGitUploadPackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[6,"git-upload-pack"]]]]]]]]]]]]]]);
   const _gitUploadPackPath = /*#__PURE__*/ __jsr.r({"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[6,"git-upload-pack"]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGitUploadPackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGitUploadPackPath(organizationPath, ...routeArgs);
   }
 
-  return _gitUploadPackPath(...args);
+  return _gitUploadPackPath(...routeArgs);
 };
 
 /**
@@ -65,17 +71,20 @@ export const gitUploadPackPath = /*#__PURE__*/ (...args) => {
  * @param {any} geoNodeId
  * @param {any} repositoryPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const gitReceivePackPath = /*#__PURE__*/ (...args) => {
   const _organizationGitReceivePackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[6,"git-receive-pack"]]]]]]]]]]]]]]);
   const _gitReceivePackPath = /*#__PURE__*/ __jsr.r({"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[6,"git-receive-pack"]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGitReceivePackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGitReceivePackPath(organizationPath, ...routeArgs);
   }
 
-  return _gitReceivePackPath(...args);
+  return _gitReceivePackPath(...routeArgs);
 };
 
 /**
@@ -89,17 +98,20 @@ export const gitReceivePackPath = /*#__PURE__*/ (...args) => {
  * @param {any} geoNodeId
  * @param {any} repositoryPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const sshUploadPackPath = /*#__PURE__*/ (...args) => {
   const _organizationSshUploadPackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[6,"ssh-upload-pack"]]]]]]]]]]]]]]);
   const _sshUploadPackPath = /*#__PURE__*/ __jsr.r({"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[6,"ssh-upload-pack"]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationSshUploadPackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationSshUploadPackPath(organizationPath, ...routeArgs);
   }
 
-  return _sshUploadPackPath(...args);
+  return _sshUploadPackPath(...routeArgs);
 };
 
 /**
@@ -113,17 +125,20 @@ export const sshUploadPackPath = /*#__PURE__*/ (...args) => {
  * @param {any} geoNodeId
  * @param {any} repositoryPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const sshReceivePackPath = /*#__PURE__*/ (...args) => {
   const _organizationSshReceivePackPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[6,"ssh-receive-pack"]]]]]]]]]]]]]]);
   const _sshReceivePackPath = /*#__PURE__*/ __jsr.r({"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[6,"ssh-receive-pack"]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationSshReceivePackPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationSshReceivePackPath(organizationPath, ...routeArgs);
   }
 
-  return _sshReceivePackPath(...args);
+  return _sshReceivePackPath(...routeArgs);
 };
 
 /**
@@ -137,17 +152,20 @@ export const sshReceivePackPath = /*#__PURE__*/ (...args) => {
  * @param {any} geoNodeId
  * @param {any} repositoryPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const batchPath = /*#__PURE__*/ (...args) => {
   const _organizationBatchPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[2,[6,"objects"],[2,[7,"/"],[6,"batch"]]]]]]]]]]]]]]]]]]]]);
   const _batchPath = /*#__PURE__*/ __jsr.r({"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[2,[6,"objects"],[2,[7,"/"],[6,"batch"]]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationBatchPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationBatchPath(organizationPath, ...routeArgs);
   }
 
-  return _batchPath(...args);
+  return _batchPath(...routeArgs);
 };
 
 /**
@@ -162,17 +180,20 @@ export const batchPath = /*#__PURE__*/ (...args) => {
  * @param {any} repositoryPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const unlockLfsLockPath = /*#__PURE__*/ (...args) => {
   const _unlockOrganizationLfsLockPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"geo_node_id":{"r":true},"repository_path":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[2,[6,"locks"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"unlock"]]]]]]]]]]]]]]]]]]]]]]);
   const _unlockLfsLockPath = /*#__PURE__*/ __jsr.r({"geo_node_id":{"r":true},"repository_path":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[2,[6,"locks"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"unlock"]]]]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _unlockOrganizationLfsLockPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _unlockOrganizationLfsLockPath(organizationPath, ...routeArgs);
   }
 
-  return _unlockLfsLockPath(...args);
+  return _unlockLfsLockPath(...routeArgs);
 };
 
 /**
@@ -186,17 +207,20 @@ export const unlockLfsLockPath = /*#__PURE__*/ (...args) => {
  * @param {any} geoNodeId
  * @param {any} repositoryPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const verifyLfsLocksPath = /*#__PURE__*/ (...args) => {
   const _verifyOrganizationLfsLocksPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[2,[6,"locks"],[2,[7,"/"],[6,"verify"]]]]]]]]]]]]]]]]]]]]);
   const _verifyLfsLocksPath = /*#__PURE__*/ __jsr.r({"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[2,[6,"locks"],[2,[7,"/"],[6,"verify"]]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _verifyOrganizationLfsLocksPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _verifyOrganizationLfsLocksPath(organizationPath, ...routeArgs);
   }
 
-  return _verifyLfsLocksPath(...args);
+  return _verifyLfsLocksPath(...routeArgs);
 };
 
 /**
@@ -210,17 +234,20 @@ export const verifyLfsLocksPath = /*#__PURE__*/ (...args) => {
  * @param {any} geoNodeId
  * @param {any} repositoryPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const lfsLocksPath = /*#__PURE__*/ (...args) => {
   const _organizationLfsLocksPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[6,"locks"]]]]]]]]]]]]]]]]]]);
   const _lfsLocksPath = /*#__PURE__*/ __jsr.r({"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[6,"locks"]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationLfsLocksPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationLfsLocksPath(organizationPath, ...routeArgs);
   }
 
-  return _lfsLocksPath(...args);
+  return _lfsLocksPath(...routeArgs);
 };
 
 /**
@@ -234,17 +261,20 @@ export const lfsLocksPath = /*#__PURE__*/ (...args) => {
  * @param {any} geoNodeId
  * @param {any} repositoryPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const newLfsLockPath = /*#__PURE__*/ (...args) => {
   const _newOrganizationLfsLockPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[2,[6,"locks"],[2,[7,"/"],[6,"new"]]]]]]]]]]]]]]]]]]]]);
   const _newLfsLockPath = /*#__PURE__*/ __jsr.r({"geo_node_id":{"r":true},"repository_path":{"r":true}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[2,[6,"locks"],[2,[7,"/"],[6,"new"]]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _newOrganizationLfsLockPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _newOrganizationLfsLockPath(organizationPath, ...routeArgs);
   }
 
-  return _newLfsLockPath(...args);
+  return _newLfsLockPath(...routeArgs);
 };
 
 /**
@@ -259,17 +289,20 @@ export const newLfsLockPath = /*#__PURE__*/ (...args) => {
  * @param {any} repositoryPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const editLfsLockPath = /*#__PURE__*/ (...args) => {
   const _editOrganizationLfsLockPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"geo_node_id":{"r":true},"repository_path":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[2,[6,"locks"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"edit"]]]]]]]]]]]]]]]]]]]]]]);
   const _editLfsLockPath = /*#__PURE__*/ __jsr.r({"geo_node_id":{"r":true},"repository_path":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[2,[6,"locks"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"edit"]]]]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _editOrganizationLfsLockPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _editOrganizationLfsLockPath(organizationPath, ...routeArgs);
   }
 
-  return _editLfsLockPath(...args);
+  return _editLfsLockPath(...routeArgs);
 };
 
 /**
@@ -284,16 +317,19 @@ export const editLfsLockPath = /*#__PURE__*/ (...args) => {
  * @param {any} repositoryPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const lfsLockPath = /*#__PURE__*/ (...args) => {
   const _organizationLfsLockPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"geo_node_id":{"r":true},"repository_path":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[2,[6,"locks"],[2,[7,"/"],[3,"id"]]]]]]]]]]]]]]]]]]]]);
   const _lfsLockPath = /*#__PURE__*/ __jsr.r({"geo_node_id":{"r":true},"repository_path":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"from_secondary"],[2,[7,"/"],[2,[3,"geo_node_id"],[2,[7,"/"],[2,[5,[3,"repository_path"]],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"lfs"],[2,[7,"/"],[2,[6,"locks"],[2,[7,"/"],[3,"id"]]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationLfsLockPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationLfsLockPath(organizationPath, ...routeArgs);
   }
 
-  return _lfsLockPath(...args);
+  return _lfsLockPath(...routeArgs);
 };
 

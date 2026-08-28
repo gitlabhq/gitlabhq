@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -15,17 +15,20 @@ import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
  * - controller#action: `onboarding/feature_library#search`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const onboardingFeatureLibrarySearchPath = /*#__PURE__*/ (...args) => {
   const _organizationOnboardingFeatureLibrarySearchPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"onboarding"],[2,[7,"/"],[2,[6,"feature_library"],[2,[7,"/"],[2,[6,"search"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _onboardingFeatureLibrarySearchPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"onboarding"],[2,[7,"/"],[2,[6,"feature_library"],[2,[7,"/"],[2,[6,"search"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationOnboardingFeatureLibrarySearchPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationOnboardingFeatureLibrarySearchPath(organizationPath, ...routeArgs);
   }
 
-  return _onboardingFeatureLibrarySearchPath(...args);
+  return _onboardingFeatureLibrarySearchPath(...routeArgs);
 };
 
 /**
@@ -37,16 +40,19 @@ export const onboardingFeatureLibrarySearchPath = /*#__PURE__*/ (...args) => {
  * - controller#action: `onboarding/feature_library#ai_search`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const onboardingFeatureLibraryAiSearchPath = /*#__PURE__*/ (...args) => {
   const _organizationOnboardingFeatureLibraryAiSearchPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"onboarding"],[2,[7,"/"],[2,[6,"feature_library"],[2,[7,"/"],[2,[6,"ai_search"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _onboardingFeatureLibraryAiSearchPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"onboarding"],[2,[7,"/"],[2,[6,"feature_library"],[2,[7,"/"],[2,[6,"ai_search"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationOnboardingFeatureLibraryAiSearchPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationOnboardingFeatureLibraryAiSearchPath(organizationPath, ...routeArgs);
   }
 
-  return _onboardingFeatureLibraryAiSearchPath(...args);
+  return _onboardingFeatureLibraryAiSearchPath(...routeArgs);
 };
 

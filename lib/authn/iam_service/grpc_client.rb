@@ -128,6 +128,10 @@ module Authn
         Authn::IamAuthService.grpc_address
       end
 
+      def secure_transport?
+        Authn::IamAuthService.grpc_secure?
+      end
+
       def metadata
         { ROUTING_HEADER => ROUTING_HEADER_VALUE }
       end

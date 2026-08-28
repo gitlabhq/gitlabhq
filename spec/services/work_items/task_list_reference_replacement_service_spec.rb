@@ -5,8 +5,14 @@ require 'spec_helper'
 RSpec.describe WorkItems::TaskListReferenceReplacementService, feature_category: :team_planning do
   let_it_be(:developer) { create(:user) }
   let_it_be(:project) { create(:project, developers: developer) }
-  let_it_be_with_refind(:single_line_work_item) { create(:work_item, project: project, description: '- [ ] single line', lock_version: 3) }
-  let_it_be_with_refind(:multiple_line_work_item) { create(:work_item, project: project, description: "Any text\n\n* [ ] Item to be converted\n    second line\n    third line", lock_version: 3) }
+  let_it_be_with_refind(:single_line_work_item) do
+    create(:work_item, project: project, description: '- [ ] single line', lock_version: 3)
+  end
+
+  let_it_be_with_refind(:multiple_line_work_item) do
+    create(:work_item, project: project,
+      description: "Any text\n\n* [ ] Item to be converted\n    second line\n    third line", lock_version: 3)
+  end
 
   let(:line_number_start) { 3 }
   let(:line_number_end) { 5 }
@@ -58,7 +64,8 @@ RSpec.describe WorkItems::TaskListReferenceReplacementService, feature_category:
       it 'creates description version note' do
         expect { result }.to change { Note.count }.by(1)
         expect(work_item.notes.last.note).to eq('changed the description')
-        expect(work_item.saved_description_version.id).to eq(work_item.notes.last.system_note_metadata.description_version_id)
+        expect(work_item.saved_description_version.id)
+          .to eq(work_item.notes.last.system_note_metadata.description_version_id)
       end
     end
 
@@ -94,7 +101,8 @@ RSpec.describe WorkItems::TaskListReferenceReplacementService, feature_category:
     context 'when line_number_end is lower than line_number_start' do
       let(:line_number_end) { line_number_start - 1 }
 
-      it_behaves_like 'failing work item task reference replacement service', 'line_number_end must be greater or equal to line_number_start'
+      it_behaves_like 'failing work item task reference replacement service',
+        'line_number_end must be greater or equal to line_number_start'
     end
 
     context 'when lock_version is older than current' do

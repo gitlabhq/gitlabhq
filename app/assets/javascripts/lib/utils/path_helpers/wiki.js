@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths, splitProjectFullPath } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope, splitProjectFullPath } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -16,17 +16,20 @@ import { hasOrganizationScopedPaths, splitProjectFullPath } from '~/lib/utils/pa
  *
  * @param {any} groupId
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const groupWikisGitAccessPath = /*#__PURE__*/ (...args) => {
   const _organizationGroupWikisGitAccessPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"git_access"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
   const _groupWikisGitAccessPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"git_access"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGroupWikisGitAccessPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGroupWikisGitAccessPath(organizationPath, ...routeArgs);
   }
 
-  return _groupWikisGitAccessPath(...args);
+  return _groupWikisGitAccessPath(...routeArgs);
 };
 
 /**
@@ -39,17 +42,20 @@ export const groupWikisGitAccessPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} groupId
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const groupWikisPagesPath = /*#__PURE__*/ (...args) => {
   const _organizationGroupWikisPagesPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"pages"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
   const _groupWikisPagesPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"pages"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGroupWikisPagesPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGroupWikisPagesPath(organizationPath, ...routeArgs);
   }
 
-  return _groupWikisPagesPath(...args);
+  return _groupWikisPagesPath(...routeArgs);
 };
 
 /**
@@ -62,17 +68,20 @@ export const groupWikisPagesPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} groupId
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const groupWikisTemplatesPath = /*#__PURE__*/ (...args) => {
   const _organizationGroupWikisTemplatesPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"templates"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
   const _groupWikisTemplatesPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"templates"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGroupWikisTemplatesPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGroupWikisTemplatesPath(organizationPath, ...routeArgs);
   }
 
-  return _groupWikisTemplatesPath(...args);
+  return _groupWikisTemplatesPath(...routeArgs);
 };
 
 /**
@@ -85,17 +94,20 @@ export const groupWikisTemplatesPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} groupId
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const groupWikisNewPath = /*#__PURE__*/ (...args) => {
   const _organizationGroupWikisNewPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
   const _groupWikisNewPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGroupWikisNewPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGroupWikisNewPath(organizationPath, ...routeArgs);
   }
 
-  return _groupWikisNewPath(...args);
+  return _groupWikisNewPath(...routeArgs);
 };
 
 /**
@@ -108,17 +120,20 @@ export const groupWikisNewPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} groupId
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const groupWikisPath = /*#__PURE__*/ (...args) => {
   const _organizationGroupWikisPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
   const _groupWikisPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGroupWikisPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGroupWikisPath(organizationPath, ...routeArgs);
   }
 
-  return _groupWikisPath(...args);
+  return _groupWikisPath(...routeArgs);
 };
 
 /**
@@ -131,17 +146,20 @@ export const groupWikisPath = /*#__PURE__*/ (...args) => {
  *
  * @param {any} groupId
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const groupWikisConfluencePath = /*#__PURE__*/ (...args) => {
   const _organizationGroupWikisConfluencePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"confluence"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
   const _groupWikisConfluencePath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"confluence"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGroupWikisConfluencePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGroupWikisConfluencePath(organizationPath, ...routeArgs);
   }
 
-  return _groupWikisConfluencePath(...args);
+  return _groupWikisConfluencePath(...routeArgs);
 };
 
 /**
@@ -155,17 +173,20 @@ export const groupWikisConfluencePath = /*#__PURE__*/ (...args) => {
  * @param {any} groupId
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const groupWikiEditPath = /*#__PURE__*/ (...args) => {
   const _organizationGroupWikiEditPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"edit"]]]]]]]]]]]]]]]]);
   const _groupWikiEditPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"edit"]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGroupWikiEditPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGroupWikiEditPath(organizationPath, ...routeArgs);
   }
 
-  return _groupWikiEditPath(...args);
+  return _groupWikiEditPath(...routeArgs);
 };
 
 /**
@@ -179,17 +200,20 @@ export const groupWikiEditPath = /*#__PURE__*/ (...args) => {
  * @param {any} groupId
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const groupWikiHistoryPath = /*#__PURE__*/ (...args) => {
   const _organizationGroupWikiHistoryPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"history"]]]]]]]]]]]]]]]]);
   const _groupWikiHistoryPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"history"]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGroupWikiHistoryPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGroupWikiHistoryPath(organizationPath, ...routeArgs);
   }
 
-  return _groupWikiHistoryPath(...args);
+  return _groupWikiHistoryPath(...routeArgs);
 };
 
 /**
@@ -203,17 +227,20 @@ export const groupWikiHistoryPath = /*#__PURE__*/ (...args) => {
  * @param {any} groupId
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const groupWikiDiffPath = /*#__PURE__*/ (...args) => {
   const _organizationGroupWikiDiffPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"diff"]]]]]]]]]]]]]]]]);
   const _groupWikiDiffPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"diff"]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGroupWikiDiffPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGroupWikiDiffPath(organizationPath, ...routeArgs);
   }
 
-  return _groupWikiDiffPath(...args);
+  return _groupWikiDiffPath(...routeArgs);
 };
 
 /**
@@ -227,17 +254,20 @@ export const groupWikiDiffPath = /*#__PURE__*/ (...args) => {
  * @param {any} groupId
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const groupWikiRawPath = /*#__PURE__*/ (...args) => {
   const _organizationGroupWikiRawPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"raw"]]]]]]]]]]]]]]]]);
   const _groupWikiRawPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"raw"]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGroupWikiRawPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGroupWikiRawPath(organizationPath, ...routeArgs);
   }
 
-  return _groupWikiRawPath(...args);
+  return _groupWikiRawPath(...routeArgs);
 };
 
 /**
@@ -251,17 +281,20 @@ export const groupWikiRawPath = /*#__PURE__*/ (...args) => {
  * @param {any} groupId
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const groupWikiPreviewMarkdownPath = /*#__PURE__*/ (...args) => {
   const _organizationGroupWikiPreviewMarkdownPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"preview_markdown"]]]]]]]]]]]]]]]]);
   const _groupWikiPreviewMarkdownPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"preview_markdown"]]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGroupWikiPreviewMarkdownPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGroupWikiPreviewMarkdownPath(organizationPath, ...routeArgs);
   }
 
-  return _groupWikiPreviewMarkdownPath(...args);
+  return _groupWikiPreviewMarkdownPath(...routeArgs);
 };
 
 /**
@@ -275,17 +308,20 @@ export const groupWikiPreviewMarkdownPath = /*#__PURE__*/ (...args) => {
  * @param {any} groupId
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const groupWikiPath = /*#__PURE__*/ (...args) => {
   const _organizationGroupWikiPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[5,[3,"id"]]]]]]]]]]]]]]]);
   const _groupWikiPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[5,[3,"id"]]]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationGroupWikiPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationGroupWikiPath(organizationPath, ...routeArgs);
   }
 
-  return _groupWikiPath(...args);
+  return _groupWikiPath(...routeArgs);
 };
 
 /**
@@ -298,6 +334,7 @@ export const groupWikiPath = /*#__PURE__*/ (...args) => {
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectWikisGitAccessPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -305,12 +342,13 @@ export const projectWikisGitAccessPath = /*#__PURE__*/ (projectFullPath, ...args
   const _namespaceProjectWikisGitAccessPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"git_access"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectWikisGitAccessPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectWikisGitAccessPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectWikisGitAccessPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectWikisGitAccessPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -323,6 +361,7 @@ export const projectWikisGitAccessPath = /*#__PURE__*/ (projectFullPath, ...args
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectWikisPagesPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -330,12 +369,13 @@ export const projectWikisPagesPath = /*#__PURE__*/ (projectFullPath, ...args) =>
   const _namespaceProjectWikisPagesPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"pages"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectWikisPagesPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectWikisPagesPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectWikisPagesPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectWikisPagesPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -348,6 +388,7 @@ export const projectWikisPagesPath = /*#__PURE__*/ (projectFullPath, ...args) =>
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectWikisTemplatesPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -355,12 +396,13 @@ export const projectWikisTemplatesPath = /*#__PURE__*/ (projectFullPath, ...args
   const _namespaceProjectWikisTemplatesPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"templates"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectWikisTemplatesPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectWikisTemplatesPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectWikisTemplatesPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectWikisTemplatesPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -373,6 +415,7 @@ export const projectWikisTemplatesPath = /*#__PURE__*/ (projectFullPath, ...args
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectWikisNewPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -380,12 +423,13 @@ export const projectWikisNewPath = /*#__PURE__*/ (projectFullPath, ...args) => {
   const _namespaceProjectWikisNewPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectWikisNewPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectWikisNewPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectWikisNewPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectWikisNewPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -398,6 +442,7 @@ export const projectWikisNewPath = /*#__PURE__*/ (projectFullPath, ...args) => {
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectWikisPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -405,12 +450,13 @@ export const projectWikisPath = /*#__PURE__*/ (projectFullPath, ...args) => {
   const _namespaceProjectWikisPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectWikisPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectWikisPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectWikisPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectWikisPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -423,6 +469,7 @@ export const projectWikisPath = /*#__PURE__*/ (projectFullPath, ...args) => {
  *
  * @param {string} projectFullPath
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectWikisConfluencePath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -430,12 +477,13 @@ export const projectWikisConfluencePath = /*#__PURE__*/ (projectFullPath, ...arg
   const _namespaceProjectWikisConfluencePath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"confluence"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectWikisConfluencePath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectWikisConfluencePath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectWikisConfluencePath(namespacePath, projectPath, ...args);
+  return _namespaceProjectWikisConfluencePath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -449,6 +497,7 @@ export const projectWikisConfluencePath = /*#__PURE__*/ (projectFullPath, ...arg
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectWikiEditPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -456,12 +505,13 @@ export const projectWikiEditPath = /*#__PURE__*/ (projectFullPath, ...args) => {
   const _namespaceProjectWikiEditPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"edit"]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectWikiEditPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectWikiEditPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectWikiEditPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectWikiEditPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -475,6 +525,7 @@ export const projectWikiEditPath = /*#__PURE__*/ (projectFullPath, ...args) => {
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectWikiHistoryPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -482,12 +533,13 @@ export const projectWikiHistoryPath = /*#__PURE__*/ (projectFullPath, ...args) =
   const _namespaceProjectWikiHistoryPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"history"]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectWikiHistoryPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectWikiHistoryPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectWikiHistoryPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectWikiHistoryPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -501,6 +553,7 @@ export const projectWikiHistoryPath = /*#__PURE__*/ (projectFullPath, ...args) =
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectWikiDiffPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -508,12 +561,13 @@ export const projectWikiDiffPath = /*#__PURE__*/ (projectFullPath, ...args) => {
   const _namespaceProjectWikiDiffPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"diff"]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectWikiDiffPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectWikiDiffPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectWikiDiffPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectWikiDiffPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -527,6 +581,7 @@ export const projectWikiDiffPath = /*#__PURE__*/ (projectFullPath, ...args) => {
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectWikiRawPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -534,12 +589,13 @@ export const projectWikiRawPath = /*#__PURE__*/ (projectFullPath, ...args) => {
   const _namespaceProjectWikiRawPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"raw"]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectWikiRawPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectWikiRawPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectWikiRawPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectWikiRawPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -553,6 +609,7 @@ export const projectWikiRawPath = /*#__PURE__*/ (projectFullPath, ...args) => {
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectWikiPreviewMarkdownPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -560,12 +617,13 @@ export const projectWikiPreviewMarkdownPath = /*#__PURE__*/ (projectFullPath, ..
   const _namespaceProjectWikiPreviewMarkdownPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"preview_markdown"]]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectWikiPreviewMarkdownPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectWikiPreviewMarkdownPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectWikiPreviewMarkdownPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectWikiPreviewMarkdownPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**
@@ -579,6 +637,7 @@ export const projectWikiPreviewMarkdownPath = /*#__PURE__*/ (projectFullPath, ..
  * @param {string} projectFullPath
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const projectWikiPath = /*#__PURE__*/ (projectFullPath, ...args) => {
@@ -586,11 +645,12 @@ export const projectWikiPath = /*#__PURE__*/ (projectFullPath, ...args) => {
   const _namespaceProjectWikiPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[5,[3,"id"]]]]]]]]]]]);
 
   const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectWikiPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  if (organizationPath) {
+    return _organizationNamespaceProjectWikiPath(organizationPath, namespacePath, projectPath, ...routeArgs);
   }
 
-  return _namespaceProjectWikiPath(namespacePath, projectPath, ...args);
+  return _namespaceProjectWikiPath(namespacePath, projectPath, ...routeArgs);
 };
 

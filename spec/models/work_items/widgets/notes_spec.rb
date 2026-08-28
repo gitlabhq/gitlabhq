@@ -27,7 +27,7 @@ RSpec.describe WorkItems::Widgets::Notes, feature_category: :team_planning do
   describe '.quick_action_commands' do
     subject { described_class.quick_action_commands }
 
-    it { is_expected.to match_array([:lock, :unlock]) }
+    it { is_expected.to match_array([:lock, :unlock, :internal_note]) }
   end
 
   describe '#discussion_locked' do

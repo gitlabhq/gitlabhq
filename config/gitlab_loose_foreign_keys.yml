@@ -881,10 +881,6 @@ projects_with_pipeline_variables:
   - table: projects
     column: project_id
     on_delete: async_delete
-push_rules:
-  - table: organizations
-    column: organization_id
-    on_delete: async_delete
 requirements_management_test_reports:
   - table: p_ci_builds
     column: build_id

@@ -61,13 +61,10 @@ describe('~/lib/utils/path_helpers/instance_admin', () => {
     );
   });
 
-  describe('when current organization has scoped paths', () => {
+  describe('when the current page URL is organization scoped', () => {
     beforeEach(async () => {
       window.gon = {
-        current_organization: {
-          path: 'acme',
-          has_scoped_paths: true,
-        },
+        organization_path: 'acme',
       };
       await setup();
     });

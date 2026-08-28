@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -2221,17 +2221,20 @@ export const adminDashboardStatsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[
  * - controller#action: `admin/dashboard#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const adminRootPath = /*#__PURE__*/ (...args) => {
   const _organizationAdminRootPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
   const _adminRootPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[1,[2,[8,"."],[3,"format"]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _organizationAdminRootPath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationAdminRootPath(organizationPath, ...routeArgs);
   }
 
-  return _adminRootPath(...args);
+  return _adminRootPath(...routeArgs);
 };
 
 /**

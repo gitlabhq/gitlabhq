@@ -36,7 +36,6 @@ export default {
     'ee/app/assets/javascripts/external_issues_show/components/sidebar/issue_due_date.vue',
     'ee/app/assets/javascripts/external_issues_show/components/sidebar/issue_field.vue',
     'ee/app/assets/javascripts/incidents/components/published_cell.vue',
-    'ee/app/assets/javascripts/issues_analytics/components/issues_analytics.vue',
     'ee/app/assets/javascripts/ldap/components/group_select.vue',
     'ee/app/assets/javascripts/on_demand_scans/components/action_button.vue',
     'ee/app/assets/javascripts/on_demand_scans/components/actions.vue',

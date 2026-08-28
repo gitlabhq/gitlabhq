@@ -160,8 +160,6 @@ ee/app/models/members/member_role.rb:
 ee/app/models/merge_requests/compliance_violation.rb:
   - order_by_reason
   - order_by_severity_level
-ee/app/models/package_metadata/checkpoint.rb:
-  - for_malware_advisories
 ee/app/models/remote_development/workspace_variable.rb:
   - by_workspace_ids
 ee/app/models/sbom/occurrence.rb:

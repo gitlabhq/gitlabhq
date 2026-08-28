@@ -12,7 +12,6 @@ class Route < ApplicationRecord
   end
 
   cells_claims_attribute :path, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ROUTE,
-    feature_flag: :cells_claims_routes,
     if: ->(record) { record.path.exclude?('/') }
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::NAMESPACE, subject_key: :namespace_id

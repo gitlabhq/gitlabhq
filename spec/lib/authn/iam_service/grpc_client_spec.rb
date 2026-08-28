@@ -18,6 +18,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
   before do
     allow(Authn::IamAuthService).to receive_messages(
       grpc_address: iam_service_address,
+      grpc_secure?: false,
       secret: iam_secret
     )
 
@@ -171,29 +172,29 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
   end
 
   describe 'channel credentials' do
-    where(:address, :expected_endpoint, :expects_tls) do
-      'localhost:5004'                  | 'localhost:5004'              | false
-      'tls://iam.example.com:5004'      | 'iam.example.com:5004'        | true
-      'tcp://iam.example.com:5004'      | 'iam.example.com:5004'        | false
-      ':::invalid'                      | ':::invalid'                  | false
+    let(:iam_service_address) { 'iam.example.com:5004' }
+
+    where(:secure, :expects_tls) do
+      true  | true
+      false | false
     end
 
     with_them do
-      let(:iam_service_address) { address }
       let(:tls_credentials) { instance_double(GRPC::Core::ChannelCredentials) }
 
       before do
+        allow(Authn::IamAuthService).to receive(:grpc_secure?).and_return(secure)
         allow(::Gitlab::X509::Certificate).to receive(:ca_certs_bundle).and_return('cert-data')
         allow(GRPC::Core::ChannelCredentials).to receive(:new).with('cert-data').and_return(tls_credentials)
         allow(auth_stub).to receive(:health).and_return(::Gitlab::Iam::Auth::V1::HealthResponse.new)
       end
 
-      it 'configures the gRPC channel with the expected endpoint and credentials' do
+      it 'configures the gRPC channel with the address as-is and the expected credentials' do
         client.health
 
         expected_credentials = expects_tls ? tls_credentials : :this_channel_is_insecure
         expect(::Gitlab::Iam::Auth::V1::AuthService::Stub).to have_received(:new).with(
-          expected_endpoint,
+          'iam.example.com:5004',
           expected_credentials,
           interceptors: [
             Labkit::Correlation::GRPC::ClientInterceptor.instance,

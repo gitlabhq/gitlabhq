@@ -4,7 +4,7 @@ class RedirectRoute < ApplicationRecord
   include CaseSensitivity
   include Cells::Claimable
 
-  cells_claims_attribute :path, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_REDIRECT_ROUTE, feature_flag: :cells_claims_routes
+  cells_claims_attribute :path, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_REDIRECT_ROUTE
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::NAMESPACE,
     # We don't just use :namespace_id here, because it's updated by

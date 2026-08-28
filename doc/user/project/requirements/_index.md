@@ -31,7 +31,7 @@ For an overview, see [Requirements Management](https://www.youtube.com/watch?v=u
 For a more in-depth walkthrough see [GitLab Requirements Traceability Walkthrough](https://youtu.be/VIiuTQYFVa0).
 <!-- Video published on 2020-02-12 -->
 
-![requirements list view](img/requirements_list_v13_5.png)
+![The requirements list view with tabs displaying open, archived, and all requirements.](img/requirements_list_v13_5.png)
 
 ## Create a requirement
 

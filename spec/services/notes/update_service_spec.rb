@@ -173,6 +173,31 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
           end
         end
       end
+
+      context 'when the note is edited with the /internal_note quick action' do
+        let_it_be_with_reload(:note) { create(:note, project: project, noteable: issue, author: user) }
+
+        it 'does not change the note and surfaces a clear error', :aggregate_failures do
+          updated_note = described_class.new(project, user, note: "#{note.note}\n/internal_note").execute(note)
+
+          expect(updated_note.errors[:base])
+            .to include(_('Cannot convert existing comment to an internal note'))
+          expect(note.reload).not_to be_confidential
+        end
+
+        context 'when the note is already internal' do
+          let_it_be_with_reload(:note) do
+            create(:note, project: project, noteable: issue, author: user, confidential: true)
+          end
+
+          it 'does not add an error' do
+            updated_note = described_class.new(project, user, note: "#{note.note}\n/internal_note").execute(note)
+
+            expect(updated_note.errors[:base]).to be_empty
+            expect(note.reload).to be_confidential
+          end
+        end
+      end
     end
 
     context 'when note text was not changed' do

@@ -68,6 +68,20 @@ describe('Work Item Note', () => {
     },
   });
 
+  const muationErrorMessage = 'Cannot convert existing comment to an internal note';
+  const mutationErrorHandler = jest.fn().mockResolvedValue({
+    data: {
+      updateNote: {
+        errors: [muationErrorMessage],
+        note: {
+          ...mockWorkItemCommentNote,
+          body: updatedNoteText,
+          bodyHtml: updatedNoteBody,
+        },
+      },
+    },
+  });
+
   const workItemResponseHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
   const workItemByAuthoredByDifferentUser = jest
     .fn()
@@ -86,6 +100,7 @@ describe('Work Item Note', () => {
   const findNoteActions = () => wrapper.findComponent(NoteActions);
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
   const findEditedAt = () => wrapper.findComponent(EditedAt);
+  const findUpdateError = () => wrapper.find('[data-testid="update-error"]');
 
   const createComponent = ({
     note = mockWorkItemCommentNote,
@@ -231,8 +246,37 @@ describe('Work Item Note', () => {
         );
       });
 
-      it('emits an error', () => {
-        expect(wrapper.emitted('error')).toHaveLength(1);
+      it('shows the error inline', () => {
+        expect(findUpdateError().text()).toBe(
+          'Something went wrong when updating a comment. Please try again',
+        );
+      });
+    });
+
+    describe('when mutation returns errors', () => {
+      beforeEach(async () => {
+        createComponent({
+          updateNoteMutationHandler: mutationErrorHandler,
+        });
+        findNoteActions().vm.$emit('start-editing');
+        await nextTick();
+        findCommentForm().vm.$emit('submit-form', { commentText: updatedNoteText });
+        await waitForPromises();
+      });
+
+      it('opens the form again', () => {
+        expect(findCommentForm().exists()).toBe(true);
+      });
+
+      it('updates the saved draft with the latest comment text', () => {
+        expect(updateDraft).toHaveBeenCalledWith(
+          `${mockWorkItemCommentNote.id}-comment`,
+          updatedNoteText,
+        );
+      });
+
+      it('shows the returned error inline', () => {
+        expect(findUpdateError().text()).toBe(muationErrorMessage);
       });
     });
   });

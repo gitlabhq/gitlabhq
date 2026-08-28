@@ -18,6 +18,8 @@ Every GitLab Duo feature has a default large language model (LLM) chosen by GitL
 
 GitLab can update this default model to optimize feature performance. Therefore, a feature's model might change without you taking any action.
 
+Model changes come from the GitLab AI Gateway and take effect regardless of your GitLab version, unless otherwise noted.
+
 If you do not want to use the default model for each feature, or have specific requirements, you can choose from an array of other available supported models.
 
 If you select a specific model for a feature, the feature uses that model until you select another.
@@ -45,11 +47,15 @@ Prerequisites:
 
 - You must be an administrator.
 
+> [!note]
+> For GitLab 19.0 or earlier, Code Review Flow and GitLab Duo Code Review share the same model setting.
+> Changes you make to the model impact both features.
+
 To select a model for a feature:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
-1. On **Configure AI features**, select **Configure models for GitLab Duo**. If **Configure AI features** is not displayed, verify that the GitLab Duo Enterprise add-on is configured for your instance.
+1. Under **Model selection**, select **Manage models**. If **Model selection** is not displayed, verify that the GitLab Duo Enterprise add-on is configured for your instance.
 1. For the feature you want to configure, select a model from the dropdown list
    to set as the default model.
 1. Optional. To apply the model to all features in the section, select **Apply to all**.
@@ -64,7 +70,8 @@ To select a model for a feature:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
-1. On **Configure AI features**, go to the **GitLab Duo Agentic Chat** section.
+1. Under **Model selection**, select **Manage models**.
+1. Go to the **GitLab Duo Agentic Chat** section.
 1. Select a model from the dropdown list to set as the default model. If you plan
    to restrict access to other models, select a GitLab-managed model as the default.
 1. Optional. To restrict what other models users can select for Agentic Chat:
@@ -87,3 +94,48 @@ To select a model for a feature:
    > model as the default model.
    > If you do not restrict Agentic Chat to specific models, users can choose from
    > all GitLab-managed models.
+
+### Select a model for Code Review Flow
+
+{{< history >}}
+
+- [Separate model setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) from GitLab Duo Code Review introduced for Code Review Flow in GitLab 19.1, using the **Agentic Code Review** setting.
+
+{{< /history >}}
+
+For Code Review Flow, the setting for model selection differs based on your GitLab version.
+
+{{< tabs >}}
+
+{{< tab title="GitLab 19.1 or later" >}}
+
+To select a model for Code Review Flow:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Under **Model selection**, select **Manage models**.
+1. Under **GitLab Duo Agent Platform**, find **Agentic Code Review**.
+1. Select a model from the dropdown list to set as the default model.
+
+For a list of available models, see [Agent Platform AI models](../../user/duo_agent_platform/model_selection.md#supported-models).
+
+{{< /tab >}}
+
+{{< tab title="GitLab 19.0 or earlier" >}}
+
+Code Review Flow shares a model setting with GitLab Duo Code Review, the non-agentic version of
+the feature.
+The model you select applies to both features, and you can only choose from the [models available](../../user/gitlab_duo/model_selection.md#gitlab-duo-for-merge-requests)
+for the non-agentic feature.
+
+To select a model for Code Review Flow:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Under **Model selection**, select **Manage models**.
+1. Under **GitLab Duo for merge requests**, find **Code Review**.
+1. Select a model from the dropdown list to set as the default model.
+
+{{< /tab >}}
+
+{{< /tabs >}}

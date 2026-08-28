@@ -28,7 +28,7 @@ export default {
       return hasTouchCapability() ? null : this.$options.i18n.homepage;
     },
     rootPath() {
-      return rootPath();
+      return rootPath({ organizationPath: null });
     },
   },
 };

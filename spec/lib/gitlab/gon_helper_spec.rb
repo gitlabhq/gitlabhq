@@ -89,7 +89,6 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
       it 'exposes current_organization' do
         expect(gon).to receive(:current_organization=).with(
           current_organization.slice(:id, :name, :path, :full_path, :web_url, :avatar_url)
-            .merge({ has_scoped_paths: true })
         )
 
         add_gon_variables
@@ -119,6 +118,90 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
         expect(gon).not_to receive(:current_organization=)
 
         helper.add_gon_variables
+      end
+    end
+
+    describe 'organization scoped path helpers' do
+      context 'when the request has an organization_path param' do
+        before do
+          organization = build_stubbed(:organization, path: 'acme')
+          allow(Current).to receive(:organization_resolver)
+            .and_return(instance_double(Gitlab::Current::Organization, from_organization_params: organization))
+        end
+
+        it 'exposes organization_path' do
+          expect(gon).to receive(:organization_path=).with('acme')
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when the request has no organization_path param' do
+        before do
+          allow(Current).to receive(:organization_resolver)
+            .and_return(instance_double(Gitlab::Current::Organization, from_organization_params: nil))
+        end
+
+        it 'exposes a nil organization_path' do
+          expect(gon).to receive(:organization_path=).with(nil)
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when the data context is an organization' do
+        before do
+          allow(Current).to receive(:data_context).and_return(
+            Gitlab::Current::DataContext.new(organization: build_stubbed(:organization, :isolated, path: 'acme'))
+          )
+        end
+
+        it 'exposes data_context_organization_path' do
+          expect(gon).to receive(:data_context_organization_path=).with('acme')
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when the data context is not an organization' do
+        before do
+          allow(Current).to receive(:data_context).and_return(Gitlab::Current::DataContext.new)
+        end
+
+        it 'exposes a nil data_context_organization_path' do
+          expect(gon).to receive(:data_context_organization_path=).with(nil)
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when there is no data context' do
+        it 'exposes a nil data_context_organization_path' do
+          expect(gon).to receive(:data_context_organization_path=).with(nil)
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
+        before do
+          organization = build_stubbed(:organization, path: 'acme')
+          allow(Current).to receive(:organization_resolver)
+            .and_return(instance_double(Gitlab::Current::Organization,
+              from_organization_params: organization))
+
+          allow(Current).to receive(:data_context).and_return(
+            Gitlab::Current::DataContext.new(organization: build_stubbed(:organization, :isolated,
+              path: 'acme'))
+          )
+        end
+
+        it 'does not expose organization_path or data_context_organization_path' do
+          expect(gon).not_to receive(:organization_path=)
+          expect(gon).not_to receive(:data_context_organization_path=)
+
+          helper.add_gon_variables
+        end
       end
     end
 

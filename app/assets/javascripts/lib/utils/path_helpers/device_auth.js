@@ -3,7 +3,7 @@
 // To regenerate, run: bin/rake gitlab:js:routes
 
 import { __jsr } from '~/lib/utils/path_helpers/core';
-import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
+import { resolveOrganizationScope } from '~/lib/utils/path_helpers/utils';
 
 
 /**
@@ -15,16 +15,19 @@ import { hasOrganizationScopedPaths } from '~/lib/utils/path_helpers/utils';
  * - controller#action: `oauth/device_authorizations#confirm`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
 export const confirmOauthDevicePath = /*#__PURE__*/ (...args) => {
   const _confirmOrganizationOauthDevicePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"oauth"],[2,[7,"/"],[2,[6,"device"],[2,[7,"/"],[2,[6,"confirm"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
   const _confirmOauthDevicePath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"oauth"],[2,[7,"/"],[2,[6,"device"],[2,[7,"/"],[2,[6,"confirm"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
-  if (hasOrganizationScopedPaths()) {
-    return _confirmOrganizationOauthDevicePath(gon.current_organization.path, ...args);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _confirmOrganizationOauthDevicePath(organizationPath, ...routeArgs);
   }
 
-  return _confirmOauthDevicePath(...args);
+  return _confirmOauthDevicePath(...routeArgs);
 };
 

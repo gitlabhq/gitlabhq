@@ -17,8 +17,12 @@ module Authn
             'IAM data access gRPC service is not configured'
         end
 
-        scheme = Rails.env.development? ? '' : 'tls://'
-        "#{scheme}#{grpc.host}:#{grpc.port}"
+        "#{grpc.host}:#{grpc.port}"
+      end
+
+      # Anything but an explicit false keeps TLS on.
+      def grpc_secure?
+        iam_config.grpc['secure'] != false
       end
 
       def secret

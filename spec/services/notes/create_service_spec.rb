@@ -125,6 +125,74 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         end
       end
 
+      context 'with /internal_note quick action' do
+        let(:opts) { base_opts.merge(note: "Awesome comment\n/internal_note") }
+
+        it 'creates an internal note without changing the noteable', :aggregate_failures do
+          expect(note).to be_persisted
+          expect(note).to be_confidential
+          expect(note.note).to eq('Awesome comment')
+          expect(issue.reload).not_to be_confidential
+        end
+
+        context 'when the user cannot mark notes as internal' do
+          let_it_be(:guest) { create(:user, guest_of: project) }
+
+          subject(:note) { described_class.new(project, guest, opts).execute }
+
+          it 'does not mark the note as internal', :aggregate_failures do
+            expect(note).to be_persisted
+            expect(note).not_to be_confidential
+          end
+        end
+
+        context 'when the note contains only the quick action' do
+          let(:opts) { base_opts.merge(note: '/internal_note') }
+
+          it 'does not report a false success and surfaces a clear error', :aggregate_failures do
+            expect { note }.not_to change { Note.count }
+
+            expect(note.quick_actions_status).to be_nil
+            expect(note.errors[:base]).to include(_('Cannot make an empty comment internal'))
+          end
+        end
+
+        context 'when replying to a discussion that is not internal' do
+          let_it_be(:discussion_note) { create(:note_on_issue, project: project, noteable: issue) }
+
+          let(:opts) do
+            base_opts.merge(
+              note: "Awesome reply\n/internal_note",
+              in_reply_to_discussion_id: discussion_note.discussion_id
+            )
+          end
+
+          it 'does not create the note and surfaces a clear error', :aggregate_failures do
+            expect(note).not_to be_persisted
+            expect(note.errors[:base])
+              .to include(_('Cannot make this reply internal unless the thread is already internal'))
+          end
+        end
+
+        context 'when replying to an internal discussion' do
+          let_it_be(:internal_discussion_note) do
+            create(:note_on_issue, project: project, noteable: issue, confidential: true)
+          end
+
+          let(:opts) do
+            base_opts.merge(
+              note: "Awesome reply\n/internal_note",
+              in_reply_to_discussion_id: internal_discussion_note.discussion_id
+            )
+          end
+
+          it 'creates an internal reply', :aggregate_failures do
+            expect(note).to be_persisted
+            expect(note).to be_confidential
+          end
+        end
+      end
+
       it 'note has valid content' do
         expect(note.note).to eq(opts[:note])
       end

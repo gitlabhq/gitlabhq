@@ -33,7 +33,8 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
 
   shared_examples 'allows issue creation with CAPTCHA' do
     it 'allows issue creation' do
-      find_button('Create issue').click # `click_button` would wait for the request to complete and would timeout with CAPTCHA being enabled
+      # `click_button` would wait for the request to complete and would timeout with CAPTCHA being enabled
+      find_button('Create issue').click
 
       # it is impossible to test reCAPTCHA automatically and there is no possibility to fill in recaptcha
       # so just confirm the reCAPTCHA modal appears
