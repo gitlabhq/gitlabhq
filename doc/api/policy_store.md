@@ -34,13 +34,16 @@ in the policy store.
 A policy belongs to an organization, responds to a single trigger, and carries the rules and
 actions that make up its behavior.
 
-These endpoints are available only when both of the following are true:
+These endpoints are available only when all of the following are true:
 
 - The `security_policies_v2` feature flag is enabled.
 - An administrator has enabled the policy store experiment for the instance in
   **Admin** > **Settings** > **Security and compliance**.
+- The organization has opted in through its `policy_store_experiment_enabled`
+  organization setting, set through the `policyStoreExperimentEnabled`
+  argument of the `organizationUpdate` GraphQL mutation.
 
-When either is not true, the endpoints return `404 Not Found`.
+When any of these is not true, the endpoints return `404 Not Found`.
 When the instance is not licensed for security orchestration policies, they return
 `403 Forbidden`.
 

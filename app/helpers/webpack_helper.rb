@@ -15,11 +15,11 @@ module WebpackHelper
     link_tag
   end
 
-  def webpack_bundle_tag(bundle)
+  def webpack_bundle_tag(bundle, **options)
     if vite_enabled?
-      vite_javascript_tag bundle
+      vite_javascript_tag bundle, **options
     else
-      javascript_include_tag(*webpack_entrypoint_paths(bundle))
+      javascript_include_tag(*webpack_entrypoint_paths(bundle), **options)
     end
   end
 

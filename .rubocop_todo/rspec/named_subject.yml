@@ -197,7 +197,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/geo/git_ssh_proxy_spec.rb'
     - 'ee/spec/lib/gitlab/geo/health_check_spec.rb'
     - 'ee/spec/lib/gitlab/geo/jwt_request_decoder_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/log_cursor/event_logs_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_cursor/events/cache_invalidation_event_spec.rb'
     - 'ee/spec/lib/gitlab/geo/oauth/session_spec.rb'
     - 'ee/spec/lib/gitlab/geo/registry_batcher_spec.rb'

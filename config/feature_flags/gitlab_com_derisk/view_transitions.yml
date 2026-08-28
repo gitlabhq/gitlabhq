@@ -1,0 +1,10 @@
+---
+name: view_transitions
+description: Opt into cross-document view transitions via the @view-transition at-rule
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/613948
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248470
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/624034
+milestone: '19.4'
+group: group::design system
+type: gitlab_com_derisk
+default_enabled: false

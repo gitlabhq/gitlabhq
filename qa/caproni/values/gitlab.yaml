@@ -1,0 +1,192 @@
+# Ported from ResourcePresets.high and Configurations::Kind; see README for gaps
+
+global:
+  shell:
+    # Fixed at 22 by the chart's gitlab-ssh listener
+    port: 22
+
+  hosts:
+    # domain comes from caproni.yaml's dynamic_overrides
+    https: false
+
+  minio:
+    enabled: false
+
+  psql:
+    host: gitlab-dev-stack-gitlab-rw.gitlab-dev-stack.svc
+    username: gitlab-dev-stack
+    database: gitlabhq_production
+    password:
+      useSecret: true
+      secret: gitlab-dev-stack-gitlab-gitlabhq-production-conn
+      key: PGPASSWORD
+
+  redis:
+    host: gitlab-dev-stack-valkey.gitlab-dev-stack.svc
+    port: 6379
+    auth:
+      enabled: true
+      secret: gitlab-dev-stack-valkey-conn
+      key: password
+
+  # Without these the suite's licence fabrication is rejected as invalid
+  extraEnv:
+    GITLAB_LICENSE_MODE: test
+    CUSTOMER_PORTAL_URL: https://customers.staging.gitlab.com
+
+  appConfig:
+    applicationSettingsCacheSeconds: 0
+    object_store:
+      enabled: true
+      proxy_download: true
+      connection:
+        secret: gitlab-dev-stack-garage-conn
+        key: connection
+    artifacts:
+      bucket: gitlab-artifacts
+    lfs:
+      bucket: git-lfs
+    uploads:
+      bucket: gitlab-uploads
+    packages:
+      bucket: gitlab-packages
+    externalDiffs:
+      enabled: true
+      bucket: gitlab-mr-diffs
+    terraformState:
+      enabled: true
+      bucket: gitlab-terraform-state
+    ciSecureFiles:
+      enabled: true
+      bucket: gitlab-ci-secure-files
+    dependencyProxy:
+      enabled: true
+      bucket: gitlab-dependency-proxy
+
+# Keeps %2F intact in project paths, or the API breaks
+gatewayApiResources:
+  envoy:
+    clientTrafficPolicySpec:
+      path:
+        escapedSlashesAction: KeepUnchanged
+
+installCertmanager: false
+
+certmanager:
+  install: false
+
+prometheus:
+  install: false
+
+gitlab-runner:
+  install: false
+
+# The edge is Envoy Gateway, installed by caproni.yaml.
+nginx-ingress:
+  enabled: false
+
+registry:
+  storage:
+    secret: gitlab-dev-stack-garage-conn
+    key: registry_connection
+    redirect:
+      disable: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 50m
+      memory: 128Mi
+  hpa:
+    minReplicas: 1
+    cpu:
+      targetType: Utilization
+      targetAverageUtilization: 90
+
+gitlab:
+  gitlab-exporter:
+    enabled: false
+
+  gitlab-shell:
+    sshDaemon: gitlab-sshd
+    config:
+      # The Gateway sends no PROXY header, unlike nginx-ingress
+      proxyProtocol: false
+    minReplicas: 2
+    # No limits: with limits set, git operations start failing in e2e tests.
+    # https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/3699
+    resources:
+      requests:
+        cpu: 60m
+        memory: 32Mi
+    hpa:
+      cpu:
+        targetType: Utilization
+        targetAverageUtilization: 90
+
+  webservice:
+    workerProcesses: 4
+    minReplicas: 1
+    # https://docs.gitlab.com/charts/charts/gitlab/webservice/#memory-requestslimits
+    resources:
+      requests:
+        cpu: 3
+        memory: 5Gi
+      limits:
+        cpu: 3
+        memory: 7Gi
+    hpa:
+      cpu:
+        targetType: Utilization
+        targetAverageUtilization: 90
+
+  sidekiq:
+    concurrency: 30
+    minReplicas: 1
+    resources:
+      requests:
+        cpu: 1200m
+        memory: 2Gi
+      limits:
+        cpu: 1200m
+        memory: 2Gi
+    hpa:
+      cpu:
+        targetType: Utilization
+        targetAverageUtilization: 90
+
+  kas:
+    minReplicas: 1
+    resources:
+      requests:
+        cpu: 60m
+        memory: 96Mi
+      limits:
+        cpu: 60m
+        memory: 96Mi
+    hpa:
+      cpu:
+        targetType: Utilization
+        targetAverageUtilization: 90
+
+  gitaly:
+    resources:
+      requests:
+        cpu: 400m
+        memory: 384Mi
+      limits:
+        cpu: 400m
+        memory: 384Mi
+
+  # Low request: toolbox peaks at startup then idles
+  toolbox:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+    backups:
+      objectStorage:
+        config:
+          secret: gitlab-dev-stack-garage-conn
+          key: s3cmd

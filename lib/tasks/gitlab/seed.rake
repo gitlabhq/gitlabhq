@@ -96,5 +96,48 @@ namespace :gitlab do
       seeder.seed!
       puts "\nDone."
     end
+
+    # `db/docs/` also holds views, deleted tables and background migrations, and the dictionary is
+    # the authority on which names are tables. Its default scope covers only tables, so anything
+    # else returns nil here and is ignored.
+    def dictionary_table_entries(names)
+      names.filter_map { |name| Gitlab::Database::Dictionary.entry(name) }
+    end
+
+    # Every decomposed database holds the full schema, so counting a `gitlab_ci` table on the main
+    # connection reads an always-empty copy of it.
+    def base_model_for_entry(entry)
+      Gitlab::Database.schemas_to_base_models[entry.gitlab_schema]&.first
+    end
+
+    desc "GitLab | Seed | Report seed coverage for tables added since a git ref"
+    task :coverage_report, [:base_ref] => :environment do |t, args|
+      require_relative "../../../tooling/quality/added_tables"
+      require_relative "../../../tooling/quality/fixture_coverage"
+
+      base_ref = args.base_ref.presence || ENV["CI_MERGE_REQUEST_DIFF_BASE_SHA"].presence
+      next puts "\nNo base ref given, skipping the fixture coverage report" unless base_ref
+
+      begin
+        added = Quality::AddedTables.new(base_ref).entry_names
+      rescue Quality::AddedTables::UnreadableBaseRef => e
+        next puts "\nCannot report fixture coverage: #{e.message}"
+      end
+
+      entries = dictionary_table_entries(added)
+      next puts "\nNo new tables in this diff, skipping the fixture coverage report" if entries.empty?
+
+      puts "\nFixture coverage for #{entries.size} newly added table(s)"
+
+      entries.group_by { |entry| base_model_for_entry(entry) }.each do |base_model, group|
+        tables = group.map(&:table_name)
+        next puts "  #{tables.join(', ')}: no connection for gitlab_schema, cannot check" unless base_model
+
+        coverage = Quality::FixtureCoverage.new(tables, connection: base_model.connection)
+        coverage.findings.each { |finding| puts "  #{finding.table}: #{finding.summary}" }
+      end
+
+      puts "\nReport only - this task never fails the job."
+    end
   end
 end

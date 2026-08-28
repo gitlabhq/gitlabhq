@@ -14417,6 +14417,7 @@ Arguments:
 | <a id="mutation-organizationupdate-id"></a>`id` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | ID of the organization to mutate. |
 | <a id="mutation-organizationupdate-name"></a>`name` | [`String`](#string) | Name for the organization. |
 | <a id="mutation-organizationupdate-path"></a>`path` | [`String`](#string) | Path for the organization. |
+| <a id="mutation-organizationupdate-policystoreexperimentenabled"></a>`policyStoreExperimentEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Opt the organization in to or out of the Policy Store experiment. Opting in returns an error when the experiment is not available to the organization; opting out is always accepted. |
 | <a id="mutation-organizationupdate-visibility"></a>`visibility` | [`OrganizationVisibility`](#organizationvisibility) | Visibility for the organization. |
 
 Fields:
@@ -36869,6 +36870,7 @@ Fields:
 | <a id="cdenvironment-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the environment was created. |
 | <a id="cdenvironment-description"></a>`description` | [`String`](#string) | Description of the environment. |
 | <a id="cdenvironment-environmentdriverbindings"></a>`environmentDriverBindings` {{< icon name="warning-solid" >}} | [`CdEnvironmentDriverBindingConnection`](#cdenvironmentdriverbindingconnection) | Introduced in GitLab 19.2. Status: Experiment. Driver bindings of the environment. |
+| <a id="cdenvironment-healthstatus"></a>`healthStatus` {{< icon name="warning-solid" >}} | [`CdServiceHealth`](#cdservicehealth) | Introduced in GitLab 19.4. Status: Experiment. Worst observed service health across the environment. Null when no service health has been reported. |
 | <a id="cdenvironment-id"></a>`id` | [`CdEnvironmentID!`](#cdenvironmentid) | Global ID of the environment. |
 | <a id="cdenvironment-name"></a>`name` | [`String!`](#string) | Name of the environment. |
 | <a id="cdenvironment-organization"></a>`organization` | [`Organization`](#organization) | Organization the environment belongs to. |
@@ -53496,6 +53498,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="organization-cdenvironments-applicationid"></a>`applicationId` | [`CdApplicationID`](#cdapplicationid) | Filter environments to those where the application has services deployed. |
 | <a id="organization-cdenvironments-search"></a>`search` | [`String`](#string) | Search environments by name or description. |
+| <a id="organization-cdenvironments-status"></a>`status` | [`CdEnvironmentStatus`](#cdenvironmentstatus) | Filter environments by status. An environment can match more than one status. |
 | <a id="organization-cdenvironments-tier"></a>`tier` | [`CdEnvironmentTier`](#cdenvironmenttier) | Filter environments by tier. |
 
 ##### `Organization.cdRollout`
@@ -66787,6 +66790,16 @@ State recorded in a continuous deployment deployment transition.
 | <a id="cddeploymenttransitionstate-healthy"></a>`HEALTHY` | Deployment transition state healthy. |
 | <a id="cddeploymenttransitionstate-initial"></a>`INITIAL` | Deployment transition state initial. |
 | <a id="cddeploymenttransitionstate-pending"></a>`PENDING` | Deployment transition state pending. |
+
+### `CdEnvironmentStatus`
+
+Status used to filter the continuous deployment environments list. An environment can match more than one status.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cdenvironmentstatus-degraded"></a>`DEGRADED` | Worst service health across the environment is degraded or failed. |
+| <a id="cdenvironmentstatus-deploying"></a>`DEPLOYING` | Environment has a rollout in progress. |
+| <a id="cdenvironmentstatus-healthy"></a>`HEALTHY` | Worst service health across the environment is healthy. |
 
 ### `CdEnvironmentTier`
 

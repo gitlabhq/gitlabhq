@@ -1,0 +1,116 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/caproni/-/raw/main/schema/config.v2.schema.json
+# CNG deploy rig for test-on-cng; the reasoning lives in README.md
+
+version: 2
+
+variables:
+  # Spelled out at each use: caproni variables cannot reference each other
+  BASE_DOMAIN: cng.test
+  # Pinned: an unpinned dependency in the deploy path can break master
+  GL_CNPG_VERSION: "0.29.0"
+  GL_DEV_STACK_VERSION: "1.6.0"
+
+deployers:
+  # gitlab-dev-stack writes its secrets here, so create it first
+  prerequisites:
+    type: namespace
+    namespace:
+      namespaces:
+        - gitlab
+
+  cloudnative-pg:
+    type: helm
+    helm:
+      namespace: cnpg-system
+      wait: true
+      repository:
+        name: cnpg
+        url: https://cloudnative-pg.github.io/charts
+      release:
+        name: cloudnative-pg
+        chart: cnpg/cloudnative-pg
+        version: ${GL_CNPG_VERSION}
+      dynamic_overrides:
+        - type: inline
+          value_map:
+            crds.create: true
+
+  gitlab-dev-stack:
+    type: helm
+    needs: [prerequisites, cloudnative-pg]
+    helm:
+      namespace: gitlab-dev-stack
+      wait: true
+      timeout: 10m
+      values_file: ./values/gitlab-dev-stack.yaml
+      release:
+        name: gitlab-dev-stack
+        chart: oci://registry.gitlab.com/gitlab-org/cloud-native/charts/gitlab-dev-stack/gitlab-dev-stack:${GL_DEV_STACK_VERSION}
+
+  gitlab:
+    type: helm
+    needs: [prerequisites, gitlab-dev-stack]
+    helm:
+      namespace: gitlab
+      values_file: ./values/gitlab.yaml
+      # 10m rather than 5m: Caproni has no deploy retry
+      wait: true
+      timeout: 10m
+      release:
+        name: gitlab
+        # Never swap this for a published chart version -- see README
+        chart: ${GITLAB_CHART_PACKAGE}
+      dynamic_overrides:
+        - type: inline
+          value_map:
+            global.hosts.domain: ${BASE_DOMAIN}
+
+            # Gateway API: the chart default since 19.0, Ingress goes in 20.0
+            global.gatewayApi.enabled: true
+            global.ingress.enabled: false
+            # The chart supplies Envoy; the rig adds no proxy of its own
+            global.gatewayApi.installEnvoy: true
+            global.gatewayApi.configureCertmanager: false
+            gatewayApiResources.gateway.protocol: HTTP
+
+            # Tags resolved by scripts/cng-image-tags.sh
+            gitlab.gitaly.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly
+            gitlab.gitaly.image.tag: ${CAPRONI_CNG_GITALY_TAG}
+            gitlab.gitlab-shell.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell
+            gitlab.gitlab-shell.image.tag: ${CAPRONI_CNG_GITLAB_SHELL_TAG}
+            gitlab.migrations.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-toolbox-ee
+            gitlab.migrations.image.tag: ${CAPRONI_CNG_TOOLBOX_TAG}
+            gitlab.toolbox.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-toolbox-ee
+            gitlab.toolbox.image.tag: ${CAPRONI_CNG_TOOLBOX_TAG}
+            gitlab.sidekiq.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ee
+            gitlab.sidekiq.image.tag: ${CAPRONI_CNG_SIDEKIQ_TAG}
+            gitlab.sidekiq.annotations.commit: ${CI_COMMIT_SHORT_SHA}
+            gitlab.webservice.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-webservice-ee
+            gitlab.webservice.image.tag: ${CAPRONI_CNG_WEBSERVICE_TAG}
+            gitlab.webservice.annotations.commit: ${CI_COMMIT_SHORT_SHA}
+            gitlab.webservice.workhorse.image: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-workhorse-ee
+            gitlab.webservice.workhorse.tag: ${CAPRONI_CNG_WORKHORSE_TAG}
+            gitlab.kas.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-kas
+            gitlab.kas.image.tag: ${CAPRONI_CNG_KAS_TAG}
+            gitlab.registry.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-container-registry
+            gitlab.registry.image.tag: ${CAPRONI_CNG_REGISTRY_TAG}
+
+cluster:
+  driver: k3d
+  network:
+    hostname: gitlab.${BASE_DOMAIN}
+    # Local /etc/hosts only; CI uses nip.io and needs none of this
+    additional_hostnames:
+      - registry.${BASE_DOMAIN}
+      - kas.${BASE_DOMAIN}
+  k3d:
+    servers: 1
+    k3s:
+      # k3s's Traefik would fight the chart's Envoy for ports 80 and 22
+      disable:
+        - traefik
+    port_mappings:
+      - "80:80@loadbalancer"
+      - "22:22@loadbalancer"
+
+  # No registry_mirror: the job's dind cache starts empty every run anyway

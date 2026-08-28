@@ -27992,9 +27992,12 @@ ALTER SEQUENCE pm_cve_enrichment_id_seq OWNED BY pm_cve_enrichment.id;
 
 CREATE TABLE pm_licenses (
     id bigint NOT NULL,
-    spdx_identifier text NOT NULL,
+    spdx_identifier text,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    spdx_expression text,
+    CONSTRAINT check_59a1ddda07 CHECK ((num_nonnulls(spdx_expression, spdx_identifier) = 1)),
+    CONSTRAINT check_909f232c9d CHECK ((char_length(spdx_expression) <= 1024)),
     CONSTRAINT check_c1eb81d1ba CHECK ((char_length(spdx_identifier) <= 50))
 );
 
@@ -45183,6 +45186,8 @@ CREATE UNIQUE INDEX i_packages_unique_project_package_type_target_pattern ON pac
 CREATE INDEX i_pkgs_deb_file_meta_on_updated_at_package_file_id_when_unknown ON packages_debian_file_metadata USING btree (updated_at, package_file_id) WHERE (file_type = 1);
 
 CREATE UNIQUE INDEX i_pkgs_rubygems_spec_files_on_obj_stor_key_and_project_id ON packages_rubygems_spec_files USING btree (object_storage_key, project_id);
+
+CREATE UNIQUE INDEX i_pm_licenses_on_spdx_expression ON pm_licenses USING btree (spdx_expression);
 
 CREATE UNIQUE INDEX i_pm_licenses_on_spdx_identifier ON pm_licenses USING btree (spdx_identifier);
 

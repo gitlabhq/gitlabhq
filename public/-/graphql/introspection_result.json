@@ -62908,6 +62908,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
             },
             {
+              "name": "healthStatus",
+              "description": "Worst observed service health across the environment. Null when no service health has been reported. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "CdServiceHealth",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "id",
               "description": "Global ID of the environment.",
               "args": [],
@@ -64060,6 +64072,35 @@
           "inputFields": null,
           "interfaces": null,
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "CdEnvironmentStatus",
+          "description": "Status used to filter the continuous deployment environments list. An environment can match more than one status.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "HEALTHY",
+              "description": "Worst service health across the environment is healthy.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DEGRADED",
+              "description": "Worst service health across the environment is degraded or failed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DEPLOYING",
+              "description": "Environment has a rollout in progress.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -287486,6 +287527,18 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "status",
+                  "description": "Filter environments by status. An environment can match more than one status.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "CdEnvironmentStatus",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -290383,6 +290436,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "policyStoreExperimentEnabled",
+              "description": "Opt the organization in to or out of the Policy Store experiment. Opting in returns an error when the experiment is not available to the organization; opting out is always accepted. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "interfaces": null,

@@ -39,3 +39,5 @@ module Mutations
     end
   end
 end
+
+Mutations::Organizations::Update.prepend_mod_with('Mutations::Organizations::Update')

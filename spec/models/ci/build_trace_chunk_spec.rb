@@ -156,13 +156,29 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
         expect(described_class.get_store_class(data_store)).to be_a(Ci::BuildTraceChunks::Fog)
       end
 
-      it 'only initializes Fog::Storage once' do
-        RequestStore.clear!
+      context 'when the cache_ci_build_trace_chunk_fog_connection flag is enabled' do
+        it 'reuses the process-level Fog connection across reads' do
+          expect(Fog::Storage).not_to receive(:new)
 
-        expect(Fog::Storage).to receive(:new).and_call_original
+          2.times do
+            expect(build_trace_chunk.reload.build.trace_chunks.first.data).to eq(sample_data)
+          end
+        end
+      end
 
-        2.times do
-          expect(build_trace_chunk.reload.build.trace_chunks.first.data).to eq(sample_data)
+      context 'when the cache_ci_build_trace_chunk_fog_connection flag is disabled' do
+        before do
+          stub_feature_flags(cache_ci_build_trace_chunk_fog_connection: false)
+        end
+
+        it 'only initializes Fog::Storage once per request' do
+          RequestStore.clear!
+
+          expect(Fog::Storage).to receive(:new).and_call_original
+
+          2.times do
+            expect(build_trace_chunk.reload.build.trace_chunks.first.data).to eq(sample_data)
+          end
         end
       end
     end

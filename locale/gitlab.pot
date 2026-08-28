@@ -59948,6 +59948,9 @@ msgstr ""
 msgid "Policy '%{escalation_policy_name}' does not exist."
 msgstr ""
 
+msgid "Policy Store experiment is not available for this organization"
+msgstr ""
+
 msgid "Policy `%{policyName}` found %{count} violation"
 msgid_plural "Policy `%{policyName}` found %{count} violations"
 msgstr[0] ""

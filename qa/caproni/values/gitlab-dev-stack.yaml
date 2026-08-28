@@ -1,0 +1,61 @@
+# PostgreSQL, Valkey and Garage; the chart v10 removed the bundled ones
+
+secretNamespace: gitlab
+
+postgres:
+  enabled: true
+  clusters:
+    # The chart adds the release prefix; naming it gitlab-dev-stack doubles it
+    - name: gitlab
+      image: ghcr.io/cloudnative-pg/postgresql:17.2
+      instances: 1
+      storage:
+        size: 5Gi
+      parameters:
+        wal_sender_timeout: 60s
+        wal_receiver_timeout: 60s
+        # Matches the POSTGRESQL_MAX_CONNECTIONS the orchestrator sets.
+        max_connections: "200"
+      databases:
+        - name: gitlabhq_production
+          owner: gitlab-dev-stack
+          extensions:
+            - pg_trgm
+            - btree_gist
+            - amcheck
+            - pg_stat_statements
+
+valkey:
+  enabled: true
+  replica:
+    enabled: false
+  auth:
+    enabled: true
+
+garage:
+  enabled: true
+  # The bucket name the registry_connection secret key is rendered with.
+  gitlabRegistryBucket: registry
+  # Exactly Garage::BUCKETS, including git-lfs rather than the chart's gitlab-lfs
+  buckets:
+    - default
+    - git-lfs
+    - gitlab-artifacts
+    - gitlab-backups
+    - gitlab-ci-secure-files
+    - gitlab-dependency-proxy
+    - gitlab-mr-diffs
+    - gitlab-packages
+    - gitlab-pages
+    - gitlab-terraform-state
+    - gitlab-uploads
+    - registry
+    - runner-cache
+    - tmp
+
+# Not needed by the suite, and each costs startup time
+clickhouse:
+  enabled: false
+
+nats:
+  enabled: false

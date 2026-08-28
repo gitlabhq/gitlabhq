@@ -67,17 +67,46 @@ module Mcp
                 maxItems: 100,
                 description: 'Label IDs or global IDs. Create only; on update use add_label_ids/remove_label_ids.'
               },
+              labels: {
+                type: 'array',
+                items: { type: 'string' },
+                maxItems: 100,
+                description: 'Names of the labels to set, resolved in the project or group and its ' \
+                  'ancestor groups. Create only; on update use add_labels/remove_labels.'
+              },
               add_label_ids: {
                 type: 'array',
                 items: { type: 'string' },
                 maxItems: 100,
                 description: 'Update only. Label IDs or global IDs to add.'
               },
+              add_labels: {
+                type: 'array',
+                items: { type: 'string' },
+                maxItems: 100,
+                description: 'Update only. Names of the labels to add.'
+              },
               remove_label_ids: {
                 type: 'array',
                 items: { type: 'string' },
                 maxItems: 100,
                 description: 'Update only. Label IDs or global IDs to remove.'
+              },
+              remove_labels: {
+                type: 'array',
+                items: { type: 'string' },
+                maxItems: 100,
+                description: 'Update only. Names of the labels to remove.'
+              },
+              milestone_id: {
+                type: 'string',
+                description: 'ID or global ID of the milestone to assign, validated against the ' \
+                  'project or group and its ancestor groups. Wins over milestone when both are given.'
+              },
+              milestone: {
+                type: 'string',
+                description: 'Title of the milestone to assign, resolved among the milestones of ' \
+                  'the project or group and its ancestor groups.'
               },
               confidential: {
                 type: 'boolean',

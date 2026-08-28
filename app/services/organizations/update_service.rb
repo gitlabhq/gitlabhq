@@ -45,3 +45,5 @@ module Organizations
     end
   end
 end
+
+Organizations::UpdateService.prepend_mod_with('Organizations::UpdateService')

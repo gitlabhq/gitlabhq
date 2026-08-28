@@ -69,6 +69,26 @@ RSpec.describe WebpackHelper, feature_category: :tooling do
       it 'return vite javascript tag' do
         expect(helper.webpack_bundle_tag(bundle)).to eq('vite')
       end
+
+      it 'forwards options to the vite javascript tag' do
+        expect(helper).to receive(:vite_javascript_tag).with(bundle, blocking: 'render')
+
+        helper.webpack_bundle_tag(bundle, blocking: 'render')
+      end
+    end
+  end
+
+  describe '#webpack_bundle_tag' do
+    let(:bundle) { 'bundle.js' }
+
+    before do
+      allow(helper).to receive(:webpack_entrypoint_paths).with(bundle).and_return([asset_path])
+    end
+
+    it 'forwards options to the javascript include tag' do
+      expect(helper).to receive(:javascript_include_tag).with(asset_path, blocking: 'render')
+
+      helper.webpack_bundle_tag(bundle, blocking: 'render')
     end
   end
 

@@ -142,7 +142,7 @@ Read our [merge request guidelines for contributors before you start for the fir
 
 If you would like to work on GitLab features that are within a paid tier, the code that lives in the
 [EE directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee) requires a GitLab Enterprise Edition license.
-Request an Enterprise Edition Developers License according to the [documented process](https://handbook.gitlab.com/handbook/marketing/developer-relations/contributor-success/community-contributors-workflows/#contributing-to-the-gitlab-enterprise-edition-ee).
+Request an Enterprise Edition Developers License according to the [documented process](https://handbook.gitlab.com/handbook/marketing/developer-relations/engineering/community-contributors-workflows/#contributing-to-the-gitlab-enterprise-edition-ee).
 
 ## Get help
 

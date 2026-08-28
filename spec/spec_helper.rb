@@ -500,6 +500,9 @@ RSpec.configure do |config|
 
   config.after do
     Fog.unmock! if Fog.mock?
+    # Reset the process-level Fog connection cache so a connection warmed by one
+    # example (e.g. via the :fog_with_data factory trait) cannot leak into another.
+    Ci::BuildTraceChunks::Fog.connections.clear
     Gitlab::ApplicationSettingFetcher.clear_in_memory_application_settings!
 
     # Reset all feature flag stubs to default for testing

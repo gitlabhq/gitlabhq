@@ -11,7 +11,7 @@ module Mcp
           graphql_operation: load_graphql('work_items/update_work_item.mutation.graphql')
         }
 
-        CREATE_ONLY_PARAMS = %i[type_name label_ids].freeze
+        CREATE_ONLY_PARAMS = %i[type_name label_ids labels].freeze
 
         def build_variables
           ensure_single_parent_identifier!
@@ -25,6 +25,7 @@ module Mcp
             descriptionWidget: description_widget,
             assigneesWidget: assignees_widget,
             labelsWidget: labels_widget,
+            milestoneWidget: milestone_widget,
             startAndDueDateWidget: start_and_due_date_widget,
             hierarchyWidget: hierarchy_widget,
             currentUserTodosWidget: current_user_todos_widget,
@@ -59,8 +60,8 @@ module Mcp
 
         def labels_widget
           {
-            addLabelIds: params.key?(:add_label_ids) ? normalize_gids(params[:add_label_ids], 'Label') : nil,
-            removeLabelIds: params.key?(:remove_label_ids) ? normalize_gids(params[:remove_label_ids], 'Label') : nil
+            addLabelIds: combined_label_gids(:add_label_ids, :add_labels),
+            removeLabelIds: combined_label_gids(:remove_label_ids, :remove_labels)
           }.compact.presence
         end
 

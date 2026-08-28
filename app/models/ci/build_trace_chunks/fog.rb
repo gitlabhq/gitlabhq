@@ -11,6 +11,25 @@ module Ci
         Gitlab.config.artifacts.object_store
       end
 
+      # Reuse one Fog connection per process, keyed by credentials, so the
+      # googleauth OAuth token is cached across requests instead of re-fetched
+      # on every job update (each fetch is a token-endpoint round trip). Key on a
+      # serialized copy because Fog mutates the credentials hash (e.g. adding a
+      # User-Agent header) after it is stored, which would otherwise break lookups.
+      def self.cached_connection(credentials)
+        connections.compute_if_absent(::Gitlab::Json.dump(credentials)) do
+          ::Fog::Storage.new(credentials)
+        end
+      end
+
+      # Eagerly initialized at class load so concurrent callers at boot share one
+      # map instead of racing on a lazy `||=` and orphaning a connection.
+      @connections = Concurrent::Map.new
+
+      class << self
+        attr_reader :connections
+      end
+
       def available?
         self.class.available?
       end
@@ -120,9 +139,23 @@ module Ci
       def connection
         return unless available?
 
-        ::Gitlab::SafeRequestStore.fetch(object_store_raw_config) do
-          ::Fog::Storage.new(object_store.connection.to_hash.deep_symbolize_keys)
+        if connection_cache_enabled?
+          self.class.cached_connection(object_store.connection.to_hash.deep_symbolize_keys)
+        else
+          ::Gitlab::SafeRequestStore.fetch(object_store_raw_config) do
+            ::Fog::Storage.new(object_store.connection.to_hash.deep_symbolize_keys)
+          end
         end
+      end
+
+      # fog-aws refreshes IAM instance-profile credentials in place on the shared
+      # connection without synchronization, so a process-wide cache would race
+      # under concurrent requests. Only cache when credentials cannot refresh.
+      # Remove this guard once the fog-aws fix ships:
+      # https://github.com/fog/fog-aws/pull/759.
+      def connection_cache_enabled?
+        Feature.enabled?(:cache_ci_build_trace_chunk_fog_connection, Feature.current_request) &&
+          !object_store_config.use_iam_profile?
       end
 
       def fog_directory

@@ -191,6 +191,42 @@ RSpec.describe 'layouts/_head', feature_category: :design_system do
     end
   end
 
+  context 'for view transitions' do
+    context 'when view_transitions feature flag is enabled' do
+      it 'adds the @view-transition CSS rule' do
+        render
+
+        expect(rendered).to match('@view-transition')
+        expect(rendered).to match('navigation: auto')
+      end
+
+      it 'loads the super_sidebar bundle as render-blocking' do
+        render
+
+        expect(rendered).to match(%r{super_sidebar.*blocking="render"})
+      end
+    end
+
+    context 'when view_transitions feature flag is disabled' do
+      before do
+        stub_feature_flags(view_transitions: false)
+      end
+
+      it 'does not add the @view-transition CSS rule' do
+        render
+
+        expect(rendered).not_to match('@view-transition')
+      end
+
+      it 'loads the super_sidebar bundle without render-blocking' do
+        render
+
+        expect(rendered).to match('super_sidebar')
+        expect(rendered).not_to match(%r{super_sidebar.*blocking="render"})
+      end
+    end
+  end
+
   def stub_helper_with_safe_string(method)
     allow_any_instance_of(PageLayoutHelper).to receive(method)
       .and_return(%q(foo" http-equiv="refresh).html_safe)

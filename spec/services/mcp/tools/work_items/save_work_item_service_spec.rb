@@ -94,17 +94,46 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
               maxItems: 100,
               description: 'Label IDs or global IDs. Create only; on update use add_label_ids/remove_label_ids.'
             },
+            labels: {
+              type: 'array',
+              items: { type: 'string' },
+              maxItems: 100,
+              description: 'Names of the labels to set, resolved in the project or group and its ' \
+                'ancestor groups. Create only; on update use add_labels/remove_labels.'
+            },
             add_label_ids: {
               type: 'array',
               items: { type: 'string' },
               maxItems: 100,
               description: 'Update only. Label IDs or global IDs to add.'
             },
+            add_labels: {
+              type: 'array',
+              items: { type: 'string' },
+              maxItems: 100,
+              description: 'Update only. Names of the labels to add.'
+            },
             remove_label_ids: {
               type: 'array',
               items: { type: 'string' },
               maxItems: 100,
               description: 'Update only. Label IDs or global IDs to remove.'
+            },
+            remove_labels: {
+              type: 'array',
+              items: { type: 'string' },
+              maxItems: 100,
+              description: 'Update only. Names of the labels to remove.'
+            },
+            milestone_id: {
+              type: 'string',
+              description: 'ID or global ID of the milestone to assign, validated against the ' \
+                'project or group and its ancestor groups. Wins over milestone when both are given.'
+            },
+            milestone: {
+              type: 'string',
+              description: 'Title of the milestone to assign, resolved among the milestones of ' \
+                'the project or group and its ancestor groups.'
             },
             confidential: {
               type: 'boolean',
@@ -169,6 +198,204 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
         expect(result[:structuredContent]['type']).to eq('Issue')
         expect(result[:structuredContent]['title']).to eq('Created via MCP')
         expect(result[:structuredContent]['state']).to eq('OPEN')
+      end
+    end
+
+    context 'with label names and milestone parameters' do
+      let_it_be(:group) { create(:group, :public) }
+      let_it_be(:labeled_project) { create(:project, :public, group: group, developers: [user]) }
+      let_it_be(:bug_label) { create(:label, project: labeled_project, title: 'bug') }
+      let_it_be(:critical_label) { create(:group_label, group: group, title: 'critical') }
+      let_it_be(:milestone) { create(:milestone, project: labeled_project, title: '19.4') }
+      let_it_be_with_reload(:target) { create(:work_item, :issue, project: labeled_project, title: 'Target') }
+
+      let(:create_arguments) do
+        { project_id: labeled_project.id.to_s, title: 'Labeled', type_name: 'Issue' }
+      end
+
+      it 'creates with label names and a milestone title', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: create_arguments.merge(labels: %w[bug critical], milestone: '19.4') }
+        )
+
+        expect(result[:isError]).to be(false)
+        created = labeled_project.work_items.find_by!(title: 'Labeled')
+        expect(created.labels.map(&:title)).to match_array(%w[bug critical])
+        expect(created.milestone).to eq(milestone)
+      end
+
+      it 'merges label names with label ids', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: create_arguments.merge(label_ids: [bug_label.id.to_s], labels: %w[critical]) }
+        )
+
+        expect(result[:isError]).to be(false)
+        created = labeled_project.work_items.find_by!(title: 'Labeled')
+        expect(created.labels.map(&:title)).to match_array(%w[bug critical])
+      end
+
+      it 'assigns a milestone by id, winning over a resolvable title', :aggregate_failures do
+        other = create(:milestone, project: labeled_project, title: 'other')
+
+        result = service.execute(
+          request: request,
+          params: { arguments: create_arguments.merge(milestone_id: other.id.to_s, milestone: '19.4') }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(labeled_project.work_items.find_by!(title: 'Labeled').milestone).to eq(other)
+      end
+
+      it 'assigns a milestone by global ID', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: create_arguments.merge(milestone_id: milestone.to_global_id.to_s) }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(labeled_project.work_items.find_by!(title: 'Labeled').milestone).to eq(milestone)
+      end
+
+      it 'rejects an unknown label name with the unmatched names', :aggregate_failures do
+        result = nil
+
+        expect do
+          result = service.execute(request: request,
+            params: { arguments: create_arguments.merge(labels: %w[bug nope]) })
+        end
+          .not_to change { WorkItem.count }
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include('Labels not found').and include('nope')
+      end
+
+      it 'resolves a milestone title from an ancestor group', :aggregate_failures do
+        group_milestone = create(:milestone, group: group, title: 'Group Q4')
+
+        result = service.execute(
+          request: request,
+          params: { arguments: create_arguments.merge(milestone: 'Group Q4') }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(labeled_project.work_items.find_by!(title: 'Labeled').milestone).to eq(group_milestone)
+      end
+
+      it 'strips surrounding whitespace from label names', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: create_arguments.merge(labels: [' bug ']) }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(labeled_project.work_items.find_by!(title: 'Labeled').labels.map(&:title)).to eq(%w[bug])
+      end
+
+      it 'strips surrounding whitespace from the milestone title', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: create_arguments.merge(milestone: ' 19.4 ') }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(labeled_project.work_items.find_by!(title: 'Labeled').milestone).to eq(milestone)
+      end
+
+      it 'rejects a milestone id outside the project and its ancestors', :aggregate_failures do
+        foreign_milestone = create(:milestone, project: create(:project, :public))
+
+        result = service.execute(
+          request: request,
+          params: { arguments: create_arguments.merge(milestone_id: foreign_milestone.id.to_s) }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text])
+          .to include("Milestone with id #{foreign_milestone.id} not found")
+      end
+
+      it 'sets a milestone on update', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: { project_id: labeled_project.id.to_s, work_item_iid: target.iid,
+                                 milestone: '19.4' } }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(target.reload.milestone).to eq(milestone)
+      end
+
+      it 'dedups a label given by id and by name', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: create_arguments.merge(label_ids: [bug_label.id.to_s], labels: %w[bug]) }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(labeled_project.work_items.find_by!(title: 'Labeled').labels.map(&:title)).to eq(%w[bug])
+      end
+
+      it 'merges remove_label_ids with remove_labels on update', :aggregate_failures do
+        target.labels = [bug_label, critical_label]
+
+        result = service.execute(
+          request: request,
+          params: {
+            arguments: {
+              project_id: labeled_project.id.to_s, work_item_iid: target.iid,
+              remove_label_ids: [bug_label.id.to_s], remove_labels: %w[critical]
+            }
+          }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(target.reload.labels).to be_empty
+      end
+
+      it 'rejects an unknown milestone title', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: create_arguments.merge(milestone: 'no-such-milestone') }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include("Milestone 'no-such-milestone' not found")
+      end
+
+      it 'adds and removes labels by name on update', :aggregate_failures do
+        target.labels << bug_label
+
+        result = service.execute(
+          request: request,
+          params: {
+            arguments: {
+              project_id: labeled_project.id.to_s, work_item_iid: target.iid,
+              add_labels: %w[critical], remove_labels: %w[bug]
+            }
+          }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(target.reload.labels.map(&:title)).to eq(%w[critical])
+      end
+
+      it 'rejects labels on update and add_labels on create', :aggregate_failures do
+        update_result = service.execute(
+          request: request,
+          params: { arguments: { project_id: labeled_project.id.to_s, work_item_iid: target.iid,
+                                 labels: %w[bug] } }
+        )
+        create_result = service.execute(
+          request: request,
+          params: { arguments: create_arguments.merge(add_labels: %w[bug]) }
+        )
+
+        expect(update_result[:isError]).to be(true)
+        expect(update_result[:content].first[:text]).to include('labels can only be used when creating')
+        expect(create_result[:isError]).to be(true)
+        expect(create_result[:content].first[:text]).to include('add_labels can only be used when updating')
       end
     end
 

@@ -1,0 +1,119 @@
+# E2E smoke tests against CNG, deployed by caproni on job-local k3d
+
+.caproni-deploy-cmd:
+  # Paths are absolute: .qa-install does `cd qa` partway through before_script.
+  script:
+    - source $CI_PROJECT_DIR/qa/caproni/scripts/cng-image-tags.sh
+    - |
+      section_start "package_chart" "Packaging GitLab chart at GITLAB_HELM_CHART_REF"
+      source $CI_PROJECT_DIR/qa/caproni/scripts/package-chart.sh
+      section_end "package_chart"
+    # nip.io, not /etc/hosts: sibling dind containers have their own hosts file
+    - GITLAB_DOMAIN="$(getent hosts docker | awk '{ print $1 }' | head -n1).nip.io"
+    # In a file, not an env var: base config wins over environment
+    - |
+      {
+        echo "variables:"
+        echo "  BASE_DOMAIN: ${GITLAB_DOMAIN}"
+      } > $CI_PROJECT_DIR/qa/caproni/caproni.local.yaml
+      cat $CI_PROJECT_DIR/qa/caproni/caproni.local.yaml
+    - |
+      section_start "caproni_up" "Deploying CNG with Caproni"
+      # --debug not LOG_LEVEL: the env var corrupts k3d JSON output
+      # https://gitlab.com/gitlab-org/caproni/-/issues/184
+      caproni -c "${CAPRONI_CONFIG}" --debug up
+      caproni -c "${CAPRONI_CONFIG}" kubectl -n ${NAMESPACE} wait --for=condition=Ready \
+        --selector="app=webservice" pods --timeout=600s
+      section_end "caproni_up"
+    - $CI_PROJECT_DIR/qa/caproni/scripts/seed_admin_token.rb
+    - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}"
+    # Read back, not pre-created: Caproni has no pre-install hook
+    - |
+      export GITLAB_ADMIN_PASSWORD="$(caproni -c "${CAPRONI_CONFIG}" kubectl -n ${NAMESPACE} \
+        get secret gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}' | base64 -d)"
+
+.caproni-test:
+  image: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-kubectl-${KUBECTL_VERSION}-helm-${HELM_VERSION}-kind-${KIND_VERSION}"
+  stage: test
+  extends:
+    - .e2e-test-base
+    - .with-ignored-runtime-data
+    # For CNG_HELM_REPOSITORY_CACHE: package-chart.sh reuses the orchestrator's chart cache
+    - .cng-qa-cache
+  needs:
+    - job: build-cng-env
+    - job: build-cng
+    - pipeline: $PARENT_PIPELINE_ID
+      job: clone-gitlab-repo
+  tags:
+    - e2e
+  variables:
+    NAMESPACE: gitlab
+    CAPRONI_CONFIG: $CI_PROJECT_DIR/qa/caproni/caproni.yaml
+    QA_RSPEC_TAGS: ""
+    QA_TESTS: ""
+    RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
+    QA_DOCKER_NETWORK: host
+    GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
+    GIT_STRATEGY: "none"
+  before_script:
+    # Coverband is off here; exported because pipeline variables outrank job ones
+    - export COVERBAND_ENABLED=false
+    - source $CI_PROJECT_DIR/scripts/utils.sh
+    - |
+      section_start "install_tools" "Installing caproni and k3d"
+      $CI_PROJECT_DIR/qa/caproni/scripts/install-caproni.sh
+      case "$(uname -m)" in
+        x86_64 | amd64) k3d_arch=amd64 ;;
+        aarch64 | arm64) k3d_arch=arm64 ;;
+        *) echo "Unsupported architecture: $(uname -m)" >&2; exit 1 ;;
+      esac
+      if k3d version 2>/dev/null | grep -qF "k3d version ${K3D_VERSION}"; then
+        echo "k3d ${K3D_VERSION} already installed"
+      else
+        k3d_bin="k3d-linux-${k3d_arch}"
+        k3d_url="https://github.com/k3d-io/k3d/releases/download/${K3D_VERSION}"
+        curl --fail --silent --show-error --location --retry 3 --retry-all-errors \
+          --output "/tmp/${k3d_bin}" "${k3d_url}/${k3d_bin}"
+        checksum_line="$(curl --fail --silent --show-error --location --retry 3 --retry-all-errors \
+          "${k3d_url}/checksums.txt" | sed 's|_dist/||' | grep " ${k3d_bin}\$" || true)"
+        if [ -z "${checksum_line}" ]; then
+          echo "No checksum entry for ${k3d_bin} in checksums.txt" >&2
+          exit 1
+        fi
+        echo "${checksum_line}" | (cd /tmp && sha256sum --check --strict -) || exit 1
+        install -m 0755 "/tmp/${k3d_bin}" /usr/local/bin/k3d
+      fi
+      k3d version
+      section_end "install_tools"
+    - !reference [.qa-install, before_script]
+    - !reference [.caproni-deploy-cmd, script]
+  after_script:
+    - export CREATE_TEST_FAILURE_ISSUES=false
+    - !reference [.gitlab-qa-report, after_script]
+    - source $CI_PROJECT_DIR/scripts/utils.sh
+    - |
+      section_start "logs_section" "Saving environment logs"
+      $CI_PROJECT_DIR/qa/caproni/scripts/save-cluster-logs.sh || true
+      section_end "logs_section"
+  artifacts:
+    expire_in: 7 days
+    when: always
+    reports:
+      junit: qa/tmp/rspec-*.xml
+    paths:
+      - qa/tmp
+      - qa/*.log
+    exclude:
+      # Already cached, and in the chart project
+      - qa/tmp/helm-cng/**/*
+      # Envoy logs request paths, and the suite sends ?private_token=
+      - qa/tmp/cluster-logs/*.envoy.log
+  allow_failure: true
+
+cng-instance-caproni:
+  extends: .caproni-test
+  variables:
+    QA_SCENARIO: Test::Instance::Smoke
+    QA_RUN_IN_PARALLEL: "true"
+    QA_PARALLEL_PROCESSES: 4

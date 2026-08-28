@@ -18,6 +18,8 @@ variables:
   GITLAB_HELM_CHART_REF: "474afbdc84e48ec8a81de25235c0a6bc693ae137"
   # Specific ref for cng-mirror project to trigger builds for
   GITLAB_CNG_MIRROR_REF: "fc75d92d5305425bdc590383fc6a068f26c7c175"
+  CAPRONI_VERSION: "4.2.5"
+  K3D_VERSION: "v5.8.3"
   # Makes sure some of the common scripts from pipeline-common use bundler to execute commands
   RUN_WITH_BUNDLE: "true"
   # Makes sure reporting script defined in .gitlab-qa-report from pipeline-common is executed from correct folder

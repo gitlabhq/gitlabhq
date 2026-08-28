@@ -961,6 +961,7 @@ Show me the work items in this saved view: <URL>
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605852) in GitLab 19.4.
+- `labels`, `add_labels`, `remove_labels`, `milestone_id`, and `milestone` parameters [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/622711) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -980,8 +981,13 @@ one. Send only the fields you intend to set, and omit the rest. The tool names
 | `description`      | string            | No       | Description in GitLab Flavored Markdown. Maximum 1,048,576 characters. |
 | `assignee_ids`     | array of integers | No       | User IDs to assign to the work item. Maximum 100 items. |
 | `label_ids`        | array of strings  | No       | Label IDs or global IDs. Create only; on update use `add_label_ids` or `remove_label_ids`. Maximum 100 items. |
+| `labels`           | array of strings  | No       | Names of the labels to set, resolved in the project or group and its ancestor groups. Create only; on update use `add_labels` or `remove_labels`. Maximum 100 items. |
 | `add_label_ids`    | array of strings  | No       | Update only. Label IDs or global IDs to add. Maximum 100 items. |
+| `add_labels`       | array of strings  | No       | Update only. Names of the labels to add. Maximum 100 items. |
 | `remove_label_ids` | array of strings  | No       | Update only. Label IDs or global IDs to remove. Maximum 100 items. |
+| `remove_labels`    | array of strings  | No       | Update only. Names of the labels to remove. Maximum 100 items. |
+| `milestone_id`     | string            | No       | ID or global ID of the milestone to assign, validated against the project or group and its ancestor groups. Wins over `milestone` when both are given. |
+| `milestone`        | string            | No       | Title of the milestone to assign, resolved among the milestones of the project or group and its ancestor groups. |
 | `confidential`     | boolean           | No       | Sets the work item confidentiality. |
 | `start_date`       | string            | No       | Start date, in `YYYY-MM-DD` format. |
 | `due_date`         | string            | No       | Due date, in `YYYY-MM-DD` format. |
