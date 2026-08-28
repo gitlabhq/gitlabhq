@@ -57419,9 +57419,6 @@ ALTER TABLE ONLY resource_milestone_events
 ALTER TABLE ONLY project_group_links
     ADD CONSTRAINT fk_28a1244b01 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
-ALTER TABLE ONLY packages_helm_metadata_cache_states
-    ADD CONSTRAINT fk_2902beee34 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY duo_workflows_workflow_work_items
     ADD CONSTRAINT fk_290dc77821 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 

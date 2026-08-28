@@ -21765,6 +21765,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Ensures the GitLab instance is using an Ultimate license level."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Ensures the ML model registry is restricted to project members only."
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Ensures the default branch has protection rules enabled."
 msgstr ""
 
@@ -21900,6 +21903,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Merge requests require code owner approval"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Model registry access level configured"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|More members than admins"
 msgstr ""
 
@@ -22029,6 +22035,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Resolve discussions required"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Restrict model registry access"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Restrict pipeline access"
 msgstr ""
 
@@ -22093,6 +22102,9 @@ msgid "ComplianceStandardsAdherence|Secure webhook configurations"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Secure webhooks"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Set the model registry access level to private or disabled to prevent non-members from accessing model artifacts."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Set up CI/CD job token scope restrictions to enhance pipeline security."
@@ -30287,6 +30299,9 @@ msgid_plural "DuoAgenticChat|%{count} characters remaining."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DuoAgenticChat|%{linkStart}Use non-agentic Chat%{linkEnd} (answers questions only)"
+msgstr ""
+
 msgid "DuoAgenticChat|A workplan has already been started for this item."
 msgstr ""
 
@@ -30329,6 +30344,9 @@ msgstr ""
 msgid "DuoAgenticChat|Chat with different agents"
 msgstr ""
 
+msgid "DuoAgenticChat|Choose a group to use Agentic Chat"
+msgstr ""
+
 msgid "DuoAgenticChat|Collaborate with AI agents to accomplish tasks and answer questions, or use a multi-agent flow to solve a complex problem."
 msgstr ""
 
@@ -30360,9 +30378,6 @@ msgid "DuoAgenticChat|GitLab Duo Agent Platform is turned off"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
-msgstr ""
-
-msgid "DuoAgenticChat|GitLab Duo Agentic Chat is unavailable"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo is already responding to this chat in another tab or location. Start a new chat, or wait for GitLab Duo to finish before sending a new message."
@@ -30443,6 +30458,9 @@ msgstr ""
 msgid "DuoAgenticChat|No credits remaining"
 msgstr ""
 
+msgid "DuoAgenticChat|No eligible groups available"
+msgstr ""
+
 msgid "DuoAgenticChat|Optional. Turn on preview features"
 msgstr ""
 
@@ -30482,13 +30500,13 @@ msgstr ""
 msgid "DuoAgenticChat|Retry"
 msgstr ""
 
-msgid "DuoAgenticChat|Return to non-agentic Chat"
-msgstr ""
-
 msgid "DuoAgenticChat|Review and confirm"
 msgstr ""
 
-msgid "DuoAgenticChat|Select default namespace"
+msgid "DuoAgenticChat|Select a group"
+msgstr ""
+
+msgid "DuoAgenticChat|Select a group to continue"
 msgstr ""
 
 msgid "DuoAgenticChat|Send chat message."
@@ -30524,6 +30542,9 @@ msgstr ""
 msgid "DuoAgenticChat|This conversation has been archived"
 msgstr ""
 
+msgid "DuoAgenticChat|This determines where your GitLab Duo usage is tracked. You can change this any time in your profile preferences."
+msgstr ""
+
 msgid "DuoAgenticChat|To continue collaborating with GitLab Duo Agent Platform, purchase credits."
 msgstr ""
 
@@ -30531,12 +30552,6 @@ msgid "DuoAgenticChat|To continue collaborating with GitLab Duo Agent Platform, 
 msgstr ""
 
 msgid "DuoAgenticChat|To use Chat, select a default namespace in your %{preferencesLinkStart}user profile preferences%{preferencesLinkEnd}. Alternatively, turn off the %{agenticModeStart}Agentic toggle%{agenticModeEnd} to return to non-agentic Chat."
-msgstr ""
-
-msgid "DuoAgenticChat|To use Chat, select a default namespace in your user profile preferences."
-msgstr ""
-
-msgid "DuoAgenticChat|To use Chat, select a default namespace in your user profile preferences. Alternatively, turn off the Agentic toggle to return to non-agentic Chat."
 msgstr ""
 
 msgid "DuoAgenticChat|Turn on GitLab Duo Agent Platform"
@@ -30558,6 +30573,12 @@ msgid "DuoAgenticChat|Type /help to learn more"
 msgstr ""
 
 msgid "DuoAgenticChat|Unable to connect to workflow service. Please try again."
+msgstr ""
+
+msgid "DuoAgenticChat|Unable to load groups. Try again."
+msgstr ""
+
+msgid "DuoAgenticChat|Unable to save your namespace selection. Try again."
 msgstr ""
 
 msgid "DuoAgenticChat|Upgrade subscription"
@@ -31113,6 +31134,9 @@ msgid "DuoAgentsPlatform|Start a Free Trial"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Start your free %{strongStart}%{trialDuration}-day trial%{strongEnd} now to accelerate your software delivery. Automate tasks with AI agents, from searching projects to creating commits."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Started %{timeago} by %{user}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Target"
@@ -47406,6 +47430,9 @@ msgid "MD5"
 msgstr ""
 
 msgid "MFA for contributors"
+msgstr ""
+
+msgid "ML model registry"
 msgstr ""
 
 msgid "MLExperimentTracking|Delete experiment?"
@@ -84537,9 +84564,6 @@ msgid "Trigger token:"
 msgstr ""
 
 msgid "Trigger variables"
-msgstr ""
-
-msgid "Triggered by"
 msgstr ""
 
 msgid "Triggerer"

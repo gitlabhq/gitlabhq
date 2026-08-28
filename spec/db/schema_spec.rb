@@ -168,6 +168,10 @@ RSpec.describe 'Database schema',
       # https://gitlab.com/gitlab-org/gitlab/-/work_items/606941
       packages_nuget_symbol_states: %w[project_id],
       packages_package_file_states: %w[project_id],
+      # packages_helm_metadata_caches lacks a hard FK for a different reason: its LFK marks
+      # the parent pending_destruction, CleanupStaleMetadataCacheWorker destroys it, and this
+      # child row is removed via the ON DELETE CASCADE on packages_helm_metadata_cache_id.
+      packages_helm_metadata_cache_states: %w[project_id],
       p_ci_build_needs: %w[project_id],
       p_ci_builds: %w[erased_by_id scoped_user_id],
       p_ci_build_trace_metadata: %w[project_id],

@@ -22,6 +22,7 @@ import RetryUnknownWhenJson from './json_tests/negative_tests/retry_unknown_when
 
 // YAML POSITIVE TEST
 import ArtifactsYaml from './yaml_tests/positive_tests/artifacts.yml';
+import DastConfigurationYaml from './yaml_tests/positive_tests/dast_configuration.yml';
 import ImageYaml from './yaml_tests/positive_tests/image.yml';
 import CacheYaml from './yaml_tests/positive_tests/cache.yml';
 import CacheFilesCommitsYaml from './yaml_tests/positive_tests/cache_files_commits.yml';
@@ -53,10 +54,12 @@ import TriggerYaml from './yaml_tests/positive_tests/trigger.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
+import DastConfigurationNegativeYaml from './yaml_tests/negative_tests/dast_configuration.yml';
 import ImageNegativeYaml from './yaml_tests/negative_tests/image.yml';
 import CacheKeyNeative from './yaml_tests/negative_tests/cache.yml';
 import MultipleCachesYamlNegative from './yaml_tests/negative_tests/cache_multiple.yml';
 import IncludeNegativeYaml from './yaml_tests/negative_tests/include.yml';
+import IncludeCacheNegativeYaml from './yaml_tests/negative_tests/include_cache.yml';
 import JobWhenNegativeYaml from './yaml_tests/negative_tests/job_when.yml';
 import ProjectPathIncludeEmptyYaml from './yaml_tests/negative_tests/project_path/include/empty.yml';
 import ProjectPathIncludeInvalidVariableYaml from './yaml_tests/negative_tests/project_path/include/invalid_variable.yml';
@@ -67,6 +70,15 @@ import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
 import RulesNeedsNegativeYaml from './yaml_tests/negative_tests/rules_needs.yml';
 import RunNegativeYaml from './yaml_tests/negative_tests/run.yml';
 import SpecInputsNegativeYaml from './yaml_tests/negative_tests/spec_inputs.yml';
+import SpecComponentInvalidValueYaml from './yaml_tests/negative_tests/spec/component_invalid_value.yml';
+import SpecDescriptionTooLongYaml from './yaml_tests/negative_tests/spec/description_too_long.yml';
+import SpecIncludeTemplateYaml from './yaml_tests/negative_tests/spec/include_template.yml';
+import SpecIncludeWithInputsYaml from './yaml_tests/negative_tests/spec/include_with_inputs.yml';
+import SpecInputsRulesUnknownKeyYaml from './yaml_tests/negative_tests/spec/inputs_rules_unknown_key.yml';
+import SpecInputsRulesWithDefaultYaml from './yaml_tests/negative_tests/spec/inputs_rules_with_default.yml';
+import SpecInputsRulesWithOptionsYaml from './yaml_tests/negative_tests/spec/inputs_rules_with_options.yml';
+import SpecInputsRulesWithoutDefaultYaml from './yaml_tests/negative_tests/spec/inputs_rules_without_default.yml';
+import SpecUnknownKeywordYaml from './yaml_tests/negative_tests/spec/unknown_keyword.yml';
 import TriggerNegativeYaml from './yaml_tests/negative_tests/trigger.yml';
 import VariablesInvalidOptionsYaml from './yaml_tests/negative_tests/variables/invalid_options.yml';
 import VariablesInvalidSyntaxDescYaml from './yaml_tests/negative_tests/variables/invalid_syntax_desc.yml';
@@ -118,6 +130,7 @@ describe('positive tests', () => {
       CacheYaml,
       CacheFilesCommitsYaml,
       MultipleCachesYaml,
+      DastConfigurationYaml,
       FilterYaml,
       HooksYaml,
       IdTokensYaml,
@@ -186,9 +199,11 @@ describe('negative tests', () => {
       // YAML
       ArtifactsNegativeYaml,
       CacheKeyNeative,
+      DastConfigurationNegativeYaml,
       HooksNegative,
       IdTokensNegativeYaml,
       ImageNegativeYaml,
+      IncludeCacheNegativeYaml,
       IncludeNegativeYaml,
       JobInputsNegativeYaml,
       JobWhenNegativeYaml,
@@ -209,7 +224,16 @@ describe('negative tests', () => {
       ScriptNegativeYaml,
       SecretsNegativeYaml,
       ServicesNegativeYaml,
+      SpecComponentInvalidValueYaml,
+      SpecDescriptionTooLongYaml,
+      SpecIncludeTemplateYaml,
+      SpecIncludeWithInputsYaml,
       SpecInputsNegativeYaml,
+      SpecInputsRulesUnknownKeyYaml,
+      SpecInputsRulesWithDefaultYaml,
+      SpecInputsRulesWithOptionsYaml,
+      SpecInputsRulesWithoutDefaultYaml,
+      SpecUnknownKeywordYaml,
       StagesNegativeYaml,
       TriggerNegativeYaml,
       VariablesInvalidOptionsYaml,

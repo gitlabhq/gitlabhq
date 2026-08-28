@@ -14,6 +14,32 @@
       "properties": {
         "inputs": {
           "$ref": "#/definitions/configInputs"
+        },
+        "include": {
+          "type": "array",
+          "markdownDescription": "List of files to fetch additional input definitions from. Supports `local`, `remote`, and `project` includes only. [Learn More](https://docs.gitlab.com/ci/yaml/#specinclude).",
+          "items": {
+            "$ref": "#/definitions/spec_include_item"
+          }
+        },
+        "component": {
+          "type": "array",
+          "markdownDescription": "Component context fields made available for interpolation with `$[[ component.<field-name> ]]`. [Learn More](https://docs.gitlab.com/ci/yaml/#speccomponent).",
+          "items": {
+            "type": "string",
+            "enum": [
+              "name",
+              "sha",
+              "version",
+              "reference"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "description": {
+          "type": "string",
+          "markdownDescription": "Description of the component, shown in the CI/CD Catalog on the component details page. [Learn More](https://docs.gitlab.com/ci/yaml/#specdescription).",
+          "maxLength": 256
         }
       },
       "additionalProperties": false
@@ -212,6 +238,19 @@
       ],
       "markdownDescription": "Used to specify a list of files and directories that should be attached to the job if it succeeds. Artifacts are sent to GitLab where they can be downloaded. [Learn More](https://docs.gitlab.com/ci/yaml/#artifacts).",
       "additionalProperties": false,
+      "if": {
+        "type": "object",
+        "required": [
+          "access"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "public"
+          ]
+        }
+      },
       "properties": {
         "paths": {
           "type": "array",
@@ -263,6 +302,11 @@
             "all"
           ]
         },
+        "public": {
+          "type": "boolean",
+          "markdownDescription": "Determines whether the job artifacts are publicly available. Superseded by [`artifacts:access`](https://docs.gitlab.com/ci/yaml/#artifactsaccess). [Learn More](https://docs.gitlab.com/ci/yaml/#artifactspublic).",
+          "default": true
+        },
         "expire_in": {
           "type": "string",
           "markdownDescription": "How long artifacts should be kept. They are saved 30 days by default. Artifacts that have expired are removed periodically via cron job. Supports a wide variety of formats, e.g. '1 week', '3 mins 4 sec', '2 hrs 20 min', '2h20min', '6 mos 1 day', '47 yrs 6 mos and 4d', '3 weeks and 2 days'. [Learn More](https://docs.gitlab.com/ci/yaml/#artifactsexpire_in).",
@@ -280,6 +324,10 @@
             "annotations": {
               "type": "string",
               "description": "Path to JSON file with annotations report."
+            },
+            "api_fuzzing": {
+              "$ref": "#/definitions/string_file_list",
+              "markdownDescription": "Path to file or list of files with API fuzzing report(s). [Learn More](https://docs.gitlab.com/ci/yaml/artifacts_reports/#artifactsreportsapi_fuzzing)."
             },
             "junit": {
               "description": "Path for file(s) that should be parsed as JUnit XML result",
@@ -322,6 +370,10 @@
                   "minLength": 1
                 }
               }
+            },
+            "coverage_fuzzing": {
+              "$ref": "#/definitions/string_file_list",
+              "markdownDescription": "Path to file or list of files with coverage-guided fuzz testing report(s). [Learn More](https://docs.gitlab.com/ci/yaml/artifacts_reports/#artifactsreportscoverage_fuzzing)."
             },
             "codequality": {
               "$ref": "#/definitions/string_file_list",
@@ -468,10 +520,64 @@
                   "properties": {
                     "rules": {
                       "type": "array",
-                      "markdownDescription": "Conditional rules for this input.",
+                      "markdownDescription": "Conditional options and defaults for this input, evaluated in order until one matches. Cannot be combined with `options` or `default`. [Learn More](https://docs.gitlab.com/ci/yaml/#specinputsrules).",
                       "items": {
-                        "type": "object"
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "default"
+                        ],
+                        "properties": {
+                          "if": {
+                            "type": "string",
+                            "markdownDescription": "Expression to evaluate. A rule with no `if` acts as the fallback."
+                          },
+                          "options": {
+                            "type": "array",
+                            "markdownDescription": "List of allowed values when this rule matches.",
+                            "maxItems": 50,
+                            "items": {
+                              "oneOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "number"
+                                },
+                                {
+                                  "type": "boolean"
+                                }
+                              ]
+                            }
+                          },
+                          "default": {
+                            "markdownDescription": "Value used when this rule matches. Required on every rule. Must be one of `options` when `options` is defined."
+                          }
+                        }
                       }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "required": [
+                      "rules"
+                    ]
+                  },
+                  "then": {
+                    "not": {
+                      "anyOf": [
+                        {
+                          "required": [
+                            "options"
+                          ]
+                        },
+                        {
+                          "required": [
+                            "default"
+                          ]
+                        }
+                      ]
                     }
                   }
                 },
@@ -867,11 +973,107 @@
               "type": "string",
               "pattern": "^sha256-[A-Za-z0-9+/]{43}=$"
             },
+            "cache": {
+              "$ref": "#/definitions/include_cache"
+            },
             "rules": {
               "$ref": "#/definitions/includeRules"
             },
             "inputs": {
               "$ref": "#/definitions/inputs"
+            }
+          },
+          "required": [
+            "remote"
+          ]
+        }
+      ]
+    },
+    "include_cache": {
+      "markdownDescription": "Cache the fetched remote file content to reduce HTTP requests. Only available for `include:remote`. [Learn More](https://docs.gitlab.com/ci/yaml/#includecache).",
+      "oneOf": [
+        {
+          "type": "boolean",
+          "description": "Set to `true` to enable caching with a default time-to-live of 1 hour."
+        },
+        {
+          "type": "string",
+          "description": "Time-to-live duration using `minutes`, `hours`, or `days`, for example '30 minutes' or '1 day'. Minimum '1 minute'.",
+          "minLength": 1
+        }
+      ]
+    },
+    "spec_include_item": {
+      "markdownDescription": "An input file to include in the header. Supports `local`, `remote`, and `project` includes only. [Learn More](https://docs.gitlab.com/ci/yaml/#specinclude).",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "local": {
+              "description": "Relative path from local repository root (`/`) to the `yaml`/`yml` file template. The file must be on the same branch, and does not work across git submodules.",
+              "type": "string",
+              "format": "uri-reference",
+              "pattern": "\\.ya?ml$"
+            }
+          },
+          "required": [
+            "local"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "project": {
+              "description": "Path to the project, e.g. `group/project`, or `group/sub-group/project` [Learn more](https://docs.gitlab.com/ci/yaml/#includeproject).",
+              "type": "string",
+              "pattern": "(?:\\S/\\S|\\$\\S+)"
+            },
+            "ref": {
+              "description": "Branch/Tag/Commit-hash for the target project.",
+              "type": "string"
+            },
+            "file": {
+              "oneOf": [
+                {
+                  "description": "Relative path from project root (`/`) to the `yaml`/`yml` file template.",
+                  "type": "string",
+                  "pattern": "\\.ya?ml$"
+                },
+                {
+                  "description": "List of files by relative path from project root (`/`) to the `yaml`/`yml` file template.",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "\\.ya?ml$"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "project",
+            "file"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "remote": {
+              "description": "URL to a `yaml`/`yml` template file using HTTP/HTTPS.",
+              "type": "string",
+              "format": "uri-reference",
+              "pattern": "^https?://.+\\.ya?ml$"
+            },
+            "integrity": {
+              "description": "SHA256 integrity hash of the remote file content.",
+              "type": "string",
+              "pattern": "^sha256-[A-Za-z0-9+/]{43}=$"
+            },
+            "cache": {
+              "$ref": "#/definitions/include_cache"
             }
           },
           "required": [
@@ -1124,6 +1326,21 @@
       "enum": [
         "google_cloud"
       ]
+    },
+    "dast_configuration": {
+      "type": "object",
+      "markdownDescription": "Specifies the DAST site profile and scanner profile to use in the job. Requires the Ultimate tier and a job in the `dast` stage. [Learn More](https://docs.gitlab.com/ci/yaml/#dast_configuration).",
+      "additionalProperties": false,
+      "properties": {
+        "site_profile": {
+          "type": "string",
+          "description": "The name of the site profile to use in the job."
+        },
+        "scanner_profile": {
+          "type": "string",
+          "description": "The name of the scanner profile to use in the job."
+        }
+      }
     },
     "secrets": {
       "type": "object",
@@ -1414,7 +1631,7 @@
                 "$ref": "#/definitions/start_in"
               },
               "allow_failure": {
-                "$ref": "#/definitions/allow_failure"
+                "$ref": "#/definitions/rulesAllowFailure"
               },
               "needs": {
                 "$ref": "#/definitions/rulesNeeds"
@@ -1826,6 +2043,11 @@
           }
         }
       ]
+    },
+    "rulesAllowFailure": {
+      "type": "boolean",
+      "markdownDescription": "Allow the job to fail when this rule matches. Unlike job-level `allow_failure`, only a boolean is accepted here. [Learn More](https://docs.gitlab.com/ci/yaml/#rulesallow_failure).",
+      "default": false
     },
     "parallel": {
       "description": "Splits up a single job into multiple that run in parallel. Provides `CI_NODE_INDEX` and `CI_NODE_TOTAL` environment variables to the jobs.",
@@ -2360,6 +2582,9 @@
         },
         "identity": {
           "$ref": "#/definitions/identity"
+        },
+        "dast_configuration": {
+          "$ref": "#/definitions/dast_configuration"
         },
         "inputs": {
           "$ref": "#/definitions/jobInputs"

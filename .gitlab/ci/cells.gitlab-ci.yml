@@ -1,0 +1,20 @@
+cells-routes:up-to-date:
+  variables:
+    SETUP_DB: "false"
+  extends:
+    - .default-retry
+    - .ruby-cache
+    - .default-before_script
+    - .cells:rules:routes-up-to-date
+  stage: lint
+  needs:
+    - job: cache:ruby-gems
+      optional: true
+  script:
+    - bundle exec rake gitlab:cells:routes:updated_check
+  artifacts:
+    expire_in: 7 days
+    name: gitlab-routes-snapshot
+    paths:
+      - config/routing/gitlab_routes.json
+    when: on_failure

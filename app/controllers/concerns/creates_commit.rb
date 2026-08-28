@@ -42,12 +42,11 @@ module CreatesCommit
         format.json { render json: { message: _("success"), filePath: success_path } }
       end
     else
-      flash[:alert] = flash_message(result, @project, @branch_name, @commit_params)
-
       failure_path = failure_path.call if failure_path.respond_to?(:call)
 
       respond_to do |format|
         format.html do
+          flash[:alert] = flash_message(result, @project, @branch_name, @commit_params)
           if failure_view
             render failure_view
           else

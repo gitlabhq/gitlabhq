@@ -20,7 +20,6 @@ RSpec.describe 'sharding key foreign key strength', feature_category: :cell do
   # dropped (relying on the parent chain) or aligned with the parent's mechanism.
   # DO NOT add new entries: the generator must not emit a hard FK when the parent carries the key.
   allowed_hard_fk_stronger_than_parent = [
-    'packages_helm_metadata_cache_states.project_id',
     'snippet_repositories.snippet_organization_id',
     'snippet_repository_storage_moves.snippet_organization_id',
     'snippet_statistics.snippet_organization_id',

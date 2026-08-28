@@ -35,6 +35,7 @@ module Ml
                             }
     scope :by_version, ->(version) { where("version LIKE ?", "#{sanitize_sql_like(version)}%") }
     scope :for_model, ->(model) { where(project: model.project, model: model) }
+    scope :by_project, ->(project) { where(project_id: project.id) }
     scope :including_relations, -> { includes(:project, :model, :candidate) }
     scope :order_by_version, ->(order) { reorder(version: order) }
 

@@ -97,7 +97,7 @@ To restore full access, renew your subscription.
 
 ## End of beta
 
-Beta usage of the GitLab Secrets Manager doesn't consume GitLab Credits. The beta for GitLab.com ends September 19, 2026.
+Beta usage of the GitLab Secrets Manager doesn't consume GitLab Credits. The beta for GitLab.com ends September 21, 2026.
 
 Any time before the end of the beta, you can start a trial
 and use temporary evaluation credits. At the end of the trial, you must ensure you have GitLab Credits available

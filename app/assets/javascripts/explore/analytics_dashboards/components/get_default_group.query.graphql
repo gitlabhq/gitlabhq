@@ -1,0 +1,10 @@
+# @feature_category: product_analytics
+
+query getDefaultGroup($fullPath: ID!) {
+  group(fullPath: $fullPath) {
+    id
+    name
+    avatarUrl
+    fullPath
+  }
+}

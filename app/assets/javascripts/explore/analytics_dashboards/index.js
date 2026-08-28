@@ -19,6 +19,7 @@ export default () => {
   }
 
   const { exploreAnalyticsDashboardsPath } = convertObjectPropsToCamelCase(el.dataset);
+  const { groupFullPath, projectFullPath } = document.body.dataset;
 
   Vue.use(VueApollo);
   const apolloProvider = new VueApollo({
@@ -48,6 +49,8 @@ export default () => {
     provide: {
       exploreAnalyticsDashboardsPath,
       breadcrumbState,
+      defaultGroupFullPath: groupFullPath ?? null,
+      defaultProjectFullPath: projectFullPath ?? null,
     },
     component: App,
     props: {

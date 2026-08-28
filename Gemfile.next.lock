@@ -95,6 +95,11 @@ PATH
     gitlab-cd-driver-orchestration (0.6.0)
 
 PATH
+  remote: gems/gitlab-cells-http_router
+  specs:
+    gitlab-cells-http_router (0.1.0)
+
+PATH
   remote: gems/gitlab-configs
   specs:
     gitlab-configs (0.1.0)
@@ -2514,6 +2519,7 @@ DEPENDENCIES
   gitlab-bitbucket!
   gitlab-bitbucket-server!
   gitlab-cd-driver-orchestration!
+  gitlab-cells-http_router!
   gitlab-chronic (~> 0.10.5)
   gitlab-cloud-connector (~> 1.53)
   gitlab-configs!
@@ -3025,6 +3031,7 @@ CHECKSUMS
   gitlab-bitbucket (0.1.0)
   gitlab-bitbucket-server (0.1.0)
   gitlab-cd-driver-orchestration (0.6.0)
+  gitlab-cells-http_router (0.1.0)
   gitlab-chronic (0.10.6) sha256=a244d11a1396d2aac6ae9b2f326adf1605ec1ad20c29f06e8b672047d415a9ac
   gitlab-cloud-connector (1.53.0) sha256=cdacefc13725bbf65d8b932f41fca3b238d3cf330966a577450dd8c03ac1b67d
   gitlab-configs (0.1.0)

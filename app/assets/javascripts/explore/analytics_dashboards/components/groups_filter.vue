@@ -4,12 +4,16 @@ import { getParameterByName } from '~/lib/utils/url_utility';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import GetDefaultGroupsQuery from './get_default_groups.query.graphql';
+import GetDefaultGroupQuery from './get_default_group.query.graphql';
 import { GROUP_FILTER_QUERY_NAME } from './constants';
 
 export default {
   name: 'AnalyticsDashboardGroupFilter',
   components: {
     GroupsDropdownFilter,
+  },
+  inject: {
+    defaultGroupFullPath: { default: null },
   },
   props: {
     multiSelect: {
@@ -22,9 +26,12 @@ export default {
   data() {
     return {
       defaultGroups: [],
+      appDefaultGroup: null,
     };
   },
   apollo: {
+    // Default groups pulled from URL params use IDs since there's
+    // no way to fetch multiple groups via fullPath
     defaultGroups: {
       query: GetDefaultGroupsQuery,
       variables() {
@@ -35,6 +42,19 @@ export default {
       },
       skip() {
         return this.defaultGroupIds.length === 0;
+      },
+    },
+    appDefaultGroup: {
+      query: GetDefaultGroupQuery,
+      variables() {
+        return { fullPath: this.defaultGroupFullPath };
+      },
+      update({ group }) {
+        return group;
+      },
+      skip() {
+        // A default from the URL params takes priority
+        return this.defaultGroupIds.length > 0 || !this.defaultGroupFullPath;
       },
     },
   },
@@ -54,8 +74,24 @@ export default {
 
       return this.multiSelect ? allGroups : allGroups.slice(0, 1);
     },
+    defaultGroupSelection() {
+      if (this.appDefaultGroup) return [this.appDefaultGroup];
+
+      return this.defaultGroups;
+    },
     isLoadingDefaultGroups() {
-      return this.$apollo.queries.defaultGroups.loading;
+      return (
+        this.$apollo.queries.defaultGroups.loading || this.$apollo.queries.appDefaultGroup.loading
+      );
+    },
+  },
+  watch: {
+    // Default selection is determined internally, but notify the dashboard
+    // once it's ready so the filter can be applied.
+    defaultGroupSelection(groups) {
+      if (groups.length > 0) {
+        this.onGroupsSelected(groups);
+      }
     },
   },
   methods: {
@@ -76,7 +112,7 @@ export default {
     :query-params="$options.queryParams"
     :multi-select="multiSelect"
     :loading-default-groups="isLoadingDefaultGroups"
-    :default-groups="defaultGroups"
+    :default-groups="defaultGroupSelection"
     @selected="onGroupsSelected"
   />
 </template>

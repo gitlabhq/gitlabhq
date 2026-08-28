@@ -1,0 +1,9 @@
+# `spec:inputs:rules` accepts only if, options, and default
+spec:
+  inputs:
+    stage_by_branch:
+      rules:
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+          options: ["deploy"]
+          default: "deploy"
+          when: always

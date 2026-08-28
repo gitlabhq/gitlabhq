@@ -1,0 +1,4 @@
+# `include:cache` is only available for `include:remote`
+include:
+  - local: builds.yml
+    cache: true

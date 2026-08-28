@@ -1,0 +1,25 @@
+dast_configuration with both profiles:
+  stage: dast
+  dast_configuration:
+    site_profile: "Example Co"
+    scanner_profile: "Quick Passive Test"
+
+dast_configuration with only the site profile:
+  stage: dast
+  dast_configuration:
+    site_profile: "Example Co"
+
+dast_configuration with only the scanner profile:
+  stage: dast
+  dast_configuration:
+    scanner_profile: "Quick Passive Test"
+
+dast_configuration with no keys:
+  stage: dast
+  dast_configuration: {}
+
+dast_configuration with an empty profile name:
+  stage: dast
+  dast_configuration:
+    site_profile: ""
+    scanner_profile: "Quick Passive Test"

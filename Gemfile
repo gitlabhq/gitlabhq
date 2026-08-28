@@ -592,6 +592,9 @@ group :development, :test do
 
   gem 'gitlab-housekeeper', path: 'gems/gitlab-housekeeper', feature_category: :tooling
 
+  gem 'gitlab-cells-http_router', path: 'gems/gitlab-cells-http_router',
+    require: false, feature_category: :cell
+
   gem 'yard', '~> 0.9', require: false, feature_category: :tooling
 
   # Gems required for Dangerfile

@@ -1,0 +1,6 @@
+# `spec:include` does not accept the `inputs` keyword
+spec:
+  include:
+    - local: "inputs/common.yml"
+      inputs:
+        environment: "production"

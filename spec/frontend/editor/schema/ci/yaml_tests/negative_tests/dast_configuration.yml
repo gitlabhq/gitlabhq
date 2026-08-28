@@ -1,0 +1,10 @@
+dast_configuration with unknown property:
+  stage: dast
+  dast_configuration:
+    site_profile: "Example Co"
+    scanner_profile: "Quick Passive Test"
+    dast_profile: "Example Co"
+
+dast_configuration as a string:
+  stage: dast
+  dast_configuration: "Example Co"

@@ -102,6 +102,12 @@ pre-push:
       glob: '{config/routes.rb,ee/config/routes.rb,config/routes/**,ee/config/routes/**,lib/gitlab/js_routes.rb}'
       run: echo {files} >/dev/null && RAILS_ENV=test GITLAB_CONFIG=config/gitlab.yml.example bundle exec rake gitlab:js:routes:updated_check
       fail_text: JavaScript path helpers are out of sync. Run `bin/rake gitlab:js:routes` and commit the changes.
+    cells-routes:
+      tags: backend
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '{config/routes.rb,ee/config/routes.rb,config/routes/**,ee/config/routes/**,lib/api/**,ee/lib/api/**,gems/gitlab-cells-http_router/**}'
+      run: echo {files} >/dev/null && RAILS_ENV=test CI=true GITLAB_CONFIG=config/gitlab.yml.example bundle exec rake gitlab:cells:routes:updated_check
+      fail_text: HTTP Router routing snapshot is out of sync. Run `bin/rake gitlab:cells:routes:generate` and commit the changes.
     docs-deprecations:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -381,6 +387,11 @@ auto-fix:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
       glob: '{config/routes.rb,ee/config/routes.rb,config/routes/**,ee/config/routes/**,lib/gitlab/js_routes.rb}'
       run: echo {files} >/dev/null && RAILS_ENV=test GITLAB_CONFIG=config/gitlab.yml.example bundle exec rake gitlab:js:routes
+    cells-routes:
+      tags: backend
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
+      glob: '{config/routes.rb,ee/config/routes.rb,config/routes/**,ee/config/routes/**,lib/api/**,ee/lib/api/**,gems/gitlab-cells-http_router/**}'
+      run: echo {files} >/dev/null && RAILS_ENV=test CI=true GITLAB_CONFIG=config/gitlab.yml.example bundle exec rake gitlab:cells:routes:generate
     graphql_docs_compile:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached

@@ -118,6 +118,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       # https://gitlab.com/gitlab-org/gitlab/-/work_items/606941
       'packages_nuget_symbol_states.project_id',
       'packages_package_file_states.project_id',
+      # packages_helm_metadata_caches lacks a hard FK for a different reason: its LFK marks
+      # the parent pending_destruction, CleanupStaleMetadataCacheWorker destroys it, and this
+      # child row is removed via the ON DELETE CASCADE on packages_helm_metadata_cache_id.
+      'packages_helm_metadata_cache_states.project_id',
       'merge_request_commits_metadata.project_id',
       'sbom_vulnerability_scans.project_id',
       'sbom_vulnerability_scan_results.project_id',

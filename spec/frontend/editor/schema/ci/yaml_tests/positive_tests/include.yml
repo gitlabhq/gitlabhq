@@ -44,6 +44,11 @@ include:
           paths:
             - 'test.yml'
           compare_to: 'master'
+  # valid include:cache
+  - remote: 'https://gitlab.com/example-project/-/raw/main/sample1.gitlab-ci.yml'
+    cache: true
+  - remote: 'https://gitlab.com/example-project/-/raw/main/sample2.gitlab-ci.yml'
+    cache: '1 day'
 
 # valid trigger:include
 trigger:include accepts project and file properties:

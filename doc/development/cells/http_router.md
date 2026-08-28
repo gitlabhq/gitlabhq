@@ -139,3 +139,79 @@ Coming soon
 ## Routing based on resource ID
 
 Coming soon
+
+## Route snapshot
+
+GitLab is the source of truth for the list of routes the HTTP Router must be able to classify.
+The file `config/routing/gitlab_routes.json` holds every Rails and Grape route as a `template`
+paired with a concrete `example` URL. The HTTP Router downloads this file and replays each example
+against its own routing table in a
+[snapshot test](https://gitlab.com/gitlab-org/cells/http-router/-/blob/main/test/routes/routes.spec.ts)
+to detect when a GitLab route change affects routing.
+
+To keep GitLab and the HTTP Router in sync, the routes are generated and committed in GitLab instead
+of the HTTP Router repository. This prevents the two from drifting apart, which could route requests
+to the wrong cell.
+
+### Regenerate the snapshot
+
+When you add, change, or remove a route, regenerate the file and commit it in the same merge request:
+
+```shell
+bundle exec rake gitlab:cells:routes:generate
+```
+
+The `cells-routes:up-to-date` CI job regenerates the file and fails when it differs from the
+committed copy, so a route change cannot merge without a refreshed snapshot. A `pre-push` Git
+hook runs the same check against your own changes, so most drift is caught before you push.
+
+The CI job runs on the merged result, so it can also fail on a merge request that does not
+touch routes at all, when someone else adds a route after you generated the snapshot. In that
+case regenerating alone reports no change, and you need to rebase first:
+
+```shell
+git fetch origin master && git rebase origin/master
+bundle exec rake gitlab:cells:routes:generate
+```
+
+### Generation environment
+
+The Rails route table is not fixed. It depends on the Rails environment and on local
+configuration, so generating the snapshot on two different machines can produce two different
+files. To keep the output reproducible, the Rake task pins its environment and re-executes itself
+if the environment does not already match:
+
+- `RAILS_ENV=test` - the development and test environments each mount their own routes.
+- `CI=true` - `config/environments/test.rb` skips the Sprockets `/assets` mount when `CI` is set.
+- `GITLAB_CONFIG=config/gitlab.yml.example` - some routes are drawn from local configuration.
+  OmniAuth and LDAP provider callback routes under `/users/auth/` come from `config/gitlab.yml`,
+  so a GDK with an extra provider configured would generate extra entries. CI uses
+  `config/gitlab.yml.example`, set up by `scripts/prepare_build.sh`, so the task uses it too.
+
+The task also aborts when `FOSS_ONLY` is set. Under `FOSS_ONLY` the `ee/` routes are not drawn,
+and the snapshot would be written without any EE route. This mirrors what
+`Gitlab::JsRoutes.match_ci_env!` does for the generated JavaScript path helpers.
+
+Because the snapshot is generated under `RAILS_ENV=test`, it is close to but not exactly the
+production route table. Extra templates are harmless: they only ever add a reserved-word guard on
+the router side. A missing template is the dangerous direction, because a real route would then
+fall through to a broader classification rule. Routes that exist only in the test environment are
+excluded explicitly by the generator, in
+`Gitlab::Cells::HttpRouter::RoutesSnapshot::TEST_ONLY_TEMPLATES`.
+
+### Update the HTTP Router
+
+The HTTP Router downloads `config/routing/gitlab_routes.json` from GitLab. When a GitLab merge
+request changes routes, update the HTTP Router snapshot in a paired merge request that downloads
+the file from that GitLab branch. For details, see the
+[HTTP Router development documentation](https://gitlab.com/gitlab-org/cells/http-router/-/blob/main/docs/development.md).
+
+The HTTP Router derives its reserved-word route guards, in `src/generated_route_guards.ts`, from
+this snapshot file. Because the snapshot is generated with `RAILS_ENV=test`, development-only
+`/rails/*` routes, such as Lookbook, letter_opener, and mailer previews, are absent from it, so
+regenerating the guards drops the `/rails/*` guard. That's fine: those routes only exist in
+development, so a production guard for them serves no purpose, and no change is needed in the
+router. GDK behavior is unchanged either way. With the guard, `/rails/*` goes straight to the
+JSON rule engine; without it, the request falls through the top-level `/:ROUTE/*` classify rule,
+fails to classify `rails` as a namespace route, and the handler catches that failure and falls
+back to the same JSON rule engine, at the cost of one extra Topology Service call in development.

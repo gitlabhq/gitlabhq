@@ -74,3 +74,24 @@ accessibility-report-gl-path:
   artifacts:
     reports:
       accessibility: reports/gl-accessibility.json
+
+# valid artifacts:public
+artifacts-public-false:
+  artifacts:
+    public: false
+    paths:
+      - binaries/
+
+# valid artifacts:reports:api_fuzzing
+api-fuzzing-report-string-path:
+  artifacts:
+    reports:
+      api_fuzzing: gl-api-fuzzing-report.json
+
+# valid artifacts:reports:coverage_fuzzing
+coverage-fuzzing-report-list-of-paths:
+  artifacts:
+    reports:
+      coverage_fuzzing:
+        - gl-coverage-fuzzing-report.json
+        - ./reports/gl-coverage-fuzzing-report.json

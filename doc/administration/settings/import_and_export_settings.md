@@ -78,6 +78,73 @@ The same setting
 [is available](../../api/settings.md#available-settings) in the API as the
 `bulk_import_enabled` attribute.
 
+## Enable export of groups and projects for offline transfer
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/588971) in GitLab 19.3
+  [with a feature flag](../../administration/feature_flags/_index.md) named `offline_transfer_exports`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Prerequisites:
+
+- You must be an administrator.
+
+Turn on this setting to allow users to create
+[offline transfer](../../user/import/gitlab_instances/offline-transfer-migrations.md) exports of
+groups and projects.
+
+To enable export of groups and projects for offline transfer:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand the **Import and export settings** section.
+1. Scroll to **Allow exporting GitLab groups and projects by offline transfer**.
+1. Select the **Enabled** checkbox.
+1. Select **Save changes**.
+
+The same setting
+[is available](../../api/settings.md#available-settings) in the API as the
+`offline_transfer_exports_enabled` attribute.
+
+## Enable import of groups and projects by offline transfer
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/588971) in GitLab 19.3
+  [with a feature flag](../../administration/feature_flags/_index.md) named `offline_transfer_imports`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Prerequisites:
+
+- You must be an administrator.
+
+Turn on this setting to allow users to import groups and projects from an
+[offline transfer](../../user/import/gitlab_instances/offline-transfer-migrations.md) export.
+
+To enable import of groups and projects by offline transfer:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand the **Import and export settings** section.
+1. Scroll to **Allow importing GitLab groups and projects by offline transfer**.
+1. Select the **Enabled** checkbox.
+1. Select **Save changes**.
+
+The same setting
+[is available](../../api/settings.md#available-settings) in the API as the
+`offline_transfer_imports_enabled` attribute.
+
 ## Allow S3-compatible object storage for offline transfer
 
 {{< history >}}
