@@ -1,5 +1,9 @@
 import { DocAttrStep } from '@tiptap/pm/transform';
 
+export const COLLABORATION_SYNC_TIMEOUT_MS = 10000;
+
+const SYNC_TIMEOUT_ERROR = 'Timed out waiting for the collaborative session to sync';
+
 /* eslint-disable no-underscore-dangle */
 export class ContentEditor {
   constructor({
@@ -12,6 +16,7 @@ export class ContentEditor {
     supportsTableOfContents,
     codeSuggestionsConfig,
     autocompleteHelper,
+    collaborationProvider = null,
   }) {
     this._tiptapEditor = tiptapEditor;
     this._serializer = serializer;
@@ -19,6 +24,7 @@ export class ContentEditor {
     this._eventHub = eventHub;
     this._assetResolver = assetResolver;
     this._autocompleteHelper = autocompleteHelper;
+    this._collaborationProvider = collaborationProvider;
 
     this.codeSuggestionsConfig = codeSuggestionsConfig;
     this.drawioEnabled = drawioEnabled;
@@ -42,6 +48,10 @@ export class ContentEditor {
 
   get editable() {
     return this.tiptapEditor.isEditable;
+  }
+
+  get isCollaborative() {
+    return Boolean(this._collaborationProvider);
   }
 
   dispose() {
@@ -91,8 +101,42 @@ export class ContentEditor {
     this._autocompleteHelper.updateDataSources(dataSources);
   }
 
+  async _whenSyncedOrTimeout() {
+    let timeoutId;
+
+    const timeout = new Promise((_resolve, reject) => {
+      timeoutId = setTimeout(
+        () => reject(new Error(SYNC_TIMEOUT_ERROR)),
+        COLLABORATION_SYNC_TIMEOUT_MS,
+      );
+    });
+
+    try {
+      return await Promise.race([this._collaborationProvider.whenSynced, timeout]);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
   async setSerializedContent(serializedContent) {
     const { _tiptapEditor: editor } = this;
+
+    if (this._collaborationProvider) {
+      const { seed } = await this._whenSyncedOrTimeout();
+
+      // Every other client receives the document through the CRDT.
+      if (!seed) return;
+
+      await this._collaborationProvider.seed(async () => {
+        const { document } = await this.deserialize(serializedContent);
+
+        if (document) {
+          editor.commands.setContent(document.toJSON(), false);
+        }
+      });
+
+      return;
+    }
 
     const { document } = await this.deserialize(serializedContent);
     const { doc } = editor.state;

@@ -115,6 +115,11 @@ export default {
       required: false,
       default: false,
     },
+    insertingCard: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: [
     'card-move',
@@ -359,6 +364,7 @@ export default {
         @start="onDragStart"
         @end="$emit('card-move', $event)"
       >
+        <work-item-card-skeleton v-if="insertingCard" key="inserting-card" />
         <work-item-card
           v-for="workItem in workItems"
           :key="workItem.id"

@@ -6965,7 +6965,6 @@
 - './spec/services/projects/git_deduplication_service_spec.rb'
 - './spec/services/projects/gitlab_projects_import_service_spec.rb'
 - './spec/services/projects/group_links/create_service_spec.rb'
-- './spec/services/projects/group_links/destroy_service_spec.rb'
 - './spec/services/projects/group_links/update_service_spec.rb'
 - './spec/services/projects/hashed_storage/base_attachment_service_spec.rb'
 - './spec/services/projects/hashed_storage/migrate_attachments_service_spec.rb'

@@ -27,13 +27,11 @@ class Current < ActiveSupport::CurrentAttributes
 
   attribute :cells_claims_leases
 
-  # TODO: After updating to Rails 7.2, move this logic to the attribute default.
+  # Deliberately lazy rather than a CurrentAttributes default: a default is
+  # resolved on reset, which in specs happens before stub_config_cell applies,
+  # silently disabling claiming.
   def cells_claims_leases?
-    if cells_claims_leases.nil?
-      self.cells_claims_leases =
-        Gitlab.config.cell.enabled &&
-        Feature.enabled?(:cells_unique_claims) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- We can't easily tie this to an actor
-    end
+    self.cells_claims_leases = Gitlab.config.cell.enabled if cells_claims_leases.nil?
 
     cells_claims_leases
   end

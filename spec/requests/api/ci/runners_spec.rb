@@ -2079,10 +2079,22 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
             ])
           end
 
-          it_behaves_like 'an endpoint with keyset pagination', invalid_order: nil do
-            let(:first_record) { jobs[2] }
-            let(:second_record) { jobs[1] }
+          it_behaves_like 'an endpoint with keyset pagination', invalid_order: nil, invalid_sort: nil do
+            let!(:first_record) do
+              create(:ci_build, :failed, runner_manager: shared_runner_manager1,
+                pipeline: create(:ci_pipeline, project: project))
+            end
+
+            let(:second_record) { jobs[2] }
             let(:api_call) { api(path, current_user) }
+            let(:additional_params) { { status: 'failed' } }
+          end
+
+          it_behaves_like 'an endpoint with keyset pagination', invalid_order: nil, invalid_sort: nil do
+            let(:first_record) { jobs[1] }
+            let(:second_record) { jobs[2] }
+            let(:api_call) { api(path, current_user) }
+            let(:additional_params) { { order_by: 'id', sort: 'asc' } }
           end
 
           context 'with request authorized with access token' do

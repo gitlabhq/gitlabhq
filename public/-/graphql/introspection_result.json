@@ -21294,6 +21294,12 @@
               "deprecationReason": null
             },
             {
+              "name": "DUO_DEVELOPER",
+              "description": "Duo developer feature setting",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "DUO_CHAT_TROUBLESHOOT_JOB",
               "description": "Duo chat troubleshoot job feature setting",
               "isDeprecated": false,
@@ -24352,6 +24358,12 @@
             {
               "name": "RESOLVE_DEPENDENCY_BUMP",
               "description": "Resolve dependency bump feature setting",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DUO_DEVELOPER",
+              "description": "Duo developer feature setting",
               "isDeprecated": false,
               "deprecationReason": null
             }

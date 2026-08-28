@@ -6,12 +6,8 @@ title: Claiming an attribute for a cell
 ---
 
 > [!flag]
-> Both [cells](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/cells.md#setting-up-cells-locally)
-> and feature flag `Feature.enabled?(:cells_unique_claims)` have to be enabled
-> for this to take effect.
->
-> Additionally, individual model claiming is controlled by model-specific feature flags.
-> See [Feature flags](#feature-flags) for the complete list.
+> [Cells](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/cells.md#setting-up-cells-locally)
+> must be enabled for claiming to take effect.
 
 ## Why we need to claim attributes
 
@@ -92,20 +88,12 @@ that claims work correctly after enablement.
 The Cells Infrastructure team is available to help, but ownership of the
 rollout and ensuring correctness belongs to the feature-owning team.
 
-## Feature flags
+## Enabling claims
 
-### Global feature flag
-
-| Feature flag | Description |
-|--------------|-------------|
-| `cells_unique_claims` | Primary switch for the entire claims system. Must be enabled for any claims to work. |
-
-### Enabling claims
-
-With cells and the global flag enabled, a model's attributes are claimed
-without any further configuration, unless an individual attribute still
-carries a temporary `feature_flag:` for rollout
-(see [How to claim attributes](#how-to-claim-attributes)).
+With cells enabled, a model's attributes are claimed without any further
+configuration, unless an individual attribute still carries a temporary
+`feature_flag:` for rollout (see
+[How to claim attributes](#how-to-claim-attributes)).
 The verification worker for a model runs automatically when at least one of
 the model's attributes is enabled, so there's no separate step to
 enable it. See
@@ -114,11 +102,7 @@ enable it. See
 ```ruby
 # In Rails console
 
-# Enable the global claims system
-Feature.enable(:cells_unique_claims)
-
-# Check all cells claims feature flags, including any temporary
-# per-attribute rollout flags
+# Check for any temporary per-attribute rollout flags
 Feature.all.select { |f| f.name.start_with?('cells_claims') }
 ```
 
@@ -580,10 +564,10 @@ working as expected.
 
 ### Claims not being created
 
-1. **Check global feature flag:**
+1. **Check the cell configuration:**
 
    ```ruby
-   Feature.enabled?(:cells_unique_claims)
+   Gitlab.config.cell.enabled
    ```
 
 1. **Check whether the attribute is claimable:**

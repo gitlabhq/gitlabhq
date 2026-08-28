@@ -321,9 +321,6 @@ RSpec.configure do |config|
 
       stub_feature_flags(merge_widget_stop_polling: false)
 
-      # This feature has global impact and most tests aren't ready for it yet
-      stub_feature_flags(cells_unique_claims: false)
-
       # Org migration target cell mode is only enabled in Cells on GitLab.com
       stub_feature_flags(org_migration_target_cell: false)
 

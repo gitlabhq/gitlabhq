@@ -260,6 +260,20 @@ RSpec.shared_examples 'a policy repository' do
       end
     end
 
+    port::ENUMERATED_ATTRIBUTES.each do |attribute, vocabulary|
+      it "raises ValidationError when #{attribute} is not one of #{vocabulary}" do
+        expect { repository.create(attributes.merge(attribute => 'nonsense')) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /#{attribute} must be one of: #{vocabulary.join(', ')}/)
+      end
+
+      it "accepts every value in #{attribute}'s vocabulary" do
+        vocabulary.each do |value|
+          expect(repository.create(attributes.merge(attribute => value, name: "#{attribute} #{value}")))
+            .to have_attributes(attribute => value)
+        end
+      end
+    end
+
     port::ENTRY_COUNT_LIMITS.each do |attribute, limit|
       it "raises ValidationError when #{attribute} carries more than #{limit} entries" do
         too_many = Array.new(limit + 1) { { 'type' => 'custom' } }
@@ -766,6 +780,15 @@ RSpec.shared_examples 'a policy repository' do
 
         expect { repository.update(created.id, attribute => nil) }
           .to raise_error(Gitlab::PolicyStore::ValidationError, /#{attribute}/i)
+      end
+    end
+
+    port::ENUMERATED_ATTRIBUTES.each do |attribute, vocabulary|
+      it "raises ValidationError when #{attribute} is updated to a value outside #{vocabulary}" do
+        created = repository.create(attributes)
+
+        expect { repository.update(created.id, attribute => 'nonsense') }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /#{attribute} must be one of: #{vocabulary.join(', ')}/)
       end
     end
 

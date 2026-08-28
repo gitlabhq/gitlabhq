@@ -1,5 +1,8 @@
 import { builders } from 'prosemirror-test-builder';
-import { ContentEditor } from '~/content_editor/services/content_editor';
+import {
+  ContentEditor,
+  COLLABORATION_SYNC_TIMEOUT_MS,
+} from '~/content_editor/services/content_editor';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { createTestEditor } from '../test_utils';
 
@@ -64,6 +67,69 @@ describe('content_editor/services/content_editor', () => {
       await contentEditor.setSerializedContent(testMarkdown);
 
       expect(contentEditor.tiptapEditor.state.doc.toJSON()).toEqual(document.toJSON());
+    });
+  });
+
+  describe('when collaborating', () => {
+    let collaborationProvider;
+
+    const createCollaborativeEditor = (whenSynced) => {
+      collaborationProvider = { whenSynced, seed: jest.fn() };
+
+      contentEditor = new ContentEditor({
+        tiptapEditor: createTestEditor(),
+        serializer,
+        deserializer,
+        eventHub,
+        collaborationProvider,
+      });
+    };
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('seeds the document when the server elected this client', async () => {
+      createCollaborativeEditor(Promise.resolve({ seed: true }));
+
+      await contentEditor.setSerializedContent(testMarkdown);
+
+      expect(collaborationProvider.seed).toHaveBeenCalled();
+    });
+
+    it('leaves the document alone when another client seeds it', async () => {
+      createCollaborativeEditor(Promise.resolve({ seed: false }));
+
+      await contentEditor.setSerializedContent(testMarkdown);
+
+      expect(collaborationProvider.seed).not.toHaveBeenCalled();
+    });
+
+    it('rejects rather than hanging when the initial sync never arrives', async () => {
+      createCollaborativeEditor(new Promise(() => {}));
+
+      const settled = contentEditor
+        .setSerializedContent(testMarkdown)
+        .then(() => null)
+        .catch((error) => error.message);
+
+      jest.advanceTimersByTime(COLLABORATION_SYNC_TIMEOUT_MS);
+
+      await expect(settled).resolves.toMatch(/Timed out/);
+    });
+
+    it('does not reject when the sync arrives within the timeout', async () => {
+      createCollaborativeEditor(Promise.resolve({ seed: false }));
+
+      const result = contentEditor.setSerializedContent(testMarkdown);
+
+      jest.advanceTimersByTime(COLLABORATION_SYNC_TIMEOUT_MS * 2);
+
+      await expect(result).resolves.toBeUndefined();
     });
   });
 });

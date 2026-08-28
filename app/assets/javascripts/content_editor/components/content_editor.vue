@@ -152,6 +152,11 @@ export default {
       required: false,
       default: '',
     },
+    collaborationProvider: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   emits: ['blur', 'change', 'enable-markdown-editor', 'focus', 'initialized', 'keydown', 'loading'],
   data() {
@@ -163,6 +168,9 @@ export default {
   },
   computed: {
     showPlaceholder() {
+      // The markdown prop lags the CRDT document, so it is not reliable.
+      if (this.collaborationProvider) return false;
+
       return this.placeholder && !this.markdown && !this.focused;
     },
     editorAriaAttributes() {
@@ -183,6 +191,9 @@ export default {
       }
     },
     markdown(markdown) {
+      // The markdown prop lags the CRDT document, so it is not reliable.
+      if (this.collaborationProvider) return;
+
       if (markdown !== this.latestMarkdown) {
         this.setSerializedContent(markdown);
       }
@@ -220,6 +231,7 @@ export default {
       enableAutocomplete,
       autocompleteDataSources,
       codeSuggestionsConfig,
+      collaborationProvider,
     } = this;
 
     // This is a non-reactive attribute intentionally since this is a complex object.
@@ -234,6 +246,7 @@ export default {
         enableAutocomplete,
         autocompleteDataSources,
         codeSuggestionsConfig,
+        collaborationProvider,
         sidebarMediator: SidebarMediator.singleton,
         tiptapOptions: {
           autofocus,

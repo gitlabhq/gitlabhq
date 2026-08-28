@@ -126,7 +126,6 @@ extend type Mutation {
   updateNewWorkItem(input: LocalUpdateNewWorkItemInput!): LocalWorkItemPayload
   localUpdateWorkItem(input: LocalUpdateWorkItemInput!): LocalWorkItemPayload
   updateActiveDesignDiscussion(id: ID!, source: String!): Boolean
-  updateWorkItemsGroupByVisibleGroups(visibleGroups: [String!]): [String!]
 }
 
 type ActiveDesignDiscussion {
@@ -136,10 +135,6 @@ type ActiveDesignDiscussion {
 
 extend type Query {
   activeDesignDiscussion: ActiveDesignDiscussion
-  workItemsGroupByVisibleGroups: [String!]
-  # Distinguishes "not hydrated yet" from "hydrated to null", so board_view
-  # doesn't fetch everything and then immediately refetch scoped.
-  workItemsGroupByVisibleGroupsHydrated: Boolean
 }
 
 type LocalWorkItemChildIsExpanded {

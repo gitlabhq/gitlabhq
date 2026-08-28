@@ -2,7 +2,7 @@
 data_category: optional
 key_path: redis_hll_counters.testing.users_expanding_testing_code_quality_report
 description: Count of expanding the code quality widget
-product_group: static_analysis
+product_group: code_scanning
 product_categories:
 - code_quality
 value_type: number

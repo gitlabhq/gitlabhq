@@ -66040,6 +66040,7 @@ AI features that can be configured through the Duo self-hosted feature settings.
 | <a id="aifeatures-duo_chat_summarize_comments"></a>`DUO_CHAT_SUMMARIZE_COMMENTS` | Duo chat summarize comment feature setting. |
 | <a id="aifeatures-duo_chat_troubleshoot_job"></a>`DUO_CHAT_TROUBLESHOOT_JOB` | Duo chat troubleshoot job feature setting. |
 | <a id="aifeatures-duo_chat_write_tests"></a>`DUO_CHAT_WRITE_TESTS` | Duo chat write test feature setting. |
+| <a id="aifeatures-duo_developer"></a>`DUO_DEVELOPER` | Duo developer feature setting. |
 | <a id="aifeatures-feature_discovery_search"></a>`FEATURE_DISCOVERY_SEARCH` | Feature discovery search feature setting. |
 | <a id="aifeatures-generate_commit_message"></a>`GENERATE_COMMIT_MESSAGE` | Generate commit message feature setting. |
 | <a id="aifeatures-glab_ask_git_command"></a>`GLAB_ASK_GIT_COMMAND` | Glab ask git command feature setting. |
@@ -66126,6 +66127,7 @@ AI features that can be configured through the Model Selection feature settings.
 | <a id="aimodelselectionfeatures-duo_chat_summarize_comments"></a>`DUO_CHAT_SUMMARIZE_COMMENTS` | Duo chat summarize comment feature setting. |
 | <a id="aimodelselectionfeatures-duo_chat_troubleshoot_job"></a>`DUO_CHAT_TROUBLESHOOT_JOB` | Duo chat troubleshoot job feature setting. |
 | <a id="aimodelselectionfeatures-duo_chat_write_tests"></a>`DUO_CHAT_WRITE_TESTS` | Duo chat write test feature setting. |
+| <a id="aimodelselectionfeatures-duo_developer"></a>`DUO_DEVELOPER` | Duo developer feature setting. |
 | <a id="aimodelselectionfeatures-generate_commit_message"></a>`GENERATE_COMMIT_MESSAGE` | Generate commit message feature setting. |
 | <a id="aimodelselectionfeatures-glab_ask_git_command"></a>`GLAB_ASK_GIT_COMMAND` | Glab ask git command feature setting. |
 | <a id="aimodelselectionfeatures-resolve_dependency_bump"></a>`RESOLVE_DEPENDENCY_BUMP` | Resolve dependency bump feature setting. |

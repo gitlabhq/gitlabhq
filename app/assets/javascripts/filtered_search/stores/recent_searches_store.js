@@ -1,6 +1,6 @@
 import { uniqWith, isEqual } from 'lodash-es';
 
-import { MAX_HISTORY_SIZE } from '../constants';
+import { MAX_HISTORY_SIZE } from '~/vue_shared/components/filtered_search_bar/constants';
 
 class RecentSearchesStore {
   constructor(initialState = {}, allowedKeys) {

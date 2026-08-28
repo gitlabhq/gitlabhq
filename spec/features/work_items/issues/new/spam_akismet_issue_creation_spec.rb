@@ -57,6 +57,15 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
     end
   end
 
+  shared_examples 'disallows issue creation' do
+    it 'disallows issue creation' do
+      click_button 'Create issue'
+
+      expect(find('.gl-alert-danger')).to have_content('Request denied. Spam detected')
+      expect(page).not_to have_css('h1', text: 'issue title')
+    end
+  end
+
   shared_context 'when spammable is identified as possible spam' do
     before do
       allow_next_instance_of(Spam::AkismetService) do |akismet_service|
@@ -107,12 +116,12 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
     # ALLOW, false, true, false, false
     # TODO: Add example for NOOP verdict when we add support for testing SpamCheck - see https://gitlab.com/groups/gitlab-org/-/epics/5527#lacking-coverage-for-spamcheck-vs-akismet
 
-    context 'DISALLOW: spam_flagged=true, captcha_enabled=true, allow_possible_spam=true' do
+    context 'DISALLOW: spam_flagged=true, captcha_enabled=false, allow_possible_spam=false' do
       include_context 'when spammable is identified as possible spam'
-      include_context 'when CAPTCHA is enabled'
-      include_context 'when allow_possible_spam application setting is true'
+      include_context 'when CAPTCHA is not enabled'
+      include_context 'when allow_possible_spam application setting is false'
 
-      it_behaves_like 'allows issue creation without CAPTCHA'
+      it_behaves_like 'disallows issue creation'
     end
 
     context 'CONDITIONAL_ALLOW: spam_flagged=true, captcha_enabled=true, allow_possible_spam=false' do

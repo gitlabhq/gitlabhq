@@ -16,28 +16,24 @@ RSpec.describe Oauth::UserinfoController, feature_category: :system_access do
     get '/oauth/userinfo', headers: { 'Authorization' => "Bearer #{token}" }
   end
 
-  def parsed_response_body
-    Gitlab::Json::SafeParser.parse(response.body)
-  end
-
   describe 'GET /oauth/userinfo' do
     context 'with an IAM-issued JWT' do
       it 'returns the user claims', :aggregate_failures do
         get_userinfo(iam_jwt)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(parsed_response_body['sub']).to eq(user.id.to_s)
+        expect(json_response['sub']).to eq(user.id.to_s)
       end
 
       it 'returns the same response as a Doorkeeper-issued token', :aggregate_failures do
         get_userinfo(iam_jwt)
-        iam_response = parsed_response_body
+        iam_response = json_response
 
         access_token = create(:oauth_access_token, resource_owner_id: user.id, scopes: 'openid')
         get_userinfo(access_token.plaintext_token)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(iam_response).to eq(parsed_response_body)
+        expect(iam_response).to eq(json_response)
       end
 
       context 'when the token does not include the openid scope' do
@@ -171,7 +167,7 @@ RSpec.describe Oauth::UserinfoController, feature_category: :system_access do
         get_userinfo(access_token.plaintext_token)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(parsed_response_body['sub']).to eq(user.id.to_s)
+        expect(json_response['sub']).to eq(user.id.to_s)
       end
     end
 

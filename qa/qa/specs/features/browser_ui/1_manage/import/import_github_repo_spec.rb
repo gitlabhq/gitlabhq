@@ -42,7 +42,6 @@ module QA
           Page::Project::Import::Github.perform do |import_page|
             import_page.add_personal_access_token(Runtime::Env.github_access_token)
 
-            import_page.select_advanced_option(:single_endpoint_notes_import)
             import_page.select_advanced_option(:attachments_import)
 
             import_page.import!(github_repo, group.full_path, imported_project.name)

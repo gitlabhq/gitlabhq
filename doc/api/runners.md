@@ -472,6 +472,12 @@ curl --request PUT \
 
 ## List all jobs processed by a runner
 
+{{< history >}}
+
+- Ascending keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252032) in GitLab 19.4.
+
+{{< /history >}}
+
 Lists all jobs that are being processed or were processed by the specified runner. The list of jobs is limited
 to projects where the user has the Reporter, Developer, Maintainer, or Owner role.
 
@@ -486,6 +492,19 @@ GET /runners/:id/jobs
 | `status`    | string  | no       | Status of the job; one of: `created`, `waiting_for_resource`, `preparing`, `waiting_for_callback`, `pending`, `running`, `success`, `failed`, `canceling`, `canceled`, `skipped`, `manual`, `scheduled` |
 | `order_by`  | string  | no       | Order jobs by `id` |
 | `sort`      | string  | no       | Sort jobs in `asc` or `desc` order (default: `desc`). If `sort` is specified, `order_by` must be specified as well |
+
+This endpoint also supports [keyset pagination](rest/_index.md#keyset-based-pagination), which is the preferred
+pagination method.
+Keyset pagination supports ordering by `id` in ascending or descending order, and does not return the `X-Total` or
+`X-Total-Pages` headers.
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/runners/1/jobs?status=success&pagination=keyset&per_page=20&order_by=id&sort=desc"
+```
+
+Follow the `Link` response header with `rel="next"` to retrieve the next page.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

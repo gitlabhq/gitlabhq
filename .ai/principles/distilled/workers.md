@@ -1,6 +1,6 @@
 ---
-source_checksum: 902d91f6d44a1c63
-distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
+source_checksum: fa11301b0b1a866a
+distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -14,7 +14,7 @@ distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
 - Set `data_consistency` explicitly on every worker (RuboCop enforces this).
 - Define a known `feature_category` on every Sidekiq worker.
 - Mark workers as `idempotent!` unless there is a documented reason they cannot be.
-- Use `deduplicate :until_executing` (default) or `:until_executed` alongside `idempotent!`; pass `including_scheduled: true` if future-scheduled jobs should also be deduplicated.
+- Use `deduplicate :until_executing` (default) or `:until_executed` alongside `idempotent!`; pass `including_scheduled: true` if future-scheduled jobs should also be deduplicated; pass `if_deduplicated: :reschedule_once` with `:until_executed` to re-run the job once after the running job finishes when deduplication occurred, ensuring the latest result is always produced.
 - DO NOT mark a worker as both `urgency :high` and `worker_has_external_dependencies!`.
 - DO NOT mark a worker as both `urgency :high` and `worker_resource_boundary :memory`.
 - Prepend `::Geo::SkipSecondary` to workers that attempt database writes if they can be enqueued on Geo secondary sites.
@@ -118,6 +118,7 @@ distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
 
 ### Pause Control
 
+- Use one of the existing strategies in `lib/gitlab/sidekiq_middleware/pause_control/strategies/` or define a custom strategy there and register it in `lib/gitlab/sidekiq_middleware/pause_control.rb` when adding `pause_control` to a worker.
 - When removing a `pause_control` middleware from a worker, set the strategy to `:deprecated` first and wait until a required stop before removing it completely, to ensure all paused jobs are resumed correctly.
 
 ### Tests

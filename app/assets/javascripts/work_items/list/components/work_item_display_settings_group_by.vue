@@ -23,8 +23,6 @@ import {
   isGroupVisible as computeGroupVisible,
   toggleGroupVisibility as computeToggleGroupVisibility,
 } from '~/work_items/board/grouping/visibility';
-import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
-import updateVisibleGroupsMutation from '~/work_items/board/grouping/graphql/client/update_visible_groups.mutation.graphql';
 import { persistMetadataPreference, alertPreferenceError } from '../display_settings_preferences';
 
 export default {
@@ -79,7 +77,6 @@ export default {
     return {
       searchQuery: '',
       groupByValues: [],
-      workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS,
     };
   },
   computed: {
@@ -93,7 +90,10 @@ export default {
       return this.$apollo.queries.groupByValues.loading;
     },
     visibleGroups() {
-      return effectiveVisibleGroups(this.workItemsGroupByVisibleGroups, this.groupByValues.length);
+      return effectiveVisibleGroups(
+        this.namespacePreferences.visibleGroups ?? SHOW_ALL_GROUPS,
+        this.groupByValues.length,
+      );
     },
     shownCount() {
       return this.visibleGroups === SHOW_ALL_GROUPS
@@ -160,15 +160,12 @@ export default {
         },
       };
     },
-    workItemsGroupByVisibleGroups: {
-      query: workItemsGroupByVisibleGroupsQuery,
-    },
   },
   methods: {
     isGroupVisible(value) {
       return computeGroupVisible(this.visibleGroups, this.groupBy, value);
     },
-    async toggleGroupVisibility(value) {
+    toggleGroupVisibility(value) {
       const wasVisible = this.isGroupVisible(value);
       const next = computeToggleGroupVisibility({
         visibleGroups: this.visibleGroups,
@@ -176,22 +173,14 @@ export default {
         value,
         allGroups: this.groupByValues,
       });
-      await this.$apollo.mutate({
-        mutation: updateVisibleGroupsMutation,
-        variables: { visibleGroups: next },
-      });
       this.trackEvent('configure_columns_on_work_item_board', {
         label: wasVisible ? 'hide_group' : 'show_group',
       });
       this.persist(next);
     },
-    async hideAll() {
+    hideAll() {
       // Everything is already hidden, so skip the redundant preference write.
       if (this.visibleGroups?.length === 0) return;
-      await this.$apollo.mutate({
-        mutation: updateVisibleGroupsMutation,
-        variables: { visibleGroups: [] },
-      });
       this.trackEvent('configure_columns_on_work_item_board', { label: 'hide_all_groups' });
       this.persist([]);
     },

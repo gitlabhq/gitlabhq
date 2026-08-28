@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::UnlockPipelineService, :unlock_pipelines, :clean_gitlab_redis_shared_state, feature_category: :job_artifacts do
-  describe '#execute', :aggregate_failures do
+  describe '#execute', :aggregate_failures, factory_default: :keep do
+    let_it_be(:project) { create_default(:project) }
     let(:service) { described_class.new(pipeline) }
 
     let!(:pipeline) do

@@ -2310,6 +2310,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe '.supported_keyset_orderings' do
+    subject(:supported_keyset_orderings) { described_class.supported_keyset_orderings }
+
+    it 'supports ordering by id in both directions' do
+      expect(supported_keyset_orderings).to eq(id: [:asc, :desc])
+    end
+  end
+
   describe 'build auto retry feature' do
     context 'with deployment job' do
       let(:build) do
@@ -3468,15 +3476,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         create(:ci_variable, :protected, protected_variable.slice(:key, :value).merge(project: project))
       end
 
-      context 'when the branch is protected' do
-        before do
-          allow(build.pipeline.project).to receive(:protected_for?).with(ref).and_return(true)
-        end
-
-        it { is_expected.to include(protected_variable) }
-      end
-
-      context 'when the tag is protected' do
+      context 'when the ref is protected' do
         before do
           allow(build.pipeline.project).to receive(:protected_for?).with(ref).and_return(true)
         end
@@ -3512,15 +3512,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         create(:ci_group_variable, :protected, protected_variable.slice(:key, :value).merge(group: group))
       end
 
-      context 'when the branch is protected' do
-        before do
-          allow(build.pipeline.project).to receive(:protected_for?).with(ref).and_return(true)
-        end
-
-        it { is_expected.to include(protected_variable) }
-      end
-
-      context 'when the tag is protected' do
+      context 'when the ref is protected' do
         before do
           allow(build.pipeline.project).to receive(:protected_for?).with(ref).and_return(true)
         end

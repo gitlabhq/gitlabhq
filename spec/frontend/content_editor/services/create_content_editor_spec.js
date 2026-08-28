@@ -1,3 +1,5 @@
+import * as Y from 'yjs';
+import { Awareness } from 'y-protocols/awareness';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '~/content_editor/constants';
 import { createContentEditor } from '~/content_editor/services/create_content_editor';
 import AssetResolver from '~/content_editor/services/asset_resolver';
@@ -69,5 +71,69 @@ describe('content_editor/services/create_content_editor', () => {
       createContentEditor({ renderMarkdown, uploadsPath, supportsTableOfContents: true })
         .supportsTableOfContents,
     ).toBe(true);
+  });
+
+  describe('collaborative editing', () => {
+    let collaborationProvider;
+
+    beforeEach(() => {
+      const doc = new Y.Doc();
+      const awareness = new Awareness(doc);
+      awareness.setLocalStateField('user', { name: 'Aardvark', color: '#1f75cb' });
+
+      collaborationProvider = { doc, awareness };
+    });
+
+    const extensionNames = (contentEditor) =>
+      contentEditor.tiptapEditor.extensionManager.extensions.map((e) => e.name);
+
+    it('is off by default', () => {
+      expect(editor.isCollaborative).toBe(false);
+    });
+
+    it('loads the local history extension when not collaborating', () => {
+      expect(extensionNames(editor)).toContain('history');
+    });
+
+    describe('with a collaboration provider', () => {
+      let collaborativeEditor;
+
+      beforeEach(() => {
+        collaborativeEditor = createContentEditor({
+          renderMarkdown,
+          uploadsPath,
+          collaborationProvider,
+        });
+      });
+
+      it('reports itself as collaborative', () => {
+        expect(collaborativeEditor.isCollaborative).toBe(true);
+      });
+
+      it('swaps the local history extension for the collaborative one', () => {
+        const names = extensionNames(collaborativeEditor);
+
+        expect(names).not.toContain('history');
+        expect(names).toContain('collaboration');
+      });
+
+      it('loads the collaboration cursor extension', () => {
+        expect(extensionNames(collaborativeEditor)).toContain('collaborationCursor');
+      });
+
+      it('shares the provider document with the collaboration extension', () => {
+        const collaboration = collaborativeEditor.tiptapEditor.extensionManager.extensions.find(
+          (e) => e.name === 'collaboration',
+        );
+
+        expect(collaboration.options.document).toBe(collaborationProvider.doc);
+      });
+
+      it('leaves the provider intact when disposed', () => {
+        collaborativeEditor.dispose();
+
+        expect(collaborationProvider.doc.isDestroyed).toBe(false);
+      });
+    });
   });
 });

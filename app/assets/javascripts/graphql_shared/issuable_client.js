@@ -20,8 +20,6 @@ import {
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import activeDiscussionQuery from '~/work_items/components/design_management/graphql/client/active_design_discussion.query.graphql';
-import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
-import { SHOW_ALL_GROUPS } from '~/work_items/board/grouping/visibility';
 import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
 import { restWorkItemsResolver } from 'ee_else_ce/work_items/list/graphql/rest/work_items_rest_resolver';
 import { decisionLogStubResolvers } from 'ee_else_ce/work_items/components/decision_log/graphql/stub_resolvers';
@@ -710,16 +708,6 @@ export const resolvers = {
       };
 
       cache.writeQuery({ query: activeDiscussionQuery, data });
-    },
-    updateWorkItemsGroupByVisibleGroups(_, { visibleGroups = SHOW_ALL_GROUPS }, { cache }) {
-      cache.writeQuery({
-        query: workItemsGroupByVisibleGroupsQuery,
-        data: {
-          workItemsGroupByVisibleGroups: visibleGroups,
-          workItemsGroupByVisibleGroupsHydrated: true,
-        },
-      });
-      return visibleGroups;
     },
   },
 };

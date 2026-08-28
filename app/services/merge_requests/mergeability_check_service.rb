@@ -65,6 +65,8 @@ module MergeRequests
       recheck! if recheck
       ref_updated = update_merge_status
 
+      MergeRequests::AfterCreateEventPublisher.new(merge_request).publish_deferred
+
       unless merge_request.can_be_merged?
         message = 'Merge request is not mergeable'
 

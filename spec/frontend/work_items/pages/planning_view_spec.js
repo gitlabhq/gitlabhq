@@ -12,7 +12,6 @@ import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { resolvers } from '~/graphql_shared/issuable_client';
-import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -2999,6 +2998,8 @@ describe('planning-view', () => {
         'queryVariables',
         'collapsedGroups',
         'groupOrder',
+        'visibleGroups',
+        'visibleGroupsLoaded',
         'canManageColumns',
         'activeItem',
         'detailPanelEnabled',
@@ -3518,11 +3519,6 @@ describe('planning-view', () => {
     describe('column collapse', () => {
       const collapsedId = 'status:gid://gitlab/WorkItems::Statuses::Custom::Status/2';
 
-      const readVisibleGroups = () =>
-        apolloProvider.clients.defaultClient.readQuery({
-          query: workItemsGroupByVisibleGroupsQuery,
-        });
-
       const mountAllItemsBoard = async (options = {}) => {
         await mountComponent({
           provide: {
@@ -3557,11 +3553,8 @@ describe('planning-view', () => {
             });
           });
 
-          it('hydrates the local visible-groups cache with the persisted selection', () => {
-            expect(readVisibleGroups()).toEqual({
-              workItemsGroupByVisibleGroups: [collapsedId],
-              workItemsGroupByVisibleGroupsHydrated: true,
-            });
+          it('passes the persisted selection to the board view', () => {
+            expect(findBoardView().props('visibleGroups')).toEqual([collapsedId]);
           });
         });
 
@@ -3572,16 +3565,13 @@ describe('planning-view', () => {
             });
           });
 
-          it('hydrates the local visible-groups cache with null', () => {
-            expect(readVisibleGroups()).toEqual({
-              workItemsGroupByVisibleGroups: null,
-              workItemsGroupByVisibleGroupsHydrated: true,
-            });
+          it('passes null to the board view', () => {
+            expect(findBoardView().props('visibleGroups')).toBeNull();
           });
         });
 
-        describe('hydration timing', () => {
-          it('does not hydrate the local visible-groups cache until displaySettings resolves', async () => {
+        describe('before the preferences resolve', () => {
+          it('does not tell the board the selection is known until displaySettings resolves', async () => {
             let resolvePreferences;
             const deferredHandler = jest.fn(
               () =>
@@ -3590,30 +3580,45 @@ describe('planning-view', () => {
                 }),
             );
 
-            await mountComponent({ mockPreferencesHandler: deferredHandler, skipLastWait: true });
+            await mountComponent({
+              provide: {
+                glFeatures: { planningViewBoards: true, workItemListDisplaySettingsDrawer: true },
+              },
+              stubs: {
+                WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+                BoardView: boardViewStub,
+              },
+              mockPreferencesHandler: deferredHandler,
+              skipLastWait: true,
+            });
+            findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+            await waitForPromises();
 
             // The preferences query is still in flight, so the selection isn't known yet.
-            // Nothing has written to the local cache — an immediate write here (the bug
-            // this guards against) would make this a real, hydrated value instead of null.
-            expect(readVisibleGroups()).toBeNull();
+            // board_view skips its first fetch on this flag — flipping it early (the bug
+            // this guards against) would fetch everything unscoped.
+            expect(findBoardView().props()).toMatchObject({
+              visibleGroups: null,
+              visibleGroupsLoaded: false,
+            });
 
             resolvePreferences(await preferencesHandlerWith({ visibleGroups: [collapsedId] })());
             await waitForPromises();
 
-            expect(readVisibleGroups()).toEqual({
-              workItemsGroupByVisibleGroups: [collapsedId],
-              workItemsGroupByVisibleGroupsHydrated: true,
+            expect(findBoardView().props()).toMatchObject({
+              visibleGroups: [collapsedId],
+              visibleGroupsLoaded: true,
             });
           });
 
-          it('hydrates even when displaySettings fails, so the board is not skipped forever', async () => {
-            await mountComponent({
+          it('tells the board the selection is known even when displaySettings fails, so the board is not skipped forever', async () => {
+            await mountAllItemsBoard({
               mockPreferencesHandler: jest.fn().mockRejectedValue(new Error('boom')),
             });
 
-            expect(readVisibleGroups()).toEqual({
-              workItemsGroupByVisibleGroups: null,
-              workItemsGroupByVisibleGroupsHydrated: true,
+            expect(findBoardView().props()).toMatchObject({
+              visibleGroups: null,
+              visibleGroupsLoaded: true,
             });
           });
         });

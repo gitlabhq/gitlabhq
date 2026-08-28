@@ -83,10 +83,10 @@ export default {
     },
   },
   mounted() {
-    eventHub.$on('jobActionPerformed', this.handleJobAction);
+    eventHub.$on('job-action-performed', this.handleJobAction);
   },
   beforeDestroy() {
-    eventHub.$off('jobActionPerformed', this.handleJobAction);
+    eventHub.$off('job-action-performed', this.handleJobAction);
   },
   methods: {
     handleJobAction() {

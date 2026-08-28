@@ -1,10 +1,19 @@
-import initCommitActions from '~/projects/commit';
-import { initCommitBoxInfo } from '~/projects/commit_box/info';
+import { fetchCommitMergeRequests } from '~/commit_merge_requests';
+import initCherryPickCommitModal from '~/projects/commit/init_cherry_pick_commit_modal';
+import initCommitOptionsDropdown from '~/projects/commit/init_commit_options_dropdown';
+import initRevertCommitModal from '~/projects/commit/init_revert_commit_modal';
+import initCommitPipelineSummary from '~/projects/commit_box/info/init_commit_pipeline_summary';
+import initCommitReferences from '~/projects/commit_box/info/init_commit_references';
 import { initCommitPipelines } from '~/commit/pipelines/pipelines_bundle';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
-initCommitBoxInfo();
-initCommitActions();
+fetchCommitMergeRequests();
+initCommitPipelineSummary();
+initCommitReferences();
+
+initRevertCommitModal();
+initCherryPickCommitModal();
+initCommitOptionsDropdown();
 
 if (gon.features?.vue3MigratePipelines) {
   (async () => {

@@ -9,7 +9,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
   let(:optional_stages) do
     {
-      single_endpoint_notes_import: false,
       attachments_import: false,
       collaborators_import: false
     }
@@ -18,7 +17,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
   let(:data_input) do
     {
       optional_stages: {
-        single_endpoint_notes_import: 'false',
         attachments_import: nil,
         collaborators_import: false,
         foo: :bar
@@ -31,13 +29,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
   describe '.stages_array' do
     let(:expected_list) do
       [
-        {
-          name: 'single_endpoint_notes_import',
-          label: s_('GitHubImporter|Use alternative comments import method'),
-          selected: false,
-          details: s_('GitHubImporter|The default method can skip some comments in large ' \
-            'projects because of limitations of the GitHub API.')
-        },
         {
           name: 'attachments_import',
           label: s_('GitHubImporter|Import Markdown attachments (links)'),
@@ -79,13 +70,21 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
       settings.write(data_input)
 
       expect(project.import_data.data['optional_stages'])
-        .to eq optional_stages.stringify_keys
+        .to eq optional_stages.merge(single_endpoint_notes_import: true).stringify_keys
       expect(project.import_data.data['timeout_strategy'])
         .to eq("optimistic")
       expect(project.import_data.data['user_contribution_mapping_enabled'])
         .to be true
       expect(project.import_data.data['pagination_limit'])
         .to eq(50)
+    end
+
+    it 'always forces single_endpoint_notes_import to true regardless of input' do
+      project.build_or_assign_import_data(credentials: { user: 'token' })
+
+      settings.write(data_input.deep_merge('optional_stages' => { 'single_endpoint_notes_import' => 'false' }))
+
+      expect(project.import_data.data['optional_stages']['single_endpoint_notes_import']).to be(true)
     end
   end
 

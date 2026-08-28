@@ -266,7 +266,7 @@ module Ci
       end
 
       def supported_keyset_orderings
-        { id: [:desc] }
+        { id: [:asc, :desc] }
       end
 
       def latest_with_artifacts_for_ref(project, job_name, ref_name, limit: MAX_PIPELINES_TO_SEARCH)

@@ -3,8 +3,7 @@
 module QA
   module Resource
     class ProjectImportedFromGithub < Resource::Project
-      attr_accessor :full_notes_import,
-        :attachments_import,
+      attr_accessor :attachments_import,
         :allow_partial_import
 
       attribute :github_repo_id do
@@ -21,7 +20,6 @@ module QA
         Page::Project::Import::Github.perform do |import_page|
           import_page.add_personal_access_token(github_personal_access_token)
 
-          import_page.select_advanced_option(:single_endpoint_notes_import) if full_notes_import
           import_page.select_advanced_option(:attachments_import) if attachments_import
 
           import_page.import!(github_repository_path, group.full_path, name)
@@ -61,7 +59,6 @@ module QA
           personal_access_token: github_personal_access_token,
           ci_cd_only: false,
           optional_stages: {
-            single_endpoint_notes_import: full_notes_import,
             attachments_import: attachments_import
           }
         }.compact

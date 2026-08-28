@@ -7,8 +7,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { createAlert } from '~/alert';
-import { resolvers } from '~/graphql_shared/issuable_client';
-import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
 import WorkItemDisplaySettingsGroupBy from '~/work_items/list/components/work_item_display_settings_group_by.vue';
 import { groupingStrategyFor } from '~/work_items/board/grouping';
 import {
@@ -61,8 +59,6 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
   const findToggles = () => wrapper.findAllComponents(GlToggle);
   const findNoGroupsFound = () => wrapper.findByTestId('no-groups-found');
   const findGroupLimitHint = () => wrapper.findByTestId('group-limit-hint');
-  const readVisibleGroups = () =>
-    apolloProvider.clients.defaultClient.readQuery({ query: workItemsGroupByVisibleGroupsQuery });
 
   beforeEach(() => {
     groupByValuesHandler = jest.fn().mockResolvedValue({ data: { statuses } });
@@ -76,14 +72,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
   });
 
   const createComponent = ({ props = {}, visibleGroups = null } = {}) => {
-    apolloProvider = createMockApollo([[mockGroupByValuesQuery, groupByValuesHandler]], resolvers);
-    apolloProvider.clients.defaultClient.writeQuery({
-      query: workItemsGroupByVisibleGroupsQuery,
-      data: {
-        workItemsGroupByVisibleGroups: visibleGroups,
-        workItemsGroupByVisibleGroupsHydrated: true,
-      },
-    });
+    apolloProvider = createMockApollo([[mockGroupByValuesQuery, groupByValuesHandler]]);
 
     wrapper = shallowMountExtended(WorkItemDisplaySettingsGroupBy, {
       apolloProvider,
@@ -91,6 +80,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         fullPath: 'group/full/path',
         workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
         sortKey: 'CREATED_DESC',
+        namespacePreferences: { visibleGroups },
         ...props,
       },
     });
@@ -174,13 +164,23 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
 
   describe('when only some groups are visible', () => {
     beforeEach(async () => {
-      // planning_view.vue hydrates this cache from namespacePreferences before
-      // the drawer mounts.
       createComponent({ visibleGroups: [groupId(statuses[0])] });
       await waitForPromises();
     });
 
     it('only turns on the toggles for the visible groups', () => {
+      expect(findToggles().at(0).props('value')).toBe(true);
+      expect(findToggles().at(1).props('value')).toBe(false);
+    });
+  });
+
+  describe('when the persisted selection changes', () => {
+    it('follows it', async () => {
+      createComponent();
+      await waitForPromises();
+
+      await wrapper.setProps({ namespacePreferences: { visibleGroups: [groupId(statuses[0])] } });
+
       expect(findToggles().at(0).props('value')).toBe(true);
       expect(findToggles().at(1).props('value')).toBe(false);
     });
@@ -194,12 +194,6 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
 
         findToggles().at(1).vm.$emit('change');
         await waitForPromises();
-      });
-
-      it('updates the local visible-groups cache', () => {
-        expect(readVisibleGroups()).toMatchObject({
-          workItemsGroupByVisibleGroups: [groupId(statuses[0])],
-        });
       });
 
       it('persists the visible groups as a user preference', () => {
@@ -234,7 +228,6 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
       beforeEach(async () => {
         createComponent({
           props: { namespacePreferences: { visibleGroups: [groupId(statuses[0])] } },
-          visibleGroups: [groupId(statuses[0])],
         });
         await waitForPromises();
 
@@ -242,8 +235,10 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         await waitForPromises();
       });
 
-      it('normalizes the local visible-groups cache back to null', () => {
-        expect(readVisibleGroups()).toMatchObject({ workItemsGroupByVisibleGroups: null });
+      it('normalizes the persisted selection back to null', () => {
+        expect(persistMetadataPreference).toHaveBeenCalledWith(
+          expect.objectContaining({ displaySettings: { visibleGroups: null } }),
+        );
       });
     });
 
@@ -319,12 +314,12 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
           await waitForPromises();
         });
 
-        it('computes the local visible-groups cache against the full status set, not the filtered view', () => {
+        it('computes the persisted selection against the full status set, not the filtered view', () => {
           // Only "Triage" is rendered while filtered, but toggling it off must
           // still leave "To do" (filtered out of view) recorded as visible.
-          expect(readVisibleGroups()).toMatchObject({
-            workItemsGroupByVisibleGroups: [groupId(statuses[1])],
-          });
+          expect(persistMetadataPreference).toHaveBeenCalledWith(
+            expect.objectContaining({ displaySettings: { visibleGroups: [groupId(statuses[1])] } }),
+          );
         });
       });
 
@@ -335,7 +330,9 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         });
 
         it('still hides every group, not just the filtered ones', () => {
-          expect(readVisibleGroups()).toMatchObject({ workItemsGroupByVisibleGroups: [] });
+          expect(persistMetadataPreference).toHaveBeenCalledWith(
+            expect.objectContaining({ displaySettings: { visibleGroups: [] } }),
+          );
         });
       });
     });
@@ -360,16 +357,6 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
   });
 
   describe('Hide all', () => {
-    it('updates the local visible-groups cache to an empty list', async () => {
-      createComponent();
-      await waitForPromises();
-
-      findHideAll().trigger('click');
-      await waitForPromises();
-
-      expect(readVisibleGroups()).toMatchObject({ workItemsGroupByVisibleGroups: [] });
-    });
-
     it('persists the visible groups as a user preference', async () => {
       createComponent();
       await waitForPromises();
@@ -423,15 +410,6 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
 
       it('says how many groups can be selected', () => {
         expect(findGroupLimitHint().text()).toBe('Select up to 25 groups.');
-      });
-
-      it('updates the local visible-groups cache with only the group toggled on', async () => {
-        findToggles().at(3).vm.$emit('change');
-        await waitForPromises();
-
-        expect(readVisibleGroups()).toMatchObject({
-          workItemsGroupByVisibleGroups: [groupId(manyValues[3])],
-        });
       });
 
       it('persists only the group toggled on', async () => {

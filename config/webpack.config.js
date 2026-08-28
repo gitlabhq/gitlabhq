@@ -396,6 +396,14 @@ module.exports = {
         options: defaultJsOptions,
       },
       {
+        // The Yjs CRDT stack ships untranspiled `?.` and `??`, which webpack 4's
+        // parser can't read. y-prosemirror publishes its `src/` directly.
+        test: /\.[mc]?js$/,
+        include: /node_modules\/(yjs|y-prosemirror|y-protocols|lib0)\//,
+        loader: 'babel-loader',
+        options: defaultJsOptions,
+      },
+      {
         test: /\.(js|cjs)$/,
         exclude: shouldExcludeFromCompiling,
         use: [

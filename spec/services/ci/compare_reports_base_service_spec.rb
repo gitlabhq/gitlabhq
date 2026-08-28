@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Ci::CompareReportsBaseService, feature_category: :continuous_integration do
   let(:service) { described_class.new(project) }
-  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   let!(:base_pipeline) { nil }
-  let!(:head_pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
+  let_it_be_with_reload(:head_pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
   let!(:key) { service.send(:key, base_pipeline, head_pipeline) }
 
   describe '#latest?' do

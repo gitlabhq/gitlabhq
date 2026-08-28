@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Project::Sample::RelationFactory, feature_category: :importers do
-  let(:group) { create(:group) }
-  let(:project) { create(:project, :repository, group: group) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group, creator: admin) }
   let(:members_mapper) { double('members_mapper').as_null_object }
-  let(:admin) { create(:admin) }
   let(:importer_user) { admin }
   let(:excluded_keys) { [] }
   let(:date_calculator) { instance_double(Gitlab::ImportExport::Project::Sample::DateCalculator) }
@@ -83,55 +83,13 @@ RSpec.describe Gitlab::ImportExport::Project::Sample::RelationFactory, feature_c
       allow(date_calculator).to receive(:calculate_by_closest_date_to_average).twice
     end
 
-    it 'correctly updated due date', :aggregate_failures do
+    it 'correctly updated start and due dates', :aggregate_failures do
       expect(date_calculator).to receive(:calculate_by_closest_date_to_average)
         .with(relation_hash['due_date']).and_return(due_date - 10.days)
-
-      expect(created_object.due_date).to eq((due_date - 10.days).to_date)
-    end
-
-    it 'correctly updated start date', :aggregate_failures do
       expect(date_calculator).to receive(:calculate_by_closest_date_to_average)
         .with(relation_hash['start_date']).and_return(start_date - 20.days)
 
-      expect(created_object.start_date).to eq((start_date - 20.days).to_date)
-    end
-  end
-
-  context 'milestone object' do
-    let(:relation_sym) { :milestones }
-    let(:id) { 1001 }
-
-    let(:relation_hash) do
-      {
-        'id' => id,
-        'title' => 'v3.0',
-        'project_id' => original_project_id,
-        'created_at' => '2016-08-12T09:41:03.462Z',
-        'updated_at' => '2016-08-12T09:41:03.462Z',
-        'description' => 'Rerum at autem exercitationem ea voluptates harum quam placeat.',
-        'state' => 'closed',
-        'start_date' => start_date,
-        'due_date' => due_date
-      }
-    end
-
-    before do
-      allow(date_calculator).to receive(:closest_date_to_average).twice { Time.current - 10.days }
-      allow(date_calculator).to receive(:calculate_by_closest_date_to_average).twice
-    end
-
-    it 'correctly updated due date', :aggregate_failures do
-      expect(date_calculator).to receive(:calculate_by_closest_date_to_average)
-        .with(relation_hash['due_date']).and_return(due_date - 10.days)
-
       expect(created_object.due_date).to eq((due_date - 10.days).to_date)
-    end
-
-    it 'correctly updated start date', :aggregate_failures do
-      expect(date_calculator).to receive(:calculate_by_closest_date_to_average)
-        .with(relation_hash['start_date']).and_return(start_date - 20.days)
-
       expect(created_object.start_date).to eq((start_date - 20.days).to_date)
     end
   end

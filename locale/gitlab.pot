@@ -3584,10 +3584,10 @@ msgstr ""
 msgid "AICatalog|Trigger %{itemType} on a recurring schedule."
 msgstr ""
 
-msgid "AICatalog|Trigger %{itemType} when a merge request is ready, approved, merged, or has conflicts."
+msgid "AICatalog|Trigger %{itemType} when a merge request is created, ready, approved, merged, or has conflicts."
 msgstr ""
 
-msgid "AICatalog|Trigger %{itemType} when a merge request is ready, approved, or has conflicts."
+msgid "AICatalog|Trigger %{itemType} when a merge request is created, ready, approved, or has conflicts."
 msgstr ""
 
 msgid "AICatalog|Trigger %{itemType} when a pipeline status changes."
@@ -5928,6 +5928,9 @@ msgid "Admin mode is already active."
 msgstr ""
 
 msgid "Admin mode is inactive."
+msgstr ""
+
+msgid "Admin mode is inactive. Please re-authenticate."
 msgstr ""
 
 msgid "Admin notes"
@@ -12296,6 +12299,9 @@ msgstr ""
 msgid "ArtifactRegistry|GitLab UI"
 msgstr ""
 
+msgid "ArtifactRegistry|Go to repository"
+msgstr ""
+
 msgid "ArtifactRegistry|Gradle (Groovy)"
 msgstr ""
 
@@ -12409,10 +12415,16 @@ msgstr ""
 msgid "ArtifactRegistry|No connection information available."
 msgstr ""
 
+msgid "ArtifactRegistry|No manifests found for %{name}."
+msgstr ""
+
 msgid "ArtifactRegistry|No repositories"
 msgstr ""
 
 msgid "ArtifactRegistry|No repositories match your filters."
+msgstr ""
+
+msgid "ArtifactRegistry|No versions found for %{name}."
 msgstr ""
 
 msgid "ArtifactRegistry|OCI"
@@ -12453,6 +12465,9 @@ msgstr ""
 msgid "ArtifactRegistry|Publish your first package to get started."
 msgstr ""
 
+msgid "ArtifactRegistry|Publish your first version to get started."
+msgstr ""
+
 msgid "ArtifactRegistry|Published"
 msgstr ""
 
@@ -12472,6 +12487,9 @@ msgid "ArtifactRegistry|Pull command for %{version}"
 msgstr ""
 
 msgid "ArtifactRegistry|Push an image:"
+msgstr ""
+
+msgid "ArtifactRegistry|Push your first manifest to get started."
 msgstr ""
 
 msgid "ArtifactRegistry|Referrer for %{digest}"
@@ -12621,7 +12639,13 @@ msgstr ""
 msgid "ArtifactRegistry|There are no images in this repository yet"
 msgstr ""
 
+msgid "ArtifactRegistry|There are no manifests in this image yet"
+msgstr ""
+
 msgid "ArtifactRegistry|There are no packages in this repository yet"
+msgstr ""
+
+msgid "ArtifactRegistry|There are no versions of this package yet"
 msgstr ""
 
 msgid "ArtifactRegistry|This action permanently deletes the repository and all of its artifacts. If this repository is connected to a virtual repository, the virtual repository loses access to this repository and its artifacts."
@@ -37828,12 +37852,6 @@ msgstr ""
 msgid "GitHubImporter|Import direct repository collaborators who are not outside collaborators. Imported collaborators who aren't members of the group you imported the project into consume seats on your GitLab instance."
 msgstr ""
 
-msgid "GitHubImporter|The default method can skip some comments in large projects because of limitations of the GitHub API."
-msgstr ""
-
-msgid "GitHubImporter|Use alternative comments import method"
-msgstr ""
-
 msgid "GitLab"
 msgstr ""
 
@@ -49574,6 +49592,9 @@ msgid "MergeRequest|Compare %{target} and %{source}"
 msgstr ""
 
 msgid "MergeRequest|Control access to protected variables and runners in merge request pipelines"
+msgstr ""
+
+msgid "MergeRequest|Created"
 msgstr ""
 
 msgid "MergeRequest|Error dismissing suggestion popover. Please try again."

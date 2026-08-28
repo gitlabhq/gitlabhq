@@ -54,7 +54,7 @@ RSpec.describe Projects::Observability::SessionsController, feature_category: :o
       make_request
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(Gitlab::Json::SafeParser.parse(response.body)).to eq(
+      expect(json_response).to eq(
         'auth_tokens' => { 'access_jwt' => 'a-jwt', 'refresh_jwt' => 'r-jwt' }
       )
     end

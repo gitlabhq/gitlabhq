@@ -170,6 +170,11 @@ export default {
       required: false,
       default: false,
     },
+    collaborationProvider: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   emits: [
     'blur',
@@ -501,6 +506,7 @@ export default {
         :code-suggestions-config="codeSuggestionsConfig"
         :immersive="immersive"
         :hide-mode-switcher="hideModeSwitcher"
+        :collaboration-provider="collaborationProvider"
         :data-testid="formFieldProps['data-testid'] || 'markdown-editor-form-field'"
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"

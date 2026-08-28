@@ -17,6 +17,7 @@ description: "Import repositories from GitHub or Bitbucket Server with the REST 
 
 - Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a feature flag](../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
 - Reassigning contributions to a personal namespace owner when importing to a personal namespace [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211626) in GitLab 18.6. Feature flag `user_mapping_to_personal_namespace_owner` removed.
+- `single_endpoint_notes_import` [made always enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250959) for newly configured imports in GitLab 19.4, and can no longer be disabled. Imports configured on earlier GitLab versions keep their previously configured value.
 
 {{< /history >}}
 
@@ -67,7 +68,6 @@ curl --request POST \
     "new_name": "NEW-NAME",
     "github_hostname": "https://github.example.com",
     "optional_stages": {
-      "single_endpoint_notes_import": true,
       "attachments_import": true,
       "collaborators_import": true
     }
@@ -78,8 +78,9 @@ The following keys are available for `optional_stages`:
 
 - `attachments_import`, for Markdown attachments import.
 - `collaborators_import`, for importing direct repository collaborators who are not outside collaborators.
-- `single_endpoint_issue_events_import`, for issue and pull request events import. This optional stage was removed in GitLab 16.9.
-- `single_endpoint_notes_import`, for an alternative and more thorough comments import.
+- `single_endpoint_notes_import`, for an alternative and more thorough comments import method that is
+  optional on GitLab 19.3 and earlier. On GitLab 19.4 and later, this method is mandatory for newly
+  configured imports.
 
 For more information, see [select additional items to import](../user/project/import/github.md#select-additional-items-to-import).
 

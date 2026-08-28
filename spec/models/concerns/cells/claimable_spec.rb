@@ -16,6 +16,10 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
   before do
     stub_feature_flag_definition(:cells_claims_test_flag)
+    # spec_helper no longer forces claims off suite-wide, so records built as
+    # example setup would claim for real. Each example stubs the transaction
+    # record for the connection it actually asserts on.
+    allow(Cells::TransactionRecord).to receive(:current_transaction).and_return(nil)
 
     test_klass.cells_claims_attribute :path, type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
       feature_flag: :cells_claims_test_flag

@@ -6,9 +6,9 @@ export const SHOW_ALL_GROUPS = null;
 // Each column runs its own query, so uncapped grouping means dozens of concurrent requests.
 export const MAX_VISIBLE_GROUPS = 25;
 
-// Reading this from the cache before it's been written gives `undefined`, not
-// `null`, so we treat anything that isn't a real array as "show everything"
-// rather than checking for `null` specifically.
+// The persisted preference reads as `undefined`, not `null`, before it's loaded,
+// so we treat anything that isn't a real array as "show everything" rather than
+// checking for `null` specifically.
 const showAllGroups = (visibleGroups) => !Array.isArray(visibleGroups);
 
 export const exceedsGroupLimit = (groupCount) => groupCount > MAX_VISIBLE_GROUPS;

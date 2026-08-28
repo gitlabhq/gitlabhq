@@ -163,6 +163,25 @@ describe.each([
       expect(findColumnHeader().props('canCreateWorkItem')).toBe(true);
     });
 
+    it('shows no placeholder card by default', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findSkeletons()).toHaveLength(0);
+    });
+
+    it('stands a placeholder card in above the existing ones while a created item is fetched', async () => {
+      createComponent({ props: { insertingCard: true } });
+      await waitForPromises();
+
+      expect(findSkeletons()).toHaveLength(1);
+
+      const markup = findDraggable().html();
+      expect(markup.indexOf('work-item-card-skeleton')).toBeLessThan(
+        markup.indexOf('work-item-card-stub'),
+      );
+    });
+
     it('forwards create-item from the header with the column value', async () => {
       createComponent({ props: { canCreateWorkItem: true } });
       await waitForPromises();

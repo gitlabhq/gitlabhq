@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="120" height="20">
+<svg xmlns="http://www.w3.org/2000/svg" width="116" height="20">
   <g shape-rendering="crispEdges">
     <path fill="#555" d="M0 0 h62 v20 H0 z"/>
-    <path fill="#9f9f9f" d="M62 0 h58 v20 H62 z"/>
+    <path fill="#4c1" d="M62 0 h54 v20 H62 z"/>
   </g>
 
   <g fill="#fff" text-anchor="middle">
@@ -9,8 +9,8 @@
       <text x="31" y="14">
         coverage
       </text>
-      <text x="91" y="14">
-        unknown
+      <text x="89" y="14">
+        95.00%
       </text>
     </g>
   </g>

@@ -35,8 +35,6 @@ import {
   toggleGroupVisibility,
 } from './grouping/visibility';
 import { orderGroups, reorderGroupIds } from './grouping/ordering';
-import workItemsGroupByVisibleGroupsQuery from './grouping/graphql/client/visible_groups.query.graphql';
-import updateVisibleGroupsMutation from './grouping/graphql/client/update_visible_groups.mutation.graphql';
 import {
   boardColumnQuery,
   boardColumnQueryVariables,
@@ -112,6 +110,16 @@ export default {
       required: false,
       default: () => [],
     },
+    visibleGroups: {
+      type: Array,
+      required: false,
+      default: SHOW_ALL_GROUPS,
+    },
+    visibleGroupsLoaded: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     canManageColumns: {
       type: Boolean,
       required: false,
@@ -170,8 +178,8 @@ export default {
       // The column value a new item targets; also gates the create modal's
       // mount so it re-reads the freshly-seeded draft each time it opens.
       createColumnValue: null,
-      workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS,
-      workItemsGroupByVisibleGroupsHydrated: false,
+      // Column standing a placeholder in for a just-created item while we refetch it.
+      insertingInColumnId: null,
       // Columns the dragged item can't be dropped into.
       invalidValueIds: [],
       // Lock dragging while a move is saving, so the next drop doesn't land based
@@ -193,19 +201,16 @@ export default {
       return this.$apollo.queries.groupValues.loading;
     },
     noGroupsSelected() {
-      return (
-        Array.isArray(this.workItemsGroupByVisibleGroups) &&
-        this.workItemsGroupByVisibleGroups.length === 0
-      );
+      return Array.isArray(this.visibleGroups) && this.visibleGroups.length === 0;
     },
     // Returning undefined (not null) skips the ids variable, since Apollo treats null as a
     // real filter. Skip it the same way when nothing's selected, so the fetch stays unfiltered
     // and groupValues still reports the true group count (see groupSelectionPromptDescription).
     idsToFetch() {
-      if (this.workItemsGroupByVisibleGroups === SHOW_ALL_GROUPS || this.noGroupsSelected) {
+      if (this.visibleGroups === SHOW_ALL_GROUPS || this.noGroupsSelected) {
         return undefined;
       }
-      return this.workItemsGroupByVisibleGroups
+      return this.visibleGroups
         .map((groupId) => getGroupValueId({ groupBy: this.groupBy, groupId }))
         .filter((valueId) => valueId !== null);
     },
@@ -267,20 +272,14 @@ export default {
     this.trackEvent('view_work_item_board', { label: this.groupBy.property });
   },
   apollo: {
-    workItemsGroupByVisibleGroups: {
-      query: workItemsGroupByVisibleGroupsQuery,
-    },
-    workItemsGroupByVisibleGroupsHydrated: {
-      query: workItemsGroupByVisibleGroupsQuery,
-    },
     groupValues() {
       return {
         query: this.strategy?.valuesQuery,
-        // Waits for hydration so the first fetch is already scoped, not fetch-then-refetch.
-        // It's safe to fetch everything when nothing's selected too, since columns don't
-        // render until a selection is made, so this can't render too many columns.
+        // Waits for the persisted selection so the first fetch is already scoped, not
+        // fetch-then-refetch. Fetching everything when nothing's selected is safe too,
+        // since columns don't render without a selection, so this can't over-render.
         skip() {
-          return !this.strategy || !this.workItemsGroupByVisibleGroupsHydrated;
+          return !this.strategy || !this.visibleGroupsLoaded;
         },
         variables() {
           return { fullPath: this.rootPageFullPath, ids: this.idsToFetch };
@@ -375,6 +374,11 @@ export default {
       const query = this.columnQuery;
       const variables = this.columnVariables(column);
 
+      // The modal has already closed by now, but the card can't appear until this refetch
+      // lands, and it deliberately can't be cached — the server decides whether the new item
+      // matches the column's filters. Stand a placeholder in for the card meanwhile.
+      this.insertingInColumnId = column.id;
+
       try {
         const { data } = await client.query({
           query,
@@ -416,6 +420,8 @@ export default {
       } catch (error) {
         Sentry.captureException(error);
         return false;
+      } finally {
+        this.insertingInColumnId = null;
       }
     },
     async persistCreatedItemPosition({ workItemId, nodes }) {
@@ -752,26 +758,13 @@ export default {
       }
       this.moveColumn(oldIndex, oldIndex + delta, 'reorder_menu');
     },
-    async onColumnHide(value) {
+    onColumnHide(value) {
       const visibleGroups = toggleGroupVisibility({
-        visibleGroups: this.workItemsGroupByVisibleGroups,
+        visibleGroups: this.visibleGroups,
         groupBy: this.groupBy,
         value,
         allGroups: this.groupValues,
       });
-
-      try {
-        await this.$apollo.mutate({
-          mutation: updateVisibleGroupsMutation,
-          variables: { visibleGroups },
-          // See syncVisibleGroupsToCache in planning_view.vue: caching this client-only
-          // mutation lets a later work item refetch overwrite unrelated edits.
-          fetchPolicy: 'no-cache',
-        });
-      } catch (error) {
-        Sentry.captureException(error);
-        return;
-      }
 
       this.trackEvent('configure_columns_on_work_item_board', { label: 'hide_group' });
 
@@ -962,6 +955,7 @@ export default {
         :can-move-right="index < renderedColumns.length - 1"
         :can-hide="canManageColumns"
         :can-create-work-item="canCreateWorkItem"
+        :inserting-card="insertingInColumnId === value.id"
         :hidden-metadata-keys="hiddenMetadataKeys"
         :active-item="activeItem"
         :detail-panel-enabled="detailPanelEnabled"

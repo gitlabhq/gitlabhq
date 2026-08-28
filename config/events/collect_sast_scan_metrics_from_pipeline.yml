@@ -6,7 +6,7 @@ identifiers:
 - project
 - namespace
 - user
-product_group: static_analysis
+product_group: code_scanning
 product_categories:
 - vulnerability_management
 milestone: '17.11'

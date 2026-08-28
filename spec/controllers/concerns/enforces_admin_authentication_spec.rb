@@ -98,6 +98,52 @@ RSpec.describe EnforcesAdminAuthentication, feature_category: :system_access do
             expect(assigns(:current_user_mode)&.admin_mode?).to be(false)
           end
 
+          it 'stores the path so re-authentication returns the admin to it' do
+            get :index
+
+            expect(controller.stored_location_for(:redirect)).to eq(request.fullpath)
+          end
+
+          context 'when the request is an XHR' do
+            shared_examples 'a request rejected with a JSON error' do
+              it 'renders a JSON error with 401 and does not set admin mode', :aggregate_failures do
+                get :index, format: request_format, xhr: true
+
+                expect(response).to have_gitlab_http_status(:unauthorized)
+                expect(response.media_type).to eq('application/json')
+                # `message` is the key the frontend renders, i.e. `onError` in
+                # new_access_token_app.vue and formatErrors in the Pinia store. Renaming it
+                # turns the error back into a silent no-op in the UI.
+                expect(json_response['message']).to eq('Admin mode is inactive. Please re-authenticate.')
+                expect(assigns(:current_user_mode)&.admin_mode?).to be(false)
+                # An XHR has no page to come back to, and PUT-only endpoints 404 on that GET.
+                expect(controller.stored_location_for(:redirect)).to be_nil
+              end
+            end
+
+            context 'when the format is JSON' do
+              let(:request_format) { :json }
+
+              it_behaves_like 'a request rejected with a JSON error'
+            end
+
+            context 'when the format is JS' do
+              let(:request_format) { :js }
+
+              it_behaves_like 'a request rejected with a JSON error'
+            end
+          end
+
+          context 'when a non-HTML format is requested without an XHR' do
+            # A CSV export under /admin is a plain navigation. It has to keep redirecting, so the
+            # admin re-authenticates and is then returned to the download.
+            it 'redirects to the re-authentication page' do
+              get :index, format: :csv
+
+              expect(response).to redirect_to(new_admin_session_path)
+            end
+          end
+
           context 'when admin mode is active', :enable_admin_mode do
             it 'renders ok' do
               get :index

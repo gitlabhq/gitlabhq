@@ -16,6 +16,7 @@ description: "Migrate from GitHub to GitLab."
 {{< history >}}
 
 - **Imported** badge [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461208) in GitLab 17.2.
+- **Use alternative comments import method** checkbox [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250959) in GitLab 19.4. This comments import method is now always used for new imports and cannot be turned off.
 
 {{< /history >}}
 
@@ -174,14 +175,11 @@ When the **Organization** tab is selected, you can further narrow down your sear
 
 To make imports as fast as possible, the following items aren't imported from GitHub by default:
 
-- More than approximately 30,000 comments because of a [limitation of the GitHub API](troubleshooting_github_import.md#missing-comments).
 - Markdown attachments from repository comments, release posts, issue descriptions, and pull request descriptions. These can include
   images, text, or binary attachments. If not imported, links in Markdown to attachments break after you remove the attachments from GitHub.
 
 You can choose to import these items, but this could significantly increase import time. To import these items, select the appropriate fields in the UI:
 
-- **Use alternative comments import method**. If importing GitHub projects with more than approximately 30,000 comments across all issues and pull requests, you should enable this method because of a
-  [limitation of the GitHub API](troubleshooting_github_import.md#missing-comments).
 - **Import Markdown attachments**.
 - **Import collaborators** (selected by default). Leaving it selected might result in new users using a seat in the group or namespace,
   and being granted permissions [as high as project owner](#collaborators-members). Only direct collaborators are imported.

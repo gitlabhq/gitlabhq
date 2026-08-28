@@ -9,6 +9,8 @@ module Gitlab
       # implements it today; a future remote (e.g. gRPC) adapter would implement
       # the same interface, keeping the facade and callers unchanged.
       class PolicyRepository
+        include EnumeratedAttributeValidation
+
         REQUIRED_ATTRIBUTES = [:organization_id, :name, :trigger_type].freeze
 
         # Text length limits matching database constraints
@@ -69,6 +71,8 @@ module Gitlab
         MODES = %w[audit warn enforce].freeze
         LIFECYCLE_STATES = %w[active disabled].freeze
 
+        ENUMERATED_ATTRIBUTES = { mode: MODES, lifecycle_state: LIFECYCLE_STATES }.freeze
+
         DEFAULT_MODE = 'enforce'
         DEFAULT_LIFECYCLE_STATE = 'active'
 
@@ -77,8 +81,9 @@ module Gitlab
         # @return [Gitlab::PolicyStore::Policy] the created policy
         # @raise [Gitlab::PolicyStore::ValidationError] if the policy is invalid, its name is
         #   taken, an attribute is outside CREATABLE_ATTRIBUTES and IMMUTABLE_ATTRIBUTES,
-        #   one of NON_NULLABLE_ATTRIBUTES is explicitly nil, or its rules merge into a
-        #   module larger than MAX_COMPILED_RULES_BYTES
+        #   one of NON_NULLABLE_ATTRIBUTES is explicitly nil, its mode or lifecycle_state is
+        #   outside ENUMERATED_ATTRIBUTES, or its rules merge into a module larger than
+        #   MAX_COMPILED_RULES_BYTES
         def create(_attributes)
           raise NotImplementedError
         end
@@ -93,8 +98,9 @@ module Gitlab
         # @raise [Gitlab::PolicyStore::ValidationError] if the result is invalid, its name is
         #   taken, an attribute is outside UPDATABLE_ATTRIBUTES and IMMUTABLE_ATTRIBUTES, one of
         #   IDENTITY_ATTRIBUTES differs from the stored policy, one of
-        #   NON_NULLABLE_ATTRIBUTES is explicitly nil, or replacement rules merge into a
-        #   module larger than MAX_COMPILED_RULES_BYTES
+        #   NON_NULLABLE_ATTRIBUTES is explicitly nil, its mode or lifecycle_state is outside
+        #   ENUMERATED_ATTRIBUTES, or replacement rules merge into a module larger than
+        #   MAX_COMPILED_RULES_BYTES
         def update(_id, _attributes)
           raise NotImplementedError
         end

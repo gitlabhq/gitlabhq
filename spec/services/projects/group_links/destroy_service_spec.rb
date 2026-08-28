@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_category: :groups_and_projects do
   let_it_be(:user) { create :user }
-  let_it_be(:project) { create(:project, :private) }
+  let_it_be_with_reload(:project) { create(:project, :private) }
   let_it_be(:group) { create(:group) }
   let_it_be(:group_user) { create(:user, guest_of: group) }
 
@@ -44,14 +44,14 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_categor
   end
 
   context 'when the user has proper permissions to remove a group-link from a project' do
-    context 'when the user is a OWNER in the project' do
-      before do
-        project.add_owner(user)
-      end
+    before_all do
+      project.add_owner(user)
+    end
 
+    context 'when the user is an OWNER in the project' do
       it_behaves_like 'removes group from project'
 
-      context 'project authorizations refresh', :sidekiq_inline do
+      context 'project authorizations refresh' do
         it 'calls AuthorizedProjectUpdate::ProjectRecalculateWorker to update project authorizations' do
           expect(AuthorizedProjectUpdate::ProjectRecalculateWorker)
             .to receive(:perform_async).with(group_link.project.id)
@@ -59,7 +59,7 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_categor
           subject.execute(group_link)
         end
 
-        it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations' do
+        it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations', :sidekiq_inline do
           stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
 
           expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
@@ -102,13 +102,17 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_categor
           end
 
           context 'when project is public' do
-            let(:project) { create(:project, :public) }
+            before_all do
+              Project.where(id: project.id).update_all(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+            end
 
             it_behaves_like 'removes confidential todos'
           end
 
           context 'when project is internal' do
-            let(:project) { create(:project, :public) }
+            before_all do
+              Project.where(id: project.id).update_all(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+            end
 
             it_behaves_like 'removes confidential todos'
           end
@@ -118,35 +122,21 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_categor
       context 'on trying to destroy a link with OWNER access' do
         let(:group_access) { Gitlab::Access::OWNER }
 
-        it 'does not remove the group from project' do
+        it 'removes the group from project and returns success' do
           expect do
             result = subject.execute(group_link)
 
             expect(result[:status]).to eq(:success)
-          end.to change { project.reload.project_group_links.count }
+          end.to change { project.reload.project_group_links.count }.from(1).to(0)
         end
 
         context 'if the user is an OWNER of the group' do
-          before do
+          before_all do
             group.add_owner(user)
           end
 
           it_behaves_like 'removes group from project'
         end
-      end
-    end
-
-    context 'when the user is an OWNER in the project' do
-      before do
-        project.add_owner(user)
-      end
-
-      it_behaves_like 'removes group from project'
-
-      context 'on trying to destroy a link with OWNER access' do
-        let(:group_access) { Gitlab::Access::OWNER }
-
-        it_behaves_like 'removes group from project'
       end
     end
   end

@@ -18,11 +18,11 @@ RSpec.describe Ci::StuckPipelines::ProcessService, feature_category: :continuous
 
   describe '#execute' do
     context 'with a stale running pipeline with no active builds' do
-      let!(:stale_pipeline) do
+      let_it_be(:stale_pipeline) do
         create(:ci_pipeline, :running, project: project, updated_at: 10.minutes.ago)
       end
 
-      before do
+      before_all do
         create(:ci_build, :success, pipeline: stale_pipeline)
       end
 
@@ -43,7 +43,7 @@ RSpec.describe Ci::StuckPipelines::ProcessService, feature_category: :continuous
     end
 
     context 'with a recently updated running pipeline' do
-      let!(:active_pipeline) do
+      let_it_be(:active_pipeline) do
         create(:ci_pipeline, :running, project: project, updated_at: 2.minutes.ago)
       end
 
@@ -51,7 +51,7 @@ RSpec.describe Ci::StuckPipelines::ProcessService, feature_category: :continuous
     end
 
     context 'with a non-running pipeline with old updated_at' do
-      let!(:completed_pipeline) do
+      let_it_be(:completed_pipeline) do
         create(:ci_pipeline, :success, project: project, updated_at: 10.minutes.ago)
       end
 
@@ -59,7 +59,7 @@ RSpec.describe Ci::StuckPipelines::ProcessService, feature_category: :continuous
     end
 
     context 'with a running pipeline older than the lookback window' do
-      let!(:old_pipeline) do
+      let_it_be(:old_pipeline) do
         create(:ci_pipeline, :running, project: project, updated_at: 2.hours.ago)
       end
 
@@ -67,7 +67,7 @@ RSpec.describe Ci::StuckPipelines::ProcessService, feature_category: :continuous
     end
 
     context 'with more stale pipelines than the batch size' do
-      let!(:stale_pipelines) do
+      let_it_be(:stale_pipelines) do
         create_list(:ci_pipeline, 5, :running, project: project, updated_at: 10.minutes.ago).each do |pipeline|
           create(:ci_build, :success, pipeline: pipeline)
         end
@@ -87,24 +87,20 @@ RSpec.describe Ci::StuckPipelines::ProcessService, feature_category: :continuous
     end
 
     context 'when exceeding MAX_PIPELINES' do
-      before do
-        stub_const("#{described_class}::MAX_PIPELINES", 2)
-        stub_const("#{described_class}::BATCH_SIZE", 1)
-
+      before_all do
         create_list(:ci_pipeline, 3, :running, project: project, updated_at: 10.minutes.ago).each do |pipeline|
           create(:ci_build, :success, pipeline: pipeline)
         end
       end
 
-      it 'stops enqueuing after the limit is reached' do
-        expect(PipelineProcessWorker)
-          .to receive(:perform_async).twice
-
-        service.execute
+      before do
+        stub_const("#{described_class}::MAX_PIPELINES", 2)
+        stub_const("#{described_class}::BATCH_SIZE", 1)
       end
 
-      it 'logs a warning' do
-        allow(PipelineProcessWorker).to receive(:perform_async)
+      it 'stops enqueuing after the limit is reached and logs a warning', :aggregate_failures do
+        expect(PipelineProcessWorker)
+          .to receive(:perform_async).twice
 
         expect(Gitlab::AppLogger).to receive(:warn).with(
           hash_including(

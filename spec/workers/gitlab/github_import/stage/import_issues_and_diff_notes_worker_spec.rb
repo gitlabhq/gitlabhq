@@ -6,12 +6,11 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssuesAndDiffNotesWorker, feat
   let_it_be(:project) { create(:project) }
 
   let(:settings) { ::Gitlab::GithubImport::Settings.new(project.reload) }
-  let(:single_endpoint_optional_stage) { true }
 
   subject(:worker) { described_class.new }
 
   before do
-    settings.write({ optional_stages: { single_endpoint_notes_import: single_endpoint_optional_stage } })
+    settings.write({})
   end
 
   it_behaves_like Gitlab::GithubImport::StageMethods
@@ -53,8 +52,15 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssuesAndDiffNotesWorker, feat
       end
     end
 
+    # single_endpoint_notes_import is hardcoded to enabled in Settings#write for new imports,
+    # so this context stubs Settings#enabled? directly to keep the disabled branch (kept as a
+    # rollback safety net) covered even though it's currently unreachable in production.
     context 'when optional stage single_endpoint_notes_import is disabled' do
-      let(:single_endpoint_optional_stage) { false }
+      before do
+        allow_next_instance_of(Gitlab::GithubImport::Settings) do |settings|
+          allow(settings).to receive(:enabled?).with(:single_endpoint_notes_import).and_return(false)
+        end
+      end
 
       it 'includes default diff notes importer' do
         expect(worker.importers(project)).to contain_exactly(

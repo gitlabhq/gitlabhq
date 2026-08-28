@@ -204,7 +204,6 @@ module QA
           project.github_repository_path = github_repo
           project.personal_namespace = user.username
           project.api_client = user_api_client
-          project.full_notes_import = true
         end
       end
 

@@ -163,7 +163,7 @@ describe('Job actions cell', () => {
     ${findUnscheduleButton} | ${'unschedule'} | ${scheduledJob}  | ${JobUnscheduleMutation} | ${unscheduleMutationHandler}
     ${findCancelButton}     | ${'cancel'}     | ${cancelableJob} | ${JobCancelMutation}     | ${cancelMutationHandler}
   `(
-    'the mutation action $action emits the jobActionPerformed event',
+    'the mutation action $action emits the `job-action-performed` event',
     async ({ button, jobType, mutationFile, handler }) => {
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
 
@@ -173,7 +173,7 @@ describe('Job actions cell', () => {
 
       await waitForPromises();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('jobActionPerformed');
+      expect(eventHub.$emit).toHaveBeenCalledWith('job-action-performed');
       expect(visitUrl).not.toHaveBeenCalled();
     },
   );

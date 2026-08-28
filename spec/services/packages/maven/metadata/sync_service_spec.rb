@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe ::Packages::Maven::Metadata::SyncService, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:versionless_package_for_versions) { create(:maven_package, name: 'test', version: nil, project: project) }
+  let_it_be(:project) { create(:project, group: create(:group)) }
+  let_it_be_with_reload(:versionless_package_for_versions) { create(:maven_package, name: 'test', version: nil, project: project, package_files: []) }
   let_it_be_with_reload(:metadata_file_for_versions) { create(:package_file, :xml, package: versionless_package_for_versions) }
   let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: versionless_package_for_versions, file_name: Packages::Maven::Metadata.filename) }
 
@@ -159,7 +159,7 @@ RSpec.describe ::Packages::Maven::Metadata::SyncService, feature_category: :pack
 
       context 'with a maven plugin package' do
         let_it_be(:versionless_package_name_for_plugins) { versionless_package_for_versions.maven_metadatum.app_group.tr('.', '/') }
-        let_it_be_with_reload(:versionless_package_for_plugins) { create(:maven_package, name: versionless_package_name_for_plugins, version: nil, project: project) }
+        let_it_be_with_reload(:versionless_package_for_plugins) { create(:maven_package, name: versionless_package_name_for_plugins, version: nil, project: project, package_files: []) }
         let_it_be_with_reload(:metadata_file_for_plugins) { create(:package_file, :xml, package: versionless_package_for_plugins) }
 
         let(:create_plugins_xml_service_double) { double(::Packages::Maven::Metadata::CreatePluginsXmlService, execute: create_plugins_xml_service_response) }
@@ -238,14 +238,14 @@ RSpec.describe ::Packages::Maven::Metadata::SyncService, feature_category: :pack
 
           context 'without a versionless package for plugins' do
             before do
-              versionless_package_for_plugins.package_files.update_all(file_name: 'test.txt')
+              versionless_package_for_plugins.update!(version: '2.2.2')
               expect(::Packages::Maven::Metadata::CreatePluginsXmlService).not_to receive(:new)
             end
 
             it_behaves_like 'returning a success service response', message: 'New metadata package files created'
           end
 
-          context 'without a versionless package for versions' do
+          context 'without a metadata package file for versions' do
             before do
               versionless_package_for_versions.package_files.update_all(file_name: 'test.txt')
               expect(::Packages::Maven::Metadata::CreateVersionsXmlService).not_to receive(:new)

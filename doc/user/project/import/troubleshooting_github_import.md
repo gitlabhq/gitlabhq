@@ -51,8 +51,6 @@ repository to be imported manually. Administrators can manually import the repos
    .write(
      timeout_strategy: "optimistic",
      optional_stages: {
-       single_endpoint_issue_events_import: true,
-       single_endpoint_notes_import: true,
        attachments_import: true,
        collaborators_import: true
      }
@@ -83,9 +81,10 @@ When this limit is reached, the GitHub API instead returns the following error:
 In order to keep the API fast for everyone, pagination is limited for this resource. Check the rel=last link relation in the Link response header to see how far back you can traverse.
 ```
 
-When importing GitHub projects with a large number of comments, select the **Use alternative comments import method**
-[additional item to import](github.md#select-additional-items-to-import) checkbox. This setting makes the import process take longer because it increases the number of network requests
-required to perform the import.
+This error can only occur for project imports on GitLab 19.3 and earlier when the
+**Use alternative comments import method** option is not selected. This error cannot
+occur for project imports configured on GitLab 19.4 and later because this method is
+always enabled.
 
 ## Related topics
 

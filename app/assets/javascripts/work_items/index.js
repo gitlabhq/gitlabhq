@@ -10,8 +10,6 @@ import { apolloProvider } from '~/graphql_shared/issuable_client';
 import App from './components/app.vue';
 import WorkItemBreadcrumb from './components/work_item_breadcrumb.vue';
 import activeDiscussionQuery from './components/design_management/graphql/client/active_design_discussion.query.graphql';
-import workItemsGroupByVisibleGroupsQuery from './board/grouping/graphql/client/visible_groups.query.graphql';
-import { SHOW_ALL_GROUPS } from './board/grouping/visibility';
 import { createRouter } from './router';
 
 Vue.use(VueApollo);
@@ -52,14 +50,6 @@ export const initWorkItemsRoot = ({ workItemType, withTabs } = {}) => {
         id: null,
         source: null,
       },
-    },
-  });
-
-  apolloProvider.clients.defaultClient.cache.writeQuery({
-    query: workItemsGroupByVisibleGroupsQuery,
-    data: {
-      workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS,
-      workItemsGroupByVisibleGroupsHydrated: false,
     },
   });
 

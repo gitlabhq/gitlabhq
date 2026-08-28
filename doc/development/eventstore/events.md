@@ -111,6 +111,7 @@ To find subscribers, search the subscription files under
 
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
+| `MergeRequests::AfterCreateCloudEvent` | `code_suggestions` | CE | Published when a newly created merge request is ready for automation, with its diff built and its code-owner approval rules synced against it. Backs the **created** action for the `merge_request` trigger on the GitLab Duo Agent Platform. Uses the CloudEvents v1.0 envelope, and fires for draft merge requests too. |
 | `MergeRequests::ApprovalsResetEvent` | `code_review_workflow` | EE | Published when existing approvals on a merge request are reset, typically because new commits were pushed or other state changes invalidated prior approvals. |
 | `MergeRequests::ApprovedCloudEvent` | `code_suggestions` | CE | Published when a merge request receives all required approvals. CloudEvent counterpart of the legacy ApprovedEvent, using the CloudEvents v1.0 envelope with a richer payload that includes merge_request IID, project ID, and organization context. |
 | `MergeRequests::ApprovedEvent` | `code_review_workflow` | CE | Published when a user approves a merge request. Fires only when the approving user is eligible (not the author, satisfies any approval rules), the MR is not already merged, and the approval record is persisted. |

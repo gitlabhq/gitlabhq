@@ -1,0 +1,11 @@
+---
+name: merge_request_create_flow_trigger
+description: Scoped to the Project level. If enabled, the created merge request trigger
+  event is available and Developer flow runs start when a merge request is created.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592452
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242698
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/618743
+milestone: '19.4'
+group: group::dap events
+type: gitlab_com_derisk
+default_enabled: false

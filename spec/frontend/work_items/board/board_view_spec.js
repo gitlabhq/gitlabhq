@@ -11,7 +11,6 @@ import BoardColumn from '~/work_items/board/components/board_column.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import * as grouping from '~/work_items/board/grouping';
 import { addWorkItemToColumn } from '~/work_items/board/graphql/cache_updates';
-import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
 import getBoardWorkItemsQuery from 'ee_else_ce/work_items/board/graphql/get_board_work_items.query.graphql';
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import {
@@ -50,6 +49,7 @@ describe('BoardView', () => {
   const createComponent = ({
     props = {},
     visibleGroups = null,
+    visibleGroupsLoaded = true,
     glFeatures = {},
     handlers = [],
   } = {}) => {
@@ -58,15 +58,6 @@ describe('BoardView', () => {
       ...(gateQuery ? [[gateQuery, gateDataHandler]] : []),
       ...handlers,
     ]);
-    apolloProvider.clients.defaultClient.writeQuery({
-      query: workItemsGroupByVisibleGroupsQuery,
-      // `hydrated: true` by default so the query fires immediately, matching
-      // the common case in tests below that aren't specifically about hydration.
-      data: {
-        workItemsGroupByVisibleGroups: visibleGroups,
-        workItemsGroupByVisibleGroupsHydrated: true,
-      },
-    });
 
     wrapper = shallowMountExtended(BoardView, {
       apolloProvider,
@@ -76,6 +67,10 @@ describe('BoardView', () => {
       propsData: {
         rootPageFullPath: 'full/path',
         queryVariables,
+        // `true` by default so the group values query fires immediately, matching
+        // the common case in tests below that aren't specifically about loading.
+        visibleGroups,
+        visibleGroupsLoaded,
         ...props,
       },
     });
@@ -201,21 +196,9 @@ describe('BoardView', () => {
   });
 
   describe('fetch scoping', () => {
-    describe('when the store has not hydrated', () => {
+    describe('before the persisted selection is known', () => {
       beforeEach(() => {
-        const scopedApolloProvider = createMockApollo([[groupValuesQuery, groupValuesHandler]]);
-        scopedApolloProvider.clients.defaultClient.writeQuery({
-          query: workItemsGroupByVisibleGroupsQuery,
-          data: {
-            workItemsGroupByVisibleGroups: null,
-            workItemsGroupByVisibleGroupsHydrated: false,
-          },
-        });
-
-        wrapper = shallowMountExtended(BoardView, {
-          apolloProvider: scopedApolloProvider,
-          propsData: { rootPageFullPath: 'full/path', queryVariables },
-        });
+        createComponent({ visibleGroupsLoaded: false });
       });
 
       it('does not fetch the group values', () => {

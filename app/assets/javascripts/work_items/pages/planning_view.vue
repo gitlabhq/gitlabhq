@@ -145,7 +145,6 @@ import {
   preferencesChanged,
 } from '~/work_items/list/view_change_detection';
 import { persistSortPreference } from '~/work_items/list/display_settings_preferences';
-import updateVisibleGroupsMutation from '~/work_items/board/grouping/graphql/client/update_visible_groups.mutation.graphql';
 import { buildInitialViewState } from '~/work_items/list/saved_view_config';
 
 import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
@@ -1169,19 +1168,6 @@ export default {
         this.restoreViewDraft();
       }
     },
-    // Seed the local visibility cache once preferencesLoaded is true. Until then, visibleGroups
-    // reads as `{}` just because it hasn't loaded yet, not because nothing is selected — writing
-    // it early would make board_view fetch everything unscoped too soon.
-    visibleGroups(visibleGroups) {
-      if (this.preferencesLoaded) {
-        this.syncVisibleGroupsToCache(visibleGroups);
-      }
-    },
-    preferencesLoaded(loaded) {
-      if (loaded) {
-        this.syncVisibleGroupsToCache(this.visibleGroups);
-      }
-    },
     eeSearchTokens() {
       if (this.isSavedView && Boolean(this.savedView)) {
         this.applySavedViewState(this.savedView);
@@ -1313,16 +1299,6 @@ export default {
   },
 
   methods: {
-    syncVisibleGroupsToCache(visibleGroups) {
-      this.$apollo.mutate({
-        mutation: updateVisibleGroupsMutation,
-        variables: { visibleGroups },
-        // Client-only mutation: the resolver writes to the cache itself, so we never read the result.
-        // Caching it makes a later work item refetch overwrite unrelated edits. We have not pinned
-        // down why, but skipping the cache write stops it.
-        fetchPolicy: 'no-cache',
-      });
-    },
     saveSessionFilters(tokens) {
       if (this.isSavedView) {
         setSavedViewSessionFilters(this.$route.params.view_id, tokens);
@@ -2553,6 +2529,8 @@ export default {
       :query-variables="queryVariables"
       :collapsed-groups="collapsedGroups"
       :group-order="groupOrder"
+      :visible-groups="visibleGroups"
+      :visible-groups-loaded="preferencesLoaded"
       :can-manage-columns="isLoggedIn"
       :hidden-metadata-keys="hiddenMetadataKeys"
       :active-item="activeItem"

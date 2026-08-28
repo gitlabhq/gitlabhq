@@ -9,6 +9,8 @@ module Gitlab
       # surface editing policies. A future remote adapter implements the same
       # interface, keeping the facade and the engine unchanged.
       class EvaluationRecorder
+        include EnumeratedAttributeValidation
+
         TRIGGER_TYPES = Triggers::TYPES
         MODES = PolicyRepository::MODES
         VERDICTS = %w[allow deny require_approval].freeze
@@ -46,7 +48,7 @@ module Gitlab
 
           reject_unknown_attributes!(normalized)
           validate_required_attributes!(normalized)
-          validate_enum_attributes!(normalized)
+          validate_enumerated_attributes!(normalized, ENUM_ATTRIBUTES)
           validate_policy_version!(normalized)
           validate_violations!(normalized)
 
@@ -69,16 +71,6 @@ module Gitlab
           return if missing.empty?
 
           raise PolicyStore::ValidationError, "Missing required attributes: #{missing.join(', ')}"
-        end
-
-        def validate_enum_attributes!(attributes)
-          ENUM_ATTRIBUTES.each do |attribute, permitted|
-            value = attributes[attribute]
-            next if value.nil? || permitted.include?(value)
-
-            raise PolicyStore::ValidationError,
-              "#{attribute} must be one of: #{permitted.join(', ')}"
-          end
         end
 
         def validate_policy_version!(attributes)

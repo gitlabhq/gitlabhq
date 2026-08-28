@@ -1,5 +1,7 @@
-import Vue from 'vue';
 import axios from '~/lib/utils/axios_utils';
+import { compatH } from '~/lib/utils/vue3compat/compat_h';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
+import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { pinia } from '~/pinia/instance';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import FileBrowserToggle from '~/diffs/components/file_browser_toggle.vue';
@@ -50,70 +52,77 @@ const bindFocusShortcut = () => {
 };
 
 const initToggle = (el) => {
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el: document.querySelector('#js-page-breadcrumbs-extra'),
     name: 'FileBrowserDrawerToggleRoot',
     pinia,
-    computed: {
-      visible() {
-        return useMainContainer().isCompact && useApp().appVisible;
+    component: normalizeRender({
+      name: 'FileBrowserDrawerToggleApp',
+      computed: {
+        visible() {
+          return useMainContainer().isCompact && useApp().appVisible;
+        },
       },
-    },
-    render(h) {
-      if (!this.visible) return null;
+      render() {
+        if (!this.visible) return null;
 
-      return h(FileBrowserDrawerToggle);
-    },
+        return compatH(FileBrowserDrawerToggle);
+      },
+    }),
   });
-  // eslint-disable-next-line no-new
-  new Vue({
+
+  initVueApp({
     el,
     name: 'FileBrowserToggleRoot',
     pinia,
-    computed: {
-      visible() {
-        return !useMainContainer().isCompact;
+    component: normalizeRender({
+      name: 'FileBrowserToggleApp',
+      computed: {
+        visible() {
+          return !useMainContainer().isCompact;
+        },
       },
-    },
-    render(h) {
-      if (!this.visible) return null;
+      render() {
+        if (!this.visible) return null;
 
-      return h(FileBrowserToggle, { props: { bindFocusShortcut: false } });
-    },
+        return compatH(FileBrowserToggle, { props: { bindFocusShortcut: false } });
+      },
+    }),
   });
 };
 
 const initBrowserComponent = async (el, shouldSort) => {
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el,
     name: 'FileBrowserRoot',
     pinia,
-    render(h) {
-      return h(useMainContainer().isCompact ? FileBrowserDrawer : FileBrowser, {
-        props: {
-          groupBlobsListItems: shouldSort,
-          linkedFilePath: useDiffsList().linkedFilePath,
-        },
-        on: {
-          'click-file': (file) => {
-            const diffsView = useDiffsView(pinia);
-
-            if (diffsView.singleFileMode) {
-              const index = useFileBrowser(pinia).flatBlobsList.findIndex(
-                (entry) => entry.fileHash === file.fileHash,
-              );
-
-              if (index >= 0) diffsView.goToFile(index);
-              return;
-            }
-
-            DiffFile.findByFileHash(file.fileHash).selectFile();
+    component: normalizeRender({
+      name: 'FileBrowserApp',
+      render() {
+        return compatH(useMainContainer().isCompact ? FileBrowserDrawer : FileBrowser, {
+          props: {
+            groupBlobsListItems: shouldSort,
+            linkedFilePath: useDiffsList().linkedFilePath,
           },
-        },
-      });
-    },
+          on: {
+            'click-file': (file) => {
+              const diffsView = useDiffsView(pinia);
+
+              if (diffsView.singleFileMode) {
+                const index = useFileBrowser(pinia).flatBlobsList.findIndex(
+                  (entry) => entry.fileHash === file.fileHash,
+                );
+
+                if (index >= 0) diffsView.goToFile(index);
+                return;
+              }
+
+              DiffFile.findByFileHash(file.fileHash).selectFile();
+            },
+          },
+        });
+      },
+    }),
   });
 };
 

@@ -502,4 +502,53 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       end
     end
   end
+
+  describe 'the deferred MergeRequests::AfterCreateCloudEvent' do
+    let(:merge_request) { create(:merge_request, merge_status: :unchecked) }
+
+    subject(:execute) { described_class.new(merge_request).execute }
+
+    shared_examples 'asking the publisher to publish' do
+      it 'gives the publisher its one chance to publish' do
+        expect_next_instance_of(MergeRequests::AfterCreateEventPublisher, merge_request) do |publisher|
+          expect(publisher).to receive(:publish_deferred)
+        end
+
+        execute
+      end
+    end
+
+    it_behaves_like 'asking the publisher to publish'
+
+    context 'when the merge request is broken' do
+      before do
+        allow(merge_request).to receive(:broken?).and_return(true)
+      end
+
+      it_behaves_like 'asking the publisher to publish'
+    end
+
+    context 'when the merge to ref fails (for example, conflicts)' do
+      before do
+        allow_next_instance_of(MergeRequests::MergeToRefService) do |service|
+          allow(service).to receive(:execute).and_return(status: :error)
+        end
+      end
+
+      it_behaves_like 'asking the publisher to publish'
+    end
+
+    # The merge head diff is what code-owner approval rules are synced against, so a
+    # failed reload means the event is published without them. No later checkpoint is
+    # guaranteed, and stranding the event is worse.
+    context 'when the merge head diff reload fails' do
+      before do
+        allow_next_instance_of(MergeRequests::ReloadMergeHeadDiffService) do |service|
+          allow(service).to receive(:execute).and_return(status: :error, message: 'failed')
+        end
+      end
+
+      it_behaves_like 'asking the publisher to publish'
+    end
+  end
 end

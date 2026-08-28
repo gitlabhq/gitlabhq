@@ -117,35 +117,27 @@ RSpec.describe Current, feature_category: :organization do
         described_class.cells_claims_leases = true
       end
 
-      it 'returns the cached value without re-evaluating flags' do
+      it 'returns the cached value without re-reading the cell config' do
         expect(Gitlab.config.cell).not_to receive(:enabled)
-        expect(Feature).not_to receive(:enabled)
         expect(cells_claims_leases?).to be(true)
       end
     end
 
     context 'when value is not yet set' do
-      before do
-        allow(Gitlab.config.cell).to receive(:enabled).and_return(cell_enabled)
-        stub_feature_flags(cells_unique_claims: feature_enabled)
+      it 'returns true and memoizes the value when the cell is enabled' do
+        allow(Gitlab.config.cell).to receive(:enabled).and_return(true)
+
+        expect(cells_claims_leases?).to be(true)
+        expect(Gitlab.config.cell).not_to receive(:enabled)
+        expect(described_class.cells_claims_leases?).to be(true)
       end
 
-      where(:cell_enabled, :feature_enabled, :expected_result) do
-        [
-          [true,  true,  true],
-          [true,  false, false],
-          [false, true,  false],
-          [false, false, false]
-        ]
-      end
+      it 'returns false and memoizes the value when the cell is disabled' do
+        allow(Gitlab.config.cell).to receive(:enabled).and_return(false)
 
-      with_them do
-        it 'returns expected result and memoizes the value' do
-          expect(cells_claims_leases?).to eq(expected_result)
-          expect(Gitlab.config.cell).not_to receive(:enabled)
-          expect(Feature).not_to receive(:enabled?)
-          expect(described_class.cells_claims_leases?).to eq(expected_result)
-        end
+        expect(cells_claims_leases?).to be(false)
+        expect(Gitlab.config.cell).not_to receive(:enabled)
+        expect(described_class.cells_claims_leases?).to be(false)
       end
     end
   end

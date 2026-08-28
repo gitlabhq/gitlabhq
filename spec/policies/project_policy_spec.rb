@@ -1485,7 +1485,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     context 'private project' do
       let(:project) { private_project }
 
-      context 'feature private' do
+      shared_examples 'metrics dashboard unaffected by access level for a private project' do
         context 'with reporter' do
           let(:current_user) { reporter }
 
@@ -1504,23 +1504,16 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         end
       end
 
+      context 'feature private' do
+        it_behaves_like 'metrics dashboard unaffected by access level for a private project'
+      end
+
       context 'feature enabled' do
-        context 'with reporter' do
-          let(:current_user) { reporter }
-
-          it { is_expected.to be_allowed(:metrics_dashboard) }
-          it { is_expected.to be_allowed(:read_prometheus) }
-          it { is_expected.to be_allowed(:read_deployment) }
+        before do
+          project.project_feature.update!(metrics_dashboard_access_level: ProjectFeature::ENABLED)
         end
 
-        %w[anonymous guest planner].each do |role|
-          context "with #{role}" do
-            let(:current_user) { send(role) }
-
-            it { is_expected.to be_disallowed(:metrics_dashboard) }
-            it { is_expected.to be_disallowed(:read_prometheus) }
-          end
-        end
+        it_behaves_like 'metrics dashboard unaffected by access level for a private project'
       end
     end
 

@@ -1,6 +1,6 @@
 ---
-source_checksum: 74348cb7ea067bf8
-distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
+source_checksum: e67321bd862e9a3b
+distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -53,6 +53,7 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 - DO NOT skip a new pipeline if the latest one was created before approval and the MR has backend changes.
 - DO NOT start a new pipeline if the latest merged results pipeline was created less than 16 hours ago (72 hours for stable branches).
 - Use Squash and merge only if the author has already set this option or the commit history is clearly messy; otherwise respect the author's setting.
+- Push feedback-based changes as isolated commits rather than squashing them, so reviewers can quickly identify changes since their last review.
 - Confirm all required approvers have approved before merging.
 - DO NOT approve your own MR or approve an MR you have added commits to.
 
@@ -94,7 +95,7 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 - Review all changes thoroughly for malicious code before starting a merged results pipeline on fork MRs.
 - Pay particular attention to new or updated dependencies (`Gemfile.lock`, `yarn.lock`, Node packages) in community MRs.
 - Review links and images in documentation MRs
-- Consult `@gitlab-com/gl-security/appsec` before manually starting any pipeline for suspicious community MRs.
+- Consult `@gitlab-com/gl-security/appsec` before starting any pipeline when in doubt about a community MR.
 - Only set the milestone when the MR is likely to be included in the current milestone
 - When taking over an unresponsive community MR: comment that you are taking over, add the `~"coach will finish"` label, create a feature branch from main, merge their branch into it, open a new MR linking the original, add the `~"Community contribution"` label, and notify the contributor.
 

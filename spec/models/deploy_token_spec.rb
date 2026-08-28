@@ -393,7 +393,13 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
         end
 
         context 'and the passed-in project does not belong to the token group' do
-          it { is_expected.to be_falsy }
+          let(:other_group) { create(:group) }
+
+          it 'is false' do
+            other_group.projects << project
+
+            is_expected.to be_falsy
+          end
         end
 
         context 'and the project belongs to a group that is parent of the token group' do
