@@ -302,12 +302,17 @@ export default {
         const { errorMessages, messages } = data.createNote.quickActionsStatus ?? {};
 
         this.errorMessages = errorMessages?.join(' ');
-        this.messages = messages?.join(' ');
+        // The server builds `messages` while parsing the note, before commands apply,
+        // so it can claim work that a failed apply rolled back. Show only the errors.
+        this.messages = this.errorMessages ? '' : messages?.join(' ');
         this.$emit('replied');
         clearDraft(this.autosaveKey);
         clearDraft(this.autosaveKeyInternalNote);
         this.cancelEditing();
-        this.doFullPageReloadIfUnsupportedTypeChange(commentText);
+        this.doFullPageReloadIfUnsupportedTypeChangeApplied(commentText, {
+          errorMessages,
+          messages,
+        });
         this.refetchTimeTrackingIfQuickActionApplied(commentText, {
           errorMessages,
           messages,
@@ -323,13 +328,17 @@ export default {
     // The time tracking widget is loaded via its own dedicated query and isn't part of
     // the main work item query. When a time-tracking-related quick action runs successfully,
     // refetch the dedicated query so the widget reflects the latest values.
+    quickActionRanSuccessfully({ errorMessages, messages }) {
+      return (!errorMessages || errorMessages.length === 0) && messages?.length > 0;
+    },
     refetchTimeTrackingIfQuickActionApplied(commentText, { errorMessages, messages }) {
       const timeTrackingQuickActionRegex =
         /\/(spend|spent|estimate|remove_estimate|remove_time_spent)(?!\S)/im;
-      const quickActionRanSuccessfully =
-        (!errorMessages || errorMessages.length === 0) && messages?.length > 0;
 
-      if (!quickActionRanSuccessfully || !timeTrackingQuickActionRegex.test(commentText)) {
+      if (
+        !this.quickActionRanSuccessfully({ errorMessages, messages }) ||
+        !timeTrackingQuickActionRegex.test(commentText)
+      ) {
         return;
       }
 
@@ -344,12 +353,15 @@ export default {
     // we need to browse to the detail page again
     // so the legacy detail view is rendered.
     // https://gitlab.com/gitlab-org/gitlab/-/issues/502823
-    doFullPageReloadIfUnsupportedTypeChange(commentText) {
+    doFullPageReloadIfUnsupportedTypeChangeApplied(commentText, { errorMessages, messages }) {
       // Matches quick actions /promote_to incident /promote_to_incident /type incident and /convert_to_ticket case insensitive
       const unsupportedTypeChangeRegex =
         /\/(promote_to(?:_incident|\s{1,3}incident)|type\s{1,3}incident|convert_to_ticket)(?!\S)/im;
 
-      if (unsupportedTypeChangeRegex.test(commentText)) {
+      if (
+        this.quickActionRanSuccessfully({ errorMessages, messages }) &&
+        unsupportedTypeChangeRegex.test(commentText)
+      ) {
         visitUrl(this.workItem.webUrl);
       }
     },
@@ -410,6 +422,12 @@ export default {
           errors[0].includes('Commands only') &&
           errors[1].includes('Command names')
         ) {
+          return;
+        }
+
+        // Quick action errors render in the alert next to the editor;
+        // only errors without an inline message bubble up as a page-level error.
+        if (data.createNote.quickActionsStatus?.errorMessages?.length) {
           return;
         }
 

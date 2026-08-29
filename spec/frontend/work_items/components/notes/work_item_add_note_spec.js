@@ -313,6 +313,36 @@ describe('Work item add note', () => {
         expect(findErrorAlert().props('variant')).toBe('danger');
       });
 
+      it('renders the quick action error inline instead of a page-level error when the response carries both', async () => {
+        await createComponent({
+          isEditing: true,
+          mutationHandler: jest.fn().mockResolvedValue(
+            createWorkItemNoteResponse({
+              errorMessages: [
+                'Work item type cannot be changed to incident when linked to a parent epic.',
+              ],
+              messages: ['Type changed successfully.'],
+              errors: [
+                'Validation Work item type cannot be changed to incident when linked to a parent epic.',
+              ],
+            }),
+          ),
+        });
+
+        findCommentForm().vm.$emit('submit-form', {
+          commentText: '/type Incident',
+          isNoteInternal: isInternalComment,
+        });
+        await waitForPromises();
+
+        expect(findErrorAlert().text()).toBe(
+          'Work item type cannot be changed to incident when linked to a parent epic.',
+        );
+        expect(findSuccessAlert().exists()).toBe(false);
+        expect(wrapper.emitted('error')).toBeUndefined();
+        expect(visitUrl).not.toHaveBeenCalled();
+      });
+
       it('refetches widgets when work item type is updated', async () => {
         await createComponent({
           isEditing: true,
