@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
 require_relative 'schema/enum'
+require_relative 'schema/input_object'
 require_relative 'schema/scalar'
 
 module Tooling
   module Graphql
     module Docs
       class SchemaParser
-        attr_reader :enums, :scalars
+        attr_reader :enums, :input_objects, :scalars
 
         def initialize(schema)
           @schema = schema
           @enums = []
+          @input_objects = []
           @scalars = []
         end
 
@@ -30,6 +32,7 @@ module Tooling
             next if type.introspection?
 
             @enums << Schema::Enum.new(type) if type.kind.enum?
+            @input_objects << Schema::InputObject.new(type) if type.kind.input_object?
             @scalars << Schema::Scalar.new(type) if type.kind.scalar?
           end
         end

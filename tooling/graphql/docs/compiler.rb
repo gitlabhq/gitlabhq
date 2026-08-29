@@ -21,6 +21,7 @@ module Tooling
           [
             compile(:index, filename: '_index.md'),
             compile(:enums, parsed_schema.enums),
+            compile(:input_objects, parsed_schema.input_objects),
             compile(:scalars, parsed_schema.scalars)
           ]
         end

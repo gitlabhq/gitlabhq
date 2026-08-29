@@ -4,6 +4,8 @@ require 'spec_helper'
 
 require Rails.root.join('tooling/graphql/docs/helper')
 require Rails.root.join('tooling/graphql/docs/schema/enum')
+require Rails.root.join('tooling/graphql/docs/schema/scalar')
+require Rails.root.join('tooling/graphql/docs/schema/temp_undocumented')
 
 RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
   let(:helper) do
@@ -41,6 +43,25 @@ RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
       sorted = helper.sorted_by_name([value('PLAIN'), value('DEPRECATED'), value('EXPERIMENTAL')])
 
       expect(sorted.map(&:name)).to eq(%w[DEPRECATED EXPERIMENTAL PLAIN])
+    end
+  end
+
+  describe '#type' do
+    let(:fake_graphql_type) { Struct.new(:graphql_name, :description) }
+    let(:item_struct) { Struct.new(:type, :type_signature) }
+
+    it 'returns a linked type signature for a known type' do
+      scalar = Tooling::Graphql::Docs::Schema::Scalar.new(fake_graphql_type.new('String', nil))
+      item = item_struct.new(scalar, 'String')
+
+      expect(helper.type(item)).to eq('[`String`](scalars.md#string)')
+    end
+
+    it 'returns an unlinked type signature for a TempUndocumented type' do
+      temp = Tooling::Graphql::Docs::Schema::TempUndocumented.new(fake_graphql_type.new('SomeObject', nil))
+      item = item_struct.new(temp, 'SomeObject')
+
+      expect(helper.type(item)).to eq('`SomeObject`')
     end
   end
 

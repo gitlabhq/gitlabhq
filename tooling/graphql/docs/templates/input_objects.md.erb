@@ -1,0 +1,21 @@
+<%= docs_render 'page_metadata', title: 'Input types', description: 'Groups of arguments passed together to mutations and fields.' %>
+
+Input types are structured arguments passed to queries, mutations, and other fields. For more
+information, see the [GraphQL input types documentation](https://graphql.org/learn/schema/#input-object-types).
+
+<%= docs_render 'deprecation_warning_header' %>
+
+<% sorted_by_name(@input_objects).each do |input_object| %>
+
+## <%= name(input_object) %>
+
+<%= description(input_object) %>
+
+
+<% if input_object.arguments.present? %>
+### Arguments {.no_toc}
+
+<%= docs_render 'arguments_table', arguments: input_object.arguments %>
+
+<% end %>
+<% end %>

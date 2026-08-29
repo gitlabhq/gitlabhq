@@ -190,6 +190,8 @@ export default {
     },
   },
   i18n: {
+    loadingText: s__('Pipeline|Loading CI/CD variables from the pipeline configuration.'),
+    loadingHint: s__('Pipeline|This might take a few seconds.'),
     keyErrorCannotStartWithNumber: s__('CIVariablesForm|Variable key cannot start with a number.'),
     keyErrorCannotHaveNonAlphanumericOrUnderscore: s__(
       'CIVariablesForm|Variable key can only contain letters, numbers, and underscores.',
@@ -201,7 +203,15 @@ export default {
 
 <template>
   <gl-form-group id="pipeline-form-ci-variables" class="gl-mb-0" :label="s__('Pipeline|Variables')">
-    <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="md" />
+    <div
+      v-if="isLoading"
+      class="gl-mb-5 gl-flex gl-flex-col gl-items-center"
+      data-testid="ci-variables-loading"
+    >
+      <gl-loading-icon size="md" class="gl-mb-3" :label="$options.i18n.loadingText" />
+      <span class="gl-font-bold">{{ $options.i18n.loadingText }}</span>
+      <span class="gl-text-subtle">{{ $options.i18n.loadingHint }}</span>
+    </div>
     <template v-else>
       <gl-form-group class="gl-mb-0">
         <template v-for="(variable, index) in variables">

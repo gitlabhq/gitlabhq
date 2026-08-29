@@ -303,7 +303,7 @@ GEM
       nkf
       rexml
     RedCloth (4.3.4)
-    acme-client (2.0.32)
+    acme-client (2.0.34)
       base64 (~> 0.2)
       faraday (>= 1.0, < 3.0.0)
       faraday-retry (>= 1.0, < 3.0.0)
@@ -2816,7 +2816,7 @@ DEPENDENCIES
 CHECKSUMS
   CFPropertyList (3.0.7) sha256=c45721614aca8d5eb6fa216f2ec28ec38de1a94505e9766a20e98745492c3c4c
   RedCloth (4.3.4) sha256=5231b2fdd91a933915cba330e5fd1a74025e77b56f57b7404c7191ebf2812297
-  acme-client (2.0.32) sha256=fbc0b8dfba099af4c65ab9a2d3ec35332fcc7578ba906b6457502ba449334b3d
+  acme-client (2.0.34) sha256=3204a94addbdf82c06fe7a5d87a43c77ee135f0cbd05cb0ada18fffdf1935395
   action_dispatch-draw_all (0.1.0)
   actioncable (7.2.3.1) sha256=d3bf40a3f4fc79a09709878f0e5c43a5e2d8e6607089f6b38f9472b8715eb33c
   actionmailbox (7.2.3.1) sha256=a4e73480c97ab2fff5a416f92c54b065b1a6564ea4a807d42e0b83a94d4ec541

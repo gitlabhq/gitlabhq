@@ -17,12 +17,21 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
       graphql_name 'GraphQLScalar'
     end
 
+    input_object_type = Class.new(::Types::BaseInputObject) do
+      graphql_name 'GraphQLInputObject'
+
+      argument :my_arg, GraphQL::Types::String, required: false
+    end
+
     Class.new(GraphQL::Schema) do
       query(Class.new(::Types::BaseObject) do
         graphql_name 'Query'
 
         field :enum_field, enum_type
         field :scalar_field, scalar_type
+        field :input_field, scalar_type do
+          argument :input, input_object_type, required: false
+        end
       end)
     end
   end
@@ -39,6 +48,18 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
 
       it 'contains all enum types in the schema' do
         expect(enums.map(&:name)).to contain_exactly('GraphQLEnum')
+      end
+    end
+
+    describe '@input_objects' do
+      subject(:input_objects) { result.input_objects }
+
+      it 'contains an array of input object types' do
+        expect(input_objects).to all(be_a(Tooling::Graphql::Docs::Schema::InputObject))
+      end
+
+      it 'contains the input object type in the schema' do
+        expect(input_objects.map(&:name)).to include('GraphQLInputObject')
       end
     end
 

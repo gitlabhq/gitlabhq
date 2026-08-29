@@ -7,13 +7,27 @@ require_relative Rails.root.join('tooling/graphql/docs/compiler')
 RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
   let_it_be(:mock_schema) do
     spec_scalar = Class.new(::Types::BaseScalar) do
-      graphql_name 'SpecScalar'
-      description 'A spec scalar.'
+      graphql_name 'Scalar'
+      description 'A scalar.'
+    end
+
+    spec_input_object = Class.new(::Types::BaseInputObject) do
+      graphql_name 'InputObject'
+      description 'An input object.'
+
+      argument :scalar_arg, GraphQL::Types::String, required: false,
+        description: 'A scalar argument.'
+      argument :deprecated_arg, GraphQL::Types::String, required: false,
+        description: 'A deprecated argument.',
+        deprecated: { milestone: '1.0', reason: 'Use scalarArg instead' }
+      argument :experimental_arg, GraphQL::Types::String, required: false,
+        description: 'An experimental argument.',
+        experiment: { milestone: '2.0' }
     end
 
     spec_enum = Class.new(::Types::BaseEnum) do
-      graphql_name 'SpecEnum'
-      description 'A spec enum.'
+      graphql_name 'Enum'
+      description 'An enum.'
 
       value 'PLAIN', 'A plain value.'
       value 'EXPERIMENTAL', 'An experimental value.', experiment: { milestone: '2.0' }
@@ -26,6 +40,9 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
         field :scalar_field, spec_scalar
         field :enum_field, spec_enum
+        field :input_field, spec_scalar do
+          argument :input, spec_input_object, required: false, description: 'An input.'
+        end
       end)
     end
   end
@@ -42,11 +59,41 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
     it 'renders a heading and description for each scalar' do
       expect(doc).to include(
         <<~MD
-          ## `SpecScalar`
+          ## `Scalar`
 
-          A spec scalar.
+          A scalar.
         MD
       )
+    end
+
+    it 'does not include introspection types' do
+      expect(doc).not_to include('__')
+    end
+  end
+
+  describe 'the input_objects page' do
+    subject(:doc) { page('input_objects.md').doc }
+
+    it 'renders the input object with its arguments, type links, and deprecation/experiment status' do
+      expect(doc).to include(
+        <<~MD
+          ## `InputObject`
+
+          An input object.
+
+          ### Arguments {.no_toc}
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | `deprecatedArg` | [`String`](scalars.md#string) | Deprecated in GitLab 1.0. Use scalarArg instead. |
+          | `experimentalArg` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 2.0.<br/><br/>An experimental argument. |
+          | `scalarArg` | [`String`](scalars.md#string) | A scalar argument. |
+        MD
+      )
+    end
+
+    it 'lists arguments in alphabetical order' do
+      expect(doc.scan(/^\| `(\w+)` \|/).flatten).to eq(%w[deprecatedArg experimentalArg scalarArg])
     end
 
     it 'does not include introspection types' do
@@ -60,27 +107,16 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
     it 'renders a heading and values table for the enum' do
       expect(doc).to include(
         <<~MD
-          ## `SpecEnum`
+          ## `Enum`
 
-          A spec enum.
+          An enum.
 
           | Value | Description |
           | ----- | ----------- |
+          | `DEPRECATED` | Deprecated in GitLab 1.0. Use PLAIN instead. |
+          | `EXPERIMENTAL` | Status: Experiment. Introduced in GitLab 2.0.<br/><br/>An experimental value. |
+          | `PLAIN` | A plain value. |
         MD
-      )
-    end
-
-    it 'renders a plain value' do
-      expect(doc).to include('| `PLAIN` | A plain value. |')
-    end
-
-    it 'renders a deprecated value with its milestone and reason' do
-      expect(doc).to include('| `DEPRECATED` | Deprecated in GitLab 1.0. Use PLAIN instead. |')
-    end
-
-    it 'renders an experimental value with its status and milestone' do
-      expect(doc).to include(
-        '| `EXPERIMENTAL` | Status: Experiment. Introduced in GitLab 2.0.<br/><br/>An experimental value. |'
       )
     end
 

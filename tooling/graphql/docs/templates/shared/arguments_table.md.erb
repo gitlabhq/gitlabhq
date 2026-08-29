@@ -1,0 +1,5 @@
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+<% sorted_by_name(@arguments).each do |argument| %>
+| <%= name(argument) %> | <%= type(argument) %> | <%= description(argument).squish %> |
+<% end %>

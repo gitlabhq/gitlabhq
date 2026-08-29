@@ -145,6 +145,15 @@ The category of the additional context.
 | `TERMINAL` | Terminal content category. |
 | `USER_RULE` | User_rule content category. |
 
+## `AiBackgroundToolPermission`
+
+Permission mode for an AI tool on the background-flow surface. `ask` is not available because no human is present to approve on a background flow.
+
+| Value | Description |
+| ----- | ----------- |
+| `ALLOW` | Tool is always allowed to run without approval. |
+| `DENY` | Tool is always blocked from running. |
+
 ## `AiCatalogFlowConfigType`
 
 Possible flow configuration types for AI Catalog agents.
@@ -194,9 +203,9 @@ Possible visibility levels for AI catalog items.
 
 | Value | Description |
 | ----- | ----------- |
-| `INTERNAL` | Internal visibility. |
 | `PRIVATE` | Private visibility. |
 | `PUBLIC` | Public visibility. |
+| `RESTRICTED` | Restricted visibility. |
 
 ## `AiCatalogItemsSort`
 
@@ -219,6 +228,16 @@ Authentication types for MCP servers.
 | `NO_AUTH` | No authentication. |
 | `OAUTH` | OAuth authentication. |
 
+## `AiCatalogMcpServerBlockStatus`
+
+Block status of an MCP server for a group or project.
+
+| Value | Description |
+| ----- | ----------- |
+| `ACTIVE` | Server is allowed for the group or project. |
+| `BLOCKED` | Server is blocked directly on the group or project. |
+| `BLOCKED_BY_ANCESTOR` | Server is blocked by an ancestor group and cannot be allowed here. |
+
 ## `AiCatalogMcpServerTransport`
 
 Transport types for MCP servers.
@@ -226,6 +245,30 @@ Transport types for MCP servers.
 | Value | Description |
 | ----- | ----------- |
 | `HTTP` | HTTP transport. |
+
+## `AiCatalogTriggerConditionsMatch`
+
+Match strategy for a trigger conditions group.
+
+| Value | Description |
+| ----- | ----------- |
+| `ALL` | All rules in the group must match. |
+| `ANY` | Any rule in the group must match. |
+
+## `AiCatalogTriggerConditionsOperator`
+
+Operators for a trigger condition rule.
+
+| Value | Description |
+| ----- | ----------- |
+| `CONTAINS` | Contains the value. |
+| `EQ` | Equal to the value. |
+| `GT` | Greater than the value. |
+| `IN` | Included in the value. |
+| `LT` | Less than the value. |
+| `NE` | Not equal to the value. |
+| `NOT_CONTAINS` | Does not contain the value. |
+| `NOT_IN` | Not included in the value. |
 
 ## `AiCatalogVersionBump`
 
@@ -303,8 +346,10 @@ AI features that can be configured through the Duo self-hosted feature settings.
 | `DUO_CHAT_SUMMARIZE_COMMENTS` | Duo chat summarize comment feature setting. |
 | `DUO_CHAT_TROUBLESHOOT_JOB` | Duo chat troubleshoot job feature setting. |
 | `DUO_CHAT_WRITE_TESTS` | Duo chat write test feature setting. |
+| `FEATURE_DISCOVERY_SEARCH` | Feature discovery search feature setting. |
 | `GENERATE_COMMIT_MESSAGE` | Generate commit message feature setting. |
 | `GLAB_ASK_GIT_COMMAND` | Glab ask git command feature setting. |
+| `RESOLVE_DEPENDENCY_BUMP` | Resolve dependency bump feature setting. |
 | `RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | `REVIEW_MERGE_REQUEST` | Review merge request feature setting. |
 | `REVIEW_MERGE_REQUEST_DAP` | Review merge request dap feature setting. |
@@ -323,12 +368,33 @@ Possible event types for flow triggers.
 | ----- | ----------- |
 | `ASSIGN` | Flow trigger assign event. |
 | `ASSIGN_REVIEWER` | Flow trigger assign_reviewer event. |
+| `COMMIT_TO_DEFAULT_BRANCH` | Flow trigger commit_to_default_branch event. |
 | `MENTION` | Flow trigger mention event. |
 | `MERGE_REQUEST` | Flow trigger merge_request event. |
 | `MERGE_REQUEST_CODE_CONFLICT` | Flow trigger merge_request_code_conflict event. |
 | `MERGE_REQUEST_READY` | Flow trigger merge_request_ready event. |
 | `PIPELINE_HOOKS` | Flow trigger pipeline_hooks event. |
 | `WORK_ITEM` | Flow trigger work_item event. |
+
+## `AiGovernanceAgentClass`
+
+Agent class segmentation for AI governance dashboard metrics.
+
+| Value | Description |
+| ----- | ----------- |
+| `ALL` | All agent classes, combining internal and external agents. |
+| `EXTERNAL` | Agents running outside the Duo Agent Platform, such as third-party coding agents. |
+| `INTERNAL_DAP` | Agents running on the internal Duo Agent Platform. |
+
+## `AiGovernanceMetricsTimeframe`
+
+Time window for AI governance dashboard metrics.
+
+| Value | Description |
+| ----- | ----------- |
+| `LAST_24_HOURS` | Last 24 hours, bucketed hourly. |
+| `LAST_30_DAYS` | Last 30 days, bucketed daily. |
+| `LAST_7_DAYS` | Last 7 days, bucketed daily. |
 
 ## `AiMessageRole`
 
@@ -368,6 +434,7 @@ AI features that can be configured through the Model Selection feature settings.
 | `DUO_CHAT_WRITE_TESTS` | Duo chat write test feature setting. |
 | `GENERATE_COMMIT_MESSAGE` | Generate commit message feature setting. |
 | `GLAB_ASK_GIT_COMMAND` | Glab ask git command feature setting. |
+| `RESOLVE_DEPENDENCY_BUMP` | Resolve dependency bump feature setting. |
 | `RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | `REVIEW_MERGE_REQUEST` | Review merge request feature setting. |
 | `REVIEW_MERGE_REQUEST_DAP` | Review merge request dap feature setting. |
@@ -439,6 +506,7 @@ Type of AI usage event.
 | `AGENT_PLATFORM_SESSION_RESUMED` | Agent platform session was resumed. |
 | `AGENT_PLATFORM_SESSION_STARTED` | Agent platform session was started. |
 | `AGENT_PLATFORM_SESSION_STOPPED` | Agent platform session was stopped. |
+| `AI_DUO_MESSAGING_FEEDBACK_SUBMITTED` | Feedback was submitted on a Duo agent response in a messaging surface. |
 | `CLICK_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_LEARN_MORE` | User clicked learn more on Duo Agent Platform subscription expired state. |
 | `CLICK_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_UPGRADE` | User clicked upgrade on Duo Agent Platform subscription expired state. |
 | `CODE_SUGGESTIONS_REQUESTED` | Code Suggestion was requested. Old data only. |
@@ -449,19 +517,25 @@ Type of AI usage event.
 | `DUO_WORKFLOW_WORKLOAD_COMPLETED` | Duo Workflow workload was completed. |
 | `ENCOUNTER_DUO_CODE_REVIEW_ERROR_DURING_REVIEW` | Duo Code Review encountered an error. |
 | `EXCLUDED_FILES_FROM_DUO_CODE_REVIEW` | Files were excluded from Duo Code Review. |
+| `EXPLAIN_VULNERABILITY` | An AI explanation of a vulnerability was requested with GitLab Duo. |
 | `FIND_NOTHING_TO_REVIEW_DUO_CODE_REVIEW_ON_MR` | Duo Code Review found nothing to review on MR. |
 | `FIND_NO_ISSUES_DUO_CODE_REVIEW_AFTER_REVIEW` | Duo Code Review found no issues after review. |
 | `FINISH_MCP_TOOL_CALL` | MCP tool call was finished. |
 | `FIX_PIPELINE_SUGGESTION_APPLIED` | Fix pipeline suggestion was applied. |
 | `FIX_PIPELINE_SUGGESTION_POSTED` | Fix pipeline suggestion was posted. |
+| `GENERATE_MERGE_COMMIT_MESSAGE` | Merge commit message was generated for a merge request. |
 | `POST_COMMENT_DUO_CODE_REVIEW_ON_DIFF` | Duo Code Review posted a diff comment. |
+| `PUBLISH_DUO_CODE_REVIEW_COMMENTS` | Duo Code Review comments were published. |
 | `REACT_THUMBS_DOWN_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-down reaction to Duo Code Review comment. |
 | `REACT_THUMBS_UP_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-up reaction to Duo Code Review comment. |
 | `REQUEST_DUO_CHAT_RESPONSE` | Duo Chat response was requested. |
+| `REQUEST_DUO_VULNERABILITY_RESOLUTION` | An AI vulnerability resolution was requested with GitLab Duo. |
 | `REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_AUTHOR` | MR author requested Duo Code Review. |
 | `REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_NON_AUTHOR` | Non-author requested Duo Code Review on MR. |
+| `RESOLVE_FEATURE_DISCOVERY_SEARCH` | Feature discovery search was resolved. |
 | `RESTORE_AI_CATALOG_ITEM` | AI Catalog item version was restored as new latest version. |
 | `START_MCP_TOOL_CALL` | MCP tool call was started. |
+| `SUMMARIZE_NEW_MERGE_REQUEST` | Merge request summary was generated. |
 | `SUMMARIZE_REVIEW` | A merge request review summary was requested with GitLab Duo. |
 | `TROUBLESHOOT_JOB` | Troubleshoot job feature was used. |
 | `VIEW_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_EMPTY_STATE` | Duo Agent Platform subscription expired empty state was viewed. |
@@ -488,6 +562,8 @@ Values for sorting AI user metrics.
 | `AGENT_PLATFORM_TOTAL_COUNT_DESC` | Agent Platform total event count in descending order. |
 | `AI_CATALOG_TOTAL_COUNT_ASC` | Ai Catalog total event count in ascending order. |
 | `AI_CATALOG_TOTAL_COUNT_DESC` | Ai Catalog total event count in descending order. |
+| `AI_DUO_MESSAGING_FEEDBACK_SUBMITTED_ASC` | Ai Duo Messaging Feedback Submitted event count in ascending order. |
+| `AI_DUO_MESSAGING_FEEDBACK_SUBMITTED_DESC` | Ai Duo Messaging Feedback Submitted event count in descending order. |
 | `CHAT_TOTAL_COUNT_ASC` | Chat total event count in ascending order. |
 | `CHAT_TOTAL_COUNT_DESC` | Chat total event count in descending order. |
 | `CLICK_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_LEARN_MORE_ASC` | Click Duo Agentic Subscription Expired Learn More event count in ascending order. |
@@ -508,6 +584,8 @@ Values for sorting AI user metrics.
 | `CODE_SUGGESTION_REJECTED_IN_IDE_DESC` | Code Suggestion Rejected In Ide event count in descending order. |
 | `CODE_SUGGESTION_SHOWN_IN_IDE_ASC` | Code Suggestion Shown In Ide event count in ascending order. |
 | `CODE_SUGGESTION_SHOWN_IN_IDE_DESC` | Code Suggestion Shown In Ide event count in descending order. |
+| `DUO_MESSAGING_TOTAL_COUNT_ASC` | Duo Messaging total event count in ascending order. |
+| `DUO_MESSAGING_TOTAL_COUNT_DESC` | Duo Messaging total event count in descending order. |
 | `DUO_WORKFLOW_TOTAL_COUNT_ASC` | Duo Workflow total event count in ascending order. |
 | `DUO_WORKFLOW_TOTAL_COUNT_DESC` | Duo Workflow total event count in descending order. |
 | `DUO_WORKFLOW_WORKLOAD_COMPLETED_ASC` | Duo Workflow Workload Completed event count in ascending order. |
@@ -516,6 +594,12 @@ Values for sorting AI user metrics.
 | `ENCOUNTER_DUO_CODE_REVIEW_ERROR_DURING_REVIEW_DESC` | Encounter Duo Code Review Error During Review event count in descending order. |
 | `EXCLUDED_FILES_FROM_DUO_CODE_REVIEW_ASC` | Excluded Files From Duo Code Review event count in ascending order. |
 | `EXCLUDED_FILES_FROM_DUO_CODE_REVIEW_DESC` | Excluded Files From Duo Code Review event count in descending order. |
+| `EXPLAIN_VULNERABILITY_ASC` | Explain Vulnerability event count in ascending order. |
+| `EXPLAIN_VULNERABILITY_DESC` | Explain Vulnerability event count in descending order. |
+| `EXPLAIN_VULNERABILITY_TOTAL_COUNT_ASC` | Explain Vulnerability total event count in ascending order. |
+| `EXPLAIN_VULNERABILITY_TOTAL_COUNT_DESC` | Explain Vulnerability total event count in descending order. |
+| `FEATURE_DISCOVERY_TOTAL_COUNT_ASC` | Feature Discovery total event count in ascending order. |
+| `FEATURE_DISCOVERY_TOTAL_COUNT_DESC` | Feature Discovery total event count in descending order. |
 | `FIND_NOTHING_TO_REVIEW_DUO_CODE_REVIEW_ON_MR_ASC` | Find Nothing To Review Duo Code Review On Mr event count in ascending order. |
 | `FIND_NOTHING_TO_REVIEW_DUO_CODE_REVIEW_ON_MR_DESC` | Find Nothing To Review Duo Code Review On Mr event count in descending order. |
 | `FIND_NO_ISSUES_DUO_CODE_REVIEW_AFTER_REVIEW_ASC` | Find No Issues Duo Code Review After Review event count in ascending order. |
@@ -528,24 +612,40 @@ Values for sorting AI user metrics.
 | `FIX_PIPELINE_SUGGESTION_POSTED_DESC` | Fix Pipeline Suggestion Posted event count in descending order. |
 | `FIX_PIPELINE_TOTAL_COUNT_ASC` | Fix Pipeline total event count in ascending order. |
 | `FIX_PIPELINE_TOTAL_COUNT_DESC` | Fix Pipeline total event count in descending order. |
+| `GENERATE_MERGE_COMMIT_MESSAGE_ASC` | Generate Merge Commit Message event count in ascending order. |
+| `GENERATE_MERGE_COMMIT_MESSAGE_DESC` | Generate Merge Commit Message event count in descending order. |
+| `GENERATE_MERGE_COMMIT_MESSAGE_TOTAL_COUNT_ASC` | Generate Merge Commit Message total event count in ascending order. |
+| `GENERATE_MERGE_COMMIT_MESSAGE_TOTAL_COUNT_DESC` | Generate Merge Commit Message total event count in descending order. |
 | `MCP_TOTAL_COUNT_ASC` | Mcp total event count in ascending order. |
 | `MCP_TOTAL_COUNT_DESC` | Mcp total event count in descending order. |
 | `POST_COMMENT_DUO_CODE_REVIEW_ON_DIFF_ASC` | Post Comment Duo Code Review On Diff event count in ascending order. |
 | `POST_COMMENT_DUO_CODE_REVIEW_ON_DIFF_DESC` | Post Comment Duo Code Review On Diff event count in descending order. |
+| `PUBLISH_DUO_CODE_REVIEW_COMMENTS_ASC` | Publish Duo Code Review Comments event count in ascending order. |
+| `PUBLISH_DUO_CODE_REVIEW_COMMENTS_DESC` | Publish Duo Code Review Comments event count in descending order. |
 | `REACT_THUMBS_DOWN_ON_DUO_CODE_REVIEW_COMMENT_ASC` | React Thumbs Down On Duo Code Review Comment event count in ascending order. |
 | `REACT_THUMBS_DOWN_ON_DUO_CODE_REVIEW_COMMENT_DESC` | React Thumbs Down On Duo Code Review Comment event count in descending order. |
 | `REACT_THUMBS_UP_ON_DUO_CODE_REVIEW_COMMENT_ASC` | React Thumbs Up On Duo Code Review Comment event count in ascending order. |
 | `REACT_THUMBS_UP_ON_DUO_CODE_REVIEW_COMMENT_DESC` | React Thumbs Up On Duo Code Review Comment event count in descending order. |
 | `REQUEST_DUO_CHAT_RESPONSE_ASC` | Request Duo Chat Response event count in ascending order. |
 | `REQUEST_DUO_CHAT_RESPONSE_DESC` | Request Duo Chat Response event count in descending order. |
+| `REQUEST_DUO_VULNERABILITY_RESOLUTION_ASC` | Request Duo Vulnerability Resolution event count in ascending order. |
+| `REQUEST_DUO_VULNERABILITY_RESOLUTION_DESC` | Request Duo Vulnerability Resolution event count in descending order. |
+| `REQUEST_DUO_VULNERABILITY_RESOLUTION_TOTAL_COUNT_ASC` | Request Duo Vulnerability Resolution total event count in ascending order. |
+| `REQUEST_DUO_VULNERABILITY_RESOLUTION_TOTAL_COUNT_DESC` | Request Duo Vulnerability Resolution total event count in descending order. |
 | `REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_AUTHOR_ASC` | Request Review Duo Code Review On Mr By Author event count in ascending order. |
 | `REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_AUTHOR_DESC` | Request Review Duo Code Review On Mr By Author event count in descending order. |
 | `REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_NON_AUTHOR_ASC` | Request Review Duo Code Review On Mr By Non Author event count in ascending order. |
 | `REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_NON_AUTHOR_DESC` | Request Review Duo Code Review On Mr By Non Author event count in descending order. |
+| `RESOLVE_FEATURE_DISCOVERY_SEARCH_ASC` | Resolve Feature Discovery Search event count in ascending order. |
+| `RESOLVE_FEATURE_DISCOVERY_SEARCH_DESC` | Resolve Feature Discovery Search event count in descending order. |
 | `RESTORE_AI_CATALOG_ITEM_ASC` | Restore Ai Catalog Item event count in ascending order. |
 | `RESTORE_AI_CATALOG_ITEM_DESC` | Restore Ai Catalog Item event count in descending order. |
 | `START_MCP_TOOL_CALL_ASC` | Start Mcp Tool Call event count in ascending order. |
 | `START_MCP_TOOL_CALL_DESC` | Start Mcp Tool Call event count in descending order. |
+| `SUMMARIZE_NEW_MERGE_REQUEST_ASC` | Summarize New Merge Request event count in ascending order. |
+| `SUMMARIZE_NEW_MERGE_REQUEST_DESC` | Summarize New Merge Request event count in descending order. |
+| `SUMMARIZE_NEW_MERGE_REQUEST_TOTAL_COUNT_ASC` | Summarize New Merge Request total event count in ascending order. |
+| `SUMMARIZE_NEW_MERGE_REQUEST_TOTAL_COUNT_DESC` | Summarize New Merge Request total event count in descending order. |
 | `SUMMARIZE_REVIEW_ASC` | Summarize Review event count in ascending order. |
 | `SUMMARIZE_REVIEW_DESC` | Summarize Review event count in descending order. |
 | `SUMMARIZE_REVIEW_TOTAL_COUNT_ASC` | Summarize Review total event count in ascending order. |
@@ -715,6 +815,28 @@ Enum for types of analyzers.
 | `SECRET_DETECTION_PIPELINE_BASED` | Secret detection analyzer. |
 | `SECRET_DETECTION_SECRET_PUSH_PROTECTION` | Secret push protection. Managed via project security settings. |
 
+## `AnalyzerTypeForStatus`
+
+Analyzer types that can appear in project and group analyzer statuses.
+
+| Value | Description |
+| ----- | ----------- |
+| `API_FUZZING` | Api fuzzing analyzer. |
+| `CLUSTER_IMAGE_SCANNING` | Cluster image scanning analyzer. |
+| `CONTAINER_SCANNING` | Any kind of container scanning. |
+| `CONTAINER_SCANNING_FOR_REGISTRY` | Container scanning for registry. Managed via project security settings. |
+| `CONTAINER_SCANNING_PIPELINE_BASED` | Container scanning analyzer. |
+| `COVERAGE_FUZZING` | Coverage fuzzing analyzer. |
+| `DAST` | Dast analyzer. |
+| `DEPENDENCY_SCANNING` | Dependency scanning analyzer. |
+| `DEPENDENCY_SCANNING_POST_PROCESSING` | Dependency scanning post-processing. |
+| `SAST` | Sast analyzer. |
+| `SAST_ADVANCED` | Sast advanced analyzer. |
+| `SAST_IAC` | Sast iac analyzer. |
+| `SECRET_DETECTION` | Any kind of secret detection. |
+| `SECRET_DETECTION_PIPELINE_BASED` | Secret detection analyzer. |
+| `SECRET_DETECTION_SECRET_PUSH_PROTECTION` | Secret push protection. Managed via project security settings. |
+
 ## `ApiFuzzingScanMode`
 
 All possible ways to specify the API surface for an API fuzzing scan.
@@ -745,6 +867,52 @@ The kind of an approval rule.
 | `CODE_OWNER` | A `code_owner` approval rule. |
 | `REGULAR` | A `regular` approval rule. |
 | `REPORT_APPROVER` | A `report_approver` approval rule. |
+
+## `ArtifactRegistryRepositoryFormat`
+
+Package format an Artifact Registry repository holds.
+
+| Value | Description |
+| ----- | ----------- |
+| `DOCKER` | Docker images. |
+| `MAVEN` | Maven packages. |
+| `NPM` | npm packages. |
+| `OCI` | OCI artifacts. |
+
+## `ArtifactRegistryRepositoryKind`
+
+How an Artifact Registry repository sources its artifacts.
+
+| Value | Description |
+| ----- | ----------- |
+| `HOSTED` | Stores artifacts published to GitLab. |
+| `REMOTE` | Proxies and caches an upstream registry. |
+| `VIRTUAL` | Serves other repositories through a single endpoint. |
+
+## `ArtifactRegistryRepositorySort`
+
+Values for sorting Artifact Registry repositories.
+
+| Value | Description |
+| ----- | ----------- |
+| `DOWNLOADS_COUNT_ASC` | Downloads count by ascending order. |
+| `DOWNLOADS_COUNT_DESC` | Downloads count by descending order. |
+| `LAST_UPDATED_AT_ASC` | Last updated timestamp by ascending order. |
+| `LAST_UPDATED_AT_DESC` | Last updated timestamp by descending order. |
+| `NAME_ASC` | Name by ascending order. |
+| `NAME_DESC` | Name by descending order. |
+| `SIZE_BYTES_ASC` | Size in bytes by ascending order. |
+| `SIZE_BYTES_DESC` | Size in bytes by descending order. |
+
+## `ArtifactRegistryRepositoryVisibility`
+
+Who can read an Artifact Registry repository.
+
+| Value | Description |
+| ----- | ----------- |
+| `INTERNAL` | Readable by any authenticated user. |
+| `PRIVATE` | Readable only by users holding an Artifact Registry role. |
+| `PUBLIC` | Readable by anyone. |
 
 ## `ArtifactRegistryRole`
 
@@ -784,6 +952,7 @@ Assignee ID wildcard values.
 | Value | Description |
 | ----- | ----------- |
 | `ANY` | An assignee is assigned. |
+| `ME` | Logged-in user is assigned. |
 | `NONE` | No assignee is assigned. |
 
 ## `AttributeFilterOperator`
@@ -868,6 +1037,33 @@ Status of a merge train's car.
 | `SKIP_MERGED` | Car's status: skip_merged. |
 | `STALE` | Car's status: stale. |
 
+## `CdApplicationLinkType`
+
+Type of a continuous deployment application link.
+
+| Value | Description |
+| ----- | ----------- |
+| `CHANGE_REQUEST` | Change / CR system link. |
+| `CHAT` | Chat / Slack link. |
+| `DASHBOARD` | Dashboard link. |
+| `DOCS` | Docs link. |
+| `ISSUE_TRACKER` | Issue tracker link. |
+| `ON_CALL` | On-call rotation link. |
+| `OTHER` | Other link. |
+| `REPOSITORY` | Repository link. |
+| `RUNBOOK` | Runbook link. |
+
+## `CdApplicationStatus`
+
+Status used to filter the continuous deployment applications list. An application can match more than one status.
+
+| Value | Description |
+| ----- | ----------- |
+| `AWAITING_APPROVAL` | Application has a rollout waiting on an approval. Not recorded on the backend yet, so this always matches no applications for now. |
+| `DEGRADED` | Worst service health across the application is degraded. |
+| `DEPLOYING` | Application has a rollout in progress. |
+| `HEALTHY` | Worst service health across the application is healthy. |
+
 ## `CdDeploymentState`
 
 State of a continuous deployment deployment.
@@ -919,6 +1115,15 @@ State of a continuous deployment rollout environment.
 | `PAUSED` | Rollout environment is paused. |
 | `PENDING` | Rollout environment is pending. |
 
+## `CdRolloutGateStatus`
+
+Decision recorded when resolving a continuous deployment rollout approval gate.
+
+| Value | Description |
+| ----- | ----------- |
+| `APPROVED` | Approve the rollout and allow it to continue. |
+| `REJECTED` | Reject the rollout and stop it from continuing. |
+
 ## `CdRolloutState`
 
 State of a continuous deployment rollout.
@@ -931,6 +1136,32 @@ State of a continuous deployment rollout.
 | `IN_PROGRESS` | Rollout is in progress. |
 | `PAUSED` | Rollout is paused. |
 | `PENDING` | Rollout is pending. |
+
+## `CdRolloutStatus`
+
+High-level status of a continuous deployment rollout.
+
+| Value | Description |
+| ----- | ----------- |
+| `ACTIVE` | Rollout is pending, in progress, or paused. |
+| `FAILED` | Rollout finished unsuccessfully (failed or cancelled). |
+| `SUCCEEDED` | Rollout finished successfully. |
+
+## `CdRolloutStepState`
+
+State of a continuous deployment rollout step.
+
+| Value | Description |
+| ----- | ----------- |
+| `APPROVED` | Rollout step is approved. |
+| `AWAITING_APPROVAL` | Rollout step is awaiting approval. |
+| `CANCELLED` | Rollout step is cancelled. |
+| `FAILED` | Rollout step is failed. |
+| `PENDING` | Rollout step is pending. |
+| `REJECTED` | Rollout step is rejected. |
+| `RUNNING` | Rollout step is running. |
+| `SKIPPED` | Rollout step is skipped. |
+| `SUCCESS` | Rollout step is success. |
 
 ## `CdRolloutTransitionState`
 
@@ -946,6 +1177,15 @@ State recorded in a continuous deployment rollout transition.
 | `PAUSED` | Rollout transition state paused. |
 | `PENDING` | Rollout transition state pending. |
 
+## `CdRolloutUpdateReason`
+
+Reason a rollout update was pushed to the client.
+
+| Value | Description |
+| ----- | ----------- |
+| `DEPLOYMENT_CREATED` | New rollout was created and Duo opened a session for it. |
+| `DEPLOYMENT_FAILED` | Rollout failed and Duo opened an investigation session. |
+
 ## `CdServiceHealth`
 
 Observed health of a service in an environment.
@@ -956,6 +1196,16 @@ Observed health of a service in an environment.
 | `FAILED` | Service is failed. |
 | `HEALTHY` | Service is healthy. |
 | `UNKNOWN` | Service is unknown. |
+
+## `CdVersionSetStatus`
+
+High-level lifecycle status of a continuous deployment release (version set).
+
+| Value | Description |
+| ----- | ----------- |
+| `DEPLOYING` | Release has a rollout currently in progress. |
+| `ROLLED_BACK` | Release was redeployed to an environment after a newer release had already run there. |
+| `SUPERSEDED` | Release has been replaced, in at least one environment, by a newer release. |
 
 ## `CiCatalogResourceProjectUsageSort`
 
@@ -1137,6 +1387,7 @@ Values for sorting CI/CD job analytics.
 | `RUNNER_UNSUPPORTED` | A job that failed due to runner unsupported. |
 | `SCHEDULER_FAILURE` | A job that failed due to scheduler failure. |
 | `SCRIPT_FAILURE` | A job that failed due to script failure. |
+| `SECRETS_MANAGER_ACCESS_DENIED` | A job that failed due to secrets manager access denied. |
 | `SECRETS_PROVIDER_NOT_FOUND` | A job that failed due to secrets provider not found. |
 | `SERVER_TIMEOUT_CANCELING` | A job that failed due to server timeout canceling. |
 | `SERVER_TIMEOUT_RUNNING` | A job that failed due to server timeout running. |
@@ -2002,6 +2253,16 @@ Weight of the data visualization palette.
 | `WEIGHT_900` | 900 weight. |
 | `WEIGHT_950` | 950 weight. |
 
+## `DependencyFirewallRuleType`
+
+Type of a dependency firewall policy rule.
+
+| Value | Description |
+| ----- | ----------- |
+| `LICENSE` | Rule matching on package licenses. |
+| `MALICIOUS` | Rule matching on packages flagged as malicious. |
+| `VULNERABILITY` | Rule matching on package vulnerabilities. |
+
 ## `DependencyProxyManifestStatus`
 
 
@@ -2156,6 +2417,17 @@ All possible ways that DORA metrics can be aggregated.
 | `DAILY` | Data points are combined into chunks by day. |
 | `MONTHLY` | Data points are combined into chunks by month. |
 
+## `DuoAvailability`
+
+GitLab Duo availability states for an admin-locked namespace override.
+
+| Value | Description |
+| ----- | ----------- |
+| `ALWAYS_ON` | Duo is on and group Owners cannot turn it off. |
+| `DEFAULT_OFF` | Duo is off by default but group Owners can turn it on. |
+| `DEFAULT_ON` | Duo is on by default but group Owners can turn it off. |
+| `NEVER_ON` | Duo is off and group Owners cannot turn it on. |
+
 ## `DuoLicensedFeature`
 
 List of GitLab Duo licensed features.
@@ -2165,6 +2437,24 @@ List of GitLab Duo licensed features.
 | `AGENTIC_CHAT` | Agentic Chat feature. |
 | `AI_CATALOG` | AI Catalog feature. |
 | `AI_FEATURES` | AI features. |
+
+## `DuoWorkflowMergeRequestLinkType`
+
+Type of link between a GitLab Duo Agent Platform session and a merge request.
+
+| Value | Description |
+| ----- | ----------- |
+| `CREATED` | Link of type `created` between a session and a merge request. |
+| `SOURCE` | Link of type `source` between a session and a merge request. |
+
+## `DuoWorkflowNoteLinkType`
+
+Type of link between a GitLab Duo Agent Platform session and a note.
+
+| Value | Description |
+| ----- | ----------- |
+| `CREATED` | Link of type `created` between a session and a note. |
+| `TRIGGERED` | Link of type `triggered` between a session and a note. |
 
 ## `DuoWorkflowStatus`
 
@@ -2194,6 +2484,35 @@ The status group of the flow session.
 | `COMPLETED` | Flow sessions with a status group of completed. |
 | `FAILED` | Flow sessions with a status group of failed. |
 | `PAUSED` | Flow sessions with a status group of paused. |
+
+## `DuoWorkflowToolCallApprovalMatchType`
+
+Mechanism that resolved a stored Duo Workflow tool call approval.
+
+| Value | Description |
+| ----- | ----------- |
+| `EXACT_HASH` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Tool call matched a previously approved call by exact argument hash. |
+| `PATTERN` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Tool call matched a stored glob pattern. |
+
+## `DuoWorkflowToolCallApprovalSource`
+
+Source of a Duo Workflow tool call approval decision, as reported by the client. Identifies the mechanism the client reports as having made the decision, not the policy that was evaluated or its author.
+
+| Value | Description |
+| ----- | ----------- |
+| `AUTO_MODE` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Approval granted automatically by auto-mode. |
+| `PREAPPROVED_CONFIG` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Approval granted through a pre-approved tool or pattern configuration. |
+| `PRETOOLUSE_HOOK` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Approval granted automatically by a PreToolUse hook. |
+| `USER_EXPLICIT` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Explicit approval by a user action. |
+
+## `DuoWorkflowWorkItemLinkType`
+
+Type of link between a GitLab Duo Agent Platform session and a work item.
+
+| Value | Description |
+| ----- | ----------- |
+| `CREATED` | Link of type `created` between a session and a work item. |
+| `SOURCE` | Link of type `source` between a session and a work item. |
 
 ## `DuoWorkflowsWorkflowSort`
 
@@ -2391,6 +2710,7 @@ Geo registry class.
 | `ACHIEVEMENT_UPLOAD_REGISTRY` | Geo::AchievementUploadRegistry registry class. |
 | `AI_VECTORIZABLE_FILE_UPLOAD_REGISTRY` | Geo::AiVectorizableFileUploadRegistry registry class. |
 | `ALERT_MANAGEMENT_METRIC_IMAGE_UPLOAD_REGISTRY` | Geo::AlertManagementMetricImageUploadRegistry registry class. |
+| `APPEARANCE_UPLOAD_REGISTRY` | Geo::AppearanceUploadRegistry registry class. |
 | `BULK_IMPORT_EXPORT_UPLOAD_UPLOAD_REGISTRY` | Geo::BulkImportExportUploadUploadRegistry registry class. |
 | `CI_SECURE_FILE_REGISTRY` | Geo::CiSecureFileRegistry registry class. |
 | `CONTAINER_REPOSITORY_REGISTRY` | Geo::ContainerRepositoryRegistry registry class. |
@@ -2417,6 +2737,7 @@ Geo registry class.
 | `PIPELINE_ARTIFACT_REGISTRY` | Geo::PipelineArtifactRegistry registry class. |
 | `PROJECT_IMPORT_EXPORT_RELATION_EXPORT_UPLOAD_UPLOAD_REGISTRY` | Geo::ProjectImportExportRelationExportUploadUploadRegistry registry class. |
 | `PROJECT_REPOSITORY_REGISTRY` | Geo::ProjectRepositoryRegistry registry class. |
+| `PROJECT_TOPIC_UPLOAD_REGISTRY` | Geo::ProjectTopicUploadRegistry registry class. |
 | `PROJECT_UPLOAD_REGISTRY` | Geo::ProjectUploadRegistry registry class. |
 | `PROJECT_WIKI_REPOSITORY_REGISTRY` | Geo::ProjectWikiRepositoryRegistry registry class. |
 | `SNIPPET_REPOSITORY_REGISTRY` | Geo::SnippetRepositoryRegistry registry class. |
@@ -2970,7 +3291,6 @@ Licensed features that can be checked for availability on a namespace or project
 | `DEPENDENCY_FIREWALL` | Dependency firewall feature. |
 | `DEPENDENCY_PROXY_FOR_PACKAGES` | Dependency proxy for packages feature. |
 | `DEPENDENCY_SCANNING` | Dependency scanning feature. |
-| `DESCRIPTION_COMPOSER` | Description composer feature. |
 | `DESCRIPTION_DIFFS` | Description diffs feature. |
 | `DEVOPS_ADOPTION` | Devops adoption feature. |
 | `DISABLE_DELETING_ACCOUNT_FOR_USERS` | Disable deleting account for users feature. |
@@ -3080,6 +3400,7 @@ Licensed features that can be checked for availability on a namespace or project
 | `PACKAGE_FORWARDING` | Package forwarding feature. |
 | `PAGES_MULTIPLE_VERSIONS` | Pages multiple versions feature. |
 | `PERSONAL_ACCESS_TOKEN_EXPIRATION_POLICY` | Personal access token expiration policy feature. |
+| `PREVENT_ENTERPRISE_USER_ACCOUNT_DELETION` | Prevent enterprise user account deletion feature. |
 | `PRODUCTIVITY_ANALYTICS` | Productivity analytics feature. |
 | `PRODUCT_ANALYTICS` | Product analytics feature. |
 | `PROJECT_LEVEL_ANALYTICS_DASHBOARD` | Project level analytics dashboard feature. |
@@ -3120,6 +3441,7 @@ Licensed features that can be checked for availability on a namespace or project
 | `SECRET_DETECTION` | Secret detection feature. |
 | `SECRET_DETECTION_VALIDITY_CHECKS` | Secret detection validity checks feature. |
 | `SECRET_PUSH_PROTECTION` | Secret push protection feature. |
+| `SECRET_SCANNING_FOR_SOURCE_CODE` | Secret scanning for source code feature. |
 | `SECURITY_ATTRIBUTES` | Security attributes feature. |
 | `SECURITY_CONFIGURATION_IN_UI` | Security configuration in ui feature. |
 | `SECURITY_DASHBOARD` | Security dashboard feature. |
@@ -3276,6 +3598,8 @@ Member role permission.
 | `ADMIN_WEB_HOOK` | Manage webhooks. |
 | `APPLY_SECURITY_SCAN_PROFILES` | Apply security scan profiles. |
 | `ARCHIVE_PROJECT` | Allows archiving of projects. |
+| `CREATE_SECURITY_SCAN_PROFILES` | Create security scan profiles. |
+| `DELETE_SECURITY_SCAN_PROFILES` | Delete security scan profiles. |
 | `DESTROY_PACKAGE` | Delete packages and package files in the package registry. |
 | `MANAGE_DEPLOY_TOKENS` | Manage deploy tokens at the group or project level. |
 | `MANAGE_GROUP_ACCESS_TOKENS` | Create, read, update, and delete group access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
@@ -3300,6 +3624,7 @@ Member role permission.
 | `READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
 | `REMOVE_GROUP` | Ability to delete or restore a subgroup. This ability does not allow deleting top-level groups. Review the retention period settings to prevent accidental deletion. |
 | `REMOVE_PROJECT` | Allows deletion of projects. |
+| `UPDATE_SECURITY_SCAN_PROFILES` | Update security scan profiles. |
 | `UPDATE_SEC_AI_WORKFLOW_SETTINGS` | Update security AI workflow settings such as SAST Vulnerability Resolution. Also requires the `read_vulnerability` permission. |
 
 ## `MemberRoleStandardPermission`
@@ -3325,6 +3650,8 @@ Member role standard permission.
 | `ADMIN_WEB_HOOK` | Manage webhooks. |
 | `APPLY_SECURITY_SCAN_PROFILES` | Apply security scan profiles. |
 | `ARCHIVE_PROJECT` | Allows archiving of projects. |
+| `CREATE_SECURITY_SCAN_PROFILES` | Create security scan profiles. |
+| `DELETE_SECURITY_SCAN_PROFILES` | Delete security scan profiles. |
 | `DESTROY_PACKAGE` | Delete packages and package files in the package registry. |
 | `MANAGE_DEPLOY_TOKENS` | Manage deploy tokens at the group or project level. |
 | `MANAGE_GROUP_ACCESS_TOKENS` | Create, read, update, and delete group access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
@@ -3343,6 +3670,7 @@ Member role standard permission.
 | `READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
 | `REMOVE_GROUP` | Ability to delete or restore a subgroup. This ability does not allow deleting top-level groups. Review the retention period settings to prevent accidental deletion. |
 | `REMOVE_PROJECT` | Allows deletion of projects. |
+| `UPDATE_SECURITY_SCAN_PROFILES` | Update security scan profiles. |
 | `UPDATE_SEC_AI_WORKFLOW_SETTINGS` | Update security AI workflow settings such as SAST Vulnerability Resolution. Also requires the `read_vulnerability` permission. |
 
 ## `MemberRolesAccessLevel`
@@ -3538,7 +3866,7 @@ Representation of mergeability check identifier.
 
 ## `MergeabilityCheckStatus`
 
-Representation of whether a mergeability check passed, checking, failed or is inactive.
+Representation of whether a mergeability check passed, checking, failed, or is inactive.
 
 | Value | Description |
 | ----- | ----------- |
@@ -3781,8 +4109,8 @@ State of an organization.
 | `ACTIVE` | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Active organization. |
 | `CONFIRMED` | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Confirmed organization. |
 | `DELETION_IN_PROGRESS` | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Deletion In Progress organization. |
-| `READ_ONLY` | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Read Only organization. |
-| `READ_ONLY_INITIALIZATION` | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Read Only Initialization organization. |
+| `MAINTENANCE` | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Maintenance organization. |
+| `MAINTENANCE_INITIALIZATION` | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Maintenance Initialization organization. |
 | `SOFT_DELETED` | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Soft Deleted organization. |
 | `UNCONFIRMED` | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Unconfirmed organization. |
 
@@ -3794,6 +4122,15 @@ Access level of an organization user.
 | ----- | ----------- |
 | `DEFAULT` | Status: Experiment. Introduced in GitLab 16.11.<br/><br/>Guest access. |
 | `OWNER` | Status: Experiment. Introduced in GitLab 16.11.<br/><br/>Owner access. |
+
+## `OrganizationUserType`
+
+Type of an organization user.
+
+| Value | Description |
+| ----- | ----------- |
+| `ADMIN` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Organization administrator. |
+| `USER` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Regular organization user. |
 
 ## `OrganizationVisibility`
 
@@ -3839,6 +4176,7 @@ Values for package manager.
 | Value | Description |
 | ----- | ----------- |
 | `APK` | Package manager: apk. |
+| `BUN` | Package manager: bun. |
 | `BUNDLER` | Package manager: bundler. |
 | `CARGO` | Package manager: cargo. |
 | `COMPOSER` | Package manager: composer. |
@@ -4121,6 +4459,7 @@ State of a policy schedule test run.
 | Value | Description |
 | ----- | ----------- |
 | `COMPLETE` | Test run completed successfully. |
+| `CREATING` | Test run is creating the pipeline. |
 | `FAILED` | Test run failed. |
 | `PENDING` | Test run is pending and waiting for pipeline creation. |
 | `RUNNING` | Test run is in progress. |
@@ -4441,10 +4780,10 @@ Risk rating levels based on score ranges.
 
 | Value | Description |
 | ----- | ----------- |
-| `CRITICAL` | Critical risk (76–100). |
-| `HIGH` | High risk (51–75). |
-| `LOW` | Low risk (0–25). |
-| `MEDIUM` | Medium risk (26–50). |
+| `CRITICAL` | Critical risk (76-100). |
+| `HIGH` | High risk (51-75). |
+| `LOW` | Low risk (0-25). |
+| `MEDIUM` | Medium risk (26-50). |
 | `UNKNOWN` | Unknown risk level. |
 
 ## `SastUiComponentSize`
@@ -4566,6 +4905,7 @@ Actions that can be performed on secrets.
 | ----- | ----------- |
 | `DELETE` | Delete secrets. |
 | `READ` | Read secrets. |
+| `READ_VALUE` | Read secret values. |
 | `WRITE` | Create and update secrets. |
 
 ## `SecretsManagerEntitlementBlockedReason`
@@ -4592,6 +4932,20 @@ State of a Secrets Manager entitlement for a top-level group.
 | `PAID` | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Paid subscription on a SaaS or online-cloud-licensed self-managed install. |
 | `TRIAL` | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Active trial. |
 | `TRIAL_ELIGIBLE` | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Eligible to start a trial. |
+
+## `SecretsManagerWriteDenialReason`
+
+Reason a Secrets Manager write was denied due to entitlement.
+
+| Value | Description |
+| ----- | ----------- |
+| `CREDITS_EXHAUSTED` | No trial credits remain. |
+| `GRACE` | Subscription has expired; access is read-only during the grace window. |
+| `INELIGIBLE` | Namespace is not eligible for Secrets Manager. |
+| `ON_DEMAND_DISABLED` | On-demand purchasing is disabled for the namespace. |
+| `SUBSCRIPTION_GRACE_PERIOD_EXPIRED` | Subscription is expired and the grace window has elapsed. |
+| `TRIAL_EXPIRED` | Trial period has ended. |
+| `TRIAL_REQUIRED` | A trial must be started before writes are allowed. |
 
 ## `SecurityAttributeBulkUpdateMode`
 
@@ -4661,6 +5015,15 @@ Template type for predefined security categories.
 | `SAST_IAC` | SAST IAC scan report. |
 | `SECRET_DETECTION` | SECRET DETECTION scan report. |
 
+## `SecurityScanProfileImageSuffix`
+
+Suffix appended to the analyzer image name.
+
+| Value | Description |
+| ----- | ----------- |
+| `DEFAULT` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>No suffix; use the standard analyzer image. |
+| `FIPS` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Use the FIPS-compliant analyzer image. |
+
 ## `SecurityScanProfileType`
 
 Scan profile type.
@@ -4672,6 +5035,16 @@ Scan profile type.
 | `DEPENDENCY_SCANNING_POST_PROCESSING` | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Dependency scanning post processing. |
 | `SAST` | Sast. |
 | `SECRET_DETECTION` | Secret detection. |
+
+## `SecurityScanProfileUpgradePolicy`
+
+Highest version bump allowed when remediating a dependency.
+
+| Value | Description |
+| ----- | ----------- |
+| `MAJOR` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Allow any upgrade. |
+| `MINOR` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Allow patch and minor upgrades. |
+| `PATCH` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Allow patch upgrades only. |
 
 ## `SecurityScannerType`
 
@@ -4838,6 +5211,16 @@ Values for sort direction.
 | `ASC` | Ascending order. |
 | `DESC` | Descending order. |
 
+## `SortableAnalyzerType`
+
+Analyzer types that project lists can be sorted by.
+
+| Value | Description |
+| ----- | ----------- |
+| `DEPENDENCY_SCANNING` | Sort by Dependency scanning analyzer status. |
+| `SAST` | Sort by Sast analyzer status. |
+| `SECRET_DETECTION` | Sort by Secret detection analyzer status. |
+
 ## `SourceUserSort`
 
 Values for sorting the mapping of users on source instance to users on destination instance.
@@ -4988,6 +5371,7 @@ Values for sorting timelogs.
 | `review_submitted` | Todo action name for review_submitted. |
 | `ssh_key_expired` | Todo action name for ssh_key_expired. |
 | `ssh_key_expiring_soon` | Todo action name for ssh_key_expiring_soon. |
+| `transfer_failed` | Todo action name for transfer_failed. |
 | `unmergeable` | Todo action name for unmergeable. |
 
 ## `TodoSort`
@@ -5077,6 +5461,7 @@ Name of the feature that the callout is for.
 | `EMAIL_OTP_ENROLLMENT_CALLOUT` | Callout feature name for email_otp_enrollment_callout. |
 | `EXPIRED_TRIAL_STATUS_WIDGET` | Callout feature name for expired_trial_status_widget. |
 | `FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
+| `FEATURE_LIBRARY_SHIMMER_SEEN` | Callout feature name for feature_library_shimmer_seen. |
 | `FILE_TREE_BROWSER_POPOVER` | Callout feature name for file_tree_browser_popover. |
 | `FOCUSED_VULNERABILITY_REPORTING` | Callout feature name for focused_vulnerability_reporting. |
 | `GEO_ENABLE_HASHED_STORAGE` | Callout feature name for geo_enable_hashed_storage. |
@@ -5107,7 +5492,6 @@ Name of the feature that the callout is for.
 | `SECRETS_MANAGER_NAV_BADGE` | Callout feature name for secrets_manager_nav_badge. |
 | `SECURITY_CONFIGURATION_DEVOPS_ALERT` | Callout feature name for security_configuration_devops_alert. |
 | `SECURITY_CONFIGURATION_UPGRADE_BANNER` | Callout feature name for security_configuration_upgrade_banner. |
-| `SECURITY_MANAGER_ROLE` | Callout feature name for security_manager_role. |
 | `SECURITY_POLICY_PROTECTED_BRANCH_MODIFICATION` | Callout feature name for security_policy_protected_branch_modification. |
 | `SECURITY_SCANNER_PROFILES_ANNOUNCEMENT` | Callout feature name for security_scanner_profiles_announcement. |
 | `SINGLE_ORIGIN_FALLBACK_CALLOUT` | Callout feature name for single_origin_fallback_callout. |
@@ -5128,7 +5512,6 @@ Name of the feature that the callout is for.
 | `VULNERABILITY_REPORT_LIMITED_EXPERIENCE` | Callout feature name for vulnerability_report_limited_experience. |
 | `WEB_IDE_ALERT_DISMISSED` | Callout feature name for web_ide_alert_dismissed. |
 | `WEB_IDE_CI_ENVIRONMENTS_GUIDANCE` | Callout feature name for web_ide_ci_environments_guidance. |
-| `WORK_ITEMS_ONBOARDING_MODAL` | Callout feature name for work_items_onboarding_modal. |
 | `WORK_ITEM_EPIC_FEEDBACK` | Callout feature name for work_item_epic_feedback. |
 
 ## `UserEventFilter`
@@ -5308,7 +5691,7 @@ Sorting values available to value stream stage items.
 
 ## `VerificationStatus`
 
-Verification status of a GPG, X.509 or SSH signature for a commit.
+Verification status of a GPG, X.509, or SSH signature for a commit.
 
 | Value | Description |
 | ----- | ----------- |
@@ -5376,6 +5759,16 @@ The dismissal reason of the Vulnerability.
 | `NOT_APPLICABLE` | The vulnerability is known, and has not been remediated or mitigated, but is considered to be in a part of the application that will not be updated. |
 | `USED_IN_TESTS` | The finding is not a vulnerability because it is part of a test or is test data. |
 
+## `VulnerabilityDuoWorkflow`
+
+Bulk Duo workflows.
+
+| Value | Description |
+| ----- | ----------- |
+| `RESOLVE_SAST_VULNERABILITY_V1` | Generate AI-assisted vulnerability resolutions. |
+| `SAST_FP_DETECTION_V1` | Detect false positive SAST vulnerabilities. |
+| `SECRETS_FP_DETECTION_V1` | Detect false positive secret detection vulnerabilities. |
+
 ## `VulnerabilityExternalIssueLinkExternalTracker`
 
 The external tracker of the external issue link related to a vulnerability.
@@ -5421,8 +5814,9 @@ Status of a step in the vulnerability resolution funnel.
 | Value | Description |
 | ----- | ----------- |
 | `AVAILABLE` | Data is available and count is populated. |
-| `UNAVAILABLE_DISABLED` | Licensed but the underlying feature is disabled in settings. |
-| `UNAVAILABLE_NO_LICENSE` | User's plan does not include the required capability. |
+| `UNAVAILABLE_DISABLED` | Feature is disabled in settings. |
+| `UNAVAILABLE_DUO_DISABLED` | GitLab Duo is not enabled, so the AI-derived data for the step cannot be shown. |
+| `UNAVAILABLE_UPSTREAM_DISABLED` | An earlier step in the funnel is unavailable, so no data can be shown for the step. |
 
 ## `VulnerabilityGrade`
 
@@ -5561,6 +5955,32 @@ The state of the vulnerability.
 | `DISMISSED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
 | `RESOLVED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
 
+## `VulnerabilityWorkflowErrorReason`
+
+
+
+| Value | Description |
+| ----- | ----------- |
+| `ALREADY_STARTED` | Workflow execution is already running. |
+| `CANCEL_FAILED` | Workflow execution could not be cancelled. |
+| `FORBIDDEN` | One or more findings cannot be processed for the project. |
+| `INVALID_STATE` | Workflow execution cannot be started from its current state. |
+| `NOT_FOUND` | No active workflow execution found. |
+| `START_FAILED` | Workflow execution could not be started. |
+| `TERMINAL_STATE` | Workflow execution is already in a terminal state. |
+
+## `VulnerabilityWorkflowItemState`
+
+Processing state of a vulnerability within a bulk Duo workflow.
+
+| Value | Description |
+| ----- | ----------- |
+| `CANCELLED` | Processing was cancelled. |
+| `COMPLETED` | Processed successfully. |
+| `FAILED` | Processing failed. |
+| `PENDING` | Waiting to be processed. |
+| `PROCESSING` | Currently being processed. |
+
 ## `VulnerabilityWorkflowName`
 
 Workflow name for vulnerability triggered workflows.
@@ -5570,6 +5990,18 @@ Workflow name for vulnerability triggered workflows.
 | `RESOLVE_SAST_VULNERABILITY` | Workflow name is resolve sast vulnerability. |
 | `SAST_FP_DETECTION` | Workflow name is sast fp detection. |
 | `SECRETS_FP_DETECTION` | Workflow name is secrets fp detection. |
+
+## `VulnerabilityWorkflowStatus`
+
+Execution status of a bulk Duo workflow.
+
+| Value | Description |
+| ----- | ----------- |
+| `CANCELLED` | Execution was cancelled. |
+| `COMPLETED` | Execution completed successfully. |
+| `CREATED` | Execution has been created. |
+| `FAILED` | Execution failed. |
+| `RUNNING` | Execution is running. |
 
 ## `WebhookAlertStatus`
 
@@ -5627,6 +6059,16 @@ Values for work item award emoji update enum.
 | `ADD` | Adds the emoji. |
 | `REMOVE` | Removes the emoji. |
 | `TOGGLE` | Toggles the status of the emoji. |
+
+## `WorkItemChangeAction`
+
+Action that triggered a work item change event.
+
+| Value | Description |
+| ----- | ----------- |
+| `CREATED` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Work item was created. |
+| `DELETED` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Work item was deleted. |
+| `UPDATED` | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Work item was updated. |
 
 ## `WorkItemDiscussionsSort`
 
@@ -5814,6 +6256,7 @@ The environment of a workflow.
 | `AMBIENT` | Ambient environment. |
 | `CHAT` | Chat environment. |
 | `CHAT_PARTIAL` | Chat Partial environment. |
+| `EXTERNAL` | External environment. |
 | `IDE` | Deprecated in GitLab 18.6. Renamed. Use `CHAT` instead. |
 | `WEB` | Deprecated in GitLab 18.6. Renamed. Use `AMBIENT` instead. |
 

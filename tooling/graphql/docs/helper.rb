@@ -28,12 +28,24 @@ module Tooling
           [description, doc_reference(item)].reject(&:empty?).join(' ')
         end
 
+        def type(item)
+          return "`#{item.type_signature}`" if item.type.is_a?(Schema::TempUndocumented)
+
+          "[`#{item.type_signature}`](#{docs_link(item.type)})"
+        end
+
         def docs_render(partial, **args)
           template = "shared/#{partial}"
           Renderer.new(template: template, locals: args).execute
         end
 
         private
+
+        def docs_link(item)
+          page = item.class.name.demodulize.underscore.pluralize
+
+          "#{page}.md##{item.name.downcase}"
+        end
 
         def plain_description(item)
           description = item.description&.strip

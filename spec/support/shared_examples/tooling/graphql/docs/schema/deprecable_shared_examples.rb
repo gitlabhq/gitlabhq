@@ -3,6 +3,8 @@
 require Rails.root.join('tooling/graphql/docs/schema/concerns/deprecable')
 
 RSpec.shared_examples Tooling::Graphql::Docs::Schema::Deprecable do
+  it { is_expected.to be_kind_of(Tooling::Graphql::Docs::Schema::Deprecable) }
+
   context 'when schema item is experimental' do
     subject(:deprecable) { experimental_item }
 

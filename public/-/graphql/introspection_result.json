@@ -102470,6 +102470,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 17.11."
             },
             {
+              "name": "ascpComponent",
+              "description": "The ASCP component the vulnerability belongs to. Returns `null` when there is no matchor when the `ascp_component_vulnerability_association` feature flag is disabled. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AscpComponent",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "commenters",
               "description": "All commenters on the noteable.",
               "args": [
@@ -287264,7 +287276,7 @@
             },
             {
               "name": "artifactRegistryRepositories",
-              "description": "Artifact Registry repositories in the organization. Returns `null` when the `artifact_registry_ui` feature flag is disabled. Introduced in GitLab 19.3: Status: Experiment.",
+              "description": "Artifact Registry repositories in the organization. Returns `null` when the `artifact_registry_ui` feature flag is disabled. Raises a resource-not-available error when the organization is not activated for Artifact Registry, where `artifactRegistry` returns `null` instead. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [
                 {
                   "name": "format",
@@ -287361,7 +287373,7 @@
             },
             {
               "name": "artifactRegistryRepository",
-              "description": "Single Artifact Registry repository in the organization, by name. Returns `null` when not found or when the `artifact_registry_ui` feature flag is disabled. Introduced in GitLab 19.3: Status: Experiment.",
+              "description": "Single Artifact Registry repository in the organization, by name. Returns `null` when not found or when the `artifact_registry_ui` feature flag is disabled. Raises a resource-not-available error when the organization is not activated for Artifact Registry, where `artifactRegistry` returns `null` instead. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [
                 {
                   "name": "name",
@@ -424338,6 +424350,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 17.11."
+            },
+            {
+              "name": "ascpComponent",
+              "description": "The ASCP component the vulnerability belongs to. Returns `null` when there is no matchor when the `ascp_component_vulnerability_association` feature flag is disabled. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AscpComponent",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "commenters",

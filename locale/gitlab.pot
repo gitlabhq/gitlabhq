@@ -59498,6 +59498,9 @@ msgstr ""
 msgid "Pipeline|In %{pipeline_ref}"
 msgstr ""
 
+msgid "Pipeline|Loading CI/CD variables from the pipeline configuration."
+msgstr ""
+
 msgid "Pipeline|Manual"
 msgstr ""
 
@@ -59643,6 +59646,9 @@ msgid "Pipeline|This change will increase the overall test coverage if merged."
 msgstr ""
 
 msgid "Pipeline|This change will not change the overall test coverage if merged."
+msgstr ""
+
+msgid "Pipeline|This might take a few seconds."
 msgstr ""
 
 msgid "Pipeline|This pipeline ran for a branch."

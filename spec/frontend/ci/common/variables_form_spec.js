@@ -63,6 +63,17 @@ describe('Pipeline variables form group', () => {
       expect(findVariableRows().exists()).toBe(false);
     });
 
+    it('explains what is loading when isLoading is true', () => {
+      createComponent({ props: { isLoading: true } });
+
+      const loadingState = wrapper.findByTestId('ci-variables-loading');
+
+      expect(loadingState.text()).toContain(
+        'Loading CI/CD variables from the pipeline configuration.',
+      );
+      expect(loadingState.text()).toContain('This might take a few seconds.');
+    });
+
     it('removes loading icon when isLoading is false', () => {
       createComponent();
 
