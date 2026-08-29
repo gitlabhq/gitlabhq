@@ -91303,7 +91303,34 @@ msgstr ""
 msgid "WorkItemCustomField|Use on"
 msgstr ""
 
+msgid "WorkItemDecisionLog|Are you sure you want to cancel creating this decision?"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Are you sure you want to cancel editing this decision?"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Background on the decision and any other options considered."
+msgstr ""
+
+msgid "WorkItemDecisionLog|Captured automatically from the source and cannot be changed."
+msgstr ""
+
 msgid "WorkItemDecisionLog|Context"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Context (required)"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Continue editing"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Create decision"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Decided by (required)"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Decision (required)"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Decision log"
@@ -91312,10 +91339,31 @@ msgstr ""
 msgid "WorkItemDecisionLog|Decisions show up here once an open question gets answered or a comment is marked as a decision. Each one keeps the background behind it and a link back to where it was made."
 msgstr ""
 
+msgid "WorkItemDecisionLog|Describe the context for this decision"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Edit decision"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Enter a full link, starting with http:// or https://"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Enter a summary of the decision"
+msgstr ""
+
 msgid "WorkItemDecisionLog|Hide context"
 msgstr ""
 
+msgid "WorkItemDecisionLog|New decision"
+msgstr ""
+
+msgid "WorkItemDecisionLog|No decisions"
+msgstr ""
+
 msgid "WorkItemDecisionLog|No decisions yet"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Rationale for choosing this option over others."
 msgstr ""
 
 msgid "WorkItemDecisionLog|Recorded from a thread on this work item"
@@ -91324,10 +91372,19 @@ msgstr ""
 msgid "WorkItemDecisionLog|Recorded manually on this work item"
 msgstr ""
 
+msgid "WorkItemDecisionLog|Select who made this decision"
+msgstr ""
+
 msgid "WorkItemDecisionLog|Show context"
 msgstr ""
 
+msgid "WorkItemDecisionLog|Slack, Google Docs, GitLab, or anywhere the discussion lives."
+msgstr ""
+
 msgid "WorkItemDecisionLog|Something went wrong when fetching the decision log. Please try again."
+msgstr ""
+
+msgid "WorkItemDecisionLog|Source link"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Suggested answer to an open question raised by %{author}"

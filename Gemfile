@@ -467,7 +467,7 @@ gem 'prometheus-client-mmap', '~> 1.6.0', require: 'prometheus/client', feature_
 
 # Event-driven reactor for Ruby
 # Required manually in config/initializers/require_async_gem
-gem 'async', '~> 2.42.0', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'async', '~> 2.44.0', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'io-event', '~> 1.14', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Security report schemas used to validate CI job artifacts of security jobs

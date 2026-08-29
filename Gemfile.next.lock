@@ -412,12 +412,10 @@ GEM
     asciidoctor-plantuml (0.0.16)
       asciidoctor (>= 2.0.17, < 3.0.0)
     ast (2.4.3)
-    async (2.42.0)
+    async (2.44.1)
       console (~> 1.29)
       fiber-annotation
       io-event (~> 1.11)
-      metrics (~> 0.12)
-      traces (~> 0.18)
     atlassian-jwt (0.2.1)
       jwt (~> 2.1)
     attr_encrypted (4.2.0)
@@ -767,7 +765,7 @@ GEM
       fog-json
       ipaddress (~> 0.8)
       xml-simple (~> 1.1)
-    fog-aws (3.33.2)
+    fog-aws (3.33.3)
       base64 (>= 0.2, < 0.4)
       fog-core (~> 2.6)
       fog-json (~> 1.1)
@@ -1375,7 +1373,6 @@ GEM
     matrix (0.4.2)
     memory_profiler (1.1.0)
     method_source (1.0.0)
-    metrics (0.12.1)
     mime-types (3.5.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2023.1003)
@@ -2275,7 +2272,6 @@ GEM
       bindata (~> 2.4)
       openssl (> 2.0)
       openssl-signature_algorithm (~> 1.0)
-    traces (0.18.1)
     trailblazer-option (0.1.2)
     train-core (3.10.8)
       addressable (~> 2.5)
@@ -2434,7 +2430,7 @@ DEPENDENCIES
   asciidoctor-include-ext (~> 0.4.0)
   asciidoctor-kroki (~> 0.10.0)
   asciidoctor-plantuml (~> 0.0.16)
-  async (~> 2.42.0)
+  async (~> 2.44.0)
   atlassian-jwt (~> 0.2.1)
   attr_encrypted (~> 4.2)
   auto_freeze!
@@ -2844,7 +2840,7 @@ CHECKSUMS
   asciidoctor-kroki (0.10.0) sha256=8e4225d88f120e2e7b5d3f5ddb67c5e69496d7344a16c57db5036ac900123062
   asciidoctor-plantuml (0.0.16) sha256=407e47cd1186ded5ccc75f0c812e5524c26c571d542247c5132abb8f47bd1793
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
-  async (2.42.0) sha256=536078293b8c95d5b5679fa01bf7d2458bcc65cd46dec2c4cb3580feaeb965c6
+  async (2.44.1) sha256=079bce0d019fb27cc58ec110fd9b9af4991d97b801d1c6cc6def1d1954dcf9b2
   atlassian-jwt (0.2.1) sha256=2fd2d87418773f2e140c038cb22e049069708aff2bd0a423a7e1740574e97823
   attr_encrypted (4.2.0) sha256=7e5c80159e6e38ed40dc4e2e65c4f57234fe1f376bddc40c8b773bfb9b81ad51
   attr_required (1.0.2) sha256=f0ebfc56b35e874f4d0ae799066dbc1f81efefe2364ca3803dc9ea6a4de6cb99
@@ -3006,7 +3002,7 @@ CHECKSUMS
   flipper-active_record (1.3.6) sha256=0c172224e4024637abd47fbd1429ded2cd2042693757f3caa7b80f4bb06b2abe
   flipper-active_support_cache_store (1.3.6) sha256=c03c2d231e7f1f39b94b772fb856b4e5274697f87268497822cb117150cd1037
   fog-aliyun (0.4.1) sha256=88c8bf8dbf6c01ada34ec6241e44a18cd80696cdb455acf4618a17936313c803
-  fog-aws (3.33.2) sha256=bd9c1b045f19daad8942d65d7e9c9c7c1cd144beeabde63e34df7c58a9bb0f5b
+  fog-aws (3.33.3) sha256=7b13b0572f9388ebca3211b0fe56fc15bbb497f15d70978cb5e4b5cde70eecca
   fog-core (2.6.0) sha256=3fe08aa83a23cddce42f4ba412040c08f890d7ff04c175c0ee59119371245be6
   fog-google (1.29.4) sha256=5185b727cedbdd7710d0703cd513b4b80c2aa356d3616839f6a2b841fd467ce3
   fog-json (1.2.0) sha256=dd4f5ab362dbc72b687240bba9d2dd841d5dfe888a285797533f85c03ea548fe
@@ -3222,7 +3218,6 @@ CHECKSUMS
   matrix (0.4.2) sha256=71083ccbd67a14a43bfa78d3e4dc0f4b503b9cc18e5b4b1d686dc0f9ef7c4cc0
   memory_profiler (1.1.0) sha256=79a17df7980a140c83c469785905409d3027ca614c42c086089d128b805aa8f8
   method_source (1.0.0) sha256=d779455a2b5666a079ce58577bfad8534f571af7cec8107f4dce328f0981dede
-  metrics (0.12.1) sha256=42ec8eeadb92a57549a72bdd1baf86d4270089bc598917b93cf9cb6f95fcc29c
   microsoft_graph_mailer (0.1.0)
   mime-types (3.5.1) sha256=85d772fb6cf21f999ac8085998192fb9dd5d16e86ec4c69c5e79ac3003420d61
   mime-types-data (3.2023.1003) sha256=0f7b96d4e54d17752ed78398dca9402359ccaeb391aa0c0e5b305bedaf025b7a
@@ -3574,7 +3569,6 @@ CHECKSUMS
   tomlrb (1.3.0) sha256=68666bf53fa70ba686a48a7435ce7e086f5227c58c4c993bd9792f4760f2a503
   toon-ruby (0.1.1) sha256=c0395be95161f3fe2487888b4172cc6ecafdbbbb9aa2a580a0dc2d7563458428
   tpm-key_attestation (0.14.1) sha256=7fd4e4653a7afd0a386632ddfb05d10ecfdd47678299c5e69165bc9ae111193f
-  traces (0.18.1) sha256=7e3498fa3fa96e4634c1bbf4d315e09f6e258a3649fd399229fcfacf93c5c44e
   trailblazer-option (0.1.2) sha256=20e4f12ea4e1f718c8007e7944ca21a329eee4eed9e0fa5dde6e8ad8ac4344a3
   train-core (3.10.8) sha256=8493da02015fbe9b11840d22ba879ef18a0aa2633cb0c04eac3f07dd9b87223b
   truncato (0.7.13) sha256=34621943c067eb892389d356d1312822b81b574e8d7dec2b61955fef0e91e380

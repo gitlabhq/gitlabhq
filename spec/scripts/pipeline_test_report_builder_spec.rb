@@ -318,11 +318,11 @@ RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
         let(:max_retries) { described_class::MAX_RETRIES }
         let(:error_pattern) { /Rate limited \(429\) after #{max_retries} retries/ }
 
-        it 'raises an error after MAX_RETRIES attempts' do
+        it 'raises a RateLimitError after MAX_RETRIES attempts' do
           # Simulate handle_rate_limit being called at max retries
           expect do
             subject.send(:handle_rate_limit, uri_str, max_retries)
-          end.to raise_error(RuntimeError, error_pattern)
+          end.to raise_error(described_class::RateLimitError, error_pattern)
         end
       end
 
@@ -393,6 +393,35 @@ RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
         expect(subject).to receive(:fetch).with(failed_build_uri).and_return(test_report_for_build)
 
         subject.test_report_for_pipeline
+      end
+    end
+  end
+
+  describe '#execute' do
+    before do
+      allow(FileUtils).to receive(:mkdir_p)
+    end
+
+    it 'writes the report to the output file' do
+      allow(subject).to receive(:test_report_for_pipeline).and_return('{"suites":[]}')
+
+      expect(File).to receive(:open).with(output_file_path, 'w').and_yield(file = instance_double(File))
+      expect(file).to receive(:write).with('{"suites":[]}')
+
+      subject.execute
+    end
+
+    context 'when the report fetch is rate limited past MAX_RETRIES' do
+      before do
+        allow(subject).to receive(:test_report_for_pipeline)
+          .and_raise(described_class::RateLimitError, 'Rate limited (429) after 3 retries')
+      end
+
+      it 'writes an empty report and does not raise' do
+        expect(File).to receive(:open).with(output_file_path, 'w').and_yield(file = instance_double(File))
+        expect(file).to receive(:write).with('{}')
+
+        expect { subject.execute }.not_to raise_error
       end
     end
   end

@@ -29,6 +29,8 @@ class PipelineTestReportBuilder
 
   MAX_RETRIES = 3
 
+  RateLimitError = Class.new(StandardError)
+
   def initialize(options)
     @target_project = options.delete(:target_project)
     @current_pipeline_id = options.delete(:current_pipeline_id)
@@ -41,8 +43,20 @@ class PipelineTestReportBuilder
   def execute
     FileUtils.mkdir_p(File.dirname(output_file_path))
 
+    # This job only feeds the rerun-previous-failed-tests optimization. If the
+    # previous report can't be fetched (e.g. unauthenticated rate limiting on
+    # the web suite.json endpoint), degrade to an empty report so the pipeline
+    # runs normally instead of failing here.
+    report =
+      begin
+        test_report_for_pipeline
+      rescue RateLimitError => e
+        puts "[PipelineTestReportBuilder] #{e.message}. Continuing without a previous test report."
+        {}.to_json
+      end
+
     File.open(output_file_path, 'w') do |file|
-      file.write(test_report_for_pipeline)
+      file.write(report)
     end
   end
 
@@ -174,7 +188,7 @@ class PipelineTestReportBuilder
   end
 
   def handle_rate_limit(uri_str, retries, retry_after = nil)
-    raise "[PipelineTestReportBuilder] Rate limited (429) after #{MAX_RETRIES} retries" if retries >= MAX_RETRIES
+    raise RateLimitError, "Rate limited (429) after #{MAX_RETRIES} retries" if retries >= MAX_RETRIES
 
     backoff_time = 2**(retries + 1)
     wait_time = [backoff_time, retry_after.to_i].max
