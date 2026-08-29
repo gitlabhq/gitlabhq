@@ -1755,7 +1755,7 @@ GEM
       activerecord (>= 6.1)
       request_store (~> 1.4)
     parallel (1.28.0)
-    parser (3.3.11.1)
+    parser (3.3.12.0)
       ast (~> 2.4.1)
       racc
     parslet (1.8.2)
@@ -2690,7 +2690,7 @@ DEPENDENCIES
   pact (~> 1.64)
   paper_trail (~> 16.0)
   parallel (~> 1.19)
-  parser (= 3.3.11.1)
+  parser (= 3.3.12.0)
   parslet (~> 1.8)
   peek (~> 1.1)
   pg (~> 1.6.1)
@@ -3358,7 +3358,7 @@ CHECKSUMS
   pact-support (1.20.0) sha256=41c343a3124fb379684b9ad9f1a0766c5fa18d3b78d433a52e5552d8b9475871
   paper_trail (16.0.0) sha256=e9b9f0fb1b8b590c8231cfa931b282ba92f90e066e393930a5e1c61ae4c5019d
   parallel (1.28.0) sha256=33e6de1484baf2524792d178b0913fc8eb94c628d6cfe45599ad4458c638c970
-  parser (3.3.11.1) sha256=d17ace7aabe3e72c3cc94043714be27cc6f852f104d81aa284c2281aecc65d54
+  parser (3.3.12.0) sha256=21a6d7f755d5a24dfbdc6e6b772e4e879a52e7631a88bc5a3a134606052c9828
   parslet (1.8.2) sha256=08d1ab3721cd3f175bfbee8788b2ddff71f92038f2d69bd65454c22bb9fbd98a
   pastel (0.8.0) sha256=481da9fb7d2f6e6b1a08faf11fa10363172dc40fd47848f096ae21209f805a75
   pdf-core (0.10.0) sha256=0a5d101e2063c01e3f941e1ee47cbb97f1adfc1395b58372f4f65f1300f3ce91

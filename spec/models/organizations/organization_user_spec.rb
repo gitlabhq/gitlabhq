@@ -276,4 +276,41 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
       end
     end
   end
+
+  describe '.member_ids_among' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:member) { create(:user) }
+    let_it_be(:other_member) { create(:user) }
+    let_it_be(:non_member) { create(:user) }
+
+    before_all do
+      create(:organization_user, organization: organization, user: member)
+      create(:organization_user, organization: organization, user: other_member)
+      create(:organization_user, organization: other_organization, user: non_member)
+    end
+
+    it 'returns only the given ids that are members of the organization' do
+      ids = [member.id, other_member.id, non_member.id]
+
+      expect(described_class.member_ids_among(organization, ids)).to match_array([member.id, other_member.id])
+    end
+
+    it 'ignores members of the organization that were not asked about' do
+      expect(described_class.member_ids_among(organization, [member.id])).to eq([member.id])
+    end
+
+    it 'returns an empty array without querying when no ids are given' do
+      expect(described_class).not_to receive(:in_organization)
+
+      expect(described_class.member_ids_among(organization, [])).to eq([])
+    end
+
+    it 'answers a batch in a single query' do
+      ids = [member.id, other_member.id, non_member.id]
+
+      expect { described_class.member_ids_among(organization, ids) }
+        .not_to exceed_query_limit(1)
+    end
+  end
 end

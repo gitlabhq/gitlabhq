@@ -26,6 +26,19 @@ module Organizations
     scope :with_active_users, -> { joins(:user).merge(User.active) }
     scope :by_user, ->(user) { where(user: user) }
 
+    # The subset of user_ids that are members of organization. One query for a
+    # whole batch, so a caller checking many users does not issue a lookup per
+    # user. The unique index on (organization_id, user_id) caps the result at
+    # user_ids.size, which is what the limit states.
+    def self.member_ids_among(organization, user_ids)
+      return [] if user_ids.empty?
+
+      in_organization(organization)
+        .where(user_id: user_ids)
+        .limit(user_ids.size)
+        .pluck(:user_id)
+    end
+
     def self.update_home_organization_record_for(user, user_is_admin:)
       find_or_initialize_by(
         user_id: user.id, organization_id: user.organization_id
