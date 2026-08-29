@@ -3,6 +3,7 @@ import { testApolloLink } from 'helpers/test_apollo_link';
 import { getInstrumentationLink, FEATURE_CATEGORY_HEADER } from '~/lib/apollo/instrumentation_link';
 
 const TEST_FEATURE_CATEGORY = 'foo_feature';
+const TEST_OPERATION_FEATURE_CATEGORY = 'bar_feature';
 
 describe('~/lib/apollo/instrumentation_link', () => {
   const setFeatureCategory = (val) => {
@@ -60,6 +61,24 @@ describe('~/lib/apollo/instrumentation_link', () => {
         expect(headers).toEqual({
           ...defaultHeaders,
           [FEATURE_CATEGORY_HEADER]: TEST_FEATURE_CATEGORY,
+        });
+      });
+    });
+
+    describe('with a featureCategory in the operation context', () => {
+      beforeEach(() => {
+        setFeatureCategory(TEST_FEATURE_CATEGORY);
+      });
+
+      it('prefers the operation context over gon.feature_category', async () => {
+        const operation = await testApolloLink(getInstrumentationLink(), {
+          context: { featureCategory: TEST_OPERATION_FEATURE_CATEGORY },
+        });
+
+        const { headers } = operation.getContext();
+
+        expect(headers).toEqual({
+          [FEATURE_CATEGORY_HEADER]: TEST_OPERATION_FEATURE_CATEGORY,
         });
       });
     });
