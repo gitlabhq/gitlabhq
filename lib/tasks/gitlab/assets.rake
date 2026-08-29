@@ -15,6 +15,7 @@ namespace :gitlab do
 
       require_dependency 'gitlab/task_helpers'
       require_relative '../../../scripts/lib/assets_sha'
+      require_relative '../../../scripts/lib/assets_heap_sizing'
 
       cached_assets_sha = AssetsSha.cached_assets_sha256
       current_assets_sha = AssetsSha.sha256_of_assets_impacting_compilation
@@ -50,9 +51,11 @@ namespace :gitlab do
           end
         end
 
-        ENV['NODE_OPTIONS'] = '--max-old-space-size=8192' if ENV.has_key?('CI')
-        if ENV['GITLAB_LARGE_RUNNER_OPTIONAL'] == "saas-linux-large-amd64"
-          ENV['NODE_OPTIONS'] = '--max-old-space-size=16384'
+        if ENV.has_key?('CI')
+          detected = AssetsHeapSizing.container_memory_limit_mb
+          heap_mb = AssetsHeapSizing.node_heap_size_mb(detected)
+          ENV['NODE_OPTIONS'] = "--max-old-space-size=#{heap_mb}"
+          puts "Node heap limit: #{heap_mb} MB (detected memory: #{detected || 'unknown'} MB)"
         end
 
         # Set Sidekiq gem information for webpack
