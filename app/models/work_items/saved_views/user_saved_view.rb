@@ -36,16 +36,15 @@ module WorkItems
           end
         end
 
+        # Falsey when there was no subscription to remove, so callers can tell a real unsubscribe from a no-op.
         def unsubscribe(user:, saved_view:)
           find_by(user: user, saved_view: saved_view, namespace: saved_view.namespace)&.destroy
-
-          true
         end
 
         def unsubscribe_last_saved_view(user:, namespace:)
           last_user_saved_view = where(user: user, namespace: namespace).order(:relative_position).last
 
-          return true unless last_user_saved_view
+          return unless last_user_saved_view
 
           unsubscribe(user: user, saved_view: last_user_saved_view.saved_view)
         end

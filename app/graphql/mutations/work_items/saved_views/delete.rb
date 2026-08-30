@@ -32,6 +32,12 @@ module Mutations
 
           saved_view.destroy!
 
+          ::Gitlab::WorkItems::Instrumentation::TrackingService.track_saved_view(
+            event: ::Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_DELETE,
+            saved_view: saved_view,
+            user: current_user
+          )
+
           { saved_view: saved_view, errors: [] }
         end
 

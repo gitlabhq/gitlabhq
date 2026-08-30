@@ -52,6 +52,22 @@ RSpec.describe Mutations::WorkItems::SavedViews::Unsubscribe, feature_category: 
           expect(result[:errors]).to eq([])
         end
 
+        it 'tracks the saved_view_unsubscribe internal event', :clean_gitlab_redis_shared_state do
+          expect { resolve_mutation(id: saved_view.to_global_id) }
+            .to trigger_internal_events('saved_view_unsubscribe')
+            .with(
+              category: 'Gitlab::WorkItems::Instrumentation::TrackingService',
+              user: current_user,
+              namespace: saved_view.namespace,
+              project: project,
+              additional_properties: { property: 'Planner' }
+            )
+            .and increment_usage_metrics(
+              'redis_hll_counters.count_distinct_user_id_from_saved_view_unsubscribe_weekly',
+              'redis_hll_counters.count_distinct_user_id_from_saved_view_unsubscribe_monthly'
+            )
+        end
+
         it 'deletes the user saved view record' do
           expect { resolve_mutation(id: saved_view.to_global_id) }
             .to change { WorkItems::SavedViews::UserSavedView.count }.by(-1)
@@ -74,6 +90,11 @@ RSpec.describe Mutations::WorkItems::SavedViews::Unsubscribe, feature_category: 
         it 'does not change the user saved view count' do
           expect { resolve_mutation(id: saved_view.to_global_id) }
             .not_to change { WorkItems::SavedViews::UserSavedView.count }
+        end
+
+        it 'does not track the saved_view_unsubscribe event' do
+          expect { resolve_mutation(id: saved_view.to_global_id) }
+            .not_to trigger_internal_events('saved_view_unsubscribe')
         end
       end
     end

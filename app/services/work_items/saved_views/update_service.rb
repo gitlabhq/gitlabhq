@@ -39,7 +39,11 @@ module WorkItems
         SavedView.transaction do
           if saved_view.update(params)
             saved_view.unsubscribe_other_users!(user: current_user) if changing_to_private
-            track_saved_view_update
+            ::Gitlab::WorkItems::Instrumentation::TrackingService.track_saved_view(
+              event: ::Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_UPDATE,
+              saved_view: saved_view,
+              user: current_user
+            )
             ServiceResponse.success(payload: { saved_view: saved_view })
           else
             ServiceResponse.error(message: saved_view.errors.full_messages)
@@ -69,20 +73,6 @@ module WorkItems
 
       def changing_to_private?
         params[:private] == true && !saved_view.private?
-      end
-
-      def track_saved_view_update
-        ::Gitlab::WorkItems::Instrumentation::TrackingService.track(
-          event: ::Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_UPDATE,
-          properties: {
-            user: current_user,
-            namespace: saved_view.namespace,
-            project: container.is_a?(Project) ? container : nil,
-            additional_properties: {
-              property: saved_view.namespace.user_role(current_user)
-            }
-          }
-        )
       end
     end
   end

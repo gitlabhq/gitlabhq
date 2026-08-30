@@ -18,6 +18,23 @@ module Gitlab
           track_internal_event(event, **properties)
         end
 
+        def self.track_saved_view(event:, saved_view:, user:)
+          namespace = saved_view.namespace
+          container = namespace.owner_entity
+
+          track(
+            event: event,
+            properties: {
+              user: user,
+              namespace: namespace,
+              project: container.is_a?(Project) ? container : nil,
+              additional_properties: {
+                property: namespace.user_role(user)
+              }
+            }
+          )
+        end
+
         # Derives a source/agent dimension from the request's token scopes.
         # Returns one of: 'ai_workflows' (Duo workflows, glab, external agents using ai_workflows-scoped
         # tokens), 'api' (regular PAT/OAuth api scope or session-backed UI), or 'internal'

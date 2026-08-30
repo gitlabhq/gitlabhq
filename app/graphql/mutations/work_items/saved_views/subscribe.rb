@@ -33,6 +33,11 @@ module Mutations
           subscription = ::WorkItems::SavedViews::UserSavedView.subscribe(user: current_user, saved_view: saved_view)
 
           if subscription
+            ::Gitlab::WorkItems::Instrumentation::TrackingService.track_saved_view(
+              event: ::Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_SUBSCRIBE,
+              saved_view: saved_view,
+              user: current_user
+            )
             { saved_view: saved_view, errors: [] }
           else
             { saved_view: nil, errors: [_('Subscribed saved view limit exceeded.')] }

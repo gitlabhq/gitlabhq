@@ -240,4 +240,69 @@ RSpec.describe Gitlab::WorkItems::Instrumentation::TrackingService, feature_cate
       end
     end
   end
+
+  describe '.track_saved_view', :clean_gitlab_redis_shared_state do
+    let_it_be(:group) { create(:group, developers: user) }
+    let_it_be(:group_project) { create(:project, group: group) }
+    let_it_be(:group_saved_view) { create(:saved_view, namespace: group) }
+    let_it_be(:project_saved_view) { create(:saved_view, namespace: group_project.project_namespace) }
+
+    let(:event) { Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_DELETE }
+
+    context 'when the saved view belongs to a project namespace' do
+      it 'triggers the event with the owning project' do
+        expect do
+          described_class.track_saved_view(event: event, saved_view: project_saved_view, user: user)
+        end.to trigger_internal_events('saved_view_delete').with(
+          user: user,
+          namespace: group_project.project_namespace,
+          project: group_project,
+          additional_properties: { property: 'Developer' }
+        )
+      end
+    end
+
+    context 'when the saved view belongs to a group namespace' do
+      it 'triggers the event with a nil project' do
+        expect do
+          described_class.track_saved_view(event: event, saved_view: group_saved_view, user: user)
+        end.to trigger_internal_events('saved_view_delete').with(
+          user: user,
+          namespace: group,
+          project: nil,
+          additional_properties: { property: 'Developer' }
+        )
+      end
+    end
+
+    context 'when the user has a different role in the namespace' do
+      let_it_be(:maintainer) { create(:user, maintainer_of: group) }
+
+      it 'derives the property from the namespace user role' do
+        expect do
+          described_class.track_saved_view(event: event, saved_view: group_saved_view, user: maintainer)
+        end.to trigger_internal_events('saved_view_delete').with(
+          user: maintainer,
+          namespace: group,
+          project: nil,
+          additional_properties: { property: 'Maintainer' }
+        )
+      end
+    end
+
+    context 'when the user is not a member of the namespace' do
+      let_it_be(:non_member) { create(:user) }
+
+      it 'derives a nil property from the namespace user role' do
+        expect do
+          described_class.track_saved_view(event: event, saved_view: group_saved_view, user: non_member)
+        end.to trigger_internal_events('saved_view_delete').with(
+          user: non_member,
+          namespace: group,
+          project: nil,
+          additional_properties: { property: nil }
+        )
+      end
+    end
+  end
 end
