@@ -26678,6 +26678,9 @@ msgstr ""
 msgid "DastProfiles|Target paths file"
 msgstr ""
 
+msgid "DastProfiles|Target proxy"
+msgstr ""
+
 msgid "DastProfiles|Target timeout"
 msgstr ""
 
@@ -26763,6 +26766,9 @@ msgid "DastProfiles|Timeout"
 msgstr ""
 
 msgid "DastProfiles|URL"
+msgstr ""
+
+msgid "DastProfiles|URL of an upstream HTTP proxy for the DAST scanner."
 msgstr ""
 
 msgid "DastProfiles|URLs to skip during the authenticated scan."

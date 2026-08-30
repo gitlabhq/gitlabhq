@@ -535,6 +535,13 @@ module Gitlab
                   "`DAST_CRAWL_MAX_DEPTH` defaults to 1. To prevent this, set `DAST_OVERRIDE_MAX_DEPTH: false`."
               )
             },
+            DAST_TARGET_PROXY: {
+              additional: true,
+              type: "URL",
+              example: "http://proxy.example.com:8080",
+              name: s_("DastProfiles|Target proxy"),
+              description: s_("DastProfiles|URL of an upstream HTTP proxy for the DAST scanner.")
+            },
             DAST_TARGET_URL: {
               additional: false,
               type: "URL",
