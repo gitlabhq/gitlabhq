@@ -83,7 +83,7 @@ module Gitlab
       # local runs and as the in-process fallback; scheduled CI now splits these stages across jobs (see
       # generate_child_pipeline / distill_one / collect).
       def distill_and_publish(options)
-        workflow.validate_config! unless options[:dry_run]
+        workflow.validate_config!(push: options[:push]) unless options[:dry_run]
 
         banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
         manifest.load
@@ -313,6 +313,8 @@ module Gitlab
       # that touches git, so the `git checkout -B` per team in `create_branch_and_mr` still operates on one working
       # tree, unchanged.
       def collect(expected, push: false)
+        workflow.validate_publish_config! if push
+
         banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
         manifest.load
 
@@ -600,6 +602,7 @@ module Gitlab
 
         announce_distillation_start(name, mutex)
         workflow.validate_sources!(config) # raises if any SSOT source is missing on disk
+        workflow.warn_if_sources_differ_from_pushed_branch(config, log_warn: log_warn)
 
         log_warn.call(Rainbow("  WARNING: --rewrite is a no-op with the Workflow API backend").yellow) if rewrite
 

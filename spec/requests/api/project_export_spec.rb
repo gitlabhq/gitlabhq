@@ -574,7 +574,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
             project.first_owner.id,
             project.id,
             nil,
-            { description: "Foo", exported_by_admin: false }
+            { 'description' => 'Foo', 'exported_by_admin' => false }
           )
 
           post api(path, project.first_owner), params: params

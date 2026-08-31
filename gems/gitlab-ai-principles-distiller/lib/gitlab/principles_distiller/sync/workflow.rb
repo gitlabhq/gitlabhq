@@ -310,18 +310,54 @@ module Gitlab
           candidates.last&.dig('content')
         end
 
-        def validate_config!
-          missing = []
-          missing << Env::GITLAB_TOKEN if ENV[Env::GITLAB_TOKEN].to_s.empty?
-          missing << Env::CATALOG_ITEM_CONSUMER_ID if catalog_item_consumer_id.to_s.empty?
+        def validate_config!(push: false)
+          required = [Env::GITLAB_TOKEN, Env::CATALOG_ITEM_CONSUMER_ID, Env::CATALOG_PROJECT,
+            Env::CI_DEFAULT_BRANCH]
+          validate_required_env!(required, consumer_id_hint: true)
+          validate_publish_config! if push
+        end
 
+        def validate_publish_config!
+          validate_required_env!([Env::GITLAB_TOKEN, Env::CATALOG_PROJECT, Env::CI_DEFAULT_BRANCH,
+            Env::GITLAB_API_TOKEN, Env::CI_PROJECT_ID])
+        end
+
+        def validate_required_env!(required, consumer_id_hint: false)
+          missing = required.select { |name| ENV[name].to_s.empty? }
           return if missing.empty?
+
+          consumer_id_guidance = if consumer_id_hint
+                                   "\nUse gitlab-ai-principles-distiller-provision-flow --print-consumer-id " \
+                                     'to obtain the consumer ID.'
+                                 end
 
           abort Rainbow(
             "ERROR: Workflow API is not configured. Missing env: #{missing.join(', ')}.\n" \
-              'Run gitlab-ai-principles-distiller-provision-flow first to provision the catalog flow ' \
-              'and obtain the consumer ID.'
+              "\n#{missing.map { |name| "export #{name}=<value>" }.join("\n")}\n\n" \
+              "GITLAB_TOKEN requires a classic personal access token with api scope.#{consumer_id_guidance}"
           ).red
+        end
+
+        def warn_if_sources_differ_from_pushed_branch(config, log_warn: method(:warn))
+          paths = manifest.config_source_paths(config)
+          return if paths.empty?
+          return unless system('git', '-C', Workspace.path, 'rev-parse', '--git-dir', out: File::NULL, err: File::NULL)
+
+          ref = "refs/remotes/origin/#{source_branch}"
+          unless system('git', '-C', Workspace.path, 'show-ref', '--verify', '--quiet', ref, out: File::NULL,
+            err: File::NULL)
+            log_warn.call Rainbow("WARNING: pushed source branch not found: origin/#{source_branch}. " \
+              'The workflow cannot see local-only commits or changes.').yellow
+            return
+          end
+
+          changed = IO.popen(['git', '-C', Workspace.path, 'diff', '--name-only', ref, '--', *paths],
+            err: File::NULL, &:read).lines.map(&:strip).reject(&:empty?)
+          return if changed.empty?
+
+          log_warn.call Rainbow("WARNING: local SSOT differs from pushed branch origin/#{source_branch}:\n" \
+            "#{changed.map { |path| "  - #{path}" }.join("\n")}\n" \
+            'Push these changes before distilling, or the workflow will read the pushed versions.').yellow
         end
 
         # Pre-empts late agent failures by verifying every SSOT source

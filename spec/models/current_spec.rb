@@ -102,7 +102,8 @@ RSpec.describe Current, feature_category: :organization do
       end
 
       it 'triggers FallbackOrganizationTracker' do
-        expect(Gitlab::Organizations::FallbackOrganizationTracker).to receive(:trigger).and_call_original
+        expect(Gitlab::Organizations::FallbackOrganizationTracker)
+          .to receive(:trigger).and_call_original
 
         assigned_organization
       end

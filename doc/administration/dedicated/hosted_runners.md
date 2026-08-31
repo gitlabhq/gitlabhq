@@ -281,9 +281,6 @@ Hosted runners for GitLab Dedicated are exempt from usage caps because interrupt
 A subscription or per-user cap does not stop CI/CD jobs from running. Jobs continue after the Monthly Commitment Pool is depleted, drawing On-Demand credits in the usual order.
 Because caps do not apply, you can't use cap-based controls to limit this spend. Monitor consumption in the GitLab Credits dashboard instead.
 
-Exempt usage requires accepted usage billing terms, in the same way as any other On-Demand consumption.
-If you haven't accepted usage billing terms and your available credits are depleted, GitLab denies further usage.
-
 ## Pricing
 
 For pricing details, reach out to your account representative.

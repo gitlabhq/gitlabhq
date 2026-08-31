@@ -218,6 +218,14 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       allow(sync).to receive(:regenerate_static_artifacts)
     end
 
+    it 'preflights publish configuration' do
+      allow(sync).to receive(:distill).and_return([{}, []])
+
+      sync.distill_and_publish(push: true)
+
+      expect(sync.workflow).to have_received(:validate_config!).with(push: true)
+    end
+
     def run_report
       path = File.join(tmpdir, described_class::RUN_REPORT_PATH)
       File.exist?(path) ? File.read(path) : nil
@@ -319,7 +327,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
 
     before do
       Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
-      allow(sync.workflow).to receive(:validate_config!)
+      allow(sync.workflow).to receive_messages(validate_config!: nil, validate_publish_config!: nil)
     end
 
     describe '.generate_child_pipeline' do
@@ -475,6 +483,25 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
 
       def run_report
         File.read(File.join(tmpdir, described_class::RUN_REPORT_PATH))
+      end
+
+      context 'with --push' do
+        before do
+          allow(sync.workflow).to receive(:validate_publish_config!).and_raise('invalid publish configuration')
+        end
+
+        it 'validates publish configuration before reading artifacts' do
+          expect { sync.collect(expected, push: true) }.to raise_error('invalid publish configuration')
+          expect(sync.manifest).not_to have_received(:load)
+        end
+      end
+
+      context 'without --push' do
+        it 'does not validate publish configuration' do
+          sync.collect(expected, push: false)
+
+          expect(sync.workflow).not_to have_received(:validate_publish_config!)
+        end
       end
 
       context 'when one principle succeeded, one failed, and one never ran' do

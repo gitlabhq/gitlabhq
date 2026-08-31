@@ -1,4 +1,3 @@
----
 description: Tracks when the current organization fallbacks to the Default organization.
 internal_events: true
 action: fallback_current_organization_to_default
@@ -10,6 +9,9 @@ product_categories:
 - organization
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172017
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251639
+milestone_removed: '19.4'
+status: removed
 tiers:
 - free
 - premium

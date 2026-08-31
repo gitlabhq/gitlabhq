@@ -176,8 +176,9 @@ RSpec.describe Oauth::AuthorizationsController, feature_category: :system_access
             it 'displays the warning message' do
               subject
               expect(response.body).to have_css(
-                'p.gl-text-warning', text: "Make sure you trust #{application.name} before authorizing.")
-              expect(response.body).to have_css('[data-testid="warning-solid-icon"]')
+                '.gl-alert-warning .gl-alert-body',
+                text: "Make sure you trust #{application.name} before authorizing.")
+              expect(response.body).to have_css('[data-testid="warning-icon"]')
             end
           end
         end

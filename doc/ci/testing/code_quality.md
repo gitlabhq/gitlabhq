@@ -187,6 +187,16 @@ The format is different from the [CodeClimate report format](https://github.com/
 
 - Although the [CodeClimate report format](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types) supports more properties, Code Quality only processes the fields listed previously.
 - The GitLab parser does not allow a [byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark) at the beginning of the file.
+  Some tools add a UTF-8 byte order mark to their output by default, particularly tools that originate from a Windows or .NET environment.
+  To check for and remove a UTF-8 byte order mark, run:
+
+  ```shell
+  [ "$(head -c3 report.json | od -An -tx1 | tr -d ' \n')" = "efbbbf" ] && {
+    sed -i.bak '1s/^\xEF\xBB\xBF//' report.json &&
+      echo "BOM removed" ||
+      echo "BOM detected but removal failed"
+  } || echo "No BOM found, nothing changed"
+  ```
 
 For example, this is a compliant report:
 

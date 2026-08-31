@@ -11,7 +11,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
   # spec-ordering failures due to the project-based permissions
   # associating them. They should be recreated every time.
   let(:user) { create(:user) }
-  let(:upstream_project) { create(:project, :repository) }
+  let(:upstream_project) { create(:project, :repository, developers: user) }
   let(:downstream_project) { create(:project, :repository) }
 
   let!(:upstream_pipeline) do
@@ -42,10 +42,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
 
   let(:service) { described_class.new(upstream_project, user) }
   let(:pipeline) { subject.payload }
-
-  before do
-    upstream_project.add_developer(user)
-  end
 
   subject { service.execute(bridge) }
 
@@ -1049,13 +1045,13 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       let_it_be(:child)      { create(:ci_pipeline, child_of: parent) }
       let_it_be(:sibling)    { create(:ci_pipeline, child_of: parent) }
 
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :small_repo) }
       let(:bridge) do
         create(:ci_bridge, status: :pending, user: user, options: trigger, pipeline: child, project: project)
       end
 
       context 'when limit was specified by admin' do
-        before do
+        before_all do
           project.actual_limits.update!(pipeline_hierarchy_size: 3)
         end
 

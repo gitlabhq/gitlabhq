@@ -18,13 +18,19 @@ module Gitlab
       PATH_TRAVERSAL_REGEX = %r{\A(\.{1,2})\z|\A\.\.[/\\]|[/\\]\.\.\z|[/\\]\.\.[/\\]}
 
       class << self
-        attr_writer :path
+        def path=(value)
+          @path = File.expand_path(value)
+        end
 
         def path
-          @path || ENV.fetch(Env::CI_PROJECT_DIR) do
+          return @path if @path
+
+          env_path = ENV.fetch(Env::CI_PROJECT_DIR) do
             abort Rainbow('ERROR: workspace path not set. Pass --workspace, set CI_PROJECT_DIR, ' \
               'or call Gitlab::PrinciplesDistiller::Workspace.path = ...').red
           end
+
+          File.expand_path(env_path)
         end
 
         # Joins the workspace root with the given segments after rejecting

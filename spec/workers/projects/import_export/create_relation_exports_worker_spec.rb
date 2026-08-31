@@ -89,6 +89,16 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
         )
       )
     end
+
+    it 'passes the params on as native JSON types' do
+      allow(Projects::ImportExport::RelationExport).to receive(:relation_names_list).and_return(%w[relation_1])
+
+      perform
+
+      enqueued_params = Projects::ImportExport::RelationExportWorker.jobs.map { |job| job['args'].last }
+      expect(enqueued_params).to param_containing_valid_native_json_types
+      expect(enqueued_params).to contain_exactly({ 'exported_by_admin' => true })
+    end
   end
 
   describe 'sidekiq deduplication configuration' do

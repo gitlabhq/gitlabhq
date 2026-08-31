@@ -9,6 +9,7 @@ query getMergeRequest(
   $includeNotes: Boolean = false
   $includePipelines: Boolean = false
   $includeDiscussions: Boolean = false
+  $includeApprovals: Boolean = false
   $notesAfter: String
   $notesFirst: Int
   $diffsAfter: String
@@ -34,6 +35,17 @@ query getMergeRequest(
         id
         username
         name
+      }
+      approved @include(if: $includeApprovals)
+      approvedBy(first: 100) @include(if: $includeApprovals) {
+        pageInfo {
+          hasNextPage
+        }
+        nodes {
+          id
+          username
+          name
+        }
       }
       diffStatsSummary @include(if: $includeDiffs) {
         additions

@@ -97,6 +97,8 @@
   - 1
 - - ai_messaging_progress_delivery
   - 1
+- - ai_messaging_webhook_delivery
+  - 1
 - - ai_repository_xray_scan_dependencies
   - 1
 - - analytics_ai_usage_events_backfill

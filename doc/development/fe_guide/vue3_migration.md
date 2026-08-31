@@ -384,6 +384,10 @@ every distribution.
 To verify which apps run under Vue 3 on any environment, query the DOM marker set by the Vue 3
 runtime: `document.querySelectorAll('[data-gitlab-vue3-app]')`.
 
+Use the [`beta`](../feature_flags/_index.md#beta-type) feature flag type, since it is the only
+type that lets you both enable the migration by default and still turn it off if a regression
+appears.
+
 #### Migration steps
 
 1. Identify your page's entrypoint under `app/assets/javascripts/pages` (or `ee/...`).

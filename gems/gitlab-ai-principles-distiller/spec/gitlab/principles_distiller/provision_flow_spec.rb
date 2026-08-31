@@ -98,6 +98,48 @@ RSpec.describe Gitlab::PrinciplesDistiller::ProvisionFlow do
     end
   end
 
+  describe '#execute' do
+    subject(:execute) { instance.execute }
+
+    context 'when print_consumer_id is enabled' do
+      let(:instance) { described_class.new({ dry_run: false, print_consumer_id: true }) }
+      let(:flow) { { 'id' => 'gid://gitlab/Ai::Catalog::Item/1009160' } }
+      let(:consumer) { { 'id' => 'gid://gitlab/Ai::Catalog::ItemConsumer/7368818' } }
+
+      before do
+        allow(instance).to receive_messages(find_project_gid!: 'gid://gitlab/Project/278964', find_flow: flow,
+          lookup_item_consumer: consumer)
+      end
+
+      it 'prints only the numeric consumer ID without reading the prompt or mutating the catalog' do
+        File.delete(prompt_path)
+        expect(instance).not_to receive(:reconcile_flow_version)
+        expect(instance).not_to receive(:create_flow)
+        expect(instance).not_to receive(:ensure_item_consumer)
+
+        expect { execute }.to output("7368818\n").to_stdout
+      end
+
+      context 'when the flow does not exist' do
+        let(:flow) { nil }
+
+        it 'aborts with an actionable error' do
+          expect { execute }.to output(%r{catalog flow not found.*Agent Principles Distiller.*gitlab-org/gitlab})
+            .to_stderr.and raise_error(SystemExit)
+        end
+      end
+
+      context 'when the flow is not bound to the project' do
+        let(:consumer) { nil }
+
+        it 'aborts with an actionable error' do
+          expect { execute }.to output(%r{catalog flow is not bound to project: gitlab-org/gitlab})
+            .to_stderr.and raise_error(SystemExit)
+        end
+      end
+    end
+  end
+
   describe '#check_definition_size!' do
     let(:instance) { described_class.new({ dry_run: true }) }
 
@@ -268,16 +310,22 @@ RSpec.describe Gitlab::PrinciplesDistiller::ProvisionFlow do
       ARGV.replace(original_argv)
     end
 
-    it 'defaults dry_run to false' do
+    it 'defaults options to false' do
       ARGV.replace([])
 
-      expect(described_class.parse_options).to eq(dry_run: false)
+      expect(described_class.parse_options).to eq(dry_run: false, print_consumer_id: false)
     end
 
     it 'sets dry_run when --dry-run is passed' do
       ARGV.replace(['--dry-run'])
 
-      expect(described_class.parse_options).to eq(dry_run: true)
+      expect(described_class.parse_options).to eq(dry_run: true, print_consumer_id: false)
+    end
+
+    it 'sets print_consumer_id when --print-consumer-id is passed' do
+      ARGV.replace(['--print-consumer-id'])
+
+      expect(described_class.parse_options).to eq(dry_run: false, print_consumer_id: true)
     end
   end
 

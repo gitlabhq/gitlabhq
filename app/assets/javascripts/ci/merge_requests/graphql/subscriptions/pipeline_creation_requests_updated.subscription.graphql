@@ -3,11 +3,11 @@
 subscription ciPipelineCreationRequestsUpdated($mergeRequestId: MergeRequestID!) {
   ciPipelineCreationRequestsUpdated(mergeRequestId: $mergeRequestId) {
     id
-    # `id` is intentionally not selected until this backend field is deployed (frontend follow-up: #612802)
-    # eslint-disable-next-line @graphql-eslint/require-selections
     pipelineCreationRequests {
+      id
       status
       error
+      userInitiated
       pipeline {
         ...MergeRequestPipelineListItem
       }

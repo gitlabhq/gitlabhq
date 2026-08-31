@@ -19864,6 +19864,33 @@ CREATE SEQUENCE dependency_list_exports_id_seq
 
 ALTER SEQUENCE dependency_list_exports_id_seq OWNED BY dependency_list_exports.id;
 
+CREATE TABLE dependency_management_remediations (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    merge_request_id bigint,
+    purl_type smallint NOT NULL,
+    state smallint NOT NULL,
+    package_name text NOT NULL,
+    input_file_path text DEFAULT ''::text NOT NULL,
+    current_version text NOT NULL,
+    target_version text NOT NULL,
+    CONSTRAINT check_36c467f56d CHECK ((char_length(current_version) <= 255)),
+    CONSTRAINT check_4c7e31aeee CHECK ((char_length(package_name) <= 255)),
+    CONSTRAINT check_6f97a871af CHECK ((char_length(target_version) <= 255)),
+    CONSTRAINT check_dae4fdd62c CHECK ((char_length(input_file_path) <= 1024))
+);
+
+CREATE SEQUENCE dependency_management_remediations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE dependency_management_remediations_id_seq OWNED BY dependency_management_remediations.id;
+
 CREATE TABLE dependency_proxy_blob_states (
     verification_started_at timestamp with time zone,
     verification_retry_at timestamp with time zone,
@@ -37039,6 +37066,8 @@ ALTER TABLE ONLY dependency_list_export_upload_states ALTER COLUMN id SET DEFAUL
 
 ALTER TABLE ONLY dependency_list_exports ALTER COLUMN id SET DEFAULT nextval('dependency_list_exports_id_seq'::regclass);
 
+ALTER TABLE ONLY dependency_management_remediations ALTER COLUMN id SET DEFAULT nextval('dependency_management_remediations_id_seq'::regclass);
+
 ALTER TABLE ONLY dependency_proxy_blobs ALTER COLUMN id SET DEFAULT nextval('dependency_proxy_blobs_id_seq'::regclass);
 
 ALTER TABLE ONLY dependency_proxy_group_settings ALTER COLUMN id SET DEFAULT nextval('dependency_proxy_group_settings_id_seq'::regclass);
@@ -40439,6 +40468,9 @@ ALTER TABLE ONLY dependency_list_export_uploads
 
 ALTER TABLE ONLY dependency_list_exports
     ADD CONSTRAINT dependency_list_exports_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY dependency_management_remediations
+    ADD CONSTRAINT dependency_management_remediations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY dependency_proxy_blob_states
     ADD CONSTRAINT dependency_proxy_blob_states_pkey PRIMARY KEY (dependency_proxy_blob_id);
@@ -45506,6 +45538,8 @@ CREATE INDEX idx_dlep_upl_states_on_verification_state ON dependency_list_export
 
 CREATE INDEX idx_dlep_upl_states_pending_verification ON dependency_list_export_part_upload_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
+CREATE UNIQUE INDEX idx_dm_remediations_on_project_purl_package_path_and_version ON dependency_management_remediations USING btree (project_id, purl_type, package_name, input_file_path, current_version);
+
 CREATE UNIQUE INDEX idx_duo_wf_checkpoint_blobs_dedup ON ONLY p_duo_workflows_checkpoint_blobs USING btree (project_id, workflow_id, thread_ts, channel, version, step_action, workflow_created_at) NULLS NOT DISTINCT;
 
 CREATE INDEX idx_elastic_reindexing_slices_on_elastic_reindexing_subtask_id ON elastic_reindexing_slices USING btree (elastic_reindexing_subtask_id);
@@ -47784,6 +47818,8 @@ CREATE INDEX index_dependency_list_exports_on_project_id ON dependency_list_expo
 
 CREATE INDEX index_dependency_list_exports_on_user_id ON dependency_list_exports USING btree (user_id);
 
+CREATE INDEX index_dependency_management_remediations_on_merge_request_id ON dependency_management_remediations USING btree (merge_request_id);
+
 CREATE INDEX index_dependency_proxy_blob_states_failed_verification ON dependency_proxy_blob_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
 
 CREATE INDEX index_dependency_proxy_blob_states_needs_verification ON dependency_proxy_blob_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
@@ -48043,6 +48079,8 @@ CREATE UNIQUE INDEX index_duo_workflows_workflows_on_project_user_idempotency_ke
 CREATE INDEX index_duo_workflows_workflows_on_service_account_id ON duo_workflows_workflows USING btree (service_account_id);
 
 CREATE INDEX index_duo_workflows_workflows_on_user_id ON duo_workflows_workflows USING btree (user_id);
+
+CREATE INDEX index_duo_workflows_workflows_on_user_id_created_at ON duo_workflows_workflows USING btree (user_id, created_at DESC) WHERE (workflow_definition <> 'chat'::text);
 
 CREATE INDEX index_duo_workflows_workflows_project_environment_created_at ON duo_workflows_workflows USING btree (project_id, environment, created_at DESC) WHERE (workflow_definition <> 'chat'::text);
 

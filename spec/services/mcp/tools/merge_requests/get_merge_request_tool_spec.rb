@@ -54,6 +54,7 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
       expect(variables[:includeNotes]).to be(false)
       expect(variables[:includePipelines]).to be(false)
       expect(variables[:includeDiscussions]).to be(false)
+      expect(variables[:includeApprovals]).to be(false)
     end
 
     it 'omits notes pagination parameters when not provided', :aggregate_failures do
@@ -72,6 +73,7 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
         'notes'       | :includeNotes
         'pipelines'   | :includePipelines
         'discussions' | :includeDiscussions
+        'approvals'   | :includeApprovals
       end
 
       with_them do
@@ -79,7 +81,7 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
 
         it 'enables only the requested facet', :aggregate_failures do
           variables = tool.build_variables
-          all_keys = %i[includeDiffs includeCommits includeNotes includePipelines includeDiscussions]
+          all_keys = %i[includeDiffs includeCommits includeNotes includePipelines includeDiscussions includeApprovals]
 
           expect(variables[enabled_key]).to be(true)
           (all_keys - [enabled_key]).each { |key| expect(variables[key]).to be(false) }
@@ -194,6 +196,42 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
       expect(result[:structuredContent]).not_to have_key('notes')
       expect(result[:structuredContent]).not_to have_key('commits')
       expect(result[:structuredContent]).not_to have_key('diffStatsSummary')
+      expect(result[:structuredContent]).not_to have_key('approved')
+      expect(result[:structuredContent]).not_to have_key('approvedBy')
+    end
+
+    context 'when approvals are requested' do
+      let(:params) { super().merge(include: ['approvals']) }
+      let_it_be(:approver) { create(:user) }
+
+      before_all do
+        project.add_developer(approver)
+        create(:approval, merge_request: merge_request, user: approver)
+      end
+
+      it 'includes the approval flag and the users who approved', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]['approved']).to be(true)
+
+        approver_ids = result[:structuredContent].dig('approvedBy', 'nodes').map { |node| node['id'] }
+        expect(approver_ids).to include(approver.to_global_id.to_s)
+        expect(result[:structuredContent].dig('approvedBy', 'pageInfo')).to have_key('hasNextPage')
+      end
+    end
+
+    context 'when approvals are requested and nobody has approved' do
+      let(:params) { super().merge(include: ['approvals']) }
+
+      it 'reports the merge request as not approved and returns an empty approver list',
+        :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]['approved']).to be(false)
+        expect(result[:structuredContent].dig('approvedBy', 'nodes')).to eq([])
+      end
     end
 
     context 'when notes are requested' do

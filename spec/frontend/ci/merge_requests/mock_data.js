@@ -337,14 +337,22 @@ export const generatePipelineCreationSubscriptionResponse = ({
   },
 });
 
+// Unique default ids per call: requests carry `id` + `__typename`, so Apollo
+// would merge two fixtures sharing an id into one cache entry.
+let pipelineCreationRequestCount = 0;
+
 export const generatePipelineCreationRequest = ({
+  id = `request-uuid-${(pipelineCreationRequestCount += 1)}`,
   status = 'SUCCEEDED',
   pipelineId = 'gid://gitlab/Ci::Pipeline/999',
   error = null,
   pipeline = null,
+  userInitiated = true,
 } = {}) => ({
+  id,
   status,
   error,
+  userInitiated,
   pipeline:
     pipeline ||
     (status === 'SUCCEEDED' ? generateMockPipeline({ id: pipelineId.split('/').pop() }) : null),

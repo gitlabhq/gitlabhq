@@ -13,9 +13,11 @@ RSpec.describe Gitlab::SidekiqMiddleware::CurrentOrganization::Server, feature_c
       include ApplicationWorker
 
       cattr_accessor(:current_organization) { nil }
+      cattr_accessor(:organization_source) { nil }
 
       def perform
         self.class.current_organization = Current.organization
+        self.class.organization_source = Gitlab::ApplicationContext.current_context_attribute(:organization_source)
       end
     end
   end
@@ -39,6 +41,28 @@ RSpec.describe Gitlab::SidekiqMiddleware::CurrentOrganization::Server, feature_c
             TestWorker.perform_async
 
             expect(TestWorker.current_organization).to eq(organization)
+          end
+        end
+
+        it 'sets organization_source to context in the application context' do
+          Gitlab::ApplicationContext.with_context(organization: organization) do
+            TestWorker.perform_async
+
+            expect(TestWorker.organization_source).to eq('context')
+          end
+        end
+
+        context 'when `track_organization_fallback` flag is disabled' do
+          before do
+            stub_feature_flags(track_organization_fallback: false)
+          end
+
+          it 'does not set organization_source in the application context' do
+            Gitlab::ApplicationContext.with_context(organization: organization) do
+              TestWorker.perform_async
+
+              expect(TestWorker.organization_source).to be_nil
+            end
           end
         end
       end

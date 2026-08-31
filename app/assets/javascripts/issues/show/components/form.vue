@@ -103,7 +103,6 @@ export default {
     },
   },
   created() {
-    eventHub.$on('delete.issuable', this.resetAutosave);
     eventHub.$on('update.issuable', this.resetAutosave);
     eventHub.$on('close-form', this.resetAutosave);
   },
@@ -111,7 +110,6 @@ export default {
     this.initAutosave();
   },
   beforeDestroy() {
-    eventHub.$off('delete.issuable', this.resetAutosave);
     eventHub.$off('update.issuable', this.resetAutosave);
     eventHub.$off('close-form', this.resetAutosave);
   },

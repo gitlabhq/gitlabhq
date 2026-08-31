@@ -81,7 +81,7 @@ module Gitlab
 
             opts.on('--workspace PATH', 'Path to the repository workspace ' \
               '(defaults to $CI_PROJECT_DIR)') do |path|
-              Workspace.path = File.expand_path(path)
+              Workspace.path = path
             end
           end.parse!
         end

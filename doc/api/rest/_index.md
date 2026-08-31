@@ -469,6 +469,7 @@ options:
 | [Registry Repository Tags](../container_registry.md)                           | `order_by=name`, `sort=asc`, or `sort=desc` only.                                                                                                                                     | Authenticated users only. |
 | [List repository tree](../repositories.md#list-all-repository-trees-in-a-project)                | N/A                                                                                                                                                                                   | Authenticated and unauthenticated users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154897) in GitLab 17.1. |
 | [Project issues](../issues.md#list-all-project-issues)                             | `order_by=created_at`, `order_by=updated_at`, `order_by=title`, `order_by=id`, `order_by=weight`, `order_by=due_date`, `order_by=relative_position`, `sort=asc`, or `sort=desc` only. | Authenticated and unauthenticated users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199887/) in GitLab 18.3. |
+| [Runner jobs](../runners.md#list-all-jobs-processed-by-a-runner) | `order_by=id`, `sort=desc` only | Authenticated users only. |
 
 ### Pagination response headers
 

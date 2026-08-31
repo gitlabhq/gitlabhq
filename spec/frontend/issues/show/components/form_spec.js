@@ -148,13 +148,9 @@ describe('Inline edit form component', () => {
 
       expect(clearDraft).toHaveBeenCalledTimes(2);
 
-      eventHub.$emit('delete.issuable');
-
-      expect(clearDraft).toHaveBeenCalledTimes(4);
-
       eventHub.$emit('update.issuable');
 
-      expect(clearDraft).toHaveBeenCalledTimes(6);
+      expect(clearDraft).toHaveBeenCalledTimes(4);
     });
 
     describe('outdated description', () => {

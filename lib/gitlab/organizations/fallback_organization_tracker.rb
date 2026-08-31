@@ -26,13 +26,7 @@ module Gitlab
       def self.trigger
         return unless enabled? && Feature.enabled?(:track_organization_fallback, Feature.current_request)
 
-        Gitlab::InternalEvents.track_event(
-          'fallback_current_organization_to_default',
-          category: 'Organizations',
-          additional_properties: {
-            label: Gitlab::ApplicationContext.current_context_attribute(:caller_id)
-          }
-        )
+        Gitlab::ApplicationContext.push(organization_source: 'fallback')
 
         disable
       end

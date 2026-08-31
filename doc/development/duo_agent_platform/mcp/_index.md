@@ -576,14 +576,19 @@ route_setting :mcp, tool_name: :new_name,
 - `tool_aliases:` on a route that also sets `aggregators:` has no effect: the aggregated tool's
   aliases come from the aggregator class's `self.tool_aliases`
 - The alias resolution happens in `Manager#resolve_alias` which checks all tool registries
-- Plan to remove aliases in a future release after sufficient time for clients to update
 
-**Deprecation timeline:**
+**When can I remove an alias?**
 
-Release M: Add alias and rename tool
-Release M+1: Remove alias (after clients have had time to refresh their tool lists)
+Not yet. Aliases currently serve two purposes:
 
-This approach ensures zero downtime for connected clients during tool renames.
+1. Backward compatibility for MCP clients that cached the old tool name.
+1. Identity mapping for any feature which resolves MCP tool names through `tool_aliases`. For example, tool governance for AI Catalog.
+
+Removing an alias that governance depends on silently breaks deny, ask, and
+allow rules for that tool. Until a dedicated identity mechanism decouples
+governance from rename aliases
+([work item 609451](https://gitlab.com/gitlab-org/gitlab/-/work_items/609451)), keep
+every alias in place.
 
 ### Gating a tool's availability
 

@@ -6947,7 +6947,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="mutation-cdrolloutgateresolve-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-cdrolloutgateresolve-id"></a>`id` | [`CdRolloutID!`](#cdrolloutid) | Global ID of the rollout whose approval gate is being resolved. |
-| <a id="mutation-cdrolloutgateresolve-reason"></a>`reason` | [`String`](#string) | Reason for the decision. |
+| <a id="mutation-cdrolloutgateresolve-resolutionreason"></a>`resolutionReason` | [`String`](#string) | Reason for the decision. |
 | <a id="mutation-cdrolloutgateresolve-status"></a>`status` | [`CdRolloutGateStatus!`](#cdrolloutgatestatus) | Decision to record for the approval gate. |
 
 Fields:

@@ -1,0 +1,10 @@
+= javascript_tag nonce: content_security_policy_nonce do
+  :plain
+    const enablePointerEvents = () => {
+      setTimeout(() => {
+        document.getElementById('container').classList.remove('gl-pointer-events-none');
+      }, 500);
+    }
+
+    window.addEventListener('focus', enablePointerEvents, { once: true });
+    window.addEventListener('mousemove', enablePointerEvents, { once: true });

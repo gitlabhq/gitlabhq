@@ -31,6 +31,7 @@ module Mcp
             includeNotes: facets.include?('notes'),
             includePipelines: facets.include?('pipelines'),
             includeDiscussions: facets.include?('discussions'),
+            includeApprovals: facets.include?('approvals'),
             notesAfter: params[:notes_after],
             notesFirst: params[:notes_first],
             diffsAfter: params[:diffs_after],

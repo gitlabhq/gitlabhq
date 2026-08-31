@@ -326,26 +326,35 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
   end
 
   describe 'POST #publish' do
-    it 'starts the submit_mr_review_ui user experience' do
+    it 'starts both submit review user experiences' do
       create(:draft_note, merge_request: merge_request, author: user)
 
       expect { post :publish, params: params }
         .to start_user_experience(:submit_mr_review_ui)
+        .and start_user_experience(:submit_and_notify_mr_review_ui)
     end
 
     context 'when review delivery is scheduled asynchronously' do
-      it 'leaves the submit_mr_review_ui experience to be completed by the worker' do
+      before do
         create(:draft_note, merge_request: merge_request, author: user)
+      end
 
+      it 'completes the submit_mr_review_ui user experience in the request' do
         expect { post :publish, params: params }
-          .not_to complete_user_experience(:submit_mr_review_ui)
+          .to complete_user_experience(:submit_mr_review_ui)
+      end
+
+      it 'leaves the submit_and_notify_mr_review_ui experience to be completed by the worker' do
+        expect { post :publish, params: params }
+          .not_to complete_user_experience(:submit_and_notify_mr_review_ui)
       end
     end
 
     context 'when nothing is delivered asynchronously' do
-      it 'completes the submit_mr_review_ui user experience in the request' do
+      it 'completes both user experiences in the request' do
         expect { post :publish, params: params }
           .to complete_user_experience(:submit_mr_review_ui)
+          .and complete_user_experience(:submit_and_notify_mr_review_ui)
       end
     end
 
@@ -404,7 +413,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         expect(json_response["message"]).to include(error_message)
       end
 
-      it 'completes the submit_mr_review_ui user experience with an error' do
+      it 'completes both user experiences with an error' do
         create(:draft_note, merge_request: merge_request, author: user)
 
         expect_next_instance_of(DraftNotes::PublishService) do |service|
@@ -413,6 +422,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
 
         expect { post :publish, params: params }
           .to complete_user_experience(:submit_mr_review_ui, error: true)
+          .and complete_user_experience(:submit_and_notify_mr_review_ui, error: true)
       end
     end
 

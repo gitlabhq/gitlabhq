@@ -65,16 +65,16 @@ RSpec.describe MergeRequests::ProcessDraftNotePublishedWorker, feature_category:
     end
   end
 
-  describe 'submit_mr_review_ui user experience', :freeze_time do
+  describe 'submit_and_notify_mr_review_ui user experience', :freeze_time do
     context 'when the experience was started in the web request' do
       before do
-        Labkit::UserExperienceSli.start(:submit_mr_review_ui)
+        Labkit::UserExperienceSli.start(:submit_and_notify_mr_review_ui)
       end
 
       it 'resumes and completes the experience' do
         expect { consume_event(subscriber: described_class, event: approved_event) }
-          .to resume_user_experience(:submit_mr_review_ui)
-          .and complete_user_experience(:submit_mr_review_ui)
+          .to resume_user_experience(:submit_and_notify_mr_review_ui)
+          .and complete_user_experience(:submit_and_notify_mr_review_ui)
       end
 
       context 'when the current user does not exist' do
@@ -84,7 +84,7 @@ RSpec.describe MergeRequests::ProcessDraftNotePublishedWorker, feature_category:
 
         it 'completes the experience' do
           expect { consume_event(subscriber: described_class, event: approved_event) }
-            .to complete_user_experience(:submit_mr_review_ui)
+            .to complete_user_experience(:submit_and_notify_mr_review_ui)
         end
       end
 
@@ -95,7 +95,7 @@ RSpec.describe MergeRequests::ProcessDraftNotePublishedWorker, feature_category:
 
         it 'completes the experience' do
           expect { consume_event(subscriber: described_class, event: approved_event) }
-            .to complete_user_experience(:submit_mr_review_ui)
+            .to complete_user_experience(:submit_and_notify_mr_review_ui)
         end
       end
     end
@@ -103,7 +103,7 @@ RSpec.describe MergeRequests::ProcessDraftNotePublishedWorker, feature_category:
     context 'when the experience was not started' do
       it 'does not resume the experience' do
         expect { consume_event(subscriber: described_class, event: approved_event) }
-          .not_to resume_user_experience(:submit_mr_review_ui)
+          .not_to resume_user_experience(:submit_and_notify_mr_review_ui)
       end
     end
   end

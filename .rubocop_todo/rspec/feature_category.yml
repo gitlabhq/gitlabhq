@@ -251,7 +251,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/mailers/devise_mailer_spec.rb'
     - 'ee/spec/mailers/ee/emails/profile_spec.rb'
     - 'ee/spec/mailers/emails/epics_spec.rb'
-    - 'ee/spec/mailers/emails/group_memberships_spec.rb'
     - 'ee/spec/mailers/emails/requirements_spec.rb'
     - 'ee/spec/mailers/emails/user_cap_spec.rb'
     - 'ee/spec/mailers/license_mailer_spec.rb'

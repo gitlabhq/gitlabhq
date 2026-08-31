@@ -544,6 +544,49 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
       end
     end
 
+    context 'when pipeline creation requests fail', :sidekiq_inline do
+      let(:failed_alert_message) { 'Pipeline creation failed. Please try again.' }
+
+      before do
+        # A tag-only rule produces no jobs for merge request pipelines, so creation fails.
+        stub_ci_pipeline_yaml_file(YAML.dump({ test: { script: 'test', rules: [{ if: '$CI_COMMIT_TAG' }] } }))
+      end
+
+      context 'when the request was automatic' do
+        before do
+          MergeRequests::CreatePipelineService
+            .new(project: project, current_user: user, params: { allow_duplicate: true })
+            .execute_async(merge_request)
+        end
+
+        it 'does not show the failure alert' do
+          # visit_pipelines_tab waits for the subscription, which only registers
+          # once the creation requests query has resolved.
+          visit_pipelines_tab('ciPipelineCreationRequestsUpdated')
+
+          expect(page).not_to have_content(failed_alert_message)
+        end
+      end
+
+      context 'when the request was user-initiated' do
+        it 'shows the failure alert and keeps its dismissal across reloads', :aggregate_failures do
+          visit_pipelines_tab('ciPipelineCreationRequestsUpdated')
+
+          click_button 'Run pipeline'
+
+          expect(page).to have_content(failed_alert_message)
+
+          click_button 'Dismiss'
+
+          expect(page).not_to have_content(failed_alert_message)
+
+          visit_pipelines_tab('ciPipelineCreationRequestsUpdated')
+
+          expect(page).not_to have_content(failed_alert_message)
+        end
+      end
+    end
+
     context 'when jobs progress through multiple stages', :sidekiq_inline do
       let!(:build_stage) { create(:ci_stage, pipeline: pipeline, name: 'build', position: 1, status: 'running') }
       let!(:test_stage) { create(:ci_stage, pipeline: pipeline, name: 'test', position: 2, status: 'created') }

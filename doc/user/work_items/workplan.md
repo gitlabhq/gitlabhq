@@ -17,6 +17,7 @@ title: Workplan
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240718) in GitLab 19.0 [with a feature flag](../../administration/feature_flags/_index.md) named `workplan`. Disabled by default.
+- Workplan widget [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250010) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -39,7 +40,10 @@ the work.
 The workplan is part of the [GitLab Duo Agent Platform](../duo_agent_platform/_index.md) and the
 specification-driven development workflow.
 
-The **Workplan** widget appears on the work item and shows the workplan status:
+You can add a workplan to issues and tasks.
+
+After you turn on planning for a work item, the **Workplan**
+widget appears and shows the workplan status:
 
 - **Not yet created**: The work item has no workplan, and you can create one.
 - **No workplan**: The work item has no workplan, and you do not have permission to create one.
@@ -71,12 +75,36 @@ the work.
 
 You do not need a workplan for small or well-understood changes, where planning adds more effort than it saves.
 
+## Turn on planning for a work item
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250010) in GitLab 19.4.
+
+{{< /history >}}
+
+By default, the **Workplan** widget and the confidence score are hidden on a work item.
+To show them, turn on planning for that work item.
+
+Prerequisites:
+
+- The work item must be an issue or a task.
+- Permission to edit the work item.
+
+To turn on planning:
+
+- On the work item, in the upper-right corner, select **Plan**.
+
+The **Workplan** widget appears on the work item, and the **Plan** button no longer appears.
+After you turn on planning for a work item, you cannot turn it off.
+
 ## Create a workplan
 
 Create a workplan to describe how to complete a unit of work.
 
 Prerequisites:
 
+- Planning turned on for the work item.
 - Permission to edit the work item.
 
 You can generate a workplan with GitLab Duo or write one manually.
@@ -178,10 +206,14 @@ This action cannot be undone.
 The confidence score shows how ready a work item is for an agent to run.
 GitLab Duo scores the work item on how complete, clear, and well scoped it is, then
 maps the score to a confidence level.
-The score appears whether or not the work item has a workplan.
+
+Prerequisites:
+
+- Planning turned on for the work item.
 
 In the **Workplan** widget on the work item, the confidence level appears as
 **Low**, **Medium**, or **High**.
+The score appears whether or not the work item has a workplan.
 
 To raise the score, add more detail to the work item description and to the workplan
 steps, such as requirements, acceptance criteria, and constraints.

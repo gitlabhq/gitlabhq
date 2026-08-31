@@ -8,6 +8,7 @@ import Api from '~/api';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { s__, __ } from '~/locale';
 
 import { getIdFromGraphQLId, setupQueryPollingByVisibility } from '~/graphql_shared/utils';
@@ -29,7 +30,12 @@ import mrPipelineStatusesUpdatedSubscription from '../graphql/subscriptions/mr_p
 import downstreamPipelineStatusUpdatedSubscription from '../graphql/subscriptions/downstream_pipeline_status_updated.subscription.graphql';
 import pipelineCreationRequestsUpdatedSubscription from '../graphql/subscriptions/pipeline_creation_requests_updated.subscription.graphql';
 
-import { createSubscriptionsCollection } from '../utils';
+import {
+  createSubscriptionsCollection,
+  dismissedCreationAlertsStorageKey,
+  hasAlertableFailureCountIncreased,
+  nextDismissedCreationRequestIds,
+} from '../utils';
 import {
   MR_PIPELINE_TYPE_DETACHED,
   MR_PIPELINE_TYPE_MERGED_RESULT,
@@ -48,6 +54,7 @@ export default {
     GlLoadingIcon,
     GlModal,
     GlSprintf,
+    LocalStorageSync,
     PipelinesEmptyState,
     PipelinesErrorState,
     PipelinesTable,
@@ -101,6 +108,7 @@ export default {
       downstreamPipelines: {},
       pipelineCreationRequests: [],
       showCreationFailedAlert: false,
+      dismissedCreationRequestIds: [],
       isCreatingPipeline: false,
       loaderTimeout: null,
       mergeRequestGid: null,
@@ -369,6 +377,9 @@ export default {
     hasInProgressCreationRequests() {
       return this.requestLengthByStatus(this.pipelineCreationRequests, 'IN_PROGRESS') > 0;
     },
+    dismissedCreationAlertsStorageKey() {
+      return dismissedCreationAlertsStorageKey(this.targetProjectFullPath, this.mergeRequestId);
+    },
     showRunPipelineButtonLoader() {
       return this.isCallingPostMergeRequestPipeline || this.hasInProgressCreationRequests;
     },
@@ -387,7 +398,11 @@ export default {
           this.stopDebouncedPipelineLoader();
         }
 
-        this.showCreationFailedAlert = this.hasFailureCountIncreased(oldRequests, newRequests);
+        this.showCreationFailedAlert = hasAlertableFailureCountIncreased(
+          oldRequests,
+          newRequests,
+          this.dismissedCreationRequestIds,
+        );
       },
       deep: true,
       immediate: true,
@@ -615,11 +630,12 @@ export default {
       };
     },
 
-    hasFailureCountIncreased(previousRequests = [], currentRequests = []) {
-      return (
-        this.requestLengthByStatus(currentRequests, 'FAILED') >
-        this.requestLengthByStatus(previousRequests, 'FAILED')
+    dismissCreationFailedAlert() {
+      this.dismissedCreationRequestIds = nextDismissedCreationRequestIds(
+        this.pipelineCreationRequests,
+        this.dismissedCreationRequestIds,
       );
+      this.showCreationFailedAlert = false;
     },
     requestLengthByStatus(requests, status) {
       return requests.filter((r) => r.status === status).length;
@@ -677,11 +693,11 @@ export default {
 </script>
 <template>
   <div class="content-list pipelines">
-    <gl-alert
-      v-if="showCreationFailedAlert"
-      variant="danger"
-      @dismiss="showCreationFailedAlert = false"
-    >
+    <local-storage-sync
+      v-model="dismissedCreationRequestIds"
+      :storage-key="dismissedCreationAlertsStorageKey"
+    />
+    <gl-alert v-if="showCreationFailedAlert" variant="danger" @dismiss="dismissCreationFailedAlert">
       {{ $options.i18n.pipelineCreationFailed }}
     </gl-alert>
     <gl-loading-icon

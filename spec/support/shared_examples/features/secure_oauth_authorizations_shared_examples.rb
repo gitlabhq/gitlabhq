@@ -23,7 +23,7 @@ RSpec.shared_examples 'Secure Device OAuth Authorizations' do
 
   context 'when authorize page is rendered' do
     it 'asks user to authorize the device' do
-      expect(page).to have_text "Authorize device to access to your GitLab account"
+      expect(page).to have_text "Authorize a device to access your GitLab account"
       within_testid('authorization-button') do
         expect(page).to have_content(format(_('Authorize')))
       end
@@ -45,6 +45,10 @@ RSpec.shared_examples 'Secure Device OAuth Authorizations' do
       end
 
       expect(find_by_testid('authorization-button')[:id].nil?).to be_truthy
+    end
+
+    it 'renders a form without id, guarding against a form_with_generates_ids revert' do
+      expect(page).not_to have_css('form [id]')
     end
   end
 end

@@ -16,7 +16,8 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         :http_router_rule_type,
         :auth_fail_token_type,
         :auth_fail_auth_header_type,
-        :duo_workflow_id
+        :duo_workflow_id,
+        :organization_source
       )
     end
   end
@@ -343,6 +344,20 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         context = described_class.new(project: project)
 
         expect(result(context)).not_to have_key(:duo_workflow_id)
+      end
+    end
+
+    context 'when using the organization source context' do
+      it 'sets the organization_source value' do
+        context = described_class.new(organization_source: 'fallback')
+
+        expect(result(context)).to include(organization_source: 'fallback')
+      end
+
+      it 'does not set the organization_source value when absent' do
+        context = described_class.new(project: project)
+
+        expect(result(context)).not_to have_key(:organization_source)
       end
     end
   end

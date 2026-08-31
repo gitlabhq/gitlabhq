@@ -28,7 +28,7 @@ module Projects
         project = Project.find_by_id(project_id)
         return unless project
 
-        params.symbolize_keys!
+        params = params.stringify_keys
 
         project_export_job = find_or_create_project_export_job(project, user_id, params)
         return if project_export_job.started?
@@ -58,7 +58,7 @@ module Projects
       end
 
       def find_or_create_project_export_job(project, user_id, params)
-        exported_by_admin = !!params[:exported_by_admin]
+        exported_by_admin = !!params['exported_by_admin']
 
         unless throttle_exports?
           return ProjectExportJob.find_or_create_by_jid(

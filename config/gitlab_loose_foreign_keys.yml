@@ -456,6 +456,13 @@ dependency_list_exports:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+dependency_management_remediations:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: merge_requests
+    column: merge_request_id
+    on_delete: async_nullify
 dependency_proxy_blob_states:
   - table: dependency_proxy_blobs
     column: dependency_proxy_blob_id

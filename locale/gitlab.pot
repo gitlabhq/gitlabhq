@@ -2768,6 +2768,9 @@ msgstr ""
 msgid "AICatalog|Can't be viewed or used outside the owning project's top-level group."
 msgstr ""
 
+msgid "AICatalog|Cannot add trigger events because the custom flow configuration is invalid"
+msgstr ""
+
 msgid "AICatalog|Cannot restore a deprecated version."
 msgstr ""
 
@@ -2901,6 +2904,9 @@ msgid "AICatalog|Default"
 msgstr ""
 
 msgid "AICatalog|Define the agent's personality, expertise, and behavior. This changes how the agent solves problems and responds to requests."
+msgstr ""
+
+msgid "AICatalog|Definition is missing and cannot be validated"
 msgstr ""
 
 msgid "AICatalog|Delete %{itemType}"
@@ -12129,6 +12135,11 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact registry settings"
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact: %d hour"
+msgid_plural "ArtifactRegistry|Artifact: %d hours"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ArtifactRegistry|Assignee could not be found."
 msgstr ""
 
@@ -12154,6 +12165,9 @@ msgid "ArtifactRegistry|CI/CD pipelines (.gitlab-ci.yml)"
 msgstr ""
 
 msgid "ArtifactRegistry|CLI commands"
+msgstr ""
+
+msgid "ArtifactRegistry|Caching period"
 msgstr ""
 
 msgid "ArtifactRegistry|Client configuration files"
@@ -12378,6 +12392,11 @@ msgstr ""
 
 msgid "ArtifactRegistry|Metadata caching period"
 msgstr ""
+
+msgid "ArtifactRegistry|Metadata: %d hour"
+msgid_plural "ArtifactRegistry|Metadata: %d hours"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "ArtifactRegistry|More actions for %{name}"
 msgstr ""
@@ -29127,7 +29146,7 @@ msgstr ""
 msgid "DeviceAuth|Authorize"
 msgstr ""
 
-msgid "DeviceAuth|Authorize device to access to your GitLab account."
+msgid "DeviceAuth|Authorize a device to access your GitLab account."
 msgstr ""
 
 msgid "DeviceAuth|Confirm"
@@ -29139,7 +29158,10 @@ msgstr ""
 msgid "DeviceAuth|Enter the code shown on your device to grant it access to your GitLab account."
 msgstr ""
 
-msgid "DeviceAuth|Please make sure that you intended to authorize this device."
+msgid "DeviceAuth|Never enter a code someone else gave you."
+msgstr ""
+
+msgid "DeviceAuth|Only authorize if you started this yourself."
 msgstr ""
 
 msgid "DeviceAuth|You are an administrator, which means authorizing access will allow it to interact with GitLab as an administrator as well."
@@ -93646,6 +93668,9 @@ msgid "You are already impersonating another user"
 msgstr ""
 
 msgid "You are an administrator, which means authorizing access to %{strong_start}%{client_name}%{strong_end} will allow it to interact with GitLab as an administrator as well."
+msgstr ""
+
+msgid "You are an administrator. Authorizing %{strong_start}%{client_name}%{strong_end} will let it act as an administrator. Only continue if you trust this application."
 msgstr ""
 
 msgid "You are attempting to delete a file that has been previously updated."

@@ -9548,7 +9548,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'enqueues CreateionProjectExportWorker' do
       expect(Projects::ImportExport::CreateRelationExportsWorker)
         .to receive(:perform_async)
-        .with(user.id, project.id, nil, { exported_by_admin: false })
+        .with(user.id, project.id, nil, { 'exported_by_admin' => false })
 
       project.add_export_job(current_user: user)
     end
@@ -9559,7 +9559,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'passes `exported_by_admin` correctly in the `params` hash' do
         expect(Projects::ImportExport::CreateRelationExportsWorker)
         .to receive(:perform_async)
-        .with(user.id, project.id, nil, { exported_by_admin: true })
+        .with(user.id, project.id, nil, { 'exported_by_admin' => true })
 
         project.add_export_job(current_user: user)
       end
@@ -9570,7 +9570,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         stub_application_setting(max_export_size: 1)
         allow(project.statistics).to receive(:storage_size).and_return(0.megabytes)
 
-        expect(Projects::ImportExport::CreateRelationExportsWorker).to receive(:perform_async).with(user.id, project.id, nil, { exported_by_admin: false })
+        expect(Projects::ImportExport::CreateRelationExportsWorker).to receive(:perform_async).with(user.id, project.id, nil, { 'exported_by_admin' => false })
 
         project.add_export_job(current_user: user)
       end
@@ -9589,7 +9589,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'when application setting max_export_size is not set' do
       it 'starts project export worker' do
         allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
-        expect(Projects::ImportExport::CreateRelationExportsWorker).to receive(:perform_async).with(user.id, project.id, nil, { exported_by_admin: false })
+        expect(Projects::ImportExport::CreateRelationExportsWorker).to receive(:perform_async).with(user.id, project.id, nil, { 'exported_by_admin' => false })
 
         project.add_export_job(current_user: user)
       end
@@ -11408,7 +11408,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     def expect_worker_to_be_enqueued(user = current_user)
       expect(Projects::ImportExport::CreateRelationExportsWorker)
         .to receive(:perform_async)
-        .with(user.id, project.id, nil, { exported_by_admin: false })
+        .with(user.id, project.id, nil, { 'exported_by_admin' => false })
     end
 
     shared_examples 'blocks duplicate export' do |status|

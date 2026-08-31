@@ -57,7 +57,11 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   end
 
   def publish
-    experience = Labkit::UserExperienceSli.start(:submit_mr_review_ui)
+    # Two experiences cover this action: submit_mr_review_ui stops once the review
+    # is visible in the app, submit_and_notify_mr_review_ui keeps running until the
+    # todos and notifications have been delivered in ProcessDraftNotePublishedWorker.
+    submit_experience = Labkit::UserExperienceSli.start(:submit_mr_review_ui)
+    submit_and_notify_experience = Labkit::UserExperienceSli.start(:submit_and_notify_mr_review_ui)
 
     result = DraftNotes::PublishService.new(merge_request, current_user, draft_note_ids_param)
       .execute(draft: draft_note(allow_nil: true))
@@ -70,13 +74,15 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
     update_reviewer_state if reviewer_state_params[:reviewer_state]
 
-    experience.checkpoint(checkpoint_action: 'notes_published') if result[:async_notifications]
-
     if result[:status] == :success
-      experience.complete(notes_published: false) unless result[:async_notifications]
+      submit_experience.complete
+      submit_and_notify_experience.complete(notes_published: false) unless result[:async_notifications]
+
       head :ok
     else
-      experience.error!(result[:message]).complete
+      submit_experience.error!(result[:message]).complete
+      submit_and_notify_experience.error!(result[:message]).complete
+
       render json: { message: result[:message] }, status: :internal_server_error
     end
   end

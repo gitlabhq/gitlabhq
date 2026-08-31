@@ -40,20 +40,24 @@ module Gitlab
       end
 
       def self.parse_options
-        { dry_run: false }.tap do |options|
+        { dry_run: false, print_consumer_id: false }.tap do |options|
           OptionParser.new do |opts|
             opts.banner = 'Usage: gitlab-ai-principles-distiller-provision-flow [options]'
             opts.on('--workspace PATH', 'Path to the repository workspace ' \
               '(defaults to $CI_PROJECT_DIR)') do |path|
-              Workspace.path = File.expand_path(path)
+              Workspace.path = path
             end
             opts.on('--dry-run', 'Print intended actions without mutating the catalog') { options[:dry_run] = true }
+            opts.on('--print-consumer-id', 'Print the catalog ItemConsumer ID and exit (read-only)') do
+              options[:print_consumer_id] = true
+            end
           end.parse!
         end
       end
 
       def initialize(options)
         @dry_run = options[:dry_run]
+        @print_consumer_id = options[:print_consumer_id]
         @host = ENV.fetch(Env::GITLAB_HOST, DEFAULT_HOST).chomp('/')
         @flow_name = ENV.fetch(Env::CATALOG_FLOW_NAME, DEFAULT_FLOW_NAME)
         @token = ENV[Env::GITLAB_TOKEN]
@@ -65,6 +69,8 @@ module Gitlab
       end
 
       def execute
+        return print_consumer_id if @print_consumer_id
+
         puts "Catalog host:   #{@host}"
         puts "Project:        #{@project_path}"
         puts "Flow name:      #{@flow_name}"
@@ -90,13 +96,24 @@ module Gitlab
         puts "Consumer ID:    #{consumer['id']}" if consumer
         return unless consumer
 
-        consumer_numeric_id = consumer['id'].to_s.split('/').last
         puts Rainbow(
-          "\nExport AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID=#{consumer_numeric_id} for principles_distiller/sync.rb"
+          "\nExport AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID=#{consumer_numeric_id(consumer)} " \
+            'for principles_distiller/sync.rb'
         ).cyan
       end
 
       private
+
+      def print_consumer_id
+        project_gid = find_project_gid!(@project_path)
+        flow = find_flow
+        abort Rainbow("ERROR: catalog flow not found: #{@flow_name} in #{@project_path}").red unless flow
+
+        consumer = lookup_item_consumer(flow, project_gid)
+        abort Rainbow("ERROR: catalog flow is not bound to project: #{@project_path}").red unless consumer
+
+        puts consumer_numeric_id(consumer)
+      end
 
       def load_distillation_prompt
         FlowDefinition.load_distillation_prompt
@@ -300,16 +317,7 @@ module Gitlab
           return
         end
 
-        lookup_vars = { id: flow['id'], projectId: project_gid }
-        existing = graphql(<<~GQL, lookup_vars)
-      query ExistingConsumer($id: AiCatalogItemID!, $projectId: ProjectID!) {
-        aiCatalogItem(id: $id) {
-          configurationForProject(projectId: $projectId) { id }
-        }
-      }
-        GQL
-
-        consumer = existing.dig('aiCatalogItem', 'configurationForProject')
+        consumer = lookup_item_consumer(flow, project_gid)
         if consumer
           puts Rainbow("ItemConsumer already exists: #{consumer['id']}").green
           return consumer
@@ -337,6 +345,23 @@ module Gitlab
 
         puts Rainbow("ItemConsumer created: #{payload.dig('itemConsumer', 'id')}").green
         payload['itemConsumer']
+      end
+
+      def lookup_item_consumer(flow, project_gid)
+        lookup_vars = { id: flow['id'], projectId: project_gid }
+        existing = graphql(<<~GQL, lookup_vars)
+      query ExistingConsumer($id: AiCatalogItemID!, $projectId: ProjectID!) {
+        aiCatalogItem(id: $id) {
+          configurationForProject(projectId: $projectId) { id }
+        }
+      }
+        GQL
+
+        existing.dig('aiCatalogItem', 'configurationForProject')
+      end
+
+      def consumer_numeric_id(consumer)
+        consumer['id'].to_s.split('/').last
       end
 
       # Reports both the YAML delta and the stored-JSONB size, because only the latter is what the catalog's

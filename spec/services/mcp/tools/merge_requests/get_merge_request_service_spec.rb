@@ -34,9 +34,9 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestService, feature_catego
   describe 'input schema' do
     it 'locks the full input schema for version 0.1.0' do
       expect(described_class.version_metadata('0.1.0')[:description]).to eq(
-        'Get a merge request and optionally its diffs, commits, notes, pipelines, or discussions. ' \
-          'By default only the base merge request metadata is returned; request associated data through the ' \
-          '`include` parameter so nothing extra is fetched unless asked for.'
+        'Get a merge request and optionally its diffs, commits, notes, pipelines, discussions, or ' \
+          'approvals. By default only the base merge request metadata is returned; request associated data ' \
+          'through the `include` parameter so nothing extra is fetched unless asked for.'
       )
 
       expect(described_class.version_metadata('0.1.0')[:input_schema]).to eq({
@@ -61,10 +61,13 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestService, feature_catego
             description: 'Associated facets to fetch inline, one per call. diffs returns aggregate change ' \
               'stats and a per-file breakdown by default; set detail=full_patch for raw per-file patch ' \
               'text or detail=none for summary counts only. For conflicts use the ' \
-              'get_merge_request_conflicts tool. notes supports pagination (notes_after/notes_first).',
+              'get_merge_request_conflicts tool. notes supports pagination (notes_after/notes_first). ' \
+              'approvals returns approved and approvedBy on every tier. approvalsRequired, approvalsLeft, and ' \
+              'the rule breakdown in approvalState need GitLab Premium or Ultimate; otherwise ' \
+              'these keys are present but zeroed or empty, not omitted.',
             items: {
               type: 'string',
-              enum: %w[diffs commits notes pipelines discussions]
+              enum: %w[diffs commits notes pipelines discussions approvals]
             },
             maxItems: 1
           },

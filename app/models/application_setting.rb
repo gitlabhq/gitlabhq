@@ -71,7 +71,6 @@ class ApplicationSetting < ApplicationRecord
   add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required # rubocop:disable Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
   add_authentication_token_field :error_tracking_access_token, encrypted: :required # rubocop:disable Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
 
-  belongs_to :push_rule
   belongs_to :web_ide_oauth_application, class_name: 'Authn::OauthApplication'
   belongs_to :o11y_oauth_application, class_name: 'Authn::OauthApplication', optional: true
 
@@ -1490,13 +1489,6 @@ class ApplicationSetting < ApplicationRecord
     return false if session_expire_from_init?
 
     remember_me_enabled?
-  end
-
-  # Overrides the belongs_to :push_rule association.
-  # This method and the push_rule_id column from application_settings should be removed together.
-  # See https://gitlab.com/gitlab-org/gitlab/-/work_items/601603
-  def push_rule
-    nil
   end
 
   def custom_default_search_scope_set?

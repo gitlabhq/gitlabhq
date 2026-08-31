@@ -65716,7 +65716,7 @@
               "deprecationReason": null
             },
             {
-              "name": "reason",
+              "name": "resolutionReason",
               "description": "Reason for the decision.",
               "type": {
                 "kind": "SCALAR",

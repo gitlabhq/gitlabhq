@@ -93,7 +93,10 @@ class WebHookService
       execution_duration: ::Gitlab::Metrics::System.monotonic_time - start_time
     )
 
-    ServiceResponse.success(message: response.body, payload: { http_status: response.code })
+    ServiceResponse.success(
+      message: response.body,
+      payload: { http_status: response.code, response_category: response_category(response) }
+    )
   rescue CustomWebHookTemplateError,
     Gitlab::Json::LimitedEncoder::NumberLimitExceeded => e
     log_execution(

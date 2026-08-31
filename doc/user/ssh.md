@@ -22,8 +22,14 @@ To use SSH keys with GitLab, you must:
 1. Add your SSH key to your GitLab account.
 1. Verify your connection to GitLab.
 
+You can then [clone a repository with SSH](../topics/git/clone.md#clone-with-ssh).
+One SSH key authenticates you to every project and group your account can access.
+You do not need a separate key for each project.
+To use a different key for a specific repository, see
+[use different keys for different repositories](ssh_advanced.md#use-different-keys-for-different-repositories).
+
 > [!note]
-> For information on advanced SSH key configuration,
+> For less common setups, like hardware security keys, multiple accounts, or Microsoft Windows,
 > see [advanced SSH key configuration](ssh_advanced.md).
 
 ## What are SSH keys
@@ -293,3 +299,9 @@ GitLab checks daily for expiring SSH keys and sends notifications:
 
 - At 01:00 AM UTC, seven days before expiration.
 - At 02:00 AM UTC on the expiration date.
+
+## Related topics
+
+- [Move an SSH key to another device](ssh_advanced.md#move-an-ssh-key-to-another-device)
+- [SSH keys for service accounts](profile/service_accounts.md)
+- [Troubleshooting SSH](ssh_troubleshooting.md)

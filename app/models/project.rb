@@ -2838,7 +2838,7 @@ class Project < ApplicationRecord
     params[:exported_by_admin] = current_user.can_admin_all_resources?
 
     job_id = Projects::ImportExport::CreateRelationExportsWorker
-                 .perform_async(current_user.id, self.id, after_export_strategy, params)
+                 .perform_async(current_user.id, self.id, after_export_strategy, params.stringify_keys)
 
     if job_id
       Gitlab::AppLogger.info "Export job started for project ID #{self.id} with job ID #{job_id}"

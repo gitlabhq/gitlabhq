@@ -6,9 +6,11 @@ product_categories:
 - organization
 performance_indicator_type: []
 value_type: number
-status: active
+status: removed
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172017
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251639
+milestone_removed: '19.4'
 time_frame: all
 data_source: internal_events
 data_category: optional

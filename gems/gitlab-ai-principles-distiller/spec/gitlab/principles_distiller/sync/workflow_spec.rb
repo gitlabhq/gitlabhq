@@ -2,10 +2,12 @@
 
 require 'spec_helper'
 require_relative '../../../support/tmpdir'
+require_relative '../../../support/abort_capture'
 require_relative '../../../../lib/gitlab/principles_distiller/sync'
 
 RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
   include TmpdirHelper
+  include AbortCaptureHelper
 
   let(:manifest) { Gitlab::PrinciplesDistiller::Sync::Manifest.new }
   let(:workflow) { described_class.new(manifest: manifest) }
@@ -681,38 +683,68 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
   end
 
   describe '.validate_config!' do
-    subject(:validate) { workflow.validate_config! }
+    subject(:validate) { workflow.validate_config!(push: push) }
 
-    context 'when both env vars are set' do
-      before do
-        stub_const('ENV',
-          env_double('GITLAB_TOKEN' => 'token', 'AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID' => '123'))
-      end
+    let(:push) { false }
+    let(:env) do
+      {
+        'GITLAB_TOKEN' => 'token',
+        'AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID' => '123',
+        'AGENT_PRINCIPLES_CATALOG_PROJECT' => 'gitlab-org/gitlab',
+        'CI_DEFAULT_BRANCH' => 'master'
+      }
+    end
 
+    before do
+      stub_const('ENV', env_double(env))
+    end
+
+    context 'when every required variable is set' do
       it 'does not abort' do
         expect { validate }.not_to raise_error
       end
     end
 
-    context 'when GITLAB_TOKEN is missing' do
+    context 'when several variables are missing' do
       before do
-        stub_const('ENV',
-          env_double('GITLAB_TOKEN' => '', 'AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID' => '123'))
+        env['GITLAB_TOKEN'] = ''
+        env['AGENT_PRINCIPLES_CATALOG_PROJECT'] = ''
       end
 
-      it 'aborts' do
-        expect { validate }.to raise_error(SystemExit)
+      it 'reports every missing variable and the token constraint once', :aggregate_failures do
+        message = capture_abort_stderr { validate }
+
+        expect(message).to include('Missing env: GITLAB_TOKEN, AGENT_PRINCIPLES_CATALOG_PROJECT')
+        expect(message).to include('export GITLAB_TOKEN=<value>')
+        expect(message).to include('export AGENT_PRINCIPLES_CATALOG_PROJECT=<value>')
+        expect(message).to include('GITLAB_TOKEN requires a classic personal access token with api scope')
+        expect(message).to include("api scope.\nUse gitlab-ai-principles-distiller-provision-flow")
       end
     end
 
-    context 'when AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID is missing' do
+    context 'with push enabled' do
+      let(:push) { true }
+
       before do
-        stub_const('ENV',
-          env_double('GITLAB_TOKEN' => 'token', 'AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID' => ''))
+        env['GITLAB_API_TOKEN'] = 'api-token'
+        env['CI_PROJECT_ID'] = '278964'
       end
 
-      it 'aborts' do
-        expect { validate }.to raise_error(SystemExit)
+      it 'does not abort when publish configuration is complete' do
+        expect { validate }.not_to raise_error
+      end
+
+      context 'when publish configuration is missing' do
+        before do
+          env['GITLAB_API_TOKEN'] = ''
+          env['CI_PROJECT_ID'] = ''
+        end
+
+        it 'reports both variables before distillation starts' do
+          message = capture_abort_stderr { validate }
+
+          expect(message).to include('Missing env: GITLAB_API_TOKEN, CI_PROJECT_ID')
+        end
       end
     end
 
@@ -741,6 +773,110 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
           @env_hash.key?(key) && !@env_hash[key].to_s.empty?
         end
       end.new(env_hash)
+    end
+  end
+
+  describe '.validate_publish_config!' do
+    subject(:validate) { workflow.validate_publish_config! }
+
+    let(:env) do
+      {
+        'GITLAB_TOKEN' => 'token',
+        'AGENT_PRINCIPLES_CATALOG_PROJECT' => 'gitlab-org/gitlab',
+        'CI_DEFAULT_BRANCH' => 'master',
+        'GITLAB_API_TOKEN' => 'api-token',
+        'CI_PROJECT_ID' => '278964'
+      }
+    end
+
+    before do
+      stub_const('ENV', env)
+    end
+
+    it 'does not require the consumer ID' do
+      expect { validate }.not_to raise_error
+    end
+
+    context 'when publish configuration is missing' do
+      before do
+        env['GITLAB_API_TOKEN'] = ''
+        env['CI_PROJECT_ID'] = ''
+      end
+
+      it 'reports every missing publish variable without consumer ID guidance' do
+        message = capture_abort_stderr { validate }
+
+        expect(message).to include('Missing env: GITLAB_API_TOKEN, CI_PROJECT_ID')
+        expect(message).not_to include('--print-consumer-id')
+      end
+    end
+  end
+
+  describe '.warn_if_sources_differ_from_pushed_branch' do
+    subject(:warn_if_different) { workflow.warn_if_sources_differ_from_pushed_branch(config, **arguments) }
+
+    let(:arguments) { {} }
+    let(:config) do
+      {
+        'sources' => [{ 'path' => 'doc/changed.md' }, { 'path' => 'doc/unchanged.md' }],
+        'baseline' => '.ai/principles/baselines/changed.md'
+      }
+    end
+
+    before do
+      allow(workflow).to receive_messages(source_branch: 'feature-branch', system: true)
+    end
+
+    context 'when local sources differ from the pushed branch' do
+      before do
+        output = "doc/changed.md\n.ai/principles/baselines/changed.md\n"
+        allow(IO).to receive(:popen).and_return(output)
+      end
+
+      it 'warns with each changed path and continues' do
+        expect { warn_if_different }.to output(%r{doc/changed\.md.*baselines/changed\.md.*Push these changes}m)
+          .to_stderr
+      end
+
+      context 'with an injected warning logger' do
+        let(:log_warn) { instance_spy(Proc) }
+        let(:arguments) { { log_warn: log_warn } }
+
+        it 'routes the warning through the logger', :aggregate_failures do
+          expect { warn_if_different }.not_to output.to_stderr
+          expect(log_warn).to have_received(:call).with(%r{doc/changed\.md.*baselines/changed\.md.*Push these changes}m)
+        end
+      end
+    end
+
+    context 'when local sources match the pushed branch' do
+      before do
+        allow(IO).to receive(:popen).and_return('')
+      end
+
+      it 'does not warn' do
+        expect { warn_if_different }.not_to output.to_stderr
+      end
+    end
+
+    context 'when the pushed branch is unavailable' do
+      before do
+        allow(workflow).to receive(:system).and_return(true, false)
+      end
+
+      it 'warns that workflows cannot see local-only changes' do
+        expect { warn_if_different }.to output(/pushed source branch not found.*local-only/m).to_stderr
+      end
+    end
+
+    context 'when the workspace is not a Git repository' do
+      before do
+        allow(workflow).to receive(:system).and_return(false)
+      end
+
+      it 'does not warn' do
+        expect { warn_if_different }.not_to output.to_stderr
+      end
     end
   end
 end
