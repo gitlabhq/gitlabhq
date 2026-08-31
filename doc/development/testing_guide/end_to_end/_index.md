@@ -167,7 +167,7 @@ A common CI template for report uploading is stored in [`allure-report.yml`](htt
 
 ##### Merge requests
 
-When these tests are executed in the scope of merge requests, the `Allure` report is uploaded to the `GCS` bucket and a bot comment is added linking to their respective reports.
+When these tests are executed in the scope of merge requests, the `Allure` report is uploaded to an `S3` bucket. A link to the report is printed at the end of the `e2e-test-report` job log.
 
 ##### Scheduled pipelines
 

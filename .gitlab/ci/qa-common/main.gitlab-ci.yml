@@ -23,6 +23,9 @@ include:
       aws_secret_access_key_variable_name: "QA_ALLURE_AWS_SECRET_ACCESS_KEY"
       gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
       allure_job_name: "${QA_RUN_TYPE}"
+      # An empty value makes allure-report-publisher skip the merge request update, so the
+      # report is still uploaded but no bot comment is posted.
+      allure_mr_update_type: ""
   - project: gitlab-org/quality/pipeline-common
     ref: 12.2.0
     file:
