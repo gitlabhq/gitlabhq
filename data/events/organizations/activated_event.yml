@@ -1,0 +1,7 @@
+---
+event: Organizations::ActivatedEvent
+description: Published when an organization transitions from `confirmed` to `active`.
+  Emitted by Organizations::ActivateService after the state transition is committed,
+  once its group and user transfers have succeeded. Not published if activation fails
+  or is rolled back.
+feature_category: organization

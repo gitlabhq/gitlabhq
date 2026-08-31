@@ -123,7 +123,16 @@ module Gitlab
 
       def ionice
         strong_memoize(:ionice) do
-          Gitlab::Utils.which('ionice')
+          path = Gitlab::Utils.which('ionice')
+          next unless path
+
+          # Verify ionice actually works. It may be present but non-functional
+          # in sandboxed environments (e.g. gVisor) where the ioprio_set
+          # syscall is not permitted. Probe with 'best-effort' which is the
+          # least privileged class.
+          next unless system(path, '-c', 'best-effort', 'true', [:out, :err] => File::NULL)
+
+          path
         end
       end
 

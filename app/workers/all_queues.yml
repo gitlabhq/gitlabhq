@@ -4874,6 +4874,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: organizations_activation_email
+  :worker_name: Organizations::ActivationEmailWorker
+  :feature_category: :organization
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: organizations_check_organization_isolation_status
   :worker_name: Organizations::CheckOrganizationIsolationStatusWorker
   :feature_category: :organization

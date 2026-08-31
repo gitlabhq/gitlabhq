@@ -20,6 +20,9 @@ $super-sidebar-nav-flayout-menu-z-index: 800;
 $super-sidebar-nav-item-menu-z-index: $super-sidebar-nav-flayout-menu-z-index + 1;
 $super-sidebar-nav-item-z-index: $super-sidebar-nav-item-menu-z-index + 1;
 $panel-header-inner-z-index: 99;
+// The Duo chat surface sits at 999, so the AI panel header has to clear it
+// or chat content swallows clicks on the header's menus.
+$ai-panel-header-inner-z-index: 1000;
 $base-layout-sticky-header-z-index: $panel-header-inner-z-index - 1;
 $panel-header-inner-height: 2.25rem; //= 36px
 $top-bar-z-index: 210;

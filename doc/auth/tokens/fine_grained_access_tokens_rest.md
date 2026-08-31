@@ -2293,6 +2293,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/closing_merge_requests` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/current_user_todos` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
+| Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/email_participants` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/feature_flags` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_items` |
@@ -2307,6 +2308,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/closing_merge_requests` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/current_user_todos` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/discussions` |
+| Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/email_participants` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/feature_flags` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/linked_items` |
@@ -2388,6 +2390,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/closing_merge_requests` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/current_user_todos` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/discussions` |
+| Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/email_participants` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/feature_flags` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/linked_items` |
@@ -2439,6 +2442,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/closing_merge_requests` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/current_user_todos` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
+| Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/email_participants` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/feature_flags` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_items` |

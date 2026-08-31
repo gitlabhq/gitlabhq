@@ -118,6 +118,8 @@ class Projects::BlobController < Projects::ApplicationController
       return render json: { errors: ["Preview content too large"] }, status: :payload_too_large
     end
 
+    @preview_file_name = preview_file_name
+
     blob.load_all_data!
     diffy = Diffy::Diff.new(blob.data, @content, diff: '-U 3', include_diff_info: true)
     diff_lines = diffy.diff.scan(/.*\n/)[2..]
@@ -202,6 +204,13 @@ class Projects::BlobController < Projects::ApplicationController
 
   def require_blob
     redirect_to_project_tree_path unless blob
+  end
+
+  # Only the base name is used, which rules out path traversal.
+  def preview_file_name
+    file_path = params.permit(:file_path)[:file_path]
+
+    file_path.present? ? File.basename(file_path.to_s) : blob.name
   end
 
   def redirect_to_project_tree_path

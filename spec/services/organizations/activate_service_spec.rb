@@ -31,6 +31,12 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
         expect(response.payload[:organization]).to eq(organization)
       end
 
+      it 'publishes an Organizations::ActivatedEvent' do
+        expect { response }
+          .to publish_event(Organizations::ActivatedEvent)
+          .with(organization_id: organization.id)
+      end
+
       it 'calls Organizations::Transfer::GroupsService for each top-level group', :aggregate_failures do
         expect(Organizations::Transfer::GroupsService).to receive(:new).with(
           group: top_level_group,
@@ -138,6 +144,10 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
       it 'does not change organization state' do
         expect { response }.not_to change { organization.reload.state }.from('confirmed')
       end
+
+      it 'does not publish an Organizations::ActivatedEvent' do
+        expect { response }.to not_publish_event(Organizations::ActivatedEvent)
+      end
     end
 
     context 'when the state transition to active fails' do
@@ -158,6 +168,10 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
 
       it 'does not change organization state' do
         expect { response }.not_to change { organization.reload.state }.from('confirmed')
+      end
+
+      it 'does not publish an Organizations::ActivatedEvent' do
+        expect { response }.to not_publish_event(Organizations::ActivatedEvent)
       end
     end
 
@@ -189,6 +203,10 @@ RSpec.describe Organizations::ActivateService, feature_category: :organization d
         it 'returns an error response', :aggregate_failures do
           expect(response).to be_error
           expect(response.message).to eq(_(error_message))
+        end
+
+        it 'does not publish an Organizations::ActivatedEvent' do
+          expect { response }.to not_publish_event(Organizations::ActivatedEvent)
         end
       end
     end

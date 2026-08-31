@@ -31,12 +31,15 @@ export default {
     ...visualizations,
   },
   mixins: [glAbilitiesMixin(), glLicensedFeaturesMixin()],
-  inject: [
-    'namespaceFullPath',
-    'namespaceName',
-    'dataSourceClickhouse',
-    'overviewCountsAggregationEnabled',
-  ],
+  inject: {
+    namespaceFullPath: {},
+    namespaceName: {},
+    dataSourceClickhouse: {},
+    overviewCountsAggregationEnabled: {},
+    // Defaulted because the dashboard edit and data explorer routes mount panels outside the
+    // dashboard page that provides this.
+    isProject: { default: false },
+  },
   props: {
     visualization: {
       type: Object,
@@ -380,6 +383,9 @@ export default {
         :data="data"
         :options="visualizationOptions"
         :query="aggregatedQuery"
+        :namespace="namespace"
+        :is-project="isProject"
+        :filters="filters"
         @set-alerts="setAlerts"
         @set-actions="setActions"
         @reload="fetchData"

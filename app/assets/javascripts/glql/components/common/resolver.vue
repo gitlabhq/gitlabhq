@@ -30,6 +30,15 @@ export default {
       type: String,
       default: '',
     },
+    /**
+     * Namespace to compile the query against, as `{ group }` or `{ project }`.
+     * When null, the namespace is derived from the current URL.
+     */
+    scope: {
+      required: false,
+      type: Object,
+      default: null,
+    },
   },
   emits: ['change'],
   data() {
@@ -64,6 +73,11 @@ export default {
   },
   watch: {
     glqlQuery() {
+      this.executeQuery();
+    },
+    // The query string is unchanged when only the namespace changes, so without this the
+    // rendered results would still be those of the previously selected namespace.
+    scope() {
       this.executeQuery();
     },
   },
@@ -114,7 +128,10 @@ export default {
       this.emitChange();
 
       try {
-        const { query, config, variables, fields, mode, source } = await parse(this.glqlQuery);
+        const { query, config, variables, fields, mode, source } = await parse(
+          this.glqlQuery,
+          this.scope,
+        );
 
         this.query = query;
         this.config = config;

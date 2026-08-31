@@ -76,6 +76,20 @@ RSpec.describe ::Gitlab::Seeders::Ci::Catalog::ResourceSeeder, feature_category:
       end
     end
 
+    context 'when release creation fails' do
+      before do
+        allow_next_instance_of(::Releases::CreateService) do |service|
+          allow(service).to receive(:execute).and_return(status: :error, message: 'error')
+        end
+      end
+
+      it 'does not create a release but keeps seeding' do
+        expect { seed }.to change { Project.count }.by(seed_count)
+
+        expect(group.projects.sum { |project| project.releases.count }).to eq(0)
+      end
+    end
+
     describe 'publish argument' do
       context 'when false' do
         let(:publish) { false }
@@ -126,6 +140,44 @@ RSpec.describe ::Gitlab::Seeders::Ci::Catalog::ResourceSeeder, feature_category:
       expect { seed }.to change { Project.count }.by(seed_count)
 
       expect(group.projects.all?(&:catalog_resource)).to be true
+    end
+
+    describe 'catalog resource releases' do
+      context 'when publish is true' do
+        it 'creates a release for every project' do
+          seed
+
+          group.projects.each do |project|
+            expect(project.releases.pluck(:tag)).to include('v1.0.0')
+          end
+        end
+
+        it 'creates a CI/CD catalog resource version for each release' do
+          seed
+
+          group.projects.each do |project|
+            expect(project.catalog_resource.versions.count).to eq(project.releases.count)
+          end
+        end
+
+        it 'creates a second release for the first seeded resource' do
+          seed
+
+          first_project = group.projects.find_by(name: 'ci_seed_resource_0')
+
+          expect(first_project.releases.pluck(:tag)).to contain_exactly('v1.0.0', 'v1.1.0')
+        end
+      end
+
+      context 'when publish is false' do
+        let(:publish) { false }
+
+        it 'does not create any releases' do
+          seed
+
+          expect(group.projects.sum { |project| project.releases.count }).to eq(0)
+        end
+      end
     end
   end
 end

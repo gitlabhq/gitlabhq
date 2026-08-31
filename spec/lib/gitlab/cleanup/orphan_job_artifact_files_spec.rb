@@ -24,12 +24,14 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFiles do
   it 'errors when invalid niceness is given' do
     allow(Gitlab::Utils).to receive(:which).with('ionice').and_return('/fake/ionice')
     cleanup = described_class.new(logger: null_logger, niceness: 'FooBar')
+    allow(cleanup).to receive(:system).and_return(true)
 
     expect { cleanup.run! }.to raise_error('Invalid niceness')
   end
 
   it 'passes correct arguments to ionice' do
     allow(Gitlab::Utils).to receive(:which).with('ionice').and_return('/fake/ionice')
+    allow(cleanup).to receive(:system).and_return(true)
     expect(Open3).to receive(:popen3).with('/fake/ionice', '-c', any_args)
     cleanup.run!
   end

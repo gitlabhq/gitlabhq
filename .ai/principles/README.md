@@ -222,6 +222,10 @@ requests](https://docs.gitlab.com/development/ai_instruction_files_review/#revie
 which is the SSOT for reviewing them. This file stays the SSOT for how the
 sync itself works.
 
+If a weekly sync MR has automated review findings, use the
+[`ai-principles-review-feedback` skill](../../.claude/skills/ai-principles-review-feedback/SKILL.md)
+to work through every finding before the MR is merged.
+
 ## Running the sync locally
 
 Both binaries operate on the consuming repository's working tree, which they

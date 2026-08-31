@@ -335,10 +335,18 @@ export default {
     showGenerateMrWithDuoButton() {
       if (!this.duoRemoteFlowsAvailability) return false;
 
-      const hasAgentPlan =
-        this.workItem?.features?.agentPlan || Boolean(this.findWidget('AGENT_PLAN'));
-
-      return !hasAgentPlan;
+      return !this.agentPlanWidget;
+    },
+    agentPlanWidget() {
+      return this.workItem?.features?.agentPlan || this.findWidget('AGENT_PLAN');
+    },
+    showPlanCta() {
+      return (
+        !this.editMode &&
+        this.canUpdate &&
+        Boolean(this.agentPlanWidget) &&
+        !this.agentPlanWidget.aiPlanningEnabled
+      );
     },
     workItemProjectId() {
       return this.workItem?.project?.id;
@@ -1093,9 +1101,8 @@ export default {
               {{ __('Edit') }}
             </gl-button>
             <work-item-plan-cta
-              v-if="!editMode"
+              v-if="showPlanCta"
               :work-item="workItem"
-              :can-update="canUpdate"
               @error="updateError = $event"
             />
             <todos-toggle

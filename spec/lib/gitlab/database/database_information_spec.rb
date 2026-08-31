@@ -70,6 +70,13 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
         allow(connection).to receive(:select_all)
           .with(a_string_matching(/pg_stat_progress_vacuum/)).and_return(vacuum_rows)
 
+        # Pin activity_readable? via its underlying query so the result does not
+        # depend on the test DB role's privileges. Contexts below override the
+        # is_superuser check to exercise the restricted paths.
+        allow(connection).to receive(:select_value).and_call_original
+        allow(connection).to receive(:select_value)
+          .with(a_string_matching(/is_superuser/)).and_return(true)
+
         # Keep this context focused on vacuum progress: stub the sibling
         # autovacuum-config collection so its queries don't hit the real DB.
         allow_next_instance_of(described_class) do |info|
@@ -158,6 +165,63 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
           expect(vacuums).to eq([])
           expect(connection).not_to have_received(:select_all)
             .with(a_string_matching(/pg_stat_progress_vacuum/))
+        end
+      end
+
+      it 'reports vacuum activity as available on the normal path' do
+        expect(described_class.execute[:databases]['main'][:vacuum_activity_available]).to be(true)
+      end
+
+      context 'when the role cannot read all stats' do
+        subject(:payload) { described_class.execute[:databases]['main'] }
+
+        before do
+          allow(connection).to receive(:select_value)
+            .with(a_string_matching(/is_superuser/)).and_return(false)
+        end
+
+        it 'skips the activity join and reports activity unavailable', :aggregate_failures do
+          expect(payload[:error]).to be_nil
+          expect(payload[:vacuum_activity_available]).to be(false)
+          expect(payload[:vacuums].first).to include(
+            table_name: 'ci_builds',
+            heap_blks_total: 1000,
+            vacuum_type: nil,
+            anti_wraparound: nil,
+            running_time_seconds: nil
+          )
+          expect(connection).not_to have_received(:select_all).with(a_string_matching(/pg_stat_activity/))
+        end
+      end
+
+      context 'when SELECT on pg_stat_activity is revoked' do
+        subject(:payload) { described_class.execute[:databases]['main'] }
+
+        before do
+          error = ActiveRecord::StatementInvalid.new('permission denied for view pg_stat_activity')
+          allow(error).to receive(:cause).and_return(PG::InsufficientPrivilege.new)
+          allow(connection).to receive(:select_all)
+            .with(a_string_matching(/pg_stat_activity/)).and_raise(error)
+        end
+
+        it 'retries without the activity join and keeps the progress data', :aggregate_failures do
+          expect(payload[:error]).to be_nil
+          expect(payload[:vacuum_activity_available]).to be(false)
+          expect(payload[:vacuums].first).to include(
+            table_name: 'ci_builds',
+            vacuum_type: nil,
+            anti_wraparound: nil,
+            running_time_seconds: nil
+          )
+        end
+
+        it 're-raises other StatementInvalid errors into the payload error' do
+          allow(connection).to receive(:select_all)
+            .with(a_string_matching(/pg_stat_activity/))
+            .and_raise(ActiveRecord::StatementInvalid.new('boom'))
+          allow(Gitlab::ErrorTracking).to receive(:track_exception)
+
+          expect(payload[:error]).to be_present
         end
       end
     end

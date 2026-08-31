@@ -162,6 +162,18 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
         expect(page).to have_content('sublist')
         expect(page).not_to have_xpath('//ol//li//ul')
       end
+
+      it 'renders the preview using the renamed file type' do
+        visit project_edit_blob_path(project, tree_join(branch, 'CHANGELOG'))
+        fill_editor(content: "* Title\n")
+        fill_in 'file_path', with: 'CHANGELOG.org'
+        click_on 'Preview changes'
+
+        # The original name would render a diff; the rename must switch to markup.
+        expect(page).to have_css('.file-content.md')
+        expect(page).to have_css('h1', text: 'Title')
+        expect(page).not_to have_css('.diff-file')
+      end
     end
   end
 

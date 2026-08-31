@@ -17,6 +17,9 @@ import { createDynamicHeightManager } from '~/vue_shared/utils/dynamic_height';
 
 import { BLOB_EDITOR_ERROR, BLOB_PREVIEW_ERROR, BLOB_EDIT_ERROR } from './constants';
 
+const findFileNameEl = () =>
+  document.getElementById('file_path') || document.getElementById('file_name');
+
 export default class EditBlob {
   // The options object has:
   // assetsPath, filePath, currentAction, projectId, isMarkdown, previewMarkdownPath
@@ -191,7 +194,7 @@ export default class EditBlob {
   }
 
   initFilepathListeners() {
-    const fileNameEl = document.getElementById('file_path') || document.getElementById('file_name');
+    const fileNameEl = findFileNameEl();
     this.editor.updateModelLanguage(fileNameEl.value);
     fileNameEl.addEventListener('input', () => {
       this.editor.updateModelLanguage(fileNameEl.value);
@@ -246,6 +249,7 @@ export default class EditBlob {
         axios
           .post(currentLink.data('previewUrl'), {
             content: this.editor.getValue(),
+            file_path: findFileNameEl()?.value,
           })
           .then(({ data }) => {
             currentPane.empty().append(data);

@@ -168,6 +168,20 @@ describe('WikiPageAwardEmoji', () => {
       });
     });
 
+    describe('when currentUserData is null (anonymous user)', () => {
+      it('does not call the toggle mutation', async () => {
+        await createWrapper({
+          canAwardEmoji: false,
+          provideCurrentUserData: null,
+        });
+
+        findAwardsList().vm.$emit('award', 'thumbsup');
+        await waitForPromises();
+
+        expect(toggleHandler).not.toHaveBeenCalled();
+      });
+    });
+
     describe('when toggled on', () => {
       it('adds the emoji to the cache', async () => {
         await createWrapper();

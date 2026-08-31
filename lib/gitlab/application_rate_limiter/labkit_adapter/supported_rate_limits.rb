@@ -712,6 +712,13 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            snippets_create: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_snippets_created_by_user',
+              characteristics: %i[user],
+              limit: 300,
+              period: 1.hour,
+              action: :limit
+            ),
             temporary_email_failure: ::Labkit::RateLimit::Rule.new(
               name: 'limit_temporary_email_failures_by_email',
               characteristics: %i[email],

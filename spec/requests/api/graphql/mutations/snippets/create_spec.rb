@@ -221,5 +221,21 @@ RSpec.describe 'Creating a Snippet', :with_current_organization, feature_categor
     it_behaves_like 'has spam protection' do
       let(:mutation_class) { ::Mutations::Snippets::Create }
     end
+
+    context 'when the rate limit is exceeded' do
+      before do
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+          .with(:snippets_create, scope: [user]).and_return(true)
+      end
+
+      it_behaves_like 'a mutation that returns top-level errors',
+        errors: ['This endpoint has been requested too many times. Try again later.']
+
+      it 'does not create the Snippet' do
+        expect do
+          subject
+        end.not_to change { Snippet.count }
+      end
+    end
   end
 end

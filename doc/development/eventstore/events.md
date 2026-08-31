@@ -158,6 +158,7 @@ To find subscribers, search the subscription files under
 
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
+| `Organizations::ActivatedEvent` | `organization` | CE | Published when an organization transitions from `confirmed` to `active`. Emitted by Organizations::ActivateService after the state transition is committed, once its group and user transfers have succeeded. Not published if activation fails or is rolled back. |
 | `Organizations::ConfirmedEvent` | `organization` | CE | Published when an organization transitions from `unconfirmed` to `confirmed`. Emitted by Organizations::ConfirmService after the state transition is committed. Not published if the confirmation fails or is rolled back. |
 | `Organizations::GroupTransferredEvent` | `organization` | CE | Published once per `organization_id` change on a root group. May be delivered more than once for the same group, so subscribers must be idempotent. Descendant namespaces and projects may not have moved yet, and subscribers are responsible for traversing them if needed. Not emitted when the surrounding transaction is rolled back. |
 

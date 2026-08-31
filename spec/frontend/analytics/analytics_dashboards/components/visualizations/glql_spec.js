@@ -35,6 +35,37 @@ describe('GlqlVisualization', () => {
     expect(findResolver().props()).toEqual({
       glqlQuery,
       trackingEventName: 'render_analytics_dashboard_glql_panel',
+      scope: null,
+    });
+  });
+
+  describe('scope', () => {
+    const glqlQuery = 'type = Issue AND state = opened';
+
+    // Without a namespace the resolver falls back to deriving one from the URL, which is what
+    // group and project dashboards already rely on.
+    it('is null when no namespace is given', () => {
+      createWrapper({ data: glqlQuery });
+
+      expect(findResolver().props('scope')).toBe(null);
+    });
+
+    it('is null when the given namespace is empty', () => {
+      createWrapper({ data: glqlQuery, namespace: '', isProject: false });
+
+      expect(findResolver().props('scope')).toBe(null);
+    });
+
+    it('is a group scope for a group namespace', () => {
+      createWrapper({ data: glqlQuery, namespace: 'gitlab-org', isProject: false });
+
+      expect(findResolver().props('scope')).toEqual({ group: 'gitlab-org' });
+    });
+
+    it('is a project scope for a project namespace', () => {
+      createWrapper({ data: glqlQuery, namespace: 'gitlab-org/gitlab', isProject: true });
+
+      expect(findResolver().props('scope')).toEqual({ project: 'gitlab-org/gitlab' });
     });
   });
 
@@ -114,6 +145,23 @@ describe('GlqlVisualization', () => {
       expect(findEmptyState().exists()).toBe(true);
 
       wrapper.setProps({ data: 'type = Issue AND state = closed' });
+      await nextTick();
+
+      expect(findEmptyState().exists()).toBe(false);
+      expect(findResolver().exists()).toBe(true);
+    });
+
+    // The empty state unmounts the resolver, so without this reset the resolver could never run
+    // its own scope watcher and the panel would stay empty for the newly selected namespace.
+    it('resets the resolver data when the namespace changes', async () => {
+      createWrapper({ data: 'type = Issue AND state = opened', namespace: 'gitlab-org' });
+
+      findResolver().vm.$emit('change', { data: { nodes: [] } });
+      await nextTick();
+
+      expect(findEmptyState().exists()).toBe(true);
+
+      wrapper.setProps({ namespace: 'gitlab-com' });
       await nextTick();
 
       expect(findEmptyState().exists()).toBe(false);

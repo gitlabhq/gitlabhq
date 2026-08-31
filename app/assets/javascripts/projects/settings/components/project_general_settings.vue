@@ -4,7 +4,7 @@ import { n__, __, s__, sprintf } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { checkRules } from '~/projects/project_name_rules';
-import AvatarUploadDropzone from '~/organizations/shared/components/avatar_upload_dropzone.vue';
+import AvatarUploadDropzone from '~/vue_shared/components/avatar_upload_dropzone.vue';
 import TopicsTokenSelector from '~/projects/settings/topics/components/topics_token_selector.vue';
 
 export default {

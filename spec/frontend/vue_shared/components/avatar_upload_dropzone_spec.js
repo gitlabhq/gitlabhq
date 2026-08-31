@@ -1,7 +1,7 @@
 import { GlAvatar, GlButton, GlTruncate } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import AvatarUploadDropzone from '~/organizations/shared/components/avatar_upload_dropzone.vue';
+import AvatarUploadDropzone from '~/vue_shared/components/avatar_upload_dropzone.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 

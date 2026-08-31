@@ -22,6 +22,7 @@ class Notify < ApplicationMailer
   include Emails::RemoteMirrors
   include Emails::Releases
   include Emails::Groups
+  include Emails::Organizations
   include Emails::Reviews
   include Emails::ServiceDesk
   include Emails::AdminNotification

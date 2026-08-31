@@ -13,6 +13,7 @@ module API
       helpers ::API::Helpers::WorkItems::Authorization
       helpers ::API::Helpers::WorkItems::Preloads
       helpers ::API::Helpers::WorkItems::Rendering
+      helpers ::API::Helpers::NotesHelpers
 
       SORT_TO_DISCUSSIONS_SORT = {
         'asc' => :created_asc,
@@ -33,16 +34,8 @@ module API
             desc: 'Number of discussions to return per page (maximum 100).'
         end
 
-        def render_discussions_endpoint_for(resource_parent)
-          parent_work_item = find_work_item_by_iid(resource_parent, params[:work_item_iid])
-          not_found!('Work Item') unless parent_work_item
-
-          render_discussions_for(parent_work_item)
-        end
-
         def render_discussions_for(parent_work_item)
-          check_work_item_rest_api_feature_flag!
-          authorize! :read_work_item, parent_work_item
+          authorize_work_item_feature!(parent_work_item)
           authorize! :read_note, parent_work_item
 
           service = ::Issuable::DiscussionsListService.new(
@@ -68,6 +61,23 @@ module API
             cursor: params[:cursor],
             per_page: params[:per_page]
           }
+        end
+
+        params :work_item_single_discussion_params do
+          requires :work_item_iid, type: Integer, desc: 'The internal ID of the work item'
+          requires :discussion_id, type: String, desc: 'The ID of a discussion'
+        end
+
+        def render_discussion_for(parent_work_item)
+          authorize_work_item_feature!(parent_work_item)
+          authorize! :read_note, parent_work_item
+
+          notes = readable_discussion_notes(parent_work_item, params[:discussion_id])
+          not_found!('Discussion') if notes.empty?
+
+          discussion = Discussion.build(notes, parent_work_item)
+
+          present discussion, with: ::API::Entities::Discussion, current_user: current_user
         end
       end
 
@@ -98,11 +108,30 @@ module API
             job_token_policies: :read_work_items
 
           get ':work_item_iid/discussions' do
-            namespace = find_namespace_by_path!(params[:id].to_s, allow_project_namespaces: true)
-            not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
-            resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
+            render_discussions_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
+          end
 
-            render_discussions_endpoint_for(resource_parent)
+          desc 'Get a discussion on a work item.' do
+            detail 'Get a single discussion (thread of notes) for a work item in a namespace. ' \
+              'Project and group namespaces are supported.'
+            hidden true
+            success ::API::Entities::Discussion
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_single_discussion_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :read_work_item,
+            boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
+            job_token_policies: :read_work_items
+
+          get ':work_item_iid/discussions/:discussion_id' do
+            render_discussion_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
           end
         end
       end
@@ -133,7 +162,29 @@ module API
             job_token_policies: :read_work_items
 
           get ':work_item_iid/discussions' do
-            render_discussions_endpoint_for(find_project!(params[:id]))
+            render_discussions_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
+          end
+
+          desc 'Get a discussion on a work item in a project.' do
+            detail 'Get a single discussion (thread of notes) for a work item in a project.'
+            hidden true
+            success ::API::Entities::Discussion
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_single_discussion_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :read_work_item,
+            boundary_type: :project,
+            job_token_policies: :read_work_items
+
+          get ':work_item_iid/discussions/:discussion_id' do
+            render_discussion_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
           end
         end
       end
@@ -163,7 +214,28 @@ module API
             boundary_type: :group
 
           get ':work_item_iid/discussions' do
-            render_discussions_endpoint_for(find_group!(params[:id]))
+            render_discussions_for(work_item_for!(find_group!(params[:id]), params[:work_item_iid]))
+          end
+
+          desc 'Get a discussion on a work item in a group.' do
+            detail 'Get a single discussion (thread of notes) for a work item in a group.'
+            hidden true
+            success ::API::Entities::Discussion
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_single_discussion_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :read_work_item,
+            boundary_type: :group
+
+          get ':work_item_iid/discussions/:discussion_id' do
+            render_discussion_for(work_item_for!(find_group!(params[:id]), params[:work_item_iid]))
           end
         end
       end

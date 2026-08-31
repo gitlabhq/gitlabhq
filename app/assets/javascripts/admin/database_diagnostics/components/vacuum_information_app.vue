@@ -12,6 +12,7 @@ export default {
       return Object.entries(this.databaseInformation.databases).map(([name, payload]) => ({
         name,
         vacuums: payload.vacuums || [],
+        activityAvailable: payload.vacuum_activity_available !== false,
       }));
     },
   },
@@ -44,7 +45,11 @@ export default {
         </h3>
       </template>
 
-      <db-vacuum-section class="gl-mt-5" :vacuums="database.vacuums" />
+      <db-vacuum-section
+        class="gl-mt-5"
+        :vacuums="database.vacuums"
+        :activity-available="database.activityAvailable"
+      />
     </gl-card>
   </section>
 </template>

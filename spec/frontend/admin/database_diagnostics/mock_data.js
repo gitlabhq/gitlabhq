@@ -235,6 +235,7 @@ export const databaseInformationResults = {
       severity: null,
       counts: {},
       vacuums: vacuumActivity,
+      vacuum_activity_available: true,
       autovacuum_config: autovacuumConfig,
     },
   },

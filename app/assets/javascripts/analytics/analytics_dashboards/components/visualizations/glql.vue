@@ -17,6 +17,16 @@ export default {
       required: false,
       default: '',
     },
+    namespace: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    isProject: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['set-alerts', 'set-actions', 'reload'],
   data() {
@@ -29,9 +39,20 @@ export default {
     showEmptyState() {
       return this.resolverData?.nodes?.length === 0;
     },
+    // Null, not an empty object, so the resolver falls back to deriving the namespace from the URL.
+    scope() {
+      if (!this.namespace) return null;
+
+      return this.isProject ? { project: this.namespace } : { group: this.namespace };
+    },
   },
   watch: {
     data() {
+      this.resolverData = undefined;
+    },
+    // Also clears the empty state. Leaving it up keeps the resolver unmounted, and an unmounted
+    // resolver can never run its own scope watcher to re-query the new namespace.
+    scope() {
       this.resolverData = undefined;
     },
   },
@@ -85,6 +106,7 @@ export default {
       v-else
       ref="resolver"
       :glql-query="data"
+      :scope="scope"
       tracking-event-name="render_analytics_dashboard_glql_panel"
       @change="handleResolverChange"
     />

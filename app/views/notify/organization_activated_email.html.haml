@@ -1,0 +1,5 @@
+%p
+  = safe_format(s_('Notify|Your organization %{organization_name} is ready.'), organization_name: @organization.name)
+%p
+  - organization_link_tag_pair = tag_pair(link_to('', @target_url, target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
+  = safe_format(s_('Notify|You can now access %{link_start}%{organization_name}%{link_end}.'), organization_link_tag_pair, organization_name: @organization.name)

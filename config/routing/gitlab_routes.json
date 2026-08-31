@@ -5432,6 +5432,10 @@
     "example": "/api/v4/groups/foo/-/work_items/foo/discussions"
   },
   {
+    "template": "/api/:version/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id",
+    "example": "/api/v4/groups/foo/-/work_items/foo/discussions/foo"
+  },
+  {
     "template": "/api/:version/groups/:id/-/work_items/:work_item_iid/email_participants",
     "example": "/api/v4/groups/foo/-/work_items/foo/email_participants"
   },
@@ -6176,6 +6180,10 @@
     "example": "/api/v4/namespaces/foo/-/work_items/foo/discussions"
   },
   {
+    "template": "/api/:version/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id",
+    "example": "/api/v4/namespaces/foo/-/work_items/foo/discussions/foo"
+  },
+  {
     "template": "/api/:version/namespaces/:id/-/work_items/:work_item_iid/email_participants",
     "example": "/api/v4/namespaces/foo/-/work_items/foo/email_participants"
   },
@@ -6430,6 +6438,10 @@
   {
     "template": "/api/:version/projects/:id/-/work_items/:work_item_iid/discussions",
     "example": "/api/v4/projects/foo/-/work_items/foo/discussions"
+  },
+  {
+    "template": "/api/:version/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id",
+    "example": "/api/v4/projects/foo/-/work_items/foo/discussions/foo"
   },
   {
     "template": "/api/:version/projects/:id/-/work_items/:work_item_iid/email_participants",

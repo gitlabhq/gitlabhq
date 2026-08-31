@@ -54,8 +54,6 @@ export default {
     'ee/app/assets/javascripts/protected_environments/group_protected_environment.vue',
     'ee/app/assets/javascripts/protected_environments/protected_environments.vue',
     'ee/app/assets/javascripts/protected_environments/protected_environments_app.vue',
-    'ee/app/assets/javascripts/saml_providers/saml_members/index.vue',
-    'ee/app/assets/javascripts/saml_providers/saml_membership_role_selector/components/saml_membership_role_selector.vue',
   ],
   rules: {
     'vue/require-name-property': 'off',

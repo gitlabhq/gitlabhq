@@ -224,6 +224,10 @@
   height: calc(100% - #{$calc-application-bars-height} - var(--ai-navigation-rail-size) + calc(var(--gl-spacing-scale-2) * 2));
   z-index: 999;
 
+  .panel-header-inner {
+    z-index: $ai-panel-header-inner-z-index;
+  }
+
   @include media-breakpoint-up(sm) {
     @apply gl-left-5;
     width: calc(100% - (var(--gl-spacing-scale-5) * 2));

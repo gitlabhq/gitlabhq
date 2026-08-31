@@ -1344,6 +1344,14 @@ Migration/PreventForeignKeyCreation:
   Enabled: true
   EnforcedSince: 20250116000000
 
+Migration/ForeignKeysToDestroyServiceTables:
+  Enabled: true
+  Details: grace period
+  EnforcedSince: 20260820000000
+  Include:
+    - 'db/migrate/*.rb'
+    - 'db/post_migrate/*.rb'
+
 Migration/PreventLargeBlobInDatabase:
   Enabled: true
   Include:

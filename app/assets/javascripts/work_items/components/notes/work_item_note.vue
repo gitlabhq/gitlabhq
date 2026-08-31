@@ -556,6 +556,7 @@ export default {
               :replies="replies"
               :is-discussion-resolved="isDiscussionResolved"
               :is-discussion-resolvable="isDiscussionResolvable"
+              :can-reply="canReply"
               @error="$emit('error', $event)"
             />
           </div>

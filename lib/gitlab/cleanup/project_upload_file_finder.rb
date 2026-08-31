@@ -55,7 +55,15 @@ module Gitlab
       end
 
       def which_ionice
-        Gitlab::Utils.which('ionice')
+        ionice = Gitlab::Utils.which('ionice')
+        return false unless ionice
+
+        # Verify ionice actually works. It may be present but non-functional
+        # in sandboxed environments (e.g. gVisor) where the ioprio_set
+        # syscall is not permitted.
+        return false unless system(ionice, '-c', 'Idle', 'true', [:out, :err] => File::NULL)
+
+        ionice
       rescue StandardError
         # In this case, returning false is relatively safe,
         # even though it isn't very nice

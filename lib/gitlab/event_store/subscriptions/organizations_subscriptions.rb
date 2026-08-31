@@ -6,6 +6,7 @@ module Gitlab
       class OrganizationsSubscriptions < BaseSubscriptions
         def register
           store.subscribe ::Organizations::ActivateWorker, to: ::Organizations::ConfirmedEvent
+          store.subscribe ::Organizations::ActivationEmailWorker, to: ::Organizations::ActivatedEvent
         end
       end
     end

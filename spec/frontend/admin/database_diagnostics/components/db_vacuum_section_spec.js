@@ -1,4 +1,4 @@
-import { GlTableLite } from '@gitlab/ui';
+import { GlAlert, GlTableLite } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DbVacuumSection from '~/admin/database_diagnostics/components/db_vacuum_section.vue';
 import { vacuumActivity } from '../mock_data';
@@ -8,11 +8,12 @@ describe('DbVacuumSection component', () => {
 
   const findTable = () => wrapper.findComponent(GlTableLite);
   const findEmptyState = () => wrapper.findByTestId('vacuum-empty');
+  const findActivityAlert = () => wrapper.findByTestId('activity-unavailable');
   const findRows = () => wrapper.findAll('tbody tr');
 
-  const createComponent = ({ vacuums = vacuumActivity } = {}) => {
+  const createComponent = ({ vacuums = vacuumActivity, activityAvailable } = {}) => {
     wrapper = mountExtended(DbVacuumSection, {
-      propsData: { vacuums },
+      propsData: { vacuums, ...(activityAvailable === undefined ? {} : { activityAvailable }) },
     });
   };
 
@@ -125,6 +126,44 @@ describe('DbVacuumSection component', () => {
         expect(rowText).not.toContain('Not available');
         expect(rowText).toContain('0 ms');
       });
+    });
+  });
+
+  describe('when pg_stat_activity is unavailable', () => {
+    it('does not render the alert by default', () => {
+      createComponent();
+
+      expect(findActivityAlert().exists()).toBe(false);
+    });
+
+    it('warns and still renders progress rows when activity is unavailable', () => {
+      createComponent({
+        activityAvailable: false,
+        vacuums: [
+          {
+            ...vacuumActivity[0],
+            vacuum_type: null,
+            anti_wraparound: null,
+            running_time_seconds: null,
+          },
+        ],
+      });
+
+      expect(findActivityAlert().exists()).toBe(true);
+      expect(wrapper.findComponent(GlAlert).props('variant')).toBe('warning');
+      expect(findRows()).toHaveLength(1);
+
+      const rowText = findRows().at(0).text();
+      expect(rowText).toContain('public.ci_builds');
+      // Type and running time fall back to the not-available label.
+      expect(rowText).toContain('Not available');
+    });
+
+    it('shows the warning even when no vacuum is running', () => {
+      createComponent({ activityAvailable: false, vacuums: [] });
+
+      expect(findActivityAlert().exists()).toBe(true);
+      expect(findEmptyState().exists()).toBe(true);
     });
   });
 

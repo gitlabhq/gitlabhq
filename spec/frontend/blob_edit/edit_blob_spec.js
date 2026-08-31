@@ -42,6 +42,7 @@ jest.mock('~/vue_shared/utils/dynamic_height', () => ({
 }));
 
 const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';
+const PREVIEW_ENDPOINT = `${TEST_HOST}/preview`;
 const defaultExtensions = [
   { definition: ToolbarExtension },
   { definition: SourceEditorExtension },
@@ -111,6 +112,31 @@ describe('Blob Editing', () => {
     editorInst({ isMarkdown, isSecurityPolicy });
     await waitForPromises();
   };
+
+  const findFileNameInput = () =>
+    document.getElementById('file_path') || document.getElementById('file_name');
+
+  // Renames without waiting, so the load triggered by the rename
+  // is still in flight when the test continues.
+  const startRename = (value) => {
+    const input = findFileNameInput();
+    input.value = value;
+    input.dispatchEvent(new Event('input'));
+  };
+
+  const clickTab = async (tabToClick) => {
+    document.querySelector(`a[href='${tabToClick}']`).click();
+    await waitForPromises();
+  };
+
+  const findPane = (id) => document.querySelector(`.js-edit-mode-pane${id}`);
+
+  const stubPreviewEndpoint = () => {
+    mock.onPost(PREVIEW_ENDPOINT).reply(HTTP_STATUS_OK, '<div>rendered</div>');
+    document.querySelector(`a[href='#preview']`).dataset.previewUrl = PREVIEW_ENDPOINT;
+  };
+
+  const findPreviewRequest = () => mock.history.post.find(({ url }) => url === PREVIEW_ENDPOINT);
 
   describe('file content', () => {
     beforeEach(() => initEditor());
@@ -356,6 +382,10 @@ describe('Blob Editing', () => {
       mockInstance.getValue = jest.fn().mockReturnValue(content);
     });
 
+    afterEach(() => {
+      mockInstance.getValue = getValueMock;
+    });
+
     it.each(['post', 'put'])(
       'submits a "%s" request without mutating line endings',
       async (method) => {
@@ -386,18 +416,16 @@ describe('Blob Editing', () => {
   });
 
   describe('handles error during preview', () => {
-    const endpoint = `${TEST_HOST}/preview`;
-
     const setupSpec = async () => {
       await initEditor();
       const findPreviewLink = () => document.querySelector('a[href="#preview"]');
-      findPreviewLink().dataset.previewUrl = endpoint;
+      findPreviewLink().dataset.previewUrl = PREVIEW_ENDPOINT;
       findPreviewLink().click();
       await waitForPromises();
     };
 
     it('creates an alert for file size limit exceeded', async () => {
-      mock.onPost(endpoint).reply(HTTP_STATUS_PAYLOAD_TOO_LARGE);
+      mock.onPost(PREVIEW_ENDPOINT).reply(HTTP_STATUS_PAYLOAD_TOO_LARGE);
       await setupSpec();
 
       expect(createAlert).toHaveBeenCalledWith(
@@ -408,11 +436,68 @@ describe('Blob Editing', () => {
     });
 
     it('creates a generic alert for other errors', async () => {
-      mock.onPost(endpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      mock.onPost(PREVIEW_ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       await setupSpec();
 
       expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred previewing the blob',
+      });
+    });
+  });
+
+  describe('preview request', () => {
+    const expectPreviewPaneVisible = () => {
+      expect(findPane('#editor').style.display).toBe('none');
+      expect(findPane('#preview').style.display).not.toBe('none');
+    };
+
+    const expectPreviewPaneRendered = (payload) => {
+      const previewRequest = findPreviewRequest();
+      expect(previewRequest).toBeDefined();
+      expect(JSON.parse(previewRequest.data)).toEqual(payload);
+      expect(findPane('#preview').innerHTML).toContain('rendered');
+      expectPreviewPaneVisible();
+    };
+
+    beforeEach(async () => {
+      setHTMLFixture(`
+        <div class="js-edit-mode"><a href="#editor">Write</a><a href="#preview">Preview</a></div>
+        <form class="js-edit-blob-form">
+          <input id="file_path" value="README.rst" />
+          <div class="js-edit-mode-pane" id="editor" data-ref="main"></div>
+          <div class="js-edit-mode-pane" id="preview"></div>
+        </form>
+      `);
+      stubPreviewEndpoint();
+      await initEditor();
+    });
+
+    it('renders the preview using the submitted file path', async () => {
+      await clickTab('#preview');
+
+      expectPreviewPaneRendered({
+        content: valueMock,
+        file_path: 'README.rst',
+      });
+    });
+
+    it('submits the renamed file path after a mid-edit rename', async () => {
+      startRename('README.org');
+      await clickTab('#preview');
+
+      expectPreviewPaneRendered({
+        content: valueMock,
+        file_path: 'README.org',
+      });
+    });
+
+    it('omits the file path when the file name input is absent', async () => {
+      // Stands in for the race where the tab is clicked before the input is wired up.
+      findFileNameInput().remove();
+      await clickTab('#preview');
+
+      expectPreviewPaneRendered({
+        content: valueMock,
       });
     });
   });

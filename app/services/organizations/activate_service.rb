@@ -39,10 +39,18 @@ module Organizations
         end
       end
 
+      publish_activated_event if response&.success?
+
       response
     end
 
     private
+
+    def publish_activated_event
+      Gitlab::EventStore.publish(
+        Organizations::ActivatedEvent.build(organization: organization)
+      )
+    end
 
     def transfer_top_level_groups
       aggregated_errors = []

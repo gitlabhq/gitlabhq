@@ -855,6 +855,8 @@
   - 1
 - - organizations_activate
   - 1
+- - organizations_activation_email
+  - 1
 - - organizations_check_organization_isolation_status
   - 1
 - - organizations_confirm

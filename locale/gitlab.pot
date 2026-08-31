@@ -27260,6 +27260,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|The database diagnostic job is taking longer than expected. You can check back later or try running it again."
 msgstr ""
 
+msgid "DatabaseDiagnostics|The database role cannot read the activity of other backends in pg_stat_activity, so vacuum type, running time, and anti-wraparound status are unavailable. Progress metrics are still shown. Grant the role membership in pg_monitor to see the full details."
+msgstr ""
+
 msgid "DatabaseDiagnostics|The search path contains a GitLab partition schema. Partition schemas are expected to be referenced fully qualified, not via the search path."
 msgstr ""
 
@@ -53343,6 +53346,12 @@ msgstr ""
 msgid "Notify|We were not able to make a connection to the specified host or there was an SSL issue."
 msgstr ""
 
+msgid "Notify|You can now access %{link_start}%{organization_name}%{link_end}."
+msgstr ""
+
+msgid "Notify|You can now access:"
+msgstr ""
+
 msgid "Notify|You don't have access to the project."
 msgstr ""
 
@@ -53368,6 +53377,12 @@ msgid "Notify|Your account has been created successfully."
 msgstr ""
 
 msgid "Notify|Your email address %{strong_open}%{email_address}%{strong_close} for the Service Desk of %{project_link_start}%{project_name}%{project_link_end} was verified successfully."
+msgstr ""
+
+msgid "Notify|Your organization %{organization_name} is ready"
+msgstr ""
+
+msgid "Notify|Your organization %{organization_name} is ready."
 msgstr ""
 
 msgid "Notify|Your request to join the %{target_to_join} %{target_type} has been %{denied_tag}."
@@ -71901,6 +71916,9 @@ msgstr ""
 msgid "SecurityOrchestration|All types"
 msgstr ""
 
+msgid "SecurityOrchestration|Allow list"
+msgstr ""
+
 msgid "SecurityOrchestration|Allowed licenses"
 msgstr ""
 
@@ -72347,6 +72365,9 @@ msgstr ""
 msgid "SecurityOrchestration|Denied licenses"
 msgstr ""
 
+msgid "SecurityOrchestration|Deny list"
+msgstr ""
+
 msgid "SecurityOrchestration|Denylist details"
 msgstr ""
 
@@ -72752,6 +72773,9 @@ msgstr ""
 msgid "SecurityOrchestration|Individual users"
 msgstr ""
 
+msgid "SecurityOrchestration|Info"
+msgstr ""
+
 msgid "SecurityOrchestration|Inherited"
 msgstr ""
 
@@ -72803,6 +72827,9 @@ msgstr ""
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr ""
 
+msgid "SecurityOrchestration|License"
+msgstr ""
+
 msgid "SecurityOrchestration|License Finding"
 msgstr ""
 
@@ -72840,6 +72867,9 @@ msgid "SecurityOrchestration|MR"
 msgstr ""
 
 msgid "SecurityOrchestration|MRs that would trigger"
+msgstr ""
+
+msgid "SecurityOrchestration|Malicious package"
 msgstr ""
 
 msgid "SecurityOrchestration|Malware blocking is available but turned off."
@@ -73730,6 +73760,9 @@ msgstr ""
 msgid "SecurityOrchestration|Severity is %{severity}."
 msgstr ""
 
+msgid "SecurityOrchestration|Severity threshold"
+msgstr ""
+
 msgid "SecurityOrchestration|Show all included projects"
 msgstr ""
 
@@ -74018,6 +74051,9 @@ msgstr ""
 msgid "SecurityOrchestration|Type in custom variable"
 msgstr ""
 
+msgid "SecurityOrchestration|Unknown"
+msgstr ""
+
 msgid "SecurityOrchestration|Unknown source"
 msgstr ""
 
@@ -74124,6 +74160,9 @@ msgid "SecurityOrchestration|Vulnerabilities have EPSS score greater than %{valu
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerabilities have EPSS score less than %{value}."
+msgstr ""
+
+msgid "SecurityOrchestration|Vulnerability"
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerability Detected"

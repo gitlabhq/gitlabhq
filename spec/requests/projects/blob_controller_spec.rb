@@ -214,24 +214,33 @@ RSpec.describe 'Projects blob controller', feature_category: :code_review_workfl
     end
   end
 
-  describe 'POST preview' do
+  describe 'POST preview', :aggregate_failures do
     let(:content) { 'Some content' }
 
-    def do_post(content)
+    def do_post(content, id: 'master/CHANGELOG', **extra_params)
       post namespace_project_preview_blob_path(
         namespace_id: project.namespace,
         project_id: project,
-        id: 'master/CHANGELOG'
-      ), params: { content: content }
+        id: id
+      ), params: { content: content }.merge(extra_params)
     end
 
-    context 'when content is within size limit' do
-      it 'returns success and renders the preview' do
-        do_post(content)
+    def expect_markup_preview
+      expect(response).to have_gitlab_http_status(:ok)
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers['Content-Type']).to include('text/html')
-      end
+      doc = Nokogiri::HTML(response.body)
+      expect(doc.css('.file-content.md')).to be_present
+      expect(doc.css('.diff-file')).to be_empty
+      expect(doc.css('.file-content.md h1').map { |heading| heading.text.strip }).to include('Title')
+    end
+
+    def expect_diff_preview
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.headers['Content-Type']).to include('text/html')
+
+      doc = Nokogiri::HTML(response.body)
+      expect(doc.css('.diff-file')).to be_present
+      expect(doc.css('.file-content.md')).to be_empty
     end
 
     context 'when content exceeds size limit' do
@@ -244,6 +253,58 @@ RSpec.describe 'Projects blob controller', feature_category: :code_review_workfl
 
         expect(response).to have_gitlab_http_status(:payload_too_large)
         expect(json_response['errors']).to include('Preview content too large')
+      end
+    end
+
+    context 'without a file_path param' do
+      context 'when the blob is a markup file' do
+        it 'renders the content with the markup renderer' do
+          do_post('# Title', id: 'master/README.md')
+
+          expect_markup_preview
+        end
+      end
+
+      context 'when the blob is not a markup file' do
+        it 'renders a diff' do
+          do_post(content)
+
+          expect_diff_preview
+        end
+      end
+    end
+
+    context 'with a file_path param' do
+      context 'when file_path is a markup file' do
+        where(:file_path, :body) do
+          'docs/doc.org'         | "* Title\n"
+          'docs/doc.md'          | '# Title'
+          '../../../etc/doc.org' | "* Title\n"
+        end
+
+        with_them do
+          it 'renders the content with the markup renderer' do
+            do_post(body, file_path: file_path)
+
+            expect_markup_preview
+          end
+        end
+      end
+
+      context 'when file_path is not a markup file' do
+        where(:case_name, :file_path) do
+          'a non-markup file path' | 'scripts/script.py'
+          'a blank file_path'      | ''
+          'a non-string file_path' | ['docs/doc.rst']
+        end
+
+        with_them do
+          it 'renders a diff' do
+            do_post(content, file_path: file_path)
+
+            expect_diff_preview
+          end
+        end
       end
     end
   end

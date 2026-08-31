@@ -230,6 +230,18 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
       end
 
       it_behaves_like 'project snippet repository actions'
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :snippets_create do
+        let(:current_user) { user }
+
+        def request
+          post api("/projects/#{project.id}/snippets/", user), params: params
+        end
+
+        def request_with_second_scope
+          post api("/projects/#{project.id}/snippets/", snippet_maintainer), params: params
+        end
+      end
     end
 
     context 'with an admin' do

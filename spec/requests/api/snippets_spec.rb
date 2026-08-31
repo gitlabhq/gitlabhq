@@ -425,6 +425,19 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
       expect(json_response['error']).to eq 'title is empty'
     end
 
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :snippets_create do
+      let(:current_user) { user }
+      let_it_be(:other_user_token) { create(:personal_access_token, user: other_user) }
+
+      def request
+        post api("/snippets/", personal_access_token: user_token), params: params
+      end
+
+      def request_with_second_scope
+        post api("/snippets/", personal_access_token: other_user_token), params: params
+      end
+    end
+
     context 'when save fails because the repository could not be created' do
       before do
         allow_next_instance_of(Snippets::CreateService) do |instance|

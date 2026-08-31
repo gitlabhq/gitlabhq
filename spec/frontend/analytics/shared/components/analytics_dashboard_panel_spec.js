@@ -312,6 +312,16 @@ describe('AnalyticsDashboardPanel', () => {
         expectPanelLoaded();
       });
 
+      // Only visualizations that declare these as props read them; the rest fall through to
+      // `$attrs`, which is why this asserts on `$attrs` rather than `props()`.
+      it('passes the namespace context and dashboard filters to the visualization', () => {
+        expect(findVisualization().vm.$attrs).toMatchObject({
+          namespace: 'namespace/full/path',
+          'is-project': true,
+          filters: {},
+        });
+      });
+
       it('renders the visualization with the fetched data', () => {
         expect(findVisualization().props()).toMatchObject({
           data: mockData,

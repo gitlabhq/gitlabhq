@@ -1,6 +1,6 @@
 ---
-source_checksum: 7fdf31cc21fbfbf9
-distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
+source_checksum: 3731d9ca4e1ffc04
+distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -32,7 +32,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - DO NOT use `pluck` to load IDs into memory for use as arguments in another query; use subqueries instead. Exception: when using CTEs with `update_all`, first pluck IDs from the CTE result and scope the update to those IDs (the CTE is dropped otherwise)
 - Use `pluck` only within model code, or when values are needed in Ruby or cached for multiple related queries
 - Limit `pluck` results to `MAX_PLUCK` (1,000) records when `pluck` is necessary
-- Use `WHERE EXISTS` instead of `WHERE IN` wherever possible
+- Use `WHERE EXISTS` instead of `WHERE IN` wherever possible; when the planner mis-estimates an `IN (...)` predicate and chooses a sequential scan, rewrite using a `LATERAL` join to force one index seek per value (see [`doc/development/database/lateral_planner_fence.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/database/lateral_planner_fence.md))
 - Check all query variants (`.exists?`, `.count`, pagination) for query plan flip issues when using complex scopes with `IN` subqueries
 - Use a CTE (via `Gitlab::SQL::CTE`) to stabilize query plans when `.exists?` causes plan flips, but only as a last resort
 - DO NOT use CTEs with `UPDATE` or `DELETE` — the CTE is dropped and the operation affects the entire table. Exception: when using CTEs with `update_all`, first pluck IDs from the CTE result and scope the update to those IDs
@@ -43,7 +43,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - DO NOT mix `SELECT column_names` with `SELECT *` in `UNION` sub-queries; use consistent column selection across all sub-queries
 - Use `User.cached_column_list` for explicit column lists in `UNION` queries to avoid stale schema cache issues
 - Inherit models from `ApplicationRecord` or `Ci::ApplicationRecord`, not `ActiveRecord::Base`; use `MigrationRecord` only in migration context
-- DO NOT use `.find_or_create_by` or `.first_or_create` — they are not atomic; use `ApplicationRecord.safe_find_or_create_by` or `.upsert` instead
+- DO NOT use `.find_or_create_by` or `.first_or_create` — they are not atomic; use `ApplicationRecord.safe_find_or_create_by` or `.upsert` instead (`.safe_find_or_create_by` is restricted by the `Performance/ActiveRecordSubtransactionMethods` RuboCop cop and must be disabled per-case with justification)
 - Use `.safe_find_or_create_by` only in isolated code not wrapped in an existing transaction (subtransactions carry risk)
 - Prefer `.upsert` with `unique_by` when the common path is record creation and duplicate avoidance is only needed on edge cases
 

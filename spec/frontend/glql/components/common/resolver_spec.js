@@ -84,6 +84,39 @@ describe('Resolver', () => {
   const findPresenter = () => wrapper.findComponent(DataPresenter);
   const findPagination = () => wrapper.findComponent(Pagination);
 
+  describe('scope', () => {
+    beforeEach(() => {
+      mockUtils();
+    });
+
+    it('parses the query with no scope by default', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      expect(parse).toHaveBeenCalledWith('assignee = "foo"', null);
+    });
+
+    it('parses the query with the given scope', async () => {
+      createWrapper({ scope: { group: 'gitlab-org' } });
+      await waitForPromises();
+
+      expect(parse).toHaveBeenCalledWith('assignee = "foo"', { group: 'gitlab-org' });
+    });
+
+    it('re-runs the query when the scope changes', async () => {
+      createWrapper({ scope: { group: 'gitlab-org' } });
+      await waitForPromises();
+
+      expect(parse).toHaveBeenCalledTimes(1);
+
+      await wrapper.setProps({ scope: { group: 'gitlab-com' } });
+      await waitForPromises();
+
+      expect(parse).toHaveBeenCalledTimes(2);
+      expect(parse).toHaveBeenLastCalledWith('assignee = "foo"', { group: 'gitlab-com' });
+    });
+  });
+
   describe('when no query is set', () => {
     beforeEach(() => {
       return createWrapper({ glqlQuery: '' });

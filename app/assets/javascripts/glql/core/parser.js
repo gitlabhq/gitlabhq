@@ -23,10 +23,13 @@ export const parseQueryTextWithFrontmatter = (text) => {
   };
 };
 
-export const parseQuery = async (query, config) => {
+export const parseQuery = async (query, config, scope = null) => {
   const { output, success, variables, fields, mode, source } = await glql.compile(query, {
     ...config,
-    ...extractGroupOrProject(),
+    // An explicit scope replaces the URL-derived one rather than merging with it: the compiler
+    // prefers `project` over `group` unconditionally, so merging would let a stale URL-derived
+    // `project` win and compile successfully against the wrong namespace.
+    ...(scope ?? extractGroupOrProject()),
     username: gon.current_username,
     featureFlags: glqlFeatureFlags(),
   });
@@ -55,7 +58,7 @@ export const parseYAML = (yaml) => {
   return { query, config };
 };
 
-export const parse = (yaml) => {
+export const parse = (yaml, scope = null) => {
   const { query, config } = parseYAML(yaml);
-  return parseQuery(query, config);
+  return parseQuery(query, config, scope);
 };
