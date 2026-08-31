@@ -115,9 +115,9 @@ To add a Kubernetes cluster to your project, group, or instance:
    1. **Token** -
       GitLab authenticates against Kubernetes using service tokens, which are
       scoped to a particular `namespace`.
-      **The token used should belong to a service account with
+      The token used should belong to a service account with
       [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
-      privileges**. To create this service account:
+      privileges. To create this service account:
       1. Create a file called `gitlab-admin-service-account.yaml` with contents:
 
          ```yaml

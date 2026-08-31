@@ -104,14 +104,15 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
     it 'calls change_column_default on partition_key with the most default partition number' do
       connection.change_column_default(model.table_name, strategy.partitioning_key, 1)
 
-      expect(Gitlab::AppLogger).to receive(:warn).with(
-        message: 'Fixed default value of sliding_list_strategy partitioning_key',
-        connection_name: 'main',
-        old_value: 1,
-        new_value: 2,
-        table_name: table_name,
-        column: strategy.partitioning_key
-      )
+      expect(Gitlab::AppLogger).to receive(:warn).with({
+        'class_name' => described_class.name,
+        'message' => 'Fixed default value of sliding_list_strategy partitioning_key',
+        'connection_name' => 'main',
+        'old_value' => 1,
+        'new_value' => 2,
+        'table_name' => table_name,
+        'column' => strategy.partitioning_key
+      })
 
       expect(strategy.model.connection).to receive(:change_column_default).with(
         model.table_name, strategy.partitioning_key, 2
@@ -125,11 +126,12 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
 
       expect(strategy.model.connection).not_to receive(:change_column_default)
 
-      expect(Gitlab::AppLogger).to receive(:warn).with(
-        message: 'Table partitions or partition key default value have been changed by another process',
-        table_name: table_name,
-        default_value: 2
-      )
+      expect(Gitlab::AppLogger).to receive(:warn).with({
+        'class_name' => described_class.name,
+        'message' => 'Table partitions or partition key default value have been changed by another process',
+        'table_name' => table_name,
+        'default_value' => 2
+      })
 
       strategy.validate_and_fix
     end
@@ -213,6 +215,19 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
       it 'is the leading set of partitions before that value' do
         # should not contain partition 2 since it's the default value for the partition column
         expect(strategy.extra_partitions.map(&:value)).to contain_exactly(1, 3, 4)
+      end
+
+      it 'names the partition it refused to detach' do
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            'class_name' => described_class.name,
+            'message' => /Inconsistent partition detected/,
+            'partition_name' => "#{table_name}_2",
+            'partition_number' => 2
+          )
+        )
+
+        strategy.extra_partitions
       end
     end
 
@@ -352,13 +367,14 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
         skip_if_shared_database(:ci)
         expect(strategy.model.connection).not_to receive(:change_column_default)
 
-        expect(Gitlab::AppLogger).to receive(:warn).with(
-          message: 'Skipping changing column default because connections mismatch',
-          model_connection_name: 'main',
-          shared_connection_name: 'ci',
-          table_name: table_name,
-          event: :partition_manager_after_adding_partitions_connection_mismatch
-        )
+        expect(Gitlab::AppLogger).to receive(:warn).with({
+          'class_name' => described_class.name,
+          'message' => 'Skipping changing column default because connections mismatch',
+          'model_connection_name' => 'main',
+          'shared_connection_name' => 'ci',
+          'table_name' => table_name,
+          'event' => :partition_manager_after_adding_partitions_connection_mismatch
+        })
 
         Gitlab::Database::SharedModel.using_connection(Ci::ApplicationRecord.connection) do
           strategy.after_adding_partitions

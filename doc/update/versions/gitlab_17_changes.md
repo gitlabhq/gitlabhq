@@ -360,7 +360,7 @@ If you have a multi-node configuration, you must [ensure these secrets are the s
 
   To safely resolve this issue, follow these steps:
 
-  1. **Only do this if you got this error when trying to upgrade to 17.8**.
+  1. Only do this if you got this error when trying to upgrade to 17.8.
      Run the following SQL query in your `gitlab_main` database:
 
       ```sql

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Consul::Internal do
+RSpec.describe Gitlab::Consul::Internal, feature_category: :consul do
   let(:api_url) { 'http://127.0.0.1:8500' }
 
   let(:consul_settings) do
@@ -72,6 +72,15 @@ RSpec.describe Gitlab::Consul::Internal do
 
       expect { subject }
         .to raise_error(described_class::UnexpectedResponseError)
+    end
+
+    context 'when data is malformed JSON' do
+      it 'raises Consul::Internal::UnexpectedResponseError' do
+        stub_consul_discover_prometheus.to_return(status: 200, body: '{"incomplete": ')
+
+        expect { subject }
+          .to raise_error(described_class::UnexpectedResponseError)
+      end
     end
   end
 

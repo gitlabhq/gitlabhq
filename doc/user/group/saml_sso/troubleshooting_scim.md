@@ -201,7 +201,7 @@ If the error persists, the user most likely already exists, has both a SAML and
 SCIM identity, and a SCIM identity that is set to `active: false`. To resolve
 this:
 
-1. Optional. If you did not save your SCIM token when you first configured SCIM, [generate a new token](scim_setup.md#configure-gitlab). If you generate a new SCIM token, you **must** update the token in your identity provider's SCIM configuration, or SCIM will stop working.
+1. Optional. If you did not save your SCIM token when you first configured SCIM, [generate a new token](scim_setup.md#configure-gitlab). If you generate a new SCIM token, you must update the token in your identity provider's SCIM configuration, or SCIM will stop working.
 1. Locate your SCIM token.
 1. Use the API to [get a single SCIM provisioned user](../../../development/internal_api/_index.md#get-a-single-scim-provisioned-user).
 1. Check the returned information to make sure that:

@@ -6380,6 +6380,10 @@
     "example": "/api/v4/personal_access_tokens/self/rotate"
   },
   {
+    "template": "/api/:version/pipelines",
+    "example": "/api/v4/pipelines"
+  },
+  {
     "template": "/api/:version/projects",
     "example": "/api/v4/projects"
   },

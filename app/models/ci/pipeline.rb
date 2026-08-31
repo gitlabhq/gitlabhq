@@ -556,6 +556,7 @@ module Ci
     scope :before_pipeline, ->(pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
     scope :with_pipeline_source, ->(source) { where(source: source) }
     scope :preload_pipeline_metadata, -> { preload(:pipeline_metadata) }
+    scope :with_api_entity_associations, -> { preload(:pipeline_metadata, **PROJECT_ROUTE_AND_NAMESPACE_ROUTE) }
     scope :not_ref_protected, -> { where("#{quoted_table_name}.protected IS NOT true") }
     scope :unlocked, -> { where(locked: :unlocked) }
 
@@ -611,7 +612,31 @@ module Ci
     scope :order_id_asc, -> { order(id: :asc) }
     scope :order_id_desc, -> { order(id: :desc) }
     scope :order_created_at_asc_id_asc, -> { order(created_at: :asc, id: :asc) }
+    # Declaring both columns NOT NULL lets keyset pagination emit a composite
+    # row comparison ((created_at, id) < (x, y)) that can serve as an index
+    # boundary; the IS NOT NULL filter keeps that declaration truthful.
+    scope :order_created_at_desc_id_desc_keyset, -> do
+      keyset_order = Gitlab::Pagination::Keyset::Order.build([
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: :created_at,
+          order_expression: Ci::Pipeline.arel_table[:created_at].desc,
+          nullable: :not_nullable
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: :id,
+          order_expression: Ci::Pipeline.arel_table[:id].desc,
+          nullable: :not_nullable
+        )
+      ])
+
+      where.not(created_at: nil).order(keyset_order)
+    end
     scope :order_updated_at_asc_id_asc, -> { order(updated_at: :asc, id: :asc) }
+
+    # Orderings supported by cursor-based keyset pagination in the REST API
+    def self.supported_keyset_orderings
+      { created_at: [:desc] }
+    end
 
     scope :not_archived, -> do
       archive_cutoff = Gitlab::CurrentSettings.archive_builds_older_than

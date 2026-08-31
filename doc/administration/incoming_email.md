@@ -29,7 +29,7 @@ GitLab has several features based on receiving incoming email messages:
 
 ## Requirements
 
-You should use an email address that receives **only** messages that are intended for
+You should use an email address that receives only messages that are intended for
 the GitLab instance. Any incoming email messages not intended for GitLab receive a reject notice.
 
 Handling incoming email messages requires an [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)-enabled

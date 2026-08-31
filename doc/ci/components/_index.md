@@ -511,7 +511,7 @@ component users to need to review the component's internal details and adapt the
 to work with the component.
 
 A common keyword with problematic hard-coded values is `stage`. If a component job's
-stage is hardcoded, all pipelines using the component **must** either define
+stage is hardcoded, all pipelines using the component must either define
 the exact same stage, or [override](../yaml/includes.md#override-included-configuration-values)
 the configuration.
 

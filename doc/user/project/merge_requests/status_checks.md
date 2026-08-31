@@ -128,14 +128,14 @@ For common form errors see the [troubleshooting](#troubleshooting) section below
 
 #### Service name
 
-This name can be any alphanumerical value and **must** be set. The name **must** be unique for
+This name can be any alphanumerical value and must be set. The name must be unique for
 the project.
 
 #### API to check
 
-This field requires a URL and **must** use either the HTTP or HTTPS protocols.
+This field requires a URL and must use either the HTTP or HTTPS protocols.
 We **recommend** using HTTPS to protect your merge request data in transit.
-The URL **must** be set and **must** be unique for the project.
+The URL must be set and must be unique for the project.
 
 #### Target branch
 
@@ -151,7 +151,7 @@ when there are a lot of branches and the branch you are looking
 for doesn't appear immediately. The search box requires
 **three** alphanumeric characters to be entered for the search to begin.
 
-If you want the status check to be applied to **all** merge requests,
+If you want the status check to be applied to all merge requests,
 you can select the **All branches** option.
 
 #### HMAC shared secret

@@ -287459,7 +287459,7 @@
                 },
                 {
                   "name": "status",
-                  "description": "Filter applications by status. An application can match more than one status.",
+                  "description": "Filter applications by status. Returns applications whose most-urgent status matches the given value.",
                   "type": {
                     "kind": "ENUM",
                     "name": "CdApplicationStatus",

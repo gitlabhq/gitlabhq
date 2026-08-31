@@ -40,6 +40,10 @@ describe('Work Item type component', () => {
         expect(findIcon().props('name')).toBe(typeIconName || 'work-item-issue');
       });
 
+      it('renders icon with "Type" aria label to add context for screen readers', () => {
+        expect(findIcon().props('ariaLabel')).toBe('Type');
+      });
+
       it(`renders correct text`, () => {
         expect(wrapper.text()).toBe(text);
       });

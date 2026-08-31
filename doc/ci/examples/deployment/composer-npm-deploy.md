@@ -58,7 +58,7 @@ To make this work, you must add a GitLab CI/CD Variable (accessible on `gitlab.e
 
 ### Security tip
 
-Create a user that has access **only** to the folder that needs to be updated.
+Create a user that has access only to the folder that needs to be updated.
 
 After you create that variable, make sure that key is added to the Docker container on run:
 

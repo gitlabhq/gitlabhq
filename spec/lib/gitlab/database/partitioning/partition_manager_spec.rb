@@ -87,6 +87,53 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
           expect { sync_partitions }.not_to raise_error
         end
       end
+
+      context 'when the failure comes after the run has decided what to change' do
+        let(:partitioning_strategy) do
+          double(
+            missing_partitions: partitions,
+            extra_partitions: [
+              instance_double(Gitlab::Database::Partitioning::TimePartition, partition_name: 'foo0')
+            ],
+            after_adding_partitions: nil,
+            analyze_interval: nil
+          )
+        end
+
+        it 'names the partitions it had planned to create and detach' do
+          allow(connection).to receive(:execute).with('CREATE TABLE _partition_1')
+            .and_raise(ActiveRecord::StatementInvalid, 'statement timeout')
+
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including(
+              'class_name' => described_class.name,
+              'message' => 'Failed to create / detach partition(s)',
+              'partitions_to_create' => %w[foo foo2],
+              'partitions_to_detach' => %w[foo0]
+            )
+          )
+
+          sync_partitions
+        end
+      end
+    end
+
+    context 'when the database is not reachable' do
+      # sync_partitions_ignore_db_error only rescues PG::Error, so anything else raised from here
+      # escapes it and aborts a boot that runs before the database exists
+      it 'logs empty partition lists rather than raising' do
+        expect(manager).to receive(:table_partitioned?).and_raise(PG::ConnectionBad, 'database does not exist')
+
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            'message' => 'Failed to create / detach partition(s)',
+            'partitions_to_create' => [],
+            'partitions_to_detach' => []
+          )
+        )
+
+        expect { sync_partitions }.not_to raise_error
+      end
     end
 
     context 'when the table is not partitioned' do
@@ -96,9 +143,10 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         expect(connection).not_to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
         expect(Gitlab::AppLogger).to receive(:warn).with(
           {
-            message: 'Skipping syncing partitions',
-            table_name: table,
-            connection_name: 'main'
+            'class_name' => described_class.name,
+            'message' => 'Skipping syncing partitions',
+            'table_name' => table,
+            'connection_name' => 'main'
           }
         )
 
@@ -332,10 +380,10 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         extra_partitions.each do |partition|
           expect(Gitlab::AppLogger).to receive(:error).with(
             hash_including(
-              message: 'Deferred detaching partition',
-              deferral_reason: :database_error,
-              exception_message: /statement timeout/,
-              partition_name: partition.partition_name
+              'message' => 'Deferred detaching partition',
+              'deferral_reason' => :database_error,
+              'exception_message' => /statement timeout/,
+              'partition_name' => partition.partition_name
             )
           )
         end
@@ -370,13 +418,14 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
         extra_partitions.each do |partition|
           expect(Gitlab::AppLogger).to receive(:warn).with({
-            message: 'Deferred detaching partition',
-            deferral_reason: :referencing_table_cannot_prune,
-            partition_name: partition.partition_name,
-            table_name: table,
-            connection_name: 'main',
-            referencing_table: 'public._test_bar',
-            foreign_key_name: 'fk_test_referencing'
+            'class_name' => described_class.name,
+            'message' => 'Deferred detaching partition',
+            'deferral_reason' => :referencing_table_cannot_prune,
+            'partition_name' => partition.partition_name,
+            'table_name' => table,
+            'connection_name' => 'main',
+            'referencing_table' => 'public._test_bar',
+            'foreign_key_name' => 'fk_test_referencing'
           })
         end
 
@@ -396,8 +445,8 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
             extra_partitions.each do |partition|
               expect(Gitlab::AppLogger).to receive(log_method).with(
                 hash_including(
-                  deferral_reason: :referencing_table_cannot_prune,
-                  partition_name: partition.partition_name
+                  'deferral_reason' => :referencing_table_cannot_prune,
+                  'partition_name' => partition.partition_name
                 )
               )
             end

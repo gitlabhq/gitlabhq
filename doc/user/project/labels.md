@@ -526,7 +526,7 @@ For example, if your project has these labels:
 - `workflow::backend::development`
 - `workflow::frontend::review`
 
-An issue **can't** have both `workflow::backend::review` and `workflow::backend::development`
+An issue cannot have both `workflow::backend::review` and `workflow::backend::development`
 labels at the same time, because they both share the same scope: `workflow::backend`.
 
 On the other hand, an issue **can** have both `workflow::backend::review` and `workflow::frontend::review`

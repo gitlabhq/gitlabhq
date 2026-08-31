@@ -68,6 +68,16 @@ class Ability
       end
     end
 
+    # Returns an Array of Ci::Pipelines that can be read by the given user.
+    #
+    # pipelines - The pipelines to reduce down to those readable by the user.
+    # user - The User for which to check the pipelines
+    def pipelines_readable_by_user(pipelines, user = nil)
+      DeclarativePolicy.user_scope do
+        pipelines.select { |pipeline| allowed?(user, :read_pipeline, pipeline) }
+      end
+    end
+
     def feature_flags_readable_by_user(feature_flags, user = nil, filters: {})
       feature_flags = apply_filters_if_needed(feature_flags, user, filters)
 

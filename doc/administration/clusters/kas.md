@@ -99,7 +99,7 @@ gitlab_rails['gitlab_kas_internal_url'] = 'grpc://kas.internal.gitlab.example.co
 gitlab_rails['gitlab_kas_external_k8s_proxy_url'] = 'https://gitlab.example.com/-/kubernetes-agent/k8s-proxy/'
 ```
 
-**Do not** set `private_api_listen_address` to listen on an internal address, such as:
+Do not set `private_api_listen_address` to listen on an internal address, such as:
 
 - `localhost`
 - Loopback IP addresses, like `127.0.0.1` or `::1`

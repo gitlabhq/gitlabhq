@@ -15,6 +15,83 @@ title: Pipelines API
 
 Use this API to interact with [CI/CD pipelines](../ci/pipelines/_index.md).
 
+## List pipelines
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250635) in GitLab 19.3.
+
+{{< /history >}}
+
+Lists pipelines across all projects that were triggered by the authenticated user.
+
+Only recently created pipelines are returned. To list the full pipeline history of a specific
+project, use [List project pipelines](#list-project-pipelines).
+
+Pipelines from projects the user can no longer access are not included in the results.
+By default, [child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)
+are not included in the results. To return child pipelines, set `source` to `parent_pipeline`.
+
+```plaintext
+GET /pipelines
+```
+
+The results are [paginated](rest/_index.md#keyset-based-pagination) and return up to 100 records
+per page (20 by default). Offset-based pagination is not supported. To retrieve the next page of
+results, use the URL in the `Link` response header.
+
+Supported attributes:
+
+| Attribute        | Type     | Required | Description |
+|------------------|----------|----------|-------------|
+| `created_after`  | datetime | No       | Return pipelines created after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `created_before` | datetime | No       | Return pipelines created before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `cursor`         | string   | No       | Cursor for keyset pagination, from the `Link` header of a previous response. |
+| `order_by`       | string   | No       | Order pipelines by `created_at`. Only `created_at` is supported. Default: `created_at`. |
+| `sort`           | string   | No       | Sort pipelines in `desc` order. Only `desc` is supported. Default: `desc`. |
+| `source`         | string   | No       | Return pipelines with the specified [source](../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable). |
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/pipelines?created_after=2016-08-11T00:00:00Z"
+```
+
+Example of response
+
+```json
+[
+  {
+    "id": 47,
+    "iid": 12,
+    "project_id": 1,
+    "status": "pending",
+    "source": "push",
+    "ref": "new-pipeline",
+    "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+    "name": "Build pipeline",
+    "web_url": "https://example.com/foo/bar/pipelines/47",
+    "created_at": "2016-08-11T11:28:34.085Z",
+    "updated_at": "2016-08-11T11:32:35.169Z"
+  },
+  {
+    "id": 51,
+    "iid": 5,
+    "project_id": 3,
+    "status": "success",
+    "source": "web",
+    "ref": "main",
+    "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a",
+    "name": "Deploy pipeline",
+    "web_url": "https://example.com/foo/baz/pipelines/51",
+    "created_at": "2016-08-11T09:07:01.514Z",
+    "updated_at": "2016-08-11T09:12:44.782Z"
+  }
+]
+```
+
 ## List project pipelines
 
 {{< history >}}

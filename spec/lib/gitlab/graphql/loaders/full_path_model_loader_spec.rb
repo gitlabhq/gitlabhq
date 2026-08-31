@@ -49,6 +49,34 @@ RSpec.describe Gitlab::Graphql::Loaders::FullPathModelLoader, feature_category: 
       end
     end
 
+    context 'when a returned model matches the requested full_path' do
+      it 'does not log an error' do
+        expect(Gitlab::AppLogger).not_to receive(:error)
+
+        result = described_class.new(Namespace, 'test-group/test-project').find
+
+        expect(result.sync).to eq(project.project_namespace)
+      end
+    end
+
+    context 'when a returned model does not match a requested full_path' do
+      it 'logs an error and still loads the model under its computed full_path', :aggregate_failures do
+        allow(Group).to receive(:where_full_path_in).and_return([group])
+
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          message: 'FullPathModelLoader computed full_path did not match a requested key',
+          class: 'Gitlab::Graphql::Loaders::FullPathModelLoader',
+          model_class: 'Group',
+          model_id: group.id,
+          computed_full_path: group.full_path.downcase
+        )
+
+        result = described_class.new(Group, 'nonexistent-group').find
+
+        expect(result.sync).to be_nil
+      end
+    end
+
     it 'only queries once' do
       expect do
         [

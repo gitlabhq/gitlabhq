@@ -30,11 +30,6 @@ export default {
       required: false,
       default: false,
     },
-    showDerivedText: {
-      type: String,
-      required: false,
-      default: null,
-    },
     iconVariant: {
       type: String,
       required: false,
@@ -54,19 +49,13 @@ export default {
     },
     workItemTypeName() {
       const name = convertTypeEnumToName(this.workItemTypeEnum);
-      return name || this.workItemType;
+      return name || this.workItemType || '';
     },
     iconName() {
       return this.typeIconName || 'work-item-issue';
     },
-    workItemTypeText() {
-      return this.workItemTypeName || '';
-    },
     workItemTooltipTitle() {
-      return this.showTooltipOnHover ? this.workItemTypeText : '';
-    },
-    workItemDerivedText() {
-      return this.showDerivedText ? this.showDerivedText : this.workItemTypeText;
+      return this.showTooltipOnHover ? this.workItemTypeName : '';
     },
   },
 };
@@ -77,12 +66,11 @@ export default {
     v-gl-tooltip="showTooltipOnHover"
     data-testid="work-item-type-icon"
     :title="workItemTooltipTitle"
-    :aria-label="workItemTypeText"
     class="!gl-cursor-default gl-border-none gl-bg-transparent gl-p-0 focus-visible:gl-focus-inset"
   >
-    <gl-icon :name="iconName" :variant="iconVariant" :class="iconClass" />
-    <span v-if="workItemTypeText" :class="{ 'gl-sr-only !gl-absolute': !showText }">{{
-      workItemDerivedText
+    <gl-icon :name="iconName" :variant="iconVariant" :class="iconClass" :aria-label="__('Type')" />
+    <span v-if="workItemTypeName" :class="{ 'gl-sr-only !gl-absolute': !showText }">{{
+      workItemTypeName
     }}</span>
   </button>
 </template>

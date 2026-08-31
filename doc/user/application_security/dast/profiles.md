@@ -34,7 +34,7 @@ website, or API to be scanned by DAST.
 A site profile contains:
 
 - **Profile name**: A name you assign to the site to be scanned. While a site profile is referenced
-  in either `.gitlab-ci.yml` or an on-demand scan, it **cannot** be renamed.
+  in either `.gitlab-ci.yml` or an on-demand scan, it cannot be renamed.
 - **Site type**: The type of target to be scanned, either website or API scan.
 - **Target URL**: The URL that DAST runs against.
 - **Excluded URLs**: A comma-separated list of URLs to exclude from the scan.
@@ -266,7 +266,7 @@ A scanner profile defines the configuration details of a security scanner.
 A scanner profile contains:
 
 - **Profile name**: A name you give the scanner profile. For example, "Spider_15". While a scanner
-  profile is referenced in either `.gitlab-ci.yml` or an on-demand scan, it **cannot** be renamed.
+  profile is referenced in either `.gitlab-ci.yml` or an on-demand scan, it cannot be renamed.
 - **Scan mode**: A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities.
 - **Crawl timeout**: The maximum number of minutes allowed for the crawler to traverse the site.
 - **Target timeout**: The maximum number of seconds DAST waits for the site to be available before

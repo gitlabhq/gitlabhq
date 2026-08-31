@@ -399,7 +399,7 @@ The following guide assumes that:
 
    PostgreSQL now only recognizes that exact certificate when verifying TLS
    connections. The certificate can only be replicated by someone with access
-   to the private key, which is **only** present on the primary site.
+   to the private key, which is only present on the primary site.
 
    Because `gitlab-ctl replicate-geo-database` runs as root, install
    the certificate also for the root user. Otherwise, the replication
@@ -594,7 +594,7 @@ see [the relevant documentation](../../postgresql/replication_and_failover.md).
 ### Changing the replication password
 
 > [!warning]
-> When changing the replication password, you must update it on **all** Geo sites (primary and all secondaries) with the [same password value](#database-password-consistency-requirements). Failure to keep passwords synchronized breaks replication.
+> When changing the replication password, you must update it on all Geo sites (primary and all secondaries) with the [same password value](#database-password-consistency-requirements). Failure to keep passwords synchronized breaks replication.
 
 To change the password for the [replication user](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION)
 when using PostgreSQL instances managed by a Linux package installation:
@@ -1024,7 +1024,7 @@ For each node running a Patroni instance on the secondary site:
 
    When configuring `patroni['standby_cluster']['host']` and `patroni['standby_cluster']['port']`:
    - `INTERNAL_LOAD_BALANCER_PRIMARY_IP` must point to the primary internal load balancer IP.
-   - `INTERNAL_LOAD_BALANCER_PRIMARY_PORT` must point to the frontend port [configured for the primary Patroni cluster leader](#step-2-configure-the-internal-load-balancer-on-the-primary-site). **Do not** use the PgBouncer frontend port.
+   - `INTERNAL_LOAD_BALANCER_PRIMARY_PORT` must point to the frontend port [configured for the primary Patroni cluster leader](#step-2-configure-the-internal-load-balancer-on-the-primary-site). Do not use the PgBouncer frontend port.
 
 1. Reconfigure GitLab for the changes to take effect.
    This step is required to bootstrap PostgreSQL users and settings.

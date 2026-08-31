@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# Shim: the helm deployer cannot pin a SHA yet
-# https://gitlab.com/gitlab-org/caproni/-/issues/242
 
 # Sourced, so options leak into later job lines; restored at the end
 __caproni_saved_opts="$(set +o)"
@@ -8,9 +6,10 @@ set -euo pipefail
 
 : "${CI_PROJECT_DIR:?CI_PROJECT_DIR is not set}"
 
-# Falls back to the CI file so laptops use the same commit
+# Locally fall back to variables.gitlab-ci.yml
 if [[ -z "${GITLAB_HELM_CHART_REF:-}" ]]; then
-  GITLAB_HELM_CHART_REF=$(awk -F'"' '/GITLAB_HELM_CHART_REF:/ {print $2}' \
+  GITLAB_HELM_CHART_REF=$(awk -F'"' \
+    '$0 ~ /^[[:space:]]*GITLAB_HELM_CHART_REF:[[:space:]]*"/ {print $2; exit}' \
     "${CI_PROJECT_DIR}/.gitlab/ci/qa-common/variables.gitlab-ci.yml")
   export GITLAB_HELM_CHART_REF
 fi

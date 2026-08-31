@@ -28,9 +28,9 @@ Authentication methods supported by DAST include:
 
 When choosing authentication credentials:
 
-- **DO NOT** use credentials that are valid for production systems, production servers, or used to access production data.
-- **DO NOT** run an authenticated scan against a production server. Authenticated scans may perform
-  **any** function that the authenticated user can, including modifying or deleting data, submitting
+- Do not use credentials that are valid for production systems, production servers, or used to access production data.
+- Do not run an authenticated scan against a production server. Authenticated scans may perform
+  any function that the authenticated user can, including modifying or deleting data, submitting
   forms, and following links. Only run an authenticated scan against non-production systems or
   servers.
 - Provide credentials that allow DAST to test the entire application.

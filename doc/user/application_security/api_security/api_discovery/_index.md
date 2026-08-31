@@ -188,4 +188,4 @@ When experiencing a behavior not working as expected, consider providing context
 <!-- - Scanner log file is available as a job artifact named `gl-api-discovery.log`. -->
 
 > [!warning]
-> **Sanitize data attached to a support issue**. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
+> Sanitize data attached to a support issue. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.

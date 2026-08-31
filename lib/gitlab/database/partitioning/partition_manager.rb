@@ -4,6 +4,7 @@ module Gitlab
   module Database
     module Partitioning
       class PartitionManager
+        include ::Gitlab::Loggable
         include ::Gitlab::Utils::StrongMemoize
         include ::Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
@@ -24,13 +25,12 @@ module Gitlab
         end
 
         def sync_partitions(analyze: true)
+          partitions_to_create = []
+          partitions_to_detach = []
+
           return skip_syncing_partitions unless table_partitioned?
 
-          Gitlab::AppLogger.info(
-            message: "Checking state of dynamic postgres partitions",
-            table_name: model.table_name,
-            connection_name: @connection_name
-          )
+          Gitlab::AppLogger.info(log_payload(message: 'Checking state of dynamic postgres partitions'))
 
           only_with_exclusive_lease(model, lease_key: MANAGEMENT_LEASE_KEY) do
             model.partitioning_strategy.validate_and_fix
@@ -47,11 +47,13 @@ module Gitlab
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         rescue StandardError => e
           Gitlab::AppLogger.error(
-            message: "Failed to create / detach partition(s)",
-            table_name: model.table_name,
-            exception_class: e.class,
-            exception_message: e.message,
-            connection_name: @connection_name
+            log_payload(
+              message: 'Failed to create / detach partition(s)',
+              exception_class: e.class,
+              exception_message: e.message,
+              partitions_to_create: partitions_to_create.map(&:partition_name),
+              partitions_to_detach: partitions_to_detach.map(&:partition_name)
+            )
           )
         end
 
@@ -75,10 +77,7 @@ module Gitlab
         end
 
         def process_created_partition(partition)
-          Gitlab::AppLogger.info(message: "Created partition",
-            partition_name: partition.partition_name,
-            table_name: partition.table,
-            connection_name: @connection_name)
+          Gitlab::AppLogger.info(log_payload(message: 'Created partition', partition_name: partition.partition_name))
 
           lock_partitions_for_writes(partition) if should_lock_for_writes?
 
@@ -134,12 +133,7 @@ module Gitlab
 
           connection.execute partition.to_detach_sql
 
-          Gitlab::AppLogger.info(
-            message: "Detached Partition",
-            partition_name: partition.partition_name,
-            table_name: partition.table,
-            connection_name: @connection_name
-          )
+          Gitlab::AppLogger.info(log_payload(message: 'Detached Partition', partition_name: partition.partition_name))
         end
 
         def detachable?(partition)
@@ -156,20 +150,26 @@ module Gitlab
         end
 
         def log_deferred_detach(partition, blocker)
-          payload = {
+          payload = log_payload(
             message: 'Deferred detaching partition',
             deferral_reason: blocker.reason,
             partition_name: partition.partition_name,
-            table_name: partition.table,
-            connection_name: @connection_name,
             **blocker.details
-          }
+          )
 
           case blocker.level
           when :warn then Gitlab::AppLogger.warn(payload)
           when :error then Gitlab::AppLogger.error(payload)
           else Gitlab::AppLogger.info(payload)
           end
+        end
+
+        def log_payload(**params)
+          build_structured_payload_labkit(
+            table_name: model.table_name,
+            connection_name: @connection_name,
+            **params
+          )
         end
 
         def with_lock_retries(&block)
@@ -187,11 +187,7 @@ module Gitlab
         end
 
         def skip_syncing_partitions
-          Gitlab::AppLogger.warn(
-            message: "Skipping syncing partitions",
-            table_name: model.table_name,
-            connection_name: @connection_name
-          )
+          Gitlab::AppLogger.warn(log_payload(message: 'Skipping syncing partitions'))
         end
 
         def run_analyze_on_partitioned_table

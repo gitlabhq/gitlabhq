@@ -67971,6 +67971,118 @@ paths:
           type: integer
         in: path
         example: 10
+  "/api/v4/pipelines":
+    get:
+      operationId: getApiV4Pipelines
+      summary: List pipelines triggered by the authenticated user
+      description: Lists recently created pipelines across all projects that were
+        triggered by the authenticated user. By default, child pipelines are not included
+        in the results. To return child pipelines, set `source` to `parent_pipeline`.
+        This endpoint only supports keyset pagination.
+      tags:
+      - Pipelines
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesCiPipelineBasicWithMetadata"
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      parameters:
+      - name: source
+        required: false
+        description: The source of pipelines
+        schema:
+          type: string
+          enum:
+          - unknown
+          - push
+          - web
+          - trigger
+          - schedule
+          - api
+          - external
+          - pipeline
+          - chat
+          - webide
+          - merge_request_event
+          - external_pull_request_event
+          - parent_pipeline
+          - ondemand_dast_scan
+          - ondemand_dast_validation
+          - security_orchestration_policy
+          - container_registry_push
+          - duo_workflow
+          - pipeline_execution_policy_schedule
+          - dependency_management_security_update
+          nullable: true
+        in: query
+        example: push
+      - name: created_before
+        required: false
+        description: 'Return pipelines created before the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2015-12-24T15:51:21.880Z'
+      - name: created_after
+        required: false
+        description: 'Return pipelines created after the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2015-12-24T15:51:21.880Z'
+      - name: order_by
+        required: false
+        description: Return pipelines ordered by `created_at`
+        schema:
+          type: string
+          enum:
+          - created_at
+          default: created_at
+          nullable: true
+        in: query
+        example: created_at
+      - name: sort
+        required: false
+        description: Return pipelines sorted in `desc` order
+        schema:
+          type: string
+          enum:
+          - desc
+          default: desc
+          nullable: true
+        in: query
+        example: desc
+      - name: cursor
+        required: false
+        description: Cursor for obtaining the next set of records
+        schema:
+          type: string
+          nullable: true
+        in: query
+        example: eyJpZCI6IjE0In0
+      - name: per_page
+        required: false
+        description: Number of items per page
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+          nullable: true
+        in: query
+        example: 20
   "/api/v4/projects/{id}/pipeline_schedules":
     get:
       operationId: getApiV4ProjectsIdPipelineSchedules
@@ -94451,6 +94563,46 @@ components:
           example: '2015-12-24T17:54:31.198Z'
         owner:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
+    APIEntitiesCiPipelineBasicWithMetadata:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        iid:
+          type: integer
+          example: 2
+        project_id:
+          type: integer
+          format: int64
+          example: 3
+        sha:
+          type: string
+          example: 0ec9e58fdfca6cdd6652c083c9edb53abc0bad52
+        ref:
+          type: string
+          example: feature-branch
+        status:
+          type: string
+          example: success
+        source:
+          type: string
+          example: push
+        created_at:
+          type: string
+          format: date-time
+          example: '2022-10-21T16:49:48.000+02:00'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2022-10-21T16:49:48.000+02:00'
+        web_url:
+          type: string
+          example: https://gitlab.example.com/gitlab-org/gitlab-foss/-/pipelines/61
+        name:
+          type: string
+          example: Build pipeline
     APIEntitiesCiInput:
       type: object
       properties:

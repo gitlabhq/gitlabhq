@@ -406,9 +406,9 @@ To configure a Credentials Store:
      `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner reads this configuration file
      and uses the needed helper for this specific repository.
 
-`credsStore` is used to access **all** the registries.
+`credsStore` is used to access all the registries.
 If you use both images from a private registry and public images from Docker Hub,
-pulling from Docker Hub fails. The Docker daemon tries to use the same credentials for **all** the registries.
+pulling from Docker Hub fails. The Docker daemon tries to use the same credentials for all the registries.
 
 ### Use Credential Helpers
 

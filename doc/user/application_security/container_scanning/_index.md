@@ -612,8 +612,8 @@ The `vulnerability-allowlist.yml` file is a YAML file that specifies a list of C
 
 If a matching entry is found in the `vulnerability-allowlist.yml` file, the following happens:
 
-- The vulnerability **is not included** when the analyzer generates the `gl-container-scanning-report.json` file.
-- The Security tab of the pipeline **does not show** the vulnerability. It is not included in the JSON file, which is the source of truth for the Security tab.
+- The vulnerability is not included when the analyzer generates the `gl-container-scanning-report.json` file.
+- The Security tab of the pipeline does not show the vulnerability. It is not included in the JSON file, which is the source of truth for the Security tab.
 
 Example `vulnerability-allowlist.yml` file:
 
@@ -639,7 +639,7 @@ This example excludes from `gl-container-scanning-report.json`:
 ##### File format
 
 - `generalallowlist` block allows you to specify CVE IDs globally. All vulnerabilities with matching CVE IDs are excluded from the scan report.
-- `images` block allows you to specify CVE IDs for each container image independently. All vulnerabilities from the given image with matching CVE IDs are excluded from the scan report. The image name is retrieved from one of the environment variables used to specify the Docker image to be scanned, such as `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` or `CS_IMAGE`. The image provided in this block **must** match this value and **must not** include the tag value. For example, if you specify the image to be scanned using `CS_IMAGE=alpine:3.7`, then you would use `alpine` in the `images` block, but you cannot use `alpine:3.7`.
+- `images` block allows you to specify CVE IDs for each container image independently. All vulnerabilities from the given image with matching CVE IDs are excluded from the scan report. The image name is retrieved from one of the environment variables used to specify the Docker image to be scanned, such as `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` or `CS_IMAGE`. The image provided in this block must match this value and must not include the tag value. For example, if you specify the image to be scanned using `CS_IMAGE=alpine:3.7`, then you would use `alpine` in the `images` block, but you cannot use `alpine:3.7`.
 
   You can specify a container image in multiple ways:
 
@@ -648,7 +648,7 @@ This example excludes from `gl-container-scanning-report.json`:
   - As full image name with registry hostname and sha256 label (such as `registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256`).
 
 > [!note]
-> The string after CVE ID (`cups` and `libxml2` in the previous example) is an optional comment format. It has **no impact** on the handling of vulnerabilities. You can include comments to describe the vulnerability.
+> The string after CVE ID (`cups` and `libxml2` in the previous example) is an optional comment format. It has no impact on the handling of vulnerabilities. You can include comments to describe the vulnerability.
 
 ##### Container scanning job log format
 

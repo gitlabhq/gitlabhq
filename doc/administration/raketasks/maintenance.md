@@ -422,7 +422,7 @@ Database reindexing performs these tasks:
 Prerequisites:
 
 - This feature requires PostgreSQL 12 or later.
-- These index types are **not supported**: expression indexes and indexes used for constraint exclusion.
+- These index types are not supported: expression indexes and indexes used for constraint exclusion.
 
 ### Run reindexing
 

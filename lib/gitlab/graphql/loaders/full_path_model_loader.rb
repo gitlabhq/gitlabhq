@@ -23,10 +23,30 @@ module Gitlab
                       scope.where_full_path_in(full_paths)
                     end
 
+            requested = full_paths.to_set
+
             scope.each do |model_instance|
-              loader.call(model_instance.full_path.downcase, model_instance)
+              computed_full_path = model_instance.full_path.downcase
+
+              unless requested.include?(computed_full_path)
+                log_unmatched_full_path(args[:key], model_instance, computed_full_path)
+              end
+
+              loader.call(computed_full_path, model_instance)
             end
           end
+        end
+
+        private
+
+        def log_unmatched_full_path(model_class, model_instance, computed_full_path)
+          Gitlab::AppLogger.error(
+            message: 'FullPathModelLoader computed full_path did not match a requested key',
+            class: self.class.name,
+            model_class: model_class.name,
+            model_id: model_instance.id,
+            computed_full_path: computed_full_path
+          )
         end
       end
     end

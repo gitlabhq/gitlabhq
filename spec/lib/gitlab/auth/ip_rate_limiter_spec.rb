@@ -206,6 +206,94 @@ RSpec.describe Gitlab::Auth::IpRateLimiter, :use_clean_rails_memory_store_cachin
     it_behaves_like 'skips the rate limiter'
   end
 
+  # The labkit path is exercised in detail in git_basic_auth_ban_spec.rb. What
+  # matters here is that the flag routes to it and that the metrics, which are
+  # the point of the comparison, keep firing on both paths.
+  context 'when use_labkit_git_basic_auth_ban is enabled', :clean_gitlab_redis_rate_limiting do
+    before do
+      stub_feature_flags(use_labkit_git_basic_auth_ban: true)
+      Gitlab::Auth::GitBasicAuthBan.reset_limiter!
+    end
+
+    after do
+      Gitlab::Auth::GitBasicAuthBan.reset_limiter!
+    end
+
+    it 'does not touch Rack::Attack::Allow2Ban', :aggregate_failures do
+      expect(Rack::Attack::Allow2Ban).not_to receive(:filter)
+      expect(Rack::Attack::Allow2Ban).not_to receive(:banned?)
+      expect(Rack::Attack::Allow2Ban).not_to receive(:reset)
+
+      rate_limiter.register_fail!
+      rate_limiter.banned?
+      rate_limiter.reset!
+    end
+
+    it 'bans one attempt later than the Allow2Ban path did', :aggregate_failures do
+      2.times { rate_limiter.register_fail! }
+
+      expect(rate_limiter.banned?).to be(false)
+
+      rate_limiter.register_fail!
+
+      expect(rate_limiter.banned?).to be(true)
+    end
+
+    it 'clears the ban on reset', :aggregate_failures do
+      3.times { rate_limiter.register_fail! }
+      expect(rate_limiter.banned?).to be(true)
+
+      rate_limiter.reset!
+
+      expect(rate_limiter.banned?).to be(false)
+    end
+
+    it 'still skips allowlisted IPs' do
+      allow(rate_limiter).to receive(:trusted_ip?).and_return(true)
+
+      expect(Gitlab::Auth::GitBasicAuthBan).not_to receive(:register_fail!)
+
+      expect(rate_limiter.register_fail!).to be(false)
+    end
+
+    describe 'metrics' do
+      let(:counter) { instance_double(Prometheus::Client::Counter, increment: nil) }
+
+      before do
+        allow(Gitlab::Metrics).to receive(:counter).and_call_original
+        allow(Gitlab::Metrics).to receive(:counter)
+          .with(:gitlab_rate_limiter_git_basic_auth_ban_events_total, anything, anything)
+          .and_return(counter)
+      end
+
+      it 'counts failures and the resulting ban', :aggregate_failures do
+        expect(counter).to receive(:increment).with(event: :failure).exactly(3).times
+        expect(counter).to receive(:increment).with(event: :ban).once
+
+        3.times { rate_limiter.register_fail! }
+      end
+
+      # labkit counts and bans in one call and suppresses counting while banned,
+      # so it cannot separate "already banned" from "banned by this attempt".
+      # That event disappears on this path; those requests report :ban instead.
+      it 'never emits already_banned' do
+        expect(counter).not_to receive(:increment).with(event: :already_banned)
+
+        4.times { rate_limiter.register_fail! }
+      end
+
+      # So :ban counts attempts blocked by a ban, not bans created. Getting here
+      # with a live ban needs the race above, since Gitlab::Auth refuses a banned
+      # caller before it authenticates.
+      it 'keeps counting failure and ban on attempts against a live ban', :aggregate_failures do
+        expect(counter).to receive(:increment).with(event: :failure).exactly(5).times
+        expect(counter).to receive(:increment).with(event: :ban).exactly(3).times
+
+        5.times { rate_limiter.register_fail! }
+      end
+    end
+  end
+
   describe '#trusted_ip?' do
     subject { rate_limiter.trusted_ip? }
 

@@ -94,8 +94,6 @@ orchestrator uses, and the job extends `.cng-qa-cache` to mount it.
 
 - Admin token seeding and reading back the root password are CI script steps rather than
   deploy hooks. [caproni#192](https://gitlab.com/gitlab-org/caproni/-/issues/192)
-- The chart is packaged locally so the pinned SHA is honoured, rather than the Helm
-  deployer pinning it. [caproni#242](https://gitlab.com/gitlab-org/caproni/-/issues/242)
 - EE licence secret: the suite licenses itself over the API, which needs
   `GITLAB_LICENSE_MODE=test` and `CUSTOMER_PORTAL_URL` (both set in
   `values/gitlab.yaml`). The orchestrator's pre-created `gitlab-license` secret is not

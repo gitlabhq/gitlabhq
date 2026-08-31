@@ -12447,6 +12447,9 @@ msgstr[1] ""
 msgid "ArtifactRegistry|Podman"
 msgstr ""
 
+msgid "ArtifactRegistry|Preferences"
+msgstr ""
+
 msgid "ArtifactRegistry|Private"
 msgstr ""
 
@@ -12490,6 +12493,9 @@ msgid "ArtifactRegistry|Push your first manifest to get started."
 msgstr ""
 
 msgid "ArtifactRegistry|Referrer for %{digest}"
+msgstr ""
+
+msgid "ArtifactRegistry|Referrer manifests"
 msgstr ""
 
 msgid "ArtifactRegistry|Registry URL"
