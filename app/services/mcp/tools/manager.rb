@@ -46,8 +46,6 @@ module Mcp
         'accept_merge_request' => ::Mcp::Tools::MergeRequests::AcceptMergeRequestService,
         'add_branch' => ::Mcp::Tools::Repositories::Branches::AddBranchService,
         'add_commit' => ::Mcp::Tools::Repositories::AddCommitService,
-        'create_merge_request_note' => ::Mcp::Tools::MergeRequests::CreateMergeRequestNoteService,
-        'create_workitem_note' => ::Mcp::Tools::WorkItems::CreateWorkItemNoteService,
         'get_commit' => ::Mcp::Tools::Commits::GetCommitService,
         'get_merge_request' => ::Mcp::Tools::MergeRequests::GetMergeRequestService,
         'get_merge_request_notes' => ::Mcp::Tools::MergeRequests::GetMergeRequestNotesService,
@@ -65,6 +63,7 @@ module Mcp
         'list_wiki_pages' => ::Mcp::Tools::Wikis::ListWikiPagesService,
         'list_work_items' => ::Mcp::Tools::WorkItems::ListWorkItemsService,
         'save_merge_request_review' => ::Mcp::Tools::MergeRequests::SaveMergeRequestReviewService,
+        'save_note' => ::Mcp::Tools::Notes::SaveNoteService,
         'save_pipeline' => ::Mcp::Tools::Pipelines::SavePipelineService,
         'save_work_item' => ::Mcp::Tools::WorkItems::SaveWorkItemService,
         'search_labels' => ::Mcp::Tools::Labels::SearchService

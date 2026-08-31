@@ -54,6 +54,8 @@ class Projects::BranchesController < Projects::ApplicationController
   def diverging_commit_counts
     respond_to do |format|
       format.json do
+        next render json: {} unless repository.head_commit
+
         service = ::Branches::DivergingCommitCountsService.new(repository)
         ref_names = permitted_params[:names].presence
 
@@ -64,7 +66,7 @@ class Projects::BranchesController < Projects::ApplicationController
         ).execute
 
         Gitlab::GitalyClient.allow_n_plus_1_calls do
-          render json: branches.to_h { |branch| [branch.name, service.call(branch)] }
+          render json: branches.to_h { |branch| [branch.name, service.call(branch)] }.compact
         end
       end
     end

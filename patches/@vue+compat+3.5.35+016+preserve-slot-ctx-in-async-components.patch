@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -12040,7 +12040,14 @@
+@@ -12061,7 +12061,14 @@
        type = 32;
        const slotFlag = children._;
        if (!slotFlag && !isInternalObject(children)) {
@@ -22,7 +22,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -12062,7 +12062,14 @@
+@@ -12083,7 +12083,14 @@
        type = 32;
        const slotFlag = children._;
        if (!slotFlag && !isInternalObject(children)) {
@@ -42,7 +42,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -11989,7 +11989,14 @@
+@@ -12010,7 +12010,14 @@
        type = 32;
        const slotFlag = children._;
        if (!slotFlag && !isInternalObject(children)) {

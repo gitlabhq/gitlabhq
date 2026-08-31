@@ -32,6 +32,13 @@ RSpec.describe 'Gitlab OAuth2 Device Authorization Grant', feature_category: :sy
       allow(instance).to receive(:organization).and_return(organization)
     end
     sign_in(user)
+
+    # verification_uri is generated via Gitlab::Routing.url_helpers, which
+    # uses Rails' default_url_options host rather than the request host.
+    # Align it with the integration test session's actual default host so
+    # posting back to verification_uri hits the same session/cookies.
+    allow(Gitlab::Application.routes).to receive(:default_url_options)
+      .and_return(protocol: 'http', host: 'www.example.com', script_name: '')
   end
 
   def fetch_device_code
@@ -55,11 +62,12 @@ RSpec.describe 'Gitlab OAuth2 Device Authorization Grant', feature_category: :sy
 
   describe 'Device Authorization Request' do
     context 'with valid client_id and scope' do
-      it 'returns device code and verification URI' do
+      it 'returns device code and verification URI', :aggregate_failures do
         response_body = fetch_device_code
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response_body).to include('device_code', 'user_code', 'verification_uri', 'expires_in')
+        expect(response_body).to include('device_code', 'user_code', 'expires_in')
+        expect(response_body['verification_uri']).to eq('http://www.example.com/oauth/device')
         expect(json_response['expires_in']).to be(300) # device_code_expires_in default
       end
     end
@@ -70,6 +78,22 @@ RSpec.describe 'Gitlab OAuth2 Device Authorization Grant', feature_category: :sy
 
         expect(response).to have_gitlab_http_status(:unauthorized)
         expect(json_response['error']).to eq('invalid_client')
+      end
+    end
+
+    context 'when relative_url_root is configured' do
+      before do
+        allow(Gitlab::Application.routes).to receive(:default_url_options)
+          .and_return(protocol: 'http', host: 'www.example.com', script_name: '/gitlab')
+      end
+
+      it 'includes relative_url_root in verification_uri and verification_uri_complete',
+        :aggregate_failures do
+        response_body = fetch_device_code
+
+        expect(response_body['verification_uri']).to eq('http://www.example.com/gitlab/oauth/device')
+        expect(response_body['verification_uri_complete'])
+          .to start_with('http://www.example.com/gitlab/oauth/device?user_code=')
       end
     end
 

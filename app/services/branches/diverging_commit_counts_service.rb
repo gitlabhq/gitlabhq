@@ -5,12 +5,14 @@ module Branches
     def initialize(repository)
       @repository = repository
       @cache = Gitlab::RepositoryCache.new(repository)
+      @root_ref_sha = repository.head_commit&.id
     end
 
     def call(branch)
-      @root_ref_sha ||= raw_repository.commit(repository.root_ref).id
+      return unless root_ref_sha
+
       cache.fetch(:"diverging_commit_counts_#{branch.name}") do
-        diverging_counts(@root_ref_sha, branch.target)
+        diverging_counts(root_ref_sha, branch.target)
       end
     end
 
@@ -22,7 +24,7 @@ module Branches
 
     private
 
-    attr_reader :repository, :cache
+    attr_reader :repository, :cache, :root_ref_sha
 
     delegate :raw_repository, to: :repository
   end

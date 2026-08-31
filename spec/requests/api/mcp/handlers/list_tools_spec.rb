@@ -60,12 +60,11 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         # write, non-destructive
         'add_branch' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'create_issue' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'create_merge_request_note' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'save_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'create_workitem_note' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'fork_repository' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'link_work_items' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'save_merge_request_review' => { 'readOnlyHint' => false, 'destructiveHint' => false },
+        'save_note' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'save_work_item' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         # write, destructive
         'accept_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => true },

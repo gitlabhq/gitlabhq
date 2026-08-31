@@ -45070,6 +45070,7 @@ Fields:
 | <a id="governpolicy-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Name of the policy. |
 | <a id="governpolicy-namespaceid"></a>`namespaceId` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. ID of the namespace the policy is scoped to. Null for organization-wide policies. |
 | <a id="governpolicy-organizationid"></a>`organizationId` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.4. Status: Experiment. ID of the organization the policy belongs to. |
+| <a id="governpolicy-policyrego"></a>`policyRego` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Rego program merged from the compiled rules. Null when the rules cannot be merged. |
 | <a id="governpolicy-policyscope"></a>`policyScope` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 19.4. Status: Experiment. Scope of the policy. |
 | <a id="governpolicy-rules"></a>`rules` {{< icon name="warning-solid" >}} | [`[JSON!]`](#json) | Introduced in GitLab 19.4. Status: Experiment. Rules of the policy. |
 | <a id="governpolicy-scopedimensions"></a>`scopeDimensions` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.4. Status: Experiment. Dotted context paths scopeRego reads to decide whether the policy applies. Null when scopeRego was authored directly instead of compiled from policyScope. |
@@ -67981,6 +67982,7 @@ Type of a dependency firewall policy rule.
 | ----- | ----------- |
 | <a id="dependencyfirewallruletype-license"></a>`LICENSE` | Rule matching on package licenses. |
 | <a id="dependencyfirewallruletype-malicious"></a>`MALICIOUS` | Rule matching on packages flagged as malicious. |
+| <a id="dependencyfirewallruletype-risk_severity"></a>`RISK_SEVERITY` | Rule matching on vulnerability counts per severity level. |
 | <a id="dependencyfirewallruletype-vulnerability"></a>`VULNERABILITY` | Rule matching on package vulnerabilities. |
 
 ### `DependencyProxyManifestStatus`

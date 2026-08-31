@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6675,7 +6675,7 @@
+@@ -6680,7 +6680,7 @@
      $: (i) => i,
      $el: (i) => i.vnode.el,
      $data: (i) => i.data,
@@ -11,7 +11,7 @@ index aaaaaaa..bbbbbbb 100644
      $attrs: (i) => shallowReadonly(i.attrs) ,
      $slots: (i) => shallowReadonly(i.slots) ,
      $refs: (i) => shallowReadonly(i.refs) ,
-@@ -9000,6 +9000,10 @@
+@@ -9005,6 +9005,10 @@
        );
      }
    }
@@ -26,7 +26,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -6655,7 +6655,7 @@
+@@ -6660,7 +6660,7 @@
      $: (i) => i,
      $el: (i) => i.vnode.el,
      $data: (i) => i.data,
@@ -35,7 +35,7 @@ index aaaaaaa..bbbbbbb 100644
      $attrs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.attrs) : i.attrs,
      $slots: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.slots) : i.slots,
      $refs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.refs) : i.refs,
-@@ -8984,6 +8984,10 @@
+@@ -8989,6 +8989,10 @@
        );
      }
    }
@@ -50,7 +50,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6582,7 +6582,7 @@
+@@ -6587,7 +6587,7 @@
      $: (i) => i,
      $el: (i) => i.vnode.el,
      $data: (i) => i.data,
@@ -59,7 +59,7 @@ index aaaaaaa..bbbbbbb 100644
      $attrs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.attrs) : i.attrs,
      $slots: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.slots) : i.slots,
      $refs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.refs) : i.refs,
-@@ -8911,6 +8911,10 @@
+@@ -8916,6 +8916,10 @@
        );
      }
    }

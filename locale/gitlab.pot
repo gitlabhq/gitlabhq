@@ -85816,6 +85816,9 @@ msgstr ""
 msgid "UsageBilling|An error occurred while fetching usage data"
 msgstr ""
 
+msgid "UsageBilling|An error occurred while fetching user overrides."
+msgstr ""
+
 msgid "UsageBilling|An error occurred while saving flat cap."
 msgstr ""
 
@@ -85962,6 +85965,9 @@ msgstr ""
 msgid "UsageBilling|Increase your commitment to unlock higher discounts. Pool GitLab Credits across your namespace for flexibility and predictable monthly costs. Learn more about %{linkStart}GitLab Credit pricing%{linkEnd}."
 msgstr ""
 
+msgid "UsageBilling|Individual overrides take precedence over the flat cap."
+msgstr ""
+
 msgid "UsageBilling|Keep your team's GitLab Duo features unblocked"
 msgstr ""
 
@@ -86010,6 +86016,9 @@ msgstr ""
 msgid "UsageBilling|Monthly waiver limit"
 msgstr ""
 
+msgid "UsageBilling|No per-user overrides set."
+msgstr ""
+
 msgid "UsageBilling|No product data available"
 msgstr ""
 
@@ -86029,6 +86038,9 @@ msgid "UsageBilling|Peak day usage"
 msgstr ""
 
 msgid "UsageBilling|Per user, per month. Resets on the 1st."
+msgstr ""
+
+msgid "UsageBilling|Per-user cap overrides"
 msgstr ""
 
 msgid "UsageBilling|Product"

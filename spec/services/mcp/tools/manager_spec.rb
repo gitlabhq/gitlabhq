@@ -14,8 +14,8 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
 
     # Stub the GRAPHQL_TOOLS with GraphQL tools
     graphql_tools = {
-      'add_commit' => Mcp::Tools::Repositories::AddCommitService,
-      'create_workitem_note' => Mcp::Tools::WorkItems::CreateWorkItemNoteService
+      'save_note' => Mcp::Tools::Notes::SaveNoteService,
+      'add_commit' => Mcp::Tools::Repositories::AddCommitService
     }
     stub_const("#{described_class}::GRAPHQL_TOOLS", graphql_tools)
     stub_const("::EE::#{described_class}::EE_GRAPHQL_TOOLS", {})
@@ -36,7 +36,7 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
 
         expect(manager.tools.keys).to contain_exactly(
           'get_mcp_server_version',
-          'create_workitem_note',
+          'save_note',
           'add_commit'
         )
       end
@@ -67,7 +67,7 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
           'create_user' => api_tool1,
           'delete_user' => api_tool2,
           'get_mcp_server_version' => be_a(Mcp::Tools::GetServerVersionService),
-          'create_workitem_note' => be_a(Mcp::Tools::WorkItems::CreateWorkItemNoteService),
+          'save_note' => be_a(Mcp::Tools::Notes::SaveNoteService),
           'add_commit' => be_a(Mcp::Tools::Repositories::AddCommitService)
         )
         expect(manager.tools.size).to eq(5)
@@ -205,7 +205,7 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
         expect(manager.tools).to include(
           'valid_tool' => api_tool1,
           'get_mcp_server_version' => be_a(Mcp::Tools::GetServerVersionService),
-          'create_workitem_note' => be_a(Mcp::Tools::WorkItems::CreateWorkItemNoteService),
+          'save_note' => be_a(Mcp::Tools::Notes::SaveNoteService),
           'add_commit' => be_a(Mcp::Tools::Repositories::AddCommitService)
         )
         expect(manager.tools.size).to eq(4)
@@ -348,27 +348,27 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
     context 'with graphql tool' do
       context 'when requesting specific version' do
         it 'returns the correct version' do
-          tool = manager.get_tool(name: 'create_workitem_note', version: '0.1.0')
+          tool = manager.get_tool(name: 'save_note', version: '0.1.0')
 
-          expect(tool).to be_a(Mcp::Tools::WorkItems::CreateWorkItemNoteService)
+          expect(tool).to be_a(Mcp::Tools::Notes::SaveNoteService)
           expect(tool.version).to eq('0.1.0')
         end
       end
 
       context 'when requesting latest version' do
         it 'returns the latest version' do
-          tool = manager.get_tool(name: 'create_workitem_note')
+          tool = manager.get_tool(name: 'save_note')
 
-          expect(tool).to be_a(Mcp::Tools::WorkItems::CreateWorkItemNoteService)
+          expect(tool).to be_a(Mcp::Tools::Notes::SaveNoteService)
           expect(tool.version).to eq('0.1.0')
         end
       end
 
       context 'when requesting non-existent version' do
         it 'raises VersionNotFoundError' do
-          expect { manager.get_tool(name: 'create_workitem_note', version: '99.99.99') }
+          expect { manager.get_tool(name: 'save_note', version: '99.99.99') }
             .to raise_error(described_class::VersionNotFoundError) do |error|
-            expect(error.tool_name).to eq('create_workitem_note')
+            expect(error.tool_name).to eq('save_note')
             expect(error.requested_version).to eq('99.99.99')
             expect(error.available_versions).to eq(['0.1.0'])
           end

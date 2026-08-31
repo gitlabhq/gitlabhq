@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6480,7 +6480,12 @@
+@@ -6485,7 +6485,12 @@
    if (bindObject) {
      props = mergeProps(props, bindObject);
    }
@@ -20,7 +20,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -6460,7 +6460,12 @@
+@@ -6465,7 +6465,12 @@
    if (bindObject) {
      props = mergeProps(props, bindObject);
    }
@@ -38,7 +38,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6387,7 +6387,12 @@
+@@ -6392,7 +6392,12 @@
    if (bindObject) {
      props = mergeProps(props, bindObject);
    }

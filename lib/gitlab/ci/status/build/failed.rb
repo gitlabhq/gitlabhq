@@ -60,7 +60,7 @@ module Gitlab
             reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.',
             job_router_failure: 'The Job Router failed to run this job.',
             job_token_expired: 'job token has expired',
-            id_token_burned_project_path: 'CI ID token issuance disabled for this project path'
+            id_token_burned_project_path: 'ID token issuance disabled for this project path'
           }.freeze
           # rubocop: enable Layout/LineLength
 

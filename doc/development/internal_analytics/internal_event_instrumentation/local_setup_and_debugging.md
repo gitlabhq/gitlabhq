@@ -121,6 +121,10 @@ Starting with GitLab 18.0, Self-Managed instances collect event data by default.
   <iframe src="https://www.youtube-nocookie.com/embed/netZ0TogNcA" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
+Snowplow Micro shows you the events a running GDK emits.
+To assert those events from a feature spec instead, without running a collector, see
+[Capturing Snowplow events in feature specs](../capturing_snowplow_events_in_specs.md).
+
 ## Manual check in GDK
 
 As a quick test of whether an event is getting triggered & metric is updated, you can check the latest values in the rails console.

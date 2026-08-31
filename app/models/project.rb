@@ -612,6 +612,7 @@ class Project < ApplicationRecord
     with_options prefix: :ci do
       delegate :pipeline_variables_minimum_override_role, :pipeline_variables_minimum_override_role=
       delegate :push_repository_for_job_token_allowed, :push_repository_for_job_token_allowed=
+      delegate :push_pipelines_for_job_token_allowed, :push_pipelines_for_job_token_allowed=
       delegate :cross_project_push_for_job_token_allowed, :cross_project_push_for_job_token_allowed=
       delegate :default_git_depth, :default_git_depth=
       delegate :forward_deployment_enabled, :forward_deployment_enabled=

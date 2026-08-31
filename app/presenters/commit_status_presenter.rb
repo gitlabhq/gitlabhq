@@ -55,8 +55,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.',
     job_router_failure: 'The Job Router failed to run this job.',
     job_token_expired: 'The CI job token has expired. The job may have exceeded the maximum time limit.',
-    id_token_burned_project_path: 'CI ID token issuance is disabled because this project\'s path was previously used by a different project. ' \
-      'To restore CI ID tokens, set `ci_id_token_sub_claim_components` to start with `project_id` ' \
+    id_token_burned_project_path: 'ID token issuance is disabled in CI because this project\'s path was previously used by a different project. ' \
+      'To restore ID tokens, set `ci_id_token_sub_claim_components` to start with `project_id` ' \
       '(for example, `["project_id", "ref_type", "ref"]`) and update your cloud trust policy to match.'
   }.freeze
 

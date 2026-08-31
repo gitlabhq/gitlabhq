@@ -28,16 +28,6 @@ class ContainerExpirationPolicy < ApplicationRecord
   scope :active, -> { where(enabled: true) }
   scope :preloaded, -> { preload(project: [:route]) }
 
-  def self.with_container_repositories
-    where(
-      'EXISTS (?)',
-      ContainerRepository.select(1)
-                         .where(
-                           'container_repositories.project_id = container_expiration_policies.project_id'
-                         )
-    )
-  end
-
   def self.without_container_repositories
     where.not(
       'EXISTS(?)',

@@ -339,29 +339,43 @@ Example:
 Show me all pipelines for merge request 42 in project gitlab-org/gitlab
 ```
 
-## `create_merge_request_note`
+## `save_note`
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597494) in GitLab 19.2.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605848) in GitLab 19.4.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/work_items/605848) from `create_merge_request_note` in GitLab 19.4. `create_merge_request_note` continues to work as an alias.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/work_items/605848) from `create_workitem_note` in GitLab 19.4. `create_workitem_note` continues to work as an alias.
 
 {{< /history >}}
 
-Adds a comment or reply to a discussion on a GitLab merge request as the authenticated user.
+Adds a comment to a GitLab merge request or work item, or replies to an existing discussion thread,
+as the authenticated user.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
-| `url`               | string  | No       | URL of the GitLab merge request. Required if `project_id` and `merge_request_iid` are missing. |
-| `project_id`        | string  | No       | ID or URL-encoded path of the project. Required if `url` is missing. |
-| `merge_request_iid` | integer | No       | Internal ID of the merge request. Required if `url` is missing. |
+| `url`               | string  | No       | URL of the merge request or work item. The URL determines the target type. |
+| `project_id`        | string  | No       | ID or path of the project. Required with `merge_request_iid`, and with `work_item_iid` for project-level work items. |
+| `group_id`          | string  | No       | ID or path of the group. Required with `work_item_iid` for group-level work items. |
+| `merge_request_iid` | integer | No       | Internal ID of the merge request. Provide with `project_id`. Mutually exclusive with `work_item_iid`. |
+| `work_item_iid`     | integer | No       | Internal ID of the work item. Provide with `project_id` or `group_id`. Mutually exclusive with `merge_request_iid`. |
 | `body`              | string  | Yes      | Content of the note. Lines cannot start with `/` to avoid triggering quick actions (for example, `/merge`). |
+| `internal`          | boolean | No       | Marks the note as internal (visible only to members with at least the Reporter role). Default is `false`. |
 | `discussion_id`     | string  | No       | Global ID of the discussion to reply to (in the format `gid://gitlab/Discussion/<id>`). If missing, creates a new top-level note. |
 
-Example:
+Examples:
 
-```plaintext
-Reply "Thanks, fixed in the latest push" to merge request 42 in project gitlab-org/gitlab
-```
+- Comment on a merge request:
+
+  ```plaintext
+  Reply "Thanks, fixed in the latest push" to merge request 42 in project gitlab-org/gitlab
+  ```
+
+- Comment on a work item:
+
+  ```plaintext
+  Add a comment "This looks good to me" to work item 42 in project gitlab-org/gitlab
+  ```
 
 ## `get_merge_request_notes`
 
@@ -850,32 +864,6 @@ Example:
 
 ```plaintext
 Get issue 42 in project gitlab-org/gitlab with its related merge requests
-```
-
-## `create_workitem_note`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/581890) in GitLab 18.7.
-
-{{< /history >}}
-
-Creates a new note (comment) on a GitLab work item.
-
-| Parameter       | Type    | Required | Description |
-|-----------------|---------|----------|-------------|
-| `body`          | string  | Yes      | Content of the note. |
-| `url`           | string  | No       | URL for the work item. Required if `group_id` or `project_id` and `work_item_iid` are missing. |
-| `group_id`      | string  | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
-| `project_id`    | string  | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
-| `work_item_iid` | integer | No       | Internal ID of the work item. Required if `url` is missing. |
-| `internal`      | boolean | No       | Marks the note as internal (visible only to users with the Reporter, Developer, Maintainer, or Owner role for the project). Default is `false`. |
-| `discussion_id` | string  | No       | Global ID of the discussion to reply to (in the format `gid://gitlab/Discussion/<id>`). |
-
-Example:
-
-```plaintext
-Add a comment "This looks good to me" to work item 42 in project gitlab-org/gitlab
 ```
 
 ## `get_workitem_notes`

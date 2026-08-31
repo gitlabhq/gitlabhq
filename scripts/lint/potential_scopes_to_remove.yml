@@ -12,8 +12,6 @@ app/models/authn/iam_outbox.rb:
 app/models/ci/build.rb:
   - with_no_runner_assigned
   - with_runner_assigned
-app/models/ci/job_artifact.rb:
-  - for_job_name
 app/models/ci/pipeline.rb:
   - where_not_sha
   - not_ref_protected

@@ -127805,6 +127805,12 @@
               "description": "Rule matching on packages flagged as malicious.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "RISK_SEVERITY",
+              "description": "Rule matching on vulnerability counts per severity level.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -170067,6 +170073,18 @@
                   "name": "Int",
                   "ofType": null
                 }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "policyRego",
+              "description": "Rego program merged from the compiled rules. Null when the rules cannot be merged. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
@@ -388291,6 +388309,35 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "cdRolloutGateUpdated",
+              "description": "Triggered when a rollout approval gate opens or is resolved. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [
+                {
+                  "name": "rolloutId",
+                  "description": "Global ID of the rollout whose approval gates to watch.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "CdRolloutID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CdRollout",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "cdRolloutStepUpdated",

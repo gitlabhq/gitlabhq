@@ -145,7 +145,7 @@ Supported attributes:
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
 | `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `ecosystem` | string            | yes      | Package ecosystem. One of `maven`, `npm`, `pypi`, or `gem`. |
+| `ecosystem` | string            | yes      | Package ecosystem. One of `cargo`, `composer`, `conan`, `gem`, `golang`, `maven`, `npm`, `nuget`, `pub`, `pypi`, or `swift`. |
 | `name`      | string            | yes      | Package name, maximum 255 characters. For `maven`, use the `groupId:artifactId` form, for example `com.example:trivial-lib`. For `pypi`, names are normalized according to PEP 503 before evaluation, so `Flask_Login` and `flask-login` are equivalent. |
 | `version`   | string            | yes      | Package version, maximum 255 characters. |
 

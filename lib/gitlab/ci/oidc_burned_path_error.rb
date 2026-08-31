@@ -4,10 +4,10 @@ module Gitlab
   module Ci
     class OidcBurnedPathError < StandardError
       MESSAGE = <<~MSG
-        CI ID token issuance is disabled for this project because the project
+        ID token issuance is disabled for this project because the project
         path was previously held by a different project.
 
-        To restore CI ID token issuance, set `ci_id_token_sub_claim_components`
+        To restore ID token issuance, set `ci_id_token_sub_claim_components`
         for this project to use `project_id` as the first element
         (for example, ["project_id", "ref_type", "ref"]).
         See: https://docs.gitlab.com/ci/secrets/id_token_authentication/#error-id-token-issuance-is-disabled

@@ -80,9 +80,9 @@ Introduce a **two-layer architecture** for GraphQL-based MCP tools:
 ```mermaid
 graph TB
     accTitle: MCP GraphQL two-layer architecture
-    accDescr: AI client sends an MCP request to CreateWorkItemNoteService, which delegates to CreateWorkItemNoteTool, which executes a GraphQL mutation against GitlabSchema and returns the result back up the chain.
-    A[AI Client<br/>Claude/Cursor] -->|MCP Request| B[CreateWorkItemNoteService<br/>Base::GraphqlService]
-    B -->|params, version| E[CreateWorkItemNoteTool<br/>Base::GraphqlTool]
+    accDescr: AI client sends an MCP request to SaveNoteService, which delegates to SaveNoteTool, which executes a GraphQL mutation against GitlabSchema and returns the result back up the chain.
+    A[AI Client<br/>Claude/Cursor] -->|MCP Request| B[SaveNoteService<br/>Base::GraphqlService]
+    B -->|params, version| E[SaveNoteTool<br/>Base::GraphqlTool]
     E -->|GraphQL Mutation| F[GitlabSchema.execute]
     F -->|Response| E
     E -->|Structured Result| B
@@ -128,7 +128,7 @@ of them, and there is no separate `graphql` folder, so the prefix adds no inform
 | Layer           | Pattern              | Example                             |
 |-----------------|----------------------|-------------------------------------|
 | Service wrapper | `<Operation>Service` | `Mcp::Tools::Labels::SearchService` |
-| GraphQL tool    | `<Operation>Tool`    | `Mcp::Tools::WorkItems::CreateWorkItemNoteTool` |
+| GraphQL tool    | `<Operation>Tool`    | `Mcp::Tools::Notes::SaveNoteTool` |
 
 The `tool_name` keys registered in `Mcp::Tools::Manager` are a public, append-only contract.
 Renaming a Ruby class does not rename its registered tool, so keep the keys unchanged.
@@ -417,7 +417,7 @@ end
 
 ### Service Wrapper Pattern
 
-**File**: `app/services/mcp/tools/work_items/create_work_item_note_service.rb`
+**File**: `app/services/mcp/tools/notes/save_note_service.rb`
 
 **Purpose**: Provides input validation, MCP protocol compliance, and version
 management. Authorization is delegated to GraphQL layer.
@@ -427,10 +427,11 @@ This `input_schema` below omits optional properties such as `minLength` and `enu
 ```ruby
 module Mcp
   module Tools
-    module WorkItems
-      class CreateWorkItemNoteService < Base::GraphqlService
+    module Notes
+      class SaveNoteService < Base::GraphqlService
         register_version '0.1.0', {
-          description: 'Create a new note (comment) on a GitLab work item',
+          description: 'Add a comment to a GitLab merge request or work item, or reply to an existing ' \
+            'discussion thread',
           annotations: {
             readOnlyHint: false,
             destructiveHint: false
@@ -440,15 +441,15 @@ module Mcp
             properties: {
               url: {
                 type: 'string',
-                description: 'GitLab URL for the work item.'
+                description: 'GitLab URL of the merge request or work item'
               },
               project_id: {
                 type: 'string',
-                description: 'ID or path of the project. Required if URL and group_id are not provided.'
+                description: 'ID or path of the project. Required with merge_request_iid or work_item_iid'
               },
               work_item_iid: {
                 type: 'integer',
-                description: 'Internal ID of the work item. Required if URL is not provided.'
+                description: 'Internal ID of the work item. Mutually exclusive with merge_request_iid'
               },
               body: {
                 type: 'string',
@@ -464,7 +465,7 @@ module Mcp
 
         # Specify which GraphQL tool class to use
         def graphql_tool_class
-          Mcp::Tools::WorkItems::CreateWorkItemNoteTool
+          Mcp::Tools::Notes::SaveNoteTool
         end
 
         # Version 0.1.0 implementation
@@ -495,15 +496,15 @@ end
 
 ### Mutation Tool Example
 
-**File**: `app/services/mcp/tools/work_items/create_work_item_note_tool.rb`
+**File**: `app/services/mcp/tools/notes/save_note_tool.rb`
 
-**Use Case**: Create a note (comment) on a work item.
+**Use Case**: Create a note (comment) on a merge request or work item.
 
 Each version loads its operation from a `.graphql` file.
 For more information, see [Store GraphQL operations in `.graphql` files](#store-graphql-operations-in-graphql-files).
 
 ```graphql
-# app/graphql/queries/mcp/work_items/create_note.mutation.graphql
+# app/graphql/queries/mcp/notes/create_note.mutation.graphql
 # @feature_category: mcp_server
 mutation createNote($input: CreateNoteInput!) {
   createNote(input: $input) {
@@ -513,6 +514,7 @@ mutation createNote($input: CreateNoteInput!) {
       internal
       createdAt
       updatedAt
+      url
       author {
         id
         name
@@ -529,36 +531,45 @@ mutation createNote($input: CreateNoteInput!) {
 }
 ```
 
-`WorkItems::BaseTool` inherits from `Base::GraphqlTool` and resolves the target work item from
-either a URL or a project and internal ID pair:
+`SaveNoteTool` inherits from `Base::GraphqlTool` directly and resolves the target noteable from
+either a URL, a project and merge request IID pair, or a project/group and work item IID pair:
 
 ```ruby
 module Mcp
   module Tools
-    module WorkItems
-      class CreateWorkItemNoteTool < BaseTool
+    module Notes
+      class SaveNoteTool < Mcp::Tools::Base::GraphqlTool
+        include Mcp::Tools::Concerns::ContentValidation
+        include Mcp::Tools::Concerns::ResourceFinder
+        include Mcp::Tools::Concerns::UrlParser
+        include Mcp::Tools::Concerns::MergeRequestResolution
+
         register_version VERSIONS[:v0_1_0], {
           operation_name: 'createNote',
-          graphql_operation: load_graphql('work_items/create_note.mutation.graphql')
+          graphql_operation: load_graphql('notes/create_note.mutation.graphql')
         }
 
         def build_variables
           validate_no_quick_actions!(params[:body], field_name: 'note body')
 
-          work_item_id = resolve_work_item_id
-
-          { input: build_note_input(work_item_id) }
+          { input: build_note_input }
         end
 
         private
 
-        def build_note_input(work_item_id)
+        def build_note_input
           {
-            noteableId: work_item_id,
+            noteableId: resolve_noteable_id,
             body: params[:body],
             internal: params[:internal],
             discussionId: params[:discussion_id]
           }.compact
+        end
+
+        def resolve_noteable_id
+          return resolve_noteable_from_url(params[:url]) if params[:url]
+
+          # ... dispatch on merge_request_iid vs. work_item_iid
         end
       end
     end
@@ -569,12 +580,12 @@ end
 #### Register a later version
 
 A tool with a single version loads an unversioned file, such as
-`work_items/create_note.mutation.graphql`. When you add a second version, rename that file to
+`notes/create_note.mutation.graphql`. When you add a second version, rename that file to
 include its version and add a file for the new version, so every registered version maps to its own
 file:
 
 ```plain
-app/graphql/queries/mcp/work_items/
+app/graphql/queries/mcp/notes/
   create_note.v0_1_0.mutation.graphql
   create_note.v0_2_0.mutation.graphql
 ```
@@ -584,13 +595,13 @@ Register each version against its own file:
 ```ruby
 register_version VERSIONS[:v0_1_0], {
   operation_name: 'createNote',
-  graphql_operation: load_graphql('work_items/create_note.v0_1_0.mutation.graphql')
+  graphql_operation: load_graphql('notes/create_note.v0_1_0.mutation.graphql')
 }
 
 # A later version returns more fields from its own file
 register_version '0.2.0', {
   operation_name: 'createNote',
-  graphql_operation: load_graphql('work_items/create_note.v0_2_0.mutation.graphql')
+  graphql_operation: load_graphql('notes/create_note.v0_2_0.mutation.graphql')
 }
 ```
 

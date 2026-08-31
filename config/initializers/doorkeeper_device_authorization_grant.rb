@@ -19,16 +19,19 @@ Doorkeeper::DeviceAuthorizationGrant.configure do
   # user_code_generator 'Doorkeeper::DeviceAuthorizationGrant::OAuth::Helpers::UserCode'
 
   # A Proc returning the end-user verification URI on the authorization server.
-  # verification_uri ->(host_name) do
-  #   "#{host_name}/oauth/device"
-  # end
+  #
+  # The gem's default builds this from the raw request host/scheme, which
+  # does not account for `relative_url_root` (GitLab's `external_url` path
+  # prefix). Use the actual route instead, which already does.
+  verification_uri ->(_host_name) do
+    Gitlab::Routing.url_helpers.oauth_device_authorizations_index_url
+  end
 
   # A Proc returning the verification URI that includes the "user_code"
   # (or other information with the same function as the "user_code"), which is
   # designed for non-textual transmission. This is optional, so the Proc can
   # also return `nil`.
-  #
-  # verification_uri_complete ->(verification_uri, host_name, device_grant) do
-  #   "#{verification_uri}?user_code=#{CGI.escape(device_grant.user_code)}"
-  # end
+  verification_uri_complete ->(verification_uri, _host_name, device_grant) do
+    "#{verification_uri}?user_code=#{CGI.escape(device_grant.user_code)}"
+  end
 end

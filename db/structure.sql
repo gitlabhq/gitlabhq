@@ -28652,7 +28652,8 @@ CREATE TABLE project_ci_cd_settings (
     max_pipelines_per_merge_train smallint,
     cross_project_push_for_job_token_allowed boolean DEFAULT false NOT NULL,
     merge_train_enforcement smallint DEFAULT 0 NOT NULL,
-    skip_branch_pipelines_for_mrs boolean DEFAULT false NOT NULL
+    skip_branch_pipelines_for_mrs boolean DEFAULT false NOT NULL,
+    push_pipelines_for_job_token_allowed boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq

@@ -413,8 +413,6 @@ methods:
   app/models/concerns/user_mention_behaviour.rb:
   - mentioned_groups
   - mentioned_projects
-  app/models/container_expiration_policy.rb:
-  - self.with_container_repositories
   app/models/customer_relations/contact_state_counts.rb:
   - self.declarative_policy_class
   app/models/customer_relations/issue_contact.rb:
@@ -639,8 +637,6 @@ scopes:
   - with_no_runner_assigned
   - with_runner_assigned
   - with_erasable_artifacts
-  app/models/ci/job_artifact.rb:
-  - for_job_name
   app/models/ci/pipeline.rb:
   - where_not_sha
   - not_ref_protected

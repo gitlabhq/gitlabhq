@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6116,7 +6116,7 @@
+@@ -6121,7 +6121,7 @@
      } else if (key === "on" || key === "nativeOn") {
        const listeners = legacyProps[key];
        for (const event in listeners) {
@@ -11,7 +11,7 @@ index aaaaaaa..bbbbbbb 100644
          if (key === "nativeOn") handlerKey += `Native`;
          const existing = converted[handlerKey];
          const incoming = listeners[event];
-@@ -6152,7 +6152,7 @@
+@@ -6157,7 +6157,7 @@
    }
    return converted;
  }
@@ -20,7 +20,7 @@ index aaaaaaa..bbbbbbb 100644
    if (event[0] === "&") {
      event = event.slice(1) + "Passive";
    }
-@@ -6162,6 +6162,10 @@
+@@ -6167,6 +6167,10 @@
    if (event[0] === "!") {
      event = event.slice(1) + "Capture";
    }
@@ -35,7 +35,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -6096,7 +6096,7 @@
+@@ -6101,7 +6101,7 @@
      } else if (key === "on" || key === "nativeOn") {
        const listeners = legacyProps[key];
        for (const event in listeners) {
@@ -44,7 +44,7 @@ index aaaaaaa..bbbbbbb 100644
          if (key === "nativeOn") handlerKey += `Native`;
          const existing = converted[handlerKey];
          const incoming = listeners[event];
-@@ -6132,7 +6132,7 @@
+@@ -6137,7 +6137,7 @@
    }
    return converted;
  }
@@ -53,7 +53,7 @@ index aaaaaaa..bbbbbbb 100644
    if (event[0] === "&") {
      event = event.slice(1) + "Passive";
    }
-@@ -6142,6 +6142,10 @@
+@@ -6147,6 +6147,10 @@
    if (event[0] === "!") {
      event = event.slice(1) + "Capture";
    }
@@ -68,7 +68,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6023,7 +6023,7 @@
+@@ -6028,7 +6028,7 @@
      } else if (key === "on" || key === "nativeOn") {
        const listeners = legacyProps[key];
        for (const event in listeners) {
@@ -77,7 +77,7 @@ index aaaaaaa..bbbbbbb 100644
          if (key === "nativeOn") handlerKey += `Native`;
          const existing = converted[handlerKey];
          const incoming = listeners[event];
-@@ -6059,7 +6059,7 @@
+@@ -6064,7 +6064,7 @@
    }
    return converted;
  }
@@ -86,7 +86,7 @@ index aaaaaaa..bbbbbbb 100644
    if (event[0] === "&") {
      event = event.slice(1) + "Passive";
    }
-@@ -6069,6 +6069,10 @@
+@@ -6074,6 +6074,10 @@
    if (event[0] === "!") {
      event = event.slice(1) + "Capture";
    }

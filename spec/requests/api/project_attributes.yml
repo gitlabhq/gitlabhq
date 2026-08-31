@@ -110,6 +110,7 @@ ci_cd_settings:
     - allow_composite_identities_to_run_pipelines
     - max_pipelines_per_merge_train
     - skip_branch_pipelines_for_mrs
+    - push_pipelines_for_job_token_allowed
   remapped_attributes:
     pipeline_variables_minimum_override_role: ci_pipeline_variables_minimum_override_role
     push_repository_for_job_token_allowed: ci_push_repository_for_job_token_allowed

@@ -2157,6 +2157,12 @@ For example, if we need to test the below Haml,
 
 When you want to ensure that tracking isn't assigned, you can use `not_to` with the above matchers.
 
+None of the matchers above observe an event that was actually emitted.
+`expect_snowplow_event` asserts on a mock of `Gitlab::Tracking`, and `have_tracking` asserts on
+rendered markup.
+To assert the payloads GitLab emits, from the backend and the frontend alike, see
+[Capturing Snowplow events in feature specs](../internal_analytics/capturing_snowplow_events_in_specs.md).
+
 #### Test Snowplow context against the schema
 
 The [Snowplow schema matcher](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60480)

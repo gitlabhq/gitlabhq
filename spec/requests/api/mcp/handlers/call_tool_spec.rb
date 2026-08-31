@@ -1144,6 +1144,92 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
+  describe '#save_note' do
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:work_item) { create(:work_item, :issue, project: project) }
+
+    context 'with a merge request target' do
+      let(:tool_params) do
+        {
+          name: 'save_note',
+          arguments: { project_id: project.full_path, merge_request_iid: merge_request.iid, body: 'LGTM' }
+        }
+      end
+
+      it 'creates the note' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['structuredContent']['note']['body']).to eq('LGTM')
+      end
+
+      context 'when called as the create_merge_request_note alias' do
+        let(:tool_params) do
+          {
+            name: 'create_merge_request_note',
+            arguments: { project_id: project.full_path, merge_request_iid: merge_request.iid, body: 'LGTM' }
+          }
+        end
+
+        it 'creates the note' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_falsey
+          expect(json_response['result']['structuredContent']['note']['body']).to eq('LGTM')
+        end
+      end
+    end
+
+    context 'with a work item target' do
+      let(:tool_params) do
+        {
+          name: 'save_note',
+          arguments: { project_id: project.full_path, work_item_iid: work_item.iid, body: 'Needs a rebase' }
+        }
+      end
+
+      it 'creates the note' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['structuredContent']['note']['body']).to eq('Needs a rebase')
+      end
+
+      context 'when called as the create_workitem_note alias' do
+        let(:tool_params) do
+          {
+            name: 'create_workitem_note',
+            arguments: { project_id: project.full_path, work_item_iid: work_item.iid, body: 'Needs a rebase' }
+          }
+        end
+
+        it 'creates the note' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_falsey
+          expect(json_response['result']['structuredContent']['note']['body']).to eq('Needs a rebase')
+        end
+      end
+    end
+
+    context 'when neither a merge request nor a work item identifier is provided' do
+      let(:tool_params) do
+        { name: 'save_note', arguments: { project_id: project.full_path, body: 'LGTM' } }
+      end
+
+      it 'returns an error' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+      end
+    end
+  end
+
   # Facet, filter, and pagination behaviour is covered in the tool spec. These examples only cover
   # what the tool spec cannot: that arguments survive the JSON-RPC round trip and that the endpoint
   # enforces access.

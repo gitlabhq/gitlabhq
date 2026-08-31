@@ -251,7 +251,7 @@ Make sure that:
 You might receive this error when a CI/CD job requests an ID token:
 
 ```plaintext
-CI ID token issuance is disabled because this project's path was previously used by a different project.
+ID token issuance is disabled in CI because this project's path was previously used by a different project.
 ```
 
 GitLab blocks ID token issuance when the configured `sub` claim contains a `project_path` with a path that another
