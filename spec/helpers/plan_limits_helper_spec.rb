@@ -9,6 +9,7 @@ RSpec.describe PlanLimitsHelper, feature_category: :continuous_integration do
         :ci_instance_level_variables,
         :dotenv_size,
         :dotenv_variables,
+        :ci_max_artifact_size_cyclonedx,
         :ci_pipeline_size,
         :ci_active_jobs,
         :ci_project_subscriptions,

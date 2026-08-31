@@ -84,6 +84,29 @@ Set the limit to `0` to disable it. Defaults to `20`.
 
 You can also set this limit by using the [Plan limits API](../../api/plan_limits.md).
 
+## Limit CycloneDX artifact size
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248527) in GitLab 19.3.
+
+{{< /history >}}
+
+You can set a limit on the maximum size of a
+[CycloneDX SBOM](../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) artifact.
+This limit is checked every time a CycloneDX report is uploaded as an artifact.
+
+To configure this limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Under **CI/CD limits**, set a value for **Maximum size of a CycloneDX artifact in MB**.
+1. Select **Save changes**.
+
+Set the limit to `0` to use the [maximum artifacts size](#maximum-artifacts-size) instead.
+Defaults to `1` MB.
+
 ## Maximum number of jobs in a pipeline
 
 {{< history >}}
@@ -630,6 +653,9 @@ GitLab Self-Managed, run the following in the [GitLab Rails console](../operatio
 ```ruby
 Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
 ```
+
+You can also set `ci_max_artifact_size_cyclonedx` in the **Admin** area. For more information, see
+[Limit CycloneDX artifact size](#limit-cyclonedx-artifact-size).
 
 ### Maximum file size for job logs
 
