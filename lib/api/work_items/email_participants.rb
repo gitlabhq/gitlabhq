@@ -10,6 +10,7 @@ module API
       feature_category :service_desk
       urgency :low
 
+      helpers ::API::Helpers::WorkItems::Authorization
       helpers ::API::Helpers::WorkItems::Preloads
       helpers ::API::Helpers::WorkItems::Rendering
 

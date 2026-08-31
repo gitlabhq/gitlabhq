@@ -10,6 +10,7 @@ module API
 
       helpers ::API::Helpers::WorkItems::UpdateParams
       helpers ::API::Helpers::WorkItems::ShowParams
+      helpers ::API::Helpers::WorkItems::Authorization
       helpers ::API::Helpers::WorkItems::Update
       helpers ::API::Helpers::WorkItems::Rendering
       helpers ::API::Helpers::WorkItems::Preloads

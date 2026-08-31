@@ -140,3 +140,28 @@ export const mockDashboardWithViews = {
 export const mockDashboardWithViewsResponse = {
   customDashboard: mockDashboardWithViews,
 };
+
+export const mockPanelWithViews = {
+  ...mockCustomDashboard.config.panels[0],
+  titleIcon: 'information-o',
+  tooltip: { description: 'Fake tooltip' },
+  queryOverrides: { limit: 10 },
+  // The explore app expects an inline visualization object, not a slug.
+  visualization: { type: 'SingleStat' },
+  views: [
+    { text: 'Chart', visualization: { type: 'LineChart' } },
+    { text: 'Table', visualization: { type: 'DataTable' } },
+  ],
+};
+
+export const mockDashboardWithPanelViews = {
+  ...mockCustomDashboard,
+  config: {
+    ...mockCustomDashboard.config,
+    panels: [mockPanelWithViews],
+  },
+};
+
+export const mockDashboardWithPanelViewsResponse = {
+  customDashboard: mockDashboardWithPanelViews,
+};

@@ -202,6 +202,7 @@ export default {
             :tooltip="panel.tooltip"
             :visualization="panel.visualization"
             :query-overrides="panel.queryOverrides"
+            :views="panel.views"
             :filters="filters"
             :data-testid="panelTestId(panel)"
           />

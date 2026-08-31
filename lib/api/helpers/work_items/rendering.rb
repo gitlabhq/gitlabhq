@@ -3,6 +3,8 @@
 module API
   module Helpers
     module WorkItems
+      # Apart from render_work_item_response, the methods here reach into Preloads and Authorization,
+      # so endpoints mounting this module must mount those too.
       module Rendering
         def render_work_items_collection_for(resource_parent)
           check_pagination_param!(params)
@@ -196,22 +198,6 @@ module API
                 'Pagination is determined automatically based on the sort parameter.' },
             405
           )
-        end
-
-        def check_work_item_rest_api_feature_flag!
-          return if Feature.enabled?(:work_item_rest_api, current_user)
-
-          forbidden!('work_item_rest_api feature flag is disabled for this user')
-        end
-
-        # Invariant prologue for every work-item-scoped read path: gate on the REST API feature flag,
-        # then authorize reading the parent work item. Used by render_paginated_work_items_for
-        # (children, linked items) and by the development widget sub-endpoints (closing_merge_requests,
-        # related_merge_requests, related_branches, feature_flags), so the gate and the authorization
-        # check can't drift apart between them.
-        def authorize_work_item_feature!(parent_work_item)
-          check_work_item_rest_api_feature_flag!
-          authorize! :read_work_item, parent_work_item
         end
 
         def filter_requested_keys(requested_param, available_keys)

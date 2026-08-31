@@ -14,6 +14,7 @@ module API
       urgency :low
 
       helpers ::API::Helpers::WorkItems::ShowParams
+      helpers ::API::Helpers::WorkItems::Authorization
       helpers ::API::Helpers::WorkItems::Preloads
       helpers ::API::Helpers::WorkItems::Rendering
 

@@ -10,6 +10,7 @@ module API
 
       helpers ::API::Helpers::WorkItems::CreateParams
       helpers ::API::Helpers::WorkItems::ShowParams
+      helpers ::API::Helpers::WorkItems::Authorization
       helpers ::API::Helpers::WorkItems::Creation
       helpers ::API::Helpers::WorkItems::Rendering
       helpers ::API::Helpers::WorkItems::WidgetValidation

@@ -8,12 +8,12 @@ module API
       feature_category :portfolio_management
       urgency :low
 
+      helpers ::API::Helpers::WorkItems::Authorization
       helpers ::API::Helpers::WorkItems::Preloads
 
       helpers do
         def delete_work_item(resource_parent)
-          forbidden!('work_item_rest_api feature flag is disabled for this user') unless
-            Feature.enabled?(:work_item_rest_api, current_user)
+          check_work_item_rest_api_feature_flag!
 
           work_item = build_work_items_relation(resource_parent).without_order.find_by_iid(params[:work_item_iid])
           not_found!('Work Item') unless work_item

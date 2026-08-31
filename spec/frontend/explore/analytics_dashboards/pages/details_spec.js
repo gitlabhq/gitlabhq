@@ -10,8 +10,13 @@ import { TEST_HOST } from 'helpers/test_constants';
 import ExploreAnalyticsDashboard from '~/explore/analytics_dashboards/pages/details.vue';
 import DashboardFilters from '~/explore/analytics_dashboards/components/dashboard_filters.vue';
 import DashboardLoader from '~/explore/analytics_dashboards/components/dashboard_loader.vue';
+import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
 import getDashboardQuery from '~/explore/analytics_dashboards/graphql/get_dashboard.query.graphql';
-import { mockDashboardResponse } from '../mock_data';
+import {
+  mockDashboardResponse,
+  mockDashboardWithPanelViewsResponse,
+  mockPanelWithViews,
+} from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -461,6 +466,35 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       it('returns to the empty state', () => {
         expect(findEmptyState().exists()).toBe(true);
         expect(findDashboardLayout().props('config').panels).toEqual([]);
+      });
+    });
+  });
+
+  describe('dashboard panels', () => {
+    const panelLayoutStub = {
+      props: ['config'],
+      template: `
+        <div>
+          <slot name="filters" />
+          <slot name="panel" v-if="config.panels.length" :panel="config.panels[0]" />
+        </div>
+      `,
+    };
+
+    beforeEach(async () => {
+      createComponent({
+        requestHandlers: mockResolvedQuery(mockDashboardWithPanelViewsResponse),
+        stubs: { GlDashboardLayout: panelLayoutStub },
+      });
+
+      await waitForPromises();
+      await selectGroup();
+    });
+
+    it('forwards the panel views config to the panel component', () => {
+      expect(wrapper.findComponent(AnalyticsDashboardPanel).props()).toMatchObject({
+        views: mockPanelWithViews.views,
+        filters: { groups: ['gitlab-org'], projects: [] },
       });
     });
   });
