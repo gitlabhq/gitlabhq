@@ -287458,20 +287458,12 @@
                   "deprecationReason": null
                 },
                 {
-                  "name": "statuses",
+                  "name": "status",
                   "description": "Filter applications by status. An application can match more than one status.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "ENUM",
-                        "name": "CdApplicationStatus",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "CdApplicationStatus",
+                    "ofType": null
                   },
                   "defaultValue": null,
                   "isDeprecated": false,

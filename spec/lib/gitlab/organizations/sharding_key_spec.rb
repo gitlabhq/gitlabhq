@@ -56,38 +56,21 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # Some reasons to exempt a table:
   #   1. It has no foreign key for performance reasons
   #   2. It does not yet have a foreign key as the index is still being backfilled
+  #
+  # Do NOT add entries here when the sharding key is already covered by a parent
+  # table's loose FK to the sharding root. Those cases pass the FK check automatically
+  # (detected by `sharding_key_covered_by_parent_lfk?`). Adding them here would be
+  # flagged by the 'does not allow entries covered by a parent LFK' test.
   let(:allowed_to_be_missing_foreign_key) do
     [
       'web_hook_logs_daily.organization_id', # No LFK needed: daily partitions are dropped after 7 days
       'web_hook_logs_daily.group_id', # No LFK needed: daily partitions are dropped after 7 days
       'web_hook_logs_daily.project_id', # No LFK needed: daily partitions are dropped after 7 days
-      'ci_deleted_objects.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
+      'ci_deleted_objects.project_id', # No parent FK chain; rows cleaned up by a dedicated worker
       'ci_test_balancing_assignments.project_id', # No LFK needed: daily partitions are dropped after 30 days
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
       # No direct FK/LFK on project_id: LFK already present on merge_request_diff_id, which cascades deletes
       'merge_request_diff_commits.project_id',
-      'ci_pipeline_chat_data.project_id',
-      'p_ci_pipeline_variables.project_id',
-      'ci_pipeline_messages.project_id',
-      'security_findings.project_id', # No LFK needed: sliding_list partitions are detached once stale and purged
-      # LFK already present on ci_pipeline_schedules and cascade delete all ci resources.
-      'ci_pipeline_schedule_variables.project_id',
-      'p_ci_build_trace_metadata.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
-      'ci_build_trace_chunks.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
-      'ci_secure_file_states.project_id', # LFK already present on ci_secure_files and cascade delete all ci resources
-      'p_ci_job_annotations.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
-      'ci_build_pending_states.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
-      'ci_builds_runner_session.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
-      'ci_resources.project_id', # LFK already present on ci_resource_groups and cascade delete all ci resources
-      'ci_unit_test_failures.project_id', # LFK already present on ci_unit_tests and cascade delete all ci resources
-      'ci_job_artifact_states.project_id',
-      # LFK already present on p_ci_job_artifacts and cascade delete all ci resources
-      'dast_profiles_pipelines.project_id', # LFK already present on dast_profiles and will cascade delete
-      'dast_scanner_profiles_builds.project_id', # LFK already present on dast_scanner_profiles and will cascade delete
-      'vulnerability_finding_links.project_id', # LFK already present on vulnerability_occurrence with cascade delete
-      'vulnerability_occurrence_identifiers.project_id', # LFK present on vulnerability_occurrence with cascade delete
-      'secret_detection_token_statuses.project_id',
-      # LFK already present on vulnerability_occurrence with cascade delete.
       'ldap_group_links.group_id',
       'namespace_descendants.namespace_id',
       'p_batched_git_ref_updates_deletions.project_id',
@@ -143,8 +126,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'loose_foreign_keys_organization_deleted_records.organization_id',
       'loose_foreign_keys_namespace_deleted_records.namespace_id',
       'loose_foreign_keys_project_deleted_records.project_id',
-      'loose_foreign_keys_user_deleted_records.user_id',
-      'ai_flow_schedules.project_id' # LFK already present on ai_flow_triggers and cascade delete via ai_flow_trigger_id
+      'loose_foreign_keys_user_deleted_records.user_id'
     ]
   end
 
@@ -239,6 +221,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
               "then you must remove it from allowed_to_be_missing_foreign_key"
         else
           next if Gitlab::Database::PostgresPartition.partition_exists?(table_name)
+          next if sharding_key_covered_by_parent_lfk?(table_name, column_name, referenced_table_name)
 
           expect(has_foreign_key?(table_name, column_name, to_table_name: referenced_table_name)).to eq(true),
             "Missing a foreign key constraint for `#{table_name}.#{column_name}` " \
@@ -487,6 +470,23 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       expect(entry&.sharding_key&.keys).to include(column),
         "`#{exemption}` is not a `sharding_key`. " \
           "You must remove this entry from the `allowed_to_be_missing_foreign_key` list."
+    end
+  end
+
+  it 'does not allow `allowed_to_be_missing_foreign_key` entries covered by a parent LFK',
+    :aggregate_failures do
+    allowed_to_be_missing_foreign_key.each do |exemption|
+      table, column = exemption.split('.')
+      entry = ::Gitlab::Database::Dictionary.entry(table)
+      next unless entry&.sharding_key&.key?(column)
+
+      root_table = entry.sharding_key[column]
+      next if Gitlab::Database::PostgresPartition.partition_exists?(table)
+
+      expect(sharding_key_covered_by_parent_lfk?(table, column, root_table)).to eq(false),
+        "`#{exemption}` is covered by a parent table's loose FK to `#{root_table}`. " \
+          "Remove it from `allowed_to_be_missing_foreign_key`; the FK check passes automatically " \
+          "when the parent carries the sharding key via a loose FK."
     end
   end
 

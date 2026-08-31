@@ -42,6 +42,7 @@ const defaultProps = {
     lfsEnabled: true,
     emailsEnabled: true,
     packagesEnabled: true,
+    packageRegistryAllowAnyoneToPullOption: true,
     showDefaultAwardEmojis: true,
     warnAboutPotentiallyUnwantedCharacters: true,
     extendedPratExpiryWebhooksExecute: false,

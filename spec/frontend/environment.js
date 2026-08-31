@@ -10,6 +10,20 @@ const { TEST_HOST } = require('./__helpers__/test_constants');
 const { createGon } = require('./__helpers__/gon_helper');
 const { setupConsoleWatcher } = require('./__helpers__/console_watcher');
 
+// Jest reads these off every value in a failing assertion: `equals` looks for `asymmetricMatch`,
+// pretty-format for React, DOM and Immutable markers. A Vue 2 instance warns about each one; Vue 3
+// does not, since its equivalent warning only fires during an actual render (see below).
+const VUE2_JEST_PROBED_PROPERTIES = [
+  '\\$\\$typeof',
+  '@@__IMMUTABLE_ITERABLE__@@',
+  '@@__IMMUTABLE_RECORD__@@',
+  'asymmetricMatch',
+  'hasAttribute',
+  'nodeType',
+  'tagName',
+  'toJSON',
+].join('|');
+
 class CustomEnvironment extends TestEnvironment {
   constructor({ globalConfig, projectConfig }, context) {
     // Setup testURL so that window.location is setup properly
@@ -27,12 +41,19 @@ class CustomEnvironment extends TestEnvironment {
         /^\[Vue warn\]: Missing required prop/,
         /^\[Vue warn\]: Invalid prop/,
 
-        // pretty-format's ReactTestComponent plugin probes an unrelated `$$typeof` property
-        // on a reactive object while building a failed assertion's diff, which otherwise masks
-        // the real failure behind an unrelated console error.
-        /^\[Vue warn\]: Property or method ".*" is not defined on the instance but referenced during render/,
-        // @vue/compat's wording of the "unknown property accessed during render" warning.
-        /^\[Vue warn\]: Property .* was accessed during render but is not defined on instance/,
+        new RegExp(
+          `^\\[Vue warn\\]: Property or method "(${VUE2_JEST_PROBED_PROPERTIES})" is not defined on the instance but referenced during render`,
+        ),
+        // Vue 3 warns from its `ownKeys` trap when Jest enumerates an instance instead. It names
+        // no property, so it cannot be narrowed like the one above.
+        /^\[Vue warn\]: Avoid app logic that relies on enumerating keys on a component instance/,
+
+        // Pinia's Vue 2 plugin overwrites `pinia._a` with the current component instance on every
+        // `new Vue({ pinia })`, so a store's setup function looks for `runWithContext` there. No
+        // Vue instance defines it, and Pinia already falls back to running the callback directly
+        // when it is missing, so this warning does not signal an app bug.
+        /^\[Vue warn\]: Property "runWithContext" was accessed during render but is not defined on instance/,
+
         /^\[Vue warn\]: Slot ".*" invoked outside of the render function/,
       ],
       // TODO: Remove this and replace with localized calls to `useConsoleWatcherThrowsImmediately`

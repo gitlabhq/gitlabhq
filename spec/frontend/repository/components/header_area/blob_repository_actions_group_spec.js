@@ -29,6 +29,9 @@ describe('BlobRepositoryActionsGroup', () => {
         GlDisclosureDropdownGroup,
         PermalinkDropdownItem,
       },
+      mocks: {
+        $route: { query: {} },
+      },
     });
   };
 

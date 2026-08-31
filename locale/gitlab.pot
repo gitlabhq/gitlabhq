@@ -12579,6 +12579,9 @@ msgstr ""
 msgid "ArtifactRegistry|Size"
 msgstr ""
 
+msgid "ArtifactRegistry|Sorts alphabetically, not by version order. Ascending puts 1.10.0 before 1.9.0."
+msgstr ""
+
 msgid "ArtifactRegistry|Source"
 msgstr ""
 

@@ -36,6 +36,7 @@ func TestConfigFile(t *testing.T) {
 shutdown_timeout = "60s"
 trusted_cidrs_for_x_forwarded_for = ["127.0.0.1/8", "192.168.0.1/8"]
 trusted_cidrs_for_propagation = ["10.0.0.1/8"]
+trusted_forwarded_hosts = ["gitlab.example.com"]
 
 [redis]
 Password = "redis password"
@@ -81,6 +82,7 @@ key = "/path/to/private/key"
 	require.Equal(t, uint32(123), cfg.ImageResizerConfig.MaxScalerProcs, "image resizer max_scaler_procs")
 	require.Equal(t, []string{"127.0.0.1/8", "192.168.0.1/8"}, cfg.TrustedCIDRsForXForwardedFor)
 	require.Equal(t, []string{"10.0.0.1/8"}, cfg.TrustedCIDRsForPropagation)
+	require.Equal(t, []string{"gitlab.example.com"}, cfg.TrustedForwardedHosts)
 	require.Equal(t, 60*time.Second, cfg.ShutdownTimeout.Duration)
 
 	listenerConfigs := []config.ListenerConfig{

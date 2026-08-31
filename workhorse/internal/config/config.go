@@ -255,6 +255,7 @@ type Config struct {
 	ShutdownTimeout              TomlDuration             `toml:"shutdown_timeout" json:"shutdown_timeout"`
 	TrustedCIDRsForXForwardedFor []string                 `toml:"trusted_cidrs_for_x_forwarded_for" json:"trusted_cidrs_for_x_forwarded_for"`
 	TrustedCIDRsForPropagation   []string                 `toml:"trusted_cidrs_for_propagation" json:"trusted_cidrs_for_propagation"`
+	TrustedForwardedHosts        []string                 `toml:"trusted_forwarded_hosts" json:"trusted_forwarded_hosts"`
 	Listeners                    []ListenerConfig         `toml:"listeners" json:"listeners"`
 	MetricsListener              *ListenerConfig          `toml:"metrics_listener" json:"metrics_listener"`
 	HealthCheckListener          *HealthCheckConfig       `toml:"health_check_listener" json:"health_check_listener"`
@@ -377,6 +378,7 @@ func (c *Config) MergeFromFile(file *Config, prometheusListenAddr string) error 
 	c.ShutdownTimeout = file.ShutdownTimeout
 	c.TrustedCIDRsForXForwardedFor = file.TrustedCIDRsForXForwardedFor
 	c.TrustedCIDRsForPropagation = file.TrustedCIDRsForPropagation
+	c.TrustedForwardedHosts = file.TrustedForwardedHosts
 	c.Listeners = file.Listeners
 	c.HealthCheckListener = file.HealthCheckListener
 	c.LoadSheddingConfig = file.LoadSheddingConfig

@@ -147,8 +147,8 @@ describe('Blob Overflow Menu', () => {
         expect(wrapper.emitted('copy')).toHaveLength(1);
       });
 
-      it('does not proxy copy event when overrideCopy is false', () => {
-        createComponent({
+      it('does not proxy copy event when overrideCopy is false', async () => {
+        await createComponent({
           propsData: {
             overrideCopy: false,
           },

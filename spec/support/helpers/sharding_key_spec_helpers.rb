@@ -146,6 +146,33 @@ module ShardingKeySpecHelpers
     fk.present? || lfk.present?
   end
 
+  def sharding_key_covered_by_parent_lfk?(table_name, column_name, root_table)
+    parent_tables = parent_tables_of(table_name, root_table)
+    return false if parent_tables.empty?
+
+    parent_tables.any? do |parent|
+      ::Gitlab::Database::LooseForeignKeys.definitions.any? do |d|
+        d.from_table == parent &&
+          d.to_table == root_table &&
+          d.options[:column].to_s == column_name.to_s &&
+          d.options[:on_delete].to_s == 'async_delete'
+      end
+    end
+  end
+
+  def parent_tables_of(table_name, root_table)
+    cascading_hard_fk_parents = ::Gitlab::Database::PostgresForeignKey
+      .by_constrained_table_name(table_name)
+      .by_on_delete_action(:cascade)
+      .map(&:referenced_table_name)
+
+    deleting_lfk_parents = ::Gitlab::Database::LooseForeignKeys.definitions
+      .select { |d| d.from_table == table_name && d.options[:on_delete].to_s == 'async_delete' }
+      .map(&:to_table)
+
+    (cascading_hard_fk_parents + deleting_lfk_parents).uniq.reject { |t| t == root_table }
+  end
+
   def column_exists?(table_name, column_name)
     sql = <<~SQL
     SELECT 1

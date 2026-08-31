@@ -139,6 +139,44 @@ existing feature that needs to allow moving data you will need to reach out to
 the Tenant Scale team early on to discuss options for how to manage the
 sharding key.
 
+### When the sharding key value comes from a parent table
+
+Before you add a direct foreign key from a new sharding key column to its
+target table (`projects`, `namespaces`, `organizations`, or `users`), check
+whether the table already references a parent table that carries the same
+sharding key. If it does, populate the sharding key from that parent using
+[`desired_sharding_key.backfill_via.parent`](#define-a-desired_sharding_key-configuration)
+and rely on the parent's foreign key. The column is still a normal sharding key
+and keeps all other requirements, like the `NOT NULL` constraint and
+immutability. Only the duplicate foreign key is omitted.
+
+A duplicate foreign key can break upgrades. When the parent's own reference to
+the target table is maintained by a
+[loose foreign key](../../database/loose_foreign_keys.md), cleanup is eventually
+consistent, so a parent row can validly reference a row that is already deleted.
+A backfill that copies that value into a column protected by a hard foreign key
+fails with a foreign key violation, which blocks the upgrade
+([issue 605940](https://gitlab.com/gitlab-org/gitlab/-/issues/605940)).
+
+Duplicate foreign keys also accumulate on the target tables, which makes lock
+contention worse for migrations
+([issue 599943](https://gitlab.com/gitlab-org/gitlab/-/issues/599943)).
+
+Add a direct foreign key to the target table only when:
+
+- The table has no parent that already carries the sharding key, or
+- The direct reference is intentionally a different entity than the one
+  reachable through the parent (for example, cross-namespace sharing targets,
+  template projects, custom-template namespaces, or mirror sources). In this
+  case the direct foreign key is meaningful denormalization and should stay.
+
+These requirements are enforced by
+`spec/lib/gitlab/organizations/sharding_key_spec.rb`, which requires a direct
+foreign key by default. When the sharding key value comes from a parent table
+that the table already references with a foreign key or loose foreign key to the
+same target, the spec detects the parent chain and waives the direct foreign key
+requirement for you. You do not need to add the column to an exception list.
+
 ### Using `namespace_id` as sharding key
 
 The `namespaces` table has rows that can refer to a `Group`, a `ProjectNamespace`,

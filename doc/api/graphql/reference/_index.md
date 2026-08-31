@@ -53458,7 +53458,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="organization-cdapplications-search"></a>`search` | [`String`](#string) | Search applications by name or description. |
-| <a id="organization-cdapplications-statuses"></a>`statuses` | [`[CdApplicationStatus!]`](#cdapplicationstatus) | Filter applications by status. An application can match more than one status. |
+| <a id="organization-cdapplications-status"></a>`status` | [`CdApplicationStatus`](#cdapplicationstatus) | Filter applications by status. An application can match more than one status. |
 
 ##### `Organization.cdEnvironment`
 

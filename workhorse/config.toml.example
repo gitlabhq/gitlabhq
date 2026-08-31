@@ -2,6 +2,7 @@
 # shutdown_timeout = "60s"
 # trusted_cidrs_for_x_forwarded_for = []
 # trusted_cidrs_for_propagation = []
+# trusted_forwarded_hosts = []
 
 [redis]
 URL = "unix:/home/git/gitlab/redis/redis.socket"

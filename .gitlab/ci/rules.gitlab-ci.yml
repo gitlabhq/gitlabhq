@@ -329,6 +329,10 @@
   - ".gitlab/ci/static-analysis.gitlab-ci.yml"
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
 
+.ci-qa-image-patterns: &ci-qa-image-patterns
+  - "qa/Dockerfile"
+  - "scripts/build_qa_image"
+
 .ci-qa-patterns: &ci-qa-patterns
   - ".gitlab-ci.yml"
   - ".gitlab/ci/frontend.gitlab-ci.yml"
@@ -1486,6 +1490,10 @@
   rules:
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
+    - <<: *if-merge-request
+      changes: *ci-qa-image-patterns
+      variables:
+        ARCH: amd64,arm64
     - <<: *if-merge-request
       changes: *ci-qa-patterns
     - <<: *if-merge-request

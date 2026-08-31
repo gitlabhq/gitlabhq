@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -24,13 +25,14 @@ import (
 // for active workflow runners. It tracks all active runners to ensure they can be
 // properly terminated during server shutdown.
 type Handler struct {
-	rails               *api.API
-	rdb                 *redis.Client
-	backend             http.Handler
-	relativeURLRoot     string
-	upgrader            websocket.Upgrader
-	runners             sync.Map // map[*runner]bool
-	stopWorkflowTimeout time.Duration
+	rails                 *api.API
+	rdb                   *redis.Client
+	backend               http.Handler
+	relativeURLRoot       string
+	upgrader              websocket.Upgrader
+	runners               sync.Map // map[*runner]bool
+	stopWorkflowTimeout   time.Duration
+	trustedForwardedHosts []string
 }
 
 // NewHandler creates a new Handler for managing Duo Workflow WebSocket connections.
@@ -40,13 +42,14 @@ type Handler struct {
 // relativeURLRoot is GitLab's URL prefix (e.g. "/gitlab/"), empty at the domain
 // root. It is forwarded to the action handler so DWS action paths resolve
 // against the correct prefix when re-entering the upstream router.
-func NewHandler(rails *api.API, rdb *redis.Client, backend http.Handler, relativeURLRoot string) *Handler {
+func NewHandler(rails *api.API, rdb *redis.Client, backend http.Handler, relativeURLRoot string, trustedForwardedHosts ...string) *Handler {
 	return &Handler{
-		rails:           rails,
-		backend:         backend,
-		relativeURLRoot: relativeURLRoot,
-		rdb:             rdb,
-		upgrader:        websocket.Upgrader{},
+		rails:                 rails,
+		backend:               backend,
+		relativeURLRoot:       relativeURLRoot,
+		rdb:                   rdb,
+		upgrader:              websocket.Upgrader{},
+		trustedForwardedHosts: trustedForwardedHosts,
 	}
 }
 
@@ -71,34 +74,31 @@ const (
 	errorTypeOther         = "other"
 )
 
-// checkOriginByForwardedHost is a custom WebSocket origin check that compares
-// the Origin header against X-Forwarded-Host (set by the HTTP Router / nginx)
-// rather than the Host header. This is needed because the HTTP Router rewrites
-// the Host header to an internal hostname, causing the default gorilla/websocket
-// origin check to reject legitimate browser connections.
-//
-// If X-Forwarded-Host is absent, the check falls back to the Host header so
-// that direct connections (e.g. in development without a router) still work.
-func checkOriginByForwardedHost(r *http.Request) bool {
-	origin := r.Header.Get("Origin")
-	if origin == "" {
-		return true
-	}
+// checkOriginByForwardedHost only trusts X-Forwarded-Host when its value is in
+// trustedForwardedHosts, since the header is otherwise attacker-controllable.
+func checkOriginByForwardedHost(trustedForwardedHosts []string) func(r *http.Request) bool {
+	return func(r *http.Request) bool {
+		origin := r.Header.Get("Origin")
+		if origin == "" {
+			return true
+		}
 
-	u, err := url.Parse(origin)
-	if err != nil {
-		return false
-	}
+		u, err := url.Parse(origin)
+		if err != nil {
+			return false
+		}
 
-	// Prefer X-Forwarded-Host (set by the HTTP Router / nginx) over Host so
-	// that the comparison uses the public-facing hostname rather than the
-	// internal one that the router may have substituted.
-	host := r.Header.Get("X-Forwarded-Host")
-	if host == "" {
-		host = r.Host
-	}
+		forwardedHost := r.Header.Get("X-Forwarded-Host")
+		if forwardedHost == "" {
+			return strings.EqualFold(u.Host, r.Host)
+		}
 
-	return strings.EqualFold(u.Host, host)
+		isTrusted := slices.ContainsFunc(trustedForwardedHosts, func(h string) bool {
+			return strings.EqualFold(h, forwardedHost)
+		})
+
+		return isTrusted && strings.EqualFold(u.Host, forwardedHost)
+	}
 }
 
 // Build returns an HTTP handler that processes Duo Workflow WebSocket connections.
@@ -109,8 +109,8 @@ func (h *Handler) Build() http.Handler {
 		connectionsTotal.Inc()
 
 		upgrader := h.upgrader
-		if a.DuoWorkflow != nil && a.DuoWorkflow.CheckOriginByForwardedHost {
-			upgrader.CheckOrigin = checkOriginByForwardedHost
+		if len(h.trustedForwardedHosts) > 0 {
+			upgrader.CheckOrigin = checkOriginByForwardedHost(h.trustedForwardedHosts)
 		}
 
 		conn, err := upgrader.Upgrade(w, r, nil)
