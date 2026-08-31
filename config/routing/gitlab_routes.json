@@ -6684,6 +6684,10 @@
     "example": "/api/v4/projects/foo/feature_flags/foo"
   },
   {
+    "template": "/api/:version/projects/:id/feature_flags_settings",
+    "example": "/api/v4/projects/foo/feature_flags_settings"
+  },
+  {
     "template": "/api/:version/projects/:id/feature_flags_user_lists",
     "example": "/api/v4/projects/foo/feature_flags_user_lists"
   },

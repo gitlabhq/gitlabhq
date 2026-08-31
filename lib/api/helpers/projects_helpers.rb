@@ -131,6 +131,7 @@ module API
         optional :protect_merge_request_pipelines, type: Boolean, desc: "Make protected CI/CD variables and runners available in merge request pipelines"
         optional :ci_display_pipeline_variables, type: Boolean, desc: "Display all manually-defined variables in the pipeline details page after running a pipeline manually"
         optional :automatic_rebase_enabled, type: Boolean, desc: 'Enable automatic rebase of the source branch before merge'
+        optional :feature_flags_minimum_role, values: ::ProjectSetting::FEATURE_FLAGS_MANAGEMENT_ROLES.keys.map(&:to_s), type: String, desc: 'Limit the ability to create, update, toggle, and delete feature flags to only users with at least the set minimum role'
       end
 
       params :optional_update_params_ee do
@@ -240,6 +241,7 @@ module API
           :max_artifacts_size,
           :protect_merge_request_pipelines,
           :ci_display_pipeline_variables,
+          :feature_flags_minimum_role,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

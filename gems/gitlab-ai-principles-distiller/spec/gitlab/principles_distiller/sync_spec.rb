@@ -58,8 +58,23 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       FileUtils.mkdir_p(principles_dir)
       sync.manifest.data = manifest
 
-      allow(sync).to receive(:parallel_distill)
-        .and_return({ 'qa' => [existing_content, distilled_content] })
+      allow(sync).to receive_messages(distillation_base_sha: '2' * 40,
+        parallel_distill: { 'qa' => [existing_content, distilled_content] })
+    end
+
+    it 'passes the same target SHA to distillation and frontmatter' do
+      sync.distill_and_write_principles(affected)
+
+      expect(sync).to have_received(:parallel_distill).with(
+        an_object_having_attributes(affected: affected, target_sha: '2' * 40), rewrite: false)
+      expect(File.read(File.join(principles_dir, 'qa.md'))).to include("distilled_at_sha: #{'2' * 40}")
+    end
+
+    it 'validates every commit SHA before starting parallel distillation' do
+      affected['qa'][:prior_sha] = 'main'
+
+      expect { sync.distill_and_write_principles(affected) }.to raise_error(/invalid distillation commit sha: "main"/)
+      expect(sync).not_to have_received(:parallel_distill)
     end
 
     it 'writes the file with frontmatter, header, content, and sources footer', :aggregate_failures do
@@ -382,7 +397,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
           sync.distill_one('qa')
 
           expect(sync).to have_received(:build_distilled_contents).with(
-            'qa' => { config: config, new_sources: [{ 'path' => 'doc/new.md' }] }
+            'qa' => { config: config, prior_sha: nil, new_sources: [{ 'path' => 'doc/new.md' }] }
           )
         end
 
@@ -578,10 +593,15 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     # `distill_principle` is private (it's an internal step of parallel_distill), so specs reach it via `send`.
     # The retry loop is the most failure-prone control flow in the gem: any of the three Duo invocations can return nil,
     # return content missing the required heading, or succeed.
-    subject(:distill) { sync.send(:distill_principle, 'qa', config, new_sources: new_sources) }
+    subject(:distill) do
+      sync.send(:distill_principle, 'qa', config, prior_sha: prior_sha, target_sha: target_sha,
+        new_sources: new_sources)
+    end
 
     let(:config) { { 'sources' => [{ 'path' => 'doc/qa.md' }] } }
     let(:new_sources) { [] }
+    let(:prior_sha) { '1' * 40 }
+    let(:target_sha) { '2' * 40 }
     let(:valid_content) { "# QA Principles\n\n## Checklist\n\n- Do thing\n" }
 
     before do
@@ -613,7 +633,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
           distill
 
           expect(sync.workflow).to have_received(:distill)
-            .with('qa', config, new_sources: new_sources)
+            .with('qa', config, prior_sha: prior_sha, target_sha: target_sha, new_sources: new_sources)
         end
       end
     end

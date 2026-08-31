@@ -78,7 +78,7 @@ module Gitlab
           # Dropping a foreign key takes an ACCESS EXCLUSIVE lock on both tables participating in the foreign key.
 
           partition_identifier = detached_partition.fully_qualified_table_name
-          with_lock_retries do
+          with_lock_retries(partition_name: detached_partition.table_name) do
             connection.transaction(requires_new: false) do
               next unless try_lock_detached_partition(detached_partition.id)
 
@@ -115,11 +115,12 @@ module Gitlab
           Postgresql::DetachedPartition.connection
         end
 
-        def with_lock_retries(&block)
+        def with_lock_retries(partition_name:, &block)
           Gitlab::Database::Partitioning::WithPartitioningLockRetries.new(
             klass: self.class,
             logger: Gitlab::AppLogger,
-            connection: connection
+            connection: connection,
+            extra_log_params: { partition_name: partition_name }
           ).run(raise_on_exhaustion: true, &block)
         end
       end

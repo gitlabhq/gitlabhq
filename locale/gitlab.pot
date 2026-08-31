@@ -28100,6 +28100,9 @@ msgstr ""
 msgid "DependencyFirewall|Protect against malicious and suspicious packages for all projects in this GitLab instance."
 msgstr ""
 
+msgid "DependencyFirewall|Risk severity rule"
+msgstr ""
+
 msgid "DependencyFirewall|Rule"
 msgstr ""
 
@@ -30435,6 +30438,9 @@ msgid "DuoAgenticChat|GitLab Duo Agent Platform is turned off"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
+msgstr ""
+
+msgid "DuoAgenticChat|GitLab Duo couldn't complete this response. Recent messages might be missing or incomplete. Try sending your message again."
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo is already responding to this chat in another tab or location. Start a new chat, or wait for GitLab Duo to finish before sending a new message."
@@ -39386,6 +39392,18 @@ msgid "GooglePlay|Use GitLab to build and release an app in Google Play."
 msgstr ""
 
 msgid "Got it"
+msgstr ""
+
+msgid "GovernPolicies|Only one of policy_scope or scope_rego can be provided"
+msgstr ""
+
+msgid "GovernPolicies|Policy Store experiment is not active for this organization"
+msgstr ""
+
+msgid "GovernPolicies|Policy was not found"
+msgstr ""
+
+msgid "GovernPolicies|You are not authorized to perform this action on policies in this organization"
 msgstr ""
 
 msgid "Governance"
@@ -85457,6 +85475,9 @@ msgstr ""
 msgid "UpdateProject|Cannot rename project: failed to connect to the container registry. Please try again later."
 msgstr ""
 
+msgid "UpdateProject|Changing the feature_flags_minimum_role is not allowed"
+msgstr ""
+
 msgid "UpdateProject|Changing the restrict_user_defined_variables or ci_pipeline_variables_minimum_override_role is not allowed"
 msgstr ""
 
@@ -94644,6 +94665,9 @@ msgid "Your WebAuthn device was registered!"
 msgstr ""
 
 msgid "Your access request to the %{source_type} has been withdrawn."
+msgstr ""
+
+msgid "Your account belongs to more than one organization with Artifact Registry. This is not supported yet."
 msgstr ""
 
 msgid "Your account has been blocked. Contact %{support} for assistance."

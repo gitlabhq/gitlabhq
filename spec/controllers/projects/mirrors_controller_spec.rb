@@ -250,13 +250,19 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
       sign_in(project.first_owner)
     end
 
+    context 'when the SSH URL is missing' do
+      it 'returns an invalid URL error with a 400 response', :aggregate_failures do
+        get :ssh_host_keys,
+          params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq('message' => 'Invalid URL')
+      end
+    end
+
     context 'invalid URLs' do
-      %w[
-        INVALID
-        git@example.com:foo/bar.git
-        ssh://git@example.com:foo/bar.git
-        ssh://127.0.0.1/foo/bar.git
-      ].each do |url|
+      ['', 'INVALID', 'git@example.com:foo/bar.git', 'ssh://git@example.com:foo/bar.git',
+        'ssh://127.0.0.1/foo/bar.git'].each do |url|
         it "returns an error with a 400 response for URL #{url.inspect}" do
           do_get(project, url)
 

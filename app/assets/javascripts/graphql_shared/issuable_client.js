@@ -1,6 +1,6 @@
 import produce from 'immer';
 import VueApollo from 'vue-apollo';
-import { unionBy } from 'lodash-es';
+import { isPlainObject, unionBy } from 'lodash-es';
 import { concatPagination } from '@apollo/client/utilities';
 import errorQuery from '~/boards/graphql/client/error.query.graphql';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
@@ -345,32 +345,18 @@ export const config = {
           features: {
             keyArgs: false,
             merge(existing = {}, incoming = {}, context) {
-              const merged = { ...existing, ...incoming };
+              // A widget can arrive from more than one document, so merge wrapper by wrapper:
+              // a partial write would otherwise drop fields another query supplied.
+              const merged = { ...existing };
+              Object.keys(incoming).forEach((key) => {
+                const existingWidget = existing[key];
+                const incomingWidget = incoming[key];
 
-              // Deep-merge hierarchy so a partial incoming.hierarchy (e.g. from
-              // an optimistic response that only knows the new parent) preserves
-              // existing fields like children, hasChildren, rolledUpCountsByType.
-              if (incoming.hierarchy && existing.hierarchy) {
-                merged.hierarchy = { ...existing.hierarchy, ...incoming.hierarchy };
-              }
-
-              // preserve existing awardEmoji connection when incoming only has summary data
-              // (e.g. upvotes/downvotes from main query or subscription)
-              if (
-                incoming.awardEmoji &&
-                existing.awardEmoji &&
-                !incoming.awardEmoji.awardEmoji &&
-                existing.awardEmoji.awardEmoji
-              ) {
-                merged.awardEmoji = { ...existing.awardEmoji, ...incoming.awardEmoji };
-              }
-
-              // Preserve existing notes.discussions when the incoming notes object
-              // does not carry a discussions field. This happens when a subscription
-              // write (e.g. workItemUpdated) and trigger a network refetch.
-              if (incoming.notes && existing.notes?.discussions && !incoming.notes.discussions) {
-                merged.notes = { ...existing.notes, ...incoming.notes };
-              }
+                merged[key] =
+                  isPlainObject(existingWidget) && isPlainObject(incomingWidget)
+                    ? { ...existingWidget, ...incomingWidget }
+                    : incomingWidget;
+              });
 
               // Extract data into reactive vars, mirroring the `widgets[]` merge below,
               // so consumers relying on these vars keep working when the

@@ -640,6 +640,7 @@ class Project < ApplicationRecord
     delegate :automatic_rebase_enabled, :automatic_rebase_enabled=
     delegate :extended_prat_expiry_webhooks_execute, :extended_prat_expiry_webhooks_execute=
     delegate :protect_merge_request_pipelines, :protect_merge_request_pipelines=, :protect_merge_request_pipelines?
+    delegate :feature_flags_minimum_role, :feature_flags_minimum_role=
 
     with_options allow_nil: true do
       delegate :merge_commit_template, :merge_commit_template=
@@ -969,14 +970,21 @@ class Project < ApplicationRecord
     with_project_feature.merge(ProjectFeature.with_feature_access_level(feature, level))
   }
 
-  # Picks projects which use the given programming language
+  # Non-NULL language_id values are authoritative; legacy IDs only apply to unbackfilled rows to avoid cross-cell clashes.
+  # Remove the fallback in 19.6: https://gitlab.com/gitlab-org/gitlab/-/work_items/614144
   scope :with_programming_language, ->(language_name) do
-    lang_id_query = ProgrammingLanguage
-        .with_name_case_insensitive(language_name)
-        .select(:id)
+    languages = ProgrammingLanguage.with_name_case_insensitive(language_name)
+    repository_languages = RepositoryLanguage.unscoped # Drops the default scope (includes(:programming_language)), unnecessary in a subquery.
+      .where(RepositoryLanguage.arel_table[:project_id].eq(arel_table[:id]))
 
-    joins(:repository_languages)
-        .where(repository_languages: { programming_language_id: lang_id_query })
+    matching_repository_languages = repository_languages
+      .where(language_id: languages.select(:language_id))
+      .or(repository_languages.where(
+        language_id: nil,
+        programming_language_id: languages.select(:id)
+      ))
+
+    where_exists(matching_repository_languages)
   end
 
   scope :service_desk_enabled, -> { where(service_desk_enabled: true) }

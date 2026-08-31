@@ -563,8 +563,7 @@ module API
 
         merge_requests = ::Issues::ReferencedMergeRequestsService
                            .new(container: user_project, current_user: current_user)
-                           .execute(issue)
-                           .first
+                           .related_merge_requests(issue)
 
         present paginate(::Kaminari.paginate_array(merge_requests)),
           with: Entities::MergeRequest,

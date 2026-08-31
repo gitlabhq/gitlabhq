@@ -92,6 +92,7 @@ module Projects
       validate_default_branch_change
       validate_renaming_project_with_tags
       validate_restrict_user_defined_variables_change
+      validate_feature_flags_minimum_role_change
       validate_pages_primary_domain
       validate_pages_access_level
       validate_ci_inbound_job_token_scope_change
@@ -113,6 +114,13 @@ module Projects
       return if can?(current_user, :update_pipeline_variable_override_setting, project)
 
       raise_api_error(s_("UpdateProject|Changing the restrict_user_defined_variables or ci_pipeline_variables_minimum_override_role is not allowed"))
+    end
+
+    def validate_feature_flags_minimum_role_change
+      return unless changing_feature_flags_minimum_role?
+      return if can?(current_user, :update_feature_flags_minimum_role_setting, project)
+
+      raise_api_error(s_("UpdateProject|Changing the feature_flags_minimum_role is not allowed"))
     end
 
     def validate_default_branch_change
@@ -353,6 +361,13 @@ module Projects
       return false if new_pipeline_variables_minimum_override_role.nil?
 
       project.ci_pipeline_variables_minimum_override_role != new_pipeline_variables_minimum_override_role
+    end
+
+    def changing_feature_flags_minimum_role?
+      new_feature_flags_minimum_role = params[:feature_flags_minimum_role]
+      return false if new_feature_flags_minimum_role.nil?
+
+      project.feature_flags_minimum_role != new_feature_flags_minimum_role
     end
 
     def enabling_wiki?

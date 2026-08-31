@@ -344,10 +344,6 @@ module Ci
 
     def runner_matched?(build)
       @logger.instrument(:process_build_runner_matched) do
-        if ::Feature.enabled?(:ci_resume_environment_runner_routing, type: :gitlab_com_derisk)
-          next false unless resume_environment_available_to_runner?(build) # rubocop:disable Style/SoleNestedConditional -- clearer as two separate conditions
-        end
-
         runner.matches_build?(build)
       end
     end
@@ -519,13 +515,6 @@ module Ci
         pipeline_id: build.pipeline_id,
         project_id: build.project_id
       }
-    end
-
-    def resume_environment_available_to_runner?(build)
-      env_key = build.options.dig(:suspend_options, :environment_key)
-      return true if env_key.blank?
-
-      ::Gitlab::Ci::Matching::EnvironmentKey.new(env_key).matches_runner?(runner, runner_manager: runner_manager)
     end
 
     def pre_assign_runner_checks

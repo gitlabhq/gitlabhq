@@ -1,0 +1,5 @@
+---
+table: project_to_security_attributes
+database: sec
+replication_targets:
+  - name: gcs_parquet_consumer

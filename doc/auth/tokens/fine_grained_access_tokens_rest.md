@@ -332,7 +332,16 @@ Grants the ability to create, delete, read, and update feature flags.
 | Delete | Project | `DELETE` | `/projects/:id/feature_flags/:feature_flag_name` |
 | Read | Project | `GET` | `/projects/:id/feature_flags` |
 | Read | Project | `GET` | `/projects/:id/feature_flags/:feature_flag_name` |
+| Read | Project | `GET` | `/projects/:id/feature_flags_settings` |
 | Update | Project | `PUT` | `/projects/:id/feature_flags/:feature_flag_name` |
+
+#### Feature Flag Settings
+
+Grants the ability to update feature flag settings.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Update | Project | `PUT` | `/projects/:id/feature_flags_settings` |
 
 #### Freeze Period
 

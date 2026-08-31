@@ -2381,6 +2381,7 @@ see [Project feature visibility level](#project-feature-visibility-level).
 - `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
 - `automatic_rebase_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250632) in GitLab 19.4.
 - `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
+- `feature_flags_minimum_role` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8239) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `feature_flag_management_permissions`. Disabled by default.
 
 {{< /history >}}
 
@@ -2437,6 +2438,7 @@ Supported general project attributes:
 | `emails_enabled`                                   | boolean           | No       | Enable email notifications. |
 | `enforce_auth_checks_on_uploads`                   | boolean           | No       | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
 | `external_authorization_classification_label`      | string            | No       | The classification label for the project. Premium and Ultimate only. |
+| `feature_flags_minimum_role`                       | string            | No       | Minimum role required to create, update, toggle, and delete [feature flags](../operations/feature_flags.md#restrict-who-can-manage-feature-flags). One of `no_one_allowed`, `developer`, `maintainer`, or `owner`. Defaults to `developer`. Requires the Owner role to change this setting away from `owner` or `no_one_allowed`. |
 | `group_runners_enabled`                            | boolean           | No       | Enable group runners for this project. |
 | `import_url`                                       | string            | No       | URL the repository was imported from. |
 | `issues_enabled`                                   | boolean           | No       | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |

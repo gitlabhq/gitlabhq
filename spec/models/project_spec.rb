@@ -3286,6 +3286,47 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.with_programming_language' do
+    let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
+    let_it_be(:python) { create(:programming_language, name: 'Python') }
+    let_it_be(:backfilled_project) { create(:project) }
+    let_it_be(:mismatched_ids_project) { create(:project) }
+    let_it_be(:legacy_id_project) { create(:project) }
+
+    before_all do
+      create(:repository_language,
+        project: backfilled_project,
+        programming_language: ruby,
+        language_id: ruby.language_id)
+      create(:repository_language,
+        project: mismatched_ids_project,
+        programming_language: python,
+        language_id: ruby.language_id)
+      create(:repository_language,
+        project: mismatched_ids_project,
+        programming_language: ruby,
+        language_id: nil)
+      create(:repository_language,
+        project: legacy_id_project,
+        programming_language: ruby,
+        language_id: nil)
+    end
+
+    it 'matches the stable language ID and falls back to the legacy ID for unbackfilled rows' do
+      projects = described_class.with_programming_language('rUbY')
+
+      expect(projects).to contain_exactly(
+        backfilled_project,
+        mismatched_ids_project,
+        legacy_id_project
+      )
+    end
+
+    it 'does not fall back to the legacy ID when language_id is present' do
+      expect(described_class.with_programming_language('Python')).to be_empty
+    end
+  end
+
   describe '.with_remote_mirrors' do
     let_it_be(:project) { create(:project, :repository) }
 

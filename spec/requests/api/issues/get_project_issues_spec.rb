@@ -853,7 +853,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       get api("/projects/#{project_id}/issues/#{issue_iid}/related_merge_requests", user)
     end
 
-    def create_referencing_mr(user, project, issue)
+    def create_referencing_mr(user, project, issue, overrides = {})
       attributes = {
         author: user,
         source_project: project,
@@ -861,9 +861,16 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         source_branch: 'master',
         target_branch: 'test',
         description: "See #{issue.to_reference}"
-      }
+      }.merge(overrides)
       create(:merge_request, attributes).tap do |merge_request|
         create(:note, :system, project: issue.project, noteable: issue, author: user, note: merge_request.to_reference(full: true))
+      end
+    end
+
+    def create_explicitly_related_mr(project, issue, overrides = {})
+      create(:merge_request, { source_project: project, target_project: project }.merge(overrides)).tap do |merge_request|
+        create(:merge_requests_closing_issues,
+          issue: issue, merge_request: merge_request, link_type: :related, from_mr_description: false)
       end
     end
 
@@ -916,6 +923,62 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       get_related_merge_requests(project.id, issue.iid, user)
 
       expect_paginated_array_response(related_mr.id)
+    end
+
+    context 'with an explicitly related merge request' do
+      let!(:explicitly_related_mr) do
+        create_explicitly_related_mr(project, issue, source_branch: 'improve/awesome', target_branch: 'markdown')
+      end
+
+      it 'returns the referenced and the explicitly related merge requests' do
+        get_related_merge_requests(project.id, issue.iid, user)
+
+        expect_paginated_array_response([related_mr.id, explicitly_related_mr.id])
+      end
+
+      context 'when the explicit_mr_work_item_relations feature flag is disabled' do
+        before do
+          stub_feature_flags(explicit_mr_work_item_relations: false)
+        end
+
+        it 'excludes explicitly related merge requests' do
+          get_related_merge_requests(project.id, issue.iid, user)
+
+          expect_paginated_array_response(related_mr.id)
+        end
+      end
+    end
+
+    it 'returns a merge request that is both referenced and explicitly related only once' do
+      create(:merge_requests_closing_issues,
+        issue: issue, merge_request: related_mr, link_type: :related, from_mr_description: false)
+
+      get_related_merge_requests(project.id, issue.iid, user)
+
+      expect_paginated_array_response(related_mr.id)
+    end
+
+    # The endpoint renders Entities::MergeRequest, which issues a fixed number of queries per
+    # merge request regardless of how the collection was built. This guards the new persisted
+    # `related` link path against costing more than the pre-existing text-reference path.
+    it 'does not issue more queries than the equivalent text-referenced merge requests' do
+      referenced_issue = create(:issue, project: project, author: user)
+      related_issue = create(:issue, project: project, author: user)
+
+      3.times do |i|
+        create_referencing_mr(user, project, referenced_issue, source_branch: "referenced-#{i}", target_branch: 'markdown')
+        create_explicitly_related_mr(project, related_issue, source_branch: "related-#{i}", target_branch: 'markdown')
+      end
+
+      get_related_merge_requests(project.id, referenced_issue.iid, user)
+      get_related_merge_requests(project.id, related_issue.iid, user)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        get_related_merge_requests(project.id, referenced_issue.iid, user)
+      end
+
+      expect { get_related_merge_requests(project.id, related_issue.iid, user) }
+        .not_to exceed_all_query_limit(control)
     end
 
     context 'no merge request mentioned a issue' do

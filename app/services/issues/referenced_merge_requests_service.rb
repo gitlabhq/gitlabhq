@@ -14,20 +14,23 @@ module Issues
       [sort_by_iid(referenced), sort_by_iid(closed_by)]
     end
 
+    def related_merge_requests(issue)
+      merge_requests = related_merge_requests_union(issue)
+
+      ActiveRecord::Associations::Preloader.new(
+        records: merge_requests,
+        associations: { head_pipeline: { project: [:route, { namespace: :route }] } }
+      ).call
+
+      sort_by_iid(merge_requests)
+    end
+
+    def related_merge_request_ids(issue)
+      related_merge_requests_union(issue).map(&:id)
+    end
+
     def referenced_merge_requests(issue)
-      merge_requests = extract_merge_requests(issue)
-
-      cross_project_filter = ->(merge_requests) do
-        merge_requests.select { |mr| mr.target_project == project }
-      end
-
-      Ability.merge_requests_readable_by_user(
-        merge_requests,
-        current_user,
-        filters: {
-          read_cross_project: cross_project_filter
-        }
-      )
+      filter_readable_by_user(extract_merge_requests(issue))
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -47,6 +50,33 @@ module Issues
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
+
+    def related_merge_requests_union(issue)
+      referenced_merge_requests(issue) | persisted_related_merge_requests(issue)
+    end
+
+    def persisted_related_merge_requests(issue)
+      return [] unless Feature.enabled?(:explicit_mr_work_item_relations, project)
+
+      merge_request_ids = MergeRequestsClosingIssues.link_type_related.with_issues(issue.id).select(:merge_request_id)
+      merge_requests = MergeRequest.id_in(merge_request_ids).preload_target_project.preload_author
+
+      filter_readable_by_user(merge_requests)
+    end
+
+    def filter_readable_by_user(merge_requests)
+      cross_project_filter = ->(merge_requests) do
+        merge_requests.select { |mr| mr.target_project == project }
+      end
+
+      Ability.merge_requests_readable_by_user(
+        merge_requests,
+        current_user,
+        filters: {
+          read_cross_project: cross_project_filter
+        }
+      )
+    end
 
     def extract_merge_requests(issue, filter: nil)
       ext = issue.all_references(current_user)

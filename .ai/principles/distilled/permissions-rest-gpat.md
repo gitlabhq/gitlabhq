@@ -1,6 +1,6 @@
 ---
-source_checksum: 42486251c09350ab
-distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
+source_checksum: f04d2025bf3b6e5f
+distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -21,6 +21,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - Create specific permissions for special actions (cancel, retry, download, trigger); DO NOT collapse them into a generic update permission.
 - Use a single `update_<resource>` permission covering all attribute updates; DO NOT create per-attribute permissions such as `update_issue_title`.
 - Set `feature_category` in the resource `.metadata.yml` to a valid entry from `config/feature_categories.yml`; look at existing endpoints in the same API file for the correct value.
+- Set `conditionally_enables` in the permission definition for any private (underscore-prefixed) permission; use `null` when no broader permission implies it.
 - Run `bundle exec rake gitlab:permissions:validate` (or rely on the Lefthook pre-push hook) to catch naming and structure violations before pushing.
 
 ### Assignable Permissions
@@ -34,6 +35,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - Create a category `.metadata.yml` only when titleization produces an incorrect display name (e.g., `ci_cd` → "CI/CD"); DO NOT create one when the folder name titleizes correctly.
 - Create a resource `.metadata.yml` only when the resource name contains an acronym, brand name, or awkward pluralization; DO NOT create one when the directory name titleizes and pluralizes correctly.
 - Use `<actions>` interpolation in a resource `.metadata.yml` description so the action list stays in sync automatically.
+- Use the optional `assignable_when` field to declare conditions (e.g., `admin`, `saas`, `self_managed`, `gitlab_team_member`) a user must meet for the permission to appear in the token creation UI at a given boundary; tag the corresponding REST endpoints with `assignable_when` in the same merge request, because the validation task fails when endpoint tags and YAML conditions disagree.
 - DO NOT remove an assignable permission while the underlying API functionality still exists; removal is a **breaking change** that silently drops all access for tokens holding that permission.
 - DO NOT rename an assignable permission without following the three-step migration process: add the new YAML, queue a `rename_granular_scope_permission` batched background migration, mark the old permission `deprecated: true`, finalize the migration in a later milestone, then delete the deprecated file using `bundle exec rake gitlab:permissions:assignable:cleanup_deprecated`.
 - DO NOT add raw permissions to an existing assignable permission except when adding support for new API endpoints.
@@ -48,6 +50,8 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - Use the `boundary` option (a callable returning the boundary object) only when the boundary cannot be determined through standard parameter lookup.
 - Use `boundary_param` when the request parameter containing the boundary identifier is not the default `:id`.
 - When using `boundaries` array, include a `boundary_type` key in each entry and optionally a `boundary_param`; the system evaluates boundaries in priority order `project` > `group` > `user` > `instance` and uses the first resolvable boundary.
+- Use `additional_scopes` when an endpoint acts on a second container (e.g., a move-issue endpoint that writes to a target project): declare each additional container's `permissions` and `boundary_type`, plus `boundary_param` or a callable `boundary`; every entry must authorize successfully or the request is denied with `404 Not Found`. A `:project` or `:group` entry without `boundary_param` or `boundary` is rejected by `gitlab:permissions:validate`.
+- Use `assignable_when: [:admin]` (or other conditions) on the `route_setting :authorization` decorator when the endpoint restricts access beyond membership (e.g., `authenticated_as_admin!`); update the corresponding assignable permission YAML in the same merge request.
 - Use `skip_granular_token_authorization: :<reason>` (a symbol naming the reason, e.g., `:public_endpoint`) only for endpoints that are publicly accessible, authenticate by means other than PATs, or where authentication is optional; DO NOT use it to bypass permission checks on authenticated endpoints, and DO NOT pass `true` — the reason must be a key defined in `lib/tasks/gitlab/permissions/routes/skip_reasons.rb` (add a new key with a human-readable label if no existing reason fits).
 - Use `todo: '<issue-link-or-reason>'` (a non-empty string) to defer granular token authorization when you have not yet decided how it should work for an endpoint; granular PATs receive `403 Forbidden` while legacy PATs are unaffected. Replace `todo` with `permissions` + `boundary_type` (or `skip_granular_token_authorization`) once the decision is made. DO NOT leave `todo` blank — the validation task fails on a blank value.
 - Add permissions that represent read-only access to publicly visible data to `config/authz/roles/public_anonymous.yml` under the matching `project:` or `group:` boundary so that granular PATs without an explicit scope can access them on public resources; DO NOT add `user` or `instance` boundary permissions to this file.
@@ -60,6 +64,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - Pass `expected_success_status:` as a keyword argument to the shared example when the success response is not `:success` (e.g., `:created`, `:accepted`, `:no_content`, `:redirect`).
 - Pass `legacy_token_scopes:` as a keyword argument when the endpoint requires legacy token scopes other than the default `%w[api]`.
 - Ensure the `request` block supplies valid `params` and that any resource the request path references exists, so the "granting access" assertion receives a real success response.
+- For endpoints declaring `additional_scopes`, pass `additional_scope_permissions:` to the shared example and define `additional_scope_requirements` let-bindings; the shared example adds an assertion that a token holding only the primary boundary's scope is denied.
 
 ### Documentation and Validation
 

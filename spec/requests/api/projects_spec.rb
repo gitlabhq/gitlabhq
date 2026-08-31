@@ -5226,6 +5226,57 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
+      it 'updates feature_flags_minimum_role' do
+        project_param = { feature_flags_minimum_role: 'maintainer' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project3.reload.feature_flags_minimum_role).to eq('maintainer')
+      end
+
+      it 'rejects updating feature_flags_minimum_role when an invalid role is provided' do
+        project_param = { feature_flags_minimum_role: 'wrong' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'rejects updating feature_flags_minimum_role when an existing but not allowed role is provided' do
+        project_param = { feature_flags_minimum_role: 'guest' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      context 'when feature_flags_minimum_role is set to a privileged role' do
+        before do
+          project3.add_maintainer(user2)
+          project3.project_setting.feature_flags_minimum_role_owner!
+        end
+
+        it 'prevents a maintainer from loosening it' do
+          project_param = { feature_flags_minimum_role: 'developer' }
+
+          put api("/projects/#{project3.id}", user2), params: project_param
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('Changing the feature_flags_minimum_role is not allowed')
+          expect(project3.reload.feature_flags_minimum_role).to eq('owner')
+        end
+
+        it 'allows an owner to loosen it' do
+          project_param = { feature_flags_minimum_role: 'developer' }
+
+          put api("/projects/#{project3.id}", user), params: project_param
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(project3.reload.feature_flags_minimum_role).to eq('developer')
+        end
+      end
+
       it 'updates public_builds (deprecated)' do
         project3.update!({ public_builds: false })
         project_param = { public_builds: 'true' }

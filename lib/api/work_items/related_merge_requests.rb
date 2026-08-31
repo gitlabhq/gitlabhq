@@ -23,20 +23,21 @@ module API
           # Sourced from the same service as the GraphQL development widget
           # (Resolvers::MergeRequests::WorkItemRelatedResolver) so REST tracks GraphQL instead of
           # reimplementing the derivation. Group-level work items have no project to search.
-          referenced = if project
-                         ::Issues::ReferencedMergeRequestsService
-                           .new(container: project, current_user: current_user)
-                           .referenced_merge_requests(parent_work_item)
-                       else
-                         []
-                       end
+          related_ids = if project
+                          ::Issues::ReferencedMergeRequestsService
+                            .new(container: project, current_user: current_user)
+                            .related_merge_request_ids(parent_work_item)
+                        else
+                          []
+                        end
 
           # Re-loaded as a relation so with_api_entity_associations can preload what MergeRequestBasic
           # renders. Querying by id is safe because the service already filtered them through
-          # Ability.merge_requests_readable_by_user. Ordered by iid to match
-          # GET /issues/:iid/related_merge_requests and to keep pagination deterministic.
-          merge_requests = ::MergeRequest.id_in(referenced.map(&:id))
+          # Ability.merge_requests_readable_by_user. Ordered by iid, with id as a tiebreak so
+          # pagination stays stable across pages.
+          merge_requests = ::MergeRequest.id_in(related_ids)
             .order_iid_asc
+            .with_order_id_asc
             .with_api_entity_associations
 
           present paginate(merge_requests),

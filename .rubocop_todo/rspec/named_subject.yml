@@ -1686,7 +1686,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/middleware/query_analyzer_spec.rb'
     - 'spec/lib/gitlab/middleware/rack_multipart_tempfile_factory_spec.rb'
     - 'spec/lib/gitlab/middleware/request_context_spec.rb'
-    - 'spec/lib/gitlab/monitor/demo_projects_spec.rb'
     - 'spec/lib/gitlab/multi_destination_logger_spec.rb'
     - 'spec/lib/gitlab/namespaced_session_store_spec.rb'
     - 'spec/lib/gitlab/no_cache_headers_spec.rb'

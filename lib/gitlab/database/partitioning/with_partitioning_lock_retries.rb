@@ -20,10 +20,17 @@ module Gitlab
           [1.second, 5.seconds]
         ].map(&:freeze).freeze
 
-        def initialize(**args)
+        def initialize(extra_log_params: {}, **args)
           args[:timing_configuration] = LOCK_RETRIES_TIMING_CONFIGURATION * 2
+          @extra_log_params = extra_log_params
 
-          super
+          super(**args)
+        end
+
+        private
+
+        def log_params
+          super.merge(@extra_log_params).stringify_keys
         end
       end
     end

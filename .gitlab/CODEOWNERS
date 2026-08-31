@@ -2174,8 +2174,16 @@ ee/app/workers/ai/repository_xray/
 
 [Geo]
 /ee/**/geo/ @gitlab-org/geo-team/geo-backend
-/ee/lib/gitlab/geo.rb @gitlab-org/geo-team/geo-backend
-/ee/spec/lib/gitlab/geo_spec.rb @gitlab-org/geo-team/geo-backend
+/ee/app/**/geo*.rb @gitlab-org/geo-team/geo-backend
+/ee/bin/geo_log_cursor @gitlab-org/geo-team/geo-backend
+/ee/config/initializers/geo.rb @gitlab-org/geo-team/geo-backend
+/ee/db/database_connections/geo.yaml @gitlab-org/geo-team/geo-backend
+/ee/db/gitlab_schemas/gitlab_geo.yaml @gitlab-org/geo-team/geo-backend
+/ee/lib/**/geo*.rake @gitlab-org/geo-team/geo-backend
+/ee/lib/**/geo*.rb @gitlab-org/geo-team/geo-backend
+/ee/spec/**/geo*.rb @gitlab-org/geo-team/geo-backend
+/ee/spec/fixtures/api/schemas/public_api/v4/geo*.json @gitlab-org/geo-team/geo-backend
+/ee/spec/requests/git_http_geo_spec.rb @gitlab-org/geo-team/geo-backend
 /qa/**/geo/ @gitlab-org/geo-team/geo-backend
 /node_modules/**/geo/ @gitlab-org/geo-team/geo-backend
 

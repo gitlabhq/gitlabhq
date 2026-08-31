@@ -64,6 +64,7 @@ module Gitlab
       # artifacts for the collect job to fan back in. Both are under tmp/ so they never pollute a publish diff.
       CHILD_PIPELINE_PATH = 'tmp/ai-principles-child-pipeline.yml'
       ARTIFACTS_DIR = 'tmp/ai-principles-distilled'
+      DistillationRun = Data.define(:affected, :target_sha)
 
       # A thematic break (`---`, `***`, or `___` alone on a line) is Markdown document scaffolding, not a rule, so
       # `logical_units` treats it as a unit boundary rather than comparable baseline content (observed with
@@ -296,7 +297,13 @@ module Gitlab
         workflow.validate_config!
 
         banner("\nDistilling #{name}...")
-        affected = { name => { config: config, new_sources: manifest.new_sources_for(name, config) } }
+        affected = {
+          name => {
+            config: config,
+            prior_sha: manifest.prior_distillation_sha(name),
+            new_sources: manifest.new_sources_for(name, config)
+          }
+        }
         contents, failed = build_distilled_contents(affected)
 
         record_distill_artifact(name, contents[name], failed)
@@ -481,12 +488,14 @@ module Gitlab
         header = '<!-- Auto-generated from docs.gitlab.com by ' \
           "gitlab-ai-principles-distiller — do not edit manually -->\n\n"
 
-        results = parallel_distill(affected, rewrite: rewrite)
+        run = DistillationRun.new(affected: affected, target_sha: distillation_base_sha)
+        workflow.validate_commit_shas!([run.target_sha, *run.affected.values.filter_map { |info| info[:prior_sha] }])
+        results = parallel_distill(run, rewrite: rewrite)
 
         failed = []
         contents = {}
 
-        affected.each_key do |name|
+        run.affected.each_key do |name|
           current, updated = results[name]
 
           if updated.nil?
@@ -513,7 +522,7 @@ module Gitlab
           contents[name] = <<~CONTENT
         ---
         source_checksum: #{checksum}
-        distilled_at_sha: #{distillation_base_sha}
+        distilled_at_sha: #{run.target_sha}
         ---
         #{assembled}
           CONTENT
@@ -564,18 +573,18 @@ module Gitlab
       # Manifest#read_repo_file owns its own mutex for the SSOT file cache.
       # Manifest must be loaded before forking; otherwise the unsynchronized
       # `@data ||= load` in Manifest#data would race.
-      def parallel_distill(affected, rewrite: false)
+      def parallel_distill(run, rewrite: false)
         raise 'manifest must be loaded before parallel_distill' unless manifest.loaded?
 
         mutex = Mutex.new
         results = {}
 
-        affected.each_slice(MAX_CONCURRENT_DISTILLATIONS) do |batch|
+        run.affected.each_slice(MAX_CONCURRENT_DISTILLATIONS) do |batch|
           threads = batch.map do |name, info|
             Thread.new do
               current = read_principles_file(name)
-              updated = distill_principle(name, info[:config], new_sources: info[:new_sources] || [], mutex: mutex,
-                rewrite: rewrite)
+              updated = distill_principle(name, info[:config], prior_sha: info[:prior_sha], target_sha: run.target_sha,
+                new_sources: info[:new_sources] || [], mutex: mutex, rewrite: rewrite)
               mutex.synchronize { results[name] = [current, updated] }
             end
           end
@@ -585,7 +594,7 @@ module Gitlab
         results
       end
 
-      def distill_principle(name, config, new_sources: [], mutex: nil, rewrite: false)
+      def distill_principle(name, config, prior_sha:, target_sha:, new_sources: [], mutex: nil, rewrite: false)
         log = ->(msg) { mutex ? mutex.synchronize { puts msg } : puts(msg) }
         log_warn = ->(msg) { mutex ? mutex.synchronize { warn msg } : warn(msg) }
 
@@ -604,7 +613,8 @@ module Gitlab
           end
 
           log.call("  Triggering Duo Workflow for #{name}#{" (retry #{attempt})" if attempt.positive?}...")
-          result = workflow.distill(name, config, new_sources: new_sources)
+          result = workflow.distill(name, config, prior_sha: prior_sha, target_sha: target_sha,
+            new_sources: new_sources)
 
           if result&.include?('## Checklist')
             baseline_missing = baseline_drift(config, result)

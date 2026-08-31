@@ -56,6 +56,58 @@ To create and enable a feature flag:
 To change these settings, select **Edit** ({{< icon name="pencil" >}})
 next to any feature flag in the list.
 
+## Restrict who can manage feature flags
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8239) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `feature_flag_management_permissions`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+By default, any project member with at least the Developer role can create, update,
+toggle, and delete feature flags. To meet change-control or compliance requirements,
+you can raise this threshold.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- To change the minimum role away from `owner` or `no_one_allowed`, you must have the
+  Owner role for the project.
+
+Set the minimum role with the
+[Update feature flag settings](../api/feature_flags.md#update-feature-flag-settings) REST endpoint:
+
+```shell
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/<project_id>/feature_flags_settings?minimum_role=maintainer"
+```
+
+You can also set it as the `feature_flags_minimum_role` attribute of the
+[Update a project](../api/projects.md#update-a-project) endpoint, to configure several
+project settings in one request.
+
+The setting accepts one of the following values:
+
+| Value            | Who can manage feature flags |
+|------------------|------------------------------|
+| `developer`      | Members with at least the Developer role. This is the default and matches the behavior in earlier GitLab versions. |
+| `maintainer`     | Members with at least the Maintainer role. |
+| `owner`          | Members with the Owner role. |
+| `no_one_allowed` | No one, including instance administrators. Use this value to freeze feature flag management entirely. |
+
+Members below the threshold can still view feature flags and their status if they have at least
+the Developer role, but cannot create, update, toggle, or delete them. They also cannot create,
+edit, or delete [user lists](#user-list), because a user list changes which users a flag applies to.
+
+> [!warning]
+> A Maintainer can set `owner` or `no_one_allowed`, but then cannot change it back.
+> Only a member with the Owner role can move the setting off either value.
+
 ## Maximum number of feature flags
 
 The maximum number of feature flags per project on GitLab Self-Managed

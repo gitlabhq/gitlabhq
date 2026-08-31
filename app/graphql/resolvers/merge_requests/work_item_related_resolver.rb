@@ -9,7 +9,11 @@ module Resolvers
       def resolve_with_lookahead
         return ::MergeRequest.none if resource.group_level?
 
-        super
+        ids = ::Issues::ReferencedMergeRequestsService
+          .new(container: resource.project, current_user: current_user)
+          .related_merge_request_ids(resource)
+
+        apply_lookahead(::MergeRequest.id_in(ids))
       end
 
       private

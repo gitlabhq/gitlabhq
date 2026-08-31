@@ -147,10 +147,8 @@ RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_nam
     @errors = []
     replication_targets = Array(content['replication_targets'])
 
-    target = replication_targets.first
-    if target['name'] != 'clickhouse_main'
-      @errors << "expected replication target name to be 'clickhouse_main', got '#{target['name']}'"
-    end
+    target = replication_targets.find { |t| t['name'] == 'clickhouse_main' }
+    next true unless target
 
     unless clickhouse_table_names.include?(target['target'])
       @errors << "target ClickHouse table '#{target['target']}' does not exist"

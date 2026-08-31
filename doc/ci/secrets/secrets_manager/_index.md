@@ -167,7 +167,7 @@ job:
   secrets:
     KUBE_CA_PEM:
       gitlab_secrets_manager:
-        name: kube-cert
+        name: kube_cert
   script:
    - kubectl config set-cluster e2e --server="https://example.com" --certificate-authority="$KUBE_CA_PEM"
 ```
@@ -181,7 +181,7 @@ Prerequisites:
 To access secrets stored in the Secret Manager for a group:
 
 - Use the [`secrets`](../../yaml/_index.md#secrets) and `gitlab_secrets_manager` keywords.
-- Specify the group as a secret manager source with the `source` field with the format `group/<full-path-to-group>`.
+- Specify the group as a secret manager source by using the `source` field with the `group/` prefix followed by the `<full-path-to-group>`.
 
 For example:
 
@@ -190,7 +190,7 @@ job:
   secrets:
     KUBE_CA_PEM:
       gitlab_secrets_manager:
-        name: kube-cert
+        name: kube_cert
         source: group/my-group/my-subgroup
   script:
    - kubectl config set-cluster e2e --server="https://example.com" --certificate-authority="$KUBE_CA_PEM"
@@ -206,7 +206,7 @@ job:
   secrets:
     DEPLOY_SECRET:
       gitlab_secrets_manager:
-        name: deploy-credentials
+        name: deploy_credentials
       file: false
   script:
     - my_deploy_command --user username --pass $DEPLOY_SECRET

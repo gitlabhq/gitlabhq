@@ -16967,11 +16967,13 @@ CREATE TABLE cd_rollout_transitions (
     principal text,
     on_behalf_of text,
     rollout_step_id bigint,
+    resolution_reason text,
     CONSTRAINT check_2d1ed89919 CHECK ((char_length(on_behalf_of) <= 255)),
     CONSTRAINT check_3707175af1 CHECK ((char_length(reason) <= 2000)),
     CONSTRAINT check_4e3a0df636 CHECK ((char_length(triggered_by) <= 255)),
     CONSTRAINT check_4ee4e030f4 CHECK ((principal IS NOT NULL)),
     CONSTRAINT check_6a2d564a87 CHECK ((char_length(principal) <= 255)),
+    CONSTRAINT check_703b3b43c5 CHECK ((char_length(resolution_reason) <= 2000)),
     CONSTRAINT check_adc54d280e CHECK ((char_length(event) <= 72))
 );
 
@@ -59834,7 +59836,7 @@ ALTER TABLE ONLY cluster_platforms_kubernetes
     ADD CONSTRAINT fk_eb81334270 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY tag_gpg_signatures
-    ADD CONSTRAINT fk_ebf091e1c4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_ebf091e1c4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cd_version_sets
     ADD CONSTRAINT fk_ebf4f69024 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

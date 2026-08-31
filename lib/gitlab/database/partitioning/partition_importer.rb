@@ -126,7 +126,8 @@ module Gitlab
             WithPartitioningLockRetries.new(
               klass: self.class,
               logger: Gitlab::AppLogger,
-              connection: connection
+              connection: connection,
+              extra_log_params: { table_name: partitions.first.table }
             ).run(raise_on_exhaustion: true) do
               connection.transaction(requires_new: false) do
                 partitions.each do |partition|

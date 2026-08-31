@@ -995,5 +995,7 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`block_ai_catalog_mcp_server`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251763) | A user blocks an AI Catalog MCP server for a group or project. | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/work_items/623216) | Group, Project |
 | [`create_ai_catalog_mcp_server`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227051) | A user creates an AI Catalog MCP server. | {{< yes >}} | GitLab [18.11](https://gitlab.com/gitlab-org/gitlab/-/work_items/590708) | Instance |
+| [`unblock_ai_catalog_mcp_server`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251763) | A user allows a previously blocked AI Catalog MCP server for a group or project. | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/work_items/623216) | Group, Project |
 | [`update_ai_catalog_mcp_server`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227051) | A user updates an AI Catalog MCP server. | {{< yes >}} | GitLab [18.11](https://gitlab.com/gitlab-org/gitlab/-/work_items/590708) | Instance |

@@ -110,6 +110,105 @@ RSpec.describe Issues::ReferencedMergeRequestsService, feature_category: :team_p
     end
   end
 
+  describe '#related_merge_requests' do
+    let_it_be(:explicitly_related_mr, freeze: false) do
+      create(:merge_request, source_project: project, source_branch: 'improve/awesome').tap do |merge_request|
+        create(:merge_requests_closing_issues,
+          issue: issue, merge_request: merge_request, link_type: :related, from_mr_description: false)
+      end
+    end
+
+    it 'returns the referenced and the explicitly related merge requests, sorted by iid' do
+      expect(service.related_merge_requests(issue)).to eq([
+        closing_mr,
+        referencing_mr,
+        explicitly_related_mr,
+        closing_mr_other_project,
+        referencing_mr_other_project
+      ])
+    end
+
+    it 'includes an explicitly related merge request from another project the user can read' do
+      other_project_mr = create(:merge_request, source_project: other_project, source_branch: 'improve/awesome')
+      create(:merge_requests_closing_issues,
+        issue: issue, merge_request: other_project_mr, link_type: :related, from_mr_description: false)
+
+      expect(service.related_merge_requests(issue)).to include(other_project_mr)
+    end
+
+    it 'returns a merge request that is both referenced and explicitly related only once' do
+      create(:merge_requests_closing_issues,
+        issue: issue, merge_request: referencing_mr, link_type: :related, from_mr_description: false)
+
+      expect(service.related_merge_requests(issue).count(referencing_mr)).to eq(1)
+    end
+
+    it 'excludes cross project references if the user cannot read cross project' do
+      allow(Ability).to receive(:allowed?).and_call_original
+      expect(Ability).to receive(:allowed?).with(user, :read_cross_project).at_least(:once).and_return(false)
+
+      expect(service.related_merge_requests(issue)).not_to include(closing_mr_other_project)
+      expect(service.related_merge_requests(issue)).not_to include(referencing_mr_other_project)
+    end
+
+    context 'when the explicit_mr_work_item_relations feature flag is disabled' do
+      before do
+        stub_feature_flags(explicit_mr_work_item_relations: false)
+      end
+
+      it 'returns only the referenced merge requests' do
+        expect(service.related_merge_requests(issue)).not_to include(explicitly_related_mr)
+      end
+    end
+
+    context 'performance' do
+      it 'does not run extra queries for each explicitly related merge request' do
+        service.related_merge_requests(issue) # warm cache
+        control = ActiveRecord::QueryRecorder.new { service.related_merge_requests(issue) }
+
+        create(:merge_request, source_project: project, source_branch: 'signed-commits').tap do |merge_request|
+          create(:merge_requests_closing_issues,
+            issue: issue, merge_request: merge_request, link_type: :related, from_mr_description: false)
+        end
+        service.related_merge_requests(issue) # warm cache
+
+        expect { service.related_merge_requests(issue) }.not_to exceed_query_limit(control)
+      end
+
+      it 'preloads the head pipeline for each merge request, and its routes' do
+        # Hack to ensure no data is preserved on issue before starting the spec,
+        # to avoid false negatives
+        reloaded_issue = Issue.find(issue.id)
+
+        pipeline_routes = ->(merge_requests) do
+          merge_requests.map { |mr| mr.head_pipeline&.project&.full_path }
+        end
+
+        closing_mr_other_project.update!(head_pipeline: create(:ci_pipeline))
+        control = ActiveRecord::QueryRecorder.new { pipeline_routes.call(service.related_merge_requests(reloaded_issue)) }
+
+        explicitly_related_mr.update!(head_pipeline: create(:ci_pipeline))
+
+        expect { pipeline_routes.call(service.related_merge_requests(issue)) }
+          .not_to exceed_query_limit(control)
+      end
+    end
+  end
+
+  describe '#related_merge_request_ids' do
+    let_it_be(:explicitly_related_mr, freeze: false) do
+      create(:merge_request, source_project: project, source_branch: 'improve/awesome').tap do |merge_request|
+        create(:merge_requests_closing_issues,
+          issue: issue, merge_request: merge_request, link_type: :related, from_mr_description: false)
+      end
+    end
+
+    it 'returns the ids of the related merge requests' do
+      expect(service.related_merge_request_ids(issue))
+        .to match_array(service.related_merge_requests(issue).map(&:id))
+    end
+  end
+
   describe '#closed_by_merge_requests' do
     let(:closed_issue) { build(:issue, :closed, project: project) }
 

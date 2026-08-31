@@ -1735,7 +1735,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/metrics/subscribers/action_cable.rb'
     - 'lib/gitlab/metrics/subscribers/rack_attack.rb'
     - 'lib/gitlab/middleware/basic_health_check.rb'
-    - 'lib/gitlab/monitor/demo_projects.rb'
     - 'lib/gitlab/nav/top_nav_menu_item.rb'
     - 'lib/gitlab/object_hierarchy.rb'
     - 'lib/gitlab/otp_key_rotator.rb'

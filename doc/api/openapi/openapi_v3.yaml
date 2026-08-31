@@ -34711,7 +34711,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_6d60e453a420"
+              "$ref": "#/components/schemas/RequestBody_b4059264f99d"
     delete:
       operationId: deleteApiV4ProjectsId
       summary: Delete a project
@@ -59425,6 +59425,71 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/RequestBody_2014afd4b67c"
+  "/api/v4/projects/{id}/feature_flags_settings":
+    get:
+      operationId: getApiV4ProjectsIdFeatureFlagsSettings
+      summary: Retrieve feature flag settings
+      description: Retrieves the feature flag settings of a specified project.
+      tags:
+      - Feature flags
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesFeatureFlagSettings"
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '400':
+          description: Bad Request
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+    put:
+      operationId: putApiV4ProjectsIdFeatureFlagsSettings
+      summary: Update feature flag settings
+      description: Updates the feature flag settings of a specified project.
+      tags:
+      - Feature flags
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesFeatureFlagSettings"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_cddc12582487"
   "/api/v4/projects/{id}/feature_flags/{feature_flag_name}":
     get:
       operationId: getApiV4ProjectsIdFeatureFlagsFeatureFlagName
@@ -93623,6 +93688,12 @@ components:
           type: array
         strategies:
           "$ref": "#/components/schemas/APIEntitiesFeatureFlagStrategy"
+    APIEntitiesFeatureFlagSettings:
+      type: object
+      properties:
+        minimum_role:
+          type: string
+          example: developer
     APIEntitiesErrorTrackingProjectSetting:
       type: object
       properties:
@@ -108099,7 +108170,7 @@ components:
           nullable: true
       required:
       - name
-    RequestBody_6d60e453a420:
+    RequestBody_b4059264f99d:
       type: object
       properties:
         name:
@@ -108700,6 +108771,16 @@ components:
         automatic_rebase_enabled:
           type: boolean
           description: Enable automatic rebase of the source branch before merge
+          nullable: true
+        feature_flags_minimum_role:
+          type: string
+          enum:
+          - no_one_allowed
+          - developer
+          - maintainer
+          - owner
+          description: Limit the ability to create, update, toggle, and delete feature
+            flags to only users with at least the set minimum role
           nullable: true
         allow_pipeline_trigger_approve_deployment:
           type: boolean
@@ -116794,6 +116875,21 @@ components:
           nullable: true
       required:
       - name
+    RequestBody_cddc12582487:
+      type: object
+      properties:
+        minimum_role:
+          type: string
+          enum:
+          - no_one_allowed
+          - developer
+          - maintainer
+          - owner
+          description: Minimum role required to create, update, toggle, and delete
+            feature flags
+          minLength: 1
+      required:
+      - minimum_role
     RequestBody_d6c4ed39fc6a:
       type: object
       properties:

@@ -48,6 +48,19 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       end
     end
 
+    context 'when the pipeline-creation context carries suspend_options' do
+      let(:seed_context) do
+        Gitlab::Ci::Pipeline::Seed::Context.new(
+          pipeline, root_variables: root_variables,
+          suspend_options: { suspend_on_success: true, environment_key: 'some-key' }
+        )
+      end
+
+      it 'does not merge suspend_options into build options' do
+        expect(seed_attributes.dig(:options, :suspend_options)).to be_nil
+      end
+    end
+
     context 'with job:rules:[when:]' do
       context 'is matched' do
         let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$VAR == null', when: 'always' }] } }

@@ -235,7 +235,7 @@ adds those wrappers automatically.
 
         **This-run capture pass (mirror of the rule 18 gate).** Diff each
         SSOT source between the prior file's `distilled_at_sha` and HEAD
-        (`git diff <distilled_at_sha>..HEAD -- <source_path>`). Every line the
+        (provided in the invocation's additional context). Every line the
         SSOT **added or modified** this run MUST be either captured by an
         emitted/revised item, or explicitly excludable under a named rule
         (rule 9 universal best practice, rule 11 duplicate, rule 16d
@@ -248,8 +248,8 @@ adds those wrappers automatically.
         constraint — fold it in; do NOT drop it.
 
         When the user prompt identifies an SSOT source as newly declared,
-        its `git diff <distilled_at_sha>..HEAD` is empty by construction:
-        the manifest changed, not the document. Read that source in full and
+        it has no historical diff because the prior distillation did not
+        consider it. Read that source in full and
         treat its normative content as this-run additions exempt from this
         diff gate. Rules 9, 11, and 16d still apply, so a source that is
         purely conceptual, duplicates another rule, or delegates elsewhere
@@ -399,10 +399,9 @@ adds those wrappers automatically.
 
     **Mechanical per-item gate (apply to EVERY item you change or add).**
     Determine what changed THIS run: the prior distilled file's frontmatter
-    records the `distilled_at_sha` it was generated from. Use your tools to
-    diff each SSOT source between that sha and the current checkout (for
-    example `git diff <distilled_at_sha>..HEAD -- <source_path>`, or a
-    targeted `grep` of the changed regions) to see exactly which source lines
+    records the `distilled_at_sha` it was generated from. Read the supplied
+    per-source diff in the invocation's additional context, which covers
+    that sha through the current checkout, to see exactly which source lines
     were added or removed since the last distillation. Before you emit any
     line that differs from the prior checklist, you MUST be able to point to
     SPECIFIC source lines that changed this run AND that GOVERN THIS ITEM. If
@@ -411,8 +410,9 @@ adds those wrappers automatically.
     this-run change to the lines governing that item — then the change is
     FORBIDDEN: revert the item to its prior text verbatim. "Grounded in the
     full source" is necessary but NOT sufficient; the governing lines must
-    have changed this run. If you cannot run the diff, or cannot tie a
-    proposed edit to a this-run source change, keep the prior line exactly.
+    have changed this run. If no diff was supplied for a source, or you
+    cannot tie a proposed edit to a this-run source change, keep the prior
+    line exactly.
     This gate is **bidirectional**: "keep the prior line exactly" applies ONLY
     to items whose governing source lines did NOT change this run — it NEVER
     licenses ignoring a line the SSOT added or changed this run, which must

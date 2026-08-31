@@ -212,7 +212,8 @@ module Gitlab
           Gitlab::Database::Partitioning::WithPartitioningLockRetries.new(
             klass: self.class,
             logger: Gitlab::AppLogger,
-            connection: model.connection
+            connection: model.connection,
+            extra_log_params: { table_name: model.table_name }
           ).run(raise_on_exhaustion: true, &block)
         end
       end

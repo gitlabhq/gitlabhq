@@ -902,4 +902,144 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
       end
     end
   end
+
+  describe 'GET /projects/:id/feature_flags_settings' do
+    subject { get api("/projects/#{project.id}/feature_flags_settings", user) }
+
+    it_behaves_like 'authorizing granular token permissions', :read_feature_flag do
+      let(:user) { developer }
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/feature_flags_settings", personal_access_token: pat)
+      end
+    end
+
+    it 'returns the minimum role' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to eq({ 'minimum_role' => 'developer' })
+    end
+
+    context 'when the minimum role has been changed' do
+      before do
+        project.project_setting.feature_flags_minimum_role_maintainer!
+      end
+
+      it 'returns the current value' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['minimum_role']).to eq('maintainer')
+      end
+    end
+
+    it_behaves_like 'check user permission'
+
+    context 'when user is not a project member' do
+      let(:user) { non_project_member }
+
+      it_behaves_like 'not found'
+    end
+  end
+
+  describe 'PUT /projects/:id/feature_flags_settings' do
+    let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+    let_it_be(:owner) { create(:user, owner_of: project) }
+
+    let(:user) { maintainer }
+    let(:params) { { minimum_role: 'maintainer' } }
+
+    subject { put api("/projects/#{project.id}/feature_flags_settings", user), params: params }
+
+    it_behaves_like 'authorizing granular token permissions', :update_feature_flags_minimum_role_setting do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) do
+        put api("/projects/#{project.id}/feature_flags_settings", personal_access_token: pat),
+          params: { minimum_role: 'maintainer' }
+      end
+    end
+
+    it 'updates the minimum role' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['minimum_role']).to eq('maintainer')
+      expect(project.reload.feature_flags_minimum_role).to eq('maintainer')
+    end
+
+    context 'when the role is invalid' do
+      let(:params) { { minimum_role: 'wrong' } }
+
+      it 'returns Bad Request' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'when the role is valid but not permitted' do
+      let(:params) { { minimum_role: 'guest' } }
+
+      it 'returns Bad Request' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'when minimum_role is missing' do
+      let(:params) { {} }
+
+      it 'returns Bad Request' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'when user is a developer' do
+      let(:user) { developer }
+
+      it 'forbids the request' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(project.reload.feature_flags_minimum_role).to eq('developer')
+      end
+    end
+
+    context 'when user is not a project member' do
+      let(:user) { non_project_member }
+
+      it_behaves_like 'not found'
+    end
+
+    context 'when the setting is already at a privileged role' do
+      before do
+        project.project_setting.feature_flags_minimum_role_owner!
+      end
+
+      let(:params) { { minimum_role: 'developer' } }
+
+      it 'forbids a maintainer from loosening it' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(project.reload.feature_flags_minimum_role).to eq('owner')
+      end
+
+      context 'when user is an owner' do
+        let(:user) { owner }
+
+        it 'allows loosening it' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(project.reload.feature_flags_minimum_role).to eq('developer')
+        end
+      end
+    end
+  end
 end

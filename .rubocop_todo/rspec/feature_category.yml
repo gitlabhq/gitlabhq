@@ -1857,7 +1857,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/middleware/speedscope_spec.rb'
     - 'spec/lib/gitlab/middleware/strip_cookies_spec.rb'
     - 'spec/lib/gitlab/middleware/webhook_recursion_detection_spec.rb'
-    - 'spec/lib/gitlab/monitor/demo_projects_spec.rb'
     - 'spec/lib/gitlab/multi_collection_paginator_spec.rb'
     - 'spec/lib/gitlab/multi_destination_logger_spec.rb'
     - 'spec/lib/gitlab/namespaced_session_store_spec.rb'
