@@ -19509,6 +19509,89 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "AiChatQuestionCategory",
+          "description": "Category of suggested questions for GitLab Duo Chat",
+          "fields": [
+            {
+              "name": "contextual",
+              "description": "Whether the questions are about the resource on the current page. At most one category is contextual, and it is returned first.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "key",
+              "description": "Stable identifier of the category. The type of the current page for contextual categories, for example `merge_request` or `blob`, and the topic for static ones, for example `security`.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "questions",
+              "description": "Suggested questions in the category.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "title",
+              "description": "Display title of the category, for example the reference of the current resource.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "SCALAR",
           "name": "AiConversationThreadID",
           "description": "A `AiConversationThreadID` is a global ID. It is encoded as a string.\n\nAn example `AiConversationThreadID` is: `\"gid://gitlab/Ai::Conversation::Thread/1\"`.",
@@ -102090,6 +102173,26 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "questionCategories",
+              "description": "Suggested questions grouped by category. Not affected by questionCount. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AiChatQuestionCategory",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "questions",

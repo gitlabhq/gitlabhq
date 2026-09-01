@@ -72,8 +72,10 @@ export default {
     >
       <span class="gl-font-weight-bold gl-text-xs">{{ scannerMetadata.label }}</span>
     </div>
-    <span class="gl-font-bold">{{ scannerMetadata.displayName }}</span>
-    <gl-icon :id="popoverTargetId" name="information-o" variant="info" class="gl-ml-2" />
+    <span class="gl-font-semibold">
+      {{ scannerMetadata.displayName }}
+      <gl-icon :id="popoverTargetId" name="information-o" variant="info" class="gl-ml-2" />
+    </span>
     <gl-popover :target="popoverTargetId" placement="top" :title="scannerMetadata.helpTitle">
       <gl-sprintf :message="scannerMetadata.helpDescription">
         <template #link="{ content }">

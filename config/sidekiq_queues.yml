@@ -869,6 +869,8 @@
   - 1
 - - organizations_transfer_topic_avatar
   - 1
+- - organizations_transfer_user_agent_details
+  - 1
 - - package_cleanup
   - 1
 - - package_metadata_global_advisory_scan

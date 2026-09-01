@@ -582,6 +582,33 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
           expect { service.execute }.not_to change { non_group_mention.reload.snippet_organization_id }
         end
       end
+
+      context 'for user agent details' do
+        it 'updates organization_id for details on personal snippets of transferred users' do
+          detail = create(:user_agent_detail, subject: personal_snippet, organization: old_organization)
+
+          expect(detail.subject_type).to eq('Snippet')
+
+          service.execute
+
+          expect(detail.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update details on personal snippets of users not in the group' do
+          detail = create(:user_agent_detail, subject: non_group_snippet, organization: old_organization)
+
+          expect { service.execute }.not_to change { detail.reload.organization_id }
+        end
+
+        it 'does not update details on project snippets' do
+          project = create(:project, namespace: group, organization: old_organization)
+          detail = create(:user_agent_detail,
+            subject: create(:project_snippet, project: project, author: user1),
+            organization: old_organization)
+
+          expect { service.execute }.not_to change { detail.reload.organization_id }
+        end
+      end
     end
 
     context 'with cluster transfers' do

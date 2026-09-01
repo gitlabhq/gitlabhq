@@ -27,7 +27,7 @@ include:
       # report is still uploaded but no bot comment is posted.
       allure_mr_update_type: ""
   - project: gitlab-org/quality/pipeline-common
-    ref: 12.2.0
+    ref: 13.0.0
     file:
       - /ci/notify-slack.gitlab-ci.yml
       - /ci/qa-report.gitlab-ci.yml

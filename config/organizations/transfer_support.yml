@@ -165,7 +165,7 @@ subscription_user_add_on_assignments: supported
 todos: supported
 topics: supported
 upcoming_reconciliations: supported
-user_agent_details: https://gitlab.com/gitlab-org/gitlab/-/issues/611967
+user_agent_details: supported
 user_upload_states: https://gitlab.com/gitlab-org/gitlab/-/issues/611963
 user_uploads: https://gitlab.com/gitlab-org/gitlab/-/issues/611963
 users: supported

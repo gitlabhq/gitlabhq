@@ -142,6 +142,7 @@ module Organizations
           update_granular_scopes(user_ids)
           update_associated_organization_ids(user_ids)
           update_personal_snippet_notes(user_ids)
+          update_user_agent_details(user_ids)
           update_clusters(user_ids)
           update_oauth_applications(user_ids)
           update_abuse_reports(user_ids)
@@ -286,6 +287,15 @@ module Organizations
           update_organization_id_for(snippet_class, organization_key: :snippet_organization_id) do |relation|
             relation.where(snippet_id: personal_snippets)
           end
+        end
+      end
+
+      def update_user_agent_details(user_ids)
+        update_organization_id_for(UserAgentDetail) do |relation|
+          relation.where(
+            subject_type: 'Snippet',
+            subject_id: PersonalSnippet.where(author_id: user_ids).select(:id)
+          )
         end
       end
 

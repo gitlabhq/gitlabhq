@@ -166,6 +166,25 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
     end
   end
 
+  describe '#markdown_with_result' do
+    it 'returns the rendered HTML alongside what the post-process filters reported',
+      :aggregate_failures do
+      html, result = helper.markdown_with_result('[README](README.md)', requested_path: '')
+
+      expect(html).to include("/#{project.full_path}/-/blob/master/README.md")
+      expect(result[:linkable_attributes]).to be_present
+    end
+
+    context 'when the text is blank' do
+      it 'has nothing to report', :aggregate_failures do
+        html, result = helper.markdown_with_result('')
+
+        expect(html).to eq('')
+        expect(result).to eq({})
+      end
+    end
+  end
+
   describe '#markdown_field' do
     let(:attribute) { :title }
 

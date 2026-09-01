@@ -27,7 +27,7 @@ module Gitlab
       # `cross_project` is set when the embed's project differs from the project
       # the surrounding document belongs to; the header then shows the target's
       # full path to qualify it.
-      def initialize(project:, sha:, path:, from:, to:, blob: nil, cross_project: false)
+      def initialize(project:, sha:, path:, from:, to:, blob: nil, cross_project: false, for_email: false)
         @project = project
         @sha = sha
         @path = path
@@ -35,6 +35,7 @@ module Gitlab
         @to = to
         @blob = blob
         @cross_project = cross_project
+        @for_email = for_email
       end
 
       # Returns the embed HTML String, or nil if the blob cannot be embedded for any reason.
@@ -55,7 +56,7 @@ module Gitlab
 
       private
 
-      attr_reader :project, :sha, :path, :from, :to, :cross_project
+      attr_reader :project, :sha, :path, :from, :to, :cross_project, :for_email
 
       # A lazy Blob is truthy even when it resolves to nil, so a caller that
       # supplied one always keeps it. Only callers that didn't pass one trigger
@@ -69,7 +70,7 @@ module Gitlab
       end
 
       def cache_key
-        ['blob_embed', VERSION, project.id, sha, path, from, to, cross_project, I18n.locale]
+        ['blob_embed', VERSION, project.id, sha, path, from, to, cross_project, for_email, I18n.locale]
       end
 
       def build_html
@@ -83,7 +84,7 @@ module Gitlab
         line_count = blob.data.each_line.count
         return if from > line_count
 
-        html = Blobs::EmbeddedBlobComponent.new(
+        html = component_class.new(
           blob: blob.present,
           project: project,
           sha: sha,
@@ -93,6 +94,10 @@ module Gitlab
         ).render_in(view_context)
 
         strip_view_annotations(html)
+      end
+
+      def component_class
+        for_email ? Blobs::EmailEmbeddedBlobComponent : Blobs::EmbeddedBlobComponent
       end
 
       # Remove the "<!-- BEGIN app/components/blobs/embedded_blob_component.html.haml -->"

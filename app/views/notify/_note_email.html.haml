@@ -8,6 +8,11 @@
 - discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion?
 - project = local_assigns.fetch(:project, @project)
 
+- note_body, note_render_result = markdown_with_result(note.note, pipeline: :email, author: author, current_user: @recipient, issuable_reference_expansion_enabled: true, no_header_anchors: true)
+- if note_render_result[:blob_embeds_rendered]
+  = content_for :head do
+    = blob_embed_stylesheet_link_tag
+
 - if note.noteable.respond_to?(:confidential?) && note.noteable.confidential?
   %p{ style: "color: #3a383f; background-color: #fdf1dd; border-radius: 4px; padding: 6px 10px; margin-bottom: 10px; font-size: 13px;" }
     🔒 #{_('Confidential work item')}
@@ -44,4 +49,4 @@
       locals: { diff_file: discussion.diff_file }
 
 .md{ style: note_style }
-  = markdown(note.note, pipeline: :email, author: author, current_user: @recipient, issuable_reference_expansion_enabled: true, no_header_anchors: true)
+  = note_body

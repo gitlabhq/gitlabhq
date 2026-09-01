@@ -30441,10 +30441,16 @@ msgstr ""
 msgid "DuoAgenticChat|Current page"
 msgstr ""
 
+msgid "DuoAgenticChat|Development"
+msgstr ""
+
 msgid "DuoAgenticChat|Generate workplan"
 msgstr ""
 
 msgid "DuoAgenticChat|Get GitLab Duo turned on"
+msgstr ""
+
+msgid "DuoAgenticChat|Get started"
 msgstr ""
 
 msgid "DuoAgenticChat|Get targeted help for tasks with specialized agents"
@@ -30531,6 +30537,9 @@ msgstr ""
 msgid "DuoAgenticChat|Loading your conversation..."
 msgstr ""
 
+msgid "DuoAgenticChat|Merge requests"
+msgstr ""
+
 msgid "DuoAgenticChat|More actions"
 msgstr ""
 
@@ -30553,6 +30562,9 @@ msgid "DuoAgenticChat|Optional. Turn on preview features"
 msgstr ""
 
 msgid "DuoAgenticChat|Page context"
+msgstr ""
+
+msgid "DuoAgenticChat|Pipelines"
 msgstr ""
 
 msgid "DuoAgenticChat|Prompted to ignore it"
@@ -30589,6 +30601,9 @@ msgid "DuoAgenticChat|Retry"
 msgstr ""
 
 msgid "DuoAgenticChat|Review and confirm"
+msgstr ""
+
+msgid "DuoAgenticChat|Security"
 msgstr ""
 
 msgid "DuoAgenticChat|Select a group"
@@ -30631,6 +30646,15 @@ msgid "DuoAgenticChat|This conversation has been archived"
 msgstr ""
 
 msgid "DuoAgenticChat|This determines where your GitLab Duo usage is tracked. You can change this any time in your profile preferences."
+msgstr ""
+
+msgid "DuoAgenticChat|This file"
+msgstr ""
+
+msgid "DuoAgenticChat|This job"
+msgstr ""
+
+msgid "DuoAgenticChat|This page"
 msgstr ""
 
 msgid "DuoAgenticChat|To continue collaborating with GitLab Duo Agent Platform, purchase credits."
@@ -30682,6 +30706,9 @@ msgid "DuoAgenticChat|Usage billing not available"
 msgstr ""
 
 msgid "DuoAgenticChat|Web search"
+msgstr ""
+
+msgid "DuoAgenticChat|Work items"
 msgstr ""
 
 msgid "DuoAgenticChat|Work with GitLab Duo to break your item into an efficient implementation plan."
@@ -70890,6 +70917,9 @@ msgstr ""
 msgid "SecurityConfiguration|Learn more about vulnerability training"
 msgstr ""
 
+msgid "SecurityConfiguration|Manage %{scannerName} profiles"
+msgstr ""
+
 msgid "SecurityConfiguration|Manage DAST profiles"
 msgstr ""
 
@@ -70897,6 +70927,9 @@ msgid "SecurityConfiguration|Manage corpus"
 msgstr ""
 
 msgid "SecurityConfiguration|Manage corpus files used as seed inputs with coverage-guided fuzzing."
+msgstr ""
+
+msgid "SecurityConfiguration|Manage profiles"
 msgstr ""
 
 msgid "SecurityConfiguration|Manage profiles for use by DAST scans."
@@ -76364,9 +76397,6 @@ msgstr ""
 msgid "SemanticSearch|Elasticsearch"
 msgstr ""
 
-msgid "SemanticSearch|Embedding model"
-msgstr ""
-
 msgid "SemanticSearch|Embedding model configuration is not available. Ensure %{coll_name} collection exists."
 msgstr ""
 
@@ -76424,6 +76454,9 @@ msgstr ""
 msgid "SemanticSearch|Next model"
 msgstr ""
 
+msgid "SemanticSearch|No models configured yet"
+msgstr ""
+
 msgid "SemanticSearch|Once a model has been set, changing the chunk strategy will require a full re-indexing. This will be supported later."
 msgstr ""
 
@@ -76431,6 +76464,9 @@ msgid "SemanticSearch|OpenSearch"
 msgstr ""
 
 msgid "SemanticSearch|OpenSearch's region."
+msgstr ""
+
+msgid "SemanticSearch|Overview"
 msgstr ""
 
 msgid "SemanticSearch|Password"
@@ -76548,6 +76584,9 @@ msgid "SemanticSearch|This process can take several hours depending on your code
 msgstr ""
 
 msgid "SemanticSearch|Unexpected server response. Please refresh the page and try again."
+msgstr ""
+
+msgid "SemanticSearch|Update embedding model"
 msgstr ""
 
 msgid "SemanticSearch|Update embeddings and start backfill process"

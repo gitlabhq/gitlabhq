@@ -44,11 +44,13 @@ module Banzai
             from: embed[:from],
             to: embed[:to],
             blob: embed[:blob],
-            cross_project: cross_project?(embed[:target])
+            cross_project: cross_project?(embed[:target]),
+            for_email: for_email?
           ).render
           next unless html
 
           embed[:node].parent.replace(html)
+          result[:blob_embeds_rendered] = true
         end
 
         doc

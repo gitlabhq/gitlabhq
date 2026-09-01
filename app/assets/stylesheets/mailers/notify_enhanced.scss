@@ -67,7 +67,7 @@ pre {
   }
 
   .diff-table.code,
-  table.code {
+  table.code:not(.blob-embed) {
     width: auto;
 
     td {

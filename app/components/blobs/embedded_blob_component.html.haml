@@ -8,4 +8,4 @@
         = link_to number, permalink("L#{number}"), class: 'diff-line-num'
     .blob-content
       %pre.code.highlight
-        %code= highlighted_lines
+        %code= safe_join(highlighted_lines, "\n")

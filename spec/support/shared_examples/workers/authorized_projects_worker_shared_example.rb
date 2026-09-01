@@ -10,8 +10,8 @@ RSpec.shared_examples "refreshes user's project authorizations" do
 
     subject(:job) { described_class.new }
 
-    it 'calls refresh authorized projects service without redis lock' do
-      expect(service).to receive(:execute_without_lease)
+    it 'calls refresh authorized projects service' do
+      expect(service).to receive(:execute)
 
       expect(Users::RefreshAuthorizedProjectsService)
         .to receive(:new)

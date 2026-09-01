@@ -16,9 +16,7 @@ module AuthorizedProjectUpdate
 
       return unless project && user
 
-      service = AuthorizedProjectUpdate::ProjectRecalculatePerUserService.new(project, user)
-
-      recalculate(service)
+      AuthorizedProjectUpdate::ProjectRecalculatePerUserService.new(project, user).execute
     end
   end
 end

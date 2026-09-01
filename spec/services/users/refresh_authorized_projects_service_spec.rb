@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_management do
-  include ExclusiveLeaseHelpers
-
   # We're using let! here so that any expectations for the service class are not
   # triggered twice.
   let!(:project) { create(:project) }
@@ -12,17 +10,7 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
   let(:user) { project.namespace.first_owner }
   let(:service) { described_class.new(user) }
 
-  describe '#execute', :clean_gitlab_redis_shared_state do
-    it 'refreshes the authorizations using a lease' do
-      lease_key = "refresh_authorized_projects:#{user.id}"
-
-      expect_to_obtain_exclusive_lease(lease_key, 'uuid')
-      expect_to_cancel_exclusive_lease(lease_key, 'uuid')
-      expect(service).to receive(:execute_without_lease)
-
-      service.execute
-    end
-
+  describe '#execute' do
     context 'callbacks' do
       let(:callback) { double('callback') }
 
@@ -57,69 +45,56 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
       end
     end
 
-    it 'logs the duration statistics' do
-      expect(Gitlab::AppJsonLogger).to receive(:info).with(
-        hash_including(
-          event: 'authorized_projects_refresh',
-          user_id: user.id,
-          obtain_redis_lease_duration_s: anything,
-          find_records_due_for_refresh_duration_s: anything,
-          update_authorizations_duration_s: anything
-        )
-      )
-      service.execute
-    end
-  end
+    context 'when authorizations are outdated' do
+      before do
+        user.project_authorizations.delete_all
+      end
 
-  describe '#execute_without_lease' do
-    before do
-      user.project_authorizations.delete_all
-    end
+      it 'updates the authorized projects of the user' do
+        project2 = create(:project)
+        project_authorization = user.project_authorizations
+          .create!(project: project2, access_level: Gitlab::Access::MAINTAINER)
 
-    it 'updates the authorized projects of the user' do
-      project2 = create(:project)
-      project_authorization = user.project_authorizations
-        .create!(project: project2, access_level: Gitlab::Access::MAINTAINER)
+        to_be_removed = [project_authorization.project_id]
 
-      to_be_removed = [project_authorization.project_id]
+        to_be_added = [
+          { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::OWNER }
+        ]
 
-      to_be_added = [
-        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::OWNER }
-      ]
+        expect(service).to receive(:update_authorizations)
+          .with(to_be_removed, to_be_added)
 
-      expect(service).to receive(:update_authorizations)
-        .with(to_be_removed, to_be_added)
+        service.execute
+      end
 
-      service.execute_without_lease
-    end
+      it 'sets the access level of a project to the highest available level' do
+        user.project_authorizations.delete_all
 
-    it 'sets the access level of a project to the highest available level' do
-      user.project_authorizations.delete_all
+        project_authorization = user.project_authorizations
+          .create!(project: project, access_level: Gitlab::Access::DEVELOPER)
 
-      project_authorization = user.project_authorizations
-        .create!(project: project, access_level: Gitlab::Access::DEVELOPER)
+        to_be_removed = [project_authorization.project_id]
 
-      to_be_removed = [project_authorization.project_id]
+        to_be_added = [
+          { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::OWNER }
+        ]
 
-      to_be_added = [
-        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::OWNER }
-      ]
+        expect(service).to receive(:update_authorizations)
+          .with(to_be_removed, to_be_added)
 
-      expect(service).to receive(:update_authorizations)
-        .with(to_be_removed, to_be_added)
+        service.execute
+      end
 
-      service.execute_without_lease
-    end
+      it 'updates project_authorizations_recalculated_at', :freeze_time do
+        default_date = Time.zone.local('2010')
+        expect do
+          service.execute
+        end.to change { user.project_authorizations_recalculated_at }.from(default_date).to(Time.zone.now)
+      end
 
-    it 'updates project_authorizations_recalculated_at', :freeze_time do
-      default_date = Time.zone.local('2010')
-      expect do
-        service.execute_without_lease
-      end.to change { user.project_authorizations_recalculated_at }.from(default_date).to(Time.zone.now)
-    end
-
-    it 'returns a User' do
-      expect(service.execute_without_lease).to be_an_instance_of(User)
+      it 'returns a User' do
+        expect(service.execute).to be_an_instance_of(User)
+      end
     end
   end
 

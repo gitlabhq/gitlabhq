@@ -33,4 +33,8 @@ module Banzai
   def self.post_process(html, context)
     Renderer.post_process(html, context)
   end
+
+  def self.post_process_result(html, context)
+    Renderer.post_process_result(html, context)
+  end
 end

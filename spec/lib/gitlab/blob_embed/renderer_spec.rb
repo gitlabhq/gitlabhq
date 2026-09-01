@@ -10,6 +10,7 @@ RSpec.describe Gitlab::BlobEmbed::Renderer, feature_category: :markdown do
   let(:from) { 3 }
   let(:to) { 6 }
   let(:cross_project) { false }
+  let(:for_email) { false }
   let(:line_count) { project.repository.blob_at(sha, path).data.each_line.count }
 
   subject(:renderer) { fresh_renderer }
@@ -18,7 +19,8 @@ RSpec.describe Gitlab::BlobEmbed::Renderer, feature_category: :markdown do
   # separate instances.
   def fresh_renderer
     described_class.new(
-      project: project, sha: sha, path: path, from: from, to: to, cross_project: cross_project
+      project: project, sha: sha, path: path, from: from, to: to, cross_project: cross_project,
+      for_email: for_email
     )
   end
 
@@ -190,6 +192,20 @@ RSpec.describe Gitlab::BlobEmbed::Renderer, feature_category: :markdown do
 
         fresh_renderer.render
         Gitlab::I18n.with_locale('fr') { fresh_renderer.render }
+      end
+    end
+
+    context 'when rendering for email' do
+      let(:for_email) { true }
+
+      def fragment
+        Nokogiri::HTML5.fragment(fresh_renderer.render)
+      end
+
+      it 'renders the table variant rather than the blob viewer markup', :aggregate_failures do
+        expect(fragment.at_css('table.blob-embed')).to be_present
+        expect(fragment.at_css('.line-numbers')).to be_nil
+        expect(fragment.css('td.blob-embed-line').size).to eq(4)
       end
     end
 

@@ -682,6 +682,43 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           end
         end
       end
+
+      context 'for user agent details' do
+        it 'enqueues TransferUserAgentDetailsWorker with correct arguments' do
+          expect(Organizations::TransferUserAgentDetailsWorker).to receive(:perform_async).with(
+            group.id, old_organization.id, new_organization.id
+          )
+
+          service.execute
+        end
+
+        it 'does not move the rows inside the transaction' do
+          detail = create(:user_agent_detail,
+            subject: create(:issue, project: nested_project), organization: old_organization)
+
+          expect { service.execute }.not_to change { detail.reload.organization_id }
+        end
+
+        it 'does not enqueue the worker when the transfer fails' do
+          allow(service).to receive(:publish_event).and_raise(StandardError, 'Transfer failed')
+
+          expect(Organizations::TransferUserAgentDetailsWorker).not_to receive(:perform_async)
+
+          expect(service.execute).to be_error
+        end
+
+        # Organizations::ActivateService wraps this service in its own transaction and
+        # rolls it back when a later step fails.
+        it 'does not enqueue the worker when a wrapping transaction rolls back' do
+          expect(Organizations::TransferUserAgentDetailsWorker).not_to receive(:perform_async)
+
+          ApplicationRecord.transaction do
+            expect(service.execute).to be_success
+
+            raise ActiveRecord::Rollback
+          end
+        end
+      end
     end
 
     context 'when group is not root' do

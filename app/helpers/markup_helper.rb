@@ -94,15 +94,21 @@ module MarkupHelper
   end
 
   def markdown(text, context = {}, postprocess = {})
-    return '' unless text.present?
+    markdown_with_result(text, context, postprocess).first
+  end
+
+  def markdown_with_result(text, context = {}, postprocess = {})
+    return ['', {}] unless text.present?
 
     context[:project] ||= @project
     context[:group] ||= @group
 
-    html = Markup::RenderingService.new(text, context: context,
-      postprocess_context: postprocess_context.merge!(postprocess)).execute
+    service = Markup::RenderingService.new(text, context: context,
+      postprocess_context: postprocess_context.merge!(postprocess))
 
-    Hamlit::RailsHelpers.preserve(html)
+    html = service.execute
+
+    [Hamlit::RailsHelpers.preserve(html), service.postprocess_result]
   end
 
   def markdown_field(object, field, context = {})

@@ -190,6 +190,14 @@ module EmailsHelper
     "#{project.id}.#{project_path_as_domain}.#{Gitlab.config.gitlab.host}"
   end
 
+  def blob_embed_stylesheet_link_tag
+    return if @blob_embed_stylesheet_linked
+
+    @blob_embed_stylesheet_linked = true
+
+    universal_stylesheet_link_tag('mailers/blob_embed')
+  end
+
   def html_header_message
     return unless show_header?
 

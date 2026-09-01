@@ -58,6 +58,26 @@ RSpec.describe Banzai::Filter::RepositoryBlobEmbedFilter, :request_store, featur
     expect(embed.at_css('.blob-embed-title').text).to eq(path)
   end
 
+  describe 'the pipeline result' do
+    let(:pipeline_result) { {} }
+
+    def filter_html(html)
+      filter(html, { current_user: current_user, for_email: for_email }, pipeline_result)
+    end
+
+    it 'reports that an embed was rendered' do
+      filter_html(standalone_paragraph(blob_url))
+
+      expect(pipeline_result[:blob_embeds_rendered]).to be(true)
+    end
+
+    it "doesn't report an embed when not rendered" do
+      filter_html(inline_paragraph(blob_url))
+
+      expect(pipeline_result).not_to have_key(:blob_embeds_rendered)
+    end
+  end
+
   it 'embeds a permalink with a query string' do
     result = filter_html(standalone_paragraph(blob_url(query: '?blame=1&page=2')))
 
@@ -264,10 +284,12 @@ RSpec.describe Banzai::Filter::RepositoryBlobEmbedFilter, :request_store, featur
   context 'when rendering for email' do
     let(:for_email) { true }
 
-    it 'embeds when every project involved includes diff previews in email' do
+    it 'embeds the table variant when every project involved includes diff previews in email',
+      :aggregate_failures do
       result = filter_html(standalone_paragraph(blob_url))
 
-      expect(result.at_css('.blob-embed')).to be_present
+      expect(result.at_css('table.blob-embed')).to be_present
+      expect(result.at_css('.line-numbers')).to be_nil
     end
 
     context 'when the project the document belongs to excludes diff previews from email' do

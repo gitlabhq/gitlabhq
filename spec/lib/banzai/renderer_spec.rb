@@ -102,8 +102,8 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
   describe '#post_process' do
     let(:context_options) { {} }
     let(:html) { 'Consequatur aperiam et nesciunt modi aut assumenda quo id. ' }
-    let(:post_processed_html) { double(html_safe: 'safe doc') }
-    let(:doc) { double(to_html: post_processed_html) }
+    let(:doc) { Nokogiri::HTML5.fragment('<p>safe doc</p>') }
+    let(:pipeline_result) { { output: doc } }
 
     subject { renderer.post_process(html, context_options) }
 
@@ -112,9 +112,9 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
 
       context 'without :post_process_pipeline key' do
         it 'uses PostProcessPipeline' do
-          expect(::Banzai::Pipeline::PostProcessPipeline).to receive(:to_document).and_return(doc)
+          expect(::Banzai::Pipeline::PostProcessPipeline).to receive(:call).and_return(pipeline_result)
 
-          subject
+          is_expected.to eq('<p>safe doc</p>')
         end
       end
 
@@ -122,9 +122,9 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
         let(:context_options) { { post_process_pipeline: Object, xhtml: ' ' } }
 
         it 'uses passed post process pipeline' do
-          expect(Object).to receive(:to_document).and_return(doc)
+          expect(Object).to receive(:call).and_return(pipeline_result)
 
-          subject
+          is_expected.to eq('<p>safe doc</p>')
         end
       end
     end
@@ -132,11 +132,11 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
     context 'when not xhtml' do
       context 'without :post_process_pipeline key' do
         it 'uses PostProcessPipeline' do
-          expect(::Banzai::Pipeline::PostProcessPipeline).to receive(:to_html)
+          expect(::Banzai::Pipeline::PostProcessPipeline).to receive(:call)
             .with(html, { only_path: true, disable_asset_proxy: true })
-            .and_return(post_processed_html)
+            .and_return(pipeline_result)
 
-          subject
+          is_expected.to eq('<p>safe doc</p>')
         end
       end
 
@@ -144,10 +144,53 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
         let(:context_options) { { post_process_pipeline: Object } }
 
         it 'uses passed post process pipeline' do
-          expect(Object).to receive(:to_html).and_return(post_processed_html)
+          expect(Object).to receive(:call).and_return(pipeline_result)
 
-          subject
+          is_expected.to eq('<p>safe doc</p>')
         end
+      end
+    end
+
+    it 'returns an HTML-safe String' do
+      expect(renderer.post_process('<p>hi</p>', {})).to be_html_safe
+    end
+  end
+
+  describe '#post_process_result' do
+    it 'hands back what the filters reported alongside the rendered output', :aggregate_failures do
+      pipeline = class_double(::Banzai::Pipeline::PostProcessPipeline)
+      allow(pipeline).to receive(:call)
+        .and_return({ output: Nokogiri::HTML5.fragment('<p>safe doc</p>'), quick_action_paragraphs: [1] })
+
+      result = renderer.post_process_result('<p>doc</p>', post_process_pipeline: pipeline)
+
+      expect(result[:output]).to eq('<p>safe doc</p>')
+      expect(result[:quick_action_paragraphs]).to eq([1])
+    end
+
+    context 'when the last filter returns a String' do
+      let(:pipeline) do
+        Class.new(::Banzai::Pipeline::PostProcessPipeline) do
+          def self.filters
+            Banzai::FilterArray[Class.new(HTML::Pipeline::Filter) do
+              def call
+                doc.to_html
+              end
+            end]
+          end
+        end
+      end
+
+      it 'passes the HTML String through' do
+        result = renderer.post_process_result('<p>doc</p>', post_process_pipeline: pipeline)
+
+        expect(result[:output]).to eq('<p>doc</p>')
+      end
+
+      it 'reparses it when serialising as XHTML' do
+        result = renderer.post_process_result('<br>', post_process_pipeline: pipeline, xhtml: true)
+
+        expect(result[:output]).to eq('<br />')
       end
     end
   end

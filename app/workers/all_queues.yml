@@ -4944,6 +4944,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: organizations_transfer_user_agent_details
+  :worker_name: Organizations::TransferUserAgentDetailsWorker
+  :feature_category: :instance_resiliency
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: pages
   :worker_name: PagesWorker
   :feature_category: :pages

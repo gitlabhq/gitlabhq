@@ -919,8 +919,19 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         Nokogiri::HTML5.fragment(subject.html_part.body.to_s)
       end
 
-      it 'embeds the referenced lines' do
-        expect(email_body.at_css('.blob-embed')).to be_present
+      def stylesheet_links
+        email_body.css("link[rel='stylesheet']").filter_map { |link| link[:href] }
+      end
+
+      it 'embeds the referenced lines as a table', :aggregate_failures do
+        fragment = email_body
+
+        expect(fragment.at_css('table.blob-embed')).to be_present
+        expect(fragment.css('td.blob-embed-line').size).to eq(4)
+      end
+
+      it 'links the stylesheet premailer needs to style the embed' do
+        expect(stylesheet_links).to include(a_string_matching(%r{/mailers/blob_embed[.-]}))
       end
 
       context 'when the project does not show diffs in emails' do
@@ -934,6 +945,10 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
           expect(fragment.at_css('.blob-embed')).to be_nil
           expect(fragment.at_css("a[href='#{permalink}']")).to be_present
+        end
+
+        it 'does not link the stylesheet' do
+          expect(stylesheet_links).not_to include(a_string_matching(%r{/mailers/blob_embed[.-]}))
         end
       end
     end
@@ -2376,6 +2391,36 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     it 'contains the message from the notes of the review' do
       review.notes.each do |note|
         is_expected.to have_body_text note.note
+      end
+    end
+
+    context 'when every note holds a blob permalink' do
+      let(:permalink) do
+        "#{Gitlab.config.gitlab.url}/#{project.full_path}" \
+          "/-/blob/#{project.commit.sha}/files/ruby/popen.rb#L3-6"
+      end
+
+      let!(:notes) do
+        create_list(:note, 3, review: review, project: project, author: review.author,
+          noteable: merge_request, note: permalink)
+      end
+
+      before do
+        project.add_developer(recipient)
+      end
+
+      it 'embeds every one of them' do
+        fragment = Nokogiri::HTML5.fragment(subject.html_part.body.to_s)
+
+        expect(fragment.css('table.blob-embed').size).to eq(3)
+      end
+
+      it 'includes only one link to the blob_embed stylesheet' do
+        links = Nokogiri::HTML5.fragment(subject.html_part.body.to_s)
+          .css("link[rel='stylesheet']")
+          .filter_map { |link| link[:href] }
+
+        expect(links.grep(%r{/mailers/blob_embed[.-]}).size).to eq(1)
       end
     end
 

@@ -28,7 +28,7 @@ describe('ScanTypeCell', () => {
   };
 
   const findBadge = () => wrapper.findByTestId('scan-type-badge');
-  const findDisplayName = () => wrapper.find('.gl-font-bold');
+  const findDisplayName = () => wrapper.find('.gl-font-semibold');
   const findInfoIcon = () => wrapper.findComponent(GlIcon);
   const findPopover = () => wrapper.findComponent(GlPopover);
   const findPopoverLink = () => wrapper.findComponent(GlLink);

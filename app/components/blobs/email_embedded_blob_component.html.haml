@@ -1,0 +1,11 @@
+%table.blob-embed.code{ cellpadding: 0, cellspacing: 0, border: 0 }
+  %tr
+    %th.blob-embed-header{ colspan: 2 }
+      = link_to title_text, permalink(range_anchor), class: 'blob-embed-title', target: '_blank', rel: 'noopener noreferrer'
+      %span.blob-embed-range= range_text
+  - numbered_lines.each do |number, line|
+    %tr
+      %td.blob-embed-num<
+        = link_to number, permalink("L#{number}"), class: 'blob-embed-num-link'
+      %td.blob-embed-line<
+        = line

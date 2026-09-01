@@ -34284,6 +34284,19 @@ Fields:
 | <a id="aicatalogthirdpartyflowversion-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item version was updated. |
 | <a id="aicatalogthirdpartyflowversion-versionname"></a>`versionName` | [`String`](#string) | Version name of the item version. |
 
+### `AiChatQuestionCategory`
+
+Category of suggested questions for GitLab Duo Chat.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aichatquestioncategory-contextual"></a>`contextual` | [`Boolean!`](#boolean) | Whether the questions are about the resource on the current page. At most one category is contextual, and it is returned first. |
+| <a id="aichatquestioncategory-key"></a>`key` | [`String!`](#string) | Stable identifier of the category. The type of the current page for contextual categories, for example `merge_request` or `blob`, and the topic for static ones, for example `security`. |
+| <a id="aichatquestioncategory-questions"></a>`questions` | [`[String!]!`](#string) | Suggested questions in the category. |
+| <a id="aichatquestioncategory-title"></a>`title` | [`String!`](#string) | Display title of the category, for example the reference of the current resource. |
+
 ### `AiConversationsThread`
 
 Conversation thread of the AI feature.
@@ -39623,6 +39636,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="contextpreset-airesourcedata"></a>`aiResourceData` | [`String`](#string) | Serialized representation of the AI resource in the current context. |
+| <a id="contextpreset-questioncategories"></a>`questionCategories` {{< icon name="warning-solid" >}} | [`[AiChatQuestionCategory!]`](#aichatquestioncategory) | Introduced in GitLab 19.4. Status: Experiment. Suggested questions grouped by category. Not affected by questionCount. |
 | <a id="contextpreset-questions"></a>`questions` | [`[String!]`](#string) | Array of questions that the user can ask GitLab Duo Chat from the current page. |
 
 ### `ContributionAnalyticsContribution`

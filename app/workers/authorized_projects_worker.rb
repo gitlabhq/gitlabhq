@@ -22,8 +22,6 @@ class AuthorizedProjectsWorker
 
     return unless user
 
-    refresh_service = Users::RefreshAuthorizedProjectsService.new(user, source: self.class.name)
-
-    refresh_service.execute_without_lease
+    Users::RefreshAuthorizedProjectsService.new(user, source: self.class.name).execute
   end
 end

@@ -327,6 +327,7 @@ module Gitlab
     config.assets.precompile << "tailwind.css"
 
     config.assets.precompile << "print.css"
+    config.assets.precompile << "mailers/blob_embed.css"
     config.assets.precompile << "mailers/highlighted_diff_email.css"
     config.assets.precompile << "mailers/mailer.css"
     config.assets.precompile << "mailers/mailer_client_specific.css"

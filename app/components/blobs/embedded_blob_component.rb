@@ -51,7 +51,7 @@ module Blobs
       lines = blob.highlight(to: to, suppress_line_ids: true).lines[(from - 1)..] || []
 
       # Rouge output is sanitised HTML; slicing drops the html_safe flag.
-      lines.join.html_safe # rubocop:disable Rails/OutputSafety -- syntax-highlighted, escaped output from Gitlab::Highlight
+      lines.map { |line| line.chomp.html_safe } # rubocop:disable Rails/OutputSafety -- syntax-highlighted, escaped output from Gitlab::Highlight
     end
   end
 end

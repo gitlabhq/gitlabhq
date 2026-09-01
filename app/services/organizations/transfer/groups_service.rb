@@ -85,6 +85,7 @@ module Organizations
         transfer_slack_api_scopes
         transfer_infrastructure
         schedule_ci_runners_transfer
+        schedule_user_agent_details_transfer
         publish_event
       end
 
@@ -269,6 +270,19 @@ module Organizations
 
         group.run_after_commit_or_now do
           ::Ci::Runners::TransferOrganizationWorker.perform_async(group_id, old_org_id, new_org_id)
+        end
+      end
+
+      def schedule_user_agent_details_transfer
+        group_id = group.id
+        old_org_id = old_organization.id
+        new_org_id = new_organization.id
+
+        # `group` is never saved here - every write is `update_all` - so it cannot carry
+        # an after-commit callback, and a caller may have wrapped us in its own
+        # transaction. Defer to the outermost commit so a rollback enqueues nothing.
+        ActiveRecord.after_all_transactions_commit do
+          ::Organizations::TransferUserAgentDetailsWorker.perform_async(group_id, old_org_id, new_org_id)
         end
       end
 
