@@ -11,7 +11,7 @@ RSpec.describe Resolvers::BoardResolver do
 
   shared_examples_for 'group and project boards resolver' do
     it 'does not create a default board' do
-      expect(resolve_board(id: dummy_gid)).to eq nil
+      expect(resolve_board(id: dummy_gid)).to be_nil
     end
 
     it 'calls Boards::BoardsFinder' do
@@ -39,7 +39,7 @@ RSpec.describe Resolvers::BoardResolver do
         outside_parent = create(board_parent.class.underscore.to_sym) # rubocop:disable Rails/SaveBang
         outside_board  = create(:board, name: 'outside board', resource_parent: outside_parent)
 
-        expect(resolve_board(id: global_id_of(outside_board))).to eq nil
+        expect(resolve_board(id: global_id_of(outside_board))).to be_nil
       end
     end
   end
@@ -49,7 +49,7 @@ RSpec.describe Resolvers::BoardResolver do
       let(:board_parent) { nil }
 
       it 'returns nil if parent is nil' do
-        expect(resolve_board(id: dummy_gid)).to eq(nil)
+        expect(resolve_board(id: dummy_gid)).to be_nil
       end
     end
 

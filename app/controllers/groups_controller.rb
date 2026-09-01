@@ -82,8 +82,8 @@ class GroupsController < Groups::ApplicationController
   end
 
   def new
-    @parent_group = Group.find_by_id(params[:parent_id])
-    @group = Group.new(params.permit(:parent_id))
+    @parent_group = Group.find_by_id(parent_id_params[:parent_id])
+    @group = Group.new(parent_id_params)
     @group.build_namespace_settings
   end
 
@@ -181,16 +181,16 @@ class GroupsController < Groups::ApplicationController
   end
 
   def edit_group_origin_location
-    if params.dig(:group, :redirect_target) == 'repository_settings'
+    if permitted_params.dig(:group, :redirect_target) == 'repository_settings'
       group_settings_repository_path(@group, anchor: 'js-default-branch-name')
     else
-      edit_group_path(@group, anchor: params[:update_section])
+      edit_group_path(@group, anchor: permitted_params[:update_section])
     end
   end
 
   def destroy
     if group.self_deletion_scheduled? &&
-        ::Gitlab::Utils.to_boolean(params.permit(:permanently_remove)[:permanently_remove])
+        ::Gitlab::Utils.to_boolean(permitted_params[:permanently_remove])
 
       return destroy_immediately
     end
@@ -241,7 +241,7 @@ class GroupsController < Groups::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def transfer
-    parent_group = Group.find_by(id: params[:new_parent_group_id])
+    parent_group = Group.find_by(id: permitted_params[:new_parent_group_id])
 
     if Feature.enabled?(:groups_and_projects_async_transfer, @group)
       enqueue_async_transfer(parent_group)
@@ -304,7 +304,7 @@ class GroupsController < Groups::ApplicationController
   def render_show_html
     Gitlab::Tracking.event('group_overview', 'render', user: current_user, namespace: @group)
 
-    render 'groups/show', locals: { trial: params[:trial] }
+    render 'groups/show', locals: { trial: permitted_params[:trial] }
   end
 
   def render_details_view_atom
@@ -314,8 +314,9 @@ class GroupsController < Groups::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def authorize_create_group!
-    allowed = if params[:parent_id].present?
-                parent = Group.find_by(id: params[:parent_id])
+    parent_id = parent_id_params[:parent_id]
+    allowed = if parent_id.present?
+                parent = Group.find_by(id: parent_id)
                 can?(current_user, :create_subgroup, parent)
               else
                 can?(current_user, :create_group)
@@ -337,16 +338,15 @@ class GroupsController < Groups::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def load_events
-    params[:sort] ||= 'latest_activity_desc'
-
     options = { include_subgroups: true }
-    projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user)
-                                  .execute
-                                  .includes(:namespace)
+    projects = GroupProjectsFinder.new(
+      params: event_projects_finder_params, group: group, options: options, current_user: current_user
+    ).execute
+      .includes(:namespace)
 
     @events = EventCollection.new(
       projects,
-      offset: params[:offset].to_i,
+      offset: permitted_params[:offset].to_i,
       filter: event_filter,
       groups: groups,
       transfer_options: { current_group_id: @group.id }
@@ -358,6 +358,24 @@ class GroupsController < Groups::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  # Permits the filter keys read by GroupProjectsFinder/ProjectsFinder for the group activity feed,
+  # including the EE-only filters those finders gain via prepend_mod.
+  def event_projects_finder_params
+    finder_params = params.permit(
+      :sort, :visibility_level, :topic, :topic_id, :tag, :personal, :search, :non_archived, :archived,
+      :owned, :non_public, :min_access_level, :starred, :with_issues_enabled, :with_merge_requests_enabled,
+      :namespace_path, :include_pending_delete, :id_after, :id_before, :marked_for_deletion_on,
+      :aimed_for_deletion, :not_aimed_for_deletion, :last_activity_after, :last_activity_before,
+      :repository_storage, :language_name, :active, :last_repository_check_failed,
+      :with_security_reports, :include_hidden, :duo_licensed_feature,
+      :filter_expired_saml_session_projects,
+      :name, :minimum_search_length, :search_namespaces, :updated_before, :updated_after,
+      full_paths: [], plans: [], feature_available: [], custom_attributes: {}
+    )
+    finder_params[:sort] ||= 'latest_activity_desc'
+    finder_params
+  end
+
   def user_actions
     @notification_setting = current_user.notification_settings_for(group) if current_user
   end
@@ -365,15 +383,13 @@ class GroupsController < Groups::ApplicationController
   def build_canonical_path(group)
     return group_path(group) if action_name == 'show' # root group path
 
-    params[:id] = group.to_param
-
-    url_for(safe_params)
+    url_for(safe_params.merge(id: group.to_param))
   end
 
   def check_export_rate_limit!
-    prefixed_action = :"group_#{params[:action]}"
+    prefixed_action = :"group_#{action_name}"
 
-    scope = params[:action] == :download_export ? @group : nil
+    scope = action_name == 'download_export' ? @group : nil
 
     check_rate_limit!(prefixed_action, scope: [current_user, scope].compact)
   end
@@ -385,6 +401,21 @@ class GroupsController < Groups::ApplicationController
   end
 
   private
+
+  # Kept separate from permitted_params because it is passed whole to Group.new,
+  # where the exact key set is the behaviour.
+  def parent_id_params
+    params.permit(:parent_id)
+  end
+  strong_memoize_attr :parent_id_params
+
+  def permitted_params
+    params.permit(
+      :update_section, :permanently_remove, :new_parent_group_id, :trial, :offset,
+      group: :redirect_target
+    )
+  end
+  strong_memoize_attr :permitted_params
 
   def successful_creation_hooks
     # overwritten in EE

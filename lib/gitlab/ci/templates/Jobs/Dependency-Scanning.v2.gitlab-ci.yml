@@ -275,7 +275,7 @@ variables:
       cat .gitlab_ds/service.log || echo "WARNING: no service logs found"
 
       if [ ! -f .gitlab_ds/dependency_resolution.sh ]; then
-        echo "ERROR: .gitlab_ds/dependency_resolution.sh script not found after $TIMEOUT seconds. Use `resolution_jobs_checkout_timeout` and `resolution_jobs_script_timeout` to configure this value."
+        echo "ERROR: .gitlab_ds/dependency_resolution.sh script not found after $TIMEOUT seconds. Use 'resolution_jobs_checkout_timeout' and 'resolution_jobs_script_timeout' to configure this value."
         exit 1
       fi
     - sh .gitlab_ds/dependency_resolution.sh
@@ -358,7 +358,7 @@ variables:
       cat .gitlab_ds/service.log || echo "WARNING: no service logs found"
 
       if [ ! -f .gitlab_ds/dependency_resolution.sh ]; then
-        echo "ERROR: .gitlab_ds/dependency_resolution.sh script not found after $TIMEOUT seconds. Use `resolution_jobs_checkout_timeout` and `resolution_jobs_script_timeout` to configure this value."
+        echo "ERROR: .gitlab_ds/dependency_resolution.sh script not found after $TIMEOUT seconds. Use 'resolution_jobs_checkout_timeout' and 'resolution_jobs_script_timeout' to configure this value."
         exit 1
       fi
     - sh .gitlab_ds/dependency_resolution.sh
@@ -445,7 +445,7 @@ variables:
       cat .gitlab_ds/service.log || echo "WARNING: no service logs found"
 
       if [ ! -f .gitlab_ds/dependency_resolution.sh ]; then
-        echo "ERROR: .gitlab_ds/dependency_resolution.sh script not found after $TIMEOUT seconds. Use `resolution_jobs_checkout_timeout` and `resolution_jobs_script_timeout` to configure this value."
+        echo "ERROR: .gitlab_ds/dependency_resolution.sh script not found after $TIMEOUT seconds. Use 'resolution_jobs_checkout_timeout' and 'resolution_jobs_script_timeout' to configure this value."
         exit 1
       fi
     - sh .gitlab_ds/dependency_resolution.sh

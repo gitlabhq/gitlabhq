@@ -41,7 +41,7 @@ module Projects
         end
 
         def size
-          params[:id]
+          params.permit(:id)[:id]
         end
 
         def version

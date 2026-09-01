@@ -1,6 +1,6 @@
 ---
-source_checksum: 30873d451c409442
-distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
+source_checksum: 861acd9c167c4e50
+distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -154,7 +154,7 @@ distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 
 ### Path Helpers
 
-- Do not mock JavaScript path helpers imported from `app/assets/javascripts/lib/utils/path_helpers` or `ee/app/assets/javascripts/lib/utils/path_helpers` in Jest tests. You can assume that `gon.current_organization.has_scoped_paths` will be `false` and that `window.gon?.relative_url_root` will be `''` in Jest tests. There may be existing tests for the `relative_url_root` functionality, for these you can use `useConfigurePathHelpers` in `spec/frontend/__helpers__/configure_path_helpers.js`.
+- Do not mock JavaScript path helpers imported from `app/assets/javascripts/lib/utils/path_helpers` or `ee/app/assets/javascripts/lib/utils/path_helpers` in Jest tests. You can assume that `gon.organization_path` and `gon.data_context_organization_path` are both `undefined`, so generated paths are never nested under `/o/:organization_path/`, and that `window.gon?.relative_url_root` will be `''` in Jest tests. There may be existing tests for the `relative_url_root` functionality, for these you can use `useConfigurePathHelpers` in `spec/frontend/__helpers__/configure_path_helpers.js`.
 
 ### Test structure
 

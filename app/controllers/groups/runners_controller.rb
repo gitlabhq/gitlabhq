@@ -43,12 +43,16 @@ class Groups::RunnersController < Groups::ApplicationController
 
   private
 
+  def runner_id_param
+    params.permit(:id)[:id]
+  end
+
   def runner
     group_params = { group: @group, membership: :all_available }
 
     @runner ||= Ci::RunnersFinder.new(current_user: current_user, params: group_params).execute
       .except(:limit, :offset)
-      .find(params[:id])
+      .find(runner_id_param)
   rescue Gitlab::Access::AccessDeniedError
     nil
   end

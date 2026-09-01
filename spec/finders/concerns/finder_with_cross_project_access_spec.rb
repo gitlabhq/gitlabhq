@@ -104,7 +104,7 @@ RSpec.describe FinderWithCrossProjectAccess do
         end
 
         expect(finder.instance_variable_get(:@should_skip_cross_project_check))
-          .to eq(false)
+          .to be(false)
       end
     end
   end

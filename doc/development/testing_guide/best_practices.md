@@ -71,10 +71,19 @@ When using spring and guard together, use `SPRING=1 bundle exec guard` instead t
 - Use `focus: true` to isolate parts of the specs you want to run.
 - Use [`:aggregate_failures`](https://rspec.info/features/3-12/rspec-core/expectation-framework-integration/aggregating-failures/) when there is more than one expectation in a test.
 - For [empty test description blocks](https://github.com/rubocop-hq/rspec-style-guide#it-and-specify), use `specify` rather than `it do` if the test is self-explanatory.
-- Use `non_existing_record_id`/`non_existing_record_iid`/`non_existing_record_access_level`
-  when you need an ID/IID/access level that doesn't actually exist. Using 123, 1234,
-  or even 999 is brittle as these IDs could actually exist in the database in the
-  context of a CI run.
+- Use `non_existing_record_id`, `non_existing_record_iid`, or
+  `non_existing_record_access_level` when you need a value that doesn't exist.
+  Use `non_existing_project_hashed_path` when you need a valid hashed storage path
+  that no project uses.
+- Don't use arbitrary values like `123`, `1234`, or `999` for records that shouldn't
+  exist.
+  These values can exist in the CI database.
+- Don't calculate an unused ID with queries like `Model.maximum(:id) + 1` or
+  `Model.last.id + 1`.
+  These queries can race with concurrent database writes and add an unnecessary query.
+  Use the non-existing record helpers instead.
+- The non-existing record ID helpers return `ACTIVE_MODEL_INTEGER_MAX`, the maximum
+  value for a 32-bit integer, which no sequence reaches in a CI run.
 - When writing a new test, verify it fails in the way you expect before asserting it passes.
   Run the spec with the condition inverted or the behavior under test removed to confirm the failure message is meaningful.
   A test that cannot fail is not providing coverage.

@@ -117,7 +117,7 @@ RSpec.describe 'User Settings > Password', feature_category: :user_profile do
           user.reload
 
           expect(user.failed_attempts).to eq(1)
-          expect(user.valid_password?(new_password)).to eq(false)
+          expect(user.valid_password?(new_password)).to be(false)
           expect(page).to have_current_path(edit_user_settings_password_path, ignore_query: true)
 
           page.within '.flash-container' do

@@ -49,7 +49,7 @@ RSpec.describe Resolvers::Clusters::AgentsResolver.single, feature_category: :de
   it { expect(described_class).to be < Resolvers::Clusters::AgentsResolver }
 
   it { expect(described_class.type).to eq(::Types::Clusters::AgentType) }
-  it { expect(described_class.null).to eq(true) }
+  it { expect(described_class.null).to be(true) }
   it { expect(described_class.extras).to include(:lookahead) }
 
   describe 'arguments' do

@@ -418448,6 +418448,18 @@
               "deprecationReason": null
             },
             {
+              "name": "approvedAt",
+              "description": "Timestamp of when the user approved the merge request. Returns `null` if the user has not approved it.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "canMerge",
               "description": "Whether the user can merge the merge request.",
               "args": [],

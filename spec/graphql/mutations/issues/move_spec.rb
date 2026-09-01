@@ -25,7 +25,7 @@ RSpec.describe Mutations::Issues::Move, feature_category: :api do
         end
 
         it 'returns error message' do
-          expect(resolve[:issue]).to eq(nil)
+          expect(resolve[:issue]).to be_nil
           expect(resolve[:errors].first).to eq("Unable to move. You have insufficient permissions.")
         end
       end

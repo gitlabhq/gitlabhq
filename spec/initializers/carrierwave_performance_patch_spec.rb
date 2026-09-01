@@ -80,7 +80,7 @@ RSpec.describe "CarrierWave::Uploader::Url", feature_category: :shared do
 
     context "when file does not respond to either url nor path" do
       it "returns nil" do
-        expect(url).to eq(nil)
+        expect(url).to be_nil
       end
     end
   end

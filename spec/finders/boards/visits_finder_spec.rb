@@ -15,7 +15,7 @@ RSpec.describe Boards::VisitsFinder, feature_category: :planning_views do
       it 'returns nil when there is no user' do
         finder.current_user = nil
 
-        expect(finder.execute).to eq nil
+        expect(finder.execute).to be_nil
       end
 
       it 'queries for most recent visit' do
@@ -40,7 +40,7 @@ RSpec.describe Boards::VisitsFinder, feature_category: :planning_views do
       it 'returns nil when there is no user' do
         finder.current_user = nil
 
-        expect(finder.execute).to eq nil
+        expect(finder.execute).to be_nil
       end
 
       it 'queries for most recent visit' do

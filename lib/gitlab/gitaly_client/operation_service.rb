@@ -10,6 +10,8 @@ module Gitlab
 
       CUSTOM_HOOK_FALLBACK_MESSAGE = 'Prevented by server hooks'
 
+      MAX_CONFLICTING_FILES = 10
+
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
         @repository = repository
@@ -163,6 +165,15 @@ module Gitlab
           :user_merge_to_ref, request, timeout: GitalyClient.long_timeout)
 
         response.commit_id
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error.try(:error)
+        when :merge_conflict
+          raise merge_conflict_error(e, detailed_error.merge_conflict.conflicting_files)
+        else
+          raise
+        end
       end
 
       def user_merge_branch(user, source_sha:, target_branch:, message:, target_sha: nil, sign: true)
@@ -738,6 +749,23 @@ module Gitlab
         else
           "Unknown error performing git operation"
         end
+      end
+
+      # #exception clones the error rather than building a new one from a string: that keeps the
+      # Gitaly metadata Gitlab::ExceptionLogFormatter reads, and skips the Gitlab::Git::BaseError
+      # truncation that would drop everything appended after a debug_error_string.
+      def merge_conflict_error(exception, conflicting_files)
+        error = Gitlab::Git::CommandError.new(exception)
+
+        # Gitaly reports the conflict even when it could not work out which files conflict.
+        return error if conflicting_files.empty?
+
+        # The message reaches a system note, whose body is rendered as markdown.
+        files = conflicting_files.first(MAX_CONFLICTING_FILES).map { |file| "`#{encode_utf8_safe_path(file)}`" }
+        remaining = conflicting_files.size - files.size
+        files << "and #{remaining} more" if remaining > 0
+
+        error.exception("#{error.message.chomp('.')}. Conflicts in: #{files.join(', ')}.")
       end
 
       def handle_undetailed_bad_status_errors(error)

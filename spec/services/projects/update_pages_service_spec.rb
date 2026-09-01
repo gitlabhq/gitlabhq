@@ -2,10 +2,10 @@
 
 require "spec_helper"
 
-RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
-  let_it_be_with_refind(:project) { create(:project, :repository) }
+RSpec.describe Projects::UpdatePagesService, factory_default: :keep, feature_category: :pages do
+  let_it_be(:namespace) { create_default(:namespace).freeze }
+  let_it_be_with_refind(:project) { create(:project, :small_repo) }
 
-  let_it_be(:old_pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
 
   let(:options) { {} }

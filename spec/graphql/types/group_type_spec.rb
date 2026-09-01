@@ -274,7 +274,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
         group.update!(emails_enabled: true)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     describe 'when emails_enabled is false' do
@@ -282,7 +282,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
         group.update!(emails_enabled: false)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -313,7 +313,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
         group.update!(emails_enabled: true)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     describe 'when emails_enabled is false' do
@@ -321,7 +321,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
         group.update!(emails_enabled: false)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

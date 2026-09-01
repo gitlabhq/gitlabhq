@@ -62552,6 +62552,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="usermergerequestinteraction-applicableapprovalrules"></a>`applicableApprovalRules` | [`[ApprovalRule!]`](#approvalrule) | Approval rules that apply to the user for the merge request. |
 | <a id="usermergerequestinteraction-approved"></a>`approved` | [`Boolean!`](#boolean) | Whether the user has approved the merge request. |
+| <a id="usermergerequestinteraction-approvedat"></a>`approvedAt` | [`Time`](#time) | Timestamp of when the user approved the merge request. Returns `null` if the user has not approved it. |
 | <a id="usermergerequestinteraction-canmerge"></a>`canMerge` | [`Boolean!`](#boolean) | Whether the user can merge the merge request. |
 | <a id="usermergerequestinteraction-canupdate"></a>`canUpdate` | [`Boolean!`](#boolean) | Whether the user can update the merge request. |
 | <a id="usermergerequestinteraction-reviewstate"></a>`reviewState` | [`MergeRequestReviewState`](#mergerequestreviewstate) | State of the review by the user. |

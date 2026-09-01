@@ -60,8 +60,16 @@ module Groups
 
       private
 
+      def cursor_param
+        params.permit(:cursor)[:cursor]
+      end
+
+      def application_id_param
+        params.permit(:id)[:id]
+      end
+
       def set_index_vars
-        @applications = @group.oauth_applications.keyset_paginate(cursor: params[:cursor])
+        @applications = @group.oauth_applications.keyset_paginate(cursor: cursor_param)
         @applications_total_count = @group.oauth_applications.count
 
         # Don't overwrite a value possibly set by `create`
@@ -69,7 +77,7 @@ module Groups
       end
 
       def set_application
-        @application = @group.oauth_applications.find(params[:id])
+        @application = @group.oauth_applications.find(application_id_param)
       end
 
       def application_params

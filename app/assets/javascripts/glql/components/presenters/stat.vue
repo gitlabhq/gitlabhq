@@ -31,6 +31,12 @@ export default {
       type: Boolean,
       default: false,
     },
+    // eslint-disable-next-line vue/no-unused-properties
+    displayConfig: {
+      required: false,
+      type: Object,
+      default: () => ({}),
+    },
   },
   emits: { error: null },
   computed: {

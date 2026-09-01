@@ -25,15 +25,14 @@ class Groups::GroupMembersController < Groups::ApplicationController
   urgency :low
 
   def index
-    @sort = params[:sort].presence || sort_value_name
+    @sort = index_params[:sort].presence || sort_value_name
     @include_relations ||= requested_relations(:groups_with_inherited_permissions)
 
     if can?(current_user, :admin_group_member, @group)
       @invited_members = invited_members
 
-      if params[:search_invited].present?
-        @invited_members = @invited_members.search_invite_email(params[:search_invited])
-      end
+      search_invited = index_params[:search_invited]
+      @invited_members = @invited_members.search_invite_email(search_invited) if search_invited.present?
 
       @invited_members = present_invited_members(@invited_members)
     end
@@ -67,15 +66,25 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def present_invited_members(invited_members)
     present_members(invited_members
-      .page(params[:invited_members_page])
+      .page(member_page_params[:invited_members_page])
       .per(MEMBER_PER_PAGE_LIMIT))
   end
 
   def present_group_members(members)
     present_members(members
-      .page(params[:page])
+      .page(member_page_params[:page])
       .per(MEMBER_PER_PAGE_LIMIT))
   end
+
+  def index_params
+    params.permit(:sort, :search_invited)
+  end
+  strong_memoize_attr :index_params
+
+  def member_page_params
+    params.permit(:invited_members_page, :page)
+  end
+  strong_memoize_attr :member_page_params
 
   def filter_params
     params.permit(:two_factor, :search, :user_type, :max_role).merge(sort: @sort)

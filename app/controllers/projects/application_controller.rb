@@ -29,11 +29,19 @@ class Projects::ApplicationController < ApplicationController
 
   private
 
+  def project_route_params
+    params.permit(:project_id, :id, :namespace_id)
+  end
+  strong_memoize_attr :project_route_params
+
   def project
     return @project if @project
-    return unless params[:project_id] || params[:id]
 
-    path = File.join(params[:namespace_id], params[:project_id] || params[:id])
+    route_params = project_route_params
+    project_id = route_params[:project_id] || route_params[:id]
+    return unless project_id
+
+    path = File.join(route_params[:namespace_id], project_id)
 
     @project = find_routable!(Project, path, request.fullpath, extra_authorization_proc: auth_proc)
   end
@@ -43,10 +51,7 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def build_canonical_path(project)
-    params[:namespace_id] = project.namespace.to_param
-    params[:project_id] = project.to_param
-
-    url_for(safe_params)
+    url_for(safe_params.merge(namespace_id: project.namespace.to_param, project_id: project.to_param))
   end
 
   def repository
@@ -122,10 +127,12 @@ class Projects::ApplicationController < ApplicationController
   def enforce_step_up_auth_for_namespace
     # Use @project instance variable instead of calling project method
     # to avoid triggering find_routable! when the :project before_action was skipped
+    namespace_id = project_route_params[:namespace_id]
+
     if @project&.namespace.present?
       enforce_step_up_auth_for(@project.namespace)
-    elsif params[:namespace_id].present?
-      enforce_step_up_auth_for_namespace_id(params[:namespace_id])
+    elsif namespace_id.present?
+      enforce_step_up_auth_for_namespace_id(namespace_id)
     end
   end
 

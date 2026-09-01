@@ -27,7 +27,7 @@ RSpec.describe Resolvers::Import::SourceUsersResolver, feature_category: :import
     context 'when user is not authorized' do
       let(:current_user) { create(:user)  }
 
-      it { expect(resolve_import_source_users).to eq(nil) }
+      it { expect(resolve_import_source_users).to be_nil }
     end
 
     describe 'arguments' do

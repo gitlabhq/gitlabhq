@@ -44,6 +44,21 @@ RSpec.describe 'groups autocomplete', feature_category: :groups_and_projects do
         )
       end
     end
+
+    context 'when usernames are passed in the mentioned param' do
+      let_it_be(:mentioned_user) { create(:user, username: 'zzz_mentioned', guest_of: group) }
+
+      it 'includes a mentioned member that does not match the search', :aggregate_failures do
+        issue = create(:issue, :group_level, namespace: group, author: user)
+
+        get members_group_autocomplete_sources_path(
+          group, type_id: issue.iid, type: 'Issue', search: user.username, mentioned: [mentioned_user.username]
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('username')).to include(mentioned_user.username)
+      end
+    end
   end
 
   describe '#issues' do

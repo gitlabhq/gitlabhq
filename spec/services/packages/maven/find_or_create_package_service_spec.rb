@@ -20,19 +20,17 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
     subject(:execute_service) { service.execute }
 
     shared_examples 'reuse existing package' do
-      it { expect { subject }.not_to change { Packages::Package.count } }
-
-      it 'returns the existing package' do
+      it 'does not create a new package and returns the existing one', :aggregate_failures do
+        expect { subject }.not_to change { Packages::Package.count }
         expect(subject.payload).to eq(package: existing_package)
       end
     end
 
     shared_examples 'create package' do
-      it { expect { subject }.to change { Packages::Package.count }.by(1) }
+      it 'creates a package with the proper name and version', :aggregate_failures do
+        expect { subject }.to change { Packages::Package.count }.by(1)
+        expect(subject).to be_success
 
-      it_behaves_like 'returning a success service response'
-
-      it 'sets the proper name and version', :aggregate_failures do
         pkg = subject.payload[:package]
 
         expect(pkg.name).to eq(path)
@@ -48,10 +46,12 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
     end
 
     shared_examples 'returning an error' do |with_message: ''|
-      it { expect { subject }.not_to change { ::Packages::PackageFile.for_projects(project).count } }
+      it 'returns an error without creating a package file', :aggregate_failures do
+        expect { subject }.not_to change { ::Packages::PackageFile.for_projects(project).count }
 
-      it_behaves_like 'returning an error service response', message: with_message do
-        it { expect(subject.payload).to be_empty }
+        expect(subject).to be_error
+        expect(subject.message).to eq(with_message) if with_message
+        expect(subject.payload).to be_empty
       end
     end
 
@@ -89,7 +89,9 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
         let(:file_name) { 'maven-metadata.xml' }
 
         context 'with existing package' do
-          let!(:existing_package) { create(:maven_package, name: path, version: version, project: project) }
+          let!(:existing_package) do
+            create(:maven_package, name: path, version: version, project: project)
+          end
 
           it_behaves_like 'reuse existing package'
 
@@ -109,7 +111,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
     end
 
     context 'with a build' do
-      let_it_be(:pipeline) { create(:ci_pipeline, user: user) }
+      let_it_be(:pipeline) { create(:ci_pipeline, user: user, project: project) }
 
       let(:build) { double('build', pipeline: pipeline) }
       let(:params) { { path: param_path, file_name: file_name, build: build } }
@@ -133,12 +135,12 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
     end
 
     context 'when package duplicates are not allowed' do
-      let_it_be_with_refind(:package_settings) do
+      let_it_be_with_reload(:package_settings) do
         create(:namespace_package_setting, :group, maven_duplicates_allowed: false)
       end
 
-      let_it_be_with_refind(:group) { package_settings.namespace }
-      let_it_be_with_refind(:project) { create(:project, group: group) }
+      let_it_be(:group) { package_settings.namespace }
+      let_it_be(:project) { create(:project, group: group) }
 
       let!(:existing_package) { create(:maven_package, name: path, version: version, project: project) }
 
@@ -219,12 +221,12 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
     end
 
     context 'when package duplicates are allowed' do
-      let_it_be_with_refind(:package_settings) do
+      let_it_be_with_reload(:package_settings) do
         create(:namespace_package_setting, :group, maven_duplicates_allowed: true)
       end
 
-      let_it_be_with_refind(:group) { package_settings.namespace }
-      let_it_be_with_refind(:project) { create(:project, group: group) }
+      let_it_be(:group) { package_settings.namespace }
+      let_it_be(:project) { create(:project, group: group) }
 
       let!(:existing_package) { create(:maven_package, name: path, version: version, project: project) }
 

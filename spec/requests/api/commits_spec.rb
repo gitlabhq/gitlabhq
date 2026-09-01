@@ -915,6 +915,31 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
             expect(json_response).to eq([])
           end
         end
+
+        context 'when the path was renamed in its history' do
+          let(:ref_name) { 'blame-on-renamed' }
+          let(:path) { 'files/plain_text/renamed' }
+
+          it 'returns literal-path history, unlike offset pagination with follow=true', :aggregate_failures do
+            get api(route, current_user),
+              params: { ref_name: ref_name, path: path, follow: true, per_page: 100 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            followed_ids = json_response.map { |c| c['id'] }
+            expect(followed_ids).to be_present
+
+            get api(route, current_user),
+              params: { pagination: 'keyset', ref_name: ref_name, path: path, per_page: 100 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            keyset_ids = json_response.map { |c| c['id'] }
+            literal_ids = project.repository.commits(ref_name, path: path, limit: 100).map(&:id)
+
+            expect(literal_ids).to be_present
+            expect(keyset_ids).to match_array(literal_ids)
+            expect(keyset_ids).not_to match_array(followed_ids)
+          end
+        end
       end
 
       context 'when the finder raises a generic ArgumentError' do

@@ -13,8 +13,6 @@ module Ci
 
       module PipelineRelationPreload
         def preload_associations(records)
-          return super unless Feature.enabled?(:partition_aware_pipeline_preload, :current_request)
-
           loaders = klass.partitioned_pipeline_loaders
           requested = loaders.keys & preload_keys
 

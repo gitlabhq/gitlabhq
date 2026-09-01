@@ -170,19 +170,5 @@ RSpec.describe Ci::Partitionable::AssociationFinder, feature_category: :continuo
         relation.load
       end
     end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(partition_aware_pipeline_preload: false)
-      end
-
-      it 'does not use BulkByIdLookup and falls back to vanilla preload' do
-        expect(Gitlab::Ci::Pipeline::BulkByIdLookup).not_to receive(:new)
-
-        records = relation.load.to_a
-
-        expect(records.map { |r| r.association(:pipeline).loaded? }).to all(be(true))
-      end
-    end
   end
 end

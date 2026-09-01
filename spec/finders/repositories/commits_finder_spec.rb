@@ -357,6 +357,21 @@ RSpec.describe Repositories::CommitsFinder, feature_category: :source_code_manag
             expect(keyset_commits.map(&:id)).to eq(offset_commits.map(&:id))
           end
         end
+
+        context 'when the path was renamed in its history and follow is not given' do
+          let(:params) { { ref_name: 'blame-on-renamed', path: 'files/plain_text/renamed' } }
+
+          it 'returns literal-path history rather than following the rename', :aggregate_failures do
+            followed_commits = described_class.new(project, params.merge(follow: true))
+              .execute(gitaly_pagination: false)
+            literal_commits = described_class.new(project, params.merge(follow: false))
+              .execute(gitaly_pagination: false)
+
+            expect(literal_commits).to be_present
+            expect(commits.map(&:id)).to match_array(literal_commits.map(&:id))
+            expect(commits.map(&:id)).not_to match_array(followed_commits.map(&:id))
+          end
+        end
       end
 
       context 'when per_page is specified' do

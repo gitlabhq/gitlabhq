@@ -15,11 +15,11 @@ RSpec.describe Resolvers::Ci::RunnerSetupResolver, feature_category: :runner_cor
       let(:project) { create(:project) }
 
       it 'returns install instructions' do
-        expect(resolve_subject[:install_instructions]).not_to eq(nil)
+        expect(resolve_subject[:install_instructions]).not_to be_nil
       end
 
       it 'does not return register instructions' do
-        expect(resolve_subject[:register_instructions]).to eq(nil)
+        expect(resolve_subject[:register_instructions]).to be_nil
       end
     end
 

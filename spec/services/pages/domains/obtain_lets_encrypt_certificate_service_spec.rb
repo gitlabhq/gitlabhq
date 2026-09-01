@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Pages::Domains::ObtainLetsEncryptCertificateService, feature_category: :pages do
   include LetsEncryptHelpers
 
-  let(:pages_domain) { create(:pages_domain, :without_certificate, :without_key) }
+  let_it_be_with_reload(:pages_domain) { create(:pages_domain, :without_certificate, :without_key) }
   let(:service) { described_class.new(pages_domain) }
 
   subject(:execute_service) { service.execute }
@@ -42,16 +42,12 @@ RSpec.describe Pages::Domains::ObtainLetsEncryptCertificateService, feature_cate
   end
 
   shared_examples 'saves error and sends notification' do
-    it 'saves error to domain' do
-      expect { subject }.to change { pages_domain.reload.auto_ssl_failed }.from(false).to(true)
-    end
-
-    it 'sends notification' do
+    it 'saves error to domain and sends notification', :aggregate_failures do
       expect_next_instance_of(NotificationService) do |notification_service|
         expect(notification_service).to receive(:pages_domain_auto_ssl_failed).with(pages_domain)
       end
 
-      subject
+      expect { subject }.to change { pages_domain.reload.auto_ssl_failed }.from(false).to(true)
     end
   end
 
@@ -94,134 +90,116 @@ RSpec.describe Pages::Domains::ObtainLetsEncryptCertificateService, feature_cate
     end
   end
 
-  %w[pending processing].each do |status|
-    context "when there is an order in '#{status}' status" do
-      let(:existing_order) do
-        create(:pages_domain_acme_order, pages_domain: pages_domain)
-      end
-
-      before do
-        stub_lets_encrypt_order(existing_order.url, status)
-      end
-
-      it 'does not raise errors' do
-        expect do
-          service.execute
-        end.not_to raise_error
-      end
-    end
-  end
-
-  context 'when order is ready' do
-    let(:existing_order) do
+  context 'when there is an existing acme order' do
+    let_it_be(:existing_order) do
       create(:pages_domain_acme_order, pages_domain: pages_domain)
     end
 
-    let!(:api_order) do
-      stub_lets_encrypt_order(existing_order.url, 'ready')
+    context 'when there is an order pending processing' do
+      %w[pending processing].each do |status|
+        context "when there is an order in '#{status}' status" do
+          before do
+            stub_lets_encrypt_order(existing_order.url, status)
+          end
+
+          it 'does not raise errors' do
+            expect do
+              service.execute
+            end.not_to raise_error
+          end
+        end
+      end
     end
 
-    it 'request certificate and schedules next step' do
-      expect(api_order).to receive(:request_certificate).and_call_original
-      expect(PagesDomainSslRenewalWorker).to(
-        receive(:perform_in).with(described_class::CERTIFICATE_PROCESSING_DELAY, pages_domain.id)
-          .and_return(nil).once
-      )
+    context 'when order is ready' do
+      let!(:api_order) do
+        stub_lets_encrypt_order(existing_order.url, 'ready')
+      end
 
-      service.execute
-    end
-
-    describe 'when #request_certificate returns a client error' do
-      before do
-        allow(api_order).to receive(:request_certificate).and_raise(
-          Acme::Client::Error::BadCSR,
-          'Error finalizing order :: CN was longer than 64 bytes'
+      it 'request certificate and schedules next step' do
+        expect(api_order).to receive(:request_certificate).and_call_original
+        expect(PagesDomainSslRenewalWorker).to(
+          receive(:perform_in).with(described_class::CERTIFICATE_PROCESSING_DELAY, pages_domain.id)
+            .and_return(nil).once
         )
+
+        service.execute
       end
 
-      it_behaves_like 'saves error and sends notification'
-    end
-  end
+      describe 'when #request_certificate returns a client error' do
+        before do
+          allow(api_order).to receive(:request_certificate).and_raise(
+            Acme::Client::Error::BadCSR,
+            'Error finalizing order :: CN was longer than 64 bytes'
+          )
+        end
 
-  context 'when order is valid' do
-    let(:existing_order) do
-      create(:pages_domain_acme_order, pages_domain: pages_domain)
-    end
-
-    let!(:api_order) do
-      stub_lets_encrypt_order(existing_order.url, 'valid')
-    end
-
-    let(:certificate) do
-      key = OpenSSL::PKey.read(existing_order.private_key)
-
-      subject = "/C=BE/O=Test/OU=Test/CN=#{pages_domain.domain}"
-
-      cert = OpenSSL::X509::Certificate.new
-      cert.subject = cert.issuer = OpenSSL::X509::Name.parse(subject)
-      cert.not_before = Time.current
-      cert.not_after = 1.year.from_now
-      cert.public_key = key.public_key
-      cert.serial = 0x0
-      cert.version = 2
-
-      ef = OpenSSL::X509::ExtensionFactory.new
-      ef.subject_certificate = cert
-      ef.issuer_certificate = cert
-      cert.extensions = [
-        ef.create_extension("basicConstraints", "CA:TRUE", true),
-        ef.create_extension("subjectKeyIdentifier", "hash")
-      ]
-      cert.add_extension ef.create_extension("authorityKeyIdentifier", "keyid:always,issuer:always")
-
-      cert.sign key, OpenSSL::Digest.new('SHA256')
-
-      cert.to_pem
-    end
-
-    before do
-      allow(api_order).to receive(:certificate).and_return(certificate)
-    end
-
-    it 'saves private_key and certificate for domain' do
-      service.execute
-
-      expect(pages_domain.key).to be_present
-      expect(pages_domain.certificate).to eq(certificate)
-    end
-
-    it 'marks certificate as gitlab_provided' do
-      service.execute
-
-      expect(pages_domain.certificate_source).to eq("gitlab_provided")
-    end
-
-    it 'removes order from database' do
-      service.execute
-
-      expect(PagesDomainAcmeOrder.find_by_id(existing_order.id)).to be_nil
-    end
-  end
-
-  context 'when order is invalid' do
-    let(:existing_order) do
-      create(:pages_domain_acme_order, pages_domain: pages_domain)
-    end
-
-    let!(:api_order) do
-      stub_lets_encrypt_order(existing_order.url, 'invalid')
-    end
-
-    shared_examples 'saves error, deletes acme order and sends notification' do
-      it_behaves_like 'saves error and sends notification'
-
-      it 'deletes acme order' do
-        execute_service
-
-        expect(PagesDomainAcmeOrder.where(id: existing_order.id)).not_to exist
+        it_behaves_like 'saves error and sends notification'
       end
     end
 
-    it_behaves_like 'saves error, deletes acme order and sends notification'
+    context 'when order is valid' do
+      let!(:api_order) do
+        stub_lets_encrypt_order(existing_order.url, 'valid')
+      end
+
+      let(:certificate) do
+        key = OpenSSL::PKey.read(existing_order.private_key)
+
+        subject = "/C=BE/O=Test/OU=Test/CN=#{pages_domain.domain}"
+
+        cert = OpenSSL::X509::Certificate.new
+        cert.subject = cert.issuer = OpenSSL::X509::Name.parse(subject)
+        cert.not_before = Time.current
+        cert.not_after = 1.year.from_now
+        cert.public_key = key.public_key
+        cert.serial = 0x0
+        cert.version = 2
+
+        ef = OpenSSL::X509::ExtensionFactory.new
+        ef.subject_certificate = cert
+        ef.issuer_certificate = cert
+        cert.extensions = [
+          ef.create_extension("basicConstraints", "CA:TRUE", true),
+          ef.create_extension("subjectKeyIdentifier", "hash")
+        ]
+        cert.add_extension ef.create_extension("authorityKeyIdentifier", "keyid:always,issuer:always")
+
+        cert.sign key, OpenSSL::Digest.new('SHA256')
+
+        cert.to_pem
+      end
+
+      before do
+        allow(api_order).to receive(:certificate).and_return(certificate)
+      end
+
+      it 'saves certificate data and removes order', :aggregate_failures do
+        service.execute
+
+        expect(pages_domain.key).to be_present
+        expect(pages_domain.certificate).to eq(certificate)
+        expect(pages_domain.certificate_source).to eq("gitlab_provided")
+        expect(PagesDomainAcmeOrder.find_by_id(existing_order.id)).to be_nil
+      end
+    end
+
+    context 'when order is invalid' do
+      let!(:api_order) do
+        stub_lets_encrypt_order(existing_order.url, 'invalid')
+      end
+
+      shared_examples 'saves error, deletes acme order and sends notification' do
+        it_behaves_like 'saves error and sends notification'
+
+        it 'deletes acme order' do
+          execute_service
+
+          expect(PagesDomainAcmeOrder.where(id: existing_order.id)).not_to exist
+        end
+      end
+
+      it_behaves_like 'saves error, deletes acme order and sends notification'
+    end
   end
 end

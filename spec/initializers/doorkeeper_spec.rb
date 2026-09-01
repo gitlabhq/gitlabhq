@@ -13,7 +13,7 @@ RSpec.describe Doorkeeper.configuration, feature_category: :system_access do
       end
 
       it 'returns nil' do
-        expect(expires_in).to eq(nil)
+        expect(expires_in).to be_nil
       end
     end
 
@@ -94,7 +94,7 @@ RSpec.describe Doorkeeper.configuration, feature_category: :system_access do
 
       # NOTE: this is required for doorkeeper-openid_connect
       it 'returns nil' do
-        expect(subject).to eq nil
+        expect(subject).to be_nil
       end
 
       it 'redirects to the login form' do

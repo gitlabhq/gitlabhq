@@ -150,7 +150,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
       context 'with non member user' do
         it 'returns true' do
-          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to eq(true)
+          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to be(true)
         end
       end
     end
@@ -166,7 +166,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         end
 
         it 'returns true' do
-          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to eq(true)
+          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to be(true)
         end
       end
 
@@ -176,7 +176,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         end
 
         it 'returns false' do
-          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to eq(false)
+          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to be(false)
         end
       end
     end
@@ -271,7 +271,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       analyzer = subject.dig('data', 'project', 'sastCiConfiguration', 'analyzers', 'nodes').first
       expect(analyzer['name']).to eq('brakeman')
       expect(analyzer['label']).to eq('Brakeman')
-      expect(analyzer['enabled']).to eq(true)
+      expect(analyzer['enabled']).to be(true)
     end
 
     context 'with guest user' do
@@ -1671,7 +1671,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       let_it_be(:project) { create(:project, :public) }
       let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when project is a catalog resource and is published' do
@@ -1681,7 +1681,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
       let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project, state: :published) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 

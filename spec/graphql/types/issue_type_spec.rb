@@ -159,7 +159,7 @@ RSpec.describe GitlabSchema.types['Issue'], feature_category: :team_planning do
 
     context 'when issue is hidden' do
       it 'returns `true`' do
-        expect(subject.dig('data', 'project', 'issue', 'hidden')).to eq(true)
+        expect(subject.dig('data', 'project', 'issue', 'hidden')).to be(true)
       end
     end
 
@@ -167,7 +167,7 @@ RSpec.describe GitlabSchema.types['Issue'], feature_category: :team_planning do
       let(:issue) { visible_issue }
 
       it 'returns `false`' do
-        expect(subject.dig('data', 'project', 'issue', 'hidden')).to eq(false)
+        expect(subject.dig('data', 'project', 'issue', 'hidden')).to be(false)
       end
     end
   end

@@ -135,6 +135,16 @@ describe('StatPresenter', () => {
     });
   });
 
+  describe('displayConfig', () => {
+    const displayConfig = { title: 'Total suggestions', unit: 'suggestions' };
+
+    it('leaves the rendered stat unchanged, because no key is read yet', () => {
+      createComponent({ displayConfig });
+
+      expect(findSingleStat().props()).toMatchObject({ title: '', value: '1,234' });
+    });
+  });
+
   describe('validation', () => {
     it('emits an error when there are no metrics', () => {
       createComponent({ fields: [DIMENSION] });

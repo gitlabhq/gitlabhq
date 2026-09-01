@@ -94,6 +94,24 @@ RSpec.describe ::Users::MergeRequestInteraction, feature_category: :code_review_
     end
   end
 
+  describe '#approved_at' do
+    subject { interaction.approved_at }
+
+    context 'when the user has not approved the MR' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the user has approved the MR' do
+      before do
+        merge_request.approved_by_users << user
+      end
+
+      it 'returns the approval record timestamp' do
+        is_expected.to be_like_time(merge_request.approvals.find_by(user_id: user.id).created_at)
+      end
+    end
+  end
+
   describe '#updated_at' do
     subject { interaction.updated_at }
 

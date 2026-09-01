@@ -1,4 +1,4 @@
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AreaChartPresenter from '~/glql/components/presenters/area_chart.vue';
 import BarChartPresenter from '~/glql/components/presenters/bar_chart.vue';
 import ColumnChartPresenter from '~/glql/components/presenters/column_chart.vue';
@@ -87,6 +87,34 @@ describe('DataPresenter', () => {
   });
 
   describe('stat', () => {
+    it('forwards displayConfig to the stat presenter', () => {
+      const displayConfig = { title: 'Total suggestions' };
+
+      const wrapper = shallowMountExtended(DataPresenter, {
+        propsData: {
+          data: MOCK_AGGREGATED_DATA_ONE_DIM,
+          displayType: 'stat',
+          fields: MOCK_STAT_FIELDS,
+          displayConfig,
+        },
+      });
+
+      expect(wrapper.findComponent(StatPresenter).props('displayConfig')).toBe(displayConfig);
+    });
+
+    it('declares displayConfig, so it does not leak into the DOM as an attribute', () => {
+      const wrapper = mountExtended(DataPresenter, {
+        propsData: {
+          data: { nodes: [{ totalCount: 5 }] },
+          displayType: 'stat',
+          fields: MOCK_STAT_FIELDS,
+          displayConfig: { title: 'Total suggestions' },
+        },
+      });
+
+      expect(wrapper.findComponent(StatPresenter).attributes('display-config')).toBeUndefined();
+    });
+
     it('re-emits errors from the stat presenter', () => {
       const wrapper = shallowMountExtended(DataPresenter, {
         propsData: {

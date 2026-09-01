@@ -163,7 +163,7 @@ RSpec.describe Mutations::Releases::Update do
           let(:updated_description) { nil }
 
           it 'updates the description to nil' do
-            expect(updated_release.description).to eq(nil)
+            expect(updated_release.description).to be_nil
           end
 
           it_behaves_like 'no changes to the release except for the', :description

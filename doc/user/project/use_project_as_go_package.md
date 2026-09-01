@@ -16,6 +16,7 @@ description: Go modules and import calls.
 {{< history >}}
 
 - Changed in [GitLab 17.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161162) to return 404 errors for unauthorized `go get` requests.
+- Changed in [GitLab 19.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250766) to support fine-grained personal access tokens.
 
 {{< /history >}}
 
@@ -40,7 +41,10 @@ To use a project as a Go package, use the `go get` and `godoc.org` discovery req
 Prerequisites:
 
 - Your GitLab instance must be accessible with HTTPS.
-- You must have a [personal access token](../profile/personal_access_tokens.md) with `read_api` scope.
+- You must have one of the following:
+  - A [personal access token](../profile/personal_access_tokens.md) with `read_api` scope.
+  - A [fine-grained personal access token](../../auth/tokens/fine_grained_access_tokens.md) with the
+    Download permission for the Code resource, scoped to the project.
 
 ### Authenticate with `GOAUTH`
 

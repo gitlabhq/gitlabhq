@@ -166,12 +166,38 @@ module Gitlab
         auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, request: request)
 
         return false unless auth_result.success?
-
-        return false unless auth_result.authentication_abilities_include?(:download_code) ||
-          auth_result.authentication_abilities_include?(:read_project)
+        return false unless token_authorized?(auth_result, project)
 
         auth_result.can_perform_action_on_project?(:download_code, project) ||
           auth_result.can_perform_action_on_project?(:read_project, project)
+      end
+
+      # Mirrors Gitlab::GitAccess#check_authentication_abilities!: granular PATs carry no legacy
+      # authentication abilities, so they are checked against their granular scopes instead. The
+      # permission is `download_code` because `go get` clones the repository next.
+      def token_authorized?(auth_result, project)
+        token = auth_result.personal_access_token
+        return false unless granular_scopes_authorized?(token, project)
+        return true if token&.granular?
+
+        legacy_token_authorized?(auth_result)
+      end
+
+      # AuthorizeGranularScopesService is called for legacy tokens too, but it only errors for
+      # them when the namespace enforces granular tokens, where denying access is correct.
+      def granular_scopes_authorized?(token, project)
+        return true unless token
+
+        ::Authz::Tokens::AuthorizeGranularScopesService.new(
+          boundaries: ::Authz::Boundary.for(project),
+          permissions: [:download_code],
+          token: token
+        ).execute.success?
+      end
+
+      def legacy_token_authorized?(auth_result)
+        auth_result.authentication_abilities_include?(:download_code) ||
+          auth_result.authentication_abilities_include?(:read_project)
       end
 
       def ssh_url(path)

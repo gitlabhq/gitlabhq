@@ -23,7 +23,7 @@ RSpec.describe Resolvers::Ci::TestReportSummaryResolver do
         expect(resolve_subject[:total][:failed]).to eq(0)
         expect(resolve_subject[:total][:skipped]).to eq(0)
         expect(resolve_subject[:total][:error]).to eq(2)
-        expect(resolve_subject[:total][:suite_error]).to eq(nil)
+        expect(resolve_subject[:total][:suite_error]).to be_nil
       end
     end
 
@@ -39,7 +39,7 @@ RSpec.describe Resolvers::Ci::TestReportSummaryResolver do
         expect(resolve_subject[:total][:failed]).to eq(0)
         expect(resolve_subject[:total][:skipped]).to eq(0)
         expect(resolve_subject[:total][:error]).to eq(0)
-        expect(resolve_subject[:total][:suite_error]).to eq(nil)
+        expect(resolve_subject[:total][:suite_error]).to be_nil
       end
     end
   end

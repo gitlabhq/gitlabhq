@@ -2,18 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe Todos::SnoozingService, feature_category: :team_planning do
-  let_it_be(:project) { create(:project) }
+RSpec.describe Todos::SnoozingService, feature_category: :team_planning, factory_default: :keep do
+  let_it_be(:project) { create_default(:project) }
   let_it_be(:user) { create(:user, developer_of: project) }
+  let_it_be(:issue) { create_default(:issue) }
   let(:service) { described_class.new }
 
   describe '#snooze_todo' do
     let_it_be(:time1) { Time.utc(2024, 9, 12, 19, 0, 0) }
     let_it_be(:time2) { Time.utc(2024, 9, 13, 3, 0, 0) }
+    let_it_be_with_reload(:todo) { create(:todo, :pending, user: user) }
 
     context 'when the todo has not been snoozed yet' do
-      let!(:todo) { create(:todo, :pending, user: user) }
-
       it 'snoozes the todo until the provided time' do
         expect do
           service.snooze_todo(todo, time1)
@@ -23,7 +23,7 @@ RSpec.describe Todos::SnoozingService, feature_category: :team_planning do
     end
 
     context 'when the todo is already snoozed' do
-      let!(:todo) { create(:todo, :pending, snoozed_until: time1, user: user) }
+      let_it_be_with_reload(:todo) { create(:todo, :pending, snoozed_until: time1, user: user) }
 
       it 'changes the snoozed_until timestamp' do
         service.snooze_todo(todo, time2)
@@ -34,8 +34,6 @@ RSpec.describe Todos::SnoozingService, feature_category: :team_planning do
     end
 
     context 'when the update fails' do
-      let!(:todo) { create(:todo, :pending, user: user) }
-
       before do
         allow(todo).to receive(:update).and_return(false)
 
@@ -55,7 +53,7 @@ RSpec.describe Todos::SnoozingService, feature_category: :team_planning do
 
   describe '#un_snooze_todo' do
     let_it_be(:snoozed_until) { Time.utc(2024, 9, 12, 19, 0, 0) }
-    let!(:todo) { create(:todo, :pending, snoozed_until: snoozed_until, user: user) }
+    let_it_be_with_reload(:todo) { create(:todo, :pending, snoozed_until: snoozed_until, user: user) }
 
     context 'when the todo is snoozed' do
       it 'un-snoozes the todo' do
@@ -90,16 +88,11 @@ RSpec.describe Todos::SnoozingService, feature_category: :team_planning do
     let_it_be(:todo2) { create(:todo, :pending, user: user, snoozed_until: 1.hour.ago) }
     let(:todos) { Todo.where(id: [todo1.id, todo2.id]) }
 
-    it 'snoozes all todos until the provided time' do
-      service.snooze_todos(todos, time)
+    it 'snoozes all todos and responds with the updated todo ids', :aggregate_failures do
+      response = service.snooze_todos(todos, time)
 
       expect(todo1.reload.snoozed_until).to be_within(1.second).of(time)
       expect(todo2.reload.snoozed_until).to be_within(1.second).of(time)
-    end
-
-    it 'responds with the updated todo ids' do
-      response = service.snooze_todos(todos, time)
-
       expect(response).to match_array [todo1.id, todo2.id]
     end
   end
@@ -109,16 +102,11 @@ RSpec.describe Todos::SnoozingService, feature_category: :team_planning do
     let_it_be(:todo2) { create(:todo, :pending, user: user, snoozed_until: nil) }
     let(:todos) { Todo.where(id: [todo1.id, todo2.id]) }
 
-    it 'unsnoozes all todos' do
-      service.unsnooze_todos(todos)
+    it 'unsnoozes all todos and responds with the updated todo ids', :aggregate_failures do
+      response = service.unsnooze_todos(todos)
 
       expect(todo1.reload.snoozed_until).to be_nil
       expect(todo2.reload.snoozed_until).to be_nil
-    end
-
-    it 'responds with the updated todo ids' do
-      response = service.unsnooze_todos(todos)
-
       expect(response).to match_array [todo1.id, todo2.id]
     end
   end

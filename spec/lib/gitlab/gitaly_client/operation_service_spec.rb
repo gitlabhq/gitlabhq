@@ -215,6 +215,129 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         client.user_merge_to_ref(user, **payload)
       end
     end
+
+    context 'when the RPC fails' do
+      subject(:merge_to_ref) { client.user_merge_to_ref(user, **payload) }
+
+      let(:error_message) { 'merging commits: merge: there are conflicting files' }
+      let(:conflicting_files) { %w[files/ruby/popen.rb files/ruby/regex.rb] }
+      let(:raised_error) { GRPC::FailedPrecondition.new(error_message) }
+
+      before do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_merge_to_ref).and_raise(raised_error)
+      end
+
+      context 'with a MergeConflictError' do
+        # Gitaly::UserMergeToRefError is not in the gitaly gem yet, so only the wrapper is stubbed.
+        # Replace this with new_detailed_error once a released gem provides the message:
+        # https://gitlab.com/gitlab-org/gitlab/-/work_items/622305
+        before do
+          detailed_error = Struct.new(:merge_conflict).new(
+            Gitaly::MergeConflictError.new(conflicting_files: conflicting_files)
+          )
+          allow(detailed_error).to receive(:try).with(:error).and_return(:merge_conflict)
+
+          allow(Gitlab::GitalyClient).to receive(:decode_detailed_error)
+            .with(raised_error).and_return(detailed_error)
+        end
+
+        it 'raises a CommandError naming the conflicting files' do
+          expect { merge_to_ref }.to raise_error(
+            Gitlab::Git::CommandError,
+            "9:#{error_message}. Conflicts in: `files/ruby/popen.rb`, `files/ruby/regex.rb`."
+          )
+        end
+
+        context 'when the error carries a debug error string' do
+          let(:raised_error) do
+            GRPC::FailedPrecondition.new("#{error_message}. debug_error_string:{\"created\":\"@1\"}")
+          end
+
+          it 'keeps the conflicting files that the debug error string strip would drop' do
+            expect { merge_to_ref }.to raise_error(
+              Gitlab::Git::CommandError,
+              "9:#{error_message}. Conflicts in: `files/ruby/popen.rb`, `files/ruby/regex.rb`."
+            )
+          end
+        end
+
+        context 'when a conflicting file name is not valid UTF-8' do
+          let(:conflicting_files) { ["invalid\xC3(.txt".b] }
+
+          it 'raises a CommandError with a message that is safe to persist', :aggregate_failures do
+            expect { merge_to_ref }.to raise_error(Gitlab::Git::CommandError) do |error|
+              expect(error.message).to eq("9:#{error_message}. Conflicts in: `invalid�(.txt`.")
+              expect(error.message.encoding).to eq(Encoding::UTF_8)
+              expect(error.message).to be_valid_encoding
+            end
+          end
+        end
+
+        context 'when more files conflict than the message lists' do
+          let(:conflicting_files) { Array.new(12) { |i| "file#{i}.txt" } }
+          let(:listed_files) do
+            conflicting_files.first(described_class::MAX_CONFLICTING_FILES).map { |file| "`#{file}`" }.join(', ')
+          end
+
+          it 'lists the first files and counts the rest' do
+            expect { merge_to_ref }.to raise_error(
+              Gitlab::Git::CommandError,
+              "9:#{error_message}. Conflicts in: #{listed_files}, and 2 more."
+            )
+          end
+        end
+
+        context 'when a conflicting file name contains markdown' do
+          let(:conflicting_files) { ['__init__.py', 'x](https://example.com)[y'] }
+
+          it 'wraps the file names so a system note renders them literally' do
+            expect { merge_to_ref }.to raise_error(
+              Gitlab::Git::CommandError,
+              "9:#{error_message}. Conflicts in: `__init__.py`, `x](https://example.com)[y`."
+            )
+          end
+        end
+
+        context 'when Gitaly does not report which files conflict' do
+          let(:conflicting_files) { [] }
+
+          it 'raises a CommandError with the message unchanged' do
+            expect { merge_to_ref }.to raise_error(Gitlab::Git::CommandError, "9:#{error_message}")
+          end
+        end
+      end
+
+      context 'without a detailed error' do
+        let(:raised_error) { GRPC::Internal.new('non-detailed error') }
+
+        it 'raises the original error' do
+          expect { merge_to_ref }.to raise_error(GRPC::Internal)
+        end
+      end
+
+      context 'when the gitaly gem cannot decode the detailed error type' do
+        let(:raised_error) do
+          status = Google::Rpc::Status.new(
+            code: GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+            message: error_message,
+            details: [
+              Google::Protobuf::Any.new(type_url: 'type.googleapis.com/gitaly.UnknownToThisGemError')
+            ]
+          )
+
+          GRPC::BadStatus.new(
+            GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+            error_message,
+            { 'grpc-status-details-bin' => Google::Rpc::Status.encode(status) }
+          )
+        end
+
+        it 'raises the original error' do
+          expect { merge_to_ref }.to raise_error(GRPC::BadStatus, "9:#{error_message}")
+        end
+      end
+    end
   end
 
   describe '#user_delete_branch' do

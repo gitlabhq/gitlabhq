@@ -102,6 +102,7 @@ export default {
     :data="data"
     :fields="fields"
     :loading="loading"
+    :display-config="displayConfig"
     @error="$emit('error', $event)"
   />
   <column-chart-presenter
