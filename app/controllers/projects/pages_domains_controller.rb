@@ -22,12 +22,12 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   end
 
   def verify
-    result = VerifyPagesDomainService.new(@domain).execute
+    result = VerifyPagesDomainService.new(@domain, current_user).execute
 
     if result[:status] == :success
-      flash[:notice] = 'Successfully verified domain ownership'
+      flash[:notice] = s_('GitLabPagesDomains|Successfully verified domain ownership')
     else
-      flash[:alert] = 'Failed to verify domain ownership'
+      flash[:alert] = s_('GitLabPagesDomains|Failed to verify domain ownership')
     end
 
     redirect_to project_pages_domain_path(@project, @domain)
@@ -59,20 +59,26 @@ class Projects::PagesDomainsController < Projects::ApplicationController
     if service.execute(@domain)
       redirect_to project_pages_path(@project, anchor: 'domains-settings'),
         status: :found,
-        notice: 'Domain was updated'
+        notice: s_('GitLabPagesDomains|Domain was updated')
     else
       render 'show'
     end
   end
 
   def destroy
-    ::Pages::Domains::DeleteService.new(@project, current_user).execute(@domain)
+    domain = ::Pages::Domains::DeleteService.new(@project, current_user).execute(@domain)
 
     respond_to do |format|
       format.html do
-        redirect_to project_pages_path(@project, anchor: 'domains-settings'),
-          status: :found,
-          notice: 'Domain was removed'
+        if domain&.destroyed?
+          redirect_to project_pages_path(@project, anchor: 'domains-settings'),
+            status: :found,
+            notice: s_('GitLabPagesDomains|Domain was removed')
+        else
+          redirect_to project_pages_path(@project, anchor: 'domains-settings'),
+            status: :found,
+            alert: s_('GitLabPagesDomains|Failed to remove domain')
+        end
       end
       format.js
     end

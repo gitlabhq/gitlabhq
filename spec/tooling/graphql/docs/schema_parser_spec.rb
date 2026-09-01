@@ -39,6 +39,18 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
   describe '#execute' do
     subject(:result) { described_class.new(schema).execute }
 
+    describe '@directives' do
+      subject(:directives) { result.directives }
+
+      it 'contains an array of directive types' do
+        expect(directives).to all(be_a(Tooling::Graphql::Docs::Schema::Directive))
+      end
+
+      it 'contains the built-in directives in the schema' do
+        expect(directives.map(&:name)).to include('include', 'skip')
+      end
+    end
+
     describe '@enums' do
       subject(:enums) { result.enums }
 

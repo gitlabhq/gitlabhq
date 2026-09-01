@@ -20,18 +20,16 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
 
   let_it_be(:issue) { create(:issue, project: project, description: description) }
 
-  let(:expected) do
+  let(:mermaid_frame_selector) do
     src_prefix = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}#{sandbox_mermaid_v11_path}"
-    %r{<iframe src="#{Regexp.escape(src_prefix)}(?:\?darkMode=true)?" sandbox="allow-scripts allow-popups"}
+    "iframe[src^='#{src_prefix}'][sandbox='allow-scripts allow-popups']"
   end
 
   context 'in an issue' do
     it 'includes mermaid frame correctly', :with_license do
       visit project_issue_path(project, issue)
 
-      wait_for_requests
-
-      expect(page.html).to match(expected)
+      expect(page).to have_css(mermaid_frame_selector)
     end
   end
 
@@ -41,18 +39,14 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
     it 'renders diffs and includes mermaid frame correctly' do
       visit(diffs_project_merge_request_path(project, merge_request))
 
-      wait_for_requests
-
       page.within('.tab-content') do
         expect(page).to have_selector('.diffs')
       end
 
       visit(project_merge_request_path(project, merge_request))
 
-      wait_for_requests
-
       page.within('.merge-request') do
-        expect(page.html).to match(expected)
+        expect(page).to have_css(mermaid_frame_selector)
       end
     end
   end
@@ -60,17 +54,16 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
   context 'in a project milestone' do
     let(:milestone) { create(:project_milestone, project: project, description: description) }
 
-    it 'includes mermaid frame correctly',
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9494' do
+    it 'includes mermaid frame correctly' do
       visit(project_milestone_path(project, milestone))
 
-      wait_for_requests
-
-      expect(page.html).to match(expected)
+      expect(page).to have_css(mermaid_frame_selector)
     end
   end
 
   context 'in a project home page' do
+    let_it_be_with_refind(:project) { create(:project, :public, :repository, group: subgroup) }
+
     let!(:wiki) { create(:project_wiki, project: project) }
     let!(:wiki_page) { create(:wiki_page, wiki: wiki, title: 'home', content: description) }
 
@@ -78,18 +71,11 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
       project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
     end
 
-    it 'includes mermaid frame correctly',
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9387' do
+    it 'includes mermaid frame correctly' do
       visit(project_path(project))
 
-      wait_for_all_requests
-
       page.within '.js-wiki-content' do
-        # the find is needed to ensure the lazy container is loaded, otherwise
-        # it can be a flaky test, similar to
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25408
-        #
-        expect(page.html).to match(expected)
+        expect(page).to have_css(mermaid_frame_selector)
       end
     end
   end
@@ -100,9 +86,7 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
     it 'includes mermaid frame correctly' do
       visit(group_milestone_path(group_milestone.group, group_milestone))
 
-      wait_for_requests
-
-      expect(page.html).to match(expected)
+      expect(page).to have_css(mermaid_frame_selector)
     end
   end
 end

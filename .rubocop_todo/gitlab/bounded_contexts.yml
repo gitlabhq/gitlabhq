@@ -3325,6 +3325,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/vulnerability_exports/create_service.rb'
     - 'ee/app/services/vulnerability_exports/export_service.rb'
     - 'ee/app/services/vulnerability_exports/exporters/csv_service.rb'
+    - 'ee/app/services/vulnerability_exports/filterable.rb'
     - 'ee/app/services/vulnerability_external_issue_links/create_service.rb'
     - 'ee/app/services/vulnerability_external_issue_links/destroy_service.rb'
     - 'ee/app/services/vulnerability_feedback/create_service.rb'

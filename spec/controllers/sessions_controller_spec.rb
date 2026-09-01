@@ -1135,6 +1135,54 @@ RSpec.describe SessionsController, feature_category: :system_access do
         end
       end
     end
+
+    context 'for sign_in_dashboard UX SLI start marker', :aggregate_failures, :freeze_time do
+      let(:user) { create(:user) }
+      let(:user_params) { { login: user.username, password: user.password } }
+
+      context 'when login succeeds with username and password (no 2FA)' do
+        it 'sets session[:start_time_of_sign_in_dashboard_ux_sli]' do
+          post(:create, params: { user: user_params })
+
+          expect(@request.env['warden']).to be_authenticated
+          expect(session[:start_time_of_sign_in_dashboard_ux_sli]).to eq(Time.current)
+        end
+
+        context 'when redirects to any another page than root/dashboard after authentication' do
+          before do
+            allow(controller).to receive(:after_sign_in_path_for).and_return(user_settings_profile_path)
+          end
+
+          it 'does not set session[:start_time_of_sign_in_dashboard_ux_sli]' do
+            post(:create, params: { user: user_params })
+
+            expect(@request.env['warden']).to be_authenticated
+            expect(session[:start_time_of_sign_in_dashboard_ux_sli]).to be_nil
+          end
+        end
+      end
+
+      context 'when login fails (wrong password)' do
+        it 'does not set session[:start_time_of_sign_in_dashboard_ux_sli]' do
+          post(:create, params: { user: { login: user.username, password: 'wrong_password' } })
+
+          expect(@request.env['warden']).not_to be_authenticated
+          expect(session[:start_time_of_sign_in_dashboard_ux_sli]).to be_nil
+        end
+      end
+
+      context 'when the user has 2FA enabled' do
+        let(:user) { create(:user, :two_factor) }
+
+        it 'does not set session[:start_time_of_sign_in_dashboard_ux_sli] (2FA challenge is issued instead)' do
+          post(:create, params: { user: user_params })
+
+          expect(response).to render_template('devise/sessions/two_factor')
+          expect(@request.env['warden']).not_to be_authenticated
+          expect(session[:start_time_of_sign_in_dashboard_ux_sli]).to be_nil
+        end
+      end
+    end
   end
 
   describe '#new_passkey' do

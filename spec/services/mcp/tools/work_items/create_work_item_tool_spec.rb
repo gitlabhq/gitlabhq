@@ -135,6 +135,20 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemTool, feature_category: :mcp
       end
     end
 
+    context 'with readiness_score' do
+      it 'maps readiness_score to agentPlanWidget' do
+        params[:readiness_score] = 70
+
+        expect(tool.build_variables[:input][:agentPlanWidget]).to eq(readinessScore: 70)
+      end
+
+      it 'combines readiness_score with agent_plan content' do
+        params.merge!(agent_plan: 'Plan content', readiness_score: 70)
+
+        expect(tool.build_variables[:input][:agentPlanWidget]).to eq(content: 'Plan content', readinessScore: 70)
+      end
+    end
+
     context 'with update-only params' do
       update_only = {
         state: 'closed',

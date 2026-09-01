@@ -34,6 +34,12 @@ module Tooling
           "[`#{item.type_signature}`](#{docs_link(item.type)})"
         end
 
+        def default_arg_value(argument)
+          return unless argument.default_value?
+
+          "`#{argument.default_value}`"
+        end
+
         def docs_render(partial, **args)
           template = "shared/#{partial}"
           Renderer.new(template: template, locals: args).execute

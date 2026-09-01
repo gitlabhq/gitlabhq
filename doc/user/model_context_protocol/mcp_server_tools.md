@@ -989,6 +989,7 @@ one. Send only the fields you intend to set, and omit the rest. The tool names
 | `status_id`        | string            | No       | Global ID of the status to set. Premium and Ultimate only. |
 | `is_fixed`         | boolean           | No       | Whether start and due dates are fixed. When `false`, dates roll up from child items and `start_date` and `due_date` are ignored. Premium and Ultimate only. |
 | `agent_plan`       | string            | No       | Markdown content of the agent plan. Ultimate only. Requires the workplan feature. |
+| `readiness_score`  | integer           | No       | Readiness score of the agent plan, from 0 to 100. Ultimate only. Requires the workplan feature. |
 
 Example:
 

@@ -133,9 +133,10 @@ module Mcp
         end
 
         def agent_plan_widget
-          return unless params.key?(:agent_plan)
-
-          { content: params[:agent_plan] }
+          {
+            content: params[:agent_plan],
+            readinessScore: params[:readiness_score]
+          }.compact.presence
         end
 
         def process_result(result)

@@ -72,6 +72,8 @@ RSpec.describe 'Database schema',
       project_compliance_violations: %w[audit_event_id], # audit_events table doesn't have id as the primary key instead the primary key is btree (id, created_at)
       award_emoji: %w[awardable_id user_id],
       aws_roles: %w[role_external_id],
+      # No FK: deleting a namespace must not delete billing data that has not been exported yet.
+      billable_usage_daily_aggregates: %w[root_namespace_id],
       boards: %w[milestone_id iteration_id],
       burned_project_routes: %w[project_id], # No FK constraint: tombstones must outlive the project they reference.
       catalog_resource_component_last_usages: %w[used_by_project_id], # No FK constraint because we want to preserve usage data even if project is deleted.

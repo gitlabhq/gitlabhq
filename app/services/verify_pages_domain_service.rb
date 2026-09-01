@@ -10,10 +10,11 @@ class VerifyPagesDomainService
   VERIFICATION_PERIOD = 7.days
   REMOVAL_DELAY = 1.week.freeze
 
-  attr_reader :domain
+  attr_reader :domain, :current_user
 
-  def initialize(domain)
+  def initialize(domain, current_user = nil)
     @domain = domain
+    @current_user = current_user
   end
 
   def execute
@@ -44,8 +45,10 @@ class VerifyPagesDomainService
 
     if was_disabled
       notify(:enabled)
+      log_audit_event(:enabled)
     elsif was_unverified
       notify(:verification_succeeded)
+      log_audit_event(:verification_succeeded)
     end
 
     after_successful_verification
@@ -64,7 +67,10 @@ class VerifyPagesDomainService
     domain.remove_at ||= REMOVAL_DELAY.from_now unless domain.enabled?
     domain.save!(validate: false)
 
-    notify(:verification_failed) if was_verified
+    if was_verified
+      notify(:verification_failed)
+      log_audit_event(:verification_failed)
+    end
 
     ServiceResponse.error(message: "Couldn't verify #{domain.domain}")
   end
@@ -75,6 +81,7 @@ class VerifyPagesDomainService
     domain.save!(validate: false)
 
     notify(:disabled)
+    log_audit_event(:disabled)
 
     ServiceResponse.error(message: "Couldn't verify #{domain.domain}. It is now disabled.")
   end
@@ -122,6 +129,9 @@ class VerifyPagesDomainService
     Gitlab::AppLogger.info("Pages domain '#{domain.domain}' changed state to '#{type}'")
     NotificationService.new.public_send("pages_domain_#{type}", domain) # rubocop:disable GitlabSecurity/PublicSend -- Technical debt
   end
+
+  # Overridden in EE
+  def log_audit_event(type); end
 end
 
 VerifyPagesDomainService.prepend_mod

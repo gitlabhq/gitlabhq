@@ -48,6 +48,14 @@ Footnotes:
 1. Multiple threading levels are collapsed into one thread and quotes are added as part of the original comment.
 1. Project filtering doesn't support fuzzy search. Only **starts with** or **full match** strings are supported.
 
+## Known issues
+
+- Images and file attachments embedded in pull request descriptions and comments are not copied to GitLab.
+  They remain as external links pointing to the original Bitbucket-hosted URLs.
+  If the source Bitbucket Server instance is decommissioned or the repository is deleted, all embedded images and attachment links break permanently.
+  Before decommissioning the source Bitbucket Server instance, verify that all embedded images and attachments are accessible or preserve them separately.
+  Support for importing images and attachments is proposed in [work item 623235](https://gitlab.com/gitlab-org/gitlab/-/work_items/623235).
+
 ## Importer workflow
 
 The Bitbucket Server importer supports [post-migration mapping](mapping/post_migration_mapping.md) of user contributions for GitLab.com and

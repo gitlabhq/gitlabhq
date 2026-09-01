@@ -147,7 +147,7 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
       it 'redirects to the project page' do
         patch(:update, params: params)
 
-        expect(flash[:notice]).to eq 'Domain was updated'
+        expect(flash[:notice]).to eq s_('GitLabPagesDomains|Domain was updated')
         expect(response).to redirect_to(project_pages_path(project, anchor: 'domains-settings'))
       end
     end
@@ -192,25 +192,25 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
     let(:params) { request_params.merge(id: pages_domain.domain) }
 
     it 'handles verification success' do
-      expect_next_instance_of(VerifyPagesDomainService, pages_domain) do |service|
+      expect_next_instance_of(VerifyPagesDomainService, pages_domain, user) do |service|
         expect(service).to receive(:execute).and_return(status: :success)
       end
 
       post :verify, params: params
 
       expect(response).to redirect_to project_pages_domain_path(project, pages_domain)
-      expect(flash[:notice]).to eq('Successfully verified domain ownership')
+      expect(flash[:notice]).to eq(s_('GitLabPagesDomains|Successfully verified domain ownership'))
     end
 
     it 'handles verification failure' do
-      expect_next_instance_of(VerifyPagesDomainService, pages_domain) do |service|
+      expect_next_instance_of(VerifyPagesDomainService, pages_domain, user) do |service|
         expect(service).to receive(:execute).and_return(status: :failed)
       end
 
       post :verify, params: params
 
       expect(response).to redirect_to project_pages_domain_path(project, pages_domain)
-      expect(flash[:alert]).to eq('Failed to verify domain ownership')
+      expect(flash[:alert]).to eq(s_('GitLabPagesDomains|Failed to verify domain ownership'))
     end
 
     it 'returns a 404 response for an unknown domain' do
@@ -252,6 +252,24 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
         )
 
       expect(response).to redirect_to(project_pages_path(project, anchor: 'domains-settings'))
+      expect(flash[:notice]).to eq(s_('GitLabPagesDomains|Domain was removed'))
+    end
+
+    context 'when the domain fails to be destroyed' do
+      before do
+        allow_next_found_instance_of(PagesDomain) do |domain|
+          allow(domain).to receive(:destroy).and_return(false)
+        end
+      end
+
+      it 'redirects with an alert and keeps the pages domain' do
+        expect { delete(:destroy, params: request_params.merge(id: pages_domain.domain)) }
+          .to not_change { PagesDomain.count }
+          .and not_publish_event(::Pages::Domains::PagesDomainDeletedEvent)
+
+        expect(response).to redirect_to(project_pages_path(project, anchor: 'domains-settings'))
+        expect(flash[:alert]).to eq(s_('GitLabPagesDomains|Failed to remove domain'))
+      end
     end
   end
 

@@ -29781,6 +29781,9 @@ msgstr ""
 msgid "DomainVerification|Enter your domain"
 msgstr ""
 
+msgid "DomainVerification|Failed to remove domain"
+msgstr ""
+
 msgid "DomainVerification|Failed to verify domain ownership"
 msgstr ""
 
@@ -38138,7 +38141,22 @@ msgstr ""
 msgid "GitLabDuo|GitLab Duo Agentic Chat"
 msgstr ""
 
+msgid "GitLabPagesDomains|Domain was removed"
+msgstr ""
+
+msgid "GitLabPagesDomains|Domain was updated"
+msgstr ""
+
+msgid "GitLabPagesDomains|Failed to remove domain"
+msgstr ""
+
+msgid "GitLabPagesDomains|Failed to verify domain ownership"
+msgstr ""
+
 msgid "GitLabPagesDomains|Retry"
+msgstr ""
+
+msgid "GitLabPagesDomains|Successfully verified domain ownership"
 msgstr ""
 
 msgid "GitLabPages|Access Control is enabled for this Pages website; only authorized users will be able to access it. To make your website publicly available, navigate to your project's %{strong_start}Settings &gt; General &gt; Visibility%{strong_end} and select %{strong_start}Everyone%{strong_end} in pages section. Read the %{link_start}documentation%{link_end} for more information."

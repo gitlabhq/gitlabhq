@@ -185,7 +185,7 @@ module API
         authorize! :update_pages, user_project
 
         pages_domain = find_pages_domain!
-        result = ::VerifyPagesDomainService.new(pages_domain).execute
+        result = ::VerifyPagesDomainService.new(pages_domain, current_user).execute
 
         if result[:status] == :success
           present pages_domain, with: Entities::PagesDomain
@@ -206,7 +206,9 @@ module API
       delete ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
         authorize! :update_pages, user_project
 
-        ::Pages::Domains::DeleteService.new(user_project, current_user).execute(pages_domain)
+        domain = ::Pages::Domains::DeleteService.new(user_project, current_user).execute(pages_domain)
+
+        unprocessable_entity!('Failed to remove domain') unless domain&.destroyed?
 
         no_content!
       end

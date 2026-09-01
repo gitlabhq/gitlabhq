@@ -220,6 +220,22 @@ We recommend to migrate to the bundled Envoy Gateway and Gateway API.
 Alternatively, you can deploy and configure an
 [external Ingress controller and class](https://docs.gitlab.com/charts/charts/globals/#configure-ingress-settings).
 
+### `--master` option for `gitlab-ctl patroni failover` and `switchover`
+
+- Announced in GitLab 19.4
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9467).
+
+The `--master` option of the `gitlab-ctl patroni failover` and
+`gitlab-ctl patroni switchover` commands is deprecated and will be removed
+in GitLab 20.0. Both commands accept `--leader` as of GitLab 19.4, which
+matches the option name that `patronictl` uses.
+
+To migrate, replace `--master` with `--leader` in scripts and runbooks that
+call these commands. The option accepts the same value: the name of the
+current leader node. Until removal, `--master` keeps its behavior and
+prints a deprecation warning.
+
 ## GitLab 19.5
 
 ### Bitbucket Cloud issue and wiki import

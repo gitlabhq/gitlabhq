@@ -17,6 +17,7 @@ class SessionsController < Devise::SessionsController
   include SkipsAlreadySignedInMessage
   include AcceptsPendingInvitations
   include SynchronizeBroadcastMessageDismissals
+  include SignInDashboardUxSli
   extend ::Gitlab::Utils::Override
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
@@ -26,6 +27,7 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :authenticate_with_two_factor,
     if: -> { action_name == 'create' && two_factor_enabled? }
   prepend_before_action :check_captcha, only: [:create]
+  prepend_before_action :start_time_for_sign_in_dashboard_ux_sli, only: [:create]
   prepend_before_action :store_redirect_uri, only: [:new]
   prepend_before_action :ensure_password_authentication_enabled!,
     if: -> { action_name == 'create' && password_based_login? }
@@ -111,6 +113,8 @@ class SessionsController < Devise::SessionsController
       log_audit_event(current_user, resource, with: authentication_method)
       log_user_activity(current_user)
     end
+
+    store_start_time_for_sign_in_dashboard_ux_sli(response.redirect_url)
   end
 
   def destroy

@@ -592,6 +592,13 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`group_force_pages_access_control_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229638) | A group's Pages public access control setting is updated | {{< yes >}} | GitLab [18.11](https://gitlab.com/gitlab-org/gitlab/-/issues/595288) | Group |
+| [`pages_domain_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249228) | A Pages domain is created | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/issues/545633) | Project |
+| [`pages_domain_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249228) | A Pages domain is deleted | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/issues/545633) | Project |
+| [`pages_domain_disabled`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249228) | A Pages domain is disabled after failing verification | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/issues/545633) | Project |
+| [`pages_domain_enabled`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249228) | A Pages domain is enabled after successful verification | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/issues/545633) | Project |
+| [`pages_domain_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249228) | A Pages domain is updated | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/issues/545633) | Project |
+| [`pages_domain_verification_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249228) | A Pages domain verification failed | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/issues/545633) | Project |
+| [`pages_domain_verification_succeeded`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249228) | A Pages domain verification succeeded | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/issues/545633) | Project |
 | [`project_feature_pages_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's page access level setting is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369297) | Project |
 
 ### Permissions

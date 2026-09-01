@@ -6094,7 +6094,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c0052911b7d9"
+              "$ref": "#/components/schemas/RequestBody_bbb79f8da8f1"
   "/api/v4/security/groups/{id}/vulnerability_exports":
     post:
       operationId: postApiV4SecurityGroupsIdVulnerabilityExports
@@ -98376,6 +98376,255 @@ components:
         remove_hidden_groups:
           type: boolean
           description: Whether hidden groups should be removed
+          nullable: true
+    RequestBody_bbb79f8da8f1:
+      type: object
+      properties:
+        export_format:
+          type: string
+          enum:
+          - csv
+          - pdf
+          default: csv
+          description: Format of the generated report
+          nullable: true
+        send_email:
+          type: boolean
+          description: If `true`, sends an email notification to the requesting user
+            when the export completes.
+          nullable: true
+        report_data:
+          type: object
+          description: |
+            An object that contains report components mapped to frontend data assets.
+
+            Some report formats support embedding UI components from the
+            UI. For example, users can apply certain filters in the web UI, and
+            export the component to a PDF. The SVG is provided from
+            the frontend in the report data field.
+
+            Unsupported keys are discarded. If the data
+            does not fit the component it is keyed to, the
+            component is ignored and an error is logged.
+          properties:
+            project_vulnerabilities_history:
+              type: object
+              description: This object should include an SVG asset to be rendered
+                in PDF reports
+              nullable: true
+            group_vulnerabilities_over_time:
+              type: object
+              description: This object should include an SVG asset to be rendered
+                in PDF reports
+              nullable: true
+            project_security_status:
+              type: object
+              description: Data for rendering the project grades summary in PDF reports
+              nullable: true
+            total_risk_score:
+              type: object
+              description: Data for rendering the total risk score in PDF reports
+              nullable: true
+            open_vulnerabilities_over_time:
+              type: object
+              description: Data for rendering the open vulnerabilities over time in
+                PDF reports
+              nullable: true
+            vulnerabilities_by_age:
+              type: object
+              description: Data for rendering the vulnerabilities by age in PDF reports
+              nullable: true
+            vulnerabilities_by_severity_count:
+              type: object
+              description: Data for rendering the vulnerabilities by severity count
+                in PDF reports
+              properties:
+                critical:
+                  type: object
+                  description: Count, median age, and color for critical severity
+                    vulnerabilities
+                  properties:
+                    count:
+                      type: integer
+                      description: Number of vulnerabilities
+                      nullable: true
+                    medianAge:
+                      type: number
+                      description: Median age in days
+                      nullable: true
+                    color:
+                      type: string
+                      description: Severity color hex code
+                      nullable: true
+                  nullable: true
+                high:
+                  type: object
+                  description: Count, median age, and color for high severity vulnerabilities
+                  properties:
+                    count:
+                      type: integer
+                      description: Number of vulnerabilities
+                      nullable: true
+                    medianAge:
+                      type: number
+                      description: Median age in days
+                      nullable: true
+                    color:
+                      type: string
+                      description: Severity color hex code
+                      nullable: true
+                  nullable: true
+                medium:
+                  type: object
+                  description: Count, median age, and color for medium severity vulnerabilities
+                  properties:
+                    count:
+                      type: integer
+                      description: Number of vulnerabilities
+                      nullable: true
+                    medianAge:
+                      type: number
+                      description: Median age in days
+                      nullable: true
+                    color:
+                      type: string
+                      description: Severity color hex code
+                      nullable: true
+                  nullable: true
+                low:
+                  type: object
+                  description: Count, median age, and color for low severity vulnerabilities
+                  properties:
+                    count:
+                      type: integer
+                      description: Number of vulnerabilities
+                      nullable: true
+                    medianAge:
+                      type: number
+                      description: Median age in days
+                      nullable: true
+                    color:
+                      type: string
+                      description: Severity color hex code
+                      nullable: true
+                  nullable: true
+                unknown:
+                  type: object
+                  description: Count, median age, and color for unknown severity vulnerabilities
+                  properties:
+                    count:
+                      type: integer
+                      description: Number of vulnerabilities
+                      nullable: true
+                    medianAge:
+                      type: number
+                      description: Median age in days
+                      nullable: true
+                    color:
+                      type: string
+                      description: Severity color hex code
+                      nullable: true
+                  nullable: true
+                info:
+                  type: object
+                  description: Count, median age, and color for info severity vulnerabilities
+                  properties:
+                    count:
+                      type: integer
+                      description: Number of vulnerabilities
+                      nullable: true
+                    medianAge:
+                      type: number
+                      description: Median age in days
+                      nullable: true
+                    color:
+                      type: string
+                      description: Severity color hex code
+                      nullable: true
+                  nullable: true
+              nullable: true
+            dashboard_type:
+              type: string
+              enum:
+              - :project
+              - :group
+              - :instance
+              description: The type of vulnerability grouping this report is being
+                created for
+              nullable: true
+            full_path:
+              type: string
+              description: The full path of the vulnerable
+              nullable: true
+          nullable: true
+        filters:
+          type: object
+          description: Filters to apply to the vulnerability export
+          properties:
+            severity:
+              type: array
+              items:
+                type: string
+              description: Filter by vulnerability severities
+              nullable: true
+            state:
+              type: array
+              items:
+                type: string
+              description: Filter by vulnerability states
+              nullable: true
+            report_type:
+              type: array
+              items:
+                type: string
+              description: Filter by report types
+              nullable: true
+            scanner_id:
+              type: array
+              items:
+                type: string
+              description: Filter by scanner IDs
+              nullable: true
+            project_id:
+              type: array
+              items:
+                type: integer
+              description: Filter by project IDs
+              nullable: true
+            has_resolution:
+              type: boolean
+              description: Filter by resolution availability
+              nullable: true
+            has_issues:
+              type: boolean
+              description: Filter by linked issues
+              nullable: true
+            has_merge_request:
+              type: boolean
+              description: Filter by linked merge requests
+              nullable: true
+            has_remediations:
+              type: boolean
+              description: Filter by remediations availability
+              nullable: true
+            scanner:
+              type: array
+              items:
+                type: string
+              description: Filter by scanner external IDs
+              nullable: true
+            image:
+              type: array
+              items:
+                type: string
+              description: Filter by container images
+              nullable: true
+            cluster_agent_id:
+              type: array
+              items:
+                type: string
+              description: Filter by cluster agent IDs
+              nullable: true
           nullable: true
     RequestBody_c0052911b7d9:
       type: object

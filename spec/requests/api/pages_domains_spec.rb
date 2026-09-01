@@ -690,6 +690,23 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
+
+      context 'when the domain fails to be destroyed' do
+        before do
+          allow_next_found_instance_of(PagesDomain) do |domain|
+            allow(domain).to receive(:destroy).and_return(false)
+          end
+        end
+
+        it 'returns 422 and keeps the pages domain' do
+          expect { delete api(route_domain, user) }
+            .to not_change { PagesDomain.count }
+            .and not_publish_event(::Pages::Domains::PagesDomainDeletedEvent)
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('Failed to remove domain')
+        end
+      end
     end
 
     context 'when domain is vacant' do

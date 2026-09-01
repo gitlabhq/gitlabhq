@@ -1,0 +1,25 @@
+- title: "`--master` option for `gitlab-ctl patroni failover` and `switchover`"
+  removal_milestone: "20.0"
+  announcement_milestone: "19.4"
+  breaking_change: true
+  window:
+  reporter: axugl
+  stage: gitlab-delivery
+  issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9467
+  check_impact:
+  impact: low
+  impact_details:
+  impact_offering: self-managed
+  scope: instance
+  resolution_role: Admin
+  manual_task: true
+  body: |
+    The `--master` option of the `gitlab-ctl patroni failover` and
+    `gitlab-ctl patroni switchover` commands is deprecated and will be removed
+    in GitLab 20.0. Both commands accept `--leader` as of GitLab 19.4, which
+    matches the option name that `patronictl` uses.
+
+    To migrate, replace `--master` with `--leader` in scripts and runbooks that
+    call these commands. The option accepts the same value: the name of the
+    current leader node. Until removal, `--master` keeps its behavior and
+    prints a deprecation warning.

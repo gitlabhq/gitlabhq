@@ -168,6 +168,24 @@ RSpec.describe Mcp::Tools::WorkItems::UpdateWorkItemTool, feature_category: :mcp
       end
     end
 
+    context 'with readiness_score' do
+      it 'maps readiness_score to agentPlanWidget' do
+        params[:readiness_score] = 80
+
+        expect(tool.build_variables[:input][:agentPlanWidget]).to eq(readinessScore: 80)
+      end
+
+      it 'combines readiness_score with agent_plan content' do
+        params.merge!(agent_plan: 'Plan content', readiness_score: 60)
+
+        expect(tool.build_variables[:input][:agentPlanWidget]).to eq(content: 'Plan content', readinessScore: 60)
+      end
+
+      it 'omits agentPlanWidget when neither agent_plan nor readiness_score is given' do
+        expect(tool.build_variables[:input]).not_to have_key(:agentPlanWidget)
+      end
+    end
+
     context 'with create-only params' do
       { type_name: 'Issue', label_ids: ['1'] }.each do |param, value|
         it "rejects #{param}" do

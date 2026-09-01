@@ -222,7 +222,6 @@ RSpec/AvoidWaitForRequests:
     - 'spec/features/markdown/iframe_spec.rb'
     - 'spec/features/markdown/json_table_spec.rb'
     - 'spec/features/markdown/math_spec.rb'
-    - 'spec/features/markdown/sandboxed_mermaid_spec.rb'
     - 'spec/features/merge_request/batch_comments_spec.rb'
     - 'spec/features/merge_request/maintainer_edits_fork_spec.rb'
     - 'spec/features/merge_request/user_accepts_merge_request_spec.rb'

@@ -1,0 +1,32 @@
+<%= docs_render 'page_metadata', title: 'Directives', description: 'Schema and query modifiers that change how fields are executed or validated.' %>
+
+A directive provides a way to describe alternate runtime execution and type validation behavior
+in a GraphQL document. For more information, see the
+[GraphQL directive documentation](https://graphql.org/learn/queries/#directives).
+
+<%= docs_render 'deprecation_warning_header' %>
+
+<% sorted_by_name(@directives).each do |directive| %>
+
+## <%= name(directive) %>
+
+<%= description(directive) %>
+
+
+### Locations {.no_toc}
+
+<% directive.locations.each do |location| %>
+- `<%= location %>`
+<% end %>
+<% if directive.repeatable? %>
+
+This is a repeatable directive and can be used with different arguments at the same location.
+<% end %>
+
+<% if directive.arguments.present? %>
+### Arguments {.no_toc}
+
+<%= docs_render 'arguments_table', arguments: directive.arguments %>
+
+<% end %>
+<% end %>

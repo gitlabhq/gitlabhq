@@ -7,6 +7,7 @@ module VerifiesWithEmail
   extend ActiveSupport::Concern
   include ActionView::Helpers::DateHelper
   include VerifiesWithEmailHelper
+  include SignInDashboardUxSli
 
   VERIFICATION_REASON_UNTRUSTED_IP = 'sign in from untrusted IP address'
   VERIFICATION_REASON_NEW_TOKEN_NEEDED = 'new unlock token needed'
@@ -99,15 +100,18 @@ module VerifiesWithEmail
       return render json: { status: :failure }, status: :forbidden
     end
 
+    redirect_path = users_skip_verification_confirmation_path
+
     handle_verification_success(
       user,
       :skipped,
-      'user chose to skip verification in warning period'
+      'user chose to skip verification in warning period',
+      redirect_path
     )
 
     render json: {
       status: :success,
-      redirect_path: users_skip_verification_confirmation_path
+      redirect_path: redirect_path
     }
   end
 
@@ -268,7 +272,7 @@ module VerifiesWithEmail
     result = service.execute
 
     if result[:status] == :success
-      handle_verification_success(user, :successful)
+      handle_verification_success(user, :successful, '', redirect_path)
       session.delete(:verifies_with_email_user_id)
       render json: { status: :success, redirect_path: redirect_path }
     else
@@ -308,7 +312,7 @@ module VerifiesWithEmail
     log_verification(user, :failed_attempt, reason)
   end
 
-  def handle_verification_success(user, verification_result, log_message = '')
+  def handle_verification_success(user, verification_result, log_message, redirect_path)
     # Unlock the user
     user.unlock_access!
     # If an email-otp was set, e.g. by this or a concurrent sign in
@@ -322,6 +326,7 @@ module VerifiesWithEmail
     log_audit_event(current_user, user, with: authentication_method)
     log_user_activity(user)
     verify_known_sign_in
+    store_start_time_for_sign_in_dashboard_ux_sli(redirect_path)
   end
 
   def permitted_to_view_skip_verification_confirmation?

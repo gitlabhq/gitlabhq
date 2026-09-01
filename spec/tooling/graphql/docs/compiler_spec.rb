@@ -16,7 +16,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
       description 'An input object.'
 
       argument :scalar_arg, GraphQL::Types::String, required: false,
-        description: 'A scalar argument.'
+        description: 'A scalar argument.', default_value: 'the default'
       argument :deprecated_arg, GraphQL::Types::String, required: false,
         description: 'A deprecated argument.',
         deprecated: { milestone: '1.0', reason: 'Use scalarArg instead' }
@@ -34,7 +34,18 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
       value 'DEPRECATED', 'A deprecated value.', deprecated: { milestone: '1.0', reason: 'Use PLAIN instead' }
     end
 
+    spec_directive = Class.new(GraphQL::Schema::Directive) do
+      graphql_name 'Directive'
+      description 'A directive.'
+      repeatable true
+      locations(:INLINE_FRAGMENT, :FIELD)
+
+      argument :directive_arg, GraphQL::Types::String, required: false, description: 'A directive argument.'
+    end
+
     Class.new(GraphQL::Schema) do
+      directive(spec_directive)
+
       query(Class.new(::Types::BaseObject) do
         graphql_name 'Query'
 
@@ -74,7 +85,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
   describe 'the input_objects page' do
     subject(:doc) { page('input_objects.md').doc }
 
-    it 'renders the input object with its arguments, type links, and deprecation/experiment status' do
+    it 'renders the input object with its arguments, type links, defaults, and deprecation/experiment status' do
       expect(doc).to include(
         <<~MD
           ## `InputObject`
@@ -83,11 +94,11 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
           ### Arguments {.no_toc}
 
-          | Name | Type | Description |
-          | ---- | ---- | ----------- |
-          | `deprecatedArg` | [`String`](scalars.md#string) | Deprecated in GitLab 1.0. Use scalarArg instead. |
-          | `experimentalArg` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 2.0.<br/><br/>An experimental argument. |
-          | `scalarArg` | [`String`](scalars.md#string) | A scalar argument. |
+          | Name | Type | Description | Default |
+          | ---- | ---- | ----------- | ------- |
+          | `deprecatedArg` | [`String`](scalars.md#string) | Deprecated in GitLab 1.0. Use scalarArg instead. |  |
+          | `experimentalArg` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 2.0.<br/><br/>An experimental argument. |  |
+          | `scalarArg` | [`String`](scalars.md#string) | A scalar argument. | `"the default"` |
         MD
       )
     end
@@ -98,6 +109,37 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
     it 'does not include introspection types' do
       expect(doc).not_to include('__')
+    end
+  end
+
+  describe 'the directives page' do
+    subject(:doc) { page('directives.md').doc }
+
+    it 'renders the directive with its locations, repeatable note, and arguments' do
+      expect(doc).to include(
+        <<~MD
+          ## `Directive`
+
+          A directive.
+
+          ### Locations {.no_toc}
+
+          - `FIELD`
+          - `INLINE_FRAGMENT`
+
+          This is a repeatable directive and can be used with different arguments at the same location.
+
+          ### Arguments {.no_toc}
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | `directiveArg` | [`String`](scalars.md#string) | A directive argument. |
+        MD
+      )
+    end
+
+    it 'lists directives in alphabetical order' do
+      expect(doc.scan(/^## `(\w+)`/).flatten).to eq(doc.scan(/^## `(\w+)`/).flatten.sort)
     end
   end
 

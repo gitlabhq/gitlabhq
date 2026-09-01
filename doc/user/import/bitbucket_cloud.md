@@ -34,8 +34,17 @@ The Bitbucket Cloud importer imports a subset of items from Bitbucket Cloud.
 | Labels                            | {{< yes >}} |
 | Milestones                        | {{< yes >}} |
 | LFS objects                       | {{< yes >}} |
+| Inline images and attachments in Markdown | {{< no >}} |
 | Pull request approvals            | {{< no >}} |
 | Approval rules                    | {{< no >}} |
+
+## Known issues
+
+- Images and file attachments embedded in issues, issue comments, and pull requests are not copied to GitLab.
+  They remain as external links pointing to the original Bitbucket-hosted URLs (for example, `bitbucket.org` or `bbuseruploads.s3.amazonaws.com`).
+  If the source Bitbucket repository is deleted, all embedded images and attachment links break permanently.
+  Before deleting the source Bitbucket repository, verify that all embedded images and attachments are accessible or preserve them separately.
+  Support for importing images and attachments is proposed in [work item 623235](https://gitlab.com/gitlab-org/gitlab/-/work_items/623235).
 
 ## Importer workflow
 

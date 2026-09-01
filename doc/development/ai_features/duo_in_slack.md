@@ -129,6 +129,10 @@ without approval.
 
 ## Create the Slack app
 
+> [!note]
+> The **Create Slack app** button does not appear when `GITLAB_SIMULATE_SAAS` is set.
+> If you don't see it, unset that variable and restart GDK before continuing.
+
 1. In your GDK, in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**, then expand **GitLab for Slack app**.
 1. Select **Create Slack app**. GitLab redirects you to Slack with the generated manifest.
@@ -179,6 +183,27 @@ Run the first mention as a user who can create projects in the default GitLab Du
 mentions carry no project context, so `Ai::Messaging::DefaultProjectFlowResolver` derives one from
 your default GitLab Duo namespace and calls `Ai::Messaging::WorkspaceProjectService`, which finds the
 `duo-workspace` project in that namespace or creates it.
+
+## Reset your local setup
+
+To start over from scratch, remove all Slack integration data from your GDK and delete the app from Slack:
+
+1. In a Rails console, run:
+
+   ```ruby
+   SlackIntegration.delete_all
+   Integrations::GitlabSlackApplication.delete_all
+   ChatName.delete_all
+   ApplicationSetting.current.update!(
+     slack_app_enabled: false,
+     slack_app_id: nil,
+     slack_app_secret: nil,
+     slack_app_signing_secret: nil,
+     slack_app_verification_token: nil
+   )
+   ```
+
+1. Go to [**Your Apps**](https://api.slack.com/apps) in Slack, open the app, and delete it.
 
 ## Troubleshooting
 

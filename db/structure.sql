@@ -15894,6 +15894,37 @@ CREATE SEQUENCE batched_background_migrations_id_seq
 
 ALTER SEQUENCE batched_background_migrations_id_seq OWNED BY batched_background_migrations.id;
 
+CREATE TABLE billable_usage_daily_aggregates (
+    id bigint NOT NULL,
+    event_aggregate_uuid uuid NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    events_count bigint DEFAULT 0 NOT NULL,
+    root_namespace_id bigint,
+    usage_date date NOT NULL,
+    schema_version smallint DEFAULT 1 NOT NULL,
+    quantity numeric(14,4) NOT NULL,
+    event_type text NOT NULL,
+    unit_of_measure text NOT NULL,
+    feature_qualified_name text NOT NULL,
+    operation_type text,
+    CONSTRAINT check_77c6c93c77 CHECK ((char_length(event_type) <= 255)),
+    CONSTRAINT check_90fae9b72d CHECK ((char_length(operation_type) <= 64)),
+    CONSTRAINT check_billable_usage_daily_aggs_events_count_non_negative CHECK ((events_count >= 0)),
+    CONSTRAINT check_billable_usage_daily_aggs_quantity_non_negative CHECK ((quantity >= (0)::numeric)),
+    CONSTRAINT check_d85c952c42 CHECK ((char_length(unit_of_measure) <= 64)),
+    CONSTRAINT check_e4594e5241 CHECK ((char_length(feature_qualified_name) <= 255))
+);
+
+CREATE SEQUENCE billable_usage_daily_aggregates_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE billable_usage_daily_aggregates_id_seq OWNED BY billable_usage_daily_aggregates.id;
+
 CREATE TABLE board_assignees (
     id bigint NOT NULL,
     board_id bigint NOT NULL,
@@ -34011,7 +34042,8 @@ CREATE TABLE vulnerability_exports (
     organization_id bigint NOT NULL,
     expires_at timestamp with time zone,
     send_email boolean DEFAULT false NOT NULL,
-    report_data jsonb DEFAULT '{}'::jsonb NOT NULL
+    report_data jsonb DEFAULT '{}'::jsonb NOT NULL,
+    filters jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE vulnerability_exports_id_seq
@@ -36754,6 +36786,8 @@ ALTER TABLE ONLY batched_background_migration_job_transition_logs ALTER COLUMN i
 ALTER TABLE ONLY batched_background_migration_jobs ALTER COLUMN id SET DEFAULT nextval('batched_background_migration_jobs_id_seq'::regclass);
 
 ALTER TABLE ONLY batched_background_migrations ALTER COLUMN id SET DEFAULT nextval('batched_background_migrations_id_seq'::regclass);
+
+ALTER TABLE ONLY billable_usage_daily_aggregates ALTER COLUMN id SET DEFAULT nextval('billable_usage_daily_aggregates_id_seq'::regclass);
 
 ALTER TABLE ONLY board_assignees ALTER COLUMN id SET DEFAULT nextval('board_assignees_id_seq'::regclass);
 
@@ -39794,6 +39828,9 @@ ALTER TABLE ONLY batched_background_migration_jobs
 
 ALTER TABLE ONLY batched_background_migrations
     ADD CONSTRAINT batched_background_migrations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY billable_usage_daily_aggregates
+    ADD CONSTRAINT billable_usage_daily_aggregates_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT board_assignees_pkey PRIMARY KEY (id);
@@ -46962,6 +46999,10 @@ CREATE INDEX index_batched_jobs_by_batched_migration_id_and_id ON batched_backgr
 CREATE INDEX index_batched_jobs_on_batched_migration_id_and_status ON batched_background_migration_jobs USING btree (batched_background_migration_id, status);
 
 CREATE UNIQUE INDEX index_batched_migrations_on_gl_schema_and_unique_configuration ON batched_background_migrations USING btree (gitlab_schema, job_class_name, table_name, column_name, job_arguments);
+
+CREATE UNIQUE INDEX index_billable_usage_daily_aggs_on_event_aggregate_uuid ON billable_usage_daily_aggregates USING btree (event_aggregate_uuid);
+
+CREATE UNIQUE INDEX index_billable_usage_daily_aggs_on_unique_tuple ON billable_usage_daily_aggregates USING btree (usage_date, event_type, feature_qualified_name, root_namespace_id, operation_type) NULLS NOT DISTINCT;
 
 CREATE INDEX index_bj_cell_local_by_status ON ONLY background_operation_jobs_cell_local USING btree (status);
 
