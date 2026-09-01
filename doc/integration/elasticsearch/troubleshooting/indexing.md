@@ -344,16 +344,16 @@ If you need help with dead queue items, share the following information with Git
 
 To improve performance, ensure:
 
-- The Elasticsearch server **is not** running on the same node as GitLab.
+- The Elasticsearch server is not running on the same node as GitLab.
 - The Elasticsearch server has enough RAM and CPU cores.
-- That sharding **is** being used.
+- That sharding is being used.
 
-Going into some more detail here, if Elasticsearch is running on the same server as GitLab, resource contention is **very** likely to occur. Ideally, Elasticsearch, which requires ample resources, should be running on its own server (maybe coupled with Logstash and Kibana).
+Going into some more detail here, if Elasticsearch is running on the same server as GitLab, resource contention is very likely to occur. Ideally, Elasticsearch, which requires ample resources, should be running on its own server (maybe coupled with Logstash and Kibana).
 
 When it comes to Elasticsearch, RAM is the key resource. Elasticsearch themselves recommend:
 
-- **At least** 8 GB of RAM for a non-production instance.
-- **At least** 16 GB of RAM for a production instance.
+- At least 8 GB of RAM for a non-production instance.
+- At least 16 GB of RAM for a production instance.
 - Ideally, 64 GB of RAM.
 
 For CPU, Elasticsearch recommends at least 2 CPU cores, but Elasticsearch states common
@@ -364,7 +364,7 @@ Beyond the obvious, sharding comes into play. Sharding is a core part of Elastic
 It allows for horizontal scaling of indices, which is helpful when you are dealing with
 a large amount of data.
 
-With the way GitLab does indexing, there is a **huge** amount of documents being
+With the way GitLab does indexing, there is a huge number of documents being
 indexed. By using sharding, you can speed up the ability of Elasticsearch to locate
 data because each shard is a Lucene index.
 

@@ -1,0 +1,10 @@
+---
+name: mr_dashboard_vue_search
+description: Renders the merge request dashboard search tab as a Vue app instead of HAML
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252305
+rollout_issue_url:
+milestone: '19.4'
+group: group::code review
+type: wip
+default_enabled: false

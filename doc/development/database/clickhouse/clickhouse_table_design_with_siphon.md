@@ -95,7 +95,7 @@ The generator includes all columns from the PostgreSQL table and adds three extr
 
 By default, the generator uses the same primary key as PostgreSQL. You may modify this to suit your querying needs, provided the following two rules are met:
 
-- All primary key columns from the PostgreSQL table **must** be included in the ClickHouse primary key.
+- All primary key columns from the PostgreSQL table must be included in the ClickHouse primary key.
 - You may add extra columns to the primary key definition, provided the values of those columns **never change**.
 
 Examples for such columns:

@@ -10861,6 +10861,9 @@ msgstr ""
 msgid "AnalyticsDashboards|Code Suggestions"
 msgstr ""
 
+msgid "AnalyticsDashboards|Collapse %{name}"
+msgstr ""
+
 msgid "AnalyticsDashboards|Created by GitLab"
 msgstr ""
 
@@ -10904,6 +10907,9 @@ msgid "AnalyticsDashboards|Enter a title"
 msgstr ""
 
 msgid "AnalyticsDashboards|Enter and run a query to see results before adding the panel to the dashboard."
+msgstr ""
+
+msgid "AnalyticsDashboards|Expand %{name}"
 msgstr ""
 
 msgid "AnalyticsDashboards|Failed to create dashboard. Please try again."
@@ -10955,6 +10961,9 @@ msgid "AnalyticsDashboards|Root Cause Analysis"
 msgstr ""
 
 msgid "AnalyticsDashboards|Save"
+msgstr ""
+
+msgid "AnalyticsDashboards|Scope"
 msgstr ""
 
 msgid "AnalyticsDashboards|Select a group or project"
@@ -23496,6 +23505,12 @@ msgstr ""
 msgid "ContinuousDeployment|+ Add service"
 msgstr ""
 
+msgid "ContinuousDeployment|@%{user} approved"
+msgstr ""
+
+msgid "ContinuousDeployment|@%{user} rejected"
+msgstr ""
+
 msgid "ContinuousDeployment|A short name and the tier it represents."
 msgstr ""
 
@@ -23550,6 +23565,9 @@ msgstr ""
 msgid "ContinuousDeployment|Approval needed"
 msgstr ""
 
+msgid "ContinuousDeployment|Approval step"
+msgstr ""
+
 msgid "ContinuousDeployment|Approve"
 msgstr ""
 
@@ -23589,6 +23607,9 @@ msgstr ""
 msgid "ContinuousDeployment|Bundled by"
 msgstr ""
 
+msgid "ContinuousDeployment|Bundled by @%{user}"
+msgstr ""
+
 msgid "ContinuousDeployment|By"
 msgstr ""
 
@@ -23599,6 +23620,9 @@ msgid "ContinuousDeployment|Cancelled"
 msgstr ""
 
 msgid "ContinuousDeployment|Change / CR system"
+msgstr ""
+
+msgid "ContinuousDeployment|Changed services"
 msgstr ""
 
 msgid "ContinuousDeployment|Chat / Slack"
@@ -23644,6 +23668,9 @@ msgid "ContinuousDeployment|Degraded"
 msgstr ""
 
 msgid "ContinuousDeployment|Deploy"
+msgstr ""
+
+msgid "ContinuousDeployment|Deploy step"
 msgstr ""
 
 msgid "ContinuousDeployment|Deployed"
@@ -23865,6 +23892,9 @@ msgstr ""
 msgid "ContinuousDeployment|No services yet — add at least one."
 msgstr ""
 
+msgid "ContinuousDeployment|No version changes in this deploy."
+msgstr ""
+
 msgid "ContinuousDeployment|No versions recorded."
 msgstr ""
 
@@ -23914,6 +23944,9 @@ msgid "ContinuousDeployment|Rejected %{step}"
 msgstr ""
 
 msgid "ContinuousDeployment|Release"
+msgstr ""
+
+msgid "ContinuousDeployment|Release %{name}"
 msgstr ""
 
 msgid "ContinuousDeployment|Release not found"
@@ -23976,6 +24009,9 @@ msgstr ""
 msgid "ContinuousDeployment|Show %{size} items"
 msgstr ""
 
+msgid "ContinuousDeployment|Show details for %{step}, %{state}"
+msgstr ""
+
 msgid "ContinuousDeployment|Skipped"
 msgstr ""
 
@@ -23986,6 +24022,9 @@ msgid "ContinuousDeployment|Staging"
 msgstr ""
 
 msgid "ContinuousDeployment|Status"
+msgstr ""
+
+msgid "ContinuousDeployment|Step"
 msgstr ""
 
 msgid "ContinuousDeployment|Step failed"
@@ -24021,6 +24060,9 @@ msgstr ""
 msgid "ContinuousDeployment|Title"
 msgstr ""
 
+msgid "ContinuousDeployment|Trigger"
+msgstr ""
+
 msgid "ContinuousDeployment|Trigger a manual deployment of %{name}. It will use the latest deployment flow."
 msgstr ""
 
@@ -24043,6 +24085,12 @@ msgid "ContinuousDeployment|Unknown"
 msgstr ""
 
 msgid "ContinuousDeployment|Version"
+msgstr ""
+
+msgid "ContinuousDeployment|Wait step"
+msgstr ""
+
+msgid "ContinuousDeployment|Waiting for approval."
 msgstr ""
 
 msgid "ContinuousDeployment|Waiting for your approval"

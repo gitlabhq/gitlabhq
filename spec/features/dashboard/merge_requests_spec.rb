@@ -17,6 +17,8 @@ RSpec.describe 'Dashboard Merge Requests', :with_current_organization, :js, feat
   let(:forked_project) { fork_project(public_project, current_user, repository: true) }
 
   before do
+    stub_feature_flags(mr_dashboard_vue_search: false)
+
     project.add_maintainer(current_user)
     sign_in(current_user)
   end

@@ -233,6 +233,7 @@ class MergeRequestsFinder < IssuableFinder
     items = init_collection
     items = filter_items(items)
     items = filter_negated_items(items) if should_filter_negated_args?
+    items = by_label(items)
     items = by_search(items)
     items = sort(items)
 
@@ -254,6 +255,16 @@ class MergeRequestsFinder < IssuableFinder
     return items if @skip_parent_filter
 
     super
+  end
+
+  override :bounding_user_params
+  def bounding_user_params
+    super + %i[reviewer_id reviewer_username]
+  end
+
+  override :cte_safe_query?
+  def cte_safe_query?
+    super && !use_grouping_columns?
   end
 
   override :sort

@@ -2834,6 +2834,7 @@ Grants the ability to create, delete, read, and update repositories.
 | Read | Project | `GET` | `/projects/:id/repository/archive` |
 | Read | Project | `GET` | `/projects/:id/repository/blobs/:sha` |
 | Read | Project | `GET` | `/projects/:id/repository/blobs/:sha/raw` |
+| Read | Project | `GET` | `/projects/:id/repository/changed_paths` |
 | Read | Project | `GET` | `/projects/:id/repository/changelog` |
 | Read | Project | `GET` | `/projects/:id/repository/compare` |
 | Read | Project | `GET` | `/projects/:id/repository/contributors` |
@@ -3936,6 +3937,7 @@ feature is enabled.
 | Branch: Read | `GET` | `/projects/:id/repository/branches` |
 | Branch: Read | `GET` | `/projects/:id/repository/branches/:branch` |
 | Branch: Read | `HEAD` | `/projects/:id/repository/branches/:branch` |
+| Repository: Read | `GET` | `/projects/:id/repository/changed_paths` |
 | Repository: Read | `GET` | `/projects/:id/repository/changelog` |
 | Commit: Read | `GET` | `/projects/:id/repository/commits` |
 | Commit: Read | `GET` | `/projects/:id/repository/commits/:noteable_id/discussions` |

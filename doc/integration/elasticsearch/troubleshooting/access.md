@@ -116,8 +116,8 @@ To verify that your GitLab instance is using Elasticsearch:
 
   The output from the last command is the key here. If it shows:
 
-  - `ActiveRecord::Relation`, **it is not** using Elasticsearch.
-  - `Kaminari::PaginatableArray`, **it is** using Elasticsearch.
+  - `ActiveRecord::Relation`, it is not using Elasticsearch.
+  - `Kaminari::PaginatableArray`, it is using Elasticsearch.
 - If Elasticsearch is limited to specific namespaces and you need to know if
   Elasticsearch is being used for a specific project or namespace, you can use
   the Rails console:

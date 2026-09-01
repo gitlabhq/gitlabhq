@@ -178,11 +178,17 @@ adds those wrappers automatically.
         scope the update to those IDs (the CTE is dropped otherwise)."
 15. **Baseline rules.** When a baseline file is provided, include its rules
     verbatim — they are exempt from the rephrasing rule (rule 8 / 10).
-    Do not rephrase or omit them. Integrate them in place:
-    - If the checklist already has a subsection covering the same topic,
-      put the baseline rules inside THAT subsection. DO NOT emit a second
-      subsection for the same topic (e.g. an "i18n — Baseline" section
-      after an existing "Internationalization (i18n)" section).
+    Do not rephrase or omit them. The baseline is authoritative for both
+    content and placement:
+    - Put each baseline rule under the heading the BASELINE gives it. If
+      the checklist already has a subsection with that heading, put the
+      rule there. DO NOT emit a second subsection for the same topic
+      (e.g. an "i18n — Baseline" section after an existing
+      "Internationalization (i18n)" section).
+    - If the baseline moves a rule to a different heading, MOVE it in the
+      distilled file too: emit it once at its new baseline heading and
+      DELETE the copy under the old heading. Leaving both is a duplicate
+      and is mechanically rejected.
     - If a baseline rule and an SSOT-derived item overlap or conflict,
       keep the baseline rule verbatim and drop or narrow the SSOT-derived
       item so the checklist does not state the same topic two different
@@ -196,10 +202,9 @@ adds those wrappers automatically.
       rule must appear exactly once. The sync tooling mechanically rejects
       (and retries) any output that alters, duplicates, or omits a
       baseline rule, so a paraphrased baseline can never be published.
-    - Once baseline rules are integrated, DO NOT relocate them on a later
-      run: keep them in the same subsection and position they occupy in
-      the prior distilled file. Moving a baseline section elsewhere in the
-      checklist is reordering churn under rule 18.
+    - Keep baseline rules where they are on a later run UNLESS the
+      baseline itself changed their heading. Relocating a rule the
+      baseline did not move is reordering churn under rule 18.
 16. **Reconcile against the SSOT — capture new, revise changed.** The
     current distilled file is the PRIOR version; the SSOT is the current
     truth. Do not simply re-emit the prior checklist. On every invocation,

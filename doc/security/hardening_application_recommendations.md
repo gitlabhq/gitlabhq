@@ -52,7 +52,7 @@ The adjustments help limit pushes to established and authorized users.
 1. In the left sidebar, select **Deploy keys**.
 
 Public deploy keys are used to give read or read/write access to
-**all** projects on the instance, and are intended for remote automation to access
+all projects on the instance, and are intended for remote automation to access
 projects. Public deploy keys should not be used in a hardened environment. If you
 must use deploy keys, use project deploy keys instead. For more information, refer to
 the documentation on [deploy keys](../user/project/deploy_keys/_index.md) and

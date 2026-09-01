@@ -22,7 +22,9 @@ class DashboardController < Dashboard::ApplicationController
     redirect_to_work_items_dashboard(format: :ics)
   end
 
-  before_action :check_filters_presence!, only: [:issues, :merge_requests, :search_merge_requests, :work_items]
+  before_action :check_filters_presence!,
+    only: [:issues, :merge_requests, :search_merge_requests, :work_items],
+    unless: :vue_merge_request_dashboard_search?
 
   before_action only: [:merge_requests] do
     if request.query_string.present?
@@ -66,10 +68,17 @@ class DashboardController < Dashboard::ApplicationController
   end
 
   def search_merge_requests
+    return if vue_merge_request_dashboard_search?
+
     render_merge_requests
   end
 
   protected
+
+  def vue_merge_request_dashboard_search?
+    action_name == 'search_merge_requests' &&
+      Feature.enabled?(:mr_dashboard_vue_search, current_user)
+  end
 
   def load_events
     @events =

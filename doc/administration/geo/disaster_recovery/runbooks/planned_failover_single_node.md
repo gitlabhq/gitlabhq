@@ -66,7 +66,7 @@ time to complete.
 
 If any objects are failing to replicate, this should be investigated before
 scheduling the maintenance window. After a planned failover, anything that
-failed to replicate is **lost**.
+failed to replicate is lost.
 
 A common cause of replication failures is the data being missing on the
 primary site - you can resolve these failures by restoring the data from backup,
@@ -85,7 +85,7 @@ follow these steps to avoid unnecessary data loss:
    access to the primary site during the maintenance window:
 
    1. At the scheduled time, using your cloud provider or your site's firewall, block
-      all HTTP, HTTPS, and SSH traffic to/from the primary site, **except** for your IP and
+      all HTTP, HTTPS, and SSH traffic to/from the primary site, except for your IP and
       the secondary site's IP.
 
       For instance, you can run the following commands on the primary site:
@@ -229,7 +229,7 @@ To promote the secondary site:
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary site to primary **without any further confirmation**:
+   - To promote the secondary site to primary without any further confirmation:
 
      ```shell
      sudo gitlab-ctl geo promote --force

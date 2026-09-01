@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: Security Governance
+group: AI Control Plane
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Control GitLab Duo availability for earlier GitLab versions
 ---

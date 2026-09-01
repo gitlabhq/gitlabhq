@@ -4,59 +4,8 @@
   "description": "The step types a flow definition/pipeline stage targeting an Argo Rollouts environment may use. Discriminated by `type`.",
   "oneOf": [
     {
-      "title": "Rolling deploy",
-      "description": "Deploys the named services to the Argo Rollouts environment using a rolling update, replacing pods incrementally within the max_surge and max_unavailable bounds.",
-      "type": "object",
-      "required": ["type", "environment", "services"],
-      "additionalProperties": false,
-      "properties": {
-        "type": { "const": "com.gitlab.cd.argo.rolling.deploy" },
-        "environment": {
-          "type": "string",
-          "description": "The environment id this step targets; join key into the top-level environments map and flow_definition.environments."
-        },
-        "services": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "description": "The services this step deploys. At least one is required, and each is named at most once: a step naming one service twice is refused.",
-          "items": {
-            "type": "object",
-            "required": ["name"],
-            "additionalProperties": false,
-            "properties": {
-              "name": {
-                "type": "string",
-                "description": "Name of the service to deploy, matching a service defined for this environment."
-              }
-            }
-          }
-        },
-        "max_surge": {
-          "type": "string",
-          "pattern": "^[0-9]+%?$",
-          "default": "25%",
-          "examples": ["1", "25%"],
-          "description": "Maximum pods that may run above the desired replica count during the rollout.",
-          "gitlab": {
-            "type": "com.gitlab.cd.number_or_percentage"
-          }
-        },
-        "max_unavailable": {
-          "type": "string",
-          "pattern": "^[0-9]+%?$",
-          "default": "0",
-          "examples": ["0", "25%"],
-          "description": "Maximum pods that may be unavailable during the rollout. Setting to \"0\" means new pods surge up before old ones are retired (zero-downtime).",
-          "gitlab": {
-            "type": "com.gitlab.cd.number_or_percentage"
-          }
-        }
-      }
-    },
-    {
       "title": "Canary deploy",
-      "description": "Deploys the named services to the Argo Rollouts environment using a canary strategy, rolling each service's Rollout up to its first pause gate and leaving it parked there. The canary steps (traffic weights and pause gates) live in the service's Rollout manifest; a following canary.promote step clears each gate. A canary with K pauses is a canary.deploy step followed by K canary.promote steps. A canary strategy with no pause gate has nothing to park at, so a lone canary.deploy step deploys it to completion. Exactly one canary.deploy opens a service's canary in an environment, and the canary.promote steps that follow climb it; a second canary.deploy for the same service and environment is refused. Every gate must be an indefinite `pause: {}`: a timed `pause: {duration}` hands the increment's timing to the Argo controller and is rejected, because the deploy flow, not the controller, decides when a canary advances. Insert a wait step in the flow instead.",
+      "description": "Deploys the named services to the Argo Rollouts environment using a canary strategy, rolling each service's Rollout up to its first pause gate and leaving it parked there. The driver writes the canary steps into the service's Rollout manifest, generating them from this step's weight and those of the canary.promote steps that follow: one traffic weight per step, each gated by an indefinite pause the following canary.promote clears. Any steps the manifest already carried are replaced; the rest of its canary block, traffic routing and analysis templates and service references and surge bounds, is left as authored. Because the driver owns the step indexes, a manifest that authors `analysis.startingStep` is refused rather than silently pointed at a different rung. A service reaching 100 in this step alone has no gate to park at, so a lone canary.deploy deploys it to completion. Exactly one canary.deploy opens a service's canary in an environment, and the canary.promote steps that follow climb it; a second canary.deploy for the same service and environment is refused. Timing between increments belongs to the flow, not the Argo controller: put a wait step between the steps that should be separated in time.",
       "type": "object",
       "required": ["type", "environment", "services"],
       "additionalProperties": false,
@@ -83,7 +32,7 @@
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 100,
-                "description": "Traffic weight this canary increment deploys to. Must equal the weight the service's Rollout canary strategy reaches before its first pause gate, otherwise the deploy fails: the step weights and the Rollout manifest have to describe the same increments. Taken together, a service's canary weights in one environment must never decrease, must end at 100, and must all differ, since a repeated weight cannot identify a single gate; a flow whose weights cannot describe a gradual rollout to full traffic is refused before it reads, commits or syncs anything. May later become an object to express other kinds of weight (e.g. scale, replicas)."
+                "description": "Traffic weight this canary increment deploys to, and the first rung of the ladder the driver generates for the service. Taken together, a service's canary weights in one environment must never decrease, must end at 100, and must all differ, since a repeated weight cannot identify a single gate; a flow whose weights cannot describe a gradual rollout to full traffic is refused before it reads, commits or syncs anything. May later become an object to express other kinds of weight (e.g. scale, replicas)."
               }
             }
           }
@@ -122,7 +71,7 @@
                 "type": "integer",
                 "minimum": 1,
                 "maximum": 100,
-                "description": "Traffic weight this promotion advances to; it selects which pause gate to clear. Must be a weight the service's Rollout canary strategy reaches by clearing a gate (so not the weight canary.deploy already reached), otherwise the deploy fails. The minimum is 1, unlike canary.deploy's 0: a promotion to 0 shifts no traffic, so it advances nothing, while a canary.deploy at 0 legitimately brings a canary up alongside the stable version to be smoke tested before any traffic moves. Taken together, a service's canary weights in one environment must never decrease, must end at 100, and must all differ, since a repeated weight cannot identify a single gate; a flow whose weights cannot describe a gradual rollout to full traffic is refused before it reads, commits or syncs anything. May later become an object to express other kinds of weight (e.g. scale, replicas)."
+                "description": "Traffic weight this promotion advances to; it is a rung of the ladder the service's canary.deploy generated, and it selects which pause gate to clear. The minimum is 1, unlike canary.deploy's 0: a promotion to 0 shifts no traffic, so it advances nothing, while a canary.deploy at 0 legitimately brings a canary up alongside the stable version to be smoke tested before any traffic moves. Taken together, a service's canary weights in one environment must never decrease, must end at 100, and must all differ, since a repeated weight cannot identify a single gate; a flow whose weights cannot describe a gradual rollout to full traffic is refused before it reads, commits or syncs anything. May later become an object to express other kinds of weight (e.g. scale, replicas)."
               }
             }
           }

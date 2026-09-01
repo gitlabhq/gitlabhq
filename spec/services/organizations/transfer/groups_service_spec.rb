@@ -198,6 +198,18 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           )
       end
 
+      # Organizations::ActivateService wraps this service in its own transaction and
+      # rolls it back when a later step fails.
+      it 'does not publish a GroupTransferredEvent when a wrapping transaction rolls back' do
+        expect do
+          ApplicationRecord.transaction do
+            expect(service.execute).to be_success
+
+            raise ActiveRecord::Rollback
+          end
+        end.not_to publish_event(Organizations::GroupTransferredEvent)
+      end
+
       context 'for runner transfers' do
         it 'enqueues TransferOrganizationWorker with correct arguments' do
           expect(Ci::Runners::TransferOrganizationWorker).to receive(:perform_async).with(
@@ -205,6 +217,16 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           )
 
           service.execute
+        end
+
+        it 'does not enqueue TransferOrganizationWorker when the transfer fails' do
+          # Raised from the last step inside the transaction, so anything scheduled
+          # before it would already have been enqueued.
+          allow(service).to receive(:publish_event).and_raise(StandardError, 'Transfer failed')
+
+          expect(Ci::Runners::TransferOrganizationWorker).not_to receive(:perform_async)
+
+          expect(service.execute).to be_error
         end
       end
 
@@ -565,6 +587,16 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
           it 'enqueues Organizations::TransferTopicAvatarWorker' do
             expect { service.execute }.to change { Organizations::TransferTopicAvatarWorker.jobs.size }.by(1)
+          end
+
+          it 'does not enqueue the worker when the transfer fails' do
+            # Raised from the last step inside the transaction, so anything scheduled
+            # before it would already have been enqueued.
+            allow(service).to receive(:publish_event).and_raise(StandardError, 'Transfer failed')
+
+            expect(Organizations::TransferTopicAvatarWorker).not_to receive(:perform_async)
+
+            expect(service.execute).to be_error
           end
         end
       end
@@ -1126,6 +1158,22 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
       it 'does not publish a GroupTransferredEvent' do
         expect { service.execute }.not_to publish_event(Organizations::GroupTransferredEvent)
+      end
+
+      context 'when a project is linked to a pool repository' do
+        let_it_be_with_reload(:pooled_project) do
+          create(:project, namespace: group, organization: old_organization)
+        end
+
+        let_it_be(:pool_repository) { create(:pool_repository, source_project: pooled_project) }
+
+        # Disconnecting is scheduled before ForkNetwork raises, so this only holds
+        # while the enqueue is deferred past the commit.
+        it 'does not enqueue Repositories::LeavePoolRepositoryWorker' do
+          expect(Repositories::LeavePoolRepositoryWorker).not_to receive(:perform_async)
+
+          expect(service.execute).to be_error
+        end
       end
     end
 

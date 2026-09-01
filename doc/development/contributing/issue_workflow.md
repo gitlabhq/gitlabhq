@@ -7,7 +7,7 @@ title: Issues workflow
 
 ## Creating an issue
 
-**Before you submit an issue, [search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)**
+Before you submit an issue, [search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)
 for similar entries. Someone else might have already had the same bug or feature proposal.
 If you find an existing issue, show your support with an emoji reaction and add your notes to the discussion.
 
@@ -162,5 +162,5 @@ The maintainer must always agree before an outstanding discussion is resolved in
 this manner, and will be the one to create the issue. The title and description
 should be of the same quality as those created
 [in the usual manner](../labels/_index.md#technical-debt-and-deferred-ux) - in particular, the issue title
-**must not** begin with `Follow-up`! The creating maintainer should also expect
+must not begin with `Follow-up`! The creating maintainer should also expect
 to be involved in some capacity when work begins on the follow-up issue.

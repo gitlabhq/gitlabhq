@@ -1,0 +1,9 @@
+---
+name: update_merge_request_saved_view
+description: Grants the ability to update merge request saved views
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - update_saved_view

@@ -186,7 +186,7 @@ but not anonymous users.
 behavior. You should use percent rollout because it's more flexible than percent of users.
 
 > [!warning]
-> If the percent of users strategy is selected, then the Unleash client **must** be given a user
+> If the percent of users strategy is selected, then the Unleash client must be given a user
 > ID for the feature to be enabled. See the [Ruby example](#ruby-application-example) below.
 
 ### User IDs
@@ -199,7 +199,7 @@ Enter user IDs as a comma-separated list of values (for example,
 User IDs are identifiers for your application users. They do not need to be GitLab users.
 
 > [!warning]
-> The Unleash client **must** be given a user ID for the feature to be enabled for
+> The Unleash client must be given a user ID for the feature to be enabled for
 > target users. See the [Ruby example](#ruby-application-example) below.
 
 ### User List

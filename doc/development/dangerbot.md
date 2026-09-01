@@ -68,7 +68,7 @@ Danger is a powerful tool and flexible tool, but not always the most appropriate
 way to solve a given problem or workflow.
 
 First, be aware of the GitLab [commitment to dogfooding](https://handbook.gitlab.com/handbook/engineering/development/principles/#dogfooding).
-The code we write for Danger is GitLab-specific, and it **may not** be most
+The code we write for Danger is GitLab-specific, and it might not be most
 appropriate place to implement functionality that addresses a need we encounter.
 Our users, customers, and even our own satellite projects, such as [Gitaly](https://gitlab.com/gitlab-org/gitaly),
 often face similar challenges, after all. Think about how you could fulfill the

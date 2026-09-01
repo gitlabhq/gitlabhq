@@ -111,6 +111,9 @@ module Types
     mount_mutation Mutations::MergeRequests::SetReviewers, scopes: [:api, :ai_workflows]
     mount_mutation Mutations::MergeRequests::ReviewerRereview
     mount_mutation Mutations::MergeRequests::RequestChanges
+    mount_mutation Mutations::MergeRequests::SavedViews::Create, experiment: { milestone: '19.4' }
+    mount_mutation Mutations::MergeRequests::SavedViews::Update, experiment: { milestone: '19.4' }
+    mount_mutation Mutations::MergeRequests::SavedViews::Delete, experiment: { milestone: '19.4' }
     mount_mutation Mutations::MergeRequests::WorkItemRelations::Create
     mount_mutation Mutations::MergeRequests::WorkItemRelations::Destroy
     mount_mutation Mutations::Metrics::Dashboard::Annotations::Create, deprecated: {

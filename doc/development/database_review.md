@@ -195,7 +195,7 @@ of these methods:
    ```
 
    Run the tests with `bundle exec rspec <test_file>` and the queries will appear
-   in the test output. **This will only produce correct queries in integration tests.**
+   in the test output. This will only produce correct queries in integration tests.
    The output of unit tests may not be correct if there is an additional component modifying
    the ActiveRecord relation, such as pagination middleware.
 

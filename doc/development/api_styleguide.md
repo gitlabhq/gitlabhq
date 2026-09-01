@@ -445,7 +445,7 @@ For more information about development stages, see
 Every endpoint must have at least one value defined in `tags` per `desc` block.
 The tags should describe the type of objects being acted upon in the API call, in their plural form.
 
-**In most cases, the filename of the API is sufficient** but can also be too granular.
+In most cases, the filename of the API is sufficient but can also be too granular.
 
 #### Good tag names
 

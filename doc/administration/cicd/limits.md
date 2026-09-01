@@ -379,9 +379,9 @@ To limit the number of pipeline requests:
 
 The rate limits are evaluated independently:
 
-- A user creating multiple pipelines for the same commit SHA in a project is subject to the **per project, user, and commit** limit.
-- A user creating pipelines across different projects or commits is subject to the **per user** limit.
-- A user sending CI lint requests across projects is subject to the **per user for CI lint requests** limit.
+- A user creating multiple pipelines for the same commit SHA in a project is subject to the per project, user, and commit limit.
+- A user creating pipelines across different projects or commits is subject to the per user limit.
+- A user sending CI lint requests across projects is subject to the per user for CI lint requests limit.
 - If a limit is exceeded, the request is blocked.
 
 ## Limit downstream pipeline trigger rate

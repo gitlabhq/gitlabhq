@@ -30,7 +30,7 @@ The `plan_limits` table is **cell-scoped configuration**: each cell has its own
 copy of the table, and limits are not migrated between cells. New cells start
 with the column default for each limit, and administrators tune limits per cell
 via the [admin Plan Limits API](../api/plan_limits.md). Because of this, every
-new plan limit **must** be settable through that API - otherwise a new limit
+new plan limit must be settable through that API - otherwise a new limit
 can only ever take its column default on each cell.
 
 Do not introduce a plan limit that must stay consistent across cells -

@@ -75,7 +75,7 @@ The logging setup is designed to protect sensitive information while maintaining
 
 Logging in the `application.json`, `production_json.log`, and `production.log` files, among others, capture requests to the GitLab instance:
 
-- **Filtered Requests**: We log the requests in these files but ensure that sensitive data (such as input parameters) is **filtered**. This means that while the request metadata is captured (for example, the request type, endpoint, and response status), the actual input data (for example, the query parameters, variables, and content) is not logged to prevent the exposure of sensitive information.
+- **Filtered Requests**: We log the requests in these files but ensure that sensitive data (such as input parameters) is filtered. This means that while the request metadata is captured (for example, the request type, endpoint, and response status), the actual input data (for example, the query parameters, variables, and content) is not logged to prevent the exposure of sensitive information.
 - **Example 1**: In the case of a code suggestions completion request, the logs capture the request details while filtering sensitive information:
 
   ```json
@@ -336,7 +336,7 @@ provider on how to use their logs.
 
 ## Logging behavior in GitLab and AI Gateway environments
 
-GitLab provides logging functionality for AI-related activities through the use of `llm.log`, which captures inputs, outputs, and other relevant information. However, the logging behavior differs depending on whether the GitLab instance and AI Gateway are **self-hosted** or **cloud-connected**.
+GitLab provides logging functionality for AI-related activities through the use of `llm.log`, which captures inputs, outputs, and other relevant information. However, the logging behavior differs depending on whether the GitLab instance and AI Gateway are self-hosted or cloud-connected.
 
 By default, the log does not contain LLM prompt input and response output to support [data retention policies](../../user/gitlab_duo/data_usage.md#data-retention) of AI feature data.
 

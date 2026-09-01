@@ -1378,7 +1378,7 @@ The one special case is permission errors. In the REST API we return
 `404 Not Found` for any resources that the user does not have permission to
 access. The equivalent behavior in GraphQL is for us to return `null` for
 all absent or unauthorized resources.
-Query resolvers **should not raise errors for unauthorized resources**.
+Query resolvers should not raise errors for unauthorized resources.
 
 The rationale for this is that clients must not be able to distinguish between
 the absence of a record and the presence of one they do not have access to. To
@@ -2663,7 +2663,7 @@ For guidance, see the [GraphQL API](documentation/graphql_styleguide.md) page.
 
 ## Include a changelog entry
 
-All client-facing changes **must** include a [changelog entry](changelog.md).
+All client-facing changes must include a [changelog entry](changelog.md).
 
 ## Laziness
 

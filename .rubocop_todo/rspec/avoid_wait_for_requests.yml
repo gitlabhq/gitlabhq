@@ -62,7 +62,6 @@ RSpec/AvoidWaitForRequests:
     - 'ee/spec/features/groups/virtual_registries/container/registries_spec.rb'
     - 'ee/spec/features/groups/virtual_registries/container/upstreams_spec.rb'
     - 'ee/spec/features/groups/virtual_registries/maven/registries_and_upstreams_spec.rb'
-    - 'ee/spec/features/groups/virtual_registries/maven/registries_spec.rb'
     - 'ee/spec/features/groups/virtual_registries_spec.rb'
     - 'ee/spec/features/incidents/incident_details_spec.rb'
     - 'ee/spec/features/incidents/incidents_list_spec.rb'

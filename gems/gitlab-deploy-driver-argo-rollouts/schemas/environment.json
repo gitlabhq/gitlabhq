@@ -8,8 +8,8 @@
   "properties": {
     "cluster_agent_id": {
       "type": "string",
-      "minLength": 1,
-      "description": "GitLab agent for Kubernetes (agentk) used to reach the cluster running Argo CD Core and the Argo Rollouts controller. The driver resolves it to a connection and drives Argo CD syncs and Rollout promotions through it.",
+      "pattern": "^[1-9][0-9]*$",
+      "description": "GitLab agent for Kubernetes (agentk) used to reach the cluster running Argo CD Core and the Argo Rollouts controller, as the agent's positive numeric id in base 10. The driver resolves it to a connection and drives Argo CD syncs and Rollout promotions through it.",
       "gitlab": {
         "type": "com.gitlab.cd.agent_id"
       }

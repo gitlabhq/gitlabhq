@@ -703,7 +703,7 @@ does not do this:
 
 ### User DN and email have changed
 
-If both the primary email **and** the DN change in LDAP, GitLab cannot identify the correct LDAP record of a user. As a
+If both the primary email and the DN change in LDAP, GitLab cannot identify the correct LDAP record of a user. As a
 result, GitLab blocks that user. So that GitLab can find the LDAP record, update the user's existing GitLab profile with
 at least either:
 

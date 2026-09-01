@@ -238,7 +238,7 @@ it receive traffic from any destination.
    as the destination. In the target column, select the **Internet Gateway** and select the `gitlab-gateway` we created previously.
    Select **Save changes** when done.
 
-Next, we must associate the **public** subnets to the route table:
+Next, we must associate the public subnets to the route table:
 
 1. Select the **Subnet Associations** tab and select **Edit subnet associations**.
 1. Check only the public subnets and select **Save associations**.

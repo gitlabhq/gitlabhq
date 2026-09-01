@@ -172,7 +172,7 @@ configuration:
 
 ## Secret-safety requirements for agent prompts
 
-If your foundational agent's scope includes any of the following, you **must** include secret-safety
+If your foundational agent's scope includes any of the following, you must include secret-safety
 guidance in its system prompt:
 
 - Generating or modifying files (for example, `.gitlab-ci.yml`, configuration files, scripts).

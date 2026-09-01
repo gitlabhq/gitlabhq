@@ -111,7 +111,7 @@ At this point, we don't have applications using the old database table name in t
      end
    ```
 
-1. The table name **must** be removed from `TABLES_TO_BE_RENAMED`.
+1. The table name must be removed from `TABLES_TO_BE_RENAMED`.
 
    To do so, edit the `TABLES_TO_BE_RENAMED` constant in `lib/gitlab/database.rb`:
 

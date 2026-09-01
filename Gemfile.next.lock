@@ -92,7 +92,7 @@ PATH
 PATH
   remote: gems/gitlab-cd-driver-orchestration
   specs:
-    gitlab-cd-driver-orchestration (0.6.0)
+    gitlab-cd-driver-orchestration (0.7.0)
 
 PATH
   remote: gems/gitlab-cells-http_router
@@ -114,7 +114,7 @@ PATH
 PATH
   remote: gems/gitlab-deploy-driver-argo-rollouts
   specs:
-    gitlab-deploy-driver-argo-rollouts (0.6.0)
+    gitlab-deploy-driver-argo-rollouts (0.7.0)
 
 PATH
   remote: gems/gitlab-email_handler
@@ -430,8 +430,8 @@ GEM
       aws-sdk-sesv2 (~> 1, >= 1.34.0)
     aws-eventstream (1.3.0)
     aws-partitions (1.1001.0)
-    aws-sdk-cloudformation (1.154.0)
-      aws-sdk-core (~> 3, >= 3.248.0)
+    aws-sdk-cloudformation (1.157.0)
+      aws-sdk-core (~> 3, >= 3.254.0)
       aws-sigv4 (~> 1.5)
     aws-sdk-core (3.254.1)
       aws-eventstream (~> 1, >= 1.3.0)
@@ -944,7 +944,7 @@ GEM
       activesupport (>= 5.2.0)
       rake (~> 13.0)
       snowplow-tracker (~> 0.8.0)
-    gitlab-secret_detection (0.42.1)
+    gitlab-secret_detection (0.45.0)
       grpc (>= 1.63.0, < 2)
       grpc_reflection (~> 0.1)
       parallel (~> 1)
@@ -2850,7 +2850,7 @@ CHECKSUMS
   aws-actionmailer-ses (1.2.0) sha256=e01ccfcc5bf1449abb91bb8b15e7945e97310144c7f67fee8d9b76de2e89107f
   aws-eventstream (1.3.0) sha256=f1434cc03ab2248756eb02cfa45e900e59a061d7fbdc4a9fd82a5dd23d796d3f
   aws-partitions (1.1001.0) sha256=2979f3317d3a757508d35d0f322839f422cbc8459589b7cc4a3889d0085a8307
-  aws-sdk-cloudformation (1.154.0) sha256=2cf4cf05ce5f7fa5f7a7105efa0e3d026ff8d31a2abb90eec6af3fdb04682cf2
+  aws-sdk-cloudformation (1.157.0) sha256=6855e258cbe5e4044267e0365bac587d8c640b79374d2f7beba7755392ee7767
   aws-sdk-core (3.254.1) sha256=518089e32134c3478cd4ec63d07fb966546a45e9e4cbf5f80d2cf16d5699d29b
   aws-sdk-kms (1.76.0) sha256=e7f75013cba9ba357144f66bbc600631c192e2cda9dd572794be239654e2cf49
   aws-sdk-s3 (1.229.0) sha256=7dd11a111875b3505d2ec0a0a383a6aab6c1badb3d4e94e7fbb958a24451f596
@@ -3026,7 +3026,7 @@ CHECKSUMS
   gitlab-backup-cli (0.0.1)
   gitlab-bitbucket (0.1.0)
   gitlab-bitbucket-server (0.1.0)
-  gitlab-cd-driver-orchestration (0.6.0)
+  gitlab-cd-driver-orchestration (0.7.0)
   gitlab-cells-http_router (0.1.0)
   gitlab-chronic (0.10.6) sha256=a244d11a1396d2aac6ae9b2f326adf1605ec1ad20c29f06e8b672047d415a9ac
   gitlab-cloud-connector (1.53.0) sha256=cdacefc13725bbf65d8b932f41fca3b238d3cf330966a577450dd8c03ac1b67d
@@ -3034,7 +3034,7 @@ CHECKSUMS
   gitlab-crystalball (1.1.3) sha256=ea9a90d659704a042d763ce6d343a9f664cd650e0787a19adec7036ea4390861
   gitlab-dangerfiles (4.12.0) sha256=0b8b7b00bf1ab155c3ab37cfc7c9815b5b82f403f85ddaf62aea137129403072
   gitlab-database-data_isolation (0.1.0)
-  gitlab-deploy-driver-argo-rollouts (0.6.0)
+  gitlab-deploy-driver-argo-rollouts (0.7.0)
   gitlab-duo-workflow-service-client (0.10)
   gitlab-email_handler (0.1.0)
   gitlab-experiment (2.0.0) sha256=05183dee7ddad1ef183de43c2c330e57a1457f679744c19c61f637e1135d3c76
@@ -3068,7 +3068,7 @@ CHECKSUMS
   gitlab-safe_request_store (0.1.0)
   gitlab-schema-validation (0.1.0)
   gitlab-sdk (0.3.1) sha256=48ba49084f4ab92df7c7ef9f347020d9dfdf6ed9c1e782b67264e98ffe6ea710
-  gitlab-secret_detection (0.42.1) sha256=50eafdb74af752efebe46801db13e318cf7e7ee9cd97b8b70feb599630b3f595
+  gitlab-secret_detection (0.45.0) sha256=61413bac4fb68085318d1ba0362f504a449d95886447be87eea90974b48159fc
   gitlab-security_report_schemas (0.2.1.min15.0.0.max15.2.4) sha256=4a9fc031d6c5374ab2bc6a8ae82ca27659b55e5fd712b61993ae527361579d17
   gitlab-sidekiq-fetcher (0.12.1)
   gitlab-styles (14.1.0) sha256=f39bc5619636bad3690d574438d70b865f48e38d57a38d7823bdeff2a90d2d5a

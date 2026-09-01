@@ -183,7 +183,7 @@ Elasticsearch is not supported in Geo.
 
 #### Enable or disable replication (for some data types)
 
-Replication for some data types is released behind feature flags that are **enabled by default**.
+Replication for some data types is released behind feature flags that are enabled by default.
 [GitLab administrators with access to the GitLab Rails console](../../feature_flags/_index.md) can opt to disable it for your instance. You can find feature flag names of each of those data types in the notes column of the table below.
 
 To disable, such as for package file replication:
@@ -201,7 +201,7 @@ Feature.enable(:geo_package_file_replication)
 > [!warning]
 > Features not on this list, or with **No** in the **Replicated** column,
 > are not replicated to a secondary site. Failing over without manually
-> replicating data from those features causes the data to be **lost**.
+> replicating data from those features causes the data to be lost.
 > To use those features on a secondary site, or to execute a failover
 > successfully, you must replicate their data using some other means.
 

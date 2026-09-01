@@ -51,7 +51,7 @@ By default, selective synchronization is disabled. To enable it:
 
 > [!warning]
 > Promoting a secondary site with selective synchronization enabled to become the primary site
-> results in **permanent data loss** for all data that was not replicated to that secondary site.
+> results in permanent data loss for all data that was not replicated to that secondary site.
 
 When selective synchronization is configured on a secondary site, only a subset of data is replicated:
 

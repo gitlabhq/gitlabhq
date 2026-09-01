@@ -1480,11 +1480,14 @@ Grants the ability to approve, create, delete, merge, read, subscribe, and updat
 
 #### Merge Request Saved View
 
-Grants the ability to read merge request saved views.
+Grants the ability to create, delete, read, and update merge request saved views.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create | User | Mutation | `MergeRequestSavedViewCreate` |
+| Delete | User | Mutation | `MergeRequestSavedViewDelete` |
 | Read | User | Type | `MergeRequestSavedView` |
+| Update | User | Mutation | `MergeRequestSavedViewUpdate` |
 
 #### Path Lock
 

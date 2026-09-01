@@ -1236,7 +1236,7 @@ This can result in:
 
 If you are affected, you can use one of the following temporary mitigations until you upgrade to a fixed version:
 
-- **Disable the concurrency limiter for a specific worker** by enabling a feature flag.
+- Disable the concurrency limiter for a specific worker by enabling a feature flag.
   Open a Rails console by running `exec` on a Sidekiq pod:
 
   ```shell
@@ -1251,7 +1251,7 @@ If you are affected, you can use one of the following temporary mitigations unti
 
   Replace `<WorkerClass>` with the affected worker name (for example, `WebHookWorker`).
 
-- **Disable all default concurrency limits** by setting `GITLAB_SIDEKIQ_MAX_REPLICAS=0`
+- Disable all default concurrency limits by setting `GITLAB_SIDEKIQ_MAX_REPLICAS=0`
   in your Sidekiq pod environment configuration. This disables the default concurrency limit
   calculation entirely.
 

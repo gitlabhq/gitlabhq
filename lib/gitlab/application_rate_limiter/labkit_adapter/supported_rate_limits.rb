@@ -598,6 +598,13 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            project_repositories_changed_paths: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_repository_changed_paths_by_user_project',
+              characteristics: %i[user project],
+              limit: 30,
+              period: 1.minute,
+              action: :limit
+            ),
             project_repositories_diff_stats: ::Labkit::RateLimit::Rule.new(
               name: 'limit_project_repository_diff_stats_by_user_project',
               characteristics: %i[user project],

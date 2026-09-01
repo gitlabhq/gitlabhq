@@ -169,7 +169,7 @@ requires at least two separate environments:
 If the primary site becomes unavailable, you can fail over to one of the secondary sites.
 
 > [!note]
-> Use this **advanced and complex** setup only if DR is
+> Use this advanced and complex setup only if DR is
 > a key requirement for your environment. You must also make additional decisions
 > on how each site is configured. For example, if each secondary site would be the
 > same architecture as the primary or if each site is configured for HA.

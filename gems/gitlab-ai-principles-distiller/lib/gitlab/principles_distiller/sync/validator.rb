@@ -11,6 +11,7 @@ module Gitlab
       #    to a file on the current branch (gitlab-org/gitlab#604077).
       # 2. The distillation prompt still fits the AI Catalog's stored-definition limit, so a prompt edit cannot
       #    make the flow unpublishable (https://gitlab.com/gitlab-org/gitlab/-/issues/608440).
+      # 3. Baseline rule placement matches the distilled file.
       class Validator
         def self.run
           new.run
@@ -33,10 +34,78 @@ module Gitlab
           oversized = prompt_size_failure_message
           abort(oversized) if oversized
 
+          misplaced = misplaced_baseline_rules
+          abort(misplaced_failure_message(misplaced)) if misplaced.any?
+
           success
         end
 
         private
+
+        def misplaced_baseline_rules
+          manifest.principles.flat_map do |name, config|
+            baseline = config['baseline']
+            next [] unless baseline
+
+            baseline_content = manifest.read_repo_file(baseline)
+            raw_distilled = manifest.read_repo_file(manifest.principles_path(name))
+            next [] unless baseline_content && raw_distilled
+
+            compare_rule_placement(name, baseline_content, manifest.strip_frontmatter(raw_distilled))
+          end
+        end
+
+        # Reports rules that are duplicated or sit under a heading other than the baseline's; both trip the
+        # exactly-once drift guard at run time.
+        def compare_rule_placement(name, baseline_content, distilled)
+          baseline_sections = BaselineRules.units_by_section(BaselineRules.baseline_rules(baseline_content))
+          distilled_sections = BaselineRules.units_by_section(BaselineRules.checklist_body(distilled))
+
+          baseline_sections.filter_map do |unit, baseline_occurrences|
+            found = distilled_sections[unit]
+            next unless found
+            next if found == baseline_occurrences.first(1)
+
+            {
+              principle: name,
+              rule: unit,
+              baseline_section: baseline_occurrences.first,
+              distilled_section: found.uniq.map { |section| section || '(no heading)' }.join(', ')
+            }
+          end
+        end
+
+        def misplaced_failure_message(misplaced)
+          listed = misplaced.map do |entry|
+            <<~ENTRY.chomp
+              #{entry[:principle]}
+                    rule:      #{truncate_rule(entry[:rule])}
+                    baseline:  #{entry[:baseline_section] || '(no heading)'}
+                    distilled: #{entry[:distilled_section] || '(no heading)'}
+            ENTRY
+          end.join("\n\n  - ")
+
+          Rainbow(<<~MESSAGE).red
+            ERROR: #{misplaced.size} baseline rule(s) are not placed as the baseline specifies:
+
+              - #{listed}
+
+            The baseline is authoritative for placement, so the agent emits a copy at the baseline's
+            heading while leaving the existing one in place, tripping the exactly-once baseline drift
+            check. Every retry re-runs identical input, so the principle fails permanently and takes
+            the rest of the run's output with it.
+
+            Fix so each rule appears EXACTLY ONCE, under the baseline's heading: MOVE a misplaced
+            rule, and delete the surplus copies of a duplicated one. Do not delete every copy — that
+            flips the failure from "duplicated" to "omitted".
+
+            See https://gitlab.com/gitlab-org/gitlab/-/issues/616111 for the analysis.
+          MESSAGE
+        end
+
+        def truncate_rule(rule)
+          rule.length > 100 ? "#{rule[0, 97]}..." : rule
+        end
 
         # Guards the prompt against the AI Catalog's stored-definition limit.
         # Returns nil when within budget, or the failure message.

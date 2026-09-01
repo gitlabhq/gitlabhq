@@ -37,7 +37,7 @@ The DDL migrations are all migrations that:
 1. Prepare or not asynchronous indexes (for example, `prepare_async_index`, `unprepare_async_index_by_name`).
 1. Truncate a table (for example using the `truncate_tables!` helper method).
 
-As such DDL migrations **CANNOT**:
+As such DDL migrations cannot:
 
 1. Read or modify data in any form, via SQL statements or ActiveRecord models.
 1. Update column values (for example, `update_column_in_batches`).
@@ -115,7 +115,7 @@ The DML migrations are all migrations that:
 1. Access application settings (for example, `ApplicationSetting.last` if run for `main:` database).
 1. Read and modify feature flags if run for the `main:` database.
 
-The DML migrations **CANNOT**:
+The DML migrations cannot:
 
 1. Make any changes to DDL since this breaks the rule of keeping `structure.sql` coherent across
    all decomposed databases.

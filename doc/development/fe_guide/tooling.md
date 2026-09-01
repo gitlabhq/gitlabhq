@@ -132,7 +132,7 @@ statement in `.eslint_todo/index.mjs`.
 
 ### The `no-undef` rule and declaring globals
 
-**Never** disable the `no-undef` rule. Declare globals with `/* global Foo */` instead.
+Never disable the `no-undef` rule. Declare globals with `/* global Foo */` instead.
 
 When declaring multiple globals, always use one `/* global [name] */` line per variable.
 

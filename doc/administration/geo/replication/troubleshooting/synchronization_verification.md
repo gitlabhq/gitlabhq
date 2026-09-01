@@ -437,7 +437,7 @@ The following script:
   or running it using [Rails runner](../../../operations/rails_console.md#using-the-rails-runner)
   and `nohup`.
 
-Run this script **on the secondary Geo site**.
+Run this script on the secondary Geo site.
 
 ```ruby
 Geo::ProjectRepositoryRegistry.failed.find_each do |registry|
@@ -1809,7 +1809,7 @@ These errors can be observed by [immediately syncing all failed repositories](#s
 
 Removing the malformed objects causing consistency errors involves rewriting the repository history, which is usually not an option.
 
-To ignore these consistency checks, reconfigure Gitaly **on the secondary Geo sites** to ignore these `git fsck` issues.
+To ignore these consistency checks, reconfigure Gitaly on the secondary Geo sites to ignore these `git fsck` issues.
 The following configuration example:
 
 - [Uses the updated configuration structure](../../../../update/versions/gitlab_16_changes.md#gitaly-configuration-structure-change).

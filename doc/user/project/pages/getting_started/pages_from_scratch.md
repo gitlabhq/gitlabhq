@@ -287,7 +287,7 @@ create-pages:
 ```
 
 Now add another job to the CI file, telling it to
-test every push to every branch **except** the `main` branch:
+test every push to every branch except the `main` branch:
 
 ```yaml
 default:

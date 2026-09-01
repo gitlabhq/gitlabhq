@@ -19,12 +19,7 @@ RSpec.describe 'sharding key foreign key strength', feature_category: :cell do
   # is stronger than the parent's loose FK. Remove an entry once the child's direct FK is
   # dropped (relying on the parent chain) or aligned with the parent's mechanism.
   # DO NOT add new entries: the generator must not emit a hard FK when the parent carries the key.
-  allowed_hard_fk_stronger_than_parent = [
-    'snippet_repositories.snippet_organization_id',
-    'snippet_repository_storage_moves.snippet_organization_id',
-    'snippet_statistics.snippet_organization_id',
-    'snippet_user_mentions.snippet_organization_id'
-  ].freeze
+  allowed_hard_fk_stronger_than_parent = [].freeze
 
   let_it_be(:offenders) { hard_over_loose_offenders(sharding_roots) }
   let(:offending_keys) { offenders.keys }

@@ -152,7 +152,7 @@ To rotate the two-factor authentication encryption key:
    ```
 
    The `<old key>` value can be read from `config/secrets.yml` (`<new key>` was
-   generated earlier). The **encrypted** values for the user 2FA secrets are
+   generated earlier). The encrypted values for the user 2FA secrets are
    written to the specified `filename`. You can use this to roll back in case of
    error.
 

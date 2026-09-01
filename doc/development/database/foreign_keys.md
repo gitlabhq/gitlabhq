@@ -86,7 +86,7 @@ Adding an FK constraint to an existing column is a multi-milestone process:
 > If the index was added [asynchronously](adding_database_indexes.md#create-indexes-asynchronously), we should wait until
 > the index gets added in the `structure.sql`.
 
-This is **required** for all foreign keys, for example, to support efficient cascading
+This is required for all foreign keys, for example, to support efficient cascading
 deleting: when a lot of rows in a table get deleted, the referenced records need
 to be deleted too. The database has to look for corresponding records in the
 referenced table. Without an index, this results in a sequential scan on the

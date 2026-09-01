@@ -60,6 +60,10 @@ To select a model for a feature:
    to set as the default model.
 1. Optional. To apply the model to all features in the section, select **Apply to all**.
 
+   > [!note]
+   > If you select **Default** for all features, each feature uses its own GitLab
+   > default model, which might vary between features.
+
 ### Select a model for Agentic Chat
 
 {{< history >}}

@@ -3,7 +3,6 @@
 module LooseForeignKeys # rubocop: disable Gitlab/BoundedContexts -- This module is used for database cleanup workers
   class MergeRequestDiffCommitCleanupWorker
     include ApplicationWorker
-    include Gitlab::LooseForeignKeys::RecordStoreSelector
     include Gitlab::ExclusiveLeaseHelpers
     include CronjobQueue # rubocop: disable Scalability/CronWorkerContext -- this is a cronjob.
 
@@ -28,7 +27,7 @@ module LooseForeignKeys # rubocop: disable Gitlab/BoundedContexts -- This module
           modification_tracker: modification_tracker,
           logger: Sidekiq.logger,
           worker_class: self.class,
-          record_store: record_store
+          record_store: ::Gitlab::LooseForeignKeys::DeletedRecordStore
         ).execute
 
         log_extra_metadata_on_done(:stats, stats)

@@ -134,7 +134,7 @@ Official documentation suggests using `setActivePinia(createPinia())` to test th
 Our recommendation is to leverage `createTestingPinia` with unstubbed actions.
 It acts the same as `setActivePinia(createPinia())` but also allows us to spy on any action by default.
 
-**Always** use `createTestingPinia` with `stubActions: false` when unit testing the store.
+Always use `createTestingPinia` with `stubActions: false` when unit testing the store.
 
 A basic test could look like this:
 
@@ -445,7 +445,7 @@ function callOtherStore() {
 This will look up the store by its name using Pinia instance and prevent the circular dependency issue.
 Store name is defined when calling `defineStore('storeName', ...)`.
 
-You **must** initialize both stores prior to component mounting when using `tryStore`:
+You must initialize both stores prior to component mounting when using `tryStore`:
 
 ```javascript
 // stores are created in advance

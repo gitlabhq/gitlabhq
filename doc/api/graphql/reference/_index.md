@@ -13462,6 +13462,93 @@ Fields:
 | <a id="mutation-mergerequestreviewerrereview-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-mergerequestreviewerrereview-mergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
+### `Mutation.mergeRequestSavedViewCreate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Creates a saved view on the merge request dashboard. Available only when the `mr_dashboard_saved_views` feature flag is enabled.
+
+Input type: `MergeRequestSavedViewCreateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-mergerequestsavedviewcreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-mergerequestsavedviewcreate-filters"></a>`filters` | [`MergeRequestSavedViewFilterInput`](#mergerequestsavedviewfilterinput) | Merge request filters stored in the saved view. |
+| <a id="mutation-mergerequestsavedviewcreate-name"></a>`name` | [`String!`](#string) | Name of the saved view. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-mergerequestsavedviewcreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-mergerequestsavedviewcreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-mergerequestsavedviewcreate-savedview"></a>`savedView` | [`MergeRequestSavedView`](#mergerequestsavedview) | Saved view after the mutation. |
+
+### `Mutation.mergeRequestSavedViewDelete`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Deletes a saved view from the merge request dashboard. Available only when the `mr_dashboard_saved_views` feature flag is enabled.
+
+Input type: `MergeRequestSavedViewDeleteInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-mergerequestsavedviewdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-mergerequestsavedviewdelete-id"></a>`id` | [`MergeRequestsSavedViewID!`](#mergerequestssavedviewid) | Global ID of the saved view. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-mergerequestsavedviewdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-mergerequestsavedviewdelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-mergerequestsavedviewdelete-savedview"></a>`savedView` | [`MergeRequestSavedView`](#mergerequestsavedview) | Saved view after the mutation. |
+
+### `Mutation.mergeRequestSavedViewUpdate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Updates a saved view on the merge request dashboard. Available only when the `mr_dashboard_saved_views` feature flag is enabled.
+
+Input type: `MergeRequestSavedViewUpdateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-mergerequestsavedviewupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-mergerequestsavedviewupdate-filters"></a>`filters` | [`MergeRequestSavedViewFilterInput`](#mergerequestsavedviewfilterinput) | Merge request filters stored in the saved view. |
+| <a id="mutation-mergerequestsavedviewupdate-id"></a>`id` | [`MergeRequestsSavedViewID!`](#mergerequestssavedviewid) | Global ID of the saved view. |
+| <a id="mutation-mergerequestsavedviewupdate-name"></a>`name` | [`String`](#string) | Name of the saved view. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-mergerequestsavedviewupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-mergerequestsavedviewupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-mergerequestsavedviewupdate-savedview"></a>`savedView` | [`MergeRequestSavedView`](#mergerequestsavedview) | Saved view after the mutation. |
+
 ### `Mutation.mergeRequestSetAssignees`
 
 Input type: `MergeRequestSetAssigneesInput`
@@ -36998,6 +37085,7 @@ Fields:
 | <a id="cdenvironment-environmentdriverbindings"></a>`environmentDriverBindings` {{< icon name="warning-solid" >}} | [`CdEnvironmentDriverBindingConnection`](#cdenvironmentdriverbindingconnection) | Introduced in GitLab 19.2. Status: Experiment. Driver bindings of the environment. |
 | <a id="cdenvironment-healthstatus"></a>`healthStatus` {{< icon name="warning-solid" >}} | [`CdServiceHealth`](#cdservicehealth) | Introduced in GitLab 19.4. Status: Experiment. Worst observed service health across the environment. Null when no service health has been reported. |
 | <a id="cdenvironment-id"></a>`id` | [`CdEnvironmentID!`](#cdenvironmentid) | Global ID of the environment. |
+| <a id="cdenvironment-latestfinishedrolloutenvironment"></a>`latestFinishedRolloutEnvironment` {{< icon name="warning-solid" >}} | [`CdRolloutEnvironment`](#cdrolloutenvironment) | Introduced in GitLab 19.4. Status: Experiment. Most recently finished rollout environment for the environment. |
 | <a id="cdenvironment-name"></a>`name` | [`String!`](#string) | Name of the environment. |
 | <a id="cdenvironment-organization"></a>`organization` | [`Organization`](#organization) | Organization the environment belongs to. |
 | <a id="cdenvironment-rolloutenvironments"></a>`rolloutEnvironments` {{< icon name="warning-solid" >}} | [`CdRolloutEnvironmentConnection`](#cdrolloutenvironmentconnection) | Introduced in GitLab 19.2. Status: Experiment. Rollout environments of the environment. |
@@ -76799,6 +76887,46 @@ Arguments:
 | <a id="mergeaccesslevelinput-groupid"></a>`groupId` | [`GroupID`](#groupid) | Group associated with the access level. |
 | <a id="mergeaccesslevelinput-memberroleid"></a>`memberRoleId` {{< icon name="warning-solid" >}} | [`MemberRoleID`](#memberroleid) | Introduced in GitLab 19.2. Status: Experiment. Custom member role associated with the access level. |
 | <a id="mergeaccesslevelinput-userid"></a>`userId` | [`UserID`](#userid) | User associated with the access level. |
+
+### `MergeRequestSavedViewFilterInput`
+
+Merge request filter values that can be stored in a saved view.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestsavedviewfilterinput-approvedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of the approvers. |
+| <a id="mergerequestsavedviewfilterinput-assigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
+| <a id="mergerequestsavedviewfilterinput-authorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="mergerequestsavedviewfilterinput-draft"></a>`draft` | [`Boolean`](#boolean) | Limit results to draft merge requests. |
+| <a id="mergerequestsavedviewfilterinput-labelname"></a>`labelName` | [`[String!]`](#string) | Labels applied to the merge request. |
+| <a id="mergerequestsavedviewfilterinput-mergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the timestamp. |
+| <a id="mergerequestsavedviewfilterinput-mergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the timestamp. |
+| <a id="mergerequestsavedviewfilterinput-milestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
+| <a id="mergerequestsavedviewfilterinput-not"></a>`not` | [`MergeRequestSavedViewNegatedFilterInput`](#mergerequestsavedviewnegatedfilterinput) | Filter values to exclude. |
+| <a id="mergerequestsavedviewfilterinput-reviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mergerequestsavedviewfilterinput-sort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort order for the merge requests. |
+| <a id="mergerequestsavedviewfilterinput-sourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Source branch names. |
+| <a id="mergerequestsavedviewfilterinput-state"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. |
+| <a id="mergerequestsavedviewfilterinput-targetbranches"></a>`targetBranches` | [`[String!]`](#string) | Target branch names. |
+
+### `MergeRequestSavedViewNegatedFilterInput`
+
+Merge request filter values to exclude in a saved view.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestsavedviewnegatedfilterinput-approvedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of approvers to exclude. |
+| <a id="mergerequestsavedviewnegatedfilterinput-assigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of assignees to exclude. |
+| <a id="mergerequestsavedviewnegatedfilterinput-authorusername"></a>`authorUsername` | [`String`](#string) | Username of the author to exclude. |
+| <a id="mergerequestsavedviewnegatedfilterinput-labelname"></a>`labelName` | [`[String!]`](#string) | Labels to exclude. |
+| <a id="mergerequestsavedviewnegatedfilterinput-milestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone to exclude. |
+| <a id="mergerequestsavedviewnegatedfilterinput-reviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer to exclude. |
+| <a id="mergerequestsavedviewnegatedfilterinput-sourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Source branch names to exclude. |
+| <a id="mergerequestsavedviewnegatedfilterinput-targetbranches"></a>`targetBranches` | [`[String!]`](#string) | Target branch names to exclude. |
 
 ### `MergeRequestsResolverNegatedParams`
 

@@ -429,8 +429,8 @@ implications for how you document commands and flags:
 
 | Change type                                                       | Version bump | Documentation note |
 |-------------------------------------------------------------------|--------------|--------------------|
-| Delete a command, change its behavior, or add a **required** flag | `MAJOR`      | Clearly describe the breaking change in the Synopsis and in the MR description. |
-| Add a new command or **optional** flag                            | `MINOR`      | No special documentation treatment required. |
+| Delete a command, change its behavior, or add a required flag | `MAJOR`      | Clearly describe the breaking change in the Synopsis and in the MR description. |
+| Add a new command or optional flag                            | `MINOR`      | No special documentation treatment required. |
 | Fix a bug                                                         | `PATCH`      | No special documentation treatment required. |
 
 > [!note]

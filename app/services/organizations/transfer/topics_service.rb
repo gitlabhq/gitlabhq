@@ -104,7 +104,10 @@ module Organizations
       end
 
       def schedule_avatar_transfers(pairs)
-        group.run_after_commit_or_now do
+        # `group` is never saved by the transfer, so it cannot carry an after-commit
+        # callback. The target topics are created in this transaction and the worker
+        # returns early if it cannot see them yet.
+        ActiveRecord.after_all_transactions_commit do
           pairs.each do |source_topic_id, target_topic_id|
             Organizations::TransferTopicAvatarWorker.perform_async(source_topic_id, target_topic_id)
           end

@@ -41,8 +41,8 @@ similarly mitigated by a rate limit.
 
 ## Configuration options
 
-You can set most rate limits in the **Admin** area, and a few only through the API or the
-Rails console.
+You can set most rate limits in the **Admin** area. Some are available only through the API
+or the Rails console, and you set the GitLab Pages rate limits in a configuration file.
 
 ### Admin area
 
@@ -51,7 +51,6 @@ You can set these rate limits in the **Admin** area of your instance:
 - [API rate limits](api/_index.md)
 - [Content creation rate limits](content_creation.md)
 - [Git operations rate limits](git.md)
-- [GitLab Pages rate limits](../administration/pages/_index.md#rate-limits)
 - [Import and export rate limits](../administration/settings/import_export_rate_limits.md)
 - [Incident management rate limits](../administration/settings/incident_management_rate_limits.md)
 - [Pipeline creation rate limits](../administration/cicd/limits.md#pipeline-creation-rate-limits)
@@ -72,6 +71,13 @@ You can set this rate limit with the [plan limits API](../api/plan_limits.md) or
 [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 - [Webhook rate limit](../administration/instance_limits.md#webhook-rate-limit)
+
+### Configuration file
+
+You can set these rate limits only in the configuration file for your installation, for example
+`/etc/gitlab/gitlab.rb` in a Linux package installation:
+
+- [GitLab Pages rate limits](../administration/pages/rate-limits.md)
 
 ## Non-configurable limits
 

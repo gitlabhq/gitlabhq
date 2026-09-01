@@ -1,0 +1,13 @@
+---
+table_name: work_item_decisions
+classes:
+- WorkItems::Decision
+feature_categories:
+- team_planning
+description: Stores decision log entries associated with a work item.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250573
+milestone: '19.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+table_size: small

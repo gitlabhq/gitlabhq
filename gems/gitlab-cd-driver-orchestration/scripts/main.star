@@ -3,7 +3,12 @@
 # each driver's fragment into the single program kas runs.
 
 load("module:gitlab-function", gitlab_function_run = "run")
-load("module:gitlab", "call_api")
+load("module:gitlab", "call_api", "post_value")
+load("module:policy", "evaluate", "ALLOW", "DENY", "REQUIRE_APPROVAL")
+
+# Bound unwrapped rather than behind a gl_run-style wrapper: get_object is a derived
+# action, so a caller gathers it, and a poll can drive it.
+load("module:kubernetes?file=object.star", "get_object")
 
 def gl_run(function, inputs):
     return gather(gitlab_function_run(function = function, inputs = inputs))
@@ -21,20 +26,51 @@ _STEPS = {}
 # a handler that would never be called.
 _STAGE_TYPE = "com.gitlab.cd.steps.stage"
 
+# Handled in the walk like _STAGE_TYPE: an author's approval parks regardless of governance,
+# which a driver's own handler has no way to do.
+_APPROVAL_TYPE = "com.gitlab.cd.steps.approval"
+
 # The one topic the rollouts API accepts. Every report the engine makes is a
 # deployment progress report, so it is a constant rather than a parameter.
 _TOPIC = "com.gitlab.cd.deployment"
 
-# Builds this run's emit(event_type, data), the one place in the repo that calls
-# call_api. A closure over the destination rather than a value the walk carries,
-# because Starlark freezes globals so a per-run value cannot be stashed in one.
-def _build_emitter(kwargs):
+# The status the rollouts API answers a send with. Anything else is a send that did not land.
+_ACCEPTED = 202
+
+# Where this run reports, the header both senders carry, and whether it reports anywhere at
+# all. Reporting nowhere is not an error, the flow still deploys: Rails passes a token but
+# not yet an id, and a guessed id draws a 401 no different from a bad token.
+def _destination(kwargs):
     callback_token = kwargs.get("callback_token")
     rollout_id = kwargs.get("rollout_id")
-
-    # Reporting nowhere is not an error, the flow still deploys. Rails passes a token
-    # but not yet an id, and a guessed id draws a 401 no different from a bad token.
     if callback_token == None or rollout_id == None:
+        return None, {}, False
+
+    # The endpoint reads the token from a "Bearer "-prefixed header and answers 401 without
+    # the prefix. Built with + rather than %s: Starlark refuses to add a sensitive_string to
+    # a string, so a non-plain token fails here.
+    return (
+        "/api/v4/rollouts/%s" % rollout_id,
+        {"Authorization": "Bearer " + callback_token},
+        True,
+    )
+
+# A send that did not land, described, or None. Both senders answer a non-2xx as an ordinary
+# status and a transport failure as the fourth element of their tuple, so neither arrives as
+# a raised error.
+def _problem(what, status, body, error):
+    if error != None:
+        return "%s: %s" % (what, error)
+    if status != _ACCEPTED:
+        return "%s: rollouts API returned %d: %s" % (what, status, body)
+    return None
+
+# Builds this run's emit(event_type, data). A closure over the destination rather than a
+# value the walk carries, because Starlark freezes globals so a per-run value cannot be
+# stashed in one.
+def _build_emitter(kwargs):
+    path, headers, reporting = _destination(kwargs)
+    if not reporting:
         print("deploy progress will not be reported: main() needs both a callback_token and a rollout_id kwarg")
 
         def emit_nowhere(event_type, data, or_fail = True):
@@ -42,14 +78,8 @@ def _build_emitter(kwargs):
 
         return emit_nowhere
 
-    path = "/api/v4/rollouts/%s" % rollout_id
-    headers = {
-        "Content-Type": "application/json",
-        # The endpoint reads the token from a "Bearer "-prefixed header and answers
-        # 401 without the prefix. Built with + rather than %s: Starlark refuses to
-        # add a sensitive_string to a string, so a non-plain token fails here.
-        "Authorization": "Bearer " + callback_token,
-    }
+    headers = dict(headers)
+    headers["Content-Type"] = "application/json"
 
     # A lost report fails the flow, because a consumer that never sees the event holds a
     # wrong view of the deploy. or_fail = False hands the problem back instead, which is
@@ -64,14 +94,7 @@ def _build_emitter(kwargs):
             body = json.encode({"topic": _TOPIC, "type": event_type, "data": data}),
         ))
 
-        # call_api returns a non-2xx as an ordinary status and a transport failure as
-        # the fourth element of its tuple, so neither arrives as a raised error.
-        problem = None
-        if error != None:
-            problem = "reporting %s: %s" % (event_type, error)
-        elif status != 202:
-            problem = "reporting %s: rollouts API returned %d: %s" % (event_type, status, body)
-
+        problem = _problem("reporting %s" % event_type, status, body, error)
         if problem != None and or_fail:
             fail(problem)
         return problem
@@ -120,7 +143,212 @@ def _service_reporter(emit, data):
 
     return report
 
-_ACTIONS_ALLOWED = ("com.gitlab.cd.action.promote",)
+# Builds this run's ask(request, boundary), which announces the request on a channel it mints
+# and parks until a person answers, then answers (the actor, that actor as prose for a
+# message, failure), and unavailable(boundary), its opening refusal.
+def _build_asker(kwargs, hitl):
+    path, headers, reporting = _destination(kwargs)
+
+    # Two rendered scalars, or nothing: an actor reaches a policy through json.encode and a
+    # person through a report's error, so a structured one could abort a run or overrun the
+    # field. An id arriving as a number is still an id, and dropping it anonymizes the approver.
+    def named(actor):
+        if type(actor) != "dict":
+            return None
+
+        name = actor.get("name")
+        id = actor.get("id")
+        if type(name) not in ("string", "int") or type(id) not in ("string", "int"):
+            return None
+        return {"name": "%s" % name, "id": "%s" % id}
+
+    def prose(actor):
+        if actor == None:
+            return "an actor the decision did not name"
+        return "%s (%s)" % (actor["name"], actor["id"])
+
+    def unavailable(boundary):
+        if not hitl:
+            return failure(
+                "com.gitlab.cd.reason.approval_unavailable",
+                "%s needs an approval, and the hitl feature flag is off" % boundary,
+            )
+
+        if not reporting:
+            return failure(
+                "com.gitlab.cd.reason.approval_unavailable",
+                "%s needs an approval, and a run that reports nowhere cannot ask for one" % boundary,
+            )
+
+        return None
+
+    def ask(request, boundary):
+        f = unavailable(boundary)
+        if f != None:
+            return None, None, f
+
+        # Minted per park: one channel shared across the walk would hand a decision that
+        # arrived late for an earlier step to the next park, which would refuse it.
+        reply = channel()
+
+        print("awaiting approval for %s" % boundary)
+        status, _headers, body, error = gather(post_value(path, value = {
+            "topic": _TOPIC,
+            "type": "com.gitlab.cd.approval_requested",
+            "data": dict(request, reply = reply),
+        }, headers = headers))
+
+        # Refused rather than failed: a park that went ahead after a lost request would wait
+        # for a Rails that was never told, and fail() is the uncatchable abort that reporting
+        # a failure exists to replace.
+        problem = _problem("requesting an approval for %s" % boundary, status, body, error)
+        if problem != None:
+            return None, None, failure("com.gitlab.cd.reason.approval_unavailable", problem)
+
+        answer = gather(reply)
+
+        # %s and %r rather than json.encode() on everything read off the channel: encoding a
+        # value the engine did not build can raise, which would abort the run, not refuse it.
+        if type(answer) != "dict":
+            return None, None, failure(
+                "com.gitlab.cd.reason.approval_invalid",
+                "%s was answered with %s, not a decision" % (boundary, type(answer)),
+            )
+
+        # A channel carries whatever has been sent to it, so a decision names the request it
+        # answers. Refusing a decision about another one is what stops an approval granted for
+        # one step from satisfying the next.
+        if answer.get("position") != request["position"]:
+            return None, None, failure(
+                "com.gitlab.cd.reason.approval_invalid",
+                "%s was answered by a decision about position %s" % (boundary, answer.get("position")),
+            )
+
+        actor = named(answer.get("actor"))
+        result = answer.get("result")
+        if result == "approve":
+            return actor, prose(actor), None
+        if result == "reject":
+            return None, None, failure(
+                "com.gitlab.cd.reason.approval_denied",
+                "%s was refused by %s" % (boundary, prose(actor)),
+            )
+        return None, None, failure(
+            "com.gitlab.cd.reason.approval_invalid",
+            "%s was answered with result %r, not approve or reject" % (boundary, result),
+        )
+
+    return ask, unavailable
+
+# The flags a caller turns a gate on with. A flag the engine does not read is ignored; one it
+# does read has to be a bool, because Starlark truthiness reads a "false" passed as a string
+# as on, so a caller who meant off would get gated.
+_FLAGS = ["hitl", "governance"]
+
+def _feature_flags(kwargs):
+    flags = kwargs.get("feature_flags")
+    if flags == None:
+        return {}, None
+
+    if type(flags) != "dict":
+        return None, failure(
+            "com.gitlab.cd.reason.feature_flags_invalid",
+            "feature_flags is %s, not an object of flag name to true or false" % type(flags),
+        )
+
+    for name in _FLAGS:
+        if name in flags and type(flags[name]) != "bool":
+            return None, failure(
+                "com.gitlab.cd.reason.feature_flags_invalid",
+                "feature_flags.%s is %s, not true or false" % (name, type(flags[name])),
+            )
+    return flags, None
+
+# Builds this run's gate(trigger, resource, data), answering None or the failure() the caller
+# reports against the boundary. data is the boundary's own report payload; see _build_emitter
+# for the closure.
+def _build_gate(flags, rollout, ledger, ask):
+    # ledger is read on each call, not captured now: it is the list main() appends to.
+    if not flags.get("governance", False):
+        def gate_nothing(trigger, resource, data):
+            return None
+
+        return gate_nothing, None
+
+    # Reporting degrades to reporting nowhere; enforcement does not.
+    if rollout == None:
+        return None, failure(
+            "com.gitlab.cd.reason.governance_unnameable",
+            "governance needs both an organization_id and a rollout_id to name what it gates",
+        )
+
+    def gate(trigger, resource, data):
+        context = {"ledger": ledger}
+
+        # A stage's name is what a rule matches as a tier, and the boundary's report already
+        # carries it, so the two cannot disagree.
+        tier = data.get("stage_name")
+        if tier != None:
+            context["environment"] = {"tier": tier}
+
+        def decide(context):
+            return gather(evaluate(
+                trigger = trigger,
+                resource = resource,
+                context = json.encode(context),
+            ))
+
+        def boundary_of(decision):
+            return "%s at %s (decision %s)" % (trigger, resource, decision.get("decision_id"))
+
+        # None on an allow, otherwise the failure to report against the boundary. after names the
+        # approval a refusal overrode, which the decision being refused carries no id for.
+        def refusal(decision, after = None):
+            verdict = decision.get("verdict")
+            if verdict == ALLOW:
+                return None
+
+            about = boundary_of(decision)
+            tail = ""
+            if after != None:
+                tail = ", after %s" % after
+
+            if verdict == DENY:
+                return failure("com.gitlab.cd.reason.policy_denied", "policy refused %s%s" % (about, tail))
+            if verdict == REQUIRE_APPROVAL:
+                return failure(
+                    "com.gitlab.cd.reason.policy_requires_approval",
+                    "policy requires a further approval for %s, which the engine does not ask for%s" %
+                    (about, tail),
+                )
+            return failure(
+                "com.gitlab.cd.reason.policy_verdict_unknown",
+                "policy answered %s with an unknown verdict %s%s" % (about, verdict, tail),
+            )
+
+        decision = decide(context)
+        if decision.get("verdict") != REQUIRE_APPROVAL:
+            return refusal(decision)
+
+        boundary = boundary_of(decision)
+        decision_id = "%s" % decision.get("decision_id")
+        actor, who, f = ask(dict(
+            data,
+            resource = resource,
+            decision_id = decision_id,
+            reason = "policy requires approval for %s" % boundary,
+        ), boundary)
+        if f != None:
+            return f
+
+        # An approval is not the verdict. The policy decides again, told which decision it is
+        # resuming and who approved it, so nothing but an allow lets the boundary through.
+        context["approval"] = {"decision_id": decision_id, "actor": actor}
+        return refusal(decide(context), "%s approved %s" % (who, boundary))
+
+    return gate, None
+
+_ACTION_TRIGGERS = {"com.gitlab.cd.action.promote": "com.gitlab.cd.deployment_promoted"}
 
 # What a step type's spec holds, exactly one of run and build:
 #   run(step, environment, services, version_set, report) handles a step, returning None or a
@@ -132,20 +360,20 @@ _ACTIONS_ALLOWED = ("com.gitlab.cd.action.promote",)
 #     spanning steps, which a load-time one cannot: globals freeze once the program has
 #     loaded, captures included.
 #   validate(steps) is called before the flow runs any step, returning None or a failure().
-#   action declares what a step of this type is to governance, from _ACTIONS_ALLOWED, and
+#   action declares what a step of this type is to governance, from _ACTION_TRIGGERS, and
 #     its absence is the signal: a step type with no action is never gated.
 # build and validate are each called once, handed every step whose type registered that same
 # function, in flow order, each entry carrying that step's own environment, services and
 # version_set; a failure from either is reported against the first step it owns.
 def register(step_type, *, run = None, build = None, validate = None, action = None):
-    if step_type == _STAGE_TYPE:
+    if step_type in (_STAGE_TYPE, _APPROVAL_TYPE):
         fail("step type is reserved by the orchestration engine: %s" % step_type)
     if step_type in _STEPS:
         fail("step type already registered: %s" % step_type)
     if (run == None) == (build == None):
         fail("step type %s needs exactly one of run and build" % step_type)
-    if action != None and action not in _ACTIONS_ALLOWED:
-        fail("unknown step action %s: expected one of %s" % (action, ", ".join(_ACTIONS_ALLOWED)))
+    if action != None and action not in _ACTION_TRIGGERS:
+        fail("unknown step action %s: expected one of %s" % (action, ", ".join(_ACTION_TRIGGERS.keys())))
     _STEPS[step_type] = {"run": run, "build": build, "validate": validate, "action": action}
 
 _WAIT_TYPE = "com.gitlab.cd.steps.wait"
@@ -187,6 +415,15 @@ def _check_step_shape(step, at):
                 "com.gitlab.cd.reason.flow_definition_invalid",
                 "%s has seconds of %s, not a whole number of seconds" % (at, type(step["seconds"])),
             )
+
+    # Reported verbatim, and a report the rollouts API refuses raises out of the send rather
+    # than failing the step, so a reason it would reject is refused here instead.
+    if step["type"] == _APPROVAL_TYPE and "reason" in step and type(step["reason"]) != "string":
+        return failure(
+            "com.gitlab.cd.reason.flow_definition_invalid",
+            "%s has a reason of %s, not a string saying why an approval is needed" %
+            (at, type(step["reason"])),
+        )
     return None
 
 # A shape failure's data, with step_type filled in when _check_step_shape had already
@@ -201,13 +438,15 @@ def _shape_failure_data(position, step):
 # first, so this catches a flow that reached kas another way — without it a missing field
 # surfaces as a Starlark key error, which aborts the run instead of reporting against a step.
 def _check_flow_document(flow_definition, environments):
+    # A refusal of the document itself belongs to no step; see the identity refusal in main()
+    # for the empty position.
     if type(flow_definition) != "dict":
-        return {}, failure(
+        return {"position": []}, failure(
             "com.gitlab.cd.reason.flow_definition_invalid",
             "flow_definition is %s, not an object" % type(flow_definition),
         )
     if type(environments) != "dict":
-        return {}, failure(
+        return {"position": []}, failure(
             "com.gitlab.cd.reason.environments_invalid",
             "environments is %s, not an object keyed by environment id" % type(environments),
         )
@@ -215,25 +454,25 @@ def _check_flow_document(flow_definition, environments):
     # Absent is legal — a flow of only common steps declares none — but present and
     # misshapen is not.
     if type(flow_definition.get("environments", {})) != "dict":
-        return {}, failure(
+        return {"position": []}, failure(
             "com.gitlab.cd.reason.environments_invalid",
             "flow_definition.environments is %s, not an object keyed by environment id" %
             type(flow_definition["environments"]),
         )
 
     if "steps" not in flow_definition:
-        return {}, failure(
+        return {"position": []}, failure(
             "com.gitlab.cd.reason.flow_definition_invalid",
             "flow_definition has no steps",
         )
     steps = flow_definition["steps"]
     if type(steps) != "list":
-        return {}, failure(
+        return {"position": []}, failure(
             "com.gitlab.cd.reason.flow_definition_invalid",
             "flow_definition.steps is %s, not an array of steps" % type(steps),
         )
     if not steps:
-        return {}, failure(
+        return {"position": []}, failure(
             "com.gitlab.cd.reason.flow_definition_invalid",
             "flow_definition.steps is empty, so the flow would deploy nothing",
         )
@@ -327,6 +566,20 @@ def _step_resource(rollout, position):
         name += "/steps/%d" % index
     return name
 
+# What an approval is really asking about: the next thing the walk reaches. A stage's close is
+# stepped over, so an approval last in its stage names the stage that follows rather than the
+# one it ends.
+def _gated_by(plan, index):
+    for action in plan[index + 1:]:
+        if action["kind"] == "stage_started":
+            return "Approve before the %s stage." % action["data"]["stage_name"]
+        if action["kind"] == "step":
+            stage_name = action["data"].get("stage_name")
+            if stage_name == None:
+                return "Approve before the next step."
+            return "Approve before the next step in %s." % stage_name
+    return "Approve before the deploy completes."
+
 # One flat list of actions in the order they happen; stages never nest, so one level of
 # unrolling covers them. position is the path to the step in the document. A step the
 # engine cannot run is refused here rather than part way through the run, and the refusal
@@ -358,7 +611,7 @@ def _plan(flow_definition, environments, service_envs, rollout):
             })
 
     # A second pass, so the walk above stays a plain transcription of the document.
-    for action in plan:
+    for index, action in enumerate(plan):
         if action["kind"] != "step":
             continue
 
@@ -370,12 +623,15 @@ def _plan(flow_definition, environments, service_envs, rollout):
         if "environment" in step:
             data["environment"] = str(step["environment"])
 
-        if step["type"] not in _STEPS:
+        if step["type"] not in _STEPS and step["type"] != _APPROVAL_TYPE:
             return None, data, failure("com.gitlab.cd.reason.unsupported_step_type", "unsupported step type: %s" % step["type"])
 
         environment, services, f = _step_environment(step, environments, service_envs)
         if f != None:
             return None, data, f
+
+        if step["type"] == _APPROVAL_TYPE:
+            action["default_reason"] = _gated_by(plan, index)
 
         action["data"] = data
         action["environment"] = environment
@@ -392,6 +648,10 @@ def _owned_steps(plan, version_set, key):
             continue
 
         step_type = action["step"]["type"]
+
+        # Walked by _run_step rather than registered, so it owns no validate or build hook.
+        if step_type == _APPROVAL_TYPE:
+            continue
         fn = _STEPS[step_type].get(key)
         if fn == None:
             continue
@@ -469,25 +729,75 @@ def _bind_handlers(plan, version_set):
                 )
     return handlers, None, None
 
-def _run_step(emit, action, version_set, handlers):
-    step = action["step"]
-
-    # A flow that reports nowhere still leaves this in the kas log, so the run is
-    # followable even then.
+# What a refusal calls the step: its type, and the name it carries when the rollout has one.
+def _step_boundary(action):
     at = ""
     if action["resource"] != None:
         at = " at %s" % action["resource"]
+    return "%s%s" % (action["step"]["type"], at)
 
-    print("running step %s%s" % (step["type"], at))
+# Answers the step's failure and what that failure makes of the stage it sits in. ask is the
+# one main() built, which an approval step parks on.
+def _run_step(emit, ask, gate, action, version_set, handlers):
+    step = action["step"]
+
+    # _check_hitl has already refused a flow this run cannot serve.
+    if step["type"] == _APPROVAL_TYPE:
+        # A flow that reports nowhere still leaves this in the kas log, so the run is
+        # followable even then. The ordinary step below prints the same line.
+        print("running step %s" % _step_boundary(action))
+        emit("com.gitlab.cd.step_started", action["data"])
+
+        # A reason always goes out, an author's own verbatim or one naming what the approval
+        # gates. Of the two a governed request adds, only decision_id is its own.
+        request = action["data"]
+        if action["resource"] != None:
+            request = dict(request, resource = action["resource"])
+
+        reason = step.get("reason", "")
+        if reason.strip() == "":
+            reason = action["default_reason"]
+        request = dict(request, reason = reason)
+
+        _actor, who, f = ask(request, _step_boundary(action))
+        if f != None:
+            _emit_step_failed(emit, action["data"], f)
+            return f, "refused"
+
+        # The approval itself reports no actor: the rollouts API declares no key for one, so
+        # the kas log is the only place the approver's name survives.
+        print("%s approved by %s" % (_step_boundary(action), who))
+        emit("com.gitlab.cd.step_succeeded", action["data"])
+        return None, None
+
+    step_action = _STEPS[step["type"]]["action"]
+    if step_action != None:
+        f = gate(_ACTION_TRIGGERS[step_action], action["resource"], action["data"])
+        if f != None:
+            _emit_step_failed(emit, action["data"], f)
+            return f, "refused"
+
+    print("running step %s" % _step_boundary(action))
     emit("com.gitlab.cd.step_started", action["data"])
 
     report = _service_reporter(emit, action["data"])
     f = handlers[step["type"]](step, action["environment"], action["services"], version_set, report)
     if f != None:
         _emit_step_failed(emit, action["data"], f)
-        return f
+        return f, "unhealthy"
     emit("com.gitlab.cd.step_succeeded", action["data"])
-    return None
+    return None, None
+
+# Refuses a flow whose approval steps this run cannot serve, before anything is read,
+# committed or synced. ask() is never called here: it would report a request and park before
+# an earlier step ran. One approval step answers for all of them.
+def _check_hitl(plan, unavailable):
+    for action in plan:
+        if action["kind"] != "step" or action["step"]["type"] != _APPROVAL_TYPE:
+            continue
+
+        return action["data"], unavailable(_step_boundary(action))
+    return None, None
 
 def main(w, *args, **kwargs):
     flow_definition = _require(kwargs, "flow_definition")
@@ -496,15 +806,41 @@ def main(w, *args, **kwargs):
 
     emit = _build_emitter(kwargs)
 
+    flags, f = _feature_flags(kwargs)
+    if f != None:
+        # Flags belong to no step, and an empty position is how a report locates nothing.
+        _emit_step_failed(emit, {"position": []}, f)
+        return
+
     rollout, f = _rollout_resource(kwargs.get("organization_id"), kwargs.get("rollout_id"))
     if f != None:
-        _emit_step_failed(emit, {}, f)
+        # An identity belongs to no step, but every report about a step or a stage carries a
+        # position, and an empty path is how one says it locates nothing.
+        _emit_step_failed(emit, {"position": []}, f)
         return
 
     # A name built from a guessed id would name another rollout's step, and a decision
     # recorded against it would be untraceable.
     if rollout == None:
         print("deploy steps will not be named: main() needs both an organization_id and a rollout_id kwarg")
+
+    # What the flow has already done, in the order it did it. A local because kas freezes
+    # the globals before main() runs.
+    ledger = []
+
+    # The deploy's own report payload; see the identity refusal above.
+    deploy_data = {"position": []}
+
+    ask, unavailable = _build_asker(kwargs, flags.get("hitl", False))
+
+    gate, f = _build_gate(flags, rollout, ledger, ask)
+    if f == None:
+        # The workflow's first act, so a refused deploy is never planned and reaches no
+        # driver's validator, which is free to probe a cluster or a registry.
+        f = gate("com.gitlab.cd.deployment_requested", rollout, deploy_data)
+    if f != None:
+        _emit_step_failed(emit, deploy_data, f)
+        return
 
     # All four before anything is read, committed or synced, and all refused the same way: no
     # stage has begun, so a refusal is a step_failed with no stage_failed behind it. The
@@ -515,6 +851,10 @@ def main(w, *args, **kwargs):
         # A flow of only common steps deploys nothing and so declares no environments; a step
         # that does name one is still refused while the plan is built.
         plan, data, f = _plan(flow_definition, environments, flow_definition.get("environments", {}), rollout)
+    if f == None:
+        # Ahead of any driver validator, which is free to probe a cluster or a registry: a
+        # flow nobody could answer should cost nothing.
+        data, f = _check_hitl(plan, unavailable)
     if f == None:
         data, f = _validate_flow(plan, version_set)
     if f == None:
@@ -527,22 +867,24 @@ def main(w, *args, **kwargs):
     # leave in place, so a degraded rollout must not reach the promotion that follows it.
     stage = None
 
-    # What the flow has already done, in the order it did it. A local because kas freezes
-    # the globals before main() runs.
-    ledger = []
-
     for action in plan:
         kind = action["kind"]
         if kind == "step":
-            if _run_step(emit, action, version_set, handlers) != None:
+            f, outcome = _run_step(emit, ask, gate, action, version_set, handlers)
+            if f != None:
                 if stage != None:
                     name = stage["data"]["stage_name"]
-                    ledger.append({"environment": name, "outcome": "unhealthy"})
-                    print("stage %s unhealthy, ledger %s" % (name, json.encode(ledger)))
+                    ledger.append({"environment": name, "outcome": outcome})
+                    print("stage %s %s, ledger %s" % (name, outcome, json.encode(ledger)))
                     _report_failure(emit, "com.gitlab.cd.stage_failed", stage["data"])
                 return
         elif kind == "stage_started":
             stage = action
+
+            f = gate("com.gitlab.cd.environment_advanced", stage["resource"], stage["data"])
+            if f != None:
+                _emit_step_failed(emit, stage["data"], f)
+                return
 
             at = ""
             if stage["resource"] != None:

@@ -586,6 +586,53 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
       end
 
+      describe 'label filtering without a project or group scope' do
+        let_it_be(:label, freeze: false) { create(:label, project: project1) }
+
+        let!(:label_link) { create(:label_link, label: label, target: merge_request2) }
+        let!(:same_label_different_reviewer) { create(:label_link, label: label, target: merge_request3) }
+
+        let(:params) { { reviewer_id: user2.id, label_name: label.title } }
+
+        it 'returns the same merge requests with and without the CTE fence', :aggregate_failures do
+          expect(described_class.new(user, params).execute).to contain_exactly(merge_request2)
+
+          stub_feature_flags(use_cte_for_label_filter: false)
+
+          expect(described_class.new(user, params).execute).to contain_exactly(merge_request2)
+        end
+
+        it 'fences only a query bounded by a specific reviewer', :aggregate_failures do
+          fenced = ->(extra) do
+            described_class
+              .new(user, { label_name: label.title }.merge(extra))
+              .execute.to_sql.include?('filtered_issuables')
+          end
+
+          expect(fenced.call(reviewer_id: user2.id)).to be(true)
+          expect(fenced.call(reviewer_username: user2.username)).to be(true)
+
+          expect(fenced.call(reviewer_id: 'None')).to be(false)
+          expect(fenced.call(reviewer_id: 'Any')).to be(false)
+
+          expect(
+            fenced.call(reviewer_id: user2.id, sort: 'created_desc', approved_by_usernames: [user.username])
+          ).to be(false)
+        end
+
+        it 'executes when approvals force a GROUP BY' do
+          approvals_params = params.merge(sort: 'created_desc', approved_by_usernames: [user.username])
+
+          expect { described_class.new(user, approvals_params).execute.to_a }.not_to raise_error
+        end
+
+        it 'executes when a vote sort forces a GROUP BY', :aggregate_failures do
+          %w[popularity upvotes_desc downvotes_desc].each do |sort|
+            expect { described_class.new(user, params.merge(sort: sort)).execute.to_a }.not_to raise_error
+          end
+        end
+      end
+
       it 'filters by source project id' do
         params = { source_project_id: merge_request2.source_project_id }
 

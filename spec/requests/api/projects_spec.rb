@@ -1889,6 +1889,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       expect(response).to have_gitlab_http_status(:created)
       expect(Project.find(json_response['id']).automatic_rebase_enabled).to be(false)
+      expect(json_response['automatic_rebase_enabled']).to be(false)
     end
 
     it 'sets a project as allowing merge even if discussions are unresolved' do
@@ -3205,10 +3206,20 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['resource_group_default_process_mode']).to eq(project.resource_group_default_process_mode)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
         expect(json_response['squash_option']).to eq(project.squash_option.to_s)
+        expect(json_response['automatic_rebase_enabled']).to eq(project.automatic_rebase_enabled)
         expect(json_response['readme_url']).to eq(project.readme_url)
         expect(json_response).to have_key 'packages_enabled'
         expect(json_response['keep_latest_artifact']).to be_present
         expect(json_response['warn_about_potentially_unwanted_characters']).to be_present
+      end
+
+      it 'returns automatic_rebase_enabled when it is enabled' do
+        project.project_setting.update!(automatic_rebase_enabled: true)
+
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['automatic_rebase_enabled']).to be(true)
       end
 
       it 'returns a group link with expiration date' do
@@ -5460,7 +5471,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           .to(true)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).not_to have_key('automatic_rebase_enabled')
+        expect(json_response['automatic_rebase_enabled']).to be(true)
       end
 
       it 'updates ci_delete_pipelines_in_seconds' do

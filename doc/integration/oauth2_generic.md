@@ -26,9 +26,9 @@ This strategy allows for the configuration of this OmniAuth SSO process:
    authorization to access the user's profile.
 1. The OAuth 2.0 provider directs the client back to GitLab where Strategy
    retrieves the access token.
-1. Strategy requests user information from a **configurable** "user profile"
+1. Strategy requests user information from a configurable "user profile"
    URL using the access token.
-1. Strategy parses user information from the response using a **configurable**
+1. Strategy parses user information from the response using a configurable
    format.
 1. GitLab finds or creates the returned user and signs them in.
 

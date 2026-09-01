@@ -17,17 +17,31 @@ module Gitlab
         ENGINE_GLOBALS = %w[
           gitlab_function_run
           call_api
+          post_value
+          evaluate
+          ALLOW
+          DENY
+          REQUIRE_APPROVAL
+          get_object
           gl_run
           _require
           _STEPS
           _STAGE_TYPE
+          _APPROVAL_TYPE
           _TOPIC
+          _ACCEPTED
+          _destination
+          _problem
           _build_emitter
           failure
           _emit_step_failed
           _report_failure
           _service_reporter
-          _ACTIONS_ALLOWED
+          _build_asker
+          _FLAGS
+          _feature_flags
+          _build_gate
+          _ACTION_TRIGGERS
           register
           _WAIT_TYPE
           _wait
@@ -37,11 +51,14 @@ module Gitlab
           _step_environment
           _rollout_resource
           _step_resource
+          _gated_by
           _plan
           _owned_steps
           _validate_flow
           _bind_handlers
+          _step_boundary
           _run_step
+          _check_hitl
           main
         ].freeze
 

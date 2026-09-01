@@ -202,11 +202,6 @@ deployment_merge_requests:
 - deployment_id
 - environment_id
 - merge_request_id
-deployments:
-- environment_id
-- id
-- project_id
-- user_id
 description_versions:
 - epic_id
 - issue_id

@@ -337,6 +337,18 @@ module MergeRequestsHelper
     current_user.merge_request_dashboard_show_drafts
   end
 
+  def merge_request_dashboard_search_data
+    {
+      autocomplete_users_path: autocomplete_users_path,
+      has_scoped_labels_feature: 'false',
+      initial_sort: default_merge_request_sort || current_user&.user_preference&.merge_requests_sort,
+      is_public_visibility_restricted:
+        Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
+      is_signed_in: current_user.present?.to_s,
+      vue_search_enabled: Feature.enabled?(:mr_dashboard_vue_search, current_user).to_s
+    }
+  end
+
   private
 
   def default_suggestion_commit_message(project)

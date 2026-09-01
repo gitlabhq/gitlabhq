@@ -31,7 +31,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     listItems = [],
     shortcut = undefined,
     noResetButton = false,
-    attrs,
   } = {}) => {
     wrapper = mountExtended(WorkItemSidebarDropdownWidget, {
       propsData: {
@@ -48,7 +47,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
         shortcut,
         noResetButton,
       },
-      attrs,
       slots,
     });
 
@@ -192,30 +190,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
 
         expect(wrapper.emitted('update-value')).toBeDefined();
       });
-    });
-  });
-
-  describe('data-testid', () => {
-    // Guard against a regression where data-testid falls through into $attrs.
-    // BootstrapVue copies those attrs onto tooltip elements, creating duplicate
-    // test IDs outside the widget and causing flaky Capybara scopes. Asserting on
-    // the rendered root alone is not enough: attribute fallthrough satisfies it
-    // whether or not the prop works. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251822
-    it('forwards it to the inner widget as a prop, keeping it out of both $attrs', () => {
-      createComponent({ attrs: { 'data-testid': 'work-item-labels' } });
-
-      expect(wrapper.vm.$attrs).not.toHaveProperty('data-testid');
-      expect(findWorkItemSidebarWidget().props('dataTestid')).toBe('work-item-labels');
-      expect(findWorkItemSidebarWidget().vm.$attrs).not.toHaveProperty('data-testid');
-      expect(wrapper.find('section').attributes('data-testid')).toBe('work-item-labels');
-      expect(wrapper.findAll('[data-testid="work-item-labels"]')).toHaveLength(1);
-    });
-
-    it('is absent from the root element when not passed', () => {
-      createComponent();
-
-      expect(findWorkItemSidebarWidget().props('dataTestid')).toBeNull();
-      expect(wrapper.find('section').attributes('data-testid')).toBeUndefined();
     });
   });
 

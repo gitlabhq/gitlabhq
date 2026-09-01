@@ -22,11 +22,11 @@ For many of our users, GitLab is a tier zero system. It is critical in creating,
 
 Product and Engineering Managers are responsible and accountable for customer impacts due to the changes they make to the platform. The burden is on GitLab, not the customer, to own change management.
 
-**We aim to eliminate all breaking changes from GitLab.** If you have exhausted the alternatives and believe you have a strong case for why a breaking change should be allowed, you can follow the process below to seek an exception.
+We aim to eliminate all breaking changes from GitLab. If you have exhausted the alternatives and believe you have a strong case for why a breaking change should be allowed, you can follow the process below to seek an exception.
 
 ## How do I get approval to move forward with a breaking change?
 
-**By default, no breaking change is allowed unless the breaking change implementation plan has been granted explicit approval by following the process below.**
+By default, no breaking change is allowed unless the breaking change implementation plan has been granted explicit approval by following the process below.
 
 1. Open an issue using the [Breaking Change Exception template](https://gitlab.com/gitlab-com/Product/-/issues/new?description_template=Breaking-Change-Exception) and fill in all of the required sections.
 1. **If your breaking change meets any of the below criteria**, please call it out in the request. It doesn't guarantee the request will be approved but it helps make a good argument. Most breaking changes that are approved will fall into at least one of these categories:

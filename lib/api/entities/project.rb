@@ -168,6 +168,7 @@ module API
       expose :printing_merge_request_link_enabled, documentation: { type: 'Boolean' }
       expose :merge_method, documentation: { type: 'String', example: 'merge' }
       expose :squash_option, documentation: { type: 'String', example: 'default_off' }
+      expose :automatic_rebase_enabled, documentation: { type: 'Boolean' }
       expose :enforce_auth_checks_on_uploads, documentation: { type: 'Boolean' }
       expose :suggestion_commit_message, documentation: { type: 'String', example: 'Suggestion message' }
       expose :merge_commit_template, documentation: { type: 'String', example: '%(title)' }

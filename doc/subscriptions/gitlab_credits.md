@@ -102,7 +102,7 @@ Monthly Commitment Pool is a shared pool of credits available to all users in th
 All users in your subscription can draw from this shared pool after they have consumed their included credits.
 
 You can't reserve the pool for a subset of users or isolate consumption to specific users, groups, or projects.
-To limit how much individual users consume, use usage caps.
+To limit how much individual users consume, use [usage caps](gitlab_credits_dashboard.md#usage-caps).
 
 You can purchase the Monthly Commitment Pool as a recurring annual or multi-year term.
 The number of credits purchased for the year is divided by 12.

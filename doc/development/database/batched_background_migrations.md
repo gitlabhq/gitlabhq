@@ -576,7 +576,7 @@ All the above steps can be implemented in a single MR.
 
 `BatchedMigrationJob` provides the `job_arguments` helper method for job classes to define the job arguments they need.
 
-Batched migrations scheduled with `queue_batched_background_migration` **must** use the helper to define the job arguments:
+Batched migrations scheduled with `queue_batched_background_migration` must use the helper to define the job arguments:
 
 ```ruby
 queue_batched_background_migration(
@@ -1245,7 +1245,7 @@ the CI builds metadata migration.
 
 ### When to add upgrade notes
 
-Add upgrade notes when **any** of the following conditions apply to the migration:
+Add upgrade notes when any of the following conditions apply to the migration:
 
 - The migration operates on large tables that could take significant time to complete.
 - The migration provides configuration options for customers to control the migration scope.

@@ -747,6 +747,82 @@ Example response:
 }
 ```
 
+## Retrieve changed paths
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234458) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `repository_changed_paths_api`. Disabled by default. This feature is in [beta](../policy/development_stages_support.md).
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Retrieves the list of files that changed between two commits, branches, or tags.
+
+This endpoint requires authentication.
+Unauthenticated requests are rejected with [`401 Unauthorized`](rest/troubleshooting.md#status-codes).
+
+```plaintext
+GET /projects/:id/repository/changed_paths
+```
+
+Supported attributes:
+
+| Attribute      | Type              | Required | Description |
+|----------------|-------------------|----------|-------------|
+| `id`           | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
+| `from`         | string            | Yes      | Commit SHA, branch, or tag to compare from. |
+| `to`           | string            | Yes      | Commit SHA, branch, or tag to compare to. |
+| `find_renames` | boolean           | No       | If `true`, detect file renames. Defaults to `false`. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and a list of
+changed paths with the following response attributes:
+
+| Attribute  | Type   | Description |
+|------------|--------|-------------|
+| `new_mode` | string | New file mode. |
+| `old_mode` | string | Previous file mode. |
+| `old_path` | string | Previous path of the file. An empty string for added files. |
+| `path`     | string | Path of the file. |
+| `status`   | string | Change type. One of `ADDED`, `MODIFIED`, `DELETED`, `RENAMED`, `TYPE_CHANGED`, or `COPIED`. |
+
+Can return the following status codes:
+
+- `400 Bad Request`: `from` or `to` is missing or exceeds the maximum length.
+- `401 Unauthorized`: The request is not authenticated.
+- `403 Forbidden`: You do not have permission to compare repository contents in this project, or the repository is disabled.
+- `404 Not Found`: The project does not exist or is not visible to you, a specified ref does not exist, or the `repository_changed_paths_api` feature flag is disabled.
+- `429 Too Many Requests`: The rate limit for this endpoint is exceeded.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/changed_paths?from=main&to=feature"
+```
+
+Example response:
+
+```json
+[
+  {
+    "status": "MODIFIED",
+    "path": "app/models/user.rb",
+    "old_path": "app/models/user.rb",
+    "old_mode": "100644",
+    "new_mode": "100644"
+  }
+]
+```
+
 ## Generate changelog data
 
 {{< history >}}

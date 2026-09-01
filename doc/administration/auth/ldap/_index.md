@@ -1425,7 +1425,7 @@ When a user tries to sign in with LDAP, GitLab tries to find the user using the 
 - If GitLab cannot find a user by their DN, it tries to find the user by their email. If GitLab:
   - Finds the user by their email, GitLab updates the DN stored in the user's GitLab account. Both values now
     match the information stored in LDAP.
-  - Cannot find the user by their email address (both the DN **and** the email address have changed), see
+  - Cannot find the user by their email address (both the DN and the email address have changed), see
     [User DN and email have changed](ldap-troubleshooting.md#user-dn-and-email-have-changed).
 
 ## Disable anonymous LDAP authentication

@@ -162,7 +162,6 @@ project_feature:
 
 project_setting:
   unexposed_attributes:
-    - automatic_rebase_enabled
     - created_at
     - has_confluence
     - has_shimo

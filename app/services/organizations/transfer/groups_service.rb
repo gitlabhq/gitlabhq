@@ -234,17 +234,22 @@ module Organizations
 
       # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
       def schedule_pool_repository_disconnections(batch)
-        group.run_after_commit_or_now do
-          batch.where.not(pool_repository_id: nil).select(:id).each do |project|
-            Repositories::LeavePoolRepositoryWorker.perform_async(project.id)
-          end
+        # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- bounded by each_batch
+        project_ids = batch.where.not(pool_repository_id: nil).pluck(:id)
+        # rubocop:enable Database/AvoidUsingPluckWithoutLimit
+
+        return if project_ids.empty?
+
+        # `group` never joins the transaction (all writes are `update_all`), so it cannot
+        # carry an after-commit callback. Leaving a pool disconnects alternates in Gitaly
+        # and nils pool_repository_id on the worker's connection; a rollback undoes neither.
+        ActiveRecord.after_all_transactions_commit do
+          project_ids.each { |project_id| Repositories::LeavePoolRepositoryWorker.perform_async(project_id) }
         end
       end
       # rubocop:enable CodeReuse/ActiveRecord
 
       def publish_event
-        # Capture IDs before the block: instance_eval in run_after_commit_or_now
-        # changes self to the group object, so attr_reader methods would not resolve.
         group_id = group.id
         old_org_id = old_organization.id
         new_org_id = new_organization.id
@@ -252,7 +257,11 @@ module Organizations
         # Publish once for the root group only. Descendants implicitly move with it.
         # Subscribers that need to act on descendant projects must traverse them
         # independently (e.g. via NamespaceEachBatch).
-        group.run_after_commit_or_now do
+        #
+        # `group` never joins the transaction (all writes are `update_all`), so it cannot
+        # carry an after-commit callback. Subscribers read the transferred rows, so
+        # publishing before commit makes them act on the old organization.
+        ActiveRecord.after_all_transactions_commit do
           Gitlab::EventStore.publish(
             Organizations::GroupTransferredEvent.new(data: {
               group_id: group_id,
@@ -268,7 +277,9 @@ module Organizations
         old_org_id = old_organization.id
         new_org_id = new_organization.id
 
-        group.run_after_commit_or_now do
+        # `group` never joins the transaction (all writes are `update_all`), so it cannot
+        # carry an after-commit callback. Defer so a rollback enqueues nothing.
+        ActiveRecord.after_all_transactions_commit do
           ::Ci::Runners::TransferOrganizationWorker.perform_async(group_id, old_org_id, new_org_id)
         end
       end

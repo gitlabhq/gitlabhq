@@ -24,14 +24,6 @@ export default {
       required: false,
       default: false,
     },
-    // Declared as a prop so it stays out of $attrs. BootstrapVue copies the host
-    // component's $attrs onto the tooltip element it appends to the page body,
-    // which would otherwise duplicate this test ID outside the widget.
-    dataTestid: {
-      type: String,
-      required: false,
-      default: null,
-    },
     isEditing: {
       type: Boolean,
       required: false,
@@ -84,7 +76,7 @@ export default {
 </script>
 
 <template>
-  <section :data-testid="dataTestid">
+  <section>
     <div class="gl-flex gl-items-center gl-gap-3">
       <h3 class="gl-heading-5 gl-mb-0">
         <slot name="title"></slot>

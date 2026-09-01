@@ -360,7 +360,7 @@ For more information on:
    https://gitlab.example.com/users/auth/saml/metadata
    ```
 
-   At a minimum the IdP **must** provide a claim containing the user's email address
+   At a minimum the IdP must provide a claim containing the user's email address
    using `email` or `mail`. For more information on other available claims, see
    [configuring assertions](#configure-assertions).
 1. On the sign in page there should now be a SAML icon below the regular sign in form.

@@ -39083,6 +39083,72 @@ paths:
       tags:
       - repositories
       operationId: postApiV4ProjectsIdRepositoryBlobsBatch
+  "/api/v4/projects/{id}/repository/changed_paths":
+    get:
+      summary: List files changed between two commits
+      description: Returns the path, change status, and file modes for every path
+        that differs between two refs.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+        example: 1
+      - in: query
+        name: from
+        description: The commit SHA or branch/tag to compare from
+        type: string
+        required: true
+        example: main
+      - in: query
+        name: to
+        description: The commit SHA or branch/tag to compare to
+        type: string
+        required: true
+        example: feature
+      - in: query
+        name: find_renames
+        description: If true, detect file renames
+        type: boolean
+        default: false
+        required: false
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      responses:
+        '200':
+          description: List files changed between two commits
+          schema:
+            "$ref": "#/definitions/API_Entities_ChangedPath"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '429':
+          description: Too Many Requests
+      tags:
+      - repositories
+      operationId: getApiV4ProjectsIdRepositoryChangedPaths
   "/api/v4/projects/{id}/repository/diverging_commits":
     get:
       description: Retrieve diverging commit counts between two refs
@@ -73652,6 +73718,31 @@ definitions:
     - encoding
     - content
     description: API_Entities_BatchBlob model
+  API_Entities_ChangedPath:
+    type: object
+    properties:
+      status:
+        type: string
+        example: MODIFIED
+      path:
+        type: string
+        example: app/models/user.rb
+      old_path:
+        type: string
+        example: app/models/user.rb
+      old_mode:
+        type: string
+        example: '100644'
+      new_mode:
+        type: string
+        example: '100644'
+    required:
+    - status
+    - path
+    - old_path
+    - old_mode
+    - new_mode
+    description: API_Entities_ChangedPath model
   API_Entities_DivergingCommitCount:
     type: object
     properties:

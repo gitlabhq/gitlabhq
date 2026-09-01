@@ -999,6 +999,14 @@ stages:
 
 image: maven:3.9.9-eclipse-temurin-21
 
+variables:
+  # Disable the automatic Maven resolution job. The dependency graph is
+  # generated manually in the build job below. The built-in resolution
+  # job which runs whenever a `pom.xml` is present is redundant.
+  # Alternatively, set the `disabled_resolution_jobs: "maven"` input on the
+  # template include.
+  DS_DISABLED_RESOLUTION_JOBS: "maven"
+
 include:
   - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
 

@@ -20925,6 +20925,7 @@ CREATE TABLE emails (
     confirmed_at timestamp without time zone,
     confirmation_sent_at timestamp without time zone,
     detumbled_email text,
+    organization_id bigint,
     CONSTRAINT check_319f6999dc CHECK ((char_length(detumbled_email) <= 255))
 );
 
@@ -35140,6 +35141,61 @@ CREATE TABLE work_item_dates_sources (
     due_date_fixed date
 );
 
+CREATE TABLE work_item_decision_options (
+    id bigint NOT NULL,
+    work_item_decision_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    recommended boolean DEFAULT false NOT NULL,
+    selected boolean DEFAULT false NOT NULL,
+    content text NOT NULL,
+    description text,
+    CONSTRAINT check_1f92c8ad89 CHECK ((char_length(content) <= 1024)),
+    CONSTRAINT check_9019e30ad4 CHECK ((char_length(description) <= 2048))
+);
+
+CREATE SEQUENCE work_item_decision_options_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE work_item_decision_options_id_seq OWNED BY work_item_decision_options.id;
+
+CREATE TABLE work_item_decisions (
+    id bigint NOT NULL,
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    author_id bigint,
+    resolved_by_id bigint,
+    resolving_note_id bigint,
+    workflow_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    resolved_at timestamp with time zone,
+    title text NOT NULL,
+    description text,
+    resolution_rationale text,
+    discussion_id text,
+    source_link text,
+    CONSTRAINT check_5a3ddf5181 CHECK ((char_length(discussion_id) <= 255)),
+    CONSTRAINT check_8e46bf5aec CHECK ((char_length(description) <= 3000)),
+    CONSTRAINT check_ac996a3be7 CHECK ((char_length(title) <= 255)),
+    CONSTRAINT check_cff0d4bd51 CHECK ((char_length(resolution_rationale) <= 3000)),
+    CONSTRAINT check_fe83b99171 CHECK ((char_length(source_link) <= 2048))
+);
+
+CREATE SEQUENCE work_item_decisions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE work_item_decisions_id_seq OWNED BY work_item_decisions.id;
+
 CREATE TABLE work_item_number_field_values (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -38274,6 +38330,10 @@ ALTER TABLE ONLY work_item_custom_statuses ALTER COLUMN id SET DEFAULT nextval('
 ALTER TABLE ONLY work_item_custom_types ALTER COLUMN id SET DEFAULT nextval('work_item_custom_types_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_date_field_values ALTER COLUMN id SET DEFAULT nextval('work_item_date_field_values_id_seq'::regclass);
+
+ALTER TABLE ONLY work_item_decision_options ALTER COLUMN id SET DEFAULT nextval('work_item_decision_options_id_seq'::regclass);
+
+ALTER TABLE ONLY work_item_decisions ALTER COLUMN id SET DEFAULT nextval('work_item_decisions_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_number_field_values ALTER COLUMN id SET DEFAULT nextval('work_item_number_field_values_id_seq'::regclass);
 
@@ -42699,6 +42759,12 @@ ALTER TABLE ONLY work_item_date_field_values
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT work_item_dates_sources_pkey PRIMARY KEY (issue_id);
+
+ALTER TABLE ONLY work_item_decision_options
+    ADD CONSTRAINT work_item_decision_options_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY work_item_decisions
+    ADD CONSTRAINT work_item_decisions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY work_item_number_field_values
     ADD CONSTRAINT work_item_number_field_values_pkey PRIMARY KEY (id);
@@ -48164,6 +48230,8 @@ CREATE UNIQUE INDEX index_emails_on_email ON emails USING btree (email);
 
 CREATE INDEX index_emails_on_email_trigram ON emails USING gin (email gin_trgm_ops);
 
+CREATE INDEX index_emails_on_organization_id ON emails USING btree (organization_id);
+
 CREATE INDEX index_emails_on_user_id ON emails USING btree (user_id);
 
 CREATE UNIQUE INDEX index_emails_on_user_id_and_confirmation_token ON emails USING btree (user_id, confirmation_token);
@@ -51905,6 +51973,22 @@ CREATE INDEX index_work_item_custom_statuses_on_updated_by_id ON work_item_custo
 CREATE INDEX index_work_item_date_field_values_on_custom_field_id ON work_item_date_field_values USING btree (custom_field_id);
 
 CREATE INDEX index_work_item_date_field_values_on_namespace_id ON work_item_date_field_values USING btree (namespace_id);
+
+CREATE INDEX index_work_item_decision_options_on_namespace_id ON work_item_decision_options USING btree (namespace_id);
+
+CREATE INDEX index_work_item_decision_options_on_work_item_decision_id ON work_item_decision_options USING btree (work_item_decision_id);
+
+CREATE INDEX index_work_item_decisions_on_author_id ON work_item_decisions USING btree (author_id);
+
+CREATE INDEX index_work_item_decisions_on_namespace_id ON work_item_decisions USING btree (namespace_id);
+
+CREATE INDEX index_work_item_decisions_on_resolved_by_id ON work_item_decisions USING btree (resolved_by_id);
+
+CREATE INDEX index_work_item_decisions_on_resolving_note_id ON work_item_decisions USING btree (resolving_note_id);
+
+CREATE INDEX index_work_item_decisions_on_work_item_id ON work_item_decisions USING btree (work_item_id);
+
+CREATE INDEX index_work_item_decisions_on_workflow_id ON work_item_decisions USING btree (workflow_id);
 
 CREATE INDEX index_work_item_number_field_values_on_custom_field_id ON work_item_number_field_values USING btree (custom_field_id);
 
@@ -57428,6 +57512,9 @@ ALTER TABLE ONLY import_failures
 ALTER TABLE ONLY project_ci_cd_settings
     ADD CONSTRAINT fk_24c15d2f2e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_decisions
+    ADD CONSTRAINT fk_24d05b7e66 FOREIGN KEY (resolving_note_id) REFERENCES notes(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY snippet_repository_storage_moves
     ADD CONSTRAINT fk_2522a20cfb FOREIGN KEY (snippet_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -57548,6 +57635,9 @@ ALTER TABLE ONLY work_item_type_user_preferences
 ALTER TABLE ONLY notes
     ADD CONSTRAINT fk_2e82291620 FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY work_item_decisions
+    ADD CONSTRAINT fk_2e926f047e FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY lfs_objects_projects
     ADD CONSTRAINT fk_2eb33f7a78 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
 
@@ -57604,9 +57694,6 @@ ALTER TABLE ONLY approvals
 
 ALTER TABLE ONLY packages_debian_file_metadata
     ADD CONSTRAINT fk_31440cf2d5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY snippet_repository_storage_moves
-    ADD CONSTRAINT fk_321e6c6235 FOREIGN KEY (snippet_organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_approval_metrics
     ADD CONSTRAINT fk_324639fb86 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -58055,6 +58142,9 @@ ALTER TABLE ONLY projects_branch_rules_squash_options
 ALTER TABLE ONLY approval_merge_request_rules
     ADD CONSTRAINT fk_5822f009ea FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_decisions
+    ADD CONSTRAINT fk_5824d0d3f8 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_requests_approval_rules_approver_users
     ADD CONSTRAINT fk_582e5f36e8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -58150,6 +58240,9 @@ ALTER TABLE ONLY milestone_releases
 
 ALTER TABLE ONLY supply_chain_attestation_states
     ADD CONSTRAINT fk_5eb250e61f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY emails
+    ADD CONSTRAINT fk_5f7164ec3d FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY snippet_repository_states
     ADD CONSTRAINT fk_5f750f3182 FOREIGN KEY (snippet_repository_id) REFERENCES snippet_repositories(snippet_id) ON DELETE CASCADE;
@@ -58405,9 +58498,6 @@ ALTER TABLE ONLY cd_deployments
 
 ALTER TABLE ONLY project_compliance_violations_issues
     ADD CONSTRAINT fk_735afdd8a7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY snippet_statistics
-    ADD CONSTRAINT fk_73a34da7d8 FOREIGN KEY (snippet_organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY granular_scopes
     ADD CONSTRAINT fk_73a513f489 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -59102,6 +59192,9 @@ ALTER TABLE ONLY security_policy_settings
 ALTER TABLE ONLY cd_version_sets
     ADD CONSTRAINT fk_a7c314342d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_decisions
+    ADD CONSTRAINT fk_a7cacab499 FOREIGN KEY (resolved_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY snippet_statistics
     ADD CONSTRAINT fk_a8031c4c3e FOREIGN KEY (snippet_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -59245,6 +59338,9 @@ ALTER TABLE ONLY subscription_seat_assignments
 
 ALTER TABLE ONLY protected_tag_create_access_levels
     ADD CONSTRAINT fk_b4eb82fe3c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_decision_options
+    ADD CONSTRAINT fk_b501ec7be1 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY status_check_responses
     ADD CONSTRAINT fk_b53bf31a72 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -59759,9 +59855,6 @@ ALTER TABLE ONLY packages_composer_packages
 ALTER TABLE ONLY cluster_platforms_kubernetes
     ADD CONSTRAINT fk_deca307b23 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY snippet_user_mentions
-    ADD CONSTRAINT fk_def441dfc3 FOREIGN KEY (snippet_organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY cd_environment_driver_bindings
     ADD CONSTRAINT fk_def58488b9 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -59930,6 +60023,9 @@ ALTER TABLE ONLY scan_result_policy_violation_details
 ALTER TABLE ONLY catalog_resource_components
     ADD CONSTRAINT fk_ec417536da FOREIGN KEY (catalog_resource_id) REFERENCES catalog_resources(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_decisions
+    ADD CONSTRAINT fk_ec62753609 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY workspaces
     ADD CONSTRAINT fk_ec70695b2c FOREIGN KEY (personal_access_token_id) REFERENCES personal_access_tokens(id) ON DELETE RESTRICT;
 
@@ -59983,9 +60079,6 @@ ALTER TABLE ONLY approval_project_rules
 
 ALTER TABLE ONLY vulnerability_archive_export_upload_states
     ADD CONSTRAINT fk_efa6852077 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY snippet_repositories
-    ADD CONSTRAINT fk_efaf4ac269 FOREIGN KEY (snippet_organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dora_daily_metrics
     ADD CONSTRAINT fk_efc32a39fa FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -60112,6 +60205,9 @@ ALTER TABLE ONLY ml_model_metadata
 
 ALTER TABLE ONLY cd_rollouts
     ADD CONSTRAINT fk_f6a73cac85 FOREIGN KEY (application_id) REFERENCES cd_applications(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_decisions
+    ADD CONSTRAINT fk_f6e83592b4 FOREIGN KEY (workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT fk_f748646298 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
@@ -62212,6 +62308,9 @@ ALTER TABLE ONLY approval_policy_rules
 
 ALTER TABLE ONLY work_item_select_field_values
     ADD CONSTRAINT fk_rails_e3ecc2c14e FOREIGN KEY (custom_field_id) REFERENCES custom_fields(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_decision_options
+    ADD CONSTRAINT fk_rails_e4603fd02d FOREIGN KEY (work_item_decision_id) REFERENCES work_item_decisions(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_occurrence_identifiers
     ADD CONSTRAINT fk_rails_e4ef6d027c FOREIGN KEY (occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;

@@ -43,7 +43,7 @@ The global nav is stored in the `gitlab-org/technical-writing/docs-gitlab-com` p
 `data/en-us/navigation.yaml` file. The documentation website at `docs.gitlab.com` is built using Hugo and assembles documentation
 content from several projects (including `charts`, `gitlab`, `gitlab-runner`, and `omnibus-gitlab`).
 
-**Do not** add items to the global nav without
+Do not add items to the global nav without
 the consent of one of the technical writers.
 
 To add a topic to the global navigation:

@@ -367,7 +367,7 @@ For complex features split over multiple merge requests:
   included.
 - If a merge request will expose a feature to users in any way, such as an
   enabled user interface element, an API endpoint, or anything similar, then
-  that MR **must** have documentation. This might mean multiple
+  that MR must have documentation. This might mean multiple
   documentation additions could happen in the buildup to the implementation of
   a single large feature, for example API documentation and feature usage
   documentation.
@@ -413,7 +413,7 @@ This will help manage the volume of notifications per review round.
 
 ### MR Reviews
 
-After the merge request is created, all changes and additions to text in the UI **must** be reviewed by
+After the merge request is created, all changes and additions to text in the UI must be reviewed by
 the technical writer.
 These might include labels (buttons, menus, column headers, and UI sections) or any phrases that would be
 displayed in the UI, such as microcopy or error messages.

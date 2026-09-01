@@ -233,6 +233,59 @@ RSpec.describe Slack::API, feature_category: :integrations do
     end
   end
 
+  describe '#get_permalink' do
+    let(:slack_installation) { build(:slack_integration) }
+    let(:api) { described_class.new(slack_installation) }
+    let(:api_url) { "#{described_class::BASE_URL}/chat.getPermalink" }
+    let(:permalink) { 'https://myworkspace.slack.com/archives/C123/p1234567890123456' }
+
+    subject(:get_permalink) { api.get_permalink(channel: 'C123', message_ts: '1234567890.123456') }
+
+    context 'when the request succeeds' do
+      before do
+        stub_request(:get, api_url).with(query: { channel: 'C123', message_ts: '1234567890.123456' }).to_return(
+          status: 200,
+          body: { ok: true, permalink: permalink }.to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+      end
+
+      it 'returns the parsed response' do
+        expect(get_permalink).to include('ok' => true, 'permalink' => permalink)
+      end
+    end
+
+    context 'when the Slack API returns an error' do
+      before do
+        stub_request(:get, api_url).with(query: hash_including({})).to_return(
+          status: 200,
+          body: { ok: false, error: 'message_not_found' }.to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+      end
+
+      it 'logs and returns the error response' do
+        expect(Gitlab::IntegrationsLogger).to receive(:error)
+          .with(hash_including(message: 'Slack API error when fetching permalink'))
+
+        expect(get_permalink).to include('ok' => false, 'error' => 'message_not_found')
+      end
+    end
+
+    context 'when an HTTP error is raised' do
+      before do
+        stub_request(:get, api_url).with(query: hash_including({})).to_raise(Errno::ECONNREFUSED.new('error'))
+      end
+
+      it 'returns an error response without raising' do
+        expect(Gitlab::IntegrationsLogger).to receive(:error)
+          .with(hash_including(message: 'Slack API error when fetching permalink'))
+
+        expect(get_permalink['ok']).to be(false)
+      end
+    end
+  end
+
   describe '#conversation_info' do
     let(:slack_installation) { build(:slack_integration) }
     let(:api) { described_class.new(slack_installation) }

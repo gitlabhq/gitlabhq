@@ -1,0 +1,18 @@
+# @feature_category: custom_dashboards_foundation
+
+query getAnalyticsDashboardGroupProjects($fullPath: ID!) {
+  group(fullPath: $fullPath) {
+    id
+    name
+    fullName
+    fullPath
+    projects(first: 100, sort: ACTIVITY_DESC, includeArchived: false) {
+      nodes {
+        id
+        name
+        fullName: nameWithNamespace
+        fullPath
+      }
+    }
+  }
+}

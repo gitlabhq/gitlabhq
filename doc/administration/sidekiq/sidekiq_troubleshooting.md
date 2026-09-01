@@ -25,7 +25,7 @@ It may reveal a bug or necessary improvement in GitLab.
 
 In any of the backtraces, be wary of suspecting cases where every
 thread appears to be waiting in the database, Redis, or waiting to acquire
-a mutex. This **may** mean there's contention in the database, for example,
+a mutex. This might mean there's contention in the database, for example,
 but look for one thread that is different than the rest. This other thread
 may be using all available CPU, or have a Ruby Global Interpreter Lock,
 preventing other threads from continuing.

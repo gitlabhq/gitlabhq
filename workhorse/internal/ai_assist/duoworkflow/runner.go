@@ -345,7 +345,7 @@ func (r *runner) acquireWorkflowLock(startReq *pb.StartWorkflowRequest) error {
 	// remove it. Legacy/chat flows have no concept of a flow definition until they are migrated to
 	// the flow registry, so this field is still the only value we get for them today.
 	//lint:ignore SA1019 see comment above
-	mutex, err := r.lockManager.acquireLock(r.originalReq.Context(), r.workflowID, startReq.WorkflowDefinition)
+	mutex, err := r.lockManager.acquireLock(r.originalReq.Context(), r.workflowID, startReq.WorkflowDefinition) //nolint:staticcheck // SA1019: see comment above
 	if err != nil && err != errLockIsUnavailable {
 		return errFailedToAcquireLockError
 	}

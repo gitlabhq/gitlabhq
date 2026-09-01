@@ -3,7 +3,6 @@
 module LooseForeignKeys
   class CleanupWorker
     include ApplicationWorker
-    include Gitlab::LooseForeignKeys::RecordStoreSelector
     include Gitlab::ExclusiveLeaseHelpers
     include CronjobQueue # rubocop: disable Scalability/CronWorkerContext
 
@@ -26,7 +25,7 @@ module LooseForeignKeys
           modification_tracker: modification_tracker,
           logger: Sidekiq.logger,
           worker_class: self.class,
-          record_store: record_store
+          record_store: ::Gitlab::LooseForeignKeys::DeletedRecordStore
         ).execute
         stats[:connection] = connection_name
         stats[:turbo_mode] = turbo_mode

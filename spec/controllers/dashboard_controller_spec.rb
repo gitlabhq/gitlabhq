@@ -110,6 +110,10 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
     end
 
     describe 'GET merge requests search' do
+      before do
+        stub_feature_flags(mr_dashboard_vue_search: false)
+      end
+
       it_behaves_like 'issuables requiring filter', :search_merge_requests
 
       context 'when sorting by merged_at with merged state' do

@@ -575,7 +575,7 @@ The following IPs will be used as an example:
 - `10.6.0.23`: PostgreSQL secondary 2
 
 First, make sure to [install](../../install/package/_index.md#supported-platforms)
-the Linux package **on each node**. Be sure to only add the GitLab
+the Linux package on each node. Be sure to only add the GitLab
 package repository and install GitLab for your chosen operating system,
 but do not provide the `EXTERNAL_URL` value.
 
@@ -703,7 +703,7 @@ are supported and can be added if needed.
 
 #### PostgreSQL post-configuration
 
-SSH in to any of the Patroni nodes on the **primary site**:
+SSH in to any of the Patroni nodes on the primary site:
 
 1. Check the status of the leader and cluster:
 
@@ -1345,7 +1345,7 @@ There are many third-party solutions for PostgreSQL HA. The solution selected mu
 > minimal.
 
 A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal)
-and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default from
+and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is incompatible with load balancing enabled by default from
 [14.4.0](https://archives.docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes/#1440).
 
 Once the database is set up, follow the [post configuration](#praefect-postgresql-post-configuration).
@@ -1532,7 +1532,7 @@ To configure the Praefect nodes, on each one:
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 1. Praefect needs to run some database migrations, much like the main GitLab application. For this
-   you should select **one Praefect node only to run the migrations**, AKA the _Deploy Node_. This node
+   you should select one Praefect node only to run the migrations, AKA the _Deploy Node_. This node
    must be configured first before the others as follows:
 
    1. In the `/etc/gitlab/gitlab.rb` file, change the `praefect['auto_migrate']` setting value from `false` to `true`
@@ -2305,8 +2305,8 @@ documentation for setup instructions including guidance on what GitLab secrets t
 between Kubernetes and the backend components.
 
 > [!note]
-> This is an **advanced** setup. Running services in Kubernetes is well known
-> to be complex. **This setup is only recommended** if you have strong working
+> This is an advanced setup. Running services in Kubernetes is well known
+> to be complex. This setup is only recommended if you have strong working
 > knowledge and experience in Kubernetes. The rest of this
 > section assumes this.
 

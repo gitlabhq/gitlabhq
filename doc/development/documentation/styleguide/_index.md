@@ -1572,7 +1572,7 @@ To emphasize an area in a screenshot, use an arrow.
   - Height should be 500 pixels or less.
   - Make sure the screenshot is still clear after being resized and compressed.
 - Use PNG images instead of JPEG.
-- All images **must** be [compressed](#compress-images) to 100 KB or less.
+- All images must be [compressed](#compress-images) to 100 KB or less.
   In many cases, 25-50 KB or less is often possible without reducing image quality.
 - Save the image with a lowercase filename that's descriptive of the feature
   or concept in the image:
@@ -1834,7 +1834,7 @@ To create accessible and maintainable diagrams, follow these guidelines:
 - Shapes that represent the same element should have the same shape and size.
 - Add clear labels and brief descriptions to diagram elements.
 - For elements that have text, ensure adequate white space exists between the text and the
-  shape's outline. If required, increase the size of the shape and **all** similar shapes in the diagram.
+  shape's outline. If required, increase the size of the shape and all similar shapes in the diagram.
 - Include a title and brief description for the diagram.
 - Use GitLab Sans font for text, or Google Inter font as a fallback option.
 - For complex processes, consider creating multiple simple diagrams instead of one large diagram.
@@ -2114,7 +2114,7 @@ It renders on the GitLab documentation site as:
 
 ### Disclaimer
 
-If you **must** write about features we have not yet delivered, add a disclaimer about forward-looking statements near the content it applies to.
+If you must write about features we have not yet delivered, add a disclaimer about forward-looking statements near the content it applies to.
 
 Disclaimer alerts are populated by using a [template](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/themes/gitlab-docs/layouts/shortcodes/alert.html) and should not include
 any other text.

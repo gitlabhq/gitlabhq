@@ -46,7 +46,7 @@ bindings to widgets or to their child components. This includes Vuex mappings an
 ## Widget responsibility
 
 A widget is responsible for fetching and updating an entity it's designed for (assignees, iterations, and so on).
-This means a widget should **always** fetch data (if it's not in Apollo cache already).
+This means a widget should always fetch data (if it's not in Apollo cache already).
 Even if we provide an initial value to the widget, it should perform a GraphQL query in the background
 to be stored in Apollo cache.
 

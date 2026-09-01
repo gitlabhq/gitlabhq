@@ -163,11 +163,14 @@ module Gitlab
             SSOT source files (the documentation to distill from):
             #{sources}
 
-            Baseline (include EVERY rule line byte-for-byte, in the same
-            place it occupies in the prior distilled file — relocating it is
-            churn under rule 18. The sync mechanically rejects and retries
-            any output that alters, re-wraps, duplicates, or omits a
-            baseline line — system prompt rule 15):
+            Baseline (include EVERY rule line byte-for-byte, under the
+            heading the BASELINE gives it — the baseline wins over the prior
+            distilled file's placement. If the baseline moved a rule, emit it
+            at its new heading and DELETE the old copy; do not relocate a
+            rule the baseline did not move (churn under rule 18). The sync
+            mechanically rejects and retries any output that alters,
+            re-wraps, duplicates, or omits a baseline line — system prompt
+            rule 15):
             #{baseline_line}
 
             Output ONLY the checklist content. No preamble, no thinking, no

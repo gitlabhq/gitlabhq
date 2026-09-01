@@ -46,7 +46,7 @@ For a full list of reference architectures, see
    Sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. See [Load Balancers](_index.md#load-balancers) for more information.
 5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 6. Gitaly specifications are based on the use of normal-sized repositories in good health.
-   However, if you have large monorepos (larger than several gigabytes) this can **significantly** impact Git and Gitaly performance and an increase of specifications will likely be required.
+   However, if you have large monorepos (larger than several gigabytes) this can significantly impact Git and Gitaly performance and an increase of specifications will likely be required.
    Refer to [large monorepos](_index.md#large-monorepos) for more information.
 7. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](_index.md#autoscaling-of-stateful-nodes).
    However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
@@ -1092,8 +1092,8 @@ between Kubernetes and the backend components.
 
 > [!note]
 >
-> - This is an **advanced** setup. Running services in Kubernetes is well known
->   to be complex. **This setup is only recommended** if you have strong working
+> - This is an advanced setup. Running services in Kubernetes is well known
+>   to be complex. This setup is only recommended if you have strong working
 >   knowledge and experience in Kubernetes. The rest of this
 >   section assumes this.
 > - The 2,000 reference architecture is not a highly-available setup. To achieve HA,
@@ -1141,7 +1141,7 @@ services where applicable):
 3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 5. Gitaly specifications are based on the use of normal-sized repositories in good health.
-   However, if you have large monorepos (larger than several gigabytes) this can **significantly** impact Git and Gitaly performance and an increase of specifications will likely be required.
+   However, if you have large monorepos (larger than several gigabytes) this can significantly impact Git and Gitaly performance and an increase of specifications will likely be required.
    Refer to [large monorepos](_index.md#large-monorepos) for more information.
 <!-- markdownlint-enable MD029 -->
 

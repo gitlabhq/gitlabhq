@@ -81,9 +81,9 @@ See the [CI/CD job tokens documentation](../ci/jobs/ci_job_token.md) for complet
 
 **Limitations:**
 
-- **Cannot access most GitLab API endpoints** (issues, merge requests, users, groups, etc.)
-- **Cannot perform administrative actions** like creating tokens or managing users
-- **Cannot access external APIs** or services outside GitLab
+- Cannot access most GitLab API endpoints (issues, merge requests, users, groups, etc.)
+- Cannot perform administrative actions like creating tokens or managing users
+- Cannot access external APIs or services outside GitLab
 
 **Avoid when:**
 
@@ -121,9 +121,9 @@ See the [group access tokens documentation](../user/group/settings/group_access_
 
 **High Risk - Use Sparingly:**
 
-- **Grants access to ALL projects in group** - massive blast radius if leaked
-- **Especially dangerous for large groups** like `gitlab-org` with hundreds of projects
-- **Consider Service Account PAT instead** for better scope control
+- Grants access to ALL projects in group - massive blast radius if leaked
+- Especially dangerous for large groups like `gitlab-org` with hundreds of projects
+- Consider Service Account PAT instead for better scope control
 
 **Avoid when:**
 
@@ -138,15 +138,15 @@ See the [service accounts documentation](../user/profile/service_accounts.md) fo
 **Use when:**
 
 - Need to create/manage other access tokens (Terraform use case)
-- **Multiple specific projects access needed** - add service account to each project individually
+- Multiple specific projects access needed - add service account to each project individually
 - Cross-group or instance-wide access required
 - Want proper user separation for audit trails
-- **Better alternative to Group Access Token** for precise permission control
+- Better alternative to Group Access Token for precise permission control
 
 **Key Advantage:**
 
-- **Granular permissions**: Add service account only to specific projects/groups with minimal required role
-- **Much safer than Group Access Tokens** for large organizations
+- Granular permissions. Add service account only to specific projects/groups with minimal required role
+- Much safer than Group Access Tokens for large organizations
 
 **Avoid when:**
 

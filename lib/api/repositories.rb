@@ -416,11 +416,11 @@ module API
         end
       end
 
-      # Unlike the other repository endpoints, batch blob retrieval, diverging
-      # commit counts and diff stats require an authenticated user: the per-user rate
-      # limiter cannot protect against anonymous abuse on public projects. Authenticate
-      # in a `before` block so unauthenticated requests are rejected before parameter
-      # validation runs.
+      # Unlike the other repository endpoints, batch blob retrieval, changed paths,
+      # diverging commit counts and diff stats require an authenticated user: the
+      # per-user rate limiter cannot protect against anonymous abuse on public
+      # projects. Authenticate in a `before` block so unauthenticated requests are
+      # rejected before parameter validation runs.
       namespace do
         before { authenticate! }
 
@@ -468,6 +468,45 @@ module API
 
           status 200
           present result, with: Entities::BatchBlob
+        end
+
+        desc 'List files changed between two commits' do
+          detail 'Returns the path, change status, and file modes for every path that differs between two refs.'
+          success code: 200, model: Entities::ChangedPath, is_array: true
+          failure [[400, 'Bad Request'], [401, 'Unauthorized'], [403, 'Forbidden'], [404, 'Not Found'],
+            [429, 'Too Many Requests']]
+          tags ['repositories']
+        end
+        params do
+          requires :from, type: String, limit: 255, allow_blank: false,
+            desc: 'The commit SHA or branch/tag to compare from',
+            documentation: { example: 'main' }
+          requires :to, type: String, limit: 255, allow_blank: false,
+            desc: 'The commit SHA or branch/tag to compare to',
+            documentation: { example: 'feature' }
+          optional :find_renames, type: Boolean, default: false,
+            desc: 'If true, detect file renames'
+          use :pagination
+        end
+        route_setting :authorization, permissions: :read_repository_comparison, boundary_type: :project
+        route_setting :lifecycle, :beta
+        get ':id/repository/changed_paths', urgency: :low do
+          not_found! unless Feature.enabled?(:repository_changed_paths_api, user_project)
+
+          check_rate_limit!(:project_repositories_changed_paths, scope: [current_user, user_project])
+
+          diff_tree = Gitlab::Git::DiffTree.new(params[:from], params[:to])
+
+          changed_paths =
+            begin
+              user_project.repository.find_changed_paths!([diff_tree], find_renames: params[:find_renames])
+            rescue ArgumentError, Gitlab::Git::ReferenceNotFoundError
+              not_found!('Ref')
+            rescue Gitlab::Git::Repository::NoRepository
+              not_found!('Repository')
+            end
+
+          present paginate(::Kaminari.paginate_array(changed_paths)), with: Entities::ChangedPath
         end
 
         desc 'Retrieve diverging commit counts between two refs' do

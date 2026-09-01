@@ -12,6 +12,8 @@ class Email < ApplicationRecord
   belongs_to :user, optional: false
   belongs_to :banned_user, class_name: '::Users::BannedUser', foreign_key: 'user_id', inverse_of: 'emails'
 
+  populate_sharding_key :organization_id, source: :user
+
   validates :email, presence: true, uniqueness: true, devise_email: true
 
   validate :unique_email, if: ->(email) { email.email_changed? }

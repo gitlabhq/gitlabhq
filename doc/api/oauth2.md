@@ -56,9 +56,14 @@ Authorization code (with or without PKCE) flow requires `application` to be
 registered first via the `/user_settings/applications` page in your user's account.
 During registration, by enabling proper scopes, you can limit the range of
 resources which the `application` can access. Upon creation, you obtain the
-`application` credentials: _Application ID_ and _Client Secret_. The _Client Secret_
-**must be kept secure**. It is also advantageous to keep the _Application ID_
-secret when your application architecture allows.
+`application` credentials:
+
+- Application ID
+- Client Secret
+
+> [!warning]
+> The Client Secret must be kept secure. You should also keep Application ID
+> secret when your application architecture allows.
 
 For a list of scopes in GitLab, see [the provider documentation](../integration/oauth_provider.md#view-all-authorized-applications).
 

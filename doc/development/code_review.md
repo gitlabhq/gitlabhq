@@ -114,7 +114,7 @@ experience, refactors the existing code). Then:
 - Let the author know if changes are required following your review.
 
 > [!warning]
-> **If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
+> If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).
 
 ### GitLab-specific concerns
 

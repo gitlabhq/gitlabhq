@@ -3,7 +3,7 @@ title: GitLab Credits usage caps are generally available
 tier: [ Premium, Ultimate ]
 offering: [ gitlab_com, self_managed, gitlab_dedicated ]
 stage: fulfillment
-documentation_link: "../../../subscriptions/gitlab_credits/#usage-caps"
+documentation_link: "../../../subscriptions/gitlab_credits_dashboard/#usage-caps"
 work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/607551
 categories: [ Consumables Cost Management ]
 level: secondary

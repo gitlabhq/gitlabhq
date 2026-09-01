@@ -120,6 +120,7 @@ Use the alternative attributes instead.
 - `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
 - `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.2.
 - `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
+- `automatic_rebase_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/623568) in GitLab 19.4.
 - `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
 
 {{< /history >}}
@@ -292,6 +293,7 @@ following response attributes:
 | `merge_request_title_regex` | string | Regex pattern for validating merge request titles. |
 | `merge_request_title_regex_description` | string | Description of the merge request title regex validation. |
 | `squash_option` | string | Squash option for merge requests. |
+| `automatic_rebase_enabled` | boolean | Indicates if the source branch is automatically rebased before merge. |
 | `enforce_auth_checks_on_uploads` | boolean | Whether authentication checks are enforced on uploads. |
 | `suggestion_commit_message` | string | Custom commit message for suggestions. |
 | `merge_commit_template` | string | Template for merge commit messages. |
@@ -570,6 +572,7 @@ List projects and project attributes.
 - `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
 - `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.2.
 - `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
+- `automatic_rebase_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/623568) in GitLab 19.4.
 - `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
 
 {{< /history >}}
@@ -746,6 +749,7 @@ following response attributes:
 | `merge_request_title_regex` | string | Regex pattern for validating merge request titles. |
 | `merge_request_title_regex_description` | string | Description of the merge request title regex validation. |
 | `squash_option` | string | Squash option for merge requests. |
+| `automatic_rebase_enabled` | boolean | Indicates if the source branch is automatically rebased before merge. |
 | `enforce_auth_checks_on_uploads` | boolean | Whether authentication checks are enforced on uploads. |
 | `suggestion_commit_message` | string | Custom commit message for suggestions. |
 | `merge_commit_template` | string | Template for merge commit messages. |
@@ -962,6 +966,7 @@ Example response:
 - `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
 - `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.2.
 - `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
+- `automatic_rebase_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/623568) in GitLab 19.4.
 - `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
 
 {{< /history >}}
@@ -1133,6 +1138,7 @@ following response attributes:
 | `merge_request_title_regex` | string | Regex pattern for validating merge request titles. |
 | `merge_request_title_regex_description` | string | Description of the merge request title regex validation. |
 | `squash_option` | string | Squash option for merge requests. |
+| `automatic_rebase_enabled` | boolean | Indicates if the source branch is automatically rebased before merge. |
 | `enforce_auth_checks_on_uploads` | boolean | Whether authentication checks are enforced on uploads. |
 | `suggestion_commit_message` | string | Custom commit message for suggestions. |
 | `merge_commit_template` | string | Template for merge commit messages. |
@@ -1456,6 +1462,7 @@ Example response:
 - `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
 - `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.2.
 - `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
+- `automatic_rebase_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/623568) in GitLab 19.4.
 - `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
 
 {{< /history >}}
@@ -1602,6 +1609,7 @@ following response attributes:
 | `merge_request_title_regex` | string | Regex pattern for validating merge request titles. |
 | `merge_request_title_regex_description` | string | Description of the merge request title regex validation. |
 | `squash_option` | string | Squash option for merge requests. |
+| `automatic_rebase_enabled` | boolean | Indicates if the source branch is automatically rebased before merge. |
 | `enforce_auth_checks_on_uploads` | boolean | Whether authentication checks are enforced on uploads. |
 | `suggestion_commit_message` | string | Custom commit message for suggestions. |
 | `merge_commit_template` | string | Template for merge commit messages. |

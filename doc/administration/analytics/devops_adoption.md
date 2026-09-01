@@ -36,7 +36,7 @@ the last 30 days, averaged over the number of billable users in that time period
   [Service Ping data](../settings/usage_statistics.md#service-ping) collected by GitLab.
 
 Service Ping data is aggregated on GitLab servers for analysis.
-Your usage information is **not sent** to any other GitLab instances.
+Your usage information is not sent to any other GitLab instances.
 If you have just started using GitLab, it might take a few weeks for data to be collected
 before this feature becomes available.
 

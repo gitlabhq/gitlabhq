@@ -21,6 +21,7 @@ require_relative 'sync/workflow'
 require_relative 'sync/reviewer_resolver'
 require_relative 'sync/auto_mr'
 require_relative 'sync/manifest'
+require_relative 'sync/baseline_rules'
 require_relative 'sync/validator'
 require_relative 'sync/artifacts'
 require_relative 'sync/child_pipeline'
@@ -65,11 +66,6 @@ module Gitlab
       CHILD_PIPELINE_PATH = 'tmp/ai-principles-child-pipeline.yml'
       ARTIFACTS_DIR = 'tmp/ai-principles-distilled'
       DistillationRun = Data.define(:affected, :target_sha)
-
-      # A thematic break (`---`, `***`, or `___` alone on a line) is Markdown document scaffolding, not a rule, so
-      # `logical_units` treats it as a unit boundary rather than comparable baseline content (observed with
-      # testing-frontend-testing-hierarchy's `---` divider, job 15601793108).
-      THEMATIC_BREAK = /\A(?:-{3,}|\*{3,}|_{3,})\z/
 
       def manifest
         @manifest ||= Manifest.new
@@ -741,57 +737,16 @@ module Gitlab
         logical_units(baseline_rules(baseline)).reject { |unit| occurrences[unit] == 1 }
       end
 
-      # Returns the rule-bearing portion of a baseline file: everything from its own `## Checklist` heading onward, or
-      # the whole file when no such heading exists (most baselines have none - they are already pure rule content with
-      # no title/prerequisite preamble).
       def baseline_rules(baseline)
-        heading = baseline.index(/^##\s+Checklist\s*$/)
-        heading ? baseline[heading..] : baseline
+        BaselineRules.baseline_rules(baseline)
       end
 
-      # Returns `content` truncated before the `## Authoritative sources` footer, so a footer-listed path cannot be
-      # counted as a duplicate of the same path appearing in the checklist body.
       def checklist_body(content)
-        content.split(/^##\s+Authoritative sources\s*$/, 2).first
+        BaselineRules.checklist_body(content)
       end
 
-      # Splits markdown into logical units: each list item or paragraph is one unit, with hard-wrapped continuation
-      # lines joined and inner whitespace collapsed.
-      # Heading lines and blank lines terminate the current unit and are excluded from the result.
-      #
-      # The leading list marker (-, *, +, or an ordered "1." / "1)") is stripped during normalization so a rule's
-      # identity is its TEXT, not its bullet-vs-paragraph presentation.
-      # A baseline may store a rule as a bare paragraph (e.g. an intro sentence ending in "For example:" that precedes
-      # nested sub-bullets), while every reasonable distillation renders that same rule as a bullet so the sub-bullets
-      # attach - a legitimate reformat, not corruption. Keeping the marker in the unit made those two forms compare
-      # unequal, so the guard flagged drift on byte-identical rule text and burned every retry (observed with the
-      # database-fundamentals baseline).
-      # Rewording, omission, and duplication still change the text itself and remain detected.
-      #
-      # A single trailing period is likewise stripped: the agent routinely appends one while rephrasing a baseline rule
-      # into a sentence, and that punctuation is presentation, not the rule's identity (observed across several
-      # baselines whose committed distilled form differs from the baseline only by a trailing ".").
-      # A reworded or truncated rule still differs by more than punctuation and remains detected.
       def logical_units(text)
-        units = []
-        current = nil
-
-        text.each_line do |raw|
-          line = raw.strip
-
-          if line.empty? || line.start_with?('#') || line.match?(THEMATIC_BREAK)
-            units << current if current
-            current = nil
-          elsif current.nil? || line.match?(/\A(?:[-*+]|\d+[.)])\s/)
-            units << current if current
-            current = line
-          else
-            current = "#{current} #{line}"
-          end
-        end
-
-        units << current if current
-        units.map { |unit| unit.sub(/\A(?:[-*+]|\d+[.)])\s+/, '').gsub(/\s+/, ' ').delete_suffix('.') }
+        BaselineRules.logical_units(text)
       end
 
       def warn_baseline_drift(name, drifted, attempt, log_warn)

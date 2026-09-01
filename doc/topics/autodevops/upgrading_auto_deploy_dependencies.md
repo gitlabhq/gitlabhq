@@ -34,7 +34,7 @@ are using. First verify which template is in use:
 - For GitLab Self-Managed instances, the [stable Auto Deploy template bundled with the GitLab package](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
   is being used.
 - [The GitLab.com stable Auto Deploy template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
-  is being used if **one** of the following is true:
+  is being used if one of the following is true:
   - Your Auto DevOps project doesn't have a `.gitlab-ci.yml` file.
   - Your Auto DevOps project has a `.gitlab-ci.yml` and [includes](../../ci/yaml/_index.md#includetemplate)
     the `Auto-DevOps.gitlab-ci.yml` template.

@@ -112,14 +112,14 @@ The partial failover to a secondary Geo site may be the result of a temporary/tr
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the secondary site to primary **without any further confirmation**:
+   - To promote the secondary site to primary without any further confirmation:
 
      ```shell
      sudo gitlab-ctl geo promote --force
      ```
 
 1. Verify you can connect to the newly-promoted primary site using the URL used previously for the secondary site.
-1. If **successful**, the secondary site is now promoted to the primary site.
+1. If successful, the secondary site is now promoted to the primary site.
 
 If the previous steps are **not successful**, proceed through the next steps:
 

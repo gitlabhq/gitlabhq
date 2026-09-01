@@ -783,6 +783,7 @@ lib/api/entities/project.rb:
   - auto_devops_deploy_strategy
   - auto_devops_enabled?
   - autoclose_referenced_issues
+  - automatic_rebase_enabled
   - build_git_strategy
   - build_timeout
   - builds_access_level

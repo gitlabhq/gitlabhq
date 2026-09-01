@@ -145,7 +145,7 @@ Prerequisites:
   in your AWS account named `AWSServiceRoleForAmazonOpenSearchService` when you create OpenSearch domains.
 - The domain access policy for AWS OpenSearch must allow `es:ESHttp*` actions.
 
-`AWSServiceRoleForAmazonOpenSearchService` is used by **all** OpenSearch domains.
+`AWSServiceRoleForAmazonOpenSearchService` is used by all OpenSearch domains.
 In most cases, this role is created automatically when you use the AWS Management Console to create the first OpenSearch domain.
 To create a service-linked role manually, see the
 [AWS documentation](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/slr-aos.html#create-slr).

@@ -8064,6 +8064,10 @@
     "example": "/api/v4/projects/foo/repository/branches/foo/unprotect"
   },
   {
+    "template": "/api/:version/projects/:id/repository/changed_paths",
+    "example": "/api/v4/projects/foo/repository/changed_paths"
+  },
+  {
     "template": "/api/:version/projects/:id/repository/changelog",
     "example": "/api/v4/projects/foo/repository/changelog"
   },

@@ -120,6 +120,14 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'p_knowledge_graph_code_indexing_tasks.project_id',
       # No need for FK, rows will be deleted by the LFK to merge_request_diffs
       'merge_request_diff_commits_b5377a7a34.project_id',
+      # snippet_organization_id is copied from snippets.organization_id, which has no hard FK to organizations.
+      # A hard FK here causes PG::ForeignKeyViolation when a child row is written after the organization is
+      # deleted but before the snippet LFK cleanup runs. Cleanup happens via snippet_id -> snippets CASCADE.
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/613747
+      'snippet_repositories.snippet_organization_id',
+      'snippet_statistics.snippet_organization_id',
+      'snippet_user_mentions.snippet_organization_id',
+      'snippet_repository_storage_moves.snippet_organization_id',
       # Sharding key columns (organization_id, namespace_id, project_id, user_id) for LFK deleted records intentionally
       # have no foreign key constraints. These tables track record deletions for async LFK cleanup.
       # The referenced parent record may already be deleted by the time the LFK record is inserted or processed.
@@ -150,6 +158,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "customer_relations_contacts" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549029",
       "design_management_action_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      # organization_id backfill in progress; NOT NULL + validated FK land after the BBM completes on prod.
+      "emails" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/585903",
       # Cell-local table; organization_id is a plain ID column for namespace path resolution, not a sharding key.
       # No FK or LFK is intended - orphaned tasks are handled by the task service.
       "group_secrets_manager_maintenance_tasks" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/597219",

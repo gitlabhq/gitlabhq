@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: AI Clients
+group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Refactor legacy code in your repository.
 title: Refactor legacy code

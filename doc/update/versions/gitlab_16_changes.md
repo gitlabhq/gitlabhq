@@ -75,7 +75,7 @@ For additional information for Helm chart installations, see
 ### Linux package installations
 
 - Gitaly and Praefect configuration structure must be changed before upgrading to GitLab 16.
-  **To avoid data loss** reconfigure Praefect first, and as part of the new configuration, disable metadata verification.
+  To avoid data loss, reconfigure Praefect first, and as part of the new configuration, disable metadata verification.
   Read more:
 
   - [Praefect configuration structure change](#praefect-configuration-structure-change).
@@ -855,7 +855,7 @@ Specific information applies to installations using Geo:
 
 ## 16.3.0
 
-- **Update to GitLab 16.3.5 or later**. This avoids [issue 425971](https://gitlab.com/gitlab-org/gitlab/-/issues/425971) that causes an excessive use of database disk space for GitLab 16.3.3 and 16.3.4.
+- Update to GitLab 16.3.5 or later. This avoids [issue 425971](https://gitlab.com/gitlab-org/gitlab/-/issues/425971) that causes an excessive use of database disk space for GitLab 16.3.3 and 16.3.4.
 - A unique index was added to ensure that there's no duplicate NPM packages in the database. If you have duplicate NPM packages, you need to upgrade to 16.1 first, or you are likely to run into the following error: `PG::UniqueViolation: ERROR:  could not create unique index "idx_packages_on_project_id_name_version_unique_when_npm"`.
 - For Go applications, [`crypto/tls`: verifying certificate chains containing large RSA keys is slow (CVE-2023-29409)](https://github.com/golang/go/issues/61460)
   introduced a hard limit of 8192 bits for RSA keys. In the context of Go applications at GitLab, RSA keys can be configured for:
@@ -1291,7 +1291,7 @@ Migrate by moving your existing configuration under the new structure. `git_data
 **Migrate to the new structure**
 
 > [!warning]
-> If you are running Gitaly Cluster (Praefect), [migrate Praefect to the new configuration structure **first**](#praefect-configuration-structure-change).
+> If you are running Gitaly Cluster (Praefect), [migrate Praefect to the new configuration structure first](#praefect-configuration-structure-change).
 > Once this change is tested, proceed with your Gitaly nodes.
 > If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect/configure.md#repository-verification)
 > will [delete metadata required for Gitaly Cluster (Praefect) to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
@@ -1477,7 +1477,7 @@ Migrate by moving your existing configuration under the new structure. The new s
 **Migrate to the new structure**
 
 > [!warning]
-> Migrate Praefect to the new configuration structure **first**.
+> Migrate Praefect to the new configuration structure first.
 > Once this change is tested, [proceed with your Gitaly nodes](#gitaly-configuration-structure-change).
 > If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect/configure.md#repository-verification)
 > will [delete metadata required for Gitaly Cluster (Praefect) to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).

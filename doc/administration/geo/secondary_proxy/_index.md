@@ -136,7 +136,7 @@ distributes traffic to your Geo sites using a location-aware URL.
 After you have set up routing from a single URL to all of your Geo sites, follow
 the following steps if your sites use different URLs:
 
-1. On each GitLab site, SSH into **each** node running Rails (Puma, Sidekiq, Log-Cursor)
+1. On each GitLab site, SSH into each node running Rails (Puma, Sidekiq, Log-Cursor)
    and set the `external_url` to that of the single URL:
 
    ```shell
@@ -172,7 +172,7 @@ You can use different external URLs per site. You can use this to offer a specif
 If your secondary site uses the same external URL as the primary site,
 but you want to change it to use a different URL:
 
-1. On the secondary site, SSH into **each** node running Rails (Puma, Sidekiq, Log-Cursor)
+1. On the secondary site, SSH into each node running Rails (Puma, Sidekiq, Log-Cursor)
    and set the `external_url` to the desired URL for the secondary site:
 
    ```shell
@@ -208,7 +208,7 @@ site is inaccessible:
 
 Most HTTP traffic sent to a secondary Geo site is proxied to the primary Geo site. With this architecture,
 secondary Geo sites are able to support write requests, and avoid read-after-write problems. Certain
-**read** requests are handled locally by secondary sites for improved latency and bandwidth nearby.
+read requests are handled locally by secondary sites for improved latency and bandwidth nearby.
 
 The following table details the components tested through the Geo secondary site Workhorse proxy.
 It does not cover all data types.

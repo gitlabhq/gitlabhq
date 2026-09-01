@@ -640,7 +640,7 @@ stop_review_app:
 
 ### Multiple stop actions for an environment
 
-To configure multiple **parallel** stop actions on an environment, specify the
+To configure multiple parallel stop actions on an environment, specify the
 [`on_stop`](../yaml/_index.md#environmenton_stop) keyword across multiple
 [deployment jobs](../jobs/_index.md#deployment-jobs) for the same `environment`, as defined in the
 `.gitlab-ci.yml` file.

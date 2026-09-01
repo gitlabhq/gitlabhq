@@ -47,12 +47,16 @@ The supported ClickHouse version differs depending on your GitLab version:
 - GitLab 18.1 and later supports ClickHouse 23.x, 24.x, and 25.x.
 - GitLab 18.8 and later supports ClickHouse 23.x, 24.x, 25.x, and the Replicated database engine.
   - Older clusters will require an additional permission (`dictGet`), see the [snippet](#database-dictionary-read-support).
-- GitLab 19.0 and later supports ClickHouse 25.x and 26.x. Support for ClickHouse 23.x and 24.x has been removed.
+- GitLab 19.0 and later supports ClickHouse 25.x and 26.x up to and including 26.6. Support for ClickHouse 23.x and 24.x has been removed.
+- ClickHouse 26.7 and later is not supported. For a temporary workaround, see [ClickHouse 26.7 and later](#clickhouse-267-and-later).
 
 ClickHouse Cloud is always compatible with the latest stable GitLab release.
 
 > [!warning]
-> If you're using ClickHouse 25.12, note that it introduced a [backward-incompatible change](https://clickhouse.com/docs/whats-new/changelog#backward-incompatible-change) to `ALTER MODIFY COLUMN`. This breaks the migration process for the GitLab ClickHouse integration in versions prior to 18.8. It requires upgrading GitLab to version 18.8+.
+> Some ClickHouse versions introduce backward-incompatible changes that affect the GitLab integration:
+>
+> - ClickHouse 25.12 introduced a [backward-incompatible change](https://clickhouse.com/docs/whats-new/changelog#backward-incompatible-change) to `ALTER MODIFY COLUMN`. This breaks the migration process for the GitLab ClickHouse integration in versions prior to 18.8. It requires upgrading GitLab to version 18.8+.
+> - ClickHouse 26.7 added a validation for `AggregatingMergeTree` tables that GitLab does not yet satisfy, so migrations fail with a `Code: 36` (`BAD_ARGUMENTS`) error. For a temporary workaround, see [ClickHouse 26.7 and later](#clickhouse-267-and-later).
 
 ## Set up ClickHouse
 
@@ -885,3 +889,38 @@ To resolve this issue, upgrade to GitLab 18.6 or later.
 If you have existing duplicate data, a fix to rebuild the affected materialized views is planned
 for GitLab 18.10 in [issue 586319](https://gitlab.com/gitlab-org/gitlab/-/issues/586319).
 For assistance, contact GitLab Support.
+
+### ClickHouse 26.7 and later
+
+ClickHouse 26.7 rejects `AggregatingMergeTree` tables whose columns are neither part of the sorting
+key nor aggregate-state columns (`AggregateFunction` or `SimpleAggregateFunction`).
+Some GitLab tables have this shape, so migrations fail:
+
+```plaintext
+Code: 36. DB::Exception: Column(s) purchase_id, add_on_name of the AggregatingMergeTree table are neither part of the sorting key nor aggregate measures (AggregateFunction or SimpleAggregateFunction). ... (BAD_ARGUMENTS)
+```
+
+Existing installations are unaffected. New installations, new replicas, and environments built from
+scratch fail.
+
+Use ClickHouse 26.6 or earlier. If you must run 26.7 or later, set `compatibility` to `26.6` in
+`/etc/clickhouse-server/users.d/compatibility.xml`:
+
+```xml
+<clickhouse>
+    <profiles>
+        <default>
+            <compatibility>26.6</compatibility>
+        </default>
+    </profiles>
+</clickhouse>
+```
+
+ClickHouse reloads `users.d` automatically, so a restart is not required. The setting works only in
+a profile, so `ALTER USER ... SETTINGS compatibility` has no effect. `users.d` reverts the defaults
+of every setting added in 26.7, so remove this file when GitLab starts supporting 26.7.
+
+> [!warning]
+> Do not use the `allow_dimensions_outside_sorting_key` server `merge_tree` setting as an
+> alternative to the `compatibility` setting. Servers earlier than 26.7 fail to start with
+> `Code: 115` (`UNKNOWN_SETTING`).

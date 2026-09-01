@@ -92,9 +92,9 @@ Files: `users.xml` and `config.xml`.
 
 | Topic | Security Requirement | Reason |
 | ----- | -------------------- | ------ |
-| [`user_name/password`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-namepassword) | Usernames **must not** be blank. Passwords **must** use `password_sha256_hex` and **must not** be blank. | `plaintext` and `password_double_sha1_hex` are insecure. If username isn't specified, [`default` is used with no password](https://clickhouse.com/docs/en/operations/settings/settings-users). |
+| [`user_name/password`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-namepassword) | Usernames must not be blank. Passwords must use `password_sha256_hex` and must not be blank. | `plaintext` and `password_double_sha1_hex` are insecure. If username isn't specified, [`default` is used with no password](https://clickhouse.com/docs/en/operations/settings/settings-users). |
 | [`access_management`](https://clickhouse.com/docs/en/operations/settings/settings-users#access_management-user-setting) | Use Server [configuration files](https://clickhouse.com/docs/en/operations/configuration-files) `users.xml` and `config.xml`. Avoid SQL-driven workflow. | SQL-driven workflow implies that at least one user has `access_management` which can be avoided via configuration files. These files are easier to audit and monitor too, considering that ["You can't manage the same access entity by both configuration methods simultaneously."](https://clickhouse.com/docs/en/operations/access-rights#access-control). |
-| [`user_name/networks`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-namenetworks) | At least one of `<ip>`, `<host>`, `<host_regexp>` **must** be set. Do not use `<ip>::/0</ip>` to open access for any network. | Network controls. ([Trust cautiously](https://handbook.gitlab.com/handbook/security/architecture/#trust-cautiously) principle) |
+| [`user_name/networks`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-namenetworks) | At least one of `<ip>`, `<host>`, `<host_regexp>` must be set. Do not use `<ip>::/0</ip>` to open access for any network. | Network controls. ([Trust cautiously](https://handbook.gitlab.com/handbook/security/architecture/#trust-cautiously) principle) |
 | [`user_name/profile`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-nameprofile) | Use profiles to set similar properties across multiple users and set limits (from the user interface). | [Least privilege](https://handbook.gitlab.com/handbook/security/architecture/#assign-the-least-privilege-possible) principle and limits. |
 | [`user_name/quota`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-namequota) | Set quotas for users whenever possible. | Limit resource usage over a period of time or track the use of resources. |
 | [`user_name/databases`](https://clickhouse.com/docs/en/operations/settings/settings-users#user-namedatabases) | Restrict access to data, and avoid users with full access. | [Least privilege](https://handbook.gitlab.com/handbook/security/architecture/#assign-the-least-privilege-possible) principle. |
@@ -121,9 +121,9 @@ Files: `config.xml`
 
 | Topic | Security Requirement | Reason |
 | ----- | -------------------- | ------ |
-| `logger` | `Log` and `errorlog` **must** be defined and writable by `clickhouse`. | Make sure logs are stored. |
-| SIEM  | If hosted on GitLab.com, the ClickHouse instance or cluster **must** report [logs to our SIEM](https://internal.gitlab.com/handbook/security/security_operations/security_logging/tooling/devo/) (internal link). | [GitLab logs critical information system activity](https://handbook.gitlab.com/handbook/security/audit-logging-policy/). |
-| Log sensitive data | Query masking rules **must** be used if sensitive data can be logged. See [example masking rules](#example-masking-rules). | [Column level encryption](https://clickhouse.com/docs/en/sql-reference/functions/encryption-functions) can be used and leak sensitive data (keys) in logs. |
+| `logger` | `Log` and `errorlog` must be defined and writable by `clickhouse`. | Make sure logs are stored. |
+| SIEM  | If hosted on GitLab.com, the ClickHouse instance or cluster must report [logs to our SIEM](https://internal.gitlab.com/handbook/security/security_operations/security_logging/tooling/devo/) (internal link). | [GitLab logs critical information system activity](https://handbook.gitlab.com/handbook/security/audit-logging-policy/). |
+| Log sensitive data | Query masking rules must be used if sensitive data can be logged. See [example masking rules](#example-masking-rules). | [Column level encryption](https://clickhouse.com/docs/en/sql-reference/functions/encryption-functions) can be used and leak sensitive data (keys) in logs. |
 
 #### Example masking rules
 

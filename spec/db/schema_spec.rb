@@ -209,6 +209,13 @@ RSpec.describe 'Database schema',
       p_sent_notifications: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id],
       slack_integrations: %w[team_id user_id bot_user_id], # these are external Slack IDs
       snippets: %w[author_id],
+      # snippet_organization_id is copied from snippets.organization_id, which has no hard FK to organizations.
+      # Cleanup happens via the hard snippet_id -> snippets ON DELETE CASCADE FK.
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/613747
+      snippet_repositories: %w[snippet_organization_id],
+      snippet_repository_storage_moves: %w[snippet_organization_id],
+      snippet_statistics: %w[snippet_organization_id],
+      snippet_user_mentions: %w[snippet_organization_id],
       spam_logs: %w[target_id],
       status_check_responses: %w[external_approval_rule_id],
       # FK removed while the table is converted to a FixedItemsModel
@@ -311,6 +318,7 @@ RSpec.describe 'Database schema',
       # system_defined_status_id reference to fixed items model which is stored in code
       work_item_current_statuses: %w[system_defined_status_id],
       work_item_positions: %w[relative_positioning_namespace_id], # denormalized positioning root; row lifecycle is tied to work_item_id (cascade), so no FK needed
+      work_item_decisions: %w[discussion_id], # discussion_id is a SHA (as on notes)
       # we can't use a foreign key reference because we want to preserve namespace_id  for asynchronous deletion
       p_knowledge_graph_replicas: %w[namespace_id],
       # temp entry, removing FK on source_type_id and target_type_id until table is dropped in follow up MR

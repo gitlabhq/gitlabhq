@@ -147,7 +147,7 @@ many problems with a module that exports utility functions.
 Singletons solve the problem of enforcing there to be only 1 instance of a thing. It's possible
 that a Singleton could be appropriate in the following rare cases:
 
-- We need to manage some resource that **MUST** have just 1 instance (that is, some hardware restriction).
+- We need to manage some resource that must have just 1 instance (that is, some hardware restriction).
 - There is a real [cross-cutting concern](https://en.wikipedia.org/wiki/Cross-cutting_concern) (for example, logging) and a Singleton provides the simplest API.
 
 Even in these scenarios, consider avoiding the Singleton pattern.

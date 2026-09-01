@@ -124,31 +124,31 @@ MR: https://gitlab.com/foo/bar/-/merge_requests/123
 EE: true
 ```
 
-**Do not** add this trailer for changes that apply to both EE and CE.
+Do not add this trailer for changes that apply to both EE and CE.
 
 ## What warrants a changelog entry?
 
 - Any change that introduces a database migration, whether it's regular, post,
-  or data migration, **must** have a changelog entry, even if it is behind a
+  or data migration, must have a changelog entry, even if it is behind a
   disabled feature flag.
 - [Security fixes](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md)
-  **must** have a changelog entry, with `Changelog` trailer set to `security`.
-- Any user-facing change **must** have a changelog entry. Example: "GitLab now
+  must have a changelog entry, with `Changelog` trailer set to `security`.
+- Any user-facing change must have a changelog entry. Example: "GitLab now
   uses system fonts for all text."
-- Any client-facing change to our REST and GraphQL APIs **must** have a changelog entry.
+- Any client-facing change to our REST and GraphQL APIs must have a changelog entry.
   See the [complete list what comprises a GraphQL breaking change](api_graphql_styleguide.md#breaking-changes).
 - Any change that introduces an [advanced search migration](search/advanced_search_migration_styleguide.md#create-a-new-advanced-search-migration)
-  **must** have a changelog entry.
+  must have a changelog entry.
 - A fix for a regression introduced and then fixed in the same release (such as
-  fixing a bug introduced during a monthly release candidate) **should not**
+  fixing a bug introduced during a monthly release candidate) should not
   have a changelog entry.
 - Any developer-facing change (such as refactoring, technical debt remediation,
-  or test suite changes) **should not** have a changelog entry. Example: "Reduce
+  or test suite changes) should not have a changelog entry. Example: "Reduce
   database records created during Cycle Analytics model spec."
-- _Any_ contribution from a community member, no matter how small, **may** have
+- _Any_ contribution from a community member, no matter how small, may have
   a changelog entry regardless of these guidelines if the contributor wants one.
-- Any [experiment](experiment_guide/_index.md) changes **should not** have a changelog entry.
-- An MR that includes only documentation changes **should not** have a changelog entry.
+- Any [experiment](experiment_guide/_index.md) changes should not have a changelog entry.
+- An MR that includes only documentation changes should not have a changelog entry.
 
 For more information, see
 [how to handle changelog entries with feature flags](feature_flags/_index.md#changelog).
