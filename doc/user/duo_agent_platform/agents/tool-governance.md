@@ -65,6 +65,49 @@ enforcement depends on where the flow runs:
 | Write | Always Ask |
 | Delete | Always Ask |
 
+### GitLab MCP server tools
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606073) in GitLab 19.4 with a [feature flag](../../../administration/feature_flags/_index.md) named `duo_mcp_tool_governance`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Tools exposed by the GitLab MCP server appear on the **Tool management** tab
+with a source of `mcp`, alongside the GitLab Duo Agent Platform tools. You set
+a mode for them the same way, as described in
+[Configure tool governance for a group](#configure-tool-governance-for-a-group).
+
+Each tool is sorted into an action category based on the annotations it
+declares. There's no maintained list to update, so a newly added MCP tool is
+governed automatically:
+
+| Tool declares | Category |
+|---|---|
+| `destructiveHint: true` | Delete |
+| `readOnlyHint: true` | Read |
+| `readOnlyHint: false` | Write |
+| Neither annotation | Delete |
+
+A tool that declares both `destructiveHint: true` and `readOnlyHint: true` is
+sorted as Delete. The categories are resolved in the order shown, so the most
+restrictive declaration wins. The tools on the tab also vary by GitLab edition,
+license, and enabled features, because those determine which tools the MCP
+server exposes.
+
+Many capabilities exist as a GitLab Duo Agent Platform tool and an MCP server
+tool. One mode governs both, even when the two tools have different names. For
+example, setting a mode for `get_work_item_notes` also applies to the MCP
+server tool `get_workitem_notes`. Set the mode on the GitLab Duo Agent Platform
+tool. You don't need to find and set the MCP server tool separately.
+
+If you don't set a mode, behavior is unchanged. Read-only MCP tools remain
+pre-approved. Write and delete MCP tools still prompt for approval.
+
 ### Approval prompt (Always Ask)
 
 When an agent calls a tool configured as **Always Ask**, execution pauses
@@ -223,6 +266,10 @@ in the project.
   Runner access supports only Always Allow and Always Deny. Always Ask does not apply,
   because no user is present to respond to an approval prompt in a background flow.
   A tool with no configured runner rule defaults to Always Allow.
+- The `search` tool served by the GitLab MCP server aggregates what the
+  GitLab Duo Agent Platform exposes as separate, narrower search tools.
+  Rules configured on those narrower tools do not extend to `search`. To
+  restrict MCP search, configure a rule on `search` directly.
 
 ## Related topics
 

@@ -15,7 +15,7 @@ module API
           detail 'Lists recently created pipelines across all projects that were triggered by the authenticated ' \
             'user. By default, child pipelines are not included in the results. To return child pipelines, set ' \
             '`source` to `parent_pipeline`. This endpoint only supports keyset pagination.'
-          success status: 200, model: Entities::Ci::PipelineBasicWithMetadata
+          success status: 200, model: Entities::Ci::PipelineBasicWithProject
           failure [
             { code: 401, message: 'Unauthorized' }
           ]
@@ -63,7 +63,7 @@ module API
             resource_type: 'api/pipelines'
           )
 
-          present pipelines, with: Entities::Ci::PipelineBasicWithMetadata
+          present pipelines, with: Entities::Ci::PipelineBasicWithProject
         end
       end
     end

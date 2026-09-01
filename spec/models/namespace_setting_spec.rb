@@ -177,6 +177,11 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
   end
 
   describe "validations" do
+    it 'validates the length of ai_custom_instructions' do
+      is_expected.to validate_length_of(:ai_custom_instructions)
+        .is_at_most(NamespaceSetting::MAX_AI_CUSTOM_INSTRUCTIONS_LENGTH)
+    end
+
     describe "#default_branch_name_content" do
       shared_examples "doesn't return an error" do
         it "doesn't return an error" do

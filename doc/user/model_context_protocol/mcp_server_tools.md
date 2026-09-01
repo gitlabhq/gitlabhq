@@ -610,6 +610,49 @@ Example:
 Show me commit abc123 in gitlab-org/gitlab with its diff stats
 ```
 
+## `list_releases`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/618494) in GitLab 19.4.
+
+{{< /history >}}
+
+Lists releases in a GitLab project, most recently released first.
+
+| Parameter    | Type    | Required | Description |
+|--------------|---------|----------|-------------|
+| `url`        | string  | No       | GitLab URL of the project. Required if `project_id` is not provided. |
+| `project_id` | string  | No       | ID or full path of the project. Required if `url` is not provided. |
+| `page`       | integer | No       | Page number to retrieve. Default is `1`. |
+| `per_page`   | integer | No       | Releases to return per page. Default is `20`, maximum is `100`. |
+| `state`      | string  | No       | Filter by release state: `released`, `upcoming`, or `all`. Default is `released`. |
+
+Provide exactly one of `url` or `project_id`.
+
+Each entry returns release metadata only: `tag_name`, `name`, `released_at`, `upcoming`, and
+`assets`. `assets` holds a `count` of the release's asset links and up to five of those `links`.
+When a release has more than five, `count` reports the real total. Source archives are excluded,
+because they are derivable from the tag.
+
+The response also carries a `metadata` object with `page`, `per_page`, and `has_more`. Use
+`has_more` to decide whether to request the next page.
+
+Release notes are intentionally not returned in this response.
+
+A release with a future `released_at` is scheduled rather than published, and sorts ahead of
+published releases. Use `state` to control which you get. Scheduled releases carry `upcoming` set
+to `true`.
+
+To read the commit a release is built on, pass its `tag_name` to the `get_commit` tool. To
+download an asset, use the `url` from `assets.links`.
+
+Example:
+
+```plaintext
+List the most recent releases for project gitlab-org/gitlab
+```
+
 ## `get_pipeline`
 
 {{< history >}}

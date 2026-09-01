@@ -4,6 +4,11 @@ module Mcp
   module Tools
     module MergeRequests
       class GetMergeRequestNotesService < Base::GraphqlService
+        override :tool_aliases
+        def self.tool_aliases
+          ['list_all_merge_request_notes']
+        end
+
         register_version '0.1.0', {
           description: 'Get the notes (comments and system notes) for a specific merge request.',
           input_schema: {

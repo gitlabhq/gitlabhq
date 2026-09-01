@@ -3,10 +3,14 @@ module Gitlab
   module Database
     module Partitioning
       class DetachedPartitionDropper
+        include ::Gitlab::Loggable
+
         PROCESSING_DELAY = 1.minute
 
         def perform
-          Gitlab::AppLogger.info(message: "Checking for previously detached partitions to drop")
+          Gitlab::AppLogger.info(
+            build_structured_payload_labkit(message: 'Checking for previously detached partitions to drop')
+          )
 
           Postgresql::DetachedPartition.ready_to_drop.find_each do |detached_partition|
             if partition_attached?(detached_partition.fully_qualified_table_name)
@@ -17,10 +21,14 @@ module Gitlab
 
             sleep(PROCESSING_DELAY)
           rescue StandardError => e
-            Gitlab::AppLogger.error(message: "Failed to drop previously detached partition",
-              partition_name: detached_partition.table_name,
-              exception_class: e.class,
-              exception_message: e.message)
+            Gitlab::AppLogger.error(
+              build_structured_payload_labkit(
+                message: 'Failed to drop previously detached partition',
+                partition_name: detached_partition.table_name,
+                exception_class: e.class,
+                exception_message: e.message
+              )
+            )
           end
         end
 
@@ -41,7 +49,12 @@ module Gitlab
 
             # The current partition was scheduled for deletion incorrectly
             # Dropping it now could delete in-use data and take locks that interrupt other database activity
-            Gitlab::AppLogger.error(message: "Prevented an attempt to drop an attached database partition", partition_name: detached_partition.table_name)
+            Gitlab::AppLogger.error(
+              build_structured_payload_labkit(
+                message: 'Prevented an attempt to drop an attached database partition',
+                partition_name: detached_partition.table_name
+              )
+            )
             detached_partition.destroy!
           end
         end
@@ -87,10 +100,14 @@ module Gitlab
 
               connection.execute("ALTER TABLE #{connection.quote_table_name(partition_identifier)} DROP CONSTRAINT #{connection.quote_table_name(foreign_key.name)}")
 
-              Gitlab::AppLogger.info(message: "Dropped foreign key for previously detached partition",
-                partition_name: detached_partition.table_name,
-                referenced_table_name: foreign_key.referenced_table_identifier,
-                foreign_key_name: foreign_key.name)
+              Gitlab::AppLogger.info(
+                build_structured_payload_labkit(
+                  message: 'Dropped foreign key for previously detached partition',
+                  partition_name: detached_partition.table_name,
+                  referenced_table_name: foreign_key.referenced_table_identifier,
+                  foreign_key_name: foreign_key.name
+                )
+              )
             end
           end
         end
@@ -98,7 +115,12 @@ module Gitlab
         def drop_detached_partition(detached_partition)
           connection.drop_table(detached_partition.fully_qualified_table_name, if_exists: true)
 
-          Gitlab::AppLogger.info(message: "Dropped previously detached partition", partition_name: detached_partition.table_name)
+          Gitlab::AppLogger.info(
+            build_structured_payload_labkit(
+              message: 'Dropped previously detached partition',
+              partition_name: detached_partition.table_name
+            )
+          )
         end
 
         def partition_attached?(partition_identifier)

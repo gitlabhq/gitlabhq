@@ -389859,6 +389859,35 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
+              "name": "cdVersionSetUpdated",
+              "description": "Triggered when the derived status of a release (version set) in an application changes. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [
+                {
+                  "name": "applicationId",
+                  "description": "Global ID of the application whose releases to watch.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "CdApplicationID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CdVersionSet",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "ciJobProcessed",
               "description": "Triggered when a job changes state.",
               "args": [

@@ -40203,6 +40203,9 @@ msgstr ""
 msgid "GroupSettings|%{restricted_access_start}Restricted access%{restricted_access_end} is turned on for your subscription by default. This setting prevents overages when no seats are available. %{purchase_seats_start}Purchase more seats%{purchase_seats_end} to add users."
 msgstr ""
 
+msgid "GroupSettings|AI context"
+msgstr ""
+
 msgid "GroupSettings|Add additional webhook triggers for group access token expiration"
 msgstr ""
 
@@ -40294,6 +40297,9 @@ msgid "GroupSettings|Create an organization to manage your top-level group and i
 msgstr ""
 
 msgid "GroupSettings|Create organization…"
+msgstr ""
+
+msgid "GroupSettings|Custom instructions"
 msgstr ""
 
 msgid "GroupSettings|Custom project templates"
@@ -40437,7 +40443,13 @@ msgstr ""
 msgid "GroupSettings|Include diff previews"
 msgstr ""
 
+msgid "GroupSettings|Instructions appended to the AI context block on pages in this group, including its projects, for AI agents."
+msgstr ""
+
 msgid "GroupSettings|MCP client access"
+msgstr ""
+
+msgid "GroupSettings|Maximum %{maxLength} characters."
 msgstr ""
 
 msgid "GroupSettings|Members cannot invite groups outside of %{group} and its subgroups"
@@ -40462,6 +40474,9 @@ msgid "GroupSettings|Prevent forking setting was not saved"
 msgstr ""
 
 msgid "GroupSettings|Projects in %{group} cannot be shared with other groups"
+msgstr ""
+
+msgid "GroupSettings|Provide custom instructions for AI agents that read this group and its projects."
 msgstr ""
 
 msgid "GroupSettings|Reporting"
@@ -60327,6 +60342,9 @@ msgstr ""
 msgid "PolicyStore|All projects in the group"
 msgstr ""
 
+msgid "PolicyStore|An error occurred updating the Policy store setting. Please try again."
+msgstr ""
+
 msgid "PolicyStore|Are you sure you want to delete %{name}? This action cannot be undone."
 msgstr ""
 
@@ -60373,6 +60391,9 @@ msgid "PolicyStore|Complete the policy before saving"
 msgstr ""
 
 msgid "PolicyStore|Continue editing"
+msgstr ""
+
+msgid "PolicyStore|Control the Policy store experiment for this organization."
 msgstr ""
 
 msgid "PolicyStore|Create a policy to enforce rules for deployments across your organization."
@@ -60444,6 +60465,9 @@ msgstr ""
 msgid "PolicyStore|Enable"
 msgstr ""
 
+msgid "PolicyStore|Enable the Policy store experiment"
+msgstr ""
+
 msgid "PolicyStore|Enforce"
 msgstr ""
 
@@ -60496,6 +60520,9 @@ msgid "PolicyStore|Log the violation. No user impact"
 msgstr ""
 
 msgid "PolicyStore|Maintainer"
+msgstr ""
+
+msgid "PolicyStore|Members of this organization can author and manage policies in the Policy store."
 msgstr ""
 
 msgid "PolicyStore|Message shown when the action is blocked"
@@ -60556,6 +60583,12 @@ msgid "PolicyStore|Policy creation steps"
 msgstr ""
 
 msgid "PolicyStore|Policy name"
+msgstr ""
+
+msgid "PolicyStore|Policy store"
+msgstr ""
+
+msgid "PolicyStore|Policy store experiment setting updated."
 msgstr ""
 
 msgid "PolicyStore|Production"
@@ -72720,7 +72753,13 @@ msgstr ""
 msgid "SecurityOrchestration|Enforcement type"
 msgstr ""
 
+msgid "SecurityOrchestration|Enter package URLs (PURLs) to exempt, separated by commas"
+msgstr ""
+
 msgid "SecurityOrchestration|Enter up to %{maxBranches} branch names, separated by commas."
+msgstr ""
+
+msgid "SecurityOrchestration|Enter vulnerability IDs (e.g. CVEs) to exempt, separated by commas"
 msgstr ""
 
 msgid "SecurityOrchestration|Error: %{error}"
@@ -72760,6 +72799,9 @@ msgid "SecurityOrchestration|Exception Bypass (pre-approved)"
 msgstr ""
 
 msgid "SecurityOrchestration|Exception branches"
+msgstr ""
+
+msgid "SecurityOrchestration|Exceptions"
 msgstr ""
 
 msgid "SecurityOrchestration|Excluded projects"
@@ -73012,6 +73054,9 @@ msgid "SecurityOrchestration|License Types"
 msgstr ""
 
 msgid "SecurityOrchestration|License override details"
+msgstr ""
+
+msgid "SecurityOrchestration|Licenses"
 msgstr ""
 
 msgid "SecurityOrchestration|Linked groups"
@@ -74184,6 +74229,9 @@ msgstr ""
 msgid "SecurityOrchestration|This project"
 msgstr ""
 
+msgid "SecurityOrchestration|This rule is active as soon as it appears in the rules list, and always denies packages flagged by the malicious packages data feed - it cannot be switched to an allow list. To turn it off, remove this rule using the button on the right."
+msgstr ""
+
 msgid "SecurityOrchestration|This setting will be locked for 10 minutes after making changes to prevent further performance issues."
 msgstr ""
 
@@ -74317,6 +74365,9 @@ msgid "SecurityOrchestration|Violation Type"
 msgstr ""
 
 msgid "SecurityOrchestration|Visual"
+msgstr ""
+
+msgid "SecurityOrchestration|Vulnerabilities"
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerabilities %{vulnerabilityStates}."
@@ -86018,6 +86069,9 @@ msgstr ""
 msgid "UsageBilling|Action"
 msgstr ""
 
+msgid "UsageBilling|Actions"
+msgstr ""
+
 msgid "UsageBilling|Active users"
 msgstr ""
 
@@ -86117,6 +86171,9 @@ msgid "UsageBilling|Displaying user data is disabled. %{linkStart}Learn more%{li
 msgstr ""
 
 msgid "UsageBilling|Edit your search and try again."
+msgstr ""
+
+msgid "UsageBilling|Enabled"
 msgstr ""
 
 msgid "UsageBilling|Enforce cap"
@@ -86249,6 +86306,9 @@ msgid "UsageBilling|On Demand"
 msgstr ""
 
 msgid "UsageBilling|On-demand"
+msgstr ""
+
+msgid "UsageBilling|Override cap"
 msgstr ""
 
 msgid "UsageBilling|Peak day usage"
@@ -93038,6 +93098,9 @@ msgid "WorkItem|Something went wrong when fetching iterations. Please try again.
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching labels. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong when fetching resources. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching status. Please try again."

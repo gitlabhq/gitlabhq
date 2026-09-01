@@ -7,7 +7,7 @@ RSpec.describe Clusters::Cleanup::ProjectNamespaceService, feature_category: :de
     subject { service.execute }
 
     let!(:service) { described_class.new(cluster) }
-    let!(:cluster) { create(:cluster, :with_environments, :cleanup_removing_project_namespaces) }
+    let_it_be_with_reload(:cluster) { create(:cluster, :with_environments, :cleanup_removing_project_namespaces) }
     let!(:logger) { service.send(:logger) }
     let(:log_meta) do
       {
@@ -74,7 +74,7 @@ RSpec.describe Clusters::Cleanup::ProjectNamespaceService, feature_category: :de
     end
 
     context 'when cluster has no namespaces' do
-      let!(:cluster) { create(:cluster, :cleanup_removing_project_namespaces) }
+      let_it_be_with_reload(:cluster) { create(:cluster, :cleanup_removing_project_namespaces) }
 
       it 'schedules Clusters::Cleanup::ServiceAccountWorker' do
         expect(Clusters::Cleanup::ServiceAccountWorker).to receive(:perform_async).with(cluster.id)

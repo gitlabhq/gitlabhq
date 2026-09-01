@@ -188,6 +188,56 @@ RSpec.describe Gitlab::PolicyStore::RuleTranspiler do
         ])
       end
 
+      it "de-duplicates windows that are identical after normalization" do
+        rego = transpile(
+          { type: "calendar",
+            value: { windows: [{ name: "eoq", tiers: ["production"], starts_at: "2026-12-24T00:00:00Z",
+                                 ends_at: "2027-01-02T00:00:00Z" },
+              { name: "eoq", tiers: ["production"], starts_at: "2026-12-24T00:00:00Z",
+                ends_at: "2027-01-02T00:00:00Z" }] } }
+        )
+
+        expect(windows_from(rego).length).to eq(1)
+      end
+
+      it "de-duplicates windows naming the same instant in different authored forms" do
+        rego = transpile(
+          { type: "calendar",
+            value: { windows: [{ name: "eoq", tiers: ["production"], starts_at: "2026-09-01T12:00:00+02:00",
+                                 ends_at: "2026-09-03T01:30:00-01:00" },
+              { name: "eoq", tiers: ["production"], starts_at: "2026-09-01T10:00:00Z",
+                ends_at: "2026-09-03T02:30:00Z" }] } }
+        )
+
+        expect(windows_from(rego).length).to eq(1)
+      end
+
+      it "keeps windows with the same name but different tiers, since a name alone is not a duplicate" do
+        rego = transpile(
+          { type: "calendar",
+            value: { windows: [{ name: "eoq", tiers: ["production"], starts_at: "2026-12-24T00:00:00Z",
+                                 ends_at: "2027-01-02T00:00:00Z" },
+              { name: "eoq", tiers: ["staging"], starts_at: "2026-12-24T00:00:00Z",
+                ends_at: "2027-01-02T00:00:00Z" }] } }
+        )
+
+        expect(windows_from(rego).length).to eq(2)
+      end
+
+      it "de-duplicates windows even when the duplicate is not adjacent in authored order" do
+        rego = transpile(
+          { type: "calendar",
+            value: { windows: [{ name: "eoq", tiers: ["production"], starts_at: "2026-12-24T00:00:00Z",
+                                 ends_at: "2027-01-02T00:00:00Z" },
+              { name: "second", tiers: ["production"], starts_at: "2027-06-01T00:00:00Z",
+                ends_at: "2027-06-02T00:00:00Z" },
+              { name: "eoq", tiers: ["production"], starts_at: "2026-12-24T00:00:00Z",
+                ends_at: "2027-01-02T00:00:00Z" }] } }
+        )
+
+        expect(windows_from(rego).length).to eq(2)
+      end
+
       it "keeps the windows out of the package document, so two calendar rules can merge" do
         expect(transpile(calendar_rule)).not_to match(/^\S+\s*:?=/)
       end

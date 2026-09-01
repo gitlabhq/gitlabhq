@@ -10,7 +10,6 @@ import {
 } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
 import DuoWorkItemToMrAction from 'ee_component/ai/shared/widgets/duo_work_item_to_mr_action.vue';
-import WorkItemPlanCta from 'ee_component/work_items/components/work_item_plan_cta.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import DetailLayout from '~/vue_shared/components/detail_layout.vue';
 import PanelActionsPortal from '~/vue_shared/components/panel_actions_portal.vue';
@@ -158,7 +157,6 @@ export default {
     ),
     WorkItemMetadataProvider,
     DuoWorkItemToMrAction,
-    WorkItemPlanCta,
   },
   mixins: [glFeatureFlagsMixin(), trackingMixin, glSlotsMixin],
   inject: {
@@ -340,14 +338,6 @@ export default {
     agentPlanWidget() {
       return this.workItem?.features?.agentPlan || this.findWidget('AGENT_PLAN');
     },
-    showPlanCta() {
-      return (
-        !this.editMode &&
-        this.canUpdate &&
-        Boolean(this.agentPlanWidget) &&
-        !this.agentPlanWidget.aiPlanningEnabled
-      );
-    },
     workItemProjectId() {
       return this.workItem?.project?.id;
     },
@@ -452,8 +442,8 @@ export default {
     workItemErrorTracking() {
       return findErrorTrackingWidget(this.workItem) ?? {};
     },
-    workItemLinkedResources() {
-      return findLinkedResourcesWidget(this.workItem)?.linkedResources?.nodes ?? [];
+    hasLinkedResourcesWidget() {
+      return Boolean(findLinkedResourcesWidget(this.workItem));
     },
     workItemHierarchy() {
       return findHierarchyWidget(this.workItem);
@@ -610,7 +600,7 @@ export default {
     },
     showWidgets() {
       return (
-        this.workItemLinkedResources.length ||
+        this.hasLinkedResourcesWidget ||
         this.hasDesignWidget ||
         this.showWorkItemTree ||
         this.workItemLinkedItems ||
@@ -1100,11 +1090,14 @@ export default {
             >
               {{ __('Edit') }}
             </gl-button>
-            <work-item-plan-cta
-              v-if="showPlanCta"
+            <slot
+              name="plan-cta"
               :work-item="workItem"
-              @error="updateError = $event"
-            />
+              :can-update="canUpdate"
+              :edit-mode="editMode"
+              :agent-plan-widget="agentPlanWidget"
+              :on-error="(e) => (updateError = e)"
+            ></slot>
             <todos-toggle
               v-if="showWorkItemCurrentUserTodos"
               :item-id="workItem.id"
@@ -1191,8 +1184,10 @@ export default {
 
         <template v-if="showWidgets" #widgets>
           <work-item-linked-resources
-            v-if="workItemLinkedResources.length"
-            :linked-resources="workItemLinkedResources"
+            v-if="hasLinkedResourcesWidget"
+            :full-path="workItemFullPath"
+            :work-item-iid="iid"
+            @error="updateError = $event"
           />
 
           <design-widget

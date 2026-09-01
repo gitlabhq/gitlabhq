@@ -74,7 +74,7 @@ sudo apt-get update && sudo apt-get install git
 {{< tab title="Other operating systems" >}}
 
 For information on downloading and installing Git on other operating systems, see the
-[official Git website](https://git-scm.com/downloads).
+[official Git website](https://git-scm.com/downloads/).
 
 {{< /tab >}}
 

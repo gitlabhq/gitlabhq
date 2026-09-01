@@ -29,6 +29,8 @@ For more information, see [scopes](_index.md#scopes).
 
 ## Query fields
 
+Use these fields in the `query` parameter to filter your results.
+
 | Field                                                          | Name (and alias)                             | Operators                  | Types              |
 | -------------------------------------------------------------- | -------------------------------------------- | -------------------------- | ------------------ |
 | [Assignees](#workitem-assignees)                               | `assignee`, `assignees`                      | `=`, `in`, `!=`            | All                |

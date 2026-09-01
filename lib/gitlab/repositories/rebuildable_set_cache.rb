@@ -26,11 +26,17 @@ module Gitlab
         'RebuildableSetCache requires a repository with a project ' \
           '(needed for the {project.id} Redis Cluster hash tag)'
 
+      REF_TYPES = {
+        'branch_names' => 'branch',
+        'tag_names' => 'tag'
+      }.freeze
+
       # Cache keys actually backed by this set cache. #expire is called with the
       # full list of repository methods being invalidated (e.g. branch_count,
       # has_visible_content?), but only these have set/trust keys here, so only
-      # these are worth logging.
-      SET_BACKED_KEYS = %w[branch_names tag_names].freeze
+      # these are worth logging. Deriving this list from REF_TYPES ensures every
+      # set-backed key maps to a real ref type instead of the `unknown` fallback.
+      SET_BACKED_KEYS = REF_TYPES.keys.freeze
 
       # Cache key suffixes for different status types
       CACHE_KEYS_STATUSES = {
@@ -85,11 +91,12 @@ module Gitlab
       # Atomically deletes the trust flag (KEYS[2]) and UNLINKs the set (KEYS[1])
       # so a concurrent rebuild cannot grant trust between the two, which would
       # strand a trusted-but-empty cache. Leaves pending_key/rebuild_flag_key for
-      # an in-flight #write. Same-slot via the {project.id} hash tag. Returns the
-      # number of set keys deleted (0 or 1), matching #expire's contract.
+      # an in-flight #write. Same-slot via the {project.id} hash tag. Returns
+      # [set keys deleted, trust keys deleted], with each count being 0 or 1.
       EXPIRE_KEY_SCRIPT = <<~LUA
-        redis.call('DEL', KEYS[2])
-        return redis.call('UNLINK', KEYS[1])
+        local trust_deleted = redis.call('DEL', KEYS[2])
+        local set_deleted = redis.call('UNLINK', KEYS[1])
+        return {set_deleted, trust_deleted}
       LUA
 
       attr_reader :repository, :namespace, :expires_in
@@ -142,14 +149,7 @@ module Gitlab
 
         set_backed, other = keys.partition { |key| SET_BACKED_KEYS.include?(key.to_s) }
 
-        deleted = expire_with_trust(set_backed) + super(*other)
-
-        set_backed.each do |key|
-          log_event(:cache_marked_untrusted, key)
-          log_event(:cache_expired, key)
-        end
-
-        deleted
+        expire_with_trust(set_backed) + super(*other)
       end
 
       # Handle individual ref changes (add or remove)
@@ -160,13 +160,23 @@ module Gitlab
       def handle_ref_change(key, ref, deleted)
         ref_name = Gitlab::Git.ref_name(ref)
 
-        if rebuilding?(key)
-          log_event(:dual_write, key, ref: ref_name, deleted: deleted)
-          dual_write(key, ref_name, deleted)
-        else
-          log_event(:simple_update, key, ref: ref_name, deleted: deleted)
-          simple_update(key, ref_name, deleted)
-        end
+        result = if rebuilding?(key)
+                   log_event(:dual_write, key, ref: ref_name, deleted: deleted)
+                   dual_write(key, ref_name, deleted)
+                 else
+                   log_event(:simple_update, key, ref: ref_name, deleted: deleted)
+                   simple_update(key, ref_name, deleted)
+                 end
+
+        # An absent-set add was not applied, while an absent-set delete already has the requested outcome.
+        # `skipped` also includes dual-writes queued during a rebuild and applied later
+        # by reconciliation, so it is not solely a signal of updates that were lost.
+        status = result == SET_ABSENT && !deleted ? 'skipped' : 'success'
+        metrics.increment_operation(key: key, operation: 'update', status: status)
+        result
+      rescue StandardError
+        metrics.increment_operation(key: key, operation: 'update', status: 'error')
+        raise
       end
 
       # Rebuild cache with queue drain mechanism
@@ -177,10 +187,11 @@ module Gitlab
         # 1. Acquire rebuild lock (prevents concurrent rebuilds)
         unless mark_rebuild_in_progress(key)
           log_event(:rebuild_skipped, key, reason: 'another rebuild in progress')
+          metrics.increment_operation(key: key, operation: 'rebuild', status: 'skipped_locked')
           return value
         end
 
-        begin
+        result, status = begin
           # Re-check under the lock: another request may have rebuilt and released
           # the lock just before we acquired it. (The redundant Gitaly call still
           # happens upstream in #fetch; only the duplicate overwrite is avoided.)
@@ -190,19 +201,24 @@ module Gitlab
             log_event(:rebuild_skipped, key, reason: 'cache already rebuilt')
             # Return the trusted set, not our value: the winner reconciled it with
             # the pending-event queue, so it is authoritative (like a cache_hit).
-            return smembers
+            [smembers, 'skipped_trusted']
+          else
+            [perform_rebuild(key, value), 'success']
           end
-
-          perform_rebuild(key, value)
         ensure
           # 7. Release rebuild lock
           mark_rebuild_complete(key)
         end
+
+        metrics.increment_operation(key: key, operation: 'rebuild', status: status)
+        result
       rescue ::Redis::BaseError => e
-        log_event(:rebuild_failed, key, level: :error,
-          error_class: e.class.name,
-          error_message: e.message)
+        metrics.increment_operation(key: key, operation: 'rebuild', status: 'error')
+        log_event(:rebuild_failed, key, level: :error, error_class: e.class.name, error_message: e.message)
         mark_untrusted(key)
+        raise
+      rescue StandardError
+        metrics.increment_operation(key: key, operation: 'rebuild', status: 'error')
         raise
       end
 
@@ -211,12 +227,18 @@ module Gitlab
 
         if is_trusted
           log_event(:cache_hit, key, count: smembers.size)
+          metrics.increment_operation(key: key, operation: 'fetch', status: 'hit')
           return smembers
         end
 
         log_event(:cache_miss, key, exists: exists, trusted: is_trusted)
 
-        write(key, yield)
+        result = write(key, yield)
+        metrics.increment_operation(key: key, operation: 'fetch', status: 'miss')
+        result
+      rescue StandardError
+        metrics.increment_operation(key: key, operation: 'fetch', status: 'error')
+        raise
       end
 
       # Searches the cache set using SSCAN with the MATCH option. The MATCH
@@ -226,13 +248,20 @@ module Gitlab
       def search(key, pattern)
         full_key = cache_key(key)
 
-        with do |redis|
+        enumerator, status = with do |redis|
           is_trusted = redis.exists?(trust_key(key)) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
 
           write(key, yield) unless is_trusted
 
-          redis.sscan_each(full_key, match: pattern)
+          # search:error excludes failures raised while consuming the lazy enumerator.
+          [redis.sscan_each(full_key, match: pattern), is_trusted ? 'hit' : 'miss']
         end
+
+        metrics.increment_operation(key: key, operation: 'search', status: status)
+        enumerator
+      rescue StandardError
+        metrics.increment_operation(key: key, operation: 'search', status: 'error')
+        raise
       end
 
       # Override to add trust-awareness.
@@ -250,9 +279,16 @@ module Gitlab
           end
         end
 
-        return [false, false] unless is_trusted
+        unless is_trusted
+          metrics.increment_operation(key: key, operation: 'include', status: 'miss')
+          return [false, false]
+        end
 
+        metrics.increment_operation(key: key, operation: 'include', status: 'hit')
         [result, exists]
+      rescue StandardError
+        metrics.increment_operation(key: key, operation: 'include', status: 'error')
+        raise
       end
 
       private
@@ -491,8 +527,12 @@ module Gitlab
       def grant_trust(key, final_set)
         granted = final_set.empty? ? set_trust_flag(key) : grant_trust_if_present(key)
 
-        return log_event(:rebuild_trust_skipped, key, reason: 'set evicted before trust') unless granted
+        unless granted
+          metrics.increment_trust_event(key: key, event: 'grant_skipped')
+          return log_event(:rebuild_trust_skipped, key, reason: 'set evicted before trust')
+        end
 
+        metrics.increment_trust_event(key: key, event: 'granted')
         log_event(:cache_marked_trusted, key)
       end
 
@@ -514,18 +554,26 @@ module Gitlab
       end
 
       # Atomically deletes the trust flag and set for each trust-backed key.
+      # Returns the number of set keys deleted, matching #expire's contract.
       def expire_with_trust(keys)
         return 0 if keys.empty?
 
         with do |redis|
           keys.sum do |key|
-            redis.eval(EXPIRE_KEY_SCRIPT, keys: [cache_key(key), trust_key(key)])
+            set_deleted, trust_deleted = redis.eval(EXPIRE_KEY_SCRIPT, keys: [cache_key(key), trust_key(key)])
+
+            metrics.increment_trust_event(key: key, event: 'revoked') if trust_deleted.to_i > 0
+            log_event(:cache_marked_untrusted, key)
+            log_event(:cache_expired, key)
+
+            set_deleted.to_i
           end
         end
       end
 
       def mark_untrusted(key)
-        with { |redis| redis.del(trust_key(key)) }
+        deleted = with { |redis| redis.del(trust_key(key)) }
+        metrics.increment_trust_event(key: key, event: 'revoked') if deleted.to_i > 0
         log_event(:cache_marked_untrusted, key)
       end
 
@@ -562,6 +610,10 @@ module Gitlab
 
       def cache
         Gitlab::Redis::RepositoryCache
+      end
+
+      def metrics
+        @metrics ||= Metrics.new
       end
 
       def with(&blk)

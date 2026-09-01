@@ -318,7 +318,7 @@ option in the `package.json`.
   of the project with the source code of the package itself. The scope should be lowercase.
 - The package name can be anything you want.
 
-For more information, see [Scoped packages](https://docs.npmjs.com/cli/v11/using-npm/scope).
+For more information, see [Scoped packages](https://docs.npmjs.com/cli/v11/using-npm/scope/).
 
 | Project URL                                             | Package registry in | Scope     | Full package name      |
 | ------------------------------------------------------- | ------------------- | --------- | ---------------------- |

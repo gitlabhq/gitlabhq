@@ -10,7 +10,7 @@ GitLab Duo uses generative AI to help increase your velocity and make you more p
 
 GitLab uses the right large language models (LLMs) for specific tasks.
 These LLMs are [Anthropic Claude](https://claude.com/product/overview),
-[Fireworks AI-hosted Codestral](https://mistral.ai/news/codestral),
+[Fireworks AI-hosted Codestral](https://mistral.ai/news/codestral/),
 [Gemini Enterprise Agent Platform models](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/beginners-guide),
 and [OpenAI models](https://platform.openai.com/docs/models).
 

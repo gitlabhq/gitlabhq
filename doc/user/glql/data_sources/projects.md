@@ -28,6 +28,8 @@ For more information, see [scopes](_index.md#scopes).
 
 ## Query fields
 
+Use these fields in the `query` parameter to filter your results.
+
 | Field                                                    | Name (and alias)       | Operators  |
 | -------------------------------------------------------- | ---------------------- | ---------- |
 | [Archived only](#project-archived-only)                  | `archivedOnly`         | `=`, `!=`  |

@@ -68129,7 +68129,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/APIEntitiesCiPipelineBasicWithMetadata"
+                "$ref": "#/components/schemas/APIEntitiesCiPipelineBasicWithProject"
         '401':
           description: Unauthorized
         '400':
@@ -94735,7 +94735,7 @@ components:
           example: '2015-12-24T17:54:31.198Z'
         owner:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
-    APIEntitiesCiPipelineBasicWithMetadata:
+    APIEntitiesCiPipelineBasicWithProject:
       type: object
       properties:
         id:
@@ -94775,6 +94775,8 @@ components:
         name:
           type: string
           example: Build pipeline
+        project:
+          "$ref": "#/components/schemas/APIEntitiesProjectIdentity"
     APIEntitiesCiInput:
       type: object
       properties:

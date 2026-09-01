@@ -86,13 +86,6 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
       }
     }
   }
-  ... on WorkItemWidgetLinkedResources @skip(if: $useWorkItemFeatures) {
-    linkedResources {
-      nodes {
-        url
-      }
-    }
-  }
   ... on WorkItemWidgetMilestone @skip(if: $useWorkItemFeatures) {
     milestone {
       ...MilestoneFragment

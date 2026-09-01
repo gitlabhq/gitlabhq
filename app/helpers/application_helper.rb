@@ -127,10 +127,6 @@ module ApplicationHelper
     Digest::SHA1.hexdigest string
   end
 
-  def simple_sanitize(str)
-    sanitize(str, tags: %w[a span])
-  end
-
   def body_data
     {
       page: body_data_page,

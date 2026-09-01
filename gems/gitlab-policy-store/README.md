@@ -213,6 +213,10 @@ Five properties of that compilation, each of which a caller has to work with:
 - **Rules whose merged module exceeds `MAX_COMPILED_RULES_BYTES` are refused too**, for a
   different reason: the Policy Engine would not load a module that large, so accepting one
   would defer the failure to evaluation.
+- **A `calendar` rule's windows are de-duplicated after normalization**, so two windows
+  identical in name, tiers, and normalized bounds emit once. Two windows sharing only a
+  name are not duplicates and both emit, since name equality alone does not mean the same
+  window.
 
 Timestamps in a `calendar` rule are normalized to UTC before being emitted, because the
 generated program compares them as strings. An authored bound would otherwise sort by its

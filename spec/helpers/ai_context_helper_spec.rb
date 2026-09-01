@@ -208,6 +208,127 @@ RSpec.describe AiContextHelper, feature_category: :portfolio_management do
       end
     end
 
+    context 'with group-level custom instructions' do
+      let_it_be(:group) { build_stubbed(:group) }
+
+      let(:resolved_entries) { [["Group: #{group.full_path}", 'Use the community fork workflow.']] }
+
+      subject(:block) { helper.ai_context_block(group) }
+
+      before do
+        resolver = instance_double(Gitlab::Ai::CustomInstructionsResolver, resolve: resolved_entries)
+        allow(Gitlab::Ai::CustomInstructionsResolver).to receive(:new).and_return(resolver)
+      end
+
+      it 'inlines a labeled Custom instructions section', :aggregate_failures do
+        expect(block).to include("Custom instructions:")
+        expect(block).to include("[Group: #{group.full_path}] Use the community fork workflow.")
+      end
+
+      it 'places custom instructions between the resource lines and the tools section', :aggregate_failures do
+        expect(block.index("Custom instructions:")).to be > block.index("Group: #{group.full_path}")
+        expect(block.index("Custom instructions:")).to be < block.index("Required tooling")
+      end
+
+      context 'when there are no entries' do
+        let(:resolved_entries) { [] }
+
+        it 'does not include the Custom instructions section' do
+          expect(block).not_to include("Custom instructions:")
+        end
+      end
+    end
+
+    context 'with custom instructions resolved by the cascade' do
+      let_it_be(:group) { build_stubbed(:group) }
+
+      subject(:block) { helper.ai_context_block(group) }
+
+      before do
+        resolver = instance_double(Gitlab::Ai::CustomInstructionsResolver, resolve: resolved_entries)
+        allow(Gitlab::Ai::CustomInstructionsResolver).to receive(:new).and_return(resolver)
+      end
+
+      context 'with a single entry' do
+        let(:resolved_entries) { [['Group: my-group', 'Use the community fork workflow.']] }
+
+        it 'inlines a labeled custom instruction', :aggregate_failures do
+          expect(block).to include("Custom instructions:")
+          expect(block).to include("[Group: my-group] Use the community fork workflow.")
+        end
+      end
+
+      context 'with multiple entries' do
+        let(:resolved_entries) do
+          [
+            ['Group: top', 'Top group rule.'],
+            ['Group: top/sub', 'Sub group rule.']
+          ]
+        end
+
+        it 'renders each entry on its own labeled line in order', :aggregate_failures do
+          expect(block).to include("[Group: top] Top group rule.")
+          expect(block).to include("[Group: top/sub] Sub group rule.")
+          expect(block.index("[Group: top]")).to be < block.index("[Group: top/sub]")
+        end
+      end
+
+      context 'with no entries' do
+        let(:resolved_entries) { [] }
+
+        it 'does not include the Custom instructions section' do
+          expect(block).not_to include("Custom instructions:")
+        end
+      end
+
+      context 'when an entry contains embedded newlines' do
+        let(:resolved_entries) do
+          [['Group: my-group', "first directive\nsecond directive"]]
+        end
+
+        it 'keeps the entry on a single labeled line' do
+          expect(block).to include("[Group: my-group] first directive second directive")
+        end
+      end
+
+      context 'when entries contain carriage returns and blank lines' do
+        let(:resolved_entries) do
+          [
+            ['Group: top', "top one\r\ntop two"],
+            ['Group: top/sub', "sub one\n\n\nsub two"]
+          ]
+        end
+
+        it 'renders one line per level so levels stay unambiguous', :aggregate_failures do
+          expect(block).to include("[Group: top] top one top two")
+          expect(block).to include("[Group: top/sub] sub one sub two")
+        end
+      end
+    end
+
+    context 'when given a group' do
+      let_it_be(:group) { build_stubbed(:group) }
+
+      subject(:block) { helper.ai_context_block(group) }
+
+      it 'renders the context block with group identity', :aggregate_failures do
+        expect(block).to have_css('div.gl-hidden[data-testid="ai-context"]')
+        expect(block).to include("GitLab AI Context")
+        expect(block).to include("Group: #{group.full_path}")
+      end
+
+      it 'includes the instance and tools sections', :aggregate_failures do
+        expect(block).to include("Instance: #{Gitlab.config.gitlab.url}")
+        expect(block).to include("Required tooling")
+        expect(block).to include(AiContextHelper::GLAB_CLI_URL)
+      end
+
+      it 'does not include project-specific metadata', :aggregate_failures do
+        expect(block).not_to include("Project:")
+        expect(block).not_to include("Repository:")
+      end
+    end
+
     context 'when given nil' do
       it 'returns nil' do
         expect(helper.ai_context_block(nil)).to be_nil

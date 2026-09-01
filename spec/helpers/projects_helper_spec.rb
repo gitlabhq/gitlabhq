@@ -799,6 +799,18 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         subject
       end
     end
+
+    it 'does not escape special characters such as ampersands in the project name' do
+      project_with_special_chars = create(:project)
+      project_with_special_chars.update_column(:name, 'R & D')
+
+      allow(helper).to receive(:push_to_schema_breadcrumb)
+
+      helper.push_project_breadcrumbs(project_with_special_chars)
+
+      expect(helper).to have_received(:push_to_schema_breadcrumb)
+        .with('R & D', project_path(project_with_special_chars), nil)
+    end
   end
 
   describe '#remove_project_message' do

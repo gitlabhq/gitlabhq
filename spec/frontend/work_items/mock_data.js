@@ -2099,6 +2099,7 @@ export const mockWorkItemFeaturesData = ({ discussionLocked = false } = {}) => (
     __typename: 'WorkItemWidgetCurrentUserTodos',
   },
   linkedResources: {
+    type: 'LINKED_RESOURCES',
     linkedResources: {
       nodes: [],
       __typename: 'WorkItemLinkedResourceConnection',
@@ -2582,6 +2583,35 @@ export const workItemByIidResponseFactory = (options) => {
         __typename: 'Project',
         id: 'gid://gitlab/Project/1',
         workItem: response.data.workItem,
+      },
+    },
+  };
+};
+
+export const workItemLinkedResourcesResponseFactory = ({
+  resources = [
+    { url: 'http://zoom.example.com/j/1234567890', __typename: 'WorkItemLinkedResource' },
+  ],
+  useWorkItemFeatures = false,
+} = {}) => {
+  const widget = {
+    __typename: 'WorkItemWidgetLinkedResources',
+    type: 'LINKED_RESOURCES',
+    linkedResources: { nodes: resources, __typename: 'WorkItemLinkedResourceConnection' },
+  };
+
+  return {
+    data: {
+      namespace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        workItem: {
+          __typename: 'WorkItem',
+          id: 'gid://gitlab/WorkItem/1',
+          ...(useWorkItemFeatures
+            ? { features: { __typename: 'WorkItemFeatures', linkedResources: widget } }
+            : { widgets: [widget] }),
+        },
       },
     },
   };

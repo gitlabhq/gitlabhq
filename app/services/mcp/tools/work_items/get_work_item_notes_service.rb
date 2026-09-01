@@ -4,6 +4,11 @@ module Mcp
   module Tools
     module WorkItems
       class GetWorkItemNotesService < Base::GraphqlService
+        override :tool_aliases
+        def self.tool_aliases
+          ['get_work_item_notes']
+        end
+
         register_version '0.1.0', {
           description: 'Get all comments (notes) for a specific work item',
           input_schema: {

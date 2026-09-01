@@ -3,22 +3,21 @@
 require 'spec_helper'
 
 RSpec.describe Issues::CloseService, feature_category: :team_planning do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:parent_namespace) { create(:namespace) }
+  let(:project) do
+    create(:project, :repository, namespace: parent_namespace, maintainers: user, developers: user2, guests: guest)
+  end
+
   let(:delegated_project) { project.project_namespace.project }
-  let(:user) { create(:user, email: "user@example.com") }
+  let_it_be(:user) { create(:user, email: "user@example.com") }
   let(:user2) { create(:user, email: "user2@example.com") }
-  let(:guest) { create(:user) }
-  let(:issue) { create(:issue, :unchanged, title: "My issue", project: project, assignees: [user2], author: create(:user)) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:author) { create(:user) }
+  let(:issue) { create(:issue, :unchanged, title: "My issue", project: project, assignees: [user2], author: author) }
   let(:external_issue) { ExternalIssue.new('JIRA-123', project) }
   let(:closing_merge_request) { create(:merge_request, :unchanged, source_project: project) }
   let(:closing_commit) { create(:commit, project: project) }
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
-
-  before do
-    project.add_maintainer(user)
-    project.add_developer(user2)
-    project.add_guest(guest)
-  end
 
   describe '#execute' do
     let(:service) { described_class.new(container: project, current_user: user) }
@@ -35,13 +34,6 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
       end
     end
 
-    it 'checks if the user is authorized to update the issue' do
-      expect(service).to receive(:can?).with(user, :update_issue, issue)
-        .and_call_original
-
-      service.execute(issue)
-    end
-
     context 'when the user is not authorized to close the issue' do
       let(:target_issue) { issue }
 
@@ -49,12 +41,8 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
         allow(service).to receive(:can?).with(user, :update_issue, target_issue).and_return(false)
       end
 
-      it 'does not close the issue' do
+      it 'does not close the issue and logs the failed authorization', :aggregate_failures do
         expect(service).not_to receive(:close_issue)
-        expect(service.execute(issue)).to eq(issue)
-      end
-
-      it 'logs the failed authorization' do
         expect(Gitlab::AppLogger).to receive(:info).with(
           {
             class: 'Issues::CloseService',
@@ -64,7 +52,7 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
           }.stringify_keys
         )
 
-        service.execute(issue)
+        expect(service.execute(issue)).to eq(issue)
       end
 
       context 'when issue is closed via merge request' do
@@ -121,46 +109,36 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
       service.execute(issue)
     end
 
-    it 'refreshes the number of open issues', :use_clean_rails_memory_store_caching do
-      expect do
-        service.execute(issue)
-
-        BatchLoader::Executor.clear_current
-      end.to change { project.open_issues_count }.from(1).to(0)
-    end
-
-    it 'invalidates counter cache for assignees' do
-      expect_any_instance_of(User).to receive(:invalidate_issue_cache_counts)
-
-      service.execute(issue)
-    end
-
-    it 'does not change escalation status' do
+    it 'checks authorization, refreshes the number of open issues, invalidates assignee counter cache, ' \
+      'does not change escalation status, and broadcasts namespaceWorkItemChanges',
+      :use_clean_rails_memory_store_caching, :aggregate_failures do
       resolved = IncidentManagement::Escalatable::STATUSES[:resolved]
 
-      expect { service.execute(issue) }
-        .to not_change { IncidentManagement::IssuableEscalationStatus.where(issue: issue).count }
-        .and not_change { IncidentManagement::IssuableEscalationStatus.where(status: resolved).count }
-    end
-
-    it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
-      subject(:execute_service) { service.execute(issue) }
-    end
-
-    it 'broadcasts namespaceWorkItemChanges for the state change' do
+      expect(service).to receive(:can?).with(user, :update_issue, issue).and_call_original
+      expect_any_instance_of(User).to receive(:invalidate_issue_cache_counts)
       allow(GitlabSchema.subscriptions).to receive(:trigger)
       allow(Gitlab::ApplicationRateLimiter).to receive(:peek)
         .with(:namespace_work_item_changes_broadcast, scope: anything).and_return(false)
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
         .with(:namespace_work_item_changes_broadcast, scope: anything).and_return(false)
 
-      service.execute(issue)
+      expect do
+        service.execute(issue)
+
+        BatchLoader::Executor.clear_current
+      end.to change { project.open_issues_count }.from(1).to(0)
+        .and not_change { IncidentManagement::IssuableEscalationStatus.where(issue: issue).count }
+        .and not_change { IncidentManagement::IssuableEscalationStatus.where(status: resolved).count }
 
       expect(GitlabSchema.subscriptions).to have_received(:trigger).with(
         'namespaceWorkItemChanges',
         { namespace_id: project.project_namespace.to_gid },
         { work_item_id: issue.id, action: :updated }
       )
+    end
+
+    it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+      subject(:execute_service) { service.execute(issue) }
     end
 
     context 'issue is incident type' do
@@ -189,25 +167,20 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
           create(:incident_management_issuable_escalation_status, issue: issue)
         end
 
-        it 'changes escalations status to resolved' do
-          expect { service.execute(issue) }.to change { issue.incident_management_issuable_escalation_status.reload.resolved? }.to(true)
-        end
-
-        it 'adds a system note', :aggregate_failures do
-          expect { service.execute(issue) }.to change { issue.notes.count }.by(1)
-
-          new_note = issue.notes.last
-          expect(new_note.note).to eq('changed the incident status to **Resolved** by closing the incident')
-          expect(new_note.author).to eq(user)
-        end
-
-        it 'adds a timeline event', :aggregate_failures do
+        it 'resolves the escalation status, adds a system note, and adds a timeline event', :aggregate_failures do
           expect(IncidentManagement::TimelineEvents::CreateService)
             .to receive(:resolve_incident)
             .with(issue, user)
             .and_call_original
 
-          expect { service.execute(issue) }.to change { issue.incident_management_timeline_events.count }.by(1)
+          expect { service.execute(issue) }
+            .to change { issue.incident_management_issuable_escalation_status.reload.resolved? }.to(true)
+            .and change { issue.notes.count }.by(1)
+            .and change { issue.incident_management_timeline_events.count }.by(1)
+
+          new_note = issue.notes.last
+          expect(new_note.note).to eq('changed the incident status to **Resolved** by closing the incident')
+          expect(new_note.author).to eq(user)
         end
 
         context 'when the escalation status did not change to resolved' do
@@ -217,12 +190,10 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
             allow(issue).to receive(:incident_management_issuable_escalation_status).and_return(escalation_status)
           end
 
-          it 'does not create a system note' do
-            expect { service.execute(issue) }.not_to change { issue.notes.count }
-          end
-
-          it 'does not create a timeline event' do
-            expect { service.execute(issue) }.not_to change { issue.incident_management_timeline_events.count }
+          it 'does not create a system note or a timeline event', :aggregate_failures do
+            expect { service.execute(issue) }
+              .to not_change { issue.notes.count }
+              .and not_change { issue.incident_management_timeline_events.count }
           end
         end
       end
@@ -338,17 +309,18 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
         expect(recorded.cached_count).to eq(0)
       end
 
-      it 'closes the issue' do
+      it 'closes the issue, records closed user, creates a resource state event, and marks todos as done',
+        :aggregate_failures do
         close_issue
 
         expect(issue).to be_valid
         expect(issue).to be_closed
-      end
-
-      it 'records closed user' do
-        close_issue
-
         expect(issue.reload.closed_by_id).to be(user.id)
+
+        event = issue.resource_state_events.last
+        expect(event.state).to eq('closed')
+
+        expect(todo.reload).to be_done
       end
 
       it 'sends notification', :sidekiq_might_not_need_inline do
@@ -357,19 +329,6 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
         end
 
         close_issue
-      end
-
-      it 'creates resource state event about the issue being closed' do
-        close_issue
-
-        event = issue.resource_state_events.last
-        expect(event.state).to eq('closed')
-      end
-
-      it 'marks todos as done' do
-        close_issue
-
-        expect(todo.reload).to be_done
       end
 
       context 'when closing the issue fails' do

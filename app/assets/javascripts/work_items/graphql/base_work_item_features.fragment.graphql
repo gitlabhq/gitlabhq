@@ -96,11 +96,7 @@ fragment BaseWorkItemFeatures on WorkItemFeatures {
     }
   }
   linkedResources {
-    linkedResources {
-      nodes {
-        url
-      }
-    }
+    type
   }
   labels {
     allowsScopedLabels

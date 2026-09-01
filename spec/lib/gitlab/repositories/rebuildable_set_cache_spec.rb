@@ -415,6 +415,108 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
         expect(cache.trusted?(:branch_names)).to be false
       end
     end
+
+    context 'with Prometheus metrics', :prometheus, :aggregate_failures do
+      it 'records a cold add as a skipped update without revoking trust' do
+        expect do
+          cache.handle_ref_change(:branch_names, branch_ref, false)
+        end.to change { operation_metric_value('update', 'skipped') }.by(1)
+          .and not_change { operation_metric_value('update', 'success') }
+          .and not_change { operation_metric_value('update', 'error') }
+          .and not_change { trust_metric_value('revoked') }
+      end
+
+      it 'records one revocation when an add finds a trusted cache without a set' do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.set(cache.trust_key(:branch_names), '1')
+        end
+
+        expect do
+          cache.handle_ref_change(:branch_names, branch_ref, false)
+        end.to change { trust_metric_value('revoked') }.by(1)
+          .and not_change { trust_metric_value('granted') }
+          .and change { operation_metric_value('update', 'skipped') }.by(1)
+          .and not_change { operation_metric_value('update', 'success') }
+          .and not_change { operation_metric_value('update', 'error') }
+        expect(cache.trusted?(:branch_names)).to be(false)
+      end
+
+      it 'records revocation only for the first repeated invalidation' do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.set(cache.trust_key(:branch_names), '1')
+        end
+
+        expect do
+          cache.handle_ref_change(:branch_names, branch_ref, false)
+          cache.handle_ref_change(:branch_names, branch_ref, false)
+        end.to change { trust_metric_value('revoked') }.by(1)
+      end
+
+      it 'records success for a simple add to an existing set' do
+        cache.write(:branch_names, %w[main])
+
+        expect do
+          cache.handle_ref_change(:branch_names, branch_ref, false)
+        end.to change { operation_metric_value('update', 'success') }.by(1)
+      end
+
+      it 'records skipped for a dual-write add to an absent set and enqueues the event' do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.set(cache.rebuild_flag_key(:branch_names), '1')
+        end
+
+        expect do
+          cache.handle_ref_change(:branch_names, branch_ref, false)
+        end.to change { operation_metric_value('update', 'skipped') }.by(1)
+
+        pending_events = Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.lrange(cache.pending_key(:branch_names), 0, -1)
+        end
+        expect(pending_events).to contain_exactly('+feature-branch')
+      end
+
+      it 'records success for deletions from existing and absent sets' do
+        cache.write(:branch_names, %w[feature-branch])
+
+        expect do
+          cache.handle_ref_change(:branch_names, branch_ref, true)
+        end.to change { operation_metric_value('update', 'success') }.by(1)
+
+        cache.expire(:branch_names)
+
+        expect do
+          cache.handle_ref_change(:branch_names, branch_ref, true)
+        end.to change { operation_metric_value('update', 'success') }.by(1)
+          .and not_change { operation_metric_value('update', 'skipped') }
+      end
+
+      it 'records one error when an update fails' do
+        allow(cache).to receive(:rebuilding?).and_raise(StandardError, 'failure')
+
+        expect do
+          expect { cache.handle_ref_change(:branch_names, branch_ref, false) }
+            .to raise_error(StandardError, 'failure')
+        end.to change { operation_metric_value('update', 'error') }.by(1)
+      end
+
+      it 'does not turn successful update instrumentation failures into cache errors' do
+        error = StandardError.new('metrics failure')
+        recorded_statuses = []
+        counter = instance_double(Prometheus::Client::Counter)
+        allow(Gitlab::Metrics).to receive(:counter).and_return(counter)
+        allow(counter).to receive(:increment) do |labels|
+          recorded_statuses << labels[:status]
+          raise error
+        end
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(error, key: :branch_names, operation: 'update')
+
+        expect { cache.handle_ref_change(:branch_names, branch_ref, false) }.not_to raise_error
+        expect(cache.exist?(:branch_names)).to be(false)
+        expect(recorded_statuses).to eq(['skipped'])
+      end
+    end
   end
 
   describe '#write' do
@@ -614,6 +716,107 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
           redis.exists?(cache.rebuild_flag_key(:branch_names))
         end
         expect(rebuild_flag_exists).to be true
+      end
+    end
+
+    context 'with Prometheus metrics', :prometheus, :aggregate_failures do
+      it 'records success and granted trust while preserving the success return value' do
+        expect do
+          expect(write_cache).to contain_exactly('main', 'feature')
+        end.to change { operation_metric_value('rebuild', 'success') }.by(1)
+          .and change { trust_metric_value('granted') }.by(1)
+      end
+
+      it 'records skipped_locked while returning the original value' do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.set(cache.rebuild_flag_key(:branch_names), '1')
+        end
+
+        expect do
+          expect(write_cache).to eq(%w[main feature])
+        end.to change { operation_metric_value('rebuild', 'skipped_locked') }.by(1)
+      end
+
+      it 'records skipped_trusted while returning the trusted members' do
+        cache.write(:branch_names, %w[trusted winner])
+
+        expect do
+          expect(write_cache).to contain_exactly('trusted', 'winner')
+        end.to change { operation_metric_value('rebuild', 'skipped_trusted') }.by(1)
+      end
+
+      it 'records only error when rebuilding raises' do
+        allow(cache).to receive(:read_with_trust).and_raise(StandardError, 'failure')
+
+        expect do
+          expect { write_cache }.to raise_error(StandardError, 'failure')
+        end.to change { operation_metric_value('rebuild', 'error') }.by(1)
+          .and not_change { operation_metric_value('rebuild', 'success') }
+      end
+
+      it 'records error when rebuild completion raises' do
+        allow(cache).to receive(:mark_rebuild_complete).and_raise(StandardError, 'completion failure')
+
+        expect do
+          expect { write_cache }.to raise_error(StandardError, 'completion failure')
+        end.to change { operation_metric_value('rebuild', 'error') }.by(1)
+          .and not_change { operation_metric_value('rebuild', 'success') }
+          .and change { trust_metric_value('granted') }.by(1)
+      end
+
+      it 'records error when returning the Redis connection raises' do
+        rebuild_committed = false
+
+        allow(cache).to receive(:grant_trust).and_wrap_original do |method, *args|
+          method.call(*args).tap { rebuild_committed = true }
+        end
+
+        allow(cache).to receive(:with).and_wrap_original do |method, *args, &block|
+          result = method.call(*args, &block)
+          next result unless rebuild_committed
+
+          rebuild_committed = false
+          raise StandardError, 'connection check-in failure'
+        end
+
+        expect do
+          expect { write_cache }.to raise_error(StandardError, 'connection check-in failure')
+        end.to change { operation_metric_value('rebuild', 'error') }.by(1)
+          .and not_change { operation_metric_value('rebuild', 'success') }
+      end
+
+      it 'records one error and logs rebuild details for a Redis failure' do
+        error = Redis::ConnectionError.new('failure')
+        allow(cache).to receive(:read_with_trust).and_raise(error)
+        expect(cache).to receive(:mark_untrusted).with(:branch_names)
+        expect(cache).to receive(:log_event).with(
+          :rebuild_failed,
+          :branch_names,
+          level: :error,
+          error_class: error.class.name,
+          error_message: error.message
+        )
+
+        expect do
+          expect { write_cache }.to raise_error(error)
+        end.to change { operation_metric_value('rebuild', 'error') }.by(1)
+          .and not_change { operation_metric_value('rebuild', 'success') }
+      end
+
+      it 'records one error without Redis failure logging when lock acquisition fails' do
+        error = StandardError.new('failure')
+        allow(cache).to receive(:mark_rebuild_in_progress).and_raise(error)
+        expect(cache).not_to receive(:log_event).with(:rebuild_failed, anything, anything)
+
+        expect do
+          expect { write_cache }.to raise_error(error)
+        end.to change { operation_metric_value('rebuild', 'error') }.by(1)
+      end
+
+      it 'records grant_skipped when the rebuilt set is evicted before trust' do
+        allow(cache).to receive(:grant_trust_if_present).and_return(false)
+
+        expect { write_cache }.to change { trust_metric_value('grant_skipped') }.by(1)
       end
     end
 
@@ -1113,6 +1316,30 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
         expect(pending_events).to be_empty
       end
     end
+
+    context 'with Prometheus metrics', :prometheus, :aggregate_failures do
+      it 'records a hit for a trusted read' do
+        cache.write(:branch_names, %w[main])
+
+        expect { cache.fetch(:branch_names) { block_value } }
+          .to change { operation_metric_value('fetch', 'hit') }.by(1)
+          .and not_change { operation_metric_value('fetch', 'miss') }
+      end
+
+      it 'records a miss and the nested rebuild after fallback succeeds' do
+        expect { cache.fetch(:branch_names) { block_value } }
+          .to change { operation_metric_value('fetch', 'miss') }.by(1)
+          .and change { operation_metric_value('rebuild', 'success') }.by(1)
+      end
+
+      it 'records only error when fallback raises' do
+        expect do
+          expect { cache.fetch(:branch_names) { raise StandardError, 'failure' } }
+            .to raise_error(StandardError, 'failure')
+        end.to change { operation_metric_value('fetch', 'error') }.by(1)
+          .and not_change { operation_metric_value('fetch', 'miss') }
+      end
+    end
   end
 
   describe '#search' do
@@ -1265,6 +1492,31 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
         expect(count).to eq(10)
       end
     end
+
+    context 'with Prometheus metrics', :prometheus, :aggregate_failures do
+      it 'records hit when constructing the lazy enumerator without forcing iteration' do
+        cache.write(:branch_names, %w[main])
+
+        result = nil
+        expect { result = cache.search(:branch_names, '*') { [] } }
+          .to change { operation_metric_value('search', 'hit') }.by(1)
+
+        expect(result).to be_an(Enumerator)
+      end
+
+      it 'records miss only after rebuild and enumerator construction succeed' do
+        expect { cache.search(:branch_names, '*') { %w[main] } }
+          .to change { operation_metric_value('search', 'miss') }.by(1)
+      end
+
+      it 'records only error when fallback raises' do
+        expect do
+          expect { cache.search(:branch_names, '*') { raise StandardError, 'failure' } }
+            .to raise_error(StandardError, 'failure')
+        end.to change { operation_metric_value('search', 'error') }.by(1)
+          .and not_change { operation_metric_value('search', 'miss') }
+      end
+    end
   end
 
   describe '#try_include?' do
@@ -1321,6 +1573,35 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
         # [false, false] because the cache is untrusted, forcing the caller
         # to take the cold-cache path and trigger a full rebuild.
         expect(cache.try_include?(:branch_names, 'new-branch')).to eq([false, false])
+      end
+    end
+
+    context 'with Prometheus metrics', :prometheus, :aggregate_failures do
+      it 'records hit for positive and negative trusted membership results' do
+        cache.write(:branch_names, %w[main])
+
+        expect do
+          expect(cache.try_include?(:branch_names, 'main')).to eq([true, true])
+        end.to change { operation_metric_value('include', 'hit') }.by(1)
+          .and not_change { operation_metric_value('include', 'miss') }
+        expect do
+          expect(cache.try_include?(:branch_names, 'missing')).to eq([false, true])
+        end.to change { operation_metric_value('include', 'hit') }.by(1)
+          .and not_change { operation_metric_value('include', 'miss') }
+      end
+
+      it 'records miss and preserves the untrusted return contract' do
+        expect do
+          expect(cache.try_include?(:branch_names, 'main')).to eq([false, false])
+        end.to change { operation_metric_value('include', 'miss') }.by(1)
+      end
+
+      it 'records error when the Redis transaction raises' do
+        allow(Gitlab::Redis::RepositoryCache).to receive(:with).and_raise(StandardError, 'failure')
+
+        expect do
+          expect { cache.try_include?(:branch_names, 'main') }.to raise_error(StandardError, 'failure')
+        end.to change { operation_metric_value('include', 'error') }.by(1)
       end
     end
   end
@@ -1382,6 +1663,36 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
 
         expect(cache.expire(:merged_branch_names)).to eq(1)
         expect(cache.exist?(:merged_branch_names)).to be(false)
+      end
+    end
+
+    context 'with Prometheus metrics', :prometheus, :aggregate_failures do
+      it 'records revoked trust for symbol and string set-backed keys' do
+        expect { cache.expire(:branch_names) }.to change { trust_metric_value('revoked', 'branch') }.by(1)
+        expect { cache.expire('tag_names') }.to change { trust_metric_value('revoked', 'tag') }.by(1)
+      end
+
+      it 'does not record a trust event for another key' do
+        expect { cache.expire(:branch_count) }.not_to change { trust_metric_value('revoked') }
+      end
+
+      it 'records revocation only for removed trust keys and preserves the deletion sum' do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.del(cache.trust_key(:tag_names))
+          redis.sadd(cache.cache_key(:merged_branch_names), 'merged')
+        end
+
+        expect do
+          expect(cache.expire(:branch_names, :tag_names, :merged_branch_names)).to eq(3)
+        end.to change { trust_metric_value('revoked', 'branch') }.by(1)
+          .and not_change { trust_metric_value('revoked', 'tag') }
+      end
+
+      it 'records revocation only for the first repeated expiration' do
+        expect do
+          expect(cache.expire(:branch_names)).to eq(1)
+          expect(cache.expire(:branch_names)).to eq(0)
+        end.to change { trust_metric_value('revoked') }.by(1)
       end
     end
 
@@ -1810,5 +2121,17 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
         expect(flag_exists).to be false
       end
     end
+  end
+
+  def operation_metric_value(operation, status, ref_type = 'branch')
+    metric = Gitlab::Metrics.client.get(:gitlab_ref_cache_operations_total)
+
+    metric&.get(operation: operation, ref_type: ref_type, status: status).to_f
+  end
+
+  def trust_metric_value(event, ref_type = 'branch')
+    metric = Gitlab::Metrics.client.get(:gitlab_ref_cache_trust_events_total)
+
+    metric&.get(ref_type: ref_type, event: event).to_f
   end
 end

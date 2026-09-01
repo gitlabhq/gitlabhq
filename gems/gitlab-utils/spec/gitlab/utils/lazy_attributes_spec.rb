@@ -9,15 +9,19 @@ RSpec.describe Gitlab::Utils::LazyAttributes do
 
       lazy_attr_reader :number, type: Numeric
       lazy_attr_reader :reader_1, :reader_2
+      lazy_attr_reader :uncached_nil, type: String, cache_nil: false
       lazy_attr_accessor :incorrect_type, :string_attribute, :accessor_2, type: String
 
       def initialize
         @number = -> { 1 }
         @reader_1 = 'reader_1'
         @reader_2 = -> { 'reader_2' }
+        @uncached_nil = -> { @source }
         @incorrect_type = -> { :incorrect_type }
         @accessor_2 = -> { 'accessor_2' }
       end
+
+      attr_writer :source
     end
   end
 
@@ -55,6 +59,28 @@ RSpec.describe Gitlab::Utils::LazyAttributes do
           instance.number
           instance.incorrect_type
           instance.accessor_2
+        end
+      end
+
+      context 'with cache_nil: false' do
+        it 're-resolves while nil, then caches the first non-nil value', :aggregate_failures do
+          expect(instance.uncached_nil).to be_nil
+
+          instance.source = 'resolved'
+          expect(instance.uncached_nil).to eq('resolved')
+
+          # Once a non-nil value is cached, a later change to the source is ignored.
+          instance.source = 'changed'
+          expect(instance.uncached_nil).to eq('resolved')
+        end
+
+        it 'treats a wrong-typed value as nil and keeps re-resolving', :aggregate_failures do
+          instance.source = :not_a_string
+          expect(instance.uncached_nil).to be_nil
+
+          # A later, correctly-typed value is resolved and cached.
+          instance.source = 'now valid'
+          expect(instance.uncached_nil).to eq('now valid')
         end
       end
     end

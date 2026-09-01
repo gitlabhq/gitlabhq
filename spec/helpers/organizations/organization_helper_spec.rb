@@ -240,7 +240,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
   end
 
   describe '#organization_settings_general_app_data' do
-    it 'returns expected json' do
+    it 'returns expected json', unless: Gitlab.ee? do
       expect(organization).to receive(:avatar_url).with(size: 192).and_return('avatar.jpg')
       expect(organization).to receive(:max_group_visibility_level).and_return(Gitlab::VisibilityLevel::PRIVATE)
 
@@ -462,6 +462,18 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
         )
 
         helper.push_organization_breadcrumbs(organization)
+      end
+
+      it 'does not escape special characters such as ampersands in the name' do
+        organization_with_special_chars = build_stubbed(:organization, name: 'Tooling & Support')
+
+        expect(helper).to receive(:push_to_schema_breadcrumb).with(
+          'Tooling & Support',
+          organization_path(organization_with_special_chars),
+          organization_with_special_chars.avatar_url
+        )
+
+        helper.push_organization_breadcrumbs(organization_with_special_chars)
       end
     end
   end

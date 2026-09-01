@@ -15,8 +15,18 @@ require 'spec_helper'
 # skips (an enable setting, an IP discriminator, and authenticated identity
 # resolution), each with the cohort flag in both states.
 RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_limiting, feature_category: :rate_limiting do
+  using RSpec::Parameterized::TableSyntax
+  include RackAttackSpecHelpers
+  include WorkhorseHelpers
+
   let(:aid) { 'shadow-spec-app-id' }
   let(:labkit_key) { "labkit:rl:{rack_request:product_analytics_collector:aid:#{aid}}" }
+
+  # Shared by every table below that needs an authenticated requester; tables
+  # needing extra fixtures (a project, a group) define those locally.
+  let_it_be(:user) { create(:user) }
+  let_it_be(:token) { create(:personal_access_token, user: user) }
+  let(:private_token_params) { { private_token: token.token } }
 
   def labkit_count
     Gitlab::Redis::RateLimiting.with { |redis| redis.get(labkit_key) }.to_i
@@ -123,6 +133,302 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
         get '/api/v4/projects', params: { private_token: token.token }
 
         expect(labkit_count_for('authenticated_api')).to eq(0)
+      end
+    end
+  end
+
+  # Tables below use only plain values or ref()/lazy{} - never a proc - per the
+  # testing guide's table-based tests section. perform_request dispatches generically
+  # off each table's :method/:path/:params/:headers/:login_as_user columns.
+  def perform_request
+    login_as(user) if login_as_user
+    public_send(method, path, params: params, headers: headers)
+  end
+
+  # Shadow+enforce a single cohort - what every table below needs to prove its own
+  # throttles block. The "dry run" describe further down enables every cohort at
+  # once instead, for a different reason (Rack::Attack's own boot-time throttling).
+  def enable_cohort!(cohort)
+    stub_feature_flags(
+      "rate_limiter_use_labkit_rack_cohort_#{cohort}": true,
+      "rate_limiter_use_labkit_rack_cohort_#{cohort}_enforce": true
+    )
+  end
+
+  # Shared by tables whose throttles each have their own <prefix>_enabled/
+  # _requests_per_period/_period_in_seconds setting group; the protected-paths and
+  # bypass/allowlist tables below override this locally with their own shape.
+  def stub_throttle_settings(enabled:)
+    stub_application_setting(
+      "#{setting_prefix}_enabled": enabled,
+      "#{setting_prefix}_requests_per_period": 1,
+      "#{setting_prefix}_period_in_seconds": 60
+    )
+  end
+
+  shared_examples 'a labkit-enforced throttle toggle' do
+    it 'rejects requests over the rate limit with the full RateLimit-* header set', :aggregate_failures do
+      stub_throttle_settings(enabled: true)
+
+      perform_request
+      expect(response).not_to have_gitlab_http_status(:too_many_requests)
+
+      expect_rejection(throttle_name) { perform_request }
+    end
+
+    it 'does not block requests over the same limit when the throttle setting is disabled', :aggregate_failures do
+      stub_throttle_settings(enabled: false)
+
+      3.times do
+        perform_request
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
+      end
+    end
+  end
+
+  shared_examples 'an exempt labkit throttle' do
+    it 'is exempt from the throttle and writes no counter for it', :aggregate_failures do
+      stub_throttle_settings
+
+      3.times do
+        perform_request
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
+      end
+
+      expect(labkit_count_for(throttle_name.delete_prefix('throttle_'))).to eq(0)
+    end
+  end
+
+  # Table-based coverage for the four "general" throttles (see
+  # Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry::GENERAL, cohort 2).
+  describe 'general web and API throttles' do
+    let(:headers) { {} }
+
+    before do
+      enable_cohort!(2)
+    end
+
+    # setting_prefix follows the uniform <prefix>_enabled/_requests_per_period/
+    # _period_in_seconds naming every one of these four throttles uses.
+    where(:throttle_name, :setting_prefix, :method, :path, :params, :login_as_user) do
+      'throttle_unauthenticated_web' | 'throttle_unauthenticated'     | :get | '/users/sign_in'      | {} | false
+      'throttle_authenticated_web'   | 'throttle_authenticated_web'   | :get | '/dashboard/snippets' | {} | true
+      'throttle_unauthenticated_api' | 'throttle_unauthenticated_api' | :get | '/api/v4/projects'    | {} | false
+      'throttle_authenticated_api' | 'throttle_authenticated_api' | :get | '/api/v4/projects' |
+        ref(:private_token_params) | false
+    end
+
+    with_them { include_examples 'a labkit-enforced throttle toggle' }
+  end
+
+  # Table-based coverage for the specialized-path throttles (packages, files,
+  # deprecated), cohort 1.
+  describe 'specialized API throttles' do
+    let_it_be(:project) { create(:project, :public, :custom_repo, files: { 'README' => 'foo' }) }
+    let_it_be(:group) { create(:group, :public) }
+    let(:files_token_params) { { ref: 'master', private_token: token.token } }
+    let(:headers) { {} }
+
+    before do
+      enable_cohort!(1)
+    end
+
+    where(:throttle_name, :setting_prefix, :method, :path, :params) do
+      'throttle_unauthenticated_packages_api' | 'throttle_unauthenticated_packages_api' | :get |
+        lazy { "/api/v4/projects/#{project.id}/packages/conan/v1/ping" } | {}
+      'throttle_authenticated_packages_api' | 'throttle_authenticated_packages_api' | :get |
+        lazy { "/api/v4/projects/#{project.id}/packages/conan/v1/ping" } | ref(:private_token_params)
+      'throttle_unauthenticated_files_api' | 'throttle_unauthenticated_files_api' | :get |
+        lazy { "/api/v4/projects/#{project.id}/repository/files/README" } | { ref: 'master' }
+      'throttle_authenticated_files_api' | 'throttle_authenticated_files_api' | :get |
+        lazy { "/api/v4/projects/#{project.id}/repository/files/README" } | ref(:files_token_params)
+      'throttle_unauthenticated_deprecated_api' | 'throttle_unauthenticated_deprecated_api' | :get |
+        lazy { "/api/v4/groups/#{group.id}" } | {}
+      'throttle_authenticated_deprecated_api' | 'throttle_authenticated_deprecated_api' | :get |
+        lazy { "/api/v4/groups/#{group.id}" } | ref(:private_token_params)
+    end
+
+    with_them do
+      let(:login_as_user) { false }
+
+      include_examples 'a labkit-enforced throttle toggle'
+    end
+  end
+
+  # Table-based coverage for the git throttles (git_http unauth/auth, git_lfs auth),
+  # cohort 3.
+  describe 'git throttles' do
+    let_it_be(:project) { create(:project, :small_repo, :public) }
+    let(:git_auth_headers) { workhorse_internal_api_request_header.merge(basic_auth_headers(user, token)) }
+
+    before do
+      enable_cohort!(3)
+    end
+
+    where(:throttle_name, :setting_prefix, :method, :path, :headers) do
+      'throttle_unauthenticated_git_http' | 'throttle_unauthenticated_git_http' | :get |
+        '/gitlab-org/gitlab-test.git/info/refs?service=git-upload-pack' | {}
+      'throttle_authenticated_git_http' | 'throttle_authenticated_git_http' | :get |
+        lazy { "/#{project.full_path}.git/info/refs?service=git-upload-pack" } | ref(:git_auth_headers)
+      'throttle_authenticated_git_lfs' | 'throttle_authenticated_git_lfs' | :get |
+        lazy { "/#{project.full_path}.git/info/lfs/locks" } | ref(:git_auth_headers)
+    end
+
+    with_them do
+      let(:params) { {} }
+      let(:login_as_user) { false }
+
+      include_examples 'a labkit-enforced throttle toggle'
+    end
+  end
+
+  # Unlike the tables above, all six throttles here share ONE setting group
+  # (throttle_protected_paths_*); what varies is which admin path list applies
+  # (protected_paths vs protected_paths_for_get_request) - path doubles as both.
+  describe 'protected-paths throttles' do
+    let(:headers) { {} }
+
+    before do
+      enable_cohort!(3)
+    end
+
+    # Deliberately overrides the top-level stub_throttle_settings by name, not a
+    # naming collision: the shared example calls it generically, so this table's
+    # different setting shape must be reachable under the same method name.
+    def stub_throttle_settings(enabled:)
+      stub_application_setting(
+        throttle_protected_paths_enabled: enabled,
+        throttle_protected_paths_requests_per_period: 1,
+        throttle_protected_paths_period_in_seconds: 60,
+        setting_key => [path]
+      )
+    end
+
+    where(:throttle_name, :setting_key, :method, :path, :params, :login_as_user) do
+      'throttle_unauthenticated_protected_paths' | :protected_paths | :post | '/users/sign_in' |
+        { user: { login: 'a-user', password: 'a-password' } } | false
+      'throttle_authenticated_protected_paths_api' | :protected_paths | :post | '/api/v4/user/emails' |
+        ref(:private_token_params) | false
+      'throttle_authenticated_protected_paths_web' | :protected_paths | :post | '/users/confirmation' |
+        {} | true
+      'throttle_unauthenticated_get_protected_paths' | :protected_paths_for_get_request | :get |
+        '/users/sign_in' | {} | false
+      'throttle_authenticated_get_protected_paths_api' | :protected_paths_for_get_request | :get |
+        '/api/v4/user/emails' | ref(:private_token_params) | false
+      'throttle_authenticated_get_protected_paths_web' | :protected_paths_for_get_request | :get |
+        '/users/confirmation' | {} | true
+    end
+
+    with_them { include_examples 'a labkit-enforced throttle toggle' }
+  end
+
+  # The bypass rule is one :skip on every limiter, ahead of any throttle's own
+  # counting rule (Limiters::BYPASS_RULE_NAME) - two representative throttles (one
+  # unauthenticated, one authenticated) prove it generalizes across auth state.
+  describe 'bypass header (GITLAB_THROTTLE_BYPASS_HEADER)' do
+    let(:headers) { { 'Gitlab-Bypass' => '1' } }
+    let(:login_as_user) { false }
+
+    before do
+      stub_env('GITLAB_THROTTLE_BYPASS_HEADER', 'GITLAB_BYPASS')
+      enable_cohort!(2)
+    end
+
+    # Delegates to the top-level stub_throttle_settings(enabled:) instead of
+    # rebuilding the same hash, since bypass always stubs it enabled.
+    def stub_throttle_settings
+      super(enabled: true)
+    end
+
+    where(:throttle_name, :setting_prefix, :method, :path, :params) do
+      'throttle_unauthenticated_api' | 'throttle_unauthenticated_api' | :get | '/api/v4/projects' | {}
+      'throttle_authenticated_api' | 'throttle_authenticated_api' | :get | '/api/v4/projects' |
+        ref(:private_token_params)
+    end
+
+    with_them { include_examples 'an exempt labkit throttle' }
+  end
+
+  # The allowlist rule is one :skip on every limiter (Limiters::ALLOWLIST_RULE_NAME).
+  # "an allowlisted user" below additionally proves mutual exemption from both API
+  # throttles in a single request.
+  describe 'user allowlist (GITLAB_THROTTLE_USER_ALLOWLIST)' do
+    let(:headers) { {} }
+
+    before do
+      allow(Gitlab::RackAttack).to receive(:user_allowlist).and_return(Set.new([user.id]))
+      # The allowlist is baked into the memoized rule set; rebuild it after stubbing.
+      Gitlab::RackAttack::LabkitRateLimit::Limiters.reset!
+      enable_cohort!(2)
+    end
+
+    after do
+      Gitlab::RackAttack::LabkitRateLimit::Limiters.reset!
+    end
+
+    # Delegates to the top-level stub_throttle_settings(enabled:) instead of
+    # rebuilding the same hash, since allowlist always stubs it enabled.
+    def stub_throttle_settings
+      super(enabled: true)
+    end
+
+    where(:throttle_name, :setting_prefix, :method, :path, :params, :login_as_user) do
+      'throttle_authenticated_api' | 'throttle_authenticated_api' | :get | '/api/v4/projects' |
+        ref(:private_token_params) | false
+      'throttle_authenticated_web' | 'throttle_authenticated_web' | :get | '/dashboard/snippets' | {} | true
+    end
+
+    with_them { include_examples 'an exempt labkit throttle' }
+  end
+
+  # Naming a throttle swaps its rule to :log (see Limiters#build_rules). Every
+  # cohort must be fully enforced (ThrottleRegistry.fully_enforced?): Rack::Attack's
+  # own registration is fixed at boot, before this stub_env runs, so it still blocks.
+  describe 'dry run (GITLAB_THROTTLE_DRY_RUN)' do
+    before do
+      labkit_flags = Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry.cohorts.flat_map do |cohort|
+        [
+          :"rate_limiter_use_labkit_rack_cohort_#{cohort}",
+          :"rate_limiter_use_labkit_rack_cohort_#{cohort}_enforce"
+        ]
+      end
+      stub_feature_flags(labkit_flags.index_with(true))
+    end
+
+    after do
+      Gitlab::RackAttack::LabkitRateLimit::Limiters.reset!
+    end
+
+    it 'never blocks a dry-run throttle even over its limit', :aggregate_failures do
+      stub_env('GITLAB_THROTTLE_DRY_RUN', 'throttle_unauthenticated_api')
+      Gitlab::RackAttack::LabkitRateLimit::Limiters.reset!
+      stub_application_setting(
+        throttle_unauthenticated_api_enabled: true,
+        throttle_unauthenticated_api_requests_per_period: 1,
+        throttle_unauthenticated_api_period_in_seconds: 60
+      )
+
+      2.times do
+        get '/api/v4/projects'
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
+      end
+    end
+
+    # throttle_unauthenticated_web predates the API/web split; naming the legacy
+    # alias must still resolve to the modern throttle name (see
+    # Gitlab::RackAttack.track?).
+    it 'honors the legacy throttle_unauthenticated alias for the web throttle', :aggregate_failures do
+      stub_env('GITLAB_THROTTLE_DRY_RUN', 'throttle_unauthenticated')
+      Gitlab::RackAttack::LabkitRateLimit::Limiters.reset!
+      stub_application_setting(
+        throttle_unauthenticated_enabled: true,
+        throttle_unauthenticated_requests_per_period: 1,
+        throttle_unauthenticated_period_in_seconds: 60
+      )
+
+      2.times do
+        get '/users/sign_in'
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
     end
   end

@@ -571,7 +571,7 @@ group :development, :test do
   gem 'keela', '~> 0.4.1', feature_category: :tooling, require: false
 
   # Benchmarking & profiling
-  gem 'benchmark-ips', '~> 2.14.0', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+  gem 'benchmark-ips', '~> 2.15.0', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
   gem 'benchmark-memory', '~> 0.1', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
   gem 'knapsack', '~> 4.0.0', feature_category: :tooling
@@ -680,7 +680,7 @@ gem 'gitaly', '~> 19.2', feature_category: :gitaly
 gem 'gitlab-kas-grpc', '~> 19.4.0-rc1', feature_category: :deployment_management
 
 # Knowledge Graph GRPC protocol definitions
-gem 'gitlab-orbit-proto', '~> 0.100.0', feature_category: :knowledge_graph
+gem 'gitlab-orbit-proto', '~> 0.105.0', feature_category: :knowledge_graph
 
 gem 'grpc', '~> 1.81.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 

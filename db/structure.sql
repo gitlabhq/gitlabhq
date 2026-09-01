@@ -25409,6 +25409,7 @@ CREATE TABLE namespace_settings (
     policy_store_experiment_enabled boolean DEFAULT false NOT NULL,
     enterprise_user_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     seat_assignment_model_enabled boolean DEFAULT false NOT NULL,
+    ai_custom_instructions text,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_d9644d516f CHECK ((char_length(step_up_auth_required_oauth_provider) <= 255)),
     CONSTRAINT check_namespace_settings_enterprise_user_settings_is_hash CHECK ((jsonb_typeof(enterprise_user_settings) = 'object'::text)),
@@ -40089,6 +40090,9 @@ ALTER TABLE ONLY project_type_ci_runners
 
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
+
+ALTER TABLE namespace_settings
+    ADD CONSTRAINT check_939de199cb CHECK ((char_length(ai_custom_instructions) <= 2000)) NOT VALID;
 
 ALTER TABLE abuse_reports
     ADD CONSTRAINT check_95e5f0c300 CHECK ((char_length(message) <= 2048)) NOT VALID;

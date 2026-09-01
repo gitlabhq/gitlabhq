@@ -34,6 +34,8 @@ To query individual pipeline records, use [Pipelines](pipelines.md).
 
 ## Query fields
 
+Use these fields in the `query` parameter to filter your results.
+
 | Field                                  | Name       | Operators                 |
 | -------------------------------------- | ---------- | ------------------------- |
 | [Finished at](#finished-at)         | `finished` | `=`, `>`, `<`, `>=`, `<=` |

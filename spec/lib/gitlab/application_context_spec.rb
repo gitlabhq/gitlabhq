@@ -146,6 +146,20 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
       )
     end
 
+    it 're-resolves the user lambda instead of caching a nil result' do
+      current = nil
+      context = described_class.new(user: -> { current })
+
+      # First read happens before the user is known (e.g. before authentication).
+      expect(context.to_lazy_hash[:user].call).to be_nil
+
+      current = user
+
+      # A later read must pick up the now-known user, not a memoized nil.
+      expect(context.to_lazy_hash[:user].call).to eq(user.username)
+      expect(context.to_lazy_hash[Labkit::Fields::GL_USER_ID].call).to eq(user.id)
+    end
+
     it 'falls back to a projects namespace when a project is passed but no namespace' do
       context = described_class.new(project: project)
 

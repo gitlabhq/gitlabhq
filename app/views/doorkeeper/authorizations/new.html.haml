@@ -48,27 +48,27 @@
           = safe_format(_('You will be redirected to %{strong_start}%{domain}%{strong_end} after authorizing.'),
             { domain: domain }, tag_pair(tag.strong, :strong_start, :strong_end))
   %div
-    = form_tag oauth_authorization_path, method: :post, class: 'gl-inline-block gl-pr-3' do
-      = hidden_field_tag :client_id, @pre_auth.client.uid
-      = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
-      = hidden_field_tag :state, @pre_auth.state
-      = hidden_field_tag :response_type, @pre_auth.response_type
-      = hidden_field_tag :scope, @pre_auth.scope
-      = hidden_field_tag :nonce, @pre_auth.nonce
-      = hidden_field_tag :code_challenge, @pre_auth.code_challenge
-      = hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method
+    = form_with url: oauth_authorization_path, method: :post, class: 'gl-inline-block gl-pr-3' do |f|
+      = f.hidden_field :client_id, value: @pre_auth.client.uid
+      = f.hidden_field :redirect_uri, value: @pre_auth.redirect_uri
+      = f.hidden_field :state, value: @pre_auth.state
+      = f.hidden_field :response_type, value: @pre_auth.response_type
+      = f.hidden_field :scope, value: @pre_auth.scope
+      = f.hidden_field :nonce, value: @pre_auth.nonce
+      = f.hidden_field :code_challenge, value: @pre_auth.code_challenge
+      = f.hidden_field :code_challenge_method, value: @pre_auth.code_challenge_method
       = render Pajamas::ButtonComponent.new(type: :submit,
         variant: :confirm,
         button_options: { data: { testid: 'authorization-button' } }) do
         = safe_format(_('Authorize %{client_name}'), { client_name: @pre_auth.client.name })
-    = form_tag oauth_authorization_path, method: :delete, class: 'gl-inline-block' do
-      = hidden_field_tag :client_id, @pre_auth.client.uid
-      = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
-      = hidden_field_tag :state, @pre_auth.state
-      = hidden_field_tag :response_type, @pre_auth.response_type
-      = hidden_field_tag :scope, @pre_auth.scope
-      = hidden_field_tag :nonce, @pre_auth.nonce
-      = hidden_field_tag :code_challenge, @pre_auth.code_challenge
-      = hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method
+    = form_with url: oauth_authorization_path, method: :delete, class: 'gl-inline-block' do |f|
+      = f.hidden_field :client_id, value: @pre_auth.client.uid
+      = f.hidden_field :redirect_uri, value: @pre_auth.redirect_uri
+      = f.hidden_field :state, value: @pre_auth.state
+      = f.hidden_field :response_type, value: @pre_auth.response_type
+      = f.hidden_field :scope, value: @pre_auth.scope
+      = f.hidden_field :nonce, value: @pre_auth.nonce
+      = f.hidden_field :code_challenge, value: @pre_auth.code_challenge
+      = f.hidden_field :code_challenge_method, value: @pre_auth.code_challenge_method
       = render Pajamas::ButtonComponent.new(type: :submit) do
         = _('Cancel')

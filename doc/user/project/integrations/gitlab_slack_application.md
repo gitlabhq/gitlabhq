@@ -119,6 +119,13 @@ Alternatively, you can [configure the integration](https://about.gitlab.com/solu
 > For more information, see the history.
 > This feature is available for testing, but not ready for production use.
 
+<!-- markdownlint-disable-next-line MD028 -- Two distinct notes, so the blank line between them is intentional. -->
+
+> [!note]
+> If you use multiple Slack installations without Slack Enterprise Grid, Slack rate limits GitLab Duo to 15 conversation objects in each minute.
+> This prevents the integration from functioning because a single invocation requests 50 messages from the channel history to use as context.
+> To avoid rate limits for GitLab Duo in Slack, keep all of your Slack workspaces in a single Enterprise Grid organization.
+
 You can interact with [GitLab Duo](../../gitlab_duo/_index.md) directly from Slack by mentioning the
 GitLab bot in any channel or thread where the bot is present. GitLab Duo reads the full
 conversation thread and recent channel history as context, runs a flow on a CI/CD runner, and posts the

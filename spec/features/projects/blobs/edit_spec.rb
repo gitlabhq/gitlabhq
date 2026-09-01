@@ -163,6 +163,21 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
         expect(page).not_to have_xpath('//ol//li//ul')
       end
 
+      it 'switches to the live markdown preview after renaming to markdown' do
+        visit project_edit_blob_path(project, tree_join(branch, 'CHANGELOG'))
+        fill_editor(content: '# Title\\n')
+        fill_in 'file_path', with: 'CHANGELOG.md'
+
+        # The markdown extensions load asynchronously with no visible signal,
+        # so retry the tab click until the live preview appears
+        wait_for('live markdown preview') do
+          click_on 'Preview changes'
+          page.has_css?('.source-editor-preview .md h1', text: 'Title', wait: 1)
+        end
+
+        expect(page).not_to have_css('.diff-file')
+      end
+
       it 'renders the preview using the renamed file type' do
         visit project_edit_blob_path(project, tree_join(branch, 'CHANGELOG'))
         fill_editor(content: "* Title\n")

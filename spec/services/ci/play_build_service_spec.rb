@@ -16,12 +16,8 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
 
   subject(:execute_service) { service_result.payload[:job] }
 
-  before do
-    project.update!(ci_pipeline_variables_minimum_override_role: :developer)
-  end
-
   context 'when project does not have repository yet' do
-    let(:project) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     it 'allows user to play build if protected branch rules are met' do
       create(:protected_branch, :developers_can_merge, name: build.ref, project: project)
@@ -37,7 +33,7 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
   end
 
   context 'when project has repository' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
 
     it 'allows user with developer role to play a build' do
       execute_service
@@ -56,14 +52,9 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
     let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
     let!(:branch) { create(:protected_branch, :developers_can_merge, name: build.ref, project: project) }
 
-    it 'enqueues the build' do
+    it 'enqueues the build and reassigns the build user', :aggregate_failures do
       expect(execute_service).to eq build
       expect(build.reload).to be_pending
-    end
-
-    it 'reassignes build user correctly' do
-      execute_service
-
       expect(build.reload.user).to eq user
     end
 
@@ -79,6 +70,10 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
       let(:job_variables) do
         [{ key: 'first', value: 'first' },
           { key: 'second', value: 'second' }]
+      end
+
+      before_all do
+        project.update!(ci_pipeline_variables_minimum_override_role: :developer)
       end
 
       it 'assigns the variables to the build' do
@@ -100,7 +95,7 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
       end
 
       context 'when user defined variables are restricted' do
-        before do
+        before_all do
           project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
         end
 
@@ -153,15 +148,10 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
       context 'when inputs are invalid' do
         let(:job_inputs) { { unknown_input: 'value' } }
 
-        it 'returns an error response' do
+        it 'returns an error response and does not enqueue the build', :aggregate_failures do
           expect(service_result).to be_a(ServiceResponse)
           expect(service_result.error?).to be true
           expect(service_result.message).to include('Unknown input')
-        end
-
-        it 'does not enqueue the build' do
-          service_result
-
           expect(build.reload).to be_manual
         end
       end
@@ -199,19 +189,16 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
   end
 
   context 'when build is not a playable manual action' do
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+
     let(:build) { create(:ci_build, :success, pipeline: pipeline) }
     let!(:branch) { create(:protected_branch, :developers_can_merge, name: build.ref, project: project) }
 
-    it 'duplicates the build' do
+    it 'duplicates the build and assigns users correctly', :aggregate_failures do
       duplicate = execute_service
 
       expect(duplicate).not_to eq build
       expect(duplicate).to be_pending
-    end
-
-    it 'assigns users correctly' do
-      duplicate = execute_service
-
       expect(build.user).not_to eq user
       expect(duplicate.user).to eq user
     end
@@ -219,12 +206,11 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
     context 'and is not retryable' do
       let(:build) { create(:ci_build, :deployment_rejected, pipeline: pipeline) }
 
-      it 'does not duplicate the build' do
-        expect { execute_service }.not_to change { Ci::Build.count }
-      end
+      it 'does not duplicate or enqueue the build', :aggregate_failures do
+        build_status = build.status
 
-      it 'does not enqueue the build' do
-        expect { execute_service }.not_to change { build.status }
+        expect { execute_service }.not_to change { Ci::Build.count }
+        expect(build.reload.status).to eq(build_status)
       end
     end
   end

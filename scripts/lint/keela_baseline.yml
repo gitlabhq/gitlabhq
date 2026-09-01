@@ -124,8 +124,6 @@ constants:
   - SETTINGS_BASED_TYPES
   ee/app/services/work_items/legacy_epics/imports/create_from_imported_epic_service.rb:
   - ADDITIONAL_IMPORT_ASSOCIATIONS
-  ee/lib/ai/tool_rules/registry.rb:
-  - UNGOVERNED_TOOLS
   ee/lib/ee.rb:
   - CUSTOMER_LICENSE_SUPPORT_URL
   ee/lib/ee/gitlab/background_migration/backfill_security_inventory_filters.rb:

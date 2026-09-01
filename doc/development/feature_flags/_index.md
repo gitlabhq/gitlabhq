@@ -335,7 +335,7 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | `group`             | yes      | The [group](https://handbook.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 | `feature_issue_url` | no       | The URL to the original feature issue.                         |
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
-| `log_state_changes` | no       | Used to log the state of the feature flag                      |
+| `log_state_changes` | no       | Set to `true` to [log the state of the feature flag](#logging). |
 
 > [!note]
 > All validations are skipped when running in `RAILS_ENV=production`.
@@ -880,16 +880,35 @@ Access `http://gdk.test:3000/rails/features` to see and manage the feature flag 
 
 ### Logging
 
-Usage and state of the feature flag are logged if either:
+When code calls `Feature.enabled?` or `Feature.disabled?` for a flag, GitLab records the checked state once per request.
+The state appears in structured logs as a `feature_flag_states` array, with entries like `my_feature_flag:1` for enabled or `my_feature_flag:0` for disabled.
+You can find this field in `production_json.log`, `api_json.log`, exception logs (as `exception.feature_flag_states`), and Sentry error events.
 
-- `log_state_changes` is set to `true` in the feature flag definition.
-- `milestone` refers to a milestone that is greater than or equal to the current GitLab version.
+GitLab logs a flag's state only when both of these conditions hold:
 
-When the state of a feature flag is logged, it can be identified by using the `"json.feature_flag_states": "feature_flag_name:1"` or `"json.feature_flag_states": "feature_flag_name:0"` condition in Kibana.
-You can see an example in [this](https://log.gprd.gitlab.net/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-7d%2Fd,to:now))&_a=(columns:!(json.feature_flag_states),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,field:json.feature_flag_states,index:'7092c4e2-4eb5-46f2-8305-a7da2edad090',key:json.feature_flag_states,negate:!f,params:(query:'optimize_where_full_path_in:1'),type:phrase),query:(match_phrase:(json.feature_flag_states:'optimize_where_full_path_in:1')))),hideChart:!f,index:'7092c4e2-4eb5-46f2-8305-a7da2edad090',interval:auto,query:(language:kuery,query:''),sort:!(!(json.time,desc)))) link.
+- The [`feature_flag_state_logs`](https://gitlab.com/gitlab-org/gitlab/-/blob/6deb6ecbc69f05a80d920a295dfc1a6a303fc7a0/config/feature_flags/ops/feature_flag_state_logs.yml) `ops` feature flag is enabled for the request. This flag is disabled by default, and it applies to any GitLab instance, not only GitLab.com.
+- Either the flag definition sets `log_state_changes: true`, or the flag's `milestone` is greater than or equal to the current GitLab version.
+
+Because of the second condition, GitLab logs a flag's state automatically while its milestone is current or in the future.
+Set `log_state_changes: true` in the flag's definition file when you still need logs after the milestone has passed.
+For example, set it during a prolonged rollout, or while you debug an issue that you suspect relates to the flag.
+
+The logs can answer questions such as:
+
+- Whether the requests that raised an error or a Sentry event had the flag enabled or disabled.
+- Whether a percentage rollout reaches real traffic, and in what proportion.
+- Whether requests with the flag enabled behave differently from requests with it disabled, for example in request duration.
+- Impact that the feature flag changes might have on database metrics, such as count of database requests or duration of database calls.
 
 > [!note]
-> Only 20% of the requests log the state of the feature flags. This is controlled with the [`feature_flag_state_logs`](https://gitlab.com/gitlab-org/gitlab/-/blob/6deb6ecbc69f05a80d920a295dfc1a6a303fc7a0/config/feature_flags/ops/feature_flag_state_logs.yml) feature flag.
+> On GitLab.com, GitLab enables `feature_flag_state_logs` for 20% of requests.
+
+#### Search for feature flag states in Kibana
+
+When the state of a feature flag is logged, you can find it in Kibana with the `"json.feature_flag_states": "feature_flag_name:1"` or `"json.feature_flag_states": "feature_flag_name:0"` condition.
+For a library of saved visualizations, see the [FF Observability](https://log.gprd.gitlab.net/app/visualize#/?s=FF%20Observability) collection in Kibana.
+
+This search works on GitLab.com logs, available at [`log.gprd.gitlab.net`](https://log.gprd.gitlab.net).
 
 ## Changelog
 

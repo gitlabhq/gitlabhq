@@ -6,7 +6,8 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
   include RepoHelpers
   include ProjectForksHelper
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:namespace) { create(:namespace) }
+  let(:project) { create(:project, :repository, namespace: namespace) }
   let(:user) { project.creator }
 
   let(:branch) { project.default_branch }
@@ -52,18 +53,16 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     context "with commits" do
       subject { push_data[:commits] }
 
-      it { is_expected.to be_an(Array) }
-
-      it 'has 1 element' do
+      it 'is an array with 1 element', :aggregate_failures do
+        is_expected.to be_an(Array)
         expect(subject.size).to eq(1)
       end
 
       context "the commit" do
         subject { push_data[:commits].first }
 
-        it { expect(subject[:timestamp].in_time_zone).to eq(commit.date.in_time_zone) }
-
-        it 'includes expected commit data' do
+        it 'includes expected commit data', :aggregate_failures do
+          expect(subject[:timestamp].in_time_zone).to eq(commit.date.in_time_zone)
           is_expected.to match a_hash_including(
             id: commit.id,
             message: commit.safe_message,
@@ -98,6 +97,8 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     subject(:execute_service) { service.execute }
 
     context "with an existing branch" do
+      let_it_be(:commit_author) { create(:user, email: sample_commit.author_email) }
+
       it 'generates a push event with one commit' do
         execute_service
 
@@ -119,8 +120,6 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
           end
         end
 
-        let!(:commit_author) { create(:user, email: sample_commit.author_email) }
-
         it 'tracks the event' do
           expect { subject }
           .to trigger_internal_events('commit_change_to_ciconfigfile')
@@ -132,20 +131,25 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
             'redis_hll_counters.pipeline_authoring.pipeline_authoring_total_unique_counts_weekly',
             'redis_hll_counters.pipeline_authoring.pipeline_authoring_total_unique_counts_monthly'
           )
+          .and not_change { Ci::ProjectMetric.count }
         end
 
-        context 'when the commit has a Duo-Workflow-Definition trailer' do
+        context 'when the commit has a Duo-Workflow-Definition trailer', :aggregate_failures do
           before do
             allow_next_instance_of(Commit) do |commit|
               allow(commit).to receive(:trailers).and_return({ 'Duo-Workflow-Definition' => 'ci_expert_agent/v1' })
             end
           end
 
-          it 'tracks the event with the trailer value as author_source' do
+          it 'tracks the event and persists ci_config_generated_by on the project metric' do
             expect { subject }
               .to trigger_internal_events('commit_change_to_ciconfigfile')
               .with(category: 'Git::BranchHooksService', user: commit_author, project: project,
                 additional_properties: { author_source: 'ci_expert_agent/v1' })
+              .and change { Ci::ProjectMetric.where(project_id: project.id).count }.by(1)
+
+            expect(Ci::ProjectMetric.find_by(project_id: project.id).ci_config_generated_by)
+              .to eq('ci_expert_agent/v1')
           end
         end
 
@@ -213,28 +217,6 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
             .not_to trigger_internal_events('commit_change_to_ciconfigfile')
           end
         end
-
-        context 'when the commit has a known AI agent trailer' do
-          before do
-            allow_next_instance_of(Commit) do |commit|
-              allow(commit).to receive(:trailers).and_return({ 'Duo-Workflow-Definition' => 'ci_expert_agent/v1' })
-            end
-          end
-
-          it 'persists ci_config_generated_by on the project metric' do
-            expect { subject }
-              .to change { Ci::ProjectMetric.where(project_id: project.id).count }.by(1)
-
-            expect(Ci::ProjectMetric.find_by(project_id: project.id).ci_config_generated_by)
-              .to eq('ci_expert_agent/v1')
-          end
-        end
-
-        context 'when the commit has no AI agent trailer' do
-          it 'does not persist ci_config_generated_by' do
-            expect { subject }.not_to change { Ci::ProjectMetric.count }
-          end
-        end
       end
 
       context 'with creating CI config' do
@@ -244,8 +226,6 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
           end
         end
 
-        let_it_be(:commit_author) { create(:user, email: sample_commit.author_email) }
-
         it 'tracks the create_ci_config_file event' do
           expect { subject }
             .to trigger_internal_events('create_ci_config_file')
@@ -253,18 +233,22 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
               additional_properties: { author_source: 'human' })
         end
 
-        context 'when the commit has a Duo-Workflow-Definition trailer' do
+        context 'when the commit has a Duo-Workflow-Definition trailer', :aggregate_failures do
           before do
             allow_next_instance_of(Commit) do |c|
               allow(c).to receive(:trailers).and_return({ 'Duo-Workflow-Definition' => 'ci_expert_agent/v1' })
             end
           end
 
-          it 'tracks the event with the trailer value as author_source' do
+          it 'tracks the event and persists ci_config_generated_by on the project metric' do
             expect { subject }
               .to trigger_internal_events('create_ci_config_file')
               .with(user: commit_author, project: project, namespace: project.namespace,
                 additional_properties: { author_source: 'ci_expert_agent/v1' })
+              .and change { Ci::ProjectMetric.where(project_id: project.id).count }.by(1)
+
+            expect(Ci::ProjectMetric.find_by(project_id: project.id).ci_config_generated_by)
+              .to eq('ci_expert_agent/v1')
           end
         end
 
@@ -429,7 +413,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
       end
 
       context 'with a real commit containing a Duo-Workflow-Definition trailer', :aggregate_failures do
-        let(:commit_author) { create(:user, :with_namespace, email: 'agent@example.com') }
+        let_it_be(:commit_author) { create(:user, :with_namespace, email: 'agent@example.com') }
         let(:agent_commit) do
           project.repository.create_file(
             commit_author,
@@ -443,16 +427,12 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
         let(:oldrev) { project.repository.commit(agent_commit).parent_id }
         let(:newrev) { agent_commit }
 
-        it 'tracks commit_change_to_ciconfigfile with the trailer value as author_source' do
+        it 'tracks the event and writes ci_config_generated_by to ci_project_metrics' do
           expect { subject }
             .to trigger_internal_events('commit_change_to_ciconfigfile')
             .with(user: commit_author, project: project,
               additional_properties: { author_source: 'ci_expert_agent/v1' })
-        end
-
-        it 'writes ci_config_generated_by to ci_project_metrics', :aggregate_failures do
-          expect { subject }
-            .to change { Ci::ProjectMetric.where(project_id: project.id).count }.by(1)
+            .and change { Ci::ProjectMetric.where(project_id: project.id).count }.by(1)
 
           expect(Ci::ProjectMetric.find_by(project_id: project.id).ci_config_generated_by)
             .to eq('ci_expert_agent/v1')
@@ -463,7 +443,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     context "with a new default branch" do
       let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
-      it 'generates a push event with more than one commit' do
+      it 'generates a push event with more than one commit and marks branch as protected', :aggregate_failures do
         execute_service
 
         expect(event).to be_an_instance_of(PushEvent)
@@ -475,11 +455,6 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
         expect(event.push_event_payload.commit_title).to eq('Change some files')
         expect(event.push_event_payload.ref).to eq('master')
         expect(event.push_event_payload.commit_count).to be > 1
-      end
-
-      it 'correctly marks branch as protected' do
-        execute_service
-
         expect(ProtectedBranch.protected?(project, branch)).to be(true)
       end
     end
@@ -596,7 +571,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     context 'when the commit has a signature' do
       context 'when the signature is already cached' do
         before do
-          create(:gpg_signature, commit_sha: commit.id)
+          create(:gpg_signature, commit_sha: commit.id, project: project)
         end
 
         it 'does not queue a CreateCommitSignatureWorker' do
@@ -670,26 +645,21 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     context 'creating the default branch' do
       let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
-      it 'processes a limited number of commit messages' do
+      it 'processes a limited number of commit messages and collects the related metrics', :aggregate_failures do
         expect(project.repository)
           .to receive(:commits)
           .with(newrev, limit: threshold_limit)
           .and_call_original
 
         expect(ProcessCommitWorker).to receive(:perform_in).twice
-
-        service.execute
-
-        expect(commits_count).to eq(project.repository.commit_count_for_ref(newrev))
-      end
-
-      it 'collects the related metrics' do
         expect(Gitlab::Metrics).to receive(:add_event).with(:push_commit, { branch: 'master' })
         expect(Gitlab::Metrics).to receive(:add_event).with(:push_branch, {})
         expect(Gitlab::Metrics).to receive(:add_event).with(:change_default_branch, {})
         expect(Gitlab::Metrics).to receive(:add_event).with(:process_commit_limit_overflow)
 
         service.execute
+
+        expect(commits_count).to eq(project.repository.commit_count_for_ref(newrev))
       end
 
       context 'when limit is not hit' do

@@ -2,7 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Database::ConsistencyFixService, feature_category: :cell do
+RSpec.describe Database::ConsistencyFixService, feature_category: :cell, factory_default: :keep do
+  let_it_be(:organization) { create_default(:common_organization) }
+  let_it_be(:namespace) { create(:namespace) }
+
   describe '#execute' do
     context 'fixing namespaces inconsistencies' do
       subject(:consistency_fix_service) do
@@ -17,20 +20,16 @@ RSpec.describe Database::ConsistencyFixService, feature_category: :cell do
 
       let(:table) { 'public.namespaces' }
       let!(:namespace) { create(:namespace) }
-      let!(:namespace_mirror) { Ci::NamespaceMirror.find_by(namespace_id: namespace.id) }
 
       context 'when both objects exist' do
-        it 'creates a Namespaces::SyncEvent to modify the target object' do
+        it 'creates a Namespaces::SyncEvent and enqueues the worker', :aggregate_failures do
+          expect(::Namespaces::ProcessSyncEventsWorker).to receive(:perform_async)
+
           expect do
             consistency_fix_service.execute(ids: [namespace.id])
           end.to change {
             Namespaces::SyncEvent.where(namespace_id: namespace.id).count
           }.by(1)
-        end
-
-        it 'enqueues the worker to process the Namespaces::SyncEvents' do
-          expect(::Namespaces::ProcessSyncEventsWorker).to receive(:perform_async)
-          consistency_fix_service.execute(ids: [namespace.id])
         end
       end
 
@@ -59,21 +58,17 @@ RSpec.describe Database::ConsistencyFixService, feature_category: :cell do
       end
 
       let(:table) { 'public.projects' }
-      let!(:project) { create(:project) }
-      let!(:project_mirror) { Ci::ProjectMirror.find_by(project_id: project.id) }
+      let!(:project) { create(:project, namespace: namespace) }
 
       context 'when both objects exist' do
-        it 'creates a Projects::SyncEvent to modify the target object' do
+        it 'creates a Projects::SyncEvent and enqueues the worker', :aggregate_failures do
+          expect(::Projects::ProcessSyncEventsWorker).to receive(:perform_async)
+
           expect do
             consistency_fix_service.execute(ids: [project.id])
           end.to change {
             Projects::SyncEvent.where(project_id: project.id).count
           }.by(1)
-        end
-
-        it 'enqueues the worker to process the Projects::SyncEvents' do
-          expect(::Projects::ProcessSyncEventsWorker).to receive(:perform_async)
-          consistency_fix_service.execute(ids: [project.id])
         end
       end
 
@@ -93,8 +88,6 @@ RSpec.describe Database::ConsistencyFixService, feature_category: :cell do
 
   describe '#create_sync_event_for' do
     context 'when the source model is Namespace' do
-      let(:namespace) { create(:namespace) }
-
       let(:service) do
         described_class.new(
           source_model: Namespace,
@@ -113,7 +106,7 @@ RSpec.describe Database::ConsistencyFixService, feature_category: :cell do
     end
 
     context 'when the source model is Project' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, namespace: namespace) }
 
       let(:service) do
         described_class.new(

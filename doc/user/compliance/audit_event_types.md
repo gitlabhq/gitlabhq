@@ -64,6 +64,7 @@ Audit event types belong to the following product categories.
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`admin_override_cleared_for_namespace_duo_availability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244301) | Admin cleared a duo_availability override from a namespace | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/issues/603325) | Group |
 | [`admin_override_set_for_namespace_duo_availability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244301) | Admin set a duo_availability override on a namespace | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/issues/603325) | Group |
+| [`ai_custom_instructions_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245563) | Custom AI instructions setting on group changed | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/work_items/601517) | Group |
 | [`ai_setting_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230001) | An AI setting is updated | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593015) | Instance |
 
 ### AI agents

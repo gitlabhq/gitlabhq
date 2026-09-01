@@ -109,6 +109,16 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
         helper.push_group_breadcrumbs(very_deep_nested_group)
       end.not_to exceed_query_limit(control)
     end
+
+    it 'does not escape special characters such as ampersands in the name' do
+      group_with_special_chars = create(:group)
+      group_with_special_chars.update_column(:name, 'Digital & Clients')
+
+      expect(helper).to receive(:push_to_schema_breadcrumb)
+        .with('Digital & Clients', group_path(group_with_special_chars), nil)
+
+      helper.push_group_breadcrumbs(group_with_special_chars)
+    end
   end
 
   describe '#share_with_group_lock_help_text' do

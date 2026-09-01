@@ -45,6 +45,14 @@ module Ci
       end
     end
 
+    # `Ci::PipelinesFinder` returns no pipelines unless the user can read its
+    # project. Prefer the source project, and fall back to the target project.
+    def authorizing_project
+      return source_project if can_read_pipeline_in_source_project?
+
+      target_project
+    end
+
     private
 
     def all_pipelines_for_merge_request

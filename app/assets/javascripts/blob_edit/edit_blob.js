@@ -26,7 +26,6 @@ export default class EditBlob {
   constructor(options) {
     this.options = options;
     this.configureMonacoEditor();
-    this.isMarkdown = this.options.isMarkdown;
 
     this.initModePanesAndLinks();
     this.initSoftWrap();
@@ -128,7 +127,7 @@ export default class EditBlob {
       { definition: FileTemplateExtension },
     ]);
 
-    if (this.isMarkdown) {
+    if (this.options.isMarkdown) {
       this.installMarkdownExtensions();
     }
 
@@ -237,11 +236,14 @@ export default class EditBlob {
 
     currentLink.parent().addClass('active hover');
 
-    if (this.isMarkdown) {
+    this.$editModePanes.hide();
+
+    if (this.markdownExtensions) {
+      // The live preview renders next to the editor, so the editor pane
+      // is always the one to show, even if the preview pane was open.
+      this.$editModePanes.filter('#editor').show();
       this.toggleMarkdownPreview(paneId === '#preview');
     } else {
-      this.$editModePanes.hide();
-
       currentPane.show();
 
       if (paneId === '#preview') {

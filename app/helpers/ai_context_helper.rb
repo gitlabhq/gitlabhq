@@ -5,17 +5,40 @@ module AiContextHelper
   GLAB_CLI_URL = "https://gitlab.com/api/v4/projects/#{GLAB_CLI_PROJECT_ID}/repository/files/README.md/raw?ref=HEAD".freeze
 
   def ai_context_block(resource_parent)
-    return unless resource_parent.is_a?(Project)
+    return unless resource_parent.is_a?(Project) || resource_parent.is_a?(Group)
 
     lines = []
     lines << "GitLab AI Context"
-    lines.concat(ai_context_project_lines(resource_parent))
+    lines.concat(ai_context_resource_lines(resource_parent))
+    lines.concat(ai_context_custom_instruction_lines(resource_parent))
     lines.concat(ai_context_tools_lines)
 
     content_tag(:div, lines.join("\n"), class: 'gl-hidden', data: { testid: 'ai-context' })
   end
 
   private
+
+  def ai_context_resource_lines(resource_parent)
+    case resource_parent
+    when Project
+      ai_context_project_lines(resource_parent)
+    when Group
+      ["Group: #{resource_parent.full_path}", "Instance: #{instance_url}"]
+    else
+      []
+    end
+  end
+
+  def ai_context_custom_instruction_lines(resource_parent)
+    entries = Gitlab::Ai::CustomInstructionsResolver.new(resource_parent).resolve
+    return [] if entries.empty?
+
+    lines = ["", "Custom instructions:"]
+    entries.each do |level_label, text|
+      lines << "[#{level_label}] #{text.gsub(/\R+/, ' ')}"
+    end
+    lines
+  end
 
   def ai_context_project_lines(project)
     lines = ["Project: #{project.full_path}", "Instance: #{instance_url}"]

@@ -1,0 +1,23 @@
+#import "./work_item_linked_resources.fragment.graphql"
+
+# @feature_category: team_planning
+query workItemLinkedResources(
+  $fullPath: ID!
+  $iid: String!
+  $useWorkItemFeatures: Boolean = false
+) {
+  namespace(fullPath: $fullPath) {
+    id
+    workItem(iid: $iid) {
+      id
+      widgets(onlyTypes: [LINKED_RESOURCES]) @skip(if: $useWorkItemFeatures) {
+        ...WorkItemLinkedResources
+      }
+      features @include(if: $useWorkItemFeatures) {
+        linkedResources {
+          ...WorkItemLinkedResources
+        }
+      }
+    }
+  }
+}

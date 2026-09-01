@@ -287,7 +287,6 @@ RSpec/NamedSubject:
     - 'ee/spec/models/concerns/geo/has_replicator_spec.rb'
     - 'ee/spec/models/concerns/geo/replicable_model_spec.rb'
     - 'ee/spec/models/concerns/geo/verifiable_model_spec.rb'
-    - 'ee/spec/models/concerns/geo/verification_state_spec.rb'
     - 'ee/spec/models/concerns/identity_verifiable_spec.rb'
     - 'ee/spec/models/concerns/mirror_configuration_spec.rb'
     - 'ee/spec/models/concerns/projects/custom_branch_rule_spec.rb'

@@ -39,7 +39,8 @@ module Mcp
       CUSTOM_TOOLS = {
         'get_job' => ::Mcp::Tools::Jobs::GetJobService,
         'get_mcp_server_version' => ::Mcp::Tools::GetServerVersionService,
-        'get_merge_request_conflicts' => ::Mcp::Tools::MergeRequests::GetMergeRequestConflictsService
+        'get_merge_request_conflicts' => ::Mcp::Tools::MergeRequests::GetMergeRequestConflictsService,
+        'list_releases' => ::Mcp::Tools::Releases::ListReleasesService
       }.freeze
 
       GRAPHQL_TOOLS = {
@@ -110,7 +111,17 @@ module Mcp
         alias_map[name] || name
       end
 
+      def aliases_for(canonical_name)
+        reverse_alias_map.fetch(canonical_name, [])
+      end
+
       private
+
+      def reverse_alias_map
+        @reverse_alias_map ||= alias_map.each_with_object({}) do |(alias_name, canonical), map|
+          (map[canonical] ||= []) << alias_name
+        end
+      end
 
       def get_custom_tool(name, version)
         get_tool_from_registry(custom_tools, name, version)

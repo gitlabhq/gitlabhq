@@ -1234,6 +1234,45 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
         end
       end
     end
+
+    context 'when updating :ai_custom_instructions' do
+      let_it_be(:group, freeze: false) { create(:group, :public) }
+
+      let(:settings) { group.namespace_settings }
+
+      subject(:update_group) do
+        patch group_path(group), params: { group: { ai_custom_instructions: 'Use the community fork workflow.' } }
+      end
+
+      context 'when the user is a group owner' do
+        let_it_be(:user) { create(:user, owner_of: group) }
+
+        before do
+          sign_in(user)
+        end
+
+        it 'persists the instructions on the namespace settings', :aggregate_failures do
+          update_group
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(settings.reload.ai_custom_instructions).to eq('Use the community fork workflow.')
+        end
+      end
+
+      context 'when the user is not a group owner' do
+        let_it_be(:user) { create(:user, maintainer_of: group) }
+
+        before do
+          sign_in(user)
+        end
+
+        it 'does not update the attribute', :aggregate_failures do
+          expect { update_group }.not_to change { settings.reload.ai_custom_instructions }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
   end
 
   describe 'DELETE #destroy' do

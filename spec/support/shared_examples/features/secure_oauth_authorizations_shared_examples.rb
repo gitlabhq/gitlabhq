@@ -7,6 +7,10 @@ RSpec.shared_examples 'Secure OAuth Authorizations' do
     it 'asks the user to authorize the application' do
       expect(page).to have_text "#{application.name} is requesting access to your account on"
     end
+
+    it 'renders the consent forms without id, guarding against a form_with_generates_ids revert' do
+      expect(page).not_to have_css('form [id]')
+    end
   end
 
   context 'when user is unconfirmed' do

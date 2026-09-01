@@ -80,12 +80,11 @@ describe('Blob Editing', () => {
     mockInstance.onDidChangeModelLanguage = emitter.event;
     mock = new MockAdapter(axios);
     setHTMLFixture(`
-      <div class="js-edit-mode-pane"></div>
-      <div class="js-edit-mode"><a href="#write">Write</a><a href="#preview">Preview</a></div>
+      <div class="js-edit-mode"><a href="#editor">Write</a><a href="#preview">Preview</a></div>
       <form class="js-edit-blob-form">
         <div id="file_path"></div>
-        <div id="editor" data-ref="main"></div>
-        <textarea id="file-content"></textarea>
+        <div class="js-edit-mode-pane" id="editor" data-ref="main"></div>
+        <div class="js-edit-mode-pane" id="preview"></div>
       </form>
     `);
     jest.spyOn(SourceEditor.prototype, 'createInstance').mockReturnValue(mockInstance);
@@ -130,6 +129,16 @@ describe('Blob Editing', () => {
   };
 
   const findPane = (id) => document.querySelector(`.js-edit-mode-pane${id}`);
+
+  const expectEditorPaneVisible = () => {
+    expect(findPane('#editor').style.display).not.toBe('none');
+    expect(findPane('#preview').style.display).toBe('none');
+  };
+
+  const expectPreviewPaneVisible = () => {
+    expect(findPane('#editor').style.display).toBe('none');
+    expect(findPane('#preview').style.display).not.toBe('none');
+  };
 
   const stubPreviewEndpoint = () => {
     mock.onPost(PREVIEW_ENDPOINT).reply(HTTP_STATUS_OK, '<div>rendered</div>');
@@ -318,44 +327,134 @@ describe('Blob Editing', () => {
   });
 
   describe('correctly handles toggling the live-preview panel for different file types', () => {
-    it.each`
-      desc                                  | isMarkdown | isPreviewOpened | tabToClick    | shouldOpenPreview | shouldClosePreview | expectedDesc
-      ${'not markdown with preview closed'} | ${false}   | ${false}        | ${'#write'}   | ${false}          | ${false}           | ${'not toggle preview'}
-      ${'not markdown with preview closed'} | ${false}   | ${false}        | ${'#preview'} | ${false}          | ${false}           | ${'not toggle preview'}
-      ${'markdown with preview closed'}     | ${true}    | ${false}        | ${'#write'}   | ${false}          | ${false}           | ${'not toggle preview'}
-      ${'markdown with preview closed'}     | ${true}    | ${false}        | ${'#preview'} | ${true}           | ${false}           | ${'open preview'}
-      ${'markdown with preview opened'}     | ${true}    | ${true}         | ${'#write'}   | ${false}          | ${true}            | ${'close preview'}
-      ${'markdown with preview opened'}     | ${true}    | ${true}         | ${'#preview'} | ${false}          | ${false}           | ${'not toggle preview'}
-    `(
-      'when $desc, clicking $tabToClick should $expectedDesc',
-      async ({
-        isMarkdown,
-        isPreviewOpened,
-        tabToClick,
-        shouldOpenPreview,
-        shouldClosePreview,
-      }) => {
-        const fire = jest.fn();
-        SourceEditor.prototype.createInstance = jest.fn().mockReturnValue({
-          ...mockInstance,
-          markdownPreview: {
-            shown: isPreviewOpened,
-            eventEmitter: {
-              fire,
-            },
-          },
-        });
-        await initEditor({ isMarkdown });
-        const elToClick = document.querySelector(`a[href='${tabToClick}']`);
-        elToClick.dispatchEvent(new Event('click'));
+    const expectPreviewPaneRendered = (fire) => {
+      expect(fire).not.toHaveBeenCalled();
+      const previewRequest = findPreviewRequest();
+      expect(previewRequest).toBeDefined();
+      expect(JSON.parse(previewRequest.data)).toEqual(
+        expect.objectContaining({ content: valueMock }),
+      );
+      expect(findPane('#preview').innerHTML).toContain('rendered');
+      expectPreviewPaneVisible();
+    };
 
-        if (shouldOpenPreview || shouldClosePreview) {
-          expect(fire).toHaveBeenCalled();
-        } else {
-          expect(fire).not.toHaveBeenCalled();
-        }
+    const mockEditorWithPreview = ({ shown = false } = {}) => {
+      const fire = jest.fn();
+      jest.spyOn(SourceEditor.prototype, 'createInstance').mockReturnValue({
+        ...mockInstance,
+        markdownPreview: {
+          shown,
+          eventEmitter: {
+            fire,
+          },
+        },
+      });
+      return fire;
+    };
+
+    it.each`
+      fileType          | isMarkdown | previewShown | tabToClick    | expectedFireCount
+      ${'non-markdown'} | ${false}   | ${false}     | ${'#editor'}  | ${0}
+      ${'non-markdown'} | ${false}   | ${false}     | ${'#preview'} | ${0}
+      ${'markdown'}     | ${true}    | ${false}     | ${'#editor'}  | ${0}
+      ${'markdown'}     | ${true}    | ${false}     | ${'#preview'} | ${1}
+      ${'markdown'}     | ${true}    | ${true}      | ${'#editor'}  | ${1}
+      ${'markdown'}     | ${true}    | ${true}      | ${'#preview'} | ${0}
+    `(
+      'when the file type is $fileType (preview shown: $previewShown), clicking $tabToClick fires preview toggle $expectedFireCount time(s)',
+      async ({ isMarkdown, previewShown, tabToClick, expectedFireCount }) => {
+        const fire = mockEditorWithPreview({ shown: previewShown });
+        await initEditor({ isMarkdown });
+        await clickTab(tabToClick);
+
+        expect(fire).toHaveBeenCalledTimes(expectedFireCount);
       },
     );
+
+    describe('when the file is renamed mid-edit', () => {
+      let fire;
+
+      beforeEach(() => {
+        fire = mockEditorWithPreview();
+      });
+
+      it('switches the preview tab to the live preview when renamed to markdown', async () => {
+        await initEditor();
+
+        await emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+        await waitForPromises();
+        await clickTab('#preview');
+
+        expect(fire).toHaveBeenCalled();
+        expectEditorPaneVisible();
+      });
+
+      it('opens the preview pane instead of the live preview when renamed away from markdown', async () => {
+        stubPreviewEndpoint();
+        await initEditor({ isMarkdown: true });
+
+        await emitter.fire({ newLanguage: 'plaintext', oldLanguage: 'markdown' });
+        await clickTab('#preview');
+
+        expectPreviewPaneRendered(fire);
+      });
+
+      it('falls back to the preview pane while markdown extensions are still loading', async () => {
+        stubPreviewEndpoint();
+        await initEditor();
+
+        // Switch to markdown without waiting, so the load is still in flight on click.
+        emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+        await clickTab('#preview');
+
+        expectPreviewPaneRendered(fire);
+      });
+
+      it('falls back to the preview pane after markdown extensions failed to load', async () => {
+        stubPreviewEndpoint();
+        await initEditor();
+        useMock.mockImplementationOnce(() => {
+          throw new Error('loading failed');
+        });
+
+        await emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+        await waitForPromises();
+        await clickTab('#preview');
+
+        expectPreviewPaneRendered(fire);
+      });
+
+      describe('with the preview pane shown before the rename', () => {
+        beforeEach(async () => {
+          stubPreviewEndpoint();
+          await initEditor();
+
+          // Show the preview pane, which hides the editor pane
+          await clickTab('#preview');
+
+          await emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+          await waitForPromises();
+        });
+
+        it('starts with the editor pane hidden by the preview pane', () => {
+          expectPreviewPaneVisible();
+        });
+
+        it('restores the editor pane when clicking the write tab', async () => {
+          await clickTab('#editor');
+
+          expect(fire).not.toHaveBeenCalled();
+          expectEditorPaneVisible();
+        });
+
+        it('restores the editor pane and opens the live preview when clicking the preview tab', async () => {
+          await clickTab('#preview');
+
+          expect(fire).toHaveBeenCalled();
+          expectEditorPaneVisible();
+        });
+      });
+    });
   });
 
   describe('submit form', () => {
@@ -446,11 +545,6 @@ describe('Blob Editing', () => {
   });
 
   describe('preview request', () => {
-    const expectPreviewPaneVisible = () => {
-      expect(findPane('#editor').style.display).toBe('none');
-      expect(findPane('#preview').style.display).not.toBe('none');
-    };
-
     const expectPreviewPaneRendered = (payload) => {
       const previewRequest = findPreviewRequest();
       expect(previewRequest).toBeDefined();

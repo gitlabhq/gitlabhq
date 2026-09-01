@@ -125,7 +125,7 @@ Ideally, your team should work toward splitting or combining stories until they 
 
 > [!note]
 > Stakeholders should never use story points to measure the team's performance or
-> [compare one team to another](https://towardsdatascience.com/why-story-points-are-a-horrible-metric-for-software-engineers-421bc8971f11).
+> [compare one team to another](https://towardsdatascience.com/why-story-points-are-a-horrible-metric-for-software-engineers-421bc8971f11/).
 
 ## Velocity and volatility
 

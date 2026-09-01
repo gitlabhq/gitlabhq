@@ -149,7 +149,7 @@ module Gitlab
       end
 
       def windows
-        @windows ||= authored_windows.each_with_index.map { |window, index| normalized_window(window, index) }
+        @windows ||= authored_windows.each_with_index.map { |window, index| normalized_window(window, index) }.uniq
       end
 
       def authored_windows

@@ -446,6 +446,59 @@ ENGINE = ReplacingMergeTree(updated_at)
 ORDER BY workflow_id
 SETTINGS index_granularity = 8192;
 
+CREATE TABLE duo_workflows_workflows_enriched
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `user_id` Int64,
+    `project_id` Nullable(Int64),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `status` Int16 DEFAULT 0,
+    `goal` Nullable(String),
+    `agent_privileges` Array(Int16) DEFAULT [],
+    `workflow_definition` String DEFAULT 'software_development',
+    `allow_agent_to_request_user` Bool DEFAULT true,
+    `pre_approved_agent_privileges` Array(Int16) DEFAULT [],
+    `image` Nullable(String),
+    `environment` Nullable(Int16),
+    `namespace_id` Nullable(Int64),
+    `ai_catalog_item_version_id` Nullable(Int64),
+    `issue_id` Nullable(Int64),
+    `merge_request_id` Nullable(Int64),
+    `service_account_id` Nullable(Int64),
+    `tool_call_approvals` String DEFAULT '{}',
+    `ai_catalog_item_id` Nullable(Int64),
+    `traversal_path` String CODEC(ZSTD(3)),
+    `messaging_callback_context` Nullable(String),
+    `summary` Nullable(String),
+    `title` Nullable(String),
+    `incremental_checkpoints_enabled` Nullable(Bool),
+    `agent_type` Nullable(String),
+    `jsonl_sha256` Nullable(String),
+    `idempotency_key` Nullable(String),
+    `sync_type` Nullable(Int16),
+    `agent_identity_id` Nullable(Int64),
+    `web_search_enabled` Bool DEFAULT false,
+    `trigger_source` Int16 DEFAULT 0,
+    `trigger_flow_trigger_id` Nullable(Int64),
+    `source_type` Nullable(Int16),
+    `source_link` Nullable(String),
+    `execution_mode` Nullable(Int16),
+    `credits_used` Float64 DEFAULT 0,
+    `model_used` LowCardinality(String) DEFAULT '',
+    `source_merge_request_ids` Array(Int64) DEFAULT [],
+    `created_merge_request_ids` Array(Int64) DEFAULT [],
+    `later_closed_merge_request_ids` Array(Int64) DEFAULT [],
+    `later_merged_merge_request_ids` Array(Int64) DEFAULT [],
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `_version` DateTime64(6, 'UTC') CODEC(ZSTD(1)),
+    `_watermark` DateTime64(6, 'UTC') CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_version, _siphon_deleted)
+PRIMARY KEY (traversal_path, created_at, id)
+ORDER BY (traversal_path, created_at, id)
+SETTINGS index_granularity = 8192;
+
 CREATE TABLE event_authors
 (
     `author_id` UInt64 DEFAULT 0,
@@ -3654,6 +3707,421 @@ AS SELECT
     1 AS occurrences
 FROM ai_usage_events
 WHERE event = 6;
+
+CREATE MATERIALIZED VIEW duo_workflows_workflows_enriched_delta_mv
+REFRESH EVERY 15 MINUTE APPEND TO duo_workflows_workflows_enriched
+(
+    `id` Int64,
+    `user_id` Int64,
+    `project_id` Nullable(Int64),
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `status` Int16,
+    `goal` Nullable(String),
+    `agent_privileges` Array(Int16),
+    `workflow_definition` String,
+    `allow_agent_to_request_user` Bool,
+    `pre_approved_agent_privileges` Array(Int16),
+    `image` Nullable(String),
+    `environment` Nullable(Int16),
+    `namespace_id` Nullable(Int64),
+    `ai_catalog_item_version_id` Nullable(Int64),
+    `issue_id` Nullable(Int64),
+    `merge_request_id` Nullable(Int64),
+    `service_account_id` Nullable(Int64),
+    `tool_call_approvals` String,
+    `ai_catalog_item_id` Nullable(Int64),
+    `traversal_path` String,
+    `messaging_callback_context` Nullable(String),
+    `summary` Nullable(String),
+    `title` Nullable(String),
+    `incremental_checkpoints_enabled` Nullable(Bool),
+    `agent_type` Nullable(String),
+    `jsonl_sha256` Nullable(String),
+    `idempotency_key` Nullable(String),
+    `sync_type` Nullable(Int16),
+    `agent_identity_id` Nullable(Int64),
+    `web_search_enabled` Bool,
+    `trigger_source` Int16,
+    `trigger_flow_trigger_id` Nullable(Int64),
+    `source_type` Nullable(Int16),
+    `source_link` Nullable(String),
+    `execution_mode` Nullable(Int16),
+    `credits_used` Float64,
+    `model_used` String,
+    `source_merge_request_ids` Array(Int64),
+    `created_merge_request_ids` Array(Int64),
+    `later_closed_merge_request_ids` Array(Int64),
+    `later_merged_merge_request_ids` Array(Int64),
+    `_siphon_deleted` Bool,
+    `_version` DateTime64(6, 'UTC'),
+    `_watermark` DateTime64(6, 'UTC')
+)
+DEFINER = default SQL SECURITY DEFINER
+AS WITH
+    (
+        SELECT max(_watermark) - toIntervalMinute(30)
+        FROM duo_workflows_workflows_enriched
+    ) AS window_start,
+    affected AS
+    (
+        SELECT DISTINCT id
+        FROM
+        (
+            SELECT id
+            FROM siphon_duo_workflows_workflows
+            WHERE _siphon_watermark >= window_start
+            UNION ALL
+            SELECT workflow_id AS id
+            FROM siphon_duo_workflows_workflow_merge_requests
+            WHERE _siphon_watermark >= window_start
+            UNION ALL
+            SELECT workflow_id AS id
+            FROM duo_workflow_session_enrichments
+            WHERE updated_at >= window_start
+        )
+    ),
+    wf AS
+    (
+        SELECT
+            id,
+            argMax(user_id, _siphon_replicated_at) AS user_id,
+            argMax(project_id, _siphon_replicated_at) AS project_id,
+            argMax(created_at, _siphon_replicated_at) AS created_at,
+            argMax(updated_at, _siphon_replicated_at) AS updated_at,
+            argMax(status, _siphon_replicated_at) AS status,
+            argMax(goal, _siphon_replicated_at) AS goal,
+            argMax(agent_privileges, _siphon_replicated_at) AS agent_privileges,
+            argMax(workflow_definition, _siphon_replicated_at) AS workflow_definition,
+            argMax(allow_agent_to_request_user, _siphon_replicated_at) AS allow_agent_to_request_user,
+            argMax(pre_approved_agent_privileges, _siphon_replicated_at) AS pre_approved_agent_privileges,
+            argMax(image, _siphon_replicated_at) AS image,
+            argMax(environment, _siphon_replicated_at) AS environment,
+            argMax(namespace_id, _siphon_replicated_at) AS namespace_id,
+            argMax(ai_catalog_item_version_id, _siphon_replicated_at) AS ai_catalog_item_version_id,
+            argMax(issue_id, _siphon_replicated_at) AS issue_id,
+            argMax(merge_request_id, _siphon_replicated_at) AS merge_request_id,
+            argMax(service_account_id, _siphon_replicated_at) AS service_account_id,
+            argMax(tool_call_approvals, _siphon_replicated_at) AS tool_call_approvals,
+            argMax(ai_catalog_item_id, _siphon_replicated_at) AS ai_catalog_item_id,
+            argMax(traversal_path, _siphon_replicated_at) AS traversal_path,
+            argMax(messaging_callback_context, _siphon_replicated_at) AS messaging_callback_context,
+            argMax(summary, _siphon_replicated_at) AS summary,
+            argMax(title, _siphon_replicated_at) AS title,
+            argMax(incremental_checkpoints_enabled, _siphon_replicated_at) AS incremental_checkpoints_enabled,
+            argMax(agent_type, _siphon_replicated_at) AS agent_type,
+            argMax(jsonl_sha256, _siphon_replicated_at) AS jsonl_sha256,
+            argMax(idempotency_key, _siphon_replicated_at) AS idempotency_key,
+            argMax(sync_type, _siphon_replicated_at) AS sync_type,
+            argMax(agent_identity_id, _siphon_replicated_at) AS agent_identity_id,
+            argMax(web_search_enabled, _siphon_replicated_at) AS web_search_enabled,
+            argMax(trigger_source, _siphon_replicated_at) AS trigger_source,
+            argMax(trigger_flow_trigger_id, _siphon_replicated_at) AS trigger_flow_trigger_id,
+            argMax(source_type, _siphon_replicated_at) AS source_type,
+            argMax(source_link, _siphon_replicated_at) AS source_link,
+            argMax(execution_mode, _siphon_replicated_at) AS execution_mode,
+            argMax(_siphon_deleted, _siphon_replicated_at) AS _siphon_deleted,
+            max(_siphon_replicated_at) AS wf_version,
+            max(_siphon_watermark) AS wf_watermark
+        FROM siphon_duo_workflows_workflows
+        WHERE id IN (
+            SELECT id
+            FROM affected
+        )
+        GROUP BY id
+    ),
+    mr_links_cte AS
+    (
+        SELECT
+            traversal_path,
+            workflow_id,
+            groupArrayIf(merge_request_id, (link_type = 0) AND (deleted = false)) AS source_merge_request_ids,
+            groupArrayIf(merge_request_id, (link_type = 1) AND (deleted = false)) AS created_merge_request_ids,
+            max(replicated_at) AS links_version,
+            max(watermark) AS links_watermark
+        FROM
+        (
+            SELECT
+                traversal_path,
+                workflow_id,
+                merge_request_id,
+                argMax(link_type, _siphon_replicated_at) AS link_type,
+                argMax(_siphon_deleted, _siphon_replicated_at) AS deleted,
+                max(_siphon_replicated_at) AS replicated_at,
+                max(_siphon_watermark) AS watermark
+            FROM siphon_duo_workflows_workflow_merge_requests
+            WHERE (traversal_path, workflow_id) IN (
+                SELECT
+                    traversal_path,
+                    id
+                FROM wf
+            )
+            GROUP BY
+                traversal_path,
+                workflow_id,
+                merge_request_id
+        )
+        GROUP BY
+            traversal_path,
+            workflow_id
+    ),
+    credits_cte AS
+    (
+        SELECT
+            workflow_id,
+            argMax(credits_used, updated_at) AS credits_used,
+            argMax(model_used, updated_at) AS model_used,
+            max(updated_at) AS credits_version
+        FROM duo_workflow_session_enrichments
+        WHERE workflow_id IN (
+            SELECT id
+            FROM wf
+        )
+        GROUP BY workflow_id
+    ),
+    current_state_cte AS
+    (
+        SELECT
+            traversal_path,
+            id,
+            argMax(later_closed_merge_request_ids, _version) AS later_closed_merge_request_ids,
+            argMax(later_merged_merge_request_ids, _version) AS later_merged_merge_request_ids
+        FROM duo_workflows_workflows_enriched
+        WHERE (traversal_path, id) IN (
+            SELECT
+                traversal_path,
+                id
+            FROM wf
+        )
+        GROUP BY
+            traversal_path,
+            id
+    )
+SELECT
+    wf.id AS id,
+    wf.user_id AS user_id,
+    wf.project_id AS project_id,
+    wf.created_at AS created_at,
+    wf.updated_at AS updated_at,
+    wf.status AS status,
+    wf.goal AS goal,
+    wf.agent_privileges AS agent_privileges,
+    wf.workflow_definition AS workflow_definition,
+    wf.allow_agent_to_request_user AS allow_agent_to_request_user,
+    wf.pre_approved_agent_privileges AS pre_approved_agent_privileges,
+    wf.image AS image,
+    wf.environment AS environment,
+    wf.namespace_id AS namespace_id,
+    wf.ai_catalog_item_version_id AS ai_catalog_item_version_id,
+    wf.issue_id AS issue_id,
+    wf.merge_request_id AS merge_request_id,
+    wf.service_account_id AS service_account_id,
+    wf.tool_call_approvals AS tool_call_approvals,
+    wf.ai_catalog_item_id AS ai_catalog_item_id,
+    wf.traversal_path AS traversal_path,
+    wf.messaging_callback_context AS messaging_callback_context,
+    wf.summary AS summary,
+    wf.title AS title,
+    wf.incremental_checkpoints_enabled AS incremental_checkpoints_enabled,
+    wf.agent_type AS agent_type,
+    wf.jsonl_sha256 AS jsonl_sha256,
+    wf.idempotency_key AS idempotency_key,
+    wf.sync_type AS sync_type,
+    wf.agent_identity_id AS agent_identity_id,
+    wf.web_search_enabled AS web_search_enabled,
+    wf.trigger_source AS trigger_source,
+    wf.trigger_flow_trigger_id AS trigger_flow_trigger_id,
+    wf.source_type AS source_type,
+    wf.source_link AS source_link,
+    wf.execution_mode AS execution_mode,
+    credits_cte.credits_used AS credits_used,
+    credits_cte.model_used AS model_used,
+    arraySort(mr_links_cte.source_merge_request_ids) AS source_merge_request_ids,
+    arraySort(mr_links_cte.created_merge_request_ids) AS created_merge_request_ids,
+    current_state_cte.later_closed_merge_request_ids AS later_closed_merge_request_ids,
+    current_state_cte.later_merged_merge_request_ids AS later_merged_merge_request_ids,
+    wf._siphon_deleted AS _siphon_deleted,
+    greatest(wf.wf_version, coalesce(credits_cte.credits_version, toDateTime64(0, 6, 'UTC')), coalesce(mr_links_cte.links_version, toDateTime64(0, 6, 'UTC'))) AS _version,
+    greatest(wf.wf_watermark, coalesce(credits_cte.credits_version, toDateTime64(0, 6, 'UTC')), coalesce(mr_links_cte.links_watermark, toDateTime64(0, 6, 'UTC'))) AS _watermark
+FROM wf
+LEFT JOIN credits_cte ON credits_cte.workflow_id = wf.id
+LEFT JOIN mr_links_cte ON (mr_links_cte.traversal_path = wf.traversal_path) AND (mr_links_cte.workflow_id = wf.id)
+LEFT JOIN current_state_cte ON (current_state_cte.traversal_path = wf.traversal_path) AND (current_state_cte.id = wf.id);
+
+CREATE MATERIALIZED VIEW duo_workflows_workflows_enriched_mr_outcomes_mv
+REFRESH EVERY 12 HOUR APPEND TO duo_workflows_workflows_enriched
+(
+    `traversal_path` String,
+    `created_at` DateTime64(6, 'UTC'),
+    `id` Int64,
+    `user_id` Int64,
+    `project_id` Nullable(Int64),
+    `updated_at` DateTime64(6, 'UTC'),
+    `status` Int16,
+    `goal` Nullable(String),
+    `agent_privileges` Array(Int16),
+    `workflow_definition` String,
+    `allow_agent_to_request_user` Bool,
+    `pre_approved_agent_privileges` Array(Int16),
+    `image` Nullable(String),
+    `environment` Nullable(Int16),
+    `namespace_id` Nullable(Int64),
+    `ai_catalog_item_version_id` Nullable(Int64),
+    `issue_id` Nullable(Int64),
+    `merge_request_id` Nullable(Int64),
+    `service_account_id` Nullable(Int64),
+    `tool_call_approvals` String,
+    `ai_catalog_item_id` Nullable(Int64),
+    `messaging_callback_context` Nullable(String),
+    `summary` Nullable(String),
+    `title` Nullable(String),
+    `incremental_checkpoints_enabled` Nullable(Bool),
+    `agent_type` Nullable(String),
+    `jsonl_sha256` Nullable(String),
+    `idempotency_key` Nullable(String),
+    `sync_type` Nullable(Int16),
+    `agent_identity_id` Nullable(Int64),
+    `web_search_enabled` Bool,
+    `trigger_source` Int16,
+    `trigger_flow_trigger_id` Nullable(Int64),
+    `source_type` Nullable(Int16),
+    `source_link` Nullable(String),
+    `execution_mode` Nullable(Int16),
+    `credits_used` Float64,
+    `model_used` String,
+    `source_merge_request_ids` Array(Int64),
+    `created_merge_request_ids` Array(Int64),
+    `later_closed_merge_request_ids` Array(Int64),
+    `later_merged_merge_request_ids` Array(Int64),
+    `_siphon_deleted` Bool,
+    `_version` DateTime64(6, 'UTC'),
+    `_watermark` DateTime64(6, 'UTC')
+)
+DEFINER = default SQL SECURITY DEFINER
+AS WITH
+    unresolved AS
+    (
+        SELECT
+            traversal_path,
+            created_at,
+            id,
+            argMax(user_id, _version) AS user_id,
+            argMax(project_id, _version) AS project_id,
+            argMax(updated_at, _version) AS updated_at,
+            argMax(status, _version) AS status,
+            argMax(goal, _version) AS goal,
+            argMax(agent_privileges, _version) AS agent_privileges,
+            argMax(workflow_definition, _version) AS workflow_definition,
+            argMax(allow_agent_to_request_user, _version) AS allow_agent_to_request_user,
+            argMax(pre_approved_agent_privileges, _version) AS pre_approved_agent_privileges,
+            argMax(image, _version) AS image,
+            argMax(environment, _version) AS environment,
+            argMax(namespace_id, _version) AS namespace_id,
+            argMax(ai_catalog_item_version_id, _version) AS ai_catalog_item_version_id,
+            argMax(issue_id, _version) AS issue_id,
+            argMax(merge_request_id, _version) AS merge_request_id,
+            argMax(service_account_id, _version) AS service_account_id,
+            argMax(tool_call_approvals, _version) AS tool_call_approvals,
+            argMax(ai_catalog_item_id, _version) AS ai_catalog_item_id,
+            argMax(messaging_callback_context, _version) AS messaging_callback_context,
+            argMax(summary, _version) AS summary,
+            argMax(title, _version) AS title,
+            argMax(incremental_checkpoints_enabled, _version) AS incremental_checkpoints_enabled,
+            argMax(agent_type, _version) AS agent_type,
+            argMax(jsonl_sha256, _version) AS jsonl_sha256,
+            argMax(idempotency_key, _version) AS idempotency_key,
+            argMax(sync_type, _version) AS sync_type,
+            argMax(agent_identity_id, _version) AS agent_identity_id,
+            argMax(web_search_enabled, _version) AS web_search_enabled,
+            argMax(trigger_source, _version) AS trigger_source,
+            argMax(trigger_flow_trigger_id, _version) AS trigger_flow_trigger_id,
+            argMax(source_type, _version) AS source_type,
+            argMax(source_link, _version) AS source_link,
+            argMax(execution_mode, _version) AS execution_mode,
+            argMax(credits_used, _version) AS credits_used,
+            argMax(model_used, _version) AS model_used,
+            argMax(source_merge_request_ids, _version) AS source_merge_request_ids,
+            argMax(created_merge_request_ids, _version) AS created_merge_request_ids,
+            argMax(later_closed_merge_request_ids, _version) AS old_later_closed,
+            argMax(later_merged_merge_request_ids, _version) AS old_later_merged,
+            argMax(_siphon_deleted, _version) AS _siphon_deleted,
+            argMax(_watermark, _version) AS _watermark,
+            max(_version) AS prev_version
+        FROM duo_workflows_workflows_enriched
+        WHERE _version >= (now64(6, 'UTC') - toIntervalDay(60))
+        GROUP BY
+            traversal_path,
+            created_at,
+            id
+        HAVING (_siphon_deleted = false) AND notEmpty(arrayFilter(mr_id -> ((NOT has(old_later_closed, mr_id)) AND (NOT has(old_later_merged, mr_id))), created_merge_request_ids))
+    ),
+    (
+        SELECT (groupArrayIf(mr_id, state_id = 2), groupArrayIf(mr_id, state_id = 3))
+        FROM
+        (
+            SELECT
+                id AS mr_id,
+                argMax(state_id, _siphon_replicated_at) AS state_id,
+                argMax(_siphon_deleted, _siphon_replicated_at) AS mr_deleted
+            FROM merge_requests
+            WHERE id IN (
+                SELECT DISTINCT arrayJoin(created_merge_request_ids)
+                FROM duo_workflows_workflows_enriched
+                WHERE _version >= (now64(6, 'UTC') - toIntervalDay(60))
+            )
+            GROUP BY id
+            HAVING (mr_deleted = false) AND (state_id IN (2, 3))
+        )
+    ) AS resolved_mr_ids
+SELECT
+    unresolved.traversal_path AS traversal_path,
+    unresolved.created_at AS created_at,
+    unresolved.id AS id,
+    unresolved.user_id AS user_id,
+    unresolved.project_id AS project_id,
+    unresolved.updated_at AS updated_at,
+    unresolved.status AS status,
+    unresolved.goal AS goal,
+    unresolved.agent_privileges AS agent_privileges,
+    unresolved.workflow_definition AS workflow_definition,
+    unresolved.allow_agent_to_request_user AS allow_agent_to_request_user,
+    unresolved.pre_approved_agent_privileges AS pre_approved_agent_privileges,
+    unresolved.image AS image,
+    unresolved.environment AS environment,
+    unresolved.namespace_id AS namespace_id,
+    unresolved.ai_catalog_item_version_id AS ai_catalog_item_version_id,
+    unresolved.issue_id AS issue_id,
+    unresolved.merge_request_id AS merge_request_id,
+    unresolved.service_account_id AS service_account_id,
+    unresolved.tool_call_approvals AS tool_call_approvals,
+    unresolved.ai_catalog_item_id AS ai_catalog_item_id,
+    unresolved.messaging_callback_context AS messaging_callback_context,
+    unresolved.summary AS summary,
+    unresolved.title AS title,
+    unresolved.incremental_checkpoints_enabled AS incremental_checkpoints_enabled,
+    unresolved.agent_type AS agent_type,
+    unresolved.jsonl_sha256 AS jsonl_sha256,
+    unresolved.idempotency_key AS idempotency_key,
+    unresolved.sync_type AS sync_type,
+    unresolved.agent_identity_id AS agent_identity_id,
+    unresolved.web_search_enabled AS web_search_enabled,
+    unresolved.trigger_source AS trigger_source,
+    unresolved.trigger_flow_trigger_id AS trigger_flow_trigger_id,
+    unresolved.source_type AS source_type,
+    unresolved.source_link AS source_link,
+    unresolved.execution_mode AS execution_mode,
+    unresolved.credits_used AS credits_used,
+    unresolved.model_used AS model_used,
+    unresolved.source_merge_request_ids AS source_merge_request_ids,
+    unresolved.created_merge_request_ids AS created_merge_request_ids,
+    arraySort(arrayIntersect(created_merge_request_ids, resolved_mr_ids.1)) AS later_closed_merge_request_ids,
+    arraySort(arrayIntersect(created_merge_request_ids, resolved_mr_ids.2)) AS later_merged_merge_request_ids,
+    unresolved._siphon_deleted AS _siphon_deleted,
+    unresolved.prev_version + toIntervalMicrosecond(1) AS _version,
+    unresolved._watermark AS _watermark
+FROM unresolved
+WHERE (later_closed_merge_request_ids != arraySort(old_later_closed)) OR (later_merged_merge_request_ids != arraySort(old_later_merged))
+SETTINGS optimize_aggregation_in_order = 1;
 
 CREATE MATERIALIZED VIEW event_authors_mv TO event_authors
 (

@@ -36,7 +36,7 @@ export default {
     setSectionExpandedState(section, state) {
       const sectionId = section.getAttribute('id');
 
-      this.sectionsExpandedState[sectionId] = state;
+      this.setExpandedState(sectionId, state);
     },
     onSearchExpand(section) {
       this.setSectionExpandedState(section, true);
@@ -45,10 +45,15 @@ export default {
       this.setSectionExpandedState(section, false);
     },
     onToggleExpand(sectionId, state) {
-      this.sectionsExpandedState[sectionId] = state;
+      this.setExpandedState(sectionId, state);
+    },
+    setExpandedState(sectionId, state) {
+      // Reassigning keeps slot-injected EE sections reactive in Vue 2; their
+      // ids are not pre-seeded in sectionsExpandedState.
+      this.sectionsExpandedState = { ...this.sectionsExpandedState, [sectionId]: state };
     },
     expandedProp(sectionId) {
-      return this.sectionsExpandedState[sectionId];
+      return Boolean(this.sectionsExpandedState[sectionId]);
     },
   },
 };
@@ -81,6 +86,12 @@ export default {
         :expanded="expandedProp($options.ADVANCED_SETTINGS_ID)"
         @toggle-expand="onToggleExpand($options.ADVANCED_SETTINGS_ID, $event)"
       />
+      <!-- EE-only sections; inside searchRoot so search-settings indexes them. -->
+      <slot
+        name="ee-settings-sections"
+        :expanded-prop="expandedProp"
+        :on-toggle-expand="onToggleExpand"
+      ></slot>
     </div>
   </div>
 </template>

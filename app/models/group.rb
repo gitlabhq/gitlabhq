@@ -184,6 +184,8 @@ class Group < Namespace
   has_one :group_feature, inverse_of: :group, class_name: 'Groups::FeatureSetting'
 
   delegate(
+    :ai_custom_instructions,
+    :ai_custom_instructions=,
     :default_branch_name,
     :jobs_to_be_done,
     :new_user_signups_cap,

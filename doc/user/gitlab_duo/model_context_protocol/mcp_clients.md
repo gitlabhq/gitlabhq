@@ -302,7 +302,7 @@ Other example servers are [Smithery.ai](https://smithery.ai/) and [Awesome MCP S
 
 #### GitLab Knowledge Graph server
 
-The [GitLab Knowledge Graph](https://gitlab-org.gitlab.io/rust/knowledge-graph) provides code intelligence
+The [GitLab Knowledge Graph](https://gitlab-org.gitlab.io/rust/knowledge-graph/) provides code intelligence
 through MCP. You can approve all tools or specific ones:
 
 ```json

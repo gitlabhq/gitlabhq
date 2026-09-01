@@ -95,6 +95,15 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper, feature
         expect(table_oid(:_test_partition)).to be_nil
       end
 
+      it 'names itself on the info lines it logs' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
+        dropper.perform
+
+        expect(Gitlab::AppLogger).to have_received(:info)
+          .with(hash_including('class_name' => described_class.name)).at_least(:twice)
+      end
+
       context 'removing foreign keys' do
         it 'removes foreign keys from the table before dropping it' do
           expect(dropper).to receive(:drop_detached_partition).and_wrap_original do |drop_method, partition|

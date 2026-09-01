@@ -41,7 +41,7 @@ This setup gives you flexibility to choose the best model and platform for each 
 
 [vLLM](https://docs.vllm.ai/en/latest/index.html) is a high-performance inference server optimized for serving LLMs with memory efficiency. It supports model parallelism and integrates easily with existing workflows.
 
-To install vLLM, see the [vLLM Installation Guide](https://docs.vllm.ai/en/latest/getting_started/installation.html). You should install [version v0.18.1](https://github.com/vllm-project/vllm/releases/tag/v0.18.1) or later.
+To install vLLM, see the [vLLM Installation Guide](https://docs.vllm.ai/en/latest/getting_started/installation/). You should install [version v0.18.1](https://github.com/vllm-project/vllm/releases/tag/v0.18.1) or later.
 
 For a prescriptive setup guide for serving GPT OSS 120B with vLLM, see [Serve GPT OSS 120B with vLLM](vllm_gpt_oss_120b.md).
 
@@ -88,8 +88,8 @@ In this example, if the model's `id` is `Mixtral-8x22B-Instruct-v0.1`, you would
 
 For more information, see the following documentation:
 
-- vLLM supported models, see the [vLLM Supported Models documentation](https://docs.vllm.ai/en/latest/models/supported_models.html).
-- Available options when using vLLM to run a model, see the [vLLM documentation on engine arguments](https://docs.vllm.ai/en/stable/configuration/engine_args.html).
+- vLLM supported models, see the [vLLM Supported Models documentation](https://docs.vllm.ai/en/latest/models/supported_models/).
+- Available options when using vLLM to run a model, see the [vLLM documentation on engine arguments](https://docs.vllm.ai/en/stable/configuration/engine_args/).
 
 #### Mistral-7B-Instruct-v0.2
 

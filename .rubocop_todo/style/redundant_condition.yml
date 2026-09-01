@@ -5,7 +5,6 @@ Style/RedundantCondition:
     - 'app/helpers/avatars_helper.rb'
     - 'app/workers/delete_user_worker.rb'
     - 'ee/app/graphql/ee/resolvers/board_item_filterable.rb'
-    - 'ee/app/models/vulnerabilities/finding.rb'
     - 'ee/lib/gitlab/duo/chat/parsers/final_answer_parser.rb'
     - 'ee/lib/gitlab/llm/stage_check.rb'
     - 'ee/spec/lib/remote_development/workspace_operations/create/desired_config/config_values_extractor_spec.rb'

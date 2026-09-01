@@ -540,6 +540,7 @@ export const getNewWorkItemSharedCache = ({
     },
     linkedResources: {
       ...widgetDefinitionsHash[WIDGET_TYPE_LINKED_RESOURCES],
+      type: WIDGET_TYPE_LINKED_RESOURCES,
       linkedResources: {
         nodes: [],
         __typename: 'WorkItemLinkedResourceConnection',

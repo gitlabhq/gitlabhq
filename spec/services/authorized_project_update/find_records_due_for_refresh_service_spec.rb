@@ -219,13 +219,8 @@ RSpec.describe AuthorizedProjectUpdate::FindRecordsDueForRefreshService, feature
       expect(hash.keys).to eq([project.id])
     end
 
-    it 'sets the values to the project authorization rows' do
-      expect(hash.values.length).to eq(1)
-
-      value = hash.values[0]
-
-      expect(value.project_id).to eq(project.id)
-      expect(value.access_level).to eq(Gitlab::Access::OWNER)
+    it 'sets the values to the access levels' do
+      expect(hash.values).to eq([Gitlab::Access::OWNER])
     end
   end
 
@@ -239,18 +234,14 @@ RSpec.describe AuthorizedProjectUpdate::FindRecordsDueForRefreshService, feature
     end
 
     context 'with an authorization' do
-      let(:row) { service.current_authorizations.take }
+      let(:row) { service.current_authorizations.first }
 
       it 'returns the currently authorized projects' do
         expect(service.current_authorizations.length).to eq(1)
       end
 
-      it 'includes the project ID for every row' do
-        expect(row.project_id).to eq(project.id)
-      end
-
-      it 'includes the access level for every row' do
-        expect(row.access_level).to eq(Gitlab::Access::OWNER)
+      it 'returns [project_id, access_level] pairs' do
+        expect(row).to eq([project.id, Gitlab::Access::OWNER])
       end
     end
   end

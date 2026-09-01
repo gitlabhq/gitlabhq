@@ -63,6 +63,36 @@ RSpec.describe Release, feature_category: :release_orchestration do
           expect(described_class.by_tag(release.tag)).to eq([release])
         end
       end
+
+      describe '.released and .upcoming' do
+        let_it_be(:scheduled) do
+          create(:release, project: project, tag: 'v9-rc', released_at: 30.days.from_now)
+        end
+
+        it 'splits releases on the release date', :aggregate_failures do
+          expect(described_class.released).to include(release)
+          expect(described_class.released).not_to include(scheduled)
+          expect(described_class.upcoming).to include(scheduled)
+          expect(described_class.upcoming).not_to include(release)
+        end
+
+        it 'agrees with #upcoming_release?', :aggregate_failures do
+          expect(scheduled.upcoming_release?).to be true
+          expect(release.upcoming_release?).to be false
+        end
+
+        # A release dated exactly now is not upcoming, so the two scopes must not both match it.
+        it 'counts a release dated now as released', :aggregate_failures do
+          now = Time.zone.now.change(usec: 0)
+          exact = create(:release, project: project, tag: 'v-now', released_at: now)
+
+          travel_to(now) do
+            expect(exact.upcoming_release?).to be false
+            expect(described_class.released).to include(exact)
+            expect(described_class.upcoming).not_to include(exact)
+          end
+        end
+      end
     end
 
     context 'when description of a release is longer than the limit' do

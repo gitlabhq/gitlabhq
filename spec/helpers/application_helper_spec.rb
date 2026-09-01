@@ -105,24 +105,6 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     end
   end
 
-  describe 'simple_sanitize' do
-    let(:a_tag) { '<a href="#">Foo</a>' }
-
-    it 'allows the a tag' do
-      expect(helper.simple_sanitize(a_tag)).to eq(a_tag)
-    end
-
-    it 'allows the span tag' do
-      input = '<span class="foo">Bar</span>'
-      expect(helper.simple_sanitize(input)).to eq(input)
-    end
-
-    it 'disallows other tags' do
-      input = "<strike><b>#{a_tag}</b></strike>"
-      expect(helper.simple_sanitize(input)).to eq(a_tag)
-    end
-  end
-
   describe 'time_ago_with_tooltip' do
     around do |example|
       Time.use_zone('UTC') { example.run }

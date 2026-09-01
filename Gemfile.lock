@@ -469,7 +469,7 @@ GEM
     batch-loader (2.0.5)
     bcrypt (3.1.22)
     benchmark (0.5.0)
-    benchmark-ips (2.14.0)
+    benchmark-ips (2.15.1)
     benchmark-malloc (0.2.0)
     benchmark-memory (0.2.0)
       memory_profiler (~> 1)
@@ -925,7 +925,7 @@ GEM
       wikicloth (= 0.8.1)
     gitlab-net-dns (0.15.0)
       logger
-    gitlab-orbit-proto (0.100.0)
+    gitlab-orbit-proto (0.105.2)
       grpc (~> 1.0)
     gitlab-rspec-metrics-exporter (0.2.0)
       logger (>= 1.4, < 2.0)
@@ -2447,7 +2447,7 @@ DEPENDENCIES
   base64 (~> 0.2.0)
   batch-loader (~> 2.0.5)
   bcrypt (~> 3.1, >= 3.1.14)
-  benchmark-ips (~> 2.14.0)
+  benchmark-ips (~> 2.15.0)
   benchmark-memory (~> 0.1)
   bootsnap (~> 1.25.0)
   browser (~> 5.3.1)
@@ -2543,7 +2543,7 @@ DEPENDENCIES
   gitlab-mail_room (~> 1.1.0)
   gitlab-markup (~> 2.1.0)
   gitlab-net-dns (~> 0.15.0)
-  gitlab-orbit-proto (~> 0.100.0)
+  gitlab-orbit-proto (~> 0.105.0)
   gitlab-policy-store!
   gitlab-rspec!
   gitlab-rspec-metrics-exporter (~> 0.2.0)
@@ -2870,7 +2870,7 @@ CHECKSUMS
   batch-loader (2.0.5) sha256=964bf638b8f498bab40abaafc6f89c057b2e02aa25b64fc1ec12872ad6bff213
   bcrypt (3.1.22) sha256=1f0072e88c2d705d94aff7f2c5cb02eb3f1ec4b8368671e19112527489f29032
   benchmark (0.5.0) sha256=465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c
-  benchmark-ips (2.14.0) sha256=b72bc8a65d525d5906f8cd94270dccf73452ee3257a32b89fbd6684d3e8a9b1d
+  benchmark-ips (2.15.1) sha256=07a1a9f3c6105ecaf68c174fc3fbcddd71a0e9ada6236ae03093a0dcfd812d59
   benchmark-malloc (0.2.0) sha256=37c68f0435261634026f584d79956a35325a3027e3e6b4cc8d7575aa10537e6b
   benchmark-memory (0.2.0) sha256=ca1e436433b09535ee8f64f80600a5edb407cff1f6ac70e089ca238118e6ab5c
   benchmark-perf (0.6.0) sha256=fe2b01959f3de0f9dd34820d54ef881eb4f3589fccb7d17b63068ac92d7f9621
@@ -3063,7 +3063,7 @@ CHECKSUMS
   gitlab-mail_room (1.1.0) sha256=784847b914a6636b30264fd8a042c15e39f3473f3acd78ebd254ac0a885a5878
   gitlab-markup (2.1.0) sha256=d352c0d261191a1d354aa63bece5644ef75c663bc34276b6de63539d11adf32f
   gitlab-net-dns (0.15.0) sha256=d229aae205055b86b2ad166981257eb589ce6d6a146aa79b3ea2b1e5d9741f46
-  gitlab-orbit-proto (0.100.0) sha256=29219004efe021aec754759d7a6dec583bdb8b24b6d496e5dde7e24201a7356c
+  gitlab-orbit-proto (0.105.2) sha256=e926e9e8103e4e2498bdacd853a305300d49bb8cd20a5c2a407a6ee07c3c5aaf
   gitlab-policy-store (0.1.0)
   gitlab-rspec (0.1.0)
   gitlab-rspec-metrics-exporter (0.2.0) sha256=9d05ee0437d30cc59d78437e795916e13746f070ea2423e88e9325e96bd09c63

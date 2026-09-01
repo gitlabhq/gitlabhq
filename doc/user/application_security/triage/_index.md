@@ -36,7 +36,7 @@ You should conduct vulnerability triage according to a risk assessment framework
 Depending on your industry or geographical location, compliance with a framework might be
 required by law. If not, you should use a respected risk assessment framework, for example:
 
-- [SANS Institute Vulnerability Management Framework](https://www.sans.org/blog/the-vulnerability-assessment-framework/)
+- [SANS Institute Vulnerability Management Framework](https://www.sans.org/blog/the-vulnerability-assessment-framework)
 - [OWASP Threat and Safeguard Matrix (TaSM)](https://owasp.org/www-project-threat-and-safeguard-matrix/)
 
 If available, use the

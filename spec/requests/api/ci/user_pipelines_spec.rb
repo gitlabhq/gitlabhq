@@ -48,6 +48,17 @@ RSpec.describe API::Ci::UserPipelines, feature_category: :continuous_integration
         expect(json_response.first['name']).to eq('Build pipeline')
       end
 
+      it 'includes the project of each pipeline' do
+        get api('/pipelines', user)
+
+        expect(json_response.first['project']).to include(
+          'id' => project.id,
+          'name' => project.name,
+          'path' => project.path,
+          'path_with_namespace' => project.full_path
+        )
+      end
+
       it 'does not return counted offset pagination headers' do
         get api('/pipelines', user)
 

@@ -46,9 +46,12 @@ import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.
 import getAllowedWorkItemChildTypes from '~/work_items/graphql/work_item_allowed_children.query.graphql';
 import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
 import workItemLinkedItemsQuery from '~/work_items/graphql/work_item_linked_items.query.graphql';
+import workItemLinkedResourcesQuery from '~/work_items/graphql/work_item_linked_resources.query.graphql';
+import workItemLinkedResourcesUpdatedSubscription from '~/work_items/graphql/work_item_linked_resources.subscription.graphql';
 
 import {
   workItemByIidResponseFactory,
+  workItemLinkedResourcesResponseFactory,
   workItemQueryResponse,
   mockParent,
   workItemLinkedItemsResponse,
@@ -159,6 +162,13 @@ describe('WorkItemDetail component', () => {
     return { dataTransfer: { types, files, items } };
   };
 
+  const linkedResourcesSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(workItemLinkedResourcesResponseFactory());
+  const linkedResourcesSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue({ data: { workItemUpdated: null } });
+
   const createComponent = ({
     props = {},
     provide = {},
@@ -182,6 +192,8 @@ describe('WorkItemDetail component', () => {
       [workspacePermissionsQuery, workspacePermissionsHandler],
       [uploadDesignMutation, uploadDesignMutationHandler],
       [workItemLinkedItemsQuery, workItemLinkedItemsSuccessHandler],
+      [workItemLinkedResourcesQuery, linkedResourcesSuccessHandler],
+      [workItemLinkedResourcesUpdatedSubscription, linkedResourcesSubscriptionHandler],
     ]);
 
     wrapper = shallowMountExtended(WorkItemDetail, {
@@ -659,39 +671,24 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  it('renders the resources widget', async () => {
+  // The widget is registered with `defineAsyncComponent`, and its stub exposes no props under
+  // Vue 3, so this asserts on rendering rather than on the props the parent passes.
+  it('renders the resources widget when the work item has the widget', async () => {
     createComponent();
     await mockApollo.resolveAll();
 
     expect(findLinkedResourcesWidget().exists()).toBe(true);
   });
 
-  it('renders the resources widget from features', async () => {
-    const response = workItemByIidResponseFactory({
-      linkedResourcesWidgetPresent: false,
-      features: {
-        linkedResources: {
-          linkedResources: {
-            nodes: [
-              {
-                url: 'http://zoom.example.com/j/1234567890',
-                __typename: 'WorkItemLinkedResource',
-              },
-            ],
-            __typename: 'WorkItemLinkedResourceConnection',
-          },
-          __typename: 'WorkItemWidgetLinkedResources',
-        },
-      },
-    });
-
+  it('does not render the resources widget when the work item lacks the widget', async () => {
     createComponent({
-      handler: jest.fn().mockReturnValue(response),
-      provide: { glFeatures: { workItemFeaturesField: true } },
+      handler: jest
+        .fn()
+        .mockResolvedValue(workItemByIidResponseFactory({ linkedResourcesWidgetPresent: false })),
     });
     await mockApollo.resolveAll();
 
-    expect(findLinkedResourcesWidget().exists()).toBe(true);
+    expect(findLinkedResourcesWidget().exists()).toBe(false);
   });
 
   it('shows an error message when WorkItemTitle emits an `error` event', async () => {

@@ -64,7 +64,7 @@ module Mcp
 
         override :tool_aliases
         def self.tool_aliases
-          %w[create_merge_request_note create_workitem_note]
+          %w[create_merge_request_note create_workitem_note create_work_item_note]
         end
 
         protected

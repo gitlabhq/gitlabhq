@@ -238,7 +238,9 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionImporter, feature_catego
 
       it 'logs what would be created' do
         expect(Gitlab::AppLogger).to receive(:info).with(
-          hash_including(message: 'Dry run: would create partition', partition_name: '_test_import_partitioned_100')
+          hash_including('class_name' => described_class.name,
+            'message' => 'Dry run: would create partition',
+            'partition_name' => '_test_import_partitioned_100')
         )
 
         importer.import(table_definitions, dry_run: true)
@@ -272,9 +274,10 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionImporter, feature_catego
         it 'skips invalid partitions, logs warnings, and raises with error summary' do
           expect(Gitlab::AppLogger).to receive(:warn).with(
             hash_including(
-              message: 'Skipping invalid partition bounds',
-              table_name: '_test_import_partitioned',
-              partition_name: '_test_import_partitioned_invalid'
+              'class_name' => described_class.name,
+              'message' => 'Skipping invalid partition bounds',
+              'table_name' => '_test_import_partitioned',
+              'partition_name' => '_test_import_partitioned_invalid'
             )
           )
 
@@ -470,9 +473,10 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionImporter, feature_catego
         it 'skips the invalid partition and raises with error summary' do
           expect(Gitlab::AppLogger).to receive(:warn).with(
             hash_including(
-              message: 'Skipping invalid partition definition',
-              table_name: '_test_date_import_partitioned',
-              partition_name: '_test_date_import_partitioned_bad'
+              'class_name' => described_class.name,
+              'message' => 'Skipping invalid partition definition',
+              'table_name' => '_test_date_import_partitioned',
+              'partition_name' => '_test_date_import_partitioned_bad'
             )
           )
 

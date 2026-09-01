@@ -33,7 +33,8 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteService, feature_category: :mcp_server
     end
 
     it 'aliases the tools it replaces' do
-      expect(described_class.tool_aliases).to contain_exactly('create_merge_request_note', 'create_workitem_note')
+      expect(described_class.tool_aliases)
+        .to contain_exactly('create_merge_request_note', 'create_workitem_note', 'create_work_item_note')
     end
   end
 

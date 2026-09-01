@@ -194,7 +194,12 @@ module Gitlab
 
     def set_attr_readers
       self.class.application_attributes.each do |attr|
-        self.class.lazy_attr_reader attr.name, type: attr.type
+        # The user can be pushed as a lazy lambda (e.g. `-> { @current_user }`)
+        # that resolves to nil until authentication completes. Caching that nil
+        # would drop user attribution for the rest of the request (username,
+        # user_id, client_id, and the Gitaly RPC metadata), so re-resolve it.
+        cache_nil = attr.name != :user
+        self.class.lazy_attr_reader attr.name, type: attr.type, cache_nil: cache_nil
       end
     end
 

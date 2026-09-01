@@ -1026,6 +1026,210 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
+  describe '#list_releases' do
+    # `Release belongs_to :project, touch: true`, so creating one writes to the project.
+    # These projects cannot be frozen by `let_it_be`.
+    let_it_be(:releases_project, freeze: false) do
+      create(:project, :repository, group: group, maintainers: [user])
+    end
+
+    let_it_be(:other_project, freeze: false) { create(:project, :repository, maintainers: [user]) }
+
+    let_it_be(:release_v1) do
+      create(:release, project: releases_project, tag: 'v1.0', author: user, released_at: 3.days.ago)
+    end
+
+    let_it_be(:release_v2) do
+      create(:release, project: releases_project, tag: 'v2.0', author: user, released_at: 2.days.ago)
+    end
+
+    let_it_be(:release_v3, freeze: false) do
+      create(:release, project: releases_project, tag: 'v3.0', author: user, released_at: 1.day.ago)
+    end
+
+    let_it_be(:other_project_release) do
+      create(:release, project: other_project, tag: 'v9.0', author: user)
+    end
+
+    let_it_be(:release_link) do
+      create(:release_link, release: release_v3, name: 'Binary', url: 'https://example.com/v3.0/binary')
+    end
+
+    let(:tool_params) do
+      { name: 'list_releases', arguments: { project_id: releases_project.full_path } }
+    end
+
+    let(:structured_content) { json_response['result']['structuredContent'] }
+
+    it 'returns only the requested project releases, most recent first', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      expect(structured_content['releases'].pluck('tag_name')).to eq(%w[v3.0 v2.0 v1.0])
+    end
+
+    it 'returns metadata-only entries with asset links', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      entry = structured_content['releases'].first
+      expect(entry.keys).to match_array(%w[tag_name name released_at upcoming assets])
+      expect(entry['assets']).to eq(
+        'count' => 1,
+        'links' => [{ 'name' => 'Binary', 'url' => 'https://example.com/v3.0/binary' }]
+      )
+    end
+
+    it 'reports pagination state' do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      expect(structured_content['metadata']).to eq(
+        'page' => 1, 'per_page' => 20, 'has_more' => false
+      )
+    end
+
+    context 'when identified by url instead of project_id' do
+      let(:tool_params) do
+        { name: 'list_releases', arguments: { url: releases_project.web_url } }
+      end
+
+      it 'resolves the project from the url' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(structured_content['releases'].pluck('tag_name')).to eq(%w[v3.0 v2.0 v1.0])
+      end
+    end
+
+    context 'when neither url nor project_id is given' do
+      let(:tool_params) { { name: 'list_releases', arguments: {} } }
+
+      it 'returns an error naming the requirement', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text'])
+          .to include('Provide exactly one of: url or project_id')
+      end
+    end
+
+    context 'when arguments are omitted entirely' do
+      let(:tool_params) { { name: 'list_releases' } }
+
+      it 'returns an error naming the requirement', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text'])
+          .to include('Provide exactly one of: url or project_id')
+      end
+    end
+
+    context 'when both url and project_id are given' do
+      let(:tool_params) do
+        {
+          name: 'list_releases',
+          arguments: { url: releases_project.web_url, project_id: releases_project.full_path }
+        }
+      end
+
+      it 'returns an error naming the requirement' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['content'].first['text'])
+          .to include('Provide exactly one of: url or project_id')
+      end
+    end
+
+    context 'with pagination' do
+      let(:tool_params) do
+        { name: 'list_releases', arguments: { project_id: releases_project.full_path, per_page: 2 } }
+      end
+
+      it 'bounds the page and reports that more remain', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(structured_content['releases'].pluck('tag_name')).to eq(%w[v3.0 v2.0])
+        expect(structured_content['metadata']).to eq(
+          'page' => 1, 'per_page' => 2, 'has_more' => true
+        )
+      end
+
+      it 'returns the remainder on the last page, with has_more false', :aggregate_failures do
+        # `as: :json` matters: form encoding would send per_page as "2", and the schema requires
+        # an integer.
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: params.deep_merge(params: { arguments: { page: 2 } }), as: :json
+
+        expect(structured_content['releases'].pluck('tag_name')).to eq(%w[v1.0])
+        expect(structured_content['metadata']['has_more']).to be false
+      end
+    end
+
+    context 'when per_page exceeds the maximum' do
+      let(:tool_params) do
+        { name: 'list_releases', arguments: { project_id: releases_project.full_path, per_page: 101 } }
+      end
+
+      it 'rejects the call rather than silently clamping', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('per_page')
+      end
+    end
+
+    context 'when the project has no releases' do
+      let_it_be(:empty_project) { create(:project, maintainers: [user]) }
+
+      let(:tool_params) do
+        { name: 'list_releases', arguments: { project_id: empty_project.full_path } }
+      end
+
+      it 'returns an empty list', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['isError']).to be_falsey
+        expect(structured_content['releases']).to eq([])
+        expect(structured_content['metadata']['has_more']).to be false
+      end
+    end
+
+    context 'when the url points at a group' do
+      let(:tool_params) do
+        { name: 'list_releases', arguments: { url: group.web_url } }
+      end
+
+      it 'returns an error' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['isError']).to be_truthy
+      end
+    end
+
+    context 'when caller cannot read the project' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+      let_it_be(:private_project, freeze: false) { create(:project, :private) }
+      let_it_be(:private_release) { create(:release, project: private_project, tag: 'v1.0') }
+
+      let(:tool_params) do
+        { name: 'list_releases', arguments: { project_id: private_project.full_path } }
+      end
+
+      it 'answers a private project exactly as it answers a missing one', :aggregate_failures do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params
+        denied = json_response['result']['content'].first['text']
+
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token),
+          params: params.deep_merge(params: { arguments: { project_id: 'no/such-project' } })
+        missing = json_response['result']['content'].first['text']
+
+        expect(denied).to eq("Tool execution failed: Project '#{private_project.full_path}' not found or inaccessible")
+        expect(missing).to eq("Tool execution failed: Project 'no/such-project' not found or inaccessible")
+      end
+    end
+  end
+
   describe '#add_branch' do
     let(:tool_params) do
       { name: 'add_branch', arguments: { project_id: project.full_path, branch: 'my-feature', ref: 'master' } }

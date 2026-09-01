@@ -96,7 +96,7 @@ module Organizations
       return unless organization
 
       push_to_schema_breadcrumb(
-        simple_sanitize(organization.name),
+        organization.name,
         organization_path(organization),
         organization.try(:avatar_url)
       )

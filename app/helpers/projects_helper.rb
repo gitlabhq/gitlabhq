@@ -112,7 +112,7 @@ module ProjectsHelper
       push_to_schema_breadcrumb(name, url)
     end
 
-    push_to_schema_breadcrumb(simple_sanitize(project.name), project_path(project), project.try(:avatar_url))
+    push_to_schema_breadcrumb(project.name, project_path(project), project.try(:avatar_url))
   end
 
   def remove_project_message
