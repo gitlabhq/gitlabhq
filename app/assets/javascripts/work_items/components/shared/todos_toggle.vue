@@ -110,6 +110,7 @@ export default {
               todos.push({
                 __typename: 'Todo',
                 id: todo.id,
+                state: todo.state,
               });
             }
             this.$emit('todos-updated', { cache, todos });

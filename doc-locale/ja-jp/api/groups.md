@@ -27,7 +27,7 @@ GET /groups/:id
 
 パラメータは以下のとおりです:
 
-| 属性                | 型           | 必須 | 説明 |
+| 属性                | タイプ           | 必須 | 説明 |
 |--------------------------|----------------|----------|-------------|
 | `id`                     | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `with_custom_attributes` | ブール値        | いいえ       | レスポンスに[カスタム属性](custom_attributes.md)を含めます（管理者のみ）。 |
@@ -43,7 +43,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 このエンドポイントは、最大100個のプロジェクトと共有プロジェクトを返します。グループ内のすべてのプロジェクトの詳細を取得するには、代わりに[グループのプロジェクトをリスト](#list-projects)を使用します。
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -256,10 +256,10 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "include_recommended_allowed": false,
     "allow_all_unix_sockets": false,
     "allow_project_extension": true,
-    "minimum_access_level_execute": 30,
-    "minimum_access_level_execute_async": 30,
-    "minimum_access_level_manage": 40,
-    "minimum_access_level_enable_on_projects": 40
+    "minimum_access_level_execute": "developer",
+    "minimum_access_level_execute_async": "developer",
+    "minimum_access_level_manage": "maintainer",
+    "minimum_access_level_enable_on_projects": "maintainer"
   },
   ...
 }
@@ -277,20 +277,20 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 `ai_settings`オブジェクトは、グループでGitLab Duo Agent Platformが利用可能な場合に、グループを読み取れるユーザーへの応答に含まれます。オブジェクトには次の属性が含まれています:
 
-| 属性 | 型 | 説明 |
+| 属性 | タイプ | 説明 |
 |-----------|------|-------------|
 | `ai_catalog_restricted_to_group_hierarchy` | ブール値 | `true`の場合、AIカタログはこのトップレベルグループ階層内の項目に制限されます。PremiumおよびUltimateのみです。 |
 | `ai_usage_data_collection_enabled` | ブール値 | `true`の場合、このグループでAI使用状況データ収集が有効になります。GitLab.comのみ。 |
-| `allow_all_unix_sockets` | ブール値 | `true`の場合、GitLab Duo Agent Platformネットワークアクセスに対してすべてのUnixソケットが許可されます。`dap_group_network_access_controls`機能フラグが有効な場合に返されます。 |
-| `allow_project_extension` | ブール値 | `true`の場合、プロジェクトはGitLab Duo Agent Platformのネットワークアクセスドメイン許可リストを拡張できます。`dap_group_network_access_controls`機能フラグが有効な場合に返されます。 |
+| `allow_all_unix_sockets` | ブール値 | `true`の場合、すべてのUnixソケットはGitLab Duo Agent Platformで許可されます。 |
+| `allow_project_extension` | ブール値 | `true`の場合、プロジェクトはGitLab Duo Agent Platformのネットワークアクセスドメイン許可リストを拡張できます。 |
 | `duo_agent_platform_enabled` | ブール値 | `true`の場合、このグループでGitLab Duo Agent Platformの機能が有効になります。Premium、Ultimate。GitLab.comのFreeプランでGitLabクレジットでも利用できます。 |
 | `duo_workflow_mcp_enabled` | ブール値 | `true`の場合、GitLab Duo Agent PlatformのMCPサポートが有効になります。Premium、Ultimate。GitLab.comのFreeプランでGitLabクレジットでも利用できます。 |
 | `foundational_agents_default_enabled` | ブール値 | `true`の場合、新しい基本エージェントがこのグループでデフォルトで有効になります。Premium、Ultimate。GitLab.comのFreeプランでGitLabクレジットでも利用できます。 |
-| `include_recommended_allowed` | ブール値 | `true`の場合、GitLab Duo Agent Platformのネットワークアクセス許可リストに推奨ドメインが含まれます。`dap_group_network_access_controls`機能フラグが有効な場合に返されます。 |
-| `minimum_access_level_enable_on_projects` | 整数 | プロジェクトでGitLab Duo Agent Platformを有効にするために必要な最小アクセスレベル。`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー) のいずれか。`dap_group_customizable_permissions`機能フラグが有効な場合に返されます。 |
-| `minimum_access_level_execute` | 整数 | ユーザーがGitLab Duo Agent Platform機能と対話するために必要な最小アクセスレベル。`10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー) のいずれか。`dap_group_customizable_permissions`機能フラグが有効な場合に返されます。 |
-| `minimum_access_level_execute_async` | 整数 | CI/CDでGitLab Duo Agent Platformの機能を実行するために必要な最小アクセスレベル。`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー) のいずれか。`dap_group_customizable_permissions`機能フラグが有効な場合に返されます。 |
-| `minimum_access_level_manage` | 整数 | GitLab Duo Agent Platformを管理するために必要な最小アクセスレベル。`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー) のいずれか。`dap_group_customizable_permissions`機能フラグが有効な場合に返されます。 |
+| `include_recommended_allowed` | ブール値 | `true`の場合、GitLab Duo Agent Platformのネットワークアクセス許可リストに推奨ドメインが含まれます。 |
+| `minimum_access_level_enable_on_projects` | 文字列 | プロジェクトでGitLab Duo Agent Platformを有効にするために必要な最小アクセスレベル。`developer`、`maintainer`、`owner`のいずれかです。`dap_group_customizable_permissions`機能フラグが有効な場合に返されます。 |
+| `minimum_access_level_execute` | 文字列 | ユーザーがGitLab Duo Agent Platform機能と対話するために必要な最小アクセスレベル。`guest`、`planner`、`reporter`、`developer`、`maintainer`、`owner`のいずれか。`dap_group_customizable_permissions`機能フラグが有効な場合に返されます。 |
+| `minimum_access_level_execute_async` | 文字列 | CI/CDでGitLab Duo Agent Platformの機能を実行するために必要な最小アクセスレベル。`developer`、`maintainer`、`owner`のいずれかです。`dap_group_customizable_permissions`機能フラグが有効な場合に返されます。 |
+| `minimum_access_level_manage` | 文字列 | GitLab Duo Agent Platformを管理するために必要な最小アクセスレベル。`developer`、`maintainer`、`owner`のいずれかです。`dap_group_customizable_permissions`機能フラグが有効な場合に返されます。 |
 | `prompt_injection_protection_level` | 文字列 | プロンプトインジェクション保護レベル。`no_checks`、`log_only`、`interrupt`のいずれかです。 |
 
 パラメータ`with_projects=false`を追加すると、プロジェクトは返されません。
@@ -300,7 +300,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/4?with_projects=false"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -335,7 +335,7 @@ APIの結果は[ページネーション](rest/_index.md#pagination)されるた
 
 パラメータは以下のとおりです:
 
-| 属性                | 型              | 必須 | 説明 |
+| 属性                | タイプ              | 必須 | 説明 |
 |--------------------------|-------------------|----------|-------------|
 | `skip_groups`            | 整数の配列 | いいえ       | 渡されたグループIDをスキップします。 |
 | `all_available`          | ブール値           | いいえ       | `true`の場合、アクセス可能なすべてのグループを返します。`false`の場合、ユーザーがメンバーであるグループのみを返します。ユーザーの場合は`false`がデフォルトであり、管理者の場合は`true`がデフォルトです。認証されていないリクエストでは、常にすべての公開グループが返されます。`owned`属性と`min_access_level`属性が優先されます。 |
@@ -348,7 +348,7 @@ APIの結果は[ページネーション](rest/_index.md#pagination)されるた
 | `owned`                  | ブール値           | いいえ       | 現在の認証済みユーザーが明示的に所有するグループに制限します。 |
 | `min_access_level`       | 整数           | いいえ       | 現在のユーザーが指定されたアクセスレベル以上を持つグループに限定します。使用可能な値: `5` （最小アクセス）、`10` （ゲスト）、`15` （プランナー）、`20` （レポーター）、`25` （セキュリティマネージャー）、`30` （デベロッパー）、`40` （メンテナー）、または`50` （オーナー）。 |
 | `top_level_only`         | ブール値           | いいえ       | トップレベルグループに制限します（すべてのサブグループを除外）。 |
-| `repository_storage`     | 文字列            | いいえ       | グループが使用しているリポジトリストレージでフィルタリングします（管理者のみ）。GitLab 16.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/419643)されました。PremiumおよびUltimateのみです。 |
+| `repository_storage`     | 文字列            | いいえ       | グループが使用しているリポジトリストレージでフィルタリングします（管理者のみ）。PremiumおよびUltimateのみです。 |
 | `marked_for_deletion_on` | 日付              | いいえ       | グループが削除対象としてマークされた日付でフィルタリングします。GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/429315)されました。PremiumおよびUltimateのみです。 |
 | `active`                 | ブール値           | いいえ       | アーカイブされておらず、削除対象としてマークされていないグループに制限します。 |
 | `archived`               | ブール値           | いいえ       | アーカイブされたグループで制限します。GitLab 18.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/519587)されました。 |
@@ -413,7 +413,7 @@ GET /groups?statistics=true
 パラメータ`statistics=true`を使用すると、認証済みユーザーが管理者の場合、レスポンスにはコンテナレジストリのストレージサイズに関する情報が含まれます。
 
 - `container_registry_size`: グループとそのサブグループ内のすべてのコンテナで使用されるストレージサイズの合計（バイト単位）。グループのプロジェクトとサブグループ内のすべてのリポジトリサイズの合計として計算されます。メタデータデータベースが有効になっている場合にのみ使用できます。
-- `container_registry_size_is_estimated`: サイズが、すべてのの実際のデータに基づいた正確な計算であるか（`false`）、パフォーマンスの制約による見積もりであるか（`true`）を示します。
+- `container_registry_size_is_estimated`: サイズが、すべての実際のデータに基づいた正確な計算であるか（`false`）、パフォーマンスの制約による見積もりであるか（`true`）を示します。
 
 GitLab Self-Managedインスタンスの場合、コンテナレジストリサイズ属性を含めるには、[コンテナレジストリメタデータデータベース](../administration/packages/container_registry_metadata_database.md)を有効にする必要があります。
 
@@ -552,7 +552,7 @@ GET /groups/:id/projects
 
 パラメータは以下のとおりです:
 
-| 属性                     | 型           | 必須 | 説明 |
+| 属性                     | タイプ           | 必須 | 説明 |
 |-------------------------------|----------------|----------|-------------|
 | `id`                          | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `active`                      | ブール値        | いいえ       | プロジェクトステータスで制限します。`true`の場合、アクティブなプロジェクトが返されます。`false`の場合、アーカイブ済みまたは削除対象としてマークされたプロジェクトが返されます。GitLab 18.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218053)されました。 |
@@ -573,11 +573,11 @@ GET /groups/:id/projects
 | `with_custom_attributes`      | ブール値        | いいえ       | レスポンスに[カスタム属性](custom_attributes.md)を含めます（管理者のみ）。 |
 | `with_security_reports`       | ブール値        | いいえ       | ビルドのいずれかにセキュリティレポートアーティファクトが存在するプロジェクトのみを返します。これは、「セキュリティが有効になっているプロジェクト」を意味します。デフォルトは`false`です。Ultimateのみです。 |
 
-**脚注**: 
+**補足説明**: 
 
 1. `search`パラメータから計算された類似性スコアで結果を並べ替えます。`order_by=similarity`を使用すると、`sort`パラメータは無視されます。`search`パラメータが指定されていない場合、APIは`name`で並べ替えられたプロジェクトを返します。
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -637,7 +637,7 @@ GET /groups/:id/projects/shared
 
 パラメータは以下のとおりです:
 
-| 属性                     | 型           | 必須 | 説明 |
+| 属性                     | タイプ           | 必須 | 説明 |
 | ----------------------------- | -------------- | -------- | ----------- |
 | `id`                          | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `archived`                    | ブール値        | いいえ       | アーカイブ状態で制限します。 |
@@ -652,7 +652,7 @@ GET /groups/:id/projects/shared
 | `min_access_level`            | 整数        | いいえ       | 現在のユーザーが指定されたアクセスレベル以上を持つプロジェクトに限定します。使用可能な値: `5` （最小アクセス）、`10` （ゲスト）、`15` （プランナー）、`20` （レポーター）、`25` （セキュリティマネージャー）、`30` （デベロッパー）、`40` （メンテナー）、または`50` （オーナー）。 |
 | `with_custom_attributes`      | ブール値        | いいえ       | レスポンスに[カスタム属性](custom_attributes.md)を含めます（管理者のみ）。 |
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -772,7 +772,7 @@ DELETE /groups/:id/shared_projects/:project_id
 
 パラメータは以下のとおりです:
 
-| 属性 | 型 | 必須 | 説明 |
+| 属性 | タイプ | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `project_id` | 整数 | はい | プロジェクトのID。 |
@@ -810,7 +810,7 @@ GET /groups/:id/saml_users
 
 サポートされている属性:
 
-| 属性        | 型           | 必須 | 説明 |
+| 属性        | タイプ           | 必須 | 説明 |
 |:-----------------|:---------------|:---------|:------------|
 | `id`             | 整数または文字列 | はい      | トップレベルグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `username`       | 文字列         | いいえ       | 指定されたユーザー名のユーザーを返します。 |
@@ -827,7 +827,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/saml_users"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -907,7 +907,7 @@ GET /groups/:id/provisioned_users
 
 パラメータは以下のとおりです:
 
-| 属性        | 型           | 必須 | 説明 |
+| 属性        | タイプ           | 必須 | 説明 |
 |:-----------------|:---------------|:---------|:------------|
 | `id`             | 整数または文字列 | はい      | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
 | `username`       | 文字列         | いいえ       | 特定のユーザー名を持つ1つのユーザーを返します。 |
@@ -917,7 +917,7 @@ GET /groups/:id/provisioned_users
 | `created_after`  | 日時       | いいえ       | 指定された時刻以降に作成されたユーザーを返します。 |
 | `created_before` | 日時       | いいえ       | 指定された時刻よりも前に作成されたユーザーを返します。 |
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -978,11 +978,11 @@ APIの結果は[ページネーション](rest/_index.md#pagination)されるた
 
 パラメータは以下のとおりです:
 
-| 属性                | 型              | 必須 | 説明 |
+| 属性                | タイプ              | 必須 | 説明 |
 | ------------------------ | ----------------- | -------- | ----------- |
 | `id`                     | 整数または文字列    | はい      | 直属の親グループのIDまたは[URLエンコードされたグループのパス](rest/_index.md#namespaced-paths)。 |
 | `skip_groups`            | 整数の配列 | いいえ       | 渡されたグループIDをスキップします。 |
-| `all_available`          | ブール値           | いいえ       | アクセスできるすべてのグループを表示します（認証済みユーザーの場合は`false`がデフォルトで、管理者の場合は`true`がデフォルトです）。属性とが優先されます。`owned`および`min_access_level`属性が優先されます。 |
+| `all_available`          | ブール値           | いいえ       | アクセスできるすべてのグループを表示します（認証済みユーザーの場合は`false`がデフォルトで、管理者の場合は`true`がデフォルトです）。`owned`および`min_access_level`属性が優先されます。 |
 | `search`                 | 文字列            | いいえ       | 検索条件に一致する認証済みグループのリストを返します。サブグループの（フルパスではなく）短いパスのみが検索されます。 |
 | `order_by`               | 文字列            | いいえ       | グループを`name`、`path`、または`id`で並べ替えます。デフォルトは`name`です。 |
 | `sort`                   | 文字列            | いいえ       | グループを`asc`または`desc`の順に並べ替えます。デフォルトは`asc`です。 |
@@ -1053,7 +1053,7 @@ APIの結果は[ページネーション](rest/_index.md#pagination)されるた
 
 パラメータは以下のとおりです:
 
-| 属性                | 型              | 必須 | 説明 |
+| 属性                | タイプ              | 必須 | 説明 |
 | ------------------------ | ----------------- | -------- | ----------- |
 | `id`                     | 整数または文字列    | はい      | 直属の親グループのIDまたは[URLエンコードされたグループのパス](rest/_index.md#namespaced-paths)。 |
 | `skip_groups`            | 整数の配列 | いいえ       | 渡されたグループIDをスキップします。 |
@@ -1166,7 +1166,7 @@ APIの結果は[ページネーション](rest/_index.md#pagination)されるた
 
 パラメータは以下のとおりです:
 
-| 属性                             | 型              | 必須 | 説明 |
+| 属性                             | タイプ              | 必須 | 説明 |
 | ------------------------------------- | ----------------- | -------- | ---------- |
 | `id`                                  | 整数または文字列    | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `skip_groups`                         | 整数の配列 | いいえ       | 指定されたグループのIDを除外します。 |
@@ -1181,7 +1181,7 @@ APIの結果は[ページネーション](rest/_index.md#pagination)されるた
 GET /groups/:id/groups/shared
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -1244,7 +1244,7 @@ APIの結果は[ページネーション](rest/_index.md#pagination)されるた
 
 パラメータは以下のとおりです:
 
-| 属性                             | 型              | 必須 | 説明 |
+| 属性                             | タイプ              | 必須 | 説明 |
 | ------------------------------------- | ----------------- | -------- | ---------- |
 | `id`                                  | 整数または文字列    | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `search`                              | 文字列            | いいえ       | 検索条件に一致する認証済みグループのリストを返します。 |
@@ -1256,7 +1256,7 @@ APIの結果は[ページネーション](rest/_index.md#pagination)されるた
 GET /groups/:id/invited_groups
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -1336,18 +1336,18 @@ POST /groups
 
 パラメータは以下のとおりです:
 
-| 属性                            | 型    | 必須 | 説明 |
+| 属性                            | タイプ    | 必須 | 説明 |
 |--------------------------------------|---------|----------|-------------|
 | `name`                               | 文字列  | はい      | グループの名前。 |
 | `path`                               | 文字列  | はい      | グループのパス。 |
 | `auto_devops_enabled`                | ブール値 | いいえ       | このグループ内のすべてのプロジェクトでAuto DevOpsパイプラインをデフォルトにします。 |
 | `avatar`                             | 混合   | いいえ       | グループのアバターの画像ファイル。 |
-| `default_branch`                     | 文字列  | いいえ       | グループのプロジェクトの[デフォルトブランチ](../user/project/repository/branches/default.md)名。GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/442298)されました。 |
-| `default_branch_protection`          | 整数 | いいえ       | GitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/408314)になりました。代わりに`default_branch_protection_defaults`を使用してください。 |
+| `default_branch`                     | 文字列  | いいえ       | グループのプロジェクトの[デフォルトブランチ](../user/project/repository/branches/default.md)名。 |
+| `default_branch_protection`          | 整数 | いいえ       | GitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/408314)になりました。代わりに、`default_branch_protection_defaults`を使用してください。 |
 | `default_branch_protection_defaults` | ハッシュ    | いいえ       | GitLab 17.0で導入されました。利用可能なオプションについては、[`default_branch_protection_defaults`のオプション](#options-for-default_branch_protection_defaults)を参照してください。 |
 | `description`                        | 文字列  | いいえ       | グループの説明。 |
-| `enabled_git_access_protocol`        | 文字列  | いいえ       | Gitアクセスで有効になっているプロトコル。使用できる値は`ssh`、`http`、および`all`（両方のプロトコルを許可する場合）です。GitLab 16.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/436618)されました。 |
-| `emails_disabled`                    | ブール値 | いいえ       | （GitLab 16.5で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899)になりました。）メール通知を無効にします。代わりに`emails_enabled`を使用してください。 |
+| `enabled_git_access_protocol`        | 文字列  | いいえ       | Gitアクセスで有効になっているプロトコル。使用できる値は`ssh`、`http`、および`all`（両方のプロトコルを許可する場合）です。 |
+| `emails_disabled`                    | ブール値 | いいえ       | （GitLab 16.5で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899)になりました。）メール通知を無効にします。代わりに、`emails_enabled`を使用してください。 |
 | `emails_enabled`                     | ブール値 | いいえ       | メール通知を有効にします。 |
 | `lfs_enabled`                        | ブール値 | いいえ       | このグループのプロジェクトに対して、Large File Storage（LFS）を有効または無効にします。 |
 | `mentions_disabled`                  | ブール値 | いいえ       | グループがメンションされる機能を無効にします。 |
@@ -1390,7 +1390,7 @@ POST /groups
 
 `default_branch_protection_defaults`属性は、デフォルトブランチ保護のデフォルトを記述します。すべてのパラメータはオプションです。
 
-| キー                            | 型    | 説明 |
+| キー                            | タイプ    | 説明 |
 |:-------------------------------|:--------|:------------|
 | `allowed_to_push`              | 配列   | プッシュが許可されたアクセスレベルの配列。デベロッパー（30）またはメンテナー（40）をサポートしています。 |
 | `allow_force_push`             | ブール値 | プッシュアクセスを持つすべてのユーザーに対して強制プッシュを許可します。 |
@@ -1417,8 +1417,7 @@ curl --request POST \
 
 {{< history >}}
 
-- GitLab 16.0で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/389557)になりました。PremiumおよびUltimateのみです。
-- GitLab 18.0で、GitLab PremiumからGitLab Freeに[移行](https://gitlab.com/groups/gitlab-org/-/epics/17208)しました。
+- GitLab 18.0で、GitLab PremiumからGitLab Freeに[移行](https://gitlab.com/groups/gitlab-org/-/work_items/17208)しました。
 
 {{< /history >}}
 
@@ -1431,16 +1430,16 @@ curl --request POST \
 
 前提条件: 
 
-- グループの管理者であるか、オーナーロールを持っている必要があります。
+- グループの管理者であるか、オーナーのロールを持っていること。
 
 ```plaintext
 DELETE /groups/:id
 ```
 
-| 属性            | 型              | 必須 | 説明 |
+| 属性            | タイプ              | 必須 | 説明 |
 |----------------------|-------------------|----------|-------------|
 | `id`                 | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `full_path`          | 文字列            | 条件付き       | サブグループへのフルパス。サブグループの削除の確認に使用されます。`permanently_remove`が`true`の場合、この属性は必須です。サブグループのパスを確認するには、[グループ](groups.md#retrieve-a-group)の詳細を参照してください。 |
+| `full_path`          | 文字列            | 条件付き       | サブグループへのフルパス。サブグループの削除の確認に使用されます。`permanently_remove`が`true`の場合、この属性は必須です。サブグループのパスを確認するには、[グループの詳細](#retrieve-a-group)を参照してください。 |
 | `permanently_remove` | ブール値/文字列    | いいえ       | `true`の場合、すでに削除がスケジュールされているサブグループをすぐに削除します。トップレベルグループは削除できません。 |
 
 成功した場合、[`202 Accepted`](rest/troubleshooting.md#status-codes)ステータスコードを返します。
@@ -1463,13 +1462,13 @@ curl --request DELETE \
 
 前提条件: 
 
-- グループの管理者であるか、オーナーロールを持っている必要があります。
+- グループの管理者であるか、オーナーのロールを持っていること。
 
 ```plaintext
 DELETE /groups/:id
 ```
 
-| 属性            | 型              | 必須 | 説明 |
+| 属性            | タイプ              | 必須 | 説明 |
 |----------------------|-------------------|----------|-------------|
 | `id`                 | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `full_path`          | 文字列            | はい       | 削除がスケジュールされた後のサブグループの変更されたフルパス。`permanently_remove`が`true`の場合、この属性は必須です。変更されたフルパスを確認するには、グループを[取得](#retrieve-a-group)します。 |
@@ -1511,7 +1510,7 @@ POST /groups/:id/restore
 
 パラメータは以下のとおりです:
 
-| 属性 | 型           | 必須 | 説明 |
+| 属性 | タイプ           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
@@ -1519,7 +1518,7 @@ POST /groups/:id/restore
 
 {{< history >}}
 
-- GitLab 18.0で`archive_group`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/481969)されました。デフォルトでは無効になっています。
+- GitLab 18.0で`archive_group`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/481969)されました。デフォルトでは無効になっています。
 - GitLab 18.9で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/526771)になりました。機能フラグ`archive_group`は削除されました。
 
 {{< /history >}}
@@ -1528,7 +1527,7 @@ POST /groups/:id/restore
 
 前提条件: 
 
-- グループの管理者であるか、オーナーロールを持っている必要があります。
+- グループの管理者であるか、オーナーのロールを持っていること。
 
 グループが既にアーカイブされている場合、このエンドポイントは、処理できないエンティティエラー`422`を返します。
 
@@ -1538,11 +1537,11 @@ POST /groups/:id/archive
 
 パラメータは以下のとおりです:
 
-| 属性 | 型              | 必須 | 説明 |
+| 属性 | タイプ              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | 認証済みユーザーが所有しているグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -1606,7 +1605,7 @@ POST /groups/:id/archive
 
 {{< history >}}
 
-- GitLab 18.0で`archive_group`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/481969)されました。デフォルトでは無効になっています。
+- GitLab 18.0で`archive_group`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/481969)されました。デフォルトでは無効になっています。
 - GitLab 18.9で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/526771)になりました。機能フラグ`archive_group`は削除されました。
 
 {{< /history >}}
@@ -1615,7 +1614,7 @@ POST /groups/:id/archive
 
 前提条件: 
 
-- グループの管理者であるか、オーナーロールを持っている必要があります。
+- グループの管理者であるか、オーナーのロールを持っていること。
 
 グループがアーカイブされていない場合、このエンドポイントは、処理できないエンティティエラー`422`を返します。
 
@@ -1625,11 +1624,11 @@ POST /groups/:id/unarchive
 
 パラメータは以下のとおりです:
 
-| 属性 | 型              | 必須 | 説明 |
+| 属性 | タイプ              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | 認証済みユーザーが所有しているグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -1705,9 +1704,8 @@ POST /groups/:id/transfer
 
 パラメータは以下のとおりです:
 
-| 属性  | 型    | 必須 | 説明 |
+| 属性  | タイプ    | 必須 | 説明 |
 |------------|---------|----------|-------------|
-| `id`       | 整数 | はい      | 転送行するグループのID。 |
 | `id`       | 整数 | はい      | 転送行するグループのID。 |
 | `group_id` | 整数 | いいえ       | 新しい親グループのID。指定しない場合、グループはトップレベルグループに変換されます。 |
 
@@ -1725,7 +1723,7 @@ curl --request POST \
 GET /groups/:id/transfer_locations
 ```
 
-| 属性 | 型              | 必須 | 説明 |
+| 属性 | タイプ              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | 転送するグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `search`  | 文字列            | いいえ       | 検索する特定のグループの名前。 |
@@ -1737,7 +1735,7 @@ curl --request GET \
     --url "https://gitlab.example.com/api/v4/groups/1/transfer_locations"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -1784,7 +1782,7 @@ POST /groups/:id/projects/:project_id
 
 パラメータは以下のとおりです:
 
-| 属性    | 型           | 必須 | 説明 |
+| 属性    | タイプ           | 必須 | 説明 |
 | ------------ | -------------- | -------- | ----------- |
 | `id`         | 整数または文字列 | はい      | ターゲットグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `project_id` | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
@@ -1809,7 +1807,7 @@ POST /groups/:id/share
 
 パラメータは以下のとおりです:
 
-| 属性        | 型              | 必須 | 説明 |
+| 属性        | タイプ              | 必須 | 説明 |
 |------------------|-------------------|----------|-------------|
 | `id`             | 整数または文字列 | はい      | ターゲットグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `group_id`       | 整数           | はい      | 招待するグループのID。 |
@@ -1827,7 +1825,7 @@ POST /groups/:id/share
 DELETE /groups/:id/share/:group_id
 ```
 
-| 属性  | 型           | 必須 | 説明 |
+| 属性  | タイプ           | 必須 | 説明 |
 |------------|----------------|----------|-------------|
 | `id`       | 整数または文字列 | はい      | ターゲットグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `group_id` | 整数        | はい      | 招待を取り消すグループのID。 |
@@ -1839,11 +1837,13 @@ DELETE /groups/:id/share/:group_id
 {{< history >}}
 
 - GitLab 18.0[で一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183101)になりました。機能フラグ`limit_unique_project_downloads_per_namespace_user`は削除されました。
-- `web_based_commit_signing_enabled`は、GitLab 18.2で`use_web_based_commit_signing_enabled`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193928)されました。デフォルトでは無効になっています。
+- `web_based_commit_signing_enabled`はGitLab 18.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193928)され、`use_web_based_commit_signing_enabled`という名前の[機能フラグ](../administration/feature_flags/_index.md)が付けられています。デフォルトでは無効になっています。
 - `web_based_commit_signing_enabled`はGitLab 18.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/542975)されました。機能フラグ`use_web_based_commit_signing_enabled`は削除されました。
-- `allow_personal_snippets` [GitLab](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200575) 18.5で導入され、[フラグ](../administration/feature_flags/_index.md) `allow_personal_snippets_setting`と名付けられました。デフォルトでは無効になっています。
+- `allow_personal_snippets`はGitLab 18.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200575)され、`allow_personal_snippets_setting`という名前の[機能フラグ](../administration/feature_flags/_index.md)が付けられています。デフォルトでは無効になっています。
 - `allow_personal_snippets` [GitLab](https://gitlab.com/gitlab-org/gitlab/-/work_items/583564) 18.9で一般提供されています。機能フラグ`allow_personal_snippets_setting`は削除されました。
-- `built_in_project_templates_enabled`と`lock_built_in_project_templates_enabled`は、`use_built_in_project_templates_enabled`という名前の[フラグとともに](../administration/feature_flags/_index.md)GitLab 19.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504)されました。デフォルトでは無効になっています。
+- `built_in_project_templates_enabled`と`lock_built_in_project_templates_enabled`はGitLab 19.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504)され、`use_built_in_project_templates_enabled`という名前の[機能フラグ](../administration/feature_flags/_index.md)が付けられています。デフォルトでは無効になっています。
+- `built_in_project_templates_enabled`と`lock_built_in_project_templates_enabled`はGitLab 19.2で[一般公開](https://gitlab.com/gitlab-org/gitlab/-/work_items/593623)されました。機能フラグ`use_built_in_project_templates_enabled`は削除されました。
+- `ai_audit_events_storage_enabled`と`lock_ai_audit_events_storage_enabled`はGitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245843)されました。
 
 {{< /history >}}
 
@@ -1851,27 +1851,27 @@ DELETE /groups/:id/share/:group_id
 
 前提条件: 
 
-- グループの管理者であるか、オーナーロールを持っている必要があります。
+- グループの管理者であるか、オーナーのロールを持っていること。
 
 ```plaintext
 PUT /groups/:id
 ```
 
-| 属性                                            | 型              | 必須 | 説明 |
+| 属性                                            | タイプ              | 必須 | 説明 |
 |------------------------------------------------------|-------------------|----------|-------------|
 | `id`                                                 | 整数           | はい      | グループのID。 |
 | `name`                                               | 文字列            | いいえ       | グループの名前。 |
 | `path`                                               | 文字列            | いいえ       | グループのパス。 |
 | `auto_devops_enabled`                                | ブール値           | いいえ       | このグループ内のすべてのプロジェクトでAuto DevOpsパイプラインをデフォルトにします。 |
 | `avatar`                                             | 混合             | いいえ       | グループのアバターの画像ファイル。 |
-| `built_in_project_templates_enabled`                | ブール値           | いいえ       | ユーザーがグループ内でプロジェクトを作成するときに、組み込みのプロジェクトテンプレートを有効にします。PremiumおよびUltimateのみです。GitLab 19.0で`use_built_in_project_templates_enabled`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504)されました。デフォルトでは無効になっています。 |
-| `lock_built_in_project_templates_enabled`           | ブール値           | いいえ       | すべてのサブグループに対して`built_in_project_templates_enabled`設定を強制します。PremiumおよびUltimateのみです。GitLab 19.0で`use_built_in_project_templates_enabled`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504)されました。デフォルトでは無効になっています。 |
-| `default_branch`                                     | 文字列            | いいえ       | グループのプロジェクトの[デフォルトブランチ](../user/project/repository/branches/default.md)名。GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/442298)されました。 |
-| `default_branch_protection`                          | 整数           | いいえ       | GitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/408314)になりました。代わりに`default_branch_protection_defaults`を使用してください。 |
+| `built_in_project_templates_enabled`                | ブール値           | いいえ       | ユーザーがグループ内でプロジェクトを作成するときに、組み込みのプロジェクトテンプレートを有効にします。PremiumおよびUltimateのみです。GitLab 19.0で`use_built_in_project_templates_enabled`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504)されました。デフォルトでは無効になっています。GitLab 19.2で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/593623)になりました。機能フラグ`use_built_in_project_templates_enabled`は削除されました。 |
+| `lock_built_in_project_templates_enabled`           | ブール値           | いいえ       | すべてのサブグループに対して`built_in_project_templates_enabled`設定を強制します。PremiumおよびUltimateのみです。GitLab 19.0で`use_built_in_project_templates_enabled`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504)されました。デフォルトでは無効になっています。GitLab 19.2で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/593623)になりました。機能フラグ`use_built_in_project_templates_enabled`は削除されました。 |
+| `default_branch`                                     | 文字列            | いいえ       | グループのプロジェクトの[デフォルトブランチ](../user/project/repository/branches/default.md)名。 |
+| `default_branch_protection`                          | 整数           | いいえ       | GitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/408314)になりました。代わりに、`default_branch_protection_defaults`を使用してください。 |
 | `default_branch_protection_defaults`                 | ハッシュ              | いいえ       | GitLab 17.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/408314)されました。利用可能なオプションについては、[`default_branch_protection_defaults`のオプション](#options-for-default_branch_protection_defaults)を参照してください。 |
 | `description`                                        | 文字列            | いいえ       | グループの説明。 |
-| `enabled_git_access_protocol`                        | 文字列            | いいえ       | Gitアクセスで有効になっているプロトコル。使用できる値は`ssh`、`http`、および`all`（両方のプロトコルを許可する場合）です。GitLab 16.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/436618)されました。 |
-| `emails_disabled`                                    | ブール値           | いいえ       | （GitLab 16.5で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899)になりました。）メール通知を無効にします。代わりに`emails_enabled`を使用してください。 |
+| `enabled_git_access_protocol`                        | 文字列            | いいえ       | Gitアクセスで有効になっているプロトコル。使用できる値は`ssh`、`http`、および`all`（両方のプロトコルを許可する場合）です。 |
+| `emails_disabled`                                    | ブール値           | いいえ       | （GitLab 16.5で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899)になりました。）メール通知を無効にします。代わりに、`emails_enabled`を使用してください。 |
 | `emails_enabled`                                     | ブール値           | いいえ       | メール通知を有効にします。 |
 | `lfs_enabled`                                        | ブール値           | いいえ       | このグループのプロジェクトに対して、Large File Storage（LFS）を有効または無効にします。 |
 | `mentions_disabled`                                  | ブール値           | いいえ       | グループがメンションされる機能を無効にします。 |
@@ -1894,7 +1894,7 @@ PUT /groups/:id
 | `unique_project_download_limit_interval_in_seconds`  | 整数           | いいえ       | ユーザーが最大量のプロジェクトをダウンロードできる期間。この期間を経過すると、ユーザーはBANされます。トップレベルグループでのみ使用できます。デフォルト: 0、最大値は864,000秒（10日間）です。Ultimateのみです。 |
 | `unique_project_download_limit_allowlist`            | 文字列の配列  | いいえ       | 一意のプロジェクトのダウンロード制限から除外されるユーザー名のリスト。トップレベルグループでのみ使用できます。デフォルトは`[]`、最大値は100個のユーザー名です。Ultimateのみです。 |
 | `unique_project_download_limit_alertlist`            | 整数の配列 | いいえ       | 一意のプロジェクトのダウンロード制限を超えた場合にメールで通知されるユーザーIDのリスト。トップレベルグループでのみ使用できます。デフォルトは`[]`、最大値は100個のユーザーIDです。Ultimateのみです。 |
-| `auto_ban_user_on_excessive_projects_download`       | ブール値           | いいえ       | 有効にすると、ユーザーが`unique_project_download_limit`と`unique_project_download_limit_interval_in_seconds`で指定されている一意のプロジェクトの最大数を超えてダウンロードすると、.ユーザーは自動的にグループからBANされます。Ultimateのみです。 |
+| `auto_ban_user_on_excessive_projects_download`       | ブール値           | いいえ       | 有効にすると、ユーザーが`unique_project_download_limit`と`unique_project_download_limit_interval_in_seconds`で指定されている一意のプロジェクトの最大数を超えてダウンロードすると、ユーザーは自動的にグループからBANされます。Ultimateのみです。 |
 | `ip_restriction_ranges`                              | 文字列      | いいえ       | グループアクセスを制限するためのIPアドレスまたはサブネットマスクのカンマ区切りリスト。PremiumおよびUltimateのみです。 |
 | `allowed_email_domains_list`                         | 文字列      | いいえ       | グループアクセスを許可するメールアドレスドメインのカンマ区切りリスト。GitLab 17.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/351494)されました。GitLab PremiumおよびUltimateのみです。 |
 | `wiki_access_level`                                  | 文字列            | いいえ       | Wikiのアクセスレベル。`disabled`、`private`、または`enabled`のいずれかです。PremiumおよびUltimateのみです。 |
@@ -1903,8 +1903,10 @@ PUT /groups/:id
 | `ai_settings_attributes`                             | ハッシュ | いいえ | このグループのAI関連設定。利用可能なオプションについては、[`ai_settings_attributes`のオプション](#options-for-ai_settings_attributes)を参照してください。GitLab Duo機能が有効になっている必要があります。 |
 | `math_rendering_limits_enabled`                      | ブール値           | いいえ       | 数式レンダリングの制限がこのグループに使用されるかどうかを示します。 |
 | `lock_math_rendering_limits_enabled`                 | ブール値           | いいえ       | 数式レンダリングの制限がすべての子孫グループに対してロックされているかどうかを示します。 |
-| `duo_features_enabled`                               | ブール値           | いいえ       | このグループでGitLab Duo機能が有効になっているかどうかを示します。GitLab 16.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931)されました。GitLab Self-Managed、Premium、およびUltimateのみです。 |
-| `lock_duo_features_enabled`                          | ブール値           | いいえ       | GitLab Duo機能で有効になっている設定がすべてのサブグループに適用されるかどうかを示します。GitLab 16.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931)されました。GitLab Self-Managed、Premium、およびUltimateのみです。 |
+| `duo_features_enabled`                               | ブール値           | いいえ       | このグループでGitLab Duo機能が有効になっているかどうかを示します。GitLab Self-Managed、Premium、およびUltimateのみです。 |
+| `lock_duo_features_enabled`                          | ブール値           | いいえ       | GitLab Duo機能で有効になっている設定がすべてのサブグループに適用されるかどうかを示します。GitLab Self-Managed、Premium、およびUltimateのみです。 |
+| `ai_audit_events_storage_enabled`                    | ブール値           | いいえ       | グループのAI監査イベントが保存されるかどうかを示します。GitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245843)されました。PremiumおよびUltimateのみです。 |
+| `lock_ai_audit_events_storage_enabled`               | ブール値           | いいえ       | AI監査イベントのストレージ設定が、すべてのサブグループとプロジェクトに対して適用されるかどうかを示します。GitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245843)されました。PremiumおよびUltimateのみです。 |
 | `max_artifacts_size`                                 | 整数           | いいえ       | 個々のジョブアーティファクトの最大ファイルサイズ（MB単位）。 |
 | `web_based_commit_signing_enabled`                  | ブール値           | いいえ       | GitLab UIから作成されたコミットのWebベースのコミット署名を有効にします。GitLab.comのトップレベルグループでのみ利用可能です。グループに対して有効になっている場合、グループ内のすべてのプロジェクトに適用されます。 |
 | `only_allow_merge_if_pipeline_succeeds`             | ブール値           | いいえ       | パイプラインが成功した場合にのみ、マージリクエストのマージを許可します。グループに対して有効になっている場合、グループ内のすべてのプロジェクトに適用されます。PremiumおよびUltimateのみです。 |
@@ -1923,7 +1925,7 @@ curl --request PUT \
 
 このエンドポイントは、最大100個のプロジェクトと共有プロジェクトを返します。グループ内のすべてのプロジェクトの詳細を取得するには、代わりに[グループのプロジェクトをリストエンドポイント](#list-projects)を使用します。
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -2026,20 +2028,20 @@ curl --request PUT \
 
 `ai_settings_attributes`ハッシュは、グループのAI関連設定を構成します。すべての属性はオプションです。
 
-| 属性 | 型 | 説明 |
+| 属性 | タイプ | 説明 |
 |-----|------|-------------|
 | `ai_catalog_restricted_to_group_hierarchy` | ブール値 | `true`の場合、AIカタログはこのトップレベルグループ階層内の項目に制限されます。トップレベルグループでのみ設定できます。PremiumおよびUltimateのみです。 |
 | `ai_usage_data_collection_enabled` | ブール値 | `true`の場合、このグループでAI使用状況データ収集が有効になります。GitLab.comのみ。 |
-| `allow_all_unix_sockets` | ブール値 | `true`の場合、GitLab Duo Agent Platformネットワークアクセスに対してすべてのUnixソケットを許可します。`dap_group_network_access_controls`機能フラグが有効な場合に利用できます。 |
-| `allow_project_extension` | ブール値 | `true`の場合、プロジェクトはGitLab Duo Agent Platformのネットワークアクセスドメイン許可リストを拡張できます。`dap_group_network_access_controls`機能フラグが有効な場合に利用できます。 |
+| `allow_all_unix_sockets` | ブール値 | `true`の場合、すべてのUnixソケットはGitLab Duo Agent Platformで許可されます。 |
+| `allow_project_extension` | ブール値 | `true`の場合、プロジェクトはGitLab Duo Agent Platformのネットワークアクセスドメイン許可リストを拡張できます。 |
 | `duo_agent_platform_enabled` | ブール値 | `true`の場合、このグループでGitLab Duo Agent Platform機能が有効になります。PremiumおよびUltimateで利用できます。GitLab.comのFreeプランでGitLabクレジットでも利用できます。 |
 | `duo_workflow_mcp_enabled` | ブール値 | `true`の場合、GitLab Duo Agent PlatformのMCPサポートが有効になります。PremiumおよびUltimateで利用できます。GitLab.comのFreeプランでGitLabクレジットでも利用できます。 |
 | `foundational_agents_default_enabled` | ブール値 | `true`の場合、新しい基本エージェントがこのグループでデフォルトで有効になります。PremiumおよびUltimateで利用できます。GitLab.comのFreeプランでGitLabクレジットでも利用できます。 |
-| `include_recommended_allowed` | ブール値 | `true`の場合、GitLab Duo Agent Platformのネットワークアクセス許可リストに推奨ドメインが含まれます。`dap_group_network_access_controls`機能フラグが有効な場合に利用できます。 |
-| `minimum_access_level_enable_on_projects` | 整数 | プロジェクトでGitLab Duo Agent Platformを有効にするために必要な最小アクセスレベル。有効な値: `30` (デベロッパー)、`40` (メンテナー)、`50` (オーナー)。`dap_group_customizable_permissions`機能フラグが有効な場合に利用できます。 |
-| `minimum_access_level_execute` | 整数 | ユーザーがGitLab Duo Agent Platform機能を使用するために必要な最小アクセスレベル。有効な値: `10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`30` (デベロッパー)、`40` (メンテナー)、`50` (オーナー)。`dap_group_customizable_permissions`機能フラグが有効な場合に利用できます。 |
-| `minimum_access_level_execute_async` | 整数 | CI/CDでGitLab Duo Agent Platformの機能を実行するために必要な最小アクセスレベル。有効な値: `30` (デベロッパー)、`40` (メンテナー)、`50` (オーナー)。`dap_group_customizable_permissions`機能フラグが有効な場合に利用できます。 |
-| `minimum_access_level_manage` | 整数 | GitLab Duo Agent Platformを管理するために必要な最小アクセスレベル。有効な値: `30` (デベロッパー)、`40` (メンテナー)、`50` (オーナー)。`dap_group_customizable_permissions`機能フラグが有効な場合に利用できます。 |
+| `include_recommended_allowed` | ブール値 | `true`の場合、GitLab Duo Agent Platformのネットワークアクセス許可リストに推奨ドメインが含まれます。 |
+| `minimum_access_level_enable_on_projects` | 整数 | プロジェクトでGitLab Duo Agent Platformを有効にするために必要な最小アクセスレベル。有効な値: `30`（デベロッパー）、`40`（メンテナー）、`50`（オーナー）。`dap_group_customizable_permissions`機能フラグが有効な場合に利用できます。 |
+| `minimum_access_level_execute` | 整数 | ユーザーがGitLab Duo Agent Platform機能を使用するために必要な最小アクセスレベル。有効な値: `10`（ゲスト）、`15`（プランナー）、`20`（レポーター）、`30`（デベロッパー）、`40`（メンテナー）、`50`（オーナー）。`dap_group_customizable_permissions`機能フラグが有効な場合に利用できます。 |
+| `minimum_access_level_execute_async` | 整数 | CI/CDでGitLab Duo Agent Platformの機能を実行するために必要な最小アクセスレベル。有効な値: `30`（デベロッパー）、`40`（メンテナー）、`50`（オーナー）。`dap_group_customizable_permissions`機能フラグが有効な場合に利用できます。 |
+| `minimum_access_level_manage` | 整数 | GitLab Duo Agent Platformを管理するために必要な最小アクセスレベル。有効な値: `30`（デベロッパー）、`40`（メンテナー）、`50`（オーナー）。`dap_group_customizable_permissions`機能フラグが有効な場合に利用できます。 |
 | `prompt_injection_protection_level` | 文字列 | プロンプトインジェクション保護レベル。有効な値: `no_checks`、`log_only`、`interrupt`。 |
 
 ## グループアバターを更新する {#update-group-avatars}
@@ -2054,7 +2056,7 @@ curl --request PUT \
 GET /groups/:id/avatar
 ```
 
-| 属性 | 型           | 必須 | 説明 |
+| 属性 | タイプ           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | グループのID。 |
 
@@ -2104,13 +2106,13 @@ curl --request PUT \
 
 前提条件: 
 
-- グループの管理者であるか、オーナーロールを持っている必要があります。
+- グループの管理者であるか、オーナーのロールを持っていること。
 
 ```plaintext
 POST /groups/:id/ldap_sync
 ```
 
-| 属性 | 型                | 必須 | 説明                            |
+| 属性 | タイプ                | 必須 | 説明                            |
 | --------- | ------------------- | -------- | -------------------------------------- |
 | `id`      | 整数または文字列   | はい      | グループのIDまたはURLエンコードされたパス。 |
 
@@ -2125,7 +2127,7 @@ POST /groups/:id/ldap_sync
 
 {{< history >}}
 
-- GitLab 18.6で`manage_pat_by_group_owners_ready`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/16343)されました。デフォルトでは無効になっています。
+- GitLab 18.6で`manage_pat_by_group_owners_ready`[機能フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/16343)されました。デフォルトでは無効になっています。
 - GitLab 18.7で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/578133)になりました。機能フラグ`manage_pat_by_group_owners_ready`は削除されました。
 
 {{< /history >}}
@@ -2144,7 +2146,7 @@ GitLab.com上のエンタープライズユーザーの認証情報を表示、�
 GET /groups/:id/manage/personal_access_tokens
 ```
 
-| 属性          | 型                | 必須 | 説明 |
+| 属性          | タイプ                | 必須 | 説明 |
 | ------------------ | ------------------- | -------- | ----------- |
 | `id`               | 整数または文字列   | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `created_after`    | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より後に作成されたトークンを返します。 |
@@ -2163,7 +2165,7 @@ curl --header "PRIVATE-TOKEN: <group_owner_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/manage/personal_access_tokens"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -2186,13 +2188,13 @@ curl --header "PRIVATE-TOKEN: <group_owner_token>" \
 
 ### グループのすべてのグループおよびプロジェクトアクセストークンをリスト表示する {#list-all-group-and-project-access-tokens-for-a-group}
 
-トップレベルグループに関連付けられたすべてのグループおよびプロジェクトアクセストークンをリスト表示します。
+トップレベルグループに関連付けられているすべてのグループおよびプロジェクトアクセストークンを一覧表示します。
 
 ```plaintext
 GET /groups/:id/manage/resource_access_tokens
 ```
 
-| 属性          | 型                | 必須 | 説明 |
+| 属性          | タイプ                | 必須 | 説明 |
 | ------------------ | ------------------- | -------- | ----------- |
 | `id`               | 整数または文字列   | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `created_after`    | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より後に作成されたトークンを返します。 |
@@ -2211,7 +2213,7 @@ curl --header "PRIVATE-TOKEN: <group_owner_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/manage/resource_access_tokens"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -2237,13 +2239,13 @@ curl --header "PRIVATE-TOKEN: <group_owner_token>" \
 
 ### グループのすべてのSSHキーをリスト表示する {#list-all-ssh-keys-for-a-group}
 
-トップレベルグループ内のエンタープライズユーザーに関連付けられたすべてのSSH公開キーをリスト表示します。
+トップレベルグループのエンタープライズユーザーに関連付けられているすべてのSSH公開キーを一覧表示します。
 
 ```plaintext
 GET /groups/:id/manage/ssh_keys
 ```
 
-| 属性        | 型                | 必須 | 説明 |
+| 属性        | タイプ                | 必須 | 説明 |
 | ---------------- | ------------------- | -------- | ----------- |
 | `id`             | 整数または文字列   | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `created_after`  | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より後に作成されたSSHキーを返します。 |
@@ -2256,7 +2258,7 @@ curl --header "PRIVATE-TOKEN: <group_owner_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/manage/ssh_keys"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 [
@@ -2280,7 +2282,7 @@ curl --header "PRIVATE-TOKEN: <group_owner_token>" \
 DELETE groups/:id/manage/personal_access_tokens/:id
 ```
 
-| 属性 | 型    | 必須 | 説明         |
+| 属性 | タイプ    | 必須 | 説明         |
 |-----------|---------|----------|---------------------|
 | `id` | 整数または文字列 | はい | パーソナルアクセストークン、またはキーワード`self`のID。 |
 
@@ -2306,7 +2308,7 @@ curl --request DELETE \
 DELETE groups/:id/manage/resource_access_tokens/:id
 ```
 
-| 属性 | 型    | 必須 | 説明         |
+| 属性 | タイプ    | 必須 | 説明         |
 |-----------|---------|----------|---------------------|
 | `id` | 整数または文字列 | はい | リソースアクセストークンのIDまたはキーワード`self`。 |
 
@@ -2334,7 +2336,7 @@ DELETE /groups/:id/manage/ssh_keys/:key_id
 
 サポートされている属性:
 
-| 属性 | 型    | 必須 | 説明 |
+| 属性 | タイプ    | 必須 | 説明 |
 |:----------|:--------|:---------|:------------|
 | `key_id`  | 整数 | はい      | 既存のキーのID。  |
 
@@ -2354,7 +2356,7 @@ DELETE /groups/:id/manage/ssh_keys/:key_id
 POST groups/:id/manage/personal_access_tokens/:id/rotate
 ```
 
-| 属性 | 型      | 必須 | 説明         |
+| 属性 | タイプ      | 必須 | 説明         |
 |-----------|-----------|----------|---------------------|
 | `id` | 整数または文字列 | はい      | パーソナルアクセストークン、またはキーワード`self`のID。 |
 | `expires_at` | 日付   | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。日付はローテーション日から1年以内である必要があります。未定義の場合、トークンは1週間後に期限切れになります。 |
@@ -2365,7 +2367,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/:id/manage/personal_access_tokens/<personal_access_token_id>/rotate"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {
@@ -2405,7 +2407,7 @@ curl --request POST \
 POST groups/:id/manage/resource_access_tokens/:id/rotate
 ```
 
-| 属性 | 型      | 必須 | 説明         |
+| 属性 | タイプ      | 必須 | 説明         |
 |-----------|-----------|----------|---------------------|
 | `id` | 整数または文字列 | はい      | パーソナルアクセストークン、またはキーワード`self`のID。 |
 | `expires_at` | 日付   | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。日付はローテーション日から1年以内である必要があります。未定義の場合、トークンは1週間後に期限切れになります。 |
@@ -2416,7 +2418,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/:id/manage/resource_access_tokens/<resource_access_token_id>/rotate"
 ```
 
-レスポンス例: 
+レスポンス例:
 
 ```json
 {

@@ -33,13 +33,6 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
       }
     }
   }
-  ... on WorkItemWidgetCurrentUserTodos @skip(if: $useWorkItemFeatures) {
-    currentUserTodos(state: pending) {
-      nodes {
-        id
-      }
-    }
-  }
   ... on WorkItemWidgetDescription @skip(if: $useWorkItemFeatures) {
     description
     descriptionHtml

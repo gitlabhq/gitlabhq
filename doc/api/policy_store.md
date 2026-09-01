@@ -295,7 +295,14 @@ Supported attributes:
 | Attribute      | Type    | Required | Description |
 | -------------- | ------- | -------- | ----------- |
 | `id`           | integer | Yes      | ID of the organization. |
+| `page`         | integer | No       | Page of results to return. Defaults to `1`. |
+| `per_page`     | integer | No       | Number of results per page. Defaults to `20`, and any value above `100` is capped at `100`. |
 | `trigger_type` | string  | No       | Return only the policies that respond to this trigger. One of the IDs returned by [List all triggers](#list-all-triggers). |
+
+This endpoint returns [paginated](rest/_index.md#offset-based-pagination) results. For
+performance reasons, it never returns the `x-total` or `x-total-pages` headers or the
+`rel="last"` `link`, regardless of how many policies the organization has: check
+`x-next-page` to find out whether another page follows.
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and an array of
 [policy attributes](#response-attributes).
@@ -304,7 +311,7 @@ Example request:
 
 ```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/organizations/1/security/policy_store"
+  --url "https://gitlab.example.com/api/v4/organizations/1/security/policy_store?per_page=20"
 ```
 
 Example response:

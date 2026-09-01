@@ -5,6 +5,7 @@ require_relative "policy_store/triggers"
 require_relative "policy_store/actions"
 require_relative "policy_store/rules"
 require_relative "policy_store/policy"
+require_relative "policy_store/page"
 require_relative "policy_store/json_value"
 require_relative "policy_store/scope_transpiler"
 require_relative "policy_store/rego_package"
@@ -70,8 +71,12 @@ module Gitlab
         configuration.repository.delete(id)
       end
 
-      def list(organization_id:, trigger_type: nil)
-        configuration.repository.list(organization_id: organization_id, trigger_type: trigger_type)
+      def list(
+        organization_id:, trigger_type: nil, ids: nil, offset: 0,
+        per_page: Ports::PolicyRepository::DEFAULT_PER_PAGE)
+        configuration.repository.list(
+          organization_id: organization_id, trigger_type: trigger_type, ids: ids, offset: offset, per_page: per_page
+        )
       end
 
       def record_evaluation(attributes)

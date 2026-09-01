@@ -258,7 +258,7 @@ interface:
 - `#update(id, attributes)` - Changes an existing policy and bumps its `version` by one, or returns it untouched when no supplied value differs
 - `#find(id)` - Returns a `Policy` by ID, raises `NotFound` if not found
 - `#delete(id)` - Deletes a policy by ID, raises `NotFound` if not found
-- `#list(organization_id:, trigger_type: nil)` - Returns an organization's policies, optionally for one trigger
+- `#list(organization_id:, trigger_type: nil, ids: nil, offset: 0, per_page: DEFAULT_PER_PAGE)` - Returns a `Page` (`items`, `per_page`, `has_next_page?`) of an organization's policies, optionally for one trigger. When `ids` is given, returns only those ids (bypassing `offset`/`per_page`) instead of a page. Speaks offset, not page number: page-oriented callers (like the REST API) translate at their own boundary. `offset` is clamped to `MAX_OFFSET` and `per_page` to `MAX_PER_PAGE`. Carries no total count: adapters fetch one row past `per_page` to answer `has_next_page?` instead of running a separate `COUNT` query.
 
 Every method that returns a policy returns copies of its structured attributes, so a
 caller cannot reach stored data through one.

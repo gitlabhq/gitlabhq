@@ -48,6 +48,7 @@ import {
   getWorkItemFeatures,
 } from '../utils';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
+import workItemCurrentUserTodosQuery from './work_item_current_user_todos.query.graphql';
 import workItemByIdQuery from './work_item_by_id.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
 
@@ -328,7 +329,7 @@ export const updateParent = ({ cache, fullPath, iid, workItem }) => {
 
 export const updateWorkItemCurrentTodosWidget = ({ cache, fullPath, iid, todos }) => {
   const query = {
-    query: workItemByIidQuery,
+    query: workItemCurrentUserTodosQuery,
     variables: {
       fullPath,
       iid,
@@ -344,6 +345,11 @@ export const updateWorkItemCurrentTodosWidget = ({ cache, fullPath, iid, todos }
 
   const newData = produce(sourceData, (draftState) => {
     const widgetCurrentUserTodos = findCurrentUserTodosWidget(draftState.namespace.workItem);
+
+    if (!widgetCurrentUserTodos?.currentUserTodos) {
+      return;
+    }
+
     widgetCurrentUserTodos.currentUserTodos.nodes = todos;
   });
 
@@ -555,6 +561,7 @@ export const getNewWorkItemSharedCache = ({
     },
     currentUserTodos: {
       ...widgetDefinitionsHash[WIDGET_TYPE_CURRENT_USER_TODOS],
+      type: WIDGET_TYPE_CURRENT_USER_TODOS,
       currentUserTodos: {
         nodes: [],
         __typename: 'TodoConnection',

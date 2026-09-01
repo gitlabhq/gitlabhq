@@ -33,7 +33,7 @@ The following foundational flows are available:
 | [Fix CI/CD Pipeline](fix_pipeline.md) | Diagnose and repair failed jobs. |
 | [Recommend Reviewers](../../../project/merge_requests/reviews/automatic_reviewer_assignment.md#assign-reviewers-with-the-recommend-reviewers-flow) | Recommend and assign the reviewers best suited to review a merge request. |
 | [SAST False Positive Detection](../../../application_security/vulnerabilities/false_positive_detection.md) | Automatically identify and filter false positives in SAST findings. |
-| [SAST Vulnerability Resolution](agentic_sast_vulnerability_resolution.md) | Automatically generate merge requests to resolve SAST vulnerabilities. |
+| [SAST Vulnerability Resolution](../../../application_security/vulnerabilities/agentic_vulnerability_resolution.md) | Automatically generate merge requests to resolve SAST vulnerabilities. |
 | [Secret False Positive Detection](secret_false_positive_detection.md) | Automatically identify and filter false positives in secret detection findings. |
 | [Security Review](security_review.md) | Detect business logic security vulnerabilities in merge request changes. |
 | [Software Development](software_development.md) | Create AI-generated solutions for work across the software development lifecycle. |

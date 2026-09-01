@@ -62,13 +62,21 @@ module Gitlab
           nil
         end
 
-        def list(organization_id:, trigger_type: nil)
-          @policies.values.filter_map do |policy|
-            next unless policy.organization_id == organization_id
-            next unless trigger_type.nil? || policy.trigger_type == trigger_type
+        def list(organization_id:, trigger_type: nil, ids: nil, offset: 0, per_page: DEFAULT_PER_PAGE)
+          validate_ids_size!(ids) if ids
 
-            copy_of(policy)
+          matching = @policies.values.select do |policy|
+            policy.organization_id == organization_id &&
+              (trigger_type.nil? || policy.trigger_type == trigger_type) &&
+              (ids.nil? || ids.include?(policy.id))
           end
+
+          return paginated_result(matching, per_page: matching.size) { |policy| copy_of(policy) } if ids
+
+          offset, per_page = clamped_pagination(offset: offset, per_page: per_page)
+          fetched = matching[offset, per_page + 1].to_a
+
+          paginated_result(fetched, per_page: per_page) { |policy| copy_of(policy) }
         end
 
         private

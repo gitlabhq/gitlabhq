@@ -27,7 +27,7 @@ import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_heade
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vue';
 import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
-import TodosToggle from '~/work_items/components/shared/todos_toggle.vue';
+import WorkItemTodosWidget from '~/work_items/components/work_item_todos_widget.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
 import DesignUploadButton from '~/work_items/components//design_management/upload_button.vue';
 import WorkItemCreateBranchMergeRequestSplitButton from '~/work_items/components/work_item_development/work_item_create_branch_merge_request_split_button.vue';
@@ -137,7 +137,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemRelationships = () => wrapper.findComponent(WorkItemRelationships);
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
   const findWorkItemAbuseModal = () => wrapper.findComponent(WorkItemAbuseModal);
-  const findTodosToggle = () => wrapper.findComponent(TodosToggle);
+  const findTodosWidget = () => wrapper.findComponent(WorkItemTodosWidget);
   const findStickyHeader = () => wrapper.findComponent(WorkItemStickyHeader);
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
@@ -303,7 +303,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('renders todos widget if logged in', () => {
-      expect(findTodosToggle().exists()).toBe(true);
+      expect(findTodosWidget().exists()).toBe(true);
     });
 
     it('calls the work item updated subscription', () => {
@@ -1036,7 +1036,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('does not renders if not logged in', () => {
-      expect(findTodosToggle().exists()).toBe(false);
+      expect(findTodosWidget().exists()).toBe(false);
     });
   });
 

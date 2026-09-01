@@ -4336,6 +4336,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutation-aiflowtriggercreate-active"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Indicates whether the AI flow trigger is active. Defaults to true. |
 | <a id="mutation-aiflowtriggercreate-aicatalogitemconsumerid"></a>`aiCatalogItemConsumerId` | [`AiCatalogItemConsumerID`](#aicatalogitemconsumerid) | AI catalog item consumer to use instead of config_path. |
 | <a id="mutation-aiflowtriggercreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-aiflowtriggercreate-configpath"></a>`configPath` | [`String`](#string) | Path to the configuration file for the AI flow trigger. |
@@ -4393,6 +4394,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutation-aiflowtriggerupdate-active"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Indicates whether the AI flow trigger is active. Inactive triggers do not run automatically. |
 | <a id="mutation-aiflowtriggerupdate-aicatalogitemconsumerid"></a>`aiCatalogItemConsumerId` | [`AiCatalogItemConsumerID`](#aicatalogitemconsumerid) | AI catalog item consumer to use instead of config_path. |
 | <a id="mutation-aiflowtriggerupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-aiflowtriggerupdate-configpath"></a>`configPath` | [`String`](#string) | Path to the configuration file for the AI flow trigger. |
@@ -22251,6 +22253,29 @@ Fields:
 | <a id="artifactregistryimageedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="artifactregistryimageedge-node"></a>`node` | [`ArtifactRegistryImage`](#artifactregistryimage) | The item at the end of the edge. |
 
+#### `ArtifactRegistryManifestConnection`
+
+The connection type for [`ArtifactRegistryManifest`](#artifactregistrymanifest).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrymanifestconnection-edges"></a>`edges` | [`[ArtifactRegistryManifestEdge]`](#artifactregistrymanifestedge) | A list of edges. |
+| <a id="artifactregistrymanifestconnection-nodes"></a>`nodes` | [`[ArtifactRegistryManifest]`](#artifactregistrymanifest) | A list of nodes. |
+| <a id="artifactregistrymanifestconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ArtifactRegistryManifestEdge`
+
+The edge type for [`ArtifactRegistryManifest`](#artifactregistrymanifest).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrymanifestedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="artifactregistrymanifestedge-node"></a>`node` | [`ArtifactRegistryManifest`](#artifactregistrymanifest) | The item at the end of the edge. |
+
 #### `ArtifactRegistryPackageConnection`
 
 The connection type for [`ArtifactRegistryPackage`](#artifactregistrypackage).
@@ -34439,6 +34464,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aiflowtriggertype-active"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Indicates whether the flow trigger is active. Inactive triggers do not run automatically. |
 | <a id="aiflowtriggertype-aicatalogitemconsumer"></a>`aiCatalogItemConsumer` | [`AiCatalogItemConsumer`](#aicatalogitemconsumer) | AI catalog item consumer associated with the trigger. |
 | <a id="aiflowtriggertype-configpath"></a>`configPath` | [`String`](#string) | Path to the configuration file for the trigger. |
 | <a id="aiflowtriggertype-configurl"></a>`configUrl` | [`String`](#string) | Web URL to the configuration file for the trigger. |
@@ -35457,7 +35483,24 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="artifactregistryimage-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the image in Artifact Registry. |
+| <a id="artifactregistryimage-manifests"></a>`manifests` {{< icon name="warning-solid" >}} | [`ArtifactRegistryManifestConnection`](#artifactregistrymanifestconnection) | Introduced in GitLab 19.4. Status: Experiment. Manifests of the image, ordered by publication date descending. Reads at most 20 rows per page and can be selected for up to 20 images per operation, matching the images page size. Returns `null` for an image that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. |
 | <a id="artifactregistryimage-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Name of the image. |
+
+### `ArtifactRegistryManifest`
+
+Manifest of a container image in an Artifact Registry repository (Docker and OCI).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrymanifest-artifacttype"></a>`artifactType` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Artifact type of the manifest. Null when the manifest declares none. |
+| <a id="artifactregistrymanifest-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Time the manifest was pushed. Null if the timestamp is absent or unparseable. |
+| <a id="artifactregistrymanifest-digest"></a>`digest` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Content-addressable digest of the manifest. |
+| <a id="artifactregistrymanifest-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the manifest in Artifact Registry. |
+| <a id="artifactregistrymanifest-mediatype"></a>`mediaType` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Media type of the manifest. |
+| <a id="artifactregistrymanifest-size"></a>`size` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.4. Status: Experiment. Size of the manifest, in bytes. For a hosted repository, the push-time tree total, where an index total already contains its platform children and so does not sum across sibling rows. For a remote repository, the cached manifest's own payload bytes. |
+| <a id="artifactregistrymanifest-subjectdigest"></a>`subjectDigest` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Digest of the subject manifest a referrer refers to. Null for a manifest that is not a referrer, and always null on this connection until the referrer-inclusion argument lands: the read leaves Artifact Registry on its default, which excludes referrers. |
 
 ### `ArtifactRegistryMavenPackage`
 

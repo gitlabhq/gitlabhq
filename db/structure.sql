@@ -13097,6 +13097,32 @@ CREATE SEQUENCE ai_catalog_mcp_servers_users_id_seq
 
 ALTER SEQUENCE ai_catalog_mcp_servers_users_id_seq OWNED BY ai_catalog_mcp_servers_users.id;
 
+CREATE TABLE ai_compliance_anthropic_integrations (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    consecutive_failure_count smallint DEFAULT 0 NOT NULL,
+    disabled_reason smallint,
+    enabled boolean DEFAULT false NOT NULL,
+    api_key jsonb NOT NULL,
+    anthropic_organization_uuid text,
+    list_cursor text,
+    last_error text,
+    CONSTRAINT check_2e187077af CHECK ((char_length(last_error) <= 1024)),
+    CONSTRAINT check_666622dd6b CHECK ((char_length(list_cursor) <= 2048)),
+    CONSTRAINT check_d965b76f22 CHECK ((char_length(anthropic_organization_uuid) <= 255))
+);
+
+CREATE SEQUENCE ai_compliance_anthropic_integrations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_compliance_anthropic_integrations_id_seq OWNED BY ai_compliance_anthropic_integrations.id;
+
 CREATE TABLE ai_conversation_messages (
     id bigint NOT NULL,
     thread_id bigint NOT NULL,
@@ -36674,6 +36700,8 @@ ALTER TABLE ONLY ai_catalog_mcp_servers ALTER COLUMN id SET DEFAULT nextval('ai_
 
 ALTER TABLE ONLY ai_catalog_mcp_servers_users ALTER COLUMN id SET DEFAULT nextval('ai_catalog_mcp_servers_users_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_compliance_anthropic_integrations ALTER COLUMN id SET DEFAULT nextval('ai_compliance_anthropic_integrations_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_conversation_messages ALTER COLUMN id SET DEFAULT nextval('ai_conversation_messages_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_conversation_threads ALTER COLUMN id SET DEFAULT nextval('ai_conversation_threads_id_seq'::regclass);
@@ -39544,6 +39572,9 @@ ALTER TABLE ONLY ai_catalog_mcp_servers
 
 ALTER TABLE ONLY ai_catalog_mcp_servers_users
     ADD CONSTRAINT ai_catalog_mcp_servers_users_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_compliance_anthropic_integrations
+    ADD CONSTRAINT ai_compliance_anthropic_integrations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_conversation_messages
     ADD CONSTRAINT ai_conversation_messages_pkey PRIMARY KEY (id);
@@ -46679,6 +46710,8 @@ CREATE INDEX index_ai_catalog_mcp_server_blocks_on_created_by_id ON ai_catalog_m
 CREATE INDEX index_ai_catalog_mcp_servers_on_created_by_id ON ai_catalog_mcp_servers USING btree (created_by_id);
 
 CREATE INDEX index_ai_catalog_mcp_servers_users_on_user_id ON ai_catalog_mcp_servers_users USING btree (user_id);
+
+CREATE UNIQUE INDEX index_ai_compliance_anthropic_integrations_on_namespace_id ON ai_compliance_anthropic_integrations USING btree (namespace_id);
 
 CREATE INDEX index_ai_conversation_messages_on_message_xid ON ai_conversation_messages USING btree (message_xid);
 
@@ -58655,6 +58688,9 @@ ALTER TABLE ONLY import_offline_exports
 
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_7b92f835bb FOREIGN KEY (contact_id) REFERENCES customer_relations_contacts(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_compliance_anthropic_integrations
+    ADD CONSTRAINT fk_7c49efedf4 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dependency_firewall_activity_stats
     ADD CONSTRAINT fk_7c65cd34fb FOREIGN KEY (dependency_firewall_policy_rule_id) REFERENCES dependency_firewall_policy_rules(id) ON DELETE CASCADE;

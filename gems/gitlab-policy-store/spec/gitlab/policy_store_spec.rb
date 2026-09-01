@@ -95,15 +95,23 @@ RSpec.describe Gitlab::PolicyStore do
     end
 
     describe '#list' do
-      it 'delegates to the configured repository, defaulting trigger_type to nil' do
-        unfiltered = [instance_double(Gitlab::PolicyStore::Policy)]
-        filtered = [instance_double(Gitlab::PolicyStore::Policy)]
-        allow(repository).to receive(:list).with(organization_id: 5, trigger_type: nil).and_return(unfiltered)
+      it 'delegates to the configured repository, defaulting trigger_type, ids, offset and per_page' do
+        unfiltered = instance_double(Gitlab::PolicyStore::Page)
+        filtered = instance_double(Gitlab::PolicyStore::Page)
+        allow(repository).to receive(:list).with(
+          organization_id: 5, trigger_type: nil, ids: nil, offset: 0,
+          per_page: Gitlab::PolicyStore::Ports::PolicyRepository::DEFAULT_PER_PAGE
+        ).and_return(unfiltered)
         allow(repository).to receive(:list)
-          .with(organization_id: 5, trigger_type: 'deployment_requested').and_return(filtered)
+          .with(organization_id: 5, trigger_type: 'deployment_requested', ids: [1, 2], offset: 20, per_page: 10)
+          .and_return(filtered)
 
         expect(described_class.list(organization_id: 5)).to eq(unfiltered)
-        expect(described_class.list(organization_id: 5, trigger_type: 'deployment_requested')).to eq(filtered)
+        expect(
+          described_class.list(
+            organization_id: 5, trigger_type: 'deployment_requested', ids: [1, 2], offset: 20, per_page: 10
+          )
+        ).to eq(filtered)
       end
     end
   end

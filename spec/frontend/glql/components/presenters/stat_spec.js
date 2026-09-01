@@ -136,12 +136,111 @@ describe('StatPresenter', () => {
   });
 
   describe('displayConfig', () => {
-    const displayConfig = { title: 'Total suggestions', unit: 'suggestions' };
+    it('leaves every option at its GlSingleStat default when the block sets none', () => {
+      createComponent();
 
-    it('leaves the rendered stat unchanged, because no key is read yet', () => {
-      createComponent({ displayConfig });
+      expect(findSingleStat().props()).toMatchObject({
+        title: '',
+        unit: null,
+        description: null,
+        metaText: null,
+        metaIcon: null,
+        metaTooltip: '',
+        titleIcon: null,
+        variant: 'neutral',
+      });
+    });
+
+    it.each`
+      key              | value
+      ${'title'}       | ${'Total suggestions'}
+      ${'unit'}        | ${'accepted'}
+      ${'description'} | ${'Suggestions shown in the last 30 days'}
+      ${'metaText'}    | ${'+140 vs prior'}
+      ${'metaIcon'}    | ${'arrow-up'}
+      ${'titleIcon'}   | ${'users'}
+      ${'variant'}     | ${'success'}
+    `('passes $key through to the stat', ({ key, value }) => {
+      createComponent({ displayConfig: { [key]: value } });
+
+      expect(findSingleStat().props(key)).toBe(value);
+    });
+
+    // GlSingleStat hangs the tooltip off the meta badge, which it only renders with metaText.
+    it('passes metaTooltip through to the stat when the block also sets metaText', () => {
+      createComponent({
+        displayConfig: {
+          metaText: '+140 vs prior',
+          metaTooltip: 'Compared with the previous 30 days',
+        },
+      });
+
+      expect(findSingleStat().props('metaTooltip')).toBe('Compared with the previous 30 days');
+    });
+
+    it('drops metaTooltip when the block sets no metaText', () => {
+      createComponent({ displayConfig: { metaTooltip: 'Compared with the previous 30 days' } });
+
+      expect(findSingleStat().props('metaTooltip')).toBe('');
+    });
+
+    it('coerces a value that YAML parsed as a number', () => {
+      createComponent({ displayConfig: { title: 2026 } });
+
+      expect(findSingleStat().props('title')).toBe('2026');
+    });
+
+    it('falls back to the defaults when the block leaves displayConfig empty', () => {
+      createComponent({ displayConfig: null });
 
       expect(findSingleStat().props()).toMatchObject({ title: '', value: '1,234' });
+    });
+
+    it('ignores a key the stat does not read', () => {
+      createComponent({ displayConfig: { stacked: true } });
+
+      expect(findSingleStat().props()).toMatchObject({ title: '', value: '1,234' });
+    });
+
+    // Excluded on purpose: a class prop would let a GLQL block inject arbitrary CSS.
+    it('does not let a block set titleIconClass', () => {
+      createComponent({ displayConfig: { titleIcon: 'users', titleIconClass: 'gl-text-danger' } });
+
+      expect(findSingleStat().props('titleIconClass')).toBe('');
+    });
+
+    describe('validation', () => {
+      it.each(['info', 'success', 'warning', 'danger', 'tier'])(
+        'accepts the %s variant',
+        (variant) => {
+          createComponent({ displayConfig: { variant } });
+
+          expect(findSingleStat().props('variant')).toBe(variant);
+          expect(wrapper.emitted('error')).toBeUndefined();
+        },
+      );
+
+      it('emits an error for an unsupported variant', () => {
+        createComponent({ displayConfig: { variant: 'nonsense' } });
+
+        expect(findEmittedErrorMessage()).toBe(
+          'Unknown variant: `nonsense`. Supported variants are: `neutral`, `info`, `success`, `warning`, `danger`, `tier`.',
+        );
+        expect(findSingleStat().exists()).toBe(false);
+      });
+
+      it.each(['metaIcon', 'titleIcon'])('emits an error naming %s for an unknown icon', (key) => {
+        createComponent({ displayConfig: { [key]: 'not-an-icon' } });
+
+        expect(findEmittedErrorMessage()).toBe(`Unknown icon for \`${key}\`: \`not-an-icon\`.`);
+        expect(findSingleStat().exists()).toBe(false);
+      });
+
+      it('emits the error before the fields are populated', () => {
+        createComponent({ fields: [], displayConfig: { metaIcon: 'not-an-icon' } });
+
+        expect(findEmittedErrorMessage()).toBe('Unknown icon for `metaIcon`: `not-an-icon`.');
+      });
     });
   });
 

@@ -62,7 +62,6 @@ import {
   findNotesWidget,
   activeWorkItemIds,
 } from '../utils';
-import { updateWorkItemCurrentTodosWidget } from '../graphql/cache_utils';
 
 import getWorkItemDesignListQuery from './design_management/graphql/design_collection.query.graphql';
 import uploadDesignMutation from './design_management/graphql/upload_design.mutation.graphql';
@@ -79,7 +78,7 @@ import {
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
-import TodosToggle from './shared/todos_toggle.vue';
+import WorkItemTodosWidget from './work_item_todos_widget.vue';
 import WorkItemNotificationsWidget from './work_item_notifications_widget.vue';
 import WorkItemAttributesWrapper from './work_item_attributes_wrapper.vue';
 import WorkItemCreatedUpdated from './work_item_created_updated.vue';
@@ -129,7 +128,7 @@ export default {
     LocalStorageSync,
     PanelActionsPortal,
     WorkItemActions,
-    TodosToggle,
+    WorkItemTodosWidget,
     WorkItemNotificationsWidget,
     WorkItemCreatedUpdated,
     WorkItemDescription,
@@ -429,9 +428,6 @@ export default {
     },
     showWorkItemCurrentUserTodos() {
       return Boolean(this.$options.isLoggedIn && this.workItemCurrentUserTodos);
-    },
-    currentUserTodos() {
-      return this.workItemCurrentUserTodos?.currentUserTodos?.nodes;
     },
     workItemAssignees() {
       return findAssigneesWidget(this.workItem);
@@ -879,14 +875,6 @@ export default {
       this.resetFilesToBeSaved();
       this.designUploadError = UPLOAD_DESIGN_ERROR_MESSAGE;
     },
-    updateWorkItemCurrentTodosWidgetCache({ cache, todos }) {
-      updateWorkItemCurrentTodosWidget({
-        cache,
-        todos,
-        fullPath: this.workItemFullPath,
-        iid: this.iid,
-      });
-    },
     async deleteChildItem({ id }) {
       this.activeChildItem = null;
       await this.$nextTick();
@@ -1098,11 +1086,11 @@ export default {
               :agent-plan-widget="agentPlanWidget"
               :on-error="(e) => (updateError = e)"
             ></slot>
-            <todos-toggle
+            <work-item-todos-widget
               v-if="showWorkItemCurrentUserTodos"
-              :item-id="workItem.id"
-              :current-user-todos="currentUserTodos"
-              @todos-updated="updateWorkItemCurrentTodosWidgetCache"
+              :work-item-id="workItem.id"
+              :work-item-iid="iid"
+              :full-path="workItemFullPath"
               @error="updateError = $event"
             />
             <work-item-notifications-widget

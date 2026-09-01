@@ -76,6 +76,10 @@ module Gitlab
         DEFAULT_MODE = 'enforce'
         DEFAULT_LIFECYCLE_STATE = 'active'
 
+        DEFAULT_PER_PAGE = 20
+        MAX_PER_PAGE = 100
+        MAX_OFFSET = 100_000
+
         # @param _attributes [Hash] the policy attributes, limited to CREATABLE_ATTRIBUTES;
         #   IMMUTABLE_ATTRIBUTES are accepted and dropped, so every policy starts at version 1
         # @return [Gitlab::PolicyStore::Policy] the created policy
@@ -121,12 +125,34 @@ module Gitlab
 
         # @param organization_id [Integer] the organization ID
         # @param trigger_type [String, nil] returns every trigger when nil
-        # @return [Array<Gitlab::PolicyStore::Policy>] the policies
-        def list(organization_id:, trigger_type: nil)
+        # @param ids [Array<Integer>, nil] when given, returns only these ids (ignoring
+        #   offset/per_page) instead of a page; an empty array returns no policies
+        # @param offset [Integer] rows to skip; clamped to between 0 and MAX_OFFSET
+        # @param per_page [Integer] items per page; clamped to between 1 and MAX_PER_PAGE
+        # @return [Gitlab::PolicyStore::Page] the requested page of policies
+        def list(organization_id:, trigger_type: nil, ids: nil, offset: 0, per_page: DEFAULT_PER_PAGE)
           raise NotImplementedError
         end
 
         private
+
+        def clamped_pagination(offset:, per_page:)
+          [offset.to_i.clamp(0, MAX_OFFSET), per_page.to_i.clamp(1, MAX_PER_PAGE)]
+        end
+
+        def validate_ids_size!(ids)
+          return if ids.size <= MAX_PER_PAGE
+
+          raise PolicyStore::ValidationError, "ids exceeds maximum of #{MAX_PER_PAGE} entries"
+        end
+
+        def paginated_result(fetched, per_page:, &mapper)
+          items = fetched.first(per_page).map(&mapper)
+
+          PolicyStore::Page.new(
+            items: items, per_page: per_page, has_next_page: fetched.size > per_page
+          )
+        end
 
         def normalize_attributes(attributes)
           attributes.to_h.transform_keys(&:to_sym).transform_values { |value| JsonValue.deep_stringify(value) }

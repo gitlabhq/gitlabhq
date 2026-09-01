@@ -5,12 +5,7 @@
 
 fragment BaseWorkItemFeatures on WorkItemFeatures {
   currentUserTodos {
-    currentUserTodos(state: pending) {
-      nodes {
-        id
-        state
-      }
-    }
+    type
   }
   description {
     description

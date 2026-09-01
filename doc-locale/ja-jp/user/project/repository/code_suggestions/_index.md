@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Coding
+stage: AI Coding
+group: DAP Repository Flows
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLab Duoコード提案を使用すると、入力時にAIがコードを提案するため、GitLabでより効率的にコードを作成できます。
 title: コード提案
@@ -8,7 +8,7 @@ title: コード提案
 
 {{< details >}}
 
-- プラン: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom)、Premium、Ultimate
+- プラン: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier)、Premium、Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
@@ -23,20 +23,21 @@ title: コード提案
 
 {{< history >}}
 
-- GitLab 16.1で[Google Vertex AI Codey APIのサポートが導入](https://gitlab.com/groups/gitlab-org/-/epics/10562)されました。
-- GitLab 16.2で[GitLabネイティブモデルのサポートが終了](https://gitlab.com/groups/gitlab-org/-/epics/10752)しました。
+- [Gemini Enterprise Agent Platform Codey APIのサポート](https://gitlab.com/groups/gitlab-org/-/epics/10562)がGitLab 16.1で導入されました。
+- GitLab 16.2で[GitLabネイティブモデルのサポートが終了](https://gitlab.com/groups/gitlab-org/-/work_items/10752)しました。
 - GitLab 16.3で[コード生成のサポートが導入](https://gitlab.com/gitlab-org/gitlab/-/issues/415583)されました。
 - GitLab 16.7で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/435271)になりました。
 - 2024年2月15日にGitLab Duo Proアドオンが必須となるように[変更](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031)されました。この機能は以前、PremiumおよびUltimateサブスクリプションに含まれていました。
 - 2024年10月17日以降、サポートされているすべてのGitLabバージョンでGitLab Duo ProまたはGitLab Duo Enterpriseアドオンが必須となるように[変更](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031)されました。
-- GitLab 17.6で`fireworks_qwen_code_completion`フラグとともに[Fireworks AIでホストされるQwen2.5コード補完モデルのサポートが導入](https://gitlab.com/groups/gitlab-org/-/epics/15850)されました。
+- GitLab 17.6で`fireworks_qwen_code_completion`フラグとともに[Fireworks AIでホストされるQwen2.5コード補完モデルのサポートが導入](https://gitlab.com/groups/gitlab-org/-/work_items/15850)されました。
 - GitLab 17.11でQwen2.5コード補完モデルのサポートが[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187397)されました。
 - GitLab 17.11で`use_fireworks_codestral_code_completion`機能フラグを介して、Fireworksでホストされる`Codestral`をデフォルトで有効にしました。
 - GitLab 18.0でGitLab Duo Coreを含むように変更されました。
 - GitLab 18.1でFireworksでホストされる`Codestral`をデフォルトモデルとして有効にしました。
 - GitLab 18.2でコード生成のデフォルトモデルがClaude Sonnet 4に[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/545489)されました。
 - 機能フラグ`code_suggestions_context`はGitLab 18.6で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/462750)されました。
-- GitLab 18.10では、GitLab.comのFreeティアでGitLabクレジットとともに利用できます。
+- GitLab 18.10で、GitLab.comのFreeプランにおいてGitLabクレジットを使用して利用できるようになりました。
+- GitLab Duo Coreのユーザーアクセスがコード提案に変更されました。GitLab 19.0より、GitLab Duo Agent Platformの一部として利用可能です。
 
 {{< /history >}}
 
@@ -44,7 +45,7 @@ title: コード提案
 > コード提案は以下で利用可能です:
 >
 > - GitLab Duo Agent Platform。課金は[利用量に基づいています](../../../../subscriptions/gitlab_credits.md)。
-> - GitLab Duo Core、Pro、またはEnterprise、GitLab Duo with Amazon Q。課金はアドオンに基づきます。
+> - GitLab Duo ProまたはEnterprise、GitLab Duo with Amazon Q。請求はアドオンに基づきます。
 
 GitLab Duoコード提案を使用すると、開発中に生成AIを使用してコードを提案することにより、より効率的にコードを作成できます。
 
@@ -54,21 +55,18 @@ GitLab Duoコード提案を使用すると、開発中に生成AIを使用し�
 
 ## 前提条件 {#prerequisites}
 
-コード提案を使用するには、以下の手順に従います:
-
-- GitLab Duo Coreをお持ちの場合は、[IDE機能をオン](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off)にします。
-- [コード提案をセットアップ](set_up.md)します。
+- GitLab Duo Coreをお持ちの場合、[IDE機能はオン](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off)になっています。
+- IDEで[コード提案がセットアップされています](set_up.md)。
+- [デフォルトのGitLab Duoネームスペースが設定されている](../../../profile/preferences.md#namespace-resolution-in-your-local-environment)か、GitLab Duoアクセスを持つプロジェクトを開いている必要があります。
 
 > [!note]
-> GitLab DuoにはGitLab 17.2以降が必要です。GitLab Duo Coreにアクセスして、最高のユーザーエクスペリエンスと結果を得るには、[GitLab 18.0以降にアップグレード](../../../../update/_index.md)してください。以前のバージョンでも引き続き動作する可能性はありますが、エクスペリエンスが低下するおそれがあります。
+> GitLab DuoにはGitLab 17.2またはそれ以降が必要です。GitLab Duo Coreにアクセスして、最高のユーザーエクスペリエンスと結果を得るには、[GitLab 18.0以降にアップグレード](../../../../update/_index.md)してください。以前のバージョンでも引き続き動作する可能性はありますが、エクスペリエンスが低下するおそれがあります。
 
 ## コード提案を使用する {#use-code-suggestions}
 
 コード提案を使用するには、以下の手順に従います:
 
-1. [サポートされているIDE](supported_extensions.md#supported-editor-extensions)でGitプロジェクトを開きます。
-1. [`git remote add`](../../../../topics/git/commands.md#git-remote-add)を使用して、ローカルリポジトリのリモートとしてプロジェクトを追加します。
-1. 隠し`.git/`フォルダーを含むプロジェクトディレクトリを、IDEワークスペースまたはプロジェクトに追加します。
+1. IDEでプロジェクトを開きます。
 1. コードを作成します。入力すると、提案が表示されます。コード提案は、カーソルの位置に応じてコードスニペットを提示するか、現在の行を補完します。
 
 1. 要件を自然言語で記述します。コード提案は、提供されたコンテキストに基づいて関数やコードスニペットを生成します。
@@ -179,35 +177,18 @@ AIは決定的ではないため、同じ入力を使用しても毎回同じ候
 
 プロンプトキャッシュは、キャッシュされたプロンプトと入力データの再処理を回避することで、レイテンシーを大幅に改善します。キャッシュされたデータは、永続ストレージに記録されません。
 
-#### プロンプトキャッシュをオフにする {#turn-off-prompt-caching}
+次の場所で、[プロンプトキャッシュをオフに](../../../gitlab_duo/data_usage.md#turn-off-prompt-caching)できます:
 
-GitLab Duo設定で、トップレベルグループのプロンプトキャッシュをオフにすることができます。これにより、[GitLab Duo Agentic Chat](../../../gitlab_duo_chat/agentic_chat.md#prompt-caching)のプロンプトキャッシュもオフになります。
+- GitLab.comの場合: トップレベルグループ。
+- GitLab Self-Managed: インスタンス。
 
-前提条件: 
-
-- GitLab Self-Managedインスタンスの管理者アクセス権。
-
-GitLab.comの場合: 
-
-1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
-1. **設定** > **GitLab Duo**を選択します。
-1. **設定の変更**を選択します。
-1. **プロンプトキャッシュ**切替を無効にします。
-1. **変更を保存**を選択します。
-
-GitLab Self-Managed: 
-
-1. 右上隅で、**管理者**を選択します。
-1. 左側のサイドバーで、**GitLab Duo**を選択します。
-1. **設定の変更**を選択します。
-1. **プロンプトキャッシュ**で、**プロンプトキャッシュを有効にする**チェックボックスをオフにします。
-1. **変更を保存**を選択します。
+この設定は、GitLab Duo Agent Platformのすべての機能に適用されます。
 
 ### ダイレクト接続とインダイレクト接続 {#direct-and-indirect-connections}
 
 {{< history >}}
 
-- GitLab 17.2で`code_suggestions_direct_access`[フラグ](../../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/462791)されました。デフォルトでは無効になっています。
+- GitLab 17.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/462791)され、[機能フラグ](../../../../administration/feature_flags/_index.md) `code_suggestions_direct_access`という名前が付けられました。デフォルトでは無効になっています。
 
 {{< /history >}}
 

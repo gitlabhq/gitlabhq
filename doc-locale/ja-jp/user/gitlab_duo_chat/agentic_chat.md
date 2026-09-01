@@ -24,17 +24,17 @@ title: GitLab Duo Agentic Chat
 
 - VS Codeは、[実験的機能](../../policy/development_stages_support.md)として`duo_agentic_chat`[フラグ](../../administration/feature_flags/_index.md)とともに、GitLab 18.1の[GitLab.comで導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/540917)されました。デフォルトでは無効になっています。
 - VS Codeは、GitLab 18.2の[GitLab Self-Managedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196688)になりました。
-- GitLab UIは、GitLab 18.2で[GitLab.comおよびGitLab Self-Managedに導入](https://gitlab.com/gitlab-org/gitlab/-/issues/546140)され、[機能フラグ](../../administration/feature_flags/_index.md)`duo_workflow_workhorse`および`duo_workflow_web_chat_mutation_tools`という名前が付けられました。どちらのフラグもデフォルトで有効になっています。
+- GitLab UIは、`duo_workflow_workhorse`および`duo_workflow_web_chat_mutation_tools`[機能フラグ](../../administration/feature_flags/_index.md)とともに、GitLab 18.2の[GitLab.comとGitLab Self-Managedで導入](https://gitlab.com/gitlab-org/gitlab/-/issues/546140)されました。どちらのフラグもデフォルトで有効になっています。
 - 機能フラグ`duo_agentic_chat`は、GitLab 18.2でデフォルトで有効になっています。
 - JetBrains IDEがGitLab 18.2で[導入](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/1077)されました。
 - GitLab 18.2でベータ版に変更されました。
 - Visual Studio for WindowsがGitLab 18.3で[導入](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/245)されました。
 - GitLab 18.3でGitLab Duo Coreに[追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721)されました。
 - 機能フラグ`duo_workflow_workhorse`および`duo_workflow_web_chat_mutation_tools`は、GitLab 18.4で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198487)されました。
-- GitLab Self-Managed上のGitLab Duo Agent Platform（[セルフホストモデル](../../administration/gitlab_duo_self_hosted/_index.md)とクラウド接続されたGitLabモデルの両方）が、GitLab 18.4で`self_hosted_agent_platform`[機能フラグ](../../administration/feature_flags/_index.md)とともに[実験的機能](../../policy/development_stages_support.md#experiment)として[導入](https://gitlab.com/groups/gitlab-org/-/epics/19213)されました。デフォルトでは無効になっています。
+- GitLab Self-Managed上のGitLab Duo Agent Platform（[セルフホストモデル](../../administration/gitlab_duo_self_hosted/_index.md)とクラウド接続されたGitLabモデルの両方）が、GitLab 18.4で`self_hosted_agent_platform`[機能フラグ](../../administration/feature_flags/_index.md)とともに[実験的機能](../../policy/development_stages_support.md#experiment)として[導入](https://gitlab.com/groups/gitlab-org/-/work_items/19213)されました。デフォルトでは無効になっています。
 - GitLab 18.5でGitLab Self-Managed上のGitLab Duo Agent Platformは実験的機能から[ベータ版](https://gitlab.com/groups/gitlab-org/-/epics/19402)に変更されました。
 - GitLab 18.6で[デフォルトLLMが更新](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1541)され、Claude Sonnet 4.5になりました。
-- GitLab 18.7で機能フラグ`self_hosted_agent_platform`が[有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951)になりました。
+- GitLab 18.7で機能フラグ`self_hosted_agent_platform`は[有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951)になりました。
 - GitLab 18.7で[デフォルトLLMが更新](https://gitlab.com/groups/gitlab-org/-/epics/19998)され、Claude Haiku 4.5になりました。
 - GitLab 18.8で`agentic_chat_ga`および`ai_duo_agent_platform_ga_rollout_self_managed`[フラグ](../../administration/feature_flags/_index.md)とともに[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/581872)になりました。どちらのフラグもデフォルトで有効になっています。機能フラグ`duo_agentic_chat`は削除されました。
 - 機能フラグ[`self_hosted_agent_platform`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218589)、[`agentic_chat_ga`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219679)、[`ai_duo_agent_platform_ga_rollout_self_managed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219679)はGitLab 18.10で削除されました。
@@ -83,8 +83,8 @@ GitLab Duo Chatは、以下で使用できます:
 
 前提条件: 
 
-- [GitLab Duo Agent Platformの前提条件](../duo_agent_platform/_index.md#prerequisites)を満たす必要があります。
-- [デフォルトのGitLab Duoネームスペース](../profile/preferences.md#set-a-default-gitlab-duo-namespace)を設定します。
+- [GitLab Duo Agent Platformの前提条件](../duo_agent_platform/_index.md#prerequisites)を満たしている。
+- [デフォルトのGitLab Duoネームスペース](../profile/preferences.md#set-a-default-gitlab-duo-namespace)を設定している。
 
 GitLab UIでChatを使用するには:
 
@@ -99,8 +99,8 @@ GitLab UIでChatを使用するには:
    - チャットに[コンテキスト](../duo_agent_platform/context.md#gitlab-duo-agentic-chat)を追加できます。
    - インタラクティブなAIチャットが回答を生成するまで、数秒かかる場合があります。
 1. オプション。次のことが可能です。
-   - フォローアップの質問をします。
-   - [別の会話](#have-multiple-conversations)を開始します。
+   - フォローアップの質問をする。
+   - [別の会話](#have-multiple-conversations)を開始する。
 
 Webページをリロードしたり別のWebページに移動したりしても、Chatは最新の会話を記憶し、その会話はChatドロワーでアクティブなままです。
 
@@ -108,14 +108,14 @@ Webページをリロードしたり別のWebページに移動したりして�
 
 {{< history >}}
 
-- GitLab Duo Agentic Chatの会話における基本フローのトリガーは、GitLab 19.2で[導入](https://gitlab.com/groups/gitlab-org/-/work_items/20484)され、`agentic_foundational_flow_tool`という名前の[機能フラグ](../../administration/feature_flags/_index.md)が付いています。デフォルトでは有効になっています。
+- GitLab 19.2で、GitLab Duo Agentic Chatの会話において基本フローをトリガーする機能が`agentic_foundational_flow_tool`[機能フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/work_items/20484)されました。デフォルトでは有効になっています。
 
 {{< /history >}}
 
 > [!flag]
 > この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
 
-必要に応じて、以下の基本フローをAgentic Chatの会話からトリガーして、質問に答えたり目標を達成したりできます。
+必要に応じて、次の基本フローをAgentic Chatの会話からトリガーして、質問に答えたり目標を達成したりできます。
 
 - [デベロッパーフロー](../duo_agent_platform/flows/foundational_flows/developer.md#use-the-flow-in-agentic-chat)
 - [コードレビューフロー](../duo_agent_platform/flows/foundational_flows/code_review.md#use-the-flow)
@@ -125,9 +125,9 @@ Webページをリロードしたり別のWebページに移動したりして�
 
 前提条件: 
 
-- [GitLab for VS Code拡張機能](../../editor_extensions/visual_studio_code/setup.md)バージョン6.15.1以降をインストールして設定します。
-- [GitLab Duo Agent Platformの前提条件](../duo_agent_platform/_index.md#prerequisites)を満たす必要があります。
-- [デフォルトのGitLab Duoネームスペース](../profile/preferences.md#set-a-default-gitlab-duo-namespace)を設定します。
+- [GitLab for VS Code拡張機能バージョン6.15.1以降をインストールして設定](../../editor_extensions/visual_studio_code/setup.md)している。
+- [GitLab Duo Agent Platformの前提条件](../duo_agent_platform/_index.md#prerequisites)を満たしている。
+- [デフォルトのGitLab Duoネームスペース](../profile/preferences.md#set-a-default-gitlab-duo-namespace)を設定している。
 
 GitLab Duo Chatをオンにする: 
 
@@ -149,8 +149,8 @@ GitLab Duo Chatをオンにする:
 前提条件: 
 
 - バージョン3.11.1以降の[JetBrains IDE用GitLab Duoプラグインをインストールして設定](../../editor_extensions/jetbrains_ide/setup.md)します。
-- [GitLab Duo Agent Platformの前提条件](../duo_agent_platform/_index.md#prerequisites)を満たす必要があります。
-- [デフォルトのGitLab Duoネームスペース](../profile/preferences.md#set-a-default-gitlab-duo-namespace)を設定します。
+- [GitLab Duo Agent Platformの前提条件](../duo_agent_platform/_index.md#prerequisites)を満たしている。
+- [デフォルトのGitLab Duoネームスペース](../profile/preferences.md#set-a-default-gitlab-duo-namespace)を設定している。
 
 GitLab Duo Chatをオンにする: 
 
@@ -168,9 +168,9 @@ GitLab Duo Chatをオンにする:
 
 前提条件: 
 
-- バージョン0.60.0以降の[Visual Studio用GitLab拡張機能](../../editor_extensions/visual_studio/setup.md)をインストールして設定します。
-- [GitLab Duo Agent Platformの前提条件](../duo_agent_platform/_index.md#prerequisites)を満たす必要があります。
-- [デフォルトのGitLab Duoネームスペース](../profile/preferences.md#set-a-default-gitlab-duo-namespace)を設定します。
+- [GitLab for Visual Studio拡張機能](../../editor_extensions/visual_studio/setup.md)バージョン0.60.0以降をインストールして設定している。
+- [GitLab Duo Agent Platformの前提条件](../duo_agent_platform/_index.md#prerequisites)を満たしている。
+- [デフォルトのGitLab Duoネームスペース](../profile/preferences.md#set-a-default-gitlab-duo-namespace)を設定している。
 
 GitLab Duo Chatをオンにする: 
 
@@ -207,7 +207,7 @@ IDEでは、最新の20件の会話が表示されます。[イシュー1308](ht
 {{< history >}}
 
 - 複数の会話機能がGitLab 18.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/556875)されました。
-- GitLab UIにおけるチャット履歴の検索機能がGitLab 18.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/582513)されました。
+- GitLab UIでチャット履歴を検索する機能がGitLab 18.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/582513)されました。
 
 {{< /history >}}
 
@@ -221,10 +221,10 @@ GitLab Duo Chatと無制限の数の同時会話を行うことができます�
 
    - GitLab UIでは、次のいずれかを実行できます:
 
-     - 特定のエージェントとの新しい会話を作成するには:
+     - 特定のエージェントとの新しい会話を作成する場合:
        1. GitLab Duoサイドバーで、**新しいチャットを追加**（{{< icon name="pencil-square" >}}）を選択します。
-       1. ドロップダウンリストでエージェントを選択します。
-     - 既存の会話と同じエージェントとの新しい会話を作成するには、メッセージボックスに`/new`と入力し、<kbd>Enter</kbd>を押すか、**送信**を選択します。
+       1. ドロップダウンリストで、エージェントを選択します。
+     - 既存の会話と同じエージェントとの新しい会話を作成する場合は、メッセージボックスに`/new`と入力し、<kbd>Enter</kbd>を押すか、**送信**を選択します。
 
      新しいChatの会話で既存の会話が置き換えられます。
    - Chatテキストボックスの下で、**エージェント**切替がオンになっていることを確認します。
@@ -253,14 +253,14 @@ LLMコンテキストウィンドウの制限により、会話はそれぞれ20
 
 ## ローカル環境でGitLab Duo Chatをカスタマイズする {#customize-gitlab-duo-chat-in-your-local-environment}
 
-ローカル環境でのGitLab Duo Chatの動作は、コーディングスタイル、チームプラクティス、プロジェクト要件を反映する指示を提供することでカスタマイズできます。
+コーディングスタイル、チームのプラクティス、プロジェクトの要件を反映した指示を指定することで、ローカル環境でのGitLab Duo Chatの動作をカスタマイズできます。
 
 GitLab Duo Chatは、次の2つのアプローチをサポートしています:
 
-- `chat-rules.md`の[カスタムルール](../duo_agent_platform/customize/custom_rules.md): GitLab向け。個人の設定やチームの標準に最適。
-- [`AGENTS.md`の共有ルール](../duo_agent_platform/customize/agents_md.md): `AGENTS.md`仕様をサポートするGitLabおよびその他のAIツール向け。プロジェクトのコンテキスト、モノレポ構成、ディレクトリ固有の規則に最適。
+- `chat-rules.md`の[カスタムルール](../duo_agent_platform/customize/custom_rules.md): GitLab専用。個人の設定やチームの標準に最適です。
+- [`AGENTS.md`の共有ルール](../duo_agent_platform/customize/agents_md.md): GitLab、および`AGENTS.md`仕様をサポートするその他のAIツールで使用できます。プロジェクトのコンテキスト、モノレポの構成、ディレクトリ固有の規則に最適です。
 
-両方のファイルを同時に使用できます。GitLab Duo Chatは、利用可能なすべてのルールファイルから指示を適用します。
+両方のファイルを同時に使用できます。GitLab Duo Chatは、利用可能なすべてのルールファイルの指示を適用します。
 
 [GitLab Duoをカスタマイズ](../duo_agent_platform/customize/_index.md)する方法について詳細をご覧ください。
 
@@ -295,15 +295,15 @@ GitLab UI、VS Code、またはJetBrains IDEでChatを使用する場合、会�
 
 {{< tab title=GitLab.com >}}
 
-- トップレベルグループのオーナーがGitLab Duo Agent Platformのモデルを選択していないこと。[グループに対してモデルが選択されている](../gitlab_duo/model_selection.md)場合、Chatのモデルを変更することはできません。
-- トップレベルグループでChatを使用していること。組織内でChatにアクセスしている場合、モデルを変更することはできません。
+- トップレベルグループのオーナーがGitLab Duo Agent Platformのモデルを選択していない。[グループに対してモデルが選択されている](../gitlab_duo/model_selection.md)場合、Chatのモデルを変更することはできません。
+- トップレベルグループでChatを使用している。組織内でChatにアクセスしている場合、モデルを変更することはできません。
 
 {{< /tab >}}
 
 {{< tab title="Self-Managed" >}}
 
 - 管理者がインスタンスのモデルを選択していないこと。インスタンスに対してモデルが選択されている場合、Chatのモデルを変更することはできません。
-- インスタンスがGitLab AIゲートウェイに接続されていること。
+- インスタンスがGitLab AIゲートウェイに接続されている。
 
 {{< /tab >}}
 
@@ -332,10 +332,10 @@ GitLab UI、VS Code、またはJetBrains IDEのプロジェクトでChatを使�
 
 前提条件: 
 
-- プロジェクトでは、[AIカタログのエージェントを有効にする](../duo_agent_platform/agents/custom.md#enable-an-agent)必要があります。
-- エージェントが有効になっているプロジェクトのメンバーである必要があります。
-- VS Codeの場合、バージョン6.49.12以降の[GitLab for VS Code拡張機能](../../editor_extensions/visual_studio_code/setup.md)をインストールして設定します。
-- JetBrains IDEの場合、バージョン3.22.0以降の[JetBrains IDE用GitLab Duoプラグインをインストールして設定](../../editor_extensions/jetbrains_ide/setup.md)します。
+- プロジェクトで[AIカタログのエージェントが有効](../duo_agent_platform/agents/custom.md#enable-an-agent)になっている。
+- そのエージェントが有効になっているプロジェクトのメンバーである。
+- VS Codeの場合、バージョン6.49.12以降の[GitLab for VS Code拡張機能をインストールして設定](../../editor_extensions/visual_studio_code/setup.md)している。
+- JetBrains IDEの場合、バージョン3.22.0以降の[JetBrains IDE用GitLab Duoプラグインをインストールして設定](../../editor_extensions/jetbrains_ide/setup.md)している。
 
 エージェントを選択するには:
 
@@ -346,9 +346,9 @@ GitLab UI、VS Code、またはJetBrains IDEのプロジェクトでChatを使�
 
 エージェントとの会話を作成した後:
 
-- 会話では選択したエージェントが記憶されます。その会話に別のエージェントを選択することはできません。
+- 会話では選択したエージェントが記憶されます。その会話で別のエージェントを選択することはできません。
 - チャット履歴を使用して同じ会話に戻ると、同じエージェントが使用されます。
-- 会話に戻り、関連付けられているエージェントが利用できなくなっている場合、その会話を続行することはできません。
+- 会話に戻ったときに、関連付けられているエージェントが利用できなくなっている場合、その会話を続けることはできません。
 
 ## プロンプトキャッシュ {#prompt-caching}
 
@@ -362,11 +362,11 @@ GitLab UI、VS Code、またはJetBrains IDEのプロジェクトでChatを使�
 
 プロンプトキャッシュが有効な場合、チャットプロンプトデータはモデルベンダーによって一時的にメモリに保存されます。
 
-プロンプトキャッシュにより、キャッシュされたプロンプトと入力データの再処理を回避できるため、レイテンシーが大幅に改善されます。
+プロンプトキャッシュは、キャッシュされたプロンプトと入力データの再処理を回避することで、レイテンシーを大幅に改善します。
 
 次の場所で、[プロンプトキャッシュをオフに](../gitlab_duo/data_usage.md#turn-off-prompt-caching)できます:
 
-- GitLab.com: トップレベルグループ。
+- GitLab.comの場合: トップレベルグループ。
 - GitLab Self-Managed: インスタンス。
 
 この設定は、GitLab Duo Agent Platformのすべての機能に適用されます。
@@ -379,13 +379,13 @@ GitLab UI、VS Code、またはJetBrains IDEのプロジェクトでChatを使�
   - [GitLab for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.72.0) 6.72.0で導入されました
   - [JetBrains IDE用GitLab Duoプラグイン](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.33.0)3.33.0で導入されました
   - [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.80.0) 8.80.0で導入されました。
-- パターンベースのツール承認がGitLab 19.1で[導入](https://gitlab.com/groups/gitlab-org/-/work_items/21850)されました。
+- GitLab 19.1でパターンベースのツール承認が[導入](https://gitlab.com/groups/gitlab-org/-/work_items/21850)されました。
   - [GitLab for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.83.2) 6.83.2で導入されました。
   - [JetBrains IDE用GitLab Duoプラグイン](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.38.0)3.38.0で導入されました。
   - [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.101.0) 8.101.0で導入されました。
-- パターンベースのツール承認は、2026年7月10日に[削除されました](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/3699)。
+- パターンベースのツール承認は、2026年7月10日に[削除](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/3699)されました。
   - [GitLab for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.85.3) 6.85.3で削除されました。
-  - [GitLab Duoプラグインfor JetBrains IDEs](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.43.0) 3.43.0で削除されました。
+  - [JetBrains IDE用GitLab Duoプラグイン](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.43.0)3.43.0で削除されました。
   - [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.3.0) 9.3.0で削除されました。
 
 {{< /history >}}
@@ -476,7 +476,7 @@ Agentic Chatがユーザーに代わってツールを使用するには、ユ�
 前提条件: 
 
 - グループまたはインスタンスでツールの承認が有効になっている必要があります。
-- ローカル環境でGitLab Duo Chatについて、次のいずれかをインストールして設定している必要があります:
+- ローカル環境でGitLab Duo Chatを使用する場合は、以下のいずれかをインストールして設定してください:
   - [GitLab for VS Code](../../editor_extensions/visual_studio_code/setup.md) 6.72.0以降。
   - [JetBrains IDE用GitLab Duoプラグイン](../../editor_extensions/jetbrains_ide/setup.md)3.33.0以降。
   - [GitLab Duo CLI](../gitlab_duo_cli/_index.md) 8.80.0以降。
@@ -486,7 +486,7 @@ Agentic Chatがユーザーに代わってツールを使用するには、ユ�
 1. ツールの承認プロンプトが表示されたら、承認ボタンの横にあるドロップダウンを選択します。
 1. 次のいずれかのオプションを選択します:
    - **承認**: Chatは、この引数を指定してツールを1回使用できます。
-   - **セッションを承認する**: Chatは、セッションの残りの期間、この引数を指定してツールを使用できます。別の引数を使用する場合は、追加の承認が必要です。
+   - **セッションで承認**: Chatは、セッションの残りの期間、この引数を指定してツールを使用できます。別の引数を使用する場合は、追加の承認が必要です。
    - **拒否**: Chatはこのツールを使用できません。
 
 新しい会話を開始すると、すべての承認がリセットされます。

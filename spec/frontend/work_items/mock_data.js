@@ -2092,6 +2092,7 @@ export const mockWorkItemFeaturesData = ({ discussionLocked = false } = {}) => (
     __typename: 'WorkItemWidgetCrmContacts',
   },
   currentUserTodos: {
+    type: 'CURRENT_USER_TODOS',
     currentUserTodos: {
       nodes: [],
       __typename: 'TodoConnection',
@@ -2583,6 +2584,33 @@ export const workItemByIidResponseFactory = (options) => {
         __typename: 'Project',
         id: 'gid://gitlab/Project/1',
         workItem: response.data.workItem,
+      },
+    },
+  };
+};
+
+export const workItemCurrentUserTodosResponseFactory = ({
+  todos = [{ id: 'gid://gitlab/Todo/1', state: 'pending', __typename: 'Todo' }],
+  useWorkItemFeatures = false,
+} = {}) => {
+  const widget = {
+    __typename: 'WorkItemWidgetCurrentUserTodos',
+    type: 'CURRENT_USER_TODOS',
+    currentUserTodos: { nodes: todos, __typename: 'TodoConnection' },
+  };
+
+  return {
+    data: {
+      namespace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        workItem: {
+          __typename: 'WorkItem',
+          id: 'gid://gitlab/WorkItem/1',
+          ...(useWorkItemFeatures
+            ? { features: { __typename: 'WorkItemFeatures', currentUserTodos: widget } }
+            : { widgets: [widget] }),
+        },
       },
     },
   };

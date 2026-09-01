@@ -965,5 +965,134 @@ RSpec.shared_examples 'a policy repository' do
           .to contain_exactly(same_organization_policy)
       end
     end
+
+    context 'with pagination' do
+      def created_policies
+        @created_policies ||= Array.new(3) { |index| repository.create(attributes.merge(name: "Policy #{index}")) }
+      end
+
+      it 'defaults to the first DEFAULT_PER_PAGE policies ordered by id' do
+        created_policies
+
+        page = repository.list(organization_id: organization_id)
+
+        expect(page).to eq(created_policies)
+        expect(page.per_page).to eq(described_class::DEFAULT_PER_PAGE)
+        expect(page.has_next_page?).to be(false)
+      end
+
+      it 'returns the items starting at the given offset' do
+        created_policies
+
+        page = repository.list(organization_id: organization_id, offset: 1, per_page: 1)
+
+        expect(page).to eq([created_policies[1]])
+        expect(page.has_next_page?).to be(true)
+      end
+
+      it 'clamps per_page to MAX_PER_PAGE' do
+        page = repository.list(organization_id: organization_id, per_page: described_class::MAX_PER_PAGE + 1)
+
+        expect(page.per_page).to eq(described_class::MAX_PER_PAGE)
+      end
+
+      it 'clamps a negative offset up to 0' do
+        created_policies
+
+        page = repository.list(organization_id: organization_id, offset: -1)
+
+        expect(page).to eq(created_policies)
+      end
+
+      it 'clamps a per_page of zero or below up to 1' do
+        created_policies
+
+        page = repository.list(organization_id: organization_id, per_page: 0)
+
+        expect(page.per_page).to eq(1)
+        expect(page).to eq([created_policies.first])
+      end
+
+      it 'reports has_next_page? scoped to the trigger_type, not the whole organization' do
+        repository.create(other_trigger_attributes)
+        created_policies
+
+        page = repository.list(
+          organization_id: organization_id, trigger_type: trigger_type, per_page: created_policies.size
+        )
+
+        expect(page.has_next_page?).to be(false)
+      end
+
+      it 'returns an empty page without a next page once past the last one' do
+        created_policies
+
+        page = repository.list(
+          organization_id: organization_id, offset: created_policies.size, per_page: created_policies.size
+        )
+
+        expect(page).to be_empty
+        expect(page.has_next_page?).to be(false)
+      end
+
+      it 'does not count the peeked-at row towards the returned page' do
+        created_policies
+
+        page = repository.list(organization_id: organization_id, per_page: 1)
+
+        expect(page.size).to eq(1)
+        expect(page.has_next_page?).to be(true)
+      end
+    end
+
+    context 'with ids' do
+      it 'finds a policy outside the current page bounds' do
+        created = Array.new(3) { |index| repository.create(attributes.merge(name: "Policy #{index}")) }
+
+        page = repository.list(organization_id: organization_id, ids: [created.last.id], per_page: 1)
+
+        expect(page).to contain_exactly(created.last)
+      end
+
+      it 'returns no policies for an empty ids array' do
+        repository.create(attributes)
+
+        expect(repository.list(organization_id: organization_id, ids: [])).to be_empty
+      end
+
+      it 'ignores ids no policy has' do
+        created = repository.create(attributes)
+
+        expect(repository.list(organization_id: organization_id, ids: [created.id, non_existing_id]))
+          .to contain_exactly(created)
+      end
+
+      it 'combines with trigger_type' do
+        other_trigger_policy = repository.create(other_trigger_attributes)
+        default_trigger_policy = repository.create(attributes)
+
+        page = repository.list(
+          organization_id: organization_id, trigger_type: other_trigger_type,
+          ids: [other_trigger_policy.id, default_trigger_policy.id]
+        )
+
+        expect(page).to contain_exactly(other_trigger_policy)
+      end
+
+      it 'reports no next page regardless of how many ids match' do
+        created = Array.new(3) { |index| repository.create(attributes.merge(name: "Policy #{index}")) }
+
+        page = repository.list(organization_id: organization_id, ids: created.map(&:id))
+
+        expect(page.has_next_page?).to be(false)
+      end
+
+      it 'raises rather than running an unbounded IN query when ids exceeds MAX_PER_PAGE' do
+        oversized = Array.new(described_class::MAX_PER_PAGE + 1) { |index| index }
+
+        expect { repository.list(organization_id: organization_id, ids: oversized) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /ids exceeds maximum/)
+      end
+    end
   end
 end

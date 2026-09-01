@@ -1,0 +1,9 @@
+fragment WorkItemCurrentUserTodos on WorkItemWidgetCurrentUserTodos {
+  type
+  currentUserTodos(state: pending) {
+    nodes {
+      id
+      state
+    }
+  }
+}

@@ -10,4 +10,10 @@ RSpec.describe Gitlab::PolicyStore::Ports::PolicyRepository do
       expect(described_class::MAX_COMPILED_RULES_BYTES).to eq(65_536)
     end
   end
+
+  describe "MAX_OFFSET" do
+    it "holds the figure that bounds the query, independent of MAX_PAGE at the service layer" do
+      expect(described_class::MAX_OFFSET).to eq(100_000)
+    end
+  end
 end

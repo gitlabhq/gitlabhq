@@ -35,7 +35,7 @@ class DeleteUserWorker # rubocop:disable Scalability/IdempotentWorker
 
     skip =
       if user.banned?
-        true
+        user.deleted_own_account?
       else
         # User is blocked when they delete their own account. Skip record deletion
         # when user has been unblocked (e.g. when the user's account is reinstated

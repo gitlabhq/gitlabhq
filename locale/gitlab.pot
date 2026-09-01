@@ -12248,6 +12248,9 @@ msgstr ""
 msgid "ArtifactRegistry|Create repository"
 msgstr ""
 
+msgid "ArtifactRegistry|Create your first repository"
+msgstr ""
+
 msgid "ArtifactRegistry|Create your first repository to start publishing and pulling artifacts."
 msgstr ""
 
@@ -12443,9 +12446,6 @@ msgstr ""
 msgid "ArtifactRegistry|No manifests found for %{name}."
 msgstr ""
 
-msgid "ArtifactRegistry|No repositories"
-msgstr ""
-
 msgid "ArtifactRegistry|No repositories match your filters."
 msgstr ""
 
@@ -12617,6 +12617,9 @@ msgid "ArtifactRegistry|Sorts alphabetically, not by version order. Ascending pu
 msgstr ""
 
 msgid "ArtifactRegistry|Source"
+msgstr ""
+
+msgid "ArtifactRegistry|Store and manage packages and container images by creating a hosted or remote repository."
 msgstr ""
 
 msgid "ArtifactRegistry|Team documentation / READMEs:"
@@ -60333,9 +60336,6 @@ msgstr ""
 msgid "PolicyStore|Affected projects"
 msgstr ""
 
-msgid "PolicyStore|Agent Tool Access Control"
-msgstr ""
-
 msgid "PolicyStore|All projects"
 msgstr ""
 
@@ -60531,9 +60531,6 @@ msgstr ""
 msgid "PolicyStore|Mode"
 msgstr ""
 
-msgid "PolicyStore|Most restrictive SLA wins when multiple policies match"
-msgstr ""
-
 msgid "PolicyStore|Name"
 msgstr ""
 
@@ -60622,9 +60619,6 @@ msgid "PolicyStore|Require additional approvals before proceeding"
 msgstr ""
 
 msgid "PolicyStore|Require approval"
-msgstr ""
-
-msgid "PolicyStore|Restrict which tools an AI agent may call"
 msgstr ""
 
 msgid "PolicyStore|Review impact"
@@ -60787,9 +60781,6 @@ msgid "PolicyStore|actions"
 msgstr ""
 
 msgid "PolicyStore|all projects in the group"
-msgstr ""
-
-msgid "PolicyStore|days"
 msgstr ""
 
 msgid "PolicyStore|e.g. 2026-12-20T00:00:00Z"
@@ -70677,6 +70668,9 @@ msgid "SecurityAttributes|An error has occurred while deleting the security attr
 msgstr ""
 
 msgid "SecurityAttributes|An error has occurred while deleting the security category."
+msgstr ""
+
+msgid "SecurityAttributes|An error has occurred while loading security categories."
 msgstr ""
 
 msgid "SecurityAttributes|An error has occurred while removing the security attribute."
@@ -85534,7 +85528,13 @@ msgstr ""
 msgid "Unknown gate status."
 msgstr ""
 
+msgid "Unknown icon for `%{key}`: `%{icon}`."
+msgstr ""
+
 msgid "Unknown user"
+msgstr ""
+
+msgid "Unknown variant: `%{variant}`. Supported variants are: %{supportedVariants}."
 msgstr ""
 
 msgid "Unless otherwise agreed to in writing with GitLab, by selecting \"Add License\" you agree that your use of GitLab Software is subject to the %{eula_link_start}Terms of Service%{eula_link_end}."
@@ -93106,6 +93106,9 @@ msgstr ""
 msgid "WorkItem|Something went wrong when fetching status. Please try again."
 msgstr ""
 
+msgid "WorkItem|Something went wrong when fetching the to-do state. Please try again."
+msgstr ""
+
 msgid "WorkItem|Something went wrong when fetching user permissions"
 msgstr ""
 
@@ -96141,6 +96144,9 @@ msgstr ""
 msgid "ciReport|Showing %{fetchedItems} of %{totalItems} items"
 msgstr ""
 
+msgid "ciReport|Shows findings from this merge request's latest pipeline. Findings from other pipelines that ran for the same commit are not included."
+msgstr ""
+
 msgid "ciReport|Something went wrong while fetching the finding. Please try again later."
 msgstr ""
 
@@ -96173,10 +96179,10 @@ msgid_plural "ciReport|Used by %{packagesString}, and %{lastPackage}"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ciReport|View all pipeline findings"
+msgid "ciReport|View full report"
 msgstr ""
 
-msgid "ciReport|View full report"
+msgid "ciReport|View latest pipeline findings"
 msgstr ""
 
 msgid "ciReport|View merge request"

@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Coding
+stage: AI Coding
+group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: マージリクエストのレビューでAIが使用する指示をカスタマイズします。
 title: GitLab Duoへのレビューの指示をカスタマイズする
@@ -16,7 +16,7 @@ title: GitLab Duoへのレビューの指示をカスタマイズする
 
 {{< history >}}
 
-- GitLab 18.2で`duo_code_review_custom_instructions`[フラグ](../../../administration/feature_flags/_index.md)とともに[ベータ版](../../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/545136)されました。デフォルトでは無効になっています。
+- GitLab 18.2で`duo_code_review_custom_instructions`[機能フラグ](../../../administration/feature_flags/_index.md)とともに[ベータ版](../../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/545136)されました。デフォルトでは無効になっています。
 - 機能フラグ`duo_code_review_custom_instructions`は、GitLab 18.3で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199802)になっています。
 - 機能フラグ`duo_code_review_custom_instructions`は、GitLab 18.4で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202262)されました。
 - GitLab 19.1で`fileFilters`の和集合パターン（例: `{rb,ts}`）が[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237952)されました。
@@ -32,7 +32,7 @@ title: GitLab Duoへのレビューの指示をカスタマイズする
 
 GitLab Duoは、標準のレビュー基準を置き換えるのではなく、カスタムレビュー指示を追加する形で適用します。
 
-GitLab Duoコードレビューは、特定のプロジェクトまたはグループ内のすべてのプロジェクトに設定されたカスタムレビュー指示をサポートしています。
+GitLab Duoコードレビューは、プロジェクト、グループ、またはインスタンスに対するカスタムレビュー指示をサポートしています。
 
 ## プロジェクトのカスタムレビュー指示を設定する {#configure-custom-review-instructions-for-a-project}
 
@@ -53,7 +53,7 @@ GitLab Duoコードレビューは、特定のプロジェクトまたはグル�
          <your_custom_review_instructions>
    ```
 
-   `fileFilters`セクションはオプションです。このセクションでは、globパターンを使用して、特定ファイルへの指示をターゲットにします。`fileFilters`を省略するか空のままにすると、GitLab Duoはマージリクエスト内のすべてのファイルに指示を適用します。
+   `fileFilters`セクションはオプションです。このセクションでは、グロブパターンを使用して、特定ファイルへの指示をターゲットにします。`fileFilters`を省略するか空のままにすると、GitLab Duoはマージリクエスト内のすべてのファイルに指示を適用します。
 
    例: 
 
@@ -143,16 +143,56 @@ GitLab Duoコードレビューは、特定のプロジェクトまたはグル�
 
 GitLab Duoがコードレビューを実行すると、トップレベルグループの指示と、個々のプロジェクトで定義された指示が組み合わされます。
 
+> [!note]
+> グループに[自動レビュー除外ルール](../code_review.md#exclude-merge-requests-for-a-group)を保存するプロジェクトをすでに設定している場合は、`mr-review-instructions.yaml`を同じプロジェクトに保存してください。グループのコードレビューをカスタマイズできるプロジェクトは1つだけであるため、GitLabは自動的にそのプロジェクトのレビュー指示もチェックします。以下の手順を再度実行する必要はありません。
+
 前提条件: 
 
 - トップレベルグループのオーナーロール。
 - グループ内のプロジェクトに、テンプレートとして使用するカスタムレビュー指示が含まれていること。
 
+  > [!warning]
+  > `mr-review-instructions.yaml`に機密情報や秘匿情報を保存しないでください。グループ内のマージリクエストを表示できるユーザーは、ファイルを含むプロジェクトへのアクセス権がなくても、グループレビュー指示にアクセスできます。
+
 グループのカスタムレビュー指示を設定するには:
 
 1. 上部のバーで**検索または移動先**を選択して、トップレベルグループを見つけます。
-1. 左サイドバーで、**設定** > **一般** > **GitLab Duoの機能**を選択します。
-1. **グループのカスタムレビュー指示**の下で、グループのレビュー指示が記述された`.gitlab/duo/mr-review-instructions.yaml`ファイルを含むプロジェクトを選択します。
+1. 左側のサイドバーで、**設定** > **一般** > **GitLab Duoの機能**を選択します。
+1. **コードレビューをカスタマイズ**で、グループのレビュー指示が記述された`.gitlab/duo/mr-review-instructions.yaml`ファイルを含むプロジェクトを選択します。
+1. **変更を保存**を選択します。
+
+## インスタンスのカスタムレビュー指示を設定する {#configure-custom-review-instructions-for-an-instance}
+
+{{< details >}}
+
+- 提供形態: GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- GitLab 19.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237573)されました。
+
+{{< /history >}}
+
+GitLab Self-ManagedおよびGitLab Dedicatedでは、テンプレートとして使用するプロジェクトを指定することで、インスタンス全体に適用されるカスタムレビュー指示を定義できます。テンプレートプロジェクトには、インスタンス上のすべてのプロジェクトに適用されるレビュー指示を含む`.gitlab/duo/mr-review-instructions.yaml`ファイルが必要です。
+
+GitLab Duoがコードレビューを実行する際、インスタンスの指示をグループおよびプロジェクトの指示と組み合わせます。
+
+前提条件: 
+
+- インスタンスの管理者アクセス。
+- インスタンス上のプロジェクトに、テンプレートとして使用するカスタムレビュー指示が含まれている。
+
+  > [!warning]
+  > `mr-review-instructions.yaml`に機密情報や秘匿情報を保存しないでください。インスタンスのマージリクエストを表示できるユーザーは、ファイルを含むプロジェクトへのアクセス権がなくても、インスタンスレビュー指示にアクセスできます。
+
+インスタンスのカスタムレビュー指示を設定するには:
+
+1. 右上隅で、**管理者**を選択します。
+1. 左側のサイドバーで、**GitLab Duo**を選択します。
+1. **設定の変更**を選択します。
+1. **このインスタンス内のすべてのグループに対する、コードレビューをカスタマイズ**で、レビュー指示が記述された`.gitlab/duo/mr-review-instructions.yaml`ファイルを含むプロジェクトを選択します。
 1. **変更を保存**を選択します。
 
 ## ベストプラクティス {#best-practices}

@@ -13,9 +13,9 @@ title: リポジトリミラーリングのトラブルシューティング
 
 {{< /details >}}
 
-ミラーリングが失敗した場合、GitLabはプロジェクトの詳細ページに警告を表示します。例えば: {{< icon name="warning-solid" >}} **Pull mirroring failed 1 hour ago.** 警告テキストを選択して、**リポジトリのミラーリング**設定に移動します。
+ミラーリングが失敗した場合、GitLabはプロジェクトの詳細ページに警告を表示します。例: {{< icon name="warning-solid" >}} **1時間前にプルミラーリングが失敗しました。**警告テキストを選択して、**リポジトリのミラーリング**設定に移動します。
 
-影響を受けるリポジトリの横に、GitLabは**エラー**バッジを表示します。エラーメッセージを表示するには、バッジにカーソルを合わせるます。エラーメッセージには、認証の失敗や分岐したブランチなど、一般的な問題に関する具体的な詳細が含まれています。その他のエラーは、Git操作から直接発生する可能性があります。
+影響を受けるリポジトリの横に、GitLabは**エラー**バッジを表示します。エラーメッセージを表示するには、バッジにカーソルを合わせます。エラーメッセージには、認証の失敗や分岐したブランチなど、一般的な問題に関する具体的な詳細が含まれています。その他のエラーは、Git操作から直接発生する可能性があります。
 
 ## GitHubでエラーコード2のRST_STREAMを受信しました {#received-rst_stream-with-error-code-2-with-github}
 
@@ -29,7 +29,7 @@ GitHubリポジトリへミラーリング中にこのメッセージが表示�
 
 1. GitHubの設定で、コミットで使用されているメールアドレスを公開するプッシュをブロックするように設定されている可能性があります。この問題を修正するには、次のいずれかを実行します:
    - GitHubのメールアドレスを公開に設定します。
-   - [**Block command line pushes that expose my email**](https://github.com/settings/emails)設定をオフにします。
+   - [**メールアドレスを公開するコマンドラインプッシュをブロックする**](https://github.com/settings/emails)設定をオフにします。
 1. リポジトリがGitHubのファイルサイズ制限100 MBを超過しています。この問題を修正するには、GitHubで設定されているファイルサイズ制限を確認し、大きなファイルを管理するために[Git Large File Storage（LFS）](https://git-lfs.com/)の使用を検討してください。
 
 ## 期限超過 {#deadline-exceeded}
@@ -44,7 +44,7 @@ GitLabとリモートリポジトリ間の接続がブロックされていま�
 
 ## ユーザー名を読み取れませんでした: ターミナルプロンプトが無効になっています {#could-not-read-username-terminal-prompts-disabled}
 
-[外部リポジトリのGitLab CI/CD](../../../../ci/ci_cd_for_external_repos/_index.md)を使用して新しいプロジェクトを作成した後にこのエラーが表示される場合:
+[外部リポジトリ用のGitLab CI/CD](../../../../ci/ci_cd_for_external_repos/_index.md)を使用して新しいプロジェクトを作成した後にこのエラーが表示される場合:
 
 - Bitbucket Cloudの場合:
 
@@ -53,7 +53,7 @@ GitLabとリモートリポジトリ間の接続がブロックされていま�
   terminal prompts disabled\n": exit status 128."
   ```
 
-- Bitbucket Server (セルフホスト)の場合:
+- Bitbucket Server（セルフホスト）の場合:
 
   ```plaintext
   "2:fetch remote: "fatal: could not read Username for 'https://lab.example.com':
@@ -65,7 +65,7 @@ GitLabとリモートリポジトリ間の接続がブロックされていま�
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. 左側のサイドバーで、**設定** > **リポジトリ**を選択します。
 1. **リポジトリのミラーリング**を展開します。
-1. リポジトリオーナーが指定されていない場合は、`OWNER`、`ACCOUNTNAME`、`PATH_TO_REPO`、および`REPONAME`をあなたの値に置き換えて、この形式でURLを削除して再度追加してください:
+1. リポジトリオーナーが指定されていない場合は、`OWNER`、`ACCOUNTNAME`、`PATH_TO_REPO`、および`REPONAME`を自分の値に置き換えて、この形式でURLを削除して再度追加してください:
 
    - Bitbucket Cloudの場合:
 
@@ -73,7 +73,7 @@ GitLabとリモートリポジトリ間の接続がブロックされていま�
      https://OWNER@bitbucket.org/ACCOUNTNAME/REPONAME.git
      ```
 
-   - Bitbucket Server (セルフホスト)の場合:
+   - Bitbucket Server（セルフホスト）の場合:
 
      ```plaintext
      https://OWNER@lab.example.com/PATH_TO_REPO/REPONAME.git
@@ -114,7 +114,7 @@ GitLab: GitLab: LFS objects are missing. Ensure LFS is properly set up or try a 
 
 ## `The repository is being updated`が、目に見えて失敗することも成功することもない {#the-repository-is-being-updated-but-neither-fails-nor-succeeds-visibly}
 
-まれに、Redis上のミラーリングスロットが使い果たされることがあります。これは、メモリ不足 (OoM) イベントによりSidekiqワーカーが再利用されるためと考えられます。これが発生すると、ミラーリングジョブはすぐに開始して完了しますが、失敗も成功もどちらもせず、目に見える形では結果が分かりません。また、明確なログも残りません。この問題を確認するには:
+まれに、Redis上のミラーリングスロットが使い果たされることがあります。これは、メモリ不足（OoM）イベントによりSidekiqワーカーが再利用されるためと考えられます。これが発生すると、ミラーリングジョブはすぐに開始して完了しますが、失敗も成功もどちらもせず、目に見える形では結果が分かりません。また、明確なログも残りません。この問題を確認するには:
 
 1. [Railsコンソール](../../../../administration/operations/rails_console.md)に入り、Redisのミラーリング容量を確認してください:
 
@@ -138,7 +138,7 @@ GitLab: GitLab: LFS objects are missing. Ensure LFS is properly set up or try a 
 
 [SSH](_index.md#ssh-authentication)経由でミラーリングを設定中にこのエラーが表示される場合は、URLが有効な形式であることを確認してください。
 
-ミラーリングは、ホストとプロジェクトパスが`:`で区切られた`git@gitlab.com:gitlab-org/gitlab.git`のようなSCP形式のクローンURLをサポートしていません。`ssh://`プロトコルを含む[標準URL](https://git-scm.com/docs/git-clone#_git_urls)が必要です。`ssh://git@gitlab.com/gitlab-org/gitlab.git`のように。
+ミラーリングは、ホストとプロジェクトパスが`:`で区切られた`git@gitlab.com:gitlab-org/gitlab.git`のようなSCP形式のクローンURLをサポートしていません。`ssh://`プロトコルを含む[標準URL](https://git-scm.com/docs/git-clone#_git_urls)を指定する必要があります。例: `ssh://git@gitlab.com/gitlab-org/gitlab.git`。
 
 ## ホストキー認証に失敗しました {#host-key-verification-failed}
 
@@ -167,7 +167,7 @@ To re-enable mirroring, update your repository mirroring settings.
 ユースケース: 複数のユーザーが自身のGitHub認証情報を使用してリポジトリのミラーリングを設定している場合、従業員が退職するとミラーリングが機能しなくなります。このスクリプトを使用して、異なるミラーリングユーザーとトークンを単一のサービスアカウントに移行することができます:
 
 > [!warning]
-> データを変更するコマンドは、正しく実行されない場合や適切な条件下で実行されない場合に、損害を引き起こす可能性があります。最初にテスト環境でコマンドを実行し、復元できるバックアップインスタンスを準備してください。
+> データを変更するコマンドは、正しく実行されない場合や適切な条件下でない場合に損傷を引き起こす可能性があります。最初にテスト環境でコマンドを実行し、復元できるバックアップインスタンスを準備してください。
 
 ```ruby
 svc_user = User.find_by(username: 'ourServiceUser')
@@ -274,8 +274,48 @@ curl --silent --dump-header - "$GIT_URL/info/refs?service=git-upload-pack"\
 
 これを解決するには、次のいずれかを実行します:
 
-- ソースリポジトリを「スマート」サーバーに移行するます。
+- ソースリポジトリを「スマート」サーバーに移行します。
 - [SSH](_index.md#ssh-authentication)プロトコルを使用してリポジトリをミラーします（認証が必要です）。
+
+## プルミラーリングが`Could not update main`で失敗します {#pull-mirroring-fails-with-could-not-update-main}
+
+次のようなエラーが発生する可能性があります:
+
+- `9:Could not update main. Please refresh and try again.`
+
+これは、宛先リポジトリが完全に空でない場合、最初のプルミラー更新中に発生する可能性があります。
+
+たとえば、宛先リポジトリにはすでに次のものが含まれている可能性があります:
+
+- 最初のReadmeコミット。
+- ライセンスまたは`.gitignore`。
+- 既存のブランチまたはタグ。
+
+この問題を解決するには、次の手順に従います:
+
+1. 宛先リポジトリを空のリポジトリとして再作成します。
+1. リポジトリがソースリポジトリとs同じオブジェクト形式を使用していることを確認してください。
+1. リポジトリをReadme、ライセンス、または`.gitignore`で初期化しないでください。
+1. プルミラーリングを再度設定し、**今すぐ更新**を実行します。
+
+回避策として、既存の宛先リポジトリを保持する必要がある場合は、**分岐したブランチを上書き**を有効にし、ミラーリングユーザーがターゲットブランチを上書きする権限を持っていることを確認してください。
+
+## エラー: `mismatched algorithms` {#error-mismatched-algorithms}
+
+次のようなエラーが発生する可能性があります:
+
+```plaintext
+13:fetch remote: "fatal: mismatched algorithms: client sha1; server sha256": exit status 128.
+```
+
+このエラーは、ソースと宛先のリポジトリが異なるオブジェクト形式を使用している場合、および異なるオブジェクト形式を使用するリポジトリ間ではプルミラーリングがサポートされていない場合に発生します。
+
+例: 
+
+- ソースリポジトリはSHA-1を使用します。
+- 宛先リポジトリはSHA-256を使用します。またはその逆です。
+
+この問題を解決するには、宛先リポジトリをソースリポジトリと同じオブジェクト形式で再作成し、再度ミラーリングを設定します。
 
 ## エラー: `File directory conflict` {#error-file-directory-conflict}
 
