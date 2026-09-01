@@ -254,10 +254,10 @@ table.package-managers-and-types ul {
       <td><a href="https://setuptools.pypa.io/en/latest/">Setuptools</a></td>
     </tr>
     <tr>
-      <td><a href="https://pip.pypa.io/en/stable">pip</a></td>
+      <td><a href="https://pip.pypa.io/en/stable/">pip</a></td>
     </tr>
     <tr>
-      <td><a href="https://pipenv.pypa.io/en/latest">Pipenv</a></td>
+      <td><a href="https://pipenv.pypa.io/en/latest/">Pipenv</a></td>
     </tr>
     <tr>
       <td><a href="https://python-poetry.org/">Poetry</a></td>

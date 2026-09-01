@@ -1,0 +1,10 @@
+---
+name: duo_flow_callback_hooks
+description: Allows a project or group webhook to be used as a Duo flow callback endpoint, delivering flow lifecycle events (flow.started/flow.progress/flow.completed/flow.failed) to hooks that have duo_flow_callback_enabled set.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/606804
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249147
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608649
+milestone: '19.4'
+group: group::agent developer
+type: wip
+default_enabled: false

@@ -278,7 +278,7 @@ You can also use or adapt the [MyPy CI/CD component](https://gitlab.com/explore/
 
 #### Flake8
 
-If you already have a [Flake8](https://flake8.pycqa.org/) job in your CI/CD pipelines, you should add a report to send its output to Code Quality.
+If you already have a [Flake8](https://flake8.pycqa.org/en/latest/) job in your CI/CD pipelines, you should add a report to send its output to Code Quality.
 To integrate its output:
 
 1. Install [`flake8-gl-codeclimate`](https://github.com/awelzel/flake8-gl-codeclimate) as a dependency in your project.

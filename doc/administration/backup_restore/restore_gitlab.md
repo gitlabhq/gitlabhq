@@ -508,6 +508,12 @@ For example:
 
 ### Restore specific repositories
 
+{{< history >}}
+
+- `SKIP_REPOSITORIES_PATHS` restore [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/610910) in GitLab 19.4 to no longer remove repositories excluded from the backup.
+
+{{< /history >}}
+
 > [!warning]
 > GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412)
 > that can cause data loss. The problem affects repositories that have been forked and use GitLab
@@ -525,6 +531,15 @@ Both the groups and projects must exist in the specified backup or on the target
 > They do not apply to project or group database entries. If you created a repositories backup
 > with `SKIP=db`, by itself it cannot be used to restore specific repositories to a new instance.
 
+Setting either `REPOSITORIES_PATHS` or `SKIP_REPOSITORIES_PATHS` restores only specific
+repositories. During this kind of restore, repositories that already exist on the instance are not
+removed. You can therefore run several of these restores one after another, without a later restore
+removing the repositories that an earlier one restored.
+
+A full restore, where neither option is specified, instead removes any repository that is not part
+of the backup being restored. This clears stale repositories, for example repositories belonging to
+projects that were created after the backup was taken.
+
 For example, to restore all repositories for all projects in Group A (`group-a`), the repository for
 Project C in Group B (`group-b/project-c`), and skip the Project D in Group A (`group-a/project-d`):
 
@@ -538,6 +553,21 @@ Project C in Group B (`group-b/project-c`), and skip the Project D in Group A (`
 
   ```shell
   sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=<backup-id> REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
+  ```
+
+To restore everything in the backup except the repositories for Project D in Group A
+(`group-a/project-d`):
+
+- Linux package installations:
+
+  ```shell
+  sudo gitlab-backup restore BACKUP=<backup-id> SKIP_REPOSITORIES_PATHS=group-a/project-d
+  ```
+
+- Self-compiled installations:
+
+  ```shell
+  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=<backup-id> SKIP_REPOSITORIES_PATHS=group-a/project-d
   ```
 
 ### Restore untarred backups

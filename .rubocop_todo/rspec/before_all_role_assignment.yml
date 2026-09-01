@@ -1,6 +1,5 @@
 ---
 RSpec/BeforeAllRoleAssignment:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/ee/groups/usage_quotas_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/issues_controller_spec.rb'
@@ -115,7 +114,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/graphql/resolvers/epics/children_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/epics/default_project_for_issue_creation_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/incident_management/issuable_resource_links_resolver_spec.rb'
-    - 'ee/spec/graphql/resolvers/security_orchestration/scan_execution_policy_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/vulnerabilities/container_images_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/vulnerabilities/scanners_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/vulnerabilities_count_per_day_resolver_spec.rb'
@@ -617,7 +615,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/services/authorized_project_update/project_recalculate_service_spec.rb'
     - 'spec/services/bulk_imports/create_service_spec.rb'
     - 'spec/services/ci/create_pipeline_service_spec.rb'
-    - 'spec/services/ci/create_web_ide_terminal_service_spec.rb'
     - 'spec/services/ci/runners/assign_runner_service_spec.rb'
     - 'spec/services/cloud_seed/google_cloud/generate_pipeline_service_spec.rb'
     - 'spec/services/error_tracking/list_projects_service_spec.rb'
@@ -633,7 +630,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/services/members/update_service_spec.rb'
     - 'spec/services/notification_service_spec.rb'
     - 'spec/services/projects/group_links/create_service_spec.rb'
-    - 'spec/services/projects/group_links/destroy_service_spec.rb'
     - 'spec/services/projects/transfer_service_spec.rb'
     - 'spec/services/quick_actions/interpret_service_spec.rb'
     - 'spec/services/security/ci_configuration/sast_create_service_spec.rb'

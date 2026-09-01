@@ -39,6 +39,12 @@ Each list item points to a specific section that holds more information.
 Items marked with an installation method, like `(Geo)` or `(Linux package)`,
 apply only to that method. All other items apply to all installation methods.
 
+### Upgrade to 19.4
+
+Before upgrading to GitLab 19.4, review the following:
+
+- [19.4.0] - [Restores that use `SKIP_REPOSITORIES_PATHS` keep existing repositories](#restores-that-use-skip_repositories_paths-keep-existing-repositories)
+
 ### Upgrade to 19.2
 
 Before upgrading to GitLab 19.2, review the following:
@@ -67,6 +73,32 @@ Before upgrading to GitLab 19.0, review the following:
 ## Upgrade notes
 
 Specific upgrade notes for GitLab 19.
+
+### Restores that use `SKIP_REPOSITORIES_PATHS` keep existing repositories
+
+- Affects: All installation methods
+- Affected versions: 19.4.0
+
+In GitLab 19.4 and later, a restore keeps the repositories that are already on the instance when
+`SKIP_REPOSITORIES_PATHS` excludes repositories from that restore. This applies both when you
+specify the option for the restore and when the backup was created with it, including backups
+created on earlier versions, because the restore also reads the excluded paths from the backup
+manifest (`backup_information.yml`).
+
+Previously, in both cases, and unless `REPOSITORIES_PATHS` was also specified, the restore first
+removed all repositories in the storages it restored to. The excluded repositories were removed with
+them, and because they were also left out of the restore itself, that backup could not bring them
+back.
+
+A full restore, where neither `REPOSITORIES_PATHS` nor `SKIP_REPOSITORIES_PATHS` applies, still
+removes repositories that are not part of the backup.
+
+If your restore process relies on the previous behavior to clear repositories, run a full restore
+instead, or remove those repositories before the restore.
+
+For more information, see
+[restore specific repositories](../../administration/backup_restore/restore_gitlab.md#restore-specific-repositories)
+and [issue 610910](https://gitlab.com/gitlab-org/gitlab/-/issues/610910).
 
 ### GitLab Duo Self-Hosted AI Gateway URLs cleared after upgrade
 

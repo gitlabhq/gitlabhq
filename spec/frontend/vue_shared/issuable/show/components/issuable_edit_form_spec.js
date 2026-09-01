@@ -40,7 +40,7 @@ const createComponent = ({ propsData = issuableEditFormProps } = {}) =>
 describe('IssuableEditForm', () => {
   let wrapper;
   const assertEvent = (eventSpy) => {
-    expect(eventSpy).toHaveBeenNthCalledWith(1, 'update.issuable', expect.any(Function));
+    expect(eventSpy).toHaveBeenNthCalledWith(1, 'update-issuable', expect.any(Function));
     expect(eventSpy).toHaveBeenNthCalledWith(2, 'close-form', expect.any(Function));
   };
 
@@ -96,7 +96,7 @@ describe('IssuableEditForm', () => {
   });
 
   describe('created', () => {
-    it('binds `update.issuable` and `close-form` event listeners', () => {
+    it('binds `update-issuable` and `close-form` event listeners', () => {
       const eventOnSpy = jest.spyOn(IssuableEventHub, '$on');
       const wrapperTemp = createComponent();
 
@@ -107,7 +107,7 @@ describe('IssuableEditForm', () => {
   });
 
   describe('beforeDestroy', () => {
-    it('unbinds `update.issuable` and `close-form` event listeners', () => {
+    it('unbinds `update-issuable` and `close-form` event listeners', () => {
       const wrapperTemp = createComponent();
       const eventOffSpy = jest.spyOn(IssuableEventHub, '$off');
 
@@ -125,11 +125,11 @@ describe('IssuableEditForm', () => {
     });
 
     describe('resetAutosave', () => {
-      it('resets title on "update.issuable event"', () => {
+      it('resets title on `update-issuable`', () => {
         const clearDescriptionAutosaveSpy = jest.fn();
         markdownEditorEventHub.$on(CLEAR_AUTOSAVE_ENTRY_EVENT, clearDescriptionAutosaveSpy);
 
-        IssuableEventHub.$emit('update.issuable');
+        IssuableEventHub.$emit('update-issuable');
         expect(Autosave.prototype.reset).toHaveBeenCalled();
         expect(clearDescriptionAutosaveSpy).toHaveBeenCalled();
       });

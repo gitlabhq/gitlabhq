@@ -347,6 +347,7 @@ Arguments:
 | <a id="query-aicatalogconfigureditems-itemtype"></a>`itemType` | [`AiCatalogItemType`](#aicatalogitemtype) | Type of items to retrieve. |
 | <a id="query-aicatalogconfigureditems-itemtypes"></a>`itemTypes` | [`[AiCatalogItemType!]`](#aicatalogitemtype) | Types of items to retrieve. |
 | <a id="query-aicatalogconfigureditems-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Project ID to retrieve configured AI Catalog items for. |
+| <a id="query-aicatalogconfigureditems-sort"></a>`sort` | [`AiCatalogConfiguredItemsSort`](#aicatalogconfigureditemssort) | Sort configured items, for example by usage. |
 
 ### `Query.aiCatalogCustomAndFoundationalItems`
 
@@ -35066,6 +35067,7 @@ Arguments:
 | <a id="analytics-deployments-finishedatto"></a>`finishedAtTo` | [`Time`](#time) | Filter by deployment finish timestamp. End of the range. |
 | <a id="analytics-deployments-ref"></a>`ref` | [`[String!]`](#string) | Filter by one or many deployment refs. |
 | <a id="analytics-deployments-status"></a>`status` | [`[String!]`](#string) | Filter by one or many deployment statuses. |
+| <a id="analytics-deployments-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
 
 ##### `Analytics.duoCodeSuggestions`
 
@@ -35459,6 +35461,46 @@ Fields:
 | <a id="artifactregistryrepositorydetails-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Storage the repository occupies, in bytes. Buffered, so it can lag. |
 | <a id="artifactregistryrepositorydetails-updatedby"></a>`updatedBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who last changed the repository. Null when the editor is unknown or no longer exists. |
 | <a id="artifactregistryrepositorydetails-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryVisibility!`](#artifactregistryrepositoryvisibility) | Introduced in GitLab 19.3. Status: Experiment. Who can read the repository. |
+
+#### Fields with arguments
+
+##### `ArtifactRegistryRepositoryDetails.image`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Single container image the repository holds, by Artifact Registry ID. Can be selected once per operation. Returns `null` for a repository holding packages and for an image that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx.
+
+Returns [`ArtifactRegistryImage`](#artifactregistryimage).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryrepositorydetails-image-id"></a>`id` | [`ID!`](#id) | ID of the image in Artifact Registry. |
+
+##### `ArtifactRegistryRepositoryDetails.package`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Single package the repository holds, by Artifact Registry ID. Can be selected once per operation. Returns `null` for a repository holding images and for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx.
+
+Returns [`ArtifactRegistryPackage`](#artifactregistrypackage).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryrepositorydetails-package-id"></a>`id` | [`ID!`](#id) | ID of the package in Artifact Registry. |
 
 ### `ArtifactRegistryRoleAssignment`
 
@@ -41549,6 +41591,7 @@ Fields:
 | <a id="deploymentsaggregationresponsedimensions-environment"></a>`environment` | [`Environment`](#environment) | Environment ID. |
 | <a id="deploymentsaggregationresponsedimensions-ref"></a>`ref` | [`String`](#string) | Deployment ref. |
 | <a id="deploymentsaggregationresponsedimensions-status"></a>`status` | [`String`](#string) | Deployment status. |
+| <a id="deploymentsaggregationresponsedimensions-user"></a>`user` | [`UserCore`](#usercore) | User who created the deployment. Returns `null` if there is no recorded creator, or if that user has been deleted. |
 
 #### Fields with arguments
 
@@ -65945,6 +65988,15 @@ Permission mode for an AI tool on the background-flow surface. `ask` is not avai
 | ----- | ----------- |
 | <a id="aibackgroundtoolpermission-allow"></a>`ALLOW` | Tool is always allowed to run without approval. |
 | <a id="aibackgroundtoolpermission-deny"></a>`DENY` | Tool is always blocked from running. |
+
+### `AiCatalogConfiguredItemsSort`
+
+Values for sorting configured AI Catalog items.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogconfigureditemssort-usage_count_asc"></a>`USAGE_COUNT_ASC` | Last 30-day usage count by ascending order. |
+| <a id="aicatalogconfigureditemssort-usage_count_desc"></a>`USAGE_COUNT_DESC` | Last 30-day usage count by descending order. |
 
 ### `AiCatalogFlowConfigType`
 

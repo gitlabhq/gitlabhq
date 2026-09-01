@@ -383,7 +383,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/features/groups/show_spec.rb'
     - 'spec/features/invites_spec.rb'
     - 'spec/features/merge_request/user_sees_merge_widget_spec.rb'
-    - 'spec/features/projects/files/user_browses_files_spec.rb'
     - 'spec/features/projects/files/user_creates_directory_spec.rb'
     - 'spec/features/projects/files/user_creates_files_spec.rb'
     - 'spec/features/projects/files/user_deletes_files_spec.rb'

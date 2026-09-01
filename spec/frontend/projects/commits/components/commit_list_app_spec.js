@@ -18,6 +18,7 @@ import BaseLayout from '~/vue_shared/components/base_layout.vue';
 import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import commitsQuery from '~/projects/commits/graphql/queries/commits.query.graphql';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 import {
   TOKEN_TYPE_COMMITTED_AFTER,
   TOKEN_TYPE_COMMITTED_BEFORE,
@@ -316,6 +317,61 @@ describe('CommitListApp', () => {
           message: 'Something went wrong while loading commits. Please try again.',
           captureError: true,
         }),
+      );
+    });
+  });
+
+  describe('performance instrumentation', () => {
+    it('marks the fetch start synchronously when the query starts loading', () => {
+      createComponent();
+
+      expect(performanceMarkAndMeasure).toHaveBeenCalledWith({
+        sync: true,
+        mark: 'commit-list-fetching-data',
+      });
+    });
+
+    it('marks the render start and measures the data fetch when the query resolves', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(performanceMarkAndMeasure).toHaveBeenCalledWith({
+        sync: true,
+        mark: 'commit-list-rendering-data',
+        measures: [
+          {
+            name: 'Commit List: Data fetch',
+            start: 'commit-list-fetching-data',
+            end: 'commit-list-rendering-data',
+          },
+        ],
+      });
+    });
+
+    it('marks the rendered point synchronously and measures the render after the DOM updates', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(performanceMarkAndMeasure).toHaveBeenCalledWith({
+        sync: true,
+        mark: 'commit-list-data-rendered',
+        measures: [
+          {
+            name: 'Commit List: Render',
+            start: 'commit-list-rendering-data',
+            end: 'commit-list-data-rendered',
+          },
+        ],
+      });
+    });
+
+    it('does not instrument the fetch again when the render mark already exists', async () => {
+      window.performance.getEntriesByName = jest.fn().mockReturnValue([{}]);
+      createComponent();
+      await waitForPromises();
+
+      expect(performanceMarkAndMeasure).not.toHaveBeenCalledWith(
+        expect.objectContaining({ mark: 'commit-list-rendering-data' }),
       );
     });
   });

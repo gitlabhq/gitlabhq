@@ -29,12 +29,12 @@ describe('Title field component', () => {
   it('triggers update with meta+enter', () => {
     findInput().trigger('keydown.enter', { metaKey: true });
 
-    expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
+    expect(eventHub.$emit).toHaveBeenCalledWith('update-issuable');
   });
 
   it('triggers update with ctrl+enter', () => {
     findInput().trigger('keydown.enter', { ctrlKey: true });
 
-    expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
+    expect(eventHub.$emit).toHaveBeenCalledWith('update-issuable');
   });
 });

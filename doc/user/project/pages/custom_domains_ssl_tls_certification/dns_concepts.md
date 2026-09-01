@@ -41,7 +41,7 @@ For the most popular hosting services, see the following instructions:
 - [Cloudflare](https://developers.cloudflare.com/fundamentals/account/)
 - [cPanel](https://docs.cpanel.net/cpanel/domains/zone-editor/)
 - [DigitalOcean](https://docs.digitalocean.com/products/networking/dns/how-to/manage-records/)
-- [DreamHost](https://help.dreamhost.com/hc/en-us/articles/360035516812)
+- [DreamHost](https://help.dreamhost.com/hc/en-us/articles/360035516812-Adding-custom-DNS-records)
 - [Gandi](https://docs.gandi.net/en/domain_names/faq/dns_records.html)
 - [Go Daddy](https://www.godaddy.com/help/add-an-a-record-19238)
 - [Hostgator](https://www.hostgator.com/help/article/changing-dns-records)

@@ -17,7 +17,7 @@ instruct Claude to create an issue in your GitLab instance.
 - Allow access to the MCP server:
   - On GitLab.com, [for the top-level group](../../user/group/access_and_permissions.md#allow-access-to-the-mcp-server).
   - On GitLab Self-Managed and GitLab Dedicated, [for the instance](../../administration/settings/visibility_and_access_controls.md#allow-access-to-the-mcp-server).
-- Install [Claude Desktop](https://support.claude.com/en/articles/10065433-installing-claude-desktop) for your operating system.
+- Install [Claude Desktop](https://support.claude.com/en/articles/10065433-install-claude-desktop) for your operating system.
 - Install Node.js version 20 or later.
   Have Node.js available globally in the `PATH` environment variable (`which -a node`).
 - Have at least one active project where you can create an issue.

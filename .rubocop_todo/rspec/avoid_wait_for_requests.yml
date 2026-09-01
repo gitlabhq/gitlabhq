@@ -418,7 +418,6 @@ RSpec/AvoidWaitForRequests:
     - 'spec/features/work_items/issues/user_sees_live_update_spec.rb'
     - 'spec/features/work_items/issues/user_toggles_subscription_spec.rb'
     - 'spec/features/work_items/issues/user_uploads_file_to_note_spec.rb'
-    - 'spec/features/work_items/list/user_applies_work_items_list_filters_spec.rb'
     - 'spec/features/work_items/list/user_bulk_edits_work_items_spec.rb'
     - 'spec/features/work_items/list/user_manage_saved_views_list_spec.rb'
     - 'spec/features/work_items/list/user_resets_their_incoming_email_token_spec.rb'

@@ -228,9 +228,9 @@ To add links to other accounts:
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Main settings** section, add your:
-   - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
+   - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID).
    - BlueSky [`did:plc` identifier](https://atproto.com/specs/did). To find your identifier, [resolve your user handle](https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=USER_HANDLE).
-   - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
+   - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID).
    - GitHub username.
    - LinkedIn profile name.
    - [Mastodon handle](#add-a-mastodon-handle).

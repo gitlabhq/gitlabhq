@@ -162,6 +162,9 @@ To create a permalink:
 1. Select **Actions** ({{< icon name="ellipsis_v" >}}), then select **Copy Permalink**.
    Alternatively, press <kbd>y</kbd>. For more shortcuts, see [keyboard shortcuts](../../../shortcuts.md).
 
+When you paste a permalink to lines of a file in a comment or description, GitLab can
+[embed the code](../../../markdown.md#embed-code-from-a-repository) instead of the link.
+
 ## View open merge requests for a file
 
 {{< history >}}

@@ -41984,6 +41984,9 @@ msgstr ""
 msgid "IdentityVerification|The code is incorrect. Enter it again, or send a new code."
 msgstr ""
 
+msgid "IdentityVerification|This step is separate from the verification you completed during registration."
+msgstr ""
+
 msgid "IdentityVerification|To stop using this email with your GitLab account, remove it in your %{account_settings_link_start}account settings%{link_end}."
 msgstr ""
 
@@ -42017,6 +42020,9 @@ msgstr ""
 msgid "IdentityVerification|Verify email address"
 msgstr ""
 
+msgid "IdentityVerification|Verify identity"
+msgstr ""
+
 msgid "IdentityVerification|Verify my account"
 msgstr ""
 
@@ -42030,6 +42036,9 @@ msgid "IdentityVerification|Verify with a phone number instead?"
 msgstr ""
 
 msgid "IdentityVerification|Verify your identity"
+msgstr ""
+
+msgid "IdentityVerification|Verify your identity to run this pipeline"
 msgstr ""
 
 msgid "IdentityVerification|We received a request to access your GitLab account with your secondary email address %{user_secondary_email}."

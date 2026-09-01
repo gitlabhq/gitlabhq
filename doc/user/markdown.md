@@ -1540,6 +1540,76 @@ When rendered, the example looks similar to:
 > But let's throw in a <b>tag</b>.
 > ```
 
+## Embed code from a repository
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246838) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `blob_permalink_embed`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+When you paste a [permalink](project/repository/files/_index.md#create-permalinks) to lines of a file
+in a repository, GitLab replaces the link with a syntax-highlighted snippet of those lines.
+The embed header shows the path to the file and the lines the embed displays.
+To go to the file at that commit, select the header or a line number.
+
+To embed code from a repository:
+
+1. [Create a permalink](project/repository/files/_index.md#create-permalinks) to a single line, or to
+   a range of lines, in a file.
+1. Paste the permalink in a comment or description, in a paragraph of its own.
+
+For example:
+
+```markdown
+The external URL is configured here:
+
+https://gitlab.com/gitlab-org/gitlab/-/blob/d768310246d88433a5534576776939d81846f19e/config/gitlab.yml.example#L35-37
+```
+
+The permalink must:
+
+- Point to a project on the same GitLab instance.
+- Contain the full 40-character commit SHA. Links that use a branch or tag name are not embedded.
+- End with a line or line range anchor, like `#L27` or `#L27-30`.
+- Be the only content in its paragraph, and its link text must match its URL.
+  A permalink pasted as plain text meets both of these conditions.
+
+### Limits
+
+GitLab does not embed:
+
+- Ranges of more than 100 lines, or ranges that end after line 5000.
+- Ranges that start after the last line of the file.
+- Binary files, files larger than 10 MB, and files stored in [Git LFS](../topics/git/lfs/_index.md).
+- More than 10 embeds in a single Markdown document.
+
+If a range ends after the last line of the file, GitLab still embeds it, and the embed stops at the
+last line.
+
+### Cross-project permalinks
+
+A permalink to a different project is embedded only for users who can view the code in that project.
+Other users see the permalink instead, so you and the readers of your comment might not see the same
+content.
+
+### Email notifications
+
+GitLab embeds code in an email notification only when diff previews are turned on for both of the following:
+
+- The project or group the notification comes from.
+- The project the permalink points to.
+
+GitLab never embeds code in Service Desk emails. In these situations, the email shows the permalink
+instead. You can turn off diff previews for a
+[project](project/settings/_index.md#turn-off-diff-previews-in-project-email-notifications) or for
+[all projects in a group](group/manage.md#disable-diff-previews-in-email-notifications).
+
 ## Diagrams and flowcharts
 
 You can generate diagrams from text by using:

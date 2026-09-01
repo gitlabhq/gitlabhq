@@ -95,7 +95,7 @@ describe('Issuable output', () => {
   };
 
   const updateIssuable = () => {
-    return emitHubEvent('update.issuable');
+    return emitHubEvent('update-issuable');
   };
 
   const advanceToNextPoll = () => {

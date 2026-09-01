@@ -12913,6 +12913,29 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "AiCatalogConfiguredItemsSort",
+          "description": "Values for sorting configured AI Catalog items.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "USAGE_COUNT_ASC",
+              "description": "Last 30-day usage count by ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "USAGE_COUNT_DESC",
+              "description": "Last 30-day usage count by descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "UNION",
           "name": "AiCatalogCustomAndFoundationalItem",
           "description": "An AI catalog item, which is either a custom or foundational item",
@@ -32386,6 +32409,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "userId",
+                  "description": "Filter by one or many user Global IDs",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "createdAtFrom",
                   "description": "Filter by deployment creation timestamp. Start of the range.",
                   "type": {
@@ -37473,6 +37516,35 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
+              "name": "image",
+              "description": "Single container image the repository holds, by Artifact Registry ID. Can be selected once per operation. Returns `null` for a repository holding packages and for an image that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "ID of the image in Artifact Registry.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ArtifactRegistryImage",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "images",
               "description": "Images the repository holds. Can be selected once per operation, so one operation reads images for one repository. Returns `null` for a repository holding packages and for a repository that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
@@ -37576,6 +37648,35 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "package",
+              "description": "Single package the repository holds, by Artifact Registry ID. Can be selected once per operation. Returns `null` for a repository holding images and for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "ID of the package in Artifact Registry.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "UNION",
+                "name": "ArtifactRegistryPackage",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "packages",
@@ -132395,6 +132496,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "user",
+              "description": "User who created the deployment. Returns `null` if there is no recorded creator, or if that user has been deleted",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -349026,6 +349139,18 @@
                         "ofType": null
                       }
                     }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "sort",
+                  "description": "Sort configured items, for example by usage.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiCatalogConfiguredItemsSort",
+                    "ofType": null
                   },
                   "defaultValue": null,
                   "isDeprecated": false,

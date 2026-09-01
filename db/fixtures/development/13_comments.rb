@@ -3,6 +3,8 @@ require './spec/support/sidekiq_middleware'
 Gitlab::Seeder.quiet do
   Issue.find_each do |issue|
     project = issue.project
+    # Group-level work items have no project, so there is no project team to comment as.
+    next unless project
 
     project.team.users.each do |user|
       note_params = {

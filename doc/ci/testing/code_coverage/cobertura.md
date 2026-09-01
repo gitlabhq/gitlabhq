@@ -132,7 +132,7 @@ coverage-jdk11:
 
 ### Python example
 
-The following `.gitlab-ci.yml` example uses [pytest-cov](https://pytest-cov.readthedocs.io/)
+The following `.gitlab-ci.yml` example uses [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/)
 to collect test coverage data:
 
 ```yaml

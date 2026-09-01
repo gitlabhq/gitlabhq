@@ -3641,7 +3641,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_24bfaf02a0f1"
+              "$ref": "#/components/schemas/RequestBody_2ac715ce5351"
       x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/workflows/agent_privileges":
     get:
@@ -97512,7 +97512,7 @@ components:
           description: The ID or path of the project
           example: '1'
           nullable: true
-    RequestBody_24bfaf02a0f1:
+    RequestBody_2ac715ce5351:
       type: object
       properties:
         project_id:
@@ -97638,6 +97638,21 @@ components:
           - convert_platform_ci_pipeline
           description: Where the session was triggered from
           nullable: true
+        callback_hook_id:
+          type: integer
+          description: ID of a webhook with GitLab Duo flow callbacks enabled. When
+            provided, GitLab POSTs flow lifecycle events to that webhook so the client
+            does not have to poll. The hook must belong to the project or namespace
+            the flow runs in, or to one of its ancestor groups.
+          example: 42
+          nullable: true
+        client_reference:
+          type: string
+          description: An opaque string echoed back in every callback payload, useful
+            for correlating callbacks to the triggering request.
+          example: autoflow-run-abc123
+          nullable: true
+          maxLength: 255
     RequestBody_7139042d9372:
       type: object
       properties:

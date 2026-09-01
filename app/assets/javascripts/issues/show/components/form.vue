@@ -103,14 +103,14 @@ export default {
     },
   },
   created() {
-    eventHub.$on('update.issuable', this.resetAutosave);
+    eventHub.$on('update-issuable', this.resetAutosave);
     eventHub.$on('close-form', this.resetAutosave);
   },
   mounted() {
     this.initAutosave();
   },
   beforeDestroy() {
-    eventHub.$off('update.issuable', this.resetAutosave);
+    eventHub.$off('update-issuable', this.resetAutosave);
     eventHub.$off('close-form', this.resetAutosave);
   },
   methods: {

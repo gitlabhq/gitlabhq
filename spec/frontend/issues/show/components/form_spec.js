@@ -148,7 +148,7 @@ describe('Inline edit form component', () => {
 
       expect(clearDraft).toHaveBeenCalledTimes(2);
 
-      eventHub.$emit('update.issuable');
+      eventHub.$emit('update-issuable');
 
       expect(clearDraft).toHaveBeenCalledTimes(4);
     });

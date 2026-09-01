@@ -191,7 +191,7 @@ Provide GitLab Support with:
 - Your GitLab.com username.
 - Optional. The `X-Request-Id` response header for the failed `GET`
   request to `https://gitlab.com/-/jira_connect/installations`.
-- Optional. [A HAR file](https://support.zendesk.com/hc/en-us/articles/4408828867098-Generating-a-HAR-file-for-troubleshooting)
+- Optional. [A HAR file](https://support.zendesk.com/hc/en-us/articles/4408828867098-Workflow-Generating-a-HAR-file-for-troubleshooting)
   you've processed with [`harcleaner`](https://gitlab.com/gitlab-com/support/toolbox/harcleaner) that captures the issue.
 
 GitLab Support can then investigate the issue in the GitLab.com server logs.

@@ -166,12 +166,17 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       dependent_value = association.options[:dependent]
 
       expect(dependent_value).not_to be_nil,
-        "Association #{association.name} should have a dependent clause " \
-          "(either :destroy, :nullify, :delete_all, or :delete)"
+        "Association #{association.name} has no dependent clause. This check prevents orphaned " \
+          "rows and slow user deletion (epic https://gitlab.com/groups/gitlab-org/-/epics/19085). " \
+          "Fix by adding dependent: (:destroy, :nullify, :delete_all, or :delete) to the " \
+          "association, or, if that genuinely doesn't apply, add :#{association.name} to " \
+          "existing_associations_without_dependent in " \
+          "spec/support/shared_examples/models/user_shared_examples.rb with a comment explaining why."
 
       expect([:destroy, :nullify, :delete_all, :delete]).to include(dependent_value),
-        "Association #{association.name} has dependent: #{dependent_value}, " \
-          "but should be one of: :destroy, :nullify, :delete_all, or :delete"
+        "Association #{association.name} has dependent: #{dependent_value}, but must be one of " \
+          ":destroy, :nullify, :delete_all, or :delete " \
+          "(see epic https://gitlab.com/groups/gitlab-org/-/epics/19085 for why)."
     end
   end
 
@@ -229,10 +234,14 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       end
 
       expect(tables_without_associations).to be_empty,
-        "Found tables with foreign keys to users but no " \
-          "corresponding associations in User model: " \
+        "Found table(s) with a foreign key to users but no corresponding User association: " \
           "#{tables_without_associations.join(', ')}.\n" \
-          "Consider adding appropriate associations with dependent clauses to prevent orphaned records."
+          "This check prevents orphaned rows and slow user deletion " \
+          "(epic https://gitlab.com/groups/gitlab-org/-/epics/19085). If your merge request added " \
+          "this, fix by either adding a has_many/has_one association on User with a dependent: " \
+          "clause, or, if that genuinely doesn't apply, adding the table name to " \
+          "tables_with_known_missing_associations in " \
+          "spec/support/shared_examples/models/user_shared_examples.rb with a comment explaining why."
     end
   end
 end

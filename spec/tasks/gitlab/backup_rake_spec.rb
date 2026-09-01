@@ -232,6 +232,30 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
       end
     end
 
+    context 'when the backup was created with SKIP_REPOSITORIES_PATHS' do
+      let!(:excluded_project) { create(:project, :small_repo) }
+
+      before do
+        # We only need a backup of the repositories and the DB for this test
+        stub_env('SKIP', 'uploads,builds,artifacts,lfs,terraform_state,registry')
+        stub_env('GITLAB_ASSUME_YES', '1')
+      end
+
+      it 'leaves the excluded repository in place' do
+        stub_env('SKIP_REPOSITORIES_PATHS', excluded_project.full_path)
+
+        expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
+
+        stub_env('SKIP_REPOSITORIES_PATHS', nil)
+
+        raw_repo = excluded_project.repository.raw
+
+        expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout_from_any_process
+
+        expect(raw_repo).to exist
+      end
+    end
+
     context 'when the backup is restored' do
       let!(:included_project) { create(:project_with_design, :repository) }
       let!(:original_checksum) { included_project.repository.checksum }

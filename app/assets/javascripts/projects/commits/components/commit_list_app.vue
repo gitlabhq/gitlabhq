@@ -122,9 +122,9 @@ export default {
       },
       watchLoading(isLoading) {
         if (isLoading) {
-          performanceMarkAndMeasure({
-            mark: COMMIT_LIST_MARK_FETCHING_DATA,
-          });
+          // sync: a rAF-deferred mark could still be absent (or mistimed) when
+          // result() measures against it, e.g. in background tabs.
+          performanceMarkAndMeasure({ sync: true, mark: COMMIT_LIST_MARK_FETCHING_DATA });
         }
       },
       update(data) {
@@ -135,19 +135,23 @@ export default {
 
         if (performance.getEntriesByName(COMMIT_LIST_MARK_RENDERING_DATA).length) return;
 
-        // Use performance.mark/measure directly instead of performanceMarkAndMeasure
-        // because the utility defers execution via requestAnimationFrame. The mark must
-        // exist synchronously so the measure on the next line can reference it, and so
-        // the $nextTick callback below can reliably compute the render duration from it.
-        performance.mark(COMMIT_LIST_MARK_RENDERING_DATA);
-        performance.measure(
-          COMMIT_LIST_MEASURE_DATA_FETCH,
-          COMMIT_LIST_MARK_FETCHING_DATA,
-          COMMIT_LIST_MARK_RENDERING_DATA,
-        );
+        // sync so the mark exists for the $nextTick render measure below. The fetch
+        // measure is skipped by the util when the start mark is missing (cache hit).
+        performanceMarkAndMeasure({
+          sync: true,
+          mark: COMMIT_LIST_MARK_RENDERING_DATA,
+          measures: [
+            {
+              name: COMMIT_LIST_MEASURE_DATA_FETCH,
+              start: COMMIT_LIST_MARK_FETCHING_DATA,
+              end: COMMIT_LIST_MARK_RENDERING_DATA,
+            },
+          ],
+        });
 
         this.$nextTick(() => {
           performanceMarkAndMeasure({
+            sync: true,
             mark: COMMIT_LIST_MARK_DATA_RENDERED,
             measures: [
               {

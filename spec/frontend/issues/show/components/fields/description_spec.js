@@ -56,7 +56,7 @@ describe('Description field component', () => {
     });
 
     it('triggers update', () => {
-      expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
+      expect(eventHub.$emit).toHaveBeenCalledWith('update-issuable');
     });
 
     it('tracks event', () => {

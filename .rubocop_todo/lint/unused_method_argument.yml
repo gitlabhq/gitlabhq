@@ -201,7 +201,6 @@ Lint/UnusedMethodArgument:
     - 'ee/lib/elastic/latest/repository_instance_proxy.rb'
     - 'ee/lib/elastic/latest/snippet_class_proxy.rb'
     - 'ee/lib/elastic/latest/snippet_instance_proxy.rb'
-    - 'ee/lib/gitlab/audit/events/preloader.rb'
     - 'ee/lib/gitlab/geo.rb'
     - 'ee/lib/gitlab/license_scanning/base_scanner.rb'
     - 'ee/lib/search/elastic/elasticsearch_enabled_cache.rb'

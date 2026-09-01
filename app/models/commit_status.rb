@@ -9,7 +9,6 @@ class CommitStatus < Ci::ApplicationRecord
   include BulkInsertableAssociations
   include Ci::PartitionableFinder
 
-  ignore_column :environment_auto_stop_in, remove_with: '18.4', remove_after: '2025-09-01'
   ignore_columns %i[options yaml_variables], remove_with: '19.3', remove_after: '2026-08-15' # https://gitlab.com/gitlab-org/gitlab/-/work_items/604404
 
   self.table_name = :p_ci_builds
