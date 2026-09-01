@@ -178097,6 +178097,18 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "fuzzySearch",
+                  "description": "Match `searchTerm` fuzzily: labels match when they contain the searched characters in order, but not necessarily contiguously (for example, `bugu` matches `bug::ux`). Ignored if using `title`.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "searchIn",
                   "description": "Specify which fields to search in. Ignored if using `title`.",
                   "type": {
@@ -323147,6 +323159,18 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "fuzzySearch",
+                  "description": "Match `searchTerm` fuzzily: labels match when they contain the searched characters in order, but not necessarily contiguously (for example, `bugu` matches `bug::ux`). Ignored if using `title`.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "searchIn",
                   "description": "Specify which fields to search in. Ignored if using `title`.",
                   "type": {
@@ -373386,6 +373410,30 @@
               "description": "SBOM ingested. Introduced in GitLab 19.2: Status: Experiment.",
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+            },
+            {
+              "name": "SAST_FALSE_POSITIVE",
+              "description": "SAST false positive. Introduced in GitLab 19.4: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "SAST_VULNERABILITY_RESOLUTION",
+              "description": "SAST vulnerability resolution. Introduced in GitLab 19.4: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "SECRET_DETECTION_FALSE_POSITIVE",
+              "description": "Secret detection false positive. Introduced in GitLab 19.4: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "VULNERABILITY_ENRICHMENT",
+              "description": "Vulnerability enrichment. Introduced in GitLab 19.4: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "possibleTypes": null
@@ -381912,6 +381960,12 @@
               "description": "Dependency scanning post processing. Introduced in GitLab 19.2: Status: Experiment.",
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+            },
+            {
+              "name": "TRIAGE_AND_REMEDIATION",
+              "description": "Triage and remediation. Introduced in GitLab 19.4: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "possibleTypes": null

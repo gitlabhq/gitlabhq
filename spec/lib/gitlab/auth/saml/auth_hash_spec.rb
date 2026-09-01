@@ -43,6 +43,64 @@ RSpec.describe Gitlab::Auth::Saml::AuthHash, feature_category: :system_access do
     end
   end
 
+  describe '#location' do
+    context 'when the location attribute is provided' do
+      before do
+        info_hash[:location] = 'Köln, Germany'
+      end
+
+      it 'returns the location attribute' do
+        expect(saml_auth_hash.location).to eq 'Köln, Germany'
+      end
+
+      context 'when the address attribute is also provided' do
+        before do
+          info_hash[:address] = 'Berlin, Germany'
+        end
+
+        it 'prefers the address attribute' do
+          expect(saml_auth_hash.location).to eq 'Berlin, Germany'
+        end
+      end
+
+      context 'when the address attribute is blank' do
+        before do
+          info_hash[:address] = ''
+        end
+
+        it 'falls back to the location attribute' do
+          expect(saml_auth_hash.location).to eq 'Köln, Germany'
+        end
+      end
+    end
+
+    context 'when neither address nor location attributes are provided' do
+      it 'is nil' do
+        expect(saml_auth_hash.location).to be_nil
+      end
+    end
+  end
+
+  describe '#has_attribute?' do
+    context 'for location' do
+      it 'is true when the location attribute is provided' do
+        info_hash[:location] = 'Köln, Germany'
+
+        expect(saml_auth_hash.has_attribute?(:location)).to be(true)
+      end
+
+      it 'is true when the address attribute is provided' do
+        info_hash[:address] = 'Berlin, Germany'
+
+        expect(saml_auth_hash.has_attribute?(:location)).to be(true)
+      end
+
+      it 'is false when neither address nor location attributes are provided' do
+        expect(saml_auth_hash.has_attribute?(:location)).to be(false)
+      end
+    end
+  end
+
   describe '#azure_group_overage_claim?' do
     context 'when the claim is not present' do
       let(:raw_info_attr) { {} }

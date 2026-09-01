@@ -13,12 +13,6 @@ description: Kubernetesインテグレーション、GitOps、CI/CD、エージ�
 
 {{< /details >}}
 
-{{< history >}}
-
-- GitLab 15.10のGitOpsソリューションとしてFlux[が推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/357947#note_1253489000)されています。
-
-{{< /history >}}
-
 KubernetesクラスターをGitLabに接続して、クラウドネイティブソリューションをデプロイ、管理、およびMonitorできます。
 
 KubernetesクラスターをGitLabに接続するには、まず[エージェントをクラスターにインストール](install/_index.md)する必要があります。
@@ -45,16 +39,16 @@ GitLabは、次のKubernetesバージョンをサポートしています。Kube
 
 サポートされているバージョンにKubernetesバージョンをいつでもアップグレードできます。
 
+- 1.36（GitLabバージョン20.2がリリースされるか、または1.39がサポート対象になるとサポートは終了します）
 - 1.35 (GitLabバージョン19.10がリリースされるか、1.38がサポート対象になるまでサポートされます)
 - 1.34 (GitLabバージョン19.7がリリースされるか、1.37がサポート対象になるまでサポートされます)
-- 1.33（GitLabバージョン19.2のリリース時、または1.36がサポートされるようになったときにサポートが終了）
 
 GitLabは、新しいマイナーKubernetesバージョンの初期リリース後、3か月以内にサポートすることを目指しています。GitLabは、常に少なくとも3つの本番環境対応のKubernetesマイナーバージョンをサポートしています。
 
 新しいKubernetesのバージョンがリリースされると:
 
 - このページは、約4週間以内に初期のスモークテストの結果で更新されます。
-- 新しいバージョンのサポートリリースが遅延した場合、このページは約8週間以内に期待されるGitLabのサポートバージョンで更新されます。
+- 新しいKubernetesバージョンのサポートが遅延した場合、このページは約8週間以内に予想されるGitLabサポートバージョンで更新されます。
 
 エージェントをインストールするときは、Kubernetesバージョンと互換性のあるHelmバージョンを使用してください。他のバージョンのHelmは機能しない可能性があります。互換性のあるバージョンのリストについては、[Helmバージョンのサポートポリシー](https://helm.sh/docs/topics/version_skew/)を参照してください。
 
@@ -90,7 +84,7 @@ GitLab CI/CDからクラスターにリクエストをプッシュするため�
 - 各エージェントは、アクティブストリームとアイドルストリームを含め、最大500の論理gRPCストリームを維持できます。
 - gRPCストリームで使用されるTCP接続の数は、gRPC自体によって決定されます。
 - 各接続の最大ライフタイムは2時間で、1時間の猶予期間があります。
-  - KASの前にあるプロキシは、接続の最大ライフタイムに影響を与える可能性があります。GitLab.comでは、これは[2時間](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy/-/blob/68df3484087f0af368d074215e17056d8ab69f1c/attributes/default.rb#L217)です。猶予期間は、最大ライフタイムの50％です。
+  - KASの前にあるプロキシは、接続の最大ライフタイムに影響を与える可能性があります。GitLab.comでは、これは[2時間](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy/-/blob/68df3484087f0af368d074215e17056d8ab69f1c/attributes/default.rb#L217)です。猶予期間は、最大ライフタイムの50%です。
 
 チャンネルルーティングの詳細については、[エージェントでのKASリクエストのルーティング](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kas_request_routing.md)を参照してください。
 
@@ -105,7 +99,7 @@ GitLab CI/CDからクラスターにリクエストをプッシュするため�
 
 {{< history >}}
 
-- GitLab 17.4で[導入](https://gitlab.com/groups/gitlab-org/-/epics/12180)されました。
+- GitLab 17.4で[導入](https://gitlab.com/groups/gitlab-org/-/work_items/12180)されました。
 
 {{< /history >}}
 

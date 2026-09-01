@@ -921,6 +921,20 @@ export const participantsQueryResponse = {
   },
 };
 
+export const mrAssignee = {
+  __typename: 'UserCore',
+  id: 'gid://gitlab/User/2',
+  avatarUrl: '/avatar',
+  name: 'Jacki Kub',
+  username: 'francina.skiles',
+  webUrl: '/franc',
+  webPath: '/franc',
+  status: null,
+  type: userTypes.human,
+  compositeIdentityEnforced: false,
+  mergeRequestInteraction: { canMerge: false },
+};
+
 export const mrAssigneesQueryResponse = {
   data: {
     namespace: {
@@ -931,7 +945,8 @@ export const mrAssigneesQueryResponse = {
         id: 'gid://gitlab/MergeRequest/1',
         iid: '1',
         author: {
-          id: '1',
+          __typename: 'UserCore',
+          id: 'gid://gitlab/User/1',
           avatarUrl: '/avatar',
           name: 'root',
           username: 'root',
@@ -945,7 +960,15 @@ export const mrAssigneesQueryResponse = {
           },
         },
         assignees: {
-          nodes: [],
+          nodes: [
+            mrAssignee,
+            {
+              ...placeholderAuthor,
+              __typename: 'UserCore',
+              compositeIdentityEnforced: false,
+              mergeRequestInteraction: { canMerge: false },
+            },
+          ],
         },
         userPermissions: {
           canMerge: true,

@@ -1,6 +1,6 @@
 ---
-source_checksum: 262735e36a66c191
-distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
+source_checksum: 18d4e56345888662
+distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -181,10 +181,13 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 ### Shared Examples and Helpers
 
 - Declare shared contexts or shared examples used by only one spec file inline in that file.
-- Place shared examples used within a single bounded context in that context's directory structure; place shared examples used across multiple bounded contexts under `spec/support/shared_*`.
+- Place shared examples used within a single bounded context in that context's directory structure; place shared examples used across multiple bounded contexts under `spec/support/shared_*`. Exception: place shared examples covering core behavior for a CE spec and its EE mirror in `spec/support/shared_examples/` so both test suites load them.
 - DO NOT change RSpec configuration inside helpers modules — add `config.include` calls in `spec/spec_helper.rb` or scope them with type modifiers.
 - Place helper modules under `spec/support/helpers/`, following Rails naming conventions (`spec/support/helpers/` is the root).
 - Place RSpec configuration files under `spec/support/`, one file per domain.
+- DO NOT define a shared example in one spec file and use it from another — RSpec loads only the spec files in the current run, so the shared example is unresolved whenever the defining file is not part of the run.
+- Use `it_behaves_like` in both a CE spec and its EE mirror; wrap only license-gated EE cases in `stub_licensed_features`.
+- Before moving a shared example into `spec/support/shared_examples/`, check for another top-level `RSpec.shared_examples` with the same name; rename one before moving it because RSpec silently overwrites the earlier definition.
 
 ### Test Order and Flakiness
 

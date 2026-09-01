@@ -1354,6 +1354,25 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       end
     end
 
+    context 'when both refs do not exist' do
+      it_behaves_like '400 response' do
+        let(:refs) { %w[first-missing second-missing] }
+        let(:current_user) { user }
+        let(:message) { 'Could not find refs: first-missing, second-missing' }
+      end
+    end
+
+    context 'when several of multiple refs do not exist' do
+      it_behaves_like '400 response' do
+        let(:refs) do
+          %w[first-missing 304d257dcb821665ab5110318fc58a007bd104ed second-missing]
+        end
+
+        let(:current_user) { user }
+        let(:message) { 'Could not find refs: first-missing, second-missing' }
+      end
+    end
+
     context 'when passing refs that do not have a merge base' do
       it_behaves_like '404 response' do
         let(:refs) { ['304d257dcb821665ab5110318fc58a007bd104ed', TestEnv::BRANCH_SHA['orphaned-branch']] }

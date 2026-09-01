@@ -46492,6 +46492,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="group-labels-archived"></a>`archived` | [`Boolean`](#boolean) | Filters archived labels. Defaults to false. |
+| <a id="group-labels-fuzzysearch"></a>`fuzzySearch` | [`Boolean`](#boolean) | Match `searchTerm` fuzzily: labels match when they contain the searched characters in order, but not necessarily contiguously (for example, `bugu` matches `bug::ux`). Ignored if using `title`. |
 | <a id="group-labels-includeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Include labels from ancestor groups. |
 | <a id="group-labels-includedescendantgroups"></a>`includeDescendantGroups` | [`Boolean`](#boolean) | Include labels from descendant groups. |
 | <a id="group-labels-onlygrouplabels"></a>`onlyGroupLabels` | [`Boolean`](#boolean) | Include only group level labels. |
@@ -57346,6 +57347,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="project-labels-archived"></a>`archived` | [`Boolean`](#boolean) | Filters archived labels. Defaults to false. |
+| <a id="project-labels-fuzzysearch"></a>`fuzzySearch` | [`Boolean`](#boolean) | Match `searchTerm` fuzzily: labels match when they contain the searched characters in order, but not necessarily contiguously (for example, `bugu` matches `bug::ux`). Ignored if using `title`. |
 | <a id="project-labels-includeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Include labels from ancestor groups. |
 | <a id="project-labels-searchin"></a>`searchIn` | [`[LabelSearchFieldList!]!`](#labelsearchfieldlist) | Specify which fields to search in. Ignored if using `title`. |
 | <a id="project-labels-searchterm"></a>`searchTerm` | [`String`](#string) | Search term to find labels with. |
@@ -70737,7 +70739,11 @@ Scan profile trigger type.
 | <a id="scanprofiletriggertype-default_branch_pipeline"></a>`DEFAULT_BRANCH_PIPELINE` | Default branch pipeline. |
 | <a id="scanprofiletriggertype-git_push_event"></a>`GIT_PUSH_EVENT` | Git push event. |
 | <a id="scanprofiletriggertype-merge_request_pipeline"></a>`MERGE_REQUEST_PIPELINE` | Merge request pipeline. |
+| <a id="scanprofiletriggertype-sast_false_positive"></a>`SAST_FALSE_POSITIVE` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. SAST false positive. |
+| <a id="scanprofiletriggertype-sast_vulnerability_resolution"></a>`SAST_VULNERABILITY_RESOLUTION` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. SAST vulnerability resolution. |
 | <a id="scanprofiletriggertype-sbom_ingested"></a>`SBOM_INGESTED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.2. Status: Experiment. SBOM ingested. |
+| <a id="scanprofiletriggertype-secret_detection_false_positive"></a>`SECRET_DETECTION_FALSE_POSITIVE` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Secret detection false positive. |
+| <a id="scanprofiletriggertype-vulnerability_enrichment"></a>`VULNERABILITY_ENRICHMENT` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Vulnerability enrichment. |
 
 ### `ScanStatus`
 
@@ -70927,6 +70933,7 @@ Scan profile type.
 | <a id="securityscanprofiletype-dependency_scanning_post_processing"></a>`DEPENDENCY_SCANNING_POST_PROCESSING` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.2. Status: Experiment. Dependency scanning post processing. |
 | <a id="securityscanprofiletype-sast"></a>`SAST` | Sast. |
 | <a id="securityscanprofiletype-secret_detection"></a>`SECRET_DETECTION` | Secret detection. |
+| <a id="securityscanprofiletype-triage_and_remediation"></a>`TRIAGE_AND_REMEDIATION` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Triage and remediation. |
 
 ### `SecurityScanProfileUpgradePolicy`
 

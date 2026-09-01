@@ -311,7 +311,7 @@ depending on [how long a migration takes](#how-long-a-migration-should-take)
 
 - Split the migration into **multiple single-transaction migrations**.
 - Use **multiple transactions** by [using `disable_ddl_transaction!`](#disable-transaction-wrapped-migration).
-- Keep using a single-transaction migration after **adjusting statement and lock timeout settings**.
+- Keep using a single-transaction migration after adjusting statement and lock timeout settings.
   If your heavy workload must use the guarantees of a transaction,
   you should check your migration can execute without hitting the timeout limits.
   The same advice applies to both single-transaction migrations and individual transactions.
@@ -659,7 +659,7 @@ end
 
 #### Minimizing lock contention with 2-step foreign key validation
 
-For high-traffic tables or when adding foreign keys that might cause lock contention during deployment, consider separating the foreign key creation and validation into different migrations. **This is especially important for partitioned tables**, where foreign keys must be added to each partition individually before being added to the parent table.
+For high-traffic tables or when adding foreign keys that might cause lock contention during deployment, consider separating the foreign key creation and validation into different migrations. This is especially important for partitioned tables, where foreign keys must be added to each partition individually before being added to the parent table.
 
 1. **First migration**: Add the foreign key with `validate: false` to avoid blocking writes during deployment
 1. **Second migration**: Validate the foreign key asynchronously using `prepare_async_foreign_key_validation`
@@ -703,7 +703,7 @@ end
 
 ### When to use the helper method
 
-You can **only** use the `with_lock_retries` helper method when the execution is not already inside
+You can only use the `with_lock_retries` helper method when the execution is not already inside
 an open transaction (using PostgreSQL subtransactions is discouraged). It can be used with
 standard Rails migration helper methods. Calling more than one migration
 helper is not a problem if they're executed on the same table.
@@ -718,7 +718,7 @@ Example changes:
 - `change_column_default`
 - `create_table` / `drop_table`
 
-The `with_lock_retries` method **cannot** be used within the `change` method, you must manually define the `up` and `down` methods to make the migration reversible.
+The `with_lock_retries` method cannot be used within the `change` method, you must manually define the `up` and `down` methods to make the migration reversible.
 
 ### How the helper method works
 
@@ -1131,7 +1131,7 @@ Under the hood, it works like this:
 
 ## Swapping primary key
 
-Swapping the primary key is required to partition a table as the **partition key must be included in the primary key**.
+Swapping the primary key is required to partition a table as the partition key must be included in the primary key.
 
 You can use the `swap_primary_key` method provided by the database team.
 

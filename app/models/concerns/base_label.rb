@@ -39,8 +39,20 @@ module BaseLabel # rubocop:disable Gitlab/BoundedContexts -- existing Label modu
                     [:title, :description]
                   end
 
-      fuzzy_search(query, search_in)
+      return fuzzy_search(query, search_in) unless options[:fuzzy_search]
+
+      subsequence_search(query, search_in)
     end
+
+    # Matches labels containing the characters of `query` in order, but not
+    # necessarily contiguously ('bugu' matches 'bug::ux'). Whitespace is
+    # ignored, mirroring client-side fuzzaldrin-plus matching.
+    def self.subsequence_search(query, columns)
+      pattern = "%#{query.gsub(/\s/, '').chars.map { |char| sanitize_sql_like(char) }.join('%')}%"
+
+      where(columns.map { |column| arel_table[column].matches(pattern) }.reduce(:or))
+    end
+    private_class_method :subsequence_search
 
     # Override Gitlab::SQL::Pattern.min_chars_for_partial_matching as
     # label queries are never global, and so will not use a trigram

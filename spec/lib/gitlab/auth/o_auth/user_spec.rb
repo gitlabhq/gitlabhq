@@ -1258,6 +1258,19 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
       end
     end
 
+    context "when provider sets a location in the location attribute instead of the address attribute" do
+      before do
+        info_hash.delete(:address)
+        info_hash[:location] = 'some city, some country'
+      end
+
+      it "does not update the user location" do
+        expect(gl_user.location).to be_blank
+        expect(gl_user.user_synced_attributes_metadata.location_synced).to be(false)
+        expect(gl_user.read_only_attribute?(:location)).to be(false)
+      end
+    end
+
     context "when provider doesn't set a location" do
       before do
         info_hash[:address].delete(:country)

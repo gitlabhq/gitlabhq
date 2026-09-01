@@ -16,7 +16,7 @@ title: シークレットプッシュ保護
 
 - GitLab 16.7で[導入](https://gitlab.com/groups/gitlab-org/-/epics/11439)され、GitLab Dedicatedの顧客向けに[実験](../../../../policy/development_stages_support.md)として提供されました。
 - GitLab 17.1で[変更](https://gitlab.com/groups/gitlab-org/-/epics/12729)され、ベータ版としてGitLab.comで利用できるようになりました。
-- GitLab 17.2でGitLab Self-Managedで[有効化](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156907)され、[フラグ](../../../../administration/feature_flags/_index.md) `pre_receive_secret_detection_beta_release`および`pre_receive_secret_detection_push_check`が命名されました。
+- [GitLab Self-Managedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156907)になりました。GitLab 17.2では、`pre_receive_secret_detection_beta_release`と`pre_receive_secret_detection_push_check`という名前の[機能フラグ](../../../../administration/feature_flags/_index.md)が設定されています。
 - 機能フラグ`pre_receive_secret_detection_beta_release`は、GitLab 17.4で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/472418)されました。
 - GitLab 17.5で[一般提供](https://gitlab.com/groups/gitlab-org/-/epics/13107)になりました。
 - 機能フラグ`pre_receive_secret_detection_push_check`は、GitLab 17.7で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/472419)されました。
@@ -36,7 +36,7 @@ title: シークレットプッシュ保護
 <!-- To edit the diagram, use either Draw.io or the VS Code extension "Draw.io Integration" -->
 ![シークレット保護がプッシュをブロックする方法を示すフローチャート](img/spp_workflow_v17_9.drawio.svg)
 
-プッシュがブロックされると、GitLabは次のプロンプトメッセージを表示します:
+プッシュがブロックされると、GitLabは次の情報を含むメッセージを表示します:
 
 - コミットIDにシークレットが含まれています。
 - ファイル名とシークレットを含む行。
@@ -89,7 +89,7 @@ GitLabインスタンスでシークレットプッシュ保護の使用を許�
 
 前提条件: 
 
-- プロジェクトのセキュリティマネージャー、メンテナー、またはオーナーのロールを持っている必要があります。
+- プロジェクトのセキュリティマネージャー、メンテナー、またはオーナーロールが必要です。
 - GitLab DedicatedとGitLab Self-Managedでは、インスタンスでシークレットプッシュ保護を許可する必要があります。
 
 プロジェクトでシークレットプッシュ保護を有効にするには:
@@ -110,7 +110,7 @@ GitLabインスタンスでシークレットプッシュ保護の使用を許�
 
 シークレットプッシュ保護は、次の場合にはシークレットをブロックしません:
 
-- コミットをプッシュする際に、シークレットプッシュ保護のスキップオプションを使用しました。
+- コミットをプッシュする際に、シークレットプッシュ保護をスキップするオプションを使用します。
 - シークレットがシークレットプッシュ保護から除外されています。
 - シークレットが[除外](../exclusions.md)として定義されたパスにあります。
 
@@ -118,7 +118,7 @@ GitLabインスタンスでシークレットプッシュ保護の使用を許�
 
 - ファイルがバイナリファイルである。
 - ファイルまたは差分パッチが1 MiBより大きい。
-- ファイルが内容の変更なしで名前変更、削除、または移動された。
+- ファイルが、コンテンツの変更なしに名前変更、削除、または移動された場合。
 - ファイルの内容が、コード内の別のファイルの内容と同一である。
 - ファイルがリポジトリを作成した最初のプッシュに含まれている。
 - プッシュに含まれる変更された行の合計が350,000行を超える。
@@ -127,15 +127,32 @@ GitLabインスタンスでシークレットプッシュ保護の使用を許�
 
 {{< history >}}
 
-- GitLab 17.5で`spp_scan_diffs`[フラグ](../../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/469161)されました。デフォルトでは無効になっています。
+- GitLab 17.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/469161)されました。`spp_scan_diffs`という名前の[機能フラグ](../../../../administration/feature_flags/_index.md)が設定されています。デフォルトでは無効になっています。
 - GitLab 17.6の[GitLab.comで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/480092)になりました。
-- GitLab 17.10でWeb IDEのプッシュに対するサポートが[追加](https://gitlab.com/gitlab-org/gitlab/-/issues/491282)され、`secret_checks_for_web_requests`という名前の[フラグ](../../../../administration/feature_flags/_index.md)が付けられました。デフォルトでは無効になっています。
+- GitLab 17.10でWeb IDEのプッシュのサポートが[追加](https://gitlab.com/gitlab-org/gitlab/-/issues/491282)されました。`secret_checks_for_web_requests`という名前の[機能フラグ](../../../../administration/feature_flags/_index.md)が設定されています。デフォルトでは無効になっています。
 - GitLab 17.11で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/525627)になりました。機能フラグ`spp_scan_diffs`は削除されました。
 - GitLab 17.11で`secret_checks_for_web_requests`機能フラグが[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/525629)されました。
 
 {{< /history >}}
 
 シークレットプッシュ保護は、HTTP(S)およびSSH経由でプッシュされたコミットの差分のみをスキャンします。シークレットが既にファイル内に存在し、変更の一部ではない場合、それは検出されません。
+
+## 監査イベント {#audit-events}
+
+{{< history >}}
+
+- GitLab 19.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/604787)されました。
+
+{{< /history >}}
+
+[監査イベント](../../../compliance/audit_event_types.md#secret-detection)は次の場合にログに記録されます:
+
+- プッシュに[変更されたパスが多すぎる](#push-size-threshold)ため、シークレットプッシュ保護がスキップされる場合。
+- プッシュで[変更された行が多すぎる](#push-size-threshold)ため、シークレットプッシュ保護がスキップされる場合。
+- シークレットプッシュ保護スキャンがタイムアウトし、GitLabがプッシュを受け入れる場合。
+- シークレットプッシュ保護がルールセットの解析またはコンパイルエラーを検出する場合。
+- スキャンが無効な入力を受け取ったため、シークレットプッシュ保護がスキップされる場合。
+- シークレットプッシュ保護が予期しないスキャンエラーを検出する場合。
 
 ## プッシュサイズのしきい値 {#push-size-threshold}
 
@@ -184,7 +201,7 @@ GitLabインスタンスでシークレットプッシュ保護の使用を許�
 誤検出を削減するには:
 
 - 戦略的に[除外を設定](../exclusions.md)します:
-  - テストディレクトリ、ドキュメント、およびサードパーティの依存関係に対してパスベースの除外を作成します。
+  - テストディレクトリ、ドキュメント、およびサードパーティの依存関係に対して、パスベースの除外を戦略的に作成します。
   - コードベースに固有の既知の誤検出パターンに対して、パターンベースの除外を使用します。
   - 除外ルールセットをドキュメント化し、定期的にレビューします。
 - プレースホルダー値とテスト認証情報の標準を作成します。これらは除外ルールセットに一致する必要がありますが、[デフォルト](../detected_secrets.md)のルールセットには一致しないようにします。
@@ -222,7 +239,7 @@ GitLabインスタンスでシークレットプッシュ保護の使用を許�
 パイロットを完了した後、大規模なロールアウトのための次のフェーズを検討してください:
 
 1. 早期導入者（3〜6週間）
-   - アクティブなプロジェクトの10〜20％で有効にし、セキュリティに敏感なリポジトリを優先します。
+   - アクティブなプロジェクトの10〜20%で有効にし、セキュリティに敏感なリポジトリを優先します。
    - セキュリティ意識が高く、協力的なチームに焦点を当てます。
    - パフォーマンスへの影響とデベロッパーエクスペリエンスを監視します。
    - 実際の使用状況に基づいてプロセスを改善します。
@@ -256,7 +273,7 @@ GitLabインスタンスでシークレットプッシュ保護の使用を許�
 - ターゲットブランチ。（GitLab 17.4で導入）
 - シークレットプッシュ保護をスキップしたコミット。（GitLab 17.9で導入）
 
-パイプラインシークレット検出が有効になっている場合、すべてのコミットの内容はリポジトリにプッシュされた後にスキャンされます。
+パイプラインシークレット検出が有効になっている場合、すべてのコミットのコンテンツは、リポジトリにプッシュされた後にスキャンされます。
 
 プッシュ内のすべてのコミットに対してシークレットプッシュ保護をスキップするには、次のいずれかを実行します:
 

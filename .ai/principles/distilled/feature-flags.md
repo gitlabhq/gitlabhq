@@ -1,6 +1,6 @@
 ---
-source_checksum: 2269df72ed803ec8
-distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
+source_checksum: 3c5c2b3767867b67
+distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -84,14 +84,12 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 
 ### Tests
 
-- DO NOT stub feature flags to `true` — they are enabled by default in the test environment.
-- Use `stub_feature_flags(flag_name: false)` to test the disabled state; place the stub in a `before` hook within a self-contained context.
-- Include automated tests for both enabled and disabled states of every feature flag.
+- Include automated tests for all code affected by a feature flag for both enabled and disabled states. In Rails tests, use the default enabled state without a stub or dedicated context, and put `stub_feature_flags(flag_name: false)` in a `before` hook inside a self-contained disabled context. Exception: explicitly enable a flag that is disabled in `spec/spec_helper.rb`.
+- End-to-end (QA) tests do NOT enable feature flags by default; use the separate API-based process to toggle flags there.
 - Prefer `stub_feature_flags` over `Feature.enable*` for test setup; use `Feature.enable_percentage_of_time` or `Feature.enable_percentage_of_actors` only when testing percentage rollout behavior.
 - Use `have_pushed_frontend_feature_flags` matcher to verify `push_frontend_feature_flag` added the flag to HTML.
 - Use `stub_feature_flag_gate` to create a custom actor for actor-specific flag testing in specs.
 - DO NOT use `stub_feature_flags: false` unless specifically testing Flipper's interaction with `ActiveRecord`.
-- Be aware that end-to-end (QA) tests do NOT enable feature flags by default; use the API-based process for toggling flags in E2E tests.
 
 ### Experiments
 
@@ -115,4 +113,3 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 For the full picture, see:
 
 - doc/development/feature_flags/_index.md
-

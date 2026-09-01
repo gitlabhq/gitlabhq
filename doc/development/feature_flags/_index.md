@@ -133,11 +133,11 @@ GitLab are of the `gitlab_com_derisk` type.
 
 #### Constraints
 
-- `default_enabled`: **Must not** be set to true. This kind of feature flag is meant to lower the risk on GitLab.com, thus there's no need to keep the flag in the codebase after it's been enabled on GitLab.com. `default_enabled: true` will not have any effect for this type of feature flag.
+- `default_enabled`: Must not be set to true. This kind of feature flag is meant to lower the risk on GitLab.com, thus there's no need to keep the flag in the codebase after it's been enabled on GitLab.com. `default_enabled: true` will not have any effect for this type of feature flag.
 - Maximum Lifespan: 2 months after it's merged into the default branch
 - Documentation: This type of feature flag doesn't need to be documented in the
   [All feature flags in GitLab](../../administration/feature_flags/list.md) page given they're short-lived and deployment-related.
-- Rollout issue: **Must** have a rollout issue created from the
+- Rollout issue: Must have a rollout issue created from the
   [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md)
 
 #### Usage
@@ -181,7 +181,7 @@ Once the feature is complete, the feature flag type can be changed to the `gitla
 
 #### Constraints
 
-- `default_enabled`: **Must not** be set to true. If needed, this type can be changed to beta once the feature is complete.
+- `default_enabled`: Must not be set to true. If needed, this type can be changed to beta once the feature is complete.
 - Maximum Lifespan: 4 months after it's merged into the default branch
 - Documentation: This type of feature flag doesn't need to be documented in the
   [All feature flags in GitLab](../../administration/feature_flags/list.md) page given they're mostly hiding unfinished code.
@@ -213,11 +213,11 @@ Providing a flag in this case allows engineers and customers to disable the new 
   possibility to disable it in the case of scalability issues (ideally it should only be disabled for this
   reason on specific on-premise installations)
 - Maximum Lifespan: 6 months after it's merged into the default branch
-- Documentation: This type of feature flag **must** be documented in the
+- Documentation: This type of feature flag must be documented in the
   [All feature flags in GitLab](../../administration/feature_flags/list.md) page.
   That page is [auto-generated during the docs build](../documentation/site_architecture/automation.md) from the YAML definition files,
   so no manual edits to that page are needed.
-- Rollout issue: **Must** have a rollout issue
+- Rollout issue: Must have a rollout issue
   created from the
   [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md)
 
@@ -252,7 +252,7 @@ confirm that the `ops` feature flag is still in use.
 - `default_enabled`: Should be set to `false` in most cases, and only enabled to resolve temporary scalability
   issues or help debug production issues.
 - Maximum Lifespan: Unlimited, but must be evaluated every 12 months
-- Documentation: This type of feature flag **must** be documented in the
+- Documentation: This type of feature flag must be documented in the
   [All feature flags in GitLab](../../administration/feature_flags/list.md) page as well as be associated with an operational
   runbook describing the circumstances when it can be used.
   That page is [auto-generated during the docs build](../documentation/site_architecture/automation.md) from the YAML definition files,
@@ -282,7 +282,7 @@ created using the [Experiment tracking template](https://gitlab.com/gitlab-org/g
 
 #### Constraints
 
-- `default_enabled`: **Must not** be set to `true`.
+- `default_enabled`: Must not be set to `true`.
 - Maximum Lifespan: 6 months after it's merged into the default branch
 
 ### `worker` type
@@ -310,7 +310,7 @@ The `development` type is deprecated in favor of the `gitlab_com_derisk`, `wip`,
 
 During development (`RAILS_ENV=development`) or testing (`RAILS_ENV=test`) all feature flag usage is being strictly validated.
 
-This process is meant to ensure consistent feature flag usage in the codebase. All feature flags **must**:
+This process is meant to ensure consistent feature flag usage in the codebase. All feature flags must:
 
 - Be known. Only use feature flags that are explicitly defined (except for feature flags of the types `experiment`, `worker`, and `undefined`).
 - Not be defined twice. They have to be defined either in FOSS or EE, but not both.
@@ -424,7 +424,7 @@ When choosing a name for a new feature flag, consider the following guidelines:
 ### Risk of a broken master (main) branch
 
 > [!warning]
-> Feature flags **must** be used in the MR that introduces them. Not doing so causes a
+> Feature flags must be used in the MR that introduces them. Not doing so causes a
 > [broken master](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
 > to the `rspec:feature-flags` job that only runs on the `master` branch.
 
@@ -895,10 +895,10 @@ You can see an example in [this](https://log.gprd.gitlab.net/app/discover#/?_g=(
 
 We want to avoid introducing a changelog when features are not accessible by an end-user either directly (example: ability to use the feature) or indirectly (examples: ability to take advantage of background jobs, performance improvements, or database migration updates).
 
-- Database migrations are always accessible by an end-user indirectly, as self-managed customers need to be aware of database changes before upgrading. For this reason, they **should** have a changelog entry.
-- Any change behind a feature flag **disabled** by default **should not** have a changelog entry.
-- Any change behind a feature flag that is **enabled** by default **should** have a changelog entry.
-- Changing the feature flag itself (flag removal, default-on setting) **should** have [a changelog entry](../changelog.md).
+- Database migrations are always accessible by an end-user indirectly, as self-managed customers need to be aware of database changes before upgrading. For this reason, they should have a changelog entry.
+- Any change behind a feature flag disabled by default should not have a changelog entry.
+- Any change behind a feature flag that is enabled by default should have a changelog entry.
+- Changing the feature flag itself (flag removal, default-on setting) should have [a changelog entry](../changelog.md).
   Use the flowchart to determine the changelog entry type.
 
   ```mermaid

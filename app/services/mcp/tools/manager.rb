@@ -70,7 +70,7 @@ module Mcp
       }.freeze
 
       def initialize
-        # Do not call build_tools here. API::API.routes is lazily memoized by Grape, and
+        # Do not call build_tools here. API::Base.descendants is evaluated lazily, and
         # Manager is instantiated at class-definition time via namespace_setting in
         # API::Mcp::Base, before all routes are registered. Deferring to the first call
         # of #tools ensures a complete route list.
@@ -194,9 +194,7 @@ module Mcp
         @api_tools ||= begin
           api_tools = {}
 
-          ::API::API.routes.each do |route|
-            settings = route.app.route_setting(:mcp)
-            next if settings.blank?
+          mcp_routes.each do |route, settings|
             next if settings[:aggregators].present?
 
             name = settings[:tool_name].to_s
@@ -212,14 +210,11 @@ module Mcp
         @aggregated_api_tools ||= begin
           aggregated_api_tools = {}
 
-          ::API::API.routes.each do |route|
-            settings = route.app.route_setting(:mcp)
-            next if settings.blank?
-
-            name = settings[:tool_name].to_s
+          mcp_routes.each do |route, settings|
             aggregators = settings[:aggregators]
             next if aggregators.blank?
 
+            name = settings[:tool_name].to_s
             tool = Mcp::Tools::Base::ApiTool.new(name: name, route: route)
 
             aggregators.each do |aggregator|
@@ -231,6 +226,26 @@ module Mcp
           aggregated_api_tools.to_h do |klass, tools|
             [klass.tool_name, klass.new(tools: tools)]
           end.freeze
+        end
+      end
+
+      # Scans descendants and memoize instead of API::API.routes to ensure EE-only sub-apps are also discovered
+      def mcp_routes
+        @mcp_routes ||= begin
+          pairs = []
+
+          ::API::Base.descendants.each do |klass|
+            next if klass == ::API::API
+
+            klass.routes.each do |route|
+              settings = route.app.route_setting(:mcp)
+              next if settings.blank?
+
+              pairs << [route, settings]
+            end
+          end
+
+          pairs.freeze
         end
       end
 

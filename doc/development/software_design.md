@@ -180,7 +180,7 @@ In exceptional cases, we may need to add a new bounded context to the list. This
 
 1. **Is there ever a situation where the cop should be disabled**?
 
-   - The cop **should not** be disabled but it **could** be disabled temporarily if the offending class or module is part
+   - The cop should not be disabled but it could be disabled temporarily if the offending class or module is part
      of a cluster of classes that should otherwise be moved all together.
      In this case you could disable the cop and create a follow-up issue to move all the classes at once.
 

@@ -430,6 +430,7 @@ gem 'gitlab-cd-driver-orchestration', path: 'gems/gitlab-cd-driver-orchestration
 gem 'gitlab-policy-store', path: 'gems/gitlab-policy-store',
   require: 'gitlab/policy_store', feature_category: :security_policy_management
 
+gem 'css_parser', '~> 1.22', feature_category: :notifications
 gem 'premailer-rails', '~> 1.12.0', feature_category: :notifications
 
 # Mobile push notifications via APNs (GitLab mobile app prototype)
@@ -523,10 +524,7 @@ group :development do
   gem 'solargraph-rspec', '~> 0.5.1', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
   gem 'letter_opener_web', '~> 3.0.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-  # GitLab's fork of lookbook, which relaxes the upper bound on the rouge
-  # dependency to allow rouge 5.x. See:
-  # https://gitlab.com/gitlab-org/gitlab/-/work_items/581507
-  gem 'gitlab-lookbook', '~> 2.3', require: 'lookbook', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+  gem 'lookbook', '~> 2.3.15', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
   gem 'sprite-factory', '~> 1.7', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 

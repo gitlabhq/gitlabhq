@@ -2008,6 +2008,20 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         let(:content) { '/internal_note' }
         let(:issuable) { ticket }
       end
+
+      context 'when the target is not persisted' do
+        let(:issuable) { build(:issue, project: project, work_item_type: nil) }
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :internal_note))
+        end
+
+        it 'does not set the internal update' do
+          _, updates, _ = service.execute('/internal_note', issuable)
+
+          expect(updates).to be_empty
+        end
+      end
     end
 
     it_behaves_like 'lock command' do

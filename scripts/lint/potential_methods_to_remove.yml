@@ -130,7 +130,6 @@ app/models/namespace.rb:
 app/models/project.rb:
   - import_scheduled?
   - updating_remote_mirror?
-  - issue_exists?
   - enable_ci
   - valid_runners_token?
 ee/app/models/concerns/ai/user_authorizable.rb:

@@ -31,7 +31,7 @@ To make repository A borrow from repository B:
 
 After the repack, repository A is no longer self-contained, but still contains its
 own refs and configuration. Objects in A that are not in B remain in A. For this
-configuration to work, **objects must not be deleted from repository B** because
+configuration to work, objects must not be deleted from repository B because
 repository A might need them.
 
 > [!warning]

@@ -71,6 +71,12 @@ Macs hmac-sha2-256,hmac-sha2-512
 
 ```
 
+These settings apply to OpenSSH.
+If `gitlab-sshd` also serves Git SSH traffic on your instance, configure its algorithms
+separately.
+For more information, see
+[Configure SSH algorithms](../administration/operations/gitlab_sshd.md#configure-ssh-algorithms).
+
 ## Firewall Rules
 
 For firewall rules, only TCP ports `80` and `443` need to be open for basic usage. By

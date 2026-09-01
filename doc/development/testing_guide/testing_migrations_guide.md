@@ -11,8 +11,8 @@ a database schema.
 ## When to write a migration test
 
 - Post migrations (`/db/post_migrate`) and background migrations
-  (`lib/gitlab/background_migration`) **must** have migration tests performed.
-- If your migration is a data migration then it **must** have a migration test.
+  (`lib/gitlab/background_migration`) must have migration tests performed.
+- If your migration is a data migration then it must have a migration test.
 - Other migrations may have a migration test if necessary.
 
 We don't enforce tests on post migrations that only perform schema changes.
@@ -100,7 +100,7 @@ end
 
 Use the `table` helper to create a temporary `ActiveRecord::Base`-derived model
 for a table. [FactoryBot](best_practices.md#factories)
-**should not** be used to create data for migration specs because it relies on
+should not be used to create data for migration specs because it relies on
 application code which can change after the migration has run, and cause the test
 to fail. For example, to create a record in the `projects` table:
 

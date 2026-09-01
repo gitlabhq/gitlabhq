@@ -36,7 +36,7 @@ See the [Introduce "tiers" in MR pipelines](https://gitlab.com/groups/gitlab-org
 
 ## Predictive test jobs before a merge request is approved
 
-**To reduce the pipeline cost and shorten the job duration, before a merge request is approved, the pipeline will run a predictive set of RSpec & Jest tests that are likely to fail for the merge request changes.**
+To reduce the pipeline cost and shorten the job duration, before a merge request is approved, the pipeline will run a predictive set of RSpec & Jest tests that are likely to fail for the merge request changes.
 
 After a merge request has been approved, the pipeline would contain the full RSpec & Jest tests. This will ensure that all tests
 have been run before a merge request is merged.
@@ -344,7 +344,7 @@ There are two Observability end-to-end jobs:
 - `e2e:observability-backend-main-branch`: executes the tests against the main branch of the GitLab Observability Backend.
 - `e2e:observability-backend`: executes the tests against a branch of the GitLab Observability Backend with the same name as the MR branch.
 
-The Observability E2E jobs are triggered automatically **only** for merge requests that touch relevant files, such as those in the `lib/gitlab/observability/` directory or specific configuration files related to observability features.
+The Observability E2E jobs are triggered automatically only for merge requests that touch relevant files, such as those in the `lib/gitlab/observability/` directory or specific configuration files related to observability features.
 
 To run these jobs manually, you can add the `pipeline:run-observability-e2e-tests-main-branch` or `pipeline:run-observability-e2e-tests-current-branch` label to your merge request.
 

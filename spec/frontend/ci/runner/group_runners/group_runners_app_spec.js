@@ -1,4 +1,5 @@
 import Vue, { nextTick } from 'vue';
+import { cloneDeep } from 'lodash-es';
 import { GlButton, GlLink } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -21,6 +22,7 @@ import RunnerList from '~/ci/runner/components/runner_list.vue';
 import RunnerListEmptyState from '~/ci/runner/components/runner_list_empty_state.vue';
 import RunnerStats from '~/ci/runner/components/stat/runner_stats.vue';
 import RunnerActionsCell from '~/ci/runner/components/cells/runner_actions_cell.vue';
+import RunnerPauseButton from '~/ci/runner/components/runner_pause_button.vue';
 import RegistrationDropdown from '~/ci/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
 import RunnerMembershipToggle from '~/ci/runner/components/runner_membership_toggle.vue';
@@ -49,6 +51,7 @@ import {
 import groupRunnersQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners.query.graphql';
 import groupRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners_count.query.graphql';
 import runnerJobCountQuery from '~/ci/runner/graphql/list/runner_job_count.query.graphql';
+import runnerTogglePausedMutation from '~/ci/runner/graphql/shared/runner_toggle_paused.mutation.graphql';
 import GroupRunnersApp from '~/ci/runner/group_runners/group_runners_app.vue';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import {
@@ -70,6 +73,7 @@ const mockGroupRunnersCount = mockGroupRunnersEdges.length;
 const mockGroupRunnersHandler = jest.fn();
 const mockGroupRunnersCountHandler = jest.fn();
 const mockRunnerJobCountHandler = jest.fn();
+const mockRunnerTogglePausedHandler = jest.fn();
 
 jest.mock('~/alert');
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -108,6 +112,7 @@ describe('GroupRunnersApp', () => {
       [groupRunnersQuery, mockGroupRunnersHandler],
       [groupRunnersCountQuery, mockGroupRunnersCountHandler],
       [runnerJobCountQuery, mockRunnerJobCountHandler],
+      [runnerTogglePausedMutation, mockRunnerTogglePausedHandler],
     ];
 
     wrapper = mountFn(GroupRunnersApp, {
@@ -141,12 +146,24 @@ describe('GroupRunnersApp', () => {
     mockGroupRunnersHandler.mockResolvedValue(groupRunnersData);
     mockGroupRunnersCountHandler.mockResolvedValue(groupRunnersCountData);
     mockRunnerJobCountHandler.mockResolvedValue(runnerJobCountData);
+    mockRunnerTogglePausedHandler.mockImplementation(({ input }) =>
+      Promise.resolve({
+        data: {
+          runnerUpdate: {
+            __typename: 'RunnerUpdatePayload',
+            errors: [],
+            runner: { __typename: 'CiRunner', id: input.id, paused: input.paused },
+          },
+        },
+      }),
+    );
   });
 
   afterEach(() => {
     mockGroupRunnersHandler.mockReset();
     mockGroupRunnersCountHandler.mockReset();
     mockRunnerJobCountHandler.mockReset();
+    mockRunnerTogglePausedHandler.mockReset();
   });
 
   it('shows the runner tabs with a runner count for each type', async () => {
@@ -312,6 +329,54 @@ describe('GroupRunnersApp', () => {
 
       expect(showToast).toHaveBeenCalledTimes(1);
       expect(showToast).toHaveBeenCalledWith('Runner deleted');
+    });
+  });
+
+  describe('when a runner is paused and quickly resumed', () => {
+    const groupRunnersDataWithPaused = (paused) => {
+      const data = cloneDeep(groupRunnersData);
+      data.data.group.runners.edges[0].node.paused = paused;
+      return data;
+    };
+
+    const findPauseButton = () => wrapper.findComponent(RunnerPauseButton).find('button');
+
+    const togglePausedAndTriggerRefetch = async () => {
+      await findPauseButton().trigger('click');
+      await waitForPromises();
+
+      // The cache broadcast that triggers the list refetch fires via setTimeout,
+      // so fake timers must be advanced for it to run.
+      jest.runOnlyPendingTimers();
+      await waitForPromises();
+    };
+
+    beforeEach(async () => {
+      await createComponent({ mountFn: mountExtended });
+    });
+
+    it('ignores a stale list response that is overtaken by a newer mutation', async () => {
+      const pendingListQueries = [];
+      mockGroupRunnersHandler.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            pendingListQueries.push(resolve);
+          }),
+      );
+
+      await togglePausedAndTriggerRefetch();
+      await togglePausedAndTriggerRefetch();
+
+      expect(pendingListQueries).toHaveLength(2);
+
+      // The fresh response (paused: false) overtakes the stale one (paused: true)
+      const [resolveStaleQuery, resolveFreshQuery] = pendingListQueries;
+      resolveFreshQuery(groupRunnersDataWithPaused(false));
+      await waitForPromises();
+      resolveStaleQuery(groupRunnersDataWithPaused(true));
+      await waitForPromises();
+
+      expect(findRunnerList().props('runners')[0].paused).toBe(false);
     });
   });
 

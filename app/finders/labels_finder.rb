@@ -88,7 +88,7 @@ class LabelsFinder < UnionFinder
   def by_search(labels)
     return labels unless search?
 
-    labels.search(params[:search], search_in: params[:search_in])
+    labels.search(params[:search], search_in: params[:search_in], fuzzy_search: params[:fuzzy_search])
   end
 
   def by_subscription(labels)

@@ -1037,7 +1037,7 @@ Keep setup proportional to what is being asserted.
 A spec that assigns many instance variables and stubs several helpers to assert a single element
 is a signal that the view has too many responsibilities.
 
-**Do not** include the following in view specs:
+Do not include the following in view specs:
 
 - `ActiveRecord::QueryRecorder` or `exceed_query_limit` assertions.
   Query performance belongs in request or controller specs, not view specs.
@@ -1782,7 +1782,7 @@ One consequence of using these strategies, instead of the well-known
 reset across specs. So if you create a project in spec A, then create a project
 in spec B, the first has `id=1`, while the second has `id=2`.
 
-This means that specs should **never** rely on the value of an ID, or any other
+This means that specs should never rely on the value of an ID, or any other
 sequence-generated column. To avoid accidental conflicts, specs should also
 avoid manually specifying any values in these kinds of columns. Instead, leave
 them unspecified, and look up the value after the row is created.
@@ -1970,7 +1970,7 @@ managed in the same way. With hashed storage enabled in the specs, they are
 written to disk in locations determined by ID, so conflicts should not occur.
 
 Some specs disable hashed storage by passing the `:legacy_storage` trait to the
-`projects` factory. Specs that do this must **never** override the `path` of the
+`projects` factory. Specs that do this must never override the `path` of the
 project, or any of its groups. The default path includes the project ID, so it
 does not conflict. If two specs create a `:legacy_storage` project with the same
 path, they use the same repository on disk and lead to test environment

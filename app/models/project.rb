@@ -2187,10 +2187,6 @@ class Project < ApplicationRecord
     end
   end
 
-  def issue_exists?(issue_id)
-    get_issue(issue_id)
-  end
-
   def external_issue_reference_pattern
     external_issue_tracker.reference_pattern(only_long: issues_enabled?)
   end

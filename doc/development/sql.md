@@ -149,7 +149,7 @@ Later on, a new feature adds an extra column to the `projects` table: `user_id`.
 
 The problem is caused by the way the attributes are selected from the database. The `user_id` column is present in both the `users` and `merge_requests` tables. The query planner cannot decide which table to use when looking up the `user_id` column.
 
-When writing a customized `SELECT` statement, it's better to **explicitly specify the columns with the table name**.
+When writing a customized `SELECT` statement, it's better to explicitly specify the columns with the table name.
 
 ### Good (prefer)
 

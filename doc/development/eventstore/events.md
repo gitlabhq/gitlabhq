@@ -81,6 +81,7 @@ To find subscribers, search the subscription files under
 
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
+| `GitlabSubscriptions::RenewedCloudEvent` | `subscription_management` | CE | CloudEvent published when a GitLab subscription is renewed. Fires only on genuine renewals - both start_date and end_date must change in the same update, with the new start_date >= the previous end_date. |
 | `GitlabSubscriptions::RenewedEvent` | `subscription_management` | CE | Published when a GitLab subscription is renewed. Fires only on genuine renewals - both start_date and end_date must change in the same update, with the new start_date >= the previous end_date. Deferred via run_after_commit. |
 
 ## Groups

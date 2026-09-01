@@ -121,7 +121,7 @@ Alternatively, you can [configure the integration](https://about.gitlab.com/solu
 
 You can interact with [GitLab Duo](../../gitlab_duo/_index.md) directly from Slack by mentioning the
 GitLab bot in any channel or thread where the bot is present. GitLab Duo reads the full
-conversation thread as context, runs a flow on a CI/CD runner, and posts the
+conversation thread and recent channel history as context, runs a flow on a CI/CD runner, and posts the
 result back to the Slack thread.
 
 For example, you can ask GitLab Duo to do the following:
@@ -178,8 +178,8 @@ GitLab Duo requires the following additional GitLab for Slack app permissions:
 | Scope               | Purpose |
 |---------------------|---------|
 | `app_mentions:read` | Receives events when users mention the bot in a channel. |
-| `channels:history`  | Reads conversation history in public channels to provide thread context to the agent. |
-| `groups:history`    | Reads conversation history in private channels to provide thread context to the agent. |
+| `channels:history`  | Reads conversation history in public channels to provide thread and channel context to the agent. |
+| `groups:history`    | Reads conversation history in private channels to provide thread and channel context to the agent. |
 | `reactions:write`   | Adds emoji reactions to messages to indicate agent lifecycle status. |
 
 New installations receive these permissions automatically.

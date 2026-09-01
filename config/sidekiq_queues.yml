@@ -273,6 +273,10 @@
   - 1
 - - cd_artifact_sources_publish_from_registry
   - 1
+- - cd_rollouts_process_workflow_event
+  - 1
+- - cd_rollouts_push_gate_decision
+  - 1
 - - cd_rollouts_start
   - 1
 - - cd_versions_backfill_from_artifact_source

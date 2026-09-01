@@ -38,6 +38,8 @@ If you are considering switching from OpenSSH to `gitlab-sshd`, consider:
   Attempting to run `2fa_recovery_codes` results in the error:
   `remote: ERROR: Unknown command: 2fa_recovery_codes`. See
   [the discussion](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/766#note_1906707753) for details.
+- Algorithm configuration: `gitlab-sshd` does not read `/etc/ssh/sshd_config`.
+  For more information, see [configure SSH algorithms](#configure-ssh-algorithms).
 
 The capabilities of GitLab Shell extend beyond Git operations and can be used for various
 SSH-based interactions with GitLab.
@@ -110,6 +112,181 @@ You can [configure different ports in the Helm chart](https://docs.gitlab.com/ch
 {{< /tab >}}
 
 {{< /tabs >}}
+
+## Configure SSH algorithms
+
+{{< history >}}
+
+- `public_key_algorithms` [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/7660) in GitLab 17.2.
+- Default algorithms [changed](https://gitlab.com/gitlab-org/gitlab-shell/-/merge_requests/1315) in GitLab 18.3.
+- Default algorithms [changed](https://gitlab.com/gitlab-org/gitlab-shell/-/merge_requests/1320) in GitLab 18.4.
+
+{{< /history >}}
+
+`gitlab-sshd` is a separate SSH server and does not read `/etc/ssh/sshd_config`.
+Configure the algorithms it offers with GitLab settings instead.
+You can set the key exchange algorithms, the ciphers, the message authentication code (MAC)
+algorithms, and the public key algorithms accepted for client authentication.
+
+These settings apply only when [`gitlab-sshd` is enabled](#enable-gitlab-sshd).
+They apply only to the port `gitlab-sshd` listens on.
+If OpenSSH serves Git SSH traffic on another port, you configure that separately in
+`/etc/ssh/sshd_config`.
+
+> [!warning]
+> Removing algorithms from `public_key_algorithms` stops affected clients from
+> authenticating.
+> The example excludes `ssh-rsa`, which affects clients that can only produce SHA-1 RSA
+> signatures.
+> RSA SSH certificates continue to work, because clients present them with
+> `rsa-sha2-256-cert-v01@openssh.com` or `rsa-sha2-512-cert-v01@openssh.com`, whose
+> underlying algorithms remain allowed.
+> Only clients limited to `ssh-rsa-cert-v01@openssh.com` are affected.
+> Check your clients before you apply this change.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+To restrict the algorithms that `gitlab-sshd` offers:
+
+1. Edit `/etc/gitlab/gitlab.rb`. For example, to exclude algorithms that use SHA-1:
+
+   ```ruby
+   gitlab_sshd['kex_algorithms'] = %w(mlkem768x25519-sha256 curve25519-sha256 ecdh-sha2-nistp256 ecdh-sha2-nistp384 ecdh-sha2-nistp521 diffie-hellman-group16-sha512)
+   gitlab_sshd['macs'] = %w(hmac-sha2-512-etm@openssh.com hmac-sha2-256-etm@openssh.com)
+   gitlab_sshd['public_key_algorithms'] = %w(ssh-ed25519 sk-ssh-ed25519@openssh.com sk-ecdsa-sha2-nistp256@openssh.com ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521 rsa-sha2-256 rsa-sha2-512)
+   ```
+
+   No default cipher uses SHA-1, so the `ciphers` setting does not need to change.
+   To restrict ciphers separately, set `gitlab_sshd['ciphers']`.
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+The generated configuration is written to the `sshd` section of
+`/var/opt/gitlab/gitlab-shell/config.yml`.
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+These settings apply only when `sshDaemon` is set to `gitlab-sshd`.
+The `sshDaemon` default is `openssh`.
+
+1. Set the [`gitlab.gitlab-shell.config` options](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/#installation-command-line-options).
+   For example, to exclude algorithms that use SHA-1:
+
+   ```yaml
+   gitlab:
+     gitlab-shell:
+       sshDaemon: gitlab-sshd
+       config:
+         kexAlgorithms:
+           - mlkem768x25519-sha256
+           - curve25519-sha256
+           - ecdh-sha2-nistp256
+           - ecdh-sha2-nistp384
+           - ecdh-sha2-nistp521
+           - diffie-hellman-group16-sha512
+         macs:
+           - hmac-sha2-512-etm@openssh.com
+           - hmac-sha2-256-etm@openssh.com
+         publicKeyAlgorithms:
+           - ssh-ed25519
+           - sk-ssh-ed25519@openssh.com
+           - sk-ecdsa-sha2-nistp256@openssh.com
+           - ecdsa-sha2-nistp256
+           - ecdsa-sha2-nistp384
+           - ecdsa-sha2-nistp521
+           - rsa-sha2-256
+           - rsa-sha2-512
+   ```
+
+1. Perform a Helm upgrade.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+Each setting replaces the default list for that algorithm type.
+Settings you leave unset keep their defaults.
+
+### Default algorithms
+
+When you leave a setting empty, `gitlab-sshd` uses the defaults of the
+[`golang.org/x/crypto/ssh`](https://pkg.go.dev/golang.org/x/crypto/ssh) package that
+GitLab Shell is built against.
+The defaults change when GitLab updates that dependency.
+Before GitLab 18.3, GitLab Shell carried its own hard-coded lists.
+
+The defaults are permissive and include algorithms that use SHA-1.
+Configure the settings explicitly to exclude them.
+
+When you configure these settings, the following behaviors apply:
+
+- An algorithm name that GitLab Shell does not recognize is dropped from the list instead of
+  reported as an error, so a mistake can leave a different set than intended.
+  Always confirm a change took effect.
+  For more information, see [issue 870](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/870).
+- A mistake in `public_key_algorithms` behaves differently and is more serious.
+  The value is checked for each connection rather than at startup, so
+  `gitlab-ctl reconfigure` succeeds and the server starts, but clients cannot authenticate.
+  For more information, see [issue 871](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/871).
+- Two names appear in scans that you did not configure.
+  `curve25519-sha256@libssh.org` is added automatically when you list `curve25519-sha256`.
+  `kex-strict-s-v00@openssh.com` always appears because it is a strict key exchange marker
+  rather than an algorithm.
+
+The sample `sshd` lists in the GitLab Shell
+[`config.yml.example`](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/config.yml.example)
+file illustrate the format.
+They are not the effective defaults.
+
+To confirm a change took effect, scan the running server from a client.
+For example:
+
+```shell
+ssh-audit <hostname> -p <port>
+```
+
+### Host key algorithms
+
+You cannot configure host key algorithms directly.
+`gitlab-sshd` derives them from the host keys it loads, so an RSA host key causes the server
+to offer `rsa-sha2-256`, `rsa-sha2-512`, and `ssh-rsa`.
+The `public_key_algorithms` setting does not change this, because it applies only to client
+authentication.
+For more information, see [issue 806](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/806).
+
+To stop the server from offering `ssh-rsa`, exclude the RSA host key.
+
+> [!warning]
+> Removing a host key changes the host key fingerprints that clients see.
+> Users get host key warnings, and clients pinned to the removed key fail until their
+> `known_hosts` entries are updated.
+> Tell your users before you make this change.
+
+For Linux package installations:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_sshd['host_keys_glob'] = 'ssh_host_{ecdsa,ed25519}_key'
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+`gitlab-sshd` matches the pattern inside the host key directory, which defaults to
+`/var/opt/gitlab/gitlab-sshd`.
+If the pattern matches no files, `gitlab-sshd` does not start.
 
 ## Metrics
 

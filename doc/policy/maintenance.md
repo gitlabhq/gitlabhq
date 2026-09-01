@@ -13,8 +13,8 @@ patch releases. New releases are announced on the [GitLab blog](https://about.gi
 
 Our current policy is:
 
-- Backporting bug fixes for **only the current stable release** at any given time - see [patch releases](#patch-releases) below.
-- Backporting security fixes **to the previous two monthly releases in addition to the current stable release**. In some circumstances (outlined in [patch releases](#patch-releases) below) we may address a security vulnerability to the current stable release only or in the regular monthly release process, with no backports.
+- Backporting bug fixes for only the current stable release at any given time - see [patch releases](#patch-releases) below.
+- Backporting security fixes to the previous two monthly releases in addition to the current stable release. In some circumstances (outlined in [patch releases](#patch-releases) below) we may address a security vulnerability to the current stable release only or in the regular monthly release process, with no backports.
 
 In rare cases, an exception may be granted to backport to more than the last two monthly releases. For the required process, see
 [policy exceptions](#policy-exceptions).
@@ -90,8 +90,8 @@ Backward-incompatible changes and migrations are reserved for major versions. Fo
 
 ## Patch releases
 
-Patch releases include **bug fixes** for the current stable released version of
-GitLab and **security fixes** to the previous two monthly releases in addition to the current stable release.
+Patch releases include bug fixes for the current stable released version of
+GitLab and security fixes to the previous two monthly releases in addition to the current stable release.
 
 These policies are in place because:
 

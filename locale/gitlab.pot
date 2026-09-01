@@ -23514,6 +23514,9 @@ msgstr ""
 msgid "ContinuousDeployment|A short name and the tier it represents."
 msgstr ""
 
+msgid "ContinuousDeployment|Access for"
+msgstr ""
+
 msgid "ContinuousDeployment|Active"
 msgstr ""
 
@@ -23527,6 +23530,9 @@ msgid "ContinuousDeployment|Add at least one service."
 msgstr ""
 
 msgid "ContinuousDeployment|Add link"
+msgstr ""
+
+msgid "ContinuousDeployment|Add members"
 msgstr ""
 
 msgid "ContinuousDeployment|Add service"
@@ -23700,6 +23706,9 @@ msgstr ""
 msgid "ContinuousDeployment|Digest"
 msgstr ""
 
+msgid "ContinuousDeployment|Direct members"
+msgstr ""
+
 msgid "ContinuousDeployment|Docs"
 msgstr ""
 
@@ -23817,6 +23826,9 @@ msgstr ""
 msgid "ContinuousDeployment|In progress"
 msgstr ""
 
+msgid "ContinuousDeployment|Inherited members"
+msgstr ""
+
 msgid "ContinuousDeployment|Issue tracker"
 msgstr ""
 
@@ -23839,6 +23851,9 @@ msgid "ContinuousDeployment|Links"
 msgstr ""
 
 msgid "ContinuousDeployment|List view"
+msgstr ""
+
+msgid "ContinuousDeployment|Manage access"
 msgstr ""
 
 msgid "ContinuousDeployment|Name (e.g. api-gateway)"
@@ -36151,6 +36166,19 @@ msgstr ""
 msgid "Flow execution"
 msgstr ""
 
+msgid "FlowEditor|%d stage"
+msgid_plural "FlowEditor|%d stages"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "FlowEditor|%d step"
+msgid_plural "FlowEditor|%d steps"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "FlowEditor|Based on v%{version}"
+msgstr ""
+
 msgid "FlowEditor|Create flow"
 msgstr ""
 
@@ -36178,6 +36206,9 @@ msgstr ""
 msgid "FlowEditor|Stage"
 msgstr ""
 
+msgid "FlowEditor|The flow is not valid YAML. Fix the syntax and try again."
+msgstr ""
+
 msgid "FlowEditor|Trigger"
 msgstr ""
 
@@ -36191,6 +36222,24 @@ msgid "Focus file tree browser filter bar"
 msgstr ""
 
 msgid "Focus filter bar"
+msgstr ""
+
+msgid "FocusCarousel|%{current} of %{total}"
+msgstr ""
+
+msgid "FocusCarousel|Item %{current} of %{total}: %{title}"
+msgstr ""
+
+msgid "FocusCarousel|Item %{current} of %{total}: %{title}, %{status}"
+msgstr ""
+
+msgid "FocusCarousel|Open"
+msgstr ""
+
+msgid "FocusCarousel|Up next"
+msgstr ""
+
+msgid "FocusCarousel|carousel"
 msgstr ""
 
 msgid "FogBugz Email"
@@ -60353,6 +60402,12 @@ msgstr ""
 msgid "PolicyStore|Deployment Gate"
 msgstr ""
 
+msgid "PolicyStore|Deployment promoted"
+msgstr ""
+
+msgid "PolicyStore|Deployment requested"
+msgstr ""
+
 msgid "PolicyStore|Deployment tiers this rule applies to. At least one name or tier is required."
 msgstr ""
 
@@ -60402,6 +60457,9 @@ msgid "PolicyStore|Enforcement mode"
 msgstr ""
 
 msgid "PolicyStore|Environment State"
+msgstr ""
+
+msgid "PolicyStore|Environment advanced"
 msgstr ""
 
 msgid "PolicyStore|Environment names"
@@ -60659,10 +60717,16 @@ msgstr ""
 msgid "PolicyStore|What happens when rules are matched?"
 msgstr ""
 
+msgid "PolicyStore|When a deployment advances to the next environment"
+msgstr ""
+
 msgid "PolicyStore|When a deployment environment is not in the required operational state"
 msgstr ""
 
 msgid "PolicyStore|When a deployment to a gated environment is requested"
+msgstr ""
+
+msgid "PolicyStore|When an existing deployment is promoted to a new environment"
 msgstr ""
 
 msgid "PolicyStore|When should this policy be evaluated?"

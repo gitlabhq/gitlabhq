@@ -109,8 +109,8 @@ at enforcement points (controllers, services, finders, GraphQL).
 In the GitLab RBAC model, the same action can behave differently depending on the
 role. For example:
 
-- **Guest** can read confidential issues **they authored or are assigned to**.
-- **Planner+** can read **any** confidential issue.
+- **Guest** can read confidential issues they authored or are assigned to.
+- **Planner+** can read any confidential issue.
 
 Without private permissions, both cases map to a single `read_issue`
 permission and the nuance is buried in procedural policy logic. This creates problems:

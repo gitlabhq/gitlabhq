@@ -203,7 +203,7 @@ The method includes the following prerequisites:
 - The supplied `relation` must include the primary key defined as the numeric column.
   For example: `id bigint NOT NULL`.
 - The `estimate_batch_distinct_count` can handle a joined relation. To use its ability to
-  count non-unique columns, the joined relation **must not** have a one-to-many relationship,
+  count non-unique columns, the joined relation must not have a one-to-many relationship,
   such as `has_many :boards`.
 - Both `start` and `finish` arguments should always represent primary key relationship values,
   even if the estimated count refers to another column, for example:

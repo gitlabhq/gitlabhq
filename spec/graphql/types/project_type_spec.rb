@@ -585,7 +585,9 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   it_behaves_like 'a GraphQL type with labels' do
-    let(:labels_resolver_arguments) { [:search_term, :includeAncestorGroups, :searchIn, :title, :archived] }
+    let(:labels_resolver_arguments) do
+      [:search_term, :includeAncestorGroups, :searchIn, :title, :archived, :fuzzySearch]
+    end
   end
 
   describe 'jira_imports' do

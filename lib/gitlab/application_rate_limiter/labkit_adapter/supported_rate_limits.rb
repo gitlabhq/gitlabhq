@@ -154,6 +154,13 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            collaborative_editing_update: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_collaborative_editing_updates_by_user_document',
+              characteristics: %i[user document_key],
+              limit: 600,
+              period: 1.minute,
+              action: :limit
+            ),
             create_organization_api: ::Labkit::RateLimit::Rule.new(
               name: 'limit_organization_creates_by_user',
               characteristics: %i[user],

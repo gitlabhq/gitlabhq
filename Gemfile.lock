@@ -558,7 +558,7 @@ GEM
     cronex (0.15.0)
       tzinfo
       unicode (>= 0.4.4.5)
-    css_parser (1.14.0)
+    css_parser (1.22.0)
       addressable
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
@@ -911,18 +911,6 @@ GEM
       prometheus-client-mmap (>= 1.2, < 2.0)
       redis (> 3.0.0, < 6.0.0)
     gitlab-license (2.6.0)
-    gitlab-lookbook (2.3.14)
-      activemodel
-      css_parser
-      htmlbeautifier (~> 1.3)
-      htmlentities (~> 4.3)
-      marcel (~> 1.0)
-      railties (>= 5.0)
-      redcarpet (~> 3.5)
-      rouge (>= 3.26, < 6.0)
-      view_component (>= 2.0)
-      yard (~> 0.9)
-      zeitwerk (~> 2.5)
     gitlab-mail_room (1.1.0)
       jwt (>= 2.0, < 4)
       net-imap (>= 0.5, < 0.7)
@@ -1363,6 +1351,18 @@ GEM
     loofah (2.25.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
+    lookbook (2.3.15)
+      activemodel
+      css_parser
+      htmlbeautifier (~> 1.3)
+      htmlentities (~> 4.3)
+      marcel (>= 1.0)
+      railties (>= 5.0)
+      redcarpet (~> 3.5)
+      rouge (>= 3.26, < 6.0)
+      view_component (>= 2.0)
+      yard (~> 0.9)
+      zeitwerk (~> 2.5)
     lru_redux (1.1.0)
     lumberjack (1.2.7)
     mail (2.9.0)
@@ -2464,6 +2464,7 @@ DEPENDENCIES
   countries (~> 4.0.0)
   coverband (= 6.2.2)
   creole (~> 0.5.0)
+  css_parser (~> 1.22)
   cssbundling-rails (= 1.4.3)
   csv_builder!
   cvss-suite (~> 4.1.1)
@@ -2539,7 +2540,6 @@ DEPENDENCIES
   gitlab-kas-grpc (~> 19.4.0.pre.rc1)
   gitlab-labkit (~> 4.6.0)
   gitlab-license (~> 2.6)
-  gitlab-lookbook (~> 2.3)
   gitlab-mail_room (~> 1.1.0)
   gitlab-markup (~> 2.1.0)
   gitlab-net-dns (~> 0.15.0)
@@ -2628,6 +2628,7 @@ DEPENDENCIES
   logger (~> 1.7.0)
   lograge (~> 0.5)
   loofah (~> 2.25.0)
+  lookbook (~> 2.3.15)
   lru_redux
   mail (= 2.9.0)
   mail-smtp_pool (~> 0.1.0)!
@@ -2912,7 +2913,7 @@ CHECKSUMS
   crass (1.0.6) sha256=dc516022a56e7b3b156099abc81b6d2b08ea1ed12676ac7a5657617f012bd45d
   creole (0.5.0) sha256=951701e2d80760f156b1cb2a93471ca97c076289becc067a33b745133ed32c03
   cronex (0.15.0) sha256=21c794e085fad2951c4f2e279f440340a35ba2297e0b738f22f263f69fbe2186
-  css_parser (1.14.0) sha256=f2ce6148cd505297b07bdbe7a5db4cce5cf530071f9b732b9a23538d6cdc0113
+  css_parser (1.22.0) sha256=f274988a40c6178305530d60e7deb5162f7b5538b701b61b5488fc703e5b40c1
   cssbundling-rails (1.4.3) sha256=53aecd5a7d24ac9c8fcd92975acd0e830fead4ee4583d3d3d49bb64651946e41
   csv (3.3.0) sha256=0bbd1defdc31134abefed027a639b3723c2753862150f4c3ee61cab71b20d67d
   csv_builder (0.1.0)
@@ -3059,7 +3060,6 @@ CHECKSUMS
   gitlab-kas-grpc (19.4.0.pre.rc1) sha256=ebe94f6a8611d43ab1f09967bb997185a1745716caa429a4f359387a79ec8a91
   gitlab-labkit (4.6.0) sha256=dccb6924ba5e76f17a4feb7ec6683d8b686d2d63536c77da680cbba2ba324475
   gitlab-license (2.6.0) sha256=2c1f8ae73835640ec77bf758c1d0c9730635043c01cf77902f7976e826d7d016
-  gitlab-lookbook (2.3.14) sha256=146e78e7e72c3ce58b6e71400276af9ce2929c8eff4965bc2d2a70d527d2a0c7
   gitlab-mail_room (1.1.0) sha256=784847b914a6636b30264fd8a042c15e39f3473f3acd78ebd254ac0a885a5878
   gitlab-markup (2.1.0) sha256=d352c0d261191a1d354aa63bece5644ef75c663bc34276b6de63539d11adf32f
   gitlab-net-dns (0.15.0) sha256=d229aae205055b86b2ad166981257eb589ce6d6a146aa79b3ea2b1e5d9741f46
@@ -3213,6 +3213,7 @@ CHECKSUMS
   logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
   lograge (0.11.2) sha256=4cbd1554b86f545d795eff15a0c24fd25057d2ac4e1caa5fc186168b3da932ef
   loofah (2.25.2) sha256=2007f746959ac65552456e04b433e83deb22759ab38c838b4445c70e43425918
+  lookbook (2.3.15) sha256=e635123d16a4da30f10952fe93b399b5049bf3338670a9768dfc0f66da915f73
   lru_redux (1.1.0) sha256=ee71d0ccab164c51de146c27b480a68b3631d5b4297b8ffe8eda1c72de87affb
   lumberjack (1.2.7) sha256=a5c6aae6b4234f1420dbcd80b23e3bca0817bd239440dde097ebe3fa63c63b1f
   mail (2.9.0) sha256=6fa6673ecd71c60c2d996260f9ee3dd387d4673b8169b502134659ece6d34941

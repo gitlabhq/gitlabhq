@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
-  let(:api_double) { class_double(API::API) }
-
   before do
     custom_tools = {
       'get_mcp_server_version' => Mcp::Tools::GetServerVersionService
@@ -23,11 +21,11 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
 
   describe '#initialize' do
     let(:routes) { [] }
+    let(:fake_api_class) { Class.new(API::Base) }
 
     before do
-      stub_const('API::API', api_double)
-      allow(api_double).to receive(:reset_routes!)
-      allow(api_double).to receive(:routes).and_return(routes)
+      allow(API::Base).to receive(:descendants).and_return([fake_api_class])
+      allow(fake_api_class).to receive(:routes).and_return(routes)
     end
 
     context 'with no API routes' do
@@ -377,7 +375,19 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
     end
 
     context 'when name matches both a canonical tool and an alias' do
+      let(:search_app) { instance_double(Grape::Endpoint) }
+      let(:search_route) { instance_double(Grape::Router::Route, app: search_app) }
+      let(:search_api_tool) { instance_double(Mcp::Tools::Base::ApiTool) }
+      let(:fake_api_class) { Class.new(API::Base) }
+
       before do
+        allow(search_app).to receive(:route_setting).with(:mcp)
+          .and_return({ tool_name: :gitlab_search_in_project, aggregators: [Mcp::Tools::Search::SearchService] })
+        allow(API::Base).to receive(:descendants).and_return([fake_api_class])
+        allow(fake_api_class).to receive(:routes).and_return([search_route])
+        allow(Mcp::Tools::Base::ApiTool).to receive(:new)
+          .with(name: 'gitlab_search_in_project', route: search_route)
+          .and_return(search_api_tool)
         allow(manager).to receive(:alias_map).and_return('search' => 'get_mcp_server_version')
       end
 
@@ -388,37 +398,17 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
       end
     end
 
-    describe 'semantic search tool' do
-      let(:semantic_search_app) { instance_double(Grape::Endpoint) }
-      let(:semantic_search_route) { instance_double(Grape::Router::Route, app: semantic_search_app) }
-      let(:semantic_search_api_tool) { instance_double(Mcp::Tools::Base::ApiTool) }
-
-      before do
-        allow(semantic_search_app).to receive(:route_setting).with(:mcp)
-          .and_return({ tool_name: :semantic_code_search })
-        allow(API::API).to receive(:routes).and_return([semantic_search_route])
-        allow(Mcp::Tools::Base::ApiTool).to receive(:new)
-          .with(name: 'semantic_code_search', route: semantic_search_route)
-          .and_return(semantic_search_api_tool)
-        allow(semantic_search_api_tool).to receive(:version).and_return('1.0.0')
-      end
-
-      it 'resolves semantic_code_search to the discovered ApiTool' do
-        tool = manager.get_tool(name: 'semantic_code_search')
-
-        expect(tool).to eq(semantic_search_api_tool)
-      end
-    end
-
     context 'with an API tool that declares an alias in its route settings' do
       let(:aliased_app) { instance_double(Grape::Endpoint) }
       let(:aliased_route) { instance_double(Grape::Router::Route, app: aliased_app) }
       let(:aliased_api_tool) { instance_double(Mcp::Tools::Base::ApiTool) }
+      let(:fake_api_class) { Class.new(API::Base) }
 
       before do
         allow(aliased_app).to receive(:route_setting).with(:mcp)
           .and_return({ tool_name: :new_api_tool, tool_aliases: [:old_api_tool] })
-        allow(API::API).to receive(:routes).and_return([aliased_route])
+        allow(API::Base).to receive(:descendants).and_return([fake_api_class])
+        allow(fake_api_class).to receive(:routes).and_return([aliased_route])
         allow(Mcp::Tools::Base::ApiTool).to receive(:new)
           .with(name: 'new_api_tool', route: aliased_route)
           .and_return(aliased_api_tool)
@@ -435,7 +425,7 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
 
   describe 'MCP route settings' do
     it 'does not declare tool_aliases on a route that also sets aggregators' do
-      offenders = ::API::API.routes.filter_map do |route|
+      offenders = ::API::Base.descendants.flat_map(&:routes).filter_map do |route|
         settings = route.app.route_setting(:mcp)
         next if settings.blank?
         next unless settings[:aggregators].present? && settings[:tool_aliases].present?

@@ -47,7 +47,7 @@ fostering trust and consistency in the GitLab ecosystem.
 
 ### Enforcing CI/CD-Only Publishing
 
-Packages **must only be published through GitLab CI/CD pipelines on a protected branch**, not from local developer machines. This ensures:
+Packages must only be published through GitLab CI/CD pipelines on a protected branch, not from local developer machines. This ensures:
 
 - Secrets are managed securely
 - Handoffs between team members are seamless, as workflows are documented and automated.

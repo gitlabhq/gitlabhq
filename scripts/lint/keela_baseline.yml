@@ -468,7 +468,6 @@ methods:
   app/models/project.rb:
   - import_scheduled?
   - updating_remote_mirror?
-  - issue_exists?
   - items_for
   - enable_ci
   - valid_runners_token?

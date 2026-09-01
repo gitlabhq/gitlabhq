@@ -35,7 +35,7 @@ We run scheduled pipelines each night to test staging. You can find these pipeli
 
 It is possible to run end-to-end tests for a merge request by triggering the `e2e:test-on-omnibus-ee` manual action in the `qa` stage (not available for forks).
 
-**This runs end-to-end tests against a custom EE (with an Ultimate license) Docker image built from your merge request's changes.**
+This runs end-to-end tests against a custom EE (with an Ultimate license) Docker image built from your merge request's changes.
 
 Manual action that starts end-to-end tests is also available in [`gitlab-org/omnibus-gitlab` merge requests](https://docs.gitlab.com/omnibus/build/team_member_docs/#i-have-an-mr-in-the-omnibus-gitlab-project-and-want-a-package-or-docker-image-to-test-it).
 

@@ -2523,6 +2523,7 @@ This also sets the `username` attribute in your SAML Response to the username in
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505575) `job_title` and `organization` attributes in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/496518) `location` attribute in GitLab 19.4.
 
 {{< /history >}}
 
@@ -2530,10 +2531,16 @@ To sync profile information from your SAML provider, you must configure `attribu
 
 The supported profile attributes are:
 
+- `address`
 - `job_title`
+- `location`
 - `organization`
 
 These attributes have no default mappings and do not sync unless explicitly configured.
+
+> [!note]
+> Both `address` and `location` map to the user's profile location.
+> If both are defined, GitLab uses the `address` value.
 
 {{< tabs >}}
 
@@ -2554,7 +2561,8 @@ These attributes have no default mappings and do not sync unless explicitly conf
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
                attribute_statements: {
                  organization: ['organization'],
-                 job_title: ['job_title']
+                 job_title: ['job_title'],
+                 location: ['location']
                }
        }
      }
@@ -2587,6 +2595,7 @@ These attributes have no default mappings and do not sync unless explicitly conf
      attribute_statements:
        organization: ['organization']
        job_title: ['job_title']
+       location: ['location']
    ```
 
 1. Create the Kubernetes Secret:
@@ -2641,7 +2650,8 @@ These attributes have no default mappings and do not sync unless explicitly conf
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
                         attribute_statements: {
                           organization: ['organization'],
-                          job_title: ['job_title']
+                          job_title: ['job_title'],
+                          location: ['location']
                         }
                 }
               }
@@ -2675,7 +2685,8 @@ These attributes have no default mappings and do not sync unless explicitly conf
                      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
                      attribute_statements: {
                        organization: ['organization'],
-                       job_title: ['job_title']
+                       job_title: ['job_title'],
+                       location: ['location']
                      }
              }
            }

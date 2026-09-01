@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Git::MergeBase, feature_category: :source_code_management
 
   shared_context 'when passing a missing ref' do
     let(:refs) do
-      %w[304d257dcb821665ab5110318fc58a007bd104ed aaaa]
+      %w[aaaa 304d257dcb821665ab5110318fc58a007bd104ed]
     end
   end
 
@@ -105,7 +105,7 @@ RSpec.describe Gitlab::Git::MergeBase, feature_category: :source_code_management
     end
 
     it 'only looks up the commits once' do
-      expect(merge_base).to receive(:commits_for_refs).once.and_call_original
+      expect(repository).to receive(:list_commits_by_ref_name).once.and_call_original
 
       2.times { merge_base.unknown_refs }
     end

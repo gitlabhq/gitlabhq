@@ -76,7 +76,6 @@ set-pipeline-name:
   variables:
     # We use > instead of | because we want the files to be space-separated.
     FILES_TO_DOWNLOAD: >
-      scripts/utils.sh
       scripts/pipeline/set_pipeline_name.rb
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.23
   stage: prepare

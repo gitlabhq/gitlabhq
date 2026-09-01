@@ -16,12 +16,14 @@ import getIssueAssigneesQuery from '~/sidebar/queries/get_issue_assignees.query.
 import getMrAssigneesQuery from '~/sidebar/queries/get_mr_assignees.query.graphql';
 import updateIssueAssigneesMutation from '~/sidebar/queries/update_issue_assignees.mutation.graphql';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
+import AssigneeDropdown from '~/merge_requests/components/assignees/assignee_dropdown.vue';
 import {
   issuableQueryResponse,
   updateIssueAssigneesMutationResponse,
   updateIssueAssigneesMutationErrorResponse,
   issuableQueryWithPlaceholderResponse,
   mrAssigneesQueryResponse,
+  mrAssignee,
   initialAssigneesPlaceholder,
   initialAssignees,
 } from '../../mock_data';
@@ -44,6 +46,7 @@ describe('Sidebar assignees widget', () => {
   const findEditableItem = () => wrapper.findComponent(SidebarEditableItem);
   const findInviteMembersLink = () => wrapper.findComponent(SidebarInviteMembers);
   const findUserSelect = () => wrapper.findComponent(UserSelect);
+  const findAssigneeDropdown = () => wrapper.findComponent(AssigneeDropdown);
 
   const expandDropdown = () => wrapper.vm.$refs.toggle.expand();
 
@@ -423,13 +426,36 @@ describe('Sidebar assignees widget', () => {
     });
   });
 
-  it('does not render invite members link on non-issue sidebar', async () => {
-    createComponent({
-      props: { issuableType: TYPE_MERGE_REQUEST },
+  describe('on a merge request', () => {
+    beforeEach(async () => {
+      createComponent({ props: { issuableType: TYPE_MERGE_REQUEST } });
+      await waitForPromises();
     });
 
-    await waitForPromises();
-    expect(findInviteMembersLink().exists()).toBe(false);
+    it('renders the assignee dropdown instead of the editable item', () => {
+      expect(findEditableItem().exists()).toBe(false);
+      expect(findAssigneeDropdown().props()).toMatchObject({
+        selectedAssignees: [mrAssignee],
+        author: expect.objectContaining({ username: 'root' }),
+        multipleSelectionEnabled: true,
+        currentUserCanMerge: true,
+      });
+    });
+
+    it('does not render the assignees or the dropdown before the query resolves', () => {
+      createComponent({ props: { issuableType: TYPE_MERGE_REQUEST } });
+
+      expect(findAssignees().exists()).toBe(false);
+      expect(findAssigneeDropdown().exists()).toBe(false);
+    });
+
+    it('does not render the assignee dropdown when the issuable is not editable', async () => {
+      createComponent({ props: { issuableType: TYPE_MERGE_REQUEST, editable: false } });
+      await waitForPromises();
+
+      expect(findAssigneeDropdown().exists()).toBe(false);
+      expect(findAssignees().exists()).toBe(true);
+    });
   });
 
   it('does not render invite members link if `directlyInviteMembers` was not passed', async () => {

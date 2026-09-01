@@ -183,7 +183,7 @@ func main() {
 
 This echoes `"1; cat /etc/passwd"`.
 
-**Do not** use `sh`, as it bypasses internal protections:
+Do not use `sh`. It bypasses internal protections:
 
 ```go
 out, _ = exec.Command("sh", "-c", "echo 1 | cat /etc/passwd").Output()

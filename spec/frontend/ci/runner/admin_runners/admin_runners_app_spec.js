@@ -1,4 +1,5 @@
 import Vue, { nextTick } from 'vue';
+import { cloneDeep } from 'lodash-es';
 import { GlLink } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -23,6 +24,7 @@ import RunnerList from '~/ci/runner/components/runner_list.vue';
 import RunnerListEmptyState from '~/ci/runner/components/runner_list_empty_state.vue';
 import RunnerStats from '~/ci/runner/components/stat/runner_stats.vue';
 import RunnerActionsCell from '~/ci/runner/components/cells/runner_actions_cell.vue';
+import RunnerPauseButton from '~/ci/runner/components/runner_pause_button.vue';
 import RegistrationDropdown from '~/ci/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
 import RunnerJobStatusBadge from '~/ci/runner/components/runner_job_status_badge.vue';
@@ -53,6 +55,7 @@ import {
 import allRunnersQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners.query.graphql';
 import allRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners_count.query.graphql';
 import runnerJobCountQuery from '~/ci/runner/graphql/list/runner_job_count.query.graphql';
+import runnerTogglePausedMutation from '~/ci/runner/graphql/shared/runner_toggle_paused.mutation.graphql';
 import usersSearchAllQuery from '~/graphql_shared/queries/users_search_all.query.graphql';
 
 import { captureException } from '~/sentry/sentry_browser_wrapper';
@@ -76,6 +79,7 @@ const mockRunnersHandler = jest.fn();
 const mockRunnersCountHandler = jest.fn();
 const mockRunnerJobCountHandler = jest.fn();
 const mockUsersSearchAllHandler = jest.fn();
+const mockRunnerTogglePausedHandler = jest.fn();
 jest.mock('~/alert');
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -125,6 +129,7 @@ describe('AdminRunnersApp', () => {
       [allRunnersCountQuery, mockRunnersCountHandler],
       [runnerJobCountQuery, mockRunnerJobCountHandler],
       [usersSearchAllQuery, mockUsersSearchAllHandler],
+      [runnerTogglePausedMutation, mockRunnerTogglePausedHandler],
     ];
 
     wrapper = mountFn(AdminRunnersApp, {
@@ -158,6 +163,17 @@ describe('AdminRunnersApp', () => {
     mockRunnersCountHandler.mockResolvedValue(runnersCountData);
     mockRunnerJobCountHandler.mockResolvedValue(runnerJobCountData);
     mockUsersSearchAllHandler.mockResolvedValue(usersData);
+    mockRunnerTogglePausedHandler.mockImplementation(({ input }) =>
+      Promise.resolve({
+        data: {
+          runnerUpdate: {
+            __typename: 'RunnerUpdatePayload',
+            errors: [],
+            runner: { __typename: 'CiRunner', id: input.id, paused: input.paused },
+          },
+        },
+      }),
+    );
   });
 
   afterEach(() => {
@@ -165,6 +181,7 @@ describe('AdminRunnersApp', () => {
     mockRunnersCountHandler.mockReset();
     mockRunnerJobCountHandler.mockReset();
     mockUsersSearchAllHandler.mockReset();
+    mockRunnerTogglePausedHandler.mockReset();
     showToast.mockReset();
   });
 
@@ -541,6 +558,54 @@ describe('AdminRunnersApp', () => {
 
       expect(showToast).toHaveBeenCalledTimes(1);
       expect(showToast).toHaveBeenCalledWith('Runner deleted');
+    });
+  });
+
+  describe('when a runner is paused and quickly resumed', () => {
+    const allRunnersDataWithPaused = (paused) => {
+      const data = cloneDeep(allRunnersData);
+      data.data.runners.nodes[0].paused = paused;
+      return data;
+    };
+
+    const findPauseButton = () => wrapper.findComponent(RunnerPauseButton).find('button');
+
+    const togglePausedAndTriggerRefetch = async () => {
+      await findPauseButton().trigger('click');
+      await waitForPromises();
+
+      // The cache broadcast that triggers the list refetch fires via setTimeout,
+      // so fake timers must be advanced for it to run.
+      jest.runOnlyPendingTimers();
+      await waitForPromises();
+    };
+
+    beforeEach(async () => {
+      await createComponent({ mountFn: mountExtended });
+    });
+
+    it('ignores a stale list response that is overtaken by a newer mutation', async () => {
+      const pendingListQueries = [];
+      mockRunnersHandler.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            pendingListQueries.push(resolve);
+          }),
+      );
+
+      await togglePausedAndTriggerRefetch();
+      await togglePausedAndTriggerRefetch();
+
+      expect(pendingListQueries).toHaveLength(2);
+
+      // The fresh response (paused: false) overtakes the stale one (paused: true)
+      const [resolveStaleQuery, resolveFreshQuery] = pendingListQueries;
+      resolveFreshQuery(allRunnersDataWithPaused(false));
+      await waitForPromises();
+      resolveStaleQuery(allRunnersDataWithPaused(true));
+      await waitForPromises();
+
+      expect(findRunnerList().props('runners')[0].paused).toBe(false);
     });
   });
 

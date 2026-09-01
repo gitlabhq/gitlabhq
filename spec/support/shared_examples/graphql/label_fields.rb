@@ -104,6 +104,25 @@ RSpec.shared_examples 'querying a GraphQL type with labels' do
           expect(labels_response.pluck('title')).to contain_exactly(label_b.title)
         end
       end
+
+      context 'with fuzzy_search' do
+        let(:labels_params) { { search_term: 'mtchng', search_in: [:TITLE], fuzzy_search: true } }
+
+        it 'finds labels containing the searched characters in order' do
+          expect(labels_response.pluck('title')).to contain_exactly(
+            label_c.title,
+            label_d.title
+          )
+        end
+      end
+
+      context 'without fuzzy_search' do
+        let(:labels_params) { { search_term: 'mtchng', search_in: [:TITLE] } }
+
+        it 'does not match non-contiguous characters' do
+          expect(labels_response).to be_empty
+        end
+      end
     end
 
     context 'title search' do

@@ -22,6 +22,7 @@ title: Policy store API
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/612905) to reject rules that compile to a Rego module larger than 65536 bytes in GitLab 19.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/623359) to add the `scope_dimensions` response attribute in GitLab 19.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/612905) to limit `rules` and `actions` to 5 entries each, and each entry to 4096 bytes, in GitLab 19.4.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252841) to add the `environment_advanced` and `deployment_promoted` triggers, and to rename the `deployment_requested` trigger's display name to `Deployment requested`, in GitLab 19.4.
 
 {{< /history >}}
 
@@ -80,7 +81,9 @@ Example response:
 
 ```json
 [
-  { "id": "deployment_requested", "name": "Deployment" }
+  { "id": "deployment_requested", "name": "Deployment requested" },
+  { "id": "environment_advanced", "name": "Environment advanced" },
+  { "id": "deployment_promoted", "name": "Deployment promoted" }
 ]
 ```
 

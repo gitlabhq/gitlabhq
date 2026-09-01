@@ -111,6 +111,10 @@ export default {
       // A "cache and network" policy prevents outdated filtered
       // results.
       fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      // Skip deduplication so each refetch is a real request: otherwise a
+      // stale in-flight response could overwrite newer mutation results,
+      // e.g. a "Paused" badge that never clears.
+      context: { queryDeduplication: false },
       variables() {
         return this.variables;
       },

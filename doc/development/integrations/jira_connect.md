@@ -28,7 +28,7 @@ The following are required to install the app:
 
   <!-- vale gitlab_base.Spelling = NO -->
 
-  GitLab team members **must not** use tunneling tools such as Serveo or `ngrok`. These are
+  GitLab team members must not use tunneling tools such as Serveo or `ngrok`. These are
   security risks, and must not be run on GitLab developer laptops.
 
   <!-- vale gitlab_base.Spelling = YES -->
@@ -145,7 +145,7 @@ To set up a development Jira Connect Proxy:
 
     <!-- vale gitlab_base.Spelling = NO -->
 
-    GitLab team members **must not** use tunneling tools such as Serveo or `ngrok`. These are
+    GitLab team members must not use tunneling tools such as Serveo or `ngrok`. These are
     security risks, and must not be run on GitLab developer laptops.
 
     <!-- vale gitlab_base.Spelling = YES -->

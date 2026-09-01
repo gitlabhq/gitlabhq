@@ -83358,6 +83358,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "fuzzySearch",
+                  "description": "Match `searchTerm` fuzzily: labels match when they contain the searched characters in order, but not necessarily contiguously (for example, `bugu` matches `bug::ux`). Ignored if using `title`.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                },
+                {
                   "name": "searchIn",
                   "description": "Specify which fields to search in. Ignored if using `title`.",
                   "type": {
@@ -164981,6 +164991,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "fuzzySearch",
+                  "description": "Match `searchTerm` fuzzily: labels match when they contain the searched characters in order, but not necessarily contiguously (for example, `bugu` matches `bug::ux`). Ignored if using `title`.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
                 },
                 {
                   "name": "searchIn",

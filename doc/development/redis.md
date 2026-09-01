@@ -44,7 +44,7 @@ provide a semblance of structure at application level. An example might be
 Although we split our Redis usage by purpose into distinct categories, and
 those may map to separate Redis servers in a Highly Available
 configuration like GitLab.com, the default Omnibus and GDK setups share
-a single Redis server. This means that keys should **always** be
+a single Redis server. This means that keys should always be
 globally unique across all categories.
 
 It is usually better to use immutable identifiers - project ID rather than
@@ -279,7 +279,7 @@ Gitlab::Redis::Cache.with { |redis| redis.sismember(key, value) }
 as `Rails.cache`, and so has a key eviction policy if one [is configured](#caching). Use this class for data
 that is truly cache-like and could be regenerated if absent.
 
-Ensure you **always** set a TTL for keys when using this class
+Ensure you always set a TTL for keys when using this class
 as it does not set a default TTL, unlike `Rails.cache` whose default TTL
 [is 8 hours](https://gitlab.com/gitlab-org/gitlab/-/blob/a3e435da6e9f7c98dc05eccb1caa03c1aed5a2a8/lib/gitlab/redis/cache.rb#L26). Consider using an 8 hour TTL for general caching, this matches a workday and would mean that a user would generally only have one cache-miss per day for the same content.
 

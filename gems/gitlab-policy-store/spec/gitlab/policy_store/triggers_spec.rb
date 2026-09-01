@@ -7,9 +7,15 @@ RSpec.describe Gitlab::PolicyStore::Triggers do
     it "enumerates the triggers a policy can target" do
       expect(described_class::ALL).to eq(
         [
-          { id: 'deployment_requested', name: 'Deployment' }
+          { id: 'deployment_requested', name: 'Deployment requested' },
+          { id: 'environment_advanced', name: 'Environment advanced' },
+          { id: 'deployment_promoted', name: 'Deployment promoted' }
         ]
       )
+    end
+
+    it "catalogues exactly the canonical types, so the catalogue can neither drift ahead nor lag behind" do
+      expect(described_class::ALL.map { |trigger| trigger[:id] }).to eq(described_class::TYPES)
     end
 
     it "is frozen down to each trigger, so no caller can mutate the catalogue" do

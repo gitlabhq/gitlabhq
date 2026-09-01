@@ -2730,20 +2730,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#issue_exists?' do
-    let_it_be(:project) { create(:project) }
-
-    it 'is truthy when issue exists' do
-      expect(project).to receive(:get_issue).and_return(double)
-      expect(project.issue_exists?(1)).to be_truthy
-    end
-
-    it 'is falsey when issue does not exist' do
-      expect(project).to receive(:get_issue).and_return(nil)
-      expect(project.issue_exists?(1)).to be_falsey
-    end
-  end
-
   describe '#to_param' do
     context 'with namespace' do
       before do

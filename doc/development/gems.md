@@ -69,7 +69,7 @@ Examples of existing gems:
 
 ## In the same repo
 
-**When extracting Gems from existing codebase, put them in `gems/` of the GitLab monorepo**
+When extracting Gems from existing codebase, put them in `gems/` of the GitLab monorepo.
 
 That gives us the advantages of gems (modular code, quicker to run tests in development).
 and prevents complexity (coordinating changes across repositories, new permissions, multiple projects, etc.).
@@ -349,7 +349,7 @@ to store them in monorepo:
 
 ### Reserve a gem name
 
-We may reserve gem names as a precaution **before publishing any public code that contains a new gem**, to avoid name-squatters taking over the name in RubyGems.
+We may reserve gem names as a precaution before publishing any public code that contains a new gem, to avoid name-squatters taking over the name in RubyGems.
 
 To reserve a gem name, follow the steps to [Create and publish a Ruby gem](#create-and-publish-a-ruby-gem), with the following changes:
 

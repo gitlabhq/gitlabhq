@@ -150,7 +150,7 @@ frontend and API changes are disabled by default. This can be done with multiple
 merge requests, merged in any order. After all the changes are deployed to
 GitLab.com, the feature can be enabled in ChatOps and validated on GitLab.com.
 
-**However, it is not necessarily safe to enable the feature by default.** If the
+However, it is not necessarily safe to enable the feature by default. If the
 feature flag is removed, or the default is flipped to enabled, in the same release
 where the code was merged, then customers performing [zero-downtime updates](../update/zero_downtime.md)
 will end up running the new frontend code against the previous release's API.

@@ -1904,7 +1904,7 @@ You can download any older version of Firefox from the releases FTP server, <htt
 
 ## Snapshots
 
-[Jest snapshot tests](https://jestjs.io/docs/snapshot-testing) are a useful way to prevent unexpected changes to the HTML output of a given component. They should **only** be used when other testing methods (such as asserting elements with `vue-tests-utils`) do not cover the required use case. To use them within GitLab, there are a few guidelines that should be highlighted:
+[Jest snapshot tests](https://jestjs.io/docs/snapshot-testing) are a useful way to prevent unexpected changes to the HTML output of a given component. They should only be used when other testing methods (such as asserting elements with `vue-tests-utils`) do not cover the required use case. To use them within GitLab, there are a few guidelines that should be highlighted:
 
 - Treat snapshots as code
 - Don't think of a snapshot file as a black box
@@ -2469,7 +2469,7 @@ end
 > using the Chrome driver.
 
 Sometimes, there are known console errors that we want to ignore. To ignore a set of messages, such that the test
-**will not** fail if the message is observed, you can pass an `allow:` parameter to
+will not fail if the message is observed, you can pass an `allow:` parameter to
 `expect_page_to_have_no_console_errors`:
 
 ```ruby

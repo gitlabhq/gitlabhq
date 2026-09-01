@@ -150,6 +150,15 @@ module Slack
       handle_http_error(e, 'Slack API error when fetching permalink', channel)
     end
 
+    def conversation_history(channel:, limit:, latest: nil)
+      response = get('conversations.history', **{ channel:, limit:, latest: }.compact)
+      parsed = normalize_response(response)
+      log_error('Slack API error when fetching conversation history', parsed, channel) unless parsed['ok']
+      parsed
+    rescue *Gitlab::HTTP::HTTP_ERRORS => e
+      handle_http_error(e, 'Slack API error when fetching conversation history', channel)
+    end
+
     # Fetches metadata about a conversation (channel, private channel, DM, or
     # group DM). Requires the matching read scope for the conversation type
     # (channels:read, groups:read, im:read, or mpim:read).

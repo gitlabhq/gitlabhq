@@ -22,14 +22,14 @@ title: GitLab高度なSAST
 - GitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/474094)になりました。
 - GitLab 17.4でJava Server Pages（JSP）のサポートが追加されました。
 - GitLab 18.1でPHPのサポートが[追加](https://gitlab.com/groups/gitlab-org/-/epics/14273)されました。
-- GitLab 18.6でC/C++のサポートが[追加](https://gitlab.com/groups/gitlab-org/-/epics/14271)されました。
-- SwiftとObjective-CのサポートはGitLab 19.3で[追加](https://gitlab.com/groups/gitlab-org/-/epics/16318)され、[ベータ](../../../policy/development_stages_support.md#beta)として提供されています。
+- GitLab 18.6でC/C++のサポートが[追加](https://gitlab.com/groups/gitlab-org/-/work_items/14271)されました。
+- GitLab 19.3で、SwiftとObjective-Cのサポートが[追加](https://gitlab.com/groups/gitlab-org/-/work_items/16318)され、[ベータ](../../../policy/development_stages_support.md#beta)として提供されます。
 
 {{< /history >}}
 
 GitLab高度なSASTは、従来のSASTよりも誤検出が少なく、クロスファンクションおよびクロスファイルのテイント解析を使用して複雑な脆弱性を検出する、静的アプリケーションセキュリティテスト（SAST）アナライザーです。
 
-GitLab高度なSASTは、オプトイン機能です。有効にすると、GitLab高度なSASTは、定義済みのルールセットを使用してサポートされているすべての言語ファイルをスキャンします。SASTアナライザーは引き続き他のファイルをスキャンします。両方のアナライザーは並行して実行できます。SASTとGitLab高度なSASTには完全な同等性がありません。それぞれのアナライザーが、もう一方が検出しない脆弱性を検出します。両方のアナライザーが同じ脆弱性を検出した場合、自動化された[移行プロセス](#transitioning-from-semgrep-to-gitlab-advanced-sast)によって検出結果の重複が排除されます。
+GitLab高度なSASTは、オプトイン機能です。有効にすると、GitLab高度なSASTは、定義済みのルールセットを使用してサポートされているすべての言語ファイルをスキャンします。SASTアナライザーは引き続き他のファイルをスキャンします。両方のアナライザーは並行して実行できます。SASTとGitLab高度なSASTは完全な同等性を持っていません。それぞれのアナライザーは、もう一方が検出しない脆弱性を検出します。両方のアナライザーが同じ脆弱性を検出した場合、自動化された[移行プロセス](#transitioning-from-semgrep-to-gitlab-advanced-sast)によって検出結果の重複が排除されます。
 
 GitLab高度なSASTは、標準のSemgrepベースのSASTアナライザーよりも詳細な分析を実行します。この包括的なアプローチにより、精度が向上し、誤検出が減少しますが、より多くのコンピューティングリソースとより長いスキャン時間が必要です。
 
@@ -456,7 +456,7 @@ GitLab高度なSASTは、テイント解析を使用して、信頼できない�
 
 未検証の結果は、完全に検証された脆弱性とは以下の点で明確に区別されます:
 
-- パイプライン**セキュリティ**タブでは、脆弱性の説明は**（未検証）**プレフィックスで始まります。
+- パイプライン**セキュリティ**タブでは、脆弱性の説明は**（未検証）** プレフィックスで始まります。
 - **脆弱性レポート**では、未検証の結果も同様にプレフィックスが付加されます。
 - **データフロー**タブでは、未検証の脆弱性にはソースノードがありません。フロー内の最初のノードは**トレースエントリーポイント**であり、部分的なトレースの開始点を示します。
 
@@ -536,6 +536,7 @@ variables:
 |---------------------------------------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | CおよびC++を除く、サポートされているすべての言語でGitLab高度なSASTスキャンを有効にします。SwiftとObjective-Cの分析は、個別の`gitlab-advanced-sast-ext`ジョブとして実行されます。 |
 | `GITLAB_ADVANCED_SAST_CPP_ENABLED`          | `false`                | CおよびC++プロジェクト専用にGitLab高度なSASTスキャンを有効にします。                                                                                                                       |
+| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | `true` | `false`に設定して、SwiftおよびObjective-C (`gitlab-advanced-sast-ext`) アナライザーの[インクリメンタルスキャン](advanced_sast_swift_objc.md#incremental-scanning)をオフにします。 |
 | `ADVANCED_SAST_PARTIAL_SCAN`                | `false`                | GitLab高度なSAST差分-スキャンモードを`differential`に設定して有効にします。                                                                                                                    |
 | `GITLAB_ADVANCED_SAST_RULE_TIMEOUT`         | `30`                   | ファイルおよびルールごとのタイムアウト（秒単位）。超過すると、その分析はスキップされます。                                                                                                                  |
 | `REPORT_UNVERIFIED_VULNS`                   | `false`                | スキャン結果に未検証の結果を含めます。有効にするには、`true`、`1`、または`True`に設定します。                                                                                                           |

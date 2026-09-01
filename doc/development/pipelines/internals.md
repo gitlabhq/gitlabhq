@@ -454,6 +454,7 @@ After:
 
 - This pattern does not work if a script relies on `git` to access the repository, because we don't have the repository without cloning or fetching.
 - The job using this pattern needs to have `curl` available.
+- Do not list `scripts/utils.sh` in `FILES_TO_DOWNLOAD`: `.fast-no-clone-job` always downloads it in its `before_script`, so listing it again downloads the same file a second time.
 - If you need to run `bundle install` in the job (even using `BUNDLE_ONLY`), you need to:
   - Download the gems that are stored in the `gitlab-org/gitlab` project.
     - You can use the `download_local_gems` shell command for that purpose.
@@ -462,15 +463,14 @@ After:
 #### Where is this pattern used?
 
 - For now, we use this pattern for the following jobs, and those do not block private repositories:
-  - `rspec:coverage` for:
-    - `config/bundler_setup.rb`
-    - `Gemfile`
-    - `Gemfile.lock`
-    - `scripts/merge-simplecov`
-    - `spec/simplecov_env_core.rb`
-    - `spec/simplecov_env.rb`
+  - `set-pipeline-name` for:
+    - `scripts/pipeline/set_pipeline_name.rb`
+  - `pre-merge-checks` for:
+    - `scripts/pipeline/pre_merge_checks.rb`
   - `prepare-as-if-foss-env` for:
     - `scripts/setup/generate-as-if-foss-env.rb`
+  - `retrieve-tests-metadata` for:
+    - `scripts/setup/tests-metadata.rb`
 
 Additionally, `scripts/utils.sh` is always downloaded from the API when this pattern is used (this file contains the code for `.fast-no-clone-job`).
 

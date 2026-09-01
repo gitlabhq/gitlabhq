@@ -17,6 +17,13 @@ module Resolvers
       required: false,
       description: 'Search term to find labels with.'
 
+    argument :fuzzy_search, GraphQL::Types::Boolean,
+      required: false,
+      default_value: false,
+      description: 'Match `searchTerm` fuzzily: labels match when they contain the searched ' \
+        'characters in order, but not necessarily contiguously ' \
+        '(for example, `bugu` matches `bug::ux`). Ignored if using `title`.'
+
     argument :search_in, [Types::Issuables::Labels::SearchFieldListEnum],
       default_value: [:title, :description],
       description: 'Specify which fields to search in. Ignored if using `title`.'

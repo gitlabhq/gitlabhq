@@ -109,6 +109,67 @@ When `SomeEntity` type doesn't have an `id` property in the GraphQL schema, to f
 
 We have some client-wide types with `merge: true` defined in the default client as [`typePolicies`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/graphql.js) (this means that Apollo will merge existing and incoming responses in the case of subsequent queries). Consider adding `SomeEntity` there or defining a custom merge function for it.
 
+### Query deduplication (and when to disable it)
+
+By default, Apollo Client enables deduplication of queries.
+
+When deduplication is on, an operation reuses an identical request already in flight (same query
+document and same variables) instead of sending a new one.
+A refetch that happens while an earlier identical request is still in flight does not reach the
+network.
+It receives the response of the request that is already in flight.
+
+This behavior usually helps.
+For example, several components can mount at the same time and request the same data with one
+network call.
+
+However, deduplication can cause a problem when a query refetches while an earlier, identical
+refetch is still in flight, and a mutation lands in between.
+The later refetch does not reach the network.
+It reuses the earlier request's response, which reflects a snapshot from before the mutation.
+The UI shows the wrong state until you reload the page.
+Refetches happen explicitly through `refetch()`.
+They also happen implicitly when a `cache-and-network` query re-runs after a cache write.
+
+This race is more likely to surface as a flaky test than as a bug report from real usage.
+A person takes noticeably longer between two actions than an automated test does, so a test that
+fires the same two actions back to back is more likely to catch the second dispatch while the
+first refetch is still in flight.
+
+Opt out of deduplication for a query that can be re-dispatched (same document and variables) while
+an earlier dispatch is still in flight, when the later dispatch needs a genuinely fresh round trip
+for one of these reasons:
+
+- Freshness across a mutation race: a mutation can change state between the two dispatches, but
+  the deduped call inherits the earlier, stale response instead of fetching again.
+- Per-call cancellation or identity: the call carries its own `AbortController` signal, or other
+  per-call context, that must attach to its own request instead of silently riding an earlier
+  call's shared one.
+- On-demand confirmation semantics: the call is an imperative "fetch now" (`refetch()`,
+  `refresh()`, `client.query()`) that must produce a real round trip every time, not whatever an
+  in-flight identical call happens to return.
+
+To opt out of deduplication for one query, add `context: { queryDeduplication: false }` to the
+query options.
+Vue smart queries pass `context` through to `watchQuery`, so the same option works there:
+
+```javascript
+apollo: {
+  items: {
+    query: itemsQuery,
+    fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+    context: { queryDeduplication: false },
+  },
+},
+```
+
+With deduplication off, every fetch becomes a separate network request.
+Apollo keeps only the result of the newest request for each watched query.
+Apollo discards a stale response from a superseded request instead of writing it to the cache.
+
+Do not opt out for queries that many components fetch at the same time.
+The point of deduplication is to share those requests.
+
 ## GraphQL Queries
 
 To save query compilation at runtime, webpack can directly import `.graphql`
