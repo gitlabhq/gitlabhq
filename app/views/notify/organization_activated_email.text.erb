@@ -1,4 +1,9 @@
-<%= format(s_('Notify|Your organization %{organization_name} is ready.'), organization_name: @organization.name) %>
+<%= format(s_('Notify|Your organization %{organization_name} is ready'), organization_name: @organization.name) %>
 
-<%= s_('Notify|You can now access:') %>
-<%= @target_url %>
+<%= say_hi(@user) %>
+
+<%= format(s_('Notify|Your organization is ready to use. All of your groups, projects, and users have been successfully transferred to %{organization_name}.'), organization_name: @organization.name) %>
+
+<%= format(s_('Notify|Go to %{organization_name}'), organization_name: @organization.name) %>: <%= @target_url %>
+
+<%= s_("Notify|Go to your organization to change your organization name, description, and to manage organization settings.") %>

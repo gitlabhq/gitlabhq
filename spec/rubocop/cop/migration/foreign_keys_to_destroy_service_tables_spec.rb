@@ -11,8 +11,9 @@ RSpec.describe RuboCop::Cop::Migration::ForeignKeysToDestroyServiceTables, featu
     "Records of the `#{table}` table are deleted through #{service}, so the destroy service " \
       "must be updated to handle these new dependent records. The ON DELETE CASCADE on this " \
       "foreign key is only a backstop for a self-managed admin who manually deletes a `#{table}` " \
-      "row from the database. Once #{service} handles the cleanup, disable this cop on this line " \
-      "with a comment stating where it's handled."
+      "row from the database. Once #{service} handles the cleanup, declare it there with " \
+      "`handles_removal_of` (see Gitlab::HandlesRemovalOf), then disable this cop on this line " \
+      "with a comment referencing that declaration."
   end
 
   before do

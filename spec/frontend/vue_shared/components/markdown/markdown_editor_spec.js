@@ -7,6 +7,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   EDITING_MODE_MARKDOWN_FIELD,
   EDITING_MODE_CONTENT_EDITOR,
+  EDITING_MODE_EVENTS,
   CLEAR_AUTOSAVE_ENTRY_EVENT,
   CONTENT_EDITOR_READY_EVENT,
   MARKDOWN_EDITOR_READY_EVENT,
@@ -445,28 +446,28 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(findTextarea().attributes('data-can-suggest')).toBe('true');
   });
 
-  it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enable-content-editor emitted from markdown editor`, async () => {
+  it(`emits \`content-editor\` when enable-content-editor emitted from markdown editor`, async () => {
     buildWrapper();
 
     await enableContentEditor();
 
-    expect(wrapper.emitted(EDITING_MODE_CONTENT_EDITOR)).toHaveLength(1);
+    expect(wrapper.emitted(EDITING_MODE_EVENTS[EDITING_MODE_CONTENT_EDITOR])).toHaveLength(1);
   });
 
-  it(`emits ${EDITING_MODE_MARKDOWN_FIELD} event when \`enable-markdown-editor\` emitted from content editor`, async () => {
+  it(`emits \`markdown-field\` when \`enable-markdown-editor\` emitted from content editor`, async () => {
     buildWrapper();
 
     await enableContentEditor();
     await enableMarkdownEditor();
 
-    expect(wrapper.emitted(EDITING_MODE_MARKDOWN_FIELD)).toHaveLength(2);
+    expect(wrapper.emitted(EDITING_MODE_EVENTS[EDITING_MODE_MARKDOWN_FIELD])).toHaveLength(2);
   });
 
   it('emits initial editing mode on mount so parents can sync custom UI', () => {
     buildWrapper();
 
-    expect(wrapper.emitted(EDITING_MODE_MARKDOWN_FIELD)).toHaveLength(1);
-    expect(wrapper.emitted(EDITING_MODE_CONTENT_EDITOR)).toBeUndefined();
+    expect(wrapper.emitted(EDITING_MODE_EVENTS[EDITING_MODE_MARKDOWN_FIELD])).toHaveLength(1);
+    expect(wrapper.emitted(EDITING_MODE_EVENTS[EDITING_MODE_CONTENT_EDITOR])).toBeUndefined();
   });
 
   describe(`when editingMode is ${EDITING_MODE_MARKDOWN_FIELD}`, () => {

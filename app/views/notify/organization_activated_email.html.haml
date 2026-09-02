@@ -1,5 +1,16 @@
-%p
-  = safe_format(s_('Notify|Your organization %{organization_name} is ready.'), organization_name: @organization.name)
-%p
-  - organization_link_tag_pair = tag_pair(link_to('', @target_url, target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
-  = safe_format(s_('Notify|You can now access %{link_start}%{organization_name}%{link_end}.'), organization_link_tag_pair, organization_name: @organization.name)
+- heading_style = 'font-size:24px;font-weight:600;line-height:1.4;margin:0 0 24px;'
+- text_style = 'margin:0 0 16px;'
+- button_style = 'display:inline-block;background-color:#1d1424;color:#ffffff;font-size:14px;line-height:20px;padding:8px 16px;border-radius:6px;text-decoration:none;'
+
+%tr
+  %td.text-content{ style: 'text-align:left;' }
+    %h1{ style: heading_style }
+      = safe_format(s_('Notify|Your organization %{organization_name} is ready'), organization_name: @organization.name)
+    %p{ style: text_style }
+      = say_hi(@user)
+    %p{ style: text_style }
+      = safe_format(s_('Notify|Your organization is ready to use. All of your groups, projects, and users have been successfully transferred to %{organization_name}.'), organization_name: @organization.name)
+    %p{ style: 'margin:24px 0;' }
+      = link_to safe_format(s_('Notify|Go to %{organization_name}'), organization_name: @organization.name), @target_url, target: '_blank', rel: 'noopener noreferrer', style: button_style
+    %p{ style: text_style }
+      = s_("Notify|Go to your organization to change your organization name, description, and to manage organization settings.")

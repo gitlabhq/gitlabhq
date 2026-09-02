@@ -218,6 +218,27 @@ RSpec.describe Gitlab::Database::PostgresPartition, type: :model, feature_catego
     end
   end
 
+  describe '#pending_detach' do
+    it 'is false for an attached partition' do
+      expect(find(identifier).pending_detach).to be(false)
+    end
+
+    context 'when a concurrent detach of the partition has not finalized' do
+      before do
+        # Mocks an interrupted DETACH...CONCURRENTLY
+        ActiveRecord::Base.connection.execute(<<~SQL)
+          UPDATE pg_inherits SET inhdetachpending = true
+          WHERE inhrelid = '#{identifier}'::regclass
+        SQL
+      end
+
+      it 'is true, and the partition still reads as attached' do
+        expect(find(identifier).pending_detach).to be(true)
+        expect(described_class.for_identifier(identifier)).not_to be_empty
+      end
+    end
+  end
+
   describe '.partition_exists?' do
     subject { described_class.partition_exists?(table_name) }
 

@@ -285,6 +285,7 @@ For premium models with optimized integration:
 | `claude-4.5-haiku` | 6.7 |
 | `gemini-3.6-flash` <sup>1</sup> | 6.7 |
 | `gemini-3.7-flash` <sup>1</sup> | 6.7 |
+| `gemini-3.8-flash` <sup>1</sup> | 6.7 |
 | `gpt-5-4-mini` | 6.7 |
 | `gemini-3.5-flash` | 3.3 |
 | `gpt-5` | 3.3 |

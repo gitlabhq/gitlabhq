@@ -20,13 +20,22 @@ snapshot = Gitlab::Cells::HttpRouter::RoutesSnapshot.new(
     API::API.routes.map { |route| route.path.to_s }
 )
 
-snapshot.routes         # => [#<struct Route template: "/groups/:id", example: "/groups/foo">, ...]
+snapshot.routes         # => [#<struct Route template="/groups/:id", example="/groups/foo", ...>, ...]
 snapshot.to_json_string # => the snapshot as pretty-printed JSON
 snapshot.write!(Rails.root.join('config/routing/gitlab_routes.json'))
 ```
 
 Given the path spec `/groups/*group_id/-/milestones/:id(.:format)`, it produces the template
 `/groups/*group_id/-/milestones/:id` and the example `/groups/foo/bar/-/milestones/foo`.
+
+That spec accepts a format segment and has a parameter, so the entry also carries
+`acceptsFormat: true` and `dottedExample` (`/groups/john.doe/bar/-/milestones/john.doe`).
+The consumer composes the `.json` variants itself: `example` + `.json`
+(`/groups/foo/bar/-/milestones/foo.json`) and `dottedExample` + `.json`
+(`/groups/john.doe/bar/-/milestones/john.doe.json`). The router must classify all of these
+the same as the plain example. Each field is omitted when it does not apply: `acceptsFormat`
+for a route that takes no format segment, and `dottedExample` for a template with nothing
+to substitute.
 
 Templates are deduplicated and sorted. Routes that only exist under `RAILS_ENV=test` are dropped,
 because each template also becomes a reserved-word guard on the router side. See

@@ -1,0 +1,20 @@
+# frozen_string_literal: true
+
+RUN_WITH_RUBY_NEXT_LABEL = 'pipeline:run-with-ruby-next'
+RUBY_VERSIONS_FILE = '.gitlab/ci/version.yml'
+
+return unless helper.all_changed_files.include?(RUBY_VERSIONS_FILE)
+
+next_ruby_bumped = helper.changed_lines(RUBY_VERSIONS_FILE).any? do |line|
+  line.start_with?('+') && line.include?('RUBY_VERSION_NEXT')
+end
+
+return unless next_ruby_bumped
+return if helper.mr_labels.include?(RUN_WITH_RUBY_NEXT_LABEL)
+
+# Merge request pipelines run the default Ruby version, so a RUBY_VERSION_NEXT
+# bump is not exercised by its own MR pipeline unless the MR opts in.
+warn "This merge request changes `RUBY_VERSION_NEXT` but does not have the " \
+  "~\"#{RUN_WITH_RUBY_NEXT_LABEL}\" label. Without the label, this MR's pipeline runs no " \
+  "jobs on the new Ruby version. Add the label and start a new pipeline so the bump is " \
+  "validated before merge."

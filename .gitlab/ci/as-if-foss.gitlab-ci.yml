@@ -73,9 +73,14 @@ start-as-if-foss:
       - GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
       - GLCI_PUSH_RAILS_TEST_FAILURE_ISSUES_TO_GCS
       - GLCI_EXPORT_TEST_METRICS
+      # Forward the parent's Ruby version selection, like as-if-jh does.
+      # A job-level `RUBY_VERSION: $RUBY_VERSION` cannot do this: the
+      # allowlist excludes the workflow value, so it expands to empty.
+      - RUBY_VERSION_DEFAULT
+      - RUBY_VERSION_NEXT
+      - RUBY_VERSION
   variables:
     START_AS_IF_FOSS: $START_AS_IF_FOSS
-    RUBY_VERSION: $RUBY_VERSION
     # Use same runner tags as in the parent project
     GITLAB_LARGE_RUNNER_OPTIONAL: $GITLAB_LARGE_RUNNER_OPTIONAL
     GLCI_MEDIUM_RUNNER_REQUIRED: $GLCI_MEDIUM_RUNNER_REQUIRED

@@ -220,6 +220,15 @@ module MergeRequestsHelper
     }
   end
 
+  def code_dropdown_data(merge_request)
+    {
+      web_ide_path: (ide_merge_request_path(merge_request) if current_user),
+      gitpod_path: gitpod_merge_request_url(merge_request),
+      patches_path: merge_request_path(merge_request, format: :patch),
+      plain_diff_path: merge_request_path(merge_request, format: :diff)
+    }
+  end
+
   def mr_compare_form_data(merge_request)
     {
       source_branch_url: project_new_merge_request_branch_from_path(merge_request.source_project),
@@ -350,6 +359,12 @@ module MergeRequestsHelper
   end
 
   private
+
+  def gitpod_merge_request_url(merge_request)
+    return unless Gitlab::CurrentSettings.gitpod_enabled && current_user&.gitpod_enabled
+
+    "#{Gitlab::CurrentSettings.gitpod_url}##{merge_request_url(merge_request)}"
+  end
 
   def default_suggestion_commit_message(project)
     project.suggestion_commit_message.presence || Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE

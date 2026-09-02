@@ -2,6 +2,7 @@
 import { GlSprintf, GlForm, GlFormGroup, GlFormInput, GlButton, GlLink } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { applyDeepLinkFragment } from '~/authentication/sessions/post_signin_fragment';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
@@ -128,7 +129,7 @@ export default {
     },
     handleVerificationResponse(response) {
       if (response.data.status === SUCCESS_RESPONSE) {
-        visitUrl(response.data.redirect_path);
+        visitUrl(applyDeepLinkFragment(response.data.redirect_path));
       } else {
         this.handleError();
       }
@@ -162,7 +163,7 @@ export default {
     },
     handleSkipResponse(response) {
       if (response.data.status === SUCCESS_RESPONSE) {
-        visitUrl(response.data.redirect_path);
+        visitUrl(applyDeepLinkFragment(response.data.redirect_path));
       } else {
         this.handleError();
       }

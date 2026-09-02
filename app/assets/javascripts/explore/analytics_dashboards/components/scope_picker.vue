@@ -1,11 +1,14 @@
 <script>
 import { GlButton, GlCollapsibleListbox } from '@gitlab/ui';
 import { xor } from 'lodash-es';
-import { s__ } from '~/locale';
-import { TYPENAME_GROUP } from '~/graphql_shared/constants';
+import { s__, sprintf } from '~/locale';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
-import getGroupProjectsQuery from '../graphql/get_group_projects.query.graphql';
+import getGroupChildrenQuery from '../graphql/get_group_children.query.graphql';
+import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.graphql';
 import ScopePickerItem from './scope_picker_item.vue';
+
+// Keeps a placeholder row's value from colliding with a real namespace path.
+const EMPTY_ITEM_SUFFIX = '::empty';
 
 export default {
   name: 'AnalyticsDashboardScopePicker',
@@ -26,12 +29,14 @@ export default {
       namespace: null,
       selectedPath: '',
       // The top-level group's projects arrive with the group itself, so it opens without a fetch.
-      isExpanded: true,
+      expandedPaths: [this.groupFullPath],
+      // Each expanded subgroup's projects, flattened across its own subgroups, keyed by path.
+      subgroupProjects: {},
     };
   },
   apollo: {
     namespace: {
-      query: getGroupProjectsQuery,
+      query: getGroupChildrenQuery,
       variables() {
         return { fullPath: this.groupFullPath };
       },
@@ -49,56 +54,164 @@ export default {
     projects() {
       return this.namespace?.projects.nodes ?? [];
     },
+    subgroups() {
+      return this.namespace?.descendantGroups.nodes ?? [];
+    },
     groupNamespace() {
       return this.namespace ? this.asNamespace(this.namespace) : null;
     },
-    projectNamespaces() {
-      return this.projects.map((project) => this.asNamespace(project));
+    // Everything the picker has loaded, which is what the selected path is resolved against. It
+    // outlives the rows, so collapsing a subgroup does not forget what was picked inside it.
+    knownNamespaces() {
+      const subgroupProjects = Object.values(this.subgroupProjects).flatMap(
+        ({ projects }) => projects ?? [],
+      );
+
+      return [this.namespace, ...this.projects, ...this.subgroups, ...subgroupProjects]
+        .filter(Boolean)
+        .map((namespace) => this.asNamespace(namespace));
     },
     selectedNamespace() {
-      return (
-        [this.groupNamespace, ...this.projectNamespaces].find(
-          (namespace) => namespace?.fullPath === this.selectedPath,
-        ) ?? null
-      );
+      return this.knownNamespaces.find(({ fullPath }) => fullPath === this.selectedPath) ?? null;
     },
     toggleText() {
       return this.selectedNamespace?.name ?? s__('AnalyticsDashboards|Select a group or project');
     },
-    visibleItems() {
-      if (!this.groupNamespace) return [];
+    sections() {
+      if (!this.namespace) return [];
 
-      return [this.groupNamespace, ...(this.isExpanded ? this.projectNamespaces : [])].map(
-        ({ name, fullPath, type }) => {
-          const isGroup = type === TYPENAME_GROUP;
-          // A selected group covers everything beneath it, so those items cannot be picked on their own.
-          const isLockedByAncestor =
-            Boolean(this.selectedPath) && fullPath.startsWith(`${this.selectedPath}/`);
-
-          return {
-            value: fullPath,
-            text: name,
-            namespaceType: type,
-            selected: this.selectedPath === fullPath || isLockedByAncestor,
-            indeterminate: this.hasSelectedDescendant(fullPath),
-            disabled: isLockedByAncestor,
-            expandable: isGroup && this.projects.length > 0,
-            expanded: this.isExpanded,
-            nested: !isGroup,
-          };
+      return [
+        {
+          text: sprintf(s__('AnalyticsDashboards|Projects in top-level group (%{name})'), {
+            name: this.namespace.name,
+          }),
+          options: [
+            { ...this.asItem(this.groupNamespace), expandable: this.projects.length > 0 },
+            ...(this.isExpanded(this.groupFullPath)
+              ? this.projects.map((project) => ({
+                  ...this.asItem(this.asNamespace(project)),
+                  nested: true,
+                }))
+              : []),
+          ],
         },
-      );
+        {
+          text: s__('AnalyticsDashboards|Subgroups incl. nested'),
+          options: this.subgroups.flatMap((subgroup) => [
+            {
+              ...this.asItem(this.asNamespace(subgroup)),
+              // Both counts are direct-only, so this is as close as the API gets to "has
+              // content" without an unbatched per-row query. See the No projects row below.
+              expandable: subgroup.projectsCount > 0 || subgroup.descendantGroupsCount > 0,
+            },
+            ...this.subgroupItems(subgroup.fullPath),
+          ]),
+        },
+      ].filter(({ options }) => options.length);
     },
     selectedPaths() {
-      return this.visibleItems.filter(({ selected }) => selected).map(({ value }) => value);
+      return this.sections
+        .flatMap(({ options }) => options)
+        .filter(({ selected }) => selected)
+        .map(({ value }) => value);
     },
   },
   methods: {
     asNamespace({ id, name, fullName, fullPath, __typename }) {
       return { id, name, fullName, fullPath, type: __typename };
     },
+    asItem({ name, fullPath, type }) {
+      // A selected group covers everything beneath it, so those items cannot be picked on their own.
+      const isLockedByAncestor =
+        Boolean(this.selectedPath) && fullPath.startsWith(`${this.selectedPath}/`);
+
+      return {
+        value: fullPath,
+        text: name,
+        namespaceType: type,
+        selected: this.selectedPath === fullPath || isLockedByAncestor,
+        indeterminate: this.hasSelectedDescendant(fullPath),
+        disabled: isLockedByAncestor,
+        expanded: this.isExpanded(fullPath),
+        expanding: this.isExpanded(fullPath) && Boolean(this.subgroupProjects[fullPath]?.isLoading),
+      };
+    },
+    // The rows an expanded subgroup reveals. Nothing until its fetch lands.
+    subgroupItems(fullPath) {
+      if (!this.isExpanded(fullPath)) return [];
+
+      const { projects } = this.subgroupProjects[fullPath] ?? {};
+      if (!projects) return [];
+
+      // A subgroup can look expandable on its direct counts and still hold nothing, so say so
+      // rather than leaving the expand looking broken.
+      if (!projects.length) {
+        return [
+          {
+            value: `${fullPath}${EMPTY_ITEM_SUFFIX}`,
+            text: s__('AnalyticsDashboards|No projects'),
+            placeholder: true,
+            disabled: true,
+          },
+        ];
+      }
+
+      // Projects arrive pre-flattened, so they render at one level whatever their real depth.
+      // Naming the parent only helps for projects below the subgroup that was expanded.
+      return projects.map((project) => ({
+        ...this.asItem(this.asNamespace(project)),
+        nested: true,
+        parentName: project.namespace?.fullPath === fullPath ? null : project.namespace?.name,
+      }));
+    },
+    isExpanded(fullPath) {
+      return this.expandedPaths.includes(fullPath);
+    },
     hasSelectedDescendant(fullPath) {
       return this.selectedPath.startsWith(`${fullPath}/`);
+    },
+    async toggleExpanded(fullPath) {
+      if (this.isExpanded(fullPath)) {
+        this.expandedPaths = this.expandedPaths.filter((path) => path !== fullPath);
+        return;
+      }
+
+      this.expandedPaths = [...this.expandedPaths, fullPath];
+
+      // The top-level group's projects came with the group itself, and a subgroup is fetched
+      // once -- including while its first fetch is still in flight.
+      const cached = this.subgroupProjects[fullPath];
+      if (fullPath === this.groupFullPath || cached?.projects || cached?.isLoading) return;
+
+      await this.loadSubgroupProjects(fullPath);
+    },
+    async loadSubgroupProjects(fullPath) {
+      this.subgroupProjects = {
+        ...this.subgroupProjects,
+        [fullPath]: { isLoading: true, projects: null },
+      };
+
+      try {
+        const { data } = await this.$apollo.query({
+          query: getSubgroupProjectsQuery,
+          variables: { fullPath },
+        });
+
+        this.subgroupProjects = {
+          ...this.subgroupProjects,
+          // A subgroup can go missing between the parent query and this one, which comes back
+          // as a successful null rather than an error.
+          [fullPath]: { isLoading: false, projects: data.group?.projects?.nodes ?? [] },
+        };
+      } catch (error) {
+        // Collapse and forget the row, so expanding it again retries the fetch.
+        const { [fullPath]: failed, ...rest } = this.subgroupProjects;
+        this.subgroupProjects = rest;
+        this.expandedPaths = this.expandedPaths.filter((path) => path !== fullPath);
+
+        this.$emit('error', error);
+        captureException(error);
+      }
     },
     onSelect(paths) {
       // The listbox reports the whole selection, but only one item can change per click and the
@@ -128,7 +241,7 @@ export default {
     class="analytics-scope-picker"
     multiple
     fluid-width
-    :items="visibleItems"
+    :items="sections"
     :selected="selectedPaths"
     :toggle-text="toggleText"
     :header-text="s__('AnalyticsDashboards|Scope')"
@@ -137,7 +250,17 @@ export default {
     @select="onSelect"
   >
     <template #list-item="{ item }">
-      <scope-picker-item v-bind="item" @toggle-expanded="isExpanded = !isExpanded" />
+      <span
+        v-if="item.placeholder"
+        class="-gl-m-2 gl-flex gl-items-center gl-gap-2 gl-pl-5 gl-text-subtle"
+        data-testid="scope-picker-empty-item"
+      >
+        <!-- Reserve the chevron's width so the text lines up with the projects it stands in for. -->
+        <span class="gl-w-6 gl-shrink-0"></span>
+        {{ item.text }}
+      </span>
+
+      <scope-picker-item v-else v-bind="item" @toggle-expanded="toggleExpanded(item.value)" />
     </template>
 
     <template #footer>

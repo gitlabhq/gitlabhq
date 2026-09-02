@@ -501,7 +501,8 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     it 'users matches the serialized json' do
       entity = double
       expect_next_instance_of(Admin::UserSerializer) do |instance|
-        expect(instance).to receive(:represent).with([user], { current_user: user }).and_return(entity)
+        expect(instance).to receive(:represent)
+          .with([user], { current_user: user, authorization_context: nil }).and_return(entity)
       end
       expect(entity).to receive(:to_json).and_return("{\"username\":\"admin\"}")
       expect(data[:users]).to eq "{\"username\":\"admin\"}"

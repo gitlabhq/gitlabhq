@@ -11775,6 +11775,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+            },
+            {
+              "name": "webPath",
+              "description": "Web path of the item in the AI catalog. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "inputFields": null,
@@ -13561,6 +13573,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+            },
+            {
+              "name": "webPath",
+              "description": "Web path of the item in the AI catalog. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "inputFields": null,
@@ -14723,6 +14747,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+            },
+            {
+              "name": "webPath",
+              "description": "Web path of the item in the AI catalog. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "inputFields": null,
@@ -18436,6 +18472,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+            },
+            {
+              "name": "webPath",
+              "description": "Web path of the item in the AI catalog. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "inputFields": null,
@@ -143420,6 +143468,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "aiCatalogItem",
+              "description": "AI catalog item (flow or agent definition) that the session ran. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "AiCatalogItem",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "aiCatalogItemVersionId",

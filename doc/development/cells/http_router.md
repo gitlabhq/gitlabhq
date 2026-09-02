@@ -149,6 +149,25 @@ against its own routing table in a
 [snapshot test](https://gitlab.com/gitlab-org/cells/http-router/-/blob/main/test/routes/routes.spec.ts)
 to detect when a GitLab route change affects routing.
 
+Each entry can also carry two optional fields.
+The router replays these the same way and must classify them identically to `example`.
+
+- `acceptsFormat`: present and set to `true` only for routes that accept a Rails format segment
+  (`.:format`). The snapshot does not materialize a `.json` example; the consumer composes it
+  itself as `example` + `.json`.
+- `dottedExample`: present only for templates that contain a parameter or a wildcard.
+  The value is `example` rebuilt with `john.doe` in place of each parameter value.
+  Dots are legal in usernames and namespace paths, so this catches code that reads a dot as a
+  suffix separator and truncates the value.
+
+When both fields are present, the consumer also composes `dottedExample` + `.json`
+(for example `/users/john.doe.json`). That combination is the closest input to a bug that routes
+a request to the wrong cell: a dotted identifier followed by a real format suffix.
+Claim extraction has to strip exactly one suffix, at the last dot.
+A parser that handles the two fields on their own can still get this combination wrong.
+
+Both fields are omitted when they do not apply.
+
 To keep GitLab and the HTTP Router in sync, the routes are generated and committed in GitLab instead
 of the HTTP Router repository. This prevents the two from drifting apart, which could route requests
 to the wrong cell.

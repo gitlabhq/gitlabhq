@@ -15,6 +15,7 @@ import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import EmailCode from '~/authentication/sessions/components/email_code.vue';
 import EmailForm from '~/sessions/new/components/email_form.vue';
 import { newUserSessionPath } from '~/lib/utils/path_helpers/routes';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -181,6 +182,21 @@ describe('EmailCode', () => {
 
       expect(visitUrl).not.toHaveBeenCalled();
       expect(wrapper.text()).toContain('Invalid code.');
+    });
+
+    describe('when a deep-link fragment is in the address bar', () => {
+      it('carries the fragment onto the redirect path', async () => {
+        setWindowLocation('https://gitlab.test/users/sign_in#L7');
+        axiosMock
+          .onPost(verifyPath)
+          .reply(HTTP_STATUS_OK, { status: 'success', redirect_path: '/welcome' });
+
+        await enterCode('123456');
+        await submitCodeForm();
+        await waitForPromises();
+
+        expect(visitUrl).toHaveBeenCalledWith('/welcome#L7');
+      });
     });
   });
 

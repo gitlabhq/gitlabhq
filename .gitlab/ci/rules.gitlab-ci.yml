@@ -292,7 +292,7 @@
   if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train" && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org/'
 
 .if-ruby-branch: &if-ruby-branch
-  if: '$CI_COMMIT_BRANCH == "ruby-next" || (($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/)'
+  if: '$CI_COMMIT_BRANCH == "ruby-next" || (($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*|pipeline:run-with-ruby-next/)'
 
 .if-rails-next-branch: &if-rails-next-branch
   if: '$CI_COMMIT_BRANCH == "rails-next"'

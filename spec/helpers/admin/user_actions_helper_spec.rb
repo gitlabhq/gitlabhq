@@ -136,17 +136,6 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
       end
     end
 
-    context 'the current_user does not have permission to delete the user' do
-      let_it_be(:user) { build(:user) }
-
-      before do
-        allow(helper).to receive(:can?).and_call_original
-        allow(helper).to receive(:can?).with(current_user, :destroy_user, user).and_return(false)
-      end
-
-      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate", "trust") }
-    end
-
     context 'the user is a sole owner of a group' do
       let_it_be(:group) { create(:group) }
       let_it_be(:user, freeze: false) { create(:user) }
@@ -162,6 +151,40 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
       let_it_be(:user, freeze: false) { create(:user, :bot) }
 
       it { is_expected.to match_array([]) }
+    end
+
+    context 'the current_user does not have permission to delete the user' do
+      let_it_be(:user, freeze: false) { create(:user) }
+
+      before do
+        allow(helper).to receive(:can?).and_call_original
+        allow(helper).to receive(:can?).with(current_user, :destroy_user, user).and_return(false)
+      end
+
+      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate", "trust") }
+    end
+
+    context 'when the current user cannot administer all resources' do
+      let_it_be(:current_user) { build(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
+
+      it 'returns no actions' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'in the organization admin area' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:current_user) { create(:organization_owner, organization: organization).user }
+      let_it_be(:user, freeze: false) { create(:organization_user, organization: organization).user }
+
+      before do
+        allow(helper).to receive(:options).and_return(authorization_context: organization)
+      end
+
+      it 'returns no actions' do
+        is_expected.to be_empty
+      end
     end
   end
 end

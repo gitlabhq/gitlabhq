@@ -178,6 +178,31 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
         expect(page).not_to have_css('.diff-file')
       end
 
+      it 'switches to the diff after renaming from markdown to a non-markup file' do
+        visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
+        fill_editor(content: 'some content\\n')
+        fill_in 'file_path', with: 'README.py'
+        click_on 'Preview'
+
+        # The original .md name would render markup; the rename must switch to the diff view.
+        expect(page).to have_css('.line_holder.new')
+        expect(page).to have_content('some content')
+        expect(page).not_to have_css('.file-content.md')
+      end
+
+      it 'switches to the renamed markup preview after renaming from markdown' do
+        visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
+        fill_editor(content: '* Title\\n')
+        fill_in 'file_path', with: 'README.org'
+        click_on 'Preview'
+
+        # The original .md name would open the live preview; the rename must
+        # switch to the preview pane using the new file type.
+        expect(page).to have_css('.file-content.md')
+        expect(page).to have_css('h1', text: 'Title')
+        expect(page).not_to have_css('.source-editor-preview')
+      end
+
       it 'renders the preview using the renamed file type' do
         visit project_edit_blob_path(project, tree_join(branch, 'CHANGELOG'))
         fill_editor(content: "* Title\n")

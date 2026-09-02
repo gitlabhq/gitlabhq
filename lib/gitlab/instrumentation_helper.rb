@@ -178,13 +178,11 @@ module Gitlab
 
     def instrument_gvl(payload)
       context = Gitlab::RequestContext.instance
-      return unless context.gvl_local_timer_start && context.gvl_global_timer_start
-      return unless GVLTools::LocalTimer.enabled? && GVLTools::GlobalTimer.enabled?
+      return unless context.gvl_local_timer_start
+      return unless GVLTools::LocalTimer.enabled?
 
       payload[:gvl_thread_wait_s] =
         (GVLTools::LocalTimer.monotonic_time - context.gvl_local_timer_start) / 1_000_000_000.0
-      payload[:gvl_process_wait_s] =
-        (GVLTools::GlobalTimer.monotonic_time - context.gvl_global_timer_start) / 1_000_000_000.0
     end
 
     # Returns the total queuing duration for a Sidekiq job in seconds, as a float, if the

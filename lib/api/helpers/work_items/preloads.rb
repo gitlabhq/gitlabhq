@@ -103,14 +103,17 @@ module API
           ).execute.first
         end
 
-        # Resolves the work item for a `namespaces/:id/-/work_items/:iid` route: user namespaces are
-        # rejected, project namespaces resolve to their project, group namespaces are used directly.
-        def work_item_for_namespace!(namespace_id, work_item_iid)
-          namespace = find_namespace_by_path!(namespace_id.to_s, allow_project_namespaces: true)
+        # Resolves a `namespaces/:id` route param: user namespaces are rejected, project namespaces
+        # resolve to their project, group namespaces are used directly.
+        def resolve_namespace_resource_parent!(resource_parent_id)
+          namespace = find_namespace_by_path!(resource_parent_id.to_s, allow_project_namespaces: true)
           not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
+          namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
+        end
 
-          resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
-          work_item_for!(resource_parent, work_item_iid)
+        # Resolves the work item for a `namespaces/:id/-/work_items/:iid` route.
+        def work_item_for_namespace!(namespace_id, work_item_iid)
+          work_item_for!(resolve_namespace_resource_parent!(namespace_id), work_item_iid)
         end
 
         # Resolves the work item for a project- or group-scoped route. 404s if not found or not readable.

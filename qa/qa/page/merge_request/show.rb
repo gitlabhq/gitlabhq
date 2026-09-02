@@ -104,6 +104,13 @@ module QA
           element 'open-in-web-ide-button'
         end
 
+        view 'app/assets/javascripts/merge_requests/components/code_dropdown.vue' do
+          element 'mr-code-dropdown'
+          element 'download-email-patches-menu-item'
+          element 'download-plain-diff-menu-item'
+          element 'open-in-web-ide-button'
+        end
+
         view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_pipeline.vue' do
           element 'pipeline-info-container'
           element 'pipeline-id'
@@ -579,26 +586,17 @@ module QA
         end
 
         def view_email_patches
-          # Click by JS is needed to bypass the Moved MR actions popover
-          # Change back to regular click_element when moved_mr_sidebar FF is removed
-          # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-          click_by_javascript(find_element('mr-code-dropdown'))
+          open_code_dropdown
           visit_link_in_element('download-email-patches-menu-item')
         end
 
         def view_plain_diff
-          # Click by JS is needed to bypass the Moved MR actions popover
-          # Change back to regular click_element when moved_mr_sidebar FF is removed
-          # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-          click_by_javascript(find_element('mr-code-dropdown'))
+          open_code_dropdown
           visit_link_in_element('download-plain-diff-menu-item')
         end
 
         def click_open_in_web_ide
-          # Click by JS is needed to bypass the Moved MR actions popover
-          # Change back to regular click_element when moved_mr_sidebar FF is removed
-          # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-          click_by_javascript(find_element('mr-code-dropdown'))
+          open_code_dropdown
           click_element('open-in-web-ide-button')
           page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
           wait_for_requests
@@ -716,6 +714,16 @@ module QA
         def close_dap_panel_if_exists; end
 
         private
+
+        def open_code_dropdown
+          vue_dropdown = within_element('mr-code-dropdown') { has_element?('base-dropdown-toggle', wait: 1) }
+
+          if vue_dropdown
+            within_element('mr-code-dropdown') { click_element('base-dropdown-toggle') }
+          else
+            click_by_javascript(find_element('mr-code-dropdown'))
+          end
+        end
 
         def wait_assignees_block_finish_loading
           within_element('assignee-block-container') do

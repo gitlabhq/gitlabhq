@@ -15,6 +15,7 @@ import {
 } from '~/lib/utils/http_status';
 import EmailVerification from '~/sessions/new/components/email_verification.vue';
 import EmailForm from '~/sessions/new/components/email_form.vue';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
   I18N_EMAIL_EMPTY_CODE,
@@ -125,6 +126,30 @@ describe('EmailVerification', () => {
 
       it('redirects to the returned redirect path', () => {
         expect(visitUrl).toHaveBeenCalledWith(redirectPath);
+      });
+    });
+
+    describe('when a deep-link fragment is in the address bar', () => {
+      const redirectPath = 'root';
+
+      afterEach(() => {
+        setWindowLocation('https://gitlab.test/users/sign_in');
+      });
+
+      beforeEach(async () => {
+        setWindowLocation('https://gitlab.test/users/sign_in#L7');
+        enterCode('123456');
+
+        axiosMock
+          .onPost(defaultPropsData.verifyPath)
+          .reply(HTTP_STATUS_OK, { status: 'success', redirect_path: redirectPath });
+
+        await submitForm();
+        await axios.waitForAll();
+      });
+
+      it('carries the fragment onto the redirect path', () => {
+        expect(visitUrl).toHaveBeenCalledWith(`${redirectPath}#L7`);
       });
     });
 

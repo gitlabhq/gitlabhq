@@ -60,5 +60,14 @@ RSpec.describe Sidebars::Admin::Organizations::Menus::OverviewMenu, feature_cate
       expect(menu.has_items?).to be true
     end
   end
+
+  describe 'menu items' do
+    it 'includes the Users item' do
+      users_item = menu.renderable_items.find { |item| item.item_id == :organization_admin_users }
+
+      expect(users_item).to be_present
+      expect(users_item.title).to eq(_('Users'))
+    end
+  end
 end
 # rubocop:enable RSpec/FactoryBot/AvoidCreate

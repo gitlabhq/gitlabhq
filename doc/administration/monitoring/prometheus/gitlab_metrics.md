@@ -329,6 +329,7 @@ The following metrics can be controlled by feature flags:
 | `gitlab_ci_queue_active_runners_total`       | `gitlab_ci_builds_queuing_metrics` |
 | `gitaly_circuit_breaker_requests_total`      | `add_circuit_breaker_to_gitaly`    |
 | `gitaly_circuit_breaker_transitions_total`   | `add_circuit_breaker_to_gitaly`    |
+| `ruby_gvl_wait_seconds_total`                | `enable_sidekiq_gvl_metrics`       |
 
 ## Praefect metrics
 
@@ -937,6 +938,7 @@ Some basic Ruby runtime metrics are available:
 | `ruby_gc_duration_seconds`                | Counter | 11.1  | Time spent by Ruby in GC |
 | `ruby_gc_stat_...`                        | Gauge   | 11.1  | Various metrics from [GC.stat](https://ruby-doc.org/core-2.6.5/GC.html#method-c-stat) |
 | `ruby_gc_stat_ext_heap_fragmentation`     | Gauge   | 15.2  | Degree of Ruby heap fragmentation as live objects versus eden slots (range 0 to 1) |
+| `ruby_gvl_wait_seconds_total`             | Gauge   | 19.4  | Seconds all threads in this process spent waiting for the Global VM Lock. [Controlled by a feature flag](#metrics-controlled-by-a-feature-flag) |
 | `ruby_file_descriptors`                   | Gauge   | 11.1  | File descriptors per process |
 | `ruby_sampler_duration_seconds`           | Counter | 11.1  | Time spent collecting stats |
 | `ruby_process_cpu_seconds_total`          | Gauge   | 12.0  | Total amount of CPU time per process |

@@ -1,4 +1,5 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import TwoFactorAuthentication from '~/authentication/sessions/components/two_factor_authentication.vue';
 import TotpCode from '~/authentication/sessions/components/totp_code.vue';
 import RecoveryCode from '~/authentication/sessions/components/recovery_code.vue';
@@ -126,6 +127,25 @@ describe('TwoFactorAuthentication', () => {
 
       expect(findTotpCode().exists()).toBe(true);
       expect(findWebauthnAuthentication().exists()).toBe(false);
+    });
+  });
+
+  describe('deep-link fragment', () => {
+    afterEach(() => {
+      setWindowLocation('https://gitlab.test/users/sign_in');
+    });
+
+    it('appends the address-bar fragment to the active child path', () => {
+      setWindowLocation('https://gitlab.test/users/sign_in#L7');
+      createComponent();
+
+      expect(findTotpCode().props('path')).toBe(`${defaultProps.path}#L7`);
+    });
+
+    it('leaves the path unchanged when there is no fragment', () => {
+      createComponent();
+
+      expect(findTotpCode().props('path')).toBe(defaultProps.path);
     });
   });
 

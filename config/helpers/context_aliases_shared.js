@@ -23,6 +23,17 @@ const INFECTION_BLOCKLIST = [
   // Global state vars should not be duplicated
   'app/assets/javascripts/lib/utils/breadcrumbs_state.js',
   'app/assets/javascripts/super_sidebar/state.js',
+  // Memoises the one mounted invite modal. Two copies mount two apps on the same
+  // element, because each copy sees its own memo as empty.
+  'app/assets/javascripts/invite_members/init_invite_members_modal.js',
+  // Registers document listeners at module scope. Two copies handle one click
+  // twice, and the second handler reads state the first already changed, so the
+  // markdown preview opens and closes again.
+  'app/assets/javascripts/behaviors/preview_markdown.js',
+  // Holds the one work item Apollo cache. `super_sidebar` loads on every page and
+  // reaches it, so a migrated page would otherwise get a second cache. The provider
+  // in `issuable_client.js` stays per-lane, because VueApollo cannot be shared.
+  'app/assets/javascripts/graphql_shared/issuable_default_client.js',
 ];
 
 // Infectable despite the scanner marking them clean, so a Vue 3 importer gets a

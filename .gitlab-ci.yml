@@ -92,7 +92,7 @@ workflow:
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
     - if: '$CI_MERGE_REQUEST_LABELS =~ /Community contribution/'
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (community contribution)'
     # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 which prevents usage of dependency proxy
@@ -106,7 +106,7 @@ workflow:
     # and we would always reconfigure the docker deamon for any CI/CD pipeline.
     - if: '$CI_MERGE_REQUEST_IID && $GITLAB_USER_LOGIN =~ /project_\d+_bot/'
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         DOCKER_AUTH_CONFIG: "${DOCKER_AUTH_CONFIG_OVERRIDE}"
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (triggered by a project token)'
@@ -120,19 +120,26 @@ workflow:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/332411.
     - if: '$CI_MERGE_REQUEST_IID && $GITLAB_USER_LOGIN == "service-modelops-agent-principles-distiller"'
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         DOCKER_AUTH_CONFIG: "${DOCKER_AUTH_CONFIG_OVERRIDE}"
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (triggered by the principles distiller)'
     - <<: *if-merge-request-security-canonical-sync
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: '$CI_DEFAULT_BRANCH security->canonical sync'
         SKIP_MESSAGE: 'MR only contains changes from the security mirror, which have already been reviewed, tested and deployed.'
     - <<: *if-merge-request-labels-run-with-rails-next
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         BUNDLE_GEMFILE: Gemfile.next
+    # Opt-in to the next Ruby version, like pipeline:run-with-rails-next does
+    # for Rails. Excludes merge trains: a train validates what the default
+    # branch will run, and that is the default Ruby.
+    - if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-with-ruby-next/'
+      variables:
+        <<: [*next-ruby-variables, *default-merge-request-variables]
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (run-with-ruby-next)'
     # This variable can be specified in manual or scheduled pipelines to run CI with the next Rails version.
     # Specifying BUNDLE_GEMFILE: Gemfile.next wouldn't work because QA jobs require
     # BUNDLE_GEMFILE to be Gemfile even with the next Rails version pipelines.
@@ -145,13 +152,13 @@ workflow:
     # SQL queries carry source-file info (useful when reviewing DB changes).
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && $CI_MERGE_REQUEST_LABELS =~ /database/'
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
         QUERY_LOG_LINE: "true"
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
-        <<: [*next-ruby-variables, *default-merge-request-variables]
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
     # For the scheduled pipelines, we set specific variables.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $BUILD_WITH_NEXT_RUBY_VERSION == "true"'

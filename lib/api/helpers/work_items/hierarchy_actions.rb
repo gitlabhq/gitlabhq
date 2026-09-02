@@ -7,7 +7,7 @@ module API
         def attach_child_work_item!(resource_parent, work_item_iid, child_id)
           check_work_item_rest_api_feature_flag!
 
-          parent_work_item = find_parent_work_item!(resource_parent, work_item_iid)
+          parent_work_item = work_item_for!(resource_parent, work_item_iid)
           authorize! :update_work_item, parent_work_item
 
           child_work_item = find_child_work_item!(child_id)
@@ -19,7 +19,7 @@ module API
         def detach_child_work_item!(resource_parent, work_item_iid, child_id)
           check_work_item_rest_api_feature_flag!
 
-          parent_work_item = find_parent_work_item!(resource_parent, work_item_iid)
+          parent_work_item = work_item_for!(resource_parent, work_item_iid)
           authorize! :update_work_item, parent_work_item
 
           child_work_item = find_child_work_item!(child_id)
@@ -39,7 +39,7 @@ module API
         def reorder_child_work_item!(resource_parent:, work_item_iid:, child_id:, move_before_id:, move_after_id:)
           check_work_item_rest_api_feature_flag!
 
-          parent_work_item = find_parent_work_item!(resource_parent, work_item_iid)
+          parent_work_item = work_item_for!(resource_parent, work_item_iid)
           authorize! :update_work_item, parent_work_item
 
           child_work_item = find_sibling_work_item!(parent_work_item, child_id)

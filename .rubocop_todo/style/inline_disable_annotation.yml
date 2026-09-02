@@ -22,6 +22,7 @@ Style/InlineDisableAnnotation:
     - 'app/controllers/admin/version_check_controller.rb'
     - 'app/controllers/chaos_controller.rb'
     - 'app/controllers/concerns/access_tokens_actions.rb'
+    - 'app/controllers/concerns/admin/users_actions.rb'
     - 'app/controllers/concerns/analytics/cycle_analytics/value_stream_actions.rb'
     - 'app/controllers/concerns/authenticates_with_two_factor.rb'
     - 'app/controllers/concerns/checks_collaboration.rb'

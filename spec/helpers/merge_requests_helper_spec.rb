@@ -567,4 +567,42 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       it { expect(data[:initial_sort]).to eq('created_asc') }
     end
   end
+
+  describe '#code_dropdown_data' do
+    let_it_be(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:data) { helper.code_dropdown_data(merge_request) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    it 'returns the review and download paths' do
+      expect(data).to eq(
+        web_ide_path: helper.ide_merge_request_path(merge_request),
+        gitpod_path: nil,
+        patches_path: merge_request_path(merge_request, format: :patch),
+        plain_diff_path: merge_request_path(merge_request, format: :diff)
+      )
+    end
+
+    context 'when there is no current user' do
+      let(:current_user) { nil }
+
+      it 'omits the Web IDE path' do
+        expect(data[:web_ide_path]).to be_nil
+      end
+    end
+
+    context 'when Ona is enabled for the instance and the user' do
+      before do
+        stub_application_setting(gitpod_enabled: true, gitpod_url: 'https://gitpod.example.com')
+        allow(current_user).to receive(:gitpod_enabled).and_return(true)
+      end
+
+      it 'returns the Ona path' do
+        expect(data[:gitpod_path]).to eq("https://gitpod.example.com##{merge_request_url(merge_request)}")
+      end
+    end
+  end
 end

@@ -10337,6 +10337,9 @@ msgstr ""
 msgid "An administrator added this OAuth application "
 msgstr ""
 
+msgid "An administrator can review the affected member's access or the group's email domain restrictions, then run the sync again."
+msgstr ""
+
 msgid "An administrator changed the password for your GitLab account on %{link_to}."
 msgstr ""
 
@@ -10936,10 +10939,16 @@ msgstr ""
 msgid "AnalyticsDashboards|No dashboards found"
 msgstr ""
 
+msgid "AnalyticsDashboards|No projects"
+msgstr ""
+
 msgid "AnalyticsDashboards|Panel query"
 msgstr ""
 
 msgid "AnalyticsDashboards|Projects"
+msgstr ""
+
+msgid "AnalyticsDashboards|Projects in top-level group (%{name})"
 msgstr ""
 
 msgid "AnalyticsDashboards|Query required"
@@ -10967,6 +10976,9 @@ msgid "AnalyticsDashboards|Settings"
 msgstr ""
 
 msgid "AnalyticsDashboards|Start building your dashboard"
+msgstr ""
+
+msgid "AnalyticsDashboards|Subgroups incl. nested"
 msgstr ""
 
 msgid "AnalyticsDashboards|This table doesn't include GitLab Duo Agent Platform events."
@@ -12771,9 +12783,6 @@ msgid "ArtifactRegistry|Versions"
 msgstr ""
 
 msgid "ArtifactRegistry|View pull command"
-msgstr ""
-
-msgid "ArtifactRegistry|View setup instructions"
 msgstr ""
 
 msgid "ArtifactRegistry|Virtual"
@@ -33318,9 +33327,6 @@ msgstr ""
 msgid "Enable searching"
 msgstr ""
 
-msgid "Enable the Policy Store experiment"
-msgstr ""
-
 msgid "Enable to allow %{docs_link_start}Device authorization grant flow%{docs_link_end}."
 msgstr ""
 
@@ -53530,6 +53536,12 @@ msgstr ""
 msgid "Notify|Forward all emails to the custom email address to %{code_open}%{service_desk_incoming_address}%{code_end}."
 msgstr ""
 
+msgid "Notify|Go to %{organization_name}"
+msgstr ""
+
+msgid "Notify|Go to your organization to change your organization name, description, and to manage organization settings."
+msgstr ""
+
 msgid "Notify|Group %{code_open}%{old_path_with_namespace}%{code_close} was moved to another location."
 msgstr ""
 
@@ -53770,12 +53782,6 @@ msgstr ""
 msgid "Notify|We were not able to make a connection to the specified host or there was an SSL issue."
 msgstr ""
 
-msgid "Notify|You can now access %{link_start}%{organization_name}%{link_end}."
-msgstr ""
-
-msgid "Notify|You can now access:"
-msgstr ""
-
 msgid "Notify|You don't have access to the project."
 msgstr ""
 
@@ -53806,7 +53812,7 @@ msgstr ""
 msgid "Notify|Your organization %{organization_name} is ready"
 msgstr ""
 
-msgid "Notify|Your organization %{organization_name} is ready."
+msgid "Notify|Your organization is ready to use. All of your groups, projects, and users have been successfully transferred to %{organization_name}."
 msgstr ""
 
 msgid "Notify|Your request to join the %{target_to_join} %{target_type} has been %{denied_tag}."
@@ -60726,6 +60732,9 @@ msgstr ""
 msgid "PolicyStore|Enable"
 msgstr ""
 
+msgid "PolicyStore|Enable the Policy Store experiment"
+msgstr ""
+
 msgid "PolicyStore|Enable the Policy store experiment"
 msgstr ""
 
@@ -61015,6 +61024,9 @@ msgid "PolicyStore|When a deployment to a gated environment is requested"
 msgstr ""
 
 msgid "PolicyStore|When an existing deployment is promoted to a new environment"
+msgstr ""
+
+msgid "PolicyStore|When enabled, the experimental Policy Store becomes available at the organization level."
 msgstr ""
 
 msgid "PolicyStore|When should this policy be evaluated?"
@@ -67258,7 +67270,91 @@ msgstr ""
 msgid "RightSidebar|Issue email"
 msgstr ""
 
+msgid "RiskClassification|Agent-authored commits"
+msgstr ""
+
+msgid "RiskClassification|Author does not own the changed code"
+msgstr ""
+
+msgid "RiskClassification|Author experience"
+msgstr ""
+
+msgid "RiskClassification|Change shape"
+msgstr ""
+
+msgid "RiskClassification|Change ships behind a feature flag"
+msgstr ""
+
+msgid "RiskClassification|Changed paths with no declared owner"
+msgstr ""
+
+msgid "RiskClassification|Code ownership"
+msgstr ""
+
+msgid "RiskClassification|Commit authorship"
+msgstr ""
+
+msgid "RiskClassification|Concentration of the change across files"
+msgstr ""
+
+msgid "RiskClassification|Dependency changes"
+msgstr ""
+
+msgid "RiskClassification|Dependency files changed"
+msgstr ""
+
+msgid "RiskClassification|Destructive database migration"
+msgstr ""
+
+msgid "RiskClassification|Feature flag rollout"
+msgstr ""
+
+msgid "RiskClassification|How new the author is to this project"
+msgstr ""
+
+msgid "RiskClassification|Manifest file changed directly"
+msgstr ""
+
+msgid "RiskClassification|Number of dependency ecosystems touched"
+msgstr ""
+
+msgid "RiskClassification|Number of distinct owners"
+msgstr ""
+
+msgid "RiskClassification|Number of files changed"
+msgstr ""
+
+msgid "RiskClassification|Proportion of added to removed lines"
+msgstr ""
+
+msgid "RiskClassification|Reversibility"
+msgstr ""
+
+msgid "RiskClassification|Revert"
+msgstr ""
+
+msgid "RiskClassification|Reverts a previously merged change"
+msgstr ""
+
 msgid "RiskClassification|Risk assessment cannot be refreshed while %{status}."
+msgstr ""
+
+msgid "RiskClassification|Size of change"
+msgstr ""
+
+msgid "RiskClassification|Source changes without a matching test"
+msgstr ""
+
+msgid "RiskClassification|Spread across subsystems"
+msgstr ""
+
+msgid "RiskClassification|Test coverage"
+msgstr ""
+
+msgid "RiskClassification|Test evidence"
+msgstr ""
+
+msgid "RiskClassification|Uncovered changed lines"
 msgstr ""
 
 msgid "RiskClassification|diff_sha %{diff_sha} does not match any known revision of this merge request."
@@ -81874,6 +81970,9 @@ msgstr ""
 msgid "The metric must be one of %{metrics}."
 msgstr ""
 
+msgid "The most recent LDAP sync failed"
+msgstr ""
+
 msgid "The name of the CI/CD configuration file. A path relative to the root directory is optional (for example %{code_open}my/path/.myfile.yml%{code_close})."
 msgstr ""
 
@@ -86392,6 +86491,9 @@ msgstr ""
 msgid "UsageBilling|An error occurred while saving flat cap."
 msgstr ""
 
+msgid "UsageBilling|An error occurred while saving user cap override."
+msgstr ""
+
 msgid "UsageBilling|Applies to every user in this namespace unless an override replaces it."
 msgstr ""
 
@@ -86608,6 +86710,9 @@ msgid "UsageBilling|On-demand"
 msgstr ""
 
 msgid "UsageBilling|Override cap"
+msgstr ""
+
+msgid "UsageBilling|Override saved."
 msgstr ""
 
 msgid "UsageBilling|Peak day usage"
@@ -91387,9 +91492,6 @@ msgid "When enabled, it will send 301 Moved Permanently instead of 302 if you wa
 msgstr ""
 
 msgid "When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces."
-msgstr ""
-
-msgid "When enabled, the experimental Policy Store becomes available at the organization level. Groups that already opted in keep their group-level access."
 msgstr ""
 
 msgid "When enabled, users can embed YouTube videos, Figma designs, and other external content."

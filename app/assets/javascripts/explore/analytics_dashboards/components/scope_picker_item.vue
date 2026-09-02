@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlFormCheckbox, GlIcon } from '@gitlab/ui';
+import { GlButton, GlFormCheckbox, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 
@@ -9,6 +9,10 @@ export default {
     GlButton,
     GlFormCheckbox,
     GlIcon,
+    GlLoadingIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     value: {
@@ -49,10 +53,21 @@ export default {
       required: false,
       default: false,
     },
+    expanding: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     nested: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    // Names the group a flattened project actually sits in, when that is not the row above it.
+    parentName: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   emits: ['toggle-expanded'],
@@ -80,8 +95,10 @@ export default {
     :class="{ 'gl-pl-5': nested }"
     :data-testid="`scope-picker-item-${value}`"
   >
-    <!-- Reserve the chevron's width so items without one stay aligned. -->
-    <span class="gl-flex gl-w-6 gl-shrink-0 gl-justify-center">
+    <!-- Reserve the chevron's width so items without one stay aligned. A disabled listbox option
+         puts pointer-events: none on its whole content, so opt the chevron back in: a row locked
+         by a selected ancestor should still be browsable. -->
+    <span class="gl-pointer-events-auto gl-flex gl-w-6 gl-shrink-0 gl-justify-center">
       <!-- The listbox option owns Enter and Space, so keep those off the expand button. -->
       <gl-button
         v-if="expandable"
@@ -112,5 +129,19 @@ export default {
         <span class="gl-min-w-0 gl-truncate">{{ text }}</span>
       </span>
     </gl-form-checkbox>
+
+    <!-- Outside the button on purpose: GlButton's loading state also marks it disabled, which
+         drops its click listener, so the row could not be collapsed while its children load. -->
+    <gl-loading-icon v-if="expanding" class="gl-ml-auto gl-shrink-0 gl-pl-3" />
+
+    <span
+      v-if="parentName"
+      v-gl-tooltip
+      :title="value"
+      class="gl-ml-auto gl-shrink-0 gl-pl-3 gl-text-sm gl-text-subtle"
+      data-testid="scope-picker-item-parent"
+    >
+      ({{ parentName }})
+    </span>
   </div>
 </template>

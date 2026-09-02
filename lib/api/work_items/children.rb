@@ -93,9 +93,7 @@ module API
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
             job_token_policies: :read_work_items
           get ':work_item_iid/children' do
-            resource_parent = resolve_namespace_resource_parent!(params[:id])
-
-            parent_work_item = find_parent_work_item!(resource_parent, params[:work_item_iid])
+            parent_work_item = work_item_for_namespace!(params[:id], params[:work_item_iid])
             render_children_for(parent_work_item)
           end
 
@@ -193,9 +191,7 @@ module API
             boundary_type: :project,
             job_token_policies: :read_work_items
           get ':work_item_iid/children' do
-            project = find_project!(params[:id])
-
-            parent_work_item = find_parent_work_item!(project, params[:work_item_iid])
+            parent_work_item = work_item_for!(find_project!(params[:id]), params[:work_item_iid])
             render_children_for(parent_work_item)
           end
 
@@ -289,9 +285,7 @@ module API
             permissions: :read_work_item,
             boundary_type: :group
           get ':work_item_iid/children' do
-            group = find_group!(params[:id])
-
-            parent_work_item = find_parent_work_item!(group, params[:work_item_iid])
+            parent_work_item = work_item_for!(find_group!(params[:id]), params[:work_item_iid])
             render_children_for(parent_work_item)
           end
 

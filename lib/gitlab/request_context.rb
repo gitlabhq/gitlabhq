@@ -8,7 +8,7 @@ module Gitlab
     RequestDeadlineExceeded = Class.new(StandardError)
 
     attr_accessor :client_ip, :spam_params, :start_thread_cpu_time, :request_start_time, :thread_memory_allocations,
-      :gvl_local_timer_start, :gvl_global_timer_start, :request_start_monotonic_time, :request_timeout_at
+      :gvl_local_timer_start, :request_start_monotonic_time, :request_timeout_at
 
     class << self
       def instance
@@ -31,7 +31,6 @@ module Gitlab
         instance.start_thread_cpu_time = Gitlab::Metrics::System.thread_cpu_time
         instance.thread_memory_allocations = Gitlab::Memory::Instrumentation.start_thread_memory_allocations
         instance.gvl_local_timer_start = GVLTools::LocalTimer.monotonic_time if GVLTools::LocalTimer.enabled?
-        instance.gvl_global_timer_start = GVLTools::GlobalTimer.monotonic_time if GVLTools::GlobalTimer.enabled?
       end
 
       def apdex_duration_s

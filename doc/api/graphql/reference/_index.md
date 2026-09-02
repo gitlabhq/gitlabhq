@@ -33993,6 +33993,7 @@ Fields:
 | <a id="aicatalogagent-verificationlevel"></a>`verificationLevel` | [`AiCatalogItemVerificationLevel!`](#aicatalogitemverificationlevel) | Verification level of the item. |
 | <a id="aicatalogagent-versions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
 | <a id="aicatalogagent-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`AiCatalogItemVisibility!`](#aicatalogitemvisibility) | Introduced in GitLab 19.2. Status: Experiment. Visibility of the item in the catalog. |
+| <a id="aicatalogagent-webpath"></a>`webPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Web path of the item in the AI catalog. |
 
 #### Fields with arguments
 
@@ -34132,6 +34133,7 @@ Fields:
 | <a id="aicatalogflow-verificationlevel"></a>`verificationLevel` | [`AiCatalogItemVerificationLevel!`](#aicatalogitemverificationlevel) | Verification level of the item. |
 | <a id="aicatalogflow-versions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
 | <a id="aicatalogflow-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`AiCatalogItemVisibility!`](#aicatalogitemvisibility) | Introduced in GitLab 19.2. Status: Experiment. Visibility of the item in the catalog. |
+| <a id="aicatalogflow-webpath"></a>`webPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Web path of the item in the AI catalog. |
 
 #### Fields with arguments
 
@@ -34362,6 +34364,7 @@ Fields:
 | <a id="aicatalogthirdpartyflow-verificationlevel"></a>`verificationLevel` | [`AiCatalogItemVerificationLevel!`](#aicatalogitemverificationlevel) | Verification level of the item. |
 | <a id="aicatalogthirdpartyflow-versions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
 | <a id="aicatalogthirdpartyflow-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`AiCatalogItemVisibility!`](#aicatalogitemvisibility) | Introduced in GitLab 19.2. Status: Experiment. Visibility of the item in the catalog. |
+| <a id="aicatalogthirdpartyflow-webpath"></a>`webPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Web path of the item in the AI catalog. |
 
 #### Fields with arguments
 
@@ -42656,6 +42659,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="duoworkflow-agentname"></a>`agentName` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 18.8. Status: Experiment. Name of the agent used for the workflow. |
 | <a id="duoworkflow-agentprivilegesnames"></a>`agentPrivilegesNames` | [`[String!]`](#string) | Privileges granted to the agent during execution. |
+| <a id="duoworkflow-aicatalogitem"></a>`aiCatalogItem` {{< icon name="warning-solid" >}} | [`AiCatalogItem`](#aicatalogitem) | Introduced in GitLab 19.4. Status: Experiment. AI catalog item (flow or agent definition) that the session ran. |
 | <a id="duoworkflow-aicatalogitemversionid"></a>`aiCatalogItemVersionId` {{< icon name="warning-solid" >}} | [`AiCatalogItemVersionID`](#aicatalogitemversionid) | Introduced in GitLab 18.4. Status: Experiment. ID of the AI catalog item version that triggered the workflow. |
 | <a id="duoworkflow-allexecutorlogsurls"></a>`allExecutorLogsUrls` | [`[String!]`](#string) | List of all the executor logs for the workflow. |
 | <a id="duoworkflow-allowagenttorequestuser"></a>`allowAgentToRequestUser` | [`Boolean`](#boolean) | Allow the agent to request user input. |
@@ -74390,6 +74394,7 @@ Fields:
 | <a id="aicatalogitem-verificationlevel"></a>`verificationLevel` | [`AiCatalogItemVerificationLevel!`](#aicatalogitemverificationlevel) | Verification level of the item. |
 | <a id="aicatalogitem-versions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
 | <a id="aicatalogitem-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`AiCatalogItemVisibility!`](#aicatalogitemvisibility) | Introduced in GitLab 19.2. Status: Experiment. Visibility of the item in the catalog. |
+| <a id="aicatalogitem-webpath"></a>`webPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Web path of the item in the AI catalog. |
 
 ##### Fields with arguments
 

@@ -1,32 +1,16 @@
 # frozen_string_literal: true
 
 class Admin::UsersController < Admin::ApplicationController
-  include RoutableActions
-  include SortingHelper
+  include Admin::UsersActions
 
+  # rubocop:disable Rails/LexicallyScopedActionFilter -- index is defined in Admin::UsersActions
   before_action :user, except: [:index, :new, :create]
+  # rubocop:enable Rails/LexicallyScopedActionFilter
   before_action :check_impersonation_availability, only: :impersonate
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
+  # rubocop:disable Rails/LexicallyScopedActionFilter -- show is defined in Admin::UsersActions
   before_action :set_shared_view_parameters, only: [:show, :projects, :keys]
-
-  feature_category :user_management
-
-  PAGINATION_WITH_COUNT_LIMIT = 1000
-
-  def index
-    return redirect_to admin_cohorts_path if safe_params[:tab] == 'cohorts'
-
-    @sort = safe_params[:sort].presence || sort_value_name
-
-    @users = filter_users
-    @users = users_from_search_query(@users) if safe_params[:search_query].present?
-    @users = users_with_included_associations(@users)
-    @users = @users.sort_by_attribute(@sort)
-    @users = @users.page(safe_params[:page])
-    @users = @users.without_count if paginate_without_count?
-  end
-
-  def show; end
+  # rubocop:enable Rails/LexicallyScopedActionFilter
 
   # rubocop: disable CodeReuse/ActiveRecord
   def projects
@@ -34,6 +18,7 @@ class Admin::UsersController < Admin::ApplicationController
     @joined_projects = user.projects.joined(@user).includes(:topics).page(safe_params[:projects_page])
     @user_group_members = user.group_members.or(user.minimal_access_group_members).page(safe_params[:groups_page])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def keys
     @keys = user.keys.order_id_desc
@@ -255,7 +240,7 @@ class Admin::UsersController < Admin::ApplicationController
       after_successful_update_hook(result[:user]) if result[:status] == :success
 
       if result[:status] == :success
-        format.html { redirect_to [:admin, user], after_successful_update_flash }
+        format.html { redirect_to default_route, after_successful_update_flash }
         format.json { head :ok }
       else
         # restore username to keep form action url.
@@ -292,25 +277,6 @@ class Admin::UsersController < Admin::ApplicationController
 
   protected
 
-  def paginate_without_count?
-    counts = Gitlab::Database::Count.approximate_counts([User])
-
-    counts[User] > PAGINATION_WITH_COUNT_LIMIT
-  end
-
-  def users_with_included_associations(users)
-    users.includes(:trusted_with_spam_attribute, :identities) # rubocop: disable CodeReuse/ActiveRecord
-  end
-
-  def users_from_search_query(users)
-    users.search(safe_params[:search_query], with_private_emails: true, partial_email_search: partial_email_search?)
-  end
-
-  # Overridden in EE
-  def partial_email_search?
-    true
-  end
-
   def admin_making_changes_for_another_user?
     user != current_user
   end
@@ -332,14 +298,6 @@ class Admin::UsersController < Admin::ApplicationController
 
   def hard_delete?
     destroy_params[:hard_delete]
-  end
-
-  def user
-    @user ||= find_routable!(User, safe_params[:id], request.fullpath)
-  end
-
-  def build_canonical_path(user)
-    url_for(safe_params.merge(id: user.to_param))
   end
 
   def redirect_back_or_admin_user(options = {})
@@ -414,14 +372,6 @@ class Admin::UsersController < Admin::ApplicationController
 
   private
 
-  def set_shared_view_parameters
-    @can_impersonate = helpers.can_impersonate_user(user, impersonation_in_progress?)
-    unless @can_impersonate
-      @impersonation_error_text =
-        helpers.impersonation_error_text(user, impersonation_in_progress?)
-    end
-  end
-
   # method overridden in EE
   def after_successful_create_hook(user); end
 
@@ -434,25 +384,6 @@ class Admin::UsersController < Admin::ApplicationController
 
   def after_successful_update_flash
     { notice: _('User was successfully updated.') }
-  end
-
-  def filter_users
-    User.filter_items(safe_params[:filter]).order_name_asc
-  end
-
-  def safe_params
-    params.permit(
-      :id,
-      :email_id,
-      :personal_projects_page,
-      :projects_page,
-      :groups_page,
-      :tab,
-      :search_query,
-      :sort,
-      :page,
-      :filter
-    )
   end
 
   # WARNING: Only use permitted_user_password_params in contexts where password input has been

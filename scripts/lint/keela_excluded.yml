@@ -103,6 +103,8 @@ methods:
   ee/app/models/ci/test_balancing/test_split.rb:
     - self.paths_by_id: Will be called from the parallel test balancing service layer in a follow-up MR (gitlab-org/gitlab!249227)
     - self.fetch_or_create_ids!: Will be called from the parallel test balancing service layer in a follow-up MR (gitlab-org/gitlab!249227)
+  ee/app/models/ci/test_balancing/queue.rb:
+    - clear_backup: Called from the claim and initialize services in stacked follow-up MR (gitlab-org/gitlab!249227)
   ee/app/models/cloud_connector/keys.rb:
     - create_new_key!: Called from ee/lib/tasks/cloud_connector/keys.rake (cloud_connector:keys:create task)
     - trim!: Called from ee/lib/tasks/cloud_connector/keys.rake (cloud_connector:keys:trim task)

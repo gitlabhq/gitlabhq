@@ -1,6 +1,7 @@
 ---
 name: vue3_migrate_project_overview
-description: Enables Vue 3 in compatibility mode for the project overview page
+description: Enables Vue 3 in compatibility mode for the project overview, repository
+  tree and blob viewer pages, which share the repository app and its stores
 feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/23084
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250535
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/613672

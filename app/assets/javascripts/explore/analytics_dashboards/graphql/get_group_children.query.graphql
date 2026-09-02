@@ -1,6 +1,6 @@
 # @feature_category: custom_dashboards_foundation
 
-query getAnalyticsDashboardGroupProjects($fullPath: ID!) {
+query getAnalyticsDashboardGroupChildren($fullPath: ID!) {
   group(fullPath: $fullPath) {
     id
     name
@@ -12,6 +12,16 @@ query getAnalyticsDashboardGroupProjects($fullPath: ID!) {
         name
         fullName: nameWithNamespace
         fullPath
+      }
+    }
+    descendantGroups(first: 100, includeParentDescendants: false, archived: false) {
+      nodes {
+        id
+        name
+        fullName
+        fullPath
+        projectsCount
+        descendantGroupsCount
       }
     }
   }

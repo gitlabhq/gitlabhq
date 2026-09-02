@@ -13,9 +13,12 @@ module Gitlab
           )
 
           Postgresql::DetachedPartition.ready_to_drop.find_each do |detached_partition|
-            if partition_attached?(detached_partition.fully_qualified_table_name)
+            pg_partition = find_pg_partition(detached_partition.fully_qualified_table_name)
+
+            if partition_attached?(pg_partition)
               unmark_partition(detached_partition)
             else
+              finalize_detach(pg_partition) if pg_partition&.pending_detach
               drop_partition(detached_partition)
             end
 
@@ -36,7 +39,11 @@ module Gitlab
           raise 'This is meant to be used only for test cleanup' unless Rails.env.test?
 
           Postgresql::DetachedPartition.all.find_each do |detached_partition|
-            drop_partition(detached_partition) unless partition_attached?(detached_partition.fully_qualified_table_name)
+            pg_partition = find_pg_partition(detached_partition.fully_qualified_table_name)
+            next if partition_attached?(pg_partition)
+
+            finalize_detach(pg_partition) if pg_partition&.pending_detach
+            drop_partition(detached_partition)
           end
         end
 
@@ -123,10 +130,31 @@ module Gitlab
           )
         end
 
-        def partition_attached?(partition_identifier)
-          # PostgresPartition checks the pg_inherits view, so our partition will only show here if it's still attached
-          # and thus should not be dropped
-          Gitlab::Database::PostgresPartition.for_identifier(partition_identifier).exists?
+        # An interrupted DETACH ... CONCURRENTLY leaves the partition linked to its parent, so
+        # dropping it from here would take ACCESS EXCLUSIVE on the parent. FINALIZE unlinks it
+        # under SHARE UPDATE EXCLUSIVE instead, after which the drop takes no lock on the parent.
+        def finalize_detach(pg_partition)
+          with_lock_retries(partition_name: pg_partition.name) do
+            connection.transaction(requires_new: false) do
+              connection.execute(<<~SQL)
+                ALTER TABLE #{connection.quote_table_name(pg_partition.parent_identifier)}
+                DETACH PARTITION #{connection.quote_table_name(pg_partition.identifier)} FINALIZE
+              SQL
+            end
+          end
+
+          Gitlab::AppLogger.info(message: 'Finalized a pending partition detach',
+            partition_name: pg_partition.name)
+        end
+
+        def find_pg_partition(partition_identifier)
+          # PostgresPartition reads the pg_inherits view, so the partition is absent here once
+          # it is fully detached, and present while it is attached or awaiting FINALIZE.
+          Gitlab::Database::PostgresPartition.for_identifier(partition_identifier).first
+        end
+
+        def partition_attached?(pg_partition)
+          pg_partition && !pg_partition.pending_detach
         end
 
         def try_lock_detached_partition(id)

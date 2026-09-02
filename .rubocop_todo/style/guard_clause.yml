@@ -6,6 +6,7 @@ Style/GuardClause:
     - 'app/controllers/application_controller.rb'
     - 'app/controllers/chaos_controller.rb'
     - 'app/controllers/concerns/accepts_pending_invitations.rb'
+    - 'app/controllers/concerns/admin/users_actions.rb'
     - 'app/controllers/concerns/authenticates_with_two_factor.rb'
     - 'app/controllers/concerns/creates_commit.rb'
     - 'app/controllers/concerns/cycle_analytics_params.rb'

@@ -12,8 +12,9 @@ module RuboCop
       # The ON DELETE CASCADE is only a backstop for manual admin deletes; the
       # destroy service must clean up dependent records itself, since cascades
       # skip application logic such as object storage removal. Update the
-      # service, then disable this cop inline with a comment pointing at the
-      # handling.
+      # service, declare it there with `handles_removal_of` (see
+      # Gitlab::HandlesRemovalOf), then disable this cop inline with a comment
+      # referencing that declaration.
       #
       # Not flagged: declared sharding keys, which sharding_key_spec.rb already
       # mandates and validates, and tables documented in db/docs/deleted_tables.
@@ -23,7 +24,8 @@ module RuboCop
       #   add_concurrent_foreign_key :widgets, :projects, column: :project_id
       #
       #   # good
-      #   # Once Projects::DestroyService deletes widgets:
+      #   # Once Projects::DestroyService deletes widgets and declares
+      #   # `handles_removal_of :widgets`:
       #   add_concurrent_foreign_key :widgets, :projects, column: :project_id # inline disable with reason
       class ForeignKeysToDestroyServiceTables < RuboCop::Cop::Base
         include MigrationHelpers
@@ -31,8 +33,9 @@ module RuboCop
         MSG = 'Records of the `%{table}` table are deleted through %{service}, so the destroy service ' \
           'must be updated to handle these new dependent records. The ON DELETE CASCADE on this ' \
           'foreign key is only a backstop for a self-managed admin who manually deletes a `%{table}` ' \
-          'row from the database. Once %{service} handles the cleanup, disable this cop on this line ' \
-          'with a comment stating where it\'s handled.'
+          'row from the database. Once %{service} handles the cleanup, declare it there with ' \
+          '`handles_removal_of` (see Gitlab::HandlesRemovalOf), then disable this cop on this line ' \
+          'with a comment referencing that declaration.'
 
         TABLE_BLOCK_METHODS = %i[create_table change_table].freeze
 

@@ -237,8 +237,7 @@ module Gitlab
         @metrics[:sidekiq_gvl_measurement_enabled].set(labels, gvl_tools_enabled? ? 1 : 0)
 
         gvl_thread_wait = get_gvl_thread_wait_time(instrumentation)
-        gvl_process_wait = get_gvl_process_wait_time(instrumentation)
-        return unless gvl_thread_wait && gvl_process_wait
+        return unless gvl_thread_wait
 
         unless @metrics[:sidekiq_gvl_thread_wait_seconds]
           @metrics[:sidekiq_gvl_thread_wait_seconds] = ::Gitlab::Metrics.histogram(
@@ -248,16 +247,7 @@ module Gitlab
             SIDEKIQ_LATENCY_BUCKETS)
         end
 
-        unless @metrics[:sidekiq_gvl_process_wait_seconds]
-          @metrics[:sidekiq_gvl_process_wait_seconds] = ::Gitlab::Metrics.gauge(
-            :sidekiq_gvl_process_wait_seconds,
-            'Seconds of this process waiting for GVL',
-            {},
-            :all)
-        end
-
         @metrics[:sidekiq_gvl_thread_wait_seconds].observe(labels, gvl_thread_wait)
-        @metrics[:sidekiq_gvl_process_wait_seconds].increment(labels, gvl_process_wait)
       end
 
       def with_load_balancing_settings(job)
@@ -305,10 +295,6 @@ module Gitlab
 
       def get_gvl_thread_wait_time(payload)
         payload[:gvl_thread_wait_s]
-      end
-
-      def get_gvl_process_wait_time(payload)
-        payload[:gvl_process_wait_s]
       end
 
       def gvl_tools_enabled?

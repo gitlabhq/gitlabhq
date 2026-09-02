@@ -108,7 +108,8 @@ module Ci
           pipeline_source: pipeline_source)
       end
 
-      # TODO: temporary technical debt until https://gitlab.com/gitlab-org/gitlab/-/issues/520828
+      # Bypasses Mapper#process and calls Matcher and Verifier directly, because ProjectConfig has no
+      # uninterpolated load path. Changes to either class have to account for this caller.
       def yaml_result_of_internal_include(content, sha)
         context = build_context(sha)
 

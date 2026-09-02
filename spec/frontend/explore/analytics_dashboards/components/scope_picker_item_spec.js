@@ -1,5 +1,6 @@
-import { GlButton, GlFormCheckbox, GlIcon } from '@gitlab/ui';
+import { GlButton, GlFormCheckbox, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import ScopePickerItem from '~/explore/analytics_dashboards/components/scope_picker_item.vue';
 
@@ -15,6 +16,7 @@ describe('ScopePickerItem', () => {
   const createWrapper = (props = {}) => {
     wrapper = shallowMountExtended(ScopePickerItem, {
       propsData: { ...defaultProps, ...props },
+      directives: { GlTooltip: createMockDirective('gl-tooltip') },
     });
   };
 
@@ -22,6 +24,8 @@ describe('ScopePickerItem', () => {
   const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findExpandButton = () => wrapper.findComponent(GlButton);
+  const findParentName = () => wrapper.findByTestId('scope-picker-item-parent');
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   describe('default', () => {
     beforeEach(() => createWrapper());
@@ -119,6 +123,10 @@ describe('ScopePickerItem', () => {
       expect(event.stopPropagation).toHaveBeenCalled();
     });
 
+    it('renders no loading icon', () => {
+      expect(findLoadingIcon().exists()).toBe(false);
+    });
+
     describe('and expanded', () => {
       beforeEach(() => createWrapper({ expandable: true, expanded: true }));
 
@@ -127,6 +135,51 @@ describe('ScopePickerItem', () => {
         expect(findExpandButton().attributes('aria-expanded')).toBe('true');
         expect(findExpandButton().attributes('aria-label')).toBe('Collapse GitLab.org');
       });
+    });
+
+    describe('and expanding', () => {
+      beforeEach(() => createWrapper({ expandable: true, expanding: true }));
+
+      it('renders a loading icon', () => {
+        expect(findLoadingIcon().exists()).toBe(true);
+      });
+
+      it('keeps the row collapsible, so a slow fetch cannot strand it open', () => {
+        expect(findExpandButton().props('loading')).toBe(false);
+
+        findExpandButton().vm.$emit('click', { stopPropagation: jest.fn() });
+
+        expect(wrapper.emitted('toggle-expanded')).toHaveLength(1);
+      });
+    });
+  });
+
+  describe('when disabled by a selected ancestor', () => {
+    beforeEach(() => createWrapper({ expandable: true, disabled: true }));
+
+    it('keeps the chevron clickable, so the row can still be browsed', () => {
+      expect(findExpandButton().exists()).toBe(true);
+      expect(wrapper.find('.gl-pointer-events-auto').exists()).toBe(true);
+    });
+  });
+
+  describe('when the namespace sits below the group it is listed under', () => {
+    beforeEach(() => createWrapper({ namespaceType: TYPENAME_PROJECT, parentName: 'Tools' }));
+
+    it('names the group it belongs to', () => {
+      expect(findParentName().text()).toBe('(Tools)');
+    });
+
+    it('gives the full path in a tooltip, so the hierarchy is exact', () => {
+      expect(findParentName().attributes('title')).toBe(defaultProps.value);
+    });
+  });
+
+  describe('when no parent name is given', () => {
+    beforeEach(() => createWrapper());
+
+    it('renders no parent name', () => {
+      expect(findParentName().exists()).toBe(false);
     });
   });
 });

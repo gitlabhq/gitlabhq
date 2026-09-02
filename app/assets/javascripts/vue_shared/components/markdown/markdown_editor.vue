@@ -12,6 +12,7 @@ import {
   EDITING_MODE_KEY,
   EDITING_MODE_MARKDOWN_FIELD,
   EDITING_MODE_CONTENT_EDITOR,
+  EDITING_MODE_EVENTS,
   CLEAR_AUTOSAVE_ENTRY_EVENT,
 } from '../../constants';
 import MarkdownField from './field.vue';
@@ -178,12 +179,12 @@ export default {
   },
   emits: [
     'blur',
-    'contentEditor',
+    'content-editor',
     'focus',
     'handle-suggest-dismissed',
     'input',
     'keydown',
-    'markdownField',
+    'markdown-field',
   ],
   data() {
     let editingMode;
@@ -235,7 +236,7 @@ export default {
     // Second argument (`true`) is passed to identify
     // that the input event was emitted on component mount.
     this.$emit('input', this.markdown, true);
-    this.$emit(this.editingMode);
+    this.$emit(EDITING_MODE_EVENTS[this.editingMode]);
     this.saveDraft();
 
     this.setFacade?.({
@@ -334,11 +335,11 @@ export default {
       }
 
       this.editingMode = editingMode;
-      this.$emit(editingMode);
+      this.$emit(EDITING_MODE_EVENTS[editingMode]);
       this.notifyEditingModeChange(editingMode);
     },
     async notifyEditingModeChange(editingMode) {
-      this.$emit(editingMode);
+      this.$emit(EDITING_MODE_EVENTS[editingMode]);
 
       const componentToFocus =
         editingMode === EDITING_MODE_CONTENT_EDITOR

@@ -1590,17 +1590,22 @@ export default defineFixtureVariants({
 });
 ```
 
-In a test, activate a variant with `setQueryVariant('operationName', 'VARIANT_KEY')` imported from `ee_jest/msw_integration/helpers/setup_utils`.
+In a test, activate a variant with `setQueryVariant` imported from `ee_jest/msw_integration/helpers/setup_utils`.
+Pass the query constant, which is the variant file's default export, and call the method named after the variant key.
+`EMPTY` becomes `empty()`, `WITH_ERROR` becomes `withError()`, so an unknown key cannot be spelled and editor autocomplete lists the variants for that query.
 The active variant resets to `BASE` automatically in `afterEach`.
 
 ```javascript
 import { setQueryVariant } from 'ee_jest/msw_integration/helpers/setup_utils';
+import getWorkItemsFull from 'ee_jest/msw_integration/work_items/fixture_variants/get_work_items_full';
 
 it('renders the empty state', async () => {
-  setQueryVariant('getWorkItemsFullEE', 'EMPTY');
+  setQueryVariant(getWorkItemsFull).empty();
   // mount and assert
 });
 ```
+
+When the variant key is a runtime value, such as a shared helper that receives the key, use the low-level `activateVariant('operationName', variantKey)` instead.
 
 The feature handler serves the active variant by calling `getActiveVariant('operationName')` and falls back to its default fixture when none is active.
 
@@ -1609,7 +1614,9 @@ The feature handler serves the active variant by calling `getActiveVariant('oper
 `defineFixtureVariants` self-registers at **module load time** by adding the query to a module-level registry inside `fixture_variant_schema.js`. There are three consequences you must understand before using it:
 
 **The variant file must be imported in the feature handler.**
-`setQueryVariant` looks up the registry and throws if the query is not found. If you call `setQueryVariant('myQuery', 'EMPTY')` in a test and get `"no variants registered for query"`, the variant file has not been imported. Import it (as a side-effect import) in the feature handler, not in the spec:
+`setQueryVariant` throws `"expected a query constant"` if you pass something other than a variant file's default export.
+The low-level `activateVariant(query, key)` throws `"no variants registered for query"` if the query name it is given was never registered.
+Either way, the variant file has not been imported. Import it (as a side-effect import) in the feature handler, not in the spec:
 
 ```javascript
 // <feature>/handlers.js

@@ -789,18 +789,35 @@ Exceptions to this general guideline should be motivated and documented.
 ### Ruby versions testing
 
 We're running Ruby 3.3 on GitLab.com, as well as for the default branch.
-To prepare for the next Ruby version, we run merge requests in Ruby 3.4.
-See the roadmap at
+Merge request pipelines run the default version too, unless you add a
+label to opt into another version.
+
+To prepare for the next Ruby version, we run 2-hourly scheduled pipelines
+(every odd-numbered hour) on the `ruby-next` branch. See the roadmap at the
 [Ruby 3.4 epic](https://gitlab.com/groups/gitlab-org/-/work_items/16601)
 for more details.
 
-To make sure all supported Ruby versions are working, we also run our test
-suite on dedicated 2-hourly scheduled pipelines for each supported version.
+For merge requests, you can add one of the following labels to change
+which Ruby version the pipeline runs:
 
-For merge requests, you can add the following labels to run the respective
-Ruby version only:
-
-- `pipeline:run-in-ruby3_3`
+- `pipeline:run-in-ruby3_3`: keeps the merge request pipeline on the
+  default Ruby version. If the default Ruby version changes later, this
+  label follows the new default. It takes precedence over
+  `pipeline:run-with-ruby-next` when both labels are present.
+- `pipeline:run-with-ruby-next`: runs the merge request pipeline with the
+  next Ruby version, from the `RUBY_VERSION_NEXT` CI variable. It works the
+  same way `pipeline:run-with-rails-next` does for Rails. Add it to any
+  merge request that bumps `RUBY_VERSION_NEXT`, so the new version gets
+  validated before it merges. Merge train pipelines always run the default
+  Ruby version regardless of this label. The label also has no effect on
+  merge requests matched by an earlier-evaluated workflow rule, such as
+  community contributions, bot-authored merge requests, and merge
+  requests targeting stable branches. The rule for
+  `pipeline:run-with-rails-next` is also evaluated first, so a merge
+  request carrying both labels gets the default Ruby version. The
+  `database` label rule, on the other hand, is evaluated after this one,
+  so a merge request with both labels runs on the next Ruby version and
+  does not get `QUERY_LOG_LINE`.
 
 ### PostgreSQL versions testing
 

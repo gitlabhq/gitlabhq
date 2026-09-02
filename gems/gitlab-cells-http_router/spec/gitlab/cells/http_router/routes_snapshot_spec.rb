@@ -24,6 +24,26 @@ RSpec.describe Gitlab::Cells::HttpRouter::RoutesSnapshot do
         expect(described_class.example_for(template)).to eq(expected)
       end
     end
+
+    context 'with the dotted substitution values' do
+      where(:case_name, :template, :expected) do
+        'a named parameter' | '/-/jira_connect/subscriptions/:id' | '/-/jira_connect/subscriptions/john.doe'
+        'a wildcard' | '/*namespace_id/:project_id' | '/john.doe/bar/john.doe'
+        'no parameter at all' | '/users/sign_in' | '/users/sign_in'
+      end
+
+      with_them do
+        it 'substitutes dotted values' do
+          example = described_class.example_for(
+            template,
+            param: described_class::DOTTED_PARAM_VALUE,
+            glob: described_class::DOTTED_GLOB_VALUE
+          )
+
+          expect(example).to eq(expected)
+        end
+      end
+    end
   end
 
   describe '#routes' do
@@ -31,8 +51,45 @@ RSpec.describe Gitlab::Cells::HttpRouter::RoutesSnapshot do
 
     let(:path_specs) { ['/groups/:id(.:format)'] }
 
-    it 'pairs each template with its example' do
-      expect(routes.map(&:to_h)).to eq([{ template: '/groups/:id', example: '/groups/foo' }])
+    it 'pairs each template with its example and its adversarial variants' do
+      expect(routes.map(&:to_h)).to eq([{
+        template: '/groups/:id',
+        example: '/groups/foo',
+        accepts_format: true,
+        dotted_example: '/groups/john.doe'
+      }])
+    end
+
+    context 'when the path spec carries no format segment' do
+      let(:path_specs) { ['/groups/:id'] }
+
+      it 'does not accept a format' do
+        expect(routes.first.accepts_format).to be(false)
+      end
+    end
+
+    context 'when the format segment is inline rather than optional' do
+      let(:path_specs) { ['/*namespace_id/:project_id/-/archive/*id.:format'] }
+
+      it 'accepts a format' do
+        expect(routes.first.accepts_format).to be(true)
+      end
+    end
+
+    context 'when the template has no parameter' do
+      let(:path_specs) { ['/users/sign_in(.:format)'] }
+
+      it 'omits the dotted example' do
+        expect(routes.first.dotted_example).to be_nil
+      end
+    end
+
+    context 'when the template has a wildcard' do
+      let(:path_specs) { ['/*namespace_id/:project_id'] }
+
+      it 'builds the dotted example from the wildcard too' do
+        expect(routes.first.dotted_example).to eq('/john.doe/bar/john.doe')
+      end
     end
 
     context 'with routes mounted only in the test environment' do
@@ -56,6 +113,10 @@ RSpec.describe Gitlab::Cells::HttpRouter::RoutesSnapshot do
       it 'deduplicates them after dropping the format segment' do
         expect(routes.map(&:template)).to contain_exactly('/groups/:id')
       end
+
+      it 'accepts a format, since one of the specs accepts a format' do
+        expect(routes.first.accepts_format).to be(true)
+      end
     end
 
     it 'sorts templates' do
@@ -66,17 +127,36 @@ RSpec.describe Gitlab::Cells::HttpRouter::RoutesSnapshot do
   end
 
   describe '#to_json_string' do
-    subject(:json) { described_class.new(path_specs: ['/groups/:id(.:format)']).to_json_string }
+    subject(:json) { described_class.new(path_specs: path_specs).to_json_string }
+
+    let(:path_specs) { ['/groups/:id(.:format)'] }
 
     it 'pretty-prints the entries and ends with a newline' do
       expect(json).to eq(<<~JSON)
         [
           {
             "template": "/groups/:id",
-            "example": "/groups/foo"
+            "example": "/groups/foo",
+            "acceptsFormat": true,
+            "dottedExample": "/groups/john.doe"
           }
         ]
       JSON
+    end
+
+    context 'when no variant applies' do
+      let(:path_specs) { ['/users/sign_in'] }
+
+      it 'omits the optional keys' do
+        expect(json).to eq(<<~JSON)
+          [
+            {
+              "template": "/users/sign_in",
+              "example": "/users/sign_in"
+            }
+          ]
+        JSON
+      end
     end
   end
 

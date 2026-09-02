@@ -27,8 +27,17 @@ RSpec.describe Emails::Organizations, feature_category: :organization do
 
     it 'has the correct subject and body' do
       is_expected.to have_subject("Your organization #{organization.name} is ready")
-      is_expected.to have_body_text("Your organization #{organization.name} is ready.")
+      is_expected.to have_body_text("Your organization #{organization.name} is ready")
+      is_expected.to have_body_text("Hi #{user.name}!")
+      is_expected.to have_body_text(
+        "Your organization is ready to use. All of your groups, projects, and users have been successfully " \
+          "transferred to #{organization.name}."
+      )
+      is_expected.to have_body_text("Go to #{organization.name}")
       is_expected.to have_body_text(organization.web_url)
+      is_expected.to have_body_text(
+        'Go to your organization to change your organization name, description, and to manage organization settings.'
+      )
     end
 
     context 'when the organization name contains a character that HTML escapes' do
@@ -38,7 +47,7 @@ RSpec.describe Emails::Organizations, feature_category: :organization do
 
       it 'does not escape the name in the subject or the text part', :aggregate_failures do
         expect(email.subject).to eq('Your organization Foo & Bar is ready')
-        expect(email.text_part.body.to_s).to include('Your organization Foo & Bar is ready.')
+        expect(email.text_part.body.to_s).to include('Your organization Foo & Bar is ready')
       end
     end
 

@@ -1,1 +1,4 @@
-status: migrated
+status: rollout
+feature_flag: vue3_migrate_project_overview
+group: group::source code
+migration_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/613672

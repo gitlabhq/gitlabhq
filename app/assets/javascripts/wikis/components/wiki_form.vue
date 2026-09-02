@@ -647,7 +647,6 @@ export default {
     <div class="row">
       <div class="gl-col-sm-12 row-sm-5">
         <gl-form-group :label="$options.i18n.content.label" label-for="wiki_content" label-sr-only>
-          <!-- eslint-disable vue/v-on-event-hyphenation -- MarkdownEditor emits the camelCase `contentEditor` and `markdownField` events -->
           <markdown-editor
             ref="markdownEditor"
             v-model="content"
@@ -664,8 +663,8 @@ export default {
             supports-table-of-contents
             :disable-attachments="isTemplate"
             immersive
-            @contentEditor="notifyContentEditorActive"
-            @markdownField="notifyContentEditorInactive"
+            @content-editor="notifyContentEditorActive"
+            @markdown-field="notifyContentEditorInactive"
             @keydown.ctrl.enter="submitFormWithShortcut"
             @keydown.meta.enter="submitFormWithShortcut"
           >
@@ -812,7 +811,6 @@ export default {
               </div>
             </template>
           </markdown-editor>
-          <!-- eslint-enable vue/v-on-event-hyphenation -->
           <input name="wiki[content]" type="hidden" :value="rawContent" />
         </gl-form-group>
       </div>

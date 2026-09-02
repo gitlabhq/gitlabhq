@@ -1,40 +1,45 @@
-.dropdown.gl-dropdown.gl-flex-1
-  #js-check-out-modal{ data: how_merge_modal_data(@merge_request) }
-  = render Pajamas::ButtonComponent.new(button_text_classes: 'gl-inline-flex gl-justify-between gl-w-full', button_options: { class: 'gl-flex gl-self-start gl-w-full @sm/panel:gl-w-auto !gl-pr-3', data: { toggle: 'dropdown', testid: 'mr-code-dropdown' } }) do
-    = _('Code')
-    = sprite_icon "chevron-down", size: 16, css_class: "gl-icon gl-ml-2 !gl-mr-0"
-  .dropdown-menu.dropdown-menu-right
-    .gl-dropdown-inner
-      .gl-dropdown-contents
-        %ul
-          %li.gl-dropdown-section-header
-            %header.dropdown-header
-              = _('Review changes')
-          %li.gl-dropdown-item
-            %button.dropdown-item.js-check-out-modal-trigger{ type: 'button' }
-              .gl-dropdown-item-text-wrapper
-                = _('Check out branch')
-          - if current_user
+- if code_dropdown_vue_enabled
+  .gl-flex-1
+    #js-check-out-modal{ data: how_merge_modal_data(@merge_request) }
+    .js-mr-code-dropdown{ data: code_dropdown_data(@merge_request) }
+- else
+  .dropdown.gl-dropdown.gl-flex-1
+    #js-check-out-modal{ data: how_merge_modal_data(@merge_request) }
+    = render Pajamas::ButtonComponent.new(button_text_classes: 'gl-inline-flex gl-justify-between gl-w-full', button_options: { class: 'gl-flex gl-self-start gl-w-full @sm/panel:gl-w-auto !gl-pr-3', data: { toggle: 'dropdown', testid: 'mr-code-dropdown' } }) do
+      = _('Code')
+      = sprite_icon "chevron-down", size: 16, css_class: "gl-icon gl-ml-2 !gl-mr-0"
+    .dropdown-menu.dropdown-menu-right
+      .gl-dropdown-inner
+        .gl-dropdown-contents
+          %ul
+            %li.gl-dropdown-section-header
+              %header.dropdown-header
+                = _('Review changes')
             %li.gl-dropdown-item
-              = link_to ide_merge_request_path(@merge_request), class: 'dropdown-item', target: '_blank', data: { testid: 'open-in-web-ide-button' } do
+              %button.dropdown-item.js-check-out-modal-trigger{ type: 'button' }
                 .gl-dropdown-item-text-wrapper
-                  = _('Open in Web IDE')
-          - if Gitlab::CurrentSettings.gitpod_enabled && current_user&.gitpod_enabled
+                  = _('Check out branch')
+            - if current_user
+              %li.gl-dropdown-item
+                = link_to ide_merge_request_path(@merge_request), class: 'dropdown-item', target: '_blank', data: { testid: 'open-in-web-ide-button' } do
+                  .gl-dropdown-item-text-wrapper
+                    = _('Open in Web IDE')
+            - if Gitlab::CurrentSettings.gitpod_enabled && current_user&.gitpod_enabled
+              %li.gl-dropdown-item
+                = link_to "#{Gitlab::CurrentSettings.gitpod_url}##{merge_request_url(@merge_request)}", target: '_blank', class: 'dropdown-item' do
+                  .gl-dropdown-item-text-wrapper
+                    = _('Open in Ona')
+            = render_if_exists 'projects/merge_requests/code_dropdown_open_in_workspace'
+            %li.gl-dropdown-divider
+              %hr.dropdown-divider
+            %li.gl-dropdown-section-header
+              %header.dropdown-header
+                = _('Download')
             %li.gl-dropdown-item
-              = link_to "#{Gitlab::CurrentSettings.gitpod_url}##{merge_request_url(@merge_request)}", target: '_blank', class: 'dropdown-item' do
+              = link_to merge_request_path(@merge_request, format: :patch), class: 'dropdown-item', download: '', data: { testid: 'download-email-patches-menu-item' } do
                 .gl-dropdown-item-text-wrapper
-                  = _('Open in Ona')
-          = render_if_exists 'projects/merge_requests/code_dropdown_open_in_workspace'
-          %li.gl-dropdown-divider
-            %hr.dropdown-divider
-          %li.gl-dropdown-section-header
-            %header.dropdown-header
-              = _('Download')
-          %li.gl-dropdown-item
-            = link_to merge_request_path(@merge_request, format: :patch), class: 'dropdown-item', download: '', data: { testid: 'download-email-patches-menu-item' } do
-              .gl-dropdown-item-text-wrapper
-                = _('Patches')
-          %li.gl-dropdown-item
-            = link_to merge_request_path(@merge_request, format: :diff), class: 'dropdown-item', download: '', data: { testid: 'download-plain-diff-menu-item' } do
-              .gl-dropdown-item-text-wrapper
-                = _('Plain diff')
+                  = _('Patches')
+            %li.gl-dropdown-item
+              = link_to merge_request_path(@merge_request, format: :diff), class: 'dropdown-item', download: '', data: { testid: 'download-plain-diff-menu-item' } do
+                .gl-dropdown-item-text-wrapper
+                  = _('Plain diff')

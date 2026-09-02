@@ -30,8 +30,14 @@ class Current < ActiveSupport::CurrentAttributes
   # Deliberately lazy rather than a CurrentAttributes default: a default is
   # resolved on reset, which in specs happens before stub_config_cell applies,
   # silently disabling claiming.
+  #
+  # skip_sequence_alteration gates the other Topology Service calls in the DB
+  # configure path (cell enabled but no reachable service); claiming follows suit.
   def cells_claims_leases?
-    self.cells_claims_leases = Gitlab.config.cell.enabled if cells_claims_leases.nil?
+    if cells_claims_leases.nil?
+      self.cells_claims_leases =
+        Gitlab.config.cell.enabled && !Gitlab.config.cell.database.skip_sequence_alteration
+    end
 
     cells_claims_leases
   end

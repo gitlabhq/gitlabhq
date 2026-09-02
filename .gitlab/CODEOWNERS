@@ -300,6 +300,7 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @tkuah
 # Database infrastructure specs enforce DB rules and require mandatory database review
 /spec/db/*
 /ee/spec/db/*
+/spec/support/database/destroy_service_foreign_keys_todo.yml
 /spec/lib/gitlab/database/
 /ee/spec/lib/gitlab/database/
 /ee/spec/lib/ee/gitlab/database/

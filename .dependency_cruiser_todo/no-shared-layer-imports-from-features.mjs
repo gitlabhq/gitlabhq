@@ -11,7 +11,7 @@ export default {
     'app/assets/javascripts/behaviors/markdown/serializer.js',
     'app/assets/javascripts/behaviors/shortcuts/shortcuts_issuable.js',
     'app/assets/javascripts/behaviors/shortcuts/shortcuts_work_items.js',
-    'app/assets/javascripts/graphql_shared/issuable_client.js',
+    'app/assets/javascripts/graphql_shared/issuable_default_client.js',
     'app/assets/javascripts/lib/graphql.js',
     'app/assets/javascripts/lib/utils/axios_utils.js',
     'app/assets/javascripts/lib/utils/breadcrumbs.js',

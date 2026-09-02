@@ -113,7 +113,7 @@ RSpec.describe 'User browses a job', :js, feature_category: :continuous_integrat
   context 'job log search' do
     before do
       visit(project_job_path(project, build))
-      wait_for_all_requests
+      find('.js-log-line', match: :first)
     end
 
     it 'searches for supplied substring' do
@@ -121,7 +121,7 @@ RSpec.describe 'User browses a job', :js, feature_category: :continuous_integrat
 
       find_by_testid('search-button').click
 
-      expect(page).to have_content('26 results found for GroupsHelper')
+      expect(page).to have_css('.gl-toast', text: '26 results found for GroupsHelper')
     end
 
     it 'shows no results for supplied substring' do
@@ -129,7 +129,7 @@ RSpec.describe 'User browses a job', :js, feature_category: :continuous_integrat
 
       find_by_testid('search-button').click
 
-      expect(page).to have_content('No search results found')
+      expect(page).to have_css('.gl-toast', text: 'No search results found')
     end
   end
 end

@@ -294,7 +294,7 @@ end
 # - `path_for` - proc accepting `work_item_iid:` and `child_id:`, returning the full request path
 # - `unauthorized_user` - a user who can read but not update `parent_work_item`
 # - `non_sibling_work_item` - a valid work item that is not a child of `parent_work_item`
-# - `unreadable_sibling_work_item` - a child of `parent_work_item` the current user cannot admin
+# - `unreadable_sibling_work_item` - a child of `parent_work_item` the current user can neither read nor admin
 # - `cross_boundary_sibling_work_item` - a child of `parent_work_item` living in a different project
 RSpec.shared_examples 'reorder child work item endpoint' do
   let(:api_request_path) { path_for.call(work_item_iid: parent_work_item.iid, child_id: second_child.id) }

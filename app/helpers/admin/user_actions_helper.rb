@@ -5,11 +5,23 @@ module Admin
     def admin_actions(user)
       return [] if user.internal?
 
-      @actions ||= ['edit']
+      @user = user
+      @actions = []
 
-      return @actions if user == current_user
+      organization_admin_area? ? organization_admin_actions : instance_admin_actions
 
-      @user ||= user
+      @actions
+    end
+
+    private
+
+    def organization_admin_actions
+      []
+    end
+
+    def instance_admin_actions
+      edit_actions
+      return if @user == current_user
 
       blocked_actions
       deactivate_actions
@@ -17,13 +29,19 @@ module Admin
       delete_actions
       ban_actions
       trust_actions
-
-      @actions
     end
 
-    private
+    def organization_admin_area?
+      respond_to?(:options) && options[:authorization_context].is_a?(::Organizations::Organization)
+    end
+
+    def edit_actions
+      @actions << 'edit' if can?(current_user, :admin_all_resources)
+    end
 
     def blocked_actions
+      return unless can?(current_user, :admin_all_resources)
+
       if @user.ldap_blocked?
         @actions << 'ldap'
       elsif @user.blocked? && @user.blocked_pending_approval?
@@ -37,6 +55,8 @@ module Admin
     end
 
     def deactivate_actions
+      return unless can?(current_user, :admin_all_resources)
+
       if @user.can_be_deactivated?
         @actions << 'deactivate'
       elsif @user.deactivated?
@@ -45,7 +65,7 @@ module Admin
     end
 
     def unlock_actions
-      @actions << 'unlock' if @user.access_locked?
+      @actions << 'unlock' if @user.access_locked? && can?(current_user, :admin_all_resources)
     end
 
     def delete_actions
@@ -56,7 +76,7 @@ module Admin
     end
 
     def ban_actions
-      return if @user.internal?
+      return if @user.internal? || !can?(current_user, :admin_all_resources)
 
       if @user.banned?
         @actions << 'unban'
@@ -67,6 +87,8 @@ module Admin
     end
 
     def trust_actions
+      return unless can?(current_user, :admin_all_resources)
+
       return if @user.internal? ||
         @user.blocked_pending_approval? ||
         @user.banned? ||

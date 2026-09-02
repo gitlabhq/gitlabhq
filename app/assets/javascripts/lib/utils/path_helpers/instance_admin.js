@@ -436,9 +436,21 @@ export const removeEmailAdminUserPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"
  * - controller#action: `admin/users#index`
  *
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
-export const adminUsersPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"users"],[1,[2,[8,"."],[3,"format"]]]]]]]);
+export const adminUsersPath = /*#__PURE__*/ (...args) => {
+  const _organizationAdminUsersPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"users"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
+  const _adminUsersPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"users"],[1,[2,[8,"."],[3,"format"]]]]]]]);
+
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationAdminUsersPath(organizationPath, ...routeArgs);
+  }
+
+  return _adminUsersPath(...routeArgs);
+};
 
 /**
  * Generates the Rails route:
@@ -477,9 +489,21 @@ export const editAdminUserPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format"
  *
  * @param {any} id
  * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
  * @returns {string} route path
  */
-export const adminUserPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
+export const adminUserPath = /*#__PURE__*/ (...args) => {
+  const _organizationAdminUserPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
+  const _adminUserPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
+
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationAdminUserPath(organizationPath, ...routeArgs);
+  }
+
+  return _adminUserPath(...routeArgs);
+};
 
 /**
  * Generates the Rails route:

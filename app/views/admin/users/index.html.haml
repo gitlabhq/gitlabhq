@@ -9,8 +9,8 @@
       = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_path) do
         = s_('AdminUsers|New user')
 
-= render 'tabs'
+= render 'admin/users/tabs'
 
 .tab-content.gl-border-t
   .tab-pane.active
-    = render 'users'
+    = render 'admin/users/users'

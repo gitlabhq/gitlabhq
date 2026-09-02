@@ -140,6 +140,14 @@ RSpec.describe Current, feature_category: :organization do
         expect(Gitlab.config.cell).not_to receive(:enabled)
         expect(described_class.cells_claims_leases?).to be(false)
       end
+
+      it 'returns false when the cell is enabled but sequence alteration is skipped' do
+        allow(Gitlab.config.cell).to receive(:enabled).and_return(true)
+        allow(Gitlab.config.cell.database).to receive(:skip_sequence_alteration).and_return(true)
+
+        expect(cells_claims_leases?).to be(false)
+        expect(described_class.cells_claims_leases?).to be(false)
+      end
     end
   end
 

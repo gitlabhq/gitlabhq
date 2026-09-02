@@ -3,7 +3,8 @@
 - are_close_and_open_buttons_hidden = merge_request_button_hidden?(@merge_request, true) && merge_request_button_hidden?(@merge_request, false)
 - hide_gutter_toggle = local_assigns.fetch(:hide_gutter_toggle, false)
 - rapid_diffs_enabled = Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :beta)
-- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.2-updated_header", true, hide_gutter_toggle, fluid_layout, Gitlab::CurrentSettings.gitpod_enabled, current_user&.gitpod_enabled, rapid_diffs_enabled]
+- code_dropdown_vue_enabled = Feature.enabled?(:merge_request_code_dropdown_vue, @project)
+- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.3-updated_header", true, hide_gutter_toggle, fluid_layout, Gitlab::CurrentSettings.gitpod_enabled, current_user&.gitpod_enabled, rapid_diffs_enabled, code_dropdown_vue_enabled]
 
 = cache(cache_key, expires_in: 1.day) do
   - if @merge_request.closed_or_merged_without_fork?
@@ -29,7 +30,7 @@
         = render Pajamas::ButtonComponent.new(href: edit_project_merge_request_path(@project, @merge_request), button_options: { aria: {label: edit_action_description, keyshortcuts: edit_action_shortcut}, class: "gl-hidden @sm/panel:gl-inline-flex gl-self-start has-tooltip js-issuable-edit", data: { html: "true", testid: "edit-title-button" }, title: edit_button_title }) do
           = _('Edit')
       - if @merge_request.source_project
-        = render 'projects/merge_requests/code_dropdown'
+        = render 'projects/merge_requests/code_dropdown', code_dropdown_vue_enabled: code_dropdown_vue_enabled
 
       - if current_user
         - merge_request_data = { iid: @merge_request.iid, draft: @merge_request.draft, target_project_id: @merge_request.target_project_id }

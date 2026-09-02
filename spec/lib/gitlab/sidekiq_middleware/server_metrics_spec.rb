@@ -168,7 +168,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
           expect(zoekt_requests_total).to receive(:increment).with(labels_with_job_status, zoekt_calls)
           expect(sidekiq_mem_total_bytes).to receive(:set).with(labels_with_job_status, mem_total_bytes)
           expect(gvl_thread_metric).to receive(:observe).with(labels_with_job_status, gvl_thread_wait)
-          expect(gvl_process_metric).to receive(:increment).with(labels_with_job_status, gvl_process_wait)
           expect(gvl_enabled_metric).to receive(:set).with(labels_with_job_status, 1)
           expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_execution_apdex)
                                                     .with(labels.slice(:worker,
@@ -347,7 +346,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
 
           it 'does not report gvl duration to prometheus' do
             expect(Gitlab::Metrics).not_to receive(:histogram).with(:sidekiq_gvl_thread_wait_seconds, anything, anything, anything)
-            expect(Gitlab::Metrics).not_to receive(:gauge).with(:sidekiq_gvl_process_wait_seconds, anything, anything, anything)
 
             subject.call(worker, job, :test) { nil }
           end

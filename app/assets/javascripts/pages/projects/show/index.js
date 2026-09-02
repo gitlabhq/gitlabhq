@@ -18,7 +18,7 @@ import { initHomePanel } from '~/projects/home_panel';
 
 // Project show page loads different overview content based on user preferences
 if (document.getElementById('js-tree-list')) {
-  import(/* webpackChunkName: 'treeList' */ 'ee_else_ce/repository?vue3')
+  import(/* webpackChunkName: 'treeList' */ 'ee_else_ce/repository')
     .then(({ default: initTree }) => {
       initTree();
     })
@@ -26,7 +26,7 @@ if (document.getElementById('js-tree-list')) {
 }
 
 if (document.querySelector('.blob-viewer')) {
-  import(/* webpackChunkName: 'blobViewer' */ '~/blob/viewer?vue3')
+  import(/* webpackChunkName: 'blobViewer' */ '~/blob/viewer')
     .then(({ BlobViewer }) => {
       new BlobViewer(); // eslint-disable-line no-new
       initHeaderApp({ isReadmeView: true });

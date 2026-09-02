@@ -8,6 +8,7 @@ module Sidebars
           override :configure_menu_items
           def configure_menu_items
             add_item(dashboard_menu_item)
+            add_item(users_menu_item)
 
             true
           end
@@ -42,6 +43,17 @@ module Sidebars
               # rubocop:enable Gitlab/AvoidOrganizationUrlRoutes
               active_routes: { controller: 'admin/organizations/dashboard' },
               item_id: :organization_admin_dashboard
+            )
+          end
+
+          def users_menu_item
+            build_menu_item(
+              title: _('Users'),
+              # rubocop:disable Gitlab/AvoidOrganizationUrlRoutes -- We only want to generate org-scoped path here
+              link: organization_admin_users_path(context.current_organization),
+              # rubocop:enable Gitlab/AvoidOrganizationUrlRoutes
+              active_routes: { controller: 'admin/organizations/users' },
+              item_id: :organization_admin_users
             )
           end
         end

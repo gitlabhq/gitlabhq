@@ -1,4 +1,5 @@
 <script>
+import { applyDeepLinkFragment } from '~/authentication/sessions/post_signin_fragment';
 import RecoveryCode from './recovery_code.vue';
 import TotpCode from './totp_code.vue';
 import WebauthnAuthentication from './webauthn_authentication.vue';
@@ -73,6 +74,11 @@ export default {
       method: this.activeMethod || this.defaultMethod(),
     };
   },
+  computed: {
+    actionPath() {
+      return applyDeepLinkFragment(this.path);
+    },
+  },
   methods: {
     /**
      * @returns {Method}
@@ -111,7 +117,7 @@ export default {
   <div>
     <webauthn-authentication
       v-if="isMethod('webauthn')"
-      :path="path"
+      :path="actionPath"
       :remember-me="rememberMe"
       :remember-me-enabled="rememberMeEnabled"
       :webauthn-params="webauthnParams"
@@ -122,7 +128,7 @@ export default {
     />
     <totp-code
       v-else-if="isMethod('totp')"
-      :path="path"
+      :path="actionPath"
       :remember-me="rememberMe"
       :remember-me-enabled="rememberMeEnabled"
       :webauthn-enabled="webauthnEnabled"
@@ -136,7 +142,7 @@ export default {
     />
     <recovery-code
       v-else-if="isMethod('recovery')"
-      :path="path"
+      :path="actionPath"
       :admin-mode="adminMode"
       :remember-me="rememberMe"
       :remember-me-enabled="rememberMeEnabled"
