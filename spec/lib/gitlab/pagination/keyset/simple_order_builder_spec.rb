@@ -140,7 +140,7 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder,
 
       it 'sets the column definition for created_at' do
         expect(column_definition.attribute_name).to eq('created_at')
-        expect(column_definition.nullable?).to eq(true) # be_nullable calls non_null? method for some reason
+        expect(column_definition.nullable?).to be(true) # be_nullable calls non_null? method for some reason
       end
     end
 
@@ -157,7 +157,7 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder,
 
       it 'sets the column definition for authored_date nullable' do
         expect(column_definition.attribute_name).to eq('authored_date')
-        expect(column_definition.nullable?).to eq(true) # be_nullable calls non_null? method for some reason
+        expect(column_definition.nullable?).to be(true) # be_nullable calls non_null? method for some reason
       end
     end
   end
@@ -280,7 +280,7 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder,
     context 'when raw SQL order is given' do
       let(:scope) { Project.order('id DESC') }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when an invalid NULLS order is given' do
@@ -295,20 +295,20 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder,
       end
 
       with_them do
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
     context 'when more than 2 columns are given for the order' do
       let(:scope) { Project.order(created_at: :asc, updated_at: :desc, id: :asc) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when columns that are not in the model are given' do
       let(:scope) { Project.where(id: [1, 2, 3]).order(Project.arel_table[:foo].desc) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when order expression does not respond to `name`' do

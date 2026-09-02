@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
         end
       end
 
-      expect(subject.available_for_type?(model.all)).to eq(true)
+      expect(subject.available_for_type?(model.all)).to be(true)
     end
 
     it 'return false when class does not implement .supported_keyset_orderings' do
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
         self.table_name = 'users'
       end
 
-      expect(subject.available_for_type?(model.all)).to eq(false)
+      expect(subject.available_for_type?(model.all)).to be(false)
     end
   end
 
@@ -116,7 +116,7 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
       let(:sort) { :desc }
 
       it 'returns true' do
-        expect(subject.available?(cursor_based_request_context, model.all)).to eq(true)
+        expect(subject.available?(cursor_based_request_context, model.all)).to be(true)
       end
     end
 
@@ -125,7 +125,7 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
       let(:sort) { :asc }
 
       it 'returns false' do
-        expect(subject.available?(cursor_based_request_context, model.all)).to eq(false)
+        expect(subject.available?(cursor_based_request_context, model.all)).to be(false)
       end
     end
 
@@ -134,7 +134,7 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
       let(:sort) { :desc }
 
       it 'returns false' do
-        expect(subject.available?(cursor_based_request_context, model.all)).to eq(false)
+        expect(subject.available?(cursor_based_request_context, model.all)).to be(false)
       end
     end
 
@@ -148,7 +148,7 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
       end
 
       it 'returns false' do
-        expect(subject.available?(cursor_based_request_context, model.all)).to eq(false)
+        expect(subject.available?(cursor_based_request_context, model.all)).to be(false)
       end
     end
   end

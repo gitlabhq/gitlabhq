@@ -150,22 +150,6 @@ offenses:
   callsite: app/services/analytics/glql/logging_service.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
-- logger_class: Gitlab::AppJsonLogger
-  callsite: app/services/audit_event_service.rb
-  deprecated_field: author_class
-  standard_field: Labkit::Fields::CLASS_NAME
-- logger_class: Gitlab::AuditJsonLogger
-  callsite: app/services/audit_event_service.rb
-  deprecated_field: custom_message
-  standard_field: Labkit::Fields::LOG_MESSAGE
-- logger_class: Gitlab::AuditJsonLogger
-  callsite: app/services/audit_event_service.rb
-  deprecated_field: ip_address
-  standard_field: Labkit::Fields::REMOTE_IP
-- logger_class: Gitlab::AuditJsonLogger
-  callsite: app/services/audit_event_service.rb
-  deprecated_field: reason
-  standard_field: Labkit::Fields::LOG_MESSAGE
 - logger_class: Gitlab::AuthLogger
   callsite: app/services/auth/container_registry_authentication_service.rb
   deprecated_field: project_path

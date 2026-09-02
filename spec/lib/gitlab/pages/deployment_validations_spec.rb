@@ -19,14 +19,14 @@ RSpec.describe Gitlab::Pages::DeploymentValidations, :aggregate_failures, featur
 
   shared_examples "valid pages deployment" do
     specify do
-      expect(validations.valid?).to eq(true)
+      expect(validations.valid?).to be(true)
       expect(validations.errors.full_messages).to eq([])
     end
   end
 
   shared_examples "invalid pages deployment" do |message:|
     specify do
-      expect(validations.valid?).to eq(false)
+      expect(validations.valid?).to be(false)
       expect(validations.errors.full_messages).to include(message)
     end
   end

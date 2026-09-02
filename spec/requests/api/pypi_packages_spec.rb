@@ -95,6 +95,46 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
     end
   end
 
+  # json_format_requested? prefix-matches each comma-separated media type, so
+  # format selection is Accept parsing and independent of the endpoint. The risk
+  # this covers is a client being switched onto the JSON path without asking:
+  # pip's own HTML Accept sends `+html` types that share a long prefix with the
+  # `+json` ones, and a browser sends `*/*`.
+  shared_examples 'PEP 691 Accept header format selection' do
+    where(:case_name, :accept, :expects_json) do
+      [
+        ['no Accept header', nil, false],
+        ['browser Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', false],
+        ['wildcard only', '*/*', false],
+        ['pip HTML Accept (+html shares a prefix with +json)',
+          'application/vnd.pypi.simple.v1+html;q=0.2, text/html;q=0.01', false],
+        ['pip PEP 691 Accept', 'application/vnd.pypi.simple.v1+json, ' \
+          'application/vnd.pypi.simple.v1+html;q=0.1, text/html;q=0.01', true],
+        ['JSON carrying a q-value', 'application/vnd.pypi.simple.v1+json;q=0.5', true],
+        ['JSON not first in the list', 'text/html, application/vnd.pypi.simple.v1+json', true],
+        ['latest+json with a parameter', 'application/vnd.pypi.simple.latest+json; charset=utf-8', true]
+      ]
+    end
+
+    with_them do
+      it 'selects the format from the Accept header' do
+        request_headers = basic_auth_header(user.username, personal_access_token.token)
+        request_headers['Accept'] = accept if accept
+
+        get api(url), headers: request_headers
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expected_content_type =
+          expects_json ? API::PypiPackages::PEP_691_JSON_CONTENT_TYPE : 'text/html'
+        expect(response.headers['Content-Type']).to include(expected_content_type)
+
+        # Both variants are served from one URL, so each must carry Vary.
+        expect(response.headers['Vary']).to include('Accept')
+      end
+    end
+  end
+
   shared_examples 'returns HTML by default' do
     it 'returns HTML by default' do
       get api(url)
@@ -177,6 +217,8 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       context 'PEP 691 Accept negotiation' do
         include_context 'PEP 691 Accept negotiation', 'returns HTML when PEP 691 flag disabled'
         include_context 'PEP 691 Accept negotiation', 'PEP 691 JSON simple index response'
+
+        it_behaves_like 'PEP 691 Accept header format selection'
       end
     end
 
@@ -215,6 +257,8 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       context 'PEP 691 Accept negotiation' do
         include_context 'PEP 691 Accept negotiation', 'returns HTML when PEP 691 flag disabled'
         include_context 'PEP 691 Accept negotiation', 'PEP 691 JSON simple index response'
+
+        it_behaves_like 'PEP 691 Accept header format selection'
       end
     end
   end
@@ -279,6 +323,8 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       context 'PEP 691 Accept negotiation' do
         include_context 'PEP 691 Accept negotiation', 'returns HTML when PEP 691 flag disabled'
         include_context 'PEP 691 Accept negotiation', 'PEP 691 JSON simple package response'
+
+        it_behaves_like 'PEP 691 Accept header format selection'
       end
     end
 
@@ -317,6 +363,8 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       context 'PEP 691 Accept negotiation' do
         include_context 'PEP 691 Accept negotiation', 'returns HTML when PEP 691 flag disabled'
         include_context 'PEP 691 Accept negotiation', 'PEP 691 JSON simple package response'
+
+        it_behaves_like 'PEP 691 Accept header format selection'
       end
     end
   end

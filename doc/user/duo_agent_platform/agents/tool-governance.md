@@ -186,6 +186,7 @@ To configure tool governance rules for a project:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601159) in GitLab 19.3 as a [beta](../../../policy/development_stages_support.md) with a [feature flag](../../../administration/feature_flags/_index.md) named `mcp_server_block_enforcement`. Disabled by default.
+- Enforcement [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251329) in GitLab 19.4 to apply when the session's tool configuration is built.
 
 {{< /history >}}
 
@@ -198,12 +199,21 @@ In addition to [per-tool governance](#default-governance-matrix), group Owners c
 external MCP server. When an MCP server is blocked, no tools from that server can be
 invoked, regardless of individual tool governance settings or user approvals.
 
-This block is enforced on every tool call, including mid-session. If an administrator
-blocks an MCP server while a workflow is running, subsequent calls to tools from that
-server are denied immediately.
+The block is applied when the tools for a chat session are assembled, which happens
+on every user message, tool approval, and new session. In practice a block takes
+effect at the user's next action: a tool call that is awaiting approval when the
+block lands does not run, and from the next message onward the blocked server's
+tools are not offered to the agent at all. A tool call that is already running
+completes.
 
-When a tool from a blocked MCP server is called, the agent receives a policy message
-instead of a tool result. The agent cannot use any tools from that server.
+Because the tools are silently removed rather than denied, the agent does not
+receive a policy message. Agents describe the missing tools in their own words,
+and after a server is allowed again, an agent in an existing conversation may
+still claim the server is blocked based on the earlier conversation. Start a new
+conversation, or ask the agent to retry the tool.
+
+Blocking applies to GitLab Duo Agentic Chat in the UI. IDE and CLI clients configure
+MCP servers through local configuration files, which this setting does not control.
 
 This differs from the **Always Deny** tool governance mode:
 
@@ -212,10 +222,10 @@ This differs from the **Always Deny** tool governance mode:
   the MCP Registry. It overrides any user approval or tool governance setting.
 
 > [!note]
-> Blocking an MCP server requires GitLab 19.3 or later. On older GitLab Self-Managed
-> and Dedicated instances, the block is not enforced and tools from the server are
-> allowed by default. In GitLab 19.3, enforcing the block requires one additional
-> request per MCP tool call.
+> Blocking an MCP server from the MCP Registry requires GitLab 19.3 or later.
+> Enforcement requires GitLab 19.4 or later with the `mcp_server_block_enforcement`
+> feature flag enabled. When enforcement is unavailable, the block is not enforced
+> and tools from the server are allowed by default.
 
 ### Block an MCP server
 
@@ -239,8 +249,8 @@ To block an MCP server for a group:
 1. Select the **MCP Registry** tab.
 1. Find the MCP server you want to block and select **Block**.
 
-The block applies immediately. All tools from the blocked server are denied for all users
-in the group and its subgroups and projects.
+The block applies from each user's next message or new chat session. Tools from the
+blocked server are removed for all users in the group and its subgroups and projects.
 
 #### Block an MCP server for a project
 
@@ -256,8 +266,11 @@ To block an MCP server for a project:
 1. Select the **MCP Registry** tab.
 1. Find the MCP server you want to block and select **Block**.
 
-The block applies immediately. All tools from the blocked server are denied for all users
-in the project.
+The block applies from each user's next message or new chat session. Tools from the
+blocked server are removed for all users in the project. If the same server is also
+blocked on an ancestor group, allowing it in the project has no effect until the
+group block is removed. The MCP Registry shows these servers as blocked by an
+ancestor.
 
 ## Known issues
 

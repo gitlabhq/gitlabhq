@@ -169,9 +169,9 @@ export default {
       const groupId = this.searchContext.group?.id;
 
       if (projectId) {
-        settingsUrl = searchSettingsPath({ project_id: projectId });
+        settingsUrl = searchSettingsPath({ organizationPath: null, project_id: projectId });
       } else if (groupId) {
-        settingsUrl = searchSettingsPath({ group_id: groupId });
+        settingsUrl = searchSettingsPath({ organizationPath: null, group_id: groupId });
       } else {
         this.settings = [];
         return;
@@ -246,7 +246,7 @@ export default {
       try {
         const response = await axios.get(
           autocompleteQuery({
-            path: searchAutocompletePath(),
+            path: searchAutocompletePath({ organizationPath: null }),
             searchTerm: this.searchTerm,
             handle: this.handle,
             projectId: this.searchContext.project?.id,

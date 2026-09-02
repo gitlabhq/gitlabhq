@@ -53,7 +53,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ReleaseFormatter do
       let(:raw_data) { base_data }
 
       it 'returns true' do
-        expect(release.valid?).to eq true
+        expect(release.valid?).to be true
       end
     end
 
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ReleaseFormatter do
       let(:raw_data) { base_data.merge(draft: true) }
 
       it 'returns false' do
-        expect(release.valid?).to eq false
+        expect(release.valid?).to be false
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ReleaseFormatter do
       let(:raw_data) { base_data.merge(tag_name: '') }
 
       it 'returns false' do
-        expect(release.valid?).to eq false
+        expect(release.valid?).to be false
       end
     end
   end

@@ -14,6 +14,8 @@ module Organizations
     before_action :authorize_read_organization!, only: [:activity, :show, :groups_and_projects]
 
     skip_before_action :authenticate_user!, only: [:activity, :show, :groups_and_projects]
+    # Checks `org_creation` organization flag in `authorize_create_organization!`
+    skip_before_action :check_feature_flag!, only: [:new]
 
     urgency :low, [:activity]
 

@@ -2738,6 +2738,25 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
       expect(merge_commit_id).to be_nil
     end
+
+    context 'when the branches have conflicting changes' do
+      let_it_be(:project) { create(:project, :repository) }
+
+      it 'raises a MergeConflictError' do
+        repository.create_file(user, 'conflict.txt', 'from target',
+          message: 'Add conflict.txt on target', branch_name: project.default_branch)
+        repository.create_file(user, 'conflict.txt', 'from source',
+          message: 'Add conflict.txt on source', branch_name: 'feature')
+
+        expect do
+          repository.merge_to_branch(user,
+            source_sha: repository.commit('feature').sha,
+            target_branch: project.default_branch,
+            target_sha: repository.commit(project.default_branch).sha,
+            message: 'New merge commit')
+        end.to raise_error(Gitlab::Git::MergeConflictError) { |error| expect(error).to be_a(Gitlab::Git::CommandError) }
+      end
+    end
   end
 
   describe '#merge_to_ref' do

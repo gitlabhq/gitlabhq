@@ -96,7 +96,7 @@ RSpec.describe Gitlab::InternalPostReceive::Response do
   describe '#reference_counter_decreased' do
     context 'initially' do
       it 'reference_counter_decreased is set to false' do
-        expect(subject.reference_counter_decreased).to eq(false)
+        expect(subject.reference_counter_decreased).to be(false)
       end
     end
   end

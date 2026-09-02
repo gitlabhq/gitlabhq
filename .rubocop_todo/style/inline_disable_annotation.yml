@@ -1114,7 +1114,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/services/ci/runners/stale_group_runners_prune_service.rb'
     - 'ee/app/services/click_house/data_ingestion/ci_finished_builds_sync_service.rb'
     - 'ee/app/services/deployments/approval_service.rb'
-    - 'ee/app/services/ee/audit_event_service.rb'
     - 'ee/app/services/ee/audit_events/build_service.rb'
     - 'ee/app/services/ee/auth/container_registry_authentication_service.rb'
     - 'ee/app/services/ee/boards/base_service.rb'

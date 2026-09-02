@@ -32,12 +32,12 @@ RSpec.describe Gitlab::ProcessManagement do
   describe '.signal' do
     it 'sends a signal to the given process' do
       allow(Process).to receive(:kill).with(:INT, 4)
-      expect(described_class.signal(4, :INT)).to eq(true)
+      expect(described_class.signal(4, :INT)).to be(true)
     end
 
     it 'returns false when the process does not exist' do
       allow(Process).to receive(:kill).with(:INT, 4).and_raise(Errno::ESRCH)
-      expect(described_class.signal(4, :INT)).to eq(false)
+      expect(described_class.signal(4, :INT)).to be(false)
     end
   end
 
@@ -49,13 +49,13 @@ RSpec.describe Gitlab::ProcessManagement do
     it 'returns true if all processes are alive' do
       processes = [Process.pid]
 
-      expect(described_class.all_alive?(processes)).to eq(true)
+      expect(described_class.all_alive?(processes)).to be(true)
     end
 
     it 'returns false when a thread was not alive' do
       processes = [-2]
 
-      expect(described_class.all_alive?(processes)).to eq(false)
+      expect(described_class.all_alive?(processes)).to be(false)
     end
   end
 
@@ -63,19 +63,19 @@ RSpec.describe Gitlab::ProcessManagement do
     it 'returns true if the process is alive' do
       process = Process.pid
 
-      expect(described_class.process_alive?(process)).to eq(true)
+      expect(described_class.process_alive?(process)).to be(true)
     end
 
     it 'returns false when a thread was not alive' do
       process = -2
 
-      expect(described_class.process_alive?(process)).to eq(false)
+      expect(described_class.process_alive?(process)).to be(false)
     end
 
     it 'returns false when no pid is given' do
       process = nil
 
-      expect(described_class.process_alive?(process)).to eq(false)
+      expect(described_class.process_alive?(process)).to be(false)
     end
   end
 
@@ -83,19 +83,19 @@ RSpec.describe Gitlab::ProcessManagement do
     it 'returns false if the process is alive' do
       process = Process.pid
 
-      expect(described_class.process_died?(process)).to eq(false)
+      expect(described_class.process_died?(process)).to be(false)
     end
 
     it 'returns true when a thread was not alive' do
       process = -2
 
-      expect(described_class.process_died?(process)).to eq(true)
+      expect(described_class.process_died?(process)).to be(true)
     end
 
     it 'returns true when no pid is given' do
       process = nil
 
-      expect(described_class.process_died?(process)).to eq(true)
+      expect(described_class.process_died?(process)).to be(true)
     end
   end
 
@@ -111,13 +111,13 @@ RSpec.describe Gitlab::ProcessManagement do
     it 'returns true if at least one process is alive' do
       processes = [Process.pid, -2]
 
-      expect(described_class.any_alive?(processes)).to eq(true)
+      expect(described_class.any_alive?(processes)).to be(true)
     end
 
     it 'returns false when all threads are dead' do
       processes = [-2, -3]
 
-      expect(described_class.any_alive?(processes)).to eq(false)
+      expect(described_class.any_alive?(processes)).to be(false)
     end
   end
 

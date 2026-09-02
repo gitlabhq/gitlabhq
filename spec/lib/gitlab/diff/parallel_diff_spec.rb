@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::ParallelDiff do
+RSpec.describe Gitlab::Diff::ParallelDiff, feature_category: :source_code_management do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

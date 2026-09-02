@@ -110,7 +110,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
 
         project = service.execute
 
-        expect(project.wiki.repository_exists?).to eq false
+        expect(project.wiki.repository_exists?).to be false
       end
     end
 
@@ -120,7 +120,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
 
         project = service.execute
 
-        expect(project.wiki.repository_exists?).to eq true
+        expect(project.wiki.repository_exists?).to be true
       end
     end
   end

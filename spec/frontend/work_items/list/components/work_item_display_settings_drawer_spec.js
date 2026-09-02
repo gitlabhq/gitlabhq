@@ -1,10 +1,11 @@
-import { GlDrawer, GlSegmentedControl } from '@gitlab/ui';
+import { GlButtonGroup, GlDrawer, GlSegmentedControl } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   DISPLAY_SETTINGS_PAGE_GROUP_BY,
   DISPLAY_SETTINGS_PAGE_ROOT,
   VIEW_MODE_LIST,
   VIEW_MODE_BOARD,
+  VIEW_MODE_TABLE,
 } from '~/work_items/constants';
 import WorkItemDisplaySettingsDrawer from '~/work_items/list/components/work_item_display_settings_drawer.vue';
 import WorkItemDisplaySettingsSort from '~/work_items/list/components/work_item_display_settings_sort.vue';
@@ -35,6 +36,9 @@ describe('WorkItemDisplaySettingsDrawer', () => {
   const findMetadata = () => wrapper.findComponent(WorkItemDisplaySettingsMetadata);
   const findUserPreferences = () => wrapper.findComponent(WorkItemDisplaySettingsUserPreferences);
   const findViewModeToggle = () => wrapper.findComponent(GlSegmentedControl);
+  const findIconViewModeToggle = () => wrapper.findComponent(GlButtonGroup);
+  const findIconViewModeButton = (viewMode) =>
+    wrapper.findComponentByTestId(`view-mode-${viewMode}`);
   const findGroupByRow = () => wrapper.findByTestId('group-by-row');
   const findGroupByBackButton = () => wrapper.findComponentByTestId('group-by-back-button');
   const findGroupBy = () => wrapper.findComponent(WorkItemDisplaySettingsGroupBy);
@@ -104,6 +108,71 @@ describe('WorkItemDisplaySettingsDrawer', () => {
       createComponent({ provide: { glFeatures: { planningViewBoards: false } } });
 
       expect(findViewModeToggle().exists()).toBe(false);
+    });
+  });
+
+  describe('icon-only view mode toggles', () => {
+    const createWithTableEnabled = ({ props = {}, planningViewBoards = true } = {}) =>
+      createComponent({
+        props,
+        provide: { glFeatures: { planningViewBoards, planningViewTable: true } },
+      });
+
+    describe('when planningViewTable feature flag is enabled', () => {
+      beforeEach(() => {
+        createWithTableEnabled();
+      });
+
+      it('replaces the labelled toggles with the icon-only ones', () => {
+        expect(findViewModeToggle().exists()).toBe(false);
+        expect(findIconViewModeToggle().exists()).toBe(true);
+      });
+
+      it.each`
+        viewMode           | icon                       | label
+        ${VIEW_MODE_LIST}  | ${'list-bulleted'}         | ${'List'}
+        ${VIEW_MODE_TABLE} | ${'table'}                 | ${'Table'}
+        ${VIEW_MODE_BOARD} | ${'work-item-issue-board'} | ${'Board (Beta)'}
+      `(
+        'renders $label as a $icon button labelled for assistive tech',
+        ({ viewMode, icon, label }) => {
+          expect(findIconViewModeButton(viewMode).props('icon')).toBe(icon);
+          expect(findIconViewModeButton(viewMode).attributes('aria-label')).toBe(label);
+          expect(findIconViewModeButton(viewMode).attributes('title')).toBe(label);
+        },
+      );
+
+      it.each([VIEW_MODE_TABLE, VIEW_MODE_BOARD])(
+        'switches view mode to %s on click',
+        (viewMode) => {
+          findIconViewModeButton(viewMode).vm.$emit('click');
+
+          expect(wrapper.emitted('toggle-view-mode')).toEqual([[viewMode]]);
+        },
+      );
+    });
+
+    describe('when the current view mode is table', () => {
+      beforeEach(() => {
+        createWithTableEnabled({ props: { viewMode: VIEW_MODE_TABLE } });
+      });
+
+      it('marks that view mode as pressed and selected', () => {
+        expect(findIconViewModeButton(VIEW_MODE_TABLE).props('selected')).toBe(true);
+        expect(findIconViewModeButton(VIEW_MODE_TABLE).attributes('aria-pressed')).toBe('true');
+        expect(findIconViewModeButton(VIEW_MODE_LIST).props('selected')).toBe(false);
+        expect(findIconViewModeButton(VIEW_MODE_LIST).attributes('aria-pressed')).toBe('false');
+      });
+    });
+
+    describe('when planningViewTable feature flag is disabled', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render the icon-only toggles', () => {
+        expect(findIconViewModeToggle().exists()).toBe(false);
+      });
     });
   });
 

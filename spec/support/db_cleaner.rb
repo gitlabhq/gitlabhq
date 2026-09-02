@@ -152,6 +152,8 @@ ActiveRecord::Tasks::PostgreSQLDatabaseTasks.prepend(PostgreSQLDatabaseTasksPatc
 # We suppress both for the cleanup query only.
 # Upstream: https://github.com/DatabaseCleaner/database_cleaner-active_record/pull/113
 module DatabaseCleanerDeletionBatchPatch
+  AUTO_EXPLAIN_SETTING = 'auto_explain.log_min_duration'
+
   private
 
   def delete_tables(connection, table_names)
@@ -163,8 +165,34 @@ module DatabaseCleanerDeletionBatchPatch
 
     Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
       Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/589022') do
-        connection.execute(statements.join)
+        without_auto_explain(connection) do
+          connection.execute(statements.join)
+        end
       end
+    end
+  end
+
+  # auto_explain takes "Query Text" from debug_query_string, which for a simple
+  # query message is the entire message rather than the statement being planned.
+  # Batching N deletes into one message therefore logs the whole batch N times,
+  # so log volume grows with N squared. CI runs auto_explain.log_min_duration=0,
+  # which turned this sweep into ~57MB of plan text per clean.
+  # https://gitlab.com/gitlab-org/gitlab/-/work_items/608175
+  #
+  # These plans are noise anyway: full-table cleanup has no partition key to
+  # prune on, so scripts/database/query_analyzers already discards them.
+  def without_auto_explain(connection)
+    previous = connection.select_value("SELECT current_setting('#{AUTO_EXPLAIN_SETTING}', true)")
+
+    # nil means the extension was never loaded, so there is nothing to suppress.
+    return yield if previous.nil?
+
+    connection.execute("SET #{AUTO_EXPLAIN_SETTING} = -1")
+
+    begin
+      yield
+    ensure
+      connection.execute("SET #{AUTO_EXPLAIN_SETTING} = #{connection.quote(previous)}")
     end
   end
 end

@@ -61,6 +61,7 @@ export default {
       organizations: [],
       initialDefaultOrgGroupIds: [],
       nextButtonLoading: false,
+      createdOrganization: null,
     };
   },
   apollo: {
@@ -113,12 +114,15 @@ export default {
     },
   },
   computed: {
+    computedGroupOrganization() {
+      return this.createdOrganization || this.groupOrganization;
+    },
     shouldCreateNewOrganization() {
       // If the current group is in the Default organization we need to create a new organization for the group.
       // The creation of the new organization will be done when user clicks `Confirm` in step 3.
       // If it is not in the default organization it has already been backfilled and we can proceed without
       // creating a new organization.
-      return isDefaultOrganization(this.groupOrganization);
+      return isDefaultOrganization(this.computedGroupOrganization);
     },
     organization() {
       return this.organizations[0];
@@ -164,19 +168,29 @@ export default {
     },
     async createNewOrganizationIfNeeded() {
       if (!this.shouldCreateNewOrganization) {
-        return Promise.resolve(this.groupOrganization.id);
+        return Promise.resolve(this.computedGroupOrganization.id);
       }
 
       try {
-        const {
-          data: { id },
-        } = await axios.post(createOrganizationFromGroupPath(this.groupFullPath));
+        const { data: organization } = await axios.post(
+          createOrganizationFromGroupPath(this.groupFullPath),
+        );
 
-        return convertToGraphQLId(TYPE_ORGANIZATION, id);
+        const id = convertToGraphQLId(TYPE_ORGANIZATION, organization.id);
+
+        this.createdOrganization = {
+          id,
+          name: organization.name,
+          path: organization.path,
+          visibility: organization.visibility,
+          avatarUrl: organization.avatar_url,
+        };
+
+        return id;
       } catch (error) {
         createAlert({
           message: s__(
-            'Organization|An error occurred creating your organization. Please reload the page and try again.',
+            'Organization|An error occurred creating your organization. Please try again.',
           ),
           error,
           captureError: true,
@@ -208,7 +222,7 @@ export default {
       } catch (error) {
         createAlert({
           message: s__(
-            'Organization|An error occurred transferring groups into your organization. Please reload the page and try again.',
+            'Organization|An error occurred transferring groups into your organization. Please try again.',
           ),
           error,
           captureError: true,
@@ -273,7 +287,7 @@ export default {
     :hide-footer="loading"
     @change="updateModalVisibility($event)"
   >
-    <div :class="$options.alertContainerSelector"></div>
+    <div class="gl-mb-5 empty:gl-mb-0" :class="$options.alertContainerSelector"></div>
     <skeleton-loader v-if="loading" />
     <template v-if="!loading && organization">
       <div class="gl-text-center gl-font-bold">

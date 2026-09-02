@@ -92,21 +92,10 @@ Optional methods:
 
 Existing preprocessors are:
 
-1. `Preload`: preloads from the database to prevent N+1 queries
 1. `ContentFetcher`: fetches content from existing documents in the vector store
 1. `Embeddings`: generates embeddings for every document in bulk
 
 These preprocessors rely on the document with content already stored in the vector store. If you need ActiveContext to handle the initial storage of documents in the vector store, you'll need to add a new preprocessor for that.
-
-#### Preload
-
-Requires `model_klass` and `model_klass` to define `preload_indexing_data`.
-
-```ruby
-add_preprocessor :preload do |refs|
-  preload(refs)
-end
-```
 
 #### ContentFetcher
 
@@ -166,7 +155,7 @@ Deletes all documents belonging to a reference.
 
 ### Examples
 
-Example for a reference reading from a database relation, with preloading and bulk embedding generation:
+Example for a reference reading from a database relation, with bulk embedding generation:
 
 ```ruby
 # frozen_string_literal: true
@@ -175,10 +164,6 @@ module Ai
   module Context
     module References
       class MergeRequest < ::ActiveContext::Reference
-        add_preprocessor :preload do |refs|
-          preload(refs)
-        end
-
         add_preprocessor :embeddings do |refs|
           apply_embeddings(refs: refs, target_field: :embeddings, content_method: :title_and_description)
         end

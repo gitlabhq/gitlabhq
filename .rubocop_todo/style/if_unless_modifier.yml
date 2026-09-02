@@ -249,7 +249,6 @@ Style/IfUnlessModifier:
     - 'ee/app/services/dora/aggregate_metrics_service.rb'
     - 'ee/app/services/ee/alert_management/alerts/update_service.rb'
     - 'ee/app/services/ee/allowed_email_domains/update_service.rb'
-    - 'ee/app/services/ee/audit_event_service.rb'
     - 'ee/app/services/ee/boards/base_service.rb'
     - 'ee/app/services/ee/boards/issues/move_service.rb'
     - 'ee/app/services/ee/ci/runners/reset_registration_token_service.rb'

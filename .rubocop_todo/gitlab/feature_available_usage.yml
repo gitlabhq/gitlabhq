@@ -60,7 +60,6 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/app/services/ci/audit_variable_change_service.rb'
     - 'ee/app/services/dashboard/projects/create_service.rb'
     - 'ee/app/services/dashboard/projects/list_service.rb'
-    - 'ee/app/services/ee/audit_event_service.rb'
     - 'ee/app/services/ee/boards/issues/list_service.rb'
     - 'ee/app/services/ee/boards/lists/create_service.rb'
     - 'ee/app/services/ee/boards/update_service.rb'

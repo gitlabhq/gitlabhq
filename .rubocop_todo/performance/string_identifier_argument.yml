@@ -32,7 +32,6 @@ Performance/StringIdentifierArgument:
     - 'app/serializers/analytics_issue_entity.rb'
     - 'app/serializers/ci/job_entity.rb'
     - 'app/serializers/group_child_entity.rb'
-    - 'app/services/concerns/audit_event_save_type.rb'
     - 'app/services/issuable_base_service.rb'
     - 'app/services/packages/rpm/parse_package_service.rb'
     - 'app/services/verify_pages_domain_service.rb'

@@ -24,6 +24,7 @@ module Gitlab
 
     CommandError = Class.new(BaseError)
     CommitError = Class.new(BaseError)
+    MergeConflictError = Class.new(CommandError)
     OSError = Class.new(BaseError)
     AmbiguousRef = Class.new(BaseError)
     CommandTimedOut = Class.new(CommandError)

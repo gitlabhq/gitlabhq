@@ -66,13 +66,13 @@ RSpec.describe Gitlab::Metrics::MethodCall do
     it 'returns false when the total call time is not above the threshold' do
       expect(method_call).to receive(:real_time).and_return(0.009)
 
-      expect(method_call.above_threshold?).to eq(false)
+      expect(method_call.above_threshold?).to be(false)
     end
 
     it 'returns true when the total call time is above the threshold' do
       expect(method_call).to receive(:real_time).and_return(9)
 
-      expect(method_call.above_threshold?).to eq(true)
+      expect(method_call.above_threshold?).to be(true)
     end
   end
 

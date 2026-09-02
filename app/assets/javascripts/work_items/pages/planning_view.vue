@@ -183,6 +183,7 @@ import {
   VIEW_CONTEXT,
   VIEW_MODE_LIST,
   VIEW_MODE_BOARD,
+  VIEW_MODE_TABLE,
   DISPLAY_SETTINGS_PAGE_ROOT,
   DISPLAY_SETTINGS_PAGE_GROUP_BY,
 } from '../constants';
@@ -224,6 +225,7 @@ export default {
   searchProjectsQuery,
   i18n: {
     boardFeedbackLinkText: s__('WorkItemPlanningView|Share feedback on the Board view'),
+    tablePlaceholder: s__('WorkItemPlanningView|Table placeholder'),
   },
   BOARD_FEEDBACK_ISSUE_URL: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/607858',
   name: 'PlanningView',
@@ -415,8 +417,11 @@ export default {
           const isDisabledBoardView =
             savedView?.displaySettings?.viewMode === VIEW_MODE_BOARD &&
             !this.isPlanningViewBoardEnabled;
+          const isDisabledTableView =
+            savedView?.displaySettings?.viewMode === VIEW_MODE_TABLE &&
+            !this.isPlanningViewTableEnabled;
 
-          if (!savedView || isDisabledBoardView) {
+          if (!savedView || isDisabledBoardView || isDisabledTableView) {
             this.handleSavedViewNotFound();
             return;
           }
@@ -492,7 +497,13 @@ export default {
               data?.currentUser?.workItemPreferences?.displaySettings?.viewMode;
             const isPersistedBoardModeUnavailable =
               persistedViewMode === VIEW_MODE_BOARD && !this.isPlanningViewBoardEnabled;
-            if (persistedViewMode && !isPersistedBoardModeUnavailable) {
+            const isPersistedTableModeUnavailable =
+              persistedViewMode === VIEW_MODE_TABLE && !this.isPlanningViewTableEnabled;
+            if (
+              persistedViewMode &&
+              !isPersistedBoardModeUnavailable &&
+              !isPersistedTableModeUnavailable
+            ) {
               this.viewMode = persistedViewMode;
             }
             // Sync default sort to URL on fresh load so the URL always reflects current state.
@@ -522,8 +533,14 @@ export default {
     isPlanningViewBoardEnabled() {
       return Boolean(this.glFeatures.planningViewBoards);
     },
+    isPlanningViewTableEnabled() {
+      return Boolean(this.glFeatures.planningViewTable);
+    },
     isBoardView() {
       return this.viewMode === VIEW_MODE_BOARD && this.isPlanningViewBoardEnabled;
+    },
+    isTableView() {
+      return this.viewMode === VIEW_MODE_TABLE && this.isPlanningViewTableEnabled;
     },
     // `afterCursor` alone answers forward pagination. Backward pagination needs `hasPreviousPage`
     // too: paging next then back to page 1 leaves a real `beforeCursor` set (see
@@ -1527,13 +1544,18 @@ export default {
 
       const isDraftBoardModeUnavailable =
         draft.viewMode === VIEW_MODE_BOARD && !this.isPlanningViewBoardEnabled;
+      const isDraftTableModeUnavailable =
+        draft.viewMode === VIEW_MODE_TABLE && !this.isPlanningViewTableEnabled;
 
       this.sortKey = draft.sortKey;
       this.localDisplaySettings = draft.displaySettings;
       // If the board itself were unavailable we'd already have been redirected to "not found"
       // earlier. So getting here with an unavailable board draft means the saved view is
       // actually a list view with some stale, invalid board draft data left over.
-      this.viewMode = isDraftBoardModeUnavailable ? VIEW_MODE_LIST : draft.viewMode;
+      this.viewMode =
+        isDraftBoardModeUnavailable || isDraftTableModeUnavailable
+          ? VIEW_MODE_LIST
+          : draft.viewMode;
     },
     handleClickTab(state) {
       if (this.state === state) {
@@ -2443,7 +2465,7 @@ export default {
       </div>
     </template>
     <list-view
-      v-if="viewMode !== $options.VIEW_MODE_BOARD"
+      v-if="viewMode !== $options.VIEW_MODE_BOARD && !isTableView"
       data-testid="list-view"
       :root-page-full-path="rootPageFullPath"
       :with-tabs="withTabs"
@@ -2566,6 +2588,9 @@ export default {
       @work-item-created="handleBoardWorkItemCreated"
       @open-group-by-settings="openGroupByDisplaySettings"
     />
+    <div v-if="isTableView" class="gl-py-5" data-testid="table-view-placeholder">
+      {{ $options.i18n.tablePlaceholder }}
+    </div>
     <work-item-display-settings-drawer
       :open="isDisplayDrawerOpen"
       :page="displayDrawerPage"

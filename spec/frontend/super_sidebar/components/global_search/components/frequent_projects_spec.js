@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import FrequentItems from '~/super_sidebar/components/global_search/components/frequent_items.vue';
 import FrequentProjects from '~/super_sidebar/components/global_search/components/frequent_projects.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import currentUserFrecentProjectsQuery from '~/super_sidebar/graphql/queries/current_user_frecent_projects.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { FREQUENTLY_VISITED_PROJECTS_HANDLE } from '~/super_sidebar/components/global_search/command_palette/constants';
@@ -43,15 +44,36 @@ describe('FrequentlyVisitedProjects', () => {
     });
   });
 
-  it('passes project-specific props', () => {
-    createComponent();
+  describe.each`
+    description              | relativeUrl
+    ${'with relativeUrl'}    | ${'/gitlab'}
+    ${'without relativeUrl'} | ${''}
+  `('$description', ({ relativeUrl }) => {
+    useConfigurePathHelpers(relativeUrl);
 
-    expect(findFrequentItems().props()).toMatchObject({
-      emptyStateText: 'Projects you visit often will appear here.',
-      groupName: 'Frequently visited projects',
-      viewAllItemsIcon: 'project',
-      viewAllItemsText: 'View all my projects',
-      viewAllItemsPath: '/dashboard/projects',
+    it('passes project-specific props', () => {
+      createComponent();
+
+      expect(findFrequentItems().props()).toMatchObject({
+        emptyStateText: 'Projects you visit often will appear here.',
+        groupName: 'Frequently visited projects',
+        viewAllItemsIcon: 'project',
+        viewAllItemsText: 'View all my projects',
+        viewAllItemsPath: `${relativeUrl}/dashboard/projects`,
+      });
+    });
+
+    it('passes fetched projects to FrequentItems', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findFrequentItems().props('items')).toEqual(
+        frecentProjectsMock.map((project) => ({
+          ...project,
+          webPath: `${relativeUrl}/${project.fullPath}`,
+        })),
+      );
+      expect(findFrequentItems().props('loading')).toBe(false);
     });
   });
 
@@ -60,14 +82,6 @@ describe('FrequentlyVisitedProjects', () => {
 
     expect(currentUserFrecentProjectsQueryHandler).toHaveBeenCalled();
     expect(findFrequentItems().props('loading')).toBe(true);
-  });
-
-  it('passes fetched projects to FrequentItems', async () => {
-    createComponent();
-    await waitForPromises();
-
-    expect(findFrequentItems().props('items')).toEqual(frecentProjectsMock);
-    expect(findFrequentItems().props('loading')).toBe(false);
   });
 
   it('passes attrs to FrequentItems', () => {

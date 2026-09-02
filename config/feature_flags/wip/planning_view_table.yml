@@ -1,0 +1,9 @@
+---
+name: planning_view_table
+description: A new table view on the work items planning page
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252560
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/612143
+milestone: '19.4'
+group: group::planning views
+type: wip
+default_enabled: false

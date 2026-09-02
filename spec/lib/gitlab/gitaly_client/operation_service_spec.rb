@@ -638,6 +638,26 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         expect(subject).to be_nil
       end
     end
+
+    context 'with MergeConflictError' do
+      let(:merge_conflict_error) do
+        new_detailed_error(GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          "merging commits: merge: there are conflicting files.",
+          Gitaly::UserMergeBranchError.new(
+            merge_conflict: Gitaly::MergeConflictError.new(
+              conflicting_files: ["README.md"]
+            )))
+      end
+
+      it 'raises MergeConflictError' do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_merge_branch).with(kind_of(Enumerator), kind_of(Hash))
+          .and_raise(merge_conflict_error)
+
+        expect { subject }.to raise_error(Gitlab::Git::MergeConflictError,
+          "9:merging commits: merge: there are conflicting files.")
+      end
+    end
   end
 
   describe '#user_ff_branch' do
@@ -1376,7 +1396,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
             )))
       end
 
-      let(:expected_error) { Gitlab::Git::Repository::GitError }
+      let(:expected_error) { Gitlab::Git::MergeConflictError }
 
       it_behaves_like '#user_squash with an error'
     end

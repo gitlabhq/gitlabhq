@@ -47,16 +47,37 @@ export default {
   computed: {
     contextSwitcherLinks() {
       return [
-        ...(isLoggedIn() ? [{ title: this.$options.i18n.YOUR_WORK_TITLE, link: rootPath() }] : []),
-        { title: this.$options.i18n.EXPLORE_TITLE, link: exploreRootPath() },
         ...(isLoggedIn()
           ? [
-              { title: this.$options.i18n.PROFILE_TITLE, link: userSettingsProfilePath() },
-              { title: this.$options.i18n.PREFERENCES_TITLE, link: profilePreferencesPath() },
+              {
+                title: this.$options.i18n.YOUR_WORK_TITLE,
+                link: rootPath({ organizationPath: null }),
+              },
+            ]
+          : []),
+        {
+          title: this.$options.i18n.EXPLORE_TITLE,
+          link: exploreRootPath({ organizationPath: null }),
+        },
+        ...(isLoggedIn()
+          ? [
+              {
+                title: this.$options.i18n.PROFILE_TITLE,
+                link: userSettingsProfilePath({ organizationPath: null }),
+              },
+              {
+                title: this.$options.i18n.PREFERENCES_TITLE,
+                link: profilePreferencesPath({ organizationPath: null }),
+              },
             ]
           : []),
         ...(this.showAdminAreaLink
-          ? [{ title: this.$options.i18n.ADMIN_AREA_TITLE, link: adminRootPath() }]
+          ? [
+              {
+                title: this.$options.i18n.ADMIN_AREA_TITLE,
+                link: adminRootPath({ organizationPath: null }),
+              },
+            ]
           : []),
       ];
     },

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::InlineDiff do
+RSpec.describe Gitlab::Diff::InlineDiff, feature_category: :source_code_management do
   describe '#inline_diffs' do
     subject { described_class.new(old_line, new_line, offset: offset).inline_diffs }
 

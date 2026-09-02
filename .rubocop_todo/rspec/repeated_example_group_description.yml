@@ -15,7 +15,6 @@ RSpec/RepeatedExampleGroupDescription:
     - 'ee/spec/requests/api/graphql/iteration_spec.rb'
     - 'ee/spec/services/app_sec/dast/profiles/create_associations_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/site_validations/find_or_create_service_spec.rb'
-    - 'ee/spec/services/audit_event_service_spec.rb'
     - 'ee/spec/services/todo_service_spec.rb'
     - 'ee/spec/support/shared_examples/services/scoped_label_shared_examples.rb'
     - 'spec/controllers/profiles/notifications_controller_spec.rb'

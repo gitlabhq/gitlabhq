@@ -16,7 +16,7 @@ export const autocompleteQuery = ({ state, fetchType }) => {
     isNil,
   );
 
-  return `${searchAutocompletePath()}?${objectToQuery(query)}`;
+  return `${searchAutocompletePath({ organizationPath: null })}?${objectToQuery(query)}`;
 };
 
 const doFetch = ({ commit, state, fetchType }) => {

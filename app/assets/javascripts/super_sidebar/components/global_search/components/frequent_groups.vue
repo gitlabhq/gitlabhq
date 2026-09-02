@@ -1,6 +1,7 @@
 <script>
 import { s__ } from '~/locale';
 import { dashboardGroupsPath } from '~/lib/utils/path_helpers/dashboard';
+import { groupPath } from '~/lib/utils/path_helpers/group';
 import currentUserFrecentGroupsQuery from '~/super_sidebar/graphql/queries/current_user_frecent_groups.query.graphql';
 import { FREQUENTLY_VISITED_GROUPS_HANDLE } from '~/super_sidebar/components/global_search/command_palette/constants';
 import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
@@ -32,10 +33,13 @@ export default {
       return Boolean(gon.current_username);
     },
     items() {
-      return this.frecentGroups || [];
+      return (this.frecentGroups || []).map((group) => ({
+        ...group,
+        webPath: groupPath(group.fullPath, { organizationPath: null }),
+      }));
     },
     viewAllItemsPath() {
-      return dashboardGroupsPath();
+      return dashboardGroupsPath({ organizationPath: null });
     },
   },
   created() {

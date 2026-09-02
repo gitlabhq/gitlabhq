@@ -4770,6 +4770,35 @@ Fields:
 | <a id="mutation-artifactregistryactivate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-artifactregistryactivate-registry"></a>`registry` {{< icon name="warning-solid" >}} | [`ArtifactRegistry`](#artifactregistry) | Introduced in GitLab 19.4. Status: Experiment. Registry provisioned. Null when the request was refused. |
 
+### `Mutation.artifactRegistryArtifactDelete`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Deletes one artifact of an Artifact Registry repository. Permanently deletes a published artifact on a hosted repository and evicts a cached artifact on a remote repository, following the kind of the repository addressed. Artifact Registry accepts the request rather than completing it, so the mutation reports acceptance rather than completion. Re-read the artifact list to see the result.
+
+Input type: `ArtifactRegistryArtifactDeleteInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryartifactdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryartifactdelete-id"></a>`id` | [`ID!`](#id) | ID of the artifact in Artifact Registry, as returned by the `id` field on a package or image. Not a GitLab global ID. |
+| <a id="mutation-artifactregistryartifactdelete-name"></a>`name` | [`String!`](#string) | Name of the repository holding the artifact, unique within the organization. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryartifactdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryartifactdelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-artifactregistryartifactdelete-repository"></a>`repository` | [`ArtifactRegistryRepository`](#artifactregistryrepository) | Repository holding the deleted artifact. Counters were read before the deletion applied, so they can lag its result. Null when the deletion was not applied. |
+
 ### `Mutation.artifactRegistryDisable`
 
 {{< details >}}
@@ -4823,6 +4852,34 @@ Fields:
 | <a id="mutation-artifactregistryenable-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-artifactregistryenable-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-artifactregistryenable-registry"></a>`registry` | [`ArtifactRegistry`](#artifactregistry) | Registry after the transition. Null when the transition was rejected, for example an unknown namespace. |
+
+### `Mutation.artifactRegistryRepositoryArtifactsDelete`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Deletes every artifact of an Artifact Registry repository. Permanently deletes published artifacts on a hosted repository and evicts cached artifacts on a remote repository, following the kind of the repository addressed. Artifact Registry accepts the request rather than completing it, so the mutation reports acceptance rather than completion. Re-read the artifact list to see the result.
+
+Input type: `ArtifactRegistryRepositoryArtifactsDeleteInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryrepositoryartifactsdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryrepositoryartifactsdelete-name"></a>`name` | [`String!`](#string) | Name of the repository whose artifacts are deleted, unique within the organization. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryrepositoryartifactsdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryrepositoryartifactsdelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-artifactregistryrepositoryartifactsdelete-repository"></a>`repository` | [`ArtifactRegistryRepository`](#artifactregistryrepository) | Repository the deletion targeted. Counters were read before the deletion applied, so they can lag its result. Null when the deletion was not applied. |
 
 ### `Mutation.artifactRegistryRepositoryCreate`
 
@@ -42605,7 +42662,7 @@ Fields:
 | <a id="duoworkflow-auditevents"></a>`auditEvents` {{< icon name="warning-solid" >}} | [`AiAuditEventConnection`](#aiauditeventconnection) | Introduced in GitLab 19.0. Status: Experiment. Audit events recorded for the session. Requires `read_agent_artifacts` on the workflow's project or namespace. Returns no events when the `agent_artifacts_page` feature flag is disabled. |
 | <a id="duoworkflow-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the session was created. |
 | <a id="duoworkflow-environment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, like IDE or web. |
-| <a id="duoworkflow-externalmcpblocked"></a>`externalMcpBlocked` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Whether the workflow's external MCP server tools are currently blocked for the namespace (group-level kill-switch). Checked per tool call so blocking takes effect mid-session. |
+| <a id="duoworkflow-externalmcpblocked"></a>`externalMcpBlocked` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Whether any of the workflow's external MCP servers are currently blocked for the namespace (group-level kill-switch). |
 | <a id="duoworkflow-flowmetadataid"></a>`flowMetadataId` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Identifier of the flow that was executed in the session. |
 | <a id="duoworkflow-flowmetadataschemaversion"></a>`flowMetadataSchemaVersion` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Schema version of the flow metadata for the session. |
 | <a id="duoworkflow-flowmetadataversion"></a>`flowMetadataVersion` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Version of the flow that was executed in the session. |

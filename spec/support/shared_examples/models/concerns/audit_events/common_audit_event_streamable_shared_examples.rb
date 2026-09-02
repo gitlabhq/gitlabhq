@@ -73,11 +73,4 @@ RSpec.shared_examples 'streaming audit event model' do
       end
     end
   end
-
-  describe '#entity_is_group_or_project?' do
-    it 'returns the expected result' do
-      expected = described_class.name.include?('Group') || described_class.name.include?('Project')
-      expect(audit_event.entity_is_group_or_project?).to eq(expected)
-    end
-  end
 end

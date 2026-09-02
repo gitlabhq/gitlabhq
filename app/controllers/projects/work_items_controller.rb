@@ -17,6 +17,7 @@ module Projects
         Feature.enabled?(:work_item_features_field, current_user))
       push_frontend_feature_flag(:work_item_rest_api_frontend_users, current_user)
       push_frontend_feature_flag(:planning_view_boards, current_user)
+      push_frontend_feature_flag(:planning_view_table, current_user)
       push_frontend_feature_flag(:work_items_realtime, current_user)
       push_frontend_feature_flag(:work_items_task_list_toggle, project.root_ancestor)
     end

@@ -90,7 +90,7 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state, feature_categ
       it_behaves_like 'a valid LFS token'
 
       it 'returns an empty container_gid' do
-        expect(lfs_token.container_gid).to eq(nil)
+        expect(lfs_token.container_gid).to be_nil
       end
     end
   end

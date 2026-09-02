@@ -715,8 +715,8 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
 
       it 'calls Gitlab::SQL::Union' do
         expect_next_instances_of(Gitlab::SQL::Union, 2) do |instance|
-          expect(instance.send(:remove_order)).to eq(false) # Do not remove order from the queries
-          expect(instance.send(:remove_duplicates)).to eq(false) # Do not deduplicate the results
+          expect(instance.send(:remove_order)).to be(false) # Do not remove order from the queries
+          expect(instance.send(:remove_duplicates)).to be(false) # Do not deduplicate the results
         end
 
         items

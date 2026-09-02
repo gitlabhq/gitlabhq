@@ -1372,8 +1372,6 @@ Layout/LineLength:
     - 'ee/spec/services/application_settings/update_service_spec.rb'
     - 'ee/spec/services/approval_rules/params_filtering_service_spec.rb'
     - 'ee/spec/services/audit_events/protected_branch_audit_event_service_spec.rb'
-    - 'ee/spec/services/audit_events/release_associate_milestone_audit_event_service_spec.rb'
-    - 'ee/spec/services/audit_events/release_created_audit_event_service_spec.rb'
     - 'ee/spec/services/audit_events/user_impersonation_group_audit_event_service_spec.rb'
     - 'ee/spec/services/award_emojis/add_service_spec.rb'
     - 'ee/spec/services/award_emojis/destroy_service_spec.rb'

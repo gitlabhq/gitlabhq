@@ -15,7 +15,7 @@ RSpec.describe Gitlab::IpAddressState, feature_category: :system_access do
     it 'clears IP address after execution' do
       described_class.with(address) {} # rubocop: disable Lint/EmptyBlock -- wrapper which requires a block
 
-      expect(Thread.current[described_class::THREAD_KEY]).to eq(nil)
+      expect(Thread.current[described_class::THREAD_KEY]).to be_nil
     end
 
     it 'clears IP address after execution even when exception occurred' do
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::IpAddressState, feature_category: :system_access do
         described_class.with(address) { raise 'boom!' }
       end.to raise_error(StandardError)
 
-      expect(Thread.current[described_class::THREAD_KEY]).to eq(nil)
+      expect(Thread.current[described_class::THREAD_KEY]).to be_nil
     end
   end
 
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::IpAddressState, feature_category: :system_access do
   describe '.nullify_address' do
     it 'clears IP address' do
       described_class.nullify_address do
-        expect(Thread.current[described_class::THREAD_KEY]).to eq(nil)
+        expect(Thread.current[described_class::THREAD_KEY]).to be_nil
       end
     end
   end

@@ -27,7 +27,6 @@ export default {
     'ee/app/assets/javascripts/compliance_dashboard/components/violations_report/drawer.vue',
     'ee/app/assets/javascripts/compliance_dashboard/components/violations_report/violations/filter.vue',
     'ee/app/assets/javascripts/compliance_dashboard/components/violations_report/violations/reason.vue',
-    'ee/app/assets/javascripts/external_issues_list/components/external_issues_list_empty_state.vue',
     'ee/app/assets/javascripts/external_issues_show/components/note.vue',
     'ee/app/assets/javascripts/external_issues_show/components/sidebar/issue_due_date.vue',
     'ee/app/assets/javascripts/external_issues_show/components/sidebar/issue_field.vue',

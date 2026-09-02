@@ -1,6 +1,7 @@
 <script>
 import { s__ } from '~/locale';
 import { dashboardProjectsPath } from '~/lib/utils/path_helpers/dashboard';
+import { projectPath } from '~/lib/utils/path_helpers/project';
 import currentUserFrecentProjectsQuery from '~/super_sidebar/graphql/queries/current_user_frecent_projects.query.graphql';
 import { FREQUENTLY_VISITED_PROJECTS_HANDLE } from '~/super_sidebar/components/global_search/command_palette/constants';
 import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
@@ -35,10 +36,13 @@ export default {
       return Boolean(gon.current_username);
     },
     items() {
-      return this.frecentProjects || [];
+      return (this.frecentProjects || []).map((project) => ({
+        ...project,
+        webPath: projectPath(project.fullPath, { organizationPath: null }),
+      }));
     },
     viewAllItemsPath() {
-      return dashboardProjectsPath();
+      return dashboardProjectsPath({ organizationPath: null });
     },
   },
   created() {

@@ -217,14 +217,14 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       allowed_sharding_key_referenced_tables = ::Gitlab::Database::GitlabSchema.sharding_root_tables(gitlab_schema)
 
       sharding_key.each do |column_name, referenced_table_name|
-        expect(column_exists?(table_name, column_name)).to eq(true),
+        expect(column_exists?(table_name, column_name)).to be(true),
           "Could not find sharding key column #{table_name}.#{column_name}"
         expect(referenced_table_name).to be_in(allowed_sharding_key_referenced_tables),
           "#{table_name} uses an incorrect sharding_key (#{referenced_table_name}). " \
             "Allowed values: #{allowed_sharding_key_referenced_tables.to_sentence}"
 
         if allowed_to_be_missing_foreign_key.include?("#{table_name}.#{column_name}")
-          expect(has_foreign_key?(table_name, column_name)).to eq(false),
+          expect(has_foreign_key?(table_name, column_name)).to be(false),
             "The column `#{table_name}.#{column_name}` has a foreign key so cannot be " \
               "allowed_to_be_missing_foreign_key. " \
               "If this is a foreign key referencing the specified table #{referenced_table_name} " \
@@ -233,7 +233,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
           next if Gitlab::Database::PostgresPartition.partition_exists?(table_name)
           next if sharding_key_covered_by_parent_lfk?(table_name, column_name, referenced_table_name)
 
-          expect(has_foreign_key?(table_name, column_name, to_table_name: referenced_table_name)).to eq(true),
+          expect(has_foreign_key?(table_name, column_name, to_table_name: referenced_table_name)).to be(true),
             "Missing a foreign key constraint for `#{table_name}.#{column_name}` " \
               "referencing #{referenced_table_name}. " \
               "All sharding keys must have a foreign key constraint"
@@ -253,11 +253,11 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
         has_null_check_constraint = has_null_check_constraint?(table_name, column_name)
 
         if allowed_to_be_missing_not_null.include?("#{table_name}.#{column_name}")
-          expect(not_nullable || has_null_check_constraint).to eq(false),
+          expect(not_nullable || has_null_check_constraint).to be(false),
             "You must remove `#{table_name}.#{column_name}` from allowed_to_be_missing_not_null " \
               "since it now has a valid constraint."
         else
-          expect(not_nullable || has_null_check_constraint).to eq(true),
+          expect(not_nullable || has_null_check_constraint).to be(true),
             "Missing a not null constraint for `#{table_name}.#{column_name}`. " \
               "All sharding keys must be not nullable or have a NOT NULL check constraint"
         end
@@ -272,12 +272,12 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
                 "allowed_to_be_missing_not_null contains only #{allowed_columns.to_sentence}. " \
                 "allowed_to_be_missing_not_null must contain all sharding key columns, or none"
           else
-            expect(has_null_check_constraint).to eq(false),
+            expect(has_null_check_constraint).to be(false),
               "You must remove #{allowed_columns.to_sentence} from allowed_to_be_missing_not_null " \
                 "since there is now a valid constraint"
           end
         else
-          expect(has_null_check_constraint).to eq(true),
+          expect(has_null_check_constraint).to be(true),
             "Missing a not null constraint for #{sharding_key_columns.to_sentence} on `#{table_name}`. " \
               "All sharding keys must have a NOT NULL check constraint. For more information on constraints for " \
               "multiple columns, see https://docs.gitlab.com/ee/development/database/not_null_constraints.html#not-null-constraints-for-multiple-columns"
@@ -431,11 +431,11 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       has_strict_constraint = has_exactly_one_not_null_check_constraint?(table_name, sharding_key_columns)
 
       if allowed_to_have_loose_multi_column_sharding_constraint.include?(table_name)
-        expect(has_strict_constraint).to eq(false),
+        expect(has_strict_constraint).to be(false),
           "`#{table_name}` now has a strict `num_nonnulls(...) = 1` check constraint on its sharding key. " \
             "You must remove this table from the `allowed_to_have_loose_multi_column_sharding_constraint` list."
       else
-        expect(has_strict_constraint).to eq(true),
+        expect(has_strict_constraint).to be(true),
           "`#{table_name}` declares a multi-column `sharding_key` (#{sharding_key_columns.to_sentence}) " \
             "but does not have a check constraint enforcing that exactly one of those columns is non-null. " \
             "Add a `num_nonnulls(#{sharding_key_columns.sort.join(', ')}) = 1` check constraint (or for " \
@@ -493,7 +493,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       root_table = entry.sharding_key[column]
       next if Gitlab::Database::PostgresPartition.partition_exists?(table)
 
-      expect(sharding_key_covered_by_parent_lfk?(table, column, root_table)).to eq(false),
+      expect(sharding_key_covered_by_parent_lfk?(table, column, root_table)).to be(false),
         "`#{exemption}` is covered by a parent table's loose FK to `#{root_table}`. " \
           "Remove it from `allowed_to_be_missing_foreign_key`; the FK check passes automatically " \
           "when the parent carries the sharding key via a loose FK."

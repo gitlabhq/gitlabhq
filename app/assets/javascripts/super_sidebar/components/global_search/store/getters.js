@@ -56,7 +56,7 @@ export const searchQuery = (state) => {
     isNil,
   );
 
-  return `${searchPath()}?${objectToQuery(query)}`;
+  return `${searchPath({ organizationPath: null })}?${objectToQuery(query)}`;
 };
 
 export const scopedIssuesPath = (state) => {
@@ -67,7 +67,7 @@ export const scopedIssuesPath = (state) => {
   return (
     state.searchContext?.project_metadata?.issues_path ||
     state.searchContext?.group_metadata?.issues_path ||
-    (gon.current_username ? issuesDashboardPath() : false)
+    (gon.current_username ? issuesDashboardPath({ organizationPath: null }) : false)
   );
 };
 
@@ -75,7 +75,7 @@ export const scopedMRPath = (state) => {
   return (
     state.searchContext?.project_metadata?.mr_path ||
     state.searchContext?.group_metadata?.mr_path ||
-    (gon.current_username ? mergeRequestsDashboardPath() : false)
+    (gon.current_username ? mergeRequestsDashboardPath({ organizationPath: null }) : false)
   );
 };
 
@@ -137,7 +137,7 @@ export const projectUrl = (state) => {
     isNil,
   );
 
-  return `${searchPath()}?${objectToQuery(query)}`;
+  return `${searchPath({ organizationPath: null })}?${objectToQuery(query)}`;
 };
 
 export const groupUrl = (state) => {
@@ -154,7 +154,7 @@ export const groupUrl = (state) => {
     isNil,
   );
 
-  return `${searchPath()}?${objectToQuery(query)}`;
+  return `${searchPath({ organizationPath: null })}?${objectToQuery(query)}`;
 };
 
 export const allUrl = (state) => {
@@ -170,7 +170,7 @@ export const allUrl = (state) => {
     isNil,
   );
 
-  return `${searchPath()}?${objectToQuery(query)}`;
+  return `${searchPath({ organizationPath: null })}?${objectToQuery(query)}`;
 };
 
 export const scopedSearchOptions = (state, getters) => {

@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import FrequentItems from '~/super_sidebar/components/global_search/components/frequent_items.vue';
 import FrequentGroups from '~/super_sidebar/components/global_search/components/frequent_groups.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import currentUserFrecentGroupsQuery from '~/super_sidebar/graphql/queries/current_user_frecent_groups.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { frecentGroupsMock } from '../../../mock_data';
@@ -42,15 +43,36 @@ describe('FrequentlyVisitedGroups', () => {
     });
   });
 
-  it('passes group-specific props', () => {
-    createComponent();
+  describe.each`
+    description              | relativeUrl
+    ${'with relativeUrl'}    | ${'/gitlab'}
+    ${'without relativeUrl'} | ${''}
+  `('$description', ({ relativeUrl }) => {
+    useConfigurePathHelpers(relativeUrl);
 
-    expect(findFrequentItems().props()).toMatchObject({
-      emptyStateText: 'Groups you visit often will appear here.',
-      groupName: 'Frequently visited groups',
-      viewAllItemsIcon: 'group',
-      viewAllItemsText: 'View all my groups',
-      viewAllItemsPath: '/dashboard/groups',
+    it('passes group-specific props', () => {
+      createComponent();
+
+      expect(findFrequentItems().props()).toMatchObject({
+        emptyStateText: 'Groups you visit often will appear here.',
+        groupName: 'Frequently visited groups',
+        viewAllItemsIcon: 'group',
+        viewAllItemsText: 'View all my groups',
+        viewAllItemsPath: `${relativeUrl}/dashboard/groups`,
+      });
+    });
+
+    it('passes fetched groups to FrequentItems', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findFrequentItems().props('items')).toEqual(
+        frecentGroupsMock.map((group) => ({
+          ...group,
+          webPath: `${relativeUrl}/${group.fullPath}`,
+        })),
+      );
+      expect(findFrequentItems().props('loading')).toBe(false);
     });
   });
 
@@ -59,14 +81,6 @@ describe('FrequentlyVisitedGroups', () => {
 
     expect(currentUserFrecentGroupsQueryHandler).toHaveBeenCalled();
     expect(findFrequentItems().props('loading')).toBe(true);
-  });
-
-  it('passes fetched groups to FrequentItems', async () => {
-    createComponent();
-    await waitForPromises();
-
-    expect(findFrequentItems().props('items')).toEqual(frecentGroupsMock);
-    expect(findFrequentItems().props('loading')).toBe(false);
   });
 
   it('passes attrs to FrequentItems', () => {

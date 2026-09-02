@@ -1,6 +1,5 @@
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import GlobalSearchFrequentItems from '~/super_sidebar/components/global_search/components/frequent_items.vue';
 import FrequentItem from '~/super_sidebar/components/global_search/components/frequent_item.vue';
 import FrequentItemSkeleton from '~/super_sidebar/components/global_search/components/frequent_item_skeleton.vue';
@@ -9,6 +8,10 @@ import SearchResultFocusLayover from '~/super_sidebar/components/global_search/c
 
 describe('FrequentlyVisitedItems', () => {
   let wrapper;
+  const mockItems = frecentGroupsMock.map((item) => ({
+    ...item,
+    webPath: `/${item.fullPath}`,
+  }));
   const mockProps = {
     emptyStateText: 'mock empty state text',
     groupName: 'mock group name',
@@ -37,7 +40,7 @@ describe('FrequentlyVisitedItems', () => {
   describe('common behavior', () => {
     beforeEach(() => {
       createComponent({
-        items: frecentGroupsMock,
+        items: mockItems,
       });
     });
 
@@ -91,29 +94,23 @@ describe('FrequentlyVisitedItems', () => {
     });
   });
 
-  describe.each`
-    description              | relativeUrl
-    ${'with relativeUrl'}    | ${'/gitlab'}
-    ${'without relativeUrl'} | ${''}
-  `('when there are items $description', ({ relativeUrl }) => {
-    useConfigurePathHelpers(relativeUrl);
-
+  describe('when there are items', () => {
     beforeEach(() => {
       createComponent({
-        items: frecentGroupsMock,
+        items: mockItems,
       });
     });
 
     it('renders the items', () => {
       const items = findItems();
 
-      frecentGroupsMock.forEach((item, index) => {
+      mockItems.forEach((item, index) => {
         const dropdownItem = items.at(index);
 
         // Check GlDisclosureDropdownItem's item has the right structure
         expect(dropdownItem.props('item')).toMatchObject({
           text: item.name,
-          href: `${relativeUrl}/${item.fullPath}`,
+          href: item.webPath,
         });
 
         // Check FrequentItem's item has the right structure

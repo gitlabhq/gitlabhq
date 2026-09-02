@@ -72,6 +72,7 @@ import {
   STATE_CLOSED,
   VIEW_MODE_LIST,
   VIEW_MODE_BOARD,
+  VIEW_MODE_TABLE,
 } from '~/work_items/constants';
 
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
@@ -3448,6 +3449,71 @@ describe('planning-view', () => {
         it('renders the error in a GlAlert', () => {
           expect(wrapper.findComponent(GlAlert).text()).toBe(message);
         });
+      });
+    });
+
+    describe('when planningViewTable feature flag is enabled', () => {
+      const findTablePlaceholder = () => wrapper.findByTestId('table-view-placeholder');
+      const tableProvideAndStubs = {
+        provide: { glFeatures: { planningViewTable: true } },
+        stubs: { WorkItemsSavedViewsSelectors: savedViewsSelectorsStub },
+      };
+
+      describe('when the table view mode is selected', () => {
+        let mutationHandler;
+
+        beforeEach(async () => {
+          mutationHandler = userPrefUpdateHandlerWith({ viewMode: VIEW_MODE_TABLE });
+          await mountComponent({
+            ...tableProvideAndStubs,
+            userPreferenceMutationResponse: mutationHandler,
+          });
+
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_TABLE);
+          await waitForPromises();
+        });
+
+        it('swaps the list view for the table placeholder', () => {
+          expect(findListView().exists()).toBe(false);
+          expect(findTablePlaceholder().text()).toBe('Table placeholder');
+          expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_TABLE);
+        });
+
+        it('persists the table view mode to the namespace preferences', () => {
+          expect(mutationHandler).toHaveBeenCalledWith({
+            namespace: 'full/path',
+            displaySettings: { viewMode: VIEW_MODE_TABLE },
+          });
+        });
+      });
+
+      describe('when the table view mode is persisted and there is no session state, as after a reload', () => {
+        beforeEach(async () => {
+          resetPlanningViewState();
+          await mountComponent({
+            ...tableProvideAndStubs,
+            mockPreferencesHandler: preferencesHandlerWith({ viewMode: VIEW_MODE_TABLE }),
+          });
+        });
+
+        it('restores the table view mode', () => {
+          expect(findTablePlaceholder().exists()).toBe(true);
+          expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_TABLE);
+        });
+      });
+    });
+
+    describe('when the persisted view mode is table but planningViewTable feature flag is disabled', () => {
+      beforeEach(async () => {
+        resetPlanningViewState();
+        await mountComponent({
+          mockPreferencesHandler: preferencesHandlerWith({ viewMode: VIEW_MODE_TABLE }),
+        });
+      });
+
+      it('falls back to the list view', () => {
+        expect(findListView().exists()).toBe(true);
+        expect(wrapper.findByTestId('table-view-placeholder').exists()).toBe(false);
       });
     });
 

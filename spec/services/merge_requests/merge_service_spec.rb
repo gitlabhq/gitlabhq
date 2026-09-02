@@ -756,6 +756,25 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         )
       end
 
+      it 'saves a conflict message and logs the Gitaly error on a merge conflict' do
+        gitaly_message = 'merging commits: merge: there are conflicting files'
+
+        allow_next_instance_of(MergeRequests::MergeStrategies::FromSourceBranch) do |strategy|
+          allow(strategy).to receive(:execute_git_merge!)
+            .and_raise(Gitlab::Git::MergeConflictError, gitaly_message)
+        end
+
+        service.execute(merge_request)
+
+        expect(merge_request.merge_error).to eq(described_class::CONFLICT_ERROR_MESSAGE)
+        expect(Gitlab::AppLogger).to have_received(:error).with(
+          hash_including(
+            merge_request_info: merge_request.to_reference(full: true),
+            message: a_string_matching(gitaly_message)
+          )
+        )
+      end
+
       it 'logs and saves error if user is not authorized' do
         stub_exclusive_lease
 
@@ -838,7 +857,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         it 'logs and saves error if there is an error when squashing' do
           error_message = 'Squashing failed: Squash the commits locally, resolve any conflicts, then push the branch.'
 
-          allow_any_instance_of(MergeRequests::SquashService).to receive(:squash!).and_return(nil)
+          allow_any_instance_of(Repository).to receive(:squash).and_raise(StandardError, 'squash failed')
           merge_request.update!(squash: true)
 
           service.execute(merge_request)

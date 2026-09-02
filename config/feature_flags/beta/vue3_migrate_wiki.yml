@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_wiki
+description: Enables Vue 3 in compatibility mode for wiki
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608112
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252725
+rollout_issue_url:
+milestone: '19.4'
+group: group::planner intelligence
+type: beta
+default_enabled: false

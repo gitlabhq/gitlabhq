@@ -2615,9 +2615,6 @@ msgstr ""
 msgid "AICatalog|Add to AI Catalog"
 msgstr ""
 
-msgid "AICatalog|Add triggers"
-msgstr ""
-
 msgid "AICatalog|Additional details are required."
 msgstr ""
 
@@ -2772,9 +2769,6 @@ msgid "AICatalog|Cannot add trigger events because the custom flow configuration
 msgstr ""
 
 msgid "AICatalog|Cannot restore a deprecated version."
-msgstr ""
-
-msgid "AICatalog|Choose what events in this project trigger the %{itemType}. You can change this later."
 msgstr ""
 
 msgid "AICatalog|Choose whether to delete or hide this %{itemType}."
@@ -3396,9 +3390,6 @@ msgid "AICatalog|Search MCP servers."
 msgstr ""
 
 msgid "AICatalog|Search tools."
-msgstr ""
-
-msgid "AICatalog|Select at least one trigger."
 msgstr ""
 
 msgid "AICatalog|Select external agent"
@@ -12132,6 +12123,9 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact caching period"
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact caching period is required."
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact list updated."
 msgstr ""
 
@@ -12405,6 +12399,9 @@ msgstr ""
 msgid "ArtifactRegistry|Metadata caching period"
 msgstr ""
 
+msgid "ArtifactRegistry|Metadata caching period is required."
+msgstr ""
+
 msgid "ArtifactRegistry|Metadata: %d hour"
 msgid_plural "ArtifactRegistry|Metadata: %d hours"
 msgstr[0] ""
@@ -12566,9 +12563,6 @@ msgid "ArtifactRegistry|Repository name is required."
 msgstr ""
 
 msgid "ArtifactRegistry|Repository setup"
-msgstr ""
-
-msgid "ArtifactRegistry|Repository was not found."
 msgstr ""
 
 msgid "ArtifactRegistry|Repository was successfully created."
@@ -31281,9 +31275,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Select minute"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Select one or multiple event types"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Select pipeline events"
 msgstr ""
 
@@ -49731,6 +49722,9 @@ msgstr ""
 msgid "MergeRequests|Squashing failed: Squash the commits locally, resolve any conflicts, then push the branch."
 msgstr ""
 
+msgid "MergeRequests|Squashing failed: The commits have conflicting changes. Squash the commits locally, resolve the conflicts, then push the branch."
+msgstr ""
+
 msgid "MergeRequests|Squashing not allowed: This project doesn't allow you to squash commits when merging."
 msgstr ""
 
@@ -56588,7 +56582,7 @@ msgstr ""
 msgid "Organization|An error occurred creating an organization. Please try again."
 msgstr ""
 
-msgid "Organization|An error occurred creating your organization. Please reload the page and try again."
+msgid "Organization|An error occurred creating your organization. Please try again."
 msgstr ""
 
 msgid "Organization|An error occurred deleting the project. Please refresh the page to try again."
@@ -56615,7 +56609,7 @@ msgstr ""
 msgid "Organization|An error occurred loading user organizations. Please refresh the page to try again."
 msgstr ""
 
-msgid "Organization|An error occurred transferring groups into your organization. Please reload the page and try again."
+msgid "Organization|An error occurred transferring groups into your organization. Please try again."
 msgstr ""
 
 msgid "Organization|An error occurred updating the organization role. Please try again."
@@ -91786,6 +91780,12 @@ msgid "WorkItemPlanningView|List"
 msgstr ""
 
 msgid "WorkItemPlanningView|Share feedback on the Board view"
+msgstr ""
+
+msgid "WorkItemPlanningView|Table"
+msgstr ""
+
+msgid "WorkItemPlanningView|Table placeholder"
 msgstr ""
 
 msgid "WorkItemStatus|%{status_name} is not a valid status for this item."

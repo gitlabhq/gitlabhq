@@ -1974,13 +1974,10 @@ ee/lib/ee/api/entities/project.rb
 /app/services/audit_events/build_service.rb
 /ee/app/services/ee/audit_events/build_service.rb
 /app/models/audit_event.rb
-/app/services/audit_event_service.rb
-/app/services/concerns/audit_event_save_type.rb
 /ee/app/models/audit_events/
 /ee/app/models/concerns/audit_events/
 /ee/app/models/concerns/auditable.rb
 /ee/app/models/ee/audit_event.rb
-/ee/app/services/ee/audit_event_service.rb
 /ee/app/workers/audit_events/
 /ee/lib/ee/gitlab/audit/
 /lib/gitlab/audit/auditor.rb

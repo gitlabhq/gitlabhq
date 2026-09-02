@@ -18,19 +18,19 @@ RSpec.describe Gitlab::LegacyGithubImport::BranchFormatter do
     it 'returns true when branch exists and commit is part of the branch' do
       branch = described_class.new(project, raw)
 
-      expect(branch.exists?).to eq true
+      expect(branch.exists?).to be true
     end
 
     it 'returns false when branch exists and commit is not part of the branch' do
       branch = described_class.new(project, raw.merge(ref: 'feature'))
 
-      expect(branch.exists?).to eq false
+      expect(branch.exists?).to be false
     end
 
     it 'returns false when branch does not exist' do
       branch = described_class.new(project, raw.merge(ref: 'removed-branch'))
 
-      expect(branch.exists?).to eq false
+      expect(branch.exists?).to be false
     end
   end
 
@@ -54,19 +54,19 @@ RSpec.describe Gitlab::LegacyGithubImport::BranchFormatter do
     it 'returns true when raw sha and ref are present' do
       branch = described_class.new(project, raw)
 
-      expect(branch.valid?).to eq true
+      expect(branch.valid?).to be true
     end
 
     it 'returns false when raw sha is blank' do
       branch = described_class.new(project, raw.merge(sha: nil))
 
-      expect(branch.valid?).to eq false
+      expect(branch.valid?).to be false
     end
 
     it 'returns false when raw ref is blank' do
       branch = described_class.new(project, raw.merge(ref: nil))
 
-      expect(branch.valid?).to eq false
+      expect(branch.valid?).to be false
     end
   end
 end

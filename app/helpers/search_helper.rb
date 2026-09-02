@@ -240,8 +240,12 @@ module SearchHelper
       if search_has_group?
         hash[:group] = { id: search_group.id, name: search_group.name, full_name: search_group.full_name }
         hash[:group_metadata] = {
-          issues_path: issues_group_path(search_group),
-          mr_path: merge_requests_group_path(search_group, assignee_username: current_user&.username)
+          issues_path: issues_group_path(search_group, organization_path: nil),
+          mr_path: merge_requests_group_path(
+            search_group,
+            assignee_username: current_user&.username,
+            organization_path: nil
+          )
         }
       end
 
@@ -250,13 +254,17 @@ module SearchHelper
         hash[:project_metadata] = {}
 
         if @project.feature_available?(:merge_requests, current_user)
-          mr_path = project_merge_requests_path(@project, assignee_username: current_user&.username)
+          mr_path = project_merge_requests_path(
+            @project,
+            assignee_username: current_user&.username,
+            organization_path: nil
+          )
           hash[:project_metadata][:mr_path] = mr_path
         end
 
         if @project.feature_available?(:issues, current_user)
           hash[:project_metadata][:issues_path] =
-            project_issues_path(@project)
+            project_issues_path(@project, organization_path: nil)
         end
 
         hash[:code_search] = search_scope.nil?
@@ -359,9 +367,9 @@ module SearchHelper
   # Autocomplete results for various settings pages
   def default_autocomplete
     [
-      { category: "Settings", label: _("User settings"),    url: user_settings_profile_path },
-      { category: "Settings", label: _("SSH keys"),         url: user_settings_ssh_keys_path },
-      { category: "Settings", label: _("Dashboard"),        url: root_path }
+      { category: "Settings", label: _("User settings"),    url: user_settings_profile_path(organization_path: nil) },
+      { category: "Settings", label: _("SSH keys"),         url: user_settings_ssh_keys_path(organization_path: nil) },
+      { category: "Settings", label: _("Dashboard"),        url: root_path(organization_path: nil) }
     ]
   end
 
@@ -370,7 +378,7 @@ module SearchHelper
     return [] unless current_user.can_read_all_resources?
 
     [
-      { category: "Jump to", label: _("Admin area / Dashboard"), url: admin_root_path }
+      { category: "Jump to", label: _("Admin area / Dashboard"), url: admin_root_path(organization_path: nil) }
     ]
   end
 
@@ -406,29 +414,42 @@ module SearchHelper
 
       if can?(current_user, :read_code, @project)
         result.concat([
-          { category: "In this project", label: _("Files"),          url: project_tree_path(@project, ref) },
-          { category: "In this project", label: _("Commits"),        url: project_commits_path(@project, ref) }
+          { category: "In this project", label: _("Files"),
+            url: project_tree_path(@project, ref, organization_path: nil) },
+          { category: "In this project", label: _("Commits"),
+            url: project_commits_path(@project, ref, organization_path: nil) }
         ])
       end
 
       if can?(current_user, :read_repository_graphs, @project)
         result.concat([
-          { category: "In this project", label: _("Network"),        url: project_network_path(@project, ref) },
-          { category: "In this project", label: _("Graph"),          url: project_graph_path(@project, ref) }
+          { category: "In this project", label: _("Network"),
+            url: project_network_path(@project, ref, organization_path: nil) },
+          { category: "In this project", label: _("Graph"),
+            url: project_graph_path(@project, ref, organization_path: nil) }
         ])
       end
 
       result.concat([
-        { category: "In this project", label: _("Issues"), url: project_issues_path(@project) },
-        { category: "In this project", label: _("Merge requests"), url: project_merge_requests_path(@project) },
-        { category: "In this project", label: _("Milestones"),     url: project_milestones_path(@project) },
-        { category: "In this project", label: _("Snippets"),       url: project_snippets_path(@project) },
-        { category: "In this project", label: _("Members"),        url: project_project_members_path(@project) },
-        { category: "In this project", label: _("Wiki"),           url: project_wikis_path(@project) }
+        { category: "In this project", label: _("Issues"), url: project_issues_path(@project, organization_path: nil) },
+        { category: "In this project", label: _("Merge requests"),
+          url: project_merge_requests_path(@project, organization_path: nil) },
+        { category: "In this project", label: _("Milestones"),
+          url: project_milestones_path(@project, organization_path: nil) },
+        { category: "In this project", label: _("Snippets"),
+          url: project_snippets_path(@project, organization_path: nil) },
+        { category: "In this project", label: _("Members"),
+          url: project_project_members_path(@project, organization_path: nil) },
+        { category: "In this project", label: _("Wiki"),
+          url: project_wikis_path(@project, organization_path: nil) }
       ])
 
       if can?(current_user, :read_feature_flag, @project)
-        result << { category: "In this project", label: _("Feature Flags"), url: project_feature_flags_path(@project) }
+        result << {
+          category: "In this project",
+          label: _("Feature Flags"),
+          url: project_feature_flags_path(@project, organization_path: nil)
+        }
       end
 
       result
@@ -449,7 +470,7 @@ module SearchHelper
         id: group.id,
         value: search_result_sanitize(group.name),
         label: search_result_sanitize(group.full_name),
-        url: group_path(group),
+        url: group_path(group, organization_path: nil),
         avatar_url: group.avatar_url || ''
       }
     end
@@ -467,7 +488,7 @@ module SearchHelper
         category: 'In this project',
         id: issue.id,
         label: search_result_sanitize("#{issue.title} (#{issue.to_reference})"),
-        url: issue_path(issue),
+        url: issue_path(issue, organization_path: nil),
         avatar_url: issue.project.avatar_url || ''
       }
     ]
@@ -489,7 +510,7 @@ module SearchHelper
         id: p.id,
         value: search_result_sanitize(p.name),
         label: search_result_sanitize(p.full_name),
-        url: project_path(p),
+        url: project_path(p, organization_path: nil),
         avatar_url: p.avatar_url || ''
       }
     end
@@ -508,7 +529,7 @@ module SearchHelper
         id: user.id,
         value: search_result_sanitize(user.name),
         label: search_result_sanitize(user.username),
-        url: user_path(user),
+        url: user_path(user, organization_path: nil),
         avatar_url: user.avatar_url || ''
       }
     end
@@ -522,7 +543,7 @@ module SearchHelper
         category: "Recent merge requests",
         id: mr.id,
         label: search_result_sanitize(mr.title),
-        url: merge_request_path(mr),
+        url: merge_request_path(mr, organization_path: nil),
         avatar_url: mr.target_project.avatar_url || '',
         project_id: mr.target_project_id,
         project_name: mr.target_project.name
@@ -542,7 +563,7 @@ module SearchHelper
         category: "Recent work items",
         id: wi.id,
         label: search_result_sanitize(wi.title),
-        url: work_item_path(wi),
+        url: work_item_path(wi, organization_path: nil),
         avatar_url: avatar_url,
         project_id: wi.project&.id,
         project_name: wi.project&.name
@@ -556,7 +577,7 @@ module SearchHelper
         category: "Recent wiki pages",
         id: wiki_page_meta.id,
         label: search_result_sanitize(wiki_page_meta.title),
-        url: Gitlab::UrlBuilder.build(wiki_page_meta)
+        url: Gitlab::UrlBuilder.build(wiki_page_meta, organization_path: nil)
       }
     end
   end

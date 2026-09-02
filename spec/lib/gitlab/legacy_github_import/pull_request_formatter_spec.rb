@@ -418,7 +418,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       let(:raw_data) { base_data }
 
       it 'returns true' do
-        expect(pull_request.valid?).to eq true
+        expect(pull_request.valid?).to be true
       end
     end
 
@@ -427,7 +427,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       let(:raw_data) { base_data }
 
       it 'returns true' do
-        expect(pull_request.valid?).to eq true
+        expect(pull_request.valid?).to be true
       end
     end
 
@@ -436,7 +436,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       let(:raw_data) { base_data }
 
       it 'returns true' do
-        expect(pull_request.valid?).to eq true
+        expect(pull_request.valid?).to be true
       end
     end
   end
@@ -446,7 +446,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       let(:raw_data) { base_data.merge(head: forked_branch) }
 
       it 'returns true' do
-        expect(pull_request.cross_project?).to eq true
+        expect(pull_request.cross_project?).to be true
       end
     end
 
@@ -454,7 +454,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       let(:raw_data) { base_data.merge(head: branch_deleted_repo) }
 
       it 'returns true' do
-        expect(pull_request.cross_project?).to eq true
+        expect(pull_request.cross_project?).to be true
       end
     end
 
@@ -462,7 +462,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       let(:raw_data) { base_data.merge(head: source_branch) }
 
       it 'returns false' do
-        expect(pull_request.cross_project?).to eq false
+        expect(pull_request.cross_project?).to be false
       end
     end
   end
@@ -471,7 +471,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
     let(:raw_data) { base_data.merge(head: forked_branch) }
 
     it 'returns false when is a cross_project' do
-      expect(pull_request.source_branch_exists?).to eq false
+      expect(pull_request.source_branch_exists?).to be false
     end
   end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBase do
+RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBase, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
   let(:diffable) { merge_request.merge_request_diff }
 

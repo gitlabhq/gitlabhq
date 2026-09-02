@@ -26,7 +26,7 @@ RSpec.describe ::Gitlab::LetsEncrypt::Client, feature_category: :pages do
     end
 
     it 'generates and stores private key and initialize acme client with it' do
-      expect(Gitlab::CurrentSettings.lets_encrypt_private_key).to eq(nil)
+      expect(Gitlab::CurrentSettings.lets_encrypt_private_key).to be_nil
 
       subject
 

@@ -487,8 +487,6 @@ methods:
   - declarative_policy_class
   app/models/wiki_page/meta.rb:
   - declarative_policy_class
-  ee/app/models/ai/catalog/mcp_server_block.rb:
-  - self.blocked_server_ids_for
   ee/app/models/ai/model_selection/namespace_feature_setting.rb:
   - self.with_non_default_code_completions
   - self.any_non_default_for_duo_chat?

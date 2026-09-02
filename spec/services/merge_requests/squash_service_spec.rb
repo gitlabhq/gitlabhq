@@ -206,6 +206,31 @@ RSpec.describe MergeRequests::SquashService, feature_category: :source_code_mana
           expect(File.exist?(squash_dir_path)).to be(false)
         end
       end
+
+      context 'with a conflict in Gitaly UserSquash RPC' do
+        before do
+          allow(merge_request.target_project.repository.gitaly_operation_client)
+            .to receive(:user_squash)
+            .and_raise(Gitlab::Git::MergeConflictError, error)
+          allow(service).to receive(:log_error)
+        end
+
+        it 'returns a conflict message and does not track the exception', :aggregate_failures do
+          response = service.execute
+
+          expect(response).to match(
+            status: :error,
+            message: 'Squashing failed: The commits have conflicting changes. ' \
+              'Squash the commits locally, resolve the conflicts, then push the branch.'
+          )
+
+          expect(service).to have_received(:log_error).with(
+            exception: an_instance_of(Gitlab::Git::MergeConflictError),
+            message: 'Failed to squash merge request',
+            track_exception: false
+          )
+        end
+      end
     end
 
     context 'when any other exception is thrown' do

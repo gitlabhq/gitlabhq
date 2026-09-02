@@ -56,6 +56,13 @@ describe('OrganizationReconciliationModal', () => {
   // component has to convert it before handing it to the mutation.
   const createdOrganizationId = 2;
   const createdOrganizationGid = convertToGraphQLId(TYPE_ORGANIZATION, createdOrganizationId);
+  const createdOrganizationResponse = {
+    id: createdOrganizationId,
+    name: 'Mock group',
+    path: 'mock-group',
+    visibility: 'private',
+    avatar_url: null,
+  };
   const createOrganizationPath = createOrganizationFromGroupPath(defaultPropsData.groupFullPath);
 
   const alertContainerSelector = '.js-organization-reconciliation-modal-alert-container';
@@ -114,7 +121,7 @@ describe('OrganizationReconciliationModal', () => {
     axiosMock = new MockAdapter(axios);
     axiosMock
       .onPost(createOrganizationPath)
-      .reply(HTTP_STATUS_CREATED, { id: createdOrganizationId });
+      .reply(HTTP_STATUS_CREATED, createdOrganizationResponse);
   });
 
   afterEach(() => {
@@ -435,9 +442,9 @@ describe('OrganizationReconciliationModal', () => {
 
       describe('confirming', () => {
         const createErrorMessage =
-          'An error occurred creating your organization. Please reload the page and try again.';
+          'An error occurred creating your organization. Please try again.';
         const confirmErrorMessage =
-          'An error occurred transferring groups into your organization. Please reload the page and try again.';
+          'An error occurred transferring groups into your organization. Please try again.';
 
         const moveGroupToOrganization = async (organization) => {
           findStep2().vm.$emit('update', [
@@ -602,11 +609,12 @@ describe('OrganizationReconciliationModal', () => {
 
         describe('when confirming the organization fails', () => {
           const error = new Error();
+          let failingMutationHandler;
 
           beforeEach(async () => {
-            await createComponentAndLoad({
-              mutationHandler: jest.fn().mockRejectedValue(error),
-            });
+            failingMutationHandler = jest.fn().mockRejectedValue(error);
+
+            await createComponentAndLoad({ mutationHandler: failingMutationHandler });
             await goToStep3AndConfirm();
           });
 
@@ -625,6 +633,24 @@ describe('OrganizationReconciliationModal', () => {
 
           it('does not redirect', () => {
             expect(visitUrlWithAlerts).not.toHaveBeenCalled();
+          });
+
+          describe('when confirming again', () => {
+            beforeEach(async () => {
+              findNextButton().vm.$emit('click');
+              await waitForPromises();
+            });
+
+            it('does not create a second organization', () => {
+              expect(axiosMock.history.post).toHaveLength(1);
+            });
+
+            it('retries with the organization that was already created', () => {
+              expect(failingMutationHandler).toHaveBeenLastCalledWith({
+                organizationId: createdOrganizationGid,
+                groupIds: [groupToMove.id],
+              });
+            });
           });
         });
 

@@ -224,6 +224,8 @@ module Gitlab
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
             fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
+        when :merge_conflict
+          raise Gitlab::Git::MergeConflictError, e
         when :reference_update
           # We simply ignore any reference update errors which are typically an
           # indicator of multiple RPC calls trying to update the same reference
@@ -492,18 +494,9 @@ module Gitlab
         detailed_error = GitalyClient.decode_detailed_error(e)
 
         case detailed_error.try(:error)
-        when :resolve_revision, :rebase_conflict
-          # Theoretically, we could now raise specific errors based on the type
-          # of the detailed error. Most importantly, we get error details when
-          # Gitaly was not able to resolve the `start_sha` or `end_sha` via a
-          # ResolveRevisionError, and we get information about which files are
-          # conflicting via a MergeConflictError.
-          #
-          # We don't do this now though such that we can maintain backwards
-          # compatibility with the minimum required set of changes during the
-          # transitory period where we're migrating UserSquash to use
-          # structured errors. We thus continue to just return a GitError, like
-          # we previously did.
+        when :rebase_conflict
+          raise Gitlab::Git::MergeConflictError, e
+        when :resolve_revision
           raise Gitlab::Git::Repository::GitError, e.details
         else
           raise

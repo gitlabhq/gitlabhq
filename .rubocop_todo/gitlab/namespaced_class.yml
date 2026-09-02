@@ -592,7 +592,6 @@ Gitlab/NamespacedClass:
     - 'app/serializers/web_ide_terminal_entity.rb'
     - 'app/serializers/web_ide_terminal_serializer.rb'
     - 'app/services/access_token_validation_service.rb'
-    - 'app/services/audit_event_service.rb'
     - 'app/services/auto_merge_service.rb'
     - 'app/services/base_container_service.rb'
     - 'app/services/base_count_service.rb'

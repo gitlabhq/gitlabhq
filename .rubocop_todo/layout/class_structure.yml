@@ -239,7 +239,6 @@ Layout/ClassStructure:
     - 'lib/banzai/filter/references/commit_range_reference_filter.rb'
     - 'lib/carrier_wave_string_file.rb'
     - 'lib/click_house/migration.rb'
-    - 'lib/click_house/models/audit_event.rb'
     - 'lib/click_house/models/base_model.rb'
     - 'lib/feature.rb'
     - 'lib/gitlab/analytics/cycle_analytics/stage_events/stage_event.rb'

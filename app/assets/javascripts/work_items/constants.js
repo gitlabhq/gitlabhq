@@ -470,6 +470,7 @@ export const VIEW_CONTEXT = {
 
 export const VIEW_MODE_LIST = 'list';
 export const VIEW_MODE_BOARD = 'board';
+export const VIEW_MODE_TABLE = 'table';
 
 export const DISPLAY_SETTINGS_PAGE_ROOT = 'root';
 export const DISPLAY_SETTINGS_PAGE_GROUP_BY = 'groupBy';
