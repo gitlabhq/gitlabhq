@@ -50,6 +50,10 @@ export const FAILURE_REASONS = {
   title_regex: s__('mrWidget|Title must match required pattern'),
 };
 
+export const CHECKING_REASONS = {
+  conflict: __('Checking for merge conflicts.'),
+};
+
 export const ICON_NAMES = Object.freeze({
   failed: 'failed',
   inactive: 'neutral',

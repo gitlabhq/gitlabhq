@@ -73,6 +73,7 @@ module Organizations
 
       def execute
         return ServiceResponse.error(message: transfer_error) unless can_transfer_users?
+        return ServiceResponse.error(message: already_transferred_error) if already_transferred?
 
         # Only create a transaction if we're not already in one
         # This allows the related organization group transfer
@@ -223,6 +224,10 @@ module Organizations
       end
       strong_memoize_attr :old_organization
 
+      def already_transferred?
+        old_organization.id == new_organization.id
+      end
+
       # These are organization-specific bots that may be the author of Todos.
       def old_organization_bots
         bot_types =
@@ -366,14 +371,6 @@ module Organizations
         update_organization_id_for(Authn::OauthApplication) do |relation|
           relation.where(owner_type: 'User', owner_id: user_ids)
         end
-
-        # update_all above bypasses callbacks, so capture the moved records explicitly.
-        # TODO: evaluate moving this into OrganizationUpdater#update_organization_id_for.
-        Authn::OauthApplication.record_iam_outbox_upserts(
-          Authn::OauthApplication.where(
-            owner_type: 'User', owner_id: user_ids, organization_id: new_organization.id
-          )
-        )
       end
       # rubocop:enable CodeReuse/ActiveRecord
 
@@ -384,6 +381,10 @@ module Organizations
       def users_different_organizations_error
         s_("TransferOrganization|Cannot transfer users to a different organization " \
           "if all users do not belong to the same organization as the top-level group.")
+      end
+
+      def already_transferred_error
+        s_("TransferOrganization|Users are already in the target organization.")
       end
     end
   end

@@ -119,14 +119,6 @@ module Organizations
         update_organization_id_for(Authn::OauthApplication) do |relation|
           relation.where(owner_type: 'Namespace', owner_id: namespace_ids)
         end
-
-        # update_all above bypasses callbacks, so capture the moved records explicitly.
-        # TODO: evaluate moving this into OrganizationUpdater#update_organization_id_for.
-        Authn::OauthApplication.record_iam_outbox_upserts(
-          Authn::OauthApplication.where(
-            owner_type: 'Namespace', owner_id: namespace_ids, organization_id: new_organization.id
-          )
-        )
       end
       # rubocop:enable CodeReuse/ActiveRecord
 

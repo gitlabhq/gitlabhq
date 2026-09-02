@@ -1,6 +1,10 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MessageComponent from '~/vue_merge_request_widget/components/checks/message.vue';
 import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
+import {
+  CHECKING_REASONS,
+  FAILURE_REASONS,
+} from '~/vue_merge_request_widget/components/checks/constants';
 
 let wrapper;
 
@@ -51,5 +55,18 @@ describe('Merge request merge checks message component', () => {
     factory({ check: { status: 'CHECKING', identifier: 'discussions_not_resolved' } });
 
     expect(wrapper.findByTestId('checking-icon').exists()).toBe(true);
+  });
+
+  it('renders the checking message instead of the failure reason for an identifier with a checking reason', () => {
+    factory({ check: { status: 'CHECKING', identifier: 'conflict' } });
+
+    expect(wrapper.text()).toBe(CHECKING_REASONS.conflict);
+    expect(wrapper.text()).not.toBe(FAILURE_REASONS.conflict);
+  });
+
+  it('falls back to the failure reason while CHECKING for an identifier without a checking reason', () => {
+    factory({ check: { status: 'CHECKING', identifier: 'discussions_not_resolved' } });
+
+    expect(wrapper.text()).toBe(FAILURE_REASONS.discussions_not_resolved);
   });
 });

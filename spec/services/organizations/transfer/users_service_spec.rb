@@ -64,6 +64,21 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
       end
     end
 
+    context 'when users are already in the target organization' do
+      let_it_be_with_refind(:user1) { create(:user, organization: new_organization) }
+
+      let(:users) { User.id_in([user1.id]) }
+
+      it 'returns error ServiceResponse with appropriate message' do
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result.message).to eq(
+          s_("TransferOrganization|Users are already in the target organization.")
+        )
+      end
+    end
+
     context 'when called within an existing transaction (outer transaction)' do
       let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
 
@@ -786,6 +801,21 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
               include(['oauth_application', app1.id, 'upsert'], ['oauth_application', app2.id, 'upsert']))
 
           service.execute
+        end
+
+        it 'records no additional outbox rows when the transfer is replayed after a successful run' do
+          app1 = create(:oauth_application, owner: user1, organization: old_organization)
+          app2 = create(:oauth_application, owner: user2, organization: old_organization)
+
+          service.execute
+
+          replay = described_class.new(users: users, new_organization: new_organization)
+
+          expect { replay.execute }.not_to change {
+            Authn::IamOutbox.where(
+              entity_id: [app1.id, app2.id], event_type: :upsert, organization_id: new_organization.id
+            ).count
+          }
         end
 
         it 'schedules no drain when the transfer rolls back' do

@@ -11,8 +11,6 @@ Style/AccessorGrouping:
     - 'app/services/notification_recipients/builder/default.rb'
     - 'ee/app/models/integrations/chat_message/vulnerability_message.rb'
     - 'ee/app/services/ci/pipeline_creation/drop_not_runnable_builds_service.rb'
-    - 'ee/lib/gitlab/ci/reports/coverage_fuzzing/crash.rb'
-    - 'ee/lib/gitlab/ci/reports/coverage_fuzzing/report.rb'
     - 'lib/feature/definition.rb'
     - 'lib/gitlab/audit/type/definition.rb'
     - 'lib/gitlab/ci/reports/test_suite.rb'

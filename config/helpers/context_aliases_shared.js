@@ -25,4 +25,20 @@ const INFECTION_BLOCKLIST = [
   'app/assets/javascripts/super_sidebar/state.js',
 ];
 
-module.exports = { CONTEXT_ALIASES, INFECTABLE_RE, INFECTION_BLOCKLIST };
+// Infectable despite the scanner marking them clean, so a Vue 3 importer gets a
+// Vue 3 copy and infection continues past them. Otherwise the subtree below
+// reverts to Vue 2 inside a Vue 3 page. Exact paths, one entry per edition.
+// https://gitlab.com/gitlab-org/gitlab/-/work_items/625296
+const INFECTION_FORCELIST = [
+  'app/assets/javascripts/issuable/index.js',
+  'app/assets/javascripts/mr_notes/mount_app.js',
+  'app/assets/javascripts/sidebar/sidebar_bundle.js',
+  'ee/app/assets/javascripts/hand_raise_leads/hand_raise_lead/index.js',
+];
+
+module.exports = {
+  CONTEXT_ALIASES,
+  INFECTABLE_RE,
+  INFECTION_BLOCKLIST,
+  INFECTION_FORCELIST,
+};

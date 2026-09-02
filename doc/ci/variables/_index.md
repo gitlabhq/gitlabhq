@@ -574,11 +574,28 @@ To limit the use of pipeline variables to only the Maintainer role and higher:
 You can also use [the projects API](../../api/projects.md#update-a-project) to set
 the role for the `ci_pipeline_variables_minimum_override_role` setting.
 
-This restriction does not affect the use of CI/CD variables from the project or group settings.
-Most jobs can still use the `variables` keyword in the YAML configuration, but not
-jobs that use the `trigger` keyword to trigger downstream pipelines. Trigger jobs
-pass variables to a downstream pipelines as pipeline variables, which is also controlled
-by this setting.
+This restriction does not affect CI/CD variables from the project or group settings.
+Most jobs can still use the `variables` keyword in the YAML configuration.
+Jobs that use the `trigger` keyword to start a [multi-project pipeline](../pipelines/downstream_pipelines.md#multi-project-pipelines)
+cannot, because these jobs pass their variables to the downstream pipeline as pipeline variables.
+
+For these jobs:
+
+- The setting in the downstream project applies. GitLab checks the user's role in the
+  downstream project. Their role in the upstream project has no effect.
+- If their role is lower than the minimum role set in the downstream project, the trigger job
+  fails with an `Insufficient permissions to set pipeline variables` error, and GitLab does not
+  create the downstream pipeline.
+- A trigger job that passes no variables is not restricted. Trigger jobs inherit
+  [default `variables`](../yaml/_index.md#default-variables), so a job with no `variables`
+  keyword can still pass variables. To prevent this, use
+  [`inherit:variables: false`](../yaml/_index.md#inheritvariables).
+- The restriction also applies to variables forwarded with
+  [`trigger:forward:pipeline_variables`](../pipelines/downstream_pipelines.md#control-what-type-of-variables-to-forward-to-downstream-pipelines).
+  This forwarding is disabled by default.
+
+Jobs that trigger a [parent-child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines)
+in the same project are not restricted by this setting.
 
 #### Enable pipeline variable restriction for multiple projects
 

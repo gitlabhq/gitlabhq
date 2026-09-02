@@ -1,13 +1,62 @@
 const path = require('path');
 const { readFileSync, existsSync } = require('fs');
 const { spawnSync } = require('child_process');
-const { INFECTABLE_RE, INFECTION_BLOCKLIST } = require('./context_aliases_shared');
+const {
+  INFECTABLE_RE,
+  INFECTION_BLOCKLIST,
+  INFECTION_FORCELIST,
+} = require('./context_aliases_shared');
 
 const ROOT_PATH = path.resolve(__dirname, '..', '..');
 const SCANNER_JSON_PATH = path.join(ROOT_PATH, 'tmp', 'infection_scanner.json');
 
 const VUE3_QUERY = 'vue3';
 const SPECIAL_QUERIES = ['vue', 'worker', 'raw', 'url', 'inline', 'sharedworker'];
+
+const EDITION_PREFIXES = ['ee/', 'jh/'];
+
+/**
+ * Whether a path belongs to an edition this checkout lacks: `ee/` in the FOSS
+ * mirror, `jh/` in CE and EE. Such an entry is not applicable rather than missing.
+ *
+ * @param {string} relPath
+ * @returns {boolean}
+ */
+const isEditionAbsent = (relPath) =>
+  EDITION_PREFIXES.some(
+    (prefix) => relPath.startsWith(prefix) && !existsSync(path.join(ROOT_PATH, prefix)),
+  );
+
+const FORCELIST_ABSOLUTE = new Set(
+  INFECTION_FORCELIST.filter((relPath) => !isEditionAbsent(relPath)).map((relPath) => {
+    // The blocklist wins below, so an entry it also matches would be silently dead.
+    // Its test is a substring one, so mirror that here.
+    const blocked = INFECTION_BLOCKLIST.find((entry) => relPath.includes(entry));
+    if (blocked) {
+      throw new Error(
+        `[vue3-infection] '${relPath}' is on INFECTION_FORCELIST but matches ` +
+          `INFECTION_BLOCKLIST entry '${blocked}'. The blocklist wins, so the ` +
+          `forcelist entry would never apply.`,
+      );
+    }
+    const absolute = path.join(ROOT_PATH, relPath);
+    if (!existsSync(absolute)) {
+      throw new Error(
+        `[vue3-infection] INFECTION_FORCELIST entry does not exist: '${relPath}'. ` +
+          `Paths are matched exactly, so a moved entry is silently dead.`,
+      );
+    }
+    return absolute;
+  }),
+);
+
+/**
+ * Whether a module must always get a per-Vue-version copy, whatever the graph says.
+ *
+ * @param {string} absolutePath - Query string already stripped.
+ * @returns {boolean}
+ */
+const isInfectionForced = (absolutePath) => FORCELIST_ABSOLUTE.has(absolutePath);
 
 /**
  * Strip the query string from a module ID.
@@ -165,6 +214,8 @@ const createIsInfectable = (scannerGraph, { shouldExclude, shouldBypass } = {}) 
     const clean = stripQuery(id);
     if (!INFECTABLE_RE.test(clean)) return false;
     if (INFECTION_BLOCKLIST.some((blocked) => clean.includes(blocked))) return false;
+    // Outranks the graph and both callbacks: the list exists for what they get wrong.
+    if (isInfectionForced(clean)) return true;
     if (!scannerGraph) return true;
     if (shouldExclude && shouldExclude(clean)) return false;
     if (shouldBypass && shouldBypass(clean)) return true;

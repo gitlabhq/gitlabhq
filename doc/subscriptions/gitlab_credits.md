@@ -308,6 +308,7 @@ For premium models with optimized integration:
 | `gpt-5.5` <sup>3</sup> | 1.0 |
 | `gpt-5.6-sol` <sup>4</sup> | 0.76 |
 | `claude-fable-5` | 0.6 |
+| `claude-fable-5.1` | 0.6 |
 | `gpt-5.5` <sup>4</sup> | 0.57 |
 
 **Footnotes**:

@@ -17427,6 +17427,9 @@ msgstr ""
 msgid "Checking branch validity…"
 msgstr ""
 
+msgid "Checking for merge conflicts."
+msgstr ""
+
 msgid "Checking if merge request can be merged…"
 msgstr ""
 
@@ -84686,6 +84689,9 @@ msgid "TransferOrganization|Target organization must be specified."
 msgstr ""
 
 msgid "TransferOrganization|Top-level group organization transfer failed: %{error_message}"
+msgstr ""
+
+msgid "TransferOrganization|Users are already in the target organization."
 msgstr ""
 
 msgid "TransferOrganization|You must be an owner of both the group and new organization."

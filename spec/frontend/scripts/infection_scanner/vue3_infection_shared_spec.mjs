@@ -1,5 +1,11 @@
+import path from 'node:path';
+import { existsSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 import vue3InfectionShared from '../../../../config/helpers/vue3_infection_shared';
+import contextAliasesShared from '../../../../config/helpers/context_aliases_shared';
+
+const REPO_ROOT = path.resolve(import.meta.dirname, '../../../..');
+const { INFECTION_FORCELIST } = contextAliasesShared;
 
 // The module under test is CommonJS; rely on Node's CJS-default-import interop.
 const {
@@ -150,6 +156,8 @@ describe('config/helpers/vue3_infection_shared', () => {
     const INFECTABLE_PATH = '/repo/app/assets/javascripts/some_module.js';
     const BLOCKED_PATH = 'app/assets/javascripts/super_sidebar/state.js';
     const NON_INFECTABLE_PATH = '/repo/app/assets/javascripts/styles.css';
+    // The force list holds repo-relative paths; the predicate matches absolute ones.
+    const FORCED_PATH = path.join(REPO_ROOT, INFECTION_FORCELIST[0]);
 
     it('returns false for files that do not match the infectable extensions', () => {
       const isInfectable = createIsInfectable(null);
@@ -223,6 +231,68 @@ describe('config/helpers/vue3_infection_shared', () => {
       });
 
       expect(isInfectable(INFECTABLE_PATH)).toBe(false);
+    });
+
+    describe('with a path on the infection force list', () => {
+      it('returns true even though the scanner graph marks it as not infected', () => {
+        const graph = new Map([[FORCED_PATH, { infected: false, appRoot: false }]]);
+        const isInfectable = createIsInfectable(graph);
+
+        expect(isInfectable(FORCED_PATH)).toBe(true);
+      });
+
+      it('returns true without a graph lookup', () => {
+        const graph = new Map(); // intentionally empty: a graph lookup would throw
+        const isInfectable = createIsInfectable(graph);
+
+        expect(isInfectable(FORCED_PATH)).toBe(true);
+      });
+
+      it('outranks shouldExclude', () => {
+        const graph = new Map([[FORCED_PATH, { infected: false, appRoot: false }]]);
+        const isInfectable = createIsInfectable(graph, { shouldExclude: () => true });
+
+        expect(isInfectable(FORCED_PATH)).toBe(true);
+      });
+
+      it('ignores query strings', () => {
+        const isInfectable = createIsInfectable(new Map());
+
+        expect(isInfectable(`${FORCED_PATH}?vue3`)).toBe(true);
+      });
+
+      it('does not match a path that merely contains a forced path as a substring', () => {
+        const graph = new Map([[`${FORCED_PATH}x`, { infected: false, appRoot: false }]]);
+        const isInfectable = createIsInfectable(graph);
+
+        expect(isInfectable(`${FORCED_PATH}x`)).toBe(false);
+      });
+
+      const editionEntries = INFECTION_FORCELIST.filter((entry) => /^(ee|jh)\//.test(entry));
+      const ceEntries = INFECTION_FORCELIST.filter((entry) => !/^(ee|jh)\//.test(entry));
+
+      it('honours every entry that is not edition-specific', () => {
+        const isInfectable = createIsInfectable(new Map());
+
+        expect(ceEntries.length).toBeGreaterThan(0);
+        ceEntries.forEach((entry) => {
+          expect(isInfectable(path.join(REPO_ROOT, entry))).toBe(true);
+        });
+      });
+
+      // Entries for an edition this checkout lacks are dropped rather than validated,
+      // so requiring the module cannot throw in the FOSS mirror where `ee/` is absent.
+      it.skipIf(!existsSync(path.join(REPO_ROOT, 'ee')))(
+        'honours edition entries in a checkout that has that edition',
+        () => {
+          const isInfectable = createIsInfectable(new Map());
+
+          expect(editionEntries.length).toBeGreaterThan(0);
+          editionEntries.forEach((entry) => {
+            expect(isInfectable(path.join(REPO_ROOT, entry))).toBe(true);
+          });
+        },
+      );
     });
   });
 });

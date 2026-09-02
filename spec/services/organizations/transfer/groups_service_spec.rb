@@ -280,6 +280,21 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           service.execute
         end
 
+        it 'records no additional outbox row when the transfer is replayed after a successful run' do
+          app = create(:oauth_application, owner_id: group.id, owner_type: 'Namespace',
+            organization: old_organization)
+
+          service.execute
+
+          replay = described_class.new(group: group.reset, new_organization: new_organization, current_user: user)
+
+          expect { replay.execute }.not_to change {
+            Authn::IamOutbox.where(
+              entity_id: app.id, event_type: :upsert, organization_id: new_organization.id
+            ).count
+          }
+        end
+
         it 'schedules no drain when the transfer rolls back' do
           create(:oauth_application, owner_id: group.id, owner_type: 'Namespace',
             organization: old_organization)

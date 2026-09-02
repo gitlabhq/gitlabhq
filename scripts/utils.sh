@@ -400,7 +400,7 @@ function download_files() {
   echo "List of files to download:"
   cat urls_outputs.txt
 
-  curl -f --header "Private-Token: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" --create-dirs --parallel --config urls_outputs.txt
+  curl -f --retry 2 --header "Private-Token: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" --create-dirs --parallel --config urls_outputs.txt
 }
 
 # Taken from https://gist.github.com/jaytaylor/5a90c49e0976aadfe0726a847ce58736
