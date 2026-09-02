@@ -1,26 +1,9 @@
 <script>
 import { defineAsyncComponent } from 'vue';
 import { GlLoadingIcon } from '@gitlab/ui';
-import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
-import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
-import SmartInterval from '~/smart_interval';
-import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import { s__ } from '~/locale';
 import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
-
-const PIPELINE_STATE = {
-  loading: 'LOADING',
-  noPipeline: 'NO_PIPELINE',
-  running: 'RUNNING',
-  complete: 'COMPLETE',
-};
-
-// 5s → 10s → 20s → 40s → 80s → 120s → repeats 120s until done
-const MR_POLLING_SETTINGS = {
-  startingInterval: secondsToMilliseconds(5), // Poll starts at 5s
-  incrementByFactorOf: 2, // Doubles each time
-  maxInterval: secondsToMilliseconds(120), // Caps at 2 mins
-};
+import mergeRequestData, { PIPELINE_STATE } from '~/merge_requests/reports/merge_request_data';
 
 export default {
   name: 'MergeRequestReportsApp',
@@ -49,18 +32,8 @@ export default {
       () => import('~/merge_requests/reports/code_quality/code_quality_nav_item.vue'),
     ),
   },
-  data() {
-    return {
-      mr: null,
-    };
-  },
+  mixins: [mergeRequestData],
   computed: {
-    pipelineState() {
-      if (!this.mr) return PIPELINE_STATE.loading;
-      if (!this.mr.pipelineIid) return PIPELINE_STATE.noPipeline;
-      if (this.mr.isPipelineActive) return PIPELINE_STATE.running;
-      return PIPELINE_STATE.complete;
-    },
     statusMessage() {
       if (this.pipelineState === PIPELINE_STATE.running) {
         return s__('MrReports|Waiting for pipeline to complete.');
@@ -71,41 +44,6 @@ export default {
         );
       }
       return '';
-    },
-  },
-  created() {
-    if (
-      window.gl?.mrWidgetData?.merge_request_cached_widget_path &&
-      window.gl?.mrWidgetData?.merge_request_widget_path
-    ) {
-      MRWidgetService.fetchInitialData()
-        .then(({ data }) => {
-          this.mr = new MRWidgetStore({ ...window.gl.mrWidgetData, ...data });
-          this.initMrPolling();
-        })
-        .catch(() => {});
-    }
-  },
-  beforeDestroy() {
-    this.mrPollingInterval?.destroy();
-  },
-  methods: {
-    initMrPolling() {
-      if (this.pipelineState === PIPELINE_STATE.complete) return;
-
-      this.mrPollingInterval = new SmartInterval({
-        callback: () =>
-          MRWidgetService.fetchInitialData()
-            .then(({ data }) => {
-              this.mr.setData({ ...window.gl.mrWidgetData, ...data });
-              if (this.pipelineState === PIPELINE_STATE.complete) {
-                this.mrPollingInterval.destroy();
-              }
-            })
-            .catch(() => {}),
-        ...MR_POLLING_SETTINGS,
-        immediateExecution: false,
-      });
     },
   },
   PIPELINE_STATE,

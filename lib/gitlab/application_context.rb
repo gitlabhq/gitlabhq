@@ -18,6 +18,7 @@ module Gitlab
       :scoped_user_id,
       :project,
       :root_namespace,
+      Labkit::Fields::GL_ROOT_NAMESPACE_ID,
       :client_id,
       :caller_id,
       :remote_ip,
@@ -173,6 +174,7 @@ module Gitlab
         hash[:project] = -> { project_path } if include_project?
         hash[:organization_id] = -> { organization&.id } if set_values.include?(:organization)
         hash[:root_namespace] = -> { root_namespace_path } if include_namespace?
+        hash[Labkit::Fields::GL_ROOT_NAMESPACE_ID] = -> { root_namespace_id } if include_namespace?
         hash[:client_id] = -> { client } if include_client?
         hash[:pipeline_id] = -> { job&.pipeline_id } if set_values.include?(:job)
         hash[:job_id] = -> { job&.id } if set_values.include?(:job)
@@ -254,9 +256,27 @@ module Gitlab
       associated_user&.id
     end
 
+    def root_namespace_routable
+      namespace || project || runner_project || runner_group || job_project
+    end
+
     def root_namespace_path
-      associated_routable = namespace || project || runner_project || runner_group || job_project
-      associated_routable&.full_path_components&.first
+      root_namespace_routable&.full_path_components&.first
+    end
+
+    # Read back only by the ClickHouse log_comment, so it is best effort, only
+    # read when the association is loaded.
+    def root_namespace_id
+      routable = root_namespace_routable
+      associated_namespace = routable.is_a?(Project) ? loaded_project_namespace(routable) : routable
+
+      associated_namespace&.traversal_ids&.first
+    end
+
+    def loaded_project_namespace(associated_project)
+      return unless associated_project.association(:namespace).loaded?
+
+      associated_project.namespace
     end
 
     def include_namespace?

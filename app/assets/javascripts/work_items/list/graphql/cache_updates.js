@@ -1,5 +1,13 @@
 import { TYPENAME_NAMESPACE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import workItemIdFragment from '~/work_items/graphql/work_item_id.fragment.graphql';
+import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
+import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
+import { boardColumnQuery } from '~/work_items/board/utils';
+import { getWorkItemsConnection } from '~/work_items/utils';
+
+// The backend rejects a `workItems(ids:)` filter longer than this (`WorkItems::
+// SharedFilterArguments::MAX_FIELD_LIMIT`), so a flush bigger than this can't be checked in one go.
+export const MAX_MATCH_IDS = 100;
 
 const ACTION_CREATED = 'CREATED';
 const ACTION_UPDATED = 'UPDATED';
@@ -29,6 +37,61 @@ export const evictNamespaceWorkItems = (cache, namespaceId, { useRestApi = false
 // references out of list fields when reading. Callers run `cache.gc()` once per batch.
 export const evictWorkItem = (cache, workItemId) => {
   cache.evict({ id: cache.identify({ __typename: TYPENAME_WORK_ITEM, id: workItemId }) });
+};
+
+// Re-runs the query the view already renders with, narrowed to just these ids — the server's
+// answer is the visibility check, and Apollo normalizes whatever nodes come back into the cache
+// as a side effect, patching them for free. Returns `null` when there are too many ids to ask about.
+export const findMatchingWorkItems = async ({
+  client,
+  queryVariables,
+  ids,
+  useRestApi,
+  isBoardView,
+  glFeatures,
+}) => {
+  if (ids.length > MAX_MATCH_IDS) {
+    return null;
+  }
+
+  let query = getWorkItemsSlimQuery;
+  if (isBoardView) {
+    query = boardColumnQuery(glFeatures);
+  } else if (useRestApi) {
+    query = getWorkItemsRestQuery;
+  }
+
+  const { data } = await client.query({
+    query,
+    variables: {
+      ...queryVariables,
+      ids,
+      afterCursor: null,
+      beforeCursor: null,
+      firstPageSize: ids.length,
+      lastPageSize: null,
+    },
+    fetchPolicy: 'network-only',
+    context: { featureCategory: 'portfolio_management' },
+  });
+
+  return new Set(getWorkItemsConnection(data, useRestApi)?.nodes.map((node) => node.id) ?? []);
+};
+
+// The match query's `ids` argument gives it its own store entry, separate from the list's, because
+// `workItems` has no `keyArgs` — nothing else merges into it, so it just needs clearing out.
+export const dropMatchCacheEntries = (cache, namespaceId) => {
+  const stripMatchEntry = (value, { storeFieldName, DELETE }) =>
+    storeFieldName.includes('"ids":') ? DELETE : value;
+
+  if (namespaceId) {
+    cache.modify({
+      id: cache.identify({ __typename: TYPENAME_NAMESPACE, id: namespaceId }),
+      fields: { workItems: stripMatchEntry },
+    });
+  }
+  cache.modify({ fields: { restWorkItems: stripMatchEntry } });
+  cache.gc();
 };
 
 // True whenever the item could be on screen, but also true for items only cached as a

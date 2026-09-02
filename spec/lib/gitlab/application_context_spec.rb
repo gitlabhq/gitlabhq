@@ -169,6 +169,48 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
       )
     end
 
+    it 'includes the root namespace id when a namespace is in the context' do
+      context = described_class.new(namespace: subgroup)
+
+      expect(result(context)[Labkit::Fields::GL_ROOT_NAMESPACE_ID]).to eq(namespace.id)
+    end
+
+    it 'has no root namespace id when only a project is given and its namespace is not loaded' do
+      context = described_class.new(project: Project.find(project.id))
+
+      expect(result(context)[Labkit::Fields::GL_ROOT_NAMESPACE_ID]).to be_nil
+    end
+
+    it 'drops the root namespace id from the emitted context when it has no value' do
+      described_class.with_context(project: Project.find(project.id)) do
+        expect(Labkit::Context.current.to_h)
+          .not_to have_key(Labkit::Context.log_key(Labkit::Fields::GL_ROOT_NAMESPACE_ID))
+      end
+    end
+
+    it 'includes the root namespace id for a group runner, as the path does' do
+      runner = create(:ci_runner, :group, groups: [subgroup])
+      context = described_class.new(runner: runner)
+
+      expect(result(context)).to include(
+        root_namespace: namespace.full_path,
+        Labkit::Fields::GL_ROOT_NAMESPACE_ID => namespace.id
+      )
+    end
+
+    it 'includes the root namespace id from a project whose namespace is already loaded' do
+      context = described_class.new(project: Project.includes(:namespace).find(project.id))
+
+      expect(result(context)[Labkit::Fields::GL_ROOT_NAMESPACE_ID]).to eq(project.namespace.id)
+    end
+
+    it 'does not query for the root namespace id' do
+      context = described_class.new(namespace: Group.find(subgroup.id))
+
+      expect { result(context)[Labkit::Fields::GL_ROOT_NAMESPACE_ID] }
+        .not_to exceed_query_limit(1) # the existing root_namespace path lookup
+    end
+
     it 'contains known keys' do
       context = described_class.new(project: project)
 

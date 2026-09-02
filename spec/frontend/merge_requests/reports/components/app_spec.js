@@ -8,6 +8,7 @@ import SmartInterval from '~/smart_interval';
 import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
 import App from '~/merge_requests/reports/components/app.vue';
 import routes from '~/merge_requests/reports/routes';
+import { resetMergeRequestData } from '~/merge_requests/reports/merge_request_data';
 
 jest.mock('ee_else_ce/vue_merge_request_widget/services/mr_widget_service', () => ({
   fetchInitialData: jest.fn().mockReturnValue(new Promise(() => {})),
@@ -107,6 +108,7 @@ describe('Merge request reports App component', () => {
   };
 
   afterEach(() => {
+    resetMergeRequestData();
     gl.mrWidgetData = {};
   });
 

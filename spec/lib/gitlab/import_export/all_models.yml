@@ -287,6 +287,7 @@ merge_requests:
 - generated_ref_commits
 - policy_dismissals
 - duo_workflows
+- ai_suggested_reviewers
 - vulnerability_merge_request_links
 - duo_workflow_links
 - linked_duo_workflows
@@ -776,7 +777,6 @@ project:
 - approval_merge_request_rules
 - v2_approval_rules
 - v2_approval_rules_projects
-- audit_events
 - path_locks
 - wiki_repository
 - source_pipelines

@@ -1,0 +1,4 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/raw/master/config/user_experience_slis/schema.json
+description: "Time from approving a merge request until the approval is persisted and the approval state is updated"
+feature_category: "code_review_workflow"
+urgency: "sync_slow"

@@ -10,6 +10,7 @@ description: AI-native resolution of problems with merge requests that bump depe
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
 {{< /details >}}
 
@@ -19,15 +20,15 @@ description: AI-native resolution of problems with merge requests that bump depe
 
 {{< /history >}}
 
-Agentic breaking change resolution is an opt-in foundational flow that:
+Agentic breaking change resolution is a foundational flow that:
 
 - Analyzes failed pipelines on merge requests that bump dependencies.
 - Generates fixes to resolve breaking changes introduced by the dependency update.
 
 > [!warning]
-> When this feature is enabled, pipeline logs and code context from the affected merge request
+> When this feature is turned on, pipeline logs and code context from the affected merge request
 > are sent to large language models (LLMs) for analysis. Review your organization's data policies
-> before enabling this feature.
+> before you turn on this feature.
 
 In this foundational flow, GitLab Duo:
 
@@ -41,41 +42,17 @@ Results are based on AI analysis and should be reviewed by a developer before me
 
 ## Prerequisites
 
-- [GitLab Duo enabled](../../gitlab_duo/turn_on_off.md) in your project or group.
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
+- Turn on **Allow foundational flows** and **Resolve Dependency Bump Breaking Changes** for the
+  [top-level group and project](../../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+- [Configure push rules to allow a service account](../../duo_agent_platform/troubleshooting.md#configure-push-rules-to-allow-a-service-account).
+- [Configure your own runners](../../duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows) or turn on
+  [GitLab-hosted runners](../../../ci/runners/hosted_runners/_index.md) for your project.
 - [A default GitLab Duo namespace set](../../profile/preferences.md#set-a-default-gitlab-duo-namespace)
   in your user preferences.
-- [Dependency scanning auto-remediation](../remediate/auto_remediation.md) enabled
-  for the project. Agentic breaking change resolution acts on the dependency bump merge requests
+- [Dependency scanning auto-remediation](../remediate/auto_remediation.md) is turned on for the project.
+  Agentic breaking change resolution acts on the dependency bump merge requests
   that auto-remediation creates.
-
-## Enable agentic breaking change resolution
-
-The feature is turned off by default and must be explicitly enabled at both the group and
-project level.
-
-### Turn on this foundational flow in a top-level group
-
-To allow all projects in a group to use the foundational flow:
-
-1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **GitLab Duo**.
-1. Under **Allow foundational flows**, select the **Resolve Dependency Bump Breaking Changes** checkbox.
-1. Select **Save changes**.
-
-### Turn on this foundational flow for a project
-
-Prerequisites:
-
-- The Maintainer or Owner role for the project.
-- The foundational flow enabled for the top-level group.
-
-To turn on agentic breaking change resolution for a specific project:
-
-1. In the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
-1. Expand **GitLab Duo**.
-1. Turn on the **Turn on AI-powered resolution of dependency bump breaking changes** toggle.
-1. Select **Save changes**.
 
 ## Trigger the flow
 
@@ -111,8 +88,5 @@ Share your feedback in the [feedback issue](https://gitlab.com/gitlab-org/gitlab
 
 ## Related topics
 
-- [Agentic breaking change resolution foundational flow](../../duo_agent_platform/flows/foundational_flows/agentic-breaking-change-resolution.md)
 - [Dependency scanning auto-remediation](../remediate/auto_remediation.md)
 - [Dependency scanning](_index.md)
-- [GitLab Duo Agent Platform](../../duo_agent_platform/_index.md)
-- [GitLab Duo](../../gitlab_duo/_index.md)

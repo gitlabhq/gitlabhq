@@ -462,6 +462,7 @@ export default {
         <gl-form-checkbox
           v-gl-tooltip.right
           :title="selectAllTooltipText"
+          :aria-label="s__('Artifacts|Select all artifacts')"
           :checked="isAnyVisibleArtifactSelected"
           :indeterminate="isAnyVisibleArtifactSelected && !areAllVisibleArtifactsSelected"
           :disabled="isSelectedArtifactsLimitReached && !isAnyVisibleArtifactSelected"
@@ -472,11 +473,12 @@ export default {
       </template>
       <template
         v-if="canBulkDestroyArtifacts"
-        #cell(checkbox)="{ item: { hasArtifacts, artifacts } }"
+        #cell(checkbox)="{ item: { hasArtifacts, artifacts, name } }"
       >
         <div class="gl-flex gl-flex-grow gl-justify-end">
           <job-checkbox
             :has-artifacts="hasArtifacts"
+            :job-name="name"
             :selected-artifacts="
               artifacts.nodes.filter((node) => selectedArtifacts.includes(node.id))
             "

@@ -683,6 +683,80 @@ end
 
 Additionally, to view the executed ClickHouse queries in web interactions, on the performance bar, next to the `ch` label select the count.
 
+### Query attribution with `log_comment`
+
+Every query GitLab sends to ClickHouse carries a `log_comment` setting, appended to the request URL
+in `ClickHouse::HttpClient.build_post_proc`. ClickHouse stores this value in the `log_comment`
+column of `system.query_log`, so a recorded query can be traced back to the GitLab request that
+issued it.
+
+The value is a JSON object. A key is omitted when its value is not available:
+
+| Key | Meaning |
+|---|---|
+| `correlation_id` | The request correlation ID. This is the same value used in other GitLab logs. |
+| `user_id` | Numeric ID of the current user. |
+| `root_namespace_id` | Numeric ID of the root namespace. |
+| `organization_id` | Numeric ID of the current organization. |
+| `application` | `web`, `sidekiq`, `console`, or `test`. |
+| `feature_category` | The feature category of the request. |
+
+For example, a web request produces:
+
+```json
+{
+  "correlation_id":"4b809c12c639dbec87b37274337aae0d",
+  "user_id":1,
+  "root_namespace_id":22,
+  "organization_id":1,
+  "application":"web",
+  "feature_category":"database"
+}
+```
+
+#### Namespace attribution for user-facing queries
+
+`root_namespace_id` is filled in automatically only when a namespace already exists in the
+application context. This is the case for group-scoped controller requests, where
+`ApplicationController#set_current_context` pushes the namespace from the `@group` instance
+variable, and for REST API requests that push a group.
+
+GraphQL requests are different: the GraphQL endpoint never sets `@group` or `@project`, so nothing
+gets attributed automatically there. Project-scoped requests are also inconsistent: the namespace
+is filled in only when the project's `namespace` association is already loaded, which is often not
+the case.
+
+When you add a user-facing ClickHouse query, wrap it so the namespace gets published. Use
+`Gitlab::ApplicationContext.with_context`, which is scoped to the block, instead of `push`, which
+applies to the rest of the request.
+
+For example, `ee/lib/gitlab/contribution_analytics/click_house_data_collector.rb` wraps its query
+this way:
+
+```ruby
+def totals_by_author_target_type_action
+  ::Gitlab::ApplicationContext.with_context(namespace: group) do
+    query = ::ClickHouse::Client::Query.new(raw_query: clickhouse_query, placeholders: placeholders)
+    ::ClickHouse::Client.select(query, :main)
+  end
+end
+```
+
+A namespace is not always available. Queries from background sync and ingest workers are
+instance-wide and have no namespace to attribute.
+
+To read the annotation back, you can run this query:
+
+```sql
+SELECT JSONExtractString(log_comment, 'correlation_id') AS correlation_id,
+       query_duration_ms,
+       query
+FROM system.query_log
+WHERE type = 'QueryFinish' AND log_comment != ''
+ORDER BY query_duration_ms DESC
+LIMIT 20
+```
+
 ## Data synchronization with Siphon
 
 GitLab uses [Siphon](https://gitlab.com/gitlab-org/analytics-section/siphon), a change data capture (CDC) tool,

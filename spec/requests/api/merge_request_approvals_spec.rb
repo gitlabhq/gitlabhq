@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'labkit/rspec/matchers'
 
 RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
@@ -122,6 +123,83 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
 
           expect(response).to have_gitlab_http_status(:conflict)
           expect(merge_request.approvals).to be_empty
+        end
+      end
+
+      describe 'the approve_merge_request user experience' do
+        it 'starts and completes the experience' do
+          expect { approve }
+            .to start_user_experience(:approve_merge_request)
+            .and complete_user_experience(:approve_merge_request)
+        end
+
+        context 'when the user has already approved the merge request' do
+          before do
+            create(:approval, user: approver, merge_request: merge_request)
+          end
+
+          it 'completes the experience as an error', :aggregate_failures do
+            expect { approve }.to complete_user_experience(:approve_merge_request, error: true)
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+
+        context 'when publishing the review fails' do
+          it 'completes the experience as an error', :aggregate_failures do
+            expect_next_instance_of(::DraftNotes::PublishService) do |service|
+              expect(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Error'))
+            end
+
+            expect { approve(publish_review: true) }
+              .to complete_user_experience(:approve_merge_request, error: true)
+
+            expect(response).to have_gitlab_http_status(:internal_server_error)
+          end
+        end
+
+        context 'when the sha param is incorrect' do
+          it 'does not start the experience' do
+            expect { approve(sha: merge_request.diff_head_sha.reverse) }
+              .not_to start_user_experience(:approve_merge_request)
+          end
+        end
+
+        describe 'the publish step checkpoint' do
+          # The Sidekiq client middleware checkpoints the experience for every job the
+          # approval enqueues, so the counter matchers cannot isolate this one checkpoint.
+          let(:checkpoint_actions) { [] }
+
+          before do
+            allow(Labkit::UserExperienceSli).to receive(:get).and_wrap_original do |original, *args|
+              experience = original.call(*args)
+
+              allow(experience).to receive(:checkpoint).and_wrap_original do |checkpoint, **extra|
+                checkpoint_actions << extra[:checkpoint_action]
+                checkpoint.call(**extra)
+              end
+
+              experience
+            end
+          end
+
+          context 'when a review is published alongside the approval' do
+            before do
+              create(:draft_note, merge_request: merge_request, author: approver)
+            end
+
+            it 'checkpoints once the review is published' do
+              approve(publish_review: true)
+
+              expect(checkpoint_actions).to include('notes_published')
+            end
+          end
+
+          it 'does not checkpoint when no review is published' do
+            approve
+
+            expect(checkpoint_actions).not_to include('notes_published')
+          end
         end
       end
     end

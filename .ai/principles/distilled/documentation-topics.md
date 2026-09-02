@@ -1,6 +1,6 @@
 ---
-source_checksum: 7156e605ce1f9813
-distilled_at_sha: 45de85c05dd95accf55f90cd5dd29cc3b74dfd74
+source_checksum: 145cece96bdc9ac4
+distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -99,15 +99,6 @@ distilled_at_sha: 45de85c05dd95accf55f90cd5dd29cc3b74dfd74
 - Include glossary topics on the feature's own page rather than as a standalone page.
 - Use a concept topic instead of a glossary when a definition requires more than a brief explanation; use a task topic when the content describes how to use the feature.
 - DO NOT use jargon, internal terminology, or acronyms in glossary terms; ensure correct usage is defined in the word list.
-
-### Prompt Example Pages
-
-- Use `active verb + noun` structure for prompt example page titles (e.g., `Refactor legacy code`).
-- DO NOT use `How to [do something]`, `Using GitLab Duo for [task]`, `Tips and tricks`, or generic titles as prompt example titles.
-- Use `[descriptive_name]` format for all prompt placeholders (e.g., `[ClassName]`, `[file_path]`); DO NOT use vague placeholders like `[name]` or `[thing]`.
-- Assign difficulty levels using the defined criteria: Beginner (copy-paste, minimal customization), Intermediate (template adaptation required), Advanced (multi-step iteration and custom approaches).
-- Make expected outcomes specific and measurable (e.g., `Detailed analysis identifying 3-5 specific improvement areas with code examples`), not vague (e.g., `Analysis of the code`).
-- Include 3–5 specific, measurable verification checks in the `Verify` section.
 
 ### Related Topics
 

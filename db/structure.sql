@@ -13389,6 +13389,29 @@ CREATE SEQUENCE ai_settings_id_seq
 
 ALTER SEQUENCE ai_settings_id_seq OWNED BY ai_settings.id;
 
+CREATE TABLE ai_suggested_reviewers (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    merge_request_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    approval_merge_request_rule_id bigint,
+    approval_project_rule_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    reason text,
+    CONSTRAINT check_7972d82d0e CHECK ((char_length(reason) <= 2048)),
+    CONSTRAINT check_d0fb89b32a CHECK ((num_nonnulls(approval_merge_request_rule_id, approval_project_rule_id) <= 1))
+);
+
+CREATE SEQUENCE ai_suggested_reviewers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_suggested_reviewers_id_seq OWNED BY ai_suggested_reviewers.id;
+
 CREATE TABLE ai_testing_terms_acceptances (
     created_at timestamp with time zone NOT NULL,
     user_id bigint NOT NULL,
@@ -36725,6 +36748,8 @@ ALTER TABLE ONLY ai_self_hosted_models ALTER COLUMN id SET DEFAULT nextval('ai_s
 
 ALTER TABLE ONLY ai_settings ALTER COLUMN id SET DEFAULT nextval('ai_settings_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_suggested_reviewers ALTER COLUMN id SET DEFAULT nextval('ai_suggested_reviewers_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_tool_rules ALTER COLUMN id SET DEFAULT nextval('ai_tool_rules_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_usage_events ALTER COLUMN id SET DEFAULT nextval('ai_usage_events_id_seq'::regclass);
@@ -39609,6 +39634,9 @@ ALTER TABLE ONLY ai_self_hosted_models
 
 ALTER TABLE ONLY ai_settings
     ADD CONSTRAINT ai_settings_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_suggested_reviewers
+    ADD CONSTRAINT ai_suggested_reviewers_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_testing_terms_acceptances
     ADD CONSTRAINT ai_testing_terms_acceptances_pkey PRIMARY KEY (user_id);
@@ -46765,6 +46793,16 @@ CREATE INDEX index_ai_settings_on_duo_workflow_oauth_application_id ON ai_settin
 CREATE INDEX index_ai_settings_on_duo_workflow_service_account_user_id ON ai_settings USING btree (duo_workflow_service_account_user_id);
 
 CREATE UNIQUE INDEX index_ai_settings_on_organization_id ON ai_settings USING btree (organization_id);
+
+CREATE INDEX index_ai_suggested_reviewers_on_approval_merge_request_rule_id ON ai_suggested_reviewers USING btree (approval_merge_request_rule_id);
+
+CREATE INDEX index_ai_suggested_reviewers_on_approval_project_rule_id ON ai_suggested_reviewers USING btree (approval_project_rule_id);
+
+CREATE UNIQUE INDEX index_ai_suggested_reviewers_on_merge_request_id_and_user_id ON ai_suggested_reviewers USING btree (merge_request_id, user_id);
+
+CREATE INDEX index_ai_suggested_reviewers_on_project_id ON ai_suggested_reviewers USING btree (project_id);
+
+CREATE INDEX index_ai_suggested_reviewers_on_user_id ON ai_suggested_reviewers USING btree (user_id);
 
 CREATE INDEX index_ai_tool_rules_on_project_id ON ai_tool_rules USING btree (project_id);
 
@@ -58308,6 +58346,9 @@ ALTER TABLE ONLY resource_label_events
 ALTER TABLE ONLY user_achievements
     ADD CONSTRAINT fk_60b12fcda3 FOREIGN KEY (awarded_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY ai_suggested_reviewers
+    ADD CONSTRAINT fk_60f1fd2d30 FOREIGN KEY (approval_project_rule_id) REFERENCES approval_project_rules(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6149611a04 FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -58670,6 +58711,9 @@ ALTER TABLE ONLY protected_branches
 
 ALTER TABLE ONLY scan_result_policies
     ADD CONSTRAINT fk_7aa24439f1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_suggested_reviewers
+    ADD CONSTRAINT fk_7aaf7f1cba FOREIGN KEY (approval_merge_request_rule_id) REFERENCES approval_merge_request_rules(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY catalog_resource_versions
     ADD CONSTRAINT fk_7ad8849db4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -59163,6 +59207,9 @@ ALTER TABLE ONLY subscription_add_on_purchases
 ALTER TABLE ONLY approval_policy_merge_request_bypass_events
     ADD CONSTRAINT fk_a24f768758 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY ai_suggested_reviewers
+    ADD CONSTRAINT fk_a38a732b2a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY project_topic_upload_states
     ADD CONSTRAINT fk_a3987fd19e FOREIGN KEY (project_topic_upload_id) REFERENCES project_topic_uploads(id) ON DELETE CASCADE;
 
@@ -59265,6 +59312,9 @@ ALTER TABLE ONLY tag_gpg_signatures
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_aa5798e761 FOREIGN KEY (closed_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY ai_suggested_reviewers
+    ADD CONSTRAINT fk_aa68376196 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_aad61aedca FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE SET NULL;
 
@@ -59342,6 +59392,9 @@ ALTER TABLE ONLY custom_field_select_options
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_b1b65d8d17 FOREIGN KEY (source_package_id) REFERENCES sbom_source_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_suggested_reviewers
+    ADD CONSTRAINT fk_b20f09c400 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY work_item_text_field_values
     ADD CONSTRAINT fk_b22fe079a2 FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;

@@ -26,7 +26,7 @@ The following foundational flows are available:
 
 | Flow | Description |
 |------|-------------|
-| [Agentic Breaking Change Resolution](agentic-breaking-change-resolution.md) | Automatically resolve breaking changes in dependency bump merge requests. |
+| [Agentic Breaking Change Resolution](../../../application_security/dependency_scanning/agentic-breaking-change-resolution.md) | Automatically resolve breaking changes in dependency bump merge requests. |
 | [Code Review](code_review/_index.md) | Automate code review with AI-native analysis and feedback. |
 | [Convert to GitLab CI/CD](convert_to_gitlab_ci.md) | Migrate Jenkins pipelines to CI/CD. |
 | [Developer](developer.md) | Create actionable merge requests from issues, or complete different tasks in GitLab Duo Agentic Chat. |

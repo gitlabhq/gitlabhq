@@ -88,6 +88,8 @@ import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_sa
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import namespaceWorkItemChangesSubscription from '~/work_items/list/graphql/namespace_work_item_changes.subscription.graphql';
 import workItemIdFragment from '~/work_items/graphql/work_item_id.fragment.graphql';
+import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
+import getBoardWorkItemsQuery from 'ee_else_ce/work_items/board/graphql/get_board_work_items.query.graphql';
 
 import { saveSavedView, getFilterTokens } from 'ee_else_ce/work_items/list/utils';
 
@@ -117,6 +119,7 @@ import {
   singleSavedView,
   workItemsQueryResponseCombined,
 } from '../mock_data';
+import { buildWorkItemNode, buildBoardWorkItemsResponse } from '../board/mock_data';
 
 import {
   mockSavedViewsData,
@@ -4178,6 +4181,8 @@ describe('planning-view', () => {
 
     let subscription;
     let subscriptionHandler;
+    let slimMatchHandler;
+    let boardMatchHandler;
 
     // `debounce` is mocked to run synchronously by default, which would hide the coalescing this
     // block is about.
@@ -4192,6 +4197,9 @@ describe('planning-view', () => {
     const mountWithSubscription = async ({ provide = {}, ...options } = {}) => {
       subscription = createMockSubscription();
       subscriptionHandler = jest.fn(() => subscription);
+      // Matches nothing by default; individual tests override this to say a checked id is visible.
+      slimMatchHandler = jest.fn().mockResolvedValue(buildBoardWorkItemsResponse([]));
+      boardMatchHandler = jest.fn().mockResolvedValue(buildBoardWorkItemsResponse([]));
 
       await mountComponent({
         ...options,
@@ -4202,7 +4210,11 @@ describe('planning-view', () => {
             ...provide.glFeatures,
           },
         },
-        additionalHandlers: [[namespaceWorkItemChangesSubscription, subscriptionHandler]],
+        additionalHandlers: [
+          [namespaceWorkItemChangesSubscription, subscriptionHandler],
+          [getWorkItemsSlimQuery, slimMatchHandler],
+          [getBoardWorkItemsQuery, boardMatchHandler],
+        ],
       });
     };
 
@@ -4311,14 +4323,27 @@ describe('planning-view', () => {
     });
 
     describe('when a work item is created', () => {
-      it('reloads the list on the first page', async () => {
+      it('reloads the list on the first page when the new item matches the current filters', async () => {
+        await mountWithSubscription();
+        slimMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(2)]));
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(slimMatchHandler).toHaveBeenCalled();
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+
+      it('does not reload the list when the new item does not match the current filters', async () => {
         await mountWithSubscription();
         const evictSpy = jest.spyOn(getCache(), 'evict');
 
         emitChange(uncachedWorkItemId, 'CREATED');
         await flushChanges();
 
-        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+        expect(slimMatchHandler).toHaveBeenCalled();
+        expect(evictSpy).not.toHaveBeenCalled();
       });
 
       it('does not reload the list when the user has paginated past the first page', async () => {
@@ -4329,11 +4354,13 @@ describe('planning-view', () => {
         emitChange(uncachedWorkItemId, 'CREATED');
         await flushChanges();
 
+        expect(slimMatchHandler).not.toHaveBeenCalled();
         expect(evictSpy).not.toHaveBeenCalled();
       });
 
       it('reloads the list when the creation is followed by an update in the same window', async () => {
         await mountWithSubscription();
+        slimMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(2)]));
         const evictSpy = jest.spyOn(getCache(), 'evict');
 
         emitChange(uncachedWorkItemId, 'CREATED');
@@ -4345,6 +4372,7 @@ describe('planning-view', () => {
 
       it('reloads the list when the user paged back to page 1, even though beforeCursor is still set', async () => {
         await mountWithSubscription();
+        slimMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(2)]));
         // Mirrors list_view's handlePreviousPage + the pageInfo it reports once back on page 1.
         findListView().vm.$emit('set-page-params', {
           beforeCursor: 'startCursor',
@@ -4358,6 +4386,65 @@ describe('planning-view', () => {
         await flushChanges();
 
         expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+
+      it('reloads the board when the new item matches, probing with the board query', async () => {
+        await mountWithSubscription({
+          provide: { glFeatures: { planningViewBoards: true } },
+          stubs: { BoardView: BoardViewStub },
+        });
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+        boardMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(2)]));
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(boardMatchHandler).toHaveBeenCalled();
+        expect(slimMatchHandler).not.toHaveBeenCalled();
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+
+      it('skips the match query when a different item in the same batch is a visible update', async () => {
+        await mountWithSubscription();
+        cacheWorkItem(cachedWorkItemId);
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(cachedWorkItemId, 'UPDATED');
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(slimMatchHandler).not.toHaveBeenCalled();
+        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+      });
+
+      it('does not reload the list when the match query fails', async () => {
+        await mountWithSubscription();
+        const error = new Error('oh no!');
+        slimMatchHandler.mockRejectedValue(error);
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(Sentry.captureException).toHaveBeenCalledWith(error);
+        expect(evictSpy).not.toHaveBeenCalled();
+      });
+
+      it('still evicts a visible deletion and refreshes counts when the match query fails', async () => {
+        await mountWithSubscription();
+        cacheWorkItem(cachedWorkItemId);
+        slimMatchHandler.mockRejectedValue(new Error('oh no!'));
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+        const initialCallCount = defaultCountsOnlyHandler.mock.calls.length;
+
+        emitChange(cachedWorkItemId, 'DELETED');
+        emitChange(uncachedWorkItemId, 'CREATED');
+        await flushChanges();
+
+        expect(evictSpy).toHaveBeenCalledWith({ id: `WorkItem:${cachedWorkItemId}` });
+        expect(defaultCountsOnlyHandler.mock.calls.length).toBeGreaterThan(initialCallCount);
       });
     });
 

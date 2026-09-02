@@ -104,6 +104,8 @@ All users in your subscription can draw from this shared pool after they have co
 You can't reserve the pool for a subset of users or isolate consumption to specific users, groups, or projects.
 To limit how much individual users consume, use [usage caps](gitlab_credits_dashboard.md#usage-caps).
 
+When you purchase a Monthly Commitment Pool, you accept the usage billing terms.
+
 You can purchase the Monthly Commitment Pool as a recurring annual or multi-year term.
 The number of credits purchased for the year is divided by 12.
 
@@ -120,27 +122,13 @@ The commitment is billed up front at the start of the contract term.
 Credits become available immediately after purchase, and reset on the first of every month.
 Unused credits do not roll over to the next month.
 
-> [!note]
-> When purchasing a monthly commitment pool, you accept the usage billing terms, including On-Demand credit usage.
-> After you accept the terms, On-Demand billing stays active for the rest of your subscription and subsequent self-serve renewals, and you cannot opt out.
-
 ## On-Demand credits
 
 On-Demand credits cover usage incurred after you have used all included credits
 and the credits in the Monthly Committed Pool.
-On-Demand credits are billed monthly.
+On-Demand credits are billed monthly, at the list price of $1 per credit used.
 
-On-Demand credits are consumed at the list price of $1 per credit used.
-
-On-Demand credits can be used after you have accepted usage billing terms.
-You can accept these terms when you purchase your monthly commitment,
-or directly in the GitLab Credits dashboard in the Customers Portal.
-By accepting usage billing terms, you agree to pay for all On-Demand charges already accrued
-in the current monthly billing period, and any On-Demand charges incurred going forward.
-
-If you haven't accepted usage billing terms, you can't use credit-based features and consume On-Demand credits.
-You can regain access to credit-based features by either purchasing
-a monthly commitment or accepting the usage billing terms.
+To use On-Demand credits, you must accept the usage billing terms.
 
 For example, a subscription has a monthly commitment of 50 credits per month.
 If 75 credits are used in that month, the first 50 credits are part of the monthly commitment pool,
@@ -158,6 +146,20 @@ GitLab Credits are consumed in the following order:
 
 Other credit types, such as One-Time Charge credits, might apply to your subscription.
 For details, contact your account team.
+
+## Usage billing terms
+
+When you buy a Monthly Commitment Pool, you accept the usage billing terms, including On-Demand credit usage.
+By accepting usage billing terms, you agree to pay for all On-Demand charges already accrued
+in the current monthly billing period, and any On-Demand charges incurred going forward.
+
+You can accept the usage billing terms when you purchase a Monthly Commitment Pool, or directly in the GitLab Credits dashboard in Customers Portal.
+
+After you accept the terms, On-Demand billing stays active for the rest of your subscription and subsequent self-serve renewals,
+and you cannot opt out.
+
+If you haven't accepted usage billing terms, you can't use credit-based features and consume On-Demand credits.
+You can regain access to credit-based features by either purchasing a monthly commitment or accepting the usage billing terms.
 
 ## Buy GitLab Credits
 

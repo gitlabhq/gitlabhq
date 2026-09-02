@@ -12861,6 +12861,12 @@ msgstr ""
 msgid "Artifacts|Maximum selected artifacts limit reached"
 msgstr ""
 
+msgid "Artifacts|Select all artifacts"
+msgstr ""
+
+msgid "Artifacts|Select artifacts for %{jobName}"
+msgstr ""
+
 msgid "Artifacts|Something went wrong while deleting. Please refresh the page to try again."
 msgstr ""
 
@@ -16942,6 +16948,9 @@ msgid "Cannot assign a confidential parent item to a non-confidential child item
 msgstr ""
 
 msgid "Cannot assign this child type to parent type."
+msgstr ""
+
+msgid "Cannot be associated with both an approval merge request rule and an approval project rule"
 msgstr ""
 
 msgid "Cannot be merged automatically"
@@ -70306,7 +70315,7 @@ msgstr ""
 msgid "SecretsManager|Add secret"
 msgstr ""
 
-msgid "SecretsManager|After %{cutoffDate}, GitLab Secrets Manager usage will consume GitLab credits. Without an eligible plan, your secrets manager will be disabled. To avoid a service disruption, start a trial to keep access."
+msgid "SecretsManager|After %{cutoffDate}, GitLab Secrets Manager usage will require GitLab Credits. To avoid a service disruption, start a trial to keep access. %{linkStart}Learn more about the trial%{linkEnd}."
 msgstr ""
 
 msgid "SecretsManager|After the trial period, GitLab Secrets Manager consumes GitLab credits to store and fetch secrets. Enable on-demand billing to avoid a service interruption when the trial ends."
@@ -91692,7 +91701,7 @@ msgstr ""
 msgid "WorkItemDecisionLog|Edit decision"
 msgstr ""
 
-msgid "WorkItemDecisionLog|Enter a full link, starting with http:// or https://"
+msgid "WorkItemDecisionLog|Enter a full URL, like https://example.com"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Enter a summary of the decision"

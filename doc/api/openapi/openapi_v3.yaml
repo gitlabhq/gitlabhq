@@ -27059,6 +27059,13 @@ paths:
           type: string
           nullable: true
         in: query
+      - name: gl_root_namespace_id
+        required: false
+        description: Metadata key to match
+        schema:
+          type: string
+          nullable: true
+        in: query
       - name: client_id
         required: false
         description: Metadata key to match

@@ -676,6 +676,35 @@ For self-managed instances, ensure the `query_log` configuration parameter is en
 
 1. Once enabled, all executed queries are recorded in the `system.query_log` table, allowing for audit trail.
 
+#### Attributing queries to users
+
+GitLab annotates every query it sends to ClickHouse with a `log_comment` setting, stored in the
+`log_comment` column of `system.query_log`. Use the annotation to attribute a logged query to the
+request that issued it. The annotation is a JSON object that can include:
+
+- `user_id`: numeric ID of the user who triggered the request.
+- `root_namespace_id`: numeric ID of the root namespace.
+- `organization_id`: numeric ID of the organization the request belongs to.
+- `correlation_id`: the request correlation ID, also used in the other GitLab logs.
+- `application`: `web`, `sidekiq`, `console`, or `test`.
+- `feature_category`: the feature category of the request.
+
+Queries issued by background workers run without a user or namespace in context, so their `log_comment`
+typically contains only `correlation_id`, `application`, and `feature_category`.
+
+For example, to build an audit trail of queries and the users who issued them:
+
+```sql
+SELECT JSONExtractInt(log_comment, 'user_id') AS user_id,
+       JSONExtractString(log_comment, 'correlation_id') AS correlation_id,
+       query,
+       event_time
+FROM system.query_log
+WHERE type = 'QueryFinish' AND log_comment != ''
+ORDER BY event_time DESC
+LIMIT 20
+```
+
 ## System requirements
 
 The recommended system requirements change depending on the number of users.

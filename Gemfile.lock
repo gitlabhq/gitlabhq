@@ -992,7 +992,7 @@ GEM
       i18n (>= 0.7)
       multi_json
       request_store (>= 1.0)
-    google-apis-androidpublisher_v3 (0.92.0)
+    google-apis-androidpublisher_v3 (0.107.0)
       google-apis-core (>= 0.15.0, < 2.a)
     google-apis-cloudbilling_v1 (0.22.0)
       google-apis-core (>= 0.9.1, < 2.a)
@@ -2562,7 +2562,7 @@ DEPENDENCIES
   gitlab_quality-test_tooling (~> 3.21.1)
   gitlab_query_language (~> 0.34.0)
   gon (~> 6.6.0)
-  google-apis-androidpublisher_v3 (~> 0.92.0)
+  google-apis-androidpublisher_v3 (~> 0.107.0)
   google-apis-cloudbilling_v1 (~> 0.22.0)
   google-apis-cloudresourcemanager_v1 (~> 0.44.0)
   google-apis-compute_v1 (~> 0.129.0)
@@ -3087,7 +3087,7 @@ CHECKSUMS
   gitlab_query_language (0.34.0-x86_64-linux-gnu) sha256=300d1b18d654110b318be30516d8e8d0a225f24cccfc31e3d8124a27c95e2047
   globalid (1.1.0) sha256=b337e1746f0c8cb0a6c918234b03a1ddeb4966206ce288fbb57779f59b2d154f
   gon (6.6.0) sha256=4c0be4e4f05fc8eb5db5ac2f7d47ae28ee04826f2b153338f7fb03c0e8f6ecd1
-  google-apis-androidpublisher_v3 (0.92.0) sha256=e700dea8608494ff70fd9c9ed10c3caa8323b9a15eea85098db65d1178e79035
+  google-apis-androidpublisher_v3 (0.107.0) sha256=b8207eecc89e6a9f7ea11aa88a07bccdcae5ca90121330079db4ef4696a2f3ff
   google-apis-cloudbilling_v1 (0.22.0) sha256=db2b72aebdc2664fd5095264a160cf757119ba3a83a036817b78d0d2ad7886fd
   google-apis-cloudresourcemanager_v1 (0.44.0) sha256=be96723ff28664407dd86724857f9cd7402bf6dd63ef4257cbd42002816705f8
   google-apis-compute_v1 (0.129.0) sha256=b767d4564519fc47fc86b10159ec27ad515292e92b979b10720b02fd3b06f5d3

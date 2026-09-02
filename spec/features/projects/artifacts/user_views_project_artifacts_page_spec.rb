@@ -84,13 +84,50 @@ RSpec.describe 'User views project artifacts page', :js, feature_category: :job_
     end
 
     it 'offers the bulk selection controls', :aggregate_failures do
-      # TODO: Switch to accessible name selector once labels are available
-      # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/619205
-      expect(page).to have_selector('[data-testid="select-all-artifacts-checkbox"]', visible: :all)
+      expect(page).to have_unchecked_field('Select all artifacts')
 
       within_job_row(job_with_artifacts) do
         expect(page).to have_button('Delete')
       end
+    end
+
+    it 'selects 1 then 2 artifacts with the row checkboxes, counting them in the banner', :aggregate_failures do
+      check "Select artifacts for #{job_with_artifacts.name}"
+
+      expect(page).to have_content('2 artifacts selected')
+      expect(page).to have_checked_field('Select all artifacts')
+
+      check "Select artifacts for #{job_with_trace.name}"
+
+      expect(page).to have_content('3 artifacts selected')
+    end
+
+    it 'selects all artifacts, clears the selection, then bulk deletes them', :aggregate_failures do
+      expect(page).to have_content(job_with_artifacts.name)
+
+      check 'Select all artifacts'
+
+      expect(page).to have_content('3 artifacts selected')
+      expect(page).to have_checked_field("Select artifacts for #{job_with_artifacts.name}")
+      expect(page).to have_checked_field("Select artifacts for #{job_with_trace.name}")
+
+      click_button 'Clear selection'
+
+      expect(page).not_to have_content('artifacts selected')
+      expect(page).to have_unchecked_field('Select all artifacts')
+
+      check 'Select all artifacts'
+      click_button 'Delete selected'
+
+      within_modal do
+        expect(page).to have_content('Delete 3 artifacts?')
+
+        click_button 'Delete 3 artifacts'
+      end
+
+      expect(page).to have_content('3 selected artifacts deleted')
+      expect(page).not_to have_content(job_with_artifacts.name)
+      expect(page).not_to have_content(job_with_trace.name)
     end
   end
 

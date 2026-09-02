@@ -3509,6 +3509,7 @@ Arguments:
 | <a id="mutation-adminsidekiqqueuesdeletejobs-clientid"></a>`clientId` | [`String`](#string) | Delete jobs matching client_id in the context metadata. |
 | <a id="mutation-adminsidekiqqueuesdeletejobs-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-adminsidekiqqueuesdeletejobs-featurecategory"></a>`featureCategory` | [`String`](#string) | Delete jobs matching feature_category in the context metadata. |
+| <a id="mutation-adminsidekiqqueuesdeletejobs-glrootnamespaceid"></a>`glRootNamespaceId` | [`String`](#string) | Delete jobs matching gl_root_namespace_id in the context metadata. |
 | <a id="mutation-adminsidekiqqueuesdeletejobs-gluserid"></a>`glUserId` | [`String`](#string) | Delete jobs matching gl_user_id in the context metadata. |
 | <a id="mutation-adminsidekiqqueuesdeletejobs-jobid"></a>`jobId` | [`String`](#string) | Delete jobs matching job_id in the context metadata. |
 | <a id="mutation-adminsidekiqqueuesdeletejobs-kubernetesagentid"></a>`kubernetesAgentId` | [`String`](#string) | Delete jobs matching kubernetes_agent_id in the context metadata. |

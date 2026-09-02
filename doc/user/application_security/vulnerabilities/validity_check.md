@@ -76,6 +76,7 @@ mutation {
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16890) support for external service tokens in GitLab 18.7 [with a feature flag](../../../api/feature_flags.md) named `secret_detection_partner_token_verification`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/567736) in GitLab 18.8. 
+- [Expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/612115) validity checks for external service tokens in GitLab 19.3.
 - Feature flag `secret_detection_partner_token_verification` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/619506) in GitLab 19.4.
 
 {{< /history >}}
@@ -98,8 +99,22 @@ Validity checks support the following secret types:
 
 **External service tokens:**
 
+- Anthropic API keys
 - AWS IAM access key IDs
+- Datadog API keys
+- GitHub personal access tokens (classic)
+- Heroku API keys
+- OpenAI project API keys
 - Postman API tokens
+- SendGrid API tokens
+- Stripe live secret keys
+
+Validity checks for AWS IAM access key IDs and Postman API tokens work with any secret
+detection analyzer.
+GitLab validates all other external service token types, including token types added in the
+future, only when
+[GitLab Secret Scanning for Source Code](../secret_detection/gitlab_secret_scanner/_index.md)
+detects the secret.
 
 ### Configure outbound network access
 
@@ -110,9 +125,15 @@ If your GitLab instance is behind a firewall but has internet access, allowlist 
 for each partner's validation API.
 The supported URLs are:
 
-- `https://sts.amazonaws.com/`
-- `https://oauth2.googleapis.com/tokeninfo`
+- `https://api.anthropic.com/v1/models`
+- `https://api.datadoghq.com/api/v1/validate`
 - `https://api.getpostman.com/me`
+- `https://api.github.com/user`
+- `https://api.heroku.com/account`
+- `https://api.openai.com/v1/models`
+- `https://api.sendgrid.com/v3/scopes`
+- `https://api.stripe.com/v1/balance`
+- `https://sts.amazonaws.com/`
 
 If you cannot allow outbound access to these endpoints, do not enable this feature.
 Enabling validity checks in a restricted network environment causes network errors during

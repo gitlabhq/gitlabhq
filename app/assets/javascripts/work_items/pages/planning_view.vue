@@ -150,11 +150,13 @@ import { buildInitialViewState } from '~/work_items/list/saved_view_config';
 import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
 import namespaceWorkItemChangesSubscription from '../list/graphql/namespace_work_item_changes.subscription.graphql';
 import {
+  dropMatchCacheEntries,
   evictNamespaceWorkItems,
   evictWorkItem,
   groupWorkItemChanges,
   isWorkItemCached,
   mergeWorkItemChangeAction,
+  findMatchingWorkItems,
 } from '../list/graphql/cache_updates';
 
 import SavedViewsNotFoundModal from '../list/components/work_items_saved_views_not_found_modal.vue';
@@ -2141,7 +2143,8 @@ export default {
         this.pendingWorkItemChanges.clear();
 
         const { created, updated, deleted } = groupWorkItemChanges(changes);
-        const { cache } = this.$apollo.provider.defaultClient;
+        const client = this.$apollo.provider.defaultClient;
+        const { cache } = client;
 
         const visibleDeleted = deleted.filter((id) => isWorkItemCached(cache, id));
         const hasVisibleUpdate = updated.some((id) => isWorkItemCached(cache, id));
@@ -2155,7 +2158,32 @@ export default {
           await this.$nextTick();
         }
 
-        const needsListRefetch = hasVisibleUpdate || (created.length > 0 && canShowNewItems);
+        // Skipped when hasVisibleUpdate is already true — the refetch below is happening
+        // regardless, so the match result can't change the outcome.
+        let hasVisibleCreate = false;
+        if (!hasVisibleUpdate && created.length > 0 && canShowNewItems) {
+          try {
+            const createdMatches = await findMatchingWorkItems({
+              client,
+              queryVariables: this.queryVariables,
+              ids: created,
+              useRestApi: this.useRestApi,
+              isBoardView: this.isBoardView,
+              glFeatures: this.glFeatures,
+            });
+            // `null` means there were too many new items to ask the server about in one go —
+            // treat that as a bulk creation and reload rather than skip it.
+            hasVisibleCreate = createdMatches === null || createdMatches.size > 0;
+          } catch (error) {
+            // No answer means the new items won't show until the next event or a reconnect,
+            // but the deletions and counts below still need handling.
+            Sentry.captureException(error);
+          } finally {
+            dropMatchCacheEntries(cache, this.namespaceId);
+          }
+        }
+
+        const needsListRefetch = hasVisibleUpdate || hasVisibleCreate;
 
         if (needsListRefetch) {
           this.refetchItems({ refetchCounts: true });
@@ -2170,9 +2198,7 @@ export default {
         // A change we ignored can still move the counts, and the payload doesn't say which
         // fields changed, so counts always refresh. Using `refetchQueries` instead of a single
         // query's `.refetch()` also catches every board column's own count query.
-        this.$apollo.provider.defaultClient.refetchQueries({
-          include: [getWorkItemsCountOnlyQuery],
-        });
+        client.refetchQueries({ include: [getWorkItemsCountOnlyQuery] });
         if (created.length > 0 || deleted.length > 0) {
           this.$apollo.queries.hasWorkItems.refetch();
         }

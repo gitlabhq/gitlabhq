@@ -1,0 +1,12 @@
+---
+table_name: ai_suggested_reviewers
+classes:
+- MergeRequests::AiSuggestedReviewer
+feature_categories:
+- code_review_workflow
+description: Stores AI-recommended reviewers for merge requests, with the model rationale
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251644
+milestone: '19.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects

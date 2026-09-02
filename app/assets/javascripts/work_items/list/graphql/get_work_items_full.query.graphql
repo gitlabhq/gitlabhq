@@ -39,6 +39,7 @@ query getWorkItemsFull(
   $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
+  $ids: [WorkItemID!]
   $afterCursor: String
   $beforeCursor: String
   $firstPageSize: Int
@@ -49,6 +50,7 @@ query getWorkItemsFull(
     id
     name
     workItems(
+      ids: $ids
       iid: $iid
       excludeProjects: $excludeProjects
       excludeGroupWorkItems: $excludeGroupWorkItems

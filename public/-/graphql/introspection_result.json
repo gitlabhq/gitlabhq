@@ -8854,6 +8854,18 @@
               "deprecationReason": null
             },
             {
+              "name": "glRootNamespaceId",
+              "description": "Delete jobs matching gl_root_namespace_id in the context metadata.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "clientId",
               "description": "Delete jobs matching client_id in the context metadata.",
               "type": {

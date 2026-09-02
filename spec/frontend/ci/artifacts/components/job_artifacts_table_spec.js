@@ -554,6 +554,15 @@ describe('JobArtifactsTable component', () => {
       await waitForPromises();
     });
 
+    it('gives the select-all and job checkboxes an accessible name', () => {
+      expect(findSelectAllCheckbox().find('input').attributes('aria-label')).toBe(
+        'Select all artifacts',
+      );
+      expect(findJobCheckbox().find('input').attributes('aria-label')).toBe(
+        `Select artifacts for ${job.name}`,
+      );
+    });
+
     it('shows selected artifacts when a job is checked', async () => {
       expect(findBulkDeleteContainer().exists()).toBe(false);
 

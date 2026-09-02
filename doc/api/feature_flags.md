@@ -42,7 +42,8 @@ control the pagination of results.
 | `scope`             | string           | no         | The condition of feature flags, one of: `enabled`, `disabled`.                                                              |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/feature_flags"
 ```
 
@@ -146,7 +147,8 @@ control the pagination of results.
 | `feature_flag_name` | string           | yes        | The name of the feature flag.                                                          |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature"
 ```
 
@@ -201,10 +203,11 @@ POST /projects/:id/feature_flags
 | `strategies:user_list_id` | integer or string | no     | The ID of the feature flag user list. If strategy is `gitlabUserList`.                                                                                                                                                                                                                   |
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects/1/feature_flags" \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     --header "Content-type: application/json" \
-     --data @- << EOF
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-type: application/json" \
+  --data @- \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags" << EOF
 {
   "name": "awesome_feature",
   "version": "new_version_flag",
@@ -267,10 +270,11 @@ PUT /projects/:id/feature_flags/:feature_flag_name
 | `strategies:user_list_id` | integer or string | no     | The ID of the feature flag user list. If strategy is `gitlabUserList`.                 |
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature" \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     --header "Content-type: application/json" \
-     --data @- << EOF
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-type: application/json" \
+  --data @- \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature" << EOF
 {
   "strategies": [{ "name": "gradualRolloutUserId", "parameters": { "groupId": "default", "percentage": "25" }, "scopes": [{ "environment_scope": "staging" }] }]
 }

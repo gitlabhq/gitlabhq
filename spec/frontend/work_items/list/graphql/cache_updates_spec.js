@@ -2,13 +2,20 @@ import { InMemoryCache } from '@apollo/client/core';
 import possibleTypes from '~/graphql_shared/possible_types.json';
 import { typePolicies } from '~/lib/graphql';
 import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
+import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
+import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
+import getBoardWorkItemsQuery from 'ee_else_ce/work_items/board/graphql/get_board_work_items.query.graphql';
 import {
   evictNamespaceWorkItems,
   evictWorkItem,
   groupWorkItemChanges,
   isWorkItemCached,
   mergeWorkItemChangeAction,
+  findMatchingWorkItems,
+  dropMatchCacheEntries,
+  MAX_MATCH_IDS,
 } from '~/work_items/list/graphql/cache_updates';
+import { buildWorkItemNode, buildBoardWorkItemsResponse, mockGroupId } from '../../board/mock_data';
 
 const NAMESPACE_ID = 'gid://gitlab/Group/3';
 const workItemId = (id) => `gid://gitlab/WorkItem/${id}`;
@@ -20,6 +27,7 @@ const createFakeCache = () => ({
   evict: jest.fn(),
   gc: jest.fn(),
   readFragment: jest.fn(),
+  modify: jest.fn(),
 });
 
 describe('work item list cache updates', () => {
@@ -131,6 +139,225 @@ describe('work item list cache updates', () => {
       cache.readFragment.mockReturnValue(null);
 
       expect(isWorkItemCached(cache, workItemId(1))).toBe(false);
+    });
+  });
+
+  describe('findMatchingWorkItems', () => {
+    const queryVariables = { fullPath: 'group/path', sort: 'CREATED_DESC' };
+    const createFakeClient = (data) => ({ query: jest.fn().mockResolvedValue({ data }) });
+
+    it('returns null without querying when there are too many ids to ask the server about', async () => {
+      const client = createFakeClient({});
+      const ids = Array.from({ length: MAX_MATCH_IDS + 1 }, (_, i) => workItemId(i));
+
+      const result = await findMatchingWorkItems({
+        client,
+        queryVariables,
+        ids,
+        useRestApi: false,
+        isBoardView: false,
+        glFeatures: {},
+      });
+
+      expect(result).toBeNull();
+      expect(client.query).not.toHaveBeenCalled();
+    });
+
+    it('checks the slim list query, replacing pagination with the candidate ids', async () => {
+      const client = createFakeClient({ namespace: { workItems: { nodes: [] } } });
+
+      await findMatchingWorkItems({
+        client,
+        queryVariables: { ...queryVariables, afterCursor: 'cursor', firstPageSize: 20 },
+        ids: [workItemId(1), workItemId(2)],
+        useRestApi: false,
+        isBoardView: false,
+        glFeatures: {},
+      });
+
+      expect(client.query).toHaveBeenCalledWith({
+        query: getWorkItemsSlimQuery,
+        variables: {
+          ...queryVariables,
+          ids: [workItemId(1), workItemId(2)],
+          afterCursor: null,
+          beforeCursor: null,
+          firstPageSize: 2,
+          lastPageSize: null,
+        },
+        fetchPolicy: 'network-only',
+        context: { featureCategory: 'portfolio_management' },
+      });
+    });
+
+    it('checks the REST query when useRestApi is true', async () => {
+      const client = createFakeClient({ restWorkItems: { nodes: [] } });
+
+      await findMatchingWorkItems({
+        client,
+        queryVariables,
+        ids: [workItemId(1)],
+        useRestApi: true,
+        isBoardView: false,
+        glFeatures: {},
+      });
+
+      expect(client.query).toHaveBeenCalledWith(
+        expect.objectContaining({ query: getWorkItemsRestQuery }),
+      );
+    });
+
+    it('checks the board query in board view', async () => {
+      const client = createFakeClient({ namespace: { workItems: { nodes: [] } } });
+
+      await findMatchingWorkItems({
+        client,
+        queryVariables,
+        ids: [workItemId(1)],
+        useRestApi: false,
+        isBoardView: true,
+        glFeatures: {},
+      });
+
+      expect(client.query).toHaveBeenCalledWith(
+        expect.objectContaining({ query: getBoardWorkItemsQuery }),
+      );
+    });
+
+    it('checks the REST query in board view when the REST flag is on', async () => {
+      const client = createFakeClient({ restWorkItems: { nodes: [] } });
+
+      await findMatchingWorkItems({
+        client,
+        queryVariables,
+        ids: [workItemId(1)],
+        useRestApi: true,
+        isBoardView: true,
+        glFeatures: { workItemRestApiFrontendUsers: true },
+      });
+
+      expect(client.query).toHaveBeenCalledWith(
+        expect.objectContaining({ query: getWorkItemsRestQuery }),
+      );
+    });
+
+    it('returns the ids the server matched', async () => {
+      const client = createFakeClient({
+        namespace: { workItems: { nodes: [{ id: workItemId(2) }] } },
+      });
+
+      const result = await findMatchingWorkItems({
+        client,
+        queryVariables,
+        ids: [workItemId(1), workItemId(2)],
+        useRestApi: false,
+        isBoardView: false,
+        glFeatures: {},
+      });
+
+      expect(result).toEqual(new Set([workItemId(2)]));
+    });
+
+    it('returns an empty set when nothing matches', async () => {
+      const client = createFakeClient({ namespace: { workItems: { nodes: [] } } });
+
+      const result = await findMatchingWorkItems({
+        client,
+        queryVariables,
+        ids: [workItemId(1)],
+        useRestApi: false,
+        isBoardView: false,
+        glFeatures: {},
+      });
+
+      expect(result).toEqual(new Set());
+    });
+  });
+
+  describe('dropMatchCacheEntries', () => {
+    it('strips the ids-keyed workItems entry on the namespace', () => {
+      const cache = createFakeCache();
+
+      dropMatchCacheEntries(cache, NAMESPACE_ID);
+
+      expect(cache.modify).toHaveBeenCalledWith({
+        id: 'Namespace:gid://gitlab/Group/3',
+        fields: { workItems: expect.any(Function) },
+      });
+    });
+
+    it('also strips the ids-keyed restWorkItems entry at the root', () => {
+      const cache = createFakeCache();
+
+      dropMatchCacheEntries(cache, NAMESPACE_ID);
+
+      expect(cache.modify).toHaveBeenCalledWith({
+        fields: { restWorkItems: expect.any(Function) },
+      });
+    });
+
+    it('skips the namespace-scoped call when there is no namespace id yet', () => {
+      const cache = createFakeCache();
+
+      dropMatchCacheEntries(cache, null);
+
+      expect(cache.modify).toHaveBeenCalledTimes(1);
+      expect(cache.modify).toHaveBeenCalledWith({
+        fields: { restWorkItems: expect.any(Function) },
+      });
+    });
+
+    it('collects garbage after stripping entries', () => {
+      const cache = createFakeCache();
+
+      dropMatchCacheEntries(cache, NAMESPACE_ID);
+
+      expect(cache.gc).toHaveBeenCalledTimes(1);
+    });
+
+    it('deletes only the store field the match query created', () => {
+      const cache = createFakeCache();
+      const DELETE = Symbol('DELETE');
+
+      dropMatchCacheEntries(cache, NAMESPACE_ID);
+      const { workItems: stripMatchEntry } = cache.modify.mock.calls[0][0].fields;
+
+      expect(
+        stripMatchEntry('existing', { storeFieldName: 'workItems({"ids":["1"]})', DELETE }),
+      ).toBe(DELETE);
+      expect(
+        stripMatchEntry('existing', { storeFieldName: 'workItems({"state":"OPENED"})', DELETE }),
+      ).toBe('existing');
+    });
+
+    // Confirms the real Apollo store field name actually contains `"ids":` for a match call, which
+    // is the assumption the field modifier above relies on.
+    describe('with a real cache', () => {
+      it('removes only the store field the match query created', () => {
+        const cache = new InMemoryCache({ possibleTypes, typePolicies });
+        const variables = { fullPath: 'group/path', sort: 'CREATED_DESC' };
+        // `namespace(fullPath:)` resolves to the concrete `Namespace` type (not `Group`), which is
+        // what `TYPENAME_NAMESPACE` normalizes the entity under.
+        const write = (vars, nodes) => {
+          const { namespace } = buildBoardWorkItemsResponse(nodes).data;
+          return cache.writeQuery({
+            query: getWorkItemsSlimQuery,
+            variables: vars,
+            data: { namespace: { ...namespace, __typename: 'Namespace' } },
+          });
+        };
+
+        write(variables, [buildWorkItemNode(1)]);
+        write({ ...variables, ids: [workItemId(2)], firstPageSize: 1 }, [buildWorkItemNode(2)]);
+
+        dropMatchCacheEntries(cache, mockGroupId);
+
+        const workItemsFields = Object.keys(cache.extract()[`Namespace:${mockGroupId}`]).filter(
+          (key) => key.startsWith('workItems('),
+        );
+        expect(workItemsFields).toHaveLength(1);
+        expect(workItemsFields[0]).not.toContain('"ids"');
+      });
     });
   });
 
