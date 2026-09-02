@@ -284,3 +284,12 @@ export-code-paths-mapping:
 export-frontend-code-paths-mapping:
   extends:
     - .export-frontend-code-paths-mapping
+
+process-e2e-coverage:
+  extends:
+    - .process-e2e-coverage
+  needs:
+    - job: cng-instance
+      optional: true
+    - job: cng-registry
+      optional: true

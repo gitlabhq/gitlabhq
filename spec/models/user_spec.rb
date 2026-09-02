@@ -10501,6 +10501,17 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '.pluck_usernames' do
+    subject(:pluck_usernames) { described_class.id_in([user.id, another_user.id]).pluck_usernames }
+
+    let_it_be(:user) { create(:user, username: 'user_1') }
+    let_it_be(:another_user) { create(:user, username: 'user_2') }
+
+    it 'returns the usernames of the relation' do
+      expect(pluck_usernames).to contain_exactly('user_1', 'user_2')
+    end
+  end
+
   describe '.id_exists?' do
     let_it_be(:user) { create(:user) }
     let_it_be(:user_id) { user.id }

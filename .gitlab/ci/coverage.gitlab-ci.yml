@@ -23,13 +23,14 @@ test-coverage:export-rspec-and-e2e:
     - .rails:rules:coverage-export-rspec-and-e2e
   stage: post-qa
   needs:
-    - job: e2e:test-on-gdk
+    - job: e2e:test-on-cng
       optional: true
     - job: rspec:coverage
       optional: true
     - job: update-tests-metadata
       optional: true
   variables:
+    BRIDGE_NAME: 'e2e:test-on-cng'
     JOB_NAME: 'process-e2e-coverage'
   script:
     - ruby scripts/coverage/download_artifacts_from_child_pipeline.rb
@@ -59,7 +60,7 @@ test-coverage:export-jest-and-e2e:
     - .frontend:rules:coverage-export-jest-and-e2e
   stage: post-qa
   needs:
-    - job: e2e:test-on-gdk
+    - job: e2e:test-on-cng
       optional: true
     - job: coverage-frontend
       optional: true
@@ -69,6 +70,7 @@ test-coverage:export-jest-and-e2e:
     - source scripts/utils.sh
     - yarn_install_script
   variables:
+    BRIDGE_NAME: 'e2e:test-on-cng'
     JOB_NAME: 'process-e2e-coverage'
   script:
     - ruby scripts/coverage/download_artifacts_from_child_pipeline.rb

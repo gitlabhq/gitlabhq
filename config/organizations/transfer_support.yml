@@ -21,8 +21,8 @@
 ---
 abuse_events: supported
 abuse_report_events: supported
-abuse_report_upload_states: https://gitlab.com/gitlab-org/gitlab/-/work_items/616248
-abuse_report_uploads: https://gitlab.com/gitlab-org/gitlab/-/work_items/616249
+abuse_report_upload_states: supported
+abuse_report_uploads: supported
 abuse_report_user_mentions: https://gitlab.com/gitlab-org/gitlab/-/work_items/616250
 abuse_reports: supported
 admin_roles: no_work_needed

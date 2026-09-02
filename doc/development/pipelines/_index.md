@@ -747,7 +747,7 @@ Coverage data flows through several CI jobs:
 1. **Collection**: Tests run with coverage instrumentation
    - `rspec` jobs collect backend coverage via SimpleCov
    - `jest` jobs collect frontend coverage via Istanbul
-   - `e2e:test-on-gdk` collects E2E coverage via Coverband (backend) and Istanbul (frontend)
+   - `e2e:test-on-cng` collects E2E coverage via Coverband (backend) and Istanbul (frontend)
    - `workhorse` jobs collect Go coverage
 
 1. **Merging**: Coverage from parallel jobs and E2E is merged

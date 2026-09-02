@@ -34,8 +34,9 @@ module Gitlab
       # @param interval [Integer] Optional interval value to override default
       #     one registered in the labkit rate-limit registry
       # @param users_allowlist [Array<String>] Optional list of usernames to
-      #     exclude from the limit. This param will only be functional if Scope
-      #     includes a current user.
+      #     exclude from the limit, merged with the users named by
+      #     GITLAB_THROTTLE_USER_ALLOWLIST. This param will only be functional
+      #     if Scope includes a current user.
       # @param peek [Boolean] Optional. When true the key will not be
       #     incremented but the current throttled state will be returned.
       # @param bypass_header [String, nil] Optional. Raw bypass header value,
@@ -111,8 +112,9 @@ module Gitlab
       # @param interval [Integer] Optional interval value to override default
       #     one registered in the labkit rate-limit registry
       # @param users_allowlist [Array<String>] Optional list of usernames to
-      #     exclude from the limit. This param will only be functional if Scope
-      #     includes a current user.
+      #     exclude from the limit, merged with the users named by
+      #     GITLAB_THROTTLE_USER_ALLOWLIST. This param will only be functional
+      #     if Scope includes a current user.
       # @param peek [Boolean] Optional. When true the key will not be
       #     incremented but the current throttled state will be returned.
       #
@@ -138,7 +140,7 @@ module Gitlab
       # @param scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
       # @param threshold [Integer] Optional threshold value to override default one registered in the labkit rate-limit registry
       # @param interval [Integer] Optional interval value to override default one registered in the labkit rate-limit registry
-      # @param users_allowlist [Array<String>] Optional list of usernames to exclude from the limit. This param will only be functional if Scope includes a current user.
+      # @param users_allowlist [Array<String>] Optional list of usernames to exclude from the limit, merged with the users named by GITLAB_THROTTLE_USER_ALLOWLIST. This param will only be functional if Scope includes a current user.
       #
       # @return [Boolean] Whether or not a request is currently throttled
       #
@@ -229,7 +231,8 @@ module Gitlab
       end
 
       def scoped_user_in_allowlist?(scope, users_allowlist)
-        return unless users_allowlist.present?
+        allowlist = Array(users_allowlist) + gitlab_throttle_user_allowlist
+        return if allowlist.empty?
 
         # The positional branch is deleted once all call sites pass
         # characteristic-keyed hashes.
@@ -237,8 +240,16 @@ module Gitlab
         return unless scoped_user.is_a?(User)
 
         username = scoped_user.username.downcase
-        users_allowlist.any? { |u| u.downcase == username }
+        allowlist.any? { |u| u.downcase == username }
       end
+
+      def gitlab_throttle_user_allowlist
+        ids = ::Gitlab::RackAttack.user_allowlist.to_a
+        return [] if ids.empty?
+
+        ::User.id_in(ids).pluck_usernames
+      end
+      strong_memoize_attr :gitlab_throttle_user_allowlist
 
       def request_path(request)
         # req is an ActionDispatch::Request

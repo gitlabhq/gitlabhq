@@ -269,6 +269,43 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       end
     end
 
+    context 'when using GITLAB_THROTTLE_USER_ALLOWLIST' do
+      let_it_be(:allowlisted_user) { create(:user) }
+
+      let(:start_time) { Time.current.beginning_of_hour }
+
+      before do
+        allow(Gitlab::RackAttack).to receive(:user_allowlist).and_return(Set.new([allowlisted_user.id]))
+        described_class.clear_memoization(:gitlab_throttle_user_allowlist)
+
+        travel_to(start_time) { subject.throttled?(:test_action, scope: scope) }
+      end
+
+      after do
+        described_class.clear_memoization(:gitlab_throttle_user_allowlist)
+      end
+
+      context 'when the user is in the allow list' do
+        let(:scope) { allowlisted_user }
+
+        it 'is not throttled' do
+          travel_to(start_time + 1.minute) do
+            expect(subject.throttled?(:test_action, scope: scope)).to be(false)
+          end
+        end
+      end
+
+      context 'when the user is not in the allow list' do
+        let(:scope) { user }
+
+        it 'is throttled' do
+          travel_to(start_time + 1.minute) do
+            expect(subject.throttled?(:test_action, scope: scope)).to be(true)
+          end
+        end
+      end
+    end
+
     context 'with bypass_header' do
       let(:start_time) { Time.current.beginning_of_hour }
 

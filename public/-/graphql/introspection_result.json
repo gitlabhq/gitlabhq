@@ -36249,6 +36249,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
+              "name": "lastDownloadedAt",
+              "description": "Timestamp the image was last pulled. Null when it was never pulled. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "manifests",
               "description": "Manifests of the image, ordered by publication date descending. Reads at most 20 rows per page and can be selected for up to 20 images per operation, matching the images page size. Returns `null` for an image that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
@@ -36692,6 +36704,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
+              "name": "lastDownloadedAt",
+              "description": "Timestamp the package was last pulled. Null when it was never pulled. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "versions",
               "description": "Versions of the package, ordered by publication date descending. Resolves at most once per package in a page, so one operation reads versions for up to 20 packages. Returns `null` for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
@@ -36778,6 +36802,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "lastDownloadedAt",
+              "description": "Timestamp the package was last pulled. Null when it was never pulled. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "name",
@@ -36870,16 +36906,12 @@
             },
             {
               "name": "versionsCount",
-              "description": "Number of versions of the package. Buffered, so it can lag the version list. Introduced in GitLab 19.3: Status: Experiment.",
+              "description": "Number of versions of the package. Buffered, so it can lag the version list. Null for a package of a remote repository, which Artifact Registry supplies no count for. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."

@@ -1,6 +1,9 @@
+import { omit } from 'lodash-es';
 import getBoardWorkItemsQuery from 'ee_else_ce/work_items/board/graphql/get_board_work_items.query.graphql';
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import { DEFAULT_PAGE_SIZE_BOARD_COLUMN } from '~/work_items/constants';
+
+const LIST_PAGINATION_VARIABLES = ['afterCursor', 'beforeCursor', 'lastPageSize'];
 
 // Board columns and the drag-and-drop cache updates have to use this exact
 // same query, so they read and write the same Apollo cache entry.
@@ -18,7 +21,7 @@ export const boardColumnQueryVariables = ({
   groupFilter,
 }) => ({
   fullPath: rootPageFullPath,
-  ...baseQueryVariables,
+  ...omit(baseQueryVariables, LIST_PAGINATION_VARIABLES),
   firstPageSize: DEFAULT_PAGE_SIZE_BOARD_COLUMN,
   ...groupFilter, // spread last, so it wins if a base variable uses the same key
 });

@@ -89,7 +89,7 @@ module Gitlab
         end
 
         def block_user(user, reason)
-          user.ldap_block
+          blocked = user.ldap_block
 
           if provider
             Gitlab::AppLogger.info(
@@ -102,6 +102,12 @@ module Gitlab
               "blocking GitLab user \"#{user.name}\" (#{user.email})"
             )
           end
+
+          log_audit_event_for_block(user, reason) if blocked
+        end
+
+        def log_audit_event_for_block(user, reason)
+          # no-op in CE
         end
 
         def unblock_user(user, reason)

@@ -148,6 +148,7 @@ stages:
     - .with-ci-node-image
     - .yarn-cache
   stage: report
+  when: always
   allow_failure: true
   variables:
     NODE_ENV: "development"  # Need devDependencies for istanbul packages

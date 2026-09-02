@@ -27,7 +27,6 @@ RSpec.describe "User edits a comment on a commit", :js, feature_category: :sourc
         find_button("Edit comment").click
         fill_in("note[note]", with: new_comment_text)
         click_button("Save comment")
-        wait_for_requests
         expect(scope).to have_content(new_comment_text)
       end
     end

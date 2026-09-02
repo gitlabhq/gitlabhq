@@ -146,6 +146,7 @@
 - :skip_before_request
 - :skip_disconnect
 - :skip_freeze_time
+- :skip_gitaly_mvcc
 - :skip_html_escaped_tags_check
 - :skip_openbao_setup
 - :snowplow

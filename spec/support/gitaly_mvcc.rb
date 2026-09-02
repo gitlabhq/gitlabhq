@@ -15,4 +15,13 @@ module GitalyMvcc
   end
 end
 
-Gitlab::GitalyClient.singleton_class.prepend(GitalyMvcc::RequestKwargsPatch) if GitalySetup.mvcc_repositories?
+if GitalySetup.mvcc_repositories?
+  Gitlab::GitalyClient.singleton_class.prepend(GitalyMvcc::RequestKwargsPatch)
+
+  RSpec.configure do |config|
+    config.before(:each, :skip_gitaly_mvcc) do
+      skip 'Not supported with the MVCC reference backend. ' \
+        'See https://gitlab.com/gitlab-org/gitaly/-/work_items/7369.'
+    end
+  end
+end

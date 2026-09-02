@@ -81,6 +81,7 @@ We aim to provide at least 6 months' notice before discontinuing support for any
 | [Red Hat Enterprise Linux 10](almalinux.md)          | GitLab CE / GitLab EE 18.6.0   | `x86_64`, `arm64` <sup>1</sup>   | May 2035             | GitLab CE / GitLab EE 28.0.0  | [Red Hat Enterprise Linux details](https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates) |
 | [Ubuntu 22.04](ubuntu.md)                           | GitLab CE / GitLab EE 15.5.0   | `amd64`, `arm64` <sup>1</sup>    | April 2027           | GitLab CE / GitLab EE 19.11.0 | [Ubuntu details](https://wiki.ubuntu.com/Releases). FIPS packages were added in GitLab 18.4. Before upgrading from Ubuntu 20.04, view the [upgrade notes](#ubuntu-2204-fips). |
 | [Ubuntu 24.04](ubuntu.md)                           | GitLab CE / GitLab EE 17.1.0   | `amd64`, `arm64` <sup>1</sup>    | April 2029           | GitLab CE / GitLab EE 21.11.0 | [Ubuntu details](https://wiki.ubuntu.com/Releases)                                                            |
+| [Ubuntu 26.04](ubuntu.md)                           | GitLab CE / GitLab EE 19.3.0   | `amd64`, `arm64` <sup>1</sup>    | April 2031           | GitLab CE / GitLab EE 23.11.0 | [Ubuntu details](https://wiki.ubuntu.com/Releases)                                                            |
 
 **Footnotes**:
 

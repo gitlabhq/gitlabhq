@@ -2,6 +2,7 @@
 table_name: abuse_report_uploads
 classes:
 - AbuseReport
+- AntiAbuse::AbuseReportUpload
 - Geo::AbuseReportUpload
 - Upload
 feature_categories:

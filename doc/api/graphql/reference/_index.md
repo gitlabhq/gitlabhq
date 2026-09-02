@@ -35483,6 +35483,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="artifactregistryimage-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the image in Artifact Registry. |
+| <a id="artifactregistryimage-lastdownloadedat"></a>`lastDownloadedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the image was last pulled. Null when it was never pulled. |
 | <a id="artifactregistryimage-manifests"></a>`manifests` {{< icon name="warning-solid" >}} | [`ArtifactRegistryManifestConnection`](#artifactregistrymanifestconnection) | Introduced in GitLab 19.4. Status: Experiment. Manifests of the image, ordered by publication date descending. Reads at most 20 rows per page and can be selected for up to 20 images per operation, matching the images page size. Returns `null` for an image that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. |
 | <a id="artifactregistryimage-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Name of the image. |
 
@@ -35513,6 +35514,7 @@ Fields:
 | <a id="artifactregistrymavenpackage-artifactid"></a>`artifactId` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Maven artifact ID coordinate of the package. |
 | <a id="artifactregistrymavenpackage-groupid"></a>`groupId` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Maven group ID coordinate of the package. |
 | <a id="artifactregistrymavenpackage-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.3. Status: Experiment. ID of the package in Artifact Registry. |
+| <a id="artifactregistrymavenpackage-lastdownloadedat"></a>`lastDownloadedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the package was last pulled. Null when it was never pulled. |
 | <a id="artifactregistrymavenpackage-versions"></a>`versions` {{< icon name="warning-solid" >}} | [`ArtifactRegistryVersionConnection`](#artifactregistryversionconnection) | Introduced in GitLab 19.4. Status: Experiment. Versions of the package, ordered by publication date descending. Resolves at most once per package in a page, so one operation reads versions for up to 20 packages. Returns `null` for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. |
 
 ### `ArtifactRegistryNpmPackage`
@@ -35524,10 +35526,11 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="artifactregistrynpmpackage-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.3. Status: Experiment. ID of the package in Artifact Registry. |
+| <a id="artifactregistrynpmpackage-lastdownloadedat"></a>`lastDownloadedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the package was last pulled. Null when it was never pulled. |
 | <a id="artifactregistrynpmpackage-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Name of the package, including its scope when it has one. |
 | <a id="artifactregistrynpmpackage-scope"></a>`scope` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. npm scope of the package. Null for an unscoped package. |
 | <a id="artifactregistrynpmpackage-versions"></a>`versions` {{< icon name="warning-solid" >}} | [`ArtifactRegistryVersionConnection`](#artifactregistryversionconnection) | Introduced in GitLab 19.4. Status: Experiment. Versions of the package, ordered by publication date descending. Resolves at most once per package in a page, so one operation reads versions for up to 20 packages. Returns `null` for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. |
-| <a id="artifactregistrynpmpackage-versionscount"></a>`versionsCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.3. Status: Experiment. Number of versions of the package. Buffered, so it can lag the version list. |
+| <a id="artifactregistrynpmpackage-versionscount"></a>`versionsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Number of versions of the package. Buffered, so it can lag the version list. Null for a package of a remote repository, which Artifact Registry supplies no count for. |
 
 ### `ArtifactRegistryRemoteSettings`
 

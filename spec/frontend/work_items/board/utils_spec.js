@@ -1,4 +1,8 @@
-import { getMovePositionIds, boardColumnQueryVariables } from '~/work_items/board/utils';
+import {
+  getMovePositionIds,
+  boardColumnQueryVariables,
+  boardColumnCountVariables,
+} from '~/work_items/board/utils';
 
 describe('work item board utils', () => {
   describe('boardColumnQueryVariables', () => {
@@ -28,6 +32,51 @@ describe('work item board utils', () => {
           groupFilter: { status: { name: 'To do' } },
         }),
       ).toMatchObject({ status: { name: 'To do' } });
+    });
+
+    describe('when the base variables carry List view pagination state', () => {
+      it('drops the list cursors and lastPageSize', () => {
+        expect(
+          boardColumnQueryVariables({
+            rootPageFullPath: 'full/path',
+            baseQueryVariables: {
+              ...baseQueryVariables,
+              afterCursor: 'eyJjcmVhdGVkX2F0IjoiMjAyNi0wOC0zMSJ9',
+              beforeCursor: 'eyJjcmVhdGVkX2F0IjoiMjAyNi0wOC0wMSJ9',
+              lastPageSize: 20,
+            },
+            groupFilter: { status: { name: 'To do' } },
+          }),
+        ).toEqual({
+          fullPath: 'full/path',
+          state: 'opened',
+          sort: 'CREATED_DESC',
+          firstPageSize: 20,
+          status: { name: 'To do' },
+        });
+      });
+    });
+  });
+
+  describe('boardColumnCountVariables', () => {
+    it('drops firstPageSize along with the List view pagination state', () => {
+      expect(
+        boardColumnCountVariables({
+          rootPageFullPath: 'full/path',
+          baseQueryVariables: {
+            state: 'opened',
+            sort: 'CREATED_DESC',
+            afterCursor: 'eyJjcmVhdGVkX2F0IjoiMjAyNi0wOC0zMSJ9',
+            lastPageSize: 20,
+          },
+          groupFilter: { status: { name: 'To do' } },
+        }),
+      ).toEqual({
+        fullPath: 'full/path',
+        state: 'opened',
+        sort: 'CREATED_DESC',
+        status: { name: 'To do' },
+      });
     });
   });
 

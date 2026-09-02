@@ -1303,6 +1303,10 @@ class User < ApplicationRecord
       exists?(username: username)
     end
 
+    def pluck_usernames
+      pluck(:username)
+    end
+
     def id_exists?(id)
       exists?(id: id)
     end

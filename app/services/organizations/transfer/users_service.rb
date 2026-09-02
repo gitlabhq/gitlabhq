@@ -344,9 +344,7 @@ module Organizations
 
       # rubocop:disable CodeReuse/ActiveRecord -- Query specific to this service
       # Abuse reports follow their reporter, matching AntiAbuse::AbuseReport::CreateService which
-      # sets organization_id from params[:reporter].organization_id. Child rows derive their
-      # organization_id from the parent report -- see trigger_ca93521f3a6d (abuse_events) in
-      # db/structure.sql.
+      # sets organization_id from params[:reporter].organization_id.
       #
       # report_ids is scoped to the old organization, so the AbuseReport update must stay last
       # here. Same ordering contract as #update_granular_scopes.
@@ -356,12 +354,20 @@ module Organizations
           .where(organization_id: old_organization.id)
           .select(:id)
 
+        update_abuse_report_uploads(report_ids)
+
         update_organization_id_for(AntiAbuse::Event) do |relation|
           relation.where(abuse_report_id: report_ids)
         end
 
         update_organization_id_for(AbuseReport) do |relation|
           relation.by_reporter_id(user_ids)
+        end
+      end
+
+      def update_abuse_report_uploads(report_ids)
+        update_organization_id_for(AntiAbuse::AbuseReportUpload) do |relation|
+          relation.where(model_id: report_ids)
         end
       end
       # rubocop:enable CodeReuse/ActiveRecord

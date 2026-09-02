@@ -14,7 +14,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { InternalEvents } from '~/tracking';
 import { createAlert, VARIANT_INFO } from '~/alert';
-import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { TYPENAME_USER, TYPENAME_WORK_ITEMS_TYPE } from '~/graphql_shared/constants';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import {
   STATUS_ALL,
@@ -1005,7 +1005,19 @@ export default {
       // We should not be using ENUM and change the mount of work item type lists
       // with id instead since that is immutable
       const workItemTypeName = this.workItemType || WORK_ITEM_TYPE_NAME_ISSUE;
-      return this.getWorkItemTypeConfiguration(workItemTypeName)?.id || '';
+      const typeIdByName = this.getWorkItemTypeConfiguration(workItemTypeName)?.id;
+      if (typeIdByName) {
+        return typeIdByName;
+      }
+
+      // A namespace can rename the Issue type. The name lookup then misses, but the
+      // renamed type keeps the id of the system type it was converted from.
+      if (workItemTypeName === WORK_ITEM_TYPE_NAME_ISSUE) {
+        const issueTypeGid = convertToGraphQLId(TYPENAME_WORK_ITEMS_TYPE, 1);
+        return this.workItemTypesConfiguration?.find((type) => type?.id === issueTypeGid)?.id || '';
+      }
+
+      return '';
     },
     displaySettingsSoT() {
       return this.isSavedView
@@ -1284,6 +1296,13 @@ export default {
     // preferences query to wait on — the answer ("no persisted visibleGroups") is
     // already known.
     if (!this.isLoggedIn) {
+      this.preferencesLoaded = true;
+    }
+    // The types are provided above the keyed router-view, so on a remount they are already
+    // resolved and the watcher never fires. With no type id the preferences query stays
+    // skipped, so nothing else would ever clear the loading state of the list or the board.
+    if (this.isLoggedIn && this.workItemTypesConfiguration?.length > 0 && !this.workItemTypeId) {
+      this.isSortKeyInitialized = true;
       this.preferencesLoaded = true;
     }
     this.pendingWorkItemChanges = new Map();

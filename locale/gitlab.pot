@@ -91878,6 +91878,9 @@ msgstr ""
 msgid "WorkItems|The Type filter URL has been changed. Please update any bookmarks or links that reference the old URL."
 msgstr ""
 
+msgid "WorkItems|The readiness_score field requires the workplan_score feature flag to be enabled."
+msgstr ""
+
 msgid "WorkItems|Your preferences"
 msgstr ""
 

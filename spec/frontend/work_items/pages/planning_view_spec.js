@@ -239,6 +239,23 @@ const subscribedSavedViewsHandler = jest.fn().mockResolvedValue({
 
 const findListView = () => wrapper.findComponent(ListView);
 const findBoardView = () => wrapper.findComponent({ name: 'BoardView' });
+const boardViewStub = {
+  name: 'BoardView',
+  props: [
+    'rootPageFullPath',
+    'queryVariables',
+    'collapsedGroups',
+    'groupOrder',
+    'visibleGroups',
+    'visibleGroupsLoaded',
+    'canManageColumns',
+    'activeItem',
+    'detailPanelEnabled',
+    'preselectedWorkItemType',
+    'canCreateWorkItem',
+  ],
+  template: '<div />',
+};
 const findDetailPanel = () => wrapper.findComponent(WorkItemDetailPanel);
 const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
 const findGlIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
@@ -1601,6 +1618,73 @@ describe('planning-view', () => {
     await mountComponent({ provide: { metadataLoading: true } });
 
     expect(findListView().props('skipQuery')).toBe(true);
+  });
+
+  describe('when the Issue work item type has been renamed', () => {
+    // A renamed type keeps the id of the system type it was converted from, so the
+    // name lookup misses while the id still resolves.
+    const renamedIssueType = {
+      id: 'gid://gitlab/WorkItems::Type/1',
+      name: 'Bug',
+      isGroupWorkItemType: false,
+    };
+    const renamedProvide = {
+      getWorkItemTypeConfiguration: jest.fn().mockReturnValue(undefined),
+      workItemTypesConfiguration: [renamedIssueType],
+    };
+
+    beforeEach(async () => {
+      mockPreferencesQueryHandler.mockClear();
+      await mountComponent({ provide: renamedProvide });
+    });
+
+    it('fetches the user preferences with the renamed type id', () => {
+      expect(mockPreferencesQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ workItemTypeId: 'gid://gitlab/WorkItems::Type/1' }),
+      );
+    });
+
+    it('does not leave the list waiting on the sort key', () => {
+      expect(findListView().props('isSortKeyInitialized')).toBe(true);
+    });
+  });
+
+  describe('when the work item types resolve without an Issue type', () => {
+    const noIssueTypeProvide = {
+      getWorkItemTypeConfiguration: jest.fn().mockReturnValue(undefined),
+      workItemTypesConfiguration: [
+        { id: 'gid://gitlab/WorkItems::Type/5', name: 'Task', isGroupWorkItemType: false },
+      ],
+    };
+
+    beforeEach(async () => {
+      mockPreferencesQueryHandler.mockClear();
+      await mountComponent({ provide: noIssueTypeProvide });
+    });
+
+    it('skips the user preferences query', () => {
+      expect(mockPreferencesQueryHandler).not.toHaveBeenCalled();
+    });
+
+    it('still releases the list loading state', () => {
+      expect(findListView().props('isSortKeyInitialized')).toBe(true);
+    });
+
+    describe('and the board view is showing', () => {
+      beforeEach(async () => {
+        await mountComponent({
+          provide: { ...noIssueTypeProvide, glFeatures: { planningViewBoards: true } },
+          stubs: { BoardView: boardViewStub },
+        });
+
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+      });
+
+      it('still releases the board loading state', () => {
+        expect(findBoardView().props('visibleGroupsLoaded')).toBe(true);
+      });
+    });
   });
 
   describe('label token fetchLabels', () => {
@@ -2990,23 +3074,6 @@ describe('planning-view', () => {
       name: 'WorkItemsSavedViewsSelectors',
       props: ['displaySettings'],
       template: '<div><slot name="header-area"></slot></div>',
-    };
-    const boardViewStub = {
-      name: 'BoardView',
-      props: [
-        'rootPageFullPath',
-        'queryVariables',
-        'collapsedGroups',
-        'groupOrder',
-        'visibleGroups',
-        'visibleGroupsLoaded',
-        'canManageColumns',
-        'activeItem',
-        'detailPanelEnabled',
-        'preselectedWorkItemType',
-        'canCreateWorkItem',
-      ],
-      template: '<div />',
     };
 
     // get_user_preferences response carrying namespace-level display settings.

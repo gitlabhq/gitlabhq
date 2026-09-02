@@ -4852,7 +4852,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it { is_expected.to be_nil }
     end
 
-    context 'when pool repository exists' do
+    context 'when pool repository exists', :skip_gitaly_mvcc do
       let!(:pool) { create(:pool_repository, :ready, source_project: primary_project) }
 
       context 'when the current repository is a primary repository' do

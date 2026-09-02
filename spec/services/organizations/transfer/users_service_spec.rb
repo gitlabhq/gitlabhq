@@ -723,6 +723,41 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
 
         expect { service.execute }.not_to change { reported_report.reload.organization_id }
       end
+
+      it 'updates organization_id for screenshots of transferred reports' do
+        abuse_report = create(:abuse_report, reporter: user1, organization: old_organization)
+        upload = create_screenshot_upload(abuse_report)
+
+        service.execute
+
+        expect(upload.reload.organization_id).to eq(new_organization.id)
+      end
+
+      it 'does not update screenshots of abuse reports filed by users not in the group' do
+        non_group_report = create(:abuse_report, reporter: non_group_user, organization: old_organization)
+        non_group_upload = create_screenshot_upload(non_group_report)
+
+        expect { service.execute }.not_to change { non_group_upload.reload.organization_id }
+      end
+
+      context 'when batching screenshot updates' do
+        include_context 'with transfer batch size of 1'
+
+        let(:execute_service) { service.execute }
+        let(:expected_batch_queries) { { 'abuse_report_uploads' => 3 } }
+
+        before do
+          3.times do
+            create_screenshot_upload(create(:abuse_report, reporter: user1, organization: old_organization))
+          end
+        end
+
+        it_behaves_like 'generates batched transfer queries'
+      end
+
+      def create_screenshot_upload(abuse_report)
+        create(:upload, model: abuse_report, uploader: 'AttachmentUploader', mount_point: :screenshot)
+      end
     end
 
     context 'with associated organization_id updates', :aggregate_failures do

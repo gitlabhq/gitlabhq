@@ -24727,6 +24727,7 @@ CREATE TABLE merge_requests_risk_assessments (
     missing_signals text[] DEFAULT '{}'::text[] NOT NULL,
     signal_breakdown jsonb DEFAULT '[]'::jsonb NOT NULL,
     classification jsonb DEFAULT '{}'::jsonb NOT NULL,
+    duo_workflow_id bigint,
     CONSTRAINT check_26da91615e CHECK ((char_length(scoring_function_version) <= 20)),
     CONSTRAINT check_5f46ad8e07 CHECK ((char_length(rationale) <= 2048))
 );
@@ -49513,6 +49514,8 @@ CREATE INDEX index_mr_metrics_on_target_project_id_merged_at_nulls_last ON merge
 
 CREATE INDEX index_mr_metrics_on_target_project_id_merged_at_time_to_merge ON merge_request_metrics USING btree (target_project_id, merged_at, created_at) WHERE (merged_at > created_at);
 
+CREATE INDEX index_mr_risk_assessments_on_duo_workflow_id ON merge_requests_risk_assessments USING btree (duo_workflow_id);
+
 CREATE INDEX index_mrdc_on_merge_request_commits_metadata_id ON merge_request_diff_commits USING btree (merge_request_commits_metadata_id) WHERE (merge_request_commits_metadata_id IS NOT NULL);
 
 CREATE INDEX index_mrs_approval_rules_approver_users_on_project_id ON merge_requests_approval_rules_approver_users USING btree (project_id);
@@ -60374,6 +60377,9 @@ ALTER TABLE ONLY ml_candidates
 
 ALTER TABLE ONLY ml_experiments
     ADD CONSTRAINT fk_ml_experiments_on_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY merge_requests_risk_assessments
+    ADD CONSTRAINT fk_mr_risk_assessments_on_duo_workflow_id FOREIGN KEY (duo_workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT fk_path_locks_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
