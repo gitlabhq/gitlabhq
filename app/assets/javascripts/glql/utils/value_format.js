@@ -9,8 +9,13 @@ export const formatCount = (value) => formatNumber(value);
 
 // Compact notation for chart axes where horizontal space is tight: 2,500,000 → 2.5M.
 // Cells and tooltips keep the full-digit `formatCount` for precision.
-export const formatCountCompact = (value) =>
-  formatNumber(value, { notation: 'compact', maximumFractionDigits: 1 });
+export const formatCountCompact = (value, { lowercaseThousands = false } = {}) => {
+  const formatted = formatNumber(value, { notation: 'compact', maximumFractionDigits: 1 });
+
+  return lowercaseThousands && typeof formatted === 'string'
+    ? formatted.replace('K', 'k')
+    : formatted;
+};
 
 export const formatRate = (value) => {
   const percentage = value * 100;

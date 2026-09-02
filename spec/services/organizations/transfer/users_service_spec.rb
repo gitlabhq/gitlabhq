@@ -1120,8 +1120,7 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
             "Ai::UsageEvent",
             "Analytics::CustomDashboards::DashboardVersion",
             "LDAPKey",
-            "RemoteDevelopment::OrganizationClusterAgentMapping",
-            "Vulnerabilities::Export"
+            "RemoteDevelopment::OrganizationClusterAgentMapping"
           ]
         end
 
@@ -1147,7 +1146,8 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
               'Project',
               'ProjectSnippet',
               'Snippet',
-              'User'
+              'User',
+              'Vulnerabilities::Export'
             ]
           end
 

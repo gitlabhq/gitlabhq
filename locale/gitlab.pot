@@ -45856,10 +45856,16 @@ msgstr ""
 msgid "Job|Created"
 msgstr ""
 
+msgid "Job|Delayed job could not be executed by some reason, please try again"
+msgstr ""
+
 msgid "Job|Download"
 msgstr ""
 
 msgid "Job|Download SAST report"
+msgstr ""
+
+msgid "Job|Duo Agent Platform cannot run on this runner. Duo jobs can only run on instance wide or top level group runners. Be sure to remove the gitlab--duo tag from this runner to avoid it picking these jobs."
 msgstr ""
 
 msgid "Job|Duration"
@@ -45898,7 +45904,13 @@ msgstr ""
 msgid "Job|Full screen mode is not available"
 msgstr ""
 
+msgid "Job|How do I fix it?"
+msgstr ""
+
 msgid "Job|How this is calculated?"
+msgstr ""
+
+msgid "Job|ID token issuance is disabled in CI because this project's path was previously used by a different project. To restore ID tokens, set `ci_id_token_sub_claim_components` to start with `project_id` (for example, `[\"project_id\", \"ref_type\", \"ref\"]`) and update your cloud trust policy to match."
 msgstr ""
 
 msgid "Job|Job artifacts"
@@ -45934,6 +45946,15 @@ msgstr ""
 msgid "Job|No job log"
 msgstr ""
 
+msgid "Job|No matching runner available"
+msgstr ""
+
+msgid "Job|No more compute minutes available"
+msgstr ""
+
+msgid "Job|No runners support the requirements to run this job."
+msgstr ""
+
 msgid "Job|No search results found"
 msgstr ""
 
@@ -45944,6 +45965,9 @@ msgid "Job|Passed"
 msgstr ""
 
 msgid "Job|Pending"
+msgstr ""
+
+msgid "Job|Please contact your administrator."
 msgstr ""
 
 msgid "Job|Preparing"
@@ -46021,10 +46045,106 @@ msgstr ""
 msgid "Job|Success rate (%{percentSymbol})"
 msgstr ""
 
+msgid "Job|The CI job token has expired. The job may have exceeded the maximum time limit."
+msgstr ""
+
+msgid "Job|The CI/CD is disabled for this project"
+msgstr ""
+
+msgid "Job|The Duo Workflow job failed because the runner could not connect to the Duo Agent Platform. Check your network configuration and try again."
+msgstr ""
+
+msgid "Job|The Job Router failed to run this job."
+msgstr ""
+
 msgid "Job|The artifacts were removed"
 msgstr ""
 
 msgid "Job|The artifacts will be removed"
+msgstr ""
+
+msgid "Job|The canceling job exceeded the maximum execution time set for the job"
+msgstr ""
+
+msgid "Job|The deployment job is older than the latest deployment, and therefore failed."
+msgstr ""
+
+msgid "Job|The deployment job is older than the previously succeeded deployment job, and therefore cannot be run"
+msgstr ""
+
+msgid "Job|The downstream pipeline could not be created"
+msgstr ""
+
+msgid "Job|The downstream pipeline tree is too large"
+msgstr ""
+
+msgid "Job|The environment this job is deploying to is protected. Only users with permission may successfully run this job."
+msgstr ""
+
+msgid "Job|The job belongs to a deleted project"
+msgstr ""
+
+msgid "Job|The job failed to complete prerequisite tasks"
+msgstr ""
+
+msgid "Job|The job is archived and cannot be run"
+msgstr ""
+
+msgid "Job|The job log size limit was reached"
+msgstr ""
+
+msgid "Job|The job was canceling but showed no activity for an extended period. Try again"
+msgstr ""
+
+msgid "Job|The job was running but showed no activity for an extended period. Check your job script or try again"
+msgstr ""
+
+msgid "Job|The job was stuck in pending state with matching runners available. Check your job configuration or try again"
+msgstr ""
+
+msgid "Job|The job was stuck in pending state with no matching runners available. Check your runner tags or configuration"
+msgstr ""
+
+msgid "Job|The runner could not reach an external dependency. Please try again."
+msgstr ""
+
+msgid "Job|The runner process was interrupted before this job could finish. The job is safe to retry."
+msgstr ""
+
+msgid "Job|The running job exceeded the maximum execution time set for the job"
+msgstr ""
+
+msgid "Job|The scheduler failed to assign job to the runner, please try again or contact system administrator"
+msgstr ""
+
+msgid "Job|The script exceeded the maximum execution time set for the job"
+msgstr ""
+
+msgid "Job|The secrets provider can not be found. Check your CI/CD variables and try again."
+msgstr ""
+
+msgid "Job|The user who created this job is blocked"
+msgstr ""
+
+msgid "Job|There has been a configuration error. Check your job configuration or contact your runner administrator."
+msgstr ""
+
+msgid "Job|There has been a missing dependency failure"
+msgstr ""
+
+msgid "Job|There has been a runner system failure, please try again"
+msgstr ""
+
+msgid "Job|There has been a timeout failure or the job got stuck. Check your timeout limits or try again"
+msgstr ""
+
+msgid "Job|There has been an API failure, please try again"
+msgstr ""
+
+msgid "Job|There has been an unknown job problem, please contact your system administrator with the job ID to review the logs"
+msgstr ""
+
+msgid "Job|There is an unknown failure, please try again"
 msgstr ""
 
 msgid "Job|There was a problem retrying the failed job."
@@ -46034,6 +46154,42 @@ msgid "Job|These artifacts are the latest. They will not be deleted (even if exp
 msgstr ""
 
 msgid "Job|This artifact contains SAST scan results in JSON format."
+msgstr ""
+
+msgid "Job|This deployment job was rejected."
+msgstr ""
+
+msgid "Job|This job belongs to a child pipeline and cannot create further child pipelines"
+msgstr ""
+
+msgid "Job|This job could not be executed because downstream bridge project could not be found"
+msgstr ""
+
+msgid "Job|This job could not be executed because downstream pipeline trigger definition is invalid"
+msgstr ""
+
+msgid "Job|This job could not be executed because group IP address restrictions are enabled, and the runner's IP address is not in the allowed range."
+msgstr ""
+
+msgid "Job|This job could not be executed because it would create an environment with an invalid parameter."
+msgstr ""
+
+msgid "Job|This job could not be executed because it would create infinitely looping pipelines"
+msgstr ""
+
+msgid "Job|This job could not be executed because of insufficient permissions to create a downstream pipeline"
+msgstr ""
+
+msgid "Job|This job could not be executed because of insufficient permissions to track the upstream project."
+msgstr ""
+
+msgid "Job|This job could not be executed because the trigger:project value resolved to a blank value. Check that the variables or inputs used in trigger:project are set."
+msgstr ""
+
+msgid "Job|This job could not be executed because upstream bridge project could not be found."
+msgstr ""
+
+msgid "Job|This job could not retrieve secrets because the namespace does not have access to GitLab Secrets Manager. To restore access, start a trial or purchase GitLab Secrets Manager for the top-level group, or make sure the group has GitLab credits available and on-demand billing enabled."
 msgstr ""
 
 msgid "Job|This job failed because the necessary resources were not successfully created."
@@ -46055,6 +46211,9 @@ msgid "Job|This job was added by a pipeline execution policy"
 msgstr ""
 
 msgid "Job|This job was added by a scan execution policy"
+msgstr ""
+
+msgid "Job|Too many downstream pipelines triggered in the last minute. Try again later."
 msgstr ""
 
 msgid "Job|Trigger"
@@ -46079,6 +46238,9 @@ msgid "Job|You do not have permission to read this job's log."
 msgstr ""
 
 msgid "Job|You do not have permission to run this job again."
+msgstr ""
+
+msgid "Job|You reached the maximum depth of child pipelines"
 msgstr ""
 
 msgid "Job|allowed to fail"
@@ -66755,10 +66917,16 @@ msgstr ""
 msgid "Resize blame column"
 msgstr ""
 
+msgid "Resize dynamic panel"
+msgstr ""
+
 msgid "Resize panel"
 msgstr ""
 
 msgid "Resize sidebar"
+msgstr ""
+
+msgid "Resize static panel"
 msgstr ""
 
 msgid "Resolve"
@@ -72364,6 +72532,9 @@ msgid "SecurityOrchestration|Business criticality"
 msgstr ""
 
 msgid "SecurityOrchestration|Bypass Policy Violation"
+msgstr ""
+
+msgid "SecurityOrchestration|Bypass settings"
 msgstr ""
 
 msgid "SecurityOrchestration|Bypassed as"

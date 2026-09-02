@@ -153,15 +153,15 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
 
     context 'when the user is an admin', :enable_admin_mode do
       let(:current_user) { admin }
-      let!(:service_account_a) do
+      let_it_be(:service_account_a) do
         create(:user, :service_account, username: "auser_#{SecureRandom.hex(2)}", provisioned_by_project: project)
       end
 
-      let!(:service_account_b) do
+      let_it_be(:service_account_b) do
         create(:user, :service_account, username: "buser_#{SecureRandom.hex(2)}", provisioned_by_project: project)
       end
 
-      let!(:regular_user) { create(:user, provisioned_by_project: project) }
+      let_it_be(:regular_user) { create(:user, provisioned_by_project: project) }
 
       it 'returns the list of service accounts in the project' do
         perform_request
@@ -207,7 +207,7 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
 
   describe "GET /projects/:id/service_accounts/:user_id" do
     let(:project_id) { project.id }
-    let!(:service_account_user) { create(:user, :service_account, provisioned_by_project: project) }
+    let_it_be(:service_account_user) { create(:user, :service_account, provisioned_by_project: project) }
     let(:path) { "/projects/#{project_id}/service_accounts/#{service_account_user.id}" }
 
     subject(:perform_request) { get api(path, current_user, admin_mode: true) }
@@ -244,7 +244,11 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
       end
 
       context 'when the service account belongs to another project' do
-        let!(:service_account_user) { create(:user, :service_account, provisioned_by_project: create(:project)) }
+        let_it_be(:other_project_service_account) do
+          create(:user, :service_account, provisioned_by_project: create(:project))
+        end
+
+        let(:path) { "/projects/#{project_id}/service_accounts/#{other_project_service_account.id}" }
 
         it 'returns 404' do
           perform_request
@@ -290,7 +294,7 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
 
   describe "PATCH /projects/:id/service_accounts/:user_id" do
     let(:project_id) { project.id }
-    let!(:service_account_user) { create(:user, :service_account, provisioned_by_project: project) }
+    let_it_be(:service_account_user) { create(:user, :service_account, provisioned_by_project: project) }
     let(:params) { { name: 'Updated Name', username: "updated_#{SecureRandom.hex(4)}" } }
     let(:path) { "/projects/#{project_id}/service_accounts/#{service_account_user.id}" }
 
@@ -441,7 +445,7 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
     end
 
     describe 'GET /projects/:id/service_accounts/:user_id/personal_access_tokens' do
-      let!(:existing_token) { create(:personal_access_token, user: service_account_user, scopes: scopes) }
+      let_it_be(:existing_token) { create(:personal_access_token, user: service_account_user, scopes: scopes) }
 
       it_behaves_like 'authorizing granular token permissions', :read_service_account_personal_access_token do
         let(:boundary_object) { project }
@@ -459,7 +463,7 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
     end
 
     describe 'DELETE /projects/:id/service_accounts/:user_id/personal_access_tokens/:token_id' do
-      let!(:token) { create(:personal_access_token, user: service_account_user) }
+      let_it_be_with_reload(:token) { create(:personal_access_token, user: service_account_user) }
 
       it_behaves_like 'authorizing granular token permissions', :revoke_service_account_personal_access_token do
         let(:boundary_object) { project }
@@ -482,7 +486,7 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
     end
 
     describe 'POST /projects/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate' do
-      let!(:token) { create(:personal_access_token, user: service_account_user) }
+      let_it_be(:token) { create(:personal_access_token, user: service_account_user) }
 
       it_behaves_like 'authorizing granular token permissions', :rotate_service_account_personal_access_token do
         let(:boundary_object) { project }

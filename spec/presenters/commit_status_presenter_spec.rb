@@ -26,8 +26,11 @@ RSpec.describe CommitStatusPresenter, feature_category: :continuous_integration 
       end
 
       it 'appends the troubleshooting link' do
-        is_expected.to eq("#{described_class.callout_failure_messages[failure_reason]} " \
-                              "<a href=\"#{help_page_path('ci/environments/_index.md', anchor: 'error-job-would-create-an-environment-with-an-invalid-parameter')}\">How do I fix it?</a>")
+        is_expected.to eq(
+          "#{s_('Job|This job could not be executed because it would create an environment with an invalid parameter.')} " \
+            "<a href=\"#{help_page_path('ci/environments/_index.md', anchor: 'error-job-would-create-an-environment-with-an-invalid-parameter')}\">" \
+            "#{s_('Job|How do I fix it?')}</a>"
+        )
       end
     end
 
@@ -45,12 +48,14 @@ RSpec.describe CommitStatusPresenter, feature_category: :continuous_integration 
       end
 
       it 'includes the custom message' do
-        expect(callout_failure_message).to include('The Job Router failed to run this job.')
+        expect(callout_failure_message).to include(s_('Job|The Job Router failed to run this job.'))
         expect(callout_failure_message).to include('No available executors matching requirements: gpu=true')
       end
 
       it 'formats the message correctly' do
-        expect(callout_failure_message).to eq('The Job Router failed to run this job. No available executors matching requirements: gpu=true')
+        expect(callout_failure_message).to eq(
+          "#{s_('Job|The Job Router failed to run this job.')} No available executors matching requirements: gpu=true"
+        )
       end
     end
 
@@ -62,7 +67,9 @@ RSpec.describe CommitStatusPresenter, feature_category: :continuous_integration 
       end
 
       it 'shows fallback message' do
-        expect(callout_failure_message).to eq('The Job Router failed to run this job. Please contact your administrator.')
+        expect(callout_failure_message).to eq(
+          "#{s_('Job|The Job Router failed to run this job.')} #{s_('Job|Please contact your administrator.')}"
+        )
       end
     end
   end

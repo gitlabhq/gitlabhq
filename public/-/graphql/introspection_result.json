@@ -103979,7 +103979,7 @@
                 },
                 {
                   "name": "policyViolations",
-                  "description": "Filter by security policy violations. Introduced in GitLab 18.7: Status: Experiment.",
+                  "description": "Filter by security policy violations. Cannot be combined with the `malware` argument. Introduced in GitLab 18.7: Status: Experiment.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -174631,7 +174631,7 @@
                 },
                 {
                   "name": "policyViolations",
-                  "description": "Filter by security policy violations. Introduced in GitLab 18.7: Status: Experiment.",
+                  "description": "Filter by security policy violations. Cannot be combined with the `malware` argument. Introduced in GitLab 18.7: Status: Experiment.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -174908,7 +174908,7 @@
                 },
                 {
                   "name": "policyViolations",
-                  "description": "Filter by security policy violations. Introduced in GitLab 18.7: Status: Experiment.",
+                  "description": "Filter by security policy violations. Cannot be combined with the `malware` argument. Introduced in GitLab 18.7: Status: Experiment.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -319034,7 +319034,7 @@
                 },
                 {
                   "name": "policyViolations",
-                  "description": "Filter by security policy violations. Introduced in GitLab 18.7: Status: Experiment.",
+                  "description": "Filter by security policy violations. Cannot be combined with the `malware` argument. Introduced in GitLab 18.7: Status: Experiment.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -426969,7 +426969,7 @@
                 },
                 {
                   "name": "policyViolations",
-                  "description": "Filter by security policy violations. Introduced in GitLab 18.7: Status: Experiment.",
+                  "description": "Filter by security policy violations. Cannot be combined with the `malware` argument. Introduced in GitLab 18.7: Status: Experiment.",
                   "type": {
                     "kind": "LIST",
                     "name": null,

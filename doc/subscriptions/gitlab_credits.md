@@ -68,19 +68,6 @@ Users on the Free tier can purchase a Monthly Commitment Pool of GitLab Credits 
 
 On-demand usage for Free namespaces is capped at $25,000 for each calendar month. Upon reaching this limit, on-demand usage is automatically turned off and resets at the beginning of the following month.
 
-## Temporary evaluation credits
-
-If you have not purchased the Monthly Commitment Pool or accepted the usage billing terms for On-Demand credits,
-you can request a free temporary pool of credits to evaluate credit-based features.
-
-Credits are allocated based on the number of users you request for the evaluation,
-and added to a shared pool for those users.
-Credits are valid for 30 days, and cannot be used after they expire.
-
-To request credits, [contact the Sales team](https://about.gitlab.com/sales/).
-
-If you're on the Free tier and want to try credits, you can start an [Ultimate trial](free_trials.md).
-
 ## Included credits
 
 Included credits are allocated to all users on a Premium or Ultimate tier.
@@ -95,6 +82,19 @@ Their consumption is billed at the namespace level from the Monthly Commitment P
 in the same usage order as for human users.
 
 For more information about included credits, see [GitLab Promotions Terms & Conditions](https://about.gitlab.com/pricing/terms/).
+
+## Temporary evaluation credits
+
+If you have not purchased the Monthly Commitment Pool or accepted the usage billing terms for On-Demand credits,
+you can request a free temporary pool of credits to evaluate credit-based features.
+
+Credits are allocated based on the number of users you request for the evaluation,
+and added to a shared pool for those users.
+Credits are valid for 30 days, and cannot be used after they expire.
+
+To request credits, [contact the Sales team](https://about.gitlab.com/sales/).
+
+If you're on the Free tier and want to try credits, you can start an [Ultimate trial](free_trials.md).
 
 ## Monthly Commitment Pool
 
@@ -138,8 +138,8 @@ and the additional 25 are billed as on-demand usage.
 
 GitLab Credits are consumed in the following order:
 
-1. Temporary evaluation credits are used first.
-1. Included credits are consumed by each user before any shared credits.
+1. Included credits are used by each user first.
+1. Temporary evaluation credits are used after a user's included credits are consumed.
 1. Monthly Commitment Pool of credits is used after all included credits have been consumed.
 1. On-Demand credits are used after all other available credits
    (included credits and Monthly Commitment Pool, if applicable) are depleted and usage billing terms are signed.
@@ -158,8 +158,8 @@ You can accept the usage billing terms when you purchase a Monthly Commitment Po
 After you accept the terms, On-Demand billing stays active for the rest of your subscription and subsequent self-serve renewals,
 and you cannot opt out.
 
-If you haven't accepted usage billing terms, you can't use credit-based features and consume On-Demand credits.
-You can regain access to credit-based features by either purchasing a monthly commitment or accepting the usage billing terms.
+If you don't accept the usage billing terms, you can keep using credit-based features until you consume your
+included credits and any temporary evaluation credits.
 
 ## Buy GitLab Credits
 

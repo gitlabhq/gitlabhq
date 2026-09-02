@@ -1,0 +1,54 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -8439,7 +8439,12 @@
+       args
+     );
+   }
+-  const onceHandler = props[handlerName + `Once`];
++  let onceHandler = props[handlerName + `Once`];
++  /*! Vue 2 compiler `~kebab-event` keys become `onKebab-eventOnce`, which the
++   * camelized lookup above misses. https://gitlab.com/gitlab-org/gitlab/-/issues/623996 */
++  if (!onceHandler && event.includes("-")) {
++    onceHandler = props[toHandlerKey(event) + `Once`];
++  }
+   if (onceHandler) {
+     if (!instance.emitted) {
+       instance.emitted = {};
+diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+@@ -8423,7 +8423,12 @@
+       args
+     );
+   }
+-  const onceHandler = props[handlerName + `Once`];
++  let onceHandler = props[handlerName + `Once`];
++  /*! Vue 2 compiler `~kebab-event` keys become `onKebab-eventOnce`, which the
++   * camelized lookup above misses. https://gitlab.com/gitlab-org/gitlab/-/issues/623996 */
++  if (!onceHandler && event.includes("-")) {
++    onceHandler = props[toHandlerKey(event) + `Once`];
++  }
+   if (onceHandler) {
+     if (!instance.emitted) {
+       instance.emitted = {};
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -8350,7 +8350,12 @@
+       args
+     );
+   }
+-  const onceHandler = props[handlerName + `Once`];
++  let onceHandler = props[handlerName + `Once`];
++  /*! Vue 2 compiler `~kebab-event` keys become `onKebab-eventOnce`, which the
++   * camelized lookup above misses. https://gitlab.com/gitlab-org/gitlab/-/issues/623996 */
++  if (!onceHandler && event.includes("-")) {
++    onceHandler = props[toHandlerKey(event) + `Once`];
++  }
+   if (onceHandler) {
+     if (!instance.emitted) {
+       instance.emitted = {};

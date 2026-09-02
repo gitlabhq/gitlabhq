@@ -31,17 +31,33 @@ describe('formatCount', () => {
 
 describe('formatCountCompact', () => {
   it.each`
-    value      | expected
-    ${0}       | ${'0'}
-    ${42}      | ${'42'}
-    ${999}     | ${'999'}
-    ${1000}    | ${'1K'}
-    ${1500}    | ${'1.5K'}
-    ${1234}    | ${'1.2K'}
-    ${1234567} | ${'1.2M'}
-    ${2500000} | ${'2.5M'}
+    value         | expected
+    ${0}          | ${'0'}
+    ${42}         | ${'42'}
+    ${999}        | ${'999'}
+    ${1000}       | ${'1K'}
+    ${1500}       | ${'1.5K'}
+    ${1234}       | ${'1.2K'}
+    ${1234567}    | ${'1.2M'}
+    ${2500000}    | ${'2.5M'}
+    ${'a string'} | ${'a string'}
   `('formats $value as $expected', ({ value, expected }) => {
     expect(formatCountCompact(value)).toBe(expected);
+  });
+
+  describe('with lowercaseThousands', () => {
+    it.each`
+      value         | expected
+      ${999}        | ${'999'}
+      ${1000}       | ${'1k'}
+      ${85600}      | ${'85.6k'}
+      ${999999}     | ${'1M'}
+      ${2500000}    | ${'2.5M'}
+      ${'a sTrInG'} | ${'a sTrInG'}
+      ${null}       | ${null}
+    `('formats $value as $expected', ({ value, expected }) => {
+      expect(formatCountCompact(value, { lowercaseThousands: true })).toBe(expected);
+    });
   });
 });
 

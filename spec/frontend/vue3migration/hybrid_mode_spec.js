@@ -11,6 +11,7 @@ import OuterParentNoShownListener from './components/outer_parent_no_shown_liste
 import CustomEventOnElement from './components/custom_event_on_element.vue';
 import ParentWithCamelCaseEventHandler from './components/parent_with_camel_case_event_handler.vue';
 import ChildEmittingCamelCaseEvent from './components/child_emitting_camel_case_event.vue';
+import ParentWithOnceListeners from './components/parent_with_once_listeners.vue';
 import RefInVFor from './components/ref_in_v_for.vue';
 import ParentUsingStubWithNamedSlot from './components/slot_stubs/parent_using_stub_with_named_slot.vue';
 import StubWithNamedSlot from './components/slot_stubs/stub_with_named_slot.vue';
@@ -271,16 +272,18 @@ describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
 
   /**
    * When Vue 2 compiler generates code for a component with a camelCase event handler
-   * (e.g., `@customEvent="handler"`), it produces `on: { customEvent: handler }`.
+   * (e.g., `@customEvent="handler"`), Vue 3's `emit` looks up the handler via
+   * `toHandlerKey(event)`, which produces `onCustomEvent`.
    *
-   * The compat layer's `convertLegacyEventKey` (with preserve-custom-event-case patch)
-   * converts this to `on:customEvent` format to preserve the case.
+   * `preserve-custom-event-case.patch` changes `convertLegacyEventKey` to return
+   * `on:${event}` instead, but only when `typeof type === 'string'`. `compatH` resolves
+   * components via `resolveDynamicComponent` before this check runs, so `type` is an
+   * object for components (and a string only for plain elements), meaning components
+   * still register their handler under the `onCustomEvent` key.
    *
-   * However, Vue 3's `emit` function only looks for handlers using `toHandlerKey(event)`
-   * which produces `onCustomEvent`. It doesn't check for the `on:${event}` format.
-   *
-   * Fix (emit-on-colon-event-format.patch): In the `emit` function, add a fallback to
-   * check for `on:${event}` format when the event name contains uppercase letters.
+   * This test guards that restriction: component events must keep using the
+   * `onCustomEvent` key `emit` expects, not the `on:` form. The DOM-element case, where
+   * the patch's `on:` form does apply, is covered by the preceding test.
    */
   it('handles camelCase component events emitted via $emit', async () => {
     const wrapper = mount(ParentWithCamelCaseEventHandler);
@@ -293,6 +296,34 @@ describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
 
     expect(wrapper.find('[data-testid="received"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="received"]').text()).toBe('test-payload');
+  });
+
+  /**
+   * Vue 2 compiler turns `@two-words.once` into the render-data key `~two-words`,
+   * which `convertLegacyEventKey` converts to `onTwo-wordsOnce` (`toHandlerKey`
+   * capitalises the first letter only, it does not camelize).
+   *
+   * Vue 3's `emit` looks the once variant up as `toHandlerKey(camelize(event))`
+   * plus `Once`, which is `onTwoWordsOnce`, so the handler is never found and the
+   * listener silently never fires.
+   *
+   * Fix (once-listener-on-hyphenated-event.patch): in `emit`, fall back to the
+   * non-camelized `toHandlerKey(event) + 'Once'` spelling, mirroring the
+   * multi-spelling lookup already performed for the non-once handler.
+   */
+  it('delivers .once listeners bound to hyphenated component events', async () => {
+    const wrapper = mount(ParentWithOnceListeners);
+    const plainChild = wrapper.findComponent('[data-testid="plain-child"]');
+    const hyphenatedChild = wrapper.findComponent('[data-testid="hyphenated-child"]');
+
+    plainChild.vm.$emit('plain');
+    plainChild.vm.$emit('plain');
+    hyphenatedChild.vm.$emit('two-words');
+    hyphenatedChild.vm.$emit('two-words');
+    await waitForPromises();
+
+    expect(wrapper.find('[data-testid="plain-count"]').text()).toBe('1');
+    expect(wrapper.find('[data-testid="hyphenated-count"]').text()).toBe('1');
   });
 
   /**

@@ -48293,9 +48293,7 @@ CREATE UNIQUE INDEX index_duo_workflows_workflows_on_project_user_idempotency_ke
 
 CREATE INDEX index_duo_workflows_workflows_on_service_account_id ON duo_workflows_workflows USING btree (service_account_id);
 
-CREATE INDEX index_duo_workflows_workflows_on_user_id ON duo_workflows_workflows USING btree (user_id);
-
-CREATE INDEX index_duo_workflows_workflows_on_user_id_created_at ON duo_workflows_workflows USING btree (user_id, created_at DESC) WHERE (workflow_definition <> 'chat'::text);
+CREATE INDEX index_duo_workflows_workflows_on_user_id_and_created_at ON duo_workflows_workflows USING btree (user_id, created_at DESC);
 
 CREATE INDEX index_duo_workflows_workflows_project_environment_created_at ON duo_workflows_workflows USING btree (project_id, environment, created_at DESC) WHERE (workflow_definition <> 'chat'::text);
 

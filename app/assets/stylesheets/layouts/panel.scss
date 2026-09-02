@@ -22,11 +22,16 @@
 
 // Dynamic panel portal
 .paneled-view-portal {
-  @apply empty:gl-hidden;
   @apply gl-z-[252];
   @apply gl-w-full;
   @apply sm:gl-w-8/10;
-  @apply gl-overflow-y-auto;
+
+  // The panel width resizer keeps a node mounted inside the portal, so the
+  // portal is never `:empty`; hide it based on mounted panel content instead.
+  // stylelint-disable-next-line gitlab/no-has -- scoped to the portal's own content
+  &:not(:has(> .vue-portal-target)) {
+    @apply gl-hidden;
+  }
 
   > .vue-portal-target {
     flex: 1;

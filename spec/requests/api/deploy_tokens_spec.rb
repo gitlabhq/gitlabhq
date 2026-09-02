@@ -9,11 +9,16 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
   let_it_be_with_reload(:group) { create(:group) }
 
   let!(:deploy_token) { create(:deploy_token, projects: [project]) }
-  let!(:revoked_deploy_token) { create(:deploy_token, projects: [project], revoked: true) }
-  let!(:expired_deploy_token) { create(:deploy_token, projects: [project], expires_at: '1988-01-11T04:33:04-0600') }
+  let_it_be(:revoked_deploy_token) { create(:deploy_token, projects: [project], revoked: true) }
+  let_it_be(:expired_deploy_token) do
+    create(:deploy_token, projects: [project], expires_at: '1988-01-11T04:33:04-0600')
+  end
+
   let!(:group_deploy_token) { create(:deploy_token, :group, groups: [group]) }
-  let!(:revoked_group_deploy_token) { create(:deploy_token, :group, groups: [group], revoked: true) }
-  let!(:expired_group_deploy_token) { create(:deploy_token, :group, groups: [group], expires_at: '1988-01-11T04:33:04-0600') }
+  let_it_be(:revoked_group_deploy_token) { create(:deploy_token, :group, groups: [group], revoked: true) }
+  let_it_be(:expired_group_deploy_token) do
+    create(:deploy_token, :group, groups: [group], expires_at: '1988-01-11T04:33:04-0600')
+  end
 
   describe 'GET /deploy_tokens' do
     subject do
@@ -99,9 +104,9 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
     end
 
     context 'when authenticated as maintainer' do
-      let!(:other_deploy_token) { create(:deploy_token) }
+      let_it_be(:other_deploy_token) { create(:deploy_token) }
 
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -167,7 +172,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
     end
 
     context 'when authenticated as maintainer' do
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -223,9 +228,9 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
     end
 
     context 'when authenticated as maintainer' do
-      let!(:other_deploy_token) { create(:deploy_token, :group) }
+      let_it_be(:other_deploy_token) { create(:deploy_token, :group) }
 
-      before do
+      before_all do
         group.add_maintainer(user)
       end
 
@@ -288,7 +293,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
     end
 
     context 'when authenticated as maintainer' do
-      before do
+      before_all do
         group.add_maintainer(user)
       end
 
@@ -344,7 +349,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
     end
 
     context 'when authenticated as maintainer' do
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -412,7 +417,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
       end
 
       context "when authenticated as #{authorized_role}" do
-        before do
+        before_all do
           send(entity).send("add_#{authorized_role}", user)
         end
 
@@ -496,7 +501,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
       it_behaves_like 'creating a deploy token', :project, :not_found, :maintainer
 
       context 'when authenticated as maintainer' do
-        before do
+        before_all do
           project.add_maintainer(user)
         end
 
@@ -528,7 +533,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
       end
 
       context 'when authenticated as owner' do
-        before do
+        before_all do
           group.add_owner(user)
         end
 
@@ -573,7 +578,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
     end
 
     context 'when authenticated as owner' do
-      before do
+      before_all do
         group.add_owner(user)
       end
 

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Instrumentation::Openbao, :request_store, feature_category: :secrets_management do
   let(:counter) { instance_double(Prometheus::Client::Counter, increment: nil) }
+  let(:errors_counter) { instance_double(Prometheus::Client::Counter, increment: nil) }
   let(:histogram) { instance_double(Prometheus::Client::Histogram, observe: nil) }
 
   # The metric objects are memoized per process, so drop them or the doubles
@@ -11,13 +12,19 @@ RSpec.describe Gitlab::Instrumentation::Openbao, :request_store, feature_categor
   # Dropping them again on the way out keeps the doubles from leaking into
   # whichever spec file rspec loads next.
   def drop_memoized_metrics
-    %i[@requests_total @request_duration_seconds].each do |ivar|
+    %i[@requests_total @request_duration_seconds @request_errors_total].each do |ivar|
       described_class.remove_instance_variable(ivar) if described_class.instance_variable_defined?(ivar)
     end
   end
 
   before do
-    allow(Gitlab::Metrics).to receive_messages(counter: counter, histogram: histogram)
+    allow(Gitlab::Metrics).to receive(:histogram).and_return(histogram)
+
+    # A double per metric name, so an increment landing on the wrong counter
+    # cannot be absorbed by the other one's permissive stub.
+    allow(Gitlab::Metrics).to receive(:counter) do |name, _description|
+      name == :gitlab_openbao_request_errors_total ? errors_counter : counter
+    end
 
     drop_memoized_metrics
   end
@@ -87,10 +94,53 @@ RSpec.describe Gitlab::Instrumentation::Openbao, :request_store, feature_categor
       described_class.add_call(duration: 0.1, path: 'sys/mounts/kv_mount', method: :post, outcome: :error)
     end
 
-    it 'observes the duration against the operation' do
-      expect(histogram).to receive(:observe).with({ operation: 'sys/mounts' }, 0.42)
+    it 'observes the duration against the operation and outcome' do
+      expect(histogram).to receive(:observe).with({ operation: 'sys/mounts', outcome: 'success' }, 0.42)
 
       described_class.add_call(duration: 0.42, path: 'sys/mounts/kv_mount', method: :post, outcome: :success)
+    end
+
+    # Without `outcome` on the histogram, a failing OpenBao lowers every
+    # percentile: failures return in milliseconds while successes wait on
+    # OpenBao's synchronous audit POSTs back into Rails.
+    it 'separates failed durations from successful ones' do
+      expect(histogram).to receive(:observe).with({ operation: 'sys/mounts', outcome: 'error' }, 0.01)
+
+      described_class.add_call(duration: 0.01, path: 'sys/mounts/kv_mount', method: :post, outcome: :error)
+    end
+
+    context 'with a fault type' do
+      it 'builds the sibling error counter under the documented name' do
+        described_class.add_call(
+          duration: 0.1, path: 'sys/health', method: :get, outcome: :error, error_type: 'timeout'
+        )
+
+        expect(Gitlab::Metrics).to have_received(:counter).with(
+          :gitlab_openbao_request_errors_total, anything
+        )
+      end
+
+      it 'increments the error counter with bounded labels' do
+        expect(counter).to receive(:increment).with(
+          operation: 'sys/mounts', method: 'post', outcome: 'error'
+        )
+        expect(errors_counter).to receive(:increment).with(
+          operation: 'sys/mounts', error_type: 'timeout'
+        )
+
+        described_class.add_call(
+          duration: 0.1, path: 'sys/mounts/kv_mount', method: :post, outcome: :error, error_type: 'timeout'
+        )
+      end
+
+      it 'leaves the error counter alone when no fault type is given' do
+        expect(counter).to receive(:increment).with(
+          operation: 'sys/mounts', method: 'post', outcome: 'error'
+        )
+        expect(errors_counter).not_to receive(:increment)
+
+        described_class.add_call(duration: 0.1, path: 'sys/mounts/kv_mount', method: :post, outcome: :error)
+      end
     end
 
     context 'when the request store is not active' do

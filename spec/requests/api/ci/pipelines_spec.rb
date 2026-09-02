@@ -193,7 +193,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         end
 
         context 'when ref is specified' do
-          before do
+          before_all do
             create(:ci_pipeline, project: project)
           end
 
@@ -292,7 +292,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         context 'when order_by and sort are specified' do
           context 'when order_by user_id' do
-            before do
+            before_all do
               create_list(:user, 3).each do |some_user|
                 create(:ci_pipeline, project: project, user: some_user)
               end
@@ -330,7 +330,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         end
 
         context 'when a source is specified' do
-          before do
+          before_all do
             create(:ci_pipeline, project: project, source: :push)
             create(:ci_pipeline, project: project, source: :web)
             create(:ci_pipeline, project: project, source: :api)
@@ -605,9 +605,9 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
   shared_examples 'listing trigger jobs by pipeline' do |route_suffix|
     let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline, user: pipeline.user) }
 
-    let(:downstream_pipeline) { create(:ci_pipeline) }
+    let_it_be(:downstream_pipeline) { create(:ci_pipeline) }
 
-    let!(:pipeline_source) do
+    let_it_be(:pipeline_source) do
       create(
         :ci_sources_pipeline,
         source_pipeline: pipeline,
@@ -1187,9 +1187,9 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
   describe 'GET /projects/:id/pipelines/latest' do
     context 'authorized user' do
-      let(:second_branch) { project.repository.branches[2] }
+      let_it_be(:second_branch) { project.repository.branches[2] }
 
-      let!(:second_pipeline) do
+      let_it_be(:second_pipeline) do
         create(
           :ci_empty_pipeline,
           project: project,
@@ -1200,7 +1200,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         )
       end
 
-      before do
+      before_all do
         create(
           :ci_empty_pipeline,
           project: project,
@@ -1292,8 +1292,8 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'user is a developer' do
-      let(:pipeline_owner_user) { create(:user) }
-      let(:pipeline) { create(:ci_empty_pipeline, project: project, user: pipeline_owner_user) }
+      let_it_be(:pipeline_owner_user) { create(:user) }
+      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, user: pipeline_owner_user) }
 
       before do
         project.add_developer(api_user)
@@ -1437,7 +1437,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
   describe 'PUT /projects/:id/pipelines/:pipeline_id/name' do
     let_it_be(:pipeline_creator) { create(:user) }
-    let(:pipeline) { create(:ci_pipeline, project: project, user: pipeline_creator) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, user: pipeline_creator) }
     let(:name) { 'A new pipeline name' }
 
     subject(:execute) do
@@ -1469,9 +1469,9 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'authorized user' do
-      let(:current_user) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
 
-      before do
+      before_all do
         project.add_developer(current_user)
       end
 
@@ -1492,7 +1492,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'unauthorized user' do
-      let(:current_user) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
 
       context 'when user is not a member' do
         it 'does not rename pipeline', :aggregate_failures do
@@ -1640,7 +1640,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     context 'authorized user' do
       subject { get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report", user) }
 
-      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
       context 'when pipeline does not have a test report' do
         it 'returns an empty test report', :aggregate_failures do
@@ -1712,14 +1712,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     context 'when the pipeline has maintainer-only test artifacts' do
-      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
       let_it_be(:guest) { create(:user, guest_of: project) }
 
-      let!(:public_build) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline) }
-      let!(:maintainer_build) { create(:ci_build, :success, name: 'java', pipeline: pipeline) }
+      let_it_be(:public_build) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline) }
+      let_it_be(:maintainer_build) { create(:ci_build, :success, name: 'java', pipeline: pipeline) }
 
-      before do
+      before_all do
         create(:ci_job_artifact, :junit, job: public_build)
         # Reports-only job: maintainer-only JUnit report with no archive, so the
         # report's own accessibility must gate access (not the build/archive).
@@ -1770,7 +1770,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     context 'authorized user' do
       let(:current_user) { user }
 
-      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
       context 'when pipeline does not have a test report summary' do
         it 'returns an empty test report summary', :aggregate_failures do

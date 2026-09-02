@@ -103,8 +103,8 @@ RSpec.describe "#{ArtifactRegistryIndexSpec::METHOD} /api/v1/:slug/#{ArtifactReg
     # rubocop:disable Gitlab/Json -- pact specs run outside Rails; Gitlab::Json is unavailable
     body = JSON.parse(response.body)
     # rubocop:enable Gitlab/Json
-    expect(body).to be_an(Array)
-    expect(body.first).to include(
+    expect(body['repositories']).to be_an(Array)
+    expect(body['repositories'].first).to include(
       'id', 'name', 'format', 'kind', 'visibility',
       'description', 'artifacts_count', 'downloads_count',
       'size_bytes', 'created_at'

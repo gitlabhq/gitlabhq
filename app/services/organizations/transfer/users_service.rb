@@ -61,7 +61,8 @@ module Organizations
             "Project", # migrated by a dedicated service
             "ProjectSnippet",
             "Snippet",
-            "User" # migrated by a dedicated service
+            "User", # migrated by a dedicated service
+            "Vulnerabilities::Export" # scoped to group/project; transferred by SecurityExportsService
           ]
         end
       end

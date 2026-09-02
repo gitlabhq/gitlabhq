@@ -163,15 +163,15 @@ RSpec.describe API::GroupServiceAccounts, :with_current_organization, :aggregate
 
     context 'when the user is an admin', :enable_admin_mode do
       let(:current_user) { admin }
-      let!(:service_account_a) do
+      let_it_be(:service_account_a) do
         create(:user, :service_account, username: "auser_#{SecureRandom.hex(2)}", provisioned_by_group: group)
       end
 
-      let!(:service_account_b) do
+      let_it_be(:service_account_b) do
         create(:user, :service_account, username: "buser_#{SecureRandom.hex(2)}", provisioned_by_group: group)
       end
 
-      let!(:regular_user) { create(:user, provisioned_by_group: group) }
+      let_it_be(:regular_user) { create(:user, provisioned_by_group: group) }
 
       it 'returns the list of service accounts in the group' do
         perform_request
@@ -233,7 +233,7 @@ RSpec.describe API::GroupServiceAccounts, :with_current_organization, :aggregate
 
   describe "GET /groups/:id/service_accounts/:user_id" do
     let(:group_id) { group.id }
-    let!(:service_account_user) { create(:user, :service_account, provisioned_by_group: group) }
+    let_it_be(:service_account_user) { create(:user, :service_account, provisioned_by_group: group) }
     let(:path) { "/groups/#{group_id}/service_accounts/#{service_account_user.id}" }
 
     subject(:perform_request) { get api(path, current_user, admin_mode: true) }
@@ -263,7 +263,11 @@ RSpec.describe API::GroupServiceAccounts, :with_current_organization, :aggregate
       end
 
       context 'when the service account belongs to another group' do
-        let!(:service_account_user) { create(:user, :service_account, provisioned_by_group: create(:group)) }
+        let_it_be(:other_group_service_account) do
+          create(:user, :service_account, provisioned_by_group: create(:group))
+        end
+
+        let(:path) { "/groups/#{group_id}/service_accounts/#{other_group_service_account.id}" }
 
         it 'returns 404' do
           perform_request
@@ -323,7 +327,7 @@ RSpec.describe API::GroupServiceAccounts, :with_current_organization, :aggregate
 
   describe "PATCH /groups/:id/service_accounts/:user_id" do
     let(:group_id) { group.id }
-    let!(:service_account_user) { create(:user, :service_account, provisioned_by_group: group) }
+    let_it_be(:service_account_user) { create(:user, :service_account, provisioned_by_group: group) }
     let(:params) { { name: 'Updated Name', username: "updated_#{SecureRandom.hex(4)}" } }
     let(:path) { "/groups/#{group_id}/service_accounts/#{service_account_user.id}" }
 
@@ -508,7 +512,7 @@ RSpec.describe API::GroupServiceAccounts, :with_current_organization, :aggregate
     end
 
     describe 'DELETE /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id' do
-      let!(:token) { create(:personal_access_token, user: service_account_user) }
+      let_it_be_with_reload(:token) { create(:personal_access_token, user: service_account_user) }
 
       it 'revokes the specified token' do
         delete api("#{base_path}/#{token.id}", admin, admin_mode: true)
@@ -525,7 +529,7 @@ RSpec.describe API::GroupServiceAccounts, :with_current_organization, :aggregate
     end
 
     describe 'POST /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate' do
-      let!(:token) { create(:personal_access_token, user: service_account_user) }
+      let_it_be(:token) { create(:personal_access_token, user: service_account_user) }
 
       it 'rotates the specified token' do
         post api("#{base_path}/#{token.id}/rotate", admin, admin_mode: true)

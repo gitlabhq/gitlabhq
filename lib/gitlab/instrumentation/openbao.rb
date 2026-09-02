@@ -26,7 +26,7 @@ module Gitlab
           call_duration.round(::Gitlab::InstrumentationHelper::DURATION_PRECISION)
         end
 
-        def add_call(duration:, path:, method:, outcome:)
+        def add_call(duration:, path:, method:, outcome:, error_type: nil)
           # Outside a request (cron, rake) the store is a null object that
           # drops writes, so reading a counter back returns nil. The Prometheus
           # metrics below still work there and are the point of this method.
@@ -38,7 +38,11 @@ module Gitlab
           operation = operation_for(path)
 
           requests_total.increment(operation: operation, method: method.to_s, outcome: outcome.to_s)
-          request_duration_seconds.observe({ operation: operation }, duration)
+          request_duration_seconds.observe({ operation: operation, outcome: outcome.to_s }, duration)
+
+          return unless error_type
+
+          request_errors_total.increment(operation: operation, error_type: error_type.to_s)
         end
 
         # Matches the leftmost structural segment and stops there. A secret may
@@ -98,6 +102,17 @@ module Gitlab
               'OpenBao HTTP request duration measured from Rails',
               {},
               DURATION_BUCKETS
+            )
+        end
+
+        # A sibling counter rather than a third value on `outcome`: splitting
+        # `outcome` would leave `outcome="error"` matching no series and silence
+        # anything already alerting on it.
+        def request_errors_total
+          @request_errors_total ||=
+            ::Gitlab::Metrics.counter(
+              :gitlab_openbao_request_errors_total,
+              'OpenBao HTTP request failures made by Rails, by fault type'
             )
         end
       end

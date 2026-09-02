@@ -38,6 +38,7 @@ import { initCopyCodeButton } from './behaviors/copy_code';
 import initGitlabVersionCheck from './gitlab_version_check';
 import { initExpireSessionModal } from './authentication/sessions';
 import initPanelHeightCalc from './panel_height_calc';
+import initPanelResizers from './panel_resizers';
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';
 
@@ -132,6 +133,7 @@ function deferredInitialisation() {
   initGitlabVersionCheck();
   initExpireSessionModal();
   initPanelHeightCalc();
+  initPanelResizers();
 
   // The right sidebar's initialisation is delayed slightly to ensure it's in the proper state
   // depending on the page's content's width. This should probably be done differently, but this is
