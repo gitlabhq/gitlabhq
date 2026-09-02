@@ -22,3 +22,6 @@ export const FORM_STEPPER_TAB_COLOR = {
 
 export const FORM_STEPPER_ACTIVE_TAB_BORDER =
   'gl-border-b-2 gl-border-b-[color:var(--gl-tab-selected-indicator-color-default)]';
+
+export const OBJECT_STORAGE_VARIANT_EXPORT = 'export';
+export const OBJECT_STORAGE_VARIANT_IMPORT = 'import';

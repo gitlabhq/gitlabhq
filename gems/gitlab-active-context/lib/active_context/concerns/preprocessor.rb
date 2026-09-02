@@ -61,7 +61,7 @@ module ActiveContext
         rescue *skip_error_types => e
           ::ActiveContext::Logger.skippable_exception(
             e,
-            class_name: self.class.name,
+            class_name: name,
             queue_name: queue_name,
             preprocessor: preprocessor,
             reference: ref.serialize,
@@ -70,7 +70,7 @@ module ActiveContext
         rescue *retry_error_types => e
           ::ActiveContext::Logger.retryable_exception(
             e,
-            class_name: self.class.name,
+            class_name: name,
             queue_name: queue_name,
             preprocessor: preprocessor,
             reference: ref.serialize,
@@ -106,7 +106,7 @@ module ActiveContext
       def log_batch_failure(exception, refs, queue_name:, preprocessor:)
         ::ActiveContext::Logger.retryable_exception(
           exception,
-          class_name: self.class.name,
+          class_name: name,
           queue_name: queue_name,
           preprocessor: preprocessor,
           refs_count: refs.count,

@@ -546,6 +546,29 @@ Example:
 Create a branch named feature/x from main in project gitlab-org/gitlab
 ```
 
+## `list_branches`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605849) in GitLab 19.4.
+
+{{< /history >}}
+
+Lists the branches of a GitLab project, optionally filtered by name.
+
+| Parameter  | Type    | Required | Description |
+|------------|---------|----------|-------------|
+| `id`       | string  | Yes      | ID or URL-encoded path of the project. |
+| `search`   | string  | No       | Filters branches by name. |
+| `page`     | integer | No       | Current page number. Default is `1`. |
+| `per_page` | integer | No       | Number of items per page. Default is `20`. |
+
+Example:
+
+```plaintext
+List branches in gitlab-org/gitlab whose names contain "release"
+```
+
 ## `get_repository_file`
 
 {{< history >}}

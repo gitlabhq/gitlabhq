@@ -4,12 +4,14 @@ require 'mime/types'
 
 module API
   class Branches < ::API::Base
+    include ::API::Concerns::McpAccess
     include PaginationParams
     include APIGuard
 
     BRANCH_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(branch: ::API::NO_SLASH_URL_PART_REGEX)
 
     allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? || request.post? }
+    allow_mcp_access_read
 
     after_validation { content_type "application/json" }
 
@@ -68,6 +70,10 @@ module API
       route_setting :authorization, job_token_policies: :read_repositories,
         allow_public_access_for_enabled_project_features: :repository,
         permissions: :read_branch, boundary_type: :project
+      route_setting :mcp,
+        tool_name: :list_branches,
+        params: [:id, :search, :page, :per_page],
+        resource_name: 'project'
       get ':id/repository/branches', urgency: :low do
         cache_action([user_project, :branches, current_user, declared_params], expires_in: 30.seconds) do
           repository = user_project.repository

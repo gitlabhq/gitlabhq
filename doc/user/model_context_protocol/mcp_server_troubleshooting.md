@@ -21,7 +21,7 @@ When working with the GitLab MCP server, you might encounter the following issue
 You might get this error when you start the GitLab MCP server, or when
 `POST /api/v4/mcp` returns `404 Not Found` after the OAuth flow completes.
 
-This issue occurs when you have not met the
+To resolve this issue, make sure you meet the
 [prerequisites for the GitLab MCP server](mcp_server.md#prerequisites).
 
 To find the cause, check the [`mcp.log`](../../administration/logs/_index.md#mcplog) file

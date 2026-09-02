@@ -40,6 +40,9 @@ If you are considering switching from OpenSSH to `gitlab-sshd`, consider:
   [the discussion](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/766#note_1906707753) for details.
 - Algorithm configuration: `gitlab-sshd` does not read `/etc/ssh/sshd_config`.
   For more information, see [configure SSH algorithms](#configure-ssh-algorithms).
+- Git protocol v2: `gitlab-sshd` accepts the `GIT_PROTOCOL` environment variable without
+  additional configuration. The `AcceptEnv` setting described in
+  [configuring Git Protocol v2](../git_protocol.md) applies to OpenSSH only.
 
 The capabilities of GitLab Shell extend beyond Git operations and can be used for various
 SSH-based interactions with GitLab.

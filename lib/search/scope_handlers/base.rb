@@ -34,14 +34,14 @@ module Search
       end
 
       def count
-        @count ||= [total_count, COUNT_LIMIT].min
+        @count ||= [total_count, count_limit].min
       end
 
       def formatted_count
-        if count >= COUNT_LIMIT
-          COUNT_LIMIT_MESSAGE
+        if count >= count_limit
+          count_limit_message
         else
-          count.to_s
+          format_count(count)
         end
       end
 
@@ -61,6 +61,18 @@ module Search
 
       def total_count
         raise NotImplementedError, "#{self.class.name} must implement #total_count"
+      end
+
+      def count_limit
+        COUNT_LIMIT
+      end
+
+      def count_limit_message
+        COUNT_LIMIT_MESSAGE
+      end
+
+      def format_count(value)
+        value.to_s
       end
     end
   end

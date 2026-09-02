@@ -11,17 +11,17 @@ import { captureException } from '~/sentry/sentry_browser_wrapper';
 import offlineTransferSourceOwnedGroupsQuery from '~/import/offline_transfer/graphql/queries/offline_transfer_source_owned_groups.query.graphql';
 import FormStepper from '~/import/offline_transfer/components/form_stepper.vue';
 import SelectGroupsTab from '~/import/offline_transfer/export/select_groups_tab.vue';
-import ExportConfigTab from '~/import/offline_transfer/export/export_config_tab.vue';
-import { OFFLINE_EXPORT_TAB_HEADINGS } from '../constants';
+import ObjectStorageFields from '~/import/offline_transfer/components/object_storage_fields.vue';
+import { OFFLINE_EXPORT_TAB_HEADINGS, OBJECT_STORAGE_VARIANT_EXPORT } from '../constants';
+import { isStorageConfigValid } from '../storage_config_validation';
 import ReviewExportTab from './review_export_tab.vue';
-import { isStorageConfigValid } from './storage_config_validation';
 
 export default {
   name: 'OfflineTransferExportApp',
   components: {
     FormStepper,
     SelectGroupsTab,
-    ExportConfigTab,
+    ObjectStorageFields,
     ReviewExportTab,
   },
   data() {
@@ -243,6 +243,7 @@ export default {
     },
   },
   STEPS: OFFLINE_EXPORT_TAB_HEADINGS,
+  OBJECT_STORAGE_VARIANT_EXPORT,
 };
 </script>
 
@@ -299,7 +300,12 @@ export default {
 
       <template #step-1>
         <h2 class="gl-heading-3">{{ s__('OfflineTransferExport|Enter AWS credentials') }}</h2>
-        <export-config-tab v-model="storageConfig" :validation-attempted="showStorageConfigError" />
+        <object-storage-fields
+          v-model="storageConfig"
+          class="gl-max-w-xl"
+          :variant="$options.OBJECT_STORAGE_VARIANT_EXPORT"
+          :validation-attempted="showStorageConfigError"
+        />
       </template>
 
       <template #step-2>

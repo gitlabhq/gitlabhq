@@ -4,13 +4,15 @@ require 'spec_helper'
 
 RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
   let(:test_ref_class) do
-    Class.new do
+    klass = Class.new do
       extend ActiveContext::Concerns::Preprocessor
 
       def self.preprocessors
         @preprocessors ||= []
       end
     end
+
+    stub_const('TestPreprocessorReferenceClass', klass)
   end
 
   describe '.add_preprocessor' do
@@ -243,7 +245,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
 
         expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
           instance_of(StandardError),
-          class_name: 'Class',
+          class_name: 'TestPreprocessorReferenceClass',
           queue_name: nil,
           preprocessor: nil,
           refs_count: 2,
@@ -259,7 +261,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
 
           expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
             instance_of(StandardError),
-            class_name: 'Class',
+            class_name: 'TestPreprocessorReferenceClass',
             queue_name: 'test_queue',
             preprocessor: 'test_preprocessor',
             refs_count: 2,
@@ -278,7 +280,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
 
           expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
             instance_of(StandardError),
-            class_name: 'Class',
+            class_name: 'TestPreprocessorReferenceClass',
             queue_name: nil,
             preprocessor: nil,
             refs_count: 12,
@@ -348,7 +350,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
 
         expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
           instance_of(StandardError),
-          class_name: 'Class',
+          class_name: 'TestPreprocessorReferenceClass',
           queue_name: nil,
           preprocessor: nil,
           reference: 'ref:2',
@@ -357,7 +359,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
 
         expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
           instance_of(StandardError),
-          class_name: 'Class',
+          class_name: 'TestPreprocessorReferenceClass',
           queue_name: nil,
           preprocessor: nil,
           reference: 'ref:3',
@@ -379,7 +381,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
 
           expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
             instance_of(StandardError),
-            class_name: 'Class',
+            class_name: 'TestPreprocessorReferenceClass',
             queue_name: 'test_queue',
             preprocessor: 'test_preprocessor',
             reference: 'ref:1',
@@ -402,7 +404,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
 
         expect(ActiveContext::Logger).to have_received(:skippable_exception).with(
           instance_of(skip_error),
-          class_name: 'Class',
+          class_name: 'TestPreprocessorReferenceClass',
           queue_name: nil,
           preprocessor: nil,
           reference: 'ref:1',
@@ -425,7 +427,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
 
           expect(ActiveContext::Logger).to have_received(:skippable_exception).with(
             instance_of(skip_error),
-            class_name: 'Class',
+            class_name: 'TestPreprocessorReferenceClass',
             queue_name: 'test_queue',
             preprocessor: 'test_preprocessor',
             reference: 'ref:1',

@@ -120,7 +120,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
     it 'sets the refs as failed and logs the error' do
       expect(ActiveContext::Logger).to receive(:retryable_exception).with(
         instance_of(ArgumentError),
-        class_name: 'Class',
+        class_name: mock_reference_class.name,
         queue_name: nil,
         preprocessor: 'embeddings',
         refs_count: 2,
@@ -128,7 +128,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
       ).ordered
       expect(ActiveContext::Logger).to receive(:retryable_exception).with(
         instance_of(ArgumentError),
-        class_name: 'Class',
+        class_name: mock_reference_class.name,
         queue_name: nil,
         preprocessor: 'embeddings',
         refs_count: 1,
@@ -149,7 +149,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
       it 'does not log the queue name if the reference class does not pass it' do
         expect(ActiveContext::Logger).to receive(:retryable_exception).with(
           instance_of(ArgumentError),
-          class_name: 'Class',
+          class_name: mock_reference_class.name,
           queue_name: nil,
           preprocessor: 'embeddings',
           refs_count: 2,
@@ -157,7 +157,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
         ).ordered
         expect(ActiveContext::Logger).to receive(:retryable_exception).with(
           instance_of(ArgumentError),
-          class_name: 'Class',
+          class_name: mock_reference_class.name,
           queue_name: nil,
           preprocessor: 'embeddings',
           refs_count: 1,
@@ -181,7 +181,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
         it 'logs the queue_name' do
           expect(ActiveContext::Logger).to receive(:retryable_exception).with(
             instance_of(ArgumentError),
-            class_name: 'Class',
+            class_name: mock_reference_class.name,
             queue_name: 'test_queue',
             preprocessor: 'embeddings',
             refs_count: 2,
@@ -189,7 +189,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
           )
           expect(ActiveContext::Logger).to receive(:retryable_exception).with(
             instance_of(ArgumentError),
-            class_name: 'Class',
+            class_name: mock_reference_class.name,
             queue_name: 'test_queue',
             preprocessor: 'embeddings',
             refs_count: 1,
@@ -211,7 +211,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
       it 'sets the affected refs as failed while the other refs are successful' do
         expect(ActiveContext::Logger).to receive(:retryable_exception).with(
           instance_of(ArgumentError),
-          class_name: 'Class',
+          class_name: mock_reference_class.name,
           queue_name: nil,
           preprocessor: 'embeddings',
           refs_count: 1,

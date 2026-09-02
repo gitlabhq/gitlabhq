@@ -15,7 +15,7 @@ import {
 import OfflineTransferExportApp from '~/import/offline_transfer/export/app.vue';
 import FormStepper from '~/import/offline_transfer/components/form_stepper.vue';
 import SelectGroupsTab from '~/import/offline_transfer/export/select_groups_tab.vue';
-import ExportConfigTab from '~/import/offline_transfer/export/export_config_tab.vue';
+import ObjectStorageFields from '~/import/offline_transfer/components/object_storage_fields.vue';
 import ReviewExportTab from '~/import/offline_transfer/export/review_export_tab.vue';
 import offlineTransferSourceOwnedGroupsQuery from '~/import/offline_transfer/graphql/queries/offline_transfer_source_owned_groups.query.graphql';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
@@ -45,7 +45,7 @@ describe('OfflineTransferExportApp', () => {
 
   const findFormStepper = () => wrapper.findComponent(FormStepper);
   const findSelectGroupsTab = () => wrapper.findComponent(SelectGroupsTab);
-  const findExportConfigTab = () => wrapper.findComponent(ExportConfigTab);
+  const findObjectStorageFields = () => wrapper.findComponent(ObjectStorageFields);
   const findReviewExportTab = () => wrapper.findComponent(ReviewExportTab);
 
   const queryError = new Error('query failed');
@@ -122,10 +122,10 @@ describe('OfflineTransferExportApp', () => {
 
     it('when `stepped-back` emitted clears previous step validation error', async () => {
       await findFormStepper().vm.$emit('validation-failed', 1);
-      expect(findExportConfigTab().props('validationAttempted')).toBe(true);
+      expect(findObjectStorageFields().props('validationAttempted')).toBe(true);
 
       await findFormStepper().vm.$emit('stepped-back', { previousTabIndex: 1 });
-      expect(findExportConfigTab().props('validationAttempted')).toBe(false);
+      expect(findObjectStorageFields().props('validationAttempted')).toBe(false);
     });
   });
 
@@ -479,7 +479,7 @@ describe('OfflineTransferExportApp', () => {
       await waitForPromises();
 
       findSelectGroupsTab().vm.$emit('toggle', mockGroups[0]);
-      findExportConfigTab().vm.$emit('input', storageConfig);
+      findObjectStorageFields().vm.$emit('input', storageConfig);
     });
 
     afterEach(() => {

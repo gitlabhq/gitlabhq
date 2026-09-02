@@ -744,6 +744,133 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
+  describe '#list_branches' do
+    let(:tool_params) do
+      { name: 'list_branches', arguments: { id: project.full_path } }
+    end
+
+    shared_examples 'listing the project branches' do
+      it 'returns the project branches', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+
+        # The default page size is smaller than the fixture's branch count, so assert
+        # the page belongs to this repository rather than naming a specific branch.
+        items = json_response['result']['structuredContent']['items']
+        expect(items).to be_present
+        expect(project.repository.branch_names).to include(*items.pluck('name'))
+        expect(items.first.keys).to include('name', 'default', 'protected', 'commit')
+      end
+    end
+
+    context 'when branch_list_keyset_pagination is enabled' do
+      before do
+        stub_feature_flags(branch_list_keyset_pagination: project)
+      end
+
+      it_behaves_like 'listing the project branches'
+    end
+
+    context 'when branch_list_keyset_pagination is disabled' do
+      before do
+        stub_feature_flags(branch_list_keyset_pagination: false)
+      end
+
+      it_behaves_like 'listing the project branches'
+    end
+
+    context 'when filtering by name' do
+      let(:tool_params) do
+        { name: 'list_branches', arguments: { id: project.full_path, search: project.default_branch } }
+      end
+
+      it 'returns only branches matching the search term' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['items'].pluck('name'))
+          .to contain_exactly(project.default_branch)
+      end
+    end
+
+    context 'when the search term matches nothing' do
+      let(:tool_params) do
+        { name: 'list_branches', arguments: { id: project.full_path, search: 'does-not-exist' } }
+      end
+
+      it 'returns an empty list' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['items']).to be_empty
+      end
+    end
+
+    context 'with pagination' do
+      let(:tool_params) do
+        { name: 'list_branches', arguments: { id: project.full_path, per_page: 2, page: 1 } }
+      end
+
+      # Page 1 is served by the Gitaly offset-header path while later pages fall back to
+      # Kaminari, so the flag is pinned off to keep both pages on the same ordering.
+      before do
+        stub_feature_flags(branch_list_keyset_pagination: false)
+      end
+
+      it 'returns the requested page size' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['items'].size).to eq(2)
+      end
+
+      it 'returns a different page of branches for page 2', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+        first_page = json_response['result']['structuredContent']['items'].pluck('name')
+
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: params.deep_merge(params: { arguments: { page: 2 } })
+        second_page = json_response['result']['structuredContent']['items'].pluck('name')
+
+        expect(first_page.size).to eq(2)
+        expect(second_page.size).to eq(2)
+        expect(first_page & second_page).to be_empty
+      end
+
+      context 'when per_page exceeds the API maximum' do
+        let(:tool_params) do
+          { name: 'list_branches', arguments: { id: project.full_path, per_page: 500 } }
+        end
+
+        # The tool advertises no per_page ceiling of its own; the endpoint clamps to
+        # Kaminari's max_per_page rather than rejecting the request.
+        it 'clamps the page size instead of erroring', :aggregate_failures do
+          post api('/mcp', user, oauth_access_token: access_token), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_falsey
+          expect(json_response['result']['structuredContent']['items'].size)
+            .to be_between(1, Kaminari.config.max_per_page)
+        end
+      end
+    end
+
+    context 'when caller does not have permission to read the repository' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+
+      it 'returns a non-leaky not found error', :aggregate_failures do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('404 Project Not Found')
+      end
+    end
+  end
+
   describe '#list_pipelines' do
     let_it_be(:other_project) { create(:project, maintainers: [user]) }
 

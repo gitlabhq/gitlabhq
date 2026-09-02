@@ -39,6 +39,13 @@ RSpec.describe User, feature_category: :system_access do
       end
     end
 
+    describe '.without_bots_except_service_accounts' do
+      it 'includes everyone except bots that are not service accounts' do
+        expect(described_class.without_bots_except_service_accounts)
+          .to match_array(everyone - (bots - [service_account]))
+      end
+    end
+
     describe '.without_humans' do
       it 'includes everyone except humans' do
         expect(described_class.without_humans).to match_array(everyone - [human])

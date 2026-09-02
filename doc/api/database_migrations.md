@@ -33,8 +33,9 @@ POST /api/v4/admin/migrations/:version/mark
 | `database`      | string         | no       | The database name for which the migration is skipped. Defaults to `main`.        |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-   --url "https://gitlab.example.com/api/v4/admin/migrations/:version/mark"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/admin/migrations/:version/mark"
 ```
 
 ## List pending migrations

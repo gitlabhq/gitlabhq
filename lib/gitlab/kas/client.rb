@@ -36,6 +36,18 @@ module Gitlab
       # Length Relay's StartWorkflowRequest.token_binding rule demands, exactly.
       WORKFLOW_TOKEN_BINDING_BYTES = 64
 
+      # Only Unavailable is retried in-process: it is usually an instant connection blip, and the
+      # AutoFlow RPCs' idempotency keys make re-sends safe. Slower failures like DeadlineExceeded
+      # are left to the callers' Sidekiq backoff rather than pinning the thread for another timeout.
+      UNARY_GRPC_RETRIES = 3
+      UNARY_GRPC_RETRIABLE_ERRORS = [GRPC::Unavailable].freeze
+
+      # Statuses that no retry can fix, at any layer. Shared with classify_grpc_error and callers
+      # that must decide whether re-enqueueing a failed RPC is worthwhile.
+      PERMANENT_GRPC_ERRORS = [
+        GRPC::InvalidArgument, GRPC::NotFound, GRPC::PermissionDenied, GRPC::FailedPrecondition
+      ].freeze
+
       ConfigurationError = Class.new(StandardError)
 
       # Mints a token binding for {start_workflow}. Kept here so every caller binds at the
@@ -331,6 +343,9 @@ module Gitlab
       #   influences. Use {generate_workflow_token_binding}.
       # @return [Gitlab::Agent::AutoFlow::Rpc::StartWorkflowResponse] carries workflow_key and
       #   workflow_token; the latter is what the other AutoFlow RPCs require.
+      #
+      # Transient failures (UNARY_GRPC_RETRIABLE_ERRORS) retry in-process with the same request
+      # before raising.
       def start_workflow(idempotency_key:, workflow_definition:, namespace_id:, token_binding:, args: [], kwargs: {})
         request = Gitlab::Agent::AutoFlow::Rpc::StartWorkflowRequest.new(
           idempotency_key: idempotency_key,
@@ -341,7 +356,7 @@ module Gitlab
           kwargs: Autoflow::ValueConverter.kwargs(kwargs)
         )
 
-        stub_for(:autoflow).start_workflow(request, metadata: metadata)
+        retry_unary_grpc { stub_for(:autoflow).start_workflow(request, metadata: metadata) }
       end
 
       # Sends a message to a running AutoFlow workflow's channel on GitLab Relay.
@@ -358,6 +373,9 @@ module Gitlab
       # @raise [GRPC::InvalidArgument] if the token is malformed, expired, or the wrong kind.
       # @raise [GRPC::NotFound] if the workflow no longer exists.
       # @return [Gitlab::Agent::AutoFlow::Rpc::SendToWorkflowChannelResponse]
+      #
+      # Transient failures are retried in-process automatically using the same idempotency key;
+      # the @raise errors above are permanent and raise immediately without retry.
       def send_to_workflow_channel(idempotency_key:, channel_token:, value:)
         request = Gitlab::Agent::AutoFlow::Rpc::SendToWorkflowChannelRequest.new(
           idempotency_key: idempotency_key,
@@ -365,7 +383,7 @@ module Gitlab
           value: Autoflow::ValueConverter.to_value(value)
         )
 
-        stub_for(:autoflow).send_to_workflow_channel(request, metadata: metadata)
+        retry_unary_grpc { stub_for(:autoflow).send_to_workflow_channel(request, metadata: metadata) }
       end
 
       private
@@ -437,6 +455,13 @@ module Gitlab
         Gitlab::Kas::ExponentialBackoff.new(min: 1, max: 30, jitter: true)
       end
 
+      # Only for unary RPCs whose request carries an idempotency key, so re-sending is safe.
+      # Re-raises the last error once retries are exhausted. Backoff intervals deliberately come
+      # from Retriable's defaults (0.5s base), which the test suite zeroes globally.
+      def retry_unary_grpc(&block)
+        Retriable.retriable(on: UNARY_GRPC_RETRIABLE_ERRORS, tries: UNARY_GRPC_RETRIES, &block)
+      end
+
       # Absolute deadline as seconds-from-epoch. gRPC rejects an `ActiveSupport::TimeWithZone` (from
       # `Time.current`) with "bad input: (time)->c_timeval"; CLOCK_REALTIME also matches the clock the
       # gRPC c-core reads and is immune to Timecop in specs.
@@ -457,8 +482,7 @@ module Gitlab
           :retry
         when GRPC::Cancelled
           :stop
-        when GRPC::InvalidArgument, GRPC::NotFound, GRPC::PermissionDenied,
-          GRPC::FailedPrecondition
+        when *PERMANENT_GRPC_ERRORS
           :raise
         else
           :retry # default: be optimistic, surface in logs

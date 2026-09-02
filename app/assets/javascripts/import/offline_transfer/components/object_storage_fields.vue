@@ -1,10 +1,12 @@
 <script>
 import { GlFormGroup, GlFormInput, GlFormCheckbox } from '@gitlab/ui';
 import PasswordInput from '~/authentication/password/components/password_input.vue';
-import { getStorageConfigErrors } from './storage_config_validation';
+import { s__ } from '~/locale';
+import { OBJECT_STORAGE_VARIANT_EXPORT, OBJECT_STORAGE_VARIANT_IMPORT } from '../constants';
+import { getStorageConfigErrors } from '../storage_config_validation';
 
 export default {
-  name: 'ExportConfigTab',
+  name: 'ObjectStorageFields',
   components: {
     GlFormGroup,
     GlFormInput,
@@ -12,6 +14,12 @@ export default {
     PasswordInput,
   },
   props: {
+    variant: {
+      type: String,
+      required: true,
+      validator: (value) =>
+        [OBJECT_STORAGE_VARIANT_EXPORT, OBJECT_STORAGE_VARIANT_IMPORT].includes(value),
+    },
     value: {
       type: Object,
       required: false,
@@ -34,6 +42,12 @@ export default {
     errors() {
       return getStorageConfigErrors(this.value);
     },
+    bucketDescription() {
+      return this.$options.bucketDescriptions[this.variant];
+    },
+    secretAccessKeyName() {
+      return `offline_${this.variant}_secret_access_key`;
+    },
   },
   methods: {
     updateField(field, fieldValue) {
@@ -42,6 +56,17 @@ export default {
     fieldState(field) {
       return this.validationAttempted && this.errors[field] ? false : null;
     },
+    setFieldId(field) {
+      return `offline-${this.variant}-${field}`;
+    },
+  },
+  bucketDescriptions: {
+    [OBJECT_STORAGE_VARIANT_EXPORT]: s__(
+      'OfflineTransfer|The bucket where export files will be written. It must already exist and allow write access.',
+    ),
+    [OBJECT_STORAGE_VARIANT_IMPORT]: s__(
+      'OfflineTransfer|The bucket the export package was written to. It must already exist and allow read access.',
+    ),
   },
   placeholders: {
     region: 'us-east-1',
@@ -50,20 +75,20 @@ export default {
 </script>
 
 <template>
-  <div class="gl-max-w-xl">
+  <div>
     <gl-form-group
-      :label="s__('OfflineTransferExport|Access key ID')"
+      :label="s__('OfflineTransfer|Access key ID')"
       :description="
         s__(
-          'OfflineTransferExport|Your object storage access key. For AWS S3, find this in your IAM security credentials.',
+          'OfflineTransfer|Your object storage access key. For AWS S3, find this in your IAM security credentials.',
         )
       "
       :state="fieldState('accessKeyId')"
       :invalid-feedback="errors.accessKeyId"
-      label-for="offline-export-access-key-id"
+      :label-for="setFieldId('access-key-id')"
     >
       <gl-form-input
-        id="offline-export-access-key-id"
+        :id="setFieldId('access-key-id')"
         :value="value.accessKeyId"
         :state="fieldState('accessKeyId')"
         autocomplete="off"
@@ -73,15 +98,15 @@ export default {
     </gl-form-group>
 
     <gl-form-group
-      :label="s__('OfflineTransferExport|Secret access key')"
-      :description="s__('OfflineTransferExport|Your object storage secret key.')"
+      :label="s__('OfflineTransfer|Secret access key')"
+      :description="s__('OfflineTransfer|Your object storage secret key.')"
       :state="fieldState('secretAccessKey')"
       :invalid-feedback="errors.secretAccessKey"
-      label-for="offline-export-secret-access-key"
+      :label-for="setFieldId('secret-access-key')"
     >
       <password-input
-        id="offline-export-secret-access-key"
-        name="offline_export_secret_access_key"
+        :id="setFieldId('secret-access-key')"
+        :name="secretAccessKeyName"
         :value="value.secretAccessKey"
         :required="false"
         :state="fieldState('secretAccessKey')"
@@ -92,14 +117,14 @@ export default {
     </gl-form-group>
 
     <gl-form-group
-      :label="s__('OfflineTransferExport|Region')"
-      :description="s__('OfflineTransferExport|The AWS region where your bucket is located.')"
+      :label="s__('OfflineTransfer|Region')"
+      :description="s__('OfflineTransfer|The AWS region where your bucket is located.')"
       :state="fieldState('region')"
       :invalid-feedback="errors.region"
-      label-for="offline-export-region"
+      :label-for="setFieldId('region')"
     >
       <gl-form-input
-        id="offline-export-region"
+        :id="setFieldId('region')"
         :value="value.region"
         :placeholder="$options.placeholders.region"
         :state="fieldState('region')"
@@ -110,18 +135,15 @@ export default {
     </gl-form-group>
 
     <gl-form-group
-      :label="s__('OfflineTransferExport|Bucket name')"
-      :description="
-        s__(
-          'OfflineTransferExport|The bucket where export files will be written. It must already exist and allow write access.',
-        )
-      "
+      :label="s__('OfflineTransfer|Bucket name')"
+      :description="bucketDescription"
       :state="fieldState('bucketName')"
       :invalid-feedback="errors.bucketName"
-      label-for="offline-export-bucket-name"
+      :label-for="setFieldId('bucket-name')"
+      data-testid="bucket-name-group"
     >
       <gl-form-input
-        id="offline-export-bucket-name"
+        :id="setFieldId('bucket-name')"
         :value="value.bucketName"
         :state="fieldState('bucketName')"
         autocomplete="off"
@@ -130,16 +152,18 @@ export default {
       />
     </gl-form-group>
 
+    <slot name="additional-fields"></slot>
+
     <gl-form-group>
       <gl-form-checkbox
         :checked="value.pathStyle"
         data-testid="path-style-checkbox"
         @change="updateField('pathStyle', $event)"
       >
-        {{ s__('OfflineTransferExport|Use path-style URLs (optional)') }}
+        {{ s__('OfflineTransfer|Use path-style URLs (optional)') }}
         <template #help>{{
           s__(
-            'OfflineTransferExport|Connect using path-style bucket URLs instead of the default virtual-hosted style. Most AWS S3 buckets use the default, so leave this unchecked unless your setup requires it.',
+            'OfflineTransfer|Connect using path-style bucket URLs instead of the default virtual-hosted style. Most AWS S3 buckets use the default, so leave this unchecked unless your setup requires it.',
           )
         }}</template>
       </gl-form-checkbox>

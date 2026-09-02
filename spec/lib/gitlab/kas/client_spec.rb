@@ -50,6 +50,35 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
       allow(::Feature::Kas).to receive(:server_feature_flags_for_grpc_request).and_return(feature_flags)
     end
 
+    shared_examples 'a retried unary AutoFlow RPC' do |rpc|
+      context 'when the call fails transiently' do
+        it 'retries and returns the response once the call recovers' do
+          expect(stub).to receive(rpc).twice.and_invoke(
+            ->(*) { raise GRPC::Unavailable, 'kas down' },
+            ->(*) { response }
+          )
+
+          expect(result).to eq(response)
+        end
+
+        it 'raises after exhausting retries' do
+          expect(stub).to receive(rpc)
+            .exactly(described_class::UNARY_GRPC_RETRIES).times
+            .and_raise(GRPC::Unavailable.new('kas down'))
+
+          expect { result }.to raise_error(GRPC::Unavailable)
+        end
+      end
+
+      context 'when the call times out' do
+        it 'raises immediately, leaving the retry to the caller' do
+          expect(stub).to receive(rpc).once.and_raise(GRPC::DeadlineExceeded.new('kas slow'))
+
+          expect { result }.to raise_error(GRPC::DeadlineExceeded)
+        end
+      end
+    end
+
     describe '#get_server_info' do
       let(:stub) { instance_double(Gitlab::Agent::ServerInfo::Rpc::ServerInfo::Stub) }
       let(:request) { instance_double(Gitlab::Agent::ServerInfo::Rpc::GetServerInfoRequest) }
@@ -113,6 +142,16 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
 
         expect(result).to eq(response)
       end
+
+      it_behaves_like 'a retried unary AutoFlow RPC', :start_workflow
+
+      context 'when the call fails with a permanent error' do
+        it 'raises immediately without retrying' do
+          expect(stub).to receive(:start_workflow).once.and_raise(GRPC::InvalidArgument.new('bad definition'))
+
+          expect { result }.to raise_error(GRPC::InvalidArgument)
+        end
+      end
     end
 
     describe '.generate_workflow_token_binding' do
@@ -170,14 +209,16 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
         expect(result).to eq(response)
       end
 
-      it 'propagates a permanent gRPC error from the stub' do
+      it 'propagates a permanent gRPC error from the stub without retrying' do
         error = GRPC::InvalidArgument.new('bad channel token')
 
-        expect(stub).to receive(:send_to_workflow_channel).and_raise(error)
+        expect(stub).to receive(:send_to_workflow_channel).once.and_raise(error)
 
         expect { result }.to raise_error(GRPC::InvalidArgument)
         expect(client.send(:classify_grpc_error, error)).to eq(:raise)
       end
+
+      it_behaves_like 'a retried unary AutoFlow RPC', :send_to_workflow_channel
     end
 
     describe '#get_connected_agentks_by_agent_ids' do

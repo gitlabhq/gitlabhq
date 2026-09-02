@@ -287,7 +287,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/dora/base_metric_spec.rb'
     - 'ee/spec/models/dora/change_failure_rate_metric_spec.rb'
     - 'ee/spec/models/dora/configuration_spec.rb'
-    - 'ee/spec/models/dora/deployment_frequency_metric_spec.rb'
     - 'ee/spec/models/dora/lead_time_for_changes_metric_spec.rb'
     - 'ee/spec/models/dora/time_to_restore_service_metric_spec.rb'
     - 'ee/spec/models/ee/alert_management/alert_spec.rb'

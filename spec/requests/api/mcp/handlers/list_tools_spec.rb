@@ -90,6 +90,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'get_work_item_types' => { 'readOnlyHint' => true },
         'get_workitem_notes' => { 'readOnlyHint' => true },
         'list_commits' => { 'readOnlyHint' => true },
+        'list_branches' => { 'readOnlyHint' => true },
         'list_merge_requests' => { 'readOnlyHint' => true },
         'list_project_members' => { 'readOnlyHint' => true },
         'list_pipelines' => { 'readOnlyHint' => true },
@@ -138,6 +139,15 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
           "MCP tool '#{settings[:tool_name]}' lists params not declared on its route: #{stale.inspect}. " \
             "Update the tool's mcp params list to match the route params."
       end
+    end
+
+    it 'advertises the list_branches params', :aggregate_failures do
+      post_list_tools
+
+      schema = json_response['result']['tools'].find { |tool| tool['name'] == 'list_branches' }['inputSchema']
+
+      expect(schema['properties'].keys).to match_array(%w[id search page per_page])
+      expect(schema['required']).to contain_exactly('id')
     end
 
     it 'validates all array parameters have proper JSON Schema structure with items property' do

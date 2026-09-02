@@ -8256,6 +8256,9 @@ msgstr ""
 msgid "AggregationEngine|Invalid value(s) for parameter `%{param}`: %{values}"
 msgstr ""
 
+msgid "AggregationEngine|Parameter `origin` requires a dynamic day granularity (for example `30d`)"
+msgstr ""
+
 msgid "AggregationEngine|The following sources are not accessible: %{source_ids}"
 msgstr ""
 
@@ -12378,6 +12381,9 @@ msgstr ""
 msgid "ArtifactRegistry|Loading repositories."
 msgstr ""
 
+msgid "ArtifactRegistry|Loading version details."
+msgstr ""
+
 msgid "ArtifactRegistry|Loading versions."
 msgstr ""
 
@@ -12734,6 +12740,12 @@ msgid "ArtifactRegistry|Username"
 msgstr ""
 
 msgid "ArtifactRegistry|Version"
+msgstr ""
+
+msgid "ArtifactRegistry|Version %{version} loaded."
+msgstr ""
+
+msgid "ArtifactRegistry|Version %{version} of %{name} loaded."
 msgstr ""
 
 msgid "ArtifactRegistry|Version list for %{name} updated."
@@ -21841,6 +21853,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Ensures the GitLab instance is using an Ultimate license level."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Ensures the ML model experiments are restricted to project members only."
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Ensures the ML model registry is restricted to project members only."
 msgstr ""
 
@@ -21979,6 +21994,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Merge requests require code owner approval"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Model experiments access level configured"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Model registry access level configured"
 msgstr ""
 
@@ -22111,6 +22129,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Resolve discussions required"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Restrict model experiments access"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Restrict model registry access"
 msgstr ""
 
@@ -22178,6 +22199,9 @@ msgid "ComplianceStandardsAdherence|Secure webhook configurations"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Secure webhooks"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Set the model experiments access level to private or disabled to prevent non-members from accessing experiment data."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Set the model registry access level to private or disabled to prevent non-members from accessing model artifacts."
@@ -47701,6 +47725,9 @@ msgstr ""
 msgid "MFA for contributors"
 msgstr ""
 
+msgid "ML model experiments"
+msgstr ""
+
 msgid "ML model registry"
 msgstr ""
 
@@ -54672,34 +54699,10 @@ msgid_plural "OfflineTransferExport|%{count} groups will be exported to %{bucket
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "OfflineTransferExport|Access key ID"
-msgstr ""
-
-msgid "OfflineTransferExport|Bucket name"
-msgstr ""
-
-msgid "OfflineTransferExport|Connect using path-style bucket URLs instead of the default virtual-hosted style. Most AWS S3 buckets use the default, so leave this unchecked unless your setup requires it."
-msgstr ""
-
 msgid "OfflineTransferExport|Deselect all"
 msgstr ""
 
-msgid "OfflineTransferExport|Enter %{max} characters or fewer."
-msgstr ""
-
 msgid "OfflineTransferExport|Enter AWS credentials"
-msgstr ""
-
-msgid "OfflineTransferExport|Enter a bucket name."
-msgstr ""
-
-msgid "OfflineTransferExport|Enter a region."
-msgstr ""
-
-msgid "OfflineTransferExport|Enter a secret access key."
-msgstr ""
-
-msgid "OfflineTransferExport|Enter an access key ID."
 msgstr ""
 
 msgid "OfflineTransferExport|Export complete"
@@ -54723,16 +54726,10 @@ msgstr ""
 msgid "OfflineTransferExport|No groups match your search"
 msgstr ""
 
-msgid "OfflineTransferExport|Region"
-msgstr ""
-
 msgid "OfflineTransferExport|Review and export"
 msgstr ""
 
 msgid "OfflineTransferExport|Search by name"
-msgstr ""
-
-msgid "OfflineTransferExport|Secret access key"
 msgstr ""
 
 msgid "OfflineTransferExport|Select at least one group to continue"
@@ -54753,12 +54750,6 @@ msgstr ""
 msgid "OfflineTransferExport|Start export"
 msgstr ""
 
-msgid "OfflineTransferExport|The AWS region where your bucket is located."
-msgstr ""
-
-msgid "OfflineTransferExport|The bucket where export files will be written. It must already exist and allow write access."
-msgstr ""
-
 msgid "OfflineTransferExport|The offline export you started on %{start_date} from %{strong_open}%{source_hostname}%{strong_close} has failed."
 msgstr ""
 
@@ -54766,9 +54757,6 @@ msgid "OfflineTransferExport|The offline export you started on %{start_date} fro
 msgstr ""
 
 msgid "OfflineTransferExport|Try again, or refresh the page."
-msgstr ""
-
-msgid "OfflineTransferExport|Use path-style URLs (optional)"
 msgstr ""
 
 msgid "OfflineTransferExport|View export status"
@@ -54780,12 +54768,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "OfflineTransferExport|You have no groups available to export"
-msgstr ""
-
-msgid "OfflineTransferExport|Your object storage access key. For AWS S3, find this in your IAM security credentials."
-msgstr ""
-
-msgid "OfflineTransferExport|Your object storage secret key."
 msgstr ""
 
 msgid "OfflineTransferImport|Import for offline transfer"
@@ -54815,7 +54797,13 @@ msgstr ""
 msgid "OfflineTransferImport|The offline transfer import you started on %{start_date} has completed. You can now review your import results."
 msgstr ""
 
+msgid "OfflineTransfer|Access key ID"
+msgstr ""
+
 msgid "OfflineTransfer|Application Default Credentials can only be used with object storage buckets whose name starts with \"%{prefix}\"."
+msgstr ""
+
+msgid "OfflineTransfer|Bucket name"
 msgstr ""
 
 msgid "OfflineTransfer|Choose top-level groups to export to an object storage location."
@@ -54824,7 +54812,28 @@ msgstr ""
 msgid "OfflineTransfer|Configure"
 msgstr ""
 
+msgid "OfflineTransfer|Connect using path-style bucket URLs instead of the default virtual-hosted style. Most AWS S3 buckets use the default, so leave this unchecked unless your setup requires it."
+msgstr ""
+
 msgid "OfflineTransfer|Do you need offline transfer?"
+msgstr ""
+
+msgid "OfflineTransfer|Enter %{max} characters or fewer."
+msgstr ""
+
+msgid "OfflineTransfer|Enter a bucket name."
+msgstr ""
+
+msgid "OfflineTransfer|Enter a region."
+msgstr ""
+
+msgid "OfflineTransfer|Enter a secret access key."
+msgstr ""
+
+msgid "OfflineTransfer|Enter an access key ID."
+msgstr ""
+
+msgid "OfflineTransfer|Enter an export prefix."
 msgstr ""
 
 msgid "OfflineTransfer|Export"
@@ -54896,6 +54905,12 @@ msgstr ""
 msgid "OfflineTransfer|Only administrators can use Application Default Credentials for offline transfer."
 msgstr ""
 
+msgid "OfflineTransfer|Region"
+msgstr ""
+
+msgid "OfflineTransfer|Secret access key"
+msgstr ""
+
 msgid "OfflineTransfer|Select entities"
 msgstr ""
 
@@ -54905,7 +54920,16 @@ msgstr ""
 msgid "OfflineTransfer|Start offline import"
 msgstr ""
 
+msgid "OfflineTransfer|The AWS region where your bucket is located."
+msgstr ""
+
 msgid "OfflineTransfer|The Google Cloud service account key must be a valid JSON object."
+msgstr ""
+
+msgid "OfflineTransfer|The bucket the export package was written to. It must already exist and allow read access."
+msgstr ""
+
+msgid "OfflineTransfer|The bucket where export files will be written. It must already exist and allow write access."
 msgstr ""
 
 msgid "OfflineTransfer|Unable to access object storage bucket."
@@ -54914,7 +54938,16 @@ msgstr ""
 msgid "OfflineTransfer|Unsupported GitLab version. The minimum supported version is '%{version}'."
 msgstr ""
 
+msgid "OfflineTransfer|Use path-style URLs (optional)"
+msgstr ""
+
 msgid "OfflineTransfer|View import results"
+msgstr ""
+
+msgid "OfflineTransfer|Your object storage access key. For AWS S3, find this in your IAM security credentials."
+msgstr ""
+
+msgid "OfflineTransfer|Your object storage secret key."
 msgstr ""
 
 msgid "Oh no!"
@@ -72378,6 +72411,9 @@ msgstr ""
 msgid "SecurityOrchestration|Choose a project"
 msgstr ""
 
+msgid "SecurityOrchestration|Choose a rule type"
+msgstr ""
+
 msgid "SecurityOrchestration|Choose an action"
 msgstr ""
 
@@ -73056,6 +73092,9 @@ msgstr ""
 msgid "SecurityOrchestration|License override details"
 msgstr ""
 
+msgid "SecurityOrchestration|License rule"
+msgstr ""
+
 msgid "SecurityOrchestration|Licenses"
 msgstr ""
 
@@ -73087,6 +73126,9 @@ msgid "SecurityOrchestration|MRs that would trigger"
 msgstr ""
 
 msgid "SecurityOrchestration|Malicious package"
+msgstr ""
+
+msgid "SecurityOrchestration|Malicious package rule"
 msgstr ""
 
 msgid "SecurityOrchestration|Malware blocking is available but turned off."
@@ -74202,6 +74244,9 @@ msgstr ""
 msgid "SecurityOrchestration|This policy has no rules to match merge requests against. Add rules for this policy to take effect."
 msgstr ""
 
+msgid "SecurityOrchestration|This policy has no rules yet. Add at least one rule below for it to take effect."
+msgstr ""
+
 msgid "SecurityOrchestration|This policy has no rules, so branch-level settings will not be applied. Only project approval settings will take effect."
 msgstr ""
 
@@ -74287,6 +74332,9 @@ msgid "SecurityOrchestration|Unlink the project from the following containers:"
 msgstr ""
 
 msgid "SecurityOrchestration|Unlinking a security policy project will stop enforcing all policies from the linked project on this namespace. The policy project and its policies will not be deleted. Save to confirm this action."
+msgstr ""
+
+msgid "SecurityOrchestration|Unrecognized rule type. Switch to YAML mode to edit this rule."
 msgstr ""
 
 msgid "SecurityOrchestration|Untitled policy"
@@ -74413,6 +74461,9 @@ msgid "SecurityOrchestration|Vulnerability management"
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerability management policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Vulnerability rule"
 msgstr ""
 
 msgid "SecurityOrchestration|Warn"
@@ -74558,6 +74609,11 @@ msgstr ""
 
 msgid "SecurityOrchestration|You can add a maximum of 3 criteria."
 msgstr ""
+
+msgid "SecurityOrchestration|You can add up to %d rule"
+msgid_plural "SecurityOrchestration|You can add up to %d rules"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "SecurityOrchestration|You can select this option only once."
 msgstr ""

@@ -32,7 +32,11 @@ and [All-in-one Docker image](../install/docker/_index.md), the SSH
 service is already configured to accept the `GIT_PROTOCOL` environment. Users
 need not do anything more.
 
-For installations from the Linux package or self-compiled installations, update
+If [`gitlab-sshd`](operations/gitlab_sshd.md) handles SSH traffic, no configuration is required.
+`gitlab-sshd` accepts the `GIT_PROTOCOL` environment variable.
+Because `gitlab-sshd` does not read `/etc/ssh/sshd_config`, the `AcceptEnv` setting does not apply.
+
+For installations from the Linux package or self-compiled installations that use OpenSSH, update
 the SSH configuration of your server manually by adding this line to the `/etc/ssh/sshd_config` file:
 
 ```plaintext

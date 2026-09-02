@@ -62,6 +62,7 @@ cd_environment_driver_bindings: no_work_needed
 cd_environments: no_work_needed
 cd_rollout_channel_tokens: no_work_needed
 cd_rollout_environments: no_work_needed
+cd_rollout_incoming_events: no_work_needed
 cd_rollout_steps: no_work_needed
 cd_rollout_transitions: no_work_needed
 cd_rollout_workflow_tokens: no_work_needed

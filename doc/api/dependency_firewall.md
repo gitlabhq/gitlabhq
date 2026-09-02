@@ -148,6 +148,21 @@ Supported attributes:
 | `ecosystem` | string            | yes      | Package ecosystem. One of `cargo`, `composer`, `conan`, `gem`, `golang`, `maven`, `npm`, `nuget`, `pub`, `pypi`, or `swift`. |
 | `name`      | string            | yes      | Package name, maximum 255 characters. For `maven`, use the `groupId:artifactId` form, for example `com.example:trivial-lib`. For `pypi`, names are normalized according to PEP 503 before evaluation, so `Flask_Login` and `flask-login` are equivalent. |
 | `version`   | string            | yes      | Package version, maximum 255 characters. |
+| `operation` | string            | no       | Package operation being evaluated. One of `download` or `upload`. Defaults to `download`. |
+
+Request headers:
+
+- `X-Gitlab-Dependency-Firewall-Session-Id`: optional. Groups all evaluations
+  from a single package-manager invocation, so a single install command that
+  triggers one evaluation per package can be correlated by this value.
+  GitLab records the value on the audit event and the analytics event for
+  the evaluation, and treats it as an opaque value without verifying it.
+
+The value must be 1 to 255 characters, and can contain only letters, digits,
+underscores, and hyphens.
+If the value does not meet these constraints, GitLab ignores it and the
+evaluation proceeds as if you did not send the header.
+The request does not fail.
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response
 attributes:
@@ -170,7 +185,7 @@ This endpoint can also return the following status codes:
 
 | Status code | Code | Description |
 |-------------|------|-------------|
-| `400` | None | `name` or `version` is blank, or `ecosystem` is not one of the accepted values. |
+| `400` | None | `name` or `version` is blank, or `ecosystem` or `operation` is not one of the accepted values. |
 | `401` | None | The request was not authenticated. |
 | `403` | None | The authenticated user cannot read packages in the project, or the request used a job token from outside the project's job token scope. |
 | `404` | None | The project does not exist, the authenticated user has no access to it, or the `dependency_firewall_phase1` feature flag is disabled. |

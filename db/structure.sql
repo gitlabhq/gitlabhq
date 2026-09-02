@@ -17000,6 +17000,26 @@ CREATE SEQUENCE cd_rollout_environments_id_seq
 
 ALTER SEQUENCE cd_rollout_environments_id_seq OWNED BY cd_rollout_environments.id;
 
+CREATE TABLE cd_rollout_incoming_events (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    rollout_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    idempotency_key text NOT NULL,
+    CONSTRAINT check_ebf712bb97 CHECK ((char_length(idempotency_key) <= 255))
+);
+
+CREATE SEQUENCE cd_rollout_incoming_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE cd_rollout_incoming_events_id_seq OWNED BY cd_rollout_incoming_events.id;
+
 CREATE TABLE cd_rollout_steps (
     id bigint NOT NULL,
     organization_id bigint NOT NULL,
@@ -36986,6 +37006,8 @@ ALTER TABLE ONLY cd_rollout_channel_tokens ALTER COLUMN id SET DEFAULT nextval('
 
 ALTER TABLE ONLY cd_rollout_environments ALTER COLUMN id SET DEFAULT nextval('cd_rollout_environments_id_seq'::regclass);
 
+ALTER TABLE ONLY cd_rollout_incoming_events ALTER COLUMN id SET DEFAULT nextval('cd_rollout_incoming_events_id_seq'::regclass);
+
 ALTER TABLE ONLY cd_rollout_steps ALTER COLUMN id SET DEFAULT nextval('cd_rollout_steps_id_seq'::regclass);
 
 ALTER TABLE ONLY cd_rollout_transitions ALTER COLUMN id SET DEFAULT nextval('cd_rollout_transitions_id_seq'::regclass);
@@ -40084,6 +40106,9 @@ ALTER TABLE ONLY cd_rollout_channel_tokens
 
 ALTER TABLE ONLY cd_rollout_environments
     ADD CONSTRAINT cd_rollout_environments_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY cd_rollout_incoming_events
+    ADD CONSTRAINT cd_rollout_incoming_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY cd_rollout_steps
     ADD CONSTRAINT cd_rollout_steps_pkey PRIMARY KEY (id);
@@ -47395,6 +47420,12 @@ CREATE INDEX index_cd_rollout_environments_on_organization_id ON cd_rollout_envi
 CREATE INDEX index_cd_rollout_environments_on_previous_version_set_id ON cd_rollout_environments USING btree (previous_version_set_id);
 
 CREATE UNIQUE INDEX index_cd_rollout_environments_on_rollout_and_environment ON cd_rollout_environments USING btree (rollout_id, environment_id);
+
+CREATE INDEX index_cd_rollout_incoming_events_on_created_at ON cd_rollout_incoming_events USING btree (created_at);
+
+CREATE INDEX index_cd_rollout_incoming_events_on_organization_id ON cd_rollout_incoming_events USING btree (organization_id);
+
+CREATE UNIQUE INDEX index_cd_rollout_incoming_events_on_rollout_id_and_idem_key ON cd_rollout_incoming_events USING btree (rollout_id, idempotency_key);
 
 CREATE INDEX index_cd_rollout_steps_on_organization_id ON cd_rollout_steps USING btree (organization_id);
 
@@ -59360,6 +59391,9 @@ ALTER TABLE ONLY merge_request_metrics
 ALTER TABLE ONLY packages_nuget_dependency_link_metadata
     ADD CONSTRAINT fk_ae9b989220 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cd_rollout_incoming_events
+    ADD CONSTRAINT fk_aed5d1966b FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY cd_rollout_steps
     ADD CONSTRAINT fk_aee7ef2ca4 FOREIGN KEY (rollout_id) REFERENCES cd_rollouts(id) ON DELETE CASCADE;
 
@@ -60304,6 +60338,9 @@ ALTER TABLE ONLY cd_rollouts
 
 ALTER TABLE ONLY work_item_decisions
     ADD CONSTRAINT fk_f6e83592b4 FOREIGN KEY (workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY cd_rollout_incoming_events
+    ADD CONSTRAINT fk_f72c8a9f27 FOREIGN KEY (rollout_id) REFERENCES cd_rollouts(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT fk_f748646298 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
