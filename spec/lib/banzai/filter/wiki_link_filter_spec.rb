@@ -36,7 +36,7 @@ RSpec.describe Banzai::Filter::WikiLinkFilter, feature_category: :wiki do
     it "does not store original url in the data-canonical-src attribute" do
       filtered_link = filter("<a href='/uploads/a.test'>Link</a>", wiki: wiki).children[0]
 
-      expect(filtered_link.value?('data-canonical-src')).to eq(false)
+      expect(filtered_link.value?('data-canonical-src')).to be(false)
     end
   end
 

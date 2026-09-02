@@ -29,12 +29,12 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   def new
     if pre_auth.authorizable?
       if skip_authorization? || (matching_token? && pre_auth.client.application.confidential?)
-        auth = authorization.authorize
+        auth = authorize_with_sanctioned_write
         parsed_redirect_uri = URI.parse(auth.redirect_uri)
         session.delete(:user_return_to)
         render "doorkeeper/authorizations/redirect", locals: { redirect_uri: parsed_redirect_uri }, layout: false
       else
-        redirect_uri = URI(authorization.authorize.redirect_uri)
+        redirect_uri = URI(authorize_with_sanctioned_write.redirect_uri)
         allow_redirect_uri_form_action(redirect_uri.scheme)
 
         render "doorkeeper/authorizations/new"
@@ -45,6 +45,12 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   end
 
   private
+
+  def authorize_with_sanctioned_write
+    Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670'
+    ) { authorization.authorize }
+  end
 
   def permitted_params
     params.permit(:resource, :client_id, :code_challenge, :code_challenge_method)

@@ -199,35 +199,146 @@ describe('Snippet Blob Edit component', () => {
   });
 
   describe('markdown preview', () => {
+    const installedExtension = { extensionName: 'EditorMarkdownPreview' };
+    const expectedUseArgs = {
+      definition: EditorMarkdownPreviewExtension,
+      setupOptions: { previewMarkdownPath: TEST_MARKDOWN_PREVIEW_PATH },
+    };
     let useSpy;
+    let unuseSpy;
 
-    const emitEditorReady = async () => {
-      useSpy = jest.fn();
-      findContent().vm.$emit(EDITOR_READY_EVENT, { detail: { instance: { use: useSpy } } });
-      await waitForPromises();
+    beforeEach(() => {
+      useSpy = jest.fn().mockReturnValue(installedExtension);
+      unuseSpy = jest.fn();
+    });
+
+    const emitEditorReady = () => {
+      findContent().vm.$emit(EDITOR_READY_EVENT, {
+        detail: { instance: { use: useSpy, unuse: unuseSpy } },
+      });
     };
 
-    it('registers the markdown preview extension for a markdown file', async () => {
-      createComponent({
-        blob: { ...TEST_BLOB_LOADED, path: 'README.md' },
+    const renameBlob = (path) => wrapper.setProps({ blob: { ...TEST_BLOB_LOADED, path } });
+
+    describe('with a markdown file', () => {
+      beforeEach(() => {
+        createComponent({
+          blob: { ...TEST_BLOB_LOADED, path: 'README.md' },
+        });
       });
 
-      await emitEditorReady();
+      describe('when the editor is ready', () => {
+        beforeEach(async () => {
+          emitEditorReady();
+          await waitForPromises();
+        });
 
-      expect(useSpy).toHaveBeenCalledWith({
-        definition: EditorMarkdownPreviewExtension,
-        setupOptions: { previewMarkdownPath: TEST_MARKDOWN_PREVIEW_PATH },
+        it('installs the markdown extension', () => {
+          expect(useSpy).toHaveBeenCalledWith(expectedUseArgs);
+        });
+
+        it('uninstalls the extension when renamed to a non-markdown file', async () => {
+          await renameBlob('script.rb');
+          await waitForPromises();
+
+          expect(unuseSpy).toHaveBeenCalledWith(installedExtension);
+        });
+
+        it('does not reinstall the extension when renamed to another markdown file extension', async () => {
+          await renameBlob('CHANGELOG.markdown');
+          await waitForPromises();
+
+          expect(useSpy).toHaveBeenCalledTimes(1);
+          expect(unuseSpy).not.toHaveBeenCalled();
+        });
+      });
+
+      it('does not install the extension when renamed to a non-markdown file during load', async () => {
+        emitEditorReady();
+        await renameBlob('script.rb');
+        await waitForPromises();
+
+        expect(useSpy).not.toHaveBeenCalled();
+      });
+
+      it('ends up with the extension installed when renamed back to a markdown file during load', async () => {
+        emitEditorReady();
+        await renameBlob('script.rb');
+        await renameBlob('README.md');
+        await waitForPromises();
+
+        expect(useSpy).toHaveBeenCalledTimes(1);
+        expect(useSpy).toHaveBeenLastCalledWith(expectedUseArgs);
+        expect(unuseSpy).not.toHaveBeenCalled();
+      });
+
+      it('installs the extension only once when a second load races the first one', async () => {
+        // Two loads can be in flight at once when the file is renamed across
+        // the markdown extension boundary before the first load settles.
+        // A rename cannot reproduce this in jsdom (imports resolve immediately),
+        // so a second editor-ready event is used to create the same interleaving.
+        emitEditorReady();
+        emitEditorReady();
+        await waitForPromises();
+
+        expect(useSpy).toHaveBeenCalledTimes(1);
+      });
+
+      it('installs the extension again after a failed installation when renamed away and back', async () => {
+        emitEditorReady();
+        useSpy.mockImplementationOnce(() => {
+          throw new Error('loading failed');
+        });
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: expect.stringContaining('An error occurred while rendering the editor'),
+        });
+
+        await renameBlob('script.rb');
+        expect(unuseSpy).not.toHaveBeenCalled();
+
+        await renameBlob('README.md');
+        await waitForPromises();
+
+        expect(useSpy).toHaveBeenCalledTimes(2);
+        expect(useSpy).toHaveBeenLastCalledWith(expectedUseArgs);
       });
     });
 
-    it('does not register the extension for a non-markdown file', async () => {
-      createComponent({
-        blob: { ...TEST_BLOB_LOADED, path: 'script.rb' },
+    describe('with a non-markdown file', () => {
+      beforeEach(() => {
+        createComponent({
+          blob: { ...TEST_BLOB_LOADED, path: 'script.rb' },
+        });
       });
 
-      await emitEditorReady();
+      it('does not install the extension', async () => {
+        emitEditorReady();
+        await waitForPromises();
 
-      expect(useSpy).not.toHaveBeenCalled();
+        expect(useSpy).not.toHaveBeenCalled();
+        expect(unuseSpy).not.toHaveBeenCalled();
+      });
+
+      it('installs the extension when renamed to a markdown file', async () => {
+        emitEditorReady();
+        await waitForPromises();
+        await renameBlob('README.md');
+        await waitForPromises();
+
+        expect(useSpy).toHaveBeenCalledWith(expectedUseArgs);
+      });
+
+      it('installs the extension when renamed to a markdown file before the editor is ready', async () => {
+        await renameBlob('README.md');
+        await waitForPromises();
+        emitEditorReady();
+        await waitForPromises();
+
+        expect(useSpy).toHaveBeenCalledWith(expectedUseArgs);
+        expect(createAlert).not.toHaveBeenCalled();
+      });
     });
   });
 });

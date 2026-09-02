@@ -177,6 +177,10 @@
   - 2
 - - authorized_projects
   - 2
+- - authz_organizations_grant_owner_role
+  - 1
+- - authz_organizations_revoke_owner_role
+  - 1
 - - authz_user_group_member_roles_destroy_for_group
   - 1
 - - authz_user_group_member_roles_destroy_for_shared_group

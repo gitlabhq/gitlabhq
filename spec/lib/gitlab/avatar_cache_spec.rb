@@ -25,7 +25,7 @@ RSpec.describe Gitlab::AvatarCache, :clean_gitlab_redis_cache do
 
   describe "#by_email" do
     it "writes a new value into the cache" do
-      expect(read(key, "20:2:true")).to eq(nil)
+      expect(read(key, "20:2:true")).to be_nil
 
       perform_fetch
 
@@ -82,7 +82,7 @@ RSpec.describe Gitlab::AvatarCache, :clean_gitlab_redis_cache do
 
         expect(subject).to eq(1)
 
-        expect(read(key, "20:2:true")).to eq(nil)
+        expect(read(key, "20:2:true")).to be_nil
       end
     end
 
@@ -94,7 +94,7 @@ RSpec.describe Gitlab::AvatarCache, :clean_gitlab_redis_cache do
 
         expect(subject).to eq(1)
 
-        expect(read(key, "20:2:true")).to eq(nil)
+        expect(read(key, "20:2:true")).to be_nil
       end
     end
 

@@ -1508,7 +1508,7 @@ module Gitlab
 
           it 'returns global variables' do
             expect(job_variables).to eq([])
-            expect(root_variables_inheritance).to eq(true)
+            expect(root_variables_inheritance).to be(true)
           end
         end
 
@@ -1531,7 +1531,7 @@ module Gitlab
                 { key: 'VAR1', value: 'value1' },
                 { key: 'VAR2', value: 'value2' }
               )
-              expect(root_variables_inheritance).to eq(true)
+              expect(root_variables_inheritance).to be(true)
             end
           end
 
@@ -1567,7 +1567,7 @@ module Gitlab
                 # configuration, see issue #18775
                 #
                 expect(job_variables).to eq([])
-                expect(root_variables_inheritance).to eq(true)
+                expect(root_variables_inheritance).to be(true)
               end
             end
           end
@@ -1585,7 +1585,7 @@ module Gitlab
 
           it 'returns empty array' do
             expect(job_variables).to eq([])
-            expect(root_variables_inheritance).to eq(true)
+            expect(root_variables_inheritance).to be(true)
           end
         end
 
@@ -1609,7 +1609,7 @@ module Gitlab
               { key: 'VAR2', value: 'value2' },
               { key: 'VAR3', value: '123' }
             )
-            expect(root_variables_inheritance).to eq(true)
+            expect(root_variables_inheritance).to be(true)
           end
         end
 
@@ -3742,7 +3742,7 @@ module Gitlab
           let(:content) { YAML.dump('invalid: yaml: test') }
 
           it 'returns errors and empty configuration' do
-            expect(subject.valid?).to eq(false)
+            expect(subject.valid?).to be(false)
             expect(subject.errors).to eq(['Invalid configuration format'])
           end
         end
@@ -3751,7 +3751,7 @@ module Gitlab
           let(:content) { YAML.dump({ rspec: { script: 'test', tags: 'mysql' } }) }
 
           it 'returns errors and empty configuration' do
-            expect(subject.valid?).to eq(false)
+            expect(subject.valid?).to be(false)
             expect(subject.errors).to eq(['jobs:rspec:tags config should be an array of strings'])
           end
         end
@@ -3760,7 +3760,7 @@ module Gitlab
           let(:content) { YAML.dump({ rspec: { script: 'test', bad_tags: 'mysql', rules: { wrong: 'format' } } }) }
 
           it 'returns errors and empty configuration' do
-            expect(subject.valid?).to eq(false)
+            expect(subject.valid?).to be(false)
             expect(subject.errors).to contain_exactly(
               'jobs:rspec config contains unknown keys: bad_tags',
               'jobs:rspec rules should be an array containing hashes and arrays of hashes')
@@ -3771,7 +3771,7 @@ module Gitlab
           let(:content) { '' }
 
           it 'returns errors and empty configuration' do
-            expect(subject.valid?).to eq(false)
+            expect(subject.valid?).to be(false)
             expect(subject.errors).to eq(['Please provide content of .gitlab-ci.yml'])
           end
         end
@@ -3780,7 +3780,7 @@ module Gitlab
           let(:content) { 'steps: *bad_alias' }
 
           it 'returns errors and empty configuration' do
-            expect(subject.valid?).to eq(false)
+            expect(subject.valid?).to be(false)
             expect(subject.errors).to all match(%r{unknown .+ bad_alias}i)
           end
         end
@@ -3789,7 +3789,7 @@ module Gitlab
           let(:content) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
 
           it 'returns errors and empty configuration' do
-            expect(subject.valid?).to eq(true)
+            expect(subject.valid?).to be(true)
             expect(subject.errors).to be_empty
             expect(subject.builds).to be_present
           end

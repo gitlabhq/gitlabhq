@@ -139,6 +139,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker' => 3,
         'AuthorizedProjectUpdate::UserRefreshFromReplicaWorker' => 3,
         'AuthorizedProjectsWorker' => 3,
+        'Authz::Organizations::GrantOwnerRoleWorker' => 5,
+        'Authz::Organizations::RevokeOwnerRoleWorker' => 5,
         'AutoDevops::DisableWorker' => 3,
         'AutoMergeProcessWorker' => 3,
         'BuildQueueWorker' => 3,

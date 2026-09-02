@@ -31,8 +31,29 @@ module API
         hook_scope.find(params.delete(:hook_id))
       end
 
+      # Overridden by the project and group hook APIs. System hooks have no container.
+      def hook_container
+        nil
+      end
+
+      # Rejecting rather than dropping the attribute keeps this endpoint consistent with
+      # the create-flow API: a caller that believes it enabled callbacks must not get a
+      # success response when the feature is unavailable. Only enabling is rejected, so a
+      # client can PUT back a payload it read from GET. Reads on the declared params, not
+      # on params, so endpoints that never declare the attribute are unaffected.
+      def validate_duo_flow_callback_param!(hook_params)
+        return unless hook_params[:duo_flow_callback_enabled]
+
+        container = hook_container
+        return if container && Feature.enabled?(:duo_flow_callback_hooks, container.root_ancestor)
+
+        bad_request!('duo_flow_callback_enabled is not available for this namespace')
+      end
+
       def create_hook_params
         hook_params = declared_params(include_missing: false)
+        validate_duo_flow_callback_param!(hook_params)
+
         url_variables = hook_params.delete(:url_variables)
 
         if url_variables.present?
@@ -59,6 +80,8 @@ module API
 
       def update_hook_params(hook)
         update_params = declared_params(include_missing: false)
+        validate_duo_flow_callback_param!(update_params)
+
         url_variables = update_params.delete(:url_variables) || []
         url_variables = url_variables.to_h { [_1[:key], _1[:value]] }
         update_params[:url_variables] = hook.url_variables.merge(url_variables) if url_variables.present?

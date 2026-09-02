@@ -2,6 +2,7 @@
 import { GlTabs, GlTab, GlBadge } from '@gitlab/ui';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { formatNumber } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'IssuableTabs',
@@ -10,6 +11,7 @@ export default {
     GlTab,
     GlBadge,
   },
+  mixins: [glSlotsMixin],
   props: {
     tabs: {
       type: Array,
@@ -55,7 +57,7 @@ export default {
 </script>
 
 <template>
-  <div class="top-area">
+  <div v-if="tabs.length > 0 || glSlots()['nav-actions']" class="top-area">
     <gl-tabs
       v-if="tabs.length > 0"
       class="mobile-separator issuable-state-filters gl-m-0 gl-flex gl-grow gl-p-0 [&_.gl-tabs-wrapper]:gl-border-0"

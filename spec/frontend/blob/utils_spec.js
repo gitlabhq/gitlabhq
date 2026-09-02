@@ -113,7 +113,7 @@ describe('Blob utilities', () => {
     });
   });
 
-  describe('hasMarkdownExtension', () => {
+  describe('isMarkdownFilePath', () => {
     it.each`
       path           | result
       ${'README.md'} | ${true}
@@ -122,7 +122,7 @@ describe('Blob utilities', () => {
       ${'file.rb'}   | ${false}
       ${undefined}   | ${false}
     `('returns $result for $path', ({ path, result }) => {
-      expect(utils.hasMarkdownExtension(path)).toBe(result);
+      expect(utils.isMarkdownFilePath(path)).toBe(result);
     });
   });
 

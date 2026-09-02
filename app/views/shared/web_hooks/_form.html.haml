@@ -23,6 +23,8 @@
   %p.form-text.gl-text-subtle
     = link_to s_('Webhooks|How do I create a custom webhook template?'), help_path
 
+= render_if_exists 'shared/web_hooks/duo_agent_platform_section', form: form
+
 .form-group
   = form.label :enable_ssl_verification, s_('Webhooks|SSL verification'), class: 'label-bold checkbox'
   %ul.list-unstyled

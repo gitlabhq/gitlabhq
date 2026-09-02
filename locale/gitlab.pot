@@ -12348,6 +12348,11 @@ msgid_plural "ArtifactRegistry|Images"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ArtifactRegistry|Image cached"
+msgid_plural "ArtifactRegistry|Images cached"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ArtifactRegistry|Index"
 msgstr ""
 
@@ -12446,7 +12451,13 @@ msgstr ""
 msgid "ArtifactRegistry|No connection information available."
 msgstr ""
 
+msgid "ArtifactRegistry|No images have been cached yet."
+msgstr ""
+
 msgid "ArtifactRegistry|No manifests found for %{name}."
+msgstr ""
+
+msgid "ArtifactRegistry|No packages have been cached yet."
 msgstr ""
 
 msgid "ArtifactRegistry|No repositories match your filters."
@@ -12472,6 +12483,11 @@ msgstr ""
 
 msgid "ArtifactRegistry|Package"
 msgid_plural "ArtifactRegistry|Packages"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ArtifactRegistry|Package cached"
+msgid_plural "ArtifactRegistry|Packages cached"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -18287,6 +18303,12 @@ msgid "CiVariable|Variable %{key} has been updated."
 msgstr ""
 
 msgid "Classification Label (optional)"
+msgstr ""
+
+msgid "Classification has completed."
+msgstr ""
+
+msgid "Classification is outdated."
 msgstr ""
 
 msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
@@ -30594,6 +30616,9 @@ msgstr ""
 msgid "DuoAgenticChat|Go to your chat history"
 msgstr ""
 
+msgid "DuoAgenticChat|Groups with GitLab Duo enabled"
+msgstr ""
+
 msgid "DuoAgenticChat|Hello, I am %{agentName}!"
 msgstr ""
 
@@ -30700,6 +30725,9 @@ msgid "DuoAgenticChat|Retry"
 msgstr ""
 
 msgid "DuoAgenticChat|Review and confirm"
+msgstr ""
+
+msgid "DuoAgenticChat|Search groups"
 msgstr ""
 
 msgid "DuoAgenticChat|Security"
@@ -30872,6 +30900,11 @@ msgstr ""
 
 msgid "DuoAgentsPlatform|(editing)"
 msgstr ""
+
+msgid "DuoAgentsPlatform|+%d more"
+msgid_plural "DuoAgentsPlatform|+%d more"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "DuoAgentsPlatform|AI"
 msgstr ""
@@ -31137,6 +31170,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Identity verification is required to use GitLab Duo Agent Platform"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Linked items"
+msgstr ""
+
 msgid "DuoAgentsPlatform|List comments"
 msgstr ""
 
@@ -31174,6 +31210,9 @@ msgid "DuoAgentsPlatform|No runner is available to this project. You can still p
 msgstr ""
 
 msgid "DuoAgentsPlatform|No triggers yet"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Note on %{reference}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Nothing needs you right now"
@@ -31489,6 +31528,9 @@ msgstr ""
 msgid "DuoChat|Agentic chat"
 msgstr ""
 
+msgid "DuoChat|All models"
+msgstr ""
+
 msgid "DuoChat|Always approve this tool"
 msgstr ""
 
@@ -31571,6 +31613,9 @@ msgid "DuoChat|Created and maintained by GitLab"
 msgstr ""
 
 msgid "DuoChat|Custom agents"
+msgstr ""
+
+msgid "DuoChat|Default"
 msgstr ""
 
 msgid "DuoChat|Delete chat"
@@ -31762,6 +31807,9 @@ msgstr ""
 msgid "DuoChat|Read note's content"
 msgstr ""
 
+msgid "DuoChat|Recent"
+msgstr ""
+
 msgid "DuoChat|Rejection reason"
 msgstr ""
 
@@ -31783,10 +31831,16 @@ msgstr ""
 msgid "DuoChat|Search chats..."
 msgstr ""
 
+msgid "DuoChat|Search models"
+msgstr ""
+
 msgid "DuoChat|See request parameters as JSON"
 msgstr ""
 
 msgid "DuoChat|See your chat history"
+msgstr ""
+
+msgid "DuoChat|Select a model. Current: %{modelName}"
 msgstr ""
 
 msgid "DuoChat|Send chat message."
@@ -31844,6 +31898,12 @@ msgid "DuoChat|Untitled Chat"
 msgstr ""
 
 msgid "DuoChat|Update file %{filePath}"
+msgstr ""
+
+msgid "DuoChat|Use Agentic Chat"
+msgstr ""
+
+msgid "DuoChat|Use Non-Agentic Chat"
 msgstr ""
 
 msgid "DuoChat|What is a fork?"
@@ -65103,6 +65163,9 @@ msgstr ""
 msgid "Queued"
 msgstr ""
 
+msgid "Queued for (re)classification."
+msgstr ""
+
 msgid "Quick access"
 msgstr ""
 
@@ -90576,6 +90639,9 @@ msgstr ""
 msgid "Waiting for merge (open and assigned)"
 msgstr ""
 
+msgid "Waiting to be classified."
+msgstr ""
+
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr ""
 
@@ -90993,6 +91059,9 @@ msgstr ""
 msgid "Webhooks|File hooks"
 msgstr ""
 
+msgid "Webhooks|Flows that reference this webhook receive lifecycle and progress events. Progress events can include agent reasoning and tool arguments. %{link_start}Learn more%{link_end}."
+msgstr ""
+
 msgid "Webhooks|Generate signing token"
 msgstr ""
 
@@ -91099,6 +91168,9 @@ msgid "Webhooks|Save this token now because you can only access it once. After y
 msgstr ""
 
 msgid "Webhooks|Secret token (not recommended)"
+msgstr ""
+
+msgid "Webhooks|Send Duo flow events to this webhook"
 msgstr ""
 
 msgid "Webhooks|Sensitive portion of URL"

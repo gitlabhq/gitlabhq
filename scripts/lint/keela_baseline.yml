@@ -722,7 +722,6 @@ scopes:
   - without_epic_id
   ee/app/models/ee/ci/build.rb:
   - license_scan
-  - with_reports_of_type
   ee/app/models/ee/ci/pipeline.rb:
   - with_legacy_security_reports
   - latest_completed_or_manual_pipeline_ids_per_source

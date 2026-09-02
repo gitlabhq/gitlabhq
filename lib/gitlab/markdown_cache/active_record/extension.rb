@@ -58,7 +58,10 @@ module Gitlab
 
           count_version_upgrade
 
-          update_columns(updates)
+          ::Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+            url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+            update_columns(updates)
+          end
         end
 
         private

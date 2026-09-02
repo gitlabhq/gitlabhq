@@ -3,6 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import createDefaultClient from '~/lib/graphql';
@@ -30,7 +31,21 @@ export function initMergeRequestDashboard(el) {
     'assignedReviewStates',
     'reviewerReviewStates',
   ];
+  const searchClient = createDefaultClient(
+    {},
+    {
+      cacheConfig: {
+        typePolicies: {
+          MergeRequestConnection: {
+            merge: true,
+          },
+        },
+      },
+    },
+  );
+
   const apolloProvider = new VueApollo({
+    clients: { searchClient },
     defaultClient: createDefaultClient(
       {
         Mutation: {
@@ -111,6 +126,15 @@ export function initMergeRequestDashboard(el) {
     apolloProvider,
     provide: {
       mergeRequestsSearchDashboardPath: el.dataset.mergeRequestsSearchDashboardPath,
+      autocompleteAwardEmojisPath: el.dataset.autocompleteAwardEmojisPath,
+      autocompleteUsersPath: el.dataset.autocompleteUsersPath,
+      dashboardLabelsPath: el.dataset.dashboardLabelsPath,
+      dashboardMilestonesPath: el.dataset.dashboardMilestonesPath,
+      hasScopedLabelsFeature: parseBoolean(el.dataset.hasScopedLabelsFeature),
+      initialSort: el.dataset.initialSort,
+      isPublicVisibilityRestricted: parseBoolean(el.dataset.isPublicVisibilityRestricted),
+      isSignedIn: parseBoolean(el.dataset.isSignedIn),
+      vueSearchEnabled: parseBoolean(el.dataset.vueSearchEnabled),
     },
     component: App,
     props: {

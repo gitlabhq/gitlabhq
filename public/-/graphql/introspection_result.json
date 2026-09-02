@@ -247977,6 +247977,18 @@
               "deprecationReason": null
             },
             {
+              "name": "confidenceTier",
+              "description": "Tier derived from the confidence score.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "MergeRequestRiskTier",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "domainTags",
               "description": "Risk domains the change touches, used to route specialist review.",
               "args": [],
@@ -247996,6 +248008,18 @@
                     }
                   }
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "duoWorkflowId",
+              "description": "ID of the Duo workflow session that produced the classification.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -248037,12 +248061,24 @@
               "deprecationReason": null
             },
             {
-              "name": "score",
-              "description": "Risk score from 0 to 100. Null until the classification completes.",
+              "name": "risk",
+              "description": "Risk score from 0 to 100.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "riskTier",
+              "description": "Tier derived from the risk score.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "MergeRequestRiskTier",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -248089,13 +248125,17 @@
               "deprecationReason": null
             },
             {
-              "name": "tier",
-              "description": "Tier derived from the score. Null until the scoring function and tier thresholds exist.",
+              "name": "status",
+              "description": "Status of the classification.",
               "args": [],
               "type": {
-                "kind": "ENUM",
-                "name": "MergeRequestRiskTier",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "MergeRequestRiskAssessmentStatus",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -248104,6 +248144,41 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "MergeRequestRiskAssessmentStatus",
+          "description": "Status of a merge request risk classification.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "PENDING",
+              "description": "Waiting to be classified.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "QUEUED",
+              "description": "Queued for (re)classification.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COMPLETE",
+              "description": "Classification has completed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "STALE",
+              "description": "Classification is outdated.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

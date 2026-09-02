@@ -125,8 +125,6 @@ methods:
     - security_tracked_context_quota_explicitly_set?: Will be used in #598087 for quota enforcement service
   ee/app/models/ee/user.rb:
     - security_policy_bot_project: Returns the bot's associated project; preserved for backward compatibility with bot-specific access flows
-  ee/app/models/package_metadata/sync_configuration.rb:
-    - self.licenses_pds_endpoint: Will be called from Location.for_licenses once licenses move to PDS in a follow-up MR (#611228)
   ee/app/models/security/scan_profile_project_status.rb:
     - profile_failed?: Will be used in follow-up MR to expose profile statuses via GraphQL (Task 4, #593133)
 constants:

@@ -50,15 +50,15 @@ RSpec.describe Gitlab::Ci::Ansi2json::State, feature_category: :continuous_integ
       new_state.new_line!(style: {})
       new_state.open_section('hello', 100, {})
 
-      expect(new_state.current_line.section_header).to eq(true)
-      expect(new_state.current_line.section_footer).to eq(false)
+      expect(new_state.current_line.section_header).to be(true)
+      expect(new_state.current_line.section_footer).to be(false)
 
       new_state.new_line!(style: {})
       new_state.close_section('hello', 101)
 
-      expect(new_state.current_line.section_header).to eq(false)
+      expect(new_state.current_line.section_header).to be(false)
       expect(new_state.current_line.section_duration).to eq('00:01')
-      expect(new_state.current_line.section_footer).to eq(true)
+      expect(new_state.current_line.section_footer).to be(true)
     end
 
     it 'allows specifying offset in new_line!', :aggregate_failures do

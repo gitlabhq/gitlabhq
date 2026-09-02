@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton, GlAlert, GlTabs, GlTab, GlLink } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
@@ -15,6 +16,8 @@ import MergeRequestsQuery from './merge_requests_query.vue';
 import CollapsibleSection from './collapsible_section.vue';
 import MergeRequest from './merge_request.vue';
 import DraftsCount from './drafts_count.vue';
+
+const SEARCH_TAB_KEY = 'search';
 
 export default {
   name: 'MergeRequestDashboardRoot',
@@ -59,8 +62,12 @@ export default {
     CollapsibleSection,
     MergeRequest,
     DraftsCount,
+    SearchList: defineAsyncComponent(() => import('./search_list.vue')),
   },
-  inject: ['mergeRequestsSearchDashboardPath'],
+  inject: {
+    mergeRequestsSearchDashboardPath: { default: '' },
+    vueSearchEnabled: { default: false },
+  },
   props: {
     tabs: {
       type: Array,
@@ -79,6 +86,15 @@ export default {
   computed: {
     currentUserId() {
       return convertToGraphQLId(TYPENAME_USER, gon.current_user_id);
+    },
+    isSearchTab() {
+      return this.currentTab === SEARCH_TAB_KEY;
+    },
+    searchTabAttributes() {
+      return { href: this.$router.resolve(this.searchRoute).href };
+    },
+    searchRoute() {
+      return { path: SEARCH_TAB_KEY, query: { assignee_username: gon.current_username } };
     },
   },
   mounted() {
@@ -100,6 +116,13 @@ export default {
       this.visitedTabs.add(key);
 
       this.$router.push({ path: key || '/' });
+    },
+    clickSearchTab() {
+      if (this.isSearchTab) return;
+
+      this.currentTab = SEARCH_TAB_KEY;
+
+      this.$router.push(this.searchRoute);
     },
     queriesForTab(tab) {
       return tab.lists
@@ -262,8 +285,19 @@ export default {
           </merge-requests-query>
         </div>
       </gl-tab>
+      <gl-tab
+        v-if="vueSearchEnabled"
+        :active="isSearchTab"
+        lazy
+        :title-link-attributes="searchTabAttributes"
+        data-testid="merge-request-dashboard-search-tab"
+        @click="clickSearchTab"
+      >
+        <template #title>{{ __('Search') }}</template>
+        <search-list />
+      </gl-tab>
       <template #tabs-end>
-        <li role="presentation" class="nav-item">
+        <li v-if="!vueSearchEnabled" role="presentation" class="nav-item">
           <gl-link
             role="tab"
             :href="mergeRequestsSearchDashboardPath"

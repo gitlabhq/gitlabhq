@@ -9,13 +9,13 @@ RSpec.describe Atlassian::JiraIssueKeyExtractor, feature_category: :integrations
     context 'when string contains Jira issue keys' do
       let(:string) { 'Test some string TEST-01 with keys' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when string does not contain Jira issue keys' do
       let(:string) { 'string with no jira issue keys' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

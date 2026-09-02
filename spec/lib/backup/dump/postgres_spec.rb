@@ -32,7 +32,7 @@ RSpec.describe Backup::Dump::Postgres, feature_category: :backup_restore do
       it 'creates a dump file' do
         postgres.dump(dump_file_name, pg_dump)
 
-        expect(File.exist?(dump_file_name)).to eq(true)
+        expect(File.exist?(dump_file_name)).to be(true)
       end
 
       it 'default compression command is used' do
@@ -45,7 +45,7 @@ RSpec.describe Backup::Dump::Postgres, feature_category: :backup_restore do
 
         postgres.dump(dump_file_name, pg_dump)
 
-        expect(File.exist?(dump_file_name)).to eq(true)
+        expect(File.exist?(dump_file_name)).to be(true)
       end
     end
 
@@ -57,7 +57,7 @@ RSpec.describe Backup::Dump::Postgres, feature_category: :backup_restore do
       it 'creates a dump file' do
         postgres.dump(dump_file_name, pg_dump)
 
-        expect(File.exist?(dump_file_name)).to eq(true)
+        expect(File.exist?(dump_file_name)).to be(true)
       end
 
       it 'passes through tee instead of gzip' do
@@ -73,7 +73,7 @@ RSpec.describe Backup::Dump::Postgres, feature_category: :backup_restore do
           postgres.dump(dump_file_name, pg_dump)
         end.to output(/Using custom COMPRESS_CMD 'tee'/).to_stdout
 
-        expect(File.exist?(dump_file_name)).to eq(true)
+        expect(File.exist?(dump_file_name)).to be(true)
       end
     end
   end

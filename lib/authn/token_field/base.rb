@@ -70,8 +70,11 @@ module Authn
 
       # Resets the token, but only saves when the database is in read & write mode
       def reset_token!(token_owner_record)
-        write_new_token(token_owner_record)
-        token_owner_record.save! if Gitlab::Database.read_write?
+        ::Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+          url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+          write_new_token(token_owner_record)
+          token_owner_record.save! if Gitlab::Database.read_write?
+        end
       end
 
       def expires_at(token_owner_record)

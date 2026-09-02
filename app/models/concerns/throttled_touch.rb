@@ -8,6 +8,11 @@ module ThrottledTouch
 
   def touch(*args, **kwargs)
     last_updated_at = updated_at_previously_was || updated_at
-    super if (Time.zone.now - last_updated_at) > TOUCH_INTERVAL
+    return unless (Time.zone.now - last_updated_at) > TOUCH_INTERVAL
+
+    Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+      super
+    end
   end
 end

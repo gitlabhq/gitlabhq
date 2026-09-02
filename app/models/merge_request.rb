@@ -75,7 +75,6 @@ class MergeRequest < ApplicationRecord
   has_one :predictions, inverse_of: :merge_request
   delegate :suggested_reviewers, to: :predictions
 
-  has_one :risk_assessment, class_name: 'MergeRequests::RiskAssessment', inverse_of: :merge_request
   has_one :merge_schedule, class_name: 'MergeRequests::MergeSchedule', inverse_of: :merge_request
   has_one :metrics, inverse_of: :merge_request, autosave: true
   # NOTE: We do not want to autosave merge_data as this is saved manually

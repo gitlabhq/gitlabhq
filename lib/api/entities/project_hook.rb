@@ -19,6 +19,7 @@ module API
       expose :resource_access_token_events, documentation: { type: 'Boolean' }
       expose :resource_deploy_token_events, documentation: { type: 'Boolean' }
       expose :vulnerability_events, documentation: { type: 'Boolean' }
+      expose :duo_flow_callback_enabled, documentation: { type: 'Boolean' }
     end
   end
 end

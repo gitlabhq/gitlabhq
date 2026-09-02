@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry, feature_category: :pipeline_composi
         allow(build).to receive(:retryable?).and_return(false)
       end
 
-      specify { expect(subject).to eq(false) }
+      specify { expect(subject).to be(false) }
     end
 
     context 'with legacy retry:when aliases' do

@@ -31,7 +31,7 @@ RSpec.describe Gitlab::BitbucketImport::ParallelImporter, feature_category: :imp
       expect(Gitlab::BitbucketImport::Stage::ImportRepositoryWorker)
         .to receive_message_chain(:with_status, :perform_async).with(project.id)
 
-      expect(importer.execute).to eq(true)
+      expect(importer.execute).to be(true)
     end
 
     it 'sets the JID in Redis' do

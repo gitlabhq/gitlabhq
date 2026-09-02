@@ -40,6 +40,29 @@ describe('IssuableTabs', () => {
     setLanguage(null);
   });
 
+  const findTopArea = () => wrapper.find('.top-area');
+
+  describe('top area', () => {
+    it('is not rendered when there are no tabs and no nav actions', () => {
+      wrapper = shallowMount(IssuableTabs, { propsData: { tabs: [], currentTab: 'opened' } });
+
+      expect(findTopArea().exists()).toBe(false);
+    });
+
+    it.each`
+      case             | propsData                               | slots
+      ${'tabs'}        | ${{ tabs: mockIssuableListProps.tabs }} | ${{}}
+      ${'nav actions'} | ${{ tabs: [] }}                         | ${{ 'nav-actions': '<button />' }}
+    `('is rendered when there are $case', ({ propsData, slots }) => {
+      wrapper = shallowMount(IssuableTabs, {
+        propsData: { currentTab: 'opened', ...propsData },
+        slots,
+      });
+
+      expect(findTopArea().exists()).toBe(true);
+    });
+  });
+
   const findAllGlBadges = () => wrapper.findAllComponents(GlBadge);
   const findAllGlTabs = () => wrapper.findAllComponents(GlTab);
 

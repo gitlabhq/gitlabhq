@@ -26,6 +26,12 @@ class IsolatedRequestStore
   end
 end
 
+class SuppressWritesOnGetAnalyzer
+  def call(_worker, _msg, _queue, &blk)
+    Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.with_suppressed(true, &blk)
+  end
+end
+
 class IsolatedCurrent
   def call(_worker, msg, queue)
     old_current = Current.attributes.except(:organization_assigned)

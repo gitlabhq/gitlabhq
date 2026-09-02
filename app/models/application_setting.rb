@@ -1346,8 +1346,11 @@ class ApplicationSetting < ApplicationRecord
 
     check_schema!
 
-    transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
-      super
+    Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+      transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
+        super
+      end
     end
   rescue ActiveRecord::RecordNotUnique
     # We already have an ApplicationSetting record, so just return it.

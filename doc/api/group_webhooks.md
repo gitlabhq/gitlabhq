@@ -500,8 +500,15 @@ Example response:
 - `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
 - `signing_token` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
 - Feature flag `webhook_signing_token` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/596374) in GitLab 19.1.
+- `duo_flow_callback_enabled` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249149) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `duo_flow_callback_hooks`. Disabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of the `duo_flow_callback_enabled` attribute is controlled by a feature flag.
+> For more information, see the history.
+> Enabling the attribute where the feature is unavailable returns `400 Bad request`.
+> Disabling it is always accepted.
 
 Creates a group hook for a specified group.
 
@@ -522,6 +529,7 @@ Supported attributes:
 | `custom_webhook_template`      | String            | No       | Custom webhook template for the hook. |
 | `deployment_events`            | Boolean           | No       | Trigger hook on deployment events. |
 | `description`                  | String            | No       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
+| `duo_flow_callback_enabled`    | Boolean           | No       | Send GitLab Duo flow events to the hook. |
 | `enable_ssl_verification`      | Boolean           | No       | Do SSL verification when triggering the hook. |
 | `feature_flag_events`          | Boolean           | No       | Trigger hook on feature flag events. |
 | `issues_events`                | Boolean           | No       | Trigger hook on issue events. |
@@ -601,8 +609,15 @@ Example response:
 - `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
 - `signing_token` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
 - Feature flag `webhook_signing_token` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/596374) in GitLab 19.1.
+- `duo_flow_callback_enabled` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249149) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `duo_flow_callback_hooks`. Disabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of the `duo_flow_callback_enabled` attribute is controlled by a feature flag.
+> For more information, see the history.
+> Enabling the attribute where the feature is unavailable returns `400 Bad request`.
+> Disabling it is always accepted.
 
 Updates a group hook for a specified group.
 
@@ -624,6 +639,7 @@ Supported attributes:
 | `custom_webhook_template`                   | String            | No       | Custom webhook template for the hook. |
 | `deployment_events`                         | Boolean           | No       | Trigger hook on deployment events. |
 | `description`                               | String            | No       | Description of the hook. |
+| `duo_flow_callback_enabled`                 | Boolean           | No       | Send GitLab Duo flow events to the hook. |
 | `enable_ssl_verification`                   | Boolean           | No       | Do SSL verification when triggering the hook. |
 | `feature_flag_events`                       | Boolean           | No       | Trigger hook on feature flag events. |
 | `issues_events`                             | Boolean           | No       | Trigger hook on issue events. |

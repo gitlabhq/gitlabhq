@@ -37,7 +37,7 @@ RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, fea
 
         base_models_for_backup.each_key do |database_name|
           filename = database_name == 'main' ? 'database.sql.gz' : "#{database_name}_database.sql.gz"
-          expect(File.exist?(File.join(dir, filename))).to eq(true)
+          expect(File.exist?(File.join(dir, filename))).to be(true)
         end
       end
     end
@@ -350,7 +350,7 @@ RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, fea
             OPENBAO_DATABASE_SSLMODE OPENBAO_DATABASE_CONNECT_TIMEOUT OPENBAO_DATABASE_USER]
         )
 
-        expect(databases.send(:include_openbao_db?)).to eq(false)
+        expect(databases.send(:include_openbao_db?)).to be(false)
       end
     end
 
@@ -361,7 +361,7 @@ RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, fea
             OPENBAO_DATABASE_USER OPENBAO_DATABASE_PASSWORD]
         )
 
-        expect(databases.send(:include_openbao_db?)).to eq(true)
+        expect(databases.send(:include_openbao_db?)).to be(true)
       end
     end
 
@@ -369,7 +369,7 @@ RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, fea
       it 'returns false' do
         allow(ENV).to receive(:keys).and_return([])
 
-        expect(databases.send(:include_openbao_db?)).to eq(false)
+        expect(databases.send(:include_openbao_db?)).to be(false)
       end
     end
   end

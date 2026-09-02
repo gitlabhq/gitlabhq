@@ -3,6 +3,11 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
+  subject(:transpiler) { described_class.new(policy_scope, policy_name: policy_name) }
+
+  let(:policy_scope) { {} }
+  let(:policy_name) { "P" }
+
   def fixture_rego(name)
     File.read(File.expand_path("../../fixtures/scope/#{name}/policy.rego", __dir__))
   end
@@ -11,197 +16,228 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
     JSON.parse(File.read(File.expand_path("../../fixtures/scope/#{name}/dimensions.json", __dir__)))
   end
 
-  def transpile_including(*entries)
-    described_class.new({ "projects" => { "including" => entries } }, policy_name: "P").transpile
-  end
+  describe "#transpile" do
+    subject(:rego) { transpiler.transpile }
 
-  def transpile_excluding(*entries)
-    described_class.new({ "projects" => { "excluding" => entries } }, policy_name: "P").transpile
-  end
-
-  describe ".transpile" do
     # Whole-string comparison against committed fixtures, rather than matching
     # fragments, because `scope_rego` is stored and evaluated as text. Its
     # whitespace and rule ordering are part of what we ship, and fragment
     # matching would let them drift unnoticed.
     context "with golden fixtures" do
-      it "regenerates no_scope byte-for-byte" do
-        transpiler = described_class.new(nil, policy_name: "Applies everywhere")
+      context "with no scope at all" do
+        let(:policy_scope) { nil }
+        let(:policy_name) { "Applies everywhere" }
 
-        expect(transpiler.transpile).to eq(fixture_rego("no_scope"))
-        expect(transpiler.scope_dimensions).to eq(fixture_dimensions("no_scope"))
+        it "regenerates no_scope byte-for-byte" do
+          expect(rego).to eq(fixture_rego("no_scope"))
+          expect(transpiler.scope_dimensions).to eq(fixture_dimensions("no_scope"))
+        end
       end
 
-      it "regenerates applies_framework byte-for-byte" do
-        transpiler = described_class.new(
-          { compliance_frameworks: [{ id: 5 }], projects: { excluding: [{ type: "archived" }] } },
-          policy_name: "Scoped to compliance framework 5"
-        )
+      context "with a compliance framework and an archived exclusion" do
+        let(:policy_scope) do
+          { compliance_frameworks: [{ id: 5 }], projects: { excluding: [{ type: "archived" }] } }
+        end
 
-        expect(transpiler.transpile).to eq(fixture_rego("applies_framework"))
-        expect(transpiler.scope_dimensions).to eq(fixture_dimensions("applies_framework"))
+        let(:policy_name) { "Scoped to compliance framework 5" }
+
+        it "regenerates applies_framework byte-for-byte" do
+          expect(rego).to eq(fixture_rego("applies_framework"))
+          expect(transpiler.scope_dimensions).to eq(fixture_dimensions("applies_framework"))
+        end
       end
 
-      it "regenerates groups_any byte-for-byte" do
-        transpiler = described_class.new(
-          { match_mode: "any", groups: { including: [{ id: 10 }] }, business_impact: { including: [{ id: 1 }] } },
-          policy_name: "Scoped to groups (any)"
-        )
+      context "with groups and business impact under match_mode any" do
+        let(:policy_scope) do
+          { match_mode: "any", groups: { including: [{ id: 10 }] }, business_impact: { including: [{ id: 1 }] } }
+        end
 
-        expect(transpiler.transpile).to eq(fixture_rego("groups_any"))
-        expect(transpiler.scope_dimensions).to eq(fixture_dimensions("groups_any"))
+        let(:policy_name) { "Scoped to groups (any)" }
+
+        it "regenerates groups_any byte-for-byte" do
+          expect(rego).to eq(fixture_rego("groups_any"))
+          expect(transpiler.scope_dimensions).to eq(fixture_dimensions("groups_any"))
+        end
       end
 
-      it "regenerates excluded_archived byte-for-byte" do
-        transpiler = described_class.new(
-          { projects: { excluding: [{ type: "archived" }] } },
-          policy_name: "Excluding archived projects"
-        )
+      context "with an archived exclusion alone" do
+        let(:policy_scope) { { projects: { excluding: [{ type: "archived" }] } } }
+        let(:policy_name) { "Excluding archived projects" }
 
-        expect(transpiler.transpile).to eq(fixture_rego("excluded_archived"))
-        expect(transpiler.scope_dimensions).to eq(fixture_dimensions("excluded_archived"))
+        it "regenerates excluded_archived byte-for-byte" do
+          expect(rego).to eq(fixture_rego("excluded_archived"))
+          expect(transpiler.scope_dimensions).to eq(fixture_dimensions("excluded_archived"))
+        end
       end
     end
 
     context "with individual scope constructs" do
-      it "emits a scoped block with include (all) + exclude, ending in a total applies rule" do
-        rego = described_class.new(
+      context "with an include (all) and an exclude" do
+        let(:policy_scope) do
           {
             match_mode: "all",
             compliance_frameworks: [{ id: 5 }],
             projects: { including: [{ id: 42 }, { id: 43 }], excluding: [{ id: 77 }, { type: "archived" }] }
-          },
-          policy_name: "Block denied licenses"
-        ).transpile
+          }
+        end
 
-        expect(rego).to include("package gitlab.scope")
-        expect(rego).to include('# policy "Block denied licenses" (match_mode: all)')
-        expect(rego).to include("default excluded := false")
-        expect(rego).to include("input.project.id in {77}")
-        expect(rego).to include("input.project.archived == true")
-        expect(rego).to include("some framework_id in input.compliance_frameworks")
-        expect(rego).to include("framework_id in {5}")
-        expect(rego).to include("input.project.id in {42, 43}")
-        expect(rego).to include("default applies := false")
-        expect(rego).to include("applies if {\n\tnot excluded\n\tincluded\n}")
+        let(:policy_name) { "Block denied licenses" }
+
+        it "emits a scoped block, ending in a total applies rule" do
+          expect(rego).to include("package gitlab.scope")
+          expect(rego).to include('# policy "Block denied licenses" (match_mode: all)')
+          expect(rego).to include("default excluded := false")
+          expect(rego).to include("input.project.id in {77}")
+          expect(rego).to include("input.project.archived == true")
+          expect(rego).to include("some framework_id in input.compliance_frameworks")
+          expect(rego).to include("framework_id in {5}")
+          expect(rego).to include("input.project.id in {42, 43}")
+          expect(rego).to include("default applies := false")
+          expect(rego).to include("applies if {\n\tnot excluded\n\tincluded\n}")
+        end
       end
 
-      # The engine queries `data.gitlab.scope.applies` and nothing else, so any further
-      # rule would be text nobody reads in a stored, length-capped column. An earlier
-      # revision exposed a `results` set and `applicable`/`not_applicable`/`applicability`
-      # aggregates over it, which only pay off when several policies' programs answer in
-      # one query, and these rule names are not namespaced per policy, so co-loading them
-      # into one engine ORs them into each other instead.
-      it "exposes no rule beyond applies and the two it is derived from" do
-        rego = described_class.new({ compliance_frameworks: [{ id: 5 }] }, policy_name: "P").transpile
+      context "with a compliance framework as the only dimension" do
+        let(:policy_scope) { { compliance_frameworks: [{ id: 5 }] } }
 
-        rule_names = rego.scan(/^(?:default )?(\w+)(?= if | := )/).flatten.uniq
+        # The engine queries `data.gitlab.scope.applies` and nothing else, so any further
+        # rule would be text nobody reads in a stored, length-capped column. An earlier
+        # revision exposed a `results` set and `applicable`/`not_applicable`/`applicability`
+        # aggregates over it, which only pay off when several policies' programs answer in
+        # one query, and these rule names are not namespaced per policy, so co-loading them
+        # into one engine ORs them into each other instead.
+        it "exposes no rule beyond applies and the two it is derived from" do
+          rule_names = rego.scan(/^(?:default )?(\w+)(?= if | := )/).flatten.uniq
 
-        expect(rule_names).to contain_exactly("excluded", "included", "applies")
+          expect(rule_names).to contain_exactly("excluded", "included", "applies")
+        end
       end
 
-      it "emits one included body per dimension for match_mode any" do
-        rego = described_class.new(
-          { match_mode: "any", groups: { including: [{ id: 10 }] }, business_impact: { including: [{ id: 1 }] } },
-          policy_name: "P"
-        ).transpile
+      context "with two dimensions under match_mode any" do
+        let(:policy_scope) do
+          { match_mode: "any", groups: { including: [{ id: 10 }] }, business_impact: { including: [{ id: 1 }] } }
+        end
 
-        expect(rego.scan("included if {").length).to eq(2)
-        expect(rego).to include("some group_id in input.groups")
-        expect(rego).to include("some business_impact_id in input.security_attributes.business_impact")
+        it "emits one included body per dimension" do
+          expect(rego.scan("included if {").length).to eq(2)
+          expect(rego).to include("some group_id in input.groups")
+          expect(rego).to include("some business_impact_id in input.security_attributes.business_impact")
+        end
       end
 
-      it "emits an unconditional applies rule for a no-scope (empty) policy" do
-        rego = described_class.new({}, policy_name: "Unscoped").transpile
+      context "with an empty scope" do
+        let(:policy_scope) { {} }
+        let(:policy_name) { "Unscoped" }
 
-        expect(rego).to include('# policy "Unscoped"')
-        expect(rego).to include("no policy_scope: applies to all projects")
-        expect(rego).to include("applies := true")
-        expect(rego).not_to include("default applies")
+        it "emits an unconditional applies rule" do
+          expect(rego).to include('# policy "Unscoped"')
+          expect(rego).to include("no policy_scope: applies to all projects")
+          expect(rego).to include("applies := true")
+          expect(rego).not_to include("default applies")
+        end
       end
 
-      it "emits a constant included rule when only excludes are present" do
-        rego = described_class.new(
-          { projects: { excluding: [{ id: 9 }] } },
-          policy_name: "P"
-        ).transpile
+      context "with only excludes present" do
+        let(:policy_scope) { { projects: { excluding: [{ id: 9 }] } } }
 
-        expect(rego).to include("included if { true }")
+        it "emits a constant included rule" do
+          expect(rego).to include("included if { true }")
+        end
       end
     end
 
     context "with input coercion" do
-      it "accepts bare integer ids as well as { id: n } hashes" do
-        from_hashes = described_class.new({ compliance_frameworks: [{ id: 5 }] }, policy_name: "P").transpile
-        from_ints = described_class.new({ compliance_frameworks: [5] }, policy_name: "P").transpile
+      context "with bare integer ids" do
+        let(:policy_scope) { { compliance_frameworks: [5] } }
 
-        expect(from_ints).to eq(from_hashes)
+        it "compiles them the same as { id: n } hashes" do
+          from_hashes = described_class.new({ compliance_frameworks: [{ id: 5 }] },
+            policy_name: policy_name).transpile
+
+          expect(rego).to eq(from_hashes)
+        end
       end
 
-      it "deduplicates and sorts ids, so authoring order does not change the stored text" do
-        rego = described_class.new(
-          { projects: { including: [{ id: 5 }, { id: 3 }, { id: 5 }] } },
-          policy_name: "P"
-        ).transpile
+      context "with ids repeated and out of order" do
+        let(:policy_scope) { { projects: { including: [{ id: 5 }, { id: 3 }, { id: 5 }] } } }
 
-        expect(rego).to include("input.project.id in {3, 5}")
+        it "deduplicates and sorts them, so authoring order does not change the stored text" do
+          expect(rego).to include("input.project.id in {3, 5}")
+        end
       end
 
-      it "treats string and symbol keys identically (jsonb round-trips as strings)" do
-        with_symbols = described_class.new({ groups: { including: [{ id: 10 }] } }, policy_name: "P").transpile
-        string_keyed_scope = { "groups" => { "including" => [{ "id" => 10 }] } }
-        with_strings = described_class.new(string_keyed_scope, policy_name: "P").transpile
+      context "with string keys, as jsonb round-trips them" do
+        let(:policy_scope) { { "groups" => { "including" => [{ "id" => 10 }] } } }
 
-        expect(with_strings).to eq(with_symbols)
+        it "compiles them the same as symbol keys" do
+          with_symbols = described_class.new({ groups: { including: [{ id: 10 }] } },
+            policy_name: policy_name).transpile
+
+          expect(rego).to eq(with_symbols)
+        end
       end
 
-      it "treats string and symbol values identically" do
-        symbol_valued = { match_mode: :any, groups: { including: [{ id: 10 }] } }
-        round_tripped = JSON.parse(JSON.generate(symbol_valued))
+      context "with symbol values" do
+        let(:policy_scope) { { match_mode: :any, groups: { including: [{ id: 10 }] } } }
 
-        expect(described_class.new(symbol_valued, policy_name: "P").transpile)
-          .to eq(described_class.new(round_tripped, policy_name: "P").transpile)
+        it "compiles them the same as their JSON round trip" do
+          round_tripped = JSON.parse(JSON.generate(policy_scope))
+
+          expect(rego).to eq(described_class.new(round_tripped, policy_name: policy_name).transpile)
+        end
       end
 
-      it "honours a symbol project type in an excluding entry" do
-        rego = described_class.new({ projects: { excluding: [{ type: :personal }] } }, policy_name: "P").transpile
+      context "with a symbol project type in an excluding entry" do
+        let(:policy_scope) { { projects: { excluding: [{ type: :personal }] } } }
 
-        expect(rego).to include("personal")
+        it "honours it" do
+          expect(rego).to include("personal")
+        end
       end
 
-      it "accepts ids delivered as strings, as a form-encoded request sends them" do
-        from_strings = described_class.new(
-          { "compliance_frameworks" => [{ "id" => "5" }] },
-          policy_name: "P"
-        ).transpile
-        from_integers = described_class.new({ compliance_frameworks: [{ id: 5 }] }, policy_name: "P").transpile
+      context "with ids delivered as strings, as a form-encoded request sends them" do
+        let(:policy_scope) { { "compliance_frameworks" => [{ "id" => "5" }] } }
 
-        expect(from_strings).to eq(from_integers)
+        it "compiles them the same as integers" do
+          from_integers = described_class.new({ compliance_frameworks: [{ id: 5 }] },
+            policy_name: policy_name).transpile
+
+          expect(rego).to eq(from_integers)
+        end
       end
 
-      it "accepts bare string ids as well as { id: \"n\" } hashes" do
-        rego = described_class.new(
-          { "projects" => { "including" => ["5", { "id" => "3" }] } },
-          policy_name: "P"
-        ).transpile
+      context "with bare string ids alongside { id: \"n\" } hashes" do
+        let(:policy_scope) { { "projects" => { "including" => ["5", { "id" => "3" }] } } }
 
-        expect(rego).to include("input.project.id in {3, 5}")
+        it "accepts both" do
+          expect(rego).to include("input.project.id in {3, 5}")
+        end
       end
 
-      it "keeps an entry that declares a condition without naming an id" do
-        rego = described_class.new({ "projects" => { "including" => [{}] } }, policy_name: "P").transpile
+      context "with an entry that declares a condition without naming an id" do
+        let(:policy_scope) { { "projects" => { "including" => [{}] } } }
 
-        expect(rego).to include("input.project.id in set()")
+        it "keeps the entry" do
+          expect(rego).to include("input.project.id in set()")
+        end
+      end
+    end
+
+    context "with a projects.including criterion" do
+      context "with a padded id" do
+        let(:policy_scope) { { "projects" => { "including" => ["007"] } } }
+
+        it "accepts it, since the padding does not change which id it names" do
+          expect(rego).to include("input.project.id in {7}")
+        end
       end
 
-      it "keeps an entry whose id is null, since a null names no id either" do
-        rego = transpile_excluding(nil, { "id" => 7 })
+      context "with an id at the widest a bigint holds" do
+        let(:policy_scope) { { "projects" => { "including" => ["9223372036854775807"] } } }
 
-        expect(rego).to include("input.project.id in {7}")
-      end
-
-      it "accepts a padded id, since the padding does not change which id it names" do
-        expect(transpile_including("007")).to include("input.project.id in {7}")
+        it "accepts it" do
+          expect(rego).to include("input.project.id in {9223372036854775807}")
+        end
       end
 
       [
@@ -215,32 +251,13 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
         ["a non-ASCII digit", "١٢٣"],
         ["an id in a non-ASCII encoding", "5".encode("UTF-16")]
       ].each do |description, value|
-        it "raises ValidationError for #{description}, rather than silently dropping it" do
-          expect { transpile_including(value) }
-            .to raise_error(Gitlab::PolicyStore::ValidationError, /is not an id/)
+        context "with #{description}" do
+          let(:policy_scope) { { "projects" => { "including" => [value] } } }
+
+          it "raises ValidationError, rather than silently dropping it" do
+            expect { rego }.to raise_error(Gitlab::PolicyStore::ValidationError, /is not an id/)
+          end
         end
-      end
-
-      it "raises ValidationError for an id whose bytes are not valid UTF-8, not an encoding error" do
-        invalid_utf8 = (+"\xFF5").force_encoding("UTF-8")
-
-        expect { transpile_including(invalid_utf8) }
-          .to raise_error(Gitlab::PolicyStore::ValidationError, /text that is not valid UTF-8/)
-      end
-
-      it "names the encoding when that is what refused the id, since the bytes can read as one" do
-        expect { transpile_including("5".encode("UTF-32BE")) }
-          .to raise_error(Gitlab::PolicyStore::ValidationError, /text encoded as UTF-32BE/)
-      end
-
-      it "refuses a value that is not an id wherever it is authored, not only under projects" do
-        expect { described_class.new({ "groups" => { "including" => ["1; injected"] } }, policy_name: "P").transpile }
-          .to raise_error(Gitlab::PolicyStore::ValidationError, /is not an id/)
-      end
-
-      it "names the offending value, so the caller can find it" do
-        expect { transpile_including(3, "1; injected") }
-          .to raise_error(Gitlab::PolicyStore::ValidationError, /"1; injected"/)
       end
 
       [
@@ -253,69 +270,142 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
         ["a string past the widest a bigint holds", "9223372036854775808"],
         ["a digit run one longer than any id", "9" * 20]
       ].each do |description, value|
-        it "raises ValidationError for #{description}, which no project or group can have" do
-          expect { transpile_including(value) }
-            .to raise_error(Gitlab::PolicyStore::ValidationError, /outside the range 1 to 9223372036854775807/)
+        context "with #{description}" do
+          let(:policy_scope) { { "projects" => { "including" => [value] } } }
+
+          it "raises ValidationError, which no project or group can have" do
+            expect { rego }
+              .to raise_error(Gitlab::PolicyStore::ValidationError, /outside the range 1 to 9223372036854775807/)
+          end
         end
       end
 
-      it "accepts an id at the widest a bigint holds" do
-        expect(transpile_including("9223372036854775807"))
-          .to include("input.project.id in {9223372036854775807}")
+      context "with bytes that are not valid UTF-8" do
+        let(:policy_scope) { { "projects" => { "including" => [(+"\xFF5").force_encoding("UTF-8")] } } }
+
+        it "raises ValidationError, not an encoding error" do
+          expect { rego }
+            .to raise_error(Gitlab::PolicyStore::ValidationError, /text that is not valid UTF-8/)
+        end
       end
 
-      it "elides a string too long to be an id rather than echoing it", :aggregate_failures do
-        expect { transpile_including("9" * 65) }
-          .to raise_error(Gitlab::PolicyStore::ValidationError) { |error|
-            expect(error.message.length).to be < 200
-            expect(error.message).to end_with("...")
-          }
+      context "with an id whose encoding is what refused it, since the bytes can read as one" do
+        let(:policy_scope) { { "projects" => { "including" => ["5".encode("UTF-32BE")] } } }
+
+        it "names the encoding" do
+          expect { rego }
+            .to raise_error(Gitlab::PolicyStore::ValidationError, /text encoded as UTF-32BE/)
+        end
       end
 
-      it "names a container by its type, so nothing it holds is rendered" do
-        expect { transpile_including({ "id" => [10**5_000] }) }
-          .to raise_error(Gitlab::PolicyStore::ValidationError, /is not an id: Array/)
+      context "with one valid id and one that is not an id" do
+        let(:policy_scope) { { "projects" => { "including" => [3, "1; injected"] } } }
+
+        it "names the offending value, so the caller can find it" do
+          expect { rego }
+            .to raise_error(Gitlab::PolicyStore::ValidationError, /"1; injected"/)
+        end
       end
 
-      it "refuses an id too wide to render without rendering it", :aggregate_failures do
-        expect { transpile_including(10**5_000) }
-          .to raise_error(Gitlab::PolicyStore::ValidationError) { |error|
-            expect(error.message.length).to be < 100
-            expect(error.message).not_to include("0000")
-          }
+      context "with a string too long to be an id" do
+        let(:policy_scope) { { "projects" => { "including" => ["9" * 65] } } }
+
+        it "elides it rather than echoing it", :aggregate_failures do
+          expect { rego }
+            .to raise_error(Gitlab::PolicyStore::ValidationError) { |error|
+              expect(error.message.length).to be < 200
+              expect(error.message).to end_with("...")
+            }
+        end
+      end
+
+      context "with a container where an id belongs" do
+        let(:policy_scope) { { "projects" => { "including" => [{ "id" => [10**5_000] }] } } }
+
+        it "names it by its type, so nothing it holds is rendered" do
+          expect { rego }
+            .to raise_error(Gitlab::PolicyStore::ValidationError, /is not an id: Array/)
+        end
+      end
+
+      context "with an id too wide to render" do
+        let(:policy_scope) { { "projects" => { "including" => [10**5_000] } } }
+
+        it "refuses it without rendering it", :aggregate_failures do
+          expect { rego }
+            .to raise_error(Gitlab::PolicyStore::ValidationError) { |error|
+              expect(error.message.length).to be < 100
+              expect(error.message).not_to include("0000")
+            }
+        end
+      end
+    end
+
+    context "with a value that is not an id outside projects" do
+      let(:policy_scope) { { "groups" => { "including" => ["1; injected"] } } }
+
+      it "refuses it wherever it is authored" do
+        expect { rego }.to raise_error(Gitlab::PolicyStore::ValidationError, /is not an id/)
       end
     end
 
     context "with a criterion that is not a list of ids" do
-      it "raises rather than compiling an inclusion that matches nothing" do
-        expect { described_class.new({ "projects" => { "including" => "5" } }, policy_name: "P").transpile }
-          .to raise_error(Gitlab::PolicyStore::ValidationError, /criterion that is not a list of ids: "5"/)
+      context "with a string where an inclusion list belongs" do
+        let(:policy_scope) { { "projects" => { "including" => "5" } } }
+
+        it "raises rather than compiling an inclusion that matches nothing" do
+          expect { rego }
+            .to raise_error(Gitlab::PolicyStore::ValidationError, /criterion that is not a list of ids: "5"/)
+        end
       end
 
-      it "raises rather than widening a policy whose exclusion it cannot read" do
-        expect { described_class.new({ "projects" => { "excluding" => { "id" => 5 } } }, policy_name: "P").transpile }
-          .to raise_error(Gitlab::PolicyStore::ValidationError, /criterion that is not a list of ids: Hash/)
+      context "with a hash where an exclusion list belongs" do
+        let(:policy_scope) { { "projects" => { "excluding" => { "id" => 5 } } } }
+
+        it "raises rather than widening a policy whose exclusion it cannot read" do
+          expect { rego }
+            .to raise_error(Gitlab::PolicyStore::ValidationError, /criterion that is not a list of ids: Hash/)
+        end
       end
 
-      it "refuses a bare Integer without rendering it, however wide it is", :aggregate_failures do
-        expect { described_class.new({ "projects" => { "including" => 10**5_000 } }, policy_name: "P").transpile }
-          .to raise_error(Gitlab::PolicyStore::ValidationError) { |error|
-            expect(error.message).to end_with("Integer")
-            expect(error.message.length).to be < 100
-          }
+      context "with a bare Integer where an inclusion list belongs" do
+        let(:policy_scope) { { "projects" => { "including" => 10**5_000 } } }
+
+        it "refuses it without rendering it, however wide it is", :aggregate_failures do
+          expect { rego }
+            .to raise_error(Gitlab::PolicyStore::ValidationError) { |error|
+              expect(error.message).to end_with("Integer")
+              expect(error.message.length).to be < 100
+            }
+        end
       end
     end
 
-    context "with an id it cannot compile on the excluding side" do
-      # An excluded id that is dropped rather than refused removes the whole
-      # `scope_excluded` body, so the policy applies to what the author excluded.
-      it "raises rather than widening the policy to the project it was told to exclude" do
-        expect { transpile_excluding("1; injected") }
-          .to raise_error(Gitlab::PolicyStore::ValidationError, /is not an id/)
+    context "with a projects.excluding criterion" do
+      context "with an entry whose id is null" do
+        let(:policy_scope) { { "projects" => { "excluding" => [nil, { "id" => 7 }] } } }
+
+        it "keeps the entry, since a null names no id either" do
+          expect(rego).to include("input.project.id in {7}")
+        end
       end
 
-      it "keeps compiling an exclusion that names no id, since that is not a failed id" do
-        expect(transpile_excluding({ "type" => "personal" })).to include("input.project.personal == true")
+      # An excluded id that is dropped rather than refused removes the whole
+      # `scope_excluded` body, so the policy applies to what the author excluded.
+      context "with an id it cannot compile" do
+        let(:policy_scope) { { "projects" => { "excluding" => ["1; injected"] } } }
+
+        it "raises rather than widening the policy to the project it was told to exclude" do
+          expect { rego }.to raise_error(Gitlab::PolicyStore::ValidationError, /is not an id/)
+        end
+      end
+
+      context "with an exclusion that names no id" do
+        let(:policy_scope) { { "projects" => { "excluding" => [{ "type" => "personal" }] } } }
+
+        it "keeps compiling it, since that is not a failed id" do
+          expect(rego).to include("input.project.personal == true")
+        end
       end
     end
 
@@ -332,50 +422,62 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
         rego.include?("applies := true")
       end
 
-      it "matches nothing when compliance_frameworks declares an entry with no id" do
-        rego = described_class.new({ compliance_frameworks: [{}] }, policy_name: "P").transpile
+      context "when compliance_frameworks declares an entry with no id" do
+        let(:policy_scope) { { compliance_frameworks: [{}] } }
 
-        expect(applies_to_all?(rego)).to be(false)
-        expect(rego).to include("framework_id in set()")
+        it "matches nothing" do
+          expect(applies_to_all?(rego)).to be(false)
+          expect(rego).to include("framework_id in set()")
+        end
       end
 
-      it "matches nothing when projects.including declares an entry with no id" do
-        rego = described_class.new({ projects: { including: [{}] } }, policy_name: "P").transpile
+      context "when projects.including declares an entry with no id" do
+        let(:policy_scope) { { projects: { including: [{}] } } }
 
-        expect(applies_to_all?(rego)).to be(false)
-        expect(rego).to include("input.project.id in set()")
+        it "matches nothing" do
+          expect(applies_to_all?(rego)).to be(false)
+          expect(rego).to include("input.project.id in set()")
+        end
       end
 
-      it "matches nothing when groups.including declares an entry with no id" do
-        rego = described_class.new({ groups: { including: [{}] } }, policy_name: "P").transpile
+      context "when groups.including declares an entry with no id" do
+        let(:policy_scope) { { groups: { including: [{}] } } }
 
-        expect(applies_to_all?(rego)).to be(false)
-        expect(rego).to include("group_id in set()")
+        it "matches nothing" do
+          expect(applies_to_all?(rego)).to be(false)
+          expect(rego).to include("group_id in set()")
+        end
       end
 
       # The checker returns true here: an exclusion naming no project excludes
       # nothing, and an absent inclusion restricts nothing.
-      it "applies everywhere when projects.excluding declares an entry with no id" do
-        rego = described_class.new({ projects: { excluding: [{}] } }, policy_name: "P").transpile
+      context "when projects.excluding declares an entry with no id" do
+        let(:policy_scope) { { projects: { excluding: [{}] } } }
 
-        expect(rego).to include("included if { true }")
-        expect(rego).not_to include("set()")
+        it "applies everywhere" do
+          expect(rego).to include("included if { true }")
+          expect(rego).not_to include("set()")
+        end
       end
 
       # An empty array is not a declared condition, for the checker or here.
-      it "applies to all projects when compliance_frameworks is an empty array" do
-        rego = described_class.new({ compliance_frameworks: [] }, policy_name: "P").transpile
+      context "when compliance_frameworks is an empty array" do
+        let(:policy_scope) { { compliance_frameworks: [] } }
 
-        expect(applies_to_all?(rego)).to be(true)
+        it "applies to all projects" do
+          expect(applies_to_all?(rego)).to be(true)
+        end
       end
 
       # The root schema has no `additionalProperties: false`, so a misspelled key
       # validates. The checker sees no condition and applies the policy everywhere,
       # and matching that behaviour is deliberate rather than incidental.
-      it "applies to all projects when the only key is one it does not recognize" do
-        rego = described_class.new({ complience_frameworks: [{ id: 5 }] }, policy_name: "P").transpile
+      context "when the only key is one it does not recognize" do
+        let(:policy_scope) { { complience_frameworks: [{ id: 5 }] } }
 
-        expect(applies_to_all?(rego)).to be(true)
+        it "applies to all projects" do
+          expect(applies_to_all?(rego)).to be(true)
+        end
       end
     end
 
@@ -385,57 +487,67 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
     # `to_json` is doing real work here; this guards against a refactor to plain
     # interpolation.
     context "with a name that needs escaping" do
-      it "escapes the policy name in the generated Rego" do
-        rego = described_class.new(nil, policy_name: %(A "quoted"\nname)).transpile
+      let(:policy_scope) { nil }
+      let(:policy_name) { %(A "quoted"\nname) }
 
+      it "escapes the policy name in the generated Rego" do
         expect(rego).to include('A \"quoted\"\nname')
       end
     end
   end
 
   describe "#scope_dimensions" do
-    it "returns an empty array for an unscoped policy" do
-      dimensions = described_class.new(nil, policy_name: "P").scope_dimensions
+    subject(:dimensions) { transpiler.scope_dimensions }
 
-      expect(dimensions).to eq([])
+    context "with an unscoped policy" do
+      let(:policy_scope) { nil }
+
+      it "returns an empty array" do
+        expect(dimensions).to eq([])
+      end
     end
 
-    it "emits a path once when both an inclusion and an exclusion reference it" do
-      dimensions = described_class.new(
-        { projects: { including: [{ id: 1 }], excluding: [{ id: 2 }] } }, policy_name: "P"
-      ).scope_dimensions
+    context "with both an inclusion and an exclusion referencing the same path" do
+      let(:policy_scope) { { projects: { including: [{ id: 1 }], excluding: [{ id: 2 }] } } }
 
-      expect(dimensions).to eq(["project.id"])
+      it "emits the path once" do
+        expect(dimensions).to eq(["project.id"])
+      end
     end
 
-    it "includes a path for a declared inclusion that names no id" do
-      dimensions = described_class.new({ compliance_frameworks: [{}] }, policy_name: "P").scope_dimensions
+    context "with a declared inclusion that names no id" do
+      let(:policy_scope) { { compliance_frameworks: [{}] } }
 
-      expect(dimensions).to eq(["compliance_frameworks"])
+      it "includes a path for it" do
+        expect(dimensions).to eq(["compliance_frameworks"])
+      end
     end
 
-    it "omits a criterion that was not declared" do
-      dimensions = described_class.new({ compliance_frameworks: [] }, policy_name: "P").scope_dimensions
+    context "with a criterion that was not declared" do
+      let(:policy_scope) { { compliance_frameworks: [] } }
 
-      expect(dimensions).to eq([])
+      it "omits it" do
+        expect(dimensions).to eq([])
+      end
     end
 
-    it "lists every dimension the compiled program reads, inclusion and exclusion alike" do
-      dimensions = described_class.new(
+    context "with inclusions and exclusions across every dimension" do
+      let(:policy_scope) do
         {
           compliance_frameworks: [{ id: 5 }],
           groups: { excluding: [{ id: 9 }] },
           business_unit: { including: [{ id: 1 }] },
           exposure: { excluding: [{ id: 2 }] },
           projects: { excluding: [{ type: "personal" }] }
-        },
-        policy_name: "P"
-      ).scope_dimensions
+        }
+      end
 
-      expect(dimensions).to contain_exactly(
-        "compliance_frameworks", "groups", "security_attributes.business_unit",
-        "security_attributes.exposure", "project.personal"
-      )
+      it "lists every dimension the compiled program reads" do
+        expect(dimensions).to contain_exactly(
+          "compliance_frameworks", "groups", "security_attributes.business_unit",
+          "security_attributes.exposure", "project.personal"
+        )
+      end
     end
   end
 end

@@ -360,7 +360,7 @@ RSpec.describe Gitlab::Ci::Build::Rules, feature_category: :pipeline_composition
         let!(:when_value) { 'never' }
 
         it 'returns false' do
-          expect(result.pass?).to eq(false)
+          expect(result.pass?).to be(false)
         end
       end
 
@@ -368,7 +368,7 @@ RSpec.describe Gitlab::Ci::Build::Rules, feature_category: :pipeline_composition
         let!(:when_value) { 'on_success' }
 
         it 'returns true' do
-          expect(result.pass?).to eq(true)
+          expect(result.pass?).to be(true)
         end
       end
     end

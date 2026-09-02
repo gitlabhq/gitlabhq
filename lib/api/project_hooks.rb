@@ -21,6 +21,10 @@ module API
         user_project.hooks
       end
 
+      def hook_container
+        user_project
+      end
+
       params :common_hook_parameters do
         optional :name, type: String, desc: 'Name of the hook'
         optional :description, type: String, desc: 'Description of the hook'
@@ -51,6 +55,9 @@ module API
         optional :branch_filter_strategy, type: String, values: WebHook.branch_filter_strategies.keys,
           desc: "Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`"
         optional :vulnerability_events, type: Boolean, desc: "Trigger hook on vulnerability events"
+        optional :duo_flow_callback_enabled, type: Boolean,
+          desc: "Allow Duo Agent Platform flows to send lifecycle and progress events to this webhook. " \
+            "A flow must reference this webhook's ID as callback_hook_id when it starts"
         use :url_variables
         use :custom_headers
       end

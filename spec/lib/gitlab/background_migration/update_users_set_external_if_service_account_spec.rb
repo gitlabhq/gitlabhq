@@ -38,8 +38,8 @@ RSpec.describe Gitlab::BackgroundMigration::UpdateUsersSetExternalIfServiceAccou
     it "changes external field for service_account user" do
       perform_migration
 
-      expect(service_account_user.reload.external).to eq(true)
-      expect(service_user.reload.external).to eq(false)
+      expect(service_account_user.reload.external).to be(true)
+      expect(service_user.reload.external).to be(false)
     end
   end
 end

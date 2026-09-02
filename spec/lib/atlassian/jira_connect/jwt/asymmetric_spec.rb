@@ -137,7 +137,7 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric, feature_category: :integ
 
     let(:asymmetric_jwt) { described_class.new('123', anything) }
 
-    it { is_expected.to eq(nil) }
+    it { is_expected.to be_nil }
 
     context 'when jwt is verified' do
       before do

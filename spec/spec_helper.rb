@@ -483,6 +483,7 @@ RSpec.configure do |config|
 
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedCurrent
+      chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, SuppressWritesOnGetAnalyzer
 
       example.run
     end

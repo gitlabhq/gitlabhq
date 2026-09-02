@@ -277,7 +277,7 @@ RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cac
         it 'reads the status as nil' do
           subject
 
-          expect(pipeline_status.status).to eq(nil)
+          expect(pipeline_status.status).to be_nil
         end
       end
     end

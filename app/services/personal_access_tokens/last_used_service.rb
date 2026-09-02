@@ -27,12 +27,15 @@ module PersonalAccessTokens
       try_obtain_lease do
         ip_unseen = unseen_ip?
 
-        ::Gitlab::Database::LoadBalancing::SessionMap.current(lb).without_sticky_writes do
-          update_pat_ip if last_used_ip_needs_update?
-          update_timestamp if last_used_at_needs_update?
-        end
+        Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+          url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+          ::Gitlab::Database::LoadBalancing::SessionMap.current(lb).without_sticky_writes do
+            update_pat_ip if last_used_ip_needs_update?
+            update_timestamp if last_used_at_needs_update?
+          end
 
-        log_audit_event_for_unseen_ip if ip_unseen
+          log_audit_event_for_unseen_ip if ip_unseen
+        end
       end
     end
 

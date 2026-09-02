@@ -131,19 +131,19 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_shared_state,
 
   describe '.set_includes?' do
     it 'returns false when the key does not exist' do
-      expect(described_class.set_includes?('foo', 10)).to eq(false)
+      expect(described_class.set_includes?('foo', 10)).to be(false)
     end
 
     it 'returns false when the value is not present in the set' do
       described_class.set_add('foo', 10)
 
-      expect(described_class.set_includes?('foo', 20)).to eq(false)
+      expect(described_class.set_includes?('foo', 20)).to be(false)
     end
 
     it 'returns true when the set includes the given value' do
       described_class.set_add('foo', 10)
 
-      expect(described_class.set_includes?('foo', 10)).to eq(true)
+      expect(described_class.set_includes?('foo', 10)).to be(true)
     end
 
     it_behaves_like 'validated redis value' do
@@ -260,7 +260,7 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_shared_state,
 
   describe '.value_from_hash' do
     it 'returns nil when field was not set' do
-      expect(described_class.value_from_hash('foo', 'bar')).to eq(nil)
+      expect(described_class.value_from_hash('foo', 'bar')).to be_nil
     end
 
     it 'returns the value of the field' do

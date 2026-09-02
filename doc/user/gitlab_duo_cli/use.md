@@ -126,6 +126,9 @@ For more information, see [custom slash commands](customize.md#custom-slash-comm
 {{< history >}}
 
 - Settings panel [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.90.0) in GitLab Duo CLI 8.90.0, during the GitLab 19.0 release.
+- Setting to display work items in new sessions [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.11.0) in GitLab Duo CLI 19.11.0, during
+the GitLab 19.4 release.
+- Setting to adjust theme [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.11.0) in GitLab Duo CLI 19.11.0, during the GitLab 19.4 release.
 
 {{< /history >}}
 
@@ -145,6 +148,8 @@ The following settings are available:
 | **Telemetry**            | Send anonymous usage data to improve GitLab Duo.                                                  |
 | **Enable global skills** | (Experimental) Discover [user-level Agent Skills](../duo_agent_platform/customize/agent_skills.md#create-user-level-skills) from `~/.agents/skills/` and `~/.gitlab/duo/skills/`. A restart is required for changes to take effect. |
 | **Notifications**        | Control [system notifications](#system-notifications) (`auto` or `disabled`).                     |
+| **Show work items in new sessions** | Display your open work items when you start a new session.|
+| **Theme**        | Change the theme setting. Options include `auto`, `dark`, `light`, `dark high contrast`, and `light high contrast`. |
 
 ### System notifications
 

@@ -4104,11 +4104,21 @@ class Project < ApplicationRecord
   end
 
   def cache_has_external_wiki
-    update_column(:has_external_wiki, integrations.external_wikis.any?) if Gitlab::Database.read_write?
+    return unless Gitlab::Database.read_write?
+
+    Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+      update_column(:has_external_wiki, integrations.external_wikis.any?)
+    end
   end
 
   def cache_has_external_issue_tracker
-    update_column(:has_external_issue_tracker, integrations.external_issue_trackers.any?) if Gitlab::Database.read_write?
+    return unless Gitlab::Database.read_write?
+
+    Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+      update_column(:has_external_issue_tracker, integrations.external_issue_trackers.any?)
+    end
   end
 
   def online_runners_with_tags

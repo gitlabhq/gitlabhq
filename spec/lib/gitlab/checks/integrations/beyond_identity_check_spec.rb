@@ -168,7 +168,7 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
                 expect { check.validate! }
                 .to raise_error(::Gitlab::GitAccess::ForbiddenError,
                   'GPG Key used to sign commit f0a5ed60d24c98ec6d00ac010c1f3f01ee0a8373 is not verified')
-                expect(gpg_key.reload.externally_verified).to eq(false)
+                expect(gpg_key.reload.externally_verified).to be(false)
               end
             end
           end

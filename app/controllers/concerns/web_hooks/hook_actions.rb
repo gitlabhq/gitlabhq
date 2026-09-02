@@ -6,9 +6,10 @@ module WebHooks
     include HookExecutionNotice
 
     included do
-      attr_writer :hooks, :hook
+      attr_writer :hooks, :hook, :duo_flow_callback_available
 
       before_action :hook_logs, only: :edit
+      before_action :set_duo_flow_callback_available
       feature_category :webhooks
     end
 
@@ -106,8 +107,31 @@ module WebHooks
     end
 
     def hook_param_names
-      %i[enable_ssl_verification name description token url push_events_branch_filter
+      names = %i[enable_ssl_verification name description token url push_events_branch_filter
         branch_filter_strategy custom_webhook_template signing_token]
+
+      names << :duo_flow_callback_enabled if duo_flow_callback_available?
+
+      names
+    end
+
+    # Overridden by the project and group controllers; system hooks have no container.
+    def hook_container
+      nil
+    end
+
+    # Gates the form section and the permitted parameter together, so a request that
+    # skips the form cannot set the attribute.
+    def duo_flow_callback_available?
+      container = hook_container
+
+      container.present? && Feature.enabled?(:duo_flow_callback_hooks, container.root_ancestor)
+    end
+
+    # Assigned rather than exposed as a helper method: the form is also rendered without
+    # a controller, and param permitting must stay the only gate that can be relied on.
+    def set_duo_flow_callback_available
+      self.duo_flow_callback_available = duo_flow_callback_available?
     end
 
     def destroy_hook(hook)

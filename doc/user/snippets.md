@@ -154,6 +154,25 @@ changed to `http-a-weird-filename-me` to be included in the snippet's
 repository. As snippets are stored by ID, changing their filenames breaks
 direct or embedded links to the snippet.
 
+## Preview Markdown files
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246399) in GitLab 19.4.
+
+{{< /history >}}
+
+When you create or edit a snippet, you can view a live preview of Markdown files.
+
+To preview a Markdown file in a snippet:
+
+1. Create a snippet, or go to an existing snippet and select **Edit**.
+1. Give the file a Markdown filename, such as `example.md`.
+1. Right-click in the file's editor and select **Preview Markdown**.
+
+The preview appears next to your content and updates as you type.
+To close the preview, right-click the editor and select **Hide Live Preview**.
+
 ## Add or remove multiple files
 
 A single snippet can support up to 10 files, which helps keep related files together, such as:

@@ -156,9 +156,12 @@ class User < ApplicationRecord
 
     update_tracked_fields(request)
 
-    Gitlab::ExclusiveLease.throttle(id) do
-      ::Ability.forgetting(/admin/) do
-        Users::UpdateService.new(self, user: self).execute(validate: false)
+    Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+      Gitlab::ExclusiveLease.throttle(id) do
+        ::Ability.forgetting(/admin/) do
+          Users::UpdateService.new(self, user: self).execute(validate: false)
+        end
       end
     end
   end
@@ -2443,7 +2446,13 @@ class User < ApplicationRecord
     end
 
     @global_notification_setting = notification_settings.find_or_initialize_by(source: nil)
-    @global_notification_setting.update(level: NotificationSetting.levels[DEFAULT_NOTIFICATION_LEVEL]) unless @global_notification_setting.persisted?
+
+    unless @global_notification_setting.persisted?
+      Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+        url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+        @global_notification_setting.update(level: NotificationSetting.levels[DEFAULT_NOTIFICATION_LEVEL])
+      end
+    end
 
     @global_notification_setting
   end

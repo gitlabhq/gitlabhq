@@ -415,8 +415,15 @@ Example response:
 - `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
 - `signing_token` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
 - Feature flag `webhook_signing_token` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/596374) in GitLab 19.1.
+- `duo_flow_callback_enabled` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249149) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `duo_flow_callback_hooks`. Disabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of the `duo_flow_callback_enabled` attribute is controlled by a feature flag.
+> For more information, see the history.
+> Enabling the attribute where the feature is unavailable returns `400 Bad request`.
+> Disabling it is always accepted.
 
 Add a webhook to a specified project.
 
@@ -437,6 +444,7 @@ Supported attributes:
 | `custom_webhook_template`      | string            | No       | Custom webhook template for the project webhook. |
 | `deployment_events`            | boolean           | No       | Trigger project webhook on deployment events. |
 | `description`                  | string            | No       | Description of the webhook. |
+| `duo_flow_callback_enabled`    | boolean           | No       | Send GitLab Duo flow events to the project webhook. |
 | `enable_ssl_verification`      | boolean           | No       | Do SSL verification when triggering the webhook. |
 | `feature_flag_events`          | boolean           | No       | Trigger project webhook on feature flag events. |
 | `issues_events`                | boolean           | No       | Trigger project webhook on issue events. |
@@ -463,8 +471,15 @@ Supported attributes:
 - `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
 - `signing_token` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
 - Feature flag `webhook_signing_token` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/596374) in GitLab 19.1.
+- `duo_flow_callback_enabled` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249149) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `duo_flow_callback_hooks`. Disabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of the `duo_flow_callback_enabled` attribute is controlled by a feature flag.
+> For more information, see the history.
+> Enabling the attribute where the feature is unavailable returns `400 Bad request`.
+> Disabling it is always accepted.
 
 Updates a project webhook for a specified project.
 
@@ -486,6 +501,7 @@ Supported attributes:
 | `confidential_issues_events`   | boolean           | No       | Trigger project webhook on confidential issue events. |
 | `confidential_note_events`     | boolean           | No       | Trigger project webhook on confidential note events. |
 | `deployment_events`            | boolean           | No       | Trigger project webhook on deployment events. |
+| `duo_flow_callback_enabled`    | boolean           | No       | Send GitLab Duo flow events to the project webhook. |
 | `enable_ssl_verification`      | boolean           | No       | Do SSL verification when triggering the hook. |
 | `feature_flag_events`          | boolean           | No       | Trigger project webhook on feature flag events. |
 | `issues_events`                | boolean           | No       | Trigger project webhook on issue events. |

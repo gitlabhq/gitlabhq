@@ -28,6 +28,10 @@ class Projects::HooksController < Projects::ApplicationController
     @project.hooks
   end
 
+  def hook_container
+    @project
+  end
+
   def hook
     @hook ||= @project.hooks.find(id_param)
   end

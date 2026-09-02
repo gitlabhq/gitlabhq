@@ -16,6 +16,10 @@ Add quick commands at the bottom of the description:
 
 Before opening a merge request, verify each predicate that applies to your change. Each item states the action; follow the linked detail for the how.
 
+### Review
+
+- Before opening the merge request, review local changes using the reviewer sub-agent and fix findings that matter.
+
 ### Changelog
 
 - Add a changelog trailer for any user-facing change, or explicitly decide it is unnecessary. Use the `--changelog` flag on `git commit` or add a `Changelog:` trailer.

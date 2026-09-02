@@ -18,7 +18,6 @@ RSpec/AvoidWaitForRequests:
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_sidebar_spec.rb'
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_spec.rb'
     - 'ee/spec/features/boards/user_adds_lists_to_board_spec.rb'
-    - 'ee/spec/features/boards/user_visits_board_spec.rb'
     - 'ee/spec/features/ci/ci_minutes_spec.rb'
     - 'ee/spec/features/duo_chat/duo_chat_drawer_spec.rb'
     - 'ee/spec/features/epic_boards/multiple_epic_boards_spec.rb'

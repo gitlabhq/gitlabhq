@@ -14,10 +14,13 @@ module Packages
       def touch_last_downloaded_at(id)
         column = arel_table[:last_downloaded_at]
 
-        ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
-          id_in(id)
-            .where(column.eq(nil).or(column.lt(THROTTLE_PERIOD.ago)))
-            .update_all(last_downloaded_at: Time.zone.now)
+        ::Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+          url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+          ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
+            id_in(id)
+              .where(column.eq(nil).or(column.lt(THROTTLE_PERIOD.ago)))
+              .update_all(last_downloaded_at: Time.zone.now)
+          end
         end
       end
     end

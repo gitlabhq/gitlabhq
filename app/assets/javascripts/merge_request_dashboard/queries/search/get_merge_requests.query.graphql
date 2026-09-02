@@ -1,0 +1,39 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/merge_requests/list/queries/merge_request.fragment.graphql"
+
+# @feature_category: code_review_workflow
+query getDashboardMergeRequests(
+  $hideUsers: Boolean = false
+  $isSignedIn: Boolean = false
+  $sort: MergeRequestSort
+  $state: MergeRequestState
+  $assigneeUsernames: [String!]
+  $assigneeWildcardId: AssigneeWildcardId
+  $not: MergeRequestsResolverNegatedParams
+  $or: UnionedMergeRequestFilterInput
+  $beforeCursor: String
+  $afterCursor: String
+  $firstPageSize: Int
+  $lastPageSize: Int
+) {
+  mergeRequests(
+    sort: $sort
+    state: $state
+    assigneeUsernames: $assigneeUsernames
+    assigneeWildcardId: $assigneeWildcardId
+    not: $not
+    or: $or
+    before: $beforeCursor
+    after: $afterCursor
+    first: $firstPageSize
+    last: $lastPageSize
+  ) {
+    pageInfo {
+      ...PageInfo
+    }
+    nodes {
+      ...MergeRequestFragment
+      reference(full: true)
+    }
+  }
+}

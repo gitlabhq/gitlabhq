@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Cache::JsonCache, feature_category: :shared do
 
         cache = described_class.new(namespace: namespace, backend: backend)
 
-        expect(cache.active?).to eq(false)
+        expect(cache.active?).to be(false)
       end
     end
 
@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Cache::JsonCache, feature_category: :shared do
 
         cache = described_class.new(namespace: namespace, backend: backend)
 
-        expect(cache.active?).to eq(true)
+        expect(cache.active?).to be(true)
       end
     end
   end

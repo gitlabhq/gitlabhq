@@ -17,13 +17,13 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::If, feature_category: :co
       context 'when comparison is true' do
         let(:expression) { '"value" == "value"' }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when comparison is false' do
         let(:expression) { '"value" == "other"' }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -31,13 +31,13 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::If, feature_category: :co
       context 'when comparison is true' do
         let(:expression) { '"abcde" =~ /^ab.*/' }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when comparison is false' do
         let(:expression) { '"abcde" =~ /^af.*/' }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when both side of the expression are variables' do
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::If, feature_category: :co
             instance_double(context_class, variables_hash: { 'teststring' => 'abcde', 'pattern' => '/^ab.*/' })
           end
 
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
         end
 
         context 'when comparison is false' do
@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::If, feature_category: :co
             instance_double(context_class, variables_hash: { 'teststring' => 'abcde', 'pattern' => '/^af.*/' })
           end
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
       end
     end

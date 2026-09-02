@@ -31,7 +31,7 @@ describe('Merge requests app component', () => {
     resolve: jest.fn().mockReturnValue({ href: '/' }),
   };
 
-  function createComponent(lists = null) {
+  function createComponent(lists = null, { vueSearchEnabled = false, filter = '' } = {}) {
     subscriptionHandler = createMockSubscription();
     assigneeQueryMock = jest.fn().mockResolvedValue({
       data: {
@@ -106,15 +106,17 @@ describe('Merge requests app component', () => {
       },
       provide: {
         mergeRequestsSearchDashboardPath: '/search',
+        vueSearchEnabled,
       },
       stubs: {
         MergeRequestsQuery,
         CollapsibleSection,
         GlLink,
+        SearchList: true,
       },
       mocks: {
         $router,
-        $route: { params: { filter: '' } },
+        $route: { params: { filter } },
       },
     });
   }
@@ -199,6 +201,58 @@ describe('Merge requests app component', () => {
     await wrapper.findAllComponentsByTestId('merge-request-dashboard-tab').at(1).vm.$emit('click');
 
     expect($router.push).toHaveBeenCalledWith({ path: 'merged' });
+  });
+
+  describe('search tab', () => {
+    const findSearchTab = () => wrapper.findComponentByTestId('merge-request-dashboard-search-tab');
+
+    it('does not render a search tab when the Vue search is disabled', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findSearchTab().exists()).toBe(false);
+    });
+
+    it('renders a search tab when the Vue search is enabled', async () => {
+      createComponent(null, { vueSearchEnabled: true });
+
+      await waitForPromises();
+
+      expect(findSearchTab().exists()).toBe(true);
+    });
+
+    it('pushes the search route with the current user as the default filter', async () => {
+      window.gon.current_username = 'root';
+      createComponent(null, { vueSearchEnabled: true });
+
+      await waitForPromises();
+
+      findSearchTab().vm.$emit('click');
+
+      expect($router.push).toHaveBeenCalledWith({
+        path: 'search',
+        query: { assignee_username: 'root' },
+      });
+    });
+
+    it('stays lazy after being visited so it reloads, unlike the other tabs', async () => {
+      createComponent(null, { vueSearchEnabled: true, filter: 'search' });
+
+      await waitForPromises();
+
+      const activeTab = wrapper.findAllComponentsByTestId('merge-request-dashboard-tab').at(0);
+
+      expect(findSearchTab().attributes('lazy')).toBe('');
+
+      activeTab.vm.$emit('click');
+      await waitForPromises();
+      findSearchTab().vm.$emit('click');
+      await waitForPromises();
+
+      expect(activeTab.attributes('lazy')).toBeUndefined();
+      expect(findSearchTab().attributes('lazy')).toBe('');
+    });
   });
 
   describe('subscription updates', () => {

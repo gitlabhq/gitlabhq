@@ -81,4 +81,79 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
       let(:unauthorized_user) { user2 }
     end
   end
+
+  describe 'duo_flow_callback_enabled' do
+    before do
+      stub_feature_flags(duo_flow_callback_hooks: project.root_ancestor)
+    end
+
+    it 'can be set when creating a project hook' do
+      post api("/projects/#{project.id}/hooks", user), params: {
+        url: 'https://example.com/callback',
+        duo_flow_callback_enabled: true
+      }
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['duo_flow_callback_enabled']).to be(true)
+    end
+
+    it 'can be updated on an existing project hook' do
+      put api("/projects/#{project.id}/hooks/#{hook.id}", user), params: {
+        duo_flow_callback_enabled: true
+      }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['duo_flow_callback_enabled']).to be(true)
+    end
+
+    it 'is returned in the hook response' do
+      hook.update!(duo_flow_callback_enabled: true)
+
+      get api("/projects/#{project.id}/hooks/#{hook.id}", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to match_response_schema('public_api/v4/project_hook')
+      expect(json_response['duo_flow_callback_enabled']).to be(true)
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(duo_flow_callback_hooks: false)
+      end
+
+      it 'rejects the attribute on create rather than dropping it' do
+        post api("/projects/#{project.id}/hooks", user), params: {
+          url: 'https://example.com/callback',
+          duo_flow_callback_enabled: true
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'rejects the attribute on update rather than dropping it' do
+        put api("/projects/#{project.id}/hooks/#{hook.id}", user), params: {
+          duo_flow_callback_enabled: true
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'still accepts a request that does not mention the attribute' do
+        put api("/projects/#{project.id}/hooks/#{hook.id}", user), params: { push_events: false }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      # Reads expose the attribute whatever the flag state, so a client that GETs a hook
+      # and PUTs the payload back must not be rejected over a value it never changed.
+      it 'still accepts a request that disables the attribute' do
+        put api("/projects/#{project.id}/hooks/#{hook.id}", user), params: {
+          duo_flow_callback_enabled: false
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['duo_flow_callback_enabled']).to be(false)
+      end
+    end
+  end
 end

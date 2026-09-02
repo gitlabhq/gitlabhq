@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
+import { markRaw } from 'vue';
 import SnippetBlobEditHeader from '~/snippets/components/snippet_blob_edit_header.vue';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
@@ -9,7 +10,7 @@ import { SNIPPET_BLOB_CONTENT_FETCH_ERROR } from '~/snippets/constants';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
 import { EDITOR_READY_EVENT } from '~/editor/constants';
 import { BLOB_EDITOR_ERROR } from '~/blob_edit/constants';
-import { hasMarkdownExtension } from '~/blob/utils';
+import { isMarkdownFilePath } from '~/blob/utils';
 
 export default {
   name: 'SnippetBlobEdit',
@@ -40,13 +41,22 @@ export default {
     },
   },
   emits: ['blob-updated', 'delete'],
+  data() {
+    return {
+      editor: null,
+      markdownExtension: null,
+    };
+  },
   computed: {
     inputId() {
       return `${this.blob.id}_file_path`;
     },
     isMarkdown() {
-      return hasMarkdownExtension(this.blob.path);
+      return isMarkdownFilePath(this.blob.path);
     },
+  },
+  watch: {
+    isMarkdown: 'syncMarkdownExtension',
   },
   mounted() {
     if (!this.blob.isLoaded) {
@@ -54,8 +64,31 @@ export default {
     }
   },
   methods: {
-    async onEditorReady({ detail: { instance } }) {
-      if (!this.isMarkdown) {
+    onEditorReady({ detail: { instance } }) {
+      this.editor = markRaw(instance);
+      this.syncMarkdownExtension();
+    },
+    syncMarkdownExtension() {
+      if (!this.editor) {
+        return;
+      }
+
+      if (this.isMarkdown) {
+        this.installMarkdownExtension();
+      } else {
+        this.uninstallMarkdownExtension();
+      }
+    },
+    uninstallMarkdownExtension() {
+      if (!this.markdownExtension) {
+        return;
+      }
+
+      this.editor.unuse(this.markdownExtension);
+      this.markdownExtension = null;
+    },
+    async installMarkdownExtension() {
+      if (this.markdownExtension) {
         return;
       }
 
@@ -63,10 +96,19 @@ export default {
         const { EditorMarkdownPreviewExtension } =
           await import('~/editor/extensions/source_editor_markdown_livepreview_ext');
 
-        instance.use({
-          definition: EditorMarkdownPreviewExtension,
-          setupOptions: { previewMarkdownPath: this.markdownPreviewPath },
-        });
+        // The file may have been renamed away from markdown
+        // while the extension was loading, or renamed back
+        // so that a racing load has already installed it.
+        if (!this.isMarkdown || this.markdownExtension) {
+          return;
+        }
+
+        this.markdownExtension = markRaw(
+          this.editor.use({
+            definition: EditorMarkdownPreviewExtension,
+            setupOptions: { previewMarkdownPath: this.markdownPreviewPath },
+          }),
+        );
       } catch (e) {
         createAlert({ message: `${BLOB_EDITOR_ERROR}: ${e}` });
       }

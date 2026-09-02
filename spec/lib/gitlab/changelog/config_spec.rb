@@ -175,7 +175,7 @@ RSpec.describe Gitlab::Changelog::Config, feature_category: :source_code_managem
         project.add_developer(user)
       end
 
-      it { expect(described_class.new(project).contributor?(user)).to eq(false) }
+      it { expect(described_class.new(project).contributor?(user)).to be(false) }
     end
 
     context 'when user has at least one merge request merged into default_branch' do
@@ -194,8 +194,8 @@ RSpec.describe Gitlab::Changelog::Config, feature_category: :source_code_managem
         )
       end
 
-      it { expect(described_class.new(project).contributor?(contributor)).to eq(true) }
-      it { expect(described_class.new(project).contributor?(user_without_access)).to eq(false) }
+      it { expect(described_class.new(project).contributor?(contributor)).to be(true) }
+      it { expect(described_class.new(project).contributor?(user_without_access)).to be(false) }
     end
   end
 
@@ -238,8 +238,8 @@ RSpec.describe Gitlab::Changelog::Config, feature_category: :source_code_managem
             group_member
           )
 
-          expect(config.always_credit_author?(group_member)).to eq(true)
-          expect(config.always_credit_author?(non_group_member)).to eq(false)
+          expect(config.always_credit_author?(group_member)).to be(true)
+          expect(config.always_credit_author?(non_group_member)).to be(false)
         end
       end
 
@@ -251,8 +251,8 @@ RSpec.describe Gitlab::Changelog::Config, feature_category: :source_code_managem
             non_group_member
           )
 
-          expect(config.always_credit_author?(group_member)).to eq(false)
-          expect(config.always_credit_author?(non_group_member)).to eq(false)
+          expect(config.always_credit_author?(group_member)).to be(false)
+          expect(config.always_credit_author?(non_group_member)).to be(false)
         end
       end
     end
@@ -265,8 +265,8 @@ RSpec.describe Gitlab::Changelog::Config, feature_category: :source_code_managem
           group_member
         )
 
-        expect(config.always_credit_author?(group_member)).to eq(false)
-        expect(config.always_credit_author?(non_group_member)).to eq(false)
+        expect(config.always_credit_author?(group_member)).to be(false)
+        expect(config.always_credit_author?(non_group_member)).to be(false)
       end
     end
   end
