@@ -167,6 +167,9 @@ For more information about GitLab-managed models with a
 see [hybrid AI Gateway and model configuration](gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration).
 
 > [!warning]
+> GitLab limits embedding requests for indexing when you use GitLab-managed models.
+> To avoid these rate limits, configure a [self-hosted model](#self-hosted-models).
+>
 > If GitLab deprecates a model you selected, you must switch to a different model yourself.
 
 #### Self-hosted models

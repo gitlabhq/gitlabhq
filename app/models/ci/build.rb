@@ -1393,6 +1393,19 @@ module Ci
       project_integrations['Integrations::DiffblueCover']
     end
 
+    def parallel_build?
+      options[:parallel].present?
+    end
+
+    def matrix_build?
+      # Jobs migrated from legacy data may store numeric `parallel` as a bare Integer.
+      options[:parallel].is_a?(Hash) && options.dig(:parallel, :matrix).present?
+    end
+
+    def node_total
+      Gitlab::Utils::Job.node_total(options)
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1461,11 +1474,6 @@ module Ci
       ::Ci::JobToken::Jwt.encode(self)
     end
     strong_memoize_attr :encoded_jwt
-
-    def matrix_build?
-      # Jobs migrated from legacy data may store numeric `parallel` as a bare Integer.
-      options[:parallel].is_a?(Hash) && options.dig(:parallel, :matrix).present?
-    end
 
     def stick_build_if_status_changed
       return unless saved_change_to_status?

@@ -366,17 +366,17 @@ module SidebarsHelper
     [
       {
         title: _('Snippets'),
-        href: explore_snippets_path,
+        href: explore_snippets_path(organization_path: nil),
         css_class: 'dashboard-shortcuts-snippets'
       },
       {
         title: _('Groups'),
-        href: explore_groups_path,
+        href: explore_groups_path(organization_path: nil),
         css_class: 'dashboard-shortcuts-groups'
       },
       {
         title: _('Projects'),
-        href: explore_projects_path,
+        href: explore_projects_path(organization_path: nil),
         css_class: 'dashboard-shortcuts-projects'
       }
     ]
@@ -388,27 +388,27 @@ module SidebarsHelper
     shortcut_links = [
       {
         title: _('Milestones'),
-        href: dashboard_milestones_path,
+        href: dashboard_milestones_path(organization_path: nil),
         css_class: 'dashboard-shortcuts-milestones'
       },
       {
         title: _('Snippets'),
-        href: dashboard_snippets_path,
+        href: dashboard_snippets_path(organization_path: nil),
         css_class: 'dashboard-shortcuts-snippets'
       },
       {
         title: _('Activity'),
-        href: activity_dashboard_path,
+        href: activity_dashboard_path(organization_path: nil),
         css_class: 'dashboard-shortcuts-activity'
       },
       {
         title: _('Groups'),
-        href: dashboard_groups_path,
+        href: dashboard_groups_path(organization_path: nil),
         css_class: 'dashboard-shortcuts-groups'
       },
       {
         title: _('Projects'),
-        href: dashboard_projects_path,
+        href: dashboard_projects_path(organization_path: nil),
         css_class: 'dashboard-shortcuts-projects'
       }
     ]

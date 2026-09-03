@@ -163,9 +163,13 @@ principles:
       - 'ee/db/geo/migrate/**/*.rb'
       - 'app/models/**/*.rb'
       - 'ee/app/models/**/*.rb'
+      - 'config/organizations/transfer_support.yml'
+      - 'config/gitlab_loose_foreign_keys.yml'
     sources:
       - path: doc/development/cells/_index.md
         url: https://docs.gitlab.com/development/cells/
+      - path: doc/development/organization/sharding/_index.md
+        url: https://docs.gitlab.com/development/organization/sharding/
 
   cells-claims:
     description: Cells globally-unique attribute claims (Cells::Claimable), claim rollout lifecycle, and feature flags for cross-cell uniqueness
@@ -178,6 +182,56 @@ principles:
     sources:
       - path: doc/development/cells/claims.md
         url: https://docs.gitlab.com/development/cells/claims/
+
+  # ── Organizations ─────────────────────────────────────────────────────────
+
+  organizations-fundamentals:
+    description: Organization-level feature scoping, Current.organization, organization-scoped routing, and organization data isolation (data_isolation gem)
+    group: Organizations
+    owner_team: '@gitlab-com/gl-infra/tenant-scale/organizations/backend-engineers'
+    team_slug: organizations
+    prerequisite: true
+    file_filters:
+      # Current.organization, routing, and data isolation apply platform-wide,
+      # not only inside organizations/-namespaced code — see backend-ruby and
+      # frontend-vue for the same breadth rationale.
+      - 'app/**/*.rb'
+      - 'ee/app/**/*.rb'
+      - 'lib/**/*.rb'
+      - 'ee/lib/**/*.rb'
+      - 'app/assets/javascripts/**/*.vue'
+      - 'app/assets/javascripts/**/*.js'
+      - 'ee/app/assets/javascripts/**/*.vue'
+      - 'ee/app/assets/javascripts/**/*.js'
+    sources:
+      - path: doc/development/organization/_index.md
+        url: https://docs.gitlab.com/development/organization/
+      - path: doc/development/organization/query_scoping.md
+        url: https://docs.gitlab.com/development/organization/query_scoping/
+
+  organizations-release-process:
+    description: Releasing an organization feature behind an organization flag (Organizations::Release, the Experimental-to-GA stage ladder), and current organization-creation paths
+    group: Organizations
+    owner_team: '@gitlab-com/gl-infra/tenant-scale/organizations/backend-engineers'
+    team_slug: organizations
+    file_filters:
+      # Organizations::Release.enabled? / push_frontend_organization_release
+      # call sites, and gon.features reads, can appear in any backend or
+      # frontend file — not only under organizations/-namespaced code.
+      - 'config/organizations_release.yml'
+      - 'app/**/*.rb'
+      - 'ee/app/**/*.rb'
+      - 'lib/**/*.rb'
+      - 'ee/lib/**/*.rb'
+      - 'app/assets/javascripts/**/*.vue'
+      - 'app/assets/javascripts/**/*.js'
+      - 'ee/app/assets/javascripts/**/*.vue'
+      - 'ee/app/assets/javascripts/**/*.js'
+    sources:
+      - path: doc/development/organizations/release_process.md
+        url: https://docs.gitlab.com/development/organizations/release_process/
+      - path: doc/development/organizations/organization_creation.md
+        url: https://docs.gitlab.com/development/organizations/organization_creation/
 
   # ── Security ──────────────────────────────────────────────────────────────
 

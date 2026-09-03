@@ -6601,6 +6601,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe '#node_total' do
+    subject { build.node_total }
+
+    context 'when the job is parallelized' do
+      let(:build) { create(:ci_build, pipeline: pipeline, options: { parallel: { total: 5 } }) }
+
+      it { is_expected.to eq(5) }
+    end
+
+    context 'when the job is not parallelized' do
+      let(:build) { create(:ci_build, pipeline: pipeline, options: {}) }
+
+      it { is_expected.to eq(1) }
+    end
+  end
+
   describe '#runtime_hooks' do
     let(:build1) do
       FactoryBot.build(

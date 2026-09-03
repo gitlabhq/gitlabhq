@@ -96,10 +96,14 @@ export default {
     },
   },
   methods: {
-    adminRootPath,
-    newUserRegistrationPath,
+    adminRootPath() {
+      return adminRootPath({ organizationPath: null });
+    },
+    newUserRegistrationPath() {
+      return newUserRegistrationPath({ organizationPath: null });
+    },
     signInPath() {
-      return newUserSessionPath({ redirect_to_referer: 'yes' });
+      return newUserSessionPath({ redirect_to_referer: 'yes', organizationPath: null });
     },
     onSearchButtonDrop(event) {
       const text = event.dataTransfer.getData('text/plain');

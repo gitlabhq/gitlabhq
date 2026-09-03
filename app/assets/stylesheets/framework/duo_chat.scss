@@ -55,3 +55,11 @@
     }
   }
 }
+
+/**
+ * Queued message styles — pending user prompts, matching your message bubbles
+ */
+.duo-chat-queued-message {
+  background-color: var(--duo-chat-bubble-background-color-default);
+  color: var(--duo-chat-bubble-foreground-color-default);
+}

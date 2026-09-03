@@ -17,6 +17,13 @@ module Gitlab
         def parallel_suffix(job_name)
           job_name.to_s[PARALLEL_VARIANT_REGEX] || ''
         end
+
+        def node_total(job_options)
+          # Jobs migrated from legacy data may store numeric `parallel` as a bare Integer.
+          parallel = job_options&.dig(:parallel)
+          parallel = parallel[:total] if parallel.is_a?(Hash)
+          parallel || 1
+        end
       end
     end
   end

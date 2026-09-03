@@ -114,7 +114,7 @@ export default {
     adminLinkItem() {
       return {
         text: this.$options.i18n.adminArea,
-        href: adminRootPath(),
+        href: adminRootPath({ organizationPath: null }),
       };
     },
     statusLabel() {
@@ -265,7 +265,9 @@ export default {
   },
   methods: {
     adminImpersonationPath,
-    userPath,
+    userPath(username) {
+      return userPath(username, { organizationPath: null });
+    },
     updateAvatar(event) {
       this.updatedAvatarUrl = event.detail?.url;
     },

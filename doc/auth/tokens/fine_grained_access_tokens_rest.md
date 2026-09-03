@@ -4140,6 +4140,8 @@ incompatible with personal access tokens.
 | `POST` | `/internal/workhorse/oauth_routing` | Workhorse verification |
 | `GET` | `/job` | CI job token |
 | `GET` | `/job/allowed_agents` | CI job token |
+| `POST` | `/job/test_balancing/initialize` | CI job token |
+| `POST` | `/job/test_balancing/request` | CI job token |
 | `PUT` | `/jobs/:id` | CI job token |
 | `GET` | `/jobs/:id/artifacts` | CI job token |
 | `POST` | `/jobs/:id/artifacts` | CI job token |

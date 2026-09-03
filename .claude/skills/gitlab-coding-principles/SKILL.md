@@ -22,6 +22,10 @@ ALWAYS load Database principles regardless of which files you are editing.
 - **Cells architecture sharding keys, organization data ownership, routable requests, and cell isolation when adding tables or customer-owned resources**: Read .ai/principles/distilled/cells-fundamentals.md *(load for any cells work)*
 - **Cells globally-unique attribute claims (Cells::Claimable), claim rollout lifecycle, and feature flags for cross-cell uniqueness**: Read .ai/principles/distilled/cells-claims.md *(also load: .ai/principles/distilled/cells-fundamentals.md)*
 
+**Organizations:**
+- **Organization-level feature scoping, Current.organization, organization-scoped routing, and organization data isolation (data_isolation gem)**: Read .ai/principles/distilled/organizations-fundamentals.md *(load for any organizations work)*
+- **Releasing an organization feature behind an organization flag (Organizations::Release, the Experimental-to-GA stage ladder), and current organization-creation paths**: Read .ai/principles/distilled/organizations-release-process.md *(also load: .ai/principles/distilled/organizations-fundamentals.md)*
+
 **Security:**
 - **Security vulnerabilities and secure coding**: Read .ai/principles/distilled/security.md
 - **Authentication, authorization, token handling, OAuth, SAML, identity linking, composite identity, session management, 2FA, MFA, password management**: Read .ai/principles/distilled/authentication.md

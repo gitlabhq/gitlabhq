@@ -1679,6 +1679,8 @@ tags:
   x-displayName: Terraform
   externalDocs:
     url: https://docs.gitlab.com/api/packages/terraform-modules/
+- name: Test balancing
+  description: Operations related to test balancing.
 - name: To-dos
   description: |-
     Use this API to list [to-do items](https://docs.gitlab.com/user/todos/), mark them as done, and

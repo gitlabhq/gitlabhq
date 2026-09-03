@@ -331,5 +331,7 @@ these endpoints, and the permissions on an allowlist entry do not restrict that 
 | List all registry repository tags for a project | `GET /projects/:id/registry/repositories/:repository_id/tags` |
 | Retrieve details of a registry repository tag | `GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name` |
 | Transition a DAST site validation to a new state | `POST /internal/dast/site_validations/:id/transition` |
+| Initialize test balancing for a parallel job | `POST /job/test_balancing/initialize` |
+| Request the next batch of test splits for a parallel job | `POST /job/test_balancing/request` |
 | Evaluate a package against Dependency Firewall policies for a project | `POST /projects/:id/dependency_firewall/evaluate` |
 | Issue a short-lived JWT for a single modular-service audience | `POST /token_exchange` |

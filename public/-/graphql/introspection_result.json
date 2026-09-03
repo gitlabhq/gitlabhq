@@ -9546,6 +9546,18 @@
               "deprecationReason": null
             },
             {
+              "name": "featuresCount",
+              "description": "Number of unique features (flow types)",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "finishedCount",
               "description": "Number of finished sessions",
               "args": [],
@@ -9893,6 +9905,30 @@
                         "ofType": null
                       }
                     }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "featuresCountFrom",
+                  "description": "Filter by the number of unique features. The `features_count` metric must also be requested when using this filter. Start of the range.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "featuresCountTo",
+                  "description": "Filter by the number of unique features. The `features_count` metric must also be requested when using this filter. End of the range.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
                   },
                   "defaultValue": null,
                   "isDeprecated": false,
@@ -36909,8 +36945,20 @@
             },
             {
               "name": "versions",
-              "description": "Versions of the package, ordered by publication date descending. Resolves at most once per package in a page, so one operation reads versions for up to 20 packages. Returns `null` for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Versions of the package, ordered by publication date descending by default. Resolves at most once per package in a page, so one operation reads versions for up to 20 packages. Returns `null` for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
+                {
+                  "name": "sort",
+                  "description": "Sort versions by the criteria. Defaults to publication date descending. Introduced in GitLab 19.4: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ArtifactRegistryVersionSort",
+                    "ofType": null
+                  },
+                  "defaultValue": "CREATED_AT_DESC",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+                },
                 {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
@@ -37037,8 +37085,20 @@
             },
             {
               "name": "versions",
-              "description": "Versions of the package, ordered by publication date descending. Resolves at most once per package in a page, so one operation reads versions for up to 20 packages. Returns `null` for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Versions of the package, ordered by publication date descending by default. Resolves at most once per package in a page, so one operation reads versions for up to 20 packages. Returns `null` for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
+                {
+                  "name": "sort",
+                  "description": "Sort versions by the criteria. Defaults to publication date descending. Introduced in GitLab 19.4: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ArtifactRegistryVersionSort",
+                    "ofType": null
+                  },
+                  "defaultValue": "CREATED_AT_DESC",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+                },
                 {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
@@ -39773,6 +39833,41 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ArtifactRegistryVersionSort",
+          "description": "Values for sorting Artifact Registry package versions.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "CREATED_AT_ASC",
+              "description": "Publication date by ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_AT_DESC",
+              "description": "Publication date by descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "VERSION_ASC",
+              "description": "Version string by ascending, alphabetical order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "VERSION_DESC",
+              "description": "Version string by descending, alphabetical order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -216421,6 +216516,12 @@
             {
               "name": "EXTERNAL_STATUS_CHECKS",
               "description": "External status checks feature.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CI_PARALLEL_TEST_BALANCING",
+              "description": "Ci parallel test balancing feature.",
               "isDeprecated": false,
               "deprecationReason": null
             },

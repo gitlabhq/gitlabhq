@@ -30616,6 +30616,9 @@ msgstr ""
 msgid "DuoAgenticChat|GitLab Duo is disabled for this project. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "DuoAgenticChat|GitLab Duo is responding to this chat in another tab or location. Messages you send will be queued and delivered once it finishes."
+msgstr ""
+
 msgid "DuoAgenticChat|GitLab Duo will resume once reconnected."
 msgstr ""
 
@@ -30715,6 +30718,9 @@ msgstr ""
 msgid "DuoAgenticChat|Purchase more credits or turn off the Agentic toggle to start a new conversation."
 msgstr ""
 
+msgid "DuoAgenticChat|Queued"
+msgstr ""
+
 msgid "DuoAgenticChat|Ready when you are"
 msgstr ""
 
@@ -30722,6 +30728,9 @@ msgid "DuoAgenticChat|Reconnect"
 msgstr ""
 
 msgid "DuoAgenticChat|Reconnect to continue this conversation."
+msgstr ""
+
+msgid "DuoAgenticChat|Remove queued prompt"
 msgstr ""
 
 msgid "DuoAgenticChat|Repurchase Agent Platform"

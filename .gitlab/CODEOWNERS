@@ -200,6 +200,8 @@ yarn.lock @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/clickhouse.md @gitlab-org/maintainers/clickhouse
 /.ai/principles/distilled/cells-fundamentals.md @gitlab-com/gl-infra/tenant-scale/cells-infrastructure/backend-engineers
 /.ai/principles/distilled/cells-claims.md @gitlab-com/gl-infra/tenant-scale/cells-infrastructure/backend-engineers
+/.ai/principles/distilled/organizations-fundamentals.md @gitlab-com/gl-infra/tenant-scale/organizations/backend-engineers
+/.ai/principles/distilled/organizations-release-process.md @gitlab-com/gl-infra/tenant-scale/organizations/backend-engineers
 /.ai/principles/distilled/security.md @gitlab-com/gl-security/appsec
 /.ai/principles/distilled/authentication.md @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-com/gl-security/appsec
 /.ai/principles/distilled/permissions-fundamentals.md @gitlab-org/software-supply-chain-security/authorization/approvers

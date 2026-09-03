@@ -542,6 +542,7 @@ namespaces:
 - notes.namespace_id
 - observability_group_o11y_settings.group_id
 - observability_metrics_issues_connections.namespace_id
+- observability_project_o11y_settings.namespace_id
 - onboarding_progresses.namespace_id
 - p_ai_active_context_code_enabled_namespaces.namespace_id
 - packages_debian_group_architectures.group_id
@@ -1029,6 +1030,7 @@ projects:
 - notes.project_id
 - observability_logs_issues_connections.project_id
 - observability_metrics_issues_connections.project_id
+- observability_project_o11y_settings.project_id
 - observability_traces_issues_connections.project_id
 - operations_feature_flags.project_id
 - operations_feature_flags_clients.project_id
@@ -1378,6 +1380,7 @@ users:
 - namespace_commit_emails.user_id
 - namespace_import_users.user_id
 - oauth_consents.user_id
+- observability_project_o11y_settings.created_by_id
 - organization_cluster_agent_mappings.creator_id
 - organization_user_details.user_id
 - organization_users.user_id

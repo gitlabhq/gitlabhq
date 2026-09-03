@@ -130,7 +130,7 @@ module Nav
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'general_new_project',
             title: _('New project/repository'),
-            href: new_project_path
+            href: new_project_path(organization_path: nil)
           )
         )
       end
@@ -140,7 +140,7 @@ module Nav
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'general_new_group',
             title: _('New group'),
-            href: new_group_path
+            href: new_group_path(organization_path: nil)
           )
         )
       end
@@ -161,7 +161,7 @@ module Nav
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'general_new_snippet',
             title: _('New snippet'),
-            href: new_snippet_path
+            href: new_snippet_path(organization_path: nil)
           )
         )
       end
