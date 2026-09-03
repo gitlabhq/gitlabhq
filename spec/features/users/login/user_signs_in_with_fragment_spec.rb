@@ -111,7 +111,7 @@ RSpec.describe 'Login preserves URL fragment through 2FA',
           flush_enqueued_jobs
           find_email_for(user)
         end
-        code = mail.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
+        code = email_verification_code_from(mail)
 
         fill_in s_('IdentityVerification|Verification code'), with: code
         click_button s_('IdentityVerification|Verify code')

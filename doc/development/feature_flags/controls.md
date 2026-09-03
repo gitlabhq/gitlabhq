@@ -281,6 +281,13 @@ generic namespace (including groups) use `--namespace`:
 /chatops gitlab run feature set --namespace=myusername some_feature true
 ```
 
+You can use the `--organization` flag to enable a feature flag for a specific [organization](../organization/_index.md), by path or numeric ID:
+
+```shell
+/chatops gitlab run feature set --organization=my-org some_feature true
+/chatops gitlab run feature set --organization=1 some_feature true
+```
+
 Actor-based gates are applied before percentages. For example, considering the
 `group/project` as `gitlab-org/gitlab` and a given example feature as `some_feature`, if
 you run these 2 commands:
@@ -307,6 +314,8 @@ You can mix project paths and numeric project IDs:
 /chatops gitlab run feature set --group=gitlab-org,example-org some_feature true
 
 /chatops gitlab run feature set --namespace=gitlab-org,example-org some_feature true
+
+/chatops gitlab run feature set --organization=my-org,other-org some_feature true
 ```
 
 Lastly, to verify that the feature is deemed stable in as many cases as possible,

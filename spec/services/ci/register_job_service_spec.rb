@@ -835,6 +835,23 @@ module Ci
                 'meta.artifacts_dependencies_count' => 2
               })
             end
+
+            context 'when the recorded artifact size does not match the stored file' do
+              before do
+                [pre_stage_job, pre_stage_job_second].each do |job|
+                  job.job_artifacts_archive.update!(size: 1)
+                end
+              end
+
+              it 'logs the size recorded on the artifact' do
+                build_on(project_runner)
+
+                expect(Gitlab::ApplicationContext.current).to include({
+                  'meta.artifacts_dependencies_size' => 2,
+                  'meta.artifacts_dependencies_count' => 2
+                })
+              end
+            end
           end
 
           shared_examples 'when not picking build' do

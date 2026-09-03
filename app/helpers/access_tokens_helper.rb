@@ -4,6 +4,10 @@ module AccessTokensHelper
   include AccountsHelper
   include ApplicationHelper
 
+  def show_group_access_tokens_premium_offer?(_group)
+    false
+  end
+
   def scope_description(prefix)
     case prefix
     when :project_access_token

@@ -22,6 +22,13 @@ RSpec.shared_examples 'a policy repository' do
     "#{declaration}# #{padding}\n"
   end
 
+  # A rule's `custom` type takes Rego source (a String), while an action's value is
+  # always a Hash, so a shared example iterating both attributes needs a per-attribute
+  # shape rather than one literal reused for both.
+  def custom_entry_value_for(attribute, index)
+    attribute == :actions ? { 'index' => index } : "package governance\n\n# #{index}\n"
+  end
+
   def rule_packed_to_the_entry_limit
     names = []
 
@@ -283,7 +290,9 @@ RSpec.shared_examples 'a policy repository' do
       end
 
       it "accepts #{attribute} at exactly #{limit} entries" do
-        at_limit = Array.new(limit) { |index| { 'type' => 'custom', 'value' => "package governance\n\n# #{index}\n" } }
+        at_limit = Array.new(limit) do |index|
+          { 'type' => 'custom', 'value' => custom_entry_value_for(attribute, index) }
+        end
 
         expect(repository.create(attributes.merge(attribute => at_limit)).to_h[attribute].size).to eq(limit)
       end
@@ -324,6 +333,53 @@ RSpec.shared_examples 'a policy repository' do
       expect { repository.create(attributes.merge(actions: oversized)) }
         .to raise_error(Gitlab::PolicyStore::ValidationError,
           /actions has an entry exceeding maximum size of #{port::ENTRY_SIZE_LIMIT} bytes at 0/o)
+    end
+
+    it 'raises ValidationError when an action entry has a null type' do
+      expect { repository.create(attributes.merge(actions: [{ 'type' => nil }])) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
+    end
+
+    it 'raises ValidationError when an action entry is a nested array' do
+      expect { repository.create(attributes.merge(actions: [[{ 'type' => 'block' }]])) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
+    end
+
+    it 'raises ValidationError when an action entry has a blank type' do
+      expect { repository.create(attributes.merge(actions: [{ 'type' => '' }])) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
+    end
+
+    it 'raises ValidationError when an action entry is an empty hash' do
+      expect { repository.create(attributes.merge(actions: [{}])) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
+    end
+
+    it 'names every malformed action position together' do
+      malformed = [{ 'type' => nil }, { 'type' => 'block' }, [{ 'type' => 'block' }]]
+
+      expect { repository.create(attributes.merge(actions: malformed)) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0, 2/)
+    end
+
+    it 'raises ValidationError when an action entry has a non-string type' do
+      expect { repository.create(attributes.merge(actions: [{ 'type' => 42 }])) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
+    end
+
+    it 'raises ValidationError when an action entry has a whitespace-only type' do
+      expect { repository.create(attributes.merge(actions: [{ 'type' => '   ' }])) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
+    end
+
+    it 'raises ValidationError when an action entry has a non-Hash value' do
+      expect { repository.create(attributes.merge(actions: [{ 'type' => 'block', 'value' => 'nope' }])) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
+    end
+
+    it 'raises ValidationError when actions is not an array' do
+      expect { repository.create(attributes.merge(actions: { 'type' => 'block' })) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions must be an array/)
     end
 
     it 'raises ValidationError when a policy compiles to more than the engine evaluates' do
@@ -566,12 +622,28 @@ RSpec.shared_examples 'a policy repository' do
       end
 
       it "still renames a policy whose stored #{attribute} already exceed a lowered maximum" do
-        at_limit = Array.new(limit) { |index| { 'type' => 'custom', 'value' => "package governance\n\n# #{index}\n" } }
+        at_limit = Array.new(limit) do |index|
+          { 'type' => 'custom', 'value' => custom_entry_value_for(attribute, index) }
+        end
         created = repository.create(attributes.merge(attribute => at_limit))
         stub_const("#{port}::ENTRY_COUNT_LIMITS", port::ENTRY_COUNT_LIMITS.merge(attribute => limit - 1))
 
         expect(repository.update(created.id, name: 'Renamed policy').name).to eq('Renamed policy')
       end
+    end
+
+    it 'raises ValidationError when an update sets a malformed action entry' do
+      created = repository.create(attributes)
+
+      expect { repository.update(created.id, actions: [{ 'type' => nil }]) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
+    end
+
+    it 'raises ValidationError when an update sets actions to a non-array value' do
+      created = repository.create(attributes)
+
+      expect { repository.update(created.id, actions: { 'type' => 'block' }) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions must be an array/)
     end
 
     # A stored rule carries the program compiled from it, so measuring the whole entry

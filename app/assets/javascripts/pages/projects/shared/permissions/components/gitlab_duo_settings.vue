@@ -576,6 +576,7 @@ export default {
         <duo-readiness-agent-config-row
           :readiness="duoReadiness"
           :flow-execution-enabled="effectiveFlowExecutionEnabled"
+          :project-full-path="projectFullPath"
         />
       </div>
 
@@ -590,7 +591,7 @@ export default {
             :orbit="duoOrbit"
             :project-full-path="projectFullPath"
           />
-          <duo-mcp-row v-if="showMcpRow" :mcp="duoMcp" />
+          <duo-mcp-row v-if="showMcpRow" :mcp="duoMcp" :project-full-path="projectFullPath" />
         </div>
       </div>
 

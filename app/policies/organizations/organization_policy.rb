@@ -23,12 +23,7 @@ module Organizations
     end
 
     rule { organization_owner }.policy do
-      enable :access_organization_admin_area
-      enable :delete_organization
-      enable :read_organization_user
-      enable :read_admin_users
-      enable :transfer_group
-      enable :update_organization
+      enable(*Authz::Role.get(:organization_owner).permissions(:organization))
     end
 
     rule { default_organization }.prevent :delete_organization
@@ -39,10 +34,7 @@ module Organizations
     end
 
     rule { organization_user }.policy do
-      enable :read_organization
-      enable :create_group
-      enable :read_work_item_type
-      enable :read_artifact_registry
+      enable(*Authz::Role.get(:organization_user).permissions(:organization))
     end
   end
 end

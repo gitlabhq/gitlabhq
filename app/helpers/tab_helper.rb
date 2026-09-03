@@ -164,6 +164,7 @@ module TabHelper
 
     route_matches_paths?(options.delete(:path)) ||
       route_matches_page_without_exclusion?(options.delete(:page), options.delete(:exclude_page)) ||
+      route_matches_path_prefixes?(options.delete(:path_starts_with)) ||
       route_matches_controllers_and_or_actions?(controller, action)
   end
 
@@ -177,6 +178,15 @@ module TabHelper
   def route_matches_paths?(paths)
     Array(paths).compact.any? do |single_path|
       current_path?(single_path)
+    end
+  end
+
+  # Needed for Vue-routed sections where sub-pages share one controller#action,
+  # so controller/action matchers can't tell them apart (e.g. /-/automate/agents
+  # and /-/automate/agents/:id).
+  def route_matches_path_prefixes?(prefixes)
+    Array(prefixes).compact.any? do |prefix|
+      request.path == prefix || request.path.start_with?("#{prefix}/")
     end
   end
 

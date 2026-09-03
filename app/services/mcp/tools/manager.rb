@@ -40,7 +40,8 @@ module Mcp
         'get_job' => ::Mcp::Tools::Jobs::GetJobService,
         'get_mcp_server_version' => ::Mcp::Tools::GetServerVersionService,
         'get_merge_request_conflicts' => ::Mcp::Tools::MergeRequests::GetMergeRequestConflictsService,
-        'list_releases' => ::Mcp::Tools::Releases::ListReleasesService
+        'list_releases' => ::Mcp::Tools::Releases::ListReleasesService,
+        'list_tags' => ::Mcp::Tools::Repositories::Tags::ListTagsService
       }.freeze
 
       GRAPHQL_TOOLS = {

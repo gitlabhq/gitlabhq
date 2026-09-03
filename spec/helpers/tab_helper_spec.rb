@@ -164,6 +164,36 @@ RSpec.describe TabHelper do
     end
   end
 
+  describe '#active_nav_link? with path_starts_with' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:request_path, :prefix, :active) do
+      '/g/p/-/automate/agents'      | '/g/p/-/automate/agents' | true
+      '/g/p/-/automate/agents/42'   | '/g/p/-/automate/agents' | true
+      '/g/p/-/automate/agent-sessions' | '/g/p/-/automate/agents' | false
+      '/g/p/-/automate/flows'       | '/g/p/-/automate/agents' | false
+      '/g/p/-/automate/agentsX'     | '/g/p/-/automate/agents' | false
+    end
+
+    with_them do
+      before do
+        allow(helper).to receive(:request).and_return(instance_double(ActionDispatch::Request, path: request_path))
+      end
+
+      it 'matches the prefix path and its nested routes only' do
+        expect(helper.active_nav_link?(path_starts_with: prefix)).to eq(active)
+      end
+    end
+
+    it 'accepts an array of prefixes' do
+      allow(helper).to receive(:request)
+        .and_return(instance_double(ActionDispatch::Request, path: '/g/p/-/automate/flows/7'))
+
+      expect(helper.active_nav_link?(path_starts_with: ['/g/p/-/automate/agents', '/g/p/-/automate/flows']))
+        .to be(true)
+    end
+  end
+
   describe 'gl_tab_counter_badge' do
     it 'creates a tab counter badge' do
       expect(helper.gl_tab_counter_badge(1)).to eq(

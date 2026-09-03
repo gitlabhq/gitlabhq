@@ -4472,6 +4472,9 @@ msgstr ""
 msgid "AccessDropdown|Users"
 msgstr ""
 
+msgid "AccessTokens|%{link_start}Group access token%{link_end} creation is not available on GitLab Free. Upgrade to Premium to create tokens scoped to this group and its projects."
+msgstr ""
+
 msgid "AccessTokens|%{name} (copy)"
 msgstr ""
 
@@ -4668,6 +4671,9 @@ msgid "AccessTokens|Expiring"
 msgstr ""
 
 msgid "AccessTokens|Expiring soon"
+msgstr ""
+
+msgid "AccessTokens|Explore plans"
 msgstr ""
 
 msgid "AccessTokens|Failed to fetch statistics."
@@ -5047,7 +5053,13 @@ msgstr ""
 msgid "AccessTokens|Tokens expiring in 2 weeks"
 msgstr ""
 
+msgid "AccessTokens|Try group access tokens with Premium"
+msgstr ""
+
 msgid "AccessTokens|Type"
+msgstr ""
+
+msgid "AccessTokens|Upgrade to Premium"
 msgstr ""
 
 msgid "AccessTokens|Usage"
@@ -5084,6 +5096,9 @@ msgid "AccessTokens|You can generate a personal access token for each applicatio
 msgstr ""
 
 msgid "AccessTokens|You can only have one active project access token with a trial license. You cannot generate a new token until the existing token is deleted, or you upgrade your subscription."
+msgstr ""
+
+msgid "AccessTokens|You can still manage existing tokens."
 msgstr ""
 
 msgid "AccessTokens|Your feed token authenticates you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar. It is visible in those feed URLs."
@@ -9422,6 +9437,12 @@ msgid "AiPowered|registry.gitlab.com"
 msgstr ""
 
 msgid "AiPowered|…and %{count} more"
+msgstr ""
+
+msgid "AiSuggestedReviewers|A suggested user or approval rule no longer exists"
+msgstr ""
+
+msgid "AiSuggestedReviewers|Each user can only be suggested once per merge request"
 msgstr ""
 
 msgid "Ai|[View session](%{url})"
@@ -30237,6 +30258,12 @@ msgstr ""
 msgid "DuoAgentPlatform|Check again"
 msgstr ""
 
+msgid "DuoAgentPlatform|Checking connected MCP servers."
+msgstr ""
+
+msgid "DuoAgentPlatform|Checking for a usable runner."
+msgstr ""
+
 msgid "DuoAgentPlatform|Commit authored in a GitLab Duo Agent session"
 msgstr ""
 
@@ -30246,7 +30273,7 @@ msgstr ""
 msgid "DuoAgentPlatform|Could not check for a runner. Try again."
 msgstr ""
 
-msgid "DuoAgentPlatform|Could not check for a runner. You do not have permission to check this project."
+msgid "DuoAgentPlatform|Could not check for connected MCP servers."
 msgstr ""
 
 msgid "DuoAgentPlatform|Couldn't load sessions."
@@ -30316,6 +30343,9 @@ msgid "DuoAgentPlatform|GitLab Duo Agent session"
 msgstr ""
 
 msgid "DuoAgentPlatform|GitLab Duo CLI"
+msgstr ""
+
+msgid "DuoAgentPlatform|GitLab Duo is not available for this project."
 msgstr ""
 
 msgid "DuoAgentPlatform|GitLab Orbit"
@@ -51662,6 +51692,9 @@ msgstr ""
 msgid "MrList|Review requested from %{name}"
 msgstr ""
 
+msgid "MrReports|Add a scanning job to your CI/CD pipeline to see reports here."
+msgstr ""
+
 msgid "MrReports|Blockers"
 msgstr ""
 
@@ -51671,19 +51704,37 @@ msgstr ""
 msgid "MrReports|License compliance"
 msgstr ""
 
-msgid "MrReports|No pipelines started yet. Results will appear when a pipeline completes."
+msgid "MrReports|No pipeline results yet"
+msgstr ""
+
+msgid "MrReports|No scanning jobs configured"
+msgstr ""
+
+msgid "MrReports|Pipeline is running"
 msgstr ""
 
 msgid "MrReports|Reports"
 msgstr ""
 
+msgid "MrReports|Reports appear here when the pipeline finishes. This page updates automatically."
+msgstr ""
+
 msgid "MrReports|Security scan"
+msgstr ""
+
+msgid "MrReports|Start a pipeline to generate reports."
+msgstr ""
+
+msgid "MrReports|View CI/CD documentation"
 msgstr ""
 
 msgid "MrReports|View report"
 msgstr ""
 
-msgid "MrReports|Waiting for pipeline to complete."
+msgid "MrReports|View reports documentation"
+msgstr ""
+
+msgid "MrReports|View running pipeline"
 msgstr ""
 
 msgid "Multiple IP address ranges are supported. Does not affect access to the group's settings."
@@ -81383,6 +81434,12 @@ msgid "TestCases|Submit test case"
 msgstr ""
 
 msgid "TestHooks|Ensure one of your projects has merge requests."
+msgstr ""
+
+msgid "TestHooks|Ensure the group has a project with commits."
+msgstr ""
+
+msgid "TestHooks|Ensure the group has a project with vulnerabilities."
 msgstr ""
 
 msgid "TestHooks|Ensure the project has CI jobs."

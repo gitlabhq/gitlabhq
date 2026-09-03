@@ -412,7 +412,7 @@ module Ci
 
       presented_build.all_dependencies.then do |dependencies|
         size = dependencies.sum do |build|
-          build.available_artifacts? ? build.artifacts_file.size : 0
+          build.available_artifacts? ? build.artifacts_size.to_i : 0
         end
 
         log_build_dependencies(size: size, count: dependencies.size) if size > 0

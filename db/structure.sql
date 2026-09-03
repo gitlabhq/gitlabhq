@@ -1349,6 +1349,17 @@ RETURN OLD;
 END
 $$;
 
+CREATE FUNCTION repair_dual_sharding_key_on_notes() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+NEW.namespace_id := NULL;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION set_has_external_issue_tracker() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -56817,6 +56828,8 @@ CREATE TRIGGER trigger_7de792ddbc05 BEFORE INSERT OR UPDATE ON dast_site_validat
 CREATE TRIGGER trigger_7e2eed79e46e BEFORE INSERT OR UPDATE ON abuse_reports FOR EACH ROW EXECUTE FUNCTION trigger_7e2eed79e46e();
 
 CREATE TRIGGER trigger_80578cfbdaf9 BEFORE INSERT OR UPDATE ON push_event_payloads FOR EACH ROW EXECUTE FUNCTION trigger_80578cfbdaf9();
+
+CREATE TRIGGER trigger_817aa51bc4f2 BEFORE UPDATE ON notes FOR EACH ROW WHEN (((new.namespace_id IS NOT NULL) AND (new.project_id IS NOT NULL))) EXECUTE FUNCTION repair_dual_sharding_key_on_notes();
 
 CREATE TRIGGER trigger_81b4c93e7133 BEFORE INSERT OR UPDATE ON pages_deployment_states FOR EACH ROW EXECUTE FUNCTION trigger_81b4c93e7133();
 

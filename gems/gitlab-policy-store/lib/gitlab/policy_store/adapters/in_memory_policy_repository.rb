@@ -19,6 +19,7 @@ module Gitlab
           validate_authored_text_limits!(normalized)
           validate_enumerated_attributes!(normalized, ENUMERATED_ATTRIBUTES)
           validate_entry_limits!(normalized)
+          validate_action_shapes!(normalized)
           validate_name_available!(normalized)
           normalized = with_compiled_scope(normalized)
           normalized = with_compiled_rules(normalized)
@@ -38,6 +39,7 @@ module Gitlab
           validate_authored_text_limits!(authored)
           validate_enumerated_attributes!(authored, ENUMERATED_ATTRIBUTES)
           validate_entry_limits!(changes)
+          validate_action_shapes!(changes)
           validate_name_available!(authored, excluding_id: id)
 
           scoped = with_updated_scope(existing.to_h, changes)

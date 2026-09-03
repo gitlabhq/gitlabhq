@@ -1,4 +1,4 @@
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DuoReadinessRow from '~/pages/projects/shared/permissions/components/duo_readiness_row.vue';
 
@@ -36,6 +36,13 @@ describe('DuoReadinessRow', () => {
     createComponent({ status });
 
     expect(findIcon().props()).toMatchObject({ name: icon, variant });
+  });
+
+  it('shows a spinner instead of a status icon while the row state is loading', () => {
+    createComponent({ status: 'loading' });
+
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+    expect(findIcon().exists()).toBe(false);
   });
 
   it('mutes the title while the row is blocked on a prerequisite', () => {

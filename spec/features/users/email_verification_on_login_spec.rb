@@ -579,7 +579,7 @@ RSpec.describe 'Email Verification On Login', :with_current_organization, :clean
     mail_to = mail&.to
     expect(mail_to).to match_array([email || user.email])
     expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
-    code = mail.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
+    code = email_verification_code_from(mail)
     reset_delivered_emails!
     code
   end

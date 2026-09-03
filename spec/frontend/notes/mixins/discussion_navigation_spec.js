@@ -46,6 +46,7 @@ describe('Discussion navigation mixin', () => {
     scrollHeight: 2000,
     scrollTop: 0,
     clientHeight: 768,
+    scrollBy: jest.fn(),
     ...overrides,
   });
 
@@ -196,6 +197,17 @@ describe('Discussion navigation mixin', () => {
       });
     });
 
+    it('does not align to content top (that is legacy-only)', async () => {
+      const stickyEl = document.createElement('div');
+      setupRapidDiffs([105, 200, 400, 500, 600], () => stickyEl);
+      jest.spyOn(window, 'getComputedStyle').mockReturnValue({ position: 'sticky' });
+
+      wrapper.vm.jumpToNextDiscussion();
+      await nextTick();
+
+      expect(getScrollingElement().scrollBy).not.toHaveBeenCalled();
+    });
+
     it('filters out discussions inside closed details elements', async () => {
       resetHTMLFixture();
       setHTMLFixture(
@@ -313,7 +325,9 @@ describe('Discussion navigation mixin', () => {
     const setDiscussionPositions = (positions) => {
       mockDiscussionIds.forEach((id, index) => {
         const el = findDiscussionEl(id);
-        jest.spyOn(el, 'getBoundingClientRect').mockReturnValue({ y: positions[index] });
+        jest
+          .spyOn(el, 'getBoundingClientRect')
+          .mockReturnValue({ y: positions[index], top: positions[index] });
         jest.spyOn(el, 'scrollIntoView').mockImplementation(() => {});
       });
     };
@@ -349,6 +363,27 @@ describe('Discussion navigation mixin', () => {
 
         it(`scrolls to discussion element with id "${expectedId}"`, () => {
           expect(findDiscussionEl(expectedId).scrollIntoView).toHaveBeenCalledWith(true);
+        });
+      });
+    });
+
+    describe('aligning the target to the content top after navigating', () => {
+      beforeEach(() => {
+        window.mrTabs.currentAction = 'show';
+      });
+
+      it('scrolls the panel so the target lands just below the content top line', async () => {
+        // contentTop() resolves to 0 in jsdom. A target whose top is 120px below
+        // the line is pulled up by 119px, leaving a 1px clearance so its top edge
+        // sits just clear of the sticky header rather than on the boundary.
+        setDiscussionPositions([120, 200, 300, 400, 500]);
+
+        wrapper.vm.jumpToNextDiscussion();
+        await nextTick();
+
+        expect(getScrollingElement().scrollBy).toHaveBeenCalledWith({
+          top: 119,
+          behavior: 'instant',
         });
       });
     });

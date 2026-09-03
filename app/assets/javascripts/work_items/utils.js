@@ -416,7 +416,15 @@ export const makeDetailPanelUrlParam = (activeItem, fullPath, issuableType = TYP
  * @returns {{item: Object|null, notFound: boolean}}
  */
 export const findDetailPanelWorkItem = (queryParam, items, activeItem) => {
-  const { id, full_path: fullPath } = JSON.parse(atob(queryParam));
+  let parsed;
+  try {
+    parsed = JSON.parse(atob(queryParam));
+  } catch {
+    // The `show` param is shared with non-work-item panels (e.g. the workplan
+    // sentinel), whose values aren't base64-encoded work items. Ignore those.
+    return { item: null, notFound: false };
+  }
+  const { id, full_path: fullPath } = parsed;
 
   if (!id || getIdFromGraphQLId(activeItem?.id) === id) {
     return { item: null, notFound: false };

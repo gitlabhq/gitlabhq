@@ -35351,6 +35351,7 @@ Arguments:
 | <a id="analytics-duousageevents-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-duousageevents-event"></a>`event` | [`[String!]`](#string) | Filter by one or many events. |
 | <a id="analytics-duousageevents-feature"></a>`feature` | [`[String!]`](#string) | Filter by one or many features. |
+| <a id="analytics-duousageevents-flowtype"></a>`flowType` | [`[String!]`](#string) | Filter by one or many Duo Agent Platform flow types. |
 | <a id="analytics-duousageevents-timestampfrom"></a>`timestampFrom` | [`Time`](#time) | Filter by event timestamp. Start of the range. |
 | <a id="analytics-duousageevents-timestampto"></a>`timestampTo` | [`Time`](#time) | Filter by event timestamp. End of the range. |
 | <a id="analytics-duousageevents-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
@@ -42778,6 +42779,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="duousageeventsaggregationresponsedimensions-event"></a>`event` | [`String`](#string) | Event identifier. |
 | <a id="duousageeventsaggregationresponsedimensions-feature"></a>`feature` | [`String`](#string) | Feature identifier. |
+| <a id="duousageeventsaggregationresponsedimensions-flowtype"></a>`flowType` | [`String`](#string) | Duo Agent Platform flow type; NULL for non-DAP events. |
 | <a id="duousageeventsaggregationresponsedimensions-user"></a>`user` | [`UserCore`](#usercore) | Event owner. |
 
 #### Fields with arguments
@@ -42857,6 +42859,8 @@ Fields:
 | <a id="duoworkflow-projectid"></a>`projectId` | [`ProjectID`](#projectid) | ID of the project. |
 | <a id="duoworkflow-resourceiid"></a>`resourceIid` | [`Int`](#int) | IID of the associated resource (issue or merge request). |
 | <a id="duoworkflow-resourceweburl"></a>`resourceWebUrl` | [`String`](#string) | Web URL of the associated resource (issue or merge request). |
+| <a id="duoworkflow-sourcelink"></a>`sourceLink` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. URL or deep link to the location where the session was triggered from. |
+| <a id="duoworkflow-sourcetype"></a>`sourceType` {{< icon name="warning-solid" >}} | [`DuoWorkflowSourceType`](#duoworkflowsourcetype) | Introduced in GitLab 19.4. Status: Experiment. External system that initiated the session (for example, Slack). |
 | <a id="duoworkflow-stalled"></a>`stalled` | [`Boolean`](#boolean) | Workflow got created but has no checkpoints. |
 | <a id="duoworkflow-status"></a>`status` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the session. |
 | <a id="duoworkflow-statusgroup"></a>`statusGroup` | [`DuoWorkflowStatusGroup`](#duoworkflowstatusgroup) | Status group of the flow session. |
@@ -56135,6 +56139,7 @@ Fields:
 | <a id="project-duocontextexclusionsettings"></a>`duoContextExclusionSettings` {{< icon name="warning-solid" >}} | [`DuoContextExclusionSettings`](#duocontextexclusionsettings) | Introduced in GitLab 18.2. Status: Experiment. Settings for excluding files from Duo context. |
 | <a id="project-duodependencybumpbreakingchangesavailable"></a>`duoDependencyBumpBreakingChangesAvailable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.2. Status: Experiment. Indicates whether the GitLab Duo resolve dependency bump breaking changes flow can be triggered for the project. |
 | <a id="project-duofeaturesenabled"></a>`duoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 16.9. Status: Experiment. Indicates whether GitLab Duo features are enabled for the project. |
+| <a id="project-duomcpserverscount"></a>`duoMcpServersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. Number of distinct MCP servers used by the project's configured agents. Resolved on request only, because it reads the configured agents and their versions. |
 | <a id="project-duoworkflowrunneravailable"></a>`duoWorkflowRunnerAvailable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Indicates whether the project has a runner that can pick up GitLab Duo Agent Platform workloads. Resolved on request only, because it queries the project's runners and their managers. |
 | <a id="project-duoworkflowstatuscheck"></a>`duoWorkflowStatusCheck` {{< icon name="warning-solid" >}} | [`DuoWorkflowEnablement`](#duoworkflowenablement) | Introduced in GitLab 17.7. Status: Experiment. Indicates whether Duo Agent Platform is enabled for the project. |
 | <a id="project-duoworkflowusablerunnertype"></a>`duoWorkflowUsableRunnerType` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Runner type (instance_type, group_type, or project_type) of the runner that can pick up GitLab Duo Agent Platform workloads, or null when none can. Shares its runner scan with duoWorkflowRunnerAvailable when both are requested. |
@@ -68817,6 +68822,14 @@ Type of link between a GitLab Duo Agent Platform session and a pipeline.
 | Value | Description |
 | ----- | ----------- |
 | <a id="duoworkflowpipelinelinktype-source"></a>`SOURCE` | Link of type `source` between a session and a pipeline. |
+
+### `DuoWorkflowSourceType`
+
+External system that initiated a Duo Workflow session.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="duoworkflowsourcetype-slack"></a>`SLACK` | Session initiated from Slack. |
 
 ### `DuoWorkflowStatus`
 

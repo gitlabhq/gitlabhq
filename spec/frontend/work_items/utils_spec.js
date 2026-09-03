@@ -474,6 +474,15 @@ describe('`findDetailPanelWorkItem`', () => {
       notFound: false,
     });
   });
+
+  describe('when the param is not a base64-encoded work item', () => {
+    it('returns no item and does not flag notFound', () => {
+      expect(findDetailPanelWorkItem('workplan', items, null)).toEqual({
+        item: null,
+        notFound: false,
+      });
+    });
+  });
 });
 
 describe('getNewWorkItemAutoSaveKey', () => {

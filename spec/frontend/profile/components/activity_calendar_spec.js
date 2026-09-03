@@ -412,7 +412,7 @@ describe('ActivityCalendar', () => {
       createComponent();
       await waitForPromises();
 
-      findAlert().vm.$emit('primaryAction');
+      findAlert().vm.$emit('primary-action');
       await waitForPromises();
 
       expect(findAlert().exists()).toBe(false);

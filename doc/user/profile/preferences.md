@@ -219,6 +219,9 @@ To set a default GitLab Duo namespace:
 - Access to user default namespaces for IDEs [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2043) in GitLab 18.10.
 - Access to user default namespaces introduced in GitLab for VS Code 6.71.7.
 - Access to user default namespaces introduced in GitLab Duo CLI 8.76.0.
+- Default namespace setting in editor extensions [removed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2369) in GitLab 19.4.
+  - [Removed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.46.0) in GitLab Duo plugin for JetBrains IDEs 3.46.0.
+  - [Removed](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.90.0) in GitLab for VS Code 6.90.0.
 
 {{< /history >}}
 
@@ -230,13 +233,12 @@ GitLab Duo checks for a namespace in this order:
 
 1. The project namespace, if your project is linked to a remote repository in GitLab.
 1. The default namespace set in your user preferences.
-1. For IDEs, the default namespace set in the editor extension's settings:
-   - For VS Code, under **Extensions** > **GitLab** > **GitLab Duo** > **GitLab › Duo Agent Platform: Default Namespace**.
-   - For JetBrains IDEs, under **Settings** > **Tools** > **GitLab Duo** > **GitLab Duo Agent Platform**.
-   - For Visual Studio, under **Tools** > **Options** > **GitLab** > **General**.
 
 If the first namespace identified does not have access to the requested feature or available credits,
 the feature is not available. GitLab Duo does not fall back to the next namespace in the list.
+
+If your project is not linked to a remote repository in GitLab, you must
+[set a default GitLab Duo namespace](#set-a-default-gitlab-duo-namespace) in your user preferences.
 
 ### Hide shortcut buttons
 

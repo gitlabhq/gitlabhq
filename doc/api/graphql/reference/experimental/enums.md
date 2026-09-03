@@ -2456,6 +2456,16 @@ Type of link between a GitLab Duo Agent Platform session and a note.
 | `CREATED` | Link of type `created` between a session and a note. |
 | `TRIGGERED` | Link of type `triggered` between a session and a note. |
 
+## `DuoWorkflowSourceType`
+
+Status: Experiment. Introduced in GitLab 19.4.
+
+External system that initiated a Duo Workflow session.
+
+| Value | Description |
+| ----- | ----------- |
+| `SLACK` | Session initiated from Slack. |
+
 ## `DuoWorkflowStatus`
 
 The status of the workflow.

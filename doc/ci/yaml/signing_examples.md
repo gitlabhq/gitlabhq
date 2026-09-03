@@ -23,6 +23,9 @@ see Cosign [documentation](https://docs.sigstore.dev/quickstart/quickstart-cosig
 For details on the mapping between GitLab OIDC claims and Fulcio certificate extensions, see the GitLab column of
 [Mapping OIDC token claims to Fulcio OIDs](https://github.com/sigstore/fulcio/blob/main/docs/oid-info.md#mapping-oidc-token-claims-to-fulcio-oids).
 
+For GitLab Self-Managed with self-hosted Sigstore infrastructure, see
+[Sign artifacts and container images with self-hosted Sigstore](signing_self_hosted.md).
+
 Prerequisites:
 
 - You must be using GitLab.com.

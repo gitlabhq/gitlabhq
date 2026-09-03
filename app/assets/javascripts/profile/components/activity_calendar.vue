@@ -234,18 +234,14 @@ export default {
       <h2 class="gl-heading-3 !gl-mb-3 !gl-mt-2">{{ $options.i18n.activityHeading }}</h2>
     </div>
 
-    <!-- GlAlert emits the camelCase primaryAction event, so the hyphenated
-         listener would never fire -->
-    <!-- eslint-disable vue/v-on-event-hyphenation -->
     <gl-alert
       v-if="hasError"
       :title="$options.i18n.errorAlertTitle"
       :dismissible="false"
       variant="danger"
       :primary-button-text="$options.i18n.retry"
-      @primaryAction="loadActivityCalendar"
+      @primary-action="loadActivityCalendar"
     />
-    <!-- eslint-enable vue/v-on-event-hyphenation -->
     <div
       v-else
       ref="calendarWrapper"

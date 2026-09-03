@@ -3,7 +3,7 @@ stage: AI Coding
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Code intelligence
-description: Set up code intelligence using LSIF or SCIP indexers to enable code navigation features.
+description: Set up code intelligence using LSIF or SCIP indexers.
 ---
 
 {{< details >}}
@@ -13,7 +13,7 @@ description: Set up code intelligence using LSIF or SCIP indexers to enable code
 
 {{< /details >}}
 
-Code intelligence adds code navigation features common to interactive
+Code intelligence adds features common to interactive
 development environments (IDE), including:
 
 - Type signatures and symbol documentation.
@@ -25,7 +25,7 @@ intelligence data. GitLab processes one LSIF file per project, and
 Code intelligence does not support different LSIF files per branch.
 
 [SCIP](https://github.com/scip-code/scip) is the next evolution of tooling
-for indexing source code. You can use it to power code navigation features,
+for indexing source code. You can use it to power features,
 such as:
 
 - Go to definition
@@ -38,6 +38,10 @@ SCIP support, see [issue 412981](https://gitlab.com/gitlab-org/gitlab/-/issues/4
 
 For progress on upcoming code intelligence enhancements, see
 [epic 4212](https://gitlab.com/groups/gitlab-org/-/work_items/4212).
+
+GitLab also provides [code navigation](code_navigation.md), which reads the knowledge graph
+that GitLab Orbit builds from your code instead of an LSIF file, so it doesn't need an
+indexer or a CI/CD job.
 
 ## Configure code intelligence
 

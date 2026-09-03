@@ -42,6 +42,7 @@ export default () => {
     provide: {
       projectPath,
       iid,
+      basePath,
       dismissalDescriptions: JSON.parse(window.gl?.mrWidgetData?.dismissal_descriptions || '{}'),
     },
     component: MergeRequestReportsApp,

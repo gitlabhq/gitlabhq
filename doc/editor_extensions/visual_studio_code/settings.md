@@ -80,6 +80,13 @@ This extension also integrates with some commands provided by VS Code:
 
 ## Extension settings
 
+{{< history >}}
+
+- Default namespace setting in editor extensions [removed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2369) in GitLab 19.4.
+  - `gitlab.duoAgentPlatform.defaultNamespace` [removed](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.90.0) in GitLab for VS Code 6.90.0.
+
+{{< /history >}}
+
 To learn how to change settings in VS Code, see the VS Code documentation for
 [User and Workspace Settings](https://code.visualstudio.com/docs/configure/settings).
 
@@ -91,7 +98,6 @@ If you use self-signed certificates to connect to your GitLab instance, see [con
 | `gitlab.authentication.oauthClientIds` | Not applicable | The OAuth client ID to use (by GitLab instance URL) during [setup](setup.md#authenticate-with-gitlab). |
 | `gitlab.debug` | false | When `true`, enables debug mode. Debug mode improves error stack traces because the extension uses source maps to understand minified code. Debug mode also shows debug log messages in the [extension logs](troubleshooting.md#view-debug-logs). |
 | `gitlab.duo.enabledWithoutGitlabProject` | true | When `true`, keeps GitLab Duo features enabled if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. When `false`, disables all GitLab Duo features if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. See [`duoFeaturesEnabledForProject` setting](#duofeaturesenabledforproject). |
-| `gitlab.duoAgentPlatform.defaultNamespace` | Not applicable | The default group or namespace path for GitLab Duo Agent Platform when the extension can't get GitLab project details. |
 | `gitlab.duoCodeSuggestions.additionalLanguages` | Not applicable | (Experimental.) To expand the list of officially supported languages for GitLab Duo Code Suggestions, provide an array of the [language identifiers](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers). Code Suggestions quality for the added languages might not be optimal. |
 | `gitlab.duoCodeSuggestions.enabled` | true | When `true`, enables Code Suggestions for AI-assisted suggestions. |
 | `gitlab.duoCodeSuggestions.enabledSupportedLanguages` | Not applicable | The supported languages for which to enable Code Suggestions. By default, all supported languages are enabled. |

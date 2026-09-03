@@ -42,8 +42,27 @@ function getVisibleDiscussions() {
   return getAllDiscussionElements().filter(isVisible);
 }
 
+const CONTENT_TOP_CLEARANCE = 1;
+
+function alignToContentTop(target) {
+  const overshoot = Math.round(
+    target.getBoundingClientRect().top - contentTop() - CONTENT_TOP_CLEARANCE,
+  );
+
+  if (overshoot !== 0) {
+    getScrollingElement(target).scrollBy({ top: overshoot, behavior: 'instant' });
+  }
+}
+
+function usesLegacyStrategy() {
+  return isOverviewPage() || !isRapidDiffs();
+}
+
 function scrollToDiscussion(target) {
   target.scrollIntoView(true);
+  // Only the legacy strategy computes the current thread relative to
+  // contentTop(); rapidDiffs references the panel top, so leave it alone.
+  if (usesLegacyStrategy()) alignToContentTop(target);
   scrollPastCoveringElements(target);
 }
 
@@ -146,8 +165,7 @@ const strategies = {
 };
 
 function getNavigationStrategy() {
-  if (isOverviewPage()) return strategies.legacy;
-  return isRapidDiffs() ? strategies.rapidDiffs : strategies.legacy;
+  return usesLegacyStrategy() ? strategies.legacy : strategies.rapidDiffs;
 }
 
 function getNextDiscussion() {

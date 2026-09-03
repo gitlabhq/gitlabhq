@@ -1,11 +1,22 @@
-import { SECURITY_SCAN_ROUTE, LICENSE_COMPLIANCE_ROUTE, CODE_QUALITY_ROUTE } from './constants';
+import { GlLoadingIcon } from '@gitlab/ui';
+import {
+  SECURITY_SCAN_ROUTE,
+  LICENSE_COMPLIANCE_ROUTE,
+  CODE_QUALITY_ROUTE,
+  ROOT_ROUTE,
+} from './constants';
 
 const CATCH_ALL_ROUTE = '/:pathMatch(.*)*';
 
 export default [
   {
+    name: ROOT_ROUTE,
     path: '/',
-    redirect: { name: SECURITY_SCAN_ROUTE },
+    component: {
+      render(h) {
+        return h(GlLoadingIcon, { props: { size: 'lg' } });
+      },
+    },
   },
   {
     name: SECURITY_SCAN_ROUTE,

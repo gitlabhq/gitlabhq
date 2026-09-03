@@ -37,7 +37,9 @@ RSpec.shared_examples 'model with associated note' do
 
         context 'when the note has a namespace_id' do
           before do
-            note.update_column(:namespace_id, note.noteable.project.project_namespace_id)
+            # project_id must be cleared in the same statement: a dual-key note is
+            # repaired back to namespace_id NULL by the notes dual-key trigger.
+            note.update_columns(namespace_id: note.noteable.project.project_namespace_id, project_id: nil)
             note.reload
           end
 

@@ -3,6 +3,10 @@ import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_
 import SmartInterval from '~/smart_interval';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import { observable } from '~/lib/utils/observable';
+import {
+  hasCodeQualityReport,
+  hasLicenseComplianceReport,
+} from 'ee_else_ce/merge_requests/reports/configured_reports';
 
 export const PIPELINE_STATE = {
   loading: 'LOADING',
@@ -83,6 +87,12 @@ export default {
   computed: {
     mr() {
       return state.mr;
+    },
+    hasCodeQualityReports() {
+      return hasCodeQualityReport(state.mr);
+    },
+    hasLicenseComplianceReports() {
+      return hasLicenseComplianceReport(state.mr);
     },
     pipelineState() {
       return pipelineStateOf(state.mr);

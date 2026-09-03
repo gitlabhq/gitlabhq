@@ -32961,6 +32961,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "flowType",
+                  "description": "Filter by one or many Duo Agent Platform flow types",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "timestampFrom",
                   "description": "Filter by event timestamp. Start of the range.",
                   "type": {
@@ -143508,6 +143528,18 @@
               "deprecationReason": null
             },
             {
+              "name": "flowType",
+              "description": "Duo Agent Platform flow type; NULL for non-DAP events",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "timestamp",
               "description": "Event timestamp",
               "args": [
@@ -144537,6 +144569,30 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "sourceLink",
+              "description": "URL or deep link to the location where the session was triggered from. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "sourceType",
+              "description": "External system that initiated the session (for example, Slack). Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "DuoWorkflowSourceType",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "stalled",
@@ -146657,6 +146713,23 @@
           ],
           "interfaces": null,
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "DuoWorkflowSourceType",
+          "description": "External system that initiated a Duo Workflow session.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "SLACK",
+              "description": "Session initiated from Slack.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -320651,6 +320724,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 16.9."
+            },
+            {
+              "name": "duoMcpServersCount",
+              "description": "Number of distinct MCP servers used by the project's configured agents. Resolved on request only, because it reads the configured agents and their versions. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "duoWorkflowEvents",

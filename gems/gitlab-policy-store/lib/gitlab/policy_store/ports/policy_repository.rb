@@ -10,6 +10,7 @@ module Gitlab
       # the same interface, keeping the facade and callers unchanged.
       class PolicyRepository
         include EnumeratedAttributeValidation
+        include ActionShapeValidation
 
         REQUIRED_ATTRIBUTES = [:organization_id, :name, :trigger_type].freeze
 
@@ -86,8 +87,8 @@ module Gitlab
         # @raise [Gitlab::PolicyStore::ValidationError] if the policy is invalid, its name is
         #   taken, an attribute is outside CREATABLE_ATTRIBUTES and IMMUTABLE_ATTRIBUTES,
         #   one of NON_NULLABLE_ATTRIBUTES is explicitly nil, its mode or lifecycle_state is
-        #   outside ENUMERATED_ATTRIBUTES, or its rules merge into a module larger than
-        #   MAX_COMPILED_RULES_BYTES
+        #   outside ENUMERATED_ATTRIBUTES, an action is not a { type, value } entry, or its
+        #   rules merge into a module larger than MAX_COMPILED_RULES_BYTES
         def create(_attributes)
           raise NotImplementedError
         end
@@ -103,8 +104,8 @@ module Gitlab
         #   taken, an attribute is outside UPDATABLE_ATTRIBUTES and IMMUTABLE_ATTRIBUTES, one of
         #   IDENTITY_ATTRIBUTES differs from the stored policy, one of
         #   NON_NULLABLE_ATTRIBUTES is explicitly nil, its mode or lifecycle_state is outside
-        #   ENUMERATED_ATTRIBUTES, or replacement rules merge into a module larger than
-        #   MAX_COMPILED_RULES_BYTES
+        #   ENUMERATED_ATTRIBUTES, an action is not a { type, value } entry, or replacement
+        #   rules merge into a module larger than MAX_COMPILED_RULES_BYTES
         def update(_id, _attributes)
           raise NotImplementedError
         end

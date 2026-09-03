@@ -67,41 +67,29 @@ adds those wrappers automatically.
    structure where possible. Add new subsections only for genuinely new
    topics.
 4. **Conciseness.** Keep items concise. One line per rule where possible.
-5. **No commentary.** No explanations or meta-text outside the checklist.
-6. **Complete output.** Return the COMPLETE updated checklist (not just
-   the diff).
-7. **No preamble.** Start your response directly with the first line of
-   the file. No "Here is …", no thinking blocks, no trailing notes.
-8. **Preserve meaning, rephrase to imperative.** Preserve the meaning of
-   every existing item that survives rule 2, UNLESS the SSOT has changed
-   that item's guidance (then rule 16 applies — revise it). Do not reorder
-   or interleave genuinely new items (append instead); "append instead"
-   governs ordering of new items only and NEVER licenses keeping an
-   outdated rule. You MUST rewrite every item to comply with rule 10,
-   regardless of whether the SSOT changed — this is not optional and does
-   not count as diff noise. Specifically:
-   - Every item starting with "No " MUST become "DO NOT `<verb>` …"
-     (e.g., "No business logic in controllers" → "DO NOT put business
-     logic in controllers").
-   - Every item starting with "Avoid " MUST become "DO NOT `<verb>` …"
-     (e.g., "Avoid deep nesting" → "DO NOT nest beyond two levels").
-   - Every passive or descriptive item MUST become an imperative directive.
-   - The rewritten item MUST be grammatically correct — "DO NOT" must be
-     followed by a verb in its base form (not a noun or gerund).
-
-   The only items exempt from rephrasing are baseline rules (rule 15),
-   which must be preserved verbatim.
+5. **Output shape.** Return the complete updated checklist, and only the
+   checklist, as specified in "Your task on every invocation" and "Output
+   structure" above.
+6. **Reserved.** See rule 5.
+7. **Reserved.** See rule 5.
+8. **Preserve meaning and ordering.** Preserve the meaning of every existing
+   item that survives rule 2 unless the SSOT has changed that item's guidance
+   (then rule 16 applies — revise it). Do not reorder or interleave genuinely
+   new items; append them instead. Appending new items never licenses keeping
+   an outdated rule. The imperative rewrite in rule 10 is required work, not
+   diff noise under rule 18.
 9. **Drop universal best practices.** Omit rules that any experienced
    developer or LLM already knows (SOLID, "be kind in reviews", "use
    descriptive variable names"). Focus on GitLab-specific conventions,
    patterns, tooling, and gotchas that a reviewer would not know without
    reading the documentation.
-10. **Imperative mood.** Phrase every rule as a directive. Every item must
-    start with either "DO NOT `<verb>`" or an imperative action verb
-    (Use, Prefer, Ensure, Include, Add, Set, Follow, Freeze, Pass, Wrap,
-    etc.). DO NOT write descriptive or passive statements.
+10. **Imperative mood.** Phrase every SSOT-derived rule as a directive. Every
+    item must start with either "DO NOT `<verb>`" or an imperative action
+    verb (Use, Prefer, Ensure, Include, Add, Set, Follow, Freeze, Pass, Wrap,
+    etc.). Follow "DO NOT" with a verb in its base form, not a noun or gerund.
+    Do not write descriptive or passive statements.
 
-    Category examples (rule 8 mandates the "No " and "Avoid " rewrites):
+    Category examples:
     a) Passive/descriptive — convert to imperative:
        - BAD: "Method naming follows Ruby conventions"
        - GOOD: "Follow Ruby naming conventions for methods"
@@ -113,6 +101,11 @@ adds those wrappers automatically.
        - BAD: "Feature flags are enabled by default in tests"
        - GOOD: "DO NOT stub feature flags to `true` — they are enabled by
          default in the test environment"
+    c) Negative openers — convert to an imperative prohibition:
+       - BAD: "No business logic in controllers"
+       - GOOD: "DO NOT put business logic in controllers"
+       - BAD: "Avoid deep nesting"
+       - GOOD: "DO NOT nest beyond two levels"
 
     This ensures every rule reads as an instruction that agents follow,
     rather than background information they may ignore.
@@ -177,7 +170,7 @@ adds those wrappers automatically.
         CTEs with `update_all`, first pluck IDs from the CTE result and
         scope the update to those IDs (the CTE is dropped otherwise)."
 15. **Baseline rules.** When a baseline file is provided, include its rules
-    verbatim — they are exempt from the rephrasing rule (rule 8 / 10).
+    verbatim — they are exempt from the rephrasing rule (rule 10).
     Do not rephrase or omit them. The baseline is authoritative for both
     content and placement:
     - Put each baseline rule under the heading the BASELINE gives it. If
@@ -377,7 +370,7 @@ adds those wrappers automatically.
       action)
     - GOOD: "For complete pages: apply feature tests + browser extension"
 18. **Diff discipline.** Beyond the required reconciliation work (rule 16)
-    and the mandatory imperative rewrite (rules 8/10), keep the diff
+    and the mandatory imperative rewrite (rule 10), keep the diff
     against the prior checklist minimal:
     - DO NOT reword, reorder, split, or merge items that already
       accurately reflect the SSOT.

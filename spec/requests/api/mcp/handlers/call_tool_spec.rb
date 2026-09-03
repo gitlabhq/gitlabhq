@@ -1357,6 +1357,148 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
+  describe '#list_tags' do
+    let(:tool_params) do
+      { name: 'list_tags', arguments: { project_id: project.full_path } }
+    end
+
+    let(:structured_content) { json_response['result']['structuredContent'] }
+
+    it 'returns the project tags, most recently updated first', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      expect(structured_content['tags'].pluck('name')).to eq(%w[v1.1.1 v1.1.0 v1.0.0])
+    end
+
+    it 'returns metadata-only entries with the tip commit', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      entry = structured_content['tags'].last
+      expect(entry.keys).to match_array(%w[name commit])
+      expect(entry['commit']).to eq(
+        'sha' => '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
+        'title' => 'More submodules'
+      )
+    end
+
+    it 'reports pagination state' do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      expect(structured_content['metadata']).to eq(
+        'has_next_page' => false, 'end_cursor' => nil
+      )
+    end
+
+    context 'when identified by url instead of project_id' do
+      let(:tool_params) do
+        { name: 'list_tags', arguments: { url: project.web_url } }
+      end
+
+      it 'resolves the project from the url' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(structured_content['tags'].pluck('name')).to eq(%w[v1.1.1 v1.1.0 v1.0.0])
+      end
+    end
+
+    context 'when filtering by name' do
+      let(:tool_params) do
+        { name: 'list_tags', arguments: { project_id: project.full_path, search: 'v1.1' } }
+      end
+
+      it 'returns only matching tags' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(structured_content['tags'].pluck('name')).to eq(%w[v1.1.1 v1.1.0])
+      end
+    end
+
+    context 'with pagination' do
+      let(:tool_params) do
+        { name: 'list_tags', arguments: { project_id: project.full_path, first: 2 } }
+      end
+
+      it 'bounds the page and returns a cursor for the next one', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(structured_content['tags'].pluck('name')).to eq(%w[v1.1.1 v1.1.0])
+        expect(structured_content['metadata']).to eq(
+          'has_next_page' => true, 'end_cursor' => 'v1.1.0'
+        )
+      end
+
+      it 'returns the remainder after the cursor, with has_next_page false', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: params.deep_merge(params: { arguments: { after: 'v1.1.0' } }), as: :json
+
+        expect(structured_content['tags'].pluck('name')).to eq(%w[v1.0.0])
+        expect(structured_content['metadata']).to eq(
+          'has_next_page' => false, 'end_cursor' => nil
+        )
+      end
+    end
+
+    context 'when neither url nor project_id is given' do
+      let(:tool_params) { { name: 'list_tags', arguments: {} } }
+
+      it 'returns an error naming the requirement', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text'])
+          .to include('Provide exactly one of: url or project_id')
+      end
+    end
+
+    context 'when arguments are omitted entirely' do
+      let(:tool_params) { { name: 'list_tags' } }
+
+      it 'returns an error naming the requirement' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(json_response['result']['content'].first['text'])
+          .to include('Provide exactly one of: url or project_id')
+      end
+    end
+
+    context 'when first exceeds the maximum' do
+      let(:tool_params) do
+        { name: 'list_tags', arguments: { project_id: project.full_path, first: 101 } }
+      end
+
+      it 'rejects the call rather than silently clamping', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('first')
+      end
+    end
+
+    context 'when caller cannot read the project' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+      let_it_be(:private_project) { create(:project, :repository, :private) }
+
+      let(:tool_params) do
+        { name: 'list_tags', arguments: { project_id: private_project.full_path } }
+      end
+
+      it 'answers a private project exactly as it answers a missing one', :aggregate_failures do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params
+        denied = json_response['result']['content'].first['text']
+
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token),
+          params: params.deep_merge(params: { arguments: { project_id: 'no/such-project' } })
+        missing = json_response['result']['content'].first['text']
+
+        expect(denied).to eq("Tool execution failed: Project '#{private_project.full_path}' not found or inaccessible")
+        expect(missing).to eq("Tool execution failed: Project 'no/such-project' not found or inaccessible")
+      end
+    end
+  end
+
   describe '#add_branch' do
     let(:tool_params) do
       { name: 'add_branch', arguments: { project_id: project.full_path, branch: 'my-feature', ref: 'master' } }
