@@ -158,12 +158,12 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
   end
 
   context 'with `require_sha_for_merge` attribute' do
-    let(:extra_params) { { require_sha_for_merge: false } }
+    let(:extra_params) { { require_sha_for_merge: true } }
 
     it_behaves_like 'creating a group'
 
     it 'ignores the user-supplied value and applies the default' do
-      expect(created_group.namespace_settings.require_sha_for_merge).to be(true)
+      expect(created_group.namespace_settings.require_sha_for_merge).to be(false)
     end
   end
 
@@ -505,8 +505,8 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
         stub_application_setting(require_sha_for_merge: false)
       end
 
-      it 'expects namespace setting to be true by default' do
-        expect(created_group.namespace_settings.require_sha_for_merge).to be(true)
+      it 'expects namespace setting to be false by default' do
+        expect(created_group.namespace_settings.require_sha_for_merge).to be(false)
       end
     end
 
@@ -535,8 +535,8 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
 
       let(:extra_params) { { parent_id: parent_group.id } }
 
-      it 'expects namespace setting to be true by default' do
-        expect(created_group.namespace_settings.require_sha_for_merge).to be(true)
+      it 'expects namespace setting to be false by default' do
+        expect(created_group.namespace_settings.require_sha_for_merge).to be(false)
       end
     end
   end

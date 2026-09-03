@@ -195,7 +195,7 @@ module Groups
     def set_require_sha_for_merge_default
       return if require_sha_for_merge_locked_for_new_group?
 
-      params[:require_sha_for_merge] = true
+      params[:require_sha_for_merge] = false
     end
 
     def require_sha_for_merge_locked_for_new_group?
