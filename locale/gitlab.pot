@@ -30222,6 +30222,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Awaiting your input"
 msgstr ""
 
+msgid "DuoAgentPlatform|CI job"
+msgstr ""
+
 msgid "DuoAgentPlatform|CI/CD runner"
 msgstr ""
 
@@ -30357,6 +30360,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Manage merge requests, issues, and pipelines, and run Orbit Local from the terminal."
 msgstr ""
 
+msgid "DuoAgentPlatform|Model"
+msgstr ""
+
 msgid "DuoAgentPlatform|Needed once flow execution is on."
 msgstr ""
 
@@ -30421,6 +30427,9 @@ msgid "DuoAgentPlatform|Running"
 msgstr ""
 
 msgid "DuoAgentPlatform|Session ID"
+msgstr ""
+
+msgid "DuoAgentPlatform|Session details"
 msgstr ""
 
 msgid "DuoAgentPlatform|Session failed"
@@ -30566,6 +30575,9 @@ msgid "DuoAgenticChat|Collaborate with AI agents to accomplish tasks and answer 
 msgstr ""
 
 msgid "DuoAgenticChat|Connection lost"
+msgstr ""
+
+msgid "DuoAgenticChat|Conversation compacted"
 msgstr ""
 
 msgid "DuoAgenticChat|Current page"
@@ -56804,6 +56816,9 @@ msgstr ""
 msgid "Organization parameter must be specified"
 msgstr ""
 
+msgid "Organization quota of %{limit} tracked security contexts has been reached. Contact your administrator to request a quota increase."
+msgstr ""
+
 msgid "Organizations"
 msgstr ""
 
@@ -71368,6 +71383,9 @@ msgstr ""
 msgid "SecurityConfiguration|Create merge request"
 msgstr ""
 
+msgid "SecurityConfiguration|Custom"
+msgstr ""
+
 msgid "SecurityConfiguration|Customize common SAST settings to suit your requirements. Configuration changes made here override those provided by GitLab and are excluded from updates. For details of more advanced configuration options, see the %{linkStart}GitLab SAST documentation%{linkEnd}."
 msgstr ""
 
@@ -71438,6 +71456,9 @@ msgid "SecurityConfiguration|Failed to load scanner statistics"
 msgstr ""
 
 msgid "SecurityConfiguration|Get broad security coverage in minutes. We'll enable recommended scanners across your projects using GitLab's default profiles. You'll review all changes before anything is applied."
+msgstr ""
+
+msgid "SecurityConfiguration|GitLab"
 msgstr ""
 
 msgid "SecurityConfiguration|Go to security configuration"
@@ -78504,13 +78525,7 @@ msgstr ""
 msgid "SlackIntegration|Access request canceled"
 msgstr ""
 
-msgid "SlackIntegration|Acknowledge and continue"
-msgstr ""
-
 msgid "SlackIntegration|Are you sure you want to unlink this Slack Workspace from this integration? All projects inheriting these settings will also be unlinked. Groups and projects using custom settings will not be affected."
-msgstr ""
-
-msgid "SlackIntegration|Cancel"
 msgstr ""
 
 msgid "SlackIntegration|Client ID"
@@ -78555,16 +78570,10 @@ msgstr ""
 msgid "SlackIntegration|GitLab slash commands"
 msgstr ""
 
-msgid "SlackIntegration|Heads up: your prompt and this thread's context are saved in a GitLab Duo session. These are visible to anyone with access to the project it's saved in, not just people in this conversation."
-msgstr ""
-
 msgid "SlackIntegration|Install GitLab for Slack app…"
 msgstr ""
 
 msgid "SlackIntegration|Interact with GitLab without leaving your Slack workspace!"
-msgstr ""
-
-msgid "SlackIntegration|Okay, GitLab Duo will not process this mention. Mention GitLab Duo again if you change your mind."
 msgstr ""
 
 msgid "SlackIntegration|Perform deployments."
@@ -78598,9 +78607,6 @@ msgid "SlackIntegration|Step 1: Create your GitLab for Slack app"
 msgstr ""
 
 msgid "SlackIntegration|Step 2: Configure the app settings"
-msgstr ""
-
-msgid "SlackIntegration|Thanks! Your acknowledgement was saved and GitLab Duo is processing your request. You will not be asked again in this workspace."
 msgstr ""
 
 msgid "SlackIntegration|This integration allows users to perform common operations on their projects by entering slash commands in Slack."
@@ -91607,12 +91613,6 @@ msgstr ""
 msgid "Wiki404|Would you like to create it?"
 msgstr ""
 
-msgid "WikiClone|Clone Wiki repository"
-msgstr ""
-
-msgid "WikiClone|Git Access"
-msgstr ""
-
 msgid "WikiEdit|There is already a page with the same title in that path."
 msgstr ""
 
@@ -97844,6 +97844,9 @@ msgid "must be unique by status and elapsed time within a policy"
 msgstr ""
 
 msgid "must be unique. This CA has already been configured for this namespace."
+msgstr ""
+
+msgid "must be unique. This CA has already been configured."
 msgstr ""
 
 msgid "must be within the project hierarchy"

@@ -1,0 +1,15 @@
+# @feature_category: custom_dashboards_foundation
+
+# The scope picker's starting point when it has no group to browse within, as on the
+# instance-level Explore page. `allAvailable: false` limits this to groups the user belongs to.
+query getAnalyticsDashboardTopLevelGroups {
+  groups(topLevelOnly: true, allAvailable: false, sort: "name_asc", first: 100) {
+    nodes {
+      id
+      name
+      fullName
+      fullPath
+      projectsCount
+    }
+  }
+}

@@ -12,6 +12,7 @@ import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER, BLAME_VIEWER } from '~/blob/compo
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
+import { ERROR_POLICY_NONE } from '~/lib/graphql';
 import { __, s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
@@ -73,6 +74,7 @@ export default {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     projectInfo: {
       query: projectInfoQuery,
+      errorPolicy: ERROR_POLICY_NONE,
       variables() {
         return {
           projectPath: this.projectPath,
@@ -94,6 +96,7 @@ export default {
     },
     project: {
       query: blobInfoQuery,
+      errorPolicy: ERROR_POLICY_NONE,
       variables() {
         const queryVariables = {
           projectPath: this.projectPath,

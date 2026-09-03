@@ -49,12 +49,6 @@ To find subscribers, search the subscription files under
 |-------|-----------------|---------|-------------|
 | `Analytics::ClickHouseForAnalyticsEnabledEvent` | `value_stream_management` | EE | Published when the instance-wide setting `use_clickhouse_for_analytics` is toggled on, signalling that ClickHouse-backed analytics has just been enabled so downstream backfill jobs can run. |
 
-## Cd
-
-| Event | Feature category | Edition | Description |
-|-------|-----------------|---------|-------------|
-| `Cd::ArtifactPublishedEvent` | `continuous_delivery` | EE | Published when a new artifact version is available for a GitLab CD artifact source, so subscribers can create the corresponding cd_versions. Source-agnostic by design - today it is bridged from container registry pushes, but external artifact sources can publish the same event later. |
-
 ## Ci
 
 | Event | Feature category | Edition | Description |

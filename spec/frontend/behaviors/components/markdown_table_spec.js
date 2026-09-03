@@ -1,4 +1,5 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import MarkdownTable from '~/behaviors/components/markdown_table.vue';
 
 describe('MarkdownTable', () => {
@@ -95,6 +96,68 @@ describe('MarkdownTable', () => {
       expect(findHeaders().at(0).find('code').element).toBe(label);
       expect(findHeaders().at(1).attributes('align')).toBe('right');
       expect(findHeaders().at(2).attributes('style')).toBe('text-align: center;');
+    });
+  });
+
+  describe('internal event tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    describe('when canSort is true', () => {
+      beforeEach(() => {
+        createWrapper([
+          ['Charlie', '30'],
+          ['Alice', '25'],
+          ['Bob', '35'],
+        ]);
+      });
+
+      it('fires sort_markdown_table_column with ascending direction on first sort', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        await clickHeader(0);
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'sort_markdown_table_column',
+          { property: 'ascending' },
+          undefined,
+        );
+      });
+
+      it('fires sort_markdown_table_column with descending direction on toggle', async () => {
+        await clickHeader(0);
+
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        await clickHeader(0);
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'sort_markdown_table_column',
+          { property: 'descending' },
+          undefined,
+        );
+      });
+    });
+
+    describe('when canSort is false', () => {
+      it('does not fire sort_markdown_table_column when isSortable is false', async () => {
+        createWrapper([['Alice', '25']], { isSortable: false });
+
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        await clickHeader(0);
+
+        expect(trackEventSpy).not.toHaveBeenCalled();
+      });
+
+      it('does not fire sort_markdown_table_column when there is only one row', async () => {
+        createWrapper([['Alice', '25']]);
+
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        await clickHeader(0);
+
+        expect(trackEventSpy).not.toHaveBeenCalled();
+      });
     });
   });
 

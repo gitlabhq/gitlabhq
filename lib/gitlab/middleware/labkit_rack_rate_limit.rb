@@ -7,8 +7,7 @@ module Gitlab
     # Gitlab::ApplicationRateLimiter::LabkitAdapter:
     #
     #   shadow off              : labkit does not run; Rack::Attack alone decides.
-    #   shadow on, enforce off  : labkit runs and its block decision is recorded
-    #                             against Rack::Attack's, but never acted on.
+    #   shadow on, enforce off  : labkit runs, but its decision is never acted on.
     #   shadow on, enforce on   : labkit additionally blocks. On a block whose cohort
     #                             enforces it renders the byte-identical legacy 429
     #                             and short-circuits; otherwise the request falls
@@ -19,11 +18,10 @@ module Gitlab
     # builds a ClassifiedRequest of raw request facts and runs every limiter's full,
     # ordered rule set over them (cohort gates enforcement, not which rules exist).
     # Each limiter returns its first matching rule's decision; labkit blocks the
-    # request when any of those decisions is a block whose cohort enforces. On the
-    # way back up it compares labkit's block decision against Rack::Attack's. Once
-    # fully enforced, it also adds the proactive RateLimit-* headers to non-429
-    # responses, taking over from RackAttackHeaders, which the safelist leaves with
-    # nothing to read.
+    # request when any of those decisions is a block whose cohort enforces. Once
+    # fully enforced, on the way back up it adds the proactive RateLimit-* headers to
+    # non-429 responses, taking over from RackAttackHeaders, which the safelist leaves
+    # with nothing to read.
     #
     # The middleware blocks only when an enforcing cohort's rule blocks; otherwise it
     # never blocks. The request's own errors propagate (@app.call is not wrapped);
@@ -47,10 +45,7 @@ module Gitlab
 
         status, headers, body = @app.call(env)
 
-        if decision
-          guard { record(env, decision) }
-          guard { annotate_rate_limit_headers(status, headers, decision[:results]) }
-        end
+        guard { annotate_rate_limit_headers(status, headers, decision[:results]) } if decision
 
         [status, headers, body]
       end
@@ -60,8 +55,8 @@ module Gitlab
       # Inbound: build the request facts and run them through every limiter's full
       # ordered rule set. Each limiter returns its first matching rule's result (an
       # :allow for a bypassed/skipped/unmatched request, otherwise the matched
-      # throttle's decision). Returns those results (compared on the way out) and the
-      # byte-identical 429 to return in place of calling the app (nil unless an
+      # throttle's decision). Returns those results (read again on the way out) and
+      # the byte-identical 429 to return in place of calling the app (nil unless an
       # enforcing cohort's rule blocks), or nil when the shadow did not run (no active
       # cohort, or a guarded failure).
       def run(env)
@@ -70,21 +65,7 @@ module Gitlab
         request = build_request(env)
         context = with_isolated_throttle_instrumentation { request.labkit_facts }
         results = limiters.all.values.map { |limiter| limiter.check(context) }
-        { facts: context, results: results, response: enforced_response(results) }
-      end
-
-      # Outbound: compare labkit's block decision against Rack::Attack's for the same
-      # request. The comparison is on the decision, not per-throttle counts: labkit
-      # blocked iff one of its rules blocked, Rack::Attack blocked iff one of the
-      # throttles it annotated onto the env exceeded its limit. The full result set
-      # and the request facts ride along for the sampled divergence log.
-      def record(env, decision)
-        divergence.record(
-          labkit_result: blocking_result(decision[:results]),
-          rackattack_throttle_data: env['rack.attack.throttle_data'] || {},
-          labkit_results: decision[:results],
-          facts: decision[:facts]
-        )
+        { results: results, response: enforced_response(results) }
       end
 
       # Outbound: proactive RateLimit-* headers for non-429 responses (a 429 already
@@ -135,14 +116,9 @@ module Gitlab
         [429, { 'Content-Type' => 'text/plain' }.merge(headers || {}), [::Gitlab::Throttle.rate_limiting_response_text]]
       end
 
-      # The first rule that blocked, or nil. A dry-run throttle's rule is :log, so it
-      # never reports :block; the synthetic bypass/skip/runner/claim rules and an
-      # unmatched request are :allow. So neither a tracked-only throttle nor a
-      # short-circuited request is ever read as a block.
-      def blocking_result(results)
-        results.find { |result| blocked?(result) }
-      end
-
+      # A dry-run throttle's rule is :log, so it never reports :block; the synthetic
+      # bypass/skip/runner/claim rules and an unmatched request are :allow. So neither
+      # a tracked-only throttle nor a short-circuited request is ever read as a block.
       def blocked?(result)
         result.action == :block
       end
@@ -204,10 +180,6 @@ module Gitlab
 
       def limiters
         ::Gitlab::RackAttack::LabkitRateLimit::Limiters
-      end
-
-      def divergence
-        ::Gitlab::RackAttack::LabkitRateLimit::Divergence
       end
     end
   end

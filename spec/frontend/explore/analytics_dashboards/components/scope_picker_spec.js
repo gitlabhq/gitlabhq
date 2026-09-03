@@ -11,6 +11,7 @@ import ScopePicker from '~/explore/analytics_dashboards/components/scope_picker.
 import ScopePickerItem from '~/explore/analytics_dashboards/components/scope_picker_item.vue';
 import getGroupChildrenQuery from '~/explore/analytics_dashboards/graphql/get_group_children.query.graphql';
 import getSubgroupProjectsQuery from '~/explore/analytics_dashboards/graphql/get_subgroup_projects.query.graphql';
+import getTopLevelGroupsQuery from '~/explore/analytics_dashboards/graphql/get_top_level_groups.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -20,6 +21,7 @@ describe('ScopePicker', () => {
   let wrapper;
   let requestHandler;
   let subgroupRequestHandler;
+  let topLevelGroupsRequestHandler;
 
   const groupFullPath = 'gitlab-org';
   const closeListbox = jest.fn();
@@ -97,6 +99,46 @@ describe('ScopePicker', () => {
       },
     });
 
+  // Rootless mode's own fixtures: unrelated top-level groups, each with its own direct projects.
+  const mockTopLevelGroup = ({ id, name, path, projectsCount = 0 }) => ({
+    __typename: TYPENAME_GROUP,
+    id: `gid://gitlab/Group/${id}`,
+    name,
+    fullName: name,
+    fullPath: path,
+    projectsCount,
+  });
+
+  const mockCapsuleCorp = mockTopLevelGroup({
+    id: 20,
+    name: 'Capsule Corp',
+    path: 'capsule-corp',
+    projectsCount: 2,
+  });
+  const mockAcme = mockTopLevelGroup({ id: 21, name: 'Acme Inc', path: 'acme' });
+  const mockTopLevelGroups = [mockCapsuleCorp, mockAcme];
+
+  const mockCapsuleProjects = [
+    {
+      __typename: TYPENAME_PROJECT,
+      id: 'gid://gitlab/Project/30',
+      name: 'Time Machine',
+      fullName: 'Capsule Corp / Time Machine',
+      fullPath: 'capsule-corp/time-machine',
+      namespace: {
+        __typename: TYPENAME_GROUP,
+        id: mockCapsuleCorp.id,
+        name: mockCapsuleCorp.name,
+        fullPath: mockCapsuleCorp.fullPath,
+      },
+    },
+  ];
+
+  const respondWithTopLevelGroups = (groups = mockTopLevelGroups) =>
+    jest.fn().mockResolvedValue({
+      data: { groups: { __typename: 'GroupConnection', nodes: groups } },
+    });
+
   const respondWithSubgroupProjects = (projects = mockSubgroupProjects) =>
     jest.fn().mockResolvedValue({
       data: {
@@ -116,40 +158,56 @@ describe('ScopePicker', () => {
     type: __typename,
   });
 
-  // The real listbox renders a header per group, then its list-item slot per option.
+  // The real listbox takes either grouped sections or a flat option list, rendering its
+  // list-item slot per option either way.
   const listboxStub = stubComponent(GlCollapsibleListbox, {
     template: `
       <div>
-        <div v-for="section in items" :key="section.text">
-          <div v-for="item in section.options" :key="item.value">
-            <slot name="list-item" :item="item"></slot>
-          </div>
+        <div v-for="(item, index) in flatItems" :key="item.value || index">
+          <slot name="list-item" :item="item"></slot>
         </div>
         <slot name="footer"></slot>
       </div>`,
+    computed: {
+      flatItems() {
+        return this.items.flatMap((item) => item.options ?? item);
+      },
+    },
     methods: { close: closeListbox },
   });
 
   const createWrapper = ({
     handler = respondWith(),
     subgroupHandler = respondWithSubgroupProjects(),
+    topLevelGroupsHandler = respondWithTopLevelGroups(),
+    props = {},
   } = {}) => {
     requestHandler = handler;
     subgroupRequestHandler = subgroupHandler;
+    topLevelGroupsRequestHandler = topLevelGroupsHandler;
 
     wrapper = shallowMountExtended(ScopePicker, {
       apolloProvider: createMockApollo([
         [getGroupChildrenQuery, requestHandler],
         [getSubgroupProjectsQuery, subgroupRequestHandler],
+        [getTopLevelGroupsQuery, topLevelGroupsRequestHandler],
       ]),
-      propsData: { groupFullPath },
+      propsData: { groupFullPath, ...props },
       stubs: { GlCollapsibleListbox: listboxStub },
     });
   };
 
+  // Rootless mode: no group to browse within, so the picker lists the user's own top-level groups.
+  const createRootlessWrapper = (options = {}) =>
+    createWrapper({
+      subgroupHandler: respondWithSubgroupProjects(mockCapsuleProjects),
+      ...options,
+      props: { groupFullPath: '', ...options.props },
+    });
+
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findSections = () => findListbox().props('items');
-  const findOptions = () => findSections().flatMap(({ options }) => options);
+  const findOptions = () => findSections().flatMap((item) => item.options ?? item);
   const findDoneButton = () => wrapper.findComponent(GlButton);
   const findItems = () => wrapper.findAllComponents(ScopePickerItem);
   const findItemAt = (index) => findItems().at(index);
@@ -334,7 +392,10 @@ describe('ScopePicker', () => {
     });
 
     it('requests every project beneath it', () => {
-      expect(subgroupRequestHandler).toHaveBeenCalledWith({ fullPath: mockFrontend.fullPath });
+      expect(subgroupRequestHandler).toHaveBeenCalledWith({
+        fullPath: mockFrontend.fullPath,
+        includeSubgroups: true,
+      });
     });
 
     it('marks the subgroup as expanding while the request is in flight', () => {
@@ -479,7 +540,10 @@ describe('ScopePicker', () => {
     });
 
     it('fetches and reveals its projects, so the scope can be inspected before committing', () => {
-      expect(subgroupRequestHandler).toHaveBeenCalledWith({ fullPath: mockFrontend.fullPath });
+      expect(subgroupRequestHandler).toHaveBeenCalledWith({
+        fullPath: mockFrontend.fullPath,
+        includeSubgroups: true,
+      });
       expect(findItems().wrappers.map((item) => item.props('value'))).toEqual([
         mockGroup.fullPath,
         ...mockProjects.map(({ fullPath }) => fullPath),
@@ -737,6 +801,175 @@ describe('ScopePicker', () => {
 
     it('renders no items', () => {
       expect(findItems()).toHaveLength(0);
+    });
+  });
+  describe('without a group to browse within', () => {
+    describe('while loading', () => {
+      beforeEach(() => createRootlessWrapper());
+
+      it('requests the top-level groups and leaves the group query alone', () => {
+        expect(topLevelGroupsRequestHandler).toHaveBeenCalled();
+        expect(requestHandler).not.toHaveBeenCalled();
+      });
+
+      it('sets the listbox to loading', () => {
+        expect(findListbox().props('loading')).toBe(true);
+      });
+    });
+
+    describe('once loaded', () => {
+      beforeEach(async () => {
+        createRootlessWrapper();
+        await waitForPromises();
+      });
+
+      it('stops loading', () => {
+        expect(findListbox().props('loading')).toBe(false);
+      });
+
+      it('lists the groups flat, with no section headers to label a single kind of row', () => {
+        expect(findSections().every(({ options }) => options === undefined)).toBe(true);
+        expect(findOptions().map(({ value, text }) => ({ value, text }))).toEqual([
+          { value: mockCapsuleCorp.fullPath, text: mockCapsuleCorp.name },
+          { value: mockAcme.fullPath, text: mockAcme.name },
+        ]);
+      });
+
+      it('nests nothing, since every row is a group until one is expanded', () => {
+        expect(findItems().wrappers.map((item) => item.props('nested'))).toEqual([false, false]);
+      });
+
+      it('offers a chevron only where there are projects to reveal', () => {
+        expect(findItemFor(mockCapsuleCorp).props('expandable')).toBe(true);
+        expect(findItemFor(mockAcme).props('expandable')).toBe(false);
+      });
+
+      it('starts nothing expanded, there being no group the view is about', () => {
+        expect(findItems().wrappers.map((item) => item.props('expanded'))).toEqual([false, false]);
+      });
+
+      describe('expanding a group', () => {
+        beforeEach(() => toggleExpanded(mockCapsuleCorp));
+
+        it("asks for that group's own projects rather than its whole tree", () => {
+          expect(subgroupRequestHandler).toHaveBeenCalledWith({
+            fullPath: mockCapsuleCorp.fullPath,
+            includeSubgroups: false,
+          });
+        });
+
+        it('marks the group as expanding while the request is in flight', () => {
+          expect(findItemFor(mockCapsuleCorp).props('expanding')).toBe(true);
+        });
+
+        describe('once its projects arrive', () => {
+          beforeEach(() => waitForPromises());
+
+          it('reveals them beneath the group', () => {
+            expect(findItems().wrappers.map((item) => item.props('value'))).toEqual([
+              mockCapsuleCorp.fullPath,
+              ...mockCapsuleProjects.map(({ fullPath }) => fullPath),
+              mockAcme.fullPath,
+            ]);
+          });
+
+          it('names no parent, every project sitting directly in the group', () => {
+            const project = findItemFor(mockCapsuleProjects[0]);
+
+            expect(project.props('nested')).toBe(true);
+            expect(project.props('parentName')).toBeNull();
+          });
+
+          it('does not refetch when collapsed and expanded again', async () => {
+            await toggleExpanded(mockCapsuleCorp);
+            await toggleExpanded(mockCapsuleCorp);
+            await waitForPromises();
+
+            expect(subgroupRequestHandler).toHaveBeenCalledTimes(1);
+          });
+
+          it('locks the projects once the group itself is selected', async () => {
+            await toggleSelected(mockCapsuleCorp);
+
+            expect(findItemFor(mockCapsuleProjects[0]).props('disabled')).toBe(true);
+            expect(findItemFor(mockCapsuleProjects[0]).props('selected')).toBe(true);
+          });
+
+          it('leaves the group indeterminate when one of its projects is selected', async () => {
+            await toggleSelected(mockCapsuleProjects[0]);
+
+            expect(findItemFor(mockCapsuleCorp).props('indeterminate')).toBe(true);
+            expect(findItemFor(mockCapsuleCorp).props('selected')).toBe(false);
+          });
+
+          it('keeps the toggle text after the group it came from is collapsed', async () => {
+            await toggleSelected(mockCapsuleProjects[0]);
+            await toggleExpanded(mockCapsuleCorp);
+
+            expect(findListbox().props('toggleText')).toBe(mockCapsuleProjects[0].name);
+          });
+        });
+      });
+
+      it('emits the selected group', async () => {
+        await toggleSelected(mockCapsuleCorp);
+
+        expect(wrapper.emitted('change')).toEqual([[asNamespace(mockCapsuleCorp)]]);
+      });
+    });
+
+    describe('when the user belongs to no groups', () => {
+      beforeEach(async () => {
+        createRootlessWrapper({ topLevelGroupsHandler: respondWithTopLevelGroups([]) });
+        await waitForPromises();
+      });
+
+      it('renders no items', () => {
+        expect(findItems()).toHaveLength(0);
+      });
+    });
+
+    describe('when the query fails', () => {
+      const error = new Error('oh no');
+
+      beforeEach(async () => {
+        createRootlessWrapper({ topLevelGroupsHandler: jest.fn().mockRejectedValue(error) });
+        await waitForPromises();
+      });
+
+      it('emits error', () => {
+        expect(wrapper.emitted('error')).toEqual([[error]]);
+      });
+
+      it('logs the error to sentry', () => {
+        expect(sentryBrowserWrapper.captureException).toHaveBeenCalledWith(error);
+      });
+    });
+
+    describe('when a group to browse within arrives after mount', () => {
+      beforeEach(async () => {
+        createRootlessWrapper();
+        await waitForPromises();
+        await toggleExpanded(mockCapsuleCorp);
+        await waitForPromises();
+        await toggleSelected(mockCapsuleCorp);
+
+        await wrapper.setProps({ groupFullPath });
+        await waitForPromises();
+      });
+
+      it('switches to browsing that group', () => {
+        expect(requestHandler).toHaveBeenCalledWith({ fullPath: groupFullPath });
+        expect(findSections().map(({ text }) => text)).toEqual([
+          'Projects in top-level group (GitLab.org)',
+          'Subgroups incl. nested',
+        ]);
+      });
+
+      it('drops the old selection, which is no longer in scope', () => {
+        expect(findListbox().props('selected')).toEqual([]);
+        expect(wrapper.emitted('change').at(-1)).toEqual([null]);
+      });
     });
   });
 });

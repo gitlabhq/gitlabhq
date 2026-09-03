@@ -671,8 +671,10 @@ The following sections describe how to work with the issue list.
 
 - OR filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `or_issuable_queries`. Disabled by default.
 - OR filtering [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104292) in GitLab 15.9.
+- Filtering by created date, closed date, due date, and updated date [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120160) in GitLab 16.3 with a [with a feature flag](../../../administration/feature_flags/_index.md) named `issue_date_filter`. Disabled by default.
 - OR filtering [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/296031) in GitLab 17.0. Feature flag `or_issuable_queries` removed.
 - Filtering the list of issues by custom status or the parent item [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/520791) in GitLab 18.7.
+- Filtering by created date, closed date, due date, and updated date [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/17758) in GitLab 19.4. Feature flag `issue_date_filter` removed.
 
 {{< /history >}}
 
@@ -684,8 +686,11 @@ To filter the list of issues:
    The following filters are available:
    - Assignee
    - Author
+   - Closed date
    - Confidential
    - [Contact](../../crm/_index.md)
+   - Created date
+   - Due date
    - [Health](#health-status)
    - Iteration
    - Label
@@ -698,6 +703,7 @@ To filter the list of issues:
    - Status
    - Subscribed
    - Type
+   - Updated date
    - Weight
    - [Custom fields](../../work_items/custom_fields.md)
 1. Select or type the operator to use for filtering the attribute. The following operators are

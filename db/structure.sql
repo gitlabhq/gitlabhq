@@ -23041,6 +23041,26 @@ CREATE SEQUENCE instance_model_selection_feature_settings_id_seq
 
 ALTER SEQUENCE instance_model_selection_feature_settings_id_seq OWNED BY instance_model_selection_feature_settings.id;
 
+CREATE TABLE instance_ssh_certificates (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    fingerprint bytea NOT NULL,
+    title text NOT NULL,
+    key text NOT NULL,
+    CONSTRAINT check_570c971a4b CHECK ((char_length(title) <= 255)),
+    CONSTRAINT check_a267a967fb CHECK ((char_length(key) <= 5000))
+);
+
+CREATE SEQUENCE instance_ssh_certificates_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE instance_ssh_certificates_id_seq OWNED BY instance_ssh_certificates.id;
+
 CREATE TABLE instance_type_ci_runner_machines (
     id bigint NOT NULL,
     runner_id bigint NOT NULL,
@@ -37502,6 +37522,8 @@ ALTER TABLE ONLY instance_audit_events_streaming_headers ALTER COLUMN id SET DEF
 
 ALTER TABLE ONLY instance_model_selection_feature_settings ALTER COLUMN id SET DEFAULT nextval('instance_model_selection_feature_settings_id_seq'::regclass);
 
+ALTER TABLE ONLY instance_ssh_certificates ALTER COLUMN id SET DEFAULT nextval('instance_ssh_certificates_id_seq'::regclass);
+
 ALTER TABLE ONLY integrations ALTER COLUMN id SET DEFAULT nextval('integrations_id_seq'::regclass);
 
 ALTER TABLE ONLY internal_ids ALTER COLUMN id SET DEFAULT nextval('internal_ids_id_seq'::regclass);
@@ -41112,6 +41134,9 @@ ALTER TABLE ONLY instance_audit_events_streaming_headers
 
 ALTER TABLE ONLY instance_model_selection_feature_settings
     ADD CONSTRAINT instance_model_selection_feature_settings_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY instance_ssh_certificates
+    ADD CONSTRAINT instance_ssh_certificates_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY instance_type_ci_runner_machines
     ADD CONSTRAINT instance_type_ci_runner_machines_pkey PRIMARY KEY (id, runner_type);
@@ -48907,6 +48932,8 @@ CREATE INDEX index_inst_type_ci_runner_machines_on_contacted_at_desc_id_desc ON 
 CREATE UNIQUE INDEX index_inst_type_ci_runner_machines_on_runner_id_type_system_xid ON instance_type_ci_runner_machines USING btree (runner_id, runner_type, system_xid);
 
 CREATE UNIQUE INDEX index_instance_model_selection_feature_settings_on_feature ON instance_model_selection_feature_settings USING btree (feature);
+
+CREATE UNIQUE INDEX index_instance_ssh_certificates_on_fingerprint ON instance_ssh_certificates USING btree (fingerprint);
 
 CREATE INDEX index_instance_type_ci_runner_machines_on_executor_type ON instance_type_ci_runner_machines USING btree (executor_type);
 

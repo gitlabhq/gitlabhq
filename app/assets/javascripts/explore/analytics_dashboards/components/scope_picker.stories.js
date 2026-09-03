@@ -1,6 +1,7 @@
 import createMockApollo from 'helpers/mock_apollo_helper';
 import getGroupChildrenQuery from '../graphql/get_group_children.query.graphql';
 import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.graphql';
+import getTopLevelGroupsQuery from '../graphql/get_top_level_groups.query.graphql';
 import ScopePicker from './scope_picker.vue';
 
 export default {
@@ -95,6 +96,54 @@ const projectsBySubgroup = {
   [incubation.fullPath]: [],
 };
 
+// Rootless mode browses the user's own top-level groups instead of one group's contents.
+const mockTopLevelGroup = ({ id, name, path, projectsCount = 0 }) => ({
+  __typename: 'Group',
+  id: `gid://gitlab/Group/${id}`,
+  name,
+  fullName: name,
+  fullPath: path,
+  projectsCount,
+});
+
+const capsuleCorp = mockTopLevelGroup({
+  id: 20,
+  name: 'Capsule Corp',
+  path: 'capsule-corp',
+  projectsCount: 3,
+});
+const acme = mockTopLevelGroup({ id: 21, name: 'Acme Inc', path: 'acme', projectsCount: 1 });
+// No direct projects, so it gets no chevron.
+const empty = mockTopLevelGroup({ id: 22, name: 'Side Quests', path: 'side-quests' });
+
+const topLevelProject = ({ id, name, path, group }) => ({
+  __typename: 'Project',
+  id: `gid://gitlab/Project/${id}`,
+  name,
+  fullName: `${group.name} / ${name}`,
+  fullPath: `${group.fullPath}/${path}`,
+  namespace: { __typename: 'Group', id: group.id, name: group.name, fullPath: group.fullPath },
+});
+
+const projectsByTopLevelGroup = {
+  [capsuleCorp.fullPath]: [
+    topLevelProject({ id: 30, name: 'Time Machine', path: 'time-machine', group: capsuleCorp }),
+    topLevelProject({
+      id: 31,
+      name: 'Gravity Chamber',
+      path: 'gravity-chamber',
+      group: capsuleCorp,
+    }),
+    topLevelProject({ id: 32, name: 'Dragon Radar', path: 'dragon-radar', group: capsuleCorp }),
+  ],
+  [acme.fullPath]: [topLevelProject({ id: 33, name: 'Anvil', path: 'anvil', group: acme })],
+};
+
+const respondWithTopLevelGroups = (groups) => () =>
+  Promise.resolve({
+    data: { groups: { __typename: 'GroupConnection', nodes: groups } },
+  });
+
 const respondWith = (subgroups) => () =>
   Promise.resolve({
     data: {
@@ -110,6 +159,8 @@ const subgroupsByPath = Object.fromEntries(
   [frontend, quality, incubation].map((subgroup) => [subgroup.fullPath, subgroup]),
 );
 
+// Serves both modes: a subgroup's whole tree when rooted, a top-level group's own projects
+// when not.
 const respondWithSubgroupProjects =
   () =>
   ({ fullPath }) =>
@@ -117,10 +168,10 @@ const respondWithSubgroupProjects =
       data: {
         group: {
           __typename: 'Group',
-          id: subgroupsByPath[fullPath].id,
+          id: subgroupsByPath[fullPath]?.id ?? `gid://gitlab/Group/${fullPath}`,
           projects: {
             __typename: 'ProjectConnection',
-            nodes: projectsBySubgroup[fullPath] ?? [],
+            nodes: projectsBySubgroup[fullPath] ?? projectsByTopLevelGroup[fullPath] ?? [],
           },
         },
       },
@@ -131,11 +182,12 @@ const Template = (args, { argTypes }) => ({
   apolloProvider: createMockApollo([
     [getGroupChildrenQuery, args.requestHandler],
     [getSubgroupProjectsQuery, args.subgroupRequestHandler],
+    [getTopLevelGroupsQuery, args.topLevelGroupsRequestHandler],
   ]),
   props: Object.keys(argTypes),
   template: `
     <div style="height:500px;" class="gl-py-3">
-      <scope-picker ref="picker" :group-full-path="groupFullPath" @change="onChange" />
+      <scope-picker ref="picker" :group-full-path="groupFullPath || ''" @change="onChange" />
     </div>`,
   mounted() {
     // Expand up front, so stories that are about an expanded subgroup open on that state.
@@ -149,19 +201,37 @@ const Template = (args, { argTypes }) => ({
   },
 });
 
+// The two browsing modes. Each opens with one row expanded and the rest collapsed, so a single
+// story covers both states.
+
+// No group to browse within, which is the component's default and what the instance-level
+// Explore page needs. A flat list with no section header, expanding to direct projects only, so
+// no parent labels. Side Quests has no direct projects, so it gets no chevron.
 export const Default = Template.bind({});
 Default.args = {
+  groupFullPath: '',
+  // Skipped in this mode, but the mock client wants a handler for every query it is given.
+  requestHandler: respondWith([]),
+  subgroupRequestHandler: respondWithSubgroupProjects(),
+  topLevelGroupsRequestHandler: respondWithTopLevelGroups([capsuleCorp, acme, empty]),
+  expandedPath: capsuleCorp.fullPath,
+};
+
+// Given a group, the picker browses inside it instead: two sections, with subgroups of their own.
+// Frontend's projects arrive flattened from the subgroups below it, which is what draws the
+// parent labels.
+export const WithRoot = Template.bind({});
+WithRoot.args = {
   groupFullPath,
   requestHandler: respondWith([frontend, quality, incubation]),
   subgroupRequestHandler: respondWithSubgroupProjects(),
-};
-
-export const SubgroupExpanded = Template.bind({});
-SubgroupExpanded.args = {
-  ...Default.args,
   expandedPath: frontend.fullPath,
 };
 
+// Shapes only a root can produce. Without one there are no subgroup rows, and chevrons come
+// straight from `projectsCount` rather than guessing from direct counts.
+
+// Nothing to put in the second section, so it drops out and only the group's own projects show.
 export const NoSubgroups = Template.bind({});
 NoSubgroups.args = {
   groupFullPath,
@@ -176,19 +246,4 @@ EmptySubgroup.args = {
   requestHandler: respondWith([incubation]),
   subgroupRequestHandler: respondWithSubgroupProjects(),
   expandedPath: incubation.fullPath,
-};
-
-export const SubgroupLoading = Template.bind({});
-SubgroupLoading.args = {
-  groupFullPath,
-  requestHandler: respondWith([frontend, quality]),
-  subgroupRequestHandler: () => new Promise(() => {}),
-  expandedPath: frontend.fullPath,
-};
-
-export const Loading = Template.bind({});
-Loading.args = {
-  groupFullPath,
-  requestHandler: () => new Promise(() => {}),
-  subgroupRequestHandler: respondWithSubgroupProjects(),
 };

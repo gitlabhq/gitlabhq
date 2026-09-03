@@ -56,14 +56,13 @@ module Slack
       handle_http_error(e, 'Slack API error when removing reaction', channel)
     end
 
-    def post_ephemeral(channel:, user:, text:, thread_ts: nil, blocks: nil)
+    def post_ephemeral(channel:, user:, text:, thread_ts: nil)
       Gitlab::IntegrationsLogger.info(
         message: 'Slack API: posting ephemeral',
         channel_id: channel
       )
       payload = { channel: channel, user: user, text: text }
       payload[:thread_ts] = thread_ts if thread_ts.present?
-      payload[:blocks] = blocks if blocks.present?
       response = post('chat.postEphemeral', payload)
       log_error('Slack API error when posting ephemeral message', response, channel) unless response['ok']
       response
@@ -157,19 +156,6 @@ module Slack
       parsed
     rescue *Gitlab::HTTP::HTTP_ERRORS => e
       handle_http_error(e, 'Slack API error when fetching conversation history', channel)
-    end
-
-    # Fetches metadata about a conversation (channel, private channel, DM, or
-    # group DM). Requires the matching read scope for the conversation type
-    # (channels:read, groups:read, im:read, or mpim:read).
-    # See https://docs.slack.dev/reference/methods/conversations.info
-    def conversation_info(channel:)
-      response = get('conversations.info', channel: channel)
-      parsed = normalize_response(response)
-      log_error('Slack API error when fetching conversation info', parsed, channel) unless parsed['ok']
-      parsed
-    rescue *Gitlab::HTTP::HTTP_ERRORS => e
-      handle_http_error(e, 'Slack API error when fetching conversation info', channel)
     end
 
     private

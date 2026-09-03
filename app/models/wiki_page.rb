@@ -16,7 +16,6 @@ class WikiPage
     pages
     templates
     new
-    git_access
     -
   ].freeze
 

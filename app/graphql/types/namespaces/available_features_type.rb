@@ -5,8 +5,6 @@ module Types
     class AvailableFeaturesType < BaseObject # rubocop:disable Graphql/AuthorizeTypes -- parent is already authorized
       graphql_name 'NamespaceAvailableFeatures'
 
-      include IssuesHelper
-
       field :has_blocked_issues_feature,
         GraphQL::Types::Boolean,
         null: false,
@@ -47,13 +45,6 @@ module Types
         null: false,
         description: 'Whether issuable health status is enabled for the namespace.',
         resolver_method: :issuable_health_status_enabled?,
-        experiment: { milestone: '18.1' }
-
-      field :has_issue_date_filter_feature,
-        GraphQL::Types::Boolean,
-        null: false,
-        description: 'Whether issue date filter is enabled for the namespace.',
-        resolver_method: :issue_date_filter_enabled?,
         experiment: { milestone: '18.1' }
 
       field :has_issue_weights_feature,
@@ -143,10 +134,6 @@ module Types
 
       def issuable_health_status_enabled?
         object.licensed_feature_available?(:issuable_health_status)
-      end
-
-      def issue_date_filter_enabled?
-        has_issue_date_filter_feature?(object, current_user)
       end
 
       def issue_weights_enabled?

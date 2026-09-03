@@ -268,7 +268,6 @@ export default {
     'releasesPath',
     'hasBlockedIssuesFeature',
     'hasIssuableHealthStatusFeature',
-    'hasIssueDateFilterFeature',
     'hasIssueWeightsFeature',
     'hasOkrsFeature',
     'hasCustomFieldsFeature',
@@ -926,47 +925,45 @@ export default {
         ],
       });
 
-      if (this.hasIssueDateFilterFeature) {
-        tokens.push({
-          order: 18,
-          type: TOKEN_TYPE_CLOSED,
-          title: TOKEN_TITLE_CLOSED,
-          icon: 'history',
-          unique: true,
-          token: DateToken,
-          operators: OPERATORS_AFTER_BEFORE,
-        });
+      tokens.push({
+        order: 18,
+        type: TOKEN_TYPE_CLOSED,
+        title: TOKEN_TITLE_CLOSED,
+        icon: 'history',
+        unique: true,
+        token: DateToken,
+        operators: OPERATORS_AFTER_BEFORE,
+      });
 
-        tokens.push({
-          order: 19,
-          type: TOKEN_TYPE_CREATED,
-          title: TOKEN_TITLE_CREATED,
-          icon: 'history',
-          unique: true,
-          token: DateToken,
-          operators: OPERATORS_AFTER_BEFORE,
-        });
+      tokens.push({
+        order: 19,
+        type: TOKEN_TYPE_CREATED,
+        title: TOKEN_TITLE_CREATED,
+        icon: 'history',
+        unique: true,
+        token: DateToken,
+        operators: OPERATORS_AFTER_BEFORE,
+      });
 
-        tokens.push({
-          order: 20,
-          type: TOKEN_TYPE_DUE_DATE,
-          title: TOKEN_TITLE_DUE_DATE,
-          icon: 'calendar',
-          unique: true,
-          token: DateToken,
-          operators: OPERATORS_AFTER_BEFORE,
-        });
+      tokens.push({
+        order: 20,
+        type: TOKEN_TYPE_DUE_DATE,
+        title: TOKEN_TITLE_DUE_DATE,
+        icon: 'calendar',
+        unique: true,
+        token: DateToken,
+        operators: OPERATORS_AFTER_BEFORE,
+      });
 
-        tokens.push({
-          order: 21,
-          type: TOKEN_TYPE_UPDATED,
-          title: TOKEN_TITLE_UPDATED,
-          icon: 'history',
-          unique: true,
-          token: DateToken,
-          operators: OPERATORS_AFTER_BEFORE,
-        });
-      }
+      tokens.push({
+        order: 21,
+        type: TOKEN_TYPE_UPDATED,
+        title: TOKEN_TITLE_UPDATED,
+        icon: 'history',
+        unique: true,
+        token: DateToken,
+        operators: OPERATORS_AFTER_BEFORE,
+      });
 
       if (this.canReadCrmOrganization) {
         tokens.push({

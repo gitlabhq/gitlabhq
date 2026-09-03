@@ -8,6 +8,20 @@ RSpec.describe Gitlab::Database::Partitioning::Time::BaseStrategy, feature_categ
   let(:table_name) { :_test_partitioned_test }
   let(:base_strategy) { described_class.new(model, partitioning_key, retain_for: :ever) }
 
+  describe '#detach_concurrently?' do
+    subject(:strategy) { described_class.new(model, partitioning_key, retain_for: :ever, **options) }
+
+    let(:options) { {} }
+
+    it { expect(strategy.detach_concurrently?).to be(false) }
+
+    context 'when the model opts in' do
+      let(:options) { { detach_concurrently: true } }
+
+      it { expect(strategy.detach_concurrently?).to be(true) }
+    end
+  end
+
   describe '#initialize' do
     subject(:strategy) { described_class.new(model, partitioning_key, retain_for: retain_for) }
 

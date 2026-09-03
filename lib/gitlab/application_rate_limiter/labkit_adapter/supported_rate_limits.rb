@@ -965,7 +965,7 @@ module Gitlab
 
         # A synthetic :skip rule ahead of the real throttle rule: bypass-header
         # traffic (identifier[:bypass_header] == '1') terminates here before
-        # touching Redis, so it stays visible via calls_total{action="skip"}
+        # touching Redis, so it stays visible via rule_evaluations_total{action="skip"}
         # without back-filling the real rule's rate. Named per key so each
         # limit's bypass volume is distinguishable in Prometheus/Grafana.
         def self.bypass_rule_for(key)

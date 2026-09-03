@@ -242,6 +242,24 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
     end
   end
 
+  describe '#detach_concurrently?' do
+    it { expect(strategy.detach_concurrently?).to be(false) }
+
+    context 'when the model opts in' do
+      subject(:strategy) do
+        described_class.new(
+          model,
+          :partition,
+          next_partition_if: next_partition_if,
+          detach_partition_if: detach_partition_if,
+          detach_concurrently: true
+        )
+      end
+
+      it { expect(strategy.detach_concurrently?).to be(true) }
+    end
+  end
+
   describe '#initial_partition' do
     it 'starts with the value 1', :aggregate_failures do
       initial_partition = strategy.initial_partition

@@ -281913,22 +281913,6 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.1."
             },
             {
-              "name": "hasIssueDateFilterFeature",
-              "description": "Whether issue date filter is enabled for the namespace. Introduced in GitLab 18.1: Status: Experiment.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 18.1."
-            },
-            {
               "name": "hasIssueWeightsFeature",
               "description": "Whether issue weights are enabled for the namespace. Introduced in GitLab 18.1: Status: Experiment.",
               "args": [],

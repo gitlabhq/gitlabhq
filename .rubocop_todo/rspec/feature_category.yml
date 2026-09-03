@@ -301,7 +301,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/ee/groups/feature_setting_spec.rb'
     - 'ee/spec/models/ee/incident_management/project_incident_management_setting_spec.rb'
     - 'ee/spec/models/ee/label_spec.rb'
-    - 'ee/spec/models/ee/list_spec.rb'
     - 'ee/spec/models/ee/members_preloader_spec.rb'
     - 'ee/spec/models/ee/namespace_ci_cd_setting_spec.rb'
     - 'ee/spec/models/ee/namespaces/user_namespace_spec.rb'

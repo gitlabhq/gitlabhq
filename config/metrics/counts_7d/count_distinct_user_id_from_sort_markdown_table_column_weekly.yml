@@ -1,0 +1,21 @@
+---
+key_path: redis_hll_counters.count_distinct_user_id_from_sort_markdown_table_column_weekly
+description: Weekly count of unique users who sorted a markdown table column
+product_group: planner_intelligence
+product_categories:
+  - markdown
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252187
+time_frame: 7d
+data_source: internal_events
+data_category: optional
+tiers:
+  - free
+  - premium
+  - ultimate
+events:
+  - name: sort_markdown_table_column
+    unique: user.id

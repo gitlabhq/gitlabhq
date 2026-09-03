@@ -186,6 +186,21 @@ RSpec.describe Gitlab::Highlight do
 
         highlight
       end
+
+      it 'logs the fallback duration' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          a_hash_including(
+            'message' => 'Fallback to plain highlighting',
+            'plain_fallback_duration_s' => an_instance_of(Float),
+            'fallback_reason' => 'timeout',
+            'text_length' => 7,
+            'lexer_tag' => 'ruby',
+            'sidekiq' => false
+          )
+        )
+
+        highlight
+      end
     end
 
     context 'when highlighting raises an error' do
@@ -202,6 +217,17 @@ RSpec.describe Gitlab::Highlight do
           .with('Content', suppress_line_ids: true).and_call_original
 
         highlighter.highlight('Content', used_on: :diff)
+      end
+
+      it 'logs the fallback duration' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          a_hash_including(
+            'message' => 'Fallback to plain highlighting',
+            'fallback_reason' => 'error'
+          )
+        )
+
+        described_class.new('file.rb', 'begin', language: 'ruby').highlight('Content')
       end
     end
 

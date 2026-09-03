@@ -175,7 +175,6 @@ const mountComponent = ({
       hasEpicsFeature: false,
       hasGroupBulkEditFeature: true,
       hasIssuableHealthStatusFeature: false,
-      hasIssueDateFilterFeature: false,
       hasIssueWeightsFeature: false,
       hasOkrsFeature: false,
       hasQualityManagementFeature: false,

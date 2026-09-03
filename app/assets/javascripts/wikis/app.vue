@@ -1,6 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import WikiHeader from './components/wiki_header.vue';
 import WikiContent from './components/wiki_content.vue';
 import WikiForm from './components/wiki_form.vue';
@@ -62,6 +63,7 @@ export default {
   },
   mounted() {
     this.checkEditingMode();
+    this.checkOpenCloneModal();
     window.addEventListener('popstate', this.checkEditingMode);
   },
   beforeDestroy() {
@@ -78,6 +80,15 @@ export default {
         this.setEditingMode(true);
       } else {
         this.setEditingMode(false);
+      }
+    },
+    checkOpenCloneModal() {
+      const url = new URL(window.location);
+
+      if (url.searchParams.has('open_clone_modal')) {
+        url.searchParams.delete('open_clone_modal');
+        window.history.replaceState({}, '', url);
+        this.$root.$emit(BV_SHOW_MODAL, 'clone-wiki-modal');
       }
     },
   },

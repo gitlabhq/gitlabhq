@@ -9,9 +9,6 @@ ee/app/models/cloud_connector/keys.rb:
 ee/app/helpers/secrets_management/enrollment_helper.rb:
   - allow_secrets_manager_namespace_enrollment?: Called from HAML views and controllers via EE::ApplicationHelper
   - allow_secrets_manager_instance_enrollment?: Called from HAML views and controllers via EE::ApplicationHelper
-app/models/chat_name.rb:
-  - duo_privacy_notice_acknowledged?: Will be used in follow-up MR for the Duo privacy notice in non-public Slack conversations
-  - acknowledge_duo_privacy_notice!: Will be used in follow-up MR for the Duo privacy notice in non-public Slack conversations
 app/models/ci/catalog/components_project.rb:
   - fetch_component: Public API method for fetching component data by name; part of the model's interface
 app/models/concerns/organizations/isolatable.rb:

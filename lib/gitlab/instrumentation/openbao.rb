@@ -17,6 +17,18 @@ module Gitlab
 
       STRUCTURAL_SEGMENTS = (%w[sys auth] + KV_SEGMENTS).freeze
 
+      # Every value `operation_for` can return. The SLI pre-creates one series per
+      # entry at boot, so a value missing here stays absent until its first failure
+      # -- and an absent series is indistinguishable from a healthy silent one.
+      ALL_OPERATIONS = [
+        *SYS_ENDPOINTS.map { |endpoint| "sys/#{endpoint}" },
+        'sys/other',
+        *AUTH_ENDPOINTS.map { |endpoint| "auth/#{endpoint}" },
+        'auth/other',
+        *KV_SEGMENTS.map { |segment| "kv/#{segment}" },
+        'other'
+      ].freeze
+
       class << self
         def get_request_count
           ::Gitlab::SafeRequestStore[REQUEST_COUNT] || 0
@@ -39,6 +51,11 @@ module Gitlab
 
           requests_total.increment(operation: operation, method: method.to_s, outcome: outcome.to_s)
           request_duration_seconds.observe({ operation: operation, outcome: outcome.to_s }, duration)
+
+          ::Gitlab::Metrics::OpenbaoClientSlis.record_error_rate(
+            operation: operation,
+            error: outcome.to_s == 'error'
+          )
 
           return unless error_type
 

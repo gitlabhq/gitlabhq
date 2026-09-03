@@ -364,7 +364,6 @@ const mountComponent = async ({
       releasesPath: RELEASES_ENDPOINT,
       hasBlockedIssuesFeature: false,
       hasIssuableHealthStatusFeature: false,
-      hasIssueDateFilterFeature: false,
       hasIssueWeightsFeature: false,
       hasCustomFieldsFeature: false,
       canCreateWorkItem: false,
@@ -618,6 +617,10 @@ describe('planning-view', () => {
         TOKEN_TYPE_SUBSCRIBED,
         TOKEN_TYPE_SEARCH_WITHIN,
         TOKEN_TYPE_GROUP,
+        TOKEN_TYPE_CLOSED,
+        TOKEN_TYPE_CREATED,
+        TOKEN_TYPE_DUE_DATE,
+        TOKEN_TYPE_UPDATED,
         TOKEN_TYPE_ORGANIZATION,
         TOKEN_TYPE_CONTACT,
       ]);
@@ -631,48 +634,6 @@ describe('planning-view', () => {
           .map((token) => token.type);
 
         expect(tokens).not.toContain(TOKEN_TYPE_TYPE);
-      });
-    });
-
-    describe('when hasIssueDateFilterFeature is available', () => {
-      it('renders date-related tokens too', async () => {
-        await mountComponent({ provide: { hasIssueDateFilterFeature: true } });
-        const tokens = findFilteredSearchBar()
-          .props('tokens')
-          .map((token) => token.type);
-
-        expect(tokens).toEqual([
-          TOKEN_TYPE_STATE,
-          TOKEN_TYPE_TYPE,
-          TOKEN_TYPE_LABEL,
-          TOKEN_TYPE_ASSIGNEE,
-          TOKEN_TYPE_AUTHOR,
-          TOKEN_TYPE_MILESTONE,
-          TOKEN_TYPE_PARENT,
-          TOKEN_TYPE_CONFIDENTIAL,
-          TOKEN_TYPE_MY_REACTION,
-          TOKEN_TYPE_SUBSCRIBED,
-          TOKEN_TYPE_SEARCH_WITHIN,
-          TOKEN_TYPE_GROUP,
-          TOKEN_TYPE_CLOSED,
-          TOKEN_TYPE_CREATED,
-          TOKEN_TYPE_DUE_DATE,
-          TOKEN_TYPE_UPDATED,
-          TOKEN_TYPE_ORGANIZATION,
-          TOKEN_TYPE_CONTACT,
-        ]);
-      });
-    });
-
-    describe('when issue_date_filter is enabled', () => {
-      it('includes created and closed date in tokens', async () => {
-        await mountComponent({ provide: { hasIssueDateFilterFeature: true } });
-
-        const tokenTypes = findFilteredSearchBar()
-          .props('tokens')
-          .map((token) => token.type);
-
-        expect(tokenTypes).toEqual(expect.arrayContaining([TOKEN_TYPE_CLOSED, TOKEN_TYPE_CREATED]));
       });
     });
 
@@ -714,6 +675,10 @@ describe('planning-view', () => {
           TOKEN_TYPE_SUBSCRIBED,
           TOKEN_TYPE_SEARCH_WITHIN,
           TOKEN_TYPE_GROUP,
+          TOKEN_TYPE_CLOSED,
+          TOKEN_TYPE_CREATED,
+          TOKEN_TYPE_DUE_DATE,
+          TOKEN_TYPE_UPDATED,
           TOKEN_TYPE_ORGANIZATION,
           TOKEN_TYPE_CONTACT,
           customToken.type,

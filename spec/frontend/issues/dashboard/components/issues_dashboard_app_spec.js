@@ -69,7 +69,6 @@ describe('IssuesDashboardApp component', () => {
     emptyStateWithFilterSvgPath: 'empty/state/with/filter/svg/path.svg',
     emptyStateWithoutFilterSvgPath: 'empty/state/with/filter/svg/path.svg',
     hasBlockedIssuesFeature: true,
-    hasIssueDateFilterFeature: true,
     hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
     hasOkrsFeature: true,

@@ -14,12 +14,13 @@ module Gitlab
 
           def initialize(
             model, partitioning_key, retain_for:, retain_non_empty_partitions: false,
-            analyze_interval: nil, retain_detached_partitions_for: nil)
+            analyze_interval: nil, retain_detached_partitions_for: nil, detach_concurrently: false)
             @model = model
             @partitioning_key = partitioning_key
             @retain_for = retention_period(retain_for)
             @retain_non_empty_partitions = retain_non_empty_partitions
             @analyze_interval = analyze_interval
+            @detach_concurrently = detach_concurrently
             @retain_detached_partitions_for = validate_detached_retention!(retain_detached_partitions_for)
           end
 

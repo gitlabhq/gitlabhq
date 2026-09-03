@@ -94,7 +94,6 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
     end
   end
 
-  #      project_wikis_git_access GET    /:project_id/-/wikis/git_access(.:format) projects/wikis#git_access
   #           project_wikis_pages GET    /:project_id/-/wikis/pages(.:format)      projects/wikis#pages
   #             project_wikis_new GET    /:project_id/-/wikis/new(.:format)        projects/wikis#new
   #                               POST   /:project_id/-/wikis(.:format)            projects/wikis#create

@@ -6,6 +6,8 @@ class ChatName < ApplicationRecord
   LAST_USED_AT_INTERVAL = 1.hour
   MAX_PARAM_LENGTH = 8192
 
+  ignore_column :duo_privacy_notice_acknowledged_at, remove_with: '19.6', remove_after: '2026-10-12'
+
   belongs_to :user
 
   validates :user, presence: true
@@ -44,13 +46,5 @@ class ChatName < ApplicationRecord
 
   def update_last_used_at?
     last_used_at.nil? || last_used_at.before?(LAST_USED_AT_INTERVAL.ago)
-  end
-
-  def duo_privacy_notice_acknowledged?
-    duo_privacy_notice_acknowledged_at.present?
-  end
-
-  def acknowledge_duo_privacy_notice!
-    touch(:duo_privacy_notice_acknowledged_at)
   end
 end

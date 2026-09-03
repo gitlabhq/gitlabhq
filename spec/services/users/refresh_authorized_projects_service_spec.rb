@@ -143,7 +143,7 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
           'authorized_projects_refresh.rows_deleted_count': 0,
           'authorized_projects_refresh.rows_added_count': 1,
           'authorized_projects_refresh.rows_deleted_slice': [],
-          'authorized_projects_refresh.rows_added_slice': [[user.id, project.id, Gitlab::Access::MAINTAINER, true]]
+          'authorized_projects_refresh.rows_added_slice': [[user.id, project.id, Gitlab::Access::MAINTAINER]]
         )
       )
 

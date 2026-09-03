@@ -51,6 +51,86 @@ RSpec.describe 'Sessions', feature_category: :system_access do
     end
   end
 
+  context 'when a deactivated user signs in while 2FA enforcement applies' do
+    let(:user) { create(:user, :with_namespace) }
+    let(:deactivation_alert) do
+      'Your account has been deactivated by your administrator. Please log back in to reactivate your account.'
+    end
+
+    shared_examples 'reactivating the account and reaching 2FA enrollment' do
+      it 'reactivates the user and lands them on the enrollment page' do
+        user.deactivate!
+
+        post user_session_path(user: { login: user.username, password: user.password })
+
+        expect(user.reload).to be_active
+        expect(response).to redirect_to(root_path)
+
+        follow_redirect!
+        expect(response).to redirect_to(profile_two_factor_auth_path)
+
+        follow_redirect!
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(flash[:alert]).not_to eq(deactivation_alert)
+      end
+    end
+
+    context 'when 2FA is enforced instance-wide' do
+      before do
+        stub_application_setting(require_two_factor_authentication: true)
+      end
+
+      it_behaves_like 'reactivating the account and reaching 2FA enrollment'
+    end
+
+    context 'when 2FA is enforced by a group' do
+      before do
+        create(:group, require_two_factor_authentication: true, developers: user)
+        user.update!(require_two_factor_authentication_from_group: true)
+      end
+
+      it_behaves_like 'reactivating the account and reaching 2FA enrollment'
+    end
+
+    context 'when an already signed-in user is deactivated mid-session' do
+      before do
+        stub_application_setting(require_two_factor_authentication: true)
+        login_as(user)
+        user.deactivate!
+      end
+
+      it 'signs them out and leaves the account deactivated' do
+        get profile_two_factor_auth_path
+
+        expect(response).to redirect_to(new_user_session_path)
+        expect(flash[:alert]).to eq(deactivation_alert)
+        expect(user.reload).to be_deactivated
+      end
+    end
+  end
+
+  context 'when a user who has not enrolled in 2FA signs in with a stored redirect' do
+    let_it_be(:project) { create(:project, :public) }
+
+    let(:user) { create(:user, :with_namespace) }
+
+    before do
+      stub_application_setting(require_two_factor_authentication: true)
+    end
+
+    it 'still forces them to the 2FA enrollment page' do
+      get new_user_session_path(redirect_to_referer: 'yes'),
+        headers: { 'HTTP_REFERER' => "http://#{host}#{project_path(project)}" }
+
+      post user_session_path(user: { login: user.username, password: user.password })
+
+      expect(response).to redirect_to(project_url(project, host: host))
+
+      follow_redirect!
+      expect(response).to redirect_to(profile_two_factor_auth_path)
+    end
+  end
+
   context 'when using two-factor authentication via OTP' do
     let_it_be(:user, freeze: false) { create(:user, :two_factor, :invalid) }
     let(:user_params) { { login: user.username, password: user.password } }

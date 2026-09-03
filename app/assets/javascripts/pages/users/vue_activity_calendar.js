@@ -8,12 +8,13 @@ export const initVueActivityCalendar = () => {
     return null;
   }
 
-  const { utcOffset } = el.dataset;
+  const { username, utcOffset } = el.dataset;
 
   return new Vue({
     el,
     name: 'VueActivityCalendarRoot',
     provide: {
+      username,
       utcOffset,
     },
     render(createElement) {

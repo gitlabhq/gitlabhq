@@ -9,7 +9,6 @@ import DuoMcpRow from 'ee_component/pages/projects/shared/permissions/components
 import projectAutoRemediationProfileQuery from 'ee_else_ce/pages/projects/shared/permissions/graphql/project_auto_remediation_profile.query.graphql';
 import attachProfileMutation from 'ee_else_ce/pages/projects/shared/permissions/graphql/auto_remediation_profile_attach.mutation.graphql';
 import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
 import {
   amazonQHelpPath,
@@ -53,7 +52,6 @@ export default {
     DuoOrbitRow,
     DuoMcpRow,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     governancePath: {
       type: String,
@@ -74,6 +72,11 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+    aiAuditEventsStorageAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     aiAuditEventsStorageEnabled: {
       type: Boolean,
@@ -132,6 +135,11 @@ export default {
       default: false,
     },
     initialDuoSecretDetectionFpEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    duoDependencyBumpBreakingChangesAvailable: {
       type: Boolean,
       required: false,
       default: false,
@@ -776,7 +784,7 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
-        v-if="glFeatures.agentArtifactsPage && showAllSettings"
+        v-if="aiAuditEventsStorageAvailable && showAllSettings"
         :label="s__('AiPowered|Store AI audit events')"
         class="gl-mt-5"
         :help-text="
@@ -853,9 +861,7 @@ export default {
       </project-setting-row>
       <project-setting-row
         v-if="
-          glFeatures.enableDependencyBumpBreakingChanges &&
-          ultimateFeaturesAvailable &&
-          showAllSettings
+          duoDependencyBumpBreakingChangesAvailable && ultimateFeaturesAvailable && showAllSettings
         "
         :label="s__('DuoDependencyBump|Turn on Agentic Breaking Change Resolution')"
         class="gl-mt-5"

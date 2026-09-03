@@ -9,32 +9,6 @@ import { resolveOrganizationScope, splitProjectFullPath } from '~/lib/utils/path
 /**
  * Generates the Rails route:
  *
- * - href: `/groups/*group_id/-/wikis/git_access(.:format)`
- * - Path helper: `group_wikis_git_access_path`
- * - URL helper: `group_wikis_git_access_url`
- * - controller#action: `groups/wikis#git_access`
- *
- * @param {any} groupId
- * @param {object | undefined} options
- * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
- * @returns {string} route path
- */
-export const groupWikisGitAccessPath = /*#__PURE__*/ (...args) => {
-  const _organizationGroupWikisGitAccessPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"git_access"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
-  const _groupWikisGitAccessPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"git_access"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
-
-  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
-
-  if (organizationPath) {
-    return _organizationGroupWikisGitAccessPath(organizationPath, ...routeArgs);
-  }
-
-  return _groupWikisGitAccessPath(...routeArgs);
-};
-
-/**
- * Generates the Rails route:
- *
  * - href: `/groups/*group_id/-/wikis/pages(.:format)`
  * - Path helper: `group_wikis_pages_path`
  * - URL helper: `group_wikis_pages_url`
@@ -322,33 +296,6 @@ export const groupWikiPath = /*#__PURE__*/ (...args) => {
   }
 
   return _groupWikiPath(...routeArgs);
-};
-
-/**
- * Generates the Rails route:
- *
- * - href: `/:project_full_path/-/wikis/git_access(.:format)`
- * - Path helper: `project_wikis_git_access_path`
- * - URL helper: `project_wikis_git_access_url`
- * - controller#action: `projects/wikis#git_access`
- *
- * @param {string} projectFullPath
- * @param {object | undefined} options
- * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
- * @returns {string} route path
- */
-export const projectWikisGitAccessPath = /*#__PURE__*/ (projectFullPath, ...args) => {
-  const _organizationNamespaceProjectWikisGitAccessPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"git_access"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
-  const _namespaceProjectWikisGitAccessPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"wikis"],[2,[7,"/"],[2,[6,"git_access"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
-
-  const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
-  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
-
-  if (organizationPath) {
-    return _organizationNamespaceProjectWikisGitAccessPath(organizationPath, namespacePath, projectPath, ...routeArgs);
-  }
-
-  return _namespaceProjectWikisGitAccessPath(namespacePath, projectPath, ...routeArgs);
 };
 
 /**

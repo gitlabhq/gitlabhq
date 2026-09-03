@@ -1,0 +1,11 @@
+---
+name: instance_ssh_certificates
+description: Enables instance-level SSH certificate authorities managed via the database
+  (Admin UI/API)
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/611272
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251165
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/618662
+milestone: '19.4'
+group: group::source code
+type: beta
+default_enabled: false

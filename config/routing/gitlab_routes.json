@@ -3496,12 +3496,6 @@
     "dottedExample": "/john.doe/bar/john.doe/-/wikis/-/confluence"
   },
   {
-    "template": "/*namespace_id/:project_id/-/wikis/git_access",
-    "example": "/foo/bar/foo/-/wikis/git_access",
-    "acceptsFormat": true,
-    "dottedExample": "/john.doe/bar/john.doe/-/wikis/git_access"
-  },
-  {
     "template": "/*namespace_id/:project_id/-/wikis/new",
     "example": "/foo/bar/foo/-/wikis/new",
     "acceptsFormat": true,
@@ -14832,12 +14826,6 @@
     "dottedExample": "/groups/john.doe/bar/-/wikis/-/confluence"
   },
   {
-    "template": "/groups/*group_id/-/wikis/git_access",
-    "example": "/groups/foo/bar/-/wikis/git_access",
-    "acceptsFormat": true,
-    "dottedExample": "/groups/john.doe/bar/-/wikis/git_access"
-  },
-  {
     "template": "/groups/*group_id/-/wikis/new",
     "example": "/groups/foo/bar/-/wikis/new",
     "acceptsFormat": true,
@@ -18862,12 +18850,6 @@
     "example": "/o/foo/foo/bar/foo/-/wikis/-/confluence",
     "acceptsFormat": true,
     "dottedExample": "/o/john.doe/john.doe/bar/john.doe/-/wikis/-/confluence"
-  },
-  {
-    "template": "/o/:organization_path/*namespace_id/:project_id/-/wikis/git_access",
-    "example": "/o/foo/foo/bar/foo/-/wikis/git_access",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/john.doe/bar/john.doe/-/wikis/git_access"
   },
   {
     "template": "/o/:organization_path/*namespace_id/:project_id/-/wikis/new",
@@ -23455,12 +23437,6 @@
     "example": "/o/foo/groups/foo/bar/-/wikis/-/confluence",
     "acceptsFormat": true,
     "dottedExample": "/o/john.doe/groups/john.doe/bar/-/wikis/-/confluence"
-  },
-  {
-    "template": "/o/:organization_path/groups/*group_id/-/wikis/git_access",
-    "example": "/o/foo/groups/foo/bar/-/wikis/git_access",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/groups/john.doe/bar/-/wikis/git_access"
   },
   {
     "template": "/o/:organization_path/groups/*group_id/-/wikis/new",

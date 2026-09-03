@@ -8,7 +8,6 @@ fragment WorkItemAvailableFeatures on NamespaceAvailableFeatures {
   hasScopedLabelsFeature
   hasQualityManagementFeature
   hasLinkedItemsEpicsFeature
-  hasIssueDateFilterFeature
   hasBlockedIssuesFeature
   hasGroupBulkEditFeature
   hasCustomFieldsFeature

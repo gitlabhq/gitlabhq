@@ -1,9 +1,16 @@
 # @feature_category: custom_dashboards_foundation
 
-query getAnalyticsDashboardSubgroupProjects($fullPath: ID!) {
+# Also serves a top-level group in the picker's rootless mode, which passes
+# `includeSubgroups: false` to get that group's own projects rather than its whole tree.
+query getAnalyticsDashboardSubgroupProjects($fullPath: ID!, $includeSubgroups: Boolean = true) {
   group(fullPath: $fullPath) {
     id
-    projects(first: 100, sort: ACTIVITY_DESC, includeArchived: false, includeSubgroups: true) {
+    projects(
+      first: 100
+      sort: ACTIVITY_DESC
+      includeArchived: false
+      includeSubgroups: $includeSubgroups
+    ) {
       nodes {
         id
         name

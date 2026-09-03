@@ -5,6 +5,7 @@ import { s__, sprintf } from '~/locale';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import getGroupChildrenQuery from '../graphql/get_group_children.query.graphql';
 import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.graphql';
+import getTopLevelGroupsQuery from '../graphql/get_top_level_groups.query.graphql';
 import ScopePickerItem from './scope_picker_item.vue';
 
 // Keeps a placeholder row's value from colliding with a real namespace path.
@@ -18,18 +19,22 @@ export default {
     ScopePickerItem,
   },
   props: {
+    // Omit to browse the user's own top-level groups instead of one group's contents, which is
+    // what the instance-level Explore page needs: it has no group to scope to.
     groupFullPath: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
   },
   emits: ['change', 'error'],
   data() {
     return {
       namespace: null,
+      topLevelGroups: [],
       selectedPath: '',
       // The top-level group's projects arrive with the group itself, so it opens without a fetch.
-      expandedPaths: [this.groupFullPath],
+      expandedPaths: this.groupFullPath ? [this.groupFullPath] : [],
       // Each expanded subgroup's projects, flattened across its own subgroups, keyed by path.
       subgroupProjects: {},
     };
@@ -41,6 +46,20 @@ export default {
         return { fullPath: this.groupFullPath };
       },
       update: ({ group }) => group,
+      skip() {
+        return !this.groupFullPath;
+      },
+      error(error) {
+        this.$emit('error', error);
+        captureException(error);
+      },
+    },
+    topLevelGroups: {
+      query: getTopLevelGroupsQuery,
+      update: ({ groups }) => groups?.nodes ?? [],
+      skip() {
+        return Boolean(this.groupFullPath);
+      },
       error(error) {
         this.$emit('error', error);
         captureException(error);
@@ -49,7 +68,9 @@ export default {
   },
   computed: {
     isLoading() {
-      return this.$apollo.queries.namespace.loading;
+      const query = this.groupFullPath ? 'namespace' : 'topLevelGroups';
+
+      return this.$apollo.queries[query].loading;
     },
     projects() {
       return this.namespace?.projects.nodes ?? [];
@@ -67,7 +88,13 @@ export default {
         ({ projects }) => projects ?? [],
       );
 
-      return [this.namespace, ...this.projects, ...this.subgroups, ...subgroupProjects]
+      return [
+        this.namespace,
+        ...this.projects,
+        ...this.subgroups,
+        ...this.topLevelGroups,
+        ...subgroupProjects,
+      ]
         .filter(Boolean)
         .map((namespace) => this.asNamespace(namespace));
     },
@@ -77,7 +104,20 @@ export default {
     toggleText() {
       return this.selectedNamespace?.name ?? s__('AnalyticsDashboards|Select a group or project');
     },
-    sections() {
+    // Rooted mode groups its rows under two headers. Rootless has one kind of top-level row, so
+    // it passes a flat list; the listbox takes either shape, as long as they are not mixed.
+    items() {
+      return this.groupFullPath ? this.rootedSections : this.rootlessItems;
+    },
+    // Each top-level group is a row of its own, opening into its own projects the way the root
+    // row does in rooted mode. Subgroups are left to search.
+    rootlessItems() {
+      return this.topLevelGroups.flatMap((group) => [
+        { ...this.asItem(this.asNamespace(group)), expandable: group.projectsCount > 0 },
+        ...this.subgroupItems(group.fullPath),
+      ]);
+    },
+    rootedSections() {
       if (!this.namespace) return [];
 
       return [
@@ -109,11 +149,22 @@ export default {
         },
       ].filter(({ options }) => options.length);
     },
+    // A flat view of whichever shape `items` took, for resolving the selection against.
+    flatItems() {
+      return this.items.flatMap((item) => item.options ?? item);
+    },
     selectedPaths() {
-      return this.sections
-        .flatMap(({ options }) => options)
-        .filter(({ selected }) => selected)
-        .map(({ value }) => value);
+      return this.flatItems.filter(({ selected }) => selected).map(({ value }) => value);
+    },
+  },
+  watch: {
+    // Everything loaded so far belongs to the old root, and the selection may no longer be in
+    // scope, so start over rather than showing a mix of the two.
+    groupFullPath(fullPath) {
+      this.expandedPaths = fullPath ? [fullPath] : [];
+      this.subgroupProjects = {};
+      this.selectedPath = '';
+      this.$emit('change', null);
     },
   },
   methods: {
@@ -194,7 +245,9 @@ export default {
       try {
         const { data } = await this.$apollo.query({
           query: getSubgroupProjectsQuery,
-          variables: { fullPath },
+          // Rooted mode only ever expands subgroups, and rootless only top-level groups, so the
+          // mode decides whether the whole tree or just the group's own projects is wanted.
+          variables: { fullPath, includeSubgroups: Boolean(this.groupFullPath) },
         });
 
         this.subgroupProjects = {
@@ -241,7 +294,7 @@ export default {
     class="analytics-scope-picker"
     multiple
     fluid-width
-    :items="sections"
+    :items="items"
     :selected="selectedPaths"
     :toggle-text="toggleText"
     :header-text="s__('AnalyticsDashboards|Scope')"

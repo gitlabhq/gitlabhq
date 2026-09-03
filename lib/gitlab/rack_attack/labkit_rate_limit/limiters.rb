@@ -73,7 +73,7 @@ module Gitlab
       # throttle rules below never run, and they perform no Redis write (the
       # bypass volume made these counters the majority of the shadow's Redis
       # load; see gitlab-com/gl-infra/production-engineering#29052). The
-      # short-circuit stays observable via calls_total{action="skip"}.
+      # short-circuit stays observable via rule_evaluations_total{action="skip"}.
       #
       # The limiters are memoized: the rule set is fixed, and the only per-request
       # variation (the limit/period values, the matched facts) is read live inside

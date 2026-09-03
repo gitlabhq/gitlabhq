@@ -165,7 +165,6 @@ When tracking token usage in AI Context:
 For proper billing and customer attribution:
 
 1. **Include `correlation_id`** (Standard Context) - Critical for joining DAP events to billable events
-1. **Include `billing_event_id`** (Standard Context) - Links to billable usage events
 1. **Include `ultimate_parent_namespace_id`** (Standard Context) - Ensures customer attribution aligns with usage billing
 1. **Include `feature_enabled_by_namespace_ids`** (Standard Context) - Current method for customer attribution in AI data models
 

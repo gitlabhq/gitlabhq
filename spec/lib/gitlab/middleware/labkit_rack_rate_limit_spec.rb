@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_limiting do
   let(:registry) { Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry }
   let(:limiters) { Gitlab::RackAttack::LabkitRateLimit::Limiters }
-  let(:divergence) { Gitlab::RackAttack::LabkitRateLimit::Divergence }
 
   # The matched rule names the throttle (minus the throttle_ prefix); the
   # middleware reconstructs the throttle name from it for the cohort lookup and the
@@ -26,15 +25,13 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
     )
   end
 
-  let(:throttle_data) { { 'throttle_unauthenticated_web' => { count: 5, limit: 100, period: 3600 } } }
   let(:app) { ->(_env) { [200, {}, ['ok']] } }
-  let(:env) { Rack::MockRequest.env_for('/some/path').merge('rack.attack.throttle_data' => throttle_data) }
+  let(:env) { Rack::MockRequest.env_for('/some/path') }
   let(:middleware) { described_class.new(app) }
 
   before do
     allow(registry).to receive_messages(cohorts: [2], all: { 'throttle_unauthenticated_web' => entry })
     allow(limiters).to receive(:all).and_return({ registry::GENERAL => limiter })
-    allow(divergence).to receive(:record)
 
     stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: true)
   end
@@ -51,16 +48,14 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
       expect(body).to eq(['ok'])
     end
 
-    it 'compares labkit\'s block decision against the Rack::Attack data on the way back up' do
-      # The request did not block (the :allow result), so there is no blocking
-      # result; Divergence still receives the call and decides whether it is worth a
-      # data point. The full result set and the request facts ride along for the
-      # sampled divergence log.
-      expect(divergence).to receive(:record)
-        .with(labkit_result: nil, rackattack_throttle_data: throttle_data,
-          labkit_results: [result], facts: hash_including(:ip, :requester_id, :path, :method))
+    it 'leaves the downstream response untouched on the way back up', :aggregate_failures do
+      # Enforce is off, so the shadow observes only: no 429, and no proactive headers
+      # (Rack::Attack still enforces and RackAttackHeaders still builds those).
+      status, headers, body = middleware.call(env)
 
-      middleware.call(env)
+      expect(status).to eq(200)
+      expect(body).to eq(['ok'])
+      expect(headers).not_to include('RateLimit-Name')
     end
 
     it 'never returns a 429 when only the shadow flag is on (enforce off)' do
@@ -76,8 +71,8 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
       # Production runs several limiters (rack_request, rack_request_protected_paths,
       # rack_request_incident_management); for any path at least one does not match and
       # returns an unmatched result whose rule is nil. enforced_response must not
-      # dereference the rule on those results, or the shadow decision crashes and no
-      # comparison is ever recorded (calls_total still fires, so the failure is silent).
+      # dereference the rule on those results, or the shadow decision crashes and
+      # falls open silently.
       let(:unmatched_result) do
         instance_double(Labkit::RateLimit::Result, action: :allow, error?: false, rule: nil)
       end
@@ -91,9 +86,8 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
         )
       end
 
-      it 'records the comparison without crashing on the nil-rule result', :aggregate_failures do
+      it 'runs the shadow without crashing on the nil-rule result', :aggregate_failures do
         expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
-        expect(divergence).to receive(:record)
 
         status, = middleware.call(env)
 
@@ -152,16 +146,18 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
         end
       end
 
-      it 'does not record divergence, having short-circuited before the app' do
-        expect(divergence).not_to receive(:record)
+      it 'short-circuits, so nothing downstream reaches the response' do
+        header_setting_app = ->(_env) { [200, { 'X-Downstream' => 'yes' }, ['ok']] }
 
-        middleware.call(env)
+        _status, headers, = described_class.new(header_setting_app).call(env)
+
+        expect(headers).not_to include('X-Downstream')
       end
     end
 
     context 'when labkit allows the request' do
-      it 'falls through to Rack::Attack and records as in shadow mode' do
-        expect(divergence).to receive(:record)
+      it 'falls through to Rack::Attack rather than short-circuiting', :aggregate_failures do
+        expect(app).to receive(:call).and_call_original
 
         status, = middleware.call(env)
 
@@ -179,7 +175,7 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
 
       before do
         # cohort 1 has no enforce flag on, so the cohort-2-keyed rule does not match a
-        # cohort whose enforce flag is set: the block is recorded, not enforced.
+        # cohort whose enforce flag is set: the block is observed, not enforced.
         allow(registry).to receive(:all).and_return({ 'throttle_unauthenticated_web' => other_entry })
         stub_feature_flags(
           rate_limiter_use_labkit_rack_cohort_1: true,
@@ -188,8 +184,8 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
         )
       end
 
-      it 'does not enforce, and records the block as a comparison', :aggregate_failures do
-        expect(divergence).to receive(:record)
+      it 'does not enforce, letting the request through to Rack::Attack', :aggregate_failures do
+        expect(app).to receive(:call).and_call_original
 
         status, = middleware.call(env)
 

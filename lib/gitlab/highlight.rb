@@ -2,6 +2,8 @@
 
 module Gitlab
   class Highlight
+    include Gitlab::Loggable
+
     def self.highlight(
       blob_name, blob_content, language: nil, plain: false, context: {}, used_on: :blob,
       suppress_line_ids: nil)
@@ -87,9 +89,28 @@ module Gitlab
         lexer_tag: tag,
         text_length: text.length
       )
-      highlight_plain(text, suppress_line_ids:)
+      highlight_plain_fallback(text, reason: 'timeout', suppress_line_ids: suppress_line_ids)
     rescue StandardError
-      highlight_plain(text, suppress_line_ids:)
+      highlight_plain_fallback(text, reason: 'error', suppress_line_ids: suppress_line_ids)
+    end
+
+    def highlight_plain_fallback(text, reason:, suppress_line_ids: false)
+      start = Gitlab::Metrics::System.monotonic_time
+      result = highlight_plain(text, suppress_line_ids:)
+      duration_s = Gitlab::Metrics::System.monotonic_time - start
+
+      Gitlab::AppJsonLogger.info(
+        build_structured_payload_labkit(
+          message: 'Fallback to plain highlighting',
+          plain_fallback_duration_s: duration_s,
+          fallback_reason: reason,
+          text_length: text.length,
+          lexer_tag: @lexer&.tag,
+          sidekiq: Gitlab::Runtime.sidekiq?
+        )
+      )
+
+      result
     end
 
     def link_dependencies(text, highlighted_text, used_on: :blob)

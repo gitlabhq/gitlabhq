@@ -18,6 +18,7 @@ RSpec.describe Gitlab::Instrumentation::Openbao, :request_store, feature_categor
   end
 
   before do
+    allow(Gitlab::Metrics::OpenbaoClientSlis).to receive(:record_error_rate)
     allow(Gitlab::Metrics).to receive(:histogram).and_return(histogram)
 
     # A double per metric name, so an increment landing on the wrong counter
@@ -98,6 +99,24 @@ RSpec.describe Gitlab::Instrumentation::Openbao, :request_store, feature_categor
       expect(histogram).to receive(:observe).with({ operation: 'sys/mounts', outcome: 'success' }, 0.42)
 
       described_class.add_call(duration: 0.42, path: 'sys/mounts/kv_mount', method: :post, outcome: :success)
+    end
+
+    it 'records the error rate SLI against the same operation' do
+      expect(Gitlab::Metrics::OpenbaoClientSlis).to receive(:record_error_rate).with(
+        operation: 'sys/mounts', error: true
+      )
+
+      described_class.add_call(duration: 0.1, path: 'sys/mounts/kv_mount', method: :post, outcome: :error)
+    end
+
+    it 'records a successful call as a non-error on the SLI' do
+      expect(Gitlab::Metrics::OpenbaoClientSlis).to receive(:record_error_rate).with(
+        operation: 'kv/data', error: false
+      )
+
+      described_class.add_call(
+        duration: 0.1, path: 'org_1/ns_2/project_3/kv/data/MY_SECRET', method: :post, outcome: :success
+      )
     end
 
     # Without `outcome` on the histogram, a failing OpenBao lowers every

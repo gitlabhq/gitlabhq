@@ -20,7 +20,6 @@ export default normalizeRender({
       hasScopedLabelsFeature: computed(() => this.metadata.hasScopedLabelsFeature),
       hasQualityManagementFeature: computed(() => this.metadata.hasQualityManagementFeature),
       hasLinkedItemsEpicsFeature: computed(() => this.metadata.hasLinkedItemsEpicsFeature),
-      hasIssueDateFilterFeature: computed(() => this.metadata.hasIssueDateFilterFeature),
       hasStatusFeature: computed(() => this.metadata?.hasWorkItemStatusFeature),
       hasBlockedIssuesFeature: computed(() => this.metadata.hasBlockedIssuesFeature),
       hasGroupBulkEditFeature: computed(() => this.metadata.hasGroupBulkEditFeature),

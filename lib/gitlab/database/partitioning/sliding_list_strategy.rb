@@ -10,12 +10,15 @@ module Gitlab
 
         delegate :table_name, to: :model
 
-        def initialize(model, partitioning_key, next_partition_if:, detach_partition_if:, analyze_interval: nil)
+        def initialize(
+          model, partitioning_key, next_partition_if:, detach_partition_if:, analyze_interval: nil,
+          detach_concurrently: false)
           @model = model
           @partitioning_key = partitioning_key
           @next_partition_if = next_partition_if
           @detach_partition_if = detach_partition_if
           @analyze_interval = analyze_interval
+          @detach_concurrently = detach_concurrently
 
           ensure_partitioning_column_ignored_or_readonly!
         end

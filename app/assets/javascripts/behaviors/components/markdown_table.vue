@@ -4,6 +4,7 @@ import {
   STICKY_TABLE_WRAPPER_CLASSES,
 } from '~/lib/utils/table_sticky_header';
 import { s__ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 
 const ASCENDING = 'ascending';
 const DESCENDING = 'descending';
@@ -34,6 +35,7 @@ export default {
     adoptCells: adoptDirective,
     adoptContent: adoptDirective,
   },
+  mixins: [InternalEvents.mixin()],
   stickyHeaderClasses: STICKY_HEADER_CLASSES,
   stickyTableWrapperClasses: STICKY_TABLE_WRAPPER_CLASSES,
   props: {
@@ -124,6 +126,10 @@ export default {
         this.sortKey = key;
         this.sortDirection = ASCENDING;
       }
+
+      this.trackEvent('sort_markdown_table_column', {
+        property: this.sortDirection,
+      });
     },
   },
 };

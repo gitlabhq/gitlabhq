@@ -279,20 +279,14 @@ You can now use your chosen OmniAuth provider to sign in to GitLab.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246957) in GitLab 19.3 [with a feature flag](../administration/feature_flags/_index.md) named `link_omniauth_to_existing_user_on_login`. Enabled on GitLab.com.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/606823) in GitLab 19.4. Feature flag `link_omniauth_to_existing_user_on_login` removed.
 
 {{< /history >}}
 
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
-
-By default, when you sign in with an OmniAuth provider whose email address matches an existing GitLab account,
+When you sign in with an OmniAuth provider whose email address matches an existing GitLab account,
 GitLab guides you through linking the provider to your existing account instead of showing a sign-in error.
 
 If `auto_link_user` is enabled, linking happens automatically without a sign in flow.
-If the `link_omniauth_to_existing_user_on_login` feature flag is not enabled on your instance,
-sign-in fails with a 422 error instead.
 
 The guided linking flow works as follows:
 
@@ -361,9 +355,8 @@ Two methods are available:
 
 - **Automatic linking** (`auto_link_user`): GitLab links the OmniAuth identity to the
   matching account automatically on sign-in, without requiring the user to take any action.
-- **Guided linking** (`link_omniauth_to_existing_user_on_login` feature flag): When
-  `auto_link_user` is disabled, GitLab prompts the user to sign in with their existing
-  credentials to confirm ownership before linking the identity.
+- **Guided linking**: When `auto_link_user` is disabled, GitLab prompts the user to sign in
+  with their existing credentials to confirm ownership before linking the identity.
   For more information, see [Link an existing account when signing in with OmniAuth](#link-an-existing-account-when-signing-in-with-omniauth).
 
 ### Automatic linking

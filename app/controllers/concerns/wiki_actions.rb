@@ -311,10 +311,6 @@ module WikiActions
     end
   end
 
-  def git_access
-    render 'shared/wikis/git_access'
-  end
-
   private
 
   def wiki_page_params

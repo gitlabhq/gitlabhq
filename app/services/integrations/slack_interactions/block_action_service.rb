@@ -4,12 +4,7 @@ module Integrations
   module SlackInteractions
     class BlockActionService
       ALLOWED_UPDATES_HANDLERS = {
-        'incident_management_project' =>
-          SlackInteractions::SlackBlockActions::IncidentManagement::ProjectUpdateHandler,
-        Integrations::SlackEvents::AppMentionedService::PRIVACY_NOTICE_ACKNOWLEDGE_ACTION_ID =>
-          SlackInteractions::SlackBlockActions::DuoPrivacyNoticeHandler,
-        Integrations::SlackEvents::AppMentionedService::PRIVACY_NOTICE_DECLINE_ACTION_ID =>
-          SlackInteractions::SlackBlockActions::DuoPrivacyNoticeDeclineHandler
+        'incident_management_project' => SlackInteractions::SlackBlockActions::IncidentManagement::ProjectUpdateHandler
       }.freeze
 
       def initialize(params)

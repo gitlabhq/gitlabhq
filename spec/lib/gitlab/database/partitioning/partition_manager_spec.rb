@@ -333,7 +333,8 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { :_test_foo }
     let(:partitioning_strategy) do
-      double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil, analyze_interval: nil)
+      double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil,
+        analyze_interval: nil, detach_concurrently?: false)
     end
 
     let(:extra_partitions) do
@@ -454,6 +455,59 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
             sync_partitions
           end
         end
+      end
+    end
+
+    context 'when the strategy detaches concurrently' do
+      let(:partitioning_strategy) do
+        double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil,
+          analyze_interval: nil, detach_concurrently?: true)
+      end
+
+      let(:extra_partitions) do
+        %w[_test_foo1 _test_foo2].map do |partition_name|
+          instance_double(Gitlab::Database::Partitioning::MultipleNumericListPartition,
+            table: table, partition_name: partition_name, to_detach_sql: 'SELECT 1')
+        end
+      end
+
+      it 'asks each partition for the concurrent form of DETACH' do
+        first, second = extra_partitions
+
+        expect(first).to receive(:to_detach_sql).with(concurrently: true).and_return('SELECT 1')
+        expect(second).to receive(:to_detach_sql).with(concurrently: true).and_return('SELECT 2')
+
+        sync_partitions
+      end
+
+      it 'detaches without lock retries, which cannot wrap a statement running outside a transaction' do
+        expect(Gitlab::Database::Partitioning::WithPartitioningLockRetries).not_to receive(:new)
+
+        expect { sync_partitions }.to change { Postgresql::DetachedPartition.count }.by(2)
+      end
+
+      it 'keeps the cleanup record of a partition whose detach fails' do
+        allow(connection).to receive(:execute).and_call_original
+        allow(connection).to receive(:execute).with('SELECT 1').and_raise(ActiveRecord::StatementInvalid, 'boom')
+
+        expect { sync_partitions }.to change { Postgresql::DetachedPartition.pluck(:table_name) }
+          .to(%w[_test_foo1])
+      end
+
+      it 'records the concurrent form as a log field' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
+        extra_partitions.each do |partition|
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            hash_including(
+              'message' => 'Detached Partition',
+              'partition_name' => partition.partition_name,
+              'concurrent' => true
+            )
+          )
+        end
+
+        sync_partitions
       end
     end
 

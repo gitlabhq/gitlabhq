@@ -25,7 +25,6 @@ export default {
       vulnerabilityTrainingDocsPath: computed(
         () => this.graphqlData?.vulnerabilityTrainingDocsPath || '',
       ),
-      upgradePath: computed(() => this.graphqlData?.upgradePath || ''),
       groupFullPath: computed(() => this.graphqlData?.groupFullPath || ''),
       canApplyProfiles: computed(() => this.graphqlData?.canApplyProfiles ?? false),
       canReadAttributes: computed(() => this.graphqlData?.canReadAttributes ?? false),
@@ -36,9 +35,6 @@ export default {
       groupManageAttributesPath: computed(() => this.graphqlData?.groupManageAttributesPath || ''),
       autoDevopsHelpPagePath: computed(() => this.graphqlData?.autoDevopsHelpPagePath || ''),
       autoDevopsPath: computed(() => this.graphqlData?.autoDevopsPath || ''),
-      containerScanningForRegistryEnabled: computed(
-        () => this.graphqlData?.containerScanningForRegistryEnabled ?? false,
-      ),
       // Defaults to true to preserve the existing CycloneDX license scanning behavior
       // when the GraphQL field is unavailable (e.g., on instances without the setting).
       licenseScanningForCyclonedxEnabled: computed(
@@ -103,7 +99,6 @@ export default {
           autoDevopsHelpPagePath: config.autoDevopsHelpPagePath,
           autoDevopsPath: config.autoDevopsPath,
           helpPagePath: config.helpPagePath,
-          containerScanningForRegistryEnabled: config.containerScanningForRegistryEnabled,
           licenseScanningForCyclonedxEnabled: config.licenseScanningForCyclonedxEnabled,
           secretPushProtectionAvailable: config.secretPushProtectionAvailable,
           secretPushProtectionEnforced: config.secretPushProtectionEnforced,
@@ -115,7 +110,6 @@ export default {
           licenseConfigurationSource: config.licenseConfigurationSource,
           vulnerabilityArchiveExportPath: config.vulnerabilityArchiveExportPath,
           vulnerabilityTrainingDocsPath: config.vulnerabilityTrainingDocsPath,
-          upgradePath: config.upgradePath,
           groupFullPath: config.groupFullPath,
           canApplyProfiles: config.canApplyProfiles,
           canReadAttributes: config.canReadAttributes,

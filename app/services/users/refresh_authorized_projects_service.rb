@@ -81,7 +81,9 @@ module Users
         # most often there's only a few entries in remove and add, but limit it to the first 5
         # entries to avoid flooding the logs
         'authorized_projects_refresh.rows_deleted_slice': remove.first(5),
-        'authorized_projects_refresh.rows_added_slice': add.first(5).map(&:values)
+        # Logged arrays should have uniformly typed values.
+        'authorized_projects_refresh.rows_added_slice':
+          add.first(5).map { |row| row.values_at(:user_id, :project_id, :access_level) }
       )
     end
 

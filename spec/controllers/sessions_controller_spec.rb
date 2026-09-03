@@ -77,20 +77,6 @@ RSpec.describe SessionsController, feature_category: :system_access do
         end
       end
 
-      context 'when the chatgpt_oauth_sign_in feature flag is disabled' do
-        before do
-          stub_feature_flags(chatgpt_oauth_sign_in: false)
-          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
-          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
-        end
-
-        it 'does not render the redirect_to_provider template' do
-          get(:new, session: provider_session)
-
-          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
-        end
-      end
-
       context 'when a blocking alert is already registered' do
         before do
           allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
@@ -335,6 +321,33 @@ RSpec.describe SessionsController, feature_category: :system_access do
       let(:post_action) { post(:create, params: { user: { login: user.username, password: user.password } }) }
     end
 
+    context 'when 2FA is enforced and the user has not enrolled' do
+      let(:user) { create(:user) }
+      let(:post_action) { post(:create, params: { user: { login: user.username, password: user.password } }) }
+
+      before do
+        stub_application_setting(require_two_factor_authentication: true)
+      end
+
+      it 'creates audit and authentication event records' do
+        expect { post_action }
+          .to change { AuditEventReader.count }.by(1)
+          .and change { AuthenticationEvent.count }.by(1)
+
+        expect(AuditEventReader.last.details[:event_name]).to eq('authenticated_with_password')
+        expect(AuthenticationEvent.last.provider).to eq('standard')
+      end
+
+      it 'accepts pending invitations' do
+        member = create(:group_member, :invited, invite_email: user.email)
+
+        expect { post_action }.to change { member.reload.invite_accepted_at }.from(nil)
+        expect(member.user).to eq(user)
+      end
+
+      it_behaves_like 'known sign in'
+    end
+
     context 'when using standard authentications' do
       let(:user) { create(:user) }
       let(:post_action) { post(:create, params: { user: { login: user.username, password: user.password } }) }
@@ -471,6 +484,41 @@ RSpec.describe SessionsController, feature_category: :system_access do
 
           it 'shows reactivation flash message after logging in' do
             expect(flash[:notice]).to eq('Welcome back! Your account had been deactivated due to inactivity but is now reactivated.')
+          end
+        end
+
+        context 'a deactivated user who has not set up 2FA' do
+          shared_examples 'reactivating the account on sign-in' do
+            before do
+              user.deactivate!
+              post(:create, params: { user: user_params })
+            end
+
+            it 'activates the user' do
+              expect(user.reload).to be_active
+            end
+
+            it 'signs the user in and lets 2FA enforcement run on the next request' do
+              expect(subject.current_user).to eq user
+              expect(response).to redirect_to(root_path)
+            end
+          end
+
+          context 'when 2FA is enforced instance-wide' do
+            before do
+              stub_application_setting(require_two_factor_authentication: true)
+            end
+
+            it_behaves_like 'reactivating the account on sign-in'
+          end
+
+          context 'when 2FA is enforced by a group' do
+            before do
+              create(:group, require_two_factor_authentication: true, developers: user)
+              user.update!(require_two_factor_authentication_from_group: true)
+            end
+
+            it_behaves_like 'reactivating the account on sign-in'
           end
         end
 

@@ -20,7 +20,7 @@ class SessionsController < Devise::SessionsController
   include SignInDashboardUxSli
   extend ::Gitlab::Utils::Override
 
-  skip_before_action :check_two_factor_requirement, only: [:destroy]
+  skip_before_action :check_two_factor_requirement, only: [:create, :destroy]
   skip_before_action :check_password_expiration, only: [:destroy]
 
   prepend_before_action :check_initial_setup, only: [:new]

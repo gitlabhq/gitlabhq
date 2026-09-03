@@ -275,8 +275,6 @@
   - 1
 - - bulk_imports_user_contributions_export
   - 1
-- - cd_artifact_sources_publish_from_registry
-  - 1
 - - cd_rollouts_process_workflow_event
   - 1
 - - cd_rollouts_push_gate_decision

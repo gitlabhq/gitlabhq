@@ -37,33 +37,69 @@ RSpec.describe Compare, feature_category: :source_code_management do
   end
 
   describe '#raw_diffs' do
-    let(:base_sha) { start_commit.id }
+    let(:base_sha) { nil }
+    let(:diff_options) { { ignore_whitespace_change: true } }
+    let(:compare) { described_class.new(raw_compare, project, base_sha: base_sha, straight: straight) }
 
-    subject(:compare) { described_class.new(raw_compare, project, base_sha: base_sha, straight: straight) }
+    subject(:raw_diffs) { compare.raw_diffs(diff_options) }
 
-    it 'passes the known base_sha as the merge base' do
-      expect(raw_compare).to receive(:diffs).with(hash_including(merge_base: base_sha))
+    context 'when base_sha is provided' do
+      let(:base_sha) { start_commit.id }
 
-      compare.raw_diffs
+      it 'passes the provided base SHA as the merge base with the caller options' do
+        expect(raw_compare).to receive(:diffs)
+          .with(diff_options.merge(merge_base: base_sha))
+
+        raw_diffs
+      end
+    end
+
+    context 'when a merge base is computed' do
+      it 'passes the computed base SHA as the merge base' do
+        expect(raw_compare).to receive(:diffs)
+          .with(diff_options.merge(merge_base: project.repository.merge_base(start_commit.id, head_commit.id)))
+
+        raw_diffs
+      end
+    end
+
+    context 'when there is no merge base' do
+      before do
+        allow(project).to receive(:merge_base_commit).and_return(nil)
+      end
+
+      it 'passes the start SHA as the merge base' do
+        expect(raw_compare).to receive(:diffs)
+          .with(diff_options.merge(merge_base: start_commit.id))
+
+        raw_diffs
+      end
+    end
+
+    context 'when neither a merge base nor a usable start SHA is available' do
+      let(:diff_refs) do
+        instance_double(Gitlab::Diff::DiffRefs, base_sha: nil, start_sha: '')
+      end
+
+      before do
+        allow(compare).to receive(:diff_refs).and_return(diff_refs)
+      end
+
+      it 'passes the caller options without a merge base' do
+        expect(raw_compare).to receive(:diffs).with({ ignore_whitespace_change: true })
+
+        raw_diffs
+      end
     end
 
     context 'when the comparison is straight' do
       let(:straight) { true }
 
-      it 'does not pass a merge base' do
-        expect(raw_compare).to receive(:diffs).with(hash_excluding(:merge_base))
+      it 'does not compute or pass a merge base', :aggregate_failures do
+        expect(compare).not_to receive(:diff_refs)
+        expect(raw_compare).to receive(:diffs).with(diff_options)
 
-        compare.raw_diffs
-      end
-    end
-
-    context 'when base_sha is unknown' do
-      let(:base_sha) { nil }
-
-      it 'does not pass a merge base' do
-        expect(raw_compare).to receive(:diffs).with(hash_excluding(:merge_base))
-
-        compare.raw_diffs
+        raw_diffs
       end
     end
   end
@@ -162,6 +198,30 @@ RSpec.describe Compare, feature_category: :source_code_management do
     it 'uses commit sha as head sha' do
       expect(subject.diff_refs.head_sha).to eq(head_commit.id)
     end
+
+    context 'when there is no merge base' do
+      let(:start_commit) { project.commit(TestEnv::BRANCH_SHA['master']) }
+      let(:head_commit) { project.commit(TestEnv::BRANCH_SHA['orphaned-branch']) }
+
+      it 'uses the start commit as the base', :aggregate_failures do
+        expect(compare.base_commit_sha).to be_nil
+        expect(compare.diff_refs.base_sha).to eq(start_commit.id)
+        expect(compare.diff_refs.start_sha).to eq(start_commit.id)
+        expect(compare.diff_refs.head_sha).to eq(head_commit.id)
+      end
+
+      context 'when the comparison is straight' do
+        let(:straight) { true }
+
+        it 'uses the start commit as the base without computing a merge base', :aggregate_failures do
+          expect(project).not_to receive(:merge_base_commit)
+
+          expect(compare.diff_refs.base_sha).to eq(start_commit.id)
+          expect(compare.diff_refs.start_sha).to eq(start_commit.id)
+          expect(compare.diff_refs.head_sha).to eq(head_commit.id)
+        end
+      end
+    end
   end
 
   describe '#diff_stats' do
@@ -183,6 +243,16 @@ RSpec.describe Compare, feature_category: :source_code_management do
       allow(subject).to receive(:diff_refs).and_return(nil)
 
       expect(subject.diff_stats).to be_nil
+    end
+
+    context 'when there is no merge base' do
+      let(:start_commit) { project.commit(TestEnv::BRANCH_SHA['master']) }
+      let(:head_commit) { project.commit(TestEnv::BRANCH_SHA['orphaned-branch']) }
+
+      it 'returns stats for changes from the start commit', :aggregate_failures do
+        expect(compare.base_commit_sha).to be_nil
+        expect(compare.diff_stats.count).to eq(43)
+      end
     end
   end
 
@@ -215,6 +285,40 @@ RSpec.describe Compare, feature_category: :source_code_management do
       let(:head_commit) { sample_commit }
 
       it { is_expected.to eq([]) }
+    end
+
+    context 'when there is no merge base between commits' do
+      let(:expected_paths_and_statuses) do
+        [
+          ['.DS_Store', :DELETED],
+          ['.gitignore', :MODIFIED],
+          ['.gitmodules', :MODIFIED],
+          ['Gemfile.zip', :ADDED],
+          ['files/.DS_Store', :DELETED],
+          ['files/ruby/popen.rb', :MODIFIED],
+          ['files/ruby/regex.rb', :MODIFIED],
+          ['files/ruby/version_info.rb', :MODIFIED],
+          ['gitlab-shell', :ADDED]
+        ]
+      end
+
+      before do
+        allow(project).to receive(:merge_base_commit).and_return(nil)
+      end
+
+      it 'returns paths changed between the start and head commits' do
+        expect(changed_paths.map { |path| [path.path, path.status] }).to match_array(expected_paths_and_statuses)
+      end
+
+      it 'returns detailed diffs between the start and head commits' do
+        detailed_paths_and_statuses = compare.diffs.diff_files.map do |diff_file|
+          changed_path = Gitlab::Git::ChangedPath.from_diff(diff_file)
+
+          [changed_path.path, changed_path.status]
+        end
+
+        expect(detailed_paths_and_statuses).to match_array(expected_paths_and_statuses)
+      end
     end
   end
 

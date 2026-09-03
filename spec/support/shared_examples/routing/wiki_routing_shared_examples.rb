@@ -8,7 +8,6 @@ RSpec.shared_examples 'wiki routing' do
       {
         pages: [:get, '/pages'],
         history: [:get, '/:id/history'],
-        git_access: [:get, '/git_access'],
         preview_markdown: [:post, '/:id/preview_markdown']
       }
     end

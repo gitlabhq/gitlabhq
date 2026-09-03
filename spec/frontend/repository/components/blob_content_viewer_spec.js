@@ -55,6 +55,7 @@ jest.mock('~/lib/utils/url_utility');
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/blob/line_highlighter');
 jest.mock('~/alert');
+jest.mock('~/lib/logger');
 jest.mock('~/sentry/sentry_browser_wrapper');
 
 let wrapper;
@@ -104,6 +105,8 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
     isBinary,
     inject = { highlightWorker },
     urlParams,
+    blobInfoHandler,
+    projectInfoHandler,
   } = mockData;
 
   if (urlParams) await router.replace(urlParams);
@@ -129,13 +132,17 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
     },
   });
 
-  projectInfoMockResolver = jest.fn().mockResolvedValue({
-    data: { project: projectInfo },
-  });
+  projectInfoMockResolver =
+    projectInfoHandler ||
+    jest.fn().mockResolvedValue({
+      data: { project: projectInfo },
+    });
 
-  blobInfoMockResolver = jest.fn().mockResolvedValue({
-    data: { isBinary, project: blobInfo },
-  });
+  blobInfoMockResolver =
+    blobInfoHandler ||
+    jest.fn().mockResolvedValue({
+      data: { isBinary, project: blobInfo },
+    });
 
   const fakeApollo = createMockApollo([
     [blobInfoQuery, blobInfoMockResolver],
@@ -193,6 +200,44 @@ describe('Blob content viewer component', () => {
     await createComponent();
 
     expect(findEmptyState().exists()).toBe(false);
+  });
+
+  describe('when the blobInfo query fails', () => {
+    let resultSpy;
+
+    beforeEach(() => {
+      resultSpy = jest.spyOn(BlobContentViewer.apollo.project, 'result');
+
+      return createComponent({
+        blobInfoHandler: jest.fn().mockRejectedValue(new Error('Request failed')),
+      });
+    });
+
+    it('displays an error alert instead of the blob', () => {
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'An error occurred while loading the file. Please try again.',
+      });
+      expect(findBlobHeader().exists()).toBe(false);
+    });
+
+    it('does not run the result handler', () => {
+      expect(resultSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when the projectInfo query fails', () => {
+    beforeEach(() =>
+      createComponent({
+        projectInfoHandler: jest.fn().mockRejectedValue(new Error('Request failed')),
+      }),
+    );
+
+    it('displays an error alert and still renders the blob', () => {
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'An error occurred while loading the file. Please try again.',
+      });
+      expect(findBlobHeader().exists()).toBe(true);
+    });
   });
 
   describe('when the query returns no blob', () => {

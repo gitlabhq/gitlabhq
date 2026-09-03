@@ -445,6 +445,23 @@ Prerequisites:
 1. Find the flow you want to delete and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
 1. In the confirmation dialog, select **Delete**.
 
+## Authenticate to the GitLab API
+
+Custom flows have a GitLab OAuth token available as `GITLAB_TOKEN` (also exposed as `GITLAB_OAUTH_TOKEN`).
+These tokens are scope-limited. They can only access
+[GitLab API endpoints with the `ai_workflows` scope](foundational_flows/software_development.md#apis-that-the-flow-has-access-to).
+Endpoints outside that scope are refused even when the token is sent correctly.
+
+If you write scripts that call the GitLab API directly, send the token as an `Authorization: Bearer` token.
+If you use the `PRIVATE-TOKEN` header to send the token, the API returns `401 Unauthorized`.
+
+```shell
+curl --header "Authorization: Bearer $GITLAB_TOKEN" \
+  "$GITLAB_BASE_URL/api/v4/user"
+```
+
+The flow's built-in tools and the `glab` CLI call the API correctly.
+
 ## Group sharing and flows
 
 When you enable a flow in a group, a related service account is automatically created. The service account:

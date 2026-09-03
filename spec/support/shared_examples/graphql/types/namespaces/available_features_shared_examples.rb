@@ -14,7 +14,6 @@ RSpec.shared_examples "expose all available feature fields for the namespace" do
       has_epics_feature
       has_group_bulk_edit_feature
       has_issuable_health_status_feature
-      has_issue_date_filter_feature
       has_issue_weights_feature
       has_iterations_feature
       has_linked_items_epics_feature

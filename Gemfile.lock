@@ -895,7 +895,7 @@ GEM
     gitlab-kas-grpc (19.4.0.pre.rc1)
       google-protobuf (>= 3.25, < 5.0)
       grpc (~> 1.81)
-    gitlab-labkit (4.6.0)
+    gitlab-labkit (5.0.0)
       actionpack (>= 5.0.0, < 8.2.0)
       activesupport (>= 5.0.0, < 8.2.0)
       google-protobuf (>= 3.25, < 5.0)
@@ -2538,7 +2538,7 @@ DEPENDENCIES
   gitlab-http!
   gitlab-iam-grpc!
   gitlab-kas-grpc (~> 19.4.0.pre.rc1)
-  gitlab-labkit (~> 4.6.0)
+  gitlab-labkit (~> 5.0.0)
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 1.1.0)
   gitlab-markup (~> 2.1.0)
@@ -3058,7 +3058,7 @@ CHECKSUMS
   gitlab-http (0.1.0)
   gitlab-iam-grpc (0.1.0)
   gitlab-kas-grpc (19.4.0.pre.rc1) sha256=ebe94f6a8611d43ab1f09967bb997185a1745716caa429a4f359387a79ec8a91
-  gitlab-labkit (4.6.0) sha256=dccb6924ba5e76f17a4feb7ec6683d8b686d2d63536c77da680cbba2ba324475
+  gitlab-labkit (5.0.0) sha256=8743e1b85ec3305fb6cd38e1b51d74d8974469acb0a9be489e329c06f868c595
   gitlab-license (2.6.0) sha256=2c1f8ae73835640ec77bf758c1d0c9730635043c01cf77902f7976e826d7d016
   gitlab-mail_room (1.1.0) sha256=784847b914a6636b30264fd8a042c15e39f3473f3acd78ebd254ac0a885a5878
   gitlab-markup (2.1.0) sha256=d352c0d261191a1d354aa63bece5644ef75c663bc34276b6de63539d11adf32f

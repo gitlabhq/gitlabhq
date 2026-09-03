@@ -120,6 +120,9 @@ module Gitlab
           detachable = partitions.select { |p| detachable?(p) }
           return if detachable.empty?
 
+          # CONCURRENTLY cannot run in a transaction
+          return detachable.each { |p| detach_one_partition(p, concurrently: true) } if detach_concurrently?
+
           # with_lock_retries starts a requires_new transaction most of the time, but not on the last iteration
           with_lock_retries do
             connection.transaction(requires_new: false) do # so we open a transaction here if not already in progress
@@ -128,12 +131,20 @@ module Gitlab
           end
         end
 
-        def detach_one_partition(partition)
+        def detach_one_partition(partition, concurrently: false)
           schedule_detached_partition_cleanup(partition)
 
-          connection.execute partition.to_detach_sql
+          connection.execute partition.to_detach_sql(concurrently: concurrently)
 
-          Gitlab::AppLogger.info(log_payload(message: 'Detached Partition', partition_name: partition.partition_name))
+          Gitlab::AppLogger.info(log_payload(
+            message: 'Detached Partition',
+            partition_name: partition.partition_name,
+            concurrent: concurrently
+          ))
+        end
+
+        def detach_concurrently?
+          model.partitioning_strategy.detach_concurrently?
         end
 
         def detachable?(partition)

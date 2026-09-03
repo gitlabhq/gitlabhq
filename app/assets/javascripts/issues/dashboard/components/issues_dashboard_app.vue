@@ -105,7 +105,6 @@ export default {
     'emptyStateWithoutFilterSvgPath',
     'hasBlockedIssuesFeature',
     'hasIssuableHealthStatusFeature',
-    'hasIssueDateFilterFeature',
     'hasIssueWeightsFeature',
     'hasOkrsFeature',
     'hasStatusFeature',
@@ -371,23 +370,21 @@ export default {
           recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-my_reaction',
         });
 
-        if (this.hasIssueDateFilterFeature) {
-          tokens.push({
-            type: TOKEN_TYPE_CREATED,
-            title: TOKEN_TITLE_CREATED,
-            icon: 'history',
-            token: DateToken,
-            operators: OPERATORS_AFTER_BEFORE,
-          });
+        tokens.push({
+          type: TOKEN_TYPE_CREATED,
+          title: TOKEN_TITLE_CREATED,
+          icon: 'history',
+          token: DateToken,
+          operators: OPERATORS_AFTER_BEFORE,
+        });
 
-          tokens.push({
-            type: TOKEN_TYPE_CLOSED,
-            title: TOKEN_TITLE_CLOSED,
-            icon: 'history',
-            token: DateToken,
-            operators: OPERATORS_AFTER_BEFORE,
-          });
-        }
+        tokens.push({
+          type: TOKEN_TYPE_CLOSED,
+          title: TOKEN_TITLE_CLOSED,
+          icon: 'history',
+          token: DateToken,
+          operators: OPERATORS_AFTER_BEFORE,
+        });
       }
 
       if (this.workItemTypes.length) {

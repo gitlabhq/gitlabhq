@@ -10,21 +10,13 @@ RSpec.describe Authn::ChatGpt::SiwcRedirect, feature_category: :system_access do
       allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with(described_class::PROVIDER).and_return(true)
     end
 
-    context 'when both feature flags are enabled and the provider is enabled' do
+    context 'when the feature flag is enabled and the provider is enabled' do
       it { is_expected.to be(true) }
     end
 
     context 'when the chatgpt_siwc_login_redirect feature flag is disabled' do
       before do
         stub_feature_flags(chatgpt_siwc_login_redirect: false)
-      end
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'when the chatgpt_oauth_sign_in feature flag is disabled' do
-      before do
-        stub_feature_flags(chatgpt_oauth_sign_in: false)
       end
 
       it { is_expected.to be(false) }

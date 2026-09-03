@@ -5,7 +5,6 @@ query getProjectSecurityConfiguration($projectId: ProjectID!) {
     autoDevopsHelpPagePath
     autoDevopsPath
     canEnableAutoDevops
-    containerScanningForRegistryEnabled
     licenseScanningForCyclonedxEnabled
     features {
       type
@@ -47,7 +46,6 @@ query getProjectSecurityConfiguration($projectId: ProjectID!) {
     validityChecksEnabled
     vulnerabilityArchiveExportPath
     vulnerabilityTrainingDocsPath
-    upgradePath
     groupFullPath
     canApplyProfiles
     canReadAttributes

@@ -54,9 +54,14 @@ The instructions that apply to documentation check for:
 - API documentation: REST-specific requirements such as cURL examples and attribute tables.
 - General standards that apply to all files, such as inclusive language.
 
-Unlike the authoring and editing files, this file is manually maintained. It does not read the distilled
-principles file. It links to the [style guide](styleguide/_index.md) and the
-[word list](styleguide/word_list.md) for the authoritative standards.
+Instruction groups between `# >>> generated:` and `# <<< end generated:`
+comments are generated. The `gitlab-ai-principles-distiller` copies their
+content from the matching distilled principle, so the automated review applies
+the same standards as the authoring and editing files. A daily scheduled job
+regenerates these groups after a distilled principle changes on the default
+branch, so do not edit them by hand. Groups outside those comments are
+maintained by hand. For more information, see
+[AI instruction files review](../ai_instruction_files_review.md).
 
 ## Create documentation with an agent
 
@@ -85,10 +90,9 @@ automatically regenerates the following distilled documentation files from the s
 
 These files are used in the `gitlab` project only. The `gitlab-ai-principles-distiller` is not configured for any other project that publishes documentation to `docs.gitlab.com`.
 
-The automated review file `.gitlab/duo/mr-review-instructions.yaml` is not
-regenerated from the style guide. If a standard in the style guide also belongs
-in automated review, update the `Documentation` or `API documentation` group in
-that file by hand.
+The generated groups in `.gitlab/duo/mr-review-instructions.yaml` are
+regenerated from the same distilled files, so a style guide change reaches the
+automated review without a separate edit. Do not update those groups by hand.
 
 If you notice a recurring pattern in AI-generated content that the style guide does not address,
 open a merge request to add guidance. When you add guidance, follow these principles:

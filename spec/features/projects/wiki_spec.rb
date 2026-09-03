@@ -23,7 +23,6 @@ RSpec.describe 'Project wikis', feature_category: :wiki do
     it_behaves_like 'User views AsciiDoc page with includes'
     it_behaves_like 'User views a wiki page'
     it_behaves_like 'User views wiki sidebar'
-    it_behaves_like 'User views Git access wiki page'
   end
 
   describe 'Server-rendered flows' do

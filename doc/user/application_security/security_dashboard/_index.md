@@ -48,7 +48,7 @@ you with a collection of metrics, ratings, and charts for the vulnerabilities de
 
 To view the security dashboard for a project, a group, or an organization, you must have:
 
-- The Developer role or higher for the group or project.
+- The Security Manager, Developer, Maintainer, or Owner role for the group or project.
 - The Owner role for the organization.
 - At least one [security scanner](../detect/_index.md) configured in your project.
 - A successful security scan performed on the [default branch](../../project/repository/branches/default.md) of your project.
