@@ -907,6 +907,7 @@ project:
 - observability_metrics
 - observability_traces
 - observability_logs
+- observability_project_o11y_setting
 - security_exclusions
 - security_statistics
 - vulnerability_management_policies

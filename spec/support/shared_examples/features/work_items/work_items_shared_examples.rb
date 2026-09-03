@@ -649,28 +649,6 @@ def find_and_click_clear(selector, button_name = 'Clear')
   end
 end
 
-RSpec.shared_examples 'work items weight' do
-  it 'updates and clears a weight', :aggregate_failures do
-    within_testid 'work-item-weight' do
-      click_button 'Edit'
-      find_field('weight-widget-input').native.send_keys(3, :enter)
-
-      expect(page).to have_text(3)
-
-      click_button 'Edit'
-      find_field('weight-widget-input').native.send_keys(:backspace, 0, :enter)
-
-      expect(page).to have_text(0)
-      expect(page).not_to have_text('None')
-
-      click_button 'Edit'
-      find_field('weight-widget-input').native.send_keys(:backspace, :enter)
-
-      expect(page).to have_text('None')
-    end
-  end
-end
-
 RSpec.shared_examples 'work items iteration' do
   include Features::IterationHelpers
   let(:work_item_iteration_selector) { '[data-testid="work-item-iteration"]' }

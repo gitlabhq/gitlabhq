@@ -336,6 +336,7 @@ class Project < ApplicationRecord
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
   has_one :project_setting, inverse_of: :project, autosave: true
   has_one :service_desk_setting, class_name: 'ServiceDeskSetting'
+  has_one :observability_project_o11y_setting, class_name: 'Observability::ProjectO11ySetting', inverse_of: :project
   has_one :service_desk_custom_email_verification, class_name: 'ServiceDesk::CustomEmailVerification'
   has_one :service_desk_custom_email_credential, class_name: 'ServiceDesk::CustomEmailCredential'
 

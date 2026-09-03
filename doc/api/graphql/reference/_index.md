@@ -17676,6 +17676,9 @@ Fields:
 
 ### `Mutation.tagCreate`
 
+Creates a tag in a project repository.
+Rate limited per project by the `tags_create_limit` application setting.
+
 Input type: `TagCreateInput`
 
 Arguments:
@@ -71036,6 +71039,15 @@ Template type for predefined security categories.
 | <a id="securityreporttypeenum-sast_iac"></a>`SAST_IAC` | SAST IAC scan report. |
 | <a id="securityreporttypeenum-secret_detection"></a>`SECRET_DETECTION` | SECRET DETECTION scan report. |
 
+### `SecurityScanProfileAdvancedSastPartialScan`
+
+Controls GitLab Advanced SAST diff-based scanning.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securityscanprofileadvancedsastpartialscan-differential"></a>`DIFFERENTIAL` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Enable diff-based scanning. |
+| <a id="securityscanprofileadvancedsastpartialscan-disabled"></a>`DISABLED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Disable diff-based scanning. |
+
 ### `SecurityScanProfileImageSuffix`
 
 Suffix appended to the analyzer image name.
@@ -77433,6 +77445,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="securityscanprofileconfigurationinput-dependencyscanningpostprocessing"></a>`dependencyScanningPostProcessing` {{< icon name="warning-solid" >}} | [`SecurityScanProfileDependencyScanningPostProcessingConfigurationInput`](#securityscanprofiledependencyscanningpostprocessingconfigurationinput) | Introduced in GitLab 19.3. Status: Experiment. Configuration for a dependency scanning post-processing scan profile. |
+| <a id="securityscanprofileconfigurationinput-sast"></a>`sast` {{< icon name="warning-solid" >}} | [`SecurityScanProfileSastConfigurationInput`](#securityscanprofilesastconfigurationinput) | Introduced in GitLab 19.4. Status: Experiment. Configuration for a SAST scan profile. |
 | <a id="securityscanprofileconfigurationinput-secretdetection"></a>`secretDetection` {{< icon name="warning-solid" >}} | [`SecurityScanProfileSecretDetectionConfigurationInput`](#securityscanprofilesecretdetectionconfigurationinput) | Introduced in GitLab 19.3. Status: Experiment. Configuration for a secret detection scan profile. |
 
 ### `SecurityScanProfileDependencyScanningPostProcessingConfigurationInput`
@@ -77444,6 +77457,22 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="securityscanprofiledependencyscanningpostprocessingconfigurationinput-autoremediation"></a>`autoRemediation` {{< icon name="warning-solid" >}} | [`SecurityScanProfileAutoRemediationInput`](#securityscanprofileautoremediationinput) | Introduced in GitLab 19.3. Status: Experiment. Auto-remediation configuration. |
+
+### `SecurityScanProfileSastConfigurationInput`
+
+Configuration for a SAST scan profile.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityscanprofilesastconfigurationinput-advancedsastpartialscan"></a>`advancedSastPartialScan` {{< icon name="warning-solid" >}} | [`SecurityScanProfileAdvancedSastPartialScan`](#securityscanprofileadvancedsastpartialscan) | Introduced in GitLab 19.4. Status: Experiment. Controls GitLab Advanced SAST diff-based scanning. Use 'differential' to enable, 'false' to disable. |
+| <a id="securityscanprofilesastconfigurationinput-analyzerimagetag"></a>`analyzerImageTag` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Tag of the analyzer image to use. Warning: Setting this value overrides the pinned image tag for all SAST analyzers, which can cause analyzer failures if they require specific versions. |
+| <a id="securityscanprofilesastconfigurationinput-excludedanalyzers"></a>`excludedAnalyzers` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.4. Status: Experiment. Analyzers excluded from the scan. |
+| <a id="securityscanprofilesastconfigurationinput-excludedpaths"></a>`excludedPaths` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.4. Status: Experiment. Glob paths excluded from the scan. |
+| <a id="securityscanprofilesastconfigurationinput-gitlabadvsastincrscan"></a>`gitlabAdvSastIncrScan` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Whether GitLab Advanced SAST incremental scanning is enabled. |
+| <a id="securityscanprofilesastconfigurationinput-imagesuffix"></a>`imageSuffix` {{< icon name="warning-solid" >}} | [`SecurityScanProfileImageSuffix`](#securityscanprofileimagesuffix) | Introduced in GitLab 19.4. Status: Experiment. Suffix appended to the analyzer image name. |
+| <a id="securityscanprofilesastconfigurationinput-secureanalyzersprefix"></a>`secureAnalyzersPrefix` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Prefix for the container registry from which the analyzer image is pulled. |
 
 ### `SecurityScanProfileSecretDetectionConfigurationInput`
 

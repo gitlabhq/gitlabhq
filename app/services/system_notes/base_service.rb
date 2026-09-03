@@ -2,6 +2,8 @@
 
 module SystemNotes
   class BaseService
+    UnpersistedSystemNoteError = Class.new(StandardError)
+
     attr_accessor :project, :group
     attr_reader :noteable, :container, :author
 
@@ -19,7 +21,9 @@ module SystemNotes
       note_params = note_summary.note.merge(system: true, skip_touch_noteable: skip_touch_noteable)
       note_params[:system_note_metadata] = SystemNoteMetadata.new(note_summary.metadata) if note_summary.metadata?
 
-      Note.create(note_params)
+      Note.create(note_params).tap do |note|
+        track_unpersisted_note(note, note_summary) unless note.persisted?
+      end
     end
 
     def content_tag(...)
@@ -46,6 +50,21 @@ module SystemNotes
       when Group
         @group = container
       end
+    end
+
+    private
+
+    def track_unpersisted_note(note, note_summary)
+      Gitlab::ErrorTracking.track_exception(
+        UnpersistedSystemNoteError.new('System note was not persisted'),
+        noteable_type: note.noteable_type,
+        noteable_id: note.noteable_id,
+        # Commit notes store a nil noteable_id, so the SHA is the only identifier they have.
+        commit_id: note.commit_id,
+        note_action: note_summary.metadata[:action],
+        note_errors: note.errors.full_messages,
+        note_bytesize: note.note.to_s.bytesize
+      )
     end
   end
 end

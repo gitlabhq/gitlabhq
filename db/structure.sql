@@ -26003,6 +26003,25 @@ CREATE SEQUENCE observability_metrics_issues_connections_id_seq
 
 ALTER SEQUENCE observability_metrics_issues_connections_id_seq OWNED BY observability_metrics_issues_connections.id;
 
+CREATE TABLE observability_project_o11y_settings (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_by_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    enabled boolean DEFAULT true NOT NULL
+);
+
+CREATE SEQUENCE observability_project_o11y_settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE observability_project_o11y_settings_id_seq OWNED BY observability_project_o11y_settings.id;
+
 CREATE TABLE observability_traces_issues_connections (
     id bigint NOT NULL,
     issue_id bigint NOT NULL,
@@ -37703,6 +37722,8 @@ ALTER TABLE ONLY observability_logs_issues_connections ALTER COLUMN id SET DEFAU
 
 ALTER TABLE ONLY observability_metrics_issues_connections ALTER COLUMN id SET DEFAULT nextval('observability_metrics_issues_connections_id_seq'::regclass);
 
+ALTER TABLE ONLY observability_project_o11y_settings ALTER COLUMN id SET DEFAULT nextval('observability_project_o11y_settings_id_seq'::regclass);
+
 ALTER TABLE ONLY observability_traces_issues_connections ALTER COLUMN id SET DEFAULT nextval('observability_traces_issues_connections_id_seq'::regclass);
 
 ALTER TABLE ONLY onboarding_progresses ALTER COLUMN id SET DEFAULT nextval('onboarding_progresses_id_seq'::regclass);
@@ -41508,6 +41529,9 @@ ALTER TABLE ONLY observability_logs_issues_connections
 
 ALTER TABLE ONLY observability_metrics_issues_connections
     ADD CONSTRAINT observability_metrics_issues_connections_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY observability_project_o11y_settings
+    ADD CONSTRAINT observability_project_o11y_settings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY observability_traces_issues_connections
     ADD CONSTRAINT observability_traces_issues_connections_pkey PRIMARY KEY (id);
@@ -49789,6 +49813,12 @@ CREATE INDEX index_observability_logs_issues_connections_on_project_id ON observ
 CREATE INDEX index_observability_metrics_issues_connections_on_namespace_id ON observability_metrics_issues_connections USING btree (namespace_id);
 
 CREATE INDEX index_observability_metrics_issues_connections_on_project_id ON observability_metrics_issues_connections USING btree (project_id);
+
+CREATE INDEX index_observability_project_o11y_settings_on_created_by_id ON observability_project_o11y_settings USING btree (created_by_id);
+
+CREATE INDEX index_observability_project_o11y_settings_on_namespace_id ON observability_project_o11y_settings USING btree (namespace_id);
+
+CREATE UNIQUE INDEX index_observability_project_o11y_settings_on_project_id ON observability_project_o11y_settings USING btree (project_id);
 
 CREATE INDEX index_observability_traces_issues_connections_on_project_id ON observability_traces_issues_connections USING btree (project_id);
 
@@ -58079,6 +58109,9 @@ ALTER TABLE ONLY x509_issuers
 ALTER TABLE ONLY incident_management_issuable_escalation_statuses
     ADD CONSTRAINT fk_4a05518b10 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY observability_project_o11y_settings
+    ADD CONSTRAINT fk_4a56b73e6c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY agent_organization_authorizations
     ADD CONSTRAINT fk_4a86e6225d FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -58493,6 +58526,9 @@ ALTER TABLE ONLY merge_requests
 ALTER TABLE ONLY custom_dashboard_versions
     ADD CONSTRAINT fk_6b53f240d7 FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY observability_project_o11y_settings
+    ADD CONSTRAINT fk_6b996fb6f9 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ml_models
     ADD CONSTRAINT fk_6c95e61a6e FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -58534,6 +58570,9 @@ ALTER TABLE ONLY protected_environment_approval_rules
 
 ALTER TABLE ONLY scim_oauth_access_tokens
     ADD CONSTRAINT fk_6f24f34b0d FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY observability_project_o11y_settings
+    ADD CONSTRAINT fk_6f83dc40b9 FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY ascp_security_contexts
     ADD CONSTRAINT fk_6fb0a2b15c FOREIGN KEY (scan_id) REFERENCES ascp_scans(id) ON DELETE CASCADE;

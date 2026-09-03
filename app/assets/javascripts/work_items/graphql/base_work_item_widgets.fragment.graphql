@@ -16,22 +16,6 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
   }
   ... on WorkItemWidgetCrmContacts @skip(if: $useWorkItemFeatures) {
     contactsAvailable
-    contacts {
-      nodes {
-        id
-        email
-        firstName
-        lastName
-        phone
-        description
-        organization {
-          id
-          name
-          description
-          defaultRate
-        }
-      }
-    }
   }
   ... on WorkItemWidgetDescription @skip(if: $useWorkItemFeatures) {
     description

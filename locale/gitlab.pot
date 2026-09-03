@@ -83312,6 +83312,9 @@ msgstr ""
 msgid "This project has no inactive access tokens."
 msgstr ""
 
+msgid "This project has reached its tag creation limit. Try again later."
+msgstr ""
+
 msgid "This project is %{strongStart}NOT%{strongEnd} a fork, and has the following:"
 msgstr ""
 

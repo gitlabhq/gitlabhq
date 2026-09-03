@@ -1,13 +1,14 @@
 <script>
 import { GlLink, GlPopover, GlTooltipDirective, GlTruncateText } from '@gitlab/ui';
 import { difference, groupBy, xor } from 'lodash-es';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, n__, s__ } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import Tracking from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getGroupContactsQuery from '~/crm/contacts/components/graphql/get_group_contacts.query.graphql';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
+import workItemCrmContactsQuery from '~/work_items/graphql/work_item_crm_contacts.query.graphql';
+import updateWorkItemCrmContactsMutation from '../graphql/update_work_item_crm_contacts.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, VIEW_CONTEXT } from '../constants';
 import { findCrmContactsWidget, newWorkItemFullPath, newWorkItemId } from '../utils';
 
@@ -58,7 +59,7 @@ export default {
       return this.workItemId === newWorkItemId(this.workItemType);
     },
     selectedItems() {
-      return this.workItemCrmContacts?.contacts.nodes || [];
+      return this.workItemCrmContacts?.contacts?.nodes || [];
     },
     isLoading() {
       return this.$apollo.queries.searchItems.loading;
@@ -132,7 +133,7 @@ export default {
     },
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItem: {
-      query: workItemByIidQuery,
+      query: workItemCrmContactsQuery,
       variables() {
         return {
           fullPath: this.workItemFullPath,
@@ -148,6 +149,13 @@ export default {
       },
       skip() {
         return !this.workItemIid;
+      },
+      error(error) {
+        Sentry.captureException(error);
+        this.$emit(
+          'error',
+          s__('WorkItem|Something went wrong when fetching CRM contacts. Please try again.'),
+        );
       },
     },
   },
@@ -229,7 +237,7 @@ export default {
             workItemUpdate: { errors },
           },
         } = await this.$apollo.mutate({
-          mutation: updateWorkItemMutation,
+          mutation: updateWorkItemCrmContactsMutation,
           variables: {
             input: {
               id: this.workItemId,

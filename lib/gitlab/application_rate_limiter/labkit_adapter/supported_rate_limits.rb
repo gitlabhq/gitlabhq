@@ -733,6 +733,13 @@ module Gitlab
               period: 1.hour,
               action: :limit
             ),
+            tags_create: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_tag_creates_by_project',
+              characteristics: %i[project],
+              limit: -> { Gitlab::CurrentSettings.current_application_settings.tags_create_limit },
+              period: 30.minutes,
+              action: :limit
+            ),
             temporary_email_failure: ::Labkit::RateLimit::Rule.new(
               name: 'limit_temporary_email_failures_by_email',
               characteristics: %i[email],

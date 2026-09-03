@@ -474,6 +474,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `require_sha_for_merge` and `lock_require_sha_for_merge` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236732) in GitLab 19.2.
 - `sidekiq_timezone_override` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244922) in GitLab 19.2.
 - `concurrent_pull_request_import_jobs_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251353) in GitLab 19.4, replacing hardcoded limits for the Bitbucket Server (50) and GitHub (200) importers with a unified default of 200.
+- `tags_create_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252393) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -841,6 +842,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `spam_check_endpoint_url`                | string           | no                                   | URL of the external Spamcheck service endpoint. Valid URI schemes are `grpc` or `tls`. Specifying `tls` forces communication to be encrypted. |
 | `spam_check_api_key`                     | string           | no                                   | API key used by GitLab for accessing the Spam Check service endpoint. |
 | `enable_artifact_external_redirect_warning_page` | boolean  | no                                   | Show the external redirect page that warns you about user-generated content in GitLab Pages. |
+| `tags_create_limit`                      | integer          | no                                   | Maximum number of tag creation requests allowed per 30 minutes per project. Applies to the REST API endpoint for creating a tag, the GraphQL `tagCreate` mutation, tag creation in the UI, and the `/tag` quick action. Default: `100`. Set to `0` to disable the rate limit. |
 | `terminal_max_session_time`              | integer          | no                                   | Maximum time for web terminal websocket connection (in seconds). Set to `0` for unlimited time. |
 | `terms`                                  | text             | required by: `enforce_terms`         | (**Required by**: `enforce_terms`) Markdown content for the ToS. |
 | `throttle_authenticated_api_enabled`                      | boolean | no                                                              | (**If enabled, requires**: `throttle_authenticated_api_period_in_seconds` and `throttle_authenticated_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). |

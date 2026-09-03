@@ -358,6 +358,7 @@ class User < ApplicationRecord
   has_many :deploy_tokens, class_name: 'DeployToken', foreign_key: :creator_id, inverse_of: :user, dependent: :nullify
   has_many :terraform_states, class_name: 'Terraform::State', foreign_key: :locked_by_user_id, inverse_of: :locked_by_user, dependent: :nullify
   has_many :terraform_state_versions, class_name: 'Terraform::StateVersion', foreign_key: :created_by_user_id, inverse_of: :created_by_user, dependent: :nullify
+  has_many :observability_project_o11y_settings, class_name: 'Observability::ProjectO11ySetting', foreign_key: :created_by_id, inverse_of: :created_by, dependent: :nullify
 
   has_many :broadcast_message_dismissals, class_name: 'Users::BroadcastMessageDismissal'
 

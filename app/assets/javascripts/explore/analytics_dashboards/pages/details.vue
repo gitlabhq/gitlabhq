@@ -41,12 +41,13 @@ export default {
       namespaceName: computed(() => this.selectedProject?.name ?? this.selectedGroup?.name ?? ''),
       isProject: computed(() => Boolean(this.selectedProject)),
 
-      // TODO: Investigate how to handle namespace specific checks
-      //  These checks were previously done in controller and passed as data attributes
-      //  but they are checks on a namespace level, we might need to move these
-      //  into the relevant data sources that require the checks
+      // TODO: Investigate how to handle this namespace specific check. It was
+      //  previously done in the controller and passed as a data attribute, but it
+      //  reads the namespace's root ancestor, so it may need to move into the
+      //  data sources that require it.
+      //  dataSourceClickhouse is not listed here on purpose: it is an
+      //  instance-wide setting provided by the page entry point.
       overviewCountsAggregationEnabled: null,
-      dataSourceClickhouse: null,
     };
   },
   data() {

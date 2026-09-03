@@ -1,19 +1,21 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import workItemCrmContactsQuery from '~/work_items/graphql/work_item_crm_contacts.query.graphql';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import searchQuery from '~/crm/contacts/components/graphql/get_group_contacts.query.graphql';
-import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import updateWorkItemCrmContactsMutation from '~/work_items/graphql/update_work_item_crm_contacts.mutation.graphql';
+import { config } from '~/graphql_shared/issuable_client';
 import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import {
-  updateWorkItemMutationResponseFactory,
+  updateWorkItemCrmContactsResponseFactory,
   updateWorkItemMutationErrorResponse,
-  workItemByIidResponseFactory,
+  workItemCrmContactsResponseFactory,
   getGroupCrmContactsResponse,
   mockCrmContacts,
 } from 'ee_else_ce_jest/work_items/mock_data';
@@ -36,27 +38,34 @@ describe('WorkItemCrmContacts component', () => {
   const errorHandler = jest.fn().mockRejectedValue('Error');
   const successUpdateWorkItemMutationHandler = jest
     .fn()
-    .mockResolvedValue(updateWorkItemMutationResponseFactory({ crmContacts: [mockItems[0]] }));
+    .mockResolvedValue(updateWorkItemCrmContactsResponseFactory({ crmContacts: [mockItems[0]] }));
 
   const createComponent = ({
     searchQueryHandler = searchQuerySuccessHandler,
     updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
+    workItemQueryHandler = null,
     workItemIid = '1',
     items = [],
     provide = {},
   } = {}) => {
-    const workItemQueryResponse = workItemByIidResponseFactory({
+    const workItemQueryResponse = workItemCrmContactsResponseFactory({
       canUpdate: true,
       crmContacts: items,
     });
-    const workItemQueryHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+    const contactsQueryHandler =
+      workItemQueryHandler ?? jest.fn().mockResolvedValue(workItemQueryResponse);
 
     wrapper = shallowMountExtended(WorkItemCrmContacts, {
-      apolloProvider: createMockApollo([
-        [searchQuery, searchQueryHandler],
-        [updateWorkItemMutation, updateWorkItemMutationHandler],
-        [workItemByIidQuery, workItemQueryHandler],
-      ]),
+      apolloProvider: createMockApollo(
+        [
+          [searchQuery, searchQueryHandler],
+          [updateWorkItemCrmContactsMutation, updateWorkItemMutationHandler],
+          [workItemCrmContactsQuery, contactsQueryHandler],
+        ],
+        {},
+        // the widget arrives from two documents, so the real typePolicies are needed here
+        config.cacheConfig,
+      ),
       propsData: {
         workItemId,
         workItemIid,
@@ -174,6 +183,17 @@ describe('WorkItemCrmContacts component', () => {
     showDropdown();
     await waitForPromises();
 
+    expect(wrapper.emitted('error')).toEqual([
+      ['Something went wrong when fetching CRM contacts. Please try again.'],
+    ]);
+  });
+
+  it('emits error event and reports to Sentry if the contacts query fails', async () => {
+    jest.spyOn(Sentry, 'captureException').mockImplementation();
+    createComponent({ workItemQueryHandler: errorHandler });
+    await waitForPromises();
+
+    expect(Sentry.captureException).toHaveBeenCalled();
     expect(wrapper.emitted('error')).toEqual([
       ['Something went wrong when fetching CRM contacts. Please try again.'],
     ]);

@@ -292,6 +292,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         sourcegraph_enabled: false,
         sourcegraph_public_only: true,
         spam_check_endpoint_enabled: false,
+        tags_create_limit: 100,
         terminal_max_session_time: 0,
         throttle_authenticated_git_http_enabled: false,
         throttle_authenticated_git_http_requests_per_period:

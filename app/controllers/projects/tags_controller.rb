@@ -10,6 +10,8 @@ class Projects::TagsController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :authorize_read_code!
   before_action :authorize_admin_tag!, only: [:new, :create, :destroy]
+  before_action -> { check_rate_limit!(:tags_create, scope: { project: project }, redirect_back: true) },
+    only: [:create]
 
   feature_category :source_code_management
   urgency :low, [:new, :show, :index]

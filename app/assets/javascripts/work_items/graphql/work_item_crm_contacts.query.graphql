@@ -1,0 +1,22 @@
+#import "./work_item_crm_contacts.fragment.graphql"
+
+# @feature_category: team_planning
+query workItemCrmContacts($fullPath: ID!, $iid: String!, $useWorkItemFeatures: Boolean = false) {
+  namespace(fullPath: $fullPath) {
+    id
+    workItem(iid: $iid) {
+      id
+      userPermissions {
+        setWorkItemMetadata
+      }
+      widgets(onlyTypes: [CRM_CONTACTS]) @skip(if: $useWorkItemFeatures) {
+        ...WorkItemCrmContacts
+      }
+      features @include(if: $useWorkItemFeatures) {
+        crmContacts {
+          ...WorkItemCrmContacts
+        }
+      }
+    }
+  }
+}

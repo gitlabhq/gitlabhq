@@ -778,6 +778,7 @@ class ApplicationSetting < ApplicationRecord
       :search_rate_limit_unauthenticated,
       :sidekiq_job_limiter_compression_threshold_bytes,
       :sidekiq_job_limiter_limit_bytes,
+      :tags_create_limit,
       :terminal_max_session_time,
       :user_contributed_projects_api_limit,
       :user_projects_api_limit,
@@ -1421,6 +1422,7 @@ class ApplicationSetting < ApplicationRecord
       runner_jobs_request_api_limit: [:integer, { default: 2000 }],
       runner_jobs_patch_trace_api_limit: [:integer, { default: 200 }],
       runner_jobs_endpoints_api_limit: [:integer, { default: 200 }],
+      tags_create_limit: [:integer, { default: 100 }],
       throttle_authenticated_git_http_enabled: [:boolean, { default: false }],
       throttle_authenticated_git_http_requests_per_period:
         [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT }],

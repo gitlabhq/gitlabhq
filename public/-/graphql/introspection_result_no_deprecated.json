@@ -136547,7 +136547,7 @@
             },
             {
               "name": "tagCreate",
-              "description": null,
+              "description": "Creates a tag in a project repository.\nRate limited per project by the `tags_create_limit` application setting.\n",
               "args": [
                 {
                   "name": "input",

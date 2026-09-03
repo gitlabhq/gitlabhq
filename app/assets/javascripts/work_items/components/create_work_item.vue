@@ -89,6 +89,7 @@ import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import workItemTypesConfigurationQuery from '../graphql/work_item_types_configuration.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
+import workItemCrmContactsQuery from '../graphql/work_item_crm_contacts.query.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import TitleSuggestions from './title_suggestions.vue';
 import WorkItemProjectsListbox from './work_item_links/work_item_projects_listbox.vue';
@@ -307,6 +308,7 @@ export default {
       localDescription: this.description || '',
       error: null,
       workItem: {},
+      crmContactsWorkItem: {},
       namespace: null,
       workItemTypesConfiguration: {},
       selectedProjectFullPath: this.initialSelectedProject(),
@@ -399,6 +401,23 @@ export default {
         this.error = s__(
           'WorkItem|Something went wrong when fetching work item types configuration. Please try again',
         );
+      },
+    },
+    crmContactsWorkItem: {
+      query: workItemCrmContactsQuery,
+      fetchPolicy: fetchPolicies.CACHE_ONLY,
+      variables() {
+        return {
+          fullPath: this.newWorkItemPath,
+          iid: NEW_WORK_ITEM_IID,
+          useWorkItemFeatures: this.useWorkItemFeatures,
+        };
+      },
+      skip() {
+        return this.skipWorkItemQuery;
+      },
+      update(data) {
+        return data?.namespace?.workItem ?? {};
       },
     },
   },
@@ -599,7 +618,10 @@ export default {
       return this.workItemMilestone?.milestone?.id || this.selectedParentMilestone?.id || null;
     },
     workItemCrmContactIds() {
-      return this.workItemCrmContacts?.contacts?.nodes?.map((item) => item.id) || [];
+      return (
+        findCrmContactsWidget(this.crmContactsWorkItem)?.contacts?.nodes?.map((item) => item.id) ||
+        []
+      );
     },
     workItemParent() {
       return this.workItemHierarchy?.parent || null;

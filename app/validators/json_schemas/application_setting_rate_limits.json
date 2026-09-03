@@ -134,6 +134,11 @@
       "minimum": 0,
       "description": "Number of requests allowed to the /api/v4/jobs/* endpoints."
     },
+    "tags_create_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of tag creation requests allowed per 30 minutes per project. Set to 0 for unlimited requests per 30 minutes."
+    },
     "throttle_authenticated_git_http_enabled": {
       "type": "boolean",
       "description": "Enable authenticated Git HTTP request rate limit"

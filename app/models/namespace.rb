@@ -88,6 +88,9 @@ class Namespace < ApplicationRecord
   has_one :observability_group_o11y_setting, class_name: 'Observability::GroupO11ySetting',
     foreign_key: :group_id, inverse_of: :namespace
 
+  has_many :observability_project_o11y_settings, class_name: 'Observability::ProjectO11ySetting',
+    inverse_of: :namespace
+
   attribute :description
   accepts_nested_attributes_for :namespace_descendants, allow_destroy: true
 

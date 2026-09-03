@@ -36,6 +36,12 @@ RSpec.describe 'Creation of a tag', feature_category: :source_code_management do
 
     context 'when user is not allowed to create a tag' do
       it_behaves_like 'a mutation that returns a top-level access error'
+
+      it 'does not consume the rate limit budget' do
+        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled_request?)
+
+        post_graphql_mutation(mutation, current_user: current_user)
+      end
     end
 
     context 'when user is a direct project member' do
@@ -70,6 +76,39 @@ RSpec.describe 'Creation of a tag', feature_category: :source_code_management do
           let(:project_path) { 'unknown' }
 
           it_behaves_like 'a mutation that returns a top-level access error'
+        end
+
+        context 'when rate limited' do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :tags_create, graphql: true do
+            let_it_be(:other_project) { create(:project, :public, :small_repo, developers: current_user) }
+
+            def request
+              post_graphql_mutation(mutation, current_user: current_user)
+            end
+
+            def request_with_second_scope
+              post_graphql_mutation(
+                graphql_mutation(:tag_create, input.merge(project_path: other_project.full_path)),
+                current_user: current_user
+              )
+            end
+          end
+        end
+
+        context 'when the request is missing from the context', :clean_gitlab_redis_rate_limiting do
+          # GraphqlChannel executes mutations without a Rack request.
+          let(:context) { { current_user: current_user, is_sessionless_user: false } }
+
+          it 'still applies the rate limit' do
+            expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+              .with(:tags_create, scope: { project: project })
+              .and_return(true)
+
+            result = GitlabSchema.execute(mutation.query, context: context, variables: mutation.variables)
+
+            expect(result.to_h['errors'].pluck('message'))
+              .to include('This endpoint has been requested too many times. Try again later.')
+          end
         end
       end
     end

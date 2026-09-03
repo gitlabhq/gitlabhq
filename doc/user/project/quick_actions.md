@@ -2612,6 +2612,13 @@ Create a Git tag pointing to the commented commit.
   This comment creates a Git tag named `v2.1.1` pointing to the commit, with the
   message "Security patch release".
 
+**Additional details**:
+
+- Tag creation is rate limited for each project, with a default of 100 requests every 30 minutes.
+  An administrator can change the limit with the `tags_create_limit` [application setting](../../api/settings.md#available-settings).
+- The limit is shared between the [REST API](../../api/tags.md#create-a-new-tag), the GraphQL `tagCreate` mutation, tag creation in the UI, and this quick action.
+- If you exceed the limit, your comment is still added, but the tag is not created.
+
 ## Troubleshooting
 
 ### Quick action isn't executed

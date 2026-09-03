@@ -80,6 +80,24 @@ RSpec.describe Commits::TagService, feature_category: :source_code_management do
           let(:error_message) { tag_error }
         end
       end
+
+      context 'when rate limited' do
+        before do
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+            .with(:tags_create, scope: { project: project })
+            .and_return(true)
+        end
+
+        it_behaves_like 'tag failure' do
+          let(:error_message) { 'This project has reached its tag creation limit. Try again later.' }
+        end
+
+        it 'does not create the tag' do
+          expect(Tags::CreateService).not_to receive(:new)
+
+          service.execute(commit)
+        end
+      end
     end
 
     context 'with invalid params' do

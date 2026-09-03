@@ -66,6 +66,9 @@ You can set these rate limits with the [application settings API](../api/setting
 - [Autocomplete users rate limit](../administration/instance_limits.md#autocomplete-users-rate-limit)
 - [AI action](../api/settings.md#available-settings) (`ai_action_api_rate_limit`): 160 calls per
   8 hours per authenticated user. Applies to the GraphQL `aiAction` mutation.
+- [Create tag rate limit](../api/settings.md#available-settings) (`tags_create_limit`): 100 requests
+  per 30 minutes per project. Applies to the REST API endpoint for creating a tag, the
+  GraphQL `tagCreate` mutation, tag creation in the UI, and the `/tag` quick action.
 
 You can set this rate limit with the [plan limits API](../api/plan_limits.md) or the
 [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session):

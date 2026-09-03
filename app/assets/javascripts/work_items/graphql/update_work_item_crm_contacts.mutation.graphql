@@ -1,0 +1,22 @@
+#import "./work_item_crm_contacts.fragment.graphql"
+
+# @feature_category: team_planning
+mutation workItemUpdateCrmContacts(
+  $input: WorkItemUpdateInput!
+  $useWorkItemFeatures: Boolean = false
+) {
+  workItemUpdate(input: $input) {
+    errors
+    workItem {
+      id
+      widgets(onlyTypes: [CRM_CONTACTS]) @skip(if: $useWorkItemFeatures) {
+        ...WorkItemCrmContacts
+      }
+      features @include(if: $useWorkItemFeatures) {
+        crmContacts {
+          ...WorkItemCrmContacts
+        }
+      }
+    }
+  }
+}

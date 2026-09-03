@@ -73,22 +73,6 @@ fragment BaseWorkItemFeatures on WorkItemFeatures {
   }
   crmContacts {
     contactsAvailable
-    contacts {
-      nodes {
-        id
-        email
-        firstName
-        lastName
-        phone
-        description
-        organization {
-          id
-          name
-          description
-          defaultRate
-        }
-      }
-    }
   }
   linkedResources {
     type

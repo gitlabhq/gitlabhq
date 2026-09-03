@@ -19777,7 +19777,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_3955beffe2a9"
+              "$ref": "#/components/schemas/RequestBody_dbe0fa1dab1c"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -29505,6 +29505,8 @@ paths:
           description: Unauthenticated
         '404':
           description: Not found
+        '429':
+          description: Too many requests
       parameters:
       - name: id
         required: true
@@ -91825,6 +91827,8 @@ components:
           type: string
         users_api_limit_gpg_key:
           type: string
+        tags_create_limit:
+          type: string
         web_hook_event_resend_limit:
           type: string
         web_hook_test_limit:
@@ -106863,7 +106867,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_3955beffe2a9:
+    RequestBody_dbe0fa1dab1c:
       type: object
       properties:
         admin_mode:
@@ -109533,6 +109537,9 @@ components:
           type: string
           nullable: true
         users_api_limit_ssh_key:
+          type: string
+          nullable: true
+        tags_create_limit:
           type: string
           nullable: true
         observability_backend_ssl_verification_enabled:

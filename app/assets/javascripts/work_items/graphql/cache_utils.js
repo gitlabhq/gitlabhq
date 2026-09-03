@@ -49,6 +49,7 @@ import {
 } from '../utils';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 import workItemCurrentUserTodosQuery from './work_item_current_user_todos.query.graphql';
+import workItemCrmContactsQuery from './work_item_crm_contacts.query.graphql';
 import workItemByIdQuery from './work_item_by_id.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
 
@@ -742,9 +743,9 @@ export const legacyGetNewWorkItemSharedCache = ({
           type: 'CRM_CONTACTS',
           contactsAvailable: false,
           contacts: {
-            nodes: sharedCacheWidgets[WIDGET_TYPE_CRM_CONTACTS]
-              ? sharedCacheWidgets[WIDGET_TYPE_CRM_CONTACTS]?.contacts.nodes || []
-              : [],
+            // The draft only carries contacts when the widget was edited, and the base query no
+            // longer selects them, so every hop here has to be optional.
+            nodes: sharedCacheWidgets[WIDGET_TYPE_CRM_CONTACTS]?.contacts?.nodes || [],
             __typename: 'CustomerRelationsContactConnection',
           },
           __typename: 'WorkItemWidgetCrmContacts',
@@ -1142,6 +1143,31 @@ export const setNewWorkItemCache = ({
           commentTemplatesPaths: [],
           features,
           widgets,
+          __typename: 'WorkItem',
+        },
+        __typename: 'Namespace',
+      },
+    },
+  });
+
+  // CRM contacts live in their own query, so the draft has to be seeded there too. Without
+  // this the widget would fire a request for an IID that doesn't exist yet.
+  apolloProvider.clients.defaultClient.cache.writeQuery({
+    query: workItemCrmContactsQuery,
+    variables: {
+      fullPath: newWorkItemPath,
+      iid: NEW_WORK_ITEM_IID,
+      useWorkItemFeatures,
+    },
+    data: {
+      namespace: {
+        id: newWorkItemPath,
+        workItem: {
+          id: newWorkItemId(workItemType),
+          userPermissions: newWorkItemOptimisticUserPermissions,
+          ...(useWorkItemFeatures
+            ? { features: { crmContacts: features.crmContacts, __typename: 'WorkItemFeatures' } }
+            : { widgets: widgets.filter((widget) => widget.type === WIDGET_TYPE_CRM_CONTACTS) }),
           __typename: 'WorkItem',
         },
         __typename: 'Namespace',

@@ -379,6 +379,7 @@ export default {
       :work-item-id="workItem.id"
       :work-item-iid="workItem.iid"
       :work-item-type="workItemType"
+      @error="$emit('error', $event)"
     />
     <participants
       v-if="workItemParticipantNodes.length"

@@ -2645,6 +2645,55 @@ export const workItemLinkedResourcesResponseFactory = ({
   };
 };
 
+export const workItemCrmContactsResponseFactory = ({
+  canUpdate = true,
+  crmContacts = mockCrmContacts,
+  useWorkItemFeatures = false,
+} = {}) => {
+  const widget = {
+    __typename: 'WorkItemWidgetCrmContacts',
+    type: 'CRM_CONTACTS',
+    contactsAvailable: crmContacts.length > 0,
+    contacts: {
+      nodes: crmContacts,
+      __typename: 'CustomerRelationsContactConnection',
+    },
+  };
+
+  return {
+    data: {
+      namespace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        workItem: {
+          __typename: 'WorkItem',
+          id: 'gid://gitlab/WorkItem/1',
+          userPermissions: {
+            __typename: 'WorkItemPermissions',
+            setWorkItemMetadata: canUpdate,
+          },
+          ...(useWorkItemFeatures
+            ? { features: { __typename: 'WorkItemFeatures', crmContacts: widget } }
+            : { widgets: [widget] }),
+        },
+      },
+    },
+  };
+};
+
+export const updateWorkItemCrmContactsResponseFactory = (options) => {
+  const response = workItemCrmContactsResponseFactory(options);
+
+  return {
+    data: {
+      workItemUpdate: {
+        errors: [],
+        workItem: response.data.namespace.workItem,
+      },
+    },
+  };
+};
+
 export const getIssueDetailsResponse = ({ confidential = false } = {}) => ({
   data: {
     issue: {
