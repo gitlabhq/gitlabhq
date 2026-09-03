@@ -19312,6 +19312,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "scheduled",
+              "description": "Trigger condition rules for the scheduled event. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "AiCatalogTriggerConditionsGroupInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "interfaces": null,
@@ -21926,6 +21938,12 @@
               "description": "Flow trigger commit_to_default_branch event.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "SCHEDULED",
+              "description": "Flow trigger scheduled event. Introduced in GitLab 19.4: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "possibleTypes": null

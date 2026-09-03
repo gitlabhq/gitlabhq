@@ -577,6 +577,25 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
           it_behaves_like 'generates batched transfer queries'
         end
+
+        context 'when namespaces.traversal_ids is an integer array' do
+          # integer[] is still real on GitLab.com and pre-17.4 self-managed: the bigint
+          # migration only ever ran under Gitlab.dev_or_test_env?, so recreate the old type here.
+          before do
+            ApplicationRecord.connection.execute(<<~SQL)
+              DROP TRIGGER trigger_namespaces_traversal_ids_on_update ON namespaces;
+              ALTER TABLE namespaces ALTER COLUMN traversal_ids TYPE integer[];
+            SQL
+          end
+
+          it 'updates organization_id for agent authorizations linked to transferred projects' do
+            agent = create(:cluster_agent, project: project)
+            auth = create(:agent_ci_access_organization_authorization, agent: agent)
+
+            expect(service.execute).to be_success
+            expect(auth.reload.organization_id).to eq(new_organization.id)
+          end
+        end
       end
 
       context 'when transferring topics' do

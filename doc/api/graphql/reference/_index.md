@@ -66418,6 +66418,7 @@ Possible event types for flow triggers.
 | <a id="aiflowtriggereventtype-merge_request_code_conflict"></a>`MERGE_REQUEST_CODE_CONFLICT` | Flow trigger merge_request_code_conflict event. |
 | <a id="aiflowtriggereventtype-merge_request_ready"></a>`MERGE_REQUEST_READY` | Flow trigger merge_request_ready event. |
 | <a id="aiflowtriggereventtype-pipeline_hooks"></a>`PIPELINE_HOOKS` | Flow trigger pipeline_hooks event. |
+| <a id="aiflowtriggereventtype-scheduled"></a>`SCHEDULED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Flow trigger scheduled event. |
 | <a id="aiflowtriggereventtype-work_item"></a>`WORK_ITEM` | Flow trigger work_item event. |
 
 ### `AiGovernanceAgentClass`
@@ -76126,6 +76127,7 @@ Arguments:
 | <a id="aicatalogtriggerconditionsinput-mergerequestcodeconflict"></a>`mergeRequestCodeConflict` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the merge_request_code_conflict event. |
 | <a id="aicatalogtriggerconditionsinput-mergerequestready"></a>`mergeRequestReady` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the merge_request_ready event. |
 | <a id="aicatalogtriggerconditionsinput-pipelinehooks"></a>`pipelineHooks` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the pipeline_hooks event. |
+| <a id="aicatalogtriggerconditionsinput-scheduled"></a>`scheduled` {{< icon name="warning-solid" >}} | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Introduced in GitLab 19.4. Status: Experiment. Trigger condition rules for the scheduled event. |
 | <a id="aicatalogtriggerconditionsinput-workitem"></a>`workItem` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the work_item event. |
 
 ### `AiCatalogTriggerConditionsRuleItemInput`

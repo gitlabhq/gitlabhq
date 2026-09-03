@@ -21233,11 +21233,15 @@
   },
   {
     "template": "/o/:organization_path/admin/users",
-    "example": "/o/foo/admin/users"
+    "example": "/o/foo/admin/users",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/admin/users"
   },
   {
     "template": "/o/:organization_path/admin/users/:id",
-    "example": "/o/foo/admin/users/foo"
+    "example": "/o/foo/admin/users/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/admin/users/john.doe"
   },
   {
     "template": "/o/:organization_path/api/v4/geo/graphql",

@@ -208,7 +208,7 @@ module Organizations
       def transfer_agent_organization_authorizations
         descendant_agents = Clusters::Agent
           .joins(project: :namespace)
-          .where("namespaces.traversal_ids @> ARRAY[?]::bigint[]", group.id)
+          .where("namespaces.traversal_ids @> '{?}'", group.id)
           .where("cluster_agents.id = agent_organization_authorizations.agent_id")
 
         update_organization_id_for(

@@ -47414,7 +47414,7 @@ CREATE INDEX index_cd_rollout_channel_tokens_on_rollout_step_id ON cd_rollout_ch
 
 CREATE INDEX index_cd_rollout_environments_on_driver_binding_id ON cd_rollout_environments USING btree (driver_binding_id);
 
-CREATE INDEX index_cd_rollout_environments_on_environment_id ON cd_rollout_environments USING btree (environment_id);
+CREATE INDEX index_cd_rollout_environments_on_environment_state_finished_at ON cd_rollout_environments USING btree (environment_id, state, finished_at DESC, id DESC);
 
 CREATE INDEX index_cd_rollout_environments_on_organization_id ON cd_rollout_environments USING btree (organization_id);
 

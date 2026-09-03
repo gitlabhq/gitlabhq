@@ -86,6 +86,8 @@ methods:
     - checkpoint_header_for: Called from the by_thread_ts endpoint in stacked follow-up MR (gitlab-org/gitlab!247134)
     - latest_checkpoint_header: Called from the trace path in stacked follow-up MR (gitlab-org/gitlab!247135)
     - reconstructed_channel_values: Called from the by_thread_ts endpoint and trace path in stacked follow-up MRs (gitlab-org/gitlab!247134, !247135)
+  ee/app/models/ai/flow_trigger.rb:
+    - autonomous_only?: Will be used in follow-up MRs of the scheduled flow triggers stack (gitlab-org/gitlab#594180)
   ee/app/models/artifact_registry/namespace_mapping.rb:
     - expire_registry_cache: Called from the activate, disable, and enable mutations landing in stacked follow-up MRs
   ee/app/models/cd/application_flow_definition.rb:

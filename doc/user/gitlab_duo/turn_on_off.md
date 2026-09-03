@@ -127,7 +127,8 @@ To lock GitLab Duo off for a subgroup:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
-1. In the **Namespace availability overrides** section, find the subgroup.
+1. In the **GitLab Duo Core** section, select **Change configuration**.
+1. In the **Group Duo availability** section, select **Show groups**, then find the subgroup.
 1. In the row for the subgroup, under **GitLab Duo availability**, select **Always off**.
 
 ### Clear the lock for a subgroup
@@ -140,7 +141,8 @@ To clear the admin lock for a subgroup:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
-1. In the **Namespace availability overrides** section, find the subgroup.
+1. In the **GitLab Duo Core** section, select **Change configuration**.
+1. In the **Group Duo availability** section, find the subgroup.
 1. In the row for the subgroup, select **Reset override**.
 
 The subgroup returns to the instance default.
