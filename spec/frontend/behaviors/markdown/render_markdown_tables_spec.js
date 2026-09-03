@@ -349,7 +349,7 @@ describe('renderMarkdownTables', () => {
         expect(wrapper).not.toBeNull();
         // The component's <table> is a direct child of the wrapper so the
         // existing `[data-sticky-header] > table` CSS applies.
-        expect(wrapper.querySelector(':scope > table')).not.toBeNull();
+        expect(wrapper.querySelector('table').parentElement).toBe(wrapper);
         // Sticky-only tables render plain (non-sortable) headers.
         expect(wrapper.querySelector('[data-sort-icon]')).toBeNull();
       });

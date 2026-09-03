@@ -7,8 +7,21 @@ query getDashboardMergeRequests(
   $isSignedIn: Boolean = false
   $sort: MergeRequestSort
   $state: MergeRequestState
+  $approvedBy: [String!]
   $assigneeUsernames: [String!]
   $assigneeWildcardId: AssigneeWildcardId
+  $reviewerUsername: String
+  $reviewerWildcardId: ReviewerWildcardId
+  $authorUsername: String
+  $draft: Boolean
+  $labelName: [String!]
+  $mergeUser: String
+  $milestoneTitle: String
+  $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $subscribed: SubscriptionStatus
+  $mergedBefore: Time
+  $mergedAfter: Time
   $not: MergeRequestsResolverNegatedParams
   $or: UnionedMergeRequestFilterInput
   $beforeCursor: String
@@ -19,8 +32,21 @@ query getDashboardMergeRequests(
   mergeRequests(
     sort: $sort
     state: $state
+    approvedBy: $approvedBy
     assigneeUsernames: $assigneeUsernames
     assigneeWildcardId: $assigneeWildcardId
+    reviewerUsername: $reviewerUsername
+    reviewerWildcardId: $reviewerWildcardId
+    authorUsername: $authorUsername
+    draft: $draft
+    labelName: $labelName
+    mergedBy: $mergeUser
+    milestoneTitle: $milestoneTitle
+    milestoneWildcardId: $milestoneWildcardId
+    myReactionEmoji: $myReactionEmoji
+    subscribed: $subscribed
+    mergedBefore: $mergedBefore
+    mergedAfter: $mergedAfter
     not: $not
     or: $or
     before: $beforeCursor

@@ -361,7 +361,6 @@ RSpec/NamedSubject:
     - 'ee/spec/models/namespaces/free_user_cap/root_size_spec.rb'
     - 'ee/spec/models/namespaces/storage/root_size_spec.rb'
     - 'ee/spec/models/projects/all_protected_branches_rule_spec.rb'
-    - 'ee/spec/models/projects/target_branch_rule_spec.rb'
     - 'ee/spec/models/protected_environment_spec.rb'
     - 'ee/spec/models/push_rule_spec.rb'
     - 'ee/spec/models/release_highlight_spec.rb'

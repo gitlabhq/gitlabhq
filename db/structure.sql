@@ -20608,6 +20608,26 @@ CREATE SEQUENCE draft_notes_id_seq
 
 ALTER SEQUENCE draft_notes_id_seq OWNED BY draft_notes.id;
 
+CREATE TABLE duo_agent_platform_functional_verification_runs (
+    id bigint NOT NULL,
+    workflow_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    check_type smallint NOT NULL,
+    status smallint,
+    message text,
+    CONSTRAINT check_0e32de5b7a CHECK ((char_length(message) <= 1024))
+);
+
+CREATE SEQUENCE duo_agent_platform_functional_verification_runs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE duo_agent_platform_functional_verification_runs_id_seq OWNED BY duo_agent_platform_functional_verification_runs.id;
+
 CREATE TABLE duo_workflow_session_artifacts (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -37320,6 +37340,8 @@ ALTER TABLE ONLY dora_performance_scores ALTER COLUMN id SET DEFAULT nextval('do
 
 ALTER TABLE ONLY draft_notes ALTER COLUMN id SET DEFAULT nextval('draft_notes_id_seq'::regclass);
 
+ALTER TABLE ONLY duo_agent_platform_functional_verification_runs ALTER COLUMN id SET DEFAULT nextval('duo_agent_platform_functional_verification_runs_id_seq'::regclass);
+
 ALTER TABLE ONLY duo_workflow_session_artifacts ALTER COLUMN id SET DEFAULT nextval('duo_workflow_session_artifacts_id_seq'::regclass);
 
 ALTER TABLE ONLY duo_workflows_checkpoint_writes ALTER COLUMN id SET DEFAULT nextval('duo_workflows_checkpoint_writes_id_seq'::regclass);
@@ -40792,6 +40814,9 @@ ALTER TABLE ONLY dora_performance_scores
 
 ALTER TABLE ONLY draft_notes
     ADD CONSTRAINT draft_notes_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY duo_agent_platform_functional_verification_runs
+    ADD CONSTRAINT duo_agent_platform_functional_verification_runs_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY duo_workflow_session_artifacts
     ADD CONSTRAINT duo_workflow_session_artifacts_pkey PRIMARY KEY (id);
@@ -45724,6 +45749,10 @@ CREATE UNIQUE INDEX idx_custom_field_select_options_on_custom_field_id_lower_val
 CREATE UNIQUE INDEX idx_custom_fields_on_namespace_id_and_lower_name ON custom_fields USING btree (namespace_id, lower(name));
 
 CREATE INDEX idx_custom_software_licenses_lower_name ON custom_software_licenses USING btree (lower(name));
+
+CREATE UNIQUE INDEX idx_dap_functional_verification_runs_on_check_type ON duo_agent_platform_functional_verification_runs USING btree (check_type);
+
+CREATE UNIQUE INDEX idx_dap_functional_verification_runs_on_workflow_id ON duo_agent_platform_functional_verification_runs USING btree (workflow_id);
 
 CREATE INDEX idx_deletions_on_project_id_and_id_where_pending ON ONLY p_batched_git_ref_updates_deletions USING btree (project_id, id) WHERE (status = 1);
 

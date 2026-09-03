@@ -2,4 +2,5 @@
 Migration/ForeignKeysToDestroyServiceTables:
   Details: grace period
   Exclude:
+    - 'db/migrate/20260824090001_add_fks_to_ai_suggested_reviewers.rb'
     - 'db/post_migrate/20260824205029_add_emails_organization_id_foreign_key.rb'

@@ -6597,6 +6597,9 @@ msgstr ""
 msgid "AdminSettings|Are you sure you want to revert to the default extension host domain?"
 msgstr ""
 
+msgid "AdminSettings|Audit events API rate limits"
+msgstr ""
+
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
@@ -7048,6 +7051,9 @@ msgid "AdminSettings|Set the maximum number of GitLab Pages custom domains per p
 msgstr ""
 
 msgid "AdminSettings|Set the maximum size of GitLab Pages per project (0 for unlimited). %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "AdminSettings|Set the per-user rate limits for requests to the instance audit events API."
 msgstr ""
 
 msgid "AdminSettings|Set to 0 to use the maximum artifacts size limit instead."
@@ -65392,6 +65398,9 @@ msgid "Rate limits for specific Projects API endpoints."
 msgstr ""
 
 msgid "Rate limits for specific Users API endpoints."
+msgstr ""
+
+msgid "Rate limits for the instance audit events API."
 msgstr ""
 
 msgid "Rate the review"

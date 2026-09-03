@@ -4,6 +4,11 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "audit_events_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the instance audit events API endpoints per user per minute."
+    },
     "autocomplete_users_limit": {
       "type": "integer",
       "minimum": 0,

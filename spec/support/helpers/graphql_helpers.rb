@@ -482,7 +482,8 @@ module GraphqlHelpers
     'aiCatalogItems', # FieldCallCount limit
     'conflictFiles', # FieldCallCount limit
     'isEnabledInManagedByProject',
-    'linkedWorkItems' # FieldCallCount limit
+    'linkedWorkItems', # FieldCallCount limit
+    'unprotectedBranches' # FieldCallCount limit
   ].freeze
 
   def all_graphql_fields_for(class_name, max_depth: 3, excluded: [])

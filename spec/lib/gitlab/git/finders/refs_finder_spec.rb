@@ -474,7 +474,8 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
               anything,
               sort_by: nil,
               pagination_params: hash_including(limit: Gitlab::PaginationDelegate::MAX_PER_PAGE),
-              ignore_case: false
+              ignore_case: false,
+              exclude_patterns: []
             )
             .and_return(empty_refs)
 
@@ -489,8 +490,8 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
 
         it 'passes the overridden maximum as the Gitaly limit' do
           expect(repository).to receive(:list_refs)
-            .with(anything, sort_by: nil, pagination_params: hash_including(limit: 200), ignore_case: false)
-            .and_return(empty_refs)
+            .with(anything, sort_by: nil, pagination_params: hash_including(limit: 200), ignore_case: false,
+              exclude_patterns: []).and_return(empty_refs)
 
           subject
         end
@@ -604,6 +605,60 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
           refs = subject
 
           expect(refs.map(&:name)).to eq(['v1.1.1', 'v1.1.0', 'v1.0.0'])
+        end
+      end
+    end
+
+    describe 'Exclude ref names' do
+      context 'when exclude_ref_names is provided for branches' do
+        let(:params) do
+          { ref_type: :branches, exclude_ref_names: ['master'] }
+        end
+
+        it 'excludes matching branches by prepending the ref prefix' do
+          refs = subject
+
+          expect(refs.map(&:name)).not_to include('master')
+          expect(refs.map(&:name)).to include('feature')
+        end
+      end
+
+      context 'when exclude_ref_names is provided for tags' do
+        let(:params) do
+          { ref_type: :tags, exclude_ref_names: ['v1.0.0'] }
+        end
+
+        it 'excludes matching tags by prepending the ref prefix' do
+          refs = subject
+
+          expect(refs.map(&:name)).not_to include('v1.0.0')
+          expect(refs.map(&:name)).to include('v1.1.0')
+        end
+      end
+
+      context 'when exclude_ref_names is empty' do
+        let(:params) do
+          { ref_type: :branches, exclude_ref_names: [] }
+        end
+
+        it 'returns all refs' do
+          refs = subject
+
+          expect(refs.map(&:name)).to include('master')
+        end
+      end
+
+      context 'when combined with search' do
+        let(:params) do
+          { ref_type: :branches, search: 'feature', exclude_ref_names: ['feature'] }
+        end
+
+        it 'applies both search and exclusion' do
+          refs = subject
+
+          expect(refs.map(&:name)).to be_present
+          expect(refs.map(&:name)).not_to include('feature')
+          expect(refs.map(&:name)).to all(include('feature'))
         end
       end
     end

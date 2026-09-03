@@ -19779,7 +19779,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_dbe0fa1dab1c"
+              "$ref": "#/components/schemas/RequestBody_a84b09a2620a"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -92307,6 +92307,8 @@ components:
           type: string
         virtual_registries_endpoints_api_limit:
           type: string
+        audit_events_api_limit:
+          type: string
         dependency_scanning_sbom_scan_api_upload_limit:
           type: string
         dependency_scanning_sbom_scan_api_download_limit:
@@ -106869,7 +106871,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_dbe0fa1dab1c:
+    RequestBody_a84b09a2620a:
       type: object
       properties:
         admin_mode:
@@ -108867,6 +108869,11 @@ components:
         virtual_registries_endpoints_api_limit:
           type: integer
           description: Virtual Registries API endpoints rate limit.
+          nullable: true
+        audit_events_api_limit:
+          type: integer
+          description: Maximum number of requests per minute per user to the instance
+            audit events API.
           nullable: true
         group_owners_can_manage_default_branch_protection:
           type: boolean

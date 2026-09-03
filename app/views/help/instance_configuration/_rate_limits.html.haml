@@ -8,6 +8,8 @@
     %li= link_to _('Projects API rate limits'), '#projects-api-rate-limits'
     - if Organizations::Release.enabled?(:org_creation, current_user)
       %li= link_to _('Organizations API rate limits'), '#organizations-api-rate-limits'
+    - if rate_limits[:audit_events_api].present?
+      %li= link_to s_('AdminSettings|Audit events API rate limits'), '#audit-events-api-rate-limits'
 
 - content_for :settings_content do
   - if rate_limits
@@ -133,4 +135,19 @@
               %th= _('Period in seconds')
           %tbody
             = render 'help/instance_configuration/rate_limit_row', title: 'POST /organizations', rate_limit: rate_limits[:organizations_api]
+
+    - if rate_limits[:audit_events_api].present?
+      %h2#audit-events-api-rate-limits= s_('AdminSettings|Audit events API rate limits')
+      %p
+        = _('Rate limits for the instance audit events API.')
+        = link_to _('Learn more.'), help_page_path('administration/settings/rate-limit-on-audit-events-api.md')
+      .table-responsive
+        %table
+          %thead
+            %tr
+              %th= _('Rate limit')
+              %th= _('Requests per period')
+              %th= _('Period in seconds')
+          %tbody
+            = render 'help/instance_configuration/rate_limit_row', title: 'GET /audit_events[/:id]', rate_limit: rate_limits[:audit_events_api]
     %br

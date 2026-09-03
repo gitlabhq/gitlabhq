@@ -21,11 +21,34 @@ import {
   OPERATOR_IS,
   OPERATOR_OR,
   OPERATORS_IS,
+  OPERATORS_IS_NOT,
   OPERATORS_IS_NOT_OR,
+  TOKEN_TITLE_APPROVED_BY,
+  TOKEN_TYPE_APPROVED_BY,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TITLE_DRAFT,
+  TOKEN_TYPE_DRAFT,
+  TOKEN_TITLE_LABEL,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TITLE_MERGED_AFTER,
+  TOKEN_TYPE_MERGED_AFTER,
+  TOKEN_TITLE_MERGED_BEFORE,
+  TOKEN_TYPE_MERGED_BEFORE,
+  TOKEN_TITLE_MERGE_USER,
+  TOKEN_TYPE_MERGE_USER,
+  TOKEN_TITLE_MILESTONE,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TITLE_MY_REACTION,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TITLE_REVIEWER,
+  TOKEN_TYPE_REVIEWER,
   TOKEN_TITLE_STATE,
   TOKEN_TYPE_STATE,
+  TOKEN_TITLE_SUBSCRIBED,
+  TOKEN_TYPE_SUBSCRIBED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
@@ -45,6 +68,7 @@ import {
   PARAM_STATE,
   urlSortParams,
 } from '~/work_items/list/constants';
+import { AutocompleteCache } from '~/merge_requests/utils/autocomplete_cache';
 import { i18n } from '~/merge_requests/list/constants';
 import EmptyState from '~/merge_requests/list/components/empty_state.vue';
 import getMergeRequestsQuery from '../queries/search/get_merge_requests.query.graphql';
@@ -52,12 +76,40 @@ import getMergeRequestsQuery from '../queries/search/get_merge_requests.query.gr
 const UserToken = defineAsyncComponent(
   () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue'),
 );
+const MilestoneToken = defineAsyncComponent(
+  () => import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue'),
+);
+const LabelToken = defineAsyncComponent(
+  () => import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue'),
+);
+const EmojiToken = defineAsyncComponent(
+  () => import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue'),
+);
+const DateToken = defineAsyncComponent(
+  () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue'),
+);
 
 const SEARCH_CLIENT = 'searchClient';
 
-const SELECTIVE_TOKEN_TYPES = [TOKEN_TYPE_ASSIGNEE];
+const SELECTIVE_TOKEN_TYPES = [
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_REVIEWER,
+  TOKEN_TYPE_APPROVED_BY,
+  TOKEN_TYPE_MERGE_USER,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MY_REACTION,
+];
 
-const SUPPORTED_TOKEN_TYPES = [...SELECTIVE_TOKEN_TYPES, TOKEN_TYPE_STATE];
+const SUPPORTED_TOKEN_TYPES = [
+  ...SELECTIVE_TOKEN_TYPES,
+  TOKEN_TYPE_STATE,
+  TOKEN_TYPE_DRAFT,
+  TOKEN_TYPE_MERGED_BEFORE,
+  TOKEN_TYPE_MERGED_AFTER,
+  TOKEN_TYPE_SUBSCRIBED,
+];
 
 const STATES = [STATUS_OPEN, STATUS_MERGED, STATUS_CLOSED, STATUS_ALL];
 const UNSELECTIVE_VALUES = ['any', 'none'];
@@ -85,7 +137,10 @@ export default {
     IssuableList,
   },
   inject: [
+    'autocompleteAwardEmojisPath',
     'autocompleteUsersPath',
+    'dashboardLabelsPath',
+    'dashboardMilestonesPath',
     'hasScopedLabelsFeature',
     'initialSort',
     'isPublicVisibilityRestricted',
@@ -232,6 +287,19 @@ export default {
           ],
         },
         {
+          type: TOKEN_TYPE_AUTHOR,
+          title: TOKEN_TITLE_AUTHOR,
+          icon: 'pencil',
+          token: UserToken,
+          dataType: 'user',
+          defaultUsers: [],
+          fetchUsers: this.fetchUsers,
+          preloadedUsers,
+          recentSuggestionsStorageKey: 'dashboard-merge-requests-recent-tokens-author',
+          multiSelect: false,
+          unique: true,
+        },
+        {
           type: TOKEN_TYPE_ASSIGNEE,
           title: TOKEN_TITLE_ASSIGNEE,
           icon: 'user',
@@ -243,7 +311,121 @@ export default {
           recentSuggestionsStorageKey: 'dashboard-merge-requests-recent-tokens-assignee',
           multiSelect: true,
         },
-      ];
+        {
+          type: TOKEN_TYPE_REVIEWER,
+          title: TOKEN_TITLE_REVIEWER,
+          icon: 'user',
+          token: UserToken,
+          dataType: 'user',
+          fetchUsers: this.fetchUsers,
+          preloadedUsers,
+          recentSuggestionsStorageKey: 'dashboard-merge-requests-recent-tokens-reviewer',
+          multiSelect: false,
+          unique: true,
+        },
+        {
+          type: TOKEN_TYPE_APPROVED_BY,
+          title: TOKEN_TITLE_APPROVED_BY,
+          icon: 'approval',
+          token: UserToken,
+          dataType: 'user',
+          fetchUsers: this.fetchUsers,
+          preloadedUsers,
+          recentSuggestionsStorageKey: 'dashboard-merge-requests-recent-tokens-approved-by',
+          multiSelect: false,
+        },
+        {
+          type: TOKEN_TYPE_MERGE_USER,
+          title: TOKEN_TITLE_MERGE_USER,
+          icon: 'merge',
+          token: UserToken,
+          dataType: 'user',
+          defaultUsers: [],
+          operators: OPERATORS_IS,
+          fetchUsers: this.fetchUsers,
+          preloadedUsers,
+          recentSuggestionsStorageKey: 'dashboard-merge-requests-recent-tokens-merge-user',
+          multiSelect: false,
+          unique: true,
+        },
+        {
+          type: TOKEN_TYPE_MILESTONE,
+          title: TOKEN_TITLE_MILESTONE,
+          icon: 'milestone',
+          token: MilestoneToken,
+          fetchMilestones: this.fetchMilestones,
+          recentSuggestionsStorageKey: 'dashboard-merge-requests-recent-tokens-milestone',
+          shouldSkipSort: true,
+          multiSelect: false,
+          unique: true,
+        },
+        {
+          type: TOKEN_TYPE_LABEL,
+          title: TOKEN_TITLE_LABEL,
+          icon: 'labels',
+          token: LabelToken,
+          operators: OPERATORS_IS_NOT,
+          fetchLabels: this.fetchLabels,
+          recentSuggestionsStorageKey: 'dashboard-merge-requests-recent-tokens-label',
+        },
+        this.isSignedIn && {
+          type: TOKEN_TYPE_MY_REACTION,
+          title: TOKEN_TITLE_MY_REACTION,
+          icon: 'thumb-up',
+          token: EmojiToken,
+          unique: true,
+          fetchEmojis: this.fetchEmojis,
+          recentSuggestionsStorageKey: 'dashboard-merge-requests-recent-tokens-my-reaction',
+        },
+        {
+          type: TOKEN_TYPE_DRAFT,
+          title: TOKEN_TITLE_DRAFT,
+          icon: 'pencil-square',
+          token: GlFilteredSearchToken,
+          operators: OPERATORS_IS,
+          unique: true,
+          options: [
+            { icon: 'check', value: 'yes', title: this.$options.i18n.yes },
+            { icon: 'close', value: 'no', title: this.$options.i18n.no },
+          ],
+        },
+        this.state === STATUS_MERGED && {
+          type: TOKEN_TYPE_MERGED_BEFORE,
+          title: TOKEN_TITLE_MERGED_BEFORE,
+          icon: 'clock',
+          token: DateToken,
+          operators: OPERATORS_IS,
+          unique: true,
+        },
+        this.state === STATUS_MERGED && {
+          type: TOKEN_TYPE_MERGED_AFTER,
+          title: TOKEN_TITLE_MERGED_AFTER,
+          icon: 'clock',
+          token: DateToken,
+          operators: OPERATORS_IS,
+          unique: true,
+        },
+        this.isSignedIn && {
+          type: TOKEN_TYPE_SUBSCRIBED,
+          title: TOKEN_TITLE_SUBSCRIBED,
+          icon: 'notifications',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            {
+              icon: 'notifications',
+              value: 'EXPLICITLY_SUBSCRIBED',
+              title: __('Explicitly subscribed'),
+            },
+            {
+              icon: 'notifications-off',
+              value: 'EXPLICITLY_UNSUBSCRIBED',
+              title: __('Explicitly unsubscribed'),
+            },
+          ],
+        },
+      ].filter(Boolean);
     },
   },
   watch: {
@@ -261,6 +443,7 @@ export default {
   },
   created() {
     this.updateData(this.initialSort);
+    this.autocompleteCache = new AutocompleteCache();
   },
   methods: {
     updateUrl() {
@@ -281,6 +464,27 @@ export default {
         { type: TOKEN_TYPE_STATE, value: { data: state, operator: OPERATOR_IS } },
         ...supported.filter((token) => token.type !== TOKEN_TYPE_STATE),
       ];
+    },
+    fetchEmojis(search) {
+      return this.autocompleteCache.fetch({
+        url: this.autocompleteAwardEmojisPath,
+        searchProperty: 'name',
+        search,
+      });
+    },
+    fetchLabels(search) {
+      return this.autocompleteCache.fetch({
+        url: this.dashboardLabelsPath,
+        searchProperty: 'title',
+        search,
+      });
+    },
+    fetchMilestones(search) {
+      return this.autocompleteCache.fetch({
+        url: this.dashboardMilestonesPath,
+        searchProperty: 'title',
+        search,
+      });
     },
     fetchUsers(search) {
       return axios.get(this.autocompleteUsersPath, { params: { active: true, search } });

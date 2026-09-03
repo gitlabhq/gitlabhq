@@ -124,6 +124,10 @@ RSpec.describe 'Database schema',
       deploy_keys_projects: %w[deploy_key_id],
       deployments: %w[deployable_id user_id],
       draft_notes: %w[discussion_id commit_id],
+      # workflow_id references duo_workflows_workflows, but this table is
+      # gitlab_main_cell_setting and the workflow is gitlab_main_org, so the
+      # reference is a loose foreign key rather than a DB-level FK.
+      duo_agent_platform_functional_verification_runs: %w[workflow_id],
       # No FK to preserve attribution when the trigger/schedule is deleted
       duo_workflows_workflows: %w[trigger_flow_trigger_id trigger_flow_schedule_id],
       epics: %w[updated_by_id last_edited_by_id state_id],

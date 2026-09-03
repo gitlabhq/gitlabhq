@@ -263,18 +263,23 @@ This column shows whether each user can access
 credit-based features
 or is blocked because they reached their credit cap.
 
-The **Usage control status** column displays the status **Blocked** only when GitLab enforces the cap against the user.
+The **Usage control status** column displays the status **Blocked usage** only when GitLab enforces the cap against the user.
 GitLab enforces the cap after the user's included credits are exhausted.
-A user who has reached their cap but still has included credits has the status **Regular**,
+A user who has reached their cap but still has included credits has the status **Regular usage**,
 because they can continue to consume their included credits.
 
 The column displays one of the following statuses:
 
 | Status | Description |
 |--------|-------------|
-| **Regular** | The user has not reached their credit cap, or has reached their cap but still has included credits, and can use GitLab Duo Agent Platform features. |
-| **Blocked - subscription cap reached** | The user reached the flat per-user cap set at the subscription level. |
-| **Blocked - user cap reached** | The user reached a per-user override cap set specifically for them. |
+| **Regular usage** | The user has not reached their credit cap, or has reached their cap but still has included credits, and can use GitLab Duo Agent Platform features. |
+| **Blocked usage** | The user has exhausted their included credits and reached their per-user cap. The cap is either the flat user cap set for all users on the subscription, or a per-user override cap set specifically for them. |
+
+The dashboard does not display which type of cap blocked a user.
+To determine the cap type, use the [GraphQL API](../api/graphql/reference/_index.md#gitlabsubscriptionusageblockedstatus).
+
+The **Usage control status** column displays only per-user caps.
+The subscription-level on-demand cap applies to the entire subscription, not to individual users, and is not listed in this column.
 
 ### Unblock a user who reached their credit cap
 
@@ -287,7 +292,7 @@ To unblock a user, either:
 - Remove the cap: Delete the per-user override so the user is no longer
   subject to an individual cap.
 
-After you update the cap, the user's status changes to **Regular** and they
+After you update the cap, the user's status changes to **Regular usage** and they
 can use credit-based features again.
 
 ## View user credit usage details

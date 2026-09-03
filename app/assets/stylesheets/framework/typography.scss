@@ -256,7 +256,34 @@
     position: relative;
     width: fit-content;
     max-width: 100%;
+    // The container draws the table's outer frame; the outermost cell
+    // borders are removed below to avoid double borders.
+    border: 1px solid var(--gl-border-color-default);
+    border-radius: $gl-border-radius-base;
+    overflow: hidden;
     timeline-scope: --gl-table-scroll-x, --gl-table-scroll-y;
+
+    table:not(.code) {
+      > thead > tr > th,
+      > tbody > tr > td,
+      > tbody > tr > th {
+        &:first-child {
+          border-inline-start: 0;
+        }
+
+        &:last-child {
+          border-inline-end: 0;
+        }
+      }
+
+      > thead > tr:first-child > th {
+        border-top: 0;
+      }
+
+      > tbody > tr:last-child > td {
+        border-bottom: 0;
+      }
+    }
 
     &::before,
     &::after {
@@ -486,9 +513,8 @@
     @apply gl-z-1;
     border-top: 0;
     border-bottom: 0;
-    box-shadow:
-      inset 0 1px 0 var(--gl-border-color-default),
-      inset 0 -1px 0 var(--gl-border-color-default);
+    // Top edge is provided by the .gl-table-shadow-overlay container border.
+    box-shadow: inset 0 -1px 0 var(--gl-border-color-default);
   }
 
   table:dir(rtl) th {

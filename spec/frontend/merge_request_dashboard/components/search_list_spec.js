@@ -9,8 +9,20 @@ import { STATUS_MERGED, STATUS_OPEN } from '~/issues/constants';
 import {
   FILTERED_SEARCH_TERM,
   OPERATOR_IS,
+  OPERATOR_NOT,
+  TOKEN_TYPE_APPROVED_BY,
   TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_DRAFT,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MERGED_AFTER,
+  TOKEN_TYPE_MERGED_BEFORE,
+  TOKEN_TYPE_MERGE_USER,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_REVIEWER,
   TOKEN_TYPE_STATE,
+  TOKEN_TYPE_SUBSCRIBED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import SearchList from '~/merge_request_dashboard/components/search_list.vue';
@@ -78,7 +90,7 @@ describe('Merge request dashboard search list', () => {
     await waitForPromises();
   };
 
-  function createComponent({ query = {} } = {}) {
+  function createComponent({ query = {}, isSignedIn = true } = {}) {
     mergeRequestsQueryHandler = jest
       .fn()
       .mockResolvedValue({ data: { mergeRequests: { nodes: [mockMergeRequest], pageInfo } } });
@@ -94,11 +106,14 @@ describe('Merge request dashboard search list', () => {
     wrapper = shallowMountExtended(SearchList, {
       apolloProvider,
       provide: {
+        autocompleteAwardEmojisPath: '/emojis',
         autocompleteUsersPath: '/users',
+        dashboardLabelsPath: '/dashboard/labels',
+        dashboardMilestonesPath: '/dashboard/milestones',
         hasScopedLabelsFeature: false,
         initialSort: '',
         isPublicVisibilityRestricted: false,
-        isSignedIn: true,
+        isSignedIn,
       },
       mocks: { $router: { push }, $route: { query, fullPath: '/search' } },
     });
@@ -259,6 +274,78 @@ describe('Merge request dashboard search list', () => {
       await filterBy([assigneeToken('root')]);
 
       expect(findIssuableList().props('error')).toBe(null);
+    });
+  });
+
+  it('keeps a negation alongside a real filter', async () => {
+    setWindowLocation('?assignee_username[]=root&not[label_name][]=bug');
+    createComponent();
+    await waitForPromises();
+
+    expect(lastVariables()).toMatchObject({ assigneeUsernames: 'root' });
+    expect([lastVariables().not.labelName].flat()).toContain('bug');
+    expect(findIssuableList().props('initialFilterValue')).toEqual(
+      expect.arrayContaining([
+        { type: TOKEN_TYPE_LABEL, value: { data: 'bug', operator: OPERATOR_NOT } },
+      ]),
+    );
+  });
+
+  describe('filter tokens', () => {
+    const tokenTypes = () =>
+      findIssuableList()
+        .props('searchTokens')
+        .map((token) => token.type);
+
+    it('offers every structured token for the opened state', async () => {
+      setWindowLocation('?assignee_username[]=root');
+      createComponent();
+      await waitForPromises();
+
+      expect(tokenTypes()).toEqual([
+        TOKEN_TYPE_STATE,
+        TOKEN_TYPE_AUTHOR,
+        TOKEN_TYPE_ASSIGNEE,
+        TOKEN_TYPE_REVIEWER,
+        TOKEN_TYPE_APPROVED_BY,
+        TOKEN_TYPE_MERGE_USER,
+        TOKEN_TYPE_MILESTONE,
+        TOKEN_TYPE_LABEL,
+        TOKEN_TYPE_MY_REACTION,
+        TOKEN_TYPE_DRAFT,
+        TOKEN_TYPE_SUBSCRIBED,
+      ]);
+    });
+
+    it('offers the merged date tokens only for the merged state', async () => {
+      setWindowLocation('?assignee_username[]=root&state=merged');
+      createComponent();
+      await waitForPromises();
+
+      expect(tokenTypes()).toEqual(
+        expect.arrayContaining([TOKEN_TYPE_MERGED_BEFORE, TOKEN_TYPE_MERGED_AFTER]),
+      );
+    });
+
+    it('drops the tokens that need a signed-in user', async () => {
+      setWindowLocation('?assignee_username[]=root');
+      createComponent({ isSignedIn: false });
+      await waitForPromises();
+
+      expect(tokenTypes()).not.toContain(TOKEN_TYPE_MY_REACTION);
+      expect(tokenTypes()).not.toContain(TOKEN_TYPE_SUBSCRIBED);
+    });
+
+    it('maps the new tokens onto query variables', async () => {
+      setWindowLocation('?author_username=jane&label_name[]=bug&milestone_title=16.0');
+      createComponent();
+      await waitForPromises();
+
+      expect(lastVariables()).toMatchObject({
+        authorUsername: 'jane',
+        labelName: 'bug',
+        milestoneTitle: '16.0',
+      });
     });
   });
 });

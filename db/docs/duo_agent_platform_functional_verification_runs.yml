@@ -1,0 +1,13 @@
+---
+table_name: duo_agent_platform_functional_verification_runs
+classes:
+- Ai::DuoAgentPlatform::FunctionalVerificationRun
+feature_categories:
+- duo_agent_platform
+description: Latest GitLab Duo Agent Platform functional verification run for each
+  check type. One row per check type; a new run replaces the previous result.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252263
+milestone: '19.4'
+gitlab_schema: gitlab_main_cell_setting
+notes: Used only for self-managed. Not used in GitLab.com, nor Cells
+table_size: small

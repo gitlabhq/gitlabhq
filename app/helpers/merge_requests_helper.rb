@@ -348,7 +348,10 @@ module MergeRequestsHelper
 
   def merge_request_dashboard_search_data
     {
+      autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       autocomplete_users_path: autocomplete_users_path,
+      dashboard_labels_path: dashboard_labels_path(format: :json, include_ancestor_groups: true),
+      dashboard_milestones_path: dashboard_milestones_path(format: :json),
       has_scoped_labels_feature: 'false',
       initial_sort: default_merge_request_sort || current_user&.user_preference&.merge_requests_sort,
       is_public_visibility_restricted:

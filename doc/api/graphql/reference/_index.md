@@ -58472,6 +58472,29 @@ Arguments:
 | <a id="project-timelogs-starttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
 | <a id="project-timelogs-username"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
+##### `Project.unprotectedBranches`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Paginated list of unprotected branches, ignoring any wildcard branch rules. Supports forward-only pagination with `first` and `after`. This field can only be resolved for one project in any single request.
+
+Returns [`StringConnection`](#stringconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="project-unprotectedbranches-search"></a>`search` | [`String`](#string) | Search query to filter branch names (case-insensitive). |
+
 ##### `Project.valueStreamDashboardUsageOverview`
 
 {{< details >}}

@@ -479,6 +479,10 @@ deployment_clusters:
   - table: clusters
     column: cluster_id
     on_delete: async_delete
+duo_agent_platform_functional_verification_runs:
+  - table: duo_workflows_workflows
+    column: workflow_id
+    on_delete: async_nullify
 duo_workflows_workflow_pipelines:
   - table: p_ci_pipelines
     column: pipeline_id
