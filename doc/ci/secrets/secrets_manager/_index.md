@@ -130,7 +130,12 @@ and workflows.
    - **Rotation reminder**: Optional. Send an email reminder to rotate the secret after the set number of days.
      Minimum 7 days.
 
-After you create a secret, you can use it in the pipeline configuration or in job scripts.
+After you create a secret:
+
+- You can use it in the pipeline configuration or in job scripts.
+- If you edit the secret, you can only overwrite the value with a new value.
+  You cannot retrieve the secret value through the UI. For more information, review the
+  [permissions for GitLab Secrets Manager](../../../user/permissions.md#project-secrets-manager).
 
 > [!warning]
 > The value of a secret is accessible to all CI/CD pipeline jobs running for the specific environment or branch

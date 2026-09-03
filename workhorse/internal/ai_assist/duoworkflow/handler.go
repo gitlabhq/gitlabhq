@@ -5,9 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
-	"slices"
-	"strings"
 	"sync"
 	"time"
 
@@ -17,6 +14,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/shutdown"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/origincheck"
 
 	"github.com/gorilla/websocket"
 )
@@ -74,33 +72,6 @@ const (
 	errorTypeOther         = "other"
 )
 
-// checkOriginByForwardedHost only trusts X-Forwarded-Host when its value is in
-// trustedForwardedHosts, since the header is otherwise attacker-controllable.
-func checkOriginByForwardedHost(trustedForwardedHosts []string) func(r *http.Request) bool {
-	return func(r *http.Request) bool {
-		origin := r.Header.Get("Origin")
-		if origin == "" {
-			return true
-		}
-
-		u, err := url.Parse(origin)
-		if err != nil {
-			return false
-		}
-
-		forwardedHost := r.Header.Get("X-Forwarded-Host")
-		if forwardedHost == "" {
-			return strings.EqualFold(u.Host, r.Host)
-		}
-
-		isTrusted := slices.ContainsFunc(trustedForwardedHosts, func(h string) bool {
-			return strings.EqualFold(h, forwardedHost)
-		})
-
-		return isTrusted && strings.EqualFold(u.Host, forwardedHost)
-	}
-}
-
 // Build returns an HTTP handler that processes Duo Workflow WebSocket connections.
 // The handler performs pre-authorization checks, upgrades the connection to WebSocket,
 // and manages the lifecycle of the workflow runner including registration and cleanup.
@@ -110,7 +81,7 @@ func (h *Handler) Build() http.Handler {
 
 		upgrader := h.upgrader
 		if len(h.trustedForwardedHosts) > 0 {
-			upgrader.CheckOrigin = checkOriginByForwardedHost(h.trustedForwardedHosts)
+			upgrader.CheckOrigin = origincheck.ByForwardedHost(h.trustedForwardedHosts)
 		}
 
 		conn, err := upgrader.Upgrade(w, r, nil)

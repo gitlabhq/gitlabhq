@@ -60,6 +60,15 @@ Prerequisites:
   [supported package manager](#supported-package-managers).
 - A dependency scanning auto-remediation profile must be attached to the project. For
   instructions, see [dependency scanning auto-remediation profile](../configuration/security_configuration_profiles.md#dependency-scanning-auto-remediation-profile).
+- The runner must accept untagged jobs.
+  GitLab generates the auto-remediation job without [tags](../../../ci/yaml/_index.md#tags),
+  and does not use the project's `.gitlab-ci.yml` configuration for it, so `default:tags`
+  does not apply.
+- The runner must allow privileged mode.
+  The auto-remediation job uses a `docker:28-dind` service.
+  For more information, see [use Docker to build Docker images](../../../ci/docker/using_docker_build.md).
+- The runner must be able to pull the auto-remediation orchestrator image from
+  `registry.gitlab.com` and the `docker:28-dind` image.
 
 To trigger vulnerability detection and auto-remediation, run a pipeline.
 Dependency scanning auto-remediation triggers automatically when GitLab detects vulnerabilities
@@ -147,3 +156,10 @@ During the beta phase:
   is proposed in [epic 19244](https://gitlab.com/groups/gitlab-org/-/work_items/19244).
 - No fix available: If no non-breaking fix version exists for a vulnerability,
   no merge request is created for that finding.
+- Merge request creation depends on a successful pipeline. GitLab creates the
+  `dependency-management/<dependency>-<major-version>.x` branch before it runs the
+  auto-remediation pipeline on that branch, and creates the merge request only after that
+  pipeline succeeds.
+  A `dependency-management/` branch that has no merge request and no commit that changes a
+  manifest file indicates that the pipeline did not succeed.
+  Check the status of the pipeline on that branch.

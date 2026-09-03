@@ -455,14 +455,14 @@ func configureRoutes(u *upstream) {
 		// Terminal websocket
 		u.wsRoute(
 			newRoute(projectPattern+`-/environments/[0-9]+/terminal.ws\z`, "project_environments_terminal_ws", railsBackend),
-			channel.Handler(api)),
+			channel.Handler(api, u.TrustedForwardedHosts...)),
 		u.wsRoute(newRoute(projectPattern+`-/jobs/[0-9]+/terminal.ws\z`, "project_jobs_terminal_ws", railsBackend),
-			channel.Handler(api)),
+			channel.Handler(api, u.TrustedForwardedHosts...)),
 
 		// Proxy Job Services
 		u.wsRoute(
 			newRoute(projectPattern+`-/jobs/[0-9]+/proxy.ws\z`, "project_jobs_proxy_ws", railsBackend),
-			channel.Handler(api)),
+			channel.Handler(api, u.TrustedForwardedHosts...)),
 
 		// Duo Workflow websocket
 		u.wsRoute(

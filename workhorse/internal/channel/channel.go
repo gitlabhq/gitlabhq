@@ -13,6 +13,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/origincheck"
 )
 
 var (
@@ -26,7 +27,18 @@ var (
 )
 
 // Handler returns an HTTP handler for handling API requests using the provided API instance.
-func Handler(myAPI *api.API) http.Handler {
+//
+// trustedForwardedHosts enables the X-Forwarded-Host based Origin check for the
+// client upgrade. See origincheck.ByForwardedHost.
+func Handler(myAPI *api.API, trustedForwardedHosts ...string) http.Handler {
+	clientUpgrader := upgrader
+	if len(trustedForwardedHosts) > 0 {
+		clientUpgrader = &websocket.Upgrader{
+			Subprotocols: subprotocols,
+			CheckOrigin:  origincheck.ByForwardedHost(trustedForwardedHosts),
+		}
+	}
+
 	return myAPI.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
 		if err := a.Channel.Validate(); err != nil {
 			fail.Request(w, r, err)
@@ -45,12 +57,12 @@ func Handler(myAPI *api.API) http.Handler {
 		go checker.Loop(ReauthenticationInterval)
 		go closeAfterMaxTime(proxy, a.Channel.MaxSessionTime)
 
-		ProxyChannel(w, r, a.Channel, proxy)
+		ProxyChannel(w, r, a.Channel, proxy, clientUpgrader)
 	}, "authorize")
 }
 
 // ProxyChannel handles proxying of HTTP requests.
-func ProxyChannel(w http.ResponseWriter, r *http.Request, settings *api.ChannelSettings, proxy *Proxy) {
+func ProxyChannel(w http.ResponseWriter, r *http.Request, settings *api.ChannelSettings, proxy *Proxy, clientUpgrader *websocket.Upgrader) {
 	server, err := connectToServer(settings, r)
 	if err != nil {
 		fail.Request(w, r, err)
@@ -64,7 +76,7 @@ func ProxyChannel(w http.ResponseWriter, r *http.Request, settings *api.ChannelS
 	}()
 	serverAddr := server.UnderlyingConn().RemoteAddr().String()
 
-	client, err := upgradeClient(w, r)
+	client, err := upgradeClient(w, r, clientUpgrader)
 	if err != nil {
 		log.ContextLogger(r.Context()).WithError(err).Print("Channel: upgrading client to websocket failed")
 		return
@@ -98,8 +110,8 @@ func getClientAddr(r *http.Request) string {
 	return r.RemoteAddr
 }
 
-func upgradeClient(w http.ResponseWriter, r *http.Request) (Connection, error) {
-	conn, err := upgrader.Upgrade(w, r, nil)
+func upgradeClient(w http.ResponseWriter, r *http.Request, clientUpgrader *websocket.Upgrader) (Connection, error) {
+	conn, err := clientUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		return nil, err
 	}

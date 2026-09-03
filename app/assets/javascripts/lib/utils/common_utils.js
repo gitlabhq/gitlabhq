@@ -6,6 +6,8 @@ import $ from 'jquery';
 import { escape, isFunction, partial, toLower } from 'lodash-es';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import Cookies from '~/lib/utils/cookies';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { SCOPED_LABEL_DELIMITER } from '~/sidebar/components/labels/labels_select_widget/constants';
 import {
   CI_CONFIG_PATH_EXTENSION,
@@ -712,6 +714,34 @@ export const removeCookie = (name, attributes) => Cookies.remove(name, attribute
 export const convertArrayToCamelCase = (array) => array.map((i) => convertToCamelCase(i));
 
 export const isLoggedIn = () => Boolean(window.gon?.current_user_id);
+
+/**
+ * Returns the signed-in user from `gon` as a camelCase object,
+ * or `null` when nobody is signed in.
+ *
+ * @param {Object} [options]
+ * @param {Boolean} [options.useGlobalId] - Return `id` as a GraphQL global id.
+ * @returns {Object|null} The current user
+ */
+export const getCurrentUser = ({ useGlobalId = false } = {}) => {
+  const {
+    current_user_id: id,
+    current_username: username,
+    current_user_fullname: name,
+    current_user_avatar_url: avatarUrl,
+  } = window.gon ?? {};
+
+  if (!id) {
+    return null;
+  }
+
+  return {
+    id: useGlobalId ? convertToGraphQLId(TYPENAME_USER, id) : id,
+    username,
+    name,
+    avatarUrl,
+  };
+};
 
 /**
  * This method takes in array of objects with snake_case

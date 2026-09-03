@@ -50,6 +50,13 @@ RSpec.describe QA::Runtime::Env do
       default: false
   end
 
+  describe '.running_on_dedicated?' do
+    it_behaves_like 'boolean method',
+      method: :running_on_dedicated?,
+      env_key: 'QA_RUNNING_ON_DEDICATED',
+      default: false
+  end
+
   describe '.webdriver_headless?' do
     it_behaves_like 'boolean method',
       method: :webdriver_headless?,

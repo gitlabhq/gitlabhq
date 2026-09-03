@@ -22,13 +22,13 @@ title: GitLab Secret Scanning for Source Code
 
 GitLab Secret Scanning for Source Code is an alternative analyzer for
 [pipeline secret detection](../pipeline/_index.md). It runs in the same `secret_detection` CI/CD job
-as the default analyzer, but provides additional secret detection, including detection of generic
-secrets.
+as the default analyzer, but provides additional capabilities, including detection of generic
+secrets and false positive reduction.
 
 ## How GitLab Secret Scanning for Source Code differs
 
 The analyzer uses a proprietary scan engine developed by GitLab. Instead of relying on
-pattern matching, it uses heuristics to detect unstructured secrets and passwords beyond the
+traditional pattern matching techniques, it uses heuristics to detect unstructured secrets and passwords beyond the
 [standard GitLab Secret Detection rules](../detected_secrets.md). It combines multiple heuristic techniques to reduce
 false positives.
 
@@ -46,7 +46,7 @@ Prerequisites:
   [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
   If you use hosted runners for GitLab.com, this is enabled by default.
   - Windows runners are not supported.
-  - CPU architectures other than amd64 are not supported.
+  - Only `arm64` and `amd64` CPU architectures are supported.
 - You have a `.gitlab-ci.yml` file that includes the `test` stage.
 
 To turn on the analyzer, use the latest secret detection template and set the

@@ -54,6 +54,7 @@ module QA
         tags_for_rspec.push("~geo") unless QA::Runtime::Env.geo_environment?
         tags_for_rspec.push("~skip_signup_disabled") if QA::Runtime::Env.signup_disabled?
         tags_for_rspec.push("~skip_live_env") if QA::Specs::Helpers::ContextSelector.dot_com?
+        tags_for_rspec.push("~skip_dedicated") if QA::Runtime::Env.running_on_dedicated?
 
         QA::Runtime::Env.supported_features.each_key do |key|
           tags_for_rspec.push("~requires_#{key}") unless QA::Runtime::Env.can_test? key

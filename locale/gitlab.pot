@@ -12054,6 +12054,12 @@ msgstr ""
 msgid "ArtifactRegistry|%{date} by %{user}"
 msgstr ""
 
+msgid "ArtifactRegistry|%{tab} tab for version %{version} of %{name}."
+msgstr ""
+
+msgid "ArtifactRegistry|%{tab} tab for version %{version}."
+msgstr ""
+
 msgid "ArtifactRegistry|%{verdict}. Last verified: %{time}"
 msgstr ""
 
@@ -12768,12 +12774,6 @@ msgid "ArtifactRegistry|Username"
 msgstr ""
 
 msgid "ArtifactRegistry|Version"
-msgstr ""
-
-msgid "ArtifactRegistry|Version %{version} loaded."
-msgstr ""
-
-msgid "ArtifactRegistry|Version %{version} of %{name} loaded."
 msgstr ""
 
 msgid "ArtifactRegistry|Version list for %{name} updated."
@@ -92084,6 +92084,9 @@ msgstr ""
 msgid "WorkItemDecisionLog|Continue editing"
 msgstr ""
 
+msgid "WorkItemDecisionLog|Could not load users. Refresh the page and try again."
+msgstr ""
+
 msgid "WorkItemDecisionLog|Create decision"
 msgstr ""
 
@@ -92130,6 +92133,9 @@ msgid "WorkItemDecisionLog|Recorded from a thread on this work item"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Recorded manually on this work item"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Select a user"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Select who made this decision"
