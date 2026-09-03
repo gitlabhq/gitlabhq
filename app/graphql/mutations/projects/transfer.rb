@@ -36,17 +36,6 @@ module Mutations
         end
 
         service = ::Projects::TransferService.new(project, current_user)
-
-        if Feature.enabled?(:groups_and_projects_async_transfer, project.root_ancestor)
-          async_transfer(service, project, namespace)
-        else
-          sync_transfer(service, project, namespace)
-        end
-      end
-
-      private
-
-      def async_transfer(service, project, namespace)
         result = service.schedule_async_transfer(namespace)
 
         if result.success?
@@ -56,19 +45,7 @@ module Mutations
         end
       end
 
-      def sync_transfer(service, project, namespace)
-        # The synchronous transfer path issues more queries than the default threshold
-        # allows. Mirrors the existing exemption for the REST transfer action.
-        # See app/controllers/projects_controller.rb#disable_transfer_query_limiting.
-        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/work_items/606043', new_threshold: 110)
-
-        if service.execute(namespace)
-          { project: project, errors: [] }
-        else
-          errors = project.errors[:new_namespace].presence || ['Transfer failed']
-          { project: project, errors: errors }
-        end
-      end
+      private
 
       def find_object(id)
         GitlabSchema.find_by_gid(id)

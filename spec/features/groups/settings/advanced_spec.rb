@@ -99,76 +99,20 @@ RSpec.describe 'Group settings > Advanced', :with_current_organization, feature_
     let(:namespace_select) { find_by_testid('transfer-group-namespace-select') }
     let(:confirm_modal) { find_by_testid('confirm-danger-modal') }
 
-    before do
-      stub_feature_flags(groups_and_projects_async_transfer: false)
-    end
-
-    shared_examples 'can transfer the group' do
-      before do
-        selected_group.add_owner(user)
-      end
-
-      it 'can successfully transfer the group' do
-        selected_group_path = selected_group.path
-
-        visit edit_group_path(selected_group)
-        transfer_group(selected_group, target_group)
-
-        within_testid('breadcrumb-links') do
-          expect(page).to have_content(target_group.name) if target_group # rubocop:disable RSpec/AvoidConditionalStatements -- pre-existing violation
-          expect(page).to have_content(selected_group.name)
-        end
-
-        if target_group # rubocop:disable RSpec/AvoidConditionalStatements -- pre-existing violation
-          expect(current_url).to include("#{target_group.path}/#{selected_group_path}")
-        else
-          expect(current_url).to include(selected_group_path)
-        end
-      end
-    end
-
-    context 'when transfering from a subgroup' do
-      let(:selected_group) { create(:group, path: 'foo-subgroup', parent: group) }
-
-      context 'when transfering to no parent group' do
-        let(:target_group) { nil }
-
-        it_behaves_like 'can transfer the group'
-      end
-
-      context 'when transfering to a parent group' do
-        let(:target_group) { create(:group, path: 'foo-parentgroup') }
-
-        before do
-          target_group.add_owner(user)
-        end
-
-        it_behaves_like 'can transfer the group'
-      end
-    end
-
-    context 'when transfering from a root group to a parent group' do
-      let(:selected_group) { create(:group, path: 'foo-rootgroup') }
-      let(:target_group) { group }
-
-      it_behaves_like 'can transfer the group'
-    end
-
-    context 'when groups_and_projects_async_transfer flag is enabled' do
+    context 'when transfering a group' do
       let(:selected_group) { create(:group, path: 'foo-group', owners: [user]) }
 
       before do
-        stub_feature_flags(groups_and_projects_async_transfer: true)
-
         visit edit_group_path(selected_group)
         transfer_group(selected_group, group)
       end
 
-      it 'shows async transfer banner' do
+      it 'schedules an async transfer and shows the transfer banner' do
         expect(page).to have_content(s_(
           'TransferGroup|This group is scheduled for transfer. ' \
             'Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails.'
         ))
+        expect(selected_group.reload.state).to eq('transfer_scheduled')
       end
     end
   end

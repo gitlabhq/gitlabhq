@@ -1037,7 +1037,12 @@ module Ci
     def artifact_for_type(type)
       file_types = Ci::JobArtifact.associated_file_types_for(type)
       file_types_ids = file_types&.map { |file_type| Ci::JobArtifact.file_types[file_type] }
-      job_artifacts.find_by(file_type: file_types_ids)
+      artifacts = job_artifacts.where(file_type: file_types_ids).order(:id).to_a
+
+      # Some types share a group (`performance` and `browser_performance`) and a
+      # job can upload both, so prefer the exact type over whichever row the
+      # database happens to return first.
+      artifacts.find { |artifact| artifact.file_type == type.to_s } || artifacts.first
     end
 
     def steps

@@ -11,9 +11,9 @@ RSpec.describe Organizations::SettingsController, feature_category: :organizatio
     context 'when the user is not signed in' do
       it_behaves_like 'organization - redirects to sign in page'
 
-      context 'when `ui_for_organizations` feature flag is disabled' do
+      context 'when the org_pages release flag is disabled' do
         before do
-          stub_feature_flags(ui_for_organizations: false)
+          stub_organization_release(org_pages: false)
         end
 
         it_behaves_like 'organization - redirects to sign in page'
@@ -29,14 +29,14 @@ RSpec.describe Organizations::SettingsController, feature_category: :organizatio
 
       context 'with no association to an organization' do
         it_behaves_like 'organization - not found response'
-        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+        it_behaves_like 'organization - action disabled by org_pages release flag'
       end
 
       context 'as as admin', :enable_admin_mode do
         let_it_be_with_reload(:user) { create(:admin) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+        it_behaves_like 'organization - action disabled by org_pages release flag'
       end
 
       context 'as a default organization user' do
@@ -45,7 +45,7 @@ RSpec.describe Organizations::SettingsController, feature_category: :organizatio
         end
 
         it_behaves_like 'organization - not found response'
-        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+        it_behaves_like 'organization - action disabled by org_pages release flag'
       end
 
       context 'as an owner of an organization' do
@@ -54,7 +54,7 @@ RSpec.describe Organizations::SettingsController, feature_category: :organizatio
         end
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+        it_behaves_like 'organization - action disabled by org_pages release flag'
       end
     end
   end

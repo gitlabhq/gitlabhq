@@ -507,8 +507,10 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker, fe
 
       with_them do
         before do
-          allow(worker).to receive(:cleanup_scheduled_count).and_return(scheduled_count)
-          allow(worker).to receive(:cleanup_unfinished_count).and_return(unfinished_count)
+          allow(worker).to receive_messages(
+            cleanup_scheduled_count: scheduled_count,
+            cleanup_unfinished_count: unfinished_count
+          )
         end
 
         it { is_expected.to eq(expected_count) }

@@ -215,7 +215,7 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
       end
     end
 
-    context 'when groups_and_projects_async_transfer feature flag is enabled' do
+    context 'when transferring a project' do
       let_it_be(:user) { create(:user) }
       let_it_be_with_reload(:project) { create(:project) }
       let_it_be(:new_namespace) { create(:group) }
@@ -262,40 +262,6 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
 
           expect(response).to redirect_to(edit_project_path(project))
           expect(flash[:alert]).to eq('Unable to initiate transfer. The project may already have a transfer in progress.')
-        end
-      end
-    end
-
-    context 'when groups_and_projects_async_transfer feature flag is disabled' do
-      let_it_be(:user) { create(:user) }
-      let_it_be_with_reload(:project) { create(:project) }
-      let_it_be(:new_namespace) { create(:group) }
-
-      before_all do
-        project.add_owner(user)
-        new_namespace.add_owner(user)
-      end
-
-      before do
-        stub_feature_flags(groups_and_projects_async_transfer: false)
-        sign_in(user)
-      end
-
-      it 'transfers the project synchronously' do
-        expect(Projects::TransferWorker).not_to receive(:perform_async)
-
-        put transfer_project_path(project), params: { new_namespace_id: new_namespace.id }
-
-        expect(response).to have_gitlab_http_status(:found)
-        expect(project.reload.namespace).to eq(new_namespace)
-      end
-
-      context 'when the transfer fails' do
-        it 'redirects with an error' do
-          put transfer_project_path(project), params: { new_namespace_id: project.namespace_id }
-
-          expect(response).to redirect_to(edit_project_path(project))
-          expect(flash[:alert]).to include('Project is already in this namespace')
         end
       end
     end

@@ -16,7 +16,15 @@ Use this API to download, keep, and delete [job artifacts](../ci/jobs/job_artifa
 
 ## Download job artifacts by job ID
 
+{{< history >}}
+
+- `file_type` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/35805) in GitLab 19.4.
+
+{{< /history >}}
+
 Download a job's artifacts archive using a job ID.
+To download a specific report file (for example, JUnit test results),
+use the `file_type` attribute.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
 as the request might redirect through a CDN.
@@ -31,9 +39,11 @@ Supported attributes:
 | ----------- | ----------------- | -------- | ----------- |
 | `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`    | integer           | Yes      | ID of a job. |
+| `file_type` | string            | No       | Type of artifact to download. Default is `archive`, which returns the full artifacts archive. Set this to a specific report type to download that report file directly instead. Available types: `accessibility`, `api_fuzzing`, `archive`, `browser_performance`, `cluster_image_scanning`, `cobertura`, `codequality`, `container_scanning`, `cyclonedx`, `dast`, `dependency_scanning`, `dotenv`, `jacoco`, `junit`, `license_scanning`, `load_performance`, `lsif`, `metrics`, `performance`, `requirements`, `requirements_v2`, `sarif`, `sast`, and `secret_detection`. `performance` and `browser_performance` share a report group. If the job uploaded both, the requested type is returned. If the job only uploaded one of them, that artifact is returned regardless of which type was requested. |
 | `job_token` | string            | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and serves the artifacts file.
+If `file_type` is not a supported value, returns [`400`](rest/troubleshooting.md#status-codes).
 
 Example request:
 
@@ -43,6 +53,16 @@ curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts" \
   --output artifacts.zip
+```
+
+Example request for a JUnit test report:
+
+```shell
+curl --request GET \
+  --location \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts?file_type=junit" \
+  --output junit.xml.gz
 ```
 
 Example request using a CI/CD job token:
@@ -488,6 +508,11 @@ curl --request GET \
 
 You might get a `404 Not Found` error when trying to download reports using the job artifacts API.
 
-This issue occurs because [reports](../ci/yaml/_index.md#artifactsreports) are not downloadable by default.
+This issue occurs because [reports](../ci/yaml/_index.md#artifactsreports) are not included in the
+artifacts archive by default.
 
-To make reports downloadable, add their filenames or `gl-*-report.json` to [`artifacts:paths`](../ci/yaml/_index.md#artifactspaths).
+To resolve this issue, use [download job artifacts by job ID](#download-job-artifacts-by-job-id)
+and set `file_type` to the report type you want.
+
+As a workaround, you can also include the report in the artifacts archive itself by adding its
+filename or `gl-*-report.json` to [`artifacts:paths`](../ci/yaml/_index.md#artifactspaths).

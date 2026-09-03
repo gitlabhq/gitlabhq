@@ -7,8 +7,7 @@ RSpec.describe 'projects/project_members/index', :aggregate_failures, feature_ca
   let_it_be(:project) { create(:project, :empty_repo, :with_namespace_settings).present(current_user: user) } # rubocop:todo RSpec/FactoryBot/AvoidCreate
 
   before do
-    allow(view).to receive(:project_members_app_data_json).and_return({})
-    allow(view).to receive(:current_user).and_return(user)
+    allow(view).to receive_messages(project_members_app_data_json: {}, current_user: user)
     assign(:project, project)
   end
 

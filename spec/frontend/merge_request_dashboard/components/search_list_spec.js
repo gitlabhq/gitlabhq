@@ -26,7 +26,8 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import SearchList from '~/merge_request_dashboard/components/search_list.vue';
-import getMergeRequestsQuery from '~/merge_request_dashboard/queries/search/get_merge_requests.query.graphql';
+import getMergeRequestsQuery from 'ee_else_ce/merge_request_dashboard/queries/search/get_merge_requests.query.graphql';
+import getMergeRequestsApprovalsQuery from '~/merge_request_dashboard/queries/search/get_merge_requests_approvals.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -75,6 +76,7 @@ const pageInfo = {
 describe('Merge request dashboard search list', () => {
   let wrapper;
   let mergeRequestsQueryHandler;
+  let approvalsQueryHandler;
   let push;
 
   const findIssuableList = () => wrapper.findComponent(IssuableList);
@@ -94,12 +96,16 @@ describe('Merge request dashboard search list', () => {
     mergeRequestsQueryHandler = jest
       .fn()
       .mockResolvedValue({ data: { mergeRequests: { nodes: [mockMergeRequest], pageInfo } } });
+    approvalsQueryHandler = jest.fn().mockResolvedValue({ data: { mergeRequests: { nodes: [] } } });
     push = jest.fn();
 
     const apolloProvider = new VueApollo({
       defaultClient: createMockClient([]),
       clients: {
-        searchClient: createMockClient([[getMergeRequestsQuery, mergeRequestsQueryHandler]]),
+        searchClient: createMockClient([
+          [getMergeRequestsQuery, mergeRequestsQueryHandler],
+          [getMergeRequestsApprovalsQuery, approvalsQueryHandler],
+        ]),
       },
     });
 
@@ -217,6 +223,7 @@ describe('Merge request dashboard search list', () => {
 
     it('does not query, and asks for a filter instead', () => {
       expect(mergeRequestsQueryHandler).not.toHaveBeenCalled();
+      expect(approvalsQueryHandler).not.toHaveBeenCalled();
       expect(findNoFilterEmptyState().exists()).toBe(true);
     });
   });
@@ -346,6 +353,44 @@ describe('Merge request dashboard search list', () => {
         labelName: 'bug',
         milestoneTitle: '16.0',
       });
+    });
+  });
+
+  describe('approvals', () => {
+    beforeEach(async () => {
+      jest.spyOn(Sentry, 'captureException').mockImplementation();
+      setWindowLocation('?assignee_username[]=root');
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('queries approvals with the same filters as the list', () => {
+      expect(approvalsQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ assigneeUsernames: 'root', state: STATUS_OPEN }),
+      );
+    });
+
+    it('still renders the list when the approvals query times out', async () => {
+      approvalsQueryHandler.mockRejectedValue({ statusCode: 503 });
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'jane', operator: OPERATOR_IS } },
+      ]);
+      await waitForPromises();
+
+      expect(findIssuableList().props('issuables')).toEqual([
+        expect.objectContaining({ id: mockMergeRequest.id }),
+      ]);
+      expect(Sentry.captureException).not.toHaveBeenCalled();
+    });
+
+    it('reports any other approvals failure to Sentry', async () => {
+      approvalsQueryHandler.mockRejectedValue(new Error('boom'));
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'jane', operator: OPERATOR_IS } },
+      ]);
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalled();
     });
   });
 });

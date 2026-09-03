@@ -243,11 +243,7 @@ class GroupsController < Groups::ApplicationController
   def transfer
     parent_group = Group.find_by(id: permitted_params[:new_parent_group_id])
 
-    if Feature.enabled?(:groups_and_projects_async_transfer, @group)
-      enqueue_async_transfer(parent_group)
-    else
-      execute_sync_transfer(parent_group)
-    end
+    enqueue_async_transfer(parent_group)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -445,18 +441,6 @@ class GroupsController < Groups::ApplicationController
       redirect_to group_path(@group)
     else
       flash[:alert] = result.message
-      redirect_to edit_group_path(@group)
-    end
-  end
-
-  def execute_sync_transfer(parent_group)
-    service = ::Groups::TransferService.new(@group, current_user)
-
-    if service.execute(parent_group)
-      flash[:notice] = "Group '#{@group.name}' was successfully transferred."
-      redirect_to group_path(@group)
-    else
-      flash[:alert] = service.error.html_safe
       redirect_to edit_group_path(@group)
     end
   end

@@ -28,4 +28,5 @@ The stage determines who can use a flag and whether it can be disabled.
 | `org_admin_area` | Experimental | Organization admin area for organization owners. |
 | `org_creation` | Experimental | Create an organization from global pages or public APIs. |
 | `org_switcher` | Experimental | The organization switcher dropdown component. |
+| `org_pages` | Beta | Organization pages that extend `Organizations::ApplicationController`. |
 | `your_work_sidebar_org_menu_item` | Beta | Shows `Organizations` menu item in the `Your work` sidebar. |

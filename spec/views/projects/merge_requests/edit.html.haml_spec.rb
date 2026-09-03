@@ -30,9 +30,7 @@ RSpec.describe 'projects/merge_requests/edit.html.haml', feature_category: :code
     assign(:merge_request, closed_merge_request)
     assign(:mr_presenter, closed_merge_request.present(current_user: user))
 
-    allow(view).to receive(:can?).and_return(true)
-    allow(view).to receive(:current_user)
-      .and_return(User.find(closed_merge_request.author_id))
+    allow(view).to receive_messages(can?: true, current_user: User.find(closed_merge_request.author_id))
   end
 
   shared_examples 'merge request shows editable fields' do

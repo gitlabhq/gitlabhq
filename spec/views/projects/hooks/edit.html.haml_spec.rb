@@ -45,8 +45,7 @@ RSpec.describe 'projects/hooks/edit' do
 
   context 'when webhook is temporarily disabled' do
     before do
-      allow(hook).to receive(:temporarily_disabled?).and_return(true)
-      allow(hook).to receive(:disabled_until).and_return(Time.now + 10.minutes)
+      allow(hook).to receive_messages(temporarily_disabled?: true, disabled_until: Time.now + 10.minutes)
     end
 
     it 'renders alert' do

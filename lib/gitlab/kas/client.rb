@@ -368,18 +368,22 @@ module Gitlab
       #   retries must reuse the same key verbatim.
       # @param channel_token [String] token identifying the target channel, taken from
       #   `PostValueBody.channel_tokens`.
+      # @param workflow_token [String] the workflow token returned by {start_workflow}. The
+      #   channel_token alone names no principal this RPC can check, so this is the whole
+      #   of the authorization.
       # @param value [Object] the decision payload, converted via {Autoflow::ValueConverter}.
       #   Must not be a channel value; that invariant is enforced server-side, not here.
-      # @raise [GRPC::InvalidArgument] if the token is malformed, expired, or the wrong kind.
+      # @raise [GRPC::InvalidArgument] if either token is malformed, expired, or the wrong kind.
       # @raise [GRPC::NotFound] if the workflow no longer exists.
       # @return [Gitlab::Agent::AutoFlow::Rpc::SendToWorkflowChannelResponse]
       #
       # Transient failures are retried in-process automatically using the same idempotency key;
       # the @raise errors above are permanent and raise immediately without retry.
-      def send_to_workflow_channel(idempotency_key:, channel_token:, value:)
+      def send_to_workflow_channel(idempotency_key:, channel_token:, workflow_token:, value:)
         request = Gitlab::Agent::AutoFlow::Rpc::SendToWorkflowChannelRequest.new(
           idempotency_key: idempotency_key,
           channel_token: channel_token,
+          workflow_token: workflow_token,
           value: Autoflow::ValueConverter.to_value(value)
         )
 

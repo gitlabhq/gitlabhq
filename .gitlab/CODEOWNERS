@@ -2009,6 +2009,13 @@ ee/lib/ai/context/dependencies/
 ee/app/services/ai/repository_xray/
 ee/app/workers/ai/repository_xray/
 
+^[Category:Semantic Search] @gitlab-org/ai-powered/ai-platform/ai-core-infra/semantic-code-search
+gems/gitlab-active-context/
+ee/lib/gitlab/llm/embeddings/
+**/*active_context*
+**/*semantic_search*
+**/*vector_storage*
+
 # Fulfillment::Utilization
 ^[Usage Quotas] @gitlab-org/fulfillment/utilization/fe
 /**/javascripts/usage_quotas/

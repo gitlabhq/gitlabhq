@@ -50,3 +50,6 @@ flags:
   - name: your_work_sidebar_org_menu_item
     description: Shows `Organizations` menu item in the `Your work` sidebar.
     stage: beta
+  - name: org_pages
+    description: Organization pages that extend `Organizations::ApplicationController`.
+    stage: beta

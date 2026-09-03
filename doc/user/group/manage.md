@@ -176,6 +176,7 @@ This action is also available on other list pages.
 {{< history >}}
 
 - Asynchronous transfers for groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594575) in GitLab 18.11 [with a feature flag](../../administration/feature_flags/_index.md) named `groups_and_projects_async_transfer`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250913) in GitLab 19.4. Feature flag `groups_and_projects_async_transfer` removed.
 
 {{< /history >}}
 

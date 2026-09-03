@@ -12340,6 +12340,12 @@ msgstr ""
 msgid "ArtifactRegistry|Filter repositories"
 msgstr ""
 
+msgid "ArtifactRegistry|For more information on the Maven registry, %{linkStart}see the documentation%{linkEnd}."
+msgstr ""
+
+msgid "ArtifactRegistry|For more information on the npm registry, %{linkStart}see the documentation%{linkEnd}."
+msgstr ""
+
 msgid "ArtifactRegistry|Format"
 msgstr ""
 
@@ -12387,6 +12393,9 @@ msgid "ArtifactRegistry|Install by version"
 msgstr ""
 
 msgid "ArtifactRegistry|Install command:"
+msgstr ""
+
+msgid "ArtifactRegistry|Install instructions are unavailable because the package could not be loaded."
 msgstr ""
 
 msgid "ArtifactRegistry|Last downloaded"
@@ -20074,6 +20083,9 @@ msgstr ""
 msgid "Collapse sidebar"
 msgstr ""
 
+msgid "Collapse to drawer"
+msgstr ""
+
 msgid "Collapse work items"
 msgstr ""
 
@@ -23614,9 +23626,6 @@ msgstr ""
 msgid "ContinuousDeployment|All environments"
 msgstr ""
 
-msgid "ContinuousDeployment|All systems healthy"
-msgstr ""
-
 msgid "ContinuousDeployment|All types"
 msgstr ""
 
@@ -23636,9 +23645,6 @@ msgid "ContinuousDeployment|Application not found"
 msgstr ""
 
 msgid "ContinuousDeployment|Applications"
-msgstr ""
-
-msgid "ContinuousDeployment|Approval needed"
 msgstr ""
 
 msgid "ContinuousDeployment|Approval step"
@@ -23737,9 +23743,6 @@ msgstr ""
 msgid "ContinuousDeployment|Declare your application's topology — its services and their artifacts. Where each service deploys is configured later, per environment."
 msgstr ""
 
-msgid "ContinuousDeployment|Degradation detected"
-msgstr ""
-
 msgid "ContinuousDeployment|Degraded"
 msgstr ""
 
@@ -23759,9 +23762,6 @@ msgid "ContinuousDeployment|Deploying"
 msgstr ""
 
 msgid "ContinuousDeployment|Deployment ID"
-msgstr ""
-
-msgid "ContinuousDeployment|Deployment in progress"
 msgstr ""
 
 msgid "ContinuousDeployment|Deployments"
@@ -24176,9 +24176,6 @@ msgid "ContinuousDeployment|Wait step"
 msgstr ""
 
 msgid "ContinuousDeployment|Waiting for approval."
-msgstr ""
-
-msgid "ContinuousDeployment|Waiting for your approval"
 msgstr ""
 
 msgid "ContinuousDeployment|e.g. Grafana — Payments overview"
@@ -34830,6 +34827,9 @@ msgid "Expand settings section"
 msgstr ""
 
 msgid "Expand sidebar"
+msgstr ""
+
+msgid "Expand to full width"
 msgstr ""
 
 msgid "Experiment"
@@ -56162,10 +56162,10 @@ msgstr ""
 msgid "Orbit|Close code navigation panel"
 msgstr ""
 
-msgid "Orbit|Code Navigation"
+msgid "Orbit|Code Review"
 msgstr ""
 
-msgid "Orbit|Code Review"
+msgid "Orbit|Code navigation"
 msgstr ""
 
 msgid "Orbit|Codex"
@@ -56375,6 +56375,9 @@ msgstr ""
 msgid "Orbit|Jump to definition"
 msgstr ""
 
+msgid "Orbit|Jump to definitions and find references for symbols while reading a file, with no CI configuration. Open a file on the default branch of an indexed project and select Code navigation."
+msgstr ""
+
 msgid "Orbit|L%{line}"
 msgstr ""
 
@@ -56429,7 +56432,7 @@ msgstr ""
 msgid "Orbit|No groups match your search."
 msgstr ""
 
-msgid "Orbit|No indexed symbols in this file."
+msgid "Orbit|No indexed symbols in this file. If this project was added to Orbit recently, indexing might still be in progress."
 msgstr ""
 
 msgid "Orbit|No indexing data available yet."
@@ -56505,6 +56508,9 @@ msgid "Orbit|Pipeline"
 msgstr ""
 
 msgid "Orbit|Planning"
+msgstr ""
+
+msgid "Orbit|Powered by Orbit"
 msgstr ""
 
 msgid "Orbit|Project"
@@ -56682,6 +56688,9 @@ msgid "Orbit|Unable to load index status. Please try again."
 msgstr ""
 
 msgid "Orbit|Use Orbit in GitLab Duo"
+msgstr ""
+
+msgid "Orbit|Use Orbit in your repositories"
 msgstr ""
 
 msgid "Orbit|Use Orbit with GitLab Duo"
@@ -61567,6 +61576,9 @@ msgid "Previous open thread"
 msgstr ""
 
 msgid "Previous step"
+msgstr ""
+
+msgid "Primary content"
 msgstr ""
 
 msgid "Primary navigation sidebar"
@@ -85066,6 +85078,9 @@ msgid "TransferGroup|SAML Provider or SCIM Token is configured for this group."
 msgstr ""
 
 msgid "TransferGroup|The parent group already has a subgroup or a project with the same path."
+msgstr ""
+
+msgid "TransferGroup|This group is linked to a subscription"
 msgstr ""
 
 msgid "TransferGroup|This group is scheduled for transfer. Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails."

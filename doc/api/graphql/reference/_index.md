@@ -26483,6 +26483,30 @@ Fields:
 | <a id="duoworkflowworkitemlinkedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="duoworkflowworkitemlinkedge-node"></a>`node` | [`DuoWorkflowWorkItemLink`](#duoworkflowworkitemlink) | The item at the end of the edge. |
 
+#### `DuoWorkflowsAggregationResponseConnection`
+
+The connection type for [`DuoWorkflowsAggregationResponse`](#duoworkflowsaggregationresponse).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponseconnection-count"></a>`count` | [`Int!`](#int) | Total number of aggregated rows. |
+| <a id="duoworkflowsaggregationresponseconnection-edges"></a>`edges` | [`[DuoWorkflowsAggregationResponseEdge]`](#duoworkflowsaggregationresponseedge) | A list of edges. |
+| <a id="duoworkflowsaggregationresponseconnection-nodes"></a>`nodes` | [`[DuoWorkflowsAggregationResponse]`](#duoworkflowsaggregationresponse) | A list of nodes. |
+| <a id="duoworkflowsaggregationresponseconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DuoWorkflowsAggregationResponseEdge`
+
+The edge type for [`DuoWorkflowsAggregationResponse`](#duoworkflowsaggregationresponse).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponseedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="duoworkflowsaggregationresponseedge-node"></a>`node` | [`DuoWorkflowsAggregationResponse`](#duoworkflowsaggregationresponse) | The item at the end of the edge. |
+
 #### `EgressNodeConnection`
 
 The connection type for [`EgressNode`](#egressnode).
@@ -34622,6 +34646,54 @@ Fields:
 | <a id="aigovernancemetrics-agents"></a>`agents` | [`AiGovernanceKpi`](#aigovernancekpi) | Distinct AI agent instances with sessions in the timeframe. Chat conversations are not counted. |
 | <a id="aigovernancemetrics-sessions"></a>`sessions` | [`AiGovernanceKpi`](#aigovernancekpi) | AI sessions in the timeframe, including Duo Chat conversations. |
 
+#### Fields with arguments
+
+##### `AiGovernanceMetrics.topProjects`
+
+Projects with the most AI sessions in the timeframe, ordered by session count. Sessions attached to a namespace rather than a project are not counted.
+
+Returns [`[AiGovernanceProjectActivity!]`](#aigovernanceprojectactivity).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancemetrics-topprojects-limit"></a>`limit` | [`Int`](#int) | Number of projects to return. Defaults to 5, maximum 20. |
+
+##### `AiGovernanceMetrics.topUsers`
+
+Users with the most AI sessions in the timeframe, ordered by session count.
+
+Returns [`[AiGovernanceUserActivity!]`](#aigovernanceuseractivity).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancemetrics-topusers-limit"></a>`limit` | [`Int`](#int) | Number of users to return. Defaults to 5, maximum 20. |
+
+### `AiGovernanceProjectActivity`
+
+AI session activity in a single project.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernanceprojectactivity-project"></a>`project` | [`Project`](#project) | Project the sessions ran in. Resolves to null when the current user cannot read the project. |
+| <a id="aigovernanceprojectactivity-sessioncount"></a>`sessionCount` | [`Int`](#int) | Number of AI sessions in the project in the selected timeframe. |
+
+### `AiGovernanceUserActivity`
+
+AI session activity of a single user.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernanceuseractivity-sessioncount"></a>`sessionCount` | [`Int`](#int) | Number of AI sessions the user started in the selected timeframe. |
+| <a id="aigovernanceuseractivity-user"></a>`user` | [`UserCore`](#usercore) | User the sessions belong to. |
+
 ### `AiInstanceUsageData`
 
 Instance wide usage data for events stored in either PostgreSQL (default) or ClickHouse (when configured). Data retention: three months in PostgreSQL, indefinite in ClickHouse. Premium and Ultimate only.
@@ -35282,6 +35354,27 @@ Arguments:
 | <a id="analytics-duousageevents-timestampfrom"></a>`timestampFrom` | [`Time`](#time) | Filter by event timestamp. Start of the range. |
 | <a id="analytics-duousageevents-timestampto"></a>`timestampTo` | [`Time`](#time) | Filter by event timestamp. End of the range. |
 | <a id="analytics-duousageevents-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
+
+##### `Analytics.duoWorkflows`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Aggregation engine for GitLab Duo Agent Platform flows.
+
+Returns [`DuoWorkflowsAggregationScope`](#duoworkflowsaggregationscope).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="analytics-duoworkflows-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by flow creation timestamp. Start of the range. |
+| <a id="analytics-duoworkflows-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by flow creation timestamp. End of the range. |
+| <a id="analytics-duoworkflows-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 
 ##### `Analytics.mergeRequests`
 
@@ -40463,6 +40556,28 @@ Arguments:
 | <a id="currentuser-contributedprojects-search"></a>`search` | [`String`](#string) | Search query. |
 | <a id="currentuser-contributedprojects-sort"></a>`sort` | [`ProjectSort`](#projectsort) | Sort contributed projects. |
 
+##### `CurrentUser.creditsUsage`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+GitLab Credits usage for the current user.
+
+Returns [`GitlabSubscriptionUserCreditsUsage`](#gitlabsubscriptionusercreditsusage).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentuser-creditsusage-enddate"></a>`endDate` | [`ISO8601Date`](#iso8601date) | End date of the usage period to query. Defaults to the end of the current month. |
+| <a id="currentuser-creditsusage-flowtypes"></a>`flowTypes` | [`[String!]`](#string) | Filter usage data by flow type identifiers (for example, ["chat", "code_review"]). |
+| <a id="currentuser-creditsusage-namespacepath"></a>`namespacePath` | [`ID!`](#id) | Path of the top-level namespace to report usage for. |
+| <a id="currentuser-creditsusage-startdate"></a>`startDate` | [`ISO8601Date`](#iso8601date) | Start date of the usage period to query. Defaults to the beginning of the current month. |
+
 ##### `CurrentUser.events`
 
 Activity events visible to the current user, most recent first.
@@ -43055,6 +43170,86 @@ Fields:
 | <a id="duoworkflowworkitemlink-workitem"></a>`workItem` | [`WorkItem`](#workitem) | Linked work item. |
 | <a id="duoworkflowworkitemlink-workflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Linked GitLab Duo Agent Platform session. |
 
+### `DuoWorkflowsAggregationResponse`
+
+Response for `DuoWorkflows` aggregation engine.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponse-creditsused"></a>`creditsUsed` | [`DuoWorkflowsAggregationResponseCreditsUsedMetrics`](#duoworkflowsaggregationresponsecreditsusedmetrics) | Aggregated `credits_used` metrics. |
+| <a id="duoworkflowsaggregationresponse-dimensions"></a>`dimensions` | [`DuoWorkflowsAggregationResponseDimensions`](#duoworkflowsaggregationresponsedimensions) | Aggregation dimensions. Every selected dimension will be used for aggregation. |
+| <a id="duoworkflowsaggregationresponse-totalcount"></a>`totalCount` | [`Int`](#int) | Total number of flows. |
+| <a id="duoworkflowsaggregationresponse-userscount"></a>`usersCount` | [`Int`](#int) | Number of unique users. |
+
+### `DuoWorkflowsAggregationResponseCreditsUsedMetrics`
+
+Aggregated `credits_used` metrics for `DuoWorkflows` aggregation engine.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsecreditsusedmetrics-max"></a>`max` | [`Float`](#float) | Maximum credits used by the flow. |
+| <a id="duoworkflowsaggregationresponsecreditsusedmetrics-mean"></a>`mean` | [`Float`](#float) | Mean credits used by the flow. |
+| <a id="duoworkflowsaggregationresponsecreditsusedmetrics-min"></a>`min` | [`Float`](#float) | Minimum credits used by the flow. |
+| <a id="duoworkflowsaggregationresponsecreditsusedmetrics-sum"></a>`sum` | [`Float`](#float) | Sum of credits used by the flow. |
+
+#### Fields with arguments
+
+##### `DuoWorkflowsAggregationResponseCreditsUsedMetrics.quantile`
+
+Quantile of credits used by the flow.
+
+Returns [`Float`](#float).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsecreditsusedmetrics-quantile-quantile"></a>`quantile` | [`Float`](#float) |  |
+
+### `DuoWorkflowsAggregationResponseDimensions`
+
+Response dimensions for `DuoWorkflows` aggregation engine.
+
+#### Fields with arguments
+
+##### `DuoWorkflowsAggregationResponseDimensions.createdAt`
+
+Flow creation time.
+
+Returns [`Time`](#time).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) |  |
+
+### `DuoWorkflowsAggregationScope`
+
+Aggregation scope for `DuoWorkflows`. Apply ordering and pagination on the aggregation.
+
+#### Fields with arguments
+
+##### `DuoWorkflowsAggregationScope.aggregated`
+
+Aggregated data.
+
+Returns [`DuoWorkflowsAggregationResponseConnection`](#duoworkflowsaggregationresponseconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationscope-aggregated-orderby"></a>`orderBy` | [`[AggregationOrder!]`](#aggregationorder) | Sorting order list for the aggregated data. |
+
 ### `EgressNode`
 
 Fields:
@@ -45275,6 +45470,35 @@ Arguments:
 | <a id="gitlabsubscriptionusageusersusage-users-searchquery"></a>`searchQuery` | [`String`](#string) | Filter users with a matching name, username, or email. Ignored when username is provided or when sorting by total credits used. |
 | <a id="gitlabsubscriptionusageusersusage-users-sort"></a>`sort` | [`GitlabSubscriptionUsageUserSort`](#gitlabsubscriptionusageusersort) | Sort users by the criteria. |
 | <a id="gitlabsubscriptionusageusersusage-users-username"></a>`username` | [`String`](#string) | Username of the User. |
+
+### `GitlabSubscriptionUserCreditsUsage`
+
+GitLab Credits usage for the current user.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusercreditsusage-blockedstatus"></a>`blockedStatus` | [`GitlabSubscriptionUsageBlockedStatus`](#gitlabsubscriptionusageblockedstatus) | Blocked status of the current user under the subscription budget cap. |
+| <a id="gitlabsubscriptionusercreditsusage-creditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits consumed by the current user. |
+| <a id="gitlabsubscriptionusercreditsusage-enabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates if the Customer Portal GitLab Credits API is enabled. |
+| <a id="gitlabsubscriptionusercreditsusage-enddate"></a>`endDate` | [`ISO8601Date`](#iso8601date) | End date of the period covered by the usage data. |
+| <a id="gitlabsubscriptionusercreditsusage-isoutdatedclient"></a>`isOutdatedClient` | [`Boolean`](#boolean) | Indicates if the GitLab instance has an outdated API contract with the Customer Portal. |
+| <a id="gitlabsubscriptionusercreditsusage-products"></a>`products` | [`[GitlabSubscriptionUserCreditsUsageProduct!]`](#gitlabsubscriptionusercreditsusageproduct) | All supported products with their associated flow types. |
+| <a id="gitlabsubscriptionusercreditsusage-startdate"></a>`startDate` | [`ISO8601Date`](#iso8601date) | Start date of the period covered by the usage data. |
+| <a id="gitlabsubscriptionusercreditsusage-usedflowtypes"></a>`usedFlowTypes` | [`[GitlabSubscriptionUsageFlowTypeInfo!]`](#gitlabsubscriptionusageflowtypeinfo) | Flow types the current user consumed credits under during the period. |
+
+### `GitlabSubscriptionUserCreditsUsageProduct`
+
+A product with its flow types.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusercreditsusageproduct-flowtypes"></a>`flowTypes` | [`[GitlabSubscriptionUsageFlowTypeInfo!]!`](#gitlabsubscriptionusageflowtypeinfo) | Flow types belonging to the product. |
+| <a id="gitlabsubscriptionusercreditsusageproduct-id"></a>`id` | [`String!`](#string) | Identifier for the product. |
+| <a id="gitlabsubscriptionusercreditsusageproduct-title"></a>`title` | [`String!`](#string) | Display name for the product. |
 
 ### `GitlabTrialUsage`
 
@@ -52159,17 +52383,17 @@ Fields:
 | <a id="mergerequestriskassessment-assessedat"></a>`assessedAt` | [`Time`](#time) | When the classification completed. |
 | <a id="mergerequestriskassessment-confidence"></a>`confidence` | [`Int`](#int) | Confidence in the score, from 0 to 100. Derived from how much of the change could be measured and whether the signals agreed. |
 | <a id="mergerequestriskassessment-confidencetier"></a>`confidenceTier` | [`MergeRequestRiskTier`](#mergerequestrisktier) | Tier derived from the confidence score. |
+| <a id="mergerequestriskassessment-contributingsignals"></a>`contributingSignals` | [`[MergeRequestRiskContributingSignal!]!`](#mergerequestriskcontributingsignal) | What each signal contributed to the score. |
 | <a id="mergerequestriskassessment-domaintags"></a>`domainTags` | [`[String!]!`](#string) | Risk domains the change touches, used to route specialist review. |
 | <a id="mergerequestriskassessment-duoworkflowid"></a>`duoWorkflowId` | [`Int`](#int) | ID of the Duo workflow session that produced the classification. |
-| <a id="mergerequestriskassessment-missingsignals"></a>`missingSignals` | [`[String!]!`](#string) | Signals that could not be measured, which is why confidence may be low. |
+| <a id="mergerequestriskassessment-missingsignals"></a>`missingSignals` | [`[MergeRequestRiskMissingSignal!]!`](#mergerequestriskmissingsignal) | Signals that could not be measured, which is why confidence may be low. |
 | <a id="mergerequestriskassessment-rationale"></a>`rationale` | [`String`](#string) | Plain-language explanation of the assessment. |
 | <a id="mergerequestriskassessment-risk"></a>`risk` | [`Int`](#int) | Risk score from 0 to 100. |
 | <a id="mergerequestriskassessment-risktier"></a>`riskTier` | [`MergeRequestRiskTier`](#mergerequestrisktier) | Tier derived from the risk score. |
-| <a id="mergerequestriskassessment-signalbreakdown"></a>`signalBreakdown` | [`[MergeRequestRiskSignalContribution!]!`](#mergerequestrisksignalcontribution) | What each signal contributed to the score. |
 | <a id="mergerequestriskassessment-stale"></a>`stale` | [`Boolean!`](#boolean) | Whether the merge request has changed since it was classified. Classification runs once, so this is a notice rather than a trigger to re-run. |
 | <a id="mergerequestriskassessment-status"></a>`status` | [`MergeRequestRiskAssessmentStatus!`](#mergerequestriskassessmentstatus) | Status of the classification. |
 
-### `MergeRequestRiskSignalContribution`
+### `MergeRequestRiskContributingSignal`
 
 Contribution a single signal made to a merge request risk score.
 
@@ -52177,9 +52401,21 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestrisksignalcontribution-contribution"></a>`contribution` | [`Float!`](#float) | Points the signal added to the overall score. |
-| <a id="mergerequestrisksignalcontribution-detail"></a>`detail` | [`String`](#string) | Human-readable explanation of the contribution. |
-| <a id="mergerequestrisksignalcontribution-signal"></a>`signal` | [`String!`](#string) | Name of the signal or claim that contributed. |
+| <a id="mergerequestriskcontributingsignal-contribution"></a>`contribution` | [`Float!`](#float) | Points the signal added to the overall score. |
+| <a id="mergerequestriskcontributingsignal-detail"></a>`detail` | [`String`](#string) | Human-readable explanation of the contribution. |
+| <a id="mergerequestriskcontributingsignal-label"></a>`label` | [`String`](#string) | Human-readable name of the signal. Null for a claim, which has no registered signal class to look one up from. |
+| <a id="mergerequestriskcontributingsignal-signal"></a>`signal` | [`String!`](#string) | Name of the signal or claim. |
+
+### `MergeRequestRiskMissingSignal`
+
+A signal that could not be measured for a merge request risk assessment.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestriskmissingsignal-label"></a>`label` | [`String`](#string) | Human-readable name of the signal. Null for a claim, which has no registered signal class to look one up from. |
+| <a id="mergerequestriskmissingsignal-signal"></a>`signal` | [`String!`](#string) | Name of the signal or claim. |
 
 ### `MergeRequestSavedView`
 

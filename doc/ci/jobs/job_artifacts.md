@@ -230,9 +230,6 @@ From the GitLab UI, you can download job artifacts from:
 - The **Artifacts** page. On the right of the job, select **Download** ({{< icon name="download" >}}).
 - The artifacts browser. On the top of the page, select **Download artifacts archive** ({{< icon name="download" >}}).
 
-[Report artifacts](../yaml/artifacts_reports.md) can only be downloaded from the **Pipelines** list
-or **Artifacts** page.
-
 ### From a URL
 
 You can download the artifacts archive for a specific job with a publicly accessible URL.
@@ -258,6 +255,16 @@ on the [project overview page](../../user/project/working_with_projects.md#find-
 Artifacts for parent and child pipelines are searched in hierarchical order from parent to child.
 For example, if both parent and child pipelines have a job with the same name, the job artifacts
 from the parent pipeline are returned.
+
+Unlike the previous examples, downloading a report requires a job ID instead of a job name and branch.
+You can download [report artifacts](../yaml/artifacts_reports.md) by adding `file_type` to the URL:
+
+```plaintext
+https://gitlab.com/api/v4/projects/<project-id>/jobs/<job-id>/artifacts?file_type=junit
+```
+
+GitLab serves reports in the format the runner uploaded them in, which
+varies by report type.
 
 ### With a CI/CD job token
 
@@ -308,7 +315,9 @@ from:
 
 If GitLab Pages is enabled globally, even if it is disabled in the project settings,
 you can preview some artifacts file extensions directly in your browser. If the project
-is internal or private, you must enable GitLab Pages access control to enable the preview.
+is internal or private, an administrator must also turn on
+[GitLab Pages access control](../../administration/pages/_index.md#access-control) for the
+instance.
 
 The following extensions are supported:
 

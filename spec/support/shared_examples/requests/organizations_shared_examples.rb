@@ -29,3 +29,13 @@ RSpec.shared_examples 'organization - action disabled by ui_for_organizations_en
     it_behaves_like 'organization - not found response'
   end
 end
+
+RSpec.shared_examples 'organization - action disabled by org_pages release flag' do
+  context 'when the org_pages release flag is disabled' do
+    before do
+      stub_organization_release(org_pages: false)
+    end
+
+    it_behaves_like 'organization - not found response'
+  end
+end

@@ -30,10 +30,9 @@ RSpec.describe ApplicationWorker, feature_category: :sidekiq do
 
     allow(Feature).to receive(:enabled?).and_call_original
     allow(Feature).to receive(:enabled?).with(:route_to_main, type: :ops).and_return(true)
-    allow(router).to receive(:store).and_return('main')
 
     allow(::Gitlab::SidekiqConfig::WorkerRouter).to receive(:global).and_return(router)
-    allow(router).to receive(:route).and_return('foo_bar_dummy')
+    allow(router).to receive_messages(store: 'main', route: 'foo_bar_dummy')
   end
 
   describe 'Sidekiq attributes' do

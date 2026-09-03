@@ -11,9 +11,9 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
     context 'when the user is not signed in' do
       it_behaves_like 'organization - redirects to sign in page'
 
-      context 'when `ui_for_organizations` feature flag is disabled' do
+      context 'when the org_pages release flag is disabled' do
         before do
-          stub_feature_flags(ui_for_organizations: false)
+          stub_organization_release(org_pages: false)
         end
 
         it_behaves_like 'organization - redirects to sign in page'
@@ -29,21 +29,21 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
 
       context 'with no association to an organization' do
         it_behaves_like 'organization - not found response'
-        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+        it_behaves_like 'organization - action disabled by org_pages release flag'
       end
 
       context 'as as admin', :enable_admin_mode do
         let_it_be(:user) { create(:admin) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+        it_behaves_like 'organization - action disabled by org_pages release flag'
       end
 
       context 'as an organization user' do
         let_it_be(:organization_user) { create(:organization_user, organization: organization, user: user) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+        it_behaves_like 'organization - action disabled by org_pages release flag'
       end
     end
   end
@@ -60,7 +60,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
         sign_in(user)
       end
 
-      it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+      it_behaves_like 'organization - action disabled by org_pages release flag'
 
       context 'when current user can create group inside the organization' do
         let_it_be(:organization_user) { create(:organization_user, organization: organization, user: user) }
@@ -105,9 +105,9 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       context 'when the user is not signed in' do
         it_behaves_like 'organization - redirects to sign in page'
 
-        context 'when `ui_for_organizations` feature flag is disabled' do
+        context 'when the org_pages release flag is disabled' do
           before do
-            stub_feature_flags(ui_for_organizations: false)
+            stub_organization_release(org_pages: false)
           end
 
           it_behaves_like 'organization - redirects to sign in page'
@@ -125,7 +125,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           let_it_be(:user) { create(:admin) }
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+          it_behaves_like 'organization - action disabled by org_pages release flag'
         end
 
         context 'as a group owner' do
@@ -134,12 +134,12 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           end
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+          it_behaves_like 'organization - action disabled by org_pages release flag'
         end
 
         context 'as a user that is not an owner' do
           it_behaves_like 'organization - not found response'
-          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+          it_behaves_like 'organization - action disabled by org_pages release flag'
         end
 
         context 'as an organization owner' do
@@ -149,7 +149,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           end
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+          it_behaves_like 'organization - action disabled by org_pages release flag'
         end
       end
     end
@@ -171,7 +171,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       end
 
       it_behaves_like 'organization - not found response'
-      it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
+      it_behaves_like 'organization - action disabled by org_pages release flag'
     end
 
     context 'when group does not exist' do

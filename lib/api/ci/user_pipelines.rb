@@ -15,7 +15,7 @@ module API
           detail 'Lists recently created pipelines across all projects that were triggered by the authenticated ' \
             'user. By default, child pipelines are not included in the results. To return child pipelines, set ' \
             '`source` to `parent_pipeline`. This endpoint only supports keyset pagination.'
-          success status: 200, model: Entities::Ci::PipelineBasicWithProject
+          success status: 200, model: Entities::Ci::UserPipeline
           failure [
             { code: 401, message: 'Unauthorized' }
           ]
@@ -52,7 +52,7 @@ module API
           pipelines = ::Ci::PipelinesForUserFinder
             .new(current_user, declared_params(include_missing: false))
             .execute
-            .with_api_entity_associations
+            .with_user_pipelines_api_associations
 
           params[:pagination] = 'keyset' # keyset is the only supported pagination
           pipelines = paginate_with_strategies(pipelines)
@@ -63,7 +63,11 @@ module API
             resource_type: 'api/pipelines'
           )
 
-          present pipelines, with: Entities::Ci::PipelineBasicWithProject
+          # Register every pipeline with the BatchLoader before serialization so
+          # the per-pipeline warning lookups collapse into a single query.
+          pipelines.each(&:number_of_warnings)
+
+          present pipelines, with: Entities::Ci::UserPipeline, current_user: current_user
         end
       end
     end

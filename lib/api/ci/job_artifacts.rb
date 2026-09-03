@@ -17,17 +17,16 @@ module API
           authorize_read_builds!
         end
 
-        def audit_download(build, filename); end
+        def audit_download(build, filename, artifact: nil); end
 
-        # Returns a strong ETag derived from the archive's sha256 (and an
+        # Returns a strong ETag derived from the artifact's sha256 (and an
         # optional entry path, for the raw file endpoints), or nil when no
         # sha256 is available. Passed to the presenter helpers via the
         # `etag:` kwarg. See gitlab-org/gitlab#371991.
-        def artifact_etag(build, path: nil)
-          archive = build&.job_artifacts_archive
-          return unless archive&.file_sha256
+        def artifact_etag(artifact, path: nil)
+          return unless artifact&.file_sha256
 
-          digest = path ? Digest::SHA256.hexdigest("#{archive.file_sha256}:#{path}") : archive.file_sha256
+          digest = path ? Digest::SHA256.hexdigest("#{artifact.file_sha256}:#{path}") : artifact.file_sha256
           %("#{digest}")
         end
       end
@@ -82,7 +81,7 @@ module API
           not_found! unless latest_build.artifacts_file&.exists?
 
           audit_download(latest_build, latest_build.artifacts_file.filename)
-          present_artifacts_file!(latest_build.artifacts_file, etag: artifact_etag(latest_build))
+          present_artifacts_file!(latest_build.artifacts_file, etag: artifact_etag(latest_build.job_artifacts_archive))
         end
 
         desc 'Download a specific file from artifacts archive from a ref' do
@@ -134,14 +133,19 @@ module API
 
           bad_request! unless path.valid?
 
-          send_artifacts_entry(build.artifacts_file, path, etag: artifact_etag(build, path: params[:artifact_path]))
+          send_artifacts_entry(
+            build.artifacts_file,
+            path,
+            etag: artifact_etag(build.job_artifacts_archive, path: params[:artifact_path])
+          )
         end
 
-        desc 'Download the artifacts archive from a job' do
-          detail 'This feature was introduced in GitLab 8.5'
+        desc 'Download an artifact from a job' do
+          detail 'This feature was introduced in GitLab 8.5. The `file_type` attribute was added in GitLab 19.4.'
           produces %w[application/octet-stream]
           success code: 200
           failure [
+            { code: 400, message: 'Bad request' },
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
@@ -150,6 +154,9 @@ module API
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
+          optional :file_type, type: String, default: 'archive',
+            values: ::Enums::Ci::JobArtifact.downloadable_types,
+            desc: 'The type of artifact to download. Defaults to the job artifacts archive.'
           optional :job_token, type: String,
             desc: 'To be used with triggers for multi-project pipelines, ' \
                   'available only on Premium and Ultimate tiers.'
@@ -162,8 +169,16 @@ module API
 
           build = find_build!(params[:job_id])
           authorize_read_job_artifacts!(build)
-          audit_download(build, build.artifacts_file.filename) if build.artifacts_file
-          present_artifacts_file!(build.artifacts_file, etag: artifact_etag(build))
+
+          job_artifact = build.artifact_for_type(params[:file_type])
+
+          # The build-level check above reads the archive's accessibility, so
+          # non-archive types need their own check to honor per-artifact
+          # accessibility. Skipped when absent, to keep returning 404 not 403.
+          authorize!(:read_job_artifacts, job_artifact) if job_artifact
+
+          audit_download(build, job_artifact.file.filename, artifact: job_artifact) if job_artifact
+          present_artifacts_file!(job_artifact&.file, etag: artifact_etag(job_artifact))
         end
 
         desc 'List all files in an artifacts archive' do
@@ -254,7 +269,7 @@ module API
           legacy_send_artifacts_entry(
             build.artifacts_file,
             path,
-            etag: artifact_etag(build, path: params[:artifact_path])
+            etag: artifact_etag(build.job_artifacts_archive, path: params[:artifact_path])
           )
         end
 

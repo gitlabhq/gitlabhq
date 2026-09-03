@@ -6957,41 +6957,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         group.add_owner(user)
       end
     end
-
-    context 'when groups_and_projects_async_transfer is disabled' do
-      before do
-        stub_feature_flags(groups_and_projects_async_transfer: false)
-      end
-
-      context 'when authenticated as owner' do
-        let(:group) { create :group }
-
-        it 'transfers the project to the new namespace synchronously' do
-          group.add_owner(user)
-
-          put api(path, user), params: { namespace: group.id }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(project.project_namespace.reload.state).to eq('ancestor_inherited')
-        end
-      end
-
-      context 'when authenticated as developer' do
-        before do
-          group.add_developer(user)
-        end
-
-        context 'target namespace allows developers to create projects' do
-          let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
-
-          it 'fails transferring the project to the target namespace' do
-            put api(path, user), params: { namespace: group.id }
-
-            expect(response).to have_gitlab_http_status(:bad_request)
-          end
-        end
-      end
-    end
   end
 
   describe 'GET /projects/:id/transfer_locations' do

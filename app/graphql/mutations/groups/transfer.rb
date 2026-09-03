@@ -38,17 +38,6 @@ module Mutations
         raise_resource_not_available_error!('Target group not found.') if target_id && target_group.nil?
 
         service = ::Groups::TransferService.new(group, current_user)
-
-        if Feature.enabled?(:groups_and_projects_async_transfer, group.root_ancestor)
-          async_transfer(service, group, target_group)
-        else
-          sync_transfer(service, group, target_group)
-        end
-      end
-
-      private
-
-      def async_transfer(service, group, target_group)
         result = service.schedule_async_transfer(target_group)
 
         if result.success?
@@ -58,13 +47,7 @@ module Mutations
         end
       end
 
-      def sync_transfer(service, group, target_group)
-        if service.execute(target_group)
-          { group: group, errors: [] }
-        else
-          { group: group, errors: [service.error.presence || 'Transfer failed'] }
-        end
-      end
+      private
 
       def find_object(id)
         GitlabSchema.find_by_gid(id)

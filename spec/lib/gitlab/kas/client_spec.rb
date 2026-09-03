@@ -183,6 +183,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
         client.send_to_workflow_channel(
           idempotency_key: 'decision-1',
           channel_token: 'channel-token-abc',
+          workflow_token: 'workflow-token-xyz',
           value: { 'approved' => true }
         )
       end
@@ -198,6 +199,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           expect(metadata).to eq('authorization' => 'bearer test-token', **feature_flags)
           expect(request.idempotency_key).to eq('decision-1')
           expect(request.channel_token).to eq('channel-token-abc')
+          expect(request.workflow_token).to eq('workflow-token-xyz')
 
           key_value = request.value.dict_value.key_values.first
           expect(key_value.key.string_value).to eq('approved')

@@ -33,6 +33,8 @@ description: Automatically open merge requests to fix vulnerable dependencies.
   in GitLab 19.3.
 - Feature flag `dependency_management_auto_remediation`
   [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/595588) in GitLab 19.3.
+- NuGet (.NET) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/604603)
+  in GitLab 19.4.
 
 {{< /history >}}
 
@@ -137,9 +139,16 @@ Dependency scanning auto-remediation supports the following package managers:
 | JavaScript / TypeScript | npm, yarn, pnpm, bun                | `package.json`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `bun.lock` |
 | Go                      | Go modules                          | `go.mod`, `go.sum`                                                             |
 | Rust                    | Cargo                               | `Cargo.toml`, `Cargo.lock`                                                     |
+| .NET                    | NuGet                               | `*.csproj`, `packages.lock.json`                                               |
 
 Support for additional ecosystems is proposed in
 [epic 19244](https://gitlab.com/groups/gitlab-org/-/work_items/19244).
+
+For .NET, dependency scanning only detects NuGet dependencies from a committed
+`packages.lock.json`. Projects without one produce no NuGet findings, so
+auto-remediation has nothing to act on. To generate the lock file, set
+[`RestorePackagesWithLockFile`](https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file)
+in your project file and commit the result.
 
 ## Known issues
 

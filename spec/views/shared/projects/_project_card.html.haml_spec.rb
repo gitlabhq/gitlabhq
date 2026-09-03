@@ -6,10 +6,10 @@ RSpec.describe 'shared/projects/_project_card.html.haml', feature_category: :sha
   let(:project) { build(:project) }
 
   before do
-    allow(view)
-      .to receive(:current_application_settings)
-      .and_return(Gitlab::CurrentSettings.current_application_settings)
-    allow(view).to receive(:can?).and_return(true)
+    allow(view).to receive_messages(
+      current_application_settings: Gitlab::CurrentSettings.current_application_settings,
+      can?: true
+    )
   end
 
   it 'renders as a card component' do

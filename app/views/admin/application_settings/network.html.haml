@@ -146,7 +146,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Limit the number of pipeline creation requests per minute. This limit includes pipelines created through the UI, the API, and by background processing.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_pipelines_creation.md'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/cicd/limits.md', anchor: 'pipeline-creation-rate-limits'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'pipeline_limits'
 

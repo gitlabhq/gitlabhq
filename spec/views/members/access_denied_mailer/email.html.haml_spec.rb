@@ -7,8 +7,7 @@ RSpec.describe 'members/access_denied_mailer/email.html.haml', feature_category:
   let(:member_source) { build(:group) }
 
   before do
-    allow(view).to receive(:source_hidden?).and_return(source_hidden?)
-    allow(view).to receive(:member_source).and_return(member_source)
+    allow(view).to receive_messages(source_hidden?: source_hidden?, member_source: member_source)
   end
 
   subject { render && rendered }

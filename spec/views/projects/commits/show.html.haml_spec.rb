@@ -25,9 +25,7 @@ RSpec.describe 'projects/commits/show.html.haml', feature_category: :source_code
     controller.params[:namespace_id] = project.namespace.to_param
     controller.params[:project_id] = project.to_param
 
-    allow(view).to receive(:current_user).and_return(nil)
-    allow(view).to receive(:namespace_project_signatures_path).and_return("/")
-    allow(view).to receive(:commit_blob).and_return(true)
+    allow(view).to receive_messages(current_user: nil, namespace_project_signatures_path: "/", commit_blob: true)
   end
 
   context 'when project_commits_refactor is enabled' do

@@ -557,6 +557,10 @@ module Ci
     scope :with_pipeline_source, ->(source) { where(source: source) }
     scope :preload_pipeline_metadata, -> { preload(:pipeline_metadata) }
     scope :with_api_entity_associations, -> { preload(:pipeline_metadata, **PROJECT_ROUTE_AND_NAMESPACE_ROUTE) }
+    scope :with_user_pipelines_api_associations, -> {
+      with_api_entity_associations
+        .preload(merge_request: [:author, { target_project: PROJECT_ROUTE_AND_NAMESPACE_ROUTE[:project] }])
+    }
     scope :not_ref_protected, -> { where("#{quoted_table_name}.protected IS NOT true") }
     scope :unlocked, -> { where(locked: :unlocked) }
 

@@ -538,6 +538,10 @@ type:DuoWorkflowEnablementCheck
 type:DuoWorkflowEvent
 type:DuoWorkflowPermissions
 type:DuoWorkflowSessionArtifact
+type:DuoWorkflowsAggregationResponse
+type:DuoWorkflowsAggregationResponseCreditsUsedMetrics
+type:DuoWorkflowsAggregationResponseDimensions
+type:DuoWorkflowsAggregationScope
 type:EgressNode
 type:EmailParticipantType
 type:EnabledSecurityScans

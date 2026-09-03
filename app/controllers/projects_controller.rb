@@ -17,7 +17,6 @@ class ProjectsController < Projects::ApplicationController
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
   before_action :disable_query_limiting, only: [:show, :create]
-  before_action :disable_transfer_query_limiting, only: :transfer
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs, :unfoldered_environment_names]
   before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create]
@@ -146,11 +145,7 @@ class ProjectsController < Projects::ApplicationController
       return redirect_to edit_project_path(@project)
     end
 
-    if Feature.enabled?(:groups_and_projects_async_transfer, @project.root_ancestor)
-      enqueue_async_transfer(namespace)
-    else
-      execute_sync_transfer(namespace)
-    end
+    enqueue_async_transfer(namespace)
 
     redirect_to edit_project_path(@project)
   end
@@ -428,12 +423,6 @@ class ProjectsController < Projects::ApplicationController
     params.permit(project: key).dig(:project, key)
   end
 
-  def disable_transfer_query_limiting
-    return if Feature.enabled?(:groups_and_projects_async_transfer, project.root_ancestor)
-
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/work_items/606043', new_threshold: 110)
-  end
-
   def enqueue_async_transfer(namespace)
     service = ::Projects::TransferService.new(@project, current_user)
     result = service.schedule_async_transfer(namespace)
@@ -441,12 +430,6 @@ class ProjectsController < Projects::ApplicationController
     return if result.success?
 
     flash[:alert] = result.message
-  end
-
-  def execute_sync_transfer(namespace)
-    ::Projects::TransferService.new(project, current_user).execute(namespace)
-
-    flash[:alert] = @project.errors[:new_namespace].first if @project.errors[:new_namespace].present?
   end
 
   def destroy_immediately

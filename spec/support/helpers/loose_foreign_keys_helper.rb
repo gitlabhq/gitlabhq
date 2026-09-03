@@ -16,7 +16,8 @@ module LooseForeignKeysHelper
   def process_loose_foreign_key_deletions(record:, worker_class: nil)
     service_params = {
       connection: record.connection,
-      modification_tracker: SpecModificationTracker.new
+      modification_tracker: SpecModificationTracker.new,
+      record_store: Gitlab::LooseForeignKeys::DeletedRecordStore
     }
 
     service_params[:worker_class] = worker_class if worker_class

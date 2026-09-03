@@ -2432,8 +2432,6 @@ paths:
           description: Bad Request
         '401':
           description: Unauthorized
-        '404':
-          description: Not Found
       requestBody:
         required: true
         content:
@@ -72218,7 +72216,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/APIEntitiesCiPipelineBasicWithProject"
+                "$ref": "#/components/schemas/APIEntitiesCiUserPipeline"
         '401':
           description: Unauthorized
         '400':
@@ -78149,8 +78147,9 @@ paths:
   "/api/v4/projects/{id}/jobs/{job_id}/artifacts":
     get:
       operationId: getApiV4ProjectsIdJobsJobIdArtifacts
-      summary: Download the artifacts archive from a job
-      description: This feature was introduced in GitLab 8.5
+      summary: Download an artifact from a job
+      description: This feature was introduced in GitLab 8.5. The `file_type` attribute
+        was added in GitLab 19.4.
       tags:
       - Job artifacts
       responses:
@@ -78161,14 +78160,14 @@ paths:
               schema:
                 type: string
                 format: binary
+        '400':
+          description: Bad request
         '401':
           description: Unauthorized
         '403':
           description: Forbidden
         '404':
           description: Not found
-        '400':
-          description: Bad Request
       parameters:
       - name: id
         required: true
@@ -78184,6 +78183,40 @@ paths:
         schema:
           type: integer
         in: path
+      - name: file_type
+        required: false
+        description: The type of artifact to download. Defaults to the job artifacts
+          archive.
+        schema:
+          type: string
+          enum:
+          - accessibility
+          - api_fuzzing
+          - archive
+          - cobertura
+          - jacoco
+          - codequality
+          - container_scanning
+          - dast
+          - dependency_scanning
+          - dotenv
+          - junit
+          - license_scanning
+          - lsif
+          - metrics
+          - performance
+          - browser_performance
+          - load_performance
+          - sast
+          - secret_detection
+          - requirements
+          - requirements_v2
+          - cluster_image_scanning
+          - cyclonedx
+          - sarif
+          nullable: true
+          default: archive
+        in: query
       - name: job_token
         required: false
         description: To be used with triggers for multi-project pipelines, available
@@ -99177,7 +99210,19 @@ components:
           example: '2015-12-24T17:54:31.198Z'
         owner:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
-    APIEntitiesCiPipelineBasicWithProject:
+    APIEntitiesCiPipelineMergeRequest:
+      type: object
+      properties:
+        iid:
+          type: integer
+          example: 14
+        title:
+          type: string
+          example: Add rate limiting to the public API
+        web_url:
+          type: string
+          example: https://gitlab.example.com/foo/bar/-/merge_requests/14
+    APIEntitiesCiUserPipeline:
       type: object
       properties:
         id:
@@ -99219,6 +99264,26 @@ components:
           example: Build pipeline
         project:
           "$ref": "#/components/schemas/APIEntitiesProjectIdentity"
+        started_at:
+          type: string
+          format: date-time
+          example: '2022-10-21T16:49:50.000+02:00'
+        finished_at:
+          type: string
+          format: date-time
+          example: '2022-10-21T16:52:12.000+02:00'
+        duration:
+          type: integer
+          description: Time spent running in seconds
+          example: 127
+        queued_duration:
+          type: integer
+          description: Time spent queued in seconds
+          example: 63
+        detailed_status:
+          "$ref": "#/components/schemas/DetailedStatusEntity"
+        merge_request:
+          "$ref": "#/components/schemas/APIEntitiesCiPipelineMergeRequest"
     APIEntitiesCiInput:
       type: object
       properties:

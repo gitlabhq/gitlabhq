@@ -21,6 +21,7 @@ Use this API to interact with [CI/CD pipelines](../ci/pipelines/_index.md).
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250635) in GitLab 19.3.
 - Field `project` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252943) in GitLab 19.4.
+- Fields `detailed_status`, `started_at`, `finished_at`, `duration`, `queued_duration`, and `merge_request` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253012) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -32,6 +33,9 @@ project, use [List project pipelines](#list-project-pipelines).
 Pipelines from projects the user can no longer access are not included in the results.
 By default, [child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)
 are not included in the results. To return child pipelines, set `source` to `parent_pipeline`.
+
+The `merge_request` field is included only for [merge request pipelines](../ci/pipelines/merge_request_pipelines.md)
+whose merge request is visible to the user.
 
 ```plaintext
 GET /pipelines
@@ -68,14 +72,34 @@ Example of response
     "id": 47,
     "iid": 12,
     "project_id": 1,
-    "status": "pending",
-    "source": "push",
-    "ref": "new-pipeline",
+    "status": "running",
+    "source": "merge_request_event",
+    "ref": "refs/merge-requests/14/merge",
     "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
     "name": "Build pipeline",
     "web_url": "https://example.com/foo/bar/pipelines/47",
     "created_at": "2016-08-11T11:28:34.085Z",
     "updated_at": "2016-08-11T11:32:35.169Z",
+    "started_at": "2016-08-11T11:28:54.085Z",
+    "finished_at": null,
+    "duration": null,
+    "queued_duration": 20,
+    "detailed_status": {
+      "icon": "status_running",
+      "text": "Running",
+      "label": "running",
+      "group": "running",
+      "tooltip": "running",
+      "has_details": true,
+      "details_path": "/foo/bar/-/pipelines/47",
+      "illustration": null,
+      "favicon": "/assets/ci_favicons/favicon_status_running.png"
+    },
+    "merge_request": {
+      "iid": 14,
+      "title": "Add rate limiting to the public API",
+      "web_url": "https://example.com/foo/bar/-/merge_requests/14"
+    },
     "project": {
       "id": 1,
       "description": "",
@@ -98,6 +122,21 @@ Example of response
     "web_url": "https://example.com/foo/baz/pipelines/51",
     "created_at": "2016-08-11T09:07:01.514Z",
     "updated_at": "2016-08-11T09:12:44.782Z",
+    "started_at": "2016-08-11T09:07:31.514Z",
+    "finished_at": "2016-08-11T09:12:44.782Z",
+    "duration": 313,
+    "queued_duration": 30,
+    "detailed_status": {
+      "icon": "status_success",
+      "text": "Passed",
+      "label": "passed",
+      "group": "success",
+      "tooltip": "passed",
+      "has_details": true,
+      "details_path": "/foo/baz/-/pipelines/51",
+      "illustration": null,
+      "favicon": "/assets/ci_favicons/favicon_status_success.png"
+    },
     "project": {
       "id": 3,
       "description": "",

@@ -325,6 +325,16 @@ When the `test` job runs in the `test` stage, Jekyll
 builds the site in a directory called `test`. The job affects
 all branches except `main`.
 
+The `test` job does not publish to GitLab Pages, so its output is stored only as a job artifact.
+To view the built site,
+[browse the contents of the artifacts archive](../../../../ci/jobs/job_artifacts.md#browse-the-contents-of-the-artifacts-archive).
+If GitLab Pages is turned on for your instance, you can preview `.html` files directly in your
+browser. For a private or internal project, an administrator must also turn on
+[GitLab Pages access control](../pages_access_control.md) for the instance.
+
+To publish a branch as a separate Pages site with its own URL, use
+[parallel deployments](../parallel_deployments.md) instead.
+
 When you apply stages to different jobs, every job in the same
 stage builds in parallel. If your web application needs more than
 one test before being deployed, you can run all your tests at the

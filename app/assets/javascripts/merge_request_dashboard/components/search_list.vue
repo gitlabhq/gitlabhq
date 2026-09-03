@@ -1,8 +1,15 @@
 <script>
 import { defineAsyncComponent } from 'vue';
-import { GlEmptyState, GlFilteredSearchToken } from '@gitlab/ui';
+import {
+  GlEmptyState,
+  GlFilteredSearchToken,
+  GlIcon,
+  GlLink,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import emptySearchSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
 import { isEqual } from 'lodash-es';
+import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
 import axios from '~/lib/utils/axios_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN } from '~/issues/constants';
@@ -15,7 +22,9 @@ import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import {
   OPERATOR_IS,
@@ -70,8 +79,12 @@ import {
 } from '~/work_items/list/constants';
 import { AutocompleteCache } from '~/merge_requests/utils/autocomplete_cache';
 import { i18n } from '~/merge_requests/list/constants';
+import DiscussionsBadge from '~/merge_requests/list/components/discussions_badge.vue';
 import EmptyState from '~/merge_requests/list/components/empty_state.vue';
-import getMergeRequestsQuery from '../queries/search/get_merge_requests.query.graphql';
+import MergeRequestReviewers from '~/merge_requests/list/components/merge_request_reviewers.vue';
+import MergeRequestStatistics from '~/merge_requests/list/components/merge_request_statistics.vue';
+import getMergeRequestsQuery from 'ee_else_ce/merge_request_dashboard/queries/search/get_merge_requests.query.graphql';
+import getMergeRequestsApprovalsQuery from '../queries/search/get_merge_requests_approvals.query.graphql';
 
 const UserToken = defineAsyncComponent(
   () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue'),
@@ -132,9 +145,20 @@ export default {
   STATUS_OPEN,
   emptySearchSvgPath,
   components: {
+    ApprovalCount,
+    CiIcon,
+    DiscussionsBadge,
     EmptyState,
     GlEmptyState,
+    GlIcon,
+    GlLink,
     IssuableList,
+    IssuableMilestone,
+    MergeRequestReviewers,
+    MergeRequestStatistics,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: [
     'autocompleteAwardEmojisPath',
@@ -183,6 +207,25 @@ export default {
         this.searchTimeout = error.networkError?.statusCode === HTTP_STATUS_SERVICE_UNAVAILABLE;
 
         if (!this.searchTimeout) Sentry.captureException(error);
+      },
+      skip() {
+        return !this.hasFilters;
+      },
+    },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
+    mergeRequestApprovals: {
+      client: SEARCH_CLIENT,
+      query: getMergeRequestsApprovalsQuery,
+      variables() {
+        return this.queryVariables;
+      },
+      fetchPolicy: fetchPolicies.NETWORK_ONLY,
+      manual: true,
+      result() {},
+      error(error) {
+        if (error.networkError?.statusCode !== HTTP_STATUS_SERVICE_UNAVAILABLE) {
+          Sentry.captureException(error);
+        }
       },
       skip() {
         return !this.hasFilters;
@@ -489,6 +532,23 @@ export default {
     fetchUsers(search) {
       return axios.get(this.autocompleteUsersPath, { params: { active: true, search } });
     },
+    getStatus(mergeRequest) {
+      if (mergeRequest.state === STATUS_CLOSED) return this.$options.i18n.closed;
+      if (mergeRequest.state === STATUS_MERGED) return this.$options.i18n.merged;
+
+      return undefined;
+    },
+    getReviewers(mergeRequest) {
+      return mergeRequest.reviewers?.nodes || [];
+    },
+    isMergeRequestBroken(mergeRequest) {
+      return (
+        mergeRequest.commitCount === 0 ||
+        !mergeRequest.sourceBranchExists ||
+        !mergeRequest.targetBranchExists ||
+        mergeRequest.conflicts
+      );
+    },
     handleNextPage() {
       this.pageParams = {
         afterCursor: this.pageInfo.endCursor,
@@ -594,6 +654,72 @@ export default {
     @filter="handleFilter"
     @dismiss-alert="handleDismissAlert"
   >
+    <template #status="{ issuable = {} }">
+      {{ getStatus(issuable) }}
+      <gl-link
+        v-if="issuable.state === $options.STATUS_OPEN && isMergeRequestBroken(issuable)"
+        v-gl-tooltip
+        :href="issuable.webPath"
+        :title="__('Cannot be merged automatically')"
+        data-testid="merge-request-cannot-merge"
+      >
+        <gl-icon name="warning-solid" variant="strong" />
+      </gl-link>
+    </template>
+
+    <template #timeframe="{ issuable = {} }">
+      <issuable-milestone v-if="issuable.milestone" :milestone="issuable.milestone" />
+    </template>
+
+    <template #discussions="{ issuable = {} }">
+      <li
+        v-if="issuable.resolvableDiscussionsCount"
+        class="!gl-mr-0 gl-hidden @sm/panel:gl-inline-flex"
+      >
+        <discussions-badge :merge-request="issuable" />
+      </li>
+    </template>
+
+    <template #statistics="{ issuable = {} }">
+      <li
+        v-if="issuable.upvotes || issuable.downvotes"
+        class="!gl-mr-0 gl-hidden @sm/panel:gl-inline-flex"
+      >
+        <merge-request-statistics :merge-request="issuable" class="gl-flex" />
+      </li>
+    </template>
+
+    <template #approval-status="{ issuable = {} }">
+      <li
+        v-if="
+          issuable.approvalsRequired || (issuable.approvedBy && issuable.approvedBy.nodes.length)
+        "
+        class="!gl-mr-0"
+      >
+        <approval-count :merge-request="issuable" full-text class="gl-mt-1" />
+      </li>
+    </template>
+
+    <template #pipeline-status="{ issuable = {} }">
+      <li
+        v-if="issuable.headPipeline && issuable.headPipeline.detailedStatus"
+        class="issuable-pipeline-status !gl-mr-0 gl-hidden @sm/panel:gl-flex"
+      >
+        <ci-icon :status="issuable.headPipeline.detailedStatus" use-link show-tooltip />
+      </li>
+    </template>
+
+    <template #reviewers="{ issuable = {} }">
+      <li v-if="getReviewers(issuable).length" class="issuable-reviewers !gl-mr-0">
+        <merge-request-reviewers
+          :reviewers="getReviewers(issuable)"
+          :icon-size="16"
+          :max-visible="4"
+          class="gl-flex gl-items-center"
+        />
+      </li>
+    </template>
+
     <template #empty-state>
       <empty-state v-if="hasFilters" has-search />
       <gl-empty-state

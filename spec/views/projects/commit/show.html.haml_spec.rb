@@ -21,18 +21,19 @@ RSpec.describe 'projects/commit/show.html.haml', feature_category: :source_code_
     controller.params[:project_id] = project.to_param
     controller.params[:id] = commit.id
 
-    allow(view).to receive(:current_user).and_return(nil)
-    allow(view).to receive(:can?).and_return(false)
-    allow(view).to receive(:can_collaborate_with_project?).and_return(false)
-    allow(view).to receive(:current_ref).and_return(project.repository.root_ref)
-    allow(view).to receive(:diff_btn).and_return('')
-    allow(view).to receive(:pagination_params).and_return({})
+    allow(view).to receive_messages(
+      current_user: nil,
+      can?: false,
+      can_collaborate_with_project?: false,
+      current_ref: project.repository.root_ref,
+      diff_btn: '',
+      pagination_params: {}
+    )
   end
 
   describe 'parallel diff view' do
     before do
-      allow(view).to receive(:diff_view).and_return(:parallel)
-      allow(view).to receive(:fluid_layout).and_return(true)
+      allow(view).to receive_messages(diff_view: :parallel, fluid_layout: true)
 
       render
     end

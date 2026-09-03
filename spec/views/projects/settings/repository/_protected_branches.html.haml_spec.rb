@@ -14,8 +14,7 @@ RSpec.describe 'projects/settings/repository/_protected_branches', feature_categ
 
     allow(view).to receive(:current_user) { user }
     allow(view).to receive(:protected_branch_entity) { project }
-    allow(view).to receive(:project_protected_branch_path).and_return('http://protected-branch-url.com')
-    allow(view).to receive(:paginate).and_return('')
+    allow(view).to receive_messages(project_protected_branch_path: 'http://protected-branch-url.com', paginate: '')
   end
 
   context 'when a user has admin_protected_branch allowed' do

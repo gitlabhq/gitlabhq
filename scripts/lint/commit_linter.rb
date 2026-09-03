@@ -10,6 +10,30 @@ module Lint
     DEFAULT_BRANCH_REF = 'origin/master'
     SHA_PATTERN = /\A[0-9a-f]{40}\z/
     CommitData = Struct.new(:message, :sha)
+    HELP_TEXT = <<~HELP
+      Usage: commit_linter.rb [options] [file]
+
+        Lints commit message(s) against GitLab's commit message guidelines.
+
+        With no arguments, lints the first commit ahead of #{DEFAULT_BRANCH_REF}.
+
+      Options:
+        -m, --message MESSAGE  Lint the given message string directly, instead of
+                                a file or git history. Useful for validating a
+                                drafted commit message before committing.
+        --post-commit          Lint HEAD's commit message (used by the post-commit
+                                git hook). Never fails the hook; suggests --amend.
+        -h, --help             Show this help message.
+
+      Arguments:
+        file                   Path to a commit message file to lint (e.g. as used
+                                by a commit-msg hook with $1).
+
+      Examples:
+        commit_linter.rb -m "Fix nil pointer dereference in branch rule validator"
+        commit_linter.rb .git/COMMIT_EDITMSG
+    HELP
+      .freeze
 
     module_function
 
@@ -79,6 +103,26 @@ module Lint
       [CommitData.new(message, nil)]
     end
 
+    def commits_from_message(message)
+      [CommitData.new(message.to_s, nil)]
+    end
+
+    # Extracts and removes a `-m`/`--message` option and its value from argv, if present.
+    def extract_message_option(argv)
+      flag_index = argv.index('-m') || argv.index('--message')
+      return unless flag_index
+
+      argv.delete_at(flag_index)
+      message = argv.delete_at(flag_index)
+
+      if message.nil?
+        warn "ERROR: -m/--message requires a value"
+        exit 1
+      end
+
+      message
+    end
+
     def commits_from_git
       base_sha_output, base_success = run_command("git merge-base #{DEFAULT_BRANCH_REF} HEAD")
       base_sha = base_sha_output.strip
@@ -101,15 +145,24 @@ module Lint
       [CommitData.new(message.to_s.strip, short_sha)]
     end
 
+    def commits_for(argv, post_commit:)
+      message = extract_message_option(argv)
+
+      return commit_from_head if post_commit
+      return commits_from_message(message) if message
+      return commits_from_file(argv[0]) if argv[0]
+
+      commits_from_git
+    end
+
     def run(argv)
+      if argv.delete('-h') || argv.delete('--help')
+        puts HELP_TEXT
+        return 0
+      end
+
       post_commit = argv.delete('--post-commit')
-      commits = if post_commit
-                  commit_from_head
-                elsif argv[0]
-                  commits_from_file(argv[0])
-                else
-                  commits_from_git
-                end
+      commits = commits_for(argv, post_commit: post_commit)
 
       return 0 if commits.empty?
 

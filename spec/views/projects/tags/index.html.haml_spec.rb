@@ -17,8 +17,7 @@ RSpec.describe 'projects/tags/index.html.haml', feature_category: :source_code_m
     assign(:releases, project.releases)
     assign(:tags, Kaminari.paginate_array(tags).page(0))
 
-    allow(view).to receive(:current_ref).and_return('master')
-    allow(view).to receive(:current_user).and_return(project.namespace.owner)
+    allow(view).to receive_messages(current_ref: 'master', current_user: project.namespace.owner)
   end
 
   context 'when project has no tags' do

@@ -15,11 +15,11 @@ RSpec.describe 'projects/settings/operations/show' do
   before do
     assign :project, project
 
-    allow(view).to receive(:error_tracking_setting)
-      .and_return(error_tracking_setting)
-    allow(view).to receive(:prometheus_integration)
-      .and_return(prometheus_integration)
-    allow(view).to receive(:current_user).and_return(user)
+    allow(view).to receive_messages(
+      error_tracking_setting: error_tracking_setting,
+      prometheus_integration: prometheus_integration,
+      current_user: user
+    )
   end
 
   describe 'Operations > Alerts' do

@@ -534,10 +534,12 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
     it 'runs the pipeline successfully' do
       allow_next_instance_of(BulkImports::ExportStatus) do |status|
-        allow(status).to receive(:in_progress?).and_return(false)
-        allow(status).to receive(:waiting_on_export?).and_return(false)
-        allow(status).to receive(:failed?).and_return(false)
-        allow(status).to receive(:batched?).and_return(false)
+        allow(status).to receive_messages(
+          in_progress?: false,
+          waiting_on_export?: false,
+          failed?: false,
+          batched?: false
+        )
       end
 
       worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
@@ -548,10 +550,12 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     context 'when export status is started' do
       it 'reenqueues pipeline worker' do
         allow_next_instance_of(BulkImports::ExportStatus) do |status|
-          allow(status).to receive(:in_progress?).and_return(true)
-          allow(status).to receive(:waiting_on_export?).and_return(false)
-          allow(status).to receive(:failed?).and_return(false)
-          allow(status).to receive(:batched?).and_return(false)
+          allow(status).to receive_messages(
+            in_progress?: true,
+            waiting_on_export?: false,
+            failed?: false,
+            batched?: false
+          )
         end
 
         expect(described_class)
@@ -570,10 +574,12 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     context 'when waiting on export to start' do
       before do
         allow_next_instance_of(BulkImports::ExportStatus) do |status|
-          allow(status).to receive(:in_progress?).and_return(false)
-          allow(status).to receive(:waiting_on_export?).and_return(true)
-          allow(status).to receive(:failed?).and_return(false)
-          allow(status).to receive(:batched?).and_return(false)
+          allow(status).to receive_messages(
+            in_progress?: false,
+            waiting_on_export?: true,
+            failed?: false,
+            batched?: false
+          )
         end
 
         pipeline_tracker.update!(created_at: created_at)
@@ -622,8 +628,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     context 'when export status is failed' do
       it 'marks as failed and logs the error' do
         allow_next_instance_of(BulkImports::ExportStatus) do |status|
-          allow(status).to receive(:failed?).and_return(true)
-          allow(status).to receive(:error).and_return('Error!')
+          allow(status).to receive_messages(failed?: true, error: 'Error!')
         end
 
         expect { worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id) }
@@ -647,12 +652,14 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
       before do
         allow_next_instance_of(BulkImports::ExportStatus) do |status|
-          allow(status).to receive(:batched?).and_return(true)
-          allow(status).to receive(:batches_count).and_return(batches_count)
-          allow(status).to receive(:in_progress?).and_return(false)
-          allow(status).to receive(:waiting_on_export?).and_return(false)
-          allow(status).to receive(:failed?).and_return(false)
-          allow(status).to receive(:batches).and_return(batches)
+          allow(status).to receive_messages(
+            batched?: true,
+            batches_count: batches_count,
+            in_progress?: false,
+            waiting_on_export?: false,
+            failed?: false,
+            batches: batches
+          )
           allow(status).to receive(:batch) do |batch_number|
             batches[batch_number - 1]
           end
@@ -888,8 +895,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       allow(Import::ExportStatus).to receive(:for_context)
         .with(anything, file_extraction_pipeline.relation)
         .and_return(export_status)
-      allow(export_status).to receive(:failed?).and_return(false)
-      allow(export_status).to receive(:batched?).and_return(false)
+      allow(export_status).to receive_messages(failed?: false, batched?: false)
 
       allow(worker).to receive(:log_extra_metadata_on_done).and_call_original
     end
@@ -910,8 +916,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
     context 'when the relation export file is missing' do
       before do
-        allow(export_status).to receive(:failed?).and_return(true)
-        allow(export_status).to receive(:error).and_return('Export files not found for relation: test')
+        allow(export_status).to receive_messages(failed?: true, error: 'Export files not found for relation: test')
       end
 
       it 'marks tracker as skipped and logs the missing export file', :aggregate_failures do
@@ -945,10 +950,12 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       let(:batch_numbers) { [1, 2, 3] }
 
       before do
-        allow(export_status).to receive(:batched?).and_return(true)
-        allow(export_status).to receive(:batches_count).and_return(batch_numbers.length)
-        allow(export_status).to receive(:all_batch_numbers).and_return(batch_numbers)
-        allow(export_status).to receive(:batch_failed?).and_return(false)
+        allow(export_status).to receive_messages(
+          batched?: true,
+          batches_count: batch_numbers.length,
+          all_batch_numbers: batch_numbers,
+          batch_failed?: false
+        )
       end
 
       it 'enqueues pipeline batches using actual batch numbers' do

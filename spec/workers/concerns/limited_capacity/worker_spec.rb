@@ -84,9 +84,7 @@ RSpec.describe LimitedCapacity::Worker, :clean_gitlab_redis_queues, :aggregate_f
 
     context 'with capacity' do
       before do
-        allow(worker).to receive(:max_running_jobs).and_return(10)
-        allow(worker).to receive(:running_jobs_count).and_return(0)
-        allow(worker).to receive(:remaining_work_count).and_return(0)
+        allow(worker).to receive_messages(max_running_jobs: 10, running_jobs_count: 0, remaining_work_count: 0)
       end
 
       it 'calls perform_work' do
@@ -122,8 +120,7 @@ RSpec.describe LimitedCapacity::Worker, :clean_gitlab_redis_queues, :aggregate_f
 
     context 'with capacity and without work' do
       before do
-        allow(worker).to receive(:max_running_jobs).and_return(10)
-        allow(worker).to receive(:remaining_work_count).and_return(0)
+        allow(worker).to receive_messages(max_running_jobs: 10, remaining_work_count: 0)
         allow(worker).to receive(:perform_work)
       end
 
@@ -136,9 +133,8 @@ RSpec.describe LimitedCapacity::Worker, :clean_gitlab_redis_queues, :aggregate_f
 
     context 'without capacity' do
       before do
-        allow(worker).to receive(:max_running_jobs).and_return(10)
         allow(job_tracker).to receive(:register).and_return(false)
-        allow(worker).to receive(:remaining_work_count).and_return(10)
+        allow(worker).to receive_messages(max_running_jobs: 10, remaining_work_count: 10)
       end
 
       it 'does not call perform_work' do
@@ -195,9 +191,7 @@ RSpec.describe LimitedCapacity::Worker, :clean_gitlab_redis_queues, :aggregate_f
     subject(:report_prometheus_metrics) { worker.report_prometheus_metrics }
 
     before do
-      allow(worker).to receive(:running_jobs_count).and_return(5)
-      allow(worker).to receive(:max_running_jobs).and_return(7)
-      allow(worker).to receive(:remaining_work_count).and_return(9)
+      allow(worker).to receive_messages(running_jobs_count: 5, max_running_jobs: 7, remaining_work_count: 9)
     end
 
     it 'reports number of running jobs' do
