@@ -964,6 +964,24 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
       it_behaves_like 'a new ticket request'
     end
+
+    context 'when the email has no subject' do
+      let(:email_raw) do
+        <<~EMAIL
+          From: user@example.org
+          To: #{::ServiceDesk::Emails.new(project).incoming_address}
+          Message-ID: <no-subject-test@example.com>
+          Subject:
+
+          This email is to test empty subject.
+        EMAIL
+      end
+
+      it 'creates a ticket with "(no subject)" as the title' do
+        expect { receiver.execute }.to change { WorkItem.count }.by(1)
+        expect(WorkItem.last.title).to eq(_("(no subject)"))
+      end
+    end
   end
 
   context 'service desk is disabled for the project' do

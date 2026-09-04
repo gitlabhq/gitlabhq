@@ -1972,6 +1972,9 @@ msgstr ""
 msgid "(leave blank if you don't want to change it)"
 msgstr ""
 
+msgid "(no subject)"
+msgstr ""
+
 msgid "(no user)"
 msgstr ""
 
@@ -92196,6 +92199,9 @@ msgid "WorkItemDecisionLog|Decided by (required)"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Decision (required)"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Decision actions"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Decision log"

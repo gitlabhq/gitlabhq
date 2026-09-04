@@ -119,6 +119,9 @@ methods:
     - security_policy_bot_project: Returns the bot's associated project; preserved for backward compatibility with bot-specific access flows
   ee/app/models/security/scan_profile_project_status.rb:
     - profile_failed?: Will be used in follow-up MR to expose profile statuses via GraphQL (Task 4, #593133)
+scopes:
+  ee/app/models/govern/policy.rb:
+    - for_lifecycle_state: Will be used by the enabled filter on the policy store list endpoint, landing in a stacked follow-up MR
 constants:
   ee/lib/gitlab/llm/chain/concerns/anthropic_prompt.rb:
     - ROLE_NAMES: Used by ee/spec/lib/gitlab/llm/chain/utils/prompt_spec.rb; only flagged after an unrelated same-named constant was removed elsewhere in the codebase

@@ -34,6 +34,23 @@ Read carefully the major version upgrade steps of your external database platfor
 - [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql/docs/postgres/upgrade-major-db-version-inplace)
 - [PostgreSQL community `pg_upgrade`](https://www.postgresql.org/docs/16/pgupgrade.html)
 
+> [!note]
+> For PostgreSQL upgrades that use logical replication, such as Amazon RDS Blue/Green
+> Deployments, disable runtime DDL in GitLab before you start:
+>
+> ```shell
+> sudo gitlab-rails runner "Feature.enable(:disallow_database_ddl_feature_flags)"
+> ```
+>
+> Re-enable it as soon as the upgrade is complete:
+>
+> ```shell
+> sudo gitlab-rails runner "Feature.disable(:disallow_database_ddl_feature_flags)"
+> ```
+>
+> Leaving DDL disabled for more than a few days can degrade performance. Enabling the flag
+> also pauses background migrations, so GitLab upgrades fail while the flag is enabled.
+
 ## Always `ANALYZE` your database after a major version upgrade
 
 It is mandatory to run the [`ANALYZE` operation](https://www.postgresql.org/docs/16/sql-analyze.html)

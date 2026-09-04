@@ -26,6 +26,9 @@ Use this API to retrieve [instance audit events](../administration/compliance/au
 
 To retrieve audit events using the API, you must [authenticate yourself](rest/authentication.md) as an Administrator.
 
+Requests to this API are subject to a
+[configurable per-user rate limit](../administration/settings/rate-limit-on-audit-events-api.md).
+
 ### List all instance audit events
 
 Lists all available instance audit events, limited to a maximum of 30 days for each query.

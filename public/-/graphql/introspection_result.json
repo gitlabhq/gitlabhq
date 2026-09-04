@@ -144030,22 +144030,6 @@
               "deprecationReason": null
             },
             {
-              "name": "externalMcpBlocked",
-              "description": "Whether any of the workflow's external MCP servers are currently blocked for the namespace (group-level kill-switch). Introduced in GitLab 19.3: Status: Experiment.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
-            },
-            {
               "name": "firstCheckpoint",
               "description": "First checkpoint of the session.",
               "args": [

@@ -24,12 +24,10 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
 
           visit admin_jobs_path
 
-          wait_for_requests
-
           expect(page).to have_selector('[data-testid="jobs-all-tab"]')
+          expect(page).to have_selector('[data-testid="jobs-table-row"]', count: 4)
 
           jobs = page.all('[data-testid="jobs-table-row"]')
-          expect(jobs.size).to eq(4)
           expect(jobs.at(0)).to have_button('Retry')
           expect(jobs.at(1)).to have_button('Run again')
           expect(jobs.at(2)).to have_button('Cancel')
@@ -45,8 +43,6 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
       context 'with no jobs' do
         it 'shows a message' do
           visit admin_jobs_path
-
-          wait_for_requests
 
           expect(page).to have_selector('[data-testid="jobs-all-tab"]')
           expect(page).to have_selector('[data-testid="jobs-empty-state"]')
@@ -64,13 +60,14 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
 
           visit admin_jobs_path
 
-          wait_for_requests
+          expect(page).to have_selector('[data-testid="jobs-table-row"]', count: 3)
 
           find_by_testid('jobs-finished-tab').click
 
-          wait_for_requests
+          # The row count settles only once the tab switch has re-rendered the
+          # table, so wait on it before reading the single remaining job link
+          expect(page).to have_selector('[data-testid="jobs-table-row"]', count: 1)
 
-          expect(page).to have_selector('[data-testid="jobs-finished-tab"]')
           expect(find_by_testid('job-id-link')).not_to have_content(build1.id)
           expect(find_by_testid('job-id-link')).not_to have_content(build2.id)
           expect(find_by_testid('job-id-link')).to have_content(build3.id)
@@ -84,13 +81,10 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
 
           visit admin_jobs_path
 
-          wait_for_requests
+          expect(page).to have_selector('[data-testid="jobs-table-row"]', count: 1)
 
           find_by_testid('jobs-finished-tab').click
 
-          wait_for_requests
-
-          expect(page).to have_selector('[data-testid="jobs-finished-tab"]')
           expect(page).to have_content 'No results found'
           expect(page).to have_button 'Cancel all jobs'
         end
@@ -108,10 +102,10 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
 
         visit admin_jobs_path
 
-        wait_for_requests
+        expect(page).to have_selector('[data-testid="jobs-table-row"]', count: 1)
 
         within_testid('jobs-table') do
-          expect(page).to have_link(href: project_job_path(project, job))
+          expect(page).to have_link(href: /#{Regexp.escape(project_job_path(project, job))}/)
           expect(page).to have_link(href: project_pipeline_path(project, pipeline))
           expect(find_by_testid('job-project-link')['href']).to include(project_path(project))
           expect(find_by_testid('job-runner-link')['href']).to include("/admin/runners/#{runner.id}")
@@ -126,15 +120,11 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
 
         visit admin_jobs_path
 
-        wait_for_requests
-
         within_testid('jobs-table') do
           expect(page).to have_selector('[data-testid="jobs-table-row"]', count: 2)
         end
 
         select_tokens 'Status', 'Failed', submit: true, input_text: 'Search'
-
-        wait_for_requests
 
         within_testid('jobs-table') do
           expect(page).to have_selector('[data-testid="jobs-table-row"]', count: 1)

@@ -625,3 +625,9 @@ pre[data-lang-params='duo-question'] {
     @apply gl-shadow-none;
   }
 }
+
+// A linked decision is highlighted the way a linked comment is, so the two deep links feel the
+// same. Tailwind has no utility for the shared timeline token, so the rule lives here.
+.decision-log-item.is-target {
+  background-color: var(--timeline-entry-target-background-color);
+}

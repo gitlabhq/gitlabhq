@@ -151,7 +151,7 @@ module Gitlab
             current_user: support_bot,
             params: {
               work_item_type_id: work_item_type_id,
-              title: mail.subject,
+              title: mail.subject.presence || _("(no subject)"),
               description: message_including_template,
               confidential: ticket_confidential?,
               external_author: from_address,

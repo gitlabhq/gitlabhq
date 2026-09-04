@@ -44,17 +44,24 @@ RSpec.shared_examples 'embedded views (GLQL)' do
 
     it 'renders embedded views properly' do
       expect(page).to have_content('All issues with label glql')
-      expect(page).to have_css("[data-testid='list'] li", count: LIMIT)
+      # Use data-testid^='list-item-' to count only real items, not skeleton <li>s
+      expect(page).to have_css("[data-testid='list'] [data-testid^='list-item-']", count: LIMIT)
     end
 
     it 'loads more issues on clicking the load more button' do
+      # Wait for the load-more button to be in a stable (non-loading) state before clicking,
+      # to avoid ElementClickInterceptedError caused by skeleton <li>s shifting the button position.
+      expect(page).to have_button("Load #{LIMIT} more")
       click_on "Load #{LIMIT} more"
       wait_for_requests
-      expect(page).to have_css("[data-testid='list'] li", count: LIMIT * 2)
+      # Use data-testid^='list-item-' to count only real items, not skeleton <li>s,
+      # which would otherwise cause a transient count match during loading.
+      expect(page).to have_css("[data-testid='list'] [data-testid^='list-item-']", count: LIMIT * 2)
 
+      expect(page).to have_button("Load #{TOTAL_ISSUES - (LIMIT * 2)} more")
       click_on "Load #{TOTAL_ISSUES - (LIMIT * 2)} more"
       wait_for_requests
-      expect(page).to have_css("[data-testid='list'] li", count: TOTAL_ISSUES)
+      expect(page).to have_css("[data-testid='list'] [data-testid^='list-item-']", count: TOTAL_ISSUES)
 
       expect(page).not_to have_css('[data-testid="load-more-button"]')
     end

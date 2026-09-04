@@ -186,6 +186,7 @@ these parameters:
 
 - `allow_all_integrations`
 - `allowed_integrations`
+- `audit_events_api_limit`
 - `default_project_deletion_protection`
 - `delete_unconfirmed_users`
 - `dependency_scanning_sbom_scan_api_download_limit`
@@ -420,6 +421,7 @@ these parameters:
 
 - `allow_all_integrations`
 - `allowed_integrations`
+- `audit_events_api_limit`
 - `group_owners_can_manage_default_branch_protection`
 - `file_template_project_id`
 - `geo_node_allowed_ips`
@@ -475,6 +477,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `sidekiq_timezone_override` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244922) in GitLab 19.2.
 - `concurrent_pull_request_import_jobs_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251353) in GitLab 19.4, replacing hardcoded limits for the Bitbucket Server (50) and GitHub (200) importers with a unified default of 200.
 - `tags_create_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252393) in GitLab 19.4.
+- `audit_events_api_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/605428) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -509,6 +512,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `asset_proxy_url`                        | string           | no                                   | URL of the asset proxy server. GitLab restart is required to apply changes. |
 | `asset_proxy_whitelist`                  | string or array of strings | no                         | (Deprecated: Use `asset_proxy_allowlist` instead) Assets that match these domains are not proxied. Wildcards allowed. Your GitLab installation URL is automatically allowlisted. GitLab restart is required to apply changes. |
 | `asset_proxy_allowlist`                  | string or array of strings | no                         | Assets that match these domains are not proxied. Wildcards allowed. Your GitLab installation URL is automatically allowlisted. GitLab restart is required to apply changes. |
+| `audit_events_api_limit`                 | integer          | no                                   | Maximum number of requests to the [instance audit events API](audit_events.md#instance-audit-events) per minute per user. Default: 200. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/605428) in GitLab 19.4. |
 | `authn_data_retention_cleanup_enabled`   | boolean          | no                                   | If `true`, runs cleanup workers that permanently delete authentication login history older than one year, and previously revoked OAuth access tokens and grants older than one month. Default value: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579002) in GitLab 18.7. |
 | `authorized_keys_enabled`                | boolean          | no                                   | By default, the `authorized_keys` file supports Git over SSH without additional configuration. GitLab can be optimized to authenticate SSH keys via the database file. Only disable this if you have configured your OpenSSH server to use the AuthorizedKeysCommand. |
 | `auto_accept_awarded_achievements`       | boolean          | no                                   | If `true`, newly awarded achievements are accepted automatically and appear on user profiles immediately. Does not affect achievements awarded before this setting is enabled. Recipients can still hide any achievement. Default value: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607750) in GitLab 19.4. |

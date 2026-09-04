@@ -25,6 +25,7 @@ To configure these limits, go to the **Admin** area and select **Settings** > **
 
 | API | Description |
 |:----|:------------|
+| [Audit events API](../../administration/settings/rate-limit-on-audit-events-api.md) | Limit requests that retrieve instance audit events. |
 | [Deprecated endpoints](deprecated.md) | Restrict endpoints that have replacements but cannot be removed without breaking backward compatibility. |
 | [Groups API](groups.md) | Limit requests that list, retrieve, create, and archive groups, and that list and delete group members. |
 | [Organizations API](organizations.md) | Limit requests that create organizations. |
