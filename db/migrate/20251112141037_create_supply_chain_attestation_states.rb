@@ -9,7 +9,7 @@ class CreateSupplyChainAttestationStates < Gitlab::Database::Migration[2.3]
   NEEDS_VERIFICATION_INDEX_NAME = "index_supply_chain_attestation_states_needs_verification"
 
   def up
-    create_table :supply_chain_attestation_states do |t| # rubocop:disable Migration/EnsureFactoryForTable,Lint/RedundantCopDisableDirective -- TBA in followup MR
+    create_table :supply_chain_attestation_states do |t|
       t.datetime_with_timezone :verification_started_at
       t.datetime_with_timezone :verification_retry_at
       t.datetime_with_timezone :verified_at

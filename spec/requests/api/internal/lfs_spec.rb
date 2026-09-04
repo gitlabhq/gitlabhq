@@ -17,6 +17,40 @@ RSpec.describe API::Internal::Lfs, feature_category: :source_code_management do
       { oid: lfs_object.oid, gl_repository: gl_repository }
     end
 
+    describe 'Current.organization resolution' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:org_project) do
+        create(:project, group: create(:group, organization: organization), organization: organization)
+      end
+
+      before_all do
+        create(:lfs_objects_project, project: org_project, lfs_object: lfs_object)
+      end
+
+      it 'derives the organization from the repository' do
+        expect(::API::API::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+          expect(data.stringify_keys).to include('meta.organization_id' => organization.id)
+        end
+
+        get api('/internal/lfs'),
+          params: { oid: lfs_object.oid, gl_repository: "project-#{org_project.id}" },
+          headers: gitlab_shell_internal_api_request_header
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'does not override an already assigned organization' do
+        allow(::Current).to receive_messages(organization_assigned: true, organization: create(:organization))
+        expect(::Current).not_to receive(:organization=)
+
+        get api('/internal/lfs'),
+          params: { oid: lfs_object.oid, gl_repository: "project-#{org_project.id}" },
+          headers: gitlab_shell_internal_api_request_header
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     context 'with invalid auth' do
       it 'returns 401' do
         get api("/internal/lfs"),

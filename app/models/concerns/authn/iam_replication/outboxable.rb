@@ -13,6 +13,7 @@ module Authn
       included do
         include AfterCommitQueue
         include EachBatch
+        include Gitlab::Loggable
 
         class_attribute :iam_outbox_entity_type
 
@@ -94,7 +95,7 @@ module Authn
       def write_iam_outbox_event(event_type, payload)
         return unless IamReplication.enabled?
 
-        ::Authn::IamOutbox.create!(
+        outbox_event = ::Authn::IamOutbox.create!(
           entity_type: iam_outbox_entity_type,
           entity_id: id,
           organization_id: organization_id,
@@ -102,13 +103,35 @@ module Authn
           payload: payload
         )
 
-        run_after_commit { schedule_iam_outbox_drain(event_type) }
+        run_after_commit do
+          schedule_iam_outbox_drain(event_type)
+          attempt_direct_iam_delivery(outbox_event)
+        end
       end
 
       def schedule_iam_outbox_drain(event_type)
         ::Authn::IamReplication::DrainWorker.perform_in(
           ::Authn::IamReplication::DrainWorker::SCHEDULE_DELAY,
           iam_outbox_entity_type, id, event_type.to_s
+        )
+      end
+
+      # Best-effort (Layer 2): failures are expected here; the outbox row lets DrainWorker retry.
+      def attempt_direct_iam_delivery(outbox_event)
+        return unless ::Authn::IamAuthService.enabled?
+
+        ::Authn::IamReplication::OauthApplicationReplicator.new.deliver(outbox_event)
+        outbox_event.update_columns(l0_delivered_at: Time.current, updated_at: Time.current)
+      rescue StandardError => error
+        ::Gitlab::AuthLogger.warn(
+          build_structured_payload_labkit(
+            message: 'IAM immediate write failed',
+            layer: 2,
+            entity_type: iam_outbox_entity_type,
+            entity_id: id,
+            event_type: outbox_event.event_type,
+            error_type: ::Authn::IamService::GrpcClient.error_label(error)
+          )
         )
       end
     end

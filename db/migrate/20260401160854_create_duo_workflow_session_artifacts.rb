@@ -6,7 +6,7 @@ class CreateDuoWorkflowSessionArtifacts < Gitlab::Database::Migration[2.3]
   milestone '18.11'
 
   def up
-    create_table :duo_workflow_session_artifacts, if_not_exists: true do |t| # rubocop:disable Migration/EnsureFactoryForTable -- https://gitlab.com/gitlab-org/gitlab/-/issues/468630
+    create_table :duo_workflow_session_artifacts, if_not_exists: true do |t|
       t.timestamps_with_timezone null: false
       t.references :workflow, null: false, index: false
       t.references :project, null: true, index: false

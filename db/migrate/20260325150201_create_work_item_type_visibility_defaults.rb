@@ -4,7 +4,7 @@ class CreateWorkItemTypeVisibilityDefaults < Gitlab::Database::Migration[2.3]
   milestone '18.11'
 
   def change
-    create_table :work_item_type_visibility_defaults do |t| # rubocop:disable Migration/EnsureFactoryForTable -- ee/spec/factories/work_items/types_framework/visibility_defaults.rb
+    create_table :work_item_type_visibility_defaults do |t|
       t.bigint :namespace_id, null: false
       t.bigint :work_item_type_id, null: false
       t.timestamps_with_timezone null: false

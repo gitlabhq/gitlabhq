@@ -219,20 +219,34 @@ You can download or delete individual artifacts from this list.
 
 ## Download job artifacts
 
-You can download job artifacts by using the GitLab UI or the API.
+You can download job artifacts from the GitLab UI or through the API. To use the API, use a
+publicly accessible URL, either by job name and branch to get the latest artifacts, or by job ID
+to target a specific report.
 
-From the GitLab UI, you can download job artifacts from:
+From the GitLab UI:
 
-- Any **Pipelines** list. On the right of the pipeline, select **Download artifacts** ({{< icon name="download" >}}).
-- Any **Jobs** list. On the right of the job, select **Download artifacts** ({{< icon name="download" >}}).
-- A job's detail page. On the right of the page, select **Download**.
-- A merge request **Overview** page. On the right of the latest pipeline, select **Artifacts** ({{< icon name="download" >}}).
-- The **Artifacts** page. On the right of the job, select **Download** ({{< icon name="download" >}}).
-- The artifacts browser. On the top of the page, select **Download artifacts archive** ({{< icon name="download" >}}).
+| Location                          | Select                                                        | Use this when                                                                                                                       |
+|-----------------------------------|---------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| Any **Pipelines** list            | **Download artifacts** ({{< icon name="download" >}})         | You don't yet know which job's artifacts you want. When you select this, GitLab opens a list of the pipeline's jobs to choose from. |
+| Any **Jobs** list                 | **Download artifacts** ({{< icon name="download" >}})         | You're scanning multiple jobs and want to download from one without opening it.                                                     |
+| A job's detail page               | **Download**                                                  | You're reading that job's log, for example while investigating a failure.                                                           |
+| A merge request **Overview** page | **Artifacts** ({{< icon name="download" >}})                  | You want artifacts from the merge request's latest pipeline.                                                                        |
+| The **Artifacts** page            | **Download** ({{< icon name="download" >}})                   | You're browsing the full list of artifacts in the project.                                                                          |
+| The artifacts browser             | **Download artifacts archive** ({{< icon name="download" >}}) | You're browsing an archive's contents and want to download the whole archive.                                                       |
 
-### From a URL
+To restrict who can download job artifacts, use the `artifacts:access` keyword in your `.gitlab-ci.yml` file. For example:
 
-You can download the artifacts archive for a specific job with a publicly accessible URL.
+```yaml
+job:
+  artifacts:
+    access: maintainer
+    paths:
+      - build/
+```
+
+### By job name and branch
+
+Download the latest artifacts archive for a job using its name and branch, without needing to look up a job ID first.
 
 For example, to download the latest artifacts of a job named `build` in the `main` branch
 of a project on GitLab.com:
@@ -256,8 +270,11 @@ Artifacts for parent and child pipelines are searched in hierarchical order from
 For example, if both parent and child pipelines have a job with the same name, the job artifacts
 from the parent pipeline are returned.
 
-Unlike the previous examples, downloading a report requires a job ID instead of a job name and branch.
-You can download [report artifacts](../yaml/artifacts_reports.md) by adding `file_type` to the URL:
+### By job ID
+
+[Report artifacts](../yaml/artifacts_reports.md) (for example, JUnit test results) are not included in
+the artifacts archive downloaded by job name and branch. To download a report file, use a job ID
+and add `file_type` to the URL:
 
 ```plaintext
 https://gitlab.com/api/v4/projects/<project-id>/jobs/<job-id>/artifacts?file_type=junit
@@ -292,18 +309,6 @@ build_submodule:
 
 To fetch artifacts from a job in the same pipeline, use the `needs:artifacts` keyword.
 
-### Control who can download artifacts
-
-To restrict who can download job artifacts, use the `artifacts:access` keyword in your `.gitlab-ci.yml` file. For example:
-
-```yaml
-job:
-  artifacts:
-    access: maintainer
-    paths:
-      - build/
-```
-
 ## Browse the contents of the artifacts archive
 
 You can browse the contents of the artifacts from the UI without downloading the artifact locally,
@@ -329,7 +334,7 @@ The following extensions are supported:
 | `.txt`         | {{< no >}}  | {{< yes >}}                       |
 | `.log`         | {{< no >}}  | {{< yes >}}                       |
 
-### From a URL
+### Browse artifacts from a URL
 
 You can browse the job artifacts of the latest successful pipeline for a specific job
 with a publicly accessible URL.

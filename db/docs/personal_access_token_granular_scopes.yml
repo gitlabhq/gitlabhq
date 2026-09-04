@@ -1,5 +1,7 @@
 ---
 table_name: personal_access_token_granular_scopes
+classes:
+- Authz::PersonalAccessTokenGranularScope
 feature_categories:
   - permissions
 description: Joins personal access tokens with granular scopes

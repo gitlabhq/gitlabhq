@@ -5,7 +5,6 @@ class CreateCustomDashboardVersions < Gitlab::Database::Migration[2.3]
 
   milestone '18.6'
 
-  # rubocop:disable Migration/EnsureFactoryForTable -- No factory needed
   def up
     create_table :custom_dashboard_versions, if_not_exists: true do |t|
       t.references :custom_dashboard, null: false, index: false, foreign_key: true
@@ -27,7 +26,6 @@ class CreateCustomDashboardVersions < Gitlab::Database::Migration[2.3]
       "chk_dashboard_versions_config_object"
     )
   end
-  # rubocop:enable Migration/EnsureFactoryForTable
 
   def down
     drop_table :custom_dashboard_versions

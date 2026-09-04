@@ -12,7 +12,7 @@ distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 
 ### Semantic HTML
 
-- Prefer semantic HTML elements over `div`/`span` with ARIA roles (e.g., use `<button>` not `<div>`, `<a>` not `<div>`)
+- Prefer semantic HTML elements over `div`/`span` with ARIA roles (e.g., use `<button>` not `<div role="button">`, `<a>` not `<div role="link">`)
 - DO NOT use `role` attributes when a native HTML element with the equivalent implicit role exists
 - Replace `div`/`span` elements with semantic equivalents like `p`, `button`, `time`, `article`, `ol`/`ul`, `table`, etc.
 - Ensure heading levels are not skipped and are nested correctly

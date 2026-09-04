@@ -4,7 +4,7 @@ class CreateWorkItemAgentPlans < Gitlab::Database::Migration[2.3]
   milestone '19.0'
 
   def up
-    create_table :work_item_agent_plans, id: false do |t| # rubocop:disable Migration/EnsureFactoryForTable -- factory in ee/spec/factories/work_items/agent_plan.rb
+    create_table :work_item_agent_plans, id: false do |t|
       t.bigint :work_item_id, primary_key: true, default: nil
       t.bigint :namespace_id, null: false
 

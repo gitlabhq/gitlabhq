@@ -360,6 +360,8 @@ principles:
     sources:
       - path: doc/development/code_review.md
         url: https://docs.gitlab.com/development/code_review/
+      - path: doc/development/code_comments.md
+        url: https://docs.gitlab.com/development/code_comments/
 
   ai-instruction-files:
     description: Reviewing AI instruction files under .ai/ (hand-authored modules, distilled principles, baselines, distillation config)
@@ -586,6 +588,10 @@ principles:
         url: https://docs.gitlab.com/development/fe_guide/axios/
       - path: doc/development/i18n/externalization.md
         url: https://docs.gitlab.com/development/i18n/externalization/
+      - path: doc/development/i18n/pluralization.md
+        url: https://docs.gitlab.com/development/i18n/pluralization/
+      - path: doc/development/code_comments.md
+        url: https://docs.gitlab.com/development/code_comments/
 
   frontend-style:
     description: CSS/SCSS, Tailwind, dark mode

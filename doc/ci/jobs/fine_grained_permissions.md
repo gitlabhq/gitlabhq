@@ -107,8 +107,8 @@ CI/CD job tokens can access the following REST API endpoints:
 | ---------- | ------------ | --------------- | ----- |
 | Download a specific file from artifacts archive | `GET /projects/:id/jobs/:job_id/artifacts/*artifact_path` | `READ_JOBS` | Read |
 | Download a specific file from artifacts archive from a ref | `GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path` | `READ_JOBS` | Read |
+| Download an artifact from a job | `GET /projects/:id/jobs/:job_id/artifacts` | `READ_JOBS` | Read |
 | Download job artifacts | `GET /jobs/:id/artifacts` | `READ_JOBS` | Read |
-| Download the artifacts archive from a job | `GET /projects/:id/jobs/:job_id/artifacts` | `READ_JOBS` | Read |
 | List all files in an artifacts archive | `GET /projects/:id/jobs/:job_id/artifacts/tree` | `READ_JOBS` | Read |
 | List all jobs by pipeline | `GET /projects/:id/pipelines/:pipeline_id/jobs` | `READ_JOBS` | Read |
 | List all jobs for a project | `GET /projects/:id/jobs` | `READ_JOBS` | Read |

@@ -76106,6 +76106,9 @@ msgstr ""
 msgid "SecurityReports|Malware"
 msgstr ""
 
+msgid "SecurityReports|Malware (default branch only)"
+msgstr ""
+
 msgid "SecurityReports|Manage and track vulnerabilities identified in projects within your group. Vulnerabilities in projects are shown here when security testing is configured and a pipeline has been run on the default branch."
 msgstr ""
 
@@ -76460,6 +76463,9 @@ msgid "SecurityReports|To create the merge request privately, see %{linkStart}re
 msgstr ""
 
 msgid "SecurityReports|To detect false positives, select at least one SAST vulnerability that is not already being analyzed."
+msgstr ""
+
+msgid "SecurityReports|To filter by malware, remove the filter for other tracked refs"
 msgstr ""
 
 msgid "SecurityReports|To learn more about this CWE, view the %{linkStart}MITRE definition.%{linkEnd}"

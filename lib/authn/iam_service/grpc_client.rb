@@ -48,6 +48,13 @@ module Authn
         delete_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientRequest
       }.freeze
 
+      # Only RequestError carries a machine-readable reason; anything else falls back to the class name.
+      def self.error_label(error)
+        return error.reason.to_s if error.is_a?(RequestError)
+
+        error.class.name
+      end
+
       def health(**kwargs)
         call(:health, kwargs)
       end

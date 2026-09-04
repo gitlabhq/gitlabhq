@@ -4,7 +4,7 @@ class CreateWorkItemDecisions < Gitlab::Database::Migration[2.3]
   milestone '19.4'
 
   def up
-    create_table :work_item_decisions do |t| # rubocop:disable Migration/EnsureFactoryForTable -- factory in ee/spec/factories/work_items/decision.rb
+    create_table :work_item_decisions do |t|
       t.bigint :work_item_id, null: false
       t.bigint :namespace_id, null: false
       t.bigint :author_id

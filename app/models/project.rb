@@ -976,7 +976,7 @@ class Project < ApplicationRecord
   # Remove the fallback in 19.6: https://gitlab.com/gitlab-org/gitlab/-/work_items/614144
   scope :with_programming_language, ->(language_name) do
     languages = ProgrammingLanguage.with_name_case_insensitive(language_name)
-    repository_languages = RepositoryLanguage.unscoped # Drops the default scope (includes(:programming_language)), unnecessary in a subquery.
+    repository_languages = RepositoryLanguage.unscoped # Drops the unnecessary eager loading from the default scope.
       .where(RepositoryLanguage.arel_table[:project_id].eq(arel_table[:id]))
 
     matching_repository_languages = repository_languages

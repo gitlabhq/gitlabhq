@@ -137,7 +137,9 @@ RSpec.describe Iam::ConsentController, :use_clean_rails_memory_store_caching,
     allow(grpc_client).to receive_messages(
       get_consent_challenge: get_consent_response,
       accept_consent_challenge: accept_consent_response,
-      reject_consent_challenge: reject_consent_response
+      reject_consent_challenge: reject_consent_response,
+      create_oauth_application: nil,
+      delete_oauth_application: nil
     )
   end
 

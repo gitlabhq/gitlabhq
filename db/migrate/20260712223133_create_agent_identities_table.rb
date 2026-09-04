@@ -6,7 +6,7 @@ class CreateAgentIdentitiesTable < Gitlab::Database::Migration[2.3]
   disable_ddl_transaction!
 
   def up
-    create_table :ai_agent_identities do |t| # rubocop:disable Migration/EnsureFactoryForTable -- factory to be added in model spec
+    create_table :ai_agent_identities do |t|
       t.bigint :user_id, null: false
       t.bigint :project_id, null: false
       t.datetime_with_timezone :revoked_at

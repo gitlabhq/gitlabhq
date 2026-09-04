@@ -30,6 +30,19 @@ module API
       end
       # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
+      # rubocop:disable Gitlab/AvoidCurrentOrganization -- the internal API skips
+      # the global organization hook; derive the organization from the repository
+      def set_current_organization_from_repository
+        return if ::Current.organization_assigned
+        return if project.nil?
+
+        ::Current.organization =
+          ::Organizations::Organization.find_by_id_with_isolation_record(project.organization_id)
+
+        check_organization_maintenance_mode!
+      end
+      # rubocop:enable Gitlab/AvoidCurrentOrganization
+
       def access_check_result
         with_admin_mode_bypass!(actor.user&.id) do
           access_check!(actor, params)

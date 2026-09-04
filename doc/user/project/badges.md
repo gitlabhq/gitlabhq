@@ -372,7 +372,7 @@ To add a custom badge with an image:
 
 1. Select **Add badge**.
 
-To use custom images generated through a pipeline, see [accessing the latest job artifacts by URL](../../ci/jobs/job_artifacts.md#from-a-url).
+To use custom images generated through a pipeline, see [accessing the latest job artifacts by URL](../../ci/jobs/job_artifacts.md#by-job-name-and-branch).
 
 ## Edit a badge
 

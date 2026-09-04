@@ -277,6 +277,15 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
   end
 
   describe 'IAM outbox replication' do
+    let(:client) do
+      instance_double(Authn::IamService::GrpcClient, create_oauth_application: nil, delete_oauth_application: nil)
+    end
+
+    before do
+      allow(::Authn::IamAuthService).to receive(:enabled?).and_return(true)
+      allow(Authn::IamService::GrpcClient).to receive(:new).and_return(client)
+    end
+
     it 'declares its IAM entity type' do
       expect(described_class.iam_outbox_entity_type).to eq('oauth_application')
     end
@@ -299,6 +308,61 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
 
         create(:oauth_application)
       end
+
+      it 'delivers immediately (Layer 2) and marks the outbox row delivered', :aggregate_failures, :freeze_time do
+        app = create(:oauth_application)
+
+        expect(client).to have_received(:create_oauth_application).with(hash_including(client_id: app.uid))
+        row = Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id).sole
+        expect(row.l0_delivered_at).to be_present
+        expect(row.updated_at).to eq(row.l0_delivered_at)
+      end
+
+      context 'when the replicator raises' do
+        before do
+          allow(client).to receive(:create_oauth_application)
+            .and_raise(Authn::IamService::GrpcClient::RequestError.new('down', reason: :unavailable))
+        end
+
+        it 'swallows the error and leaves the outbox row for the drain to retry', :aggregate_failures do
+          expect(Authn::IamReplication::DrainWorker).to receive(:perform_in)
+
+          app = create(:oauth_application)
+          row = Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id).sole
+
+          expect(row.l0_delivered_at).to be_nil
+          expect(row.l0_attempts).to eq(0)
+          expect(row.l0_last_error).to be_nil
+        end
+
+        it 'logs the failure with the error label and outbox context', :aggregate_failures do
+          expect(::Gitlab::AuthLogger).to receive(:warn)
+            .with(hash_including(
+              'message' => 'IAM immediate write failed',
+              'layer' => 2,
+              'entity_type' => 'oauth_application',
+              'event_type' => 'upsert',
+              'error_type' => 'unavailable'
+            ))
+
+          create(:oauth_application)
+        end
+      end
+
+      context 'when the IAM auth service is disabled' do
+        before do
+          allow(::Authn::IamAuthService).to receive(:enabled?).and_return(false)
+        end
+
+        it 'does not deliver immediately but still schedules the drain', :aggregate_failures do
+          expect(Authn::IamReplication::DrainWorker).to receive(:perform_in)
+
+          app = create(:oauth_application)
+
+          expect(client).not_to have_received(:create_oauth_application)
+          expect(Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id).sole.l0_delivered_at).to be_nil
+        end
+      end
     end
 
     context 'on update' do
@@ -317,6 +381,15 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
         )
 
         app.update!(redirect_uri: 'https://example.com/new')
+      end
+
+      it 'delivers immediately (Layer 2) and marks the outbox row delivered' do
+        app = create(:oauth_application)
+
+        app.update!(redirect_uri: 'https://example.com/new')
+
+        row = Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id).order(:id).last
+        expect(row.l0_delivered_at).to be_present
       end
     end
 
@@ -341,6 +414,16 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
         )
 
         app.destroy!
+      end
+
+      it 'delivers the delete immediately (Layer 2) with the uid', :aggregate_failures do
+        # Real replicator + real payload: a key drift in iam_outbox_delete_payload breaks this.
+        app = create(:oauth_application)
+
+        app.destroy!
+
+        expect(client).to have_received(:delete_oauth_application).with(client_id: app.uid).twice
+        expect(Authn::IamOutbox.where(event_type: :delete, entity_id: app.id).sole.l0_delivered_at).to be_present
       end
     end
 

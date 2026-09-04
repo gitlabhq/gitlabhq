@@ -3,7 +3,12 @@
 module API
   module Internal
     class Shellhorse < ::API::Base
+      # gitlab-shell and workhorse authenticate via a shared secret, so the
+      # global organization hook has no user; derive from gl_repository instead.
+      skip_global_organization_setup!
+
       before { authenticate_by_gitlab_shell_or_workhorse_token! }
+      before { set_current_organization_from_repository }
 
       helpers ::API::Helpers::InternalHelpers
 
