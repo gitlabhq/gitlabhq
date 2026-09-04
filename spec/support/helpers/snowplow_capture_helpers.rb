@@ -40,6 +40,11 @@ module SnowplowCaptureHelpers
 
       wait_for_snowplow_event(**expected)
     end
+
+    # Recorded only once the journey holds, so index.json never claims a journey an example
+    # failed to prove. A failing example still gets its dump, listed with no journey. One journey
+    # per example: a second call replaces the first. See SnowplowEventDump.
+    RSpec.current_example.metadata[:snowplow_tracking_journey] = { name: name, variant: variant&.to_s }
   end
 
   # Frontend events are POSTed to the collector asynchronously and leave no visible trace on

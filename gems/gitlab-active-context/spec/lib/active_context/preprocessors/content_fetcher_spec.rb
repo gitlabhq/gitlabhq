@@ -2,13 +2,15 @@
 
 RSpec.describe ActiveContext::Preprocessors::ContentFetcher do
   let(:reference_class) do
-    Class.new(Test::References::Mock) do
+    klass = Class.new(Test::References::Mock) do
       include ::ActiveContext::Preprocessors::ContentFetcher
 
       add_preprocessor :fetch_content do |refs|
         fetch_content(refs: refs, query: '*', collection: 'mock_collection')
       end
     end
+
+    stub_const('MockContentFetcherReferenceClass', klass)
   end
 
   let(:reference_1) { reference_class.new(collection_id: collection_id, routing: partition, args: 'id1') }

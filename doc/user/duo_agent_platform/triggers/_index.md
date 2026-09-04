@@ -106,3 +106,11 @@ The trigger now appears in **AI** > **Triggers**.
 1. In the left sidebar, select **AI** > **Triggers**.
 1. For the trigger you want to change, select **Delete flow trigger** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **OK**.
+
+## Actions that don't initiate a trigger
+
+All trigger event types require a human user to perform the triggering action.
+A non-human user such as a bot user, service account user, or another flow, cannot activate a trigger.
+
+This restriction applies to all [trigger event types](#trigger-event-types).
+For example, a flow cannot trigger another flow by mentioning the service account in a comment.

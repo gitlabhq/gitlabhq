@@ -126,7 +126,7 @@ module API
 
         projects, options = with_custom_attributes(projects, options)
 
-        present options[:with].prepare_relation(projects, options), options
+        present options[:with].prepare_relation(projects, options), **options
       end
 
       def present_groups(params, groups, serializer: Entities::Group)
@@ -139,7 +139,7 @@ module API
         groups = groups.with_statistics if options[:statistics]
         groups, options = with_custom_attributes(groups, options)
 
-        present paginate(groups), options
+        present paginate(groups), **options
       end
 
       def present_group_details(params, group, with_projects: true)
@@ -152,7 +152,7 @@ module API
 
         group, options = with_custom_attributes(group, options) if params[:with_custom_attributes]
 
-        present group, options
+        present group, **options
       end
 
       def present_groups_with_pagination_strategies(params, groups)
@@ -168,7 +168,7 @@ module API
 
         groups, options = with_custom_attributes(groups, options)
 
-        present paginate_with_strategies(groups), options
+        present paginate_with_strategies(groups), **options
       end
 
       def immediately_delete_subgroup_error(group)

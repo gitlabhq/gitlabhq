@@ -5,5 +5,7 @@ RSpec.describe Gitlab::Database::LockRetries do
     expect(Gitlab::Database::LockRetries::VERSION).not_to be nil
   end
 
-  xit "does something useful"
+  it "can use database" do
+    expect(ApplicationRecord.connection.select_value('SELECT 42')).to eq(42)
+  end
 end

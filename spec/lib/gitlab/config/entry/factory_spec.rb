@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Config::Entry::Factory do
         end
 
         it 'makes object inheritable' do
-          expect(factory.inheritable?).to eq true
+          expect(factory.inheritable?).to be true
         end
       end
 

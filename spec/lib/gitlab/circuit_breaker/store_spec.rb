@@ -29,11 +29,11 @@ RSpec.describe Gitlab::CircuitBreaker::Store, :clean_gitlab_redis_rate_limiting,
         circuit_store.store(key, value)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when key does not exist' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -192,7 +192,7 @@ RSpec.describe Gitlab::CircuitBreaker::Store, :clean_gitlab_redis_rate_limiting,
       delete
 
       with_redis do |redis|
-        expect(redis.exists?(key)).to eq(false)
+        expect(redis.exists?(key)).to be(false)
       end
     end
   end

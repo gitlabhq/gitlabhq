@@ -221,7 +221,7 @@ module API
       def present_project(project, options = {})
         options[:with].preload_resource(project) if options[:with].respond_to?(:preload_resource)
 
-        present project, options
+        present project, **options
       end
 
       def present_projects(projects, options = {})
@@ -244,7 +244,7 @@ module API
           [options[:with].prepare_relation(projects, options), options]
         end
 
-        present records, options
+        present records, **options
       end
 
       def present_groups(groups)
@@ -255,7 +255,7 @@ module API
 
         groups, options = with_custom_attributes(groups, options)
 
-        present paginate(groups), options
+        present paginate(groups), **options
       end
 
       def translate_params_for_compatibility(params)

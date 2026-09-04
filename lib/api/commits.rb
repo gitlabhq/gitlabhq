@@ -526,7 +526,7 @@ module API
 
         if result[:status] == :success
           if params[:dry_run]
-            present dry_run: :success
+            present({ dry_run: :success })
             status :ok
           else
             present user_project.repository.commit(result[:result]),
@@ -580,7 +580,7 @@ module API
 
         if result[:status] == :success
           if params[:dry_run]
-            present dry_run: :success
+            present({ dry_run: :success })
             status :ok
           else
             present user_project.repository.commit(result[:result]),

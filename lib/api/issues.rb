@@ -175,7 +175,7 @@ module API
           include_subscribed: false
         }
 
-        present issues, options
+        present issues, **options
       end
 
       desc 'Retrieve an issue' do
@@ -222,7 +222,7 @@ module API
           group: user_group
         }
 
-        present issues, options
+        present issues, **options
       end
 
       desc 'Retrieve issues statistics for a group' do
@@ -281,7 +281,7 @@ module API
           include_subscribed: false
         }
 
-        present paginate_with_strategies(issues), options
+        present paginate_with_strategies(issues), **options
       end
 
       desc 'Retrieve issues statistics for a project' do

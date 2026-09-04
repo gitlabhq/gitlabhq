@@ -1,0 +1,10 @@
+---
+name: increase_ref_cache_trust_ttl
+description: Increases RebuildableSetCache trust TTL from one hour to six hours with up to 30 minutes of jitter, reducing full ref-cache rebuilds.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/627425
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253388
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/627528
+milestone: '19.4'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

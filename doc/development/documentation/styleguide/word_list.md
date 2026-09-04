@@ -2661,6 +2661,27 @@ Do not confuse **set up** with [**configure**](#configure).
 1. Set up your installation.
 1. Configure your installation.
 
+## ship
+
+Do not use **ship** because it is ambiguous. Sometimes it
+means to release a feature or to include a component.
+Use:
+
+- When a feature or version is released:
+  - **release**
+  - **available in**
+  - Example: This feature is available in 19.2.
+- When a product includes a component by default:
+  - **include**
+  - **come with**
+  - **provide**
+  - Example: Siphon does not include its own table list.
+
+Do not use:
+
+- Siphon does not ship its own table list.
+- This feature ships in 17.4.
+
 ## sidebar, top bar
 
 Use **sidebar** to refer to the fixed areas on the left and right of the GitLab UI.

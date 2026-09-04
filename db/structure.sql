@@ -59775,9 +59775,6 @@ ALTER TABLE ONLY sbom_graph_paths
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_c4feab64ff FOREIGN KEY (sharding_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY oauth_consents
-    ADD CONSTRAINT fk_c5f142ff4b FOREIGN KEY (client_id) REFERENCES oauth_applications(uid) ON DELETE CASCADE;
-
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_c63cbf6c25 FOREIGN KEY (closed_by_id) REFERENCES users(id) ON DELETE SET NULL;
 

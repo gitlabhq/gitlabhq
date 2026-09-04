@@ -101,7 +101,7 @@ RSpec.describe Gitlab::ContributionsCalendar, feature_category: :user_profile do
       end
 
       it "does not fail if there are no contributed projects" do
-        expect(calendar.activity_dates[today]).to eq(nil)
+        expect(calendar.activity_dates[today]).to be_nil
       end
     end
 

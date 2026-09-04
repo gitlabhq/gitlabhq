@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :pipeline_composition do
   include RepoHelpers
+  include StubRequests
 
   let_it_be(:context_project) { create(:project) }
   let_it_be(:user) { create(:user) }
@@ -331,6 +332,186 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
 
       it 'correctly interpolates the content' do
         expect(project_file.to_hash).to eq({ rspec: { script: 'rspec --suite abc' } })
+      end
+    end
+
+    context 'when the file declares spec:include with a local location' do
+      let_it_be(:context_project) { create(:project, :repository, developers: user) }
+
+      let(:params) { { file: 'spec-include-template.yml', ref: 'master', project: project.full_path } }
+      let(:project_sha) { context_project.commit.sha }
+
+      before_all do
+        project.repository.create_file(
+          user, 'spec-include-template.yml',
+          <<~YAML,
+            spec:
+              include:
+                - local: spec-shared-inputs.yml
+            ---
+            rspec:
+              script: rspec --suite $[[ inputs.name ]]
+          YAML
+          message: 'Add template', branch_name: 'master'
+        )
+
+        project.repository.create_file(
+          user, 'spec-shared-inputs.yml',
+          "inputs:\n  name:\n    default: from-included-project\n",
+          message: 'Add inputs', branch_name: 'master'
+        )
+
+        context_project.repository.create_file(
+          user, 'spec-shared-inputs.yml',
+          "inputs:\n  name:\n    default: from-including-project\n",
+          message: 'Add inputs', branch_name: 'master'
+        )
+      end
+
+      it 'resolves the location in the project the file comes from' do
+        expect(project_file.to_hash).to eq({ rspec: { script: 'rspec --suite from-included-project' } })
+      end
+
+      it 'does not log' do
+        expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+        project_file.to_hash
+      end
+
+      context 'when the ci_spec_include_own_context feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_spec_include_own_context: false)
+        end
+
+        it 'resolves the location in the including project' do
+          expect(project_file.to_hash).to eq({ rspec: { script: 'rspec --suite from-including-project' } })
+        end
+
+        it 'logs that the location resolves outside the declaring file' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(
+            a_hash_including(
+              Labkit::Fields::GL_PROJECT_ID => context_project.id,
+              message: 'CI config spec:include location resolves outside the declaring file',
+              event: 'ci_spec_include_diverging_context',
+              Labkit::Fields::ADDITIONAL_DETAILS => a_hash_including(
+                location: 'spec-include-template.yml',
+                include_type: :project,
+                declaring_project_id: project.id
+              )
+            )
+          )
+
+          project_file.to_hash
+        end
+      end
+    end
+
+    context 'when the context has no project, as for a file included by a remote file' do
+      let_it_be(:pipeline_project) { create(:project, :repository, developers: user) }
+      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: pipeline_project) }
+
+      let(:params) { { file: 'nested-spec-template.yml', ref: 'master', project: project.full_path } }
+
+      let(:context_params) do
+        { project: nil, pipeline: pipeline, sha: project_sha, user: context_user, variables: variables }
+      end
+
+      before_all do
+        project.repository.create_file(
+          user, 'nested-spec-template.yml',
+          <<~YAML,
+            spec:
+              include:
+                - local: nested-spec-inputs.yml
+            ---
+            rspec:
+              script: rspec --suite $[[ inputs.name ]]
+          YAML
+          message: 'Add template', branch_name: 'master'
+        )
+
+        project.repository.create_file(
+          user, 'nested-spec-inputs.yml',
+          "inputs:\n  name:\n    default: from-declaring-project\n",
+          message: 'Add inputs', branch_name: 'master'
+        )
+      end
+
+      it 'takes the flag actor from the pipeline' do
+        stub_feature_flags(ci_spec_include_own_context: pipeline_project)
+
+        expect(project_file.to_hash).to eq({ rspec: { script: 'rspec --suite from-declaring-project' } })
+      end
+
+      it 'stays disabled when the flag is enabled for another project' do
+        stub_feature_flags(ci_spec_include_own_context: create(:project))
+
+        project_file.load_and_validate_expanded_hash!
+
+        expect(project_file.errors.first).to include('does not have project!')
+      end
+    end
+
+    context 'when the file declares spec:include with a remote location as a string' do
+      let_it_be(:context_project) { create(:project, :repository, developers: user) }
+
+      let(:params) { { file: 'spec-include-remote-string.yml', ref: 'master', project: project.full_path } }
+      let(:project_sha) { context_project.commit.sha }
+      let(:remote_location) { 'https://example.com/spec-shared-inputs.yml' }
+
+      before_all do
+        project.repository.create_file(
+          user, 'spec-include-remote-string.yml',
+          <<~YAML,
+            spec:
+              include:
+                - https://example.com/spec-shared-inputs.yml
+            ---
+            rspec:
+              script: rspec --suite $[[ inputs.name ]]
+          YAML
+          message: 'Add template', branch_name: 'master'
+        )
+      end
+
+      before do
+        stub_feature_flags(ci_spec_include_own_context: false)
+        stub_full_request(remote_location).to_return(body: "inputs:\n  name:\n    default: from-remote\n")
+      end
+
+      it 'resolves the location over HTTP' do
+        expect(project_file.to_hash).to eq({ rspec: { script: 'rspec --suite from-remote' } })
+      end
+
+      it 'does not log, because a remote location cannot resolve differently' do
+        expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+        project_file.to_hash
+      end
+    end
+
+    context 'when the file does not declare spec:include' do
+      let_it_be(:context_project) { create(:project, :repository, developers: user) }
+
+      let(:params) { { file: 'no-spec-template.yml', ref: 'master', project: project.full_path } }
+      let(:project_sha) { context_project.commit.sha }
+
+      before_all do
+        project.repository.create_file(
+          user, 'no-spec-template.yml',
+          "rspec:\n  script: rspec\n",
+          message: 'Add template', branch_name: 'master'
+        )
+      end
+
+      before do
+        stub_feature_flags(ci_spec_include_own_context: false)
+      end
+
+      it 'does not log' do
+        expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+        project_file.to_hash
       end
     end
   end

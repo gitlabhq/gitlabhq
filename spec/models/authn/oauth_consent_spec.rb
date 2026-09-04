@@ -8,6 +8,15 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
     it { is_expected.to belong_to(:application).class_name('Authn::OauthApplication') }
   end
 
+  describe 'cross-cell client_id' do
+    it 'persists a consent whose client_id has no local oauth_applications row', :aggregate_failures do
+      consent = build(:oauth_consent, application: nil, client_id: 'iam-only-client-uid')
+
+      expect(consent.save).to be(true)
+      expect(consent.reload.application).to be_nil
+    end
+  end
+
   describe 'validations' do
     subject(:consent) { build(:oauth_consent) }
 

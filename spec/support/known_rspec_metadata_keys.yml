@@ -151,6 +151,7 @@
 - :skip_openbao_setup
 - :snowplow
 - :snowplow_micro
+- :snowplow_tracking_journey
 - :stackprof
 - :stdout
 - :stub_feature_flags

@@ -13,6 +13,8 @@ module Gitlab
     #                             and short-circuits; otherwise the request falls
     #                             through to Rack::Attack, which still enforces.
     #
+    # PlanRules also starts it, independently of the cohorts.
+    #
     # Mounted directly above Rack::Attack (see config/application.rb), so it wraps it
     # and observes every request after Warden has resolved auth. On the way in it
     # builds a ClassifiedRequest of raw request facts and runs every limiter's full,
@@ -57,10 +59,10 @@ module Gitlab
       # :allow for a bypassed/skipped/unmatched request, otherwise the matched
       # throttle's decision). Returns those results (read again on the way out) and
       # the byte-identical 429 to return in place of calling the app (nil unless an
-      # enforcing cohort's rule blocks), or nil when the shadow did not run (no active
-      # cohort, or a guarded failure).
+      # enforcing cohort's rule blocks), or nil when it did not run (nothing enabled
+      # it, or a guarded failure).
       def run(env)
-        return if active_cohorts.empty?
+        return unless any_active_cohort? || plan_rules.active?
 
         request = build_request(env)
         context = with_isolated_throttle_instrumentation { request.labkit_facts }
@@ -150,8 +152,8 @@ module Gitlab
         instrumentation.safelist = original unless instrumentation.safelist == original
       end
 
-      def active_cohorts
-        registry.cohorts.select { |cohort| registry.shadow_enabled?(cohort) }.to_set
+      def any_active_cohort?
+        registry.cohorts.any? { |cohort| registry.shadow_enabled?(cohort) }
       end
 
       # The request that classifies itself for labkit, built from a dup of the env
@@ -180,6 +182,10 @@ module Gitlab
 
       def limiters
         ::Gitlab::RackAttack::LabkitRateLimit::Limiters
+      end
+
+      def plan_rules
+        ::Gitlab::RackAttack::LabkitRateLimit::PlanRules
       end
     end
   end

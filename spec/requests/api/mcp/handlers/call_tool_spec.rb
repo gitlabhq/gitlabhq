@@ -1748,6 +1748,62 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
+  describe '#get_project' do
+    let(:arguments) { { project_id: project.full_path } }
+    let(:tool_params) { { name: 'get_project', arguments: arguments } }
+
+    it 'returns the project metadata', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      expect(json_response['result']['structuredContent']).to eq(
+        'id' => project.id,
+        'path_with_namespace' => project.full_path,
+        'default_branch' => project.default_branch,
+        'visibility' => project.visibility,
+        'web_url' => project.web_url
+      )
+    end
+
+    context 'with a project URL' do
+      let(:arguments) { { url: project.web_url } }
+
+      it 'resolves the project from the URL' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['structuredContent']['path_with_namespace']).to eq(project.full_path)
+      end
+    end
+
+    context 'when neither url nor project_id is given' do
+      let(:arguments) { {} }
+
+      it 'returns an error' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('Provide exactly one of')
+      end
+    end
+
+    context 'when caller does not have access to the project' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+
+      it 'returns a non-leaky not found error', :aggregate_failures do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('not found or inaccessible')
+      end
+    end
+  end
+
   describe '#list_repository_tree' do
     let(:arguments) { { project_id: project.full_path, path: 'files', ref: 'master' } }
     let(:tool_params) { { name: 'list_repository_tree', arguments: arguments } }

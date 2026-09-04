@@ -181,11 +181,11 @@ RSpec.describe Gitlab::Instrumentation::RedisHelper, :request_store, feature_cat
 
   describe '.exclude_from_apdex?' do
     it 'returns false if all commands are allowed' do
-      expect(minimal_test_class_instance.test_exclusion([[:set, 'foo', 'bar'], [:lpush, 'que', 'item']])).to eq(false)
+      expect(minimal_test_class_instance.test_exclusion([[:set, 'foo', 'bar'], [:lpush, 'que', 'item']])).to be(false)
     end
 
     it 'returns true if any commands are banned' do
-      expect(minimal_test_class_instance.test_exclusion([[:brpop, 'foo', 2], [:lpush, 'que', 'item']])).to eq(true)
+      expect(minimal_test_class_instance.test_exclusion([[:brpop, 'foo', 2], [:lpush, 'que', 'item']])).to be(true)
     end
   end
 end

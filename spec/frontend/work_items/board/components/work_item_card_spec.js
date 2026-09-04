@@ -69,7 +69,7 @@ describe('WorkItemCard', () => {
       stubs: {
         WorkItemStatusBadge: stubFrom('WorkItemStatusBadge', ['item']),
         IssueWeight: stubFrom('IssueWeight'),
-        IssueIteration: stubFrom('IssueIteration'),
+        WorkItemIterationAttribute: stubFrom('WorkItemIterationAttribute'),
         IssueHealthStatus: {
           name: 'IssueHealthStatus',
           props: {

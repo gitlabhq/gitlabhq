@@ -67,6 +67,89 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
   end
 
+  describe '#declared_params' do
+    include Rack::Test::Methods
+
+    let(:declared_options) { {} }
+    let(:query) { 'parent_param=p&endpoint_param=set' }
+
+    let(:app) do
+      options = declared_options
+
+      Class.new(Grape::API::Instance) do
+        helpers API::Helpers
+        format :json
+
+        params do
+          optional :parent_param, type: String
+        end
+        namespace 'parent' do
+          params do
+            optional :endpoint_param, type: String
+            optional :switch, type: String
+            given :switch do
+              optional :dependent_param, type: String
+            end
+          end
+
+          get 'declared' do
+            declared_params(options)
+          end
+        end
+      end
+    end
+
+    subject(:declared) do
+      get "/parent/declared?#{query}"
+
+      Gitlab::Json.parse(last_response.body)
+    end
+
+    it 'returns only the params declared on the endpoint, including the missing ones' do
+      expect(declared).to eq(
+        'endpoint_param' => 'set',
+        'switch' => nil,
+        'dependent_param' => nil
+      )
+    end
+
+    context 'with include_parent_namespaces: true' do
+      let(:declared_options) { { include_parent_namespaces: true } }
+
+      it 'also returns params declared on the parent namespace' do
+        expect(declared).to include('parent_param' => 'p')
+      end
+    end
+
+    context 'with include_missing: false' do
+      let(:declared_options) { { include_missing: false } }
+
+      it 'omits declared params that were not passed' do
+        expect(declared).to eq('endpoint_param' => 'set')
+      end
+    end
+
+    context 'with evaluate_given: true' do
+      let(:declared_options) { { evaluate_given: true } }
+
+      it 'omits params whose given dependency is not met' do
+        expect(declared).to eq('endpoint_param' => 'set', 'switch' => nil)
+      end
+
+      context 'when the dependency is met' do
+        let(:query) { 'parent_param=p&endpoint_param=set&switch=on&dependent_param=dep' }
+
+        it 'includes the dependent params' do
+          expect(declared).to eq(
+            'endpoint_param' => 'set',
+            'switch' => 'on',
+            'dependent_param' => 'dep'
+          )
+        end
+      end
+    end
+  end
+
   describe '#find_project' do
     let_it_be(:project) { create(:project) }
 

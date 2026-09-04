@@ -29,7 +29,10 @@ RSpec.configure do |config|
     Gitlab::Tracking.remove_instance_variable(:@tracker) if Gitlab::Tracking.instance_variable_defined?(:@tracker)
   end
 
-  config.after(:example, :capture_snowplow_events) do
+  config.after(:example, :capture_snowplow_events) do |example|
+    SnowplowEventDump.write(example,
+      captured: captured_snowplow_events, raw: Gitlab::Testing::SnowplowEvents.all)
+  ensure
     Gitlab::Testing::SnowplowEvents.stop_capturing!
   end
 end

@@ -210,6 +210,82 @@ Each of these means something to fix in the spec or the YAML file, not a problem
 | `<NAME> has no variant '<VARIANT>', only a, b` | The arm name you passed does not match any arm in the contract. |
 | `<NAME> declares no events to assert` | The contract, or the arm you selected, declares no events, so the assertion would pass without checking anything. |
 
+## Read the events a spec captured
+
+Every example tagged `:capture_snowplow_events` writes what it captured to disk, in addition to
+anything you assert in the example itself.
+No extra setup is needed.
+Locally, dumps land under `tmp/captured_snowplow_events/`.
+In CI, they land under `rspec/captured_snowplow_events/`, which the test jobs collect as a job
+artifact, because the `.artifact-base` anchor in `.gitlab/ci/rails/shared.gitlab-ci.yml` covers
+that directory.
+The artifact expires after 31 days.
+
+Each example gets its own directory, named after the RSpec example ID, which is the spec file path
+plus the example's scoped position, for example `1-1-1-1`.
+The ID is used instead of the description because descriptions are not unique.
+A shared example carries the same description into every context it runs in, so both arms of an
+experiment would otherwise collide on the same directory:
+
+```plaintext
+tmp/captured_snowplow_events/
+  index.json
+  ee/spec/features/experiments/whats_new_placement_events_spec/
+    1-1-1-1/   events.yml  payloads.json
+    1-2-1-1/   events.yml  payloads.json
+```
+
+Each example directory holds two files:
+
+- `events.yml` holds the structured events, in the same shape as a tracking journey contract,
+  deduplicated, and leaving out fields the event did not carry.
+  A header comment records the example description, its file and line, a UTC timestamp, and a
+  count of page view and self-describing events, none of which a contract can express.
+- `payloads.json` holds the raw payloads exactly as they would have been POSTed to the collector.
+
+```yaml
+# Captured from: What's new placement experiment when assigned the candidate variant ...
+# ./ee/spec/features/experiments/whats_new_placement_events_spec.rb:16 at 2026-09-02T08:28:00Z
+#
+# Frontend categories are the page an event fired on, so they are rarely worth asserting.
+# Also captured, not expressible in a contract: 1 page view, 1 self-describing event
+---
+events:
+- category: whats_new_placement
+  action: assignment
+- category: root:index
+  action: click_whats_new_for_you_menu_item
+  property: profile_menu
+```
+
+`index.json`, at the root of the dump, maps each example's dump to the tracking journey and
+variant it proves, one entry per example, so you can find a dump by experiment name without
+knowing which spec produced it.
+An example that captured events without asserting a journey, or that failed its journey
+assertion, is listed with `"journey": null`.
+A successful entry looks like this:
+
+```json
+{
+  "journey": "whats_new_placement",
+  "variant": "candidate",
+  "events": "ee/spec/features/experiments/whats_new_placement_events_spec/1-1-1-1/events.yml",
+  "payloads": "ee/spec/features/experiments/whats_new_placement_events_spec/1-1-1-1/payloads.json"
+}
+```
+
+Re-running an example replaces its directory, so what is on disk is always from the most recent
+run.
+
+This removes the need to run Snowplow Micro in Docker and copy events out of its UI by hand when
+you post evidence of an experiment's events into a rollout issue.
+Paste the contents of `events.yml` into the issue.
+
+Each CI job writes only the examples that ran in it, so the dumps are spread across the parallel
+`rspec system` and `rspec-ee system` jobs, and each `index.json` covers a single job.
+Finding the right shard takes longer than running the spec yourself, so a local run is usually the
+quicker way to collect rollout evidence.
+
 ## Scope and limits
 
 - This proves the payload the application actually emits. The capture happens at the last point

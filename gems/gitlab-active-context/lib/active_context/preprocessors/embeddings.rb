@@ -14,7 +14,8 @@ module ActiveContext
           content_field: :content,
           content_method: nil,
           remove_content: false,
-          next_model_only: false
+          next_model_only: false,
+          error_types: [StandardError]
         )
           grouped_processing_result(refs.group_by(&:root_namespace_id)) do |root_namespace_id, namespace_refs|
             generate_and_apply_embeddings_for_root_namespace(
@@ -24,7 +25,8 @@ module ActiveContext
               content_field: content_field,
               content_method: content_method,
               remove_content: remove_content,
-              next_model_only: next_model_only
+              next_model_only: next_model_only,
+              error_types: error_types
             )
           end
         end
@@ -35,7 +37,8 @@ module ActiveContext
           content_field: :content,
           content_method: nil,
           remove_content: false,
-          next_model_only: false
+          next_model_only: false,
+          error_types: [StandardError]
         )
           generate_and_apply_embeddings_for_root_namespace(
             refs: refs,
@@ -44,7 +47,8 @@ module ActiveContext
             content_field: content_field,
             content_method: content_method,
             remove_content: remove_content,
-            next_model_only: next_model_only
+            next_model_only: next_model_only,
+            error_types: error_types
           )
         end
 
@@ -57,10 +61,12 @@ module ActiveContext
           content_field: :content,
           content_method: nil,
           remove_content: false,
-          next_model_only: false
+          next_model_only: false,
+          error_types: [StandardError]
         )
           with_batch_handling(
             refs,
+            error_types: error_types,
             queue_name: queue_name,
             preprocessor: 'embeddings') do
             docs_to_process = refs.flat_map do |ref|

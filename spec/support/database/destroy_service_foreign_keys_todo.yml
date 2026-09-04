@@ -704,7 +704,6 @@ oauth_applications:
 - application_settings.o11y_oauth_application_id
 - application_settings.web_ide_oauth_application_id
 - application_settings.workspaces_oauth_application_id
-- oauth_consents.client_id
 - oauth_device_grants.application_id
 operations_feature_flags:
 - operations_feature_flags_issues.feature_flag_id

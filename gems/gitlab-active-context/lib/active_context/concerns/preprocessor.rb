@@ -98,6 +98,12 @@ module ActiveContext
           log_batch_failure(e, refs, queue_name: queue_name, preprocessor: preprocessor)
 
           { successful: [], failed: refs }
+        rescue StandardError => e
+          # This error is not in the caller's `error_types` list.
+          # Log it as an error, not a warning, so it does not hide with expected failures.
+          log_unexpected_batch_failure(e, refs, queue_name: queue_name, preprocessor: preprocessor)
+
+          { successful: [], failed: refs }
         end
       end
 
@@ -105,6 +111,17 @@ module ActiveContext
 
       def log_batch_failure(exception, refs, queue_name:, preprocessor:)
         ::ActiveContext::Logger.retryable_exception(
+          exception,
+          class_name: name,
+          queue_name: queue_name,
+          preprocessor: preprocessor,
+          refs_count: refs.count,
+          refs_sample: refs.first(LOGGED_REFS_SAMPLE_SIZE).map(&:serialize)
+        )
+      end
+
+      def log_unexpected_batch_failure(exception, refs, queue_name:, preprocessor:)
+        ::ActiveContext::Logger.exception(
           exception,
           class_name: name,
           queue_name: queue_name,

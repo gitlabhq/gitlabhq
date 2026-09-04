@@ -58,7 +58,7 @@ module API
 
         options = { with: Entities::Namespace, current_user: current_user }
 
-        present paginate(namespaces), options.reverse_merge(custom_namespace_present_options)
+        present paginate(namespaces), **options.reverse_merge(custom_namespace_present_options)
       end
 
       desc 'Retrieve namespace details' do

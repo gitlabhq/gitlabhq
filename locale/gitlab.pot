@@ -12305,6 +12305,9 @@ msgstr ""
 msgid "ArtifactRegistry|Create your first repository to start publishing and pulling artifacts."
 msgstr ""
 
+msgid "ArtifactRegistry|Created"
+msgstr ""
+
 msgid "ArtifactRegistry|Created on"
 msgstr ""
 
@@ -12365,6 +12368,9 @@ msgid "ArtifactRegistry|Enter both a username and a token or password, or leave 
 msgstr ""
 
 msgid "ArtifactRegistry|Failed to connect. Check the URL and credentials."
+msgstr ""
+
+msgid "ArtifactRegistry|File"
 msgstr ""
 
 msgid "ArtifactRegistry|Filter repositories"

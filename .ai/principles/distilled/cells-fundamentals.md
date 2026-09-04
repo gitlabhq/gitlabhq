@@ -10,6 +10,7 @@ distilled_at_sha: 73023e3b34aa63d1692e8a3066e870c10875ef55
 
 ### Compute Scope
 
+- Design for Cells as a GitLab.com-only deployment; GitLab Self-Managed and GitLab Dedicated run as a single cell.
 - Scope all Web/API requests and Sidekiq workers to a single organization; convert cross-organization compute to be organization-scoped.
 - DO NOT introduce cross-cell access to organization data — all data and compute for an organization must live on a single cell.
 
@@ -44,6 +45,7 @@ distilled_at_sha: 73023e3b34aa63d1692e8a3066e870c10875ef55
 - Use `gitlab_main_user` only for user functionality that is not organizational level; prefer `gitlab_main_org` for most user functionality (for example, commenting on an issue).
 - Use `gitlab_shared_org` for tables with data across multiple databases that have `organization_id` for sharding; DO NOT use auto-incrementing integer primary keys — use composite or UUID primary keys instead.
 - Use `gitlab_shared_cell_local` for cell-local shared tables that do not require sharding and exist across multiple databases (for example, `loose_foreign_keys_deleted_records`).
+- Inherit models for `gitlab_shared_org` and `gitlab_shared_cell_local` tables from `Gitlab::Database::SharedModel`.
 - Use `gitlab_sec_cell_local` for tables in the `sec:` database that hold cell-local, non-customer reference data with no sharding key (for example, malware and package-metadata advisories); these rows are the same for every organization in a cell and are replicated per cell — use `SecApplicationRecord` for models on this schema.
 - DO NOT use the deprecated `gitlab_main` schema — use `gitlab_main_org` instead.
 - Fix pipeline failures caused by cross-database joins, cross-database transactions, or cross-database foreign keys after assigning a schema (see `doc/development/multiple_databases.md` for remediation guidance).

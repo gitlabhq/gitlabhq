@@ -14,9 +14,9 @@ module Gitlab
       # Matches REBUILD_FLAG_TTL so orphaned events expire before the next rebuild.
       PENDING_EVENT_TTL = REBUILD_FLAG_TTL
 
-      # TTL for trust flag (cache self-heals when expired).
-      # This value is arbitrary and can be adjusted based on observed behavior.
       TRUST_TTL = 1.hour
+      INCREASED_TRUST_TTL = 6.hours
+      TRUST_TTL_JITTER = 30.minutes
       DRAIN_BATCH_SIZE = 1000
 
       # Value used for Redis flag keys (trust, rebuild)
@@ -541,16 +541,22 @@ module Gitlab
         full_key = cache_key(key)
 
         granted = with do |redis|
-          redis.eval(TRUST_IF_EXISTS_SCRIPT, keys: [full_key, trust_key(key)], argv: [TRUST_TTL.to_i, FLAG_VALUE])
+          redis.eval(TRUST_IF_EXISTS_SCRIPT, keys: [full_key, trust_key(key)], argv: [trust_ttl, FLAG_VALUE])
         end
 
         granted == 1
       end
 
       def set_trust_flag(key)
-        with { |redis| redis.set(trust_key(key), FLAG_VALUE, ex: TRUST_TTL) }
+        with { |redis| redis.set(trust_key(key), FLAG_VALUE, ex: trust_ttl) }
 
         true
+      end
+
+      def trust_ttl
+        return TRUST_TTL.to_i unless Feature.enabled?(:increase_ref_cache_trust_ttl, repository.project)
+
+        INCREASED_TRUST_TTL.to_i + rand(TRUST_TTL_JITTER.to_i)
       end
 
       # Atomically deletes the trust flag and set for each trust-backed key.

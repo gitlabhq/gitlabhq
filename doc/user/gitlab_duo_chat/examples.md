@@ -785,7 +785,7 @@ Use the commands to quickly accomplish specific tasks.
 |---------|-------------------------------------------------------------------------------------------------------------------------------|
 | /new    | Start a new conversation, but keep the previous conversations in the chat history      |
 | /reset  | Clear the chat window and reset the conversation                                       |
-| /help   | Learn more about how GitLab Duo Chat works                                                                                           |
+| /help   | Learn more about how GitLab Duo Chat works. Not available in GitLab Duo Agentic Chat.                                                                    |
 
 > [!note]
 > On GitLab.com, in GitLab 17.10 and later, when having [multiple conversations](_index.md#have-multiple-conversations), the `/clear` and `/reset` slash commands are replaced by the [`/new` slash command](#gitlab-ui).
@@ -805,13 +805,14 @@ Use the commands to quickly accomplish specific tasks.
 
 {{< /history >}}
 
-These commands are dynamic and are available only in the GitLab UI when using GitLab Duo Chat:
+These commands are dynamic and are available only in the GitLab UI when using GitLab Duo Chat.
+They are not available in GitLab Duo Agentic Chat.
 
 | Command                | Purpose                                                                                                            | Area |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------ | ---- |
-| /summarize_comments    | Generate a summary of all comments on the current issue                                                            | Issues |
-| /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Jobs |
-| /vulnerability_explain | [Explain current vulnerability](../application_security/analyze/duo.md)                                            | Vulnerabilities |
+| /summarize_comments    | Generate a summary of all comments on the current issue.                                               | Issues |
+| /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis). | Jobs |
+| /vulnerability_explain | [Explain current vulnerability](../application_security/analyze/duo.md).                               | Vulnerabilities |
 
 ### IDE
 

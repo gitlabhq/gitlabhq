@@ -165,6 +165,7 @@ principles:
       - 'ee/app/models/**/*.rb'
       - 'config/organizations/transfer_support.yml'
       - 'config/gitlab_loose_foreign_keys.yml'
+    baseline: .ai/principles/baselines/cells-fundamentals.md
     sources:
       - path: doc/development/cells/_index.md
         url: https://docs.gitlab.com/development/cells/

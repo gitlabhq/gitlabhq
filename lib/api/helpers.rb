@@ -34,7 +34,8 @@ module API
 
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)
-      declared(params, options).to_h.symbolize_keys
+      # Splatted: Grape 3.x takes these as keywords, Grape 2.4 as a positional hash. `**` satisfies both.
+      declared(params, **options).to_h.symbolize_keys
     end
 
     def check_unmodified_since!(last_modified)

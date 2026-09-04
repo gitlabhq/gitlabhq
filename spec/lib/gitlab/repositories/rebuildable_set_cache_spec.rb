@@ -24,6 +24,14 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
       expect(described_class::TRUST_TTL).to eq(1.hour)
     end
 
+    it 'defines INCREASED_TRUST_TTL as 6 hours' do
+      expect(described_class::INCREASED_TRUST_TTL).to eq(6.hours)
+    end
+
+    it 'defines TRUST_TTL_JITTER as 30 minutes' do
+      expect(described_class::TRUST_TTL_JITTER).to eq(30.minutes)
+    end
+
     it 'defines DRAIN_BATCH_SIZE as 1000' do
       expect(described_class::DRAIN_BATCH_SIZE).to eq(1000)
     end
@@ -522,6 +530,8 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
   describe '#write' do
     subject(:write_cache) { cache.write(:branch_names, %w[main feature]) }
 
+    let(:trust_ttl_offset) { 5.minutes.to_i }
+
     it 'writes the values to the cache' do
       write_cache
 
@@ -534,18 +544,12 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
       expect(cache.ttl(:branch_names)).to be_within(10).of(2.weeks.to_i)
     end
 
-    it 'marks cache as trusted after write' do
+    it 'marks cache as trusted after write', :aggregate_failures do
       expect(cache.trusted?(:branch_names)).to be false
 
       write_cache
 
       expect(cache.trusted?(:branch_names)).to be true
-
-      ttl = Gitlab::Redis::RepositoryCache.with do |redis|
-        redis.ttl(cache.trust_key(:branch_names))
-      end
-
-      expect(ttl).to be_within(5).of(described_class::TRUST_TTL.to_i)
     end
 
     it 'acquires and releases rebuild lock' do
@@ -1073,8 +1077,12 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
       end
     end
 
-    context 'when the rebuild populates a non-empty set' do
-      it 'grants trust through a same-slot script over the set and trust keys' do
+    context 'when increase_ref_cache_trust_ttl is enabled' do
+      before do
+        allow(cache).to receive(:rand).with(described_class::TRUST_TTL_JITTER.to_i).and_return(trust_ttl_offset)
+      end
+
+      it 'forwards the increased jittered TTL to the non-empty cache Lua writer', :aggregate_failures do
         full_key = cache.cache_key(:branch_names)
         trust_key = cache.trust_key(:branch_names)
 
@@ -1098,7 +1106,60 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
         cache.write(:branch_names, %w[main develop])
 
         expect(eval_keys).to eq([full_key, trust_key])
+        expect(eval_argv).to eq([
+          described_class::INCREASED_TRUST_TTL.to_i + trust_ttl_offset,
+          described_class::FLAG_VALUE
+        ])
+      end
+
+      it 'sets the increased jittered TTL on the empty cache trust flag' do
+        cache.write(:branch_names, [])
+
+        ttl = Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.ttl(cache.trust_key(:branch_names))
+        end
+        expected_ttl = described_class::INCREASED_TRUST_TTL.to_i + trust_ttl_offset
+
+        expect(ttl).to be_between(expected_ttl - 2, expected_ttl)
+      end
+    end
+
+    context 'when increase_ref_cache_trust_ttl is disabled' do
+      before do
+        stub_feature_flags(increase_ref_cache_trust_ttl: false)
+      end
+
+      it 'forwards the legacy TTL to the non-empty cache Lua writer', :aggregate_failures do
+        expect(cache).not_to receive(:rand)
+
+        eval_argv = nil
+        allow(Gitlab::Redis::RepositoryCache).to receive(:with).and_wrap_original do |original, &block|
+          original.call do |redis|
+            allow(redis).to receive(:eval).and_wrap_original do |eval_method, script, keys:, argv:|
+              eval_argv = argv if script == described_class::TRUST_IF_EXISTS_SCRIPT
+
+              eval_method.call(script, keys: keys, argv: argv)
+            end
+
+            block.call(redis)
+          end
+        end
+
+        cache.write(:branch_names, %w[main develop])
+
         expect(eval_argv).to eq([described_class::TRUST_TTL.to_i, described_class::FLAG_VALUE])
+      end
+
+      it 'sets the legacy TTL on the empty cache trust flag', :aggregate_failures do
+        expect(cache).not_to receive(:rand)
+
+        cache.write(:branch_names, [])
+
+        ttl = Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.ttl(cache.trust_key(:branch_names))
+        end
+
+        expect(ttl).to be_between(described_class::TRUST_TTL.to_i - 2, described_class::TRUST_TTL.to_i)
       end
     end
   end

@@ -135,6 +135,11 @@ module Gitlab
               ::Gitlab::Ci::Config::Yaml::Loader.new(content).load_uninterpolated_yaml
             end
 
+            def expanded_context
+              context.mutate(expand_context_attrs)
+            end
+            strong_memoize_attr :expanded_context
+
             protected
 
             def content_inputs
@@ -144,11 +149,59 @@ module Gitlab
             def content_result
               context.logger.instrument(:config_file_fetch_content_hash) do
                 ::Gitlab::Ci::Config::Yaml::Loader.new(
-                  content, inputs: content_inputs, context: yaml_context, external_context: context
+                  content, inputs: content_inputs, context: yaml_context, external_context: header_include_context
                 ).load
               end
             end
             strong_memoize_attr :content_result
+
+            def header_include_context
+              return expanded_context if Feature.enabled?(:ci_spec_include_own_context, flag_actor)
+
+              log_diverging_header_include
+
+              context
+            end
+
+            # Context#mutate drops the project under remote and template includes, so the flag
+            # would otherwise flip mid-tree.
+            def flag_actor
+              context.pipeline&.project
+            end
+
+            # TODO: remove with the flag, see https://gitlab.com/gitlab-org/gitlab/-/issues/624232
+            # Measures the blast radius of the flag: logs the files that resolve a `spec:include` location
+            # against the caller today and would resolve it against themselves once the flag is on.
+            def log_diverging_header_include
+              return unless header_include_diverges?
+
+              Gitlab::AppJsonLogger.info(
+                Labkit::Fields::CLASS_NAME => self.class.name,
+                Labkit::Fields::GL_PROJECT_ID => context.project&.id,
+                message: 'CI config spec:include location resolves outside the declaring file',
+                event: 'ci_spec_include_diverging_context',
+                Labkit::Fields::ADDITIONAL_DETAILS => {
+                  location: masked_location,
+                  include_type: include_type,
+                  declaring_project_id: expanded_context.project&.id
+                }
+              )
+            end
+
+            def header_include_diverges?
+              # Cheapest checks first: a file with no `spec:` at all cannot declare a header, and building
+              # the expanded context allocates.
+              return false unless content.to_s.include?('spec:')
+              return false if expanded_context.project == context.project && expanded_context.sha == context.sha
+
+              header_yaml = load_uninterpolated_yaml
+              return false unless header_yaml.valid?
+
+              Array.wrap(header_yaml.spec[:include]).any? do |location|
+                (location.is_a?(String) && !::Gitlab::UrlSanitizer.valid?(location)) ||
+                  (location.is_a?(Hash) && location.key?(:local))
+              end
+            end
 
             def yaml_context
               ::Gitlab::Ci::Config::Yaml::Context.new(**yaml_context_attributes)
@@ -186,7 +239,7 @@ module Gitlab
             def expand_includes(hash)
               return hash if inputs_only?
 
-              External::Processor.new(hash, context.mutate(expand_context_attrs)).perform
+              External::Processor.new(hash, expanded_context).perform
             end
 
             def expand_context_attrs

@@ -40,7 +40,7 @@ RSpec.describe ::API::Entities::Issue, feature_category: :team_planning do
       let(:email) { nil }
 
       specify { expect(json).to have_key(:service_desk_reply_to) }
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
   end
 end

@@ -283,7 +283,7 @@ module API
           status 200
         end
 
-        present message: service_response.message
+        present({ message: service_response.message })
       end
 
       desc 'Retrieve an environment' do

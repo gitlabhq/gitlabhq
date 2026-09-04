@@ -567,6 +567,39 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
         )
       end
     end
+
+    context 'when it declares spec:include with a local location' do
+      let(:remote_file_content) do
+        <<~YAML
+          spec:
+            include:
+              - local: shared-inputs.yml
+          ---
+          rspec:
+            script: rspec --suite $[[ inputs.name ]]
+        YAML
+      end
+
+      subject(:errors) do
+        remote_file.preload_content
+        remote_file.load_and_validate_expanded_hash!
+        remote_file.errors
+      end
+
+      it 'reports that there is no repository to resolve the location against' do
+        expect(errors.first).to include('Local file `shared-inputs.yml` does not have project!')
+      end
+
+      context 'when the ci_spec_include_own_context feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_spec_include_own_context: false)
+        end
+
+        it 'resolves the location in the project running the pipeline' do
+          expect(errors.first).to include('Local file `shared-inputs.yml` does not exist!')
+        end
+      end
+    end
   end
 
   describe '#content with HTTP timeout' do

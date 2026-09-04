@@ -1,0 +1,11 @@
+---
+name: ci_spec_include_own_context
+description: Resolve spec:include locations against the repository of the file that
+  declares them
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590532
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249592
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/624232
+milestone: '19.4'
+group: group::pipeline authoring
+type: beta
+default_enabled: false

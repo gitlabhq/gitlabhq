@@ -18,6 +18,10 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb']
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "activerecord", ">= 7"
+
   spec.add_development_dependency "gitlab-styles", "~> 10.1.0"
+  spec.add_development_dependency "pg", "~> 1.5"
+  spec.add_development_dependency "pry-byebug"
   spec.add_development_dependency "rspec", "~> 3.0"
 end

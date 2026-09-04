@@ -114,6 +114,34 @@ To merge selected cells into one:
 
 To split merged cells: In the upper-right corner of a cell, select the chevron {{< icon name="chevron-down" >}} > **Split cell**.
 
+### Paste into a table cell
+
+{{< history >}}
+
+- Table menu paste actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627112) in GitLab 19.4.
+
+{{< /history >}}
+
+When you press <kbd>Control</kbd>+<kbd>V</kbd> (or <kbd>Command</kbd>+<kbd>V</kbd> on macOS),
+GitLab merges the copied cells into the table by default.
+
+To choose how the content is pasted:
+
+1. In the upper-right corner of the target cell, select the chevron
+   {{< icon name="chevron-down" >}}.
+1. Select one of these options:
+   - **Paste into cell**: Inserts the copied content at the cursor. A copied table becomes a
+     table nested inside the cell.
+   - **Paste and merge into table**: Distributes the copied cells across the table (default behavior).
+
+The first time you use either option, your browser might ask for permission to read your
+clipboard.
+
+> [!note]
+> The paste options appear only when your browser can read the clipboard. Browsers allow this
+> only on pages served over HTTPS or from `localhost`, so the options are not available on a
+> GitLab Self-Managed instance served over plain HTTP.
+
 ## Insert diagrams
 
 Insert [Mermaid](https://mermaidjs.github.io/) and [PlantUML](https://plantuml.com/) diagrams and

@@ -21,7 +21,7 @@ RSpec.describe API::Entities::ApplicationSetting, feature_category: :shared do
       let(:housekeeping_bitmaps_enabled) { false }
 
       it 'returns true' do
-        expect(subject[:housekeeping_bitmaps_enabled]).to eq(true)
+        expect(subject[:housekeeping_bitmaps_enabled]).to be(true)
       end
     end
 
@@ -29,7 +29,7 @@ RSpec.describe API::Entities::ApplicationSetting, feature_category: :shared do
       let(:housekeeping_bitmaps_enabled) { true }
 
       it 'returns true' do
-        expect(subject[:housekeeping_bitmaps_enabled]).to eq(true)
+        expect(subject[:housekeeping_bitmaps_enabled]).to be(true)
       end
     end
   end

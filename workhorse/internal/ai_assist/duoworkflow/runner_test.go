@@ -2198,8 +2198,8 @@ func TestRunner_handleAgentMessages_invalidRequest(t *testing.T) {
 }
 
 func TestRunner_AcquireWorkflowLock_MisconfiguredRedis(t *testing.T) {
-	// Create a misconfigured Redis client (not connected to any server)
-	rdb := redis.NewClient(&redis.Options{})
+	// Port 1 always refuses. The default localhost:6379 is a live service on the kubernetes executor.
+	rdb := redis.NewClient(&redis.Options{Addr: "localhost:1"})
 	lockManager := newWorkflowLockManager(rdb)
 	require.NotNil(t, lockManager)
 

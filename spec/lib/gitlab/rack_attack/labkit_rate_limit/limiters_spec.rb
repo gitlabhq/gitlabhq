@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: :rate_limiting do
   let(:registry) { Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry }
 
+  before do
+    described_class.reset!
+  end
+
   after do
     described_class.reset!
   end

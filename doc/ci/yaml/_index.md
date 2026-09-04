@@ -1260,6 +1260,7 @@ spec:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931) in GitLab 18.6 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_file_inputs`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/579240) in GitLab 18.9. Feature flag `ci_file_inputs` removed.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/590532) in GitLab 19.4 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_spec_include_own_context`. Disabled by default.
 
 {{< /history >}}
 
@@ -1314,6 +1315,12 @@ deploy:
 - When you include multiple input files, they are merged in the order specified.
 - Supports [`local`](#includelocal), [`remote`](#includeremote), and [`project`](#includeproject) include types.
   Does not support `template`, `component`, or `artifact` includes.
+- Include locations resolve against the repository and ref of the file that contains the `spec` section,
+  not the file that included it.
+  A `local` location is local to the file that declares `spec:include`.
+- You cannot use a `local` location in a file added with [`include:remote`](#includeremote) or
+  [`include:template`](#includetemplate), because those files have no repository to resolve against.
+  Use [`include:project`](#includeproject) instead.
 
 **Related topics**:
 

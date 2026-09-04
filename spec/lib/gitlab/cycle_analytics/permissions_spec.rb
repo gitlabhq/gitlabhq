@@ -10,27 +10,27 @@ RSpec.describe Gitlab::CycleAnalytics::Permissions do
 
   context 'user with no relation to the project' do
     it 'has no permissions to issue stage' do
-      expect(subject[:issue]).to eq(false)
+      expect(subject[:issue]).to be(false)
     end
 
     it 'has no permissions to test stage' do
-      expect(subject[:test]).to eq(false)
+      expect(subject[:test]).to be(false)
     end
 
     it 'has no permissions to staging stage' do
-      expect(subject[:staging]).to eq(false)
+      expect(subject[:staging]).to be(false)
     end
 
     it 'has no permissions to code stage' do
-      expect(subject[:code]).to eq(false)
+      expect(subject[:code]).to be(false)
     end
 
     it 'has no permissions to review stage' do
-      expect(subject[:review]).to eq(false)
+      expect(subject[:review]).to be(false)
     end
 
     it 'has no permissions to plan stage' do
-      expect(subject[:plan]).to eq(false)
+      expect(subject[:plan]).to be(false)
     end
   end
 
@@ -40,27 +40,27 @@ RSpec.describe Gitlab::CycleAnalytics::Permissions do
     end
 
     it 'has permissions to issue stage' do
-      expect(subject[:issue]).to eq(true)
+      expect(subject[:issue]).to be(true)
     end
 
     it 'has permissions to test stage' do
-      expect(subject[:test]).to eq(true)
+      expect(subject[:test]).to be(true)
     end
 
     it 'has permissions to staging stage' do
-      expect(subject[:staging]).to eq(true)
+      expect(subject[:staging]).to be(true)
     end
 
     it 'has permissions to code stage' do
-      expect(subject[:code]).to eq(true)
+      expect(subject[:code]).to be(true)
     end
 
     it 'has permissions to review stage' do
-      expect(subject[:review]).to eq(true)
+      expect(subject[:review]).to be(true)
     end
 
     it 'has permissions to plan stage' do
-      expect(subject[:plan]).to eq(true)
+      expect(subject[:plan]).to be(true)
     end
   end
 
@@ -70,15 +70,15 @@ RSpec.describe Gitlab::CycleAnalytics::Permissions do
     end
 
     it 'has permissions to issue stage' do
-      expect(subject[:issue]).to eq(true)
+      expect(subject[:issue]).to be(true)
     end
 
     it 'has no permissions to test stage' do
-      expect(subject[:test]).to eq(false)
+      expect(subject[:test]).to be(false)
     end
 
     it 'has no permissions to staging stage' do
-      expect(subject[:staging]).to eq(false)
+      expect(subject[:staging]).to be(false)
     end
   end
 
@@ -88,15 +88,15 @@ RSpec.describe Gitlab::CycleAnalytics::Permissions do
     end
 
     it 'has permissions to issue stage' do
-      expect(subject[:issue]).to eq(true)
+      expect(subject[:issue]).to be(true)
     end
 
     it 'has no permissions to code stage' do
-      expect(subject[:code]).to eq(false)
+      expect(subject[:code]).to be(false)
     end
 
     it 'has no permissions to review stage' do
-      expect(subject[:review]).to eq(false)
+      expect(subject[:review]).to be(false)
     end
   end
 
@@ -107,11 +107,11 @@ RSpec.describe Gitlab::CycleAnalytics::Permissions do
     end
 
     it 'has permissions to code stage' do
-      expect(subject[:code]).to eq(true)
+      expect(subject[:code]).to be(true)
     end
 
     it 'has no permissions to issue stage' do
-      expect(subject[:issue]).to eq(false)
+      expect(subject[:issue]).to be(false)
     end
   end
 end

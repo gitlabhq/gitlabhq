@@ -1,6 +1,6 @@
 ---
-source_checksum: fb591c74b686c305
-distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
+source_checksum: 78095dedd5107da5
+distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -13,32 +13,29 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 ### Attribute Selection
 
 - Claim attributes that are used for routing (URL, REST API, GraphQL API) or for logging in, as these must be globally unique across the cluster.
-- Ensure every `cells_claims_attribute` specifies a `type` (bucket type); a `feature_flag` (model-specific control flag) is added for deployment safety during initial rollout but is not a permanent requirement and can be removed once the attribute is validated and stable in production.
+- Ensure every `cells_claims_attribute` specifies a `type` (claim type); an optional per-attribute `feature_flag` can be added for deployment safety during initial rollout and removed once the attribute is validated and stable in production.
 - Define `cells_claims_metadata` with `subject_type` and `subject_key` on every claimable model; `source_type` and source value are inferred automatically.
 
 ### Adding a New Claimable Model
 
 - Include `Cells::Claimable` in the model before declaring any `cells_claims_attribute` or `cells_claims_metadata`.
 - Create a `beta` feature flag YAML file at `config/feature_flags/beta/cells_claims_<model>s.yml` with `default_enabled: false` and `group: group::cells infrastructure`.
-- Create a separate `beta` feature flag YAML file at `config/feature_flags/beta/cells_claims_verification_worker_<model_name>.yml` with `default_enabled: false`.
-- Add new `Bucket::Type`, `Subject::Type`, and `Source::Type` entries in Topology Service's `proto/claims/v1/messages.proto` before using them in Rails.
-- Add validation rules for the new bucket type in Topology Service's `validation.go` to prevent incorrect usage.
+- Add new `ClaimType` entries under `oneof claim` and `ClaimType` in Topology Service's `proto/types/v1/claim.proto`, and `Subject::Type` and `Source::Type` entries in `proto/claims/v1/messages.proto` (if not already present) before using them in Rails.
+- Add validation rules for the new claim type in Topology Service's `validation.go` to prevent incorrect usage.
 - After the Topology Service MR is merged, update the Topology Service client in GitLab by running `scripts/update-topology-service-gem.sh` in the MR branch.
 - Audit the model for ActiveRecord-bypassing code paths (`delete_all`, `insert_all`, `upsert_all`, raw SQL) and handle claims for those paths using `Cells::BulkClaimsWorker`.
 - Add model tests using `it_behaves_like 'cells claimable model'` and a dedicated spec file in `spec/cells/claims/<model>_spec.rb` covering creating, deleting, and updating claims.
 
 ### Feature Flags
 
-- Enable both the global flag (`cells_unique_claims`) and the model-specific flag (`cells_claims_<model>s`) for claims to take effect; claims do not work if either flag is disabled.
-- Enable the verification worker flag (`cells_claims_verification_worker_<model_name>`) only after the model-specific claiming flag is already active.
-- Use the parameterized model name (for example, `user`, `email`, `route`) as `<model_name>` in verification worker feature flag names.
-- Test feature flag behavior with `stub_feature_flags(cells_claims_your_model: false)` and assert that no claims are created or deleted when the flag is disabled.
+- Introduce each new claimable attribute behind a temporary per-attribute `feature_flag:` for rollout safety; remove the flag and its YAML file once the attribute has been validated in production (after removal, only `Gitlab.config.cell.enabled` controls claiming).
+- Test feature flag behavior with `stub_feature_flags(cells_claims_your_new_attribute: false)` and assert that no claims are created or deleted when the flag is disabled; remove these disabled-state examples once the flag is removed.
 
 ### Rollout Lifecycle
 
-- Follow the two-phase rollout: Phase 1 enables live request claiming via `Cells::Claimable` callbacks; Phase 2 enables the verification worker for backfilling and ongoing consistency.
+- Follow the two-phase rollout: Phase 1 enables live request claiming via `Cells::Claimable` callbacks (new writes only); Phase 2 is backfilling and ongoing drift correction via the verification service, which starts automatically once at least one attribute is enabled.
 - Ensure the feature-owning team (not the Cells Infrastructure team) owns the rollout of both phases, including creating flags, enabling them, and monitoring correctness.
-- After enabling the model-specific flag globally in production, validate the full attribute lifecycle (create claims a record, delete releases it, rename releases the old and creates the new); once claiming has run without issue for at least a week, remove the per-attribute `feature_flag:` parameter and delete its YAML file (after removal, only `Gitlab.config.cell.enabled` controls claiming).
+- After enabling the per-attribute flag globally in production, validate the full attribute lifecycle (create claims a record, delete releases it, rename releases the old and creates the new); once claiming has run without issue for at least a week, remove the per-attribute `feature_flag:` parameter and delete its YAML file.
 
 ### Conditional Claiming (`if:` and `cells_claims_scope`)
 
@@ -58,7 +55,7 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 
 ### Verification and Backfilling
 
-- Rely on `Cells::Claims::VerificationService` (triggered by `cells_claims_verification_worker_<model_name>`) for backfilling existing records and for ongoing drift correction — DO NOT attempt manual backfills.
+- Rely on `Cells::Claims::VerificationService` for backfilling existing records and for ongoing drift correction — DO NOT attempt manual backfills; the service starts automatically when at least one of the model's attributes is enabled (no separate configuration step required).
 - Expect the verification worker to skip records updated within the last hour to avoid conflicts with in-flight saves.
 - Expect the verification worker to persist progress (last processed ID) to Redis and reschedule itself if it runs out of time (4.5-minute limit), so DO NOT assume a single run processes all records.
 
@@ -73,11 +70,10 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 ### Validation in GDK
 
 - Validate claims locally by running `gdk psql -d topology_service -c "SELECT * FROM claims;"` after creating, updating, or deleting records.
-- Ensure both the `cells` GDK setup and the `cells_unique_claims` feature flag are enabled before attempting local validation.
+- Ensure the Cells GDK setup is enabled (`Gitlab.config.cell.enabled`) before attempting local validation.
 
 ## Authoritative sources
 
 For the full picture, see:
 
 - doc/development/cells/claims.md
-

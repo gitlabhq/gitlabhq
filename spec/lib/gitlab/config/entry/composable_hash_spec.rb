@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Config::Entry::ComposableHash, :aggregate_failures do
         expect(entry[:ACCEPT_PASSWORD].key).to eq(:ACCEPT_PASSWORD)
         expect(entry[:ACCEPT_PASSWORD].metadata).to eq(name: :ACCEPT_PASSWORD)
         expect(entry[:ACCEPT_PASSWORD].parent.class).to eq(described_class)
-        expect(entry[:ACCEPT_PASSWORD].value).to eq(false)
+        expect(entry[:ACCEPT_PASSWORD].value).to be(false)
       end
 
       describe '#descendants' do

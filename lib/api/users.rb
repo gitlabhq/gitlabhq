@@ -262,7 +262,7 @@ module API
 
         users = users.preload(:user_detail)
 
-        present paginate_with_strategies(users), options
+        present paginate_with_strategies(users), **options
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -295,7 +295,7 @@ module API
         opts = { with: can_read_admin_user_data? ? Entities::UserDetailsWithAdmin : Entities::UserProfile, current_user: current_user }
         user, opts = with_custom_attributes(user, opts)
 
-        present user, opts
+        present user, **opts
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

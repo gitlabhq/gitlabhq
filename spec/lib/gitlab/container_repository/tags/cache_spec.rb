@@ -26,7 +26,7 @@ RSpec.describe ::Gitlab::ContainerRepository::Tags::Cache, :clean_gitlab_redis_c
 
         expect(subject).to eq(0)
 
-        tags.each { |t| expect(t.created_at).to eq(nil) }
+        tags.each { |t| expect(t.created_at).to be_nil }
       end
 
       context 'with cached values' do
@@ -45,8 +45,8 @@ RSpec.describe ::Gitlab::ContainerRepository::Tags::Cache, :clean_gitlab_redis_c
 
           expect(subject).to eq(2)
 
-          cached_tags.each { |t| expect(t.created_at).not_to eq(nil) }
-          (tags - cached_tags).each { |t| expect(t.created_at).to eq(nil) }
+          cached_tags.each { |t| expect(t.created_at).not_to be_nil }
+          (tags - cached_tags).each { |t| expect(t.created_at).to be_nil }
         end
       end
     end

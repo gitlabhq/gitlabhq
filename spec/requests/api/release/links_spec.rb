@@ -5,22 +5,19 @@ require 'spec_helper'
 RSpec.describe API::Release::Links, feature_category: :release_orchestration do
   include Ci::JobTokenScopeHelpers
 
-  let_it_be_with_reload(:project) { create(:project, :small_repo, :private) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:non_project_member) { create(:user) }
-  let_it_be(:commit) { create(:commit, project: project) }
 
-  let!(:release) do
-    create(:release, project: project, tag: 'v0.1', author: maintainer)
+  let_it_be_with_reload(:project) do
+    create(:project, :small_repo, :private, maintainers: maintainer, developers: developer, reporters: reporter)
   end
 
-  before_all do
-    project.add_maintainer(maintainer)
-    project.add_developer(developer)
-    project.add_reporter(reporter)
+  let_it_be(:commit) { create(:commit, project: project) }
+  let_it_be_with_reload(:release) { create(:release, project: project, tag: 'v0.1', author: maintainer) }
 
+  before_all do
     project.repository.add_tag(maintainer, 'v0.1', commit.id)
   end
 
@@ -43,8 +40,8 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
     end
 
     context 'when there are two release links' do
-      let!(:release_link_1) { create(:release_link, release: release, created_at: 2.days.ago) }
-      let!(:release_link_2) { create(:release_link, release: release, created_at: 1.day.ago) }
+      let_it_be(:release_link_1) { create(:release_link, release: release, created_at: 2.days.ago) }
+      let_it_be(:release_link_2) { create(:release_link, release: release, created_at: 1.day.ago) }
 
       it 'returns 200 HTTP status' do
         get api("/projects/#{project.id}/releases/v0.1/assets/links", maintainer)
@@ -82,10 +79,8 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
     end
 
     context 'when release does not exist' do
-      let!(:release) {}
-
       it_behaves_like '404 response' do
-        let(:request) { get api("/projects/#{project.id}/releases/v0.1/assets/links", maintainer) }
+        let(:request) { get api("/projects/#{project.id}/releases/non_existing_tag/assets/links", maintainer) }
         let(:message) { '404 Not found' }
       end
     end
@@ -121,7 +116,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
   end
 
   describe 'GET /projects/:id/releases/:tag_name/assets/links/:link_id' do
-    let!(:release_link) { create(:release_link, release: release) }
+    let_it_be(:release_link) { create(:release_link, release: release) }
 
     it_behaves_like 'authorizing granular token permissions', :read_release_link do
       let(:boundary_object) { project }
@@ -186,6 +181,8 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
 
       context 'when project is public' do
         let(:project) { create(:project, :small_repo, :public) }
+        let!(:release) { create(:release, project: project, tag: 'v0.1', author: maintainer) }
+        let(:release_link) { create(:release_link, release: release) }
 
         it 'allows the request' do
           get api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", non_project_member)
@@ -362,6 +359,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
 
       context 'when project is public' do
         let(:project) { create(:project, :small_repo, :public) }
+        let!(:release) { create(:release, project: project, tag: 'v0.1', author: maintainer) }
 
         it 'forbids the request' do
           post api("/projects/#{project.id}/releases/v0.1/assets/links", non_project_member), params: params
@@ -391,7 +389,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
 
   describe 'PUT /projects/:id/releases/:tag_name/assets/links/:link_id' do
     let(:params) { { name: 'awesome-app.msi' } }
-    let!(:release_link) { create(:release_link, release: release) }
+    let_it_be(:release_link) { create(:release_link, release: release) }
 
     it_behaves_like 'authorizing granular token permissions', :update_release_link do
       let(:boundary_object) { project }
@@ -534,6 +532,8 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
 
       context 'when project is public' do
         let(:project) { create(:project, :small_repo, :public) }
+        let!(:release) { create(:release, project: project, tag: 'v0.1', author: maintainer) }
+        let(:release_link) { create(:release_link, release: release) }
 
         it_behaves_like '403 response' do
           let(:request) do
@@ -546,9 +546,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
   end
 
   describe 'DELETE /projects/:id/releases/:tag_name/assets/links/:link_id' do
-    let!(:release_link) do
-      create(:release_link, release: release)
-    end
+    let_it_be(:release_link) { create(:release_link, release: release) }
 
     it_behaves_like 'authorizing granular token permissions', :delete_release_link do
       let(:boundary_object) { project }
@@ -663,6 +661,8 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
 
       context 'when project is public' do
         let(:project) { create(:project, :small_repo, :public) }
+        let!(:release) { create(:release, project: project, tag: 'v0.1', author: maintainer) }
+        let(:release_link) { create(:release_link, release: release) }
 
         it_behaves_like '403 response' do
           let(:request) do

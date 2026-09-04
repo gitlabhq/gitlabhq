@@ -36,6 +36,30 @@ Example:
 What version of the GitLab MCP server am I connected to?
 ```
 
+## `get_project`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250430) in GitLab 19.4.
+
+{{< /history >}}
+
+Returns metadata for a single GitLab project: numeric ID, full path, default branch, visibility, and web URL.
+
+| Parameter    | Type   | Required | Description |
+|--------------|--------|----------|-------------|
+| `url`        | string | No       | URL of the project. Provide exactly one of `url` or `project_id`. |
+| `project_id` | string | No       | ID or full path of the project. Provide exactly one of `url` or `project_id`. |
+
+`default_branch` is `null` when the project has no repository yet.
+To find a project you cannot name yet, use `search` with the `projects` scope.
+
+Example:
+
+```plaintext
+What is the default branch of gitlab-org/gitlab?
+```
+
 ## `add_commit`
 
 {{< history >}}

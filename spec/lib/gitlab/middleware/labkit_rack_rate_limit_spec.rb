@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_limiting do
   let(:registry) { Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry }
   let(:limiters) { Gitlab::RackAttack::LabkitRateLimit::Limiters }
+  let(:plan_rules) { Gitlab::RackAttack::LabkitRateLimit::PlanRules }
 
   # The matched rule names the throttle (minus the throttle_ prefix); the
   # middleware reconstructs the throttle name from it for the cohort lookup and the
@@ -413,7 +414,7 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
     end
   end
 
-  context 'when no cohort shadow flag is on' do
+  context 'when no cohort shadow flag is on and no plan limit is in play' do
     before do
       stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: false)
     end
@@ -424,6 +425,49 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
       status, = middleware.call(env)
 
       expect(status).to eq(200)
+    end
+  end
+
+  # PlanRules is stubbed rather than its flags, which are EE-only definitions.
+  context 'when no cohort shadow flag is on but a plan limit is in play' do
+    before do
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: false)
+      allow(plan_rules).to receive(:active?).and_return(true)
+    end
+
+    it 'still runs the rules over the request facts' do
+      expect(limiter).to receive(:check)
+        .with(hash_including(:ip, :requester_id, :requester_type, :runner_id, :aid, :path, :method))
+        .and_return(result)
+
+      status, = middleware.call(env)
+
+      expect(status).to eq(200)
+    end
+
+    it 'does not enforce, since no cohort enforces the blocked rule' do
+      allow(limiter).to receive(:check)
+        .and_return(instance_double(Labkit::RateLimit::Result, action: :block, error?: false, rule: rule))
+
+      status, = middleware.call(env)
+
+      expect(status).to eq(200)
+    end
+
+    # The state after the cohort flags are deleted.
+    context 'when the registry declares no cohorts at all' do
+      before do
+        allow(registry).to receive(:cohorts).and_return([])
+      end
+
+      it 'runs the rules without reading a cohort flag', :aggregate_failures do
+        expect(registry).not_to receive(:shadow_enabled?)
+        expect(limiter).to receive(:check).and_return(result)
+
+        status, = middleware.call(env)
+
+        expect(status).to eq(200)
+      end
     end
   end
 

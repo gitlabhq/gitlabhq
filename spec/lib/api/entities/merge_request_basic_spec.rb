@@ -84,7 +84,7 @@ RSpec.describe ::API::Entities::MergeRequestBasic, feature_category: :code_revie
       merge_request.update!(squash: true)
     end
 
-    it { is_expected.to eq(true) }
+    it { is_expected.to be(true) }
   end
 
   describe 'squash_on_merge' do
@@ -95,6 +95,6 @@ RSpec.describe ::API::Entities::MergeRequestBasic, feature_category: :code_revie
       merge_request.update!(squash: true)
     end
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
   end
 end

@@ -164,6 +164,9 @@ RSpec.describe 'Database schema',
       oauth_access_grants: %w[resource_owner_id application_id],
       oauth_access_tokens: %w[resource_owner_id application_id],
       oauth_applications: %w[owner_id],
+      # client_id FK dropped for cross-cell consents in gitlab-org/gitlab#597595.
+      # Cross-cell orphan cleanup is tracked in gitlab-org/gitlab#598601.
+      oauth_consents: %w[client_id],
       oauth_device_grants: %w[resource_owner_id],
       packages_nuget_symbols: %w[project_id],
       packages_package_files: %w[project_id],

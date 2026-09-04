@@ -118,7 +118,7 @@ module API
         options = { with: Entities::Todo, current_user: current_user }
         batch_load_issuable_metadata(todos, options)
 
-        present todos, options
+        present todos, **options
       end
 
       desc 'Mark a to-do item as done' do

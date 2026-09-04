@@ -56,7 +56,8 @@ func TestWorkflowLockManager_ConcurrentLockAttempts(t *testing.T) {
 }
 
 func TestWorkflowLockManager_MisconfiguredRedis(t *testing.T) {
-	rdb := redis.NewClient(&redis.Options{})
+	// Port 1 always refuses. The default localhost:6379 is a live service on the kubernetes executor.
+	rdb := redis.NewClient(&redis.Options{Addr: "localhost:1"})
 	manager := newWorkflowLockManager(rdb)
 	require.NotNil(t, manager)
 

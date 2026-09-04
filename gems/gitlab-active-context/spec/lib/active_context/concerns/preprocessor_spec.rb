@@ -293,12 +293,43 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
     context 'with custom error_types' do
       let(:custom_error) { Class.new(StandardError) }
 
-      it 'catches custom errors as failed' do
+      it 'catches custom errors as failed and logs them as retryable, not unexpected' do
+        allow(ActiveContext::Logger).to receive(:exception)
+
         result = test_ref_class.with_batch_handling(refs, error_types: [custom_error]) do
           raise custom_error
         end
 
         expect(result[:failed]).to eq(refs)
+        expect(ActiveContext::Logger).to have_received(:retryable_exception)
+        expect(ActiveContext::Logger).not_to have_received(:exception)
+      end
+    end
+
+    context 'with an error outside the declared error_types' do
+      let(:declared_error) { Class.new(StandardError) }
+
+      before do
+        allow(ActiveContext::Logger).to receive(:exception)
+      end
+
+      it 'still fails the batch through the existing retry chain, but logs it loudly' do
+        result = test_ref_class.with_batch_handling(refs, error_types: [declared_error]) do
+          raise StandardError, "an unclassified bug"
+        end
+
+        expect(result[:successful]).to be_empty
+        expect(result[:failed]).to eq(refs)
+
+        expect(ActiveContext::Logger).to have_received(:exception).with(
+          instance_of(StandardError),
+          class_name: 'TestPreprocessorReferenceClass',
+          queue_name: nil,
+          preprocessor: nil,
+          refs_count: 2,
+          refs_sample: ['ref:1', 'ref:2']
+        )
+        expect(ActiveContext::Logger).not_to have_received(:retryable_exception)
       end
     end
 

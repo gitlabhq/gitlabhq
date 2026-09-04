@@ -116,7 +116,7 @@ module API
       # rubocop: enable CodeReuse/ActiveRecord
 
       def render_merge_requests(merge_requests, options, skip_cache: false, ttl: 8.hours)
-        return present merge_requests, options if skip_cache
+        return present merge_requests, **options if skip_cache
 
         cache_context = ->(mr) do
           [
@@ -256,7 +256,7 @@ module API
           resource_type: 'api/merge_requests'
         )
 
-        present merge_requests, serializer_options_for(merge_requests)
+        present merge_requests, **serializer_options_for(merge_requests)
       end
     end
 
@@ -295,7 +295,7 @@ module API
         end
 
         unless Feature.enabled?(:cache_list_mr_on_group_api_responses, user_group)
-          present merge_requests, options
+          present merge_requests, **options
           next
         end
 
@@ -964,7 +964,7 @@ module API
         merge_request.rebase_async(current_user.id, skip_ci: params[:skip_ci])
 
         status :accepted
-        present rebase_in_progress: merge_request.rebase_in_progress?
+        present({ rebase_in_progress: merge_request.rebase_in_progress? })
       rescue ::MergeRequest::RebaseLockTimeout => e
         render_api_error!(e.message, 409)
       end

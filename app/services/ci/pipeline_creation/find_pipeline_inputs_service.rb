@@ -74,11 +74,12 @@ module Ci
           # We need to read the uninterpolated YAML of the included file.
           yaml_context = ::Gitlab::Ci::Config::Yaml::Context.new
           yaml_content = ::Gitlab::Ci::Config::Yaml.load!(config.content, yaml_context)
-          yaml_result = yaml_result_of_internal_include(yaml_content, sha)
+          file = internal_include_file(yaml_content, sha)
+          yaml_result = file&.load_uninterpolated_yaml
           return error_response(s_('Pipelines|Invalid YAML syntax')) unless yaml_result&.valid?
 
           # Process header includes to merge external input definitions
-          spec = process_header_includes(yaml_result.spec, sha)
+          spec = process_header_includes(yaml_result.spec, file, sha)
 
           spec_inputs = Ci::Inputs::Builder.new(spec[:inputs])
           return error_response(spec_inputs.errors.join(', ')) if spec_inputs.errors.any?
@@ -110,7 +111,7 @@ module Ci
 
       # Bypasses Mapper#process and calls Matcher and Verifier directly, because ProjectConfig has no
       # uninterpolated load path. Changes to either class have to account for this caller.
-      def yaml_result_of_internal_include(content, sha)
+      def internal_include_file(content, sha)
         context = build_context(sha)
 
         locations = content[:include]
@@ -120,7 +121,7 @@ module Ci
 
         ::Gitlab::Ci::Config::External::Mapper::Verifier.new(context).skip_load_content!.process(files)
 
-        files.first&.load_uninterpolated_yaml
+        files.first
       end
 
       def build_context(sha)
@@ -130,11 +131,17 @@ module Ci
           user: current_user)
       end
 
-      def process_header_includes(spec, sha)
+      def process_header_includes(spec, file, sha)
         return spec unless spec[:include].present?
 
-        processor = ::Gitlab::Ci::Config::External::Header::Processor.new(spec, build_context(sha))
+        processor = ::Gitlab::Ci::Config::External::Header::Processor.new(spec, header_include_context(file, sha))
         processor.perform
+      end
+
+      def header_include_context(file, sha)
+        return build_context(sha) unless Feature.enabled?(:ci_spec_include_own_context, project)
+
+        file.expanded_context
       end
 
       def inputs_supported?(config)

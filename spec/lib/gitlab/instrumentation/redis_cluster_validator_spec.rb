@@ -37,10 +37,10 @@ RSpec.describe Gitlab::Instrumentation::RedisClusterValidator, feature_category:
       it do
         args = [[command] + arguments]
         if is_valid.nil?
-          expect(described_class.validate(args)).to eq(nil)
+          expect(described_class.validate(args)).to be_nil
         else
           expect(described_class.validate(args)[:valid]).to eq(is_valid)
-          expect(described_class.validate(args)[:allowed]).to eq(false)
+          expect(described_class.validate(args)[:allowed]).to be(false)
           expect(described_class.validate(args)[:command_name]).to eq(command.to_s.upcase)
           expect(described_class.validate(args)[:key_count]).to eq(keys)
         end

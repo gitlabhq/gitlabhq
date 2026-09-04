@@ -53,6 +53,7 @@ module Mcp
         'get_merge_request_notes' => ::Mcp::Tools::MergeRequests::GetMergeRequestNotesService,
         'get_repository_file' => ::Mcp::Tools::Repositories::GetRepositoryFileService,
         'get_pipeline' => ::Mcp::Tools::Pipelines::GetPipelineService,
+        'get_project' => ::Mcp::Tools::Projects::GetProjectService,
         'get_saved_view_work_items' => ::Mcp::Tools::WorkItems::GetSavedViewWorkItemsService,
         'get_work_item' => ::Mcp::Tools::WorkItems::GetWorkItemService,
         'get_workitem_notes' => ::Mcp::Tools::WorkItems::GetWorkItemNotesService,

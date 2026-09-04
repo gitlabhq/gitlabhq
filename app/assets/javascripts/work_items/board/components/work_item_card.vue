@@ -38,8 +38,8 @@ export default {
     IssueWeight: defineAsyncComponent(
       () => import('ee_component/issues/components/issue_weight.vue'),
     ),
-    IssueIteration: defineAsyncComponent(
-      () => import('ee_component/boards/components/issue_iteration.vue'),
+    WorkItemIterationAttribute: defineAsyncComponent(
+      () => import('ee_component/work_items/components/shared/work_item_iteration_attribute.vue'),
     ),
     IssueHealthStatus: defineAsyncComponent(
       () => import('ee_component/issues/components/issue_health_status.vue'),
@@ -228,10 +228,12 @@ export default {
           :milestone="milestone"
           class="gl-flex gl-max-w-15 gl-cursor-help gl-items-center gl-align-bottom"
         />
-        <issue-iteration
+        <work-item-iteration-attribute
           v-if="showIteration"
           data-testid="work-item-iteration"
+          class="gl-max-w-15 gl-truncate"
           :iteration="iteration"
+          :namespace-path="rootPageFullPath"
         />
         <issue-due-date
           v-if="showDates"

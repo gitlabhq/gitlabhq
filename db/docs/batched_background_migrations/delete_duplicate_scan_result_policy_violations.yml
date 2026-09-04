@@ -1,0 +1,11 @@
+---
+migration_job_name: DeleteDuplicateScanResultPolicyViolations
+description: Deletes the older duplicate scan_result_policy_violations rows sharing
+  the same approval_policy_rule_id and merge_request_id, keeping the newest row, in
+  preparation for a unique index on those columns.
+feature_category: security_policy_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247136
+milestone: '19.4'
+queued_migration_version: 20260903104544
+finalized_by: # version of the migration that finalized this BBM
+gitlab_schema: gitlab_main_org

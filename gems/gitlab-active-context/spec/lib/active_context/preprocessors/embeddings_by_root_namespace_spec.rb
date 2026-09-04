@@ -2,11 +2,13 @@
 
 RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_root_namespace", :aggregate_failures do
   let(:mock_reference_class) do
-    Class.new(Test::References::MockWithWritableRootNamespace) do
+    klass = Class.new(Test::References::MockWithWritableRootNamespace) do
       add_preprocessor :embeddings do |refs|
         apply_embeddings_by_root_namespace(refs: refs)
       end
     end
+
+    stub_const('MockRootNamespaceReferenceClass', klass)
   end
 
   let(:partition) { 2 }
@@ -169,13 +171,15 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
 
       context 'when the reference class passes the queue_name' do
         let(:mock_reference_class) do
-          Class.new(Test::References::MockWithWritableRootNamespace) do
+          klass = Class.new(Test::References::MockWithWritableRootNamespace) do
             add_preprocessor :embeddings do |refs, queue_name: nil|
               apply_embeddings_by_root_namespace(
                 refs: refs, queue_name: queue_name
               )
             end
           end
+
+          stub_const('MockRootNamespaceReferenceClassWithQueueName', klass)
         end
 
         it 'logs the queue_name' do

@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :database do
-  let(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin) }
 
   describe 'GET /admin/batched_background_migrations/:id' do
-    let!(:migration) { create(:batched_background_migration, :paused) }
+    let_it_be(:migration) { create(:batched_background_migration, :paused) }
     let(:database) { :main }
     let(:params) { { database: database } }
     let(:path) { "/admin/batched_background_migrations/#{migration.id}" }
@@ -101,7 +101,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
   end
 
   describe 'GET /admin/batched_background_migrations' do
-    let!(:migration) { create(:batched_background_migration) }
+    let_it_be(:migration) { create(:batched_background_migration) }
     let(:path) { '/admin/batched_background_migrations' }
 
     it_behaves_like "GET request permissions for admin mode"
@@ -193,7 +193,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
       end
 
       context 'when filtering by job class name' do
-        let!(:my_job) { create(:batched_background_migration, job_class_name: "MyJob") }
+        let_it_be(:my_job) { create(:batched_background_migration, job_class_name: "MyJob") }
 
         let(:params) { { job_class_name: "MyJob" } }
 
@@ -208,7 +208,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
   end
 
   describe 'PUT /admin/batched_background_migrations/:id/resume' do
-    let!(:migration) { create(:batched_background_migration, :paused) }
+    let_it_be(:migration) { create(:batched_background_migration, :paused) }
     let(:database) { :main }
     let(:params) { { database: database } }
     let(:path) { "/admin/batched_background_migrations/#{migration.id}/resume" }
@@ -246,7 +246,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
     end
 
     context 'when the migration is not paused' do
-      let!(:migration) { create(:batched_background_migration, :failed) }
+      let_it_be(:migration) { create(:batched_background_migration, :failed) }
 
       it 'returns 422' do
         put api(path, admin, admin_mode: true), params: params
@@ -283,7 +283,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
   end
 
   describe 'PUT /admin/batched_background_migrations/:id/pause' do
-    let!(:migration) { create(:batched_background_migration, :active) }
+    let_it_be(:migration) { create(:batched_background_migration, :active) }
     let(:database) { :main }
     let(:params) { { database: database } }
     let(:path) { "/admin/batched_background_migrations/#{migration.id}/pause" }
@@ -317,7 +317,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
     end
 
     context 'when the migration is not active' do
-      let!(:migration) { create(:batched_background_migration, :failed) }
+      let_it_be(:migration) { create(:batched_background_migration, :failed) }
 
       it 'returns 422' do
         put api(path, admin, admin_mode: true), params: params

@@ -28,6 +28,9 @@ cases remain.
 
 Web/API requests and Sidekiq workers should be run under a single organization.
 Convert cross-organization compute to be organization-scoped where possible.
+Cross-organization Sidekiq jobs are acceptable only when the job is a recurring
+cron job and is idempotent. For more information, see
+[Cells compatibility for Sidekiq](../sidekiq/_index.md#cells-compatibility).
 
 ### Requests must be routable to the correct cell
 

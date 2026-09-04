@@ -2,7 +2,7 @@
 
 RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :aggregate_failures do
   let(:mock_reference_class) do
-    Class.new(Test::References::MockWithDatabaseRecord) do
+    klass = Class.new(Test::References::MockWithDatabaseRecord) do
       add_preprocessor :embeddings do |refs|
         apply_embeddings(
           refs: refs, content_method: :embedding_content
@@ -13,6 +13,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
         'content returned in reference method'
       end
     end
+
+    stub_const('MockEmbeddingsReferenceClass', klass)
   end
 
   let(:partition) { 2 }
@@ -296,11 +298,13 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
 
     context 'when :content_method is not passed' do
       let(:mock_reference_class) do
-        Class.new(Test::References::MockWithDatabaseRecord) do
+        klass = Class.new(Test::References::MockWithDatabaseRecord) do
           add_preprocessor :embeddings do |refs|
             apply_embeddings(refs: refs)
           end
         end
+
+        stub_const('MockEmbeddingsReferenceClassNoContentMethod', klass)
       end
 
       context 'when no documents are present' do
@@ -334,13 +338,15 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
 
         context 'when :content_field is passed' do
           let(:mock_reference_class) do
-            Class.new(Test::References::MockWithDatabaseRecord) do
+            klass = Class.new(Test::References::MockWithDatabaseRecord) do
               add_preprocessor :embeddings do |refs|
                 apply_embeddings(
                   refs: refs, content_field: :other_content
                 )
               end
             end
+
+            stub_const('MockEmbeddingsReferenceClassContentFieldNoMethod', klass)
           end
 
           context 'when documents have the content field populated' do
@@ -423,7 +429,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
 
       context 'when the reference class passes the queue_name' do
         let(:mock_reference_class) do
-          Class.new(Test::References::MockWithDatabaseRecord) do
+          klass = Class.new(Test::References::MockWithDatabaseRecord) do
             add_preprocessor :embeddings do |refs, queue_name: nil|
               apply_embeddings(
                 refs: refs, content_method: :embedding_content, queue_name: queue_name
@@ -434,6 +440,8 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
               'content returned in reference method'
             end
           end
+
+          stub_const('MockEmbeddingsReferenceClassWithQueueName', klass)
         end
 
         it 'logs the queue_name' do
@@ -448,6 +456,56 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
 
           ActiveContext::Reference.preprocess_references([test_reference], queue_name: 'test_queue')
         end
+      end
+    end
+  end
+
+  describe 'error_types passthrough' do
+    let(:declared_error) { Class.new(StandardError) }
+
+    let(:mock_reference_class) do
+      error_class = declared_error
+
+      Class.new(Test::References::MockWithDatabaseRecord) do
+        add_preprocessor :embeddings do |refs|
+          apply_embeddings(
+            refs: refs, content_method: :embedding_content, error_types: [error_class]
+          )
+        end
+
+        def embedding_content
+          'content returned in reference method'
+        end
+      end
+    end
+
+    context 'when the raised error matches the caller-declared error_types' do
+      before do
+        allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(declared_error, 'expected failure')
+      end
+
+      it 'fails the ref and logs it as a retryable exception' do
+        expect(ActiveContext::Logger).to receive(:retryable_exception)
+        expect(ActiveContext::Logger).not_to receive(:exception)
+
+        result = ActiveContext::Reference.preprocess_references([test_reference])
+
+        expect(result[:failed]).to eq([test_reference])
+      end
+    end
+
+    context 'when the raised error is not in the caller-declared error_types' do
+      before do
+        allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(NoMethodError, 'undefined method')
+      end
+
+      it 'still fails the ref through the retry chain, but logs it loudly instead' do
+        expect(ActiveContext::Logger).to receive(:exception)
+        expect(ActiveContext::Logger).not_to receive(:retryable_exception)
+
+        result = ActiveContext::Reference.preprocess_references([test_reference])
+
+        expect(result[:failed]).to eq([test_reference])
       end
     end
   end
