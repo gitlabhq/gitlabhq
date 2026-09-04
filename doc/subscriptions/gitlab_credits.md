@@ -18,6 +18,7 @@ title: GitLab Credits and usage billing
 - Introduced in GitLab 18.7.
 - GitLab Duo Agent Platform and GitLab Credits supported on GitLab 18.8 and later.
 - Introduced for community subscriptions in GitLab 18.11.
+- Credit usage order changed in GitLab 19.4.
 
 {{< /history >}}
 

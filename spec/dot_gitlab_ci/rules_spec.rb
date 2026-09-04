@@ -142,8 +142,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         '.gitlab_workhorse_secret',
         '.gitlab_suggested_reviewers_secret',
         '.gitlab/changelog_config.yml',
-        'scripts/lint/excluded_methods.yml',
-        'scripts/lint/potential_methods_to_remove.yml',
         '.gitleaksignore',
         '.gitpod.yml',
         '.graphqlrc',

@@ -23534,10 +23534,19 @@ msgstr ""
 msgid "ContentEditor|Open source file"
 msgstr ""
 
+msgid "ContentEditor|Paste and merge into table"
+msgstr ""
+
+msgid "ContentEditor|Paste into cell"
+msgstr ""
+
 msgid "ContentEditor|Text style"
 msgstr ""
 
 msgid "ContentEditor|Text style %{active}"
+msgstr ""
+
+msgid "ContentEditor|Unable to read the clipboard. Check your browser clipboard permissions and try again."
 msgstr ""
 
 msgid "ContentEditor|You have to provide a renderMarkdown function or a custom serializer"
@@ -30514,6 +30523,9 @@ msgid "DuoAgentPlatform|Takes a few minutes..."
 msgstr ""
 
 msgid "DuoAgentPlatform|Takes a few seconds..."
+msgstr ""
+
+msgid "DuoAgentPlatform|These features are not available because the GitLab Duo Agent Platform is not turned on."
 msgstr ""
 
 msgid "DuoAgentPlatform|This session encountered an error before any messages were recorded. Start a new session to try again."
@@ -87739,6 +87751,9 @@ msgid "User must be a service account"
 msgstr ""
 
 msgid "User must have permission to use Duo Workflows in the project."
+msgstr ""
+
+msgid "User must verify their identity before using GitLab Duo Agent Platform."
 msgstr ""
 
 msgid "User not provided"

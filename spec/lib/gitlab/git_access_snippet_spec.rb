@@ -471,6 +471,42 @@ RSpec.describe Gitlab::GitAccessSnippet, feature_category: :source_code_manageme
     end
   end
 
+  describe '#check_organization_maintenance!' do
+    let_it_be_with_reload(:organization) { create(:organization) }
+    let_it_be_with_reload(:org_project) { create(:project, :public, organization: organization) }
+
+    let(:authentication_abilities) { %i[download_code push_code] }
+
+    before_all do
+      org_project.add_maintainer(user)
+    end
+
+    before do
+      organization.start_maintenance(maintenance_reason: 'migration')
+      organization.confirm_maintenance
+    end
+
+    shared_examples 'blocked during organization maintenance' do
+      it 'blocks both push and pull access' do
+        expect { push_access_check }.to raise_forbidden_with_message(organization.reload.maintenance_message)
+        expect { pull_access_check }.to raise_forbidden_with_message(organization.reload.maintenance_message)
+      end
+    end
+
+    # Project snippets keep organization_id NULL and resolve the org via #project.
+    context 'with a project snippet' do
+      let(:snippet) { create(:project_snippet, :public, :repository, project: org_project) }
+
+      it_behaves_like 'blocked during organization maintenance'
+    end
+
+    context 'with a personal snippet' do
+      let(:snippet) { create(:personal_snippet, :public, :repository, author: user, organization: organization) }
+
+      it_behaves_like 'blocked during organization maintenance'
+    end
+  end
+
   private
 
   def raise_not_found(message_key)

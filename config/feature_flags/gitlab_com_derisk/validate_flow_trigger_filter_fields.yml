@@ -1,6 +1,6 @@
 ---
 name: validate_flow_trigger_filter_fields
-description:
+description: Enables validation for fields contained in Ai::FlowTrigger filters
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/597413
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248878
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608340

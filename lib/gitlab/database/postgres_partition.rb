@@ -4,6 +4,7 @@ module Gitlab
   module Database
     class PostgresPartition < SharedModel
       LIST_PARTITION_PATTERN = /FOR VALUES IN \(([^)]+)\)/
+      DEFAULT_CONDITION = 'DEFAULT'
 
       self.primary_key = :identifier
 
@@ -42,6 +43,10 @@ module Gitlab
       scope :with_list_constraint, ->(value) do
         where(sanitize_sql_for_conditions(['condition ~ ?', "^FOR VALUES IN \\(.*\\m#{value.to_i}\\M"]))
       end
+
+      # A DEFAULT partition declares no bound, so it absorbs
+      # every value the explicit partitions do not claim.
+      scope :default_partition, -> { where(condition: DEFAULT_CONDITION) }
 
       scope :above_threshold, ->(threshold) do
         where('pg_total_relation_size(identifier) > ?', threshold)

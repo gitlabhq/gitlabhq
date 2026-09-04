@@ -143,6 +143,30 @@ RSpec.describe Gitlab::Database::PostgresPartition, type: :model, feature_catego
       end
     end
 
+    describe '.default_partition' do
+      subject(:default_partition) do
+        described_class.for_parent_table('_test_partitioned_table').default_partition
+      end
+
+      it 'excludes a partition that declares a bound' do
+        expect(default_partition).to be_empty
+      end
+
+      context 'when the parent table has a DEFAULT partition' do
+        let(:default_name) { '_test_partition_default' }
+
+        before do
+          ActiveRecord::Base.connection.execute(<<~SQL)
+            CREATE TABLE #{schema}.#{default_name} PARTITION OF public._test_partitioned_table DEFAULT
+          SQL
+        end
+
+        it 'returns only the DEFAULT partition' do
+          expect(default_partition.map(&:name)).to contain_exactly(default_name)
+        end
+      end
+    end
+
     describe '.above_threshold' do
       subject(:above_threshold) { described_class.above_threshold(threshold) }
 

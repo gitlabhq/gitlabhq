@@ -98,6 +98,10 @@ describe('GitlabDuoSettings', () => {
     wrapper.findByTestId('ai-audit-events-storage-cascading-lock-icon');
   const findGovernanceCard = () => wrapper.findByTestId('duo-governance-info-card-header');
   const findGovernanceLink = () => wrapper.findByTestId('duo-governance-link');
+  const findRemoteFlowsDapDisabledIcon = () =>
+    wrapper.findByTestId('duo-remote-flows-dap-disabled-icon');
+  const findFoundationalFlowsDapDisabledIcon = () =>
+    wrapper.findByTestId('duo-foundational-flows-dap-disabled-icon');
 
   beforeEach(() => {
     wrapper = createWrapper();
@@ -132,6 +136,60 @@ describe('GitlabDuoSettings', () => {
 
     it('hides the local setup section', () => {
       expect(findLocalSetupSection().exists()).toBe(false);
+    });
+
+    describe('when DAP is disabled at the instance level', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          duoReadinessAvailable: false,
+          duoFeaturesEnabled: true,
+          duoAgentPlatformEnabled: false,
+          initialDuoRemoteFlowsAvailability: true,
+        });
+      });
+
+      it('disables the Allow flow execution toggle', () => {
+        expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(true);
+      });
+
+      it('disables the Allow foundational flows toggle', () => {
+        expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+      });
+
+      it('shows the DAP disabled tooltip icon on the Allow flow execution row', () => {
+        expect(findRemoteFlowsDapDisabledIcon().exists()).toBe(true);
+      });
+
+      it('shows the DAP disabled tooltip icon on the Allow foundational flows row', () => {
+        expect(findFoundationalFlowsDapDisabledIcon().exists()).toBe(true);
+      });
+    });
+
+    describe('when DAP is enabled at the instance level', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          duoReadinessAvailable: false,
+          duoFeaturesEnabled: true,
+          duoAgentPlatformEnabled: true,
+          initialDuoRemoteFlowsAvailability: true,
+        });
+      });
+
+      it('does not disable the Allow flow execution toggle', () => {
+        expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(false);
+      });
+
+      it('does not disable the Allow foundational flows toggle', () => {
+        expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(false);
+      });
+
+      it('does not show the DAP disabled tooltip icon on the Allow flow execution row', () => {
+        expect(findRemoteFlowsDapDisabledIcon().exists()).toBe(false);
+      });
+
+      it('does not show the DAP disabled tooltip icon on the Allow foundational flows row', () => {
+        expect(findFoundationalFlowsDapDisabledIcon().exists()).toBe(false);
+      });
     });
   });
 

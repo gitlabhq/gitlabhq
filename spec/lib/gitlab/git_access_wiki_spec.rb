@@ -241,6 +241,30 @@ RSpec.describe Gitlab::GitAccessWiki do
     end
   end
 
+  describe '#check_organization_maintenance!' do
+    let_it_be_with_reload(:organization) { create(:organization) }
+    let_it_be_with_reload(:org_project) { create(:project, :wiki_repo, organization: organization) }
+
+    let(:wiki) { create(:project_wiki, project: org_project) }
+    let(:changes) { Gitlab::GitAccess::ANY }
+
+    before_all do
+      org_project.add_maintainer(user)
+    end
+
+    before do
+      organization.start_maintenance(maintenance_reason: 'migration')
+      organization.confirm_maintenance
+    end
+
+    it 'blocks both push and pull access' do
+      expect { access.check('git-receive-pack', changes) }
+        .to raise_error(Gitlab::GitAccess::ForbiddenError, organization.reload.maintenance_message)
+      expect { access.check('git-upload-pack', changes) }
+        .to raise_error(Gitlab::GitAccess::ForbiddenError, organization.reload.maintenance_message)
+    end
+  end
+
   RSpec::Matchers.define :raise_wiki_not_found do
     match do |actual|
       expect { actual.call }.to raise_error(Gitlab::GitAccess::NotFoundError, include('wiki'))

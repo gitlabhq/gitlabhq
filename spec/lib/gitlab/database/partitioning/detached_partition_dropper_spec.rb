@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper, feature_category: :database do
+  include Database::PartitioningHelpers
   include Database::TableSchemaHelpers
 
   subject(:dropper) { described_class.new }
@@ -59,14 +60,6 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper, feature
     end
 
     Postgresql::DetachedPartition.create!(table_name: name, drop_after: drop_after)
-  end
-
-  # Mocks an interrupted DETACH...CONCURRENTLY
-  def mark_pending_detach(name)
-    connection.execute(<<~SQL)
-      UPDATE pg_inherits SET inhdetachpending = true
-      WHERE inhrelid = '#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{name}'::regclass
-    SQL
   end
 
   describe '#perform' do

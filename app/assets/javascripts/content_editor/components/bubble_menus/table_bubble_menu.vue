@@ -1,11 +1,12 @@
 <script>
 import { GlDisclosureDropdown, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { selectedRect as getSelectedRect, selectionCell, cellNear } from '@tiptap/pm/tables';
-import { __, n__ } from '~/locale';
+import { __, n__, s__ } from '~/locale';
 import EditorStateObserver from '../editor_state_observer.vue';
 import Table from '../../extensions/table';
 import TableHeader from '../../extensions/table_header';
 import TableCell from '../../extensions/table_cell';
+import { canReadClipboard } from '../../extensions/copy_paste';
 import { rectUnion } from '../../services/utils';
 import BubbleMenu from './bubble_menu.vue';
 
@@ -42,6 +43,17 @@ function getDropdownItems({ selectedRect, cellType, rowspan = 1, colspan = 1, al
         isTableBodyCell && { text: __('Insert row above'), value: 'addRowBefore' },
         { text: __('Insert row below'), value: 'addRowAfter' },
       ].filter(Boolean),
+    },
+    {
+      items: canReadClipboard()
+        ? [
+            { text: s__('ContentEditor|Paste into cell'), value: 'pasteFromClipboardIntoCell' },
+            {
+              text: s__('ContentEditor|Paste and merge into table'),
+              value: 'pasteFromClipboardIntoTable',
+            },
+          ]
+        : [],
     },
     {
       items: [

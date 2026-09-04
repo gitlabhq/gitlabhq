@@ -1,5 +1,13 @@
 <script>
-import { GlToggle, GlLink, GlButton, GlCard, GlSprintf } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlToggle,
+  GlLink,
+  GlButton,
+  GlCard,
+  GlSprintf,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import DuoDependencyBumpProfileModal from 'ee_component/pages/projects/shared/permissions/components/duo_dependency_bump_profile_modal.vue';
 import DuoReadinessAgentConfigRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_agent_config_row.vue';
 import DuoReadinessPlatformRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_platform_row.vue';
@@ -34,7 +42,11 @@ const AUTO_REMEDIATION_PROFILE_VIRTUAL_ID =
 
 export default {
   name: 'GitlabDuoSettings',
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   components: {
+    GlIcon,
     GlToggle,
     GlSprintf,
     GlLink,
@@ -188,6 +200,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    duoAgentPlatformEnabled: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
     dapSessionTrackingAvailable: {
       type: Boolean,
@@ -431,6 +448,9 @@ export default {
   DUO_SECRET_DETECTION_FP_ENABLED,
   DUO_VULNERABILITY_CONTEXT_ANALYSIS_ENABLED,
   i18n: {
+    duoAgentPlatformDisabledTooltip: s__(
+      'DuoAgentPlatform|These features are not available because the GitLab Duo Agent Platform is not turned on.',
+    ),
     readinessHeading: s__('DuoAgentPlatform|Run GitLab Duo agents on this project'),
     requiredHeading: s__('DuoAgentPlatform|Required'),
     requiredSubtitle: s__(
@@ -686,11 +706,19 @@ export default {
             :ancestor-namespace="duoRemoteFlowsCascadingSettings.ancestorNamespace"
             class="gl-ml-1"
           />
+          <gl-icon
+            v-if="!duoAgentPlatformEnabled && !showRemoteFlowsCascadingLock"
+            v-gl-tooltip
+            name="information-o"
+            :title="$options.i18n.duoAgentPlatformDisabledTooltip"
+            class="gl-ml-1"
+            data-testid="duo-remote-flows-dap-disabled-icon"
+          />
         </template>
         <gl-toggle
           v-model="duoRemoteFlowsAvailability"
           class="gl-mt-2"
-          :disabled="!duoEnabled || showRemoteFlowsCascadingLock"
+          :disabled="!duoAgentPlatformEnabled || !duoEnabled || showRemoteFlowsCascadingLock"
           :label="s__('DuoAgentPlatform|Remote GitLab Duo Flows')"
           label-position="hidden"
           name="project[project_setting_attributes][duo_remote_flows_enabled]"
@@ -724,11 +752,24 @@ export default {
             :ancestor-namespace="duoFoundationalFlowsCascadingSettings.ancestorNamespace"
             class="gl-ml-1"
           />
+          <gl-icon
+            v-if="!duoAgentPlatformEnabled && !areFoundationalFlowsLocked"
+            v-gl-tooltip
+            name="information-o"
+            :title="$options.i18n.duoAgentPlatformDisabledTooltip"
+            class="gl-ml-1"
+            data-testid="duo-foundational-flows-dap-disabled-icon"
+          />
         </template>
         <gl-toggle
           v-model="duoFoundationalFlowsAvailability"
           class="gl-mt-2"
-          :disabled="!duoEnabled || !duoRemoteFlowsAvailability || areFoundationalFlowsLocked"
+          :disabled="
+            !duoAgentPlatformEnabled ||
+            !duoEnabled ||
+            !duoRemoteFlowsAvailability ||
+            areFoundationalFlowsLocked
+          "
           :label="s__('DuoAgentPlatform|Foundational GitLab Duo Flows')"
           label-position="hidden"
           name="project[project_setting_attributes][duo_foundational_flows_enabled]"

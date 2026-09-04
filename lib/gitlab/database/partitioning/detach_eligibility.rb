@@ -5,56 +5,83 @@ module Gitlab
     module Partitioning
       # Decides if we can safely detach a partition.
       #
-      # Postgres detaches a partition only after proving no row still references it. To prove that,
-      # it queries every table with a foreign key to the partition's parent. The query prunes to
-      # nothing only when all of these hold:
+      # Two conditions concern the partition itself, and failing either makes Postgres refuse outright:
       #
-      #   1. no referencing table has a DEFAULT partition, which holds no partition id bound
-      #   2. no detached partition of a referencing table still carries a foreign key to the parent
-      #   3. every referencing table is list partitioned on the key the parent is partitioned on
-      #   4. every referencing table has already dropped its partition for the same partition ids
+      #   1. for a concurrent detach, the parent has no DEFAULT partition
+      #   2. the partition is not awaiting FINALIZE from an interrupted concurrent detach
       #
-      # The detach errors when it fails condition #4. A failure on any other condition causes it to
-      # read a whole referencing table, inside the DETACH statement and under a lock on its parent.
-      # Only partitions that can successfully detach without paying the full scan cost are eligible
-      # for detach. See cost measured per shape analysis:
+      # If any table holds a foreign key to the partition's parent, Postgres detaches the partition
+      # only after proving no row still references it. To prove that, it queries every table with a
+      # foreign key to the parent. The query prunes to nothing only when all of these hold:
+      #
+      #   3. no referencing table has a DEFAULT partition, which holds no partition id bound
+      #   4. no detached partition of a referencing table still carries a foreign key to the parent
+      #   5. every referencing table is list partitioned on the key the parent is partitioned on
+      #   6. every referencing table has already dropped its partition for the same partition ids
+      #
+      # The detach errors when it fails condition #6. Failing one of the other referencing
+      # conditions makes it read a whole referencing table, inside the DETACH statement and
+      # under a lock on its parent. Only partitions that can successfully detach without paying
+      # the full scan cost are eligible for detach. See cost measured per shape analysis:
       # https://gitlab.com/gitlab-org/gitlab/-/work_items/552078#note_3689127853
       #
-      # Currently, this class only supports tables that are list partitioned on a single integer column.
-      # The partition being detached must also live in the dynamic partitions schema.
+      # Currently, this class only supports tables that are list partitioned on a single integer
+      # column. The partition being detached must also live in the dynamic partitions schema.
       class DetachEligibility
         include ::Gitlab::Utils::StrongMemoize
 
         Blocker = Struct.new(:reason, :level, :details, keyword_init: true)
 
         LIST_STRATEGY = 'list'
-        DEFAULT_PARTITION_CONDITION = 'DEFAULT'
 
         attr_reader :blocker
 
-        def initialize(partition, connection:)
+        def initialize(partition, connection:, detach_concurrently: false)
           @partition = partition
           @connection = connection
+          @detach_concurrently = detach_concurrently
           @blocker = nil
         end
 
         def detachable?
           with_connection do
+            next false unless supported_detach? && not_pending_detach?
             next true if referencing_foreign_keys.empty?
 
-            supported_partition_key? &&
-              supported_partition_ids? &&
-              no_default_referencing_partition? &&
-              no_detached_referencing_partition? &&
-              referencing_tables_share_partition_key? &&
-              counterpart_partitions_dropped?
+            referencing_conditions_satisfied?
           end
         end
         strong_memoize_attr :detachable?
 
         private
 
-        attr_reader :partition, :connection
+        attr_reader :partition, :connection, :detach_concurrently
+
+        def referencing_conditions_satisfied?
+          supported_partition_key? &&
+            supported_partition_ids? &&
+            no_default_referencing_partition? &&
+            no_detached_referencing_partition? &&
+            referencing_tables_share_partition_key? &&
+            counterpart_partitions_dropped?
+        end
+
+        # Postgres refuses DETACH ... CONCURRENTLY while the parent
+        # has a DEFAULT partition, but plain DETACH is unaffected.
+        def supported_detach?
+          return true unless detach_concurrently
+          return true unless has_default_partition?(partition.table)
+
+          blocked_by(:parent_has_default_partition, :error)
+        end
+
+        # Either form of DETACH errors on a partition awaiting FINALIZE.
+        # DetachedPartitionDropper finalizes it once retention elapses.
+        def not_pending_detach?
+          return true unless pg_partition&.pending_detach
+
+          blocked_by(:partition_pending_detach, :info)
+        end
 
         def supported_partition_key?
           return true if parent_partition_key
@@ -128,10 +155,7 @@ module Gitlab
         end
 
         def has_default_partition?(table_name)
-          PostgresPartition
-            .for_parent_table(table_name)
-            .where(condition: DEFAULT_PARTITION_CONDITION)
-            .exists?
+          PostgresPartition.for_parent_table(table_name).default_partition.exists?
         end
 
         # An attached partition can own a non-inherited FK too, so we must
@@ -150,11 +174,15 @@ module Gitlab
         end
         strong_memoize_attr :referencing_foreign_keys
 
-        def partition_ids
+        def pg_partition
           PostgresPartition
             .for_identifier(partition_identifier)
             .find_by(parent_identifier: parent_identifier)
-            &.list_partition_ids || []
+        end
+        strong_memoize_attr :pg_partition
+
+        def partition_ids
+          pg_partition&.list_partition_ids || []
         end
         strong_memoize_attr :partition_ids
 

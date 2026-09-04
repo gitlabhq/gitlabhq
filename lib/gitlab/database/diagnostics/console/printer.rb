@@ -62,11 +62,9 @@ module Gitlab
           end
 
           def table(headers, rows)
-            widths = column_widths(headers, rows)
-
-            line(INDENT + row_to_s(headers, widths))
-            line(INDENT + row_to_s(widths.map { |width| '-' * width }, widths))
-            rows.each { |row| line(INDENT + row_to_s(row, widths)) }
+            AsciiTable.new(rows, headers: headers, gap: COLUMN_GAP).lines.each do |table_line|
+              line(INDENT + table_line)
+            end
           end
 
           # $stdout is block-buffered when redirected; a slow check would look hung.
@@ -85,16 +83,6 @@ module Gitlab
             return Rainbow(text).green if severity.nil?
 
             Rainbow(text).color(SEVERITY_COLORS.fetch(severity, :yellow))
-          end
-
-          def column_widths(headers, rows)
-            headers.each_with_index.map do |header, index|
-              rows.map { |row| row[index].to_s.length }.push(header.to_s.length).max
-            end
-          end
-
-          def row_to_s(cells, widths)
-            cells.each_with_index.map { |cell, index| cell.to_s.ljust(widths[index]) }.join(COLUMN_GAP)
           end
 
           def wrap(text, width)

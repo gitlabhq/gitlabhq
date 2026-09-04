@@ -1,0 +1,28 @@
+# @feature_category: value_stream_management
+
+query mergeRequestsThroughputClickhouse($fullPath: ID!, $startDate: Time!, $endDate: Time!) {
+  group(fullPath: $fullPath) {
+    id
+    analytics {
+      mergeRequests(metricMergedAtFrom: $startDate, metricMergedAtTo: $endDate) {
+        aggregated {
+          nodes {
+            throughputCount
+          }
+        }
+      }
+    }
+  }
+  project(fullPath: $fullPath) {
+    id
+    analytics {
+      mergeRequests(metricMergedAtFrom: $startDate, metricMergedAtTo: $endDate) {
+        aggregated {
+          nodes {
+            throughputCount
+          }
+        }
+      }
+    }
+  }
+}

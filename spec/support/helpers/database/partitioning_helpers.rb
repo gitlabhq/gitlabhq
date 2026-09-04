@@ -111,5 +111,14 @@ module Database
           and pg_class.relispartition
       SQL
     end
+
+    # Postgres reaches this state only through an interrupted DETACH ... CONCURRENTLY, which
+    # cannot run inside a spec's transaction, so we set the catalog flag it leaves behind.
+    def mark_pending_detach(partition, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA, conn: connection)
+      conn.execute(<<~SQL)
+        UPDATE pg_inherits SET inhdetachpending = true
+        WHERE inhrelid = '#{schema}.#{partition}'::regclass
+      SQL
+    end
   end
 end

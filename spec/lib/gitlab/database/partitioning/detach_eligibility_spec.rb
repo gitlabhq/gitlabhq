@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Partitioning::DetachEligibility, feature_category: :database do
+  include Database::PartitioningHelpers
+
   let(:connection) { ActiveRecord::Base.connection }
   let(:referenced_table) { :_test_gitlab_main_referenced_parent }
   let(:referencing_table) { :_test_gitlab_main_referencing_parent }
@@ -44,6 +46,69 @@ RSpec.describe Gitlab::Database::Partitioning::DetachEligibility, feature_catego
 
   context 'when nothing references the parent table' do
     it_behaves_like 'a detachable partition'
+  end
+
+  context 'when the caller intends to detach concurrently' do
+    subject(:check) do
+      described_class.new(partition, connection: connection, detach_concurrently: true)
+    end
+
+    it_behaves_like 'a detachable partition'
+  end
+
+  context 'when the partition is awaiting FINALIZE' do
+    before do
+      mark_pending_detach("#{referenced_table}_100")
+    end
+
+    it 'defers until the dropper has finalized the detach' do
+      expect(check.detachable?).to be(false)
+      expect(blocker.reason).to eq(:partition_pending_detach)
+      expect(blocker.level).to eq(:info)
+    end
+
+    context 'when nothing references the parent table' do
+      it 'still defers, because either form of DETACH errors on it' do
+        expect(check.detachable?).to be(false)
+        expect(blocker.reason).to eq(:partition_pending_detach)
+      end
+    end
+  end
+
+  context 'when the parent table has a DEFAULT partition' do
+    before do
+      connection.execute(<<~SQL)
+        CREATE TABLE #{dynamic_schema}.#{referenced_table}_default
+          PARTITION OF #{referenced_table} DEFAULT
+      SQL
+    end
+
+    it_behaves_like 'a detachable partition'
+
+    context 'when the caller intends to detach concurrently' do
+      subject(:check) do
+        described_class.new(partition, connection: connection, detach_concurrently: true)
+      end
+
+      it 'reports the DEFAULT partition as an error' do
+        expect(check.detachable?).to be(false)
+        expect(blocker.reason).to eq(:parent_has_default_partition)
+        expect(blocker.level).to eq(:error)
+      end
+
+      context 'when the partition is also awaiting FINALIZE' do
+        before do
+          mark_pending_detach("#{referenced_table}_100")
+        end
+
+        # The DEFAULT partition never resolves, so it must not hide behind a blocker that clears
+        # itself once the dropper runs
+        it 'reports the DEFAULT partition rather than the pending detach' do
+          expect(check.detachable?).to be(false)
+          expect(blocker.reason).to eq(:parent_has_default_partition)
+        end
+      end
+    end
   end
 
   context 'when the parent table is not list partitioned on a single column' do

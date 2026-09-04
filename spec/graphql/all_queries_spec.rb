@@ -70,6 +70,7 @@ RSpec.describe 'graphql queries', feature_category: :api do
     app/assets/javascripts/analytics/dashboards/graphql/dora_metrics_by_project.query.graphql
     app/assets/javascripts/analytics/dashboards/graphql/vulnerabilities.query.graphql
     app/assets/javascripts/analytics/dashboards/graphql/contributor_count.query.graphql
+    app/assets/javascripts/analytics/dashboards/graphql/merge_requests_throughput_clickhouse.query.graphql
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/ai_agent_platform_flow_metrics.query.graphql
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/ai_agent_platform_flows_usage_by_user.query.graphql
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/ai_metrics.query.graphql

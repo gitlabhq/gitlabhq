@@ -64,6 +64,20 @@ RSpec.describe Gitlab::Database::BackgroundMigration::RakeTask, feature_category
 
       expect { task.print_table(data, headers: false) }.to output(expected).to_stdout
     end
+
+    it 'prints a hash as key-value rows, as the show task does' do
+      data = { 'id' => 'main_1', 'table_name' => 'timelogs' }
+
+      expected = [
+        "",
+        "id         | main_1  ",
+        "table_name | timelogs",
+        "",
+        ""
+      ].join("\n")
+
+      expect { task.print_table(data, headers: false) }.to output(expected).to_stdout
+    end
   end
   # rubocop:enable Layout/LineLength
 end

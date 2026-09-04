@@ -4,7 +4,7 @@ import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { Schema, Slice, DOMParser as ProseMirrorDOMParser, DOMSerializer } from '@tiptap/pm/model';
 import { handlePaste as handleTablePaste, isInTable, CellSelection } from '@tiptap/pm/tables';
 import { uniqueId } from 'lodash-es';
-import { __ } from '~/locale';
+import { s__, __ } from '~/locale';
 import { sanitize } from '~/lib/dompurify';
 import { VARIANT_DANGER } from '~/alert';
 import createMarkdownDeserializer from '../services/gl_api_markdown_deserializer';
@@ -78,6 +78,35 @@ function extractMultiCellTableHTML(html) {
   return table && table.querySelectorAll('td, th').length > 1 ? table.outerHTML : null;
 }
 
+// The async Clipboard API is only available in secure contexts (HTTPS or
+// localhost) and clipboard.read() is missing in some browsers (Firefox < 127).
+export function canReadClipboard() {
+  // eslint-disable-next-line no-restricted-properties -- navigator.clipboard intentionally used here
+  return Boolean(window.isSecureContext && navigator.clipboard?.read);
+}
+
+// Reads the clipboard outside a paste event (e.g. from a menu action).
+// Requires clipboard-read permission; the browser may prompt the user.
+// text/x-gfm is read opportunistically: most browsers don't expose custom
+// formats through the async Clipboard API, so GFM fidelity is usually lost
+// compared to a keyboard paste.
+async function readClipboardContent() {
+  // eslint-disable-next-line no-restricted-properties -- navigator.clipboard intentionally used here
+  const items = await navigator.clipboard.read();
+  const readType = async (type) => {
+    const item = items.find(({ types }) => types.includes(type));
+    if (!item) return '';
+    const blob = await item.getType(type);
+    return blob.text();
+  };
+
+  return {
+    gfmContent: await readType(GFM_FORMAT),
+    htmlContent: await readType(HTML_FORMAT),
+    textContent: await readType(TEXT_FORMAT),
+  };
+}
+
 function serializeCellsToText(fragment) {
   const rows = [];
   fragment.forEach((row) => {
@@ -100,6 +129,23 @@ export default Extension.create({
     };
   },
   addCommands() {
+    const alertError = (message) => {
+      this.options.eventHub.$emit(ALERT_EVENT, { message, variant: VARIANT_DANGER });
+    };
+    // Scoped to the clipboard read so processing failures don't surface a
+    // misleading permissions message. Resolves to null on failure.
+    const readClipboard = () =>
+      readClipboardContent().catch(() => {
+        alertError(
+          s__(
+            'ContentEditor|Unable to read the clipboard. Check your browser clipboard permissions and try again.',
+          ),
+        );
+        return null;
+      });
+    const alertPasteError = () =>
+      alertError(__('An error occurred while pasting text in the editor. Please try again.'));
+
     return {
       pasteContent:
         (content = '', processMarkdown = true) =>
@@ -155,6 +201,52 @@ export default Extension.create({
                 variant: VARIANT_DANGER,
               });
             });
+
+          return true;
+        },
+      pasteFromClipboardIntoCell:
+        () =>
+        ({ editor }) => {
+          // readClipboard never rejects, so a rejection here is a processing
+          // error, not a clipboard permissions problem.
+          readClipboard()
+            .then((content) => {
+              if (!content) return;
+
+              const { gfmContent, htmlContent, textContent } = content;
+              if (gfmContent) {
+                editor.commands.pasteContent(gfmContent, true);
+              } else if (htmlContent || textContent) {
+                editor.commands.pasteContent(htmlContent || textContent, !htmlContent);
+              }
+            })
+            .catch(alertPasteError);
+
+          return true;
+        },
+      pasteFromClipboardIntoTable:
+        () =>
+        ({ editor, view }) => {
+          readClipboard()
+            .then((content) => {
+              if (!content) return;
+
+              const { gfmContent, htmlContent, textContent } = content;
+              const tableHTML = htmlContent && extractMultiCellTableHTML(htmlContent);
+
+              if (tableHTML) {
+                const pasteSlice = parseHTMLSlice(buildPasteSchema(view.state.schema), tableHTML);
+                const slice = Slice.fromJSON(view.state.schema, pasteSlice.toJSON());
+                if (handleTablePaste(view, null, slice)) return;
+              }
+
+              if (gfmContent) {
+                editor.commands.pasteContent(gfmContent, true);
+              } else if (htmlContent || textContent) {
+                editor.commands.pasteContent(htmlContent || textContent, !htmlContent);
+              }
+            })
+            .catch(alertPasteError);
 
           return true;
         },

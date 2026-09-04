@@ -410,6 +410,160 @@ describe('content_editor/extensions/copy_paste', () => {
         expect(findAllLoaders(tiptapEditor.state)).toHaveLength(1);
       });
 
+      describe('clipboard menu commands', () => {
+        const mockClipboardRead = ({ gfm, html, text } = {}) => {
+          const items = [];
+          const makeItem = (type, content) => ({
+            types: [type],
+            getType: jest.fn().mockResolvedValue({ text: () => Promise.resolve(content) }),
+          });
+          if (gfm !== undefined) items.push(makeItem('text/x-gfm', gfm));
+          if (html !== undefined) items.push(makeItem('text/html', html));
+          if (text !== undefined) items.push(makeItem('text/plain', text));
+
+          jest.spyOn(navigator.clipboard, 'read').mockResolvedValue(items);
+        };
+
+        describe('pasteFromClipboardIntoCell', () => {
+          describe('when the clipboard contains table HTML', () => {
+            beforeEach(() => {
+              mockClipboardRead({
+                html: '<table><tr><td>X</td><td>Y</td></tr></table>',
+                text: 'X\tY',
+              });
+            });
+
+            it('pastes clipboard table HTML as a nested table inside the cell', async () => {
+              tiptapEditor.commands.pasteFromClipboardIntoCell();
+              await waitForPromises();
+
+              expect(getTableRows()).toEqual([
+                ['XYA', 'B'],
+                ['C', 'D'],
+              ]);
+
+              const docJSON = JSON.stringify(tiptapEditor.state.doc.toJSON());
+              expect(docJSON.match(/"type":"table"/g)).toHaveLength(2);
+            });
+          });
+
+          describe('when the clipboard exposes text/x-gfm', () => {
+            beforeEach(() => {
+              mockClipboardRead({
+                gfm: '**bold text**',
+                html: '<p>ignored</p>',
+                text: 'ignored',
+              });
+            });
+
+            it('prefers text/x-gfm over HTML', async () => {
+              tiptapEditor.commands.pasteFromClipboardIntoCell();
+              await waitForPromises();
+
+              expect(renderMarkdown).toHaveBeenCalledWith('**bold text**');
+            });
+          });
+
+          describe('when the clipboard is empty', () => {
+            beforeEach(() => {
+              mockClipboardRead();
+            });
+
+            it('does nothing', async () => {
+              const docBefore = tiptapEditor.state.doc.toJSON();
+
+              tiptapEditor.commands.pasteFromClipboardIntoCell();
+              await waitForPromises();
+
+              expect(tiptapEditor.state.doc.toJSON()).toEqual(docBefore);
+            });
+          });
+
+          describe('when reading the clipboard fails', () => {
+            beforeEach(() => {
+              jest.spyOn(navigator.clipboard, 'read').mockRejectedValue(new Error('denied'));
+            });
+
+            it('emits an alert', async () => {
+              tiptapEditor.commands.pasteFromClipboardIntoCell();
+              await waitForPromises();
+
+              expect(eventHub.$emit).toHaveBeenCalledWith(
+                ALERT_EVENT,
+                expect.objectContaining({ variant: VARIANT_DANGER }),
+              );
+            });
+          });
+        });
+
+        describe('pasteFromClipboardIntoTable', () => {
+          describe('when the clipboard contains table HTML', () => {
+            beforeEach(() => {
+              mockClipboardRead({
+                html: '<table><tr><td>X</td><td>Y</td></tr></table>',
+                text: 'X\tY',
+              });
+            });
+
+            it('distributes clipboard table cells across the table', async () => {
+              tiptapEditor.commands.pasteFromClipboardIntoTable();
+              await waitForPromises();
+
+              expect(getTableRows()).toEqual([
+                ['X', 'Y'],
+                ['C', 'D'],
+              ]);
+            });
+          });
+
+          describe('when the clipboard has no table cells', () => {
+            beforeEach(() => {
+              mockClipboardRead({ html: '<p>plain text</p>', text: 'plain text' });
+            });
+
+            it('falls back to a regular paste', async () => {
+              tiptapEditor.commands.pasteFromClipboardIntoTable();
+              await waitForPromises();
+
+              expect(tiptapEditor.state.doc.textContent).toContain('plain text');
+              expect(getTableRows()).toEqual([
+                ['plain textA', 'B'],
+                ['C', 'D'],
+              ]);
+            });
+          });
+
+          describe('when the clipboard exposes text/x-gfm for non-table content', () => {
+            beforeEach(() => {
+              mockClipboardRead({ gfm: '**bold text**', text: 'ignored' });
+            });
+
+            it('prefers text/x-gfm over plain text', async () => {
+              tiptapEditor.commands.pasteFromClipboardIntoTable();
+              await waitForPromises();
+
+              expect(renderMarkdown).toHaveBeenCalledWith('**bold text**');
+            });
+          });
+
+          describe('when reading the clipboard fails', () => {
+            beforeEach(() => {
+              jest.spyOn(navigator.clipboard, 'read').mockRejectedValue(new Error('denied'));
+            });
+
+            it('emits an alert', async () => {
+              tiptapEditor.commands.pasteFromClipboardIntoTable();
+              await waitForPromises();
+
+              expect(eventHub.$emit).toHaveBeenCalledWith(
+                ALERT_EVENT,
+                expect.objectContaining({ variant: VARIANT_DANGER }),
+              );
+            });
+          });
+        });
+      });
+
       it('uses the markdown-based paste path when pasting a single cell', async () => {
         const result = await triggerPasteEventHandler(
           buildClipboardEvent({
@@ -503,17 +657,19 @@ describe('content_editor/extensions/copy_paste', () => {
       expect(findAllLoaders(tiptapEditor.state)).toHaveLength(1);
     });
 
-    it('pastes in the correct position if some content is added before the markdown is processed', async () => {
-      const expectedDoc = doc(p(bold('some markdown'), 'some content'));
-      const resolvedValue = '<strong>some markdown</strong>';
+    describe('when some content is added before the markdown is processed', () => {
+      it('pastes in the correct position', async () => {
+        const expectedDoc = doc(p(bold('some markdown'), 'some content'));
+        const resolvedValue = '<strong>some markdown</strong>';
 
-      await triggerPasteEventHandler(buildClipboardEvent());
+        await triggerPasteEventHandler(buildClipboardEvent());
 
-      tiptapEditor.commands.insertContent('some content');
+        tiptapEditor.commands.insertContent('some content');
 
-      await resolveRenderMarkdownPromiseAndWait(resolvedValue);
+        await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
-      expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+      });
     });
 
     describe('when rendering markdown succeeds', () => {
@@ -674,24 +830,26 @@ describe('content_editor/extensions/copy_paste', () => {
         expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
       });
 
-      it('pastes as regular markdown if language is markdown', async () => {
-        const resolvedValue = '<p><strong>bold text</strong></p>';
+      describe('when the language is markdown', () => {
+        it('pastes as regular markdown', async () => {
+          const resolvedValue = '<p><strong>bold text</strong></p>';
 
-        const expectedDoc = doc(p(bold('bold text')));
+          const expectedDoc = doc(p(bold('bold text')));
 
-        await triggerPasteEventHandler(
-          buildClipboardEvent({
-            types: ['vscode-editor-data', 'text/plain', 'text/html'],
-            data: {
-              'vscode-editor-data': '{ "version": 1, "mode": "markdown" }',
-              'text/plain': '**bold text**',
-              'text/html': '<p><strong>bold text</strong></p>',
-            },
-          }),
-        );
-        await resolveRenderMarkdownPromiseAndWait(resolvedValue);
+          await triggerPasteEventHandler(
+            buildClipboardEvent({
+              types: ['vscode-editor-data', 'text/plain', 'text/html'],
+              data: {
+                'vscode-editor-data': '{ "version": 1, "mode": "markdown" }',
+                'text/plain': '**bold text**',
+                'text/html': '<p><strong>bold text</strong></p>',
+              },
+            }),
+          );
+          await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
-        expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+        });
       });
     });
 

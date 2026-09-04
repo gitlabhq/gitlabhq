@@ -55,6 +55,12 @@ module Gitlab
       ::Authz::Boundary.for(::Authz::GranularScope::Access::USER)
     end
 
+    # Project snippets keep organization_id NULL and resolve the org via #project.
+    override :check_organization_maintenance!
+    def check_organization_maintenance!
+      enforce_organization_maintenance!(snippet.organization || project&.organization)
+    end
+
     # TODO: Implement EE/Geo https://gitlab.com/gitlab-org/gitlab/issues/205629
     override :check_custom_ssh_action!
     def check_custom_ssh_action!

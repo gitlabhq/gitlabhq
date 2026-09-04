@@ -994,7 +994,7 @@ GEM
       google-apis-core (>= 0.15.0, < 2.a)
     google-apis-cloudbilling_v1 (0.22.0)
       google-apis-core (>= 0.9.1, < 2.a)
-    google-apis-cloudresourcemanager_v1 (0.44.0)
+    google-apis-cloudresourcemanager_v1 (0.45.0)
       google-apis-core (>= 0.15.0, < 2.a)
     google-apis-compute_v1 (0.129.0)
       google-apis-core (>= 0.15.0, < 2.a)
@@ -2561,7 +2561,7 @@ DEPENDENCIES
   gon (~> 6.6.0)
   google-apis-androidpublisher_v3 (~> 0.107.0)
   google-apis-cloudbilling_v1 (~> 0.22.0)
-  google-apis-cloudresourcemanager_v1 (~> 0.44.0)
+  google-apis-cloudresourcemanager_v1 (~> 0.45.0)
   google-apis-compute_v1 (~> 0.129.0)
   google-apis-container_v1 (~> 0.100.0)
   google-apis-container_v1beta1 (~> 0.91.0)
@@ -3086,7 +3086,7 @@ CHECKSUMS
   gon (6.6.0) sha256=4c0be4e4f05fc8eb5db5ac2f7d47ae28ee04826f2b153338f7fb03c0e8f6ecd1
   google-apis-androidpublisher_v3 (0.107.0) sha256=b8207eecc89e6a9f7ea11aa88a07bccdcae5ca90121330079db4ef4696a2f3ff
   google-apis-cloudbilling_v1 (0.22.0) sha256=db2b72aebdc2664fd5095264a160cf757119ba3a83a036817b78d0d2ad7886fd
-  google-apis-cloudresourcemanager_v1 (0.44.0) sha256=be96723ff28664407dd86724857f9cd7402bf6dd63ef4257cbd42002816705f8
+  google-apis-cloudresourcemanager_v1 (0.45.0) sha256=ea936d4d51dd0556fb93f4a78131c0441c308906bf076d543c8852dbeec27d45
   google-apis-compute_v1 (0.129.0) sha256=b767d4564519fc47fc86b10159ec27ad515292e92b979b10720b02fd3b06f5d3
   google-apis-container_v1 (0.100.0) sha256=5a5ae56036e384830263de6d48ed9b9f9ef26818b28b6b027206432e718d1853
   google-apis-container_v1beta1 (0.91.0) sha256=9639664bf4876059627b44e3feca67cf34bb48c3520d60fbdfc42f4f37f5c299

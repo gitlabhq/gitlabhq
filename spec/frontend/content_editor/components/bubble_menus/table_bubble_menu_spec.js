@@ -92,6 +92,7 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
   };
 
   beforeEach(() => {
+    window.isSecureContext = true;
     buildEditor();
     buildWrapper();
   });
@@ -149,11 +150,13 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
 
     describe('common actions', () => {
       describe.each`
-        label                    | action
-        ${'Insert column left'}  | ${'addColumnBefore'}
-        ${'Insert column right'} | ${'addColumnAfter'}
-        ${'Insert row below'}    | ${'addRowAfter'}
-        ${'Delete table'}        | ${'deleteTable'}
+        label                           | action
+        ${'Insert column left'}         | ${'addColumnBefore'}
+        ${'Insert column right'}        | ${'addColumnAfter'}
+        ${'Insert row below'}           | ${'addRowAfter'}
+        ${'Paste into cell'}            | ${'pasteFromClipboardIntoCell'}
+        ${'Paste and merge into table'} | ${'pasteFromClipboardIntoTable'}
+        ${'Delete table'}               | ${'deleteTable'}
       `('action: $label', ({ label, action }) => {
         const cells = [
           'Header 1',
@@ -189,6 +192,31 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
             expect(commands[action]).toHaveBeenCalled();
           }
         });
+      });
+    });
+
+    describe('paste actions availability', () => {
+      it('are not visible in an insecure context', async () => {
+        window.isSecureContext = false;
+
+        selectCellContaining('Row 1 Cell 1');
+        await showBubbleMenu();
+
+        expect(wrapper.text()).not.toContain('Paste into cell');
+        expect(wrapper.text()).not.toContain('Paste and merge into table');
+      });
+
+      it('are not visible when clipboard.read is unavailable', async () => {
+        const { read } = navigator.clipboard;
+        delete navigator.clipboard.read;
+
+        selectCellContaining('Row 1 Cell 1');
+        await showBubbleMenu();
+
+        expect(wrapper.text()).not.toContain('Paste into cell');
+        expect(wrapper.text()).not.toContain('Paste and merge into table');
+
+        navigator.clipboard.read = read;
       });
     });
 
