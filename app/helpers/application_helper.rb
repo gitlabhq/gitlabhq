@@ -133,7 +133,15 @@ module ApplicationHelper
       page_type_id: controller.params[:id],
       group: @group&.path,
       group_full_path: @group&.full_path
-    }.merge(project_data)
+    }.merge(project_data).merge(password_manager_data)
+  end
+
+  def password_manager_data
+    return {} unless @ignore_password_managers
+
+    # 1Password only honours data-1p-ignore on <body> (or per field); without it, its DOM observers
+    # re-walk every node Rapid Diffs streams in and can freeze the page for seconds.
+    { '1p_ignore': '' }
   end
 
   def project_data

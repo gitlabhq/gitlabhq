@@ -1024,7 +1024,7 @@ GEM
       google-apis-core (>= 0.9.1, < 2.a)
     google-apis-sqladmin_v1beta4 (0.41.0)
       google-apis-core (>= 0.9.1, < 2.a)
-    google-apis-storage_v1 (0.56.0)
+    google-apis-storage_v1 (0.66.0)
       google-apis-core (>= 0.15.0, < 2.a)
     google-cloud-artifact_registry-v1 (0.11.0)
       gapic-common (>= 0.20.0, < 2.a)
@@ -3098,7 +3098,7 @@ CHECKSUMS
   google-apis-pubsub_v1 (0.45.0) sha256=1dfe4614c781250a0d4491be43e134936d5c08adc75a843e27d4bb66ba3cb205
   google-apis-serviceusage_v1 (0.28.0) sha256=5f0b7e023647e7da07f6bce6ada0a6b1aafdb545a1ae985dbac921b76d11b062
   google-apis-sqladmin_v1beta4 (0.41.0) sha256=551553b6481879f1cd39fb83cc2a2c2ea9334afc4bf261b96900dd559f96749d
-  google-apis-storage_v1 (0.56.0) sha256=b4e8d90db1a2085de66fbb915b3bcd792179dfcc573320900435f91b8d0d182b
+  google-apis-storage_v1 (0.66.0) sha256=fdf6d65d3fc77e7046b3494333a818ece9e2afd763bb161e1a7a9e70cf198351
   google-cloud-artifact_registry-v1 (0.11.0) sha256=ba80d2dce9767e663931ded7929b7f8bf5983a6e2ea68078e27e7ca9a940783e
   google-cloud-common (1.9.0) sha256=a593848e01c23705571df08e5b3019db4a09d7c91b2aff98c85ca36332a7a82c
   google-cloud-compute-v1 (2.6.0) sha256=b96059b33ffc2f25644d20161a0c1aa1331197073c2e44786b18f8b670f1141e

@@ -166,7 +166,10 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
 
     context 'for the remove_from_organization action' do
       let_it_be(:organization) { create(:organization) }
-      let_it_be(:user, freeze: false) { create(:user, organizations: [organization]) }
+
+      let_it_be(:user, freeze: false) do
+        create(:user, organization: create(:organization), organizations: [organization])
+      end
 
       context 'when on the organization admin page' do
         before do

@@ -8470,6 +8470,9 @@ msgstr ""
 msgid "AiGovernance|MCP server"
 msgstr ""
 
+msgid "AiGovernance|MCP servers"
+msgstr ""
+
 msgid "AiGovernance|No MCP servers found."
 msgstr ""
 
@@ -8509,21 +8512,6 @@ msgstr ""
 msgid "AiGovernance|Show"
 msgstr ""
 
-msgid "AiGovernance|Showing %d Connected agent in the last 7 days"
-msgid_plural "AiGovernance|Showing %d Connected agents in the last 7 days"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "AiGovernance|Showing %d DAP agent in the last 7 days"
-msgid_plural "AiGovernance|Showing %d DAP agents in the last 7 days"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "AiGovernance|Showing all %d agent in the last 7 days"
-msgid_plural "AiGovernance|Showing all %d agents in the last 7 days"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "AiGovernance|Source"
 msgstr ""
 
@@ -8543,6 +8531,9 @@ msgid "AiGovernance|Tool name"
 msgstr ""
 
 msgid "AiGovernance|Type"
+msgstr ""
+
+msgid "AiGovernance|View MCP registry"
 msgstr ""
 
 msgid "AiGovernance|View all agents"
@@ -30604,9 +30595,6 @@ msgstr[1] ""
 msgid "DuoAgenticChat|%{linkStart}Use non-agentic Chat%{linkEnd} (answers questions only)"
 msgstr ""
 
-msgid "DuoAgenticChat|A workplan has already been started for this item."
-msgstr ""
-
 msgid "DuoAgenticChat|AGENTS.md"
 msgstr ""
 
@@ -30835,9 +30823,6 @@ msgstr ""
 msgid "DuoAgenticChat|Retry"
 msgstr ""
 
-msgid "DuoAgenticChat|Review and confirm"
-msgstr ""
-
 msgid "DuoAgenticChat|Search groups"
 msgstr ""
 
@@ -30941,6 +30926,12 @@ msgid "DuoAgenticChat|Usage billing is not available for this account. To contin
 msgstr ""
 
 msgid "DuoAgenticChat|Usage billing not available"
+msgstr ""
+
+msgid "DuoAgenticChat|View"
+msgstr ""
+
+msgid "DuoAgenticChat|View the workplan and implement it when you're ready."
 msgstr ""
 
 msgid "DuoAgenticChat|Web search"
@@ -31213,6 +31204,9 @@ msgid "DuoAgentsPlatform|Failed to submit approval. Please try again."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Failed to submit modification. Please try again."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Failed to update trigger."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Files that tune how agents read and act on this codebase"
@@ -31497,6 +31491,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Started %{timeago} by %{user}"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Status"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Target"
 msgstr ""
 
@@ -31521,10 +31518,19 @@ msgstr ""
 msgid "DuoAgentsPlatform|The trigger could not be updated. Try again."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Trigger active"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Trigger created successfully."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Trigger deleted successfully."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Trigger disabled."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Trigger enabled."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Trigger not found."

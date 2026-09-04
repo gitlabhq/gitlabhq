@@ -13,6 +13,10 @@ module QA
         end
       end
 
+      attribute :custom_webhook_template do
+        nil
+      end
+
       EVENT_TRIGGERS = %i[
         issues
         job
@@ -61,7 +65,8 @@ module QA
           url: url,
           enable_ssl_verification: enable_ssl_verification,
           token: token,
-          push_events_branch_filter: @push_events_branch_filter.join(',')
+          push_events_branch_filter: @push_events_branch_filter.join(','),
+          custom_webhook_template: custom_webhook_template
         }
         EVENT_TRIGGERS.each_with_object(body) do |trigger, memo|
           attr = "#{trigger}_events"

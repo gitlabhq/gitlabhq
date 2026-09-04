@@ -9,12 +9,19 @@ module QA
             Service::DockerRun::Smocker.teardown!
           end
 
-          def setup(mock = Vendor::Smocker::SmockerApi::DEFAULT_MOCK, session: nil, **event_args)
+          def setup(
+            mock = Vendor::Smocker::SmockerApi::DEFAULT_MOCK,
+            session: nil,
+            custom_webhook_template: nil,
+            **event_args
+          )
             Service::DockerRun::Smocker.init(wait: 10) do |smocker|
               smocker.register(mock, session: session)
 
               webhook = fabricate_via_api! do |hook|
                 hook.url = smocker.url
+                # Group hooks have no such attribute, so only assign when a caller asks for it.
+                hook.custom_webhook_template = custom_webhook_template if custom_webhook_template
 
                 event_args.each do |event, bool|
                   hook.send("#{event}_events=", bool)

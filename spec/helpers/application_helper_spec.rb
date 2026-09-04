@@ -551,6 +551,14 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
   end
 
   describe '#body_data' do
+    context 'when @ignore_password_managers is set' do
+      it 'asks 1Password to ignore the page' do
+        assign(:ignore_password_managers, true)
+
+        expect(helper.body_data).to include('1p_ignore': '')
+      end
+    end
+
     context 'when @project is not set' do
       it 'does not include project data in the body data elements' do
         expect(helper.body_data).to eq(

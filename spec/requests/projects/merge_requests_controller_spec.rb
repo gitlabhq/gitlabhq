@@ -54,6 +54,22 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
     let(:merge_request) { create :merge_request, source_project: project, author: user }
 
+    describe 'password manager opt-out' do
+      {
+        'Overview' => -> { project_merge_request_path(project, merge_request) },
+        'Commits' => -> { commits_project_merge_request_path(project, merge_request) },
+        'Pipelines' => -> { pipelines_project_merge_request_path(project, merge_request) },
+        'legacy Changes' => -> { diffs_project_merge_request_path(project, merge_request) },
+        'Rapid Diffs Changes' => -> { diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true') }
+      }.each do |tab, path|
+        it "asks password managers to ignore the #{tab} tab" do
+          get instance_exec(&path)
+
+          expect(response.body).to match(/<body [^>]*data-1p-ignore=""/)
+        end
+      end
+    end
+
     context 'when the author of the merge request is banned', feature_category: :insider_threat do
       let_it_be_with_reload(:user) { create(:user, :banned) }
 

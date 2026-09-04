@@ -100,6 +100,21 @@ The trigger now appears in **AI** > **Triggers**.
 1. For the trigger you want to change, select **Edit flow trigger** ({{< icon name="pencil" >}}).
 1. Make the changes and select **Save changes**.
 
+## Turn a trigger on or off
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/598439) in GitLab 19.4.
+
+{{< /history >}}
+
+Turn off a trigger to disable it and retain its configuration. After you turn a trigger off,
+it stops running automatically after its configured actions, and remains in the list of triggers.
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **AI** > **Triggers**.
+1. For the trigger you want to turn on or off, in the **Status** column, select the toggle.
+
 ## Delete a trigger
 
 1. In the top bar, select **Search or go to** and find your project.
