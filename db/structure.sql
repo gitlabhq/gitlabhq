@@ -48525,6 +48525,8 @@ CREATE INDEX index_job_artifact_states_needs_verification ON ci_job_artifact_sta
 
 CREATE INDEX index_job_artifact_states_pending_verification ON ci_job_artifact_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
+CREATE INDEX index_job_artifact_states_reverification ON ci_job_artifact_states USING btree (verified_at) WHERE (verification_state = 2);
+
 CREATE UNIQUE INDEX index_job_environments_on_ci_job_id_and_environment_id ON job_environments USING btree (ci_job_id, environment_id);
 
 CREATE INDEX index_job_environments_on_ci_pipeline_id ON job_environments USING btree (ci_pipeline_id);
