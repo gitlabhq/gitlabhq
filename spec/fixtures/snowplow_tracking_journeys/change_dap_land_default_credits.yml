@@ -1,0 +1,39 @@
+---
+experiment: change_dap_land_default_credits
+description: |
+  Events emitted when a user reaches the purchase credits call to action on the group billing
+  page. The experiment pre-fills a larger credit quantity on the Customers Portal, so it changes
+  where the link points rather than which events fire, and both arms declare the same funnel.
+
+  Every event must also carry the experiment context for the arm under test; that is asserted
+  from the `experiment` key above and does not need repeating below. Comparing the arms is what
+  the variant in that context is for.
+
+  The conversion event closes the funnel. It is emitted when the Customers Portal provisions the
+  credits by calling back into GitLab, so no click reaches it and the spec provisions directly.
+  It only emits for a namespace already assigned to an arm, which is what keeps namespaces that
+  never saw the billing page out of the funnel.
+
+  When the experiment is cleaned up, move the winning arm's events to a top-level `events:` key
+  and delete `experiment:` and `variants:`.
+
+variants:
+  candidate:
+    events:
+      - category: change_dap_land_default_credits
+        action: assignment
+
+      - action: click_purchase_credits_dap_land_sku
+
+      - category: change_dap_land_default_credits
+        action: finish_purchase_credits_dap_land_sku
+
+  control:
+    events:
+      - category: change_dap_land_default_credits
+        action: assignment
+
+      - action: click_purchase_credits_dap_land_sku
+
+      - category: change_dap_land_default_credits
+        action: finish_purchase_credits_dap_land_sku

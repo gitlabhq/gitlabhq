@@ -117,3 +117,9 @@ cng-instance-caproni:
     QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_IN_PARALLEL: "true"
     QA_PARALLEL_PROCESSES: 4
+
+cng-registry-caproni:
+  extends: .caproni-test
+  variables:
+    QA_SCENARIO: Test::Integration::Registry
+    QA_RUN_IN_PARALLEL: "false"

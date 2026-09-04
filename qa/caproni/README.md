@@ -2,10 +2,16 @@
 
 This deploys a CNG build of the GitLab commit under test onto a job-local
 [k3d](https://k3d.io) cluster inside `docker:dind`, using
-[Caproni](https://gitlab-org.gitlab.io/caproni/) and runs `Test::Instance::Smoke` against it.
+[Caproni](https://gitlab-org.gitlab.io/caproni/) and runs the E2E suite against it.
 
-One non-blocking job, `cng-instance-caproni`, in the existing `test-on-cng` child
-pipeline. It runs whenever the orchestrator-deployed jobs run with `allow_failure: true`.
+Two non-blocking jobs in the existing `test-on-cng` child pipeline, both with
+`allow_failure: true` and both running whenever the orchestrator-deployed jobs run:
+`cng-instance-caproni` runs `Test::Instance::Smoke`, and `cng-registry-caproni` runs
+`Test::Integration::Registry`.
+
+The registry job needs nothing beyond the chart's Gateway route for `registry.<domain>`.
+The registry spec takes its address from `CI_REGISTRY`, so unlike the orchestrator this rig
+does not have to publish the registry on the GitLab host at port 5000.
 
 This doubles as a reference implementation of deploying a CNG instance with Caproni, for
 modular feature teams adopting it. Copy the shape, but check the shims first: the pieces

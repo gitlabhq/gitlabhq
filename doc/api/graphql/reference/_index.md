@@ -7396,6 +7396,8 @@ Arguments:
 | <a id="mutation-commitcreate-message"></a>`message` | [`String!`](#string) | Raw commit message. |
 | <a id="mutation-commitcreate-projectpath"></a>`projectPath` | [`ID!`](#id) | Project full path the branch is associated with. |
 | <a id="mutation-commitcreate-startbranch"></a>`startBranch` | [`String`](#string) | If on a new branch, name of the original branch. |
+| <a id="mutation-commitcreate-startprojectpath"></a>`startProjectPath` | [`ID`](#id) | Full path of the project to start the commit from. Must be the project itself or a project it was forked from. |
+| <a id="mutation-commitcreate-startsha"></a>`startSha` | [`String`](#string) | SHA of the commit to start the new branch from. Mutually exclusive with startBranch. |
 
 Fields:
 
@@ -60803,6 +60805,32 @@ Fields:
 | <a id="sastciconfigurationoptionsentity-label"></a>`label` | [`String`](#string) | Label of option entity. |
 | <a id="sastciconfigurationoptionsentity-value"></a>`value` | [`String`](#string) | Value of option entity. |
 
+### `SastFalsePositiveConfiguration`
+
+Configuration for the SAST false positive detection trigger of a triage and remediation scan profile.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="sastfalsepositiveconfiguration-cweclasses"></a>`cweClasses` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.4. Status: Experiment. CWE identifiers false positive detection is restricted to. |
+| <a id="sastfalsepositiveconfiguration-runmode"></a>`runMode` {{< icon name="warning-solid" >}} | [`SecurityScanProfileRunMode`](#securityscanprofilerunmode) | Introduced in GitLab 19.4. Status: Experiment. Whether false positive detection runs automatically or on demand. |
+| <a id="sastfalsepositiveconfiguration-severitylevel"></a>`severityLevel` {{< icon name="warning-solid" >}} | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Introduced in GitLab 19.4. Status: Experiment. Minimum vulnerability severity that triggers false positive detection. |
+
+### `SastVulnerabilityResolutionConfiguration`
+
+Configuration for the SAST vulnerability resolution trigger of a triage and remediation scan profile.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="sastvulnerabilityresolutionconfiguration-cweclasses"></a>`cweClasses` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.4. Status: Experiment. CWE identifiers resolution is restricted to. |
+| <a id="sastvulnerabilityresolutionconfiguration-falsepositiveconfidence"></a>`falsePositiveConfidence` {{< icon name="warning-solid" >}} | [`SecurityScanProfileFalsePositiveConfidence`](#securityscanprofilefalsepositiveconfidence) | Introduced in GitLab 19.4. Status: Experiment. False positive assessment a finding must carry to be resolved. |
+| <a id="sastvulnerabilityresolutionconfiguration-openmergerequestslimit"></a>`openMergeRequestsLimit` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. Maximum number of open merge requests resolution may have at once. Null means no limit. |
+| <a id="sastvulnerabilityresolutionconfiguration-runmode"></a>`runMode` {{< icon name="warning-solid" >}} | [`SecurityScanProfileRunMode`](#securityscanprofilerunmode) | Introduced in GitLab 19.4. Status: Experiment. Whether resolution runs automatically or on demand. |
+| <a id="sastvulnerabilityresolutionconfiguration-severitylevel"></a>`severityLevel` {{< icon name="warning-solid" >}} | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Introduced in GitLab 19.4. Status: Experiment. Minimum vulnerability severity that triggers a resolution attempt. |
+
 ### `SavedReply`
 
 Fields:
@@ -61021,6 +61049,16 @@ Fields:
 | <a id="secretdetectionconfiguration-logoptions"></a>`logOptions` | [`String`](#string) | Options passed to git log to control the commit range scanned. |
 | <a id="secretdetectionconfiguration-rulesetgitreference"></a>`rulesetGitReference` | [`String`](#string) | Git reference of the remote ruleset configuration to use. |
 | <a id="secretdetectionconfiguration-secureanalyzersprefix"></a>`secureAnalyzersPrefix` | [`String`](#string) | Prefix for the container registry from which the analyzer image is pulled. |
+
+### `SecretDetectionFalsePositiveConfiguration`
+
+Configuration for the secret detection false positive detection trigger of a triage and remediation scan profile.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="secretdetectionfalsepositiveconfiguration-runmode"></a>`runMode` {{< icon name="warning-solid" >}} | [`SecurityScanProfileRunMode`](#securityscanprofilerunmode) | Introduced in GitLab 19.4. Status: Experiment. Whether false positive detection runs automatically or on demand. |
 
 ### `SecretPermission`
 
@@ -64065,6 +64103,17 @@ Fields:
 | <a id="vulnerabilitydetailurl-href"></a>`href` | [`String!`](#string) | Href of the URL. |
 | <a id="vulnerabilitydetailurl-name"></a>`name` | [`String`](#string) | Name of the field. |
 | <a id="vulnerabilitydetailurl-text"></a>`text` | [`String`](#string) | Text of the URL. |
+
+### `VulnerabilityEnrichmentConfiguration`
+
+Configuration for the vulnerability enrichment trigger of a triage and remediation scan profile.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityenrichmentconfiguration-runmode"></a>`runMode` {{< icon name="warning-solid" >}} | [`SecurityScanProfileRunMode`](#securityscanprofilerunmode) | Introduced in GitLab 19.4. Status: Experiment. Whether enrichment runs automatically or on demand. |
+| <a id="vulnerabilityenrichmentconfiguration-severitylevel"></a>`severityLevel` {{< icon name="warning-solid" >}} | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Introduced in GitLab 19.4. Status: Experiment. Minimum vulnerability severity that triggers enrichment. |
 
 ### `VulnerabilityEvidence`
 
@@ -71381,6 +71430,15 @@ Controls GitLab Advanced SAST diff-based scanning.
 | <a id="securityscanprofileadvancedsastpartialscan-differential"></a>`DIFFERENTIAL` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Enable diff-based scanning. |
 | <a id="securityscanprofileadvancedsastpartialscan-disabled"></a>`DISABLED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Disable diff-based scanning. |
 
+### `SecurityScanProfileFalsePositiveConfidence`
+
+False positive assessment a finding must carry to be acted on.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securityscanprofilefalsepositiveconfidence-likely_false_positive"></a>`LIKELY_FALSE_POSITIVE` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Restrict to findings assessed as likely false positives. |
+| <a id="securityscanprofilefalsepositiveconfidence-likely_not_false_positive"></a>`LIKELY_NOT_FALSE_POSITIVE` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Restrict to findings assessed as likely not false positives. |
+
 ### `SecurityScanProfileImageSuffix`
 
 Suffix appended to the analyzer image name.
@@ -71389,6 +71447,15 @@ Suffix appended to the analyzer image name.
 | ----- | ----------- |
 | <a id="securityscanprofileimagesuffix-default"></a>`DEFAULT` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. No suffix; use the standard analyzer image. |
 | <a id="securityscanprofileimagesuffix-fips"></a>`FIPS` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Use the FIPS-compliant analyzer image. |
+
+### `SecurityScanProfileRunMode`
+
+Whether a triage and remediation capability runs automatically or on demand.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securityscanprofilerunmode-auto"></a>`AUTO` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Run automatically as findings appear. |
+| <a id="securityscanprofilerunmode-manual"></a>`MANUAL` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Run only when triggered by a user. |
 
 ### `SecurityScanProfileType`
 
@@ -74635,12 +74702,16 @@ One of:
 
 #### `ScanProfileConfiguration`
 
-Effective configuration for a scan profile trigger, resolved by scan type.
+Effective configuration for a scan profile trigger, resolved by scan type, and by trigger type for triage and remediation profiles.
 
 One of:
 
 - [`AutoRemediationConfiguration`](#autoremediationconfiguration)
+- [`SastFalsePositiveConfiguration`](#sastfalsepositiveconfiguration)
+- [`SastVulnerabilityResolutionConfiguration`](#sastvulnerabilityresolutionconfiguration)
 - [`SecretDetectionConfiguration`](#secretdetectionconfiguration)
+- [`SecretDetectionFalsePositiveConfiguration`](#secretdetectionfalsepositiveconfiguration)
+- [`VulnerabilityEnrichmentConfiguration`](#vulnerabilityenrichmentconfiguration)
 
 #### `SecurityPolicySource`
 

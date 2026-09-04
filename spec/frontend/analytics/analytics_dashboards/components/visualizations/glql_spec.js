@@ -222,6 +222,59 @@ describe('GlqlVisualization', () => {
 
       expect(wrapper.emitted('reload')).toEqual([[]]);
     });
+
+    describe('when the panel opts out with showActions: false', () => {
+      const createOptedOutWrapper = async (change) => {
+        createWrapper({ data: glqlQuery, options: { showActions: false } });
+
+        findResolver().vm.$emit('change', change);
+        await nextTick();
+      };
+
+      it('emits no actions once the resolver returns results', async () => {
+        await createOptedOutWrapper({ data: { count: 2, nodes: [{ id: 1 }, { id: 2 }] } });
+
+        expect(lastActions()).toEqual([]);
+      });
+
+      // Otherwise the dropdown a panel asked to hide would reappear the moment it broke.
+      it('emits no actions when the resolver reports an error', async () => {
+        await createOptedOutWrapper({ error: new Error('Something went wrong') });
+
+        expect(lastActions()).toEqual([]);
+      });
+
+      // The kebab's Reload is gone, so the alert popover's Retry has to stand in for it.
+      it('forwards a resolver error to the panel with a retry offered', async () => {
+        const error = new Error('Something went wrong');
+
+        await createOptedOutWrapper({ error });
+
+        expect(wrapper.emitted('set-alerts')).toEqual([
+          [
+            {
+              errors: [error],
+              title: 'An error occurred when trying to display this panel',
+              description: 'Something went wrong',
+              canRetry: true,
+            },
+          ],
+        ]);
+      });
+    });
+
+    it('emits the base set of actions when the panel opts in with showActions: true', async () => {
+      createWrapper({ data: glqlQuery, options: { showActions: true } });
+
+      findResolver().vm.$emit('change', { data: undefined });
+      await nextTick();
+
+      expect(lastActions().map((action) => action.text)).toEqual([
+        'View source',
+        'Copy source',
+        'Reload',
+      ]);
+    });
   });
 
   describe('source modal', () => {

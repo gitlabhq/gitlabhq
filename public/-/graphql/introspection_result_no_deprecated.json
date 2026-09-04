@@ -34977,6 +34977,26 @@
               "defaultValue": null
             },
             {
+              "name": "startSha",
+              "description": "SHA of the commit to start the new branch from. Mutually exclusive with startBranch.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "startProjectPath",
+              "description": "Full path of the project to start the commit from. Must be the project itself or a project it was forked from.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "message",
               "description": "Raw commit message.",
               "type": {

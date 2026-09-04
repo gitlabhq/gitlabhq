@@ -27,6 +27,11 @@ export default {
       required: false,
       default: false,
     },
+    options: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   emits: ['set-alerts', 'set-actions', 'reload'],
   data() {
@@ -38,6 +43,11 @@ export default {
   computed: {
     showEmptyState() {
       return this.resolverData?.nodes?.length === 0;
+    },
+    // GlDashboardPanel hides its actions dropdown when a panel has no actions, so opting out
+    // means emitting an empty list. Panels opt out entirely, error state included.
+    showActions() {
+      return this.options.showActions ?? true;
     },
     // Null, not an empty object, so the resolver falls back to deriving the namespace from the URL.
     scope() {
@@ -66,7 +76,8 @@ export default {
           errors: [error],
           title: s__('AnalyticsDashboards|An error occurred when trying to display this panel'),
           description: error.message,
-          canRetry: false,
+          // With the kebab's Reload gone, the alert popover's Retry is the only way back.
+          canRetry: !this.showActions,
         });
       } else {
         actions.push(
@@ -81,7 +92,7 @@ export default {
       }
 
       actions.push({ text: __('Reload'), action: () => this.$emit('reload') });
-      this.$emit('set-actions', actions);
+      this.$emit('set-actions', this.showActions ? actions : []);
     },
     viewSource() {
       this.modalVisible = true;

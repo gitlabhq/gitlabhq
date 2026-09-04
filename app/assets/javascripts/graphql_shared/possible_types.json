@@ -341,7 +341,11 @@
   ],
   "ScanProfileConfiguration": [
     "AutoRemediationConfiguration",
-    "SecretDetectionConfiguration"
+    "SastFalsePositiveConfiguration",
+    "SastVulnerabilityResolutionConfiguration",
+    "SecretDetectionConfiguration",
+    "SecretDetectionFalsePositiveConfiguration",
+    "VulnerabilityEnrichmentConfiguration"
   ],
   "SecurityPolicySource": [
     "GroupSecurityPolicySource",

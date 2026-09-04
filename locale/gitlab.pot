@@ -8446,6 +8446,12 @@ msgstr ""
 msgid "AiGovernance|Failed to load audit logs."
 msgstr ""
 
+msgid "AiGovernance|Failed to load developer activity."
+msgstr ""
+
+msgid "AiGovernance|Failed to load project exposure."
+msgstr ""
+
 msgid "AiGovernance|Failed to load tool rules."
 msgstr ""
 
@@ -8480,6 +8486,12 @@ msgid "AiGovernance|No agents configured yet."
 msgstr ""
 
 msgid "AiGovernance|No recent agent sessions."
+msgstr ""
+
+msgid "AiGovernance|No recent developer activity."
+msgstr ""
+
+msgid "AiGovernance|No recent project exposure."
 msgstr ""
 
 msgid "AiGovernance|No tool rules found."
@@ -12224,6 +12236,9 @@ msgstr ""
 msgid "ArtifactRegistry|CLI commands"
 msgstr ""
 
+msgid "ArtifactRegistry|Cache entry successfully deleted."
+msgstr ""
+
 msgid "ArtifactRegistry|Cache successfully cleared."
 msgstr ""
 
@@ -12312,6 +12327,21 @@ msgid "ArtifactRegistry|Created"
 msgstr ""
 
 msgid "ArtifactRegistry|Created on"
+msgstr ""
+
+msgid "ArtifactRegistry|Delete cache entry"
+msgstr ""
+
+msgid "ArtifactRegistry|Delete image"
+msgstr ""
+
+msgid "ArtifactRegistry|Delete image?"
+msgstr ""
+
+msgid "ArtifactRegistry|Delete package"
+msgstr ""
+
+msgid "ArtifactRegistry|Delete package?"
 msgstr ""
 
 msgid "ArtifactRegistry|Delete repository"
@@ -12421,6 +12451,9 @@ msgid "ArtifactRegistry|Image cached"
 msgid_plural "ArtifactRegistry|Images cached"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "ArtifactRegistry|Image was successfully deleted."
+msgstr ""
 
 msgid "ArtifactRegistry|Index"
 msgstr ""
@@ -12562,6 +12595,9 @@ msgid "ArtifactRegistry|Package cached"
 msgid_plural "ArtifactRegistry|Packages cached"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "ArtifactRegistry|Package was successfully deleted."
+msgstr ""
 
 msgid "ArtifactRegistry|Podman"
 msgstr ""
@@ -12774,6 +12810,12 @@ msgid "ArtifactRegistry|There are no packages in this repository yet"
 msgstr ""
 
 msgid "ArtifactRegistry|There are no versions of this package yet"
+msgstr ""
+
+msgid "ArtifactRegistry|This action permanently deletes image %{name} and all of its manifests. This action cannot be undone."
+msgstr ""
+
+msgid "ArtifactRegistry|This action permanently deletes package %{name} and all of its versions. This action cannot be undone."
 msgstr ""
 
 msgid "ArtifactRegistry|This action permanently deletes the repository and all of its artifacts. If this repository is connected to a virtual repository, the virtual repository loses access to this repository and its artifacts."
