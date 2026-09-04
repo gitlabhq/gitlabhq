@@ -41,6 +41,39 @@ RSpec.describe Gitlab::Database::Aggregation::PartDefinition, feature_category: 
     end
   end
 
+  describe '#authorize' do
+    it 'defaults to nil' do
+      expect(described_class.new(name, type).authorize).to be_nil
+    end
+
+    it 'converts an ability Symbol into a callable checking every resource' do
+      part = described_class.new(name, type, authorize: :read_owner_analytics)
+      user = build_stubbed(:user)
+
+      allow(Ability).to receive(:allowed?).and_return(true)
+
+      expect(part.authorize).to be_a(Proc)
+      expect(part.authorize.call(user, [:resource_a, :resource_b])).to be(true)
+      expect(Ability).to have_received(:allowed?).with(user, :read_owner_analytics, :resource_a)
+      expect(Ability).to have_received(:allowed?).with(user, :read_owner_analytics, :resource_b)
+    end
+
+    it 'converts an ability Symbol into a callable returning false when any resource is denied' do
+      part = described_class.new(name, type, authorize: :read_owner_analytics)
+      user = build_stubbed(:user)
+
+      allow(Ability).to receive(:allowed?).and_return(true, false)
+
+      expect(part.authorize.call(user, [:resource_a, :resource_b])).to be(false)
+    end
+
+    it 'accepts a callable' do
+      callable = ->(user, resources) { user && resources }
+
+      expect(described_class.new(name, type, authorize: callable).authorize).to eq(callable)
+    end
+  end
+
   describe 'dotted names' do
     let(:dotted_class) do
       Class.new(described_class) do

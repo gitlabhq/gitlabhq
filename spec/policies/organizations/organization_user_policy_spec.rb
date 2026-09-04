@@ -11,7 +11,7 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
   shared_examples 'organization owner policy' do
     context 'when the current user is not an owner' do
       let_it_be_with_refind(:organization_user) do
-        create(:organization_user, organization: organization, user: current_user)
+        create(:organization_user, organization: organization, user: create(:user))
       end
 
       it { is_expected.to be_disallowed(user_policy) }
@@ -135,11 +135,48 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
     let_it_be(:user_policy) { :update_organization_user }
 
     it_behaves_like 'organization owner policy'
+
+    context 'when the current user is a non-owner acting on their own membership' do
+      let_it_be_with_refind(:organization_user) do
+        create(:organization_user, organization: organization, user: current_user)
+      end
+
+      it { expect_disallowed(:update_organization_user) }
+    end
   end
 
   context 'for delete_organization_user policy' do
     let_it_be(:user_policy) { :delete_organization_user }
 
     it_behaves_like 'organization owner policy'
+
+    context 'when the current user is an owner acting on another member\'s membership' do
+      let_it_be_with_refind(:current_user) { create(:user) }
+      let_it_be_with_refind(:organization_user) do
+        create(:organization_user, organization: organization, user: create(:user))
+      end
+
+      before_all do
+        create(:organization_user, :owner, organization: organization, user: current_user)
+      end
+
+      it { expect_allowed(:delete_organization_user) }
+    end
+
+    context 'when the current user is a non-owner acting on their own membership' do
+      let_it_be_with_refind(:organization_user) do
+        create(:organization_user, organization: organization, user: current_user)
+      end
+
+      it { expect_allowed(:delete_organization_user) }
+
+      context 'when the membership is in the user home organization' do
+        before do
+          current_user.update!(organization: organization)
+        end
+
+        it { expect_disallowed(:update_organization_user, :delete_organization_user) }
+      end
+    end
   end
 end

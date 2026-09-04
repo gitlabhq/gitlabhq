@@ -133,8 +133,20 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
   end
 
   describe '#organization_show_app_data' do
+    # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needs persisted records
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:user) { create(:user, organization: create(:organization)) }
+    let_it_be(:organization_user) do
+      create(:organization_user, organization: organization, user: user)
+    end
+    # rubocop:enable RSpec/FactoryBot/AvoidCreate
+
     before do
-      allow(helper).to receive(:can?).with(user, :update_organization, organization).and_return(true)
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?)
+        .with(user, :update_organization, organization).and_return(true)
+      allow(helper).to receive(:can?)
+        .with(user, :delete_organization_user, organization_user).and_return(true)
     end
 
     it 'returns expected json without artifact registry data', unless: Gitlab.ee? do
@@ -148,9 +160,42 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
             'name' => organization.name,
             'path' => organization.path
           },
-          'can_admin_organization' => true
+          'can_admin_organization' => true,
+          'can_leave_organization' => true,
+          'organization_user_gid' => organization_user.to_global_id.to_s
         }
       )
+    end
+
+    context 'when the user cannot delete the organization user' do
+      before do
+        allow(helper).to receive(:can?).and_call_original
+        allow(helper).to receive(:can?)
+          .with(user, :delete_organization_user, organization_user).and_return(false)
+      end
+
+      it 'returns false for can_leave_organization' do
+        result = Gitlab::Json.parse(helper.organization_show_app_data(organization))
+
+        expect(result).to include('can_leave_organization' => false)
+      end
+    end
+
+    context 'when the user is not a member of the organization' do
+      let_it_be(:non_member) { create(:user, organization: create(:organization)) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- persisted user needed for the real membership query
+
+      before do
+        allow(helper).to receive_messages(current_user: non_member, can?: false)
+      end
+
+      it 'returns nil gid and false can_leave_organization' do
+        result = Gitlab::Json.parse(helper.organization_show_app_data(organization))
+
+        expect(result).to include(
+          'can_leave_organization' => false,
+          'organization_user_gid' => nil
+        )
+      end
     end
   end
 

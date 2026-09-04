@@ -13,6 +13,7 @@ GitLab uses [Redis](https://redis.io) for the following distinct purposes:
 - As a job processing queue with [Sidekiq](sidekiq/_index.md).
 - To manage the shared application state.
 - To store CI trace chunks.
+- To store deferred jobs for Sidekiq concurrency limits.
 - As a Pub/Sub queue backend for ActionCable.
 - Rate limiting state storage.
 - Sessions.

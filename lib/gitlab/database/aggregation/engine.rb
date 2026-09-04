@@ -5,6 +5,7 @@ module Gitlab
     module Aggregation
       class Engine
         include ActiveModel::Validations
+        include Authorization
 
         MEASUREMENT_AGGREGATES = {
           min: 'Minimum',
@@ -93,7 +94,7 @@ module Gitlab
           # plus `<name>.sum` for summable types), exposed in GraphQL as one
           # nested group. The expression is also registered as a transient,
           # so other definitions can reuse it via `transient(name)`.
-          def measurement(name, type, expression, description: nil)
+          def measurement(name, type, expression, description: nil, authorize: nil)
             aggregates = measurement_aggregates_for(type)
             guard_measurement_support!(aggregates.keys)
 
@@ -109,12 +110,12 @@ module Gitlab
             summable = aggregates.key?(:sum)
 
             metrics do
-              min :"#{name}.min", type, expression, description: descriptions[:min]
-              max :"#{name}.max", type, expression, description: descriptions[:max]
-              mean :"#{name}.mean", :float, expression, description: descriptions[:mean]
+              min :"#{name}.min", type, expression, description: descriptions[:min], authorize: authorize
+              max :"#{name}.max", type, expression, description: descriptions[:max], authorize: authorize
+              mean :"#{name}.mean", :float, expression, description: descriptions[:mean], authorize: authorize
               quantile :"#{name}.quantile", :float, expression, description: descriptions[:quantile],
-                parameters: { quantile: { type: :float, in: 0.0..1.0 } }
-              sum :"#{name}.sum", type, expression, description: descriptions[:sum] if summable
+                authorize: authorize, parameters: { quantile: { type: :float, in: 0.0..1.0 } }
+              sum :"#{name}.sum", type, expression, description: descriptions[:sum], authorize: authorize if summable
             end
           end
 
@@ -193,24 +194,32 @@ module Gitlab
 
         # @return [Gitlab::Database::Aggregation::AggregationResult]
         def execute(request)
-          if request_valid?(request)
-            ServiceResponse.success(payload: { data: execute_query_plan(request.to_query_plan(self)) })
+          plan = authorized_request(request).to_query_plan(self)
+
+          if plan_valid?(plan)
+            ServiceResponse.success(payload: { data: execute_query_plan(plan) })
           else
-            ServiceResponse.error(payload: { errors: errors }, message: errors.full_messages.join(', '))
+            error_response
           end
         end
 
-        def request_valid?(request)
+        def plan_valid?(plan)
           validate
+          validate_authorization!(plan)
 
-          plan = request.to_query_plan(self)
-          plan.validate
-          errors.merge!(plan.errors)
+          if errors.empty?
+            plan.validate
+            errors.merge!(plan.errors)
+          end
 
           errors.empty?
         end
 
         private
+
+        def error_response
+          ServiceResponse.error(payload: { errors: errors }, message: errors.full_messages.join(', '))
+        end
 
         def execute_query_plan(_plan)
           raise NoMethodError

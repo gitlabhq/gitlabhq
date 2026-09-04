@@ -26,7 +26,7 @@ module Resolvers
             request = ::Gitlab::Database::Aggregation::Request.new(filters: filters, metrics: [])
 
             {
-              engine: engine_class.new(context: { scope: aggregation_scope(arguments) }),
+              engine: engine_class.new(context: engine_context(arguments)),
               request: request,
               validate_request: method(:validate_request!)
             }
@@ -43,7 +43,19 @@ module Resolvers
             # further limit requests execution
           end
 
-          def aggregation_scope(arguments)
+          # Sources are already authorized against `resource_ability`; they are
+          # passed along so engines can run part-level authorization checks.
+          def engine_context(arguments)
+            sources = aggregation_sources(arguments)
+
+            {
+              scope: engine_class.prepare_base_aggregation_scope(sources),
+              current_user: current_user,
+              authorization_resources: sources
+            }
+          end
+
+          def aggregation_sources(arguments)
             scope = arguments[:descendants_scope] || {}
             group_paths = Array(scope[:group_full_paths])
             project_paths = Array(scope[:project_full_paths])
@@ -68,7 +80,7 @@ module Resolvers
                 'at least one of the groupFullPaths or projectFullPaths arguments is required'
             end
 
-            engine_class.prepare_base_aggregation_scope(authorized_sources!(group_paths, project_paths))
+            authorized_sources!(group_paths, project_paths)
           end
 
           def authorized_sources!(group_paths, project_paths)

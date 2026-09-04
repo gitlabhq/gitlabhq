@@ -57,4 +57,10 @@ RSpec.shared_context 'with IAM authentication setup' do
 
     JWT.encode(payload, private_key, algorithm, { kid: kid })
   end
+
+  # Builds a full IAM-issued access token: the 'gliamat-' prefix plus the JWT,
+  # as sent by clients and expected by Authn::Tokens::IamOauthToken.from_jwt.
+  def create_iam_access_token(**options)
+    "#{Authn::Tokens::IamOauthToken::ACCESS_TOKEN_PREFIX}#{create_iam_jwt(**options)}"
+  end
 end

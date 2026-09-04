@@ -6,7 +6,7 @@ module Gitlab
       class PartDefinition
         IDENTIFIER_SEGMENT_FORMAT = /\A[a-z][a-z0-9_]*\z/
 
-        attr_reader :name, :type, :expression, :secondary_expression, :description, :formatter
+        attr_reader :name, :type, :expression, :secondary_expression, :description, :formatter, :authorize
 
         # @param name [Symbol] the name of the part
         # @param type [Symbol] part data type (integer, float, string etc)
@@ -14,13 +14,20 @@ module Gitlab
         # @param secondary_expression [Proc] Secondary arel expression for the part. Implementation specific
         # @param description [String] Description of the part
         # @param formatter [Proc] formatting block to apply after DB loading.
-        def initialize(name, type, expression = nil, secondary_expression: nil, description: nil, formatter: nil, **)
+        # @param authorize [Symbol, #call] extra authorization required to use the part; an ability
+        #   Symbol is converted to a callable checking `Ability.allowed?` against every resource, so
+        #   `authorize` is always stored as a callable invoked with `(user, resources)`.
+        #   Evaluated by `Gitlab::Database::Aggregation::Authorization`.
+        def initialize(
+          name, type, expression = nil, secondary_expression: nil, description: nil, formatter: nil,
+          authorize: nil, **)
           @name = name
           @type = type
           @expression = expression
           @secondary_expression = secondary_expression
           @description = description
           @formatter = formatter
+          @authorize = Authorization.ability_check(authorize)
 
           validate_name!
         end

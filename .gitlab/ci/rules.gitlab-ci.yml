@@ -1563,8 +1563,6 @@
 # this rule is combination of rules for jobs that use cached frontend assets:
 #  * .frontend:rules:compile-test-assets
 #  * .frontend:rules:compile-production-assets
-#  * .qa:rules:e2e:test-on-gdk - now scheduled-pipeline only, keeping the assets
-#    hash available for the scheduled GDK image build; it no longer triggers on MRs
 .caching:rules:frontend-asset-hash:
   rules:
     - <<: *if-tag
@@ -1576,7 +1574,6 @@
     - !reference [.frontend:rules:compile-test-assets, rules]
     - !reference [.frontend:rules:assets-shared, rules]
     - !reference [.releases:rules:canonical-dot-com-security-gitlab-stable-branch-only, rules]
-    - !reference [.qa:rules:e2e:test-on-gdk, rules]
 
 ######################
 # CI Templates Rules #
@@ -2462,23 +2459,13 @@
 
 .qa:rules:e2e:test-on-gdk:
   rules:
-    # test-on-gdk no longer runs on merge request pipelines - E2E coverage for MRs
-    # is provided by test-on-cng. It still runs on the scheduled pipeline so the
-    # E2E code-paths mapping / coverage collection is preserved.
-    # See https://gitlab.com/groups/gitlab-org/quality/test-governance/-/work_items/5
+    # Retired: test-on-cng covers merge requests and exports the code-paths mapping.
+    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/609350
     - !reference [".qa:rules:e2e-test-never-run", rules]
     - <<: *if-merge-request-targeting-stable-branch
       when: never
     - <<: *if-security-merge-request
       when: never
-    - <<: *if-dot-com-gitlab-org-schedule
-      variables:
-        <<: *qa-e2e-test-schedule-variables
-        COVERBAND_ENABLED: "true"
-        QA_RUN_IN_PARALLEL: "false"
-        # https://gitlab.com/gitlab-org/gitlab/-/blob/master/babel.config.js
-        # This sets the environmental variable enabling `istanbul` plugin in Babel
-        BABEL_ENV: "istanbul"
 
 .qa:rules:e2e:test-on-cng:
   rules:

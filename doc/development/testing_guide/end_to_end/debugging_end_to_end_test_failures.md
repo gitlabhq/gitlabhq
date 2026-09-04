@@ -60,14 +60,12 @@ If you have any questions on the status, you can also reach out to the `@release
 
 ### `master` pipelines
 
-GitLab `master` has three QA pipelines generated from scheduled pipeline against the default branch:
+GitLab `master` has two QA pipelines generated from scheduled pipeline against the default branch:
 
 - [`test-on-omnibus`](_index.md#using-the-test-on-omnibus-job) runs the `full` suite of end-to-end tests against an omnibus Docker image built from `master`
-- [`test-on-gdk`](_index.md#selective-test-execution-based-on-code-path-mappings) runs the full suite of end-to-end tests as part of the `gdk-instance` job against a GDK instance from a Docker image built from `master`, only in scheduled pipelines and not in merge request pipelines
+- [`test-on-cng`](test_pipelines.md#e2etest-on-cng) runs the full suite of end-to-end tests as part of the `cng-instance` job against a cloud native GitLab deployment built from `master`
 
 If jobs in `test-on-omnibus` failed due to a GitLab Docker image issue, reach out to the [Distribution team](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/distribution/) to see if it's a known problem with the build.
-
-If failures occur only in `test-on-gdk` jobs, it's possible to stop those jobs from being added to new pipelines while the cause is being fixed. See the [runbook](https://gitlab.com/gitlab-org/quality/runbooks/-/tree/97483eafd3db198437faccc40a946fc260c0736a/test_on_gdk#disable-the-e2etest-on-gdk-pipeline) for details.
 
 Note that any failure in `master` QA pipeline will be deployed to Staging, so catching a failure earlier in the pipeline allows us to
 find what changes caused it and act on resolving the failure more quickly.

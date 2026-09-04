@@ -19,6 +19,10 @@ module Admin
       admin_actions(user)
     end
 
+    expose :organization_user_gid do |user|
+      organization_user_gid(user)
+    end
+
     private
 
     def current_user

@@ -12,6 +12,16 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::PlanRules, feature_category:
     end
   end
 
+  describe '.for_limiter' do
+    let(:registry) { Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry }
+
+    it 'contributes no rule to any limiter', :aggregate_failures do
+      expect(described_class.for_limiter(registry::GENERAL)).to eq([])
+      expect(described_class.for_limiter(registry::PROTECTED)).to eq([])
+      expect(described_class.for_limiter('unrecognized_limiter')).to eq([])
+    end
+  end
+
   describe '.active?' do
     it 'is false when the tier-aware limits cannot apply' do
       expect(described_class.active?).to be(false)

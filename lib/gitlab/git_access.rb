@@ -357,7 +357,7 @@ module Gitlab
     end
 
     def enforce_organization_maintenance!(organization)
-      return unless organization&.maintenance_enforced?
+      return unless organization&.under_maintenance?
 
       raise ForbiddenError, organization.maintenance_message
     end

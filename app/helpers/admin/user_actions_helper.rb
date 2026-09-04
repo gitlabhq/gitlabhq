@@ -13,10 +13,18 @@ module Admin
       @actions
     end
 
+    def organization_user_gid(user)
+      organization_user(user)&.to_global_id&.to_s
+    end
+
     private
 
     def organization_admin_actions
-      []
+      return if @user == current_user
+
+      remove_from_organization_actions
+
+      @actions
     end
 
     def instance_admin_actions
@@ -32,7 +40,20 @@ module Admin
     end
 
     def organization_admin_area?
-      respond_to?(:options) && options[:authorization_context].is_a?(::Organizations::Organization)
+      organization.present?
+    end
+
+    def organization
+      return unless respond_to?(:options)
+      return unless options[:authorization_context].is_a?(::Organizations::Organization)
+
+      options[:authorization_context]
+    end
+
+    def organization_user(user)
+      return unless organization
+
+      @organization_user ||= organization.organization_users.by_user(user).first
     end
 
     def edit_actions
@@ -100,6 +121,12 @@ module Admin
                   else
                     'trust'
                   end
+    end
+
+    def remove_from_organization_actions
+      return unless current_user.can?(:delete_organization_user, organization_user(@user))
+
+      @actions << 'remove_from_organization'
     end
   end
 end

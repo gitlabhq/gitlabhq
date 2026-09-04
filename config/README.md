@@ -72,6 +72,7 @@ An example configuration file for Redis is in this directory under the name
 | Name                | Fallback instance | Purpose                                                                                                      |
 |---------------------|-------------------|--------------------------------------------------------------------------------------------------------------|
 | `cache`             |                   | Volatile non-persistent data                                                                                 |
+| `concurrency_limit` | `shared_state`    | Sidekiq concurrency limit deferred jobs                                                                      |
 | `queues`            |                   | Background job processing queues                                                                             |
 | `shared_state`      |                   | Persistent application state                                                                                 |
 | `trace_chunks`      | `shared_state`    | [CI trace chunks](https://docs.gitlab.com/administration/cicd/job_logs/#incremental-logging)    |

@@ -1,6 +1,18 @@
 const ModalStub = {
   inheritAttrs: false,
   name: 'glmodal-stub',
+  props: {
+    actionPrimary: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    actionCancel: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
   data() {
     return {
       showWasCalled: false,

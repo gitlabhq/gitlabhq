@@ -31,6 +31,7 @@ describe('RemoveOrganizationUserModal', () => {
     .mockResolvedValue({ data: { organizationUserDelete: { errors: [] } } });
 
   const findModal = () => wrapper.findComponent(ModalStub);
+  const findPrimaryLoading = () => findModal().props('actionPrimary').attributes.loading;
 
   const emitOpenModalEvent = () =>
     eventHub.$emit(EVENT_OPEN_REMOVE_FROM_ORGANIZATION_MODAL, {
@@ -72,6 +73,16 @@ describe('RemoveOrganizationUserModal', () => {
       expect(showToast).not.toHaveBeenCalled();
     });
 
+    it('keeps the primary button loading until the redirect completes', async () => {
+      createComponent();
+      await emitOpenModalEvent();
+
+      findModal().vm.$emit('primary', { preventDefault: jest.fn() });
+      await waitForPromises();
+
+      expect(findPrimaryLoading()).toBe(true);
+    });
+
     describe('when the mutation returns errors', () => {
       const errorHandler = jest.fn().mockResolvedValue({
         data: { organizationUserDelete: { errors: ['Something went wrong'] } },
@@ -87,6 +98,7 @@ describe('RemoveOrganizationUserModal', () => {
         expect(findModal().vm.hideWasCalled).toBe(true);
         expect(showToast).toHaveBeenCalledWith('Something went wrong');
         expect(refreshCurrentPageWithAlerts).not.toHaveBeenCalled();
+        expect(findPrimaryLoading()).toBe(false);
       });
     });
 
@@ -105,6 +117,7 @@ describe('RemoveOrganizationUserModal', () => {
           'An error occurred while removing the user from the organization.',
         );
         expect(refreshCurrentPageWithAlerts).not.toHaveBeenCalled();
+        expect(findPrimaryLoading()).toBe(false);
       });
     });
   });

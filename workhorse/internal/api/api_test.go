@@ -111,6 +111,37 @@ func TestPreAuthorizeFixedPath_Unauthorized(t *testing.T) {
 	require.ErrorAs(t, err, &preAuthError)
 }
 
+func TestNewRequest_StripsHTTPRouterHeaders(t *testing.T) {
+	// A decoy header that merely contains the router prefix string, but not as
+	// a leading prefix, must not be stripped.
+	const decoyHeader = "X-Something-X-Gitlab-Http-Router-Rule-Action"
+
+	routerHeaders := []string{
+		"X-Gitlab-Http-Router-Rule-Action",
+		"X-Gitlab-Http-Router-Rule-Type",
+		"X-Gitlab-Http-Router-Matched-Path",
+		"X-Gitlab-Http-Router-Something-New",
+	}
+
+	req, err := http.NewRequest("GET", "/original/request/path", nil)
+	require.NoError(t, err)
+
+	for _, header := range routerHeaders {
+		req.Header.Set(header, "some-value")
+	}
+	req.Header.Set("Authorization", "Bearer sometoken")
+	req.Header.Set(decoyHeader, "not-a-router-header")
+
+	api := NewAPI(helper.URLMustParse("http://backend"), "123", http.DefaultTransport)
+	authReq := api.newRequest(req, customPath)
+
+	for _, header := range routerHeaders {
+		require.Empty(t, authReq.Header.Get(header), "%s must not propagate to the subrequest", header)
+	}
+	require.Equal(t, "Bearer sometoken", authReq.Header.Get("Authorization"), "unrelated headers must still propagate")
+	require.Equal(t, "not-a-router-header", authReq.Header.Get(decoyHeader), "headers that merely contain the router prefix elsewhere must still propagate")
+}
+
 func TestPreAuthorizeHandler_NotFound(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusNotFound)

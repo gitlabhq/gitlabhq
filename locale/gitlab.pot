@@ -7611,6 +7611,9 @@ msgstr ""
 msgid "AdminUsers|Rejected users:"
 msgstr ""
 
+msgid "AdminUsers|Remove from organization"
+msgstr ""
+
 msgid "AdminUsers|Remove user from the organization?"
 msgstr ""
 
@@ -8286,6 +8289,12 @@ msgstr ""
 msgid "AggregationEngine|The following sources are not accessible: %{source_ids}"
 msgstr ""
 
+msgid "AggregationEngine|access to dimension '%{identifier}' is not authorized"
+msgstr ""
+
+msgid "AggregationEngine|access to filter '%{identifier}' is not authorized"
+msgstr ""
+
 msgid "AggregationEngine|at least one metric is required"
 msgstr ""
 
@@ -8299,6 +8308,9 @@ msgid "AggregationEngine|metric '%{metric}' requires dimension '%{dimension}' to
 msgstr ""
 
 msgid "AggregationEngine|metric `%{identifier}` must be requested to filter by it"
+msgstr ""
+
+msgid "AggregationEngine|ordering by '%{identifier}' is not authorized"
 msgstr ""
 
 msgid "AggregationEngine|the specified identifier is not available: '%{identifier}'"
@@ -19718,9 +19730,6 @@ msgstr ""
 msgid "Code Coverage|No code coverage data"
 msgstr ""
 
-msgid "Code Navigation"
-msgstr ""
-
 msgid "Code Owner"
 msgstr ""
 
@@ -19743,6 +19752,9 @@ msgid "Code coverage statistics for %{ref} %{start_date} - %{end_date}"
 msgstr ""
 
 msgid "Code indexing concurrency"
+msgstr ""
+
+msgid "Code navigation"
 msgstr ""
 
 msgid "Code owner approval is required"
@@ -28123,9 +28135,6 @@ msgstr ""
 msgid "Dependencies|Locations of dependencies. The locations of transitive dependencies (child dependencies of other dependencies) are shown as the complete set of all paths that import the dependency."
 msgstr ""
 
-msgid "Dependencies|Malware"
-msgstr ""
-
 msgid "Dependencies|No components found."
 msgstr ""
 
@@ -28292,6 +28301,9 @@ msgid "DependencyFirewall|Monitor and manage the packages entering your group's 
 msgstr ""
 
 msgid "DependencyFirewall|Monitor and manage the packages entering your project's supply chain."
+msgstr ""
+
+msgid "DependencyFirewall|New policy"
 msgstr ""
 
 msgid "DependencyFirewall|No active dependency firewall rules."
@@ -30646,6 +30658,9 @@ msgstr ""
 msgid "DuoAgenticChat|Conversation compacted"
 msgstr ""
 
+msgid "DuoAgenticChat|Could not process the last message. Send a new message to try again."
+msgstr ""
+
 msgid "DuoAgenticChat|Current page"
 msgstr ""
 
@@ -31057,9 +31072,6 @@ msgid "DuoAgentsPlatform|Are you sure you want to cancel this session? This acti
 msgstr ""
 
 msgid "DuoAgentsPlatform|Are you sure you want to delete this trigger? This action cannot be undone."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Automate"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Available"
@@ -32132,6 +32144,9 @@ msgid "DuoCodeReview|GitLab Duo Code Review"
 msgstr ""
 
 msgid "DuoCodeReview|GitLab Duo Code Review was not automatically added. Contact your administrator to verify your account has access to this feature."
+msgstr ""
+
+msgid "DuoCodeReview|I can't run a code review in this context. Please try again on a merge request."
 msgstr ""
 
 msgid "DuoCodeReview|I encountered some problems while responding to your query. Please try again later."
@@ -56966,6 +56981,9 @@ msgstr ""
 msgid "Organization|After you confirm your organization structure, your data will be transferred to your organization."
 msgstr ""
 
+msgid "Organization|An Organization administrator must add you back to restore your access"
+msgstr ""
+
 msgid "Organization|An error occurred changing your organization URL. Please try again."
 msgstr ""
 
@@ -57012,6 +57030,12 @@ msgid "Organization|An error occurred updating your organization. Please try aga
 msgstr ""
 
 msgid "Organization|An error occurred while adding users to the organization. Please try again."
+msgstr ""
+
+msgid "Organization|An error occurred while leaving the organization."
+msgstr ""
+
+msgid "Organization|Are you sure you want to leave \"%{name}\"?"
 msgstr ""
 
 msgid "Organization|Assign top-level groups"
@@ -57093,6 +57117,9 @@ msgid "Organization|Invite organization user"
 msgstr ""
 
 msgid "Organization|Learn how Organizations work"
+msgstr ""
+
+msgid "Organization|Leave organization"
 msgstr ""
 
 msgid "Organization|Manage organization"
@@ -57279,6 +57306,9 @@ msgstr ""
 msgid "Organization|Welcome to %{organizationName}"
 msgstr ""
 
+msgid "Organization|When you leave this organization:"
+msgstr ""
+
 msgid "Organization|You are confirming:"
 msgstr ""
 
@@ -57295,6 +57325,12 @@ msgid "Organization|You have %{boldStart}%{count}%{boldEnd} other top-level grou
 msgid_plural "Organization|You have %{boldStart}%{count}%{boldEnd} other top-level groups. Drag unassigned groups to your organization, or leave the structure as is. Unassigned groups will not be included in the organization."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Organization|You left the \"%{name}\" organization."
+msgstr ""
+
+msgid "Organization|You lose access to all its groups and projects"
+msgstr ""
 
 msgid "Organization|You're inviting users to the %{strongStart}%{name}%{strongEnd} organization."
 msgstr ""

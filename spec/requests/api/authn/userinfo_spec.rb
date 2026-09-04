@@ -10,7 +10,7 @@ RSpec.describe API::Authn::Userinfo, feature_category: :system_access do
   let(:path) { '/iam/userinfo' }
   let(:iam_scopes) { %w[read_api] }
   let(:iam_jwt_token) do
-    create_iam_jwt(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
+    create_iam_access_token(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
   end
 
   def get_userinfo(token)
@@ -58,7 +58,7 @@ RSpec.describe API::Authn::Userinfo, feature_category: :system_access do
       before do
         stub_feature_flags(iam_svc_oauth: user)
         other_key = OpenSSL::PKey::RSA.new(2048)
-        tampered_token = create_iam_jwt(
+        tampered_token = create_iam_access_token(
           user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: other_key, kid: kid
         )
 
@@ -72,7 +72,7 @@ RSpec.describe API::Authn::Userinfo, feature_category: :system_access do
 
     context 'with an expired IAM JWT' do
       let(:iam_jwt_token) do
-        create_iam_jwt(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid,
+        create_iam_access_token(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid,
           expires_at: 1.hour.ago)
       end
 

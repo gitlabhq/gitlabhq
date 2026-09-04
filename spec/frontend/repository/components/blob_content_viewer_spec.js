@@ -28,6 +28,7 @@ import highlightMixin from '~/repository/mixins/highlight_mixin';
 import getRefMixin from '~/repository/mixins/get_ref';
 import { InternalEvents } from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import * as urlUtility from '~/lib/utils/url_utility';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
@@ -155,7 +156,13 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
       apolloProvider: fakeApollo,
       pinia,
       propsData: propsMock,
-      mixins: [getRefMixin, highlightMixin, glFeatureFlagMixin(), InternalEvents.mixin()],
+      mixins: [
+        getRefMixin,
+        highlightMixin,
+        glAbilitiesMixin(),
+        glFeatureFlagMixin(),
+        InternalEvents.mixin(),
+      ],
       provide: {
         targetBranch: 'test',
         originalBranch: 'default-ref',

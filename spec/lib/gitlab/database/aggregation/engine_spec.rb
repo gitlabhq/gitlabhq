@@ -181,6 +181,22 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :databas
       )
     end
 
+    it 'propagates authorize to all expanded metrics' do
+      engine = build_measurement_engine do
+        measurement :duration, :integer, ->(_params) { Arel.sql('duration') }, authorize: :read_owner_analytics
+      end
+
+      expect(engine.metrics.map(&:authorize)).to all(be_a(Proc))
+    end
+
+    it 'does not require authorize' do
+      engine = build_measurement_engine do
+        measurement :duration, :integer, ->(_params) { Arel.sql('duration') }
+      end
+
+      expect(engine.metrics.map(&:authorize).uniq).to eq([nil])
+    end
+
     it 'declares a bounded quantile parameter on the quantile metric' do
       engine = build_measurement_engine do
         measurement :duration, :integer, ->(_params) { Arel.sql('duration') }

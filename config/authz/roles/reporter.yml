@@ -55,6 +55,7 @@ project:
   - read_build
   - read_ci_cd_analytics
   - read_code
+  - read_code_navigation
   - read_code_review_analytics
   - read_commit_status
   - read_compliance_framework

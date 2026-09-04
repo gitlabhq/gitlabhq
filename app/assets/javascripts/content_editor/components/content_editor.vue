@@ -402,7 +402,11 @@ export default {
         @keydown="$emit('keydown', $event)"
       />
       <content-editor-alert />
-      <div data-testid="content-editor" :class="{ 'is-focused': focused }" class="gl-relative">
+      <div
+        data-testid="content-editor"
+        :class="{ 'is-focused': focused }"
+        class="content-editor-body gl-relative"
+      >
         <div
           data-testid="content-editor-header"
           :class="{

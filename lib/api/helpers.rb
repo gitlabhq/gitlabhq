@@ -649,7 +649,7 @@ module API
     def organization_maintenance_mode_enforced?(organization)
       return false unless organization
 
-      organization.maintenance_enforced?
+      organization.under_maintenance?
     end
 
     # Time-bounded reasons are retryable (503 + Retry-After); indefinite reasons

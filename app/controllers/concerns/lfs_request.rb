@@ -31,7 +31,7 @@ module LfsRequest
     return unless container.respond_to?(:organization)
 
     organization = container.organization
-    return unless organization&.maintenance_enforced?
+    return unless organization&.under_maintenance?
 
     render_organization_maintenance_mode_error(organization)
   end

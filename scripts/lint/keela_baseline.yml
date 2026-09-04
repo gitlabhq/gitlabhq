@@ -37,8 +37,6 @@ constants:
   - EVENT_ACTIONS
   app/models/concerns/namespaces/stateful.rb:
   - NON_PROPAGATED_STATES
-  app/models/concerns/organizations/stateful.rb:
-  - MAINTENANCE_BLOCKED_STATES
   app/models/integrations/jira.rb:
   - PROJECTS_PER_PAGE
   app/models/namespace/aggregation_schedule.rb:

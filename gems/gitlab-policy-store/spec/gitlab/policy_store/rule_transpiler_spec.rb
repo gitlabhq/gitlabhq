@@ -7,8 +7,8 @@ RSpec.describe Gitlab::PolicyStore::RuleTranspiler do
     File.read(File.expand_path("../../fixtures/rules/#{name}/rule.rego", __dir__))
   end
 
-  def transpile(rule, rule_index: 0)
-    described_class.new(rule, rule_index: rule_index).transpile
+  def transpile(rule, rule_index: 0, max_projected_bytes: nil)
+    described_class.new(rule, rule_index: rule_index, max_projected_bytes: max_projected_bytes).transpile
   end
 
   def calendar_rule(**overrides)
@@ -252,6 +252,109 @@ RSpec.describe Gitlab::PolicyStore::RuleTranspiler do
 
       it "carries the rule index in the violation, which a merged module needs to tell rules apart" do
         expect(transpile(calendar_rule, rule_index: 3)).to include('"rule_index": 3')
+      end
+
+      it "rejects windows whose raw size alone exceeds an injected byte budget" do
+        expect { transpile(calendar_rule, max_projected_bytes: 10) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError,
+            /windows project to \d+ bytes, over the maximum of 10 bytes/)
+      end
+
+      it "accepts windows whose raw size is within an injected byte budget" do
+        expect(transpile(calendar_rule, max_projected_bytes: 1_000_000)).to include("freeze_window")
+      end
+
+      it "does not check the byte budget when none is injected, the default for every other example here" do
+        expect(transpile(calendar_rule)).to include("freeze_window")
+      end
+
+      it "rejects on projected size before a malformed window would otherwise be rejected first" do
+        malformed = calendar_rule(starts_at: "not-a-timestamp")
+
+        expect { transpile(malformed, max_projected_bytes: 10) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError,
+            /windows project to \d+ bytes, over the maximum of 10 bytes/)
+      end
+
+      it "accepts windows whose projected size is exactly at the budget, and rejects one byte over",
+        :aggregate_failures do
+        at_budget = JSON.generate({ "name" => "eoq", "tiers" => ["production"],
+                                     "starts_at" => "2026-12-24T00:00:00Z", "ends_at" => "2027-01-02T00:00:00Z" })
+          .bytesize
+
+        expect(transpile(calendar_rule, max_projected_bytes: at_budget)).to include("freeze_window")
+        expect { transpile(calendar_rule, max_projected_bytes: at_budget - 1) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError,
+            /windows project to #{at_budget} bytes, over the maximum of #{at_budget - 1} bytes/)
+      end
+
+      it "rejects when no single window exceeds the budget but their combined size does" do
+        windows = Array.new(5) do |index|
+          { name: "w#{index}", tiers: ["production"], starts_at: "2026-12-24T00:00:00Z",
+            ends_at: "2027-01-02T00:00:00Z" }
+        end
+        single_window_bytesize = JSON.generate(windows.first).bytesize
+        rule = { type: "calendar", value: { windows: windows } }
+
+        expect { transpile(rule, max_projected_bytes: single_window_bytesize) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /windows project to \d+ bytes/)
+      end
+
+      it "does not partially charge a malformed window's bytes when another window in the same rule is valid" do
+        windows = [{ name: "eoq\xFF", tiers: ["production"], starts_at: "2026-12-24T00:00:00Z",
+                     ends_at: "2027-01-02T00:00:00Z" },
+          { name: "second", tiers: ["production"], starts_at: "2027-01-01T00:00:00Z",
+            ends_at: "2027-01-02T00:00:00Z" }]
+        rule = { type: "calendar", value: { windows: windows } }
+
+        expect { transpile(rule, max_projected_bytes: 10) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, "rule 0: calendar window 0 requires a name")
+      end
+
+      it "charges an exact-duplicate window once, matching what the compiled program actually charges" do
+        single_window = { name: "eoq", tiers: ["production"], starts_at: "2026-12-24T00:00:00Z",
+                          ends_at: "2027-01-02T00:00:00Z" }
+        single_window_bytesize = JSON.generate(single_window).bytesize
+        rule = { type: "calendar", value: { windows: Array.new(10) { single_window } } }
+
+        # 10 copies would blow a budget sized for 2 windows if charged individually, but the
+        # compiled program only ever emits one window after dedup.
+        expect(transpile(rule, max_projected_bytes: single_window_bytesize * 2)).to include("freeze_window")
+      end
+
+      it "stops estimating windows once the running total already exceeds the budget" do
+        windows = Array.new(5) do |index|
+          { name: "w#{index}", tiers: ["production"], starts_at: "2026-12-24T00:00:00Z",
+            ends_at: "2027-01-02T00:00:00Z" }
+        end
+        single_window_bytesize = JSON.generate(windows.first).bytesize
+        rule = { type: "calendar", value: { windows: windows } }
+
+        expect(JSON).to receive(:generate).twice.and_call_original
+
+        expect { transpile(rule, max_projected_bytes: single_window_bytesize) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /windows project to \d+ bytes/)
+      end
+
+      it "still reaches the normal window validation when a window cannot be JSON-encoded for the estimate" do
+        malformed = calendar_rule(name: "eoq\xFF")
+
+        expect { transpile(malformed, max_projected_bytes: 10) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, "rule 0: calendar window 0 requires a name")
+      end
+
+      it "still reaches the normal window validation, rather than raising JSON::NestingError, when a window " \
+        "is too deeply nested to estimate" do
+        deeply_nested = {}
+        cursor = deeply_nested
+        101.times do |index|
+          cursor[index.to_s] = {}
+          cursor = cursor[index.to_s]
+        end
+        malformed = calendar_rule(ends_at: deeply_nested)
+
+        expect { transpile(malformed, max_projected_bytes: 10) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, 'rule 0: calendar window "eoq" requires ends_at')
       end
     end
 

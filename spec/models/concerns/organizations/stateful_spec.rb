@@ -13,10 +13,6 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
       expect(described_class::DELETION_STATES).to eq(%i[soft_deleted deletion_in_progress])
     end
 
-    it 'defines MAINTENANCE_STATES' do
-      expect(described_class::MAINTENANCE_STATES).to eq(%i[maintenance_initialization maintenance])
-    end
-
     it 'defines MAINTENANCE_REASONS' do
       expect(described_class::MAINTENANCE_REASONS).to eq(%w[migration isolation incident billing legal])
     end
@@ -26,11 +22,6 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
       schema_reasons = Gitlab::Json.safe_parse(File.read(schema)).dig('properties', 'maintenance_reason', 'enum')
 
       expect(schema_reasons).to match_array(described_class::MAINTENANCE_REASONS)
-    end
-
-    it 'defines MAINTENANCE_BLOCKED_STATES' do
-      expect(described_class::MAINTENANCE_BLOCKED_STATES)
-        .to contain_exactly(:soft_deleted, :deletion_in_progress, :unconfirmed, :confirmed)
     end
 
     it 'defines TIME_BOUNDED_MAINTENANCE_REASONS as a subset of MAINTENANCE_REASONS' do
@@ -461,66 +452,6 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
     end
   end
 
-  describe '#maintenance?' do
-    subject(:maintenance?) { organization.maintenance? }
-
-    context 'when state is active' do
-      before do
-        organization.update_column(:state, Organizations::Organization.states[:active])
-      end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when state is unconfirmed' do
-      before do
-        organization.update_column(:state, Organizations::Organization.states[:unconfirmed])
-      end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when state is confirmed' do
-      before do
-        organization.update_column(:state, Organizations::Organization.states[:confirmed])
-      end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when state is soft_deleted' do
-      before do
-        organization.update_column(:state, Organizations::Organization.states[:soft_deleted])
-      end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when state is deletion_in_progress' do
-      before do
-        organization.update_column(:state, Organizations::Organization.states[:deletion_in_progress])
-      end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when state is maintenance_initialization' do
-      before do
-        organization.update_column(:state, Organizations::Organization.states[:maintenance_initialization])
-      end
-
-      it { is_expected.to be true }
-    end
-
-    context 'when state is maintenance' do
-      before do
-        organization.update_column(:state, Organizations::Organization.states[:maintenance])
-      end
-
-      it { is_expected.to be true }
-    end
-  end
-
   describe '#maintenance_time_bounded?' do
     subject(:maintenance_time_bounded?) { organization.maintenance_time_bounded? }
 
@@ -602,7 +533,7 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
 
   describe 'blocked states cannot enter maintenance' do
     where(:from_state) do
-      described_class::MAINTENANCE_BLOCKED_STATES.map { |s| [s] }
+      %i[soft_deleted deletion_in_progress unconfirmed confirmed].map { |s| [s] }
     end
 
     with_them do

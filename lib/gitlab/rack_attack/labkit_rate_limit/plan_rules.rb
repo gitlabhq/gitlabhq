@@ -14,6 +14,10 @@ module Gitlab
           def active?
             false
           end
+
+          def for_limiter(_limiter_name)
+            []
+          end
         end
       end
     end

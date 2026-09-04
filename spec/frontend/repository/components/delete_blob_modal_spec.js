@@ -49,7 +49,7 @@ describe('DeleteBlobModal', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    visitUrlSpy = jest.spyOn(urlUtility, 'visitUrl');
+    visitUrlSpy = jest.spyOn(urlUtility, 'visitUrl').mockImplementation(() => {});
 
     createComponent();
   });

@@ -633,7 +633,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       let(:user) { create(:user) }
       let(:iam_scopes) { %w[api] }
       let(:iam_jwt_token) do
-        create_iam_jwt(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
+        create_iam_access_token(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
       end
 
       def authenticate(username:, password:)
@@ -726,7 +726,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           context 'with expired token' do
             let(:iam_jwt_token) do
-              create_iam_jwt(user: user, scopes: iam_scopes, expires_at: 1.hour.ago,
+              create_iam_access_token(user: user, scopes: iam_scopes, expires_at: 1.hour.ago,
                 issuer: iam_issuer, private_key: private_key, kid: kid)
             end
 

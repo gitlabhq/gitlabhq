@@ -20,7 +20,7 @@ RSpec.describe Organizations::OrganizationUsers::DestroyService, feature_categor
         create(:organization_user, :without_common_organization, organization: organization)
       end
 
-      let(:current_user) { organization_user.user }
+      let!(:current_user) { create(:user) }
 
       before do
         add_membership_to(organization_user)
@@ -34,6 +34,25 @@ RSpec.describe Organizations::OrganizationUsers::DestroyService, feature_categor
         expect(response.message).to match_array(
           [_('You have insufficient permissions to delete the organization user')]
         )
+      end
+    end
+
+    context 'when a user removes their own membership' do
+      let!(:organization_user) do
+        create(:organization_user, :without_common_organization, organization: organization)
+      end
+
+      let(:current_user) { organization_user.user }
+
+      before do
+        add_membership_to(organization_user)
+      end
+
+      it 'deletes the organization user' do
+        expect { response }.to change { Organizations::OrganizationUser.count }.by(-1)
+
+        expect(response).to be_success
+        expect(deleted_organization_user).to be_instance_of(Organizations::OrganizationUser)
       end
     end
 

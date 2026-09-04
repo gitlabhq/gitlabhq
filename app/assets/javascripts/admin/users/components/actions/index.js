@@ -6,6 +6,7 @@ import Deactivate from './deactivate.vue';
 import Delete from './delete.vue';
 import DeleteWithContributions from './delete_with_contributions.vue';
 import Reject from './reject.vue';
+import RemoveFromOrganization from './remove_from_organization.vue';
 import Unban from './unban.vue';
 import Unblock from './unblock.vue';
 import Unlock from './unlock.vue';
@@ -24,6 +25,7 @@ export default {
   Unblock,
   Unlock,
   Reject,
+  RemoveFromOrganization,
   Trust,
   Untrust,
 };

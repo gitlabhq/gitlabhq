@@ -36,10 +36,10 @@ const maxClientIDLength = 255
 
 // iamTokenPrefixes mark tokens issued by the IAM Auth service so Workhorse can
 // route follow-up requests in the same OAuth flow back to IAM without a
-// feature-flag check. `ory_` is the prefix Hydra currently emits; `giat_` is
-// the planned GitLab IAM prefix once the IAM service migrates. Both are
-// matched until that migration lands.
-var iamTokenPrefixes = []string{"giat_", "ory_"}
+// feature-flag check. IAM wraps fosite's core strategy to stamp these instead
+// of fosite's own unprefixed "ory_ac_"/"ory_rt_" tokens — see
+// gitlab-org/auth/iam's auth/oauth/core/token_prefix.go.
+var iamTokenPrefixes = []string{"gliamac-", "gliamat-", "gliamrt-"}
 
 var tokenParamNames = []string{"code", "token", "refresh_token"}
 

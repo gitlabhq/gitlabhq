@@ -324,6 +324,11 @@ Exported items are imported with the following changes:
 
 Deploy keys aren't imported. To use deploy keys, you must enable them in your imported project and update protected branches.
 
+> [!warning]
+> Imported pipelines for merge requests retain their source status and can satisfy **Pipelines must succeed** and
+> the [security policy pipeline check](../../application_security/policies/pipeline_execution_policies.md#security-policy-pipeline-check)
+> on the destination instance without running again. Run a new pipeline on any imported merge requests before you merge them.
+
 #### Import large projects
 
 {{< details >}}

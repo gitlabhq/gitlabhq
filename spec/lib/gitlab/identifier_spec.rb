@@ -105,6 +105,30 @@ RSpec.describe Gitlab::Identifier do
     end
   end
 
+  describe '#identify_using_username' do
+    it 'returns the User for an existing username in the identifier' do
+      found = identifier.identify_using_username("username-#{user.username}")
+
+      expect(found).to eq(user)
+    end
+
+    it 'returns nil for a non existing username' do
+      found = identifier.identify_using_username('username-does-not-exist')
+
+      expect(found).to be_nil
+    end
+
+    it 'caches the found users per username' do
+      expect(User).to receive(:find_by_username).once.and_call_original
+
+      2.times do
+        found = identifier.identify_using_username("username-#{user.username}")
+
+        expect(found).to eq(user)
+      end
+    end
+  end
+
   describe '#identify_using_deploy_token' do
     it 'returns the DeployToken for an existing ID in the identifier' do
       found = identifier.identify_using_deploy_token("deploy-token-#{deploy_token.id}")

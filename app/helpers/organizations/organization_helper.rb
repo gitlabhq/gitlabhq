@@ -13,9 +13,13 @@ module Organizations
     end
 
     def organization_show_app_data(organization)
+      organization_user = organization.membership_for(current_user)
+
       {
         organization: organization.slice(:name, :path),
-        can_admin_organization: can?(current_user, :update_organization, organization)
+        can_admin_organization: can?(current_user, :update_organization, organization),
+        can_leave_organization: can?(current_user, :delete_organization_user, organization_user),
+        organization_user_gid: organization_user&.to_global_id
       }.to_json
     end
 

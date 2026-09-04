@@ -390,6 +390,19 @@ RSpec.shared_examples 'a policy repository' do
           /rules compile to \d+ bytes, over the maximum of 100 bytes/)
     end
 
+    it 'raises ValidationError on a calendar rule whose raw windows alone exceed the engine limit, ' \
+      'before normalizing them' do
+      stub_const("#{port}::MAX_COMPILED_RULES_BYTES", 100)
+      windows = [{ 'name' => 'eoq', 'tiers' => ['production'], 'starts_at' => '2026-12-24T00:00:00Z',
+                   'ends_at' => '2027-01-02T00:00:00Z' }]
+
+      rule = { 'type' => 'calendar', 'value' => { 'windows' => windows } }
+
+      expect { repository.create(attributes.merge(rules: [rule])) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError,
+          /rule 0: calendar rule's windows project to \d+ bytes, over the maximum of 100 bytes/)
+    end
+
     it 'raises ValidationError when no rule is oversized alone but the merged program is',
       :aggregate_failures do
       stub_const("#{port}::MAX_COMPILED_RULES_BYTES", 100)

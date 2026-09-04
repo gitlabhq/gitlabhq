@@ -36,19 +36,8 @@ $work-item-overview-gap-width: 2rem;
   transition: none;
 }
 
-.work-item-detail-panel-header {
-  @apply gl-flex;
-  @apply gl-items-center;
-  @apply gl-gap-x-2;
-  @apply gl-bg-default;
-  @apply gl-shadow-none;
-  @apply gl-relative;
-  @apply gl-pl-[--container-padding-x];
-  @apply gl-pr-3;
-  @apply gl-py-2;
-  @apply gl-border-b;
-  z-index: $panel-header-inner-z-index;
-  min-height: $panel-header-inner-height;
+.work-plan-editor {
+  margin-inline: calc(var(--container-padding-x) * -1);
 }
 
 .work-item-detail-panel-content {

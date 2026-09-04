@@ -16627,6 +16627,7 @@ CREATE TABLE catalog_bundled_resource_versions (
     readme text,
     readme_html text,
     cached_markdown_version integer,
+    file_store smallint DEFAULT 1 NOT NULL,
     CONSTRAINT check_82c917cc60 CHECK ((char_length(semver_prerelease) <= 255))
 );
 

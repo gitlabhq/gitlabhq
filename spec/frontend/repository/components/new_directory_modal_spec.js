@@ -68,7 +68,7 @@ describe('NewDirectoryModal', () => {
   };
 
   beforeEach(() => {
-    visitUrlSpy = jest.spyOn(urlUtility, 'visitUrl');
+    visitUrlSpy = jest.spyOn(urlUtility, 'visitUrl').mockImplementation(() => {});
     createComponent();
   });
 

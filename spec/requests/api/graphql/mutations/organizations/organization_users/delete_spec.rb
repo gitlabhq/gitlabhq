@@ -45,7 +45,7 @@ RSpec.describe Mutations::Organizations::OrganizationUsers::Delete, feature_cate
   end
 
   context 'when the user does not have permission' do
-    let(:current_user) { organization_user.user }
+    let_it_be(:current_user) { create(:user) }
 
     before do
       add_membership_to(organization_user)
@@ -55,6 +55,51 @@ RSpec.describe Mutations::Organizations::OrganizationUsers::Delete, feature_cate
 
     it 'does not delete the organization user' do
       expect { delete_organization_user }.not_to change { Organizations::OrganizationUser.count }
+    end
+  end
+
+  context 'when a user removes their own membership' do
+    let(:current_user) { organization_user.user }
+
+    context 'when the user belongs to multiple organizations' do
+      before do
+        add_membership_to(organization_user)
+      end
+
+      it 'deletes the organization user' do
+        expect { delete_organization_user }.to change { Organizations::OrganizationUser.count }.by(-1)
+
+        expect(mutation_response['errors']).to be_empty
+      end
+    end
+
+    context 'when the organization is the home organization of the user' do
+      before do
+        add_membership_to(organization_user)
+        organization_user.user.update!(organization: organization)
+      end
+
+      # The delete_organization_user ability denies the home organization, so this fails authorization
+      # before the service runs and surfaces as a top-level error rather than a mutation error.
+      it_behaves_like 'a mutation that returns a top-level access error'
+
+      it 'does not delete the organization user' do
+        expect { delete_organization_user }.not_to change { Organizations::OrganizationUser.count }
+      end
+    end
+
+    context 'when the user is the last owner' do
+      let(:organization_user) { organization_owner }
+
+      before do
+        add_membership_to(organization_owner)
+      end
+
+      it_behaves_like 'a mutation that returns a top-level access error'
+
+      it 'does not delete the organization user' do
+        expect { delete_organization_user }.not_to change { Organizations::OrganizationUser.count }
+      end
     end
   end
 
@@ -95,11 +140,10 @@ RSpec.describe Mutations::Organizations::OrganizationUsers::Delete, feature_cate
         organization_user.user.update!(organization: organization)
       end
 
-      it 'returns an error and does not delete the organization user' do
-        expect { delete_organization_user }.not_to change { Organizations::OrganizationUser.count }
+      it_behaves_like 'a mutation that returns a top-level access error'
 
-        expect(mutation_response['errors'])
-          .to contain_exactly(_('You cannot delete a user from their home organization'))
+      it 'does not delete the organization user' do
+        expect { delete_organization_user }.not_to change { Organizations::OrganizationUser.count }
       end
     end
 

@@ -53,7 +53,7 @@ describe('UploadBlobModal', () => {
   };
 
   beforeEach(() => {
-    visitUrlSpy = jest.spyOn(urlUtility, 'visitUrl');
+    visitUrlSpy = jest.spyOn(urlUtility, 'visitUrl').mockImplementation(() => {});
     mock = new MockAdapter(axios);
 
     mock.onPut(REPLACE_PATH).replyOnce(HTTP_STATUS_OK, { filePath: '/replace_file' });
@@ -345,6 +345,7 @@ describe('UploadBlobModal', () => {
         });
 
         it('on error, shows the fallback message and logs the error', async () => {
+          mock.reset();
           setupMockAsError();
           await submitForm();
 

@@ -15,7 +15,7 @@ import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
 import { ERROR_POLICY_NONE } from '~/lib/graphql';
 import { __, s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
+import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { visitUrl, getLocationHash, refreshCurrentPage } from '~/lib/utils/url_utility';
 import { projectPath } from '~/lib/utils/path_helpers/project';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
@@ -57,13 +57,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [
-    getRefMixin,
-    highlightMixin,
-    glFeatureFlagMixin(),
-    glLicensedFeaturesMixin(),
-    trackingMixin,
-  ],
+  mixins: [getRefMixin, highlightMixin, glAbilitiesMixin(), glFeatureFlagMixin(), trackingMixin],
   inject: {
     originalBranch: {
       default: '',
@@ -291,11 +285,7 @@ export default {
       return this.glFeatures.inlineBlame && !this.isBinaryFileType && this.showBlame;
     },
     isOrbitCodeIntelligenceAvailable() {
-      return (
-        this.glFeatures.orbitCodeIntelligence &&
-        this.glLicensedFeatures.orbit &&
-        this.isOnDefaultBranch
-      );
+      return this.glAbilities.readCodeNavigation && this.isOnDefaultBranch;
     },
     // KG only indexes the default branch today, so the panel would render
     // stale or misleading data on any other ref. Hide the toggle until the
@@ -520,11 +510,12 @@ export default {
             <gl-button
               v-if="isOrbitCodeIntelligenceAvailable && (blobViewer || legacyViewerLoaded)"
               v-gl-tooltip
+              data-testid="code-navigation-button"
               category="primary"
               variant="default"
               icon="code"
-              :aria-label="__('Code Navigation')"
-              :title="__('Code Navigation')"
+              :aria-label="__('Code navigation')"
+              :title="__('Code navigation')"
               @click="orbitPanelOpen = !orbitPanelOpen"
             />
           </template>

@@ -333,9 +333,7 @@ module Auth
       # organization is available; stays a no-op while the flag is off (default).
       return Feature.enabled?(:organization_maintenance_enforcement, :instance) unless organization
 
-      return false unless organization.maintenance?
-
-      Feature.enabled?(:organization_maintenance_enforcement, organization)
+      organization.under_maintenance?
     end
 
     def build_can_delete?(requested_project)

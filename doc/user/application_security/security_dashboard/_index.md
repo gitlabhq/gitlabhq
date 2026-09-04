@@ -266,6 +266,7 @@ To view details:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239423) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_dashboard_agentic_adoption`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253438) in GitLab 19.4. Feature flag `security_dashboard_agentic_adoption` removed.
 
 {{< /history >}}
 

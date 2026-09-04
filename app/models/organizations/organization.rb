@@ -132,8 +132,9 @@ module Organizations
       groups.none? && projects.none?
     end
 
-    def maintenance_enforced?
-      maintenance? && Feature.enabled?(:organization_maintenance_enforcement, self)
+    def under_maintenance?
+      (maintenance? || maintenance_initialization?) &&
+        Feature.enabled?(:organization_maintenance_enforcement, self)
     end
 
     def to_param
@@ -149,6 +150,10 @@ module Organizations
 
     def user?(user)
       organization_users.exists?(user: user)
+    end
+
+    def membership_for(user)
+      organization_users.by_user(user).first
     end
 
     def owner?(user)

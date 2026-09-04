@@ -213,6 +213,13 @@ Five properties of that compilation, each of which a caller has to work with:
 - **Rules whose merged module exceeds `MAX_COMPILED_RULES_BYTES` are refused too**, for a
   different reason: the Policy Engine would not load a module that large, so accepting one
   would defer the failure to evaluation.
+- **A `calendar` rule's raw windows are checked against that same limit before any of them
+  is normalized**, since normalizing (and later emitting) each one costs far more than
+  measuring their authored JSON. `RuleTranspiler` accepts the limit as `max_projected_bytes`
+  rather than reading `MAX_COMPILED_RULES_BYTES` itself, so it does not depend on the
+  repository layer that calls it. Through `create`/`update`, `ENTRY_SIZE_LIMIT` (a sixteenth
+  of `MAX_COMPILED_RULES_BYTES`) already refuses an oversized rule first, so this check
+  protects a `RuleTranspiler` used directly, outside that validation stack.
 - **A `calendar` rule's windows are de-duplicated after normalization**, so two windows
   identical in name, tiers, and normalized bounds emit once. Two windows sharing only a
   name are not duplicates and both emit, since name equality alone does not mean the same

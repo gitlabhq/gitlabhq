@@ -7,6 +7,12 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
   let_it_be(:group) { create(:group) }
 
   let(:project) { create(:project, :repository, namespace: user.namespace) }
+  let(:transfer_scheduled_message) do
+    s_(
+      'TransferProject|This project is scheduled for transfer. ' \
+        'Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails.'
+    )
+  end
 
   before_all do
     group.add_owner(user)
@@ -43,24 +49,25 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
     expect(page).to have_selector '#confirm_name_input:focus'
   end
 
-  it 'schedules an async transfer and shows the transfer banner' do
+  it 'schedules an async transfer and shows the transfer banner', :aggregate_failures do
     transfer_project(project, group)
 
     expect(page).to have_current_path(edit_project_path(project))
-    expect(page).to have_content(s_(
-      'TransferProject|This project is scheduled for transfer. ' \
-        'Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails.'
-    ))
+    expect(page).to have_content(transfer_scheduled_message)
     expect(project.project_namespace.reload.state).to eq('transfer_scheduled')
   end
 
   context 'when nested groups are available' do
-    it 'schedules an async transfer to a subgroup' do
+    it 'schedules an async transfer to a subgroup', :aggregate_failures do
       subgroup = create(:group, parent: group)
 
       transfer_project(project, subgroup)
 
       expect(page).to have_current_path(edit_project_path(project))
+      # Wait for the transfer request to complete before reading the state.
+      # The page is already on edit_project_path before the form is submitted,
+      # so have_current_path alone does not wait for the redirect.
+      expect(page).to have_content(transfer_scheduled_message)
       expect(project.project_namespace.reload.state).to eq('transfer_scheduled')
     end
   end

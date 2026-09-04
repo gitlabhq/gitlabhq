@@ -21,6 +21,7 @@ export const I18N_USER_ACTIONS = {
   unban: s__('AdminUsers|Unban user'),
   trust: s__('AdminUsers|Trust user'),
   untrust: s__('AdminUsers|Untrust user'),
+  removeFromOrganization: s__('AdminUsers|Remove from organization'),
 };
 
 export const createTokenConfig = (options) => ({

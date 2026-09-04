@@ -146,13 +146,13 @@ describe('sorterFor', () => {
     expect(items.sort(sorterFor('status'))).toEqual([
       { status: 'CANCELED' },
       { status: 'FAILED' },
-      { status: 'SUCCESS' },
       { status: 'running' },
+      { status: 'SUCCESS' },
     ]);
 
     expect(items.sort(sorterFor('status', false))).toEqual([
-      { status: 'running' },
       { status: 'SUCCESS' },
+      { status: 'running' },
       { status: 'FAILED' },
       { status: 'CANCELED' },
     ]);
@@ -269,6 +269,41 @@ describe('sorterFor', () => {
       { labels: { nodes: [{ title: 'A' }, { title: 'B' }] } },
       { labels: { nodes: [] } },
     ]);
+  });
+
+  it('sorts strings in locale order, regardless of accents and case', () => {
+    const items = [
+      { title: 'Zebra' },
+      { title: 'Évaluation' },
+      { title: 'apple' },
+      { title: 'Ñoño' },
+      { title: 'über' },
+      { title: 'Mango' },
+    ];
+
+    expect(items.sort(sorterFor('title'))).toEqual([
+      { title: 'apple' },
+      { title: 'Évaluation' },
+      { title: 'Mango' },
+      { title: 'Ñoño' },
+      { title: 'über' },
+      { title: 'Zebra' },
+    ]);
+
+    expect(items.sort(sorterFor('title', false))).toEqual([
+      { title: 'Zebra' },
+      { title: 'über' },
+      { title: 'Ñoño' },
+      { title: 'Mango' },
+      { title: 'Évaluation' },
+      { title: 'apple' },
+    ]);
+  });
+
+  it('treats accented and base letters as equal, preserving input order', () => {
+    const items = [{ title: 'résumé' }, { title: 'resume' }];
+
+    expect(items.sort(sorterFor('title'))).toEqual([{ title: 'résumé' }, { title: 'resume' }]);
   });
 });
 

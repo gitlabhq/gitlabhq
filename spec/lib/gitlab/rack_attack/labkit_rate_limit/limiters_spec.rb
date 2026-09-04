@@ -124,6 +124,62 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
       end
     end
 
+    # PlanRules returns [] until the EE rules land, so ordering is pinned here
+    # with a stand-in probe rather than in the EE spec.
+    describe 'plan rules' do
+      let(:probe_name) { 'plan_rule_probe' }
+
+      let(:probe) do
+        Labkit::RateLimit::Rule.new(
+          name: probe_name,
+          match: { requester_id: /./ },
+          characteristics: [:ip],
+          limit: 1,
+          period: 60,
+          action: :log
+        )
+      end
+
+      before do
+        allow(Gitlab::RackAttack::LabkitRateLimit::PlanRules).to receive(:for_limiter).and_return([probe])
+      end
+
+      it 'asks for the rules of every limiter it builds' do
+        described_class.all
+
+        registry.by_limiter.each_key do |limiter_name|
+          expect(Gitlab::RackAttack::LabkitRateLimit::PlanRules).to have_received(:for_limiter).with(limiter_name)
+        end
+      end
+
+      it 'splices them below the synthetic skips and above every registry rule', :aggregate_failures do
+        registry.by_limiter.each do |limiter_name, entries|
+          names = built_rule_names.fetch(limiter_name)
+          index = names.index(probe_name)
+
+          expect(index).not_to be_nil, "#{limiter_name} built no plan rule"
+          expect(index).to be_positive, "#{limiter_name} runs #{probe_name} ahead of its synthetic skips"
+          expect(names[index + 1]).to eq(entries.first.rule_name),
+            "#{limiter_name} runs #{names[index + 1].inspect} after #{probe_name}, " \
+              "expected its first registry rule"
+        end
+      end
+
+      def built_rule_names
+        @built_rule_names ||= begin
+          captured = {}
+          allow(Labkit::RateLimit::Limiter).to receive(:new).and_wrap_original do |original, **kwargs|
+            captured[kwargs[:name]] = kwargs[:rules].map(&:name)
+            original.call(**kwargs)
+          end
+
+          described_class.all
+
+          captured
+        end
+      end
+    end
+
     context 'when a user allowlist is configured' do
       before do
         allow(::Gitlab::RackAttack).to receive(:user_allowlist)
@@ -199,6 +255,16 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         expect(Labkit::RateLimit::Rule).not_to have_received(:new)
           .with(hash_including(name: 'unauthenticated_web_dry_run_bypass'))
       end
+    end
+  end
+
+  describe '.reset!' do
+    it 'drops the memo, so the next call rebuilds' do
+      built = described_class.all
+
+      described_class.reset!
+
+      expect(described_class.all).not_to equal(built)
     end
   end
 

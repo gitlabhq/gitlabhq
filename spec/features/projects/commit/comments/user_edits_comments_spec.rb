@@ -51,15 +51,20 @@ RSpec.describe "User edits a comment on a commit", :js, feature_category: :sourc
       expect(page).to have_selector('li.task-list-item', count: 2)
       expect(page).to have_selector('li.task-list-item input[checked]', count: 0)
 
-      # Checkboxes are rendered disabled and only enabled once TaskList JS initialises.
-      # Clicking a disabled checkbox raises nothing and silently does not toggle it, so
-      # wait for the enabled state before clicking.
-      all('li.task-list-item.enabled .task-list-item-checkbox', count: 2).each(&:click)
+      # Click one note at a time with fresh finders: elements cached by `all` are not
+      # reloadable, so a re-render between the two clicks goes stale or swallows the
+      # second click. Waiting for `.enabled` also ensures TaskList JS has initialised,
+      # because clicking a still-disabled checkbox silently does nothing.
+      # The toggle produces no visible change until the page is reloaded, so wait on the
+      # persisted note instead before clicking the next checkbox.
+      Note.where(project: project, commit_id: sample_commit.id).order(:id).each do |note|
+        within("#note_#{note.id}") do
+          find('li.task-list-item.enabled .task-list-item-checkbox').click
+        end
 
-      # The toggle produces no visible change until the page is reloaded, so there is no
-      # end-state to assert on before navigating.
-      wait_for('both task list toggles to persist', polling_interval: 0.1) do
-        Note.where(project: project, commit_id: sample_commit.id).all? { |note| note.note.include?('[x]') }
+        wait_for("task list toggle to persist for note #{note.id}", polling_interval: 0.1) do
+          note.reload.note.include?('[x]')
+        end
       end
 
       visit(project_commit_path(project, sample_commit.id))

@@ -119,6 +119,40 @@ describe('DynamicPanel', () => {
     });
   });
 
+  describe('shouldFillContent prop', () => {
+    const fillClasses = ['gl-flex', 'gl-flex-col', 'gl-flex-1', 'gl-min-h-0'];
+    const findContentInner = () => wrapper.findByTestId('panel-content-inner');
+    const findContent = () => wrapper.findByTestId('panel-content');
+
+    describe('when shouldFillContent is false', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not apply flex classes to the content wrapper chain', () => {
+        fillClasses.forEach((cls) => {
+          expect(findContentInner().classes()).not.toContain(cls);
+          expect(findContainer().classes()).not.toContain(cls);
+          expect(findContent().classes()).not.toContain(cls);
+        });
+      });
+    });
+
+    describe('when shouldFillContent is true', () => {
+      beforeEach(() => {
+        createComponent({ propsData: { shouldFillContent: true } });
+      });
+
+      it('applies flex classes to the content wrapper chain', () => {
+        fillClasses.forEach((cls) => {
+          expect(findContentInner().classes()).toContain(cls);
+          expect(findContainer().classes()).toContain(cls);
+          expect(findContent().classes()).toContain(cls);
+        });
+      });
+    });
+  });
+
   describe('maximize event', () => {
     it('is emitted when PanelActions emits maximize', async () => {
       createComponent({ propsData: { maximizeUrl: '/full/page' } });
@@ -130,7 +164,7 @@ describe('DynamicPanel', () => {
   });
 
   describe('panel content height', () => {
-    const findScrollContainer = () => wrapper.find('.panel-content-inner');
+    const findScrollContainer = () => wrapper.findByTestId('panel-content-inner');
 
     it('sets --panel-content-inner-height on its own scroll container so nested panels do not collide', async () => {
       createComponent();

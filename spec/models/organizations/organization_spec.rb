@@ -545,6 +545,39 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     end
   end
 
+  describe '#under_maintenance?' do
+    let_it_be_with_reload(:organization) { create(:organization) }
+
+    subject(:under_maintenance?) { organization.under_maintenance? }
+
+    context 'when the enforcement feature flag is enabled' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:state, :expected) do
+        :active                     | false
+        :maintenance_initialization | true
+        :maintenance                | true
+      end
+
+      with_them do
+        before do
+          organization.update_column(:state, Organizations::Organization.states[state])
+        end
+
+        it { is_expected.to eq(expected) }
+      end
+    end
+
+    context 'when the enforcement feature flag is disabled' do
+      before do
+        stub_feature_flags(organization_maintenance_enforcement: false)
+        organization.update_column(:state, described_class.states[:maintenance])
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
   describe '#user?' do
     let_it_be(:user) { create :user }
 
@@ -586,6 +619,24 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
 
     context 'when user is not an organization user' do
       it { is_expected.to be false }
+    end
+  end
+
+  describe '#membership_for' do
+    let_it_be(:user) { create(:user) }
+
+    subject { organization.membership_for(user) }
+
+    context 'when the user is a member of the organization' do
+      let_it_be(:organization_user) do
+        create(:organization_user, organization: organization, user: user)
+      end
+
+      it { is_expected.to eq(organization_user) }
+    end
+
+    context 'when the user is not a member of the organization' do
+      it { is_expected.to be_nil }
     end
   end
 

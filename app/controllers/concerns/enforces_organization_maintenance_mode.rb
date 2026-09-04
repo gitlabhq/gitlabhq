@@ -5,9 +5,9 @@
 # perform writes), so the initial iteration denies every request.
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/607966.
 #
-# Enforcement gates on the single `Organizations::Organization#maintenance?`
-# predicate and is wrapped in the `organization_maintenance_enforcement` feature
-# flag, so it ships dark and is a complete no-op when the flag is disabled.
+# Enforcement gates on the single `Organizations::Organization#under_maintenance?`
+# predicate, which is wrapped in the `organization_maintenance_enforcement`
+# feature flag, so it ships dark and is a complete no-op when the flag is disabled.
 #
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/603377.
 module EnforcesOrganizationMaintenanceMode
@@ -25,7 +25,7 @@ module EnforcesOrganizationMaintenanceMode
     organization = ::Current.organization
     return false unless organization
 
-    organization.maintenance_enforced?
+    organization.under_maintenance?
   end
 
   def handle_organization_maintenance_mode_error

@@ -61,6 +61,7 @@ export default {
         if (errors.length) {
           this.$refs.modal.hide();
           showToast(errors[0]);
+          this.loading = false;
           return;
         }
 
@@ -76,7 +77,6 @@ export default {
         showToast(
           s__('AdminUsers|An error occurred while removing the user from the organization.'),
         );
-      } finally {
         this.loading = false;
       }
     },

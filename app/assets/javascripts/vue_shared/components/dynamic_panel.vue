@@ -39,8 +39,18 @@ export default {
       required: false,
       default: () => window.gon?.fluid_layout ?? false,
     },
+    shouldFillContent: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['close', 'maximize'],
+  computed: {
+    fillContentClasses() {
+      return this.shouldFillContent ? 'gl-flex gl-flex-col gl-flex-1 gl-min-h-0' : null;
+    },
+  },
   mounted() {
     this.$nextTick(this.syncPanelContentHeight);
     window.addEventListener('resize', this.syncPanelContentHeight);
@@ -82,13 +92,22 @@ export default {
       </div>
     </div>
     <div class="panel-content">
-      <div ref="panelContentInner" class="panel-content-inner js-dynamic-panel-inner">
+      <div
+        ref="panelContentInner"
+        class="panel-content-inner js-dynamic-panel-inner"
+        :class="fillContentClasses"
+        data-testid="panel-content-inner"
+      >
         <div
           class="container-fluid"
-          :class="{ 'container-limited': !fluidLayout }"
+          :class="[{ 'container-limited': !fluidLayout }, fillContentClasses]"
           data-testid="layout-container"
         >
-          <div class="content gl-@container/panel">
+          <div
+            class="content gl-@container/panel"
+            :class="fillContentClasses"
+            data-testid="panel-content"
+          >
             <slot></slot>
           </div>
         </div>

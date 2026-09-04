@@ -11,7 +11,7 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
   let(:expires_at) { 1.hour.from_now }
   let(:sub) { user.id.to_s }
   let(:valid_token_string) do
-    create_iam_jwt(user: user, scopes: scopes, expires_at: expires_at, issuer: iam_issuer,
+    create_iam_access_token(user: user, scopes: scopes, expires_at: expires_at, issuer: iam_issuer,
       private_key: private_key, kid: kid, sub: sub)
   end
 
@@ -56,11 +56,18 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
           end
         end
 
-        context 'when token is not IAM-issued JWT format' do
+        context 'when token is missing the gliamat- prefix' do
           it 'returns nil' do
             expect(described_class.from_jwt('not-a-jwt')).to be_nil
             expect(described_class.from_jwt(nil)).to be_nil
             expect(described_class.from_jwt('only.two')).to be_nil
+            expect(described_class.from_jwt(valid_token_string.delete_prefix('gliamat-'))).to be_nil
+          end
+        end
+
+        context 'when token has the gliamat- prefix but is not a valid JWT' do
+          it 'returns nil' do
+            expect(described_class.from_jwt('gliamat-not-a-jwt')).to be_nil
           end
         end
 

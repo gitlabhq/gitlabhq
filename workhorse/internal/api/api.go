@@ -353,6 +353,15 @@ func (api *API) newRequest(r *http.Request, suffix string) *http.Request {
 	authReq.Header.Del("Trailer")
 	authReq.Header.Del("Upgrade")
 
+	// HTTP Router headers describe how the router classified the original client
+	// request. This subrequest never passed through the router, so forwarding
+	// them would pollute Rails logs and double-count router metrics.
+	for key := range authReq.Header {
+		if strings.HasPrefix(key, "X-Gitlab-Http-Router-") {
+			authReq.Header.Del(key)
+		}
+	}
+
 	// Also forward the Host header, which is excluded from the Header map by the http library.
 	// This allows the Host header received by the backend to be consistent with other
 	// requests not going through gitlab-workhorse.

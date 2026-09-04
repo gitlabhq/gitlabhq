@@ -230,7 +230,7 @@ class GraphqlController < ApplicationController
   # (https://gitlab.com/gitlab-org/gitlab/-/issues/607966).
   def disallow_requests_for_organization_maintenance_mode
     organization = ::Current.organization
-    return unless organization&.maintenance_enforced?
+    return unless organization&.under_maintenance?
 
     if organization.maintenance_time_bounded?
       raise ::Gitlab::Graphql::Errors::TimeBoundedOrganizationMaintenanceModeError.new(

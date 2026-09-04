@@ -348,7 +348,8 @@ module Gitlab
           end
 
           compiled = rules.each_with_index.map do |rule, index|
-            rule.merge(COMPILED_RULE_KEY => RuleTranspiler.new(rule, rule_index: index).transpile)
+            transpiler = RuleTranspiler.new(rule, rule_index: index, max_projected_bytes: MAX_COMPILED_RULES_BYTES)
+            rule.merge(COMPILED_RULE_KEY => transpiler.transpile)
           end
 
           validate_merged_program_size!(compiled)

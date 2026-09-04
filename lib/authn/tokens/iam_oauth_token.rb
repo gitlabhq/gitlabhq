@@ -5,13 +5,20 @@ module Authn
     class IamOauthToken
       include Gitlab::Utils::StrongMemoize
 
+      # IAM prefixes every access token it mints with this before the JWT
+      # (see gitlab-org/auth/iam's auth/oauth/core/token_prefix.go) and
+      # strips it before validating; we mirror that here.
+      ACCESS_TOKEN_PREFIX = 'gliamat-'
+
       class << self
         # Primary public interface for creating validated tokens.
         def from_jwt(token_string)
           return unless Authn::IamAuthService.enabled?
-          return unless iam_issued_jwt?(token_string)
 
-          result = ::Authn::IamService::JwtValidationService.new(token: token_string).execute
+          jwt = strip_access_token_prefix(token_string)
+          return unless jwt
+
+          result = ::Authn::IamService::JwtValidationService.new(token: jwt).execute
           return unless result.success?
 
           token = from_validated_jwt(result.payload)
@@ -25,13 +32,11 @@ module Authn
 
         private
 
-        # Checks if a token string is likely an IAM-issued JWT based on format.
-        # This is a lightweight check before expensive JWT validation.
-        # TODO: Replace with proper token prefix (e.g., 'gliat-') before production
-        def iam_issued_jwt?(token_string)
-          token_string.is_a?(String) &&
-            token_string.start_with?('ey') &&
-            token_string.count('.') == 2
+        # Cheap prefix check before expensive JWT validation.
+        def strip_access_token_prefix(token_string)
+          return unless token_string.is_a?(String) && token_string.start_with?(ACCESS_TOKEN_PREFIX)
+
+          token_string.delete_prefix(ACCESS_TOKEN_PREFIX)
         end
 
         def from_validated_jwt(validated_data)

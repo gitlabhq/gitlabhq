@@ -755,6 +755,35 @@ end
 
 If `authorize` is not specified, you must take care of authorization manually.
 
+### Part-level authorization
+
+Individual metrics, dimensions, and filters can declare their own `authorize:` option to require
+an additional visibility check beyond the field-level `authorize` described above:
+
+```ruby
+metrics do
+  count :total_count, :integer
+  count :owner_count, :integer, authorize: :owner_access
+end
+
+dimensions do
+  column :status, :string
+  column :internal_flag, :string, authorize: ->(user, resources) { resources.all? { |r| r.member?(user) } }
+end
+```
+
+`authorize:` accepts either an ability symbol, checked with `Ability.allowed?(user, ability, resource)`
+for every resource in the engine context's `authorization_resources`, or a callable invoked once with
+`(user, resources)` that returns a boolean and is responsible for authorizing all resources itself. The `measurement` macro also accepts
+`authorize:` and propagates it to all its expanded dotted metrics (`.min`, `.max`, `.mean`,
+`.quantile`, `.sum`).
+
+When a user is not authorized for a part:
+
+- A protected metric is dropped from the request silently, and its field returns `null`. The
+  response shape does not change.
+- A protected dimension, filter, order fails request validation with a clear error.
+
 ### Example GraphQL query
 
 The generated GraphQL subtree uses a two-level structure:

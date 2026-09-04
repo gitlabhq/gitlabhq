@@ -82,7 +82,7 @@ describe('BlobEditHeader', () => {
   beforeEach(() => {
     window.gon = { api_version: 'v4' };
 
-    visitUrlSpy = jest.spyOn(urlUtility, 'visitUrl');
+    visitUrlSpy = jest.spyOn(urlUtility, 'visitUrl').mockImplementation(() => {});
     mock = new MockAdapter(axios);
     createWrapper();
   });

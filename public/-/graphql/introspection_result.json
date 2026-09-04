@@ -104397,7 +104397,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -175750,7 +175750,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -176027,7 +176027,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -185714,7 +185714,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -186596,7 +186596,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -203809,7 +203809,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -320269,7 +320269,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -332505,7 +332505,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -333411,7 +333411,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -362655,7 +362655,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -428411,7 +428411,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",

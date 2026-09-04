@@ -8,13 +8,6 @@ module Organizations
     # non-admin users (see Organizations::OrganizationsFinder).
     DELETION_STATES = %i[soft_deleted deletion_in_progress].freeze
 
-    # States in which an organization is in maintenance mode (all requests
-    # blocked). Use the `maintenance?` predicate rather than checking individual
-    # states. Enforcement layers should call `maintenance?` so that gating can be
-    # added cleanly behind a feature flag in a follow-up MR
-    # (see https://gitlab.com/gitlab-org/gitlab/-/issues/602810).
-    MAINTENANCE_STATES = %i[maintenance_initialization maintenance].freeze
-
     # Valid reasons for entering maintenance mode.
     # Persisted in OrganizationDetail#state_metadata as `maintenance_reason`.
     MAINTENANCE_REASONS = %w[migration isolation incident billing legal].freeze
@@ -31,11 +24,6 @@ module Organizations
     TIME_BOUNDED_MAINTENANCE_REASONS = %w[migration incident].freeze
 
     MAINTENANCE_MODE_RETRY_AFTER_SECONDS = 60
-
-    # Non-active states from which maintenance mode cannot be entered. An
-    # organization must be active first; the state machine enforces this via the
-    # `active -> maintenance_initialization` transition.
-    MAINTENANCE_BLOCKED_STATES = (DELETION_STATES + %i[unconfirmed confirmed]).freeze
 
     included do
       include ::Gitlab::TenantContainerLifecycle::Stateful::TransitionContext
@@ -118,14 +106,6 @@ module Organizations
         after_transition :log_transition
         after_failure    :update_state_metadata_on_failure
         after_failure    :log_transition_failure
-      end
-
-      # Returns true when the organization is in any maintenance state.
-      # Enforcement layers MUST call this predicate rather than checking
-      # individual states, so that a feature flag can gate the behaviour
-      # cleanly in a follow-up MR (https://gitlab.com/gitlab-org/gitlab/-/issues/602810).
-      def maintenance?
-        MAINTENANCE_STATES.include?(state_name)
       end
 
       def maintenance_time_bounded?

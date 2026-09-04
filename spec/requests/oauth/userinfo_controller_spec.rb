@@ -9,7 +9,7 @@ RSpec.describe Oauth::UserinfoController, feature_category: :system_access do
 
   let(:scopes) { %w[openid] }
   let(:iam_jwt) do
-    create_iam_jwt(user: user, issuer: iam_issuer, private_key: private_key, kid: kid, scopes: scopes)
+    create_iam_access_token(user: user, issuer: iam_issuer, private_key: private_key, kid: kid, scopes: scopes)
   end
 
   def get_userinfo(token)
@@ -48,7 +48,7 @@ RSpec.describe Oauth::UserinfoController, feature_category: :system_access do
 
       context 'when the token is expired' do
         let(:iam_jwt) do
-          create_iam_jwt(user: user, issuer: iam_issuer, private_key: private_key, kid: kid,
+          create_iam_access_token(user: user, issuer: iam_issuer, private_key: private_key, kid: kid,
             scopes: scopes, expires_at: 1.hour.ago)
         end
 
@@ -111,7 +111,7 @@ RSpec.describe Oauth::UserinfoController, feature_category: :system_access do
 
       context 'with a wrong audience claim' do
         let(:iam_jwt) do
-          create_iam_jwt(user: user, issuer: iam_issuer, private_key: private_key, kid: kid,
+          create_iam_access_token(user: user, issuer: iam_issuer, private_key: private_key, kid: kid,
             scopes: scopes, aud: 'wrong-audience')
         end
 
@@ -124,7 +124,7 @@ RSpec.describe Oauth::UserinfoController, feature_category: :system_access do
 
       context 'when the JWKS endpoint times out' do
         let(:iam_jwt) do
-          create_iam_jwt(user: user, issuer: iam_issuer, private_key: private_key, kid: 'timeout_kid',
+          create_iam_access_token(user: user, issuer: iam_issuer, private_key: private_key, kid: 'timeout_kid',
             scopes: scopes)
         end
 
@@ -142,7 +142,7 @@ RSpec.describe Oauth::UserinfoController, feature_category: :system_access do
 
       context 'when the JWKS service is unavailable' do
         let(:iam_jwt) do
-          create_iam_jwt(user: user, issuer: iam_issuer, private_key: private_key, kid: 'unavailable_kid',
+          create_iam_access_token(user: user, issuer: iam_issuer, private_key: private_key, kid: 'unavailable_kid',
             scopes: scopes)
         end
 

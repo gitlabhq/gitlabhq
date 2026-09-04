@@ -89,6 +89,28 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
     end
   end
 
+  describe '#accept_login_challenge' do
+    it 'sends all expected fields on the request' do
+      expect(login_stub).to receive(:accept) do |request, **|
+        expect(request.challenge).to eq('test-challenge')
+        expect(request.subject).to eq('42')
+        expect(request.name).to eq('Jane Doe')
+        expect(request.email).to eq('jane.doe@example.com')
+        expect(request.cell_id).to eq(7)
+
+        ::Gitlab::Iam::Auth::V1::LoginServiceAcceptResponse.new
+      end
+
+      client.accept_login_challenge(
+        challenge: 'test-challenge',
+        subject: '42',
+        name: 'Jane Doe',
+        email: 'jane.doe@example.com',
+        cell_id: 7
+      )
+    end
+  end
+
   describe 'service token' do
     context 'with a real stub and interceptor chain' do
       # Everything up to the stub is unmocked here (including

@@ -28,9 +28,10 @@ module Gitlab
       # up to this much of it.
       MAX_REPORTED_VALUE_LENGTH = 64
 
-      def initialize(rule, rule_index: 0)
+      def initialize(rule, rule_index: 0, max_projected_bytes: nil)
         @rule = rule
         @rule_index = rule_index.to_i
+        @max_projected_bytes = max_projected_bytes
       end
 
       def transpile
@@ -46,7 +47,7 @@ module Gitlab
 
       private
 
-      attr_reader :rule, :rule_index
+      attr_reader :rule, :rule_index, :max_projected_bytes
 
       def program(statements)
         "#{RULE_PRELUDE}\n\n#{[header, *statements].join("\n\n")}\n"
@@ -112,9 +113,33 @@ module Gitlab
       end
 
       def calendar_statements
+        reject_oversized_windows!
         invalid!("calendar rule requires at least one window") if windows.empty?
 
         [violation_rule(details: calendar_details, conditions: calendar_conditions)]
+      end
+
+      def reject_oversized_windows!
+        return if max_projected_bytes.nil?
+
+        projected_bytes = projected_authored_windows_bytesize
+        return if projected_bytes.nil? || projected_bytes <= max_projected_bytes
+
+        invalid!("calendar rule's windows project to #{projected_bytes} bytes, over the " \
+          "maximum of #{max_projected_bytes} bytes")
+      end
+
+      def projected_authored_windows_bytesize
+        total = 0
+
+        authored_windows.uniq.each do |window|
+          total += JSON.generate(window).bytesize
+          break if total > max_projected_bytes
+        end
+
+        total
+      rescue JSON::JSONError, Encoding::UndefinedConversionError
+        nil
       end
 
       def calendar_details

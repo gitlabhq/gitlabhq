@@ -1,0 +1,4 @@
+---
+name: read_code_navigation
+description: Grants the ability to use Orbit-powered Code Navigation in the repository
+  file viewer

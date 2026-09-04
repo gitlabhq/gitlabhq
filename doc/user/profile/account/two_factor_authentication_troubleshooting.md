@@ -40,6 +40,11 @@ To resolve this error:
     requests: `read_registry` or `write_registry`
   - For [dependency proxy](../../packages/dependency_proxy/_index.md#authenticate-with-the-dependency-proxy-for-container-images)
     requests: `read_registry` and `write_registry`
+
+  These scopes apply to legacy personal access tokens. Fine-grained personal access tokens use
+  resources and permissions instead. For the fine-grained equivalents, see
+  [fine-grained permissions for Git and other operations](../../../auth/tokens/fine_grained_access_tokens_other.md).
+  You cannot use fine-grained personal access tokens to push container images.
 - If you configured LDAP, use an [LDAP password](../../../administration/auth/ldap/_index.md).
 - Use an [OAuth credential helper](two_factor_authentication.md#oauth-credential-helpers).
 

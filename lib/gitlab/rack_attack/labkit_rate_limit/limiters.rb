@@ -103,7 +103,11 @@ module Gitlab
           private
 
           def build(limiter_name, entries)
-            rules = synthetic_rules(limiter_name) + entries.flat_map { |entry| build_rules(entry) }
+            # A registry rule's claim ends evaluation, so a plan rule placed after
+            # one would silently count zero instead of failing loudly.
+            rules = synthetic_rules(limiter_name) +
+              PlanRules.for_limiter(limiter_name) +
+              entries.flat_map { |entry| build_rules(entry) }
 
             ::Labkit::RateLimit::Limiter.new(
               name: limiter_name,

@@ -12,7 +12,6 @@ module Organizations
 
       def execute
         return denied_response unless allowed?
-        return error_home_organization if home_organization?
         return error_has_memberships if memberships_in_organization?
 
         organization_user.destroy
@@ -53,6 +52,7 @@ module Organizations
       # The delete_organization_user ability covers both authorization and the last owner rule, so we only
       # report the latter to users who are otherwise allowed to administer the organization.
       def denied_response
+        return error_home_organization if home_organization?
         return error_last_owner if can_update_organization? && organization_user.last_owner?
 
         error_no_permission
