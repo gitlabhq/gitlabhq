@@ -39,7 +39,7 @@ describe('Pipeline Wizard -- Input Wrapper', () => {
         bar: 'baz',
         foo: { some: inputValue },
       });
-      expect(wrapper.emitted()['update:compiled']).toEqual([[expected]]);
+      expect(wrapper.emitted('update:compiled')).toEqual([[expected]]);
     });
 
     it('will emit a before-update-compiled event if child emits an input event', async () => {

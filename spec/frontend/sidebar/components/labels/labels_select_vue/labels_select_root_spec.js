@@ -101,7 +101,7 @@ describe('LabelsSelectRoot', () => {
       it('emits `toggle-collapse` event on component', () => {
         createComponent();
         wrapper.vm.handleCollapsedValueClick();
-        expect(wrapper.emitted()['toggle-collapse']).toHaveLength(1);
+        expect(wrapper.emitted('toggle-collapse')).toHaveLength(1);
       });
     });
   });

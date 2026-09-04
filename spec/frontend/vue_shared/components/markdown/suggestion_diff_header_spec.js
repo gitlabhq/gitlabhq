@@ -119,7 +119,7 @@ describe('Suggestion Diff component', () => {
 
       findAddToBatchButton().vm.$emit('click');
 
-      expect(wrapper.emitted()['add-to-batch']).toEqual([[]]);
+      expect(wrapper.emitted('add-to-batch')).toEqual([[]]);
     });
   });
 
@@ -129,7 +129,7 @@ describe('Suggestion Diff component', () => {
 
       findRemoveFromBatchButton().vm.$emit('click');
 
-      expect(wrapper.emitted()['remove-from-batch']).toEqual([[]]);
+      expect(wrapper.emitted('remove-from-batch')).toEqual([[]]);
     });
   });
 
@@ -139,7 +139,7 @@ describe('Suggestion Diff component', () => {
 
       findApplyButton().vm.$emit('apply');
 
-      expect(wrapper.emitted()['apply-batch']).toEqual([[undefined]]);
+      expect(wrapper.emitted('apply-batch')).toEqual([[undefined]]);
     });
   });
 

@@ -283,6 +283,8 @@ RSpec.describe PlanLimits do
         enforcement_limit
         notification_limit
         project_access_token_limit
+        service_desk_outbound_emails_per_hour
+        service_desk_outbound_emails_per_day
       ] + disabled_max_artifact_size_columns
     end
 

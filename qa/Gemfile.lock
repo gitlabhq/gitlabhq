@@ -155,10 +155,10 @@ GEM
     gitlab-rspec-metrics-exporter (0.2.0)
       logger (>= 1.4, < 2.0)
       rspec-core (>= 3.12, < 4.0)
-    gitlab_quality-test_tooling (3.21.0)
+    gitlab_quality-test_tooling (3.21.4)
       activesupport (>= 7.0)
       amatch (~> 0.4.1)
-      fog-google (~> 1.24, >= 1.24.1)
+      fog-google (~> 1.25)
       gitlab (>= 4.19, < 7.0)
       http (~> 5.0)
       http-cookie (>= 1.0, < 1.1.1)
@@ -352,7 +352,7 @@ GEM
       addressable (>= 2.3.5)
       faraday (>= 0.17.3, < 3)
     securerandom (0.4.1)
-    selenium-webdriver (4.47.0)
+    selenium-webdriver (4.48.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -428,7 +428,7 @@ DEPENDENCIES
   gitlab-qa (~> 15, >= 15.8.0)
   gitlab-rspec-metrics-exporter (~> 0.2.0)
   gitlab-utils!
-  gitlab_quality-test_tooling (~> 3.21.0)
+  gitlab_quality-test_tooling (~> 3.21.1)
   junit_merge (~> 0.1.2)
   knapsack (~> 4.0)
   nokogiri (~> 1.19, >= 1.19.3)
@@ -444,7 +444,7 @@ DEPENDENCIES
   rspec-parameterized (~> 2.0.1)
   rspec_junit_formatter (~> 0.6.0)
   ruby-debug-ide (~> 0.7.5)
-  selenium-webdriver (= 4.47.0)
+  selenium-webdriver (= 4.48.0)
   slack-notifier (~> 2.4)
   terminal-table (~> 4.0.0)
   warning (~> 1.6)
@@ -502,7 +502,7 @@ CHECKSUMS
   gitlab-qa (15.8.0) sha256=2111f7f04e400491867550aad1f18ccca7eaf266dce62939f8dd564299a25666
   gitlab-rspec-metrics-exporter (0.2.0) sha256=9d05ee0437d30cc59d78437e795916e13746f070ea2423e88e9325e96bd09c63
   gitlab-utils (0.2.0)
-  gitlab_quality-test_tooling (3.21.0) sha256=9ec95510601919c89ee4ecd9ad1a3dc9aaa62197d2623467dc99a8aba214df4b
+  gitlab_quality-test_tooling (3.21.4) sha256=c94c2d57cf749846daf831e1541280d6a226507d9bc63a55224f7d37abf5dda5
   google-apis-compute_v1 (0.101.0) sha256=1dea57ab0a579424305aac3219cbd70196b6f3e0d1c6387e1412e3b676c25f3f
   google-apis-core (0.15.0) sha256=9c95ee9068c6b1fb3f8698b2856f53a031c3a68e886d074cc2e9a482e070a6e4
   google-apis-dns_v1 (0.43.0) sha256=8a0db99fde5a16ede6cc160ab422b737ef2e5e0d146c2b0570795fb83afdabf1
@@ -589,7 +589,7 @@ CHECKSUMS
   rubyzip (2.3.2) sha256=3f57e3935dc2255c414484fbf8d673b4909d8a6a57007ed754dde39342d2373f
   sawyer (0.9.2) sha256=fa3a72d62a4525517b18857ddb78926aab3424de0129be6772a8e2ba240e7aca
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
-  selenium-webdriver (4.47.0) sha256=67f915b8223d2133bbaa13e92fd98854175394f086e2036a9eff4f5561fd69e4
+  selenium-webdriver (4.48.0) sha256=0c8376ebc8a0a4879343fe6fe6eccdcea76748611cd25de370b33eded2077a94
   signet (0.19.0) sha256=537f3939f57f141f691e6069a97ec40f34fadafc4c7e5ba94edb06cf4350dd31
   slack-notifier (2.4.0) sha256=cd9aba3f5f3e6227f73df1f6a33ac6c127c5fac35b513b86b7ba900cd98d2b00
   sync (0.5.0) sha256=668356cc07c59ac7ed9ecf34fec3929831f179c07adb1f3e1c3b7a1609a638fd

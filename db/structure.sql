@@ -28049,7 +28049,9 @@ CREATE TABLE plan_limits (
     plan_name_uid smallint,
     ci_max_artifact_size_sarif integer DEFAULT 10 NOT NULL,
     max_pipelines_per_merge_train smallint DEFAULT 20 NOT NULL,
-    ai_flow_schedules integer DEFAULT 10 NOT NULL
+    ai_flow_schedules integer DEFAULT 10 NOT NULL,
+    service_desk_outbound_emails_per_hour integer DEFAULT 0 NOT NULL,
+    service_desk_outbound_emails_per_day integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq

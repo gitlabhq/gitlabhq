@@ -66,6 +66,8 @@ Example response:
   "max_pipelines_per_merge_train": 20,
   "pipeline_hierarchy_size": 1000,
   "pypi_max_file_size": 3221225472,
+  "service_desk_outbound_emails_per_hour": 0,
+  "service_desk_outbound_emails_per_day": 0,
   "terraform_module_max_file_size": 1073741824,
   "storage_size_limit": 15000
 }
@@ -104,6 +106,8 @@ PUT /application/plan_limits
 | `max_pipelines_per_merge_train`   | integer | no       | Maximum number of parallel pipelines per merge train. Default value: `20`. Minimum value: `1`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374188) in GitLab 19.0. |
 | `pipeline_hierarchy_size`         | integer | no       | Maximum number of downstream pipelines in a pipeline's hierarchy tree. Default value: `1000`. Values greater than 1000 are [not recommended](../administration/cicd/limits.md#limit-pipeline-hierarchy-size). |
 | `pypi_max_file_size`              | integer | no       | Maximum PyPI package file size in bytes. |
+| `service_desk_outbound_emails_per_hour` | integer | no       | Maximum number of outbound Service Desk emails per hour per top-level namespace. 0 for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253087) in GitLab 19.4. |
+| `service_desk_outbound_emails_per_day`  | integer | no       | Maximum number of outbound Service Desk emails per day per top-level namespace. 0 for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253087) in GitLab 19.4. |
 | `terraform_module_max_file_size`  | integer | no       | Maximum Terraform Module package file size in bytes. |
 | `storage_size_limit`              | integer | no       | Maximum storage size for the root namespace in MiB. |
 | `web_hook_calls`                  | integer | no       | Maximum number of times a webhook can be called per minute per top-level namespace. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/571738) in GitLab 18.5. |
@@ -138,6 +142,8 @@ Example response:
   "max_pipelines_per_merge_train": 20,
   "pipeline_hierarchy_size": 1000,
   "pypi_max_file_size": 3221225472,
+  "service_desk_outbound_emails_per_hour": 0,
+  "service_desk_outbound_emails_per_day": 0,
   "terraform_module_max_file_size": 1073741824
 }
 ```

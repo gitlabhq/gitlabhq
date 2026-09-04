@@ -128,6 +128,9 @@ export default {
     formAction() {
       return this.addUrlFragment(this.signInPath);
     },
+    passkeysFormAction() {
+      return this.addUrlFragment(this.passkeysSignInPath);
+    },
     submitButtonText() {
       return this.showPasswordField ? __('Sign in') : __('Continue');
     },
@@ -219,7 +222,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div id="js-sign-in-form-app">
     <gl-form
       :id="$options.formId"
       :action="formAction"
@@ -289,7 +292,7 @@ export default {
     </gl-form>
     <gl-form
       v-if="showPasskeySignIn"
-      :action="passkeysSignInPath"
+      :action="passkeysFormAction"
       method="post"
       class="gl-mt-3"
       data-testid="passkey-form"

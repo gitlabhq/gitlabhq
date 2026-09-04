@@ -107,7 +107,7 @@ describe('graph component', () => {
       });
 
       it('refresh-pipeline-graph is emitted', () => {
-        expect(wrapper.emitted()['refresh-pipeline-graph']).toHaveLength(1);
+        expect(wrapper.emitted('refresh-pipeline-graph')).toHaveLength(1);
       });
     });
 
@@ -117,7 +117,7 @@ describe('graph component', () => {
       });
 
       it('set-skip-retry-modal is emitted', () => {
-        expect(wrapper.emitted()['set-skip-retry-modal']).toHaveLength(1);
+        expect(wrapper.emitted('set-skip-retry-modal')).toHaveLength(1);
       });
     });
 
@@ -132,7 +132,7 @@ describe('graph component', () => {
       });
 
       it('dims unrelated jobs', () => {
-        expect(findLinksLayer().emitted()['highlighted-jobs-change']).toHaveLength(1);
+        expect(findLinksLayer().emitted('highlighted-jobs-change')).toHaveLength(1);
         expect(findJobItem().classes('gl-opacity-3')).toBe(true);
       });
     });

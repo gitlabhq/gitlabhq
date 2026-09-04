@@ -23,6 +23,8 @@ module QA
 
         Flow::Login.sign_in
         Flow::Project.enable_catalog_resource_feature(project)
+
+        runner.wait_until_online
       end
 
       after do

@@ -606,7 +606,7 @@ describe('pipeline graph job item', () => {
           await findActionComponent().trigger('click');
           await actionBtn();
 
-          expect(wrapper.emitted()['set-skip-retry-modal']).toBeUndefined();
+          expect(wrapper.emitted('set-skip-retry-modal')).toBeUndefined();
           expect(localStorage.setItem).not.toHaveBeenCalled();
         },
       );
@@ -639,7 +639,7 @@ describe('pipeline graph job item', () => {
           await findActionComponent().trigger('click');
           await actionBtn();
 
-          expect(wrapper.emitted()['set-skip-retry-modal']).toHaveLength(1);
+          expect(wrapper.emitted('set-skip-retry-modal')).toHaveLength(1);
           expect(localStorage.setItem).toHaveBeenCalledWith('skip_retry_modal', 'true');
         },
       );

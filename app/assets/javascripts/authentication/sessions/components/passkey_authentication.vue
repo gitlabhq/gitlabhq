@@ -14,6 +14,7 @@ import {
 } from '~/authentication/webauthn/util';
 import { WEBAUTHN_AUTHENTICATE } from '~/authentication/webauthn/constants';
 import WebAuthnError from '~/authentication/webauthn/error';
+import { applyDeepLinkFragment } from '~/authentication/sessions/post_signin_fragment';
 import VerificationLayout from './verification_layout.vue';
 
 export default {
@@ -52,6 +53,9 @@ export default {
     // still here and a second credentials.get() would raise a fresh prompt mid-request.
     isBusy() {
       return this.state !== null;
+    },
+    actionPath() {
+      return applyDeepLinkFragment(this.path);
     },
   },
   mounted() {
@@ -124,7 +128,7 @@ export default {
       </template>
     </p>
 
-    <gl-form ref="form" :action="path" method="post" class="gl-hidden">
+    <gl-form ref="form" :action="actionPath" method="post" class="gl-hidden">
       <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
       <input type="hidden" name="device_response" :value="deviceResponse" />
       <input type="hidden" name="remember_me" :value="rememberMe" />

@@ -55,7 +55,7 @@ describe('Commit references component', () => {
 
   it('emits event when collapse button is clicked', () => {
     findCollapseButton().vm.$emit('click');
-    expect(wrapper.emitted()[FETCH_CONTAINING_REFS_EVENT]).toHaveLength(1);
+    expect(wrapper.emitted(FETCH_CONTAINING_REFS_EVENT)).toHaveLength(1);
   });
 
   it('renders the list of containing branches or tags when collapse is expanded', () => {

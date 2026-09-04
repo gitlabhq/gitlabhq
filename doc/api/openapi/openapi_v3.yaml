@@ -81514,7 +81514,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ee5cd6f7e046"
+              "$ref": "#/components/schemas/RequestBody_e3b508c843e3"
   "/api/v4/admin/migrations/pending":
     get:
       operationId: getApiV4AdminMigrationsPending
@@ -100797,6 +100797,12 @@ components:
         pypi_max_file_size:
           type: integer
           example: 3221225472
+        service_desk_outbound_emails_per_hour:
+          type: integer
+          example: 100
+        service_desk_outbound_emails_per_day:
+          type: integer
+          example: 700
         terraform_module_max_file_size:
           type: integer
           example: 1073741824
@@ -124953,7 +124959,7 @@ components:
           description: A description of the image or URL
           example: An example metric
           nullable: true
-    RequestBody_ee5cd6f7e046:
+    RequestBody_e3b508c843e3:
       type: object
       properties:
         plan_name:
@@ -125056,6 +125062,16 @@ components:
         pypi_max_file_size:
           type: integer
           description: Maximum PyPI package file size in bytes
+          nullable: true
+        service_desk_outbound_emails_per_hour:
+          type: integer
+          description: Maximum number of outbound Service Desk emails per hour, per
+            top-level namespace. 0 for unlimited.
+          nullable: true
+        service_desk_outbound_emails_per_day:
+          type: integer
+          description: Maximum number of outbound Service Desk emails per day, per
+            top-level namespace. 0 for unlimited.
           nullable: true
         terraform_module_max_file_size:
           type: integer

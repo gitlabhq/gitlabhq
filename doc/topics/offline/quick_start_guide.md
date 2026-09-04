@@ -639,8 +639,8 @@ To download the malware advisories:
                └── checkpoint.json
    ```
 
-   The number of archives is set per registry and read from `checkpoint.json`, up to a maximum of 64 named `00` through `3f`.
-   Some of them contain no advisories, which is expected.
+   The service sets the number of archives per registry, and names each one for its hexadecimal shard identifier.
+   An archive that contains no advisories is expected.
 
 1. Transfer the output directory to the offline instance.
 
@@ -664,7 +664,6 @@ Each run downloads a complete snapshot rather than a set of changes.
 Reuse the same output directory on every run: `rsync --delete` removes any registry that is missing from it, including registries that were skipped because their snapshot is not published yet.
 
 When the snapshot on the service matches the one already in the output directory, the script skips the download for that registry.
-Running it on a schedule therefore costs one small request per registry until a new snapshot is published.
 
 ### Automatic synchronization
 

@@ -960,10 +960,10 @@ GEM
       omniauth (>= 1.3, < 3)
       pyu-ruby-sasl (>= 0.0.3.3, < 0.1)
       rubyntlm (~> 0.5)
-    gitlab_quality-test_tooling (3.21.1)
+    gitlab_quality-test_tooling (3.21.3)
       activesupport (>= 7.0)
       amatch (~> 0.4.1)
-      fog-google (~> 1.24, >= 1.24.1)
+      fog-google (~> 1.25)
       gitlab (>= 4.19, < 7.0)
       http (~> 5.0)
       http-cookie (>= 1.0, < 1.1.1)
@@ -2378,7 +2378,7 @@ GEM
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.9.2)
     websocket (1.2.10)
-    websocket-driver (0.8.0)
+    websocket-driver (0.8.2)
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -2556,7 +2556,7 @@ DEPENDENCIES
   gitlab-utils!
   gitlab_chronic_duration (~> 0.12)
   gitlab_omniauth-ldap (~> 2.3.0)
-  gitlab_quality-test_tooling (~> 3.21.1)
+  gitlab_quality-test_tooling (~> 3.21.3)
   gitlab_query_language (~> 0.34.0)
   gon (~> 6.6.0)
   google-apis-androidpublisher_v3 (~> 0.107.0)
@@ -3076,7 +3076,7 @@ CHECKSUMS
   gitlab-utils (0.2.0)
   gitlab_chronic_duration (0.12.0) sha256=0d766944d415b5c831f176871ee8625783fc0c5bfbef2d79a3a616f207ffc16d
   gitlab_omniauth-ldap (2.3.0) sha256=167036fe37c2711f2e1d2047260766e4c9b31ac37dfc873b101bcd4ea2a3a3b4
-  gitlab_quality-test_tooling (3.21.1) sha256=6a36e4445fd569151f977dc8d2bbf710eb8fe3127621aa025d67e0ba2c3c8900
+  gitlab_quality-test_tooling (3.21.3) sha256=f1f0ea4938fed4a64249d963c1d80a99ecfe6aabdd53464c6e508f68592cde44
   gitlab_query_language (0.34.0) sha256=12968b3524d826bcba8b5b01ae179d85e369639a70d5d9faceaf5a6320074125
   gitlab_query_language (0.34.0-aarch64-linux-gnu) sha256=255505b0d96953eb2cb820ec99bdc2fff27ad8377bd862d23824ef0b89699d1b
   gitlab_query_language (0.34.0-arm64-darwin) sha256=a96ce4984236cddd84a400eaf02bf25284631fb17668e742d69d8c919657a54c
@@ -3612,7 +3612,7 @@ CHECKSUMS
   webmock (3.26.2) sha256=774556f2ea6371846cca68c01769b2eac0d134492d21f6d0ab5dd643965a4c90
   webrick (1.9.2) sha256=beb4a15fc474defed24a3bda4ffd88a490d517c9e4e6118c3edce59e45864131
   websocket (1.2.10) sha256=2cc1a4a79b6e63637b326b4273e46adcddf7871caa5dc5711f2ca4061a629fa8
-  websocket-driver (0.8.0) sha256=ed0dba4b943c22f17f9a734817e808bc84cdce6a7e22045f5315aa57676d4962
+  websocket-driver (0.8.2) sha256=97c556b019bf3410b4961002ac501621e9322d3f8a7bc02161a09301cc4c4146
   websocket-extensions (0.1.5) sha256=1c6ba63092cda343eb53fc657110c71c754c56484aad42578495227d717a8241
   wikicloth (0.8.1) sha256=7ac8a9ca0a948cf472851e521afc6c2a6b04a8f91ef1d824ba6a61ffbd60e6ca
   wisper (2.0.1) sha256=ce17bc5c3a166f241a2e6613848b025c8146fce2defba505920c1d1f3f88fae6

@@ -12,10 +12,11 @@ export function appendUrlFragment(fragment = document.location.hash) {
   }
 
   const normalFragment = fragment.replace(/^#/, '');
-  // The <form id='sign-in-form'> is rendered via the SignInForm Vue component,
-  // which has its own mechanism for appending the URL fragment. That's the
-  // reason we exclude it in the CSS selector.
-  const forms = document.querySelectorAll('.js-non-oauth-login form:not([id=sign-in-form])');
+  // The SignInForm Vue component seeds the fragment on its own form actions
+  // (the sign-in and passkey forms), so skip any form it renders.
+  const forms = document.querySelectorAll(
+    '.js-non-oauth-login form:not(#js-sign-in-form-app form)',
+  );
   forms.forEach((form) => {
     const actionWithFragment = setUrlFragment(form.getAttribute('action'), `#${normalFragment}`);
     form.setAttribute('action', actionWithFragment);

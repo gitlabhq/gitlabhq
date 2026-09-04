@@ -56,7 +56,7 @@ describe('Snippet Blob Edit component', () => {
   const findHeader = () => wrapper.findComponent(SnippetBlobEditHeader);
   const findContent = () => wrapper.findComponent(SourceEditor);
   const getLastUpdatedArgs = () => {
-    const event = wrapper.emitted()['blob-updated'];
+    const event = wrapper.emitted('blob-updated');
 
     return event?.[event.length - 1][0];
   };

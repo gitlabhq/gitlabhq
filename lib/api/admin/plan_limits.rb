@@ -77,6 +77,12 @@ module API
         optional :npm_max_file_size, type: Integer, desc: 'Maximum NPM package file size in bytes'
         optional :nuget_max_file_size, type: Integer, desc: 'Maximum NuGet package file size in bytes'
         optional :pypi_max_file_size, type: Integer, desc: 'Maximum PyPI package file size in bytes'
+        optional :service_desk_outbound_emails_per_hour, type: Integer,
+          desc: 'Maximum number of outbound Service Desk emails per hour, per top-level namespace. ' \
+            '0 for unlimited.'
+        optional :service_desk_outbound_emails_per_day, type: Integer,
+          desc: 'Maximum number of outbound Service Desk emails per day, per top-level namespace. ' \
+            '0 for unlimited.'
         optional :terraform_module_max_file_size, type: Integer,
           desc: 'Maximum Terraform Module package file size in bytes'
         optional :storage_size_limit, type: Integer, desc: 'Maximum storage size for the root namespace in MiB'

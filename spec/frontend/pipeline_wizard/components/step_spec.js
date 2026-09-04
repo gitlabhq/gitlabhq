@@ -214,7 +214,7 @@ describe('Pipeline Wizard - Step Page', () => {
 
       await input1.vm.$emit('update:compiled', compiled);
 
-      const updateEvents = wrapper.emitted()['update:compiled'];
+      const updateEvents = wrapper.emitted('update:compiled');
       const latestUpdateEvent = updateEvents[updateEvents.length - 1];
 
       expect(latestUpdateEvent[0].toString()).toBe(compiled.toString());

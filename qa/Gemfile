@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'gitlab-qa', '~> 15', '>= 15.8.0', require: 'gitlab/qa'
-gem 'gitlab_quality-test_tooling', '~> 3.21.0', require: false
+gem 'gitlab_quality-test_tooling', '~> 3.21.1', require: false
 gem 'gitlab-utils', path: '../gems/gitlab-utils'
 gem 'gitlab-rspec-metrics-exporter', '~> 0.2.0', require: false
 
@@ -14,7 +14,7 @@ gem 'capybara-screenshot', '~> 1.0.27'
 gem 'factory_bot', '~> 6.5.1'
 gem 'rake', '~> 13', '>= 13.4.2'
 gem 'rspec', '~> 3.13', '>= 3.13.2'
-gem 'selenium-webdriver', '= 4.47.0'
+gem 'selenium-webdriver', '= 4.48.0'
 gem 'rest-client', '~> 2.1.0'
 gem 'rspec_junit_formatter', '~> 0.6.0'
 gem 'faker', '~> 3.8'

@@ -1,5 +1,6 @@
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { createAlert } from '~/alert';
 import PasskeyAuthentication from '~/authentication/sessions/components/passkey_authentication.vue';
 import MockWebAuthnDevice from '../../webauthn/mock_webauthn_device';
@@ -44,6 +45,7 @@ describe('PasskeyAuthentication', () => {
   let submitSpy;
 
   const findBackButton = () => wrapper.findComponentByTestId('passkey-authentication-back');
+  const findForm = () => wrapper.find('form');
   const findIllustration = () => wrapper.find('img');
   const findRetryButton = () => wrapper.findComponentByTestId('passkey-authentication-try-again');
   const findStatus = () => wrapper.findByTestId('passkey-authentication-status');
@@ -81,6 +83,25 @@ describe('PasskeyAuthentication', () => {
 
     it('shows a back button', () => {
       expect(findBackButton().props()).toMatchObject({ block: true, href: '/users/sign_in' });
+    });
+  });
+
+  describe('deep-link fragment', () => {
+    afterEach(() => {
+      setWindowLocation('https://gitlab.test/users/sign_in');
+    });
+
+    it('appends the address-bar fragment to the form action', () => {
+      setWindowLocation('https://gitlab.test/users/sign_in#L7');
+      createComponent();
+
+      expect(findForm().attributes('action')).toBe('/users/passkeys/sign_in#L7');
+    });
+
+    it('leaves the action unchanged when there is no fragment', () => {
+      createComponent();
+
+      expect(findForm().attributes('action')).toBe('/users/passkeys/sign_in');
     });
   });
 

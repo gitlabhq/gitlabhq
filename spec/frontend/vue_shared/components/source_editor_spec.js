@@ -129,11 +129,11 @@ describe('Source Editor component', () => {
 
     it('emits EDITOR_READY_EVENT event when the Source Editor is ready', async () => {
       const el = wrapper.findComponent({ ref: 'editor' }).element;
-      expect(wrapper.emitted()[EDITOR_READY_EVENT]).toBeUndefined();
+      expect(wrapper.emitted(EDITOR_READY_EVENT)).toBeUndefined();
 
       await el.dispatchEvent(new Event(EDITOR_READY_EVENT));
 
-      expect(wrapper.emitted()[EDITOR_READY_EVENT]).toBeDefined();
+      expect(wrapper.emitted(EDITOR_READY_EVENT)).toBeDefined();
     });
 
     it('component API `getEditor()` returns the editor instance', () => {

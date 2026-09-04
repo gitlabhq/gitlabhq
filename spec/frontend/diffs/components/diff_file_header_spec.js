@@ -121,7 +121,7 @@ describe('DiffFileHeader component', () => {
     findHeader().trigger('click');
 
     await nextTick();
-    expect(wrapper.emitted()['toggle-file']).toBeDefined();
+    expect(wrapper.emitted('toggle-file')).toBeDefined();
   });
 
   it('when header is clicked it emits set-file-active', async () => {
@@ -147,7 +147,7 @@ describe('DiffFileHeader component', () => {
     createComponent({ props: { collapsible: true } });
     findCollapseButton().vm.$emit('click', new Event('click'));
     await nextTick();
-    expect(wrapper.emitted()['toggle-file']).toBeDefined();
+    expect(wrapper.emitted('toggle-file')).toBeDefined();
   });
 
   it('when other element in header is clicked does not emits toggle-file', async () => {
@@ -155,7 +155,7 @@ describe('DiffFileHeader component', () => {
     findTitleLink().trigger('click');
 
     await nextTick();
-    expect(wrapper.emitted()['toggle-file']).not.toBeDefined();
+    expect(wrapper.emitted('toggle-file')).not.toBeDefined();
   });
 
   describe('copy to clipboard', () => {
@@ -647,7 +647,7 @@ describe('DiffFileHeader component', () => {
 
         findReviewFileCheckbox().vm.$emit('change', status);
 
-        expect(Boolean(wrapper.emitted()['toggle-file'])).toBe(fires);
+        expect(Boolean(wrapper.emitted('toggle-file'))).toBe(fires);
       },
     );
 

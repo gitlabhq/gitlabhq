@@ -12218,7 +12218,13 @@ msgstr ""
 msgid "ArtifactRegistry|CLI commands"
 msgstr ""
 
+msgid "ArtifactRegistry|Cache successfully cleared."
+msgstr ""
+
 msgid "ArtifactRegistry|Caching period"
+msgstr ""
+
+msgid "ArtifactRegistry|Clear cache"
 msgstr ""
 
 msgid "ArtifactRegistry|Client configuration files"
@@ -12626,6 +12632,9 @@ msgstr ""
 msgid "ArtifactRegistry|Repositories list updated."
 msgstr ""
 
+msgid "ArtifactRegistry|Repository"
+msgstr ""
+
 msgid "ArtifactRegistry|Repository URL copied to clipboard."
 msgstr ""
 
@@ -12810,6 +12819,9 @@ msgid "ArtifactRegistry|Username"
 msgstr ""
 
 msgid "ArtifactRegistry|Version"
+msgstr ""
+
+msgid "ArtifactRegistry|Version details"
 msgstr ""
 
 msgid "ArtifactRegistry|Version list for %{name} updated."

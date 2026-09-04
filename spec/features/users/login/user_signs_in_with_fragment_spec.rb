@@ -3,20 +3,17 @@
 require 'spec_helper'
 
 # A URL fragment (e.g. #L7) is never sent to the server, so the JS re-applies it to the
-# server-built 2FA form action and final redirect to carry it onto the destination.
+# server-built form action and final redirect of the multi-step sign-in (2FA and passkey) to
+# carry it onto the destination.
 #
 # Selenium's current_url fragment handling is unreliable, so the landing fragment is read with
 # `page.evaluate_script('window.location.hash')` rather than matched against current_url.
-RSpec.describe 'Login preserves URL fragment through 2FA',
+RSpec.describe 'Login preserves URL fragment',
   :js, :with_current_organization, :clean_gitlab_redis_sessions, feature_category: :system_access do
   include Features::TwoFactorHelpers
   include EmailHelpers
 
-  let(:anchor) { 'L7' }
-  let(:app_id) { "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}" }
-  let(:namespace) { create(:namespace, owner: user) }
-  let(:project) { create(:project, :private, namespace: namespace, organization: current_organization) }
-  let(:deep_link) { project_path(project, anchor: anchor) }
+  include_context 'with a deep link that preserves the URL fragment'
 
   # Visit a private deep link while signed out. The server stores the redirect path (without the
   # fragment) and bounces to the sign-in form; the browser carries the fragment onto that URL.
@@ -35,11 +32,6 @@ RSpec.describe 'Login preserves URL fragment through 2FA',
   def enter_otp(code)
     fill_in 'user_otp_attempt', with: code
     click_button _('Verify code')
-  end
-
-  def expect_landed_on_deep_link
-    expect(page).to have_current_path(project_path(project), ignore_query: true)
-    expect(page.evaluate_script('window.location.hash')).to eq("##{anchor}")
   end
 
   context 'with a TOTP user', :freeze_time do
@@ -116,6 +108,28 @@ RSpec.describe 'Login preserves URL fragment through 2FA',
         fill_in s_('IdentityVerification|Verification code'), with: code
         click_button s_('IdentityVerification|Verify code')
       end
+
+      expect_landed_on_deep_link
+    end
+  end
+
+  context 'with a passkey user' do
+    let(:user) { create(:user) }
+
+    before do
+      allow(WebAuthn.configuration.relying_party).to receive(:allowed_origins).and_return([app_id])
+    end
+
+    it 'lands on the deep link fragment after the passkey responds' do
+      passkey = add_passkey(app_id, user)
+
+      visit deep_link
+      expect(page).to have_field('user_login')
+
+      click_button _('Passkey')
+      expect(page).to have_current_path(users_passkeys_sign_in_path, ignore_query: true)
+
+      passkey.respond_to_webauthn_authentication
 
       expect_landed_on_deep_link
     end
