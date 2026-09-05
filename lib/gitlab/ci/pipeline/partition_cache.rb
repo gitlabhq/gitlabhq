@@ -44,6 +44,7 @@ module Gitlab
           def load_from_database
             ::Ci::Partition
               .where.not(pipelines_id_range: nil)
+              .where('NOT isempty(pipelines_id_range)')
               .pluck(:id, :pipelines_id_range)
               .to_h
           end

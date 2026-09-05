@@ -41,8 +41,11 @@ module Ci
         min, max = CommitStatus.in_partition(partition.id).pick('MIN(commit_id), MAX(commit_id)')
         return unless max
 
-        partition.update!(pipelines_id_range: min...max)
-        incoming.update!(pipelines_id_range: (max.next...))
+        # Inclusive on both ends so a single-pipeline partition (min == max) is not
+        # stored as an empty int8range, and so the max pipeline is not dropped into a
+        # gap between this range and the incoming one.
+        partition.update!(pipelines_id_range: min..max)
+        incoming.update!(pipelines_id_range: (max.next..))
       end
     end
   end

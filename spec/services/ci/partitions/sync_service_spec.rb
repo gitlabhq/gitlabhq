@@ -78,9 +78,28 @@ RSpec.describe Ci::Partitions::SyncService, feature_category: :ci_scaling do
             execute_service
 
             expect(ci_partition.reload.pipelines_id_range)
-              .to eq(pipeline_first.id...pipeline_last.id)
+              .to eq(pipeline_first.id...pipeline_last.id.next)
             expect(next_ci_partition.reload.pipelines_id_range)
               .to eq(pipeline_last.id.next...Float::INFINITY)
+          end
+
+          it 'covers the max pipeline id in the outgoing range' do
+            execute_service
+
+            expect(ci_partition.reload.pipelines_id_range).to cover(pipeline_last.id)
+          end
+        end
+
+        context 'when the outgoing partition holds a single pipeline' do
+          let_it_be(:only_pipeline) { create(:ci_pipeline, partition_id: ci_partition.id) }
+          let_it_be(:only_job) { create(:ci_build, pipeline: only_pipeline) }
+
+          it 'stores a non-empty range covering that pipeline id' do
+            execute_service
+
+            range = ci_partition.reload.pipelines_id_range
+            expect(range).not_to be_nil
+            expect(range).to cover(only_pipeline.id)
           end
         end
 
