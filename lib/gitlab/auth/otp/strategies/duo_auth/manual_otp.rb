@@ -9,7 +9,7 @@ module Gitlab
             include Gitlab::Utils::StrongMemoize
 
             def validate(otp_code)
-              params = { username: user.username, factor: "passcode", passcode: otp_code.to_i }
+              params = { username: user.username, factor: "passcode", passcode: otp_code.to_s }
               response = duo_client.request('POST', "/auth/v2/auth", params)
               approve_or_deny(parse_response(response))
             rescue StandardError => e
@@ -35,7 +35,7 @@ module Gitlab
               if result_key.to_s == "allow"
                 success
               else
-                error(message: parsed_response.dig('response', 'status_msg').to_s)
+                error(parsed_response.dig('response', 'status_msg').to_s)
               end
             end
           end

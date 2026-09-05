@@ -886,7 +886,7 @@ GEM
       rb_sys (~> 0.9.128)
     gitlab-glfm-markdown (0.0.42-x86_64-linux-gnu)
       rb_sys (~> 0.9.128)
-    gitlab-grape-openapi (0.4.0)
+    gitlab-grape-openapi (0.5.0)
       grape (>= 2.4, < 3.3)
       grape-entity (~> 1.0)
       js_regex (~> 3.8)
@@ -2530,7 +2530,7 @@ DEPENDENCIES
   gitlab-fog-azure-rm (~> 2.5.0)
   gitlab-glaz (~> 1.1.0)
   gitlab-glfm-markdown (~> 0.0.42)
-  gitlab-grape-openapi (~> 0.4.0)
+  gitlab-grape-openapi (~> 0.5.0)
   gitlab-housekeeper!
   gitlab-http!
   gitlab-iam-grpc!
@@ -3050,7 +3050,7 @@ CHECKSUMS
   gitlab-glfm-markdown (0.0.42-arm64-darwin) sha256=a662bb2da6a1040e63868dd247ac1c580c9638554a9ec958059fa1eec264a01f
   gitlab-glfm-markdown (0.0.42-x86_64-darwin) sha256=c2ef01d29154d7010186ccff2c30c9d12a75db3ce542aa58155fb0b30d907e4f
   gitlab-glfm-markdown (0.0.42-x86_64-linux-gnu) sha256=7f4d9da5b90ac8966ec12266d8a3a8a1763cb6d6596f07825c256e729344e12e
-  gitlab-grape-openapi (0.4.0) sha256=40fb6bdb10a3c148006d1f89348e744c34b774ab7c8ed292b046b6154c13da0e
+  gitlab-grape-openapi (0.5.0) sha256=8085b08f11b567f2aed9431bb78c52eea7f63e09c44547eaba724253127896e8
   gitlab-housekeeper (0.1.0)
   gitlab-http (0.1.0)
   gitlab-iam-grpc (0.1.0)
