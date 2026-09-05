@@ -8,6 +8,7 @@ import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DashboardFilters from '../components/dashboard_filters.vue';
 import DashboardLoader from '../components/dashboard_loader.vue';
 import { DATE_RANGE_OPTION_LAST_30_DAYS } from '../components/constants';
+import { dateRangeOptionToFilter, getDateRangeOption } from '../components/utils';
 
 export default {
   name: 'ExploreAnalyticsDashboardDetails',
@@ -81,6 +82,7 @@ export default {
     // first view if the query param wasn't included, or has an invalid index.
     onDashboardLoaded({ config }) {
       this.dashboardFilterConfig = config.filters;
+      this.filters = this.defaultFilters();
 
       const viewParam = getParameterByName('view');
       const viewIndex = (config.views ?? []).findIndex((_, index) => `${index}` === viewParam);
@@ -132,8 +134,24 @@ export default {
         projects: [],
       };
     },
+    // The date range picker renders the dashboard's configured default without emitting it,
+    // so seed the filters to match. Otherwise a panel falls back to its own default window
+    // and the first load can show a different range than the picker names.
+    defaultFilters() {
+      const { dateRange = {} } = this.dashboardFilterConfig ?? {};
+
+      // dashboard_filters.vue renders the picker whenever dateRange.enabled is not false, so
+      // this must mirror that: `!dateRange.enabled` would render a picker with nothing behind it.
+      if (dateRange.enabled === false) return {};
+
+      const option =
+        getDateRangeOption(dateRange.defaultOption) ??
+        getDateRangeOption(DATE_RANGE_OPTION_LAST_30_DAYS);
+
+      return dateRangeOptionToFilter(option);
+    },
     resetFilters() {
-      this.filters = {};
+      this.filters = this.defaultFilters();
       this.selectedGroup = null;
       this.selectedProject = null;
       // The controls own their selection, so remount them to clear it.

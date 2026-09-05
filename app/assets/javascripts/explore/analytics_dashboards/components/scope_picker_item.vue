@@ -78,12 +78,17 @@ export default {
     icon() {
       return this.isGroup ? 'folder-o' : 'doc-text';
     },
+    parentLabel() {
+      // Not escaped by sprintf: Vue escapes the interpolation, so escaping here as well would
+      // render a group called "Sales & Marketing" as `Sales &amp; Marketing`.
+      return sprintf(s__('AnalyticsDashboards|in %{name}'), { name: this.parentName }, false);
+    },
     expandLabel() {
       const template = this.expanded
         ? s__('AnalyticsDashboards|Collapse %{name}')
         : s__('AnalyticsDashboards|Expand %{name}');
 
-      return sprintf(template, { name: this.text });
+      return sprintf(template, { name: this.text }, false);
     },
   },
 };
@@ -115,18 +120,19 @@ export default {
 
     <!-- The listbox option handles selection and announces it, so this checkbox is presentational.
          Its label also carries an 8px bottom margin for stacked lists, which pins the content to
-         the top of the item's 24px line, so cancel that. -->
+         the top of the item's 24px line, so cancel that. Grows so the name inside it, rather than
+         the parent label beside it, is what gives way when the row runs out of room. -->
     <gl-form-checkbox
-      class="gl-pointer-events-none -gl-mb-3 gl-min-w-0"
+      class="gl-pointer-events-none -gl-mb-3 gl-min-w-0 gl-grow"
       :checked="selected"
       :indeterminate="indeterminate"
       :disabled="disabled"
       aria-hidden="true"
       tabindex="-1"
     >
-      <span class="gl-flex gl-items-center gl-gap-2">
+      <span class="gl-flex gl-min-w-0 gl-items-center gl-gap-2">
         <gl-icon :name="icon" class="gl-shrink-0 gl-text-subtle" />
-        <span class="gl-min-w-0 gl-truncate">{{ text }}</span>
+        <span class="gl-min-w-0 gl-truncate" data-testid="scope-picker-item-name">{{ text }}</span>
       </span>
     </gl-form-checkbox>
 
@@ -134,14 +140,16 @@ export default {
          drops its click listener, so the row could not be collapsed while its children load. -->
     <gl-loading-icon v-if="expanding" class="gl-ml-auto gl-shrink-0 gl-pl-3" />
 
+    <!-- Allowed to shrink and truncate rather than crowding out the name it is qualifying, and
+         capped so a long parent cannot take the row. The tooltip still carries the full path. -->
     <span
       v-if="parentName"
       v-gl-tooltip
       :title="value"
-      class="gl-ml-auto gl-shrink-0 gl-pl-3 gl-text-sm gl-text-subtle"
+      class="gl-ml-auto gl-min-w-0 gl-max-w-1/2 gl-truncate gl-pl-3 gl-text-sm gl-text-subtle"
       data-testid="scope-picker-item-parent"
     >
-      ({{ parentName }})
+      {{ parentLabel }}
     </span>
   </div>
 </template>

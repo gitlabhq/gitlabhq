@@ -6,12 +6,15 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import * as sentryBrowserWrapper from '~/sentry/sentry_browser_wrapper';
 import ScopePicker from '~/explore/analytics_dashboards/components/scope_picker.vue';
 import ScopePickerItem from '~/explore/analytics_dashboards/components/scope_picker_item.vue';
 import getGroupChildrenQuery from '~/explore/analytics_dashboards/graphql/get_group_children.query.graphql';
 import getSubgroupProjectsQuery from '~/explore/analytics_dashboards/graphql/get_subgroup_projects.query.graphql';
 import getTopLevelGroupsQuery from '~/explore/analytics_dashboards/graphql/get_top_level_groups.query.graphql';
+import searchNamespacesQuery from '~/explore/analytics_dashboards/graphql/search_namespaces.query.graphql';
+import searchNamespacesGlobalQuery from '~/explore/analytics_dashboards/graphql/search_namespaces_global.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -22,6 +25,8 @@ describe('ScopePicker', () => {
   let requestHandler;
   let subgroupRequestHandler;
   let topLevelGroupsRequestHandler;
+  let searchRequestHandler;
+  let globalSearchRequestHandler;
 
   const groupFullPath = 'gitlab-org';
   const closeListbox = jest.fn();
@@ -134,6 +139,66 @@ describe('ScopePicker', () => {
     },
   ];
 
+  // Deep enough that no amount of browsing reaches it, which is the point of search.
+  const mockDeepSubgroup = {
+    __typename: TYPENAME_GROUP,
+    id: 'gid://gitlab/Group/40',
+    name: 'Design system',
+    fullName: 'GitLab.org / Frontend / Design system',
+    fullPath: `${groupFullPath}/frontend/design-system`,
+    namespace: {
+      __typename: TYPENAME_GROUP,
+      id: mockFrontend.id,
+      name: mockFrontend.name,
+      fullPath: mockFrontend.fullPath,
+    },
+  };
+
+  const mockDeepProject = {
+    ...mockProject(41, 'Pajamas', 'frontend/design-system/pajamas'),
+    namespace: {
+      __typename: TYPENAME_GROUP,
+      id: mockDeepSubgroup.id,
+      name: mockDeepSubgroup.name,
+      fullPath: mockDeepSubgroup.fullPath,
+    },
+  };
+
+  const searchResponse = ({ groups = [mockDeepSubgroup], projects = [mockDeepProject] } = {}) => ({
+    data: {
+      group: {
+        __typename: TYPENAME_GROUP,
+        id: mockGroup.id,
+        projects: { __typename: 'ProjectConnection', nodes: projects },
+        descendantGroups: { __typename: 'GroupConnection', nodes: groups },
+      },
+    },
+  });
+
+  const respondWithSearch = (results) => jest.fn().mockResolvedValue(searchResponse(results));
+
+  // What a different term matches, sharing nothing with the results above.
+  const mockUnrelatedProject = {
+    ...mockProject(42, 'Charts', 'charts'),
+    namespace: {
+      __typename: TYPENAME_GROUP,
+      id: mockGroup.id,
+      name: mockGroup.name,
+      fullPath: mockGroup.fullPath,
+    },
+  };
+
+  const respondWithGlobalSearch = ({
+    groups = [mockDeepSubgroup],
+    projects = [mockDeepProject],
+  } = {}) =>
+    jest.fn().mockResolvedValue({
+      data: {
+        groups: { __typename: 'GroupConnection', nodes: groups },
+        projects: { __typename: 'ProjectConnection', nodes: projects },
+      },
+    });
+
   const respondWithTopLevelGroups = (groups = mockTopLevelGroups) =>
     jest.fn().mockResolvedValue({
       data: { groups: { __typename: 'GroupConnection', nodes: groups } },
@@ -180,17 +245,23 @@ describe('ScopePicker', () => {
     handler = respondWith(),
     subgroupHandler = respondWithSubgroupProjects(),
     topLevelGroupsHandler = respondWithTopLevelGroups(),
+    searchHandler = respondWithSearch(),
+    globalSearchHandler = respondWithGlobalSearch(),
     props = {},
   } = {}) => {
     requestHandler = handler;
     subgroupRequestHandler = subgroupHandler;
     topLevelGroupsRequestHandler = topLevelGroupsHandler;
+    searchRequestHandler = searchHandler;
+    globalSearchRequestHandler = globalSearchHandler;
 
     wrapper = shallowMountExtended(ScopePicker, {
       apolloProvider: createMockApollo([
         [getGroupChildrenQuery, requestHandler],
         [getSubgroupProjectsQuery, subgroupRequestHandler],
         [getTopLevelGroupsQuery, topLevelGroupsRequestHandler],
+        [searchNamespacesQuery, searchRequestHandler],
+        [searchNamespacesGlobalQuery, globalSearchRequestHandler],
       ]),
       propsData: { groupFullPath, ...props },
       stubs: { GlCollapsibleListbox: listboxStub },
@@ -227,6 +298,13 @@ describe('ScopePicker', () => {
   const toggleExpanded = (namespace = mockGroup) =>
     findItemFor(namespace).vm.$emit('toggle-expanded');
 
+  // The listbox owns the search input, so typing arrives as an event. The handler is debounced.
+  const search = async (term) => {
+    findListbox().vm.$emit('search', term);
+    jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    await waitForPromises();
+  };
+
   describe('while loading', () => {
     beforeEach(() => createWrapper());
 
@@ -234,9 +312,9 @@ describe('ScopePicker', () => {
       expect(requestHandler).toHaveBeenCalledWith({ fullPath: groupFullPath });
     });
 
-    it('sets the listbox to loading', () => {
+    it('sets the listbox to loading, but not to searching, which is about the search input', () => {
       expect(findListbox().props('loading')).toBe(true);
-      expect(findListbox().props('searching')).toBe(true);
+      expect(findListbox().props('searching')).toBe(false);
     });
 
     it('renders no items', () => {
@@ -969,6 +1047,249 @@ describe('ScopePicker', () => {
       it('drops the old selection, which is no longer in scope', () => {
         expect(findListbox().props('selected')).toEqual([]);
         expect(wrapper.emitted('change').at(-1)).toEqual([null]);
+      });
+    });
+
+    describe('when a search is typed and the root changes before the debounce elapses', () => {
+      // The debounce mock is synchronous unless given a timeout, which would hide the very
+      // interleaving this is about.
+      beforeAll(() => {
+        global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
+      });
+
+      afterAll(() => {
+        global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
+      });
+
+      beforeEach(async () => {
+        createRootlessWrapper();
+        await waitForPromises();
+
+        findListbox().vm.$emit('search', 'design');
+        await wrapper.setProps({ groupFullPath });
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+        await waitForPromises();
+      });
+
+      it('runs no search, the term having been typed against the old root', () => {
+        expect(globalSearchRequestHandler).not.toHaveBeenCalled();
+        expect(searchRequestHandler).not.toHaveBeenCalled();
+      });
+
+      it("shows the new root's browse view rather than a results view", () => {
+        expect(findSections().map(({ text }) => text)).toEqual([
+          'Projects in top-level group (GitLab.org)',
+          'Subgroups incl. nested',
+        ]);
+      });
+    });
+  });
+  describe('searching', () => {
+    describe('within a group', () => {
+      beforeEach(async () => {
+        createWrapper();
+        await waitForPromises();
+        await search('design');
+      });
+
+      it('searches the whole tree beneath the root, not just what is on screen', () => {
+        expect(searchRequestHandler).toHaveBeenCalledWith({
+          fullPath: groupFullPath,
+          search: 'design',
+        });
+        expect(globalSearchRequestHandler).not.toHaveBeenCalled();
+      });
+
+      it('trims the term, matching what decided the search was worth running', async () => {
+        await search('  design  ');
+
+        expect(searchRequestHandler).toHaveBeenLastCalledWith({
+          fullPath: groupFullPath,
+          search: 'design',
+        });
+      });
+
+      it('treats whitespace alone as no search at all', async () => {
+        searchRequestHandler.mockClear();
+        await search('   ');
+
+        expect(searchRequestHandler).not.toHaveBeenCalled();
+        expect(findSections().map(({ text }) => text)).toEqual([
+          'Projects in top-level group (GitLab.org)',
+          'Subgroups incl. nested',
+        ]);
+      });
+
+      it('replaces the browse view with one flat, headerless list', () => {
+        expect(findSections().every(({ options }) => options === undefined)).toBe(true);
+        expect(findOptions().map(({ value }) => value)).toEqual([
+          mockDeepSubgroup.fullPath,
+          mockDeepProject.fullPath,
+        ]);
+      });
+
+      it('reaches a subgroup too deep for browsing to reveal', () => {
+        expect(findItemFor(mockDeepSubgroup).exists()).toBe(true);
+      });
+
+      it('names each parent, since a result can come from anywhere', () => {
+        expect(findItemFor(mockDeepSubgroup).props('parentName')).toBe(mockFrontend.name);
+        expect(findItemFor(mockDeepProject).props('parentName')).toBe(mockDeepSubgroup.name);
+      });
+
+      it('distinguishes a group from a project by icon rather than by heading', () => {
+        expect(findItemFor(mockDeepSubgroup).props('namespaceType')).toBe(TYPENAME_GROUP);
+        expect(findItemFor(mockDeepProject).props('namespaceType')).toBe(TYPENAME_PROJECT);
+      });
+
+      it('offers no chevrons, results being flat however deep they sit', () => {
+        expect(findItems().wrappers.every((item) => item.props('expandable'))).toBe(false);
+      });
+
+      it('selects a result the same way a browsed row is selected', async () => {
+        await toggleSelected(mockDeepProject);
+
+        expect(wrapper.emitted('change').at(-1)).toEqual([asNamespace(mockDeepProject)]);
+      });
+
+      it('keeps the toggle text once the search is cleared', async () => {
+        await toggleSelected(mockDeepProject);
+        await search('');
+
+        expect(findListbox().props('toggleText')).toBe(mockDeepProject.name);
+      });
+
+      it('restores the browse view when the search is cleared', async () => {
+        await search('');
+
+        expect(findSections().map(({ text }) => text)).toEqual([
+          'Projects in top-level group (GitLab.org)',
+          'Subgroups incl. nested',
+        ]);
+      });
+
+      // The listbox owns its input's value and never clears it, so clearing ours on close would
+      // only leave the box reading "design" over an unfiltered browse tree.
+      it('keeps the search when the listbox closes, so the box and the rows still agree', async () => {
+        await findListbox().vm.$emit('hidden');
+
+        expect(findOptions().map(({ value }) => value)).toEqual([
+          mockDeepSubgroup.fullPath,
+          mockDeepProject.fullPath,
+        ]);
+      });
+    });
+
+    describe('without a group', () => {
+      beforeEach(async () => {
+        createRootlessWrapper();
+        await waitForPromises();
+        await search('design');
+      });
+
+      it('searches across everything the user can reach', () => {
+        expect(globalSearchRequestHandler).toHaveBeenCalledWith({ search: 'design' });
+        expect(searchRequestHandler).not.toHaveBeenCalled();
+      });
+
+      it('renders results in the same flat list', () => {
+        expect(findSections().every(({ options }) => options === undefined)).toBe(true);
+        expect(findOptions().map(({ value }) => value)).toEqual([
+          mockDeepSubgroup.fullPath,
+          mockDeepProject.fullPath,
+        ]);
+      });
+
+      it('restores the flat browse list when the search is cleared', async () => {
+        await search('');
+
+        expect(findOptions().map(({ value }) => value)).toEqual([
+          mockCapsuleCorp.fullPath,
+          mockAcme.fullPath,
+        ]);
+      });
+    });
+
+    // Apollo replaces the results wholesale, so a second search is the only thing that takes the
+    // first one's rows away. Clearing the search leaves them cached, which is why it never showed
+    // this up.
+    describe('when a second search replaces the results the selection came from', () => {
+      beforeEach(async () => {
+        createWrapper({
+          searchHandler: jest
+            .fn()
+            .mockResolvedValueOnce(searchResponse())
+            .mockResolvedValue(searchResponse({ groups: [], projects: [mockUnrelatedProject] })),
+        });
+        await waitForPromises();
+
+        await search('pajamas');
+        await toggleSelected(mockDeepProject);
+        await search('charts');
+      });
+
+      it('goes on naming the selection the consumer still holds', () => {
+        expect(findListbox().props('toggleText')).toBe(mockDeepProject.name);
+      });
+
+      it('emits no change, nothing about the selection having been touched', () => {
+        expect(wrapper.emitted('change')).toEqual([[asNamespace(mockDeepProject)]]);
+      });
+
+      it('still names it once the search is cleared and browsing resumes', async () => {
+        await search('');
+
+        expect(findListbox().props('toggleText')).toBe(mockDeepProject.name);
+      });
+    });
+
+    describe('while a search is in flight', () => {
+      beforeEach(async () => {
+        createWrapper({ searchHandler: jest.fn().mockReturnValue(new Promise(() => {})) });
+        await waitForPromises();
+        await search('design');
+      });
+
+      it('marks the listbox as searching, leaving the whole-dropdown spinner alone', () => {
+        expect(findListbox().props('searching')).toBe(true);
+        expect(findListbox().props('loading')).toBe(false);
+      });
+    });
+
+    describe('when a search returns nothing', () => {
+      beforeEach(async () => {
+        createWrapper({ searchHandler: respondWithSearch({ groups: [], projects: [] }) });
+        await waitForPromises();
+        await search('nothing');
+      });
+
+      it('renders no items, leaving the listbox to say so', () => {
+        expect(findItems()).toHaveLength(0);
+        expect(findListbox().props('noResultsText')).toBe('No groups or projects found');
+      });
+    });
+
+    describe('when a search fails', () => {
+      const error = new Error('oh no');
+
+      beforeEach(async () => {
+        createWrapper({ searchHandler: jest.fn().mockRejectedValue(error) });
+        await waitForPromises();
+        await search('design');
+      });
+
+      // Apollo never runs update on a rejection, so anything keying off "results have not
+      // arrived yet" would stay true forever and leave the listbox spinning with no way out.
+      it('stops searching, rather than spinning on a result that will never arrive', () => {
+        expect(findListbox().props('searching')).toBe(false);
+      });
+
+      it('emits error', () => {
+        expect(wrapper.emitted('error')).toEqual([[error]]);
+      });
+
+      it('logs the error to sentry', () => {
+        expect(sentryBrowserWrapper.captureException).toHaveBeenCalledWith(error);
       });
     });
   });

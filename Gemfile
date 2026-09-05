@@ -38,7 +38,7 @@ gem 'action_dispatch-draw_all',
 # Need by Rails
 gem 'drb', '~> 2.2', feature_category: :rails_platform
 
-gem 'bootsnap', '~> 1.25.0', require: false, feature_category: :rails_platform
+gem 'bootsnap', '~> 1.26.0', require: false, feature_category: :rails_platform
 
 gem 'ffi', '~> 1.17.3', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 

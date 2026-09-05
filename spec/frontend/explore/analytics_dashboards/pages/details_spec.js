@@ -50,24 +50,39 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     await waitForPromises();
   };
 
-  const filtersLoaderStub = {
+  // Emits `loaded` the way the real loader does, so the page seeds its filters from the
+  // dashboard's own filter config.
+  const filtersLoaderStubFor = (config = { panels: [] }) => ({
     template: `
       <div>
-        <slot name="dashboard" :config="{ panels: [] }" :cell-height="undefined" :min-cell-height="undefined" :has-panels="false" />
+        <slot name="dashboard" :config="dashboardConfig" :cell-height="undefined" :min-cell-height="undefined" :has-panels="false" />
       </div>
     `,
-  };
+    data() {
+      return { dashboardConfig: config };
+    },
+    mounted() {
+      this.$emit('loaded', { config });
+    },
+  });
+
+  const filtersLoaderStub = filtersLoaderStubFor();
 
   const filtersLayoutStub = {
     props: ['filters'],
     template: '<div><slot name="filters" /></div>',
   };
 
-  const createWithFilters = async () => {
+  const createWithFilters = async (loaderStub = filtersLoaderStub) => {
     createComponent({
-      stubs: { DashboardLoader: filtersLoaderStub, GlDashboardLayout: filtersLayoutStub },
+      stubs: { DashboardLoader: loaderStub, GlDashboardLayout: filtersLayoutStub },
     });
     await waitForPromises();
+  };
+
+  const findFilterDates = () => {
+    const { startDate, endDate } = findDashboardLayout().props('filters');
+    return [startDate.toISOString(), endDate.toISOString()];
   };
 
   describe('dashboard filters', () => {
@@ -77,8 +92,11 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       expect(findDashboardFilters().props('groupNamespace')).toBe('');
     });
 
-    it('passes an empty filters object to the dashboard layout by default', () => {
-      expect(findDashboardLayout().props('filters')).toEqual({});
+    // The picker renders its default without emitting it, so the page seeds the filters
+    // to match. A panel would otherwise resolve a window the picker does not name.
+    it('seeds the dashboard layout filters with the default date range', () => {
+      expect(findDashboardLayout().props('filters')).toMatchObject({ dateRangeOption: '30d' });
+      expect(findFilterDates()).toEqual(['2020-06-06T00:00:00.000Z', '2020-07-06T00:00:00.000Z']);
     });
 
     describe('when dashboard-filters emits set-groups with a group', () => {
@@ -142,6 +160,35 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       it('passes the date range to the dashboard layout filters', () => {
         expect(findDashboardLayout().props('filters')).toMatchObject(dateRange);
       });
+    });
+  });
+
+  describe('the seeded default date range', () => {
+    const configWithDateRange = (dateRange) => ({ panels: [], filters: { dateRange } });
+
+    it('follows the option the dashboard configures', async () => {
+      await createWithFilters(
+        filtersLoaderStubFor(configWithDateRange({ enabled: true, defaultOption: '7d' })),
+      );
+
+      expect(findDashboardLayout().props('filters')).toMatchObject({ dateRangeOption: '7d' });
+      expect(findFilterDates()).toEqual(['2020-06-29T00:00:00.000Z', '2020-07-06T00:00:00.000Z']);
+    });
+
+    it('falls back to the last 30 days for an unknown option', async () => {
+      await createWithFilters(
+        filtersLoaderStubFor(
+          configWithDateRange({ enabled: true, defaultOption: 'last-fortnight' }),
+        ),
+      );
+
+      expect(findDashboardLayout().props('filters')).toMatchObject({ dateRangeOption: '30d' });
+    });
+
+    it('seeds nothing when the dashboard turns the filter off', async () => {
+      await createWithFilters(filtersLoaderStubFor(configWithDateRange({ enabled: false })));
+
+      expect(findDashboardLayout().props('filters')).toEqual({});
     });
   });
 

@@ -1,0 +1,44 @@
+# @feature_category: custom_dashboards_foundation
+
+# Search within one group. Unlike browsing, this reaches every depth: `includeSubgroups` and
+# `includeParentDescendants` both span the whole tree beneath the root.
+# Capped at 20 per kind, matching the browse connections. Results are relevance-ordered, so
+# what matters is the top of the list, and a dropdown cannot show hundreds of rows anyway.
+query searchAnalyticsDashboardNamespaces($fullPath: ID!, $search: String!) {
+  group(fullPath: $fullPath) {
+    id
+    projects(
+      first: 20
+      search: $search
+      sort: SIMILARITY
+      includeSubgroups: true
+      includeArchived: false
+    ) {
+      nodes {
+        id
+        name
+        fullName: nameWithNamespace
+        fullPath
+        namespace {
+          id
+          name
+          fullPath
+        }
+      }
+    }
+    descendantGroups(first: 20, search: $search, includeParentDescendants: true, archived: false) {
+      nodes {
+        id
+        name
+        fullName
+        fullPath
+        # Aliased so both result types expose their parent under the same key.
+        namespace: parent {
+          id
+          name
+          fullPath
+        }
+      }
+    }
+  }
+}

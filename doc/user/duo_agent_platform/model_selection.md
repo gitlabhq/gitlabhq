@@ -86,6 +86,7 @@ in the Agent Platform.
 | GPT-5.6 Sol <sup>2</sup>    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-5.6 Terra <sup>2</sup>  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-5.6 Luna <sup>2</sup>   | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-6 Astra <sup>2</sup>    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 
 **Footnotes**:
 

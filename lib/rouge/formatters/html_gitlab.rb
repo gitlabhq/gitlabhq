@@ -51,11 +51,17 @@ module Rouge
       end
 
       def replace_space_characters(text)
-        text.gsub(Gitlab::Unicode::SPACE_REGEXP, ' ')
+        return text if text.ascii_only?
+        return text unless Gitlab::Unicode::NON_ASCII_SPACE_REGEXP.match?(text)
+
+        text.tr(Gitlab::Unicode::NON_ASCII_SPACE_CHARACTERS, ' ')
       end
 
       def highlight_unicode_control_characters(text)
-        text.gsub(Gitlab::Unicode::BIDI_REGEXP) do |char|
+        return text if text.ascii_only?
+        return text unless Gitlab::Unicode::BIDI_CONTROL_REGEXP.match?(text)
+
+        text.gsub(Gitlab::Unicode::BIDI_CONTROL_REGEXP) do |char|
           %(<span class="unicode-bidi has-tooltip" data-toggle="tooltip" title="#{Gitlab::Unicode.bidi_warning}">#{char}</span>)
         end
       end

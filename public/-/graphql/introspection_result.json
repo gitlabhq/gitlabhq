@@ -122400,6 +122400,16 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "CweIdentifier",
+          "description": "A CWE identifier.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "ENUM",
           "name": "DailyUsageSort",
           "description": "Values for sorting daily usage entries",
@@ -383429,6 +383439,18 @@
               "defaultValue": null,
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "triageAndRemediation",
+              "description": "Configuration for a triage and remediation scan profile. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SecurityScanProfileTriageAndRemediationConfigurationInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "interfaces": null,
@@ -384056,6 +384078,140 @@
         },
         {
           "kind": "INPUT_OBJECT",
+          "name": "SecurityScanProfileSastFalsePositiveInput",
+          "description": "Configuration for the SAST false positive detection trigger of a triage and remediation scan profile.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "severityLevel",
+              "description": "Minimum vulnerability severity that triggers false positive detection. Findings below this threshold are skipped. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "VulnerabilitySeverity",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "cweClasses",
+              "description": "CWE identifiers to restrict false positive detection to. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "CweIdentifier",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "runMode",
+              "description": "Whether false positive detection runs automatically or only when triggered by a user. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "SecurityScanProfileRunMode",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "SecurityScanProfileSastVulnerabilityResolutionInput",
+          "description": "Configuration for the SAST vulnerability resolution trigger of a triage and remediation scan profile.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "severityLevel",
+              "description": "Minimum vulnerability severity that triggers a resolution attempt. Findings below this threshold are skipped. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "VulnerabilitySeverity",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "cweClasses",
+              "description": "CWE identifiers to restrict resolution to. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "CweIdentifier",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "runMode",
+              "description": "Whether resolution runs automatically or only when triggered by a user. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "SecurityScanProfileRunMode",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "openMergeRequestsLimit",
+              "description": "Maximum number of open merge requests resolution may have at once, from 0 to 100. Null means no limit. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "falsePositiveConfidence",
+              "description": "Restricts resolution to findings carrying the given false positive assessment. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "SecurityScanProfileFalsePositiveConfidence",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
           "name": "SecurityScanProfileSecretDetectionConfigurationInput",
           "description": "Configuration for a secret detection scan profile.",
           "fields": null,
@@ -384139,6 +384295,100 @@
               "defaultValue": null,
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "SecurityScanProfileSecretDetectionFalsePositiveInput",
+          "description": "Configuration for the secret detection false positive detection trigger of a triage and remediation scan profile.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "runMode",
+              "description": "Whether false positive detection runs automatically or only when triggered by a user. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "SecurityScanProfileRunMode",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "SecurityScanProfileTriageAndRemediationConfigurationInput",
+          "description": "Configuration for a triage and remediation scan profile trigger. Exactly one member may be set, and it must match the trigger type it is attached to.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "sbomIngested",
+              "description": "Configuration for the SBOM ingested trigger. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SecurityScanProfileDependencyScanningPostProcessingConfigurationInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "sastFalsePositive",
+              "description": "Configuration for the SAST false positive detection trigger. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SecurityScanProfileSastFalsePositiveInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "sastVulnerabilityResolution",
+              "description": "Configuration for the SAST vulnerability resolution trigger. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SecurityScanProfileSastVulnerabilityResolutionInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "secretDetectionFalsePositive",
+              "description": "Configuration for the secret detection false positive detection trigger. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SecurityScanProfileSecretDetectionFalsePositiveInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "vulnerabilityEnrichment",
+              "description": "Configuration for the vulnerability enrichment trigger. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SecurityScanProfileVulnerabilityEnrichmentInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "interfaces": null,
@@ -384412,6 +384662,41 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "SecurityScanProfileVulnerabilityEnrichmentInput",
+          "description": "Configuration for the vulnerability enrichment trigger of a triage and remediation scan profile.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "severityLevel",
+              "description": "Minimum vulnerability severity that triggers enrichment. Findings below this threshold are skipped. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "VulnerabilitySeverity",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "runMode",
+              "description": "Whether enrichment runs automatically or only when triggered by a user. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "SecurityScanProfileRunMode",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
           "possibleTypes": null
         },
         {

@@ -6,7 +6,7 @@ query getAnalyticsDashboardGroupChildren($fullPath: ID!) {
     name
     fullName
     fullPath
-    projects(first: 100, sort: ACTIVITY_DESC, includeArchived: false) {
+    projects(first: 20, sort: ACTIVITY_DESC, includeArchived: false) {
       nodes {
         id
         name
@@ -14,7 +14,7 @@ query getAnalyticsDashboardGroupChildren($fullPath: ID!) {
         fullPath
       }
     }
-    descendantGroups(first: 100, includeParentDescendants: false, archived: false) {
+    descendantGroups(first: 20, includeParentDescendants: false, archived: false) {
       nodes {
         id
         name

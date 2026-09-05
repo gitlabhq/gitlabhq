@@ -155,7 +155,7 @@ snippet_repositories: supported
 snippet_repository_states: supported
 snippet_repository_storage_moves: supported
 snippet_statistics: supported
-snippet_uploads: https://gitlab.com/gitlab-org/gitlab/-/issues/611963
+snippet_uploads: supported
 snippet_user_mentions: supported
 snippets: supported
 spam_logs: supported

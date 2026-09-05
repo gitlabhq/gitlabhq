@@ -5,7 +5,39 @@ require "spec_helper"
 RSpec.describe Gitlab::Unicode do
   using RSpec::Parameterized::TableSyntax
 
-  describe described_class::BIDI_REGEXP do
+  describe 'explicit Unicode character sets', feature_category: :source_code_management do
+    it 'matches the Unicode property character sets exactly', :aggregate_failures do
+      unicode_scalar_ranges = [0...0xD800, 0xE000..0x10FFFF]
+      regexps = {
+        bidi_property: /\p{Bidi Control}/,
+        explicit_bidi: described_class::BIDI_CONTROL_REGEXP,
+        space_property: /\p{Space_Separator}/,
+        explicit_space: described_class::NON_ASCII_SPACE_REGEXP
+      }
+      any_target_character = Regexp.union(regexps.values)
+      matched_codepoints = regexps.keys.index_with { [] }
+
+      unicode_scalar_ranges.each do |range|
+        range.each_slice(4096) do |codepoints|
+          scalar_chunk = codepoints.pack('U*')
+
+          scalar_chunk.scan(any_target_character) do |character|
+            regexps.each do |name, regexp|
+              matched_codepoints[name] << character.ord if regexp.match?(character)
+            end
+          end
+        end
+      end
+
+      matched_codepoints[:space_property].delete(0x20)
+
+      expect(matched_codepoints[:explicit_bidi]).to eq(matched_codepoints[:bidi_property])
+      expect(matched_codepoints[:explicit_space]).to eq(matched_codepoints[:space_property])
+      expect(described_class::NON_ASCII_SPACE_CHARACTERS.codepoints).to eq(matched_codepoints[:explicit_space])
+    end
+  end
+
+  describe described_class::BIDI_CONTROL_REGEXP do
     where(:bidi_string, :match) do
       "\u2066"       | true # left-to-right isolate
       "\u2067"       | true # right-to-left isolate

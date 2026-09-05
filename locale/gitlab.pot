@@ -10984,6 +10984,9 @@ msgstr ""
 msgid "AnalyticsDashboards|No dashboards found"
 msgstr ""
 
+msgid "AnalyticsDashboards|No groups or projects found"
+msgstr ""
+
 msgid "AnalyticsDashboards|No projects"
 msgstr ""
 
@@ -11014,6 +11017,9 @@ msgstr ""
 msgid "AnalyticsDashboards|Scope"
 msgstr ""
 
+msgid "AnalyticsDashboards|Search groups and projects"
+msgstr ""
+
 msgid "AnalyticsDashboards|Select a group or project"
 msgstr ""
 
@@ -11036,6 +11042,9 @@ msgid "AnalyticsDashboards|View analytics dashboards"
 msgstr ""
 
 msgid "AnalyticsDashboards|You haven't run the updated query. The panel will use the current query text, which may differ from the preview."
+msgstr ""
+
+msgid "AnalyticsDashboards|in %{name}"
 msgstr ""
 
 msgid "Analytics|%{linkStart}Learn more%{linkEnd} about managing and interacting with analytics dashboards."

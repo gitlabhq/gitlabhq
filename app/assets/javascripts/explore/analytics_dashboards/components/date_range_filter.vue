@@ -60,7 +60,12 @@ export default {
       get() {
         return { startDate: this.startDate, endDate: this.endDate };
       },
+      // GlDaterangePicker emits each bound as the user picks it, so a custom range arrives
+      // half filled. A panel would fill the missing bound with a default and query a window
+      // nobody asked for, so hold the change until both are set.
       set({ startDate, endDate }) {
+        if (!startDate || !endDate) return;
+
         this.$emit(
           'change',
           dateRangeOptionToFilter({

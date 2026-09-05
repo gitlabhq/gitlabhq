@@ -2,6 +2,8 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import getGroupChildrenQuery from '../graphql/get_group_children.query.graphql';
 import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.graphql';
 import getTopLevelGroupsQuery from '../graphql/get_top_level_groups.query.graphql';
+import searchNamespacesQuery from '../graphql/search_namespaces.query.graphql';
+import searchNamespacesGlobalQuery from '../graphql/search_namespaces_global.query.graphql';
 import ScopePicker from './scope_picker.vue';
 
 export default {
@@ -139,6 +141,61 @@ const projectsByTopLevelGroup = {
   [acme.fullPath]: [topLevelProject({ id: 33, name: 'Anvil', path: 'anvil', group: acme })],
 };
 
+// Search reaches every depth, so its results come from places the browse view cannot show.
+const designSystem = {
+  __typename: 'Group',
+  id: 'gid://gitlab/Group/40',
+  name: 'Design system',
+  fullName: 'GitLab.org / Frontend / Design system',
+  fullPath: `${groupFullPath}/frontend/design-system`,
+  namespace: {
+    __typename: 'Group',
+    id: frontend.id,
+    name: frontend.name,
+    fullPath: frontend.fullPath,
+  },
+};
+
+const searchProjects = [
+  {
+    ...mockProject(41, 'Pajamas', 'frontend/design-system/pajamas'),
+    namespace: {
+      __typename: 'Group',
+      id: designSystem.id,
+      name: designSystem.name,
+      fullPath: designSystem.fullPath,
+    },
+  },
+  {
+    ...mockProject(42, 'Design tools', 'frontend/tooling/design'),
+    namespace: {
+      __typename: 'Group',
+      id: 'gid://gitlab/Group/13',
+      name: 'Tooling',
+      fullPath: `${groupFullPath}/frontend/tooling`,
+    },
+  },
+];
+
+const respondWithSearch = () => () =>
+  Promise.resolve({
+    data: {
+      group: {
+        ...mockGroup,
+        projects: { __typename: 'ProjectConnection', nodes: searchProjects },
+        descendantGroups: { __typename: 'GroupConnection', nodes: [designSystem] },
+      },
+    },
+  });
+
+const respondWithGlobalSearch = () => () =>
+  Promise.resolve({
+    data: {
+      groups: { __typename: 'GroupConnection', nodes: [designSystem] },
+      projects: { __typename: 'ProjectConnection', nodes: searchProjects },
+    },
+  });
+
 const respondWithTopLevelGroups = (groups) => () =>
   Promise.resolve({
     data: { groups: { __typename: 'GroupConnection', nodes: groups } },
@@ -183,6 +240,8 @@ const Template = (args, { argTypes }) => ({
     [getGroupChildrenQuery, args.requestHandler],
     [getSubgroupProjectsQuery, args.subgroupRequestHandler],
     [getTopLevelGroupsQuery, args.topLevelGroupsRequestHandler],
+    [searchNamespacesQuery, args.searchRequestHandler],
+    [searchNamespacesGlobalQuery, args.globalSearchRequestHandler],
   ]),
   props: Object.keys(argTypes),
   template: `
@@ -192,6 +251,9 @@ const Template = (args, { argTypes }) => ({
   mounted() {
     // Expand up front, so stories that are about an expanded subgroup open on that state.
     if (args.expandedPath) this.$refs.picker.toggleExpanded(args.expandedPath);
+    // Same for search: set the term directly, so the results view is what the story opens on.
+    // The listbox owns the search input's own value, so the box itself still reads as empty.
+    if (args.searchTerm) this.$refs.picker.setSearchTerm(args.searchTerm);
   },
   methods: {
     onChange(namespace) {
@@ -214,6 +276,8 @@ Default.args = {
   requestHandler: respondWith([]),
   subgroupRequestHandler: respondWithSubgroupProjects(),
   topLevelGroupsRequestHandler: respondWithTopLevelGroups([capsuleCorp, acme, empty]),
+  searchRequestHandler: respondWithSearch(),
+  globalSearchRequestHandler: respondWithGlobalSearch(),
   expandedPath: capsuleCorp.fullPath,
 };
 
@@ -222,9 +286,9 @@ Default.args = {
 // parent labels.
 export const WithRoot = Template.bind({});
 WithRoot.args = {
+  ...Default.args,
   groupFullPath,
   requestHandler: respondWith([frontend, quality, incubation]),
-  subgroupRequestHandler: respondWithSubgroupProjects(),
   expandedPath: frontend.fullPath,
 };
 
@@ -234,16 +298,25 @@ WithRoot.args = {
 // Nothing to put in the second section, so it drops out and only the group's own projects show.
 export const NoSubgroups = Template.bind({});
 NoSubgroups.args = {
-  groupFullPath,
+  ...WithRoot.args,
   requestHandler: respondWith([]),
-  subgroupRequestHandler: respondWithSubgroupProjects(),
+  expandedPath: undefined,
 };
 
 // Incubation looks expandable on its direct counts, but nothing turns up beneath it.
 export const EmptySubgroup = Template.bind({});
 EmptySubgroup.args = {
-  groupFullPath,
+  ...WithRoot.args,
   requestHandler: respondWith([incubation]),
-  subgroupRequestHandler: respondWithSubgroupProjects(),
   expandedPath: incubation.fullPath,
+};
+
+// Search replaces the browse view entirely. Results are flat, and every row names its parent,
+// since a match can come from any depth. The term is set on mount, so the results view is what
+// the story opens on.
+export const SearchResults = Template.bind({});
+SearchResults.args = {
+  ...Default.args,
+  searchTerm: 'design',
+  expandedPath: undefined,
 };

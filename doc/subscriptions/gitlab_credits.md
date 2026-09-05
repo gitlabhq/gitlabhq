@@ -314,6 +314,8 @@ For premium models with optimized integration:
 | `claude-fable-5` | 0.6 |
 | `claude-fable-5.1` | 0.6 |
 | `gpt-5.5` <sup>4</sup> | 0.57 |
+| `gpt-6-astra` <sup>3</sup> | 0.54 |
+| `gpt-6-astra` <sup>4</sup> | 0.31 |
 
 **Footnotes**:
 

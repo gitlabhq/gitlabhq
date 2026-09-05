@@ -22,6 +22,7 @@ describe('ScopePickerItem', () => {
 
   const findItem = () => wrapper.findByTestId(`scope-picker-item-${defaultProps.value}`);
   const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findName = () => wrapper.findByTestId('scope-picker-item-name');
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findExpandButton = () => wrapper.findComponent(GlButton);
   const findParentName = () => wrapper.findByTestId('scope-picker-item-parent');
@@ -35,6 +36,7 @@ describe('ScopePickerItem', () => {
     });
 
     it('renders the namespace name', () => {
+      expect(findName().text()).toBe(defaultProps.text);
       expect(findCheckbox().text()).toBe(defaultProps.text);
     });
 
@@ -167,7 +169,13 @@ describe('ScopePickerItem', () => {
     beforeEach(() => createWrapper({ namespaceType: TYPENAME_PROJECT, parentName: 'Tools' }));
 
     it('names the group it belongs to', () => {
-      expect(findParentName().text()).toBe('(Tools)');
+      expect(findParentName().text()).toBe('in Tools');
+    });
+
+    it('leaves the name unescaped, Vue escaping the interpolation itself', () => {
+      createWrapper({ namespaceType: TYPENAME_PROJECT, parentName: 'Sales & Marketing' });
+
+      expect(findParentName().text()).toBe('in Sales & Marketing');
     });
 
     it('gives the full path in a tooltip, so the hierarchy is exact', () => {

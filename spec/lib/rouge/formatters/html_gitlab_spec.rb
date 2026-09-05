@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_management do
   describe '#format' do
-    subject { described_class.format(tokens, **options) }
+    subject(:formatted_tokens) { described_class.format(tokens, **options) }
 
     let(:lang) { 'ruby' }
     let(:lexer) { Rouge::Lexer.find_fancy(lang) }
@@ -104,6 +104,70 @@ RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_man
           "<span class=\"k\">def</span><span class=\"err\">                </span><span class=\"n\">hello</span>" \
           "</span>"
         )
+      end
+    end
+
+    context 'with valid ASCII containing HTML metacharacters' do
+      let(:tokens) { [[Rouge::Token['Text'], '<script>&"']] }
+
+      it 'escapes the token value' do
+        is_expected.to eq('<span id="LC1" class="line" data-lang="ruby">&lt;script&gt;&amp;"</span>')
+      end
+    end
+
+    context 'with valid non-target multibyte UTF-8' do
+      let(:tokens) { [[Rouge::Token['Text'], 'café 日本語 👋']] }
+
+      it 'preserves the token value' do
+        is_expected.to eq('<span id="LC1" class="line" data-lang="ruby">café 日本語 👋</span>')
+      end
+    end
+
+    context 'with all non-ASCII space characters' do
+      let(:tokens) do
+        [[Rouge::Token['Text'], "a\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000b"]]
+      end
+
+      it 'replaces every character with an ASCII space' do
+        is_expected.to eq(%(<span id="LC1" class="line" data-lang="ruby">a#{' ' * 16}b</span>))
+      end
+    end
+
+    context 'with all bidi control characters' do
+      let(:bidi_characters) { "\u061C\u200E\u200F\u202A\u202B\u202C\u202D\u202E\u2066\u2067\u2068\u2069" }
+      let(:tokens) { [[Rouge::Token['Text'], bidi_characters]] }
+
+      it 'wraps every character in input order' do
+        warning = 'Potentially unwanted character detected: Unicode BiDi Control'
+        wrapped_characters = bidi_characters.chars.map do |character|
+          %(<span class="unicode-bidi has-tooltip" data-toggle="tooltip" title="#{warning}">#{character}</span>)
+        end.join
+
+        is_expected.to eq(%(<span id="LC1" class="line" data-lang="ruby">#{wrapped_characters}</span>))
+      end
+    end
+
+    context 'with an invalid UTF-8 token value' do
+      let(:tokens) { [[Rouge::Token['Text'], (+"invalid\xFF").force_encoding(Encoding::UTF_8)]] }
+
+      it 'retains the inherited formatter error' do
+        expect { formatted_tokens }.to raise_error(ArgumentError, 'invalid byte sequence in UTF-8')
+      end
+    end
+
+    context 'with an ASCII-incompatible token value' do
+      let(:tokens) { [[Rouge::Token['Text'], "text\n".encode(Encoding::UTF_16LE)]] }
+
+      it 'retains the inherited formatter error' do
+        expect { formatted_tokens }.to raise_error(Encoding::CompatibilityError)
+      end
+    end
+
+    context 'with an incompatible ASCII-8BIT token value' do
+      let(:tokens) { [[Rouge::Token['Text'], "binary\xFF".b]] }
+
+      it 'retains the inherited formatter error' do
+        expect { formatted_tokens }.to raise_error(Encoding::CompatibilityError)
       end
     end
   end
