@@ -32,6 +32,10 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   private
 
+  def permitted_params
+    params.permit(:id, :noteable_id, :noteable_type)
+  end
+
   def render_discussion
     prepare_notes_for_rendering(discussion.notes)
     render_json_with_discussions_serializer
@@ -50,12 +54,13 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def noteable
-    @noteable ||= noteable_finder_class.new(current_user, project_id: @project.id).find_by!(iid: params[:noteable_id])
+    @noteable ||= noteable_finder_class.new(current_user, project_id: @project.id)
+                    .find_by!(iid: permitted_params[:noteable_id])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   def noteable_finder_class
-    case params[:noteable_type]
+    case permitted_params[:noteable_type]
     when 'issues'
       IssuesFinder
     when 'merge_requests'
@@ -68,7 +73,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   end
 
   def discussion
-    @discussion ||= @noteable.find_discussion(params[:id]) || render_404
+    @discussion ||= @noteable.find_discussion(permitted_params[:id]) || render_404
   end
 
   def authorize_resolve_discussion!

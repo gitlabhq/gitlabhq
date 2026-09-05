@@ -112,7 +112,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  isLoggedIn: isLoggedIn(),
   VALID_DESIGN_FILE_MIMETYPE,
   SHOW_SIDEBAR_STORAGE_KEY: 'work_item_show_sidebar',
   ENABLE_TRUNCATION_STORAGE_KEY: 'work_item_truncate_descriptions',
@@ -329,6 +328,9 @@ export default {
     },
   },
   computed: {
+    isLoggedIn() {
+      return isLoggedIn();
+    },
     showGenerateMrWithDuoButton() {
       if (!this.duoRemoteFlowsAvailability) return false;
 
@@ -427,7 +429,7 @@ export default {
       return findCurrentUserTodosWidget(this.workItem);
     },
     showWorkItemCurrentUserTodos() {
-      return Boolean(this.$options.isLoggedIn && this.workItemCurrentUserTodos);
+      return Boolean(this.isLoggedIn && this.workItemCurrentUserTodos);
     },
     workItemAssignees() {
       return findAssigneesWidget(this.workItem);

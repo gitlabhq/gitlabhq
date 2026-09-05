@@ -33,7 +33,6 @@ import ToggleRepliesWidget from './toggle_replies_widget.vue';
 
 export default {
   name: 'DesignDiscussion',
-  isLoggedIn: isLoggedIn(),
   i18n: {
     deleteNote: {
       confirmationText: __('Are you sure you want to delete this comment?'),
@@ -123,6 +122,9 @@ export default {
     };
   },
   computed: {
+    isLoggedIn() {
+      return isLoggedIn();
+    },
     mutationVariables() {
       return {
         noteableId: this.noteableId,
@@ -324,7 +326,7 @@ export default {
         :design-variables="designVariables"
         @delete-note="showDeleteNoteConfirmationModal($event)"
       >
-        <template v-if="$options.isLoggedIn && discussion.resolvable" #resolve-discussion>
+        <template v-if="isLoggedIn && discussion.resolvable" #resolve-discussion>
           <gl-button
             v-gl-tooltip
             :aria-label="resolveCheckboxText"
@@ -370,9 +372,9 @@ export default {
       <li
         v-show="isReplyPlaceholderVisible"
         class="reply-wrapper discussion-reply-holder"
-        :class="{ 'gl-bg-subtle': !$options.isLoggedIn }"
+        :class="{ 'gl-bg-subtle': !isLoggedIn }"
       >
-        <template v-if="!$options.isLoggedIn">
+        <template v-if="!isLoggedIn">
           <design-note-signed-out :register-path="registerPath" :sign-in-path="signInPath" />
         </template>
         <template v-else>

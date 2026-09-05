@@ -11,16 +11,21 @@ class Projects::TodosController < Projects::ApplicationController
 
   private
 
+  def issuable_params
+    params.permit(:issuable_type, :issuable_id, :issue_id)
+  end
+  strong_memoize_attr :issuable_params
+
   def issuable
     strong_memoize(:issuable) do
-      case params[:issuable_type]
+      case issuable_params[:issuable_type]
       when "issue"
-        IssuesFinder.new(current_user, project_id: @project.id).find(params[:issuable_id])
+        IssuesFinder.new(current_user, project_id: @project.id).find(issuable_params[:issuable_id])
       when "merge_request"
-        MergeRequestsFinder.new(current_user, project_id: @project.id).find(params[:issuable_id])
+        MergeRequestsFinder.new(current_user, project_id: @project.id).find(issuable_params[:issuable_id])
       when "design"
-        issue = IssuesFinder.new(current_user, project_id: @project.id).find(params[:issue_id])
-        DesignManagement::DesignsFinder.new(issue, current_user).find(params[:issuable_id])
+        issue = IssuesFinder.new(current_user, project_id: @project.id).find(issuable_params[:issue_id])
+        DesignManagement::DesignsFinder.new(issue, current_user).find(issuable_params[:issuable_id])
       end
     end
   end

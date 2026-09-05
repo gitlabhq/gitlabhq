@@ -33,7 +33,11 @@ module Projects
 
       def project_without_auth
         @project ||= Project
-          .find_by_full_path("#{params[:namespace_id]}/#{params[:project_id]}")
+          .find_by_full_path("#{project_path_params[:namespace_id]}/#{project_path_params[:project_id]}")
+      end
+
+      def project_path_params
+        params.permit(:namespace_id, :project_id)
       end
 
       def extract_alert_manager_token(request)
@@ -68,13 +72,13 @@ module Projects
       def integration
         AlertManagement::HttpIntegrationsFinder.new(
           project,
-          endpoint_identifier: params[:endpoint_identifier],
+          endpoint_identifier: params.permit(:endpoint_identifier)[:endpoint_identifier],
           active: true
         ).execute.first
       end
 
       def notification_payload
-        @notification_payload ||= params.permit![:notification]
+        @notification_payload ||= safe_params[:notification]
       end
 
       def handle_feature_flag_enabled_response

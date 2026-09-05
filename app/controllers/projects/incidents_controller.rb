@@ -21,7 +21,7 @@ class Projects::IncidentsController < Projects::ApplicationController
       incident_finder
         .execute
         .inc_relations_for_view
-        .iid_in(params[:id])
+        .iid_in(params.permit(:id)[:id])
         .without_order
         .take # rubocop:disable CodeReuse/ActiveRecord
     end

@@ -13,7 +13,6 @@ import DesignDescription from './design_description.vue';
 
 export default {
   name: 'DesignSidebar',
-  isLoggedIn: isLoggedIn(),
   components: {
     DesignDescription,
     DesignDisclosure,
@@ -62,6 +61,9 @@ export default {
     };
   },
   computed: {
+    isLoggedIn() {
+      return isLoggedIn();
+    },
     showDescriptionForm() {
       // user either has permission to add or update description,
       // or the existing description should be shown read-only.
@@ -146,9 +148,7 @@ export default {
             {{ unresolvedDiscussionsCount }}
           </h3>
           <gl-empty-state
-            v-if="
-              $options.isLoggedIn && unresolvedDiscussions.length === 0 && !isCommentFormPresent
-            "
+            v-if="isLoggedIn && unresolvedDiscussions.length === 0 && !isCommentFormPresent"
             data-testid="new-discussion-disclaimer"
             :svg-path="$options.EMPTY_DISCUSSION_URL"
           >
@@ -157,7 +157,7 @@ export default {
             </template>
           </gl-empty-state>
           <design-note-signed-out
-            v-if="!$options.isLoggedIn"
+            v-if="!isLoggedIn"
             class="gl-mb-4"
             :register-path="registerPath"
             :sign-in-path="signInPath"

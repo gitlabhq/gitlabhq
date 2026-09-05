@@ -12,6 +12,6 @@ class Projects::AlertManagementController < Projects::ApplicationController
   def index; end
 
   def details
-    @alert_id = params[:id]
+    @alert_id = params.permit(:id)[:id]
   end
 end

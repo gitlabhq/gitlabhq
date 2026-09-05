@@ -81,7 +81,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' }), GlToastMixin],
-  isLoggedIn: isLoggedIn(),
   inject: {
     getWorkItemTypeConfiguration: {
       default: () => {},
@@ -301,6 +300,9 @@ export default {
     },
   },
   computed: {
+    isLoggedIn() {
+      return isLoggedIn();
+    },
     // eslint-disable-next-line vue/no-unused-properties
     tracking() {
       return {
@@ -629,7 +631,7 @@ export default {
       @shown="showDropdown"
       @hidden="hideDropdown"
     >
-      <template v-if="$options.isLoggedIn && !hideSubscribe">
+      <template v-if="isLoggedIn && !hideSubscribe">
         <gl-disclosure-dropdown-item
           class="gl-flex gl-w-full gl-justify-end"
           data-testid="notifications-toggle-form"
@@ -758,7 +760,7 @@ export default {
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
-        v-if="$options.isLoggedIn && workItemCreateNoteEmail"
+        v-if="isLoggedIn && workItemCreateNoteEmail"
         data-testid="copy-create-note-email-action"
         :data-clipboard-text="workItemCreateNoteEmail"
         @action="copyToClipboard(workItemCreateNoteEmail, $options.i18n.emailAddressCopied)"

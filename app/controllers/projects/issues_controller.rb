@@ -36,7 +36,8 @@ class Projects::IssuesController < Projects::ApplicationController
     SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request?
   }
   before_action :check_search_rate_limit!, if: ->(c) {
-    SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request? && params[:search].present?
+    SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request? &&
+      issue_view_params[:search].present?
   }
 
   before_action :redirect_if_work_item
@@ -109,21 +110,20 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def new
-    redirect_to new_project_work_item_url(project, params.except(
-      :controller,
-      :action,
-      :namespace_id,
-      :project_id
-    ).permit!)
+    redirect_to new_project_work_item_url(
+      project,
+      safe_params.except(:controller, :action, :namespace_id, :project_id)
+    )
   end
 
   def show
     return super if issue.require_legacy_views? || !html_request?
 
-    if params[:vueroute].present? && request.path.include?('/designs/')
+    vueroute = issue_view_params[:vueroute]
+    if vueroute.present? && request.path.include?('/designs/')
       # Only redirect to designs path if both vueroute param exists and path contains /designs/
       # Needed since designs are aliased to show in this controller
-      redirect_to designs_project_work_item_path(project, issue.iid, vueroute: params[:vueroute],
+      redirect_to designs_project_work_item_path(project, issue.iid, vueroute: vueroute,
         params: request.query_parameters)
     else
       redirect_to project_work_item_path(project, issue.iid, params: request.query_parameters)
@@ -146,9 +146,9 @@ class Projects::IssuesController < Projects::ApplicationController
   def create
     create_params = issue_params.merge(
       add_related_issue: add_related_issue,
-      merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
-      observability_links: params[:observability_links],
-      discussion_to_resolve: params[:discussion_to_resolve]
+      merge_request_to_resolve_discussions_of: resolve_discussions_params[:merge_request_to_resolve_discussions_of],
+      observability_links: resolve_discussions_params[:observability_links],
+      discussion_to_resolve: resolve_discussions_params[:discussion_to_resolve]
     )
 
     service = ::Issues::CreateService.new(container: project, current_user: current_user, params: create_params)
@@ -179,10 +179,8 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def move
-    params.require(:move_to_project_id)
-
-    if params[:move_to_project_id].to_i > 0
-      new_project = Project.find(params[:move_to_project_id])
+    if move_to_project_id_param.to_i > 0
+      new_project = Project.find(move_to_project_id_param)
       return render_404 unless issue.can_move?(current_user, new_project)
 
       @issue = ::WorkItems::DataSync::MoveService.new(
@@ -242,10 +240,8 @@ class Projects::IssuesController < Projects::ApplicationController
   def create_merge_request
     Labkit::UserExperienceSli.start(:create_merge_request)
 
-    create_params = params.slice(:branch_name, :ref).merge(issue_iid: issue.iid)
-    create_params[:target_project_id] = params[:target_project_id]
     result = ::MergeRequests::CreateFromIssueService.new(project: project, current_user: current_user,
-      mr_params: create_params).execute
+      mr_params: create_from_issue_params).execute
 
     if result[:status] == :success
       render json: MergeRequestCreateSerializer.new.represent(result[:merge_request])
@@ -264,7 +260,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def import_csv
-    result = Issues::PrepareImportCsvService.new(project, current_user, file: params[:file]).execute
+    result = Issues::PrepareImportCsvService.new(project, current_user, file: params.permit(:file)[:file]).execute
 
     if result.success?
       flash[:notice] = result.message
@@ -306,7 +302,9 @@ class Projects::IssuesController < Projects::ApplicationController
     return @issue if defined?(@issue)
 
     # The Sortable default scope causes performance issues when used with find_by
-    @issuable = @noteable = @issue ||= @project.issues.inc_relations_for_view.iid_in(params[:id]).without_order.take!
+    @issue ||= @project.issues.inc_relations_for_view
+                 .iid_in(issue_lookup_params[:id]).without_order.take!
+    @issuable = @noteable = @issue
     @note = @project.notes.new(noteable: @issuable)
 
     return render_404 unless can?(current_user, :read_issue, @issue)
@@ -381,6 +379,37 @@ class Projects::IssuesController < Projects::ApplicationController
 
   private
 
+  def issue_view_params
+    params.permit(:search, :vueroute, :incident_tab)
+  end
+
+  def issue_lookup_params
+    params.permit(:id, :add_related_issue)
+  end
+
+  # :observability_links arrives as a hash of stringified JSON, one key per signal type,
+  # so it has to be permitted as a nested hash rather than a scalar.
+  def resolve_discussions_params
+    params.permit(
+      :merge_request_to_resolve_discussions_of, :discussion_to_resolve,
+      observability_links: [:metrics, :logs, :tracing]
+    )
+  end
+
+  def create_branch_params
+    params.permit(:branch_name, :ref, :target_project_id)
+  end
+
+  def move_to_project_id_param
+    params.require(:move_to_project_id)
+  end
+
+  def create_from_issue_params
+    create_branch_params
+      .slice(:branch_name, :ref)
+      .merge(issue_iid: issue.iid, target_project_id: create_branch_params[:target_project_id])
+  end
+
   def disable_show_query_limit!
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/544875', new_threshold: 130)
   end
@@ -425,7 +454,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def add_related_issue
-    add_related_issue = project.issues.find_by_iid(params[:add_related_issue])
+    add_related_issue = project.issues.find_by_iid(issue_lookup_params[:add_related_issue])
     add_related_issue if Ability.allowed?(current_user, :read_issue, add_related_issue)
   end
 
@@ -460,7 +489,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def require_incident_for_incident_routes
-    return unless params[:incident_tab].present?
+    return unless issue_view_params[:incident_tab].present?
     return if issue.work_item_type&.incident?
 
     # Redirect instead of 404 to gracefully handle

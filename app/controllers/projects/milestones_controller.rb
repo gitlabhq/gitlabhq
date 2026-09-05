@@ -26,7 +26,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   urgency :low
 
   def index
-    @sort = params[:sort] || 'due_date_asc'
+    @sort = milestone_list_params[:sort] || 'due_date_asc'
     @milestones = milestones.sort_by_attribute(@sort)
 
     respond_to do |format|
@@ -36,7 +36,7 @@ class Projects::MilestonesController < Projects::ApplicationController
         # so that people can filter by and assign group milestones,
         # but we don't need to show them on the project milestones page itself.
         @milestones = @milestones.for_projects
-        @milestones = @milestones.page(params[:page])
+        @milestones = @milestones.page(milestone_list_params[:page])
       end
       format.json do
         render json: @milestones.to_json(only: [:id, :title, :due_date], methods: :name)
@@ -152,8 +152,16 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   protected
 
+  def milestone_list_params
+    params.permit(:sort, :page)
+  end
+
+  def permitted_params
+    params.permit(:redirect_path, :id)
+  end
+
   def redirect_path
-    path = params[:redirect_path]&.to_sym
+    path = permitted_params[:redirect_path]&.to_sym
     @redirect_path = path if REDIRECT_TARGETS.include?(path)
   end
 
@@ -171,7 +179,7 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def milestone
-    @noteable = @milestone ||= @project.milestones.find_by!(iid: params[:id])
+    @noteable = @milestone ||= @project.milestones.find_by!(iid: permitted_params[:id])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
