@@ -4,7 +4,7 @@ class CreateAiFlowSchedules < Gitlab::Database::Migration[2.3]
   milestone '19.4'
 
   def change
-    create_table :ai_flow_schedules do |t| # rubocop:disable Migration/EnsureFactoryForTable -- factory added with the Ai::FlowSchedule model in a follow-up MR
+    create_table :ai_flow_schedules do |t|
       t.bigint :project_id, null: false
       t.bigint :ai_flow_trigger_id, null: false
       t.datetime_with_timezone :next_run_at
