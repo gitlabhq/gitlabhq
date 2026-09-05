@@ -688,6 +688,7 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`user_authenticated_using_job_token`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164546) | A user is authenticated using job token | {{< no >}} | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/481325) | Project |
+| [`secrets_manager_add_on_enable`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253618) | Triggered when the Secrets Manager paid add-on is enabled for a namespace | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/work_items/612843) | Group |
 | [`secrets_manager_create_group_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218603) | This event is triggered when a group level secret is created by a user | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/work_items/573328) | Group |
 | [`secrets_manager_create_project_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205780) | This event is triggered when a project level secret is created by a user | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/554056) | Project |
 | [`secrets_manager_delete_group_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218603) | This event is triggered when a group level secret is deleted by a user | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/work_items/573328) | Group |

@@ -16651,6 +16651,32 @@ Fields:
 | <a id="mutation-secretpermissionupdate-reason"></a>`reason` {{< icon name="warning-solid" >}} | [`SecretsManagerWriteDenialReason`](#secretsmanagerwritedenialreason) | Introduced in GitLab 19.2. Status: Experiment. Reason the write was denied due to entitlement; null when not denied for that reason. |
 | <a id="mutation-secretpermissionupdate-secretpermission"></a>`secretPermission` | [`SecretPermission`](#secretpermission) | Secret Permission that was created. |
 
+### `Mutation.secretsManagerEnableAddOn`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `SecretsManagerEnableAddOnInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-secretsmanagerenableaddon-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-secretsmanagerenableaddon-grouppath"></a>`groupPath` | [`ID!`](#id) | Full path of the top-level group to enable the Secrets Manager add-on for. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-secretsmanagerenableaddon-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-secretsmanagerenableaddon-entitlement"></a>`entitlement` | [`SecretsManagerEntitlement`](#secretsmanagerentitlement) | Secrets Manager entitlement state after enabling the add-on. Null when enabling failed; see errors for the reason. |
+| <a id="mutation-secretsmanagerenableaddon-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.secretsManagerStartTrial`
 
 {{< details >}}

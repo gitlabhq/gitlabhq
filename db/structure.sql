@@ -31136,7 +31136,8 @@ CREATE TABLE secrets_manager_namespace_enrollments (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     beta boolean DEFAULT true NOT NULL,
-    disabled_at timestamp with time zone
+    disabled_at timestamp with time zone,
+    add_on_requested_at timestamp with time zone
 );
 
 CREATE SEQUENCE secrets_manager_namespace_enrollments_id_seq

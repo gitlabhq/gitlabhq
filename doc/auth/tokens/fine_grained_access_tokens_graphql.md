@@ -83,6 +83,7 @@ Grants the ability to read secrets managers.
 | Read | Project | Type | `ProjectSecretsManager` |
 | Read | Group | Type | `GroupSecretsManager` |
 | Read | Group | Type | `SecretsManagerEntitlement` |
+| Read | Group | Mutation | `SecretsManagerEnableAddOn` |
 | Read | Group | Mutation | `SecretsManagerStartTrial` |
 
 #### Security Attribute
