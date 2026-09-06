@@ -72167,6 +72167,9 @@ msgstr ""
 msgid "SecurityInventory|Advanced SAST (SAST)"
 msgstr ""
 
+msgid "SecurityInventory|All scanners"
+msgstr ""
+
 msgid "SecurityInventory|An error has occurred while applying the scan profile."
 msgstr ""
 
@@ -72201,6 +72204,12 @@ msgid "SecurityInventory|Container scanning for registry"
 msgstr ""
 
 msgid "SecurityInventory|Container scanning for registry (CS)"
+msgstr ""
+
+msgid "SecurityInventory|Coverage across %{groups} and %{projects}"
+msgstr ""
+
+msgid "SecurityInventory|Coverage across all scanners, or for a single scanner, based on the scan status of the most recent pipeline on the default branch."
 msgstr ""
 
 msgid "SecurityInventory|DAST"
@@ -72263,6 +72272,9 @@ msgid "SecurityInventory|Manage security scanners"
 msgstr ""
 
 msgid "SecurityInventory|Manage security scanners for subgroup projects"
+msgstr ""
+
+msgid "SecurityInventory|More information about tool coverage"
 msgstr ""
 
 msgid "SecurityInventory|Needs attention"
@@ -72347,6 +72359,9 @@ msgid "SecurityInventory|Tool coverage: %{coverage}"
 msgstr ""
 
 msgid "SecurityInventory|Unprotected"
+msgstr ""
+
+msgid "SecurityInventory|View configuration"
 msgstr ""
 
 msgid "SecurityInventory|View project"
