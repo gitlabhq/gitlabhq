@@ -70897,13 +70897,16 @@ msgstr ""
 msgid "SecretsManager|Add secret"
 msgstr ""
 
-msgid "SecretsManager|After %{cutoffDate}, GitLab Secrets Manager usage will require GitLab Credits. To avoid a service disruption, start a trial to keep access. %{linkStart}Learn more about the trial%{linkEnd}."
+msgid "SecretsManager|After %{cutoffDate}, GitLab Secrets Manager usage will require GitLab Credits. To avoid a service disruption, enable GitLab Secrets Manager with GitLab Credits. %{linkStart}How does GitLab Secrets Manager use GitLab Credits?%{linkEnd}"
 msgstr ""
 
 msgid "SecretsManager|After the trial period, GitLab Secrets Manager consumes GitLab credits to store and fetch secrets. Enable on-demand billing to avoid a service interruption when the trial ends."
 msgstr ""
 
 msgid "SecretsManager|Allow GitLab Secrets Manager to be used in groups and projects."
+msgstr ""
+
+msgid "SecretsManager|An error occurred while enabling GitLab Secrets Manager."
 msgstr ""
 
 msgid "SecretsManager|An error occurred while fetching secrets manager data. Please try again."
@@ -70936,6 +70939,12 @@ msgstr ""
 msgid "SecretsManager|Contact your administrator to start a trial."
 msgstr ""
 
+msgid "SecretsManager|Contact your subscription owner or visit the %{linkStart}Customer Portal%{linkEnd} to purchase a Monthly Commitment of GitLab Credits or accept on-demand billing. After your subscription owner has completed this task, you can enable GitLab Secrets Manager with GitLab Credits."
+msgstr ""
+
+msgid "SecretsManager|Credits are drawn from your Monthly Commitment Pool first. When that pool is exhausted, usage continues and is billed as on-demand credits."
+msgstr ""
+
 msgid "SecretsManager|Delete secret"
 msgstr ""
 
@@ -70945,10 +70954,19 @@ msgstr ""
 msgid "SecretsManager|Edit %{name}"
 msgstr ""
 
+msgid "SecretsManager|Enable GitLab Secrets Manager"
+msgstr ""
+
+msgid "SecretsManager|Enable GitLab Secrets Manager with GitLab Credits"
+msgstr ""
+
 msgid "SecretsManager|Enable Secrets Manager for this instance. When enabled, the secrets manager can be turned on for any project or group in the instance."
 msgstr ""
 
 msgid "SecretsManager|Enable on-demand billing to try GitLab Secrets Manager"
+msgstr ""
+
+msgid "SecretsManager|Enable with GitLab Credits"
 msgstr ""
 
 msgid "SecretsManager|Enabling GitLab Secrets Manager"
@@ -70988,6 +71006,9 @@ msgid "SecretsManager|GitLab Secrets Manager has been enabled for this project. 
 msgstr ""
 
 msgid "SecretsManager|GitLab Secrets Manager is free during open beta, but will consume %{linkStart}GitLab Credits%{linkEnd} when it becomes generally available. Credits will be consumed only if you opt in. You will receive advance notice before general availability."
+msgstr ""
+
+msgid "SecretsManager|How does GitLab Secrets Manager use GitLab Credits?"
 msgstr ""
 
 msgid "SecretsManager|How is GitLab Secrets Manager billed?"
@@ -71062,10 +71083,19 @@ msgstr ""
 msgid "SecretsManager|Something went wrong while setting up the secrets manager. Please try again."
 msgstr ""
 
+msgid "SecretsManager|Spend caps don't limit Secrets Manager usage."
+msgstr ""
+
 msgid "SecretsManager|Start a 30-day trial to continue using GitLab Secrets Manager and avoid service disruption."
 msgstr ""
 
 msgid "SecretsManager|Stored secrets"
+msgstr ""
+
+msgid "SecretsManager|Storing secrets and reading them consumes GitLab Credits."
+msgstr ""
+
+msgid "SecretsManager|The GitLab Secrets Manager has been enabled for all groups and projects in this namespace. %{linkStart}Manage group permissions.%{linkEnd}"
 msgstr ""
 
 msgid "SecretsManager|The GitLab Secrets Manager trial has been enabled for all groups and projects within this namespace. %{linkStart}Manage group permissions.%{linkEnd}"
@@ -71089,18 +71119,24 @@ msgstr ""
 msgid "SecretsManager|Use the secrets manager to store your sensitive credentials, and then safely use them in your processes."
 msgstr ""
 
+msgid "SecretsManager|You pay for GitLab Secrets Manager through GitLab Credits. Usage across all projects and subgroups is combined."
+msgstr ""
+
 msgid "SecretsManager|Your Beta period is over and GitLab Secrets Manager has been disabled"
 msgstr ""
 
-msgid "SecretsManager|Your free beta ends in %{count} day. Start a trial now."
-msgid_plural "SecretsManager|Your free beta ends in %{count} days. Start a trial now."
+msgid "SecretsManager|Your free beta ends in %{count} day."
+msgid_plural "SecretsManager|Your free beta ends in %{count} days."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "SecretsManager|Your free beta ends in %{count} hour. Start a trial now."
-msgid_plural "SecretsManager|Your free beta ends in %{count} hours. Start a trial now."
+msgid "SecretsManager|Your free beta ends in %{count} hour."
+msgid_plural "SecretsManager|Your free beta ends in %{count} hours."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "SecretsManager|Your group subscription does not have GitLab Credits available"
+msgstr ""
 
 msgid "Secure Code Warrior"
 msgstr ""
