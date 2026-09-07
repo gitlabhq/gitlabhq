@@ -438,9 +438,9 @@ exclude:
 
 Now GitLab CI/CD not only builds the website, but also:
 
-- Pushes with **continuous tests** to feature branches.
-- **Caches** dependencies installed with Bundler.
-- **Continuously deploys** every push to the `main` branch.
+- Pushes with continuous tests to feature branches.
+- Caches dependencies installed with Bundler.
+- Continuously deploys every push to the `main` branch.
 
 To view the HTML and other assets that were created for the site,
 [download the job artifacts](../../../../ci/jobs/job_artifacts.md#download-job-artifacts).

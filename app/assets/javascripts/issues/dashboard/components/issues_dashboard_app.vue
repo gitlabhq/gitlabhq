@@ -12,7 +12,6 @@ import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query
 import IssueCardStatistics from 'ee_else_ce/work_items/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/work_items/list/components/issue_card_time_info.vue';
 import {
-  convertNumberToGid,
   convertToApiParams,
   convertToSearchQuery,
   convertToUrlParams,
@@ -190,18 +189,9 @@ export default {
   },
   computed: {
     apiFilterParams() {
-      const params = convertToApiParams(this.filterTokens, {
+      return convertToApiParams(this.filterTokens, {
         hasStatusFeature: this.hasStatusFeature,
       });
-      if (params.types) {
-        params.workItemTypeIds = convertNumberToGid(params.types);
-        delete params.types;
-      }
-      if (params.not?.types) {
-        params.not.workItemTypeIds = convertNumberToGid(params.not.types);
-        delete params.not.types;
-      }
-      return params;
     },
     dropdownItems() {
       return [

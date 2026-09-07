@@ -3923,9 +3923,6 @@ msgstr ""
 msgid "AI|Thanks for your feedback!"
 msgstr ""
 
-msgid "AI|The container element wasn't found, stopping AI Genie."
-msgstr ""
-
 msgid "AI|The existing description will be replaced when you submit."
 msgstr ""
 
@@ -10733,6 +10730,9 @@ msgstr ""
 msgid "An error occurred while saving the settings."
 msgstr ""
 
+msgid "An error occurred while saving your settings. Reload the page to try again."
+msgstr ""
+
 msgid "An error occurred while saving your settings. Try saving them again."
 msgstr ""
 
@@ -12584,6 +12584,9 @@ msgid "ArtifactRegistry|No versions found for %{name}."
 msgstr ""
 
 msgid "ArtifactRegistry|OCI"
+msgstr ""
+
+msgid "ArtifactRegistry|Only Maven and npm repositories have versions."
 msgstr ""
 
 msgid "ArtifactRegistry|Only lowercase letters, digits and hyphens (-) are allowed. Must start and end with an alphanumeric character."
@@ -41235,6 +41238,9 @@ msgstr ""
 msgid "HTTPS"
 msgstr ""
 
+msgid "HTTPS URL template"
+msgstr ""
+
 msgid "Harbor Registry"
 msgstr ""
 
@@ -69097,6 +69103,9 @@ msgstr ""
 msgid "SSH Key"
 msgstr ""
 
+msgid "SSH URL template"
+msgstr ""
+
 msgid "SSH fingerprints verify that the client is connecting to the correct host. Check the %{config_link_start}current instance configuration%{config_link_end}."
 msgstr ""
 
@@ -86767,6 +86776,9 @@ msgstr ""
 msgid "UsageBilling|Active users"
 msgstr ""
 
+msgid "UsageBilling|Add override"
+msgstr ""
+
 msgid "UsageBilling|An error occurred while fetching data"
 msgstr ""
 
@@ -86795,6 +86807,9 @@ msgid "UsageBilling|Automated flow"
 msgstr ""
 
 msgid "UsageBilling|Blocked usage"
+msgstr ""
+
+msgid "UsageBilling|Cancel"
 msgstr ""
 
 msgid "UsageBilling|Chat"
@@ -87006,6 +87021,9 @@ msgstr ""
 msgid "UsageBilling|Override cap"
 msgstr ""
 
+msgid "UsageBilling|Override cap amount in credits"
+msgstr ""
+
 msgid "UsageBilling|Override saved."
 msgstr ""
 
@@ -87037,6 +87055,9 @@ msgid "UsageBilling|Save"
 msgstr ""
 
 msgid "UsageBilling|Save on GitLab Credits with monthly commitment"
+msgstr ""
+
+msgid "UsageBilling|Save override"
 msgstr ""
 
 msgid "UsageBilling|Select products"
@@ -97140,6 +97161,21 @@ msgid "entries cannot be nil"
 msgstr ""
 
 msgid "entries cannot contain HTML tags"
+msgstr ""
+
+msgid "entry %{index} %{label}: is already used by entry %{first_index}"
+msgstr ""
+
+msgid "entry %{index} %{label}: must be a valid URL with a scheme"
+msgstr ""
+
+msgid "entry %{index} %{label}: must contain \"{url}\" exactly once"
+msgstr ""
+
+msgid "entry %{index} %{label}: scheme \"%{scheme}\" is not allowed"
+msgstr ""
+
+msgid "entry %{index}: name \"%{name}\" is already used by entry %{first_index}"
 msgstr ""
 
 msgid "env"

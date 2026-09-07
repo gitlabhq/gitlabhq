@@ -1,0 +1,11 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+Gemfile/MissingFeatureCategory:
+  Enabled: false
+
+# This gem is intentionally free of the gitlab-rspec dependency (which provides
+# stub_env) so it stays lightweight and reusable outside the monolith. Specs mock
+# ENV directly instead.
+RSpec/EnvMocking:
+  Enabled: false

@@ -448,7 +448,7 @@ Prerequisites:
 ## Authenticate to the GitLab API
 
 Custom flows have a GitLab OAuth token available as `GITLAB_TOKEN` (also exposed as `GITLAB_OAUTH_TOKEN`).
-These tokens are scope-limited. They can only access
+These tokens are limited to the scope granted to them. They can only access
 [GitLab API endpoints with the `ai_workflows` scope](foundational_flows/software_development.md#apis-that-the-flow-has-access-to).
 Endpoints outside that scope are refused even when the token is sent correctly.
 

@@ -1368,7 +1368,7 @@ To use the dependency scanning analyzer:
 1. Import the [current images](#current-images) from `registry.gitlab.com` into
    your [local Docker container registry](../../../packages/container_registry/_index.md).
    The process for importing Docker images into a local offline Docker registry depends on
-   **your network security policy**. Consult your IT staff to find an accepted and approved
+   your network security policy. Consult your IT staff to find an accepted and approved
    process by which external resources can be imported or temporarily accessed.
    These images are regularly updated with new features, bug fixes and patches,
    and you might want to download them regularly. In case your offline instance

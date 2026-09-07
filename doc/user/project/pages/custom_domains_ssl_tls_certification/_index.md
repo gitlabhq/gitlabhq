@@ -181,7 +181,7 @@ When your domain becomes active, your website is available through your domain n
 
 Additionally:
 
-- Domain verification is **required for GitLab.com users**.
+- Domain verification is required for GitLab.com users.
   For GitLab Self-Managed, your GitLab administrator has the option
   to [disable custom domain verification](../../../../administration/pages/_index.md#custom-domain-verification).
 - [DNS propagation might take some time (up to 24 hours)](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/),

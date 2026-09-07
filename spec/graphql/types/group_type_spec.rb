@@ -54,7 +54,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
   describe 'fields with :ai_workflows scope' do
     # These fields are redefined by Types::Namespaces::GroupInterface or
     # GroupType itself, so the scopes declared on NamespaceType do not apply.
-    %w[id name fullPath webUrl description projects].each do |field_name|
+    %w[id name fullPath webUrl description projects labels].each do |field_name|
       it "includes :ai_workflows scope for the #{field_name} field" do
         field = described_class.fields[field_name]
         expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)

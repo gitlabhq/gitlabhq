@@ -254,6 +254,95 @@ RSpec.describe Tooling::ParallelRSpecRunner, feature_category: :tooling do # rub
     end
     # rubocop:enable Gitlab/Json
 
+    context 'with test balancing (parallel job)' do
+      let(:rspec_args) { nil }
+      let(:balancing_runner) { instance_double(Gitlab::TestBalancing::Runner::Rspec) }
+      let(:master_report_file) do
+        Tempfile.new('master_report.json').tap do |f|
+          f.write(JSON.dump({ '01_spec.rb' => 65 })) # rubocop:disable Gitlab/Json -- standard JSON is sufficient
+          f.rewind
+        end
+      end
+
+      subject(:runner) { described_class.new(rspec_args: rspec_args) }
+
+      before do
+        stub_env('CI_NODE_TOTAL', '4')
+        stub_env('GLCI_USE_TEST_BALANCING', 'true')
+        stub_env('GITLAB_CI', 'true')
+        stub_env('KNAPSACK_RSPEC_SUITE_REPORT_PATH', master_report_file.path)
+        allow(Knapsack.logger).to receive(:info)
+        allow(allocator_builder).to receive(:filter_tests=).with(filter_tests)
+        allow(FileUtils).to receive(:mkdir_p)
+        allow(File).to receive(:write).and_call_original
+        allow(File).to receive(:write).with(%r{node_specs_expected_duration\.json}, anything)
+      end
+
+      after do
+        master_report_file.close
+        master_report_file.unlink
+      end
+
+      context 'when the node has no allocated tests' do
+        let(:node_tests) { [] }
+
+        it 'exits gracefully without balancing or running rspec' do
+          expect(Gitlab::TestBalancing::Runner::Rspec).not_to receive(:new)
+          expect(runner).not_to receive(:exec)
+
+          runner.run
+        end
+      end
+
+      context 'when GLCI_USE_TEST_BALANCING is not set' do
+        before do
+          stub_env('GLCI_USE_TEST_BALANCING', nil)
+        end
+
+        it 'falls back to the static split without balancing' do
+          expect(Gitlab::TestBalancing::Runner::Rspec).not_to receive(:new)
+          expect(runner).to receive(:exec).with(*(%w[bundle exec rspec --] + node_tests))
+
+          runner.run
+        end
+      end
+
+      it 'hands the node split (with durations) to the gem runner and exits with its status' do
+        expect(Gitlab::TestBalancing::Runner::Rspec).to receive(:new).with(
+          test_splits: [{ path: '01_spec.rb', expected_duration: 65 }, { path: '03_spec.rb', expected_duration: nil }],
+          rspec_args: [],
+          logger: Knapsack.logger
+        ).and_return(balancing_runner)
+
+        expect(balancing_runner).to receive(:run)
+          .and_return(Gitlab::TestBalancing::Runner::Rspec::Result.new(status: 0, unavailable: false))
+
+        expect(runner).to receive(:exit).with(0)
+
+        runner.run
+      end
+
+      it 'exits with the failure status returned by the gem runner' do
+        allow(Gitlab::TestBalancing::Runner::Rspec).to receive(:new).and_return(balancing_runner)
+        expect(balancing_runner).to receive(:run)
+          .and_return(Gitlab::TestBalancing::Runner::Rspec::Result.new(status: 1, unavailable: false))
+
+        expect(runner).to receive(:exit).with(1)
+
+        runner.run
+      end
+
+      it 'falls back to the static split when the feature is unavailable' do
+        allow(Gitlab::TestBalancing::Runner::Rspec).to receive(:new).and_return(balancing_runner)
+        expect(balancing_runner).to receive(:run)
+          .and_return(Gitlab::TestBalancing::Runner::Rspec::Result.new(status: 0, unavailable: true))
+
+        expect(runner).to receive(:exec).with(*(%w[bundle exec rspec --] + node_tests))
+
+        runner.run
+      end
+    end
+
     def expect_command(cmd)
       expect(runner).to receive(:exec).with(*cmd)
     end

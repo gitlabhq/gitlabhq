@@ -650,13 +650,13 @@ You can filter by the following:
 
 #### Filtering issues in a group board
 
-When [filtering issues](#filter-issues) in a **group** board, keep this behavior in mind:
+When [filtering issues](#filter-issues) in a group board, keep this behavior in mind:
 
 - Milestones: you can filter by the milestones belonging to the group and its descendant groups.
 - Labels: you can only filter by the labels belonging to the group but not its descendant groups.
 
 When you edit issues individually using the right sidebar, you can additionally select the
-milestones and labels from the **project** that the issue is from.
+milestones and labels from the project that the issue is from.
 
 ### Move issues and lists
 

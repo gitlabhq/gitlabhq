@@ -3,12 +3,6 @@
 Rails/StrongParams:
   Exclude:
     - 'app/controllers/groups/registry/repositories_controller.rb'
-    - 'app/controllers/projects/merge_requests/application_controller.rb'
-    - 'app/controllers/projects/merge_requests/conflicts_controller.rb'
-    - 'app/controllers/projects/merge_requests/creations_controller.rb'
-    - 'app/controllers/projects/merge_requests/diffs_controller.rb'
-    - 'app/controllers/projects/merge_requests/drafts_controller.rb'
-    - 'app/controllers/projects/merge_requests_controller.rb'
     - 'app/controllers/projects/registry/repositories_controller.rb'
     - 'app/controllers/projects/registry/tags_controller.rb'
     - 'ee/app/controllers/admin/emails_controller.rb'

@@ -206,7 +206,7 @@ Keep in mind the following observations related to this example:
 - The **Test** stage is used in the calculation for the overall time of
   the cycle. It is included in the **Review** process, as every MR should be
   tested.
-- This example illustrates only **one cycle** of the seven stages. The value stream analytics dashboard
+- This example illustrates only one cycle of the seven stages. The value stream analytics dashboard
   shows the median time for multiple cycles.
 
 ### Cumulative label event duration

@@ -336,6 +336,12 @@ const getTokenTypeFromUrlParamKey = (urlParamKey) =>
   tokenTypes.find((tokenType) => getUrlParams(tokenType).includes(urlParamKey));
 
 const getTokenTypeFromApiParamKey = (apiParamKey) => {
+  // Delete `isLegacyTypesKey` once https://gitlab.com/gitlab-org/gitlab/-/work_items/596878 is complete
+  const isLegacyTypesKey = apiParamKey === 'types';
+  if (isLegacyTypesKey) {
+    return TOKEN_TYPE_TYPE;
+  }
+
   return tokenTypes.find((tokenType) => {
     return getApiParams(tokenType).includes(apiParamKey);
   });
@@ -501,7 +507,6 @@ const convertToTokenValue = (token, baseValue) => {
     case TOKEN_TYPE_CONFIDENTIAL:
       return trueYesFalseNo(baseValue);
     case TOKEN_TYPE_SUBSCRIBED:
-    case TOKEN_TYPE_TYPE:
       return baseValue.toUpperCase();
     case TOKEN_TYPE_HEALTH:
       if (isWildcardValue(token, capitalize(baseValue))) {
@@ -537,12 +542,16 @@ export const getSavedViewFilterTokens = (filterObject, options = {}) => {
   const iterationCadenceIds = [filterObject[iterationCadenceKey] ?? []].flat().filter(Boolean);
 
   const tokens = Object.entries(filterObject)
-    .filter(
-      ([key]) =>
-        (apiParamKeys.concat('workItemTypeIds').includes(key) ||
+    .filter(([key]) => {
+      // Delete `isLegacyTypesKey` once https://gitlab.com/gitlab-org/gitlab/-/work_items/596878 is complete
+      const isLegacyTypesKey = key === 'types';
+      return (
+        (isLegacyTypesKey ||
+          apiParamKeys.includes(key) ||
           ['not', 'or', 'in', HIERARCHY_FILTERS].includes(key)) &&
-        (options.includeStateToken || key !== TOKEN_TYPE_STATE),
-    )
+        (options.includeStateToken || key !== TOKEN_TYPE_STATE)
+      );
+    })
     .reduce((acc, [key, value]) => {
       // Here the delimited search values are again formatted into array for filter tokens
       if (key === 'search' && value?.includes(SAVED_VIEW_SEARCH_DELIMITER)) {
@@ -822,7 +831,7 @@ const formatData = (token) => {
     return data === 'yes';
   }
   if (token.type === TOKEN_TYPE_TYPE) {
-    return data.toUpperCase();
+    return convertToGraphQLId(TYPENAME_WORK_ITEMS_TYPE, data);
   }
   if (token.type === TOKEN_TYPE_HEALTH) {
     return camelCase(data);

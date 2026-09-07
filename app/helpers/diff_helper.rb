@@ -31,11 +31,13 @@ module DiffHelper
     options = { ignore_whitespace_change: hide_whitespace?, expanded: diffs_expanded?, use_extra_viewer_as_main: true }
 
     if action_name == 'diff_for_path' || action_name == 'diff_by_file_hash'
+      diff_params = params.permit(:old_path, :new_path, :file_identifier)
+
       options[:expanded] = true
-      options[:paths] = params.values_at(:old_path, :new_path)
+      options[:paths] = diff_params.values_at(:old_path, :new_path)
       options[:use_extra_viewer_as_main] = false
 
-      if params[:file_identifier]&.include?('.ipynb')
+      if diff_params[:file_identifier]&.include?('.ipynb')
         options[:max_patch_bytes_for_file_extension] = {
           '.ipynb' => 1.megabyte
         }

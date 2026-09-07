@@ -141,7 +141,7 @@ your merge request template with their values:
 
 {{< /details >}}
 
-You can set a description template at the **instance level** for issues
+You can set a description template at the instance level for issues
 and merge requests by using an [instance template repository](../../administration/settings/instance_template_repository.md).
 You can also use the instance template repository for file templates.
 
@@ -157,7 +157,7 @@ that you can use when creating a new project in the instance.
 
 {{< /details >}}
 
-With **group-level** description templates, you can select a project within the group to store
+With group-level description templates, you can select a project within the group to store
 your templates. Then, you can access these templates in other projects in the group.
 As a result, you can use the same templates in issues and merge requests in all the group's projects.
 

@@ -103,6 +103,17 @@ You can find more information at each of the pages below:
 - [Dependency scanning offline directions](../dependency_scanning/dependency_scanning_sbom/_index.md#offline-environment)
 - [IaC scanning offline directions](../iac_scanning/_index.md#offline-configuration)
 
+### Package Metadata Database
+
+[Dependency scanning](../dependency_scanning/_index.md) and
+[continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md) read the Package
+Metadata Database for license, advisory, and vulnerability risk assessment data.
+This database is a data artifact, not an analyzer image, so loading the analyzer images does not provide it.
+An offline instance has none of it until you copy the exports across.
+
+For the procedure, see
+[enabling the Package Metadata Database](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
+
 ## Loading Docker images onto your offline host
 
 To use many GitLab features, including security scans

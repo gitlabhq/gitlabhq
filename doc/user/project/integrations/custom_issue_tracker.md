@@ -32,17 +32,14 @@ To turn on a custom issue tracker in a project:
 1. Select **Custom issue tracker**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Fill in the required fields:
-
    - **Project URL**: The URL to view all the issues in the custom issue tracker.
    - **Issue URL**: The URL to view an issue in the custom issue tracker. The URL must contain `:id`.
      GitLab replaces `:id` with the issue number (for example,
      `https://customissuetracker.com/project-name/:id`, which becomes
      `https://customissuetracker.com/project-name/123`).
-   - **New issue URL**:
-     <!-- The line below was originally added in January 2018: <https://gitlab.com/gitlab-org/gitlab/-/commit/778b231f3a5dd42ebe195d4719a26bf675093350> -->
-     **This URL is not used and an [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/327503) to remove it**.
-     Enter any URL.
-
+   - **New issue URL**: Enter any URL.
+     This URL is not used and an [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/327503)
+     to remove it.
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 

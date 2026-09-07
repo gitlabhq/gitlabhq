@@ -174,8 +174,8 @@ only visible to project members. The project owner can
 When a Service Desk ticket becomes public, the ticket creator's and participants' email addresses are
 visible to signed-in users with the Reporter, Developer, Maintainer, or Owner role for the project.
 
-Anyone in your project can use the Service Desk email address to create a ticket in this project, **regardless
-of their role** in the project.
+Anyone in your project can use the Service Desk email address to create a ticket in this project, regardless
+of their role in the project.
 
 The unique internal email address is visible to project members with at least
 the Planner role in your GitLab instance.

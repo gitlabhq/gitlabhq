@@ -15,7 +15,8 @@ module ActiveContext
           content_method: nil,
           remove_content: false,
           next_model_only: false,
-          error_types: [StandardError]
+          error_types: [StandardError],
+          rate_limit_error_types: []
         )
           grouped_processing_result(refs.group_by(&:root_namespace_id)) do |root_namespace_id, namespace_refs|
             generate_and_apply_embeddings_for_root_namespace(
@@ -26,7 +27,8 @@ module ActiveContext
               content_method: content_method,
               remove_content: remove_content,
               next_model_only: next_model_only,
-              error_types: error_types
+              error_types: error_types,
+              rate_limit_error_types: rate_limit_error_types
             )
           end
         end
@@ -38,7 +40,8 @@ module ActiveContext
           content_method: nil,
           remove_content: false,
           next_model_only: false,
-          error_types: [StandardError]
+          error_types: [StandardError],
+          rate_limit_error_types: []
         )
           generate_and_apply_embeddings_for_root_namespace(
             refs: refs,
@@ -48,13 +51,14 @@ module ActiveContext
             content_method: content_method,
             remove_content: remove_content,
             next_model_only: next_model_only,
-            error_types: error_types
+            error_types: error_types,
+            rate_limit_error_types: rate_limit_error_types
           )
         end
 
         private
 
-        def generate_and_apply_embeddings_for_root_namespace(
+        def generate_and_apply_embeddings_for_root_namespace( # rubocop:disable Metrics/ParameterLists -- it forwards the public methods' kwargs
           refs:,
           root_namespace_id:,
           queue_name: nil,
@@ -62,11 +66,13 @@ module ActiveContext
           content_method: nil,
           remove_content: false,
           next_model_only: false,
-          error_types: [StandardError]
+          error_types: [StandardError],
+          rate_limit_error_types: []
         )
           with_batch_handling(
             refs,
             error_types: error_types,
+            rate_limit_error_types: rate_limit_error_types,
             queue_name: queue_name,
             preprocessor: 'embeddings') do
             docs_to_process = refs.flat_map do |ref|

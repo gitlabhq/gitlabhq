@@ -6,6 +6,10 @@ module Resolvers
 
     authorize :read_label
 
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
     type Types::LabelType.connection_type, null: true
 
     argument :title, GraphQL::Types::String,

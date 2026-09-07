@@ -138,8 +138,8 @@ Prerequisites:
 1. Complete the fields, and select the desired [scopes](#scope).
 1. Select **Create deploy token**.
 
-Record the deploy token's values. After you leave or refresh the page, **you cannot access it
-again**.
+Record the deploy token's values. After you leave or refresh the page, you cannot access it
+again.
 
 ## Revoke a deploy token
 

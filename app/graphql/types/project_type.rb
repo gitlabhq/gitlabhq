@@ -784,6 +784,7 @@ module Types
     field :labels, Types::LabelType.connection_type,
       null: true,
       description: 'Labels available on this project.',
+      scopes: [:api, :read_api, :ai_workflows],
       resolver: Resolvers::LabelsResolver
 
     field :work_item_types, Types::WorkItems::TypeType.connection_type,

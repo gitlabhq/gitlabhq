@@ -32,6 +32,10 @@ module Resolvers
       false
     end
 
+    def self.authorization_scopes
+      [:api, :read_api]
+    end
+
     def self.singular_type
       return unless type
 
@@ -176,7 +180,9 @@ module Resolvers
     end
 
     def self.authorization
-      @authorization ||= ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(try(:required_permissions))
+      @authorization ||= ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(
+        try(:required_permissions), authorization_scopes
+      )
     end
 
     def self.authorized?(object, context)

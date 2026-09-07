@@ -79,7 +79,7 @@ GitLab recommends using [Flux for GitOps](gitops.md). To get started, see [Tutor
 
 In a [**CI/CD** workflow](ci_cd_workflow.md), you configure GitLab CI/CD to use the Kubernetes API to query and update your cluster.
 
-This workflow is considered **push-based**, because GitLab pushes requests
+This workflow is considered push-based, because GitLab pushes requests
 from GitLab CI/CD to your cluster.
 
 Use this workflow:

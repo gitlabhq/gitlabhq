@@ -22,18 +22,21 @@ module ActiveContext
       specs_buffer = []
       scores = {}
       failures = []
+      rate_limited = []
 
       collect_specs_from_queue(redis, specs_buffer, scores)
 
       return [0, 0] if specs_buffer.blank?
 
       refs = deserialize_all(specs_buffer)
-      failures = process_refs(refs, failures)
+      failures, rate_limited = process_refs(refs, failures, rate_limited)
 
-      track_failures!(failures)
-      cleanup_processed_refs(redis, scores, start_time, failures.count)
+      track_failures!(failures, rate_limited)
+      cleanup_processed_refs(redis, scores, start_time, failures.count, rate_limited.count)
 
-      [specs_buffer.count, failures.count]
+      # Rate-limited refs count as failures. Without them, `should_re_enqueue?`
+      # re-enqueues the worker every second for refs that are not due yet.
+      [specs_buffer.count, failures.count + rate_limited.count]
     end
 
     private
@@ -53,12 +56,13 @@ module ActiveContext
       end
     end
 
-    def process_refs(refs, failures)
+    def process_refs(refs, failures, rate_limited)
       preprocess_result = Reference.preprocess_references(refs, **queue.preprocess_options)
 
       preprocess_result[:successful].each { |ref| bulk_processor.process(ref) }
 
       failures += preprocess_result[:failed]
+      rate_limited += preprocess_result[:rate_limited]
 
       flushing_duration_s = Benchmark.realtime do
         failures += bulk_processor.flush
@@ -66,13 +70,13 @@ module ActiveContext
 
       log_indexer_flushed(flushing_duration_s)
 
-      failures
+      [failures, rate_limited]
     end
 
-    def cleanup_processed_refs(redis, scores, start_time, failures_count)
+    def cleanup_processed_refs(redis, scores, start_time, failures_count, rate_limited_count)
       scores.each do |set_key, (first_score, last_score, count)|
         redis.zremrangebyscore(set_key, first_score, last_score)
-        log_indexing_end(set_key, count, first_score, last_score, failures_count, start_time)
+        log_indexing_end(set_key, count, first_score, last_score, failures_count, rate_limited_count, start_time)
       end
     end
 
@@ -96,7 +100,7 @@ module ActiveContext
       )
     end
 
-    def log_indexing_end(set_key, count, first_score, last_score, failures_count, start_time)
+    def log_indexing_end(set_key, count, first_score, last_score, failures_count, rate_limited_count, start_time)
       duration_s = current_time - start_time
 
       duration_ms = duration_s.to_f * 1_000.to_f
@@ -110,6 +114,7 @@ module ActiveContext
         'meta.indexing.first_score' => first_score,
         'meta.indexing.last_score' => last_score,
         'meta.indexing.failures_count' => failures_count,
+        'meta.indexing.rate_limited_count' => rate_limited_count,
         'meta.indexing.bulk_execution_duration_s' => duration_s,
         'meta.indexing.bulk_execution_duration_per_ref_ms' => duration_per_ref_ms
       )
@@ -131,8 +136,9 @@ module ActiveContext
       Process.clock_gettime(Process::CLOCK_MONOTONIC)
     end
 
-    def track_failures!(failures)
+    def track_failures!(failures, rate_limited)
       ActiveContext.track!(failures, queue: queue.failure_queue) unless failures.empty?
+      ActiveContext.track!(rate_limited, queue: queue.rate_limit_failure_queue) unless rate_limited.empty?
     end
   end
 end

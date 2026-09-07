@@ -177,7 +177,7 @@ a user with that email address already exists. You might see the following error
 when the:
 
 - User exists, but does not have a SAML identity linked.
-- User exists, has a SAML identity, **and** has a SCIM identity that is set to `active: false`.
+- User exists, has a SAML identity, and has a SCIM identity that is set to `active: false`.
 - User exists, but is not a member of the associated top-level group and SAML SSO enforcement is enabled.
 
 ```plaintext

@@ -608,7 +608,7 @@ To allowlist specific vulnerabilities, follow these steps:
 
 #### `vulnerability-allowlist.yml` data format
 
-The `vulnerability-allowlist.yml` file is a YAML file that specifies a list of CVE IDs of vulnerabilities that are **allowed** to exist, because they're false positives, or they're not applicable.
+The `vulnerability-allowlist.yml` file is a YAML file that specifies a list of CVE IDs of vulnerabilities that are allowed to exist, because they're false positives, or they're not applicable.
 
 If a matching entry is found in the `vulnerability-allowlist.yml` file, the following happens:
 

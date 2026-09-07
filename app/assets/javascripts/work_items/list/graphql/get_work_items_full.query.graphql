@@ -27,7 +27,6 @@ query getWorkItemsFull(
   $milestoneWildcardId: MilestoneWildcardId
   $myReactionEmoji: String
   $subscribed: SubscriptionStatus
-  $types: [IssueType!]
   $updatedAfter: Time
   $updatedBefore: Time
   $workItemTypeIds: [WorkItemsTypeID!]
@@ -73,7 +72,6 @@ query getWorkItemsFull(
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
       subscribed: $subscribed
-      types: $types
       updatedAfter: $updatedAfter
       updatedBefore: $updatedBefore
       workItemTypeIds: $workItemTypeIds

@@ -354,7 +354,7 @@ export const filtersMap = {
   },
   [TOKEN_TYPE_TYPE]: {
     [API_PARAM]: {
-      [NORMAL_FILTER]: 'types',
+      [NORMAL_FILTER]: 'workItemTypeIds',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
@@ -747,6 +747,7 @@ export const savedViewFilters = {
     type: TOKEN_TYPE_SUBSCRIBED,
     operator: OPERATOR_IS,
   },
+  // Delete `types` once https://gitlab.com/gitlab-org/gitlab/-/work_items/596878 is complete
   types: {
     type: TOKEN_TYPE_TYPE,
     operator: OPERATOR_IS,

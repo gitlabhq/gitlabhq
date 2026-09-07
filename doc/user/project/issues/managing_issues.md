@@ -976,7 +976,7 @@ For more information, see [GitLab Status Page](../../../operations/incident_mana
 You can also use quick actions to manage issues.
 
 Some actions don't have corresponding UI buttons yet.
-You can do the following **only by using quick actions**:
+You can do the following only by using quick actions:
 
 - [Add or remove a Zoom meeting](associate_zoom_meeting.md) ([`/zoom` and `/remove_zoom`](../quick_actions.md#zoom)).
 - [Publish an issue](#publish-an-issue) ([`/publish`](../quick_actions.md#publish)).

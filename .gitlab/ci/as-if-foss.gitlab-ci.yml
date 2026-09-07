@@ -88,6 +88,8 @@ start-as-if-foss:
     # Variables for `detect-tests` to work in FOSS
     FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: $FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH
     FIND_CHANGES_MERGE_REQUEST_IID: $FIND_CHANGES_MERGE_REQUEST_IID
+    # Mirror the parent's test balancing decision (resolved from the MR label)
+    GLCI_USE_TEST_BALANCING: $GLCI_USE_TEST_BALANCING
     # Enabling each individual jobs
     ENABLE_RSPEC: $ENABLE_RSPEC
     ENABLE_RSPEC_FAST_SPEC_HELPER: $ENABLE_RSPEC_FAST_SPEC_HELPER

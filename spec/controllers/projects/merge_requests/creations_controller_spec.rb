@@ -216,6 +216,22 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
     end
   end
 
+  describe 'GET #branch_from' do
+    it 'fetches the commit when a ref is given' do
+      get :branch_from, params: base_params.merge(ref: 'master')
+
+      expect(assigns(:commit)).not_to be_nil
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'does not load the commit when no ref is given' do
+      get :branch_from, params: base_params
+
+      expect(assigns(:commit)).to be_nil
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
   describe 'GET #branch_to' do
     before do
       allow(Ability).to receive(:allowed?).and_call_original

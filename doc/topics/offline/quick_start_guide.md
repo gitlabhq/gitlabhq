@@ -244,8 +244,36 @@ Note the following in relation to use of the Package Metadata Database:
 
 Package metadata is stored in the following Google Cloud Provider (GCP) buckets which are maintained and owned by GitLab:
 
-- License Scanning - `prod-export-license-bucket-1a6c642fc4de57d4`
-- Dependency scanning - `prod-export-advisory-bucket-1a6c642fc4de57d4`
+- License Scanning: `prod-export-license-bucket-1a6c642fc4de57d4`
+- Dependency scanning: `prod-export-advisory-bucket-1a6c642fc4de57d4`
+- CVE enrichment: `prod-export-cve-enrichment-bucket-1a6c642fc4de57d4`
+
+CVE enrichment carries the [EPSS score and KEV status](../../user/application_security/vulnerabilities/risk_assessment_data.md)
+shown on a vulnerability.
+An instance that synchronizes only the license and advisory buckets has dependency scanning and
+license data, and no risk assessment data.
+
+> [!note]
+> For licenses, advisories, and CVE enrichment, GitLab reads the directory under
+> `vendor/package_metadata` whenever it exists, in preference to the bucket.
+> A directory that is present always wins, and there is no fallback to the bucket.
+> A directory that holds stale data therefore serves stale data, and reports no error.
+> [Malware advisories](#confirm-gitlab-detects-the-offline-directory) follow the same rule.
+
+### Before the first load
+
+Decide which package registry types to synchronize before you download anything.
+Only the types enabled in
+[admin settings](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync)
+are imported.
+If you download a type you disabled, it costs time and disk space, and none of it reaches the
+database.
+
+A throttle in the sync job sets the import rate, not the resources of the instance, so a larger
+instance does not import faster.
+Each run also stops after a fixed duration and resumes from its checkpoint on the next run.
+A first load with every registry type enabled can take about a day.
+To shorten it, narrow the enabled types.
 
 ### Using the gsutil tool to download the package metadata exports
 
@@ -267,6 +295,10 @@ Package metadata is stored in the following Google Cloud Provider (GCP) buckets 
    # For dependency scanning
    export PKG_METADATA_BUCKET=prod-export-advisory-bucket-1a6c642fc4de57d4
    export DATA_DIR="advisories"
+
+   # For CVE enrichment
+   export PKG_METADATA_BUCKET=prod-export-cve-enrichment-bucket-1a6c642fc4de57d4
+   export DATA_DIR="cve_enrichment"
    ```
 
 1. Download the package metadata exports.
@@ -280,6 +312,24 @@ Package metadata is stored in the following Google Cloud Provider (GCP) buckets 
    # exports can be downloaded using a machine with the allowed access, and then copied to the root of the GitLab Rails directory.
    rsync rsync://example_username@gitlab.example.com/package_metadata/$DATA_DIR "$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/$DATA_DIR"
    ```
+
+1. For CVE enrichment only, move the downloaded files up one directory level.
+
+   The license and advisory buckets hold one directory for each package registry under `v2/`, and GitLab
+   reads a copy of them as they are.
+   CVE enrichment has no package registry, and its bucket holds a single `cve_enrichment` directory
+   in that position instead.
+   GitLab reads CVE enrichment from `cve_enrichment/v2/<sequence>/<chunk>.ndjson`, at that exact
+   depth. A copy made as it is leaves the files one directory level too deep.
+   GitLab then imports nothing and logs nothing.
+
+   ```shell
+   cd "$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/cve_enrichment/v2"
+   cp -a cve_enrichment/. . && rm -r cve_enrichment
+   ```
+
+   Repeat this step after every download of the CVE enrichment export.
+   `cp -a` merges new files into sequence directories that already exist, where `mv` would stop.
 
 ### Using the Google Cloud Storage REST API to download the package metadata exports
 
@@ -682,6 +732,33 @@ For dependency scanning:
 */30 * * * * gsutil -m rsync -r -d gs://prod-export-advisory-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/advisories
 ```
 
+For CVE enrichment, omit `-d` and chain the move step from the download procedure:
+
+```plaintext
+*/30 * * * * gsutil -m rsync -r gs://prod-export-cve-enrichment-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/cve_enrichment && cd $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/cve_enrichment/v2 && cp -a cve_enrichment/. . && rm -r cve_enrichment
+```
+
+After the move step the local layout no longer matches the bucket, so `-d` would delete the moved
+files. The move also removes the directory `gsutil rsync` compares against, so every run
+re-downloads the whole export whether or not `-d` is present.
+
+> [!warning]
+> The `-d` flag in the license and advisory examples deletes local files that are no longer in the
+> bucket, and that can discard an import in progress.
+> GitLab records the last file it imported for each data type and package registry, and resumes from
+> the file after it.
+> If a prune removes the sequence directory that record points to, GitLab cannot find the record.
+> It then imports the whole data type again from the start.
+> Before you prune, confirm that the recorded sequence for each data type is still on disk.
+> To read the recorded sequences, see [verify data](#verify-data).
+> On a directory that more than one instance reads, prune only behind the oldest sequence that any of
+> them recorded.
+>
+> This behavior applies to the license, advisory, and CVE enrichment exports, which GitLab imports one file
+> at a time.
+> The malware advisory procedure described previously is different.
+> It replaces a complete snapshot on every run, and `rsync --delete` is required there.
+
 ### Change note
 
 The directory for package metadata changed with the release of 16.2 from `vendor/package_metadata_db` to `vendor/package_metadata/licenses`. If this directory already exists on the instance and dependency scanning needs to be added then you need to take the following steps.
@@ -693,6 +770,67 @@ The directory for package metadata changed with the release of 16.2 from `vendor
    ```shell
    sed -i '.bckup' -e 's#vendor/package_metadata_db#vendor/package_metadata/licenses#g' [FILE ...]
    ```
+
+### Instances installed with the Helm chart
+
+These procedures write to the Rails directory of a Linux package installation.
+The sync jobs run in Sidekiq.
+On an installation that uses the GitLab Helm chart, the same files must be on a volume
+that the Sidekiq pods read at `/srv/gitlab/vendor/package_metadata`.
+A volume mounted only on the toolbox pod is not enough.
+The sync still runs in Sidekiq, still finds no directory, and still attempts the network path on
+every run.
+
+Declare the volume in the chart values under `gitlab.sidekiq`:
+
+```yaml
+gitlab:
+  sidekiq:
+    extraVolumes: |
+      - name: package-metadata
+        persistentVolumeClaim:
+          claimName: gitlab-package-metadata
+          readOnly: true
+    extraVolumeMounts: |
+      - name: package-metadata
+        mountPath: /srv/gitlab/vendor/package_metadata
+        readOnly: true
+```
+
+No other setting is needed.
+GitLab selects the offline path from the presence of the directory.
+The change takes effect on the next sync run, with no restart and no Rake task.
+
+Every Sidekiq pod mounts the claim, so give the volume an access mode that allows that, such as
+`ReadOnlyMany`.
+GitLab only reads these files.
+
+Watch for two mistakes in the values:
+
+- Write `extraVolumes` and `extraVolumeMounts` as
+  [strings, not YAML lists](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/).
+  A list fails at render with a type error that names the template.
+  A values file that puts the keys at the wrong level fails silently instead.
+  Helm ignores the key it does not recognize, the Deployment renders without the mount, and the
+  command succeeds.
+  A successful render is not proof.
+  Confirm that the mount reached the Deployment:
+
+  ```shell
+  kubectl get deployment -l app=sidekiq -o yaml | grep -c 'vendor/package_metadata'
+  ```
+
+  The chart passes these strings through the Helm template engine, so escape any `{{` in a volume
+  name or mount path.
+
+- The mount belongs in the values, not with `kubectl set env` or `kubectl patch`.
+  The next `helm upgrade` overwrites it.
+  On a deployment that reconciles from a stored configuration, the next reconcile returns the
+  instance to the network path.
+  In an offline environment, that means no vulnerability data at all.
+
+To follow an import, read the recorded sequences and the logs on the Sidekiq pods
+rather than the Webservice pods, as described in [troubleshooting](#troubleshooting).
 
 ### Troubleshooting
 
@@ -713,10 +851,20 @@ The file structure in `vendor/package_metadata` must coincide with the package r
 - For licenses:`$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v2/maven/**/*.ndjson`.
 - For advisories:`$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/advisories/v2/maven/**/*.ndjson`.
 
+CVE enrichment is not divided by package registry type, and its files must be exactly two directory
+levels below the version directory:
+
+- For CVE enrichment: `$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/cve_enrichment/v2/*/*.ndjson`.
+
+A copy of the CVE enrichment bucket made as it is puts the files one level deeper than this and
+GitLab reads none of them.
+To correct it, see [the CVE enrichment step in the download procedure](#using-the-gsutil-tool-to-download-the-package-metadata-exports).
+
 You can check if GitLab recognizes the file path in the [Rails console](../../administration/operations/rails_console.md):
 
 - For licenses: `sudo gitlab-rails runner "puts File.exist?(PackageMetadata::SyncConfiguration::Location::LICENSES_PATH)"`
 - For advisories: `sudo gitlab-rails runner "puts File.exist?(PackageMetadata::SyncConfiguration::Location::ADVISORIES_PATH)"`
+- For CVE enrichment: `sudo gitlab-rails runner "puts File.exist?(PackageMetadata::SyncConfiguration::Location::CVE_ENRICHMENT_PATH)"`
 
 If the above commands return `false`, GitLab is not able to find the expected package path. All folders and files in the path must have `755` permissions. To update the permissions:
 

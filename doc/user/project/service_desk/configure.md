@@ -146,7 +146,7 @@ For more information, see [system header and footer messages](../../../administr
 ## Use a custom template for Service Desk tickets
 
 You can select one [description template](../description_templates.md#create-a-description-template)
-**per project** to be appended to every new Service Desk ticket description.
+per project to be appended to every new Service Desk ticket description.
 
 You can set description templates at various levels:
 

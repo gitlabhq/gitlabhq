@@ -20,12 +20,13 @@ module ActiveContext
       end
 
       def preprocess(refs, **options)
-        result = { successful: [], failed: [] }
+        result = { successful: [], failed: [], rate_limited: [] }
 
         refs_by_class = refs.group_by(&:class)
 
         refs_by_class.each do |klass, class_refs|
           all_failed_refs = []
+          all_rate_limited_refs = []
           current_successful_refs = class_refs
 
           klass.eligible_preprocessors.each do |preprocessor|
@@ -34,11 +35,13 @@ module ActiveContext
             processed = preprocessor[:block].call(current_successful_refs, **options)
 
             all_failed_refs.concat(processed[:failed])
+            all_rate_limited_refs.concat(processed[:rate_limited] || [])
             current_successful_refs = processed[:successful]
           end
 
           result[:successful].concat(current_successful_refs)
           result[:failed].concat(all_failed_refs)
+          result[:rate_limited].concat(all_rate_limited_refs)
         end
 
         result
@@ -86,24 +89,29 @@ module ActiveContext
       def with_batch_handling(
         refs,
         error_types: [StandardError],
+        rate_limit_error_types: [],
         queue_name: nil,
         preprocessor: nil)
-        return { successful: [], failed: [] } unless refs.any?
+        return { successful: [], failed: [], rate_limited: [] } unless refs.any?
 
         begin
           yield(refs)
 
-          { successful: refs, failed: [] }
+          { successful: refs, failed: [], rate_limited: [] }
+        rescue *rate_limit_error_types => e
+          log_batch_failure(e, refs, queue_name: queue_name, preprocessor: preprocessor)
+
+          { successful: [], failed: [], rate_limited: refs }
         rescue *error_types => e
           log_batch_failure(e, refs, queue_name: queue_name, preprocessor: preprocessor)
 
-          { successful: [], failed: refs }
+          { successful: [], failed: refs, rate_limited: [] }
         rescue StandardError => e
           # This error is not in the caller's `error_types` list.
           # Log it as an error, not a warning, so it does not hide with expected failures.
           log_unexpected_batch_failure(e, refs, queue_name: queue_name, preprocessor: preprocessor)
 
-          { successful: [], failed: refs }
+          { successful: [], failed: refs, rate_limited: [] }
         end
       end
 
@@ -132,12 +140,13 @@ module ActiveContext
       end
 
       def grouped_processing_result(grouped_refs)
-        initial_result = { successful: [], failed: [] }
+        initial_result = { successful: [], failed: [], rate_limited: [] }
         grouped_refs.each_with_object(initial_result) do |(group_key, refs_in_group), result|
           group_result = yield(group_key, refs_in_group)
 
           result[:successful] += group_result[:successful]
           result[:failed] += group_result[:failed]
+          result[:rate_limited] += group_result[:rate_limited].to_a
         end
       end
     end

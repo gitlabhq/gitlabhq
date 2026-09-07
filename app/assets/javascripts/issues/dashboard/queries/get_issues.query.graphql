@@ -22,7 +22,6 @@ query getDashboardIssues(
   $milestoneWildcardId: MilestoneWildcardId
   $myReactionEmoji: String
   $subscribed: SubscriptionStatus
-  $types: [IssueType!]
   $workItemTypeIds: [WorkItemsTypeID!]
   $in: [IssuableSearchableField!]
   $not: NegatedIssueFilterInput
@@ -50,7 +49,6 @@ query getDashboardIssues(
     milestoneWildcardId: $milestoneWildcardId
     myReactionEmoji: $myReactionEmoji
     subscribed: $subscribed
-    types: $types
     workItemTypeIds: $workItemTypeIds
     in: $in
     not: $not

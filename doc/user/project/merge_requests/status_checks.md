@@ -52,7 +52,7 @@ By default, merge requests in projects can be merged even if external status che
 
 ## Lifecycle
 
-External status checks have an **asynchronous** workflow. Merge requests emit a merge request webhook payload to an external service whenever:
+External status checks have an asynchronous workflow. Merge requests emit a merge request webhook payload to an external service whenever:
 
 - A merge request is updated, closed, reopened, approved, unapproved, or merged.
 - Code is pushed to the source branch of the merge request.
@@ -134,7 +134,7 @@ the project.
 #### API to check
 
 This field requires a URL and must use either the HTTP or HTTPS protocols.
-We **recommend** using HTTPS to protect your merge request data in transit.
+We recommend using HTTPS to protect your merge request data in transit.
 The URL must be set and must be unique for the project.
 
 #### Target branch
@@ -149,7 +149,7 @@ The branches list is populated from the project's [protected branches](../reposi
 You can scroll through the list of branches or use the search box
 when there are a lot of branches and the branch you are looking
 for doesn't appear immediately. The search box requires
-**three** alphanumeric characters to be entered for the search to begin.
+three alphanumeric characters to be entered for the search to begin.
 
 If you want the status check to be applied to all merge requests,
 you can select the **All branches** option.
@@ -168,8 +168,8 @@ The **Remove status check?** dialog is then shown.
 ![Status checks delete modal](img/status_checks_delete_modal_v14_0.png)
 
 To complete the deletion of the status check you must select the
-**Remove status check** button. This **permanently** deletes
-the status check and it **is not** recoverable.
+**Remove status check** button. This permanently deletes
+the status check and it is not recoverable.
 
 ## Status checks widget
 

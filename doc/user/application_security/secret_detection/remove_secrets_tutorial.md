@@ -6,7 +6,7 @@ title: 'Tutorial: Remove a secret from your commits'
 ---
 
 If your application uses external resources, you usually need to authenticate your
-application with a **secret**, like a token or key. If a secret is pushed to a
+application with a secret, like a token or key. If a secret is pushed to a
 remote repository, anyone with access to the repository can impersonate you or your
 application. If you accidentally commit a secret, you can still remove it before you push.
 

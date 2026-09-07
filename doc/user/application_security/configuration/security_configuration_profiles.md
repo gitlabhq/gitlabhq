@@ -197,7 +197,7 @@ The system uses visual cues in the inventory to indicate whether your projects a
 - **Solid green bar**: The scanner is fully enabled and active.
 - **Gray/empty bar**: The scanner is not yet configured or enabled.
 - **Partial bar**: Some protection is active (for example, some triggers available in the profile are enabled, but others are not).
-- **Tooltips**: Hover over any coverage bar to see the **last scan** date for pipeline-based scans and specific pipeline status.
+- **Tooltips**: Hover over any coverage bar to see the last scan date for pipeline-based scans and specific pipeline status.
 
 Unlike pipeline-based scans, push protection does not have a last scan date because it runs in real time during the push process.
 

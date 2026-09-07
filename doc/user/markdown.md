@@ -114,7 +114,7 @@ Ensure that there is only one `h1` element on a page, that heading levels are no
 ### Accessible tables
 
 To keep tables accessible and scannable, tables should not have any empty cells.
-If there is no otherwise meaningful value for a cell, consider entering **N/A** for "not applicable" or **None**.
+If there is no otherwise meaningful value for a cell, consider entering "N/A" or "None".
 
 ### Accessible images and videos
 
@@ -655,7 +655,7 @@ You can add task lists anywhere Markdown is supported.
 - In all other places, you cannot select the boxes. You must edit the Markdown manually
   by adding or removing an `x` in the brackets.
 
-Besides complete and incomplete, tasks can also be **inapplicable**. Selecting an inapplicable checkbox
+Besides complete and incomplete, tasks can also be inapplicable. Selecting an inapplicable checkbox
 in an issue, merge request, epic, or comment has no effect.
 
 To create a task list, follow the format of an ordered or unordered list:

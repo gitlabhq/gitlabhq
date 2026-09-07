@@ -87,20 +87,13 @@ scope :code_owner, -> { where(code_owner: true).or(where(rule_type: :code_owner)
 
 ## Class and method documentation
 
-Use [YARD](https://yardoc.org/) syntax if documenting method arguments or return values.
+Document every new or updated method with a short description of what it does, using [YARD](https://yardoc.org/) syntax for its parameters and return value:
 
-Example without YARD syntax:
+- Document `@param` for each argument, and `@return` for methods with an explicit return value.
+- Separate the description from the YARD tags with a blank line.
+- When referring to other methods or classes, use a linkable reference (for example, `{Order#order_ids_by_email}`) and consider the `@see` tag.
 
-```ruby
-class Order
-  # Finds order IDs associated with a user by email address.
-  def order_ids_by_email(email)
-    # ...
-  end
-end
-```
-
-Example using YARD syntax:
+Example:
 
 ```ruby
 class Order

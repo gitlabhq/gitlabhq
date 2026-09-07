@@ -155,6 +155,14 @@ workflow:
         <<: [*default-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
         QUERY_LOG_LINE: "true"
+    # MRs with the 'pipeline:use-test-balancing' label opt in to dynamic RSpec
+    # test balancing. Placed after the database/ruby-next toggles so those win
+    # when stacked; balancing degrades gracefully to the static Knapsack split.
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && $CI_MERGE_REQUEST_LABELS =~ /pipeline:use-test-balancing/'
+      variables:
+        <<: [*default-ruby-variables, *default-merge-request-variables]
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
+        GLCI_USE_TEST_BALANCING: "true"
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:

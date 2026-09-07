@@ -529,7 +529,7 @@ For example, if your project has these labels:
 An issue cannot have both `workflow::backend::review` and `workflow::backend::development`
 labels at the same time, because they both share the same scope: `workflow::backend`.
 
-On the other hand, an issue **can** have both `workflow::backend::review` and `workflow::frontend::review`
+On the other hand, an issue can have both `workflow::backend::review` and `workflow::frontend::review`
 labels at the same time, because they both have different scopes: `workflow::frontend` and `workflow::backend`.
 
 ## Receive notifications when a label is used

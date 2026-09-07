@@ -43,12 +43,12 @@ Use objectives and key results to align your workforce towards common goals and 
 Set a big goal with an objective and use [child objectives and key results](#child-objectives-and-key-results)
 to measure the big goal's completion.
 
-**Objectives** are aspirational goals to be achieved and define **what you're aiming to do**.
+Objectives are aspirational goals to be achieved and define what you're aiming to do.
 They show how an individual's, team's, or department's work impacts overall direction of the
 organization by connecting their work to overall company strategy.
 
 **Key results** are measures of progress against aligned objectives. They express
-**how you know if you have reached your goal** (objective).
+how you know if you have reached your goal (objective).
 By achieving a specific outcome (key result), you create progress for the linked objective.
 
 To know if your OKR makes sense, you can use this sentence:
@@ -601,7 +601,7 @@ access to the OKR.
 Users with Guest or [Minimal](permissions.md#users-with-minimal-access) roles can't access
 the OKR even if they were actively participating before the change.
 
-However, a user with the **Guest role** can create confidential OKRs, but can only view the ones
+However, a user with the Guest role can create confidential OKRs, but can only view the ones
 that they created themselves.
 
 Users with the Guest role or non-members can read the confidential OKR if they are assigned to the OKR.

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_management do
+  using RSpec::Parameterized::TableSyntax
+
   describe '#format' do
     subject(:formatted_tokens) { described_class.format(tokens, **options) }
 
@@ -144,6 +146,47 @@ RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_man
         end.join
 
         is_expected.to eq(%(<span id="LC1" class="line" data-lang="ruby">#{wrapped_characters}</span>))
+      end
+    end
+
+    context 'with line boundaries' do
+      where(:value, :expected_lines) do
+        ''       | []
+        "\n"     | ['']
+        "\n\n"   | ['', '']
+        'text'   | ['text']
+        "text\n" | ['text']
+        "text\n\n" | ['text', '']
+      end
+
+      with_them do
+        let(:tokens) { [[Rouge::Token['Text'], value]] }
+
+        it 'preserves Rouge line semantics' do
+          lines = expected_lines.each_index.map do |index|
+            %(<span id="LC#{index + 1}" class="line" data-lang="ruby">#{expected_lines[index]}</span>)
+          end
+
+          is_expected.to eq(lines.join("\n"))
+        end
+      end
+    end
+
+    context 'with multibyte text and token boundaries' do
+      let(:tokens) do
+        [
+          [Rouge::Token['Text'], "α\n"],
+          [Rouge::Token['Name'], "β\n\ngamma"]
+        ]
+      end
+
+      it 'preserves lines and token types' do
+        is_expected.to eq(
+          "<span id=\"LC1\" class=\"line\" data-lang=\"ruby\">α</span>\n" \
+            "<span id=\"LC2\" class=\"line\" data-lang=\"ruby\"><span class=\"n\">β</span></span>\n" \
+            "<span id=\"LC3\" class=\"line\" data-lang=\"ruby\"></span>\n" \
+            "<span id=\"LC4\" class=\"line\" data-lang=\"ruby\"><span class=\"n\">gamma</span></span>"
+        )
       end
     end
 

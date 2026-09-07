@@ -92,8 +92,8 @@ current date. To view an agent's activity:
 
 The activity list includes:
 
-- Agent registration events: When a new token is **created**.
-- Connection events: When an agent is successfully **connected** to a cluster.
+- Agent registration events. When a new token is created.
+- Connection events. When an agent is successfully connected to a cluster.
 
 The connection status is logged when you connect an agent for
 the first time or after more than an hour of inactivity.

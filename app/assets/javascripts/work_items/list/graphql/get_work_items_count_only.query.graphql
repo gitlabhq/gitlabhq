@@ -23,7 +23,6 @@ query getWorkItemsCountOnly(
   $milestoneWildcardId: MilestoneWildcardId
   $myReactionEmoji: String
   $subscribed: SubscriptionStatus
-  $types: [IssueType!]
   $updatedAfter: Time
   $updatedBefore: Time
   $workItemTypeIds: [WorkItemsTypeID!]
@@ -66,7 +65,6 @@ query getWorkItemsCountOnly(
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
       subscribed: $subscribed
-      types: $types
       updatedAfter: $updatedAfter
       updatedBefore: $updatedBefore
       workItemTypeIds: $workItemTypeIds

@@ -31,7 +31,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :codequality_mr_diff_reports
   ]
   before_action :set_issuables_index, only: [:index]
-  before_action :check_search_rate_limit!, only: [:index], if: -> { params[:search].present? }
+  before_action :check_search_rate_limit!, only: [:index], if: -> { permitted_params[:search].present? }
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
@@ -129,11 +129,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       )
 
     per_page = [
-      (params[:per_page] || MergeRequestDiff::COMMITS_SAFE_SIZE).to_i,
+      (permitted_params[:per_page] || MergeRequestDiff::COMMITS_SAFE_SIZE).to_i,
       MergeRequestDiff::COMMITS_SAFE_SIZE
     ].min
     recent_commits = @merge_request
-      .recent_commits(load_from_gitaly: true, limit: per_page, page: params[:page])
+      .recent_commits(load_from_gitaly: true, limit: per_page, page: permitted_params[:page])
       .with_latest_pipeline(@merge_request.source_branch)
       .with_markdown_cache
     @next_page = recent_commits.next_page
@@ -159,7 +159,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     set_pipeline_variables
     # Capture total count before pagination to ensure accurate count regardless of current page
     @pipelines_count = @pipelines.count
-    @pipelines = @pipelines.page(params[:page])
+    @pipelines = @pipelines.page(permitted_params[:page])
 
     Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
@@ -187,11 +187,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     # Get commits from repository
     # or from cache if already merged
     commits = ContextCommitsFinder.new(project, @merge_request, {
-      search: params[:search],
-      author: params[:author],
-      committed_before: convert_date_to_epoch(params[:committed_before]),
-      committed_after: convert_date_to_epoch(params[:committed_after]),
-      limit: params[:limit]
+      search: context_commits_params[:search],
+      author: context_commits_params[:author],
+      committed_before: convert_date_to_epoch(context_commits_params[:committed_before]),
+      committed_after: convert_date_to_epoch(context_commits_params[:committed_after]),
+      limit: context_commits_params[:limit]
     }).execute
     render json: CommitEntity.represent(commits, { type: :full, request: merge_request })
   end
@@ -262,7 +262,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         if merge_request.errors.present?
           render json: @merge_request.errors, status: :bad_request
         else
-          render json: serializer.represent(@merge_request, serializer: params[:serializer] || 'basic')
+          render json: serializer.represent(@merge_request, serializer: permitted_params[:serializer] || 'basic')
         end
       end
     end
@@ -402,10 +402,35 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def auto_merge_requested?
     # Support params[:merge_when_pipeline_succeeds] during the transition period
-    params[:auto_merge_strategy].present? || params[:merge_when_pipeline_succeeds].present?
+    auto_merge_params[:auto_merge_strategy].present? ||
+      auto_merge_params[:merge_when_pipeline_succeeds].present?
   end
 
   private
+
+  def permitted_params
+    params.permit(:search, :per_page, :page, :file, :serializer)
+  end
+
+  def diff_lookup_params
+    params.permit(:diff_id, :start_sha)
+  end
+
+  def merge_action_params
+    params.permit(:sha, :squash, :merge_request_diff_head_sha, :environment_target)
+  end
+
+  def context_commits_params
+    params.permit(:search, :author, :committed_before, :committed_after, :limit)
+  end
+
+  def auto_merge_params
+    params.permit(:auto_merge_strategy, :merge_when_pipeline_succeeds)
+  end
+
+  def rapid_diffs_params
+    params.permit(:rapid_diffs, :rapid_diffs_disabled)
+  end
 
   def set_issuables_index
     return if request.format.html?
@@ -463,9 +488,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-        if params[:serializer] == 'sidebar_extras'
+        if permitted_params[:serializer] == 'sidebar_extras'
           cache_context = [
-            params[:serializer],
+            permitted_params[:serializer],
             current_user&.cache_key,
             @merge_request.merge_request_assignees.map(&:cache_key),
             @merge_request.merge_request_reviewers.map(&:cache_key)
@@ -475,10 +500,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
             @merge_request,
             with: serializer,
             cache_context: ->(_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
-            serializer: params[:serializer]
+            serializer: permitted_params[:serializer]
           )
         else
-          render json: serializer.represent(@merge_request, serializer: params[:serializer])
+          render json: serializer.represent(@merge_request, serializer: permitted_params[:serializer])
         end
       end
 
@@ -524,7 +549,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @update_current_user_path = expose_path(api_v4_user_preferences_path)
     @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
     @endpoint_diff_batch_url = endpoint_diff_batch_url(@project, @merge_request)
-    @linked_file_url = linked_file_url(@project, @merge_request) if params[:file]
+    @linked_file_url = linked_file_url(@project, @merge_request) if permitted_params[:file]
 
     @diffs_batch_cache_key = @merge_request.diffs_batch_cache_key
 
@@ -538,14 +563,18 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def get_diffs_count
     return if commit
     return @merge_request.context_commits_diff.raw_diffs.size if show_only_context_commits?
-    return @merge_request.merge_request_diffs.find_by_id(params[:diff_id])&.size if params[:diff_id]
-    return @merge_request.merge_head_diff.size if @merge_request.diffable_merge_ref? && params[:start_sha].blank?
+
+    diff_id = diff_lookup_params[:diff_id]
+    return @merge_request.merge_request_diffs.find_by_id(diff_id)&.size if diff_id
+
+    start_sha = diff_lookup_params[:start_sha]
+    return @merge_request.merge_head_diff.size if @merge_request.diffable_merge_ref? && start_sha.blank?
 
     @merge_request.diff_size
   end
 
   def merge_request_update_params
-    merge_request_params.merge!(params.permit(:merge_request_diff_head_sha))
+    merge_request_params.merge!(merge_action_params.slice(:merge_request_diff_head_sha))
   end
 
   def head_pipeline
@@ -555,7 +584,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   strong_memoize_attr :head_pipeline
 
   def ci_environments_status_on_merge_result?
-    params[:environment_target] == 'merge_commit'
+    merge_action_params[:environment_target] == 'merge_commit'
   end
 
   def target_branch_missing?
@@ -569,7 +598,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       return :failed unless @merge_request.mergeable?
     end
 
-    squashing = params.fetch(:squash, false)
+    squashing = merge_action_params.fetch(:squash, false)
     merge_service = ::MergeRequests::MergeService
       .new(project: @project, current_user: current_user, params: merge_params)
 
@@ -577,7 +606,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       return :hook_validation_error
     end
 
-    return :sha_mismatch if params[:sha] != @merge_request.diff_head_sha
+    return :sha_mismatch if merge_action_params[:sha] != @merge_request.diff_head_sha
 
     @merge_request.update(merge_error: nil, squash: squashing)
 
@@ -711,7 +740,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       id: merge_request.iid,
       namespace_id: project&.namespace.to_param,
       project_id: project&.path,
-      file_hash: params[:file],
+      file_hash: permitted_params[:file],
       diff_head: true
     )
   end
@@ -764,8 +793,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def rapid_diffs_page_enabled?
     return false unless ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :beta)
-    return false if params[:rapid_diffs_disabled] == 'true'
-    return true if params[:rapid_diffs] == 'true'
+    return false if rapid_diffs_params[:rapid_diffs_disabled] == 'true'
+    return true if rapid_diffs_params[:rapid_diffs] == 'true'
 
     if ::Feature.enabled?(:rapid_diffs_default_on_mr_show, current_user)
       cookies[:rapid_diffs_enabled] != 'false'
@@ -776,7 +805,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   strong_memoize_attr :rapid_diffs_page_enabled?
 
   def auto_merge_strategy
-    params[:auto_merge_strategy] || merge_request.default_auto_merge_strategy
+    auto_merge_params[:auto_merge_strategy] || merge_request.default_auto_merge_strategy
   end
 
   def tracking_namespace_source

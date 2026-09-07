@@ -46,7 +46,7 @@ Footnotes:
 1. GitLab doesn't allow comments on arbitrary lines of code. Any out-of-bounds Bitbucket comments are inserted as
    comments in the merge request.
 1. Multiple threading levels are collapsed into one thread and quotes are added as part of the original comment.
-1. Project filtering doesn't support fuzzy search. Only **starts with** or **full match** strings are supported.
+1. Project filtering doesn't support fuzzy search. Only starts with or full match strings are supported.
 
 ## Known issues
 

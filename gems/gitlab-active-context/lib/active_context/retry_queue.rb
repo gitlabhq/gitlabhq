@@ -10,6 +10,9 @@
 # Each stage gives one retry. Items only become visible for processing
 # PROCESSING_DELAY after they are pushed, giving transient errors (for
 # example, AI Gateway timeouts) time to clear between attempts.
+#
+# Rate-limited batches do not advance through the chain. They retry here
+# until the rate limit clears, so they never reach the DeadQueue.
 
 module ActiveContext
   class RetryQueue

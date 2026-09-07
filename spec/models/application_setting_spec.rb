@@ -2864,6 +2864,135 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
     it { is_expected.not_to allow_value(invalid_custom_urls).for(:vscode_extension_marketplace) }
   end
 
+  describe '#code_dropdown_custom_clients' do
+    let(:valid_entry) do
+      {
+        'name' => 'VSCodium',
+        'ssh_url_template' => 'vscodium://vscode.git/clone?url={url}',
+        'http_url_template' => 'vscodium://vscode.git/clone?url={url}'
+      }
+    end
+
+    it { is_expected.to allow_value([]).for(:code_dropdown_custom_clients) }
+    it { is_expected.to allow_value([valid_entry]).for(:code_dropdown_custom_clients) }
+
+    it 'rejects entries missing both URL templates' do
+      expect(setting).not_to allow_value([{ 'name' => 'X' }]).for(:code_dropdown_custom_clients)
+    end
+
+    # A blank template is skipped by the entry validation, so without a schema minimum an entry
+    # holding only a blank template would save and then render no link at all.
+    it 'rejects entries whose only URL template is blank' do
+      %w[ssh_url_template http_url_template].each do |key|
+        expect(setting).not_to allow_value([{ 'name' => 'X', key => '' }]).for(:code_dropdown_custom_clients)
+      end
+    end
+
+    it 'rejects more than 20 entries' do
+      entries = Array.new(21) { |i| valid_entry.merge('name' => "C#{i}") }
+      expect(setting).not_to allow_value(entries).for(:code_dropdown_custom_clients)
+    end
+
+    it 'rejects templates without {url} placeholder' do
+      bad = { 'name' => 'X', 'http_url_template' => 'https://example.com/' }
+      setting.code_dropdown_custom_clients = [bad]
+      expect(setting).not_to be_valid
+      expect(setting.errors[:code_dropdown_custom_clients].join).to include('{url}')
+    end
+
+    it 'accepts any URL scheme an admin chooses' do
+      # Git clients register their own schemes and new ones keep appearing, so admins must not
+      # be limited to a list GitLab ships.
+      [
+        'vscode://vscode.git/clone?url={url}',
+        'sourcetree://cloneRepo/{url}',
+        'gittower://openRepo/{url}',
+        'x-github-client://openRepo/{url}',
+        'futureclient://whatever/{url}'
+      ].each do |template|
+        client = { 'name' => "C#{template}", 'http_url_template' => template }
+
+        expect(setting).to allow_value([client]).for(:code_dropdown_custom_clients)
+      end
+    end
+
+    # #security -- an instance admin controls this value and it is rendered as a link href,
+    # so a script-executing scheme here would be stored XSS for every user of the instance.
+    it 'rejects every blocked URL scheme' do
+      described_class::CODE_DROPDOWN_BLOCKED_SCHEMES.each do |scheme|
+        setting.code_dropdown_custom_clients = [
+          { 'name' => 'Evil', 'http_url_template' => "#{scheme}:payload/{url}" }
+        ]
+
+        expect(setting).not_to be_valid
+        expect(setting.errors[:code_dropdown_custom_clients].join).to include('is not allowed')
+      end
+    end
+
+    # #security -- these bypass the scheme check by casing or by smuggling a newline, so they
+    # are listed explicitly rather than derived from the constant.
+    it 'rejects blocked schemes disguised by casing or encoded characters' do
+      [
+        'JaVaScRiPt:alert(1)/{url}',
+        'javascript://example.com%0aalert(1)?{url}',
+        'DATA:text/html,<script>alert(1)</script>?{url}'
+      ].each do |payload|
+        setting.code_dropdown_custom_clients = [{ 'name' => 'Evil', 'http_url_template' => payload }]
+
+        expect(setting).not_to be_valid
+        expect(setting.errors[:code_dropdown_custom_clients].join).to include('is not allowed')
+      end
+    end
+
+    it 'rejects templates that are not parsable URLs' do
+      ['vscode://a b/clone?url={url}', "vscode://a\tb?url={url}", '{url}'].each do |payload|
+        setting.code_dropdown_custom_clients = [{ 'name' => 'X', 'http_url_template' => payload }]
+
+        expect(setting).not_to be_valid
+        expect(setting.errors[:code_dropdown_custom_clients].join).to include('must be a valid URL')
+      end
+    end
+
+    it 'rejects duplicate names case-insensitively and names the first entry' do
+      duplicate = [
+        valid_entry,
+        valid_entry.merge('name' => '  vscodium  ', 'ssh_url_template' => 'tower://open/{url}',
+          'http_url_template' => 'tower://open/{url}')
+      ]
+      setting.code_dropdown_custom_clients = duplicate
+
+      expect(setting).not_to be_valid
+      expect(setting.errors[:code_dropdown_custom_clients].join)
+        .to include('entry 2', 'is already used by entry 1')
+    end
+
+    it 'rejects the same template reused by a different entry' do
+      duplicate = [valid_entry, valid_entry.merge('name' => 'Other')]
+      setting.code_dropdown_custom_clients = duplicate
+
+      expect(setting).not_to be_valid
+      expect(setting.errors[:code_dropdown_custom_clients].join).to include('is already used by entry 1')
+    end
+
+    it 'allows one entry to reuse its own template for SSH and HTTPS' do
+      shared = 'vscodium://vscode.git/clone?url={url}'
+      client = { 'name' => 'VSCodium', 'ssh_url_template' => shared, 'http_url_template' => shared }
+
+      expect(setting).to allow_value([client]).for(:code_dropdown_custom_clients)
+    end
+
+    it 'rejects payloads over the serialized byte limit' do
+      # `maxLength` in the JSON schema counts characters, so multi-byte input can satisfy the
+      # schema while still blowing past the byte budget for the settings row.
+      wide = valid_entry.merge('name' => '😀' * 50, 'ssh_url_template' => "vscodium://#{'😀' * 480}{url}")
+      entries = Array.new(20) { |i| wide.merge('http_url_template' => "vscodium://#{i}/{url}") }
+      setting.code_dropdown_custom_clients = entries
+
+      expect(setting).not_to be_valid
+      expect(setting.errors[:code_dropdown_custom_clients].join).to include('is too large. Maximum size allowed is')
+    end
+  end
+
   describe '#vscode_extension_marketplace_enabled' do
     it 'is updated when underlying vscode_extension_marketplace changes' do
       expect(setting.vscode_extension_marketplace_enabled).to be(false)

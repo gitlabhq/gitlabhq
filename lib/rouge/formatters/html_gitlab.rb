@@ -44,6 +44,30 @@ module Rouge
         end
       end
 
+      protected
+
+      # Replaces a poor performing version from rouge
+      # https://github.com/rouge-ruby/rouge/blob/16e6ecdb3bc4248cead78375e1b24580ee2352a1/lib/rouge/formatter.rb#L92
+      def token_lines(tokens, &block)
+        return enum_for(:token_lines, tokens) unless block
+
+        line = []
+        tokens.each do |token, value|
+          segments = value.split("\n", -1)
+          final_segment = segments.pop
+
+          segments.each do |segment|
+            line << [token, segment] unless segment.empty?
+            yield line
+            line = []
+          end
+
+          line << [token, final_segment] if final_segment && !final_segment.empty?
+        end
+
+        yield line if line.any?
+      end
+
       private
 
       def ellipsis

@@ -1,12 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveContext::BulkProcessQueue do
-  let(:queue) { instance_double('ActiveContext::Queue', failure_queue: ActiveContext::RetryQueue) }
+  let(:queue) do
+    instance_double(
+      'ActiveContext::Queue',
+      failure_queue: ActiveContext::RetryQueue,
+      rate_limit_failure_queue: ActiveContext::RetryQueue
+    )
+  end
+
   let(:shard) { 0 }
   let(:redis) { instance_double(Redis) }
   let(:bulk_processor) { instance_double('ActiveContext::BulkProcessor') }
   let(:logger) { instance_double('Logger', info: nil, error: nil) }
-  let(:preprocess_result) { { successful: references, failed: [] } }
+  let(:preprocess_result) { { successful: references, failed: [], rate_limited: [] } }
 
   subject(:bulk_process_queue) { described_class.new(queue, shard) }
 
@@ -72,7 +79,7 @@ RSpec.describe ActiveContext::BulkProcessQueue do
 
     context 'when there are failures' do
       let(:failures) { ['failed_spec'] }
-      let(:preprocess_result) { { successful: references, failed: ['preprocess_failed_ref'] } }
+      let(:preprocess_result) { { successful: references, failed: ['preprocess_failed_ref'], rate_limited: [] } }
 
       before do
         allow(bulk_processor).to receive(:flush).and_return(failures)
@@ -90,12 +97,12 @@ RSpec.describe ActiveContext::BulkProcessQueue do
       end
 
       context 'when the queue is a retry chain stage' do
-        where(:stage, :next_stage) do
+        where(:stage, :next_stage, :rate_limit_stage) do
           [
-            [ActiveContext::RetryQueue, ActiveContext::SecondRetryQueue],
-            [ActiveContext::SecondRetryQueue, ActiveContext::ThirdRetryQueue],
-            [ActiveContext::ThirdRetryQueue, ActiveContext::FourthRetryQueue],
-            [ActiveContext::FourthRetryQueue, ActiveContext::DeadQueue]
+            [ActiveContext::RetryQueue, ActiveContext::SecondRetryQueue, ActiveContext::RetryQueue],
+            [ActiveContext::SecondRetryQueue, ActiveContext::ThirdRetryQueue, ActiveContext::RetryQueue],
+            [ActiveContext::ThirdRetryQueue, ActiveContext::FourthRetryQueue, ActiveContext::RetryQueue],
+            [ActiveContext::FourthRetryQueue, ActiveContext::DeadQueue, ActiveContext::RetryQueue]
           ]
         end
 
@@ -112,7 +119,50 @@ RSpec.describe ActiveContext::BulkProcessQueue do
           it 'returns the correct count of processed specs and failures' do
             expect(bulk_process_queue.process(redis)).to eq([2, 2])
           end
+
+          context 'when there are also rate_limited refs' do
+            let(:preprocess_result) do
+              {
+                successful: references,
+                failed: ['preprocess_failed_ref'],
+                rate_limited: ['rate_limited_ref']
+              }
+            end
+
+            it 'always routes rate_limited refs to the first retry stage, regardless of the current stage' do
+              combined_failures = ['preprocess_failed_ref'] + failures
+              expect(ActiveContext).to receive(:track!).with(combined_failures, queue: next_stage)
+              expect(ActiveContext).to receive(:track!).with(['rate_limited_ref'], queue: rate_limit_stage)
+
+              bulk_process_queue.process(redis)
+            end
+          end
         end
+      end
+    end
+
+    context 'when there are rate_limited refs' do
+      let(:preprocess_result) { { successful: references, failed: [], rate_limited: ['rate_limited_ref'] } }
+
+      it 'adds rate_limited refs to the rate limit failure queue instead of the failure queue' do
+        expect(ActiveContext).to receive(:track!).with(['rate_limited_ref'], queue: ActiveContext::RetryQueue)
+
+        bulk_process_queue.process(redis)
+      end
+
+      it 'counts rate_limited refs in the returned failures count' do
+        expect(bulk_process_queue.process(redis)).to eq([2, 1])
+      end
+
+      it 'logs meta.indexing.rate_limited_count without changing meta.indexing.failures_count' do
+        expect(logger).to receive(:info).with(
+          hash_including(
+            'meta.indexing.failures_count' => 0,
+            'meta.indexing.rate_limited_count' => 1
+          )
+        )
+
+        bulk_process_queue.process(redis)
       end
     end
 
@@ -126,6 +176,7 @@ RSpec.describe ActiveContext::BulkProcessQueue do
           'meta.indexing.first_score' => 1,
           'meta.indexing.last_score' => 2,
           'meta.indexing.failures_count' => 0,
+          'meta.indexing.rate_limited_count' => 0,
           'meta.indexing.bulk_execution_duration_s' => kind_of(Numeric),
           'meta.indexing.bulk_execution_duration_per_ref_ms' => kind_of(Numeric)
         )

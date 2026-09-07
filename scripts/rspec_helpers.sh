@@ -227,7 +227,7 @@ function rspec_parallelized_job() {
     parallel_rspec_opts+=(--dry_run_tags "${RSPEC_DRY_RUN_TAGS}")
   fi
 
-  tooling/bin/parallel_rspec "${parallel_rspec_opts[@]}" || rspec_run_status=$?
+  bundle exec tooling/bin/parallel_rspec "${parallel_rspec_opts[@]}" || rspec_run_status=$?
 
   echoinfo "RSpec exited with ${rspec_run_status}."
 

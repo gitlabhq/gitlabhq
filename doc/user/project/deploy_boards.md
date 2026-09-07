@@ -121,7 +121,7 @@ the triangle next to their respective environment name to hide them.
 
 ### Example manifest file
 
-The following example is an extract of a Kubernetes manifest deployment file, using the two annotations `app.gitlab.com/env` and `app.gitlab.com/app` to enable the **deploy boards**:
+The following example is an extract of a Kubernetes manifest deployment file, using the two annotations `app.gitlab.com/env` and `app.gitlab.com/app` to enable the deploy boards:
 
 ```yaml
 apiVersion: apps/v1

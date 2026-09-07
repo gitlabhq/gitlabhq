@@ -240,7 +240,7 @@ The following environment variables are automatically injected when `injectGatew
 
 GitLab-managed credentials are available for only Anthropic Claude and OpenAI Codex.
 
-To authenticate to the GitLab API from inside an agent, see [Authenticate to the GitLab API](#authenticate-to-the-gitlab-api).
+To authenticate an agent to the GitLab API, see [Authenticate to the GitLab API](#authenticate-to-the-gitlab-api).
 
 ### Supported models
 
@@ -315,12 +315,12 @@ The following CI/CD variables are available:
 
 ## Authenticate to the GitLab API
 
-Every external agent receives a GitLab OAuth token injected as the environment variable `AI_FLOW_GITLAB_TOKEN`.
-These tokens are scope-limited. They can only access
+Every external agent receives a GitLab OAuth token set as the environment variable `AI_FLOW_GITLAB_TOKEN`.
+These tokens are limited to the scope granted to them. They can only access
 [GitLab API endpoints with the `ai_workflows` scope](../flows/foundational_flows/software_development.md#apis-that-the-flow-has-access-to).
 Endpoints outside that scope are refused even when the token is sent correctly.
 
-To call the GitLab API from within an external agent, send `AI_FLOW_GITLAB_TOKEN` as an `Authorization: Bearer` token.
+To call the GitLab API from an external agent, send `AI_FLOW_GITLAB_TOKEN` as an `Authorization: Bearer` token.
 If you use the `PRIVATE-TOKEN` header to send the token, the API returns `401 Unauthorized`.
 
 ```shell
@@ -328,7 +328,7 @@ curl --header "Authorization: Bearer $AI_FLOW_GITLAB_TOKEN" \
   "https://$AI_FLOW_GITLAB_HOSTNAME/api/v4/user"
 ```
 
-To use the `glab` CLI inside your agent, write the token to `~/.config/glab-cli/config.yml`
+To use the `glab` CLI in your agent, write the token to `~/.config/glab-cli/config.yml`
 and set `is_oauth2: "true"` so that `glab` sends the token correctly:
 
 ```yaml

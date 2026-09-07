@@ -47,7 +47,7 @@ settings manually.
 
 ### EKS clusters
 
-To add an existing **EKS** cluster, you need:
+To add an existing EKS cluster, you need:
 
 - An Amazon EKS cluster with worker nodes properly configured.
 - `kubectl` [installed and configured](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html#get-started-kubectl)
@@ -56,7 +56,7 @@ To add an existing **EKS** cluster, you need:
 
 ### GKE clusters
 
-To add an existing **GKE** cluster, you need:
+To add an existing GKE cluster, you need:
 
 - The `container.clusterRoleBindings.create` permission to create a cluster
   role binding. You can follow the [Google Cloud documentation](https://cloud.google.com/iam/docs/granting-changing-revoking-access)

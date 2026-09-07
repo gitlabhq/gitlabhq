@@ -336,12 +336,12 @@ To toggle notifications on a specific issue, merge request, or epic:
 
 {{< /history >}}
 
-When you **turn on** notifications, you start receiving notifications on each update, even if you
+When you turn on notifications, you start receiving notifications on each update, even if you
 haven't participated in the discussion.
 When you turn notifications on in an epic, you aren't automatically subscribed to the issues linked
 to the epic.
 
-When you **turn off** notifications, you stop receiving notifications for updates.
+When you turn off notifications, you stop receiving notifications for updates.
 Turning this toggle off only unsubscribes you from updates related to this issue, merge request, or epic.
 Learn how to [opt out of all emails from GitLab](#opt-out-of-all-gitlab-emails).
 

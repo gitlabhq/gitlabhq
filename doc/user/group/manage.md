@@ -591,7 +591,7 @@ The selected project should follow the same naming conventions as
 are documented on that page.
 
 You can only choose projects in the group as the template source.
-This includes projects shared with the group, but it **excludes** projects in
+This includes projects shared with the group, but it excludes projects in
 subgroups or parent groups of the group being configured.
 
 You can configure this feature for both subgroups and immediate parent groups. A project

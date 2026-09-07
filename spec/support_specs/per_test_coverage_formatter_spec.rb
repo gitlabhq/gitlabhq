@@ -26,6 +26,25 @@ RSpec.describe Support::PerTestCoverageFormatter, feature_category: :tooling do 
     allow(File).to receive(:open).and_return(ndjson_file)
   end
 
+  describe '#example_started' do
+    it 'discards coverage accumulated before the example (e.g. mid-run spec loads)' do
+      expect(Coverage).to receive(:result).with(stop: false, clear: true)
+
+      formatter.example_started(notification_for('./spec/models/user_spec.rb[1:1]'))
+    end
+
+    it 'does not write any output' do
+      allow(Coverage).to receive(:result).with(stop: false, clear: true).and_return(
+        "#{project_dir}/app/foo.rb" => { lines: [1], branches: {} }
+      )
+
+      formatter.example_started(notification_for('id1'))
+
+      expect(File).not_to have_received(:open)
+      expect(ndjson_file.string).to be_empty
+    end
+  end
+
   describe '#example_finished' do
     it 'writes one NDJSON line with the example id and per-file line hits' do
       allow(Coverage).to receive(:result).with(stop: false, clear: true).and_return(

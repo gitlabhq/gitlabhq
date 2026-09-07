@@ -7,7 +7,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
   before_action :authorize_create_note!, only: [:create, :publish]
   before_action :authorize_admin_draft!, only: [:update, :destroy]
-  before_action :authorize_admin_draft!, if: -> { action_name == 'publish' && params[:id].present? }
+  before_action :authorize_admin_draft!, if: -> { action_name == 'publish' && permitted_params[:id].present? }
 
   urgency :low, [
     :create,
@@ -23,8 +23,8 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
   def create
     create_params = draft_note_params.merge(
-      in_reply_to_discussion_id: params[:in_reply_to_discussion_id],
-      note_type: params.dig(:draft_note, :type)
+      in_reply_to_discussion_id: permitted_params[:in_reply_to_discussion_id],
+      note_type: draft_note_type_param
     )
 
     create_service = DraftNotes::CreateService.new(merge_request, current_user, create_params)
@@ -95,9 +95,17 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
   private
 
+  def permitted_params
+    params.permit(:id, :merge_request_id, :in_reply_to_discussion_id)
+  end
+
+  def draft_note_type_param
+    params.permit(draft_note: [:type]).dig(:draft_note, :type)
+  end
+
   def draft_note(allow_nil: false)
     strong_memoize(:draft_note) do
-      draft_notes.find(params[:id])
+      draft_notes.find(permitted_params[:id])
     end
   rescue ActiveRecord::RecordNotFound => e
     # draft_note is allowed to be nil in #publish
@@ -116,7 +124,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   def merge_request
     @merge_request ||= MergeRequestsFinder
       .new(current_user, project_id: @project.id)
-      .find_by!(iid: params[:merge_request_id])
+      .find_by!(iid: permitted_params[:merge_request_id])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -147,10 +155,9 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   end
 
   def draft_note_ids_param
-    permitted_params = params.permit(ids: [])
-    permitted_params[:ids] = permitted_params[:ids]&.map(&:to_i) if permitted_params[:ids].present?
-
-    permitted_params
+    params.permit(ids: []).tap do |ids_params|
+      ids_params[:ids] = ids_params[:ids]&.map(&:to_i) if ids_params[:ids].present?
+    end
   end
 
   def approve_params

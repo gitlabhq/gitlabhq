@@ -15,7 +15,6 @@ query getDashboardIssuesCount(
   $milestoneWildcardId: MilestoneWildcardId
   $myReactionEmoji: String
   $subscribed: SubscriptionStatus
-  $types: [IssueType!]
   $workItemTypeIds: [WorkItemsTypeID!]
   $in: [IssuableSearchableField!]
   $not: NegatedIssueFilterInput
@@ -38,7 +37,6 @@ query getDashboardIssuesCount(
     milestoneWildcardId: $milestoneWildcardId
     myReactionEmoji: $myReactionEmoji
     subscribed: $subscribed
-    types: $types
     workItemTypeIds: $workItemTypeIds
     in: $in
     not: $not
@@ -63,7 +61,6 @@ query getDashboardIssuesCount(
     milestoneWildcardId: $milestoneWildcardId
     myReactionEmoji: $myReactionEmoji
     subscribed: $subscribed
-    types: $types
     workItemTypeIds: $workItemTypeIds
     in: $in
     not: $not
@@ -88,7 +85,6 @@ query getDashboardIssuesCount(
     milestoneWildcardId: $milestoneWildcardId
     myReactionEmoji: $myReactionEmoji
     subscribed: $subscribed
-    types: $types
     workItemTypeIds: $workItemTypeIds
     in: $in
     not: $not

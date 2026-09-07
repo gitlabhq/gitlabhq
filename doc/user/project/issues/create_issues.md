@@ -153,7 +153,7 @@ You can save this address as a contact in your email client to use it again.
 
 > [!warning]
 > The email address you see is a private email address, generated just for you.
-> **Keep it to yourself**, because anyone who knows it can create issues or merge requests as if they
+> Keep it to yourself, because anyone who knows it can create issues or merge requests as if they
 > were you.
 > If you suspect this private email address was leaked, reset the token immediately.
 

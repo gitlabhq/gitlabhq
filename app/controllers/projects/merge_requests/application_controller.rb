@@ -17,25 +17,38 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
 
   PIPELINE_DISPLAY_LIMIT = 100
 
+  def id_param
+    params.permit(:id)[:id]
+  end
+
+  def commit_id_param
+    params.permit(:commit_id)[:commit_id]
+  end
+
   def rapid_diffs_presenter
     @rapid_diffs_presenter ||= ::RapidDiffs::MergeRequestPresenter.new(
       ::MergeRequests::VersionedMergeRequest.from_diff_options(@merge_request, rapid_diff_options),
       diff_view: diff_view,
       diff_options: rapid_diff_options,
       current_user: current_user,
-      request_params: params,
+      request_params: rapid_diff_params,
       conflicts: conflicts_with_types
     )
   end
 
-  def rapid_diff_options
-    permitted = params.permit(:diff_id, :start_sha, :commit_id, :only_context_commits)
+  # Every key RapidDiffs::MergeRequestPresenter and its BasePresenter read.
+  def rapid_diff_params
+    @rapid_diff_params ||= params.permit(
+      :diff_id, :start_sha, :commit_id, :only_context_commits, :old_path, :new_path, :file_path, :line
+    )
+  end
 
+  def rapid_diff_options
     {
-      diff_id: permitted[:diff_id],
-      start_sha: permitted[:start_sha],
-      commit_id: permitted[:commit_id],
-      only_context_commits: permitted[:only_context_commits]
+      diff_id: rapid_diff_params[:diff_id],
+      start_sha: rapid_diff_params[:start_sha],
+      commit_id: rapid_diff_params[:commit_id],
+      only_context_commits: rapid_diff_params[:only_context_commits]
     }.compact.merge(diff_options)
   end
 
@@ -54,7 +67,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   def merge_request
     @issuable =
       @merge_request ||=
-        merge_request_includes(@project.merge_requests).find_by_iid!(params[:id])
+        merge_request_includes(@project.merge_requests).find_by_iid!(id_param)
 
     return render_404 unless can?(current_user, :read_merge_request, @issuable)
 
@@ -114,12 +127,12 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   end
 
   def commit
-    @commit ||= ::Gitlab::MergeRequests::CommitResolver.new(@merge_request, params[:commit_id]).resolve
+    @commit ||= ::Gitlab::MergeRequests::CommitResolver.new(@merge_request, commit_id_param)
+      .resolve
   end
 
   def build_merge_request
-    params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
-    new_params = merge_request_params.merge(diff_options: diff_options)
+    new_params = build_merge_request_params.merge(diff_options: diff_options)
 
     # Gitaly N+1 issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/58096
     Gitlab::GitalyClient.allow_n_plus_1_calls do
@@ -127,6 +140,14 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
         .new(project: project, current_user: current_user, params: new_params)
         .execute
     end
+  end
+
+  # Delegates so EE's `merge_request_params` override still clamps `approvals_before_merge`.
+  # `new` and the branch_from/branch_to partials are reachable with no `merge_request` key.
+  def build_merge_request_params
+    merge_request_params
+  rescue ActionController::ParameterMissing
+    ActionController::Parameters.new.permit!
   end
 end
 

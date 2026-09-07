@@ -491,7 +491,7 @@ The **Ping enabled** setting controls whether GitLab requests external control s
 
 #### External control lifecycle
 
-External controls have an **asynchronous** workflow. [Compliance scans](../compliance_center/compliance_status_report.md#scan-timing-and-triggers) emit a payload to an external service whenever.
+External controls have an asynchronous workflow. [Compliance scans](../compliance_center/compliance_status_report.md#scan-timing-and-triggers) emit a payload to an external service whenever.
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%

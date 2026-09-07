@@ -274,17 +274,15 @@ When you use the `/remove_contacts` quick action, follow it with `[contact:` and
 
 ## Moving objects with CRM entries
 
-When you move a work item or project and the **parent group contact source matches**,
-work items retain their contacts.
+When you move a work item or project, the outcome depends on the parent group contact source:
 
-When you move a work item or project and the **parent group contact source changes**,
-work items lose their contacts.
+- If the source matches, work items retain their contacts.
+- If the source changes, work items lose their contacts.
 
 When you move a group with a [contact source configured](#configure-the-contact-source)
-or its **contact source remains unchanged**,
-work items retain their contacts.
+or its contact source remains unchanged, work items retain their contacts.
 
-When you move a group and its **contact source changes**:
+When you move a group and its contact source changes:
 
 - All unique contacts and organizations are migrated to the new top-level group.
 - Contacts that already exist (by email address) are deemed duplicates and deleted.

@@ -28,8 +28,8 @@ title: DAST on-demand scan
 
 An on-demand DAST scan runs outside the DevOps lifecycle. Changes in your repository don't trigger
 the scan. You must either start it manually, or schedule it to run. For on-demand DAST scans,
-a [site profile](profiles.md#site-profile) defines **what** is to be scanned, and a
-[scanner profile](profiles.md#scanner-profile) defines **how** the application is to be scanned.
+a [site profile](profiles.md#site-profile) defines what is to be scanned, and a
+[scanner profile](profiles.md#scanner-profile) defines how the application is to be scanned.
 
 An on-demand scan can be run in active or passive mode:
 
@@ -88,10 +88,10 @@ To create an on-demand DAST scan:
 1. In the **Branch** dropdown list, select the desired branch.
 1. Optional. Select the runner tags.
 1. Select **Select scanner profile** or **Change scanner profile** to open the drawer, and either:
-   - Select a scanner profile from the drawer, **or**
+   - Select a scanner profile from the drawer.
    - Select **New profile**, create a [scanner profile](profiles.md#scanner-profile), then select **Save profile**.
 1. Select **Select site profile** or **Change site profile** to open the drawer, and either:
-   - Select a site profile from the **Site profile library** drawer, or
+   - Select a site profile from the **Site profile library** drawer.
    - Select **New profile**, create a [site profile](profiles.md#site-profile), then select **Save profile**.
 1. To run the on-demand scan:
 

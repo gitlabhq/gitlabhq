@@ -1033,7 +1033,7 @@ variables control which files are scanned and how thoroughly the analyzer search
 **Footnotes**:
 
 1. <a id="sast-excluded-paths-description"></a>You might need to exclude temporary directories used by your build tool as
-   these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your
+   these can generate false positives. To exclude paths, copy and paste the default excluded paths, then add your
    own paths to be excluded. If you don't specify the default excluded paths, the defaults are overridden and only the
    paths you specify are excluded from SAST scans.
 1. <a id="sast-excluded-paths-semgrep"></a>For these analyzers, `SAST_EXCLUDED_PATHS` is implemented as a **pre-filter**,
@@ -1288,7 +1288,7 @@ registry.gitlab.com/security-products/spotbugs:5
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
-**your network security policy**. Consult your IT staff to find an accepted and approved
+your network security policy. Consult your IT staff to find an accepted and approved
 process by which external resources can be imported or temporarily accessed. These scanners are [periodically updated](../detect/vulnerability_scanner_maintenance.md)
 with new definitions, and you may be able to make occasional updates on your own.
 

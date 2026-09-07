@@ -332,7 +332,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
       context 'when actor is a developer in parent project' do
         let(:actor) { developer_in_parent }
 
-        it 'creates a pipeline in the parent project when user proceeds with the warning', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2144' do
+        it 'creates a pipeline in the parent project when user proceeds with the warning' do
           visit project_merge_request_path(parent_project, merge_request)
 
           create_merge_request_pipeline
@@ -368,7 +368,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
       context 'when actor is a reporter in parent project and a developer in fork project' do
         let(:actor) { reporter_in_parent_and_developer_in_fork }
 
-        it 'creates a pipeline in the fork project', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2261' do
+        it 'creates a pipeline in the fork project' do
           visit project_merge_request_path(parent_project, merge_request)
 
           create_merge_request_pipeline
@@ -400,10 +400,12 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
       end
 
       def check_head_pipeline(expected_project:)
-        page.within('.merge-request-tabs') { click_link('Overview') }
+        # The widget mounted before the pipeline existed and only refreshes its
+        # pipeline data on a poll, so reload rather than switching tabs.
+        visit project_merge_request_path(parent_project, merge_request)
 
-        page.within('.ci-widget-content') do
-          expect(page.find('.pipeline-id')[:href]).to include(expected_project.full_path)
+        within_testid('pipeline-info-container') do
+          expect(page).to have_link(href: %r{/#{Regexp.escape(expected_project.full_path)}/-/pipelines/})
         end
       end
 

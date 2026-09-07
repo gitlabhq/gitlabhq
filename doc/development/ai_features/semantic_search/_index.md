@@ -83,6 +83,9 @@ If embedding generation fails, the references move through a chain of retry queu
 with increasing delays: 5 minutes, 30 minutes, 2 hours, and 8 hours.
 Each stage gives one retry, so transient errors have time to clear between attempts.
 References that fail every stage are placed on a dead queue.
+Rate limit errors are the exception. Rate-limited references return to the first
+retry queue from any stage. They retry every 5 minutes until the rate limit
+clears. They never reach the dead queue.
 
 ### Query execution
 

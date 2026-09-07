@@ -257,6 +257,9 @@ Prerequisites:
 When embedding generation fails, items move through a chain of retry queues with
 increasing delays (5 minutes, 30 minutes, 2 hours, and 8 hours). Items that fail
 every retry are moved to the dead queue for manual intervention.
+Items that fail with a rate limit error do not follow the chain. They return to
+the first retry queue and retry every 5 minutes until the rate limit clears.
+They never reach the dead queue.
 You can check the dead queue size in the `Embedding Queues` section of the
 [status Rake task](#check-semantic-code-search-status) output.
 

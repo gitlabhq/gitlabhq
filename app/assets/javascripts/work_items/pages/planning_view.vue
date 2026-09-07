@@ -97,7 +97,6 @@ import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vu
 import {
   convertLegacyTypeFormat,
   convertOldTypeTokenEnumToGid,
-  convertNumberToGid,
   getSortOptions,
   getInitialPageParams,
   isCursorCompatibleWithApi,
@@ -1086,24 +1085,15 @@ export default {
       return convertToSearchQuery(this.filterTokens);
     },
     apiFilterParams() {
-      const params = convertToApiParams(this.filterTokens, {
+      return convertToApiParams(this.filterTokens, {
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
       });
-      if (params.types) {
-        params.workItemTypeIds = convertNumberToGid(params.types);
-        delete params.types;
-      }
-      if (params.not?.types) {
-        params.not.workItemTypeIds = convertNumberToGid(params.not.types);
-        delete params.not.types;
-      }
-      return params;
     },
     apiTypesArgument() {
       const singleWorkItemType = this.getWorkItemTypeConfiguration(this.workItemType)?.id;
-      const field = 'workItemTypeIds';
       return {
-        [field]: this.apiFilterParams[field] || singleWorkItemType || this.defaultWorkItemTypes,
+        workItemTypeIds:
+          this.apiFilterParams.workItemTypeIds || singleWorkItemType || this.defaultWorkItemTypes,
       };
     },
     showWorkItemByEmail() {

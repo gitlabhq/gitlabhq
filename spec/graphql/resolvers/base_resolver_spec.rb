@@ -296,4 +296,11 @@ RSpec.describe Resolvers::BaseResolver, feature_category: :api do
       resolver.authorized?(object, context)
     end
   end
+
+  describe '.authorization_scopes' do
+    it 'defaults to the same scopes ObjectAuthorization assumes', :aggregate_failures do
+      expect(described_class.authorization_scopes).to match_array([:api, :read_api])
+      expect(described_class.authorization.permitted_scopes).to match_array([:api, :read_api])
+    end
+  end
 end

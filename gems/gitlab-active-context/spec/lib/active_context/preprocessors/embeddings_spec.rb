@@ -377,6 +377,22 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
   describe 'rate limit error handling' do
     let(:rate_limit_error) { Class.new(StandardError) }
 
+    let(:mock_reference_class) do
+      error_class = rate_limit_error
+
+      Class.new(Test::References::MockWithDatabaseRecord) do
+        add_preprocessor :embeddings do |refs|
+          apply_embeddings(
+            refs: refs, content_method: :embedding_content, rate_limit_error_types: [error_class]
+          )
+        end
+
+        def embedding_content
+          'content returned in reference method'
+        end
+      end
+    end
+
     before do
       allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(
         rate_limit_error,
@@ -384,11 +400,12 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
       )
     end
 
-    it 'marks refs as failed so they move through the retry chain' do
+    it 'marks refs as rate_limited instead of failed, so they retry without dead-lettering' do
       result = ActiveContext::Reference.preprocess_references([test_reference])
 
       expect(result[:successful]).to be_empty
-      expect(result[:failed]).to eq([test_reference])
+      expect(result[:failed]).to be_empty
+      expect(result[:rate_limited]).to eq([test_reference])
     end
   end
 

@@ -167,6 +167,36 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
       end
     end
 
+    context 'with a preprocessor that returns rate_limited refs' do
+      before do
+        test_ref_class.add_preprocessor :rate_limit do |refs|
+          { successful: [], failed: [], rate_limited: refs }
+        end
+      end
+
+      it 'carries the rate_limited refs through to the result' do
+        result = test_ref_class.preprocess(refs)
+
+        expect(result[:successful]).to be_empty
+        expect(result[:failed]).to be_empty
+        expect(result[:rate_limited]).to eq(refs)
+      end
+    end
+
+    context 'with a preprocessor that returns a two-key hash' do
+      before do
+        test_ref_class.add_preprocessor :legacy do |refs|
+          { successful: refs, failed: [] }
+        end
+      end
+
+      it 'tolerates the missing rate_limited key' do
+        result = test_ref_class.preprocess(refs)
+
+        expect(result[:rate_limited]).to be_empty
+      end
+    end
+
     context 'with options passed to preprocess' do
       let(:call_log) { [] }
 
@@ -231,6 +261,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
 
         expect(result[:successful]).to eq(refs)
         expect(result[:failed]).to be_empty
+        expect(result[:rate_limited]).to be_empty
       end
     end
 
@@ -333,6 +364,56 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
       end
     end
 
+    context 'with rate_limit_error_types' do
+      let(:rate_limit_error) { Class.new(StandardError) }
+
+      it 'routes matching errors to rate_limited instead of failed, and logs them as retryable' do
+        result = test_ref_class.with_batch_handling(refs, rate_limit_error_types: [rate_limit_error]) do
+          raise rate_limit_error, "429 Too Many Requests"
+        end
+
+        expect(result[:successful]).to be_empty
+        expect(result[:failed]).to be_empty
+        expect(result[:rate_limited]).to eq(refs)
+
+        expect(ActiveContext::Logger).to have_received(:retryable_exception).with(
+          instance_of(rate_limit_error),
+          class_name: 'TestPreprocessorReferenceClass',
+          queue_name: nil,
+          preprocessor: nil,
+          refs_count: 2,
+          refs_sample: ['ref:1', 'ref:2']
+        )
+      end
+
+      context 'when the error is also in error_types' do
+        it 'takes precedence over error_types' do
+          result = test_ref_class.with_batch_handling(
+            refs, error_types: [rate_limit_error], rate_limit_error_types: [rate_limit_error]) do
+            raise rate_limit_error, "429 Too Many Requests"
+          end
+
+          expect(result[:failed]).to be_empty
+          expect(result[:rate_limited]).to eq(refs)
+        end
+      end
+
+      context 'when the error is not in rate_limit_error_types' do
+        before do
+          allow(ActiveContext::Logger).to receive(:exception)
+        end
+
+        it 'falls through to the StandardError fallback' do
+          result = test_ref_class.with_batch_handling(refs, rate_limit_error_types: [rate_limit_error]) do
+            raise StandardError, "an unclassified bug"
+          end
+
+          expect(result[:rate_limited]).to be_empty
+          expect(result[:failed]).to eq(refs)
+        end
+      end
+    end
+
     context 'with empty refs' do
       it 'returns empty result without executing block' do
         block_executed = false
@@ -344,6 +425,7 @@ RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
         expect(block_executed).to be(false)
         expect(result[:successful]).to be_empty
         expect(result[:failed]).to be_empty
+        expect(result[:rate_limited]).to be_empty
       end
     end
   end
