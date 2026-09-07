@@ -114,27 +114,20 @@ instructions:
           - Ask: "Have you reviewed existing indexes on this table for redundancy or consolidation opportunities before adding a new one?"
           - If the index is temporary (e.g., to support a backfill or data migration), ask: "Do you have a plan for removing this index after the backfill or when the migration is complete? Include a follow-up issue or post-migration to drop it."
           - Remind: "Redundant and orphaned indexes increase storage overhead, degrade write performance, and contribute to LockManager LWLock contention: a known bottleneck on high-traffic tables where PostgreSQL's fast-path lock slots (limited to 16 per backend) are exhausted, forcing expensive shared-memory lock table lookups. See: https://gitlab.com/groups/gitlab-org/-/epics/11543 and https://docs.gitlab.com/development/database/adding_database_indexes/#some-tables-should-not-have-any-more-indexes"
-      16. Cells – sharding keys on new tables:
-          - For new tables in `db/migrate/**` or `db/post_migrate/**`, verify the table has a sharding key column and a foreign key to its sharding root, or is explicitly classified as cell-local in the Database Dictionary.
-      17. Cells – Database Dictionary (`db/docs/**/*.yml`):
-          - Verify new entries set `gitlab_schema` to one of the approved Cells-aware schemas (`gitlab_main_org`, `gitlab_main_cell_local`, `gitlab_main_cell_setting`, `gitlab_main_user`, `gitlab_ci`, `gitlab_ci_cell_local`, `gitlab_shared_org`, `gitlab_shared_cell_local`).
-          - Flag use of the deprecated `gitlab_main` schema for new tables.
-          - For `gitlab_main_org` and `gitlab_ci` tables, verify `sharding_key` is set.
-          - For cell-local tables, verify the table holds non-customer data and is not referenced by foreign keys from organization tables.
-          - For `gitlab_shared_org` and `gitlab_shared_cell_local` tables:
-            - Verify the model inherits from `Gitlab::Database::SharedModel`.
-            - Flag use of auto-incrementing integer primary keys. These tables live across multiple decomposed databases, so sequence-based IDs can collide.
-            - Remind: "Use a composite primary key or a UUID primary key so rows remain unique across the decomposed databases."
-      18. Cells – unique constraints across cells:
-          - Flag global `UNIQUE` indexes on customer-data tables that do not include the sharding key.
-          - Remind: "Scope unique indexes to include the sharding key. For attributes that must be globally unique across organizations, use the Claim service."
-      19. For new tables created in the current merge request:
+      16. For new tables created in the current merge request:
           - If the merge request does not add or update a development seed fixture in `db/fixtures/development/` (or `ee/db/fixtures/development/`), ask: "Will this table have seed data? Without a fixture the table is empty in the upgrade-stop database dump, so migrations touching it are never exercised by db:migrate:multi-version-upgrade."
-      - Reference: https://docs.gitlab.com/development/cells/
       - Reference: https://docs.gitlab.com/development/database_review/#preparation-when-adding-tables
 
+  # >>> generated: cells-fundamentals — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
+  # distilled_at_sha: 73023e3b34aa63d1692e8a3066e870c10875ef55
+  # source_checksum: 4179db268419765e
   - name: Cells Architecture
     fileFilters:
+      - "db/docs/**/*.yml"
+      - "ee/db/docs/**/*.yml"
+      - "db/migrate/**/*.rb"
+      - "db/post_migrate/**/*.rb"
+      - "ee/db/geo/migrate/**/*.rb"
       - "app/models/**/*.rb"
       - "ee/app/models/**/*.rb"
       - "app/workers/**/*.rb"
@@ -148,30 +141,68 @@ instructions:
       - "!spec/**/*"
       - "!ee/spec/**/*"
     instructions: |
-      Cells compatibility is a first-class development requirement for the
-      GitLab monolith. Cells applies to GitLab.com only; GitLab Self-Managed
-      and GitLab Dedicated run as a single cell.
+      ### Compute Scope
 
-      1. Org-scoped compute:
-         - Flag new Sidekiq workers or web/API request paths that operate across multiple Organizations.
-         - Ask: "Can this worker or request be scoped to a single Organization? Cross-organization compute is only acceptable for recurring, idempotent cron jobs."
-      2. Cross-organization isolation controls:
-         - For features that enforce isolation between Organizations on the same cell, verify the control accounts for the Organization's isolation choice. Do not assume all Organizations on the same cell are isolated.
-      3. Sharding keys on new models:
-         - For new ActiveRecord models in `app/models/**` or `ee/app/models/**` that store customer data, verify the model defines a sharding key (`organization_id`, `project_id`, `namespace_id`, or another approved root).
-         - Ask: "What is the sharding key for this model, and which sharding root does it point to?"
-      4. No new customer-owned resources outside an Organization:
-         - Flag new top-level customer-data models that do not belong to an Organization, Group, Project, or User scoped under an Organization.
-         - Ask: "Which Organization owns this resource? Resources outside an Organization cannot be migrated when an Organization moves cells."
-      5. Migratability and ambiguous ownership:
-         - Flag models where row ownership cannot be traced to a single Organization through its sharding key.
-         - Ask: "If this Organization moves to another cell, how is this row migrated? Is ownership unambiguous from the schema?"
-      6. Static reference data:
-         - For new ActiveRecord models that represent a fixed, known set of reference rows (for example, plan types, severity levels, status categories), prefer `ActiveRecord::FixedItemsModel::Model` over a database-backed table with an auto-incrementing primary key.
-         - Remind: "Auto-incrementing IDs are assigned per cell and are not globally consistent. Hard-coded fixed items keep IDs stable across cells so foreign references remain valid after migration."
-      - Reference: https://docs.gitlab.com/development/cells/
-      - Reference: https://docs.gitlab.com/development/organization/sharding/
-      - Reference: https://docs.gitlab.com/development/contributing/merge_request_workflow/#definition-of-done
+      - Scope all Web/API requests and Sidekiq workers to a single organization; convert cross-organization compute to be organization-scoped.
+      - DO NOT introduce cross-cell access to organization data — all data and compute for an organization must live on a single cell.
+
+      ### Request Routing
+
+      - Ensure every cell-local service that accepts external requests is routable to the correct cell based on the organization the request is for.
+      - Apply the routable requirement to all request types and protocols, including Web, API, Git, and service-specific protocols (for example, KAS or the container registry).
+
+      ### Organization Data Ownership
+
+      - Ensure organization data is migratable to another cell for all stateful cell-local services.
+      - Ensure every customer-data table in the GitLab Rails monolith has a traceable path to an organization through its sharding key.
+      - Define a sharding key on every new model that stores customer data so each row is attributable to a single organization.
+      - Mark non-customer data (data that does not belong to a customer organization) as cell-local in the schema classification.
+      - Confirm that the ownership of each row is unambiguous when designing a new table or extending an existing one — ambiguous ownership blocks future cell migrations.
+
+      ### Customer-Owned Resources
+
+      - DO NOT introduce new customer-owned resources that exist outside of an organization — all customer data must belong inside an organization.
+
+      ### Cross-Organization Isolation
+
+      - DO NOT assume all organizations on the same cell are isolated from each other; controls that provide cross-organization isolation must account for whether an organization has opted into isolation.
+
+      ### Schema Classification
+
+      - Use `gitlab_main_org` for all tables in the `main:` database that belong to an organization (for example, `projects` and `groups`).
+      - Use `gitlab_main_cell_setting` for cell-setting tables in the `main:` database (for example, `application_settings`); ensure these tables are not referenced by foreign keys from organization tables.
+      - Use `gitlab_main_cell_local` for tables in the `main:` database that are distinct per cell (for example, `zoekt_nodes`, `shards`); ensure these tables are not referenced by foreign keys from organization tables.
+      - Use `gitlab_ci` for all tables in the `ci:` database that belong to an organization (for example, `ci_pipelines`, `ci_builds`).
+      - Use `gitlab_ci_cell_local` for tables in the `ci:` database that are distinct per cell (for example, `instance_type_ci_runners`, `ci_cost_settings`); ensure these tables are not referenced by foreign keys from organization tables.
+      - Use `gitlab_main_user` only for user functionality that is not organizational level; prefer `gitlab_main_org` for most user functionality (for example, commenting on an issue).
+      - Use `gitlab_shared_org` for tables with data across multiple databases that have `organization_id` for sharding; DO NOT use auto-incrementing integer primary keys — use composite or UUID primary keys instead.
+      - Use `gitlab_shared_cell_local` for cell-local shared tables that do not require sharding and exist across multiple databases (for example, `loose_foreign_keys_deleted_records`).
+      - Use `gitlab_sec_cell_local` for tables in the `sec:` database that hold cell-local, non-customer reference data with no sharding key (for example, malware and package-metadata advisories); these rows are the same for every organization in a cell and are replicated per cell — use `SecApplicationRecord` for models on this schema.
+      - DO NOT use the deprecated `gitlab_main` schema — use `gitlab_main_org` instead.
+      - Fix pipeline failures caused by cross-database joins, cross-database transactions, or cross-database foreign keys after assigning a schema (see `doc/development/multiple_databases.md` for remediation guidance).
+
+      ### Creating New Schemas
+
+      - Default new schemas to `require_sharding_key: true` so that all tables assigned to the schema must define a sharding key.
+      - Configure the list of allowed `sharding_root_tables` (for example, `projects`, `namespaces`, `organizations`) in the schema YAML under `db/gitlab_schemas/`.
+
+      ### Database Sequences
+
+      - Rely on cluster-wide unique database sequences for `id` columns — uniqueness is enforced across all cells automatically.
+
+      ### Unique Constraints
+
+      - DO NOT rely on database `UNIQUE` constraints for global uniqueness across cells — scope uniqueness indexes to include the `sharding_key` column instead.
+      - Use the Claim service only for the rare case where an attribute must be globally unique across all organizations and cells.
+
+      ### Static Data
+
+      - DO NOT store static data in database tables that use auto-incrementing sequences as primary keys — inconsistent primary keys across cells cause reference clashes.
+      - Hard-code static data in application code using `ActiveRecord::FixedItemsModel::Model` instead of a database table; use `belongs_to_fixed_items` for associations with fixed-item models.
+      - Use globally unique references (not database sequences) when a cross-cell reference is unavoidable.
+      - Reference: doc/development/cells/_index.md
+      - Reference: doc/development/organization/sharding/_index.md
+  # <<< end generated: cells-fundamentals
 
   - name: Sidekiq Worker Compatibility
     fileFilters:

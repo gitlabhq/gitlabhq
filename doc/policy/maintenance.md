@@ -36,7 +36,7 @@ The following table describes the version types and their release cadence:
 
 | Version type | Description | Cadence |
 |:-------------|:------------|:--------|
-| Major        | For significant changes, or when any backward-incompatible changes are introduced to the public API. | Yearly. The next major release is GitLab 19.0, scheduled for May 21, 2026. GitLab [schedules major releases](https://about.gitlab.com/releases/) for May each year, by default. |
+| Major        | For significant changes, or when any backward-incompatible changes are introduced to the public API. | Yearly. The next major release is GitLab 20.0, scheduled for May 20, 2027. GitLab [schedules major releases](https://handbook.gitlab.com/handbook/engineering/releases/monthly-releases/) for May each year, by default. |
 | Minor        | For when new backward-compatible functionality is introduced to the public API, a minor feature is introduced, or when a set of smaller features is rolled out. | Monthly, scheduled for the third Thursday of each month. |
 | Patch        | For backward-compatible bug fixes that fix incorrect behavior. See [Patch releases](#patch-releases). | Twice monthly, scheduled for the Wednesday the week before and the Wednesday the week after the monthly minor release. |
 
