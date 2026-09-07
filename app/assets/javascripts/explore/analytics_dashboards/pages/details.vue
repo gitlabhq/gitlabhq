@@ -3,7 +3,9 @@ import { computed } from 'vue';
 import { GlButton, GlDashboardLayout, GlEmptyState, GlTabs, GlTab } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { getParameterByName } from '~/lib/utils/url_utility';
+import { createAlert } from '~/alert';
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
+import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DashboardFilters from '../components/dashboard_filters.vue';
 import DashboardLoader from '../components/dashboard_loader.vue';
@@ -30,6 +32,7 @@ export default {
     ),
     reset: s__('AnalyticsDashboards|Reset'),
     resetLabel: s__('AnalyticsDashboards|Reset filters'),
+    scopeError: s__('AnalyticsDashboards|Failed to load groups and projects. Please try again.'),
   },
   // Provided as computed refs — options-API inject captures the value once
   // at setup, so plain values/getters won't propagate filter changes to panels.
@@ -59,6 +62,7 @@ export default {
       activeViewIndex: 0,
       filtersKey: 0,
       dashboardFilterConfig: null,
+      alert: null,
     };
   },
   computed: {
@@ -76,6 +80,11 @@ export default {
         this.hasNamespace || (dateRangeOption && dateRangeOption !== defaultDateRange),
       );
     },
+  },
+  // createAlert renders into the global flash container, which outlives this page, so an alert
+  // raised here would otherwise follow the user to the next dashboard.
+  beforeDestroy() {
+    this.alert?.dismiss();
   },
   methods: {
     // Set the active tab from the `view` query param on load. Default to the
@@ -113,26 +122,30 @@ export default {
         endDate,
       };
     },
-    setProjectsFilter(projects) {
-      const [project = null] = projects ?? [];
-      this.selectedProject = project;
+    // The picker emits one namespace, or null, and its type says which of the two the rest of
+    // the page should treat it as. Panels still read groups and projects separately.
+    setScopeFilter(namespace) {
+      const isProject = namespace?.type === TYPENAME_PROJECT;
+
+      this.selectedProject = isProject ? namespace : null;
+      this.selectedGroup = isProject ? null : namespace;
       this.filters = {
         ...this.filters,
-        projects: project ? [project.fullPath] : [],
+        groups: this.selectedGroup ? [this.selectedGroup.fullPath] : [],
+        projects: this.selectedProject ? [this.selectedProject.fullPath] : [],
       };
     },
-    setGroupsFilter(groups) {
-      const [group = null] = groups ?? [];
-      this.selectedGroup = group;
-      // Clearing a group also clears the project (which lives under it).
-      if (!group) {
-        this.selectedProject = null;
-      }
-      this.filters = {
-        ...this.filters,
-        groups: group ? [group.fullPath] : [],
-        projects: [],
-      };
+    // The picker reports to Sentry itself, so this only has to tell the user. Without it a failed
+    // query leaves an empty dropdown with nothing to explain why.
+    onScopeError(error) {
+      // createAlert only detaches the element it replaces, leaving the instance mounted, and
+      // the handle it would be dismissed by is about to be overwritten.
+      this.alert?.dismiss();
+      this.alert = createAlert({
+        message: this.$options.i18n.scopeError,
+        error,
+        captureError: false,
+      });
     },
     // The date range picker renders the dashboard's configured default without emitting it,
     // so seed the filters to match. Otherwise a panel falls back to its own default window
@@ -194,11 +207,10 @@ export default {
           </gl-tabs>
           <dashboard-filters
             :key="filtersKey"
-            :group-namespace="selectedGroup?.fullPath || ''"
             :dashboard-filters="config.filters"
             @set-date-range="setDateRangeFilter"
-            @set-projects="setProjectsFilter"
-            @set-groups="setGroupsFilter"
+            @set-scope="setScopeFilter"
+            @error="onScopeError"
           />
           <!-- Outside the filter bar so the remount above cannot destroy it mid-click. -->
           <gl-button

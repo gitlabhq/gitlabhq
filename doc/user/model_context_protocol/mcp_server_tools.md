@@ -537,6 +537,33 @@ Example:
 Who are the maintainers of gitlab-org/gitlab?
 ```
 
+## `get_user`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253176) in GitLab 19.4.
+
+{{< /history >}}
+
+Gets a single GitLab user. Use this tool to resolve a username, or your own account, to a numeric
+user ID. For example, use it before you set assignees or reviewers with other tools.
+
+Provide exactly one of `username`, `id`, or `me`.
+
+| Parameter  | Type    | Required | Description |
+|------------|---------|----------|-------------|
+| `username` | string  | No       | Username of the user to look up. |
+| `id`       | integer | No       | Numeric ID of the user to look up. |
+| `me`       | boolean | No       | Set to `true` to look up the authenticated user. When provided, must be `true`. Omit `username` and `id`. |
+
+The response returns the user's numeric `id`, `username`, `name`, `state`, and `web_url`.
+
+Example:
+
+```plaintext
+What is my GitLab user ID?
+```
+
 ## `accept_merge_request`
 
 {{< history >}}
@@ -723,6 +750,43 @@ Example:
 
 ```plaintext
 List the most recent releases for project gitlab-org/gitlab
+```
+
+## `list_tags`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/618493) in GitLab 19.4.
+
+{{< /history >}}
+
+Lists tags in a GitLab project, most recently updated first. If `search` matches a tag name
+exactly, GitLab lists that tag first.
+
+| Parameter    | Type    | Required | Description |
+|--------------|---------|----------|-------------|
+| `url`        | string  | No       | GitLab URL of the project. Required if `project_id` is not provided. |
+| `project_id` | string  | No       | ID or full path of the project. Required if `url` is not provided. |
+| `search`     | string  | No       | Filter tags by name. Supports `^` to anchor the start, `$` to anchor the end, and `*` as a wildcard. |
+| `first`      | integer | No       | Number of tags to return. Default is `20`, maximum is `100`. |
+| `after`      | string  | No       | Cursor for forward pagination. Use `metadata.end_cursor` from the previous response. |
+
+Provide exactly one of `url` or `project_id`.
+
+Each entry returns `name` and `commit`, where `commit` holds the tag's tip commit `sha` and
+`title`. `commit` is `null` for a tag that points at something other than a commit.
+
+Tag messages are intentionally not returned in this response.
+
+The response also carries a `metadata` object with `has_next_page` and `end_cursor`. When
+`has_next_page` is `true`, pass `end_cursor` as `after` to fetch the next page.
+
+To read the full commit a tag points at, use the `get_commit` tool.
+
+Example:
+
+```plaintext
+List the most recent tags for the gitlab-org/gitlab project
 ```
 
 ## `get_pipeline`

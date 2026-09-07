@@ -29,7 +29,6 @@ import { updateText } from '~/lib/utils/text_markdown';
 import { useNotes } from '~/notes/store/legacy_notes';
 import diffsEventHub from '~/diffs/event_hub';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { EVT_REVIEW_DRAWER_APPROVED } from '../../diffs/constants';
 import reviewDrawerQuery from '../queries/review_drawer.query.graphql';
 
@@ -76,7 +75,6 @@ export default {
       () => import('ee_component/batch_comments/components/summarize_my_review.vue'),
     ),
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     canSummarize: { default: false },
   },
@@ -149,7 +147,6 @@ export default {
       if (this.$apollo.queries.mergeRequest.loading) return false;
 
       return (
-        this.glFeatures.assignReviewerOnReviewSubmission &&
         this.userPermissions.updateMergeRequest &&
         !this.currentUserIsAuthor &&
         !this.currentUserIsReviewer &&

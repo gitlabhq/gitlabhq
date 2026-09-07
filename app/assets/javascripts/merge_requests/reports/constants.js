@@ -3,6 +3,7 @@ export const CODE_QUALITY_ROUTE = 'code-quality';
 export const SECURITY_SCAN_ROUTE = 'security-scan';
 export const LICENSE_COMPLIANCE_ROUTE = 'license-compliance';
 export const ROOT_ROUTE = 'reports-root';
+export const METRICS_ROUTE = 'metrics';
 
 export const EMPTY_STATE_NO_PIPELINE = 'no-pipeline';
 export const EMPTY_STATE_PIPELINE_RUNNING = 'pipeline-running';

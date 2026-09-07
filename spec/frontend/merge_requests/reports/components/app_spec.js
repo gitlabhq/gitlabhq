@@ -116,6 +116,14 @@ describe('Merge request reports App component', () => {
           name: 'CodeQualityNavItem',
           template: '<div></div>',
         },
+        MetricsProvider: {
+          name: 'MetricsProvider',
+          template: '<div><slot /></div>',
+        },
+        MetricsNavItem: {
+          name: 'MetricsNavItem',
+          template: '<div></div>',
+        },
       },
     });
   };

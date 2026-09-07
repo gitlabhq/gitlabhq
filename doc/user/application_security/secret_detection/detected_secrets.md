@@ -12,7 +12,115 @@ title: Detected secrets
 
 {{< /details >}}
 
-This table lists the secrets detected by:
+## Secret categories
+
+GitLab Secret Detection identifies secrets using two approaches: rule-based detection and generic detection.
+
+### Rule-based detection
+
+Rule-based detection identifies secrets by matching scanned content against a known pattern for each
+credential type, called a rule. For example, a GitLab personal access token is identified by the pattern
+`glpat-` followed by a 20-character string. GitLab supports
+[200+ rules](#supported-rules-for-rule-based-detection) covering popular vendors by default.
+
+Rule-based detection's coverage is limited to the rules the analyzer supports.
+Secrets that don't match a supported rule aren't detected. Both the Gitleaks-based analyzer
+and [GitLab Secret Scanning for Source Code](gitlab_secret_scanner/_index.md)
+support rule-based detection.
+
+### Generic detection
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+Rule-based detection can only find secrets that match a pattern it already knows about.
+Many credentials don't follow a published or consistent format, so no rule can match them.
+For example, a password for an internal service, a database connection string, or an API key
+with no distinguishing prefix.
+Generic detection targets these secrets.
+Instead of matching a fixed pattern, generic detection examines the context around a value and the properties
+of the value itself. Both signals determine whether the value is likely to be a credential.
+
+Because generic detection doesn't depend on a known pattern, it can catch secrets that rule-based
+detection misses. It's also more prone to false positives, so GitLab Secret Scanning for Source Code
+includes false positive reduction to reduce noise.
+
+GitLab Secret Scanning for Source Code is the only GitLab analyzer that supports generic detection.
+For more information, see [generic secrets](gitlab_secret_scanner/_index.md#generic-secrets).
+
+Generic detection isn't limited to an obvious `secret = "value"` assignment.
+The following snippet shows less obvious values it identifies, and the finding each one produces:
+
+```plaintext
+# Secret assigned in a Perl hash, not a plain key-value pair
+$config{'webhook_token'} = "Of0Pg2Qh4Ri6Sj8Tk";
+
+# Password stored as the content of an XML element, not an attribute
+<db_password>Ct8Du0Ev2Fw4Gx6Hy</db_password>
+
+# API key passed as a URL query parameter
+https://app.gitlab.com?api_key=Of3Pg5Qh7Ri9Sj1Tk
+
+# Token embedded as a literal value in a SQL statement
+INSERT INTO secrets (key, value) VALUES ('api_token', 'Kb1Lc3Md5Ne7Of9Pg');
+
+# Password assigned through an environment variable lookup, not a plain variable
+ENV["redis_pass"] = "Tt7Yy9Uu1Ii3OoPp5"
+
+# Token passed as an argument to a setter method, not a direct assignment
+config.put("dbToken", "Kb8Lc0Md2Ne4Of6Pg");
+
+# Bearer token embedded in an XML configuration property
+<property name="authorizationHeader" value="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"/>
+
+# Secret passed as a CLI flag, not a variable assignment
+curl "https://api.example.com/v1/deploy" --api-token=7bN2vLpQ9wXzKfM4
+
+# Credential left behind in a comment
+# old admin password was T3mpP@ssw0rd2023XyZ1, rotate before removing this line
+
+# UUID-formatted secret
+client_secret: 123e4567-e89b-12d3-a456-426614174000
+
+# Secret disguised by Base64 encoding
+auth_token = "c2VjcmV0LWFwaS1rZXktdmFsdWU="
+
+# Secret disguised by hex encoding
+signing_key = "4f3c2b1a9e8d7c6b5a4938271605f4e3d2c1b0a"
+```
+
+#### Generic secret findings
+
+When a generic secret is found, GitLab labels the finding in the vulnerability report based on the type of value it detected:
+
+- `Generic Password`: A human-defined password, such as a database password or a service password.
+- `Generic Secret`: A machine-generated credential, such as an API key or access token, that doesn't match a known vendor format.
+- `Generic UUID Secret`, `Generic Base64-Encoded Secret`, `Generic Base64URL-Encoded Secret`, `Generic Hex-Encoded Secret`, `Generic JWT Token`, and `Generic Paseto Token`: Machine-generated credentials that GitLab further classified by their format.
+
+Each finding includes a description that explains why the value was flagged. The description provides
+guidance on how to confirm whether the value is a real secret, rotate a confirmed secret, or
+dismiss a false positive.
+
+#### Secrets generic detection might miss
+
+Generic detection identifies a secret from its surroundings, such as a keyword or the format of the value,
+not from confirming what the value does. This approach has trade-offs. Even with false positive reduction in
+place, some non-secret values can show up as findings. For example:
+
+- A secret built through concatenation or string interpolation, such as `full_key = prefix + secret_suffix`.
+- A secret with no recognizable keyword nearby, such as a hardcoded value with no label like `key`, `secret`, `token`, or `password` next to it.
+- A secret in a file or path that generic detection excludes, such as a vendored dependency, a generated file, or documentation.
+- A value that's shorter than the minimum length generic detection expects for that type of secret.
+- A secret reported at medium or low confidence. GitLab Secret Scanning for Source Code shows only high-confidence findings in the vulnerability report.
+
+## Supported rules for rule-based detection
+
+This table lists the rules used for rule-based detection, and shows whether each is supported by:
 
 - Pipeline secret detection
 - Client-side secret detection

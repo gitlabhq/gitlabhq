@@ -186,9 +186,27 @@ describe('TodosFilterBar', () => {
     await nextTick();
     expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
       label: 'filter_action',
+      property: mockActionParam.api,
     });
 
     expect(trackingSpy).toHaveBeenCalledTimes(5);
+  });
+
+  it('reports the first action type when tracking a combined reason filter', async () => {
+    createComponent();
+
+    findGlFilteredSearch().vm.$emit(
+      'input',
+      generateFilterTokens({
+        action: 'mentioned;directly_addressed',
+      }),
+    );
+    await nextTick();
+
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
+      label: 'filter_action',
+      property: 'mentioned',
+    });
   });
 
   it('does not emit telemetry events on changing a filter', async () => {

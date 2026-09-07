@@ -6,6 +6,7 @@ import {
   TYPENAME_ITERATION,
   TYPENAME_MILESTONE,
   TYPENAME_USER,
+  TYPENAME_WORK_ITEMS_TYPE,
 } from '~/graphql_shared/constants';
 import { isGid, convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
@@ -277,7 +278,11 @@ export const FiltersInfo = {
     negatedSupport: true,
   },
   types: {
+    remap: () => 'workItemTypeIds',
+  },
+  workItemTypeIds: {
     negatedSupport: true,
+    transform: (val) => convertToGraphQLId(TYPENAME_WORK_ITEMS_TYPE, val),
   },
   confidential: {
     negatedSupport: false,

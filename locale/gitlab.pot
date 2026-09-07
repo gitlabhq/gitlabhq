@@ -10963,13 +10963,13 @@ msgstr ""
 msgid "AnalyticsDashboards|Failed to load dashboards list. Please try again."
 msgstr ""
 
+msgid "AnalyticsDashboards|Failed to load groups and projects. Please try again."
+msgstr ""
+
 msgid "AnalyticsDashboards|Failed to load namespace metadata."
 msgstr ""
 
 msgid "AnalyticsDashboards|Failed to update dashboard. Please try again."
-msgstr ""
-
-msgid "AnalyticsDashboards|Groups"
 msgstr ""
 
 msgid "AnalyticsDashboards|Keep your teams aligned around the metrics that matter most."
@@ -10991,9 +10991,6 @@ msgid "AnalyticsDashboards|No projects"
 msgstr ""
 
 msgid "AnalyticsDashboards|Panel query"
-msgstr ""
-
-msgid "AnalyticsDashboards|Projects"
 msgstr ""
 
 msgid "AnalyticsDashboards|Projects in top-level group (%{name})"
@@ -51827,6 +51824,9 @@ msgstr ""
 msgid "MrReports|License compliance"
 msgstr ""
 
+msgid "MrReports|Metrics"
+msgstr ""
+
 msgid "MrReports|No pipeline results yet"
 msgstr ""
 
@@ -66763,6 +66763,9 @@ msgstr ""
 msgid "Reports|Metrics reports failed to load results"
 msgstr ""
 
+msgid "Reports|Metrics reports results are not available"
+msgstr ""
+
 msgid "Reports|Metrics reports: %{strong_start}%{numberOfChanges}%{strong_end} %{changes}"
 msgstr ""
 
@@ -67513,10 +67516,16 @@ msgstr ""
 msgid "RiskClassification|Agent-authored commits"
 msgstr ""
 
+msgid "RiskClassification|Authentication, session handling, or identity verification"
+msgstr ""
+
 msgid "RiskClassification|Author does not own the changed code"
 msgstr ""
 
 msgid "RiskClassification|Author experience"
+msgstr ""
+
+msgid "RiskClassification|Authorization, access control, or tenant isolation"
 msgstr ""
 
 msgid "RiskClassification|Change shape"
@@ -67535,6 +67544,12 @@ msgid "RiskClassification|Commit authorship"
 msgstr ""
 
 msgid "RiskClassification|Concentration of the change across files"
+msgstr ""
+
+msgid "RiskClassification|Cryptography, key management, or credential handling"
+msgstr ""
+
+msgid "RiskClassification|Database schema, data migration, or database layer"
 msgstr ""
 
 msgid "RiskClassification|Dependency changes"
@@ -67565,6 +67580,9 @@ msgid "RiskClassification|Number of files changed"
 msgstr ""
 
 msgid "RiskClassification|Proportion of added to removed lines"
+msgstr ""
+
+msgid "RiskClassification|Public API contract, REST or GraphQL"
 msgstr ""
 
 msgid "RiskClassification|Reversibility"

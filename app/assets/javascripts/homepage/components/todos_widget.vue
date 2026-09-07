@@ -18,6 +18,8 @@ import {
 import TodoItem from '~/todos/components/todo_item.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import {
+  EVENT_FILTER_TODOS_ON_HOMEPAGE,
+  EVENT_OPEN_TODOS_FILTER_DROPDOWN_ON_HOMEPAGE,
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
   TRACKING_LABEL_TODO_ITEMS,
   TRACKING_PROPERTY_ALL_TODOS,
@@ -32,21 +34,25 @@ const FILTER_OPTIONS = [
     value: null,
     text: s__('Todos|Everything'),
     description: s__('Todos|All your pending to-do items across GitLab.'),
+    trackingValue: 'everything',
   },
   {
     value: TODO_ACTION_TYPE_ASSIGNED,
     text: s__('Todos|Assignments'),
     description: s__('Todos|Items assigned to you.'),
+    trackingValue: TODO_ACTION_TYPE_ASSIGNED,
   },
   {
     value: `${TODO_ACTION_TYPE_MENTIONED};${TODO_ACTION_TYPE_DIRECTLY_ADDRESSED}`,
     text: s__('Todos|Mentions'),
     description: s__('Todos|Items where you were mentioned (@username).'),
+    trackingValue: TODO_ACTION_TYPE_MENTIONED,
   },
   {
     value: TODO_ACTION_TYPE_BUILD_FAILED,
     text: s__('Todos|Failed builds'),
     description: s__('Todos|Merge requests with failed pipelines.'),
+    trackingValue: TODO_ACTION_TYPE_BUILD_FAILED,
   },
   {
     value: TODO_ACTION_TYPE_UNMERGEABLE,
@@ -54,11 +60,13 @@ const FILTER_OPTIONS = [
     description: s__(
       'Todos|Merge requests that cannot be merged due to conflicts or other issues.',
     ),
+    trackingValue: TODO_ACTION_TYPE_UNMERGEABLE,
   },
   {
     value: TODO_ACTION_TYPE_REVIEW_REQUESTED,
     text: s__('Todos|Requested reviews'),
     description: s__('Todos|Merge requests that require your review or approval.'),
+    trackingValue: TODO_ACTION_TYPE_REVIEW_REQUESTED,
   },
 ];
 
@@ -133,6 +141,16 @@ export default {
       this.hasError = false;
       this.$apollo.queries.todos.refetch();
     },
+    handleFilterDropdownShown() {
+      this.trackEvent(EVENT_OPEN_TODOS_FILTER_DROPDOWN_ON_HOMEPAGE);
+    },
+    handleFilterSelect(value) {
+      const selectedOption = FILTER_OPTIONS.find((option) => option.value === value);
+
+      this.trackEvent(EVENT_FILTER_TODOS_ON_HOMEPAGE, {
+        property: selectedOption?.trackingValue,
+      });
+    },
     handleViewAllClick() {
       this.trackEvent(EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE, {
         label: TRACKING_LABEL_TODO_ITEMS,
@@ -159,6 +177,8 @@ export default {
         v-model="filter"
         :items="$options.FILTER_OPTIONS"
         :toggle-text="selectedFilterText"
+        @shown="handleFilterDropdownShown"
+        @select="handleFilterSelect"
       >
         <template #list-item="{ item }">
           <div class="gl-flex gl-w-full gl-flex-col gl-gap-1">

@@ -2,8 +2,7 @@
 import { GlFormGroup } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import DateRangeFilter from './date_range_filter.vue';
-import GroupsFilter from './groups_filter.vue';
-import ProjectsFilter from './projects_filter.vue';
+import ScopePicker from './scope_picker.vue';
 import { DATE_RANGE_OPTION_LAST_30_DAYS } from './constants';
 
 export default {
@@ -11,27 +10,26 @@ export default {
   components: {
     GlFormGroup,
     DateRangeFilter,
-    GroupsFilter,
-    ProjectsFilter,
+    ScopePicker,
   },
   i18n: {
     region: s__('AnalyticsDashboards|Dashboard filters'),
-    groupsLabel: s__('AnalyticsDashboards|Groups'),
-    projectsLabel: s__('AnalyticsDashboards|Projects'),
+    scopeLabel: s__('AnalyticsDashboards|Scope'),
     dateRangeLabel: s__('AnalyticsDashboards|Date range'),
   },
+  // The page is mounted at instance, group and project level. Only the latter two put a group on
+  // the body dataset, and the picker browses the user's own top-level groups without one.
+  inject: {
+    defaultGroupFullPath: { default: null },
+  },
   props: {
-    groupNamespace: {
-      type: String,
-      required: true,
-    },
     dashboardFilters: {
       type: Object,
       required: false,
       default: () => ({}),
     },
   },
-  emits: ['set-date-range', 'set-projects', 'set-groups'],
+  emits: ['set-date-range', 'set-scope', 'error'],
   computed: {
     dateRangeConfig() {
       return this.dashboardFilters?.dateRange ?? {};
@@ -58,14 +56,11 @@ export default {
     :aria-label="$options.i18n.region"
     class="gl-flex gl-flex-col gl-gap-3 md:gl-flex-row"
   >
-    <gl-form-group :label="$options.i18n.groupsLabel">
-      <groups-filter @group-selected="$emit('set-groups', $event)" />
-    </gl-form-group>
-    <gl-form-group class="gl-full-w" :label="$options.i18n.projectsLabel">
-      <projects-filter
-        :group-namespace="groupNamespace"
-        :disabled="!groupNamespace"
-        @project-selected="$emit('set-projects', $event)"
+    <gl-form-group class="gl-full-w" :label="$options.i18n.scopeLabel">
+      <scope-picker
+        :group-full-path="defaultGroupFullPath || ''"
+        @change="$emit('set-scope', $event)"
+        @error="$emit('error', $event)"
       />
     </gl-form-group>
     <gl-form-group v-if="showDateRangeFilter" :label="$options.i18n.dateRangeLabel">

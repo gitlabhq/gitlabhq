@@ -104,8 +104,8 @@ module API
         parent_type = args[:project_id] ? :project : :group
         args[:"attempt_#{parent_type}_search_optimizations"] = true
 
-        finder = MergeRequestsFinder.new(current_user, args)
-        merge_requests = paginate(finder.execute, skip_default_order: finder.group_mr_in_optimization_applied?)
+        merge_requests = MergeRequestsFinder.new(current_user, args).execute
+        merge_requests = paginate(merge_requests)
                            .preload(:source_project, :target_project)
 
         return merge_requests if args[:view] == 'simple'

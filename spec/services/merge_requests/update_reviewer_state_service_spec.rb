@@ -43,18 +43,6 @@ RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :cod
         merge_request.project.add_developer(non_reviewer)
       end
 
-      context 'when the assign_reviewer_on_review_submission feature flag is disabled' do
-        before do
-          stub_feature_flags(assign_reviewer_on_review_submission: false)
-        end
-
-        it 'returns an error and does not create a reviewer', :aggregate_failures do
-          expect { result }.not_to change { merge_request.merge_request_reviewers.count }
-          expect(result[:status]).to eq :error
-          expect(result[:message]).to eq 'Reviewer not found'
-        end
-      end
-
       context 'when the merge request does not allow multiple reviewers' do
         before do
           allow(merge_request).to receive(:allows_multiple_reviewers?).and_return(false)

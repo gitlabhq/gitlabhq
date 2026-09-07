@@ -751,14 +751,6 @@ class MergeRequest < ApplicationRecord
       .where(merge_request_diff_files: { old_path: path })
   end
 
-  # Optimization support, see: https://docs.gitlab.com/development/database/efficient_in_operator_queries/
-  scope :in_optimization_array_mapping_scope, ->(id_expression) {
-    where(arel_table[:target_project_id].eq(id_expression))
-  }
-  scope :in_optimization_finder_query, ->(_created_at_expression, id_expression) {
-    where(arel_table[:id].eq(id_expression))
-  }
-
   scope :with_closed_between, ->(closed_after = nil, closed_before = nil) do
     return all unless closed_after || closed_before
 

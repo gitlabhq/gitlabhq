@@ -11,6 +11,7 @@ import ExploreAnalyticsDashboard from '~/explore/analytics_dashboards/pages/deta
 import DashboardFilters from '~/explore/analytics_dashboards/components/dashboard_filters.vue';
 import DashboardLoader from '~/explore/analytics_dashboards/components/dashboard_loader.vue';
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
+import { createAlert } from '~/alert';
 import getDashboardQuery from '~/explore/analytics_dashboards/graphql/get_dashboard.query.graphql';
 import {
   mockDashboardResponse,
@@ -19,6 +20,8 @@ import {
 } from '../mock_data';
 
 Vue.use(VueApollo);
+
+jest.mock('~/alert');
 
 describe('ExploreAnalyticsDashboardDetails', () => {
   let wrapper;
@@ -45,10 +48,19 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findResetButton = () => wrapper.findComponentByTestId('dashboard-filters-reset');
 
-  const selectGroup = async (group = { id: 1, fullPath: 'gitlab-org' }) => {
-    findDashboardFilters().vm.$emit('set-groups', [group]);
+  const mockGroup = { id: 1, name: 'GitLab.org', fullPath: 'gitlab-org', type: 'Group' };
+  const mockProject = {
+    id: 2,
+    name: 'GitLab',
+    fullPath: 'gitlab-org/gitlab',
+    type: 'Project',
+  };
+
+  const selectScope = async (namespace = mockGroup) => {
+    findDashboardFilters().vm.$emit('set-scope', namespace);
     await waitForPromises();
   };
+  const selectGroup = selectScope;
 
   // Emits `loaded` the way the real loader does, so the page seeds its filters from the
   // dashboard's own filter config.
@@ -88,10 +100,6 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   describe('dashboard filters', () => {
     beforeEach(() => createWithFilters());
 
-    it('passes an empty groupNamespace to dashboard-filters by default', () => {
-      expect(findDashboardFilters().props('groupNamespace')).toBe('');
-    });
-
     // The picker renders its default without emitting it, so the page seeds the filters
     // to match. A panel would otherwise resolve a window the picker does not name.
     it('seeds the dashboard layout filters with the default date range', () => {
@@ -99,49 +107,40 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       expect(findFilterDates()).toEqual(['2020-06-06T00:00:00.000Z', '2020-07-06T00:00:00.000Z']);
     });
 
-    describe('when dashboard-filters emits set-groups with a group', () => {
-      const group = { id: 1, fullPath: 'gitlab-org' };
-
-      beforeEach(async () => {
-        findDashboardFilters().vm.$emit('set-groups', [group]);
-        await waitForPromises();
-      });
-
-      it('updates the groupNamespace prop passed back to dashboard-filters', () => {
-        expect(findDashboardFilters().props('groupNamespace')).toBe(group.fullPath);
-      });
+    describe('when dashboard-filters emits set-scope with a group', () => {
+      beforeEach(() => selectScope(mockGroup));
 
       it('passes the selected group full path to the dashboard layout filters', () => {
         expect(findDashboardLayout().props('filters')).toMatchObject({
-          groups: [group.fullPath],
+          groups: [mockGroup.fullPath],
           projects: [],
         });
       });
     });
 
-    describe('when dashboard-filters emits set-projects with a project', () => {
-      const project = { id: 2, fullPath: 'gitlab-org/gitlab' };
+    describe('when dashboard-filters emits set-scope with a project', () => {
+      beforeEach(() => selectScope(mockProject));
 
-      beforeEach(async () => {
-        findDashboardFilters().vm.$emit('set-projects', [project]);
-        await waitForPromises();
-      });
-
-      it('passes the selected project full path to the dashboard layout filters', () => {
+      // The picker is single-select, so a project replaces a group rather than nesting under it.
+      it('passes the project as the scope, and no group', () => {
         expect(findDashboardLayout().props('filters')).toMatchObject({
-          projects: [project.fullPath],
+          groups: [],
+          projects: [mockProject.fullPath],
         });
       });
     });
 
-    describe('when dashboard-filters emits set-projects with an empty list', () => {
+    describe('when dashboard-filters emits set-scope with null', () => {
       beforeEach(async () => {
-        findDashboardFilters().vm.$emit('set-projects', []);
-        await waitForPromises();
+        await selectScope(mockProject);
+        await selectScope(null);
       });
 
-      it('clears the projects on the dashboard layout filters', () => {
-        expect(findDashboardLayout().props('filters')).toMatchObject({ projects: [] });
+      it('clears both on the dashboard layout filters', () => {
+        expect(findDashboardLayout().props('filters')).toMatchObject({
+          groups: [],
+          projects: [],
+        });
       });
     });
 
@@ -204,8 +203,8 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     });
 
     it.each([
-      ['set-groups', [group]],
-      ['set-projects', [{ id: 2, fullPath: 'gitlab-org/gitlab' }]],
+      ['set-scope', mockGroup],
+      ['set-scope', mockProject],
       ['set-date-range', { dateRangeOption: '7d' }],
     ])('enables the reset button after dashboard-filters emits %s', async (event, payload) => {
       await createWithFilters();
@@ -225,12 +224,11 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       expect(findResetButton().props('disabled')).toBe(true);
     });
 
-    it('disables the reset button again when the selected group is cleared', async () => {
+    it('disables the reset button again when the scope is cleared', async () => {
       await createWithFilters();
 
-      await selectGroup(group);
-      findDashboardFilters().vm.$emit('set-groups', []);
-      await waitForPromises();
+      await selectScope(mockGroup);
+      await selectScope(null);
 
       expect(findResetButton().props('disabled')).toBe(true);
     });
@@ -251,10 +249,6 @@ describe('ExploreAnalyticsDashboardDetails', () => {
 
         findResetButton().vm.$emit('click');
         await waitForPromises();
-      });
-
-      it('clears the group namespace passed to the filter bar', () => {
-        expect(findDashboardFilters().props('groupNamespace')).toBe('');
       });
 
       it('disables the reset button', () => {
@@ -477,7 +471,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
 
     describe('once a project is selected', () => {
       beforeEach(async () => {
-        findDashboardFilters().vm.$emit('set-projects', [{ id: 2, fullPath: 'gitlab-org/gitlab' }]);
+        findDashboardFilters().vm.$emit('set-scope', mockProject);
         await waitForPromises();
       });
 
@@ -493,7 +487,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     describe('when the selected group is cleared', () => {
       beforeEach(async () => {
         await selectGroup();
-        findDashboardFilters().vm.$emit('set-groups', []);
+        findDashboardFilters().vm.$emit('set-scope', null);
         await waitForPromises();
       });
 
@@ -542,6 +536,126 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       expect(wrapper.findComponent(AnalyticsDashboardPanel).props()).toMatchObject({
         views: mockPanelWithViews.views,
         filters: { groups: ['gitlab-org'], projects: [] },
+      });
+    });
+  });
+
+  describe('when the scope picker reports an error', () => {
+    const error = new Error('oh no');
+
+    beforeEach(async () => {
+      await createWithFilters();
+      findDashboardFilters().vm.$emit('error', error);
+      await waitForPromises();
+    });
+
+    // The picker reports to Sentry itself, so this only has to reach the user. captureError is
+    // off to avoid reporting the same failure twice.
+    it('tells the user, rather than failing silently', () => {
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Failed to load groups and projects. Please try again.',
+        error,
+        captureError: false,
+      });
+    });
+
+    // The flash container outlives this page, so an undismissed alert would follow the user to
+    // the next dashboard.
+    it('dismisses the alert when the page is torn down', () => {
+      const dismiss = jest.fn();
+      createAlert.mockReturnValue({ dismiss });
+
+      findDashboardFilters().vm.$emit('error', error);
+      wrapper.destroy();
+
+      expect(dismiss).toHaveBeenCalled();
+    });
+
+    // createAlert only detaches the element of the alert it replaces, so an undismissed
+    // predecessor stays mounted with no handle left to reach it by.
+    it('dismisses the previous alert when a second error arrives', async () => {
+      const dismiss = jest.fn();
+      createAlert.mockReturnValue({ dismiss });
+
+      findDashboardFilters().vm.$emit('error', error);
+      await waitForPromises();
+      findDashboardFilters().vm.$emit('error', error);
+
+      expect(dismiss).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // Panels read the namespace from injection rather than props, so the scope picker's single
+  // emission has to end up here intact or they query nothing and spin.
+  describe('what a panel is given for the selected scope', () => {
+    const probe = {
+      inject: ['namespaceFullPath', 'namespaceName', 'namespaceId', 'isProject'],
+      template: '<div />',
+    };
+    const panelLayoutStub = {
+      props: ['config'],
+      template: `
+        <div>
+          <slot name="filters" />
+          <slot name="panel" v-if="config.panels.length" :panel="config.panels[0]" />
+        </div>
+      `,
+    };
+    const findProbe = () => wrapper.findComponent(probe);
+    // Injected computed refs arrive unwrapped, so these read as plain values.
+    const injected = () => {
+      const { namespaceFullPath, namespaceName, namespaceId, isProject } = findProbe().vm;
+
+      return { namespaceFullPath, namespaceName, namespaceId, isProject };
+    };
+
+    beforeEach(async () => {
+      createComponent({
+        requestHandlers: mockResolvedQuery(mockDashboardWithPanelViewsResponse),
+        stubs: { GlDashboardLayout: panelLayoutStub, AnalyticsDashboardPanel: probe },
+      });
+      await waitForPromises();
+    });
+
+    it('hands a selected group straight through', async () => {
+      await selectScope(mockGroup);
+
+      expect(injected()).toEqual({
+        namespaceFullPath: mockGroup.fullPath,
+        namespaceName: mockGroup.name,
+        namespaceId: mockGroup.id,
+        isProject: false,
+      });
+    });
+
+    it('hands a selected project through, marked as a project', async () => {
+      await selectScope(mockProject);
+
+      expect(injected()).toEqual({
+        namespaceFullPath: mockProject.fullPath,
+        namespaceName: mockProject.name,
+        namespaceId: mockProject.id,
+        isProject: true,
+      });
+    });
+
+    it('replaces a group with a project rather than keeping both', async () => {
+      await selectScope(mockGroup);
+      await selectScope(mockProject);
+
+      expect(injected()).toMatchObject({
+        namespaceFullPath: mockProject.fullPath,
+        isProject: true,
+      });
+    });
+
+    it('replaces a project with a group, clearing isProject', async () => {
+      await selectScope(mockProject);
+      await selectScope(mockGroup);
+
+      expect(injected()).toMatchObject({
+        namespaceFullPath: mockGroup.fullPath,
+        isProject: false,
       });
     });
   });

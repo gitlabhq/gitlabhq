@@ -52,6 +52,46 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
       subject
     end
 
+    context 'when publishing MergedCloudEvent' do
+      let_it_be(:merger) { create(:user) }
+
+      before_all do
+        project.add_maintainer(merger)
+      end
+
+      subject(:execute_as_merger) do
+        described_class.new(project: project, current_user: merger, params: params).execute(merge_request)
+      end
+
+      context 'when merge_request_merged_flow_trigger feature flag is enabled' do
+        it 'publishes MergedCloudEvent with the merging user' do
+          expect(MergeRequests::MergedCloudEvent)
+            .to receive(:build)
+            .with(merge_request: merge_request, current_user: merger)
+            .and_call_original
+
+          execute_as_merger
+        end
+
+        it 'publishes MergedCloudEvent' do
+          expect { execute_as_merger }.to publish_event(MergeRequests::MergedCloudEvent)
+            .with(merge_request_id: merge_request.id,
+              merge_request_iid: merge_request.iid,
+              project_id: merge_request.project_id)
+        end
+      end
+
+      context 'when merge_request_merged_flow_trigger feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_request_merged_flow_trigger: false)
+        end
+
+        it 'does not publish MergedCloudEvent' do
+          expect { execute_as_merger }.not_to publish_event(MergeRequests::MergedCloudEvent)
+        end
+      end
+    end
+
     it 'deletes non-latest diffs' do
       diff_removal_service = instance_double(MergeRequests::DeleteNonLatestDiffsService, execute: nil)
 

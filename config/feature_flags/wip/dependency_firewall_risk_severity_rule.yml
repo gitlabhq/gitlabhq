@@ -1,0 +1,9 @@
+---
+name: dependency_firewall_risk_severity_rule
+description: Feature flag for the Dependency Firewall risk_severity rule builder UI - Work in Progress
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/627719
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253730
+milestone: '19.4'
+group: group::dependency firewall
+type: wip
+default_enabled: false

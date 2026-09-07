@@ -47,6 +47,17 @@ module MergeRequests
       trigger_user_merge_request_updated(merge_request)
 
       execute_hooks(merge_request, 'merge')
+
+      # CloudEvent consumed by AI flow trigger workers; gated to avoid publishing
+      # on every merge when the feature is disabled.
+      return unless Feature.enabled?(:merge_request_merged_flow_trigger, project)
+
+      Gitlab::EventStore.publish(
+        MergeRequests::MergedCloudEvent.build(
+          merge_request: merge_request,
+          current_user: current_user
+        )
+      )
     end
 
     def create_note(merge_request, source)

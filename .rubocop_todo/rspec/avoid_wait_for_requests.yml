@@ -11,7 +11,6 @@ RSpec/AvoidWaitForRequests:
     - 'ee/spec/features/boards/boards_spec.rb'
     - 'ee/spec/features/boards/group_boards/board_deletion_spec.rb'
     - 'ee/spec/features/boards/group_boards/multiple_boards_spec.rb'
-    - 'ee/spec/features/boards/new_issue_spec.rb'
     - 'ee/spec/features/boards/scoped_issue_board_spec.rb'
     - 'ee/spec/features/boards/sidebar_spec.rb'
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_drag_drop_spec.rb'

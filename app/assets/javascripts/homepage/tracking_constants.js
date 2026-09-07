@@ -1,6 +1,9 @@
 // Event names
 export const EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE = 'user_follows_link_on_homepage';
 export const EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED = 'user_clicks_link_in_activity_feed';
+export const EVENT_OPEN_TODOS_FILTER_DROPDOWN_ON_HOMEPAGE =
+  'open_todos_filter_dropdown_on_homepage';
+export const EVENT_FILTER_TODOS_ON_HOMEPAGE = 'filter_todos_on_homepage';
 
 // Labels
 export const TRACKING_LABEL_MERGE_REQUESTS = 'Merge requests';

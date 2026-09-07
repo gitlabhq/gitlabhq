@@ -96,7 +96,6 @@ module MergeRequests
     def assign_reviewer_on_submission?(merge_request, state)
       REVIEWER_ASSIGNMENT_STATES.include?(state) &&
         merge_request.author_id != current_user.id &&
-        Feature.enabled?(:assign_reviewer_on_review_submission, merge_request.project) &&
         can_add_reviewer?(merge_request)
     end
 

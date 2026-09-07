@@ -4,10 +4,9 @@ import DashboardFilters from '~/explore/analytics_dashboards/components/dashboar
 describe('DashboardFilters', () => {
   let wrapper;
 
-  const GroupsFilterStub = { name: 'GroupsFilter', template: '<div />' };
-  const ProjectsFilterStub = {
-    name: 'ProjectsFilter',
-    props: ['groupNamespace', 'disabled'],
+  const ScopePickerStub = {
+    name: 'ScopePicker',
+    props: ['groupFullPath'],
     template: '<div />',
   };
   const DateRangeFilterStub = {
@@ -16,19 +15,18 @@ describe('DashboardFilters', () => {
     template: '<div />',
   };
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ props = {}, defaultGroupFullPath = null } = {}) => {
     wrapper = shallowMountExtended(DashboardFilters, {
-      propsData: { groupNamespace: 'gitlab-org', ...props },
+      propsData: { ...props },
+      provide: { defaultGroupFullPath },
       stubs: {
-        GroupsFilter: GroupsFilterStub,
-        ProjectsFilter: ProjectsFilterStub,
+        ScopePicker: ScopePickerStub,
         DateRangeFilter: DateRangeFilterStub,
       },
     });
   };
 
-  const findGroupsFilter = () => wrapper.findComponent(GroupsFilterStub);
-  const findProjectsFilter = () => wrapper.findComponent(ProjectsFilterStub);
+  const findScopePicker = () => wrapper.findComponent(ScopePickerStub);
   const findDateRangeFilter = () => wrapper.findComponent(DateRangeFilterStub);
 
   describe('rendering', () => {
@@ -42,14 +40,9 @@ describe('DashboardFilters', () => {
       expect(region.attributes('aria-label')).toBe('Dashboard filters');
     });
 
-    it('passes the groupNamespace prop to the projects filter', () => {
-      expect(findProjectsFilter().exists()).toBe(true);
-      expect(findProjectsFilter().props('groupNamespace')).toBe('gitlab-org');
-    });
-
-    it('enables the projects filter when a group is selected', () => {
-      expect(findProjectsFilter().exists()).toBe(true);
-      expect(findProjectsFilter().props('disabled')).toBe(false);
+    it('renders the scope picker with no root, the instance-level page having no group', () => {
+      expect(findScopePicker().exists()).toBe(true);
+      expect(findScopePicker().props('groupFullPath')).toBe('');
     });
 
     it('defaults the date range filter to the last 30 days', () => {
@@ -93,31 +86,31 @@ describe('DashboardFilters', () => {
     });
   });
 
-  describe('when no group is selected', () => {
-    beforeEach(() => createComponent({ props: { groupNamespace: '' } }));
+  describe('when the page provides a group, as the group and project mounts do', () => {
+    beforeEach(() => createComponent({ defaultGroupFullPath: 'gitlab-org' }));
 
-    it('disables the projects filter', () => {
-      expect(findProjectsFilter().props('disabled')).toBe(true);
+    it('roots the scope picker at it, so it browses inside that group', () => {
+      expect(findScopePicker().props('groupFullPath')).toBe('gitlab-org');
     });
   });
 
   describe('event re-emission', () => {
     beforeEach(() => createComponent());
 
-    it('re-emits group-selected as set-groups', () => {
-      const payload = [{ id: 1, fullPath: 'gitlab-org' }];
+    it('re-emits the picker change as set-scope', () => {
+      const payload = { id: 1, fullPath: 'gitlab-org', type: 'Group' };
 
-      findGroupsFilter().vm.$emit('group-selected', payload);
+      findScopePicker().vm.$emit('change', payload);
 
-      expect(wrapper.emitted('set-groups')).toEqual([[payload]]);
+      expect(wrapper.emitted('set-scope')).toEqual([[payload]]);
     });
 
-    it('re-emits project-selected as set-projects', () => {
-      const payload = [{ id: 9, fullPath: 'gitlab-org/gitlab-test' }];
+    it('re-emits a picker error, so the page can surface it', () => {
+      const error = new Error('oh no');
 
-      findProjectsFilter().vm.$emit('project-selected', payload);
+      findScopePicker().vm.$emit('error', error);
 
-      expect(wrapper.emitted('set-projects')).toEqual([[payload]]);
+      expect(wrapper.emitted('error')).toEqual([[error]]);
     });
 
     it('re-emits date-range filter change as set-date-range', () => {

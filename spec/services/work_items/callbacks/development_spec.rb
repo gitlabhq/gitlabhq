@@ -116,7 +116,7 @@ RSpec.describe WorkItems::Callbacks::Development, feature_category: :code_review
       end
     end
 
-    context "when the feature flag is disabled for the work item's project" do
+    context "when the flag is off for the work item project but on for the merge request project" do
       let_it_be(:other_project) { create(:project, :repository, :private, developers: developer) }
       let_it_be(:other_work_item) { create(:work_item, :issue, project: other_project) }
 
@@ -126,10 +126,10 @@ RSpec.describe WorkItems::Callbacks::Development, feature_category: :code_review
         stub_feature_flags(explicit_mr_work_item_relations: merge_request.project)
       end
 
-      it 'does not link even when the merge request project has the flag on' do
-        expect(::MergeRequests::WorkItemRelations::CreateService).not_to receive(:new)
+      it 'links the work item, gating only on the merge request project' do
+        expect(::MergeRequests::WorkItemRelations::CreateService).to receive(:new).and_call_original
 
-        expect { development_callback }.not_to change { merge_request.merge_request_issues.count }
+        expect { development_callback }.to change { merge_request.merge_request_issues.count }.by(1)
       end
     end
 

@@ -145,8 +145,8 @@ export const FilterFields = {
     'myReactionEmoji',
     'releaseTag',
     'search',
-    'types',
     'weight',
+    'workItemTypeIds',
     'status',
   ],
 };

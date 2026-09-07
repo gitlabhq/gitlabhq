@@ -3,14 +3,8 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/boards/components/board_app.vue',
-    'app/assets/javascripts/boards/components/board_filtered_search.vue',
     'app/assets/javascripts/issues/dashboard/components/issues_dashboard_app.vue',
-    'app/assets/javascripts/pages/projects/shared/permissions/components/gitlab_duo_settings.vue',
-    'app/assets/javascripts/search/sidebar/components/scope_sidebar_navigation.vue',
     'app/assets/javascripts/security_configuration/components/app.vue',
-    'app/assets/javascripts/vue_shared/components/filtered_search_bar/tokens/work_item_type_token.vue',
-    'app/assets/javascripts/work_items/pages/planning_view.vue',
     'app/assets/javascripts/security_configuration/components/ref_tracking_list.vue',
   ],
   rules: {

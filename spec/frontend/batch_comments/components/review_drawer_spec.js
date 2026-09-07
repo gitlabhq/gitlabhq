@@ -62,7 +62,6 @@ describe('ReviewDrawer', () => {
     reviewers = [],
     allowsMultipleReviewers = true,
     author = { id: 'gid://gitlab/User/99' },
-    glFeatures = {},
   } = {}) => {
     const requestHandlers = [
       [
@@ -95,7 +94,6 @@ describe('ReviewDrawer', () => {
     wrapper = mountExtended(ReviewDrawer, {
       pinia,
       apolloProvider,
-      provide: { glFeatures },
     });
   };
 
@@ -145,9 +143,8 @@ describe('ReviewDrawer', () => {
       useBatchComments().drawerOpened = true;
     });
 
-    it('shows the hint when the flag is on and the current user is not a reviewer', async () => {
+    it('shows the hint when the current user is not a reviewer', async () => {
       createComponent({
-        glFeatures: { assignReviewerOnReviewSubmission: true },
         reviewers: [{ id: 'gid://gitlab/User/2' }],
       });
       await waitForPromises();
@@ -158,7 +155,6 @@ describe('ReviewDrawer', () => {
 
     it('does not show the hint until the reviewers query resolves', async () => {
       createComponent({
-        glFeatures: { assignReviewerOnReviewSubmission: true },
         reviewers: [{ id: 'gid://gitlab/User/2' }],
       });
 
@@ -171,18 +167,7 @@ describe('ReviewDrawer', () => {
 
     it('hides the hint when the current user is already a reviewer', async () => {
       createComponent({
-        glFeatures: { assignReviewerOnReviewSubmission: true },
         reviewers: [{ id: 'gid://gitlab/User/1' }],
-      });
-      await waitForPromises();
-
-      expect(findAssignReviewerHint().exists()).toBe(false);
-    });
-
-    it('hides the hint when the flag is off', async () => {
-      createComponent({
-        glFeatures: { assignReviewerOnReviewSubmission: false },
-        reviewers: [{ id: 'gid://gitlab/User/2' }],
       });
       await waitForPromises();
 
@@ -191,7 +176,6 @@ describe('ReviewDrawer', () => {
 
     it('hides the hint when multiple reviewers are not allowed and one is already assigned', async () => {
       createComponent({
-        glFeatures: { assignReviewerOnReviewSubmission: true },
         allowsMultipleReviewers: false,
         reviewers: [{ id: 'gid://gitlab/User/2' }],
       });
@@ -202,7 +186,6 @@ describe('ReviewDrawer', () => {
 
     it('shows the hint when multiple reviewers are not allowed but none is assigned yet', async () => {
       createComponent({
-        glFeatures: { assignReviewerOnReviewSubmission: true },
         allowsMultipleReviewers: false,
         reviewers: [],
       });
@@ -213,7 +196,6 @@ describe('ReviewDrawer', () => {
 
     it('hides the hint when the current user is the merge request author', async () => {
       createComponent({
-        glFeatures: { assignReviewerOnReviewSubmission: true },
         author: { id: 'gid://gitlab/User/1' },
         reviewers: [],
       });
@@ -224,7 +206,6 @@ describe('ReviewDrawer', () => {
 
     it('hides the hint when the user cannot update the merge request', async () => {
       createComponent({
-        glFeatures: { assignReviewerOnReviewSubmission: true },
         canUpdate: false,
         reviewers: [],
       });

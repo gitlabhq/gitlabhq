@@ -6,6 +6,7 @@ import { observable } from '~/lib/utils/observable';
 import {
   hasCodeQualityReport,
   hasLicenseComplianceReport,
+  hasMetricsReport,
 } from 'ee_else_ce/merge_requests/reports/configured_reports';
 
 export const PIPELINE_STATE = {
@@ -93,6 +94,9 @@ export default {
     },
     hasLicenseComplianceReports() {
       return hasLicenseComplianceReport(state.mr);
+    },
+    hasMetricsReports() {
+      return hasMetricsReport(state.mr);
     },
     pipelineState() {
       return pipelineStateOf(state.mr);

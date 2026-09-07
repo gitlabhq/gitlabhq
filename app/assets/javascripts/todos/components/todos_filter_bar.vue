@@ -352,7 +352,11 @@ export default {
         const reducedOld = reduceFilter(oldValue);
         for (const filter of reduceNew) {
           if (!reducedOld.has(filter)) {
-            this.track(INSTRUMENT_TODO_FILTER_CHANGE, { label: `filter_${filter}` });
+            this.track(INSTRUMENT_TODO_FILTER_CHANGE, {
+              label: `filter_${filter}`,
+              // Only the reason is recorded by value; the other filters hold raw IDs.
+              ...(filter === 'action' ? { property: newValue[filter][0] } : {}),
+            });
           }
         }
       },

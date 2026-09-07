@@ -39893,12 +39893,48 @@
           "description": "Version of a package in an Artifact Registry repository (Maven and npm).",
           "fields": [
             {
+              "name": "commitPath",
+              "description": "Web path to the publishing commit within the resolved project. Null when there is no SHA or project, or the viewer cannot read the project code. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "commitSha",
+              "description": "Commit SHA the version was published from, within the resolved project. Null when there is no SHA or project, or the viewer cannot read the project code. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "createdAt",
               "description": "Timestamp the version was published. Null when Artifact Registry stored none. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
                 "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "createdBy",
+              "description": "User who published the version, resolved from the reference Artifact Registry stores. Null when it stored none or the user no longer exists. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
                 "ofType": null
               },
               "isDeprecated": true,
@@ -39916,6 +39952,18 @@
                   "name": "ID",
                   "ofType": null
                 }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "project",
+              "description": "Project the version was published from, resolved from the reference Artifact Registry stores. Null when it stored none, the project no longer exists, or the viewer cannot see the project. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Project",
+                "ofType": null
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
@@ -392598,6 +392646,35 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "cdEnvironmentServiceUpdated",
+              "description": "Triggered when a service finishes deploying to an environment. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [
+                {
+                  "name": "environmentId",
+                  "description": "Global ID of the environment whose deployed services to watch.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "CdEnvironmentID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CdService",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "cdRolloutGateUpdated",
