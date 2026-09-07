@@ -7629,6 +7629,12 @@
     "dottedExample": "/api/v4/groups/john.doe/-/work_items/john.doe/notes"
   },
   {
+    "template": "/api/:version/groups/:id/-/work_items/:work_item_iid/notes/:note_id",
+    "example": "/api/v4/groups/foo/-/work_items/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/work_items/john.doe/notes/john.doe"
+  },
+  {
     "template": "/api/:version/groups/:id/-/work_items/:work_item_iid/related_branches",
     "example": "/api/v4/groups/foo/-/work_items/foo/related_branches",
     "acceptsFormat": true,
@@ -8725,6 +8731,12 @@
     "dottedExample": "/api/v4/namespaces/john.doe/-/work_items/john.doe/notes"
   },
   {
+    "template": "/api/:version/namespaces/:id/-/work_items/:work_item_iid/notes/:note_id",
+    "example": "/api/v4/namespaces/foo/-/work_items/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/namespaces/john.doe/-/work_items/john.doe/notes/john.doe"
+  },
+  {
     "template": "/api/:version/namespaces/:id/-/work_items/:work_item_iid/related_branches",
     "example": "/api/v4/namespaces/foo/-/work_items/foo/related_branches",
     "acceptsFormat": true,
@@ -9096,6 +9108,12 @@
     "example": "/api/v4/projects/foo/-/work_items/foo/notes",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/-/work_items/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/projects/:id/-/work_items/:work_item_iid/notes/:note_id",
+    "example": "/api/v4/projects/foo/-/work_items/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/-/work_items/john.doe/notes/john.doe"
   },
   {
     "template": "/api/:version/projects/:id/-/work_items/:work_item_iid/related_branches",

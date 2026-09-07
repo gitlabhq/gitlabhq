@@ -23,5 +23,24 @@ RSpec.describe Gitlab::InternalEventsTracking, feature_category: :product_analyt
 
       TestModule::ClassThatTracks.new.do_it(event_name, args)
     end
+
+    context 'when the tracking class is a generic Grape endpoint' do
+      before do
+        stub_const('Grape::Endpoint', Class.new do
+          include Gitlab::InternalEventsTracking
+
+          def do_it(event_name, args)
+            track_internal_event(event_name, **args)
+          end
+        end)
+      end
+
+      it 'passes no category, so track_event applies its default' do
+        expect(Gitlab::InternalEvents).to receive(:track_event)
+          .with(event_name, category: nil, **args)
+
+        Grape::Endpoint.new.do_it(event_name, args)
+      end
+    end
   end
 end

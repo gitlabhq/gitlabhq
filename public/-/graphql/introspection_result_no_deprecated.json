@@ -237224,6 +237224,22 @@
               "deprecationReason": null
             },
             {
+              "name": "closingMergeRequestsCount",
+              "description": "Number of merge requests that will close the work item when merged.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "featureFlags",
               "description": "Feature flags associated with the work item.",
               "args": [

@@ -28,6 +28,26 @@ module API
           use :pagination
         end
 
+        params :work_item_note_params do
+          requires :work_item_iid, type: Integer, desc: 'The internal ID of the work item'
+          requires :note_id, type: Integer, desc: 'The ID of a note'
+        end
+
+        def render_note_for(parent_work_item)
+          authorize_work_item_feature!(parent_work_item)
+          authorize! :read_note, parent_work_item
+
+          # Scoped to the work item's own notes, so a note id belonging to another noteable 404s.
+          # Deliberately not NotesHelpers#get_note: its EE override presents epics with the legacy
+          # LegacyEpicNote entity, whereas this API renders every scope with Entities::Note.
+          note = parent_work_item.notes
+            .preload(::API::Helpers::WorkItems::Preloads::NOTE_REFERENCE_PRELOADS) # rubocop:disable CodeReuse/ActiveRecord -- Preloading associations for API response
+            .find_by_id(params[:note_id])
+          not_found!('Note') unless note&.readable_by?(current_user)
+
+          present note, with: ::API::Entities::Note, current_user: current_user
+        end
+
         def render_notes_endpoint_for(resource_parent)
           parent_work_item = find_work_item_by_iid(resource_parent, params[:work_item_iid])
           not_found!('Work Item') unless parent_work_item
@@ -85,6 +105,27 @@ module API
 
             render_notes_endpoint_for(resource_parent)
           end
+
+          desc 'Get a note on a work item.' do
+            detail 'Get a single note for a work item in a namespace. Project and group namespaces are supported.'
+            hidden true
+            success ::API::Entities::Note
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_note_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :read_work_item,
+            boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
+
+          get ':work_item_iid/notes/:note_id' do
+            render_note_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
+          end
         end
       end
 
@@ -116,6 +157,27 @@ module API
           get ':work_item_iid/notes' do
             render_notes_endpoint_for(find_project!(params[:id]))
           end
+
+          desc 'Get a note on a work item.' do
+            detail 'Get a single note for a work item in a project.'
+            hidden true
+            success ::API::Entities::Note
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_note_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :read_work_item,
+            boundary_type: :project
+
+          get ':work_item_iid/notes/:note_id' do
+            render_note_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
+          end
         end
       end
 
@@ -145,6 +207,27 @@ module API
 
           get ':work_item_iid/notes' do
             render_notes_endpoint_for(find_group!(params[:id]))
+          end
+
+          desc 'Get a note on a work item.' do
+            detail 'Get a single note for a work item in a group.'
+            hidden true
+            success ::API::Entities::Note
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_note_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :read_work_item,
+            boundary_type: :group
+
+          get ':work_item_iid/notes/:note_id' do
+            render_note_for(work_item_for!(find_group!(params[:id]), params[:work_item_iid]))
           end
         end
       end

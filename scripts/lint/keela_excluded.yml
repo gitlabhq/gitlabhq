@@ -11,6 +11,8 @@
 delegations:
   app/models/project.rb:
     - push_pipelines_for_job_token_allowed: Required by the ci_cd_settings delegation shared example; used by the feature implementation in !243735
+  ee/app/models/work_items/widgets/agent_plan.rb:
+    - readiness_score_feedback_html: Read by the GraphQL markdown field added in !252884
 methods:
   app/helpers/mirror_helper.rb:
     - remote_mirrors_table_data: Will be called from HAML view in follow-up feature-flagged MR for Vue mirror list table

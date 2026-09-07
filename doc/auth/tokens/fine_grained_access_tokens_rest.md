@@ -2299,6 +2299,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_items` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_resources` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/notes` |
+| Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/notes/:note_id` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/related_branches` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/related_merge_requests` |
 | Read | Project | `GET` | `/projects/:id/-/work_items` |
@@ -2314,6 +2315,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/linked_items` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/linked_resources` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/notes` |
+| Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/notes/:note_id` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/related_branches` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/related_merge_requests` |
 | Read | Project | `GET` | `/projects/:id/boards` |
@@ -2396,6 +2398,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/linked_items` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/linked_resources` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/notes` |
+| Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/notes/:note_id` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/related_branches` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/related_merge_requests` |
 | Read | Group | `GET` | `/groups/:id/boards` |
@@ -2448,6 +2451,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_items` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_resources` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/notes` |
+| Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/notes/:note_id` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/related_branches` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/related_merge_requests` |
 | Read | User | `GET` | `/issues` |

@@ -657,6 +657,64 @@ RSpec.describe 'getting a work item list for a project', feature_category: :port
       end
     end
 
+    context 'for closing merge requests count field' do
+      let(:work_items) { [item1, item2] }
+      let(:fields) do
+        <<~GRAPHQL
+          nodes {
+            id
+            features {
+              development {
+                closingMergeRequestsCount
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      before do
+        work_items.each do |item|
+          create(
+            :merge_requests_closing_issues,
+            issue: item,
+            merge_request: create(:merge_request, source_project: project, target_branch: "feature#{item.id}")
+          )
+        end
+      end
+
+      it 'returns the count for each work item' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_errors).to be_blank
+        counts = graphql_data_at(:project, :workItems, :nodes).map do |node|
+          node.dig('features', 'development', 'closingMergeRequestsCount')
+        end
+
+        expect(counts).to all(eq(1))
+      end
+
+      it 'avoids N+1 queries', :use_sql_query_cache do
+        post_graphql(query, current_user: current_user) # warmup
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          post_graphql(query, current_user: current_user)
+        end
+        expect(graphql_errors).to be_blank
+
+        2.times do
+          new_work_item = create(:work_item, project: project)
+          create(
+            :merge_requests_closing_issues,
+            issue: new_work_item,
+            merge_request: create(:merge_request, source_project: project, target_branch: "feature#{new_work_item.id}")
+          )
+        end
+
+        expect { post_graphql(query, current_user: current_user) }.not_to exceed_all_query_limit(control)
+        expect(graphql_errors).to be_blank
+      end
+    end
+
     context 'for related merge requests field' do
       let(:fields) do
         <<~GRAPHQL

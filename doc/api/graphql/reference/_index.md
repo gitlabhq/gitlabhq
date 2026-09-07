@@ -34697,6 +34697,22 @@ Fields:
 | <a id="aifoundationalchatagentflowconfig-flowconfigschemaversion"></a>`flowConfigSchemaVersion` | [`String`](#string) | Flow config schema version sent to the Duo Workflow Service. |
 | <a id="aifoundationalchatagentflowconfig-flowversion"></a>`flowVersion` | [`String`](#string) | Flow version sent to the Duo Workflow Service. |
 
+### `AiGovernanceConnectedAgent`
+
+Registered external agents of one type, with their session activity.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernanceconnectedagent-activecount"></a>`activeCount` | [`Int!`](#int) | Registered machines whose identity has not been revoked. |
+| <a id="aigovernanceconnectedagent-agenttype"></a>`agentType` | [`String!`](#string) | External agent type, for example `claude-code`. |
+| <a id="aigovernanceconnectedagent-identitycount"></a>`identityCount` | [`Int!`](#int) | Registered machines of the agent type, revoked ones included. |
+| <a id="aigovernanceconnectedagent-lastsessionat"></a>`lastSessionAt` | [`Time`](#time) | When a machine of the agent type last opened a session, across all time. |
+| <a id="aigovernanceconnectedagent-revokedcount"></a>`revokedCount` | [`Int!`](#int) | Registered machines whose identity was revoked. |
+| <a id="aigovernanceconnectedagent-sessioncount"></a>`sessionCount` | [`Int!`](#int) | Sessions opened by these machines in the selected timeframe. |
+| <a id="aigovernanceconnectedagent-usercount"></a>`userCount` | [`Int!`](#int) | Distinct users with a registered machine of the agent type. |
+
 ### `AiGovernanceKpi`
 
 Aggregated KPI for the AI governance dashboard.
@@ -34732,6 +34748,18 @@ Fields:
 | <a id="aigovernancemetrics-sessions"></a>`sessions` | [`AiGovernanceKpi`](#aigovernancekpi) | AI sessions in the timeframe, including Duo Chat conversations. |
 
 #### Fields with arguments
+
+##### `AiGovernanceMetrics.connectedAgents`
+
+Registered external (Connected) agents by type, ordered by registered machines. Empty when `agentClass` is `INTERNAL_DAP`.
+
+Returns [`[AiGovernanceConnectedAgent!]`](#aigovernanceconnectedagent).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancemetrics-connectedagents-limit"></a>`limit` | [`Int`](#int) | Number of agent types to return. Defaults to 5, maximum 20. |
 
 ##### `AiGovernanceMetrics.topProjects`
 
@@ -65674,6 +65702,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetdevelopment-closingmergerequests"></a>`closingMergeRequests` | [`WorkItemClosingMergeRequestConnection`](#workitemclosingmergerequestconnection) | Merge requests that will close the work item when merged. (see [Connections](#connections)) |
+| <a id="workitemwidgetdevelopment-closingmergerequestscount"></a>`closingMergeRequestsCount` | [`Int!`](#int) | Number of merge requests that will close the work item when merged. |
 | <a id="workitemwidgetdevelopment-featureflags"></a>`featureFlags` | [`FeatureFlagConnection`](#featureflagconnection) | Feature flags associated with the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgetdevelopment-relatedbranches"></a>`relatedBranches` | [`WorkItemRelatedBranchConnection`](#workitemrelatedbranchconnection) | Branches that have referred to the work item, but do not have an associated merge request. (see [Connections](#connections)) |
 | <a id="workitemwidgetdevelopment-relatedmergerequests"></a>`relatedMergeRequests` {{< icon name="warning-solid" >}} | [`MergeRequestConnection`](#mergerequestconnection) | Introduced in GitLab 17.6. Status: Experiment. Merge requests where the work item has been mentioned. This field can only be resolved for one work item in any single request. |

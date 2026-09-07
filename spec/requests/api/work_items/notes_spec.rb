@@ -27,7 +27,7 @@ RSpec.describe API::WorkItems::Notes, feature_category: :portfolio_management do
     end
 
     it 'returns 404 when the work item does not exist' do
-      get api(api_request_path.sub("/#{work_item.iid}/", "/#{non_existing_record_iid}/"), user)
+      get api(api_request_path.sub("/#{work_item.iid}/notes", "/#{non_existing_record_iid}/notes"), user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -153,6 +153,82 @@ RSpec.describe API::WorkItems::Notes, feature_category: :portfolio_management do
     end
   end
 
+  shared_examples 'single note endpoint' do
+    # Scoped to this group so the list examples above keep their exact expected note set.
+    let_it_be(:internal_note) do
+      create(:note, :confidential, project: project, noteable: work_item, author: user, note: 'Internal-only note')
+    end
+
+    let_it_be(:other_work_item) { create(:work_item, :issue, project: project) }
+    let_it_be(:other_note) do
+      create(:note, project: project, noteable: other_work_item, author: user, note: 'Note on another work item')
+    end
+
+    it 'returns the note', :aggregate_failures do
+      get api(api_request_path, user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to include('id' => comment.id, 'body' => 'A user comment', 'system' => false)
+      expect(json_response).to include('author', 'noteable_id', 'noteable_type')
+    end
+
+    it 'returns a system note', :aggregate_failures do
+      get api(note_path.call(system_note.id), user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to include('id' => system_note.id, 'system' => true)
+    end
+
+    it 'returns 404 when the work item does not exist' do
+      get api(note_path.call(comment.id, work_item_iid: non_existing_record_iid), user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns 404 when the note does not exist' do
+      get api(note_path.call(non_existing_record_id), user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns 404 when the note belongs to a different work item' do
+      get api(note_path.call(other_note.id), user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns forbidden when the feature flag is disabled' do
+      stub_feature_flags(work_item_rest_api: false)
+
+      get api(api_request_path, user)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it 'returns unauthorized when no token is provided' do
+      get api(api_request_path)
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    context 'with a note the user cannot read' do
+      let_it_be(:guest) { create(:user, guest_of: project) }
+
+      it 'returns 404 for a user who cannot read the note' do
+        get api(note_path.call(internal_note.id), guest)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns the note for a user who can read it', :aggregate_failures do
+        get api(note_path.call(internal_note.id), user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(internal_note.id)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/-/work_items/:work_item_iid/notes' do
     let(:api_request_path) { "/projects/#{project.id}/-/work_items/#{work_item.iid}/notes" }
 
@@ -178,6 +254,53 @@ RSpec.describe API::WorkItems::Notes, feature_category: :portfolio_management do
     end
 
     it_behaves_like 'notes endpoint'
+
+    it_behaves_like 'authorizing granular token permissions', :read_work_item do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(api_request_path, personal_access_token: pat)
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/-/work_items/:work_item_iid/notes/:note_id' do
+    # Built explicitly rather than by substituting into api_request_path: note ids are small in a
+    # fresh database and a substring replace can hit the project id or the iid instead.
+    let(:note_path) do
+      ->(note_id, work_item_iid: work_item.iid) do
+        "/projects/#{project.id}/-/work_items/#{work_item_iid}/notes/#{note_id}"
+      end
+    end
+
+    let(:api_request_path) { note_path.call(comment.id) }
+
+    it_behaves_like 'single note endpoint'
+
+    it_behaves_like 'authorizing granular token permissions', :read_work_item do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(api_request_path, personal_access_token: pat)
+      end
+    end
+
+    it 'returns not_found when the user cannot read the work item' do
+      get api(api_request_path, non_member)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
+  describe 'GET /namespaces/:id/-/work_items/:work_item_iid/notes/:note_id' do
+    let(:note_path) do
+      ->(note_id, work_item_iid: work_item.iid) do
+        "/namespaces/#{CGI.escape(project.project_namespace.full_path)}/-/work_items/#{work_item_iid}/" \
+          "notes/#{note_id}"
+      end
+    end
+
+    let(:api_request_path) { note_path.call(comment.id) }
+
+    it_behaves_like 'single note endpoint'
 
     it_behaves_like 'authorizing granular token permissions', :read_work_item do
       let(:boundary_object) { project }

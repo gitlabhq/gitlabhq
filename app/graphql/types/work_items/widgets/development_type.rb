@@ -23,6 +23,12 @@ module Types
           null: true,
           description: 'Merge requests that will close the work item when merged.',
           complexity: 10
+        field :closing_merge_requests_count, # rubocop:disable GraphQL/ExtractType -- a plain count, not worth its own type
+          GraphQL::Types::Int,
+          null: false,
+          description: 'Number of merge requests that will close the work item when merged.',
+          complexity: 1,
+          resolver: ::Resolvers::MergeRequestsCountResolver
         field :related_branches,
           ::Types::WorkItems::RelatedBranchType.connection_type,
           calls_gitaly: true,

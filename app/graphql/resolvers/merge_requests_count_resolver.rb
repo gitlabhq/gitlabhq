@@ -14,13 +14,15 @@ module Resolvers
       end
     end
 
-    # We call this resolver from `IssueType` where object is an `Issue` instance, and we also call this resolver
-    # from `Widgets::DevelopmentType`, in which case the object is a connection type, so
-    # we need to get its respective work item.
+    # We call this resolver from `IssueType` where object is an `Issue` instance, and we also call it from
+    # `Widgets::DevelopmentType`, either on the connection's `count` field, where the object is a connection,
+    # or on `closingMergeRequestsCount`, where it is the widget itself. Both need the work item behind them.
     def object
       case super
       when ::GraphQL::Pagination::Connection
         super.try(:parent)&.work_item
+      when ::WorkItems::Widgets::Development
+        super.work_item
       else
         super
       end

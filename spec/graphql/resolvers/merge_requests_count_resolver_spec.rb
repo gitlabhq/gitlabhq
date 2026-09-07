@@ -37,6 +37,26 @@ RSpec.describe Resolvers::MergeRequestsCountResolver do
         expect(subject).to eq(2)
       end
     end
+
+    context 'when the object is a development widget' do
+      let(:widget) { WorkItem.find(issue.id).get_widget(:development) }
+
+      subject { batch_sync { resolve_merge_requests_count(widget) } }
+
+      it 'counts through the work item behind the widget' do
+        expect(subject).to eq(1)
+      end
+
+      context 'when the user can see the private closing merge request' do
+        before_all do
+          project2.add_reporter(user)
+        end
+
+        it 'includes it in the count' do
+          expect(subject).to eq(2)
+        end
+      end
+    end
   end
 
   def resolve_merge_requests_count(obj)
