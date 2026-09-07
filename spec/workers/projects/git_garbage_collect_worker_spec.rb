@@ -25,7 +25,7 @@ RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code
       )
     end
 
-    context 'when the repository has joined a pool' do
+    context 'when the repository has joined a pool', :skip_gitaly_mvcc do
       let_it_be_with_reload(:pool) { create(:pool_repository, :ready, source_project: project) }
 
       it 'ensures the repositories are linked' do

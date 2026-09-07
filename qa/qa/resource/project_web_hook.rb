@@ -18,6 +18,7 @@ module QA
       end
 
       EVENT_TRIGGERS = %i[
+        deployment
         issues
         job
         merge_requests

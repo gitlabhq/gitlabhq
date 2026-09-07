@@ -29,7 +29,7 @@ RSpec.describe Backup::Restore::PoolRepositories, feature_category: :backup_rest
       end
     end
 
-    context 'with a ready pool repository' do
+    context 'with a ready pool repository', :skip_gitaly_mvcc do
       let(:pool_repository) { create(:pool_repository, :ready).tap(&:delete_object_pool) }
 
       it 'yields a scheduled result' do
@@ -42,7 +42,7 @@ RSpec.describe Backup::Restore::PoolRepositories, feature_category: :backup_rest
       end
     end
 
-    context 'when an exception is raised' do
+    context 'when an exception is raised', :skip_gitaly_mvcc do
       let(:pool_repository) { create(:pool_repository, :ready).tap(&:delete_object_pool) }
 
       it 'yields a failed result' do

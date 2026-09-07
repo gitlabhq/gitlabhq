@@ -146369,6 +146369,18 @@
           "description": "A Duo Agent Platform session artifact.",
           "fields": [
             {
+              "name": "agentType",
+              "description": "Type of the external agent that ran the session, for example `claude-code`. Null for sessions run on the GitLab Duo Agent Platform. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "auditEvents",
               "description": "Audit events recorded for the session. Readable with `read_agent_artifacts` on the parent group or project; does not require access to the underlying workflow.",
               "args": [
@@ -277429,6 +277441,35 @@
               "deprecationReason": "Use WorkItemsCsvExport. Deprecated in GitLab 18.0."
             },
             {
+              "name": "workItemGenerateReadinessScore",
+              "description": "Scores the readiness of a work item asynchronously through a Duo Agent Platform flow, instead of Duo Chat. Available only when the `workplan_score` feature flag is enabled; returns an error otherwise. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for WorkItemGenerateReadinessScore",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "WorkItemGenerateReadinessScoreInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "WorkItemGenerateReadinessScorePayload",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "workItemGenerateWorkplan",
               "description": "Generates a workplan for a work item asynchronously through a Duo Agent Platform flow, instead of Duo Chat. Available only when the `duo_workplan_async_flow` feature flag is enabled; returns an error otherwise. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [
@@ -291403,7 +291444,7 @@
                 },
                 {
                   "name": "sort",
-                  "description": "Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`",
+                  "description": "Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Use `similarity` to rank results by closeness to `search`. `similarity` applies only when `search` is given and results are already scoped to the current user's memberships, such as with `ownedOnly: true` or `allAvailable: false`. Filtering by `visibilityLevel` to public or internal groups only disables `similarity`, because the results are then no longer scoped by membership. Results fall back to `id_desc` when `similarity` does not apply.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -350800,7 +350841,7 @@
                 },
                 {
                   "name": "sort",
-                  "description": "Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`",
+                  "description": "Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Use `similarity` to rank results by closeness to `search`. `similarity` applies only when `search` is given and results are already scoped to the current user's memberships, such as with `ownedOnly: true` or `allAvailable: false`. Filtering by `visibilityLevel` to public or internal groups only disables `similarity`, because the results are then no longer scoped by membership. Results fall back to `id_desc` when `similarity` does not apply.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -356437,7 +356478,7 @@
                 },
                 {
                   "name": "sort",
-                  "description": "Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`",
+                  "description": "Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Use `similarity` to rank results by closeness to `search`. `similarity` applies only when `search` is given and results are already scoped to the current user's memberships, such as with `ownedOnly: true` or `allAvailable: false`. Filtering by `visibilityLevel` to public or internal groups only disables `similarity`, because the results are then no longer scoped by membership. Results fall back to `id_desc` when `similarity` does not apply.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -445948,6 +445989,104 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "WorkItemWidgetWeight",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "WorkItemGenerateReadinessScoreInput",
+          "description": "Autogenerated input type of WorkItemGenerateReadinessScore",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "Global ID of the work item to score readiness for.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "WorkItemID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "WorkItemGenerateReadinessScorePayload",
+          "description": "Autogenerated return type of WorkItemGenerateReadinessScore.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during the mutation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workflow",
+              "description": "Duo Agent Platform workflow started to score the readiness.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflow",
                 "ofType": null
               },
               "isDeprecated": false,

@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6223,7 +6223,11 @@
+@@ -6331,7 +6331,11 @@
    if (scopedSlots) {
      delete props.scopedSlots;
      if (slots) {
@@ -19,7 +19,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -6203,7 +6203,11 @@
+@@ -6312,7 +6312,11 @@
    if (scopedSlots) {
      delete props.scopedSlots;
      if (slots) {
@@ -36,7 +36,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6130,7 +6130,11 @@
+@@ -6239,7 +6239,11 @@
    if (scopedSlots) {
      delete props.scopedSlots;
      if (slots) {

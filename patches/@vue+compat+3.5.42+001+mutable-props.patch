@@ -2,16 +2,16 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6680,7 +6680,7 @@
+@@ -6827,7 +6827,7 @@
      $: (i) => i,
-     $el: (i) => i.vnode.el,
+     $el: (i) => getDevRootFragmentEl(i) ,
      $data: (i) => i.data,
 -    $props: (i) => shallowReadonly(i.props) ,
 +    $props: (i) => !i.props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ ? shallowReadonly(i.props) : i.props,
      $attrs: (i) => shallowReadonly(i.attrs) ,
      $slots: (i) => shallowReadonly(i.slots) ,
      $refs: (i) => shallowReadonly(i.refs) ,
-@@ -9005,6 +9005,10 @@
+@@ -9164,6 +9164,10 @@
        );
      }
    }
@@ -26,16 +26,16 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -6660,7 +6660,7 @@
+@@ -6808,7 +6808,7 @@
      $: (i) => i,
-     $el: (i) => i.vnode.el,
+     $el: (i) => !!(process.env.NODE_ENV !== "production") ? getDevRootFragmentEl(i) : i.vnode.el,
      $data: (i) => i.data,
 -    $props: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.props) : i.props,
 +    $props: (i) => !!(process.env.NODE_ENV !== "production") && !i.props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ ? shallowReadonly(i.props) : i.props,
      $attrs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.attrs) : i.attrs,
      $slots: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.slots) : i.slots,
      $refs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.refs) : i.refs,
-@@ -8989,6 +8989,10 @@
+@@ -9149,6 +9149,10 @@
        );
      }
    }
@@ -50,16 +50,16 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6587,7 +6587,7 @@
+@@ -6735,7 +6735,7 @@
      $: (i) => i,
-     $el: (i) => i.vnode.el,
+     $el: (i) => !!(process.env.NODE_ENV !== "production") ? getDevRootFragmentEl(i) : i.vnode.el,
      $data: (i) => i.data,
 -    $props: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.props) : i.props,
 +    $props: (i) => !!(process.env.NODE_ENV !== "production") && !i.props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ ? shallowReadonly(i.props) : i.props,
      $attrs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.attrs) : i.attrs,
      $slots: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.slots) : i.slots,
      $refs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.refs) : i.refs,
-@@ -8916,6 +8916,10 @@
+@@ -9076,6 +9076,10 @@
        );
      }
    }

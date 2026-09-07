@@ -24,7 +24,7 @@ RSpec.describe Projects::GitDeduplicationService, feature_category: :source_code
         end
       end
 
-      context 'when the project has a pool repository' do
+      context 'when the project has a pool repository', :skip_gitaly_mvcc do
         let(:project) { create(:project, :small_repo, pool_repository: pool) }
 
         context 'when the project is a source project' do

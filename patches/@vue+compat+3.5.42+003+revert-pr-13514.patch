@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6710,6 +6710,7 @@
+@@ -6857,6 +6857,7 @@
      if (key === "__isVue") {
        return true;
      }
@@ -10,7 +10,7 @@ index aaaaaaa..bbbbbbb 100644
      if (key[0] !== "$") {
        const n = accessCache[key];
        if (n !== void 0) {
-@@ -6729,7 +6730,11 @@
+@@ -6876,7 +6877,11 @@
        } else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
          accessCache[key] = 2 /* DATA */;
          return data[key];
@@ -23,7 +23,7 @@ index aaaaaaa..bbbbbbb 100644
          accessCache[key] = 3 /* PROPS */;
          return props[key];
        } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
-@@ -6820,10 +6825,10 @@
+@@ -6967,10 +6972,10 @@
      return true;
    },
    has({
@@ -41,7 +41,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -6690,6 +6690,7 @@
+@@ -6838,6 +6838,7 @@
      if (!!(process.env.NODE_ENV !== "production") && key === "__isVue") {
        return true;
      }
@@ -49,7 +49,7 @@ index aaaaaaa..bbbbbbb 100644
      if (key[0] !== "$") {
        const n = accessCache[key];
        if (n !== void 0) {
-@@ -6709,7 +6710,11 @@
+@@ -6857,7 +6858,11 @@
        } else if (__VUE_OPTIONS_API__ && data !== EMPTY_OBJ && hasOwn(data, key)) {
          accessCache[key] = 2 /* DATA */;
          return data[key];
@@ -62,7 +62,7 @@ index aaaaaaa..bbbbbbb 100644
          accessCache[key] = 3 /* PROPS */;
          return props[key];
        } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
-@@ -6800,10 +6805,10 @@
+@@ -6948,10 +6953,10 @@
      return true;
    },
    has({
@@ -80,7 +80,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6617,6 +6617,7 @@
+@@ -6765,6 +6765,7 @@
      if (!!(process.env.NODE_ENV !== "production") && key === "__isVue") {
        return true;
      }
@@ -88,7 +88,7 @@ index aaaaaaa..bbbbbbb 100644
      if (key[0] !== "$") {
        const n = accessCache[key];
        if (n !== void 0) {
-@@ -6636,7 +6637,11 @@
+@@ -6784,7 +6785,11 @@
        } else if (__VUE_OPTIONS_API__ && data !== EMPTY_OBJ && hasOwn(data, key)) {
          accessCache[key] = 2 /* DATA */;
          return data[key];
@@ -101,7 +101,7 @@ index aaaaaaa..bbbbbbb 100644
          accessCache[key] = 3 /* PROPS */;
          return props[key];
        } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
-@@ -6727,10 +6732,10 @@
+@@ -6875,10 +6880,10 @@
      return true;
    },
    has({

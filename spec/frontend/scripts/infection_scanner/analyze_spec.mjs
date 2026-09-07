@@ -426,6 +426,30 @@ describe('infection scanner', () => {
   });
 
   describe('analyze', () => {
+    describe('module-scope singleton annotation', () => {
+      let graph;
+
+      beforeAll(async () => {
+        const result = await analyze({
+          rootPath: fixture('singleton_annotation'),
+          entrypoints: { main: fixture('singleton_annotation', 'entry.js') },
+          infectionSpecifiers: ['infection-pkg'],
+        });
+        graph = result.graph;
+      });
+
+      it('annotates a module holding a module-scope singleton', () => {
+        expect(graph[fixture('singleton_annotation', 'store.js')].singletons).toEqual([
+          'pinia-store',
+        ]);
+      });
+
+      it('leaves the field off modules that hold none, keeping the graph sparse', () => {
+        expect(graph[fixture('singleton_annotation', 'plain.js')]).not.toHaveProperty('singletons');
+        expect(graph[fixture('singleton_annotation', 'entry.js')]).not.toHaveProperty('singletons');
+      });
+    });
+
     describe('basic infection propagation', () => {
       let result;
 

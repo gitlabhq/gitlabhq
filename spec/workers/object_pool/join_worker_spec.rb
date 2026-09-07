@@ -20,7 +20,7 @@ RSpec.describe ObjectPool::JoinWorker, feature_category: :source_code_management
       end
     end
 
-    context 'when the pool has been joined before' do
+    context 'when the pool has been joined before', :skip_gitaly_mvcc do
       before do
         pool.link_repository(repository)
       end

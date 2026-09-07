@@ -43,6 +43,25 @@ RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects
       end
     end
 
+    context 'with `sort: similarity`' do
+      let_it_be(:closest_match) { create(:group, :private, name: 'analytics', developers: user) }
+      let_it_be(:weaker_match) { create(:group, :private, name: 'analytics reporting', developers: user) }
+
+      let(:params) { { search: 'analytics', sort: 'similarity', all_available: false } }
+
+      it 'ranks the closest match first' do
+        expect(subject.map(&:name)).to eq(['analytics', 'analytics reporting'])
+      end
+
+      context 'when all available groups are requested' do
+        let(:params) { { search: 'analytics', sort: 'similarity', all_available: true } }
+
+        it 'falls back to id_desc' do
+          expect(subject.map(&:name)).to eq(['analytics reporting', 'analytics'])
+        end
+      end
+    end
+
     context 'with `ids` argument' do
       let_it_be(:other_group) { create(:group, name: 'other-group') }
 

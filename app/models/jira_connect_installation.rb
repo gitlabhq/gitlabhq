@@ -3,6 +3,15 @@
 class JiraConnectInstallation < ApplicationRecord
   include Gitlab::Routing
   include Gitlab::EncryptedAttribute
+  include Cells::Claimable
+
+  cells_claims_attribute :forge_installation_xid,
+    type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_JIRA_FORGE_INSTALLATION_ID,
+    feature_flag: :cells_claims_jira_connect_installations
+  cells_claims_attribute :client_key, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_JIRA_CLIENT_KEY,
+    feature_flag: :cells_claims_jira_connect_installations
+
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
   attr_encrypted :shared_secret,
     mode: :per_attribute_iv,

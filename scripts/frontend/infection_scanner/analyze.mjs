@@ -10,6 +10,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { init, parse } from 'es-module-lexer';
+import { detectSingletons } from './singletons.mjs';
 
 const EXTENSIONS = ['.mjs', '.js'];
 const CONCURRENCY = 64;
@@ -383,12 +384,12 @@ async function parseFile(filePath) {
   try {
     source = await readFile(filePath, 'utf-8');
   } catch {
-    return { imports: [], appRoot: false };
+    return { imports: [], appRoot: false, singletons: [] };
   }
 
   const isVue = filePath.endsWith('.vue');
   const code = isVue ? extractScriptContent(source) : source;
-  if (!code) return { imports: [], appRoot: false };
+  if (!code) return { imports: [], appRoot: false, singletons: [] };
 
   let imports = [];
   try {
@@ -405,7 +406,7 @@ async function parseFile(filePath) {
 
   const appRoot = detectAppRoot(code);
 
-  return { imports, appRoot };
+  return { imports, appRoot, singletons: detectSingletons(code) };
 }
 
 function isJsOrVue(resolved) {
@@ -418,6 +419,7 @@ async function buildGraph(entrypoints, resolver, { onProgress } = {}) {
 
   const graph = {};
   const appRootSet = new Set();
+  const singletonsByFile = new Map();
   const visited = new Set();
   const queue = [];
 
@@ -439,19 +441,20 @@ async function buildGraph(entrypoints, resolver, { onProgress } = {}) {
     // eslint-disable-next-line no-await-in-loop
     const results = await Promise.all(
       batch.map(async (filePath) => {
-        const { imports, appRoot } = await parseFile(filePath);
+        const { imports, appRoot, singletons } = await parseFile(filePath);
         const resolved = imports.map((imp) => {
           const all = resolver.resolveModuleAll(imp.source, filePath);
           const r = all ? all[0] : null;
           return { source: imp.source, resolved: r, dynamic: imp.dynamic, alternatives: all };
         });
-        return { filePath, resolved, appRoot };
+        return { filePath, resolved, appRoot, singletons };
       }),
     );
 
-    for (const { filePath, resolved, appRoot } of results) {
+    for (const { filePath, resolved, appRoot, singletons } of results) {
       graph[filePath] = resolved.filter((imp) => !imp.resolved || isJsOrVue(imp.resolved));
       if (appRoot) appRootSet.add(filePath);
+      if (singletons.length) singletonsByFile.set(filePath, singletons);
       for (const imp of resolved) {
         const paths = imp.alternatives || (imp.resolved ? [imp.resolved] : []);
         for (const p of paths) {
@@ -471,7 +474,7 @@ async function buildGraph(entrypoints, resolver, { onProgress } = {}) {
 
   if (onProgress) onProgress(total(), total());
 
-  return { graph, appRootSet };
+  return { graph, appRootSet, singletonsByFile };
 }
 
 function getInfectionSourceReason(imports, infectionSpecifiers) {
@@ -603,7 +606,9 @@ export async function analyze({
     rootPath,
     fallbackResolve,
   });
-  const { graph, appRootSet } = await buildGraph(entrypoints, resolver, { onProgress });
+  const { graph, appRootSet, singletonsByFile } = await buildGraph(entrypoints, resolver, {
+    onProgress,
+  });
   const { infectedSet, infectionTriggers } = computeInfected(
     graph,
     appRootSet,
@@ -617,6 +622,9 @@ export async function analyze({
       infected: infectedSet.has(file),
       appRoot: appRootSet.has(file),
     };
+    if (singletonsByFile.has(file)) {
+      entry.singletons = singletonsByFile.get(file);
+    }
     if (entry.infected) {
       const { reasons, totalCount } = findNearestInfectionReasons({
         file,

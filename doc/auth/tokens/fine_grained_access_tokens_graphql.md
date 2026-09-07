@@ -1349,6 +1349,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Project | Mutation | `WorkItemConvert` |
 | Update | Project | Mutation | `WorkItemCreateFromTask` |
 | Update | Project | Mutation | `WorkItemEnableAiPlanning` |
+| Update | Project | Mutation | `WorkItemGenerateReadinessScore` |
 | Update | Project | Mutation | `WorkItemGenerateWorkplan` |
 | Update | Project | Mutation | `WorkItemUpdate` |
 | Update | Project | Mutation | `workItemsReorder` |

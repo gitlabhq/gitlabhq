@@ -178,7 +178,9 @@ RSpec.describe 'Project fork', feature_category: :source_code_management do
       click_button 'Fork project'
     end
 
-    it 'forks the project', :sidekiq_might_not_need_inline,
+    # Forking a public project creates an object pool, which is not yet
+    # supported with the MVCC reference backend.
+    it 'forks the project', :sidekiq_might_not_need_inline, :skip_gitaly_mvcc,
       quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/44443' do
       visit new_project_fork_path(project)
       submit_form

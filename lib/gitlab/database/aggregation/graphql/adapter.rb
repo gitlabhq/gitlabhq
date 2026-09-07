@@ -22,6 +22,29 @@ module Gitlab
                 .reject { |f| f[:values].blank? }
             end
 
+            # `orderBy.parameters` arrives as untyped JSON while dimension/metric
+            # field arguments are coerced by typed GraphQL scalars. Order entries
+            # are matched to parts by value-sensitive instance keys, so order
+            # parameters must be coerced with the same scalars to line up
+            # (for example a `Time` origin vs its ISO 8601 string).
+            def coerce_order_parameters!(request, engine)
+              return if request.order.none? { |config| config[:parameters].present? }
+
+              orderable_parts = request.to_query_plan(engine).orderable_parts
+
+              request.order.each do |config|
+                next if config[:parameters].blank?
+
+                # Unknown identifiers and non-parameterized definitions pass
+                # through untouched; QueryPlan validation reports them.
+                definition = orderable_parts
+                  .detect { |part| part.configuration[:identifier] == config[:identifier] }&.definition
+                next unless definition.respond_to?(:parameters)
+
+                config[:parameters] = coerce_parameters(definition, config)
+              end
+            end
+
             def graphql_type(type)
               case type.to_sym
               when :integer then ::GraphQL::Types::Int
@@ -34,6 +57,37 @@ module Gitlab
             end
 
             private
+
+            def coerce_parameters(definition, config)
+              config[:parameters].to_h do |key, value|
+                spec = definition.parameters[key]
+                next [key, value] if spec.nil? || value.nil?
+
+                [key, coerce_parameter(spec, value, config[:identifier], key)]
+              end
+            end
+
+            def coerce_parameter(spec, value, identifier, key)
+              scalar = graphql_type(spec[:type])
+
+              if spec[:array]
+                Array.wrap(value).map { |item| coerce_value(scalar, item) }
+              else
+                coerce_value(scalar, value)
+              end
+            rescue ::GraphQL::CoercionError => e
+              raise ::Gitlab::Graphql::Errors::ArgumentError,
+                format(s_("AggregationEngine|Invalid value for order parameter `%{param}` of `%{identifier}`: " \
+                  "%{error}"), param: key, identifier: identifier, error: e.message)
+            end
+
+            # Built-in scalars return nil instead of raising on type mismatch.
+            def coerce_value(scalar, value)
+              coerced = scalar.coerce_isolated_input(value)
+              return coerced unless coerced.nil?
+
+              raise ::GraphQL::CoercionError, "#{value.inspect} is not a valid #{scalar.graphql_name}"
+            end
 
             def build_filter(definition, arguments)
               result = {

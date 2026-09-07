@@ -93,18 +93,20 @@ RSpec.describe Gitlab::Database::Aggregation::Authorization, feature_category: :
   end
 
   describe 'authorization context requirements' do
-    it 'raises ArgumentError when current_user is missing' do
+    it 'supports anonymous users by passing nil to the ability check' do
       engine = engine_class.new(context: { scope: :test_scope, authorization_resources: [resource] })
+      allow(Ability).to receive(:allowed?).with(nil, :read_owner_analytics, resource).and_return(true)
 
-      expect { engine.execute(build_request) }
-        .to raise_error(ArgumentError, /`current_user:` and `authorization_resources:` are required/)
+      response = engine.execute(build_request(metrics: [{ identifier: :owner_count }]))
+
+      expect(response).to be_success
     end
 
     it 'raises ArgumentError when authorization_resources are missing' do
       engine = engine_class.new(context: { scope: :test_scope, current_user: user })
 
       expect { engine.execute(build_request) }
-        .to raise_error(ArgumentError, /`current_user:` and `authorization_resources:` are required/)
+        .to raise_error(ArgumentError, /`authorization_resources:` is required/)
     end
 
     it 'does not require authorization context for engines without authorize declarations' do

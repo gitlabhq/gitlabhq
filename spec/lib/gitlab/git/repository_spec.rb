@@ -2899,7 +2899,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       expect { repository.disconnect_alternates }.not_to raise_error
     end
 
-    it 'can still access objects in the object pool' do
+    it 'can still access objects in the object pool', :skip_gitaly_mvcc do
       # Create a commit into a separate repository and fetch it into the object pool.
       # Writing directly to an object pool fails as we don't support them in the
       # authorization checks. Gitaly's pre-receive hook fails as a gl_repository is
@@ -3125,7 +3125,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       it { is_expected.to be_nil }
     end
 
-    context 'when pool repository exists' do
+    context 'when pool repository exists', :skip_gitaly_mvcc do
       let!(:pool) { create(:pool_repository, :ready, source_project: project) }
 
       it { is_expected.to be_nil }

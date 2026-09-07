@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -9340,6 +9340,7 @@
+@@ -9499,6 +9499,7 @@
      return normalizeSlotValue(rawSlot(...args));
    }, ctx);
    normalized._c = false;
@@ -14,7 +14,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -9324,6 +9324,7 @@
+@@ -9484,6 +9484,7 @@
      return normalizeSlotValue(rawSlot(...args));
    }, ctx);
    normalized._c = false;
@@ -26,7 +26,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -9251,6 +9251,7 @@
+@@ -9411,6 +9411,7 @@
      return normalizeSlotValue(rawSlot(...args));
    }, ctx);
    normalized._c = false;

@@ -20650,6 +20650,8 @@ CREATE TABLE duo_workflow_session_artifacts (
     model_used text DEFAULT ''::text NOT NULL,
     workflow_created_at timestamp with time zone NOT NULL,
     workflow_updated_at timestamp with time zone NOT NULL,
+    agent_type text,
+    CONSTRAINT check_4d534409f3 CHECK ((char_length(agent_type) <= 50)),
     CONSTRAINT check_6928cf5db3 CHECK ((char_length(workflow_definition) <= 255)),
     CONSTRAINT check_7b8006375a CHECK ((char_length(model_used) <= 255)),
     CONSTRAINT check_8610fce682 CHECK ((namespace_id IS NOT NULL))
@@ -23627,6 +23629,7 @@ CREATE TABLE jira_connect_installations (
     encrypted_forge_system_token text,
     encrypted_forge_system_token_iv text,
     forge_installation_xid text,
+    updated_at timestamp with time zone,
     CONSTRAINT check_063517862b CHECK ((char_length(cloud_id) <= 255)),
     CONSTRAINT check_1fc8a8132b CHECK ((char_length(jira_api_base_url) <= 512)),
     CONSTRAINT check_290e4c5650 CHECK ((char_length(forge_installation_xid) <= 255)),

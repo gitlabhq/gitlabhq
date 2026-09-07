@@ -1188,6 +1188,14 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
             expect(model_names & skipped_models).to be_empty
           end
 
+          def find_factory(model_class)
+            FactoryBot.factories.detect do |f|
+              f.build_class.to_s == model_class.to_s
+            rescue NameError
+              false
+            end
+          end
+
           def find_user_assoc(model_class)
             model_class.reflect_on_all_associations.find do |association|
               association.class_name == "User"
@@ -1195,20 +1203,20 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
           end
 
           it 'updates organization_id for all migratable models' do
-            described_class.migratable_models.each do |model_class|
-              factory = FactoryBot.factories.detect do |f|
-                f.build_class.to_s == model_class.to_s
-              rescue NameError
-                false
-              end
-
+            instances = described_class.migratable_models.map do |model_class|
+              factory = find_factory(model_class)
               user_assoc = find_user_assoc(model_class)
 
-              instance1 = create(factory.name, organization: old_organization, user_assoc.name => user1)
-              instance2 = create(factory.name, organization: old_organization, user_assoc.name => user2)
+              [
+                model_class,
+                create(factory.name, organization: old_organization, user_assoc.name => user1),
+                create(factory.name, organization: old_organization, user_assoc.name => user2)
+              ]
+            end
 
-              service.execute
+            service.execute
 
+            instances.each do |model_class, instance1, instance2|
               expect(instance1.reload.organization_id).to eq(new_organization.id),
                 "Expected #{model_class} organization_id to be updated"
               expect(instance2.reload.organization_id).to eq(new_organization.id),
@@ -1217,18 +1225,17 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
           end
 
           it 'does not update migratable models for users outside the group' do
-            described_class.migratable_models.each do |model_class|
-              factory = FactoryBot.factories.detect do |f|
-                f.build_class.to_s == model_class.to_s
-              rescue NameError
-                false
-              end
-
+            instances = described_class.migratable_models.map do |model_class|
+              factory = find_factory(model_class)
               user_assoc = find_user_assoc(model_class)
 
-              instance = create(factory.name, organization: old_organization, user_assoc.name => non_group_user)
+              [model_class, create(factory.name, organization: old_organization, user_assoc.name => non_group_user)]
+            end
 
-              expect { service.execute }.not_to change { instance.reload.organization_id },
+            service.execute
+
+            instances.each do |model_class, instance|
+              expect(instance.reload.organization_id).to eq(old_organization.id),
                 "Expected #{model_class} organization_id to not change for users outside the group"
             end
           end

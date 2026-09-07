@@ -226,7 +226,7 @@ RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_cachin
     end
   end
 
-  context 'a project with pool repository' do
+  context 'a project with pool repository', :skip_gitaly_mvcc do
     let(:project) { create(:project, :public, :repository) }
     let!(:pool_repository) { create(:pool_repository, :ready, source_project: project) }
 

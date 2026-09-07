@@ -158,7 +158,7 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
     end
   end
 
-  describe '#unlink_repository' do
+  describe '#unlink_repository', :skip_gitaly_mvcc do
     let(:pool) { create(:pool_repository, :ready) }
 
     before do
@@ -252,7 +252,7 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
   end
 
   describe '#reinitialize' do
-    context 'when object_pool exists' do
+    context 'when object_pool exists', :skip_gitaly_mvcc do
       subject(:pool_repository) { create(:pool_repository, :ready) }
 
       it 'does not reinitialize' do
@@ -260,7 +260,7 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
       end
     end
 
-    context 'when object_pool does not exist' do
+    context 'when object_pool does not exist', :skip_gitaly_mvcc do
       subject(:pool_repository) { create(:pool_repository, :ready) }
 
       it 'allows reinitializing the state machine' do

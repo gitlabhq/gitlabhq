@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6541,11 +6541,16 @@
+@@ -6659,11 +6659,16 @@
      return hyphenate(eventKeyName) !== key;
    }
  }
@@ -25,7 +25,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -6521,11 +6521,16 @@
+@@ -6640,11 +6640,16 @@
      return hyphenate(eventKeyName) !== key;
    }
  }
@@ -48,7 +48,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6448,11 +6448,16 @@
+@@ -6567,11 +6567,16 @@
      return hyphenate(eventKeyName) !== key;
    }
  }

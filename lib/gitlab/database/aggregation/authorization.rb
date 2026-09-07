@@ -98,12 +98,14 @@ module Gitlab
           end
         end
 
+        # `current_user` may be nil: anonymous users can legitimately hold
+        # abilities on public resources, so `Ability.allowed?` decides.
         def verify_authorization_context!
-          return if context[:current_user].present? && context[:authorization_resources].present?
+          return if context[:authorization_resources].present?
 
           raise ArgumentError,
             "#{self.class.name} declares part-level authorization: " \
-              "`current_user:` and `authorization_resources:` are required in the engine context"
+              "`authorization_resources:` is required in the engine context"
         end
 
         def add_authorization_error(message, definition)

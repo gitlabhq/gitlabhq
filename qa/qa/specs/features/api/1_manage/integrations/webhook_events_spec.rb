@@ -24,6 +24,10 @@ module QA
       # delivery; values the payload builder pre-stringifies are delivered verbatim.
       let(:normalized_timestamp) { /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\z/ }
       let(:commit_timestamp) { /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}\z/ }
+      # Deployment lifecycle timestamps round-trip through Sidekiq as zoned strings
+      # (Deployment#serialize_params_for_sidekiq! + String#to_time), so they render
+      # with a numeric offset instead of Z.
+      let(:offset_normalized_timestamp) { /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}\z/ }
 
       it 'sends a push event' do
         Resource::ProjectWebHook.setup(session: session, push: true) do |webhook, smocker|
@@ -129,6 +133,34 @@ module QA
             released_at: match(normalized_timestamp),
             commit: a_hash_including(timestamp: match(commit_timestamp))
           ))
+        end
+      end
+
+      it 'sends deployment events' do
+        Resource::ProjectWebHook.setup(session: session, deployment: true) do |webhook, smocker|
+          project_push = Resource::Repository::ProjectPush.fabricate! do |project_push|
+            project_push.project = webhook.project
+          end
+
+          deployment = create(:deployment,
+            project: webhook.project,
+            environment: 'production',
+            ref: project_push.branch_name,
+            sha: webhook.project.commits.first[:id])
+          deployment.succeed!
+
+          # One event for the running state, one for the success transition
+          expect { smocker.events(session).size }.to eventually_eq(2)
+                                                 .within(max_duration: 30, sleep_interval: 2),
+            -> { "Should have 2 events, got: #{smocker.stringified_history(session)}" }
+
+          expect(smocker.events(session)).to include(
+            a_hash_including(
+              object_kind: 'deployment',
+              status: 'success',
+              status_changed_at: match(offset_normalized_timestamp)
+            )
+          )
         end
       end
 

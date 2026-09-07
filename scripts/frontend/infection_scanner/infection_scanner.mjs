@@ -5,6 +5,8 @@ import fs from 'node:fs';
 import { createServer } from 'node:http';
 import { execSync } from 'node:child_process';
 import { analyze, createResolver } from './analyze.mjs';
+import { findDuplicatedModules } from './duplicated_modules.mjs';
+import { formatDuplicatedModulesReport } from './duplicated_modules_report.mjs';
 
 const cjsRequire = createRequire(import.meta.url);
 const ROOT_PATH = path.resolve(import.meta.dirname, '..', '..', '..');
@@ -53,24 +55,10 @@ const resolver = createResolver({
 
 function discoverEntries() {
   const { generateEntries } = cjsRequire(path.join(ROOT_PATH, 'config/webpack.helpers'));
-  const defaultEntries = ['./main'];
-  const { entries: generated } = generateEntries(defaultEntries);
+  const { baseEntryPoints } = cjsRequire(path.join(ROOT_PATH, 'config/helpers/entry_points'));
+  const { entries: generated } = generateEntries(baseEntryPoints.default);
 
-  const manual = {
-    sentry: ['./sentry/index.js'],
-    coverage_persistence: ['./entrypoints/coverage_persistence.js'],
-    performance_bar: ['./entrypoints/performance_bar.js'],
-    jira_connect_app: ['./jira_connect/subscriptions/index.js'],
-    sandboxed_mermaid_v11: ['./lib/mermaid_v11.js'],
-    redirect_listbox: ['./entrypoints/behaviors/redirect_listbox.js'],
-    sandboxed_swagger: ['./lib/swagger.js'],
-    super_sidebar: ['./entrypoints/super_sidebar.js'],
-    tracker: ['./entrypoints/tracker.js'],
-    analytics: ['./entrypoints/analytics.js'],
-    graphql_explorer: ['./entrypoints/graphql_explorer.js'],
-  };
-
-  const all = { default: defaultEntries, ...manual, ...generated };
+  const all = { ...baseEntryPoints, ...generated };
 
   const dummyFromFile = path.join(JS_ROOT, '__entry__.js');
   const entrypoints = {};
@@ -125,6 +113,98 @@ function promoteYamlDeclaredPages(graph) {
     );
   }
   return promoted;
+}
+
+// --- Duplicated modules check ---
+
+// Each is bound to the Vue version that built it, so two copies are correct.
+const DUPLICATION_EXPECTED = [
+  'ee/app/assets/javascripts/invite_members/provider.js',
+  'ee/app/assets/javascripts/subscriptions/graphql/graphql.js',
+  'app/assets/javascripts/pinia/instance.js',
+];
+
+const stripQuery = (id) => (id.includes('?') ? id.slice(0, id.indexOf('?')) : id);
+
+function discoverVue3PageSeeds() {
+  const { generateEntries } = cjsRequire(path.join(ROOT_PATH, 'config/webpack.helpers'));
+  const { loadVue3Migrations } = cjsRequire(
+    path.join(ROOT_PATH, 'config/helpers/vue3_migration_loader'),
+  );
+  const { baseEntryPoints, ALWAYS_LOADED_ENTRY_POINTS } = cjsRequire(
+    path.join(ROOT_PATH, 'config/helpers/entry_points'),
+  );
+  const { entries } = generateEntries(baseEntryPoints.default);
+  const dummyFromFile = path.join(JS_ROOT, '__entry__.js');
+  const resolveSpecifier = (spec) => resolver.resolveModule(stripQuery(spec), dummyFromFile);
+
+  // Always Vue 2: these bundles have no `.vue3` variant.
+  const globalSeeds = ALWAYS_LOADED_ENTRY_POINTS.map((name) => {
+    const file = resolveSpecifier(baseEntryPoints[name]);
+    if (!file) throw new Error(`[vue3-infection-scanner] cannot resolve entry '${name}'`);
+    return { file, infected: false };
+  });
+
+  // Unmigrated entries are skipped: checking them costs about 2.7s.
+  const migrated = new Set(
+    Object.entries(loadVue3Migrations()).flatMap(([name, { status }]) =>
+      status === 'rollout' ? [name, `${name}.vue3`] : [name],
+    ),
+  );
+
+  const pages = [];
+  for (const [key, specifiers] of Object.entries(entries)) {
+    if (!migrated.has(key)) continue;
+
+    const seeds = specifiers
+      .map((spec) => ({ file: resolveSpecifier(spec), infected: spec.includes('?vue3') }))
+      .filter((seed) => seed.file);
+    if (!seeds.length) continue;
+
+    const isRolloutFlagOn = key.endsWith('.vue3');
+    const isRolloutFlagOff = Boolean(entries[`${key}.vue3`]);
+    let flagState;
+    if (isRolloutFlagOn) flagState = 'flag on';
+    else if (isRolloutFlagOff) flagState = 'flag off';
+
+    pages.push({
+      entry: key.replace(/\.vue3$/, ''),
+      flagState,
+      seeds: [...seeds, ...globalSeeds],
+    });
+  }
+  return pages;
+}
+
+function checkDuplicatedModules(result) {
+  const { createIsInfectable } = cjsRequire(
+    path.join(ROOT_PATH, 'config/helpers/vue3_infection_shared'),
+  );
+
+  const graphMap = new Map(Object.entries(result.graph));
+  // `createIsInfectable` throws for a path that is not in the graph.
+  const realIsInfectable = createIsInfectable(graphMap);
+  const isInfectable = (file) => graphMap.has(file) && realIsInfectable(file);
+
+  const pages = discoverVue3PageSeeds();
+  const options = {
+    graph: result.graph,
+    pages,
+    isInfectable,
+    rootPath: ROOT_PATH,
+    duplicationExpected: DUPLICATION_EXPECTED,
+  };
+
+  const findings = findDuplicatedModules(options);
+  if (!findings.length) {
+    console.log(
+      `[vue3-infection-scanner] Duplicated modules check: ${pages.length} page state(s), none found.`,
+    );
+    return [];
+  }
+
+  console.error(formatDuplicatedModulesReport(findings));
+  return findings;
 }
 
 // --- JSON output ---
@@ -443,10 +523,13 @@ async function runAnalysis() {
     `[vue3-infection-scanner] Infected: ${infected} / ${Object.keys(result.graph).length} files`,
   );
 
+  // Write first so a failed check still leaves a fresh graph on disk.
   writeOutput(result);
+  const duplicatedModules = checkDuplicatedModules(result);
+
   analysisResult = result;
   analysisRunning = false;
-  return result;
+  return { result, duplicatedModules };
 }
 
 const mode = process.argv[2];
@@ -455,8 +538,13 @@ if (mode === 'web') {
   runAnalysis();
   startServer();
 } else {
-  runAnalysis().catch((err) => {
-    console.error(err);
-    process.exitCode = 1;
-  });
+  runAnalysis()
+    .then(({ duplicatedModules }) => {
+      if (duplicatedModules.length) process.exitCode = 1;
+      return duplicatedModules.length;
+    })
+    .catch((err) => {
+      console.error(err);
+      process.exitCode = 1;
+    });
 }

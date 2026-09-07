@@ -44,12 +44,16 @@ module Resolvers
             metric_selections = selections.reject { |s| s.name == :dimensions }
             metrics = build_metric_parts(metric_selections, engine)
 
-            ::Gitlab::Database::Aggregation::Request.new(
+            request = ::Gitlab::Database::Aggregation::Request.new(
               filters: outer_request.filters + metric_filters,
               dimensions: dimensions,
               metrics: metrics,
               order: order
             )
+
+            ::Gitlab::Database::Aggregation::Graphql::Adapter.coerce_order_parameters!(request, engine)
+
+            request
           end
 
           def build_parts_from_selection(selections)
@@ -90,7 +94,9 @@ module Resolvers
             order_by.map do |order_input|
               order = order_input.to_hash
               order[:identifier] = order[:identifier].underscore.to_sym
-              order[:parameters] = (order[:parameters] || {}).symbolize_keys
+              # Underscore keys so camelCase JSON keys match the snake_case
+              # keys produced by regular field arguments.
+              order[:parameters] = (order[:parameters] || {}).transform_keys { |key| key.to_s.underscore.to_sym }
               order
             end
           end

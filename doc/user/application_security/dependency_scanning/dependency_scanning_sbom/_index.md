@@ -232,6 +232,13 @@ List excluded paths in the `.gitlab-ci.yml` file:
 - For the dependency scanning template, use the `DS_EXCLUDED_PATHS` CI/CD variable.
 - For the dependency scanning CI/CD component, use the `excluded_paths` spec input.
 
+To specify multiple patterns, separate them with commas and no spaces. For example:
+
+```yaml
+variables:
+  DS_EXCLUDED_PATHS: "**/*.Test/**,**/*.Test.*/**,src/Test/**"
+```
+
 Exclusion patterns follow these rules:
 
 - Patterns without slashes match file or directory names at any depth in the project. For example,
@@ -242,6 +249,8 @@ Exclusion patterns follow these rules:
   `a/x/y/b`.
 - Leading and trailing slashes are ignored. For example, `/build` and `build/` match the same
   results as `build`.
+- Spaces after commas become part of the pattern and cause matching to fail. Use
+  `"path/a/**,path/b/**"`, not `"path/a/**, path/b/**"`.
 
 ### Limit scan directory depth
 

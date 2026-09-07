@@ -2903,9 +2903,6 @@ msgstr ""
 msgid "AICatalog|Define the agent's personality, expertise, and behavior. This changes how the agent solves problems and responds to requests."
 msgstr ""
 
-msgid "AICatalog|Definition is missing and cannot be validated"
-msgstr ""
-
 msgid "AICatalog|Delete %{itemType}"
 msgstr ""
 
@@ -8278,6 +8275,9 @@ msgid "Agents|Explore other agents"
 msgstr ""
 
 msgid "Agents|No triggers for this event"
+msgstr ""
+
+msgid "AggregationEngine|Invalid value for order parameter `%{param}` of `%{identifier}`: %{error}"
 msgstr ""
 
 msgid "AggregationEngine|Invalid value(s) for parameter `%{param}`: %{values}"
@@ -30612,6 +30612,9 @@ msgstr ""
 msgid "DuoAgentPlatform|VS Code · JetBrains · Visual Studio"
 msgstr ""
 
+msgid "DuoAgentPlatform|Verification check timed out."
+msgstr ""
+
 msgid "DuoAgentPlatform|View"
 msgstr ""
 
@@ -36839,6 +36842,9 @@ msgstr ""
 msgid "FoundationalFlow|Migrate your Jenkins pipelines to GitLab CI/CD."
 msgstr ""
 
+msgid "FoundationalFlow|Readiness Score"
+msgstr ""
+
 msgid "FoundationalFlow|Recommend Reviewers"
 msgstr ""
 
@@ -36861,6 +36867,9 @@ msgid "FoundationalFlow|Risk Classification"
 msgstr ""
 
 msgid "FoundationalFlow|SAST False Positive Detection"
+msgstr ""
+
+msgid "FoundationalFlow|Score readiness of a work item for handoff based on its specification and plan."
 msgstr ""
 
 msgid "FoundationalFlow|Secret Detection False Positive Detection"

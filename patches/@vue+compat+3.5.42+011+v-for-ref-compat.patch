@@ -11,7 +11,7 @@ index aaaaaaa..bbbbbbb 100644
  );
  const isBuiltInDirective = /* @__PURE__ */ makeMap(
    "bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo"
-@@ -11793,12 +11793,18 @@
+@@ -11960,12 +11960,18 @@
  const normalizeRef = ({
    ref,
    ref_key,
@@ -45,7 +45,7 @@ index aaaaaaa..bbbbbbb 100644
  );
  const isBuiltInDirective = /* @__PURE__ */ makeMap(
    "bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo"
-@@ -11815,12 +11815,18 @@
+@@ -11983,12 +11983,18 @@
  const normalizeRef = ({
    ref,
    ref_key,
@@ -79,7 +79,7 @@ index aaaaaaa..bbbbbbb 100644
  );
  const isBuiltInDirective = /* @__PURE__ */ makeMap(
    "bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo"
-@@ -11742,12 +11742,18 @@
+@@ -11910,12 +11910,18 @@
  const normalizeRef = ({
    ref,
    ref_key,

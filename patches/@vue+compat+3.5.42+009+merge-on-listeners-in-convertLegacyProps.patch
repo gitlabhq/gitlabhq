@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6134,7 +6134,14 @@
+@@ -6242,7 +6242,14 @@
          }
        }
      } else if (!skipLegacyRootLevelProps(key)) {
@@ -22,7 +22,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -6114,7 +6114,14 @@
+@@ -6223,7 +6223,14 @@
          }
        }
      } else if (!skipLegacyRootLevelProps(key)) {
@@ -42,7 +42,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6041,7 +6041,14 @@
+@@ -6150,7 +6150,14 @@
          }
        }
      } else if (!skipLegacyRootLevelProps(key)) {

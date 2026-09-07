@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6181,7 +6181,9 @@
+@@ -6289,7 +6289,9 @@
  function convertLegacySlots(vnode) {
    const { props, children } = vnode;
    let slots;
@@ -12,7 +12,7 @@ index aaaaaaa..bbbbbbb 100644
      slots = {};
      for (let i = 0; i < children.length; i++) {
        const child = children[i];
-@@ -6211,6 +6213,9 @@
+@@ -6319,6 +6321,9 @@
      }
    }
    if (slots) {
@@ -26,7 +26,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -6161,7 +6161,9 @@
+@@ -6270,7 +6270,9 @@
  function convertLegacySlots(vnode) {
    const { props, children } = vnode;
    let slots;
@@ -36,7 +36,7 @@ index aaaaaaa..bbbbbbb 100644
      slots = {};
      for (let i = 0; i < children.length; i++) {
        const child = children[i];
-@@ -6191,6 +6193,9 @@
+@@ -6300,6 +6302,9 @@
      }
    }
    if (slots) {
@@ -50,7 +50,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6088,7 +6088,9 @@
+@@ -6197,7 +6197,9 @@
  function convertLegacySlots(vnode) {
    const { props, children } = vnode;
    let slots;
@@ -60,7 +60,7 @@ index aaaaaaa..bbbbbbb 100644
      slots = {};
      for (let i = 0; i < children.length; i++) {
        const child = children[i];
-@@ -6118,6 +6120,9 @@
+@@ -6227,6 +6229,9 @@
      }
    }
    if (slots) {

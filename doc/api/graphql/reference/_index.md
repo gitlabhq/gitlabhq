@@ -141,7 +141,7 @@ Arguments:
 | <a id="query-admingroups-ownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
 | <a id="query-admingroups-parentpath"></a>`parentPath` | [`ID`](#id) | Full path of the parent group. |
 | <a id="query-admingroups-search"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
-| <a id="query-admingroups-sort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
+| <a id="query-admingroups-sort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Use `similarity` to rank results by closeness to `search`. `similarity` applies only when `search` is given and results are already scoped to the current user's memberships, such as with `ownedOnly: true` or `allAvailable: false`. Filtering by `visibilityLevel` to public or internal groups only disables `similarity`, because the results are then no longer scoped by membership. Results fall back to `id_desc` when `similarity` does not apply. |
 | <a id="query-admingroups-toplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top-level groups. |
 | <a id="query-admingroups-visibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter groups by visibility level. |
 
@@ -1694,7 +1694,7 @@ Arguments:
 | <a id="query-groups-ownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
 | <a id="query-groups-parentpath"></a>`parentPath` | [`ID`](#id) | Full path of the parent group. |
 | <a id="query-groups-search"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
-| <a id="query-groups-sort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
+| <a id="query-groups-sort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Use `similarity` to rank results by closeness to `search`. `similarity` applies only when `search` is given and results are already scoped to the current user's memberships, such as with `ownedOnly: true` or `allAvailable: false`. Filtering by `visibilityLevel` to public or internal groups only disables `similarity`, because the results are then no longer scoped by membership. Results fall back to `id_desc` when `similarity` does not apply. |
 | <a id="query-groups-toplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top-level groups. |
 | <a id="query-groups-visibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter groups by visibility level. |
 | <a id="query-groups-withknowledgegraphenabled"></a>`withKnowledgeGraphEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.10. Status: Experiment. Return only groups with Knowledge Graph enabled. |
@@ -20480,6 +20480,34 @@ Fields:
 | <a id="mutation-workitemexport-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-workitemexport-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-workitemexport-message"></a>`message` | [`String`](#string) | Export request result message. |
+
+### `Mutation.workItemGenerateReadinessScore`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Scores the readiness of a work item asynchronously through a Duo Agent Platform flow, instead of Duo Chat. Available only when the `workplan_score` feature flag is enabled; returns an error otherwise.
+
+Input type: `WorkItemGenerateReadinessScoreInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemgeneratereadinessscore-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemgeneratereadinessscore-id"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item to score readiness for. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemgeneratereadinessscore-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemgeneratereadinessscore-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-workitemgeneratereadinessscore-workflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Duo Agent Platform workflow started to score the readiness. |
 
 ### `Mutation.workItemGenerateWorkplan`
 
@@ -43165,6 +43193,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="duoworkflowsessionartifact-agenttype"></a>`agentType` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Type of the external agent that ran the session, for example `claude-code`. Null for sessions run on the GitLab Duo Agent Platform. |
 | <a id="duoworkflowsessionartifact-auditevents"></a>`auditEvents` | [`AiAuditEventConnection`](#aiauditeventconnection) | Audit events recorded for the session. Readable with `read_agent_artifacts` on the parent group or project; does not require access to the underlying workflow. (see [Connections](#connections)) |
 | <a id="duoworkflowsessionartifact-auditeventscount"></a>`auditEventsCount` | [`Int!`](#int) | Number of audit events recorded for the session. |
 | <a id="duoworkflowsessionartifact-creditsused"></a>`creditsUsed` {{< icon name="warning-solid" >}} | [`Float`](#float) | Introduced in GitLab 19.4. Status: Experiment. Total GitLab Credits consumed by the session. Readable with `read_agent_artifacts` on the parent group or project. Requires ClickHouse to be configured for analytics; ingestion is gated by the `duo_workflow_session_credits_ingestion` feature flag. Null until credit data has been ingested for the session, including sessions that failed before ingestion. |
@@ -54246,7 +54275,7 @@ Arguments:
 | <a id="organization-groups-ownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
 | <a id="organization-groups-parentpath"></a>`parentPath` | [`ID`](#id) | Full path of the parent group. |
 | <a id="organization-groups-search"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
-| <a id="organization-groups-sort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
+| <a id="organization-groups-sort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Use `similarity` to rank results by closeness to `search`. `similarity` applies only when `search` is given and results are already scoped to the current user's memberships, such as with `ownedOnly: true` or `allAvailable: false`. Filtering by `visibilityLevel` to public or internal groups only disables `similarity`, because the results are then no longer scoped by membership. Results fall back to `id_desc` when `similarity` does not apply. |
 | <a id="organization-groups-toplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top-level groups. |
 | <a id="organization-groups-visibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter groups by visibility level. |
 | <a id="organization-groups-withknowledgegraphenabled"></a>`withKnowledgeGraphEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.10. Status: Experiment. Return only groups with Knowledge Graph enabled. |

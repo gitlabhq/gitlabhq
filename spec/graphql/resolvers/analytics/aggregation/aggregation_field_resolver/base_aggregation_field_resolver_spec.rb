@@ -64,4 +64,30 @@ RSpec.describe Resolvers::Analytics::Aggregation::AggregationFieldResolver::Base
       expect(parts).to eq([{ identifier: :"duration.max", parameters: {} }])
     end
   end
+
+  describe '#build_order' do
+    let(:resolver) { described_class.new(object: nil, context: double.as_null_object, field: nil) }
+
+    it 'underscores the identifier and parameter keys' do
+      order_input = instance_double(Types::Analytics::Aggregation::OrderType, to_hash: {
+        identifier: 'createdAt',
+        direction: :desc,
+        parameters: { 'customOrigin' => '2026-06-07T00:00:00Z' }
+      })
+
+      expect(resolver.send(:build_order, [order_input])).to eq([{
+        identifier: :created_at,
+        direction: :desc,
+        parameters: { custom_origin: '2026-06-07T00:00:00Z' }
+      }])
+    end
+
+    it 'defaults parameters to an empty hash' do
+      order_input = instance_double(Types::Analytics::Aggregation::OrderType,
+        to_hash: { identifier: 'total', direction: :asc, parameters: nil })
+
+      expect(resolver.send(:build_order, [order_input]))
+        .to eq([{ identifier: :total, direction: :asc, parameters: {} }])
+    end
+  end
 end

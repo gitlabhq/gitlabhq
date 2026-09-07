@@ -320,6 +320,60 @@ produces a lint error.
   state.config = { ...state.config, [key]: value };
   ```
 
+### Module-scope singletons
+
+A migrated page can load some modules with both Vue 2 and Vue 3, through our "infection" mechanism.
+As each Vue version runs the same module, modules that contain state can be duplicated, and modules that execute code can run twice, for example registering an event handler twice.
+For the purpose of this duplication we call these modules **singletons**.
+
+Duplication is hard to catch.
+A consumer does not see that the module is duplicated.
+It reads a stale value, and nothing reports an error.
+
+#### The error
+
+We have built a safety mechanism that trips the bundling jobs (`compile-production-assets` and `build-vite-prod`) to prevent duplicating such singletons.
+Those jobs fail when a duplication is created.
+
+The scanner prints output like this:
+
+```plaintext
+[vue3-infection-scanner] Duplicated modules detected: 1 module(s) on 14 page state(s), 14 finding(s).
+
+  pages.dashboard.issues (flag on)
+    roots: app/assets/javascripts/main.js
+           app/assets/javascripts/pages/dashboard/issues/index.js
+           app/assets/javascripts/entrypoints/super_sidebar.js
+
+    app/assets/javascripts/graphql_shared/issuable_default_client.js
+       holds: apollo-client
+       sink:  (none: this copy has no Vue 3 ancestor)
+          V2  app/assets/javascripts/entrypoints/super_sidebar.js
+          V2  app/assets/javascripts/super_sidebar/super_sidebar_bundle.js
+          V2  app/assets/javascripts/graphql_shared/issuable_client.js
+          V2  app/assets/javascripts/graphql_shared/issuable_default_client.js
+```
+
+The fields are:
+
+- `holds` is the kind of state found in the module.
+- The chain shows how each lane reaches the module. `V2` or `V3` marks the lane of each step.
+- `sink` names the module that reverted the subtree to Vue 2, when there is one. It is the module to fix.
+- The roots list is trimmed in this example.
+
+#### How to fix it
+
+1. Usual fix: When `sink` names a module, add that module to `INFECTION_FORCELIST` in `config/helpers/context_aliases_shared.js`.
+   The module then gets a copy per lane, so the subtree below it stays on Vue 3.
+   The error prints paste-ready lines for the list.
+1. Alternative: When the state needs no Vue, move it into its own Vue-free module, and add that module to `INFECTION_BLOCKLIST` in the same file.
+   Every lane then shares one copy. `app/assets/javascripts/lib/utils/breadcrumbs_state.js` is an existing example.
+1. For flat reactive state, use `observable()` from `~/lib/utils/observable`.
+
+The two lists are opposites: `INFECTION_BLOCKLIST` means never duplicate, `INFECTION_FORCELIST` means always duplicate.
+Use the blocklist only for a module that runs no Vue-version-specific setup.
+A Pinia instance or a `VueApollo` provider is bound to the Vue version that built it, so one shared copy binds the wrong one.
+
 ### Handling libraries that do not work with `@vue/compat`
 
 **Problem**

@@ -12,4 +12,6 @@ const baseEntryPoints = {
   graphql_explorer: './entrypoints/graphql_explorer.js',
 };
 
-module.exports = { baseEntryPoints };
+const ALWAYS_LOADED_ENTRY_POINTS = ['super_sidebar', 'tracker', 'sentry', 'performance_bar'];
+
+module.exports = { baseEntryPoints, ALWAYS_LOADED_ENTRY_POINTS };

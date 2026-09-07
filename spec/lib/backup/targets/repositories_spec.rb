@@ -250,7 +250,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
         pool_result.new(disk_path: 'ee/ff/repo3.git', status: :failed, error_message: 'Error message')
       end
 
-      it 'schedules restoring of the pool', :sidekiq_might_not_need_inline do
+      it 'schedules restoring of the pool', :sidekiq_might_not_need_inline, :skip_gitaly_mvcc do
         pool_repository = create(:pool_repository, :failed)
         pool_repository.delete_object_pool
 

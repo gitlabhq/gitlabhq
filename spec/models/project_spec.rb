@@ -9227,7 +9227,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(subject.has_pool_repository?).to be false
     end
 
-    it 'returns true when it has a pool repository' do
+    it 'returns true when it has a pool repository', :skip_gitaly_mvcc do
       pool    = create(:pool_repository, :ready)
       subject = create(:project, :repository, pool_repository: pool)
 

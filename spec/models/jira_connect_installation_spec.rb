@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe JiraConnectInstallation, feature_category: :integrations do
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
+    subject_key: :organization_id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_JIRA_CONNECT_INSTALLATIONS,
+    claiming_attributes: [:forge_installation_xid, :client_key]
+
   describe 'associations' do
     it { is_expected.to have_many(:subscriptions).class_name('JiraConnectSubscription') }
   end

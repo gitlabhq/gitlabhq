@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6770,6 +6770,9 @@
+@@ -6917,6 +6917,9 @@
        if (key === "$attrs") {
          track(instance.attrs, "get", "");
          markAttrsAccessed();
@@ -16,7 +16,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -6750,6 +6750,9 @@
+@@ -6898,6 +6898,9 @@
        if (key === "$attrs") {
          track(instance.attrs, "get", "");
          !!(process.env.NODE_ENV !== "production") && markAttrsAccessed();
@@ -30,7 +30,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6677,6 +6677,9 @@
+@@ -6825,6 +6825,9 @@
        if (key === "$attrs") {
          track(instance.attrs, "get", "");
          !!(process.env.NODE_ENV !== "production") && markAttrsAccessed();
