@@ -452,7 +452,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/models/project_spec.rb'
     - 'spec/models/ssh_host_key_spec.rb'
     - 'spec/presenters/ci/pipeline_presenter_spec.rb'
-    - 'spec/presenters/commit_status_presenter_spec.rb'
     - 'spec/presenters/deployments/deployment_presenter_spec.rb'
     - 'spec/presenters/releases/link_presenter_spec.rb'
     - 'spec/requests/api/bulk_imports_spec.rb'

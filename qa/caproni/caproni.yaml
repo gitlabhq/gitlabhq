@@ -105,6 +105,7 @@ cluster:
       - kas.${BASE_DOMAIN}
   k3d:
     servers: 1
+    image: rancher/k3s:v1.34.9-k3s1
     k3s:
       # k3s's Traefik would fight the chart's Envoy for ports 80 and 22
       disable:

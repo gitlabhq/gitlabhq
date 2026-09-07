@@ -49,6 +49,10 @@ clone-gitlab-repo:
     - .absolutely-predictive-job
     - .setup:rules:clone-gitlab-repo
   stage: sync
+  retry:
+    exit_codes:
+      - 128  # get_sources exhaustion from Gitaly load-shedding
+      - 201  # low free disk space; repeated from .default-retry because deep merge replaces arrays
   script:
     # The runner injects CI_JOB_TOKEN into .git/config both as an
     # authenticated remote URL and as an http.extraheader entry.

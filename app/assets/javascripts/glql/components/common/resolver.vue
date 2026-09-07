@@ -219,6 +219,7 @@ export default {
       :fields="fields"
       :display-type="config.display"
       :display-config="config.displayConfig"
+      :source="source"
       :loading="loading"
       @error="handlePresenterError"
     />

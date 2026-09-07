@@ -37,7 +37,9 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
         'pipeline_seed_context_build_variables_duration_s' => counters,
         'pipeline_seed_context_build_variables_sort_and_expand_all_duration_s' => counters,
         'pipeline_builds_tags_count' => a_kind_of(Numeric),
-        'pipeline_builds_distinct_tags_count' => a_kind_of(Numeric)
+        'pipeline_builds_distinct_tags_count' => a_kind_of(Numeric),
+        'pipeline_variables_count' => a_kind_of(Numeric),
+        'pipeline_variables_max_value_bytesize' => a_kind_of(Numeric)
       }
     end
 
@@ -253,6 +255,71 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
           .and_call_original
 
         expect(pipeline).to be_created_successfully
+      end
+    end
+
+    context 'with pipeline variables' do
+      let(:service) do
+        described_class.new(project, user, { ref: ref, variables_attributes: variables_attributes })
+      end
+
+      let(:variables_attributes) do
+        [
+          { key: 'SMALL', value: 'a' },
+          { key: 'BIG', value: 'a' * 10 }
+        ]
+      end
+
+      shared_examples 'creating a log entry' do
+        it 'creates a log entry' do
+          expect(Gitlab::AppJsonLogger)
+            .to receive(:info)
+            .with(a_hash_including(
+              'pipeline_variables_count' => 2,
+              'pipeline_variables_max_value_bytesize' => 10
+            ))
+            .and_call_original
+
+          # We also expect some logs from Gitlab::Ci::Pipeline::CommandLogger,
+          expect(Gitlab::AppJsonLogger)
+            .to receive(:info)
+            .with(hash_including("class" => "Gitlab::Ci::Pipeline::CommandLogger"))
+            .and_call_original
+
+          expect(pipeline).to be_created_successfully
+        end
+      end
+
+      context 'when under both thresholds' do
+        it 'does not create a log entry but it collects the data' do
+          expect(Gitlab::AppJsonLogger)
+            .to receive(:info)
+            .with(hash_including("class" => "Gitlab::Ci::Pipeline::CommandLogger"))
+            .and_call_original
+
+          expect(pipeline).to be_created_successfully
+
+          expect(service.logger.observations_hash).to include(
+            'pipeline_variables_count' => 2,
+            'pipeline_variables_max_value_bytesize' => 10
+          )
+        end
+      end
+
+      context 'when the count exceeds the threshold' do
+        before do
+          stub_const("#{described_class}::LOG_MAX_PIPELINE_VARIABLES", 2)
+        end
+
+        it_behaves_like 'creating a log entry'
+      end
+
+      context 'when the largest value bytesize exceeds the threshold' do
+        before do
+          stub_const("#{described_class}::LOG_MAX_PIPELINE_VARIABLE_VALUE_BYTESIZE", 10)
+        end
+
+        it_behaves_like 'creating a log entry'
       end
     end
   end

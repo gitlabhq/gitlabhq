@@ -1,5 +1,6 @@
 <script>
 import { GlFormInput, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { SHOW_PASSWORD, HIDE_PASSWORD } from '../constants';
 
 export default {
@@ -11,6 +12,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glListenersMixin],
   props: {
     title: {
       type: String,
@@ -116,7 +118,7 @@ export default {
       :type="type"
       :disabled="disabled"
       :state="state"
-      v-on="$listeners"
+      v-on="glListeners()"
     />
     <gl-button
       v-gl-tooltip="toggleVisibilityLabel"

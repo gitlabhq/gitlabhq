@@ -53,11 +53,13 @@ const unitByFieldKey = {
   failureRate: 'rate',
   canceledRate: 'rate',
   skippedRate: 'rate',
+  completionRate: 'rate',
   acceptedCount: 'count',
   rejectedCount: 'count',
   shownCount: 'count',
   totalCount: 'count',
   usersCount: 'count',
+  finishedCount: 'count',
   suggestionSizeSum: 'count',
   throughputCount: 'count',
   featuresCount: 'count',
@@ -66,6 +68,10 @@ const unitByFieldKey = {
   duration: 'duration',
   queuedDuration: 'duration',
   durationQuantile: 'duration',
+  durationMean: 'duration',
+  durationMin: 'duration',
+  durationMax: 'duration',
+  durationSum: 'duration',
   timeToMergeQuantile: 'durationMs',
 };
 
@@ -74,6 +80,8 @@ export const unitFor = (fieldKey) => unitByFieldKey[fieldKey] ?? null;
 export const formatterFor = (fieldKey) => UNITS[unitFor(fieldKey)]?.cell ?? rawString;
 
 export const axisFormatterFor = (fieldKey) => UNITS[unitFor(fieldKey)]?.axis ?? rawString;
+
+export const valueFormatterFor = (metric) => formatterFor(baseFieldKeyOf(metric));
 
 const UNIT_LABELS = {
   count: () => __('Count'),

@@ -74,7 +74,6 @@ Performance/StringIdentifierArgument:
     - 'lib/api/ci/runners.rb'
     - 'lib/api/helpers/members_helpers.rb'
     - 'lib/api/helpers/notes_helpers.rb'
-    - 'lib/api/resource_access_tokens.rb'
     - 'lib/banzai/object_renderer.rb'
     - 'lib/feature/definition.rb'
     - 'lib/gitlab/application_context.rb'

@@ -1137,6 +1137,7 @@ CREATE TABLE siphon_duo_workflows_workflow_merge_requests
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
     `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
     `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `idempotency_key` Nullable(String),
     INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)

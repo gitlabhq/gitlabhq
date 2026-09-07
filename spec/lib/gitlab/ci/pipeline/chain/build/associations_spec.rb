@@ -344,6 +344,79 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
     end
   end
 
+  describe 'observability' do
+    subject(:observations) do
+      step.perform!
+      command.logger.observations_hash
+    end
+
+    it 'observes the variables count and the largest value bytesize' do
+      expect(observations).to include(
+        'pipeline_variables_count' => 2,
+        'pipeline_variables_max_value_bytesize' => 12
+      )
+    end
+
+    context 'with a multibyte value' do
+      let(:variables_attributes) { [{ key: 'first', value: 'áé' }] }
+
+      it 'observes the bytesize rather than the character length' do
+        expect(observations).to include('pipeline_variables_max_value_bytesize' => 4)
+      end
+    end
+
+    context 'with string keys, as passed by git push options' do
+      let(:variables_attributes) { [{ 'key' => 'first', 'value' => 'world' }] }
+
+      it 'observes the value bytesize' do
+        expect(observations).to include(
+          'pipeline_variables_count' => 1,
+          'pipeline_variables_max_value_bytesize' => 5
+        )
+      end
+    end
+
+    context 'when variables_attributes is nil' do
+      let(:variables_attributes) { nil }
+
+      it 'observes zeroes' do
+        expect(observations).to include(
+          'pipeline_variables_count' => 0,
+          'pipeline_variables_max_value_bytesize' => 0
+        )
+      end
+    end
+
+    context 'when the user cannot set pipeline variables' do
+      before do
+        project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
+      end
+
+      it 'observes the rejected variables' do
+        expect(observations).to include(
+          'pipeline_variables_count' => 2,
+          'pipeline_variables_max_value_bytesize' => 12
+        )
+      end
+    end
+
+    context 'with duplicate keys' do
+      let(:variables_attributes) do
+        [
+          { key: 'first', value: 'world' },
+          { key: 'first', value: 'second_world' }
+        ]
+      end
+
+      it 'observes the submitted variables' do
+        expect(observations).to include(
+          'pipeline_variables_count' => 2,
+          'pipeline_variables_max_value_bytesize' => 12
+        )
+      end
+    end
+  end
+
   context 'when PipelineVariablesArtifactBuilder raises ActiveModel::ValidationError' do
     let(:variables_attributes) { [{ key: 'invalid-key!', value: 'some-value' }] }
 

@@ -30,6 +30,7 @@ const MOCK_PARSE_OUTPUT = {
   },
   fields: MOCK_FIELDS,
   mode: 'standard',
+  source: 'WorkItems',
 };
 
 describe('Resolver', () => {
@@ -207,6 +208,7 @@ describe('Resolver', () => {
         data: { count: MOCK_ISSUES.nodes.length, ...MOCK_ISSUES },
         fields: MOCK_FIELDS,
         displayType: 'list',
+        source: 'WorkItems',
         loading: false,
       });
     });

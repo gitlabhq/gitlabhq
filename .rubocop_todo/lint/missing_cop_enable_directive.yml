@@ -1,7 +1,6 @@
 ---
 Lint/MissingCopEnableDirective:
   Exclude:
-    - 'app/controllers/admin/users_controller.rb'
     - 'app/graphql/types/access_level_type.rb'
     - 'app/graphql/types/base_enum.rb'
     - 'app/graphql/types/boards/board_issue_input_base_type.rb'

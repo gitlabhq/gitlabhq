@@ -135,6 +135,43 @@ describe('StatPresenter', () => {
     });
   });
 
+  describe('defaults derived from the metric', () => {
+    it('renders the description registered for the metric in the query source', () => {
+      createComponent({ fields: [ACCEPTANCE_RATE], source: 'CodeSuggestions' });
+
+      expect(findSingleStat().props('description')).toBe('Ratio of accepted to shown suggestions.');
+    });
+
+    // The same metric name counts a different subject in each data source.
+    it.each`
+      source               | expected
+      ${'CodeSuggestions'} | ${'Total number of suggestions.'}
+      ${'MergeRequests'}   | ${'Total number of merge requests.'}
+    `('describes totalCount as $expected in $source', ({ source, expected }) => {
+      createComponent({ fields: [TOTAL_COUNT], source });
+
+      expect(findSingleStat().props('description')).toBe(expected);
+    });
+
+    it('renders no description before the query source is known', () => {
+      createComponent({ fields: [ACCEPTANCE_RATE] });
+
+      expect(findSingleStat().props('description')).toBeNull();
+    });
+
+    it('takes displayConfig.description over the derived copy', () => {
+      createComponent({
+        fields: [ACCEPTANCE_RATE],
+        source: 'CodeSuggestions',
+        displayConfig: { description: 'Suggestions accepted in the last 30 days' },
+      });
+
+      expect(findSingleStat().props('description')).toBe(
+        'Suggestions accepted in the last 30 days',
+      );
+    });
+  });
+
   describe('displayConfig', () => {
     it('leaves every option at its GlSingleStat default when the block sets none', () => {
       createComponent();

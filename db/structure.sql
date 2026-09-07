@@ -20729,7 +20729,9 @@ CREATE TABLE duo_workflows_workflow_merge_requests (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     link_type smallint NOT NULL,
-    CONSTRAINT check_33722876a7 CHECK ((num_nonnulls(namespace_id, project_id) = 1))
+    idempotency_key text,
+    CONSTRAINT check_33722876a7 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
+    CONSTRAINT check_duo_wf_wf_mrs_idempotency_key_limit CHECK ((char_length(idempotency_key) <= 255))
 );
 
 CREATE SEQUENCE duo_workflows_workflow_merge_requests_id_seq
@@ -48320,6 +48322,8 @@ CREATE INDEX index_duo_wf_wf_mrs_on_merge_request_id ON duo_workflows_workflow_m
 CREATE INDEX index_duo_wf_wf_mrs_on_namespace_id ON duo_workflows_workflow_merge_requests USING btree (namespace_id);
 
 CREATE INDEX index_duo_wf_wf_mrs_on_project_id ON duo_workflows_workflow_merge_requests USING btree (project_id);
+
+CREATE INDEX index_duo_wf_wf_mrs_on_project_id_and_idempotency_key ON duo_workflows_workflow_merge_requests USING btree (project_id, idempotency_key) WHERE (idempotency_key IS NOT NULL);
 
 CREATE UNIQUE INDEX index_duo_wf_wf_mrs_on_workflow_id_and_merge_request_id ON duo_workflows_workflow_merge_requests USING btree (workflow_id, merge_request_id, link_type);
 

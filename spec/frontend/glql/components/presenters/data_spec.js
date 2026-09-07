@@ -102,6 +102,19 @@ describe('DataPresenter', () => {
       expect(wrapper.findComponent(StatPresenter).props('displayConfig')).toBe(displayConfig);
     });
 
+    it('forwards the query data source to the stat presenter', () => {
+      const wrapper = shallowMountExtended(DataPresenter, {
+        propsData: {
+          data: MOCK_AGGREGATED_DATA_ONE_DIM,
+          displayType: 'stat',
+          fields: MOCK_STAT_FIELDS,
+          source: 'CodeSuggestions',
+        },
+      });
+
+      expect(wrapper.findComponent(StatPresenter).props('source')).toBe('CodeSuggestions');
+    });
+
     it('declares displayConfig, so it does not leak into the DOM as an attribute', () => {
       const wrapper = mountExtended(DataPresenter, {
         propsData: {

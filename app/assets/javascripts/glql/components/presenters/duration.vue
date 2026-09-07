@@ -6,7 +6,9 @@ export default {
   props: {
     data: {
       required: true,
-      type: Number,
+      // Measurement-object leaves (e.g. durationMean/Min/Max/Sum) are serialized
+      // as BigDecimal strings by the aggregation GraphQL, so accept both.
+      type: [Number, String],
     },
   },
   computed: {

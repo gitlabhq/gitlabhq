@@ -47,6 +47,11 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    source: {
+      required: false,
+      type: String,
+      default: '',
+    },
   },
   emits: { error: null },
   computed: {
@@ -103,6 +108,7 @@ export default {
     :fields="fields"
     :loading="loading"
     :display-config="displayConfig"
+    :source="source"
     @error="$emit('error', $event)"
   />
   <column-chart-presenter

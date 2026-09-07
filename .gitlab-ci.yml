@@ -29,6 +29,16 @@ default:
   interruptible: true
   # Default job timeout doesn't work: https://gitlab.com/gitlab-org/gitlab/-/issues/387528
   timeout: 90m
+  hooks:
+    # Runs before the runner clones or fetches the repository. Allows the server
+    # to serve part of the transfer as packfile URIs, which the client downloads
+    # directly from object storage. Git ignores the offer unless the protocol is
+    # allowlisted, so an empty fetch.uriProtocols (git's default) disables it.
+    #
+    # NOTE: job-level `hooks` replaces this wholesale rather than merging with
+    # it, so a job that defines its own `hooks` also needs this line.
+    pre_get_sources_script:
+      - git config --global fetch.uriProtocols https
 
 .default-ruby-variables: &default-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"

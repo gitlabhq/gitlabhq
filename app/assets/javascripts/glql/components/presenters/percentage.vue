@@ -6,7 +6,9 @@ export default {
   props: {
     data: {
       required: true,
-      type: Number,
+      // The aggregation GraphQL serializes `rate` metrics as BigDecimal strings
+      // (e.g. completionRate, acceptanceRate), so accept both.
+      type: [Number, String],
     },
   },
   computed: {

@@ -29,6 +29,7 @@
   // The panel width resizer keeps a node mounted inside the portal, so the
   // portal is never `:empty`; hide it based on mounted panel content instead.
   // stylelint-disable-next-line gitlab/no-has -- scoped to the portal's own content
+  &:empty,
   &:not(:has(> .vue-portal-target)) {
     @apply gl-hidden;
   }

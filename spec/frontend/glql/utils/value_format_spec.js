@@ -8,6 +8,7 @@ import {
   formatDurationMsCompact,
   formatterFor,
   axisFormatterFor,
+  valueFormatterFor,
   unitFor,
   labelForUnit,
   buildFormatterByLabel,
@@ -154,6 +155,12 @@ describe('formatterFor', () => {
     ${'queuedDuration'}           | ${90}     | ${'1m 30s'}
     ${'durationQuantile'}         | ${3661}   | ${'1h 1m 1s'}
     ${'timeToMergeQuantile'}      | ${250000} | ${'4m 10s'}
+    ${'completionRate'}           | ${0.6}    | ${'60%'}
+    ${'finishedCount'}            | ${789}    | ${'789'}
+    ${'durationMean'}             | ${90}     | ${'1m 30s'}
+    ${'durationMin'}              | ${30}     | ${'30s'}
+    ${'durationMax'}              | ${3600}   | ${'1h'}
+    ${'durationSum'}              | ${3661}   | ${'1h 1m 1s'}
   `(
     'returns a formatter for $fieldKey that maps $input to $expected',
     ({ fieldKey, input, expected }) => {
@@ -203,6 +210,24 @@ describe('axisFormatterFor', () => {
   });
 });
 
+describe('valueFormatterFor', () => {
+  const metric = (key, extra = {}) => ({ key, name: key, label: key, type: 'metric', ...extra });
+
+  it.each`
+    fieldKey              | value    | expected
+    ${'totalCount'}       | ${1234}  | ${'1,234'}
+    ${'acceptanceRate'}   | ${0.735} | ${'73.5%'}
+    ${'durationQuantile'} | ${3661}  | ${'1h 1m 1s'}
+    ${'somethingCustom'}  | ${1234}  | ${'1234'}
+  `('formats $fieldKey as $expected', ({ fieldKey, value, expected }) => {
+    expect(valueFormatterFor(metric(fieldKey))(value)).toBe(expected);
+  });
+
+  it('resolves through the base field key of an aliased metric', () => {
+    expect(valueFormatterFor(metric('p50', { field: 'durationQuantile' }))(3661)).toBe('1h 1m 1s');
+  });
+});
+
 describe('unitFor', () => {
   it.each`
     fieldKey                      | expected
@@ -218,6 +243,12 @@ describe('unitFor', () => {
     ${'duration'}                 | ${'duration'}
     ${'durationQuantile'}         | ${'duration'}
     ${'timeToMergeQuantile'}      | ${'durationMs'}
+    ${'completionRate'}           | ${'rate'}
+    ${'finishedCount'}            | ${'count'}
+    ${'durationMean'}             | ${'duration'}
+    ${'durationMin'}              | ${'duration'}
+    ${'durationMax'}              | ${'duration'}
+    ${'durationSum'}              | ${'duration'}
   `('maps $fieldKey to unit $expected', ({ fieldKey, expected }) => {
     expect(unitFor(fieldKey)).toBe(expected);
   });

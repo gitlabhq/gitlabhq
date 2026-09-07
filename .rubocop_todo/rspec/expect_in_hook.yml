@@ -262,7 +262,6 @@ RSpec/ExpectInHook:
     - 'spec/requests/api/graphql/terraform/state/unlock_spec.rb'
     - 'spec/requests/api/group_export_spec.rb'
     - 'spec/requests/api/group_import_spec.rb'
-    - 'spec/requests/api/groups_spec.rb'
     - 'spec/requests/api/helpers_spec.rb'
     - 'spec/requests/api/internal/base_spec.rb'
     - 'spec/requests/api/issues/post_projects_issues_spec.rb'

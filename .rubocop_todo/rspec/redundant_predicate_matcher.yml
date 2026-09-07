@@ -12,6 +12,5 @@ RSpec/RedundantPredicateMatcher:
     - 'spec/lib/gitlab/safe_device_detector_spec.rb'
     - 'spec/lib/gitlab/url_blockers/domain_allowlist_entry_spec.rb'
     - 'spec/lib/gitlab/url_blockers/ip_allowlist_entry_spec.rb'
-    - 'spec/mailers/emails/admin_notification_spec.rb'
     - 'spec/mailers/emails/issues_spec.rb'
     - 'spec/models/integrations/field_spec.rb'

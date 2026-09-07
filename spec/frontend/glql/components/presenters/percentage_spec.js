@@ -11,12 +11,14 @@ describe('PercentagePresenter', () => {
   };
 
   it.each`
-    data      | expected
-    ${0.425}  | ${'42.5%'}
-    ${0}      | ${'0%'}
-    ${1}      | ${'100%'}
-    ${0.001}  | ${'0.1%'}
-    ${0.9875} | ${'98.8%'}
+    data                        | expected
+    ${0.425}                    | ${'42.5%'}
+    ${0}                        | ${'0%'}
+    ${1}                        | ${'100%'}
+    ${0.001}                    | ${'0.1%'}
+    ${0.9875}                   | ${'98.8%'}
+    ${'0.6'}                    | ${'60%'}
+    ${'0.00012488032302376888'} | ${'0.0%'}
   `('formats $data as $expected', ({ data, expected }) => {
     createComponent(data);
     expect(wrapper.text()).toBe(expected);

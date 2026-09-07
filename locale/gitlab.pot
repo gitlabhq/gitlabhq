@@ -2666,6 +2666,9 @@ msgstr ""
 msgid "AICatalog|Agents already in AI Catalog."
 msgstr ""
 
+msgid "AICatalog|Agents run on credits. Ask your group Owner to buy credits, or browse the AI Catalog to see what's available."
+msgstr ""
+
 msgid "AICatalog|Agents successfully added to AI Catalog."
 msgstr ""
 
@@ -2729,6 +2732,9 @@ msgstr ""
 msgid "AICatalog|Authentication type"
 msgstr ""
 
+msgid "AICatalog|Automate tasks with agents"
+msgstr ""
+
 msgid "AICatalog|Basic information"
 msgstr ""
 
@@ -2748,6 +2754,12 @@ msgid "AICatalog|Bulk enablement completed with errors for %{item_name}"
 msgstr ""
 
 msgid "AICatalog|Bulk enablement failed for %{item_name}"
+msgstr ""
+
+msgid "AICatalog|Buy credits"
+msgstr ""
+
+msgid "AICatalog|Buy credits to start using agents or browse the AI Catalog to see what's available."
 msgstr ""
 
 msgid "AICatalog|Can be enabled in other projects within the owning project's top-level group."
@@ -3165,6 +3177,9 @@ msgid "AICatalog|Is visible to everyone, including users outside your organizati
 msgstr ""
 
 msgid "AICatalog|Item must have a current latest released version to restore."
+msgstr ""
+
+msgid "AICatalog|Learn about credits"
 msgstr ""
 
 msgid "AICatalog|Learn more about foundational agents"
@@ -54055,6 +54070,9 @@ msgstr ""
 msgid "Number of Reports"
 msgstr ""
 
+msgid "Number of accepted suggestions."
+msgstr ""
+
 msgid "Number of commits"
 msgstr ""
 
@@ -54067,6 +54085,9 @@ msgstr ""
 msgid "Number of files touched"
 msgstr ""
 
+msgid "Number of merged merge requests."
+msgstr ""
+
 msgid "Number of namespaces per indexing rollout"
 msgstr ""
 
@@ -54077,6 +54098,9 @@ msgid "Number of projects"
 msgstr ""
 
 msgid "Number of references exceeds the limit. Please provide no more than %{refs_limit} references at the same time."
+msgstr ""
+
+msgid "Number of rejected suggestions."
 msgstr ""
 
 msgid "Number of replicas"
@@ -54092,6 +54116,24 @@ msgid "Number of shards and replicas per index"
 msgstr ""
 
 msgid "Number of shards for non-code indexing"
+msgstr ""
+
+msgid "Number of suggestions shown to users."
+msgstr ""
+
+msgid "Number of unique contributors."
+msgstr ""
+
+msgid "Number of unique features used."
+msgstr ""
+
+msgid "Number of unique users in the previous period."
+msgstr ""
+
+msgid "Number of unique users."
+msgstr ""
+
+msgid "Number of users active in both the current and previous period."
 msgstr ""
 
 msgid "Number of users for user cap"
@@ -59052,6 +59094,9 @@ msgid "Pipeline creation rate limits"
 msgstr ""
 
 msgid "Pipeline creation requests per project, commit, and user"
+msgstr ""
+
+msgid "Pipeline duration quantile, in seconds."
 msgstr ""
 
 msgid "Pipeline durations for the last 30 commits"
@@ -65614,6 +65659,21 @@ msgid "Rate the review"
 msgstr ""
 
 msgid "Rate this response %{emoji} %{separator} Mention %{codeStart}%{botUser}%{codeEnd} to continue the conversation."
+msgstr ""
+
+msgid "Ratio of accepted to shown suggestions."
+msgstr ""
+
+msgid "Ratio of canceled pipelines to finished pipelines."
+msgstr ""
+
+msgid "Ratio of failed pipelines to finished pipelines."
+msgstr ""
+
+msgid "Ratio of skipped pipelines to finished pipelines."
+msgstr ""
+
+msgid "Ratio of successful pipelines to finished pipelines."
 msgstr ""
 
 msgid "Raw blob request rate limit per minute"
@@ -83861,6 +83921,9 @@ msgstr ""
 msgid "Time estimate: %{estimate}"
 msgstr ""
 
+msgid "Time from creation to merge."
+msgstr ""
+
 msgid "Time from first comment to last commit"
 msgstr ""
 
@@ -85062,6 +85125,21 @@ msgstr ""
 msgid "Total memory (GB)"
 msgstr ""
 
+msgid "Total number of contributions."
+msgstr ""
+
+msgid "Total number of events."
+msgstr ""
+
+msgid "Total number of merge requests."
+msgstr ""
+
+msgid "Total number of pipelines, including in-progress ones."
+msgstr ""
+
+msgid "Total number of suggestions."
+msgstr ""
+
 msgid "Total of child items"
 msgstr ""
 
@@ -85078,6 +85156,9 @@ msgid "Total time to run"
 msgstr ""
 
 msgid "Total users"
+msgstr ""
+
+msgid "Total volume of suggestions."
 msgstr ""
 
 msgid "Total weight"
@@ -87076,6 +87157,9 @@ msgid "UsageBilling|Save on GitLab Credits with monthly commitment"
 msgstr ""
 
 msgid "UsageBilling|Save override"
+msgstr ""
+
+msgid "UsageBilling|Saving in the background."
 msgstr ""
 
 msgid "UsageBilling|Select products"
