@@ -42,8 +42,10 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTool, feature_category: :mcp_se
         { project_id: project.id.to_s, work_item_iid: work_item.iid, include: %w[notes] }
       end
 
-      it 'enables only the requested facet' do
-        expect(tool.build_variables).to include(includeNotes: true, includeRelatedMergeRequests: false)
+      it 'enables only the requested facet with the notes page default' do
+        expect(tool.build_variables).to include(
+          includeNotes: true, includeRelatedMergeRequests: false, notesFirst: 100
+        )
       end
     end
 

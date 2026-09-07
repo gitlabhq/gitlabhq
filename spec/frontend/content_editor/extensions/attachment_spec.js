@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { builders } from 'prosemirror-test-builder';
 import axios from '~/lib/utils/axios_utils';
 import Attachment from '~/content_editor/extensions/attachment';
+import Bold from '~/content_editor/extensions/bold';
 import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
 import Image from '~/content_editor/extensions/image';
 import Audio from '~/content_editor/extensions/audio';
@@ -32,6 +33,7 @@ describe('content_editor/extensions/attachment', () => {
   let p;
   let image;
   let audio;
+  let bold;
   let drawioDiagram;
   let video;
   let link;
@@ -75,6 +77,7 @@ describe('content_editor/extensions/attachment', () => {
 
     tiptapEditor = createTestEditor({
       extensions: [
+        Bold,
         Link,
         Image,
         Audio,
@@ -89,6 +92,7 @@ describe('content_editor/extensions/attachment', () => {
       paragraph: p,
       image,
       audio,
+      bold,
       video,
       link,
       drawioDiagram,
@@ -1165,6 +1169,509 @@ describe('content_editor/extensions/attachment', () => {
 
         completeUpload({ body: PROJECT_WIKI_ATTACHMENT_IMAGE_HTML });
         await waitForPromises();
+      });
+    });
+
+    describe('when the user moves the selection while a file is uploading', () => {
+      let completeUpload;
+      let rejectUpload;
+      let alertSpy;
+
+      const uploadedImageAttrs = {
+        alt: 'test-file.png',
+        canonicalSrc: 'test-file.png',
+        src: `/${group}/${project}/-/wikis/test-file.png`,
+        uploading: false,
+      };
+
+      const startUploadAndMoveCaret = async (file) => {
+        renderMarkdown.mockReturnValue(
+          new Promise((resolve, reject) => {
+            completeUpload = resolve;
+            rejectUpload = reject;
+          }),
+        );
+        mock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: `![test-file](${file.name})` } });
+
+        tiptapEditor.commands.setContent(doc(p('hello')).toJSON());
+        tiptapEditor.commands.setTextSelection(6);
+        tiptapEditor.commands.uploadAttachment({ file });
+        await waitForPromises();
+
+        // the user moves the caret back into the text while the upload is in flight
+        tiptapEditor.commands.setTextSelection(3);
+      };
+
+      beforeEach(() => {
+        alertSpy = jest.fn();
+        eventHub.$on('alert', alertSpy);
+      });
+
+      describe('when a media upload succeeds', () => {
+        beforeEach(async () => {
+          await startUploadAndMoveCaret(imageFile);
+
+          completeUpload({ body: PROJECT_WIKI_ATTACHMENT_IMAGE_HTML });
+          await waitForPromises();
+        });
+
+        it('updates the media node without moving the selection', () => {
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(
+            doc(p('hello'), p(image(uploadedImageAttrs))).toJSON(),
+          );
+          expect(tiptapEditor.state.selection.toJSON()).toEqual({
+            type: 'text',
+            anchor: 3,
+            head: 3,
+          });
+        });
+
+        it('does not replace the media node when the user keeps typing', () => {
+          tiptapEditor.commands.insertContent('X');
+
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(
+            doc(p('heXllo'), p(image(uploadedImageAttrs))).toJSON(),
+          );
+        });
+      });
+
+      describe('when a media upload fails', () => {
+        beforeEach(async () => {
+          await startUploadAndMoveCaret(imageFile);
+
+          rejectUpload(new Error('upload failed'));
+          await waitForPromises();
+        });
+
+        it('removes the media node without moving the selection', () => {
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(doc(p('hello'), p()).toJSON());
+          expect(tiptapEditor.state.selection.toJSON()).toEqual({
+            type: 'text',
+            anchor: 3,
+            head: 3,
+          });
+          expect(alertSpy).toHaveBeenCalledWith({
+            message: 'An error occurred while uploading the file. Please try again.',
+            variant: VARIANT_DANGER,
+          });
+        });
+      });
+
+      describe('when an attachment upload succeeds', () => {
+        beforeEach(async () => {
+          await startUploadAndMoveCaret(attachmentFile);
+
+          completeUpload({ body: markdownApiResult[attachmentFile.name] });
+          await waitForPromises();
+        });
+
+        it('updates the link attributes without moving the selection', () => {
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(
+            doc(
+              p('hello'),
+              p(
+                link(
+                  {
+                    canonicalSrc: 'test-file.zip',
+                    href: `/${group}/${project}/-/wikis/test-file.zip`,
+                  },
+                  'test-file.zip',
+                ),
+              ),
+            ).toJSON(),
+          );
+          expect(tiptapEditor.state.selection.toJSON()).toEqual({
+            type: 'text',
+            anchor: 3,
+            head: 3,
+          });
+        });
+      });
+
+      describe('when an attachment upload fails', () => {
+        beforeEach(async () => {
+          await startUploadAndMoveCaret(attachmentFile);
+
+          rejectUpload(new Error('upload failed'));
+          await waitForPromises();
+        });
+
+        it('removes the placeholder link without moving the selection', () => {
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(doc(p('hello'), p()).toJSON());
+          expect(tiptapEditor.state.selection.toJSON()).toEqual({
+            type: 'text',
+            anchor: 3,
+            head: 3,
+          });
+          expect(alertSpy).toHaveBeenCalledWith({
+            message: 'An error occurred while uploading the file. Please try again.',
+            variant: VARIANT_DANGER,
+          });
+        });
+      });
+    });
+
+    describe('when the selection has not moved during the upload', () => {
+      let completeUpload;
+
+      beforeEach(() => {
+        renderMarkdown.mockReturnValue(
+          new Promise((resolve) => {
+            completeUpload = resolve;
+          }),
+        );
+        mock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: '![test-file](test-file.png)' } });
+      });
+
+      it('keeps the uploaded media node selected when the upload completes', async () => {
+        tiptapEditor.commands.uploadAttachment({ file: imageFile });
+        await waitForPromises();
+
+        expect(tiptapEditor.state.selection.toJSON()).toEqual({ type: 'node', anchor: 1 });
+
+        completeUpload({ body: PROJECT_WIKI_ATTACHMENT_IMAGE_HTML });
+        await waitForPromises();
+
+        expect(tiptapEditor.state.selection.toJSON()).toEqual({ type: 'node', anchor: 1 });
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(
+            p(
+              image({
+                alt: 'test-file.png',
+                canonicalSrc: 'test-file.png',
+                src: `/${group}/${project}/-/wikis/test-file.png`,
+                uploading: false,
+              }),
+            ),
+          ).toJSON(),
+        );
+      });
+
+      it('keeps the media node selected when its dimensions land mid-upload', async () => {
+        getLimitedMediaDimensions.mockResolvedValue(retinaImageSize);
+
+        tiptapEditor.commands.uploadAttachment({ file: imageFile });
+        await waitForPromises();
+
+        expect(tiptapEditor.state.selection.toJSON()).toEqual({ type: 'node', anchor: 1 });
+
+        completeUpload({ body: PROJECT_WIKI_ATTACHMENT_IMAGE_HTML });
+        await waitForPromises();
+
+        expect(tiptapEditor.state.selection.toJSON()).toEqual({ type: 'node', anchor: 1 });
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(
+            p(
+              image({
+                alt: 'test-file.png',
+                canonicalSrc: 'test-file.png',
+                src: `/${group}/${project}/-/wikis/test-file.png`,
+                uploading: false,
+                ...retinaImageSize,
+              }),
+            ),
+          ).toJSON(),
+        );
+      });
+
+      it('keeps the selection on the uploaded link when the upload completes', async () => {
+        completeUpload = null;
+        renderMarkdown.mockReturnValue(
+          new Promise((resolve) => {
+            completeUpload = resolve;
+          }),
+        );
+        mock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: '[test-file](test-file.zip)' } });
+
+        tiptapEditor.commands.uploadAttachment({ file: attachmentFile });
+        await waitForPromises();
+
+        expect(tiptapEditor.state.selection.toJSON()).toEqual({
+          type: 'text',
+          anchor: 1,
+          head: 14,
+        });
+
+        completeUpload({ body: markdownApiResult[attachmentFile.name] });
+        await waitForPromises();
+
+        expect(tiptapEditor.state.selection.toJSON()).toEqual({
+          type: 'text',
+          anchor: 1,
+          head: 14,
+        });
+      });
+    });
+
+    describe('when the placeholder is deleted while the file is uploading', () => {
+      let completeUpload;
+      let rejectUpload;
+      let alertSpy;
+
+      const startUploadAndDeletePlaceholder = async (file) => {
+        renderMarkdown.mockReturnValue(
+          new Promise((resolve, reject) => {
+            completeUpload = resolve;
+            rejectUpload = reject;
+          }),
+        );
+        mock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: `![test-file](${file.name})` } });
+
+        tiptapEditor.commands.uploadAttachment({ file });
+        await waitForPromises();
+
+        tiptapEditor.commands.clearContent();
+      };
+
+      beforeEach(() => {
+        alertSpy = jest.fn();
+        eventHub.$on('alert', alertSpy);
+      });
+
+      describe.each`
+        fileType           | file
+        ${'a media'}       | ${imageFile}
+        ${'an attachment'} | ${attachmentFile}
+      `('when $fileType upload succeeds', ({ file }) => {
+        beforeEach(async () => {
+          await startUploadAndDeletePlaceholder(file);
+
+          completeUpload({ body: markdownApiResult[file.name] });
+          await waitForPromises();
+          await waitForPromises();
+        });
+
+        it('discards the upload result without modifying the document', () => {
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(doc(p()).toJSON());
+          expect(alertSpy).not.toHaveBeenCalled();
+        });
+      });
+
+      describe.each`
+        fileType           | file
+        ${'a media'}       | ${imageFile}
+        ${'an attachment'} | ${attachmentFile}
+      `('when $fileType upload fails', ({ file }) => {
+        beforeEach(async () => {
+          await startUploadAndDeletePlaceholder(file);
+
+          rejectUpload(new Error('upload failed'));
+          await waitForPromises();
+          await waitForPromises();
+        });
+
+        it('emits an error alert without modifying the document', () => {
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(doc(p()).toJSON());
+          expect(alertSpy).toHaveBeenCalledWith({
+            message: 'An error occurred while uploading the file. Please try again.',
+            variant: VARIANT_DANGER,
+          });
+        });
+      });
+    });
+
+    describe('when the uploading link is split by another mark', () => {
+      let completeUpload;
+      let rejectUpload;
+      let alertSpy;
+
+      beforeEach(async () => {
+        alertSpy = jest.fn();
+        eventHub.$on('alert', alertSpy);
+
+        renderMarkdown.mockReturnValue(
+          new Promise((resolve, reject) => {
+            completeUpload = resolve;
+            rejectUpload = reject;
+          }),
+        );
+        mock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: '[test-file](test-file.zip)' } });
+
+        tiptapEditor.commands.uploadAttachment({ file: attachmentFile });
+        await waitForPromises();
+
+        // apply bold to part of the uploading filename to split the link text node
+        tiptapEditor.commands.setTextSelection({ from: 6, to: 10 });
+        tiptapEditor.commands.setBold();
+      });
+
+      describe('when the upload succeeds', () => {
+        beforeEach(async () => {
+          completeUpload({ body: markdownApiResult[attachmentFile.name] });
+          await waitForPromises();
+        });
+
+        it('updates every segment of the link', () => {
+          const linkAttrs = {
+            canonicalSrc: 'test-file.zip',
+            href: `/${group}/${project}/-/wikis/test-file.zip`,
+          };
+
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(
+            doc(
+              p(link(linkAttrs, 'test-'), link(linkAttrs, bold('file')), link(linkAttrs, '.zip')),
+            ).toJSON(),
+          );
+        });
+      });
+
+      describe('when the upload fails', () => {
+        beforeEach(async () => {
+          rejectUpload(new Error('upload failed'));
+          await waitForPromises();
+        });
+
+        it('removes every segment of the link', () => {
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(doc(p()).toJSON());
+          expect(alertSpy).toHaveBeenCalledWith({
+            message: 'An error occurred while uploading the file. Please try again.',
+            variant: VARIANT_DANGER,
+          });
+        });
+      });
+    });
+
+    describe('when the middle of the uploading link is unlinked', () => {
+      let completeUpload;
+      let rejectUpload;
+
+      const linkAttrs = {
+        canonicalSrc: 'test-file.zip',
+        href: `/${group}/${project}/-/wikis/test-file.zip`,
+      };
+
+      beforeEach(async () => {
+        renderMarkdown.mockReturnValue(
+          new Promise((resolve, reject) => {
+            completeUpload = resolve;
+            rejectUpload = reject;
+          }),
+        );
+        mock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: '[test-file](test-file.zip)' } });
+
+        tiptapEditor.commands.uploadAttachment({ file: attachmentFile });
+        await waitForPromises();
+
+        // unlink part of the uploading filename so the placeholder is no longer contiguous
+        tiptapEditor.commands.setTextSelection({ from: 6, to: 10 });
+        tiptapEditor.commands.unsetLink();
+      });
+
+      it('updates both remaining segments when the upload succeeds', async () => {
+        completeUpload({ body: markdownApiResult[attachmentFile.name] });
+        await waitForPromises();
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(p(link(linkAttrs, 'test-'), 'file', link(linkAttrs, '.zip'))).toJSON(),
+        );
+      });
+
+      it('removes both remaining segments when the upload fails', async () => {
+        rejectUpload(new Error('upload failed'));
+        await waitForPromises();
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(doc(p('file')).toJSON());
+      });
+    });
+
+    describe('when the placeholder link is joined onto another link', () => {
+      beforeEach(async () => {
+        let completeUpload;
+
+        renderMarkdown.mockReturnValue(
+          new Promise((resolve) => {
+            completeUpload = resolve;
+          }),
+        );
+        mock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: '[test-file](test-file.zip)' } });
+
+        tiptapEditor.commands.setContent(
+          doc(p(link({ href: 'https://example.com' }, 'foo'))).toJSON(),
+        );
+        tiptapEditor.commands.setTextSelection(4);
+        tiptapEditor.commands.uploadAttachment({ file: attachmentFile });
+        await waitForPromises();
+
+        // backspace at the start of the placeholder paragraph joins it onto the previous link
+        tiptapEditor.view.dispatch(tiptapEditor.state.tr.join(5));
+
+        completeUpload({ body: markdownApiResult[attachmentFile.name] });
+        await waitForPromises();
+      });
+
+      it('updates the placeholder link without touching its neighbor', () => {
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(
+            p(
+              link({ href: 'https://example.com' }, 'foo'),
+              link(
+                {
+                  canonicalSrc: 'test-file.zip',
+                  href: `/${group}/${project}/-/wikis/test-file.zip`,
+                },
+                'test-file.zip',
+              ),
+            ),
+          ).toJSON(),
+        );
+      });
+    });
+
+    describe('when the uploading media node was duplicated', () => {
+      let completeUpload;
+      let rejectUpload;
+
+      const uploadedImageAttrs = {
+        alt: 'test-file.png',
+        canonicalSrc: 'test-file.png',
+        src: `/${group}/${project}/-/wikis/test-file.png`,
+        uploading: false,
+      };
+
+      beforeEach(async () => {
+        renderMarkdown.mockReturnValue(
+          new Promise((resolve, reject) => {
+            completeUpload = resolve;
+            rejectUpload = reject;
+          }),
+        );
+        mock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: '![test-file](test-file.png)' } });
+
+        tiptapEditor.commands.uploadAttachment({ file: imageFile });
+        await waitForPromises();
+
+        // copies share the node instance (as on a drag that copies); select the first copy
+        const placeholder = tiptapEditor.state.doc.nodeAt(1);
+        tiptapEditor.view.dispatch(tiptapEditor.state.tr.insert(2, placeholder));
+        tiptapEditor.commands.setNodeSelection(1);
+      });
+
+      describe('when the upload succeeds', () => {
+        beforeEach(async () => {
+          completeUpload({ body: PROJECT_WIKI_ATTACHMENT_IMAGE_HTML });
+          await waitForPromises();
+        });
+
+        it('completes every copy', () => {
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(
+            doc(p(image(uploadedImageAttrs), image(uploadedImageAttrs))).toJSON(),
+          );
+        });
+
+        it('keeps the selection on the selected copy', () => {
+          expect(tiptapEditor.state.selection.toJSON()).toEqual({ type: 'node', anchor: 1 });
+        });
+      });
+
+      describe('when the upload fails', () => {
+        beforeEach(async () => {
+          rejectUpload(new Error('upload failed'));
+          await waitForPromises();
+        });
+
+        it('removes every copy', () => {
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(doc(p()).toJSON());
+        });
       });
     });
   });

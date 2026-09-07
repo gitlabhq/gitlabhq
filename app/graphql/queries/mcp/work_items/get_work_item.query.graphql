@@ -5,6 +5,10 @@ query getWorkItem(
   $includeRelatedMergeRequests: Boolean = false
   $relatedMergeRequestsFirst: Int
   $relatedMergeRequestsAfter: String
+  $notesFirst: Int
+  $notesAfter: String
+  $notesLast: Int
+  $notesBefore: String
 ) {
   workItem(id: $id) {
     id
@@ -77,9 +81,11 @@ query getWorkItem(
         }
       }
       ... on WorkItemWidgetNotes @include(if: $includeNotes) {
-        notes(first: 100) {
+        notes(first: $notesFirst, after: $notesAfter, last: $notesLast, before: $notesBefore) {
           pageInfo {
             hasNextPage
+            hasPreviousPage
+            startCursor
             endCursor
           }
           count

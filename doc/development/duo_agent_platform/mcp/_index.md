@@ -198,7 +198,12 @@ still passes validation for an optional `enum` parameter.
 - Independent collections that can be queried on their own get their own `list_` tool (for example
   `list_merge_requests`, `list_pipelines`).
 - Facet-scoped pagination lives on the `get_` reader and applies only to the relevant `include`
-  value. Document this in the parameter description.
+  value. Document this in the parameter description. Name the parameters `<facet>_first` and
+  `<facet>_after`, and add `<facet>_last`/`<facet>_before` when reading from the end matters
+  (for example the newest notes). Build these parameters with
+  `Mcp::Tools::Concerns::CursorPagination.input_schema_params`, which enforces the shared bounds.
+  Return the connection's `pageInfo` alongside the nodes. See the `notes` facet of
+  `get_merge_request` (forward-only) and of `get_work_item` (bidirectional) for worked examples.
 - Add a `detail` enum (`none`/`stats`/`full_patch`) on diff-bearing reads where the diff dominates
   the payload (for example the `diff` facet of `get_commit` and the `diffs` facet of
   `get_merge_request`). Do not retrofit `detail` where a better-suited knob already exists: file

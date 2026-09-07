@@ -965,15 +965,19 @@ merge requests related to it. Widgets the work item type does not support are om
 | `group_id`                      | string  | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
 | `project_id`                    | string  | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
 | `work_item_iid`                 | integer | No       | Internal ID of the work item. Required if `url` is missing. |
-| `include`                       | array   | No       | Associated data to return. One of `notes` or `related_merge_requests`, one facet per call. |
+| `include`                       | array   | No       | Associated data to return. One of `notes` or `related_merge_requests`, one facet per call. For the newest notes, use `notes_last` without `notes_first` or `notes_after`. |
+| `notes_first`                   | integer | No       | Number of notes to return after the cursor (forward pagination). Default 100, maximum 100. |
+| `notes_after`                   | string  | No       | Cursor for forward pagination of notes. Use `pageInfo.endCursor` from a previous response. |
+| `notes_last`                    | integer | No       | Number of notes to return before the cursor (backward pagination). Default 100, maximum 100. |
+| `notes_before`                  | string  | No       | Cursor for backward pagination of notes. Use `pageInfo.startCursor` from a previous response. |
 | `related_merge_requests_first`  | integer | No       | Number of related merge requests to return. Default 20, maximum 100. |
 | `related_merge_requests_after`  | string  | No       | Cursor for forward pagination of related merge requests. |
 | `mr_page_size`                  | integer | No       | Deprecated: use `related_merge_requests_first` instead. |
 | `mr_pagination_cursor`          | string  | No       | Deprecated: use `related_merge_requests_after` instead. |
 
-The `notes` facet returns the first 100 notes. Use `get_workitem_notes` for full note
-pagination. The `related_merge_requests` facet is empty for group-level work items such
-as epics.
+The `notes` facet returns up to 100 notes per call and paginates in both directions with
+the `notes_*` parameters. The `related_merge_requests` facet is empty for group-level work
+items such as epics.
 
 Example:
 

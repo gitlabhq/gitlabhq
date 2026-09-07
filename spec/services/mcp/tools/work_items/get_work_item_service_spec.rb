@@ -63,9 +63,35 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemService, feature_category: :mcp
               },
               maxItems: 1,
               description: 'Associated data to return with the work item, one facet per call. ' \
-                'notes returns the first 100 notes; use get_workitem_notes for full note ' \
-                'pagination. related_merge_requests paginates with the parameters below and is ' \
-                'empty for group-level work items such as epics.'
+                'notes returns up to 100 notes per call and paginates with the notes_* ' \
+                'parameters; for the newest notes, use notes_last without notes_first or ' \
+                'notes_after. related_merge_requests paginates with the ' \
+                'related_merge_requests_* parameters and is empty for group-level work items ' \
+                'such as epics.'
+            },
+            notes_first: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 100,
+              description: 'Number of notes to return after the cursor (forward pagination). ' \
+                'Default 100, max 100. Applies only when notes is in include.'
+            },
+            notes_after: {
+              type: 'string',
+              description: 'Cursor for forward pagination of notes. Use pageInfo.endCursor ' \
+                'from a previous response. Applies only when notes is in include.'
+            },
+            notes_last: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 100,
+              description: 'Number of notes to return before the cursor (backward pagination). ' \
+                'Default 100, max 100. Applies only when notes is in include.'
+            },
+            notes_before: {
+              type: 'string',
+              description: 'Cursor for backward pagination of notes. Use pageInfo.startCursor ' \
+                'from a previous response. Applies only when notes is in include.'
             },
             related_merge_requests_first: {
               type: 'integer',
@@ -106,6 +132,70 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemService, feature_category: :mcp
 
         expect(result[:isError]).to be(false)
         expect(result[:structuredContent]['title']).to eq('An issue')
+      end
+    end
+
+    context 'when paginating notes' do
+      let_it_be(:old_note) { create(:note, noteable: work_item, project: project, note: 'first note') }
+      let_it_be(:new_note) { create(:note, noteable: work_item, project: project, note: 'second note') }
+
+      let(:base_arguments) do
+        { project_id: project.id.to_s, work_item_iid: work_item.iid, include: %w[notes] }
+      end
+
+      def notes_widget(result)
+        result[:structuredContent]['widgets'].find { |w| w['notes'] }['notes']
+      end
+
+      it 'pages forward with notes_first and notes_after', :aggregate_failures do
+        first_page = service.execute(request: request, params: { arguments: base_arguments.merge(notes_first: 1) })
+
+        widget = notes_widget(first_page)
+        expect(widget['nodes'].map { |n| n['body'] }).to eq(['first note'])
+        expect(widget['pageInfo']['hasNextPage']).to be(true)
+
+        second_page = service.execute(
+          request: request,
+          params: { arguments: base_arguments.merge(notes_first: 1, notes_after: widget['pageInfo']['endCursor']) }
+        )
+
+        expect(notes_widget(second_page)['nodes'].map { |n| n['body'] }).to eq(['second note'])
+      end
+
+      it 'pages backward with notes_last and notes_before', :aggregate_failures do
+        last_page = service.execute(request: request, params: { arguments: base_arguments.merge(notes_last: 1) })
+
+        widget = notes_widget(last_page)
+        expect(widget['nodes'].map { |n| n['body'] }).to eq(['second note'])
+        expect(widget['pageInfo']['hasPreviousPage']).to be(true)
+
+        previous_page = service.execute(
+          request: request,
+          params: { arguments: base_arguments.merge(notes_last: 1, notes_before: widget['pageInfo']['startCursor']) }
+        )
+
+        expect(notes_widget(previous_page)['nodes'].map { |n| n['body'] }).to eq(['first note'])
+      end
+
+      it 'ignores stray pagination params when notes is not included', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: { project_id: project.id.to_s, work_item_iid: work_item.iid,
+                                 notes_first: 1, notes_last: 1 } }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]['title']).to eq('An issue')
+      end
+
+      it 'rejects mixing both pagination directions', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: base_arguments.merge(notes_first: 1, notes_last: 1) }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include('not both directions')
       end
     end
 

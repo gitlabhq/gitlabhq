@@ -39,10 +39,19 @@ module Mcp
                 },
                 maxItems: 1,
                 description: 'Associated data to return with the work item, one facet per call. ' \
-                  'notes returns the first 100 notes; use get_workitem_notes for full note ' \
-                  'pagination. related_merge_requests paginates with the parameters below and is ' \
-                  'empty for group-level work items such as epics.'
+                  'notes returns up to 100 notes per call and paginates with the notes_* ' \
+                  'parameters; for the newest notes, use notes_last without notes_first or ' \
+                  'notes_after. related_merge_requests paginates with the ' \
+                  'related_merge_requests_* parameters and is empty for group-level work items ' \
+                  'such as epics.'
               },
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
+                items: 'notes',
+                params: %i[first after last before],
+                prefix: 'notes_',
+                applies_to: 'notes is in include',
+                default_page_size: GetWorkItemTool::DEFAULT_NOTES_PAGE_SIZE
+              ),
               **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
                 items: 'related merge requests',
                 prefix: 'related_merge_requests_',

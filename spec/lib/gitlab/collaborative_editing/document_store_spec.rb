@@ -41,63 +41,189 @@ RSpec.describe Gitlab::CollaborativeEditing::DocumentStore, :clean_gitlab_redis_
       expect(ttl).to be > 5
     end
 
-    it 'returns false while below the compaction threshold' do
-      expect(store.append('update')).to be(false)
+    it 'asks for no compaction while below the threshold', :aggregate_failures do
+      result = store.append('update')
+
+      expect(result).not_to be_full
+      expect(result).not_to be_compact
     end
 
-    it 'returns true once the log reaches the compaction threshold', :aggregate_failures do
+    it 'asks for compaction once the log reaches the threshold', :aggregate_failures do
       stub_const("#{described_class}::COMPACTION_THRESHOLD", 2)
 
-      expect(store.append('first')).to be(false)
-      expect(store.append('second')).to be(true)
+      expect(store.append('first')).not_to be_compact
+      expect(store.append('second')).to be_compact
     end
 
-    it 'signals once while the log stays uncompacted', :aggregate_failures do
-      stub_const("#{described_class}::COMPACTION_THRESHOLD", 2)
-
-      store.append('first')
-
-      expect(store.append('second')).to be(true)
-      expect(store.append('third')).to be(false)
-      expect(store.append('fourth')).to be(false)
-    end
-
-    it 'signals again once the log has been compacted', :aggregate_failures do
+    it 'asks one caller only while the log stays uncompacted', :aggregate_failures do
       stub_const("#{described_class}::COMPACTION_THRESHOLD", 2)
 
       store.append('first')
-      expect(store.append('second')).to be(true)
 
-      store.replace('snapshot')
-
-      expect(store.append('third')).to be(true)
+      expect(store.append('second')).to be_compact
+      expect(store.append('third')).not_to be_compact
+      expect(store.append('fourth')).not_to be_compact
     end
 
-    it 'scopes the compaction signal to a single document' do
+    it 'asks again once the log has been compacted' do
+      stub_const("#{described_class}::COMPACTION_THRESHOLD", 2)
+
+      store.append('first')
+      token = store.append('second').compaction_token
+
+      store.replace('snapshot', token)
+
+      expect(store.append('third')).to be_compact
+    end
+
+    it 'scopes the compaction claim to a single document' do
       stub_const("#{described_class}::COMPACTION_THRESHOLD", 1)
 
       store.append('first')
 
-      expect(described_class.new('wiki:Project:1:other').append('first')).to be(true)
+      expect(described_class.new('wiki:Project:1:other').append('first')).to be_compact
+    end
+
+    context 'when the log is at its ceiling' do
+      before do
+        stub_const("#{described_class}::COMPACTION_THRESHOLD", 2)
+        stub_const("#{described_class}::MAX_LOG_LENGTH", 2)
+      end
+
+      it 'reports the document as full' do
+        store.append('first')
+        store.append('second')
+
+        expect(store.append('third')).to be_full
+      end
+
+      it 'does not store the rejected update' do
+        store.append('first')
+        store.append('second')
+
+        store.append('third')
+
+        expect(store.updates).to eq(%w[first second])
+      end
+
+      it 'does not extend the life of a log it is refusing to write to' do
+        store.append('first')
+        store.append('second')
+        Gitlab::Redis::SharedState.with { |redis| redis.expire(updates_key, 60) }
+
+        store.append('third')
+
+        ttl = Gitlab::Redis::SharedState.with { |redis| redis.ttl(updates_key) }
+
+        expect(ttl).to be <= 60
+      end
+
+      it 'accepts updates again once the log has been compacted', :aggregate_failures do
+        store.append('first')
+        token = store.append('second').compaction_token
+
+        store.replace('snapshot', token)
+
+        expect(store.append('third')).not_to be_full
+        expect(store.updates).to eq(%w[snapshot third])
+      end
+
+      context 'and the compactor never delivered a snapshot' do
+        it 'asks a later caller to compact', :aggregate_failures do
+          store.append('first')
+          store.append('second')
+          expire_compaction_claim
+
+          result = store.append('third')
+
+          expect(result).to be_full
+          expect(result).to be_compact
+        end
+
+        it 'recovers the document when that caller compacts', :aggregate_failures do
+          store.append('first')
+          store.append('second')
+          expire_compaction_claim
+
+          token = store.append('third').compaction_token
+          expect(store.replace('snapshot', token)).to be(true)
+
+          expect(store.append('fourth')).not_to be_full
+          expect(store.updates).to eq(%w[snapshot fourth])
+        end
+
+        it 'still asks only one caller at a time', :aggregate_failures do
+          store.append('first')
+          store.append('second')
+          expire_compaction_claim
+
+          expect(store.append('third')).to be_compact
+          expect(store.append('fourth')).not_to be_compact
+        end
+      end
     end
   end
 
   describe '#replace' do
-    it 'swaps the whole log for the snapshot' do
-      store.append('first')
-      store.append('second')
+    let(:token) do
+      stub_const("#{described_class}::COMPACTION_THRESHOLD", 2)
 
-      store.replace('snapshot')
+      store.append('first')
+      store.append('second').compaction_token
+    end
+
+    it 'swaps the claimed log for the snapshot' do
+      store.replace('snapshot', token)
 
       expect(store.updates).to eq(['snapshot'])
     end
 
-    it 'sets an expiry on the replaced log' do
-      store.replace('snapshot')
+    it 'sets an expiry on the compacted log' do
+      store.replace('snapshot', token)
 
       ttl = Gitlab::Redis::SharedState.with { |redis| redis.ttl(updates_key) }
 
       expect(ttl).to be_positive
+    end
+
+    it 'keeps updates appended while the snapshot was being built', :aggregate_failures do
+      claim = token
+      store.append('third')
+
+      expect(store.replace('snapshot', claim)).to be(true)
+      expect(store.updates).to eq(%w[snapshot third])
+    end
+
+    context 'without a valid claim' do
+      it 'refuses a token that does not match the outstanding claim', :aggregate_failures do
+        token
+
+        expect(store.replace('snapshot', 'not-the-token')).to be(false)
+        expect(store.updates).to eq(%w[first second])
+      end
+
+      it 'refuses a blank token', :aggregate_failures do
+        token
+
+        expect(store.replace('snapshot', nil)).to be(false)
+        expect(store.updates).to eq(%w[first second])
+      end
+
+      it 'refuses a token when no compaction was claimed', :aggregate_failures do
+        store.append('only')
+
+        expect(store.replace('snapshot', 'made-up')).to be(false)
+        expect(store.updates).to eq(['only'])
+      end
+
+      it 'refuses to reuse a token that has already compacted', :aggregate_failures do
+        claim = token
+        store.replace('snapshot', claim)
+        store.append('third')
+
+        expect(store.replace('second-snapshot', claim)).to be(false)
+        expect(store.updates).to eq(%w[snapshot third])
+      end
     end
   end
 
@@ -116,5 +242,11 @@ RSpec.describe Gitlab::CollaborativeEditing::DocumentStore, :clean_gitlab_redis_
 
   def updates_key
     "collaborative_editing:{#{document_key}}:updates"
+  end
+
+  def expire_compaction_claim
+    Gitlab::Redis::SharedState.with do |redis|
+      redis.del("collaborative_editing:{#{document_key}}:compaction")
+    end
   end
 end

@@ -12497,6 +12497,9 @@ msgstr ""
 msgid "ArtifactRegistry|Loading artifacts."
 msgstr ""
 
+msgid "ArtifactRegistry|Loading files."
+msgstr ""
+
 msgid "ArtifactRegistry|Loading repositories."
 msgstr ""
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'setup_task'
+require_relative 'check_replication_slots_task'
 
 namespace :gitlab do
   namespace :siphon do
@@ -25,6 +26,33 @@ namespace :gitlab do
         user_prefix: ENV['SIPHON_USER_PREFIX'],
         database: ENV['SIPHON_DATABASE'],
         publication_name: ENV['SIPHON_PUBLICATION_NAME']
+      ).execute
+    end
+
+    # Checks that the Siphon logical replication slots are healthy on every configured database.
+    # Per slot it verifies that a producer is connected (`active`), that PostgreSQL still retains
+    # the WAL the slot needs (`wal_status` is `reserved`), and that `confirmed_flush_lsn` moves
+    # forward. Read only.
+    #
+    # All three are re-read up to 5 times, 5 seconds apart, so a producer that reconnects part way
+    # through still passes and the worst case is 25 seconds per database. Exits non-zero when a
+    # slot is missing, still inactive at the end, or has lost its WAL reservation. A slot that
+    # simply did not move is a warning, not a failure: an idle database produces no WAL.
+    #
+    # Only slots bound to the database being checked are considered, so one living on a replica
+    # will not be found.
+    #
+    #   bundle exec rake gitlab:siphon:check_replication_slots
+    #   SIPHON_SLOT_NAMES=siphon_slot_main_db,siphon_slot_ci_db \
+    #     bundle exec rake gitlab:siphon:check_replication_slots
+    #
+    # SIPHON_SLOT_NAMES  comma separated slot names, default every slot matching `%siphon%`
+    # SIPHON_DATABASE    limit to one database (`main`, `ci`, `sec`), default all
+    desc 'GitLab | Siphon | Check that the replication slots are active and advancing'
+    task check_replication_slots: :gitlab_environment do
+      Tasks::Gitlab::Siphon::CheckReplicationSlotsTask.new(
+        slot_names: ENV['SIPHON_SLOT_NAMES'],
+        database: ENV['SIPHON_DATABASE']
       ).execute
     end
 
