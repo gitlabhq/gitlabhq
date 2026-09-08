@@ -47,6 +47,17 @@ module Gitlab
       end
     end
 
+    # Tries to identify a user based on a username identifier (e.g. "username-alice").
+    # Used with SSH certificates, where the username comes from the CA-signed
+    # certificate instead of a key stored in the database.
+    def identify_using_username(identifier)
+      username = identifier.delete_prefix("username-")
+
+      identify_with_cache(:username, username) do
+        User.find_by_username(username)
+      end
+    end
+
     # Tries to identify a deploy key using a SSH key identifier (e.g. "key-123").
     def identify_using_deploy_key(identifier)
       key_id = identifier.gsub("key-", "")
@@ -66,6 +77,7 @@ module Gitlab
       @identification_cache ||= {
         email: {},
         user: {},
+        username: {},
         ssh_key: {},
         deploy_token: {}
       }
