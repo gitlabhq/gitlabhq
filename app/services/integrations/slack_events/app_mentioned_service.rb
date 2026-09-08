@@ -4,6 +4,7 @@ module Integrations
   module SlackEvents
     class AppMentionedService
       include Gitlab::Utils::StrongMemoize
+      include Gitlab::InternalEventsTracking
 
       DUO_SLACK_DOCS_URL = 'https://docs.gitlab.com/user/project/integrations/gitlab_slack_application/#gitlab-duo'
 
@@ -33,14 +34,19 @@ module Integrations
         gitlab_user = slack_gitlab_user_connection&.user
 
         unless gitlab_user
+          track_blocked_mention(nil, 'user_not_linked')
           ensure_user_linked
           slack_api.add_reaction(channel: channel_id, name: 'lock', timestamp: message_ts)
           return ServiceResponse.success
         end
 
-        return ServiceResponse.success unless gitlab_user.can?(:use_slash_commands)
+        unless gitlab_user.can?(:use_slash_commands)
+          track_blocked_mention(gitlab_user, 'no_permission')
+          return ServiceResponse.success
+        end
 
         unless Feature.enabled?(:slack_duo_agent, gitlab_user)
+          track_blocked_mention(gitlab_user, 'feature_flag_disabled')
           post_no_access_message(
             'You do not have access to this feature yet. ' \
               "For more information, see #{DUO_SLACK_DOCS_URL}"
@@ -49,6 +55,7 @@ module Integrations
         end
 
         unless experiment_features_available?(gitlab_user)
+          track_blocked_mention(gitlab_user, 'experiment_features_disabled')
           post_no_access_message(
             'This feature requires experiment and beta GitLab Duo features to be turned on. ' \
               "For more information, see #{DUO_SLACK_DOCS_URL}"
@@ -57,12 +64,15 @@ module Integrations
         end
 
         unless gitlab_user.allowed_to_use?(:duo_agent_platform)
+          track_blocked_mention(gitlab_user, 'no_duo_seat')
           post_no_access_message(
             'This feature requires GitLab Duo Agent Platform. ' \
               "For more information, see #{DUO_SLACK_DOCS_URL}"
           )
           return ServiceResponse.success
         end
+
+        track_internal_event('receive_slack_duo_mention', user: gitlab_user)
 
         trigger_duo_flow(gitlab_user)
 
@@ -75,6 +85,23 @@ module Integrations
 
       def valid_event?
         slack_workspace_id.present? && slack_user_id.present? && channel_id.present? && thread_ts.present?
+      end
+
+      def track_blocked_mention(gitlab_user, reason)
+        Gitlab::InternalEvents.with_batched_redis_writes do
+          track_internal_event('receive_slack_duo_mention', user: gitlab_user)
+          track_block_event(gitlab_user, reason)
+        end
+      end
+
+      # Standalone block event for paths where receive_slack_duo_mention has
+      # already fired, such as flow trigger failures in EE.
+      def track_block_event(gitlab_user, reason)
+        track_internal_event(
+          'block_slack_duo_mention',
+          user: gitlab_user,
+          additional_properties: { property: reason }
+        )
       end
 
       # Returns the thread_ts to use for ephemeral messages, so they appear

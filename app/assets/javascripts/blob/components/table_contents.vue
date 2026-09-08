@@ -1,6 +1,17 @@
 <script>
 import { GlDisclosureDropdown } from '@gitlab/ui';
 
+// Literal class names so Tailwind emits them; `!` overrides GitLab UI's default gl-px-3 item padding.
+// Index is the heading level relative to the first heading (0..5).
+const HEADING_PADDING_CLASSES = [
+  '!gl-pl-5',
+  '!gl-pl-6',
+  '!gl-pl-7',
+  '!gl-pl-8',
+  '!gl-pl-9',
+  '!gl-pl-10',
+];
+
 function getHeaderNumber(el) {
   return parseInt(el.tagName.match(/\d+/)[0], 10);
 }
@@ -44,7 +55,6 @@ export default {
   },
   methods: {
     generateHeaders() {
-      const BASE_PADDING = 16;
       const headers = [...this.blobViewer.querySelectorAll('h1,h2,h3,h4,h5,h6')];
 
       if (headers.length === 0) {
@@ -56,6 +66,7 @@ export default {
       this.items = headers
         .filter((el) => el.querySelector('a.anchor'))
         .map((el) => {
+          const relativeLevel = Math.max(getHeaderNumber(el) - firstHeader, 0);
           let href;
           const anchor = el.querySelector('a.anchor');
           // Check if this is AsciiDoc (heading has id) or Markdown / other markup (anchor has id)
@@ -71,9 +82,7 @@ export default {
             text: el.textContent.trim(),
             href,
             extraAttrs: {
-              style: {
-                paddingLeft: `${BASE_PADDING + Math.max((getHeaderNumber(el) - firstHeader) * 8, 0)}px`,
-              },
+              class: HEADING_PADDING_CLASSES[relativeLevel],
             },
           };
         });

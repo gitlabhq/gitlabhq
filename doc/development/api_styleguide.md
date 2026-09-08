@@ -78,7 +78,7 @@ that uses it, directly or transitively. For example, adding a single `expose`
 call to `UserBasic` would affect 212 endpoints, and to `CustomAttribute` 238.
 
 To prevent uncontrolled growth of API response payloads, a set of
-**high-impact entities** is protected by the
+high-impact entities is protected by the
 [`API/EntityExposureGrowth`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/api/entity_exposure_growth.rb)
 RuboCop cop. The cop maintains an allowlist of permitted fields per entity in
 [`api_entity_exposure_baseline.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/api/config/api_entity_exposure_baseline.yml).
@@ -130,7 +130,7 @@ module API
 end
 ```
 
-Name the entity after **what it represents** in its domain context (for example,
+Name the entity after what it represents in its domain context (for example,
 `Ci::JobOwner`), not after the fields it contains (for example,
 `UserWithNotificationEmail`). A name like `UserWithNotificationEmail` invites
 reuse across unrelated domains, which re-creates the cascade problem. A
@@ -575,7 +575,7 @@ Some examples of breaking changes are:
 - Adding new redirects (not all clients follow redirects).
 - Changing the content type of any response.
 - Changing the type of fields in the response. In a JSON response, this would be a change of any `Number`, `String`, `Boolean`, `Array`, or `Object` type to another type.
-- Adding a new **required** argument.
+- Adding a new required argument.
 - Changing authentication, authorization, or other header requirements.
   This covers changes to what an endpoint requires, not changes that broaden what it accepts.
   For the latter, see [what is not a breaking change](#what-is-not-a-breaking-change).

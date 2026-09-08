@@ -577,6 +577,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 13. When running manually, the pipeline executes with the triggering user's permissions instead of the schedule owner's permissions.
 14. Security Managers can only run DAST on-demand scan pipelines.
 15. Developers and Maintainers: Only if the job was triggered by the user.
+    <br>Administrators: Any job. If [Admin Mode](../administration/settings/sign_in_restrictions.md#admin-mode) is enabled for the instance, administrators must turn on Admin Mode for their session.
 
 <!-- markdownlint-enable MD029 -->
 

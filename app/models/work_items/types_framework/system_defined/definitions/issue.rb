@@ -15,6 +15,7 @@ module WorkItems
                 crm_contacts
                 current_user_todos
                 custom_fields
+                decision_log
                 description
                 designs
                 development

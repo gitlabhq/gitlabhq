@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_limiting do
   let(:registry) { Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry }
   let(:limiters) { Gitlab::RackAttack::LabkitRateLimit::Limiters }
-  let(:plan_rules) { Gitlab::RackAttack::LabkitRateLimit::PlanRules }
+  let(:plan_rules) { Gitlab::RateLimit::PlanRules }
 
   # The matched rule names the throttle (minus the throttle_ prefix); the
   # middleware reconstructs the throttle name from it for the cohort lookup and the

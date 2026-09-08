@@ -7,7 +7,7 @@ title: Generating chaos in a test GitLab instance
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-As [Werner Vogels](https://twitter.com/Werner), the CTO at Amazon Web Services, famously put it, **Everything fails, all the time**.
+As [Werner Vogels](https://twitter.com/Werner), the CTO at Amazon Web Services, famously put it, _Everything fails, all the time_.
 
 <!-- vale gitlab_base.Spelling = NO -->
 
@@ -25,7 +25,7 @@ Currently, there are four endpoints for simulating the following conditions:
 ## Enabling chaos endpoints
 
 For obvious reasons, these endpoints are not enabled by default on `production`.
-They are enabled by default on **development** environments.
+They are enabled by default on development environments.
 
 > [!warning]
 > It is required that you secure access to the chaos endpoints using a secret token.

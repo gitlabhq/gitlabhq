@@ -82,13 +82,13 @@ A visualization transforms your data into a graphical format like a chart or tab
 - DataTable
 - SingleStats
 
-For a list of all supported visualization types, see `AnalyticsVisualization.type` enum in [`analytics_visualization`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json).
+For a list of all supported visualization types, see `AnalyticsVisualization.type` enum in [`analytics_visualization_legacy`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization_legacy.json).
 You're not limited to these options though - you can create new visualization types as needed.
 
 ### Data source
 
 A data source is a connection to a database, an endpoint or a collection of data which can be used by your dashboard to query, retrieve, filter, and visualize results.
-While there's a core set of supported data sources (see `Data.type` enum in [`analytics_visualizations`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json)), you can add new ones to meet your needs.
+While there's a core set of supported data sources (see `Data.type` enum in [`analytics_visualization_legacy`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization_legacy.json)), you can add new ones to meet your needs.
 
 To support all visualization types, ensure your data source returns data as a single aggregated value and a time series with a value for each point in time.
 
@@ -98,6 +98,10 @@ Note that each panel fetches data from the data source separately and independen
 
 GitLab provides predefined dashboards that are labeled **By GitLab**. Users cannot edit them, but they can clone or use them as the basis for creating similar custom dashboards.
 
+> [!note]
+> These steps cover group and project dashboards, which validate against the `_legacy` schema pair (`analytics_dashboard_legacy.json` and `analytics_visualization_legacy.json`).
+> To explore dashboards, use the non-legacy schema pair (`analytics_dashboard.json` and `analytics_visualization.json`) instead.
+
 To create a built-in analytics dashboard:
 
 1. Create a folder for the new dashboard under `ee/lib/gitlab/analytics`, for example:
@@ -106,7 +110,7 @@ To create a built-in analytics dashboard:
    ee/lib/gitlab/analytics/cool_dashboard
    ```
 
-1. Create a dashboard configuration file (for example `dashboard.yaml`) in the new folder. The configuration must conform to the JSON schema defined in [`ee/app/validators/json_schemas/analytics_dashboard.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_dashboard.json). Example:
+1. Create a dashboard configuration file (for example `dashboard.yaml`) in the new folder. The configuration must conform to the JSON schema defined in [`ee/app/validators/json_schemas/analytics_dashboard_legacy.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_dashboard_legacy.json). Example:
 
    ```yaml
    # cool_dashboard/dashboard.yaml
@@ -139,7 +143,7 @@ To create a built-in analytics dashboard:
            maxSuggestions: 10
    ```
 
-   Refer to the `DashboardFilters` type in the [`ee/app/validators/json_schemas/analytics_dashboard.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_dashboard.json) for a list of supported filters.
+   Refer to the `DashboardFilters` type in the [`ee/app/validators/json_schemas/analytics_dashboard_legacy.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_dashboard_legacy.json) for a list of supported filters.
 1. Optional. Set the appropriate status of the dashboard if it is not production ready:
 
    ```yaml
@@ -158,7 +162,7 @@ To create a built-in analytics dashboard:
    template is copied rather than referenced. Visualization templates copied to dashboards are not updated when the
    visualization template is updated.
 
-   Each file must conform to the JSON schema defined in [`ee/app/validators/json_schemas/analytics_visualization.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json).
+   Each file must conform to the JSON schema defined in [`ee/app/validators/json_schemas/analytics_visualization_legacy.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization_legacy.json).
    Example:
 
    ```yaml
@@ -255,9 +259,9 @@ To create a built-in analytics dashboard:
          height: 4
    ```
 
-1. Register the dashboard by adding it to `builtin_dashboards` in [ee/app/models/analytics/dashboard.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/dashboard.rb).
+1. Register the dashboard by adding it to `builtin_dashboards` in [ee/app/models/analytics/dashboards/dashboard.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/dashboards/dashboard.rb).
    Here you can make your dashboard available at project-level or group-level (or both), restrict access based on feature flags, license, or user role etc.
-1. Optional. Register visualization templates by adding them to `get_path_for_visualization` in [ee/app/models/analytics/visualization.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/visualization.rb).
+1. Optional. Register visualization templates by adding them to `get_path_for_visualization` in [ee/app/models/analytics/dashboards/visualization.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/dashboards/visualization.rb).
 
 For a complete example, refer to the GitLab Duo and SDLC trends [dashboard config](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/ai_impact_dashboard/dashboard.yaml).
 
@@ -267,7 +271,7 @@ To add a new data source:
 
 1. Create a new JavaScript module that exports a `fetch` method. See [analytics_dashboards/data_sources/index.js](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/index.js) for the full documentation of the `fetch` API. You can also take a look at[`cube_analytics.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/cube_analytics.js) as an example
 1. Add your module to the list exports in [`data_sources/index.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/index.js).
-1. Add your data source to the schema's list of `Data` types in [`analytics_visualizations.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json).
+1. Add your data source to the schema's list of `Data` types in [`analytics_visualization_legacy.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization_legacy.json) for group and project dashboards. If the data source should also be available to explore dashboards, add it to [`analytics_visualization.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json) too.
 
 > [!note]
 > Your data source must respect the filters so that all panels shows the same filtered data.
@@ -281,7 +285,7 @@ To add a new visualization render type:
 1. Add relevant storybook stories for the different states of the visualization
    See [`line_chart.stories.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/line_chart.stories.js) as an example.
 1. Add your component to the list of conditional components imports in [`analytics_dashboard_panel.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard_panel.vue).
-1. Add your component to the schema's list of `AnalyticsVisualization` enum type in [`analytics_visualization.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json).
+1. Add your component to the schema's `AnalyticsVisualization` enum type in [`analytics_visualization_legacy.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization_legacy.json) for group and project dashboards. If the render type should also be available to explore dashboards, add it to [`analytics_visualization.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json) too.
 
 #### Migrating existing components to visualizations
 

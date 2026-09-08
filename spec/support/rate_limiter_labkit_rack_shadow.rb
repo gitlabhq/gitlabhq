@@ -13,7 +13,7 @@ RSpec.configure do |config|
       ]
     end
 
-    rack_shadow_flags += Gitlab::RackAttack::LabkitRateLimit::PlanRules.flags
+    rack_shadow_flags += Gitlab::RateLimit::PlanRules.flags
 
     stub_feature_flags(rack_shadow_flags.index_with(false))
   end

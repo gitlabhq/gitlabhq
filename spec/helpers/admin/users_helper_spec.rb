@@ -109,6 +109,31 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
     end
   end
 
+  describe 'invite_organization_user_app_data' do
+    let_it_be(:organization) { create(:organization) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
+
+    subject { Gitlab::Json.parse(helper.invite_organization_user_app_data(organization, has_new_user_button: has_new_user_button)) }
+
+    context 'when the New user button is also shown' do
+      let(:has_new_user_button) { true }
+
+      it do
+        is_expected.to eq({
+          'organization_gid' => organization.to_global_id.to_s,
+          'organization_name' => organization.name,
+          'search_url' => helper.autocomplete_users_path(format: :json),
+          'button_variant' => 'default'
+        })
+      end
+    end
+
+    context 'when the New user button is not shown' do
+      let(:has_new_user_button) { false }
+
+      it { is_expected.to include('button_variant' => 'confirm') }
+    end
+  end
+
   describe 'email_otp_status_text' do
     subject { helper.email_otp_status_text(current_user) }
 

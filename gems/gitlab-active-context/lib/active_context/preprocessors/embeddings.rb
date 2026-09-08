@@ -16,7 +16,7 @@ module ActiveContext
           remove_content: false,
           next_model_only: false,
           error_types: [StandardError],
-          rate_limit_error_types: []
+          infinite_retry_error_types: []
         )
           grouped_processing_result(refs.group_by(&:root_namespace_id)) do |root_namespace_id, namespace_refs|
             generate_and_apply_embeddings_for_root_namespace(
@@ -28,7 +28,7 @@ module ActiveContext
               remove_content: remove_content,
               next_model_only: next_model_only,
               error_types: error_types,
-              rate_limit_error_types: rate_limit_error_types
+              infinite_retry_error_types: infinite_retry_error_types
             )
           end
         end
@@ -41,7 +41,7 @@ module ActiveContext
           remove_content: false,
           next_model_only: false,
           error_types: [StandardError],
-          rate_limit_error_types: []
+          infinite_retry_error_types: []
         )
           generate_and_apply_embeddings_for_root_namespace(
             refs: refs,
@@ -52,7 +52,7 @@ module ActiveContext
             remove_content: remove_content,
             next_model_only: next_model_only,
             error_types: error_types,
-            rate_limit_error_types: rate_limit_error_types
+            infinite_retry_error_types: infinite_retry_error_types
           )
         end
 
@@ -67,12 +67,12 @@ module ActiveContext
           remove_content: false,
           next_model_only: false,
           error_types: [StandardError],
-          rate_limit_error_types: []
+          infinite_retry_error_types: []
         )
           with_batch_handling(
             refs,
             error_types: error_types,
-            rate_limit_error_types: rate_limit_error_types,
+            infinite_retry_error_types: infinite_retry_error_types,
             queue_name: queue_name,
             preprocessor: 'embeddings') do
             docs_to_process = refs.flat_map do |ref|

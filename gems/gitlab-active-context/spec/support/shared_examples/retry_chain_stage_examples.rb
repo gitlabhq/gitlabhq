@@ -33,9 +33,9 @@ RSpec.shared_examples 'a retry chain stage' do |queue_name:, delay:, next_queue:
     end
   end
 
-  describe '.rate_limit_failure_queue' do
-    it 'always routes rate-limited items to the first retry stage' do
-      expect(described_class.rate_limit_failure_queue).to eq(ActiveContext::RetryQueue)
+  describe '.infinite_retry_queue' do
+    it 'always routes infinite-retry items to the first retry stage' do
+      expect(described_class.infinite_retry_queue).to eq(ActiveContext::RetryQueue)
     end
   end
 end

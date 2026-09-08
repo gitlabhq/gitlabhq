@@ -22,12 +22,12 @@ Language Model (LLM) through the [AI Gateway](https://handbook.gitlab.com/handbo
 
 ## Which use cases lend themselves most to contributing to Chat?
 
-We aim to employ the Chat for all use cases and workflows that can benefit from a **conversational** interaction **between** **a user** and **an AI** that is driven by a large language model (LLM). Typically, these are:
+We aim to employ the Chat for all use cases and workflows that can benefit from a conversational interaction between a user and an AI that is driven by a large language model (LLM). Typically, these are:
 
-- **Creation and ideation** tasks as well as **Learning** tasks that are more effectively and more efficiently solved through iteration than through a one-shot interaction.
-- **Tasks** that are typically satisfiable with one-shot interactions but **that might need refinement or could turn into a conversation**.
-- Among the latter are tasks where the **AI may not get it right the first time but** where **users can easily course correct** by telling the AI more precisely what they need. For instance, "Explain this code" is a common question that most of the time would result in a satisfying answer, but sometimes the user may have additional questions.
-- **Tasks that benefit from the history of a conversation**, so neither the user nor the AI need to repeat themselves.
+- Creation and ideation tasks as well as learning tasks that are more effectively and more efficiently solved through iteration than through a one-shot interaction.
+- Tasks that are typically satisfiable with one-shot interactions but that might need refinement or could turn into a conversation.
+- Among the latter are tasks where the AI may not get it right the first time but where users can easily course correct by telling the AI more precisely what they need. For instance, "Explain this code" is a common question that most of the time would result in a satisfying answer, but sometimes the user may have additional questions.
+- Tasks that benefit from the history of a conversation, so neither the user nor the AI need to repeat themselves.
 
 Chat aims to be context aware and ultimately have access to all the resources in GitLab that the user has access to. Initially, this context was limited to the content of individual issues and epics, as well as GitLab documentation. Since then additional contexts have been added, such as code selection and code files. Currently, work is underway contributing vulnerability context and pipeline job context, so that users can ask questions about these contexts.
 

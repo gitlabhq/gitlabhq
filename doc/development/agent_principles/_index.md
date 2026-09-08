@@ -162,7 +162,7 @@ When the sync regenerates a principle, the distiller receives:
 The distillation prompt instructs the distiller to:
 
 - Convert source documentation into imperative rules.
-- Include baseline content **verbatim**, without rephrasing.
+- Include baseline content verbatim, without rephrasing.
 - Drop any item in the current file that no longer traces back to
   either source documentation or a baseline.
 

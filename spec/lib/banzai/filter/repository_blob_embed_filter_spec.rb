@@ -78,6 +78,154 @@ RSpec.describe Banzai::Filter::RepositoryBlobEmbedFilter, :request_store, featur
     end
   end
 
+  describe 'usage tracking', :clean_gitlab_redis_shared_state do
+    let(:event_name) { described_class::EVENT_NAME }
+
+    def digest_for(target, blob_sha, blob_path, from, to)
+      Digest::SHA256.hexdigest([target.id, blob_sha, blob_path, from, to].join(':'))
+    end
+
+    it 'tracks an internal event per rendered embed, keyed by a digest of the permalink' do
+      expect { filter_html(standalone_paragraph(blob_url)) }
+        .to trigger_internal_events(event_name)
+        .with(
+          user: user,
+          project: project,
+          namespace: project.namespace,
+          additional_properties: { label: digest_for(project, sha, path, 3, 6), property: 'web' }
+        )
+        .and increment_usage_metrics(
+          'redis_hll_counters.count_distinct_user_id_from_render_blob_embed_in_markdown_weekly',
+          'redis_hll_counters.count_distinct_user_id_from_render_blob_embed_in_markdown_monthly',
+          'redis_hll_counters.count_distinct_project_id_from_render_blob_embed_in_markdown_weekly',
+          'redis_hll_counters.count_distinct_project_id_from_render_blob_embed_in_markdown_monthly',
+          'redis_hll_counters.count_distinct_label_from_render_blob_embed_in_markdown_weekly',
+          'redis_hll_counters.count_distinct_label_from_render_blob_embed_in_markdown_monthly',
+          'counts.count_total_render_blob_embed_in_markdown_weekly',
+          'counts.count_total_render_blob_embed_in_markdown_monthly'
+        )
+    end
+
+    it 'tracks each embed in a document separately' do
+      expect { filter_html(embed_paragraphs(3)) }
+        .to trigger_internal_events(event_name).with(user: user, project: project).exactly(3).times
+        .and increment_usage_metrics(
+          'counts.count_total_render_blob_embed_in_markdown_weekly',
+          'counts.count_total_render_blob_embed_in_markdown_monthly'
+        ).by(3)
+    end
+
+    it 'does not track a permalink that is not embedded' do
+      expect { filter_html(inline_paragraph(blob_url)) }.not_to trigger_internal_events(event_name)
+    end
+
+    context 'when rendering for email' do
+      let(:for_email) { true }
+
+      it 'reports the email channel' do
+        expect { filter_html(standalone_paragraph(blob_url)) }
+          .to trigger_internal_events(event_name)
+          .with(
+            user: user,
+            project: project,
+            namespace: project.namespace,
+            additional_properties: { label: digest_for(project, sha, path, 3, 6), property: 'email' }
+          )
+      end
+    end
+
+    context 'when the document belongs to a group' do
+      let_it_be(:group) { create(:group) }
+
+      def filter_html(html)
+        filter(html, project: nil, group: group, current_user: current_user, for_email: for_email)
+      end
+
+      it 'attributes the event to the group' do
+        expect { filter_html(standalone_paragraph(blob_url)) }
+          .to trigger_internal_events(event_name)
+          .with(
+            user: user,
+            project: nil,
+            namespace: group,
+            additional_properties: { label: digest_for(project, sha, path, 3, 6), property: 'web' }
+          )
+      end
+    end
+
+    describe 'the outcome counter' do
+      let(:counter) { instance_double(Prometheus::Client::Counter, increment: nil) }
+
+      before do
+        allow(described_class).to receive(:outcome_counter).and_return(counter)
+      end
+
+      it 'counts a rendered embed' do
+        filter_html(standalone_paragraph(blob_url))
+
+        expect(counter).to have_received(:increment).with({ outcome: 'rendered' }, 1)
+      end
+
+      it 'counts an authorized permalink whose blob cannot be rendered' do
+        filter_html(standalone_paragraph(blob_url(blob_path: 'does/not/exist.rb')))
+
+        expect(counter).to have_received(:increment).with({ outcome: 'unrenderable' }, 1)
+      end
+
+      it 'counts a permalink to a project the viewer cannot read' do
+        other_project = create(:project, :repository, :private)
+        url = blob_url(path_project: other_project.full_path, blob_sha: other_project.commit.sha)
+
+        filter_html(standalone_paragraph(url))
+
+        expect(counter).to have_received(:increment).with({ outcome: 'unauthorized' }, 1)
+      end
+
+      it 'counts a permalink to a project that does not exist alongside one that does', :aggregate_failures do
+        filter_html(
+          [standalone_paragraph(blob_url(path_project: 'no/such-project')), standalone_paragraph(blob_url)].join
+        )
+
+        expect(counter).to have_received(:increment).with({ outcome: 'project_not_found' }, 1)
+        expect(counter).to have_received(:increment).with({ outcome: 'rendered' }, 1)
+      end
+
+      it 'increments each outcome once per document, however many permalinks share it' do
+        filter_html(embed_paragraphs(3))
+
+        expect(counter).to have_received(:increment).with({ outcome: 'rendered' }, 3).once
+      end
+
+      it 'counts the permalinks left over once EMBED_LIMIT embeds are collected' do
+        filter_html(embed_paragraphs(described_class::EMBED_LIMIT + 2))
+
+        expect(counter).to have_received(:increment).with({ outcome: 'embed_limit_exceeded' }, 2)
+      end
+
+      context 'when rendering for email' do
+        let(:for_email) { true }
+
+        it 'counts a permalink to a project that excludes diff previews from email' do
+          other_project = create(:project, :repository, :public,
+            project_setting: create(:project_setting, show_diff_preview_in_email: false))
+          url = blob_url(path_project: other_project.full_path, blob_sha: other_project.commit.sha)
+
+          filter_html(standalone_paragraph(url))
+
+          expect(counter).to have_received(:increment).with({ outcome: 'email_preview_disabled' }, 1)
+        end
+      end
+
+      it 'counts every permalink when none resolve to a project' do
+        filter_html(
+          %w[no/such-project no/other-project].map { |p| standalone_paragraph(blob_url(path_project: p)) }.join
+        )
+
+        expect(counter).to have_received(:increment).with({ outcome: 'project_not_found' }, 2)
+      end
+    end
+  end
+
   it 'embeds a permalink with a query string' do
     result = filter_html(standalone_paragraph(blob_url(query: '?blame=1&page=2')))
 

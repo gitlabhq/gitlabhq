@@ -172,6 +172,126 @@ describe('StatPresenter', () => {
     });
   });
 
+  describe('trend', () => {
+    const PREVIOUS_DATA = { nodes: [{ totalCount: 1000, durationQuantile: 3000 }] };
+
+    it('renders the change from the previous period as the meta badge', () => {
+      createComponent({ source: 'CodeSuggestions', comparisonData: PREVIOUS_DATA });
+
+      expect(findSingleStat().props()).toMatchObject({
+        value: '1,234',
+        metaText: '23.4% vs prior',
+        metaIcon: 'arrow-up',
+        metaTooltip: 'Up 23.4% from 1,000 in the previous period',
+        variant: 'success',
+      });
+    });
+
+    it('colours a move against the metric direction as danger', () => {
+      createComponent({
+        fields: [DURATION_QUANTILE],
+        source: 'Pipelines',
+        comparisonData: PREVIOUS_DATA,
+      });
+
+      expect(findSingleStat().props()).toMatchObject({
+        value: '1h 1m 1s',
+        metaText: '22% vs prior',
+        metaIcon: 'arrow-up',
+        metaTooltip: 'Up 22% from 50m in the previous period',
+        variant: 'danger',
+      });
+    });
+
+    it('renders a neutral new badge when the previous period is 0', () => {
+      createComponent({
+        source: 'CodeSuggestions',
+        comparisonData: { nodes: [{ totalCount: 0 }] },
+      });
+
+      expect(findSingleStat().props()).toMatchObject({
+        metaText: 'New',
+        metaIcon: 'arrow-up',
+        metaTooltip: 'Up from 0 in the previous period',
+        variant: 'neutral',
+      });
+    });
+
+    it('renders no badge without previous period data', () => {
+      createComponent({ source: 'CodeSuggestions' });
+
+      expect(findSingleStat().props()).toMatchObject({ metaText: null, metaIcon: null });
+    });
+
+    it('renders no badge when the previous period has no row', () => {
+      createComponent({ source: 'CodeSuggestions', comparisonData: { nodes: [] } });
+
+      expect(findSingleStat().props()).toMatchObject({ metaText: null, metaIcon: null });
+    });
+
+    it('keeps the trend when the block sets only keys outside the badge', () => {
+      createComponent({
+        source: 'CodeSuggestions',
+        comparisonData: PREVIOUS_DATA,
+        displayConfig: { title: 'Suggestions', description: 'Shown in the last 30 days' },
+      });
+
+      expect(findSingleStat().props()).toMatchObject({
+        title: 'Suggestions',
+        description: 'Shown in the last 30 days',
+        metaText: '23.4% vs prior',
+        metaIcon: 'arrow-up',
+        variant: 'success',
+      });
+    });
+
+    // A block's own text under a derived arrow, colour and tooltip would contradict itself.
+    it('leaves the whole badge to a block that sets its own metaText', () => {
+      createComponent({
+        source: 'CodeSuggestions',
+        comparisonData: PREVIOUS_DATA,
+        displayConfig: { metaText: 'Beta' },
+      });
+
+      expect(findSingleStat().props()).toMatchObject({
+        metaText: 'Beta',
+        metaIcon: null,
+        metaTooltip: '',
+        variant: 'neutral',
+      });
+    });
+
+    it.each`
+      key              | value
+      ${'metaIcon'}    | ${'users'}
+      ${'metaTooltip'} | ${'Compared with the previous 30 days'}
+      ${'variant'}     | ${'info'}
+    `('drops the derived trend when the block sets $key', ({ key, value }) => {
+      createComponent({
+        source: 'CodeSuggestions',
+        comparisonData: PREVIOUS_DATA,
+        displayConfig: { [key]: value },
+      });
+
+      expect(findSingleStat().props('metaText')).toBeNull();
+    });
+
+    it('renders no badge when the block sets metaText to an empty string', () => {
+      createComponent({
+        source: 'CodeSuggestions',
+        comparisonData: PREVIOUS_DATA,
+        displayConfig: { metaText: '' },
+      });
+
+      expect(findSingleStat().props()).toMatchObject({
+        metaText: '',
+        metaIcon: null,
+        metaTooltip: '',
+        variant: 'neutral',
+      });
+    });
+  });
+
   describe('displayConfig', () => {
     it('leaves every option at its GlSingleStat default when the block sets none', () => {
       createComponent();

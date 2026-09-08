@@ -44,8 +44,13 @@ You can use the [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-t
 - In GitLab 17.3 the `location` field always links to the commit where the dependency was first detected. Feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` removed.
 - View dependency paths option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519965) in GitLab 17.11 [with a feature flag](../../../administration/feature_flags/_index.md) named `dependency_paths`. Disabled by default.
 - View dependency paths option [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197224) in GitLab 18.2. Feature flag `dependency_paths` removed.
+- Malware badge [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587758) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `dependency_malware_detection`. Disabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of the malware badge is controlled by a feature flag.
+> For more information, see the history.
 
 Prerequisites:
 
@@ -66,8 +71,9 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 | Component                   | The dependency's name and version. |
 | Packager                    | The package manager used to install the dependency. Displays as "unknown" for unsupported package managers. |
 | Location                    | For system dependencies, this field lists the image that was scanned. For application dependencies, this field shows a link to the packager-specific lock file in your project that declared the dependency. It also shows the direct [dependents](#dependency-paths), if any. If there are transitive dependencies, selecting **View dependency paths** shows the full path of all dependents. Transitive dependencies are indirect dependents that have a direct dependent as an ancestor. |
-| License (for projects only) | Links to the dependency's software licenses. A warning badge that includes the number of vulnerabilities detected in the dependency. |
+| License (for projects only) | Links to the dependency's software licenses. |
 | Projects (for groups only)  | Links to the project with the dependency. If multiple projects have the same dependency, the total number of these projects is shown. To go to a project with this dependency, select the **Projects** number, then search for and select its name. |
+| Risk                        | A warning badge that includes the number of vulnerabilities detected in the dependency. If the dependency has been identified as malware, a red **Malware** badge is also shown. Malware findings are based on [GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-malware-advisories). |
 
 ## Filter dependency list
 
@@ -78,8 +84,14 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 - Dependency version filtering introduced for [projects](https://gitlab.com/gitlab-org/gitlab/-/issues/520771) and [groups](https://gitlab.com/gitlab-org/gitlab/-/issues/523061) in GitLab 18.0 with [flags](../../../administration/feature_flags/_index.md) named `version_filtering_on_project_level_dependency_list` and `version_filtering_on_group_level_dependency_list`. Disabled by default.
 - Dependency version filtering [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192291) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 18.1.
 - Feature flags `version_filtering_on_project_level_dependency_list` and `version_filtering_on_group_level_dependency_list` removed.
+- Tracked ref filter for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240011) in GitLab 19.2 [with flags](../../../administration/feature_flags/_index.md) named `vulnerabilities_across_contexts` and `project_dependency_tracked_ref`. `project_dependency_tracked_ref` is disabled by default.
+- Malware filter [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587758) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with flags](../../../administration/feature_flags/_index.md) named `dependency_malware_detection` and `malicious_packages_dependency_list_filtering`. Disabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of the malware and tracked ref filters is controlled by feature flags.
+> For more information, see the history.
 
 You can filter the dependency list to focus on only a subset of dependencies. The dependency
 list is available for groups and projects.
@@ -90,13 +102,34 @@ For groups, you can filter by:
 - License
 - Components
 - Component version
+- Malware
 
 For projects, you can filter by:
 
 - Components
 - Component version
+- Malware
+- Tracked ref
 
 To filter by component version, you must filter by exactly one component first.
+
+You can filter dependencies based on whether they have been identified as malware. Select
+**Malware**, then select **Yes** or **No**. By default, the dependency list shows dependencies
+with any malware status.
+
+Malware detection runs only on a project's default branch, so the filter covers only dependencies
+on that branch. On project dependency lists, where you can also
+[filter by tracked ref](../vulnerability_report/_index.md#tracked-ref-filter), the filter
+is named **Malware (default branch only)**. On group dependency lists, which have no tracked ref
+filter, the filter is named **Malware**.
+
+You can select a malware status only when the tracked ref filter is set to the default branch on
+its own. For any other tracked ref selection, the filter shows the message
+`To filter by malware, remove the filter for other tracked refs` instead of the **Yes** and
+**No** options. If you already applied a malware filter and then change the tracked ref filter,
+GitLab removes the malware filter.
+
+This filter requires [advanced vulnerability management](../vulnerability_report/_index.md#advanced-vulnerability-management).
 
 Prerequisites:
 
@@ -173,11 +206,24 @@ If the [dependency scanning](../dependency_scanning/_index.md) CI/CD job is conf
 
 ## Export
 
+{{< history >}}
+
+- `malware` field in the JSON export for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587758) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `dependency_malware_detection`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of the `malware` field in the JSON export is controlled by a feature flag.
+> For more information, see the history.
+
 You can export the dependency list in:
 
 - JSON
 - CSV
 - CycloneDX format (for projects only)
+
+The JSON export for projects also includes a `malware` field that indicates whether the dependency
+has been identified as malware.
 
 Prerequisites:
 

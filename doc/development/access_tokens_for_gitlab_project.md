@@ -10,10 +10,10 @@ This guide helps you choose the right access token type for your needs within th
 
 ## Security principles
 
-1. **Minimize manual rotation** - Prefer tokens that rotate automatically or through API
-1. **Smallest scope possible** - Use the most restrictive scope that meets your needs
-1. **Expiration visibility** - Ensure proper notifications before token expiration
-1. **Easy rotation** - Choose tokens that can be rotated without significant downtime
+- Minimize manual rotation - Prefer tokens that rotate automatically or through API
+- Smallest scope possible - Use the most restrictive scope that meets your needs
+- Expiration visibility - Ensure proper notifications before token expiration
+- Easy rotation - Choose tokens that can be rotated without significant downtime
 
 ## Decision tree
 
@@ -75,7 +75,7 @@ See the [CI/CD job tokens documentation](../ci/jobs/ci_job_token.md) for complet
 **Use when:**
 
 - Running inside GitLab CI/CD pipelines
-- Need **limited API access only**: Git repos, container/package registries, releases, deployments, environments, specific job/pipeline endpoints ([full list](../ci/jobs/ci_job_token.md#job-token-access))
+- Need limited API access only: Git repos, container/package registries, releases, deployments, environments, specific job/pipeline endpoints ([full list](../ci/jobs/ci_job_token.md#job-token-access))
 - Access is limited to pipeline duration
 - Target resources are in same project or properly allowlisted
 
@@ -114,7 +114,7 @@ See the [group access tokens documentation](../user/group/settings/group_access_
 
 **Use when:**
 
-- Automation spans multiple projects in **small, well-defined groups**
+- Automation spans multiple projects in small, well-defined groups
 - Group has limited number of projects with similar security requirements
 - Need access to group-level features
 - Can manage through GitLab API for rotation
@@ -172,10 +172,10 @@ See the [personal access tokens documentation](../user/profile/personal_access_t
 
 ## Security best practices
 
-- **Use the smallest scope possible** - Never use `api` scope unless absolutely necessary
-- **Set expiration dates** - Keep token lifetimes under 365 days
-- **Store tokens securely** - Use GitLab CI/CD variables (masked), vault systems, or credential managers
-- **Monitor expiry dates** - Set up notifications and rotation procedures
+- Use the smallest scope possible - Never use `api` scope unless absolutely necessary
+- Set expiration dates - Keep token lifetimes under 365 days
+- Store tokens securely - Use GitLab CI/CD variables (masked), vault systems, or credential managers
+- Monitor expiry dates - Set up notifications and rotation procedures
 
 ## Related documentation
 

@@ -48,7 +48,7 @@ balancing and available HA mechanisms configured as follows:
 
 For zero-downtime upgrades, you must:
 
-- Upgrade **one minor release at a time**. So from `16.1` to `16.2`, not to `16.3`. If you skip releases, database
+- Upgrade one minor release at a time. So from `16.1` to `16.2`, not to `16.3`. If you skip releases, database
   modifications might be run in the wrong sequence
   [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
 - Use post-deployment migrations.

@@ -118,7 +118,7 @@ Where `:file` is the file path. (This path reflects relative `.rb`, `.yml`, or `
 ## Linux package Setup
 
 > [!warning]
-> While it is possible to use the Data Seeder with an Linux package installation, **use caution** if you do this when the instance is being used in a production setting.
+> While it is possible to use the Data Seeder with an Linux package installation, use caution if you do this when the instance is being used in a production setting.
 
 Requires Git v2.26.0 or later.
 

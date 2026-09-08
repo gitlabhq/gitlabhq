@@ -235731,6 +235731,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "WorkItemWidgetDecisionLog",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "WorkItemWidgetDescription",
               "ofType": null
             },
@@ -236466,6 +236471,35 @@
           "kind": "OBJECT",
           "name": "WorkItemWidgetCustomFields",
           "description": "Represents a custom fields widget",
+          "fields": [
+            {
+              "name": "type",
+              "description": "Widget type.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WorkItemWidgetType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "WorkItemWidget",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "WorkItemWidgetDecisionLog",
+          "description": "Represents a decision log widget",
           "fields": [
             {
               "name": "type",
@@ -238999,6 +239033,12 @@
             {
               "name": "CUSTOM_FIELDS",
               "description": "Custom Fields widget.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DECISION_LOG",
+              "description": "Decision Log widget.",
               "isDeprecated": false,
               "deprecationReason": null
             },

@@ -62,15 +62,20 @@ Support for fixing these limitations is tracked in the following issues:
 
 Prerequisites:
 
-- You must have the Developer, Maintainer, or Owner role for the project.
-- You must have started the job.
-  No role grants access to the terminal of a job started by another user.
+- You must have the Developer, Maintainer, or Owner role for the project, or administrator
+  access to the instance.
+- You must have started the job, unless you are an administrator.
+- If [Admin Mode](../../administration/settings/sign_in_restrictions.md#admin-mode) is turned on for
+  the instance, administrators must turn on Admin Mode for their session.
+- If the job ran on a protected branch, you must be allowed to push or merge to that branch.
+  If the job ran on a protected tag, you must be allowed to create that tag.
   For more information, see [CI/CD permissions](../../user/permissions.md#project-cicd).
 
 Sometimes, when a job is running, things don't go as you expect. It
 would be helpful if one can have a shell to aid debugging. When a job runs,
 the right panel displays a `debug` button ({{< icon name="external-link" >}}) that opens the terminal
-for the current job.
+for the current job. Only the person who started a job can debug it. Administrators can also debug
+jobs they did not start.
 
 ![Example of job running with terminal available](img/interactive_web_terminal_running_job_v17_3.png)
 

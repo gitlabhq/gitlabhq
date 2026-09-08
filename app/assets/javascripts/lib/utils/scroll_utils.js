@@ -126,11 +126,15 @@ export const scrollToElement = (element, options = {}) => {
 export const preventScrollToFragment = (event) => {
   const link = event.target.closest('a[href]');
   if (!link?.hash) return;
-  if (link.href.split('#')[0] !== window.location.href.split('#')[0]) return;
-  event.preventDefault();
+  const linkUrl = new URL(link.href);
+  // Query params are ignored on purpose: diff line links carry linked file params so that the
+  // copied URL opens that file, but the fragment still points at a row on the current page.
+  if (linkUrl.origin !== window.location.origin || linkUrl.pathname !== window.location.pathname)
+    return;
   const hash = link.hash.slice(1);
   const target = document.getElementById(hash);
   if (!target) return;
+  event.preventDefault();
   target.classList.add(NO_SCROLL_TO_HASH_CLASS);
   const { scrollLeft, scrollTop } = getScrollingElement(link);
   // replaceHistory won't highlight the element

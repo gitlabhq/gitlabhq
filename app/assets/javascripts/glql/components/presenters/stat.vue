@@ -6,11 +6,13 @@ import iconSpriteInfo from '@gitlab/svgs/dist/icons.json';
 import { __, sprintf } from '~/locale';
 import { dimensionsOf, metricsOf } from '../../utils/chart_data';
 import { valueFormatterFor } from '../../utils/value_format';
-import { statPresentationFor } from './utils/stat';
+import { TREND_KEYS, statPresentationFor, trendPresentationFor } from './utils/stat';
 
 // Rendered when an aggregated query has no row for the single metric. Aggregations
 // over an empty set can omit the node entirely, so distinguish "no data" from a 0.
 const NO_VALUE = '—';
+
+const metricValueIn = (data, metric) => (metric ? data?.nodes?.[0]?.[metric.key] : undefined);
 
 const BADGE_VARIANTS = Object.values(badgeVariantOptions);
 const KNOWN_ICONS = new Set(iconSpriteInfo.icons);
@@ -26,6 +28,11 @@ export default {
       required: false,
       type: Object,
       default: () => ({ nodes: [] }),
+    },
+    comparisonData: {
+      required: false,
+      type: Object,
+      default: null,
     },
     fields: {
       required: false,
@@ -57,7 +64,20 @@ export default {
       return metricsOf(this.fields);
     },
     statConfig() {
-      return statPresentationFor(this.source, this.metric, this.displayConfig);
+      return statPresentationFor(this.source, this.metric, {
+        ...this.trend,
+        ...this.displayConfig,
+      });
+    },
+    // A block that sets any part of the badge owns all of it: its own text under a derived
+    // arrow, colour and tooltip would make the badge contradict itself.
+    trend() {
+      if (TREND_KEYS.some((key) => this.displayConfig?.[key] != null)) return null;
+
+      return trendPresentationFor(this.source, this.metric, {
+        value: this.value,
+        previousValue: this.previousValue,
+      });
     },
     displayConfigError() {
       const { variant, metaIcon, titleIcon } = this.statConfig;
@@ -97,11 +117,16 @@ export default {
     metric() {
       return this.metrics[0];
     },
+    value() {
+      return metricValueIn(this.data, this.metric);
+    },
+    previousValue() {
+      return metricValueIn(this.comparisonData, this.metric);
+    },
     displayValue() {
       if (!this.metric) return '';
-      const value = this.data?.nodes?.[0]?.[this.metric.key];
-      if (value == null) return NO_VALUE;
-      return valueFormatterFor(this.metric)(value);
+      if (this.value == null) return NO_VALUE;
+      return valueFormatterFor(this.metric)(this.value);
     },
   },
   watch: {

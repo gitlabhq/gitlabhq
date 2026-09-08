@@ -32,6 +32,14 @@ export default {
       type: Object,
       default: () => ({ nodes: [] }),
     },
+    /**
+     * Result of a second query to compare `data` against.
+     */
+    comparisonData: {
+      required: false,
+      type: Object,
+      default: null,
+    },
     fields: {
       required: false,
       type: Array,
@@ -105,6 +113,7 @@ export default {
   <stat-presenter
     v-else-if="displayType === $options.DISPLAY_TYPES.STAT"
     :data="data"
+    :comparison-data="comparisonData"
     :fields="fields"
     :loading="loading"
     :display-config="displayConfig"

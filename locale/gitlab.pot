@@ -702,6 +702,9 @@ msgid_plural "%{bold_start}%{count}%{bold_end} opened merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{change} vs prior"
+msgstr ""
+
 msgid "%{chartTitle} no data series"
 msgstr ""
 
@@ -30097,6 +30100,9 @@ msgstr ""
 msgid "Dormant users"
 msgstr ""
 
+msgid "Down %{change} from %{value} in the previous period"
+msgstr ""
+
 msgid "Download"
 msgstr ""
 
@@ -52790,6 +52796,9 @@ msgstr ""
 msgid "No change"
 msgstr ""
 
+msgid "No change from %{value} in the previous period"
+msgstr ""
+
 msgid "No change to this %{noun}'s draft status."
 msgstr ""
 
@@ -57420,8 +57429,10 @@ msgstr ""
 msgid "Organization|User type"
 msgstr ""
 
-msgid "Organization|Users were successfully added to the organization."
-msgstr ""
+msgid "Organization|User was successfully added to the organization."
+msgid_plural "Organization|Users were successfully added to the organization."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Organization|Visibility levels that are more restrictive than the groups in this Organization have been disabled."
 msgstr ""
@@ -76361,6 +76372,9 @@ msgstr ""
 msgid "SecurityReports|Low risk"
 msgstr ""
 
+msgid "SecurityReports|MTTR over time"
+msgstr ""
+
 msgid "SecurityReports|Malware"
 msgstr ""
 
@@ -76374,6 +76388,9 @@ msgid "SecurityReports|Manage and track vulnerabilities identified in your proje
 msgstr ""
 
 msgid "SecurityReports|Manage and track vulnerabilities identified in your selected projects. Vulnerabilities for selected projects are shown here when security testing is configured and a pipeline has been run on the default branch."
+msgstr ""
+
+msgid "SecurityReports|Mean time to remediation (MTTR) for vulnerabilities, shown as a weekly trend from Monday to Sunday. A vulnerability is remediated when it is resolved or no longer detected. The most recent week might be incomplete."
 msgstr ""
 
 msgid "SecurityReports|Median: %{days} day"
@@ -86490,6 +86507,12 @@ msgstr ""
 msgid "Unverified signature"
 msgstr ""
 
+msgid "Up %{change} from %{value} in the previous period"
+msgstr ""
+
+msgid "Up from %{value} in the previous period"
+msgstr ""
+
 msgid "Up to date"
 msgstr ""
 
@@ -92489,6 +92512,9 @@ msgstr ""
 msgid "WorkItemDecisionLog|Are you sure you want to cancel editing this decision?"
 msgstr ""
 
+msgid "WorkItemDecisionLog|Are you sure you want to remove this decision?"
+msgstr ""
+
 msgid "WorkItemDecisionLog|Background on the decision and any other options considered."
 msgstr ""
 
@@ -92558,6 +92584,9 @@ msgstr ""
 msgid "WorkItemDecisionLog|Recorded manually on this work item"
 msgstr ""
 
+msgid "WorkItemDecisionLog|Remove decision"
+msgstr ""
+
 msgid "WorkItemDecisionLog|Select a user"
 msgstr ""
 
@@ -92571,6 +92600,12 @@ msgid "WorkItemDecisionLog|Slack, Google Docs, GitLab, or anywhere the discussio
 msgstr ""
 
 msgid "WorkItemDecisionLog|Something went wrong when fetching the decision log. Please try again."
+msgstr ""
+
+msgid "WorkItemDecisionLog|Something went wrong when removing the decision. Please try again."
+msgstr ""
+
+msgid "WorkItemDecisionLog|Something went wrong when saving the decision. Please try again."
 msgstr ""
 
 msgid "WorkItemDecisionLog|Source link"

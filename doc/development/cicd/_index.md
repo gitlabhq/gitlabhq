@@ -255,7 +255,7 @@ There are two ways of marking builds as "stuck" and drop them.
 1. If there is no available Runner to pick up a build, it is dropped after 1 hour by [`Ci::StuckBuilds::DropPendingService`](https://gitlab.com/gitlab-org/gitlab/-/blob/v16.0.4-ee/app/services/ci/stuck_builds/drop_pending_service.rb).
    - If a job is not picked up by a runner in 24 hours it is automatically removed from
      the processing queue after that time.
-   - If a pending job is **stuck**, when there is no
+   - If a pending job is stuck, when there is no
      runner available that can process it, it is removed from the queue after 1 hour.
    - In both cases the job's status is changed to `failed` with an appropriate failure reason.
 

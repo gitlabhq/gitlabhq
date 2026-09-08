@@ -1,9 +1,10 @@
 <script>
-import { GlModal, GlFormGroup, GlFormSelect, GlAlert, GlSprintf, GlToastMixin } from '@gitlab/ui';
+import { GlModal, GlFormGroup, GlFormSelect, GlAlert, GlSprintf } from '@gitlab/ui';
 import { isUserEmail } from '~/lib/utils/forms';
-import { s__, sprintf } from '~/locale';
+import { n__, s__, sprintf } from '~/locale';
 import { memberName } from '~/invite_members/utils/member_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { refreshCurrentPageWithAlerts } from '~/lib/utils/url_utility';
 import organizationUserCreateMutation from '../graphql/mutations/organization_user_create.mutation.graphql';
 import { ORGANIZATION_USER_TYPE_DEFAULT, ORGANIZATION_USER_TYPE_OPTIONS } from '../constants';
 import OrganizationUsersTokenSelect from './organization_users_token_select.vue';
@@ -18,8 +19,11 @@ export default {
     GlSprintf,
     OrganizationUsersTokenSelect,
   },
-  mixins: [GlToastMixin],
   inject: ['organizationGid', 'organizationName'],
+  model: {
+    prop: 'visible',
+    event: 'change',
+  },
   props: {
     visible: {
       type: Boolean,
@@ -184,15 +188,24 @@ export default {
         return;
       }
 
-      this.$toast.show(s__('Organization|Users were successfully added to the organization.'));
-      this.reset();
-      this.$emit('change', false);
+      refreshCurrentPageWithAlerts([
+        {
+          id: 'organization-users-successfully-added',
+          message: n__(
+            'Organization|User was successfully added to the organization.',
+            'Organization|Users were successfully added to the organization.',
+            succeededTokens.length,
+          ),
+          variant: 'info',
+        },
+      ]);
     },
     onCancel() {
       this.reset();
       this.$emit('change', false);
     },
     onChange(value) {
+      if (!value) this.reset();
       this.$emit('change', value);
     },
     dismissAlert() {

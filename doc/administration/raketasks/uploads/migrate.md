@@ -175,12 +175,12 @@ If you need to disable [object storage](../../object_storage.md) for any reason,
 migrate your data out of object storage and back into your local storage.
 
 > [!warning]
-> **Extended downtime is required** so no new files are created in object storage during
+> Extended downtime is required so no new files are created in object storage during
 > the migration. A configuration setting to allow migrating
 > from object storage to local files with only a brief moment of downtime for configuration changes
 > is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30979).
 >
-> **Additionally,** in Cloud Native GitLab, it is generally unsafe to migrate data to local storage because it is ephemeral and not shared with all GitLab Rails application containers.
+> Additionally, in Cloud Native GitLab, it is generally unsafe to migrate data to local storage because it is ephemeral and not shared with all GitLab Rails application containers.
 
 ### All-in-one Rake task
 

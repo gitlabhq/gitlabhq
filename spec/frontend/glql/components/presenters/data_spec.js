@@ -115,6 +115,20 @@ describe('DataPresenter', () => {
       expect(wrapper.findComponent(StatPresenter).props('source')).toBe('CodeSuggestions');
     });
 
+    it('forwards the comparison data to the stat presenter', () => {
+      const comparisonData = { nodes: [{ totalCount: 4 }] };
+      const wrapper = shallowMountExtended(DataPresenter, {
+        propsData: {
+          data: { nodes: [{ totalCount: 5 }] },
+          comparisonData,
+          displayType: 'stat',
+          fields: MOCK_STAT_FIELDS,
+        },
+      });
+
+      expect(wrapper.findComponent(StatPresenter).props('comparisonData')).toBe(comparisonData);
+    });
+
     it('declares displayConfig, so it does not leak into the DOM as an attribute', () => {
       const wrapper = mountExtended(DataPresenter, {
         propsData: {

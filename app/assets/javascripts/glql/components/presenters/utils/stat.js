@@ -1,10 +1,8 @@
 import { badgeVariantOptions } from '@gitlab/ui/src/utils/constants';
-import { __ } from '~/locale';
+import { __, formatNumber, sprintf } from '~/locale';
 import { baseFieldKeyOf } from '../../../utils/chart_data';
-import { unitFor } from '../../../utils/value_format';
+import { unitFor, valueFormatterFor } from '../../../utils/value_format';
 
-// Nothing renders this yet: it exists so trend colouring (glql#102) reads one mapping
-// instead of defining a competing one.
 const POSITIVE_DIRECTION_BY_UNIT = {
   count: 'up',
   rate: 'up',
@@ -77,13 +75,80 @@ const asString = (value) => (value == null ? null : String(value));
 
 /**
  * Returns 'up' or 'down' for the direction of change that is good for this metric of this
- * data source, or null when the metric has no registered unit. Read by trend rendering
- * (glql#102).
+ * data source, or null when the metric has no registered unit.
  */
 export const positiveDirectionFor = (source, metric) =>
   presentationFor(source, metric).positiveDirection ??
   POSITIVE_DIRECTION_BY_UNIT[unitFor(baseFieldKeyOf(metric))] ??
   null;
+
+const TREND_ICON_BY_DIRECTION = { up: 'arrow-up', down: 'arrow-down' };
+
+/** The GlSingleStat props a trend fills in. */
+export const TREND_KEYS = ['metaText', 'metaIcon', 'metaTooltip', 'variant'];
+
+// Rounded half away from zero to the one decimal the badge shows, so the arrow and colour
+// agree with the text: 10,004 against 10,000 reads `0%` with no arrow rather than an up arrow.
+const roundChange = (change) => (Math.sign(change) * Math.round(Math.abs(change) * 1000)) / 1000;
+
+const formatChange = (change) =>
+  formatNumber(Math.abs(change), { style: 'percent', maximumFractionDigits: 1 });
+
+// The arrow icon and badge colour convey direction visually but are not announced, so the
+// tooltip spells it out for screen reader users.
+const trendTooltipFor = (direction, change, value) => {
+  if (direction === 'up') {
+    return sprintf(__('Up %{change} from %{value} in the previous period'), { change, value });
+  }
+  if (direction === 'down') {
+    return sprintf(__('Down %{change} from %{value} in the previous period'), { change, value });
+  }
+  return sprintf(__('No change from %{value} in the previous period'), { value });
+};
+
+/**
+ * Resolves the GlSingleStat meta badge describing how `value` moved from `previousValue`, as
+ * display config the block's own `displayConfig` can override. Null when either value is
+ * missing, since there is nothing to compare.
+ */
+export const trendPresentationFor = (source, metric, { value, previousValue }) => {
+  if (value == null || previousValue == null) return null;
+
+  const formattedPrevious = valueFormatterFor(metric)(previousValue);
+
+  // A move from 0 has no percentage, so the badge says the metric is new. It stays neutral
+  // because the size of the move is unknown, but the arrow still shows its direction.
+  if (previousValue === 0 && value !== 0) {
+    return {
+      metaText: __('New'),
+      metaIcon: TREND_ICON_BY_DIRECTION.up,
+      metaTooltip: sprintf(__('Up from %{value} in the previous period'), {
+        value: formattedPrevious,
+      }),
+      variant: badgeVariantOptions.neutral,
+    };
+  }
+
+  const change = roundChange(value === previousValue ? 0 : (value - previousValue) / previousValue);
+  let direction = null;
+  if (change > 0) direction = 'up';
+  else if (change < 0) direction = 'down';
+
+  const positiveDirection = positiveDirectionFor(source, metric);
+  let variant = badgeVariantOptions.neutral;
+  if (direction && positiveDirection) {
+    variant =
+      direction === positiveDirection ? badgeVariantOptions.success : badgeVariantOptions.danger;
+  }
+
+  const formattedChange = formatChange(change);
+  return {
+    metaText: sprintf(__('%{change} vs prior'), { change: formattedChange }),
+    metaIcon: TREND_ICON_BY_DIRECTION[direction] ?? null,
+    metaTooltip: trendTooltipFor(direction, formattedChange, formattedPrevious),
+    variant,
+  };
+};
 
 /**
  * Resolves the GlSingleStat props for a stat display. `displayConfig` always wins over a

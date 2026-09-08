@@ -69,9 +69,9 @@ If you're having issues with your GitLab Duo license setup:
 
 ## Best Practices
 
-- **Test in both environments**: For thorough testing, consider alternating between multi-tenant and single-tenant setups to ensure your feature works well in both environments.
-- **Consult domain documentation**: Review specific feature documentation to understand if there are any environment-specific behaviors you need to consider.
-- **Consider end-user context**: Remember that features should work well for both GitLab.com users and self-managed/dedicated customers.
+- Test in both environments. For thorough testing, consider alternating between multi-tenant and single-tenant setups to ensure your feature works well in both environments.
+- Consult domain documentation. Review specific feature documentation to understand if there are any environment-specific behaviors you need to consider.
+- Consider end-user context. Remember that features should work well for both GitLab.com users and self-managed/dedicated customers.
 
 ## Additional resources
 

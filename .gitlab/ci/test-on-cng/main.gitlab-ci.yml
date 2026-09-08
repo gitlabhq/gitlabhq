@@ -190,7 +190,7 @@ cng-registry:
 cng-secrets-manager:
   extends:
     - .cng-test
-    - .without-coverband
+    - .with-coverband-arg
   variables:
     QA_SCENARIO: Test::Integration::SecretsManager
     QA_RSPEC_TAGS: --tag secrets_manager
@@ -292,4 +292,6 @@ process-e2e-coverage:
     - job: cng-instance
       optional: true
     - job: cng-registry
+      optional: true
+    - job: cng-secrets-manager
       optional: true

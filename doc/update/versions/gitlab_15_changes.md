@@ -30,7 +30,7 @@ For additional information for Helm chart installations, see
 
 ## 15.11.0
 
-- **Upgrade to patch release 15.11.3 or later**. This avoids [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) when upgrading from 15.5.0 and earlier.
+- Upgrade to patch release 15.11.3 or later. This avoids [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) when upgrading from 15.5.0 and earlier.
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
   **Affected releases**:
@@ -198,7 +198,7 @@ if you can't upgrade to 15.11.12 and later.
 - A bug with the [`BackfillTraversalIdsToBlobsAndWikiBlobs` advanced search migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107730) might cause the Elasticsearch cluster to become saturated.
   - When this issue occurs, searches might become slow and updates to the Elasticsearch cluster might take a long time to complete.
   - To resolve this issue, upgrade to GitLab 15.10 to [reduce the migration batch size](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113719).
-- **Upgrade to patch release 15.9.3 or later**. This provides fixes for two database migration bugs:
+- Upgrade to patch release 15.9.3 or later. This provides fixes for two database migration bugs:
   - Patch releases 15.9.0, 15.9.1, 15.9.2 have a bug that can cause data loss
     from the user profile fields `linkedin`, `twitter`, `skype`, `website_url`,
     `location`, and `organization`. For more information, see

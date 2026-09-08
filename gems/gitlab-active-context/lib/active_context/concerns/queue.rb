@@ -41,10 +41,10 @@ module ActiveContext
           RetryQueue
         end
 
-        # Rate limits are temporary, so rate-limited refs never advance
-        # toward the DeadQueue. They retry at the first stage until they
-        # succeed. The stage delay keeps the retries 5 minutes apart.
-        def rate_limit_failure_queue
+        # Infinite-retry errors, like rate limits, are temporary. These refs
+        # never advance toward the DeadQueue. They retry at the first stage
+        # every 5 minutes until they succeed.
+        def infinite_retry_queue
           RetryQueue
         end
 

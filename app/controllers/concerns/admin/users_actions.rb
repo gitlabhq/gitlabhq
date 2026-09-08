@@ -15,6 +15,8 @@ module Admin
 
       before_action :user, only: [:show]
       before_action :set_shared_view_parameters, only: [:show]
+
+      helper_method :show_invite_organization_user_button?
     end
 
     def index
@@ -63,6 +65,12 @@ module Admin
     # organization admin area. Overridden there.
     def impersonation_available?
       true
+    end
+
+    # The invite organization user button is only offered in the organization
+    # admin area. Overridden there.
+    def show_invite_organization_user_button?
+      false
     end
 
     def user

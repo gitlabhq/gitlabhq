@@ -221,7 +221,7 @@
     "postcss-custom-properties": "^13.3.12",
     "prettier": "^3.9.5",
     "process": "^0.11.10",
-    "prosemirror-markdown": "1.13.6",
+    "prosemirror-markdown": "1.13.7",
     "raphael": "^2.2.7",
     "raw-loader": "^4.0.2",
     "react": "^18.3.1",

@@ -383,7 +383,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
       Class.new(Test::References::MockWithDatabaseRecord) do
         add_preprocessor :embeddings do |refs|
           apply_embeddings(
-            refs: refs, content_method: :embedding_content, rate_limit_error_types: [error_class]
+            refs: refs, content_method: :embedding_content, infinite_retry_error_types: [error_class]
           )
         end
 
@@ -400,12 +400,12 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
       )
     end
 
-    it 'marks refs as rate_limited instead of failed, so they retry without dead-lettering' do
+    it 'marks refs as infinite_retry instead of failed, so they retry without dead-lettering' do
       result = ActiveContext::Reference.preprocess_references([test_reference])
 
       expect(result[:successful]).to be_empty
       expect(result[:failed]).to be_empty
-      expect(result[:rate_limited]).to eq([test_reference])
+      expect(result[:infinite_retry]).to eq([test_reference])
     end
   end
 

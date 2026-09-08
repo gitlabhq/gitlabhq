@@ -389,14 +389,14 @@ the context.
 ### Nullable fields
 
 GraphQL allows fields to be "nullable" or "non-nullable". The former means
-that `null` may be returned instead of a value of the specified type. **In
-general**, you should prefer using nullable fields to non-nullable ones, for
+that `null` may be returned instead of a value of the specified type. In
+general, you should prefer using nullable fields to non-nullable ones, for
 the following reasons:
 
 - It's common for data to switch from required to not-required, and back again
-- Even when there is no prospect of a field becoming optional, it may not be **available** at query time
+- Even when there is no prospect of a field becoming optional, it may not be available at query time
   - For instance, the `content` of a blob may need to be looked up from Gitaly
-  - If the `content` is nullable, we can return a **partial** response, instead of failing the whole query
+  - If the `content` is nullable, we can return a partial response, instead of failing the whole query
 - Changing from a non-nullable field to a nullable field is difficult with a versionless schema
 
 Non-nullable fields should only be used when a field is required, very unlikely
@@ -2534,7 +2534,7 @@ end
   Authenticating a user with the `current_user:` argument for `post_graphql`
   generates more queries on the first request than on subsequent requests on that
   same user. If you are testing for N+1 queries using
-  [QueryRecorder](database/query_recorder.md), use a **different** user for each request.
+  [QueryRecorder](database/query_recorder.md), use a different user for each request.
 
   The below example shows how a test for avoiding N+1 queries should look:
 

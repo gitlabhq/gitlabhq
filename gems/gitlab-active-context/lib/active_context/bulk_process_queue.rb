@@ -22,21 +22,21 @@ module ActiveContext
       specs_buffer = []
       scores = {}
       failures = []
-      rate_limited = []
+      infinite_retry = []
 
       collect_specs_from_queue(redis, specs_buffer, scores)
 
       return [0, 0] if specs_buffer.blank?
 
       refs = deserialize_all(specs_buffer)
-      failures, rate_limited = process_refs(refs, failures, rate_limited)
+      failures, infinite_retry = process_refs(refs, failures, infinite_retry)
 
-      track_failures!(failures, rate_limited)
-      cleanup_processed_refs(redis, scores, start_time, failures.count, rate_limited.count)
+      track_failures!(failures, infinite_retry)
+      cleanup_processed_refs(redis, scores, start_time, failures.count, infinite_retry.count)
 
-      # Rate-limited refs count as failures. Without them, `should_re_enqueue?`
+      # Infinite-retry refs count as failures. Without them, `should_re_enqueue?`
       # re-enqueues the worker every second for refs that are not due yet.
-      [specs_buffer.count, failures.count + rate_limited.count]
+      [specs_buffer.count, failures.count + infinite_retry.count]
     end
 
     private
@@ -56,13 +56,13 @@ module ActiveContext
       end
     end
 
-    def process_refs(refs, failures, rate_limited)
+    def process_refs(refs, failures, infinite_retry)
       preprocess_result = Reference.preprocess_references(refs, **queue.preprocess_options)
 
       preprocess_result[:successful].each { |ref| bulk_processor.process(ref) }
 
       failures += preprocess_result[:failed]
-      rate_limited += preprocess_result[:rate_limited]
+      infinite_retry += preprocess_result[:infinite_retry]
 
       flushing_duration_s = Benchmark.realtime do
         failures += bulk_processor.flush
@@ -70,13 +70,13 @@ module ActiveContext
 
       log_indexer_flushed(flushing_duration_s)
 
-      [failures, rate_limited]
+      [failures, infinite_retry]
     end
 
-    def cleanup_processed_refs(redis, scores, start_time, failures_count, rate_limited_count)
+    def cleanup_processed_refs(redis, scores, start_time, failures_count, infinite_retry_count)
       scores.each do |set_key, (first_score, last_score, count)|
         redis.zremrangebyscore(set_key, first_score, last_score)
-        log_indexing_end(set_key, count, first_score, last_score, failures_count, rate_limited_count, start_time)
+        log_indexing_end(set_key, count, first_score, last_score, failures_count, infinite_retry_count, start_time)
       end
     end
 
@@ -100,7 +100,7 @@ module ActiveContext
       )
     end
 
-    def log_indexing_end(set_key, count, first_score, last_score, failures_count, rate_limited_count, start_time)
+    def log_indexing_end(set_key, count, first_score, last_score, failures_count, infinite_retry_count, start_time)
       duration_s = current_time - start_time
 
       duration_ms = duration_s.to_f * 1_000.to_f
@@ -114,7 +114,7 @@ module ActiveContext
         'meta.indexing.first_score' => first_score,
         'meta.indexing.last_score' => last_score,
         'meta.indexing.failures_count' => failures_count,
-        'meta.indexing.rate_limited_count' => rate_limited_count,
+        'meta.indexing.infinite_retry_count' => infinite_retry_count,
         'meta.indexing.bulk_execution_duration_s' => duration_s,
         'meta.indexing.bulk_execution_duration_per_ref_ms' => duration_per_ref_ms
       )
@@ -136,9 +136,9 @@ module ActiveContext
       Process.clock_gettime(Process::CLOCK_MONOTONIC)
     end
 
-    def track_failures!(failures, rate_limited)
+    def track_failures!(failures, infinite_retry)
       ActiveContext.track!(failures, queue: queue.failure_queue) unless failures.empty?
-      ActiveContext.track!(rate_limited, queue: queue.rate_limit_failure_queue) unless rate_limited.empty?
+      ActiveContext.track!(infinite_retry, queue: queue.infinite_retry_queue) unless infinite_retry.empty?
     end
   end
 end

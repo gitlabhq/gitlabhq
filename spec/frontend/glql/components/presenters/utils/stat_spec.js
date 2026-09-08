@@ -1,4 +1,8 @@
-import { positiveDirectionFor, statPresentationFor } from '~/glql/components/presenters/utils/stat';
+import {
+  positiveDirectionFor,
+  statPresentationFor,
+  trendPresentationFor,
+} from '~/glql/components/presenters/utils/stat';
 
 const metric = (key, extra = {}) => ({ key, name: key, label: key, type: 'metric', ...extra });
 
@@ -147,6 +151,58 @@ describe('statPresentationFor', () => {
           .variant,
       ).toBe('nonsense');
     });
+  });
+});
+
+describe('trendPresentationFor', () => {
+  it.each`
+    source               | fieldKey              | value    | previousValue | expected
+    ${'CodeSuggestions'} | ${'totalCount'}       | ${120}   | ${100}        | ${{ metaText: '20% vs prior', metaIcon: 'arrow-up', metaTooltip: 'Up 20% from 100 in the previous period', variant: 'success' }}
+    ${'CodeSuggestions'} | ${'totalCount'}       | ${80}    | ${100}        | ${{ metaText: '20% vs prior', metaIcon: 'arrow-down', metaTooltip: 'Down 20% from 100 in the previous period', variant: 'danger' }}
+    ${'CodeSuggestions'} | ${'totalCount'}       | ${100}   | ${100}        | ${{ metaText: '0% vs prior', metaIcon: null, metaTooltip: 'No change from 100 in the previous period', variant: 'neutral' }}
+    ${'CodeSuggestions'} | ${'totalCount'}       | ${0}     | ${100}        | ${{ metaText: '100% vs prior', metaIcon: 'arrow-down', metaTooltip: 'Down 100% from 100 in the previous period', variant: 'danger' }}
+    ${'CodeSuggestions'} | ${'totalCount'}       | ${0}     | ${0}          | ${{ metaText: '0% vs prior', metaIcon: null, metaTooltip: 'No change from 0 in the previous period', variant: 'neutral' }}
+    ${'CodeSuggestions'} | ${'totalCount'}       | ${120}   | ${0}          | ${{ metaText: 'New', metaIcon: 'arrow-up', metaTooltip: 'Up from 0 in the previous period', variant: 'neutral' }}
+    ${'CodeSuggestions'} | ${'acceptanceRate'}   | ${0.6}   | ${0}          | ${{ metaText: 'New', metaIcon: 'arrow-up', metaTooltip: 'Up from 0% in the previous period', variant: 'neutral' }}
+    ${'CodeSuggestions'} | ${'rejectedCount'}    | ${120}   | ${0}          | ${{ metaText: 'New', metaIcon: 'arrow-up', metaTooltip: 'Up from 0 in the previous period', variant: 'neutral' }}
+    ${'CodeSuggestions'} | ${'totalCount'}       | ${1234}  | ${1000}       | ${{ metaText: '23.4% vs prior', metaIcon: 'arrow-up', metaTooltip: 'Up 23.4% from 1,000 in the previous period', variant: 'success' }}
+    ${'CodeSuggestions'} | ${'totalCount'}       | ${10004} | ${10000}      | ${{ metaText: '0% vs prior', metaIcon: null, metaTooltip: 'No change from 10,000 in the previous period', variant: 'neutral' }}
+    ${'CodeSuggestions'} | ${'totalCount'}       | ${9996}  | ${10000}      | ${{ metaText: '0% vs prior', metaIcon: null, metaTooltip: 'No change from 10,000 in the previous period', variant: 'neutral' }}
+    ${'CodeSuggestions'} | ${'totalCount'}       | ${10006} | ${10000}      | ${{ metaText: '0.1% vs prior', metaIcon: 'arrow-up', metaTooltip: 'Up 0.1% from 10,000 in the previous period', variant: 'success' }}
+    ${'CodeSuggestions'} | ${'acceptanceRate'}   | ${0.6}   | ${0.5}        | ${{ metaText: '20% vs prior', metaIcon: 'arrow-up', metaTooltip: 'Up 20% from 50% in the previous period', variant: 'success' }}
+    ${'CodeSuggestions'} | ${'rejectedCount'}    | ${120}   | ${100}        | ${{ metaText: '20% vs prior', metaIcon: 'arrow-up', metaTooltip: 'Up 20% from 100 in the previous period', variant: 'danger' }}
+    ${'Pipelines'}       | ${'durationQuantile'} | ${90}    | ${120}        | ${{ metaText: '25% vs prior', metaIcon: 'arrow-down', metaTooltip: 'Down 25% from 2m in the previous period', variant: 'success' }}
+    ${'CodeSuggestions'} | ${'somethingCustom'}  | ${120}   | ${100}        | ${{ metaText: '20% vs prior', metaIcon: 'arrow-up', metaTooltip: 'Up 20% from 100 in the previous period', variant: 'neutral' }}
+  `(
+    'describes $fieldKey moving from $previousValue to $value in $source',
+    ({ source, fieldKey, value, previousValue, expected }) => {
+      expect(trendPresentationFor(source, metric(fieldKey), { value, previousValue })).toEqual(
+        expected,
+      );
+    },
+  );
+
+  it('colours through the base field key of an aliased metric', () => {
+    const aliased = metric('p50', { field: 'durationQuantile', parameters: { quantile: 0.5 } });
+
+    expect(
+      trendPresentationFor('Pipelines', aliased, { value: 90, previousValue: 120 }),
+    ).toMatchObject({
+      metaTooltip: 'Down 25% from 2m in the previous period',
+      variant: 'success',
+    });
+  });
+
+  it.each`
+    value        | previousValue
+    ${120}       | ${null}
+    ${120}       | ${undefined}
+    ${null}      | ${100}
+    ${undefined} | ${100}
+  `('has no trend for $value against $previousValue', ({ value, previousValue }) => {
+    expect(
+      trendPresentationFor('CodeSuggestions', metric('totalCount'), { value, previousValue }),
+    ).toBeNull();
   });
 });
 

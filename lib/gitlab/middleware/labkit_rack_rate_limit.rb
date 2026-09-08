@@ -185,7 +185,7 @@ module Gitlab
       end
 
       def plan_rules
-        ::Gitlab::RackAttack::LabkitRateLimit::PlanRules
+        ::Gitlab::RateLimit::PlanRules
       end
     end
   end

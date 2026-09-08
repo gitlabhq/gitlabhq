@@ -12,6 +12,7 @@ module Banzai
     class RepositoryBlobEmbedFilter < HTML::Pipeline::Filter
       prepend Concerns::PipelineTimingCheck
       include Concerns::ContextAccessors
+      include Gitlab::InternalEventsTracking
 
       CSS = 'a[href]'
       XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
@@ -23,35 +24,27 @@ module Banzai
 
       CANDIDATE_LIMIT = 100
 
+      EVENT_NAME = 'render_blob_embed_in_markdown'
+
+      def self.outcome_counter
+        @outcome_counter ||= Gitlab::Metrics.counter(
+          :gitlab_blob_embeds_total,
+          'Standalone blob permalinks processed by the Markdown embed filter, by outcome'
+        )
+      end
+
       def call
         return doc unless Feature.enabled?(:blob_permalink_embed, project, type: :gitlab_com_derisk)
         return doc if for_service_desk_email?
         return doc if for_email? && !container_shows_diff_previews_in_email?
 
+        @outcomes = Hash.new(0)
+
         embeds = collect_embeds
-        embeds.select! { |embed| embed[:target].show_diff_preview_in_email? } if for_email?
-        return doc if embeds.empty?
+        embeds = reject_email_excluded(embeds) if for_email?
+        render_embeds(embeds) unless embeds.empty?
 
-        embeds.map! do |embed|
-          embed.merge(blob: ::Blob.lazy(embed[:target].repository, embed[:sha], embed[:path]))
-        end
-
-        embeds.each do |embed|
-          html = Gitlab::BlobEmbed::Renderer.new(
-            project: embed[:target],
-            sha: embed[:sha],
-            path: embed[:path],
-            from: embed[:from],
-            to: embed[:to],
-            blob: embed[:blob],
-            cross_project: cross_project?(embed[:target]),
-            for_email: for_email?
-          ).render
-          next unless html
-
-          embed[:node].parent.replace(html)
-          result[:blob_embeds_rendered] = true
-        end
+        record_outcomes
 
         doc
       end
@@ -78,21 +71,68 @@ module Banzai
         return [] if candidates.empty?
 
         targets = targets_by_full_path(candidates.pluck(:full_path))
-        return [] if targets.empty?
+
+        if targets.empty?
+          @outcomes[:project_not_found] += candidates.size
+          return []
+        end
 
         Preloaders::UserMaxAccessLevelInProjectsPreloader.new(targets.values, current_user).execute
         embeds = []
 
-        candidates.each do |candidate|
-          break if embeds.size >= EMBED_LIMIT
+        candidates.each_with_index do |candidate, index|
+          if embeds.size >= EMBED_LIMIT
+            @outcomes[:embed_limit_exceeded] += candidates.size - index
+            break
+          end
 
           target = targets[candidate[:full_path].downcase]
-          next unless can_embed?(target)
 
-          embeds << candidate.merge(target: target)
+          if target.nil?
+            @outcomes[:project_not_found] += 1
+          elsif !can_embed?(target)
+            @outcomes[:unauthorized] += 1
+          else
+            embeds << candidate.merge(target: target)
+          end
         end
 
         embeds
+      end
+
+      def render_embeds(embeds)
+        embeds.map! do |embed|
+          embed.merge(blob: ::Blob.lazy(embed[:target].repository, embed[:sha], embed[:path]))
+        end
+
+        Gitlab::InternalEvents.with_batched_redis_writes do
+          embeds.each { |embed| render_embed(embed) }
+        end
+      end
+
+      def render_embed(embed)
+        html = Gitlab::BlobEmbed::Renderer.new(
+          project: embed[:target],
+          sha: embed[:sha],
+          path: embed[:path],
+          from: embed[:from],
+          to: embed[:to],
+          blob: embed[:blob],
+          cross_project: cross_project?(embed[:target]),
+          for_email: for_email?
+        ).render
+        @outcomes[html ? :rendered : :unrenderable] += 1
+        return unless html
+
+        embed[:node].parent.replace(html)
+        result[:blob_embeds_rendered] = true
+        track_render(embed)
+      end
+
+      def reject_email_excluded(embeds)
+        kept, dropped = embeds.partition { |embed| embed[:target].show_diff_preview_in_email? }
+        @outcomes[:email_preview_disabled] += dropped.size if dropped.any?
+        kept
       end
 
       # Returns up to CANDIDATE_LIMIT parsed permalinks, before any project
@@ -163,7 +203,6 @@ module Banzai
       end
 
       def can_embed?(target)
-        return false unless target
         return false if cross_project?(target) && !can_read_cross_project?
 
         Ability.allowed?(current_user, :read_code, target)
@@ -175,6 +214,31 @@ module Banzai
 
       def can_read_cross_project?
         Ability.allowed?(current_user, :read_cross_project)
+      end
+
+      def record_outcomes
+        @outcomes.each do |outcome, count|
+          self.class.outcome_counter.increment({ outcome: outcome.to_s }, count)
+        end
+      end
+
+      def track_render(embed)
+        track_internal_event(
+          EVENT_NAME,
+          user: current_user,
+          project: project,
+          namespace: group,
+          additional_properties: {
+            label: embed_digest(embed),
+            property: for_email? ? 'email' : 'web'
+          }
+        )
+      end
+
+      def embed_digest(embed)
+        Digest::SHA256.hexdigest(
+          [embed[:target].id, embed[:sha], embed[:path], embed[:from], embed[:to]].join(':')
+        )
       end
     end
   end

@@ -67,7 +67,7 @@ Follow instructions for [upgrading the Consul nodes](../administration/consul.md
 
 1. Check the Consul nodes are all healthy.
 1. Upgrade all Consul servers by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
-1. Restart all GitLab services **one node at a time**:
+1. Restart all GitLab services one node at a time:
 
    ```shell
    sudo gitlab-ctl restart

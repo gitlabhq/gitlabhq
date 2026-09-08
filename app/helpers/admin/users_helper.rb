@@ -33,6 +33,19 @@ module Admin
       'No'
     end
 
+    def invite_organization_user_app_data(organization, has_new_user_button:)
+      # Demote to the default variant when the "New user" confirm button shares
+      # the page header, to keep a single primary action per Pajamas guidance.
+      button_variant = has_new_user_button ? 'default' : 'confirm'
+
+      {
+        organization_gid: organization.to_global_id,
+        organization_name: organization.name,
+        search_url: autocomplete_users_path(format: :json),
+        button_variant: button_variant
+      }.to_json
+    end
+
     private
 
     def admin_user_organization_field_shared(initial_organization)

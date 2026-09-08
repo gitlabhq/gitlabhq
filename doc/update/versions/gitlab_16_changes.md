@@ -1301,7 +1301,7 @@ Migrate by moving your existing configuration under the new structure. `git_data
    Configure `verification_interval: 0`, and apply with `gitlab-ctl reconfigure`.
 1. To apply the new structure to your configuration:
    1. Replace the `...` with the value from the old key.
-   1. When configuring `storage` to replace `git_data_dirs`, **append `/repositories` to value of `path`** as documented in the following script. If
+   1. When configuring `storage` to replace `git_data_dirs`, append `/repositories` to value of `path` as documented in the following script. If
       you don't complete this step, your Git repositories are inaccessible until the configuration is fixed. This
       misconfiguration can cause metadata deletion.
    1. Skip any keys you haven't configured a value for previously.
@@ -1680,7 +1680,7 @@ Remove the `ci:` section from `config/database.yml`.
 
 GitLab 16.0 is a required stop for large GitLab instances with a lot of records in the `users` table.
 
-The threshold is **30,000 users**, which includes:
+The threshold is 30,000 users, which includes:
 
 - Developers and other users in any state, including active, blocked, and pending approval.
 - Bot accounts for project and group access tokens.

@@ -596,6 +596,7 @@ export default [
       ],
       // Mirrors `vue/no-unused-properties` for `inject` declarations
       'local-rules/vue-no-unused-injects': 'error',
+      'local-rules/vue-no-router-view-listeners-or-slots': 'error',
       'vue/no-undef-components': [
         'error',
         {

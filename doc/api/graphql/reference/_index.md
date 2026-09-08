@@ -32834,6 +32834,52 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="workitemconnection-count-limit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
+#### `WorkItemDecisionConnection`
+
+The connection type for [`WorkItemDecision`](#workitemdecision).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdecisionconnection-edges"></a>`edges` | [`[WorkItemDecisionEdge]`](#workitemdecisionedge) | A list of edges. |
+| <a id="workitemdecisionconnection-nodes"></a>`nodes` | [`[WorkItemDecision]`](#workitemdecision) | A list of nodes. |
+| <a id="workitemdecisionconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemDecisionEdge`
+
+The edge type for [`WorkItemDecision`](#workitemdecision).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdecisionedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemdecisionedge-node"></a>`node` | [`WorkItemDecision`](#workitemdecision) | The item at the end of the edge. |
+
+#### `WorkItemDecisionOptionConnection`
+
+The connection type for [`WorkItemDecisionOption`](#workitemdecisionoption).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdecisionoptionconnection-edges"></a>`edges` | [`[WorkItemDecisionOptionEdge]`](#workitemdecisionoptionedge) | A list of edges. |
+| <a id="workitemdecisionoptionconnection-nodes"></a>`nodes` | [`[WorkItemDecisionOption]`](#workitemdecisionoption) | A list of nodes. |
+| <a id="workitemdecisionoptionconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemDecisionOptionEdge`
+
+The edge type for [`WorkItemDecisionOption`](#workitemdecisionoption).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdecisionoptionedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemdecisionoptionedge-node"></a>`node` | [`WorkItemDecisionOption`](#workitemdecisionoption) | The item at the end of the edge. |
+
 #### `WorkItemDescriptionTemplateConnection`
 
 The connection type for [`WorkItemDescriptionTemplate`](#workitemdescriptiontemplate).
@@ -65129,6 +65175,41 @@ Fields:
 | <a id="workitemdatefieldvalue-customfield"></a>`customField` | [`CustomField!`](#customfield) | Custom field associated with the custom field value. |
 | <a id="workitemdatefieldvalue-value"></a>`value` | [`Date`](#date) | Date value of the custom field. |
 
+### `WorkItemDecision`
+
+Represents a decision recorded in the decision log of a work item.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdecision-author"></a>`author` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who raised the decision. |
+| <a id="workitemdecision-description"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Context of the decision. |
+| <a id="workitemdecision-discussionid"></a>`discussionId` {{< icon name="warning-solid" >}} | [`DiscussionID`](#discussionid) | Introduced in GitLab 19.4. Status: Experiment. Global ID of the originating discussion thread. |
+| <a id="workitemdecision-id"></a>`id` {{< icon name="warning-solid" >}} | [`WorkItemsDecisionID!`](#workitemsdecisionid) | Introduced in GitLab 19.4. Status: Experiment. Global ID of the decision. |
+| <a id="workitemdecision-noteurl"></a>`noteUrl` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. URL of the comment that resolved the decision. |
+| <a id="workitemdecision-options"></a>`options` {{< icon name="warning-solid" >}} | [`WorkItemDecisionOptionConnection`](#workitemdecisionoptionconnection) | Introduced in GitLab 19.4. Status: Experiment. Candidate options of the decision. |
+| <a id="workitemdecision-resolutionrationale"></a>`resolutionRationale` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Reasoning given when the decision was resolved. |
+| <a id="workitemdecision-resolvedat"></a>`resolvedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp when the decision was resolved. |
+| <a id="workitemdecision-resolvedby"></a>`resolvedBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who resolved the decision. |
+| <a id="workitemdecision-resolvingnoteid"></a>`resolvingNoteId` {{< icon name="warning-solid" >}} | [`NoteID`](#noteid) | Introduced in GitLab 19.4. Status: Experiment. Global ID of the comment that resolved the decision. |
+| <a id="workitemdecision-sourcelink"></a>`sourceLink` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. URL of the comment, discussion, or external resource that prompted the decision. Present only on manually created decisions. |
+| <a id="workitemdecision-title"></a>`title` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Question being decided. |
+
+### `WorkItemDecisionOption`
+
+Represents a candidate option of a work item decision.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdecisionoption-content"></a>`content` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Content of the decision option. |
+| <a id="workitemdecisionoption-description"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Reasoning behind the decision option. |
+| <a id="workitemdecisionoption-id"></a>`id` {{< icon name="warning-solid" >}} | [`WorkItemsDecisionOptionID!`](#workitemsdecisionoptionid) | Introduced in GitLab 19.4. Status: Experiment. Global ID of the decision option. |
+| <a id="workitemdecisionoption-recommended"></a>`recommended` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Indicates the option is recommended by GitLab Duo. |
+| <a id="workitemdecisionoption-selected"></a>`selected` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Indicates the option was selected when the decision was resolved. |
+
 ### `WorkItemDescriptionTemplate`
 
 Fields:
@@ -65154,6 +65235,7 @@ Fields:
 | <a id="workitemfeatures-crmcontacts"></a>`crmContacts` | [`WorkItemWidgetCrmContacts`](#workitemwidgetcrmcontacts) | Crm contacts widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-currentusertodos"></a>`currentUserTodos` | [`WorkItemWidgetCurrentUserTodos`](#workitemwidgetcurrentusertodos) | Current user todos widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-customfields"></a>`customFields` | [`WorkItemWidgetCustomFields`](#workitemwidgetcustomfields) | Custom fields widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeatures-decisionlog"></a>`decisionLog` | [`WorkItemWidgetDecisionLog`](#workitemwidgetdecisionlog) | Decision log widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-description"></a>`description` | [`WorkItemWidgetDescription`](#workitemwidgetdescription) | Description widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-designs"></a>`designs` | [`WorkItemWidgetDesigns`](#workitemwidgetdesigns) | Designs widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-development"></a>`development` | [`WorkItemWidgetDevelopment`](#workitemwidgetdevelopment) | Development widget of the work item. Returns `null` if the widget is not available for the work item. |
@@ -65594,6 +65676,17 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetcustomfields-customfieldvalues-customfieldids"></a>`customFieldIds` | [`[IssuablesCustomFieldID!]`](#issuablescustomfieldid) | Only return values for the given custom field IDs. |
+
+### `WorkItemWidgetDecisionLog`
+
+Represents a decision log widget.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdecisionlog-decisions"></a>`decisions` {{< icon name="warning-solid" >}} | [`WorkItemDecisionConnection`](#workitemdecisionconnection) | Introduced in GitLab 19.4. Status: Experiment. Decisions recorded on the work item. |
+| <a id="workitemwidgetdecisionlog-type"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetDefinitionAssignees`
 
@@ -66432,6 +66525,7 @@ Fields:
 | <a id="duomessagingusermetrics-aiduomessagingfeedbacksubmittedeventcount"></a>`aiDuoMessagingFeedbackSubmittedEventCount` | [`Int`](#int) | Total count of `ai_duo_messaging_feedback_submitted` event. |
 | <a id="duomessagingusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Duo Messaging activity for the user. |
 | <a id="duomessagingusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Duo Messaging events for the user. |
+| <a id="duomessagingusermetrics-triggerslackduoeventcount"></a>`triggerSlackDuoEventCount` | [`Int`](#int) | Total count of `trigger_slack_duo` event. |
 
 ### `duoWorkflowUserMetrics`
 
@@ -67099,6 +67193,7 @@ Type of AI usage event.
 | <a id="aiusageeventtype-start_mcp_tool_call"></a>`START_MCP_TOOL_CALL` | MCP tool call was started. |
 | <a id="aiusageeventtype-summarize_new_merge_request"></a>`SUMMARIZE_NEW_MERGE_REQUEST` | Merge request summary was generated. |
 | <a id="aiusageeventtype-summarize_review"></a>`SUMMARIZE_REVIEW` | A merge request review summary was requested with GitLab Duo. |
+| <a id="aiusageeventtype-trigger_slack_duo"></a>`TRIGGER_SLACK_DUO` | Duo agent was triggered from a Slack mention. |
 | <a id="aiusageeventtype-troubleshoot_job"></a>`TROUBLESHOOT_JOB` | Troubleshoot job feature was used. |
 | <a id="aiusageeventtype-view_duo_agentic_subscription_expired_empty_state"></a>`VIEW_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_EMPTY_STATE` | Duo Agent Platform subscription expired empty state was viewed. |
 
@@ -67214,6 +67309,8 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-summarize_review_total_count_desc"></a>`SUMMARIZE_REVIEW_TOTAL_COUNT_DESC` | Summarize Review total event count in descending order. |
 | <a id="aiusermetricssort-total_events_count_asc"></a>`TOTAL_EVENTS_COUNT_ASC` | Total count of all AI events in ascending order. |
 | <a id="aiusermetricssort-total_events_count_desc"></a>`TOTAL_EVENTS_COUNT_DESC` | Total count of all AI events in descending order. |
+| <a id="aiusermetricssort-trigger_slack_duo_asc"></a>`TRIGGER_SLACK_DUO_ASC` | Trigger Slack Duo event count in ascending order. |
+| <a id="aiusermetricssort-trigger_slack_duo_desc"></a>`TRIGGER_SLACK_DUO_DESC` | Trigger Slack Duo event count in descending order. |
 | <a id="aiusermetricssort-troubleshoot_job_asc"></a>`TROUBLESHOOT_JOB_ASC` | Troubleshoot Job event count in ascending order. |
 | <a id="aiusermetricssort-troubleshoot_job_desc"></a>`TROUBLESHOOT_JOB_DESC` | Troubleshoot Job event count in descending order. |
 | <a id="aiusermetricssort-troubleshoot_job_total_count_asc"></a>`TROUBLESHOOT_JOB_TOTAL_COUNT_ASC` | Troubleshoot Job total event count in ascending order. |
@@ -72776,6 +72873,7 @@ Type of a work item widget.
 | <a id="workitemwidgettype-crm_contacts"></a>`CRM_CONTACTS` | Crm Contacts widget. |
 | <a id="workitemwidgettype-current_user_todos"></a>`CURRENT_USER_TODOS` | Current User Todos widget. |
 | <a id="workitemwidgettype-custom_fields"></a>`CUSTOM_FIELDS` | Custom Fields widget. |
+| <a id="workitemwidgettype-decision_log"></a>`DECISION_LOG` | Decision Log widget. |
 | <a id="workitemwidgettype-description"></a>`DESCRIPTION` | Description widget. |
 | <a id="workitemwidgettype-designs"></a>`DESIGNS` | Designs widget. |
 | <a id="workitemwidgettype-development"></a>`DEVELOPMENT` | Development widget. |
@@ -74582,6 +74680,18 @@ An example `WorkItemID` is: `"gid://gitlab/WorkItem/1"`.
 
 While we transition from Issues into Work Items this type will temporarily support
 `IssueID` like: `"gid://gitlab/Issue/1"`. This behavior will be removed without notice in the future.
+
+### `WorkItemsDecisionID`
+
+A `WorkItemsDecisionID` is a global ID. It is encoded as a string.
+
+An example `WorkItemsDecisionID` is: `"gid://gitlab/WorkItems::Decision/1"`.
+
+### `WorkItemsDecisionOptionID`
+
+A `WorkItemsDecisionOptionID` is a global ID. It is encoded as a string.
+
+An example `WorkItemsDecisionOptionID` is: `"gid://gitlab/WorkItems::DecisionOption/1"`.
 
 ### `WorkItemsRelatedWorkItemLinkID`
 
@@ -76571,6 +76681,7 @@ Implementations:
 - [`WorkItemWidgetCrmContacts`](#workitemwidgetcrmcontacts)
 - [`WorkItemWidgetCurrentUserTodos`](#workitemwidgetcurrentusertodos)
 - [`WorkItemWidgetCustomFields`](#workitemwidgetcustomfields)
+- [`WorkItemWidgetDecisionLog`](#workitemwidgetdecisionlog)
 - [`WorkItemWidgetDescription`](#workitemwidgetdescription)
 - [`WorkItemWidgetDesigns`](#workitemwidgetdesigns)
 - [`WorkItemWidgetDevelopment`](#workitemwidgetdevelopment)

@@ -141,14 +141,14 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
       end
 
       before do
-        allow(Gitlab::RackAttack::LabkitRateLimit::PlanRules).to receive(:for_limiter).and_return([probe])
+        allow(Gitlab::RateLimit::PlanRules).to receive(:for_limiter).and_return([probe])
       end
 
       it 'asks for the rules of every limiter it builds' do
         described_class.all
 
         registry.by_limiter.each_key do |limiter_name|
-          expect(Gitlab::RackAttack::LabkitRateLimit::PlanRules).to have_received(:for_limiter).with(limiter_name)
+          expect(Gitlab::RateLimit::PlanRules).to have_received(:for_limiter).with(limiter_name)
         end
       end
 

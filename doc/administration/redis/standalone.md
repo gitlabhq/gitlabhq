@@ -28,7 +28,7 @@ the Linux package:
 
 1. SSH into the Redis server.
 1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package you want by using **steps 1 and 2** from the GitLab downloads page.
+   package you want by using steps 1 and 2 from the GitLab downloads page.
    Do not complete any other steps on the download page.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 

@@ -27,7 +27,7 @@ The following metrics are emitted for Zoekt task processing:
 
 ### Apdex (Application Performance Index)
 
-The Apdex SLI measures task completion performance with a **30-minute (1800 second) threshold**.
+The Apdex SLI measures task completion performance with a 30-minute (1800 second) threshold.
 This threshold aligns with the indexing timeout to ensure consistency with task execution limits.
 
 The following metrics track Apdex:

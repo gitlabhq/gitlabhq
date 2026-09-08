@@ -11,8 +11,9 @@
 # PROCESSING_DELAY after they are pushed, giving transient errors (for
 # example, AI Gateway timeouts) time to clear between attempts.
 #
-# Rate-limited batches do not advance through the chain. They retry here
-# until the rate limit clears, so they never reach the DeadQueue.
+# Batches that fail with an infinite-retry error, like a rate limit, do
+# not advance through the chain. They retry here until the error clears,
+# so they never reach the DeadQueue.
 
 module ActiveContext
   class RetryQueue

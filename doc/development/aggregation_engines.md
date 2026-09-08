@@ -603,6 +603,92 @@ metrics do
 end
 ```
 
+## Supporting CTEs (Beta, Limited functionality, ClickHouse only)
+
+A supporting CTE is a per-key summary (for example, per user) of another table.
+The framework joins it into the main query.
+This lets `dimensions`, `filters`, and `metrics` reference CTE aggregates.
+Version 1 supports summaries over the engine's own table only, following a same-table contract.
+Supported table engines are only `MergeTree` and `ReplacingMergeTree`.
+This feature is only available for ClickHouse engines.
+
+### Define a supporting CTE
+
+Declare a supporting CTE at the class level, after `table_name` is set.
+Use `supporting_cte :name, join_key: :user_id, join_type: :inner do |qb| ... end`.
+The block receives a query builder over the prepared base scope.
+It must only add aggregate projections through `qb.select(...)`.
+The framework adds the join key column and a `GROUP BY join_key` automatically.
+
+The CTE is built at query time from a copy of the already-prepared base query.
+It inherits the engine's base scope, the deduplication subquery of `ReplacingMergeTree`
+tables, and all row filters of the request.
+Filters that are themselves CTE-backed do not propagate into the CTE body.
+They apply only to the main query.
+
+The `join_type:` parameter accepts `:inner` (the default) or `:outer`, which renders a
+`LEFT OUTER JOIN`.
+With the default inner join, base rows with a `NULL` join key are dropped because they
+never match a CTE row.
+Use `:outer` for engines with nullable join keys.
+
+```ruby
+class DuoWorkflowsEngine < Gitlab::Database::Aggregation::ClickHouse::Engine
+  self.table_name = 'duo_workflows_workflows_enriched'
+
+  supporting_cte :user_activity_cte, join_key: :user_id do |qb|
+    qb.select(
+      qb.count.as('workflows'),
+      qb.named_func('uniqExact', [qb[:workflow_definition]]).as('flow_types')
+    )
+  end
+
+  dimensions do
+    column :user_tier, :string, -> {
+      sql("multiIf(user_activity.workflows >= 5, 'heavy', user_activity_cte.workflows >= 2, 'medium', 'light')")
+    }, ctes: [:user_activity_cte]
+  end
+
+  filters do
+    range :flow_types_used, :integer, -> { sql('user_activity_cte.flow_types') }, ctes: [:user_activity_cte]
+  end
+
+  metrics do
+    count
+    count :users, :integer, -> { sql('user_id') }, distinct: true
+  end
+end
+```
+
+### Reference a supporting CTE
+
+Parts opt in to a CTE by adding `ctes: :name` or `ctes: [:a, :b]` to a dimension, filter,
+or metric.
+Referencing an undeclared CTE name raises `ArgumentError` at class-definition time.
+Each referenced CTE is built and joined exactly once per query, even when several parts
+reference it.
+
+Expressions must qualify CTE columns by CTE name, for example `user_activity.workflows`,
+even when only one CTE is in scope.
+A filter backed by a CTE becomes a plain `WHERE` clause on the joined summary column,
+not a `HAVING` clause.
+This makes "count of users matching a per-user condition" a single-number query.
+
+The following request returns a single number: the count of users who used at least two
+flow types.
+
+```ruby
+Gitlab::Database::Aggregation::Request.new(
+  filters: [{ identifier: :flow_types_used, values: 2..nil }],
+  metrics: [{ identifier: :users_count }]
+)
+```
+
+### Query cost
+
+Each referenced CTE adds one extra scan of the base scope, plus an in-memory hash join.
+Prefer one CTE with several aggregate columns over several single-column CTEs.
+
 ## Using the Framework
 
 ### Creating an aggregation request

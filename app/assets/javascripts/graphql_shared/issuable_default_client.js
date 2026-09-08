@@ -616,6 +616,7 @@ export const resolvers = {
     ...decisionLogStubResolvers.Query,
   },
   Mutation: {
+    ...decisionLogStubResolvers.Mutation,
     updateIssueState: (_, { issueType = undefined, isDirty = false }, { cache }) => {
       const sourceData = cache.readQuery({ query: getIssueStateQuery });
       const data = produce(sourceData, (draftData) => {

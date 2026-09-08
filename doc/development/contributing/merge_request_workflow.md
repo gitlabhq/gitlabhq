@@ -73,7 +73,7 @@ For a walkthrough of the contribution process, see [Tutorial: Make a GitLab cont
 
 ### Keep it simple
 
-*Live by smaller iterations.* Keep the amount of changes in a single MR **as small as possible**.
+Live by smaller iterations. Keep the amount of changes in a single MR as small as possible.
 If you want to contribute a large feature, think very carefully about what the
 [minimum valuable change](https://handbook.gitlab.com/handbook/product/product-principles/#the-minimal-valuable-change-mvc)
 is. Can you split the functionality into two smaller MRs? Can you submit only the

@@ -6,40 +6,14 @@ module Gitlab
       module ClickHouse
         class Engine < Gitlab::Database::Aggregation::Engine
           extend ::Gitlab::Utils::Override
+          extend Dsl
+          include SupportingCtes
 
           INNER_QUERY_NAME = 'ch_aggregation_inner_query'
           DEDUP_QUERY_NAME = 'ch_aggregation_dedup_query'
           COLUMN_PREFIX = 'aeq_'
-          SCHEMA_CACHE_DATABASE = :main
 
           class << self
-            attr_reader :table_name, :versioning_config, :table_primary_key
-
-            def table_name=(name)
-              table = ::ClickHouse::SchemaCache[SCHEMA_CACHE_DATABASE].table(name)
-              unless table
-                raise ArgumentError,
-                  "Table '#{name}' was not found in the ClickHouse schema cache; " \
-                    "ensure the table exists in `db/click_house/schema_cache/#{SCHEMA_CACHE_DATABASE}/`"
-              end
-
-              @table_name = name
-              @table_primary_key = table.primary_key.filter_map { |part| part.respond_to?(:name) ? part.name : nil }
-              apply_replacing_merge_tree_versioning(table)
-            end
-
-            def versioned_by(column, deleted_marker: nil)
-              @versioning_config = { column: column.to_s, deleted_marker: deleted_marker&.to_s }.freeze
-            end
-
-            def table_primary_key=(*columns)
-              @table_primary_key = columns.map(&:to_s).freeze
-            end
-
-            def table_columns
-              schema_cache_table.column_names
-            end
-
             def dimensions_mapping
               {
                 column: DimensionDefinition,
@@ -68,23 +42,6 @@ module Gitlab
                 metric_exact_match: MetricExactMatchFilter,
                 metric_range: MetricRangeFilter
               }
-            end
-
-            private
-
-            def schema_cache_table
-              raise ArgumentError, "`table_name` must be set on #{self}" unless table_name
-
-              ::ClickHouse::SchemaCache[SCHEMA_CACHE_DATABASE].table(table_name)
-            end
-
-            def apply_replacing_merge_tree_versioning(table)
-              return unless table.engine == 'ReplacingMergeTree'
-
-              version, deleted_marker = table.engine_params
-              return unless version
-
-              versioned_by(version, deleted_marker: deleted_marker)
             end
           end
 
@@ -131,6 +88,7 @@ module Gitlab
 
             inner_query = base_scope.select(*inner_projections).group(Arel.sql("ALL"))
             inner_query = apply_inner_filters(inner_query, plan)
+            inner_query = attach_supporting_ctes(inner_query, base_scope, plan)
 
             query = ::ClickHouse::Client::QueryBuilder.new(inner_query, INNER_QUERY_NAME)
               .select(*outer_projections).group(Arel.sql("ALL"))
@@ -148,21 +106,27 @@ module Gitlab
 
             dedup_query = build_dedup_subquery
 
-            pk_filters = plan.filters.select { |f| self.class.table_primary_key.include?(f.definition.name.to_s) }
+            pk_filters = plan.filters.select { |f| pk_filter?(f) }
             pk_filters.each { |filter| dedup_query = filter.definition.apply_inner(dedup_query, filter.configuration) }
 
             ::ClickHouse::Client::QueryBuilder.new(dedup_query, DEDUP_QUERY_NAME)
           end
 
-          def apply_inner_filters(query, plan)
+          def apply_inner_filters(query, plan, skip_cte_backed: false)
             filters = plan.filters.reject { |f| f.definition.metric? }
+            filters = filters.reject { |f| f.definition.ctes.any? } if skip_cte_backed
             # PK filters are applied in deduplication subquery.
-            if self.class.versioning_config
-              filters = filters.reject { |f| self.class.table_primary_key.include?(f.definition.name.to_s) }
-            end
+            filters = filters.reject { |f| pk_filter?(f) } if self.class.versioning_config
 
             filters.each { |filter| query = filter.definition.apply_inner(query, filter.configuration) }
             query
+          end
+
+          # CTE-backed filters reference CTE output columns, so they never target a
+          # physical PK column even when the names collide.
+          def pk_filter?(filter)
+            filter.definition.ctes.empty? &&
+              self.class.table_primary_key.include?(filter.definition.name.to_s)
           end
 
           def apply_outer_filters(query, plan)

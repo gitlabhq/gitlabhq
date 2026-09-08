@@ -69,6 +69,10 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
       let(:slack_workspace_id) { 'UNKNOWN_WORKSPACE' }
 
       it_behaves_like 'does not call Slack API'
+
+      it 'does not track any internal events' do
+        expect { execute }.to not_trigger_internal_events('receive_slack_duo_mention', 'block_slack_duo_mention')
+      end
     end
 
     context 'when user is not authenticated' do
@@ -94,6 +98,14 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
             'text' => a_string_including('mention me again')
           )
         )
+      end
+
+      it 'tracks the received mention and the blocked mention without a user' do
+        expect { execute }
+          .to trigger_internal_events('receive_slack_duo_mention').with(user: nil)
+          .and trigger_internal_events('block_slack_duo_mention').with(
+            user: nil, additional_properties: { property: 'user_not_linked' }
+          )
       end
 
       context 'when authorize URL is nil' do
@@ -224,6 +236,14 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
             )
           )
         end
+
+        it 'tracks the blocked mention with the feature flag reason' do
+          expect { execute }
+            .to trigger_internal_events('receive_slack_duo_mention').with(user: user)
+            .and trigger_internal_events('block_slack_duo_mention').with(
+              user: user, additional_properties: { property: 'feature_flag_disabled' }
+            )
+        end
       end
 
       context 'when user cannot use slash commands' do
@@ -238,6 +258,14 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
           is_expected.to be_success
 
           expect(WebMock).not_to have_requested(:post, reactions_add_url)
+        end
+
+        it 'tracks the blocked mention with the permission reason' do
+          expect { execute }
+            .to trigger_internal_events('receive_slack_duo_mention').with(user: blocked_user)
+            .and trigger_internal_events('block_slack_duo_mention').with(
+              user: blocked_user, additional_properties: { property: 'no_permission' }
+            )
         end
       end
 
@@ -263,6 +291,12 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
                 'This feature requires experiment and beta GitLab Duo features to be turned on.'
               )
             )
+          )
+        end
+
+        it 'tracks the blocked mention with the experiment features reason' do
+          expect { execute }.to trigger_internal_events('block_slack_duo_mention').with(
+            user: user, additional_properties: { property: 'experiment_features_disabled' }
           )
         end
       end
@@ -306,6 +340,12 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
               )
             )
           end
+
+          it 'tracks the blocked mention with the Duo seat reason' do
+            expect { execute }.to trigger_internal_events('block_slack_duo_mention').with(
+              user: user, additional_properties: { property: 'no_duo_seat' }
+            )
+          end
         end
 
         it 'does not call the Slack users.info API' do
@@ -321,6 +361,16 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
           end
 
           is_expected.to be_success
+        end
+
+        it 'tracks the received mention without a blocked event' do
+          allow_next_instance_of(described_class) do |service|
+            allow(service).to receive_messages(experiment_features_available?: true, trigger_duo_flow: nil)
+          end
+
+          expect { execute }
+            .to trigger_internal_events('receive_slack_duo_mention').with(user: user)
+            .and not_trigger_internal_events('block_slack_duo_mention')
         end
       end
 

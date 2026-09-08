@@ -1,15 +1,17 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlModal, GlAlert, GlFormSelect, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { refreshCurrentPageWithAlerts } from '~/lib/utils/url_utility';
 import AddOrganizationUsersModal from '~/organizations/admin/components/add_organization_users_modal.vue';
 import OrganizationUsersTokenSelect from '~/organizations/admin/components/organization_users_token_select.vue';
 import organizationUserCreateMutation from '~/organizations/admin/graphql/mutations/organization_user_create.mutation.graphql';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/lib/utils/url_utility');
 
 Vue.use(VueApollo);
 
@@ -35,8 +37,6 @@ describe('AddOrganizationUsersModal', () => {
     },
   };
 
-  const mockToastShow = jest.fn();
-
   const createComponent = ({
     mutationHandler = jest.fn().mockResolvedValue(successResponse),
   } = {}) => {
@@ -47,7 +47,6 @@ describe('AddOrganizationUsersModal', () => {
       provide: { organizationGid, organizationName },
       propsData: { visible: true },
       stubs: { GlSprintf },
-      mocks: { $toast: { show: mockToastShow } },
     });
   };
 
@@ -123,15 +122,38 @@ describe('AddOrganizationUsersModal', () => {
       });
     });
 
-    it('shows a success toast and closes without reloading on success', async () => {
+    it('reloads with a singular info alert on success with one user', async () => {
       createComponent();
 
       selectTokens([{ id: 1, username: 'user1' }]);
       submit();
       await waitForPromises();
 
-      expect(mockToastShow).toHaveBeenCalled();
-      expect(wrapper.emitted('change')).toContainEqual([false]);
+      expect(refreshCurrentPageWithAlerts).toHaveBeenCalledWith([
+        expect.objectContaining({
+          message: 'User was successfully added to the organization.',
+          variant: 'info',
+        }),
+      ]);
+    });
+
+    it('reloads with a plural info alert when multiple users are added', async () => {
+      const mutationHandler = jest.fn().mockResolvedValue(successResponse);
+      createComponent({ mutationHandler });
+
+      selectTokens([
+        { id: 1, username: 'user1' },
+        { id: 2, name: 'user2@example.com' },
+      ]);
+      submit();
+      await waitForPromises();
+
+      expect(refreshCurrentPageWithAlerts).toHaveBeenCalledWith([
+        expect.objectContaining({
+          message: 'Users were successfully added to the organization.',
+          variant: 'info',
+        }),
+      ]);
     });
   });
 
@@ -269,5 +291,15 @@ describe('AddOrganizationUsersModal', () => {
     findModal().vm.$emit('canceled');
 
     expect(wrapper.emitted('change')).toContainEqual([false]);
+  });
+
+  it('resets state when the modal is closed via the change event', async () => {
+    createComponent();
+
+    selectTokens([{ id: 1, username: 'user1' }]);
+    findModal().vm.$emit('change', false);
+    await nextTick();
+
+    expect(findTokenSelect().props('selectedTokens')).toEqual([]);
   });
 });

@@ -79,7 +79,7 @@ For example, this defines the `retry` keyword:
 With this definition, the `retry` keyword is both a property of
 the `job_template` definition and the `default` global keyword. Global keywords
 that configure pipeline behavior (such as `workflow` and `stages`) are defined
-under the topmost **properties** key.
+under the topmost `properties` key.
 
 ```json
 {
@@ -145,7 +145,7 @@ All of the CI/CD schema specs are in [`spec/frontend/editor/schema/ci`](https://
 Legacy tests are in JSON, but we recommend writing all new tests in YAML.
 You can write them as if you're adding a new `.gitlab-ci.yml` configuration file.
 
-Tests are separated into **positive** tests and **negative** tests. Positive tests
+Tests are separated into positive tests and negative tests. Positive tests
 are snippets of CI/CD configuration code that use the schema keywords as intended.
 Conversely, negative tests give examples of the schema keywords being used incorrectly.
 These tests ensure that the schema validates different examples of input as expected.

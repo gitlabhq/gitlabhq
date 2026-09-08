@@ -96,7 +96,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
 
     preprocessed_result = preprocess_references
 
-    expect(preprocessed_result).to eq({ successful: [ref1, ref3, ref2], failed: [], rate_limited: [] })
+    expect(preprocessed_result).to eq({ successful: [ref1, ref3, ref2], failed: [], infinite_retry: [] })
 
     preprocessed_ref1 = preprocessed_result[:successful][0]
     expect(preprocessed_ref1.documents).to match_array([{

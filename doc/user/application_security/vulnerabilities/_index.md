@@ -15,13 +15,17 @@ description: Vulnerability details, status, resolution, and linking issues.
 
 {{< history >}}
 
-- Redesigned vulnerability page [introduced](https://gitlab.com/groups/gitlab-org/-/epics/21907) in GitLab 19.0 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `vulnerability_details_enrichment`. Disabled by default.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/606953) in GitLab 19.3.
+- Redesigned vulnerability page:
+  - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/21907) in GitLab 19.0 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `vulnerability_details_enrichment`. Disabled by default.
+  - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/606953) in GitLab 19.3.
+- Display of malware findings:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587647) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `vulnerability_malware_detection`. Disabled by default.
 
 {{< /history >}}
 
 > [!flag]
 > The availability of the redesigned vulnerability page is controlled by a feature flag.
+> The display of malware findings is controlled by a separate feature flag.
 > For more information, see the history.
 
 Each vulnerability in a project has a vulnerability page. The page header shows the vulnerability
@@ -51,6 +55,14 @@ catalog, the **Risk** section also includes:
 - [Reachability status](../dependency_scanning/static_reachability.md) (Limited availability)
 
 For further details on this additional data, see [vulnerability risk assessment data](risk_assessment_data.md).
+
+For vulnerabilities identified as malware, the CVSS, EPSS, and KEV scores are not shown, and the
+**Remediation** section is hidden.
+GitLab cannot recommend a remediation for malware the way it can for a CVE.
+The affected versions of the package are malicious rather than vulnerable, so no fixed version
+exists.
+Malware findings are based on
+[GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-malware-advisories).
 
 If the scanner determined the vulnerability to be a false positive, an alert is shown above the
 **Risk** section. If GitLab Duo identified the vulnerability as a possible false positive, the

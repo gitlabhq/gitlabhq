@@ -214,7 +214,7 @@ Example response:
 
 ## List project deploy keys for user
 
-Get a list of a specified user (requestee) and the authenticated user's (requester) common [project deploy keys](../user/project/deploy_keys/_index.md#scope). It lists only the **enabled project keys from the common projects of requester and requestee**.
+Get a list of a specified user (requestee) and the authenticated user's (requester) common [project deploy keys](../user/project/deploy_keys/_index.md#scope). It lists only the enabled project keys from the common projects of requester and requestee.
 
 ```plaintext
 GET /users/:id_or_username/project_deploy_keys

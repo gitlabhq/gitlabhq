@@ -32,6 +32,28 @@ RSpec.describe Admin::Organizations::UsersController, feature_category: :organiz
         expect(response.body).not_to include(non_member.username)
       end
 
+      it 'renders the invite organization user button' do
+        request
+
+        expect(response.body).to include('js-admin-add-organization-users')
+      end
+
+      context 'when the user cannot create an organization user' do
+        before do
+          allow(organization_owner).to receive(:can?).and_call_original
+          allow(organization_owner).to receive(:can?)
+            .with(:create_organization_user,
+              an_object_having_attributes(organization: organization))
+            .and_return(false)
+        end
+
+        it 'does not render the invite organization user button' do
+          request
+
+          expect(response.body).not_to include('js-admin-add-organization-users')
+        end
+      end
+
       context 'when the org_admin_area flag is disabled' do
         before do
           stub_organization_release(org_admin_area: false)

@@ -109,7 +109,7 @@ The value must be the full URL of the merge request.
 
 ### GitLab Enterprise changes
 
-If a change is exclusively for GitLab Enterprise Edition, **you must add** the
+If a change is exclusively for GitLab Enterprise Edition, you must add the
 trailer `EE: true`:
 
 ```plaintext

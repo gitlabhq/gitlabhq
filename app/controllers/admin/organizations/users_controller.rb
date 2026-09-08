@@ -10,6 +10,8 @@ module Admin
       def index
         super
 
+        @organization = ::Current.organization
+
         render 'admin/users/index' unless performed?
       end
 
@@ -32,6 +34,11 @@ module Admin
       override :impersonation_available?
       def impersonation_available?
         false
+      end
+
+      override :show_invite_organization_user_button?
+      def show_invite_organization_user_button?
+        current_user.can?(:create_organization_user, ::Current.organization.organization_users.new)
       end
     end
   end

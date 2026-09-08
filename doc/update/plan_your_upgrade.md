@@ -144,7 +144,7 @@ upgrading GitLab:
 
    After upgrading GitLab, you might have to upgrade
    [Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-compatibility).
-   Updating Elasticsearch is **out of scope for GitLab Support**.
+   Updating Elasticsearch is out of scope for GitLab Support.
 
 ## Pause CI/CD pipelines and jobs
 

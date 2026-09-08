@@ -34,9 +34,21 @@ describe('GlqlVisualization', () => {
     expect(findResolver().exists()).toBe(true);
     expect(findResolver().props()).toEqual({
       glqlQuery,
+      comparisonQuery: '',
       trackingEventName: 'render_analytics_dashboard_glql_panel',
       scope: null,
     });
+  });
+
+  it('passes the comparison query the data source derived on to the resolver', () => {
+    const comparisonQuery = 'type = Issue AND created >= "2026-01-01"';
+
+    createWrapper({
+      data: 'type = Issue AND created >= "2026-02-01"',
+      options: { comparisonQuery },
+    });
+
+    expect(findResolver().props('comparisonQuery')).toBe(comparisonQuery);
   });
 
   describe('scope', () => {

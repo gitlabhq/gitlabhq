@@ -46,7 +46,7 @@ and both pipelines types are present, the merge request pipelines are checked,
 not the branch pipelines.
 
 Therefore, the MR pipeline result is marked as unsuccessful if the
-**merge request pipeline** fails, independently of the **branch pipeline** result.
+merge request pipeline fails, independently of the branch pipeline result.
 
 However:
 

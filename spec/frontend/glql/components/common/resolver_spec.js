@@ -1,5 +1,6 @@
 import { identity } from 'lodash-es';
 import { nextTick } from 'vue';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Resolver from '~/glql/components/common/resolver.vue';
 import { parse } from '~/glql/core/parser';
 import { execute } from '~/glql/core/executor';
@@ -11,6 +12,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { MOCK_ISSUES, MOCK_ISSUES_PAGE_2, MOCK_FIELDS } from '../../mock_data';
 
+jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/glql/core/parser');
 jest.mock('~/glql/core/transformer');
 jest.mock('~/glql/core/executor', () => ({
@@ -302,6 +304,238 @@ describe('Resolver', () => {
             data: { count: totalCount, nodes: [...MOCK_ISSUES.nodes, ...MOCK_ISSUES_PAGE_2.nodes] },
           },
         ]);
+      });
+    });
+  });
+
+  describe('with a comparison query', () => {
+    const GLQL_QUERY =
+      'type = AiUsageEvent and timestamp >= "2026-08-06" and timestamp <= "2026-09-05"';
+    const COMPARISON_QUERY =
+      'type = AiUsageEvent and timestamp >= "2026-07-06" and timestamp <= "2026-08-05"';
+    const SCOPE = { group: 'gitlab-org' };
+    const CURRENT = { nodes: [{ usersCount: 120 }] };
+    const PREVIOUS = { nodes: [{ usersCount: 100 }] };
+
+    const PARSE_OUTPUT = {
+      ...MOCK_PARSE_OUTPUT,
+      config: { display: 'stat' },
+      fields: [{ key: 'usersCount', name: 'usersCount', type: 'metric' }],
+      mode: 'analytics',
+      source: 'AiUsageEvents',
+    };
+
+    const isComparison = (query) => query === 'query previous {}';
+
+    // Each query compiles to its own GraphQL document, which is how execute tells them apart.
+    const mockParse = () =>
+      parse.mockImplementation((glqlQuery) =>
+        Promise.resolve(
+          glqlQuery === COMPARISON_QUERY
+            ? { ...PARSE_OUTPUT, query: 'query previous {}' }
+            : PARSE_OUTPUT,
+        ),
+      );
+
+    const setup = async () => {
+      mockParse();
+      execute.mockImplementation((query) =>
+        Promise.resolve(isComparison(query) ? PREVIOUS : CURRENT),
+      );
+      transform.mockImplementation(identity);
+
+      createWrapper({ glqlQuery: GLQL_QUERY, comparisonQuery: COMPARISON_QUERY, scope: SCOPE });
+      await waitForPromises();
+    };
+
+    it('compiles the comparison query against the same scope', async () => {
+      await setup();
+
+      expect(parse.mock.calls).toEqual([
+        [GLQL_QUERY, SCOPE],
+        [COMPARISON_QUERY, SCOPE],
+      ]);
+    });
+
+    it('runs the comparison query once the main one has resolved', async () => {
+      let resolveCurrent;
+      mockParse();
+      execute.mockImplementation((query) =>
+        isComparison(query)
+          ? Promise.resolve(PREVIOUS)
+          : new Promise((resolve) => {
+              resolveCurrent = resolve;
+            }),
+      );
+      transform.mockImplementation(identity);
+
+      createWrapper({ glqlQuery: GLQL_QUERY, comparisonQuery: COMPARISON_QUERY });
+      await waitForPromises();
+
+      expect(execute.mock.calls.map(([query]) => query)).toEqual(['query {}']);
+      expect(findPresenter().props('loading')).toBe(true);
+
+      resolveCurrent(CURRENT);
+      await waitForPromises();
+
+      expect(execute.mock.calls.map(([query]) => query)).toEqual(['query {}', 'query previous {}']);
+      expect(findPresenter().props()).toMatchObject({
+        loading: false,
+        data: CURRENT,
+        comparisonData: PREVIOUS,
+      });
+    });
+
+    it('renders both results through the presenter', async () => {
+      await setup();
+
+      expect(findPresenter().props()).toMatchObject({
+        data: CURRENT,
+        comparisonData: PREVIOUS,
+        displayType: 'stat',
+      });
+    });
+
+    it('emits the change event with the main result as the data', async () => {
+      await setup();
+
+      expectEmittedChanges([
+        { loading: true },
+        { loading: false, data: CURRENT, comparisonData: PREVIOUS },
+      ]);
+    });
+
+    it('runs the new comparison query when the queries change together', async () => {
+      const nextQuery =
+        'type = AiUsageEvent and timestamp >= "2026-08-30" and timestamp <= "2026-09-05"';
+      const nextComparisonQuery =
+        'type = AiUsageEvent and timestamp >= "2026-08-23" and timestamp <= "2026-08-29"';
+      await setup();
+      parse.mockClear();
+
+      await wrapper.setProps({ glqlQuery: nextQuery, comparisonQuery: nextComparisonQuery });
+      await waitForPromises();
+
+      expect(parse.mock.calls).toEqual([
+        [nextQuery, SCOPE],
+        [nextComparisonQuery, SCOPE],
+      ]);
+    });
+
+    describe.each([
+      [
+        'compile',
+        'comparison parse error',
+        (rejection) => {
+          parse.mockImplementation((glqlQuery) =>
+            glqlQuery === COMPARISON_QUERY
+              ? Promise.reject(rejection)
+              : Promise.resolve(PARSE_OUTPUT),
+          );
+          execute.mockResolvedValue(CURRENT);
+        },
+      ],
+      [
+        'run',
+        'comparison execute error',
+        (rejection) => {
+          mockParse();
+          execute.mockImplementation((query) =>
+            isComparison(query) ? Promise.reject(rejection) : Promise.resolve(CURRENT),
+          );
+        },
+      ],
+    ])('when the comparison query fails to %s', (_, message, mockFailure) => {
+      const error = new Error(message);
+
+      beforeEach(async () => {
+        mockFailure(error);
+        transform.mockImplementation(identity);
+
+        createWrapper({ glqlQuery: GLQL_QUERY, comparisonQuery: COMPARISON_QUERY });
+        await waitForPromises();
+      });
+
+      it('renders the main result without the comparison', () => {
+        expect(findPresenter().props()).toMatchObject({ data: CURRENT, comparisonData: null });
+      });
+
+      it('does not report an error', () => {
+        expect(wrapper.emitted('change').slice(-1)[0][0]).toMatchObject({
+          error: undefined,
+          data: CURRENT,
+          comparisonData: undefined,
+        });
+      });
+
+      it('captures the failure for debugging', () => {
+        expect(Sentry.captureException).toHaveBeenCalledWith(error);
+      });
+    });
+
+    it('runs a single query without a comparison query', async () => {
+      parse.mockResolvedValue(PARSE_OUTPUT);
+      execute.mockResolvedValue(CURRENT);
+      transform.mockImplementation(identity);
+
+      createWrapper({ glqlQuery: GLQL_QUERY });
+      await waitForPromises();
+
+      expect(parse).toHaveBeenCalledTimes(1);
+      expect(execute).toHaveBeenCalledTimes(1);
+      expect(findPresenter().props('comparisonData')).toBeNull();
+    });
+
+    describe('when more data is loaded', () => {
+      const TOTAL_COUNT = 3;
+
+      beforeEach(async () => {
+        // Fresh variables per parse, so the cursor set on the main query is visible in the call.
+        parse.mockImplementation((glqlQuery) =>
+          Promise.resolve({
+            ...MOCK_PARSE_OUTPUT,
+            query: glqlQuery === COMPARISON_QUERY ? 'query previous {}' : 'query {}',
+            variables: {
+              limit: { value: null, type: 'Int' },
+              after: { value: null, type: 'String' },
+            },
+          }),
+        );
+        execute.mockImplementation((query, variables) => {
+          if (isComparison(query)) return Promise.resolve({ count: TOTAL_COUNT, ...MOCK_ISSUES });
+          if (variables.after.value == null) {
+            return Promise.resolve({
+              count: TOTAL_COUNT,
+              pageInfo: { endCursor: 'current-cursor' },
+              ...MOCK_ISSUES,
+            });
+          }
+          return Promise.resolve({ count: TOTAL_COUNT, ...MOCK_ISSUES_PAGE_2 });
+        });
+        transform.mockImplementation(identity);
+
+        createWrapper({ glqlQuery: GLQL_QUERY, comparisonQuery: COMPARISON_QUERY });
+        await waitForPromises();
+        execute.mockClear();
+
+        findPagination().vm.$emit('load-more');
+        await waitForPromises();
+      });
+
+      it('pages the main query alone', () => {
+        expect(execute.mock.calls).toEqual([
+          [
+            'query {}',
+            expect.objectContaining({ after: { value: 'current-cursor', type: 'String' } }),
+          ],
+        ]);
+      });
+
+      it('appends the page to the main result and keeps the comparison as first loaded', () => {
+        expect(findPresenter().props()).toMatchObject({
+          data: { count: TOTAL_COUNT, nodes: [...MOCK_ISSUES.nodes, ...MOCK_ISSUES_PAGE_2.nodes] },
+          comparisonData: { count: TOTAL_COUNT, nodes: MOCK_ISSUES.nodes },
+        });
       });
     });
   });

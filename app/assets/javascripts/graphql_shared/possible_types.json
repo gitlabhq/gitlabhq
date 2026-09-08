@@ -454,6 +454,7 @@
     "WorkItemWidgetCrmContacts",
     "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetCustomFields",
+    "WorkItemWidgetDecisionLog",
     "WorkItemWidgetDescription",
     "WorkItemWidgetDesigns",
     "WorkItemWidgetDevelopment",

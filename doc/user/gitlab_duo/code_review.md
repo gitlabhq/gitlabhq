@@ -16,7 +16,7 @@ title: GitLab Duo Code Review (non-agentic)
 {{< collapsible title="Model information" >}}
 
 - [Default LLM](model_selection.md#default-models)
-- [Select a different model](model_selection.md#select-a-model-for-a-feature) using the **Code Review** setting.
+- [Select a different model](model_selection.md#select-a-model-for-a-feature) using the **Non-Agentic Code Review** setting.
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
@@ -96,7 +96,7 @@ To reduce the risk of failed reviews on large merge requests:
 - Split large merge requests into smaller ones.
 - [Exclude context](context.md#exclude-context-from-code-review) for files that are not relevant to
   the review.
-- Ask a group Owner or instance administrator to select a different model using the **Code Review** setting.
+- Ask a group Owner or instance administrator to select a different model using the **Non-Agentic Code Review** setting.
   See [GitLab.com](model_selection.md#select-a-model-for-a-feature) or
   [GitLab Self-Managed and GitLab Dedicated](../../administration/gitlab_duo/model_selection.md#select-a-model-for-the-instance).
 
@@ -335,7 +335,7 @@ To work around the failure:
 - Split the merge request into smaller merge requests.
 - [Exclude context](context.md#exclude-context-from-code-review) for files that are not relevant to
   the review.
-- Ask a group Owner or instance administrator to select a different model using the **Code Review** setting.
+- Ask a group Owner or instance administrator to select a different model using the **Non-Agentic Code Review** setting.
   See [GitLab.com](model_selection.md#select-a-model-for-a-feature) or
   [GitLab Self-Managed and GitLab Dedicated](../../administration/gitlab_duo/model_selection.md#select-a-model-for-the-instance).
 

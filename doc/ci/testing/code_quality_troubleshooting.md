@@ -23,7 +23,7 @@ You should configure Code Quality checks to run on your worker as documented in
 ## Changing the default configuration has no effect
 
 A common issue is that the terms `Code Quality` (GitLab specific) and `Code Climate`
-(Engine used by GitLab) are very similar. You must add a **`.codeclimate.yml`** file
+(Engine used by GitLab) are very similar. You must add a `.codeclimate.yml` file
 to change the default configuration, not a `.codequality.yml` file. If you use
 the wrong filename, the [default `.codeclimate.yml`](https://gitlab.com/gitlab-org/ci-cd/codequality/-/blob/master/codeclimate_defaults/.codeclimate.yml.template)
 is still used.
@@ -76,7 +76,7 @@ To use a custom version of RuboCop that
 you can [override the configuration through a `.codeclimate.yml` file](https://docs.codeclimate.com/docs/rubocop#using-rubocops-newer-versions)
 created in the project repository.
 
-For example, to specify using RuboCop release **0.67**:
+For example, to specify using RuboCop release `0.67`:
 
 ```yaml
 version: "2"

@@ -1,6 +1,7 @@
 <script>
 import { pick } from 'lodash-es';
 import { sha256 } from '~/lib/utils/text_utility';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
 import {
   DEFAULT_PAGE_SIZE,
@@ -39,6 +40,14 @@ export default {
       type: Object,
       default: null,
     },
+    /**
+     * A second query run alongside `glqlQuery`, with its result exposed as `comparisonData`.
+     */
+    comparisonQuery: {
+      required: false,
+      type: String,
+      default: '',
+    },
   },
   emits: ['change'],
   data() {
@@ -46,6 +55,7 @@ export default {
       loading: false,
 
       data: undefined,
+      comparisonData: undefined,
       query: undefined,
       config: undefined,
       variables: undefined,
@@ -87,6 +97,7 @@ export default {
   methods: {
     resetData() {
       this.data = undefined;
+      this.comparisonData = undefined;
       this.query = undefined;
       this.config = undefined;
       this.variables = undefined;
@@ -102,6 +113,7 @@ export default {
         pick(this, [
           'query',
           'data',
+          'comparisonData',
           'config',
           'variables',
           'fields',
@@ -156,6 +168,7 @@ export default {
           mode: this.mode,
           source: this.source,
         });
+        this.comparisonData = await this.fetchComparison();
 
         this.trackRender();
       } catch (error) {
@@ -164,6 +177,26 @@ export default {
       } finally {
         this.loading = false;
         this.emitChange();
+      }
+    },
+
+    // Runs once and is never paginated: `loadMore` pages the main query alone, since two result
+    // sets paged in step drift apart as soon as one page fails. A comparison that fails to
+    // compile or run is dropped and reported, so the main result still renders without it.
+    async fetchComparison() {
+      if (!this.comparisonQuery) return undefined;
+
+      try {
+        const { query, variables, fields, mode, source } = await parse(
+          this.comparisonQuery,
+          this.scope,
+        );
+        const executionResult = await execute(query, variables);
+
+        return await transform(executionResult, { fields, mode, source });
+      } catch (error) {
+        Sentry.captureException(error);
+        return undefined;
       }
     },
 
@@ -216,6 +249,7 @@ export default {
     <data-presenter
       v-if="hasDisplayType"
       :data="data"
+      :comparison-data="comparisonData"
       :fields="fields"
       :display-type="config.display"
       :display-config="config.displayConfig"

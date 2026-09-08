@@ -117,6 +117,7 @@ export default {
       v-else
       ref="resolver"
       :glql-query="data"
+      :comparison-query="options.comparisonQuery"
       :scope="scope"
       tracking-event-name="render_analytics_dashboard_glql_panel"
       @change="handleResolverChange"

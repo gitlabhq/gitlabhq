@@ -56,7 +56,7 @@ reversible.
 
 #### Queries
 
-If new queries have been introduced or existing queries have been updated, **you are required to provide**:
+If new queries have been introduced or existing queries have been updated, you are required to provide:
 
 - [Query plans](#query-plans) for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.
 - [Raw SQL](#raw-sql) for all changed or added queries (as translated from ActiveRecord queries).

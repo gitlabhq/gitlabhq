@@ -151,7 +151,7 @@ timings are unaffected.
 
 ### Index limitations
 
-GitLab enforces a limit of **15 indexes** per table. This limitation:
+GitLab enforces a limit of 15 indexes per table. This limitation:
 
 - Helps maintain optimal database performance
 - Reduces maintenance overhead
@@ -399,7 +399,7 @@ For GitLab.com, you can check the latest generated [production reports](https://
 on postgres.ai and inspect the `H002 Unused Indexes` file.
 
 > [!warning]
-> These reports only show indexes that have no recorded usage **since the last statistics reset.**
+> These reports only show indexes that have no recorded usage since the last statistics reset.
 > They do not guarantee that the indexes are never used.
 
 ### Verifying that an index is unused
@@ -453,13 +453,13 @@ Be aware that certain factors can give the false impression that an index is unu
      sum by (indexrelname) (rate(pg_stat_user_indexes_idx_scan{env="gprd", relname=~"<TABLE_NAME_REGEX>", indexrelname=~"<INDEX_NAME_REGEX>"}[30d]))
      ```
 
-   - For partitioned tables, we must check that **all child indexes are unused** prior to dropping the parent.
+   - For partitioned tables, we must check that all child indexes are unused prior to dropping the parent.
 
 If the data shows that an index has zero or negligible usage, it's a strong candidate for removal. However, keep in mind that
 this is limited to usage on GitLab.com. We should still [investigate all related queries](#investigating-related-queries) to
 ensure it can be safely removed for GitLab Self-Managed instances.
 
-An index that shows low usage might still be dropped **if** we can confirm that other existing indexes would sufficiently
+An index that shows low usage might still be dropped if we can confirm that other existing indexes would sufficiently
 support the queries using it. PostgreSQL decides which index to use based on data distribution statistics, so in certain
 situations it might slightly prefer one index over another even if both indexes adequately support the query, which might
 account for the occasional usage.
