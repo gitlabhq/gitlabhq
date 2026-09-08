@@ -319,6 +319,7 @@ module API
       route_setting :authorization, permissions: :create_commit, boundary_type: :project
       post ':id/repository/commits' do
         require_gitlab_workhorse!
+        authenticate!
 
         attrs = file_params_from_body_upload
 
