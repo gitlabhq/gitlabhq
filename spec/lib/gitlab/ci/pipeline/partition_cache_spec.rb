@@ -43,6 +43,20 @@ RSpec.describe Gitlab::Ci::Pipeline::PartitionCache, feature_category: :continuo
       it { is_expected.to be_empty }
     end
 
+    context 'when a partition stores an empty range' do
+      let(:pipeline_ids) { 150 }
+
+      before do
+        create(:ci_partition, pipelines_id_range: (300...300))
+        described_class.invalidate
+      end
+
+      it 'skips the empty range instead of raising' do
+        expect { result }.not_to raise_error
+        expect(result).to contain_exactly(lower_partition.id)
+      end
+    end
+
     context 'when the input is nil' do
       let(:pipeline_ids) { nil }
 
