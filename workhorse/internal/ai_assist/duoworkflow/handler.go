@@ -72,6 +72,24 @@ const (
 	errorTypeOther         = "other"
 )
 
+// Stages at which a connection can fail with errorTypeOther. Logged so the
+// otherwise opaque "other" bucket can be traced back to a specific stage.
+const (
+	errorStageUpgrade        = "websocket_upgrade"
+	errorStageInitialization = "runner_initialization"
+	errorStageExecution      = "runner_execution"
+)
+
+// countOtherConnectionError increments connectionErrorsTotal{error_type=other}
+// and logs the stage and underlying error, which the metric label alone loses.
+func countOtherConnectionError(r *http.Request, stage string, err error) {
+	connectionErrorsTotal.WithLabelValues(errorTypeOther).Inc()
+	log.WithRequest(r).WithError(err).WithFields(log.Fields{
+		"error_stage": stage,
+		"error_type":  errorTypeOther,
+	}).Error("duo workflow connection failed")
+}
+
 // Build returns an HTTP handler that processes Duo Workflow WebSocket connections.
 // The handler performs pre-authorization checks, upgrades the connection to WebSocket,
 // and manages the lifecycle of the workflow runner including registration and cleanup.
@@ -86,7 +104,7 @@ func (h *Handler) Build() http.Handler {
 
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			connectionErrorsTotal.WithLabelValues(errorTypeOther).Inc()
+			countOtherConnectionError(r, errorStageUpgrade, err)
 			fail.Request(w, r, fmt.Errorf("failed to upgrade: %v", err))
 			return
 		}
@@ -98,7 +116,7 @@ func (h *Handler) Build() http.Handler {
 func (h *Handler) handleWebSocketConnection(w http.ResponseWriter, r *http.Request, conn *websocket.Conn, duoWorkflowConfig *api.DuoWorkflow) {
 	runner, err := h.createRunner(conn, duoWorkflowConfig, r)
 	if err != nil {
-		connectionErrorsTotal.WithLabelValues(errorTypeOther).Inc()
+		countOtherConnectionError(r, errorStageInitialization, err)
 		h.handleInitializationError(w, r, conn, err)
 		return
 	}
@@ -158,7 +176,7 @@ func (h *Handler) handleExecutionError(r *http.Request, conn *websocket.Conn, er
 		connectionErrorsTotal.WithLabelValues(errorTypeQuotaExceeded).Inc()
 		h.sendCloseMessage(r, conn, websocket.ClosePolicyViolation, "Insufficient credits: quota exceeded")
 	default:
-		connectionErrorsTotal.WithLabelValues(errorTypeOther).Inc()
+		countOtherConnectionError(r, errorStageExecution, err)
 	}
 }
 

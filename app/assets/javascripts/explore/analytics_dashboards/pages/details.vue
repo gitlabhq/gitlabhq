@@ -6,6 +6,7 @@ import { getParameterByName } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
 import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
+import SectionHeader from '~/analytics/analytics_dashboards/components/section_header.vue';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DashboardFilters from '../components/dashboard_filters.vue';
 import DashboardLoader from '../components/dashboard_loader.vue';
@@ -21,6 +22,7 @@ export default {
     GlTabs,
     GlTab,
     AnalyticsDashboardPanel,
+    SectionHeader,
     DashboardFilters,
     DashboardLoader,
   },
@@ -113,6 +115,9 @@ export default {
     },
     panelTestId({ visualization: { slug = '' } }) {
       return `panel-${slug.replaceAll('_', '-')}`;
+    },
+    sectionTestId({ section: { title = '' } }) {
+      return `section-${title.toLowerCase().replaceAll(' ', '-')}`;
     },
     setDateRangeFilter({ dateRangeOption, startDate, endDate }) {
       this.filters = {
@@ -227,7 +232,15 @@ export default {
         </template>
 
         <template #panel="{ panel }">
+          <section-header
+            v-if="panel.section"
+            :title="panel.section.title"
+            :description="panel.section.description"
+            :tooltip="panel.section.tooltip"
+            :data-testid="sectionTestId(panel)"
+          />
           <analytics-dashboard-panel
+            v-else
             :title="panel.title"
             :title-icon="panel.titleIcon || ''"
             :tooltip="panel.tooltip"

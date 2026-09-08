@@ -13,11 +13,11 @@ module API
           2025-03-26
         ].freeze
 
-        # The revision returned to clients that ask for one this server does not implement.
-        # Kept as its own constant so the fallback does not depend on HANDSHAKE_PROTOCOL_VERSIONS order.
+        # The newest revision that still negotiates via handshake, not the stateless variant.
+        # Its own constant, so the fallback doesn't depend on HANDSHAKE_PROTOCOL_VERSIONS order.
         LATEST_HANDSHAKE_PROTOCOL_VERSION = '2025-11-25'
 
-        # Revisions that replace the handshake with per-request metadata, newest first.
+        # Revisions that replace the handshake with per-request metadata
         STATELESS_PROTOCOL_VERSIONS = %w[
           2026-07-28
         ].freeze

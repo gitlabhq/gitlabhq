@@ -21,9 +21,11 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
   subject(:processor) { described_class.new(values, context) }
 
   around do |example|
-    create_and_delete_files(project, project_files) do
-      create_and_delete_files(another_project, other_project_files) do
-        example.run
+    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+      create_and_delete_files(project, project_files) do
+        create_and_delete_files(another_project, other_project_files) do
+          example.run
+        end
       end
     end
   end

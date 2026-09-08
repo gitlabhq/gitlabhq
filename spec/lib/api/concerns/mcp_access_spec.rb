@@ -22,6 +22,14 @@ RSpec.describe API::Concerns::McpAccess, feature_category: :mcp_server do
     dummy_class.access_scopes = []
   end
 
+  describe '.allow_mcp_access_read' do
+    it 'adds mcp scope' do
+      dummy_class.allow_mcp_access_read
+
+      expect(dummy_class.access_scopes).to include(:mcp)
+    end
+  end
+
   describe '.allow_mcp_access_create' do
     it 'adds mcp scope' do
       dummy_class.allow_mcp_access_create
@@ -30,9 +38,9 @@ RSpec.describe API::Concerns::McpAccess, feature_category: :mcp_server do
     end
   end
 
-  describe '.allow_mcp_access_read' do
+  describe '.allow_mcp_access_update' do
     it 'adds mcp scope' do
-      dummy_class.allow_mcp_access_read
+      dummy_class.allow_mcp_access_update
 
       expect(dummy_class.access_scopes).to include(:mcp)
     end

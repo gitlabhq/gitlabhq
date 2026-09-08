@@ -168,6 +168,57 @@ describe('DashboardLoader', () => {
     });
   });
 
+  describe('with a section entry', () => {
+    const sectionPanel = {
+      section: { title: 'Adoption tiers' },
+      gridAttributes: { xPos: 0, yPos: 0, height: 1 },
+    };
+    const normalPanel = mockCustomDashboard.config.panels[0];
+
+    const createWithConfig = async (config) => {
+      createComponent({
+        requestHandlers: mockResolvedQuery({
+          customDashboard: {
+            ...mockCustomDashboard,
+            config: { ...mockCustomDashboard.config, ...config },
+          },
+        }),
+      });
+      await waitForPromises();
+    };
+
+    it('fills in the full dashboard width', async () => {
+      await createWithConfig({ panels: [sectionPanel] });
+
+      expect(getSlotProp('config').panels[0].gridAttributes).toEqual({
+        xPos: 0,
+        yPos: 0,
+        height: 1,
+        width: 12,
+      });
+    });
+
+    it('keeps an explicitly configured width', async () => {
+      await createWithConfig({
+        panels: [{ ...sectionPanel, gridAttributes: { ...sectionPanel.gridAttributes, width: 6 } }],
+      });
+
+      expect(getSlotProp('config').panels[0].gridAttributes.width).toBe(6);
+    });
+
+    it('leaves the grid attributes of a normal panel untouched', async () => {
+      await createWithConfig({ panels: [normalPanel] });
+
+      expect(getSlotProp('config').panels[0].gridAttributes).toEqual(normalPanel.gridAttributes);
+    });
+
+    it('fills in the width for a section inside a view', async () => {
+      await createWithConfig({ views: [{ title: 'Overview', panels: [sectionPanel] }] });
+
+      expect(getSlotProp('config').views[0].panels[0].gridAttributes.width).toBe(12);
+    });
+  });
+
   describe('with a compact grid height', () => {
     beforeEach(async () => {
       createComponent({ requestHandlers: mockResolvedQuery(mockDashboardCompactGridResponse) });

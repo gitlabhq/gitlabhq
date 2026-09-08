@@ -3076,7 +3076,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_01e586919b93"
+              "$ref": "#/components/schemas/RequestBody_e824c02454fe"
       x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/code_review/add_comments":
     post:
@@ -82874,8 +82874,9 @@ components:
           "$ref": "#/components/schemas/DependencyEntityLicenseEntity"
         malware:
           type: boolean
-          description: 'Malware status: true if a GLAM identifier is present, false
-            otherwise. Omitted when malware detection is not enabled for the project.'
+          description: 'Malware status: true if the package version matches a malware
+            advisory, false otherwise. Omitted when malware detection is not enabled
+            for the project.'
     APIEntitiesProjectAlias:
       type: object
       properties:
@@ -100980,7 +100981,7 @@ components:
           nullable: true
       required:
       - events
-    RequestBody_01e586919b93:
+    RequestBody_e824c02454fe:
       type: object
       properties:
         project_id:
@@ -100997,6 +100998,10 @@ components:
             against
           pattern: "^[0-9a-f]{40}$"
           nullable: true
+        workflow_id:
+          type: integer
+          description: ID of the Duo workflow session that produced these claims
+          nullable: true
         claims:
           type: array
           description: Categorical claims about the merge request
@@ -101005,7 +101010,7 @@ components:
             properties:
               name:
                 type: string
-                description: Name of the claim, for example touches_auth
+                description: Name of the claim, for example authorization
                 pattern: "^[a-z0-9_]+$"
                 nullable: true
                 maxLength: 64
@@ -101034,6 +101039,7 @@ components:
       - project_id
       - merge_request_iid
       - diff_sha
+      - workflow_id
       - claims
     RequestBody_9983fc9d3604:
       type: object

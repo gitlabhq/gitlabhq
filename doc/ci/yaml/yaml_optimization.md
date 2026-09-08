@@ -395,8 +395,15 @@ use `!reference` tags to reuse configuration from [included](_index.md#include) 
 files as well.
 
 If you are using `!reference` tags to override configuration from included files, consider using
-[CI/CD inputs](../inputs/_index.md) instead. You cannot use CI/CD inputs in `!reference` tags,
-because `!reference` tags are evaluated before input interpolation.
+[CI/CD inputs](../inputs/_index.md) instead.
+
+You cannot combine `!reference` tags and inputs:
+
+- You cannot use an input inside the path of a `!reference` tag, for example
+  `!reference [.settings, "$[[ inputs.key ]]"]`. The path segments are read when the YAML file is parsed,
+  before inputs are interpolated, so the input is treated as literal text and the reference is not found.
+- You cannot use a `!reference` tag in an [input value](../inputs/_index.md#array-type), because tags are
+  resolved after inputs are interpolated.
 
 In the following example, a `script` and an `after_script` from two different locations are
 reused in the `test` job:

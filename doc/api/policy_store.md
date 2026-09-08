@@ -23,6 +23,7 @@ title: Policy store API
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/623359) to add the `scope_dimensions` response attribute in GitLab 19.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/612905) to limit `rules` and `actions` to 5 entries each, and each entry to 4096 bytes, in GitLab 19.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252841) to add the `environment_advanced` and `deployment_promoted` triggers, and to rename the `deployment_requested` trigger's display name to `Deployment requested`, in GitLab 19.4.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/598030) the catalog endpoints to require an authenticated caller instead of anonymous access, in GitLab 19.4.
 
 {{< /history >}}
 
@@ -50,9 +51,11 @@ When the instance is not licensed for security orchestration policies, they retu
 
 ## Catalogs
 
-The catalog endpoints describe what a policy can be built from.
-They return the same static content for every caller, so they take no authentication and no
-permission.
+The catalog endpoints describe what a policy can be built from, and return the same static
+content to every eligible caller.
+The caller must be an authenticated user whose organization has the `security_policies_v2`
+feature flag enabled.
+When this is not true, the endpoints return `404 Not Found`.
 
 ### List all triggers
 

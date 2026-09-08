@@ -10,6 +10,7 @@ import {
   spliceSection,
   placeholderSection,
   formatSignedDuration,
+  buildDeletedFileRow,
   apiRequest,
 } from '../../../../scripts/frontend/post_msw_test_summary.mjs';
 
@@ -202,6 +203,75 @@ describe('computeActionable', () => {
       expect(result.perTestS).toBeNull();
     });
   });
+
+  describe('with deleted spec files', () => {
+    it('returns an empty deletedFiles array when no deleted files are provided', () => {
+      const result = computeActionable({ changedFiles: [], report, baseline });
+
+      expect(result.deletedFiles).toEqual([]);
+    });
+
+    it('ignores deleted files that have no master baseline entry', () => {
+      const deletedFiles = [{ path: 'spec/features/unknown_spec.rb' }];
+
+      const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
+
+      expect(result.deletedFiles).toHaveLength(0);
+      expect(result.addedRuntimeS).toBe(0);
+      expect(result.addedTests).toBe(0);
+    });
+
+    it('includes deleted files that have a master baseline entry', () => {
+      // slow_spec.js is in the baseline with runtimeS: 40, testCount: 8.
+      const deletedFiles = [{ path: 'spec/frontend/msw_integration/slow_spec.js' }];
+
+      const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
+
+      expect(result.deletedFiles).toHaveLength(1);
+      expect(result.deletedFiles[0]).toEqual({
+        path: 'spec/frontend/msw_integration/slow_spec.js',
+        masterRuntimeS: 40,
+        masterTests: 8,
+      });
+    });
+
+    it('subtracts deleted file runtime and tests from the net totals', () => {
+      // slow_spec.js baseline: runtimeS 40, testCount 8.
+      const deletedFiles = [{ path: 'spec/frontend/msw_integration/slow_spec.js' }];
+
+      const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
+
+      expect(result.addedRuntimeS).toBe(-40);
+      expect(result.addedTests).toBe(-8);
+    });
+
+    it('sets perTestS to null when deletions outweigh additions (no net-new tests)', () => {
+      const deletedFiles = [{ path: 'spec/frontend/msw_integration/slow_spec.js' }];
+
+      const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
+
+      expect(result.perTestS).toBeNull();
+    });
+
+    it('accounts for deletions when computing net totals alongside added files', () => {
+      // new_spec.js (new): +4 tests, +12s. slow_spec.js (deleted): -8 tests, -40s.
+      const changedFiles = [
+        {
+          path: 'spec/frontend/msw_integration/new_spec.js',
+          isNew: true,
+          oldPath: 'spec/frontend/msw_integration/new_spec.js',
+        },
+      ];
+      const deletedFiles = [{ path: 'spec/frontend/msw_integration/slow_spec.js' }];
+
+      const result = computeActionable({ changedFiles, deletedFiles, report, baseline });
+
+      // Net: 4 - 8 = -4 tests, 12 - 40 = -28s.
+      expect(result.addedTests).toBe(-4);
+      expect(result.addedRuntimeS).toBe(-28);
+      expect(result.perTestS).toBeNull();
+    });
+  });
 });
 
 describe('buildComment', () => {
@@ -279,6 +349,106 @@ describe('buildComment', () => {
     const comment = buildComment({ ...baseArgs, baseline, actionable, truncated: false });
 
     expect(comment).not.toContain('per-file breakdown is truncated');
+  });
+
+  describe('with deleted spec files', () => {
+    const deletedFiles = [
+      {
+        path: 'spec/features/work_items/list/user_applies_filters_spec.rb',
+        masterRuntimeS: 90,
+        masterTests: 3,
+      },
+    ];
+
+    it('mentions time saved in the headline when there are deleted files with a baseline', () => {
+      const actionable = {
+        files: [
+          {
+            path: 'ee/spec/frontend/msw_integration/work_items_spec.js',
+            isNew: true,
+            currentRuntimeS: 3,
+            masterRuntimeS: null,
+            deltaRuntimeS: 3,
+            currentTests: 8,
+            masterTests: null,
+            deltaTests: 8,
+          },
+        ],
+        deletedFiles,
+        addedRuntimeS: -87, // 3 - 90
+        addedTests: 5, // 8 - 3
+        perTestS: -87 / 5,
+      };
+
+      const comment = buildComment({ ...baseArgs, baseline, actionable });
+
+      expect(comment).toContain('−1m 30s saved');
+      expect(comment).toContain('deleting 1 spec file');
+    });
+
+    it('includes deleted file rows in the per-file breakdown table', () => {
+      const actionable = {
+        files: [],
+        deletedFiles,
+        addedRuntimeS: -90,
+        addedTests: -3,
+        perTestS: null,
+      };
+
+      const comment = buildComment({ ...baseArgs, baseline, actionable });
+
+      expect(comment).toContain('(deleted)');
+      expect(comment).toContain('user_applies_filters_spec.rb');
+      expect(comment).toContain('3 → 0 (−3)');
+      expect(comment).toContain('1m 30s → 0s');
+    });
+
+    it('shows the per-file breakdown section when only deleted files are present', () => {
+      const actionable = {
+        files: [],
+        deletedFiles,
+        addedRuntimeS: -90,
+        addedTests: -3,
+        perTestS: null,
+      };
+
+      const comment = buildComment({ ...baseArgs, baseline, actionable });
+
+      expect(comment).toContain('<details><summary>Per-file breakdown</summary>');
+    });
+
+    it('omits the deleted suffix when no deleted files have a baseline', () => {
+      const actionable = {
+        files: [],
+        deletedFiles: [],
+        addedRuntimeS: 0,
+        addedTests: 0,
+        perTestS: null,
+      };
+
+      const comment = buildComment({ ...baseArgs, baseline, actionable });
+
+      expect(comment).not.toContain('saved');
+      expect(comment).not.toContain('deleted');
+    });
+  });
+});
+
+describe('buildDeletedFileRow', () => {
+  it('renders a table row with (deleted) tag, test count going to 0, and negative delta', () => {
+    const df = {
+      path: 'spec/features/work_items/list/user_applies_filters_spec.rb',
+      masterRuntimeS: 90,
+      masterTests: 3,
+    };
+
+    const row = buildDeletedFileRow(df);
+
+    expect(row).toContain('(deleted)');
+    expect(row).toContain('user_applies_filters_spec.rb');
+    expect(row).toContain('3 → 0 (−3)');
+    expect(row).toContain('1m 30s → 0s (−1m 30s)');
+    expect(row).toContain('−1m 30s');
   });
 });
 

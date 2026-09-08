@@ -334,6 +334,69 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
         end
       end
 
+      context 'when an included file has a YAML tag as an input default' do
+        let(:config_yaml) do
+          <<~YAML
+          spec:
+            include:
+              - local: /inputs.yml
+          ---
+          job:
+            script: echo $[[ inputs.tagged_input ]]
+          YAML
+        end
+
+        let(:external_inputs_yaml) do
+          <<~YAML
+          spec:
+            inputs:
+              tagged_input:
+                default: !reference [.setup, script]
+          ---
+          inputs:
+            external_input:
+              default: external_value
+          YAML
+        end
+
+        before do
+          project.repository.create_file(
+            project.creator,
+            '.gitlab-ci.yml',
+            config_yaml,
+            message: 'Add CI with header includes',
+            branch_name: 'master')
+
+          project.repository.create_file(
+            project.creator,
+            'inputs.yml',
+            external_inputs_yaml,
+            message: 'Add external inputs',
+            branch_name: 'master')
+        end
+
+        context 'when the flag is enabled' do
+          it 'rejects the tagged default' do
+            result = service.execute
+
+            expect(result).to be_error
+            expect(result.message).to include('default value cannot contain a !reference tag')
+          end
+        end
+
+        context 'when the flag is disabled' do
+          before do
+            stub_feature_flags(ci_reject_yaml_tags_in_inputs: false)
+          end
+
+          it 'does not reject the tagged default' do
+            result = service.execute
+
+            expect(result).to be_success
+          end
+        end
+      end
+
       context 'when header include processing fails' do
         let(:config_yaml) do
           <<~YAML

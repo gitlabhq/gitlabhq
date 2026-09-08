@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipeline_composition do
+  around do |example|
+    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+      example.run
+    end
+  end
+
   let_it_be(:project) { create(:project) }
   let(:variables) { nil }
   let(:context_params) { { sha: 'HEAD', variables: variables, project: project } }

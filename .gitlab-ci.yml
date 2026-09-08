@@ -35,10 +35,12 @@ default:
     # directly from object storage. Git ignores the offer unless the protocol is
     # allowlisted, so an empty fetch.uriProtocols (git's default) disables it.
     #
+    # Opt-in: set the CI/CD variable ENABLE_PACKFILE_URI_CI to "true" to turn it on.
+    #
     # NOTE: job-level `hooks` replaces this wholesale rather than merging with
     # it, so a job that defines its own `hooks` also needs this line.
     pre_get_sources_script:
-      - git config --global fetch.uriProtocols https
+      - if [ "$ENABLE_PACKFILE_URI_CI" = "true" ]; then git config --global fetch.uriProtocols https; fi
 
 .default-ruby-variables: &default-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"

@@ -70658,9 +70658,9 @@ Status of a merge request risk classification.
 | Value | Description |
 | ----- | ----------- |
 | <a id="mergerequestriskassessmentstatus-complete"></a>`COMPLETE` | Classification has completed. |
+| <a id="mergerequestriskassessmentstatus-failed"></a>`FAILED` | Classification could not be completed. |
 | <a id="mergerequestriskassessmentstatus-pending"></a>`PENDING` | Waiting to be classified. |
 | <a id="mergerequestriskassessmentstatus-queued"></a>`QUEUED` | Queued for (re)classification. |
-| <a id="mergerequestriskassessmentstatus-stale"></a>`STALE` | Classification is outdated. |
 
 ### `MergeRequestRiskTier`
 
@@ -72450,6 +72450,7 @@ Name of the feature that the callout is for.
 | ----- | ----------- |
 | <a id="usergroupcalloutfeaturename-all_seats_used_alert"></a>`ALL_SEATS_USED_ALERT` | Callout feature name for all_seats_used_alert. |
 | <a id="usergroupcalloutfeaturename-approaching_seat_count_threshold"></a>`APPROACHING_SEAT_COUNT_THRESHOLD` | Callout feature name for approaching_seat_count_threshold. |
+| <a id="usergroupcalloutfeaturename-billing_retrial_card"></a>`BILLING_RETRIAL_CARD` | Callout feature name for billing_retrial_card. |
 | <a id="usergroupcalloutfeaturename-ci_minutes_limit_alert_danger_stage"></a>`CI_MINUTES_LIMIT_ALERT_DANGER_STAGE` | Callout feature name for ci_minutes_limit_alert_danger_stage. |
 | <a id="usergroupcalloutfeaturename-ci_minutes_limit_alert_exceeded_stage"></a>`CI_MINUTES_LIMIT_ALERT_EXCEEDED_STAGE` | Callout feature name for ci_minutes_limit_alert_exceeded_stage. |
 | <a id="usergroupcalloutfeaturename-ci_minutes_limit_alert_warning_stage"></a>`CI_MINUTES_LIMIT_ALERT_WARNING_STAGE` | Callout feature name for ci_minutes_limit_alert_warning_stage. |

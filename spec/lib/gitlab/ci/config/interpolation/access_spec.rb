@@ -82,6 +82,16 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Access, feature_category: :pip
     end
   end
 
+  context 'when accessing array by index with a hyphenated key' do
+    let(:ctx) { { inputs: { 'supported-versions': %w[2.0 1.0] } } }
+    let(:access) { 'inputs.supported-versions[0]' }
+
+    it 'returns the first element' do
+      expect(subject).to be_valid
+      expect(subject.value).to eq '2.0'
+    end
+  end
+
   context 'when accessing nested value after array index' do
     let(:ctx) { { inputs: { items: [{ name: 'item1' }] } } }
     let(:access) { 'inputs.items[0].name' }

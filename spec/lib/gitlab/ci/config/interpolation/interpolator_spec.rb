@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category: :pipeline_composition do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:project) { create(:project) }
 
   let(:result) { ::Gitlab::Ci::Config::Yaml::Result.new(config: [header, content]) }
@@ -10,6 +12,80 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
   let(:external_context) { nil }
 
   subject { described_class.new(result, arguments, yaml_context, external_context) }
+
+  around do |example|
+    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+      example.run
+    end
+  end
+
+  context 'when an input value contains a YAML tag' do
+    let(:tag) do
+      Gitlab::Ci::Config::Yaml::Tags::Reference.new.tap do |reference|
+        reference.data = { tag: '!reference', seq: %w[.shared] }
+      end
+    end
+
+    let(:content) { { test: '$[[ inputs.a ]]' } }
+
+    shared_examples 'a rejected input' do |message|
+      it 'surfaces an error and does not interpolate' do
+        subject.interpolate!
+
+        expect(subject).not_to be_valid
+        expect(subject.errors).to include(message)
+      end
+    end
+
+    where(:case_name, :type, :value) do
+      'a string input'                    | 'string'  | ref(:tag)
+      'a number input'                    | 'number'  | ref(:tag)
+      'a boolean input'                   | 'boolean' | ref(:tag)
+      'an array input'                    | 'array'   | [ref(:tag), 'other']
+      'a tag in a hash key of an array'   | 'array'   | [{ ref(:tag) => 'other' }]
+    end
+
+    with_them do
+      let(:header) { { spec: { inputs: { a: { type: type } } } } }
+      let(:arguments) { { a: value } }
+
+      it_behaves_like 'a rejected input', '`a` input: provided value cannot contain a !reference tag'
+    end
+
+    context 'when the tag is in the default value' do
+      let(:header) { { spec: { inputs: { a: { type: 'array', default: [tag] } } } } }
+      let(:arguments) { {} }
+
+      it_behaves_like 'a rejected input', '`a` input: default value cannot contain a !reference tag'
+    end
+
+    context 'when an input with options receives a tag' do
+      let(:header) { { spec: { inputs: { a: { type: 'string', options: %w[one two] } } } } }
+      let(:arguments) { { a: tag } }
+
+      it 'reports only the tag error' do
+        subject.interpolate!
+
+        expect(subject).not_to be_valid
+        expect(subject.errors).to contain_exactly('`a` input: provided value cannot contain a !reference tag')
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_reject_yaml_tags_in_inputs: false)
+      end
+
+      let(:header) { { spec: { inputs: { a: { type: 'string' } } } } }
+      let(:arguments) { { a: tag } }
+
+      it 'does not reject the value' do
+        subject.interpolate!
+
+        expect(subject).to be_valid
+      end
+    end
+  end
 
   context 'when input data is valid' do
     let(:header) do
@@ -77,6 +153,26 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
       expect(subject).to be_interpolated
       expect(subject).to be_valid
       expect(subject.to_hash).to eq({ test: 'deploy v1.0' })
+    end
+  end
+
+  context 'when a hyphenated input uses array index access' do
+    let(:header) do
+      { spec: { inputs: { 'supported-versions': { type: 'array', default: %w[2.0 1.0] } } } }
+    end
+
+    let(:content) do
+      { test: 'echo $[[ inputs.supported-versions[0] ]]' }
+    end
+
+    let(:arguments) { {} }
+
+    it 'correctly interpolates the array element' do
+      subject.interpolate!
+
+      expect(subject).to be_interpolated
+      expect(subject).to be_valid
+      expect(subject.to_hash).to eq({ test: 'echo 2.0' })
     end
   end
 

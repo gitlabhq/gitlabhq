@@ -4,8 +4,11 @@ require 'fast_spec_helper'
 require_relative Rails.root.join('lib/ci/inputs/base_input.rb')
 require_relative Rails.root.join('lib/ci/inputs/array_input.rb')
 require_relative Rails.root.join('lib/ci/inputs/rules_evaluator.rb')
+require_relative '../../../support/shared_contexts/lib/ci/inputs/reject_yaml_tags_flag_shared_context'
 
 RSpec.describe Ci::Inputs::ArrayInput, feature_category: :pipeline_composition do
+  include_context 'with ci_reject_yaml_tags_in_inputs enabled'
+
   describe '#validate_param!' do
     context 'when validating type' do
       context 'when value is an array' do

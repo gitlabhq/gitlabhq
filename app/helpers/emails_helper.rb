@@ -461,6 +461,14 @@ module EmailsHelper
     end
   end
 
+  # Overridden in EE, where a Duo question payload is rewritten into prose. FOSS
+  # never carries one, so the body goes out as written.
+  # rubocop:disable Lint/UnusedMethodArgument -- format is used by the EE override
+  def note_email_body(note, format: :html)
+    note.note
+  end
+  # rubocop:enable Lint/UnusedMethodArgument
+
   private
 
   def format_reviewers_string(reviewers, html_tag = nil)

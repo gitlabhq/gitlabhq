@@ -37,20 +37,29 @@ module Users
         missing_auth_found_callback: missing_auth_found_callback
       ).execute
 
+      # Most refreshes find nothing to change. Skipping `update_authorizations`
+      # for those avoids a per-refresh log document that carries no information;
+      # the refresh workers' Sidekiq job metrics still show volume and duration.
+      return user if remove.blank? && add.blank?
+
       update_authorizations(remove, add)
     end
+
+    private
+
+    attr_reader :incorrect_auth_found_callback, :missing_auth_found_callback
 
     # Updates the list of authorizations for the current user.
     #
     # remove - The project IDs of the authorization rows to remove.
     # add - Rows to insert in the form `[{ user_id: user_id, project_id: project_id, access_level: access_level}, ...]`
-    def update_authorizations(remove = [], add = [])
+    def update_authorizations(remove, add)
       authorization_changes = ProjectAuthorizations::Changes.new do |changes|
         changes.add(add)
         changes.remove_projects_for_user(user, remove)
       end.apply!
 
-      user.update!(project_authorizations_recalculated_at: Time.zone.now) if remove.any? || add.any?
+      user.update!(project_authorizations_recalculated_at: Time.zone.now)
 
       log_refresh_details(authorization_changes, remove, add)
 
@@ -58,10 +67,6 @@ module Users
       # out of sync. As such we force a reload of the User object.
       user.reset
     end
-
-    private
-
-    attr_reader :incorrect_auth_found_callback, :missing_auth_found_callback
 
     def log_refresh_details(changes, remove, add)
       record_safety_net_refresh_metrics(changes)

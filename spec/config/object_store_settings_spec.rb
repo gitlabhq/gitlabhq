@@ -27,6 +27,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
           'pages' => { 'enabled' => true },
           'ci_secure_files' => { 'enabled' => true },
           'agent_plan_content' => { 'enabled' => true },
+          'ci_catalog_bundles' => { 'enabled' => true },
           'object_store' => {
             'enabled' => true,
             'connection' => connection,
@@ -51,6 +52,9 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
               },
               'agent_plan_content' => {
                 'bucket' => 'agent-plan-content'
+              },
+              'ci_catalog_bundles' => {
+                'bucket' => 'ci-catalog-bundles'
               }
             }
           }
@@ -105,6 +109,16 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         expect(settings.agent_plan_content['object_store']['bucket_prefix']).to be_nil
         expect(settings.agent_plan_content['object_store']['consolidated_settings']).to be true
         expect(settings.agent_plan_content).to eq(settings['agent_plan_content'])
+
+        expect(settings.ci_catalog_bundles['enabled']).to be true
+        expect(settings.ci_catalog_bundles['object_store']['enabled']).to be true
+        expect(settings.ci_catalog_bundles['object_store']['connection'].to_hash).to eq(connection)
+        expect(settings.ci_catalog_bundles['object_store']['direct_upload']).to be true
+        expect(settings.ci_catalog_bundles['object_store']['proxy_download']).to be true
+        expect(settings.ci_catalog_bundles['object_store']['remote_directory']).to eq('ci-catalog-bundles')
+        expect(settings.ci_catalog_bundles['object_store']['bucket_prefix']).to be_nil
+        expect(settings.ci_catalog_bundles['object_store']['consolidated_settings']).to be true
+        expect(settings.ci_catalog_bundles).to eq(settings['ci_catalog_bundles'])
 
         expect(settings.pages['enabled']).to be true
         expect(settings.pages['object_store']['enabled']).to be true
@@ -238,6 +252,13 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
 
         expect { subject }.not_to raise_error
         expect(settings.ci_secure_files['object_store']).to be_nil
+      end
+
+      it 'does not raise error if ci_catalog_bundles config is missing' do
+        config['object_store']['objects'].delete('ci_catalog_bundles')
+
+        expect { subject }.not_to raise_error
+        expect(settings.ci_catalog_bundles['object_store']).to be_nil
       end
 
       context 'GitLab Pages' do

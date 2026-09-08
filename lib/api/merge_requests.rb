@@ -17,6 +17,7 @@ module API
 
     allow_mcp_access_read
     allow_mcp_access_create
+    allow_mcp_access_update
     allow_access_with_scope :ai_workflows, if: ->(request) do
       request.get? || request.head? || mr_update?(request) || mr_create?(request)
     end

@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: :pipeline_composition do
+  around do |example|
+    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+      example.run
+    end
+  end
+
   let_it_be(:context_project) { create(:project) }
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }

@@ -316,6 +316,7 @@ Settings.ai_catalog['object_store'] = ObjectStoreSettings.legacy_parse(Settings.
 # CI catalog bundles
 #
 Settings['ci_catalog_bundles'] ||= {}
+Settings.ci_catalog_bundles['enabled'] = true if Settings.ci_catalog_bundles['enabled'].nil?
 Settings.ci_catalog_bundles['storage_path'] = Settings.absolute(Settings.ci_catalog_bundles['storage_path'] || File.join(Settings.shared['path'], "ci_catalog_bundles"))
 Settings.ci_catalog_bundles['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ci_catalog_bundles['object_store'], 'ci_catalog_bundles')
 

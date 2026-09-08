@@ -14,6 +14,7 @@ module API
 
       allow_mcp_access_read
       allow_mcp_access_create
+      allow_mcp_access_update
       allow_mcp_access_delete
       allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 

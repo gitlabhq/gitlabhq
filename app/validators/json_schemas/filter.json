@@ -1,10 +1,59 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
+  "properties": {
+    "scheduled": {
+      "$ref": "#/definitions/schedule_config"
+    }
+  },
   "additionalProperties": {
     "$ref": "#/definitions/group"
   },
   "definitions": {
+    "schedule_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "frequency": {
+          "type": "string",
+          "enum": [
+            "EVERY_15_MINUTES",
+            "EVERY_30_MINUTES",
+            "HOURLY",
+            "DAILY",
+            "WEEKDAYS",
+            "WEEKLY",
+            "MONTHLY"
+          ]
+        },
+        "minute": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 59
+        },
+        "hour": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 23
+        },
+        "dayOfWeek": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 6
+        },
+        "dayOfMonth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 28
+        },
+        "timezone": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "frequency"
+      ]
+    },
     "group": {
       "type": "object",
       "additionalProperties": false,

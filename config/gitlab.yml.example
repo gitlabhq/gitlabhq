@@ -400,6 +400,8 @@ production: &base
   #       bucket: dependency_proxy
   #     agent_plan_content:
   #       bucket: agent-plan-content
+  #     ci_catalog_bundles:
+  #       bucket: ci-catalog-bundles
 
   ## Consolidated object store config for Google Cloud Storage
   # object_store:
@@ -432,6 +434,8 @@ production: &base
   #       bucket: gitlab-pages
   #     agent_plan_content:
   #       bucket: gitlab-agent-plan-content
+  #     ci_catalog_bundles:
+  #       bucket: gitlab-ci-catalog-bundles
 
   ## Build Artifacts
   artifacts:
@@ -617,6 +621,7 @@ production: &base
         # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
         # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
+  ## CI Catalog Bundles (object storage for compiled CI/CD component bundles)
   ci_catalog_bundles:
     # storage_path: shared/ci_catalog_bundles
     object_store:

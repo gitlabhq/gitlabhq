@@ -1,0 +1,10 @@
+---
+name: ci_reject_yaml_tags_in_inputs
+description: Reject a YAML tag such as `!reference` in a CI/CD input value instead of dumping its internal object into the configuration.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/607053
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249492
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/607488
+milestone: '19.4'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false

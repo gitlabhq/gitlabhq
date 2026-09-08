@@ -48,19 +48,20 @@ RSpec.describe "User edits a comment on a commit", :js, feature_category: :sourc
     end
 
     it 'allows the tasks to be checked', :aggregate_failures do
+      # The commit box and diff list above the notes fill in asynchronously; if they grow
+      # between locating the checkbox and clicking it, the click lands on the note header's
+      # author link and navigates away, so no update request is ever sent.
+      within('.info-well') do
+        expect(page).not_to have_selector('.gl-spinner')
+      end
+      expect(page).not_to have_selector('[data-list-loading]')
+
       expect(page).to have_selector('li.task-list-item', count: 2)
       expect(page).to have_selector('li.task-list-item input[checked]', count: 0)
 
-      # Click one note at a time with fresh finders: elements cached by `all` are not
-      # reloadable, so a re-render between the two clicks goes stale or swallows the
-      # second click. Waiting for `.enabled` also ensures TaskList JS has initialised,
-      # because clicking a still-disabled checkbox silently does nothing.
-      # The toggle produces no visible change until the page is reloaded, so wait on the
-      # persisted note instead before clicking the next checkbox.
       Note.where(project: project, commit_id: sample_commit.id).order(:id).each do |note|
-        within("#note_#{note.id}") do
-          find('li.task-list-item.enabled .task-list-item-checkbox').click
-        end
+        find("#note_#{note.id} li.task-list-item.enabled .task-list-item-checkbox").click
+        expect(page).to have_selector("#note_#{note.id} .task-list-item-checkbox:checked")
 
         wait_for("task list toggle to persist for note #{note.id}", polling_interval: 0.1) do
           note.reload.note.include?('[x]')

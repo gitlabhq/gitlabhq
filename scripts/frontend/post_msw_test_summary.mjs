@@ -87,6 +87,9 @@ const BUDGET_ACTION_S = 60; // > 60 s/test  → action required (also exits 1)
 // Frontend spec files follow the `_spec.js` naming convention.
 const SPEC_FILE_RE = /_spec\.js$/;
 
+// Deleted spec files may be RSpec (`.rb`) or JS (`.js`).
+const DELETED_SPEC_FILE_RE = /_spec\.(js|rb)$/;
+
 // How far we page through the MR diffs API. 100 diffs/page × 5 pages = 500
 // files — a generous safety cap. Past this the per-file breakdown is truncated,
 // which we surface as a warning so the numbers stay trustworthy.
@@ -224,14 +227,17 @@ function thresholdInfo(perTestS) {
  * Diff each changed spec file that ran in this job against the master baseline
  * and reduce it to a single actionable number: seconds per new test.
  *
+ * @param {Array<{ path: string }>} [deletedFiles]  Spec files deleted by this MR.
+ *
  * @returns {{
  *   files: Array<Object>,
+ *   deletedFiles: Array<{ path: string, masterRuntimeS: number, masterTests: number }>,
  *   addedRuntimeS: number,
  *   addedTests: number,
  *   perTestS: number|null,
  * }}
  */
-function computeActionable({ changedFiles, report, baseline }) {
+function computeActionable({ changedFiles, deletedFiles = [], report, baseline }) {
   const reportPerFile = report?.perFile ?? {};
   const masterPerFile = baseline?.perFile ?? {};
 
@@ -273,8 +279,25 @@ function computeActionable({ changedFiles, report, baseline }) {
     });
   }
 
+  // Account for deleted spec files that have a master baseline entry.
+  // Their runtime and tests are subtracted from the net totals (time saved).
+  const resolvedDeletedFiles = [];
+  for (const df of deletedFiles) {
+    const master = masterPerFile[df.path] ?? null;
+    if (!master) continue;
+    resolvedDeletedFiles.push({
+      path: df.path,
+      masterRuntimeS: master.runtimeS,
+      masterTests: master.testCount,
+    });
+    addedRuntimeS -= master.runtimeS;
+    addedTests -= master.testCount;
+  }
+
+  // perTestS is based on net-new tests only. If deletions outweigh additions,
+  // there are no net-new tests to penalise, so perTestS is null.
   const perTestS = addedTests > 0 ? addedRuntimeS / addedTests : null;
-  return { files, addedRuntimeS, addedTests, perTestS };
+  return { files, deletedFiles: resolvedDeletedFiles, addedRuntimeS, addedTests, perTestS };
 }
 
 function buildFileRow(f) {
@@ -289,6 +312,11 @@ function buildFileRow(f) {
     perTest == null ? '—' : `${Math.round(perTest)}s ${thresholdInfo(perTest).emoji}`.trim();
 
   return `| \`${f.path}\`${tag} | ${masterTestsStr} → ${f.currentTests}${deltaTestsStr} | ${masterRtStr} → ${formatDuration(f.currentRuntimeS)} | ${formatSignedDuration(f.deltaRuntimeS)} | ${perTestCell} |`;
+}
+
+function buildDeletedFileRow(df) {
+  const savedRuntimeS = df.masterRuntimeS;
+  return `| \`${df.path}\` (deleted) | ${df.masterTests} → 0 (−${df.masterTests}) | ${formatDuration(savedRuntimeS)} → 0s (−${formatDuration(savedRuntimeS)}) | ${formatSignedDuration(-savedRuntimeS)} | — |`;
 }
 
 function buildComment({
@@ -329,24 +357,35 @@ function buildComment({
   }
 
   // Single actionable headline.
+  const deletedCount = actionable.deletedFiles?.length ?? 0;
+  const savedRuntimeS =
+    actionable.deletedFiles?.reduce((sum, df) => sum + df.masterRuntimeS, 0) ?? 0;
+  const deletedSuffix =
+    deletedCount > 0
+      ? ` · **−${formatDuration(savedRuntimeS)} saved** by deleting ${deletedCount} spec file${deletedCount === 1 ? '' : 's'}`
+      : '';
+
   if (!hasBaseline) {
     lines.push('> ℹ️ No master baseline available yet — runtime delta omitted.');
   } else if (actionable.addedTests > 0) {
     const fileCount = actionable.files.length;
     lines.push(
-      `**+${actionable.addedTests} new test${actionable.addedTests === 1 ? '' : 's'}** across ${fileCount} file${fileCount === 1 ? '' : 's'} · **${formatSignedDuration(actionable.addedRuntimeS)} vs master** · **${Math.round(actionable.perTestS)}s/test** (budget ${BUDGET_OK_S}s/test)`,
+      `**+${actionable.addedTests} new test${actionable.addedTests === 1 ? '' : 's'}** across ${fileCount} file${fileCount === 1 ? '' : 's'} · **${formatSignedDuration(actionable.addedRuntimeS)} vs master** · **${Math.round(actionable.perTestS)}s/test** (budget ${BUDGET_OK_S}s/test)${deletedSuffix}`,
     );
-  } else if (actionable.files.length > 0) {
-    lines.push(
-      `Changed ${actionable.files.length} spec file${actionable.files.length === 1 ? '' : 's'} with no net-new tests · **${formatSignedDuration(actionable.addedRuntimeS)} vs master**`,
-    );
+  } else if (actionable.files.length > 0 || deletedCount > 0) {
+    const changedPart =
+      actionable.files.length > 0
+        ? `Changed ${actionable.files.length} spec file${actionable.files.length === 1 ? '' : 's'} with no net-new tests · **${formatSignedDuration(actionable.addedRuntimeS)} vs master**`
+        : `No changed MSW spec files`;
+    lines.push(`${changedPart}${deletedSuffix}`);
   } else {
     lines.push('No changed MSW spec files detected in this MR.');
   }
   lines.push('');
 
   // Per-file breakdown, collapsed to keep the comment quiet.
-  if (actionable.files.length > 0) {
+  const hasBreakdown = actionable.files.length > 0 || (actionable.deletedFiles?.length ?? 0) > 0;
+  if (hasBreakdown) {
     lines.push('<details><summary>Per-file breakdown</summary>');
     lines.push('');
     lines.push(
@@ -354,6 +393,7 @@ function buildComment({
     );
     lines.push('| --- | --- | --- | --- | --- |');
     for (const f of actionable.files) lines.push(buildFileRow(f));
+    for (const df of actionable.deletedFiles ?? []) lines.push(buildDeletedFileRow(df));
     lines.push('');
     lines.push('</details>');
     lines.push('');
@@ -460,17 +500,24 @@ async function apiRequest(method, path, body) {
 
 /**
  * Fetch the list of added/modified spec files in this MR from the diffs API.
- * Deleted files are ignored. Renamed files are treated as modified, keeping
- * the old path so their master baseline can be looked up.
+ * Deleted spec files (both `_spec.js` and `_spec.rb`) are collected separately
+ * so their master baseline runtime can be surfaced as time saved.
+ * Renamed files are treated as modified, keeping the old path so their master
+ * baseline can be looked up.
  *
  * When the MR has more diffs than the page cap can cover, `truncated` is true:
  * some changed spec files may be missing from the breakdown, so the aggregate
  * numbers are understated and the comment surfaces a warning.
  *
- * @returns {Promise<{ files: Array<{ path: string, isNew: boolean, oldPath: string }>, truncated: boolean }>}
+ * @returns {Promise<{
+ *   files: Array<{ path: string, isNew: boolean, oldPath: string }>,
+ *   deletedFiles: Array<{ path: string }>,
+ *   truncated: boolean,
+ * }>}
  */
 async function fetchChangedSpecFiles(projectId, mrIid) {
   const files = [];
+  const deletedFiles = [];
   let truncated = false;
   try {
     for (let page = 1; page <= MAX_DIFF_PAGES; page += 1) {
@@ -482,7 +529,14 @@ async function fetchChangedSpecFiles(projectId, mrIid) {
       );
       if (!Array.isArray(diffs) || diffs.length === 0) break;
       for (const d of diffs) {
-        if (d.deleted_file) continue;
+        if (d.deleted_file) {
+          // Capture deleted spec files (JS or RSpec) so we can show time saved.
+          const oldPath = d.old_path;
+          if (oldPath && DELETED_SPEC_FILE_RE.test(oldPath)) {
+            deletedFiles.push({ path: oldPath });
+          }
+          continue;
+        }
         const newPath = d.new_path;
         if (!newPath || !SPEC_FILE_RE.test(newPath)) continue;
         files.push({
@@ -499,7 +553,7 @@ async function fetchChangedSpecFiles(projectId, mrIid) {
   } catch (err) {
     console.warn(`[MSW] Could not fetch MR changed files: ${err.message}`);
   }
-  return { files, truncated };
+  return { files, deletedFiles, truncated };
 }
 
 /**
@@ -606,12 +660,12 @@ async function run() {
 
   // Fetch the master baseline and the MR's changed files in parallel
   // (both best-effort — neither blocks the comment from posting).
-  const [baseline, { files: changedFiles, truncated }] = await Promise.all([
+  const [baseline, { files: changedFiles, deletedFiles, truncated }] = await Promise.all([
     fetchMasterBaseline(projectId, opts.jobName, opts.artifactPath),
     fetchChangedSpecFiles(projectId, mrIid),
   ]);
 
-  const actionable = computeActionable({ changedFiles, report: stats, baseline });
+  const actionable = computeActionable({ changedFiles, deletedFiles, report: stats, baseline });
 
   const comment = buildComment({
     jobName: opts.jobName,
@@ -702,5 +756,6 @@ export {
   computeActionable,
   thresholdInfo,
   buildComment,
+  buildDeletedFileRow,
   apiRequest,
 };

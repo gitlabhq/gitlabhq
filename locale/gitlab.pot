@@ -10993,6 +10993,9 @@ msgstr ""
 msgid "AnalyticsDashboards|Keep your teams aligned around the metrics that matter most."
 msgstr ""
 
+msgid "AnalyticsDashboards|More information about %{title}"
+msgstr ""
+
 msgid "AnalyticsDashboards|New dashboard"
 msgstr ""
 
@@ -12260,7 +12263,7 @@ msgstr ""
 msgid "ArtifactRegistry|CLI commands"
 msgstr ""
 
-msgid "ArtifactRegistry|Cache entry successfully deleted."
+msgid "ArtifactRegistry|Cache entry successfully scheduled for deletion."
 msgstr ""
 
 msgid "ArtifactRegistry|Cache successfully cleared."
@@ -12476,7 +12479,7 @@ msgid_plural "ArtifactRegistry|Images cached"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ArtifactRegistry|Image was successfully deleted."
+msgid "ArtifactRegistry|Image successfully scheduled for deletion."
 msgstr ""
 
 msgid "ArtifactRegistry|Index"
@@ -12635,7 +12638,7 @@ msgid_plural "ArtifactRegistry|Packages cached"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ArtifactRegistry|Package was successfully deleted."
+msgid "ArtifactRegistry|Package successfully scheduled for deletion."
 msgstr ""
 
 msgid "ArtifactRegistry|Podman"
@@ -14241,6 +14244,9 @@ msgstr ""
 msgid "BillingPlans|Advanced application security"
 msgstr ""
 
+msgid "BillingPlans|Advanced security & compliance"
+msgstr ""
+
 msgid "BillingPlans|Agents"
 msgstr ""
 
@@ -14412,6 +14418,9 @@ msgstr ""
 msgid "BillingPlans|Have a question? We're here to help."
 msgstr ""
 
+msgid "BillingPlans|Higher compute & seat limits"
+msgstr ""
+
 msgid "BillingPlans|If you would like to downgrade your plan please contact %{support_link_start}Customer Support%{support_link_end}."
 msgstr ""
 
@@ -14532,7 +14541,13 @@ msgstr ""
 msgid "BillingPlans|Start a GitLab Duo Enterprise trial to try all end-to-end AI capabilities from GitLab. You can try it for free for %{duration} days, no credit card required."
 msgstr ""
 
+msgid "BillingPlans|Start a GitLab Ultimate trial"
+msgstr ""
+
 msgid "BillingPlans|Start a free GitLab Duo Enterprise Trial"
+msgstr ""
+
+msgid "BillingPlans|Start a free trial"
 msgstr ""
 
 msgid "BillingPlans|Start a free trial of Ultimate with advanced enterprise security, no credit card required."
@@ -14587,6 +14602,9 @@ msgid "BillingPlans|Track related issues to manage large initiatives and monitor
 msgstr ""
 
 msgid "BillingPlans|Trusted by"
+msgstr ""
+
+msgid "BillingPlans|Try everything GitLab Ultimate offers for your group. Free for 30 days, no credit card required."
 msgstr ""
 
 msgid "BillingPlans|Try for free"
@@ -18455,10 +18473,10 @@ msgstr ""
 msgid "Classification Label (optional)"
 msgstr ""
 
-msgid "Classification has completed."
+msgid "Classification could not be completed."
 msgstr ""
 
-msgid "Classification is outdated."
+msgid "Classification has completed."
 msgstr ""
 
 msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
@@ -67743,6 +67761,9 @@ msgstr ""
 msgid "RiskClassification|diff_sha %{diff_sha} is older than the assessment's current diff_sha %{current_diff_sha}."
 msgstr ""
 
+msgid "RiskClassification|workflow_id %{workflow_id} is not a classification session for this merge request."
+msgstr ""
+
 msgid "Roadmap"
 msgstr ""
 
@@ -92702,6 +92723,12 @@ msgid "WorkItemDuoQuestion|An answer is required to submit"
 msgstr ""
 
 msgid "WorkItemDuoQuestion|Answer in your own words"
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Choose one of these options, or answer in your own words:"
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Choose one or more of these options, or answer in your own words:"
 msgstr ""
 
 msgid "WorkItemDuoQuestion|Include your answer"

@@ -10,6 +10,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import ExploreAnalyticsDashboard from '~/explore/analytics_dashboards/pages/details.vue';
 import DashboardFilters from '~/explore/analytics_dashboards/components/dashboard_filters.vue';
 import DashboardLoader from '~/explore/analytics_dashboards/components/dashboard_loader.vue';
+import SectionHeader from '~/analytics/analytics_dashboards/components/section_header.vue';
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
 import { createAlert } from '~/alert';
 import getDashboardQuery from '~/explore/analytics_dashboards/graphql/get_dashboard.query.graphql';
@@ -83,6 +84,16 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   const filtersLayoutStub = {
     props: ['filters'],
     template: '<div><slot name="filters" /></div>',
+  };
+
+  const panelLayoutStub = {
+    props: ['config'],
+    template: `
+        <div>
+          <slot name="filters" />
+          <slot name="panel" v-if="config.panels.length" :panel="config.panels[0]" />
+        </div>
+      `,
   };
 
   const createWithFilters = async (loaderStub = filtersLoaderStub) => {
@@ -512,16 +523,6 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   });
 
   describe('dashboard panels', () => {
-    const panelLayoutStub = {
-      props: ['config'],
-      template: `
-        <div>
-          <slot name="filters" />
-          <slot name="panel" v-if="config.panels.length" :panel="config.panels[0]" />
-        </div>
-      `,
-    };
-
     beforeEach(async () => {
       createComponent({
         requestHandlers: mockResolvedQuery(mockDashboardWithPanelViewsResponse),
@@ -592,15 +593,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       inject: ['namespaceFullPath', 'namespaceName', 'namespaceId', 'isProject'],
       template: '<div />',
     };
-    const panelLayoutStub = {
-      props: ['config'],
-      template: `
-        <div>
-          <slot name="filters" />
-          <slot name="panel" v-if="config.panels.length" :panel="config.panels[0]" />
-        </div>
-      `,
-    };
+
     const findProbe = () => wrapper.findComponent(probe);
     // Injected computed refs arrive unwrapped, so these read as plain values.
     const injected = () => {
@@ -657,6 +650,66 @@ describe('ExploreAnalyticsDashboardDetails', () => {
         namespaceFullPath: mockGroup.fullPath,
         isProject: false,
       });
+    });
+  });
+
+  describe('section entries', () => {
+    const section = { title: 'Adoption tiers', description: 'How engagement is distributed' };
+    const sectionPanel = {
+      section,
+      gridAttributes: { xPos: 0, yPos: 0, width: 12, height: 1 },
+    };
+
+    const loaderStub = (panels) =>
+      stubComponent(DashboardLoader, {
+        data() {
+          return { slotConfig: { panels } };
+        },
+        created() {
+          this.$emit('loaded', { config: this.slotConfig });
+        },
+        template: `
+          <div>
+            <slot name="dashboard" :config="slotConfig" :cell-height="undefined" :min-cell-height="undefined" />
+          </div>
+        `,
+      });
+
+    const createWithPanels = async (panels) => {
+      createComponent({
+        stubs: { DashboardLoader: loaderStub(panels), GlDashboardLayout: panelLayoutStub },
+      });
+      await waitForPromises();
+      await selectGroup();
+    };
+
+    it('renders a section header for a section entry', async () => {
+      await createWithPanels([sectionPanel]);
+
+      expect(wrapper.findComponent(SectionHeader).props()).toMatchObject({
+        title: section.title,
+        description: section.description,
+        tooltip: {},
+      });
+    });
+
+    it('does not render an analytics panel for a section entry', async () => {
+      await createWithPanels([sectionPanel]);
+
+      expect(wrapper.findComponent(AnalyticsDashboardPanel).exists()).toBe(false);
+    });
+
+    it('renders an analytics panel for a normal entry', async () => {
+      await createWithPanels([
+        {
+          title: 'Panel',
+          visualization: { type: 'SingleStat' },
+          gridAttributes: { xPos: 0, yPos: 0, width: 4, height: 1 },
+        },
+      ]);
+
+      expect(wrapper.findComponent(SectionHeader).exists()).toBe(false);
+      expect(wrapper.findComponent(AnalyticsDashboardPanel).exists()).toBe(true);
     });
   });
 });

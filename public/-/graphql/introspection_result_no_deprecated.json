@@ -223103,6 +223103,12 @@
               "description": "Callout feature name for overage_seat_count_threshold.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "BILLING_RETRIAL_CARD",
+              "description": "Callout feature name for billing_retrial_card.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

@@ -397,9 +397,8 @@ Show me all pipelines for merge request 42 in project gitlab-org/gitlab
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605848) in GitLab 19.4.
-- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/work_items/605848) from `create_merge_request_note` in GitLab 19.4. `create_merge_request_note` continues to work as an alias.
-- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/work_items/605848) from `create_workitem_note` in GitLab 19.4. `create_workitem_note` continues to work as an alias.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241114) in GitLab 19.2.
+- [Replaced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605848) `create_merge_request_note` and `create_workitem_note` tools in GitLab 19.4. Both original tool names continue to work as aliases.
 
 {{< /history >}}
 

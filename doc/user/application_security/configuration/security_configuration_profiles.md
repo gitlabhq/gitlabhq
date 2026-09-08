@@ -21,6 +21,7 @@ title: Managing security configuration profiles
 - Dependency scanning auto-remediation profile [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/604588) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_remediation_profiles`. Enabled by default.
 - Feature flag `security_scan_profiles_feature` removed in GitLab 19.4.
 - Feature flag `security_remediation_profiles` removed in GitLab 19.4.
+- SAST scan profile configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/617070) in GitLab 19.4 as an [experiment](../../../policy/development_stages_support.md), available through the GraphQL API only.
 
 {{< /history >}}
 
@@ -189,6 +190,71 @@ To apply a security configuration profile:
    A single mutation accepts a maximum of 100 IDs, counting project and group IDs together.
 
 1. Check the `errors` field in the response to confirm that the profile was applied.
+
+## Customize a SAST profile
+
+Customize a SAST profile to override the scanner configuration used when the profile runs.
+Each setting maps to an existing [SAST CI/CD variable](../sast/_index.md).
+
+This feature is an [experiment](../../../policy/development_stages_support.md) and is available through the GraphQL API only.
+
+Prerequisites:
+
+- The Maintainer or Security Manager role for the associated group.
+
+To customize a SAST profile, use the `securityScanProfileCreate` or `securityScanProfileUpdate`
+mutation. Set a `configuration.sast` object on the trigger you want to customize.
+
+| Field | Description | Equivalent CI/CD variable |
+| ----- | ----------- | ------------------------- |
+| `secureAnalyzersPrefix` | Prefix for the container registry the analyzer image is pulled from. | `SECURE_ANALYZERS_PREFIX` |
+| `imageSuffix` | Suffix appended to the analyzer image name. Set to `DEFAULT` or `FIPS`. | `SAST_IMAGE_SUFFIX` |
+| `analyzerImageTag` | Tag of the analyzer image to use. Overrides the pinned image tag for all SAST analyzers, which can cause analyzer failures if a specific version is required. | `SAST_ANALYZER_IMAGE_TAG` |
+| `excludedAnalyzers` | Analyzers excluded from the scan. | `SAST_EXCLUDED_ANALYZERS` |
+| `excludedPaths` | Glob paths excluded from the scan. | `SAST_EXCLUDED_PATHS` |
+| `advancedSastPartialScan` | Controls [diff-based scanning](../sast/gitlab_advanced_sast.md) for GitLab Advanced SAST. Set to `DIFFERENTIAL` or `DISABLED`. | `ADVANCED_SAST_PARTIAL_SCAN` |
+| `gitlabAdvSastIncrScan` | Whether [incremental scanning](../sast/gitlab_advanced_sast.md) is enabled for GitLab Advanced SAST. | `GITLAB_ADV_SAST_INCR_SCAN` |
+
+For example, to create a SAST profile with a customized merge request pipeline trigger:
+
+```graphql
+mutation {
+  securityScanProfileCreate(input: {
+    namespaceId: "gid://gitlab/Group/123",
+    scanType: SAST,
+    name: "Custom SAST profile",
+    description: "SAST profile with custom analyzer exclusions and Advanced SAST settings",
+    triggers: [
+      {
+        triggerType: MERGE_REQUEST_PIPELINE,
+        configuration: {
+          sast: {
+            excludedAnalyzers: ["eslint"],
+            excludedPaths: ["spec/**/*", "test/**/*"],
+            advancedSastPartialScan: DIFFERENTIAL,
+            gitlabAdvSastIncrScan: true
+          }
+        }
+      }
+    ]
+  }) {
+    scanProfile {
+      id
+      name
+    }
+    errors
+  }
+}
+```
+
+You can set only one configuration member per trigger, and it must match the profile's scan type.
+For a SAST profile, that member is `sast`.
+
+By default, the `stripDefaults` argument removes trigger configuration values that match the
+defaults before storing the profile, so only your overrides are persisted.
+
+For the full list of arguments, see the
+[`securityScanProfileCreate` mutation](../../../api/graphql/reference/_index.md#mutationsecurityscanprofilecreate).
 
 ## Coverage status indicators
 

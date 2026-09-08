@@ -134,8 +134,9 @@ module Ci
       def process_header_includes(spec, file, sha)
         return spec unless spec[:include].present?
 
-        processor = ::Gitlab::Ci::Config::External::Header::Processor.new(spec, header_include_context(file, sha))
-        processor.perform
+        ::Gitlab::Ci::Config::FeatureFlags.with_actor(project) do
+          ::Gitlab::Ci::Config::External::Header::Processor.new(spec, header_include_context(file, sha)).perform
+        end
       end
 
       def header_include_context(file, sha)

@@ -8,8 +8,8 @@ function getExperimentsData() {
   // Bandaid to allow-list only the properties which the current gitlab_experiment
   // context schema suppports, since we most often use this data to create that
   // Snowplow context.
-  // See TRACKING_CONTEXT_SCHEMA for current version (1-0-0)
-  // https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-0
+  // See TRACKING_CONTEXT_SCHEMA for current version (1-0-3)
+  // https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-3
   return mapValues({ ...experimentsFromGl }, (xp) => {
     return pick(xp, ['experiment', 'key', 'variant', 'migration_keys']);
   });

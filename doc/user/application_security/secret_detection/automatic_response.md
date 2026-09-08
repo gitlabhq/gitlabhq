@@ -32,7 +32,8 @@ GitLab supports automatic response for the following types of secrets:
 
 **Footnotes**:
 
-1. Supported only for [`gitlab_personal_access_token`](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/a9ea19d0d9e06f266a80975467b4b3a8360c04eb/rules/mit/gitlab/gitlab.toml#L2).
+1. Supported for the `gitlab_personal_access_token`, `gitlab_personal_access_token_routable`, and
+   `gitlab_personal_access_token_routable_versioned` [detection rules](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/3204c843e960cec1b26a6cf8f95f609c68400de8/rules/mit/gitlab/gitlab.toml).
 
 **Component legend**:
 

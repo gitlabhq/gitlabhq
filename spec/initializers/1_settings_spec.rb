@@ -305,6 +305,27 @@ RSpec.describe '1_settings', feature_category: :settings do
     end
   end
 
+  describe 'ci_catalog_bundles' do
+    after do
+      Settings.ci_catalog_bundles['enabled'] = nil
+      load_settings
+    end
+
+    it 'is enabled by default' do
+      Settings.ci_catalog_bundles['enabled'] = nil
+      load_settings
+
+      expect(Settings.ci_catalog_bundles.enabled).to be(true)
+    end
+
+    it 'uses the configured value' do
+      Settings.ci_catalog_bundles['enabled'] = false
+      load_settings
+
+      expect(Settings.ci_catalog_bundles.enabled).to be(false)
+    end
+  end
+
   describe 'ci_id_tokens_issuer_url' do
     after do
       Settings.ci_id_tokens['issuer_url'] = nil

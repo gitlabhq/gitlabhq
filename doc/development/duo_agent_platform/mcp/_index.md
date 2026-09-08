@@ -262,6 +262,35 @@ route_setting :mcp, tool_name: :get_issue, params: [:id, :issue_iid], resource_n
 
 This [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) provides more examples.
 
+##### Declare MCP token access for the route's HTTP method
+
+MCP-scoped tokens require explicit access declarations on the API class
+for each HTTP method used by its MCP routes. Without these declarations,
+MCP token requests are rejected even though the `route_setting :mcp` is present.
+
+Add the matching `allow_mcp_access_*` call to the API class that contains the route:
+
+| HTTP method | Required call |
+|---|---|
+| `GET` / `HEAD` | `allow_mcp_access_read` |
+| `POST` | `allow_mcp_access_create` |
+| `PUT` / `PATCH` | `allow_mcp_access_update` |
+| `DELETE` | `allow_mcp_access_delete` |
+
+For example, an API class with both a `GET` route and a `PUT` route exposed as MCP tools
+must include both declarations:
+
+```ruby
+class MergeRequests < ::API::Base
+  include ::API::Concerns::McpAccess
+
+  allow_mcp_access_read
+  allow_mcp_access_create
+  allow_mcp_access_update
+  # ...
+end
+```
+
 #### Implement an aggregated REST API tool
 
 Aggregated API tools combine multiple related API tools into a single unified interface, reducing

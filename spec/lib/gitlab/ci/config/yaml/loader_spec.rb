@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_composition do
+  around do |example|
+    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+      example.run
+    end
+  end
+
   describe '#load' do
     let_it_be(:yaml) do
       File.read(Rails.root.join('spec/lib/gitlab/ci/config/yaml/fixtures/complex-included-ci.yml'))

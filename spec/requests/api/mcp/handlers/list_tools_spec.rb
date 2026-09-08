@@ -153,6 +153,40 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       expect(schema['required']).to contain_exactly('id')
     end
 
+    it 'ensures every MCP-enabled route has a matching allow_mcp_access declaration',
+      :eager_load, :aggregate_failures do
+      method_to_access = {
+        'GET' => :get?,
+        'HEAD' => :head?,
+        'POST' => :post?,
+        'PUT' => :put?,
+        'PATCH' => :patch?,
+        'DELETE' => :delete?
+      }.freeze
+
+      ::API::API.routes.each do |route|
+        settings = route.app.route_setting(:mcp)
+        next if settings.blank?
+
+        http_method = route.request_method
+        next unless method_to_access.key?(http_method)
+
+        api_class = route.app.options[:for]
+        mcp_scopes = api_class.allowed_scopes.select { |s| s.name == :mcp }
+
+        request_double = instance_double(ActionDispatch::Request)
+        method_to_access.each_value { |m| allow(request_double).to receive(m).and_return(false) }
+        allow(request_double).to receive(method_to_access[http_method]).and_return(true)
+
+        matched = mcp_scopes.any? { |scope| scope.sufficient?([:mcp], request_double) }
+
+        expect(matched).to be(true),
+          "#{api_class} registers MCP tool '#{settings[:tool_name]}' on #{http_method} " \
+            "but has no allow_mcp_access_* declaration that permits #{http_method} requests. " \
+            "Add the appropriate allow_mcp_access_* call for the HTTP method."
+      end
+    end
+
     it 'validates all array parameters have proper JSON Schema structure with items property' do
       post api('/mcp', user, oauth_access_token: access_token), params: params
 

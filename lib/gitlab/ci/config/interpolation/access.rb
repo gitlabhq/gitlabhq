@@ -12,7 +12,7 @@ module Gitlab
           MAX_ACCESS_ARRAY_DEPTH = 5
           ARRAY_INDEX_PATTERN = /\[(\d+)\]/
           ANY_BRACKET_CONTENT_PATTERN = /\[([^\]]*)\]/
-          VALID_INDEXED_SEGMENT_PATTERN = /\A(\w*)(\[\d+\])+\z/
+          VALID_INDEXED_SEGMENT_PATTERN = /\A([\w-]*)(\[\d+\])+\z/
 
           def initialize(access, ctx)
             @content = access

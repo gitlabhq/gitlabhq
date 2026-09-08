@@ -492,7 +492,7 @@ def build_comment(job_name:, job_url:, stats:, baseline:, actionable:, truncated
   emoji = status_emoji(stats)
   lines = ["### #{SECTIONS.fetch('rspec')[:label]}", '']
 
-  unless stats
+  if stats.nil? && actionable[:files].none? { |f| f[:is_deleted] }
     lines << "**#{job_name}**: #{emoji} [job log](#{job_url}) -- no JSON report found"
     lines << ''
     return lines.join("\n")

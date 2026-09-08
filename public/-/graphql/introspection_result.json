@@ -250852,8 +250852,8 @@
               "deprecationReason": null
             },
             {
-              "name": "STALE",
-              "description": "Classification is outdated.",
+              "name": "FAILED",
+              "description": "Classification could not be completed.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -423943,6 +423943,12 @@
             {
               "name": "OVERAGE_SEAT_COUNT_THRESHOLD",
               "description": "Callout feature name for overage_seat_count_threshold.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BILLING_RETRIAL_CARD",
+              "description": "Callout feature name for billing_retrial_card.",
               "isDeprecated": false,
               "deprecationReason": null
             }

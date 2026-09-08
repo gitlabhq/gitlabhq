@@ -3,7 +3,7 @@
 # Set default values for object_store settings
 class ObjectStoreSettings
   SUPPORTED_TYPES = %w[artifacts external_diffs lfs uploads packages dependency_proxy terraform_state pages
-    ci_secure_files agent_plan_content].freeze
+    ci_secure_files agent_plan_content ci_catalog_bundles].freeze
   ALLOWED_OBJECT_STORE_OVERRIDES = %w[bucket enabled proxy_download cdn].freeze
 
   # To ensure the one Workhorse credential matches the Rails config, we
@@ -17,13 +17,18 @@ class ObjectStoreSettings
   # introduced first as a storage-specific setting. To avoid breaking
   # consolidated settings for other object types, exclude it here.
   #
-  # agent_plan_content is written server-side via CarrierWave only
-  # (never browser-uploaded), so it does not need Workhorse acceleration.
-  WORKHORSE_ACCELERATED_TYPES = SUPPORTED_TYPES - %w[pages ci_secure_files agent_plan_content]
+  # agent_plan_content and ci_catalog_bundles are written server-side via
+  # CarrierWave only (never browser-uploaded), so they do not need Workhorse
+  # acceleration.
+  WORKHORSE_ACCELERATED_TYPES = SUPPORTED_TYPES - %w[pages ci_secure_files agent_plan_content ci_catalog_bundles]
 
   # pages and ci_secure_files may be enabled but use legacy disk storage
   # we don't need to raise an error in that case
-  ALLOWED_INCOMPLETE_TYPES = %w[pages ci_secure_files].freeze
+  #
+  # ci_catalog_bundles defaults to enabled, so an install already using
+  # consolidated settings would fail to boot before an administrator has had a
+  # chance to provision a bucket for it. Warn instead.
+  ALLOWED_INCOMPLETE_TYPES = %w[pages ci_secure_files ci_catalog_bundles].freeze
 
   attr_accessor :settings
 

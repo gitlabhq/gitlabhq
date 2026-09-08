@@ -29,7 +29,10 @@ module Gitlab
             result = ::Gitlab::Ci::Config::Yaml::Loader.new(content).load_uninterpolated_yaml
             raise CompileError, result.error unless result.valid?
 
-            merged = ::Gitlab::Ci::Config::External::Processor.new(result.content, context).perform
+            merged = ::Gitlab::Ci::Config::FeatureFlags.with_actor(project) do
+              ::Gitlab::Ci::Config::External::Processor.new(result.content, context).perform
+            end
+
             merged = ::Gitlab::Ci::Config::Extendable.new(merged).to_hash
             merged = ::Gitlab::Ci::Config::Yaml::Tags::Resolver.new(merged).to_hash
 

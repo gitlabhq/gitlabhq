@@ -3,8 +3,11 @@
 require 'fast_spec_helper'
 require 'oj'
 require_relative Rails.root.join('lib/gitlab/ci/config/interpolation/inputs.rb')
+require_relative '../../../../../support/shared_contexts/lib/ci/inputs/reject_yaml_tags_flag_shared_context'
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pipeline_composition do
+  include_context 'with ci_reject_yaml_tags_in_inputs enabled'
+
   let(:inputs) { described_class.new(specs, args) }
   let(:specs) { { foo: { default: 'bar' } } }
   let(:args) { {} }
