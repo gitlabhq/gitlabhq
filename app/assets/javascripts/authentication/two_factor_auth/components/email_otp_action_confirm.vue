@@ -1,7 +1,13 @@
 <script>
-import { GlButton, GlFormCheckbox, GlFormGroup, GlModal, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFormCheckbox,
+  GlFormGroup,
+  GlFormPasswordInput,
+  GlModal,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
-import PasswordInput from '~/authentication/password/components/password_input.vue';
 import csrf from '~/lib/utils/csrf';
 import { __ } from '~/locale';
 
@@ -16,7 +22,7 @@ export default {
       text: __('Cancel'),
     },
   },
-  components: { GlButton, GlFormCheckbox, GlFormGroup, GlModal, PasswordInput },
+  components: { GlButton, GlFormCheckbox, GlFormGroup, GlFormPasswordInput, GlModal },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -103,7 +109,12 @@ export default {
           :state="passwordState"
           :invalid-feedback="__('Please enter your current password.')"
         >
-          <password-input id="current-password" name="current_password" />
+          <gl-form-password-input
+            id="current-password"
+            name="current_password"
+            autocomplete="current-password"
+            required
+          />
         </gl-form-group>
 
         <input type="hidden" name="_method" value="put" />

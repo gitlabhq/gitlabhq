@@ -676,8 +676,8 @@ secondary site with the same credentials as were used with the primary site.
 
 This step allows websockets to work seamlessly from primary and secondary sites.
 
-1. Collect the **external URLs** of your sites (primary and secondary). You can find them in the Site pages in the Admin area, as mentioned in the section above.
-1. SSH into each Rails and Sidekiq node on your **primary site** and sign in as root:
+1. Collect the external URLs of your sites (primary and secondary). You can find them in the Site pages in the Admin area, as mentioned in the section above.
+1. SSH into each Rails and Sidekiq node on your primary site and sign in as root:
 
    ```shell
    sudo -i

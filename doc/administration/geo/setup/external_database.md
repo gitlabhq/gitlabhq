@@ -52,13 +52,13 @@ in case a Geo site has to be rebuilt.
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
 
-1. Reconfigure the **Rails node** for the change to take effect:
+1. Reconfigure the Rails node for the change to take effect:
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
-1. Execute the command below on the **Rails node** to define the site as primary site:
+1. Execute the command below on the Rails node to define the site as primary site:
 
    ```shell
    gitlab-ctl set-geo-primary-node
@@ -165,7 +165,7 @@ has three main functions:
 
 To configure the connection to the external read-replica database and enable Log Cursor:
 
-1. SSH into each **Rails, Sidekiq, and Geo Log Cursor** node on your secondary site and login as root:
+1. SSH into each Rails, Sidekiq, and Geo Log Cursor node on your secondary site and login as root:
 
    ```shell
    sudo -i

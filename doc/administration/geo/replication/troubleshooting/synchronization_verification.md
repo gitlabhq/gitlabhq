@@ -526,10 +526,10 @@ The same errors are also reflected in the UI under **Admin** > **Geo** > **Sites
 > [!warning]
 > Ensure you have a recent and working backup at hand before issuing any deletion commands.
 
-To remove those errors, first identify which particular resources are affected. Then, run the appropriate `destroy` commands to ensure the deletion is propagated across all Geo sites and their databases. Based on the previous scenario, an **upload** is causing those errors which is used as an example below.
+To remove those errors, first identify which particular resources are affected. Then, run the appropriate `destroy` commands to ensure the deletion is propagated across all Geo sites and their databases. Based on the previous scenario, an upload is causing those errors which is used as an example below.
 
 1. Map the identified inconsistencies to their respective [Geo Model class](#geo-data-type-model-classes) name. The class name is needed in the following steps. In this scenario, for uploads it corresponds to `Upload`.
-1. Start a [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) on the **Geo primary site**.
+1. Start a [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) on the Geo primary site.
 1. Query all resources where verification failed due to missing files based on the *Geo Model class* of the previous step. Adjust or remove the `limit(20)` to display more results. Observe how the listed resources should match the failed ones shown in the UI:
 
    ```ruby
@@ -882,7 +882,7 @@ Some project repositories consistently fail to sync with the error
 for some repositories, the specific error message in the Gitaly logs is different: `gitmodulesUrl: disallowed submodule url`.
 This failure happens when repositories contain invalid submodule URLs in their `.gitmodules` files.
 
-**Root Cause:** This issue is caused by **historical commits** in the Git repository that contain `.gitmodules` files with malformed URLs. The problem occurs during Git's consistency checks (`git fsck`) that run when Geo attempts to clone the repository from primary to secondary.
+**Root Cause:** This issue is caused by historical commits in the Git repository that contain `.gitmodules` files with malformed URLs. The problem occurs during Git's consistency checks (`git fsck`) that run when Geo attempts to clone the repository from primary to secondary.
 
 The problem is in the repository's commit history. Submodule URLs in `.gitmodules` files contain
 invalid formats, using `:` instead of `/` in the path:
@@ -894,7 +894,7 @@ invalid formats, using `:` instead of `/` in the path:
 
 1. **Git's strict validation**: Starting with GitLab 17.0 and newer Git versions, Git performs stricter `fsck` checks during clone operations
 1. **Historical data persistence**: Even if the current `.gitmodules` file is correct, Git stores all historical versions as "blobs" in the repository
-1. **Clone-time failure**: When Geo tries to clone the repository, Git's `fsck` examines **all objects** (including historical ones) and fails when it finds malformed URLs
+1. **Clone-time failure**: When Geo tries to clone the repository, Git's `fsck` examines all objects (including historical ones) and fails when it finds malformed URLs
 1. **Complete sync failure**: The entire clone operation fails, preventing the repository from reaching the secondary site
 
 **Important:** Editing the current `.gitmodules` file does not resolve this issue because the problematic data exists in the repository's Git history, not just in the current version of the file.

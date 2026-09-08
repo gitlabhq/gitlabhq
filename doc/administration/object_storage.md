@@ -1634,7 +1634,7 @@ On the primary site:
 > [!warning]
 > Ensure you have a recent and working backup at hand before issuing any deletion commands.
 
-Based on the previous scenario, multiple **uploads** are causing
+Based on the previous scenario, multiple uploads are causing
 inconsistencies which are used as an example below.
 
 Proceed as follows to properly delete potential leftovers:

@@ -876,7 +876,7 @@ Is the server running locally and accepting
 connections on Unix domain socket "/var/opt/gitlab/postgresql/.s.PGSQL.5432"?
 ```
 
-This is because, in a multi-node environment, the `gitlab:env:info` Rake task should only be executed on the nodes running **GitLab Rails**.
+This is because, in a multi-node environment, the `gitlab:env:info` Rake task should only be executed on the nodes running GitLab Rails.
 
 ### Resolve statement timeout errors
 

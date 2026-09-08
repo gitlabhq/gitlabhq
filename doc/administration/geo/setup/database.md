@@ -96,7 +96,7 @@ The following guide assumes that:
    ```
 
 1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
-1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your site:
+1. Edit `/etc/gitlab/gitlab.rb` and add a unique name for your site:
 
    ```ruby
    ##
@@ -296,7 +296,7 @@ The following guide assumes that:
 1. Re-enable migrations now that PostgreSQL is restarted and listening on the
    private address.
 
-   Edit `/etc/gitlab/gitlab.rb` and **change** the configuration to `true`:
+   Edit `/etc/gitlab/gitlab.rb` and change the configuration to `true`:
 
    ```ruby
    gitlab_rails['auto_migrate'] = true
@@ -681,7 +681,7 @@ With Patroni, this support is now possible. To migrate the existing PostgreSQL t
 1. [Configure a Standby Cluster](#step-4-configure-a-standby-cluster-on-the-secondary-site)
    on that single node machine.
 
-You end up with a **Standby Cluster** with a single node. That allows you to add additional Patroni nodes by following the same instructions listed previously.
+You end up with a Standby Cluster with a single node. That allows you to add additional Patroni nodes by following the same instructions listed previously.
 
 ### Patroni support
 
@@ -723,8 +723,8 @@ To set up database replication with Patroni on a secondary site, you must
 configure a permanent replication slot on the primary site's Patroni cluster,
 and ensure password authentication is used.
 
-On each node running a Patroni instance on the primary site **starting on the Patroni
-Leader instance**:
+On each node running a Patroni instance on the primary site, starting on the Patroni
+Leader instance:
 
 1. SSH into your Patroni instance and sign in as root:
 

@@ -1,7 +1,14 @@
 <script>
-import { GlAlert, GlButton, GlForm, GlFormInput, GlFormGroup, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlForm,
+  GlFormInput,
+  GlFormGroup,
+  GlFormPasswordInput,
+  GlLoadingIcon,
+} from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import PasswordInput from '~/authentication/password/components/password_input.vue';
 import csrf from '~/lib/utils/csrf';
 import { s__ } from '~/locale';
 import { WEBAUTHN_REGISTER } from '../constants';
@@ -16,8 +23,8 @@ export default {
     GlForm,
     GlFormInput,
     GlFormGroup,
+    GlFormPasswordInput,
     GlLoadingIcon,
-    PasswordInput,
   },
   inject: ['initialError', 'passwordRequired', 'path', 'twoFactorAuthPath'],
   data() {
@@ -108,12 +115,13 @@ export default {
           :label="__('Current password')"
           label-for="passkey-registration-current-password"
         >
-          <password-input
+          <gl-form-password-input
             id="passkey-registration-current-password"
             v-model="form.password"
             name="current_password"
+            autocomplete="current-password"
+            required
             data-testid="current-password-input"
-            type="password"
           />
         </gl-form-group>
 

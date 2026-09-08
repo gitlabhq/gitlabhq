@@ -83,12 +83,15 @@ export default {
         this.deviceResponse = JSON.stringify(convertGetResponse(response));
         // Let Vue write deviceResponse into the hidden input before the native submit reads it.
         await this.$nextTick();
+        // Keep inProgress true through submit: submit() only starts the navigation, so the page
+        // is still here and a second credentials.get() would raise a fresh prompt mid-request.
         this.$refs.form.$el.submit();
       } catch (err) {
         // A get() we aborted ourselves (unmount / method switch) is intentional; surfacing
         // it would leave a stray "(AbortError)" alert behind from the destroyed instance.
         if (this.abortController.signal.aborted) return;
 
+        this.inProgress = false;
         const webAuthnError = new WebAuthnError(err, WEBAUTHN_AUTHENTICATE);
         // preservePrevious so a client-side device error doesn't wipe a server-rendered
         // flash (e.g. "Authentication via WebAuthn device failed") in the same container.
@@ -96,8 +99,6 @@ export default {
           message: `${webAuthnError.message()} (${webAuthnError.errorName})`,
           preservePrevious: true,
         });
-      } finally {
-        this.inProgress = false;
       }
     },
   },
@@ -137,8 +138,8 @@ export default {
     </gl-form>
 
     <gl-button
+      accessible-disabled
       block
-      class="js-no-auto-disable"
       data-testid="try-again-button"
       variant="confirm"
       :disabled="inProgress"

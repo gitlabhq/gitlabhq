@@ -5,6 +5,7 @@ import {
   GlForm,
   GlFormInput,
   GlFormGroup,
+  GlFormPasswordInput,
   GlLink,
   GlLoadingIcon,
   GlSprintf,
@@ -48,6 +49,7 @@ export default {
     GlForm,
     GlFormInput,
     GlFormGroup,
+    GlFormPasswordInput,
     GlLink,
     GlLoadingIcon,
     GlSprintf,
@@ -181,11 +183,10 @@ export default {
           :label="$options.I18N_PASSWORD"
           label-for="webauthn-registration-current-password"
         >
-          <gl-form-input
+          <gl-form-password-input
             id="webauthn-registration-current-password"
             v-model="form.password"
             name="current_password"
-            type="password"
             autocomplete="current-password"
             data-testid="current-password-input"
           />

@@ -35784,6 +35784,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="artifactregistryimage-manifests-includereferrers"></a>`includeReferrers` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Include referrer manifests in the list. Defaults to false, matching the endpoint. |
 | <a id="artifactregistryimage-manifests-sort"></a>`sort` {{< icon name="warning-solid" >}} | [`ArtifactRegistryManifestSort`](#artifactregistrymanifestsort) | Introduced in GitLab 19.4. Status: Experiment. Sort manifests by the criteria. Defaults to publication date descending. |
 
 ### `ArtifactRegistryManifest`

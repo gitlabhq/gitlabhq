@@ -114,13 +114,13 @@ To fix this issue, set the primary site's internal URL to a URL that is:
 
 ### Geo Admin area returns 404 error for a secondary site
 
-Sometimes `sudo gitlab-rake gitlab:geo:check` indicates that **Rails nodes of the secondary** sites are
+Sometimes `sudo gitlab-rake gitlab:geo:check` indicates that Rails nodes of the secondary sites are
 healthy, but a 404 Not Found error message for the secondary site is returned in the Geo **Admin** area on the web interface for
 the primary site.
 
 To resolve this issue:
 
-- Try restarting **each Rails, Sidekiq, and Gitaly node on your secondary site** using `sudo gitlab-ctl restart`.
+- Try restarting each Rails, Sidekiq, and Gitaly node on your secondary site using `sudo gitlab-ctl restart`.
 - Check `/var/log/gitlab/gitlab-rails/geo.log` on Sidekiq nodes to see if the secondary site is
   using IPv6 to send its status to the primary site. If it is, add an entry to
   the primary site using IPv4 in the `/etc/hosts` file. Alternatively, you should

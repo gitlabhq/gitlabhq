@@ -67469,6 +67469,9 @@ msgstr ""
 msgid "ReturningGitlabDuoUsersByFeature|Percentage of users from the previous period who use the feature again in the selected period. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "Reveal password"
+msgstr ""
+
 msgid "Reveal values"
 msgstr ""
 
@@ -78594,9 +78597,6 @@ msgid "Show or hide draft merge requests in your merge requests list."
 msgstr ""
 
 msgid "Show or hide sidebar"
-msgstr ""
-
-msgid "Show password"
 msgstr ""
 
 msgid "Show project milestones"

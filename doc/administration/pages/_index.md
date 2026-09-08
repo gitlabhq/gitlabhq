@@ -84,12 +84,12 @@ Before configuring Pages for wildcard domains, you must:
    1. If the Pages domain is a subdomain of your GitLab instance domain,
       all deployed Pages sites can access GitLab session cookies.
 
-1. Configure a **wildcard DNS record**.
-1. Optional. Have a **wildcard certificate** for that domain if you decide to
+1. Configure a wildcard DNS record.
+1. Optional. Have a wildcard certificate for that domain if you decide to
    serve Pages under HTTPS.
 1. Optional but recommended. Enable [instance runners](../../ci/runners/_index.md)
    so that your users do not have to bring their own.
-1. For custom domains, have a **secondary IP**.
+1. For custom domains, have a secondary IP.
 
 ### Single-domain sites
 
@@ -112,11 +112,11 @@ Before configuring Pages for single-domain sites, you must:
    1. If the Pages domain is a subdomain of your GitLab instance domain,
       all deployed Pages sites can access GitLab session cookies.
 
-1. Configure a **DNS record**.
-1. Optional. If you decide to serve Pages under HTTPS, have a **TLS certificate** for that domain.
+1. Configure a DNS record.
+1. Optional. If you decide to serve Pages under HTTPS, have a TLS certificate for that domain.
 1. Optional but recommended. Enable [instance runners](../../ci/runners/_index.md)
    so that your users do not have to bring their own.
-1. For custom domains, have a **secondary IP**.
+1. For custom domains, have a secondary IP.
 
 ### Add the domain to the Public Suffix List
 
@@ -523,7 +523,7 @@ For more information, see
 ## Advanced configuration
 
 In addition to wildcard domains, you can configure GitLab Pages to work with custom domains, with
-or without TLS certificates. In either case, you need a **secondary IP**. If you have both IPv6 and
+or without TLS certificates. In either case, you need a secondary IP. If you have both IPv6 and
 IPv4 addresses, you can use them both.
 
 ### Custom domains

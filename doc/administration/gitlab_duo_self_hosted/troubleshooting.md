@@ -312,7 +312,7 @@ docker run --network host -e AIGW_GITLAB_URL=<your-gitlab-endpoint> -e AIGW_FAST
 
 ## vLLM 404 Error
 
-If you encounter a 404 error while using vLLM, follow these steps to resolve the issue:
+If you encounter a `404` error while using vLLM, follow these steps to resolve the issue:
 
 1. Create a chat template file named `chat_template.jinja` with the following content:
 
@@ -483,10 +483,10 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
 
    Then restart GitLab and check if the feature becomes accessible.
 
-   Important: After troubleshooting, restart GitLab without this flag set.
-
    > [!warning]
-   > Do not use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in production. Development environments should closely mirror production, with no hidden flags or internal-only workarounds.
+   > Do not use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in production. After troubleshooting,
+   > restart GitLab without this flag set. Development environments should closely mirror
+   > production, with no hidden flags or internal-only workarounds.
 
 1. To resolve this issue:
    - If you're a GitLab team member, contact the Custom Models team through the [`#g_custom_models` Slack channel](https://gitlab.enterprise.slack.com/archives/C06DCB3N96F).

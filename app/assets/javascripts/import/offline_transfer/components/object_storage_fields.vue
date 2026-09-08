@@ -1,6 +1,5 @@
 <script>
-import { GlFormGroup, GlFormInput, GlFormCheckbox } from '@gitlab/ui';
-import PasswordInput from '~/authentication/password/components/password_input.vue';
+import { GlFormGroup, GlFormInput, GlFormCheckbox, GlFormPasswordInput } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { OBJECT_STORAGE_VARIANT_EXPORT, OBJECT_STORAGE_VARIANT_IMPORT } from '../constants';
 import { getStorageConfigErrors } from '../storage_config_validation';
@@ -11,7 +10,7 @@ export default {
     GlFormGroup,
     GlFormInput,
     GlFormCheckbox,
-    PasswordInput,
+    GlFormPasswordInput,
   },
   props: {
     variant: {
@@ -104,14 +103,14 @@ export default {
       :invalid-feedback="errors.secretAccessKey"
       :label-for="setFieldId('secret-access-key')"
     >
-      <password-input
+      <gl-form-password-input
         :id="setFieldId('secret-access-key')"
         :name="secretAccessKeyName"
         :value="value.secretAccessKey"
         :required="false"
         :state="fieldState('secretAccessKey')"
         autocomplete="new-password"
-        testid="secret-access-key-input"
+        data-testid="secret-access-key-input"
         @input="updateField('secretAccessKey', $event)"
       />
     </gl-form-group>

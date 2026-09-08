@@ -36882,6 +36882,18 @@
                   "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
                 },
                 {
+                  "name": "includeReferrers",
+                  "description": "Include referrer manifests in the list. Defaults to false, matching the endpoint. Introduced in GitLab 19.4: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {

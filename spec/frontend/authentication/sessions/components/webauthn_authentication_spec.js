@@ -87,11 +87,12 @@ describe('WebAuthnAuthentication', () => {
       expect(findInProgress().text()).toContain('Trying to communicate with your device');
     });
 
-    it('disables the "Try again" button while authentication is in progress', async () => {
+    it('keeps the "Try again" button focusable but inert while authentication is in progress', async () => {
       createComponent();
       await nextTick();
 
-      expect(findTryAgainButton().props('disabled')).toBe(true);
+      expect(findTryAgainButton().attributes('aria-disabled')).toBe('true');
+      expect(findTryAgainButton().attributes('disabled')).toBeUndefined();
     });
 
     it('renders the hidden form with the csrf and remember-me inputs', () => {
@@ -127,6 +128,15 @@ describe('WebAuthnAuthentication', () => {
         JSON.stringify(convertGetResponse(mockResponse)),
       );
       expect(submitSpy).toHaveBeenCalled();
+    });
+
+    it('keeps the "Try again" button inert while the form submits', () => {
+      // submit() only starts navigation; a second get() would raise a fresh prompt mid-request.
+      expect(findTryAgainButton().attributes('aria-disabled')).toBe('true');
+    });
+
+    it('keeps announcing in the aria-live region while the form submits', () => {
+      expect(findInProgress().text()).toContain('Trying to communicate with your device');
     });
   });
 

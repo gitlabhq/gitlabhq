@@ -30,6 +30,8 @@ applyGitLabUIConfig({
     'GlCollapsibleListbox.loadingAnnouncementText.searching': __('Searching'),
     'GlDatepicker.monthLabel': __('Month'),
     'GlDatepicker.yearLabel': __('Year'),
+    'GlFormPasswordInput.hideLabel': __('Hide password'),
+    'GlFormPasswordInput.revealLabel': __('Reveal password'),
     'GlModal.closeButtonTitle': __('Close'),
     'GlToken.closeButtonTitle': __('Remove'),
     'GlSearchBoxByType.input.placeholder': __('Search'),

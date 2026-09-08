@@ -1,7 +1,7 @@
+import { GlFormPasswordInput } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { assertProps } from 'helpers/assert_props';
 import ObjectStorageFields from '~/import/offline_transfer/components/object_storage_fields.vue';
-import PasswordInput from '~/authentication/password/components/password_input.vue';
 
 describe('ObjectStorageFields', () => {
   let wrapper;
@@ -22,7 +22,7 @@ describe('ObjectStorageFields', () => {
   };
 
   const findAccessKeyId = () => wrapper.findComponentByTestId('access-key-id-input');
-  const findSecretAccessKey = () => wrapper.findComponent(PasswordInput);
+  const findSecretAccessKey = () => wrapper.findComponent(GlFormPasswordInput);
   const findRegion = () => wrapper.findComponentByTestId('region-input');
   const findBucketName = () => wrapper.findComponentByTestId('bucket-name-input');
   const findBucketNameGroup = () => wrapper.findByTestId('bucket-name-group');
@@ -35,10 +35,8 @@ describe('ObjectStorageFields', () => {
     expect(findAccessKeyId().attributes('placeholder')).toBeUndefined();
     expect(findRegion().attributes('placeholder')).toBe('us-east-1');
     expect(findRegion().props('value')).toBe('');
-    expect(findSecretAccessKey().props()).toMatchObject({
-      required: false,
-      autocomplete: 'new-password',
-    });
+    expect(findSecretAccessKey().attributes('autocomplete')).toBe('new-password');
+    expect(findSecretAccessKey().attributes('required')).toBeUndefined();
     expect(findBucketName().props('value')).toBe('');
     expect(findPathStyle().props('checked')).toBe(false);
   });
@@ -115,7 +113,9 @@ describe('ObjectStorageFields', () => {
     });
 
     it('names the secret access key input for the export form', () => {
-      expect(findSecretAccessKey().props('name')).toBe('offline_export_secret_access_key');
+      expect(findSecretAccessKey().find('input').attributes('name')).toBe(
+        'offline_export_secret_access_key',
+      );
     });
   });
 
@@ -129,7 +129,9 @@ describe('ObjectStorageFields', () => {
     });
 
     it('names the secret access key input as import form', () => {
-      expect(findSecretAccessKey().props('name')).toBe('offline_import_secret_access_key');
+      expect(findSecretAccessKey().find('input').attributes('name')).toBe(
+        'offline_import_secret_access_key',
+      );
     });
   });
 

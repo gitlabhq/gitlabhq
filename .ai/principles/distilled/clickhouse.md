@@ -1,6 +1,6 @@
 ---
-source_checksum: 2ad3791b91323149
-distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
+source_checksum: 1998f0eb79fa4026
+distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -95,6 +95,10 @@ distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 - Return a `ClickHouse::Client::QueryBuilder` object from GraphQL resolvers that paginate ClickHouse queries.
 - Ensure `ORDER BY` columns are `NOT NULL` and uniquely identify each row for keyset pagination compatibility.
 - Use a nested `SELECT` with `GROUP BY` and `argMax` for deduplication when querying `ReplacingMergeTree` tables from a GraphQL resolver.
+
+### Observability
+
+- Wrap user-facing ClickHouse queries with `Gitlab::ApplicationContext.with_context(namespace: ...)` (not `push`) so the `root_namespace_id` is attributed in the `log_comment` sent to ClickHouse; background sync/ingest workers that have no namespace to attribute are exempt.
 
 ### Siphon Schema Synchronisation
 

@@ -208,7 +208,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    sudo -i
    ```
 
-1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your site. You need this in the next steps:
+1. Edit `/etc/gitlab/gitlab.rb` and add a unique name for your site. You need this in the next steps:
 
    ```ruby
    ##
@@ -230,7 +230,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    1. Select **Add site**.
       ![Adding a secondary site in Geo configuration interface](img/adding_a_secondary_v15_8.png)
    1. In **Name**, enter the value for `gitlab_rails['geo_node_name']` in
-      `/etc/gitlab/gitlab.rb`. These values must always match **exactly**, character
+      `/etc/gitlab/gitlab.rb`. These values must always match exactly, character
       for character.
    1. In **External URL**, enter the value for `external_url` in `/etc/gitlab/gitlab.rb`. These
       values must always match, but it doesn't matter if one ends with a `/` and
@@ -276,7 +276,7 @@ secondary site with the same credentials as were used with the primary site.
 
 This step allows websockets to work seamlessly from primary and secondary sites.
 
-1. Collect the **external URLs** of your sites (primary and secondary). You can find them in the Site pages in the Admin area, as mentioned in the section above.
+1. Collect the external URLs of your sites (primary and secondary). You can find them in the Site pages in the Admin area, as mentioned in the section above.
 1. SSH into each Rails and Sidekiq node on your primary site and sign in as root:
 
    ```shell
@@ -309,8 +309,8 @@ If your GitLab Geo primary site uses a custom or [self-signed certificate to sec
 
 Install the correct certificate based on your certificate type:
 
-- **Multi-domain certificate** that includes both primary and secondary site domains: Install the certificate at `/etc/gitlab/ssl` on all **Rails, Sidekiq, and Gitaly** nodes in the secondary site.
-- **Single-domain certificate** where the certificates are specific to each Geo site domain: Generate a valid certificate for your secondary site's domain and install it at `/etc/gitlab/ssl` following [these instructions](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates) on all **Rails, Sidekiq, and Gitaly** nodes in the secondary site.
+- **Multi-domain certificate** that includes both primary and secondary site domains: Install the certificate at `/etc/gitlab/ssl` on all Rails, Sidekiq, and Gitaly nodes in the secondary site.
+- **Single-domain certificate** where the certificates are specific to each Geo site domain: Generate a valid certificate for your secondary site's domain and install it at `/etc/gitlab/ssl` following [these instructions](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates) on all Rails, Sidekiq, and Gitaly nodes in the secondary site.
 
 ### Connecting to external services that use custom certificates
 

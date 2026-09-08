@@ -1,8 +1,7 @@
-import { GlFormGroup, GlModal } from '@gitlab/ui';
+import { GlFormGroup, GlFormPasswordInput, GlModal } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TwoFactorActionConfirm from '~/authentication/two_factor_auth/components/two_factor_action_confirm.vue';
-import PasswordInput from '~/authentication/password/components/password_input.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
@@ -31,7 +30,7 @@ describe('TwoFactorActionConfirm', () => {
   const findButton = () => wrapper.findComponentByTestId('2fa-action-button');
   const findModal = () => wrapper.findComponent(GlModal);
   const findForm = () => wrapper.find('form');
-  const findPasswordInput = () => wrapper.findComponent(PasswordInput);
+  const findPasswordInput = () => wrapper.findComponent(GlFormPasswordInput);
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
 
   beforeEach(() => {

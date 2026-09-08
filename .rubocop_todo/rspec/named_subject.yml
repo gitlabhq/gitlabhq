@@ -407,7 +407,6 @@ RSpec/NamedSubject:
     - 'ee/spec/requests/api/graphql/mutations/boards/create_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/boards/epic_boards/destroy_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/boards/epics/create_spec.rb'
-    - 'ee/spec/requests/api/graphql/mutations/ci/project_subscriptions/delete_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/compliance_management/frameworks/create_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/compliance_management/frameworks/destroy_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/compliance_management/frameworks/update_spec.rb'

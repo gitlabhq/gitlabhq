@@ -128,7 +128,7 @@ The steps below are the minimum necessary to configure a Monitoring node running
 package:
 
 1. SSH into the Monitoring node.
-1. [Install](https://about.gitlab.com/install/) the Linux package you want using **steps 1 and 2** from the GitLab
+1. [Install](https://about.gitlab.com/install/) the Linux package you want using steps 1 and 2 from the GitLab
    downloads page, but do not follow the remaining steps.
 1. Make sure to collect the IP addresses or DNS records of the Consul server nodes, for the next step.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:

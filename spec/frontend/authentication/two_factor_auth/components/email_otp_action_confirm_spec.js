@@ -1,7 +1,6 @@
-import { GlModal } from '@gitlab/ui';
+import { GlFormPasswordInput, GlModal } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EmailOtpActionConfirm from '~/authentication/two_factor_auth/components/email_otp_action_confirm.vue';
-import PasswordInput from '~/authentication/password/components/password_input.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
@@ -33,7 +32,7 @@ describe('EmailOtpActionConfirm', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findForm = () => wrapper.find('form');
   const findFormGroup = () => wrapper.findByTestId('email-otp-form-group');
-  const findPasswordInput = () => wrapper.findComponent(PasswordInput);
+  const findPasswordInput = () => wrapper.findComponent(GlFormPasswordInput);
 
   beforeEach(() => {
     createComponent();
