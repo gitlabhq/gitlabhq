@@ -73,7 +73,7 @@ module Gitlab
           value.respond_to?(:call) && value.respond_to?(:arity) && value.arity >= 1
         end
 
-        def self.rule_definitions # rubocop:disable Metrics/AbcSize, -- static registry of rate-limit definitions
+        def self.rule_definitions # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity -- static registry of rate-limit definitions
           {
             ai_action: ::Labkit::RateLimit::Rule.new(
               name: 'limit_ai_actions_by_user',
@@ -724,6 +724,34 @@ module Gitlab
               characteristics: %i[user],
               limit: 10,
               period: 1.minute,
+              action: :limit
+            ),
+            # service_desk_outbound_emails_per_{hour,day} carry no static
+            # threshold: the limit is looked up per namespace from PlanLimits
+            # and passed in via the caller's `threshold:` argument, same
+            # pattern as web_hook_calls above.
+            service_desk_outbound_emails_per_hour: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_service_desk_outbound_emails_per_hour_by_namespace',
+              characteristics: %i[namespace],
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
+              period: 1.hour,
+              action: :limit
+            ),
+            service_desk_outbound_emails_per_day: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_service_desk_outbound_emails_per_day_by_namespace',
+              characteristics: %i[namespace],
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
+              period: 1.day,
+              action: :limit
+            ),
+            # Dedups the suppression note posted when Service Desk email is
+            # rate limited: at most one per work item per hour, regardless of
+            # how many suppressed sends happen in that window.
+            service_desk_suppression_notice: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_service_desk_suppression_notices_by_work_item',
+              characteristics: %i[work_item],
+              limit: 1,
+              period: 1.hour,
               action: :limit
             ),
             snippets_create: ::Labkit::RateLimit::Rule.new(

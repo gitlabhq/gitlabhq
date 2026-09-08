@@ -79,8 +79,6 @@ RSpec.describe 'Database schema',
       catalog_resource_component_last_usages: %w[used_by_project_id], # No FK constraint because we want to preserve usage data even if project is deleted.
       chat_names: %w[chat_id team_id],
       chat_teams: %w[team_id],
-      cd_deployment_transitions: %w[principal_id], # Pending removal in 19.3
-      cd_rollout_transitions: %w[principal_id], # Pending removal in 19.3
       ci_build_pending_states: %w[project_id],
       ci_build_trace_chunks: %w[project_id],
       ci_builds_runner_session: %w[project_id],

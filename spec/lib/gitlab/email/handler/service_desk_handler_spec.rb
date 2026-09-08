@@ -806,6 +806,43 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       end
     end
 
+    context 'when the namespace is over the Service Desk email rate limit' do
+      before do
+        allow_next_instance_of(::ServiceDesk::EmailRateLimiter) do |limiter|
+          allow(limiter).to receive(:rate_limit_batch!).and_return(true)
+          allow(limiter).to receive(:post_suppression_notice)
+        end
+      end
+
+      it 'still creates the ticket' do
+        expect { receiver.execute }.to change { WorkItem.count }.by(1)
+      end
+
+      it 'does not send the thank you email' do
+        expect(Notify).not_to receive(:service_desk_thank_you_email)
+
+        receiver.execute
+      end
+
+      it 'posts a suppression notice on the ticket' do
+        expect_next_instance_of(::ServiceDesk::EmailRateLimiter) do |limiter|
+          allow(limiter).to receive(:rate_limit_batch!).and_return(true)
+          expect(limiter).to receive(:post_suppression_notice).with(instance_of(WorkItem))
+        end
+
+        receiver.execute
+      end
+    end
+
+    context 'when the namespace is not over the Service Desk email rate limit' do
+      it 'sends the thank you email as before' do
+        expect(Notify).to receive(:service_desk_thank_you_email).once
+          .and_return(instance_double(ActionMailer::MessageDelivery, deliver_later: true))
+
+        receiver.execute
+      end
+    end
+
     context 'when rate limiting is in effect', :freeze_time, :clean_gitlab_redis_rate_limiting do
       let(:receiver) { Gitlab::Email::Receiver.new(email_raw) }
 

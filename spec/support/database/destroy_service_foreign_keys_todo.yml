@@ -383,9 +383,6 @@ namespaces:
 - bulk_import_failures.namespace_id
 - bulk_import_trackers.namespace_id
 - catalog_verified_namespaces.namespace_id
-- cd_deployments.group_id
-- cd_rollouts.group_id
-- cd_services.group_id
 - chat_teams.namespace_id
 - cluster_enabled_grants.namespace_id
 - cluster_groups.group_id

@@ -1206,6 +1206,28 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
                   end
                 end
 
+                shared_examples 'charges the limiter with the filtered recipient count' do
+                  it 'charges the limiter with the count excluding the note author' do
+                    expect_next_instance_of(::ServiceDesk::EmailRateLimiter) do |limiter|
+                      expect(limiter).to receive(:rate_limit_batch!).with(1).and_return(false)
+                    end
+
+                    notification_service.new_note(note)
+                  end
+
+                  it 'still sends to the other recipient under a limit the unfiltered count would trip',
+                    :clean_gitlab_redis_rate_limiting do
+                    project.update!(service_desk_enabled: true)
+                    create(:plan_limits, plan: project.root_namespace.actual_plan,
+                      service_desk_outbound_emails_per_hour: 1)
+
+                    expect(Notify).to receive(:service_desk_new_note_email)
+                      .with(noteable.id, note.id, recipient)
+
+                    notification_service.new_note(note)
+                  end
+                end
+
                 let!(:note) do
                   create(
                     :note_on_issue,
@@ -1224,6 +1246,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
                   end
 
                   it_behaves_like 'only sends one Service Desk notification email'
+                  it_behaves_like 'charges the limiter with the filtered recipient count'
                 end
 
                 context 'and the note is from another external participant' do
@@ -1268,6 +1291,64 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           let(:noteable) { work_item }
 
           include_examples 'about sending service desk emails'
+        end
+
+        context 'when the namespace is over the Service Desk email rate limit' do
+          let!(:issue_email_participant) do
+            noteable.issue_email_participants.create!(email: 'service.desk@example.com')
+          end
+
+          let!(:other_external_participant) { noteable.issue_email_participants.create!(email: 'user@example.com') }
+
+          before do
+            project.update!(service_desk_enabled: true)
+          end
+
+          context 'with the feature flag disabled' do
+            before do
+              stub_feature_flags(service_desk_email_rate_limit: false)
+            end
+
+            it 'sends the emails as before' do
+              expect(Notify).to receive(:service_desk_new_note_email)
+                .with(noteable.id, note.id, IssueEmailParticipant).twice
+
+              notification_service.new_note(note)
+            end
+          end
+
+          context 'with the feature flag enabled' do
+            before do
+              create(:plan_limits, plan: project.root_namespace.actual_plan,
+                service_desk_outbound_emails_per_hour: 1)
+            end
+
+            it 'does not send any email in the batch (all-or-none)' do
+              expect(Notify).not_to receive(:service_desk_new_note_email)
+
+              notification_service.new_note(note)
+            end
+
+            it 'posts exactly one internal suppression note' do
+              note
+
+              expect { notification_service.new_note(note) }
+                .to change { noteable.notes.count }.by(1)
+
+              suppression_note = noteable.notes.last
+              expect(suppression_note).to be_confidential
+              expect(suppression_note.note).not_to include('service.desk@example.com', 'user@example.com')
+            end
+
+            it 'does not post a second suppression note for a second comment in the same window' do
+              notification_service.new_note(note)
+
+              second_note = create(:note, noteable: noteable, project: project)
+
+              expect { notification_service.new_note(second_note) }
+                .not_to change { noteable.notes.count }
+            end
+          end
         end
       end
 

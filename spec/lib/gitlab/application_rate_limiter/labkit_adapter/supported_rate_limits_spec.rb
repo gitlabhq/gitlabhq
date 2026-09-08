@@ -17,6 +17,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimit
       web_hook_calls
       web_hook_calls_low
       web_hook_calls_mid
+      service_desk_outbound_emails_per_hour
+      service_desk_outbound_emails_per_day
     ]
   end
 

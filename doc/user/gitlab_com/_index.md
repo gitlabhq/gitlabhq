@@ -486,6 +486,21 @@ GitLab can rate-limit requests at several layers. The rate limits listed here
 are configured in the application. These limits are the most
 restrictive for each IP address.
 
+### Service Desk email rate limit
+
+GitLab.com limits the number of outbound Service Desk notification
+emails a top-level namespace can send, per hour and per day, by plan:
+
+| Plan | Hourly limit | Daily limit |
+|------|--------------|-------------|
+| Free, Premium trial, Ultimate trial | 100 | 700 |
+| Open Source | 1,500 | 10,000 |
+| Premium | 5,000 | 50,000 |
+| Ultimate, Ultimate trial paid customer | Unlimited | Unlimited |
+
+For details, see
+[Service Desk email rate limit](../../administration/instance_limits.md#service-desk-email-rate-limit).
+
 ### Group and project import by uploading export files
 
 To help avoid abuse, GitLab.com uses rate limits:

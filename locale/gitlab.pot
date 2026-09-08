@@ -55194,7 +55194,13 @@ msgstr ""
 msgid "OfflineTransferExport|Export your groups to an AWS S3 storage service you control. You can import them to any GitLab instance, even without a network connection between this instance and the destination instance. Each group is exported with all of its subgroups and projects."
 msgstr ""
 
+msgid "OfflineTransferExport|Groups exported through offline transfer appear here."
+msgstr ""
+
 msgid "OfflineTransferExport|No groups match your search"
+msgstr ""
+
+msgid "OfflineTransferExport|No history is available yet"
 msgstr ""
 
 msgid "OfflineTransferExport|Review and export"
@@ -77862,6 +77868,9 @@ msgid "ServiceDesk|External participants"
 msgstr ""
 
 msgid "ServiceDesk|Forward all emails to the custom email address to %{incomingEmail}."
+msgstr ""
+
+msgid "ServiceDesk|GitLab has not sent Service Desk emails for recent activity on this ticket because the namespace exceeded its Service Desk email rate limit. Emails resume automatically when the rate falls below the limit."
 msgstr ""
 
 msgid "ServiceDesk|Incorrect From header"

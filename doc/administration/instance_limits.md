@@ -136,6 +136,52 @@ Set the limit to `0` to disable it.
 
 - **Default rate limit**: Disabled (unlimited).
 
+### Service Desk email rate limit
+
+{{< history >}}
+
+- Introduced in GitLab 19.4 [with a feature flag](feature_flags/_index.md) named `service_desk_email_rate_limit`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Limit the number of outbound Service Desk notification emails that a
+top-level namespace can send per hour and per day. This includes the
+ticket creation confirmation email, new comment notification emails,
+and new participant notification emails. All projects and subgroups in
+the namespace share these limits. Each email sent counts as one
+increment, so a comment that notifies 10 participants counts as 10
+emails.
+
+When a namespace reaches either limit, GitLab suppresses the outbound
+email but still creates the ticket, processes the comment, or adds the
+participant. GitLab adds an internal note to the affected ticket to
+record that email sending was suppressed, at most once per ticket per
+hour.
+
+To set these limits for a GitLab Self-Managed instance, use the
+[Plan Limits API](../api/plan_limits.md) or run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+# If limits don't exist for the default plan, you can create one with:
+# Plan.default.create_limits!
+
+Plan.default.actual_limits.update!(
+  service_desk_outbound_emails_per_hour: 100,
+  service_desk_outbound_emails_per_day: 1000
+)
+```
+
+Set a limit to `0` to disable it.
+
+- **Default rate limit**: Disabled (unlimited) on GitLab Self-Managed.
+  For GitLab.com plan-specific limits, see
+  [Rate limits on GitLab.com](../user/gitlab_com/_index.md#service-desk-email-rate-limit).
+
 ### Search rate limit
 
 This setting limits search requests as follows:

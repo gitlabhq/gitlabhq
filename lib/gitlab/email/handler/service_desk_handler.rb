@@ -46,7 +46,14 @@ module Gitlab
           return unless from_address
 
           add_email_participants
-          send_thank_you_email unless reply_email?
+
+          return if reply_email?
+
+          if email_rate_limiter.rate_limit_batch!(1)
+            email_rate_limiter.post_suppression_notice(@work_item)
+          else
+            send_thank_you_email
+          end
         end
 
         def metrics_event
@@ -290,6 +297,11 @@ module Gitlab
           Users::Internal.in_organization(project.organization_id).support_bot
         end
         strong_memoize_attr :support_bot
+
+        def email_rate_limiter
+          ::ServiceDesk::EmailRateLimiter.new(project)
+        end
+        strong_memoize_attr :email_rate_limiter
       end
     end
   end

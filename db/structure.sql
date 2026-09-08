@@ -16872,7 +16872,6 @@ CREATE TABLE cd_deployment_transitions (
     id bigint NOT NULL,
     organization_id bigint NOT NULL,
     deployment_id bigint NOT NULL,
-    principal_id bigint,
     created_at timestamp with time zone NOT NULL,
     from_state smallint NOT NULL,
     to_state smallint NOT NULL,
@@ -16900,7 +16899,6 @@ ALTER SEQUENCE cd_deployment_transitions_id_seq OWNED BY cd_deployment_transitio
 
 CREATE TABLE cd_deployments (
     id bigint NOT NULL,
-    group_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     started_at timestamp with time zone,
@@ -17069,7 +17067,6 @@ CREATE TABLE cd_rollout_transitions (
     id bigint NOT NULL,
     organization_id bigint NOT NULL,
     rollout_id bigint NOT NULL,
-    principal_id bigint,
     created_at timestamp with time zone NOT NULL,
     from_state smallint NOT NULL,
     to_state smallint NOT NULL,
@@ -17119,7 +17116,6 @@ ALTER SEQUENCE cd_rollout_workflow_tokens_id_seq OWNED BY cd_rollout_workflow_to
 
 CREATE TABLE cd_rollouts (
     id bigint NOT NULL,
-    group_id bigint,
     version_set_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -17167,7 +17163,6 @@ ALTER SEQUENCE cd_service_environment_healths_id_seq OWNED BY cd_service_environ
 
 CREATE TABLE cd_services (
     id bigint NOT NULL,
-    group_id bigint,
     application_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -47487,8 +47482,6 @@ CREATE INDEX index_cd_deployment_transitions_on_deployment_and_created_at ON cd_
 
 CREATE INDEX index_cd_deployment_transitions_on_organization_id ON cd_deployment_transitions USING btree (organization_id);
 
-CREATE INDEX index_cd_deployments_on_group_id ON cd_deployments USING btree (group_id);
-
 CREATE INDEX index_cd_deployments_on_organization_id ON cd_deployments USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_cd_deployments_on_rollout_env_id_and_service_id ON cd_deployments USING btree (rollout_environment_id, service_id);
@@ -47543,8 +47536,6 @@ CREATE UNIQUE INDEX index_cd_rollouts_on_application_id_and_iid ON cd_rollouts U
 
 CREATE UNIQUE INDEX index_cd_rollouts_on_application_id_non_terminal ON cd_rollouts USING btree (application_id) WHERE (state = ANY (ARRAY[0, 1, 2]));
 
-CREATE INDEX index_cd_rollouts_on_group_id ON cd_rollouts USING btree (group_id);
-
 CREATE INDEX index_cd_rollouts_on_organization_id ON cd_rollouts USING btree (organization_id);
 
 CREATE INDEX index_cd_rollouts_on_version_set_id_and_state ON cd_rollouts USING btree (version_set_id, state);
@@ -47556,8 +47547,6 @@ CREATE INDEX index_cd_service_env_healths_on_organization_id ON cd_service_envir
 CREATE UNIQUE INDEX index_cd_service_env_healths_on_service_and_environment ON cd_service_environment_healths USING btree (service_id, environment_id);
 
 CREATE UNIQUE INDEX index_cd_services_on_application_id_and_name ON cd_services USING btree (application_id, name);
-
-CREATE INDEX index_cd_services_on_group_id ON cd_services USING btree (group_id);
 
 CREATE INDEX index_cd_services_on_organization_id ON cd_services USING btree (organization_id);
 
@@ -58135,9 +58124,6 @@ ALTER TABLE ONLY merge_requests_approval_rules_projects
 ALTER TABLE ONLY organization_user_details
     ADD CONSTRAINT fk_4533918f8e FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY cd_deployments
-    ADD CONSTRAINT fk_454afcb5d3 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY ai_settings
     ADD CONSTRAINT fk_4571bb0ccc FOREIGN KEY (duo_workflow_oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
 
@@ -58530,9 +58516,6 @@ ALTER TABLE ONLY snippet_repository_states
 
 ALTER TABLE ONLY deployment_approvals
     ADD CONSTRAINT fk_63920ba071 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY cd_services
-    ADD CONSTRAINT fk_64133ceb23 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_641731faff FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -59931,9 +59914,6 @@ ALTER TABLE ONLY environments
 
 ALTER TABLE ONLY issue_user_mentions
     ADD CONSTRAINT fk_d1f967521a FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY cd_rollouts
-    ADD CONSTRAINT fk_d20f4cff9b FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_group_member_roles
     ADD CONSTRAINT fk_d222d57eec FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

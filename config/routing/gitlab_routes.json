@@ -7013,6 +7013,47 @@
     "dottedExample": "/api/v4/?john.doe/bar"
   },
   {
+    "template": "/api/:version/admin/active_context/code/enabled_namespaces",
+    "example": "/api/v4/admin/active_context/code/enabled_namespaces",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/admin/active_context/collections/:id",
+    "example": "/api/v4/admin/active_context/collections/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin/active_context/collections/john.doe"
+  },
+  {
+    "template": "/api/:version/admin/active_context/connections",
+    "example": "/api/v4/admin/active_context/connections",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/admin/active_context/connections/activate",
+    "example": "/api/v4/admin/active_context/connections/activate",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/admin/active_context/connections/deactivate",
+    "example": "/api/v4/admin/active_context/connections/deactivate",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/admin/active_context/dead_queue",
+    "example": "/api/v4/admin/active_context/dead_queue",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/admin/active_context/dead_queue/replay",
+    "example": "/api/v4/admin/active_context/dead_queue/replay",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/admin/ai_catalog/seed_external_agents",
+    "example": "/api/v4/admin/ai_catalog/seed_external_agents",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/admin/batched_background_migrations",
     "example": "/api/v4/admin/batched_background_migrations",
     "acceptsFormat": true
@@ -7086,10 +7127,45 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/admin/data_management/:model_name",
+    "example": "/api/v4/admin/data_management/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin/data_management/john.doe"
+  },
+  {
+    "template": "/api/:version/admin/data_management/:model_name/:record_identifier",
+    "example": "/api/v4/admin/data_management/foo/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin/data_management/john.doe/john.doe"
+  },
+  {
+    "template": "/api/:version/admin/data_management/:model_name/:record_identifier/checksum",
+    "example": "/api/v4/admin/data_management/foo/foo/checksum",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin/data_management/john.doe/john.doe/checksum"
+  },
+  {
+    "template": "/api/:version/admin/data_management/:model_name/checksum",
+    "example": "/api/v4/admin/data_management/foo/checksum",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin/data_management/john.doe/checksum"
+  },
+  {
     "template": "/api/:version/admin/databases/:database_name/dictionary/tables/:table_name",
     "example": "/api/v4/admin/databases/foo/dictionary/tables/foo",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/admin/databases/john.doe/dictionary/tables/john.doe"
+  },
+  {
+    "template": "/api/:version/admin/knowledge_graph/namespaces",
+    "example": "/api/v4/admin/knowledge_graph/namespaces",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/admin/knowledge_graph/namespaces/:id",
+    "example": "/api/v4/admin/knowledge_graph/namespaces/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin/knowledge_graph/namespaces/john.doe"
   },
   {
     "template": "/api/:version/admin/migrations/:timestamp/mark",
@@ -7103,8 +7179,221 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/admin/search/migrations",
+    "example": "/api/v4/admin/search/migrations",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/admin/search/migrations/:migration_id",
+    "example": "/api/v4/admin/search/migrations/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin/search/migrations/john.doe"
+  },
+  {
+    "template": "/api/:version/admin/security/compliance_policy_settings",
+    "example": "/api/v4/admin/security/compliance_policy_settings",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/admin/sidekiq/queues/:queue_name",
+    "example": "/api/v4/admin/sidekiq/queues/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin/sidekiq/queues/john.doe"
+  },
+  {
     "template": "/api/:version/admin/token",
     "example": "/api/v4/admin/token",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/admin/zoekt/namespaces/:id",
+    "example": "/api/v4/admin/zoekt/namespaces/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin/zoekt/namespaces/john.doe"
+  },
+  {
+    "template": "/api/:version/admin/zoekt/projects/:project_id/index",
+    "example": "/api/v4/admin/zoekt/projects/foo/index",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin/zoekt/projects/john.doe/index"
+  },
+  {
+    "template": "/api/:version/admin/zoekt/shards",
+    "example": "/api/v4/admin/zoekt/shards",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/admin/zoekt/shards/:node_id/indexed_namespaces",
+    "example": "/api/v4/admin/zoekt/shards/foo/indexed_namespaces",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin/zoekt/shards/john.doe/indexed_namespaces"
+  },
+  {
+    "template": "/api/:version/admin/zoekt/shards/:node_id/indexed_namespaces/:namespace_id",
+    "example": "/api/v4/admin/zoekt/shards/foo/indexed_namespaces/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin/zoekt/shards/john.doe/indexed_namespaces/john.doe"
+  },
+  {
+    "template": "/api/:version/admin_member_roles",
+    "example": "/api/v4/admin_member_roles",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/admin_member_roles/:member_role_id",
+    "example": "/api/v4/admin_member_roles/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/admin_member_roles/john.doe"
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/agent_workflows",
+    "example": "/api/v4/ai/duo_workflows/agent_workflows",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/code_review/add_comments",
+    "example": "/api/v4/ai/duo_workflows/code_review/add_comments",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/code_review/custom_instructions",
+    "example": "/api/v4/ai/duo_workflows/code_review/custom_instructions",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/direct_access",
+    "example": "/api/v4/ai/duo_workflows/direct_access",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/flow_callbacks",
+    "example": "/api/v4/ai/duo_workflows/flow_callbacks",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/flow_callbacks/:id",
+    "example": "/api/v4/ai/duo_workflows/flow_callbacks/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ai/duo_workflows/flow_callbacks/john.doe"
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/list_tools",
+    "example": "/api/v4/ai/duo_workflows/list_tools",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/revoke_token",
+    "example": "/api/v4/ai/duo_workflows/revoke_token",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/tools/risk_classification/results",
+    "example": "/api/v4/ai/duo_workflows/tools/risk_classification/results",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/workflows",
+    "example": "/api/v4/ai/duo_workflows/workflows",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/workflows/:id",
+    "example": "/api/v4/ai/duo_workflows/workflows/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe"
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/workflows/:id/audit_events",
+    "example": "/api/v4/ai/duo_workflows/workflows/foo/audit_events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe/audit_events"
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/workflows/:id/checkpoint_writes_batch",
+    "example": "/api/v4/ai/duo_workflows/workflows/foo/checkpoint_writes_batch",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe/checkpoint_writes_batch"
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/workflows/:id/checkpoints",
+    "example": "/api/v4/ai/duo_workflows/workflows/foo/checkpoints",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe/checkpoints"
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/workflows/:id/checkpoints/:checkpoint_id",
+    "example": "/api/v4/ai/duo_workflows/workflows/foo/checkpoints/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe/checkpoints/john.doe"
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/workflows/:id/checkpoints/by_thread_ts",
+    "example": "/api/v4/ai/duo_workflows/workflows/foo/checkpoints/by_thread_ts",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe/checkpoints/by_thread_ts"
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/workflows/:id/events",
+    "example": "/api/v4/ai/duo_workflows/workflows/foo/events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe/events"
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/workflows/:id/events/:event_id",
+    "example": "/api/v4/ai/duo_workflows/workflows/foo/events/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe/events/john.doe"
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/workflows/:workflow_id/resume",
+    "example": "/api/v4/ai/duo_workflows/workflows/foo/resume",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe/resume"
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/workflows/:workflow_id/trace.jsonl",
+    "example": "/api/v4/ai/duo_workflows/workflows/foo/trace.jsonl",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe/trace.jsonl"
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/workflows/agent_privileges",
+    "example": "/api/v4/ai/duo_workflows/workflows/agent_privileges",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/ai/duo_workflows/ws",
+    "example": "/api/v4/ai/duo_workflows/ws",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/ai/llm/git_command",
+    "example": "/api/v4/ai/llm/git_command",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/ai/third_party_agents/direct_access",
+    "example": "/api/v4/ai/third_party_agents/direct_access",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/analytics/code_review",
+    "example": "/api/v4/analytics/code_review",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/analytics/group_activity/issues_count",
+    "example": "/api/v4/analytics/group_activity/issues_count",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/analytics/group_activity/merge_requests_count",
+    "example": "/api/v4/analytics/group_activity/merge_requests_count",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/analytics/group_activity/new_members_count",
+    "example": "/api/v4/analytics/group_activity/new_members_count",
     "acceptsFormat": true
   },
   {
@@ -7115,6 +7404,11 @@
   {
     "template": "/api/:version/application/plan_limits",
     "example": "/api/v4/application/plan_limits",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/application/settings",
+    "example": "/api/v4/application/settings",
     "acceptsFormat": true
   },
   {
@@ -7138,6 +7432,17 @@
     "example": "/api/v4/applications/foo/renew-secret",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/applications/john.doe/renew-secret"
+  },
+  {
+    "template": "/api/:version/audit_events",
+    "example": "/api/v4/audit_events",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/audit_events/:id",
+    "example": "/api/v4/audit_events/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/audit_events/john.doe"
   },
   {
     "template": "/api/:version/avatar",
@@ -7196,6 +7501,31 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/chat/completions",
+    "example": "/api/v4/chat/completions",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/code_suggestions/completions",
+    "example": "/api/v4/code_suggestions/completions",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/code_suggestions/connection_details",
+    "example": "/api/v4/code_suggestions/connection_details",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/code_suggestions/direct_access",
+    "example": "/api/v4/code_suggestions/direct_access",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/code_suggestions/enabled",
+    "example": "/api/v4/code_suggestions/enabled",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/container_registry_event/events",
     "example": "/api/v4/container_registry_event/events",
     "acceptsFormat": true
@@ -7205,6 +7535,18 @@
     "example": "/api/v4/databases/foo/dictionary/tables",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/databases/john.doe/dictionary/tables"
+  },
+  {
+    "template": "/api/:version/dependency_list_exports/:export_id",
+    "example": "/api/v4/dependency_list_exports/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/dependency_list_exports/john.doe"
+  },
+  {
+    "template": "/api/:version/dependency_list_exports/:export_id/download",
+    "example": "/api/v4/dependency_list_exports/foo/download",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/dependency_list_exports/john.doe/download"
   },
   {
     "template": "/api/:version/deploy_keys",
@@ -7222,9 +7564,41 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/duo_code_review/evaluations",
+    "example": "/api/v4/duo_code_review/evaluations",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/elasticsearch_indexed_namespaces/rollback",
+    "example": "/api/v4/elasticsearch_indexed_namespaces/rollback",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/elasticsearch_indexed_namespaces/rollout",
+    "example": "/api/v4/elasticsearch_indexed_namespaces/rollout",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/events",
     "example": "/api/v4/events",
     "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/experiments",
+    "example": "/api/v4/experiments",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/experiments/:experiment_name/assignments",
+    "example": "/api/v4/experiments/foo/assignments",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/experiments/john.doe/assignments"
+  },
+  {
+    "template": "/api/:version/experiments/:name/cache",
+    "example": "/api/v4/experiments/foo/cache",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/experiments/john.doe/cache"
   },
   {
     "template": "/api/:version/feature_flags/unleash/:project_id",
@@ -7326,6 +7700,62 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/geo_nodes",
+    "example": "/api/v4/geo_nodes",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/geo_nodes/:id",
+    "example": "/api/v4/geo_nodes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/geo_nodes/john.doe"
+  },
+  {
+    "template": "/api/:version/geo_nodes/:id/repair",
+    "example": "/api/v4/geo_nodes/foo/repair",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/geo_nodes/john.doe/repair"
+  },
+  {
+    "template": "/api/:version/geo_nodes/:id/status",
+    "example": "/api/v4/geo_nodes/foo/status",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/geo_nodes/john.doe/status"
+  },
+  {
+    "template": "/api/:version/geo_nodes/status",
+    "example": "/api/v4/geo_nodes/status",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/geo_sites",
+    "example": "/api/v4/geo_sites",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/geo_sites/:id",
+    "example": "/api/v4/geo_sites/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/geo_sites/john.doe"
+  },
+  {
+    "template": "/api/:version/geo_sites/:id/repair",
+    "example": "/api/v4/geo_sites/foo/repair",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/geo_sites/john.doe/repair"
+  },
+  {
+    "template": "/api/:version/geo_sites/:id/status",
+    "example": "/api/v4/geo_sites/foo/status",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/geo_sites/john.doe/status"
+  },
+  {
+    "template": "/api/:version/geo_sites/status",
+    "example": "/api/v4/geo_sites/status",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/glql",
     "example": "/api/v4/glql",
     "acceptsFormat": true
@@ -7360,6 +7790,17 @@
     "dottedExample": "/api/v4/group/john.doe/-/packages/composer/packages"
   },
   {
+    "template": "/api/:version/group_repository_storage_moves",
+    "example": "/api/v4/group_repository_storage_moves",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/group_repository_storage_moves/:repository_storage_move_id",
+    "example": "/api/v4/group_repository_storage_moves/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/group_repository_storage_moves/john.doe"
+  },
+  {
     "template": "/api/:version/groups",
     "example": "/api/v4/groups",
     "acceptsFormat": true
@@ -7369,6 +7810,42 @@
     "example": "/api/v4/groups/foo",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/groups/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/(-/)epics",
+    "example": "/api/v4/groups/foo/-/epics",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/epics"
+  },
+  {
+    "template": "/api/:version/groups/:id/(-/)epics/:epic_iid",
+    "example": "/api/v4/groups/foo/-/epics/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/epics/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/(-/)epics/:epic_iid/epics",
+    "example": "/api/v4/groups/foo/-/epics/foo/epics",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/epics/john.doe/epics"
+  },
+  {
+    "template": "/api/:version/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id",
+    "example": "/api/v4/groups/foo/-/epics/foo/epics/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/epics/john.doe/epics/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/(-/)epics/:epic_iid/issues/:epic_issue_id",
+    "example": "/api/v4/groups/foo/-/epics/foo/issues/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/epics/john.doe/issues/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/(-/)epics/:epic_iid/issues/:issue_id",
+    "example": "/api/v4/groups/foo/-/epics/foo/issues/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/epics/john.doe/issues/john.doe"
   },
   {
     "template": "/api/:version/groups/:id/(-/)search",
@@ -7393,6 +7870,24 @@
     "example": "/api/v4/groups/foo/-/debian_distributions/foo/key.asc",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/groups/john.doe/-/debian_distributions/john.doe/key.asc"
+  },
+  {
+    "template": "/api/:version/groups/:id/-/epics",
+    "example": "/api/v4/groups/foo/-/epics",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/epics"
+  },
+  {
+    "template": "/api/:version/groups/:id/-/epics/:epic_iid",
+    "example": "/api/v4/groups/foo/-/epics/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/epics/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/-/epics/:epic_iid/issues",
+    "example": "/api/v4/groups/foo/-/epics/foo/issues",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/epics/john.doe/issues"
   },
   {
     "template": "/api/:version/groups/:id/-/packages/debian/dists/*distribution/:component/binary-:architecture/Packages",
@@ -7551,6 +8046,54 @@
     "dottedExample": "/api/v4/groups/john.doe/-/packages/pypi/simple/john.doe/bar"
   },
   {
+    "template": "/api/:version/groups/:id/-/virtual_registries/cleanup/policy",
+    "example": "/api/v4/groups/foo/-/virtual_registries/cleanup/policy",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/virtual_registries/cleanup/policy"
+  },
+  {
+    "template": "/api/:version/groups/:id/-/virtual_registries/container/registries",
+    "example": "/api/v4/groups/foo/-/virtual_registries/container/registries",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/virtual_registries/container/registries"
+  },
+  {
+    "template": "/api/:version/groups/:id/-/virtual_registries/container/upstreams",
+    "example": "/api/v4/groups/foo/-/virtual_registries/container/upstreams",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/virtual_registries/container/upstreams"
+  },
+  {
+    "template": "/api/:version/groups/:id/-/virtual_registries/container/upstreams/test",
+    "example": "/api/v4/groups/foo/-/virtual_registries/container/upstreams/test",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/virtual_registries/container/upstreams/test"
+  },
+  {
+    "template": "/api/:version/groups/:id/-/virtual_registries/packages/maven/registries",
+    "example": "/api/v4/groups/foo/-/virtual_registries/packages/maven/registries",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/virtual_registries/packages/maven/registries"
+  },
+  {
+    "template": "/api/:version/groups/:id/-/virtual_registries/packages/maven/upstreams",
+    "example": "/api/v4/groups/foo/-/virtual_registries/packages/maven/upstreams",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/virtual_registries/packages/maven/upstreams"
+  },
+  {
+    "template": "/api/:version/groups/:id/-/virtual_registries/packages/maven/upstreams/test",
+    "example": "/api/v4/groups/foo/-/virtual_registries/packages/maven/upstreams/test",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/virtual_registries/packages/maven/upstreams/test"
+  },
+  {
+    "template": "/api/:version/groups/:id/-/virtual_registries/packages/npm/registries",
+    "example": "/api/v4/groups/foo/-/virtual_registries/packages/npm/registries",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/virtual_registries/packages/npm/registries"
+  },
+  {
     "template": "/api/:version/groups/:id/-/work_items",
     "example": "/api/v4/groups/foo/-/work_items",
     "acceptsFormat": true,
@@ -7611,6 +8154,12 @@
     "dottedExample": "/api/v4/groups/john.doe/-/work_items/john.doe/email_participants"
   },
   {
+    "template": "/api/:version/groups/:id/-/work_items/:work_item_iid/feature_flags",
+    "example": "/api/v4/groups/foo/-/work_items/foo/feature_flags",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/work_items/john.doe/feature_flags"
+  },
+  {
     "template": "/api/:version/groups/:id/-/work_items/:work_item_iid/linked_items",
     "example": "/api/v4/groups/foo/-/work_items/foo/linked_items",
     "acceptsFormat": true,
@@ -7665,10 +8214,40 @@
     "dottedExample": "/api/v4/groups/john.doe/access_requests/john.doe/approve"
   },
   {
+    "template": "/api/:version/groups/:id/access_tokens",
+    "example": "/api/v4/groups/foo/access_tokens",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/access_tokens"
+  },
+  {
+    "template": "/api/:version/groups/:id/access_tokens/:token_id",
+    "example": "/api/v4/groups/foo/access_tokens/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/access_tokens/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/access_tokens/:token_id/rotate",
+    "example": "/api/v4/groups/foo/access_tokens/foo/rotate",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/access_tokens/john.doe/rotate"
+  },
+  {
     "template": "/api/:version/groups/:id/access_tokens/self/rotate",
     "example": "/api/v4/groups/foo/access_tokens/self/rotate",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/groups/john.doe/access_tokens/self/rotate"
+  },
+  {
+    "template": "/api/:version/groups/:id/approval_rules",
+    "example": "/api/v4/groups/foo/approval_rules",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/approval_rules"
+  },
+  {
+    "template": "/api/:version/groups/:id/approval_rules/:approval_rule_id",
+    "example": "/api/v4/groups/foo/approval_rules/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/approval_rules/john.doe"
   },
   {
     "template": "/api/:version/groups/:id/archive",
@@ -7737,6 +8316,30 @@
     "dottedExample": "/api/v4/groups/john.doe/billable_members/john.doe/memberships"
   },
   {
+    "template": "/api/:version/groups/:id/boards",
+    "example": "/api/v4/groups/foo/boards",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/boards"
+  },
+  {
+    "template": "/api/:version/groups/:id/boards/:board_id",
+    "example": "/api/v4/groups/foo/boards/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/boards/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/boards/:board_id/lists",
+    "example": "/api/v4/groups/foo/boards/foo/lists",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/boards/john.doe/lists"
+  },
+  {
+    "template": "/api/:version/groups/:id/boards/:board_id/lists/:list_id",
+    "example": "/api/v4/groups/foo/boards/foo/lists/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/boards/john.doe/lists/john.doe"
+  },
+  {
     "template": "/api/:version/groups/:id/clusters",
     "example": "/api/v4/groups/foo/clusters",
     "acceptsFormat": true,
@@ -7767,6 +8370,12 @@
     "dottedExample": "/api/v4/groups/john.doe/custom_attributes/john.doe"
   },
   {
+    "template": "/api/:version/groups/:id/dependency_list_exports",
+    "example": "/api/v4/groups/foo/dependency_list_exports",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/dependency_list_exports"
+  },
+  {
     "template": "/api/:version/groups/:id/dependency_proxy/cache",
     "example": "/api/v4/groups/foo/dependency_proxy/cache",
     "acceptsFormat": true,
@@ -7791,6 +8400,66 @@
     "dottedExample": "/api/v4/groups/john.doe/descendant_groups"
   },
   {
+    "template": "/api/:version/groups/:id/dora/metrics",
+    "example": "/api/v4/groups/foo/dora/metrics",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/dora/metrics"
+  },
+  {
+    "template": "/api/:version/groups/:id/enterprise_users",
+    "example": "/api/v4/groups/foo/enterprise_users",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/enterprise_users"
+  },
+  {
+    "template": "/api/:version/groups/:id/enterprise_users/:user_id",
+    "example": "/api/v4/groups/foo/enterprise_users/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/enterprise_users/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/enterprise_users/:user_id/disable_two_factor",
+    "example": "/api/v4/groups/foo/enterprise_users/foo/disable_two_factor",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/enterprise_users/john.doe/disable_two_factor"
+  },
+  {
+    "template": "/api/:version/groups/:id/epic_boards",
+    "example": "/api/v4/groups/foo/epic_boards",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epic_boards"
+  },
+  {
+    "template": "/api/:version/groups/:id/epic_boards/:board_id",
+    "example": "/api/v4/groups/foo/epic_boards/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epic_boards/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/epic_boards/:board_id/lists",
+    "example": "/api/v4/groups/foo/epic_boards/foo/lists",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epic_boards/john.doe/lists"
+  },
+  {
+    "template": "/api/:version/groups/:id/epic_boards/:board_id/lists/:list_id",
+    "example": "/api/v4/groups/foo/epic_boards/foo/lists/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epic_boards/john.doe/lists/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics",
+    "example": "/api/v4/groups/foo/epics",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:epic_iid",
+    "example": "/api/v4/groups/foo/epics/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe"
+  },
+  {
     "template": "/api/:version/groups/:id/epics/:epic_iid/award_emoji",
     "example": "/api/v4/groups/foo/epics/foo/award_emoji",
     "acceptsFormat": true,
@@ -7803,6 +8472,12 @@
     "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/award_emoji/john.doe"
   },
   {
+    "template": "/api/:version/groups/:id/epics/:epic_iid/issues",
+    "example": "/api/v4/groups/foo/epics/foo/issues",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/issues"
+  },
+  {
     "template": "/api/:version/groups/:id/epics/:epic_iid/notes/:note_id/award_emoji",
     "example": "/api/v4/groups/foo/epics/foo/notes/foo/award_emoji",
     "acceptsFormat": true,
@@ -7813,6 +8488,84 @@
     "example": "/api/v4/groups/foo/epics/foo/notes/foo/award_emoji/foo",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/notes/john.doe/award_emoji/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:epic_iid/related_epics",
+    "example": "/api/v4/groups/foo/epics/foo/related_epics",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/related_epics"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:epic_iid/related_epics/:related_epic_link_id",
+    "example": "/api/v4/groups/foo/epics/foo/related_epics/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/related_epics/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:epic_iid/todo",
+    "example": "/api/v4/groups/foo/epics/foo/todo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/todo"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:eventable_id/resource_label_events",
+    "example": "/api/v4/groups/foo/epics/foo/resource_label_events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/resource_label_events"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:eventable_id/resource_label_events/:event_id",
+    "example": "/api/v4/groups/foo/epics/foo/resource_label_events/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/resource_label_events/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:eventable_id/resource_state_events",
+    "example": "/api/v4/groups/foo/epics/foo/resource_state_events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/resource_state_events"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:eventable_id/resource_state_events/:event_id",
+    "example": "/api/v4/groups/foo/epics/foo/resource_state_events/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/resource_state_events/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:noteable_id/discussions",
+    "example": "/api/v4/groups/foo/epics/foo/discussions",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/discussions"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:noteable_id/discussions/:discussion_id",
+    "example": "/api/v4/groups/foo/epics/foo/discussions/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/discussions/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:noteable_id/discussions/:discussion_id/notes",
+    "example": "/api/v4/groups/foo/epics/foo/discussions/foo/notes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/discussions/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:noteable_id/discussions/:discussion_id/notes/:note_id",
+    "example": "/api/v4/groups/foo/epics/foo/discussions/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/discussions/john.doe/notes/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:noteable_id/notes",
+    "example": "/api/v4/groups/foo/epics/foo/notes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/groups/:id/epics/:noteable_id/notes/:note_id",
+    "example": "/api/v4/groups/foo/epics/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/epics/john.doe/notes/john.doe"
   },
   {
     "template": "/api/:version/groups/:id/export",
@@ -7849,6 +8602,48 @@
     "example": "/api/v4/groups/foo/groups/shared",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/groups/john.doe/groups/shared"
+  },
+  {
+    "template": "/api/:version/groups/:id/hooks",
+    "example": "/api/v4/groups/foo/hooks",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/hooks"
+  },
+  {
+    "template": "/api/:version/groups/:id/hooks/:hook_id",
+    "example": "/api/v4/groups/foo/hooks/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/hooks/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/hooks/:hook_id/custom_headers/:key",
+    "example": "/api/v4/groups/foo/hooks/foo/custom_headers/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/hooks/john.doe/custom_headers/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/hooks/:hook_id/events",
+    "example": "/api/v4/groups/foo/hooks/foo/events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/hooks/john.doe/events"
+  },
+  {
+    "template": "/api/:version/groups/:id/hooks/:hook_id/events/:hook_log_id/resend",
+    "example": "/api/v4/groups/foo/hooks/foo/events/foo/resend",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/hooks/john.doe/events/john.doe/resend"
+  },
+  {
+    "template": "/api/:version/groups/:id/hooks/:hook_id/test/:trigger",
+    "example": "/api/v4/groups/foo/hooks/foo/test/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/hooks/john.doe/test/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/hooks/:hook_id/url_variables/:key",
+    "example": "/api/v4/groups/foo/hooks/foo/url_variables/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/hooks/john.doe/url_variables/john.doe"
   },
   {
     "template": "/api/:version/groups/:id/integrations",
@@ -8199,10 +8994,118 @@
     "dottedExample": "/api/v4/groups/john.doe/issues_statistics"
   },
   {
+    "template": "/api/:version/groups/:id/iterations",
+    "example": "/api/v4/groups/foo/iterations",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/iterations"
+  },
+  {
+    "template": "/api/:version/groups/:id/labels",
+    "example": "/api/v4/groups/foo/labels",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/labels"
+  },
+  {
+    "template": "/api/:version/groups/:id/labels/:name",
+    "example": "/api/v4/groups/foo/labels/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/labels/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/labels/:subscribable_id/subscribe",
+    "example": "/api/v4/groups/foo/labels/foo/subscribe",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/labels/john.doe/subscribe"
+  },
+  {
+    "template": "/api/:version/groups/:id/labels/:subscribable_id/unsubscribe",
+    "example": "/api/v4/groups/foo/labels/foo/unsubscribe",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/labels/john.doe/unsubscribe"
+  },
+  {
+    "template": "/api/:version/groups/:id/ldap_group_links",
+    "example": "/api/v4/groups/foo/ldap_group_links",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/ldap_group_links"
+  },
+  {
+    "template": "/api/:version/groups/:id/ldap_group_links/:cn",
+    "example": "/api/v4/groups/foo/ldap_group_links/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/ldap_group_links/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/ldap_group_links/:provider/:cn",
+    "example": "/api/v4/groups/foo/ldap_group_links/foo/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/ldap_group_links/john.doe/john.doe"
+  },
+  {
     "template": "/api/:version/groups/:id/ldap_sync",
     "example": "/api/v4/groups/foo/ldap_sync",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/groups/john.doe/ldap_sync"
+  },
+  {
+    "template": "/api/:version/groups/:id/manage/personal_access_tokens",
+    "example": "/api/v4/groups/foo/manage/personal_access_tokens",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/manage/personal_access_tokens"
+  },
+  {
+    "template": "/api/:version/groups/:id/manage/personal_access_tokens/:pat_id",
+    "example": "/api/v4/groups/foo/manage/personal_access_tokens/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/manage/personal_access_tokens/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/manage/personal_access_tokens/:pat_id/rotate",
+    "example": "/api/v4/groups/foo/manage/personal_access_tokens/foo/rotate",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/manage/personal_access_tokens/john.doe/rotate"
+  },
+  {
+    "template": "/api/:version/groups/:id/manage/resource_access_tokens",
+    "example": "/api/v4/groups/foo/manage/resource_access_tokens",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/manage/resource_access_tokens"
+  },
+  {
+    "template": "/api/:version/groups/:id/manage/resource_access_tokens/:prat_id",
+    "example": "/api/v4/groups/foo/manage/resource_access_tokens/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/manage/resource_access_tokens/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/manage/resource_access_tokens/:prat_id/rotate",
+    "example": "/api/v4/groups/foo/manage/resource_access_tokens/foo/rotate",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/manage/resource_access_tokens/john.doe/rotate"
+  },
+  {
+    "template": "/api/:version/groups/:id/manage/ssh_keys",
+    "example": "/api/v4/groups/foo/manage/ssh_keys",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/manage/ssh_keys"
+  },
+  {
+    "template": "/api/:version/groups/:id/manage/ssh_keys/:key_id",
+    "example": "/api/v4/groups/foo/manage/ssh_keys/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/manage/ssh_keys/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/member_roles",
+    "example": "/api/v4/groups/foo/member_roles",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/member_roles"
+  },
+  {
+    "template": "/api/:version/groups/:id/member_roles/:member_role_id",
+    "example": "/api/v4/groups/foo/member_roles/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/member_roles/john.doe"
   },
   {
     "template": "/api/:version/groups/:id/members",
@@ -8253,10 +9156,52 @@
     "dottedExample": "/api/v4/groups/john.doe/members/approve_all"
   },
   {
+    "template": "/api/:version/groups/:id/merge_request_approval_setting",
+    "example": "/api/v4/groups/foo/merge_request_approval_setting",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/merge_request_approval_setting"
+  },
+  {
     "template": "/api/:version/groups/:id/merge_requests",
     "example": "/api/v4/groups/foo/merge_requests",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/groups/john.doe/merge_requests"
+  },
+  {
+    "template": "/api/:version/groups/:id/milestones",
+    "example": "/api/v4/groups/foo/milestones",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/milestones"
+  },
+  {
+    "template": "/api/:version/groups/:id/milestones/:milestone_id",
+    "example": "/api/v4/groups/foo/milestones/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/milestones/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/milestones/:milestone_id/burndown_events",
+    "example": "/api/v4/groups/foo/milestones/foo/burndown_events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/milestones/john.doe/burndown_events"
+  },
+  {
+    "template": "/api/:version/groups/:id/milestones/:milestone_id/issues",
+    "example": "/api/v4/groups/foo/milestones/foo/issues",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/milestones/john.doe/issues"
+  },
+  {
+    "template": "/api/:version/groups/:id/milestones/:milestone_id/merge_requests",
+    "example": "/api/v4/groups/foo/milestones/foo/merge_requests",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/milestones/john.doe/merge_requests"
+  },
+  {
+    "template": "/api/:version/groups/:id/notification_settings",
+    "example": "/api/v4/groups/foo/notification_settings",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/notification_settings"
   },
   {
     "template": "/api/:version/groups/:id/packages",
@@ -8301,10 +9246,40 @@
     "dottedExample": "/api/v4/groups/john.doe/projects/shared"
   },
   {
+    "template": "/api/:version/groups/:id/protected_branches",
+    "example": "/api/v4/groups/foo/protected_branches",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/protected_branches"
+  },
+  {
+    "template": "/api/:version/groups/:id/protected_branches/:name",
+    "example": "/api/v4/groups/foo/protected_branches/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/protected_branches/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/protected_environments",
+    "example": "/api/v4/groups/foo/protected_environments",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/protected_environments"
+  },
+  {
+    "template": "/api/:version/groups/:id/protected_environments/:name",
+    "example": "/api/v4/groups/foo/protected_environments/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/protected_environments/john.doe"
+  },
+  {
     "template": "/api/:version/groups/:id/provisioned_users",
     "example": "/api/v4/groups/foo/provisioned_users",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/groups/john.doe/provisioned_users"
+  },
+  {
+    "template": "/api/:version/groups/:id/push_rule",
+    "example": "/api/v4/groups/foo/push_rule",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/push_rule"
   },
   {
     "template": "/api/:version/groups/:id/registry/repositories",
@@ -8313,10 +9288,28 @@
     "dottedExample": "/api/v4/groups/john.doe/registry/repositories"
   },
   {
+    "template": "/api/:version/groups/:id/related_epic_links",
+    "example": "/api/v4/groups/foo/related_epic_links",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/related_epic_links"
+  },
+  {
     "template": "/api/:version/groups/:id/releases",
     "example": "/api/v4/groups/foo/releases",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/groups/john.doe/releases"
+  },
+  {
+    "template": "/api/:version/groups/:id/repository_storage_moves",
+    "example": "/api/v4/groups/foo/repository_storage_moves",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/repository_storage_moves"
+  },
+  {
+    "template": "/api/:version/groups/:id/repository_storage_moves/:repository_storage_move_id",
+    "example": "/api/v4/groups/foo/repository_storage_moves/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/repository_storage_moves/john.doe"
   },
   {
     "template": "/api/:version/groups/:id/restore",
@@ -8337,10 +9330,88 @@
     "dottedExample": "/api/v4/groups/john.doe/runners/reset_registration_token"
   },
   {
+    "template": "/api/:version/groups/:id/saml/:uid",
+    "example": "/api/v4/groups/foo/saml/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/saml/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/saml/identities",
+    "example": "/api/v4/groups/foo/saml/identities",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/saml/identities"
+  },
+  {
+    "template": "/api/:version/groups/:id/saml_group_links",
+    "example": "/api/v4/groups/foo/saml_group_links",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/saml_group_links"
+  },
+  {
+    "template": "/api/:version/groups/:id/saml_group_links/:saml_group_name",
+    "example": "/api/v4/groups/foo/saml_group_links/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/saml_group_links/john.doe"
+  },
+  {
     "template": "/api/:version/groups/:id/saml_users",
     "example": "/api/v4/groups/foo/saml_users",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/groups/john.doe/saml_users"
+  },
+  {
+    "template": "/api/:version/groups/:id/scim/:uid",
+    "example": "/api/v4/groups/foo/scim/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/scim/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/scim/identities",
+    "example": "/api/v4/groups/foo/scim/identities",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/scim/identities"
+  },
+  {
+    "template": "/api/:version/groups/:id/secrets_manager/access_token",
+    "example": "/api/v4/groups/foo/secrets_manager/access_token",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/secrets_manager/access_token"
+  },
+  {
+    "template": "/api/:version/groups/:id/security_settings",
+    "example": "/api/v4/groups/foo/security_settings",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/security_settings"
+  },
+  {
+    "template": "/api/:version/groups/:id/service_accounts",
+    "example": "/api/v4/groups/foo/service_accounts",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/service_accounts"
+  },
+  {
+    "template": "/api/:version/groups/:id/service_accounts/:user_id",
+    "example": "/api/v4/groups/foo/service_accounts/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/service_accounts/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/service_accounts/:user_id/personal_access_tokens",
+    "example": "/api/v4/groups/foo/service_accounts/foo/personal_access_tokens",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/service_accounts/john.doe/personal_access_tokens"
+  },
+  {
+    "template": "/api/:version/groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id",
+    "example": "/api/v4/groups/foo/service_accounts/foo/personal_access_tokens/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/service_accounts/john.doe/personal_access_tokens/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate",
+    "example": "/api/v4/groups/foo/service_accounts/foo/personal_access_tokens/foo/rotate",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/service_accounts/john.doe/personal_access_tokens/john.doe/rotate"
   },
   {
     "template": "/api/:version/groups/:id/share",
@@ -8437,6 +9508,18 @@
     "example": "/api/v4/groups/foo/variables/foo",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/groups/john.doe/variables/john.doe"
+  },
+  {
+    "template": "/api/:version/groups/:id/wiki_pages/:noteable_id/notes",
+    "example": "/api/v4/groups/foo/wiki_pages/foo/notes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/wiki_pages/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/groups/:id/wiki_pages/:noteable_id/notes/:note_id",
+    "example": "/api/v4/groups/foo/wiki_pages/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/wiki_pages/john.doe/notes/john.doe"
   },
   {
     "template": "/api/:version/groups/:id/wikis",
@@ -8561,6 +9644,420 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/internal/agents/agentk/agent_info",
+    "example": "/api/v4/internal/agents/agentk/agent_info",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/agents/agentw/agent_info",
+    "example": "/api/v4/internal/agents/agentw/agent_info",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/agents/agentw/authorize_user_access",
+    "example": "/api/v4/internal/agents/agentw/authorize_user_access",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/agents/agentw/server_config",
+    "example": "/api/v4/internal/agents/agentw/server_config",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/allowed",
+    "example": "/api/v4/internal/allowed",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/authorized_certs",
+    "example": "/api/v4/internal/authorized_certs",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/authorized_keys",
+    "example": "/api/v4/internal/authorized_keys",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/check",
+    "example": "/api/v4/internal/check",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/ci/agents/runner/info",
+    "example": "/api/v4/internal/ci/agents/runner/info",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/ci/agents/runnerc/info",
+    "example": "/api/v4/internal/ci/agents/runnerc/info",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/ci/job_router/jobs/:id",
+    "example": "/api/v4/internal/ci/job_router/jobs/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/ci/job_router/jobs/john.doe"
+  },
+  {
+    "template": "/api/:version/internal/ci/job_router/jobs/request",
+    "example": "/api/v4/internal/ci/job_router/jobs/request",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/ci/job_router/runner_controllers/job_admission",
+    "example": "/api/v4/internal/ci/job_router/runner_controllers/job_admission",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/dast/site_validations/:id/transition",
+    "example": "/api/v4/internal/dast/site_validations/foo/transition",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/dast/site_validations/john.doe/transition"
+  },
+  {
+    "template": "/api/:version/internal/discover",
+    "example": "/api/v4/internal/discover",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/error_tracking/allowed",
+    "example": "/api/v4/internal/error_tracking/allowed",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/gitaly/object_pool_members",
+    "example": "/api/v4/internal/gitaly/object_pool_members",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/gitlab_subscriptions/namespaces/:id",
+    "example": "/api/v4/internal/gitlab_subscriptions/namespaces/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/gitlab_subscriptions/namespaces/john.doe"
+  },
+  {
+    "template": "/api/:version/internal/gitlab_subscriptions/namespaces/:id/gitlab_subscription",
+    "example": "/api/v4/internal/gitlab_subscriptions/namespaces/foo/gitlab_subscription",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/gitlab_subscriptions/namespaces/john.doe/gitlab_subscription"
+  },
+  {
+    "template": "/api/:version/internal/gitlab_subscriptions/namespaces/:id/minutes",
+    "example": "/api/v4/internal/gitlab_subscriptions/namespaces/foo/minutes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/gitlab_subscriptions/namespaces/john.doe/minutes"
+  },
+  {
+    "template": "/api/:version/internal/gitlab_subscriptions/namespaces/:id/minutes/move/:target_id",
+    "example": "/api/v4/internal/gitlab_subscriptions/namespaces/foo/minutes/move/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/gitlab_subscriptions/namespaces/john.doe/minutes/move/john.doe"
+  },
+  {
+    "template": "/api/:version/internal/gitlab_subscriptions/namespaces/:id/owners",
+    "example": "/api/v4/internal/gitlab_subscriptions/namespaces/foo/owners",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/gitlab_subscriptions/namespaces/john.doe/owners"
+  },
+  {
+    "template": "/api/:version/internal/gitlab_subscriptions/namespaces/:id/projects",
+    "example": "/api/v4/internal/gitlab_subscriptions/namespaces/foo/projects",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/gitlab_subscriptions/namespaces/john.doe/projects"
+  },
+  {
+    "template": "/api/:version/internal/gitlab_subscriptions/namespaces/:id/provision",
+    "example": "/api/v4/internal/gitlab_subscriptions/namespaces/foo/provision",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/gitlab_subscriptions/namespaces/john.doe/provision"
+  },
+  {
+    "template": "/api/:version/internal/gitlab_subscriptions/namespaces/:id/subscription_add_on_purchases",
+    "example": "/api/v4/internal/gitlab_subscriptions/namespaces/foo/subscription_add_on_purchases",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/gitlab_subscriptions/namespaces/john.doe/subscription_add_on_purchases"
+  },
+  {
+    "template": "/api/:version/internal/gitlab_subscriptions/namespaces/:id/subscription_add_on_purchases/:add_on_name",
+    "example": "/api/v4/internal/gitlab_subscriptions/namespaces/foo/subscription_add_on_purchases/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/gitlab_subscriptions/namespaces/john.doe/subscription_add_on_purchases/john.doe"
+  },
+  {
+    "template": "/api/:version/internal/gitlab_subscriptions/namespaces/:namespace_id/upcoming_reconciliations",
+    "example": "/api/v4/internal/gitlab_subscriptions/namespaces/foo/upcoming_reconciliations",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/gitlab_subscriptions/namespaces/john.doe/upcoming_reconciliations"
+  },
+  {
+    "template": "/api/:version/internal/gitlab_subscriptions/namespaces/:namespace_id/user_permissions/:user_id",
+    "example": "/api/v4/internal/gitlab_subscriptions/namespaces/foo/user_permissions/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/gitlab_subscriptions/namespaces/john.doe/user_permissions/john.doe"
+  },
+  {
+    "template": "/api/:version/internal/gitlab_subscriptions/users/:id",
+    "example": "/api/v4/internal/gitlab_subscriptions/users/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/gitlab_subscriptions/users/john.doe"
+  },
+  {
+    "template": "/api/:version/internal/gitlab_subscriptions/users/:user_id/credit_card_validation",
+    "example": "/api/v4/internal/gitlab_subscriptions/users/foo/credit_card_validation",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/gitlab_subscriptions/users/john.doe/credit_card_validation"
+  },
+  {
+    "template": "/api/:version/internal/kubernetes/agent_configuration",
+    "example": "/api/v4/internal/kubernetes/agent_configuration",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/kubernetes/agent_events",
+    "example": "/api/v4/internal/kubernetes/agent_events",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/kubernetes/authorize_proxy_user",
+    "example": "/api/v4/internal/kubernetes/authorize_proxy_user",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/kubernetes/modules/remote_development/prerequisites",
+    "example": "/api/v4/internal/kubernetes/modules/remote_development/prerequisites",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/kubernetes/modules/remote_development/reconcile",
+    "example": "/api/v4/internal/kubernetes/modules/remote_development/reconcile",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/kubernetes/modules/starboard_vulnerability",
+    "example": "/api/v4/internal/kubernetes/modules/starboard_vulnerability",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/kubernetes/modules/starboard_vulnerability/policies_configuration",
+    "example": "/api/v4/internal/kubernetes/modules/starboard_vulnerability/policies_configuration",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/kubernetes/modules/starboard_vulnerability/scan_result",
+    "example": "/api/v4/internal/kubernetes/modules/starboard_vulnerability/scan_result",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/kubernetes/receptive_agents",
+    "example": "/api/v4/internal/kubernetes/receptive_agents",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/kubernetes/usage_metrics",
+    "example": "/api/v4/internal/kubernetes/usage_metrics",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/kubernetes/verify_project_access",
+    "example": "/api/v4/internal/kubernetes/verify_project_access",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/lfs",
+    "example": "/api/v4/internal/lfs",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/lfs_authenticate",
+    "example": "/api/v4/internal/lfs_authenticate",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/mail_room/*mailbox_type",
+    "example": "/api/v4/internal/mail_room/foo/bar",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/mail_room/john.doe/bar"
+  },
+  {
+    "template": "/api/:version/internal/observability/project/:id/read/analytics",
+    "example": "/api/v4/internal/observability/project/foo/read/analytics",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/observability/project/john.doe/read/analytics"
+  },
+  {
+    "template": "/api/:version/internal/observability/project/:id/read/logs",
+    "example": "/api/v4/internal/observability/project/foo/read/logs",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/observability/project/john.doe/read/logs"
+  },
+  {
+    "template": "/api/:version/internal/observability/project/:id/read/metrics",
+    "example": "/api/v4/internal/observability/project/foo/read/metrics",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/observability/project/john.doe/read/metrics"
+  },
+  {
+    "template": "/api/:version/internal/observability/project/:id/read/services",
+    "example": "/api/v4/internal/observability/project/foo/read/services",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/observability/project/john.doe/read/services"
+  },
+  {
+    "template": "/api/:version/internal/observability/project/:id/read/traces",
+    "example": "/api/v4/internal/observability/project/foo/read/traces",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/observability/project/john.doe/read/traces"
+  },
+  {
+    "template": "/api/:version/internal/observability/project/:id/write/logs",
+    "example": "/api/v4/internal/observability/project/foo/write/logs",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/observability/project/john.doe/write/logs"
+  },
+  {
+    "template": "/api/:version/internal/observability/project/:id/write/metrics",
+    "example": "/api/v4/internal/observability/project/foo/write/metrics",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/observability/project/john.doe/write/metrics"
+  },
+  {
+    "template": "/api/:version/internal/observability/project/:id/write/traces",
+    "example": "/api/v4/internal/observability/project/foo/write/traces",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/observability/project/john.doe/write/traces"
+  },
+  {
+    "template": "/api/:version/internal/orbit/project/:project_id/info",
+    "example": "/api/v4/internal/orbit/project/foo/info",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/orbit/project/john.doe/info"
+  },
+  {
+    "template": "/api/:version/internal/orbit/project/:project_id/merge_request_diffs/:diff_id",
+    "example": "/api/v4/internal/orbit/project/foo/merge_request_diffs/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/orbit/project/john.doe/merge_request_diffs/john.doe"
+  },
+  {
+    "template": "/api/:version/internal/orbit/project/:project_id/merge_request_diffs/:diff_id/raw_diffs",
+    "example": "/api/v4/internal/orbit/project/foo/merge_request_diffs/foo/raw_diffs",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/orbit/project/john.doe/merge_request_diffs/john.doe/raw_diffs"
+  },
+  {
+    "template": "/api/:version/internal/orbit/project/:project_id/merge_requests/:merge_request_iid/raw_diffs",
+    "example": "/api/v4/internal/orbit/project/foo/merge_requests/foo/raw_diffs",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/orbit/project/john.doe/merge_requests/john.doe/raw_diffs"
+  },
+  {
+    "template": "/api/:version/internal/orbit/project/:project_id/repository/archive",
+    "example": "/api/v4/internal/orbit/project/foo/repository/archive",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/orbit/project/john.doe/repository/archive"
+  },
+  {
+    "template": "/api/:version/internal/orbit/project/:project_id/repository/changed_paths",
+    "example": "/api/v4/internal/orbit/project/foo/repository/changed_paths",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/orbit/project/john.doe/repository/changed_paths"
+  },
+  {
+    "template": "/api/:version/internal/orbit/project/:project_id/repository/commits",
+    "example": "/api/v4/internal/orbit/project/foo/repository/commits",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/orbit/project/john.doe/repository/commits"
+  },
+  {
+    "template": "/api/:version/internal/orbit/project/:project_id/repository/list_blobs",
+    "example": "/api/v4/internal/orbit/project/foo/repository/list_blobs",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/orbit/project/john.doe/repository/list_blobs"
+  },
+  {
+    "template": "/api/:version/internal/orbit/redaction",
+    "example": "/api/v4/internal/orbit/redaction",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/pages",
+    "example": "/api/v4/internal/pages",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/pages/status",
+    "example": "/api/v4/internal/pages/status",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/personal_access_token",
+    "example": "/api/v4/internal/personal_access_token",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/post_receive",
+    "example": "/api/v4/internal/post_receive",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/pre_receive",
+    "example": "/api/v4/internal/pre_receive",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/search/zoekt/:uuid/callback",
+    "example": "/api/v4/internal/search/zoekt/foo/callback",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/search/zoekt/john.doe/callback"
+  },
+  {
+    "template": "/api/:version/internal/search/zoekt/:uuid/heartbeat",
+    "example": "/api/v4/internal/search/zoekt/foo/heartbeat",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/internal/search/zoekt/john.doe/heartbeat"
+  },
+  {
+    "template": "/api/:version/internal/secrets_manager/audit_logs",
+    "example": "/api/v4/internal/secrets_manager/audit_logs",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/shellhorse/git_audit_event",
+    "example": "/api/v4/internal/shellhorse/git_audit_event",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/two_factor_config",
+    "example": "/api/v4/internal/two_factor_config",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/two_factor_manual_otp_check",
+    "example": "/api/v4/internal/two_factor_manual_otp_check",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/two_factor_push_otp_check",
+    "example": "/api/v4/internal/two_factor_push_otp_check",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/two_factor_recovery_codes",
+    "example": "/api/v4/internal/two_factor_recovery_codes",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/workhorse/authorize_upload",
+    "example": "/api/v4/internal/workhorse/authorize_upload",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/workhorse/oauth_routing",
+    "example": "/api/v4/internal/workhorse/oauth_routing",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/issues",
     "example": "/api/v4/issues",
     "acceptsFormat": true
@@ -8587,6 +10084,16 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/job/test_balancing/initialize",
+    "example": "/api/v4/job/test_balancing/initialize",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/job/test_balancing/request",
+    "example": "/api/v4/job/test_balancing/request",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/jobs/:id",
     "example": "/api/v4/jobs/foo",
     "acceptsFormat": true,
@@ -8603,6 +10110,30 @@
     "example": "/api/v4/jobs/foo/artifacts/authorize",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/jobs/john.doe/artifacts/authorize"
+  },
+  {
+    "template": "/api/:version/jobs/:id/sbom_scans",
+    "example": "/api/v4/jobs/foo/sbom_scans",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/jobs/john.doe/sbom_scans"
+  },
+  {
+    "template": "/api/:version/jobs/:id/sbom_scans/:sbom_digest",
+    "example": "/api/v4/jobs/foo/sbom_scans/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/jobs/john.doe/sbom_scans/john.doe"
+  },
+  {
+    "template": "/api/:version/jobs/:id/sbom_scans/:sbom_scan_id",
+    "example": "/api/v4/jobs/foo/sbom_scans/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/jobs/john.doe/sbom_scans/john.doe"
+  },
+  {
+    "template": "/api/:version/jobs/:id/sbom_scans/authorize",
+    "example": "/api/v4/jobs/foo/sbom_scans/authorize",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/jobs/john.doe/sbom_scans/authorize"
   },
   {
     "template": "/api/:version/jobs/:id/trace",
@@ -8627,9 +10158,63 @@
     "dottedExample": "/api/v4/keys/john.doe"
   },
   {
+    "template": "/api/:version/ldap/:provider/groups",
+    "example": "/api/v4/ldap/foo/groups",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ldap/john.doe/groups"
+  },
+  {
+    "template": "/api/:version/ldap/groups",
+    "example": "/api/v4/ldap/groups",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/license",
+    "example": "/api/v4/license",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/license/:id",
+    "example": "/api/v4/license/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/license/john.doe"
+  },
+  {
+    "template": "/api/:version/license/:id/refresh_billable_users",
+    "example": "/api/v4/license/foo/refresh_billable_users",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/license/john.doe/refresh_billable_users"
+  },
+  {
+    "template": "/api/:version/license/usage_export",
+    "example": "/api/v4/license/usage_export",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/licenses",
+    "example": "/api/v4/licenses",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/markdown",
     "example": "/api/v4/markdown",
     "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/mcp",
+    "example": "/api/v4/mcp",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/member_roles",
+    "example": "/api/v4/member_roles",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/member_roles/:member_role_id",
+    "example": "/api/v4/member_roles/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/member_roles/john.doe"
   },
   {
     "template": "/api/:version/merge_requests",
@@ -8713,6 +10298,12 @@
     "dottedExample": "/api/v4/namespaces/john.doe/-/work_items/john.doe/email_participants"
   },
   {
+    "template": "/api/:version/namespaces/:id/-/work_items/:work_item_iid/feature_flags",
+    "example": "/api/v4/namespaces/foo/-/work_items/foo/feature_flags",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/namespaces/john.doe/-/work_items/john.doe/feature_flags"
+  },
+  {
     "template": "/api/:version/namespaces/:id/-/work_items/:work_item_iid/linked_items",
     "example": "/api/v4/namespaces/foo/-/work_items/foo/linked_items",
     "acceptsFormat": true,
@@ -8761,14 +10352,42 @@
     "dottedExample": "/api/v4/namespaces/john.doe/gitlab_subscription"
   },
   {
+    "template": "/api/:version/namespaces/:id/minutes",
+    "example": "/api/v4/namespaces/foo/minutes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/namespaces/john.doe/minutes"
+  },
+  {
+    "template": "/api/:version/namespaces/:id/minutes/move/:target_id",
+    "example": "/api/v4/namespaces/foo/minutes/move/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/namespaces/john.doe/minutes/move/john.doe"
+  },
+  {
     "template": "/api/:version/namespaces/:id/storage/limit_exclusion",
     "example": "/api/v4/namespaces/foo/storage/limit_exclusion",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/namespaces/john.doe/storage/limit_exclusion"
   },
   {
+    "template": "/api/:version/namespaces/:id/subscription_add_on_purchase/:add_on_name",
+    "example": "/api/v4/namespaces/foo/subscription_add_on_purchase/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/namespaces/john.doe/subscription_add_on_purchase/john.doe"
+  },
+  {
     "template": "/api/:version/namespaces/storage/limit_exclusions",
     "example": "/api/v4/namespaces/storage/limit_exclusions",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/notification_settings",
+    "example": "/api/v4/notification_settings",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/occurrences/vulnerabilities",
+    "example": "/api/v4/occurrences/vulnerabilities",
     "acceptsFormat": true
   },
   {
@@ -8788,6 +10407,68 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/orbit/agent/commands",
+    "example": "/api/v4/orbit/agent/commands",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/orbit/agent/commands/:name",
+    "example": "/api/v4/orbit/agent/commands/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/orbit/agent/commands/john.doe"
+  },
+  {
+    "template": "/api/:version/orbit/graph_status",
+    "example": "/api/v4/orbit/graph_status",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/orbit/mcp",
+    "example": "/api/v4/orbit/mcp",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/orbit/query",
+    "example": "/api/v4/orbit/query",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/orbit/query/:name",
+    "example": "/api/v4/orbit/query/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/orbit/query/john.doe"
+  },
+  {
+    "template": "/api/:version/orbit/query/templates",
+    "example": "/api/v4/orbit/query/templates",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/orbit/schema",
+    "example": "/api/v4/orbit/schema",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/orbit/schema/dsl",
+    "example": "/api/v4/orbit/schema/dsl",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/orbit/schema/format",
+    "example": "/api/v4/orbit/schema/format",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/orbit/status",
+    "example": "/api/v4/orbit/status",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/orbit/tools",
+    "example": "/api/v4/orbit/tools",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/organizations",
     "example": "/api/v4/organizations",
     "acceptsFormat": true
@@ -8797,6 +10478,18 @@
     "example": "/api/v4/organizations/foo",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/organizations/john.doe"
+  },
+  {
+    "template": "/api/:version/organizations/:id/security/policy_store",
+    "example": "/api/v4/organizations/foo/security/policy_store",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/organizations/john.doe/security/policy_store"
+  },
+  {
+    "template": "/api/:version/organizations/:id/security/policy_store/:policy_id",
+    "example": "/api/v4/organizations/foo/security/policy_store/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/organizations/john.doe/security/policy_store/john.doe"
   },
   {
     "template": "/api/:version/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel",
@@ -9009,6 +10702,34 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/pipelines/:id/dependency_list_exports",
+    "example": "/api/v4/pipelines/foo/dependency_list_exports",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/pipelines/john.doe/dependency_list_exports"
+  },
+  {
+    "template": "/api/:version/project_aliases",
+    "example": "/api/v4/project_aliases",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/project_aliases/:name",
+    "example": "/api/v4/project_aliases/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/project_aliases/john.doe"
+  },
+  {
+    "template": "/api/:version/project_repository_storage_moves",
+    "example": "/api/v4/project_repository_storage_moves",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/project_repository_storage_moves/:repository_storage_move_id",
+    "example": "/api/v4/project_repository_storage_moves/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/project_repository_storage_moves/john.doe"
+  },
+  {
     "template": "/api/:version/projects",
     "example": "/api/v4/projects",
     "acceptsFormat": true
@@ -9024,6 +10745,12 @@
     "example": "/api/v4/projects/foo/-/search",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/-/search"
+  },
+  {
+    "template": "/api/:version/projects/:id/(-/)search/semantic",
+    "example": "/api/v4/projects/foo/-/search/semantic",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/-/search/semantic"
   },
   {
     "template": "/api/:version/projects/:id/(ref/:ref/)trigger/pipeline",
@@ -9092,6 +10819,12 @@
     "dottedExample": "/api/v4/projects/john.doe/-/work_items/john.doe/email_participants"
   },
   {
+    "template": "/api/:version/projects/:id/-/work_items/:work_item_iid/feature_flags",
+    "example": "/api/v4/projects/foo/-/work_items/foo/feature_flags",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/-/work_items/john.doe/feature_flags"
+  },
+  {
     "template": "/api/:version/projects/:id/-/work_items/:work_item_iid/linked_items",
     "example": "/api/v4/projects/foo/-/work_items/foo/linked_items",
     "acceptsFormat": true,
@@ -9146,10 +10879,52 @@
     "dottedExample": "/api/v4/projects/john.doe/access_requests/john.doe/approve"
   },
   {
+    "template": "/api/:version/projects/:id/access_tokens",
+    "example": "/api/v4/projects/foo/access_tokens",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/access_tokens"
+  },
+  {
+    "template": "/api/:version/projects/:id/access_tokens/:token_id",
+    "example": "/api/v4/projects/foo/access_tokens/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/access_tokens/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/access_tokens/:token_id/rotate",
+    "example": "/api/v4/projects/foo/access_tokens/foo/rotate",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/access_tokens/john.doe/rotate"
+  },
+  {
     "template": "/api/:version/projects/:id/access_tokens/self/rotate",
     "example": "/api/v4/projects/foo/access_tokens/self/rotate",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/access_tokens/self/rotate"
+  },
+  {
+    "template": "/api/:version/projects/:id/ai_agent/audit_events",
+    "example": "/api/v4/projects/foo/ai_agent/audit_events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ai_agent/audit_events"
+  },
+  {
+    "template": "/api/:version/projects/:id/ai_agent/identities",
+    "example": "/api/v4/projects/foo/ai_agent/identities",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ai_agent/identities"
+  },
+  {
+    "template": "/api/:version/projects/:id/ai_agent/sessions",
+    "example": "/api/v4/projects/foo/ai_agent/sessions",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ai_agent/sessions"
+  },
+  {
+    "template": "/api/:version/projects/:id/ai_agent/sessions/:session_id",
+    "example": "/api/v4/projects/foo/ai_agent/sessions/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ai_agent/sessions/john.doe"
   },
   {
     "template": "/api/:version/projects/:id/alert_management_alerts/:alert_iid/metric_images",
@@ -9168,6 +10943,48 @@
     "example": "/api/v4/projects/foo/alert_management_alerts/foo/metric_images/authorize",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/alert_management_alerts/john.doe/metric_images/authorize"
+  },
+  {
+    "template": "/api/:version/projects/:id/analytics/deployment_frequency",
+    "example": "/api/v4/projects/foo/analytics/deployment_frequency",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/analytics/deployment_frequency"
+  },
+  {
+    "template": "/api/:version/projects/:id/approval_rules",
+    "example": "/api/v4/projects/foo/approval_rules",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/approval_rules"
+  },
+  {
+    "template": "/api/:version/projects/:id/approval_rules/:approval_rule_id",
+    "example": "/api/v4/projects/foo/approval_rules/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/approval_rules/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/approval_settings",
+    "example": "/api/v4/projects/foo/approval_settings",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/approval_settings"
+  },
+  {
+    "template": "/api/:version/projects/:id/approval_settings/rules",
+    "example": "/api/v4/projects/foo/approval_settings/rules",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/approval_settings/rules"
+  },
+  {
+    "template": "/api/:version/projects/:id/approval_settings/rules/:approval_rule_id",
+    "example": "/api/v4/projects/foo/approval_settings/rules/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/approval_settings/rules/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/approvals",
+    "example": "/api/v4/projects/foo/approvals",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/approvals"
   },
   {
     "template": "/api/:version/projects/:id/archive",
@@ -9230,6 +11047,30 @@
     "dottedExample": "/api/v4/projects/john.doe/badges/render"
   },
   {
+    "template": "/api/:version/projects/:id/boards",
+    "example": "/api/v4/projects/foo/boards",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/boards"
+  },
+  {
+    "template": "/api/:version/projects/:id/boards/:board_id",
+    "example": "/api/v4/projects/foo/boards/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/boards/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/boards/:board_id/lists",
+    "example": "/api/v4/projects/foo/boards/foo/lists",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/boards/john.doe/lists"
+  },
+  {
+    "template": "/api/:version/projects/:id/boards/:board_id/lists/:list_id",
+    "example": "/api/v4/projects/foo/boards/foo/lists/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/boards/john.doe/lists/john.doe"
+  },
+  {
     "template": "/api/:version/projects/:id/catalog/publish",
     "example": "/api/v4/projects/foo/catalog/publish",
     "acceptsFormat": true,
@@ -9266,6 +11107,18 @@
     "dottedExample": "/api/v4/projects/john.doe/cluster_agents/john.doe/tokens/john.doe"
   },
   {
+    "template": "/api/:version/projects/:id/cluster_agents/:agent_id/url_configurations",
+    "example": "/api/v4/projects/foo/cluster_agents/foo/url_configurations",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/cluster_agents/john.doe/url_configurations"
+  },
+  {
+    "template": "/api/:version/projects/:id/cluster_agents/:agent_id/url_configurations/:url_configuration_id",
+    "example": "/api/v4/projects/foo/cluster_agents/foo/url_configurations/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/cluster_agents/john.doe/url_configurations/john.doe"
+  },
+  {
     "template": "/api/:version/projects/:id/clusters",
     "example": "/api/v4/projects/foo/clusters",
     "acceptsFormat": true,
@@ -9282,6 +11135,12 @@
     "example": "/api/v4/projects/foo/clusters/user",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/clusters/user"
+  },
+  {
+    "template": "/api/:version/projects/:id/compliance_external_controls/:control_id/status",
+    "example": "/api/v4/projects/foo/compliance_external_controls/foo/status",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/compliance_external_controls/john.doe/status"
   },
   {
     "template": "/api/:version/projects/:id/create_ci_config",
@@ -9318,6 +11177,42 @@
     "example": "/api/v4/projects/foo/debian_distributions/foo/key.asc",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/debian_distributions/john.doe/key.asc"
+  },
+  {
+    "template": "/api/:version/projects/:id/dependencies",
+    "example": "/api/v4/projects/foo/dependencies",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/dependencies"
+  },
+  {
+    "template": "/api/:version/projects/:id/dependency_firewall/enablement",
+    "example": "/api/v4/projects/foo/dependency_firewall/enablement",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/dependency_firewall/enablement"
+  },
+  {
+    "template": "/api/:version/projects/:id/dependency_firewall/evaluate",
+    "example": "/api/v4/projects/foo/dependency_firewall/evaluate",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/dependency_firewall/evaluate"
+  },
+  {
+    "template": "/api/:version/projects/:id/dependency_list_exports",
+    "example": "/api/v4/projects/foo/dependency_list_exports",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/dependency_list_exports"
+  },
+  {
+    "template": "/api/:version/projects/:id/dependency_proxy/packages/maven/*path/:file_name",
+    "example": "/api/v4/projects/foo/dependency_proxy/packages/maven/foo/bar/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/dependency_proxy/packages/maven/john.doe/bar/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/dependency_proxy/packages/npm/*package_name/-/*file_name",
+    "example": "/api/v4/projects/foo/dependency_proxy/packages/npm/foo/bar/-/foo/bar",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/dependency_proxy/packages/npm/john.doe/bar/-/john.doe/bar"
   },
   {
     "template": "/api/:version/projects/:id/deploy_keys",
@@ -9372,6 +11267,12 @@
     "example": "/api/v4/projects/foo/deployments/foo/merge_requests",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/deployments/john.doe/merge_requests"
+  },
+  {
+    "template": "/api/:version/projects/:id/dora/metrics",
+    "example": "/api/v4/projects/foo/dora/metrics",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/dora/metrics"
   },
   {
     "template": "/api/:version/projects/:id/environments",
@@ -9458,6 +11359,18 @@
     "dottedExample": "/api/v4/projects/john.doe/export_relations/status"
   },
   {
+    "template": "/api/:version/projects/:id/external_status_checks",
+    "example": "/api/v4/projects/foo/external_status_checks",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/external_status_checks"
+  },
+  {
+    "template": "/api/:version/projects/:id/external_status_checks/:check_id",
+    "example": "/api/v4/projects/foo/external_status_checks/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/external_status_checks/john.doe"
+  },
+  {
     "template": "/api/:version/projects/:id/feature_flags",
     "example": "/api/v4/projects/foo/feature_flags",
     "acceptsFormat": true,
@@ -9516,6 +11429,18 @@
     "example": "/api/v4/projects/foo/freeze_periods/foo",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/freeze_periods/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/google_cloud/setup/integrations.sh",
+    "example": "/api/v4/projects/foo/google_cloud/setup/integrations.sh",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/google_cloud/setup/integrations.sh"
+  },
+  {
+    "template": "/api/:version/projects/:id/google_cloud/setup/runner_deployment_project.sh",
+    "example": "/api/v4/projects/foo/google_cloud/setup/runner_deployment_project.sh",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/google_cloud/setup/runner_deployment_project.sh"
   },
   {
     "template": "/api/:version/projects/:id/groups",
@@ -9938,6 +11863,30 @@
     "dottedExample": "/api/v4/projects/john.doe/issues"
   },
   {
+    "template": "/api/:version/projects/:id/issues/:eventable_id/resource_iteration_events",
+    "example": "/api/v4/projects/foo/issues/foo/resource_iteration_events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/resource_iteration_events"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:eventable_id/resource_iteration_events/:event_id",
+    "example": "/api/v4/projects/foo/issues/foo/resource_iteration_events/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/resource_iteration_events/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:eventable_id/resource_label_events",
+    "example": "/api/v4/projects/foo/issues/foo/resource_label_events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/resource_label_events"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:eventable_id/resource_label_events/:event_id",
+    "example": "/api/v4/projects/foo/issues/foo/resource_label_events/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/resource_label_events/john.doe"
+  },
+  {
     "template": "/api/:version/projects/:id/issues/:eventable_id/resource_milestone_events",
     "example": "/api/v4/projects/foo/issues/foo/resource_milestone_events",
     "acceptsFormat": true,
@@ -9948,6 +11897,30 @@
     "example": "/api/v4/projects/foo/issues/foo/resource_milestone_events/foo",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/resource_milestone_events/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:eventable_id/resource_state_events",
+    "example": "/api/v4/projects/foo/issues/foo/resource_state_events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/resource_state_events"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:eventable_id/resource_state_events/:event_id",
+    "example": "/api/v4/projects/foo/issues/foo/resource_state_events/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/resource_state_events/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:eventable_id/resource_weight_events",
+    "example": "/api/v4/projects/foo/issues/foo/resource_weight_events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/resource_weight_events"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:eventable_id/resource_weight_events/:event_id",
+    "example": "/api/v4/projects/foo/issues/foo/resource_weight_events/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/resource_weight_events/john.doe"
   },
   {
     "template": "/api/:version/projects/:id/issues/:issue_iid",
@@ -10076,16 +12049,76 @@
     "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/time_stats"
   },
   {
+    "template": "/api/:version/projects/:id/issues/:issue_iid/todo",
+    "example": "/api/v4/projects/foo/issues/foo/todo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/todo"
+  },
+  {
     "template": "/api/:version/projects/:id/issues/:issue_iid/user_agent_detail",
     "example": "/api/v4/projects/foo/issues/foo/user_agent_detail",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/user_agent_detail"
   },
   {
+    "template": "/api/:version/projects/:id/issues/:noteable_id/discussions",
+    "example": "/api/v4/projects/foo/issues/foo/discussions",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/discussions"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:noteable_id/discussions/:discussion_id",
+    "example": "/api/v4/projects/foo/issues/foo/discussions/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/discussions/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes",
+    "example": "/api/v4/projects/foo/issues/foo/discussions/foo/notes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/discussions/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes/:note_id",
+    "example": "/api/v4/projects/foo/issues/foo/discussions/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/discussions/john.doe/notes/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:noteable_id/notes",
+    "example": "/api/v4/projects/foo/issues/foo/notes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:noteable_id/notes/:note_id",
+    "example": "/api/v4/projects/foo/issues/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/notes/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:subscribable_id/subscribe",
+    "example": "/api/v4/projects/foo/issues/foo/subscribe",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/subscribe"
+  },
+  {
+    "template": "/api/:version/projects/:id/issues/:subscribable_id/unsubscribe",
+    "example": "/api/v4/projects/foo/issues/foo/unsubscribe",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/issues/john.doe/unsubscribe"
+  },
+  {
     "template": "/api/:version/projects/:id/issues_statistics",
     "example": "/api/v4/projects/foo/issues_statistics",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/issues_statistics"
+  },
+  {
+    "template": "/api/:version/projects/:id/iterations",
+    "example": "/api/v4/projects/foo/iterations",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/iterations"
   },
   {
     "template": "/api/:version/projects/:id/job_token_scope",
@@ -10196,10 +12229,58 @@
     "dottedExample": "/api/v4/projects/john.doe/jobs/artifacts/john.doe/raw/john.doe/bar"
   },
   {
+    "template": "/api/:version/projects/:id/labels",
+    "example": "/api/v4/projects/foo/labels",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/labels"
+  },
+  {
+    "template": "/api/:version/projects/:id/labels/:name",
+    "example": "/api/v4/projects/foo/labels/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/labels/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/labels/:name/promote",
+    "example": "/api/v4/projects/foo/labels/foo/promote",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/labels/john.doe/promote"
+  },
+  {
+    "template": "/api/:version/projects/:id/labels/:subscribable_id/subscribe",
+    "example": "/api/v4/projects/foo/labels/foo/subscribe",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/labels/john.doe/subscribe"
+  },
+  {
+    "template": "/api/:version/projects/:id/labels/:subscribable_id/unsubscribe",
+    "example": "/api/v4/projects/foo/labels/foo/unsubscribe",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/labels/john.doe/unsubscribe"
+  },
+  {
+    "template": "/api/:version/projects/:id/labels/promote",
+    "example": "/api/v4/projects/foo/labels/promote",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/labels/promote"
+  },
+  {
     "template": "/api/:version/projects/:id/languages",
     "example": "/api/v4/projects/foo/languages",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/languages"
+  },
+  {
+    "template": "/api/:version/projects/:id/managed_licenses",
+    "example": "/api/v4/projects/foo/managed_licenses",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/managed_licenses"
+  },
+  {
+    "template": "/api/:version/projects/:id/managed_licenses/:managed_license_id",
+    "example": "/api/v4/projects/foo/managed_licenses/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/managed_licenses/john.doe"
   },
   {
     "template": "/api/:version/projects/:id/members",
@@ -10226,10 +12307,28 @@
     "dottedExample": "/api/v4/projects/john.doe/members/all/john.doe"
   },
   {
+    "template": "/api/:version/projects/:id/merge_request_approval_setting",
+    "example": "/api/v4/projects/foo/merge_request_approval_setting",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_request_approval_setting"
+  },
+  {
     "template": "/api/:version/projects/:id/merge_requests",
     "example": "/api/v4/projects/foo/merge_requests",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/merge_requests"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:eventable_id/resource_label_events",
+    "example": "/api/v4/projects/foo/merge_requests/foo/resource_label_events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/resource_label_events"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:eventable_id/resource_label_events/:event_id",
+    "example": "/api/v4/projects/foo/merge_requests/foo/resource_label_events/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/resource_label_events/john.doe"
   },
   {
     "template": "/api/:version/projects/:id/merge_requests/:eventable_id/resource_milestone_events",
@@ -10244,6 +12343,18 @@
     "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/resource_milestone_events/john.doe"
   },
   {
+    "template": "/api/:version/projects/:id/merge_requests/:eventable_id/resource_state_events",
+    "example": "/api/v4/projects/foo/merge_requests/foo/resource_state_events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/resource_state_events"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:eventable_id/resource_state_events/:event_id",
+    "example": "/api/v4/projects/foo/merge_requests/foo/resource_state_events/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/resource_state_events/john.doe"
+  },
+  {
     "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid",
     "example": "/api/v4/projects/foo/merge_requests/foo",
     "acceptsFormat": true,
@@ -10254,6 +12365,18 @@
     "example": "/api/v4/projects/foo/merge_requests/foo/add_spent_time",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/add_spent_time"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/approval_rules",
+    "example": "/api/v4/projects/foo/merge_requests/foo/approval_rules",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/approval_rules"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id",
+    "example": "/api/v4/projects/foo/merge_requests/foo/approval_rules/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/approval_rules/john.doe"
   },
   {
     "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/approval_settings",
@@ -10290,6 +12413,24 @@
     "example": "/api/v4/projects/foo/merge_requests/foo/award_emoji/foo",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/award_emoji/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/blockees",
+    "example": "/api/v4/projects/foo/merge_requests/foo/blockees",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/blockees"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/blocks",
+    "example": "/api/v4/projects/foo/merge_requests/foo/blocks",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/blocks"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/blocks/:block_id",
+    "example": "/api/v4/projects/foo/merge_requests/foo/blocks/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/blocks/john.doe"
   },
   {
     "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds",
@@ -10430,6 +12571,24 @@
     "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/reviewers"
   },
   {
+    "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/status_check_responses",
+    "example": "/api/v4/projects/foo/merge_requests/foo/status_check_responses",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/status_check_responses"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/status_checks",
+    "example": "/api/v4/projects/foo/merge_requests/foo/status_checks",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/status_checks"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/status_checks/:external_status_check_id/retry",
+    "example": "/api/v4/projects/foo/merge_requests/foo/status_checks/foo/retry",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/status_checks/john.doe/retry"
+  },
+  {
     "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/time_estimate",
     "example": "/api/v4/projects/foo/merge_requests/foo/time_estimate",
     "acceptsFormat": true,
@@ -10440,6 +12599,12 @@
     "example": "/api/v4/projects/foo/merge_requests/foo/time_stats",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/time_stats"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/todo",
+    "example": "/api/v4/projects/foo/merge_requests/foo/todo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/todo"
   },
   {
     "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/unapprove",
@@ -10458,6 +12623,300 @@
     "example": "/api/v4/projects/foo/merge_requests/foo/versions/foo",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/versions/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:noteable_id/discussions",
+    "example": "/api/v4/projects/foo/merge_requests/foo/discussions",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/discussions"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id",
+    "example": "/api/v4/projects/foo/merge_requests/foo/discussions/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/discussions/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes",
+    "example": "/api/v4/projects/foo/merge_requests/foo/discussions/foo/notes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/discussions/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes/:note_id",
+    "example": "/api/v4/projects/foo/merge_requests/foo/discussions/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/discussions/john.doe/notes/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:noteable_id/notes",
+    "example": "/api/v4/projects/foo/merge_requests/foo/notes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:noteable_id/notes/:note_id",
+    "example": "/api/v4/projects/foo/merge_requests/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/notes/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:subscribable_id/subscribe",
+    "example": "/api/v4/projects/foo/merge_requests/foo/subscribe",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/subscribe"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_requests/:subscribable_id/unsubscribe",
+    "example": "/api/v4/projects/foo/merge_requests/foo/unsubscribe",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/unsubscribe"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_trains",
+    "example": "/api/v4/projects/foo/merge_trains",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_trains"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_trains/:target_branch",
+    "example": "/api/v4/projects/foo/merge_trains/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_trains/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/merge_trains/merge_requests/:merge_request_iid",
+    "example": "/api/v4/projects/foo/merge_trains/merge_requests/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_trains/merge_requests/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/milestones",
+    "example": "/api/v4/projects/foo/milestones",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/milestones"
+  },
+  {
+    "template": "/api/:version/projects/:id/milestones/:milestone_id",
+    "example": "/api/v4/projects/foo/milestones/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/milestones/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/milestones/:milestone_id/burndown_events",
+    "example": "/api/v4/projects/foo/milestones/foo/burndown_events",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/milestones/john.doe/burndown_events"
+  },
+  {
+    "template": "/api/:version/projects/:id/milestones/:milestone_id/issues",
+    "example": "/api/v4/projects/foo/milestones/foo/issues",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/milestones/john.doe/issues"
+  },
+  {
+    "template": "/api/:version/projects/:id/milestones/:milestone_id/merge_requests",
+    "example": "/api/v4/projects/foo/milestones/foo/merge_requests",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/milestones/john.doe/merge_requests"
+  },
+  {
+    "template": "/api/:version/projects/:id/milestones/:milestone_id/promote",
+    "example": "/api/v4/projects/foo/milestones/foo/promote",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/milestones/john.doe/promote"
+  },
+  {
+    "template": "/api/:version/projects/:id/mirror/pull",
+    "example": "/api/v4/projects/foo/mirror/pull",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/mirror/pull"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow-artifacts/artifacts",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow-artifacts/artifacts",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow-artifacts/artifacts"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow-artifacts/artifacts/:model_version/*file_path",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow-artifacts/artifacts/foo/foo/bar",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow-artifacts/artifacts/john.doe/john.doe/bar"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/create",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/experiments/create",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/experiments/create"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/delete",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/experiments/delete",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/experiments/delete"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/get",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/experiments/get",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/experiments/get"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/get-by-name",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/experiments/get-by-name",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/experiments/get-by-name"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/list",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/experiments/list",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/experiments/list"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/search",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/experiments/search",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/experiments/search"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/set-experiment-tag",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/experiments/set-experiment-tag",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/experiments/set-experiment-tag"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/metrics/get-history",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/metrics/get-history",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/metrics/get-history"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/create",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/model-versions/create",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/model-versions/create"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/get",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/model-versions/get",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/model-versions/get"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/get-download-uri",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/model-versions/get-download-uri",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/model-versions/get-download-uri"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/update",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/model-versions/update",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/model-versions/update"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/alias",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/registered-models/alias",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/registered-models/alias"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/create",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/registered-models/create",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/registered-models/create"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/delete",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/registered-models/delete",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/registered-models/delete"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/get",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/registered-models/get",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/registered-models/get"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/get-latest-versions",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/registered-models/get-latest-versions",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/registered-models/get-latest-versions"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/search",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/registered-models/search",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/registered-models/search"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/update",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/registered-models/update",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/registered-models/update"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/runs/create",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/runs/create",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/runs/create"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/runs/delete",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/runs/delete",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/runs/delete"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/runs/get",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/runs/get",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/runs/get"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/runs/log-batch",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/runs/log-batch",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/runs/log-batch"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/runs/log-metric",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/runs/log-metric",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/runs/log-metric"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/runs/log-parameter",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/runs/log-parameter",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/runs/log-parameter"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/runs/search",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/runs/search",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/runs/search"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/runs/set-tag",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/runs/set-tag",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/runs/set-tag"
+  },
+  {
+    "template": "/api/:version/projects/:id/ml/mlflow/api/2.0/mlflow/runs/update",
+    "example": "/api/v4/projects/foo/ml/mlflow/api/2.0/mlflow/runs/update",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/ml/mlflow/api/2.0/mlflow/runs/update"
+  },
+  {
+    "template": "/api/:version/projects/:id/notification_settings",
+    "example": "/api/v4/projects/foo/notification_settings",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/notification_settings"
   },
   {
     "template": "/api/:version/projects/:id/packages",
@@ -11342,6 +13801,18 @@
     "dottedExample": "/api/v4/projects/john.doe/protected_branches/john.doe"
   },
   {
+    "template": "/api/:version/projects/:id/protected_environments",
+    "example": "/api/v4/projects/foo/protected_environments",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/protected_environments"
+  },
+  {
+    "template": "/api/:version/projects/:id/protected_environments/:name",
+    "example": "/api/v4/projects/foo/protected_environments/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/protected_environments/john.doe"
+  },
+  {
     "template": "/api/:version/projects/:id/protected_tags",
     "example": "/api/v4/projects/foo/protected_tags",
     "acceptsFormat": true,
@@ -11352,6 +13823,12 @@
     "example": "/api/v4/projects/foo/protected_tags/foo",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/protected_tags/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/push_rule",
+    "example": "/api/v4/projects/foo/push_rule",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/push_rule"
   },
   {
     "template": "/api/:version/projects/:id/registry/protection/repository/rules",
@@ -11540,6 +14017,30 @@
     "dottedExample": "/api/v4/projects/john.doe/repository/commits"
   },
   {
+    "template": "/api/:version/projects/:id/repository/commits/:noteable_id/discussions",
+    "example": "/api/v4/projects/foo/repository/commits/foo/discussions",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/repository/commits/john.doe/discussions"
+  },
+  {
+    "template": "/api/:version/projects/:id/repository/commits/:noteable_id/discussions/:discussion_id",
+    "example": "/api/v4/projects/foo/repository/commits/foo/discussions/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/repository/commits/john.doe/discussions/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/repository/commits/:noteable_id/discussions/:discussion_id/notes",
+    "example": "/api/v4/projects/foo/repository/commits/foo/discussions/foo/notes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/repository/commits/john.doe/discussions/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/projects/:id/repository/commits/:noteable_id/discussions/:discussion_id/notes/:note_id",
+    "example": "/api/v4/projects/foo/repository/commits/foo/discussions/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/repository/commits/john.doe/discussions/john.doe/notes/john.doe"
+  },
+  {
     "template": "/api/:version/projects/:id/repository/commits/:sha",
     "example": "/api/v4/projects/foo/repository/commits/foo",
     "acceptsFormat": true,
@@ -11708,6 +14209,18 @@
     "dottedExample": "/api/v4/projects/john.doe/repository_size"
   },
   {
+    "template": "/api/:version/projects/:id/repository_storage_moves",
+    "example": "/api/v4/projects/foo/repository_storage_moves",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/repository_storage_moves"
+  },
+  {
+    "template": "/api/:version/projects/:id/repository_storage_moves/:repository_storage_move_id",
+    "example": "/api/v4/projects/foo/repository_storage_moves/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/repository_storage_moves/john.doe"
+  },
+  {
     "template": "/api/:version/projects/:id/resource_groups",
     "example": "/api/v4/projects/foo/resource_groups",
     "acceptsFormat": true,
@@ -11756,6 +14269,12 @@
     "dottedExample": "/api/v4/projects/john.doe/runners/reset_registration_token"
   },
   {
+    "template": "/api/:version/projects/:id/secrets_manager/access_token",
+    "example": "/api/v4/projects/foo/secrets_manager/access_token",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/secrets_manager/access_token"
+  },
+  {
     "template": "/api/:version/projects/:id/secure_files",
     "example": "/api/v4/projects/foo/secure_files",
     "acceptsFormat": true,
@@ -11772,6 +14291,48 @@
     "example": "/api/v4/projects/foo/secure_files/foo/download",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/secure_files/john.doe/download"
+  },
+  {
+    "template": "/api/:version/projects/:id/security_scans/sast/:sast_endpoint",
+    "example": "/api/v4/projects/foo/security_scans/sast/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/security_scans/sast/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/security_settings",
+    "example": "/api/v4/projects/foo/security_settings",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/security_settings"
+  },
+  {
+    "template": "/api/:version/projects/:id/service_accounts",
+    "example": "/api/v4/projects/foo/service_accounts",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/service_accounts"
+  },
+  {
+    "template": "/api/:version/projects/:id/service_accounts/:user_id",
+    "example": "/api/v4/projects/foo/service_accounts/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/service_accounts/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/service_accounts/:user_id/personal_access_tokens",
+    "example": "/api/v4/projects/foo/service_accounts/foo/personal_access_tokens",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/service_accounts/john.doe/personal_access_tokens"
+  },
+  {
+    "template": "/api/:version/projects/:id/service_accounts/:user_id/personal_access_tokens/:token_id",
+    "example": "/api/v4/projects/foo/service_accounts/foo/personal_access_tokens/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/service_accounts/john.doe/personal_access_tokens/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate",
+    "example": "/api/v4/projects/foo/service_accounts/foo/personal_access_tokens/foo/rotate",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/service_accounts/john.doe/personal_access_tokens/john.doe/rotate"
   },
   {
     "template": "/api/:version/projects/:id/services",
@@ -12128,6 +14689,42 @@
     "dottedExample": "/api/v4/projects/john.doe/snippets"
   },
   {
+    "template": "/api/:version/projects/:id/snippets/:noteable_id/discussions",
+    "example": "/api/v4/projects/foo/snippets/foo/discussions",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/snippets/john.doe/discussions"
+  },
+  {
+    "template": "/api/:version/projects/:id/snippets/:noteable_id/discussions/:discussion_id",
+    "example": "/api/v4/projects/foo/snippets/foo/discussions/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/snippets/john.doe/discussions/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes",
+    "example": "/api/v4/projects/foo/snippets/foo/discussions/foo/notes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/snippets/john.doe/discussions/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes/:note_id",
+    "example": "/api/v4/projects/foo/snippets/foo/discussions/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/snippets/john.doe/discussions/john.doe/notes/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/snippets/:noteable_id/notes",
+    "example": "/api/v4/projects/foo/snippets/foo/notes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/snippets/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/projects/:id/snippets/:noteable_id/notes/:note_id",
+    "example": "/api/v4/projects/foo/snippets/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/snippets/john.doe/notes/john.doe"
+  },
+  {
     "template": "/api/:version/projects/:id/snippets/:snippet_id",
     "example": "/api/v4/projects/foo/snippets/foo",
     "acceptsFormat": true,
@@ -12332,6 +14929,42 @@
     "dottedExample": "/api/v4/projects/john.doe/variables/john.doe"
   },
   {
+    "template": "/api/:version/projects/:id/vulnerabilities",
+    "example": "/api/v4/projects/foo/vulnerabilities",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/vulnerabilities"
+  },
+  {
+    "template": "/api/:version/projects/:id/vulnerabilities/:noteable_id/notes",
+    "example": "/api/v4/projects/foo/vulnerabilities/foo/notes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/vulnerabilities/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/projects/:id/vulnerabilities/:noteable_id/notes/:note_id",
+    "example": "/api/v4/projects/foo/vulnerabilities/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/vulnerabilities/john.doe/notes/john.doe"
+  },
+  {
+    "template": "/api/:version/projects/:id/vulnerability_findings",
+    "example": "/api/v4/projects/foo/vulnerability_findings",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/vulnerability_findings"
+  },
+  {
+    "template": "/api/:version/projects/:id/wiki_pages/:noteable_id/notes",
+    "example": "/api/v4/projects/foo/wiki_pages/foo/notes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/wiki_pages/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/projects/:id/wiki_pages/:noteable_id/notes/:note_id",
+    "example": "/api/v4/projects/foo/wiki_pages/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/wiki_pages/john.doe/notes/john.doe"
+  },
+  {
     "template": "/api/:version/projects/:id/wikis",
     "example": "/api/v4/projects/foo/wikis",
     "acceptsFormat": true,
@@ -12410,6 +15043,59 @@
     "dottedExample": "/api/v4/registry/repositories/john.doe"
   },
   {
+    "template": "/api/:version/rollouts/:id",
+    "example": "/api/v4/rollouts/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/rollouts/john.doe"
+  },
+  {
+    "template": "/api/:version/runner_controllers",
+    "example": "/api/v4/runner_controllers",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/runner_controllers/:id",
+    "example": "/api/v4/runner_controllers/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/runner_controllers/john.doe"
+  },
+  {
+    "template": "/api/:version/runner_controllers/:id/scopes",
+    "example": "/api/v4/runner_controllers/foo/scopes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/runner_controllers/john.doe/scopes"
+  },
+  {
+    "template": "/api/:version/runner_controllers/:id/scopes/instance",
+    "example": "/api/v4/runner_controllers/foo/scopes/instance",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/runner_controllers/john.doe/scopes/instance"
+  },
+  {
+    "template": "/api/:version/runner_controllers/:id/scopes/runners/:runner_id",
+    "example": "/api/v4/runner_controllers/foo/scopes/runners/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/runner_controllers/john.doe/scopes/runners/john.doe"
+  },
+  {
+    "template": "/api/:version/runner_controllers/:runner_controller_id/tokens",
+    "example": "/api/v4/runner_controllers/foo/tokens",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/runner_controllers/john.doe/tokens"
+  },
+  {
+    "template": "/api/:version/runner_controllers/:runner_controller_id/tokens/:id",
+    "example": "/api/v4/runner_controllers/foo/tokens/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/runner_controllers/john.doe/tokens/john.doe"
+  },
+  {
+    "template": "/api/:version/runner_controllers/:runner_controller_id/tokens/:id/rotate",
+    "example": "/api/v4/runner_controllers/foo/tokens/foo/rotate",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/runner_controllers/john.doe/tokens/john.doe/rotate"
+  },
+  {
     "template": "/api/:version/runners",
     "example": "/api/v4/runners",
     "acceptsFormat": true
@@ -12480,9 +15166,113 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/security/groups/:id/vulnerability_exports",
+    "example": "/api/v4/security/groups/foo/vulnerability_exports",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/security/groups/john.doe/vulnerability_exports"
+  },
+  {
+    "template": "/api/:version/security/policy_store/actions",
+    "example": "/api/v4/security/policy_store/actions",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/security/policy_store/rules",
+    "example": "/api/v4/security/policy_store/rules",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/security/policy_store/triggers",
+    "example": "/api/v4/security/policy_store/triggers",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/security/projects/:id/vulnerability_archive_exports",
+    "example": "/api/v4/security/projects/foo/vulnerability_archive_exports",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/security/projects/john.doe/vulnerability_archive_exports"
+  },
+  {
+    "template": "/api/:version/security/projects/:id/vulnerability_exports",
+    "example": "/api/v4/security/projects/foo/vulnerability_exports",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/security/projects/john.doe/vulnerability_exports"
+  },
+  {
+    "template": "/api/:version/security/vulnerability_archive_exports/:id",
+    "example": "/api/v4/security/vulnerability_archive_exports/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/security/vulnerability_archive_exports/john.doe"
+  },
+  {
+    "template": "/api/:version/security/vulnerability_archive_exports/:id/download",
+    "example": "/api/v4/security/vulnerability_archive_exports/foo/download",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/security/vulnerability_archive_exports/john.doe/download"
+  },
+  {
+    "template": "/api/:version/security/vulnerability_exports",
+    "example": "/api/v4/security/vulnerability_exports",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/security/vulnerability_exports/:id",
+    "example": "/api/v4/security/vulnerability_exports/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/security/vulnerability_exports/john.doe"
+  },
+  {
+    "template": "/api/:version/security/vulnerability_exports/:id/download",
+    "example": "/api/v4/security/vulnerability_exports/foo/download",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/security/vulnerability_exports/john.doe/download"
+  },
+  {
+    "template": "/api/:version/service_accounts",
+    "example": "/api/v4/service_accounts",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/service_accounts/:user_id",
+    "example": "/api/v4/service_accounts/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/service_accounts/john.doe"
+  },
+  {
+    "template": "/api/:version/sidekiq/compound_metrics",
+    "example": "/api/v4/sidekiq/compound_metrics",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/sidekiq/job_stats",
+    "example": "/api/v4/sidekiq/job_stats",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/sidekiq/process_metrics",
+    "example": "/api/v4/sidekiq/process_metrics",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/sidekiq/queue_metrics",
+    "example": "/api/v4/sidekiq/queue_metrics",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/slack/trigger",
     "example": "/api/v4/slack/trigger",
     "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/snippet_repository_storage_moves",
+    "example": "/api/v4/snippet_repository_storage_moves",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/snippet_repository_storage_moves/:repository_storage_move_id",
+    "example": "/api/v4/snippet_repository_storage_moves/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/snippet_repository_storage_moves/john.doe"
   },
   {
     "template": "/api/:version/snippets",
@@ -12506,6 +15296,18 @@
     "example": "/api/v4/snippets/foo/raw",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/snippets/john.doe/raw"
+  },
+  {
+    "template": "/api/:version/snippets/:id/repository_storage_moves",
+    "example": "/api/v4/snippets/foo/repository_storage_moves",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/snippets/john.doe/repository_storage_moves"
+  },
+  {
+    "template": "/api/:version/snippets/:id/repository_storage_moves/:repository_storage_move_id",
+    "example": "/api/v4/snippets/foo/repository_storage_moves/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/snippets/john.doe/repository_storage_moves/john.doe"
   },
   {
     "template": "/api/:version/snippets/:id/user_agent_detail",
@@ -12544,6 +15346,71 @@
     "example": "/api/v4/swagger_doc/foo",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/swagger_doc/john.doe"
+  },
+  {
+    "template": "/api/:version/templates/dockerfiles",
+    "example": "/api/v4/templates/dockerfiles",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/templates/dockerfiles/:name",
+    "example": "/api/v4/templates/dockerfiles/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/templates/dockerfiles/john.doe"
+  },
+  {
+    "template": "/api/:version/templates/gitignores",
+    "example": "/api/v4/templates/gitignores",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/templates/gitignores/:name",
+    "example": "/api/v4/templates/gitignores/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/templates/gitignores/john.doe"
+  },
+  {
+    "template": "/api/:version/templates/gitlab_ci_ymls",
+    "example": "/api/v4/templates/gitlab_ci_ymls",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/templates/gitlab_ci_ymls/:name",
+    "example": "/api/v4/templates/gitlab_ci_ymls/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/templates/gitlab_ci_ymls/john.doe"
+  },
+  {
+    "template": "/api/:version/templates/licenses",
+    "example": "/api/v4/templates/licenses",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/templates/licenses/:name",
+    "example": "/api/v4/templates/licenses/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/templates/licenses/john.doe"
+  },
+  {
+    "template": "/api/:version/todos",
+    "example": "/api/v4/todos",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/todos/:id/mark_as_done",
+    "example": "/api/v4/todos/foo/mark_as_done",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/todos/john.doe/mark_as_done"
+  },
+  {
+    "template": "/api/:version/todos/mark_as_done",
+    "example": "/api/v4/todos/mark_as_done",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/token_exchange",
+    "example": "/api/v4/token_exchange",
+    "acceptsFormat": true
   },
   {
     "template": "/api/:version/topics",
@@ -12602,6 +15469,87 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/user",
+    "example": "/api/v4/user",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/user/:user_id/credit_card_validation",
+    "example": "/api/v4/user/foo/credit_card_validation",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/user/john.doe/credit_card_validation"
+  },
+  {
+    "template": "/api/:version/user/activities",
+    "example": "/api/v4/user/activities",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/user/applications",
+    "example": "/api/v4/user/applications",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/user/applications/:id",
+    "example": "/api/v4/user/applications/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/user/applications/john.doe"
+  },
+  {
+    "template": "/api/:version/user/avatar",
+    "example": "/api/v4/user/avatar",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/user/emails",
+    "example": "/api/v4/user/emails",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/user/emails/:email_id",
+    "example": "/api/v4/user/emails/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/user/emails/john.doe"
+  },
+  {
+    "template": "/api/:version/user/gpg_keys",
+    "example": "/api/v4/user/gpg_keys",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/user/gpg_keys/:key_id",
+    "example": "/api/v4/user/gpg_keys/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/user/gpg_keys/john.doe"
+  },
+  {
+    "template": "/api/:version/user/gpg_keys/:key_id/revoke",
+    "example": "/api/v4/user/gpg_keys/foo/revoke",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/user/gpg_keys/john.doe/revoke"
+  },
+  {
+    "template": "/api/:version/user/keys",
+    "example": "/api/v4/user/keys",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/user/keys/:key_id",
+    "example": "/api/v4/user/keys/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/user/keys/john.doe"
+  },
+  {
+    "template": "/api/:version/user/personal_access_tokens",
+    "example": "/api/v4/user/personal_access_tokens",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/user/preferences",
+    "example": "/api/v4/user/preferences",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/user/push_subscriptions",
     "example": "/api/v4/user/push_subscriptions",
     "acceptsFormat": true
@@ -12612,9 +15560,96 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/user/status",
+    "example": "/api/v4/user/status",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/user/support_pin",
+    "example": "/api/v4/user/support_pin",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/user_counts",
     "example": "/api/v4/user_counts",
     "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/users",
+    "example": "/api/v4/users",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/users/:id",
+    "example": "/api/v4/users/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe"
+  },
+  {
+    "template": "/api/:version/users/:id/activate",
+    "example": "/api/v4/users/foo/activate",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/activate"
+  },
+  {
+    "template": "/api/:version/users/:id/approve",
+    "example": "/api/v4/users/foo/approve",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/approve"
+  },
+  {
+    "template": "/api/:version/users/:id/associations_count",
+    "example": "/api/v4/users/foo/associations_count",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/associations_count"
+  },
+  {
+    "template": "/api/:version/users/:id/ban",
+    "example": "/api/v4/users/foo/ban",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/ban"
+  },
+  {
+    "template": "/api/:version/users/:id/block",
+    "example": "/api/v4/users/foo/block",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/block"
+  },
+  {
+    "template": "/api/:version/users/:id/custom_attributes",
+    "example": "/api/v4/users/foo/custom_attributes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/custom_attributes"
+  },
+  {
+    "template": "/api/:version/users/:id/custom_attributes/:key",
+    "example": "/api/v4/users/foo/custom_attributes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/custom_attributes/john.doe"
+  },
+  {
+    "template": "/api/:version/users/:id/deactivate",
+    "example": "/api/v4/users/foo/deactivate",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/deactivate"
+  },
+  {
+    "template": "/api/:version/users/:id/disable_two_factor",
+    "example": "/api/v4/users/foo/disable_two_factor",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/disable_two_factor"
+  },
+  {
+    "template": "/api/:version/users/:id/emails",
+    "example": "/api/v4/users/foo/emails",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/emails"
+  },
+  {
+    "template": "/api/:version/users/:id/emails/:email_id",
+    "example": "/api/v4/users/foo/emails/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/emails/john.doe"
   },
   {
     "template": "/api/:version/users/:id/events",
@@ -12623,10 +15658,130 @@
     "dottedExample": "/api/v4/users/john.doe/events"
   },
   {
+    "template": "/api/:version/users/:id/follow",
+    "example": "/api/v4/users/foo/follow",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/follow"
+  },
+  {
+    "template": "/api/:version/users/:id/followers",
+    "example": "/api/v4/users/foo/followers",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/followers"
+  },
+  {
+    "template": "/api/:version/users/:id/following",
+    "example": "/api/v4/users/foo/following",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/following"
+  },
+  {
+    "template": "/api/:version/users/:id/gpg_keys",
+    "example": "/api/v4/users/foo/gpg_keys",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/gpg_keys"
+  },
+  {
+    "template": "/api/:version/users/:id/gpg_keys/:key_id",
+    "example": "/api/v4/users/foo/gpg_keys/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/gpg_keys/john.doe"
+  },
+  {
+    "template": "/api/:version/users/:id/gpg_keys/:key_id/revoke",
+    "example": "/api/v4/users/foo/gpg_keys/foo/revoke",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/gpg_keys/john.doe/revoke"
+  },
+  {
+    "template": "/api/:version/users/:id/identities/:provider",
+    "example": "/api/v4/users/foo/identities/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/identities/john.doe"
+  },
+  {
+    "template": "/api/:version/users/:id/keys/:key_id",
+    "example": "/api/v4/users/foo/keys/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/keys/john.doe"
+  },
+  {
+    "template": "/api/:version/users/:id/reject",
+    "example": "/api/v4/users/foo/reject",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/reject"
+  },
+  {
+    "template": "/api/:version/users/:id/support_pin",
+    "example": "/api/v4/users/foo/support_pin",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/support_pin"
+  },
+  {
+    "template": "/api/:version/users/:id/support_pin/revoke",
+    "example": "/api/v4/users/foo/support_pin/revoke",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/support_pin/revoke"
+  },
+  {
+    "template": "/api/:version/users/:id/unban",
+    "example": "/api/v4/users/foo/unban",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/unban"
+  },
+  {
+    "template": "/api/:version/users/:id/unblock",
+    "example": "/api/v4/users/foo/unblock",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/unblock"
+  },
+  {
+    "template": "/api/:version/users/:id/unfollow",
+    "example": "/api/v4/users/foo/unfollow",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/unfollow"
+  },
+  {
     "template": "/api/:version/users/:user_id/contributed_projects",
     "example": "/api/v4/users/foo/contributed_projects",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/users/john.doe/contributed_projects"
+  },
+  {
+    "template": "/api/:version/users/:user_id/impersonation_tokens",
+    "example": "/api/v4/users/foo/impersonation_tokens",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/impersonation_tokens"
+  },
+  {
+    "template": "/api/:version/users/:user_id/impersonation_tokens/:impersonation_token_id",
+    "example": "/api/v4/users/foo/impersonation_tokens/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/impersonation_tokens/john.doe"
+  },
+  {
+    "template": "/api/:version/users/:user_id/keys",
+    "example": "/api/v4/users/foo/keys",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/keys"
+  },
+  {
+    "template": "/api/:version/users/:user_id/memberships",
+    "example": "/api/v4/users/foo/memberships",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/memberships"
+  },
+  {
+    "template": "/api/:version/users/:user_id/personal_access_tokens",
+    "example": "/api/v4/users/foo/personal_access_tokens",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/personal_access_tokens"
+  },
+  {
+    "template": "/api/:version/users/:user_id/project_deploy_keys",
+    "example": "/api/v4/users/foo/project_deploy_keys",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/project_deploy_keys"
   },
   {
     "template": "/api/:version/users/:user_id/projects",
@@ -12641,9 +15796,264 @@
     "dottedExample": "/api/v4/users/john.doe/starred_projects"
   },
   {
+    "template": "/api/:version/users/:user_id/status",
+    "example": "/api/v4/users/foo/status",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/users/john.doe/status"
+  },
+  {
     "template": "/api/:version/version",
     "example": "/api/v4/version",
     "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/virtual_registries/container/cache_entries/*id",
+    "example": "/api/v4/virtual_registries/container/cache_entries/foo/bar",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/container/cache_entries/john.doe/bar"
+  },
+  {
+    "template": "/api/:version/virtual_registries/container/registries/:id",
+    "example": "/api/v4/virtual_registries/container/registries/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/container/registries/john.doe"
+  },
+  {
+    "template": "/api/:version/virtual_registries/container/registries/:id/cache",
+    "example": "/api/v4/virtual_registries/container/registries/foo/cache",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/container/registries/john.doe/cache"
+  },
+  {
+    "template": "/api/:version/virtual_registries/container/registries/:id/upstreams",
+    "example": "/api/v4/virtual_registries/container/registries/foo/upstreams",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/container/registries/john.doe/upstreams"
+  },
+  {
+    "template": "/api/:version/virtual_registries/container/registry_upstreams",
+    "example": "/api/v4/virtual_registries/container/registry_upstreams",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/virtual_registries/container/registry_upstreams/:id",
+    "example": "/api/v4/virtual_registries/container/registry_upstreams/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/container/registry_upstreams/john.doe"
+  },
+  {
+    "template": "/api/:version/virtual_registries/container/upstreams/:id",
+    "example": "/api/v4/virtual_registries/container/upstreams/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/container/upstreams/john.doe"
+  },
+  {
+    "template": "/api/:version/virtual_registries/container/upstreams/:id/cache",
+    "example": "/api/v4/virtual_registries/container/upstreams/foo/cache",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/container/upstreams/john.doe/cache"
+  },
+  {
+    "template": "/api/:version/virtual_registries/container/upstreams/:id/cache_entries",
+    "example": "/api/v4/virtual_registries/container/upstreams/foo/cache_entries",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/container/upstreams/john.doe/cache_entries"
+  },
+  {
+    "template": "/api/:version/virtual_registries/container/upstreams/:id/test",
+    "example": "/api/v4/virtual_registries/container/upstreams/foo/test",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/container/upstreams/john.doe/test"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/:id/*path/upload",
+    "example": "/api/v4/virtual_registries/packages/maven/foo/foo/bar/upload",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/maven/john.doe/john.doe/bar/upload"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/:id/?*path",
+    "example": "/api/v4/virtual_registries/packages/maven/foo/?foo/bar",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/maven/john.doe/?john.doe/bar"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/cache_entries/*id",
+    "example": "/api/v4/virtual_registries/packages/maven/cache_entries/foo/bar",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/maven/cache_entries/john.doe/bar"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/local/upstreams/:id",
+    "example": "/api/v4/virtual_registries/packages/maven/local/upstreams/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/maven/local/upstreams/john.doe"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/registries/:id",
+    "example": "/api/v4/virtual_registries/packages/maven/registries/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/maven/registries/john.doe"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/registries/:id/cache",
+    "example": "/api/v4/virtual_registries/packages/maven/registries/foo/cache",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/maven/registries/john.doe/cache"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/registries/:id/local/upstreams",
+    "example": "/api/v4/virtual_registries/packages/maven/registries/foo/local/upstreams",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/maven/registries/john.doe/local/upstreams"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/registries/:id/upstreams",
+    "example": "/api/v4/virtual_registries/packages/maven/registries/foo/upstreams",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/maven/registries/john.doe/upstreams"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/registry_upstreams",
+    "example": "/api/v4/virtual_registries/packages/maven/registry_upstreams",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/registry_upstreams/:id",
+    "example": "/api/v4/virtual_registries/packages/maven/registry_upstreams/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/maven/registry_upstreams/john.doe"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/upstreams/:id",
+    "example": "/api/v4/virtual_registries/packages/maven/upstreams/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/maven/upstreams/john.doe"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/upstreams/:id/cache",
+    "example": "/api/v4/virtual_registries/packages/maven/upstreams/foo/cache",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/maven/upstreams/john.doe/cache"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/upstreams/:id/cache_entries",
+    "example": "/api/v4/virtual_registries/packages/maven/upstreams/foo/cache_entries",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/maven/upstreams/john.doe/cache_entries"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/maven/upstreams/:id/test",
+    "example": "/api/v4/virtual_registries/packages/maven/upstreams/foo/test",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/maven/upstreams/john.doe/test"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/npm/registries/:id",
+    "example": "/api/v4/virtual_registries/packages/npm/registries/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/npm/registries/john.doe"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/npm/registries/:id/cache",
+    "example": "/api/v4/virtual_registries/packages/npm/registries/foo/cache",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/npm/registries/john.doe/cache"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/npm/registry_upstreams",
+    "example": "/api/v4/virtual_registries/packages/npm/registry_upstreams",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/npm/registry_upstreams/:id",
+    "example": "/api/v4/virtual_registries/packages/npm/registry_upstreams/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/npm/registry_upstreams/john.doe"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/npm/remote/cache_entries/*id",
+    "example": "/api/v4/virtual_registries/packages/npm/remote/cache_entries/foo/bar",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/npm/remote/cache_entries/john.doe/bar"
+  },
+  {
+    "template": "/api/:version/virtual_registries/packages/npm/remote/upstreams/:id/cache_entries",
+    "example": "/api/v4/virtual_registries/packages/npm/remote/upstreams/foo/cache_entries",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/virtual_registries/packages/npm/remote/upstreams/john.doe/cache_entries"
+  },
+  {
+    "template": "/api/:version/vscode/settings_sync(/:settings_context_hash)/v1/collection",
+    "example": "/api/v4/vscode/settings_sync/foo/v1/collection",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/vscode/settings_sync/john.doe/v1/collection"
+  },
+  {
+    "template": "/api/:version/vscode/settings_sync(/:settings_context_hash)/v1/manifest",
+    "example": "/api/v4/vscode/settings_sync/foo/v1/manifest",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/vscode/settings_sync/john.doe/v1/manifest"
+  },
+  {
+    "template": "/api/:version/vscode/settings_sync(/:settings_context_hash)/v1/resource/:resource_name",
+    "example": "/api/v4/vscode/settings_sync/foo/v1/resource/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/vscode/settings_sync/john.doe/v1/resource/john.doe"
+  },
+  {
+    "template": "/api/:version/vscode/settings_sync(/:settings_context_hash)/v1/resource/:resource_name/:id",
+    "example": "/api/v4/vscode/settings_sync/foo/v1/resource/foo/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/vscode/settings_sync/john.doe/v1/resource/john.doe/john.doe"
+  },
+  {
+    "template": "/api/:version/vulnerabilities/:id",
+    "example": "/api/v4/vulnerabilities/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/vulnerabilities/john.doe"
+  },
+  {
+    "template": "/api/:version/vulnerabilities/:id/confirm",
+    "example": "/api/v4/vulnerabilities/foo/confirm",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/vulnerabilities/john.doe/confirm"
+  },
+  {
+    "template": "/api/:version/vulnerabilities/:id/dismiss",
+    "example": "/api/v4/vulnerabilities/foo/dismiss",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/vulnerabilities/john.doe/dismiss"
+  },
+  {
+    "template": "/api/:version/vulnerabilities/:id/issue_links",
+    "example": "/api/v4/vulnerabilities/foo/issue_links",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/vulnerabilities/john.doe/issue_links"
+  },
+  {
+    "template": "/api/:version/vulnerabilities/:id/issue_links/:issue_link_id",
+    "example": "/api/v4/vulnerabilities/foo/issue_links/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/vulnerabilities/john.doe/issue_links/john.doe"
+  },
+  {
+    "template": "/api/:version/vulnerabilities/:id/resolve",
+    "example": "/api/v4/vulnerabilities/foo/resolve",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/vulnerabilities/john.doe/resolve"
+  },
+  {
+    "template": "/api/:version/vulnerabilities/:id/revert",
+    "example": "/api/v4/vulnerabilities/foo/revert",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/vulnerabilities/john.doe/revert"
+  },
+  {
+    "template": "/api/:version/vulnerabilities/:vulnerability_id/flags/ai_detection",
+    "example": "/api/v4/vulnerabilities/foo/flags/ai_detection",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/vulnerabilities/john.doe/flags/ai_detection"
   },
   {
     "template": "/api/:version/web_commits/public_key",
@@ -12659,6 +16069,42 @@
     "template": "/api/graphql",
     "example": "/api/graphql",
     "acceptsFormat": true
+  },
+  {
+    "template": "/api/scim/:version/application/Groups",
+    "example": "/api/scim/foo/application/Groups",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/application/Groups"
+  },
+  {
+    "template": "/api/scim/:version/application/Groups/:id",
+    "example": "/api/scim/foo/application/Groups/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/application/Groups/john.doe"
+  },
+  {
+    "template": "/api/scim/:version/application/Users",
+    "example": "/api/scim/foo/application/Users",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/application/Users"
+  },
+  {
+    "template": "/api/scim/:version/application/Users/:id",
+    "example": "/api/scim/foo/application/Users/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/application/Users/john.doe"
+  },
+  {
+    "template": "/api/scim/:version/groups/:group/Users",
+    "example": "/api/scim/foo/groups/foo/Users",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/groups/john.doe/Users"
+  },
+  {
+    "template": "/api/scim/:version/groups/:group/Users/:id",
+    "example": "/api/scim/foo/groups/foo/Users/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/groups/john.doe/Users/john.doe"
   },
   {
     "template": "/api/v4/geo/graphql",

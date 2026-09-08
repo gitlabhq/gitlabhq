@@ -41,6 +41,13 @@ namespace :gitlab do
 
         require 'gitlab/cells/http_router'
 
+        # `API::API.routes` memoizes, and grape-swagger reads it mid-definition
+        # from `add_open_api_documentation!` while only part of the endpoints are
+        # mounted, so the memo holds a partial route table. Compile to build the
+        # full endpoint tree, then drop the memo to force a rebuild.
+        API::API.compile!
+        API::API.reset_routes!
+
         snapshot = Gitlab::Cells::HttpRouter::RoutesSnapshot.new(
           path_specs: Rails.application.routes.routes.map { |route| route.path.spec.to_s } +
             API::API.routes.map { |route| route.path.to_s }
