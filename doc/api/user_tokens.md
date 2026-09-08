@@ -16,6 +16,12 @@ Use this API to interact with personal access tokens and impersonation tokens. F
 
 ## Create a personal access token for a user
 
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+
+{{< /history >}}
+
 Creates a personal access token for a specified user.
 
 Token values are included with the response, but cannot be retrieved later.
@@ -61,6 +67,7 @@ Example response:
         "api"
     ],
     "user_id": 42,
+    "last_used_ips": [],
     "active": true,
     "expires_at": "2020-12-31",
     "token": "<your_new_access_token>"
@@ -68,6 +75,12 @@ Example response:
 ```
 
 ## Create a personal access token
+
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+
+{{< /history >}}
 
 Creates a personal access token for your account. For security purposes, the token:
 
@@ -114,6 +127,7 @@ Example response:
         "k8s_proxy"
     ],
     "user_id": 42,
+    "last_used_ips": [],
     "active": true,
     "expires_at": "2020-10-15",
     "token": "<your_new_access_token>"
@@ -121,6 +135,13 @@ Example response:
 ```
 
 ## List all impersonation tokens for a user
+
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242819) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `expose_last_used_ips_for_access_tokens`. Disabled by default.
+- `last_used_ips` in the response [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/603636) in GitLab 19.4. Feature flag `expose_last_used_ips_for_access_tokens` removed.
+
+{{< /history >}}
 
 Lists all impersonation tokens for a specified user.
 
@@ -166,7 +187,8 @@ Example response:
       "created_at" : "2017-03-17T17:18:09.283Z",
       "impersonation" : true,
       "expires_at" : "2017-04-04",
-      "last_used_at": "2017-03-24T09:44:21.722Z"
+      "last_used_at": "2017-03-24T09:44:21.722Z",
+      "last_used_ips": ["192.0.2.10"]
    },
    {
       "active" : false,
@@ -181,12 +203,20 @@ Example response:
       "id" : 3,
       "impersonation" : true,
       "expires_at" : "2017-04-14",
-      "last_used_at": "2017-03-24T09:44:21.722Z"
+      "last_used_at": "2017-03-24T09:44:21.722Z",
+      "last_used_ips": ["192.0.2.11"]
    }
 ]
 ```
 
 ## Retrieve an impersonation token for a user
+
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242819) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `expose_last_used_ips_for_access_tokens`. Disabled by default.
+- `last_used_ips` in the response [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/603636) in GitLab 19.4. Feature flag `expose_last_used_ips_for_access_tokens` removed.
+
+{{< /history >}}
 
 Retrieves an impersonation token for a specified user.
 
@@ -228,11 +258,19 @@ Example response:
    "id" : 2,
    "created_at" : "2017-03-17T17:18:09.283Z",
    "impersonation" : true,
-   "expires_at" : "2017-04-04"
+   "expires_at" : "2017-04-04",
+   "last_used_ips": ["192.0.2.10"]
 }
 ```
 
 ## Create an impersonation token
+
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242819) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `expose_last_used_ips_for_access_tokens`. Disabled by default.
+- `last_used_ips` in the response [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/603636) in GitLab 19.4. Feature flag `expose_last_used_ips_for_access_tokens` removed.
+
+{{< /history >}}
 
 Creates an impersonation token for a specified user. These tokens are used to act on behalf of a user and can perform API calls as well as Git read and write actions. These tokens are not visible to the associated user on their profile settings page.
 
@@ -282,7 +320,8 @@ Example response:
    "name" : "mytoken",
    "description": "Test Token description",
    "created_at" : "2017-03-17T17:18:09.283Z",
-   "expires_at" : "2017-04-04"
+   "expires_at" : "2017-04-04",
+   "last_used_ips": []
 }
 ```
 

@@ -20,7 +20,7 @@ and your OAuth 2.0 provider, or any OAuth 2.0 provider compatible with this gem.
 
 This strategy allows for the configuration of this OmniAuth SSO process:
 
-1. Strategy directs the client to your authorization URL (**configurable**), with
+1. Strategy directs the client to your authorization URL (configurable), with
    the specified ID and key.
 1. The OAuth 2.0 provider handles authentication of the request, user, and (optionally)
    authorization to access the user's profile.

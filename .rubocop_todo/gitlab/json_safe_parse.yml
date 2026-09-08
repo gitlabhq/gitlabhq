@@ -83,7 +83,6 @@ Gitlab/JsonSafeParse:
     - 'ee/app/models/virtual_registries/container/upstream.rb'
     - 'ee/app/models/vulnerabilities/finding.rb'
     - 'ee/app/services/arkose/status_service.rb'
-    - 'ee/app/services/geo/base_batch_bulk_update_service.rb'
     - 'ee/app/services/sbom/ingestion/vulnerability_data.rb'
     - 'ee/app/workers/click_house/rebuild_materialized_view_cron_worker.rb'
     - 'ee/app/workers/observability/alert_query_worker.rb'

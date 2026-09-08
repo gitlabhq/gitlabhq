@@ -1179,5 +1179,39 @@ RSpec.shared_examples 'a policy repository' do
           .to raise_error(Gitlab::PolicyStore::ValidationError, /ids exceeds maximum/)
       end
     end
+
+    context 'with a lifecycle_state' do
+      it 'returns only the policies in that lifecycle state' do
+        disabled_policy = repository.create(attributes.merge(name: 'Disabled policy', lifecycle_state: 'disabled'))
+        repository.create(attributes)
+
+        expect(repository.list(organization_id: organization_id, lifecycle_state: 'disabled'))
+          .to contain_exactly(disabled_policy)
+      end
+
+      it 'returns an empty array when no policy is in that lifecycle state' do
+        repository.create(attributes)
+
+        expect(repository.list(organization_id: organization_id, lifecycle_state: 'disabled')).to be_empty
+      end
+
+      it 'still excludes policies from other organizations' do
+        repository.create(
+          attributes.merge(organization_id: other_organization_id, namespace_id: nil, name: 'Other org policy')
+        )
+        same_organization_policy = repository.create(attributes)
+
+        expect(repository.list(organization_id: organization_id, lifecycle_state: 'active'))
+          .to contain_exactly(same_organization_policy)
+      end
+
+      it 'still excludes an id in a different lifecycle state' do
+        disabled_policy = repository.create(attributes.merge(name: 'Disabled policy', lifecycle_state: 'disabled'))
+
+        expect(
+          repository.list(organization_id: organization_id, lifecycle_state: 'active', ids: [disabled_policy.id])
+        ).to be_empty
+      end
+    end
   end
 end

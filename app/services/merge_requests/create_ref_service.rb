@@ -26,6 +26,7 @@ module MergeRequests
       @first_parent_ref = first_parent_ref
       @first_parent_sha = target_project.commit(first_parent_ref)&.sha
       @merge_params = merge_params
+      @rebase_performed = false
     end
 
     def execute
@@ -84,9 +85,17 @@ module MergeRequests
       store_generated_ref_commits(final_commit_sha)
     end
 
-    # Default CE implementation - can be overridden in EE
+    # A rebase rewrites the source commits onto a temporary ref that is then
+    # thrown away, so the rewritten SHAs are only recoverable from here.
+    # EE widens this for merge trains.
     def should_store_generated_ref_commits?
-      false # only available in ee for merge trains for now
+      return false unless Feature.enabled?(:generated_ref_commits_for_automatic_rebase, target_project)
+
+      rebase_performed?
+    end
+
+    def rebase_performed?
+      @rebase_performed
     end
 
     attr_reader :current_user, :merge_request, :target_ref, :first_parent_ref, :first_parent_sha, :source_sha,
@@ -152,6 +161,8 @@ module MergeRequests
 
     def maybe_rebase!(commit_sha:, expected_old_oid:, squash_commit_sha: nil, **rest)
       if target_project.ff_merge_must_be_possible?
+        @rebase_performed = true
+
         commit_sha = safe_gitaly_operation do
           repository.rebase_to_ref(
             current_user,

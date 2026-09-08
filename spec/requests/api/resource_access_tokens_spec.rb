@@ -24,8 +24,6 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         let_it_be(:resource_id) { resource.id }
 
         before do
-          stub_feature_flags(expose_last_used_ips_for_access_tokens: true)
-
           if source_type == 'project'
             resource.add_maintainer(project_bot)
           else
@@ -127,37 +125,6 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
           end
 
           expect { get api(path, user) }.not_to exceed_all_query_limit(control)
-        end
-
-        # Only makes sense while expose_last_used_ips_for_access_tokens is rolled out per-actor.
-        # Delete this whole context when the flag is removed - there's no more current_user-vs-token-owner
-        # mismatch to guard against once everyone is on the same (unconditional) code path.
-        context 'when the flag differs between current_user and a token owner' do
-          it 'avoids N+1 queries' do
-            path = "/#{source_type}s/#{resource_id}/access_tokens"
-            bot_with_flag = create(:user, :project_bot, bot_namespace: namespace)
-            # Enables the flag only for this bot, not globally.
-            stub_feature_flags(expose_last_used_ips_for_access_tokens: bot_with_flag)
-
-            if source_type == 'project'
-              resource.add_maintainer(bot_with_flag)
-            else
-              resource.add_owner(bot_with_flag)
-            end
-
-            token = create(:personal_access_token, user: bot_with_flag)
-            token.last_used_ips.create!(organization: token.organization, ip_address: '192.0.2.30')
-
-            # user (the requester) never gets the feature flag, since it was only enabled for bot_with_flag above.
-            get api(path, user) # warm-up
-
-            control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(path, user) }
-
-            extra_token = create(:personal_access_token, user: bot_with_flag)
-            extra_token.last_used_ips.create!(organization: extra_token.organization, ip_address: '192.0.2.31')
-
-            expect { get api(path, user) }.not_to exceed_all_query_limit(control)
-          end
         end
 
         context "when using a #{source_type} access token to GET other #{source_type} access tokens" do
@@ -376,10 +343,6 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
       end
 
       context "when the user has valid permissions" do
-        before do
-          stub_feature_flags(expose_last_used_ips_for_access_tokens: true)
-        end
-
         it_behaves_like 'authorizing granular token permissions', :read_resource_access_token do
           let(:boundary_object) { resource }
           let(:request) do
@@ -408,27 +371,6 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
           expect(json_response["expires_at"]).to eq(token.expires_at.to_date.iso8601)
           expect(json_response["last_used_ips"]).to eq([])
-        end
-
-        # Only makes sense while expose_last_used_ips_for_access_tokens is rolled out per-actor.
-        # Delete this whole context when the flag is removed - there's no more current_user-vs-token-owner
-        # mismatch to guard against once everyone is on the same (unconditional) code path.
-        context 'when the flag differs between current_user and the token owner' do
-          it 'avoids N+1 queries' do
-            path = "/#{source_type}s/#{resource_id}/access_tokens/#{token_id}"
-            # Enables the flag only for the token owner (project_bot), not for `user`, the requester.
-            stub_feature_flags(expose_last_used_ips_for_access_tokens: project_bot)
-
-            token.last_used_ips.create!(organization: token.organization, ip_address: '192.0.2.1')
-
-            get api(path, user) # warm-up
-
-            control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(path, user) }
-
-            token.last_used_ips.create!(organization: token.organization, ip_address: '192.0.2.2')
-
-            expect { get api(path, user) }.not_to exceed_all_query_limit(control)
-          end
         end
 
         context "when using #{source_type} access token to GET other #{source_type} access token" do

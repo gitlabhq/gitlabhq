@@ -2685,7 +2685,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_9fed56308dd0"
+              "$ref": "#/components/schemas/RequestBody_8e3c2a602abe"
       x-gitlab-lifecycle: experiment
     get:
       operationId: getApiV4ProjectsIdAiAgentSessions
@@ -19587,7 +19587,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ddb13e33e88a"
+              "$ref": "#/components/schemas/RequestBody_8af545d0360b"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -40369,7 +40369,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenWithLastUsedIps"
+                "$ref": "#/components/schemas/APIEntitiesPersonalAccessToken"
         '401':
           description: Unauthorized
         '404':
@@ -40454,7 +40454,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenWithLastUsedIps"
+                "$ref": "#/components/schemas/APIEntitiesPersonalAccessToken"
         '401':
           description: Unauthorized
         '400':
@@ -40588,7 +40588,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenWithLastUsedIps"
+                "$ref": "#/components/schemas/APIEntitiesPersonalAccessToken"
         '401':
           description: Unauthorized
         '404':
@@ -83919,6 +83919,21 @@ components:
           type: string
           format: date-time
           example: '2020-08-31T15:53:00.073Z'
+        last_used_ips:
+          type: array
+          description: The five most recent unique IP addresses that have authenticated
+            with this token. When the limit is reached, the oldest IP address is removed.
+            The list updates once per minute per token.
+          example:
+          - 127.0.0.1
+          - 127.0.0.2
+          - 127.0.0.3
+          items:
+            type: string
+        granular_scopes:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
         active:
           type: boolean
         granular:
@@ -83929,10 +83944,6 @@ components:
           example: '2020-08-31T15:53:00.073Z'
         token:
           type: string
-        granular_scopes:
-          type: array
-          items:
-            "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
     APIEntitiesSshKeyWithUserId:
       type: object
       properties:
@@ -89742,14 +89753,6 @@ components:
           type: string
           format: date-time
           example: '2020-08-31T15:53:00.073Z'
-        active:
-          type: boolean
-        granular:
-          type: boolean
-        expires_at:
-          type: string
-          format: date-time
-          example: '2020-08-31T15:53:00.073Z'
         last_used_ips:
           type: array
           description: The five most recent unique IP addresses that have authenticated
@@ -89765,6 +89768,14 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
+        active:
+          type: boolean
+        granular:
+          type: boolean
+        expires_at:
+          type: string
+          format: date-time
+          example: '2020-08-31T15:53:00.073Z'
         impersonation:
           type: string
     APIEntitiesImpersonationTokenWithToken:
@@ -89797,14 +89808,6 @@ components:
           type: string
           format: date-time
           example: '2020-08-31T15:53:00.073Z'
-        active:
-          type: boolean
-        granular:
-          type: boolean
-        expires_at:
-          type: string
-          format: date-time
-          example: '2020-08-31T15:53:00.073Z'
         last_used_ips:
           type: array
           description: The five most recent unique IP addresses that have authenticated
@@ -89820,6 +89823,14 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
+        active:
+          type: boolean
+        granular:
+          type: boolean
+        expires_at:
+          type: string
+          format: date-time
+          example: '2020-08-31T15:53:00.073Z'
         impersonation:
           type: string
         token:
@@ -91736,6 +91747,21 @@ components:
           type: string
           format: date-time
           example: '2020-08-31T15:53:00.073Z'
+        last_used_ips:
+          type: array
+          description: The five most recent unique IP addresses that have authenticated
+            with this token. When the limit is reached, the oldest IP address is removed.
+            The list updates once per minute per token.
+          example:
+          - 127.0.0.1
+          - 127.0.0.2
+          - 127.0.0.3
+          items:
+            type: string
+        granular_scopes:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
         active:
           type: boolean
         granular:
@@ -92591,14 +92617,6 @@ components:
           type: string
           format: date-time
           example: '2020-08-31T15:53:00.073Z'
-        active:
-          type: boolean
-        granular:
-          type: boolean
-        expires_at:
-          type: string
-          format: date-time
-          example: '2020-08-31T15:53:00.073Z'
         last_used_ips:
           type: array
           description: The five most recent unique IP addresses that have authenticated
@@ -92614,6 +92632,14 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
+        active:
+          type: boolean
+        granular:
+          type: boolean
+        expires_at:
+          type: string
+          format: date-time
+          example: '2020-08-31T15:53:00.073Z'
         access_level:
           type: integer
           enum:
@@ -92664,14 +92690,6 @@ components:
           type: string
           format: date-time
           example: '2020-08-31T15:53:00.073Z'
-        active:
-          type: boolean
-        granular:
-          type: boolean
-        expires_at:
-          type: string
-          format: date-time
-          example: '2020-08-31T15:53:00.073Z'
         last_used_ips:
           type: array
           description: The five most recent unique IP addresses that have authenticated
@@ -92687,6 +92705,14 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
+        active:
+          type: boolean
+        granular:
+          type: boolean
+        expires_at:
+          type: string
+          format: date-time
+          example: '2020-08-31T15:53:00.073Z'
         access_level:
           type: integer
           enum:
@@ -95483,59 +95509,6 @@ components:
           "$ref": "#/components/schemas/APIEntitiesProjectIdentity"
         project:
           "$ref": "#/components/schemas/APIEntitiesBasicProjectDetails"
-    APIEntitiesPersonalAccessTokenWithLastUsedIps:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 2
-        name:
-          type: string
-          example: John Doe
-        revoked:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        description:
-          type: string
-          example: Token to manage api
-        scopes:
-          type: array
-          example:
-          - api
-        user_id:
-          type: integer
-          format: int64
-          example: 3
-        last_used_at:
-          type: string
-          format: date-time
-          example: '2020-08-31T15:53:00.073Z'
-        active:
-          type: boolean
-        granular:
-          type: boolean
-        expires_at:
-          type: string
-          format: date-time
-          example: '2020-08-31T15:53:00.073Z'
-        last_used_ips:
-          type: array
-          description: The five most recent unique IP addresses that have authenticated
-            with this token. When the limit is reached, the oldest IP address is removed.
-            The list updates once per minute per token.
-          example:
-          - 127.0.0.1
-          - 127.0.0.2
-          - 127.0.0.3
-          items:
-            type: string
-        granular_scopes:
-          type: array
-          items:
-            "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
     APIEntitiesPagesDomainCertificateExpiration:
       type: object
       properties:
@@ -100775,7 +100748,7 @@ components:
           nullable: true
       required:
       - project_path
-    RequestBody_9fed56308dd0:
+    RequestBody_8e3c2a602abe:
       type: object
       properties:
         agent_type:
@@ -100811,6 +100784,10 @@ components:
           description: Client-generated UUID for retry safety.
           nullable: true
           maxLength: 255
+        workflow_definition:
+          type: string
+          description: Workflow definition identifier for the session.
+          nullable: true
       required:
       - agent_type
       - agent_identity_id
@@ -106075,7 +106052,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_ddb13e33e88a:
+    RequestBody_8af545d0360b:
       type: object
       properties:
         admin_mode:
@@ -107669,7 +107646,7 @@ components:
         snowplow_database_collector_hostname:
           type: string
           description: The Snowplow collector for database events hostname. (for example,
-            `db-snowplow.trx.gitlab.net`)
+            `your-db-snowplow-collector.example.com`)
           nullable: true
         spam_check_api_key:
           type: string

@@ -343,7 +343,7 @@ The GitLab for Jira Cloud app connects GitLab and Jira. Data must be shared betw
 
 ### GitLab access to Jira
 
-When you [configure the GitLab for Jira Cloud app](#configure-the-gitlab-for-jira-cloud-app), GitLab receives a **shared secret token** from Jira.
+When you [configure the GitLab for Jira Cloud app](#configure-the-gitlab-for-jira-cloud-app), GitLab receives a shared secret token from Jira.
 The token grants GitLab `READ`, `WRITE`, and `DELETE` [app scopes](https://developer.atlassian.com/cloud/jira/software/scopes-for-connect-apps/#scopes-for-atlassian-connect-apps) for the Jira project.
 These scopes are required to update information in the Jira project's development panel.
 The token does not grant GitLab access to any other Atlassian product besides the Jira project the app was installed in.

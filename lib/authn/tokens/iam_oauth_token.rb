@@ -4,6 +4,7 @@ module Authn
   module Tokens
     class IamOauthToken
       include Gitlab::Utils::StrongMemoize
+      include Authn::Tokens::Concerns::DoorkeeperCompatible
 
       # IAM prefixes every access token it mints with this before the JWT
       # (see gitlab-org/auth/iam's auth/oauth/core/token_prefix.go) and
@@ -62,25 +63,17 @@ module Authn
         end
       end
 
-      attr_reader :user_id, :id, :expires_at, :issued_at, :scope_user_id
+      attr_reader :user_id, :id, :expires_at, :issued_at, :scope_user_id, :raw_scopes
 
       private_class_method :new
 
       def initialize(user_id:, scopes:, id:, expires_at:, issued_at:, scope_user_id: nil)
         @user_id = user_id
-        @scopes = scopes
+        @raw_scopes = scopes
         @id = id
         @expires_at = expires_at
         @issued_at = issued_at
         @scope_user_id = scope_user_id
-      end
-
-      def active?
-        !expired? && !revoked?
-      end
-
-      def expired?
-        expires_at.present? && expires_at.past?
       end
 
       def reload
@@ -89,45 +82,10 @@ module Authn
         self
       end
 
-      # For compatibility with AccessTokenValidationService
-      def resource_owner_id
-        user_id
-      end
-
       # IAM JWTs are stateless and cannot be revoked individually by default.
       # TODO: Implement JTI-based revocation list to support token invalidation.
       def revoked?
         false
-      end
-
-      # For compatibility with Doorkeeper which mirrors Doorkeeper::AccessToken#accessible?
-      # https://github.com/doorkeeper-gem/doorkeeper/blob/v5.8.1/lib/doorkeeper/models/concerns/accessible.rb#L10
-      def accessible?
-        active? && user.active?
-      end
-
-      # Called by doorkeeper_authorize! to check required endpoint scopes, mirrors Doorkeeper::AccessToken#acceptable?
-      # https://github.com/doorkeeper-gem/doorkeeper/blob/v5.8.1/lib/doorkeeper/models/concerns/accessible.rb#L14
-      def acceptable?(required_scopes)
-        accessible? && includes_scope?(*required_scopes)
-      end
-
-      def includes_scope?(*required_scopes)
-        required_scopes.blank? || required_scopes.any? { |scope| scopes.include?(scope.to_s) }
-      end
-
-      # Doorkeeper::AccessToken#scopes returns a Doorkeeper::OAuth::Scopes
-      # object and the OIDC ClaimsBuilder calls scopes.exists?, so mirror
-      # that here instead of exposing the raw Array.
-      def scopes
-        Doorkeeper::OAuth::Scopes.from_array(@scopes)
-      end
-
-      # Doorkeeper::OpenidConnect::UserInfo#subject passes
-      # access_token.application to the configured subject block.
-      # IAM tokens have no Doorkeeper application record.
-      def application
-        nil
       end
 
       # Extracted scoped user from 'user:X' scope (for composite identity)

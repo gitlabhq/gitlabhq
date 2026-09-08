@@ -854,7 +854,7 @@ When working with partitioned tables, you can parallelize migrations to improve 
 > [!warning]
 > The patterns described in this section have so far been used only on GitLab.com,
 > and only for a specific type of partitioned tables (CI sliding list partitions that
-> are manually managed). They are **not recommended for self-managed instances** because:
+> are manually managed). They are not recommended for self-managed instances because:
 >
 > - The set of queued migrations depends on the data (number and identity of partitions),
 >   so different self-managed instances would see different sets of migrations. This can
@@ -933,7 +933,7 @@ Create database views to slice a partition into multiple ranges, then queue sepa
   from production data
 
 > [!warning]
-> This pattern is **not suitable for self-managed instances**. View boundaries must be
+> This pattern is not suitable for self-managed instances. View boundaries must be
 > calculated in advance from the actual data distribution, which is not possible to do
 > generically across self-managed installations.
 

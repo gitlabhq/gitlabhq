@@ -11,6 +11,20 @@ module API
       expose :scopes, documentation: { type: 'Array', example: ['api'] }
       expose :user_id, documentation: { type: 'Integer', format: 'int64', example: 3 }
       expose :last_used_at, documentation: { type: 'DateTime', example: '2020-08-31T15:53:00.073Z' }
+      expose :last_used_ips,
+        documentation: {
+          type: 'String',
+          desc: 'The five most recent unique IP addresses that have authenticated with this ' \
+            'token. When the limit is reached, the oldest IP address is removed. The list updates ' \
+            'once per minute per token.',
+          is_array: true,
+          example: ['127.0.0.1', '127.0.0.2', '127.0.0.3']
+        } do |personal_access_token| # rubocop:disable Style/SymbolProc -- block form keeps the documentation type visible to API/EntityFieldType
+        personal_access_token.recent_used_ips
+      end
+      expose :granular_scopes, using: ::API::Entities::PersonalAccessTokenGranularScope,
+        if: ->(token, options) { token.granular? && options[:with_granular_scopes] },
+        documentation: { is_array: true }
       expose :active?, as: :active, documentation: { type: 'Boolean' }
       expose :granular, documentation: { type: 'Boolean' }
       expose :expires_at, documentation:

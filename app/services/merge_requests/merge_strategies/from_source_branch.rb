@@ -60,7 +60,12 @@ module MergeRequests
 
           src_sha = payload[:commit_sha]
 
-          payload[:commit_sha] = fast_forward!(src_sha)[:commit_sha]
+          begin
+            payload[:commit_sha] = fast_forward!(src_sha)[:commit_sha]
+          rescue StandardError
+            cleanup_generated_ref_commits
+            raise
+          end
 
           merge_request.schedule_cleanup_refs(only: [:rebase_on_merge_path])
 
@@ -142,6 +147,15 @@ module MergeRequests
         end
 
         { commit_sha: commit_sha }
+      end
+
+      # Rows are written before the target branch moves, so a fast-forward that
+      # never lands leaves commits resolving to this merge request through the
+      # state-filter-free by_related_commit_sha. Mirrors MergeTrains::Car#cleanup_ref.
+      def cleanup_generated_ref_commits
+        return unless Feature.enabled?(:generated_ref_commits_for_automatic_rebase, project)
+
+        ::MergeRequests::GeneratedRefCommit.delete_all_for(merge_request)
       end
 
       def merge_commit!

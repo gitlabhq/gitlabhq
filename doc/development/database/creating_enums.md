@@ -75,7 +75,7 @@ end
 
 This works as-is. However, it has a couple of downsides:
 
-- Someone could define a key/value pair in EE that is **conflicted** with a value defined in FOSS.
+- Someone could define a key/value pair in EE that is conflicted with a value defined in FOSS.
   For example, define `job_activity_limit_exceeded: 1` in `EE::Enums::Pipeline`.
 - When it happens, the feature works totally differently.
   For example, we cannot figure out `failure_reason` is either `config_error` or `job_activity_limit_exceeded`.

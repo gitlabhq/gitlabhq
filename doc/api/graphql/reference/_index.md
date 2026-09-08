@@ -4800,6 +4800,36 @@ Fields:
 | <a id="mutation-artifactregistryartifactdelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-artifactregistryartifactdelete-repository"></a>`repository` | [`ArtifactRegistryRepository`](#artifactregistryrepository) | Repository holding the deleted artifact. Counters were read before the deletion applied, so they can lag its result. Null when the deletion was not applied. |
 
+### `Mutation.artifactRegistryContainerTagDelete`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Deletes a container tag, identified by its name. Applies only to container repositories in Docker or OCI format. This mutation never reads the repository kind. Artifact Registry decides the outcome from its own records. On a hosted repository, deletion permanently removes the tag. On a remote repository, it evicts the cached tag reference. On a virtual repository, the request is passed through for Artifact Registry to decide. Deleting a tag never removes the manifest it pointed at. Artifact Registry accepts the request rather than completing it, so this mutation reports acceptance, not completion.
+
+Input type: `ArtifactRegistryContainerTagDeleteInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistrycontainertagdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistrycontainertagdelete-imageid"></a>`imageId` | [`ID!`](#id) | ID of the image holding the tag in Artifact Registry, as returned by the `id` field on an image. Not a GitLab global ID. |
+| <a id="mutation-artifactregistrycontainertagdelete-name"></a>`name` | [`String!`](#string) | Name of the repository holding the tag, unique within the organization. |
+| <a id="mutation-artifactregistrycontainertagdelete-tagname"></a>`tagName` | [`String!`](#string) | Name of the tag to delete. Limited to 1024 characters. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistrycontainertagdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistrycontainertagdelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-artifactregistrycontainertagdelete-repository"></a>`repository` | [`ArtifactRegistryRepository`](#artifactregistryrepository) | Repository holding the deleted tag. A tag delete moves no repository counter. Null when the deletion was not accepted. |
+
 ### `Mutation.artifactRegistryDisable`
 
 {{< details >}}
@@ -4853,6 +4883,36 @@ Fields:
 | <a id="mutation-artifactregistryenable-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-artifactregistryenable-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-artifactregistryenable-registry"></a>`registry` | [`ArtifactRegistry`](#artifactregistry) | Registry after the transition. Null when the transition was rejected, for example an unknown namespace. |
+
+### `Mutation.artifactRegistryManifestDelete`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Deletes a manifest, identified by its digest. Applies only to Docker or OCI container repositories, whose kind this mutation never reads. Artifact Registry decides the outcome from its records, permanently removing the manifest on a hosted repository, evicting the cached copy on a remote one, or passing the request through on a virtual one. Deleting a manifest removes tags pointing at it and index entries where it is the parent, though a manifest it indexed survives untagged. Artifact Registry accepts rather than completes the request, so this reports acceptance. Re-read the image's manifests afterward for the result. Deletion is refused if another manifest indexes the target as a child, and the error lists at most 10 blocking digests plus the total count.
+
+Input type: `ArtifactRegistryManifestDeleteInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistrymanifestdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistrymanifestdelete-digest"></a>`digest` | [`String!`](#string) | Content-addressable digest of the manifest, as returned by the `digest` field on a manifest. Limited to 512 characters. |
+| <a id="mutation-artifactregistrymanifestdelete-imageid"></a>`imageId` | [`ID!`](#id) | ID of the image holding the manifest in Artifact Registry, as returned by the `id` field on an image. Not a GitLab global ID. |
+| <a id="mutation-artifactregistrymanifestdelete-name"></a>`name` | [`String!`](#string) | Name of the repository holding the manifest, unique within the organization. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistrymanifestdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistrymanifestdelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-artifactregistrymanifestdelete-repository"></a>`repository` | [`ArtifactRegistryRepository`](#artifactregistryrepository) | Repository holding the deleted manifest. Counters were read before the deletion applied, so they can lag its result. Null when the deletion was not accepted. |
 
 ### `Mutation.artifactRegistryRepositoryArtifactsDelete`
 
@@ -4924,7 +4984,7 @@ Fields:
 
 {{< /details >}}
 
-Deletes a repository in Artifact Registry.
+Deletes a repository in Artifact Registry and removes every artifact it holds. Deleting an already-absent repository still succeeds.
 
 Input type: `ArtifactRegistryRepositoryDeleteInput`
 
@@ -35535,6 +35595,7 @@ Arguments:
 | <a id="analytics-duoworkflows-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by flow creation timestamp. Start of the range. |
 | <a id="analytics-duoworkflows-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by flow creation timestamp. End of the range. |
 | <a id="analytics-duoworkflows-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
+| <a id="analytics-duoworkflows-projectid"></a>`projectId` | [`[String!]`](#string) | Filter by one or many project Global IDs. |
 | <a id="analytics-duoworkflows-workflowdefinition"></a>`workflowDefinition` | [`[String!]`](#string) | Filter by one or many flow types. |
 
 ##### `Analytics.mergeRequests`
@@ -43373,6 +43434,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="duoworkflowsaggregationresponse-creditsused"></a>`creditsUsed` | [`DuoWorkflowsAggregationResponseCreditsUsedMetrics`](#duoworkflowsaggregationresponsecreditsusedmetrics) | Aggregated `credits_used` metrics. |
 | <a id="duoworkflowsaggregationresponse-dimensions"></a>`dimensions` | [`DuoWorkflowsAggregationResponseDimensions`](#duoworkflowsaggregationresponsedimensions) | Aggregation dimensions. Every selected dimension will be used for aggregation. |
+| <a id="duoworkflowsaggregationresponse-projectscount"></a>`projectsCount` | [`Int`](#int) | Number of unique projects. |
 | <a id="duoworkflowsaggregationresponse-totalcount"></a>`totalCount` | [`Int`](#int) | Total number of flows. |
 | <a id="duoworkflowsaggregationresponse-userscount"></a>`usersCount` | [`Int`](#int) | Number of unique users. |
 
@@ -43411,6 +43473,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsedimensions-project"></a>`project` | [`Project`](#project) | Project the flow ran in. Returns `null` for flows not scoped to a project. |
 | <a id="duoworkflowsaggregationresponsedimensions-workflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Type of flow. |
 
 #### Fields with arguments

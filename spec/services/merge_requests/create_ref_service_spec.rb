@@ -417,8 +417,45 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
         end
       end
 
-      context 'when we are not on ee' do
-        include_examples 'does not generate ref merge request commits'
+      describe 'recording generated ref commits' do
+        context 'when the project merges with a merge commit' do
+          before do
+            project.merge_method = :merge
+            project.save!
+          end
+
+          include_examples 'does not generate ref merge request commits'
+        end
+
+        context 'when the project rebases before merging' do
+          # The generated ref holds the two rebased commits, plus a merge commit
+          # for every merge method except fast-forward.
+          where(:merge_method, :expected_count) do
+            :rebase_merge | 3
+            :ff           | 2
+          end
+
+          with_them do
+            before do
+              project.merge_method = merge_method
+              project.save!
+            end
+
+            it 'records every commit the generated ref adds to the target' do
+              expect { result }
+                .to change { merge_request.generated_ref_commits.count }
+                .from(0).to(expected_count)
+            end
+
+            context 'when generated_ref_commits_for_automatic_rebase is disabled' do
+              before do
+                stub_feature_flags(generated_ref_commits_for_automatic_rebase: false)
+              end
+
+              include_examples 'does not generate ref merge request commits'
+            end
+          end
+        end
       end
     end
   end

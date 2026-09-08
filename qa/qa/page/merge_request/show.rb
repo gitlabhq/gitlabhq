@@ -97,13 +97,6 @@ module QA
           element 'sidebar-milestones'
         end
 
-        view 'app/views/projects/merge_requests/_code_dropdown.html.haml' do
-          element 'mr-code-dropdown'
-          element 'download-email-patches-menu-item'
-          element 'download-plain-diff-menu-item'
-          element 'open-in-web-ide-button'
-        end
-
         view 'app/assets/javascripts/merge_requests/components/code_dropdown.vue' do
           element 'mr-code-dropdown'
           element 'download-email-patches-menu-item'
@@ -716,13 +709,7 @@ module QA
         private
 
         def open_code_dropdown
-          vue_dropdown = within_element('mr-code-dropdown') { has_element?('base-dropdown-toggle', wait: 1) }
-
-          if vue_dropdown
-            within_element('mr-code-dropdown') { click_element('base-dropdown-toggle') }
-          else
-            click_by_javascript(find_element('mr-code-dropdown'))
-          end
+          within_element('mr-code-dropdown') { click_element('base-dropdown-toggle') }
         end
 
         def wait_assignees_block_finish_loading

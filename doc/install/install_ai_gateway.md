@@ -520,7 +520,7 @@ You can find the list of AI Gateway versions that can be used as `image.tag` in 
 This step can take a few seconds in order for all resources to be allocated
 and the AI Gateway to start.
 
-You might need to set up your own **Ingress Controller** for the AI Gateway if your existing `nginx` Ingress controller does not serve services in a different namespace. Make sure Ingress is set up correctly for multi-namespace deployments.
+You might need to set up your own Ingress controller for the AI Gateway if your existing `nginx` Ingress controller does not serve services in a different namespace. Make sure Ingress is set up correctly for multi-namespace deployments.
 
 For versions of the `ai-gateway` Helm chart, use `helm search repo ai-gateway --versions` to find the appropriate chart version.
 

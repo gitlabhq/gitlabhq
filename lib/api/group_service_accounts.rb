@@ -213,6 +213,7 @@ module API
 
             merged_params = declared(params, include_missing: false).merge({ user: user, impersonation: false })
             service_account_pats = ::PersonalAccessTokensFinder.new(merged_params, user).execute
+              .preload_last_used_ips
 
             present paginate_with_strategies(service_account_pats), with: Entities::PersonalAccessToken
           end

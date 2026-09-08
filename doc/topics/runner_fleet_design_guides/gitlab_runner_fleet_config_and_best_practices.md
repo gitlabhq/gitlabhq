@@ -394,7 +394,7 @@ Take the following information into consideration:
 
 The GKE cluster should have:
 
-- A node pool for GitLab Runner Manager (let's consider that the log processing is not demanding): **1 e2-standard-2** node
+- A node pool for GitLab Runner Manager (let's consider that the log processing is not demanding): `1 e2-standard-2` node
 - A node pool for medium jobs: 3 `e2-standard-4` nodes
 - A node pool for CPU-intensive jobs: 1 `e2-highcpu-32` node (`32 vCPU` and `32 GiB` Memory)
 

@@ -36,3 +36,5 @@ module Types
     end
   end
 end
+
+Types::Ci::ProjectVariableType.prepend_mod

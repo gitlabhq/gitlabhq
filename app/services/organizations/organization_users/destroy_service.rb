@@ -96,3 +96,5 @@ module Organizations
     end
   end
 end
+
+Organizations::OrganizationUsers::DestroyService.prepend_mod

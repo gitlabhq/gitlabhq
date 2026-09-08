@@ -23,6 +23,10 @@ module MergeRequests
     belongs_to :project
     validates :commit_sha, :project, :merge_request, presence: true
 
+    def self.delete_all_for(merge_request)
+      where(project_id: merge_request.target_project_id, merge_request_iid: merge_request.iid).delete_all
+    end
+
     def self.oldest_merge_request_id_per_commit(project_id, shas)
       fields = [
         'p_generated_ref_commits.id AS id, p_generated_ref_commits.commit_sha AS commit_sha',

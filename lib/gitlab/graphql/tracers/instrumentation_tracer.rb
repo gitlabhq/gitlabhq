@@ -5,8 +5,6 @@ module Gitlab
     module Tracers
       # This tracer writes logs for certain trace events.
       module InstrumentationTracer
-        MUTATION_REGEXP = /^mutation/
-
         IGNORED_ERRORS = [
           ::Subscriptions::BaseSubscription::UNAUTHORIZED_ERROR_MESSAGE
         ].freeze
@@ -87,8 +85,8 @@ module Gitlab
             operation_name: query.operation_name,
             operation_fingerprint: query.operation_fingerprint,
             is_mutation: query.mutation?,
-            variables: clean_variables(query.provided_variables, query.operation_name),
-            query_string: clean_query_string(query)
+            variables: ::Gitlab::Graphql::LogSanitizer.variables(query.provided_variables, query.operation_name),
+            query_string: ::Gitlab::Graphql::LogSanitizer.query_string(query)
           }
 
           token_info = ::Current.token_info
@@ -102,24 +100,6 @@ module Gitlab
           info.merge!(analysis_info) if analysis_info
 
           ::Gitlab::GraphqlLogger.info(info)
-        end
-
-        def clean_variables(variables, operation_name)
-          filtered = ActiveSupport::ParameterFilter
-            .new(::Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer::FILTER_PARAMETERS)
-            .filter(variables)
-
-          ::Gitlab::Graphql::VariableFilters::Registry.filter(filtered, operation_name)&.to_s
-        end
-
-        def clean_query_string(query)
-          return query.query_string unless mutation?(query)
-
-          query.sanitized_query_string
-        end
-
-        def mutation?(query)
-          query.query_string =~ ::Gitlab::Graphql::Tracers::InstrumentationTracer::MUTATION_REGEXP
         end
       end
     end

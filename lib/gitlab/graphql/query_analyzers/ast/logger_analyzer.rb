@@ -9,7 +9,9 @@ module Gitlab
           DEPTH_ANALYZER = GraphQL::Analysis::AST::QueryDepth
           FIELD_USAGE_ANALYZER = GraphQL::Analysis::AST::FieldUsage
           ALL_ANALYZERS = [COMPLEXITY_ANALYZER, DEPTH_ANALYZER, FIELD_USAGE_ANALYZER].freeze
-          FILTER_PARAMETERS = (::Rails.application.config.filter_parameters + [/password/i]).freeze
+          FILTER_PARAMETERS = (
+            ::Rails.application.config.filter_parameters + [/password/i, /^username$/, /^url$/]
+          ).freeze
 
           def initialize(query)
             super

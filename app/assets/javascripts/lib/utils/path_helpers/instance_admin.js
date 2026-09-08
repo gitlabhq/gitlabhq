@@ -1004,6 +1004,19 @@ export const adminDeployKeyPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format
 /**
  * Generates the Rails route:
  *
+ * - href: `/admin/ssh_certificates(.:format)`
+ * - Path helper: `admin_ssh_certificates_path`
+ * - URL helper: `admin_ssh_certificates_url`
+ * - controller#action: `admin/ssh_certificates#index`
+ *
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const adminSshCertificatesPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"ssh_certificates"],[1,[2,[8,"."],[3,"format"]]]]]]]);
+
+/**
+ * Generates the Rails route:
+ *
  * - href: `/admin/hooks/:id/test(.:format)`
  * - Path helper: `test_admin_hook_path`
  * - URL helper: `test_admin_hook_url`

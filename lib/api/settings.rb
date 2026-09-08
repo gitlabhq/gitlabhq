@@ -571,7 +571,7 @@ module API
       optional :silent_mode_enabled, desc: 'Enable Silent mode. Default is `false`.'
       optional :snippet_size_limit, desc: 'Maximum snippet content size in **bytes**. Default: 52428800 Bytes (50 MB).'
       optional :snowplow_database_collector_hostname,
-        desc: 'The Snowplow collector for database events hostname. (for example, `db-snowplow.trx.gitlab.net`)'
+        desc: 'The Snowplow collector for database events hostname. (for example, `your-db-snowplow-collector.example.com`)'
       optional :spam_check_api_key, desc: 'API key used by GitLab for accessing the Spam Check service endpoint.'
       optional :static_objects_external_storage_auth_token,
         desc: 'Authentication token for the external storage linked in `static_objects_external_storage_url`.'

@@ -6720,6 +6720,11 @@
     "dottedExample": "/admin/spam_logs/john.doe/mark_as_ham"
   },
   {
+    "template": "/admin/ssh_certificates",
+    "example": "/admin/ssh_certificates",
+    "acceptsFormat": true
+  },
+  {
     "template": "/admin/subscription",
     "example": "/admin/subscription",
     "acceptsFormat": true

@@ -212,7 +212,7 @@ module API
             validate_service_account
 
             service_account_pats = ::PersonalAccessTokensFinder.new(finder_params(service_account),
-              service_account).execute
+              service_account).execute.preload_last_used_ips
 
             present paginate_with_strategies(service_account_pats), with: Entities::PersonalAccessToken
           end

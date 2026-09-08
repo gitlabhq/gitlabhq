@@ -20,7 +20,8 @@ Use this API to interact with group access tokens. For more information, see [Gr
 {{< history >}}
 
 - `state` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.2.
-- `last_used_ips` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/600347) in GitLab 19.2.
+- `last_used_ips` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/600347) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `expose_last_used_ips_for_access_tokens`. Disabled by default.
+- `last_used_ips` attribute [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/603636) in GitLab 19.4. Feature flag `expose_last_used_ips_for_access_tokens` removed.
 
 {{< /history >}}
 

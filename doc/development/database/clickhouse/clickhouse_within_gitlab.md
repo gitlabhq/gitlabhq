@@ -207,16 +207,16 @@ bundle exec rake gitlab:clickhouse:migrate
 
 ## Column Compression Guidelines
 
-When creating new tables, consider adjusting the compression settings for specific columns to improve storage efficiency. By default, ClickHouse compresses data using **LZ4** on self-managed instances and ClickHouse Cloud uses [`ZSTD`](https://clickhouse.com/docs/data-compression/compression-in-clickhouse#compression-in-clickhouse-cloud). Depending on the column type and its content, you can achieve significantly better compression ratios using specific codecs.
+When creating new tables, consider adjusting the compression settings for specific columns to improve storage efficiency. By default, ClickHouse compresses data using `LZ4` on self-managed instances and ClickHouse Cloud uses [`ZSTD`](https://clickhouse.com/docs/data-compression/compression-in-clickhouse#compression-in-clickhouse-cloud). Depending on the column type and its content, you can achieve significantly better compression ratios using specific codecs.
 
 ### Recommended Codecs by Data Type
 
-#### **Primary Keys (or Sorted Columns)**
+#### Primary Keys (or Sorted Columns)
 
 - **Integers / Timestamps:** `CODEC(DoubleDelta, ZSTD)` - Optimized for monotonically increasing sequences.
 - **Strings:** `CODEC(ZSTD(3))` - Provides a higher compression ratio for high-entropy strings.
 
-#### **Standard Columns**
+#### Standard Columns
 
 - **Booleans:** `CODEC(ZSTD(1))`
 - **Incremental Timestamps** (`created_at`, `updated_at`): `CODEC(Delta, ZSTD(1))` - Delta encoding makes incremental values much smaller before ZSTD compresses them.

@@ -69,6 +69,27 @@ RSpec.describe Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer, feature_cat
       end
     end
 
+    context 'when variables carry a username and a URL under a client-chosen variable name' do
+      let(:query) do
+        GraphQL::Query.new(
+          GitlabSchema,
+          document: document,
+          context: {},
+          variables: { s: { url: 'https://robot:secret-pw@upstream.test', credentials: { username: 'robot-user' } } },
+          operation_name: 'createNote'
+        )
+      end
+
+      it 'redacts both leaf keys regardless of the path above them', :aggregate_failures do
+        GraphQL::Analysis::AST.analyze_query(query, [described_class], multiplex_analyzers: [])
+
+        logged_variables = RequestStore.store[:graphql_logs].first[:variables]
+
+        expect(logged_variables).not_to include('secret-pw', 'robot-user')
+        expect(logged_variables).to include('[FILTERED]')
+      end
+    end
+
     it 'does not crash when #analyze_query returns []' do
       stub_const('Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer::ALL_ANALYZERS', [])
       results = GraphQL::Analysis::AST.analyze_query(query, [described_class], multiplex_analyzers: [])

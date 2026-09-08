@@ -73,10 +73,11 @@ module Gitlab
       end
 
       def list(
-        organization_id:, trigger_type: nil, ids: nil, offset: 0,
+        organization_id:, trigger_type: nil, lifecycle_state: nil, ids: nil, offset: 0,
         per_page: Ports::PolicyRepository::DEFAULT_PER_PAGE)
         configuration.repository.list(
-          organization_id: organization_id, trigger_type: trigger_type, ids: ids, offset: offset, per_page: per_page
+          organization_id: organization_id, trigger_type: trigger_type, lifecycle_state: lifecycle_state,
+          ids: ids, offset: offset, per_page: per_page
         )
       end
 

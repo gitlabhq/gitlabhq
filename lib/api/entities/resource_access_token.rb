@@ -2,7 +2,7 @@
 
 module API
   module Entities
-    class ResourceAccessToken < Entities::PersonalAccessTokenWithLastUsedIps
+    class ResourceAccessToken < Entities::PersonalAccessToken
       expose :access_level,
         documentation: {
           type: 'Integer',

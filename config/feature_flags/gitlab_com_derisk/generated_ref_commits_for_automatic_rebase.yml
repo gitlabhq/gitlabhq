@@ -1,0 +1,11 @@
+---
+name: generated_ref_commits_for_automatic_rebase
+description: Record generated ref commits when a merge request is merged with automatic
+  rebase before merge, so the rebased commits keep their merge request association
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/627601
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253468
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/627604
+milestone: '19.4'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

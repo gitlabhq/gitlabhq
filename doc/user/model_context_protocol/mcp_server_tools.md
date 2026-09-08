@@ -622,6 +622,41 @@ Example:
 Create a branch named feature/x from main in project gitlab-org/gitlab
 ```
 
+## `fork_repository`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/597680) in GitLab 19.4.
+
+{{< /history >}}
+
+Forks a GitLab project into a namespace.
+
+The fork is created asynchronously. The response contains the new project attributes, including
+an `import_status` field, such as `scheduled`, that shows fork progress.
+
+The call fails due to reasons based on the following statuses:
+
+- `409` status when the namespace already has a fork of the project.
+- `404` status when the project or namespace doesn't exist, or you don't have
+permission to fork the project.
+
+| Parameter        | Type    | Required | Description |
+|------------------|---------|----------|-------------|
+| `id`             | string  | Yes      | ID or URL-encoded path of the project. |
+| `namespace_id`   | integer | No       | ID of the namespace to fork the project into. |
+| `namespace_path` | string  | No       | Path of the namespace to fork the project into. |
+| `name`           | string  | No       | Name to assign to the fork. |
+| `path`           | string  | No       | Path to assign to the fork. |
+| `description`    | string  | No       | Description to assign to the fork. |
+| `visibility`     | string  | No       | Visibility of the fork. |
+
+Example:
+
+```plaintext
+Fork gitlab-org/gitlab-test into my personal namespace
+```
+
 ## `list_branches`
 
 {{< history >}}

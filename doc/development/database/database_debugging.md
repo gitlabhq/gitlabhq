@@ -259,7 +259,7 @@ Up-to-date statistics never hurt!
 
 Active queries are the only ones actually consuming significant resources from the database.
 
-This query gathers meta information from all existing **active** queries, along with:
+This query gathers meta information from all existing active queries, along with:
 
 - their age
 - originating service

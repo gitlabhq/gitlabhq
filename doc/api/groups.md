@@ -2175,6 +2175,12 @@ Prerequisites:
 
 ### List all personal access tokens for a group
 
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+
+{{< /history >}}
+
 Lists all personal access tokens associated with enterprise users in a top-level group.
 
 ```plaintext
@@ -2215,6 +2221,7 @@ Example response:
     ],
     "user_id": 3,
     "last_used_at": "2021-10-06T17:58:37.550Z",
+    "last_used_ips": ["192.0.2.10"],
     "active": true,
     "expires_at": "2025-11-08"
   }
@@ -2385,6 +2392,12 @@ Other possible responses:
 
 ### Rotate a personal access token for an enterprise user
 
+{{< history >}}
+
+- `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+
+{{< /history >}}
+
 Rotates a specified personal access token for an enterprise user associated with the top-level group. This revokes the previous token and creates a new token
 that expires after one week.
 
@@ -2415,6 +2428,7 @@ Example response:
     "scopes": ["api"],
     "user_id": 1337,
     "last_used_at": null,
+    "last_used_ips": [],
     "active": true,
     "expires_at": "2023-08-15",
     "token": "s3cr3t"

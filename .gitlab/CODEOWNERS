@@ -1717,7 +1717,6 @@ lib/gitlab/checks/
 /lib/api/entities/impersonation_token.rb
 /lib/api/entities/impersonation_token_with_token.rb
 /lib/api/entities/personal_access_token.rb
-/lib/api/entities/personal_access_token_with_last_used_ips.rb
 /lib/api/entities/personal_access_token_with_token.rb
 /lib/api/entities/resource_access_token.rb
 /lib/api/entities/resource_access_token_with_token.rb

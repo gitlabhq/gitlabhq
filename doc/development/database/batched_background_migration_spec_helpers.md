@@ -205,12 +205,12 @@ end
 
 ## Best Practices
 
-1. **Always declare tables explicitly** - Use the `tables` method to declare all tables needed in your spec. Tables are not automatically available and must be declared before use.
-1. **Declare tables in alphabetical order** - This improves consistency and readability across specs.
-1. **Use the latest version** - Use V1 (or the latest available version) for new specs unless there's a specific reason not to.
-1. **Configure after declaring** - Always declare tables with `tables` first, then configure them with `configure_table` if needed.
-1. **Don't mix approaches** - Either use the spec helpers or manual `let!` definitions, not both in the same spec.
-1. **Keep configurations minimal** - Only configure tables when you need custom options (primary keys, databases, partitioning).
+- Always declare tables explicitly. Use the `tables` method to declare all tables needed in your spec. Tables are not automatically available and must be declared before use.
+- Declare tables in alphabetical order. This improves consistency and readability across specs.
+- Use the latest version. Use V1 (or the latest available version) for new specs unless there's a specific reason not to.
+- Configure after declaring. Always declare tables with `tables` first, then configure them with `configure_table` if needed.
+- Don't mix approaches. Either use the spec helpers or manual `let!` definitions, not both in the same spec.
+- Keep configurations minimal. Only configure tables when you need custom options (primary keys, databases, partitioning).
 
 ## Troubleshooting
 

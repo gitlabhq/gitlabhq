@@ -748,8 +748,10 @@ lib/api/entities/personal_access_token.rb:
   - description
   - expires_at
   - granular
+  - granular_scopes
   - id
   - last_used_at
+  - last_used_ips
   - name
   - revoked
   - scopes
@@ -761,11 +763,6 @@ lib/api/entities/personal_access_token_granular_scope.rb:
   - group_id
   - permissions
   - project_id
-lib/api/entities/personal_access_token_with_last_used_ips.rb:
-  usage_radius: 16
-  fields:
-  - granular_scopes
-  - last_used_ips
 lib/api/entities/platform/kubernetes.rb:
   usage_radius: 15
   fields:

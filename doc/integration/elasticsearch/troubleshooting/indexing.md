@@ -371,7 +371,7 @@ data because each shard is a Lucene index.
 If you are not using sharding, you are likely to hit issues when you start using
 Elasticsearch in a production environment.
 
-An index with only one shard has **no scale factor** and is likely
+An index with only one shard has no scale factor and is likely
 to encounter issues when called upon with some frequency. See the
 [Elasticsearch documentation on capacity planning](https://www.elastic.co/guide/en/elasticsearch/guide/2.x/capacity-planning.html).
 

@@ -19,7 +19,7 @@ module API
           'all personal access tokens in the instance. For non-administrators, returns all of their personal access ' \
           'tokens.'
         is_array true
-        success Entities::PersonalAccessTokenWithLastUsedIps
+        success Entities::PersonalAccessToken
         tags %w[access_tokens]
         failure [
           { code: 401, message: 'Unauthorized' }
@@ -40,7 +40,7 @@ module API
 
         paginated_tokens = paginate(tokens)
 
-        present paginated_tokens, with: Entities::PersonalAccessTokenWithLastUsedIps,
+        present paginated_tokens, with: Entities::PersonalAccessToken,
           with_granular_scopes: true,
           project_ids_by_namespace_id: project_ids_by_namespace_id_for(paginated_tokens)
       end
@@ -48,7 +48,7 @@ module API
       desc 'Retrieve a personal access token' do
         detail 'Retrieves details for a specified personal access token. Administrators can retrieve details on any ' \
           'token. Non-administrators can only retrieve details on their own tokens.'
-        success Entities::PersonalAccessTokenWithLastUsedIps
+        success Entities::PersonalAccessToken
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
@@ -65,7 +65,7 @@ module API
         allowed = Ability.allowed?(current_user, :read_personal_access_token, token&.user)
 
         if allowed
-          present token, with: Entities::PersonalAccessTokenWithLastUsedIps,
+          present token, with: Entities::PersonalAccessToken,
             with_granular_scopes: true,
             project_ids_by_namespace_id: project_ids_by_namespace_id_for([token])
         else

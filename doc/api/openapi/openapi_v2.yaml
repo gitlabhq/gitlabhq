@@ -47532,7 +47532,7 @@ paths:
         '200':
           description: Retrieve a personal access token
           schema:
-            "$ref": "#/definitions/API_Entities_PersonalAccessTokenWithLastUsedIps"
+            "$ref": "#/definitions/API_Entities_PersonalAccessToken"
         '401':
           description: Unauthorized
         '404':
@@ -47740,7 +47740,7 @@ paths:
           schema:
             type: array
             items:
-              "$ref": "#/definitions/API_Entities_PersonalAccessTokenWithLastUsedIps"
+              "$ref": "#/definitions/API_Entities_PersonalAccessToken"
         '401':
           description: Unauthorized
       tags:
@@ -47765,7 +47765,7 @@ paths:
         '200':
           description: Retrieve a personal access token
           schema:
-            "$ref": "#/definitions/API_Entities_PersonalAccessTokenWithLastUsedIps"
+            "$ref": "#/definitions/API_Entities_PersonalAccessToken"
         '401':
           description: Unauthorized
         '404':
@@ -57484,14 +57484,6 @@ definitions:
         type: string
         format: date-time
         example: '2020-08-31T15:53:00.073Z'
-      active:
-        type: boolean
-      granular:
-        type: boolean
-      expires_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
       last_used_ips:
         type: array
         items:
@@ -57503,10 +57495,18 @@ definitions:
         description: The five most recent unique IP addresses that have authenticated
           with this token. When the limit is reached, the oldest IP address is removed.
           The list updates once per minute per token.
+      active:
+        type: boolean
+      granular:
+        type: boolean
       granular_scopes:
         type: array
         items:
           "$ref": "#/definitions/API_Entities_PersonalAccessTokenGranularScope"
+      expires_at:
+        type: string
+        format: date-time
+        example: '2020-08-31T15:53:00.073Z'
       access_level:
         type: integer
         format: int32
@@ -57538,6 +57538,7 @@ definitions:
     - scopes
     - user_id
     - last_used_at
+    - last_used_ips
     - active
     - granular
     - expires_at
@@ -79810,72 +79811,6 @@ definitions:
     required:
     - expired
     - expiration
-  API_Entities_PersonalAccessTokenWithLastUsedIps:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int64
-        example: 2
-      name:
-        type: string
-        example: John Doe
-      revoked:
-        type: boolean
-      created_at:
-        type: string
-        format: date-time
-      description:
-        type: string
-        example: Token to manage api
-      scopes:
-        type: array
-        example:
-        - api
-      user_id:
-        type: integer
-        format: int64
-        example: 3
-      last_used_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
-      active:
-        type: boolean
-      granular:
-        type: boolean
-      expires_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
-      last_used_ips:
-        type: array
-        items:
-          type: string
-        example:
-        - 127.0.0.1
-        - 127.0.0.2
-        - 127.0.0.3
-        description: The five most recent unique IP addresses that have authenticated
-          with this token. When the limit is reached, the oldest IP address is removed.
-          The list updates once per minute per token.
-      granular_scopes:
-        type: array
-        items:
-          "$ref": "#/definitions/API_Entities_PersonalAccessTokenGranularScope"
-    required:
-    - id
-    - name
-    - revoked
-    - created_at
-    - description
-    - scopes
-    - user_id
-    - last_used_at
-    - active
-    - granular
-    - expires_at
-    description: API_Entities_PersonalAccessTokenWithLastUsedIps model
   API_Entities_PersonalAccessToken:
     type: object
     properties:
@@ -79906,10 +79841,25 @@ definitions:
         type: string
         format: date-time
         example: '2020-08-31T15:53:00.073Z'
+      last_used_ips:
+        type: array
+        items:
+          type: string
+        example:
+        - 127.0.0.1
+        - 127.0.0.2
+        - 127.0.0.3
+        description: The five most recent unique IP addresses that have authenticated
+          with this token. When the limit is reached, the oldest IP address is removed.
+          The list updates once per minute per token.
       active:
         type: boolean
       granular:
         type: boolean
+      granular_scopes:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_PersonalAccessTokenGranularScope"
       expires_at:
         type: string
         format: date-time
@@ -79923,6 +79873,7 @@ definitions:
     - scopes
     - user_id
     - last_used_at
+    - last_used_ips
     - active
     - granular
     - expires_at
@@ -79966,20 +79917,31 @@ definitions:
         type: string
         format: date-time
         example: '2020-08-31T15:53:00.073Z'
+      last_used_ips:
+        type: array
+        items:
+          type: string
+        example:
+        - 127.0.0.1
+        - 127.0.0.2
+        - 127.0.0.3
+        description: The five most recent unique IP addresses that have authenticated
+          with this token. When the limit is reached, the oldest IP address is removed.
+          The list updates once per minute per token.
       active:
         type: boolean
       granular:
         type: boolean
+      granular_scopes:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_PersonalAccessTokenGranularScope"
       expires_at:
         type: string
         format: date-time
         example: '2020-08-31T15:53:00.073Z'
       token:
         type: string
-      granular_scopes:
-        type: array
-        items:
-          "$ref": "#/definitions/API_Entities_PersonalAccessTokenGranularScope"
     required:
     - id
     - name
@@ -79989,6 +79951,7 @@ definitions:
     - scopes
     - user_id
     - last_used_at
+    - last_used_ips
     - active
     - granular
     - expires_at
