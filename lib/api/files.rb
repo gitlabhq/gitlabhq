@@ -332,6 +332,7 @@ module API
       route_setting :authorization, permissions: :create_repository_file, boundary_type: :project
       post ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         require_gitlab_workhorse!
+        authenticate!
 
         file_params = validate_file_params!(file_params_from_body_upload)
         file_params[:file_path] = params[:file_path]
@@ -375,6 +376,7 @@ module API
       route_setting :authorization, permissions: :update_repository_file, boundary_type: :project
       put ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         require_gitlab_workhorse!
+        authenticate!
 
         file_params = validate_file_params!(file_params_from_body_upload)
         file_params[:file_path] = params[:file_path]
