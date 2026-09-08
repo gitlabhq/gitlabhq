@@ -186,7 +186,7 @@ If you are using queries for the [CustomersDot GraphQL endpoint](https://gitlab.
 
 ### Feature category requirement
 
-All GraphQL query, mutation, and subscription files **must** include a comment that specifies their feature category. This requirement is enforced by the `local-rules/graphql-require-feature-category` ESLint rule.
+All GraphQL query, mutation, and subscription files must include a comment that specifies their feature category. This requirement is enforced by the `local-rules/graphql-require-feature-category` ESLint rule.
 
 Add a comment at the top of your `.graphql` file in the following format:
 

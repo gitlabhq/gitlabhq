@@ -41,6 +41,19 @@ RSpec.shared_examples 'rich text editor - copy/paste' do
       end
     end
 
+    it 'replaces the entire content when pasting over a select-all selection' do
+      type_in_content_editor 'Text to replace'
+
+      type_in_content_editor [modifier_key, 'a']
+      type_in_content_editor [modifier_key, 'v']
+
+      page.within content_editor_testid do
+        expect(page).to have_selector('strong', text: 'rich')
+        expect(page).not_to have_text('Text to replace')
+        expect(page).not_to have_css('.gl-dots-loader')
+      end
+    end
+
     it 'pastes raw text without formatting if shift + ctrl + v is pressed' do
       type_in_content_editor [modifier_key, :shift, 'v']
 

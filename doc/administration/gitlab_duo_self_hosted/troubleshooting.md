@@ -81,7 +81,7 @@ We provide two debugging scripts to help administrators verify their self-hosted
      | `--model-identifier` | -                | `--model-identifier=custom_openai/Mixtral-8x7B-Instruct-v0.1` | Model identifier. |
      | `--api-key`          | -                | `--api-key=your-api-key`                                      | Model API key. |
 
-     **Examples**:
+     Examples:
 
      For a `claude_3` model running on AWS Bedrock:
 
@@ -101,7 +101,7 @@ We provide two debugging scripts to help administrators verify their self-hosted
        --model-endpoint=http://<your-model-endpoint>/v1
      ```
 
-After troubleshooting is complete, stop and restart the AI Gateway container **without** `AIGW_AUTH__BYPASS_EXTERNAL=true`.
+After troubleshooting is complete, stop and restart the AI Gateway container without `AIGW_AUTH__BYPASS_EXTERNAL=true`.
 
 > [!warning]
 > You must not bypass authentication in production.
@@ -312,7 +312,7 @@ docker run --network host -e AIGW_GITLAB_URL=<your-gitlab-endpoint> -e AIGW_FAST
 
 ## vLLM 404 Error
 
-If you encounter a **404 error** while using vLLM, follow these steps to resolve the issue:
+If you encounter a 404 error while using vLLM, follow these steps to resolve the issue:
 
 1. Create a chat template file named `chat_template.jinja` with the following content:
 
@@ -483,7 +483,7 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
 
    Then restart GitLab and check if the feature becomes accessible.
 
-   **Important**: After troubleshooting, restart GitLab **without** this flag set.
+   Important: After troubleshooting, restart GitLab without this flag set.
 
    > [!warning]
    > Do not use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in production. Development environments should closely mirror production, with no hidden flags or internal-only workarounds.

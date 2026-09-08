@@ -534,7 +534,7 @@ The composite index `(project_id, commit_sha)` can efficiently support:
   SELECT * FROM ssh_signatures WHERE project_id = 1;
   ```
 
-However, the composite index **cannot** efficiently support queries filtering only on `commit_sha`:
+However, the composite index cannot efficiently support queries filtering only on `commit_sha`:
 
 ```sql
 SELECT * FROM ssh_signatures WHERE commit_sha = 'abc123';
@@ -554,7 +554,7 @@ If you're dropping an index that you think it's unused, check [the index usage s
 
 Indexes with complex definitions must be explicitly named rather than
 relying on the implicit naming behavior of migration methods. In short,
-that means you **must** provide an explicit name argument for an index
+that means you must provide an explicit name argument for an index
 created with one or more of the following options:
 
 - `where`
@@ -597,7 +597,7 @@ def up
 end
 ```
 
-The call to `index_exists?` returns true if **any** index exists on
+The call to `index_exists?` returns true if any index exists on
 `:my_table` and `:my_column`, and index creation is bypassed.
 
 The `add_concurrent_index` helper is a requirement for creating indexes

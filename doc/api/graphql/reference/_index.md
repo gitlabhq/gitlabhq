@@ -33944,7 +33944,7 @@ Fields:
 
 ##### `AgentPlatformSessionsAggregationResponseDimensions.createdEventAt`
 
-Session creation time.
+Session creation date.
 
 Returns [`Date`](#date).
 
@@ -35489,6 +35489,7 @@ Arguments:
 | <a id="analytics-duoworkflows-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by flow creation timestamp. Start of the range. |
 | <a id="analytics-duoworkflows-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by flow creation timestamp. End of the range. |
 | <a id="analytics-duoworkflows-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
+| <a id="analytics-duoworkflows-workflowdefinition"></a>`workflowDefinition` | [`[String!]`](#string) | Filter by one or many flow types. |
 
 ##### `Analytics.mergeRequests`
 
@@ -35758,8 +35759,32 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="artifactregistryimage-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the image in Artifact Registry. |
 | <a id="artifactregistryimage-lastdownloadedat"></a>`lastDownloadedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the image was last pulled. Null when it was never pulled. |
-| <a id="artifactregistryimage-manifests"></a>`manifests` {{< icon name="warning-solid" >}} | [`ArtifactRegistryManifestConnection`](#artifactregistrymanifestconnection) | Introduced in GitLab 19.4. Status: Experiment. Manifests of the image, ordered by publication date descending. Reads at most 20 rows per page and can be selected for up to 20 images per operation, matching the images page size. Returns `null` for an image that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. |
 | <a id="artifactregistryimage-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Name of the image. |
+
+#### Fields with arguments
+
+##### `ArtifactRegistryImage.manifests`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Manifests of the image, ordered by publication date descending by default. Reads at most 20 rows per page and can be selected for up to 20 images per operation, matching the images page size. Returns `null` for an image that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx.
+
+Returns [`ArtifactRegistryManifestConnection`](#artifactregistrymanifestconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryimage-manifests-sort"></a>`sort` {{< icon name="warning-solid" >}} | [`ArtifactRegistryManifestSort`](#artifactregistrymanifestsort) | Introduced in GitLab 19.4. Status: Experiment. Sort manifests by the criteria. Defaults to publication date descending. |
 
 ### `ArtifactRegistryManifest`
 
@@ -40185,9 +40210,9 @@ Fields:
 
 ##### `ContributionsAggregationResponseDimensions.createdAt`
 
-Contribution timestamp.
+Contribution date.
 
-Returns [`Time`](#time).
+Returns [`Date`](#date).
 
 Arguments:
 
@@ -42079,9 +42104,9 @@ Fields:
 
 ##### `DeploymentsAggregationResponseDimensions.createdAt`
 
-Deployment creation time.
+Deployment creation date.
 
-Returns [`Time`](#time).
+Returns [`Date`](#date).
 
 Arguments:
 
@@ -42091,9 +42116,9 @@ Arguments:
 
 ##### `DeploymentsAggregationResponseDimensions.finishedAt`
 
-Deployment finish time.
+Deployment finish date.
 
-Returns [`Time`](#time).
+Returns [`Date`](#date).
 
 Arguments:
 
@@ -42782,7 +42807,7 @@ Fields:
 
 ##### `DuoCodeSuggestionsAggregationResponseDimensions.timestamp`
 
-Suggestion timestamp.
+Suggestion date.
 
 Returns [`Date`](#date).
 
@@ -42903,9 +42928,9 @@ Fields:
 
 ##### `DuoUsageEventsAggregationResponseDimensions.timestamp`
 
-Event timestamp.
+Event date.
 
-Returns [`Time`](#time).
+Returns [`Date`](#date).
 
 Arguments:
 
@@ -43335,19 +43360,25 @@ Arguments:
 
 Response dimensions for `DuoWorkflows` aggregation engine.
 
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsedimensions-workflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Type of flow. |
+
 #### Fields with arguments
 
 ##### `DuoWorkflowsAggregationResponseDimensions.createdAt`
 
-Flow creation time.
+Flow creation date.
 
-Returns [`Time`](#time).
+Returns [`Date`](#date).
 
 Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="duoworkflowsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) |  |
+| <a id="duoworkflowsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date bucket granularity: daily, weekly, or monthly. |
 
 ### `DuoWorkflowsAggregationScope`
 
@@ -52618,27 +52649,27 @@ Fields:
 
 ##### `MergeRequestsAggregationResponseDimensions.createdAt`
 
-Merge request creation time.
+Merge request creation date.
 
-Returns [`Time`](#time).
+Returns [`Date`](#date).
 
 Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Time bucket granularity: daily, weekly, or monthly. |
+| <a id="mergerequestsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date bucket granularity: daily, weekly, or monthly. |
 
 ##### `MergeRequestsAggregationResponseDimensions.metricMergedAt`
 
-Merge request merge time.
+Merge request merge date.
 
-Returns [`Time`](#time).
+Returns [`Date`](#date).
 
 Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestsaggregationresponsedimensions-metricmergedat-granularity"></a>`granularity` | [`String`](#string) | Time bucket granularity: daily, weekly, or monthly. |
+| <a id="mergerequestsaggregationresponsedimensions-metricmergedat-granularity"></a>`granularity` | [`String`](#string) | Date bucket granularity: daily, weekly, or monthly. |
 
 ### `MergeRequestsAggregationResponseTimeToMergeMetrics`
 
@@ -55818,9 +55849,9 @@ Fields:
 
 ##### `PipelinesAggregationResponseDimensions.finishedAt`
 
-Pipeline finish time.
+Pipeline finish date.
 
-Returns [`Time`](#time).
+Returns [`Date`](#date).
 
 Arguments:
 
@@ -55830,9 +55861,9 @@ Arguments:
 
 ##### `PipelinesAggregationResponseDimensions.startedAt`
 
-Pipeline start time.
+Pipeline start date.
 
-Returns [`Time`](#time).
+Returns [`Date`](#date).
 
 Arguments:
 
@@ -65438,6 +65469,8 @@ Fields:
 | <a id="workitemwidgetagentplan-content"></a>`content` | [`String`](#string) | Content of the agent plan. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-contenthtml"></a>`contentHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `content`. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-readinessscore"></a>`readinessScore` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Readiness score of the agent plan (0-100). Null when the score is not yet available. Only available when the `workplan_score` feature flag is enabled. |
+| <a id="workitemwidgetagentplan-readinessscorefeedback"></a>`readinessScoreFeedback` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Markdown feedback explaining the readiness score. Null when no feedback is available. Only available when the `workplan_score` feature flag is enabled. This field can only be resolved for one work item in any single request. |
+| <a id="workitemwidgetagentplan-readinessscorefeedbackhtml"></a>`readinessScoreFeedbackHtml` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. GitLab Flavored Markdown rendering of `readiness_score_feedback`. Only available when the `workplan_score` feature flag is enabled. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-type"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetAiSession`
@@ -67401,6 +67434,15 @@ Stored health verdict for a remote Artifact Registry repository upstream.
 | <a id="artifactregistryhealthstatus-healthy"></a>`HEALTHY` | Most recent probe reached the upstream. |
 | <a id="artifactregistryhealthstatus-unhealthy"></a>`UNHEALTHY` | Consecutive probe failures reached the threshold Artifact Registry sets. |
 | <a id="artifactregistryhealthstatus-unknown"></a>`UNKNOWN` | No health probe has recorded a result yet, or Artifact Registry reported a status this schema does not recognize. |
+
+### `ArtifactRegistryManifestSort`
+
+Values for sorting Artifact Registry container manifests.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="artifactregistrymanifestsort-created_at_asc"></a>`CREATED_AT_ASC` | Publication date by ascending order. |
+| <a id="artifactregistrymanifestsort-created_at_desc"></a>`CREATED_AT_DESC` | Publication date by descending order. |
 
 ### `ArtifactRegistryRepositoryFormat`
 

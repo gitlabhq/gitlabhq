@@ -166,34 +166,38 @@ export default Extension.create({
               editor
                 .chain()
                 .deleteSelection()
-                .setMeta(loadingPlugin, {
-                  add: { loaderId, pos: editor.state.selection.from },
+                .command(({ tr }) => {
+                  // read the position after deleteSelection so the loader lands at the
+                  // mapped cursor (deleting a select-all selection moves it from 0 to 1)
+                  tr.setMeta(loadingPlugin, { add: { loaderId, pos: tr.selection.from } });
+                  return true;
                 })
                 .run();
 
               return promise;
             })
-            .then(async ({ document }) => {
-              if (!document) return;
-
+            .then(({ document }) => {
+              // pos 0 is a valid position; null means the loader was deleted
+              // (e.g. the user removed the surrounding content while waiting)
               const pos = findLoader(editor.state, loaderId);
-              if (!pos) return;
+              const chain = editor.chain().setMeta(loadingPlugin, { remove: { loaderId } });
 
-              const { firstChild, childCount } = document.content;
-              const toPaste =
-                childCount === 1 && firstChild.type.name === 'paragraph'
-                  ? firstChild.content
-                  : document.content;
+              if (document && pos !== null) {
+                const { firstChild, childCount } = document.content;
+                const toPaste =
+                  childCount === 1 && firstChild.type.name === 'paragraph'
+                    ? firstChild.content
+                    : document.content;
 
-              editor
-                .chain()
-                .setMeta(loadingPlugin, { remove: { loaderId } })
-                .insertContentAt(pos, toPaste.toJSON(), {
+                chain.insertContentAt(pos, toPaste.toJSON(), {
                   updateSelection: false,
-                })
-                .run();
+                });
+              }
+
+              chain.run();
             })
             .catch(() => {
+              editor.commands.setMeta(loadingPlugin, { remove: { loaderId } });
               eventHub.$emit(ALERT_EVENT, {
                 message: __(
                   'An error occurred while pasting text in the editor. Please try again.',

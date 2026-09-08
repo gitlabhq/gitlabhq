@@ -10,4 +10,6 @@ level: error
 nonword: true
 scope: raw
 tokens:
-  - '\*\*(not|does not|after|before|both|have not yet)\*\*'
+  - '\*\*(after|before|both|any|always|never|with|without|only)\*\*'
+  - '\*\*(must|recommended|cannot|could|not)\*\*'
+  - '\*\*(must|do|will|should|does) not\*\*'

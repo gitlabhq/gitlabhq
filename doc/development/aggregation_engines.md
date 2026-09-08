@@ -22,7 +22,7 @@ class IssueAggregationEngine < Gitlab::Database::Aggregation::ActiveRecord::Engi
 
   dimensions do
     column :author_id, :integer, description: 'Group by author'
-    date_bucket :created_at, :datetime,
+    date_bucket :created_at, :date,
       parameters: { granularity: { in: %i[daily weekly monthly yearly], type: :string } },
       description: 'Group by creation date'
   end
@@ -102,7 +102,7 @@ Groups results by time intervals using PostgreSQL's `date_trunc()` function. **S
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
 | `name` | Symbol | Yes | Date/datetime column name |
-| `type` | Symbol | Yes | Data type (`:date` or `:datetime`) |
+| `type` | Symbol | Yes | Data type. Use `:date`: buckets always start on a day boundary, so values serialize as dates for every granularity. |
 | `expression` | Proc | No | Custom Arel expression instead of column |
 | `scope_proc` | Proc | No | Modifies the ActiveRecord scope |
 | `parameters` | Hash | No | Parameter configuration (see below) |
@@ -143,7 +143,7 @@ class SessionAnalyticsEngine < Gitlab::Database::Aggregation::ClickHouse::Engine
 
   dimensions do
     column :flow_type, :string, description: 'Group by flow type'
-    date_bucket :created_at, :datetime,
+    date_bucket :created_at, :date,
       parameters: { granularity: { in: %i[daily weekly monthly], type: :string } },
       description: 'Group by date'
   end
@@ -466,7 +466,7 @@ Groups results by time intervals using ClickHouse's `toStartOfInterval()` functi
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
 | `name` | Symbol | Yes | Date/datetime column name |
-| `type` | Symbol | Yes | Data type (`:date` or `:datetime`) |
+| `type` | Symbol | Yes | Data type. Use `:date`: buckets always start on a day boundary, so values serialize as dates for every granularity. |
 | `expression` | Proc | No | Custom expression instead of column |
 | `parameters` | Hash | No | Parameter configuration (see below) |
 | `description` | String | No | Human-readable description |

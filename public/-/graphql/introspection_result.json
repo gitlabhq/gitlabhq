@@ -9693,7 +9693,7 @@
           "fields": [
             {
               "name": "createdEventAt",
-              "description": "Session creation time",
+              "description": "Session creation date",
               "args": [
                 {
                   "name": "granularity",
@@ -33182,6 +33182,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "workflowDefinition",
+                  "description": "Filter by one or many flow types",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "createdAtFrom",
                   "description": "Filter by flow creation timestamp. Start of the range.",
                   "type": {
@@ -36847,8 +36867,20 @@
             },
             {
               "name": "manifests",
-              "description": "Manifests of the image, ordered by publication date descending. Reads at most 20 rows per page and can be selected for up to 20 images per operation, matching the images page size. Returns `null` for an image that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Manifests of the image, ordered by publication date descending by default. Reads at most 20 rows per page and can be selected for up to 20 images per operation, matching the images page size. Returns `null` for an image that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
+                {
+                  "name": "sort",
+                  "description": "Sort manifests by the criteria. Defaults to publication date descending. Introduced in GitLab 19.4: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ArtifactRegistryManifestSort",
+                    "ofType": null
+                  },
+                  "defaultValue": "CREATED_AT_DESC",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+                },
                 {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
@@ -37233,6 +37265,29 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ArtifactRegistryManifestSort",
+          "description": "Values for sorting Artifact Registry container manifests.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "CREATED_AT_ASC",
+              "description": "Publication date by ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_AT_DESC",
+              "description": "Publication date by descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -103961,7 +104016,7 @@
             },
             {
               "name": "createdAt",
-              "description": "Contribution timestamp",
+              "description": "Contribution date",
               "args": [
                 {
                   "name": "granularity",
@@ -103978,7 +104033,7 @@
               ],
               "type": {
                 "kind": "SCALAR",
-                "name": "Time",
+                "name": "Date",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -133782,7 +133837,7 @@
           "fields": [
             {
               "name": "createdAt",
-              "description": "Deployment creation time",
+              "description": "Deployment creation date",
               "args": [
                 {
                   "name": "granularity",
@@ -133799,7 +133854,7 @@
               ],
               "type": {
                 "kind": "SCALAR",
-                "name": "Time",
+                "name": "Date",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -133819,7 +133874,7 @@
             },
             {
               "name": "finishedAt",
-              "description": "Deployment finish time",
+              "description": "Deployment finish date",
               "args": [
                 {
                   "name": "granularity",
@@ -133836,7 +133891,7 @@
               ],
               "type": {
                 "kind": "SCALAR",
-                "name": "Time",
+                "name": "Date",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -142789,7 +142844,7 @@
             },
             {
               "name": "timestamp",
-              "description": "Suggestion timestamp",
+              "description": "Suggestion date",
               "args": [
                 {
                   "name": "granularity",
@@ -143889,7 +143944,7 @@
             },
             {
               "name": "timestamp",
-              "description": "Event timestamp",
+              "description": "Event date",
               "args": [
                 {
                   "name": "granularity",
@@ -143906,7 +143961,7 @@
               ],
               "type": {
                 "kind": "SCALAR",
-                "name": "Time",
+                "name": "Date",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -147710,11 +147765,11 @@
           "fields": [
             {
               "name": "createdAt",
-              "description": "Flow creation time",
+              "description": "Flow creation date",
               "args": [
                 {
                   "name": "granularity",
-                  "description": null,
+                  "description": "Date bucket granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -147727,7 +147782,19 @@
               ],
               "type": {
                 "kind": "SCALAR",
-                "name": "Time",
+                "name": "Date",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workflowDefinition",
+              "description": "Type of flow",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -252755,11 +252822,11 @@
             },
             {
               "name": "createdAt",
-              "description": "Merge request creation time",
+              "description": "Merge request creation date",
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Time bucket granularity: daily, weekly, or monthly",
+                  "description": "Date bucket granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -252772,7 +252839,7 @@
               ],
               "type": {
                 "kind": "SCALAR",
-                "name": "Time",
+                "name": "Date",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -252780,11 +252847,11 @@
             },
             {
               "name": "metricMergedAt",
-              "description": "Merge request merge time",
+              "description": "Merge request merge date",
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Time bucket granularity: daily, weekly, or monthly",
+                  "description": "Date bucket granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -252797,7 +252864,7 @@
               ],
               "type": {
                 "kind": "SCALAR",
-                "name": "Time",
+                "name": "Date",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -312884,7 +312951,7 @@
           "fields": [
             {
               "name": "finishedAt",
-              "description": "Pipeline finish time",
+              "description": "Pipeline finish date",
               "args": [
                 {
                   "name": "granularity",
@@ -312901,7 +312968,7 @@
               ],
               "type": {
                 "kind": "SCALAR",
-                "name": "Time",
+                "name": "Date",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -312945,7 +313012,7 @@
             },
             {
               "name": "startedAt",
-              "description": "Pipeline start time",
+              "description": "Pipeline start date",
               "args": [
                 {
                   "name": "granularity",
@@ -312962,7 +313029,7 @@
               ],
               "type": {
                 "kind": "SCALAR",
-                "name": "Time",
+                "name": "Date",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -453034,6 +453101,30 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "readinessScoreFeedback",
+              "description": "Markdown feedback explaining the readiness score. Null when no feedback is available. Only available when the `workplan_score` feature flag is enabled. This field can only be resolved for one work item in any single request. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "readinessScoreFeedbackHtml",
+              "description": "GitLab Flavored Markdown rendering of `readiness_score_feedback`. Only available when the `workplan_score` feature flag is enabled. This field can only be resolved for one work item in any single request. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "type",
