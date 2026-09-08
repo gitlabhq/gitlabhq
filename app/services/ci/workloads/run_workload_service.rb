@@ -69,7 +69,7 @@ module Ci
         opts = {
           suspend_on_success: @workload_definition.suspend_on_success,
           suspend_on_failure: @workload_definition.suspend_on_failure,
-          environment_key: @workload_definition.environment_key
+          runtime_environment_key: @workload_definition.runtime_environment_key
         }.compact
 
         opts.presence

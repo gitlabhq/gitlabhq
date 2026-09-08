@@ -886,7 +886,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
       it_behaves_like 'does not create a build runtime environment row'
     end
 
-    context 'when suspend_options has neither trigger set nor an environment_key' do
+    context 'when suspend_options has neither trigger set nor a runtime_environment_key' do
       let(:command) do
         Gitlab::Ci::Pipeline::Chain::Command.new(
           project: project, current_user: user,
@@ -936,7 +936,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
       end
     end
 
-    context 'when suspend_options carries an environment_key (resume) matching an existing runtime environment' do
+    context 'when suspend_options carries a runtime_environment_key (resume) matching an existing environment' do
       let_it_be(:runtime_environment) do
         create(:ci_runtime_environment, project: project, environment_key: '22/s_abc123/acquisition-key="uuid"')
       end
@@ -944,7 +944,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
       let(:command) do
         Gitlab::Ci::Pipeline::Chain::Command.new(
           project: project, current_user: user,
-          suspend_options: { environment_key: runtime_environment.environment_key }
+          suspend_options: { runtime_environment_key: runtime_environment.environment_key }
         )
       end
 
@@ -957,11 +957,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
       end
     end
 
-    context 'when suspend_options carries an environment_key with no matching runtime environment' do
+    context 'when suspend_options carries a runtime_environment_key with no matching runtime environment' do
       let(:command) do
         Gitlab::Ci::Pipeline::Chain::Command.new(
           project: project, current_user: user,
-          suspend_options: { environment_key: 'nonexistent-key' }
+          suspend_options: { runtime_environment_key: 'nonexistent-key' }
         )
       end
 
@@ -974,7 +974,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
       end
     end
 
-    context 'when suspend_options carries an environment_key matching another project\'s runtime environment' do
+    context 'when suspend_options carries a runtime_environment_key matching another project\'s runtime environment' do
       let_it_be(:other_project) { create(:project) }
       let_it_be(:runtime_environment) do
         create(:ci_runtime_environment, project: other_project, environment_key: 'shared-key')
@@ -983,7 +983,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
       let(:command) do
         Gitlab::Ci::Pipeline::Chain::Command.new(
           project: project, current_user: user,
-          suspend_options: { environment_key: 'shared-key' }
+          suspend_options: { runtime_environment_key: 'shared-key' }
         )
       end
 

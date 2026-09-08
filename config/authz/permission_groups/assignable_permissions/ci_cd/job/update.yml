@@ -8,3 +8,4 @@ available_for:
 permissions:
   - cancel_job
   - unschedule_job
+  - update_job

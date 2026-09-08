@@ -83,7 +83,6 @@ Grants the ability to read secrets managers.
 | Read | Project | Type | `ProjectSecretsManager` |
 | Read | Group | Type | `GroupSecretsManager` |
 | Read | Group | Type | `SecretsManagerEntitlement` |
-| Read | Group | Mutation | `SecretsManagerEnableAddOn` |
 | Read | Group | Mutation | `SecretsManagerStartTrial` |
 
 #### Security Attribute
@@ -1178,6 +1177,14 @@ Grants the ability to create, delete, read, and update snippets.
 
 ### Project Model Registry and Experiments resources
 
+#### ML Experiment
+
+Grants the ability to create, delete, read, and update ML experiments.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Project | Type | `MlExperiment` |
+
 #### ML Model
 
 Grants the ability to create, delete, read, and update ML models.
@@ -1187,7 +1194,16 @@ Grants the ability to create, delete, read, and update ML models.
 | Create | Project | Mutation | `MlModelCreate` |
 | Delete | Project | Mutation | `MlModelDelete` |
 | Delete | Project | Mutation | `MlModelDestroy` |
+| Read | Project | Type | `MlModel` |
 | Update | Project | Mutation | `MlModelEdit` |
+
+#### MLflow Run
+
+Grants the ability to create, delete, log, read, and update MLflow runs.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Project | Type | `MlCandidate` |
 
 #### Model Version
 
@@ -1197,6 +1213,7 @@ Grants the ability to create, delete, read, and update model versions.
 | ------ | ------ | ---- | ---- |
 | Create | Project | Mutation | `MlModelVersionCreate` |
 | Delete | Project | Mutation | `MlModelVersionDelete` |
+| Read | Project | Type | `MlModelVersion` |
 | Update | Project | Mutation | `MlModelVersionEdit` |
 
 ### Project Planning resources
@@ -1351,6 +1368,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Project | Mutation | `WorkItemEnableAiPlanning` |
 | Update | Project | Mutation | `WorkItemGenerateReadinessScore` |
 | Update | Project | Mutation | `WorkItemGenerateWorkplan` |
+| Update | Project | Mutation | `WorkItemResumeWorkplan` |
 | Update | Project | Mutation | `WorkItemUpdate` |
 | Update | Project | Mutation | `workItemsReorder` |
 | Update | Group | Mutation | `IterationCadenceUpdate` |
@@ -1546,6 +1564,14 @@ Grants the ability to create and delete target branch rules.
 | Delete | Project | Mutation | `ProjectTargetBranchRuleDestroy` |
 
 ### Secrets Management resources
+
+#### Secrets Manager Add-on
+
+Grants the ability to enable the paid Secrets Manager add-on for a top-level group.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Enable | Group | Mutation | `SecretsManagerEnableAddOn` |
 
 #### Secrets Manager Enrollment
 

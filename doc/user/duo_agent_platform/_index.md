@@ -84,6 +84,7 @@ Features available on the Free tier require the purchase of [GitLab Credits](../
 | [Software Development Flow](flows/foundational_flows/software_development.md) <br /> Create a full, multi-step plan before executing it. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md) <br /> Access GitLab resources and tools from any MCP-compatible AI client or IDE extension. <sup>1</sup> | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Custom flows](flows/custom.md) <br /> Combine multiple agents to solve your business problems. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Interactions in merge requests](../project/merge_requests/duo_in_merge_requests.md#interact-with-gitlab-duo) <br /> Ask questions and discuss feedback in merge request comment threads. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Resolve merge conflicts](../project/merge_requests/conflicts.md#resolve-conflicts-with-gitlab-duo) <br /> Autonomously analyze merge conflicts, edit conflicting files, and push a resolution commit. | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Flow Creator Agent](agents/foundational_agents/flow_creator.md) <br /> Create custom flows for the AI Catalog. | {{< no >}} | {{< yes >}}  | {{< yes >}} |
 | [Resolve review discussions](../project/merge_requests/duo_in_merge_requests.md#resolve-a-discussion-with-gitlab-duo) <br /> Autonomously analyze a review discussion, push the requested changes, and resolve the thread. | {{< no >}} | {{< yes >}} | {{< yes >}} |

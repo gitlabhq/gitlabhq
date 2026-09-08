@@ -28,9 +28,10 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsService, feature_cate
 
     it 'locks the description' do
       expect(described_class.version_metadata('0.1.0')[:description]).to eq(
-        'List or search merge requests in a GitLab project by author, assignee, reviewer, ' \
-          'state, milestone, labels, or text. Identify the project with exactly one of url or ' \
-          'project_id. Returns compact merge request metadata; use get_merge_request for the full ' \
+        'List or search merge requests in a GitLab project or group by author, assignee, ' \
+          'reviewer, state, milestone, labels, or text. Identify the project or group with exactly one ' \
+          'of url, project_id, or group_id. Group results always include merge requests from ' \
+          'subgroups. Returns compact merge request metadata; use get_merge_request for the full ' \
           'detail of a single merge request, or search for full-text search across resource types.'
       )
     end
@@ -52,11 +53,15 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsService, feature_cate
         properties: {
           url: {
             type: 'string',
-            description: 'GitLab URL of the project.'
+            description: 'GitLab URL of the project or group.'
           },
           project_id: {
             type: 'string',
             description: 'ID or full path of the project.'
+          },
+          group_id: {
+            type: 'string',
+            description: 'ID or full path of the group. Includes merge requests from subgroups.'
           },
           author_username: {
             type: 'string',

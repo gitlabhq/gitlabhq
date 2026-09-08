@@ -7,6 +7,8 @@ module Types
       graphql_name 'MLModelLinks'
       description 'Represents links to perform actions on the model'
 
+      authorize_granular_token skip_reason: :parent_authorizes
+
       present_using ::Ml::ModelPresenter
 
       field :show_path, GraphQL::Types::String,

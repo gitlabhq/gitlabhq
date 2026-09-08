@@ -10,9 +10,9 @@ module Gitlab
       module V1
         module AuthService
           # Auth levels below are documented per service/RPC; enforcement lives in the
-          # auth gRPC interceptor (auth/internal/interceptors/service_token_auth.go),
-          # which requires a valid service-to-service token on every method except the
-          # allowlisted AuthService/Health.
+          # auth gRPC interceptor (pkg/serviceauth/grpc.go), which requires a valid
+          # service-to-service token on every method except the allowlisted
+          # AuthService/Health.
           #
           class Service
 
@@ -61,6 +61,7 @@ module Gitlab
           Stub = Service.rpc_stub_class
         end
         module InternalOAuthClientsService
+          # All RPCs require a valid service-to-service token.
           # Used to mirror OAuth client records from gitlab-rails cells.
           class Service
 
@@ -79,6 +80,13 @@ module Gitlab
             # DeleteClient removes a client by ID. Returns INVALID_ARGUMENT when
             # client_id is empty and NOT_FOUND when no client matches.
             rpc :DeleteClient, ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientRequest, ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientResponse
+            # UpsertClient inserts a new client or replaces an existing one by ID
+            # (full-record mirror from gitlab-rails cells; the caller always sends the
+            # complete record). All mutable fields are taken from the request. created_at
+            # is stored on insert and immutable thereafter (never changed on update).
+            # Returns INVALID_ARGUMENT when client_id, client_secret, client_name,
+            # created_at, or updated_at is missing.
+            rpc :UpsertClient, ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientRequest, ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientResponse
           end
 
           Stub = Service.rpc_stub_class

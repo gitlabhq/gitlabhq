@@ -7,6 +7,7 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
 
   let(:config) { described_class.new(project) }
   let(:config_path) { '.gitlab/duo/agent-config.yml' }
+  let(:candidate_path) { '.gitlab/duo/agent-config-candidate.yml' }
   let(:default_branch) { 'main' }
   let(:commit_sha) { 'abc123' }
 
@@ -14,6 +15,91 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
     allow(project).to receive(:default_branch).and_return(default_branch)
     commit = Struct.new(:sha).new(commit_sha)
     allow(project.repository).to receive(:commit).with(default_branch).and_return(commit)
+    # dap_agent_config_candidate is on by default in specs and no candidate file exists, so
+    # every example below also exercises the fallback to CONFIG_FILE_NAME.
+    allow(project.repository).to receive(:blob_data_at)
+                                   .with(default_branch, candidate_path)
+                                   .and_return(nil)
+  end
+
+  describe 'candidate config file' do
+    before do
+      allow(project.repository).to receive(:blob_data_at)
+                                     .with(default_branch, config_path)
+                                     .and_return("image: primary:1.0")
+    end
+
+    context 'when the flag is disabled' do
+      before do
+        stub_feature_flags(dap_agent_config_candidate: false)
+      end
+
+      it 'reads the primary file and never looks for the candidate' do
+        expect(project.repository).not_to receive(:blob_data_at).with(default_branch, candidate_path)
+
+        expect(config.default_image).to eq('primary:1.0')
+      end
+    end
+
+    context 'when the flag is enabled for the project' do
+      before do
+        stub_feature_flags(dap_agent_config_candidate: project)
+      end
+
+      it 'reads the candidate file' do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, candidate_path)
+                                       .and_return("image: candidate:2.0")
+
+        expect(config.default_image).to eq('candidate:2.0')
+      end
+
+      it 'falls back to the primary file when the candidate is absent' do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, candidate_path)
+                                       .and_return(nil)
+
+        expect(config.default_image).to eq('primary:1.0')
+      end
+
+      it 'is not read for a different project' do
+        other_project = create(:project, :repository)
+        allow(other_project).to receive(:default_branch).and_return(default_branch)
+        allow(other_project.repository).to receive(:blob_data_at)
+                                             .with(default_branch, config_path)
+                                             .and_return("image: other:1.0")
+
+        expect(other_project.repository).not_to receive(:blob_data_at).with(default_branch, candidate_path)
+
+        expect(described_class.new(other_project).default_image).to eq('other:1.0')
+      end
+    end
+
+    # Guards the rollback path: the flag flip does not move the SHA, so a shared key
+    # would keep serving the other file until CACHE_EXPIRY.
+    describe 'cache isolation', :use_clean_rails_memory_store_caching do
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, candidate_path)
+                                       .and_return("image: candidate:2.0")
+      end
+
+      it 'does not serve a cached candidate config after the flag is disabled' do
+        stub_feature_flags(dap_agent_config_candidate: project)
+        expect(described_class.new(project).default_image).to eq('candidate:2.0')
+
+        stub_feature_flags(dap_agent_config_candidate: false)
+        expect(described_class.new(project).default_image).to eq('primary:1.0')
+      end
+
+      it 'does not serve a cached primary config after the flag is enabled' do
+        stub_feature_flags(dap_agent_config_candidate: false)
+        expect(described_class.new(project).default_image).to eq('primary:1.0')
+
+        stub_feature_flags(dap_agent_config_candidate: project)
+        expect(described_class.new(project).default_image).to eq('candidate:2.0')
+      end
+    end
   end
 
   describe '#default_image' do
@@ -1339,6 +1425,8 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
     let(:cache_key) { "duo_config:#{project.id}:#{commit_sha}" }
 
     before do
+      # The candidate variant appends ':candidate'; 'cache isolation' above covers it.
+      stub_feature_flags(dap_agent_config_candidate: false)
       allow(project.repository).to receive(:blob_data_at)
                                      .with(default_branch, config_path)
                                      .and_return("image: cached-image")

@@ -118,7 +118,8 @@ CREATE TABLE ai_usage_events
     `event` UInt16,
     `timestamp` DateTime64(6, 'UTC'),
     `namespace_path` String DEFAULT '0/',
-    `extras` String DEFAULT '{}'
+    `extras` String DEFAULT '{}',
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3))
 )
 ENGINE = ReplacingMergeTree
 PARTITION BY toYYYYMM(timestamp)

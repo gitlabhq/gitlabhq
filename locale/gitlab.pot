@@ -23878,9 +23878,6 @@ msgstr ""
 msgid "ContinuousDeployment|Declare your application's topology — its services and their artifacts. Where each service deploys is configured later, per environment."
 msgstr ""
 
-msgid "ContinuousDeployment|Degraded"
-msgstr ""
-
 msgid "ContinuousDeployment|Deploy"
 msgstr ""
 
@@ -24017,12 +24014,6 @@ msgid "ContinuousDeployment|GitLab Agent"
 msgstr ""
 
 msgid "ContinuousDeployment|Grid view"
-msgstr ""
-
-msgid "ContinuousDeployment|Health"
-msgstr ""
-
-msgid "ContinuousDeployment|Healthy"
 msgstr ""
 
 msgid "ContinuousDeployment|ID"
@@ -88237,6 +88228,9 @@ msgstr ""
 msgid "UserMapping|After you select \"Reassign\", users receive an email to accept the reassignment. Accepted reassignments cannot be undone, so check all data carefully before you continue."
 msgstr ""
 
+msgid "UserMapping|Allow reassigning placeholder users to non-enterprise members"
+msgstr ""
+
 msgid "UserMapping|Approve reassignment"
 msgstr ""
 
@@ -88313,6 +88307,9 @@ msgid "UserMapping|Kept as placeholder"
 msgstr ""
 
 msgid "UserMapping|No matching user for provided information."
+msgstr ""
+
+msgid "UserMapping|Non-enterprise placeholder reassignment"
 msgstr ""
 
 msgid "UserMapping|Notification email could not be sent again."
@@ -88403,6 +88400,9 @@ msgid "UserMapping|Reassigned to: %{reassign_to_name} (%{reassign_to_username})"
 msgstr ""
 
 msgid "UserMapping|Reassigning"
+msgstr ""
+
+msgid "UserMapping|Reassigning contributions to the wrong person cannot be undone. Only enable this setting if you're comfortable with contributions being reassigned to any member of this group, its subgroups, or its projects -- not just verified enterprise users."
 msgstr ""
 
 msgid "UserMapping|Reassigning placeholder user could not be canceled."
@@ -88529,6 +88529,9 @@ msgid "UserMapping|Use a CSV file to reassign contributions from placeholder use
 msgstr ""
 
 msgid "UserMapping|User ID"
+msgstr ""
+
+msgid "UserMapping|When importing, contributions are usually reassigned only to enterprise users in this group. Enabling this setting also allows reassigning to any other existing member of this group, its subgroups, or its projects. It never exposes other GitLab.com users."
 msgstr ""
 
 msgid "UserMapping|When to restore user confirmation"
@@ -97269,6 +97272,9 @@ msgid "does not match the name of the predefined control."
 msgstr ""
 
 msgid "does not support select options."
+msgstr ""
+
+msgid "doesn't match the certificate"
 msgstr ""
 
 msgid "download it"

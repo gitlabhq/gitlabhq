@@ -291,15 +291,20 @@ Check the status of Duo session 42
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246413) in GitLab 19.3.
+- `group_id` parameter and group scope [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/606934) in GitLab 19.4.
 
 {{< /history >}}
 
-Lists or searches merge requests in a GitLab project, returning compact merge request metadata.
+Lists or searches merge requests in a GitLab project or group, returning compact merge request metadata.
+Group scope always includes merge requests from every project in the group and its subgroups, but excludes
+merge requests from archived projects.
+A group result also includes the owning project path of each merge request, for use with `get_merge_request`.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
-| `url`               | string  | No       | URL of the project. Provide exactly one of `url` or `project_id`. |
-| `project_id`        | string  | No       | ID or full path of the project. Provide exactly one of `url` or `project_id`. |
+| `url`               | string  | No       | GitLab URL of the project or group. Provide exactly one of `url`, `project_id`, or `group_id`. |
+| `project_id`        | string  | No       | ID or full path of the project. Provide exactly one of `url`, `project_id`, or `group_id`. |
+| `group_id`          | string  | No       | ID or full path of the group. Provide exactly one of `url`, `project_id`, or `group_id`. |
 | `author_username`   | string  | No       | Filter by the username of the merge request author. |
 | `assignee_username` | string  | No       | Filter by the username of an assignee. |
 | `reviewer_username` | string  | No       | Filter by the username of a reviewer. |

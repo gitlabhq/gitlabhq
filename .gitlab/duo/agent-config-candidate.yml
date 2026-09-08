@@ -1,0 +1,259 @@
+# Duo Agent Platform flow execution config: CANDIDATE.
+# Docs: https://docs.gitlab.com/user/duo_agent_platform/flows/execution/
+# Tracking issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/593976
+#
+# This file is inert. Gitlab::DuoAgentPlatform::Config reads it only for projects
+# that have the dap_agent_config_candidate feature flag enabled. Every other
+# project gets agent-config.yml. Edit this file to test a config change on the
+# default branch without exposing it. Promote it into agent-config.yml once it
+# is proven.
+#
+# DAP reads config from the DEFAULT BRANCH only. Edits on a feature branch have no
+# effect until you merge them.
+image: registry.gitlab.com/gitlab-org/gitlab-development-kit/gitlab-gdk-in-a-box-sandbox:latest
+
+setup_script:
+  # Update the code in place in GDK's prebuilt gitlab dir so the image's baked DB,
+  # services, gems, node_modules and bootsnap cache stay valid. Needs a privileged
+  # runner (user namespaces), or srt — the sandbox runtime — can't start.
+  - |
+    set -e
+
+    GDK_ROOT=/gitlab-gdk/gitlab-development-kit
+    GDK_GITLAB=$GDK_ROOT/gitlab
+
+    # Put mise's shims first on PATH (the image already does this; harmless to repeat).
+    # Ignore the repo mise.toml in BOTH the baked dir and the CI checkout ($CI_PROJECT_DIR):
+    # a real gitlab checkout ships a mise.toml that mise refuses to load as "untrusted",
+    # which breaks the srt shim. Tool versions come from .tool-versions (needs no trust).
+    export MISE_IGNORED_CONFIG_PATHS="$GDK_GITLAB/mise.toml:$CI_PROJECT_DIR/mise.toml"
+    export MISE_TRUSTED_CONFIG_PATHS="$GDK_GITLAB"
+    export PATH="/home/gdk/.local/share/mise/shims:/home/gdk/.local/bin:$PATH"
+
+    # These env vars apply only to this script. Later, the platform runs
+    # the agent's own command through `env -i` (sandbox.rb), which keeps
+    # only a fixed allow list and drops these. So mise shows the same
+    # "untrusted config" error there, on the agent's first real command.
+    # `mise trust --ignore` fixes this: it saves the decision to disk, not
+    # to an env var, so `env -i` cannot remove it, even when $HOME is not
+    # set.
+    mise trust --ignore "$GDK_GITLAB/mise.toml" 2>/dev/null || true
+    mise trust --ignore "$CI_PROJECT_DIR/mise.toml" 2>/dev/null || true
+
+    echo "setup: srt=$(srt --version 2>/dev/null || echo '?')"
+
+    # Fail now, not mid-flow, if this runner can't build a sandbox — tested with
+    # the strictest policy (deny everything). Not a full guarantee: the platform
+    # sandboxes each command separately later and still runs one unsandboxed if
+    # that step fails (ee/lib/gitlab/duo_workflow/sandbox.rb; tracked separately).
+    SELFCHECK="$(mktemp)"
+    printf '%s' '{"network":{"allowedDomains":[],"deniedDomains":[],"allowAllUnixSockets":false},"filesystem":{"denyRead":[],"allowWrite":["/tmp"],"denyWrite":[],"allowGitConfig":true}}' > "$SELFCHECK"
+    srt --settings "$SELFCHECK" true || {
+      echo "FATAL: srt could not construct a sandbox — runner must be privileged (userns)" >&2
+      exit 1
+    }
+
+    unset GIT_CONFIG_GLOBAL
+    git config --global advice.detachedHead false
+    cd "$GDK_GITLAB"
+
+    # Image origin points at the community fork; reset to the CI URL (carries creds).
+    git remote set-url origin "$CI_REPOSITORY_URL"
+
+    # Fetch the workload ref (into a matching local ref so it resolves) plus master
+    # for git hooks. Retry transient network flakes; give up before checkout if not.
+    for attempt in 1 2 3; do
+      if git fetch origin "+${CI_WORKLOAD_REF}:${CI_WORKLOAD_REF}" master; then
+        break
+      fi
+      if [ "$attempt" = 3 ]; then
+        echo "FATAL: git fetch failed after 3 attempts" >&2
+        exit 1
+      fi
+      echo "WARNING: git fetch attempt $attempt failed; retrying in 5s" >&2
+      sleep 5
+    done
+
+    git checkout "$CI_WORKLOAD_REF"
+
+    ACTUAL_HEAD=$(git rev-parse HEAD)
+    EXPECTED_HEAD=$(git rev-parse "$CI_WORKLOAD_REF")
+    if [ "$ACTUAL_HEAD" != "$EXPECTED_HEAD" ]; then
+      echo "FATAL: expected HEAD=$EXPECTED_HEAD ($CI_WORKLOAD_REF), got $ACTUAL_HEAD" >&2
+      exit 1
+    fi
+
+    # Best-effort: make origin/master resolvable for lefthook diffs; warn if not.
+    git rev-parse --verify origin/master >/dev/null 2>&1 \
+      || git fetch origin master \
+      || git fetch --unshallow origin master \
+      || true
+    git rev-parse --verify origin/master >/dev/null 2>&1 \
+      || echo "WARNING: origin/master unresolvable; lefthook checks may behave unpredictably" >&2
+
+    # Switch origin to an oauth URL — the platform skips this rewrite itself
+    # when the dap_full_clone feature flag is set, and the CI URL's job-token
+    # creds can't push.
+    git remote set-url origin \
+      "$(echo "${DUO_WORKFLOW_GIT_HTTP_BASE_URL}" | sed 's|://|://oauth:'"${GIT_PASSWORD}"'@|')/${GITLAB_PROJECT_PATH}.git"
+
+    # Assist, not gate: warn (don't fail) on degraded services/deps — the MR's own
+    # CI pipeline is the quality gate.
+    cd "$GDK_ROOT"
+    "$GDK_ROOT/bin/gdk" start \
+      || echo "WARNING: gdk start failed; services unavailable, rails/tests will not work" >&2
+
+    cd "$GDK_GITLAB"
+
+    bundle check || bundle install \
+      || echo "WARNING: bundle install failed; bundle exec commands will not work" >&2
+
+    # Only (re)install JS deps if the baked node_modules don't already satisfy the
+    # checked-out yarn.lock: an unconditional yarn install rewrites node_modules and
+    # breaks the integrity check `yarn jest` runs, making the baked modules unusable
+    # for tests (mirrors `bundle check`). --ignore-scripts: setup is UNSANDBOXED, so
+    # skip postinstall scripts; the agent can re-run yarn under the sandbox if needed.
+    yarn check --integrity 2>/dev/null \
+      || yarn install --frozen-lockfile --ignore-scripts \
+      || echo "WARNING: yarn install failed; JS specs and frontend work will be degraded" >&2
+
+    # Load schema only if the test DB is empty (schema:load purges) — mirrors
+    # gitlab:db:configure; an unknown count falls back to schema:load.
+    TEST_DB_TABLES=$(bundle exec rails runner -e test \
+      'puts ActiveRecord::Base.connection.tables.size' 2>/dev/null || echo unknown)
+    if [ "$TEST_DB_TABLES" -gt 1 ] 2>/dev/null; then
+      echo "test DB already has $TEST_DB_TABLES tables; skipping schema:load to avoid re-purge" >&2
+    else
+      bundle exec rails db:schema:load RAILS_ENV=test \
+        || echo "WARNING: db:schema:load failed; DB-touching rspec will not work" >&2
+    fi
+    bundle exec rails db:migrate RAILS_ENV=test \
+      || echo "WARNING: db:migrate failed; test DB schema may be stale" >&2
+
+    "$GDK_GITLAB/scripts/generate-gitleaks-local-config.sh" \
+      || echo "WARNING: gitleaks-local config regeneration failed; lefthook gitleaks check may misbehave" >&2
+    lefthook install \
+      || echo "WARNING: lefthook install failed; pre-push hooks will not run" >&2
+
+    # SRT allows writes only to the current directory and to /tmp
+    # (sandbox.rb's srt_config). $GDK_GITLAB becomes read-only once the
+    # agent's own commands run, so the agent works from $CI_PROJECT_DIR
+    # instead. That is a plain checkout with none of GDK's config,
+    # node_modules, or compiled Workhorse binaries.
+    # Link in what database-backed and frontend specs need. All linked
+    # paths are in .gitignore, so the agent cannot commit them by
+    # accident, and nobody has to re-find this problem on every run.
+    mkdir -p "$CI_PROJECT_DIR/config" "$CI_PROJECT_DIR/workhorse"
+    for f in "$GDK_GITLAB"/config/gitlab.yml "$GDK_GITLAB"/config/database.yml "$GDK_GITLAB"/config/redis.*.yml; do
+      [ -e "$f" ] && ln -sf "$f" "$CI_PROJECT_DIR/config/$(basename "$f")" || true
+    done
+    ln -sfn "$GDK_GITLAB/node_modules" "$CI_PROJECT_DIR/node_modules" || true
+    for f in gitlab-workhorse gitlab-resize-image; do
+      [ -f "$GDK_GITLAB/workhorse/$f" ] && ln -sf "$GDK_GITLAB/workhorse/$f" "$CI_PROJECT_DIR/workhorse/$f" || true
+    done
+
+    # Database-backed specs need gitlab-test and gitlab-test-fork.
+    # test_env.rb's before(:suite) hook clones them from gitlab.com if
+    # missing, but gitlab.com is not on the sandbox allow list, so that
+    # clone fails inside the agent's own sandboxed commands.
+    # Clone them here instead. Only the agent's own commands are
+    # sandboxed (sandbox.rb's wrap_command); setup_script runs before
+    # that, with normal network access.
+    # Creating the directory is enough. test_env.rb creates the matching
+    # .bundle file itself, same as a normal first test run.
+    mkdir -p "$CI_PROJECT_DIR/tmp/tests"
+    for repo in gitlab-test gitlab-test-fork; do
+      [ -d "$CI_PROJECT_DIR/tmp/tests/$repo" ] \
+        || git clone --quiet -- "https://gitlab.com/gitlab-org/$repo.git" "$CI_PROJECT_DIR/tmp/tests/$repo" \
+        || echo "WARNING: could not seed $repo; DB-backed specs needing it will fail" >&2
+    done
+
+    # test_env.rb installs Gitaly into tmp/tests/gitaly on first use,
+    # gated by component_needs_update?. A copied VERSION file does not
+    # pass this check: it compares against the git SHA in
+    # GITALY_SERVER_VERSION, not GDK's version-number VERSION file, and
+    # $GDK_GITLAB/$CI_PROJECT_DIR can be at different commits anyway.
+    #
+    # If the check fails, the real clone task runs `git fetch` against
+    # our directory. With no .git folder, that fails, and
+    # component_timed_setup treats it as a failed install: it deletes
+    # the directory (including our binaries) and exits, stopping the
+    # whole spec run, not just one example.
+    #
+    # component_matches_git_sha? is the check we can pass: a real repo
+    # at the expected SHA. GITALY_SERVER_VERSION is a plain file, so we
+    # can read it without Ruby or bundle. Clone Gitaly at that exact
+    # commit, then link in GDK's prebuilt binaries instead of compiling.
+    #
+    # `|| true` matters: under `set -e`, a failed command inside an
+    # assignment aborts the script right here with no output, silently
+    # skipping everything below with no trace in the job log.
+    GITALY_VERSION=$(cat "$CI_PROJECT_DIR/GITALY_SERVER_VERSION" 2>/dev/null || true)
+    if [ -n "$GITALY_VERSION" ] && [ ! -d "$CI_PROJECT_DIR/tmp/tests/gitaly/.git" ]; then
+      rm -rf "$CI_PROJECT_DIR/tmp/tests/gitaly"
+      git clone --quiet -- "https://gitlab.com/gitlab-org/gitaly.git" "$CI_PROJECT_DIR/tmp/tests/gitaly" \
+        && git -C "$CI_PROJECT_DIR/tmp/tests/gitaly" fetch --quiet origin "$GITALY_VERSION" \
+        && git -C "$CI_PROJECT_DIR/tmp/tests/gitaly" checkout -f --quiet FETCH_HEAD \
+        || echo "WARNING: could not seed Gitaly at $GITALY_VERSION; Gitaly-dependent specs will fail" >&2
+    fi
+    mkdir -p "$CI_PROJECT_DIR/tmp/tests/gitaly/_build/bin"
+    for f in "$GDK_ROOT"/gitaly/_build/bin/*; do
+      [ -e "$f" ] && ln -sf "$f" "$CI_PROJECT_DIR/tmp/tests/gitaly/_build/bin/$(basename "$f")" || true
+    done
+
+    # Database-backed specs also rebuild Workhorse from source, needing
+    # Go module downloads that are blocked the same way as the clones
+    # above. To skip this, skip_compile_workhorse? (test_env.rb) just
+    # needs a WORKHORSE_TREE file matching `git rev-parse HEAD:workhorse`.
+    # Unlike Gitaly, there is no git SHA check, so write the file
+    # directly instead of cloning anything.
+    mkdir -p "$CI_PROJECT_DIR/tmp/tests/gitlab-workhorse"
+    for f in gitlab-workhorse gitlab-resize-image gitlab-zip-cat gitlab-zip-metadata; do
+      [ -f "$GDK_GITLAB/workhorse/$f" ] && ln -sf "$GDK_GITLAB/workhorse/$f" "$CI_PROJECT_DIR/tmp/tests/gitlab-workhorse/$f" || true
+    done
+    git -C "$CI_PROJECT_DIR" rev-parse HEAD:workhorse > "$CI_PROJECT_DIR/tmp/tests/gitlab-workhorse/WORKHORSE_TREE" \
+      || echo "WARNING: could not write WORKHORSE_TREE; workhorse setup will attempt a rebuild" >&2
+
+    # Elasticsearch indexer and OpenBao hit the same gitlab.com clone
+    # block Gitaly did, gated by the same component_needs_update? check.
+    # Neither rewrites config after setup the way Gitaly does, so a
+    # plain symlink of the install directory satisfies the check
+    # directly: component_needs_update? returns false for any symlink
+    # in test env, with no version comparison at all. GDK already
+    # builds both as real, permanent components.
+    ln -sfn "$GDK_ROOT/gitlab-elasticsearch-indexer" "$CI_PROJECT_DIR/tmp/tests/gitlab-elasticsearch-indexer" || true
+
+    # OpenBao's own directory also holds this GDK's live unseal key and
+    # config, so link only the binary, through a clean directory,
+    # instead of symlinking the whole thing.
+    mkdir -p "$CI_PROJECT_DIR/tmp/tests/.openbao-bin/bin"
+    [ -f "$GDK_ROOT/openbao/bin/bao" ] && ln -sf "$GDK_ROOT/openbao/bin/bao" "$CI_PROJECT_DIR/tmp/tests/.openbao-bin/bin/bao" || true
+    ln -sfn "$CI_PROJECT_DIR/tmp/tests/.openbao-bin" "$CI_PROJECT_DIR/tmp/tests/openbao" || true
+
+    # Zoekt is not built in the image (disabled by default in GDK, see
+    # components/zoekt/GDK.rb), so there is no binary to link in here.
+    # A matching VERSION file alone still stops component_needs_update?
+    # from trying, and failing, to clone Zoekt from gitlab.com during
+    # suite setup, which otherwise blocks every spec, not only Zoekt
+    # ones. This works for Zoekt in a way it does not for Gitaly,
+    # because GITLAB_ZOEKT_VERSION is a plain version string, the same
+    # format component_needs_update? compares against, unlike Gitaly's
+    # git SHA. Specs that genuinely exercise Zoekt search will still
+    # fail, since there is no real binary behind this.
+    mkdir -p "$CI_PROJECT_DIR/tmp/tests/gitlab-zoekt"
+    ZOEKT_VERSION=$(cat "$CI_PROJECT_DIR/GITLAB_ZOEKT_VERSION" 2>/dev/null || true)
+    [ -n "$ZOEKT_VERSION" ] && echo "$ZOEKT_VERSION" > "$CI_PROJECT_DIR/tmp/tests/gitlab-zoekt/VERSION" || true
+
+network_policy:
+  # Deny-by-default. The recommended allowlist exposes ~100+ domains —
+  # too broad for a repo with full source access. See !233094 note 3285344526.
+  include_recommended_allowed: false
+  # Postgres is Unix-socket only, which SRT blocks by default (PG::ConnectionBad).
+  allow_all_unix_sockets: true
+  allowed_domains:
+    - rubygems.org
+    - registry.npmjs.org
+    - registry.yarnpkg.com
+    - gdk.local
+    - localhost
+  denied_domains: []

@@ -1,6 +1,7 @@
 # @feature_category: mcp_server
 query listMergeRequests(
   $fullPath: ID!
+  $isProject: Boolean!
   $authorUsername: String
   $assigneeUsername: String
   $reviewerUsername: String
@@ -11,7 +12,7 @@ query listMergeRequests(
   $first: Int
   $after: String
 ) {
-  project(fullPath: $fullPath) {
+  project(fullPath: $fullPath) @include(if: $isProject) {
     id
     mergeRequests(
       authorUsername: $authorUsername
@@ -29,18 +30,49 @@ query listMergeRequests(
         endCursor
       }
       nodes {
-        id
-        iid
-        title
-        state
-        webUrl
-        sourceBranch
-        targetBranch
-        author {
+        ...MergeRequestFields
+      }
+    }
+  }
+  group(fullPath: $fullPath) @skip(if: $isProject) {
+    id
+    mergeRequests(
+      includeSubgroups: true
+      authorUsername: $authorUsername
+      assigneeUsername: $assigneeUsername
+      reviewerUsername: $reviewerUsername
+      state: $state
+      milestoneTitle: $milestoneTitle
+      labelName: $labelName
+      search: $search
+      first: $first
+      after: $after
+    ) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      nodes {
+        ...MergeRequestFields
+        project {
           id
-          username
+          fullPath
         }
       }
     }
+  }
+}
+
+fragment MergeRequestFields on MergeRequest {
+  id
+  iid
+  title
+  state
+  webUrl
+  sourceBranch
+  targetBranch
+  author {
+    id
+    username
   }
 }

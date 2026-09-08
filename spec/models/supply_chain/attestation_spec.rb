@@ -13,11 +13,29 @@ RSpec.describe SupplyChain::Attestation, feature_category: :artifact_security do
 
     it { is_expected.to belong_to(:build) }
 
+    it 'belongs to an optional signing certificate' do
+      is_expected.to belong_to(:signing_certificate)
+        .class_name('SupplyChain::SigningCertificate').optional
+    end
+
     it { is_expected.to validate_presence_of(:predicate_kind) }
     it { is_expected.to validate_presence_of(:predicate_type) }
     it { is_expected.to validate_presence_of(:subject_digest) }
 
     it { is_expected.to validate_uniqueness_of(:subject_digest).scoped_to([:project_id, :predicate_kind]) }
+  end
+
+  describe 'signing certificate' do
+    it 'is valid without a signing certificate' do
+      expect(build(:supply_chain_attestation)).to be_valid
+    end
+
+    it 'is valid with a signing certificate' do
+      attestation = build(:supply_chain_attestation, :with_signing_certificate)
+
+      expect(attestation).to be_valid
+      expect(attestation.signing_certificate).to be_a(SupplyChain::SigningCertificate)
+    end
   end
 
   describe 'default attributes' do

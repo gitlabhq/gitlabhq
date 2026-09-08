@@ -12216,6 +12216,12 @@
     "dottedExample": "/api/v4/projects/john.doe/jobs/john.doe/retry"
   },
   {
+    "template": "/api/:version/projects/:id/jobs/:job_id/runtime_environment_key",
+    "example": "/api/v4/projects/foo/jobs/foo/runtime_environment_key",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/jobs/john.doe/runtime_environment_key"
+  },
+  {
     "template": "/api/:version/projects/:id/jobs/:job_id/trace",
     "example": "/api/v4/projects/foo/jobs/foo/trace",
     "acceptsFormat": true,

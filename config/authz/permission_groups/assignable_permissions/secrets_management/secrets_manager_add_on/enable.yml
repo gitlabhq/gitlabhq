@@ -1,0 +1,9 @@
+---
+name: enable_secrets_manager_add_on
+description: Grants the ability to enable the paid Secrets Manager add-on for a top-level group.
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - enable_secrets_manager_add_on

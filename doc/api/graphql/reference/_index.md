@@ -20685,6 +20685,34 @@ Fields:
 | <a id="mutation-workitemremovelinkeditems-message"></a>`message` | [`String`](#string) | Linked items update result message. |
 | <a id="mutation-workitemremovelinkeditems-workitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
 
+### `Mutation.workItemResumeWorkplan`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Resumes a paused workplan generation flow that is awaiting input, sending the replies left on the questions the flow asked. Available only when the `duo_workplan_async_flow` feature flag is enabled; returns an error otherwise.
+
+Input type: `WorkItemResumeWorkplanInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemresumeworkplan-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemresumeworkplan-id"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item whose workplan generation to resume. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-workitemresumeworkplan-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-workitemresumeworkplan-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-workitemresumeworkplan-workflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Duo Agent Platform workflow that was resumed. |
+
 ### `Mutation.workItemSavedViewCreate`
 
 {{< details >}}
@@ -35596,6 +35624,7 @@ Arguments:
 | <a id="analytics-duoworkflows-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by flow creation timestamp. End of the range. |
 | <a id="analytics-duoworkflows-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-duoworkflows-projectid"></a>`projectId` | [`[String!]`](#string) | Filter by one or many project Global IDs. |
+| <a id="analytics-duoworkflows-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
 | <a id="analytics-duoworkflows-workflowdefinition"></a>`workflowDefinition` | [`[String!]`](#string) | Filter by one or many flow types. |
 
 ##### `Analytics.mergeRequests`
@@ -43474,6 +43503,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowsaggregationresponsedimensions-project"></a>`project` | [`Project`](#project) | Project the flow ran in. Returns `null` for flows not scoped to a project. |
+| <a id="duoworkflowsaggregationresponsedimensions-user"></a>`user` | [`UserCore`](#usercore) | Flow owner. |
 | <a id="duoworkflowsaggregationresponsedimensions-workflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Type of flow. |
 
 #### Fields with arguments

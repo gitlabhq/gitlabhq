@@ -31881,6 +31881,7 @@ CREATE TABLE slsa_attestations (
     iid integer,
     predicate_file text,
     predicate_file_store smallint DEFAULT 1 NOT NULL,
+    signing_certificate_id bigint,
     CONSTRAINT check_3575e9121e CHECK ((char_length(file) <= 255)),
     CONSTRAINT check_dec11b603a CHECK ((char_length(subject_digest) <= 255)),
     CONSTRAINT check_ea0d61030d CHECK ((char_length(predicate_type) <= 255)),
@@ -32373,6 +32374,28 @@ CREATE SEQUENCE supply_chain_attestation_states_id_seq
     CACHE 1;
 
 ALTER SEQUENCE supply_chain_attestation_states_id_seq OWNED BY supply_chain_attestation_states.id;
+
+CREATE TABLE supply_chain_signing_certificates (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    expires_at timestamp with time zone NOT NULL,
+    active boolean DEFAULT false NOT NULL,
+    private_key jsonb NOT NULL,
+    certificate text NOT NULL,
+    CONSTRAINT check_16020ac919 CHECK ((char_length(certificate) <= 3072)),
+    CONSTRAINT check_signing_certificates_private_key_size CHECK ((char_length((private_key)::text) <= 12288))
+);
+
+CREATE SEQUENCE supply_chain_signing_certificates_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE supply_chain_signing_certificates_id_seq OWNED BY supply_chain_signing_certificates.id;
 
 CREATE TABLE system_access_group_microsoft_applications (
     id bigint NOT NULL,
@@ -38258,6 +38281,8 @@ ALTER TABLE ONLY suggestions ALTER COLUMN id SET DEFAULT nextval('suggestions_id
 
 ALTER TABLE ONLY supply_chain_attestation_states ALTER COLUMN id SET DEFAULT nextval('supply_chain_attestation_states_id_seq'::regclass);
 
+ALTER TABLE ONLY supply_chain_signing_certificates ALTER COLUMN id SET DEFAULT nextval('supply_chain_signing_certificates_id_seq'::regclass);
+
 ALTER TABLE ONLY system_access_group_microsoft_applications ALTER COLUMN id SET DEFAULT nextval('system_access_group_microsoft_applications_id_seq'::regclass);
 
 ALTER TABLE ONLY system_access_group_microsoft_graph_access_tokens ALTER COLUMN id SET DEFAULT nextval('system_access_group_microsoft_graph_access_tokens_id_seq'::regclass);
@@ -42527,6 +42552,9 @@ ALTER TABLE ONLY suggestions
 
 ALTER TABLE ONLY supply_chain_attestation_states
     ADD CONSTRAINT supply_chain_attestation_states_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY supply_chain_signing_certificates
+    ADD CONSTRAINT supply_chain_signing_certificates_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY system_access_group_microsoft_applications
     ADD CONSTRAINT system_access_group_microsoft_applications_pkey PRIMARY KEY (id);
@@ -51244,6 +51272,8 @@ CREATE UNIQUE INDEX index_slsa_attestations_on_digest_project_predicate_uniq ON 
 
 CREATE UNIQUE INDEX index_slsa_attestations_on_project_id_iid ON slsa_attestations USING btree (project_id, iid);
 
+CREATE INDEX index_slsa_attestations_on_signing_certificate_id ON slsa_attestations USING btree (signing_certificate_id);
+
 CREATE UNIQUE INDEX index_smartcard_identities_on_subject_and_issuer ON smartcard_identities USING btree (subject, issuer);
 
 CREATE INDEX index_smartcard_identities_on_user_id ON smartcard_identities USING btree (user_id);
@@ -51413,6 +51443,8 @@ CREATE INDEX index_supply_chain_attestation_states_on_project_id ON supply_chain
 CREATE INDEX index_supply_chain_attestation_states_on_verification_state ON supply_chain_attestation_states USING btree (verification_state);
 
 CREATE INDEX index_supply_chain_attestation_states_pending_verification ON supply_chain_attestation_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
+CREATE INDEX index_supply_chain_signing_certificates_on_project_id ON supply_chain_signing_certificates USING btree (project_id);
 
 CREATE UNIQUE INDEX index_system_access_group_microsoft_applications_on_group_id ON system_access_group_microsoft_applications USING btree (group_id);
 
@@ -52737,6 +52769,8 @@ CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_mod
 CREATE UNIQUE INDEX uniq_idx_project_compliance_framework_on_project_framework ON project_compliance_framework_settings USING btree (project_id, framework_id);
 
 CREATE UNIQUE INDEX uniq_idx_security_policy_requirements_on_requirement_and_policy ON security_policy_requirements USING btree (compliance_framework_security_policy_id, compliance_requirement_id);
+
+CREATE UNIQUE INDEX uniq_idx_signing_certificates_on_project_id_when_active ON supply_chain_signing_certificates USING btree (project_id) WHERE (active = true);
 
 CREATE UNIQUE INDEX uniq_idx_sm_namespace_enrollments_on_namespace_id ON secrets_manager_namespace_enrollments USING btree (namespace_id);
 
@@ -59543,6 +59577,9 @@ ALTER TABLE ONLY projects_branch_rules_merge_request_approval_settings
 ALTER TABLE ONLY issue_tracker_data
     ADD CONSTRAINT fk_b33e816ada FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
 
+ALTER TABLE ONLY supply_chain_signing_certificates
+    ADD CONSTRAINT fk_b3cf7b6582 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_conan_package_revisions
     ADD CONSTRAINT fk_b482b1a2f8 FOREIGN KEY (package_reference_id) REFERENCES packages_conan_package_references(id) ON DELETE CASCADE;
 
@@ -60136,6 +60173,9 @@ ALTER TABLE ONLY packages_debian_project_component_files
 
 ALTER TABLE ONLY abuse_events
     ADD CONSTRAINT fk_e5ce49c215 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY slsa_attestations
+    ADD CONSTRAINT fk_e5e5fd9ffd FOREIGN KEY (signing_certificate_id) REFERENCES supply_chain_signing_certificates(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY duo_workflows_workloads
     ADD CONSTRAINT fk_e62ee9a85e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

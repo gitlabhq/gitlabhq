@@ -691,7 +691,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
       end
     end
 
-    context 'when environment_key is set via the linked runtime environment' do
+    context 'when runtime_environment_key is set via the linked runtime environment' do
       let(:build) { build_stubbed(:ci_build) }
       let(:runtime_environment) do
         build_stubbed(:ci_runtime_environment, environment_key: 'runner-1/executor-specific-data')
@@ -704,11 +704,11 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
         )
       end
 
-      it 'returns suspend options with environment_key' do
+      it 'returns suspend options with runtime_environment_key' do
         expect(suspend_options).to eq(
           suspend_on_success: false,
           suspend_on_failure: false,
-          environment_key: 'runner-1/executor-specific-data'
+          runtime_environment_key: 'runner-1/executor-specific-data'
         )
       end
     end
@@ -730,7 +730,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
         expect(suspend_options).to eq(
           suspend_on_success: true,
           suspend_on_failure: true,
-          environment_key: 'runner-1/executor-specific-data'
+          runtime_environment_key: 'runner-1/executor-specific-data'
         )
       end
     end

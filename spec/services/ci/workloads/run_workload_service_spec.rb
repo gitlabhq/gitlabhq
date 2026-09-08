@@ -197,14 +197,14 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
       end
     end
 
-    context 'with environment_key for resume' do
-      let(:environment_key) { '42/machine-id/executor-specific-data' }
+    context 'with runtime_environment_key for resume' do
+      let(:runtime_environment_key) { 'runner-abc/executor-specific-data' }
 
       let(:workload_definition) do
         ::Ci::Workloads::WorkloadDefinition.new.tap do |definition|
           definition.image = image
           definition.commands = commands
-          definition.environment_key = environment_key
+          definition.runtime_environment_key = runtime_environment_key
         end
       end
 
@@ -218,7 +218,7 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
 
       context 'when a matching Ci::RuntimeEnvironment already exists' do
         let!(:runtime_environment) do
-          create(:ci_runtime_environment, project: project, environment_key: environment_key)
+          create(:ci_runtime_environment, project: project, environment_key: runtime_environment_key)
         end
 
         it 'links the build runtime environment to it' do

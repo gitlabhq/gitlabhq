@@ -15,7 +15,7 @@ title: GitLab MCP clients
 
 {{< collapsible title="Model information" >}}
 
-- Not available on GitLab Duo with self-hosted models
+- Available on GitLab Duo with self-hosted models, except with GitLab Duo Agentic Chat in the GitLab web UI
 
 {{< /collapsible >}}
 
@@ -47,6 +47,10 @@ The following features can act as MCP clients and connect to external tools from
 - The [Software Development Flow](../../duo_agent_platform/flows/foundational_flows/software_development.md)
 
 These features can then access external context and information to generate more powerful answers.
+
+> [!note]
+> Self-hosted models are not available for MCP with GitLab Duo Agentic Chat in the GitLab web UI.
+> MCP is supported with self-hosted models in IDEs, the GitLab Duo CLI, and flows.
 
 To use a feature with MCP:
 

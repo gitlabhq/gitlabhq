@@ -45,7 +45,8 @@ module Authn
         reject_consent_challenge: ::Gitlab::Iam::Auth::V1::ConsentServiceRejectRequest,
         create_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceCreateClientRequest,
         get_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceGetClientRequest,
-        delete_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientRequest
+        delete_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientRequest,
+        upsert_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientRequest
       }.freeze
 
       # Only RequestError carries a machine-readable reason; anything else falls back to the class name.
@@ -87,6 +88,10 @@ module Authn
         call(:delete_oauth_application, kwargs)
       end
 
+      def upsert_oauth_application(**kwargs)
+        call(:upsert_oauth_application, kwargs)
+      end
+
       private
 
       def call(method_name, kwargs)
@@ -102,6 +107,7 @@ module Authn
         when :create_oauth_application then oauth_clients_stub.create_client(request, **options)
         when :get_oauth_application then oauth_clients_stub.get_client(request, **options)
         when :delete_oauth_application then oauth_clients_stub.delete_client(request, **options)
+        when :upsert_oauth_application then oauth_clients_stub.upsert_client(request, **options)
         else raise ArgumentError, "Unknown gRPC method: #{method_name}"
         end
       rescue Authn::IamAuthService::ConfigurationError => e

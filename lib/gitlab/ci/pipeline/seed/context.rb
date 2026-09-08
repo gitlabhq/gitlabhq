@@ -5,13 +5,12 @@ module Gitlab
     module Pipeline
       module Seed
         class Context
-          attr_reader :pipeline, :root_variables, :logger, :suspend_options
+          attr_reader :pipeline, :root_variables, :logger
 
-          def initialize(pipeline, root_variables: [], logger: nil, suspend_options: nil)
+          def initialize(pipeline, root_variables: [], logger: nil)
             @pipeline = pipeline
             @root_variables = root_variables
             @logger = logger || build_logger
-            @suspend_options = suspend_options
           end
 
           private

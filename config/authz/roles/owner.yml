@@ -127,6 +127,7 @@ group:
   - destroy_user_achievement
   - disable_two_factor_enterprise_user
   - edit_billing
+  - enable_secrets_manager_add_on
   - export_group_memberships
   - invite_group_members
   - manage_deploy_tokens

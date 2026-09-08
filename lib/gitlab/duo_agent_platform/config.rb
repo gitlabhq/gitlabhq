@@ -8,6 +8,10 @@ module Gitlab
       ConfigError = Class.new(StandardError)
 
       CONFIG_FILE_NAME = '.gitlab/duo/agent-config.yml'
+      # Read in place of CONFIG_FILE_NAME while dap_agent_config_candidate is enabled. DAP
+      # reads the default branch only, so no pre-merge pipeline can exercise a config change;
+      # landing it here inert makes the flag, not a revert MR, the rollback path.
+      CANDIDATE_CONFIG_FILE_NAME = '.gitlab/duo/agent-config-candidate.yml'
       CACHE_EXPIRY = 5.minutes
       MAX_USER_SPECIFIED_DOMAINS = 1000
 
@@ -143,15 +147,33 @@ module Gitlab
       end
 
       def file_content
-        @file_content ||= project.repository.blob_data_at(
+        @file_content ||= candidate_file_content || project.repository.blob_data_at(
           project.default_branch,
           CONFIG_FILE_NAME
         )
       end
 
+      # Returning nil when the candidate is absent lets file_content fall back, so enabling
+      # the flag on a project with no candidate file is a no-op rather than a silent loss
+      # of that project's own config.
+      def candidate_file_content
+        return unless candidate?
+
+        project.repository.blob_data_at(project.default_branch, CANDIDATE_CONFIG_FILE_NAME)
+      end
+
+      def candidate?
+        ::Feature.enabled?(:dap_agent_config_candidate, project, type: :gitlab_com_derisk)
+      end
+
+      # Flipping the flag does not move the SHA, so without the suffix a flip keeps serving
+      # the other file until CACHE_EXPIRY - slow rollback in the incident the flag exists for.
+      # Parsed content depends only on which file won, so the flag state is the whole key.
       def cache_key
         sha = project.repository.commit(project.default_branch)&.sha || 'empty'
-        "duo_config:#{project.id}:#{sha}"
+        key = "duo_config:#{project.id}:#{sha}"
+        key += ':candidate' if candidate?
+        key
       end
 
       def run_schema_validation

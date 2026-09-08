@@ -32,3 +32,8 @@ columns:
   type: String
   default_kind: DEFAULT
   default_expression: "'{}'"
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'0/'"
+  compression_codec: CODEC(ZSTD(3))

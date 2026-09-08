@@ -133,22 +133,10 @@ curl --request POST \
 
 ## Interact with GitLab Duo in reviews
 
-{{< history >}}
+After a review, you can discuss the feedback with GitLab Duo in comment interactions.
+Interactions are a separate feature from Code Review Flow.
 
-- Comment interactions [updated](https://gitlab.com/gitlab-org/gitlab/-/work_items/601102) to use GitLab Duo Agent Platform in GitLab 19.1.
-
-{{< /history >}}
-
-In addition to assigning GitLab Duo as a reviewer, you can interact with GitLab Duo
-by:
-
-- Replying to review comments to ask for clarification or alternative approaches.
-- Mentioning `@GitLabDuo` in any discussion thread to ask follow-up questions.
-
-Discussions with GitLab Duo in comments use GitLab Duo Agent Platform and [consume credits](../../../../../subscriptions/gitlab_credits.md).
-
-Feedback provided to GitLab Duo does not influence later reviews of other merge requests.
-Adding this functionality is proposed in [issue 560116](https://gitlab.com/gitlab-org/gitlab/-/issues/560116).
+For more information, see [interact with GitLab Duo](../../../../project/merge_requests/duo_in_merge_requests.md#interact-with-gitlab-duo).
 
 ## Contextual awareness
 

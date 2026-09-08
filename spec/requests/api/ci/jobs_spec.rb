@@ -790,6 +790,79 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     end
   end
 
+  describe 'GET /projects/:id/jobs/:job_id/runtime_environment_key' do
+    subject(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/runtime_environment_key", api_user) }
+
+    context 'when the job is resuming a suspended environment' do
+      let(:runtime_environment) { create(:ci_runtime_environment, project: project, environment_key: '42/s_machineid/data') }
+
+      before do
+        create(:ci_job_runtime_environment, build: job, runtime_environment: runtime_environment)
+      end
+
+      it 'returns the runtime environment key' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['runtime_environment_key']).to eq('42/s_machineid/data')
+      end
+    end
+
+    context 'when the job has no linked runtime environment' do
+      it 'returns not found' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'unauthorized user' do
+      let(:api_user) { nil }
+
+      it 'returns unauthorized' do
+        request
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'user without :update_build permission' do
+      let(:api_user) { reporter }
+
+      it 'returns forbidden' do
+        request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'with oauth token' do
+      let(:token) { create(:oauth_access_token, user: maintainer, scopes: [:api]) }
+
+      before do
+        create(:ci_job_runtime_environment, build: job,
+          runtime_environment: create(:ci_runtime_environment, project: project, environment_key: '42/s_machineid/data'))
+      end
+
+      it 'returns the runtime environment key' do
+        get api("/projects/#{project.id}/jobs/#{job.id}/runtime_environment_key", oauth_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_job do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/runtime_environment_key", personal_access_token: pat) }
+
+      before do
+        create(:ci_job_runtime_environment, build: job,
+          runtime_environment: create(:ci_runtime_environment, project: project, environment_key: '42/s_machineid/data'))
+      end
+    end
+  end
+
   describe 'GET /projects/:id/jobs/:job_id/trace' do
     before do |example|
       unless example.metadata[:skip_before_request]

@@ -95,6 +95,34 @@ module API
           present build, with: Entities::Ci::Job
         end
 
+        desc 'Get the runtime environment key for a job' do
+          detail 'Retrieves the runtime environment key linked to a job, if the job is resuming a suspended environment.'
+          success code: 200, model: Entities::Ci::RuntimeEnvironmentKey
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags ['ci_jobs']
+        end
+        params do
+          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
+        end
+        route_setting :authorization, permissions: :update_job, boundary_type: :project
+        get ':id/jobs/:job_id/runtime_environment_key', urgency: :low, feature_category: :runner_core do
+          not_found! unless ::Feature.enabled?(:ci_suspendable_environment_runner_routing, user_project,
+            type: :gitlab_com_derisk)
+
+          build = find_build!(params[:job_id])
+          authorize!(:update_build, build)
+
+          runtime_environment_key = build.job_runtime_environment&.runtime_environment&.environment_key
+
+          not_found!('Runtime environment key') unless runtime_environment_key
+
+          present build, with: Entities::Ci::RuntimeEnvironmentKey
+        end
+
         # TODO: We should use `present_disk_file!` and leave this implementation for backward compatibility (when build trace
         #       is saved in the DB instead of file). But before that, we need to consider how to replace the value of
         #       `runners_token` with some mask (like `xxxxxx`) when sending trace file directly by workhorse.

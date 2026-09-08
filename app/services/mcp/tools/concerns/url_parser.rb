@@ -45,7 +45,14 @@ module Mcp
         # Examples:
         #   https://gitlab.com/namespace/project -> { type: :project, path: 'namespace/project' }
         #   https://gitlab.com/groups/namespace/group -> { type: :group, path: 'namespace/group' }
+        #   https://gitlab.com/namespace/group -> { type: :group, path: 'namespace/group' }
         #   https://gitlab.com/namespace/project/-/merge_requests -> { type: :project, path: 'namespace/project' }
+        #
+        # `groups/` is an explicit, authoritative signal and always wins. A URL copied from the
+        # browser address bar for a top-level group has no `groups/` prefix though, so a bare path
+        # is checked against Namespace to tell a group from a project; `follow_redirects` handles
+        # renamed/moved namespaces. A path that resolves to neither defaults to :project, matching
+        # prior behavior.
         def parse_parent_url(url)
           path = extract_path_from_url(url)
           path = path.split('/-/').first || path
@@ -53,8 +60,14 @@ module Mcp
           if path.start_with?('groups/')
             { type: :group, path: path.delete_prefix('groups/') }
           else
-            { type: :project, path: path }
+            bare_parent_type(path)
           end
+        end
+
+        def bare_parent_type(path)
+          namespace = Namespace.without_project_namespaces.find_by_full_path(path, follow_redirects: true)
+
+          namespace.is_a?(Group) ? { type: :group, path: namespace.full_path } : { type: :project, path: path }
         end
 
         # Parse work item URL. Issues and epics are work items, so their URL forms

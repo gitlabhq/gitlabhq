@@ -367,6 +367,7 @@ Grants the ability to delete, read, run, and update jobs.
 | Read | Project | `GET` | `/projects/:id/jobs/:job_id/trace` |
 | Run | Project | `POST` | `/projects/:id/jobs/:job_id/play` |
 | Run | Project | `POST` | `/projects/:id/jobs/:job_id/retry` |
+| Update | Project | `GET` | `/projects/:id/jobs/:job_id/runtime_environment_key` |
 | Update | Project | `POST` | `/projects/:id/jobs/:job_id/cancel` |
 
 #### Job Artifact
@@ -2035,9 +2036,9 @@ Grants the ability to create, delete, read, and update snippets.
 
 ### Project Model Registry and Experiments resources
 
-#### Ml Experiment
+#### ML Experiment
 
-Grants the ability to create, delete, read, and update ml experiments.
+Grants the ability to create, delete, read, and update ML experiments.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |

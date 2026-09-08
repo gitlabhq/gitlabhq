@@ -69,6 +69,7 @@
       = render 'groups/settings/step_up_authentication', f: f, group: @group
     = render 'groups/settings/membership', f: f, group: @group
     = render_if_exists 'groups/settings/placeholder_confirmation_bypass', f: f, group: @group
+    = render_if_exists 'groups/settings/non_enterprise_placeholder_reassignment', f: f, group: @group
     = render_if_exists 'groups/settings/remove_dormant_members', f: f, group: @group
     = render_if_exists 'groups/settings/disable_invite_members', f: f, group: @group
     = render_if_exists 'groups/settings/pages_access_control', f: f, group: @group

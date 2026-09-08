@@ -108,7 +108,7 @@ module Ci
       {
         suspend_on_success: job_runtime_environment.suspend_on_success,
         suspend_on_failure: job_runtime_environment.suspend_on_failure,
-        environment_key: job_runtime_environment.runtime_environment&.environment_key
+        runtime_environment_key: job_runtime_environment.runtime_environment&.environment_key
       }.compact
     end
 

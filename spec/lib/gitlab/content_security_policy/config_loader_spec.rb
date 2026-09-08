@@ -254,6 +254,38 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
       end
     end
 
+    describe 'Webpack dev server wildcard-port websocket connections' do
+      let(:webpack_dev_server_host) { 'webpack-dev-server.com' }
+
+      before do
+        stub_config(
+          { dev_server: { 'host' => webpack_dev_server_host, 'port' => '9999', 'https' => true } },
+          Settings.webpack
+        )
+      end
+
+      context 'when in development' do
+        before do
+          stub_rails_env('development')
+        end
+
+        it 'includes wildcard-port websocket urls for the dev server host in connect-src' do
+          expect(connect_src).to include("ws://#{webpack_dev_server_host}:* wss://#{webpack_dev_server_host}:*")
+        end
+      end
+
+      context 'when in production' do
+        before do
+          stub_rails_env('production')
+        end
+
+        it 'does not include wildcard-port websocket urls in connect-src' do
+          expect(connect_src).not_to include("ws://#{webpack_dev_server_host}:*")
+          expect(connect_src).not_to include("wss://#{webpack_dev_server_host}:*")
+        end
+      end
+    end
+
     describe 'Websocket connections' do
       it 'with insecure domain' do
         stub_config_setting(host: 'example.com', https: false)

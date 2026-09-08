@@ -74465,7 +74465,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_3cd3f0e4af27"
+              "$ref": "#/components/schemas/RequestBody_efbbd1be5812"
   "/api/v4/jobs/{id}/trace":
     patch:
       operationId: patchApiV4JobsIdTrace
@@ -74930,6 +74930,46 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/APIEntitiesCiJob"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '400':
+          description: Bad Request
+      parameters:
+      - name: job_id
+        required: true
+        description: The ID of a job
+        schema:
+          type: integer
+        in: path
+        example: 88
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+        example: 1
+  "/api/v4/projects/{id}/jobs/{job_id}/runtime_environment_key":
+    get:
+      operationId: getApiV4ProjectsIdJobsJobIdRuntimeEnvironmentKey
+      summary: Get the runtime environment key for a job
+      description: Retrieves the runtime environment key linked to a job, if the job
+        is resuming a suspended environment.
+      tags:
+      - CI jobs
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesCiRuntimeEnvironmentKey"
         '401':
           description: Unauthorized
         '403':
@@ -99357,6 +99397,12 @@ components:
             ci_job_token_scope_enabled:
               type: string
               example: false
+    APIEntitiesCiRuntimeEnvironmentKey:
+      type: object
+      properties:
+        runtime_environment_key:
+          type: string
+          example: 42/s_machineid/data
     APIEntitiesAiSettings:
       type: object
       properties:
@@ -122567,7 +122613,7 @@ components:
           nullable: true
       required:
       - token
-    RequestBody_3cd3f0e4af27:
+    RequestBody_efbbd1be5812:
       type: object
       properties:
         token:
@@ -122603,6 +122649,11 @@ components:
           type: integer
           description: Job's exit code
           nullable: true
+        runtime_environment_key:
+          type: string
+          description: Runtime environment key emitted by the runner on job suspension
+          nullable: true
+          maxLength: 512
       required:
       - token
     RequestBody_0ebc786e5c05:

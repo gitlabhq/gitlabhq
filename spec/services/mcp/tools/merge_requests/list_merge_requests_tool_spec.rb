@@ -38,6 +38,16 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsTool, feature_categor
     it 'reads the project root field' do
       expect(tool.operation_name).to eq('project')
     end
+
+    context 'when a group is provided' do
+      let_it_be(:group) { create(:group) }
+
+      let(:params) { { group_id: group.id.to_s } }
+
+      it 'reads the group root field' do
+        expect(tool.operation_name).to eq('group')
+      end
+    end
   end
 
   describe '#build_variables' do
@@ -138,8 +148,8 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsTool, feature_categor
       end
     end
 
-    describe 'project identification' do
-      context 'when no project is provided' do
+    describe 'parent identification' do
+      context 'when no parent is provided' do
         let(:params) { {} }
 
         it 'raises an ArgumentError' do
@@ -155,19 +165,65 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsTool, feature_categor
         end
       end
 
-      context 'with a project URL' do
-        let(:params) { { url: project.web_url } }
+      context 'when both project_id and group_id are provided' do
+        let_it_be(:group) { create(:group) }
 
-        it 'resolves the project from the URL' do
-          expect(tool.build_variables[:fullPath]).to eq(project.full_path)
+        let(:params) { { project_id: project.id.to_s, group_id: group.id.to_s } }
+
+        it 'raises an ArgumentError rather than silently picking one' do
+          expect { tool.build_variables }.to raise_error(ArgumentError, /Provide exactly one of/)
         end
       end
 
-      context 'with a full path' do
+      context 'with a project URL' do
+        let(:params) { { url: project.web_url } }
+
+        it 'resolves the project and sets isProject', :aggregate_failures do
+          variables = tool.build_variables
+
+          expect(variables[:fullPath]).to eq(project.full_path)
+          expect(variables[:isProject]).to be(true)
+        end
+      end
+
+      context 'with a project full path' do
         let(:params) { { project_id: project.full_path } }
 
         it 'resolves the project from the path' do
           expect(tool.build_variables[:fullPath]).to eq(project.full_path)
+        end
+      end
+
+      context 'with a group id' do
+        let_it_be(:group) { create(:group) }
+
+        let(:params) { { group_id: group.id.to_s } }
+
+        it 'resolves the group and sets isProject to false', :aggregate_failures do
+          variables = tool.build_variables
+
+          expect(variables[:fullPath]).to eq(group.full_path)
+          expect(variables[:isProject]).to be(false)
+        end
+      end
+
+      context 'with a group URL' do
+        let_it_be(:group) { create(:group) }
+
+        let(:params) { { url: group.web_url } }
+
+        it 'resolves the group from the URL' do
+          expect(tool.build_variables[:fullPath]).to eq(group.full_path)
+        end
+      end
+
+      context 'with a group full path' do
+        let_it_be(:group) { create(:group) }
+
+        let(:params) { { group_id: group.full_path } }
+
+        it 'resolves the group from the path' do
+          expect(tool.build_variables[:fullPath]).to eq(group.full_path)
         end
       end
     end
@@ -287,6 +343,86 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsTool, feature_categor
 
         it 'raises before executing GraphQL' do
           expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
+        end
+      end
+    end
+
+    describe 'group scope' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:group_project) { create(:project, :public, group: group) }
+      let_it_be(:subgroup_project) { create(:project, :public, group: subgroup) }
+
+      let_it_be(:group_mr) do
+        create(:merge_request, source_project: group_project, target_project: group_project,
+          source_branch: 'group-feature')
+      end
+
+      let_it_be(:subgroup_mr) do
+        create(:merge_request, source_project: subgroup_project, target_project: subgroup_project,
+          source_branch: 'subgroup-feature')
+      end
+
+      let(:params) { { group_id: group.id.to_s } }
+
+      it 'includes merge requests from subgroups, without exposing include_subgroups as a parameter' do
+        expect(result_iids(tool.execute)).to contain_exactly(group_mr.iid.to_s, subgroup_mr.iid.to_s)
+      end
+
+      it 'includes the owning project of each merge request, so results can chain into get_merge_request' do
+        nodes = tool.execute[:structuredContent]['nodes']
+        projects_returned = nodes.map { |node| node['project']['fullPath'] }
+
+        expect(projects_returned).to contain_exactly(group_project.full_path, subgroup_project.full_path)
+      end
+
+      describe 'authorization' do
+        let_it_be(:non_member) { create(:user) }
+        let_it_be(:private_group) { create(:group, :private) }
+        let_it_be(:private_group_project) { create(:project, :private, group: private_group) }
+        let_it_be(:private_group_mr) do
+          create(:merge_request, source_project: private_group_project, target_project: private_group_project)
+        end
+
+        let(:params) { { group_id: private_group.id.to_s } }
+
+        context 'when the caller is not a member' do
+          let(:tool) { described_class.new(current_user: non_member, params: params) }
+
+          it 'raises the same error as for a missing group, preventing enumeration' do
+            expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
+          end
+        end
+
+        context 'when the caller is a member' do
+          before_all do
+            private_group.add_developer(user)
+          end
+
+          it 'returns its merge requests' do
+            expect(result_iids(tool.execute)).to contain_exactly(private_group_mr.iid.to_s)
+          end
+        end
+      end
+
+      context 'when the group does not exist' do
+        let(:params) { { group_id: non_existing_record_id.to_s } }
+
+        it 'raises before executing GraphQL' do
+          expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
+        end
+      end
+
+      context 'when the group resolves but the query returns no data' do
+        before do
+          allow(GitlabSchema).to receive(:execute).and_return({ 'data' => { 'group' => nil } })
+        end
+
+        it 'returns a group-not-found error', :aggregate_failures do
+          result = tool.execute
+
+          expect(result[:isError]).to be(true)
+          expect(result[:content].first[:text]).to include('Group not found')
         end
       end
     end

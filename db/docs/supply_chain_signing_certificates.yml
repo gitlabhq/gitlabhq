@@ -1,0 +1,13 @@
+---
+table_name: supply_chain_signing_certificates
+description: Stores per-project root CA signing keys and certificates used to sign SLSA attestations
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252696
+milestone: '19.4'
+feature_categories:
+- artifact_security
+classes:
+- SupplyChain::SigningCertificate
+sharding_key:
+  project_id: projects
+gitlab_schema: gitlab_main_org
+table_size: small

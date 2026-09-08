@@ -102,16 +102,30 @@ module Ci
 
         Result.new(status: 200)
       when 'success'
+        record_successful_suspension
         build.success!
 
         Result.new(status: 200)
       when 'failed'
+        record_failed_suspension
         handle_build_failure!
 
         Result.new(status: 200)
       else
         Result.new(status: 400)
       end
+    end
+
+    def record_successful_suspension
+      Ci::RuntimeEnvironments::RecordSuccessfulSuspensionService
+        .new(build, environment_key: params[:runtime_environment_key])
+        .execute
+    end
+
+    def record_failed_suspension
+      Ci::RuntimeEnvironments::RecordFailedSuspensionService
+        .new(build, environment_key: params[:runtime_environment_key])
+        .execute
     end
 
     def handle_build_failure!

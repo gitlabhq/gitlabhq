@@ -1174,6 +1174,7 @@ projects:
 - status_page_settings.project_id
 - subscriptions.project_id
 - supply_chain_attestation_states.project_id
+- supply_chain_signing_certificates.project_id
 - tag_gpg_signatures.project_id
 - tag_ssh_signatures.project_id
 - tag_x509_signatures.project_id

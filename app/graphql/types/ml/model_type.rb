@@ -7,6 +7,8 @@ module Types
       graphql_name 'MlModel'
       description 'Machine learning model in the model registry'
 
+      authorize_granular_token permissions: :read_ml_model, boundary: :project, boundary_type: :project
+
       connection_type_class Types::LimitedCountableConnectionType
 
       present_using ::Ml::ModelPresenter

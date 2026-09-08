@@ -346,7 +346,7 @@ A feature that runs on a [self-hosted model](../administration/gitlab_duo_self_h
 
 | Feature | Executions with one credit (GitLab-managed model) | Executions with one credit (self-hosted model) |
 |---------|----------------------------|------------------------------------------------|
-| [GitLab Duo Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md) | 50 | 62.5 |
+| GitLab Duo Code Suggestions | 50 | 62.5 |
 | Code Review Flow | 4 | 5 |
 | SAST False Positive Detection Flow | 1 | 1.25 |
 | SAST Vulnerability Resolution Flow | 0.25 | 0.3125 |

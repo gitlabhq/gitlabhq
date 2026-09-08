@@ -145,6 +145,50 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
         expect(result).to eq({ type: :group, path: 'namespace/group' })
       end
     end
+
+    context 'with a bare group URL (no groups/ prefix)' do
+      it 'resolves it as a group by checking the namespace' do
+        url = "https://gitlab.com/#{group.full_path}"
+        result = service.send(:parse_parent_url, url)
+
+        expect(result).to eq({ type: :group, path: group.full_path })
+      end
+
+      it 'still resolves an existing project as a project' do
+        url = "https://gitlab.com/#{project.full_path}"
+        result = service.send(:parse_parent_url, url)
+
+        expect(result).to eq({ type: :project, path: project.full_path })
+      end
+
+      it 'defaults to project for a path that matches no namespace at all' do
+        url = 'https://gitlab.com/does-not-exist/at-all'
+        result = service.send(:parse_parent_url, url)
+
+        expect(result).to eq({ type: :project, path: 'does-not-exist/at-all' })
+      end
+
+      it 'follows a redirect for a renamed group' do
+        renamed_group = create(:group)
+        old_path = renamed_group.full_path
+        renamed_group.update!(path: 'renamed-group')
+
+        url = "https://gitlab.com/#{old_path}"
+        result = service.send(:parse_parent_url, url)
+
+        expect(result).to eq({ type: :group, path: renamed_group.full_path })
+      end
+    end
+
+    context 'with an explicit groups/ prefix for a namespace that does not exist' do
+      it 'still classifies it as a group, trusting the explicit signal', :aggregate_failures do
+        url = 'https://gitlab.com/groups/no-such-group-at-all'
+        result = service.send(:parse_parent_url, url)
+
+        expect(result[:type]).to eq(:group)
+        expect(result[:path]).to eq('no-such-group-at-all')
+      end
+    end
   end
 
   describe '#parse_work_item_url' do

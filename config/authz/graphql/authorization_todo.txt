@@ -649,9 +649,6 @@ type:LicenseHistoryEntry
 type:LicensedFeatureAvailability
 type:LinkedWorkItemType
 type:Location
-type:MLCandidateLinks
-type:MLModelLinks
-type:MLModelVersionLinks
 type:MavenMetadata
 type:MavenRegistry
 type:MavenRegistryDetails
@@ -675,13 +672,6 @@ type:MergeTrainCar
 type:MetricImage
 type:MetricsDashboardAnnotation
 type:MilestoneStats
-type:MlCandidate
-type:MlCandidateMetadata
-type:MlCandidateMetric
-type:MlCandidateParam
-type:MlExperiment
-type:MlModel
-type:MlModelVersion
 type:Namespace
 type:NamespaceAvailableFeatures
 type:NamespaceBan

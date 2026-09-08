@@ -60,6 +60,62 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           .and change { runner_manager.reload.contacted_at }
       end
 
+      context 'when runtime_environment_key is given' do
+        let(:env_key) { '22/s_system-xid-abc/acquisition-key="test-key"' }
+        let_it_be_with_reload(:job_runtime_environment) do
+          create(:ci_job_runtime_environment, build: job, runtime_environment: nil, suspend_on_success: true)
+        end
+
+        it 'creates a Ci::RuntimeEnvironment and links it to the build', :aggregate_failures do
+          update_job(state: 'success', runtime_environment_key: env_key)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(job_runtime_environment.reload.runtime_environment.environment_key).to eq(env_key)
+        end
+
+        context 'when persisting the key fails' do
+          before do
+            allow_next_found_instance_of(Ci::JobRuntimeEnvironment) do |jre|
+              allow(jre).to receive(:update!).and_raise(ActiveRecord::StatementInvalid)
+            end
+          end
+
+          it 'still completes the job successfully and tracks the error' do
+            expect(::Gitlab::ErrorTracking).to receive(:track_exception)
+              .with(kind_of(ActiveRecord::StatementInvalid), build_id: job.id)
+
+            update_job(state: 'success', runtime_environment_key: env_key)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(job.reload).to be_success
+          end
+        end
+
+        context 'when ci_suspendable_environment_runner_routing is disabled' do
+          before do
+            stub_feature_flags(ci_suspendable_environment_runner_routing: false)
+          end
+
+          it 'does not store the runtime environment key' do
+            update_job(state: 'success', runtime_environment_key: env_key)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(job_runtime_environment.reload.runtime_environment_id).to be_nil
+          end
+        end
+
+        context 'when runtime_environment_key exceeds the size limit' do
+          let(:env_key) { 'a' * (Ci::RuntimeEnvironment::ENVIRONMENT_KEY_MAX_LENGTH + 1) }
+
+          it 'returns bad request and does not create a Ci::RuntimeEnvironment' do
+            expect { update_job(state: 'success', runtime_environment_key: env_key) }
+              .not_to change { Ci::RuntimeEnvironment.count }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+      end
+
       context 'when status is given' do
         it 'marks job as succeeded' do
           update_job(state: 'success')

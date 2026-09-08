@@ -16,6 +16,15 @@ Roll out [the feature](<feature-issue-link>) currently behind the `<feature-flag
 
 <!-- Optional but recommended: blast radius, data-loss risk, and the dashboard(s) you'll watch on https://dashboards.gitlab.net. Delete if not applicable. -->
 
+## Events
+
+<!-- Replace feature flag name in the link-->
+- [Exceptions with <feature-flag-name>:1](https://log.gprd.gitlab.net/app/discover#/?_g=(time:(from:now-1d,to:now))&_a=(index:'7092c4e2-4eb5-46f2-8305-a7da2edad090',query:(language:kuery,query:'json.exception.feature_flag_states.keyword:%22<feature-flag-name>:1%22'),columns:!(json.exception.class,json.exception.message,json.extra.workflow_id,json.meta.caller_id),sort:!(!(json.time,desc))))
+- [Events with <feature-flag-name>:1](https://log.gprd.gitlab.net/app/discover#/?_g=(time:(from:now-1d,to:now))&_a=(index:'7092c4e2-4eb5-46f2-8305-a7da2edad090',query:(language:kuery,query:'json.feature_flag_states:%22<feature-flag-name>:1%22'),columns:!(json.meta.caller_id,json.feature_flag_states),sort:!(!(json.time,desc))))
+- [Error rate and other graphs by modifying the examples in the Visualization Library](https://log.gprd.gitlab.net/app/visualize#/?_g=h@358d019&s=FF%20Observability)
+
+Feature Flag events are only logged by default for feature flags marked for the current or future milestones. To enable while the feature flag is active, see https://docs.gitlab.com/development/feature_flags/#logging
+
 ## Rollout
 
 Run all production `/chatops` in [`#production`](https://gitlab.slack.com/archives/C101F3796) and cross-post the results to `#<slack-channel-of-dri-team>`. Background: [incremental rollout process](https://docs.gitlab.com/development/feature_flags/controls/#process), [feature actors](https://docs.gitlab.com/development/feature_flags/#feature-actors).

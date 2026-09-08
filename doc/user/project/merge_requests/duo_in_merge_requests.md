@@ -163,6 +163,38 @@ Prerequisites:
 Code Review Flow now runs for all code reviews in the group and consumes GitLab Credits.
 To switch all reviews back to GitLab Duo Code Review, turn off Code Review Flow.
 
+## Interact with GitLab Duo
+
+{{< details >}}
+
+- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Comment interactions [updated](https://gitlab.com/gitlab-org/gitlab/-/work_items/601102) to use GitLab Duo Agent Platform in GitLab 19.1.
+- [Changed](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/18694) to usage-based billing in GitLab 19.4.
+
+{{< /history >}}
+
+GitLab Duo can answer questions and discuss feedback directly in merge request comment threads.
+
+To interact with GitLab Duo, mention `@GitLabDuo` on your merge request:
+
+- In a new comment thread, to ask a question about the changes.
+- In reply to a review comment, to ask for clarification or alternative approaches.
+
+Interactions in comments use the model selected for Code Review Flow and [consume GitLab Credits](../../../subscriptions/gitlab_credits.md#models)
+separately from the flow.
+
+However, if you ask `@GitLabDuo` for a review, GitLab Duo starts Code Review Flow and that flow's billing
+applies.
+
+Feedback provided to GitLab Duo does not influence later reviews of other merge requests.
+Adding this functionality is proposed in [issue 560116](https://gitlab.com/gitlab-org/gitlab/-/issues/560116).
+
 ## Resolve a discussion with GitLab Duo
 
 {{< details >}}
