@@ -4721,7 +4721,7 @@ This example creates a release:
   The release is authenticated with the [`CI_JOB_TOKEN`](../jobs/ci_job_token.md) by default.
   If any of these CI/CD variable are defined in the job, `glab` uses that token instead,
   in this order: `GITLAB_TOKEN`, `GITLAB_ACCESS_TOKEN`, or `OAUTH_TOKEN`. These tokens take
-  [precedence](https://gitlab.com/gitlab-org/cli/#token-and-environment-variable-precedence)
+  [precedence](https://docs.gitlab.com/cli/authentication/#token-precedence)
   over `CI_JOB_TOKEN` in `glab`'s token resolution. If this token lacks the required API scopes,
   the release can fail with an 401 Unauthorized error.
 

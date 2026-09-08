@@ -1,0 +1,60 @@
+# @feature_category: mcp_server
+fragment ProjectFields on Project {
+  id
+  fullPath
+  name
+  webUrl
+  visibility
+  archived
+}
+
+query listProjects(
+  $search: String
+  $namespaceFullPath: ID
+  $groupFullPath: ID! = ""
+  $visibilityLevel: VisibilityLevelsEnum
+  $archived: ProjectArchived
+  $includeArchived: Boolean = true
+  $archivedOnly: Boolean = false
+  $minAccessLevel: AccessLevelEnum
+  $useGroupBranch: Boolean = false
+  $first: Int
+  $after: String
+) {
+  projects(
+    search: $search
+    namespacePath: $namespaceFullPath
+    visibilityLevel: $visibilityLevel
+    archived: $archived
+    minAccessLevel: $minAccessLevel
+    first: $first
+    after: $after
+  ) @skip(if: $useGroupBranch) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      ...ProjectFields
+    }
+  }
+  group(fullPath: $groupFullPath) @include(if: $useGroupBranch) {
+    id
+    projects(
+      search: $search
+      includeSubgroups: true
+      includeArchived: $includeArchived
+      archivedOnly: $archivedOnly
+      first: $first
+      after: $after
+    ) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      nodes {
+        ...ProjectFields
+      }
+    }
+  }
+}

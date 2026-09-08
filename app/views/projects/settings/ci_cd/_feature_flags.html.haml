@@ -1,0 +1,11 @@
+- if Feature.enabled?(:feature_flag_management_permissions, @project) && can?(current_user, :read_feature_flag, @project)
+  = render ::Layouts::SettingsBlockComponent.new(_('Feature flags'),
+    id: 'js-feature-flags-settings',
+    testid: 'feature-flags-settings-content',
+    expanded: expanded) do |c|
+    - c.with_description do
+      = s_('FeatureFlags|Control who can manage feature flags in this project.')
+    - c.with_body do
+      #js-feature-flags-minimum-role-app{ data: { project_full_path: @project.full_path,
+        minimum_role: @project.project_setting.feature_flags_minimum_role,
+        can_update: can?(current_user, :update_feature_flags_minimum_role_setting, @project).to_s } }

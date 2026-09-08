@@ -57,8 +57,15 @@ module Mcp
         def execution_context
           {
             current_user: current_user,
-            is_sessionless_user: false
+            is_sessionless_user: false,
+            mcp_tool: mcp_tool_identifier
           }
+        end
+
+        # Override in subclasses. Lets a mutation apply tool-specific behaviour without
+        # exposing the identifier through any public GraphQL input.
+        def mcp_tool_identifier
+          nil
         end
 
         def resource_not_found?(result)

@@ -4322,6 +4322,92 @@ Fields:
 | <a id="mutation-aifeaturesettingupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-aifeaturesettingupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.aiFlowScheduleCreate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `AiFlowScheduleCreateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-aiflowschedulecreate-active"></a>`active` | [`Boolean`](#boolean) | Indicates whether the schedule should be active. |
+| <a id="mutation-aiflowschedulecreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-aiflowschedulecreate-cron"></a>`cron` | [`String!`](#string) | Cron expression defining the schedule frequency. |
+| <a id="mutation-aiflowschedulecreate-crontimezone"></a>`cronTimezone` | [`String!`](#string) | IANA timezone for the cron expression. |
+| <a id="mutation-aiflowschedulecreate-description"></a>`description` | [`String!`](#string) | Description of the schedule. |
+| <a id="mutation-aiflowschedulecreate-flowtriggerid"></a>`flowTriggerId` | [`AiFlowTriggerID!`](#aiflowtriggerid) | Global ID of the flow trigger to schedule. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-aiflowschedulecreate-aiflowschedule"></a>`aiFlowSchedule` | [`AiFlowScheduleType`](#aiflowscheduletype) | Created flow schedule. |
+| <a id="mutation-aiflowschedulecreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-aiflowschedulecreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.aiFlowScheduleDelete`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `AiFlowScheduleDeleteInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-aiflowscheduledelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-aiflowscheduledelete-id"></a>`id` | [`AiFlowScheduleID!`](#aiflowscheduleid) | Global ID of the flow schedule to delete. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-aiflowscheduledelete-aiflowschedule"></a>`aiFlowSchedule` | [`AiFlowScheduleType`](#aiflowscheduletype) | Deleted flow schedule. |
+| <a id="mutation-aiflowscheduledelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-aiflowscheduledelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.aiFlowScheduleUpdate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `AiFlowScheduleUpdateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-aiflowscheduleupdate-active"></a>`active` | [`Boolean`](#boolean) | Indicates whether the schedule should be active. |
+| <a id="mutation-aiflowscheduleupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-aiflowscheduleupdate-cron"></a>`cron` | [`String`](#string) | Cron expression defining the schedule frequency. |
+| <a id="mutation-aiflowscheduleupdate-crontimezone"></a>`cronTimezone` | [`String`](#string) | IANA timezone for the cron expression. |
+| <a id="mutation-aiflowscheduleupdate-description"></a>`description` | [`String`](#string) | Description of the schedule. |
+| <a id="mutation-aiflowscheduleupdate-id"></a>`id` | [`AiFlowScheduleID!`](#aiflowscheduleid) | Global ID of the flow schedule to update. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-aiflowscheduleupdate-aiflowschedule"></a>`aiFlowSchedule` | [`AiFlowScheduleType`](#aiflowscheduletype) | Updated flow schedule. |
+| <a id="mutation-aiflowscheduleupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-aiflowscheduleupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.aiFlowTriggerCreate`
 
 {{< details >}}
@@ -21925,6 +22011,29 @@ Fields:
 | <a id="aifeaturesettingedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aifeaturesettingedge-node"></a>`node` | [`AiFeatureSetting`](#aifeaturesetting) | The item at the end of the edge. |
 
+#### `AiFlowScheduleTypeConnection`
+
+The connection type for [`AiFlowScheduleType`](#aiflowscheduletype).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiflowscheduletypeconnection-edges"></a>`edges` | [`[AiFlowScheduleTypeEdge]`](#aiflowscheduletypeedge) | A list of edges. |
+| <a id="aiflowscheduletypeconnection-nodes"></a>`nodes` | [`[AiFlowScheduleType]`](#aiflowscheduletype) | A list of nodes. |
+| <a id="aiflowscheduletypeconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiFlowScheduleTypeEdge`
+
+The edge type for [`AiFlowScheduleType`](#aiflowscheduletype).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiflowscheduletypeedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aiflowscheduletypeedge-node"></a>`node` | [`AiFlowScheduleType`](#aiflowscheduletype) | The item at the end of the edge. |
+
 #### `AiFlowTriggerTypeConnection`
 
 The connection type for [`AiFlowTriggerType`](#aiflowtriggertype).
@@ -34766,6 +34875,39 @@ Fields:
 | <a id="aiflowcapability-metadata"></a>`metadata` | [`JSON`](#json) | Arbitrary JSON-encoded metadata associated with the capability. |
 | <a id="aiflowcapability-name"></a>`name` | [`String!`](#string) | Name of the capability. |
 
+### `AiFlowScheduleLastRun`
+
+Details of the most recent execution attempt of a flow schedule.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiflowschedulelastrun-error"></a>`error` | [`String`](#string) | Error message from the most recent failed execution. |
+| <a id="aiflowschedulelastrun-ranat"></a>`ranAt` | [`Time`](#time) | Timestamp of the most recent execution attempt. |
+| <a id="aiflowschedulelastrun-status"></a>`status` | [`String`](#string) | Status of the most recent execution attempt. |
+
+### `AiFlowScheduleType`
+
+Represents a cron-based schedule for an AI flow trigger.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiflowscheduletype-active"></a>`active` | [`Boolean!`](#boolean) | Indicates the schedule is active. |
+| <a id="aiflowscheduletype-consecutivefailurecount"></a>`consecutiveFailureCount` | [`Int!`](#int) | Number of consecutive execution failures. |
+| <a id="aiflowscheduletype-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the flow schedule was created. |
+| <a id="aiflowscheduletype-cron"></a>`cron` | [`String!`](#string) | Cron expression defining the schedule frequency. |
+| <a id="aiflowscheduletype-crontimezone"></a>`cronTimezone` | [`String!`](#string) | IANA timezone for the cron expression. |
+| <a id="aiflowscheduletype-description"></a>`description` | [`String!`](#string) | Description of the flow schedule. |
+| <a id="aiflowscheduletype-flowtrigger"></a>`flowTrigger` | [`AiFlowTriggerType!`](#aiflowtriggertype) | Flow trigger the schedule executes. |
+| <a id="aiflowscheduletype-id"></a>`id` | [`AiFlowScheduleID!`](#aiflowscheduleid) | Global ID of the flow schedule. |
+| <a id="aiflowscheduletype-lastrun"></a>`lastRun` | [`AiFlowScheduleLastRun`](#aiflowschedulelastrun) | Details of the most recent execution attempt, or null if the schedule has never run. |
+| <a id="aiflowscheduletype-nextrunat"></a>`nextRunAt` | [`Time`](#time) | Timestamp of the next scheduled execution. |
+| <a id="aiflowscheduletype-project"></a>`project` | [`Project!`](#project) | Project of the flow schedule. |
+| <a id="aiflowscheduletype-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the flow schedule was last updated. |
+
 ### `AiFlowTriggerType`
 
 Represents an AI flow trigger.
@@ -34782,6 +34924,7 @@ Fields:
 | <a id="aiflowtriggertype-description"></a>`description` | [`String!`](#string) | Description of the flow trigger. |
 | <a id="aiflowtriggertype-eventtypes"></a>`eventTypes` | [`[Int!]!`](#int) | List of events that triggers the flow. |
 | <a id="aiflowtriggertype-filter"></a>`filter` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 18.11. Status: Experiment. Filter conditions for the AI flow trigger. |
+| <a id="aiflowtriggertype-flowschedules"></a>`flowSchedules` {{< icon name="warning-solid" >}} | [`AiFlowScheduleTypeConnection`](#aiflowscheduletypeconnection) | Introduced in GitLab 19.4. Status: Experiment. Cron-based schedules associated with the flow trigger. |
 | <a id="aiflowtriggertype-id"></a>`id` | [`ID!`](#id) | ID of the flow trigger. |
 | <a id="aiflowtriggertype-precondition"></a>`precondition` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 18.11. Status: Experiment. Enforced filter conditions from the foundational flow definition. |
 | <a id="aiflowtriggertype-project"></a>`project` | [`Project!`](#project) | Project of the flow trigger. |
@@ -73117,6 +73260,12 @@ An example `AiConversationThreadID` is: `"gid://gitlab/Ai::Conversation::Thread/
 A `AiDuoWorkflowsWorkflowID` is a global ID. It is encoded as a string.
 
 An example `AiDuoWorkflowsWorkflowID` is: `"gid://gitlab/Ai::DuoWorkflows::Workflow/1"`.
+
+### `AiFlowScheduleID`
+
+A `AiFlowScheduleID` is a global ID. It is encoded as a string.
+
+An example `AiFlowScheduleID` is: `"gid://gitlab/Ai::FlowSchedule/1"`.
 
 ### `AiFlowTriggerID`
 

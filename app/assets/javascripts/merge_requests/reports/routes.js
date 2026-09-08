@@ -3,6 +3,7 @@ import {
   SECURITY_SCAN_ROUTE,
   LICENSE_COMPLIANCE_ROUTE,
   CODE_QUALITY_ROUTE,
+  LOAD_PERFORMANCE_ROUTE,
   ROOT_ROUTE,
   METRICS_ROUTE,
 } from './constants';
@@ -35,6 +36,12 @@ export default [
     name: CODE_QUALITY_ROUTE,
     path: `/${CODE_QUALITY_ROUTE}`,
     component: () => import('~/merge_requests/reports/code_quality/code_quality_page.vue'),
+  },
+  {
+    name: LOAD_PERFORMANCE_ROUTE,
+    path: `/${LOAD_PERFORMANCE_ROUTE}`,
+    component: () =>
+      import('ee_component/merge_requests/reports/load_performance/load_performance_page.vue'),
   },
   {
     name: METRICS_ROUTE,

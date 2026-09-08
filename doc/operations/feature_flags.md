@@ -78,7 +78,15 @@ Prerequisites:
 - To change the minimum role away from `owner` or `no_one_allowed`, you must have the
   Owner role for the project.
 
-Set the minimum role with the
+To set the minimum role:
+
+1. In the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings** > **CI/CD**.
+1. Expand **Feature flags**.
+1. Select a role.
+1. Select **Save changes**.
+
+Alternatively, set the minimum role with the
 [Update feature flag settings](../api/feature_flags.md#update-feature-flag-settings) REST endpoint:
 
 ```shell

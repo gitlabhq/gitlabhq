@@ -6,6 +6,7 @@ import {
   SECURITY_SCAN_ROUTE,
   LICENSE_COMPLIANCE_ROUTE,
   CODE_QUALITY_ROUTE,
+  LOAD_PERFORMANCE_ROUTE,
   METRICS_ROUTE,
   ROOT_ROUTE,
   EMPTY_STATE_NO_PIPELINE,
@@ -18,6 +19,7 @@ const REPORT_ROUTES = [
   SECURITY_SCAN_ROUTE,
   LICENSE_COMPLIANCE_ROUTE,
   CODE_QUALITY_ROUTE,
+  LOAD_PERFORMANCE_ROUTE,
   METRICS_ROUTE,
 ];
 const OWNED_ROUTES = [ROOT_ROUTE, ...REPORT_ROUTES];
@@ -48,6 +50,14 @@ export default {
     CodeQualityNavItem: defineAsyncComponent(
       () => import('~/merge_requests/reports/code_quality/code_quality_nav_item.vue'),
     ),
+    LoadPerformanceProvider: defineAsyncComponent(
+      () =>
+        import('ee_component/merge_requests/reports/load_performance/load_performance_provider.vue'),
+    ),
+    LoadPerformanceNavItem: defineAsyncComponent(
+      () =>
+        import('ee_component/merge_requests/reports/load_performance/load_performance_nav_item.vue'),
+    ),
     MetricsProvider: defineAsyncComponent(
       () => import('ee_component/merge_requests/reports/metrics/metrics_provider.vue'),
     ),
@@ -70,6 +80,7 @@ export default {
         [SECURITY_SCAN_ROUTE]: this.hasSecurityScans,
         [LICENSE_COMPLIANCE_ROUTE]: this.hasLicenseComplianceReports,
         [CODE_QUALITY_ROUTE]: this.hasCodeQualityReports,
+        [LOAD_PERFORMANCE_ROUTE]: this.hasLoadPerformanceReports,
         [METRICS_ROUTE]: this.hasMetricsReports,
       };
 
@@ -152,6 +163,9 @@ export default {
           <code-quality-provider v-if="hasCodeQualityReports" :mr="mr">
             <code-quality-nav-item />
           </code-quality-provider>
+          <load-performance-provider v-if="hasLoadPerformanceReports" :mr="mr">
+            <load-performance-nav-item />
+          </load-performance-provider>
           <metrics-provider v-if="hasMetricsReports" :mr="mr">
             <metrics-nav-item />
           </metrics-provider>

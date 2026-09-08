@@ -246,7 +246,8 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
         variables: { input: { projectPath: 'gitlab-org/gitlab' } },
         context: {
           current_user: user,
-          is_sessionless_user: false
+          is_sessionless_user: false,
+          mcp_tool: nil
         }
       )
     end

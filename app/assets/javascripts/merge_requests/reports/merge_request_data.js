@@ -6,6 +6,7 @@ import { observable } from '~/lib/utils/observable';
 import {
   hasCodeQualityReport,
   hasLicenseComplianceReport,
+  hasLoadPerformanceReport,
   hasMetricsReport,
 } from 'ee_else_ce/merge_requests/reports/configured_reports';
 
@@ -94,6 +95,9 @@ export default {
     },
     hasLicenseComplianceReports() {
       return hasLicenseComplianceReport(state.mr);
+    },
+    hasLoadPerformanceReports() {
+      return hasLoadPerformanceReport(state.mr);
     },
     hasMetricsReports() {
       return hasMetricsReport(state.mr);

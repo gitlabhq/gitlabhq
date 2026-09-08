@@ -3,8 +3,11 @@ import { GlFormTextarea, GlSprintf } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import produce from 'immer';
 import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
+import MockAdapter from 'axios-mock-adapter';
 import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
+import { createAlert } from '~/alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -14,10 +17,16 @@ import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/
 import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
 import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
 import MergeFailedPipelineConfirmationDialog from '~/vue_merge_request_widget/components/states/merge_failed_pipeline_confirmation_dialog.vue';
+import RebaseConfirmationDialog from '~/vue_merge_request_widget/components/states/rebase_confirmation_dialog.vue';
 import { MWCP_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 import { joinPaths } from '~/lib/utils/url_utility';
+
+jest.mock('~/alert');
+jest.mock('~/lib/utils/simple_poll', () =>
+  jest.fn().mockImplementation(jest.requireActual('~/lib/utils/simple_poll').default),
+);
 
 const commitMessage = readyToMergeResponse.data.project.mergeRequest.defaultMergeCommitMessage;
 const squashCommitMessage =
@@ -1018,6 +1027,72 @@ describe('ReadyToMerge', () => {
         expect(wrapper.vm.sourceHasDivergedFromTarget).toBe(true);
         expect(wrapper.vm.mr.canPushToSourceBranch).toBe(true);
         expect(wrapper.vm.canRebase).toBe(true);
+      });
+    });
+
+    describe('when the rebase request is rejected', () => {
+      let axiosMock;
+
+      const findRebaseButton = () => wrapper.findComponent('[data-testid="rebase-button"]');
+
+      const rebaseWithResponse = async (body) => {
+        axiosMock
+          .onPost('/namespace/project/-/merge_requests/123/rebase')
+          .reply(HTTP_STATUS_FORBIDDEN, body);
+
+        createComponent(
+          {
+            mr: {
+              divergedCommitsCount: 2,
+              targetProjectFullPath: 'namespace/project',
+              iid: 123,
+              sourceBranch: 'feature-branch',
+              state: 'readyToMerge',
+              userPermissions: { canMerge: true },
+              availableAutoMergeStrategies: [],
+              canPushToSourceBranch: true,
+            },
+          },
+          true,
+        );
+
+        findRebaseButton().vm.$emit('click');
+        await nextTick();
+
+        wrapper.findComponent(RebaseConfirmationDialog).vm.$emit('rebase-confirmed');
+        await waitForPromises();
+      };
+
+      beforeEach(() => {
+        axiosMock = new MockAdapter(axios);
+      });
+
+      afterEach(() => {
+        axiosMock.restore();
+      });
+
+      it('alerts the reason the backend sent', async () => {
+        await rebaseWithResponse({ merge_error: 'Source branch is protected from force push' });
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Failed to rebase: Source branch is protected from force push.',
+          variant: 'danger',
+        });
+      });
+
+      it('alerts a generic message when the backend sent no reason', async () => {
+        await rebaseWithResponse({});
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Failed to rebase. Please try again.',
+          variant: 'danger',
+        });
+      });
+
+      it('stops the rebase button from loading', async () => {
+        await rebaseWithResponse({ merge_error: 'Cannot push to source branch' });
+
+        expect(findRebaseButton().props('loading')).toBe(false);
       });
     });
 

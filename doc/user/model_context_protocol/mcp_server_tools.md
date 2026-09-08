@@ -1265,6 +1265,41 @@ Example:
 List my open tasks in the gitlab-org group updated this month.
 ```
 
+## `list_projects`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250301) in GitLab 19.4.
+
+{{< /history >}}
+
+Without `group_id`, lists projects where you have at least the Guest role by default;
+pass `min_access_level` to raise the threshold. With `group_id`, lists every project in
+that group and its subgroups regardless of access level; adding `min_access_level` or
+`visibility` narrows the listing to that group only, not its subgroups, because GitLab
+does not support combining subgroup traversal with those filters when listing a
+group's projects.
+
+| Parameter          | Type    | Required | Description |
+|--------------------|---------|----------|-------------|
+| `group_id`         | string  | No       | ID or full path of a group. Omit to list across the whole instance, defaulting to projects where you have at least the Guest role. |
+| `min_access_level` | string  | No       | Minimum access level a project must grant you to be included. One of `guest`, `planner`, `reporter`, `developer`, `maintainer`, or `owner`. |
+| `search`           | string  | No       | Search projects by name, path, or description. |
+| `visibility`       | string  | No       | Filter by visibility level: `public`, `internal`, or `private`. |
+| `archived`         | string  | No       | Filter by archived state: `only`, `include`, or `exclude` (default). |
+| `after`            | string  | No       | Cursor for forward pagination. |
+| `first`            | integer | No       | Number of projects to return for forward pagination. Default is 20, maximum is 100. |
+
+When you provide `group_id`, the response includes `subgroupsIncluded`: `true` when the
+listing covers the group's subgroups, `false` when `min_access_level` or `visibility`
+narrowed the listing to that group only.
+
+Example:
+
+```plaintext
+List my projects
+```
+
 ## `search`
 
 {{< history >}}

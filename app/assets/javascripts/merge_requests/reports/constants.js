@@ -2,6 +2,7 @@ export const BLOCKERS_ROUTE = 'index';
 export const CODE_QUALITY_ROUTE = 'code-quality';
 export const SECURITY_SCAN_ROUTE = 'security-scan';
 export const LICENSE_COMPLIANCE_ROUTE = 'license-compliance';
+export const LOAD_PERFORMANCE_ROUTE = 'load-performance';
 export const ROOT_ROUTE = 'reports-root';
 export const METRICS_ROUTE = 'metrics';
 
@@ -19,4 +20,5 @@ export const TRACKING_LABEL_BY_ROUTE = {
   [SECURITY_SCAN_ROUTE]: 'security_scan',
   [LICENSE_COMPLIANCE_ROUTE]: 'license_compliance',
   [CODE_QUALITY_ROUTE]: 'code_quality',
+  [LOAD_PERFORMANCE_ROUTE]: 'load_performance',
 };

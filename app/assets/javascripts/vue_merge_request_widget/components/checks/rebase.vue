@@ -6,6 +6,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { createAlert } from '~/alert';
 import toast from '~/vue_shared/plugins/global_toast';
 import simplePoll from '~/lib/utils/simple_poll';
+import { rebaseFailureMessage } from '~/vue_merge_request_widget/utils';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import eventHub from '../../event_hub';
 import ActionButtons from '../action_buttons.vue';
@@ -125,11 +126,9 @@ export default {
         .catch((error) => {
           this.isMakingRequest = false;
 
-          if (!error.response?.data?.merge_error) {
-            createAlert({
-              message: __('Something went wrong. Please try again.'),
-            });
-          }
+          createAlert({
+            message: rebaseFailureMessage(error),
+          });
         });
     },
     rebaseWithoutCi() {

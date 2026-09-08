@@ -618,6 +618,16 @@ Grants the ability to block AI catalog MCP servers.
 | Block | Project | Mutation | `AiCatalogMcpServerSetBlock` |
 | Block | Group | Mutation | `AiCatalogMcpServerSetBlock` |
 
+#### Ai Flow Schedule
+
+Grants the ability to create, delete, and update ai flow schedules.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `AiFlowScheduleCreate` |
+| Delete | Project | Mutation | `AiFlowScheduleDelete` |
+| Update | Project | Mutation | `AiFlowScheduleUpdate` |
+
 #### AI tool rule
 
 Grants the ability to read and update AI tool rules, which control per-tool approval (Allow, Ask, Deny) for the Duo Agent Platform.

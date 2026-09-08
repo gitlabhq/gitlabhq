@@ -118,6 +118,7 @@ module Mutations
 
         check_feature_available!(container, type, params)
         widget_params = extract_widget_params!(type, params, container)
+        widget_params = prepare_widget_params(widget_params, type, container)
 
         if widget_params.dig(:description_widget, :task_list_toggle)
           raise Gitlab::Graphql::Errors::ArgumentError,
@@ -140,6 +141,11 @@ module Mutations
       end
 
       private
+
+      # Overridden on EE
+      def prepare_widget_params(widget_params, _type, _container)
+        widget_params
+      end
 
       # Overridden on EE
       def check_feature_available!(container, type, params)

@@ -27840,6 +27840,9 @@ msgstr ""
 msgid "Definition"
 msgstr ""
 
+msgid "Degraded"
+msgstr ""
+
 msgid "Delay 2FA enforcement (hours)"
 msgstr ""
 
@@ -35833,6 +35836,9 @@ msgstr ""
 msgid "Feature flag was successfully removed."
 msgstr ""
 
+msgid "Feature flags"
+msgstr ""
+
 msgid "Feature preview"
 msgstr ""
 
@@ -35881,6 +35887,12 @@ msgid "FeatureFlags|Configure feature flags"
 msgstr ""
 
 msgid "FeatureFlags|Consider using the more flexible \"Percent rollout\" strategy instead."
+msgstr ""
+
+msgid "FeatureFlags|Control who can manage feature flags in this project."
+msgstr ""
+
+msgid "FeatureFlags|Could not update the minimum role setting."
 msgstr ""
 
 msgid "FeatureFlags|Create feature flag"
@@ -35957,6 +35969,12 @@ msgstr ""
 msgid "FeatureFlags|Loading feature flags"
 msgstr ""
 
+msgid "FeatureFlags|Minimum role successfully updated."
+msgstr ""
+
+msgid "FeatureFlags|Minimum role to manage feature flags"
+msgstr ""
+
 msgid "FeatureFlags|More information"
 msgstr ""
 
@@ -35972,7 +35990,13 @@ msgstr ""
 msgid "FeatureFlags|New feature flag"
 msgstr ""
 
+msgid "FeatureFlags|No one can manage feature flags."
+msgstr ""
+
 msgid "FeatureFlags|No user list selected"
+msgstr ""
+
+msgid "FeatureFlags|Only project Owners can change this setting while it is set to Owner or No one."
 msgstr ""
 
 msgid "FeatureFlags|Percent of users"
@@ -35988,6 +36012,9 @@ msgid "FeatureFlags|Remove"
 msgstr ""
 
 msgid "FeatureFlags|Search code references"
+msgstr ""
+
+msgid "FeatureFlags|Select the minimum role required to create, update, toggle, or delete feature flags. Members with a lower role can still see feature flags and their status."
 msgstr ""
 
 msgid "FeatureFlags|Set the Unleash client application name to the name of the environment your application runs in. This value is used to match environment scopes. See the %{linkStart}example client configuration%{linkEnd}."
@@ -43042,6 +43069,9 @@ msgid "Improve indexing performance by increasing Sidekiq load. Values greater t
 msgstr ""
 
 msgid "Improve quality with test cases"
+msgstr ""
+
+msgid "Improved"
 msgstr ""
 
 msgid "In GitLab"
@@ -51845,6 +51875,9 @@ msgstr ""
 msgid "MrReports|License compliance"
 msgstr ""
 
+msgid "MrReports|Load performance"
+msgstr ""
+
 msgid "MrReports|Metrics"
 msgstr ""
 
@@ -52989,6 +53022,9 @@ msgid "No more than %{max_work_items} work items can be moved at the same time"
 msgstr ""
 
 msgid "No more than %{max_work_items} work items can be updated at the same time"
+msgstr ""
+
+msgid "No one"
 msgstr ""
 
 msgid "No one allowed"
@@ -66831,6 +66867,12 @@ msgstr ""
 msgid "Reports|Head report parsing error:"
 msgstr ""
 
+msgid "Reports|Load performance test failed to load results"
+msgstr ""
+
+msgid "Reports|Load performance test results are not available"
+msgstr ""
+
 msgid "Reports|Metrics report scanning detected no new changes"
 msgstr ""
 
@@ -74355,6 +74397,9 @@ msgid "SecurityOrchestration|Results of most recent test"
 msgstr ""
 
 msgid "SecurityOrchestration|Review your settings before enabling — use the Edit links to go back and make changes."
+msgstr ""
+
+msgid "SecurityOrchestration|Risk severity"
 msgstr ""
 
 msgid "SecurityOrchestration|Role Level"
@@ -87149,6 +87194,9 @@ msgstr ""
 msgid "UsageBilling|No users found"
 msgstr ""
 
+msgid "UsageBilling|No users found."
+msgstr ""
+
 msgid "UsageBilling|On Demand"
 msgstr ""
 
@@ -87198,6 +87246,9 @@ msgid "UsageBilling|Save override"
 msgstr ""
 
 msgid "UsageBilling|Saving in the background."
+msgstr ""
+
+msgid "UsageBilling|Search for a user"
 msgstr ""
 
 msgid "UsageBilling|Select products"
@@ -87253,6 +87304,9 @@ msgstr ""
 msgid "UsageBilling|Try the GitLab Duo Agent Platform and agentic chat to delegate routine tasks like code refactoring, security scans, and research to AI-powered assistants."
 msgstr ""
 
+msgid "UsageBilling|Type at least 3 characters to search for users."
+msgstr ""
+
 msgid "UsageBilling|Understand how credits are consumed by different features, explore your billing and commitment options, and learn how to monitor your members' usage."
 msgstr ""
 
@@ -87278,6 +87332,9 @@ msgid "UsageBilling|Usage trends"
 msgstr ""
 
 msgid "UsageBilling|User"
+msgstr ""
+
+msgid "UsageBilling|Users"
 msgstr ""
 
 msgid "UsageBilling|When off, usage is tracked but not blocked."
@@ -98039,6 +98096,9 @@ msgid "mrWidget|Did not close"
 msgstr ""
 
 msgid "mrWidget|Edit title"
+msgstr ""
+
+msgid "mrWidget|Failed to rebase: %{mergeError}."
 msgstr ""
 
 msgid "mrWidget|Go to first open thread"

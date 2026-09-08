@@ -5,12 +5,14 @@ import MergeChecksRebase from '~/vue_merge_request_widget/components/checks/reba
 import rebaseQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/rebase.query.graphql';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import toast from '~/vue_shared/plugins/global_toast';
+import { createAlert } from '~/alert';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 
 jest.mock('~/vue_shared/plugins/global_toast');
+jest.mock('~/alert');
 
 let wrapper;
 const showMock = jest.fn();
@@ -322,6 +324,51 @@ describe('Merge request merge checks rebase component', () => {
 
       expect(eventHub.$emit).toHaveBeenCalledWith('mr-widget-rebase-success');
       expect(toast).toHaveBeenCalledWith('Rebase completed');
+    });
+  });
+
+  describe('when the rebase request is rejected', () => {
+    const rebaseWithRejection = async (rejection) => {
+      createWrapper({
+        propsData: {
+          service: {
+            rebase: jest.fn().mockRejectedValue(rejection),
+            poll: jest.fn().mockResolvedValue({}),
+          },
+        },
+      });
+
+      await waitForPromises();
+
+      findStandardRebaseButton().vm.$emit('click');
+
+      await waitForPromises();
+    };
+
+    it('alerts the reason the backend sent', async () => {
+      await rebaseWithRejection({
+        response: { data: { merge_error: 'Source branch is protected from force push' } },
+      });
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Failed to rebase: Source branch is protected from force push.',
+      });
+    });
+
+    it('alerts a generic message when the backend sent no reason', async () => {
+      await rebaseWithRejection({ response: { data: {} } });
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Failed to rebase. Please try again.',
+      });
+    });
+
+    it('stops the rebase buttons from loading', async () => {
+      await rebaseWithRejection({
+        response: { data: { merge_error: 'Cannot push to source branch' } },
+      });
+
+      expect(findStandardRebaseButton().props('loading')).toBe(false);
     });
   });
 

@@ -1502,6 +1502,68 @@ go_cloud_url = "azblob://<bucket>"
 
 {{< /tabs >}}
 
+#### Use an Azure Managed Identity
+
+Instead of a Shared Access Key or SAS token, Gitaly can authenticate to
+Azure Blob storage using the Managed Identity attached to the Gitaly node.
+The identity must have the `Storage Blob Data Contributor` role on the
+backup container.
+
+Specify the storage account in the `storage_account` query parameter of
+`go_cloud_url`. Leave `AZURE_STORAGE_KEY`, `AZURE_STORAGE_SAS_TOKEN`, and
+`AZURE_STORAGE_CONNECTION_STRING` unset. When Gitaly finds none of these
+credentials, it authenticates with the Managed Identity attached to the node.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+Edit `/etc/gitlab/gitlab.rb` and configure `go_cloud_url`:
+
+```ruby
+gitaly['configuration'] = {
+    backup: {
+        go_cloud_url: 'azblob://<bucket>?storage_account=<azure_storage_account>'
+    }
+}
+```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+For Helm-based deployments, see the
+[server-side backup documentation for Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/#server-side-backups).
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
+
+```toml
+[backup]
+go_cloud_url = "azblob://<bucket>?storage_account=<azure_storage_account>"
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+To use a user-assigned Managed Identity, also set `AZURE_CLIENT_ID` in the
+environment of the Gitaly process to the client ID of that identity:
+
+```ruby
+gitaly['env'] = {
+    'AZURE_CLIENT_ID' => '<user_assigned_identity_client_id>'
+}
+```
+
+> [!note]
+> Gitaly resolves Managed Identity credentials through the Azure identity chain,
+> which reads `AZURE_CLIENT_ID` and `AZURE_TOKEN_CREDENTIALS` from the environment
+> only. You cannot set these in `go_cloud_url`.
+
 ### Configure Google Cloud storage
 
 Google Cloud storage (GCP) authenticates using Application Default Credentials. Set up Application Default Credentials on each Gitaly server using either:

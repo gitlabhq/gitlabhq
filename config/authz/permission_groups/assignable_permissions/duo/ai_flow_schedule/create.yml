@@ -1,0 +1,9 @@
+---
+name: create_ai_flow_schedule
+description: Grants the ability to create schedules for AI flow triggers
+available_for:
+  - granular_access_token
+permissions:
+  - create_ai_flow_schedule
+boundaries:
+  - project

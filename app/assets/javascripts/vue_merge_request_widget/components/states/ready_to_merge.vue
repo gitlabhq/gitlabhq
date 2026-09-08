@@ -28,6 +28,7 @@ import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { rebaseProjectMergeRequestPath } from '~/lib/utils/path_helpers/merge_requests';
+import { rebaseFailureMessage } from '~/vue_merge_request_widget/utils';
 import {
   AUTO_MERGE_STRATEGIES,
   MT_MERGE_STRATEGY,
@@ -551,7 +552,7 @@ export default {
         this.updateGraphqlState();
       } catch (error) {
         createAlert({
-          message: error.response?.data?.message || __('Failed to rebase. Please try again.'),
+          message: rebaseFailureMessage(error),
           variant: 'danger',
         });
       } finally {

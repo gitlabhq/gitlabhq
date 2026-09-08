@@ -42,6 +42,10 @@ module Mcp
 
         private
 
+        def mcp_tool_identifier
+          :create_work_item
+        end
+
         def validate_create_params!
           raise ArgumentError, 'title is required when creating a work item' if params[:title].blank?
           raise ArgumentError, 'type_name is required when creating a work item' if params[:type_name].blank?
