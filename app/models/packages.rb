@@ -3,6 +3,7 @@
 module Packages
   DuplicatePackageError = Class.new(StandardError)
   PackageProtectedError = Class.new(StandardError)
+  PackageStatusChangeNotAllowedError = Class.new(StandardError)
 
   def self.table_name_prefix
     'packages_'

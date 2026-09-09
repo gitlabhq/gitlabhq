@@ -16,6 +16,11 @@ module Packages
           ServiceResponse.error(message: e.message, reason: :package_file_already_exists)
         rescue ::Packages::PackageProtectedError
           ::Packages::CreatePackageService::ERROR_RESPONSE_PACKAGE_PROTECTED
+        rescue ::Packages::PackageStatusChangeNotAllowedError
+          ServiceResponse.error(
+            message: 'Insufficient permissions to change the package status',
+            reason: :package_status_change_not_allowed
+          )
         rescue ::ActiveRecord::RecordNotUnique => e
           retry if (retries += 1) == MAX_RETRIES
 
@@ -49,11 +54,20 @@ module Packages
           raise ::Packages::DuplicatePackageError if target_file_is_duplicate?(package)
         end
 
-        package.update_column(:status, params[:status]) if params[:status] && params[:status] != package.status
+        update_status!(package)
 
         package.create_build_infos!(params[:build])
 
         package
+      end
+
+      # Changing the status of an already existing package can hide it from the
+      # package registry, so it requires more than the ability to publish.
+      def update_status!(package)
+        return if params[:status].blank? || params[:status] == package.status
+        raise ::Packages::PackageStatusChangeNotAllowedError unless can?(current_user, :update_package, project)
+
+        package.update!(status: params[:status])
       end
 
       def create_package_file(package)

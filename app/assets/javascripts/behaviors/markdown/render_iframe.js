@@ -3,18 +3,29 @@ import { setAttributes } from '~/lib/utils/dom_utils';
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#sandbox
 export const IFRAME_SANDBOX_RESTRICTIONS = 'allow-scripts allow-popups allow-same-origin';
 
+export const iframeRenderingEnabled = () =>
+  Boolean(window.gon?.iframe_rendering_enabled && window.gon?.features?.allowIframesInMarkdown);
+
+export const isIframeSrcAllowed = (src) => {
+  if (!iframeRenderingEnabled()) return false;
+
+  let srcUrl;
+  try {
+    srcUrl = new URL(src, window.location.origin);
+  } catch {
+    return false;
+  }
+
+  const allowlist = window.gon?.iframe_rendering_allowlist ?? [];
+  return allowlist.some((domain) => new URL(`https://${domain}`).origin === srcUrl.origin);
+};
+
 const elsProcessingMap = new WeakMap();
 
 function renderIframeEl(el) {
   const { src } = el;
-  if (!src) return;
 
-  const srcUrl = new URL(src);
-
-  const allowlist = window.gon?.iframe_rendering_allowlist ?? [];
-  const allowlistUrls = allowlist.map((domain) => new URL(`https://${domain}`));
-  const allowed = allowlistUrls.some((allowlistUrl) => allowlistUrl.origin === srcUrl.origin);
-  if (!allowed) {
+  if (!isIframeSrcAllowed(src)) {
     // This URL passed the allowlist at the time the Markdown content was
     // created/last updated, but no longer does. We must remove the node
     // entirely: if this instance uses the asset proxy, allowing it to remain in
@@ -57,8 +68,7 @@ function renderIframeEl(el) {
 }
 
 export default function renderIframes(els) {
-  if (!window.gon?.iframe_rendering_enabled) return;
-  if (!window.gon?.features.allowIframesInMarkdown) return;
+  if (!iframeRenderingEnabled()) return;
 
   if (!els.length) return;
 
