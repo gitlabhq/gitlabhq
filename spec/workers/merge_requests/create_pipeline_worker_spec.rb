@@ -12,7 +12,9 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
     subject do
       worker.perform(
         project.id, user.id, merge_request.id,
-        'pipeline_creation_request' => { 'key' => '123', 'id' => '456' }, 'gitaly_context' => {}
+        'pipeline_creation_request' => { 'key' => '123', 'id' => '456' },
+        'gitaly_context' => {},
+        'checkout_sha' => merge_request.diff_head_sha
       )
     end
 
@@ -27,7 +29,8 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
               push_options: nil,
               gitaly_context: {},
               pipeline_creation_request: { 'key' => '123', 'id' => '456' },
-              defer_request_completion: nil
+              defer_request_completion: nil,
+              checkout_sha: merge_request.diff_head_sha
             }) do |service|
             expect(service).to receive(:execute).with(merge_request)
               .and_return(ServiceResponse.success(payload: nil))
@@ -45,7 +48,8 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
           {
             'pipeline_creation_request' => { 'key' => '123', 'id' => '456' },
             'push_options' => { 'ci' => { 'skip' => true } },
-            'gitaly_context' => {}
+            'gitaly_context' => {},
+            'checkout_sha' => merge_request.diff_head_sha
           }
         end
 
@@ -61,7 +65,8 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
                 push_options: { ci: { skip: true } },
                 gitaly_context: {},
                 pipeline_creation_request: { 'key' => '123', 'id' => '456' },
-                defer_request_completion: nil
+                defer_request_completion: nil,
+                checkout_sha: merge_request.diff_head_sha
               }) do |service|
               expect(service).to receive(:execute).with(merge_request)
                 .and_return(ServiceResponse.success(payload: nil))
@@ -107,6 +112,59 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
               )
           end
         end
+      end
+    end
+
+    context 'when checkout_sha is explicitly passed in params' do
+      let(:pinned_sha) { 'abc123def456abc123def456abc123def456abc1' }
+
+      subject do
+        worker.perform(
+          project.id, user.id, merge_request.id,
+          'pipeline_creation_request' => { 'key' => '123', 'id' => '456' },
+          'gitaly_context' => {},
+          'checkout_sha' => pinned_sha
+        )
+      end
+
+      it 'passes the pinned checkout_sha to CreatePipelineService instead of diff_head_sha' do
+        expect_next_instance_of(MergeRequests::CreatePipelineService,
+          project: project,
+          current_user: user,
+          params: hash_including(checkout_sha: pinned_sha)) do |service|
+          expect(service).to receive(:execute).with(merge_request)
+            .and_return(ServiceResponse.success(payload: nil))
+        end
+
+        expect(MergeRequest).to receive(:find_by_id).with(merge_request.id).and_return(merge_request)
+        expect(merge_request).to receive(:update_head_pipeline)
+
+        subject
+      end
+    end
+
+    context 'when checkout_sha is not provided in params' do
+      subject do
+        worker.perform(
+          project.id, user.id, merge_request.id,
+          'pipeline_creation_request' => { 'key' => '123', 'id' => '456' },
+          'gitaly_context' => {}
+        )
+      end
+
+      it 'passes nil as checkout_sha to CreatePipelineService without raising' do
+        expect_next_instance_of(MergeRequests::CreatePipelineService,
+          project: project,
+          current_user: user,
+          params: hash_including(checkout_sha: nil)) do |service|
+          expect(service).to receive(:execute).with(merge_request)
+            .and_return(ServiceResponse.success(payload: nil))
+        end
+
+        expect(MergeRequest).to receive(:find_by_id).with(merge_request.id).and_return(merge_request)
+        expect(merge_request).to receive(:update_head_pipeline)
+
+        subject
       end
     end
 

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, feature_category: :code_review_workflow do
   include ProjectForksHelper
+  include RepoHelpers
 
   let_it_be_with_refind(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user, developer_of: project) }
@@ -407,6 +408,30 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
     end
   end
 
+  describe '#execute with checkout_sha' do
+    let(:pinned_sha) { sample_commit.id }
+    let(:params) { { checkout_sha: pinned_sha } }
+
+    subject(:response) { service.execute(merge_request) }
+
+    it 'passes checkout_sha to Ci::CreatePipelineService' do
+      expect(Ci::CreatePipelineService).to receive(:new).with(
+        anything, anything, a_hash_including(checkout_sha: pinned_sha)
+      ).and_call_original
+
+      response
+    end
+
+    it 'creates a pipeline using the pinned SHA rather than resolving the ref live' do
+      # The pipeline sha should reflect the pinned checkout_sha, not a live ref resolution
+      expect { response }.to change { Ci::Pipeline.count }.by(1)
+
+      pipeline = response.payload
+      expect(pipeline).to be_persisted
+      expect(pipeline.sha).to eq(pinned_sha)
+    end
+  end
+
   describe '#execute_async' do
     it 'queues a merge request pipeline creation and triggers GraphQL subscriptions' do
       expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async).with(
@@ -421,6 +446,31 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
       expect(
         Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(merge_request)
       ).to be_truthy
+    end
+
+    context 'when checkout_sha is provided in params' do
+      let(:pinned_sha) { 'abc123def456abc123def456abc123def456abc1' }
+      let(:params) { { checkout_sha: pinned_sha } }
+
+      it 'serialises the pinned checkout_sha into the worker job payload' do
+        expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async).with(
+          project.id, user.id, merge_request.id,
+          hash_including('checkout_sha' => pinned_sha)
+        )
+
+        service.execute_async(merge_request)
+      end
+    end
+
+    context 'when checkout_sha is not provided' do
+      it 'falls back to diff_head_sha and serialises it into the worker job payload' do
+        expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async).with(
+          project.id, user.id, merge_request.id,
+          hash_including('checkout_sha' => merge_request.diff_head_sha)
+        )
+
+        service.execute_async(merge_request)
+      end
     end
 
     it 'includes defer_request_completion in worker params' do

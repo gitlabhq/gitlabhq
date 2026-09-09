@@ -70,4 +70,45 @@ describe('content_editor/services/create_content_editor', () => {
         .supportsTableOfContents,
     ).toBe(true);
   });
+
+  describe('#security: iframe extension', () => {
+    const hasIframeExtension = () =>
+      createContentEditor({
+        renderMarkdown,
+        uploadsPath,
+      }).tiptapEditor.extensionManager.extensions.some((extension) => extension.name === 'iframe');
+
+    it('is loaded when iframe rendering is enabled and the feature flag is on', () => {
+      window.gon = {
+        iframe_rendering_enabled: true,
+        features: { allowIframesInMarkdown: true },
+      };
+
+      expect(hasIframeExtension()).toBe(true);
+    });
+
+    it('is not loaded when iframe rendering is disabled', () => {
+      window.gon = {
+        iframe_rendering_enabled: false,
+        features: { allowIframesInMarkdown: true },
+      };
+
+      expect(hasIframeExtension()).toBe(false);
+    });
+
+    it('is not loaded when the feature flag is off', () => {
+      window.gon = {
+        iframe_rendering_enabled: true,
+        features: { allowIframesInMarkdown: false },
+      };
+
+      expect(hasIframeExtension()).toBe(false);
+    });
+
+    it('is not loaded on a page that pushes no feature flags', () => {
+      window.gon = { iframe_rendering_enabled: true };
+
+      expect(hasIframeExtension()).toBe(false);
+    });
+  });
 });

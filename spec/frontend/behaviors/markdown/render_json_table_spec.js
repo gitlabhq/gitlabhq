@@ -215,6 +215,47 @@ describe('behaviors/markdown/render_json_table', () => {
       await nextTick();
     };
 
+    const buildTable = (fields, rows) => {
+      const table = document.createElement('table');
+      table.dataset.tableFields = JSON.stringify(fields);
+      table.dataset.tableMarkdown = 'true';
+
+      const headRow = table.createTHead().insertRow();
+      fields.forEach((field) => {
+        const th = document.createElement('th');
+        th.textContent = field.label;
+        headRow.appendChild(th);
+      });
+
+      const tbody = table.createTBody();
+      rows.forEach((row) => {
+        const tr = tbody.insertRow();
+        row.forEach((value) => {
+          tr.insertCell().textContent = value;
+        });
+      });
+
+      return table;
+    };
+
+    const createTestSubjectFromTable = async (table) => {
+      if (element) {
+        throw new Error('element has already been initialized');
+      }
+
+      const parent = document.createElement('div');
+      parent.appendChild(table);
+
+      document.body.appendChild(parent);
+      renderJSONTableHTML([table]);
+
+      element = parent;
+
+      jest.runAllTimers();
+
+      await nextTick();
+    };
+
     describe('default', () => {
       beforeEach(async () => {
         await createTestSubject(TEST_MARKDOWN_DATA);
@@ -269,6 +310,32 @@ describe('behaviors/markdown/render_json_table', () => {
 
       it('shows filter', () => {
         expect(findInputs()).toHaveLength(1);
+      });
+    });
+
+    describe('with a reserved bootstrap-vue field key', () => {
+      const INJECTED_ROW_CLASS = 'js-injected-row';
+
+      beforeEach(async () => {
+        await createTestSubjectFromTable(
+          buildTable(
+            [
+              { key: '_rowVariant', label: 'Variant' },
+              { key: 'url', label: 'URL' },
+            ],
+            [[` ${INJECTED_ROW_CLASS}`, 'https://example.com/']],
+          ),
+        );
+      });
+
+      it('renders the table', () => {
+        expect(findTables()).toHaveLength(1);
+      });
+
+      it('does not apply injected classes to rows', () => {
+        const row = document.querySelector('tbody > tr');
+
+        expect(Array.from(row.classList)).toEqual([]);
       });
     });
   });

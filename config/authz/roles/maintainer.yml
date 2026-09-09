@@ -178,6 +178,7 @@ project:
   - update_duo_setting
   - update_external_status_check
   - update_freeze_period
+  - update_package
   - update_pages
   - update_pipeline_variable_override_setting
   - update_product_analytics_settings
