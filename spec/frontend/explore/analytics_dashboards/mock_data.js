@@ -93,15 +93,15 @@ export const mockSystemDashboardResponse = {
   customSystemDashboard: mockSystemDashboard,
 };
 
-export const mockDashboardCompactGridResponse = {
+export const mockDashboardCompactGridResponse = (gridHeight) => ({
   customDashboard: {
     ...mockCustomDashboard,
     config: {
       ...mockCustomDashboard.config,
-      gridHeight: 'COMPACT',
+      gridHeight,
     },
   },
-};
+});
 
 export const mockDashboardWithViews = {
   ...mockCustomDashboard,

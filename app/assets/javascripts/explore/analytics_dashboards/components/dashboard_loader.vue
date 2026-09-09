@@ -50,15 +50,15 @@ export default {
           : {}),
       };
     },
+    // The raw schema value is `compact` (lowercased)
+    isCompactGrid() {
+      return this.config.gridHeight?.toUpperCase() === GRID_HEIGHT_COMPACT;
+    },
     cellHeight() {
-      return this.config.gridHeight === GRID_HEIGHT_COMPACT
-        ? GRID_HEIGHT_COMPACT_CELL_HEIGHT
-        : undefined;
+      return this.isCompactGrid ? GRID_HEIGHT_COMPACT_CELL_HEIGHT : undefined;
     },
     minCellHeight() {
-      return this.config.gridHeight === GRID_HEIGHT_COMPACT
-        ? GRID_HEIGHT_COMPACT_MIN_CELL_HEIGHT
-        : undefined;
+      return this.isCompactGrid ? GRID_HEIGHT_COMPACT_MIN_CELL_HEIGHT : undefined;
     },
   },
   watch: {

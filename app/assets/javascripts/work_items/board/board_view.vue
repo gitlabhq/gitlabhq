@@ -249,6 +249,23 @@ export default {
     canReorderColumns() {
       return this.canManageColumns && this.orderedGroupValues.length > 1;
     },
+    // Epics are the only type a group-level board can create, so when they can't
+    // carry the grouped attribute (they have no status), anything created here
+    // would immediately fall off the board. Don't offer the button at all.
+    canCreateWorkItemInColumn() {
+      if (!this.canCreateWorkItem) {
+        return false;
+      }
+      if (!this.queryVariables.isGroup) {
+        return true;
+      }
+      return (
+        this.strategy?.supportsWorkItemType?.({
+          typeName: WORK_ITEM_TYPE_NAME_EPIC,
+          gateData: this.gateData,
+        }) ?? true
+      );
+    },
     // Epics are a fixed type on their board, so the type selector is hidden there.
     alwaysShowWorkItemTypeSelect() {
       return this.preselectedWorkItemType !== WORK_ITEM_TYPE_NAME_EPIC;
@@ -954,7 +971,7 @@ export default {
         :can-move-left="index > 0"
         :can-move-right="index < renderedColumns.length - 1"
         :can-hide="canManageColumns"
-        :can-create-work-item="canCreateWorkItem"
+        :can-create-work-item="canCreateWorkItemInColumn"
         :inserting-card="insertingInColumnId === value.id"
         :hidden-metadata-keys="hiddenMetadataKeys"
         :active-item="activeItem"

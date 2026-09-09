@@ -234,4 +234,78 @@ describe('ExtendedDashboardPanel', () => {
       );
     });
   });
+
+  describe('footer slot', () => {
+    const findFooter = () => wrapper.findByTestId('panel-footer');
+    const findBodyWrapper = () => wrapper.findByTestId('panel-body-content');
+
+    describe('when a footer slot is provided', () => {
+      beforeEach(() => {
+        createWrapper({
+          mountFn: mountExtended,
+          slots: {
+            body: '<div data-testid="panel-body-slot"></div>',
+            footer: '<a data-testid="panel-footer-slot">View adoption</a>',
+          },
+        });
+      });
+
+      it('renders the footer slot content', () => {
+        expect(wrapper.findByTestId('panel-footer-slot').exists()).toBe(true);
+      });
+
+      it('renders the body slot alongside it', () => {
+        expect(wrapper.findByTestId('panel-body-slot').exists()).toBe(true);
+      });
+
+      // The visualization scrolls and the footer stays put, so the grow wrapper owns the
+      // overflow and the footer must not shrink.
+      it('gives the body the remaining space and keeps the footer at its own height', () => {
+        expect(findBodyWrapper().classes()).toEqual(
+          expect.arrayContaining(['gl-min-h-0', 'gl-grow', 'gl-overflow-y-auto']),
+        );
+        expect(findFooter().classes()).toContain('gl-shrink-0');
+      });
+
+      // A scrollable region has to be reachable by keyboard, or content the footer
+      // pushed out of view cannot be scrolled to without a pointer.
+      it('makes the scrollable body focusable', () => {
+        expect(findBodyWrapper().attributes('tabindex')).toBe('0');
+      });
+    });
+
+    // The footer lives inside GlDashboardPanel's body slot, so it would otherwise
+    // depend on a body slot being passed too.
+    describe('when only a footer slot is provided', () => {
+      beforeEach(() => {
+        createWrapper({
+          mountFn: mountExtended,
+          slots: { footer: '<a data-testid="panel-footer-slot">View adoption</a>' },
+        });
+      });
+
+      it('still renders the footer', () => {
+        expect(wrapper.findByTestId('panel-footer-slot').exists()).toBe(true);
+      });
+    });
+
+    describe('when no footer slot is provided', () => {
+      beforeEach(() => {
+        createWrapper({
+          mountFn: mountExtended,
+          slots: { body: '<div data-testid="panel-body-slot"></div>' },
+        });
+      });
+
+      it('does not render a footer', () => {
+        expect(findFooter().exists()).toBe(false);
+      });
+
+      // Panels without a footer must keep GlDashboardPanel's own body layout.
+      it('does not wrap the body', () => {
+        expect(findBodyWrapper().exists()).toBe(false);
+        expect(wrapper.findByTestId('panel-body-slot').exists()).toBe(true);
+      });
+    });
+  });
 });

@@ -43,6 +43,7 @@ export { GROUP_NONE, getGroupKey, getGroupId, getGroupValueId } from './identity
  * @property {Object} [gateQuery] - Optional GraphQL query for drag-eligibility data. Omit to allow every drop.
  * @property {(data: Object) => *} [extractGateData] - Pulls the gate data (e.g. a lookup map) out of the `gateQuery` result.
  * @property {(args: { item: Object, value: GroupingValue, gateData: * }) => boolean} [isDropAllowed] - Whether `item` can be dropped into `value`'s group. Omit to allow every drop.
+ * @property {(args: { typeName: string, gateData: * }) => boolean} [supportsWorkItemType] - Whether a work item of that type can carry the grouped attribute at all, so it can land in a group rather than falling off the board. Omit when every type can.
  */
 
 export const DEFAULT_GROUP_BY = { property: 'status' };

@@ -1,11 +1,13 @@
 <script>
 import { isString, merge } from 'lodash-es';
-import { GlButton, GlLink, GlSegmentedControl, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlIcon, GlLink, GlSegmentedControl, GlSprintf } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 import { VARIANT_DANGER, VARIANT_INFO, VARIANT_WARNING } from '~/alert';
+import { isMetaClick } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
+import { setUrlParams } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import ExtendedDashboardPanel from '~/vue_shared/components/customizable_dashboard/extended_dashboard_panel.vue';
 import dataSources from 'ee_else_ce/analytics/analytics_dashboards/data_sources';
@@ -24,6 +26,7 @@ export default {
   name: 'AnalyticsDashboardPanel',
   components: {
     ExtendedDashboardPanel,
+    GlIcon,
     GlLink,
     GlSegmentedControl,
     GlSprintf,
@@ -75,7 +78,13 @@ export default {
       required: false,
       default: () => [],
     },
+    footer: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
+  emits: ['select-dashboard-view'],
   data() {
     return {
       errors: [],
@@ -203,6 +212,14 @@ export default {
 
       return undefined;
     },
+    dashboardViewLink() {
+      const link = this.footer?.dashboardViewLink;
+
+      return Number.isInteger(link?.view) && link.view >= 0 ? link : undefined;
+    },
+    dashboardViewHref() {
+      return setUrlParams({ view: this.dashboardViewLink.view });
+    },
   },
   watch: {
     currentVisualization: {
@@ -214,6 +231,14 @@ export default {
     filters: 'fetchData',
   },
   methods: {
+    // Switching view in place would defeat the href, so leave meta, ctrl and middle
+    // clicks to the browser.
+    onDashboardViewLinkClick(event) {
+      if (isMetaClick(event)) return;
+
+      event.preventDefault();
+      this.$emit('select-dashboard-view', this.dashboardViewLink.view);
+    },
     async importDataSourceModule(dataType) {
       const module = await dataSources[dataType]();
       return module.default;
@@ -391,6 +416,17 @@ export default {
         @reload="fetchData"
         @update-query="onUpdateQuery"
       />
+    </template>
+
+    <template v-if="dashboardViewLink" #footer>
+      <gl-link
+        :href="dashboardViewHref"
+        data-testid="panel-footer-dashboard-view-link"
+        @click="onDashboardViewLinkClick"
+      >
+        {{ dashboardViewLink.text }}
+        <gl-icon name="arrow-right" variant="current" />
+      </gl-link>
     </template>
 
     <template #alert-popover>

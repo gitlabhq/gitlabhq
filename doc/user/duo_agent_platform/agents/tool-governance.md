@@ -70,6 +70,7 @@ enforcement depends on where the flow runs:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606073) in GitLab 19.4 with a [feature flag](../../../administration/feature_flags/_index.md) named `duo_mcp_tool_governance`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/607499) in GitLab 19.4.
 
 {{< /history >}}
 

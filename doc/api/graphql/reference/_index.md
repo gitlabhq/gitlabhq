@@ -4977,6 +4977,35 @@ Fields:
 | <a id="mutation-artifactregistrymanifestdelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-artifactregistrymanifestdelete-repository"></a>`repository` | [`ArtifactRegistryRepository`](#artifactregistryrepository) | Repository holding the deleted manifest. Counters were read before the deletion applied, so they can lag its result. Null when the deletion was not accepted. |
 
+### `Mutation.artifactRegistryNpmDistTagDelete`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Deletes one dist-tag of an npm package in an Artifact Registry repository, addressed by its Artifact Registry ID. Applies to npm repositories only. A non-npm repository is refused before any request reaches Artifact Registry, and the refusal appears in the payload errors. A remote repository is refused the same way, because Artifact Registry holds the dist-tags of a remote repository as a rewritten document rather than as individually addressable rows, so there is no dist-tag row to delete. Removes the dist-tag alone, never the version it named. The mutation reports acceptance rather than completion.
+
+Input type: `ArtifactRegistryNpmDistTagDeleteInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistrynpmdisttagdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistrynpmdisttagdelete-id"></a>`id` | [`ID!`](#id) | ID of the dist-tag in Artifact Registry. Not a GitLab global ID. |
+| <a id="mutation-artifactregistrynpmdisttagdelete-name"></a>`name` | [`String!`](#string) | Name of the repository holding the dist-tag, unique within the organization. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistrynpmdisttagdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistrynpmdisttagdelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-artifactregistrynpmdisttagdelete-repository"></a>`repository` | [`ArtifactRegistryRepository`](#artifactregistryrepository) | Repository holding the deleted dist-tag. A dist-tag delete moves no repository counter. Null when the deletion was not accepted. |
+
 ### `Mutation.artifactRegistryRepositoryArtifactsDelete`
 
 {{< details >}}

@@ -1,4 +1,11 @@
-import { GlButton, GlLink, GlSegmentedControl, GlSprintf, GlDashboardPanel } from '@gitlab/ui';
+import {
+  GlButton,
+  GlIcon,
+  GlLink,
+  GlSegmentedControl,
+  GlSprintf,
+  GlDashboardPanel,
+} from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { VARIANT_DANGER, VARIANT_WARNING, VARIANT_INFO } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -992,6 +999,67 @@ describe('AnalyticsDashboardPanel', () => {
       await waitForPromises();
 
       expect(mockFetch).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('footer', () => {
+    const findFooterLink = () => wrapper.findComponentByTestId('panel-footer-dashboard-view-link');
+
+    describe('with a view link', () => {
+      beforeEach(() => {
+        createWrapper({
+          props: { footer: { dashboardViewLink: { text: 'View adoption', view: 1 } } },
+        });
+      });
+
+      it('renders the configured text', () => {
+        expect(findFooterLink().text()).toContain('View adoption');
+      });
+
+      // A real href so the link can be opened in a new tab, even though a left click is
+      // handled in the page.
+      it('links to the target view', () => {
+        expect(findFooterLink().attributes('href')).toContain('?view=1');
+      });
+
+      it('renders a trailing arrow', () => {
+        expect(findFooterLink().findComponent(GlIcon).props('name')).toBe('arrow-right');
+      });
+
+      it('emits `select-dashboard-view` with the view index instead of navigating', () => {
+        const event = { preventDefault: jest.fn() };
+
+        findFooterLink().vm.$emit('click', event);
+
+        expect(event.preventDefault).toHaveBeenCalled();
+        expect(wrapper.emitted('select-dashboard-view')).toEqual([[1]]);
+      });
+
+      // The href is there so the view can be opened in a new tab, which only works if
+      // the browser is left to handle the click.
+      it.each(['metaKey', 'ctrlKey'])('leaves a %s click to the browser', (modifier) => {
+        const event = { preventDefault: jest.fn(), [modifier]: true };
+
+        findFooterLink().vm.$emit('click', event);
+
+        expect(event.preventDefault).not.toHaveBeenCalled();
+        expect(wrapper.emitted('select-dashboard-view')).toBeUndefined();
+      });
+    });
+
+    describe.each`
+      case                      | footer
+      ${'no footer'}            | ${null}
+      ${'no dashboardViewLink'} | ${{}}
+      ${'a non-integer view'}   | ${{ dashboardViewLink: { text: 'View adoption', view: 'Adoption' } }}
+      ${'a missing view'}       | ${{ dashboardViewLink: { text: 'View adoption' } }}
+      ${'a negative view'}      | ${{ dashboardViewLink: { text: 'View adoption', view: -1 } }}
+    `('with $case', ({ footer }) => {
+      it('renders no footer link', () => {
+        createWrapper({ props: { footer } });
+
+        expect(findFooterLink().exists()).toBe(false);
+      });
     });
   });
 });

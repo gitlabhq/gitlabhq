@@ -40,7 +40,30 @@ GitLab automatically synchronizes these advisories to your GitLab instance in th
 > In [offline environments](../offline_deployments/_index.md), GitLab cannot synchronize these advisories automatically.
 > Instead, you [download them on a machine with internet access](../../../topics/offline/quick_start_guide.md#download-gitlab-malware-advisories) and copy them to the instance.
 
-These advisories are used by the dependency firewall rules to block malicious packages during CI/CD runs.
+These advisories serve two purposes:
+
+- Dependency scanning uses them to create a vulnerability when a pipeline detects a malicious package.
+- [Continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md#malicious-packages)
+  uses them to create a vulnerability without requiring a pipeline to run.
+
+### Supported package types
+
+Malware advisories are available for components with the following
+[PURL types](https://github.com/package-url/purl-spec/blob/346589846130317464b677bc4eab30bf5040183a/PURL-TYPES.rst):
+
+- `cargo`
+- `go`
+- `maven`
+- `npm`
+- `nuget`
+- `pypi`
+- `rubygem`
+
+This is a subset of the PURL types supported for
+[regular advisories](../dependency_scanning/continuous_dependency_scanning/_index.md#supported-package-types).
+There are no malware advisories for `conan`, `packagist`, `pub`, or `swift`, so components with
+those PURL types are never flagged as malicious. There are also no malware advisories for container
+scanning PURL types, such as `apk` and `deb`.
 
 ## Standardization
 

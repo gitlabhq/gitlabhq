@@ -72,11 +72,7 @@ module RSpec
     private
 
     def comparable_data(event)
-      if event.is_a?(Gitlab::EventStore::CloudEvent)
-        event.event_data.with_indifferent_access
-      else
-        event.data
-      end
+      event.event_data.with_indifferent_access
     end
 
     def match_data?(actual, expected)

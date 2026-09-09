@@ -287,11 +287,6 @@ msgid_plural "%d drafts hidden"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d entry"
-msgid_plural "%d entries"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d environment found"
 msgid_plural "%d environments found"
 msgstr[0] ""
@@ -12287,6 +12282,9 @@ msgstr ""
 msgid "ArtifactRegistry|Control artifact registry access for this organization. When enabled, all projects and groups have access to a unified registry."
 msgstr ""
 
+msgid "ArtifactRegistry|Copy %{checksum} for %{name}"
+msgstr ""
+
 msgid "ArtifactRegistry|Copy and paste this inside your %{codeStart}pom.xml%{codeEnd} %{codeStart}dependencies%{codeEnd} block:"
 msgstr ""
 
@@ -12318,6 +12316,12 @@ msgid "ArtifactRegistry|Copy the publish command"
 msgstr ""
 
 msgid "ArtifactRegistry|Copy the pull command"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy the pull-by-digest command"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy the pull-by-tag command"
 msgstr ""
 
 msgid "ArtifactRegistry|Copy the push command"
@@ -12384,6 +12388,9 @@ msgid "ArtifactRegistry|Digest"
 msgstr ""
 
 msgid "ArtifactRegistry|Disable Artifact Registry"
+msgstr ""
+
+msgid "ArtifactRegistry|Dist-tags cannot be deleted from remote repositories."
 msgstr ""
 
 msgid "ArtifactRegistry|Docker"
@@ -12455,6 +12462,9 @@ msgid "ArtifactRegistry|Gradle (Kotlin)"
 msgstr ""
 
 msgid "ArtifactRegistry|Healthy"
+msgstr ""
+
+msgid "ArtifactRegistry|Hide checksums for %{name}"
 msgstr ""
 
 msgid "ArtifactRegistry|Hosted"
@@ -12619,6 +12629,9 @@ msgstr ""
 msgid "ArtifactRegistry|Only lowercase letters, digits and hyphens (-) are allowed. Remove any spaces or special characters."
 msgstr ""
 
+msgid "ArtifactRegistry|Only npm repositories have dist-tags."
+msgstr ""
+
 msgid "ArtifactRegistry|Organization could not be determined."
 msgstr ""
 
@@ -12675,6 +12688,12 @@ msgid "ArtifactRegistry|Published to %{project} by %{author}"
 msgstr ""
 
 msgid "ArtifactRegistry|Pull an image:"
+msgstr ""
+
+msgid "ArtifactRegistry|Pull by digest:"
+msgstr ""
+
+msgid "ArtifactRegistry|Pull by tag:"
 msgstr ""
 
 msgid "ArtifactRegistry|Pull command for %{version}"
@@ -12755,6 +12774,9 @@ msgstr ""
 msgid "ArtifactRegistry|Resource could not be found."
 msgstr ""
 
+msgid "ArtifactRegistry|Revealed %{checksums} for %{name}."
+msgstr ""
+
 msgid "ArtifactRegistry|Revocation %{number} on resource %{resource_id}: %{message}"
 msgstr ""
 
@@ -12768,6 +12790,9 @@ msgid "ArtifactRegistry|Set up Artifact registry"
 msgstr ""
 
 msgid "ArtifactRegistry|Setup instructions"
+msgstr ""
+
+msgid "ArtifactRegistry|Show checksums for %{name}"
 msgstr ""
 
 msgid "ArtifactRegistry|Sign in to the registry:"
@@ -41711,6 +41736,12 @@ msgid "HomePageMergeRequestsWidget|The number of merge requests is not available
 msgstr ""
 
 msgid "HomePageMergeRequestsWidget|Waiting for your review"
+msgstr ""
+
+msgid "HomePagePipelinesWidget|Pipelines for your merge requests will appear here."
+msgstr ""
+
+msgid "HomePagePipelinesWidget|Your pipelines are not available. Please refresh the page to try again."
 msgstr ""
 
 msgid "HomePageProjectsWidget|Your projects are not available. Please refresh the page to try again."
@@ -87310,9 +87341,6 @@ msgstr[1] ""
 msgid "UsageBilling|Track monthly credit consumption and the main drivers of credit usage."
 msgstr ""
 
-msgid "UsageBilling|Track your GitLab Credits consumption for %{strong_start}%{group_name}%{strong_end} group."
-msgstr ""
-
 msgid "UsageBilling|Trial"
 msgstr ""
 
@@ -92662,9 +92690,6 @@ msgstr ""
 msgid "WorkItemDecisionLog|New decision"
 msgstr ""
 
-msgid "WorkItemDecisionLog|No decisions"
-msgstr ""
-
 msgid "WorkItemDecisionLog|No decisions yet"
 msgstr ""
 
@@ -92708,9 +92733,6 @@ msgid "WorkItemDecisionLog|Suggested answer to an open question raised by %{auth
 msgstr ""
 
 msgid "WorkItemDecisionLog|View comment"
-msgstr ""
-
-msgid "WorkItemDecisionLog|View decision log"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Why"

@@ -364,8 +364,18 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       sync_partitions
     end
 
+    it 'tells the eligibility check that the detach will not be concurrent' do
+      expect(Gitlab::Database::Partitioning::DetachEligibility).to receive(:new)
+        .with(anything, connection: connection, detach_concurrently: false)
+        .exactly(extra_partitions.size).times.and_call_original
+
+      sync_partitions
+    end
+
     context 'when the eligibility check hits a database error' do
       before do
+        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
         allow_next_instances_of(Gitlab::Database::Partitioning::DetachEligibility, extra_partitions.size) do |check|
           allow(check).to receive(:detachable?).and_raise(ActiveRecord::StatementInvalid, 'statement timeout')
         end
@@ -433,7 +443,34 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         sync_partitions
       end
 
+      context 'when the blocker is at error level' do
+        let(:blocker_level) { :error }
+
+        it 'reports one error for the whole run, naming every partition it deferred' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once do |exception|
+            expect(exception).to be_a(described_class::UnableToDetachPartition)
+            expect(exception.message).to eq(
+              'Unable to detach partitions of _test_foo: ' \
+                'foo1 (referencing_table_cannot_prune), foo2 (referencing_table_cannot_prune)'
+            )
+          end
+
+          sync_partitions
+        end
+
+        it 'logs every deferral before it escalates' do
+          expect(Gitlab::AppLogger).to receive(:error).exactly(extra_partitions.size).times.ordered
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).ordered
+
+          sync_partitions
+        end
+      end
+
       context 'when the blocker asks for another log level' do
+        before do
+          allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        end
+
         where(:blocker_level, :log_method) do
           :info  | :info
           :error | :error
@@ -458,6 +495,33 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       end
     end
 
+    context 'when only one partition is blocked' do
+      let(:blocked_partition) { extra_partitions.first }
+
+      before do
+        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+        allow(Gitlab::Database::Partitioning::DetachEligibility).to receive(:new)
+          .and_wrap_original do |method, partition, **kwargs|
+            method.call(partition, **kwargs).tap do |check|
+              next unless partition == blocked_partition
+
+              allow(check).to receive(:detachable?).and_raise(ActiveRecord::StatementInvalid, 'statement timeout')
+            end
+          end
+      end
+
+      it 'detaches the partition that is eligible' do
+        expect { sync_partitions }.to change { Postgresql::DetachedPartition.pluck(:table_name) }.to(%w[foo2])
+      end
+
+      it 'escalates the blocked one once the run is done' do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+        sync_partitions
+      end
+    end
+
     context 'when the strategy detaches concurrently' do
       let(:partitioning_strategy) do
         double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil,
@@ -469,6 +533,14 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
           instance_double(Gitlab::Database::Partitioning::MultipleNumericListPartition,
             table: table, partition_name: partition_name, to_detach_sql: 'SELECT 1')
         end
+      end
+
+      it 'tells the eligibility check that the detach will be concurrent' do
+        expect(Gitlab::Database::Partitioning::DetachEligibility).to receive(:new)
+          .with(anything, connection: connection, detach_concurrently: true)
+          .exactly(extra_partitions.size).times.and_call_original
+
+        sync_partitions
       end
 
       it 'asks each partition for the concurrent form of DETACH' do
@@ -566,6 +638,18 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         sync_partitions
 
         expect(Postgresql::DetachedPartition.pluck(:table_name)).to contain_exactly("#{table}_100")
+      end
+
+      context 'when the eligible partition is awaiting FINALIZE' do
+        before do
+          mark_pending_detach("#{table}_100")
+        end
+
+        it 'defers it rather than failing the detach' do
+          expect { sync_partitions }.not_to change { Postgresql::DetachedPartition.count }
+
+          expect(find_partitions(table).flatten).to contain_exactly("#{table}_100", "#{table}_101")
+        end
       end
     end
   end

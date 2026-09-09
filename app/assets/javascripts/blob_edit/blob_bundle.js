@@ -12,7 +12,6 @@ export default () => {
     const currentAction = $('.js-file-title').data('currentAction');
     const projectId = editBlobForm.data('project-id');
     const projectPath = editBlobForm.data('project-path');
-    const isMarkdown = editBlobForm.data('is-markdown');
     const previewMarkdownPath = editBlobForm.data('previewMarkdownPath');
     const commitButton = $('.js-commit-button');
     const commitButtonLoading = $('.js-commit-button-loading');
@@ -26,7 +25,6 @@ export default () => {
           currentAction,
           projectId,
           projectPath,
-          isMarkdown,
           previewMarkdownPath,
         });
 

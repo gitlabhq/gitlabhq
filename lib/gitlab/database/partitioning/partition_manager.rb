@@ -14,6 +14,8 @@ module Gitlab
         RETAIN_DETACHED_PARTITIONS_FOR = 1.week
         MAX_PARTITION_SIZE = 150.gigabytes
 
+        UnableToDetachPartition = Class.new(StandardError)
+
         def initialize(model, connection: nil)
           @model = model
           @connection = connection || model.connection
@@ -27,6 +29,7 @@ module Gitlab
         def sync_partitions(analyze: true)
           partitions_to_create = []
           partitions_to_detach = []
+          @detach_error_messages = []
 
           return skip_syncing_partitions unless table_partitioned?
 
@@ -42,8 +45,10 @@ module Gitlab
             detach(partitions_to_detach) unless partitions_to_detach.empty?
 
             run_analyze_on_partitioned_table if analyze
+
+            raise_unable_to_detach_partition if @detach_error_messages.any?
           end
-        rescue ArgumentError => e
+        rescue ArgumentError, UnableToDetachPartition => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         rescue StandardError => e
           Gitlab::AppLogger.error(
@@ -146,9 +151,10 @@ module Gitlab
         def detach_concurrently?
           model.partitioning_strategy.detach_concurrently?
         end
+        strong_memoize_attr :detach_concurrently?
 
         def detachable?(partition)
-          check = DetachEligibility.new(partition, connection: connection)
+          check = DetachEligibility.new(partition, connection: connection, detach_concurrently: detach_concurrently?)
           return true if check.detachable?
 
           log_deferred_detach(partition, check.blocker)
@@ -169,10 +175,21 @@ module Gitlab
           )
 
           case blocker.level
-          when :warn then Gitlab::AppLogger.warn(payload)
-          when :error then Gitlab::AppLogger.error(payload)
-          else Gitlab::AppLogger.info(payload)
+          when :warn
+            Gitlab::AppLogger.warn(payload)
+          when :error
+            Gitlab::AppLogger.error(payload)
+            @detach_error_messages << "#{partition.partition_name} (#{blocker.reason})"
+          else
+            Gitlab::AppLogger.info(payload)
           end
+        end
+
+        # An :error blocker is a misconfigured table or a database error in the eligibility check, and it must
+        # reach error tracking. We raise after the run finishes, so the other partitions still get detached.
+        def raise_unable_to_detach_partition
+          raise UnableToDetachPartition,
+            "Unable to detach partitions of #{model.table_name}: #{@detach_error_messages.join(', ')}"
         end
 
         def log_payload(**params)

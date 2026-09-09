@@ -639,6 +639,8 @@ Gitlab/Authz/PermissionCheck:
     - 'ee/app/services/member_roles/delete_service.rb'
     - 'ee/app/services/member_roles/update_service.rb'
     - 'ee/app/services/members/await_service.rb'
+    - 'ee/app/services/members/create_ldap_group_link_service.rb'
+    - 'ee/app/services/members/destroy_ldap_group_link_service.rb'
     - 'ee/app/services/merge_request_approval_settings/update_service.rb'
     - 'ee/app/services/onboarding/trial_namespace_create_service.rb'
     - 'ee/app/services/repositories/pull_mirrors/update_service.rb'

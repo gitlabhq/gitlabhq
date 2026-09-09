@@ -161,7 +161,6 @@ module BlobHelper
       'blob-filename' => @blob && @blob.path,
       'project-id' => project.id,
       'project-path': project.full_path,
-      'is-markdown' => @blob && @blob.path && Gitlab::MarkupHelper.gitlab_markdown?(@blob.path),
       'preview-markdown-path' => preview_markdown_path(project),
       'form-method' => method
     }

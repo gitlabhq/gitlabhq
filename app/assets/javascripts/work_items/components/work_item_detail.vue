@@ -1088,6 +1088,13 @@ export default {
               :agent-plan-widget="agentPlanWidget"
               :on-error="(e) => (updateError = e)"
             ></slot>
+            <slot
+              name="header-actions"
+              :work-item="workItem"
+              :is-detail-panel="isDetailPanel"
+              :active-panel="activePanel"
+              :request-panel="requestPanel"
+            ></slot>
             <work-item-todos-widget
               v-if="showWorkItemCurrentUserTodos"
               :work-item-id="workItem.id"

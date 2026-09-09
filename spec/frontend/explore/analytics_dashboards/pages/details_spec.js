@@ -522,6 +522,101 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     });
   });
 
+  describe('panel footers', () => {
+    const footer = { dashboardViewLink: { text: 'View details', view: 1 } };
+
+    // Renders the filters slot for selectGroup and the first panel, so the footer
+    // config can be asserted on the panel component.
+    const footerLayoutStub = {
+      props: ['config'],
+      template: `
+        <div>
+          <slot name="filters" />
+          <slot name="panel" v-if="config.panels.length" :panel="config.panels[0]" />
+        </div>
+      `,
+    };
+
+    const loaderStub = (config) =>
+      stubComponent(DashboardLoader, {
+        data() {
+          return { slotConfig: config };
+        },
+        created() {
+          this.$emit('loaded', { config: this.slotConfig });
+        },
+        template: `
+          <div>
+            <slot name="dashboard" :config="slotConfig" :cell-height="undefined" :min-cell-height="undefined" />
+          </div>
+        `,
+      });
+
+    const visualization = { slug: 'line_chart', type: 'LineChart' };
+    const detailsPanel = { id: 'panel-2', title: 'Details panel', visualization };
+
+    const configWith = (panelFooter) => ({
+      panels: [],
+      views: [
+        {
+          title: 'Overview',
+          panels: [{ id: 'panel-1', title: 'Overview panel', visualization, footer: panelFooter }],
+        },
+        { title: 'Details', panels: [detailsPanel] },
+      ],
+    });
+
+    const createWithFooter = async (panelFooter) => {
+      createComponent({
+        stubs: {
+          DashboardLoader: loaderStub(configWith(panelFooter)),
+          GlDashboardLayout: footerLayoutStub,
+        },
+      });
+
+      await waitForPromises();
+      await selectGroup();
+    };
+
+    const findPanel = () => wrapper.findComponent(AnalyticsDashboardPanel);
+
+    it('forwards the footer config to the panel', async () => {
+      await createWithFooter(footer);
+
+      expect(findPanel().props('footer')).toEqual(footer);
+    });
+
+    describe.each`
+      case                        | panelFooter
+      ${'points past the views'}  | ${{ dashboardViewLink: { text: 'View details', view: 2 } }}
+      ${'has a non-integer view'} | ${{ dashboardViewLink: { text: 'View details', view: 'Details' } }}
+    `('when the footer $case', ({ panelFooter }) => {
+      it('does not forward it to the panel', async () => {
+        await createWithFooter(panelFooter);
+
+        expect(findPanel().props('footer')).toBe(null);
+      });
+    });
+
+    describe('when the panel emits select-dashboard-view', () => {
+      beforeEach(async () => {
+        await createWithFooter(footer);
+        findPanel().vm.$emit('select-dashboard-view', 1);
+        await waitForPromises();
+      });
+
+      it('switches the layout to that view', () => {
+        expect(findDashboardLayout().props('config').panels).toEqual([detailsPanel]);
+      });
+
+      // GlTabs only writes the query param from its own click handler, so the page
+      // has to keep the URL in step itself.
+      it('updates the view query param', () => {
+        expect(window.location.search).toBe('?view=1');
+      });
+    });
+  });
+
   describe('dashboard panels', () => {
     beforeEach(async () => {
       createComponent({

@@ -36,6 +36,13 @@ RSpec.describe Gitlab::EventStore::Event, feature_category: :service_ping do
       expect(event.data['project_id']).to eq(123)
     end
 
+    describe '#event_data' do
+      it 'returns the event payload, so subscribers can read it the same way as a CloudEvent' do
+        expect(event.event_data).to eq(event.data)
+        expect(event.event_data[:project_id]).to eq(123)
+      end
+    end
+
     describe 'schema validation' do
       context 'when data matches the schema' do
         it 'initializes the event correctly' do

@@ -10,6 +10,7 @@ import axios from '~/lib/utils/axios_utils';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 import FilepathFormMediator from '~/blob/filepath_form_mediator';
 import mountFilepathForm from '~/blob/filepath_form';
+import { isMarkdownFilePath } from '~/blob/utils';
 import { HTTP_STATUS_PAYLOAD_TOO_LARGE } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import Api from '~/api';
@@ -22,7 +23,7 @@ const findFileNameEl = () =>
 
 export default class EditBlob {
   // The options object has:
-  // assetsPath, filePath, currentAction, projectId, isMarkdown, previewMarkdownPath
+  // assetsPath, filePath, currentAction, projectId, previewMarkdownPath
   constructor(options) {
     this.options = options;
     this.configureMonacoEditor();
@@ -127,10 +128,6 @@ export default class EditBlob {
       { definition: FileTemplateExtension },
     ]);
 
-    if (this.options.isMarkdown) {
-      this.installMarkdownExtensions();
-    }
-
     if (this.options.filePath === '.gitlab/security-policies/policy.yml') {
       await this.fetchSecurityPolicyExtension(this.options.projectPath);
     }
@@ -152,16 +149,6 @@ export default class EditBlob {
         visitUrl(data.filePath);
       } catch (error) {
         createAlert({ message: BLOB_EDIT_ERROR, captureError: true });
-      }
-    });
-
-    // onDidChangeModelLanguage is part of the native Monaco API
-    // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneCodeEditor.html#onDidChangeModelLanguage
-    this.editor.onDidChangeModelLanguage(({ newLanguage = '', oldLanguage = '' }) => {
-      if (newLanguage === 'markdown') {
-        this.installMarkdownExtensions();
-      } else if (oldLanguage === 'markdown') {
-        this.uninstallMarkdownExtensions();
       }
     });
   }
@@ -194,10 +181,20 @@ export default class EditBlob {
 
   initFilepathListeners() {
     const fileNameEl = findFileNameEl();
-    this.editor.updateModelLanguage(fileNameEl.value);
-    fileNameEl.addEventListener('input', () => {
+    const syncFileName = () => {
       this.editor.updateModelLanguage(fileNameEl.value);
-    });
+      this.syncMarkdownExtensions(fileNameEl.value);
+    };
+    syncFileName();
+    fileNameEl.addEventListener('input', syncFileName);
+  }
+
+  syncMarkdownExtensions(path) {
+    if (isMarkdownFilePath(path)) {
+      this.installMarkdownExtensions();
+    } else {
+      this.uninstallMarkdownExtensions();
+    }
   }
 
   initModePanesAndLinks() {

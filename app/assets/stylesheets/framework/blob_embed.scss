@@ -8,19 +8,22 @@
 .blob-embed {
   margin: $gl-padding 0;
   overflow: hidden;
+  @apply gl-border;
+  @apply gl-rounded-lg;
 
   .blob-embed-header {
     display: flex;
     align-items: baseline;
     gap: $gl-padding-8;
     padding: $gl-padding-8 $gl-padding;
-    background-color: $gl-background-color-subtle;
-    border-bottom: 1px solid $gl-border-color-default;
+    @apply gl-bg-subtle;
+    @apply gl-border-b;
   }
 
   .blob-embed-title {
     font-size: $code-font-size;
     word-break: break-all;
+    @apply gl-text-default;
   }
 
   .line-numbers a {

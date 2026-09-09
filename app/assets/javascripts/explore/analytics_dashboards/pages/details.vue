@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { GlButton, GlDashboardLayout, GlEmptyState, GlTabs, GlTab } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
 import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
@@ -62,6 +62,7 @@ export default {
       selectedGroup: null,
       selectedProject: null,
       activeViewIndex: 0,
+      viewCount: 0,
       filtersKey: 0,
       dashboardFilterConfig: null,
       alert: null,
@@ -99,6 +100,19 @@ export default {
       const viewIndex = (config.views ?? []).findIndex((_, index) => `${index}` === viewParam);
 
       this.activeViewIndex = viewIndex === -1 ? 0 : viewIndex;
+      this.viewCount = config.views?.length ?? 0;
+    },
+    footerFor({ footer }) {
+      const view = footer?.dashboardViewLink?.view;
+
+      if (!Number.isInteger(view) || view >= this.viewCount) return null;
+
+      return footer;
+    },
+    // GlTabs only writes the query param from its own click handler, so sync it here.
+    selectDashboardView(viewIndex) {
+      this.activeViewIndex = viewIndex;
+      updateHistory({ url: setUrlParams({ view: viewIndex }), title: document.title });
     },
     hasViews(config) {
       return Boolean(config.views?.length);
@@ -244,11 +258,13 @@ export default {
             :title="panel.title"
             :title-icon="panel.titleIcon || ''"
             :tooltip="panel.tooltip"
+            :footer="footerFor(panel)"
             :visualization="panel.visualization"
             :query-overrides="panel.queryOverrides"
             :views="panel.views"
             :filters="filters"
             :data-testid="panelTestId(panel)"
+            @select-dashboard-view="selectDashboardView"
           />
         </template>
 

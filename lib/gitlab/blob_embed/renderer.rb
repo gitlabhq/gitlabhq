@@ -10,7 +10,7 @@ module Gitlab
     # project is the caller's responsibility.
     class Renderer
       # Bump when the rendered markup changes.
-      VERSION = 1
+      VERSION = 2
 
       # Maximum number of lines a single embed will render.
       MAX_LINES = 100

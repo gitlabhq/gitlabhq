@@ -357,6 +357,9 @@ gitlab-advanced-sast-cpp:
     - '**/*.swift'
     - '**/*.m'
     - '**/*.mm'
+    - '**/*.dart'
+    - '**/*.scala'
+    - '**/*.sc'
 
 gitlab-advanced-sast-ext:
   extends: .sast-analyzer

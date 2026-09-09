@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import DashboardLoader from '~/explore/analytics_dashboards/components/dashboard_loader.vue';
+import { GRID_HEIGHT_COMPACT } from '~/explore/analytics_dashboards/constants';
 import getDashboardQuery from '~/explore/analytics_dashboards/graphql/get_dashboard.query.graphql';
 import getSystemDashboardQuery from '~/explore/analytics_dashboards/graphql/get_system_dashboard.query.graphql';
 import * as sentryBrowserWrapper from '~/sentry/sentry_browser_wrapper';
@@ -219,20 +220,27 @@ describe('DashboardLoader', () => {
     });
   });
 
-  describe('with a compact grid height', () => {
-    beforeEach(async () => {
-      createComponent({ requestHandlers: mockResolvedQuery(mockDashboardCompactGridResponse) });
-      await waitForPromises();
-    });
+  // The schema spells the value in lower case, which is what this route receives; the
+  // enum name is matched too, so it is accepted whichever way it reaches us.
+  describe.each([GRID_HEIGHT_COMPACT.toLowerCase(), GRID_HEIGHT_COMPACT])(
+    'with a compact grid height of %s',
+    (gridHeight) => {
+      beforeEach(async () => {
+        createComponent({
+          requestHandlers: mockResolvedQuery(mockDashboardCompactGridResponse(gridHeight)),
+        });
+        await waitForPromises();
+      });
 
-    it('passes cellHeight as 10 to the slot', () => {
-      expect(getSlotProp('cellHeight')).toBe('10');
-    });
+      it('passes cellHeight as 10 to the slot', () => {
+        expect(getSlotProp('cellHeight')).toBe('10');
+      });
 
-    it('passes minCellHeight as 10 to the slot', () => {
-      expect(getSlotProp('minCellHeight')).toBe('10');
-    });
-  });
+      it('passes minCellHeight as 10 to the slot', () => {
+        expect(getSlotProp('minCellHeight')).toBe('10');
+      });
+    },
+  );
 
   describe('with a query error', () => {
     beforeEach(async () => {

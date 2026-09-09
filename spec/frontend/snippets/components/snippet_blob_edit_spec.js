@@ -237,11 +237,17 @@ describe('Snippet Blob Edit component', () => {
           expect(useSpy).toHaveBeenCalledWith(expectedUseArgs);
         });
 
-        it('uninstalls the extension when renamed to a non-markdown file', async () => {
+        it('uninstalls the extension when renamed to a non-markdown file and reinstalls it when renamed back', async () => {
           await renameBlob('script.rb');
           await waitForPromises();
 
           expect(unuseSpy).toHaveBeenCalledWith(installedExtension);
+
+          await renameBlob('README.md');
+          await waitForPromises();
+
+          expect(useSpy).toHaveBeenCalledTimes(2);
+          expect(useSpy).toHaveBeenLastCalledWith(expectedUseArgs);
         });
 
         it('does not reinstall the extension when renamed to another markdown file extension', async () => {

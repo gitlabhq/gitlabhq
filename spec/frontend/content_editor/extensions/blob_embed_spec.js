@@ -29,11 +29,8 @@ const serverHTML = ({ url = URL, range = 'Lines 3 to 6' } = {}) => {
   const code = element('code', '', [element('span', 'line', 'code')]);
   const pre = element('pre', 'code highlight', [code]);
 
-  return element('div', 'blob-embed file-holder', [
-    element('div', 'blob-embed-header file-title', [
-      title,
-      element('span', 'blob-embed-range', range),
-    ]),
+  return element('div', 'blob-embed', [
+    element('div', 'blob-embed-header', [title, element('span', 'blob-embed-range', range)]),
     element('div', 'blob-embed-body code-syntax-highlight-theme', [
       element('div', 'line-numbers', [lineNumber]),
       element('div', 'blob-content', [pre]),

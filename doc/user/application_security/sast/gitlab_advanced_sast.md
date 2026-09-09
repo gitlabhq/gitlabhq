@@ -170,6 +170,8 @@ The code flow information is shown in the **Data flow** tab and includes:
 {{< history >}}
 
 - C# version support [increased from 10.0 to 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/570499) in GitLab 18.6.
+- Support for Dart [added](https://gitlab.com/gitlab-org/security-products/analyzers/static-analysis-toolkit/-/work_items/62) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta).
+- Support for Scala [added](https://gitlab.com/gitlab-org/security-products/analyzers/static-analysis-toolkit/-/work_items/63) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta).
 
 {{< /history >}}
 
@@ -177,6 +179,7 @@ GitLab Advanced SAST supports the following languages:
 
 - C# (up to and including 13.0)
 - C/C++
+- Dart (beta)
 - Go
 - Java, including Java Server Pages (JSP)
 - JavaScript, TypeScript
@@ -184,16 +187,18 @@ GitLab Advanced SAST supports the following languages:
 - PHP
 - Python
 - Ruby
+- Scala (beta)
 - Swift (beta)
 
 GitLab Advanced SAST CPP requires additional configuration, including a compilation database. For
 details, see [C/C++ configuration](advanced_sast_cpp.md). GitLab Advanced SAST CPP and Semgrep both
 run for C/C++ projects, each with different rule sets.
 
-Swift and Objective-C support is in [beta](../../../policy/development_stages_support.md#beta).
+Dart, Objective-C, Scala, and Swift support is in
+[beta](../../../policy/development_stages_support.md#beta).
 Analysis runs as a separate CI/CD job, `gitlab-advanced-sast-ext`, when GitLab Advanced SAST is
-enabled and the repository contains Swift or Objective-C files. No additional variable is required.
-For more information, see
+enabled and the repository contains files for one of these languages. No additional variable is
+required. For Swift and Objective-C, see
 [Swift and Objective-C configuration](advanced_sast_swift_objc.md).
 
 ### PHP known issues
@@ -658,9 +663,9 @@ You can adjust GitLab Advanced SAST behavior using the following variables:
 
 | CI/CD variable                              | Default                | Description                                                                                                                                                                                     |
 |---------------------------------------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | Enable GitLab Advanced SAST scanning for all supported languages except C and C++. Swift and Objective-C analysis runs as a separate `gitlab-advanced-sast-ext` job. |
+| `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | Enable GitLab Advanced SAST scanning for all supported languages except C and C++. Dart, Objective-C, Scala, and Swift analysis runs as a separate `gitlab-advanced-sast-ext` job. |
 | `GITLAB_ADVANCED_SAST_CPP_ENABLED`          | `false`                | Enable GitLab Advanced SAST scanning specifically for C and C++ projects.                                                                                                                       |
-| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | `true` | Set to `false` to turn off [incremental scanning](advanced_sast_swift_objc.md#incremental-scanning) for the Swift and Objective-C (`gitlab-advanced-sast-ext`) analyzer. |
+| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | `true` | Applies only to the `gitlab-advanced-sast-ext` analyzer (Swift, Objective-C, Dart, and Scala), which has [incremental scanning](advanced_sast_swift_objc.md#incremental-scanning) enabled by default. Set to `false` to turn it off. Has no effect on repositories without files for those languages. For other languages, use `GITLAB_ADV_SAST_INCR_SCAN` instead. |
 | `ADVANCED_SAST_PARTIAL_SCAN`                | `false`                | Enable GitLab Advanced SAST diff-scanning mode by setting to `differential`.                                                                                                                    |
 | `GITLAB_ADVANCED_SAST_RULE_TIMEOUT`         | `30`                   | Timeout in seconds per rule per file. When exceeded, that analysis is skipped.                                                                                                                  |
 | `REPORT_UNVERIFIED_VULNS`                   | `false`                | Include unverified findings in scan results. Set to `true`, `1`, or `True` to enable.                                                                                                           |

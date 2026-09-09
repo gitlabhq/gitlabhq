@@ -140,8 +140,25 @@ export default {
     @dropdown-open="dropdownOpen = true"
     @dropdown-closed="dropdownOpen = false"
   >
-    <template v-if="glSlots().body" #body>
-      <slot name="body"></slot>
+    <template v-if="glSlots().body || glSlots().footer" #body>
+      <!-- TODO: remove once https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/work_items/3629 adds a real #footer slot.
+           GlDashboardPanel has none, so the body is split to keep the footer pinned. -->
+      <div v-if="glSlots().footer" class="gl-flex gl-h-full gl-flex-col">
+        <!-- Focusable because it scrolls: a keyboard user has no other way to reach
+             content the footer has pushed out of view. -->
+        <div
+          class="gl-min-h-0 gl-grow gl-overflow-y-auto"
+          tabindex="0"
+          data-testid="panel-body-content"
+        >
+          <slot name="body"></slot>
+        </div>
+        <div class="gl-mt-3 gl-shrink-0" data-testid="panel-footer">
+          <!-- @slot Content pinned below the panel body. -->
+          <slot name="footer"></slot>
+        </div>
+      </div>
+      <slot v-else name="body"></slot>
     </template>
     <template v-if="glSlots().filters" #filters>
       <slot name="filters"></slot>
