@@ -223,6 +223,26 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
         it 'returns true' do
           expect(helper.fallback_to_email_otp_permitted?(user)).to be true
         end
+
+        context 'when user is not allowed to use password authentication for web' do
+          before do
+            allow(user).to receive(:allow_password_authentication_for_web?).and_return(false)
+          end
+
+          it 'returns false' do
+            expect(helper.fallback_to_email_otp_permitted?(user)).to be false
+          end
+        end
+
+        context 'when the password was automatically set for user' do
+          before do
+            allow(user).to receive(:password_automatically_set?).and_return(true)
+          end
+
+          it 'returns false' do
+            expect(helper.fallback_to_email_otp_permitted?(user)).to be false
+          end
+        end
       end
     end
   end
