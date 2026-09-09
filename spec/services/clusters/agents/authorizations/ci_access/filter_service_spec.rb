@@ -110,6 +110,14 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::FilterService, featur
         end
       end
 
+      context 'when environment filter only contains the wildcard scope as a substring' do
+        let(:filter_params) { { environment: 'staging-review/test', protected_ref: false } }
+
+        it 'excludes the wildcard-scoped authorizations, returning only those without any environment' do
+          expect(execute_filter).to match_array agent_authorizations_without_env
+        end
+      end
+
       context 'when environment filter is nil' do
         let(:filter_params) { { environment: nil, protected_ref: false } }
 

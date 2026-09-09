@@ -57,7 +57,6 @@ group:
   permissions: []
   raw_permissions:
   - admin_compliance_framework
-  - admin_compliance_pipeline_configuration
   - admin_external_audit_events
   - admin_security_attributes
   - admin_vulnerability
