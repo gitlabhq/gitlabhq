@@ -19,6 +19,7 @@ module MergeRequests
       GraphqlTriggers.merge_request_merge_status_updated(merge_request)
 
       worker_params = params.merge(pipeline_creation_request: pipeline_creation_request)
+      worker_params[:checkout_sha] ||= merge_request.diff_head_sha
 
       if Feature.enabled?(:defer_mr_pipeline_creation_request_completion, merge_request.target_project)
         worker_params = worker_params.merge(defer_request_completion: true)
@@ -38,6 +39,7 @@ module MergeRequests
       Ci::CreatePipelineService.new(project,
         current_user,
         ref: ref,
+        checkout_sha: params[:checkout_sha],
         push_options: params[:push_options],
         pipeline_creation_request: params[:pipeline_creation_request],
         gitaly_context: params[:gitaly_context],

@@ -32,8 +32,13 @@ module HasWiki
 
     path_to_check = path.ends_with?('.wiki') ? path.chomp('.wiki') : "#{path}.wiki"
 
+    # Use a direct `Group.where` rather than `GroupsFinder`: the finder's
+    # `by_parent` no-ops on nil parents (broadening to all visible groups) and
+    # its visibility filter would miss private siblings. A path collision is
+    # structural and must ignore both.
+    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/599240
     if Project.in_namespace(parent_id).where(path: path_to_check).exists? ||
-        GroupsFinder.new(nil, parent: parent_id).execute.where(path: path_to_check).exists?
+        Group.where(parent_id: parent_id, path: path_to_check).exists?
       errors.add(:name, _('has already been taken'))
     end
   end

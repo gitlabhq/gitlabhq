@@ -10,6 +10,7 @@ import {
   GlButtonGroup,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
+import { isIframeSrcAllowed } from '~/behaviors/markdown/render_iframe';
 import { __ } from '~/locale';
 import Audio from '../../extensions/audio';
 import DrawioDiagram from '../../extensions/drawio_diagram';
@@ -80,6 +81,9 @@ export default {
     isDrawioDiagram() {
       return this.mediaType === DrawioDiagram.name;
     },
+    isIframe() {
+      return this.mediaType === Iframe.name;
+    },
   },
   methods: {
     shouldShow() {
@@ -111,10 +115,16 @@ export default {
 
       const position = this.tiptapEditor.state.selection.from;
 
-      if (this.mediaType === Iframe.name) {
+      if (this.isIframe) {
         this.mediaSrc = await this.contentEditor.resolveIframeSrc(this.mediaCanonicalSrc);
       } else {
         this.mediaSrc = await this.contentEditor.resolveUrl(this.mediaCanonicalSrc);
+      }
+
+      if (this.isIframe && !isIframeSrcAllowed(this.mediaSrc)) {
+        this.isUpdating = false;
+        this.endEditingMedia();
+        return;
       }
 
       const attrs = {
@@ -146,7 +156,9 @@ export default {
 
       this.uploading = uploading;
 
-      this.mediaSrc = await this.contentEditor.resolveUrl(this.mediaCanonicalSrc);
+      this.mediaSrc = this.isIframe
+        ? src
+        : await this.contentEditor.resolveUrl(this.mediaCanonicalSrc);
 
       this.isUpdating = false;
     },
@@ -218,7 +230,7 @@ export default {
           @change="onFileSelect"
         />
         <gl-link
-          v-if="!showProgressIndicator"
+          v-if="!showProgressIndicator && !isIframe"
           v-gl-tooltip
           :href="mediaSrc"
           :aria-label="mediaCanonicalSrc"

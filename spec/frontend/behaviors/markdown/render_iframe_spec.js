@@ -75,6 +75,15 @@ describe('Embedded iframe renderer', () => {
     expect(findEmbeddedIframes()).toHaveLength(0);
   });
 
+  it('does not render an embedded iframe on a page that pushes no feature flags', () => {
+    setHTMLFixture(fixtureDefault);
+
+    delete window.gon.features;
+
+    expect(() => renderAllIframes()).not.toThrow();
+    expect(findEmbeddedIframes()).toHaveLength(0);
+  });
+
   describe('dimensions', () => {
     it('applies explicit width and height attributes when provided', () => {
       setHTMLFixture(fixtureWithDimensions);
