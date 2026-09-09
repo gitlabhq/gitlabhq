@@ -277,29 +277,6 @@ Arguments:
 | <a id="query-aicatalogagentflowconfig-agentversionid"></a>`agentVersionId` | [`AiCatalogItemVersionID!`](#aicatalogitemversionid) | Global ID of the agent version to use. |
 | <a id="query-aicatalogagentflowconfig-flowconfigtype"></a>`flowConfigType` | [`AiCatalogFlowConfigType!`](#aicatalogflowconfigtype) | Type of flow configuration to generate. |
 
-### `Query.aiCatalogAvailableFlowsForProject`
-
-{{< details >}}
-
-- Introduced in GitLab 18.9.
-- Status: Experiment.
-
-{{< /details >}}
-
-AI Catalog flows available to enable for a project.
-
-Returns [`AiCatalogItemConsumerConnection!`](#aicatalogitemconsumerconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#pagination-arguments):
-`before: String`, `after: String`, `first: Int`, and `last: Int`.
-
-Arguments:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="query-aicatalogavailableflowsforproject-projectid"></a>`projectId` | [`ProjectID!`](#projectid) | Project ID to retrieve available AI Catalog flows for. |
-
 ### `Query.aiCatalogBuiltInTools`
 
 {{< details >}}

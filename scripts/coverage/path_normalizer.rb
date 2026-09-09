@@ -18,11 +18,13 @@ module PathNormalizer
   # Matches absolute paths containing /gitlab/ when followed by known project root directories.
   # Uses lookahead to ensure we're matching the repo root, not a subdirectory named 'gitlab'.
   # Optionally matches ./ between /gitlab/ and the project root directory.
+  # The leading / is required so relative paths never match their own lib/gitlab/ segment.
   # Examples:
   #   /builds/gitlab-org/gitlab/app/models/user.rb -> app/models/user.rb
   #   /builds/gitlab-org/gitlab/lib/gitlab/api.rb -> lib/gitlab/api.rb (preserves lib/gitlab/)
   #   /builds/gitlab-org/gitlab/./app/models/user.rb -> app/models/user.rb
-  GITLAB_ROOT_PATTERN = %r{^.+?/gitlab/(?:\./)?(?=(?:#{PROJECT_ROOT_DIRS.join('|')})/)}
+  #   lib/gitlab/config/loader/yaml.rb -> lib/gitlab/config/loader/yaml.rb (already relative)
+  GITLAB_ROOT_PATTERN = %r{^/.+?/gitlab/(?:\./)?(?=(?:#{PROJECT_ROOT_DIRS.join('|')})/)}
 
   # Matches ./ prefix at start of path
   RELATIVE_PREFIX_PATTERN = %r{^\./}

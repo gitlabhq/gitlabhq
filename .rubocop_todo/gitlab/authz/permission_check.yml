@@ -515,7 +515,6 @@ Gitlab/Authz/PermissionCheck:
     - 'ee/app/graphql/mutations/work_items/lifecycles/create.rb'
     - 'ee/app/graphql/mutations/work_items/lifecycles/delete.rb'
     - 'ee/app/graphql/mutations/work_items/lifecycles/update.rb'
-    - 'ee/app/graphql/resolvers/ai/catalog/available_flows_for_project_resolver.rb'
     - 'ee/app/graphql/resolvers/ai/flow_triggers_resolver.rb'
     - 'ee/app/graphql/resolvers/ai/model_selection/namespaces/feature_settings_resolver.rb'
     - 'ee/app/graphql/resolvers/gitlab_subscriptions/member_management/member_approval_resolver.rb'

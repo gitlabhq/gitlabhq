@@ -649,8 +649,8 @@ def find_and_click_clear(selector, button_name = 'Clear')
   end
 end
 
+# Axe checks need to be in capybara because they need a real browser
 RSpec.shared_examples 'work items iteration' do
-  include Features::IterationHelpers
   let(:work_item_iteration_selector) { '[data-testid="work-item-iteration"]' }
   let_it_be_with_refind(:iteration_cadence) { create(:iterations_cadence, group: group, active: true) }
   let_it_be_with_refind(:iteration) do
@@ -660,18 +660,6 @@ RSpec.shared_examples 'work items iteration' do
       group: group,
       start_date: 1.day.from_now,
       due_date: 2.days.from_now
-    )
-  end
-
-  let_it_be_with_refind(:iteration2) do
-    create(
-      :iteration,
-      iterations_cadence: iteration_cadence,
-      group: group,
-      start_date: 2.days.ago,
-      due_date: 1.day.ago,
-      state: 'closed',
-      skip_future_date_validation: true
     )
   end
 
@@ -686,24 +674,6 @@ RSpec.shared_examples 'work items iteration' do
       wait_for_requests
 
       expect(page).to be_axe_clean.within(work_item_iteration_selector)
-    end
-  end
-
-  it 'adds and removes an iteration', :aggregate_failures do
-    within_testid 'work-item-iteration' do
-      click_button 'Edit'
-      send_keys(iteration.title)
-      select_listbox_item(iteration_period(iteration, use_thin_space: false))
-
-      expect(page).to have_text(iteration_cadence.title)
-      expect(page).to have_text(iteration_period(iteration, use_thin_space: false))
-
-      click_button 'Edit'
-      click_button 'Clear'
-
-      expect(page).to have_content('None')
-      expect(page).not_to have_text(iteration_cadence.title)
-      expect(page).not_to have_text(iteration_period(iteration, use_thin_space: false))
     end
   end
 end

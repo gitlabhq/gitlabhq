@@ -881,15 +881,15 @@ GEM
     gitlab-glaz (1.1.0-x86_64-linux-gnu)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
-    gitlab-glfm-markdown (0.0.42)
+    gitlab-glfm-markdown (0.0.43)
       rb_sys (~> 0.9.128)
-    gitlab-glfm-markdown (0.0.42-aarch64-linux-gnu)
+    gitlab-glfm-markdown (0.0.43-aarch64-linux-gnu)
       rb_sys (~> 0.9.128)
-    gitlab-glfm-markdown (0.0.42-arm64-darwin)
+    gitlab-glfm-markdown (0.0.43-arm64-darwin)
       rb_sys (~> 0.9.128)
-    gitlab-glfm-markdown (0.0.42-x86_64-darwin)
+    gitlab-glfm-markdown (0.0.43-x86_64-darwin)
       rb_sys (~> 0.9.128)
-    gitlab-glfm-markdown (0.0.42-x86_64-linux-gnu)
+    gitlab-glfm-markdown (0.0.43-x86_64-linux-gnu)
       rb_sys (~> 0.9.128)
     gitlab-grape-openapi (0.5.0)
       grape (>= 2.4, < 3.3)
@@ -3051,11 +3051,11 @@ CHECKSUMS
   gitlab-glaz (1.1.0-arm64-darwin) sha256=58689eadd3b366530aaeba8e0935f2f9b89dc7a3a005a44cbff31c1d0f70ade9
   gitlab-glaz (1.1.0-x86_64-darwin) sha256=7959dfd56c2d1e9a156aed1e1cd80d380c3a312cc796793110bbb64ab78823a8
   gitlab-glaz (1.1.0-x86_64-linux-gnu) sha256=e72429dd1546b85b1f6ec0097adf89ae632ba51969e8f115fb7564ca0c7e139d
-  gitlab-glfm-markdown (0.0.42) sha256=90c793d500becf7e0b6abe09d5eb25518900ed7c9ebd4e4d87bb495ad0f838a6
-  gitlab-glfm-markdown (0.0.42-aarch64-linux-gnu) sha256=f49f4503b13845792045854bcf77437d2fb1a0fe7140b247024da5139dcca7ae
-  gitlab-glfm-markdown (0.0.42-arm64-darwin) sha256=a662bb2da6a1040e63868dd247ac1c580c9638554a9ec958059fa1eec264a01f
-  gitlab-glfm-markdown (0.0.42-x86_64-darwin) sha256=c2ef01d29154d7010186ccff2c30c9d12a75db3ce542aa58155fb0b30d907e4f
-  gitlab-glfm-markdown (0.0.42-x86_64-linux-gnu) sha256=7f4d9da5b90ac8966ec12266d8a3a8a1763cb6d6596f07825c256e729344e12e
+  gitlab-glfm-markdown (0.0.43) sha256=2c9625b0c42cbcf673a10a57639a2eb9de5d63a953a98460a00dfd400881b426
+  gitlab-glfm-markdown (0.0.43-aarch64-linux-gnu) sha256=2d63885cd9c2d3322edff99bc1f5c9fcd9ca790633e236dd32c4b46f7597c25b
+  gitlab-glfm-markdown (0.0.43-arm64-darwin) sha256=3082e78f2693ed8c4b47cc34953df0ca20f60ab389af285d225443b8ec005b14
+  gitlab-glfm-markdown (0.0.43-x86_64-darwin) sha256=1b57181174770b880726e3c6a27003de8486076c509960f405b5dae0112c5164
+  gitlab-glfm-markdown (0.0.43-x86_64-linux-gnu) sha256=9144e372fe2fab18bc1b42337c522991c1af5b94d655fba8f87927cdcaefb0c9
   gitlab-grape-openapi (0.5.0) sha256=8085b08f11b567f2aed9431bb78c52eea7f63e09c44547eaba724253127896e8
   gitlab-housekeeper (0.1.0)
   gitlab-http (0.1.0)

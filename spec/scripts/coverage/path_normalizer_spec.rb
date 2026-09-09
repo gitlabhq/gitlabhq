@@ -4,6 +4,8 @@ require 'fast_spec_helper'
 require_relative '../../../scripts/coverage/path_normalizer'
 
 RSpec.describe PathNormalizer, feature_category: :tooling do
+  using RSpec::Parameterized::TableSyntax
+
   describe '.normalize' do
     it 'returns nil for nil input' do
       expect(described_class.normalize(nil)).to be_nil
@@ -66,6 +68,55 @@ RSpec.describe PathNormalizer, feature_category: :tooling do
     it 'handles qa directory paths' do
       expect(described_class.normalize('/builds/gitlab-org/gitlab/qa/qa/page/main/login.rb'))
         .to eq('qa/qa/page/main/login.rb')
+    end
+
+    context 'with a relative path whose gitlab subdirectory shares a project root directory name' do
+      where(:path) do
+        [
+          'lib/gitlab/config/loader/yaml.rb',
+          'lib/gitlab/ci/config/entry/job.rb',
+          'ee/lib/gitlab/config/entry/factory.rb',
+          'lib/gitlab/spec/helper.rb'
+        ]
+      end
+
+      with_them do
+        it 'leaves the path unchanged' do
+          expect(described_class.normalize(path)).to eq(path)
+        end
+      end
+    end
+
+    context 'with a Crystalball ./-prefixed path whose gitlab subdirectory shares a project root directory name' do
+      where(:path, :expected) do
+        [
+          ['./lib/gitlab/config/loader/yaml.rb', 'lib/gitlab/config/loader/yaml.rb'],
+          ['./ee/lib/gitlab/config/entry/factory.rb', 'ee/lib/gitlab/config/entry/factory.rb'],
+          ['./lib/gitlab/spec/helper.rb', 'lib/gitlab/spec/helper.rb']
+        ]
+      end
+
+      with_them do
+        it 'strips only the ./ prefix' do
+          expect(described_class.normalize(path)).to eq(expected)
+        end
+      end
+    end
+
+    context 'with a container path whose gitlab subdirectory shares a project root directory name' do
+      where(:path, :expected) do
+        [
+          ['/builds/gitlab-org/gitlab/lib/gitlab/config/loader/yaml.rb', 'lib/gitlab/config/loader/yaml.rb'],
+          ['/builds/gitlab-org/gitlab/lib/gitlab/ci/config/entry/job.rb', 'lib/gitlab/ci/config/entry/job.rb'],
+          ['/builds/gitlab-org/gitlab/ee/lib/gitlab/config/entry/factory.rb', 'ee/lib/gitlab/config/entry/factory.rb']
+        ]
+      end
+
+      with_them do
+        it 'strips only the container prefix' do
+          expect(described_class.normalize(path)).to eq(expected)
+        end
+      end
     end
   end
 end

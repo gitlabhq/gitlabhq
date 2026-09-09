@@ -381,7 +381,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'NewMergeRequestWorker' => 3,
         'NewNoteWorker' => 3,
         'ObjectPool::CreateWorker' => 3,
-        'ObjectPool::DestroyWorker' => 3,
         'ObjectPool::JoinWorker' => 3,
         'ObjectPool::ScheduleJoinWorker' => 3,
         'ObjectStorage::MigrateUploadsWorker' => 3,

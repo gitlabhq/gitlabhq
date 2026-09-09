@@ -85,15 +85,17 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
         group.add_developer(multi_path_user)
         group_project.add_maintainer(multi_path_user)
 
-        # Adding the members already refreshed the rows, so clear them to make the
-        # service recalculate from both paths rather than read what they left behind.
+        # Adding the members already refreshed the rows. Replace them with a row at the
+        # lower of the two access levels, so the refresh has to correct an existing row
+        # rather than only insert a missing one.
         multi_path_user.project_authorizations.delete_all
+        multi_path_user.project_authorizations.create!(
+          project: group_project, access_level: Gitlab::Access::DEVELOPER
+        )
 
-        described_class.new(multi_path_user).execute
-
-        authorization = multi_path_user.project_authorizations.find_by(project_id: group_project.id)
-
-        expect(authorization.access_level).to eq(Gitlab::Access::MAINTAINER)
+        expect { described_class.new(multi_path_user).execute }
+          .to change { multi_path_user.project_authorizations.find_by(project_id: group_project.id).access_level }
+          .from(Gitlab::Access::DEVELOPER).to(Gitlab::Access::MAINTAINER)
       end
 
       it 'updates project_authorizations_recalculated_at', :freeze_time do
@@ -228,9 +230,7 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
 
     context 'when the refresh finds nothing to change' do
       it 'does not apply any authorization changes' do
-        expect(service).not_to receive(:update_authorizations)
-
-        service.execute
+        expect { service.execute }.not_to change { user.reload.project_authorizations_recalculated_at }
       end
 
       it 'does not log the refresh' do

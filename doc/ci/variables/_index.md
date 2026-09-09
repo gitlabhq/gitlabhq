@@ -468,47 +468,73 @@ To enable variable expansion for the variable:
 
 ## CI/CD variable precedence
 
-You can use CI/CD variables with the same name in different places, but the values
-can overwrite each other. The type of variable and where they are defined determines
-which variables take precedence.
+You can define CI/CD variables with the same name in more than one place.
+When a job runs, GitLab uses the value from the source with the highest precedence.
+The highest-precedence value that exists overrides all lower-precedence values.
 
-The order of precedence for variables is (from highest to lowest):
+From highest to lowest, the order of precedence is:
 
-1. [Pipeline execution policy variables](../../user/application_security/policies/pipeline_execution_policies.md#cicd-variables).
-1. [Scan execution policy variables](../../user/application_security/policies/scan_execution_policies.md).
-1. [Pipeline variables](#use-pipeline-variables). These variables all have the same precedence:
-   - Variables passed to downstream pipelines.
-   - Trigger variables.
-   - Scheduled pipeline variables.
-   - Manual pipeline variables.
-   - Variables added when creating a pipeline with the API.
-   - Manual job variables.
-1. Project variables.
-1. Group variables. If the same variable name exists in a group and its subgroups,
+1. Variables defined in a
+   [pipeline execution policy](../../user/application_security/policies/pipeline_execution_policies.md#cicd-variables)
+   or a [scan execution policy](../../user/application_security/policies/scan_execution_policies.md).
+   These variables apply only to the jobs a policy adds to a pipeline, not to the other jobs in the
+   pipeline.
+1. Manual job variables, set when you run a manual job.
+1. [Pipeline variables](#use-pipeline-variables), from:
+   - The **Run pipeline** page
+   - A pipeline schedule
+   - The pipelines API
+   - The triggers API
+   - The `ci.variable` push option
+   - An upstream pipeline
+1. [Project variables](#for-a-project).
+1. [Group variables](#for-a-group). If the same variable name exists in a group and its subgroups,
    the job uses the value from the closest subgroup. For example, if you have
    `Group > Subgroup 1 > Subgroup 2 > Project`, the variable defined in `Subgroup 2` takes precedence.
-1. Instance variables.
-1. [Variables from `dotenv` reports](dotenv_variables.md#pass-variables-to-later-jobs).
-1. Job variables, defined in jobs in the `.gitlab-ci.yml` file.
-1. Default variables for all jobs, defined at the top-level of the `.gitlab-ci.yml` file.
+1. [Instance variables](#for-an-instance).
+1. Variables from [`dotenv` reports](dotenv_variables.md#pass-variables-to-later-jobs) in jobs
+   listed in `dependencies` or `needs`.
+1. Variables in the `.gitlab-ci.yml` file, from highest to lowest precedence:
+   1. [`rules:variables`](../yaml/_index.md#rulesvariables) in the job.
+   1. `variables` in the job.
+   1. [`workflow:rules:variables`](../yaml/_index.md#workflowrulesvariables).
+   1. [Default `variables`](../yaml/_index.md#default-variables) at the top level of the file.
 1. [Deployment variables](predefined_variables.md#deployment-variables).
-1. [Predefined variables](predefined_variables.md).
+1. [Predefined variables](predefined_variables.md). Not all predefined variables have the lowest
+   precedence. You cannot override `CI_ENVIRONMENT_ID`, `CI_ENVIRONMENT_SLUG`, `CI_ENVIRONMENT_URL`,
+   or `CI_PAGES_URL`.
 
-For example:
+For example, your project has a `DEPLOY_TARGET` project variable set to `production`, and this
+`.gitlab-ci.yml` file:
 
 ```yaml
 variables:
-  API_TOKEN: "default"
+  DEPLOY_TARGET: "staging"
 
-job1:
+deploy:
   variables:
-    API_TOKEN: "secure"
+    DEPLOY_TARGET: "review"
   script:
-    - echo "The variable is '$API_TOKEN'"
+    - echo "Deploying to $DEPLOY_TARGET"
 ```
 
-In this example, `job1` outputs `The variable is 'secure'` because variables defined in jobs in the `.gitlab-ci.yml` file
-have higher precedence than default variables.
+In this example:
+
+- The `deploy` job prints `Deploying to production`, because a project variable outranks both
+  values set in the `.gitlab-ci.yml` file.
+- Without the project variable, the job prints `Deploying to review`, because a variable defined
+  in a job outranks a default variable.
+- If you run the pipeline manually and set `DEPLOY_TARGET` to `canary`, the job prints
+  `Deploying to canary`, because a pipeline variable outranks a project variable.
+
+Additional details:
+
+- Values from [`secrets`](../yaml/_index.md#secrets) are not part of this order of precedence.
+  The runner retrieves them from the external secrets manager when the job runs.
+
+- [Inputs](../inputs/_index.md) are not CI/CD variables and take no part in this order of precedence.
+  GitLab replaces inputs with their values when the pipeline is created, so a project, group, or
+  instance variable cannot change an input value.
 
 ## Use pipeline variables
 
@@ -533,8 +559,8 @@ You can specify a pipeline variable when you:
 - Pass variables to a downstream pipeline by using either the [`variables` keyword](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline),
   [`trigger:forward` keyword](../yaml/_index.md#triggerforward) or [`dotenv` variables](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
 
-These variables have higher precedence and can override other defined variables,
-including predefined variables.
+These variables have high precedence and can override variables with the same name defined in the
+project, group, or instance settings, or in the `.gitlab-ci.yml` file.
 
 > [!warning]
 > You should avoid overriding predefined variables in most cases, as it can cause the pipeline to behave unexpectedly.

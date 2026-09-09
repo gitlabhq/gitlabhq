@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
+
 RSpec.describe ObjectPool::DestroyWorker, feature_category: :source_code_management do
   describe '#perform' do
     context 'when no pool is in the database' do
@@ -31,6 +33,30 @@ RSpec.describe ObjectPool::DestroyWorker, feature_category: :source_code_managem
         subject.perform(pool.id)
 
         expect(PoolRepository.find_by_id(pool.id)).to be_nil
+      end
+
+      it_behaves_like 'an idempotent worker' do
+        let(:job_args) { [pool.id] }
+
+        it 'destroys the pool' do
+          perform_multiple(job_args)
+
+          expect(PoolRepository.find_by_id(pool.id)).to be_nil
+        end
+      end
+
+      context 'when the Gitaly call fails' do
+        before do
+          allow_next_instance_of(Gitlab::GitalyClient::ObjectPoolService) do |service|
+            allow(service).to receive(:delete).and_raise(GRPC::Unavailable)
+          end
+        end
+
+        it 'does not destroy the pool record' do
+          expect { subject.perform(pool.id) }.to raise_error(GRPC::Unavailable)
+
+          expect(PoolRepository.find_by_id(pool.id)).to eq(pool)
+        end
       end
     end
   end

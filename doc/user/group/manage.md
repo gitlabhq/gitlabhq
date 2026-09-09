@@ -704,7 +704,7 @@ To enable this setting:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244421) in GitLab 19.2. Enabled by default for new groups.
 - Group and instance settings UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243465) in GitLab 19.3.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251669)  to disabled by default for new groups in GitLab 19.4.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251669) to disabled by default for new groups in GitLab 19.2.6, GitLab 19.3.2, and GitLab 19.4.
 
 {{< /history >}}
 
@@ -716,7 +716,15 @@ current HEAD of the source branch.
 
 This setting is disabled by default.
 
-For groups created in GitLab 19.2 and GitLab 19.3, the setting is enabled by default.
+> [!note]
+> For GitLab Self-Managed and GitLab Dedicated, this setting is enabled by default for new groups
+> created in:
+>
+> - GitLab 19.2.0 to GitLab 19.2.5
+> - GitLab 19.3.0 to GitLab 19.3.1
+>
+> If you want to disable the setting by default for all new groups, turn the setting off and select
+> **Enforce for all subgroups** or **Enforce this setting for all groups on this instance**.
 
 Prerequisites:
 
@@ -730,9 +738,6 @@ To require a commit SHA on the merge requests API:
 1. Select the **Require commit SHA on merge requests API** checkbox.
 1. Optional. To enforce this setting for all subgroups and prevent subgroups from changing it, select
    the **Enforce for all subgroups** checkbox.
-
-   For GitLab 19.2 and 19.3, if not enforced, new groups require the commit SHA by default,
-   regardless of the ancestor group value.
 1. Select **Save changes**.
 
 Administrators can set an instance-wide default value for this setting, and optionally enforce it so that new groups cannot override it.
@@ -748,11 +753,7 @@ To set the default for all groups:
 1. Expand **Merge requests**.
 1. Select the **Require commit SHA on merge requests API** checkbox.
 1. Optional. To enforce this setting for all new and existing groups on the instance and
-   prevent groups from changing it, select **Enforce this setting for all groups on this
-   instance**.
-
-   For GitLab 19.2 and 19.3, if not enforced, new groups require the commit SHA by default,
-   regardless of the instance value.
+   prevent groups from changing it, select **Enforce this setting for all groups on this instance**.
 1. Select **Save changes**.
 
 ## Group merge request approval settings

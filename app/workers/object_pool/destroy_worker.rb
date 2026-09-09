@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 module ObjectPool
-  class DestroyWorker # rubocop:disable Scalability/IdempotentWorker
+  class DestroyWorker
     include ApplicationWorker
 
     data_consistency :always
 
-    sidekiq_options retry: 3
     include ObjectPoolQueue
+
+    idempotent!
 
     def perform(pool_repository_id)
       pool = PoolRepository.find_by_id(pool_repository_id)

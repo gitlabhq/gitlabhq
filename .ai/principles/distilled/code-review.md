@@ -1,6 +1,6 @@
 ---
-source_checksum: e67321bd862e9a3b
-distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
+source_checksum: 89f2341efcf303e1
+distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -119,6 +119,14 @@ distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 - Ensure reviewers have access to any projects, snippets, or assets needed to validate the solution.
 - When assigning multiple reviewers, comment to specify which domain each reviewer should focus on.
 
+### Code Comments
+
+- Focus comments on the "why" (rationale, constraints, edge cases, business logic) rather than the "what" or "how"; the code itself should express what it does.
+- Keep comments as close as possible to the code they reference; maintain and update them as the code evolves.
+- When adding a comment for a follow-up action, create a technical debt issue and include a link to it in the comment.
+- Document every new or updated method with a YARD comment: include `@param` for each argument and `@return` for methods with an explicit return value; separate the description from YARD tags with a blank line; use linkable references (e.g. `{ClassName#method}`) when referring to other methods or classes, and consider adding `@see`.
+- Annotate void methods with `@return [void]` and explicitly return `nil` to prevent accidental use of the return value in chains or assignments.
+
 ### Troubleshooting Failing Pipelines
 
 - For an unrelated test failure that also fails on the default branch, wait for the broken-master fix before re-running the pipeline.
@@ -129,4 +137,5 @@ distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 For the full picture, see:
 
 - doc/development/code_review.md
+- doc/development/code_comments.md
 
