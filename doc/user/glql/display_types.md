@@ -42,6 +42,7 @@ The following display types are available only in analytics mode:
 | Single stat | `stat`          | A single aggregated metric, displayed as a large value. |
 | Column chart | `columnChart`   | A chart that compares metrics across the categories defined by your dimensions. |
 | Bar chart | `barChart` | A horizontal chart that compares metrics across the categories defined by your dimensions. |
+| Bar list | `barList` | A horizontal chart that shows each dimension value as a share of the total. |
 | Line chart     | `lineChart`     | A chart that plots one or more metrics as lines over a dimension, to show trends. |
 | Area chart     | `areaChart`     | A chart that plots one or more metrics as filled areas over a dimension, to show trends and volume. |
 | Heat map     | `heatMap`     | A grid of shaded cells, one per pair of dimension values, where a darker cell is a larger value. |
@@ -245,6 +246,69 @@ mode: analytics
 query: type = CodeSuggestion and timestamp >= -30d
 dimensions: language
 metrics: acceptedCount, rejectedCount
+```
+````
+
+## Bar list
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623319) in GitLab 19.4.
+
+{{< /history >}}
+
+A bar list visualizes aggregated data from [analytics mode](_index.md#analytics-mode) as
+horizontal bars, where each bar's length is that row's percentage of the total of all rows, not a
+comparison against the largest row. A bar list answers "what share of the whole is this", while a
+bar chart answers "how do these compare to each other".
+
+A bar list requires:
+
+- Analytics mode, set with `mode: analytics`.
+- Exactly one `dimensions` value.
+- Exactly one metric, set with the `metrics` parameter.
+
+More than one dimension causes a validation error in the view. A query that names more than
+one metric renders the first and ignores the rest.
+
+Rows sort in descending order by value. Each row's label shows the percentage and the value.
+
+By default, a bar list shows six rows plus an `Other (N)` roll-up row, so a query that returns
+eight or more rows always has an `Other` row. A query that returns seven or fewer rows shows
+every row, because folding a single row would hide its name without making the list shorter.
+To show a different number of rows, set `maxRows` under `displayConfig` to a whole
+number greater than zero. GitLab keeps that many of the highest-value rows and folds the rest
+into a single row named `Other (N)`, where `N` is the number of rows folded in and the value is
+their combined total. A value that is not a whole number greater than zero falls back to six.
+
+A share of the total is meaningful only when the metric is a count or a sum. For a metric such as
+an average or a median, the total behind the shares has no meaning.
+
+### Example
+
+To display Code Suggestions usage by language over the last 30 days as a bar list:
+
+````yaml
+```glql
+display: barList
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: language
+metrics: totalCount
+```
+````
+
+To show more than the default six rows:
+
+````yaml
+```glql
+display: barList
+displayConfig:
+  maxRows: 10
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: language
+metrics: totalCount
 ```
 ````
 

@@ -24,6 +24,17 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
 
+// wsClientOf returns the WebSocket transport behind a runner's clientTransport,
+// for assertions on state that is specific to the WebSocket implementation.
+func wsClientOf(t *testing.T, r *runner) *wsManager {
+	t.Helper()
+
+	ws, ok := r.client.(*wsManager)
+	require.True(t, ok, "runner client is not a *wsManager")
+
+	return ws
+}
+
 type mockWebSocketConn struct {
 	readMessages       [][]byte
 	writeMessages      [][]byte
@@ -314,13 +325,13 @@ func Test_newRunner(t *testing.T) {
 		LockConcurrentFlow: true,
 	}
 
-	runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "", req, cfg, initRdb(t))
+	runner, err := newRunner(newWsManager(mockConn), apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "", req, cfg, initRdb(t))
 
 	require.NoError(t, err)
 	require.NotNil(t, runner)
 	require.Equal(t, "oauth-token-123", runner.httpActionHandler.token)
 	require.Equal(t, req, runner.originalReq)
-	require.Equal(t, mockConn, runner.ws.conn)
+	require.Equal(t, mockConn, wsClientOf(t, runner).conn)
 	require.NotNil(t, runner.streamManager)
 
 	runner.Close()
@@ -368,7 +379,7 @@ func Test_newRunner_WithServerCapabilities(t *testing.T) {
 				LockConcurrentFlow: false,
 			}
 
-			runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "", req, cfg, nil)
+			runner, err := newRunner(newWsManager(mockConn), apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "", req, cfg, nil)
 
 			require.NoError(t, err)
 			require.Equal(t, tt.serverCapabilities, runner.serverCapabilities)
@@ -403,7 +414,7 @@ func Test_newRunner_WithoutRedis(t *testing.T) {
 		LockConcurrentFlow: true,
 	}
 
-	runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "", req, cfg, nil)
+	runner, err := newRunner(newWsManager(mockConn), apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "", req, cfg, nil)
 
 	require.NoError(t, err)
 	require.False(t, runner.lockFlow)
@@ -442,7 +453,7 @@ func Test_newRunner_WithCloudConnector(t *testing.T) {
 		LockConcurrentFlow: false,
 	}
 
-	runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "", req, cfg, nil)
+	runner, err := newRunner(newWsManager(mockConn), apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "", req, cfg, nil)
 
 	require.NoError(t, err)
 	require.NotNil(t, runner.streamManager.cloudServiceClient)
@@ -477,7 +488,7 @@ func Test_newRunner_WithoutCloudConnector(t *testing.T) {
 		LockConcurrentFlow:        false,
 	}
 
-	runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "", req, cfg, nil)
+	runner, err := newRunner(newWsManager(mockConn), apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "", req, cfg, nil)
 
 	require.NoError(t, err)
 	require.Nil(t, runner.streamManager.cloudServiceClient)
@@ -502,7 +513,7 @@ func TestRunner_Execute(t *testing.T) {
 			wsMessages:      [][]byte{[]byte(`{"type": "test"}`), []byte(`{"type": "test2"}`)},
 			wfBlockCh:       make(chan bool),
 			sendEventsCount: 2,
-			expectedErrMsg:  "handleWebSocketMessages: failed to read a WS message: EOF",
+			expectedErrMsg:  "handleClientEvents: failed to read a client event: EOF",
 		},
 		{
 			name: "wf actions",
@@ -539,7 +550,7 @@ func TestRunner_Execute(t *testing.T) {
 			req := httptest.NewRequest("GET", "/duo", nil)
 			r := &runner{
 				originalReq: req,
-				ws:          newWsManager(mockConn),
+				client:      newWsManager(mockConn),
 				httpActionHandler: &runHTTPActionHandler{
 					backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
 					token:       "test-token",
@@ -579,7 +590,7 @@ func TestRunner_Execute_with_errors(t *testing.T) {
 			name:           "websocket read error",
 			wsReadError:    errors.New("read error"),
 			wfBlockCh:      make(chan bool),
-			expectedErrMsg: "handleWebSocketMessages: failed to read a WS message: read error",
+			expectedErrMsg: "handleClientEvents: failed to read a client event: read error",
 		},
 		{
 			name:           "workflow recv error",
@@ -613,7 +624,7 @@ func TestRunner_Execute_with_errors(t *testing.T) {
 			}
 
 			r := &runner{
-				ws: newWsManager(mockConn),
+				client: newWsManager(mockConn),
 				streamManager: &streamManager{
 					wf: mockWf,
 				},
@@ -674,7 +685,7 @@ func TestRunner_Execute_with_close_errors(t *testing.T) {
 			req := httptest.NewRequest("GET", "/duo", nil)
 			stopAcked := make(chan struct{})
 			r := &runner{
-				ws:          newWsManager(mockConn),
+				client:      newWsManager(mockConn),
 				originalReq: req,
 				streamManager: &streamManager{
 					wf:          mockWf,
@@ -692,7 +703,7 @@ func TestRunner_Execute_with_close_errors(t *testing.T) {
 				return len(mockWf.getSendEvents()) == 1
 			}, 2*time.Second, 50*time.Millisecond)
 
-			require.True(t, r.ws.closed.Load())
+			require.True(t, wsClientOf(t, r).closed.Load())
 
 			// Simulate DWS acknowledging the stop request
 			close(stopAcked)
@@ -706,7 +717,7 @@ func TestRunner_Execute_with_close_errors(t *testing.T) {
 	}
 }
 
-func TestRunner_handleWebSocketMessage(t *testing.T) {
+func TestRunner_handleClientEvent(t *testing.T) {
 	tests := []struct {
 		name               string
 		message            []byte
@@ -721,7 +732,7 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			name:           "send error",
 			message:        []byte(`{"type": "test"}`),
 			sendError:      errors.New("send error"),
-			expectedErrMsg: "handleWebSocketMessage: failed to write a gRPC message: send error",
+			expectedErrMsg: "handleClientEvent: failed to write a gRPC message: send error",
 		},
 		{
 			name:           "send EOF error",
@@ -819,7 +830,7 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			req := httptest.NewRequest("GET", "/duo", nil)
 			r := &runner{
 				originalReq: req,
-				ws:          newWsManager(&mockWebSocketConn{}),
+				client:      newWsManager(&mockWebSocketConn{}),
 				httpActionHandler: &runHTTPActionHandler{
 					backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
 					token:       "test-token",
@@ -837,7 +848,7 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			event := &pb.ClientEvent{}
 			require.NoError(t, unmarshaler.Unmarshal(tt.message, event))
 
-			err := r.handleWebSocketMessage(event)
+			err := r.handleClientEvent(event)
 
 			if tt.expectedErrMsg != "" {
 				require.Error(t, err)
@@ -1054,7 +1065,7 @@ func TestRunner_handleAgentAction(t *testing.T) {
 			req := httptest.NewRequest("GET", "/duo", nil)
 			r := &runner{
 				originalReq: req,
-				ws:          newWsManager(mockConn),
+				client:      newWsManager(mockConn),
 				httpActionHandler: &runHTTPActionHandler{
 					backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
 					token:       "test-token",
@@ -1129,7 +1140,7 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 		mockCloudStream := &mockSelfHostedWorkflowStream{}
 
 		r := &runner{
-			ws: newWsManager(mockConn),
+			client: newWsManager(mockConn),
 			streamManager: &streamManager{
 				wf:                 mockWf,
 				client:             mainClient,
@@ -1157,7 +1168,7 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 		mockWf := &mockWorkflowStream{}
 
 		r := &runner{
-			ws: newWsManager(mockConn),
+			client: newWsManager(mockConn),
 			streamManager: &streamManager{
 				wf:                 mockWf,
 				client:             mainClient,
@@ -1186,7 +1197,7 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 		mockCloudStream := &mockSelfHostedWorkflowStream{}
 
 		r := &runner{
-			ws: newWsManager(mockConn),
+			client: newWsManager(mockConn),
 			streamManager: &streamManager{
 				wf:                 mockWf,
 				client:             mainClient,
@@ -1310,7 +1321,7 @@ func TestRunner_Shutdown(t *testing.T) {
 
 		r := &runner{
 			originalReq: req,
-			ws:          newWsManager(mockConn),
+			client:      newWsManager(mockConn),
 			lockFlow:    true,
 			streamManager: &streamManager{
 				wf:          mockWf,
@@ -1388,7 +1399,7 @@ func TestRunner_Shutdown(t *testing.T) {
 		stopAcked := make(chan struct{})
 		r := &runner{
 			originalReq: req,
-			ws:          newWsManager(wrappedConn),
+			client:      newWsManager(wrappedConn),
 			streamManager: &streamManager{
 				wf:          mockWf,
 				originalReq: req,
@@ -1438,7 +1449,7 @@ func TestRunner_Shutdown(t *testing.T) {
 		stopAcked := make(chan struct{})
 		r := &runner{
 			originalReq: req,
-			ws:          newWsManager(wrappedConn),
+			client:      newWsManager(wrappedConn),
 			streamManager: &streamManager{
 				wf:          mockWf,
 				originalReq: req,
@@ -1468,7 +1479,7 @@ func TestRunner_Shutdown(t *testing.T) {
 
 		r := &runner{
 			originalReq: req,
-			ws:          newWsManager(mockConn),
+			client:      newWsManager(mockConn),
 			streamManager: &streamManager{
 				wf:          mockWf,
 				originalReq: req,
@@ -1495,7 +1506,7 @@ func TestRunner_Shutdown(t *testing.T) {
 
 		r := &runner{
 			originalReq: req,
-			ws:          newWsManager(mockConn),
+			client:      newWsManager(mockConn),
 			lockFlow:    true,
 			streamManager: &streamManager{
 				wf:          mockWf,
@@ -1598,7 +1609,7 @@ func TestRunner_Shutdown_skipsStopAndCloseGoingAwayWhenWorkflowEnded(t *testing.
 	req := httptest.NewRequest("GET", "/duo", nil)
 	r := &runner{
 		originalReq: req,
-		ws:          newWsManager(wrappedConn),
+		client:      newWsManager(wrappedConn),
 		streamManager: &streamManager{
 			wf:          mockWf,
 			originalReq: req,
@@ -1693,7 +1704,7 @@ func TestRunner_Execute_stopAckFromDWS(t *testing.T) {
 
 		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
-			ws:          newWsManager(mockConn),
+			client:      newWsManager(mockConn),
 			originalReq: req,
 			streamManager: &streamManager{
 				wf:          mockWf,
@@ -1718,7 +1729,7 @@ func TestRunner_Execute_stopAckFromDWS(t *testing.T) {
 		mockWf.blockCh <- true
 
 		err := <-errCh
-		// stopWorkflow returns nil via acked, so handleWebSocketMessages sends nil error
+		// stopWorkflow returns nil via acked, so handleClientEvents sends nil error
 		require.NoError(t, err)
 	})
 }
@@ -1737,7 +1748,7 @@ func TestRunner_Close_waitsForAgentDone(t *testing.T) {
 	mockConn := &mockWebSocketConn{}
 
 	r := &runner{
-		ws: newWsManager(mockConn),
+		client: newWsManager(mockConn),
 		streamManager: &streamManager{
 			wf:     mockWf,
 			client: mainClient,
@@ -1788,7 +1799,7 @@ func TestRunner_Close_shutdownCoordination(t *testing.T) {
 		require.NoError(t, err)
 
 		return &runner{
-			ws: newWsManager(&mockWebSocketConn{}),
+			client: newWsManager(&mockWebSocketConn{}),
 			streamManager: &streamManager{
 				wf:     &mockWorkflowStream{},
 				client: mainClient,
@@ -1870,7 +1881,7 @@ func TestRunner_AcquireWorkflowLock_ConcurrentAttempts(t *testing.T) {
 	req1 := httptest.NewRequest("GET", "/", nil)
 	r1 := &runner{
 		originalReq: req1,
-		ws:          newWsManager(mockConn1),
+		client:      newWsManager(mockConn1),
 		httpActionHandler: &runHTTPActionHandler{
 			backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
 			originalReq: req1,
@@ -1887,7 +1898,7 @@ func TestRunner_AcquireWorkflowLock_ConcurrentAttempts(t *testing.T) {
 	req2 := httptest.NewRequest("GET", "/", nil)
 	r2 := &runner{
 		originalReq: req2,
-		ws:          newWsManager(mockConn2),
+		client:      newWsManager(mockConn2),
 		httpActionHandler: &runHTTPActionHandler{
 			backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
 			originalReq: req2,
@@ -1931,7 +1942,7 @@ func TestRunner_HandleWebSocketMessage_AcquiresLock(t *testing.T) {
 	req := httptest.NewRequest("GET", "/", nil)
 	r := &runner{
 		originalReq: req,
-		ws:          newWsManager(mockConn),
+		client:      newWsManager(mockConn),
 		httpActionHandler: &runHTTPActionHandler{
 			backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
 			originalReq: req,
@@ -1947,7 +1958,7 @@ func TestRunner_HandleWebSocketMessage_AcquiresLock(t *testing.T) {
 
 	event := &pb.ClientEvent{}
 	require.NoError(t, unmarshaler.Unmarshal([]byte(`{"startRequest": {"goal": "test", "workflowID": "msg-test-123"}}`), event))
-	err := r.handleWebSocketMessage(event)
+	err := r.handleClientEvent(event)
 	require.NoError(t, err)
 
 	// Verify lock was acquired
@@ -1974,7 +1985,7 @@ func TestRunner_Execute_ReleasesLock(t *testing.T) {
 	req := httptest.NewRequest("GET", "/", nil)
 	r := &runner{
 		originalReq: req,
-		ws:          newWsManager(mockConn),
+		client:      newWsManager(mockConn),
 		httpActionHandler: &runHTTPActionHandler{
 			backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
 			originalReq: req,
@@ -1992,7 +2003,7 @@ func TestRunner_Execute_ReleasesLock(t *testing.T) {
 	err := r.Execute(ctx)
 
 	// since we block gRPC stream we expect websockets to end with EOF
-	require.Equal(t, "handleWebSocketMessages: failed to read a WS message: EOF", err.Error())
+	require.Equal(t, "handleClientEvents: failed to read a client event: EOF", err.Error())
 
 	// Verify lock was released (we can acquire it again)
 	mutex, err := r.lockManager.acquireLock(ctx, "execute-test-123", "software_development")
@@ -2102,7 +2113,7 @@ func TestRunner_handleAgentMessages_invalidRequest(t *testing.T) {
 		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
 			originalReq: req,
-			ws:          newWsManager(wrappedConn),
+			client:      newWsManager(wrappedConn),
 			streamManager: &streamManager{
 				wf:          mockWf,
 				originalReq: req,
@@ -2131,7 +2142,7 @@ func TestRunner_handleAgentMessages_invalidRequest(t *testing.T) {
 		require.NotContains(t, closeReason, "failed to read a gRPC message", "close reason must not include the wrapped error chain")
 
 		// Verify the connection is marked closed
-		require.True(t, r.ws.closed.Load(), "websocket should be marked closed after SendInvalidRequest")
+		require.True(t, wsClientOf(t, r).closed.Load(), "websocket should be marked closed after SendInvalidRequest")
 	})
 
 	t.Run("truncates an over-long DWS message so the 4400 frame is still sent", func(t *testing.T) {
@@ -2150,7 +2161,7 @@ func TestRunner_handleAgentMessages_invalidRequest(t *testing.T) {
 		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
 			originalReq: req,
-			ws:          newWsManager(wrappedConn),
+			client:      newWsManager(wrappedConn),
 			streamManager: &streamManager{
 				wf:          mockWf,
 				originalReq: req,
@@ -2168,7 +2179,7 @@ func TestRunner_handleAgentMessages_invalidRequest(t *testing.T) {
 		require.LessOrEqual(t, len(controlMessages[0].data), 125, "close frame must fit the 125-byte control-frame limit")
 		closeCode := int(controlMessages[0].data[0])<<8 | int(controlMessages[0].data[1])
 		require.Equal(t, closeInvalidRequest, closeCode, "close code should be 4400")
-		require.True(t, r.ws.closed.Load(), "websocket should be marked closed after SendInvalidRequest")
+		require.True(t, wsClientOf(t, r).closed.Load(), "websocket should be marked closed after SendInvalidRequest")
 	})
 
 	t.Run("returns nil even when SendInvalidRequest write fails", func(t *testing.T) {
@@ -2179,7 +2190,7 @@ func TestRunner_handleAgentMessages_invalidRequest(t *testing.T) {
 		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
 			originalReq: req,
-			ws:          newWsManager(&mockWebSocketConn{writeControlError: errors.New("write failed")}),
+			client:      newWsManager(&mockWebSocketConn{writeControlError: errors.New("write failed")}),
 			streamManager: &streamManager{
 				wf:          mockWf,
 				originalReq: req,
@@ -2208,7 +2219,7 @@ func TestRunner_AcquireWorkflowLock_MisconfiguredRedis(t *testing.T) {
 
 	r := &runner{
 		originalReq: httptest.NewRequest("GET", "/", nil),
-		ws:          newWsManager(mockConn),
+		client:      newWsManager(mockConn),
 		streamManager: &streamManager{
 			wf: mockWf,
 		},
@@ -2245,7 +2256,7 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
 			originalReq: req,
-			ws:          newWsManager(mockConn),
+			client:      newWsManager(mockConn),
 			streamManager: &streamManager{
 				wf:                 mockWf,
 				cloudServiceStream: mockCloudStream,
@@ -2295,7 +2306,7 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
 			originalReq: req,
-			ws:          newWsManager(mockConn),
+			client:      newWsManager(mockConn),
 			streamManager: &streamManager{
 				wf:                 mockWf,
 				cloudServiceStream: nil,
@@ -2331,7 +2342,7 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
 			originalReq: req,
-			ws:          newWsManager(mockConn),
+			client:      newWsManager(mockConn),
 			streamManager: &streamManager{
 				wf:                 mockWf,
 				cloudServiceStream: mockCloudStream,
@@ -2367,7 +2378,7 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
 			originalReq: req,
-			ws:          newWsManager(mockConn),
+			client:      newWsManager(mockConn),
 			streamManager: &streamManager{
 				wf:                 mockWf,
 				cloudServiceStream: mockCloudStream,
@@ -2394,27 +2405,14 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 	})
 }
 
-func TestRunner_pingWebSocket(t *testing.T) {
-	t.Run("sends ping and sets read deadline", func(t *testing.T) {
-		mockConn := &mockWebSocketConn{}
-
-		req := httptest.NewRequest("GET", "/duo", nil)
-		r := &runner{
-			originalReq: req,
-			ws:          newWsManager(mockConn),
-		}
-
+func TestRunner_keepaliveClient(t *testing.T) {
+	t.Run("sends keepalive at the configured interval", func(t *testing.T) {
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
-		errCh := make(chan error, 1)
-
-		// Replace WriteControl with a version that signals and then cancels.
-		// We do this by running pingWebSocket with a very short interval using
-		// a test-specific runner that wraps the mock.
 		pingSent := make(chan struct{})
 		wrappedConn := &pingTrackingConn{
-			mockWebSocketConn: mockConn,
+			mockWebSocketConn: &mockWebSocketConn{},
 			onPing: func() {
 				select {
 				case pingSent <- struct{}{}:
@@ -2423,54 +2421,22 @@ func TestRunner_pingWebSocket(t *testing.T) {
 				cancel() // stop the goroutine after the first ping
 			},
 		}
-		r.ws = newWsManager(wrappedConn)
 
-		go r.pingWebSocket(ctx, errCh, 10*time.Millisecond)
+		r := &runner{
+			originalReq: httptest.NewRequest("GET", "/duo", nil),
+			client:      newWsManager(wrappedConn),
+		}
+
+		errCh := make(chan error, 1)
+		go r.keepaliveClient(ctx, errCh, 10*time.Millisecond)
 
 		select {
 		case <-pingSent:
-			// ping was sent — verify a read deadline was set on the mock
-			assert.NotEmpty(t, mockConn.getReadDeadlines(), "expected read deadline to be set before ping")
 		case err := <-errCh:
-			t.Fatalf("unexpected error from pingWebSocket: %v", err)
+			t.Fatalf("unexpected error from keepaliveClient: %v", err)
 		case <-time.After(5 * time.Second):
-			t.Fatal("timed out waiting for ping to be sent")
+			t.Fatal("timed out waiting for keepalive to be sent")
 		}
-	})
-
-	t.Run("pong handler resets read deadline", func(t *testing.T) {
-		mockConn := &mockWebSocketConn{}
-		req := httptest.NewRequest("GET", "/duo", nil)
-
-		r := &runner{
-			originalReq: req,
-			ws:          newWsManager(mockConn),
-		}
-
-		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
-
-		// Register the pong handler before launching any goroutine, mirroring
-		// what Execute() does. pingWebSocket no longer calls SetPongHandler
-		// itself, so we must set it up here.
-		r.ws.SetPongHandler(func(string) error {
-			return r.ws.SetReadDeadline(time.Now().Add(wsPongTimeout))
-		})
-
-		errCh := make(chan error, 1)
-		// Use a long interval so no pings fire during the test; we only care
-		// about the pong handler behavior.
-		go r.pingWebSocket(ctx, errCh, time.Hour)
-
-		// The pong handler is already registered synchronously above, so invoke
-		// it directly and verify it extends the read deadline.
-		before := len(mockConn.getReadDeadlines())
-		err := mockConn.getPongHandler()("test")
-		require.NoError(t, err)
-		deadlines := mockConn.getReadDeadlines()
-		require.Greater(t, len(deadlines), before, "pong handler should have extended the read deadline")
-		lastDeadline := deadlines[len(deadlines)-1]
-		assert.True(t, lastDeadline.After(time.Now()), "read deadline should be in the future")
 	})
 
 	t.Run("stops workflow and marks websocket closed when WriteControl fails", func(t *testing.T) {
@@ -2488,7 +2454,7 @@ func TestRunner_pingWebSocket(t *testing.T) {
 		stopAcked := make(chan struct{})
 		r := &runner{
 			originalReq: req,
-			ws:          newWsManager(wrappedConn),
+			client:      newWsManager(wrappedConn),
 			streamManager: &streamManager{
 				wf:          mockWf,
 				originalReq: req,
@@ -2499,10 +2465,10 @@ func TestRunner_pingWebSocket(t *testing.T) {
 		}
 
 		errCh := make(chan error, 1)
-		go r.pingWebSocket(ctx, errCh, 10*time.Millisecond)
+		go r.keepaliveClient(ctx, errCh, 10*time.Millisecond)
 
 		// Wait for the StopWorkflow event to be sent, then close stopAcked
-		// so stopWorkflow unblocks and pingWebSocket can send to errCh.
+		// so stopWorkflow unblocks and keepaliveClient can send to errCh.
 		require.Eventually(t, func() bool {
 			return len(mockWf.getSendEvents()) == 1
 		}, 2*time.Second, 10*time.Millisecond)
@@ -2510,16 +2476,16 @@ func TestRunner_pingWebSocket(t *testing.T) {
 		stopEvent := mockWf.getSendEvents()[0].GetStopWorkflow()
 		require.NotNil(t, stopEvent)
 		assert.Equal(t, "WORKHORSE_WEBSOCKET_PING_FAILED", stopEvent.Reason)
-		assert.True(t, r.ws.closed.Load())
+		assert.True(t, wsClientOf(t, r).closed.Load())
 
 		close(stopAcked)
 
 		select {
 		case err := <-errCh:
-			// stopWorkflow returned nil (via acked), so pingWebSocket forwards nil
+			// stopWorkflow returned nil (via acked), so keepaliveClient forwards nil
 			require.NoError(t, err)
 		case <-time.After(5 * time.Second):
-			t.Fatal("timed out waiting for pingWebSocket to return")
+			t.Fatal("timed out waiting for keepaliveClient to return")
 		}
 	})
 }

@@ -1704,6 +1704,36 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       expect(user.authorized_projects).not_to include(project)
     end
+
+    context 'when skip_authorized_projects_refresh is set' do
+      it 'leaves the refresh to the caller for a project member' do
+        project = create(:project, :private)
+        user    = create(:user)
+        member  = project.add_reporter(user)
+        member.skip_authorized_projects_refresh = true
+
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).not_to receive(:new)
+        expect(UserProjectAccessChangedService).not_to receive(:new)
+
+        member.destroy!
+
+        expect(user.authorized_projects).to include(project)
+      end
+
+      it 'leaves the refresh to the caller for a group member' do
+        group   = create(:group, :private)
+        project = create(:project, :private, group: group)
+        user    = create(:user)
+        member  = group.add_reporter(user)
+        member.skip_authorized_projects_refresh = true
+
+        expect(AuthorizedProjectsWorker).not_to receive(:new)
+
+        member.destroy!
+
+        expect(user.authorized_projects).to include(project)
+      end
+    end
   end
 
   context 'for updating organization_users' do

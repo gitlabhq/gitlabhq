@@ -3,6 +3,7 @@ import { __, sprintf } from '~/locale';
 import { DISPLAY_TYPES } from '../../constants';
 import AreaChartPresenter from './area_chart.vue';
 import BarChartPresenter from './bar_chart.vue';
+import BarListPresenter from './bar_list.vue';
 import ColumnChartPresenter from './column_chart.vue';
 import HeatMapPresenter from './heat_map.vue';
 import LineChartPresenter from './line_chart.vue';
@@ -21,6 +22,7 @@ export default {
     ColumnChartPresenter,
     LineChartPresenter,
     BarChartPresenter,
+    BarListPresenter,
     AreaChartPresenter,
     HeatMapPresenter,
   },
@@ -139,6 +141,14 @@ export default {
   />
   <bar-chart-presenter
     v-else-if="displayType === $options.DISPLAY_TYPES.BAR_CHART"
+    :data="data"
+    :fields="fields"
+    :loading="loading"
+    :display-config="displayConfig"
+    @error="$emit('error', $event)"
+  />
+  <bar-list-presenter
+    v-else-if="displayType === $options.DISPLAY_TYPES.BAR_LIST"
     :data="data"
     :fields="fields"
     :loading="loading"

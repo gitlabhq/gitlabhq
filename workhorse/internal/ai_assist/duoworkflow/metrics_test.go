@@ -8,12 +8,14 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -144,6 +146,35 @@ func TestConnectionsTotal(t *testing.T) {
 		"connectionsTotal should increment by 1 per connection attempt")
 }
 
+func TestConnectionsOpen(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	grpcServer := setupTestServer(t)
+	released := make(chan struct{})
+	grpcServer.execWorkflowHandler = func(_ pb.DuoWorkflow_ExecuteWorkflowServer) error {
+		<-released
+		return nil
+	}
+	handler := setupHandlerWithGRPC(t, grpcServer)
+
+	before := testutil.ToFloat64(connectionsOpen)
+
+	conn := dialTestHandler(t, handler)
+
+	require.Eventually(t, func() bool {
+		return testutil.ToFloat64(connectionsOpen) == before+1
+	}, 5*time.Second, time.Millisecond,
+		"connectionsOpen should increment while a connection is open")
+
+	close(released)
+	require.NoError(t, conn.Close())
+
+	require.Eventually(t, func() bool {
+		return testutil.ToFloat64(connectionsOpen) == before
+	}, 15*time.Second, time.Millisecond,
+		"connectionsOpen should return to its previous value once the connection closes")
+}
+
 // TestConnectionErrorsTotal verifies that connectionErrorsTotal increments with
 // the correct error_type label in handleExecutionError, and does not increment
 // on a clean EOF.
@@ -156,7 +187,7 @@ func TestConnectionErrorsTotal(t *testing.T) {
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
 		grpcErr := status.Error(codes.Internal, "boom")
 		sm := newTestStreamManager(t, &mockWorkflowStream{recvError: grpcErr})
-		runner := &runner{streamManager: sm, ws: newWsManager(&mockWebSocketConn{})}
+		runner := &runner{streamManager: sm, client: newWsManager(&mockWebSocketConn{})}
 
 		h.executeRunner(r, nil, runner)
 
@@ -196,7 +227,7 @@ func TestConnectionErrorsTotal(t *testing.T) {
 		sm := newTestStreamManager(t, &mockWorkflowStream{recvError: io.EOF})
 		runner := &runner{
 			streamManager: sm,
-			ws:            newWsManager(&mockWebSocketConn{blockCh: make(chan bool)}),
+			client:        newWsManager(&mockWebSocketConn{blockCh: make(chan bool)}),
 		}
 
 		h.executeRunner(r, nil, runner)

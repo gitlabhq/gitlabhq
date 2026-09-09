@@ -1,6 +1,7 @@
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AreaChartPresenter from '~/glql/components/presenters/area_chart.vue';
 import BarChartPresenter from '~/glql/components/presenters/bar_chart.vue';
+import BarListPresenter from '~/glql/components/presenters/bar_list.vue';
 import ColumnChartPresenter from '~/glql/components/presenters/column_chart.vue';
 import LineChartPresenter from '~/glql/components/presenters/line_chart.vue';
 import ListPresenter from '~/glql/components/presenters/list.vue';
@@ -30,6 +31,7 @@ describe('DataPresenter', () => {
     ${'columnChart'} | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${ColumnChartPresenter}
     ${'lineChart'}   | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${LineChartPresenter}
     ${'barChart'}    | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${BarChartPresenter}
+    ${'barList'}     | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${BarListPresenter}
     ${'areaChart'}   | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }}  | ${AreaChartPresenter}
     ${'heatMap'}     | ${MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC} | ${{ fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC }} | ${HeatMapPresenter}
   `(
@@ -56,6 +58,7 @@ describe('DataPresenter', () => {
     displayType      | PresenterComponent
     ${'columnChart'} | ${ColumnChartPresenter}
     ${'barChart'}    | ${BarChartPresenter}
+    ${'barList'}     | ${BarListPresenter}
     ${'areaChart'}   | ${AreaChartPresenter}
     ${'heatMap'}     | ${HeatMapPresenter}
   `('$displayType', ({ displayType, PresenterComponent }) => {
@@ -195,7 +198,7 @@ describe('DataPresenter', () => {
       expect(error.message).toBe(
         'Unknown display type: `pieChart`. Supported display types are: ' +
           '`list`, `orderedList`, `table`, `stat`, `columnChart`, `lineChart`, `barChart`, ' +
-          '`areaChart`, `heatMap`.',
+          '`barList`, `areaChart`, `heatMap`.',
       );
     });
 
@@ -206,6 +209,7 @@ describe('DataPresenter', () => {
       expect(wrapper.findComponent(ColumnChartPresenter).exists()).toBe(false);
       expect(wrapper.findComponent(LineChartPresenter).exists()).toBe(false);
       expect(wrapper.findComponent(BarChartPresenter).exists()).toBe(false);
+      expect(wrapper.findComponent(BarListPresenter).exists()).toBe(false);
       expect(wrapper.findComponent(AreaChartPresenter).exists()).toBe(false);
     });
   });

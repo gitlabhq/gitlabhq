@@ -16,6 +16,8 @@ The `duoworkflow` package enables GitLab's AI-assisted features (Duo Chat, Duo A
 
 - **handler.go**: HTTP handler for WebSocket connections and graceful shutdown management
 - **runner.go**: Main orchestrator that manages the lifecycle of a single workflow execution
+- **transport.go**: Defines the `clientTransport` interface, the runner's view of the client that started the workflow
+- **websocket.go**: WebSocket implementation of `clientTransport`, including read deadlines, keepalive pings, and close handling
 - **stream_manager.go**: Manages gRPC streams to the Duo Workflow Service (primary and optional cloud-tracking stream for self-hosted deployments)
 - **client.go**: gRPC client for communicating with the Duo Workflow Service
 - **actions.go**: Handler for executing HTTP action requests from the Duo Workflow Service
@@ -78,31 +80,51 @@ type Client struct {
 - Keepalive time: 20 seconds
 - Retry attempts: 4 with exponential backoff
 
+### Client transport
+
+The runner does not talk to the client directly. It talks to a `clientTransport`, and
+`wsManager` is the WebSocket implementation of that interface. Keeping the runner behind
+this interface lets a second transport reuse the same distributed locking, stop handshake,
+graceful shutdown, MCP tool execution, and metrics.
+
+```go
+type clientTransport interface {
+	Start() error
+	KeepaliveInterval() time.Duration
+	Keepalive() error
+	ReadClientEvent() (*pb.ClientEvent, error)
+	ReadError(err error) (reason string, ok bool)
+	WriteAction(ctx context.Context, action *pb.Action) error
+	SendGoingAway() error
+	SendInvalidRequest(reason string) error
+	Close() error
+}
+```
+
 ### Runner
 
 The `runner` orchestrates a single workflow execution:
 
 ```go
 type runner struct {
-    rails              *api.API
-    backend            http.Handler
-    token              string
-    originalReq        *http.Request
-    conn               websocketConn
-    streamManager      *streamManager
-    lockManager        *workflowLockManager
-    workflowID         string
-    mutex              *redsync.Mutex
-    lockFlow           bool
-    serverCapabilities []string
-    mcpManager         mcpManager
-    workflowDefinition string
+	originalReq         *http.Request
+	httpActionHandler   *runHTTPActionHandler
+	client              clientTransport
+	lockManager         *workflowLockManager
+	workflowID          string
+	mutex               *redsync.Mutex
+	lockFlow            bool
+	serverCapabilities  []string
+	streamManager       *streamManager
+	mcpManager          mcpManager
+	stop                stopCoordinator
+	stopWorkflowTimeout time.Duration
 }
 ```
 
 **Responsibilities:**
 
-- Handles WebSocket messages from clients
+- Handles client events received over the client transport
 - Handles gRPC actions from the Duo Workflow Service
 - Manages message serialization/deserialization
 - Coordinates HTTP request execution and MCP tool calls
@@ -110,9 +132,9 @@ type runner struct {
 
 **Message handling flow:**
 
-1. **WebSocket messages** → Unmarshal JSON to Protocol Buffer → Send to gRPC stream
+1. **Client events** → Unmarshal JSON to Protocol Buffer → Send to gRPC stream
 2. **gRPC actions** → Process action type → Execute action → Send response back to gRPC stream
-3. **WebSocket closure** → Send StopWorkflow request → Wait for acknowledgment
+3. **Client disconnect** → Send StopWorkflow request → Wait for acknowledgment
 
 ### Stream manager
 
@@ -247,11 +269,24 @@ Client receives action response
 
 ## Metrics
 
-The package exposes six Prometheus counters and one histogram.
+The package exposes six Prometheus counters, one gauge and one histogram.
 
 ### `gitlab_workhorse_duo_workflow_connections_total`
 
 Incremented for every inbound request that passes pre-authorization, before the WebSocket upgrade is attempted. This includes requests that subsequently fail to upgrade.
+
+### `gitlab_workhorse_duo_workflow_connections_open`
+
+The number of runners currently executing, incremented when a runner is registered and decremented when it is torn down.
+
+Connections stay open for hours, so concurrency cannot be derived from `connections_total` alone. `gitlab_workhorse_http_in_flight_requests` is not a substitute: it is unlabelled, so it cannot be narrowed to this route, and it also counts the HTTP actions that re-enter the upstream router while the WebSocket is still open.
+
+Use it to normalise process memory per connection:
+
+```promql
+go_memstats_heap_inuse_bytes{job=~"gitlab-workhorse.*"}
+  / on(instance) gitlab_workhorse_duo_workflow_connections_open
+```
 
 ### `gitlab_workhorse_duo_workflow_connection_errors_total`
 

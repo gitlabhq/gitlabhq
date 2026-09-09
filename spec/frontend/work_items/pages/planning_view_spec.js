@@ -95,6 +95,7 @@ import { saveSavedView, getFilterTokens } from 'ee_else_ce/work_items/list/utils
 
 import PlanningView from '~/work_items/pages/planning_view.vue';
 import ListView from 'ee_else_ce/work_items/list/list_view.vue';
+import TableView from '~/work_items/table/table_view.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import WorkItemsSavedViewsSelectors from '~/work_items/list/components/work_items_saved_views_selectors.vue';
 import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
@@ -243,6 +244,8 @@ const subscribedSavedViewsHandler = jest.fn().mockResolvedValue({
 
 const findListView = () => wrapper.findComponent(ListView);
 const findBoardView = () => wrapper.findComponent({ name: 'BoardView' });
+const findTableView = () => wrapper.findComponent({ name: 'TableView' });
+const findStateCountRow = () => wrapper.findByTestId('state-count-row');
 const boardViewStub = {
   name: 'BoardView',
   props: [
@@ -3421,10 +3424,12 @@ describe('planning-view', () => {
     });
 
     describe('when planningViewTable feature flag is enabled', () => {
-      const findTablePlaceholder = () => wrapper.findByTestId('table-view-placeholder');
       const tableProvideAndStubs = {
         provide: { glFeatures: { planningViewTable: true } },
-        stubs: { WorkItemsSavedViewsSelectors: savedViewsSelectorsStub },
+        stubs: {
+          WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+          TableView: stubComponent(TableView),
+        },
       };
 
       describe('when the table view mode is selected', () => {
@@ -3441,10 +3446,18 @@ describe('planning-view', () => {
           await waitForPromises();
         });
 
-        it('swaps the list view for the table placeholder', () => {
+        it('swaps the list view for the table view', () => {
           expect(findListView().exists()).toBe(false);
-          expect(findTablePlaceholder().text()).toBe('Table placeholder');
+          expect(findTableView().exists()).toBe(true);
           expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_TABLE);
+        });
+
+        it('passes the same data to the table view as to the list view', () => {
+          expect(findTableView().props()).toMatchObject({
+            rootPageFullPath: 'full/path',
+            queryVariables: expect.objectContaining({ fullPath: 'full/path' }),
+            hasWorkItems: true,
+          });
         });
 
         it('persists the table view mode to the namespace preferences', () => {
@@ -3452,6 +3465,10 @@ describe('planning-view', () => {
             namespace: 'full/path',
             displaySettings: { viewMode: VIEW_MODE_TABLE },
           });
+        });
+
+        it('does not render the item count row border, which the table would double up on', () => {
+          expect(findStateCountRow().classes()).not.toContain('gl-border-b');
         });
       });
 
@@ -3465,7 +3482,7 @@ describe('planning-view', () => {
         });
 
         it('restores the table view mode', () => {
-          expect(findTablePlaceholder().exists()).toBe(true);
+          expect(findTableView().exists()).toBe(true);
           expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_TABLE);
         });
       });
@@ -3481,7 +3498,11 @@ describe('planning-view', () => {
 
       it('falls back to the list view', () => {
         expect(findListView().exists()).toBe(true);
-        expect(wrapper.findByTestId('table-view-placeholder').exists()).toBe(false);
+        expect(findTableView().exists()).toBe(false);
+      });
+
+      it('keeps the item count row border', () => {
+        expect(findStateCountRow().classes()).toContain('gl-border-b');
       });
     });
 

@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_preview_scan_profile
 description: Count of unique users who previewed a scan profile
-product_group: security_platform_management
+product_group: security_controls
 product_categories:
 - security_asset_inventories
 - security_testing_configuration

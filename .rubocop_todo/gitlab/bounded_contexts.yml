@@ -2572,6 +2572,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/mailers/ee/notify.rb'
     - 'ee/app/mailers/ee/preview/notify_preview.rb'
     - 'ee/app/mailers/emails/ai/duo_workflows.rb'
+    - 'ee/app/mailers/emails/ai/flow_schedules.rb'
     - 'ee/app/mailers/emails/block_seat_overages.rb'
     - 'ee/app/mailers/emails/ci_runner_usage_by_project.rb'
     - 'ee/app/mailers/emails/compliance_frameworks.rb'

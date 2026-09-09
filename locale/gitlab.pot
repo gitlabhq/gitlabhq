@@ -8335,6 +8335,30 @@ msgstr ""
 msgid "AiCommitMessage|An unexpected error has occurred. Please try again."
 msgstr ""
 
+msgid "AiFlowSchedules|Error: %{error}"
+msgstr ""
+
+msgid "AiFlowSchedules|Failure count: %{count} of %{max}. The schedule will be deactivated after %{max} consecutive failures."
+msgstr ""
+
+msgid "AiFlowSchedules|Flow schedule deactivated: %{description}"
+msgstr ""
+
+msgid "AiFlowSchedules|Flow schedule failed: %{description}"
+msgstr ""
+
+msgid "AiFlowSchedules|Last error: %{error}"
+msgstr ""
+
+msgid "AiFlowSchedules|The flow schedule \"%{description}\" in project %{project} failed to execute."
+msgstr ""
+
+msgid "AiFlowSchedules|The flow schedule \"%{description}\" in project %{project} has been deactivated after %{count} consecutive failures."
+msgstr ""
+
+msgid "AiFlowSchedules|To resume scheduled flows, address the issue above and reactivate the schedule."
+msgstr ""
+
 msgid "AiFlowTriggers|Mention-triggered flows are not supported on group-level resources. They require a project-level item such as an issue or merge request."
 msgstr ""
 
@@ -20319,6 +20343,9 @@ msgid "ColorPicker|Enter any hex color."
 msgstr ""
 
 msgid "Colorize messages"
+msgstr ""
+
+msgid "Columns"
 msgstr ""
 
 msgid "Comma-separated list of branches to be automatically inspected. Leave blank to include all branches."
@@ -39502,6 +39529,9 @@ msgid "Globally-allowed IP ranges"
 msgstr ""
 
 msgid "Glql|GLQL query must be a string."
+msgstr ""
+
+msgid "Glql|Other (%{count})"
 msgstr ""
 
 msgid "Go Back"
@@ -71327,6 +71357,9 @@ msgstr ""
 msgid "SecretsManager|GitLab Secrets Manager"
 msgstr ""
 
+msgid "SecretsManager|GitLab Secrets Manager consumes GitLab Credits to store and fetch secrets."
+msgstr ""
+
 msgid "SecretsManager|GitLab Secrets Manager has been enabled for this group. %{linkStart}Manage permissions.%{linkEnd}"
 msgstr ""
 
@@ -72704,6 +72737,9 @@ msgstr ""
 msgid "SecurityInventory|View vulnerability report"
 msgstr ""
 
+msgid "SecurityInventory|Vulnerabilities"
+msgstr ""
+
 msgid "SecurityInventory|Vulnerability count"
 msgstr ""
 
@@ -73020,6 +73056,9 @@ msgid "SecurityOrchestration|Add regular branches"
 msgstr ""
 
 msgid "SecurityOrchestration|Add rule"
+msgstr ""
+
+msgid "SecurityOrchestration|Add severity"
 msgstr ""
 
 msgid "SecurityOrchestration|Add trigger"
@@ -73541,6 +73580,9 @@ msgid "SecurityOrchestration|Delete policy: %{policy}"
 msgstr ""
 
 msgid "SecurityOrchestration|Denied licenses"
+msgstr ""
+
+msgid "SecurityOrchestration|Deny a package when it has more vulnerabilities at a severity than the threshold allows."
 msgstr ""
 
 msgid "SecurityOrchestration|Deny list"
@@ -75226,6 +75268,9 @@ msgstr ""
 msgid "SecurityOrchestration|This will disconnect your top-level compliance and security policy group, and all the frameworks it shares, from all other top-level groups."
 msgstr ""
 
+msgid "SecurityOrchestration|Threshold"
+msgstr ""
+
 msgid "SecurityOrchestration|Timezone"
 msgstr ""
 
@@ -75395,6 +75440,9 @@ msgid "SecurityOrchestration|Vulnerability age is less than %{vulnerabilityAge}.
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerability age requires previously existing vulnerability states (detected, confirmed, resolved, or dismissed)"
+msgstr ""
+
+msgid "SecurityOrchestration|Vulnerability count thresholds"
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerability management"
@@ -85286,9 +85334,6 @@ msgstr ""
 msgid "Tool"
 msgstr ""
 
-msgid "Tool Coverage"
-msgstr ""
-
 msgid "ToolCoverage|Project coverage"
 msgstr ""
 
@@ -92899,9 +92944,6 @@ msgid "WorkItemPlanningView|Share feedback on the Board view"
 msgstr ""
 
 msgid "WorkItemPlanningView|Table"
-msgstr ""
-
-msgid "WorkItemPlanningView|Table placeholder"
 msgstr ""
 
 msgid "WorkItemStatus|%{status_name} is not a valid status for this item."

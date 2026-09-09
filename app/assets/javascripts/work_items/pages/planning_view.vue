@@ -191,6 +191,7 @@ import {
 
 const ListView = () => import('ee_else_ce/work_items/list/list_view.vue');
 const BoardView = () => import('~/work_items/board/board_view.vue');
+const TableView = () => import('~/work_items/table/table_view.vue');
 const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
@@ -226,7 +227,6 @@ export default {
   searchProjectsQuery,
   i18n: {
     boardFeedbackLinkText: s__('WorkItemPlanningView|Share feedback on the Board view'),
-    tablePlaceholder: s__('WorkItemPlanningView|Table placeholder'),
   },
   BOARD_FEEDBACK_ISSUE_URL: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/607858',
   name: 'PlanningView',
@@ -251,6 +251,7 @@ export default {
     IssuableTabs,
     ListView,
     BoardView,
+    TableView,
     WorkItemDetailPanel,
   },
   mixins: [glFeatureFlagMixin(), InternalEvents.mixin(), GlToastMixin],
@@ -2394,7 +2395,9 @@ export default {
       <!-- state-count -->
       <div
         ref="stateCountRow"
-        class="gl-border-b gl-flex gl-h-8 gl-flex-wrap gl-justify-between gl-gap-y-3 gl-py-3 sm:gl-flex-nowrap"
+        class="gl-flex gl-h-8 gl-flex-wrap gl-justify-between gl-gap-y-3 gl-py-3 sm:gl-flex-nowrap"
+        :class="{ 'gl-border-b': !isTableView }"
+        data-testid="state-count-row"
       >
         <div class="gl-flex gl-items-center gl-gap-3">
           <span data-testid="work-item-count" class="gl-mr-3">{{ workItemTotalStateCount }}</span>
@@ -2477,8 +2480,9 @@ export default {
         </template>
       </div>
     </template>
-    <list-view
-      v-if="viewMode !== $options.VIEW_MODE_BOARD && !isTableView"
+    <component
+      :is="isTableView ? 'table-view' : 'list-view'"
+      v-if="viewMode !== $options.VIEW_MODE_BOARD"
       data-testid="list-view"
       :root-page-full-path="rootPageFullPath"
       :with-tabs="withTabs"
@@ -2576,7 +2580,7 @@ export default {
           </template>
         </empty-state-without-any-issues>
       </template>
-    </list-view>
+    </component>
     <board-view
       v-if="viewMode === $options.VIEW_MODE_BOARD && isPlanningViewBoardEnabled"
       :root-page-full-path="rootPageFullPath"
@@ -2601,9 +2605,6 @@ export default {
       @work-item-created="handleBoardWorkItemCreated"
       @open-group-by-settings="openGroupByDisplaySettings"
     />
-    <div v-if="isTableView" class="gl-py-5" data-testid="table-view-placeholder">
-      {{ $options.i18n.tablePlaceholder }}
-    </div>
     <work-item-display-settings-drawer
       :open="isDisplayDrawerOpen"
       :page="displayDrawerPage"

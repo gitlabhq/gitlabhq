@@ -36,6 +36,12 @@ const wsPingInterval = 20 * time.Second
 // broken.
 const wsPongTimeout = wsPingInterval + 10*time.Second
 
+// Start small and let MarshalAppend grow the buffer to the connection's actual
+// working set. Reserving the 4MB message ceiling up front costs that much live
+// heap per connection; shrinking it back after each write costs a full
+// reallocation per action, and gprd actions are routinely 1-2MB.
+const initialMarshalBufSize = 4 << 10
+
 var normalClosureErrCodes = []int{websocket.CloseGoingAway, websocket.CloseNormalClosure}
 
 var marshaler = protojson.MarshalOptions{
@@ -144,7 +150,8 @@ func intersectServerCapabilities(fromServer []string) []string {
 }
 
 // wsManager owns the WebSocket connection and all state needed to read from and
-// write to it. It mirrors the role of streamManager for the gRPC side.
+// write to it. It mirrors the role of streamManager for the gRPC side, and is
+// the WebSocket implementation of clientTransport.
 type wsManager struct {
 	conn   websocketConn
 	closed atomic.Bool
@@ -154,25 +161,33 @@ type wsManager struct {
 func newWsManager(conn websocketConn) *wsManager {
 	return &wsManager{
 		conn: conn,
-		buf:  make([]byte, ActionResponseBodyLimit),
+		buf:  make([]byte, 0, initialMarshalBufSize),
 	}
 }
 
-// SetPongHandler registers the pong callback on the underlying connection.
-// The callback resets the read deadline so a missing pong eventually causes
-// ReadClientEvent to time out and terminate the read loop.
-func (w *wsManager) SetPongHandler(h func(string) error) {
-	w.conn.SetPongHandler(h)
+// Start registers the pong callback and arms the initial read deadline. The
+// callback resets the deadline on every pong, so a missing pong eventually
+// causes ReadClientEvent to time out and terminate the read loop.
+//
+// In gorilla/websocket pong frames are dispatched inside ReadMessage, so the
+// handler has to be in place before the first read.
+func (w *wsManager) Start() error {
+	w.conn.SetPongHandler(func(string) error {
+		return w.conn.SetReadDeadline(time.Now().Add(wsPongTimeout))
+	})
+
+	return w.conn.SetReadDeadline(time.Now().Add(wsPongTimeout))
 }
 
-// SetReadDeadline sets the read deadline on the underlying connection.
-func (w *wsManager) SetReadDeadline(t time.Time) error {
-	return w.conn.SetReadDeadline(t)
+// KeepaliveInterval returns how often Keepalive should send a ping frame.
+func (w *wsManager) KeepaliveInterval() time.Duration {
+	return wsPingInterval
 }
 
-// Ping sends a single WebSocket ping control frame. It marks the connection as
-// closed if the write fails so that subsequent WriteAction calls are skipped.
-func (w *wsManager) Ping() error {
+// Keepalive sends a single WebSocket ping control frame. It marks the
+// connection as closed if the write fails so that subsequent WriteAction calls
+// are skipped.
+func (w *wsManager) Keepalive() error {
 	if err := w.conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(wsWriteDeadline)); err != nil {
 		w.closed.Store(true)
 		return err

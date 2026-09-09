@@ -18,7 +18,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
 
-var errFailedToAcquireLockError = errors.New("handleWebSocketMessages: failed to acquire lock")
+var errFailedToAcquireLockError = errors.New("handleClientEvents: failed to acquire lock")
 
 type workflowStream interface {
 	Send(*pb.ClientEvent) error
@@ -33,9 +33,9 @@ type selfHostedWorkflowStream interface {
 }
 
 // stopCoordinator manages the graceful stop handshake between workhorse and DWS.
-// When workhorse needs to stop a workflow (WebSocket close, ping failure, server
-// shutdown), it sends a StopWorkflowRequest and waits for DWS to acknowledge by
-// closing the gRPC stream with an Unavailable status code.
+// When workhorse needs to stop a workflow (client disconnect, keepalive failure,
+// server shutdown), it sends a StopWorkflowRequest and waits for DWS to
+// acknowledge by closing the gRPC stream with an Unavailable status code.
 type stopCoordinator struct {
 	// requested is set to true when stopWorkflow sends a StopWorkflowRequest
 	// to DWS. It gates whether an Unavailable gRPC error from DWS should be
@@ -55,7 +55,7 @@ type stopCoordinator struct {
 
 	// workflowEnded is set to true when handleAgentMessages receives io.EOF,
 	// meaning DWS finished the workflow naturally. When this is set,
-	// handleWebSocketMessages should not attempt to send a StopWorkflowRequest
+	// handleClientEvents should not attempt to send a StopWorkflowRequest
 	workflowEnded atomic.Bool
 
 	// shutdownStarted is set to true at the start of Shutdown. Close only
@@ -64,16 +64,15 @@ type stopCoordinator struct {
 	shutdownStarted atomic.Bool
 
 	// shutdownDone is closed by Shutdown when it finishes. Close waits on
-	// this before calling closeWebSocketConnection so that Shutdown always
-	// gets to send CloseGoingAway (1001) before Close sends CloseNormalClosure
-	// (1000).
+	// this before closing the client transport so that Shutdown always gets to
+	// send its going-away signal before Close terminates the connection.
 	shutdownDone chan struct{}
 }
 
 type runner struct {
 	originalReq         *http.Request
 	httpActionHandler   *runHTTPActionHandler
-	ws                  *wsManager
+	client              clientTransport
 	lockManager         *workflowLockManager
 	workflowID          string
 	mutex               *redsync.Mutex
@@ -85,7 +84,7 @@ type runner struct {
 	stopWorkflowTimeout time.Duration
 }
 
-func newRunner(conn websocketConn, rails *api.API, backend http.Handler, relativeURLRoot string, r *http.Request, cfg *api.DuoWorkflow, rdb *redis.Client) (*runner, error) {
+func newRunner(client clientTransport, rails *api.API, backend http.Handler, relativeURLRoot string, r *http.Request, cfg *api.DuoWorkflow, rdb *redis.Client) (*runner, error) {
 	if cfg.Service == nil {
 		return nil, fmt.Errorf("failed to initialize client: Service configuration is nil")
 	}
@@ -118,7 +117,7 @@ func newRunner(conn websocketConn, rails *api.API, backend http.Handler, relativ
 	return &runner{
 		originalReq:        r,
 		httpActionHandler:  httpActionHandler,
-		ws:                 newWsManager(conn),
+		client:             client,
 		lockManager:        newWorkflowLockManager(rdb),
 		lockFlow:           lockFlow,
 		serverCapabilities: cfg.ServerCapabilities,
@@ -132,26 +131,24 @@ func newRunner(conn websocketConn, rails *api.API, backend http.Handler, relativ
 }
 
 func (r *runner) Execute(ctx context.Context) error {
-	// Register the pong handler before any goroutine calls ReadMessage.
-	// In gorilla/websocket, pong frames are dispatched inside ReadMessage, so
-	// if a pong arrives before SetPongHandler is called the default no-op
-	// handler runs and the read deadline is never reset.
-	r.ws.SetPongHandler(func(string) error {
-		return r.ws.SetReadDeadline(time.Now().Add(wsPongTimeout))
-	})
+	// Arm the transport before any goroutine reads from it, so liveness
+	// tracking is in place from the very first client event.
+	if err := r.client.Start(); err != nil {
+		return fmt.Errorf("Execute: failed to start client transport: %w", err)
+	}
 
-	errCh := make(chan error, 3) // one slot per goroutine: WS reader, agent reader, pinger
+	errCh := make(chan error, 3) // one slot per goroutine: client reader, agent reader, keepalive
 
 	r.stop.agentDone.Add(1)
 
-	go r.handleWebSocketMessages(errCh)
+	go r.handleClientEvents(errCh)
 	go func() {
 		defer r.stop.agentDone.Done()
 		r.handleAgentMessages(ctx, errCh)
 	}()
-	go r.pingWebSocket(ctx, errCh, wsPingInterval)
+	go r.keepaliveClient(ctx, errCh, r.client.KeepaliveInterval())
 
-	// Unfortunately the lock is acquired in handleWebSocketMessage.  This is
+	// Unfortunately the lock is acquired in handleClientEvent.  This is
 	// because the workflowID is not known until after we see the startReq. But
 	// we need to keep it as long as either of these connections is running. So
 	// we release it here instead.
@@ -165,18 +162,10 @@ func (r *runner) Execute(ctx context.Context) error {
 	return <-errCh
 }
 
-// pingWebSocket sends periodic WebSocket ping frames. It sets an initial read
-// deadline before the first ping fires; after that the pong handler (registered
-// in Execute) resets the deadline on every pong reply. A missing pong causes
-// ReadClientEvent to return a timeout error which terminates handleWebSocketMessages.
-func (r *runner) pingWebSocket(ctx context.Context, errCh chan<- error, interval time.Duration) {
-	// Set the initial read deadline before any ping is sent. Subsequent resets
-	// are handled by the pong handler registered in Execute().
-	if err := r.ws.SetReadDeadline(time.Now().Add(wsPongTimeout)); err != nil {
-		errCh <- fmt.Errorf("pingWebSocket: failed to set initial read deadline: %w", err)
-		return
-	}
-
+// keepaliveClient signals liveness to the client at a fixed interval. A dead
+// client eventually makes ReadClientEvent fail, which terminates
+// handleClientEvents.
+func (r *runner) keepaliveClient(ctx context.Context, errCh chan<- error, interval time.Duration) {
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
@@ -185,27 +174,27 @@ func (r *runner) pingWebSocket(ctx context.Context, errCh chan<- error, interval
 		case <-ctx.Done():
 			return
 		case <-ticker.C:
-			if err := r.ws.Ping(); err != nil {
-				errCh <- r.stopAndWrapError("pingWebSocket", "WORKHORSE_WEBSOCKET_PING_FAILED", err)
+			if err := r.client.Keepalive(); err != nil {
+				errCh <- r.stopAndWrapError("keepaliveClient", reasonKeepaliveFailed, err)
 				return
 			}
 		}
 	}
 }
 
-func (r *runner) handleWebSocketMessages(errCh chan<- error) {
+func (r *runner) handleClientEvents(errCh chan<- error) {
 	for {
-		event, err := r.ws.ReadClientEvent()
+		event, err := r.client.ReadClientEvent()
 		if err != nil {
-			if reason, ok := r.ws.ReadError(err); ok {
-				errCh <- r.stopAndWrapError("handleWebSocketMessages", reason, err)
+			if reason, ok := r.client.ReadError(err); ok {
+				errCh <- r.stopAndWrapError("handleClientEvents", reason, err)
 			} else {
-				errCh <- fmt.Errorf("handleWebSocketMessages: failed to read a WS message: %v", err)
+				errCh <- fmt.Errorf("handleClientEvents: failed to read a client event: %v", err)
 			}
 			return
 		}
 
-		if err := r.handleWebSocketMessage(event); err != nil {
+		if err := r.handleClientEvent(event); err != nil {
 			errCh <- err
 			return
 		}
@@ -238,8 +227,8 @@ func (r *runner) handleAgentMessages(ctx context.Context, errCh chan<- error) {
 				errCh <- nil
 			case errors.Is(err, errInvalidRequest):
 				log.WithRequest(r.originalReq).WithError(err).Info("handleAgentMessages: DWS rejected reconnect with INVALID_ARGUMENT")
-				if wsErr := r.ws.SendInvalidRequest(err.Error()); wsErr != nil {
-					log.WithRequest(r.originalReq).WithError(wsErr).Error("handleAgentMessages: failed to send invalid-request close frame")
+				if clientErr := r.client.SendInvalidRequest(err.Error()); clientErr != nil {
+					log.WithRequest(r.originalReq).WithError(clientErr).Error("handleAgentMessages: failed to send invalid-request signal")
 				}
 				errCh <- nil
 			default:
@@ -275,23 +264,23 @@ func (r *runner) Close() error {
 	r.stop.agentDone.Wait()
 
 	// When a server shutdown is in progress, wait for Shutdown to finish before
-	// closing the WebSocket connection. Shutdown sends CloseGoingAway (1001) to
-	// signal the client to reconnect; if Close races ahead and sends
-	// CloseNormalClosure (1000) first, the client never sees the 1001 and won't
-	// reconnect to the new instance. In the normal request path Shutdown is
-	// never called, so we must not block on shutdownDone there.
+	// closing the client transport. Shutdown signals the client to reconnect;
+	// if Close races ahead and terminates the connection normally first, the
+	// client never sees that signal and won't reconnect to the new instance. In
+	// the normal request path Shutdown is never called, so we must not block on
+	// shutdownDone there.
 	if r.stop.shutdownStarted.Load() {
 		<-r.stop.shutdownDone
 	}
 
 	streamManagerCloseErr := r.logClose("stream manager", r.streamManager.Close())
-	wsCloseErr := r.logClose("websocket connection", r.ws.Close())
+	clientCloseErr := r.logClose("client transport", r.client.Close())
 	mcpManagerCloseErr := r.logClose("mcp manager", r.mcpManager.Close())
 
-	return errors.Join(streamManagerCloseErr, wsCloseErr, mcpManagerCloseErr)
+	return errors.Join(streamManagerCloseErr, clientCloseErr, mcpManagerCloseErr)
 }
 
-func (r *runner) handleWebSocketMessage(response *pb.ClientEvent) error {
+func (r *runner) handleClientEvent(response *pb.ClientEvent) error {
 	if startReq := response.GetStartRequest(); startReq != nil {
 		// Acquire distributed lock when workflow starts
 		if r.lockFlow {
@@ -327,7 +316,7 @@ func (r *runner) handleWebSocketMessage(response *pb.ClientEvent) error {
 			return nil
 		}
 
-		return fmt.Errorf("handleWebSocketMessage: failed to write a gRPC message: %v", err)
+		return fmt.Errorf("handleClientEvent: failed to write a gRPC message: %v", err)
 	}
 
 	return nil
@@ -338,7 +327,7 @@ func (r *runner) acquireWorkflowLock(startReq *pb.StartWorkflowRequest) error {
 
 	if r.workflowID == "" {
 		log.WithRequest(r.originalReq).Error("No workflow ID provided in StartWorkflowRequest")
-		return fmt.Errorf("handleWebSocketMessage: no workflow ID provided in StartWorkflowRequest")
+		return fmt.Errorf("handleClientEvent: no workflow ID provided in StartWorkflowRequest")
 	}
 
 	// WorkflowDefinition is deprecated, but there is no strategy yet to stop using and eventually
@@ -375,7 +364,7 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 		// If a tool is not recongnized, propagate the message to the client
 		// It's possible when a user has local MCP servers configured in IDE
 		if !r.mcpManager.HasTool(mcpTool.Name) {
-			return r.ws.WriteAction(ctx, action)
+			return r.client.WriteAction(ctx, action)
 		}
 
 		event, err := r.mcpManager.CallTool(ctx, action)
@@ -389,7 +378,7 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 	case *pb.Action_TrackLlmCallForSelfHosted:
 		return r.streamManager.HandleCloudServiceTracking(ctx, action)
 	default:
-		return r.ws.WriteAction(ctx, action)
+		return r.client.WriteAction(ctx, action)
 	}
 
 	return nil
@@ -431,9 +420,9 @@ func (r *runner) stopWorkflow(reason string, closeErr error) error {
 // It first waits for the workflow to finish naturally within the shutdown grace
 // period. If either the request context or the shutdown context expires before
 // the workflow completes, it sends a StopWorkflowRequest to DWS, releases the
-// distributed lock, and sends a CloseGoingAway frame to the WebSocket client so
-// the executor can reconnect to a new workhorse instance and resume from the
-// last DWS checkpoint.
+// distributed lock, and signals the client to go away so the executor can
+// reconnect to a new workhorse instance and resume from the last DWS
+// checkpoint.
 // Errors during shutdown are logged but not returned to allow other runners to proceed.
 func (r *runner) Shutdown(ctx context.Context) error {
 	// Signal Close that a shutdown is in progress so it waits for shutdownDone
@@ -441,8 +430,8 @@ func (r *runner) Shutdown(ctx context.Context) error {
 	r.stop.shutdownStarted.Store(true)
 
 	// requestContextDone is set to true when the original request context fires
-	// first. In that case the client is already gone, so we skip sending
-	// CloseGoingAway — there is no one to receive it.
+	// first. In that case the client is already gone, so we skip the going-away
+	// signal — there is no one to receive it.
 	var requestContextDone bool
 
 	select {
@@ -456,8 +445,8 @@ func (r *runner) Shutdown(ctx context.Context) error {
 	workflowEnded := r.stop.workflowEnded.Load()
 
 	// If the workflow already ended naturally (DWS sent EOF), there is nothing
-	// to stop and no reason to send CloseGoingAway — the client does not need
-	// to reconnect to resume a workflow that has already finished.
+	// to stop and no reason to signal going away — the client does not need to
+	// reconnect to resume a workflow that has already finished.
 	if !workflowEnded {
 		err := r.stopWorkflow(
 			"WORKHORSE_SERVER_SHUTDOWN",
@@ -480,14 +469,14 @@ func (r *runner) Shutdown(ctx context.Context) error {
 		r.lockManager.releaseLock(context.Background(), r.mutex, r.workflowID) // lint:allow context.Background
 	}
 
-	// Send CloseGoingAway (1001) to signal the client to reconnect. Skip this
-	// when the request context fired first (client is already gone) or when
-	// the workflow ended naturally (nothing to reconnect to).
+	// Signal the client to reconnect. Skip this when the request context fired
+	// first (client is already gone) or when the workflow ended naturally
+	// (nothing to reconnect to).
 	if !requestContextDone && !workflowEnded {
-		if wsErr := r.ws.SendGoingAway(); wsErr != nil {
-			log.WithRequest(r.originalReq).WithError(wsErr).Info("Shutdown: failed to send CloseGoingAway to client")
+		if clientErr := r.client.SendGoingAway(); clientErr != nil {
+			log.WithRequest(r.originalReq).WithError(clientErr).Info("Shutdown: failed to signal going away to client")
 		} else {
-			log.WithRequest(r.originalReq).Info("Shutdown: successfully sent CloseGoingAway to client")
+			log.WithRequest(r.originalReq).Info("Shutdown: successfully signaled going away to client")
 		}
 	}
 

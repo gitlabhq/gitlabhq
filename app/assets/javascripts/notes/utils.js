@@ -70,7 +70,8 @@ export const shouldRenderAsDuoSystemNote = (note) =>
   Boolean(note?.system) &&
   (note.duo_session_status !== undefined ||
     (note.author?.user_type === 'duo_code_review_bot' &&
-      note.system_note_icon_name !== 'comment-dots'));
+      note.system_note_icon_name !== 'comment-dots' &&
+      note.system_note_icon_name !== 'check'));
 
 const matchesAuthor = (candidate, authorId) =>
   shouldRenderAsDuoSystemNote(candidate) && candidate.author?.id === authorId;

@@ -164,7 +164,7 @@ linters:
             - golang.org/x/oauth2/google
             - golang.org/x/net/html
             # Additional test and utility libraries
-            - github.com/dlclark/regexp2
+            - github.com/dlclark/regexp2/v2
             - go.uber.org/goleak
             - github.com/go-json-experiment/json
 

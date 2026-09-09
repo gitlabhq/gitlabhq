@@ -22276,6 +22276,29 @@ Fields:
 | <a id="aiselfhostedmodeledge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aiselfhostedmodeledge-node"></a>`node` | [`AiSelfHostedModel`](#aiselfhostedmodel) | The item at the end of the edge. |
 
+#### `AiSuggestedReviewerConnection`
+
+The connection type for [`AiSuggestedReviewer`](#aisuggestedreviewer).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aisuggestedreviewerconnection-edges"></a>`edges` | [`[AiSuggestedReviewerEdge]`](#aisuggestedrevieweredge) | A list of edges. |
+| <a id="aisuggestedreviewerconnection-nodes"></a>`nodes` | [`[AiSuggestedReviewer]`](#aisuggestedreviewer) | A list of nodes. |
+| <a id="aisuggestedreviewerconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiSuggestedReviewerEdge`
+
+The edge type for [`AiSuggestedReviewer`](#aisuggestedreviewer).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aisuggestedrevieweredge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aisuggestedrevieweredge-node"></a>`node` | [`AiSuggestedReviewer`](#aisuggestedreviewer) | The item at the end of the edge. |
+
 #### `AiToolRuleConnection`
 
 The connection type for [`AiToolRule`](#aitoolrule).
@@ -35368,6 +35391,20 @@ Fields:
 | <a id="aiselfhostedmodel-provider"></a>`provider` | [`AiSelfHostedModelProvider!`](#aiselfhostedmodelprovider) | Provider for the self-hosted model. |
 | <a id="aiselfhostedmodel-releasestate"></a>`releaseState` | [`AiSelfHostedModelReleaseState!`](#aiselfhostedmodelreleasestate) | GitLab release status of the model. |
 | <a id="aiselfhostedmodel-updatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of last update. |
+
+### `AiSuggestedReviewer`
+
+AI-recommended reviewer for a merge request.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aisuggestedreviewer-approvalrule"></a>`approvalRule` | [`ApprovalRule`](#approvalrule) | Approval rule the user was suggested as a reviewer for. |
+| <a id="aisuggestedreviewer-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the suggestion was created. |
+| <a id="aisuggestedreviewer-id"></a>`id` | [`ID!`](#id) | ID of the suggested reviewer. |
+| <a id="aisuggestedreviewer-reason"></a>`reason` | [`String`](#string) | Model rationale for recommending the user. |
+| <a id="aisuggestedreviewer-user"></a>`user` | [`UserCore`](#usercore) | User recommended as a reviewer. |
 
 ### `AiToolRule`
 
@@ -50566,6 +50603,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequest-aisuggestedreviewers"></a>`aiSuggestedReviewers` {{< icon name="warning-solid" >}} | [`AiSuggestedReviewerConnection`](#aisuggestedreviewerconnection) | Introduced in GitLab 19.4. Status: Experiment. AI-recommended reviewers for the merge request. Returns `null` unless the recommend reviewers flow is enabled for the project. |
 | <a id="mergerequest-allowcollaboration"></a>`allowCollaboration` | [`Boolean`](#boolean) | Indicates if members of the target project can push to the fork. |
 | <a id="mergerequest-allowsmultipleassignees"></a>`allowsMultipleAssignees` | [`Boolean!`](#boolean) | Allows assigning multiple users to a merge request. |
 | <a id="mergerequest-allowsmultiplereviewers"></a>`allowsMultipleReviewers` | [`Boolean!`](#boolean) | Allows assigning multiple reviewers to a merge request. |

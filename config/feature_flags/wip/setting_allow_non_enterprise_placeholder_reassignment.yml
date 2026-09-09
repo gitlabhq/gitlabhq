@@ -1,5 +1,5 @@
 ---
-name: allow_non_enterprise_placeholder_reassignment
+name: setting_allow_non_enterprise_placeholder_reassignment
 description: Show the group setting to opt in to non-enterprise placeholder reassignment
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/593295
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253779

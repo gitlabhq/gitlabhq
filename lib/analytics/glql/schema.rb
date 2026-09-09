@@ -57,6 +57,11 @@ module Analytics
             { 'dimensions' => 1, 'metrics' => { 'min' => 1 } },
             { 'dimensions' => 2, 'metrics' => { 'min' => 1, 'max' => 1 } }
           ] },
+        { 'name' => 'barList',
+          'description' => 'Horizontal bars showing each dimension value as a share of the total.',
+          'selections' => [
+            { 'dimensions' => 1, 'metrics' => { 'min' => 1, 'max' => 1 } }
+          ] },
         { 'name' => 'lineChart',
           'description' => 'A line over an ordered dimension, typically a date.',
           'selections' => [

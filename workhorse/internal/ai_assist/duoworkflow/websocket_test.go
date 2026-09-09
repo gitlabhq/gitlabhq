@@ -7,6 +7,7 @@ import (
 	"net"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
@@ -151,6 +152,122 @@ func TestWsManager_WriteAction_AgentContextUsage(t *testing.T) {
 	assert.Equal(t, 200000, payload.NewCheckpoint.AgentContextUsage["chat"].MaxTokens)
 }
 
+// TestWsManager_MarshalBufferSizing guards the per-connection memory footprint
+// of the action marshaling buffer. It used to be allocated at the full 4MB
+// message ceiling for every connection, which inflated the live heap and with
+// it the GC goal, so the collector ran far less often and transient garbage
+// accumulated as RSS.
+func TestWsManager_MarshalBufferSizing(t *testing.T) {
+	largeAction := func(size int) *pb.Action {
+		return &pb.Action{
+			RequestID: "req-large",
+			Action: &pb.Action_RunCommand{
+				RunCommand: &pb.RunCommandAction{Program: strings.Repeat("x", size)},
+			},
+		}
+	}
+
+	t.Run("does not reserve the message ceiling per connection", func(t *testing.T) {
+		ws := newWsManager(&mockWebSocketConn{})
+
+		assert.Empty(t, ws.buf, "buffer must start empty, not at full length")
+		assert.LessOrEqual(t, cap(ws.buf), initialMarshalBufSize,
+			"buffer must not pre-allocate ActionResponseBodyLimit per connection")
+	})
+
+	t.Run("grows on demand to write an action larger than the initial buffer", func(t *testing.T) {
+		const size = 300 << 10
+		mockConn := &mockWebSocketConn{}
+		ws := newWsManager(mockConn)
+
+		require.NoError(t, ws.WriteAction(context.Background(), largeAction(size)))
+
+		require.Len(t, mockConn.writeMessages, 1)
+		assert.Greater(t, len(mockConn.writeMessages[0]), size,
+			"the full action must be written even though the buffer started small")
+	})
+
+	t.Run("reuses the grown buffer across repeated large actions", func(t *testing.T) {
+		// gprd actions are routinely 1-2MB. Shrinking the buffer back after
+		// each write would force a full reallocation per action, which costs
+		// far more churn than the retained capacity saves.
+		mockConn := &mockWebSocketConn{}
+		ws := newWsManager(mockConn)
+		action := largeAction(300 << 10)
+
+		require.NoError(t, ws.WriteAction(context.Background(), action))
+		capAfterFirst := cap(ws.buf)
+		require.NoError(t, ws.WriteAction(context.Background(), action))
+
+		assert.Equal(t, capAfterFirst, cap(ws.buf),
+			"a repeated large action must reuse the buffer, not regrow it")
+	})
+
+	t.Run("retains the buffer across small writes", func(t *testing.T) {
+		mockConn := &mockWebSocketConn{}
+		ws := newWsManager(mockConn)
+		action := &pb.Action{
+			RequestID: "req-small",
+			Action:    &pb.Action_RunCommand{RunCommand: &pb.RunCommandAction{Program: "ls"}},
+		}
+
+		require.NoError(t, ws.WriteAction(context.Background(), action))
+		capAfterFirst := cap(ws.buf)
+		require.NoError(t, ws.WriteAction(context.Background(), action))
+
+		assert.Equal(t, capAfterFirst, cap(ws.buf),
+			"small writes must reuse the buffer rather than reallocate it")
+	})
+}
+
+// Force heap escape so the benchmark measures per-connection allocations.
+var wsManagerSink *wsManager
+
+// discardConn drops writes so a benchmark measures only wsManager allocation,
+// not the mock's retained write log.
+type discardConn struct{}
+
+func (discardConn) ReadMessage() (int, []byte, error)         { return 0, nil, nil }
+func (discardConn) WriteMessage(int, []byte) error            { return nil }
+func (discardConn) WriteControl(int, []byte, time.Time) error { return nil }
+func (discardConn) SetReadDeadline(time.Time) error           { return nil }
+func (discardConn) SetWriteDeadline(time.Time) error          { return nil }
+func (discardConn) SetPongHandler(func(string) error)         {}
+func (discardConn) Close() error                              { return nil }
+
+func BenchmarkNewWsManager(b *testing.B) {
+	b.ReportAllocs()
+	for i := 0; i < b.N; i++ {
+		wsManagerSink = newWsManager(&mockWebSocketConn{})
+	}
+}
+
+// BenchmarkWriteActionLarge guards the steady-state cost of a connection that
+// repeatedly writes large actions, which is the gprd pattern. B/op must stay
+// small: if it approaches the payload size the buffer is being reallocated on
+// every action instead of reused.
+func BenchmarkWriteActionLarge(b *testing.B) {
+	const payload = 1420 << 10 // mirrors the 1.42MB actions seen in gprd
+
+	ws := newWsManager(discardConn{})
+	action := &pb.Action{
+		RequestID: "req-large",
+		Action: &pb.Action_RunCommand{
+			RunCommand: &pb.RunCommandAction{Program: strings.Repeat("x", payload)},
+		},
+	}
+	ctx := context.Background()
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if err := ws.WriteAction(ctx, action); err != nil {
+			b.Fatal(err)
+		}
+	}
+	b.ReportMetric(float64(cap(ws.buf))/(1<<20), "MB-retained")
+}
+
 func TestWsManager_ReadError(t *testing.T) {
 	ws := newWsManager(&mockWebSocketConn{})
 
@@ -200,7 +317,40 @@ func TestWsManager_ReadError(t *testing.T) {
 	}
 }
 
-func TestWsManager_Ping(t *testing.T) {
+func TestWsManager_Start(t *testing.T) {
+	t.Run("arms the initial read deadline", func(t *testing.T) {
+		mockConn := &mockWebSocketConn{}
+		ws := newWsManager(mockConn)
+
+		require.NoError(t, ws.Start())
+
+		deadlines := mockConn.getReadDeadlines()
+		require.Len(t, deadlines, 1)
+		assert.True(t, deadlines[0].After(time.Now()), "read deadline should be in the future")
+	})
+
+	t.Run("registers a pong handler that extends the read deadline", func(t *testing.T) {
+		mockConn := &mockWebSocketConn{}
+		ws := newWsManager(mockConn)
+
+		require.NoError(t, ws.Start())
+
+		before := len(mockConn.getReadDeadlines())
+		require.NoError(t, mockConn.getPongHandler()("test"))
+
+		deadlines := mockConn.getReadDeadlines()
+		require.Greater(t, len(deadlines), before, "pong handler should have extended the read deadline")
+		assert.True(t, deadlines[len(deadlines)-1].After(time.Now()), "read deadline should be in the future")
+	})
+
+	t.Run("returns the error when the read deadline cannot be set", func(t *testing.T) {
+		ws := newWsManager(&mockWebSocketConn{setDeadlineError: errors.New("conn gone")})
+
+		require.ErrorContains(t, ws.Start(), "conn gone")
+	})
+}
+
+func TestWsManager_Keepalive(t *testing.T) {
 	tests := []struct {
 		name         string
 		writeCtrlErr error
@@ -223,7 +373,7 @@ func TestWsManager_Ping(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ws := newWsManager(&mockWebSocketConn{writeControlError: tt.writeCtrlErr})
 
-			err := ws.Ping()
+			err := ws.Keepalive()
 
 			assert.Equal(t, tt.expectErr, err != nil)
 			assert.Equal(t, tt.expectClosed, ws.closed.Load())

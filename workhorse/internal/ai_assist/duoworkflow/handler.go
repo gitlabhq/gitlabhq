@@ -125,7 +125,7 @@ func (h *Handler) handleWebSocketConnection(w http.ResponseWriter, r *http.Reque
 }
 
 func (h *Handler) createRunner(conn *websocket.Conn, duoWorkflowConfig *api.DuoWorkflow, r *http.Request) (*runner, error) {
-	runner, err := newRunner(conn, h.rails, h.backend, h.relativeURLRoot, r, duoWorkflowConfig, h.rdb)
+	runner, err := newRunner(newWsManager(conn), h.rails, h.backend, h.relativeURLRoot, r, duoWorkflowConfig, h.rdb)
 	if err != nil {
 		return nil, err
 	}
@@ -142,7 +142,9 @@ func (h *Handler) handleInitializationError(w http.ResponseWriter, r *http.Reque
 
 func (h *Handler) registerAndExecuteRunner(r *http.Request, conn *websocket.Conn, runner *runner) {
 	h.runners.Store(runner, true)
+	connectionsOpen.Inc()
 	defer func() {
+		defer connectionsOpen.Dec()
 		h.runners.Delete(runner)
 		_ = runner.Close()
 	}()

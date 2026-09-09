@@ -12,6 +12,8 @@ module Members
     #   - destroy_bot: Whether this is a bot member destruction.
     #   - skip_saml_identity: Whether to skip SAML identity deletion.
     #   - ip_address: IP address of the request, used for audit events.
+    #   - skip_authorized_projects_refresh: Whether to skip the per-member authorized projects refresh.
+    #     The caller then refreshes the user's authorizations itself.
     def initialize(member, current_user: nil, **options)
       @member = member
       @current_user = current_user
@@ -21,6 +23,7 @@ module Members
       @destroy_bot = options[:destroy_bot]
       @skip_saml_identity = options[:skip_saml_identity]
       @ip_address = options[:ip_address]
+      @skip_authorized_projects_refresh = options[:skip_authorized_projects_refresh]
     end
 
     def execute
@@ -53,7 +56,7 @@ module Members
     private
 
     attr_reader :member, :skip_authorization, :skip_subresources, :unassign_issuables,
-      :destroy_bot, :skip_saml_identity, :ip_address
+      :destroy_bot, :skip_saml_identity, :ip_address, :skip_authorized_projects_refresh
 
     def publish_events_once
       return if recursive_call?
@@ -97,6 +100,7 @@ module Members
     end
 
     def destroy_member
+      member.skip_authorized_projects_refresh = skip_authorized_projects_refresh
       member.destroy
     end
 
@@ -160,7 +164,8 @@ module Members
     def destroy_project_members(members)
       members.each do |project_member|
         service = self.class.new(project_member, current_user: current_user,
-          skip_authorization: skip_authorization, ip_address: ip_address)
+          skip_authorization: skip_authorization, ip_address: ip_address,
+          skip_authorized_projects_refresh: skip_authorized_projects_refresh)
         service.mark_as_recursive_call
         service.execute
       end
@@ -169,7 +174,8 @@ module Members
     def destroy_group_members(members)
       members.each do |group_member|
         service = self.class.new(group_member, current_user: current_user,
-          skip_authorization: skip_authorization, skip_subresources: true, ip_address: ip_address)
+          skip_authorization: skip_authorization, skip_subresources: true, ip_address: ip_address,
+          skip_authorized_projects_refresh: skip_authorized_projects_refresh)
         service.mark_as_recursive_call
         service.execute
       end

@@ -6705,6 +6705,7 @@ CREATE TABLE p_ci_workloads (
     updated_at timestamp with time zone NOT NULL,
     branch_name text,
     status smallint DEFAULT 0 NOT NULL,
+    protected_ref boolean DEFAULT false NOT NULL,
     CONSTRAINT check_f2fe503728 CHECK ((char_length(branch_name) <= 255))
 )
 PARTITION BY LIST (partition_id);
@@ -17503,6 +17504,7 @@ CREATE TABLE ci_group_variables (
     raw boolean DEFAULT false NOT NULL,
     description text,
     hidden boolean DEFAULT false NOT NULL,
+    allowed_in_workloads boolean DEFAULT false NOT NULL,
     CONSTRAINT check_dfe009485a CHECK ((char_length(environment_scope) <= 255)),
     CONSTRAINT check_e2e50ff879 CHECK ((char_length(description) <= 255))
 );
@@ -18550,6 +18552,7 @@ CREATE TABLE ci_variables (
     raw boolean DEFAULT false NOT NULL,
     description text,
     hidden boolean DEFAULT false NOT NULL,
+    allowed_in_workloads boolean DEFAULT false NOT NULL,
     CONSTRAINT check_7e46c006aa CHECK ((char_length(description) <= 255))
 );
 

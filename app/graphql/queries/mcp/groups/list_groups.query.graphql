@@ -1,0 +1,39 @@
+# @feature_category: mcp_server
+query listGroups(
+  $search: String
+  $parentPath: ID
+  $includeSubgroups: Boolean = false
+  $topLevelOnly: Boolean = false
+  $allAvailable: Boolean = true
+  $visibilityLevel: VisibilityLevelsEnum
+  $first: Int
+  $after: String
+) {
+  groups(
+    search: $search
+    parentPath: $parentPath
+    includeSubgroups: $includeSubgroups
+    topLevelOnly: $topLevelOnly
+    allAvailable: $allAvailable
+    active: true
+    visibilityLevel: $visibilityLevel
+    first: $first
+    after: $after
+  ) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      id
+      fullPath
+      name
+      description
+      visibility
+      webUrl
+      parent {
+        id
+      }
+    }
+  }
+}

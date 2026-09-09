@@ -27,12 +27,14 @@ class Member < ApplicationRecord
 
   attr_accessor :raw_invite_token
 
-  # Transient flag set by callers that create a member for which an
-  # authorized projects refresh is provably unnecessary (e.g. the owner
-  # of a brand-new group, which has no projects yet). Currently only
-  # read in `GroupMember#refresh_member_authorized_projects` and set by
-  # Groups::CreateService when adding an owner to the newly created
-  # group.
+  # Transient flag set by callers that already handle the refresh
+  # themselves, so the refresh callback can skip its own.
+  # On create: set by Groups::CreateService for a new group's owner and
+  # read only by GroupMember#refresh_member_authorized_projects, which
+  # still checks that the group grants no project access.
+  # On destroy: set by Members::DestroyService when its caller passes
+  # skip_authorized_projects_refresh: true and refreshes once afterwards;
+  # read by the destroy callback below.
   attr_accessor :skip_authorized_projects_refresh
   alias_method :skip_authorized_projects_refresh?, :skip_authorized_projects_refresh
 
@@ -400,7 +402,11 @@ class Member < ApplicationRecord
 
   after_commit :send_request, if: :request?, unless: :importing?, on: [:create]
   after_commit :log_previous_state_on_update, unless: :importing?, on: [:update]
-  after_commit on: [:create, :update, :destroy], unless: :importing? do
+  after_commit on: [:create, :update], unless: :importing? do
+    refresh_member_authorized_projects
+  end
+  # Members::DestroyService sets the flag when its caller refreshes once afterwards
+  after_commit on: [:destroy], unless: [:importing?, :skip_authorized_projects_refresh?] do
     refresh_member_authorized_projects
   end
 

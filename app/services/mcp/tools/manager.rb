@@ -60,6 +60,7 @@ module Mcp
         'get_work_item_types' => ::Mcp::Tools::WorkItems::GetWorkItemTypesService,
         'link_work_items' => ::Mcp::Tools::WorkItems::LinkWorkItemsService,
         'list_commits' => ::Mcp::Tools::Commits::ListCommitsService,
+        'list_groups' => ::Mcp::Tools::Groups::ListGroupsService,
         'list_merge_requests' => ::Mcp::Tools::MergeRequests::ListMergeRequestsService,
         'list_projects' => ::Mcp::Tools::Projects::ListProjectsService,
         'list_repository_tree' => ::Mcp::Tools::Repositories::ListRepositoryTreeService,

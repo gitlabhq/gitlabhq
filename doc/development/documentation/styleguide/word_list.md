@@ -307,6 +307,18 @@ Instead of:
 This phrasing is more active and is from the user perspective, rather than the person who implemented the feature.
 For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
 
+## allowlist
+
+Do not use as a verb. Use only as a noun. 
+
+Use:
+
+- Add variables to an allowlist.
+
+Instead of:
+
+- Allowlist variables.
+
 ## analytics
 
 Use lowercase for **analytics** and its variations, like **contribution analytics** and **issue analytics**.

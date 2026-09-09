@@ -1,6 +1,5 @@
 <script>
 import { GlChart } from '@gitlab/ui/src/charts';
-import { HEIGHT_AUTO_CLASSES } from '@gitlab/ui/src/utils/charts/constants';
 import { GL_COLOR_ORANGE_400 } from '@gitlab/ui/src/tokens/build/js/tokens';
 import { merge } from 'lodash-es';
 import { formatNumber } from '~/locale';
@@ -8,6 +7,8 @@ import { formatCountCompact } from '~/glql/utils/value_format';
 
 const BAR_HEIGHT = 7;
 const GRID_VERTICAL_PADDING = 8;
+
+const ROW_HEIGHT = 28;
 const CATEGORY_LABEL_SIZE = 13;
 
 // Matches the fixed label column in the design
@@ -55,6 +56,9 @@ export default {
     },
     labels() {
       return this.rows.map((row) => this.rowLabel(row));
+    },
+    chartHeight() {
+      return this.rows.length * ROW_HEIGHT + GRID_VERTICAL_PADDING * 2;
     },
     fullOptions() {
       const base = {
@@ -112,11 +116,13 @@ export default {
       return `${formattedShare}% · ${formatCountCompact(value, { lowercaseThousands: true })}`;
     },
   },
-  HEIGHT_AUTO_CLASSES,
 };
 </script>
 <template>
-  <div class="gl-relative" :class="$options.HEIGHT_AUTO_CLASSES">
+  <div
+    class="gl-chart-h-auto gl-relative gl-flex gl-flex-col"
+    :style="{ height: `${chartHeight}px` }"
+  >
     <gl-chart
       :options="fullOptions"
       height="auto"

@@ -8,6 +8,7 @@ export const DISPLAY_TYPES = {
   COLUMN_CHART: 'columnChart',
   LINE_CHART: 'lineChart',
   BAR_CHART: 'barChart',
+  BAR_LIST: 'barList',
   AREA_CHART: 'areaChart',
   HEAT_MAP: 'heatMap',
 };

@@ -1306,6 +1306,36 @@ Example:
 List my projects
 ```
 
+## `list_groups`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607719) in GitLab 19.4.
+
+{{< /history >}}
+
+Lists groups, for navigating the group hierarchy and discovering group IDs and full
+paths to use with other tools. Without `group_id`, this tool lists top-level groups
+where you are a member. With `group_id`, it lists the direct subgroups of that group,
+regardless of membership. Set `include_subgroups` to `true` to recurse into all
+descendant subgroups. With no `group_id`, that lists your groups at any depth.
+Archived groups and groups pending deletion are excluded.
+
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `group_id`         | string  | No       | ID or full path of a parent group to list subgroups of. Omit to list top-level groups where you are a member. |
+| `search`            | string  | No       | Search groups by name or full path. |
+| `visibility`        | string  | No       | Filter by visibility level: `public`, `internal`, or `private`. |
+| `include_subgroups` | boolean | No       | Include all descendant subgroups recursively instead of direct children only. |
+| `after`             | string  | No       | Cursor for forward pagination. |
+| `first`             | integer | No       | Number of groups to return for forward pagination. Default is 20, maximum is 100. |
+
+Example:
+
+```plaintext
+List the subgroups of gitlab-org
+```
+
 ## `search`
 
 {{< history >}}

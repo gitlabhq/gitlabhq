@@ -42,6 +42,20 @@ describe('BarListChart', () => {
     });
   });
 
+  describe('height', () => {
+    // The chart has to size itself: the wrappers between it and a dashboard
+    // panel body are all auto-height, so a percentage height collapses.
+    it('sizes itself from the row count rather than filling its container', () => {
+      createWrapper();
+
+      expect(wrapper.element.style.height).toBe('100px');
+
+      createWrapper({ data: [...rows, ...rows] });
+
+      expect(wrapper.element.style.height).toBe('184px');
+    });
+  });
+
   describe('value labels', () => {
     beforeEach(() => createWrapper());
 

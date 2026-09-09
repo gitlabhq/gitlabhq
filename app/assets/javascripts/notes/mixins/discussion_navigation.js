@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { mapActions } from 'pinia';
 import { contentTop } from '~/lib/utils/common_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
@@ -58,11 +59,23 @@ function usesLegacyStrategy() {
   return isOverviewPage() || !isRapidDiffs();
 }
 
-function scrollToDiscussion(target) {
+function nextFrame() {
+  return new Promise((resolve) => {
+    requestAnimationFrame(resolve);
+  });
+}
+
+async function scrollToDiscussion(target) {
   target.scrollIntoView(true);
   // Only the legacy strategy computes the current thread relative to
   // contentTop(); rapidDiffs references the panel top, so leave it alone.
   if (usesLegacyStrategy()) alignToContentTop(target);
+  scrollPastCoveringElements(target);
+  // Sticky headers (e.g. the merge request title bar) can toggle their own
+  // visibility asynchronously, after this scroll, via an IntersectionObserver.
+  // Re-run the correction once that settles so a header that appears late
+  // doesn't permanently obscure the target.
+  await nextFrame();
   scrollPastCoveringElements(target);
 }
 
@@ -180,7 +193,7 @@ function getPreviousDiscussion() {
   return getNavigationStrategy().getPrevious(elements);
 }
 
-function handleJumpForBothPages(getDiscussion, ctx) {
+async function handleJumpForBothPages(getDiscussion, ctx) {
   const discussion = getDiscussion();
 
   if (!isOverviewPage() && !discussion) {
@@ -195,7 +208,11 @@ function handleJumpForBothPages(getDiscussion, ctx) {
   if (discussion) {
     const id = discussion.dataset.discussionId;
     ctx.expandDiscussion({ discussionId: id });
-    scrollToDiscussion(discussion);
+    // Wait for Vue to render the expanded discussion before measuring its
+    // position, otherwise the scroll correction below runs against stale
+    // layout and can leave the discussion under a sticky header.
+    await nextTick();
+    await scrollToDiscussion(discussion);
   }
 }
 
@@ -207,18 +224,18 @@ export default {
     async jumpToNextDiscussion() {
       await this.disableVirtualScroller();
 
-      handleJumpForBothPages(getNextDiscussion, this);
+      await handleJumpForBothPages(getNextDiscussion, this);
     },
 
     async jumpToPreviousDiscussion() {
       await this.disableVirtualScroller();
 
-      handleJumpForBothPages(getPreviousDiscussion, this);
+      await handleJumpForBothPages(getPreviousDiscussion, this);
     },
 
     jumpToFirstUnresolvedDiscussion() {
       this.setCurrentDiscussionId(null);
-      this.jumpToNextDiscussion();
+      return this.jumpToNextDiscussion();
     },
   },
 };

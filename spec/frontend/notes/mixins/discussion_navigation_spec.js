@@ -3,6 +3,7 @@ import Vue, { nextTick } from 'vue';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import createEventHub from '~/helpers/event_hub_factory';
 import discussionNavigation from '~/notes/mixins/discussion_navigation';
 import { globalAccessorPlugin } from '~/pinia/plugins';
@@ -10,6 +11,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useDiscussions } from '~/notes/store/discussions';
 import { getScrollingElement } from '~/lib/utils/panels';
+import { scrollPastCoveringElements } from '~/lib/utils/sticky';
 
 jest.mock('~/lib/utils/sticky');
 jest.mock('~/lib/utils/viewport', () => ({
@@ -38,6 +40,8 @@ const createComponent = () => ({
 Vue.use(PiniaVuePlugin);
 
 describe('Discussion navigation mixin', () => {
+  useFakeRequestAnimationFrame();
+
   let wrapper;
   let pinia;
 
@@ -190,7 +194,7 @@ describe('Discussion navigation mixin', () => {
         setupRapidDiffs(positions, () => stickyEl);
         jest.spyOn(window, 'getComputedStyle').mockReturnValue({ position: cssPosition });
 
-        wrapper.vm[fn]();
+        await wrapper.vm[fn]();
         await nextTick();
 
         expect(useNotes().expandDiscussion).toHaveBeenCalledWith({ discussionId: expectedId });
@@ -202,7 +206,7 @@ describe('Discussion navigation mixin', () => {
       setupRapidDiffs([105, 200, 400, 500, 600], () => stickyEl);
       jest.spyOn(window, 'getComputedStyle').mockReturnValue({ position: 'sticky' });
 
-      wrapper.vm.jumpToNextDiscussion();
+      await wrapper.vm.jumpToNextDiscussion();
       await nextTick();
 
       expect(getScrollingElement().scrollBy).not.toHaveBeenCalled();
@@ -259,7 +263,7 @@ describe('Discussion navigation mixin', () => {
       useNotes().setCurrentDiscussionId.mockReturnValue();
       wrapper = shallowMount(createComponent(), { pinia });
 
-      wrapper.vm.jumpToNextDiscussion();
+      await wrapper.vm.jumpToNextDiscussion();
       await nextTick();
 
       // c is inside closed <details>, should be skipped → navigates from a to e
@@ -308,7 +312,7 @@ describe('Discussion navigation mixin', () => {
 
       // Legacy strategy: contentTop = 0, first resolvable (a) at y=100
       // visibleOffset = 100, isActive = false → returns a
-      wrapper.vm.jumpToNextDiscussion();
+      await wrapper.vm.jumpToNextDiscussion();
       await nextTick();
 
       expect(useNotes().expandDiscussion).toHaveBeenCalledWith({ discussionId: 'a' });
@@ -350,7 +354,7 @@ describe('Discussion navigation mixin', () => {
           window.mrTabs.currentAction = 'show';
           setDiscussionPositions(positions);
 
-          wrapper.vm[fn]();
+          await wrapper.vm[fn]();
 
           await nextTick();
         });
@@ -378,13 +382,31 @@ describe('Discussion navigation mixin', () => {
         // sits just clear of the sticky header rather than on the boundary.
         setDiscussionPositions([120, 200, 300, 400, 500]);
 
-        wrapper.vm.jumpToNextDiscussion();
+        await wrapper.vm.jumpToNextDiscussion();
         await nextTick();
 
         expect(getScrollingElement().scrollBy).toHaveBeenCalledWith({
           top: 119,
           behavior: 'instant',
         });
+      });
+    });
+
+    describe('re-checking sticky coverage after the next frame', () => {
+      beforeEach(() => {
+        window.mrTabs.currentAction = 'show';
+      });
+
+      it('re-runs the covering-element correction once after a frame, in case a sticky header settles late', async () => {
+        setDiscussionPositions([120, 200, 300, 400, 500]);
+
+        await wrapper.vm.jumpToNextDiscussion();
+        await nextTick();
+
+        const target = findDiscussionEl('a');
+        expect(scrollPastCoveringElements).toHaveBeenCalledTimes(2);
+        expect(scrollPastCoveringElements).toHaveBeenNthCalledWith(1, target);
+        expect(scrollPastCoveringElements).toHaveBeenNthCalledWith(2, target);
       });
     });
   });

@@ -13,6 +13,16 @@ var (
 		Help: "Total number of Duo Workflow connection attempts (including upgrade failures).",
 	})
 
+	// connectionsOpen tracks how many Duo Workflow runners are currently active.
+	// Connections stay open for hours, so concurrency cannot be derived from
+	// connectionsTotal alone, and gitlab_workhorse_http_in_flight_requests is
+	// unlabeled and also counts the HTTP actions that re-enter the upstream
+	// router. Memory per connection is only interpretable against this gauge.
+	connectionsOpen = promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "gitlab_workhorse_duo_workflow_connections_open",
+		Help: "Number of Duo Workflow WebSocket connections currently open.",
+	})
+
 	// connectionErrorsTotal counts WebSocket connections that failed at any stage:
 	// WebSocket upgrade, runner initialisation, or runner execution,
 	// labeled by error type (quota_exceeded, locked, other).
