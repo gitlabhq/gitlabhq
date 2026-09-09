@@ -25,10 +25,16 @@ RSpec.describe Quality::FixtureCoverage, feature_category: :tooling do
   end
 
   describe '#findings' do
-    it 'skips tables that do not exist' do
+    # The caller prints a count before the findings, so dropping a table here would leave a report
+    # listing fewer tables than it just announced.
+    it 'reports a table that is absent from the schema rather than dropping it' do
       allow(connection).to receive(:table_exists?).with('widgets').and_return(false)
 
-      expect(described_class.new(%w[widgets], connection: connection).findings).to be_empty
+      findings = described_class.new(%w[widgets], connection: connection).findings
+
+      expect(findings.size).to eq(1)
+      expect(findings.first).to be_missing
+      expect(findings.first.summary).to include('not present in this schema')
     end
 
     it 'reports an empty table as unseeded' do

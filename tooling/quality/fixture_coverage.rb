@@ -7,6 +7,12 @@ module Quality
   # `db:migrate:multi-version-upgrade`.
   class FixtureCoverage
     Finding = Struct.new(:table, :rows, :nullable_columns, :columns_never_null, keyword_init: true) do
+      # A dictionary entry can name a table that no longer exists in a fresh schema, so the caller
+      # is told rather than the table quietly vanishing from a report that already counted it.
+      def missing?
+        rows.nil?
+      end
+
       def unseeded?
         rows == 0
       end
@@ -18,10 +24,12 @@ module Quality
       end
 
       def no_null_variation?
-        !unseeded? && nullable_columns > 0 && columns_never_null == nullable_columns
+        !missing? && !unseeded? && nullable_columns > 0 && columns_never_null == nullable_columns
       end
 
       def summary
+        return "not present in this schema, so its fixture coverage cannot be checked" if missing?
+
         if unseeded?
           return "no rows after seeding. Add a fixture in db/fixtures/development/ so that " \
             "migrations touching it are exercised by db:migrate:multi-version-upgrade"
@@ -41,7 +49,9 @@ module Quality
     end
 
     def findings
-      tables.select { |table| connection.table_exists?(table) }.map { |table| examine(table) }
+      tables.map do |table|
+        connection.table_exists?(table) ? examine(table) : Finding.new(table: table)
+      end
     end
 
     private

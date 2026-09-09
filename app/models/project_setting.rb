@@ -21,6 +21,8 @@ class ProjectSetting < ApplicationRecord
   REVIEWER_ASSIGNMENT_STRATEGIES = {
     disabled: 0,
     code_owners: 1,
+    # Deprecated: no longer selectable, but the value still occurs in the
+    # database. Kept mapped so those rows read back as a label rather than nil.
     dap_powered: 2
   }.freeze
 
@@ -176,7 +178,7 @@ class ProjectSetting < ApplicationRecord
   end
 
   def reviewer_auto_assignment_enabled?
-    reviewer_auto_assignment_available? && reviewer_assignment_strategy != 'disabled'
+    reviewer_auto_assignment_available? && reviewer_assignment_code_owners?
   end
 
   private

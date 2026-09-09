@@ -8432,6 +8432,9 @@ msgstr ""
 msgid "AiGovernance|Dashboard"
 msgstr ""
 
+msgid "AiGovernance|Date range"
+msgstr ""
+
 msgid "AiGovernance|Description"
 msgstr ""
 
@@ -8469,6 +8472,9 @@ msgid "AiGovernance|Failed to update tool rule. Please try again."
 msgstr ""
 
 msgid "AiGovernance|Inherited from group"
+msgstr ""
+
+msgid "AiGovernance|Last 7 days"
 msgstr ""
 
 msgid "AiGovernance|Local access"
@@ -87336,6 +87342,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "UsageBilling|Track monthly credit consumption and the main drivers of credit usage."
+msgstr ""
+
+msgid "UsageBilling|Track your GitLab Credits consumption for %{groupName} group."
 msgstr ""
 
 msgid "UsageBilling|Trial"

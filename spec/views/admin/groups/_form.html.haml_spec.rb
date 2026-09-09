@@ -9,8 +9,7 @@ RSpec.describe 'admin/groups/_form', feature_category: :groups_and_projects do
   let_it_be(:group) { build(:group, namespace_settings: build(:namespace_settings)) }
 
   before do
-    allow(view).to receive(:current_user).and_return(admin)
-    allow(view).to receive(:visibility_level).and_return(group.visibility_level)
+    allow(view).to receive_messages(current_user: admin, visibility_level: group.visibility_level)
     assign(:group, group)
   end
 

@@ -62,8 +62,9 @@ module ActiveContext
           yield(ref)
           successful_refs << ref
         rescue *skip_error_types => e
-          ::ActiveContext::Logger.skippable_exception(
+          ::ActiveContext::Logger.exception(
             e,
+            handling: :skipped,
             class_name: name,
             queue_name: queue_name,
             preprocessor: preprocessor,
@@ -71,8 +72,9 @@ module ActiveContext
             reference_id: ref.identifier
           )
         rescue *retry_error_types => e
-          ::ActiveContext::Logger.retryable_exception(
+          ::ActiveContext::Logger.exception(
             e,
+            handling: :retryable,
             class_name: name,
             queue_name: queue_name,
             preprocessor: preprocessor,
@@ -99,17 +101,17 @@ module ActiveContext
 
           { successful: refs, failed: [], infinite_retry: [] }
         rescue *infinite_retry_error_types => e
-          log_batch_failure(e, refs, queue_name: queue_name, preprocessor: preprocessor)
+          log_batch_failure(e, refs, handling: :infinite_retry, queue_name: queue_name, preprocessor: preprocessor)
 
           { successful: [], failed: [], infinite_retry: refs }
         rescue *error_types => e
-          log_batch_failure(e, refs, queue_name: queue_name, preprocessor: preprocessor)
+          log_batch_failure(e, refs, handling: :retryable, queue_name: queue_name, preprocessor: preprocessor)
 
           { successful: [], failed: refs, infinite_retry: [] }
         rescue StandardError => e
           # This error is not in the caller's `error_types` list.
           # Log it as an error, not a warning, so it does not hide with expected failures.
-          log_unexpected_batch_failure(e, refs, queue_name: queue_name, preprocessor: preprocessor)
+          log_batch_failure(e, refs, handling: :unexpected, queue_name: queue_name, preprocessor: preprocessor)
 
           { successful: [], failed: refs, infinite_retry: [] }
         end
@@ -117,20 +119,10 @@ module ActiveContext
 
       private
 
-      def log_batch_failure(exception, refs, queue_name:, preprocessor:)
-        ::ActiveContext::Logger.retryable_exception(
-          exception,
-          class_name: name,
-          queue_name: queue_name,
-          preprocessor: preprocessor,
-          refs_count: refs.count,
-          refs_sample: refs.first(LOGGED_REFS_SAMPLE_SIZE).map(&:serialize)
-        )
-      end
-
-      def log_unexpected_batch_failure(exception, refs, queue_name:, preprocessor:)
+      def log_batch_failure(exception, refs, handling:, queue_name:, preprocessor:)
         ::ActiveContext::Logger.exception(
           exception,
+          handling: handling,
           class_name: name,
           queue_name: queue_name,
           preprocessor: preprocessor,

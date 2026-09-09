@@ -468,10 +468,6 @@ module Ci
       end
     end
 
-    def belongs_to_one_project?
-      runner_projects.one?
-    end
-
     def belongs_to_more_than_one_project?
       runner_projects.many?
     end

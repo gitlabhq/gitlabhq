@@ -43,7 +43,7 @@ module Gitlab
 
         response = connection_for(subscription).push(build_notification(subscription, payload))
 
-        categorize_response(response)
+        categorize_response(subscription, response)
       rescue StandardError => e
         drop_connection(subscription.apns_environment)
         Gitlab::ErrorTracking.track_exception(e, subscription_id: subscription.id)
@@ -114,15 +114,47 @@ module Gitlab
         notification
       end
 
-      def categorize_response(response)
-        return :failed if response.nil?
+      # APNs rejections are answers, not exceptions, so without a log line the
+      # only trace of a rejected send would be a counter increment. The status
+      # and reason (for example `BadEnvironmentKeyInToken` for a provider key
+      # restricted to the other APNs environment, or
+      # `TooManyProviderTokenUpdates`) are what an operator needs to act on.
+      def categorize_response(subscription, response)
+        if response.nil?
+          log_rejection(subscription, result: :failed, status: nil, reason: 'no response')
+          return :failed
+        end
+
         return :delivered if response.ok?
 
         reason = response.body.is_a?(Hash) ? response.body['reason'] : nil
+        bad_token = response.status.to_i == 410 || BAD_TOKEN_REASONS.include?(reason)
+        result = bad_token ? :bad_token : :failed
 
-        return :bad_token if response.status.to_i == 410 || BAD_TOKEN_REASONS.include?(reason)
+        log_rejection(subscription, result: result, status: response.status, reason: reason)
 
-        :failed
+        result
+      end
+
+      # A dead device token is an expected eviction (the app was removed or
+      # the token rotated), so it is logged at info; anything else is a
+      # delivery failure worth attention.
+      def log_rejection(subscription, result:, status:, reason:)
+        attributes = {
+          message: 'APNs rejected mobile push notification',
+          class: self.class.name,
+          subscription_id: subscription.id,
+          apns_environment: subscription.apns_environment,
+          apns_status: status,
+          apns_reason: reason,
+          result: result
+        }
+
+        if result == :bad_token
+          Gitlab::AppLogger.info(attributes)
+        else
+          Gitlab::AppLogger.warn(attributes)
+        end
       end
 
       def log_skipped(subscription)

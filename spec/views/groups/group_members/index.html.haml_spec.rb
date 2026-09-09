@@ -7,8 +7,7 @@ RSpec.describe 'groups/group_members/index', :aggregate_failures, feature_catego
   let_it_be(:group) { create(:group) } # rubocop:todo RSpec/FactoryBot/AvoidCreate
 
   before do
-    allow(view).to receive(:group_members_app_data).and_return({})
-    allow(view).to receive(:current_user).and_return(user)
+    allow(view).to receive_messages(group_members_app_data: {}, current_user: user)
     assign(:group, group)
   end
 

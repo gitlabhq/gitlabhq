@@ -40,6 +40,11 @@ export default {
     hasBuckets() {
       return this.languageAggregationBuckets.length > 0;
     },
+    // The error mutation clears buckets, so gating only on hasBuckets would hide
+    // the very alert that is meant to report the failure.
+    isVisible() {
+      return this.hasBuckets || this.aggregations.error;
+    },
     filtersData() {
       return convertFiltersData(this.shortenedLanguageFilters);
     },
@@ -82,7 +87,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="hasBuckets" class="language-filter-checkbox">
+  <div v-if="isVisible" class="language-filter-checkbox">
     <div class="gl-mb-2 gl-flex gl-items-center gl-gap-2 gl-text-sm gl-font-bold">
       <span>{{ $options.i18n.headerLabel }}</span>
       <gl-loading-icon

@@ -18,9 +18,14 @@ export default {
   },
   computed: {
     closingMergeRequestsCount() {
+      const developmentWidget = findDevelopmentWidget(this.issue);
+
+      // `closingMergeRequestsCount` is the cheap scalar the `features` path selects; the
+      // `widgets` and REST paths still return the connection.
       return (
         this.issue.mergeRequestsCount ||
-        findDevelopmentWidget(this.issue)?.closingMergeRequests?.count
+        developmentWidget?.closingMergeRequestsCount ||
+        developmentWidget?.closingMergeRequests?.count
       );
     },
     downvotes() {

@@ -124,9 +124,105 @@ By default, the container registry is not automatically replicated to secondary
 sites. This needs to be manually configured. For more information, see
 [container registry for a secondary site](../replication/container_registry.md).
 
+What a failover requires of the registry depends on two separate things: which
+metadata backend the registry uses, and where the images are stored. Two settings
+also depend on the role a site holds, and must be changed after promotion whichever
+backend and storage are in use.
+
+#### Configuration that does not carry across a promotion
+
+- The promoted site must start sending registry notifications to its own API. A site
+  that has only ever been a secondary has no `registry['notifications']` block, so
+  after promotion nothing tells GitLab that images were pushed, and replication to
+  any remaining secondary does not start. Configure it as described in
+  [configure primary site](../replication/container_registry.md#configure-primary-site).
+
+  This condition reports no error. With no endpoint configured the registry has
+  nothing to notify, so neither the registry log nor `api_json.log` records anything,
+  and container repositories on the secondary site continue to be reported as synced
+  with the timestamp of their last successful sync. To confirm notifications are
+  flowing after promotion, run this check on the promoted site, note the timestamp it
+  reports, push an image, and run it again immediately:
+
+  ```shell
+  sudo gitlab-rake gitlab:geo:check
+  ```
+
+  In GitLab 18.9 and later, the `Container Registry replication enabled` check also
+  reports `Container Registry Geo events ... last event at <timestamp>`. A timestamp
+  later than the push confirms that the promoted site is sending notifications. A
+  timestamp that has not advanced is not by itself evidence of a problem: no events
+  are created while no secondary site remains, and `Geo::PruneEventLogWorker` runs
+  every five minutes and removes events that every remaining secondary site has
+  processed, so the check can report `none found` or an older timestamp on a healthy
+  site. In that case, check `api_json.log` on the promoted site for a request to
+  `/api/v4/container_registry_event/events` after the push. A `200` means the
+  notification was accepted. A `401` means the notification secret does not match, see
+  [Registry events logs response status 401 Unauthorized unaccepted](../replication/container_registry.md#registry-events-logs-response-status-401-unauthorized-unaccepted).
+  The check is skipped entirely when
+  `gitlab_rails['geo_registry_replication_enabled']` is not set, so confirm that
+  setting first. A site promoted from a secondary still has it, along with
+  `gitlab_rails['geo_registry_replication_primary_api_url']`, and can leave both in
+  place. Neither setting affects replication on a primary site, and promotion does
+  not change them.
+- Any site that remains a secondary must point
+  `gitlab_rails['geo_registry_replication_primary_api_url']` at the promoted site, as
+  described in
+  [configure secondary site](../replication/container_registry.md#configure-secondary-site).
+
+#### Metadata database
+
+If the registry uses the
+[container registry metadata database](../../packages/container_registry_metadata_database.md),
+its tag and manifest metadata lives in a PostgreSQL database that Geo does not
+replicate and that does not need to be promoted. Copying the image storage alone
+leaves the registry on the other site without that metadata. This applies to
+every procedure in [Images in object storage](#images-in-object-storage) and
+[Images in local file system storage](#images-in-local-file-system-storage).
+Geo container registry replication populates the secondary site's own registry
+database and its storage, so a secondary site that replicates the registry
+holds both the images and the metadata.
+
+Each site runs its own registry database and its own storage, so after promotion the
+registry continues to serve from the resources it was already using. Promotion
+reconfigures the site, but leaves the registry's database configuration and its
+storage unchanged.
+
+#### Images replicated by Geo
+
+If Geo replicates the container registry, the secondary site already holds the
+images in its own storage. The procedures in
+[Images in object storage](#images-in-object-storage) and
+[Images in local file system storage](#images-in-local-file-system-storage)
+are not needed. Confirm before the maintenance window that the secondary site
+holds them, as described in
+[Verify the container registry](#verify-the-container-registry).
+
+#### Images in object storage
+
+Replicate the bucket with your object storage provider's own tooling before the
+maintenance window.
+
+> [!warning]
+> Do not run the `rsync` or backup procedures in
+> [Images in local file system storage](#images-in-local-file-system-storage)
+> when registry storage is remote.
+> They act on the local file system only, and the `rsync` command uses `--delete`.
+> When the primary site's local registry directory exists but is empty, as it usually
+> does after a move to object storage, `rsync` empties the secondary site's local
+> registry directory.
+
+Copying the bucket copies the images only. A registry that uses the metadata
+database also needs its metadata, which this procedure does not copy. See
+[Metadata database](#metadata-database).
+
+#### Images in local file system storage
+
 If you use local storage on your current primary site for the container
 registry, you can `rsync` the container registry objects to the secondary
-site you are about to fail over to:
+site you are about to fail over to. `rsync` copies the images only: a registry
+that uses the metadata database also needs its metadata, see
+[Metadata database](#metadata-database).
 
 ```shell
 # Run from the secondary site
@@ -219,7 +315,7 @@ To recover data for advanced search on the newly promoted primary site:
 ## Preflight checks
 
 Before scheduling your planned failover, ensure the process goes smoothly by verifying these preflight checks.
-Each step is described in more detail below.
+Each step is described in more detail in the following sections.
 
 During the actual failover process, after the primary site is down, run this command to perform
 final validation checks before promoting the secondary:
@@ -233,7 +329,7 @@ primary site to be down. You can't use it as a pre-maintenance validation tool w
 still running. When you run this command, a prompt asks you if the primary site is down. If you answer
 `No`, this error is shown: `ERROR: primary node must be down`.
 
-For pre-maintenance validation while the primary is still operational, use the manual checks below.
+For pre-maintenance validation while the primary is still operational, use the manual checks in the following sections.
 
 ### DNS TTL
 
@@ -332,6 +428,46 @@ Ensure that verification is complete before proceeding with failover. Any corrup
 that fails verification may be lost during failover.
 
 For more information, see [automatic background verification](background_verification.md).
+
+### Verify the container registry
+
+If the secondary site replicates the container registry, confirm before the
+maintenance window that the secondary holds the images, and that both sites serve
+from the metadata backend you expect.
+
+1. Compare the catalogs. Reading the catalog requires a token with the
+   `registry:catalog:*` scope, which is issued only to an administrator. The
+   personal access token must have at least the `read_registry` scope. On each
+   site, generate a token and list the catalog:
+
+   ```shell
+   token=$(curl --silent --user "<administrator-username>:<personal-access-token>" \
+     "https://<gitlab-host>/jwt/auth?service=container_registry&scope=registry:catalog:*" \
+     | grep --only-matching '"token":"[^"]*"' | cut --delimiter='"' --fields=4)
+
+   curl --silent --header "Authorization: Bearer ${token}" \
+     "https://<registry-host>/v2/_catalog?n=1000"
+   ```
+
+   A `401` from the catalog request usually means the account is not an administrator.
+   The token request succeeds for any authenticated user, but for a non-administrator
+   the token it returns carries no access.
+
+   The catalog is paginated. It returns 100 repositories by default, `n` sets the
+   page size and cannot exceed 1000, and a request for more than that returns an
+   error instead of a page. When more repositories remain, the response carries a
+   `Link` header with the URL of the next page. Follow it until no `Link` header
+   is returned, and compare the full list rather than the first page.
+
+   Do not rely on Geo's container repository sync status alone. A repository can be
+   recorded as synced while individual tags failed to transfer, because tag failures
+   are logged rather than recorded against the registry. Check `geo.log` on the
+   secondary site for `Error while syncing tag` entries.
+
+1. Confirm which metadata backend each site is using, as described in
+   [Verify which metadata backend is active](../../packages/container_registry_metadata_database.md#verify-which-metadata-backend-is-active).
+   A site that has fallen back to legacy metadata still reports as healthy, so this
+   is not visible from the Geo dashboard.
 
 ### Notify users of scheduled maintenance
 

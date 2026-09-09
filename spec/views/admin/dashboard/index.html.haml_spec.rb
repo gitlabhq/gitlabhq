@@ -19,9 +19,11 @@ RSpec.describe 'admin/dashboard/index.html.haml', :enable_admin_mode, feature_ca
     assign(:groups, create_list(:group, 1))
 
     allow(Gitlab::Kas).to receive(:enabled?).and_return(kas_enabled)
-    allow(view).to receive(:admin?).and_return(true)
-    allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
-    allow(view).to receive(:current_user).and_return(user)
+    allow(view).to receive_messages(
+      admin?: true,
+      current_application_settings: Gitlab::CurrentSettings.current_application_settings,
+      current_user: user
+    )
   end
 
   it "shows version of GitLab Workhorse" do
@@ -106,8 +108,7 @@ RSpec.describe 'admin/dashboard/index.html.haml', :enable_admin_mode, feature_ca
           version: '17.4.0-rc1'
         )
         presenter = Gitlab::Kas::ServerInfoPresenter.new(server_info)
-        allow(presenter).to receive(:git_ref_for_display).and_return('6a0281c6896')
-        allow(presenter).to receive(:git_ref_url).and_return('some/url')
+        allow(presenter).to receive_messages(git_ref_for_display: '6a0281c6896', git_ref_url: 'some/url')
         assign(:kas_server_info, presenter)
       end
 
@@ -144,8 +145,7 @@ RSpec.describe 'admin/dashboard/index.html.haml', :enable_admin_mode, feature_ca
     let(:user) { build(:user, preferred_language: 'uk') }
 
     before do
-      allow(view).to receive(:show_transition_to_jihu_callout?).and_return(true)
-      allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive_messages(show_transition_to_jihu_callout?: true, current_user: user)
     end
 
     it 'renders the banner class ".js-jh-transition-banner"' do

@@ -7,8 +7,7 @@ RSpec.describe 'layouts/application', :with_current_organization do
     let(:user) { create(:user) }
 
     before do
-      allow(view).to receive(:current_user).and_return(user)
-      allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(user))
+      allow(view).to receive_messages(current_user: user, current_user_mode: Gitlab::Auth::CurrentUserMode.new(user))
     end
 
     it_behaves_like 'a layout which reflects the application theme setting'
@@ -54,8 +53,7 @@ RSpec.describe 'layouts/application', :with_current_organization do
 
   context 'when user is not signed in' do
     before do
-      allow(view).to receive(:current_user).and_return(nil)
-      allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(nil))
+      allow(view).to receive_messages(current_user: nil, current_user_mode: Gitlab::Auth::CurrentUserMode.new(nil))
       allow(view).to receive(:render)
       allow(view).to receive(:render).with({ template: "layouts/application" }, {}).and_call_original
     end

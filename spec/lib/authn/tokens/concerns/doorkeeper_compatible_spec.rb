@@ -54,11 +54,31 @@ RSpec.describe Authn::Tokens::Concerns::DoorkeeperCompatible, feature_category: 
 
       expect(instance).not_to be_accessible
     end
+
+    it 'is false when expired' do
+      instance.user = instance_double(User, active?: true)
+      instance.expires_at = 1.hour.ago
+
+      expect(instance).not_to be_accessible
+    end
+
+    it 'is false when revoked' do
+      instance.user = instance_double(User, active?: true)
+      instance.revoked = true
+
+      expect(instance).not_to be_accessible
+    end
   end
 
   describe '#acceptable?' do
     before do
       instance.user = instance_double(User, active?: true)
+    end
+
+    it 'is false when the token is not accessible (e.g. expired)' do
+      instance.expires_at = 1.hour.ago
+
+      expect(instance.acceptable?('api')).to be(false)
     end
 
     it 'accepts a scope the token carries' do

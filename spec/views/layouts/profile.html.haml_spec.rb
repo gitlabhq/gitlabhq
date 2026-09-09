@@ -6,10 +6,12 @@ RSpec.describe 'layouts/profile', :with_current_organization do
   let(:user) { create(:user) }
 
   before do
-    allow(view).to receive(:session).and_return({})
-    allow(view).to receive(:current_user).and_return(user)
-    allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(user))
-    allow(view).to receive(:experiment_enabled?).and_return(false)
+    allow(view).to receive_messages(
+      session: {},
+      current_user: user,
+      current_user_mode: Gitlab::Auth::CurrentUserMode.new(user),
+      experiment_enabled?: false
+    )
     allow(view).to receive(:enable_search_settings).and_call_original
   end
 

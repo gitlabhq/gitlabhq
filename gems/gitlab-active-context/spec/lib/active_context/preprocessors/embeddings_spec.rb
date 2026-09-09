@@ -59,7 +59,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
     allow(test_reference).to receive(:indexing_embedding_models).and_return([mock_embedding_models])
 
     allow(ActiveContext::Logger).to receive(:info)
-    allow(ActiveContext::Logger).to receive(:retryable_exception)
+    allow(ActiveContext::Logger).to receive(:exception)
   end
 
   shared_examples 'skips document creation' do
@@ -124,8 +124,9 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
 
   shared_examples 'fails to generate embeddings' do
     it 'results in failures and logs the error' do
-      expect(ActiveContext::Logger).to receive(:retryable_exception) do |error, kwargs|
+      expect(ActiveContext::Logger).to receive(:exception) do |error, kwargs|
         expect(error.message).to eq(Test::MockLlmClass::NIL_CONTENTS_ERROR_MESSAGE)
+        expect(kwargs[:handling]).to eq(:retryable)
         expect(kwargs[:class_name]).to eq(mock_reference_class.name)
       end
 
@@ -415,8 +416,9 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
     end
 
     it 'marks the refs as failed and logs the error' do
-      expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+      expect(ActiveContext::Logger).to receive(:exception).with(
         instance_of(ArgumentError),
+        handling: :retryable,
         class_name: mock_reference_class.name,
         queue_name: nil,
         preprocessor: 'embeddings',
@@ -432,8 +434,9 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
 
     context 'when the queue_name is specified' do
       it 'does not log the queue name if the reference class does not pass it' do
-        expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+        expect(ActiveContext::Logger).to receive(:exception).with(
           instance_of(ArgumentError),
+          handling: :retryable,
           class_name: mock_reference_class.name,
           queue_name: nil,
           preprocessor: 'embeddings',
@@ -462,8 +465,9 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
         end
 
         it 'logs the queue_name' do
-          expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+          expect(ActiveContext::Logger).to receive(:exception).with(
             instance_of(ArgumentError),
+            handling: :retryable,
             class_name: mock_reference_class.name,
             queue_name: 'test_queue',
             preprocessor: 'embeddings',
@@ -502,8 +506,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
       end
 
       it 'fails the ref and logs it as a retryable exception' do
-        expect(ActiveContext::Logger).to receive(:retryable_exception)
-        expect(ActiveContext::Logger).not_to receive(:exception)
+        expect(ActiveContext::Logger).to receive(:exception).with(anything, hash_including(handling: :retryable))
 
         result = ActiveContext::Reference.preprocess_references([test_reference])
 
@@ -517,8 +520,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :agg
       end
 
       it 'still fails the ref through the retry chain, but logs it loudly instead' do
-        expect(ActiveContext::Logger).to receive(:exception)
-        expect(ActiveContext::Logger).not_to receive(:retryable_exception)
+        expect(ActiveContext::Logger).to receive(:exception).with(anything, hash_including(handling: :unexpected))
 
         result = ActiveContext::Reference.preprocess_references([test_reference])
 

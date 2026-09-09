@@ -378,7 +378,6 @@ RSpec/NamedSubject:
     - 'ee/spec/policies/project_policy_spec.rb'
     - 'ee/spec/presenters/approval_rule_presenter_spec.rb'
     - 'ee/spec/presenters/ci/build_runner_presenter_spec.rb'
-    - 'ee/spec/presenters/merge_request_approver_presenter_spec.rb'
     - 'ee/spec/presenters/merge_request_presenter_spec.rb'
     - 'ee/spec/presenters/vulnerabilities/scanner_presenter_spec.rb'
     - 'ee/spec/presenters/vulnerability_presenter_spec.rb'

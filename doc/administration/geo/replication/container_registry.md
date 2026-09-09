@@ -115,15 +115,31 @@ primary is used to make communication more secure.
    that starts with a letter. You can generate one with `/dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
 
    > [!note]
-   > If you use an external Registry (not the one integrated with GitLab), you only need to specify
-   > the notification secret (`registry['notification_secret']`) in the
-   > `/etc/gitlab/gitlab.rb` file.
+   > Unless you set `gitlab_rails['registry_notification_secret']` explicitly, name this
+   > endpoint `geo_event`. On a node whose `/etc/gitlab/gitlab.rb` contains a
+   > `registry['notifications']` block, the Linux package derives that secret from this
+   > endpoint's `Authorization` header only when the endpoint name matches. With any
+   > other name, and no explicit setting, GitLab has no notification secret and the
+   > registry's notifications are rejected `401 Unauthorized`.
+   >
+   > If you use an external registry (not the one integrated with GitLab), there is no
+   > `registry['notifications']` block to derive the secret from, so you must set it
+   > yourself in `/etc/gitlab/gitlab.rb`:
+   >
+   > ```ruby
+   > gitlab_rails['registry_notification_secret'] = '<replace_with_a_secret_token>'
+   > ```
 
 1. For GitLab HA only. Edit `/etc/gitlab/gitlab.rb` on every web node:
 
    ```ruby
-   registry['notification_secret'] = '<replace_with_a_secret_token_generated_above>'
+   gitlab_rails['registry_notification_secret'] = '<replace_with_a_secret_token_generated_above>'
    ```
+
+   Web nodes have no `registry['notifications']` block, so there is nothing to derive
+   the secret from and it must be set explicitly. A web node that does carry the block,
+   because the same `/etc/gitlab/gitlab.rb` is copied to every node, derives the secret
+   the same way the registry node does.
 
 1. Reconfigure each node you just updated:
 
@@ -242,6 +258,60 @@ You can further verify this by checking `geo.log` for entries from `Geo::Contain
 `401 Unauthorized` errors indicate that the primary site's container registry notification is not accepted by the Rails application, preventing it from notifying GitLab that something was pushed.
 
 To fix this, make sure that the authorization headers being sent with the registry notification match what's configured on the primary site, as should be done during step [Configure primary site](#configure-primary-site).
+
+If they appear to match, check that GitLab holds a notification secret at all.
+On each node that runs Rails:
+
+```shell
+grep notification_secret /var/opt/gitlab/gitlab-rails/etc/gitlab.yml
+```
+
+An empty value means GitLab has nothing to compare the incoming header against,
+so every notification is rejected no matter what the registry sends.
+Two causes produce an empty value:
+
+- The node's `/etc/gitlab/gitlab.rb` has no `registry['notifications']` block,
+  so there is nothing to derive the secret from. This is the usual state of a web
+  node, and of every node when the registry is external.
+  Set `gitlab_rails['registry_notification_secret']` explicitly,
+  as described in [configure primary site](#configure-primary-site).
+- The block is present, but its endpoint is not named `geo_event`.
+  The derivation matches on the endpoint name, so any other name produces no secret.
+
+The Linux package does not write the derived secret to `/etc/gitlab/gitlab-secrets.json`,
+so it is derived again on every `gitlab-ctl reconfigure`.
+A misnamed endpoint is therefore not a one-time mistake that a later reconfigure repairs.
+
+Rejected notifications are retried according to the `maxretries` value in the endpoint
+configuration and then discarded, so the push itself succeeds and no Geo event is ever
+created for it.
+While the secret remains empty, no later push starts replication either.
+
+After you correct the secret, a later push to a repository resyncs the whole repository,
+including any pushes missed during the outage.
+A repository that receives no later push is not resynced right away.
+It resyncs after the primary site's periodic reverification recalculates its checksum
+and the secondary site detects the mismatch, which can take up to the
+[reverification interval](../disaster_recovery/background_verification.md#repository-re-verification).
+To resync sooner, either select **Resync all** as described in
+[Manually trigger a container registry sync event](#manually-trigger-a-container-registry-sync-event),
+or [reverify all container repositories on the primary site](troubleshooting/synchronization_verification.md#reverify-one-component-on-all-sites).
+The targeted `gitlab:geo:reverify_container_repositories_since` task described in
+[Repository not resynced after downtime](#repository-not-resynced-after-downtime)
+does not apply here.
+It selects repositories the primary site verified recently, and while the notifications
+were rejected the primary site did not reverify the repositories that were pushed to,
+so the task cannot tell them apart from any other repository.
+
+To confirm the rejections from the GitLab side,
+check `api_json.log` rather than `production_json.log`.
+The notification endpoint is part of the REST API,
+so its requests, including the rejections, are logged in `api_json.log`
+and not in `production_json.log`:
+
+```shell
+grep container_registry_event /var/log/gitlab/gitlab-rails/api_json.log
+```
 
 #### Registry error: `token from untrusted issuer: "<token>"`
 

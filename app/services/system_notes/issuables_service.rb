@@ -87,20 +87,15 @@ module SystemNotes
     #
     # Returns the created Note object
     def change_issuable_assignees(old_assignees)
-      unassigned_users = old_assignees - noteable.assignees
-      added_users = noteable.assignees.to_a - old_assignees
-      text_parts = []
-
-      Gitlab::I18n.with_default_locale do
-        text_parts << "#{self.class.issuable_events[:assigned]} #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
-        text_parts << "#{self.class.issuable_events[:unassigned]} #{unassigned_users.map(&:to_reference).to_sentence}" if unassigned_users.any?
-      end
-
-      body = text_parts.join(' and ')
-
       track_issue_event(:track_issue_assignee_changed_action)
 
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'assignee'))
+      create_user_change_note(
+        'assignee',
+        added: noteable.assignees.to_a - old_assignees,
+        removed: old_assignees - noteable.assignees,
+        added_event: :assigned,
+        removed_event: :unassigned
+      )
     end
 
     # Called when the reviewers of an issuable is changed or removed
@@ -115,18 +110,13 @@ module SystemNotes
     #
     # Returns the created Note object
     def change_issuable_reviewers(old_reviewers)
-      unassigned_users = old_reviewers - noteable.reviewers
-      added_users = noteable.reviewers - old_reviewers
-      text_parts = []
-
-      Gitlab::I18n.with_default_locale do
-        text_parts << "#{self.class.issuable_events[:review_requested]} #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
-        text_parts << "#{self.class.issuable_events[:review_request_removed]} #{unassigned_users.map(&:to_reference).to_sentence}" if unassigned_users.any?
-      end
-
-      body = text_parts.join(' and ')
-
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'reviewer'))
+      create_user_change_note(
+        'reviewer',
+        added: noteable.reviewers - old_reviewers,
+        removed: old_reviewers - noteable.reviewers,
+        added_event: :review_requested,
+        removed_event: :review_request_removed
+      )
     end
 
     def request_review(user, has_unapproved)
@@ -487,6 +477,27 @@ module SystemNotes
     end
 
     private
+
+    # added_event and removed_event are issuable_events keys rather than strings, so
+    # that the lookup stays inside the block and resolves under the default locale.
+    #
+    # Callers decide to leave a note by comparing the collections as ordered arrays,
+    # while these diffs are set-based and are recomputed against a freshly loaded
+    # noteable. Both can come back empty, and a blank body always fails validation.
+    def create_user_change_note(action, added:, removed:, added_event:, removed_event:)
+      text_parts = []
+
+      Gitlab::I18n.with_default_locale do
+        events = self.class.issuable_events
+
+        text_parts << "#{events[added_event]} #{added.map(&:to_reference).to_sentence}" if added.any?
+        text_parts << "#{events[removed_event]} #{removed.map(&:to_reference).to_sentence}" if removed.any?
+      end
+
+      return if text_parts.empty?
+
+      create_note(NoteSummary.new(noteable, project, author, text_parts.join(' and '), action: action))
+    end
 
     def cross_reference_note_content(gfm_reference)
       "#{self.class.cross_reference_note_prefix}#{gfm_reference}"

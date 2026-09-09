@@ -1250,22 +1250,6 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
       end
     end
 
-    describe '#belongs_to_one_project?' do
-      let(:runner) { build(:ci_runner, :project, projects: projects) }
-
-      subject { runner.belongs_to_one_project? }
-
-      context "if there are two projects runner is assigned to" do
-        it { is_expected.to be_falsey }
-      end
-
-      context 'if there is only one project runner is assigned to' do
-        let(:projects) { [project] }
-
-        it { is_expected.to be_truthy }
-      end
-    end
-
     describe '#belongs_to_more_than_one_project?' do
       subject { runner.belongs_to_more_than_one_project? }
 

@@ -36,8 +36,7 @@ RSpec.describe 'admin/sessions/new.html.haml', feature_category: :system_access 
 
   context 'when omniauth authentication is enabled' do
     before do
-      allow(view).to receive(:omniauth_enabled?).and_return(true)
-      allow(view).to receive(:password_authentication_enabled_for_web?).and_return(true)
+      allow(view).to receive_messages(omniauth_enabled?: true, password_authentication_enabled_for_web?: true)
     end
 
     let(:openid_connect_button_action_url) do
@@ -62,8 +61,7 @@ RSpec.describe 'admin/sessions/new.html.haml', feature_category: :system_access 
       before do
         stub_omniauth_setting(enabled: true, providers: [oidc_step_up_auth_options])
 
-        allow(view).to receive(:omniauth_enabled?).and_return(true)
-        allow(view).to receive(:auth_providers).and_return(['openid_connect'])
+        allow(view).to receive_messages(omniauth_enabled?: true, auth_providers: ['openid_connect'])
       end
 
       it 'includes additional params related to step-up auth in form action url' do
@@ -118,21 +116,24 @@ RSpec.describe 'admin/sessions/new.html.haml', feature_category: :system_access 
     end
 
     def enable_ldap
-      allow(view).to receive(:ldap_servers).and_return([server])
-      allow(view).to receive(:form_based_providers).and_return([:ldapmain])
       allow(view).to receive(:omniauth_callback_path).with(:user, 'ldapmain').and_return('/ldapmain')
-      allow(view).to receive(:ldap_sign_in_enabled?).and_return(true)
+      allow(view).to receive_messages(
+        ldap_servers: [server],
+        form_based_providers: [:ldapmain],
+        ldap_sign_in_enabled?: true
+      )
     end
 
     def disable_ldap_sign_in
-      allow(view).to receive(:ldap_sign_in_enabled?).and_return(false)
-      allow(view).to receive(:ldap_servers).and_return([])
+      allow(view).to receive_messages(ldap_sign_in_enabled?: false, ldap_servers: [])
     end
   end
 
   def disable_all_signin_methods
-    allow(view).to receive(:password_authentication_enabled_for_web?).and_return(false)
-    allow(view).to receive(:omniauth_enabled?).and_return(false)
-    allow(view).to receive(:ldap_sign_in_enabled?).and_return(false)
+    allow(view).to receive_messages(
+      password_authentication_enabled_for_web?: false,
+      omniauth_enabled?: false,
+      ldap_sign_in_enabled?: false
+    )
   end
 end

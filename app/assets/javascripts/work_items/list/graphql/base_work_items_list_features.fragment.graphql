@@ -1,5 +1,4 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
-#import "~/work_items/graphql/milestone.fragment.graphql"
 
 fragment BaseWorkItemsListFeatures on WorkItemFeatures {
   assignees {
@@ -28,7 +27,9 @@ fragment BaseWorkItemsListFeatures on WorkItemFeatures {
   }
   milestone {
     milestone {
-      ...MilestoneFragment
+      id
+      title
+      webPath
     }
   }
   startAndDueDate {
@@ -42,9 +43,7 @@ fragment BaseWorkItemsListFeatures on WorkItemFeatures {
     }
   }
   development {
-    closingMergeRequests {
-      count
-    }
+    closingMergeRequestsCount @gl_introduced(version: "19.4.0")
   }
   hierarchy {
     parent {
@@ -56,13 +55,6 @@ fragment BaseWorkItemsListFeatures on WorkItemFeatures {
       namespace {
         id
         fullPath
-      }
-    }
-  }
-  linkedResources {
-    linkedResources {
-      nodes {
-        url
       }
     }
   }

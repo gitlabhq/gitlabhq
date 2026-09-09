@@ -6,8 +6,7 @@ RSpec.describe 'layouts/_page', :with_current_organization, feature_category: :g
   let(:user) { build_stubbed(:user) }
 
   before do
-    allow(view).to receive(:current_user).and_return(user)
-    allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(user))
+    allow(view).to receive_messages(current_user: user, current_user_mode: Gitlab::Auth::CurrentUserMode.new(user))
   end
 
   describe '_silent_mode_banner' do

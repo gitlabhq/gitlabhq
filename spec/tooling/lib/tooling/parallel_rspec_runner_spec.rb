@@ -19,6 +19,14 @@ RSpec.describe Tooling::ParallelRSpecRunner, feature_category: :tooling do # rub
 
     before do
       allow(Knapsack::AllocatorBuilder).to receive(:new).and_return(allocator_builder)
+
+      # Neutralize the ambient CI/balancing environment so examples deterministically
+      # take the static path. In a balanced CI job these are set process-wide, which
+      # would otherwise send `runner.run` into the real balanced runner (nested).
+      # Contexts that exercise the CI/balancing paths override these below.
+      stub_env('GITLAB_CI', nil)
+      stub_env('GLCI_USE_TEST_BALANCING', nil)
+      stub_env('CI_NODE_TOTAL', nil)
     end
 
     after do

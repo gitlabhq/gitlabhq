@@ -34033,6 +34033,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "status",
+                  "description": "Filter by one or many flow statuses (created, running, finished, failed, ...)",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "projectId",
                   "description": "Filter by one or many project Global IDs",
                   "type": {
@@ -148827,6 +148847,18 @@
               "deprecationReason": null
             },
             {
+              "name": "flowTypesCount",
+              "description": "Number of unique flow types",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "projectsCount",
               "description": "Number of unique projects",
               "args": [],
@@ -148840,8 +148872,29 @@
             },
             {
               "name": "totalCount",
-              "description": "Total number of flows",
-              "args": [],
+              "description": "Total number of flows, optionally filtered by status",
+              "args": [
+                {
+                  "name": "status",
+                  "description": "Only count flows with the given statuses (created, running, finished, failed, ...)",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
@@ -149058,12 +149111,36 @@
               "deprecationReason": null
             },
             {
+              "name": "modelUsed",
+              "description": "Model used by the flow",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "project",
               "description": "Project the flow ran in. Returns `null` for flows not scoped to a project",
               "args": [],
               "type": {
                 "kind": "OBJECT",
                 "name": "Project",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "status",
+              "description": "Flow status",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,

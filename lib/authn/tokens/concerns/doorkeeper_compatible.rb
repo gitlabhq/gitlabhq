@@ -18,10 +18,14 @@ module Authn
           expires_at.present? && expires_at.past?
         end
 
+        # For compatibility with Doorkeeper which mirrors Doorkeeper::AccessToken#accessible?
+        # https://github.com/doorkeeper-gem/doorkeeper/blob/v5.8.1/lib/doorkeeper/models/concerns/accessible.rb#L10
         def accessible?
           active? && user.active?
         end
 
+        # Called by doorkeeper_authorize! to check required endpoint scopes, mirrors Doorkeeper::AccessToken#acceptable?
+        # https://github.com/doorkeeper-gem/doorkeeper/blob/v5.8.1/lib/doorkeeper/models/concerns/accessible.rb#L14
         def acceptable?(required_scopes)
           accessible? && includes_scope?(*required_scopes)
         end

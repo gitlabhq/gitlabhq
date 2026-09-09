@@ -201,6 +201,16 @@ module Emails
 
     def template_content(email_type)
       template = Gitlab::Template::ServiceDeskTemplate.find(email_type, @project)
+
+      # Resolved before the restriction check so the log below only fires
+      # when a template actually exists. Checking first would log on every
+      # email a restricted namespace sends, template or not.
+      unless custom_templates_enabled?
+        log_suppressed_custom_template(email_type)
+
+        return
+      end
+
       text = substitute_template_replacements(template.content)
 
       context = { project: @project, pipeline: :service_desk_email, uploads_as_attachments: @uploads_as_attachments }
@@ -210,6 +220,23 @@ module Emails
       markdown(text, context)
     rescue Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError
       nil
+    end
+
+    def custom_templates_enabled?
+      ::ServiceDesk::CustomTemplates.new(@project).enabled?
+    end
+
+    # Gives Support an answer to "why is my template ignored" and shows
+    # unexpected legitimate hits during the flag rollout.
+    def log_suppressed_custom_template(email_type)
+      Gitlab::AppJsonLogger.info(
+        Labkit::Fields::LOG_MESSAGE => 'Service Desk custom email template suppressed',
+        Labkit::Fields::CLASS_NAME => self.class.name,
+        Labkit::Fields::GL_NAMESPACE_ID => @project.namespace_id,
+        Labkit::Fields::GL_ROOT_NAMESPACE_ID => @project.root_namespace.id,
+        Labkit::Fields::GL_PROJECT_ID => @project.id,
+        Labkit::Fields::ADDITIONAL_DETAILS => "email_type: '#{email_type}'"
+      )
     end
 
     def substitute_template_replacements(template_body)

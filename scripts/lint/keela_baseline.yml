@@ -344,7 +344,6 @@ methods:
   - self.latest_successful_ids_per_project
   - parent?
   app/models/ci/runner.rb:
-  - belongs_to_one_project?
   - fallback_owner_project
   app/models/clusters/cluster.rb:
   - self.has_one_cluster_application

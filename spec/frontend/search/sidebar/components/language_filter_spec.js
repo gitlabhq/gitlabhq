@@ -186,4 +186,30 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
       expect(container.hasAttribute('aria-busy')).toBe(false);
     });
   });
+
+  // The error mutation empties the buckets, so the component has to stay mounted on
+  // error to have anywhere to put the alert.
+  describe('when the aggregations request failed', () => {
+    afterEach(() => {
+      getterSpies.languageAggregationBuckets.mockImplementation(
+        () => MOCK_LANGUAGE_AGGREGATIONS_BUCKETS,
+      );
+    });
+
+    it('renders the error alert instead of the list', () => {
+      getterSpies.languageAggregationBuckets.mockReturnValue([]);
+      createComponent({ aggregations: { fetching: false, error: true, data: [] } });
+
+      expect(findAlert().exists()).toBe(true);
+      expect(findListContainer().exists()).toBe(false);
+    });
+
+    it('renders nothing when there are no buckets and no error', () => {
+      getterSpies.languageAggregationBuckets.mockReturnValue([]);
+      createComponent({ aggregations: { fetching: false, error: false, data: [] } });
+
+      expect(findAlert().exists()).toBe(false);
+      expect(findCheckboxFilter().exists()).toBe(false);
+    });
+  });
 });

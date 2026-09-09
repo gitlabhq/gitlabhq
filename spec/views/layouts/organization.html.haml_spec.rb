@@ -7,9 +7,11 @@ RSpec.describe 'layouts/organization', :with_current_organization, feature_categ
   let_it_be(:current_user) { build_stubbed(:user, :admin) }
 
   before do
-    allow(view).to receive(:current_user).and_return(current_user)
-    allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(current_user))
-    allow(view).to receive(:users_path).and_return('/root')
+    allow(view).to receive_messages(
+      current_user: current_user,
+      current_user_mode: Gitlab::Auth::CurrentUserMode.new(current_user),
+      users_path: '/root'
+    )
   end
 
   describe 'navigation' do

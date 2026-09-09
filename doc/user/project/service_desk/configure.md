@@ -76,6 +76,18 @@ For example, you can format the emails to include a header and footer in accorda
 organization's brand guidelines. You can also include the following placeholders to display dynamic
 content specific to the Service Desk ticket or your GitLab instance.
 
+> [!note]
+> On GitLab.com, top-level namespaces created on or after September 10, 2026 cannot use custom
+> Service Desk email templates while the namespace is on a Free plan or a trial plan.
+> These namespaces use the default GitLab email templates instead.
+> Emails are still sent, and tickets, comments, and participants continue to work as usual.
+> Namespaces created before September 10, 2026 are not affected, on any plan.
+> For groups, you can use custom templates after you purchase a paid, non-trial plan
+> (Premium, Ultimate, or Open Source).
+> Personal namespaces cannot hold a subscription on GitLab.com, so a personal namespace created on
+> or after that date cannot use custom templates.
+> GitLab Self-Managed is not affected.
+
 | Placeholder            | `thank_you.md` and `new_participant` | `new_note.md`          | Description |
 |------------------------|--------------------------------------|------------------------|-------------|
 | `%{ISSUE_ID}`          | {{< yes >}}               | {{< yes >}} | Ticket IID. |

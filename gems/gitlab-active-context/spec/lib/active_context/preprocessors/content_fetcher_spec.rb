@@ -39,7 +39,7 @@ RSpec.describe ActiveContext::Preprocessors::ContentFetcher do
     allow(ActiveContext).to receive(:adapter).and_return(mock_adapter)
     allow(mock_adapter).to receive(:search).and_return(search_results)
     allow(ActiveContext::CollectionCache).to receive(:fetch).and_return(mock_collection)
-    allow(ActiveContext::Logger).to receive(:skippable_exception).and_return(nil)
+    allow(ActiveContext::Logger).to receive(:exception).and_return(nil)
   end
 
   describe '.fetch_content' do
@@ -78,9 +78,10 @@ RSpec.describe ActiveContext::Preprocessors::ContentFetcher do
       end
 
       it 'does not add the ref to the failed refs result', :aggregate_failures do
-        expect(ActiveContext::Logger).to receive(:retryable_exception) do |e, kwargs|
+        expect(ActiveContext::Logger).to receive(:exception) do |e, kwargs|
           expect(e).to be_a(ActiveContext::Preprocessors::ContentFetcher::ContentNotFoundError)
           expect(e.message).to eq("content not found for chunk with id: id2")
+          expect(kwargs[:handling]).to eq(:retryable)
           expect(kwargs[:class_name]).to eq(reference_class.name)
           expect(kwargs[:queue_name]).to be_nil
           expect(kwargs[:preprocessor]).to eq('content_fetcher')
@@ -103,9 +104,9 @@ RSpec.describe ActiveContext::Preprocessors::ContentFetcher do
         end
 
         it 'does not log the queue name if the reference preprocessor does not pass it' do
-          expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+          expect(ActiveContext::Logger).to receive(:exception).with(
             instance_of(ActiveContext::Preprocessors::ContentFetcher::ContentNotFoundError),
-            hash_including(queue_name: nil)
+            hash_including(handling: :retryable, queue_name: nil)
           )
 
           process_refs
@@ -123,9 +124,9 @@ RSpec.describe ActiveContext::Preprocessors::ContentFetcher do
           end
 
           it 'logs the queue name' do
-            expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+            expect(ActiveContext::Logger).to receive(:exception).with(
               instance_of(ActiveContext::Preprocessors::ContentFetcher::ContentNotFoundError),
-              hash_including(queue_name: 'test_queue')
+              hash_including(handling: :retryable, queue_name: 'test_queue')
             )
 
             process_refs
@@ -160,8 +161,9 @@ RSpec.describe ActiveContext::Preprocessors::ContentFetcher do
       end
 
       it 'skips missing refs instead of failing them', :aggregate_failures do
-        expect(ActiveContext::Logger).to receive(:skippable_exception) do |e, kwargs|
+        expect(ActiveContext::Logger).to receive(:exception) do |e, kwargs|
           expect(e).to be_a(ActiveContext::Preprocessors::ContentFetcher::ContentNotFoundError)
+          expect(kwargs[:handling]).to eq(:skipped)
           expect(kwargs[:reference_id]).to eq("id2")
         end
 

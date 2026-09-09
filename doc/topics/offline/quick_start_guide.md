@@ -720,16 +720,18 @@ When the snapshot on the service matches the one already in the output directory
 Your GitLab instance is synchronized [regularly](https://gitlab.com/gitlab-org/gitlab/-/blob/63a187d47f6da353ba4514650bbbbeb99c356325/config/initializers/1_settings.rb#L840-842) with the contents of the `package_metadata` directory.
 To automatically update your local copy with the upstream changes, a cron job can be added to periodically download new exports. For example, the following crontabs can be added to set up a cron job that runs every 30 minutes.
 
-For License Scanning:
+The license and advisory jobs pass `-y "^(v1|v3)\/"` to exclude the `v1/` and `v3/` folders, so they mirror only the v2 format version.
+
+For v2 license scanning (GitLab 19.3 and earlier):
 
 ```plaintext
-*/30 * * * * gsutil -m rsync -r -d -y "^v1\/" gs://prod-export-license-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses
+*/30 * * * * gsutil -m rsync -r -d -y "^(v1|v3)\/" gs://prod-export-license-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses
 ```
 
-For dependency scanning:
+For v2 dependency scanning:
 
 ```plaintext
-*/30 * * * * gsutil -m rsync -r -d gs://prod-export-advisory-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/advisories
+*/30 * * * * gsutil -m rsync -r -d -y "^(v1|v3)\/" gs://prod-export-advisory-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/advisories
 ```
 
 For CVE enrichment, omit `-d` and chain the move step from the download procedure:
@@ -758,6 +760,55 @@ re-downloads the whole export whether or not `-d` is present.
 > at a time.
 > The malware advisory procedure described previously is different.
 > It replaces a complete snapshot on every run, and `rsync --delete` is required there.
+
+### v3 license data format version
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/22880) in GitLab 19.4.
+
+{{< /history >}}
+
+Read this section to check that the license files on your instance are in the folder structure GitLab expects, and
+to recognize the `v3/` directories that appear after a sync.
+
+`v2` and `v3` are format versions of the license export.
+Each one is published in its own folder of the license bucket, and each holds a different kind of license data:
+
+| Format version | Folder                                 | License data                                      | Read by |
+|----------------|----------------------------------------|---------------------------------------------------|---------|
+| v2             | `licenses/v2/<registry>/`              | Single SPDX identifiers, in `.ndjson` files.      | GitLab 19.3 and earlier |
+| v3             | `licenses/v3/<registry>/full_dataset/` | SPDX license expressions, in compressed archives. | GitLab 19.4 and later |
+
+You do not choose the format version, GitLab does.
+An instance can hold both folders, and only one of them is read.
+
+GitLab 19.4 selects v3, since `sync_v3_license_expressions` feature flag is enabled by default, and a `v3/` folder exists
+under `vendor/package_metadata/licenses`.
+v3 takes precedence, so an instance that holds both folders reads v3 and ignores `v2/`.
+Turn the flag off to read v2 even when a `v3/` folder is present.
+Earlier versions have no v3 read path and always read v2.
+
+About the v3 folder structure:
+
+- GitLab organizes data under `v3/<registry>`, where `<registry>` is a name such as `go`, `rubygem`, or
+  `packagist`.
+- Each registry folder stores the full dataset for that registry in `full_dataset/`. The full dataset is divided
+  into multiple shards: a `checkpoint.json` with the snapshot timestamp, and one `.tar.zst` archive per shard,
+  named by shard ID, for example `00.tar.zst`:
+
+  ```plaintext
+  $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v3/rubygem/full_dataset/checkpoint.json
+  $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v3/rubygem/full_dataset/00.tar.zst
+  $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v3/rubygem/full_dataset/01.tar.zst
+  $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v3/rubygem/full_dataset/...
+  ```
+
+- A registry folder in the bucket also holds a `deltas/` folder.
+  Do not copy it.
+  An offline instance reads `full_dataset/` only, and every snapshot it downloads is complete.
+  Reading deltas offline, so that a snapshot is downloaded once and later runs fetch only the changes, is tracked in
+  [issue 616703](https://gitlab.com/gitlab-org/gitlab/-/issues/616703).
 
 ### Change note
 
@@ -848,8 +899,9 @@ For example, if `maven` is selected, but `golang` is not, you will only see advi
 
 The file structure in `vendor/package_metadata` must coincide with the package registry type enabled previously. For example, to sync `maven` license or advisory data, the package metadata directory under the Rails directory must have the following structure where `$GITLAB_RAILS_ROOT_DIR` matches the output of the command `gitlab-rails runner 'puts Rails.root.to_s'`:
 
-- For licenses:`$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v2/maven/**/*.ndjson`.
-- For advisories:`$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/advisories/v2/maven/**/*.ndjson`.
+- For licenses on v2 (GitLab 19.3 and earlier):`$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v2/maven/**/*.ndjson`.
+- For licenses on v3 (GitLab 19.4 and later):`$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v3/maven/full_dataset/*`. See [v3 license data format version](#v3-license-data-format-version).
+- For advisories on v2:`$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/advisories/v2/maven/**/*.ndjson`.
 
 CVE enrichment is not divided by package registry type, and its files must be exactly two directory
 levels below the version directory:

@@ -21,8 +21,7 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects d
       it 'has the correct label, help text, and checkbox options' do
         assign(:group, test_group)
         allow(view).to receive(:can?).with(test_user, :admin_group, test_group).and_return(true)
-        allow(view).to receive(:can_change_group_visibility_level?).and_return(false)
-        allow(view).to receive(:current_user).and_return(test_user)
+        allow(view).to receive_messages(can_change_group_visibility_level?: false, current_user: test_user)
         expect(view).to receive(:can_change_share_with_group_lock?).and_return(!checkbox_options[:disabled])
         expect(view).to receive(:share_with_group_lock_help_text).and_return('help text here')
 

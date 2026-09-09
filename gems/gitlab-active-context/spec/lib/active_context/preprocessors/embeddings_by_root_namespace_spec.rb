@@ -77,7 +77,7 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
     ref3.documents << { content: 'ref3 embedding content' }
 
     allow(ActiveContext::Logger).to receive(:info)
-    allow(ActiveContext::Logger).to receive(:retryable_exception)
+    allow(ActiveContext::Logger).to receive(:exception)
   end
 
   it 'generates embeddings per namespace' do
@@ -120,16 +120,18 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
     end
 
     it 'sets the refs as failed and logs the error' do
-      expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+      expect(ActiveContext::Logger).to receive(:exception).with(
         instance_of(ArgumentError),
+        handling: :retryable,
         class_name: mock_reference_class.name,
         queue_name: nil,
         preprocessor: 'embeddings',
         refs_count: 2,
         refs_sample: [ref1.serialize, ref3.serialize]
       ).ordered
-      expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+      expect(ActiveContext::Logger).to receive(:exception).with(
         instance_of(ArgumentError),
+        handling: :retryable,
         class_name: mock_reference_class.name,
         queue_name: nil,
         preprocessor: 'embeddings',
@@ -149,16 +151,18 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
       end
 
       it 'does not log the queue name if the reference class does not pass it' do
-        expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+        expect(ActiveContext::Logger).to receive(:exception).with(
           instance_of(ArgumentError),
+          handling: :retryable,
           class_name: mock_reference_class.name,
           queue_name: nil,
           preprocessor: 'embeddings',
           refs_count: 2,
           refs_sample: [ref1.serialize, ref3.serialize]
         ).ordered
-        expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+        expect(ActiveContext::Logger).to receive(:exception).with(
           instance_of(ArgumentError),
+          handling: :retryable,
           class_name: mock_reference_class.name,
           queue_name: nil,
           preprocessor: 'embeddings',
@@ -183,16 +187,18 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
         end
 
         it 'logs the queue_name' do
-          expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+          expect(ActiveContext::Logger).to receive(:exception).with(
             instance_of(ArgumentError),
+            handling: :retryable,
             class_name: mock_reference_class.name,
             queue_name: 'test_queue',
             preprocessor: 'embeddings',
             refs_count: 2,
             refs_sample: [ref1.serialize, ref3.serialize]
           )
-          expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+          expect(ActiveContext::Logger).to receive(:exception).with(
             instance_of(ArgumentError),
+            handling: :retryable,
             class_name: mock_reference_class.name,
             queue_name: 'test_queue',
             preprocessor: 'embeddings',
@@ -213,8 +219,9 @@ RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings_by_roo
       end
 
       it 'sets the affected refs as failed while the other refs are successful' do
-        expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+        expect(ActiveContext::Logger).to receive(:exception).with(
           instance_of(ArgumentError),
+          handling: :retryable,
           class_name: mock_reference_class.name,
           queue_name: nil,
           preprocessor: 'embeddings',

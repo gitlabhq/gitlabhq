@@ -4,6 +4,13 @@ module ActiveContext
   class Logger
     ANONYMOUS = '<Anonymous>'
 
+    SEVERITY_BY_HANDLING = {
+      unexpected: :error,
+      retryable: :warn,
+      infinite_retry: :warn,
+      skipped: :warn
+    }.freeze
+
     class << self
       def debug(**kwargs)
         log(:debug, **kwargs)
@@ -25,34 +32,17 @@ module ActiveContext
         log(:fatal, **kwargs)
       end
 
-      def exception(exception, **kwargs)
+      def exception(exception, handling: :unexpected, **kwargs)
+        severity = SEVERITY_BY_HANDLING.fetch(handling)
+
         payload = {
           exception_class: exception.class.name,
           exception_message: exception.message,
-          exception_backtrace: exception.backtrace
+          exception_backtrace: exception.backtrace,
+          handling: handling.to_s
         }.merge(kwargs)
 
-        error(**payload)
-      end
-
-      def retryable_exception(exception, **kwargs)
-        payload = {
-          exception_class: exception.class.name,
-          exception_message: "Retryable Error occurred: #{exception.message}",
-          exception_backtrace: exception.backtrace
-        }.merge(kwargs)
-
-        warn(**payload)
-      end
-
-      def skippable_exception(exception, **kwargs)
-        payload = {
-          exception_class: exception.class.name,
-          exception_message: "Skippable Error occurred: #{exception.message}",
-          exception_backtrace: exception.backtrace
-        }.merge(kwargs)
-
-        warn(**payload)
+        log(severity, **payload)
       end
 
       private

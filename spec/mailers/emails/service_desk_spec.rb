@@ -109,12 +109,44 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       end
     end
 
+    context 'when custom templates are restricted for the namespace' do
+      let(:project) { create(:project, :custom_repo, files: { ".gitlab/service_desk_templates/#{template_key}.md" => template_content }) }
+
+      before do
+        allow_next_instance_of(::ServiceDesk::CustomTemplates) do |templates|
+          allow(templates).to receive(:enabled?).and_return(false)
+        end
+      end
+
+      it 'falls back to the default template' do
+        expect(subject.text_part.to_s).not_to include(template_content)
+        expect(subject.text_part.to_s).to include(expected_text)
+      end
+
+      it 'logs the suppression once the template was found' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          hash_including(
+            Labkit::Fields::LOG_MESSAGE => 'Service Desk custom email template suppressed',
+            Labkit::Fields::GL_PROJECT_ID => project.id
+          )
+        )
+
+        subject.text_part
+      end
+    end
+
     context 'when the service_desk_templates directory does not contain correct template' do
       let(:project) { create(:project, :custom_repo, files: { ".gitlab/service_desk_templates/another_file.md" => template_content }) }
 
       it 'uses the default template' do
         expect(subject.text_part.to_s).to include(expected_text)
         expect(subject.html_part.to_s).to include(expected_html)
+      end
+
+      it 'does not log a suppression when no template exists' do
+        expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+        subject.text_part
       end
     end
 

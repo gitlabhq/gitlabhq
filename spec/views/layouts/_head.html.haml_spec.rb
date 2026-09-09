@@ -6,8 +6,10 @@ RSpec.describe 'layouts/_head', feature_category: :design_system do
   include StubConfiguration
 
   before do
-    allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
-    allow(view).to receive(:experiment_enabled?).and_return(false)
+    allow(view).to receive_messages(
+      current_application_settings: Gitlab::CurrentSettings.current_application_settings,
+      experiment_enabled?: false
+    )
   end
 
   it 'escapes HTML-safe strings in page_title' do
@@ -122,8 +124,10 @@ RSpec.describe 'layouts/_head', feature_category: :design_system do
 
     before do
       allow(ActionController::Base).to receive(:asset_host).and_return(asset_host)
-      allow(Gitlab::CurrentSettings).to receive(:snowplow_enabled?).and_return(true)
-      allow(Gitlab::CurrentSettings).to receive(:snowplow_collector_hostname).and_return(snowplow_collector_hostname)
+      allow(Gitlab::CurrentSettings).to receive_messages(
+        snowplow_enabled?: true,
+        snowplow_collector_hostname: snowplow_collector_hostname
+      )
     end
 
     it 'adds a snowplow script tag with asset host' do

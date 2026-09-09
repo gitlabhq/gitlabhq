@@ -8,11 +8,11 @@ description: Types whose values are restricted to a fixed list of options.
 
 <!-- vale off -->
 <!-- Vale linting disabled after this line. -->
-<!-- See https://docs.gitlab.com/ee/development/documentation/testing.html#disable-vale-tests -->
+<!-- See https://docs.gitlab.com/development/documentation/testing/#disable-vale-tests -->
 
 <!-- markdownlint-disable MD044 -->
 <!-- MD044/proper-names test disabled after this line to make page compatible with markdownlint-cli 0.29.0. -->
-<!-- See https://docs.gitlab.com/ee/development/documentation/testing.html#disable-markdownlint-tests -->
+<!-- See https://docs.gitlab.com/development/documentation/testing/#disable-markdownlint-tests -->
 
 <!-- markdownlint-disable MD012 -->
 <!-- markdownlint-disable MD047 -->
