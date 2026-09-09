@@ -126,12 +126,22 @@ module Resolvers
     end
 
     def self.complexity_multiplier(args)
-      # Single iid lookup gets no multiplier (optimized case)
-      return 0 if args[:iid]
-
-      # Array of iids - apply multiplier based on size
-      if args[:iids].present?
-        args[:iids].length > 100 ? 0.02 : 0.01
+      # Array of iids takes precedence - apply multiplier based on tier size
+      iids = args[:iids]
+      if iids.is_a?(Array)
+        case iids.length
+        when 1..100
+          0.05
+        when 101..1000
+          0.5
+        when (1001..)
+          5.0
+        else
+          0.01
+        end
+      elsif args[:iid]
+        # Single iid lookup gets no multiplier (optimized case)
+        0
       else
         # Default multiplier for other cases
         0.01
