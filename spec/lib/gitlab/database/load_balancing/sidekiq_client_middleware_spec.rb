@@ -163,8 +163,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
 
       before do
         Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-          allow(lb).to receive(:primary_write_location).and_return(new_location)
-          allow(lb).to receive(:database_replica_location).and_return(new_location)
+          allow(lb).to receive_messages(primary_write_location: new_location, database_replica_location: new_location)
         end
       end
 

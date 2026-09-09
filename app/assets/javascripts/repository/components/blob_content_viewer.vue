@@ -250,7 +250,8 @@ export default {
     },
     legacyViewerLoaded() {
       return (
-        (this.activeViewerType === SIMPLE_BLOB_VIEWER && this.legacySimpleViewer) ||
+        ([SIMPLE_BLOB_VIEWER, BLAME_VIEWER].includes(this.activeViewerType) &&
+          this.legacySimpleViewer) ||
         (this.activeViewerType === RICH_BLOB_VIEWER && this.legacyRichViewer)
       );
     },

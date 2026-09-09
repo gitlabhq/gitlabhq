@@ -27,9 +27,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::ConvertToBigint, feature_cate
 
     with_them do
       it 'returns true for GitLab.com (but not JH), dev, or test' do
-        allow(Gitlab).to receive(:com?).and_return(dot_com)
-        allow(Gitlab).to receive(:dev_or_test_env?).and_return(dev_or_test)
-        allow(Gitlab).to receive(:jh?).and_return(jh)
+        allow(Gitlab).to receive_messages(com?: dot_com, dev_or_test_env?: dev_or_test, jh?: jh)
 
         expect(migration.com_or_dev_or_test_but_not_jh?).to eq(expectation)
       end

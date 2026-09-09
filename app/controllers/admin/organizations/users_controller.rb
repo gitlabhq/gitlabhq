@@ -19,7 +19,27 @@ module Admin
         render 'admin/users/show'
       end
 
+      def edit
+        user
+      end
+
+      def update
+        result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute
+
+        if result[:status] == :success
+          redirect_to admin_user_path(user), notice: _('User was successfully updated.')
+        else
+          render :edit
+        end
+      end
+
       private
+
+      def user_params
+        params.require(:user).permit(
+          organization_users_attributes: [:id, :organization_id, :access_level]
+        )
+      end
 
       override :filter_users
       def filter_users

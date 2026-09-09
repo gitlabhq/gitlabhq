@@ -92,7 +92,7 @@ Available template IDs:
 | `irap_secret` | IRAP Secret |
 | `irap_top_secret` | IRAP Top Secret |
 | `ismap` | ISMAP |
-| `iso_27001:2022` | ISO 27001:2022 |
+| `iso_27001-2022` | ISO 27001:2022 |
 | `nis_2` | NIS 2 |
 | `nist_800-171_r3_cmmc` | NIST 800-171 Rev. 3 CMMC |
 | `nist_800-218_v1-1` | NIST SP 800-218 |

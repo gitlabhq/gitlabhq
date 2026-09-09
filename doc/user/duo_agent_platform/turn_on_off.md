@@ -23,7 +23,7 @@ You can turn Agent Platform on or off:
 - On GitLab.com: For top-level groups.
 - On GitLab Self-Managed: For instances.
 
-To configure tool governance for Agent Platform, see [agent tool governance](agents/tool-governance.md).
+To configure tool governance for Agent Platform, see [agent tool governance](../ai-governance/tool-governance.md).
 
 ## Turn GitLab Duo Agent Platform on or off
 

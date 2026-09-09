@@ -176,7 +176,6 @@ create_build_service_proxy
 create_build_terminal
 create_container_image
 create_container_registry_protection_immutable_tag_rule
-create_coverage_fuzzing_corpus
 create_environment_terminal
 create_epic_tree_relation
 create_external_issue_link
@@ -195,7 +194,6 @@ create_merge_request_in
 create_non_backlog_issues
 create_objective
 create_observability_access_request
-create_on_demand_dast_scan
 create_package
 create_pages
 create_project_secrets

@@ -147,13 +147,42 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
     context 'when all partitions are true for detach_partition_if' do
       let(:detach_partition_if) { ->(_p) { true } }
 
-      it { expect(strategy.extra_partitions).to be_empty }
+      it 'keeps the most recent partition' do
+        expect(strategy.extra_partitions.map(&:values)).to eq([[100]])
+      end
     end
 
     context 'when all partitions are false for detach_partition_if' do
       let(:detach_partition_if) { proc { false } }
 
       it { expect(strategy.extra_partitions).to be_empty }
+    end
+
+    context 'when only one partition is left' do
+      let(:detach_partition_if) { ->(_p) { true } }
+
+      before do
+        connection.execute("drop table #{table_name}_101;")
+      end
+
+      it 'leaves the table with a partition to write to' do
+        expect(strategy.extra_partitions).to be_empty
+      end
+    end
+
+    context 'when a detachable partition follows one that is not detachable' do
+      let(:detach_partition_if) { ->(partition) { partition.values != [100] } }
+
+      before do
+        connection.execute(<<~SQL)
+          create table #{table_name}_102
+          partition of #{table_name} for values in (102);
+        SQL
+      end
+
+      it 'stops at the first partition that cannot be detached' do
+        expect(strategy.extra_partitions).to be_empty
+      end
     end
   end
 

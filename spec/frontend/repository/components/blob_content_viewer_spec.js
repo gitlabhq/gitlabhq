@@ -631,6 +631,39 @@ describe('Blob content viewer component', () => {
         expect(findBlobContent().props('content')).toBe('test');
       });
 
+      it('renders CodeIntelligence when blame is active on load for a legacy file', async () => {
+        const type = 'go_mod';
+        mockAxios
+          .onGet(`/${type}?format=json&viewer=blame`)
+          .replyOnce(HTTP_STATUS_OK, { html: 'test', binary: false });
+        await createComponent({
+          blob: { ...simpleViewerMock, fileType: type, webPath: type },
+          urlParams: { path: '/', query: { blame: '1' } },
+        });
+
+        expect(findCodeIntelligence().exists()).toBe(true);
+      });
+
+      it('does not refetch the legacy viewer once blame has loaded', async () => {
+        const type = 'go_mod';
+        // Answers every time, so a second request would succeed and be recorded:
+        // the guard is what has to stop it, not the mock running out of replies.
+        mockAxios
+          .onGet(`/${type}?format=json&viewer=blame`)
+          .reply(HTTP_STATUS_OK, { html: 'test', binary: false });
+        await createComponent({
+          blob: { ...simpleViewerMock, fileType: type, webPath: type },
+          urlParams: { path: '/', query: { blame: '1' } },
+        });
+
+        expect(mockAxios.history.get).toHaveLength(1);
+
+        wrapper.vm.switchViewer(BLAME_VIEWER);
+        await waitForPromises();
+
+        expect(mockAxios.history.get).toHaveLength(1);
+      });
+
       describe('code navigation', () => {
         const setup = async (viewer, viewerType) => {
           jest.spyOn(eventHub, '$emit').mockImplementation();

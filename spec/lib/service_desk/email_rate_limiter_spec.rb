@@ -96,6 +96,82 @@ RSpec.describe ServiceDesk::EmailRateLimiter, :clean_gitlab_redis_rate_limiting,
       end
     end
 
+    describe 'logging' do
+      before_all do
+        create(:plan_limits, plan: plan, service_desk_outbound_emails_per_hour: 1,
+          service_desk_outbound_emails_per_day: 50)
+      end
+
+      it 'does not log while the batch is under the limit' do
+        expect(::Gitlab::AppJsonLogger).not_to receive(:build)
+
+        expect(limiter.rate_limit_batch!(1)).to be(false)
+      end
+
+      it 'logs once per suppressed batch, not once per email' do
+        limiter.rate_limit_batch!(1)
+
+        expect_next_instance_of(::Gitlab::AppJsonLogger) do |logger|
+          expect(logger).to receive(:warn).once.and_call_original
+        end
+
+        expect(limiter.rate_limit_batch!(10)).to be(true)
+      end
+
+      it 'logs the namespace attribution and limit details in standard labkit fields' do
+        limiter.rate_limit_batch!(1)
+
+        payload = nil
+        allow_next_instance_of(::Gitlab::AppJsonLogger) do |logger|
+          allow(logger).to receive(:warn) { |args| payload = args }
+        end
+
+        limiter.rate_limit_batch!(3)
+
+        expect(payload).to include(
+          Labkit::Fields::LOG_MESSAGE => 'Service Desk outbound email rate limit exceeded',
+          Labkit::Fields::CLASS_NAME => described_class.name,
+          Labkit::Fields::GL_NAMESPACE_ID => project.namespace_id,
+          Labkit::Fields::GL_ROOT_NAMESPACE_ID => root_namespace.id,
+          Labkit::Fields::GL_PROJECT_ID => project.id
+        )
+
+        # A String rather than a Hash: the other ADDITIONAL_DETAILS call site in
+        # this feature logs a string, and a scalar/object conflict in the same
+        # Elasticsearch field drops the whole log line.
+        details = payload[Labkit::Fields::ADDITIONAL_DETAILS]
+        expect(details).to be_a(String)
+        expect(details).to include(
+          "exceeded_windows: 'hourly'", 'suppressed_email_count: 3', 'hourly_limit: 1', 'daily_limit: 50'
+        )
+      end
+
+      it 'records both windows when both are exhausted' do
+        payload = nil
+        allow_next_instance_of(::Gitlab::AppJsonLogger) do |logger|
+          allow(logger).to receive(:warn) { |args| payload = args }
+        end
+
+        # Exhausts the hourly limit of 1 and the daily limit of 50 in one batch.
+        expect(limiter.rate_limit_batch!(60)).to be(true)
+
+        expect(payload[Labkit::Fields::ADDITIONAL_DETAILS]).to include("exceeded_windows: 'hourly,daily'")
+      end
+
+      it 'does not log recipient email addresses' do
+        limiter.rate_limit_batch!(1)
+
+        payload = nil
+        allow_next_instance_of(::Gitlab::AppJsonLogger) do |logger|
+          allow(logger).to receive(:warn) { |args| payload = args }
+        end
+
+        limiter.rate_limit_batch!(1)
+
+        expect(payload.values.join(' ')).not_to include('@')
+      end
+    end
+
     describe 'scope' do
       before_all do
         create(:plan_limits, plan: plan, service_desk_outbound_emails_per_hour: 1)

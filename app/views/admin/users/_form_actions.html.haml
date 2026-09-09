@@ -1,0 +1,9 @@
+.settings-sticky-footer
+  - if @user.new_record?
+    = f.submit _('Create user'), pajamas_button: true, class: 'gl-mr-3'
+    = render Pajamas::ButtonComponent.new(href: admin_users_path) do
+      = _('Cancel')
+  - else
+    = f.submit _('Save changes'), pajamas_button: true, class: 'gl-mr-3'
+    = render Pajamas::ButtonComponent.new(href: admin_user_path(@user)) do
+      = _('Cancel')

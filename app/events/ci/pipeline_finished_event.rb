@@ -10,7 +10,8 @@ module Ci
           'pipeline_id' => { 'type' => 'integer' },
           'status' => { 'type' => 'string' },
           'source' => { 'type' => 'string' },
-          'partition_id' => { 'type' => 'integer' }
+          'partition_id' => { 'type' => 'integer' },
+          'source_ref' => { 'type' => %w[string null] }
         }
       }
     end

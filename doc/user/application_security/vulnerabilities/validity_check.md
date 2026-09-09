@@ -100,7 +100,7 @@ Validity checks support the following secret types:
 **External service tokens:**
 
 - Anthropic API keys
-- AWS IAM access key IDs
+- AWS IAM long-term access key IDs (beginning with `AKIA`)
 - Datadog API keys
 - GitHub personal access tokens (classic)
 - Heroku API keys

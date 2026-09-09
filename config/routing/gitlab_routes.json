@@ -12600,6 +12600,12 @@
     "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/status_checks/john.doe/retry"
   },
   {
+    "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/suggested_reviewers",
+    "example": "/api/v4/projects/foo/merge_requests/foo/suggested_reviewers",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/suggested_reviewers"
+  },
+  {
     "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/time_estimate",
     "example": "/api/v4/projects/foo/merge_requests/foo/time_estimate",
     "acceptsFormat": true,
@@ -24699,6 +24705,12 @@
     "example": "/o/foo/admin/users/foo",
     "acceptsFormat": true,
     "dottedExample": "/o/john.doe/admin/users/john.doe"
+  },
+  {
+    "template": "/o/:organization_path/admin/users/:id/edit",
+    "example": "/o/foo/admin/users/foo/edit",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/admin/users/john.doe/edit"
   },
   {
     "template": "/o/:organization_path/api/v4/geo/graphql",

@@ -1309,7 +1309,7 @@ Returns [`DuoSettings`](#duosettings).
 
 {{< /details >}}
 
-The alternative branches to the provided user message. Multiple branches can be created when a user retries a message. Returns an empty list if the `dw_read_blobs_graphql` feature flag is disabled, or if the session does not store incremental checkpoints.
+The alternative branches to the provided user message. Multiple branches can be created when a user retries a message. Returns an error unless the message is on the current branch of the session. Returns an empty list if the `dw_read_blobs_graphql` feature flag is disabled, or if the session does not store incremental checkpoints.
 
 Returns [`[DuoWorkflowBranch!]`](#duoworkflowbranch).
 
@@ -1317,7 +1317,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="query-duoworkflowbranches-threadts"></a>`threadTs` | [`String!`](#string) | Identifier of the checkpoint that introduced a user message, from `DuoMessage.threadTs`. Returns the other attempts at the same turn, so the branch that message belongs to is excluded. |
+| <a id="query-duoworkflowbranches-threadts"></a>`threadTs` | [`String!`](#string) | Identifier of the checkpoint that introduced a user message, from `DuoMessage.threadTs`. Must be a message on the current branch of the session. Returns the other attempts at the same turn, so the branch that message belongs to is excluded. |
 | <a id="query-duoworkflowbranches-workflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID!`](#aiduoworkflowsworkflowid) | Global ID of the session. |
 
 ### `Query.duoWorkflowEvents`
@@ -40665,7 +40665,7 @@ Arguments:
 | <a id="countablevulnerability-dependencies-componentnames"></a>`componentNames` | [`[String!]`](#string) | Filter dependencies by component names. |
 | <a id="countablevulnerability-dependencies-componentversions"></a>`componentVersions` | [`[String!]`](#string) | Filter dependencies by component versions. |
 | <a id="countablevulnerability-dependencies-licenses"></a>`licenses` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.2. Status: Experiment. Filter dependencies by SPDX license identifiers. |
-| <a id="countablevulnerability-dependencies-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. |
+| <a id="countablevulnerability-dependencies-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. |
 | <a id="countablevulnerability-dependencies-notcomponentversions"></a>`notComponentVersions` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 18.1. Status: Experiment. Filter dependencies to exclude the specified component versions. |
 | <a id="countablevulnerability-dependencies-packagemanagers"></a>`packageManagers` | [`[PackageManager!]`](#packagemanager) | Filter dependencies by package managers. |
 | <a id="countablevulnerability-dependencies-policyviolations"></a>`policyViolations` {{< icon name="warning-solid" >}} | [`[PolicyViolations!]`](#policyviolations) | Introduced in GitLab 18.7. Status: Experiment. Filter by security policy violations. Cannot be combined with the `malware` argument. |
@@ -46877,7 +46877,7 @@ Arguments:
 | <a id="group-dependencies-componentnames"></a>`componentNames` | [`[String!]`](#string) | Filter dependencies by component names. |
 | <a id="group-dependencies-componentversions"></a>`componentVersions` | [`[String!]`](#string) | Filter dependencies by component versions. |
 | <a id="group-dependencies-licenses"></a>`licenses` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.2. Status: Experiment. Filter dependencies by SPDX license identifiers. |
-| <a id="group-dependencies-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. |
+| <a id="group-dependencies-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. |
 | <a id="group-dependencies-notcomponentversions"></a>`notComponentVersions` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 18.1. Status: Experiment. Filter dependencies to exclude the specified component versions. |
 | <a id="group-dependencies-packagemanagers"></a>`packageManagers` | [`[PackageManager!]`](#packagemanager) | Filter dependencies by package managers. |
 | <a id="group-dependencies-policyviolations"></a>`policyViolations` {{< icon name="warning-solid" >}} | [`[PolicyViolations!]`](#policyviolations) | Introduced in GitLab 18.7. Status: Experiment. Filter by security policy violations. Cannot be combined with the `malware` argument. |
@@ -46911,7 +46911,7 @@ Arguments:
 | <a id="group-dependencyaggregations-componentnames"></a>`componentNames` | [`[String!]`](#string) | Filter dependencies by component names. |
 | <a id="group-dependencyaggregations-componentversions"></a>`componentVersions` | [`[String!]`](#string) | Filter dependencies by component versions. |
 | <a id="group-dependencyaggregations-licenses"></a>`licenses` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.2. Status: Experiment. Filter dependencies by SPDX license identifiers. |
-| <a id="group-dependencyaggregations-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. |
+| <a id="group-dependencyaggregations-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. |
 | <a id="group-dependencyaggregations-notcomponentversions"></a>`notComponentVersions` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 18.1. Status: Experiment. Filter dependencies to exclude the specified component versions. |
 | <a id="group-dependencyaggregations-packagemanagers"></a>`packageManagers` | [`[PackageManager!]`](#packagemanager) | Filter dependencies by package managers. |
 | <a id="group-dependencyaggregations-policyviolations"></a>`policyViolations` {{< icon name="warning-solid" >}} | [`[PolicyViolations!]`](#policyviolations) | Introduced in GitLab 18.7. Status: Experiment. Filter by security policy violations. Cannot be combined with the `malware` argument. |
@@ -57613,7 +57613,7 @@ Arguments:
 | <a id="project-dependencies-componentnames"></a>`componentNames` | [`[String!]`](#string) | Filter dependencies by component names. |
 | <a id="project-dependencies-componentversions"></a>`componentVersions` | [`[String!]`](#string) | Filter dependencies by component versions. |
 | <a id="project-dependencies-licenses"></a>`licenses` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.2. Status: Experiment. Filter dependencies by SPDX license identifiers. |
-| <a id="project-dependencies-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. |
+| <a id="project-dependencies-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. |
 | <a id="project-dependencies-notcomponentversions"></a>`notComponentVersions` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 18.1. Status: Experiment. Filter dependencies to exclude the specified component versions. |
 | <a id="project-dependencies-packagemanagers"></a>`packageManagers` | [`[PackageManager!]`](#packagemanager) | Filter dependencies by package managers. |
 | <a id="project-dependencies-policyviolations"></a>`policyViolations` {{< icon name="warning-solid" >}} | [`[PolicyViolations!]`](#policyviolations) | Introduced in GitLab 18.7. Status: Experiment. Filter by security policy violations. Cannot be combined with the `malware` argument. |
@@ -64267,7 +64267,7 @@ Arguments:
 | <a id="vulnerability-dependencies-componentnames"></a>`componentNames` | [`[String!]`](#string) | Filter dependencies by component names. |
 | <a id="vulnerability-dependencies-componentversions"></a>`componentVersions` | [`[String!]`](#string) | Filter dependencies by component versions. |
 | <a id="vulnerability-dependencies-licenses"></a>`licenses` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.2. Status: Experiment. Filter dependencies by SPDX license identifiers. |
-| <a id="vulnerability-dependencies-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. |
+| <a id="vulnerability-dependencies-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. |
 | <a id="vulnerability-dependencies-notcomponentversions"></a>`notComponentVersions` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 18.1. Status: Experiment. Filter dependencies to exclude the specified component versions. |
 | <a id="vulnerability-dependencies-packagemanagers"></a>`packageManagers` | [`[PackageManager!]`](#packagemanager) | Filter dependencies by package managers. |
 | <a id="vulnerability-dependencies-policyviolations"></a>`policyViolations` {{< icon name="warning-solid" >}} | [`[PolicyViolations!]`](#policyviolations) | Introduced in GitLab 18.7. Status: Experiment. Filter by security policy violations. Cannot be combined with the `malware` argument. |
@@ -65875,6 +65875,7 @@ Fields:
 | <a id="workitemwidgetagentplan-aiplanningenabled"></a>`aiPlanningEnabled` | [`Boolean!`](#boolean) | Indicates whether AI planning is enabled for the work item. |
 | <a id="workitemwidgetagentplan-content"></a>`content` | [`String`](#string) | Content of the agent plan. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-contenthtml"></a>`contentHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `content`. This field can only be resolved for one work item in any single request. |
+| <a id="workitemwidgetagentplan-generationstatus"></a>`generationStatus` {{< icon name="warning-solid" >}} | [`WorkItemAgentPlanGenerationStatus`](#workitemagentplangenerationstatus) | Introduced in GitLab 19.4. Status: Experiment. Status of the asynchronous workplan generation flow for the work item. Reflects the most recent `workplan/v1` Duo Agent Platform workflow, if any; creation of that workflow is currently gated by the `duo_workplan_async_flow` feature flag. |
 | <a id="workitemwidgetagentplan-readinessscore"></a>`readinessScore` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Readiness score of the agent plan (0-100). Null when the score is not yet available. Only available when the `workplan_score` feature flag is enabled. |
 | <a id="workitemwidgetagentplan-readinessscorefeedback"></a>`readinessScoreFeedback` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Markdown feedback explaining the readiness score. Null when no feedback is available. Only available when the `workplan_score` feature flag is enabled. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-readinessscorefeedbackhtml"></a>`readinessScoreFeedbackHtml` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. GitLab Flavored Markdown rendering of `readiness_score_feedback`. Only available when the `workplan_score` feature flag is enabled. This field can only be resolved for one work item in any single request. |
@@ -73055,6 +73056,18 @@ Weight ID wildcard values.
 | ----- | ----------- |
 | <a id="weightwildcardid-any"></a>`ANY` | Weight is assigned. |
 | <a id="weightwildcardid-none"></a>`NONE` | No weight is assigned. |
+
+### `WorkItemAgentPlanGenerationStatus`
+
+Status of the asynchronous workplan generation flow for a work item.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemagentplangenerationstatus-completed"></a>`COMPLETED` | Indicates the flow finished successfully. |
+| <a id="workitemagentplangenerationstatus-failed"></a>`FAILED` | Indicates the flow ended without completing. Includes flows canceled by a user. |
+| <a id="workitemagentplangenerationstatus-generating"></a>`GENERATING` | Indicates a workplan generation flow is in progress. |
+| <a id="workitemagentplangenerationstatus-needs_input"></a>`NEEDS_INPUT` | Indicates the flow is waiting for user input. |
+| <a id="workitemagentplangenerationstatus-not_started"></a>`NOT_STARTED` | No workplan generation flow has run for the work item. |
 
 ### `WorkItemAvailabilityAction`
 

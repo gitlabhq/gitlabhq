@@ -2805,6 +2805,9 @@ msgstr ""
 msgid "AICatalog|Configuration is required."
 msgstr ""
 
+msgid "AICatalog|Confine the AI Catalog to this group"
+msgstr ""
+
 msgid "AICatalog|Connect"
 msgstr ""
 
@@ -3382,9 +3385,6 @@ msgid "AICatalog|Report to admin"
 msgstr ""
 
 msgid "AICatalog|Research Assistant, Creative Writer, Code Helper"
-msgstr ""
-
-msgid "AICatalog|Restrict the AI Catalog to this group"
 msgstr ""
 
 msgid "AICatalog|Restricted"
@@ -78507,9 +78507,6 @@ msgid "Settings|Session settings"
 msgstr ""
 
 msgid "Settings|Session timeout duration"
-msgstr ""
-
-msgid "Settings|Unable to load the merge request options settings. Try reloading the page."
 msgstr ""
 
 msgid "Settings|What is experiment?"

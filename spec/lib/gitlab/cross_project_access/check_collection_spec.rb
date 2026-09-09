@@ -27,9 +27,7 @@ RSpec.describe Gitlab::CrossProjectAccess::CheckCollection do
   describe '#should_run?' do
     def fake_check(run, skip)
       check = double("Check: run=#{run} - skip={skip}")
-      allow(check).to receive(:should_run?).and_return(run)
-      allow(check).to receive(:should_skip?).and_return(skip)
-      allow(check).to receive(:skip).and_return(skip)
+      allow(check).to receive_messages(should_run?: run, should_skip?: skip, skip: skip)
 
       check
     end

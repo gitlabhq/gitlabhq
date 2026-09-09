@@ -14,6 +14,9 @@ module Ci
   #       # Or
   #       partitionable scope: ->(record) { record.partition_value }
   #
+  #       partitioned: true
+  #       # Or, with hash config
+  #       partitioned: { detach_archived: true }
   #
   module Partitionable
     extend ActiveSupport::Concern
@@ -86,6 +89,10 @@ module Ci
       def handle_partitionable_ddl(partitioned)
         return unless partitioned
 
+        options = partitioned.is_a?(Hash) ? partitioned : {}
+        options.assert_valid_keys(:detach_archived)
+        detach_archived = options.fetch(:detach_archived, false)
+
         include ::PartitionedTable
 
         partitioned_by :partition_id,
@@ -93,7 +100,8 @@ module Ci
           next_partition_if: ->(latest_partition) do
             latest_partition.blank? || create_database_partition?(latest_partition)
           end,
-          detach_partition_if: proc { false },
+          detach_partition_if: ->(partition) { detach_archived && detach_database_partition?(partition) },
+          detach_concurrently: true,
           analyze_interval: 3.days
       end
 
@@ -101,6 +109,12 @@ module Ci
         return true if database_partition.before?(Ci::Partition::LAST_STATIC_PARTITION_VALUE)
 
         Ci::Partition.provisioning(database_partition.values.max).present?
+      end
+
+      def detach_database_partition?(database_partition)
+        return false if Feature.disabled?(:ci_detach_archived_partitions, :instance)
+
+        Ci::Partition.all_archived?(database_partition.values)
       end
     end
   end

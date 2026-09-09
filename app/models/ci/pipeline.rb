@@ -370,7 +370,8 @@ module Ci
               pipeline_id: pipeline.id,
               status: pipeline.status,
               source: pipeline.source,
-              partition_id: pipeline.partition_id
+              partition_id: pipeline.partition_id,
+              source_ref: pipeline.source_ref
             })
           )
         end

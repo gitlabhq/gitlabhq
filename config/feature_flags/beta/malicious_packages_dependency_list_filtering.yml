@@ -7,5 +7,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235800
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/600025
 milestone: '19.0'
 group: group::security infrastructure
-type: wip
-default_enabled: false
+type: beta
+default_enabled: true

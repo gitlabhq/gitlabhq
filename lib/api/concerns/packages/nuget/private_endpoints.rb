@@ -43,7 +43,8 @@ module API
                 tags %w[packages_nuget]
               end
               route_setting :authorization, permissions: :read_nuget_package, boundary_type: boundary_type
-              get 'index', format: :json, urgency: :low do
+              get 'index', format: :json, urgency: :low,
+                requirements: ::API::JSON_FORMAT_SUFFIX_REQUIREMENT do
                 present ::Packages::Nuget::PackagesMetadataPresenter.new(find_packages),
                   with: ::API::Entities::Nuget::PackagesMetadata
               end
@@ -63,7 +64,8 @@ module API
                   regexp: ::API::NO_SLASH_URL_PART_REGEX, documentation: { example: '1.0.0' }
               end
               route_setting :authorization, permissions: :read_nuget_package, boundary_type: boundary_type
-              get '*package_version', format: :json, urgency: :low do
+              get '*package_version', format: :json, urgency: :low,
+                requirements: ::API::JSON_FORMAT_SUFFIX_REQUIREMENT do
                 present ::Packages::Nuget::PackageMetadataPresenter.new(find_package),
                   with: ::API::Entities::Nuget::PackageMetadata
               end
@@ -94,7 +96,7 @@ module API
                 tags %w[packages_nuget]
               end
               route_setting :authorization, permissions: :search_nuget_package, boundary_type: boundary_type
-              get format: :json, urgency: :low do
+              get format: :json, urgency: :low, requirements: ::API::JSON_FORMAT_SUFFIX_REQUIREMENT do
                 track_package_event(
                   'search_package',
                   :nuget,

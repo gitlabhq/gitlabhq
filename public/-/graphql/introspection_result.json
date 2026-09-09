@@ -106047,7 +106047,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -177909,7 +177909,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -178186,7 +178186,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -322839,7 +322839,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -357762,7 +357762,7 @@
             },
             {
               "name": "duoWorkflowBranches",
-              "description": "The alternative branches to the provided user message. Multiple branches can be created when a user retries a message. Returns an empty list if the `dw_read_blobs_graphql` feature flag is disabled, or if the session does not store incremental checkpoints. Introduced in GitLab 19.3: Status: Experiment.",
+              "description": "The alternative branches to the provided user message. Multiple branches can be created when a user retries a message. Returns an error unless the message is on the current branch of the session. Returns an empty list if the `dw_read_blobs_graphql` feature flag is disabled, or if the session does not store incremental checkpoints. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [
                 {
                   "name": "workflowId",
@@ -357782,7 +357782,7 @@
                 },
                 {
                   "name": "threadTs",
-                  "description": "Identifier of the checkpoint that introduced a user message, from `DuoMessage.threadTs`. Returns the other attempts at the same turn, so the branch that message belongs to is excluded.",
+                  "description": "Identifier of the checkpoint that introduced a user message, from `DuoMessage.threadTs`. Must be a message on the current branch of the session. Returns the other attempts at the same turn, so the branch that message belongs to is excluded.",
                   "type": {
                     "kind": "NON_NULL",
                     "name": null,
@@ -431531,7 +431531,7 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Work in progress and gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -445126,6 +445126,47 @@
         },
         {
           "kind": "ENUM",
+          "name": "WorkItemAgentPlanGenerationStatus",
+          "description": "Status of the asynchronous workplan generation flow for a work item.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "NOT_STARTED",
+              "description": "No workplan generation flow has run for the work item.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "GENERATING",
+              "description": "Indicates a workplan generation flow is in progress.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NEEDS_INPUT",
+              "description": "Indicates the flow is waiting for user input.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COMPLETED",
+              "description": "Indicates the flow finished successfully.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FAILED",
+              "description": "Indicates the flow ended without completing. Includes flows canceled by a user.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
           "name": "WorkItemAvailabilityAction",
           "description": "Action to apply to work item type availability",
           "fields": null,
@@ -455680,6 +455721,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "generationStatus",
+              "description": "Status of the asynchronous workplan generation flow for the work item. Reflects the most recent `workplan/v1` Duo Agent Platform workflow, if any; creation of that workflow is currently gated by the `duo_workplan_async_flow` feature flag. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WorkItemAgentPlanGenerationStatus",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "readinessScore",

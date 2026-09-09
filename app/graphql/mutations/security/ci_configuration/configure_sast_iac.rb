@@ -5,6 +5,9 @@ module Mutations
     module CiConfiguration
       class ConfigureSastIac < BaseSecurityAnalyzer
         graphql_name 'ConfigureSastIac'
+
+        authorize_granular_token permissions: [:push_code, :create_branch],
+          boundary_argument: :project_path, boundary_type: :project
         description <<~DESC
           Enable SAST IaC for a project in a new or
           modified `.gitlab-ci.yml` file in a new branch. The new

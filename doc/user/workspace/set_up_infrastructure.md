@@ -200,7 +200,7 @@ To configure CI/CD variables:
    | `AWS_ACCESS_KEY_ID`                            | AWS access key ID. |
    | `AWS_SECRET_ACCESS_KEY`                        | AWS secret access key. |
    | `TF_VAR_agent_token`                           | GitLab agent for Kubernetes token. |
-   | `TF_VAR_kas_address`                           | GitLab Relay (KAS) address. Required if on a GitLab Self-Managed instance. For example, `wss://kas.gitlab.com`. |
+   | `TF_VAR_kas_address`                           | GitLab Relay (KAS) address. Required if on a GitLab Self-Managed instance. For example, `grpcs://kas.gitlab.com`. |
    | `TF_VAR_workspaces_proxy_auth_client_id`       | OAuth application client ID. |
    | `TF_VAR_workspaces_proxy_auth_client_secret`   | OAuth application secret. |
    | `TF_VAR_workspaces_proxy_auth_redirect_uri`    | OAuth callback URL. For example, `https://workspaces.example.dev/auth/callback`. |

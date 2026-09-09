@@ -138,8 +138,7 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
 
     before do
       allow(described_class).to receive(:cleanup_leftovers!)
-      allow(described_class).to receive(:perform_from_queue).and_return(0)
-      allow(described_class).to receive(:perform_with_heuristic).and_return(0)
+      allow(described_class).to receive_messages(perform_from_queue: 0, perform_with_heuristic: 0)
     end
 
     it 'cleans up leftovers, before consuming the queue' do
@@ -351,8 +350,10 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
 
     context 'when database parameter is provided' do
       it 'skips other databases' do
-        allow(Gitlab::Database::AsyncIndexes).to receive(:pending_indexes_to_create).and_return([])
-        allow(Gitlab::Database::AsyncIndexes).to receive(:pending_indexes_to_drop).and_return([])
+        allow(Gitlab::Database::AsyncIndexes).to receive_messages(
+          pending_indexes_to_create: [],
+          pending_indexes_to_drop: []
+        )
         allow(described_class).to receive(:queued_actions).and_return([])
         allow(Gitlab::Database::AsyncConstraints).to receive(:pending_entries).and_return([])
 

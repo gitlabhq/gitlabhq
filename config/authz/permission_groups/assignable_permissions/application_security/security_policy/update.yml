@@ -1,0 +1,12 @@
+---
+name: update_security_policy
+description: Grants the ability to update security policies, manage the security policy project,
+  and run policy schedule test runs
+boundaries:
+  - project
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - update_security_policy
+  - create_policy_schedule_test_run

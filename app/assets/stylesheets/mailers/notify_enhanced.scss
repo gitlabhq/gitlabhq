@@ -36,6 +36,12 @@ pre {
   font-size: 14px;
 }
 
+gl-emoji img {
+  width: 1.2em;
+  height: 1.2em;
+  object-fit: scale-down;
+}
+
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-mb-5 {
   margin-bottom: $gl-spacing-scale-5;

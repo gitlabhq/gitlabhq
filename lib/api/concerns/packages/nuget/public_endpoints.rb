@@ -27,7 +27,8 @@ module API
               tags %w[packages_nuget]
             end
             route_setting :authorization, skip_granular_token_authorization: :public_endpoint
-            get 'index', format: :json, urgency: :default do
+            get 'index', format: :json, urgency: :default,
+              requirements: ::API::JSON_FORMAT_SUFFIX_REQUIREMENT do
               track_package_event(
                 'cli_metadata',
                 :nuget,
@@ -106,7 +107,7 @@ module API
 
             namespace '/v2' do
               route_setting :authorization, skip_granular_token_authorization: :public_endpoint
-              get format: :xml, urgency: :low do
+              get format: :xml, urgency: :low, requirements: ::API::XML_FORMAT_SUFFIX_REQUIREMENT do
                 env['api.format'] = :xml
                 content_type 'application/xml; charset=utf-8'
                 # needed to allow browser default inline styles in xml response
@@ -131,7 +132,8 @@ module API
               end
 
               route_setting :authorization, skip_granular_token_authorization: :public_endpoint
-              get '$metadata', format: :xml, urgency: :low do
+              get '$metadata', format: :xml, urgency: :low,
+                requirements: ::API::XML_FORMAT_SUFFIX_REQUIREMENT do
                 env['api.format'] = :xml
                 content_type 'application/xml; charset=utf-8'
                 # needed to allow browser default inline styles in xml response

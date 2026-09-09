@@ -83,8 +83,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::WraparoundVacuumHelpers, feat
 
         context 'when executed by self-managed' do
           before do
-            allow(Gitlab).to receive(:com?).and_return(false)
-            allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+            allow(Gitlab).to receive_messages(com?: false, dev_or_test_env?: false)
           end
 
           it { expect { subject }.not_to output(/autovacuum/i).to_stdout }

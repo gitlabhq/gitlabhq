@@ -669,8 +669,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
     end
 
     before do
-      allow(migration).to receive(:transaction_open?).and_return(false)
-      allow(migration).to receive(:version).and_return('20240905124118')
+      allow(migration).to receive_messages(transaction_open?: false, version: '20240905124118')
     end
 
     subject(:ensure_batched_background_migration_is_finished) { migration.ensure_batched_background_migration_is_finished(**configuration) }

@@ -1,6 +1,7 @@
 ---
 name: update_security_setting
-description: Grants the ability to update security settings
+description: Grants the ability to update security settings, including creating, updating,
+  and deleting security exclusions for secret detection
 boundaries:
   - project
   - group
@@ -8,3 +9,6 @@ available_for:
   - granular_access_token
 permissions:
   - update_security_setting
+  - create_security_exclusion
+  - update_security_exclusion
+  - delete_security_exclusion

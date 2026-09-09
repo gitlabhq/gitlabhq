@@ -2,6 +2,7 @@
 import { uniqueId } from 'lodash-es';
 import { GlTooltipDirective, GlButton, GlLink, GlTruncate } from '@gitlab/ui';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { projectBlobPath } from '~/lib/utils/path_helpers/repository';
 import { sprintf, __ } from '~/locale';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -64,14 +65,13 @@ export default {
         return null;
       }
 
-      const blobPath = joinPaths(
-        '/',
+      return projectBlobPath(
         this.projectPath,
-        '-/blob',
-        this.commit.parentSha,
-        this.previousPath,
+        joinPaths(this.commit.parentSha, this.previousPath),
+        {
+          blame: 1,
+        },
       );
-      return `${blobPath}?blame=1`;
     },
     author() {
       return this.commit.author;

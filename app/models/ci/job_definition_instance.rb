@@ -8,7 +8,7 @@ module Ci
     self.primary_key = :job_id
 
     query_constraints :job_id, :partition_id
-    partitionable scope: :job, partitioned: true
+    partitionable scope: :job, partitioned: { detach_archived: true }
 
     belongs_to :project
 

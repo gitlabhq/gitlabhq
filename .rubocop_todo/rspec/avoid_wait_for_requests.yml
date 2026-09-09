@@ -113,7 +113,6 @@ RSpec/AvoidWaitForRequests:
     - 'ee/spec/features/projects/settings/ee/repository_mirrors_settings_spec.rb'
     - 'ee/spec/features/projects/settings/ee/service_desk_setting_spec.rb'
     - 'ee/spec/features/projects/settings/merge_request_approvals_settings_spec.rb'
-    - 'ee/spec/features/projects/settings/merge_requests/disable_merge_trains_setting_spec.rb'
     - 'ee/spec/features/projects/settings/merge_requests/merge_trains/enable_merge_trains_skip_train_allowed_spec.rb'
     - 'ee/spec/features/projects/settings/merge_requests/user_manages_merge_trains_spec.rb'
     - 'ee/spec/features/projects/settings/merge_requests_settings_spec.rb'

@@ -171,6 +171,44 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
         end
       end
     end
+
+    describe '.all_archived?' do
+      subject(:all_archived) { described_class.all_archived?(ids) }
+
+      let_it_be(:archived) { create(:ci_partition, :archived) }
+      let_it_be(:also_archived) { create(:ci_partition, :archived) }
+      let_it_be(:active) { create(:ci_partition, :active) }
+
+      context 'when every id is archived' do
+        let(:ids) { [archived.id, also_archived.id] }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when one id is not archived' do
+        let(:ids) { [archived.id, active.id] }
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when an id has no ci_partitions row' do
+        let(:ids) { [archived.id, non_existing_record_id] }
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when an id is repeated' do
+        let(:ids) { [archived.id, archived.id] }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when no ids are given' do
+        let(:ids) { [] }
+
+        it { is_expected.to be(false) }
+      end
+    end
   end
 
   describe 'state machine' do

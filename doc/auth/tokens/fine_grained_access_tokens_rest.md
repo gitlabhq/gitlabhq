@@ -4169,6 +4169,7 @@ incompatible with personal access tokens.
 | `GET` | `/projects/:id/managed_licenses/:managed_license_id` | Deprecated endpoint |
 | `PATCH` | `/projects/:id/managed_licenses/:managed_license_id` | Deprecated endpoint |
 | `DELETE` | `/projects/:id/managed_licenses/:managed_license_id` | Deprecated endpoint |
+| `POST` | `/projects/:id/merge_requests/:merge_request_iid/suggested_reviewers` | AI workflows OAuth token |
 | `PUT` | `/projects/:id/packages/cargo/api/v1/crates/new/authorize` | Workhorse pre-authorization |
 | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name/authorize` | Workhorse pre-authorization |
 | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name/authorize` | Workhorse pre-authorization |

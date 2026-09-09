@@ -25,7 +25,7 @@ Before you can install the agent in your cluster, you need:
   - [Google Kubernetes Engine (GKE)](https://docs.cloud.google.com/kubernetes-engine/docs/deploy-app-cluster)
   - You should use [Infrastructure as Code techniques](../../../infrastructure/iac/_index.md) for managing infrastructure resources at scale.
 - Access to an agent server:
-  - On GitLab.com, the agent server is available at `wss://kas.gitlab.com`.
+  - On GitLab.com, the agent server is available at `grpcs://kas.gitlab.com`. The WebSocket address `wss://kas.gitlab.com` is also available.
   - On GitLab Self-Managed, a GitLab administrator must set up the [agent server](../../../../administration/clusters/kas.md).
     Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
   - On GitLab Dedicated, the agent server is available at `wss://kas.<instance-domain>`, for example `wss://kas.example.gitlab-dedicated.com`. If you use a [custom domain](../../../../administration/dedicated/configure_instance/network_security.md#custom-domains) for your GitLab Dedicated instance, you can also use a custom domain for the KAS service.

@@ -460,8 +460,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
 
       context 'when sentry is configured' do
         before do
-          allow(Gitlab::CurrentSettings).to receive(:sentry_enabled).and_return(true)
-          allow(Gitlab::CurrentSettings).to receive(:sentry_clientside_dsn).and_return(dsn)
+          allow(Gitlab::CurrentSettings).to receive_messages(sentry_enabled: true, sentry_clientside_dsn: dsn)
         end
 
         it 'adds new sentry path to CSP' do

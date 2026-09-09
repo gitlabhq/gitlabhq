@@ -44,7 +44,7 @@ You can use the [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-t
 - In GitLab 17.3 the `location` field always links to the commit where the dependency was first detected. Feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` removed.
 - View dependency paths option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519965) in GitLab 17.11 [with a feature flag](../../../administration/feature_flags/_index.md) named `dependency_paths`. Disabled by default.
 - View dependency paths option [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197224) in GitLab 18.2. Feature flag `dependency_paths` removed.
-- Malware badge [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587758) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `dependency_malware_detection`. Disabled by default.
+- Malware badge [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587758) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `dependency_malware_detection`. Enabled by default.
 
 {{< /history >}}
 
@@ -208,7 +208,7 @@ If the [dependency scanning](../dependency_scanning/_index.md) CI/CD job is conf
 
 {{< history >}}
 
-- `malware` field in the JSON export for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587758) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `dependency_malware_detection`. Disabled by default.
+- `malware` field in the JSON export for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587758) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `dependency_malware_detection`. Enabled by default.
 
 {{< /history >}}
 

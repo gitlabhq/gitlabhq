@@ -26,6 +26,8 @@ RSpec.describe Ci::JobDefinitionInstance, feature_category: :continuous_integrat
     let!(:parent) { model.project }
   end
 
+  it_behaves_like 'a CI model that detaches archived partitions'
+
   describe 'associations' do
     it { is_expected.to belong_to(:job) }
     it { is_expected.to belong_to(:job_definition) }

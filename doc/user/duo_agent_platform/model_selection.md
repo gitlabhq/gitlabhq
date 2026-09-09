@@ -23,9 +23,9 @@ For some features, you can select a different model, which persists until you ch
 
 {{< history >}}
 
-- [Separate model setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) from GitLab Duo Code Review introduced for Code Review Flow in GitLab 19.1.
-- Default LLM for Code Review Flow [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) to Claude Sonnet 4.6 Gemini Enterprise Agent Platform in GitLab 19.1.
-- Default LLM for Code Review Flow [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6422) to Claude Sonnet 5 Gemini Enterprise Agent Platform in GitLab 19.3.
+- [Separate model setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) for Code Review Flow introduced in GitLab 19.1.
+- Default LLM for Code Review Flow [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/5555) to Claude Sonnet 4.6 Gemini Enterprise Agent Platform on May 20, 2026.
+- Default LLM for Code Review Flow [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6422) to Claude Sonnet 5 Gemini Enterprise Agent Platform on August 6, 2026.
 
 {{< /history >}}
 
@@ -47,9 +47,9 @@ This table lists the default model for each feature in the Agent Platform.
 
 {{< history >}}
 
-- GPT-5.2 and GPT-5.3 Codex [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/5652) as supported models for Code Review Flow in GitLab 19.1.
-- Claude Sonnet 5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6383) as a supported model for Code Review Flow in GitLab 19.3.
-- Claude Sonnet 4.5 as a supported model for Code Review Flow [deprecated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6483) in GitLab 19.3 and [removed](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6621) in GitLab 19.4.
+- GPT-5.2 and GPT-5.3 Codex [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/5652) as supported models for Code Review Flow on May 26, 2026.
+- Claude Sonnet 5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6383) as a supported model for Code Review Flow on August 3, 2026.
+- Claude Sonnet 4.5 as a supported model for Code Review Flow [deprecated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6483) on August 10, 2026 and [removed](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6621) on August 25, 2026.
 
 {{< /history >}}
 
@@ -112,7 +112,7 @@ in the Agent Platform.
 - Feature flag `duo_agent_platform_model_selection` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212051) in GitLab 18.6.
 - Feature flag `ai_model_switching` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) in GitLab 18.7.
 - Feature flag `duo_agent_platform_model_selection` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/218591) in GitLab 18.9.
-- [Separate model setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) from GitLab Duo Code Review introduced for Code Review Flow in GitLab 19.1, using the **Agentic Code Review** setting.
+- [Separate model setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) for Code Review Flow introduced in GitLab 19.1, using the **Agentic Code Review** setting.
 - Ability to restrict GitLab Duo Agentic Chat to specific models [added](https://gitlab.com/groups/gitlab-org/-/work_items/22028) in GitLab 19.1.
 - Security Review Flow [added](https://gitlab.com/gitlab-org/gitlab/-/issues/603981) to model selection in GitLab 19.2.
 

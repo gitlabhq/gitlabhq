@@ -307,8 +307,7 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers, feature_categor
 
     context 'when outside a transaction' do
       before do
-        allow(model).to receive(:transaction_open?).and_return(false)
-        allow(model).to receive(:column_exists?).and_return(true)
+        allow(model).to receive_messages(transaction_open?: false, column_exists?: true)
       end
 
       let(:old_column_constraints) do

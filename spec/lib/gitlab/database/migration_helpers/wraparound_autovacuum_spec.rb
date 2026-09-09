@@ -36,9 +36,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::WraparoundAutovacuum, feature
 
     with_them do
       it 'returns as expected for GitLab.com, dev, or test' do
-        allow(Gitlab).to receive(:com?).and_return(dot_com)
-        allow(Gitlab).to receive(:jh?).and_return(jh)
-        allow(Gitlab).to receive(:dev_or_test_env?).and_return(dev_or_test)
+        allow(Gitlab).to receive_messages(com?: dot_com, jh?: jh, dev_or_test_env?: dev_or_test)
         allow(migration).to receive(:wraparound_prevention_on_tables?).with([:table]).and_return(wraparound_prevention)
 
         expect(migration.can_execute_on?(:table)).to eq(expectation)

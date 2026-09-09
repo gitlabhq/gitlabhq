@@ -9,8 +9,7 @@ RSpec.describe SchemaValidator, feature_category: :database do
 
   describe "#validate!" do
     before do
-      allow(validator).to receive(:committed_migrations).and_return(committed_migrations)
-      allow(validator).to receive(:run).and_return(schema_changes)
+      allow(validator).to receive_messages(committed_migrations: committed_migrations, run: schema_changes)
     end
 
     context 'when schema changes are introduced without migrations' do

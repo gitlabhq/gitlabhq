@@ -237,7 +237,7 @@ A collaborator who gains access to a project or group through a share can view, 
 items only while working inside that shared container.
 The share does not extend restricted access into the collaborator's own top-level group.
 
-## Restrict the AI Catalog to a group hierarchy
+## Confine the AI Catalog to a group hierarchy
 
 {{< details >}}
 
@@ -251,7 +251,7 @@ The share does not extend restricted access into the collaborator's own top-leve
 
 {{< /history >}}
 
-In a top-level group, you can restrict the AI Catalog so that, for a project in that group hierarchy, users can
+In a top-level group, you can confine the AI Catalog so that, for a project in that group hierarchy, users can
 see, enable, and run only:
 
 - Foundational agents and flows maintained by GitLab.
@@ -271,12 +271,12 @@ Prerequisites:
 
 - You must have the Owner role for the top-level group.
 
-To restrict the AI Catalog to your group hierarchy:
+To confine the AI Catalog to your group hierarchy:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
-1. In the **Data and privacy** section, under **AI Catalog**, select the **Restrict the AI Catalog to this group** checkbox.
+1. In the **Data and privacy** section, under **AI Catalog**, select the **Confine the AI Catalog to this group** checkbox.
 1. Select **Save changes**.
 
 ## Related topics

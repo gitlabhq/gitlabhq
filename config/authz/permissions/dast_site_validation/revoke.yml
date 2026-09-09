@@ -1,0 +1,3 @@
+---
+name: revoke_dast_site_validation
+description: Grants the ability to revoke DAST site validations

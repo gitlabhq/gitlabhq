@@ -126,7 +126,7 @@ You can
 browse, filter, and download these events from the **Audit events** tab
 on the **Governance** page.
 
-For more information, see [AI audit event report](../duo_agent_platform/ai-audit-events.md).
+For more information, see [AI audit event report](../ai-governance/ai-audit-events.md).
 
 ## Administer topics
 

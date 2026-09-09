@@ -22,7 +22,8 @@ systems, including:
 
 KAS was formerly known as the Kubernetes Agent Server. The name was changed to reflect its evolved role beyond Kubernetes.
 
-GitLab Relay (KAS) is installed and available on GitLab.com at `wss://kas.gitlab.com`.
+GitLab Relay (KAS) is installed and available on GitLab.com at `grpcs://kas.gitlab.com`.
+The WebSocket address `wss://kas.gitlab.com` is also available.
 If you use GitLab Self-Managed, by default GitLab Relay (KAS) is installed and available.
 
 ## Installation options

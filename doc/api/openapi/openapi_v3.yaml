@@ -13808,6 +13808,55 @@ paths:
         schema:
           type: integer
         in: path
+  "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/suggested_reviewers":
+    post:
+      operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidSuggestedReviewers
+      summary: Set the AI-recommended reviewers for a merge request
+      description: Replaces the AI-recommended reviewers persisted for a specified
+        merge request. Available only when the recommend reviewers flow is enabled
+        for the project.
+      tags:
+      - GitLab Duo workflows
+      - Internal operations
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiSuggestedReviewer"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '429':
+          description: Too many requests
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project.
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      - name: merge_request_iid
+        required: true
+        description: The internal ID of the merge request.
+        schema:
+          type: integer
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_ad699f18a0b7"
+      x-gitlab-lifecycle: experiment
   "/api/v4/admin/data_management/{model_name}/{record_identifier}":
     get:
       operationId: getApiV4AdminDataManagementModelNameRecordIdentifier
@@ -75591,7 +75640,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_fdaf0f5a0faa"
+              "$ref": "#/components/schemas/RequestBody_1ab15ee78a23"
   "/api/v4/groups/{id}":
     put:
       operationId: putApiV4GroupsId
@@ -75623,7 +75672,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ac9c4462c09c"
+              "$ref": "#/components/schemas/RequestBody_458681bdbaec"
     get:
       operationId: getApiV4GroupsId
       summary: Retrieve a group
@@ -88792,6 +88841,20 @@ components:
         created_at:
           type: string
           format: date-time
+    APIEntitiesAiSuggestedReviewer:
+      type: object
+      properties:
+        user:
+          "$ref": "#/components/schemas/APIEntitiesUserBasic"
+        reason:
+          type: string
+          example: Authored most of the changed files.
+        approval_rule:
+          type: object
+        created_at:
+          type: string
+          format: date-time
+          example: '2022-01-31T15:10:45.080Z'
     APIEntitiesAdminModel:
       type: object
       properties:
@@ -104888,6 +104951,42 @@ components:
           - dry_run
           description: State of the runner controller (disabled, enabled, dry_run)
           nullable: true
+    RequestBody_ad699f18a0b7:
+      type: object
+      properties:
+        suggestions:
+          type: array
+          description: Recommended reviewers (maximum is 50).
+          items:
+            type: object
+            properties:
+              user_id:
+                type: integer
+                description: ID of the recommended user.
+                nullable: true
+              reason:
+                type: string
+                description: Model rationale for the recommendation (maximum 2048
+                  characters).
+                nullable: true
+                maxLength: 2048
+              approval_rule_id:
+                type: integer
+                description: ID of the approval rule the user was suggested for.
+                nullable: true
+              approval_rule_type:
+                type: string
+                enum:
+                - merge_request_rule
+                - project_rule
+                description: Type of the approval rule the user was suggested for.
+                minLength: 1
+            required:
+            - user_id
+            - approval_rule_type
+          nullable: true
+      required:
+      - suggestions
     RequestBody_6bf5071f175c:
       type: object
       properties:
@@ -122854,7 +122953,7 @@ components:
           example:
             environment: production
           nullable: true
-    RequestBody_fdaf0f5a0faa:
+    RequestBody_1ab15ee78a23:
       type: object
       properties:
         name:
@@ -123151,8 +123250,8 @@ components:
               nullable: true
             ai_catalog_restricted_to_group_hierarchy:
               type: boolean
-              description: Restrict the AI Catalog to items within this top-level
-                group hierarchy
+              description: Confine the AI Catalog to items within this top-level group
+                hierarchy
               nullable: true
             foundational_agents_default_enabled:
               type: boolean
@@ -123224,7 +123323,7 @@ components:
       required:
       - name
       - path
-    RequestBody_ac9c4462c09c:
+    RequestBody_458681bdbaec:
       type: object
       properties:
         name:
@@ -123523,8 +123622,8 @@ components:
               nullable: true
             ai_catalog_restricted_to_group_hierarchy:
               type: boolean
-              description: Restrict the AI Catalog to items within this top-level
-                group hierarchy
+              description: Confine the AI Catalog to items within this top-level group
+                hierarchy
               nullable: true
             foundational_agents_default_enabled:
               type: boolean

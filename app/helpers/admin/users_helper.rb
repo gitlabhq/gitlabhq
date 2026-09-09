@@ -19,12 +19,11 @@ module Admin
     end
 
     def admin_edit_user_organization_field_app_data(user)
-      initial_organization = user.organization
-      organization_user = initial_organization.organization_users.by_user(user).first
+      organization_field_app_data(user, user.organization)
+    end
 
-      {
-        organization_user: organization_user.slice(:id, :access_level)
-      }.merge(admin_user_organization_field_shared(initial_organization)).to_json
+    def organization_admin_edit_user_organization_field_app_data(user)
+      organization_field_app_data(user, ::Current.organization)
     end
 
     def email_otp_status_text(user)
@@ -47,6 +46,14 @@ module Admin
     end
 
     private
+
+    def organization_field_app_data(user, initial_organization)
+      organization_user = initial_organization.organization_users.by_user(user).first
+
+      {
+        organization_user: organization_user.slice(:id, :access_level)
+      }.merge(admin_user_organization_field_shared(initial_organization)).to_json
+    end
 
     def admin_user_organization_field_shared(initial_organization)
       {

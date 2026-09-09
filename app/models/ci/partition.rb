@@ -77,6 +77,12 @@ module Ci
           .order(id: :asc)
           .first
       end
+
+      def all_archived?(ids)
+        return false if ids.blank?
+
+        id_in(ids).with_status(:archived).count == ids.uniq.size
+      end
     end
 
     def all_partitions_exist?

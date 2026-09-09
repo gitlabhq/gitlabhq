@@ -8,14 +8,14 @@
 #
 # Activation is opt-in: without CAPRONI_ACTIVATE_LICENSE=1 the script does
 # nothing at all. Once opted in, a missing `op` CLI is skipped with a warning,
-# but every other failure -- a locked vault, an unavailable toolbox pod, a
-# Rails error -- is fatal and blocks `caproni run`. Set
+# but every other failure -- a failed 1Password sign-in, an unavailable toolbox
+# pod, a Rails error -- is fatal and blocks `caproni run`. Set
 # CAPRONI_ACTIVATE_LICENSE=0 to skip activation instead.
 #
 # Prerequisites:
 # - Cluster is up and toolbox pod is healthy
 # - `.gitlab/caproni/setup.sh` was performed (config files in place)
-# - 1Password CLI (`op`) installed and app integration enabled
+# - 1Password CLI (`op`) installed, able to sign in to `gitlab.1password.com`
 
 set -euo pipefail
 
@@ -28,6 +28,7 @@ TARGET="$TARGET_DEPLOYMENT/container/toolbox"
 NAMESPACE="${GITLAB_NAMESPACE:-gitlab}"
 RAILS_ENV="${RAILS_ENV:-development}"
 
+ONEPASSWORD_ACCOUNT="gitlab.1password.com"
 ONEPASSWORD_ITEM="GitLab_self_managed_ultimate_Duo_enterprise"
 ONEPASSWORD_VAULT="Engineering"
 ONEPASSWORD_FIELD="activation_code"
@@ -45,7 +46,7 @@ if [[ "${CAPRONI_ACTIVATE_LICENSE:-0}" != "1" ]]; then
 fi
 
 # ------------------------------------------------------------------
-# 1. Check op CLI availability and authentication
+# 1. Check op CLI availability and sign in to 1Password
 # ------------------------------------------------------------------
 # No `op` at all means no 1Password to fetch a code from, and nobody in that
 # position wants a license -- warn and continue. Every later failure is fatal,
@@ -56,12 +57,19 @@ if ! command -v op &>/dev/null; then
   exit 0
 fi
 
-if ! op whoami </dev/null &>/dev/null; then
-  err "1Password CLI is not authenticated — cannot fetch the license activation code."
-  err "Run 'op signin' (or unlock the 1Password app), then re-run 'caproni run'."
-  err "To start unlicensed instead, set CAPRONI_ACTIVATE_LICENSE=0, or activate manually at:"
-  err "  http://gitlab.caproni.test/admin/subscription"
-  exit 1
+if ! op whoami --account "${ONEPASSWORD_ACCOUNT}" </dev/null &>/dev/null; then
+  info "Signing in to 1Password (${ONEPASSWORD_ACCOUNT})..."
+  session=""
+  # Without 1Password app integration, signin prints an OP_SESSION_* export
+  # to stdout that later `op` calls need; with it enabled, eval is a no-op.
+  if ! session=$(op signin --account "${ONEPASSWORD_ACCOUNT}"); then
+    err "1Password sign-in failed — cannot fetch the license activation code."
+    err "Run 'op signin --account ${ONEPASSWORD_ACCOUNT}' to see why, then re-run 'caproni run'."
+    err "To start unlicensed instead, set CAPRONI_ACTIVATE_LICENSE=0, or activate manually at:"
+    err "  http://gitlab.caproni.test/admin/subscription"
+    exit 1
+  fi
+  eval "${session}"
 fi
 
 # ------------------------------------------------------------------
@@ -71,6 +79,7 @@ info "Fetching license activation code from 1Password..."
 activation_code=""
 
 if ! activation_code=$(op item get "${ONEPASSWORD_ITEM}" \
+    --account "${ONEPASSWORD_ACCOUNT}" \
     --vault "${ONEPASSWORD_VAULT}" \
     --fields "${ONEPASSWORD_FIELD}" 2>&1); then
   err "Failed to fetch activation code from 1Password: ${activation_code}"

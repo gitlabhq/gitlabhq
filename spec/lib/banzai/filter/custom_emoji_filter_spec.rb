@@ -26,6 +26,22 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter, feature_category: :markdown do
     expect(doc.css('gl-emoji').first.attributes['data-fallback-src'].value).to eq(custom_emoji.file)
   end
 
+  it 'leaves the element empty for the frontend to render' do
+    doc = filter('<p>:tanuki:</p>')
+
+    expect(doc.at_css('gl-emoji').children).to be_empty
+  end
+
+  context 'when rendering for email' do
+    it 'nests the image in the element', :aggregate_failures do
+      doc = filter('<p>:tanuki:</p>', for_email: true)
+
+      img = doc.at_css('gl-emoji > img')
+      expect(img['src']).to eq(custom_emoji.file)
+      expect(img['alt']).to eq(':tanuki:')
+    end
+  end
+
   it 'matches multiple same custom emoji' do
     doc = filter(':tanuki: :tanuki:')
 

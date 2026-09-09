@@ -152,10 +152,91 @@ RSpec.describe Admin::Organizations::UsersController, feature_category: :organiz
     end
   end
 
+  describe 'GET #edit' do
+    subject(:request) { get edit_organization_admin_user_path(organization, user) }
+
+    context 'when user is an organization owner' do
+      before do
+        sign_in(organization_owner)
+      end
+
+      it 'renders the edit form' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when user is a regular user' do
+      before do
+        sign_in(regular_user)
+      end
+
+      it 'denies access' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'PATCH #update' do
+    let_it_be(:organization_user) { organization.organization_users.find_by(user: user) }
+    let(:params) do
+      {
+        user: {
+          organization_users_attributes: [
+            { id: organization_user.id, organization_id: organization.id, access_level: 'owner' }
+          ]
+        }
+      }
+    end
+
+    subject(:request) { patch organization_admin_user_path(organization, user), params: params }
+
+    context 'when user is an instance admin', :enable_admin_mode do
+      before do
+        sign_in(admin)
+      end
+
+      it 'updates the organization access level and redirects to the user show page' do
+        request
+
+        expect(response).to redirect_to(organization_admin_user_path(organization, user))
+        expect(organization_user.reload.access_level).to eq('owner')
+      end
+    end
+
+    context 'when user is an organization owner' do
+      before do
+        sign_in(organization_owner)
+      end
+
+      it 'updates the organization access level and redirects to the user show page' do
+        request
+
+        expect(response).to redirect_to(organization_admin_user_path(organization, user))
+        expect(organization_user.reload.access_level).to eq('owner')
+      end
+    end
+
+    context 'when user is a regular user' do
+      before do
+        sign_in(regular_user)
+      end
+
+      it 'denies access' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'unavailable actions' do
-    it 'only defines index and show' do
+    it 'only defines index, show, edit and update' do
       %i[
-        new create edit update destroy projects keys approve reject activate deactivate
+        new create destroy projects keys approve reject activate deactivate
         block unblock ban unban unlock trust untrust confirm disable_two_factor
         impersonate remove_email
       ].each do |action|

@@ -42,7 +42,7 @@ module Banzai
           custom_emoji = all_custom_emoji[name]
 
           if custom_emoji
-            Gitlab::Emoji.custom_emoji_tag(custom_emoji.name, custom_emoji.url)
+            Gitlab::Emoji.custom_emoji_tag(custom_emoji.name, custom_emoji.url, render_image: for_email?)
           else
             match_data[0]
           end
@@ -50,6 +50,10 @@ module Banzai
       end
 
       private
+
+      def for_email?
+        context[:for_email]
+      end
 
       def has_custom_emoji?
         all_custom_emoji&.any?

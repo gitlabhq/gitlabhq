@@ -333,8 +333,31 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
         end
       end
 
-      context 'when user is non-admin' do
+      context 'when user is an organization owner' do
         let_it_be(:current_user) { organization_user.user }
+        let_it_be_with_reload(:target_user) { organization.organization_users.last.user }
+
+        subject(:execute) do
+          described_class.new(current_user, {
+            user: target_user,
+            organization_users_attributes: [{
+              id: target_user.organization_users.first.id,
+              organization_id: organization.id,
+              access_level: 'default'
+            }]
+          }).execute
+        end
+
+        it 'updates the organization access level', :aggregate_failures do
+          result = execute
+
+          expect(result[:status]).to eq(:success), result[:message]
+          expect(target_user.organization_users.first.reload.access_level).to eq('default')
+        end
+      end
+
+      context 'when user is neither an admin nor an organization owner' do
+        let_it_be(:current_user) { create(:user) }
         let_it_be(:target_user) { organization_user.user }
         let_it_be(:organization_users_attributes) do
           [{ id: organization_user.id, organization_id: organization.id }]

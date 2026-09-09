@@ -953,6 +953,24 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
     end
 
+    context 'items that are noteable, the email for a note holding a custom emoji' do
+      let_it_be(:emoji_group) { create(:group) }
+      let_it_be(:emoji_project) { create(:project, group: emoji_group) }
+      let_it_be(:custom_emoji) { create(:custom_emoji, name: 'tanuki', group: emoji_group) }
+
+      let(:emoji_issue) { create(:issue, project: emoji_project) }
+      let(:note) { create(:note_on_issue, noteable: emoji_issue, project: emoji_project, note: 'Hello :tanuki:') }
+
+      subject { described_class.note_issue_email(recipient.id, note.id) }
+
+      it 'renders the emoji as an image with its name as the text fallback', :aggregate_failures do
+        img = Nokogiri::HTML5.fragment(subject.html_part.body.to_s).at_css('gl-emoji > img')
+
+        expect(img['src']).to eq(custom_emoji.file)
+        expect(img['alt']).to eq(':tanuki:')
+      end
+    end
+
     context 'items that are noteable, the email for a diff discussion note' do
       let_it_be(:note_author) { create(:user, name: 'author_name') }
 

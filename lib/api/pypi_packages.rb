@@ -229,7 +229,7 @@ module API
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
         route_setting :authorization, permissions: :read_pypi_package, boundary_type: :group,
           skip_job_token_policies: true
-        get 'simple', format: :txt do
+        get 'simple', format: :txt, requirements: ::API::TXT_FORMAT_SUFFIX_REQUIREMENT do
           present_simple_index(find_authorized_group!)
         end
 
@@ -253,7 +253,7 @@ module API
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
         route_setting :authorization, permissions: :read_pypi_package, boundary_type: :group,
           skip_job_token_policies: true
-        get 'simple/*package_name', format: :txt do
+        get 'simple/*package_name', format: :txt, requirements: ::API::TXT_FORMAT_SUFFIX_REQUIREMENT do
           present_simple_package(find_authorized_group!)
         end
       end
@@ -354,7 +354,7 @@ module API
         route_setting :authorization, permissions: :read_pypi_package, boundary_type: :project,
           job_token_policies: :read_packages,
           allow_public_access_for_enabled_project_features: :package_registry
-        get 'simple', format: :txt do
+        get 'simple', format: :txt, requirements: ::API::TXT_FORMAT_SUFFIX_REQUIREMENT do
           project = project!
           authorize_job_token_policies!(project)
           present_simple_index(project)
@@ -382,7 +382,7 @@ module API
           job_token_policies: :read_packages,
           allow_public_access_for_enabled_project_features: :package_registry
 
-        get 'simple/*package_name', format: :txt do
+        get 'simple/*package_name', format: :txt, requirements: ::API::TXT_FORMAT_SUFFIX_REQUIREMENT do
           project = project!
           authorize_job_token_policies!(project)
           present_simple_package(project)

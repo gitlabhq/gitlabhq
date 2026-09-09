@@ -38,6 +38,24 @@ Fine-grained personal access tokens can access the following GraphQL types, muta
 
 ### Application Security resources
 
+#### Ascp
+
+Grants the ability to create ascps.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `AscpComponentCreate` |
+| Create | Project | Mutation | `AscpScanCreate` |
+| Create | Project | Mutation | `AscpSecurityContextCreate` |
+
+#### Coverage Fuzzing Corpus
+
+Grants the ability to create coverage fuzzing corpus.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `CorpusCreate` |
+
 #### Dependency
 
 Grants the ability to read dependencies.
@@ -55,6 +73,27 @@ Grants the ability to update finding token statuses.
 | ------ | ------ | ---- | ---- |
 | Update | Project | Mutation | `RefreshFindingTokenStatus` |
 | Update | Project | Mutation | `RefreshVulnerabilityFindingTokenStatus` |
+
+#### On-Demand DAST Scan
+
+Grants the ability to create, delete, and update on-demand DAST scans, including their site profiles, scanner profiles, site tokens, and site validations.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `DastOnDemandScanCreate` |
+| Create | Project | Mutation | `DastProfileCreate` |
+| Create | Project | Mutation | `DastProfileRun` |
+| Create | Project | Mutation | `DastScannerProfileCreate` |
+| Create | Project | Mutation | `DastSiteProfileCreate` |
+| Create | Project | Mutation | `DastSiteTokenCreate` |
+| Create | Project | Mutation | `DastSiteValidationCreate` |
+| Delete | Project | Mutation | `DastProfileDelete` |
+| Delete | Project | Mutation | `DastScannerProfileDelete` |
+| Delete | Project | Mutation | `DastSiteProfileDelete` |
+| Delete | Project | Mutation | `DastSiteValidationRevoke` |
+| Update | Project | Mutation | `DastProfileUpdate` |
+| Update | Project | Mutation | `DastScannerProfileUpdate` |
+| Update | Project | Mutation | `DastSiteProfileUpdate` |
 
 #### Pipeline Execution Project Schedule
 
@@ -109,6 +148,34 @@ Grants the ability to update security dashboards.
 | Update | Project | Mutation | `AddProjectToSecurityDashboard` |
 | Update | Project | Mutation | `RemoveProjectFromSecurityDashboard` |
 
+#### Security Policy
+
+Grants the ability to update security policies.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `PipelineExecutionSchedulePolicyTestRun` |
+| Update | Project | Mutation | `ResyncSecurityPolicies` |
+| Update | Project | Mutation | `ScanExecutionPolicyCommit` |
+| Update | Project | Mutation | `SecurityPolicyProjectAssign` |
+| Update | Project | Mutation | `SecurityPolicyProjectCreate` |
+| Update | Project | Mutation | `SecurityPolicyProjectCreateAsync` |
+| Update | Project | Mutation | `SecurityPolicyProjectUnassign` |
+| Update | Group | Mutation | `ResyncSecurityPolicies` |
+| Update | Group | Mutation | `ScanExecutionPolicyCommit` |
+| Update | Group | Mutation | `SecurityPolicyProjectAssign` |
+| Update | Group | Mutation | `SecurityPolicyProjectCreate` |
+| Update | Group | Mutation | `SecurityPolicyProjectCreateAsync` |
+| Update | Group | Mutation | `SecurityPolicyProjectUnassign` |
+
+#### Security Project Tracked Ref
+
+Grants the ability to create security project tracked refs.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `SecurityRefsTrack` |
+
 #### Security Scan Profiles
 
 Grants the ability to create, delete, and update security scan profiles.
@@ -118,6 +185,28 @@ Grants the ability to create, delete, and update security scan profiles.
 | Create | Group | Mutation | `SecurityScanProfileCreate` |
 | Delete | Group | Mutation | `SecurityScanProfileDelete` |
 | Update | Group | Mutation | `SecurityScanProfileUpdate` |
+
+#### Security Setting
+
+Grants the ability to read and update security settings.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `ProjectSecurityExclusionCreate` |
+| Update | Project | Mutation | `ProjectSecurityExclusionDelete` |
+| Update | Project | Mutation | `ProjectSecurityExclusionUpdate` |
+| Update | Project | Mutation | `ProjectSetContinuousVulnerabilityScanning` |
+| Update | Project | Mutation | `SecurityTrainingUpdate` |
+| Update | Project | Mutation | `SetContainerScanningForRegistry` |
+| Update | Project | Mutation | `SetCvsForContainerScanning` |
+| Update | Project | Mutation | `SetCvsForDependencyScanning` |
+| Update | Project | Mutation | `SetLicenseConfigurationSource` |
+| Update | Project | Mutation | `SetLicenseScanningForCyclonedx` |
+| Update | Project | Mutation | `SetPreReceiveSecretDetection` |
+| Update | Project | Mutation | `SetSecretPushProtection` |
+| Update | Project | Mutation | `SetValidityChecks` |
+| Update | Group | Mutation | `SetGroupSecretPushProtection` |
+| Update | Group | Mutation | `SetGroupValidityChecks` |
 
 #### Vulnerability
 
@@ -1476,9 +1565,16 @@ Grants the ability to download, push, and read code via Git.
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Push | Project | Mutation | `CommitCreate` |
+| Push <sup>1</sup> | Project | Mutation | `ConfigureContainerScanning` |
+| Push <sup>1</sup> | Project | Mutation | `ConfigureDependencyScanning` |
+| Push <sup>1</sup> | Project | Mutation | `ConfigureSast` |
+| Push <sup>1</sup> | Project | Mutation | `ConfigureSastIac` |
+| Push <sup>1</sup> | Project | Mutation | `ConfigureSecretDetection` |
 | Push | Project | Mutation | `ProjectSyncFork` |
 | Read | Project | Type | `Commit` |
 | Read | Project | Type | `Repository` |
+
+<sup>1</sup> Also requires the `Create Branch` permission.
 
 #### Merge Request
 

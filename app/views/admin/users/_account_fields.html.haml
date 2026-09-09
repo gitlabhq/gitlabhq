@@ -1,0 +1,17 @@
+.settings-section
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0
+        = _('Account')
+
+  .form-group.gl-form-group{ role: 'group' }
+    = f.label :name, _('Name'), class: 'gl-block col-form-label'
+    = f.text_field :name, required: true, autocomplete: 'off', class: 'form-control gl-form-input gl-form-input-lg'
+
+  .form-group.gl-form-group{ role: 'group' }
+    = f.label :username, _('Username'), class: 'gl-block col-form-label'
+    = f.text_field :username, required: true, autocomplete: 'off', autocorrect: 'off', autocapitalize: 'off', spellcheck: false, class: 'form-control gl-form-input gl-form-input-lg'
+
+  .form-group.gl-form-group{ role: 'group' }
+    = f.label :email, _('Email'), class: 'gl-block col-form-label'
+    = f.text_field :email, required: true, autocomplete: 'off', class: 'form-control gl-form-input gl-form-input-lg'

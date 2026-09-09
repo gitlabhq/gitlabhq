@@ -1,0 +1,3 @@
+---
+name: create_coverage_fuzzing_corpus
+description: Grants the ability to create coverage fuzzing corpuses

@@ -125,8 +125,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
 
       allow(lb).to receive(:host).and_return(host)
       allow(Rails.application.executor).to receive(:active?).and_return(true)
-      allow(host).to receive(:query_cache_enabled).and_return(false)
-      allow(host).to receive(:connection).and_return(connection)
+      allow(host).to receive_messages(query_cache_enabled: false, connection: connection)
 
       expect(host).to receive(:enable_query_cache!).once
 
@@ -139,8 +138,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
 
       allow(lb).to receive(:host).and_return(host)
       allow(Rails.application.executor).to receive(:active?).and_return(false)
-      allow(host).to receive(:query_cache_enabled).and_return(false)
-      allow(host).to receive(:connection).and_return(connection)
+      allow(host).to receive_messages(query_cache_enabled: false, connection: connection)
 
       expect(host).not_to receive(:enable_query_cache!)
 

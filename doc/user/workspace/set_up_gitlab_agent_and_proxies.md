@@ -87,7 +87,7 @@ Kubernetes cluster to connect your cluster to GitLab:
 
 GitLab Relay (KAS) is the component that communicates with the agent in your cluster.
 
-- On GitLab.com, GitLab Relay (KAS) is available at `wss://kas.gitlab.com` by default.
+- On GitLab.com, GitLab Relay (KAS) is available at `grpcs://kas.gitlab.com` by default.
 - On GitLab Self-Managed, an administrator must
   [set up GitLab Relay (KAS)](../../administration/clusters/kas.md).
   It's then available at `wss://gitlab.example.com/-/kubernetes-agent/`.

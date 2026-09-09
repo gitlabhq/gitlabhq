@@ -10,8 +10,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
   let(:disabled_analyzer) { double(:disabled_query_analyzer) }
 
   before do
-    allow(analyzer).to receive(:enabled?).and_return(true)
-    allow(analyzer).to receive(:suppressed?).and_return(false)
+    allow(analyzer).to receive_messages(enabled?: true, suppressed?: false)
     allow(analyzer).to receive(:begin!)
     allow(analyzer).to receive(:end!)
     allow(analyzer).to receive(:skip_cached?, &:cached?)
@@ -156,8 +155,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
     context 'when user analyzers are used' do
       it 'calls begin! and end!' do
         expect(analyzer).not_to receive(:begin!)
-        allow(user_analyzer).to receive(:enabled?).and_return(true)
-        allow(user_analyzer).to receive(:suppressed?).and_return(false)
+        allow(user_analyzer).to receive_messages(enabled?: true, suppressed?: false)
         expect(user_analyzer).to receive(:begin!)
         expect(user_analyzer).to receive(:end!)
 

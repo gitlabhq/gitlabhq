@@ -8782,11 +8782,31 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
             'pipeline_id' => pipeline.id,
             'status' => pipeline.status,
             'source' => pipeline.source,
-            'partition_id' => pipeline.partition_id
+            'partition_id' => pipeline.partition_id,
+            'source_ref' => pipeline.ref
           })
         end
 
         pipeline.public_send(transition)
+      end
+    end
+
+    context 'with a merge request pipeline' do
+      let_it_be(:merge_request) do
+        create(:merge_request, source_project: project, target_project: project, source_branch: 'feature-branch')
+      end
+
+      let_it_be_with_reload(:pipeline) do
+        create(:ci_pipeline, project: project, merge_request: merge_request,
+          source: :merge_request_event, ref: merge_request.ref_path)
+      end
+
+      it 'publishes the merge request source branch as source_ref' do
+        expect(::Gitlab::EventStore).to receive(:publish) do |event|
+          expect(event.data).to include('source_ref' => 'feature-branch')
+        end
+
+        pipeline.succeed!
       end
     end
   end

@@ -51043,7 +51043,7 @@ definitions:
             description: Enable AI usage data collection for this namespace
           ai_catalog_restricted_to_group_hierarchy:
             type: boolean
-            description: Restrict the AI Catalog to items within this top-level group
+            description: Confine the AI Catalog to items within this top-level group
               hierarchy
           foundational_agents_default_enabled:
             type: boolean
@@ -51362,7 +51362,7 @@ definitions:
             description: Enable AI usage data collection for this namespace
           ai_catalog_restricted_to_group_hierarchy:
             type: boolean
-            description: Restrict the AI Catalog to items within this top-level group
+            description: Confine the AI Catalog to items within this top-level group
               hierarchy
           foundational_agents_default_enabled:
             type: boolean
