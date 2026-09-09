@@ -1487,6 +1487,29 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       end
     end
 
+    context 'when Workhorse did not rewrite the file param (route-matching bypass)' do
+      let(:leaked_file) { Tempfile.new('leaked-file-payload') }
+
+      subject(:request) do
+        post url, params: { file: '', 'file.path' => leaked_file.path }, headers: workhorse_headers
+      end
+
+      before do
+        leaked_file.write({ branch: 'master', commit_message: 'leaked', content: 'leaked' }.to_json)
+        leaked_file.close
+      end
+
+      after do
+        leaked_file.unlink
+      end
+
+      it 'does not read the attacker-supplied file.path param', :aggregate_failures do
+        expect { request }.not_to change { project.repository.commit_count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
     context 'for arbitrary local file read (security issue #627748)' do
       let(:unsigned_upload_url) do
         api("/projects/#{public_project.id}/repository/files/new-file.rb", nil)

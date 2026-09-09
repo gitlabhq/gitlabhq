@@ -2571,6 +2571,35 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       end
     end
 
+    context 'when Workhorse did not rewrite the file param (route-matching bypass)' do
+      let(:leaked_file) { Tempfile.new('leaked-commit-payload') }
+
+      subject(:request) do
+        post url, params: { file: '', 'file.path' => leaked_file.path }, headers: workhorse_headers
+      end
+
+      before do
+        leaked_file.write(
+          {
+            branch: 'master', commit_message: 'leaked',
+            actions: [{ action: 'create', file_path: "leaked-#{SecureRandom.hex}.rb", content: 'x' }]
+          }.to_json
+        )
+        leaked_file.close
+      end
+
+      after do
+        leaked_file.unlink
+      end
+
+      it 'does not read the attacker-supplied file.path param', :aggregate_failures do
+        expect { request }.not_to change { project.repository.commit_count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.body).not_to include('leaked')
+      end
+    end
+
     it_behaves_like 'authorizing granular token permissions', :create_commit do
       let(:url) { "/projects/#{project_id}/repository/commits" }
       let(:boundary_object) { project }
