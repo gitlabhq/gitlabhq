@@ -1,0 +1,9 @@
+---
+name: report_ai_catalog_item
+description: Grants the ability to report AI catalog items
+available_for:
+  - granular_access_token
+permissions:
+  - report_ai_catalog_item
+boundaries:
+  - project

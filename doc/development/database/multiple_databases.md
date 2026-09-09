@@ -70,7 +70,7 @@ This is used as a primary source of classification for:
 `gitlab_shared` is a special case that describes tables or views that, by design, contain data across
 all decomposed databases. This classification describes application-defined tables (like `loose_foreign_keys_deleted_records`).
 
-**Be careful** to use `gitlab_shared` as it requires special handling while accessing data.
+Be careful to use `gitlab_shared` as it requires special handling while accessing data.
 Since `gitlab_shared` shares not only structure but also data, the application needs to be written in a way
 that traverses all data from all databases in sequential manner.
 

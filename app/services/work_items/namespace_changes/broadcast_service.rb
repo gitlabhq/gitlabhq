@@ -18,6 +18,7 @@ module WorkItems
         iteration_widget
         labels
         milestone_id
+        relative_position
         sprint_id
         start_and_due_date_widget
         start_date

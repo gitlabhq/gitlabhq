@@ -691,22 +691,64 @@ Grants the ability to create, delete, read, retry, and update external status ch
 
 ### Duo resources
 
-#### AI catalog item
+#### AI Catalog External Agent
 
-Grants the ability to restore AI catalog items.
+Grants the ability to create, delete, and update AI catalog external agents.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `AiCatalogThirdPartyFlowCreate` |
+| Delete | Project | Mutation | `AiCatalogThirdPartyFlowDelete` |
+| Update | Project | Mutation | `AiCatalogThirdPartyFlowUpdate` |
+
+#### AI catalog item
+
+Grants the ability to create, delete, read, report, restore, and update AI catalog items.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `AiCatalogAgentCreate` |
+| Create | Project | Mutation | `AiCatalogFlowCreate` |
+| Delete | Project | Mutation | `AiCatalogAgentDelete` |
+| Delete | Project | Mutation | `AiCatalogFlowDelete` |
+| Read | Project | Mutation | `AiCatalogItemStar` |
+| Read | User | Mutation | `AiCatalogItemStar` |
+| Read | User | Field | `Query.aiCatalogBuiltInTools` |
+| Report | Project | Mutation | `AiCatalogItemReport` |
 | Restore | Project | Mutation | `AiCatalogItemVersionRestore` |
+| Update | Project | Mutation | `AiCatalogAgentUpdate` |
+| Update | Project | Mutation | `AiCatalogFlowUpdate` |
+
+#### AI catalog item consumer
+
+Grants the ability to delete and update AI catalog item consumers.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Delete | Project | Mutation | `AiCatalogItemConsumerDelete` |
+| Delete | Group | Mutation | `AiCatalogItemConsumerDelete` |
+| Update | Project | Mutation | `AiCatalogItemConsumerUpdate` |
+| Update | Group | Mutation | `AiCatalogItemConsumerUpdate` |
 
 #### AI catalog MCP server
 
-Grants the ability to block AI catalog MCP servers.
+Grants the ability to block, create, and update AI catalog MCP servers.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Block | Project | Mutation | `AiCatalogMcpServerSetBlock` |
 | Block | Group | Mutation | `AiCatalogMcpServerSetBlock` |
+| Create | Instance | Mutation | `AiCatalogMcpServerCreate` |
+| Update | Instance | Mutation | `AiCatalogMcpServerUpdate` |
+
+#### AI Domain Settings
+
+Grants the ability to update AI domain settings.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Group | Mutation | `AiDomainSettingsNamespaceUpdate` |
+| Update | Instance | Mutation | `AiDomainSettingsInstanceUpdate` |
 
 #### Ai Flow Schedule
 
@@ -718,6 +760,27 @@ Grants the ability to create, delete, and update ai flow schedules.
 | Delete | Project | Mutation | `AiFlowScheduleDelete` |
 | Update | Project | Mutation | `AiFlowScheduleUpdate` |
 
+#### AI Flow Trigger
+
+Grants the ability to create, delete, and update AI flow triggers.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `AiFlowTriggerCreate` |
+| Delete | Project | Mutation | `AiFlowTriggerDelete` |
+| Update | Project | Mutation | `AiFlowTriggerUpdate` |
+
+#### AI Self-Hosted Model
+
+Grants the ability to create, delete, and update AI self-hosted models.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `AiSelfHostedModelCreate` |
+| Delete | Instance | Mutation | `AiSelfHostedModelDelete` |
+| Update | Instance | Mutation | `AiSelfHostedModelConnectionCheck` |
+| Update | Instance | Mutation | `AiSelfHostedModelUpdate` |
+
 #### AI tool rule
 
 Grants the ability to read and update AI tool rules, which control per-tool approval (Allow, Ask, Deny) for the Duo Agent Platform.
@@ -725,6 +788,8 @@ Grants the ability to read and update AI tool rules, which control per-tool appr
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Read | Group | Field | `Query.aiToolRules` |
+| Update | Project | Mutation | `BulkUpdateAiToolRules` |
+| Update | Project | Mutation | `UpdateAiToolRule` |
 | Update | Group | Mutation | `BulkUpdateAiToolRules` |
 | Update | Group | Mutation | `UpdateAiToolRule` |
 
@@ -737,12 +802,42 @@ Grants the ability to read per-user GitLab Duo usage metrics.
 | Read | Project | Field | `Project.aiUserMetrics` |
 | Read | Group | Field | `Group.aiUserMetrics` |
 
-#### Duo Workflow
+#### Conversation Thread
 
-Grants the ability to create, read, resume, and update duo workflows.
+Grants the ability to delete conversation threads.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Delete | User | Mutation | `DeleteConversationThread` |
+
+#### Duo Setting
+
+Grants the ability to update duo settings.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Group | Mutation | `AiModelSelectionNamespaceUpdate` |
+| Update | Instance | Mutation | `AiFeatureSettingUpdate` |
+| Update | Instance | Mutation | `DuoSettingsUpdate` |
+
+#### Duo user feedback
+
+Grants the ability to create user feedback on Duo AI messages.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | User | Mutation | `DuoUserFeedback` |
+
+#### Duo Workflow
+
+Grants the ability to create, delete, read, resume, and update duo workflows.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `AiDuoWorkflowCreate` |
+| Create | Group | Mutation | `AiDuoWorkflowCreate` |
+| Create | User | Mutation | `AiDuoWorkflowCreate` |
+| Delete | User | Mutation | `DeleteDuoWorkflowsWorkflow` |
 | Read | User | Type | `DuoWorkflowMergeRequestLink` |
 | Read | User | Type | `DuoWorkflowNoteLink` |
 | Read | User | Type | `DuoWorkflowPipelineLink` |
@@ -751,6 +846,7 @@ Grants the ability to create, read, resume, and update duo workflows.
 | Read | User | Field | `Note.duoTriggeredSession` |
 | Read | User | Field | `Query.duoWorkflowBranches` |
 | Update | User | Mutation | `UpdateDuoWorkflowAgentPrivileges` |
+| Update | User | Mutation | `UpdateDuoWorkflowToolCallApprovals` |
 | Update | User | Mutation | `UpdateDuoWorkflowWebSearch` |
 
 #### Flows Metadata
@@ -775,6 +871,15 @@ Grants the ability to read and update model selection allowlists.
 | Read | Instance | Type | `AiModelSelectionAllowListModel` |
 | Update | Group | Mutation | `AiModelSelectionNamespaceModelAllowlistUpdate` |
 | Update | Instance | Mutation | `AiFeatureSettingModelAllowlistUpdate` |
+
+#### Namespace Duo Feature
+
+Grants the ability to lock namespace duo features.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Lock | Group | Mutation | `AdminClearDuoAvailability` |
+| Lock | Group | Mutation | `AdminSetDuoAvailability` |
 
 ### Geo resources
 

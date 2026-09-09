@@ -3855,6 +3855,9 @@ msgstr ""
 msgid "AI|Explain with AI"
 msgstr ""
 
+msgid "AI|Flow"
+msgstr ""
+
 msgid "AI|For example: Organizations should be able to forecast into the future by using value stream analytics charts. This feature would help them understand how their metrics are trending."
 msgstr ""
 
@@ -30307,6 +30310,16 @@ msgid_plural "DuoAgentPlatform|%d MCP servers are connected. Agents can use them
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DuoAgentPlatform|%d step left"
+msgid_plural "DuoAgentPlatform|%d steps left"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "DuoAgentPlatform|%d step left to set up flows."
+msgid_plural "DuoAgentPlatform|%d steps left to set up flows."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "DuoAgentPlatform|%{base} Attention required."
 msgstr ""
 
@@ -30379,13 +30392,13 @@ msgstr ""
 msgid "DuoAgentPlatform|Agent todos"
 msgstr ""
 
-msgid "DuoAgentPlatform|Agents cannot run here until everything below is in place."
-msgstr ""
-
 msgid "DuoAgentPlatform|Agents get repo-wide context."
 msgstr ""
 
 msgid "DuoAgentPlatform|Agents run without it, but in a generic container that may not have your project tooling."
+msgstr ""
+
+msgid "DuoAgentPlatform|All steps complete"
 msgstr ""
 
 msgid "DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project."
@@ -30411,6 +30424,11 @@ msgstr ""
 
 msgid "DuoAgentPlatform|Cancelled"
 msgstr ""
+
+msgid "DuoAgentPlatform|Chat and Code Suggestions work today. %d more step to set up flows."
+msgid_plural "DuoAgentPlatform|Chat and Code Suggestions work today. %d more steps to set up flows."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "DuoAgentPlatform|Check again"
 msgstr ""
@@ -30479,6 +30497,9 @@ msgid "DuoAgentPlatform|Features that give your agent more context to work with.
 msgstr ""
 
 msgid "DuoAgentPlatform|Flow"
+msgstr ""
+
+msgid "DuoAgentPlatform|Flow execution"
 msgstr ""
 
 msgid "DuoAgentPlatform|Foundational GitLab Duo Flows"
@@ -30562,6 +30583,9 @@ msgstr ""
 msgid "DuoAgentPlatform|No runner this project can use, so flows would never start."
 msgstr ""
 
+msgid "DuoAgentPlatform|Not set up yet. To get started, turn on GitLab Duo."
+msgstr ""
+
 msgid "DuoAgentPlatform|Off for this group. Only a Group Owner can turn it on."
 msgstr ""
 
@@ -30583,16 +30607,25 @@ msgstr ""
 msgid "DuoAgentPlatform|Paused"
 msgstr ""
 
+msgid "DuoAgentPlatform|Production-ready flows built and maintained by GitLab."
+msgstr ""
+
 msgid "DuoAgentPlatform|Project-wide behavior, unrelated to readiness."
 msgstr ""
 
 msgid "DuoAgentPlatform|Query graph"
 msgstr ""
 
+msgid "DuoAgentPlatform|Ready. Flows can run in this project."
+msgstr ""
+
 msgid "DuoAgentPlatform|Remote GitLab Duo Flows"
 msgstr ""
 
 msgid "DuoAgentPlatform|Required"
+msgstr ""
+
+msgid "DuoAgentPlatform|Required for full agent and flow support."
 msgstr ""
 
 msgid "DuoAgentPlatform|Resolve with GitLab Duo"
@@ -30607,7 +30640,7 @@ msgstr ""
 msgid "DuoAgentPlatform|Review the %{linkStart}most recent job%{linkEnd} for details on what went wrong."
 msgstr ""
 
-msgid "DuoAgentPlatform|Run GitLab Duo agents on this project"
+msgid "DuoAgentPlatform|Run GitLab Duo agents and flows in this project"
 msgstr ""
 
 msgid "DuoAgentPlatform|Run flows and agentic chat from the terminal."
@@ -30635,6 +30668,9 @@ msgid "DuoAgentPlatform|Sessions"
 msgstr ""
 
 msgid "DuoAgentPlatform|Showing most recent %{count}"
+msgstr ""
+
+msgid "DuoAgentPlatform|Something blocks agent execution. Check the rows below."
 msgstr ""
 
 msgid "DuoAgentPlatform|Something went wrong saving Duo Agent Platform settings"
@@ -30671,6 +30707,12 @@ msgid "DuoAgentPlatform|Tools you can install to use GitLab Duo."
 msgstr ""
 
 msgid "DuoAgentPlatform|Track GitLab Duo Agent Platform sessions in commits"
+msgstr ""
+
+msgid "DuoAgentPlatform|Turn on AI-native features for this project."
+msgstr ""
+
+msgid "DuoAgentPlatform|Turn on flows so agents can review merge requests, fix pipelines, and more."
 msgstr ""
 
 msgid "DuoAgentPlatform|Usage billing is not available for this account. To continue using GitLab Duo Agent Platform, contact your administrator."
@@ -31198,6 +31240,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Before you can use GitLab Duo Agent Platform, we need to verify your account."
 msgstr ""
 
+msgid "DuoAgentsPlatform|CI jobs"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Cancel session"
 msgstr ""
 
@@ -31270,6 +31315,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Data Analyst"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Default model"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Delegated to subagent"
 msgstr ""
 
@@ -31310,6 +31358,9 @@ msgid "DuoAgentsPlatform|Every 15 minutes"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Every 30 minutes"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Execution"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Failed to cancel session. Please try again."
@@ -31391,6 +31442,9 @@ msgid "DuoAgentsPlatform|Hourly"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Identify code improvements"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Identity"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Identity Verification required"
@@ -31478,6 +31532,9 @@ msgid "DuoAgentsPlatform|Planning Agent"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Prerequisite missing"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Raw runner output"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Read file"
@@ -31588,6 +31645,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Service account is required."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Session"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Session has been cancelled successfully."
 msgstr ""
 
@@ -31619,6 +31679,9 @@ msgid "DuoAgentsPlatform|Started %{timeago} by %{user}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Status"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Supplemental"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Target"
@@ -53723,9 +53786,6 @@ msgstr ""
 msgid "Notify|%{mr_highlight}Merge request%{highlight_end} %{mr_link} %{reviewer_highlight}was unapproved by%{highlight_end} %{reviewer_avatar} %{reviewer_link}"
 msgstr ""
 
-msgid "Notify|%{p_start}Hi %{name}!%{p_end}%{p_start}The SAML authentication identifier (extern_uid) linked to your account was changed by an owner of the %{group_name} group.%{p_end}%{p_start}As a security measure, you must sign in with your GitLab credentials and re-link your SAML identity before you can use SAML single sign-on again.%{p_end}%{p_start}If you did not expect this change, contact your group owner or a GitLab administrator immediately.%{p_end}"
-msgstr ""
-
 msgid "Notify|%{p_start}To update the remote url in your local repository run (for ssh):%{p_end} %{ssh_url_to_repo} %{p_start}or for http(s):%{p_end} %{http_url_to_repo}"
 msgstr ""
 
@@ -69224,9 +69284,6 @@ msgid "SAML"
 msgstr ""
 
 msgid "SAML SSO"
-msgstr ""
-
-msgid "SAML authentication identifier changed"
 msgstr ""
 
 msgid "SAML discovery tokens"
@@ -85858,6 +85915,9 @@ msgid "Trigger token:"
 msgstr ""
 
 msgid "Trigger variables"
+msgstr ""
+
+msgid "Triggered by"
 msgstr ""
 
 msgid "Triggerer"

@@ -17,16 +17,12 @@ module MergeRequests
     # #publish_deferred within a few hundred milliseconds, well before the rest of the
     # after-create work finishes, and would otherwise find nothing to publish.
     def defer_to_mergeability_check
-      return unless enabled?
-
       Gitlab::Redis::SharedState.with do |redis|
         redis.set(redis_key, 1, ex: TTL.to_i, nx: true)
       end
     end
 
     def publish_deferred
-      return unless enabled?
-
       # The flag is set moments before `prepared_at`, so anything older than the TTL
       # cannot hold one. Nil means the check beat the rest of the create.
       return if merge_request.prepared_at&.before?(TTL.ago)
@@ -40,10 +36,6 @@ module MergeRequests
     private
 
     attr_reader :merge_request
-
-    def enabled?
-      Feature.enabled?(:merge_request_create_flow_trigger, merge_request.project)
-    end
 
     def consume
       Gitlab::Redis::SharedState.with do |redis|

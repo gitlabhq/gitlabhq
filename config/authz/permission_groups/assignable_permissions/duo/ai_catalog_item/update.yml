@@ -1,0 +1,10 @@
+---
+name: update_ai_catalog_item
+description: Grants the ability to update AI catalog items
+available_for:
+  - granular_access_token
+permissions:
+  - update_ai_catalog_agent
+  - update_ai_catalog_flow
+boundaries:
+  - project

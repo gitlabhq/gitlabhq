@@ -150,8 +150,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "alert_management_alert_metric_image_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "appearance_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "bulk_import_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      # organization_id backfill in progress; NOT NULL + validated FK land after the BBM completes on prod.
-      "bulk_import_exports" => "https://gitlab.com/gitlab-org/gitlab/-/issues/600457",
       "ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "ci_runner_taggings" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "ci_runner_taggings_instance_type" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",

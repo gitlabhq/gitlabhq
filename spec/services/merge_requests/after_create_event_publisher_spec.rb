@@ -11,19 +11,6 @@ RSpec.describe MergeRequests::AfterCreateEventPublisher,
 
   subject(:publisher) { described_class.new(merge_request) }
 
-  context 'when the merge_request_create_flow_trigger flag is disabled' do
-    before do
-      stub_feature_flags(merge_request_create_flow_trigger: false)
-    end
-
-    it 'does not defer, publish, or touch Redis' do
-      publisher.defer_to_mergeability_check
-
-      expect(Gitlab::Redis::SharedState.with { |redis| redis.get(redis_key) }).to be_nil
-      expect { publisher.publish_deferred }.not_to publish_event(::MergeRequests::AfterCreateCloudEvent)
-    end
-  end
-
   describe '#publish_deferred' do
     context 'when the event was deferred' do
       before do

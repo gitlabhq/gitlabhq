@@ -52,7 +52,7 @@ We are interested in datasets that show the following characteristics:
 ### Size of the dataset
 
 There can be datasets of variable sizes that show strong time-decay effects, but in the context of
-this blueprint, we intend to focus on entities with a **considerably large dataset**.
+this blueprint, we intend to focus on entities with a considerably large dataset.
 
 Smaller datasets do not contribute significantly to the database related resource usage, nor do they
 inflict a considerable performance penalty to queries.
@@ -65,7 +65,7 @@ use the time-decay effect to our advantage and reduce the actively accessed data
 
 The second and most important characteristic of time-decay data is that most of the time, we are
 able to implicitly or explicitly access the data using a date filter,
-**restricting our results based on a time-related dimension**.
+restricting our results based on a time-related dimension.
 
 There can be many such dimensions, but we focus only on the creation date as it is both
 the most commonly used, and the one that we can control and optimize against. It:
@@ -76,7 +76,7 @@ the most commonly used, and the one that we can control and optimize against. It
 
 It's important to add that even if time-decay data are not accessed that way by the application by
 default, you can make the vast majority of the queries explicitly filter the data in such
-a way. **Time decay data without such a time-decay related access method are of no use from an optimization perspective, as there is no way to set and follow a scaling pattern.**
+a way. Time decay data without such a time-decay related access method are of no use from an optimization perspective, as there is no way to set and follow a scaling pattern.
 
 We are not restricting the definition to data that are always accessed using a time-decay related
 access method, as there might be some outlier operations. These might be necessary and we can accept
@@ -86,10 +86,10 @@ a maximum of a month of events, restricted to 6 months in the past.
 
 ### Immutability
 
-The third characteristic of time-decay data is that their **time-decay status does not change**.
+The third characteristic of time-decay data is that their time-decay status does not change.
 Once they are considered "old", they cannot switch back to "new" or relevant again.
 
-This definition might sound trivial, but we have to be able to make operations over "old" data **more**
+This definition might sound trivial, but we have to be able to make operations over "old" data more
 expensive (for example, by archiving or moving them to less expensive storage) without having to worry about
 the repercussions of switching back to being relevant and having important application operations
 underperforming.
@@ -101,9 +101,9 @@ perspective, but that definition is volatile and not actionable.
 ### Retention
 
 Finally, a characteristic that further differentiates time-decay data in sub-categories with
-slightly different approaches available is **whether we want to keep the old data or not**
+slightly different approaches available is whether we want to keep the old data or not
 (for example, retention policy) and/or
-**whether old data is accessible by users through the application**.
+whether old data is accessible by users through the application.
 
 #### (optional) Extended definition of time-decay data
 
@@ -135,21 +135,21 @@ application-related operation.
 We have to set the partitioning key based on the date interval of interest, which might depend on two
 factors:
 
-1. **How far back in time do we need to access data for**?
+1. How far back in time do we need to access data for?
    Partitioning by week is of no use if we always access data for a year back, as we would have to
    execute queries over 52 different partitions (tables) each time. As an example for that consider the
    activity feed on the profile of any GitLab user.
 
    In contrast, if we want to just access the last 7 days of created records, partitioning by year
    would include too many unnecessary records in each partition, as is the case for `web_hook_logs`.
-1. **How large are the partitions created**?
+1. How large are the partitions created?
    The major purpose of partitioning is accessing tables that are as small as possible. If they get too
    large by themselves, queries start underperforming. We might have to re-partition (split) them
    in even smaller partitions.
 
-The perfect partitioning scheme keeps **all queries over a dataset almost always over a single partition**,
+The perfect partitioning scheme keeps all queries over a dataset almost always over a single partition,
 with some cases going over two partitions and seldom over multiple partitions being
-an acceptable balance. We should also target for **partitions that are as small as possible**, below
+an acceptable balance. We should also target for partitions that are as small as possible, below
 5-10M records and/or 10 GB each maximum.
 
 Partitioning can be combined with other strategies to either prune (drop) old partitions, move them
@@ -194,7 +194,7 @@ threshold, as is the case of [`web_hook_logs`](https://gitlab.com/gitlab-org/git
 at the time of writing this document.
 
 For the aforementioned reasons, our proposal is that
-**we should base any implementation of a data retention strategy on partitioning**,
+we should base any implementation of a data retention strategy on partitioning,
 unless there are strong reasons not to.
 
 ### Move old data outside of the database

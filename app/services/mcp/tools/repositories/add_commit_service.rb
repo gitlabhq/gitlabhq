@@ -40,6 +40,16 @@ module Mcp
                 description: 'Name of the branch from which to create a new branch. ' \
                   'Required when branch does not exist yet.'
               },
+              start_sha: {
+                type: 'string',
+                description: 'SHA of the commit to start a new branch from. ' \
+                  'Mutually exclusive with start_branch.'
+              },
+              start_project: {
+                type: 'string',
+                description: 'Full path of the project to start the commit from. Must be the ' \
+                  'project itself or a project it was forked from.'
+              },
               commit_message: {
                 type: 'string',
                 description: 'Commit message.'
@@ -139,6 +149,11 @@ module Mcp
           partial_actions = actions.select { |action| partial?(action) }
           return actions if partial_actions.empty?
 
+          if arguments[:start_project].present?
+            raise PartialEditError,
+              'Partial edits are not supported with start_project. Provide the full content instead.'
+          end
+
           validate_partial_actions!(partial_actions)
           # rubocop:disable Rails/Pluck -- partial_actions is a plain Array of Hashes, not an ActiveRecord relation
           contents = read_blob_contents(arguments, partial_actions.map { |action| action[:file_path] }.uniq)
@@ -222,10 +237,10 @@ module Mcp
         # entirely; start_branch only seeds a *new* branch. Mirror that here so old_str is
         # matched against the same content the commit will actually be based on.
         def partial_edit_ref(arguments)
-          return arguments[:branch] if arguments[:start_branch].blank?
+          return arguments[:branch] if arguments[:start_branch].blank? && arguments[:start_sha].blank?
           return arguments[:branch] if resolve_project(arguments).repository.branch_exists?(arguments[:branch])
 
-          arguments[:start_branch]
+          arguments[:start_sha].presence || arguments[:start_branch]
         end
 
         def resolve_project(arguments)

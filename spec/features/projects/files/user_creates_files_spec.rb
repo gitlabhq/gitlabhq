@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :source_code_management do
+RSpec.describe 'Projects > Files > User creates files', :js,
+  feature_category: :source_code_management,
+  quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/44401' do
   include Features::SourceEditorSpecHelpers
   include Features::BlobSpecHelpers
 

@@ -1,0 +1,10 @@
+---
+name: update_ai_domain_settings
+description: Grants the ability to update the AI domain allowlist that controls flow egress
+available_for:
+  - granular_access_token
+permissions:
+  - update_ai_domain_settings
+boundaries:
+  - instance
+  - group

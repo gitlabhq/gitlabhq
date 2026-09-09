@@ -30,7 +30,7 @@ Instead of using STI, consider the following alternatives:
   - Splitting the existent data into multiple tables.
   - Refactoring so that new types can be added as new tables while keeping existing ones (for example, move logic of the base class into a concern).
 
-If, **after considering all of the above downsides and alternatives**, STI
+If, after considering all of the above downsides and alternatives, STI
 is the only solution for the problem at hand, we can at least avoid the
 issues with saving the class name in the record by using an enum type
 instead and the `EnumInheritance` concern:

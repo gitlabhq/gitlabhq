@@ -111,6 +111,7 @@ module Organizations
           )
 
           transfer_oauth_applications(batch_ids)
+          transfer_stage_event_hashes(batch_ids)
         end
       end
 
@@ -181,6 +182,85 @@ module Organizations
         transfer_burned_project_routes
         transfer_agent_organization_authorizations
       end
+
+      # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
+      def transfer_stage_event_hashes(namespace_ids)
+        stages = stages_with_event_hashes(namespace_ids)
+        group_ids = namespace_ids
+
+        Analytics::CycleAnalytics::StageEventHash
+          .where(organization_id: old_organization.id)
+          .each_batch(of: BATCH_SIZE) do |hash_batch|
+            source_hashes = hash_batch.where_exists(matching_stages_scope(stages)).to_a
+            next if source_hashes.empty?
+
+            target_ids_by_sha256 = ensure_target_stage_event_hashes(source_hashes)
+
+            source_hashes.each do |source_hash|
+              target_hash_id = target_ids_by_sha256.fetch(source_hash.hash_sha256)
+
+              repoint_stages(stages, source_hash.id, target_hash_id)
+              repoint_stage_events(source_hash.id, target_hash_id, group_ids)
+            end
+          end
+      end
+
+      def stages_with_event_hashes(namespace_ids)
+        Analytics::CycleAnalytics::Stage
+          .where(group_id: namespace_ids)
+          .where.not(stage_event_hash_id: nil)
+      end
+
+      def matching_stages_scope(stages)
+        stages.where(
+          Analytics::CycleAnalytics::Stage.arel_table[:stage_event_hash_id]
+            .eq(Analytics::CycleAnalytics::StageEventHash.arel_table[:id])
+        )
+      end
+
+      def ensure_target_stage_event_hashes(source_hashes)
+        hash_sha256_values = source_hashes.map(&:hash_sha256)
+        attributes = hash_sha256_values.map do |hash_sha256|
+          { organization_id: new_organization.id, hash_sha256: hash_sha256 }
+        end
+
+        Analytics::CycleAnalytics::StageEventHash.insert_all(
+          attributes,
+          unique_by: 'index_cycle_analytics_stage_event_hashes_on_org_id_sha_256',
+          returning: false
+        )
+
+        Analytics::CycleAnalytics::StageEventHash
+          .where(organization_id: new_organization.id, hash_sha256: hash_sha256_values)
+          .index_by(&:hash_sha256)
+          .transform_values(&:id)
+      end
+
+      def repoint_stages(stages, source_hash_id, target_hash_id)
+        stages.where(stage_event_hash_id: source_hash_id).each_batch(of: BATCH_SIZE) do |stage_batch|
+          stage_batch.update_all(stage_event_hash_id: target_hash_id)
+        end
+      end
+
+      def repoint_stage_events(source_hash_id, target_hash_id, group_ids)
+        return if source_hash_id == target_hash_id
+
+        stage_event_models.each do |model|
+          model
+            .where(stage_event_hash_id: source_hash_id, group_id: group_ids)
+            .each_batch(column: model.issuable_id_column, of: BATCH_SIZE) do |batch|
+              batch.update_all(stage_event_hash_id: target_hash_id)
+            end
+        end
+      end
+
+      def stage_event_models
+        [
+          Analytics::CycleAnalytics::IssueStageEvent,
+          Analytics::CycleAnalytics::MergeRequestStageEvent
+        ]
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
 
       # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
       def transfer_burned_project_routes

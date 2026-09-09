@@ -354266,13 +354266,9 @@
                 }
               ],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "AiCatalogBuiltInToolConnection",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "AiCatalogBuiltInToolConnection",
+                "ofType": null
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.3."
@@ -376174,6 +376170,117 @@
         },
         {
           "kind": "OBJECT",
+          "name": "SastConfiguration",
+          "description": "Configuration for a SAST scan profile.",
+          "fields": [
+            {
+              "name": "advancedSastPartialScan",
+              "description": "Controls GitLab Advanced SAST diff-based scanning. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "SecurityScanProfileAdvancedSastPartialScan",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "analyzerImageTag",
+              "description": "Tag of the analyzer image to use. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "excludedAnalyzers",
+              "description": "Analyzers excluded from the scan. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "excludedPaths",
+              "description": "Glob paths excluded from the scan. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "gitlabAdvSastIncrScan",
+              "description": "Whether GitLab Advanced SAST incremental scanning is enabled. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "imageSuffix",
+              "description": "Suffix appended to the analyzer image name. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "SecurityScanProfileImageSuffix",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "secureAnalyzersPrefix",
+              "description": "Prefix for the container registry from which the analyzer image is pulled. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "SastFalsePositiveConfiguration",
           "description": "Configuration for the SAST false positive detection trigger of a triage and remediation scan profile.",
           "fields": [
@@ -377753,6 +377860,11 @@
             {
               "kind": "OBJECT",
               "name": "AutoRemediationConfiguration",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "SastConfiguration",
               "ofType": null
             },
             {

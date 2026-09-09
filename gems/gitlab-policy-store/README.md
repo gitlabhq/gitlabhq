@@ -256,6 +256,18 @@ absent, `null`, a number, or an object produces no violation and no error, becau
 orders across types, so the freeze window never fires at all. Neither the transpiler nor
 the emitted program can tell. Whoever calls the engine owns that contract.
 
+## Enforcement Modes
+
+Every policy has a `mode` that controls how evaluation outcomes are handled by callers.
+The Policy Store stores and returns this mode but does not interpret it — **mode routing
+is the caller's responsibility**.
+
+| Mode | Description | Caller Action on Deny |
+|------|-------------|----------------------|
+| `warn` | Surface a warning, do not block | Show warning to user, allow the action to proceed |
+| `enforce` | Apply the configured action | Block the action or require approval |
+| `audit` | Log only, no user-facing action | Record the evaluation, take no blocking action |
+
 ## Repository Contract
 
 Any storage adapter must implement the `Gitlab::PolicyStore::Ports::PolicyRepository`

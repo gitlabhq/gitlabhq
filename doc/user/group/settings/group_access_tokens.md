@@ -3,11 +3,11 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Group access tokens
+availability_details: no
 ---
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -26,7 +26,7 @@ You can use a group access token to authenticate:
 
 Prerequisites:
 
-- The Owner role for the group.
+- You must have the Owner role for the group.
 
 > [!note]
 > On GitLab.com, group access tokens require a Premium or Ultimate subscription. They are not
@@ -267,9 +267,15 @@ When the bot user is created, the following attributes are defined:
 
 ## Restrict the creation of group and project access tokens
 
-To limit potential abuse, you can restrict users from creating access tokens in a top-level group
-and any descendant subgroups or projects. Any existing tokens remain valid until they expire or
-are manually revoked.
+To limit potential abuse, you can restrict users from creating group and project access tokens.
+The restriction covers the entire group, including all subgroups and their projects. Existing
+tokens remain valid until they expire or you revoke them.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+- The group must be a top-level group.
+- On GitLab.com, the group must have a Premium or Ultimate subscription.
 
 To restrict the creation of access tokens:
 

@@ -42,7 +42,7 @@ GitLab automatically synchronizes these advisories to your GitLab instance in th
 
 These advisories serve two purposes:
 
-- Dependency scanning uses them to create a vulnerability when a pipeline detects a malicious package.
+- [Dependency scanning](../dependency_scanning/_index.md#dependency-scanning-using-sbom) uses them to create a vulnerability when a pipeline detects a malicious package.
 - [Continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md#malicious-packages)
   uses them to create a vulnerability without requiring a pipeline to run.
 

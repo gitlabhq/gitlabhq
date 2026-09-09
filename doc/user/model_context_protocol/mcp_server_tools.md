@@ -65,6 +65,7 @@ What is the default branch of gitlab-org/gitlab?
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605876) in GitLab 19.3.
+- `start_sha` and `start_project` parameters [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/621972) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -78,6 +79,8 @@ Adds a commit with one or more file actions to a branch in a single call.
 | `project_id`     | string           | No       | ID or path of the project. Required if `url` is not provided. |
 | `url`            | string           | No       | GitLab URL of the project. Required if `project_id` is not provided. |
 | `start_branch`   | string           | No       | Name of the branch to start the new branch from. Required when `branch` does not exist. |
+| `start_sha`      | string           | No       | SHA of the commit to start a new branch from. Mutually exclusive with `start_branch`. |
+| `start_project`  | string           | No       | Full path of the project to start the commit from. Must be the project itself or a project it was forked from. |
 
 Each object in `actions` accepts the following fields:
 

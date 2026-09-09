@@ -59,9 +59,6 @@ RSpec.describe 'Database schema',
         stage_event_hash_id state_id sprint_id],
       analytics_cycle_analytics_stage_aggregations: %w[last_issues_id last_merge_requests_id],
       audit_events: %w[author_id entity_id target_id],
-      # organization_id FK dropped in gitlab-org/gitlab#604997 (unnecessary sharding key).
-      # Column removal follows in https://gitlab.com/gitlab-org/gitlab/-/issues/606167
-      bulk_import_exports: %w[organization_id],
       user_audit_events: %w[author_id user_id target_id],
       group_audit_events: %w[author_id group_id target_id],
       project_audit_events: %w[author_id project_id target_id],

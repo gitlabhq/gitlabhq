@@ -363,6 +363,264 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         it_behaves_like 'generates batched transfer queries'
       end
 
+      context 'for cycle analytics stage event hashes' do
+        let_it_be_with_refind(:stage) { create(:cycle_analytics_stage, namespace: group) }
+
+        it 'duplicates the hash into the new organization and updates the stage' do
+          old_hash = Analytics::CycleAnalytics::StageEventHash.create!(
+            organization: old_organization,
+            hash_sha256: Digest::SHA256.hexdigest("organization-transfer-#{stage.id}")
+          )
+          stage.update_column(:stage_event_hash_id, old_hash.id)
+
+          service.execute
+
+          new_hash = stage.reload.stage_event_hash
+          expect(new_hash.id).not_to eq(old_hash.id)
+          expect(new_hash.organization_id).to eq(new_organization.id)
+          expect(new_hash.hash_sha256).to eq(old_hash.hash_sha256)
+          expect(old_hash.reload.organization_id).to eq(old_organization.id)
+        end
+
+        it 'updates stages in subgroups' do
+          subgroup_stage = create(:cycle_analytics_stage, namespace: subgroup)
+          old_hash = subgroup_stage.stage_event_hash
+
+          service.execute
+
+          new_hash = subgroup_stage.reload.stage_event_hash
+          expect(new_hash.id).not_to eq(old_hash.id)
+          expect(new_hash.organization_id).to eq(new_organization.id)
+          expect(new_hash.hash_sha256).to eq(old_hash.hash_sha256)
+        end
+
+        it 'reuses a matching hash in the new organization' do
+          matching_hash = Analytics::CycleAnalytics::StageEventHash.create!(
+            organization: new_organization,
+            hash_sha256: stage.stage_event_hash.hash_sha256
+          )
+
+          service.execute
+
+          expect(stage.reload.stage_event_hash_id).to eq(matching_hash.id)
+        end
+
+        it 'handles new and existing target hashes in the same batch' do
+          second_stage = create(:cycle_analytics_stage, namespace: group)
+          second_old_hash = Analytics::CycleAnalytics::StageEventHash.create!(
+            organization: old_organization,
+            hash_sha256: Digest::SHA256.hexdigest("organization-transfer-#{second_stage.id}")
+          )
+          second_stage.update_column(:stage_event_hash_id, second_old_hash.id)
+          matching_hash = Analytics::CycleAnalytics::StageEventHash.create!(
+            organization: new_organization,
+            hash_sha256: stage.stage_event_hash.hash_sha256
+          )
+
+          service.execute
+
+          expect(stage.reload.stage_event_hash_id).to eq(matching_hash.id)
+          expect(second_stage.reload.stage_event_hash.organization_id).to eq(new_organization.id)
+          expect(second_stage.stage_event_hash.hash_sha256).to eq(second_old_hash.hash_sha256)
+        end
+
+        it 'does not update stages outside the group' do
+          other_group = create(:group, organization: old_organization)
+          other_stage = create(:cycle_analytics_stage, namespace: other_group)
+          old_hash_id = other_stage.stage_event_hash_id
+
+          service.execute
+
+          expect(other_stage.reload.stage_event_hash_id).to eq(old_hash_id)
+        end
+
+        it 'does not update stages in another organization' do
+          unrelated_organization = create(:organization)
+          unrelated_group = create(:group, organization: unrelated_organization)
+          unrelated_stage = create(:cycle_analytics_stage, namespace: unrelated_group)
+          old_hash_id = unrelated_stage.stage_event_hash_id
+
+          service.execute
+
+          expect(unrelated_stage.reload.stage_event_hash_id).to eq(old_hash_id)
+        end
+
+        it 'repoints issue stage events to the new hash' do
+          old_hash = stage.stage_event_hash
+          issue = create(:issue, project: project)
+          create(:cycle_analytics_issue_stage_event,
+            stage_event_hash_id: old_hash.id,
+            issue_id: issue.id,
+            group_id: group.id,
+            project_id: project.id
+          )
+
+          service.execute
+
+          new_hash = stage.reload.stage_event_hash
+          repointed_event = Analytics::CycleAnalytics::IssueStageEvent
+            .find_by(stage_event_hash_id: new_hash.id, issue_id: issue.id)
+          expect(repointed_event).to be_present
+          expect(Analytics::CycleAnalytics::IssueStageEvent
+            .find_by(stage_event_hash_id: old_hash.id, issue_id: issue.id)).to be_nil
+        end
+
+        it 'repoints merge request stage events to the new hash' do
+          old_hash = stage.stage_event_hash
+          merge_request = create(:merge_request, source_project: project)
+          create(:cycle_analytics_merge_request_stage_event,
+            stage_event_hash_id: old_hash.id,
+            merge_request_id: merge_request.id,
+            group_id: group.id,
+            project_id: project.id
+          )
+
+          service.execute
+
+          new_hash = stage.reload.stage_event_hash
+          repointed_event = Analytics::CycleAnalytics::MergeRequestStageEvent
+            .find_by(stage_event_hash_id: new_hash.id, merge_request_id: merge_request.id)
+          expect(repointed_event).to be_present
+          expect(Analytics::CycleAnalytics::MergeRequestStageEvent
+            .find_by(stage_event_hash_id: old_hash.id, merge_request_id: merge_request.id)).to be_nil
+        end
+
+        it 'does not repoint events belonging to other groups sharing the same hash' do
+          old_hash = stage.stage_event_hash
+          other_group = create(:group, organization: old_organization)
+          other_project = create(:project, group: other_group, organization: old_organization)
+          other_stage = create(:cycle_analytics_stage, namespace: other_group)
+          other_stage.update_column(:stage_event_hash_id, old_hash.id)
+          other_issue = create(:issue, project: other_project)
+          create(:cycle_analytics_issue_stage_event,
+            stage_event_hash_id: old_hash.id,
+            issue_id: other_issue.id,
+            group_id: other_group.id,
+            project_id: other_project.id
+          )
+
+          service.execute
+
+          expect(Analytics::CycleAnalytics::IssueStageEvent
+            .find_by(stage_event_hash_id: old_hash.id, issue_id: other_issue.id)).to be_present
+        end
+
+        it 'covers all StageEventModel implementors' do
+          Rails.autoloaders.main.eager_load_namespace(Analytics::CycleAnalytics)
+
+          all_stage_event_models = ObjectSpace.each_object(Class).select do |klass|
+            klass < ApplicationRecord && klass.included_modules.include?(Analytics::CycleAnalytics::StageEventModel)
+          end
+
+          expect(described_class.new(
+            group: group, new_organization: new_organization, current_user: user
+          ).send(:stage_event_models)).to match_array(all_stage_event_models)
+        end
+
+        it 'repoints events for every StageEventModel class' do
+          old_hash = stage.stage_event_hash
+          issuable_map = {
+            Analytics::CycleAnalytics::IssueStageEvent => {
+              factory: :cycle_analytics_issue_stage_event,
+              issuable_key: :issue_id,
+              issuable: create(:issue, project: project)
+            },
+            Analytics::CycleAnalytics::MergeRequestStageEvent => {
+              factory: :cycle_analytics_merge_request_stage_event,
+              issuable_key: :merge_request_id,
+              issuable: create(:merge_request, source_project: project)
+            }
+          }
+
+          events = described_class.new(
+            group: group, new_organization: new_organization, current_user: user
+          ).send(:stage_event_models).map do |model|
+            config = issuable_map.fetch(model)
+            create(config[:factory],
+              stage_event_hash_id: old_hash.id,
+              config[:issuable_key] => config[:issuable].id,
+              group_id: group.id,
+              project_id: project.id
+            )
+            { model: model, issuable_key: config[:issuable_key], issuable_id: config[:issuable].id }
+          end
+
+          service.execute
+
+          new_hash = stage.reload.stage_event_hash
+          events.each do |event_info|
+            repointed = event_info[:model].find_by(
+              stage_event_hash_id: new_hash.id,
+              event_info[:issuable_key] => event_info[:issuable_id]
+            )
+            expect(repointed).to be_present,
+              "expected #{event_info[:model]} event to be repointed to new hash #{new_hash.id}"
+          end
+        end
+
+        context 'when batching stage event hash transfers' do
+          include_context 'with transfer batch size of 1'
+
+          let_it_be_with_refind(:batch_stages) do
+            Array.new(3) do
+              batch_group = create(:group, parent: group, organization: old_organization)
+              create(:cycle_analytics_stage, namespace: batch_group)
+            end
+          end
+
+          let(:execute_service) { service.execute }
+          let(:expected_batch_queries) do
+            { 'analytics_cycle_analytics_group_stages' => 3 }
+          end
+
+          it 'processes all records across multiple batches' do
+            service.execute
+
+            batch_stages.each do |batch_stage|
+              expect(batch_stage.reload.stage_event_hash.organization_id).to eq(new_organization.id)
+            end
+          end
+
+          it_behaves_like 'generates batched transfer queries'
+        end
+
+        context 'when batching hashes and stages' do
+          include_context 'with transfer batch size of 1'
+
+          let_it_be_with_refind(:stages_across_hash_batches) do
+            Array.new(3).flat_map do
+              batch_stages = Array.new(2) { create(:cycle_analytics_stage, namespace: group) }
+              old_hash = Analytics::CycleAnalytics::StageEventHash.create!(
+                organization: old_organization,
+                hash_sha256: Digest::SHA256.hexdigest("organization-transfer-batch-#{batch_stages.first.id}")
+              )
+
+              batch_stages.each { |batch_stage| batch_stage.update_column(:stage_event_hash_id, old_hash.id) }
+            end
+          end
+
+          let(:execute_service) { service.execute }
+          let(:expected_batch_queries) do
+            { 'analytics_cycle_analytics_group_stages' => 6 }
+          end
+
+          let(:expected_upsert_queries) do
+            { 'analytics_cycle_analytics_stage_event_hashes' => 3 }
+          end
+
+          it 'processes multiple hash and stage batches' do
+            service.execute
+
+            stages_across_hash_batches.each do |batch_stage|
+              expect(batch_stage.reload.stage_event_hash.organization_id).to eq(new_organization.id)
+            end
+          end
+
+          it_behaves_like 'generates batched transfer queries'
+          it_behaves_like 'generates batched upsert queries'
+        end
+      end
+
       context 'for burned project routes' do
         it 'updates organization_id for burned routes of transferred projects' do
           burned_route = create(:burned_project_route, :owned_by_project, project: project)

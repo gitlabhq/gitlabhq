@@ -274,10 +274,6 @@ GitLab supports two SAML modes:
 
 Guardrails:
 
-- When modifying `extern_uid` through the API, set `trusted_extern_uid` to
-  `false`. The base OAuth login class (`lib/gitlab/auth/o_auth/user.rb`)
-  checks `trusted_extern_uid?` before resolving the user. When you override
-  the user lookup in a subclass, verify the override also checks this flag.
 - Validate SAML `RelayState` parameters before using them as redirect
   targets. Past incident: open redirect via unvalidated RelayState in
   SAML Single Logout.
@@ -358,8 +354,6 @@ The `Identity` model (`app/models/identity.rb`) stores:
   `ldapmain`).
 - `extern_uid`: The user's unique identifier from the provider.
 - `saml_provider_id`: For Group SAML, links to the group's SAML configuration.
-- `trusted_extern_uid`: Boolean flag, defaults to `true`. Set to `false`
-  when `extern_uid` is modified through the API.
 
 During login, GitLab resolves the user through the identity:
 
@@ -370,13 +364,8 @@ During login, GitLab resolves the user through the identity:
 
 Guardrails:
 
-- Do not update `extern_uid` without setting `trusted_extern_uid` to
-  `false`. Unverified extern_uid changes can enable account takeover.
-- When overriding user lookup in OAuth subclasses (for example,
-  `GroupSaml::User`), verify the override checks `trusted_extern_uid?`.
-  The base class checks this but overrides can bypass it.
-- Do not resolve users solely by `extern_uid` without verifying the
-  identity is trusted (`trusted_extern_uid?`).
+- Do not resolve users solely by `extern_uid` where the provider does not
+  establish that the UID belongs to the account.
 
 ## Password management
 

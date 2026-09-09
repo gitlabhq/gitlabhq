@@ -722,7 +722,7 @@ Grants the ability to create, read, and update AI Agent Sessions.
 
 #### AI Catalog External Agent
 
-Grants the ability to create AI catalog external agents.
+Grants the ability to create, delete, and update AI catalog external agents.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -781,7 +781,7 @@ Grants the ability to create, delete, and read duo flow callback hooks.
 
 #### Duo Workflow
 
-Grants the ability to create, read, resume, and update duo workflows.
+Grants the ability to create, delete, read, resume, and update duo workflows.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |

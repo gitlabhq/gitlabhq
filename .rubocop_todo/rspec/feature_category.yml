@@ -321,7 +321,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/incident_management/escalation_rule_spec.rb'
     - 'ee/spec/models/incident_management/issuable_resource_link_spec.rb'
     - 'ee/spec/models/incident_management/oncall_participant_spec.rb'
-    - 'ee/spec/models/incident_management/oncall_rotation_spec.rb'
     - 'ee/spec/models/incident_management/oncall_schedule_spec.rb'
     - 'ee/spec/models/incident_management/oncall_shift_spec.rb'
     - 'ee/spec/models/integrations/chat_message/vulnerability_message_spec.rb'

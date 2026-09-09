@@ -169,7 +169,7 @@ When we paginate over a large dataset, we might notice that the response time ge
 
 From the user's point of view, this might not always be noticeable. As the user paginates forward, the previous rows might be still in the buffer cache of the database. If the user shares the link with someone else and it's opened after a few minutes or hours, the response time might be significantly higher or it would even time out.
 
-When requesting a large page number, the database needs to read `PAGE * PAGE_SIZE` rows. This makes offset pagination **unsuitable for large database tables**. However, with an [optimization technique](offset_pagination_optimization.md) the overall performance of the database queries can be slightly improved.
+When requesting a large page number, the database needs to read `PAGE * PAGE_SIZE` rows. This makes offset pagination unsuitable for large database tables. However, with an [optimization technique](offset_pagination_optimization.md) the overall performance of the database queries can be slightly improved.
 
 Example: listing users on the Admin area
 

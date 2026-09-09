@@ -119,6 +119,20 @@ RSpec.describe Projects::GitDeduplicationService, feature_category: :source_code
           end
         end
 
+        context 'when the pool repository has no source project' do
+          before do
+            pool.update!(source_project: nil)
+          end
+
+          it 'does not raise and does not fetch' do
+            stub_exclusive_lease(lease_key, timeout: lease_timeout)
+            allow(service).to receive(:source_project?).and_return(true)
+
+            expect(pool.object_pool).not_to receive(:fetch)
+            expect { service.execute }.not_to raise_error
+          end
+        end
+
         it 'links the repository to the object pool' do
           expect(project).to receive(:link_pool_repository)
 

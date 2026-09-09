@@ -1,0 +1,11 @@
+---
+name: read_ai_catalog_item
+description: Grants the ability to read AI catalog items and star them
+available_for:
+  - granular_access_token
+permissions:
+  - read_ai_catalog_item
+  - star_ai_catalog_item
+boundaries:
+  - project
+  - user

@@ -74,7 +74,7 @@ module Gitlab
 
         ENUMERATED_ATTRIBUTES = { mode: MODES, lifecycle_state: LIFECYCLE_STATES }.freeze
 
-        DEFAULT_MODE = 'enforce'
+        DEFAULT_MODE = 'warn'
         DEFAULT_LIFECYCLE_STATE = 'active'
 
         DEFAULT_PER_PAGE = 20
@@ -168,6 +168,7 @@ module Gitlab
           reject_unknown_attributes!(normalized, CREATABLE_ATTRIBUTES)
           reject_null_attributes!(normalized)
           reject_malformed_scope!(normalized)
+          validate_enumerated_attributes!(normalized, ENUMERATED_ATTRIBUTES)
 
           normalized.slice(*CREATABLE_ATTRIBUTES)
         end
@@ -179,6 +180,7 @@ module Gitlab
           reject_identity_changes!(normalized, stored)
           reject_null_attributes!(normalized)
           reject_malformed_scope!(normalized)
+          validate_enumerated_attributes!(normalized, ENUMERATED_ATTRIBUTES)
 
           normalized.slice(*UPDATABLE_ATTRIBUTES)
         end

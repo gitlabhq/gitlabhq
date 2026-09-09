@@ -145,7 +145,7 @@ WHERE namespace_id IN (
 
 Even though this approach would make aggregating much easier, it has some major downsides:
 
-- We'd have to migrate **all namespaces** by adding and filling a new column. Because of the size of the table, dealing with time/cost would be significant. The background migration would take approximately `153h`, see <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29772>.
+- We'd have to migrate all namespaces by adding and filling a new column. Because of the size of the table, dealing with time/cost would be significant. The background migration would take approximately `153h`, see <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29772>.
 - Background migration has to be shipped one release before, delaying the functionality by another milestone.
 
 ### Attempt E (final): Update the namespace storage statistics asynchronously

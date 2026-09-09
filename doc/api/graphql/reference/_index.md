@@ -288,7 +288,7 @@ Arguments:
 
 List of AI Catalog built-in tools.
 
-Returns [`AiCatalogBuiltInToolConnection!`](#aicatalogbuiltintoolconnection).
+Returns [`AiCatalogBuiltInToolConnection`](#aicatalogbuiltintoolconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
@@ -61340,6 +61340,22 @@ Fields:
 | <a id="sastciconfigurationoptionsentity-label"></a>`label` | [`String`](#string) | Label of option entity. |
 | <a id="sastciconfigurationoptionsentity-value"></a>`value` | [`String`](#string) | Value of option entity. |
 
+### `SastConfiguration`
+
+Configuration for a SAST scan profile.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="sastconfiguration-advancedsastpartialscan"></a>`advancedSastPartialScan` {{< icon name="warning-solid" >}} | [`SecurityScanProfileAdvancedSastPartialScan`](#securityscanprofileadvancedsastpartialscan) | Introduced in GitLab 19.4. Status: Experiment. Controls GitLab Advanced SAST diff-based scanning. |
+| <a id="sastconfiguration-analyzerimagetag"></a>`analyzerImageTag` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Tag of the analyzer image to use. |
+| <a id="sastconfiguration-excludedanalyzers"></a>`excludedAnalyzers` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.4. Status: Experiment. Analyzers excluded from the scan. |
+| <a id="sastconfiguration-excludedpaths"></a>`excludedPaths` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.4. Status: Experiment. Glob paths excluded from the scan. |
+| <a id="sastconfiguration-gitlabadvsastincrscan"></a>`gitlabAdvSastIncrScan` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Whether GitLab Advanced SAST incremental scanning is enabled. |
+| <a id="sastconfiguration-imagesuffix"></a>`imageSuffix` {{< icon name="warning-solid" >}} | [`SecurityScanProfileImageSuffix`](#securityscanprofileimagesuffix) | Introduced in GitLab 19.4. Status: Experiment. Suffix appended to the analyzer image name. |
+| <a id="sastconfiguration-secureanalyzersprefix"></a>`secureAnalyzersPrefix` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Prefix for the container registry from which the analyzer image is pulled. |
+
 ### `SastFalsePositiveConfiguration`
 
 Configuration for the SAST false positive detection trigger of a triage and remediation scan profile.
@@ -75384,6 +75400,7 @@ Effective configuration for a scan profile trigger, resolved by scan type, and b
 One of:
 
 - [`AutoRemediationConfiguration`](#autoremediationconfiguration)
+- [`SastConfiguration`](#sastconfiguration)
 - [`SastFalsePositiveConfiguration`](#sastfalsepositiveconfiguration)
 - [`SastVulnerabilityResolutionConfiguration`](#sastvulnerabilityresolutionconfiguration)
 - [`SecretDetectionConfiguration`](#secretdetectionconfiguration)

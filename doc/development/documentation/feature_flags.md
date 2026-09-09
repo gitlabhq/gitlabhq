@@ -33,7 +33,7 @@ To document feature flags:
 ## Offerings
 
 When documenting the [offerings](styleguide/availability_details.md#offering), for features
-**disabled on GitLab Self-Managed**, don't list `GitLab Dedicated` as the feature's offering.
+disabled on GitLab Self-Managed, don't list `GitLab Dedicated` as the feature's offering.
 
 ## Add history text
 

@@ -12,7 +12,7 @@ global nav to browse the content.
 Research shows that people use Google to search for GitLab product documentation. When they land on a result,
 we want them to find topics nearby that are related to the content they're reading. The global nav provides this information.
 
-At the highest level, our global nav is **workflow-based**. Navigation needs to help users build a mental model of how to use GitLab.
+At the highest level, our global nav is workflow-based. Navigation needs to help users build a mental model of how to use GitLab.
 The levels under each of the higher workflow-based topics are the names of features. For example:
 
 **Use GitLab** (_workflow_) > **Build your application** (_workflow_) > **Get started** (_feature_) > **CI/CD** (_feature_) > **Pipelines** (_feature_)
@@ -194,7 +194,7 @@ at the same time.
 
 #### Syntax
 
-For all components, **respect the indentation** and the following syntax rules.
+For all components, respect the indentation and the following syntax rules.
 
 ##### Titles
 

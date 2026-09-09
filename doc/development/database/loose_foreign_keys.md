@@ -471,7 +471,7 @@ it_behaves_like 'it has loose foreign keys' do
 end
 ```
 
-**After** [removing a foreign key](#remove-the-foreign-key),
+After [removing a foreign key](#remove-the-foreign-key),
 use the "`cleanup by a loose foreign key`" shared example to test a child record's deletion or nullification
 via the added loose foreign key:
 
@@ -890,7 +890,7 @@ immediately. After some time, the next scheduled worker continues the cleanup pr
 
 #### Performance characteristics
 
-The database trigger on the parent tables **decreases** the record deletion speed. Each
+The database trigger on the parent tables decreases the record deletion speed. Each
 statement that removes rows from the parent table invokes the trigger to insert records
 into the `loose_foreign_keys_deleted_records` table.
 

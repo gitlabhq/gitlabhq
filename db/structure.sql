@@ -16465,7 +16465,6 @@ CREATE TABLE bulk_import_exports (
     total_objects_count integer DEFAULT 0 NOT NULL,
     user_id bigint,
     offline_export_id bigint,
-    organization_id bigint,
     CONSTRAINT check_24cb010672 CHECK ((char_length(relation) <= 255)),
     CONSTRAINT check_8f0f357334 CHECK ((char_length(error) <= 255)),
     CONSTRAINT check_9ee6d14d33 CHECK ((char_length(jid) <= 255)),
@@ -21753,7 +21752,7 @@ CREATE TABLE govern_policies (
     updated_at timestamp with time zone NOT NULL,
     version integer DEFAULT 1 NOT NULL,
     trigger_type smallint NOT NULL,
-    mode smallint DEFAULT 2 NOT NULL,
+    mode smallint DEFAULT 1 NOT NULL,
     lifecycle_state smallint DEFAULT 0 NOT NULL,
     name text NOT NULL,
     description text,
@@ -48049,6 +48048,8 @@ CREATE INDEX index_customer_relations_contacts_on_group_id ON customer_relations
 CREATE INDEX index_customer_relations_contacts_on_organization_id ON customer_relations_contacts USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_customer_relations_contacts_on_unique_email_per_group ON customer_relations_contacts USING btree (group_id, lower(email), id);
+
+CREATE INDEX index_cycle_analytics_stage_event_hashes_on_org_id_and_id ON analytics_cycle_analytics_stage_event_hashes USING btree (organization_id, id);
 
 CREATE UNIQUE INDEX index_cycle_analytics_stage_event_hashes_on_org_id_sha_256 ON analytics_cycle_analytics_stage_event_hashes USING btree (organization_id, hash_sha256);
 

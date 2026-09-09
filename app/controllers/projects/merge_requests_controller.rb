@@ -74,6 +74,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :index,
     :show,
     :diffs,
+    :diff_files_metadata,
+    :diffs_stats,
     :commits,
     :bulk_update,
     :edit,

@@ -10,7 +10,7 @@ for [the decomposed GitLab application using multiple databases](https://gitlab.
 For more information, see [Multiple databases](multiple_databases.md).
 
 The design for multiple databases (except for the Geo database) assumes
-that all decomposed databases have **the same structure** (for example, schema), but **the data is different** in each database. This means that some tables do not contain data on each database.
+that all decomposed databases have the same structure (for example, schema), but the data is different in each database. This means that some tables do not contain data on each database.
 
 ## Operations
 
@@ -18,10 +18,10 @@ Depending on the used constructs, we can classify migrations to be either:
 
 1. Modifying structure ([DDL - Data Definition Language](https://www.postgresql.org/docs/16/ddl.html)) (for example, `ALTER TABLE`).
 1. Modifying data ([DML - Data Manipulation Language](https://www.postgresql.org/docs/16/dml.html)) (for example, `UPDATE`).
-1. Performing [other queries](https://www.postgresql.org/docs/16/queries.html) (for example, `SELECT`) that are treated as **DML** for the purposes of our migrations.
+1. Performing [other queries](https://www.postgresql.org/docs/16/queries.html) (for example, `SELECT`) that are treated as DML for the purposes of our migrations.
 
-**The usage of `Gitlab::Database::Migration[2.0]` requires migrations to always be of a single purpose**.
-Migrations cannot mix **DDL** and **DML** changes as the application requires the structure
+The usage of `Gitlab::Database::Migration[2.0]` requires migrations to always be of a single purpose.
+Migrations cannot mix DDL and DML changes as the application requires the structure
 (as described by `db/structure.sql`) to be exactly the same across all decomposed databases.
 
 ### Data Definition Language (DDL)
@@ -119,7 +119,7 @@ The DML migrations cannot:
 
 1. Make any changes to DDL since this breaks the rule of keeping `structure.sql` coherent across
    all decomposed databases.
-1. **Read data from another database**.
+1. Read data from another database.
 
 To indicate the `DML` migration type, a migration must use the `restrict_gitlab_migration gitlab_schema:`
 syntax in a migration class. This marks the given migration as DML and restricts access to it.
@@ -239,8 +239,8 @@ end
 
 ### The behavior of skipping migrations
 
-The only migrations that are skipped are the ones performing **DML** changes.
-The **DDL** migrations are **always and unconditionally** executed.
+The only migrations that are skipped are the ones performing DML changes.
+The DDL migrations are always and unconditionally executed.
 
 The implemented [solution](https://gitlab.com/gitlab-org/gitlab/-/issues/355014#solution-2-use-database_tasks)
 uses the `database_tasks:` as a way to indicate which additional database configurations
@@ -308,9 +308,9 @@ Modifying of 'projects' (gitlab_main) with 'SELECT * FROM projects...
 ```
 
 The current migration does not use `restrict_gitlab_migration`. The lack indicates a migration
-running in **DDL** mode, but the executed payload appears to be reading data from `projects`.
+running in DDL mode, but the executed payload appears to be reading data from `projects`.
 
-**The solution** is to add `restrict_gitlab_migration gitlab_schema: :gitlab_main_org`.
+The solution is to add `restrict_gitlab_migration gitlab_schema: :gitlab_main_org`.
 
 ### Exception 2: migration running in DML mode changes the structure
 
@@ -338,10 +338,10 @@ DDL queries (structure) are disallowed in the Select/DML (SELECT/UPDATE/DELETE) 
 Modifying of 'merge_request_reviewers' with 'CREATE INDEX...
 ```
 
-The current migration does use `restrict_gitlab_migration`. The presence indicates **DML** mode,
+The current migration does use `restrict_gitlab_migration`. The presence indicates DML mode,
 but the executed payload appears to be doing structure changes (DDL).
 
-**The solution** is to remove `restrict_gitlab_migration gitlab_schema: :gitlab_main_org`.
+The solution is to remove `restrict_gitlab_migration gitlab_schema: :gitlab_main_org`.
 
 ### Exception 3: migration running in DML mode accesses data from a table in another schema
 
@@ -372,7 +372,7 @@ which is outside of list of allowed schemas: 'gitlab_ci'
 The current migration does restrict the migration to `gitlab_ci`, but appears to modify
 data in `gitlab_main`.
 
-**The solution** is to change `restrict_gitlab_migration gitlab_schema: :gitlab_ci`.
+The solution is to change `restrict_gitlab_migration gitlab_schema: :gitlab_ci`.
 
 ### Exception 4: mixing DDL and DML mode
 
@@ -397,7 +397,7 @@ class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.1]
 end
 ```
 
-The migrations mixing **DDL** and **DML** depending on ordering of operations raises
+The migrations mixing DDL and DML depending on ordering of operations raises
 one of the prior exceptions.
 
 ## Upcoming changes on multiple database migrations

@@ -11,7 +11,7 @@ module Gitlab
       def initialize(
         id:, organization_id:, name:, trigger_type:, namespace_id: nil, version: 1,
         description: nil, rules: [], actions: [], policy_scope: nil, scope_rego: nil,
-        scope_dimensions: nil, mode: 'enforce', lifecycle_state: 'active', created_at: nil, updated_at: nil)
+        scope_dimensions: nil, mode: 'warn', lifecycle_state: 'active', created_at: nil, updated_at: nil)
         # rubocop:enable Metrics/ParameterLists
         @id = id
         @organization_id = organization_id

@@ -27,6 +27,20 @@ RSpec.describe WorkItems::ReorderService, feature_category: :team_planning do
       end
 
       it_behaves_like 'reorder service'
+
+      it 'broadcasts the change to namespace subscribers' do
+        allow(GitlabSchema.subscriptions).to receive(:trigger)
+
+        described_class
+          .new(current_user: user, params: { move_after_id: item2.id, move_before_id: item3.id })
+          .execute(item1)
+
+        expect(GitlabSchema.subscriptions).to have_received(:trigger).with(
+          'namespaceWorkItemChanges',
+          { namespace_id: project.project_namespace.to_gid },
+          { work_item_id: item1.id, action: :updated }
+        )
+      end
     end
 
     context 'when ordering work items in a group' do

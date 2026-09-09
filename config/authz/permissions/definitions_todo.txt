@@ -215,7 +215,6 @@ create_web_ide_terminal
 daily_statistics
 decline_terms
 delete_admin_role
-delete_conversation_thread
 delete_group_link
 delete_group_stage
 delete_o11y_settings

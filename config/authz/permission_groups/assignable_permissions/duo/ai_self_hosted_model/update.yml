@@ -1,0 +1,10 @@
+---
+name: update_ai_self_hosted_model
+description: Grants the ability to update self-hosted models and check their connection
+available_for:
+  - granular_access_token
+permissions:
+  - update_ai_self_hosted_model
+  - check_ai_self_hosted_model_connection
+boundaries:
+  - instance

@@ -34,12 +34,12 @@ ai_catalog_items: supported
 ai_catalog_mcp_server_blocks: supported
 ai_catalog_mcp_servers: supported
 ai_catalog_mcp_servers_users: supported
-ai_conversation_messages: https://gitlab.com/gitlab-org/gitlab/-/issues/611964
+ai_conversation_messages: supported
 ai_conversation_threads: supported
 ai_events_counts: supported
 ai_settings: no_work_needed
 ai_usage_events: supported
-analytics_cycle_analytics_stage_event_hashes: https://gitlab.com/gitlab-org/gitlab/-/issues/611961
+analytics_cycle_analytics_stage_event_hashes: supported
 artifact_registry_namespace_mappings: no_work_needed
 authentication_events: supported
 award_emoji: supported

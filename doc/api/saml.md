@@ -91,6 +91,12 @@ Example response:
 
 ### Update `extern_uid` field for a SAML identity
 
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/608236) in GitLab 19.4 to no longer mark the identity as untrusted or send an email notification.
+
+{{< /history >}}
+
 Updates `extern_uid` field for a SAML identity:
 
 | SAML IdP attribute | GitLab field |
@@ -107,14 +113,6 @@ Supported attributes:
 | --------- | ------ | -------- | ------------------------- |
 | `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `uid`     | string | yes      | External UID of the user. |
-
-When the `extern_uid` is updated, GitLab:
-
-- Marks the SAML identity as untrusted. The affected user cannot sign in with SAML until they re-link their identity.
-- Sends an email notification to the affected user.
-
-To re-link a SAML identity, the user must sign in with their GitLab credentials,
-then complete the SAML linking flow for the group.
 
 Example request:
 

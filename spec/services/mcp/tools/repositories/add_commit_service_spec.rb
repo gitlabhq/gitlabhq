@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::Repositories::AddCommitService, feature_category: :mcp_server do
+  include ProjectForksHelper
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
 
@@ -46,6 +48,16 @@ RSpec.describe Mcp::Tools::Repositories::AddCommitService, feature_category: :mc
             type: 'string',
             description: 'Name of the branch from which to create a new branch. ' \
               'Required when branch does not exist yet.'
+          },
+          start_sha: {
+            type: 'string',
+            description: 'SHA of the commit to start a new branch from. ' \
+              'Mutually exclusive with start_branch.'
+          },
+          start_project: {
+            type: 'string',
+            description: 'Full path of the project to start the commit from. Must be the ' \
+              'project itself or a project it was forked from.'
           },
           commit_message: { type: 'string', description: 'Commit message.' },
           actions: {
@@ -112,6 +124,130 @@ RSpec.describe Mcp::Tools::Repositories::AddCommitService, feature_category: :mc
       expect(result[:isError]).to be(false)
       expect(result[:structuredContent].dig('commit', 'sha')).to be_present
       expect(project.repository.blob_at_branch(project.default_branch, 'mcp-test.txt').data).to eq('Test content')
+    end
+
+    context 'when starting a new branch from a sha' do
+      let(:start_sha) { project.repository.commit("#{project.default_branch}~1").sha }
+      let(:params) do
+        {
+          arguments: {
+            project_id: project.full_path,
+            branch: 'from-sha-branch',
+            start_sha: start_sha,
+            commit_message: 'Commit from sha',
+            actions: [{ action: 'create', file_path: 'from-sha.txt', content: 'x' }]
+          }
+        }
+      end
+
+      it 'creates the branch from the given sha', :aggregate_failures do
+        result = service.execute(params: params)
+
+        expect(result[:isError]).to be(false)
+        expect(project.repository.commit('from-sha-branch').parent_ids).to contain_exactly(start_sha)
+      end
+
+      context 'with start_branch as well' do
+        let(:params) do
+          super().tap { |p| p[:arguments][:start_branch] = project.default_branch }
+        end
+
+        it 'surfaces the mutual-exclusion error', :aggregate_failures do
+          result = service.execute(params: params)
+
+          expect(result[:isError]).to be(true)
+          expect(result.dig(:content, 0, :text)).to include('Only one of [startBranch, startSha] arguments is allowed')
+        end
+      end
+    end
+
+    context 'when a partial edit seeds a new branch from a sha' do
+      let(:start_sha) { project.repository.commit(project.default_branch).sha }
+      let(:params) do
+        {
+          arguments: {
+            project_id: project.full_path,
+            branch: 'partial-from-sha',
+            start_sha: start_sha,
+            commit_message: 'Partial edit from sha',
+            actions: [{ action: 'update', file_path: 'README.md', old_str: 'Sample repo', new_str: 'MCP' }]
+          }
+        }
+      end
+
+      it 'reads the file at the sha instead of the not-yet-existing branch', :aggregate_failures do
+        result = service.execute(params: params)
+
+        expect(result[:isError]).to be(false)
+        expect(project.repository.commit('partial-from-sha').parent_ids).to contain_exactly(start_sha)
+        expect(project.repository.blob_at_branch('partial-from-sha', 'README.md').data).to include('MCP')
+      end
+    end
+
+    context 'when a partial edit is combined with start_project' do
+      let(:params) do
+        {
+          arguments: {
+            project_id: project.full_path,
+            branch: 'partial-start-project',
+            start_sha: project.repository.commit(project.default_branch).sha,
+            start_project: project.full_path,
+            commit_message: 'x',
+            actions: [{ action: 'update', file_path: 'README.md', old_str: 'a', new_str: 'b' }]
+          }
+        }
+      end
+
+      it 'rejects the combination with a self-correcting error', :aggregate_failures do
+        result = service.execute(params: params)
+
+        expect(result[:isError]).to be(true)
+        expect(result.dig(:content, 0, :text)).to include('not supported with start_project')
+      end
+    end
+
+    context 'when starting from a forked project' do
+      let_it_be(:forked_project) { fork_project(project, nil, repository: true) }
+
+      let(:start_sha) { project.repository.commit(project.default_branch).sha }
+      let(:params) do
+        {
+          arguments: {
+            project_id: forked_project.full_path,
+            branch: 'from-upstream',
+            start_sha: start_sha,
+            start_project: project.full_path,
+            commit_message: 'Commit from upstream',
+            actions: [{ action: 'create', file_path: 'from-upstream.txt', content: 'x' }]
+          }
+        }
+      end
+
+      before_all do
+        forked_project.add_developer(user)
+      end
+
+      it 'creates the branch starting from the upstream project', :aggregate_failures do
+        result = service.execute(params: params)
+
+        expect(result[:isError]).to be(false)
+        expect(forked_project.repository.commit('from-upstream')).to be_present
+      end
+
+      context 'when the start project is outside the fork network' do
+        let_it_be(:unrelated) { create(:project, :public, :repository) }
+
+        let(:params) do
+          super().tap { |p| p[:arguments][:start_project] = unrelated.full_path }
+        end
+
+        it 'rejects it with the uniform fork-network error', :aggregate_failures do
+          result = service.execute(params: params)
+
+          expect(result[:isError]).to be(true)
+          expect(result.dig(:content, 0, :text)).to include('fork network')
+        end
+      end
     end
 
     context 'when current_user is not set' do

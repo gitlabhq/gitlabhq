@@ -28,7 +28,7 @@ for a milestone when:
 - A process, workflow, or previously documented feature is changed.
 - A feature is deprecated or removed.
 
-Documentation is not typically required when a **backend feature** is added or changed.
+Documentation is not typically required when a backend feature is added or changed.
 
 ### Developer responsibilities
 
@@ -243,11 +243,11 @@ documentation in the same merge request as the code that it relates to, but
 this isn't strictly mandatory. It's still common for documentation to be added
 in an MR separate from the feature MR.
 
-Engineering teams may elect to adopt a workflow where it is **mandatory** that
+Engineering teams may elect to adopt a workflow where it is mandatory that
 documentation is included in the code MR, as part of their
 [definition of done](../contributing/merge_request_workflow.md#definition-of-done).
 When a team adopts this workflow, that team's engineers must include their
-documentation in the **same** MR as their feature code, at all times.
+documentation in the same MR as their feature code, at all times.
 
 ### Downsides of separate documentation MRs
 
@@ -342,7 +342,7 @@ changes might need to happen to a team's current workflow:
   must be reassigned the MR to verify the update.
 - Maintainers are allowed to merge features with the documentation *as-is*,
   even if the technical writer hasn't given final approval yet. The
-  **documentation reviews must not be blockers**. Therefore, it's important to
+  documentation reviews must not be blockers. Therefore, it's important to
   get the documentation included and assigned to the technical writers early.
   If the feature is merged before final documentation approval, the maintainer
   must create a [post-merge follow-up issue](#post-merge-reviews),

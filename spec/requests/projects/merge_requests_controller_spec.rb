@@ -565,6 +565,12 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
     include_examples 'diff files metadata'
 
+    it 'sets a low request urgency' do
+      send_request
+
+      expect(response).to have_request_urgency(:low)
+    end
+
     context 'when merge_request_diff does not exist' do
       let_it_be(:merge_request) { create(:merge_request, :skip_diff_creation, author: user) }
       let_it_be(:project) { merge_request.project }
@@ -625,6 +631,12 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           diffs_count: 21
         }
       end
+    end
+
+    it 'sets a low request urgency' do
+      send_request
+
+      expect(response).to have_request_urgency(:low)
     end
 
     context 'when diffs overflow' do

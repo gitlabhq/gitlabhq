@@ -39,7 +39,7 @@ SELECT issues.* FROM issues ORDER BY created_at, id;
 This change makes the order distinct so we have "stable" sorting.
 
 > [!note]
-> To make the query efficient, we need an index covering both columns: `(created_at, id)`. The order of the columns **should match** the columns in the `ORDER BY` clause.
+> To make the query efficient, we need an index covering both columns: `(created_at, id)`. The order of the columns should match the columns in the `ORDER BY` clause.
 
 ### Incremental sorting
 

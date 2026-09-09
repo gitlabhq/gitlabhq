@@ -18,6 +18,8 @@ module Mcp
               projectPath: resolve_project.full_path,
               branch: params[:branch],
               startBranch: params[:start_branch],
+              startSha: params[:start_sha],
+              startProjectPath: params[:start_project],
               message: params[:commit_message],
               actions: params[:actions].map { |action| build_action(action) }
             }.compact

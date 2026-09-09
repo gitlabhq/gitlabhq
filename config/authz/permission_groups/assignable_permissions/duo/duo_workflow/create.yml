@@ -7,3 +7,5 @@ permissions:
   - create_duo_workflow
 boundaries:
   - user
+  - project
+  - group

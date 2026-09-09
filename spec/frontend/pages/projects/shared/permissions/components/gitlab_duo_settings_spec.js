@@ -200,8 +200,6 @@ describe('GitlabDuoSettings', () => {
     });
   });
 
-  // The design's blocked state: the platform switch lives above the project, so the card
-  // stays, the platform row carries the warning, and every row below is blocked and disabled.
   describe('when the Agent Platform is off above the project', () => {
     beforeEach(() => {
       wrapper = createWrapper({ duoReadiness: { platformEnabled: false } });
@@ -211,16 +209,16 @@ describe('GitlabDuoSettings', () => {
       expect(findReadinessBlock().exists()).toBe(true);
     });
 
-    it('blocks every row below the platform row', () => {
-      expect(findDuoRow().props('status')).toBe('blocked');
+    it('blocks the agent-only flow rows', () => {
       expect(findFlowExecutionRow().props('status')).toBe('blocked');
       expect(findFoundationalFlowsRow().props('status')).toBe('blocked');
-    });
-
-    it('disables every toggle below the platform row', () => {
-      expect(findDuoFeaturesEnabledToggle().props('disabled')).toBe(true);
       expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(true);
       expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+    });
+
+    it('keeps the GitLab Duo row live, because it also governs Chat and Code Suggestions', () => {
+      expect(findDuoRow().props('status')).toBe('done');
+      expect(findDuoFeaturesEnabledToggle().props('disabled')).toBe(false);
     });
   });
 
@@ -249,9 +247,10 @@ describe('GitlabDuoSettings', () => {
       expect(findReadinessBlock().exists()).toBe(true);
       expect(findDuoRow().props()).toMatchObject({
         title: 'GitLab Duo',
-        description: 'Use AI-native features in this project.',
         status: 'done',
       });
+      expect(findDuoRow().text()).toContain('Turn on AI-native features for this project.');
+      expect(findDuoRow().text()).toContain('Learn more');
       expect(findDuoEnabledToggle().exists()).toBe(true);
     });
 

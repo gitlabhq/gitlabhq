@@ -29,12 +29,12 @@ We aim to eliminate all breaking changes from GitLab. If you have exhausted the 
 By default, no breaking change is allowed unless the breaking change implementation plan has been granted explicit approval by following the process below.
 
 1. Open an issue using the [Breaking Change Exception template](https://gitlab.com/gitlab-com/Product/-/issues/new?description_template=Breaking-Change-Exception) and fill in all of the required sections.
-1. **If your breaking change meets any of the below criteria**, please call it out in the request. It doesn't guarantee the request will be approved but it helps make a good argument. Most breaking changes that are approved will fall into at least one of these categories:
-   1. The impact of the breaking change has been **fully mitigated via an automated migration** that requires no action from the customer.
-   1. The breaking change will have **negligible customer impact** as measured by actual product usage tracking across GitLab Self-Managed, GitLab.com, and GitLab Dedicated. For instance if it impacts less than 1% of the GitLab customer base.
-   1. The breaking change is being implemented due to a **significant security risk- Severity 1 or 2.**
+1. If your breaking change meets any of the below criteria, please call it out in the request. It doesn't guarantee the request will be approved but it helps make a good argument. Most breaking changes that are approved will fall into at least one of these categories:
+   1. The impact of the breaking change has been fully mitigated via an automated migration that requires no action from the customer.
+   1. The breaking change will have negligible customer impact as measured by actual product usage tracking across GitLab Self-Managed, GitLab.com, and GitLab Dedicated. For instance if it impacts less than 1% of the GitLab customer base.
+   1. The breaking change is being implemented due to a significant security risk: Severity 1 or 2.
 1. Once the issue is ready for review, follow the instructions in the template for who to tag to get the approval process started.
-1. Wait until you get approval before publicly sharing the news or confirming your proposed timeline. The time from initial submission to approval or denial will vary, so **submit a minimum of six months in advance** of the proposed removal time frame.
+1. Wait until you get approval before publicly sharing the news or confirming your proposed timeline. The time from initial submission to approval or denial will vary, so submit a minimum of six months in advance of the proposed removal time frame.
 
 ## What details are part of the request template?
 
@@ -101,10 +101,10 @@ following are true:
 
 ### Window assignment
 
-All matching deprecations are assigned to the **primary window** by default,
+All matching deprecations are assigned to the primary window by default,
 regardless of the `window` value in the YAML file.
 
-A **contingency window** is available as a fallback. To move a breaking change
+A contingency window is available as a fallback. To move a breaking change
 to the contingency window, set `window: 2` in its YAML file. The contingency
 window section is only shown on the page when at least one deprecation is
 assigned to it.

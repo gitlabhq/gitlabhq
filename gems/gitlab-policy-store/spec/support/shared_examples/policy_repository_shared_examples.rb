@@ -97,7 +97,7 @@ RSpec.shared_examples 'a policy repository' do
         description: nil,
         rules: [],
         actions: [],
-        mode: 'enforce',
+        mode: 'warn',
         lifecycle_state: 'active'
       )
     end
@@ -506,6 +506,11 @@ RSpec.shared_examples 'a policy repository' do
         .to raise_error(Gitlab::PolicyStore::ValidationError, /nmae/)
     end
 
+    it 'rejects an invalid mode' do
+      expect { repository.create(attributes.merge(mode: 'block')) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /mode must be one of: audit, warn, enforce.*block/)
+    end
+
     it 'ignores immutable attributes rather than rejecting them, so a policy can be copied',
       :aggregate_failures do
       created = repository.create(attributes)
@@ -825,6 +830,13 @@ RSpec.shared_examples 'a policy repository' do
 
       expect { repository.update(created.id, nmae: 'Misspelled') }
         .to raise_error(Gitlab::PolicyStore::ValidationError, /nmae/)
+    end
+
+    it 'rejects an invalid mode' do
+      created = repository.create(attributes)
+
+      expect { repository.update(created.id, mode: 'block') }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /mode must be one of: audit, warn, enforce.*block/)
     end
 
     it 'ignores immutable attributes rather than rejecting them, so a whole policy can be handed back' do

@@ -1,0 +1,3 @@
+---
+name: check_ai_self_hosted_model_connection
+description: Grants the ability to check the AI Gateway connection for a self-hosted model configuration

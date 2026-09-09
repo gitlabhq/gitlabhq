@@ -341,6 +341,7 @@
   ],
   "ScanProfileConfiguration": [
     "AutoRemediationConfiguration",
+    "SastConfiguration",
     "SastFalsePositiveConfiguration",
     "SastVulnerabilityResolutionConfiguration",
     "SecretDetectionConfiguration",

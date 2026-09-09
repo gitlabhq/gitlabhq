@@ -57,6 +57,12 @@ RSpec.describe WorkItems::NamespaceChanges::BroadcastService, feature_category: 
       it_behaves_like 'broadcasts the event'
     end
 
+    context 'when the work item was repositioned' do
+      let(:updated_changes) { %w[relative_position] }
+
+      it_behaves_like 'broadcasts the event'
+    end
+
     context 'when only irrelevant fields changed' do
       let(:updated_changes) { %w[description] }
 
