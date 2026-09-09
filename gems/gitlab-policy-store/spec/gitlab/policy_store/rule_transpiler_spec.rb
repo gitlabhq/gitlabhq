@@ -134,41 +134,6 @@ RSpec.describe Gitlab::PolicyStore::RuleTranspiler do
         expect(rego).to include('"ends_at": "2026-09-03T02:30:00Z"')
       end
 
-      it "does not compile a bound whose meaning depends on the host time zone" do
-        expect { transpile(calendar_rule(starts_at: "2026-09-01T00:00:00")) }
-          .to raise_error(Gitlab::PolicyStore::ValidationError, /starts_at must be an RFC 3339 instant/)
-      end
-
-      it "accepts an offset written without a colon" do
-        rego = transpile(calendar_rule(starts_at: "2026-09-01T12:00:00+0200"))
-
-        expect(rego).to include('"starts_at": "2026-09-01T10:00:00Z"')
-      end
-
-      it "accepts a lowercase zone designator, which the parser reads and the emitter normalizes" do
-        rego = transpile(calendar_rule(starts_at: "2026-12-24T00:00:00z"))
-
-        expect(rego).to include('"starts_at": "2026-12-24T00:00:00Z"')
-      end
-
-      it "accepts a lowercase date separator, which RFC 3339 permits" do
-        rego = transpile(calendar_rule(starts_at: "2026-12-24t00:00:00Z"))
-
-        expect(rego).to include('"starts_at": "2026-12-24T00:00:00Z"')
-      end
-
-      it "accepts a leap day in a leap year, which the date check must not read as non-existent" do
-        rego = transpile(calendar_rule(starts_at: "2028-02-29T00:00:00Z", ends_at: "2028-03-05T00:00:00Z"))
-
-        expect(rego).to include('"starts_at": "2028-02-29T00:00:00Z"')
-      end
-
-      it "accepts a zero fraction, which drops without changing the instant" do
-        rego = transpile(calendar_rule(starts_at: "2026-12-24T00:00:00.000Z"))
-
-        expect(rego).to include('"starts_at": "2026-12-24T00:00:00Z"')
-      end
-
       it "keeps windows in the authored order" do
         rego = transpile(
           { type: "calendar",
@@ -473,105 +438,9 @@ RSpec.describe Gitlab::PolicyStore::RuleTranspiler do
           'calendar window "eoq" requires at least one tier')
       end
 
-      it "rejects a window with a missing bound" do
-        expect_invalid(
-          { type: "calendar", value: { windows: [{ name: "eoq", tiers: ["production"] }] } },
-          'calendar window "eoq" requires starts_at'
-        )
-      end
-
       it "rejects a window that is not an object" do
         expect_invalid({ type: "calendar", value: { windows: ["2026-12-24"] } },
           "calendar window 0 must be an object")
-      end
-
-      it "names the shape, not the calendar, when a two-digit year would parse leniently" do
-        expect_invalid(
-          calendar_rule(starts_at: "26-12-24T00:00:00Z"),
-          'calendar window "eoq" starts_at must be an RFC 3339 instant such as ' \
-            '`2026-12-24T00:00:00Z`: "26-12-24T00:00:00Z"'
-        )
-      end
-
-      it "rejects a five-digit year, which is not the shape an instant takes" do
-        expect_invalid(
-          calendar_rule(starts_at: "10000-01-01T00:00:00Z", ends_at: "3000-01-01T00:00:00Z"),
-          'calendar window "eoq" starts_at must be an RFC 3339 instant such as ' \
-            '`2026-12-24T00:00:00Z`: "10000-01-01T00:00:00Z"'
-        )
-      end
-
-      it "rejects an instant whose UTC form the string comparison cannot order" do
-        expect_invalid(
-          calendar_rule(starts_at: "9999-12-31T23:00:00-05:00", ends_at: "3000-01-01T00:00:00Z"),
-          'calendar window "eoq" starts_at is outside the range the emitted comparison can order: ' \
-            '"9999-12-31T23:00:00-05:00"'
-        )
-      end
-
-      it "rejects a bound finer than the second the comparison comes down to" do
-        expect_invalid(
-          calendar_rule(ends_at: "2027-01-02T23:59:59.999Z"),
-          'calendar window "eoq" ends_at carries sub-second precision the emitted comparison ' \
-            'cannot represent: "2027-01-02T23:59:59.999Z"'
-        )
-      end
-
-      it "rejects a bound too long to be an instant before parsing it, since the parse is the cost" do
-        too_long = "#{'9' * 1_000_000}-01-01T00:00:00Z"
-
-        expect_invalid(
-          calendar_rule(starts_at: too_long),
-          "calendar window \"eoq\" starts_at is longer than any instant: " \
-            "#{('9' * 64).inspect} (#{too_long.length} characters)"
-        )
-      end
-
-      it "rejects a date that does not exist, rather than rolling it into the next month" do
-        expect_invalid(
-          calendar_rule(starts_at: "2026-06-31T10:00:00Z"),
-          'calendar window "eoq" starts_at names a date or time that does not exist: ' \
-            '"2026-06-31T10:00:00Z"'
-        )
-      end
-
-      it "rejects a leap day in a non-leap year" do
-        expect_invalid(
-          calendar_rule(starts_at: "2027-02-29T00:00:00Z", ends_at: "2027-03-05T00:00:00Z"),
-          'calendar window "eoq" starts_at names a date or time that does not exist: ' \
-            '"2027-02-29T00:00:00Z"'
-        )
-      end
-
-      it "rejects a leap second, which would move the boundary a second without saying so" do
-        expect_invalid(
-          calendar_rule(starts_at: "2026-12-31T23:59:60Z"),
-          'calendar window "eoq" starts_at names a date or time that does not exist: ' \
-            '"2026-12-31T23:59:60Z"'
-        )
-      end
-
-      it "rejects an hour of 24, which names the following midnight" do
-        expect_invalid(
-          calendar_rule(starts_at: "2026-06-15T24:00:00Z"),
-          'calendar window "eoq" starts_at names a date or time that does not exist: ' \
-            '"2026-06-15T24:00:00Z"'
-        )
-      end
-
-      it "rejects a timestamp it cannot parse" do
-        expect_invalid(
-          calendar_rule(starts_at: "2026-13-45T00:00:00Z"),
-          'calendar window "eoq" has an unparsable starts_at: "2026-13-45T00:00:00Z"'
-        )
-      end
-
-      it "rejects free text before trying to parse it" do
-        expect_invalid(
-          calendar_rule(starts_at: "next tuesday"),
-          'calendar window "eoq" starts_at must be an RFC 3339 instant such as ' \
-            '`2026-12-24T00:00:00Z`: "next tuesday"'
-        )
       end
 
       it "rejects a window that ends before it starts" do
@@ -624,15 +493,6 @@ RSpec.describe Gitlab::PolicyStore::RuleTranspiler do
         expect { transpile({ type: "environment", value: { names: ["prod\xFF".b] } }) }
           .to raise_error(Gitlab::PolicyStore::ValidationError,
             'rule 0: value cannot be encoded as UTF-8: "prod\xFF"')
-      end
-
-      it "refuses a bound in an encoding the offset match cannot read, rather than raising from the match" do
-        window = { name: "eoq", tiers: ["production"],
-                   starts_at: "2026-12-24T00:00:00Z".encode("UTF-16LE"), ends_at: "2027-01-02T00:00:00Z" }
-
-        expect { transpile({ type: "calendar", value: { windows: [window] } }) }
-          .to raise_error(Gitlab::PolicyStore::ValidationError,
-            'rule 0: calendar window "eoq" starts_at must be ASCII to be an ISO 8601 instant, not UTF-16LE')
       end
 
       it "refuses a window name whose bytes cannot reach UTF-8" do

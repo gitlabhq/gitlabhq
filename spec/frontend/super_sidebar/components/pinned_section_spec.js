@@ -110,6 +110,21 @@ describe('PinnedSection component', () => {
     });
   });
 
+  describe('asyncCount prop', () => {
+    it('passes asyncCount to MenuSection so the flyout shows correct pill counts when collapsed', () => {
+      const asyncCount = { openIssuesCount: 5, openMergeRequestsCount: 3 };
+      createWrapper({ asyncCount });
+
+      expect(wrapper.findComponent(MenuSection).props('asyncCount')).toEqual(asyncCount);
+    });
+
+    it('passes empty asyncCount by default', () => {
+      createWrapper();
+
+      expect(wrapper.findComponent(MenuSection).props('asyncCount')).toEqual({});
+    });
+  });
+
   describe('ambiguous settings names', () => {
     it('get renamed to be unambiguous', () => {
       createWrapper({

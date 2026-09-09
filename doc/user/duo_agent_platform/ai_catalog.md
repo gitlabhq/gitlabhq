@@ -193,12 +193,9 @@ To resolve the error, reduce the size of your configuration.
 {{< history >}}
 
 - Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
+- Generally available in GitLab 19.4. Feature flag `ai_catalog_internal_visibility` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
-> For more information, see the history.
 
 When you create an agent or flow, you select a project to manage it and choose whether the item is
 public, private, or restricted.

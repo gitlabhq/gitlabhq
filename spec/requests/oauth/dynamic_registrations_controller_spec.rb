@@ -330,12 +330,55 @@ RSpec.describe Oauth::DynamicRegistrationsController, :with_current_organization
             create_registration
           end
 
-          it 'uses the first recognized scope' do
+          it 'uses the recognized MCP scope' do
             expect(created_application.scopes.to_s).to eq('mcp_orbit')
           end
         end
 
-        context 'with space-delimited scopes where first is not recognized' do
+        context 'with both MCP scopes and nothing else' do
+          let(:request_body) { valid_request_body.merge(scope: 'mcp mcp_orbit') }
+          let(:created_application) { Authn::OauthApplication.last }
+
+          before do
+            create_registration
+          end
+
+          it 'registers the narrower mcp_orbit scope', :aggregate_failures do
+            expect(created_application.scopes.to_s).to eq('mcp_orbit')
+            expect(response.parsed_body['scope']).to eq('mcp_orbit')
+          end
+        end
+
+        context 'with both MCP scopes in the opposite order' do
+          let(:request_body) { valid_request_body.merge(scope: 'mcp_orbit mcp') }
+          let(:created_application) { Authn::OauthApplication.last }
+
+          before do
+            create_registration
+          end
+
+          it 'registers the narrower mcp_orbit scope regardless of order' do
+            expect(created_application.scopes.to_s).to eq('mcp_orbit')
+          end
+        end
+
+        context 'when the client echoes the full authorization server scope list' do
+          let(:request_body) do
+            valid_request_body.merge(scope: Doorkeeper.config.scopes.to_s)
+          end
+
+          let(:created_application) { Authn::OauthApplication.last }
+
+          before do
+            create_registration
+          end
+
+          it 'registers the mcp scope' do
+            expect(created_application.scopes.to_s).to eq('mcp')
+          end
+        end
+
+        context 'with space-delimited scopes where the MCP scope is not first' do
           let(:request_body) { valid_request_body.merge(scope: 'openid mcp_orbit') }
           let(:created_application) { Authn::OauthApplication.last }
 
@@ -343,8 +386,8 @@ RSpec.describe Oauth::DynamicRegistrationsController, :with_current_organization
             create_registration
           end
 
-          it 'falls back to default mcp scope' do
-            expect(created_application.scopes.to_s).to eq('mcp')
+          it 'uses the recognized MCP scope' do
+            expect(created_application.scopes.to_s).to eq('mcp_orbit')
           end
         end
 

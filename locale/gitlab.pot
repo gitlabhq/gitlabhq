@@ -3749,9 +3749,6 @@ msgstr ""
 msgid "AICatalog|Your bulk enablement of %{link_start}%{item_name}%{link_end} did not complete successfully."
 msgstr ""
 
-msgid "AICatalog|`restricted` visibility is not available"
-msgstr ""
-
 msgid "AICatalog|agent"
 msgstr ""
 

@@ -14,6 +14,8 @@ module Oauth
       '/api/v4/mcp' => Gitlab::Auth::MCP_SCOPE.to_s
     }.freeze
 
+    MCP_SCOPES_BY_SPECIFICITY = RESOURCE_SCOPE_MAP.values.freeze
+
     # POST /oauth/register
     def create
       client_metadata = Gitlab::Json.safe_parse(request.body.read).symbolize_keys
@@ -77,10 +79,15 @@ module Oauth
         end
       end
 
-      if requested_scope.present?
-        normalized = requested_scope.to_s.strip.split.first
-        return normalized if normalized.present? && RESOURCE_SCOPE_MAP.value?(normalized)
-      end
+      scope_from_requested_scopes(requested_scope) || Gitlab::Auth::MCP_SCOPE.to_s
+    end
+
+    def scope_from_requested_scopes(requested_scope)
+      requested = requested_scope.to_s.split
+      recognized = MCP_SCOPES_BY_SPECIFICITY & requested
+      return recognized.first if recognized.size <= 1
+
+      return recognized.first if (requested - MCP_SCOPES_BY_SPECIFICITY).empty?
 
       Gitlab::Auth::MCP_SCOPE.to_s
     end

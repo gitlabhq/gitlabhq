@@ -55,6 +55,7 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
       expect(variables[:includePipelines]).to be(false)
       expect(variables[:includeDiscussions]).to be(false)
       expect(variables[:includeApprovals]).to be(false)
+      expect(variables[:includeConflicts]).to be(false)
     end
 
     it 'omits notes pagination parameters when not provided', :aggregate_failures do
@@ -74,6 +75,7 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
         'pipelines'   | :includePipelines
         'discussions' | :includeDiscussions
         'approvals'   | :includeApprovals
+        'conflicts'   | :includeConflicts
       end
 
       with_them do
@@ -81,7 +83,8 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
 
         it 'enables only the requested facet', :aggregate_failures do
           variables = tool.build_variables
-          all_keys = %i[includeDiffs includeCommits includeNotes includePipelines includeDiscussions includeApprovals]
+          all_keys = %i[includeDiffs includeCommits includeNotes includePipelines includeDiscussions
+            includeApprovals includeConflicts]
 
           expect(variables[enabled_key]).to be(true)
           (all_keys - [enabled_key]).each { |key| expect(variables[key]).to be(false) }

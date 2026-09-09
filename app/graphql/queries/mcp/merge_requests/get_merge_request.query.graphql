@@ -10,6 +10,7 @@ query getMergeRequest(
   $includePipelines: Boolean = false
   $includeDiscussions: Boolean = false
   $includeApprovals: Boolean = false
+  $includeConflicts: Boolean = false
   $notesAfter: String
   $notesFirst: Int
   $diffsAfter: String
@@ -31,6 +32,11 @@ query getMergeRequest(
       updatedAt
       mergedAt
       conflicts
+      conflictFiles @include(if: $includeConflicts) {
+        ourPath
+        theirPath
+        content
+      }
       author {
         id
         username

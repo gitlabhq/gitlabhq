@@ -997,11 +997,11 @@ GEM
       request_store (>= 1.0)
     google-apis-androidpublisher_v3 (0.107.0)
       google-apis-core (>= 0.15.0, < 2.a)
-    google-apis-cloudbilling_v1 (0.22.0)
-      google-apis-core (>= 0.9.1, < 2.a)
+    google-apis-cloudbilling_v1 (0.40.0)
+      google-apis-core (>= 0.15.0, < 2.a)
     google-apis-cloudresourcemanager_v1 (0.45.0)
       google-apis-core (>= 0.15.0, < 2.a)
-    google-apis-compute_v1 (0.129.0)
+    google-apis-compute_v1 (0.154.0)
       google-apis-core (>= 0.15.0, < 2.a)
     google-apis-container_v1 (0.100.0)
       google-apis-core (>= 0.15.0, < 2.a)
@@ -2195,7 +2195,7 @@ GEM
       yard (~> 0.9, >= 0.9.24)
       yard-activesupport-concern (~> 0.0)
       yard-solargraph (~> 0.1)
-    solargraph-rspec (0.5.4)
+    solargraph-rspec (0.6.0)
       solargraph (>= 0.52.0)
     sorbet-runtime (0.6.12984)
     spamcheck (1.3.3)
@@ -2566,9 +2566,9 @@ DEPENDENCIES
   gitlab_query_language (~> 0.35.0)
   gon (~> 6.6.0)
   google-apis-androidpublisher_v3 (~> 0.107.0)
-  google-apis-cloudbilling_v1 (~> 0.22.0)
+  google-apis-cloudbilling_v1 (~> 0.40.0)
   google-apis-cloudresourcemanager_v1 (~> 0.45.0)
-  google-apis-compute_v1 (~> 0.129.0)
+  google-apis-compute_v1 (~> 0.154.0)
   google-apis-container_v1 (~> 0.100.0)
   google-apis-container_v1beta1 (~> 0.91.0)
   google-apis-core (~> 0.18.0, >= 0.18.0)
@@ -2769,7 +2769,7 @@ DEPENDENCIES
   slack-messenger (~> 2.3.5)
   snowplow-tracker (~> 0.8.0)
   solargraph (~> 0.58.0)
-  solargraph-rspec (~> 0.5.1)
+  solargraph-rspec (~> 0.6.0)
   spamcheck (~> 1.3.0)
   spring (~> 4.3.0)
   spring-commands-rspec (~> 1.0.4)
@@ -3092,9 +3092,9 @@ CHECKSUMS
   globalid (1.1.0) sha256=b337e1746f0c8cb0a6c918234b03a1ddeb4966206ce288fbb57779f59b2d154f
   gon (6.6.0) sha256=4c0be4e4f05fc8eb5db5ac2f7d47ae28ee04826f2b153338f7fb03c0e8f6ecd1
   google-apis-androidpublisher_v3 (0.107.0) sha256=b8207eecc89e6a9f7ea11aa88a07bccdcae5ca90121330079db4ef4696a2f3ff
-  google-apis-cloudbilling_v1 (0.22.0) sha256=db2b72aebdc2664fd5095264a160cf757119ba3a83a036817b78d0d2ad7886fd
+  google-apis-cloudbilling_v1 (0.40.0) sha256=5b7b1e93946c7a4631f9eadb5ca79e1d7f760b2eaf718f069d778359bdf93268
   google-apis-cloudresourcemanager_v1 (0.45.0) sha256=ea936d4d51dd0556fb93f4a78131c0441c308906bf076d543c8852dbeec27d45
-  google-apis-compute_v1 (0.129.0) sha256=b767d4564519fc47fc86b10159ec27ad515292e92b979b10720b02fd3b06f5d3
+  google-apis-compute_v1 (0.154.0) sha256=8209a6414ccdf0f59a13ae4d0c4cc3c021689d2839b3be086fdf2ebc357d2452
   google-apis-container_v1 (0.100.0) sha256=5a5ae56036e384830263de6d48ed9b9f9ef26818b28b6b027206432e718d1853
   google-apis-container_v1beta1 (0.91.0) sha256=9639664bf4876059627b44e3feca67cf34bb48c3520d60fbdfc42f4f37f5c299
   google-apis-core (0.18.0) sha256=96b057816feeeab448139ed5b5c78eab7fc2a9d8958f0fbc8217dedffad054ee
@@ -3533,7 +3533,7 @@ CHECKSUMS
   snaky_hash (2.0.7) sha256=7d02c70012a3f932e48860cd024577908300c9aa615e0cb9b450aaa749cbcb4d
   snowplow-tracker (0.8.0) sha256=7ba6f4f1443a829845fd28e63eda72d9d3d247f485310ddcccaebbc52b734a38
   solargraph (0.58.3) sha256=debefdc927d1e72383b2c4add89e71373d902b9904617efdb687749509fe2e69
-  solargraph-rspec (0.5.4) sha256=295fc5ae98694edcc638488a93d4c8cd66f56883cf7961f47f1409602baf7e1c
+  solargraph-rspec (0.6.0) sha256=c9e3220136a6ed02e96613c4bb080032cffac4f1fb9034b8d4726bbec3487d46
   sorbet-runtime (0.6.12984) sha256=3fff20a5b147a2e191210563d61886ac121fc1cd8b5e0faf6bc18873139e0fe4
   spamcheck (1.3.3) sha256=3a29ba9dfcd59543d88054d38c657f79e0a6cf44d763df08ad47680abed50ec7
   spring (4.3.0) sha256=0aaaf3bcce38e8528275854881d1922660d76cbd19a9a3af4a419d95b7fe7122

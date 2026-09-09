@@ -55,12 +55,9 @@ automate complex, multi-step tasks across your GitLab projects.
 
 - Roles that can view private flows [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
 - Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
+- Generally available in GitLab 19.4. Feature flag `ai_catalog_internal_visibility` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
-> For more information, see the history.
 
 When you create a custom flow, you select a project to manage it and choose whether the flow is public, private, or restricted.
 
@@ -110,12 +107,9 @@ Select a flow to view its details.
 
 - Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
 - GitLab flow builder [introduced](https://gitlab.com/groups/gitlab-org/editor-extensions/-/work_items/236) in GitLab for VS Code 6.87.0 during the GitLab 19.3 release, with a VS Code extension setting named `gitlab.featureFlags.flowBuilder`. Disabled by default. This is a [beta](../../../policy/development_stages_support.md) feature.
+- Generally available in GitLab 19.4. Feature flag `ai_catalog_internal_visibility` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
-> For more information, see the history.
 
 The GitLab flow builder in VS Code is controlled by the VS Code extension setting `gitlab.featureFlags.flowBuilder`.
 For more information, see the history.

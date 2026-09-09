@@ -440,6 +440,25 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
         end
       end
 
+      context 'when dynamic application has only mcp_orbit scope and both MCP scopes are requested' do
+        let(:application) do
+          create(:oauth_application, :dynamic, scopes: 'mcp_orbit', redirect_uri: 'http://example.com')
+        end
+
+        it 'forces scope to mcp_orbit', :aggregate_failures do
+          get oauth_authorization_path, params: params.merge(
+            scope: 'mcp mcp_orbit',
+            resource: 'https://gitlab.example.com/api/v4/orbit/mcp',
+            code_challenge: 'valid_code_challenge',
+            code_challenge_method: 'S256'
+          )
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/new')
+          expect(response.body).to include('value="mcp_orbit"')
+        end
+      end
+
       context 'when non-dynamic application has multiple scopes and no scope provided' do
         let(:application) { create(:oauth_application, scopes: 'api read_user', redirect_uri: 'http://example.com') }
 

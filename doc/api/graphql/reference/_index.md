@@ -27315,6 +27315,29 @@ Fields:
 | <a id="googlecloudloggingconfigurationtypeedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="googlecloudloggingconfigurationtypeedge-node"></a>`node` | [`GoogleCloudLoggingConfigurationType`](#googlecloudloggingconfigurationtype) | The item at the end of the edge. |
 
+#### `GovernPolicyEvaluationConnection`
+
+The connection type for [`GovernPolicyEvaluation`](#governpolicyevaluation).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="governpolicyevaluationconnection-edges"></a>`edges` | [`[GovernPolicyEvaluationEdge]`](#governpolicyevaluationedge) | A list of edges. |
+| <a id="governpolicyevaluationconnection-nodes"></a>`nodes` | [`[GovernPolicyEvaluation]`](#governpolicyevaluation) | A list of nodes. |
+| <a id="governpolicyevaluationconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `GovernPolicyEvaluationEdge`
+
+The edge type for [`GovernPolicyEvaluation`](#governpolicyevaluation).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="governpolicyevaluationedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="governpolicyevaluationedge-node"></a>`node` | [`GovernPolicyEvaluation`](#governpolicyevaluation) | The item at the end of the edge. |
+
 #### `GroupAuditEventStreamingDestinationConnection`
 
 The connection type for [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination).
@@ -40573,7 +40596,7 @@ Fields:
 | <a id="countablevulnerability-latestdetectedpipeline"></a>`latestDetectedPipeline` {{< icon name="warning-solid" >}} | [`Pipeline`](#pipeline) | Introduced in GitLab 18.2. Status: Experiment. Pipeline where the vulnerability was last detected. |
 | <a id="countablevulnerability-latestflag"></a>`latestFlag` {{< icon name="warning-solid" >}} | [`VulnerabilityFlag`](#vulnerabilityflag) | Introduced in GitLab 18.5. Status: Experiment. Latest flag for the vulnerability. |
 | <a id="countablevulnerability-latestnonclosedmergerequest"></a>`latestNonClosedMergeRequest` {{< icon name="warning-solid" >}} | [`MergeRequest`](#mergerequest) | Introduced in GitLab 19.1. Status: Experiment. Latest non-closed merge request linked to fix the vulnerability. |
-| <a id="countablevulnerability-latestsecurityreportfinding"></a>`latestSecurityReportFinding` {{< icon name="warning-solid" >}} | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | Introduced in GitLab 18.4. Status: Experiment. Latest security report finding for the vulnerability. |
+| <a id="countablevulnerability-latestsecurityreportfinding"></a>`latestSecurityReportFinding` {{< icon name="warning-solid" >}} | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | Introduced in GitLab 18.4. Status: Experiment. Latest security report finding for the vulnerability. On large projects, the field can time out and return null. Clients should check the top-level errors array for timeout errors, even when the HTTP response status is 200. |
 | <a id="countablevulnerability-links"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
 | <a id="countablevulnerability-location"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="countablevulnerability-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the namespace. |
@@ -46081,6 +46104,38 @@ Fields:
 | <a id="governpolicy-triggertype"></a>`triggerType` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Trigger the policy responds to. |
 | <a id="governpolicy-updatedat"></a>`updatedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp of when the policy was last updated. |
 | <a id="governpolicy-version"></a>`version` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. Version of the policy. |
+
+### `GovernPolicyEvaluation`
+
+Recorded evaluation of a policy stored in the policy store.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="governpolicyevaluation-environmentid"></a>`environmentId` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. ID of the environment the evaluation ran for. Null when the evaluation was not scoped to an environment. |
+| <a id="governpolicyevaluation-evaluatedat"></a>`evaluatedAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp of when the policy was evaluated. |
+| <a id="governpolicyevaluation-id"></a>`id` {{< icon name="warning-solid" >}} | [`GovernPolicyEvaluationID!`](#governpolicyevaluationid) | Introduced in GitLab 19.4. Status: Experiment. Global ID of the evaluation. |
+| <a id="governpolicyevaluation-mode"></a>`mode` {{< icon name="warning-solid" >}} | [`GovernPolicyEvaluationMode!`](#governpolicyevaluationmode) | Introduced in GitLab 19.4. Status: Experiment. Enforcement mode of the policy at the time of the evaluation. |
+| <a id="governpolicyevaluation-policyid"></a>`policyId` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.4. Status: Experiment. ID of the policy that was evaluated. |
+| <a id="governpolicyevaluation-policyversion"></a>`policyVersion` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.4. Status: Experiment. Version of the policy at the time of the evaluation. |
+| <a id="governpolicyevaluation-projectid"></a>`projectId` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. ID of the project the evaluation ran for. Null when the evaluation was not scoped to a project. |
+| <a id="governpolicyevaluation-triggertype"></a>`triggerType` {{< icon name="warning-solid" >}} | [`GovernPolicyEvaluationTriggerType!`](#governpolicyevaluationtriggertype) | Introduced in GitLab 19.4. Status: Experiment. Trigger that started the evaluation. |
+| <a id="governpolicyevaluation-userid"></a>`userId` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. ID of the user whose operation triggered the evaluation. Null when the evaluation was not triggered by a user. |
+| <a id="governpolicyevaluation-verdict"></a>`verdict` {{< icon name="warning-solid" >}} | [`GovernPolicyEvaluationVerdict!`](#governpolicyevaluationverdict) | Introduced in GitLab 19.4. Status: Experiment. Verdict the evaluation produced. |
+| <a id="governpolicyevaluation-violations"></a>`violations` {{< icon name="warning-solid" >}} | [`[GovernPolicyViolation!]`](#governpolicyviolation) | Introduced in GitLab 19.4. Status: Experiment. Violations the evaluation produced. |
+
+### `GovernPolicyViolation`
+
+Violation a policy evaluation produced.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="governpolicyviolation-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp of when the violation was recorded. |
+| <a id="governpolicyviolation-details"></a>`details` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 19.4. Status: Experiment. Details of the violation. |
+| <a id="governpolicyviolation-id"></a>`id` {{< icon name="warning-solid" >}} | [`GovernPolicyViolationID!`](#governpolicyviolationid) | Introduced in GitLab 19.4. Status: Experiment. Global ID of the violation. |
 
 ### `GpgSignature`
 
@@ -56427,6 +56482,33 @@ Arguments:
 | <a id="policystore-policies-ids"></a>`ids` {{< icon name="warning-solid" >}} | [`[Int!]`](#int) | Introduced in GitLab 19.4. Status: Experiment. Return only the policies with these IDs. Unknown IDs are ignored; an empty list returns no policies. Maximum is 1000 IDs. |
 | <a id="policystore-policies-triggertype"></a>`triggerType` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Return only the policies that respond to this trigger. Valid values are the ids in the policy store triggers catalog. |
 
+##### `PolicyStore.policyEvaluations`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Recorded evaluations of the policies stored in the policy store for the organization, newest first. Returns `null` for groups and when the current user cannot read the policies of the organization.
+
+Returns [`GovernPolicyEvaluationConnection`](#governpolicyevaluationconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policystore-policyevaluations-evaluatedafter"></a>`evaluatedAfter` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Return only the evaluations that ran at or after the given timestamp. |
+| <a id="policystore-policyevaluations-evaluatedbefore"></a>`evaluatedBefore` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Return only the evaluations that ran at or before the given timestamp. |
+| <a id="policystore-policyevaluations-mode"></a>`mode` {{< icon name="warning-solid" >}} | [`GovernPolicyEvaluationMode`](#governpolicyevaluationmode) | Introduced in GitLab 19.4. Status: Experiment. Return only the evaluations that ran in the given enforcement mode. |
+| <a id="policystore-policyevaluations-policyid"></a>`policyId` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. Return only the evaluations of the policy with the given ID. |
+| <a id="policystore-policyevaluations-verdict"></a>`verdict` {{< icon name="warning-solid" >}} | [`GovernPolicyEvaluationVerdict`](#governpolicyevaluationverdict) | Introduced in GitLab 19.4. Status: Experiment. Return only the evaluations that produced the given verdict. |
+
 ### `PolicyStoreAction`
 
 Action available when creating a policy in the policy store.
@@ -64116,7 +64198,7 @@ Fields:
 | <a id="vulnerability-latestdetectedpipeline"></a>`latestDetectedPipeline` {{< icon name="warning-solid" >}} | [`Pipeline`](#pipeline) | Introduced in GitLab 18.2. Status: Experiment. Pipeline where the vulnerability was last detected. |
 | <a id="vulnerability-latestflag"></a>`latestFlag` {{< icon name="warning-solid" >}} | [`VulnerabilityFlag`](#vulnerabilityflag) | Introduced in GitLab 18.5. Status: Experiment. Latest flag for the vulnerability. |
 | <a id="vulnerability-latestnonclosedmergerequest"></a>`latestNonClosedMergeRequest` {{< icon name="warning-solid" >}} | [`MergeRequest`](#mergerequest) | Introduced in GitLab 19.1. Status: Experiment. Latest non-closed merge request linked to fix the vulnerability. |
-| <a id="vulnerability-latestsecurityreportfinding"></a>`latestSecurityReportFinding` {{< icon name="warning-solid" >}} | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | Introduced in GitLab 18.4. Status: Experiment. Latest security report finding for the vulnerability. |
+| <a id="vulnerability-latestsecurityreportfinding"></a>`latestSecurityReportFinding` {{< icon name="warning-solid" >}} | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | Introduced in GitLab 18.4. Status: Experiment. Latest security report finding for the vulnerability. On large projects, the field can time out and return null. Clients should check the top-level errors array for timeout errors, even when the HTTP response status is 200. |
 | <a id="vulnerability-links"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
 | <a id="vulnerability-location"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="vulnerability-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the namespace. |
@@ -69757,6 +69839,36 @@ Values for sorting artifacts.
 | <a id="googlecloudartifactregistryartifactssort-upload_time_asc"></a>`UPLOAD_TIME_ASC` | Ordered by `upload_time` in ascending order. |
 | <a id="googlecloudartifactregistryartifactssort-upload_time_desc"></a>`UPLOAD_TIME_DESC` | Ordered by `upload_time` in descending order. |
 
+### `GovernPolicyEvaluationMode`
+
+Enforcement mode of the policy at the time of an evaluation.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="governpolicyevaluationmode-audit"></a>`AUDIT` | Policy was in `audit` mode when it was evaluated. |
+| <a id="governpolicyevaluationmode-enforce"></a>`ENFORCE` | Policy was in `enforce` mode when it was evaluated. |
+| <a id="governpolicyevaluationmode-warn"></a>`WARN` | Policy was in `warn` mode when it was evaluated. |
+
+### `GovernPolicyEvaluationTriggerType`
+
+Trigger that started a policy evaluation.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="governpolicyevaluationtriggertype-deployment_promoted"></a>`DEPLOYMENT_PROMOTED` | Evaluation was triggered by the `deployment_promoted` operation. |
+| <a id="governpolicyevaluationtriggertype-deployment_requested"></a>`DEPLOYMENT_REQUESTED` | Evaluation was triggered by the `deployment_requested` operation. |
+| <a id="governpolicyevaluationtriggertype-environment_advanced"></a>`ENVIRONMENT_ADVANCED` | Evaluation was triggered by the `environment_advanced` operation. |
+
+### `GovernPolicyEvaluationVerdict`
+
+Verdict a policy evaluation produced.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="governpolicyevaluationverdict-allow"></a>`ALLOW` | Evaluation produced a `allow` verdict. |
+| <a id="governpolicyevaluationverdict-deny"></a>`DENY` | Evaluation produced a `deny` verdict. |
+| <a id="governpolicyevaluationverdict-require_approval"></a>`REQUIRE_APPROVAL` | Evaluation produced a `require_approval` verdict. |
+
 ### `GroupMemberRelation`
 
 Group member relation.
@@ -74182,6 +74294,18 @@ Represents a Google Cloud Compute region.
 ### `GoogleCloudZone`
 
 Represents a Google Cloud Compute zone.
+
+### `GovernPolicyEvaluationID`
+
+A `GovernPolicyEvaluationID` is a global ID. It is encoded as a string.
+
+An example `GovernPolicyEvaluationID` is: `"gid://gitlab/Govern::PolicyEvaluation/1"`.
+
+### `GovernPolicyViolationID`
+
+A `GovernPolicyViolationID` is a global ID. It is encoded as a string.
+
+An example `GovernPolicyViolationID` is: `"gid://gitlab/Govern::PolicyViolation/1"`.
 
 ### `GroupHookID`
 

@@ -147,6 +147,7 @@ export default {
     :expanded="expanded"
     :has-flyout="hasFlyout"
     :headerless="headerless"
+    :async-count="asyncCount"
     @collapse-toggle="expanded = !expanded"
     @pin-remove="onPinRemove"
     @nav-link-click="writePinnedClick"
