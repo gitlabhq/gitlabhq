@@ -262,6 +262,31 @@ RSpec.describe UploadsController, feature_category: :groups_and_projects do
               response
             end
           end
+
+          # Exercises SendFileUpload#send_upload's image-scaling branch through a
+          # real controller (the unit spec stubs verify_workhorse_api!; this runs
+          # the real WorkhorseAuthenticatable guard and the JWT injection harness).
+          context "when a scaled image is requested" do
+            let(:scaled_avatar_params) do
+              { model: "user", mounted_as: "avatar", id: user.id, filename: "dk.png", width: "64" }
+            end
+
+            it "emits a scaled-image Workhorse senddata instruction" do
+              get :show, params: scaled_avatar_params
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('send-scaled-img:')
+            end
+
+            context "without a Workhorse JWT", :verify_workhorse_jwt do
+              it "returns 403 forbidden and emits no senddata", :aggregate_failures do
+                get :show, params: scaled_avatar_params
+
+                expect(response).to have_gitlab_http_status(:forbidden)
+                expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to be_nil
+              end
+            end
+          end
         end
       end
 
