@@ -39,6 +39,18 @@ export const toggleBlameLineBorders = (blameData, isVisible) => {
 };
 
 /**
+ * Returns the element inside the highlight overlay at the given viewport
+ * coordinates. The overlay is `inert` so it doesn't intercept pointer events;
+ * it is briefly made hit-testable to resolve the element.
+ */
+export const findOverlayElementFromPoint = (overlay, clientX, clientY) => {
+  overlay.removeAttribute('inert');
+  const element = document.elementsFromPoint(clientX, clientY).find((el) => overlay.contains(el));
+  overlay.setAttribute('inert', '');
+  return element;
+};
+
+/**
  * Checks if any blame data exists for a given chunk's line range.
  * Used to determine if a skeleton loader should still be shown for a chunk.
  */

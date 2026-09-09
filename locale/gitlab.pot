@@ -974,6 +974,9 @@ msgid_plural "%{digit} total tests"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{displayType} requires %{minDimensions} dimensions"
+msgstr ""
+
 msgid "%{displayType} requires at least one dimension"
 msgstr ""
 
@@ -8420,9 +8423,6 @@ msgstr ""
 msgid "AiGovernance|Connected"
 msgstr ""
 
-msgid "AiGovernance|Connection"
-msgstr ""
-
 msgid "AiGovernance|Control how your AI-powered features are used."
 msgstr ""
 
@@ -8436,9 +8436,6 @@ msgid "AiGovernance|Dashboard"
 msgstr ""
 
 msgid "AiGovernance|Date range"
-msgstr ""
-
-msgid "AiGovernance|Description"
 msgstr ""
 
 msgid "AiGovernance|Destroy"
@@ -8709,6 +8706,15 @@ msgid "AiModelDeprecation|Change model"
 msgstr ""
 
 msgid "AiModelDeprecation|The following models have been deprecated and will stop working after GitLab removes them. Please change to an alternative model before the removal version to avoid disruption."
+msgstr ""
+
+msgid "AiOverview|AI Overview"
+msgstr ""
+
+msgid "AiOverview|Switch to the classic overview"
+msgstr ""
+
+msgid "AiOverview|Try the new overview"
 msgstr ""
 
 msgid "AiPowered|%{word} by %{source} — subgroups cannot opt in."
@@ -12513,6 +12519,12 @@ msgstr ""
 msgid "ArtifactRegistry|Install instructions are unavailable because the package could not be loaded."
 msgstr ""
 
+msgid "ArtifactRegistry|Its file may have been deleted from the registry."
+msgstr ""
+
+msgid "ArtifactRegistry|Its files may have been deleted from the registry."
+msgstr ""
+
 msgid "ArtifactRegistry|Last downloaded"
 msgstr ""
 
@@ -12946,6 +12958,12 @@ msgid "ArtifactRegistry|Username"
 msgstr ""
 
 msgid "ArtifactRegistry|Version"
+msgstr ""
+
+msgid "ArtifactRegistry|Version %{version} stores no file"
+msgstr ""
+
+msgid "ArtifactRegistry|Version %{version} stores no files"
 msgstr ""
 
 msgid "ArtifactRegistry|Version details"
@@ -17448,6 +17466,9 @@ msgid "ChangeReviewer|All reviewers were removed."
 msgstr ""
 
 msgid "ChangeTypeAction|Cherry-pick"
+msgstr ""
+
+msgid "ChangeTypeAction|Copy merge request description"
 msgstr ""
 
 msgid "ChangeTypeAction|GitLab will create a branch in your fork and start a merge request."
@@ -36186,6 +36207,11 @@ msgstr ""
 msgid "FeatureFlag|User List"
 msgstr ""
 
+msgid "FeatureLibrary|%d feature found."
+msgid_plural "FeatureLibrary|%d features found."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "FeatureLibrary|All"
 msgstr ""
 
@@ -36198,8 +36224,10 @@ msgstr ""
 msgid "FeatureLibrary|Gemini couldn't find a matching feature. Try different keywords."
 msgstr ""
 
-msgid "FeatureLibrary|Gemini found matching features."
-msgstr ""
+msgid "FeatureLibrary|Gemini found %d matching feature."
+msgid_plural "FeatureLibrary|Gemini found %d matching features."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "FeatureLibrary|GitLab features"
 msgstr ""
@@ -36219,6 +36247,9 @@ msgstr ""
 msgid "FeatureLibrary|Powered by Gemini"
 msgstr ""
 
+msgid "FeatureLibrary|Press Enter or the down arrow key to move to the first search result."
+msgstr ""
+
 msgid "FeatureLibrary|Recommended"
 msgstr ""
 
@@ -36232,6 +36263,9 @@ msgid "FeatureLibrary|Search features in this group"
 msgstr ""
 
 msgid "FeatureLibrary|Search features in this project"
+msgstr ""
+
+msgid "FeatureLibrary|Searching for features …"
 msgstr ""
 
 msgid "FeatureLibrary|Searching with Gemini …"
@@ -39991,10 +40025,16 @@ msgstr ""
 msgid "GovernPolicies|Only one of policy_scope or scope_rego can be provided"
 msgstr ""
 
+msgid "GovernPolicies|Policy Store experiment is not active for this group"
+msgstr ""
+
 msgid "GovernPolicies|Policy Store experiment is not active for this organization"
 msgstr ""
 
 msgid "GovernPolicies|Policy was not found"
+msgstr ""
+
+msgid "GovernPolicies|You are not authorized to perform this action on policies in this group"
 msgstr ""
 
 msgid "GovernPolicies|You are not authorized to perform this action on policies in this organization"
@@ -41598,6 +41638,9 @@ msgid "HealthCheck|Unhealthy"
 msgstr ""
 
 msgid "Healthy"
+msgstr ""
+
+msgid "Heat map of %{metric} by %{columns} and %{rows}."
 msgstr ""
 
 msgid "Hello %{name},"
@@ -61017,6 +61060,12 @@ msgstr ""
 msgid "PolicyStore|%{rule} needs at least one of: %{fields}."
 msgstr ""
 
+msgid "PolicyStore|2026-12-24T00:00:00Z"
+msgstr ""
+
+msgid "PolicyStore|2027-01-02T00:00:00Z"
+msgstr ""
+
 msgid "PolicyStore|A policy with this name already exists. Choose a different name."
 msgstr ""
 
@@ -61039,6 +61088,9 @@ msgid "PolicyStore|Add rule"
 msgstr ""
 
 msgid "PolicyStore|Add trigger"
+msgstr ""
+
+msgid "PolicyStore|Add window"
 msgstr ""
 
 msgid "PolicyStore|Advanced"
@@ -61143,6 +61195,9 @@ msgstr ""
 msgid "PolicyStore|Deployment tiers this rule applies to. At least one name or tier is required."
 msgstr ""
 
+msgid "PolicyStore|Deployments to the selected tiers are blocked during each window. Enter the start and end as a date and time with a time zone, using whole seconds only (no decimal fractions), for example 2026-12-24T00:00:00Z or 2026-12-24T01:00:00+01:00. At least one window is required."
+msgstr ""
+
 msgid "PolicyStore|Describe what this policy does"
 msgstr ""
 
@@ -61180,6 +61235,9 @@ msgid "PolicyStore|Enable the Policy Store experiment"
 msgstr ""
 
 msgid "PolicyStore|Enable the Policy store experiment"
+msgstr ""
+
+msgid "PolicyStore|Ends at"
 msgstr ""
 
 msgid "PolicyStore|Enforce"
@@ -61222,6 +61280,9 @@ msgid "PolicyStore|Exclusions"
 msgstr ""
 
 msgid "PolicyStore|Freeze Window"
+msgstr ""
+
+msgid "PolicyStore|Freeze windows"
 msgstr ""
 
 msgid "PolicyStore|Hide configuration details"
@@ -61320,13 +61381,13 @@ msgstr ""
 msgid "PolicyStore|Read-only Rego the store compiled from the scope. The policy engine evaluates this program to decide where the policy applies."
 msgstr ""
 
-msgid "PolicyStore|Recurring"
-msgstr ""
-
 msgid "PolicyStore|Rego policy definition"
 msgstr ""
 
 msgid "PolicyStore|Remove %{label}"
+msgstr ""
+
+msgid "PolicyStore|Remove window %{name}"
 msgstr ""
 
 msgid "PolicyStore|Require additional approvals before proceeding"
@@ -61386,6 +61447,9 @@ msgstr ""
 msgid "PolicyStore|Start from scratch"
 msgstr ""
 
+msgid "PolicyStore|Starts at"
+msgstr ""
+
 msgid "PolicyStore|Status"
 msgstr ""
 
@@ -61423,9 +61487,6 @@ msgid "PolicyStore|This policy will be enabled for %{scope} in Warn mode. Users 
 msgstr ""
 
 msgid "PolicyStore|This step is coming soon."
-msgstr ""
-
-msgid "PolicyStore|Timezone"
 msgstr ""
 
 msgid "PolicyStore|Trigger"
@@ -61479,10 +61540,7 @@ msgstr ""
 msgid "PolicyStore|Which projects should this policy govern?"
 msgstr ""
 
-msgid "PolicyStore|Window end"
-msgstr ""
-
-msgid "PolicyStore|Window start"
+msgid "PolicyStore|Window name"
 msgstr ""
 
 msgid "PolicyStore|You"
@@ -61500,19 +61558,13 @@ msgstr ""
 msgid "PolicyStore|all projects in the group"
 msgstr ""
 
-msgid "PolicyStore|e.g. 2026-12-20T00:00:00Z"
-msgstr ""
-
-msgid "PolicyStore|e.g. 2027-01-02T00:00:00Z"
-msgstr ""
-
-msgid "PolicyStore|e.g. America/New_York"
-msgstr ""
-
 msgid "PolicyStore|e.g. production, staging"
 msgstr ""
 
 msgid "PolicyStore|e.g. security-leads, engineering-leads"
+msgstr ""
+
+msgid "PolicyStore|end-of-year freeze"
 msgstr ""
 
 msgid "PolicyStore|rules"

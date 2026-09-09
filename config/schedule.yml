@@ -33,6 +33,10 @@ authorized_project_update_periodic_recalculate_worker:
   class: AuthorizedProjectUpdate::PeriodicRecalculateWorker
   cron: "45 1 1,15 * *"
 
+authz_reverify_project_authorizations_cron_worker:
+  class: Authz::ReverifyProjectAuthorizationsCronWorker
+  cron: "*/1 * * * *"
+
 background_operation_environments_auto_delete:
   class: Database::BackgroundOperation::CronEnqueueWorker
   cron: "24 * * * *"

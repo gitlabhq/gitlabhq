@@ -179,6 +179,7 @@ describe('FeatureLibraryModal', () => {
   const findGeminiLoading = () => wrapper.findByTestId('gemini-loading');
   const findGeminiError = () => wrapper.findByTestId('gemini-error');
   const findGeminiStatusRegion = () => wrapper.findByTestId('gemini-status-region');
+  const findSearchStatusRegion = () => wrapper.findByTestId('search-status-region');
   const findGeminiItems = () =>
     findGeminiSection().exists()
       ? findGeminiSection().findAllComponents(FeatureLibraryItem)
@@ -947,8 +948,22 @@ describe('FeatureLibraryModal', () => {
         expect(findHideGeminiButton().exists()).toBe(true);
       });
 
-      it('announces that matching features were found via the status live region', () => {
-        expect(findGeminiStatusRegion().text()).toBe('Gemini found matching features.');
+      it('announces the result count via the status live region', () => {
+        expect(findGeminiStatusRegion().text()).toBe('Gemini found 1 matching feature.');
+      });
+    });
+
+    describe('when the request resolves with multiple results', () => {
+      beforeEach(async () => {
+        mockAiSearch({ ids: ['boards', 'members'], ai_search_available: true });
+        await emitSearch('re');
+        await waitForPromises();
+
+        await clickGeminiSearch();
+      });
+
+      it('announces the result count in the plural form via the status live region', () => {
+        expect(findGeminiStatusRegion().text()).toBe('Gemini found 2 matching features.');
       });
     });
 
@@ -1382,10 +1397,6 @@ describe('FeatureLibraryModal', () => {
   });
 
   describe('keyboard-first navigation', () => {
-    const pressEnter = () => {
-      findSearch().vm.$emit('keydown', new KeyboardEvent('keydown', { key: 'Enter' }));
-    };
-
     describe('when the modal is shown', () => {
       beforeEach(() => {
         createWrapper();
@@ -1397,115 +1408,238 @@ describe('FeatureLibraryModal', () => {
       });
     });
 
-    describe('when a query has results', () => {
-      beforeEach(async () => {
-        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
-        createWrapper();
-        await emitSearch('board');
-        await waitForPromises();
-      });
-
-      it('focuses the first displayed result on Enter, without navigating or closing the modal', () => {
-        pressEnter();
-
-        expect(focusItem).toHaveBeenCalled();
-        expect(focusItem.mock.contexts[0].item.id).toBe('boards');
-        expect(visitUrl).not.toHaveBeenCalled();
-        expect(hideModal).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('when the modal is closed and reopened with a stale query', () => {
-      beforeEach(async () => {
-        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
-        createWrapper();
-        await emitSearch('board');
-        await waitForPromises();
-
-        findModal().vm.$emit('hidden');
-        findModal().vm.$emit('shown');
-      });
-
-      it('does not focus a result on Enter', () => {
-        pressEnter();
-
-        expect(focusItem).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('when synonym matches exist', () => {
-      beforeEach(async () => {
-        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: ['members'] });
-        createWrapper();
-        await emitSearch('sprint');
-        await waitForPromises();
-      });
-
-      it('focuses the first displayed result on Enter', () => {
-        pressEnter();
-
-        expect(focusItem).toHaveBeenCalled();
-        expect(focusItem.mock.contexts[0].item.id).toBe('members');
-      });
-    });
-
-    describe('when the query is empty', () => {
+    describe('search input description', () => {
       beforeEach(() => {
         createWrapper();
       });
 
-      it('does nothing on Enter', () => {
-        pressEnter();
+      it('links the search input to an sr-only hint teaching the focus keys', () => {
+        const describedBy = findSearch().attributes('aria-describedby');
+        const hint = wrapper.find(`#${describedBy}`);
 
-        expect(focusItem).not.toHaveBeenCalled();
+        expect(hint.classes()).toContain('gl-sr-only');
+        expect(hint.text()).toBe(
+          'Press Enter or the down arrow key to move to the first search result.',
+        );
       });
     });
 
-    describe('while the search endpoint is in flight', () => {
-      beforeEach(async () => {
-        mockAxios.onGet(SEARCH_URL).reply(() => new Promise(() => {}));
-        createWrapper();
-        await emitSearch('board');
+    describe.each(['Enter', 'ArrowDown'])('via the %s key', (key) => {
+      const pressKey = () => {
+        const event = new KeyboardEvent('keydown', { key, cancelable: true });
+        findSearch().vm.$emit('keydown', event);
+        return event;
+      };
+
+      describe('when a query has results', () => {
+        beforeEach(async () => {
+          mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
+          createWrapper();
+          await emitSearch('board');
+          await waitForPromises();
+        });
+
+        it('focuses the first displayed result, without navigating or closing the modal', () => {
+          const event = pressKey();
+
+          // Assert identity, not just that some item was focused: focusItem is
+          // one shared mock across every stubbed item, and $refs.searchResultItems[0]
+          // (Vue 2 v-for ref array registration order) isn't guaranteed to track
+          // the current filteredItems order, so this also guards the ref-ordering fix.
+          expect(focusItem).toHaveBeenCalled();
+          expect(focusItem.mock.contexts[0].item.id).toBe('boards');
+          expect(event.defaultPrevented).toBe(true);
+          expect(visitUrl).not.toHaveBeenCalled();
+          expect(hideModal).not.toHaveBeenCalled();
+        });
       });
 
-      it('does nothing on Enter', () => {
-        pressEnter();
+      describe('when the modal is closed and reopened with a stale query', () => {
+        beforeEach(async () => {
+          mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
+          createWrapper();
+          await emitSearch('board');
+          await waitForPromises();
 
-        expect(focusItem).not.toHaveBeenCalled();
+          findModal().vm.$emit('hidden');
+          findModal().vm.$emit('shown');
+        });
+
+        it('does not focus a result', () => {
+          pressKey();
+
+          expect(focusItem).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('when synonym matches exist', () => {
+        beforeEach(async () => {
+          mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: ['members'] });
+          createWrapper();
+          await emitSearch('sprint');
+          await waitForPromises();
+        });
+
+        it('focuses the first displayed result', () => {
+          pressKey();
+
+          expect(focusItem).toHaveBeenCalled();
+          expect(focusItem.mock.contexts[0].item.id).toBe('members');
+        });
+      });
+
+      describe('when the query is empty', () => {
+        beforeEach(() => {
+          createWrapper();
+        });
+
+        it('does nothing, leaving the default key behavior intact', () => {
+          const event = pressKey();
+
+          expect(focusItem).not.toHaveBeenCalled();
+          expect(event.defaultPrevented).toBe(false);
+        });
+      });
+
+      describe('while the search endpoint is in flight', () => {
+        beforeEach(async () => {
+          mockAxios.onGet(SEARCH_URL).reply(() => new Promise(() => {}));
+          createWrapper();
+          await emitSearch('board');
+        });
+
+        it('does nothing', () => {
+          pressKey();
+
+          expect(focusItem).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('when there are no results', () => {
+        beforeEach(async () => {
+          mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
+          createWrapper();
+          await emitSearch('nonexistent feature');
+          await waitForPromises();
+        });
+
+        it('does nothing, leaving the default key behavior intact', () => {
+          const event = pressKey();
+
+          expect(focusItem).not.toHaveBeenCalled();
+          expect(event.defaultPrevented).toBe(false);
+        });
+      });
+
+      describe('when the first displayed result has no link', () => {
+        beforeEach(async () => {
+          mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
+          createWrapper();
+          // 'milestones' has no link in defaultSections and is the only match.
+          await emitSearch('milestones');
+          await waitForPromises();
+        });
+
+        it('delegates to focus(), which intentionally no-ops for link-less items, rather than navigating', () => {
+          // The no-op here is intentional: a link-less item isn't navigable, so
+          // there's nothing to focus into for that row. The modal itself
+          // doesn't special-case this — FeatureLibraryItem#focus() is a no-op
+          // when there's no title link to focus (see feature_library_item_spec.js).
+          pressKey();
+
+          expect(focusItem).toHaveBeenCalled();
+          expect(visitUrl).not.toHaveBeenCalled();
+          expect(hideModal).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('when only Gemini has results', () => {
+        beforeEach(async () => {
+          mockSearch();
+          mockAiSearch({ ids: ['boards'], ai_search_available: true });
+          createWrapper({ aiSearchAvailable: true, resourceId: 42 });
+          await emitSearch('asdfgh');
+          await waitForPromises();
+
+          await clickGeminiSearch();
+        });
+
+        it('falls through to focus the first Gemini result', () => {
+          const event = pressKey();
+
+          expect(focusItem).toHaveBeenCalled();
+          expect(focusItem.mock.contexts[0].item.id).toBe('boards');
+          expect(event.defaultPrevented).toBe(true);
+        });
+
+        describe('and the Gemini section is hidden', () => {
+          beforeEach(async () => {
+            await findHideGeminiButton().vm.$emit('click');
+          });
+
+          it('does nothing, leaving the default key behavior intact', () => {
+            const event = pressKey();
+
+            expect(focusItem).not.toHaveBeenCalled();
+            expect(event.defaultPrevented).toBe(false);
+          });
+        });
       });
     });
+  });
 
-    describe('when there are no results', () => {
-      beforeEach(async () => {
-        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
-        createWrapper();
-        await emitSearch('nonexistent feature');
-        await waitForPromises();
-      });
+  describe('search status live region', () => {
+    it('renders as a polite, atomic status region that is empty while browsing', () => {
+      createWrapper();
 
-      it('does nothing on Enter', () => {
-        pressEnter();
-
-        expect(focusItem).not.toHaveBeenCalled();
-      });
+      expect(findSearchStatusRegion().attributes('aria-live')).toBe('polite');
+      expect(findSearchStatusRegion().attributes('aria-atomic')).toBe('true');
+      expect(findSearchStatusRegion().text()).toBe('');
     });
 
-    describe('when the first displayed result has no link', () => {
-      beforeEach(async () => {
-        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
-        createWrapper();
-        // 'milestones' has no link in defaultSections and is the only match.
-        await emitSearch('milestones');
-        await waitForPromises();
-      });
+    it('announces the loading state while the search endpoint is in flight', async () => {
+      mockAxios.onGet(SEARCH_URL).reply(() => new Promise(() => {}));
+      createWrapper();
+      await emitSearch('board');
 
-      it('delegates to focus(), which no-ops for link-less items, rather than navigating', () => {
-        pressEnter();
+      expect(findSearchStatusRegion().text()).toBe('Searching for features …');
+    });
 
-        expect(focusItem).toHaveBeenCalled();
-        expect(visitUrl).not.toHaveBeenCalled();
-        expect(hideModal).not.toHaveBeenCalled();
-      });
+    it('announces a singular result count', async () => {
+      mockSearch();
+      createWrapper();
+      await emitSearch('board');
+      await waitForPromises();
+
+      expect(findSearchStatusRegion().text()).toBe('1 feature found.');
+    });
+
+    it('announces a plural result count', async () => {
+      mockSearch();
+      createWrapper();
+      await emitSearch('manage');
+      await waitForPromises();
+
+      expect(findSearchStatusRegion().text()).toBe('3 features found.');
+    });
+
+    it('announces when nothing matches, so keyboard users know Enter and ArrowDown will not act', async () => {
+      mockSearch();
+      createWrapper();
+      await emitSearch('nonexistent feature');
+      await waitForPromises();
+
+      expect(findSearchStatusRegion().text()).toBe('No features match your search');
+    });
+
+    it('clears the announcement when the query is cleared', async () => {
+      mockSearch();
+      createWrapper();
+      await emitSearch('board');
+      await waitForPromises();
+      await emitSearch('');
+
+      expect(findSearchStatusRegion().text()).toBe('');
     });
   });
 

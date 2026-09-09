@@ -1,0 +1,15 @@
+-# Also seeds the notes state the diffs app reads, so it stays in the DOM even when the notes app is not mounted.
+#js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request).to_json,
+  endpoint_metadata: @endpoint_metadata_url,
+  noteable_data: serialize_issuable(@merge_request, serializer: 'noteable'),
+  noteable_type: 'MergeRequest',
+  notes_filters: UserPreference.notes_filters.to_json,
+  notes_filter_value: current_user&.notes_filter_for(@merge_request),
+  target_type: 'merge_request',
+  help_page_path: help_page_path('user/project/merge_requests/reviews/suggestions.md'),
+  current_user_data: @current_user_data,
+  is_locked: @merge_request.discussion_locked.to_s,
+  archived: @project.self_or_ancestors_archived?.to_s,
+  report_abuse_path: add_category_abuse_reports_path,
+  new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json,
+  new_custom_emoji_path: new_custom_emoji_path(@project.group) } }

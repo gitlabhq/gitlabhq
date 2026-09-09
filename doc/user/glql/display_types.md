@@ -44,6 +44,7 @@ The following display types are available only in analytics mode:
 | Bar chart | `barChart` | A horizontal chart that compares metrics across the categories defined by your dimensions. |
 | Line chart     | `lineChart`     | A chart that plots one or more metrics as lines over a dimension, to show trends. |
 | Area chart     | `areaChart`     | A chart that plots one or more metrics as filled areas over a dimension, to show trends and volume. |
+| Heat map     | `heatMap`     | A grid of shaded cells, one per pair of dimension values, where a darker cell is a larger value. |
 
 ## Table
 
@@ -330,6 +331,60 @@ mode: analytics
 query: type = CodeSuggestion and timestamp >= -30d
 dimensions: timestamp
 metrics: shownCount, acceptedCount
+```
+````
+
+## Heat map
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628031) in GitLab 19.4.
+
+{{< /history >}}
+
+A heat map visualizes aggregated data from [analytics mode](_index.md#analytics-mode) as a grid of
+shaded cells, one cell per pair of dimension values. Use a heat map to compare a single metric across
+two dimensions at once, and to see where the largest values sit.
+
+A heat map requires:
+
+- Analytics mode, set with `mode: analytics`.
+- Exactly two `dimensions` to group results by. The first runs along the columns, the second down
+  the rows.
+- Exactly one metric to shade the cells by (using the `metrics` parameter).
+
+Each cell shows its value, shaded from light to dark as the value rises. Shading uses fixed bands
+derived from the values in the result, so a darker cell always means a larger value. Cells with no
+value at all are shaded a neutral gray rather than the lightest color, so that a small value is not
+mistaken for an absent one. Hover a cell for its row, column, and exact value.
+
+To describe the panel above the grid, set `description` under `displayConfig`.
+
+### Example
+
+To compare Code Suggestion volume across IDEs and languages over the last 30 days:
+
+````yaml
+```glql
+display: heatMap
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: ideName, language
+metrics: totalCount
+```
+````
+
+To add a description above the grid:
+
+````yaml
+```glql
+display: heatMap
+displayConfig:
+  description: Code Suggestions accepted per language, by IDE.
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: ideName, language
+metrics: acceptedCount
 ```
 ````
 

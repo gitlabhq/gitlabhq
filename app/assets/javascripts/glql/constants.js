@@ -9,6 +9,7 @@ export const DISPLAY_TYPES = {
   LINE_CHART: 'lineChart',
   BAR_CHART: 'barChart',
   AREA_CHART: 'areaChart',
+  HEAT_MAP: 'heatMap',
 };
 
 // Display types that opt into the page-size default and the load-more UI.

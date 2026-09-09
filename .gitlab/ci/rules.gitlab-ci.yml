@@ -2193,6 +2193,12 @@
     - if: $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
       changes: *code-backstage-spec-patterns
 
+.frontend:rules:update-frontend-fixtures-on-demand:
+  rules:
+    - <<: *if-dot-com-gitlab-org-merge-request
+      when: manual
+      allow_failure: true
+
 .frontend:rules:update-fe-islands:
   rules:
     - <<: *if-not-ee

@@ -2,7 +2,11 @@
 
 module Users
   class DestroyService
+    include Gitlab::HandlesRemovalOf
+
     DestroyError = Class.new(StandardError)
+
+    handles_removal_of :project_authorization_reverifications
 
     attr_accessor :current_user
 

@@ -22,6 +22,14 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
     end
   end
 
+  describe '.importable_project_types' do
+    it 'returns all importer types except project template importers' do
+      expect(described_class.importable_project_types).to eq(
+        %w[github bitbucket bitbucket_server fogbugz git gitlab_project gitea manifest]
+      )
+    end
+  end
+
   describe '.has_importer?' do
     it 'returns true when has import source has importer' do
       with_importer =

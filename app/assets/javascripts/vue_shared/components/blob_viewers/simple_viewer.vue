@@ -8,7 +8,18 @@ import Blame from '../source_viewer/components/blame_info.vue';
 import { calculateBlameOffset, shouldRender, toggleBlameLineBorders } from '../source_viewer/utils';
 import blameDataQuery from '../source_viewer/queries/blame_data.query.graphql';
 import ViewerMixin from './mixins';
-import { HIGHLIGHT_CLASS_NAME, MAX_BLAME_LINES } from './constants';
+import {
+  HIGHLIGHT_CLASS_NAME,
+  HIGHLIGHT_TOP_CLASS_NAME,
+  HIGHLIGHT_BOTTOM_CLASS_NAME,
+  MAX_BLAME_LINES,
+} from './constants';
+
+const HIGHLIGHT_CLASS_NAMES = [
+  HIGHLIGHT_CLASS_NAME,
+  HIGHLIGHT_TOP_CLASS_NAME,
+  HIGHLIGHT_BOTTOM_CLASS_NAME,
+];
 
 export default {
   name: 'SimpleViewer',
@@ -65,7 +76,7 @@ export default {
   },
   data() {
     return {
-      highlightedLine: null,
+      highlightedLines: [],
       blameData: [],
       fromLine: 1,
       toLine: MAX_BLAME_LINES,
@@ -120,17 +131,21 @@ export default {
   methods: {
     scrollToLine(hash, scroll = false) {
       const lineToHighlight = hash && this.$el.querySelector(hash);
-      const currentlyHighlighted = this.highlightedLine;
-      if (lineToHighlight) {
-        if (currentlyHighlighted) {
-          currentlyHighlighted.classList.remove(HIGHLIGHT_CLASS_NAME);
-        }
+      if (!lineToHighlight) return;
 
-        lineToHighlight.classList.add(HIGHLIGHT_CLASS_NAME);
-        this.highlightedLine = lineToHighlight;
-        if (scroll) {
-          lineToHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+      // The hash targets either the code line (`#LC2`) or the line number (`#L2`);
+      // highlight both so the selection reads as one box across the gutter and the
+      // code, as it does in the source viewer.
+      const lineNumber = lineToHighlight.id.replace(/^LC?/, '');
+      const gutter = this.$el.querySelector(`#L${lineNumber}`)?.closest('.diff-line-num');
+      const code = this.$el.querySelector(`#LC${lineNumber}`);
+
+      this.highlightedLines.forEach((line) => line.classList.remove(...HIGHLIGHT_CLASS_NAMES));
+      this.highlightedLines = [code, gutter].filter(Boolean);
+      this.highlightedLines.forEach((line) => line.classList.add(...HIGHLIGHT_CLASS_NAMES));
+
+      if (scroll) {
+        lineToHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     },
     async requestBlameInfo(fromLine, toLine) {

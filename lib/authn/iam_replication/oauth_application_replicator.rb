@@ -6,8 +6,8 @@
 module Authn
   module IamReplication
     class OauthApplicationReplicator
-      def initialize(client: ::Authn::IamService::GrpcClient.new)
-        @client = client
+      def initialize(client: nil, timeout: nil)
+        @client = client || ::Authn::IamService::GrpcClient.new(timeout: timeout)
       end
 
       # Returns :delivered, or :skipped if the record is gone. Raises on transport
@@ -20,13 +20,10 @@ module Authn
           # Absent means the record was removed after this row was written
           return :skipped unless application
 
-          # IAM has no update RPC; delete-then-create is a temporary workaround.
-          # Tracked in https://gitlab.com/gitlab-org/gitlab/-/work_items/616947
-          delete_upstream(application.uid)
-          client.create_oauth_application(**upsert_attributes(application))
+          client.upsert_oauth_application(**upsert_attributes(application))
           :delivered
         when 'delete'
-          client.delete_oauth_application(client_id: outbox_event.payload.symbolize_keys.fetch(:uid))
+          delete_upstream(outbox_event.payload.symbolize_keys.fetch(:uid))
           :delivered
         else
           raise ArgumentError, "unhandled event_type: #{outbox_event.event_type}"
@@ -36,6 +33,14 @@ module Authn
       private
 
       attr_reader :client
+
+      # NOT_FOUND means the client is already gone, which is the desired end
+      # state, so it counts as delivered. Layer 2 usually deletes it first.
+      def delete_upstream(uid)
+        client.delete_oauth_application(client_id: uid)
+      rescue ::Authn::IamService::GrpcClient::RequestError => error
+        raise unless error.reason == :not_found
+      end
 
       def upsert_attributes(application)
         {
@@ -52,13 +57,6 @@ module Authn
           created_at: timestamp(application.created_at),
           updated_at: timestamp(application.updated_at)
         }
-      end
-
-      # A first upsert has nothing upstream to replace, so a missing client is not a failure.
-      def delete_upstream(uid)
-        client.delete_oauth_application(client_id: uid)
-      rescue ::Authn::IamService::GrpcClient::RequestError => error
-        raise unless error.reason == :not_found
       end
 
       # Mirrors auth_helper#auth_app_owner_text

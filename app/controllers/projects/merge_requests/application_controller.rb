@@ -132,7 +132,10 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   end
 
   def build_merge_request
-    new_params = build_merge_request_params.merge(diff_options: diff_options)
+    new_params = build_merge_request_params.merge(
+      diff_options: diff_options,
+      cherry_picked_merge_request_id: cherry_picked_merge_request_id
+    )
 
     # Gitaly N+1 issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/58096
     Gitlab::GitalyClient.allow_n_plus_1_calls do
@@ -148,6 +151,14 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
     merge_request_params
   rescue ActionController::ParameterMissing
     ActionController::Parameters.new.permit!
+  end
+
+  # Only the form prefills a description; the other actions that build a merge
+  # request render diffs or a branch dropdown.
+  def cherry_picked_merge_request_id
+    return unless action_name == 'new'
+
+    params.permit(:cherry_picked_merge_request_id)[:cherry_picked_merge_request_id]
   end
 end
 

@@ -455,6 +455,8 @@ class ApplicationSetting < ApplicationRecord
   validates :wiki_page_max_content_bytes, numericality: { only_integer: true, greater_than_or_equal_to: 1.kilobyte }
   validates :wiki_asciidoc_allow_uri_includes, inclusion: { in: [true, false], message: N_('must be a boolean value') }
   validates :secrets_manager_instance_enrolled, inclusion: { in: [true, false], message: N_('must be a boolean value') }
+  validates :secrets_manager_instance_beta_enrolled,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :email_restrictions, untrusted_regexp: true
 

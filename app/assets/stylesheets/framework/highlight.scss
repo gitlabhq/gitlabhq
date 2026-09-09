@@ -20,13 +20,19 @@
     word-wrap: normal;
     border-left: 1px solid;
 
+    // Only `code.line` takes part in width calculations, since the absolutely
+    // positioned highlighted lines don't affect `max-content` sizing. Both layers
+    // need the same padding, or the highlighted one ends up wider than the column.
     code.line, code .line {
       padding-left: 10px;
+      padding-right: 10px;
     }
 
     code {
       display: inline-block;
-      min-width: 100%;
+      // The source viewer offsets the code by `--source-gutter-width`; subtract it
+      // so the code doesn't overrun the viewport by that much.
+      min-width: calc(100% - var(--source-gutter-width, 0px));
       font-family: $monospace-font;
       white-space: normal;
       word-wrap: normal;
@@ -35,7 +41,6 @@
       .line {
         display: block;
         width: 100%;
-        padding-right: 10px;
         white-space: pre;
 
         &:empty::before, span:empty::before {
@@ -57,6 +62,10 @@
         .inline-section-marker {
           padding-right: 2px;
           border-radius: 4px;
+        }
+
+        &:last-of-type {
+          border-bottom-right-radius: $gl-border-radius-lg-inner;
         }
       }
     }
@@ -107,7 +116,7 @@
     }
 
     &:last-of-type {
-     border-bottom-left-radius: $gl-border-radius-base-inner;
+     border-bottom-left-radius: $gl-border-radius-lg-inner;
     }
   }
 
@@ -136,8 +145,31 @@ td.line-numbers {
   text-decoration: underline wavy $red-500;
 }
 
+// Line highlight background for all code viewers: global code search, the simple
+// blob viewer, and the rich source viewer. `!important` overrides the per-theme
+// `.hll` token color.
+pre .hll {
+  background-color: var(--code-highlighted-line-background-color) !important;
+}
+
 .blob-viewer {
   --source-line-height: 1.1875rem;
+
+  // Follow the `gl-rounded-lg` file frame, so a selected last line's bottom
+  // corners match it instead of the smaller default `.code` radius.
+  &.code {
+    border-bottom-right-radius: $gl-border-radius-lg-inner;
+    border-bottom-left-radius: $gl-border-radius-lg-inner;
+  }
+
+  // Blame, when shown, takes over the frame's bottom-left corner.
+  .blame {
+    border-bottom-left-radius: $gl-border-radius-lg-inner;
+  }
+
+  .blame ~ &.code .line-numbers:last-of-type {
+    border-bottom-left-radius: 0;
+  }
 
   .line-numbers {
     min-width: 6rem;
@@ -159,10 +191,14 @@ td.line-numbers {
   .line-numbers:not(.line-links) a:hover::before,
   .line-numbers:not(.line-links) a:focus-within::before,
   .line-links:hover a::before,
-  .line-links:focus-within a::before {
+  // `.is-over` is set from JS when the code (not the gutter) is hovered, so the
+  // blame icon also appears when hovering any part of the line.
+  .line-links.is-over a::before,
+  // `:focus-visible` rather than `:focus-within` keeps the icon visible when it is
+  // tabbed to, without leaving it visible after a line number is clicked.
+  .line-links a:focus-visible::before {
     visibility: visible;
   }
-
 
   .file-line-num {
     justify-content: flex-end;
@@ -178,5 +214,67 @@ td.line-numbers {
   .file-line-blame {
     align-items: center;
     display: flex;
+  }
+
+  // Match the gutter/content separator color to the diff views (which use
+  // `--code-border-color`) instead of the generic `gl-border-r` default.
+  .diff-line-num.line-links {
+    border-right-color: var(--code-border-color);
+  }
+
+  // Selected lines read as one box across the gutter and the code. An element can
+  // only have one `box-shadow`, so each side is composed from a custom property:
+  // a multi-line selection then draws top/bottom on its first/last line only.
+  .diff-line-num.hll,
+  pre .hll {
+    --highlighted-line-shadow-top: 0 0 transparent;
+    --highlighted-line-shadow-bottom: 0 0 transparent;
+  }
+
+  // `.line-links` outranks the theme's `line-links:focus-within` background, so a
+  // clicked line keeps its fill instead of the hover background.
+  .diff-line-num.line-links.hll {
+    background-color: var(--code-highlighted-line-background-color);
+    box-shadow:
+      inset 1px 0 var(--code-highlighted-line-border-color),
+      var(--highlighted-line-shadow-top),
+      var(--highlighted-line-shadow-bottom);
+  }
+
+  pre .hll {
+    box-shadow:
+      inset -1px 0 var(--code-highlighted-line-border-color),
+      var(--highlighted-line-shadow-top),
+      var(--highlighted-line-shadow-bottom);
+  }
+
+  .diff-line-num.highlight-top,
+  pre .highlight-top {
+    --highlighted-line-shadow-top: inset 0 1px var(--code-highlighted-line-border-color);
+  }
+
+  .diff-line-num.highlight-bottom,
+  pre .highlight-bottom {
+    --highlighted-line-shadow-bottom: inset 0 -1px var(--code-highlighted-line-border-color);
+  }
+
+  .diff-line-num.hll .file-line-num {
+    color: var(--code-line-number-hover-color, #{$gl-color-neutral-600});
+  }
+
+  // The `.line-links` compound is needed to override the gray gutter hover
+  // background the theme applies to `.line-links`. Not `:focus-within`, which
+  // would keep the gutter tinted after a line number is clicked.
+  .diff-line-num.line-links:hover,
+  .diff-line-num.line-links.is-over {
+    background-color: var(--code-line-number-hover-background-color, #{$gl-color-purple-100});
+  }
+
+  .file-line-num:hover {
+    color: var(--code-line-number-hover-color, #{$gl-color-neutral-600});
+  }
+
+  .diff-line-num .file-line-blame:hover::before {
+    background-color: var(--code-line-number-hover-color, #{$gl-color-neutral-600});
   }
 }

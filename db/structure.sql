@@ -14661,6 +14661,7 @@ CREATE TABLE application_settings (
     nats_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     o11y_oauth_application_id bigint,
     code_dropdown_custom_clients jsonb DEFAULT '[]'::jsonb NOT NULL,
+    secrets_manager_instance_beta_enrolled boolean DEFAULT false NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -28746,6 +28747,23 @@ CREATE SEQUENCE project_aliases_id_seq
 
 ALTER SEQUENCE project_aliases_id_seq OWNED BY project_aliases.id;
 
+CREATE TABLE project_authorization_reverifications (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    enqueued_at timestamp with time zone NOT NULL,
+    refresh_started_at timestamp with time zone,
+    status smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE project_authorization_reverifications_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_authorization_reverifications_id_seq OWNED BY project_authorization_reverifications.id;
+
 CREATE TABLE project_authorizations (
     user_id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -37986,6 +38004,8 @@ ALTER TABLE ONLY programming_languages ALTER COLUMN id SET DEFAULT nextval('prog
 
 ALTER TABLE ONLY project_aliases ALTER COLUMN id SET DEFAULT nextval('project_aliases_id_seq'::regclass);
 
+ALTER TABLE ONLY project_authorization_reverifications ALTER COLUMN id SET DEFAULT nextval('project_authorization_reverifications_id_seq'::regclass);
+
 ALTER TABLE ONLY project_auto_devops ALTER COLUMN id SET DEFAULT nextval('project_auto_devops_id_seq'::regclass);
 
 ALTER TABLE ONLY project_build_artifacts_size_refreshes ALTER COLUMN id SET DEFAULT nextval('project_build_artifacts_size_refreshes_id_seq'::regclass);
@@ -42020,6 +42040,9 @@ ALTER TABLE ONLY project_aliases
 
 ALTER TABLE ONLY project_audit_events
     ADD CONSTRAINT project_audit_events_pkey PRIMARY KEY (id, created_at);
+
+ALTER TABLE ONLY project_authorization_reverifications
+    ADD CONSTRAINT project_authorization_reverifications_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY project_authorizations_for_migration
     ADD CONSTRAINT project_authorizations_for_migration_pkey PRIMARY KEY (user_id, project_id);
@@ -46286,6 +46309,12 @@ CREATE INDEX idx_project_audit_events_on_author_id_created_at_id ON ONLY project
 CREATE INDEX idx_project_audit_events_on_project_created_at_id ON ONLY project_audit_events USING btree (project_id, created_at, id);
 
 CREATE INDEX idx_project_audit_events_on_project_id_author_created_at_id ON ONLY project_audit_events USING btree (project_id, author_id, created_at, id DESC);
+
+CREATE INDEX idx_project_authz_reverifications_on_enqueued_at ON project_authorization_reverifications USING btree (enqueued_at) WHERE (status = ANY (ARRAY[0, 2]));
+
+CREATE INDEX idx_project_authz_reverifications_on_refresh_started_at ON project_authorization_reverifications USING btree (refresh_started_at) WHERE (status = 1);
+
+CREATE UNIQUE INDEX idx_project_authz_reverifications_on_user_id ON project_authorization_reverifications USING btree (user_id);
 
 CREATE INDEX idx_project_compliance_violations_on_control_id ON project_compliance_violations USING btree (compliance_requirements_control_id);
 
@@ -59439,6 +59468,9 @@ ALTER TABLE ONLY snippet_statistics
 
 ALTER TABLE ONLY merge_requests_closing_issues
     ADD CONSTRAINT fk_a8703820ae FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_authorization_reverifications
+    ADD CONSTRAINT fk_a888e588b6 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ai_catalog_item_versions
     ADD CONSTRAINT fk_a98456de32 FOREIGN KEY (ai_catalog_item_id) REFERENCES ai_catalog_items(id) ON DELETE CASCADE;

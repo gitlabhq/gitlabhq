@@ -349,6 +349,149 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
     end
   end
 
+  describe 'internal events on state transitions' do
+    context 'for a project entity' do
+      let_it_be(:project) { create(:project, import_type: 'gitlab_project_migration') }
+      let(:bulk_import) { create(:bulk_import, :with_configuration) }
+      let(:entity) do
+        create(:bulk_import_entity, :project_entity, :started, project: project, bulk_import: bulk_import)
+      end
+
+      it 'tracks fail_project_import on fail_op' do
+        expect { entity.fail_op! }
+          .to trigger_internal_events('fail_project_import')
+          .with(
+            project: project,
+            user: entity.bulk_import.user,
+            namespace: project.namespace,
+            additional_properties: { label: 'gitlab_project_migration', property: entity.hashed_import_source }
+          )
+      end
+
+      it 'tracks cancel_project_import on cancel' do
+        expect { entity.cancel! }
+          .to trigger_internal_events('cancel_project_import')
+          .with(
+            project: project,
+            user: entity.bulk_import.user,
+            namespace: project.namespace,
+            additional_properties: { label: 'gitlab_project_migration', property: entity.hashed_import_source }
+          )
+      end
+
+      it 'tracks timeout_project_import on cleanup_stale' do
+        expect { entity.cleanup_stale! }
+          .to trigger_internal_events('timeout_project_import')
+          .with(
+            project: project,
+            user: entity.bulk_import.user,
+            namespace: project.namespace,
+            additional_properties: { label: 'gitlab_project_migration', property: entity.hashed_import_source }
+          )
+      end
+    end
+
+    context 'for a group entity' do
+      let(:entity) { create(:bulk_import_entity, :group_entity, :started) }
+
+      it 'does not track project import events' do
+        expect { entity.fail_op! }
+          .to not_trigger_internal_events('fail_project_import')
+          .and not_trigger_internal_events('cancel_project_import')
+      end
+    end
+
+    context 'for an offline project entity' do
+      let_it_be(:project) { create(:project, import_type: 'offline_transfer') }
+      let(:entity) do
+        create(
+          :bulk_import_entity, :project_entity, :started, project: project,
+          bulk_import: create(:bulk_import, :with_offline_configuration)
+        )
+      end
+
+      it 'tracks fail_project_import on fail_op, labeled as offline_transfer' do
+        expect { entity.fail_op! }
+          .to trigger_internal_events('fail_project_import')
+          .with(
+            project: project,
+            user: entity.bulk_import.user,
+            namespace: project.namespace,
+            additional_properties: { label: 'offline_transfer', property: entity.hashed_import_source }
+          )
+      end
+    end
+
+    context 'for a project entity with no project record yet' do
+      let(:entity) do
+        create(:bulk_import_entity, :project_entity, :started, bulk_import: create(:bulk_import, :with_configuration))
+      end
+
+      it 'still labels the event, using bulk_import rather than the (absent) project' do
+        expect { entity.fail_op! }
+          .to trigger_internal_events('fail_project_import')
+          .with(
+            project: nil,
+            user: entity.bulk_import.user,
+            namespace: nil,
+            additional_properties: { label: 'gitlab_project_migration', property: entity.hashed_import_source }
+          )
+      end
+    end
+  end
+
+  describe '#hashed_import_source' do
+    let(:bulk_import) { create(:bulk_import, :with_configuration) }
+    let(:entity) do
+      create(:bulk_import_entity, :project_entity, source_full_path: 'group/project', bulk_import: bulk_import)
+    end
+
+    it 'returns a stable hash derived from the source path' do
+      first_hash = entity.hashed_import_source
+
+      expect(entity.hashed_import_source).to eq(first_hash)
+    end
+
+    it 'differs for a different source path' do
+      other_entity = create(
+        :bulk_import_entity, :project_entity, source_full_path: 'group/other-project', bulk_import: bulk_import
+      )
+
+      expect(entity.hashed_import_source).not_to eq(other_entity.hashed_import_source)
+    end
+
+    it 'returns nil when the bulk import has no configuration' do
+      entity = create(:bulk_import_entity, :project_entity, source_full_path: 'group/project')
+
+      expect(entity.hashed_import_source).to be_nil
+    end
+
+    context 'for an offline entity' do
+      it 'uses the offline source_hostname, not the (unset) online configuration' do
+        entity = create(
+          :bulk_import_entity, :project_entity, source_full_path: 'group/project',
+          bulk_import: create(:bulk_import, :with_offline_configuration)
+        )
+
+        expect(entity.hashed_import_source).not_to be_nil
+      end
+
+      it 'differs for a different source_hostname, even with the same source path' do
+        other_configuration = build(:import_offline_configuration, source_hostname: 'https://other.example.com')
+        entity = create(
+          :bulk_import_entity, :project_entity, source_full_path: 'group/project',
+          bulk_import: create(:bulk_import, :with_offline_configuration)
+        )
+        other_entity = create(
+          :bulk_import_entity, :project_entity, source_full_path: 'group/project',
+          bulk_import: create(:bulk_import, :offline, offline_configuration: other_configuration)
+        )
+
+        expect(entity.hashed_import_source).not_to eq(other_entity.hashed_import_source)
+      end
+    end
+  end
+
   describe '#pipelines' do
     context 'when bulk_import is offline', :aggregate_failures do
       let(:offline_import) { build(:bulk_import, :with_offline_configuration) }

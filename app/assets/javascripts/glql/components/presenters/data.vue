@@ -4,6 +4,7 @@ import { DISPLAY_TYPES } from '../../constants';
 import AreaChartPresenter from './area_chart.vue';
 import BarChartPresenter from './bar_chart.vue';
 import ColumnChartPresenter from './column_chart.vue';
+import HeatMapPresenter from './heat_map.vue';
 import LineChartPresenter from './line_chart.vue';
 import ListPresenter from './list.vue';
 import StatPresenter from './stat.vue';
@@ -21,6 +22,7 @@ export default {
     LineChartPresenter,
     BarChartPresenter,
     AreaChartPresenter,
+    HeatMapPresenter,
   },
   props: {
     displayType: {
@@ -145,6 +147,14 @@ export default {
   />
   <area-chart-presenter
     v-else-if="displayType === $options.DISPLAY_TYPES.AREA_CHART"
+    :data="data"
+    :fields="fields"
+    :loading="loading"
+    :display-config="displayConfig"
+    @error="$emit('error', $event)"
+  />
+  <heat-map-presenter
+    v-else-if="displayType === $options.DISPLAY_TYPES.HEAT_MAP"
     :data="data"
     :fields="fields"
     :loading="loading"

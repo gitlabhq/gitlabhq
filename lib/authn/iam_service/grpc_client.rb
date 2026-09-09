@@ -56,6 +56,10 @@ module Authn
         error.class.name
       end
 
+      def initialize(timeout: nil)
+        @timeout = timeout || TIMEOUT_SECONDS
+      end
+
       def health(**kwargs)
         call(:health, kwargs)
       end
@@ -122,19 +126,19 @@ module Authn
       end
 
       def stub
-        build_stub(::Gitlab::Iam::Auth::V1::AuthService::Stub, grpc_address, timeout: TIMEOUT_SECONDS)
+        build_stub(::Gitlab::Iam::Auth::V1::AuthService::Stub, grpc_address, timeout: @timeout)
       end
 
       def login_stub
-        build_stub(::Gitlab::Iam::Auth::V1::LoginService::Stub, grpc_address, timeout: TIMEOUT_SECONDS)
+        build_stub(::Gitlab::Iam::Auth::V1::LoginService::Stub, grpc_address, timeout: @timeout)
       end
 
       def consent_stub
-        build_stub(::Gitlab::Iam::Auth::V1::ConsentService::Stub, grpc_address, timeout: TIMEOUT_SECONDS)
+        build_stub(::Gitlab::Iam::Auth::V1::ConsentService::Stub, grpc_address, timeout: @timeout)
       end
 
       def oauth_clients_stub
-        build_stub(::Gitlab::Iam::Auth::V1::InternalOAuthClientsService::Stub, grpc_address, timeout: TIMEOUT_SECONDS)
+        build_stub(::Gitlab::Iam::Auth::V1::InternalOAuthClientsService::Stub, grpc_address, timeout: @timeout)
       end
 
       def grpc_address

@@ -229,7 +229,7 @@ RSpec.describe Authn::IamReplication::DrainWorker, feature_category: :system_acc
 
     context 'with the real replicator' do
       let(:client) do
-        instance_double(Authn::IamService::GrpcClient, create_oauth_application: nil, delete_oauth_application: nil)
+        instance_double(Authn::IamService::GrpcClient, upsert_oauth_application: nil, delete_oauth_application: nil)
       end
 
       before do
@@ -242,7 +242,7 @@ RSpec.describe Authn::IamReplication::DrainWorker, feature_category: :system_acc
 
         worker.perform(entity_type, application.id, 'upsert')
 
-        expect(client).to have_received(:create_oauth_application).with(hash_including(client_id: application.uid))
+        expect(client).to have_received(:upsert_oauth_application).with(hash_including(client_id: application.uid))
       end
     end
   end

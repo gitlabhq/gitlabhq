@@ -1119,4 +1119,64 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
       end
     end
   end
+
+  describe 'inheriting the description of a picked merge request' do
+    let_it_be(:pick_project, freeze: false) { create(:project, :repository) }
+    let_it_be(:pick_user, freeze: false) { pick_project.first_owner }
+
+    let_it_be_with_reload(:picked_merge_request) do
+      create(:merge_request, :merged, source_project: pick_project,
+        description: 'Description of the picked merge request')
+    end
+
+    before_all do
+      # The template the inherited description has to win over.
+      pick_project.repository.create_file(
+        pick_user, '.gitlab/merge_request_templates/default.md', "## From the template\n",
+        message: 'Add default merge request template', branch_name: pick_project.default_branch
+      )
+    end
+
+    def build_merge_request(**params)
+      described_class.new(
+        project: pick_project,
+        current_user: pick_user,
+        params: { source_branch: 'feature', target_branch: 'master' }.merge(params)
+      ).execute
+    end
+
+    it 'inherits the description of the picked merge request over the template' do
+      built = build_merge_request(cherry_picked_merge_request_id: picked_merge_request.id)
+
+      expect(built.description).to eq('Description of the picked merge request')
+    end
+
+    it 'falls back to the template without a picked merge request' do
+      expect(build_merge_request.description).to eq("## From the template\n")
+    end
+
+    it 'falls back to the template when the picked merge request has no description' do
+      picked_merge_request.update!(description: nil)
+
+      built = build_merge_request(cherry_picked_merge_request_id: picked_merge_request.id)
+
+      expect(built.description).to eq("## From the template\n")
+    end
+
+    it 'keeps a picked description verbatim, it is content rather than a template' do
+      picked_merge_request.update!(description: 'Mentions %{source_branch} on purpose')
+
+      built = build_merge_request(cherry_picked_merge_request_id: picked_merge_request.id)
+
+      expect(built.description).to eq('Mentions %{source_branch} on purpose')
+    end
+
+    it 'keeps a description given explicitly' do
+      built = build_merge_request(
+        cherry_picked_merge_request_id: picked_merge_request.id, description: 'Written by hand'
+      )
+
+      expect(built.description).to eq('Written by hand')
+    end
+  end
 end

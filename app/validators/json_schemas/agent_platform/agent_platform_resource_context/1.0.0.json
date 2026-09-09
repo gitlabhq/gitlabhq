@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Resources in scope for a Duo Agent Platform flow session. resource_type/resource_id/resource_web_url name the primary target the session was started against; the type-prefixed fields carry each resource in scope, including the target itself and any resource the trigger path resolves for it in one lookup.",
+  "type": "object",
+  "properties": {
+    "resource_type": {
+      "type": "string",
+      "description": "Type of the primary target the session was started against",
+      "enum": [
+        "work_item",
+        "merge_request",
+        "vulnerability",
+        "pipeline"
+      ]
+    },
+    "resource_id": {
+      "type": "string",
+      "description": "Identifier of the primary target. Project-scoped IID for work_item/merge_request, global ID for vulnerability/pipeline. Equal to the matching <resource_type>_id field for the types that have one; a vulnerability target has no type-prefixed fields, so resource_type/resource_id/resource_web_url carry it alone."
+    },
+    "resource_web_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Web URL of the primary target. Equal to the matching <resource_type>_web_url field for the types that have one."
+    },
+    "pipeline_id": {
+      "type": "string",
+      "description": "Global ID of the pipeline in scope; empty when there is none"
+    },
+    "pipeline_web_url": {
+      "type": "string",
+      "description": "Web URL of the pipeline in scope; empty when there is none"
+    },
+    "pipeline_source_branch": {
+      "type": "string",
+      "description": "The branch the pipeline ran on, can be the same as source_branch if triggered from a pipeline."
+    },
+    "merge_request_id": {
+      "type": "string",
+      "description": "IID of the merge request in scope, scoped to its own target project; empty when there is none. For a merge request from a fork, the target project can differ from the project the flow is running in: resolve by merge_request_web_url rather than assuming this IID is scoped to the flow's project."
+    },
+    "merge_request_web_url": {
+      "type": "string",
+      "description": "Web URL of the merge request in scope; empty when there is none"
+    },
+    "work_item_id": {
+      "type": "string",
+      "description": "Project-scoped IID of the work item in scope; empty when there is none"
+    },
+    "work_item_web_url": {
+      "type": "string",
+      "description": "Web URL of the work item in scope; empty when there is none"
+    }
+  },
+  "required": [
+    "resource_type",
+    "resource_id",
+    "resource_web_url",
+    "pipeline_id",
+    "pipeline_web_url",
+    "pipeline_source_branch",
+    "merge_request_id",
+    "merge_request_web_url",
+    "work_item_id",
+    "work_item_web_url"
+  ],
+  "additionalProperties": false
+}

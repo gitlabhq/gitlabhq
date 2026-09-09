@@ -27,8 +27,6 @@ constants:
   - CACHED_INTROSPECTION_QUERY_STRING
   app/controllers/omniauth_callbacks_controller.rb:
   - ACTIVE_SINCE_KEY
-  app/controllers/projects/commit_controller.rb:
-  - BRANCH_SEARCH_LIMIT
   app/controllers/projects/ml/models_controller.rb:
   - MAX_MODELS_PER_PAGE
   app/helpers/users/callouts_helper.rb:

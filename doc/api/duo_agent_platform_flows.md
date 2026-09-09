@@ -26,7 +26,24 @@ such as fixing bugs, writing code, or resolving vulnerabilities.
 
 {{< /details >}}
 
+{{< history >}}
+
+- Requirement for a composite identity service account when `start_workflow` is `true` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/601901) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `enforce_composite_identity_for_api_started_workflows`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The requirement for a composite identity service account is controlled by a feature flag.
+> For more information, see the history.
+
 Triggers and starts a new flow.
+
+Prerequisites:
+
+- If the `enforce_composite_identity_for_api_started_workflows` feature flag is enabled and `start_workflow` is `true`,
+  the flow must have a [composite identity](../user/duo_agent_platform/composite_identity.md) service account.
+  The service account is either configured for the flow in the AI Catalog, or is the service account behind the request's composite identity.
+  Otherwise, GitLab returns `403 Forbidden` and does not start the flow.
 
 ```plaintext
 POST /ai/duo_workflows/workflows

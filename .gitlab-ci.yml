@@ -307,6 +307,7 @@ variables:
   GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-predictive.gitlab-ci.yml.erb
   GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH: rspec/duo_system_test_files.txt
   GLCI_PREDICTIVE_RSPEC_SYSTEM_FULL_PIPELINE_YML: .gitlab/ci/rails/rspec-predictive-system-full-generated.yml
+  GLCI_FLAKY_TEST_LIST_URL: "https://gitlab-org.gitlab.io/quality/analytics/ci-alerts/flaky-tests.json"
 
   # Test execution result export to ClickHouse
   GLCI_EXPORT_TEST_METRICS: "true"

@@ -6,6 +6,7 @@ import {
   hasBlameDataForChunk,
   normalizeBlameGroups,
   blameGroupsForChunk,
+  findOverlayElementFromPoint,
 } from '~/vue_shared/components/source_viewer/utils';
 import { SOURCE_CODE_CONTENT_MOCK, BLAME_DATA_MOCK } from './mock_data';
 
@@ -51,6 +52,43 @@ describe('SourceViewer utils', () => {
     it('removes classes', () => {
       toggleBlameLineBorders(BLAME_DATA_MOCK, false);
       expect(findContent()).toMatchSnapshot();
+    });
+  });
+
+  describe('findOverlayElementFromPoint', () => {
+    let overlay;
+    let child;
+
+    beforeEach(() => {
+      overlay = document.createElement('code');
+      overlay.setAttribute('inert', '');
+      child = document.createElement('span');
+      overlay.appendChild(child);
+      document.body.appendChild(overlay);
+      // `elementsFromPoint` is not implemented in jsdom.
+      document.elementsFromPoint = jest.fn().mockReturnValue([]);
+    });
+
+    afterEach(() => {
+      delete document.elementsFromPoint;
+    });
+
+    it('returns the overlay descendant at the given point and restores inert', () => {
+      document.elementsFromPoint.mockImplementation(() => {
+        expect(overlay.hasAttribute('inert')).toBe(false);
+        return [document.body, child];
+      });
+
+      expect(findOverlayElementFromPoint(overlay, 1, 2)).toBe(child);
+      expect(document.elementsFromPoint).toHaveBeenCalledWith(1, 2);
+      expect(overlay.hasAttribute('inert')).toBe(true);
+    });
+
+    it('returns undefined when no element at the point belongs to the overlay', () => {
+      document.elementsFromPoint.mockReturnValue([document.body]);
+
+      expect(findOverlayElementFromPoint(overlay, 1, 2)).toBeUndefined();
+      expect(overlay.hasAttribute('inert')).toBe(true);
     });
   });
 

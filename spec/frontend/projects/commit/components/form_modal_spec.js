@@ -107,6 +107,35 @@ describe('CommitFormModal', () => {
       expect(findCheckBox().exists()).toBe(true);
     });
 
+    describe('copy description checkbox', () => {
+      const findCopyDescriptionCheckbox = () => wrapper.findByTestId('copy-description-checkbox');
+
+      it('is offered on a cherry-pick, unticked', () => {
+        createComponent({ propsData: { isCherryPick: true } });
+
+        expect(findCopyDescriptionCheckbox().exists()).toBe(true);
+        expect(findCopyDescriptionCheckbox().attributes('checked')).not.toBe('true');
+        expect(findCopyDescriptionCheckbox().attributes('name')).toBe(
+          'copy_merge_request_description',
+        );
+      });
+
+      it('is not offered on a revert', () => {
+        createComponent();
+
+        expect(findCopyDescriptionCheckbox().exists()).toBe(false);
+      });
+
+      it('goes away when no new merge request is being started', async () => {
+        createComponent({ propsData: { isCherryPick: true } });
+
+        findCheckBox().vm.$emit('input', false);
+        await nextTick();
+
+        expect(findCopyDescriptionCheckbox().exists()).toBe(false);
+      });
+    });
+
     it('Shows the prepended text', () => {
       createComponent({ provide: { prependedText: '_prepended_text_' } });
 

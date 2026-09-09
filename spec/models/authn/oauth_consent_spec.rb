@@ -84,6 +84,23 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
     end
   end
 
+  describe '.preload_application' do
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      create(:oauth_consent, user: user)
+      create(:oauth_consent, user: user)
+      create(:oauth_consent, user: user)
+    end
+
+    it 'eager-loads the application owner to avoid N+1 queries' do
+      records = described_class.preload_application.to_a
+
+      expect { records.each { |record| record.application.owner } }
+        .not_to exceed_query_limit(0)
+    end
+  end
+
   describe '.revoke_authorized_for' do
     let_it_be(:user) { create(:user) }
     let_it_be(:other_user) { create(:user) }

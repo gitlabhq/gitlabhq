@@ -10,6 +10,10 @@ module Authn
     module Outboxable
       extend ActiveSupport::Concern
 
+      # Layer 2 runs on the request thread, so it must fail fast; the DrainWorker retries
+      # from the outbox row, so a slow or down IAM is safe to drop here.
+      IMMEDIATE_WRITE_TIMEOUT_SECONDS = 0.2
+
       included do
         include AfterCommitQueue
         include EachBatch
@@ -116,12 +120,14 @@ module Authn
         )
       end
 
-      # Best-effort (Layer 2): failures are expected here; the outbox row lets DrainWorker retry.
+      # Best-effort (Layer 2), fire-and-forget: delivery state is owned by the drain.
+      # In case of failure, the outbox row lets DrainWorker retry.
       def attempt_direct_iam_delivery(outbox_event)
         return unless ::Authn::IamAuthService.enabled?
 
-        ::Authn::IamReplication::OauthApplicationReplicator.new.deliver(outbox_event)
-        outbox_event.update_columns(l0_delivered_at: Time.current, updated_at: Time.current)
+        ::Authn::IamReplication::OauthApplicationReplicator
+          .new(timeout: IMMEDIATE_WRITE_TIMEOUT_SECONDS)
+          .deliver(outbox_event)
       rescue StandardError => error
         ::Gitlab::AuthLogger.warn(
           build_structured_payload_labkit(

@@ -217,12 +217,10 @@ rspec-all frontend_fixture clickhouse:
     - !reference [.clickhouse-setup, script]
     - rspec_parallelized_job "--tag click_house"
 
-# Uploads fixtures to package registry if running in canonical project
-upload-frontend-fixtures:
+.upload-frontend-fixtures-base:
   extends:
     - .default-retry
     - .with-ruby-slim-image
-    - .frontend:rules:update-frontend-fixtures
   stage: fixtures
   needs:
     - !reference [.with-fixtures-needs, needs]
@@ -232,6 +230,27 @@ upload-frontend-fixtures:
       fixtures_archive_doesnt_exist || { echo "Exiting early as package exists!"; exit 0; }
       create_fixtures_package
       upload_fixtures_package
+
+# Uploads fixtures to package registry if running in canonical project
+upload-frontend-fixtures:
+  extends:
+    - .upload-frontend-fixtures-base
+    - .frontend:rules:update-frontend-fixtures
+
+# Same as upload-frontend-fixtures, but triggered manually so fixtures from an
+# unmerged branch/pipeline can be published on demand (e.g. to develop an MFE
+# against a monolith change before it merges).
+upload-frontend-fixtures-on-demand:
+  extends:
+    - .upload-frontend-fixtures-base
+    - .frontend:rules:update-frontend-fixtures-on-demand
+  # This job can run on pipelines where the fixture jobs are absent (e.g. MRs
+  # targeting a stable branch), so its needs must be optional.
+  needs:
+    - job: "rspec-all frontend_fixture"
+      optional: true
+    - job: "rspec-all frontend_fixture clickhouse"
+      optional: true
 
 # Cleans up older fixtures packages
 cleanup-frontend-fixtures:

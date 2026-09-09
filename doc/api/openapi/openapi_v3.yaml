@@ -41370,7 +41370,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_d07b7211412b"
+              "$ref": "#/components/schemas/RequestBody_1d42f280041c"
   "/api/v4/projects/{id}/packages/nuget/index":
     get:
       operationId: getApiV4ProjectsIdPackagesNugetIndex
@@ -116325,7 +116325,7 @@ components:
       required:
       - bucket
       - entities
-    RequestBody_d07b7211412b:
+    RequestBody_1d42f280041c:
       type: object
       properties:
         bucket:
@@ -116479,10 +116479,24 @@ components:
             - source_full_path
             - destination_namespace
           nullable: true
+        import_all:
+          type: object
+          description: Import every top-level group in the export, recreating the
+            source instance structure
+          properties:
+            destination_namespace:
+              type: string
+              description: Full path of the destination namespace the source structure
+                is recreated under. Use an empty string to recreate it at the instance
+                root.
+              example: destination-group/subgroup
+              nullable: true
+          required:
+          - destination_namespace
+          nullable: true
       required:
       - bucket
       - export_prefix
-      - entities
     RequestBody_2ce27e3485fd:
       type: object
       properties:

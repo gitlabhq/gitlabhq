@@ -614,6 +614,93 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       end
     end
 
+    context 'when import_all is provided instead of entities' do
+      let(:service_response) { instance_double(ServiceResponse, success?: true, payload: bulk_import) }
+      let(:service_double) { instance_double(Import::Offline::Imports::CreateService, execute: service_response) }
+      let(:destination_namespace) { 'dest-group' }
+      let(:params) do
+        {
+          bucket: bucket,
+          export_prefix: export_prefix,
+          aws_s3_configuration: aws_s3_credentials,
+          import_all: { destination_namespace: destination_namespace }
+        }
+      end
+
+      before do
+        allow(Import::Offline::Imports::CreateService).to receive(:new).and_return(service_double)
+      end
+
+      it 'passes import_all to the service instead of entities' do
+        expect(Import::Offline::Imports::CreateService).to receive(:new).with(
+          anything,
+          { import_all: { destination_namespace: destination_namespace } },
+          current_user: user,
+          fallback_organization: current_organization
+        )
+
+        request
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      context 'when destination_namespace is empty' do
+        let(:destination_namespace) { '' }
+
+        it 'is accepted so the source structure is recreated at the instance root' do
+          expect(Import::Offline::Imports::CreateService).to receive(:new).with(
+            anything,
+            { import_all: { destination_namespace: '' } },
+            current_user: user,
+            fallback_organization: current_organization
+          )
+
+          request
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+    end
+
+    context 'when neither entities nor import_all are provided' do
+      let(:params) do
+        {
+          bucket: bucket,
+          export_prefix: export_prefix,
+          aws_s3_configuration: aws_s3_credentials
+        }
+      end
+
+      it_behaves_like '400 response'
+    end
+
+    context 'when both entities and import_all are provided' do
+      let(:params) do
+        {
+          bucket: bucket,
+          export_prefix: export_prefix,
+          aws_s3_configuration: aws_s3_credentials,
+          entities: entity_params,
+          import_all: { destination_namespace: 'dest-group' }
+        }
+      end
+
+      it_behaves_like '400 response'
+    end
+
+    context 'when entities is empty' do
+      let(:params) do
+        {
+          bucket: bucket,
+          export_prefix: export_prefix,
+          aws_s3_configuration: aws_s3_credentials,
+          entities: []
+        }
+      end
+
+      it_behaves_like '400 response'
+    end
+
     context 'when no configuration params are provided' do
       let(:params) do
         {

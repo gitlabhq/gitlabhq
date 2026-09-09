@@ -119,7 +119,7 @@ Alternatively, you can [configure the integration](https://about.gitlab.com/solu
 > For more information, see the history.
 > This feature is available for testing, but not ready for production use.
 
-<!-- markdownlint-disable-next-line MD028 -- Two distinct notes, so the blank line between them is intentional. -->
+<!-- Two distinct notes, so the blank line between them is intentional. -->
 
 > [!note]
 > If you use multiple Slack installations without Slack Enterprise Grid, Slack rate limits GitLab Duo to 15 conversation objects in each minute.

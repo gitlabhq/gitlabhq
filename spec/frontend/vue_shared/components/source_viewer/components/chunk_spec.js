@@ -109,8 +109,64 @@ describe('Chunk component', () => {
 
       it('renders highlighted content', () => {
         expect(findHighlightOverlay().exists()).toBe(true);
-        expect(findHighlightOverlay().attributes('style')).toBe('margin-left: 96px;');
+        expect(findHighlightOverlay().attributes('style')).toContain('margin-left: 96px;');
+        expect(findHighlightOverlay().attributes('style')).toContain(
+          '--source-gutter-width: 96px;',
+        );
       });
+    });
+  });
+
+  describe('line hover', () => {
+    const firstLineNumber = CHUNK_2.startingFrom + 1;
+    const findRawLayer = () => wrapper.find('code[data-testid="content"]:not([inert])');
+
+    // Resolve the hovered code line via the overlay, mirroring how the component
+    // uses `document.elementsFromPoint` (not implemented in jsdom).
+    const hoverCodeLine = async (lineNumber) => {
+      const overlay = findHighlightOverlay().element;
+      const lineEl = document.createElement('span');
+      lineEl.classList.add('line');
+      lineEl.id = `LC${lineNumber}`;
+      overlay.appendChild(lineEl);
+      document.elementsFromPoint.mockReturnValue([lineEl]);
+      await findRawLayer().trigger('mousemove');
+    };
+
+    beforeEach(() => {
+      document.elementsFromPoint = jest.fn().mockReturnValue([]);
+      // Run the rAF-throttled hover hit-test synchronously.
+      jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => cb());
+      createComponent({ ...CHUNK_2, isHighlighted: true });
+    });
+
+    afterEach(() => {
+      delete document.elementsFromPoint;
+      window.requestAnimationFrame.mockRestore();
+    });
+
+    it('tints the gutter cell of the hovered code line with is-over', async () => {
+      await hoverCodeLine(firstLineNumber);
+
+      expect(findLineNumbers().at(0).classes()).toContain('is-over');
+    });
+
+    it('moves the tint as different code lines are hovered', async () => {
+      await hoverCodeLine(firstLineNumber);
+      expect(findLineNumbers().at(0).classes()).toContain('is-over');
+
+      await hoverCodeLine(firstLineNumber + 1);
+      expect(findLineNumbers().at(0).classes()).not.toContain('is-over');
+      expect(findLineNumbers().at(1).classes()).toContain('is-over');
+    });
+
+    it('clears the tint when the pointer leaves the code', async () => {
+      await hoverCodeLine(firstLineNumber);
+      expect(findLineNumbers().at(0).classes()).toContain('is-over');
+
+      await findRawLayer().trigger('mouseleave');
+
+      expect(findLineNumbers().at(0).classes()).not.toContain('is-over');
     });
   });
 

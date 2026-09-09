@@ -1094,6 +1094,19 @@ scripts/frontend/download_fixtures.sh --max-commits=10
 scripts/frontend/download_fixtures.sh --branch master
 ```
 
+To download fixtures published by an unmerged branch, first run the manual
+`upload-frontend-fixtures-on-demand` job on that branch's pipeline. Then fetch the branch and
+pass it to `--branch`, or resolve the fixtures through the GitLab API with the pipeline ID:
+
+```shell
+# Fetch the branch, then walk its commits
+git fetch origin my-feature-branch
+scripts/frontend/download_fixtures.sh --branch origin/my-feature-branch
+
+# Or download fixtures published by a specific pipeline ID
+scripts/frontend/download_fixtures.sh --pipeline 123456789
+```
+
 #### Creating new fixtures
 
 For each fixture, you can find the content of the `response` variable in the output file.

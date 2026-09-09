@@ -5,6 +5,7 @@ import { GlIntersectionObserver } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getPageParamValue, getPageSearchString } from '~/blob/utils';
 import { addInteractionClass } from '~/code_navigation/utils';
+import { findOverlayElementFromPoint } from '../utils';
 
 /*
  * We only highlight the chunk that is currently visible to the user.
@@ -80,7 +81,13 @@ export default {
     },
     codeStyling() {
       const defaultGutterWidth = 96;
-      return { marginLeft: `${this.$refs.lineNumbers?.offsetWidth || defaultGutterWidth}px` };
+      const gutterWidth = this.$refs.lineNumbers?.offsetWidth || defaultGutterWidth;
+      // Expose the gutter width so the code's `min-width` can subtract it, keeping
+      // the selection's right border inside the viewport.
+      return {
+        marginLeft: `${gutterWidth}px`,
+        '--source-gutter-width': `${gutterWidth}px`,
+      };
     },
     // Pin the raw `<code>` to `totalLines` × line-height so the in-flow layer
     // matches the overlay and the overlay's trailing box can't overhang
@@ -115,6 +122,16 @@ export default {
       immediate: true,
     },
   },
+  created() {
+    // Kept off `data` so Vue doesn't take over the gutter cell's class attribute,
+    // which would wipe the selection classes LineHighlighter adds to it.
+    this.hoveredGutter = null;
+    this.hoverFrameId = null;
+    this.pendingHover = null;
+  },
+  beforeDestroy() {
+    if (this.hoverFrameId) cancelAnimationFrame(this.hoverFrameId);
+  },
   methods: {
     handleChunkAppear() {
       this.hasAppeared = true;
@@ -124,15 +141,53 @@ export default {
     forwardEventToHighlight({ type, clientX, clientY }) {
       const overlay = this.$refs.highlightOverlay;
       if (!overlay) return;
-      overlay.removeAttribute('inert');
-      const target = document
-        .elementsFromPoint(clientX, clientY)
-        .find((el) => overlay.contains(el));
+      const target = findOverlayElementFromPoint(overlay, clientX, clientY);
       if (target) target.dispatchEvent(new MouseEvent(type, { bubbles: true, clientX, clientY }));
-      overlay.setAttribute('inert', '');
     },
     calculateLineNumber(index) {
       return this.startingFrom + index + 1;
+    },
+    // Tints the gutter cell of the line the cursor is over in the code content.
+    // `mousemove` fires very frequently, so the hit-test runs at most once per
+    // animation frame, on the latest cursor position.
+    handleCodeHover({ clientX, clientY }) {
+      this.pendingHover = { clientX, clientY };
+      if (this.hoverFrameId) return;
+
+      this.hoverFrameId = requestAnimationFrame(() => {
+        this.hoverFrameId = null;
+        this.resolveHoveredGutter();
+      });
+    },
+    // The raw layer is a single element, so the line comes from the overlay.
+    resolveHoveredGutter() {
+      const overlay = this.$refs.highlightOverlay;
+      if (!overlay || !this.pendingHover) return;
+
+      const { clientX, clientY } = this.pendingHover;
+      const target = findOverlayElementFromPoint(overlay, clientX, clientY);
+      const line = target?.closest?.('.line[id^="LC"]');
+      this.setHoveredGutter(line ? Number(line.id.replace('LC', '')) : null);
+    },
+    clearHoveredGutter() {
+      if (this.hoverFrameId) {
+        cancelAnimationFrame(this.hoverFrameId);
+        this.hoverFrameId = null;
+      }
+      this.setHoveredGutter(null);
+    },
+    // Toggled imperatively rather than with `:class`, see `hoveredGutter` above.
+    setHoveredGutter(lineNumber) {
+      const gutter =
+        lineNumber != null
+          ? this.$el.querySelector(`#L${lineNumber}`)?.closest('.diff-line-num')
+          : null;
+
+      if (gutter === this.hoveredGutter) return;
+
+      this.hoveredGutter?.classList.remove('is-over');
+      gutter?.classList.add('is-over');
+      this.hoveredGutter = gutter;
     },
     handleBlameClick(event, index) {
       if (this.glFeatures.inlineBlame) {
@@ -197,7 +252,7 @@ export default {
     >
       <pre
         class="code highlight gl-relative gl-m-0 gl-w-full !gl-overflow-visible !gl-border-none !gl-p-0 gl-leading-0"
-      ><code v-once class="line gl-relative gl-z-1 !gl-whitespace-pre !gl-bg-transparent !gl-text-transparent" :style="rawCodeStyling" data-testid="content" @click="forwardEventToHighlight" @mouseover="forwardEventToHighlight" @mouseout="forwardEventToHighlight" v-text="rawContent"></code><code v-if="shouldHighlight" ref="highlightOverlay" v-safe-html="highlightedContent" :style="codeStyling" class="gl-absolute gl-left-0" data-gfm-ignore inert></code></pre>
+      ><code v-once class="line gl-relative gl-z-1 !gl-whitespace-pre !gl-bg-transparent !gl-text-transparent" :style="rawCodeStyling" data-testid="content" @click="forwardEventToHighlight" @mouseover="forwardEventToHighlight" @mouseout="forwardEventToHighlight" @mousemove="handleCodeHover" @mouseleave="clearHoveredGutter" v-text="rawContent"></code><code v-if="shouldHighlight" ref="highlightOverlay" v-safe-html="highlightedContent" :style="codeStyling" class="gl-absolute gl-left-0" data-gfm-ignore inert></code></pre>
     </gl-intersection-observer>
   </div>
 </template>

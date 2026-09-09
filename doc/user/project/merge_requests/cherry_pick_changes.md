@@ -104,6 +104,9 @@ To do this:
    ![Cherry-pick merge request](img/cherry_pick_v15_4.png)
 1. On the dialog, select the project and branch to cherry-pick into.
 1. Optional. Select **Start a new merge request with these changes**.
+1. Optional. Select **Copy merge request description** to start the new merge request
+   from the description of the merge request you cherry-pick, instead of from the
+   description templates. Available only when you start a new merge request.
 1. Select **Cherry-pick**.
 
 ## Cherry-pick a single commit

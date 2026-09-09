@@ -20,6 +20,8 @@ module Import
         #   }
         # @option params [entities] An array of entity paths to import. This may be
         #   a subset of the entities defined in the export's metadata.json.
+        # @option params [import_all] A hash with a single destination_namespace, to
+        #   import every top-level group in the export. Mutually exclusive with entities.
         def initialize(storage_configuration, params, current_user:, fallback_organization:)
           @params = params
           @storage_configuration = storage_configuration
@@ -38,7 +40,11 @@ module Import
             end
           end
 
-          ScheduleImportWorker.perform_async(bulk_import.id, Array.wrap(params[:entities]).map(&:deep_stringify_keys))
+          ScheduleImportWorker.perform_async(
+            bulk_import.id,
+            Array.wrap(params[:entities]).map(&:deep_stringify_keys),
+            import_all_params&.deep_stringify_keys
+          )
 
           ServiceResponse.success(payload: bulk_import)
         rescue ActiveRecord::RecordInvalid => e
@@ -54,7 +60,7 @@ module Import
             user: current_user,
             source_type: 'offline_export',
             source_enterprise: false,
-            organization: organization(params.dig(:entities, 0, :destination_namespace))
+            organization: organization(destination_namespaces.first)
           )
         end
 
@@ -64,20 +70,43 @@ module Import
           )
         end
 
+        # For import_all only the destination namespace can be checked here. The
+        # entity slugs are derived from the export's metadata.json, which is not read
+        # until ScheduleImportService runs.
         def destinations_valid?
-          Array.wrap(params[:entities]).each do |entity_params|
-            destination_validator.validate!(
-              entity_params[:destination_namespace],
-              entity_params[:destination_slug],
-              entity_params[:destination_name],
-              entity_params[:source_type]
+          if import_all_params
+            destination_validator.validate_destination_namespace!(
+              import_all_params[:destination_namespace],
+              ::BulkImports::Entity::GROUP_ENTITY_SOURCE_TYPE
             )
+          else
+            Array.wrap(params[:entities]).each do |entity_params|
+              destination_validator.validate!(
+                entity_params[:destination_namespace],
+                entity_params[:destination_slug],
+                entity_params[:destination_name],
+                entity_params[:source_type]
+              )
+            end
           end
 
           true
         rescue ::BulkImports::Error
           false
         end
+
+        def import_all_params
+          params[:import_all]
+        end
+
+        def destination_namespaces
+          return [import_all_params[:destination_namespace]] if import_all_params
+
+          # rubocop:disable Rails/Pluck -- pluck triggers Database/AvoidUsingPluckWithoutLimit, and these are param hashes, not records
+          Array.wrap(params[:entities]).map { |entity_params| entity_params[:destination_namespace] }
+          # rubocop:enable Rails/Pluck
+        end
+        strong_memoize_attr :destination_namespaces
 
         def destination_validator
           @destination_validator ||= ::Import::Framework::DestinationValidator.new(current_user: current_user)
@@ -89,14 +118,11 @@ module Import
 
         # Mirrors BulkImports::CreateService#validate_destination_organizations!.
         def cross_organization_destination
-          entities = Array.wrap(params[:entities])
-          namespaces = entities.filter_map { |entity_params| entity_params[:destination_namespace].presence }
-          groups_by_path = Group.where_full_path_in(namespaces)
+          groups_by_path = Group.where_full_path_in(destination_namespaces.compact_blank)
             .includes(:organization) # rubocop:disable CodeReuse/ActiveRecord -- eager-load org to avoid N+1 when resolving destinations
             .index_by { |group| group.full_path.downcase }
 
-          entities.each do |entity_params|
-            destination_namespace = entity_params[:destination_namespace]
+          destination_namespaces.each do |destination_namespace|
             destination_group = groups_by_path[destination_namespace&.downcase]
             resolved_organization = destination_group&.organization || fallback_organization
 

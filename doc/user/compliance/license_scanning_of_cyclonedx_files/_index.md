@@ -57,7 +57,6 @@ To enable License scanning of CycloneDX files:
 
 License scanning is supported for the following languages and package managers:
 
-<!-- markdownlint-disable MD044 -->
 <table class="supported-languages">
   <thead>
     <tr>
@@ -187,7 +186,6 @@ License scanning is supported for the following languages and package managers:
     </tr>
   </tbody>
 </table>
-<!-- markdownlint-enable MD044 -->
 
 **Footnotes**:
 

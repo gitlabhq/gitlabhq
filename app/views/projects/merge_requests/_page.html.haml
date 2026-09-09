@@ -5,7 +5,6 @@
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference})", _("Merge requests")
 - page_description @merge_request.description_html
 - page_card_attributes @merge_request.card_attributes
-- suggest_changes_help_path = help_page_path('user/project/merge_requests/reviews/suggestions.md')
 - mr_action = j(params[:tab].presence || 'show')
 - add_issuable_stylesheet
 - add_page_specific_style 'page_bundles/design_management'
@@ -63,34 +62,27 @@
       #js-diff-file-finder
         #js-code-navigation
       = render "projects/merge_requests/tabs/pane", id: "notes", class: "notes voting_notes" do
-        .merge-request-overview
-          %section
-            .issuable-discussion.js-vue-notes-event
-              - if @merge_request.description.present?
-                .detail-page-description.gl-pb-0
-                  = render "projects/merge_requests/description"
-              = render "projects/merge_requests/awards_block"
-              .js-verification-alert{ data: identity_verification_alert_data(@merge_request) }
-              = render "projects/merge_requests/widget"
-              - if mr_action === "show"
-                - add_page_startup_api_call discussions_path(@merge_request, per_page: 20, notes_filter: 0, persist_filter: false)
-                - add_page_startup_api_call widget_project_json_merge_request_path(@project, @merge_request, format: :json)
-                - add_page_startup_api_call cached_widget_project_json_merge_request_path(@project, @merge_request, format: :json)
-              #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request).to_json,
-                endpoint_metadata: @endpoint_metadata_url,
-                noteable_data: serialize_issuable(@merge_request, serializer: 'noteable'),
-                noteable_type: 'MergeRequest',
-                notes_filters: UserPreference.notes_filters.to_json,
-                notes_filter_value: current_user&.notes_filter_for(@merge_request),
-                target_type: 'merge_request',
-                help_page_path: suggest_changes_help_path,
-                current_user_data: @current_user_data,
-                is_locked: @merge_request.discussion_locked.to_s,
-                archived: @project.self_or_ancestors_archived?.to_s,
-                report_abuse_path: add_category_abuse_reports_path,
-                new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json,
-                new_custom_emoji_path: new_custom_emoji_path(@project.group) } }
-          = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
+        = render "projects/merge_requests/widget_data"
+        - if ai_overview_enabled?
+          = render_if_exists "projects/merge_requests/ai_overview"
+          = render "projects/merge_requests/discussions_root"
+          = render 'shared/issuable/sidebar_options', issuable_sidebar: @issuable_sidebar
+        - else
+          .merge-request-overview
+            %section
+              .issuable-discussion.js-vue-notes-event
+                - if @merge_request.description.present?
+                  .detail-page-description.gl-pb-0
+                    = render "projects/merge_requests/description"
+                = render "projects/merge_requests/awards_block"
+                .js-verification-alert{ data: identity_verification_alert_data(@merge_request) }
+                = render "projects/merge_requests/widget"
+                - if mr_action === "show"
+                  - add_page_startup_api_call discussions_path(@merge_request, per_page: 20, notes_filter: 0, persist_filter: false)
+                  - add_page_startup_api_call widget_project_json_merge_request_path(@project, @merge_request, format: :json)
+                  - add_page_startup_api_call cached_widget_project_json_merge_request_path(@project, @merge_request, format: :json)
+                = render "projects/merge_requests/discussions_root"
+            = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
       = render "projects/merge_requests/tabs/pane", name: "commits", id: "commits", class: "commits" do
         -# This tab is always loaded via AJAX

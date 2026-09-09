@@ -141,10 +141,17 @@ module CreatesCommit
         target_project_id: @project_to_commit_into.default_merge_request_target.id,
         source_branch: @branch_name,
         target_branch: @start_branch
-      }
+      },
+      **new_merge_request_extra_params
     )
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  # Override to add context about the commit that seeded the branch. Kept out of
+  # the `merge_request` hash because these are not merge request attributes.
+  def new_merge_request_extra_params
+    {}
+  end
 
   def existing_merge_request_path
     project_merge_request_path(@project, @merge_request) # rubocop:disable Gitlab/ModuleWithInstanceVariables

@@ -9,7 +9,9 @@ module QA
       let(:project) { create(:project, name: project_name, description: 'project with CI vars') }
       let!(:runner) { create(:project_runner, project: project, name: executor, tags: [executor]) }
       let!(:ci_file) do
-        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+        # Skip CI here, or the default branch pipeline produces a job of the same name whose
+        # log legitimately contains the protected value, since the default branch is protected.
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml [ci skip]', actions: [
           {
             action: 'create',
             file_path: '.gitlab-ci.yml',
@@ -146,7 +148,7 @@ module QA
         Flow::Pipeline.wait_for_pipeline_to_have_status_by_source_branch(project: project,
           source_branch: source_branch,
           status: 'success')
-        project.visit_job('job')
+        project.visit_job('job', ref: source_branch)
         sleep 2
       end
     end

@@ -312,11 +312,6 @@ $dracula-gh: #6272a4;
 
   @include conflict-colors('dracula');
 
-  // highlight line via anchor
-  pre .hll {
-    background-color: $dracula-hll !important;
-  }
-
   // mark lines via mark_multiple_lines
   pre.dracula code {
     .selected-inline-section-marker {

@@ -19,7 +19,7 @@ module Import
           bulk_import&.fail_op!
         end
 
-        def perform(bulk_import_id, entities)
+        def perform(bulk_import_id, entities, import_all = nil)
           bulk_import = BulkImport.find_by_id(bulk_import_id)
           unless bulk_import
             Import::Framework::Logger.warn(class_name: self.class.name, bulk_import_id: bulk_import_id,
@@ -40,7 +40,7 @@ module Import
             return
           end
 
-          ScheduleImportService.new(bulk_import, entities).execute
+          ScheduleImportService.new(bulk_import, entities, import_all).execute
         end
       end
     end

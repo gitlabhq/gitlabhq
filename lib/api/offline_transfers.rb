@@ -83,6 +83,15 @@ module API
 
         raise ArgumentError, "Expected one of #{OBJECT_STORAGE_PROVIDERS.keys} to be present"
       end
+
+      # Presence is checked against raw params because declared_params fills a missing
+      # optional param with nil, which is indistinguishable from an import_all
+      # destination_namespace of "" (meaning "recreate at the instance root").
+      def import_entities_params
+        return { import_all: declared_params[:import_all] } if params[:import_all]
+
+        { entities: declared_params[:entities] }
+      end
     end
 
     before do
@@ -183,13 +192,25 @@ module API
       params do
         use :object_storage_configuration_params
         requires :export_prefix, type: String, desc: 'Prefix of the export within the bucket'
-        requires :entities, type: Array, desc: 'List of entities to import' do
+        # Grape does not validate the nested params of an optional array whose elements
+        # are not hashes, and declared() then raises on them. Coercing those to nil lets
+        # allow_blank reject them with a 400 rather than a 500.
+        optional :entities, type: Array, allow_blank: false, desc: 'List of entities to import',
+          coerce_with: ->(value) { value.is_a?(Array) && value.all?(Hash) ? value : nil } do
           requires :source_type, type: String, values: %w[group_entity project_entity],
             desc: 'Type of the entity to import'
           requires :source_full_path, type: String, desc: 'Full path of the entity on the source instance'
           requires :destination_namespace, type: String, desc: 'Full path of the destination namespace'
           optional :destination_slug, type: String, desc: 'Destination slug for the imported entity'
         end
+        optional :import_all, type: Hash,
+          desc: 'Import every top-level group in the export, recreating the source instance structure' do
+          requires :destination_namespace, type: String,
+            desc: 'Full path of the destination namespace the source structure is recreated under. ' \
+              'Use an empty string to recreate it at the instance root.',
+            documentation: { example: 'destination-group/subgroup' }
+        end
+        exactly_one_of :entities, :import_all
       end
       route_setting :authorization, permissions: :create_offline_import, boundary_type: :instance
       post do
@@ -205,7 +226,7 @@ module API
 
         response = ::Import::Offline::Imports::CreateService.new(
           storage_config,
-          declared_params.slice(:entities),
+          import_entities_params,
           current_user: current_user,
           fallback_organization: Current.organization
         ).execute

@@ -59,15 +59,9 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_categor
           subject.execute(group_link)
         end
 
-        it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations', :sidekiq_inline do
-          stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
-
-          expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-            receive(:bulk_perform_in).with(
-              1.hour,
-              [[group_user.id]],
-              batch_delay: 30.seconds, batch_size: 100
-            )
+        it 'enqueues a safety net refresh for group members' do
+          expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker).to(
+            receive(:perform_async).with(group_link.group.id)
           )
 
           subject.execute(group_link)

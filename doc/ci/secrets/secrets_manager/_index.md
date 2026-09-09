@@ -21,6 +21,7 @@ ignore_in_report: true
 - Group secrets manager [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17904) and made available to closed beta users in 18.10 [with the feature flag](../../../development/feature_flags/_index.md) `group_secrets_manager`.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/21731) from closed beta to public beta in GitLab 19.0.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/10723) to limited availability on GitLab.com in GitLab 19.3.
+- Default read and write permissions for the Maintainer role in projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623437) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -238,6 +239,9 @@ To update the secrets permissions for a project:
 1. Under **Secrets manager**, in the **Secrets manager user permissions** section, you can manage the user permissions:
    - Select **Add** to add permissions rules for specific users, groups, or roles.
    - You can set permission scopes to read, write (create & update), and delete secrets.
+
+For secrets managers enabled in GitLab 19.4 and later, users with the Maintainer role for the project have the
+read and write (create & update) permissions by default. Users with the Owner role can remove or change these default permissions.
 
 ### For a group
 

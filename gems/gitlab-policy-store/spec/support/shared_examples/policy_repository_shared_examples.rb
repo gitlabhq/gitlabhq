@@ -1039,6 +1039,30 @@ RSpec.shared_examples 'a policy repository' do
       expect(repository.list(organization_id: organization_id)).to be_empty
     end
 
+    context 'with a namespace_id' do
+      it 'returns only the policies stamped with that namespace' do
+        group_owned = repository.create(attributes)
+        repository.create(attributes.merge(name: 'Organization policy', namespace_id: nil))
+
+        expect(repository.list(organization_id: organization_id, namespace_id: namespace_id))
+          .to contain_exactly(group_owned)
+      end
+
+      it 'excludes policies stamped with another namespace' do
+        repository.create(attributes.merge(name: 'Other namespace policy', namespace_id: namespace_id + 1))
+
+        expect(repository.list(organization_id: organization_id, namespace_id: namespace_id)).to be_empty
+      end
+
+      it 'combines with a trigger_type' do
+        repository.create(other_trigger_attributes)
+        default_trigger_policy = repository.create(attributes)
+
+        expect(repository.list(organization_id: organization_id, trigger_type: trigger_type,
+          namespace_id: namespace_id)).to contain_exactly(default_trigger_policy)
+      end
+    end
+
     context 'with a trigger_type' do
       it 'returns only the policies for that trigger' do
         other_trigger_policy = repository.create(other_trigger_attributes)

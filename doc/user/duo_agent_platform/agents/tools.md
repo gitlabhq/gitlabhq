@@ -7,8 +7,6 @@ title: Agent tools
 
 The following tools are available to custom agents.
 
-<!-- markdownlint-disable MD044 -->
-
 ## Tools available in the Web UI and IDE
 
 | Name | Tool | Description |

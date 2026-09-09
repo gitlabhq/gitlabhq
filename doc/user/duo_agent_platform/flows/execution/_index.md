@@ -244,7 +244,6 @@ To configure your own runner for flows:
    - For an existing runner, [edit the jobs the runner can run](../../../../ci/runners/configure_runners.md#control-jobs-that-a-runner-can-run)
      and enter `gitlab--duo` in the **Tags** field.
    - If you configure runners with a `config.toml` file, add the tag to the `[[runners]]` section:
-     <!-- markdownlint-disable MD044 -->
 
      ```toml
      [[runners]]
@@ -252,7 +251,6 @@ To configure your own runner for flows:
        tags = ["gitlab--duo"]
      ```
 
-     <!-- markdownlint-enable MD044 -->
 1. Configure the runner to use an [executor](https://docs.gitlab.com/runner/executors/) that
    supports Docker images, like `docker`, `docker-autoscaler`, or `kubernetes`.
    The `shell` executor is not supported.
@@ -277,7 +275,6 @@ To use the sandbox, you must use one of the following images:
 To configure runners to use the sandbox, set `privileged = true` in your [runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
 
 For example:
-<!-- markdownlint-disable MD044 -->
 
 ```toml
 [[runners]]
@@ -287,7 +284,6 @@ For example:
     privileged = true
 ```
 
-<!-- markdownlint-enable MD044 -->
 You cannot use the sandbox with the following images:
 
 - Custom images without SRT installed

@@ -10,6 +10,7 @@ PatternsList = Struct.new(:name, :patterns)
 RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output_length, feature_category: :tooling do
   config = YAML.safe_load_file(
     File.expand_path('../../.gitlab/ci/rules.gitlab-ci.yml', __dir__),
+    permitted_classes: [Gitlab::Ci::Config::Yaml::Tags::Reference],
     aliases: true
   ).freeze
 

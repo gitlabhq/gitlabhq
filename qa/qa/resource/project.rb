@@ -562,19 +562,20 @@ module QA
         parse_body(response)
       end
 
-      def job_by_name(job_name)
-        jobs.find { |job| job[:name] == job_name }
+      # Pass ref when several pipelines in the project have a job of the same name.
+      def job_by_name(job_name, ref: nil)
+        jobs.find { |job| job[:name] == job_name && (ref.nil? || job.dig(:pipeline, :ref) == ref) }
       end
 
       def has_job?(job_name)
         !!job_by_name(job_name)
       end
 
-      def visit_job(job_name)
+      def visit_job(job_name, ref: nil)
         # The job may not be listed yet immediately after the pipeline is created, so wait for it
         # to appear before dereferencing it to avoid a NoMethodError on a nil lookup.
         job = Support::Waiter.wait_until(sleep_interval: 3, message: "Waiting for job '#{job_name}' to be created") do
-          job_by_name(job_name)
+          job_by_name(job_name, ref: ref)
         end
 
         url = job[:web_url]

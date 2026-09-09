@@ -395,6 +395,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:authz_reverify_project_authorizations_cron
+  :worker_name: Authz::ReverifyProjectAuthorizationsCronWorker
+  :feature_category: :permissions
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:batched_git_ref_updates_cleanup_scheduler
   :worker_name: BatchedGitRefUpdates::CleanupSchedulerWorker
   :feature_category: :gitaly

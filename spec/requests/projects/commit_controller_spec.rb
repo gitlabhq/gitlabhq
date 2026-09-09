@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::CommitController, feature_category: :source_code_management do
+  include ProjectForksHelper
+
   let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:user, freeze: false) { project.owner }
 
@@ -796,6 +798,185 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         send_request
 
         expect(response).to have_gitlab_http_status(:success)
+      end
+    end
+  end
+
+  describe 'POST #cherry_pick' do
+    # A merge commit has to be created in the repository, so this uses a project
+    # of its own rather than the one shared with the examples above.
+    let_it_be(:pick_project, freeze: false) { create(:project, :repository) }
+    let_it_be(:pick_user, freeze: false) { pick_project.owner }
+
+    let_it_be_with_reload(:picked_merge_request) do
+      create(:merge_request, :merged, source_project: pick_project,
+        description: 'Description of the picked merge request')
+    end
+
+    # A commit that no merge request recorded.
+    let_it_be(:plain_sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
+
+    before_all do
+      merge_commit_sha = pick_project.repository.merge(
+        pick_user, picked_merge_request.diff_head_sha, picked_merge_request, 'Merge for the spec'
+      )
+
+      picked_merge_request.update!(merge_commit_sha: merge_commit_sha)
+    end
+
+    before do
+      sign_in(pick_user)
+    end
+
+    def redirect_query
+      Rack::Utils.parse_nested_query(URI.parse(response.location).query)
+    end
+
+    def cherry_pick(sha, start_branch:, copy_description: 'true')
+      post cherry_pick_project_commit_path(pick_project, sha),
+        params: {
+          start_branch: start_branch,
+          create_merge_request: '1',
+          copy_merge_request_description: copy_description
+        }.compact
+    end
+
+    it 'points the new merge request at the merge request being picked' do
+      cherry_pick(picked_merge_request.merge_commit_sha, start_branch: 'merge-test')
+
+      expect(response).to have_gitlab_http_status(:found)
+      expect(redirect_query).to include(
+        'cherry_picked_merge_request_id' => picked_merge_request.id.to_s
+      )
+    end
+
+    context 'when the description was not asked for' do
+      it 'leaves the redirect as it was built' do
+        cherry_pick(picked_merge_request.merge_commit_sha, start_branch: 'merge-test',
+          copy_description: nil)
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(redirect_query).not_to have_key('cherry_picked_merge_request_id')
+      end
+    end
+
+    context 'when the picked commit belongs to no merge request' do
+      it 'leaves the redirect as it was built' do
+        cherry_pick(plain_sha, start_branch: 'master')
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(redirect_query).not_to have_key('cherry_picked_merge_request_id')
+      end
+    end
+
+    context 'when the picked merge request was merged fast-forward' do
+      let_it_be(:fast_forwarded_merge_request) do
+        create(:merge_request, :merged, source_project: pick_project, merged_commit_sha: plain_sha,
+          description: 'Description of a fast-forwarded merge request')
+      end
+
+      it 'points at it, there is neither a merge nor a squash commit to go by' do
+        expect(fast_forwarded_merge_request.merge_commit_sha).to be_nil
+        expect(fast_forwarded_merge_request.squash_commit_sha).to be_nil
+
+        cherry_pick(plain_sha, start_branch: 'merge-test')
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(redirect_query).to include(
+          'cherry_picked_merge_request_id' => fast_forwarded_merge_request.id.to_s
+        )
+      end
+    end
+
+    context 'when the picked merge request was squashed' do
+      let_it_be(:squashed_merge_request) do
+        create(:merge_request, :merged, source_project: pick_project, squash_commit_sha: plain_sha,
+          description: 'Description of a squashed merge request')
+      end
+
+      it 'points at it, the squash commit is what recorded the change' do
+        expect(squashed_merge_request.merge_commit_sha).to be_nil
+        expect(squashed_merge_request.read_attribute(:merged_commit_sha)).to be_nil
+
+        cherry_pick(plain_sha, start_branch: 'merge-test')
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(redirect_query).to include(
+          'cherry_picked_merge_request_id' => squashed_merge_request.id.to_s
+        )
+      end
+    end
+
+    context 'when a fast-forward merge recorded the same commit in several merge requests' do
+      let_it_be(:original_merge_request) do
+        create(:merge_request, :merged, source_project: pick_project, source_branch: 'feature',
+          target_branch: 'master', merged_commit_sha: plain_sha,
+          description: 'Description of the original merge request')
+      end
+
+      let_it_be(:backport_merge_request) do
+        create(:merge_request, :merged, source_project: pick_project, source_branch: 'feature',
+          target_branch: 'merge-test', merged_commit_sha: plain_sha,
+          description: 'Description of the backport')
+      end
+
+      it 'points at the oldest of them, the merge request the change came from' do
+        expect(backport_merge_request.id).to be > original_merge_request.id
+
+        cherry_pick(plain_sha, start_branch: 'merge-test')
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(redirect_query).to include(
+          'cherry_picked_merge_request_id' => original_merge_request.id.to_s
+        )
+      end
+    end
+
+    context 'when the merge request the commit came from is hidden' do
+      let_it_be(:hidden_merge_request) do
+        create(:merge_request, :merged, source_project: pick_project, author: create(:user, :banned),
+          merged_commit_sha: plain_sha, description: 'Description of a hidden merge request')
+      end
+
+      it 'leaves the redirect as it was built' do
+        cherry_pick(plain_sha, start_branch: 'merge-test')
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(redirect_query).not_to have_key('cherry_picked_merge_request_id')
+      end
+    end
+
+    context 'when the pick lands in another project' do
+      let_it_be(:target_fork) { fork_project(pick_project, pick_user, repository: true) }
+
+      it 'still points the new merge request at the merge request being picked' do
+        post cherry_pick_project_commit_path(pick_project, picked_merge_request.merge_commit_sha),
+          params: {
+            start_branch: 'merge-test',
+            create_merge_request: '1',
+            copy_merge_request_description: 'true',
+            target_project_id: target_fork.id
+          }
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response.location).to include(target_fork.full_path)
+        expect(redirect_query).to include(
+          'cherry_picked_merge_request_id' => picked_merge_request.id.to_s
+        )
+      end
+    end
+
+    context 'when the commit is reverted instead of picked' do
+      it 'leaves the new merge request without a pointer' do
+        post revert_project_commit_path(pick_project, picked_merge_request.merge_commit_sha),
+          params: {
+            start_branch: 'merge-test',
+            create_merge_request: '1',
+            copy_merge_request_description: 'true'
+          }
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(redirect_query).not_to have_key('cherry_picked_merge_request_id')
       end
     end
   end

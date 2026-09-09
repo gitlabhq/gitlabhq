@@ -26,6 +26,7 @@ export const I18N_CHERRY_PICK_MODAL = {
   branchLabel: s__('ChangeTypeAction|Pick into branch'),
   projectLabel: s__('ChangeTypeAction|Pick into project'),
   actionPrimaryText: s__('ChangeTypeAction|Cherry-pick'),
+  copyDescription: s__('ChangeTypeAction|Copy merge request description'),
 };
 
 export const PREPENDED_MODAL_TEXT = s__(

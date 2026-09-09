@@ -65,13 +65,14 @@ module Gitlab
         end
 
         def list(
-          organization_id:, trigger_type: nil, lifecycle_state: nil, ids: nil, offset: 0,
+          organization_id:, trigger_type: nil, namespace_id: nil, lifecycle_state: nil, ids: nil, offset: 0,
           per_page: DEFAULT_PER_PAGE)
           validate_ids_size!(ids) if ids
 
           matching = @policies.values.select do |policy|
             policy.organization_id == organization_id &&
               (trigger_type.nil? || policy.trigger_type == trigger_type) &&
+              (namespace_id.nil? || policy.namespace_id == namespace_id) &&
               (lifecycle_state.nil? || policy.lifecycle_state == lifecycle_state) &&
               (ids.nil? || ids.include?(policy.id))
           end

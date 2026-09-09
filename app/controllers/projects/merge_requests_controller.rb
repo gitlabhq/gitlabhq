@@ -797,7 +797,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     return false if rapid_diffs_params[:rapid_diffs_disabled] == 'true'
     return true if rapid_diffs_params[:rapid_diffs] == 'true'
 
-    if ::Feature.enabled?(:rapid_diffs_default_on_mr_show, current_user)
+    if ::Feature.enabled?(:rapid_diffs_default_on_mr_show, current_user, type: :beta)
       cookies[:rapid_diffs_enabled] != 'false'
     else
       cookies[:rapid_diffs_enabled] == 'true'

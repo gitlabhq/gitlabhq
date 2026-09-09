@@ -57,10 +57,15 @@ export default {
   modalId: MODAL_ID,
   DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
   FEEDBACK_ISSUE_URL,
+  searchInputDescriptionId: 'feature-library-search-input-description',
   i18n: {
     geminiSearching: s__('FeatureLibrary|Searching with Gemini …'),
+    searchInProgress: s__('FeatureLibrary|Searching for features …'),
     geminiEmptyState: s__(
       "FeatureLibrary|Gemini couldn't find a matching feature. Try different keywords.",
+    ),
+    searchInputDescription: s__(
+      'FeatureLibrary|Press Enter or the down arrow key to move to the first search result.',
     ),
   },
   inject: {
@@ -278,6 +283,25 @@ export default {
     emptyStateTitle() {
       return s__('FeatureLibrary|No features match your search');
     },
+    searchStatusMessage() {
+      if (!this.trimmedQuery) {
+        return '';
+      }
+
+      if (this.isSearching) {
+        return this.$options.i18n.searchInProgress;
+      }
+
+      if (this.filteredItems.length === 0) {
+        return this.emptyStateTitle;
+      }
+
+      return n__(
+        'FeatureLibrary|%d feature found.',
+        'FeatureLibrary|%d features found.',
+        this.filteredItems.length,
+      );
+    },
     showGeminiTopBorder() {
       // showEmptyState already requires !showGeminiEmptyState, so the two are
       // mutually exclusive: no need to check showEmptyState separately here.
@@ -301,7 +325,11 @@ export default {
       }
 
       if (this.geminiItems.length > 0) {
-        return s__('FeatureLibrary|Gemini found matching features.');
+        return n__(
+          'FeatureLibrary|Gemini found %d matching feature.',
+          'FeatureLibrary|Gemini found %d matching features.',
+          this.geminiItems.length,
+        );
       }
 
       return '';
@@ -338,21 +366,30 @@ export default {
       this.revealRemainingItems();
       this.trackEvent(EVENT_OPEN_FEATURE_LIBRARY_MODAL);
     },
-    onSearchEnter() {
-      if (!this.trimmedQuery || this.isSearching || !this.filteredItems.length) return;
+    focusFirstResult(event) {
+      if (!this.trimmedQuery || this.isSearching) return;
 
       // Move focus into the results instead of navigating away: focusing the
       // first result lets keyboard users continue from there
-      // (e.g. Tab to its pin action, or Enter again to open it).
-      //
-      // Match by id rather than taking $refs.searchResultItems[0]: Vue 2's
-      // v-for ref arrays reflect registration order, which isn't guaranteed
-      // to track the current (re-ranked) filteredItems order.
-      const [firstDisplayedItem] = this.filteredItems;
-      const firstResultComponent = (this.$refs.searchResultItems || []).find(
-        (component) => component.item.id === firstDisplayedItem.id,
-      );
-      firstResultComponent?.focus();
+      // (e.g. Tab to its pin action, or Enter again to open it). When the
+      // main grid is empty, fall through to the first Gemini suggestion; a
+      // hidden Gemini section renders no refs, so this no-ops and both keys
+      // keep their default behavior.
+      const target =
+        this.findResultComponent(this.$refs.searchResultItems, this.filteredItems[0]) ||
+        this.findResultComponent(this.$refs.geminiResultItems, this.geminiItems[0]);
+
+      if (!target) return;
+
+      event.preventDefault();
+      target.focus();
+    },
+    // Match by id rather than taking refs[0]: Vue 2's v-for ref arrays
+    // reflect registration order, which isn't guaranteed to track the
+    // current (re-ranked) item order.
+    findResultComponent(components, item) {
+      if (!item) return null;
+      return (components || []).find((component) => component.item.id === item.id) || null;
     },
     revealRemainingItems() {
       if (this.renderLimit >= this.catalog.length) return;
@@ -512,11 +549,16 @@ export default {
       ref="searchBox"
       :value="searchQuery"
       :placeholder="searchPlaceholder"
+      :aria-describedby="$options.searchInputDescriptionId"
       :debounce="$options.DEFAULT_DEBOUNCE_AND_THROTTLE_MS"
       class="gl-mt-3"
       @input="onSearchInput"
-      @keydown.enter="onSearchEnter"
+      @keydown.enter="focusFirstResult"
+      @keydown.down="focusFirstResult"
     />
+    <span :id="$options.searchInputDescriptionId" class="gl-sr-only">
+      {{ $options.i18n.searchInputDescription }}
+    </span>
     <div
       role="group"
       :aria-label="s__('FeatureLibrary|Filter features by category')"
@@ -547,6 +589,17 @@ export default {
       class="gl-sr-only"
     >
       {{ categoryStatusMessage }}
+    </div>
+    <!-- Always present in the DOM for the same mount-timing reason as the
+         Gemini status region below. -->
+    <div
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      data-testid="search-status-region"
+      class="gl-sr-only"
+    >
+      {{ searchStatusMessage }}
     </div>
     <scroll-scrim
       data-testid="feature-library-scroll-area"
@@ -676,6 +729,7 @@ export default {
               <feature-library-item
                 v-for="item in geminiItems"
                 :key="item.id"
+                ref="geminiResultItems"
                 :item="item"
                 :pinned="isPinned(item.id)"
                 @pin-toggle="onPinToggle"

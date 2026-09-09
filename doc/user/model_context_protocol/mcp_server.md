@@ -19,6 +19,7 @@ title: GitLab MCP server
 - Introduced as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 18.3 [with feature flags](../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
 - Changed from experiment to [beta](../../policy/development_stages_support.md#beta) in GitLab 18.6. Feature flags [`mcp_server`](https://gitlab.com/gitlab-org/gitlab/-/issues/556448) and [`oauth_dynamic_client_registration`](https://gitlab.com/gitlab-org/gitlab/-/issues/555942) removed.
 - Support for `2025-03-26` and `2025-06-18` MCP protocol specifications [added](https://gitlab.com/gitlab-org/gitlab/-/issues/581459) in GitLab 18.7.
+- Support for the `2025-11-25` MCP protocol specification [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216219) in GitLab 18.7.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/590729) to a separate setting and [moved](https://gitlab.com/groups/gitlab-org/-/work_items/21183) from GitLab Premium to GitLab Free in GitLab 19.2.
 
 {{< /history >}}
@@ -516,6 +517,24 @@ PKCE defends against authorization code interception for public clients.
 
 To enforce PKCE, verify that your MCP client sends `code_challenge` and `code_challenge_method` parameters during the OAuth flow.
 GitLab accepts PKCE parameters for pre-registered applications, but does not require them.
+
+## Supported MCP protocol versions
+
+The GitLab MCP server negotiates the protocol version in the `initialize` request.
+If the client requests a version that the server does not support, the server returns
+a JSON-RPC error that lists the supported versions.
+
+| Protocol version | Support |
+|------------------|---------|
+| `2025-11-25`     | Supported. The server also answers with this version when a client asks for a newer version. |
+| `2025-06-18`     | Supported. |
+| `2025-03-26`     | Supported. |
+| `2026-07-28`     | Accepted in the `initialize` request only. The server answers with `2025-11-25`, because it does not implement the stateless features of this version yet. For progress, see [issue 627825](https://gitlab.com/gitlab-org/gitlab/-/work_items/627825). |
+
+GitLab continues to support a protocol version after the MCP specification deprecates it.
+The removal of a protocol version is a breaking change.
+GitLab announces the removal in the [deprecations and removals](../../update/deprecations.md) page
+before the version is removed.
 
 ## Related topics
 

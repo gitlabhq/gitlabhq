@@ -67,6 +67,12 @@ module Analytics
           'selections' => [
             { 'dimensions' => 1, 'metrics' => { 'min' => 1 } },
             { 'dimensions' => 2, 'metrics' => { 'min' => 1, 'max' => 1 } }
+          ] },
+        { 'name' => 'heatMap',
+          'description' => 'A grid of shaded cells, one per pair of dimension values. ' \
+            'The first dimension runs along the columns, the second down the rows.',
+          'selections' => [
+            { 'dimensions' => 2, 'metrics' => { 'min' => 1, 'max' => 1 } }
           ] }
       ].map(&DEEP_FREEZE).freeze
 

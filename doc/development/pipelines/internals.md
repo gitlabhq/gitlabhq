@@ -300,6 +300,7 @@ The table below lists custom exit codes we use to auto-retry (see the retry rule
 
 | Exit code | Description |
 |-----------|-------------|
+| 112       | known flaky test detected; retry the whole job |
 | 201       | low disk space |
 
 This list can be expanded as new failure patterns emerge. To avoid conflicts, please use exit codes in the range 201-255.

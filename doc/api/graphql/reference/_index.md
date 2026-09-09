@@ -11014,6 +11014,44 @@ Fields:
 | <a id="mutation-governpolicydelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-governpolicydelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.governPolicyUpdate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Updates a policy in the policy store for an organization. Only the supplied fields are changed; omitted fields keep their current values, while an explicit null clears a nullable field.
+
+Input type: `GovernPolicyUpdateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-governpolicyupdate-actions"></a>`actions` | [`[JSON!]`](#json) | Actions the policy takes. No more than 1000 actions. |
+| <a id="mutation-governpolicyupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-governpolicyupdate-description"></a>`description` | [`String`](#string) | Description of the policy. |
+| <a id="mutation-governpolicyupdate-lifecyclestate"></a>`lifecycleState` | [`String`](#string) | Lifecycle state of the policy. |
+| <a id="mutation-governpolicyupdate-mode"></a>`mode` | [`String`](#string) | Enforcement mode of the policy. |
+| <a id="mutation-governpolicyupdate-name"></a>`name` | [`String`](#string) | Name of the policy. |
+| <a id="mutation-governpolicyupdate-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | Global ID of the organization the policy belongs to. |
+| <a id="mutation-governpolicyupdate-policyid"></a>`policyId` | [`Int!`](#int) | ID of the policy. |
+| <a id="mutation-governpolicyupdate-policyscope"></a>`policyScope` | [`JSON`](#json) | Authored scope of the policy. Mutually exclusive with scopeRego. |
+| <a id="mutation-governpolicyupdate-rules"></a>`rules` | [`[JSON!]`](#json) | Rules of the policy, at least one when supplied. No more than 1000 rules. |
+| <a id="mutation-governpolicyupdate-scoperego"></a>`scopeRego` | [`String`](#string) | Rego expression scoping the policy. Mutually exclusive with policyScope. |
+| <a id="mutation-governpolicyupdate-triggertype"></a>`triggerType` | [`String`](#string) | Trigger the policy responds to. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-governpolicyupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-governpolicyupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-governpolicyupdate-policy"></a>`policy` | [`GovernPolicy`](#governpolicy) | Policy updated in the policy store. |
+
 ### `Mutation.groupAuditEventStreamingDestinationsCreate`
 
 {{< details >}}
@@ -45962,12 +46000,24 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionusercreditsusage-blockedstatus"></a>`blockedStatus` | [`GitlabSubscriptionUsageBlockedStatus`](#gitlabsubscriptionusageblockedstatus) | Blocked status of the current user under the subscription budget cap. |
 | <a id="gitlabsubscriptionusercreditsusage-creditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits consumed by the current user. |
+| <a id="gitlabsubscriptionusercreditsusage-dailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionUserCreditsUsageDailyUsage!]`](#gitlabsubscriptionusercreditsusagedailyusage) | Daily GitLab Credits usage for the current user. |
 | <a id="gitlabsubscriptionusercreditsusage-enabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates if the Customer Portal GitLab Credits API is enabled. |
 | <a id="gitlabsubscriptionusercreditsusage-enddate"></a>`endDate` | [`ISO8601Date`](#iso8601date) | End date of the period covered by the usage data. |
 | <a id="gitlabsubscriptionusercreditsusage-isoutdatedclient"></a>`isOutdatedClient` | [`Boolean`](#boolean) | Indicates if the GitLab instance has an outdated API contract with the Customer Portal. |
 | <a id="gitlabsubscriptionusercreditsusage-products"></a>`products` | [`[GitlabSubscriptionUserCreditsUsageProduct!]`](#gitlabsubscriptionusercreditsusageproduct) | All supported products with their associated flow types. |
 | <a id="gitlabsubscriptionusercreditsusage-startdate"></a>`startDate` | [`ISO8601Date`](#iso8601date) | Start date of the period covered by the usage data. |
 | <a id="gitlabsubscriptionusercreditsusage-usedflowtypes"></a>`usedFlowTypes` | [`[GitlabSubscriptionUsageFlowTypeInfo!]`](#gitlabsubscriptionusageflowtypeinfo) | Flow types the current user consumed credits under during the period. |
+
+### `GitlabSubscriptionUserCreditsUsageDailyUsage`
+
+Daily GitLab Credits usage for the current user.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusercreditsusagedailyusage-creditsused"></a>`creditsUsed` | [`Float!`](#float) | GitLab Credits consumed by the current user on the date. |
+| <a id="gitlabsubscriptionusercreditsusagedailyusage-date"></a>`date` | [`ISO8601Date!`](#iso8601date) | Date when credits were used. |
 
 ### `GitlabSubscriptionUserCreditsUsageProduct`
 
@@ -61661,6 +61711,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="secretsmanagerentitlement-betaprogramended"></a>`betaProgramEnded` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Indicates whether the free-beta program has ended for the namespace. Set only when state is TRIAL_ELIGIBLE; null otherwise. |
+| <a id="secretsmanagerentitlement-betawindoweligible"></a>`betaWindowEligible` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Indicates whether the namespace joined Secrets Manager during the free beta and keeps beta access until the beta program ends. True only when state is TRIAL_ELIGIBLE or INELIGIBLE; false or null otherwise. |
 | <a id="secretsmanagerentitlement-blockedreason"></a>`blockedReason` {{< icon name="warning-solid" >}} | [`SecretsManagerEntitlementBlockedReason`](#secretsmanagerentitlementblockedreason) | Introduced in GitLab 19.2. Status: Experiment. Reason the entitlement is blocked; null when state is not BLOCKED. |
 | <a id="secretsmanagerentitlement-creditsremaining"></a>`creditsRemaining` {{< icon name="warning-solid" >}} | [`Float`](#float) | Introduced in GitLab 19.2. Status: Experiment. Number of trial credits remaining. |
 | <a id="secretsmanagerentitlement-creditstotal"></a>`creditsTotal` {{< icon name="warning-solid" >}} | [`Float`](#float) | Introduced in GitLab 19.2. Status: Experiment. Initial trial credit allocation for the current trial period. |

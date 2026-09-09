@@ -160,6 +160,36 @@ RSpec.describe API::Mcp, 'Initialize request', feature_category: :mcp_server do
         expect(json_response['error']['data']['params']).to include('2025-11-25')
       end
     end
+
+    # Session IDs were optional for servers in the 2025 revisions and removed in 2026-07-28,
+    # which tells a server to ignore the header rather than mint or echo an ID of its own.
+    context 'for every supported protocol version' do
+      API::Mcp::Handlers::InitializeRequest::SUPPORTED_PROTOCOL_VERSIONS.each do |version|
+        context "with #{version}" do
+          it 'negotiates a supported version and echoes the request id', :aggregate_failures do
+            post api('/mcp', user, oauth_access_token: access_token),
+              params: base_params.merge(params: { protocolVersion: version })
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(API::Mcp::Handlers::InitializeRequest::SUPPORTED_PROTOCOL_VERSIONS)
+              .to include(json_response['result']['protocolVersion'])
+            expect(json_response['id']).to eq(base_params[:id])
+          end
+
+          it 'ignores an Mcp-Session-Id header and assigns no session', :aggregate_failures do
+            post api('/mcp', user, oauth_access_token: access_token),
+              params: base_params.merge(params: { protocolVersion: version }),
+              headers: { 'Mcp-Session-Id' => 'client-supplied-session' }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(API::Mcp::Handlers::InitializeRequest::SUPPORTED_PROTOCOL_VERSIONS)
+              .to include(json_response['result']['protocolVersion'])
+            expect(json_response['id']).to eq(base_params[:id])
+            expect(response.headers['Mcp-Session-Id']).to be_nil
+          end
+        end
+      end
+    end
   end
 end
 # rubocop:enable RSpec/SpecFilePathFormat

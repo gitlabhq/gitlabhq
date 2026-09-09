@@ -20,10 +20,13 @@ import { useBatchComments } from '~/batch_comments/store';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import InternalEvents from '~/tracking/internal_events';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import initAiOverviewApp from 'ee_else_ce/merge_requests/ai_overview';
 
 jest.mock('~/lib/utils/webpack', () => ({
   resetServiceWorkersPublicPath: jest.fn(),
 }));
+
+jest.mock('ee_else_ce/merge_requests/ai_overview');
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -843,6 +846,29 @@ describe('MergeRequestTabs', () => {
       ${'/group/reports/project/-/merge_requests/1/reports'} | ${'reports'}
     `('returns $action for $location', ({ pathName, action }) => {
       expect(getActionFromHref(pathName)).toBe(action);
+    });
+  });
+
+  describe('pageBundles.show', () => {
+    afterEach(() => {
+      document.getElementById('js-ai-overview')?.remove();
+    });
+
+    it('loads the notes app by default', async () => {
+      const bundle = await pageBundles.show();
+
+      expect(bundle).toBe(await import('~/mr_notes/mount_app'));
+    });
+
+    it('mounts the AI overview app instead when its mount point is present', async () => {
+      const el = document.createElement('div');
+      el.id = 'js-ai-overview';
+      document.body.appendChild(el);
+
+      const { default: init } = await pageBundles.show();
+      init();
+
+      expect(initAiOverviewApp).toHaveBeenCalledWith(el);
     });
   });
 

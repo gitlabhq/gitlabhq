@@ -1,0 +1,22 @@
+---
+description: A project import or migration failed
+internal_events: true
+action: fail_project_import
+identifiers:
+- project
+- user
+- namespace
+additional_properties:
+  label:
+    description: import_type of the source (e.g., github, bitbucket, gitlab_project_migration)
+  property:
+    description: hashed identifier of the source host and path, used to detect repeated imports of the same source
+product_group: import
+product_categories:
+- importers
+milestone: '19.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253895
+tiers:
+- free
+- premium
+- ultimate

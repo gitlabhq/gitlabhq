@@ -1,0 +1,10 @@
+---
+name: mr_ai_overview
+description: Makes an AI-driven replacement for the merge request Overview tab available behind a user toggle.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/597919
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252481
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/627189
+milestone: '19.4'
+group: group::code review
+type: wip
+default_enabled: false

@@ -3,7 +3,9 @@
 - are_close_and_open_buttons_hidden = merge_request_button_hidden?(@merge_request, true) && merge_request_button_hidden?(@merge_request, false)
 - hide_gutter_toggle = local_assigns.fetch(:hide_gutter_toggle, false)
 - rapid_diffs_enabled = Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :beta)
-- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.4-updated_header", true, hide_gutter_toggle, fluid_layout, Gitlab::CurrentSettings.gitpod_enabled, current_user&.gitpod_enabled, rapid_diffs_enabled]
+- ai_overview_available = ai_overview_available?
+- ai_overview_enabled = ai_overview_enabled?
+- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.4-updated_header", true, hide_gutter_toggle, fluid_layout, Gitlab::CurrentSettings.gitpod_enabled, current_user&.gitpod_enabled, rapid_diffs_enabled, ai_overview_available, ai_overview_enabled]
 
 = cache(cache_key, expires_in: 1.day) do
   - if @merge_request.closed_or_merged_without_fork?
@@ -48,6 +50,8 @@
           clipboard_text: @merge_request.to_reference(full: true),
           report_abuse_path: add_category_abuse_reports_path,
           reported_user_id: @merge_request.author.id,
+          ai_overview_available: ai_overview_available.to_s,
+          ai_overview_enabled: ai_overview_enabled.to_s,
         } }
 
       - unless hide_gutter_toggle

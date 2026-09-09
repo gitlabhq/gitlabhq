@@ -58,6 +58,10 @@ module Gitlab
       def project_template_importers
         PROJECT_TEMPLATE_IMPORTERS
       end
+
+      def importable_project_types
+        values - project_template_importers
+      end
     end
   end
 end

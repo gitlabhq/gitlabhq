@@ -168,4 +168,33 @@ RSpec.describe Import::Framework::DestinationValidator, feature_category: :impor
       end
     end
   end
+
+  describe '#validate_destination_full_path_in_batch!' do
+    let_it_be(:group) { create(:group, path: 'existing-group') }
+
+    let(:candidate_full_paths) { [group.full_path.upcase, 'some-namespace/new-group'] }
+
+    it 'raises a BulkImports::Error when the full path already exists, regardless of case' do
+      expect do
+        validator.validate_destination_full_path_in_batch!(group.full_path.upcase, candidate_full_paths)
+      end.to raise_error(
+        ::BulkImports::Error,
+        eq("Import failed. '#{group.full_path.upcase}' already exists. Change the destination and try again.")
+      )
+    end
+
+    it 'does not raise an error when the full path does not exist' do
+      expect do
+        validator.validate_destination_full_path_in_batch!('some-namespace/new-group', candidate_full_paths)
+      end.not_to raise_error
+    end
+
+    it 'does not query again for repeated calls with the same candidate full paths' do
+      validator.validate_destination_full_path_in_batch!('some-namespace/new-group', candidate_full_paths)
+
+      expect do
+        validator.validate_destination_full_path_in_batch!('some-namespace/new-group', candidate_full_paths)
+      end.not_to exceed_query_limit(0)
+    end
+  end
 end

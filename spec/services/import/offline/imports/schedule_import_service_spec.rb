@@ -192,5 +192,172 @@ RSpec.describe Import::Offline::Imports::ScheduleImportService, :aggregate_failu
         extra: { user_role: 'Owner', import_type: 'offline_import_group' }
       )
     end
+
+    context 'when import_all is given' do
+      let(:fake_metadata) do
+        super().merge(
+          entities_mapping: {
+            "top_level_group" => "group_1",
+            "top_level_group/group" => "group_2",
+            "top_level_group/group/first_project" => "project_1",
+            "another_top_level_group" => "group_3",
+            "unexported_root/orphaned_group" => "group_4",
+            "unexported_root/orphaned_group/project" => "project_2"
+          }
+        )
+      end
+
+      let(:destination_namespace) { destination_group.full_path }
+      let(:import_all) { { "destination_namespace" => destination_namespace } }
+
+      subject(:service) { described_class.new(bulk_import, [], import_all) }
+
+      it 'returns a success result' do
+        expect(service.execute).to be_success
+      end
+
+      it 'creates an entity for each top-level group in the export' do
+        expect { service.execute }.to change { BulkImports::Entity.count }.by(2)
+
+        expect(BulkImports::Entity.all).to contain_exactly(
+          have_attributes(
+            source_type: 'group_entity',
+            source_full_path: 'top_level_group',
+            destination_name: 'top_level_group',
+            destination_namespace: destination_namespace
+          ),
+          have_attributes(
+            source_type: 'group_entity',
+            source_full_path: 'another_top_level_group',
+            destination_name: 'another_top_level_group',
+            destination_namespace: destination_namespace
+          )
+        )
+      end
+
+      it 'logs the paths whose top-level group was not exported' do
+        logger = instance_double(BulkImports::Logger)
+        allow(BulkImports::Logger).to receive(:build).and_return(logger)
+
+        expect(logger).to receive(:warn).with(
+          message: 'Skipping entities whose top-level group is not in the export',
+          skipped_paths: ['unexported_root/orphaned_group', 'unexported_root/orphaned_group/project'],
+          bulk_import_id: bulk_import.id,
+          importer: Import::SOURCE_OFFLINE_TRANSFER.to_s
+        )
+
+        service.execute
+      end
+
+      it 'is safe to retry - clears existing entities before creating new ones' do
+        described_class.new(bulk_import.reload, [], import_all).execute
+
+        expect { described_class.new(bulk_import.reload, [], import_all).execute }
+          .not_to change { BulkImports::Entity.count }
+        expect(BulkImports::Entity.count).to eq(2)
+      end
+
+      context 'when destination_namespace is empty' do
+        let(:destination_namespace) { '' }
+
+        it 'creates the entities at the instance root' do
+          service.execute
+
+          expect(BulkImports::Entity.all.map(&:destination_namespace)).to all(eq(''))
+        end
+      end
+
+      context 'when the export contains no top-level groups' do
+        let(:fake_metadata) do
+          super().merge(entities_mapping: { "unexported_root/orphaned_group" => "group_4" })
+        end
+
+        it 'returns an error result and fails the import' do
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.message).to eq('Export contains no top-level groups to import')
+          expect(bulk_import.reload.failed?).to be(true)
+        end
+
+        it 'creates no entities' do
+          expect { service.execute }.not_to change { BulkImports::Entity.count }
+        end
+
+        it 'does not log a misleading partial skip' do
+          logger = instance_double(BulkImports::Logger, error: nil)
+          allow(BulkImports::Logger).to receive(:build).and_return(logger)
+          expect(logger).not_to receive(:warn)
+
+          service.execute
+        end
+      end
+
+      context 'when a top-level group path is not a valid destination slug' do
+        let(:fake_metadata) do
+          super().merge(
+            entities_mapping: {
+              "-invalid-group" => "group_1",
+              "another_top_level_group" => "group_3"
+            }
+          )
+        end
+
+        it 'skips the invalid entity but creates the rest' do
+          expect { service.execute }.to change { BulkImports::Entity.count }.by(1)
+
+          expect(BulkImports::Entity.last).to have_attributes(source_full_path: 'another_top_level_group')
+        end
+
+        it 'logs the skipped entity' do
+          logger = instance_double(BulkImports::Logger, warn: nil)
+          allow(BulkImports::Logger).to receive(:build).and_return(logger)
+
+          service.execute
+
+          expect(logger).to have_received(:warn).with(
+            message: a_string_matching(/Skipping import_all entity.*can only include non-accented letters/),
+            source_full_path: '-invalid-group',
+            bulk_import_id: bulk_import.id,
+            importer: Import::SOURCE_OFFLINE_TRANSFER.to_s
+          )
+        end
+      end
+
+      context 'when a top-level group destination path already exists' do
+        let(:fake_metadata) do
+          super().merge(
+            entities_mapping: {
+              "top_level_group" => "group_1",
+              "another_top_level_group" => "group_3"
+            }
+          )
+        end
+
+        before do
+          create(:group, path: 'top_level_group', parent: destination_group)
+        end
+
+        it 'skips the colliding entity but creates the rest' do
+          expect { service.execute }.to change { BulkImports::Entity.count }.by(1)
+
+          expect(BulkImports::Entity.last).to have_attributes(source_full_path: 'another_top_level_group')
+        end
+      end
+
+      context 'when every top-level group has an invalid destination' do
+        let(:fake_metadata) do
+          super().merge(entities_mapping: { "-invalid-group" => "group_1" })
+        end
+
+        it 'returns an error result and fails the import' do
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.message).to eq('No top-level groups have a valid destination')
+          expect(bulk_import.reload.failed?).to be(true)
+        end
+      end
+    end
   end
 end

@@ -479,13 +479,15 @@ Project permissions for [GitLab Secrets Manager](../ci/secrets/secrets_manager/_
 |-------------------------------------------------|:-----:|:-------:|:--------:|:----------------:|:---------:|:----------:|:-----:|
 | View Secrets Manager user permissions           |       |         |          |                  |           |     ✓      |   ✓   |
 | Manage permissions for secrets                  |       |         |          |                  |           |            |   ✓   |
-| Read secrets metadata                           |       |         |          |                  |           |            |   ✓   |
-| Create, update, and delete secrets <sup>1</sup> |       |         |          |                  |           |            |   ✓   |
-| Read secret value <sup>2</sup>                  |       |         |          |                  |           |            |       |
+| Read secrets metadata <sup>1</sup> <sup>2</sup> |       |         |          |                  |           |     ✓      |   ✓   |
+| Create and update secrets <sup>1</sup> <sup>2</sup> |   |         |          |                  |           |     ✓      |   ✓   |
+| Delete secrets <sup>1</sup>                     |       |         |          |                  |           |            |   ✓   |
+| Read secret value <sup>3</sup>                  |       |         |          |                  |           |            |       |
 
 **Footnotes**:
 
-1. Owners can grant this action to other roles, specific users, groups, or custom roles. See [Manage secrets permissions](../ci/secrets/secrets_manager/_index.md#manage-secrets-permissions).
+1. Users with the Owner role can grant this action to other roles, specific users, groups, or custom roles. See [Manage secrets permissions](../ci/secrets/secrets_manager/_index.md#manage-secrets-permissions).
+1. Users with the Maintainer role have this permission by default for secrets managers enabled in GitLab 19.4 and later. Users with the Owner role can remove or change the default permissions for the Maintainer role.
 1. No role can read a secret's value. CI/CD jobs read values through job authentication. Other workloads read values through the [Secrets Manager API](../ci/secrets/secrets_manager/non_cicd_access.md), and only if they have been granted the read value permission for that secret.
 
 ### Project CI/CD
@@ -772,7 +774,7 @@ Project permissions for [issues](project/issues/_index.md):
 | Manage [design management](project/issues/design_management.md) files             |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Manage [issue boards](project/issue_board.md)                                     |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Manage [milestones](project/milestones/_index.md)                                 |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) milestones <sup>6</sup>                                |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) milestones                                             |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Archive or reopen [requirements](project/requirements/_index.md) <sup>3</sup>     |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Create or edit [requirements](project/requirements/_index.md) <sup>4</sup>        |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Import or export [requirements](project/requirements/_index.md)                   |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
@@ -795,7 +797,7 @@ Project permissions for [issues](project/issues/_index.md):
 1. Guest users can archive and reopen issues that they authored or are assigned to.
 1. Guest users can modify the title and description that they authored or are assigned to.
 1. Users who don't have the Planner or Owner role can only delete the issues they authored.
-1. Users with the Planner role can not use advanced search for milestones or comments on confidential issues.
+1. Users with the Planner role can not use advanced search for comments on confidential issues.
    For more information, see [epic 17674](https://gitlab.com/groups/gitlab-org/-/work_items/17674).
 
 Project permissions for [tasks](tasks.md):
@@ -871,9 +873,6 @@ Project permissions for [repository](project/repository/_index.md) features incl
 
 **Footnotes**:
 
-<!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
-<!-- markdownlint-disable MD029 -->
-
 1. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
    and internal projects (not on private projects). [External users](../administration/external_users.md)
    must be given explicit access (at least the **Planner** role) even if the project is internal.
@@ -896,8 +895,6 @@ Project permissions for [repository](project/repository/_index.md) features incl
    or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign
    that role to the users.
 1. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/repository/branches/protected.md#allow-force-push).
-
-<!-- markdownlint-enable MD029 -->
 
 ### Project user management
 

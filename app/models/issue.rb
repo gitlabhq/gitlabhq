@@ -559,6 +559,13 @@ class Issue < ApplicationRecord
     Feature.enabled?(:read_relative_positions_from_work_item_positions, root_namespace&.root_ancestor)
   end
 
+  # Write positions to `work_item_positions` (the source of truth) instead of
+  # `issues.relative_position` when the flag is on. Gated per positioning root; must trail
+  # the read flag for a given root, or readers on the legacy column see stale data.
+  def self.write_relative_positions_to_work_item_positions?(root_namespace = nil)
+    Feature.enabled?(:write_relative_positions_to_work_item_positions, root_namespace&.root_ancestor)
+  end
+
   # Order by `work_item_positions.relative_position` when the flag is on, else the legacy
   # `issues.relative_position`. LEFT JOIN keeps unpositioned issues last (NULLS LAST).
   # When a positioning root is known (e.g. a board), also filter by

@@ -10,6 +10,7 @@
       - unknown_failure
     # See https://docs.gitlab.com/development/pipelines/internals/#custom-exit-codes
     exit_codes:
+      - 112  # known flaky test detected, retry the whole job
       - 201  # low free disk space
 
 .default-utils-before_script:

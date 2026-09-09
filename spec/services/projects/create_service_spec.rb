@@ -1289,20 +1289,14 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
 
     it 'schedules authorization update for users with access to group', :sidekiq_inline do
-      stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
-
       expect(AuthorizedProjectsWorker).not_to(
         receive(:bulk_perform_async)
       )
       expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to(
         receive(:perform_async).and_call_original
       )
-      expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-        receive(:bulk_perform_in).with(
-          1.hour,
-          array_including([user.id], [other_user.id]),
-          batch_delay: 30.seconds, batch_size: 100
-        ).and_call_original
+      expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker).to(
+        receive(:perform_async).with(group.id).and_call_original
       )
 
       project = create_project(user, opts)

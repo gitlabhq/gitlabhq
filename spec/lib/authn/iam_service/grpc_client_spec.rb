@@ -274,4 +274,24 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
       end
     end
   end
+
+  describe 'request timeout' do
+    before do
+      allow(auth_stub).to receive(:health).and_return(::Gitlab::Iam::Auth::V1::HealthResponse.new)
+    end
+
+    it 'defaults to TIMEOUT_SECONDS' do
+      described_class.new.health
+
+      expect(::Gitlab::Iam::Auth::V1::AuthService::Stub).to have_received(:new)
+        .with(anything, anything, a_hash_including(timeout: described_class::TIMEOUT_SECONDS))
+    end
+
+    it 'uses a caller-supplied timeout' do
+      described_class.new(timeout: 0.2).health
+
+      expect(::Gitlab::Iam::Auth::V1::AuthService::Stub).to have_received(:new)
+        .with(anything, anything, a_hash_including(timeout: 0.2))
+    end
+  end
 end

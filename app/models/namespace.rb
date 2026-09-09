@@ -1034,9 +1034,8 @@ class Namespace < ApplicationRecord
       AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project.id)
     end
 
-    # Until we compare the inconsistency rates of the new specialized worker and
-    # the old approach, we still run AuthorizedProjectsWorker
-    # but with some delay and lower urgency as a safety net.
+    # Low-priority safety net for the specialized refresh above, to catch
+    # authorizations it may have missed.
     enqueue_jobs_for_groups_requiring_authorizations_refresh(priority: UserProjectAccessChangedService::LOW_PRIORITY)
   end
 

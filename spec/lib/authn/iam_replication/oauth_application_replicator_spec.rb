@@ -6,7 +6,7 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
   using RSpec::Parameterized::TableSyntax
 
   let(:client) do
-    instance_double(Authn::IamService::GrpcClient, create_oauth_application: nil, delete_oauth_application: nil)
+    instance_double(Authn::IamService::GrpcClient, upsert_oauth_application: nil, delete_oauth_application: nil)
   end
 
   subject(:replicator) { described_class.new(client: client) }
@@ -19,7 +19,7 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
       it 'pushes the full field set to IAM' do
         replicator.deliver(row)
 
-        expect(client).to have_received(:create_oauth_application).with(
+        expect(client).to have_received(:upsert_oauth_application).with(
           client_id: application.uid,
           client_secret: application.secret,
           client_name: application.name,
@@ -35,31 +35,21 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
         )
       end
 
-      it 'replaces the upstream client', :aggregate_failures do
+      it 'delivers with a single upsert call' do
         replicator.deliver(row)
 
-        expect(client).to have_received(:delete_oauth_application).with(client_id: application.uid).ordered
-        expect(client).to have_received(:create_oauth_application).ordered
+        expect(client).to have_received(:upsert_oauth_application).once
       end
 
       it 'returns :delivered' do
         expect(replicator.deliver(row)).to eq(:delivered)
       end
 
-      it 'treats a missing upstream client as a first create rather than a failure' do
-        allow(client).to receive(:delete_oauth_application)
-          .and_raise(Authn::IamService::GrpcClient::RequestError.new('gone', reason: :not_found))
-
-        expect { replicator.deliver(row) }.not_to raise_error
-        expect(client).to have_received(:create_oauth_application)
-      end
-
-      it 'fails when the replace delete fails for any other reason' do
-        allow(client).to receive(:delete_oauth_application)
+      it 'raises when the upsert fails' do
+        allow(client).to receive(:upsert_oauth_application)
           .and_raise(Authn::IamService::GrpcClient::RequestError.new('down', reason: :unavailable))
 
         expect { replicator.deliver(row) }.to raise_error(Authn::IamService::GrpcClient::RequestError)
-        expect(client).not_to have_received(:create_oauth_application)
       end
 
       context 'when the application is not confidential' do
@@ -68,7 +58,7 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
         it 'omits client_credentials and marks the app public' do
           replicator.deliver(row)
 
-          expect(client).to have_received(:create_oauth_application).with(
+          expect(client).to have_received(:upsert_oauth_application).with(
             hash_including(public: true, grant_types: %w[authorization_code refresh_token])
           )
         end
@@ -80,7 +70,7 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
         it 'sends the administrator label' do
           replicator.deliver(row)
 
-          expect(client).to have_received(:create_oauth_application).with(hash_including(owner: 'An administrator'))
+          expect(client).to have_received(:upsert_oauth_application).with(hash_including(owner: 'An administrator'))
         end
       end
 
@@ -90,7 +80,7 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
         it 'sends the anonymous service label' do
           replicator.deliver(row)
 
-          expect(client).to have_received(:create_oauth_application).with(hash_including(owner: 'An anonymous service'))
+          expect(client).to have_received(:upsert_oauth_application).with(hash_including(owner: 'An anonymous service'))
         end
       end
 
@@ -100,7 +90,7 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
         it 'sends the group name' do
           replicator.deliver(row)
 
-          expect(client).to have_received(:create_oauth_application).with(hash_including(owner: application.owner.name))
+          expect(client).to have_received(:upsert_oauth_application).with(hash_including(owner: application.owner.name))
         end
       end
 
@@ -112,7 +102,7 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
         it 'splits them into an array' do
           replicator.deliver(row)
 
-          expect(client).to have_received(:create_oauth_application).with(
+          expect(client).to have_received(:upsert_oauth_application).with(
             hash_including(redirect_uris: %w[https://a.example.com https://b.example.com])
           )
         end
@@ -123,7 +113,7 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
 
         it 'returns :skipped without calling IAM' do
           expect(replicator.deliver(row)).to eq(:skipped)
-          expect(client).not_to have_received(:create_oauth_application)
+          expect(client).not_to have_received(:upsert_oauth_application)
         end
       end
     end
@@ -148,6 +138,20 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
 
       it 'returns :delivered' do
         expect(replicator.deliver(row)).to eq(:delivered)
+      end
+
+      it 'treats an already-absent client as delivered' do
+        allow(client).to receive(:delete_oauth_application)
+          .and_raise(Authn::IamService::GrpcClient::RequestError.new('gone', reason: :not_found))
+
+        expect(replicator.deliver(row)).to eq(:delivered)
+      end
+
+      it 'raises when the delete fails for any other reason' do
+        allow(client).to receive(:delete_oauth_application)
+          .and_raise(Authn::IamService::GrpcClient::RequestError.new('down', reason: :unavailable))
+
+        expect { replicator.deliver(row) }.to raise_error(Authn::IamService::GrpcClient::RequestError)
       end
 
       it 'raises when the payload has no uid' do

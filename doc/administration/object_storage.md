@@ -148,6 +148,7 @@ The following table lists the valid `objects` that can be used:
 | `terraform_state`  | [Terraform state files](terraform_state.md) |
 | `pages`            | [Pages](pages/_index.md) |
 | `ci_secure_files`  | [Secure files](cicd/secure_files.md) |
+| `ci_catalog_bundles` | [CI/CD component bundles](../ci/components/_index.md) |
 
 Within each object type, three parameters can be defined:
 

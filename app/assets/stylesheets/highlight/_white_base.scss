@@ -9,7 +9,6 @@
 */
 $white-code-color: $gl-color-neutral-800;
 $white-highlight: #fafe3d;
-$white-pre-hll-bg: #f8eec7;
 $white-hll-bg: #f8f8f8;
 $white-expanded-border: #e0e0e0;
 $white-expanded-bg: #f7f7f7;
@@ -277,11 +276,6 @@ $white-gc-bg: #eaf2f5;
         background-color: $gl-color-blue-50;
       }
     }
-  }
-
-  // highlight line via anchor
-  pre .hll {
-    background-color: $white-pre-hll-bg !important;
   }
 
   // mark lines via mark_multiple_lines

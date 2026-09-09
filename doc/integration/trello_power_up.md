@@ -13,6 +13,9 @@ description: Configure Trello Power-Ups for GitLab to attach merge requests to T
 
 {{< /details >}}
 
+> [!warning]
+> This feature is not under active development.
+
 You can use Trello Power-Ups for GitLab to attach
 GitLab merge requests to Trello cards.
 

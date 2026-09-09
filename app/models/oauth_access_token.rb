@@ -13,7 +13,7 @@ class OauthAccessToken < Doorkeeper::AccessToken
   alias_method :user=, :resource_owner=
 
   scope :latest_per_application, -> { select('distinct on(application_id) *').order(application_id: :desc, created_at: :desc) }
-  scope :preload_application, -> { preload(:application) }
+  scope :preload_application, -> { preload(application: :owner) }
 
   RETENTION_PERIOD = 1.month
 

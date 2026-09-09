@@ -17,6 +17,50 @@ describe('dimensionMetricValidationError', () => {
     ).toBe('barChart requires at least one dimension');
   });
 
+  it('requires a minimum number of dimensions when one is set', () => {
+    expect(
+      dimensionMetricValidationError({
+        displayType: 'heatMap',
+        dimensions: [DIM_A],
+        metrics: [METRIC_X],
+        minDimensions: 2,
+      }),
+    ).toBe('heatMap requires 2 dimensions');
+  });
+
+  it('states the real requirement when no dimensions are given at all', () => {
+    expect(
+      dimensionMetricValidationError({
+        displayType: 'heatMap',
+        dimensions: [],
+        metrics: [METRIC_X],
+        minDimensions: 2,
+      }),
+    ).toBe('heatMap requires 2 dimensions');
+  });
+
+  it('still requires one dimension when asked for fewer', () => {
+    expect(
+      dimensionMetricValidationError({
+        displayType: 'barChart',
+        dimensions: [],
+        metrics: [METRIC_X],
+        minDimensions: 0,
+      }),
+    ).toBe('barChart requires at least one dimension');
+  });
+
+  it('accepts exactly the minimum number of dimensions', () => {
+    expect(
+      dimensionMetricValidationError({
+        displayType: 'heatMap',
+        dimensions: [DIM_A, DIM_B],
+        metrics: [METRIC_X],
+        minDimensions: 2,
+      }),
+    ).toBe(null);
+  });
+
   it('caps dimensions at the default maximum of 2', () => {
     expect(
       dimensionMetricValidationError({

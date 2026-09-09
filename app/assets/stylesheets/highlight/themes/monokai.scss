@@ -312,11 +312,6 @@ $monokai-gh: #75715e;
 
   @include conflict-colors('monokai');
 
-  // highlight line via anchor
-  pre .hll {
-    background-color: $monokai-hll !important;
-  }
-
   // mark lines via mark_multiple_lines
   pre.monokai code {
     .selected-inline-section-marker {

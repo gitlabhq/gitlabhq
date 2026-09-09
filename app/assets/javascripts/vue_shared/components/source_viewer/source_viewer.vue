@@ -253,7 +253,7 @@ export default {
 <template>
   <div>
     <div class="flash-container gl-mb-3"></div>
-    <div ref="fileContent" class="gl-relative gl-flex gl-overflow-x-auto">
+    <div ref="fileContent" class="gl-relative gl-flex gl-overflow-x-auto gl-overflow-y-hidden">
       <blame-info v-if="showBlame" :blame-info="blameInfo" :project-path="projectPath" />
 
       <blame-skeleton-loader
@@ -278,22 +278,27 @@ export default {
           :project-path="projectPath"
           :file-path="blob.path"
         />
-        <chunk
-          v-for="(chunk, index) in chunks"
-          :key="index"
-          :ref="`chunk-${index}`"
-          :is-highlighted="Boolean(chunk.isHighlighted)"
-          :raw-content="chunk.rawContent"
-          :highlighted-content="chunk.highlightedContent"
-          :total-lines="chunk.totalLines"
-          :starting-from="chunk.startingFrom"
-          :blame-path="blob.blamePath"
-          :blob-path="blob.path"
-          :is-blame-active="showBlame"
-          @appear="() => handleAppear(index)"
-          @disappear="() => handleDisappear(index)"
-          @highlighted="blameData = [...blameData]"
-        />
+        <!-- One max-content column so the widest line in the file sets the width for
+        every chunk. Without it a chunk only stretches to its own longest line, and a
+        selected line in a narrow chunk stops short of the right edge. -->
+        <div class="gl-flex gl-w-max gl-min-w-full gl-flex-col">
+          <chunk
+            v-for="(chunk, index) in chunks"
+            :key="index"
+            :ref="`chunk-${index}`"
+            :is-highlighted="Boolean(chunk.isHighlighted)"
+            :raw-content="chunk.rawContent"
+            :highlighted-content="chunk.highlightedContent"
+            :total-lines="chunk.totalLines"
+            :starting-from="chunk.startingFrom"
+            :blame-path="blob.blamePath"
+            :blob-path="blob.path"
+            :is-blame-active="showBlame"
+            @appear="() => handleAppear(index)"
+            @disappear="() => handleDisappear(index)"
+            @highlighted="blameData = [...blameData]"
+          />
+        </div>
       </div>
     </div>
   </div>

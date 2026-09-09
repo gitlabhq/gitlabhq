@@ -116,6 +116,18 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
     end
   end
 
+  describe 'the timed_out flag' do
+    it 'is picked up by mark_as_failed, but does not change its behavior' do
+      import_state = create(:import_state, :started)
+      import_state.timed_out = true
+
+      import_state.mark_as_failed('boom')
+
+      expect(import_state).to be_failed
+      expect(import_state).to be_timed_out
+    end
+  end
+
   describe '#human_status_name' do
     context 'when import_state exists' do
       it 'returns the humanized status name' do
@@ -203,9 +215,169 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
 
         project.import_state.finish
       end
+
+      it 'tracks the finish_project_import internal event' do
+        project = create(:project, :import_started, import_type: 'github')
+
+        expect { project.import_state.finish }
+          .to trigger_internal_events('finish_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'github' }
+          )
+      end
+
+      it 'does not track the finish_project_import event for built-in template imports' do
+        project = create(:project, :import_started, import_type: 'gitlab_built_in_project_template')
+
+        expect { project.import_state.finish }
+          .not_to trigger_internal_events('finish_project_import')
+      end
+
+      it 'does not track the finish_project_import event for unknown import types' do
+        project = create(:project, :import_started, import_type: 'not_a_real_importer')
+
+        expect { project.import_state.finish }
+          .not_to trigger_internal_events('finish_project_import')
+      end
+
+      it 'includes the hashed import_source when the project has an import URL' do
+        project = create(:project, :import_started, import_type: 'github', import_url: 'https://github.com/foo/bar.git')
+        expected_source = Gitlab::Import::SourceIdentifier.hash(project.safe_import_url(masked: false))
+
+        expect { project.import_state.finish }
+          .to trigger_internal_events('finish_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'github', property: expected_source }
+          )
+      end
+
+      it 'hashes the same import_source regardless of saved credentials' do
+        with_credentials = create(
+          :project, :import_started, import_type: 'github', import_url: 'https://user:pass@github.com/foo/bar.git'
+        )
+        without_credentials = create(
+          :project, :import_started, import_type: 'github', import_url: 'https://github.com/foo/bar.git'
+        )
+
+        expect(with_credentials.import_state.send(:hashed_import_source))
+          .to eq(without_credentials.import_state.send(:hashed_import_source))
+      end
+
+      it 'does not track the finish_project_import event for mirrors' do
+        project = create(:project, :import_started, import_type: 'github')
+        allow(project).to receive(:mirror?).and_return(true)
+        allow(project.import_state).to receive(:project).and_return(project)
+
+        expect { project.import_state.finish }
+          .not_to trigger_internal_events('finish_project_import')
+      end
+    end
+
+    context 'state transition: [:scheduled] => [:started]' do
+      it 'tracks the start_project_import internal event' do
+        project = create(:project, :import_scheduled, import_type: 'github')
+
+        expect { project.import_state.start }
+          .to trigger_internal_events('start_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'github' }
+          )
+      end
+
+      it 'does not track the start_project_import event for built-in template imports' do
+        project = create(:project, :import_scheduled, import_type: 'gitlab_built_in_project_template')
+
+        expect { project.import_state.start }
+          .not_to trigger_internal_events('start_project_import')
+      end
+
+      it 'does not track the start_project_import event for unknown import types' do
+        project = create(:project, :import_scheduled, import_type: 'not_a_real_importer')
+
+        expect { project.import_state.start }
+          .not_to trigger_internal_events('start_project_import')
+      end
+    end
+
+    context 'state transition: [:scheduled, :started] => [:failed]' do
+      it 'tracks the fail_project_import internal event' do
+        project = create(:project, :import_started, import_type: 'github')
+
+        expect { project.import_state.fail_op }
+          .to trigger_internal_events('fail_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'github' }
+          )
+      end
+
+      it 'does not track the fail_project_import event for unknown import types' do
+        project = create(:project, :import_started, import_type: 'not_a_real_importer')
+
+        expect { project.import_state.fail_op }
+          .not_to trigger_internal_events('fail_project_import')
+      end
+    end
+
+    context 'when marked as timed out' do
+      it 'tracks the timeout_project_import internal event, not fail_project_import' do
+        project = create(:project, :import_started, import_type: 'github')
+        project.import_state.timed_out = true
+
+        expect { project.import_state.mark_as_failed('boom') }
+          .to trigger_internal_events('timeout_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'github' }
+          )
+          .and not_trigger_internal_events('fail_project_import')
+      end
+
+      it 'marks the import as completed, in the failed state' do
+        project = create(:project, :import_started, import_type: 'github')
+        project.import_state.timed_out = true
+
+        project.import_state.mark_as_failed('boom')
+
+        expect(project.import_state).to be_completed
+        expect(project.import_state).to be_failed
+      end
     end
 
     context 'state transition: [:none, :scheduled, :started] => [:canceled]' do
+      it 'tracks the cancel_project_import internal event' do
+        project = create(:project, :import_started, import_type: 'github')
+
+        expect { project.import_state.cancel }
+          .to trigger_internal_events('cancel_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'github' }
+          )
+      end
+
+      it 'does not track the cancel_project_import event for unknown import types' do
+        project = create(:project, :import_started, import_type: 'not_a_real_importer')
+
+        expect { project.import_state.cancel }
+          .not_to trigger_internal_events('cancel_project_import')
+      end
+
       it 'updates the import status' do
         import_state = create(:import_state, :none)
         expect { import_state.cancel }
@@ -262,11 +434,11 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
         :transition,
         :expected_checksums
       ) do
-        'github'         | :started   | :finish  | { 'fetched' => {}, 'imported' => {} }
-        'github'         | :started   | :cancel  | { 'fetched' => {}, 'imported' => {} }
-        'github'         | :started   | :fail_op | { 'fetched' => {}, 'imported' => {} }
-        'github'         | :scheduled | :cancel  | {}
-        'gitlab_project' | :started   | :cancel  | {}
+        'github'         | :started   | :finish     | { 'fetched' => {}, 'imported' => {} }
+        'github'         | :started   | :cancel     | { 'fetched' => {}, 'imported' => {} }
+        'github'         | :started   | :fail_op    | { 'fetched' => {}, 'imported' => {} }
+        'github'         | :scheduled | :cancel     | {}
+        'gitlab_project' | :started   | :cancel     | {}
       end
 
       with_them do

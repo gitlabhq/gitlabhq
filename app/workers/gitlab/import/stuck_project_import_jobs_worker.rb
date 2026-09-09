@@ -7,6 +7,12 @@ module Gitlab
 
       private
 
+      def mark_as_failed(import_state)
+        import_state.timed_out = true
+
+        super
+      end
+
       def track_metrics(with_jid_count, without_jid_count)
         Gitlab::Metrics.add_event(
           :stuck_import_jobs,

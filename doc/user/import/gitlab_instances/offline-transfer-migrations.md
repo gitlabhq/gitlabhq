@@ -153,6 +153,51 @@ To migrate a group or project:
 1. On the destination instance, [create an offline transfer import](https://api.gitlab.com/rest/#tag/offline-transfers/POST/api/v4/offline_imports) from the bucket and export prefix.
 1. Monitor the import with the [group and project migration by direct transfer API](../../../api/bulk_imports.md#retrieve-a-group-or-project-migration).
 
+## Import an entire export
+
+By default, an offline transfer import requires an `entities` array that lists every group or project to
+import and where to put it. Instead, you can pass an `import_all` object to import every top-level group
+in the export, together with its subgroups and projects, recreating the source instance's structure
+under a destination namespace. Exactly one of `entities` or `import_all` is required.
+
+To import an entire export, pass `import_all` with a `destination_namespace` attribute to the
+[create an offline transfer import](https://api.gitlab.com/rest/#tag/offline-transfers/POST/api/v4/offline_imports) API:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/offline_imports" \
+  --data '{
+    "bucket": "example-bucket",
+    "export_prefix": "example-export-prefix",
+    "aws_s3_configuration": {
+      "aws_access_key_id": "<aws_access_key_id>",
+      "aws_secret_access_key": "<aws_secret_access_key>",
+      "region": "us-east-1"
+    },
+    "import_all": {
+      "destination_namespace": "dest-group"
+    }
+  }'
+```
+
+Set `destination_namespace` to the full path of an existing group, for example `dest-group/subgroup`, to
+recreate the structure under that group. Set it to an empty string (`""`) to recreate the structure as
+new top-level groups.
+
+Only top-level groups are imported:
+
+- If the export contains a path whose top-level group was not itself exported (for example, the export
+  contains `group-a/subgroup-b` but not `group-a`), GitLab skips that path instead of creating the
+  missing parent group.
+- If a top-level group's path conflicts with an existing group in the destination namespace, GitLab
+  skips that group and everything under it. The rest of the export still imports.
+- If every top-level group collides with an existing destination path, the import fails.
+- If the export contains no top-level groups, the import fails.
+
+Monitor the import with the [group and project migration by direct transfer API](../../../api/bulk_imports.md#retrieve-a-group-or-project-migration).
+
 ## Rate limits
 
 Offline transfer exports and imports are rate limited.

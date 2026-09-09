@@ -570,7 +570,7 @@ When rendered, the example looks similar to:
 >
 >   5. First ordered list item
 
-<!-- markdownlint-disable MD029 -->
+<!-- markdownlint-enable MD029 -->
 
 If the blank line is missing, the second list item renders as part of the first one:
 

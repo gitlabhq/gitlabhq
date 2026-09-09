@@ -126,6 +126,8 @@ module Gitlab
 
         # @param organization_id [Integer] the organization ID
         # @param trigger_type [String, nil] returns every trigger when nil
+        # @param namespace_id [Integer, nil] when nil returns all policies; when set, returns
+        #   only policies stamped with that namespace_id (how a group surface sees only its own)
         # @param lifecycle_state [String, nil] returns every lifecycle state when nil
         # @param ids [Array<Integer>, nil] when given, returns only these ids (ignoring
         #   offset/per_page) instead of a page; an empty array returns no policies
@@ -133,7 +135,7 @@ module Gitlab
         # @param per_page [Integer] items per page; clamped to between 1 and MAX_PER_PAGE
         # @return [Gitlab::PolicyStore::Page] the requested page of policies
         def list(
-          organization_id:, trigger_type: nil, lifecycle_state: nil, ids: nil, offset: 0,
+          organization_id:, trigger_type: nil, namespace_id: nil, lifecycle_state: nil, ids: nil, offset: 0,
           per_page: DEFAULT_PER_PAGE)
           raise NotImplementedError
         end

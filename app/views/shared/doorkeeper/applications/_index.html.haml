@@ -85,6 +85,10 @@
                       %td{ data: { label: _('Name') } }
                         - if record.application
                           = record.application.name
+                          .form-text.gl-text-subtle
+                            = safe_format(_('%{owner} %{created_date} ago.'),
+                              { owner: auth_app_owner_text(record.application),
+                                created_date: time_ago_in_words(record.application.created_at) })
                         - else
                           = _('Anonymous')
                           .form-text.gl-text-subtle

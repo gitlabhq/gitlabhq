@@ -2480,18 +2480,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         .and change { group_two_user.authorized_projects.include?(project) }.from(true).to(false)
     end
 
-    it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations' do
-      stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+    it 'calls UserProjectAccessChangedService with a delay to update project authorizations' do
+      expect_next_instance_of(UserProjectAccessChangedService, [group_one_user.id]) do |service|
+        expect(service).to receive(:execute).with(priority: UserProjectAccessChangedService::LOW_PRIORITY)
+      end
 
-      expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-        receive(:bulk_perform_in)
-          .with(1.hour, [[group_one_user.id]], batch_delay: 30.seconds, batch_size: 100)
-      )
-
-      expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-        receive(:bulk_perform_in)
-          .with(1.hour, [[group_two_user.id]], batch_delay: 30.seconds, batch_size: 100)
-      )
+      expect_next_instance_of(UserProjectAccessChangedService, [group_two_user.id]) do |service|
+        expect(service).to receive(:execute).with(priority: UserProjectAccessChangedService::LOW_PRIORITY)
+      end
 
       execute_update
     end

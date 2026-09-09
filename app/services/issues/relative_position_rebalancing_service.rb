@@ -155,11 +155,26 @@ module Issues
          SELECT *
          FROM (VALUES #{values}) as t (id, pos)
         )
-        UPDATE #{Issue.table_name}
-        SET relative_position = cte.new_pos
-        FROM cte
-        WHERE cte_id = id
+        #{rebalance_update_target}
       SQL
+    end
+
+    def rebalance_update_target
+      if Issue.write_relative_positions_to_work_item_positions?(root_namespace)
+        <<~SQL
+          UPDATE work_item_positions
+          SET relative_position = cte.new_pos, updated_at = NOW()
+          FROM cte
+          WHERE work_item_id = cte_id
+        SQL
+      else
+        <<~SQL
+          UPDATE #{Issue.table_name}
+          SET relative_position = cte.new_pos
+          FROM cte
+          WHERE cte_id = id
+        SQL
+      end
     end
 
     def gaps

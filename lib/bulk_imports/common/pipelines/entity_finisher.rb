@@ -4,6 +4,8 @@ module BulkImports
   module Common
     module Pipelines
       class EntityFinisher
+        include Gitlab::InternalEventsTracking
+
         def self.file_extraction_pipeline?
           false
         end
@@ -32,13 +34,23 @@ module BulkImports
             message: "Entity #{entity.status_name}"
           )
 
-          ::BulkImports::FinishProjectImportWorker.perform_async(entity.project_id) if entity.project?
           schedule_group_work_item_placement if entity.group?
+
+          return unless entity.project?
+
+          ::BulkImports::FinishProjectImportWorker.perform_async(entity.project_id)
+          track_finish_project_import if entity.finished?
         end
 
         private
 
         attr_reader :context, :entity, :trackers
+
+        def track_finish_project_import
+          return unless entity.project
+
+          track_internal_event('finish_project_import', entity.project_import_event_attributes)
+        end
 
         def logger
           @logger ||= Logger.build.with_entity(entity)

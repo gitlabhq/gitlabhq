@@ -159,6 +159,10 @@ function handle_retry_rspec_in_new_process() {
     exit "${rspec_run_status}"
   fi
 
+  if [[ $rspec_retry_status -ne 0 ]]; then
+    auto_retry_if_known_flaky_test
+  fi
+
   exit "${rspec_retry_status}"
 }
 
@@ -355,6 +359,19 @@ function retry_failed_rspec_examples() {
   fi
 
   return $rspec_run_status
+}
+
+# Exit with code 112 to trigger a CI job-level auto-retry if any of the failed tests is a known flaky test.
+# See scripts/flaky_tests/auto_retry_checker.rb for the implementation and tests.
+# Disable by setting GLCI_AUTO_RETRY_KNOWN_FLAKY_TESTS to any value other than "true" in CI/CD variables.
+function auto_retry_if_known_flaky_test() {
+  if [[ "${GLCI_AUTO_RETRY_KNOWN_FLAKY_TESTS}" != "true" ]]; then
+    echoinfo "Skipping known flaky test auto-retry (GLCI_AUTO_RETRY_KNOWN_FLAKY_TESTS != 'true')."
+    return
+  fi
+
+  RSPEC_LAST_RUN_RESULTS_FILE="${RSPEC_LAST_RUN_RESULTS_FILE}" \
+    ruby scripts/flaky_tests/auto_retry_checker.rb
 }
 
 # Exit with an allowed_failure exit code if the flaky test was part of the MR that triggered this pipeline

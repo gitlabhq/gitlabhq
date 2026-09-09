@@ -10,6 +10,7 @@ module MergeRequests
 
     def execute
       @params_issue_iid = params.delete(:issue_iid)
+      @cherry_picked_merge_request_id = params.delete(:cherry_picked_merge_request_id)
       self.merge_request = MergeRequest.new
       # TODO: this should handle all quick actions that don't have side effects
       # https://gitlab.com/gitlab-org/gitlab-foss/issues/53658
@@ -23,6 +24,11 @@ module MergeRequests
       initialize_callbacks!(merge_request)
 
       process_params
+
+      # Memoized before any template can fill the description in, so that a
+      # description the user typed can be told apart from one a template
+      # supplied.
+      description_given?
 
       merge_request.compare_commits = []
       set_merge_request_target_branch
@@ -251,6 +257,7 @@ module MergeRequests
     def assign_title_and_description
       assign_description_from_repository_template
       replace_variables_in_description
+      assign_description_from_cherry_picked_merge_request unless description_given?
 
       assign_title_from_template if mr_title_template_enabled?
       assign_title_and_description_from_commits
@@ -332,6 +339,11 @@ module MergeRequests
       ::Gitlab::MergeRequests::MessageGenerator.humanize_branch_name(branch_name)
     end
 
+    def description_given?
+      merge_request.description.present?
+    end
+    strong_memoize_attr :description_given?
+
     def assign_description_from_repository_template
       return unless merge_request.description.blank?
 
@@ -361,6 +373,26 @@ module MergeRequests
       return unless repository_template.present?
 
       merge_request.description = repository_template.content
+    end
+
+    # Runs after the template and the variable replacement, both of which it
+    # wins over: a picked description is content, so it keeps any %{...} in it.
+    def assign_description_from_cherry_picked_merge_request
+      picked_merge_request = cherry_picked_merge_request
+
+      return if picked_merge_request&.description.blank?
+
+      merge_request.description = picked_merge_request.description
+    end
+
+    # The id arrives in the query string, so authorize whatever it resolves to.
+    def cherry_picked_merge_request
+      return if @cherry_picked_merge_request_id.blank?
+
+      picked_merge_request = MergeRequest.find_by_id(@cherry_picked_merge_request_id)
+      return unless picked_merge_request && can?(current_user, :read_merge_request, picked_merge_request)
+
+      picked_merge_request
     end
 
     def replace_variables_in_description

@@ -278,7 +278,7 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
 
   describe 'IAM outbox replication' do
     let(:client) do
-      instance_double(Authn::IamService::GrpcClient, create_oauth_application: nil, delete_oauth_application: nil)
+      instance_double(Authn::IamService::GrpcClient, upsert_oauth_application: nil, delete_oauth_application: nil)
     end
 
     before do
@@ -309,18 +309,22 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
         create(:oauth_application)
       end
 
-      it 'delivers immediately (Layer 2) and marks the outbox row delivered', :aggregate_failures, :freeze_time do
+      it 'delivers immediately (fire-and-forget) without marking the outbox row delivered',
+        :aggregate_failures do
         app = create(:oauth_application)
 
-        expect(client).to have_received(:create_oauth_application).with(hash_including(client_id: app.uid))
-        row = Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id).sole
-        expect(row.l0_delivered_at).to be_present
-        expect(row.updated_at).to eq(row.l0_delivered_at)
+        expect(Authn::IamService::GrpcClient).to have_received(:new)
+          .with(timeout: Authn::IamReplication::Outboxable::IMMEDIATE_WRITE_TIMEOUT_SECONDS)
+        expect(client).to have_received(:upsert_oauth_application).with(hash_including(client_id: app.uid))
+
+        outbox_rows = Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id)
+        expect(outbox_rows.count).to eq(1)
+        expect(outbox_rows.first.l0_delivered_at).to be_nil
       end
 
       context 'when the replicator raises' do
         before do
-          allow(client).to receive(:create_oauth_application)
+          allow(client).to receive(:upsert_oauth_application)
             .and_raise(Authn::IamService::GrpcClient::RequestError.new('down', reason: :unavailable))
         end
 
@@ -359,7 +363,7 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
 
           app = create(:oauth_application)
 
-          expect(client).not_to have_received(:create_oauth_application)
+          expect(client).not_to have_received(:upsert_oauth_application)
           expect(Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id).sole.l0_delivered_at).to be_nil
         end
       end
@@ -383,13 +387,13 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
         app.update!(redirect_uri: 'https://example.com/new')
       end
 
-      it 'delivers immediately (Layer 2) and marks the outbox row delivered' do
+      it 'delivers immediately (fire-and-forget) without marking the outbox row delivered' do
         app = create(:oauth_application)
 
         app.update!(redirect_uri: 'https://example.com/new')
 
         row = Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id).order(:id).last
-        expect(row.l0_delivered_at).to be_present
+        expect(row.l0_delivered_at).to be_nil
       end
     end
 
@@ -416,14 +420,15 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
         app.destroy!
       end
 
-      it 'delivers the delete immediately (Layer 2) with the uid', :aggregate_failures do
+      it 'delivers the delete immediately (fire-and-forget) without marking the outbox row delivered',
+        :aggregate_failures do
         # Real replicator + real payload: a key drift in iam_outbox_delete_payload breaks this.
         app = create(:oauth_application)
 
         app.destroy!
 
-        expect(client).to have_received(:delete_oauth_application).with(client_id: app.uid).twice
-        expect(Authn::IamOutbox.where(event_type: :delete, entity_id: app.id).sole.l0_delivered_at).to be_present
+        expect(client).to have_received(:delete_oauth_application).with(client_id: app.uid).once
+        expect(Authn::IamOutbox.where(event_type: :delete, entity_id: app.id).sole.l0_delivered_at).to be_nil
       end
     end
 
