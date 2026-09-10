@@ -52735,6 +52735,8 @@ CREATE INDEX tmp_idx_repository_languages_on_programming_language_id ON reposito
 
 CREATE INDEX tmp_idx_sbom_occurrence_refs_on_project_id_id ON sbom_occurrence_refs USING btree (project_id, id);
 
+CREATE INDEX tmp_idx_users_on_id_where_two_factor_required_from_group ON users USING btree (id) WHERE ((require_two_factor_authentication_from_group = true) AND (user_type = 0));
+
 CREATE INDEX tmp_idx_vuln_occurrences_on_project_id_sec_prj_trck_cnxt_id_id ON vulnerability_occurrences USING btree (project_id, security_project_tracked_context_id, id);
 
 CREATE INDEX tmp_idx_vuln_reads_on_project_id_sec_prj_trck_cnxt_id_id ON vulnerability_reads USING btree (project_id, security_project_tracked_context_id, id);

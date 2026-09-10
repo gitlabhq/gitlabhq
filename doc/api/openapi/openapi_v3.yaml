@@ -44020,9 +44020,8 @@ paths:
       parameters:
       - name: author_id
         required: false
-        description: Returns merge requests created by the given user `id`. Mutually
-          exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`.
-          Mutually exclusive with `author_username`.
+        description: Returns merge requests created by the given user `id`. Combine
+          with `scope=all` or `scope=assigned_to_me`. Mutually exclusive with `author_username`.
         schema:
           type: integer
           nullable: true
@@ -44030,7 +44029,7 @@ paths:
       - name: author_username
         required: false
         description: Returns merge requests created by the given `username`. Mutually
-          exclusive with `author_id`. Mutually exclusive with `author_id`.
+          exclusive with `author_id`.
         schema:
           type: string
           nullable: true
@@ -44050,7 +44049,7 @@ paths:
       - name: assignee_username
         required: false
         description: Returns merge requests created by the given `username`. Mutually
-          exclusive with `author_id`. Mutually exclusive with `assignee_id`.
+          exclusive with `assignee_id`.
         schema:
           type: array
           items:
@@ -44061,8 +44060,8 @@ paths:
         required: false
         description: Returns merge requests which have the user as a reviewer with
           the given `username`. `None` returns merge requests with no reviewers. `Any`
-          returns merge requests with any reviewer. Mutually exclusive with `reviewer_id`.
-          Introduced in GitLab 13.8. Mutually exclusive with `reviewer_id`.
+          returns merge requests with any reviewer. Introduced in GitLab 13.8. Mutually
+          exclusive with `reviewer_id`.
         schema:
           type: string
           nullable: true
@@ -44103,7 +44102,6 @@ paths:
         description: Returns merge requests which have the user as a reviewer with
           the given user `id`. `None` returns merge requests with no reviewers. `Any`
           returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`.
-          Mutually exclusive with `reviewer_username`.
         schema:
           oneOf:
           - type: integer
@@ -44323,8 +44321,8 @@ paths:
       - name: not[author_id]
         required: false
         description: "`<Negated>` Returns merge requests created by the given user
-          `id`. Mutually exclusive with `author_username`. Combine with `scope=all`
-          or `scope=assigned_to_me`. Mutually exclusive with `not[author_username]`."
+          `id`. Combine with `scope=all` or `scope=assigned_to_me`. Mutually exclusive
+          with `not[author_username]`."
         schema:
           type: integer
           nullable: true
@@ -44332,7 +44330,7 @@ paths:
       - name: not[author_username]
         required: false
         description: "`<Negated>` Returns merge requests created by the given `username`.
-          Mutually exclusive with `author_id`. Mutually exclusive with `not[author_id]`."
+          Mutually exclusive with `not[author_id]`."
         schema:
           type: string
           nullable: true
@@ -44352,7 +44350,7 @@ paths:
       - name: not[assignee_username]
         required: false
         description: "`<Negated>` Returns merge requests created by the given `username`.
-          Mutually exclusive with `author_id`. Mutually exclusive with `not[assignee_id]`."
+          Mutually exclusive with `not[assignee_id]`."
         schema:
           type: array
           items:
@@ -44363,8 +44361,8 @@ paths:
         required: false
         description: "`<Negated>` Returns merge requests which have the user as a
           reviewer with the given `username`. `None` returns merge requests with no
-          reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive
-          with `reviewer_id`. Introduced in GitLab 13.8. Mutually exclusive with `not[reviewer_id]`."
+          reviewers. `Any` returns merge requests with any reviewer. Introduced in
+          GitLab 13.8. Mutually exclusive with `not[reviewer_id]`."
         schema:
           type: string
           nullable: true
@@ -44403,7 +44401,7 @@ paths:
         description: "`<Negated>` Returns merge requests which have the user as a
           reviewer with the given user `id`. `None` returns merge requests with no
           reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive
-          with `reviewer_username`. Mutually exclusive with `not[reviewer_username]`."
+          with `not[reviewer_username]`."
         schema:
           type: integer
           nullable: true
@@ -44439,8 +44437,7 @@ paths:
       - name: merge_user_id
         required: false
         description: Returns merge requests which have been merged by the user with
-          the given user `id`. Mutually exclusive with `merge_user_username`. Mutually
-          exclusive with `merge_user_username`.
+          the given user `id`. Mutually exclusive with `merge_user_username`.
         schema:
           type: integer
           nullable: true
@@ -44448,8 +44445,7 @@ paths:
       - name: merge_user_username
         required: false
         description: Returns merge requests which have been merged by the user with
-          the given `username`. Mutually exclusive with `merge_user_id`. Mutually
-          exclusive with `merge_user_id`.
+          the given `username`. Mutually exclusive with `merge_user_id`.
         schema:
           type: string
           nullable: true
@@ -44543,9 +44539,8 @@ paths:
         in: path
       - name: author_id
         required: false
-        description: Returns merge requests created by the given user `id`. Mutually
-          exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`.
-          Mutually exclusive with `author_username`.
+        description: Returns merge requests created by the given user `id`. Combine
+          with `scope=all` or `scope=assigned_to_me`. Mutually exclusive with `author_username`.
         schema:
           type: integer
           nullable: true
@@ -44553,7 +44548,7 @@ paths:
       - name: author_username
         required: false
         description: Returns merge requests created by the given `username`. Mutually
-          exclusive with `author_id`. Mutually exclusive with `author_id`.
+          exclusive with `author_id`.
         schema:
           type: string
           nullable: true
@@ -44573,7 +44568,7 @@ paths:
       - name: assignee_username
         required: false
         description: Returns merge requests created by the given `username`. Mutually
-          exclusive with `author_id`. Mutually exclusive with `assignee_id`.
+          exclusive with `assignee_id`.
         schema:
           type: array
           items:
@@ -44584,8 +44579,8 @@ paths:
         required: false
         description: Returns merge requests which have the user as a reviewer with
           the given `username`. `None` returns merge requests with no reviewers. `Any`
-          returns merge requests with any reviewer. Mutually exclusive with `reviewer_id`.
-          Introduced in GitLab 13.8. Mutually exclusive with `reviewer_id`.
+          returns merge requests with any reviewer. Introduced in GitLab 13.8. Mutually
+          exclusive with `reviewer_id`.
         schema:
           type: string
           nullable: true
@@ -44626,7 +44621,6 @@ paths:
         description: Returns merge requests which have the user as a reviewer with
           the given user `id`. `None` returns merge requests with no reviewers. `Any`
           returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`.
-          Mutually exclusive with `reviewer_username`.
         schema:
           oneOf:
           - type: integer
@@ -44846,8 +44840,8 @@ paths:
       - name: not[author_id]
         required: false
         description: "`<Negated>` Returns merge requests created by the given user
-          `id`. Mutually exclusive with `author_username`. Combine with `scope=all`
-          or `scope=assigned_to_me`. Mutually exclusive with `not[author_username]`."
+          `id`. Combine with `scope=all` or `scope=assigned_to_me`. Mutually exclusive
+          with `not[author_username]`."
         schema:
           type: integer
           nullable: true
@@ -44855,7 +44849,7 @@ paths:
       - name: not[author_username]
         required: false
         description: "`<Negated>` Returns merge requests created by the given `username`.
-          Mutually exclusive with `author_id`. Mutually exclusive with `not[author_id]`."
+          Mutually exclusive with `not[author_id]`."
         schema:
           type: string
           nullable: true
@@ -44875,7 +44869,7 @@ paths:
       - name: not[assignee_username]
         required: false
         description: "`<Negated>` Returns merge requests created by the given `username`.
-          Mutually exclusive with `author_id`. Mutually exclusive with `not[assignee_id]`."
+          Mutually exclusive with `not[assignee_id]`."
         schema:
           type: array
           items:
@@ -44886,8 +44880,8 @@ paths:
         required: false
         description: "`<Negated>` Returns merge requests which have the user as a
           reviewer with the given `username`. `None` returns merge requests with no
-          reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive
-          with `reviewer_id`. Introduced in GitLab 13.8. Mutually exclusive with `not[reviewer_id]`."
+          reviewers. `Any` returns merge requests with any reviewer. Introduced in
+          GitLab 13.8. Mutually exclusive with `not[reviewer_id]`."
         schema:
           type: string
           nullable: true
@@ -44926,7 +44920,7 @@ paths:
         description: "`<Negated>` Returns merge requests which have the user as a
           reviewer with the given user `id`. `None` returns merge requests with no
           reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive
-          with `reviewer_username`. Mutually exclusive with `not[reviewer_username]`."
+          with `not[reviewer_username]`."
         schema:
           type: integer
           nullable: true
@@ -44962,8 +44956,7 @@ paths:
       - name: merge_user_id
         required: false
         description: Returns merge requests which have been merged by the user with
-          the given user `id`. Mutually exclusive with `merge_user_username`. Mutually
-          exclusive with `merge_user_username`.
+          the given user `id`. Mutually exclusive with `merge_user_username`.
         schema:
           type: integer
           nullable: true
@@ -44971,8 +44964,7 @@ paths:
       - name: merge_user_username
         required: false
         description: Returns merge requests which have been merged by the user with
-          the given `username`. Mutually exclusive with `merge_user_id`. Mutually
-          exclusive with `merge_user_id`.
+          the given `username`. Mutually exclusive with `merge_user_id`.
         schema:
           type: string
           nullable: true
@@ -45258,9 +45250,8 @@ paths:
         in: path
       - name: author_id
         required: false
-        description: Returns merge requests created by the given user `id`. Mutually
-          exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`.
-          Mutually exclusive with `author_username`.
+        description: Returns merge requests created by the given user `id`. Combine
+          with `scope=all` or `scope=assigned_to_me`. Mutually exclusive with `author_username`.
         schema:
           type: integer
           nullable: true
@@ -45268,7 +45259,7 @@ paths:
       - name: author_username
         required: false
         description: Returns merge requests created by the given `username`. Mutually
-          exclusive with `author_id`. Mutually exclusive with `author_id`.
+          exclusive with `author_id`.
         schema:
           type: string
           nullable: true
@@ -45288,7 +45279,7 @@ paths:
       - name: assignee_username
         required: false
         description: Returns merge requests created by the given `username`. Mutually
-          exclusive with `author_id`. Mutually exclusive with `assignee_id`.
+          exclusive with `assignee_id`.
         schema:
           type: array
           items:
@@ -45299,8 +45290,8 @@ paths:
         required: false
         description: Returns merge requests which have the user as a reviewer with
           the given `username`. `None` returns merge requests with no reviewers. `Any`
-          returns merge requests with any reviewer. Mutually exclusive with `reviewer_id`.
-          Introduced in GitLab 13.8. Mutually exclusive with `reviewer_id`.
+          returns merge requests with any reviewer. Introduced in GitLab 13.8. Mutually
+          exclusive with `reviewer_id`.
         schema:
           type: string
           nullable: true
@@ -45341,7 +45332,6 @@ paths:
         description: Returns merge requests which have the user as a reviewer with
           the given user `id`. `None` returns merge requests with no reviewers. `Any`
           returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`.
-          Mutually exclusive with `reviewer_username`.
         schema:
           oneOf:
           - type: integer
@@ -45561,8 +45551,8 @@ paths:
       - name: not[author_id]
         required: false
         description: "`<Negated>` Returns merge requests created by the given user
-          `id`. Mutually exclusive with `author_username`. Combine with `scope=all`
-          or `scope=assigned_to_me`. Mutually exclusive with `not[author_username]`."
+          `id`. Combine with `scope=all` or `scope=assigned_to_me`. Mutually exclusive
+          with `not[author_username]`."
         schema:
           type: integer
           nullable: true
@@ -45570,7 +45560,7 @@ paths:
       - name: not[author_username]
         required: false
         description: "`<Negated>` Returns merge requests created by the given `username`.
-          Mutually exclusive with `author_id`. Mutually exclusive with `not[author_id]`."
+          Mutually exclusive with `not[author_id]`."
         schema:
           type: string
           nullable: true
@@ -45590,7 +45580,7 @@ paths:
       - name: not[assignee_username]
         required: false
         description: "`<Negated>` Returns merge requests created by the given `username`.
-          Mutually exclusive with `author_id`. Mutually exclusive with `not[assignee_id]`."
+          Mutually exclusive with `not[assignee_id]`."
         schema:
           type: array
           items:
@@ -45601,8 +45591,8 @@ paths:
         required: false
         description: "`<Negated>` Returns merge requests which have the user as a
           reviewer with the given `username`. `None` returns merge requests with no
-          reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive
-          with `reviewer_id`. Introduced in GitLab 13.8. Mutually exclusive with `not[reviewer_id]`."
+          reviewers. `Any` returns merge requests with any reviewer. Introduced in
+          GitLab 13.8. Mutually exclusive with `not[reviewer_id]`."
         schema:
           type: string
           nullable: true
@@ -45641,7 +45631,7 @@ paths:
         description: "`<Negated>` Returns merge requests which have the user as a
           reviewer with the given user `id`. `None` returns merge requests with no
           reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive
-          with `reviewer_username`. Mutually exclusive with `not[reviewer_username]`."
+          with `not[reviewer_username]`."
         schema:
           type: integer
           nullable: true
@@ -45677,8 +45667,7 @@ paths:
       - name: merge_user_id
         required: false
         description: Returns merge requests which have been merged by the user with
-          the given user `id`. Mutually exclusive with `merge_user_username`. Mutually
-          exclusive with `merge_user_username`.
+          the given user `id`. Mutually exclusive with `merge_user_username`.
         schema:
           type: integer
           nullable: true
@@ -45686,8 +45675,7 @@ paths:
       - name: merge_user_username
         required: false
         description: Returns merge requests which have been merged by the user with
-          the given `username`. Mutually exclusive with `merge_user_id`. Mutually
-          exclusive with `merge_user_id`.
+          the given `username`. Mutually exclusive with `merge_user_id`.
         schema:
           type: string
           nullable: true
@@ -45790,7 +45778,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_b3b0a765ad52"
+              "$ref": "#/components/schemas/RequestBody_f2a98056bc9c"
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}":
     delete:
       operationId: deleteApiV4ProjectsIdMergeRequestsMergeRequestIid
@@ -45920,7 +45908,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_2b4971ab6883"
+              "$ref": "#/components/schemas/RequestBody_6bd49bb73271"
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/participants":
     get:
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidParticipants
@@ -50839,7 +50827,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_f5dab59a683c"
+              "$ref": "#/components/schemas/RequestBody_0290a07ba120"
   "/api/v4/projects/{id}/issues_statistics":
     get:
       operationId: getApiV4ProjectsIdIssuesStatistics
@@ -51255,7 +51243,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_dfb032907e0a"
+              "$ref": "#/components/schemas/RequestBody_834d35fb870b"
     delete:
       operationId: deleteApiV4ProjectsIdIssuesIssueIid
       summary: Delete an issue
@@ -62763,16 +62751,15 @@ paths:
       - name: name
         required: false
         description: Return the environment with this name. Mutually exclusive with
-          search. Mutually exclusive with `search`.
+          `search`.
         schema:
           type: string
           nullable: true
         in: query
       - name: search
         required: false
-        description: Return list of environments matching the search criteria. Mutually
-          exclusive with name. Must be at least 3 characters. Mutually exclusive with
-          `name`.
+        description: Return list of environments matching the search criteria. Must
+          be at least 3 characters. Mutually exclusive with `name`.
         schema:
           type: string
           nullable: true
@@ -63667,9 +63654,8 @@ paths:
         in: path
       - name: author_id
         required: false
-        description: Returns merge requests created by the given user `id`. Mutually
-          exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`.
-          Mutually exclusive with `author_username`.
+        description: Returns merge requests created by the given user `id`. Combine
+          with `scope=all` or `scope=assigned_to_me`. Mutually exclusive with `author_username`.
         schema:
           type: integer
           nullable: true
@@ -63677,7 +63663,7 @@ paths:
       - name: author_username
         required: false
         description: Returns merge requests created by the given `username`. Mutually
-          exclusive with `author_id`. Mutually exclusive with `author_id`.
+          exclusive with `author_id`.
         schema:
           type: string
           nullable: true
@@ -63697,7 +63683,7 @@ paths:
       - name: assignee_username
         required: false
         description: Returns merge requests created by the given `username`. Mutually
-          exclusive with `author_id`. Mutually exclusive with `assignee_id`.
+          exclusive with `assignee_id`.
         schema:
           type: array
           items:
@@ -63708,8 +63694,8 @@ paths:
         required: false
         description: Returns merge requests which have the user as a reviewer with
           the given `username`. `None` returns merge requests with no reviewers. `Any`
-          returns merge requests with any reviewer. Mutually exclusive with `reviewer_id`.
-          Introduced in GitLab 13.8. Mutually exclusive with `reviewer_id`.
+          returns merge requests with any reviewer. Introduced in GitLab 13.8. Mutually
+          exclusive with `reviewer_id`.
         schema:
           type: string
           nullable: true
@@ -63750,7 +63736,6 @@ paths:
         description: Returns merge requests which have the user as a reviewer with
           the given user `id`. `None` returns merge requests with no reviewers. `Any`
           returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`.
-          Mutually exclusive with `reviewer_username`.
         schema:
           oneOf:
           - type: integer
@@ -63970,8 +63955,8 @@ paths:
       - name: not[author_id]
         required: false
         description: "`<Negated>` Returns merge requests created by the given user
-          `id`. Mutually exclusive with `author_username`. Combine with `scope=all`
-          or `scope=assigned_to_me`. Mutually exclusive with `not[author_username]`."
+          `id`. Combine with `scope=all` or `scope=assigned_to_me`. Mutually exclusive
+          with `not[author_username]`."
         schema:
           type: integer
           nullable: true
@@ -63979,7 +63964,7 @@ paths:
       - name: not[author_username]
         required: false
         description: "`<Negated>` Returns merge requests created by the given `username`.
-          Mutually exclusive with `author_id`. Mutually exclusive with `not[author_id]`."
+          Mutually exclusive with `not[author_id]`."
         schema:
           type: string
           nullable: true
@@ -63999,7 +63984,7 @@ paths:
       - name: not[assignee_username]
         required: false
         description: "`<Negated>` Returns merge requests created by the given `username`.
-          Mutually exclusive with `author_id`. Mutually exclusive with `not[assignee_id]`."
+          Mutually exclusive with `not[assignee_id]`."
         schema:
           type: array
           items:
@@ -64010,8 +63995,8 @@ paths:
         required: false
         description: "`<Negated>` Returns merge requests which have the user as a
           reviewer with the given `username`. `None` returns merge requests with no
-          reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive
-          with `reviewer_id`. Introduced in GitLab 13.8. Mutually exclusive with `not[reviewer_id]`."
+          reviewers. `Any` returns merge requests with any reviewer. Introduced in
+          GitLab 13.8. Mutually exclusive with `not[reviewer_id]`."
         schema:
           type: string
           nullable: true
@@ -64050,7 +64035,7 @@ paths:
         description: "`<Negated>` Returns merge requests which have the user as a
           reviewer with the given user `id`. `None` returns merge requests with no
           reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive
-          with `reviewer_username`. Mutually exclusive with `not[reviewer_username]`."
+          with `not[reviewer_username]`."
         schema:
           type: integer
           nullable: true
@@ -64086,8 +64071,7 @@ paths:
       - name: merge_user_id
         required: false
         description: Returns merge requests which have been merged by the user with
-          the given user `id`. Mutually exclusive with `merge_user_username`. Mutually
-          exclusive with `merge_user_username`.
+          the given user `id`. Mutually exclusive with `merge_user_username`.
         schema:
           type: integer
           nullable: true
@@ -64095,8 +64079,7 @@ paths:
       - name: merge_user_username
         required: false
         description: Returns merge requests which have been merged by the user with
-          the given `username`. Mutually exclusive with `merge_user_id`. Mutually
-          exclusive with `merge_user_id`.
+          the given `username`. Mutually exclusive with `merge_user_id`.
         schema:
           type: string
           nullable: true
@@ -116759,7 +116742,7 @@ components:
           nullable: true
       required:
       - duration
-    RequestBody_b3b0a765ad52:
+    RequestBody_f2a98056bc9c:
       type: object
       properties:
         title:
@@ -116828,8 +116811,7 @@ components:
         milestone:
           type: string
           description: The title of a project or ancestor-group milestone to assign
-            the merge request to. Mutually exclusive with `milestone_id`. Mutually
-            exclusive with `milestone_id`.
+            the merge request to. Mutually exclusive with `milestone_id`.
           nullable: true
           maxLength: 255
         remove_source_branch:
@@ -116861,7 +116843,7 @@ components:
       - title
       - source_branch
       - target_branch
-    RequestBody_2b4971ab6883:
+    RequestBody_6bd49bb73271:
       type: object
       properties:
         title:
@@ -116934,8 +116916,7 @@ components:
         milestone:
           type: string
           description: The title of a project or ancestor-group milestone to assign
-            the merge request to. Mutually exclusive with `milestone_id`. Mutually
-            exclusive with `milestone_id`.
+            the merge request to. Mutually exclusive with `milestone_id`.
           nullable: true
           maxLength: 255
         remove_source_branch:
@@ -117154,7 +117135,7 @@ components:
           nullable: true
       required:
       - content
-    RequestBody_f5dab59a683c:
+    RequestBody_0290a07ba120:
       type: object
       properties:
         title:
@@ -117202,8 +117183,7 @@ components:
         milestone:
           type: string
           description: The title of a project or ancestor-group milestone to assign
-            the issue to. Mutually exclusive with `milestone_id`. Mutually exclusive
-            with `milestone_id`.
+            the issue to. Mutually exclusive with `milestone_id`.
           nullable: true
           maxLength: 255
         labels:
@@ -117280,7 +117260,7 @@ components:
           nullable: true
       required:
       - title
-    RequestBody_dfb032907e0a:
+    RequestBody_834d35fb870b:
       type: object
       properties:
         title:
@@ -117322,8 +117302,7 @@ components:
         milestone:
           type: string
           description: The title of a project or ancestor-group milestone to assign
-            the issue to. Mutually exclusive with `milestone_id`. Mutually exclusive
-            with `milestone_id`.
+            the issue to. Mutually exclusive with `milestone_id`.
           nullable: true
           maxLength: 255
         labels:

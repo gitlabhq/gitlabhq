@@ -148601,6 +148601,12 @@
               "description": "Session initiated from Slack.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "MCP",
+              "description": "Session initiated from MCP.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -396746,6 +396752,35 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 15.9."
+            },
+            {
+              "name": "workItemSavedViewUpdated",
+              "description": "Triggered when the configuration of a work item saved view is updated. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [
+                {
+                  "name": "savedViewId",
+                  "description": "ID of the saved view.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "WorkItemsSavedViewsSavedViewID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "WorkItemSavedViewType",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
               "name": "workItemUpdated",

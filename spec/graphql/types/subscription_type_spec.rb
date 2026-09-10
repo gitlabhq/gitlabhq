@@ -25,6 +25,7 @@ RSpec.describe GitlabSchema.types['Subscription'], feature_category: :subscripti
       merge_request_approval_state_updated
       merge_request_diff_generated
       work_item_updated
+      work_item_saved_view_updated
       issuable_todo_updated
       user_merge_request_updated
     ]

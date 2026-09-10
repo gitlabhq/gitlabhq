@@ -15,12 +15,12 @@ export default function initPages() {
   const el = document.querySelector('#js-pages');
   const pagesTabEl = document.querySelector('.js-pages-tabs');
 
-  // eslint-disable-next-line no-new
-  new GlTabsBehavior(pagesTabEl, { history: HISTORY_TYPE_HASH });
-
-  if (!el) {
+  if (!el || !pagesTabEl) {
     return false;
   }
+
+  // eslint-disable-next-line no-new
+  new GlTabsBehavior(pagesTabEl, { history: HISTORY_TYPE_HASH });
 
   return initVueApp({
     el,

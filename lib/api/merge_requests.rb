@@ -339,8 +339,7 @@ module API
             documentation: { is_array: true }
           optional :milestone_id, type: Integer, desc: 'The global ID of a milestone to assign the merge request to.'
           optional :milestone, type: String, limit: 255,
-            desc: 'The title of a project or ancestor-group milestone to assign the merge request to. ' \
-              'Mutually exclusive with `milestone_id`.'
+            desc: 'The title of a project or ancestor-group milestone to assign the merge request to.'
           mutually_exclusive :milestone_id, :milestone
           optional :remove_source_branch, type: Boolean, desc: 'Flag indicating if a merge request should remove the source branch when merging.'
           optional :allow_collaboration, type: Boolean, desc: 'Allow commits from members who can merge to the target branch.'

@@ -5,7 +5,10 @@
   "additionalProperties": false,
   "properties": {
     "duo_workflow_oauth_application_id": {
-      "type": "integer",
+      "type": [
+        "integer",
+        "null"
+      ],
       "description": "oauth application id for duo workflow"
     },
     "duo_agent_platform_enabled": {

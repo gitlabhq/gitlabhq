@@ -14,9 +14,9 @@ module API
 
       params :merge_requests_negatable_params do |options|
         optional :author_id, type: Integer,
-          desc: "#{options[:prefix]}Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`."
+          desc: "#{options[:prefix]}Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned_to_me`."
         optional :author_username, type: String,
-          desc: "#{options[:prefix]}Returns merge requests created by the given `username`. Mutually exclusive with `author_id`."
+          desc: "#{options[:prefix]}Returns merge requests created by the given `username`."
         mutually_exclusive :author_id, :author_username
         optional :assignee_id, types: [Integer, String],
           integer_none_any: true,
@@ -24,11 +24,11 @@ module API
         optional :assignee_username, type: Array[String],
           check_assignees_count: true,
           coerce_with: Validations::Validators::CheckAssigneesCount.coerce,
-          desc: "#{options[:prefix]}Returns merge requests created by the given `username`. Mutually exclusive with `author_id`.",
+          desc: "#{options[:prefix]}Returns merge requests created by the given `username`.",
           documentation: { is_array: true }
         mutually_exclusive :assignee_id, :assignee_username
         optional :reviewer_username, type: String,
-          desc: "#{options[:prefix]}Returns merge requests which have the user as a reviewer with the given `username`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_id`. Introduced in GitLab 13.8."
+          desc: "#{options[:prefix]}Returns merge requests which have the user as a reviewer with the given `username`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Introduced in GitLab 13.8."
         optional :labels, type: Array[String],
           coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
           desc: "#{options[:prefix]}Returns merge requests matching a comma-separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. Predefined names are case-insensitive.",
@@ -44,7 +44,7 @@ module API
 
         optional :reviewer_id, types: [Integer, String],
           integer_none_any: true,
-          desc: 'Returns merge requests which have the user as a reviewer with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`.'
+          desc: 'Returns merge requests which have the user as a reviewer with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer.'
         mutually_exclusive :reviewer_id, :reviewer_username
         optional :state, type: String,
           values: %w[opened closed locked merged all],
@@ -106,7 +106,7 @@ module API
           use :merge_requests_negatable_params, prefix: '`<Negated>` '
 
           optional :reviewer_id, type: Integer,
-            desc: '`<Negated>` Returns merge requests which have the user as a reviewer with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`.'
+            desc: '`<Negated>` Returns merge requests which have the user as a reviewer with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer.'
           mutually_exclusive :reviewer_id, :reviewer_username
         end
         optional :deployed_before, type: DateTime, desc: 'Returns merge requests deployed before the given date/time. Expected in ISO 8601 format.',
@@ -116,9 +116,9 @@ module API
         optional :environment, type: String, desc: 'Returns merge requests deployed to the given environment',
           documentation: { example: 'production' }
         optional :merge_user_id, type: Integer,
-          desc: "Returns merge requests which have been merged by the user with the given user `id`. Mutually exclusive with `merge_user_username`."
+          desc: "Returns merge requests which have been merged by the user with the given user `id`."
         optional :merge_user_username, type: String,
-          desc: "Returns merge requests which have been merged by the user with the given `username`. Mutually exclusive with `merge_user_id`."
+          desc: "Returns merge requests which have been merged by the user with the given `username`."
         mutually_exclusive :merge_user_id, :merge_user_username
       end
 

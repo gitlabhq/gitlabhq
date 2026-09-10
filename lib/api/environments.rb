@@ -29,8 +29,8 @@ module API
       end
       params do
         use :pagination
-        optional :name, type: String, desc: 'Return the environment with this name. Mutually exclusive with search'
-        optional :search, type: String, desc: "Return list of environments matching the search criteria. Mutually exclusive with name. Must be at least #{MIN_SEARCH_LENGTH} characters."
+        optional :name, type: String, desc: 'Return the environment with this name.'
+        optional :search, type: String, desc: "Return list of environments matching the search criteria. Must be at least #{MIN_SEARCH_LENGTH} characters."
         optional :states,
           type: String,
           values: Environment.valid_states.map(&:to_s),

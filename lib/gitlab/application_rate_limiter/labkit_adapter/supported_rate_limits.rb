@@ -945,6 +945,20 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            work_item_delete: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_work_item_deletes_by_user',
+              characteristics: %i[user],
+              limit: 300,
+              period: 1.minute,
+              action: :limit
+            ),
+            work_item_saved_view_broadcast: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_work_item_saved_view_broadcasts_by_saved_view',
+              characteristics: %i[saved_view],
+              limit: 30,
+              period: 1.minute,
+              action: :limit
+            ),
             # Per-database Sidekiq resource-usage (DB duration) limits,
             # one Limiter per database. Cost-mode (the per-job DB duration is the
             # `check(cost:)` value, not a call count). threshold and interval are

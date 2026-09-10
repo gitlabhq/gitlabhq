@@ -106,8 +106,7 @@ module API
         optional :assignee_id,  type: Integer, desc: '[Deprecated] The ID of a user to assign issue'
         optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
         optional :milestone, type: String, limit: 255,
-          desc: 'The title of a project or ancestor-group milestone to assign the issue to. ' \
-            'Mutually exclusive with `milestone_id`.'
+          desc: 'The title of a project or ancestor-group milestone to assign the issue to.'
         mutually_exclusive :milestone_id, :milestone
         optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :add_labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'

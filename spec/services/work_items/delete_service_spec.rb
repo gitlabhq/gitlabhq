@@ -128,6 +128,40 @@ RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
       end
     end
 
+    context 'with the work item delete rate limit' do
+      let(:user) { owner }
+
+      context 'when the user is throttled' do
+        before do
+          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+            .with(:work_item_delete, scope: { user: user }).and_return(true)
+        end
+
+        it 'raises a rate limited error and keeps the work item' do
+          expect { result }.to raise_error(
+            ::RateLimitedService::RateLimitedError,
+            'This endpoint has been requested too many times. Try again later.'
+          )
+
+          expect(WorkItem.find_by_id(work_item.id)).to be_present
+        end
+      end
+
+      context 'when the work_item_delete_rate_limit feature flag is disabled' do
+        before do
+          stub_feature_flags(work_item_delete_rate_limit: false)
+        end
+
+        it 'does not check the rate limit' do
+          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:work_item_delete, any_args)
+
+          expect(result).to be_success
+        end
+      end
+    end
+
     # currently we don't expect destroy to fail. Mocking here for coverage and keeping
     # the service's return type consistent
     context 'when there are errors preventing to delete the work item' do

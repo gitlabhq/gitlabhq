@@ -171,6 +171,23 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       end
     end
 
+    # jsonb_accessor attributes with no default are serialised as null by GET, so a
+    # client that replays the GET body verbatim must not be rejected.
+    it 'accepts the nulls that GET returns for unset jsonb_accessor attributes' do
+      get api('/application/settings', admin)
+
+      unset = json_response.slice('jira_connect_additional_audience_url', 'jira_forge_app_id')
+
+      expect(unset.keys).to match_array(%w[jira_connect_additional_audience_url jira_forge_app_id])
+      expect(unset.values).to all(be_nil)
+
+      put api('/application/settings', admin),
+        headers: { 'Content-Type' => 'application/json' },
+        params: unset.to_json
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
     it_behaves_like 'authorizing granular token permissions', :update_application_setting do
       let(:boundary_object) { :instance }
       let(:user) { admin }

@@ -332,6 +332,76 @@ RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :planning
       it_behaves_like 'does not track non work item event'
     end
 
+    describe 'realtime subscription trigger' do
+      shared_examples 'broadcasts the update' do
+        it 'triggers the work_item_saved_view_updated subscription' do
+          expect(GraphqlTriggers).to receive(:work_item_saved_view_updated).with(saved_view)
+
+          expect(service.execute).to be_success
+        end
+      end
+
+      shared_examples 'does not broadcast the update' do
+        it 'does not trigger the work_item_saved_view_updated subscription' do
+          expect(GraphqlTriggers).not_to receive(:work_item_saved_view_updated)
+
+          service.execute
+        end
+      end
+
+      context 'when display settings change' do
+        let(:params) { { display_settings: { hiddenMetadataKeys: %w[assignee] } } }
+
+        it_behaves_like 'broadcasts the update'
+      end
+
+      context 'when filters change' do
+        let(:params) { { filters: { assignee_usernames: [current_user.username] } } }
+
+        it_behaves_like 'broadcasts the update'
+      end
+
+      context 'when the sort changes' do
+        let(:params) { { sort: 'created_asc' } }
+
+        it_behaves_like 'broadcasts the update'
+      end
+
+      context 'when only the name changes' do
+        let(:params) { { name: 'Renamed View' } }
+
+        it_behaves_like 'does not broadcast the update'
+      end
+
+      context 'when only the visibility changes' do
+        let(:params) { { private: true } }
+
+        it_behaves_like 'does not broadcast the update'
+      end
+
+      context 'when display settings are set to the value they already hold' do
+        let(:params) { { display_settings: saved_view.display_settings } }
+
+        it_behaves_like 'does not broadcast the update'
+      end
+
+      context 'when the update fails' do
+        let(:params) { { name: '', display_settings: { hiddenMetadataKeys: %w[assignee] } } }
+
+        it_behaves_like 'does not broadcast the update'
+      end
+
+      context 'when the user cannot update the saved view' do
+        let(:params) { { display_settings: { hiddenMetadataKeys: %w[assignee] } } }
+
+        subject(:service) do
+          described_class.new(current_user: other_user, saved_view: saved_view, params: params)
+        end
+
+        it_behaves_like 'does not broadcast the update'
+      end
+    end
+
     context 'when filter normalization fails' do
       let(:params) { { filters: { invalid: 'filter' } } }
 

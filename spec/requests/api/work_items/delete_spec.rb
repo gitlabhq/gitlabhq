@@ -60,6 +60,23 @@ RSpec.describe API::WorkItems::Delete, feature_category: :portfolio_management d
       end
     end
 
+    context 'when the user is rate limited' do
+      before do
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+          .with(:work_item_delete, scope: { user: owner }).and_return(true)
+      end
+
+      it 'returns 429 and keeps the work item' do
+        delete api(api_request_path, owner)
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(json_response['message']['error'])
+          .to eq('This endpoint has been requested too many times. Try again later.')
+        expect(WorkItem.find_by_id(work_item.id)).to be_present
+      end
+    end
+
     context 'when feature flag is disabled' do
       before do
         stub_feature_flags(work_item_rest_api: false)

@@ -837,7 +837,7 @@ We run our test suite against PostgreSQL 16, 17, and 18 on nightly scheduled pip
 | Merge requests                                                                                  | 17 (default version)            | 3.3 (default version) |
 | `master` branch commits                                                                         | 17 (default version)            | 3.3 (default version) |
 | `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)   | 17 (default version)            | 3.3 (default version) |
-| `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 17 (default version)            | 3.3                   |
+| `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 17 (default version)            | 3.4                   |
 | `nightly` scheduled pipelines for the `master` branch                                           | 17 (default version), 16, and 18 | 3.3 (default version) |
 | `weekly` scheduled pipelines for the `master` branch                                            | 17 (default version)            | 3.3 (default version) |
 

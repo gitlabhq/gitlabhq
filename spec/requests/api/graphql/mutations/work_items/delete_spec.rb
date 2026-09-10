@@ -17,6 +17,10 @@ RSpec.describe 'Delete a work item', feature_category: :team_planning do
   let(:mutation) { graphql_mutation(:workItemDelete, { 'id' => work_item.to_global_id.to_s }) }
   let(:mutation_response) { graphql_mutation_response(:work_item_delete) }
 
+  def delete_mutation_for(target)
+    graphql_mutation(:workItemDelete, { 'id' => target.to_global_id.to_s })
+  end
+
   context 'when the user is not allowed to delete a work item' do
     context 'with issue type' do
       let(:work_item) { issue }
@@ -104,6 +108,24 @@ RSpec.describe 'Delete a work item', feature_category: :team_planning do
         let(:current_user) { owner }
 
         it_behaves_like 'mutation that deletes work item'
+      end
+    end
+  end
+
+  context 'with the work item delete rate limit' do
+    let(:current_user) { owner }
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :work_item_delete, graphql: true do
+      let_it_be(:other_owner) { create(:user, owner_of: group) }
+
+      def request
+        post_graphql_mutation(delete_mutation_for(create(:work_item, :issue, project: project)),
+          current_user: current_user)
+      end
+
+      def request_with_second_scope
+        post_graphql_mutation(delete_mutation_for(create(:work_item, :issue, project: project)),
+          current_user: other_owner)
       end
     end
   end

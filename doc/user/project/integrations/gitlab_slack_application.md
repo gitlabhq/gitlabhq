@@ -111,6 +111,7 @@ Alternatively, you can [configure the integration](https://about.gitlab.com/solu
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590434) in GitLab 19.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `slack_duo_agent`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+- [Enabled on GitLab.com and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/592185) in GitLab 19.4.
 
 {{< /history >}}
 

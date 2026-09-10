@@ -522,6 +522,24 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
     it { is_expected.not_to allow_value('ari:cloud:ecosystem::app/too-short').for(:jira_forge_app_id) }
     it { is_expected.not_to allow_value("ari:cloud:ecosystem::app/#{'a' * 300}").for(:jira_forge_app_id) }
 
+    # These have no jsonb_accessor default, so GET serialises them as null and a
+    # replayed PUT must not be rejected by the integrations schema.
+    %i[jira_connect_additional_audience_url jira_forge_app_id].each do |attribute|
+      it "keeps the integrations schema valid when #{attribute} is nil" do
+        setting.public_send(:"#{attribute}=", nil)
+
+        expect(setting).to be_valid
+        expect(setting.integrations).to include(attribute.to_s => nil)
+      end
+    end
+
+    it 'reports the integrations schema error once' do
+      setting.integrations = setting.integrations.merge('jira_forge_app_id' => 123)
+
+      expect(setting).not_to be_valid
+      expect(setting.errors[:integrations]).to contain_exactly('must be a valid json schema')
+    end
+
     it { is_expected.not_to allow_value(apdex_slo: '10').for(:prometheus_alert_db_indicators_settings) }
     it { is_expected.to allow_value(nil).for(:prometheus_alert_db_indicators_settings) }
 

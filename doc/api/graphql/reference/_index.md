@@ -69584,6 +69584,7 @@ External system that initiated a Duo Workflow session.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="duoworkflowsourcetype-mcp"></a>`MCP` | Session initiated from MCP. |
 | <a id="duoworkflowsourcetype-slack"></a>`SLACK` | Session initiated from Slack. |
 
 ### `DuoWorkflowStatus`

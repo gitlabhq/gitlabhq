@@ -5840,6 +5840,12 @@
     "dottedExample": "/admin/application_settings/semantic_search_embeddings/john.doe/test_model_configuration"
   },
   {
+    "template": "/admin/application_settings/semantic_search_embeddings/:id/update_embeddings_request_batch_size",
+    "example": "/admin/application_settings/semantic_search_embeddings/foo/update_embeddings_request_batch_size",
+    "acceptsFormat": true,
+    "dottedExample": "/admin/application_settings/semantic_search_embeddings/john.doe/update_embeddings_request_batch_size"
+  },
+  {
     "template": "/admin/application_settings/service_accounts(/*vueroute)",
     "example": "/admin/application_settings/service_accounts/foo/bar",
     "acceptsFormat": true,
