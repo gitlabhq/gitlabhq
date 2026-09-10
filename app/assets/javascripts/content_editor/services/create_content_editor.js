@@ -1,6 +1,7 @@
 import { Editor } from '@tiptap/vue-2';
 import { isFunction, flatMap } from 'lodash-es';
 import eventHubFactory from '~/helpers/event_hub_factory';
+import { iframeRenderingEnabled } from '~/behaviors/markdown/render_iframe';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
 import * as builtInExtensions from '../extensions';
 import { ContentEditor } from './content_editor';
@@ -45,7 +46,8 @@ export const createContentEditor = ({
     render: renderMarkdown,
   });
 
-  const { Suggestions, DrawioDiagram, TableOfContents, ...otherExtensions } = builtInExtensions;
+  const { Suggestions, DrawioDiagram, TableOfContents, Iframe, ...otherExtensions } =
+    builtInExtensions;
 
   const builtInContentEditorExtensions = flatMap(otherExtensions).map((ext) =>
     ext.configure({
@@ -64,6 +66,7 @@ export const createContentEditor = ({
     allExtensions.push(Suggestions.configure({ autocompleteHelper, serializer }));
   if (drawioEnabled) allExtensions.push(DrawioDiagram.configure({ uploadsPath, assetResolver }));
   if (supportsTableOfContents) allExtensions.push(TableOfContents);
+  if (iframeRenderingEnabled()) allExtensions.push(Iframe);
 
   const trackedExtensions = allExtensions.map(trackInputRulesAndShortcuts);
   const tiptapEditor = createTiptapEditor({ extensions: trackedExtensions, ...tiptapOptions });

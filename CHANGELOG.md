@@ -2,6 +2,40 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.2.6 (2026-09-10)
+
+### Fixed (2 changes)
+
+- [Fix partition cache crash on single-pipeline ranges](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b8533d3802e2dadc83b2029540f9f6a254388a4b)
+- [Default SHA on merge requirement for new groups to false](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4a0ae3dc16804f9af4154680a15fc41b7d4ff4ea)
+
+### Security (17 changes)
+
+- [Prevent scheduled PEP test runs from bypassing policy scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2748855df4b2c12d76e3cde01150dec7da5ad548) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6715))
+- [Reassign sole approver rules on permanent deletion (19.2)](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8da9b0869be7e61c4caa28aa8e3db12054c0c806) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6695))
+- [Preserve protected environment approval rule on approver revoke (19.2)](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f5353af8809f56247f8bf28f36f2cf6afe8e61d1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6692))
+- [Sanitise items in JSONTable before passing to BTable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b010f517721b5055a85f0e3de7196445f685a04b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6702))
+- [Fix complexity multiplier logic enables Unauthenticated DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/92781c6e554de8a97754bf8ca7cffc342e7dbdaa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6664))
+- [Require update_package to change generic package status](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2480f8911a9517deb2cc6321c3d579c833e320db) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6670))
+- [Fix routing manipulation with group wiki [Backport 19.2]](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1160a4ab93891d1a52aae405d61fcd2c3eda2e96) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6526))
+- [Content editor vets iframe sources before rendering](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6888f7c3fc724840852c5084a10e62a320a9df16) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6638))
+- [Pin checkout_sha at push time to prevent MR pipeline code injection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bc274d2997f44ed7c0db501c16b3121b6174e765) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6683))
+- [Read Terraform state upload path from verified UploadedFile](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6476067abacaf50db4506accd3f3ca41922e87c0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6624))
+- [Remove admin compliance pipeline config from SM role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fc45eb904a3ffb36cd11e3b0c4dd364052a6303f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6608))
+- [Verify Workhorse JWT on all remaining senddata emitters](https://gitlab.com/gitlab-org/security/gitlab/-/commit/84069f727321f09ee75d439d035ffe9d098870ec) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6554))
+- [Prevent email OTP from bypassing SSO enforcement](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8f5cefc75b00103510c06520a3ef73c514fe2ab9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6613))
+- [Anchor and escape EnvironmentMatcher wildcard patterns](https://gitlab.com/gitlab-org/security/gitlab/-/commit/20fe6f55169e3031913fedef4e63d49c19ae33fd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6592))
+- [Upgrade graphql gem and backport GlobalID serialization fixes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b3835003ce623b5fa091da4844c7b658aaa69c8a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6768))
+- [Update GitLab Elasticsearch Indexer to 5.14.13](https://gitlab.com/gitlab-org/security/gitlab/-/commit/92c15d583c6e66c8b80838a9f08977bbb027db0e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6741))
+- [Fix unauthenticated arbitrary local file read in commits API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b43c8b2627a8dda4c34d9142b496146c93716795) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6755))
+
+### Performance (4 changes)
+
+- [Cache the previous chunk in Gitlab::HttpIO](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c06f51ef75b46c7ad248efaa4595ade8d86522ab)
+- [Reuse HTTP connections and add timeouts in Gitlab::HttpIO](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3203f7ee1a5a4a643def755d097f8c0c82970e1f)
+- [Fix quadratic line reading in CI trace reverse scan](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bede32d37814f4169240b9a4f963ce0ceb9cfb29)
+- [Optimize remote CI artifact parsing and size validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/64e1bc77b92691019cf1f4132816eed9df574f97)
+
 ## 19.2.5 (2026-08-25)
 
 ### Fixed (2 changes)

@@ -91,14 +91,46 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
       let(:params) { super().merge(status: 'hidden') }
       let(:package_params) { super().merge(status: 'hidden') }
 
-      it 'updates an existing packages status' do
-        expect { response }.to change { package.package_files.count }.by(1)
-          .and change { Packages::PackageFileBuildInfo.count }.by(1)
-
-        package_file = package.package_files.last
-        aggregate_failures do
-          expect(package_file.package.status).to eq('hidden')
+      context 'when the user can update packages' do
+        before_all do
+          project.add_maintainer(user)
         end
+
+        it 'updates an existing packages status' do
+          expect { response }.to change { package.package_files.count }.by(1)
+            .and change { Packages::PackageFileBuildInfo.count }.by(1)
+
+          package_file = package.package_files.last
+          aggregate_failures do
+            expect(package_file.package.status).to eq('hidden')
+          end
+        end
+      end
+
+      context 'when the user cannot update packages' do
+        before_all do
+          project.add_developer(user)
+        end
+
+        it_behaves_like 'returning an error service response',
+          message: 'Insufficient permissions to change the package status'
+
+        it { is_expected.to have_attributes reason: :package_status_change_not_allowed }
+
+        it 'does not change the status and does not create the package file' do
+          expect { response }.to not_change { package.reload.status }
+            .and not_change { ::Packages::PackageFile.for_projects(project).count }
+        end
+      end
+
+      context 'when the requested status matches the existing status' do
+        let(:package) { create(:generic_package, :hidden, project: project) }
+
+        before_all do
+          project.add_developer(user)
+        end
+
+        it_behaves_like 'allows creating the file'
       end
     end
 

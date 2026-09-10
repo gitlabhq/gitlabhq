@@ -967,6 +967,20 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
+
+    context 'without an authenticated user' do
+      let_it_be(:public_project) { create(:project, :public, :repository) }
+
+      let(:url) { "/projects/#{public_project.id}/repository/commits/authorize" }
+
+      subject(:request) { post api(url, nil), headers: workhorse_headers }
+
+      it 'returns unauthorized' do
+        request
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
   end
 
   describe 'POST /projects/:id/repository/commits' do
@@ -2411,13 +2425,16 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         it_behaves_like 'move actions'
       end
 
-      context 'without a file size parameter' do
-        it 'rate limits the request' do
+      context 'when the declared file size is below the actual file size' do
+        it 'rate limits based on the actual file size' do
+          body = params.to_json
+          stub_const('Repositories::CommitsUploader::MAX_RATE_LIMITED_REQUEST_SIZE', body.bytesize - 1)
+
           allow_next_instance_of(described_class) do |controller|
             expect(controller).to receive(:check_rate_limit!).with(:user_large_commit_request, scope: user)
           end
 
-          perform_workhorse_json_body_upload(url, params.to_json, params: { 'file.size': nil })
+          perform_workhorse_json_body_upload(url, body, params: { 'file.size': 1 })
         end
       end
 
@@ -2554,6 +2571,35 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       end
     end
 
+    context 'when Workhorse did not rewrite the file param (route-matching bypass)' do
+      let(:leaked_file) { Tempfile.new('leaked-commit-payload') }
+
+      subject(:request) do
+        post url, params: { file: '', 'file.path' => leaked_file.path }, headers: workhorse_headers
+      end
+
+      before do
+        leaked_file.write(
+          {
+            branch: 'master', commit_message: 'leaked',
+            actions: [{ action: 'create', file_path: "leaked-#{SecureRandom.hex}.rb", content: 'x' }]
+          }.to_json
+        )
+        leaked_file.close
+      end
+
+      after do
+        leaked_file.unlink
+      end
+
+      it 'does not read the attacker-supplied file.path param', :aggregate_failures do
+        expect { request }.not_to change { project.repository.commit_count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.body).not_to include('leaked')
+      end
+    end
+
     it_behaves_like 'authorizing granular token permissions', :create_commit do
       let(:url) { "/projects/#{project_id}/repository/commits" }
       let(:boundary_object) { project }
@@ -2581,6 +2627,29 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
       before do
         project.add_developer(user)
+      end
+    end
+
+    context 'for arbitrary local file read (security issue #627748)' do
+      let_it_be(:public_project) { create(:project, :public, :repository) }
+
+      let(:canary) { "SECRET-CANARY-627748-%%%\n" }
+      let(:unsigned_upload_url) { api("/projects/#{public_project.id}/repository/commits", nil) }
+      let(:non_existing_file_path) { '/tmp/this-file-does-not-exist-627748' }
+
+      it_behaves_like 'rejects unsigned Workhorse upload metadata', :post
+
+      it 'does not leak file contents in error messages', :aggregate_failures do
+        authed_url = api("/projects/#{project_id}/repository/commits", user)
+
+        perform_workhorse_json_body_upload(
+          authed_url,
+          "invalid %-encoding #{canary}",
+          params: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        )
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.body).not_to include('SECRET-CANARY-627748')
       end
     end
   end
