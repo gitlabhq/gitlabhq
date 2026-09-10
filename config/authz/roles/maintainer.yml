@@ -183,6 +183,7 @@ project:
   - update_external_status_check
   - update_feature_flags_minimum_role_setting
   - update_freeze_period
+  - update_package
   - update_pages
   - update_pipeline_variable_override_setting
   - update_product_analytics_settings

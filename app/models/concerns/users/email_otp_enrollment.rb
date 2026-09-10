@@ -39,6 +39,7 @@ module Users
 
     def must_require_email_otp?
       !password_automatically_set? &&
+        allow_password_authentication_for_web? &&
         Gitlab::CurrentSettings.require_minimum_email_based_otp_for_users_with_passwords? &&
         !two_factor_enabled?
     end
@@ -60,9 +61,10 @@ module Users
         # Revert if being changed to nil, or set to Time.current if
         # it was always nil but shouldn't be
         user_detail.email_otp_required_after = user_detail.email_otp_required_after_was || Time.current
-      elsif Gitlab::Auth::TwoFactorAuthVerifier.new(self).two_factor_authentication_required? && two_factor_enabled?
-        # Email OTP has less security assurance than 2FA. Therefore,
-        # don't allow email OTP when 2FA is required & configured.
+      elsif !allow_password_authentication_for_web? || password_automatically_set? ||
+          # Email OTP has less security assurance than 2FA. Therefore,
+          # don't allow email OTP when 2FA is required & configured.
+          (Gitlab::Auth::TwoFactorAuthVerifier.new(self).two_factor_authentication_required? && two_factor_enabled?)
         user_detail.email_otp_required_after = nil
       end
       # If neither condition is true, email_otp_required_after does not

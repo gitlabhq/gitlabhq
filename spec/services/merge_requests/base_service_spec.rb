@@ -4,8 +4,9 @@ require 'spec_helper'
 
 module MergeRequests
   class ExampleService < MergeRequests::BaseService
-    def execute(merge_request, async: false, allow_duplicate: false)
-      create_pipeline_for(merge_request, current_user, async: async, allow_duplicate: allow_duplicate)
+    def execute(merge_request, async: false, allow_duplicate: false, checkout_sha: nil)
+      create_pipeline_for(merge_request, current_user, async: async, allow_duplicate: allow_duplicate,
+        checkout_sha: checkout_sha)
     end
   end
 end
@@ -89,7 +90,7 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
       it 'creates a pipeline directly' do
         expect(MergeRequests::CreatePipelineService)
           .to receive(:new)
-          .with(hash_including(project: project, current_user: user, params: { allow_duplicate: false }))
+          .with(hash_including(project: project, current_user: user, params: { allow_duplicate: false, checkout_sha: nil }))
           .and_call_original
         expect(MergeRequests::CreatePipelineWorker).not_to receive(:perform_async)
 
@@ -100,11 +101,24 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
         it 'passes :allow_duplicate as true' do
           expect(MergeRequests::CreatePipelineService)
           .to receive(:new)
-          .with(hash_including(project: project, current_user: user, params: { allow_duplicate: true }))
+          .with(hash_including(project: project, current_user: user, params: { allow_duplicate: true, checkout_sha: nil }))
           .and_call_original
           expect(MergeRequests::CreatePipelineWorker).not_to receive(:perform_async)
 
           subject.execute(merge_request, async: false, allow_duplicate: true)
+        end
+      end
+
+      context 'when checkout_sha is provided' do
+        let(:pinned_sha) { 'abc123def456' }
+
+        it 'forwards checkout_sha to CreatePipelineService' do
+          expect(MergeRequests::CreatePipelineService)
+            .to receive(:new)
+            .with(hash_including(params: hash_including(checkout_sha: pinned_sha)))
+            .and_call_original
+
+          subject.execute(merge_request, async: false, checkout_sha: pinned_sha)
         end
       end
     end
@@ -115,7 +129,7 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
 
         expect(MergeRequests::CreatePipelineService)
           .to receive(:new)
-          .with(project: project, current_user: user, params: { allow_duplicate: false })
+          .with(project: project, current_user: user, params: { allow_duplicate: false, checkout_sha: nil })
           .and_return(service)
 
         expect(service).to receive(:execute_async).with(merge_request)
@@ -129,12 +143,44 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
 
           expect(MergeRequests::CreatePipelineService)
             .to receive(:new)
-            .with(project: project, current_user: user, params: { allow_duplicate: true })
+            .with(project: project, current_user: user, params: { allow_duplicate: true, checkout_sha: nil })
             .and_return(service)
 
           expect(service).to receive(:execute_async).with(merge_request)
 
           subject.execute(merge_request, async: true, allow_duplicate: true)
+        end
+      end
+
+      context 'when checkout_sha is provided' do
+        let(:pinned_sha) { 'abc123def456' }
+
+        it 'forwards checkout_sha to CreatePipelineService and calls execute_async' do
+          service = instance_double(MergeRequests::CreatePipelineService)
+
+          expect(MergeRequests::CreatePipelineService)
+            .to receive(:new)
+            .with(project: project, current_user: user, params: { allow_duplicate: false, checkout_sha: pinned_sha })
+            .and_return(service)
+
+          expect(service).to receive(:execute_async).with(merge_request)
+
+          subject.execute(merge_request, async: true, checkout_sha: pinned_sha)
+        end
+
+        it 'does not fall back to diff_head_sha when checkout_sha is explicitly provided' do
+          service = instance_double(MergeRequests::CreatePipelineService)
+
+          expect(MergeRequests::CreatePipelineService)
+            .to receive(:new)
+            .with(hash_including(params: hash_including(checkout_sha: pinned_sha)))
+            .and_return(service)
+
+          allow(service).to receive(:execute_async)
+
+          expect(merge_request).not_to receive(:diff_head_sha)
+
+          subject.execute(merge_request, async: true, checkout_sha: pinned_sha)
         end
       end
     end

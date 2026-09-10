@@ -34,6 +34,12 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
 
       def current_user; end
 
+      # Stands in for WorkhorseAuthenticatable#verify_workhorse_api!, which
+      # ApplicationController provides to every real controller that includes
+      # this concern. Overridden per-example to assert the senddata branches
+      # invoke it and the local/redirect branches do not.
+      def verify_workhorse_api!; end
+
       def request
         ActionDispatch::Request.new({})
       end
@@ -347,6 +353,90 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
         expect(controller).to receive(:redirect_to).with(signed_url)
 
         subject
+      end
+    end
+
+    describe 'Workhorse JWT verification' do
+      before do
+        allow(controller).to receive_messages(headers: {}, head: nil, send_file: nil, redirect_to: nil)
+      end
+
+      context 'with the image-scaling (send-scaled-img) branch' do
+        let(:params) { { attachment: 'avatar.png' } }
+
+        before do
+          uploader.store!(temp_file)
+          allow(uploader).to receive_messages(image_safe_for_scaling?: true, mounted_as: :avatar)
+          allow(controller).to receive(:params).and_return(width: '64')
+        end
+
+        it 'verifies the Workhorse JWT before emitting senddata' do
+          expect(controller).to receive(:verify_workhorse_api!)
+          expect(controller.headers).to receive(:store)
+            .with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
+
+          subject
+        end
+
+        it 'does not emit senddata when verification fails' do
+          allow(controller).to receive(:verify_workhorse_api!).and_raise(JWT::DecodeError)
+
+          expect(controller.headers).not_to receive(:store)
+          expect { subject }.to raise_error(JWT::DecodeError)
+        end
+      end
+
+      context 'with the proxied object-storage (send-url) branch' do
+        before do
+          stub_uploads_object_storage(uploader: uploader_class)
+          uploader.object_store = ObjectStorage::Store::REMOTE
+          uploader.store!(temp_file)
+          allow(Gitlab.config.uploads.object_store).to receive(:proxy_download).and_return(true)
+        end
+
+        it 'verifies the Workhorse JWT before emitting senddata' do
+          expect(controller).to receive(:verify_workhorse_api!)
+          expect(controller.headers).to receive(:store)
+            .with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-url:/)
+
+          subject
+        end
+
+        it 'does not emit senddata when verification fails' do
+          allow(controller).to receive(:verify_workhorse_api!).and_raise(JWT::DecodeError)
+
+          expect(controller.headers).not_to receive(:store)
+          expect { subject }.to raise_error(JWT::DecodeError)
+        end
+      end
+
+      context 'with the local-file (send_file) branch' do
+        before do
+          uploader.store!(temp_file)
+        end
+
+        it 'does not verify the Workhorse JWT (no senddata emitted)' do
+          expect(controller).not_to receive(:verify_workhorse_api!)
+          expect(controller).to receive(:send_file)
+
+          subject
+        end
+      end
+
+      context 'with the object-storage redirect branch' do
+        before do
+          stub_uploads_object_storage(uploader: uploader_class)
+          uploader.object_store = ObjectStorage::Store::REMOTE
+          uploader.store!(temp_file)
+          allow(Gitlab.config.uploads.object_store).to receive(:proxy_download).and_return(false)
+        end
+
+        it 'does not verify the Workhorse JWT (no senddata emitted)' do
+          expect(controller).not_to receive(:verify_workhorse_api!)
+          expect(controller).to receive(:redirect_to)
+
+          subject
+        end
       end
     end
   end

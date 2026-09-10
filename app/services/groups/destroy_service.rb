@@ -48,7 +48,12 @@ module Groups
       destroy_associated_users
       ::Import::BulkImports::RemoveExportUploadsService.new(group).execute
 
-      group.destroy
+      # Not dead code: closes a silent-failure path where a before_destroy
+      # callback aborts without raising. Errors can be blank (some abort
+      # via throw(:abort) without adding one), so fall back to a message.
+      unless group.destroy
+        raise DestroyError, group.errors.full_messages.to_sentence.presence || "Group #{group.id} can't be deleted"
+      end
 
       refresh_authorizations&.call
       publish_event
