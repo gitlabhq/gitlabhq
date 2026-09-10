@@ -28,7 +28,10 @@ module Gitlab
       #   of a proxy since the IP address may be used to
       #   connect. Otherwise, Net::HTTP may erroneously compare the IP
       #   address against the no_proxy list.
-      Result = Struct.new(:uri, :hostname, :use_proxy)
+      Result = Struct.new(:uri, :hostname, :use_proxy) do
+        # Accessor, not a member, to keep Result equality unchanged.
+        attr_accessor :ip_addresses
+      end
 
       class << self
         # Validates the given url according to the constraints specified by arguments.
@@ -159,6 +162,8 @@ module Gitlab
             allow_localhost: allow_localhost,
             allow_local_network: allow_local_network
           )
+
+          protected_uri_with_hostname.ip_addresses = address_info.map(&:ip_address) if dns_rebind_protection
 
           protected_uri_with_hostname
         end
