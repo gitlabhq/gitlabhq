@@ -1354,6 +1354,52 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         end
 
         it_behaves_like 'package registry SSRF protection'
+
+        context 'when allowed_download_modes includes direct' do
+          before do
+            stub_package_file_object_storage(proxy_download: true, allowed_download_modes: %w[proxy direct])
+          end
+
+          context 'when download_mode=direct is requested' do
+            subject(:download) { download_file(personal_access_token_header, params: { download_mode: 'direct' }) }
+
+            it 'redirects to object storage' do
+              download
+
+              expect(response).to have_gitlab_http_status(:redirect)
+            end
+          end
+
+          context 'when download_mode is not requested' do
+            it 'proxies the file' do
+              expect(::Gitlab::Workhorse).to receive(:send_url)
+                .with(instance_of(String), expected_headers).and_call_original
+
+              download
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+
+        context 'when allowed_download_modes only allows proxy' do
+          before do
+            stub_package_file_object_storage(proxy_download: true, allowed_download_modes: %w[proxy])
+          end
+
+          context 'when download_mode=direct is requested' do
+            subject(:download) { download_file(personal_access_token_header, params: { download_mode: 'direct' }) }
+
+            it 'proxies the file' do
+              expect(::Gitlab::Workhorse).to receive(:send_url)
+                .with(instance_of(String), expected_headers).and_call_original
+
+              download
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
       end
     end
 
@@ -1372,12 +1418,12 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
     end
 
-    def download_file(request_headers, package_name: nil, file_name: nil, method: :get)
+    def download_file(request_headers, package_name: nil, file_name: nil, method: :get, params: {})
       package_name ||= package.name
       file_name ||= package_file.file_name
       url = "/projects/#{project.id}/packages/generic/#{package_name}/#{package.version}/#{file_name}"
 
-      public_send(method, api(url), headers: request_headers)
+      public_send(method, api(url), headers: request_headers, params: params)
     end
   end
 end

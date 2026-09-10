@@ -41196,6 +41196,17 @@ paths:
         schema:
           type: integer
         in: path
+      - name: download_mode
+        required: false
+        description: Requested download transfer mode (`proxy` or `direct`). Only
+          honored when allowed by the object storage configuration.
+        schema:
+          type: string
+          enum:
+          - proxy
+          - direct
+          nullable: true
+        in: query
   "/api/v4/organizations":
     post:
       operationId: postApiV4Organizations
@@ -61060,6 +61071,17 @@ paths:
           type: string
           pattern: "^(?!(?:[\\uD800-\\uDBFF][\\uDC00-\\uDFFF]|[^\\n\\uD800-\\uDFFF])*\\.\\.)[\\w+.\\-]+$"
         in: path
+      - name: download_mode
+        required: false
+        description: Requested download transfer mode (`proxy` or `direct`). Only
+          honored when allowed by the object storage configuration.
+        schema:
+          type: string
+          enum:
+          - proxy
+          - direct
+          nullable: true
+        in: query
   "/api/v4/projects/{id}/packages/generic/{package_name}/{package_version}/{path}/{file_name}":
     put:
       operationId: putApiV4ProjectsIdPackagesGenericPackageNamePackageVersionPathFileName
@@ -61175,6 +61197,17 @@ paths:
         schema:
           type: string
         in: path
+      - name: download_mode
+        required: false
+        description: Requested download transfer mode (`proxy` or `direct`). Only
+          honored when allowed by the object storage configuration.
+        schema:
+          type: string
+          enum:
+          - proxy
+          - direct
+          nullable: true
+        in: query
   "/api/v4/projects/{id}/freeze_periods":
     get:
       operationId: getApiV4ProjectsIdFreezePeriods
@@ -77439,6 +77472,17 @@ paths:
           type: boolean
           default: false
         in: query
+      - name: download_mode
+        required: false
+        description: Requested download transfer mode (`proxy` or `direct`). Only
+          honored when allowed by the object storage configuration.
+        schema:
+          type: string
+          enum:
+          - proxy
+          - direct
+          nullable: true
+        in: query
   "/api/v4/projects/{id}/jobs/artifacts/{ref_name}/raw/{artifact_path}":
     get:
       operationId: getApiV4ProjectsIdJobsArtifactsRefNameRawArtifactPath
@@ -77580,6 +77624,17 @@ paths:
           only on Premium and Ultimate tiers.
         schema:
           type: string
+          nullable: true
+        in: query
+      - name: download_mode
+        required: false
+        description: Requested download transfer mode (`proxy` or `direct`). Only
+          honored when allowed by the object storage configuration.
+        schema:
+          type: string
+          enum:
+          - proxy
+          - direct
           nullable: true
         in: query
     delete:

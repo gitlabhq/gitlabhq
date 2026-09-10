@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers do
+RSpec.describe BulkImports::Entity, feature_category: :importers do
   subject { build(:bulk_import_entity, group: Group.new) }
 
   describe 'associations' do

@@ -1929,6 +1929,20 @@ RSpec.describe API::Helpers, feature_category: :api do
             subject
           end
         end
+
+        context 'when requested with HEAD for an AWS-backed file' do
+          before do
+            allow(helper).to receive(:request).and_return(instance_double(Rack::Request, head?: true))
+          end
+
+          it 'redirects to a signed HEAD URL instead of the CDN/file URL' do
+            expect(ObjectStorage::S3).to receive(:signed_head_url).with(artifact.file).and_call_original
+            expect(ObjectStorage::CDN::FileUrl).not_to receive(:new)
+            expect(helper).to receive(:redirect).with(an_instance_of(String))
+
+            subject
+          end
+        end
       end
 
       context 'with direct upload not available' do
@@ -2036,6 +2050,226 @@ RSpec.describe API::Helpers, feature_category: :api do
             expect(helper).to receive(:header).with('Last-Modified', '0')
 
             subject
+          end
+        end
+      end
+
+      context 'when proxy_download is true' do
+        let(:supports_direct_download) { true }
+        let(:params) { {} }
+        let(:declared_params) { { download_mode: params[:download_mode] } }
+
+        before do
+          allow(helper).to receive(:params).and_return(params)
+          allow(helper).to receive(:declared).with(params, include_parent_namespaces: false).and_return(declared_params)
+          stub_artifacts_object_storage(
+            enabled: true,
+            proxy_download: true,
+            allowed_download_modes: allowed_download_modes
+          )
+        end
+
+        context 'when direct mode is not allowed' do
+          let(:allowed_download_modes) { %w[proxy] }
+
+          it 'sends a workhorse header even if download_mode=direct is requested' do
+            params[:download_mode] = 'direct'
+
+            expect(helper).to receive(:header).with(Gitlab::Workhorse::SEND_DATA_HEADER, an_instance_of(String))
+            expect(helper).to receive(:status).with(:ok)
+            expect(helper).to receive(:body).with('')
+
+            subject
+          end
+        end
+
+        context 'when direct mode is allowed' do
+          let(:allowed_download_modes) { %w[proxy direct] }
+
+          context 'when download_mode param is not provided' do
+            it 'sends a workhorse header' do
+              expect(helper).to receive(:header).with(Gitlab::Workhorse::SEND_DATA_HEADER, an_instance_of(String))
+              expect(helper).to receive(:status).with(:ok)
+              expect(helper).to receive(:body).with('')
+
+              subject
+            end
+          end
+
+          context 'when download_mode=direct is requested' do
+            let(:params) { { download_mode: 'direct' } }
+
+            it 'sends a redirect' do
+              expect(helper).to receive(:redirect).with(an_instance_of(String))
+
+              subject
+            end
+
+            context 'when supports_direct_download is false' do
+              let(:supports_direct_download) { false }
+
+              it 'sends a workhorse header' do
+                expect(helper).to receive(:header).with(Gitlab::Workhorse::SEND_DATA_HEADER, an_instance_of(String))
+                expect(helper).to receive(:status).with(:ok)
+                expect(helper).to receive(:body).with('')
+
+                subject
+              end
+            end
+          end
+
+          context 'when helper does not respond to params' do
+            before do
+              allow(helper).to receive(:respond_to?).and_call_original
+              allow(helper).to receive(:respond_to?).with(:params).and_return(false)
+            end
+
+            it 'sends a workhorse header' do
+              expect(helper).to receive(:header).with(Gitlab::Workhorse::SEND_DATA_HEADER, an_instance_of(String))
+              expect(helper).to receive(:status).with(:ok)
+              expect(helper).to receive(:body).with('')
+
+              subject
+            end
+          end
+        end
+      end
+    end
+  end
+
+  describe '#resolved_download_mode' do
+    let(:file) { instance_double(JobArtifactUploader, allowed_download_modes: allowed_download_modes, default_download_mode: default_download_mode) }
+    let(:declared_params) { { download_mode: params[:download_mode] } }
+
+    subject(:mode) { helper.send(:resolved_download_mode, file, supports_direct_download: supports_direct_download) }
+
+    before do
+      allow(helper).to receive(:respond_to?).and_call_original
+      allow(helper).to receive(:respond_to?).with(:params).and_return(true)
+      allow(helper).to receive(:params).and_return(params)
+      allow(helper).to receive(:respond_to?).with(:declared).and_return(true)
+      allow(helper).to receive(:declared).with(params, include_parent_namespaces: false).and_return(declared_params)
+    end
+
+    context 'when the client requests an allowed mode and the endpoint supports it' do
+      let(:allowed_download_modes) { %i[proxy direct] }
+      let(:default_download_mode) { :proxy }
+      let(:supports_direct_download) { true }
+      let(:params) { { download_mode: 'direct' } }
+
+      it 'returns the requested mode' do
+        expect(mode).to eq(:direct)
+      end
+    end
+
+    context 'when the endpoint does not support direct download' do
+      let(:allowed_download_modes) { %i[proxy direct] }
+      let(:default_download_mode) { :proxy }
+      let(:supports_direct_download) { false }
+      let(:params) { { download_mode: 'direct' } }
+
+      it 'excludes direct from the allowed modes and falls back to the default' do
+        expect(mode).to eq(:proxy)
+      end
+    end
+
+    context 'when no mode is requested' do
+      let(:allowed_download_modes) { %i[proxy direct] }
+      let(:default_download_mode) { :direct }
+      let(:supports_direct_download) { true }
+      let(:params) { {} }
+
+      it 'returns the default mode' do
+        expect(mode).to eq(:direct)
+      end
+    end
+
+    context 'when neither the requested nor the default mode is allowed' do
+      let(:allowed_download_modes) { [:proxy] }
+      let(:default_download_mode) { :direct }
+      let(:supports_direct_download) { true }
+      let(:params) { {} }
+
+      it 'falls back to :proxy' do
+        expect(mode).to eq(:proxy)
+      end
+    end
+  end
+
+  describe '#client_requested_download_mode' do
+    subject(:requested_mode) { helper.send(:client_requested_download_mode) }
+
+    context 'when the helper does not respond to params' do
+      it 'returns nil' do
+        expect(requested_mode).to be_nil
+      end
+    end
+
+    context 'when the helper responds to params' do
+      before do
+        allow(helper).to receive(:respond_to?).and_call_original
+        allow(helper).to receive(:respond_to?).with(:params).and_return(true)
+        allow(helper).to receive(:params).and_return(params)
+      end
+
+      context 'when the helper does not respond to declared' do
+        let(:params) { { download_mode: 'direct' } }
+
+        it 'returns nil' do
+          expect(requested_mode).to be_nil
+        end
+      end
+
+      context 'when the helper responds to declared' do
+        before do
+          allow(helper).to receive(:respond_to?).with(:declared).and_return(true)
+          allow(helper).to receive(:declared).with(params, include_parent_namespaces: false).and_return(declared_params)
+        end
+
+        context 'when download_mode is not declared on the endpoint' do
+          let(:params) { { download_mode: 'direct' } }
+          let(:declared_params) { {} }
+
+          it 'returns nil' do
+            expect(requested_mode).to be_nil
+          end
+        end
+
+        context 'when download_mode is declared on the endpoint' do
+          context 'when download_mode is not provided' do
+            let(:params) { {} }
+            let(:declared_params) { { download_mode: nil } }
+
+            it 'returns nil' do
+              expect(requested_mode).to be_nil
+            end
+          end
+
+          context 'when download_mode is provided with a valid value' do
+            let(:params) { { download_mode: 'direct' } }
+            let(:declared_params) { { download_mode: 'direct' } }
+
+            it 'returns the requested mode as a symbol' do
+              expect(requested_mode).to eq(:direct)
+            end
+          end
+
+          context 'when download_mode is provided with proxy' do
+            let(:params) { { download_mode: 'proxy' } }
+            let(:declared_params) { { download_mode: 'proxy' } }
+
+            it 'returns the requested mode as a symbol' do
+              expect(requested_mode).to eq(:proxy)
+            end
+          end
+
+          context 'when download_mode is provided with an unvalidated/arbitrary value' do
+            let(:params) { { download_mode: 'arbitrary_value' } }
+            let(:declared_params) { { download_mode: 'arbitrary_value' } }
+
+            it 'returns nil and does not convert to symbol' do
+              expect(requested_mode).to be_nil
+            end
           end
         end
       end

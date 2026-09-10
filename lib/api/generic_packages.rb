@@ -147,6 +147,9 @@ module API
             requires :package_version, type: String, desc: 'Package version', regexp: Gitlab::Regex.generic_package_version_regex
             optional :path, type: String, desc: 'File directory path', file_path: true
             requires :file_name, type: String, desc: 'Package file name', regexp: Gitlab::Regex.generic_package_file_name_regex, file_path: true
+            optional :download_mode, type: String, values: %w[proxy direct],
+              desc: 'Requested download transfer mode (`proxy` or `direct`). Only honored when allowed by the ' \
+                'object storage configuration.'
           end
 
           route_setting :authentication, job_token_allowed: %i[request basic_auth], basic_auth_personal_access_token: true, deploy_token_allowed: true

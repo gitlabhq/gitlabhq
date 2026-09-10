@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Export, type: :model, feature_category: :importers do
+RSpec.describe BulkImports::Export, feature_category: :importers do
   using RSpec::Parameterized::TableSyntax
 
   describe 'constants' do

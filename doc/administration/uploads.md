@@ -89,7 +89,7 @@ package installations, they are prefixed by `uploads_object_store_`.
 |---------|-------------|---------|
 | `enabled` | Enable/disable object storage | `false` |
 | `remote_directory` | The bucket name where Uploads are stored| |
-| `proxy_download` | Set to `true` to enable proxying all files served. This option reduces egress traffic as it allows clients to download directly from remote storage instead of proxying all data | `false` |
+| `proxy_download` | Set to `true` to enable proxying all files served. When set to `false`, clients download directly from remote storage, reducing egress traffic on the GitLab server | `false` |
 | `connection` | Various connection options described below | |
 
 #### Connection settings

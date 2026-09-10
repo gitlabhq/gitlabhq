@@ -656,5 +656,68 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
         end
       end
     end
+
+    context 'with remote storage' do
+      let(:package_file) { create(:package_file, :object_storage, package: package) }
+
+      subject(:request) { get api(url, user), params: params }
+
+      context 'when direct download is enabled' do
+        before do
+          stub_package_file_object_storage
+        end
+
+        it 'redirects to object storage' do
+          request
+
+          expect(response).to have_gitlab_http_status(:redirect)
+        end
+      end
+
+      context 'when proxy_download is true' do
+        before do
+          stub_package_file_object_storage(
+            proxy_download: true,
+            allowed_download_modes: allowed_download_modes
+          )
+        end
+
+        context 'when allowed_download_modes only allows proxy' do
+          let(:allowed_download_modes) { %w[proxy] }
+
+          context 'when download_mode=direct is requested' do
+            let(:params) { { download_mode: 'direct' } }
+
+            it 'proxies the file via Workhorse' do
+              request
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+
+        context 'when allowed_download_modes includes direct' do
+          let(:allowed_download_modes) { %w[proxy direct] }
+
+          context 'when download_mode=direct is requested' do
+            let(:params) { { download_mode: 'direct' } }
+
+            it 'redirects to object storage' do
+              request
+
+              expect(response).to have_gitlab_http_status(:redirect)
+            end
+          end
+
+          context 'when download_mode is not requested' do
+            it 'proxies the file via Workhorse' do
+              request
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+      end
+    end
   end
 end

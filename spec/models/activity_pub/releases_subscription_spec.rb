@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ActivityPub::ReleasesSubscription, type: :model, feature_category: :release_orchestration do
+RSpec.describe ActivityPub::ReleasesSubscription, feature_category: :release_orchestration do
   describe 'factory' do
     subject { build(:activity_pub_releases_subscription) }
 

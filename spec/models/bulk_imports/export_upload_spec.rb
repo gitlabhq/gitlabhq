@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::ExportUpload, type: :model, feature_category: :importers do
+RSpec.describe BulkImports::ExportUpload, feature_category: :importers do
   let(:export) { create(:bulk_import_export) }
 
   subject(:bulk_import_export) { described_class.new(export: export) }

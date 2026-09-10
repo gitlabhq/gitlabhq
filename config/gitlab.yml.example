@@ -375,6 +375,7 @@ production: &base
   # object_store:
   #   enabled: false
   #   proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+  #   allowed_download_modes: [direct, proxy] # Transfer modes API clients may request via the `download_mode` param. Unset by default, which only allows the mode implied by `proxy_download`. Only set this to expand beyond that default.
   #   connection:
   #     provider: AWS
   #     aws_access_key_id: AWS_ACCESS_KEY_ID

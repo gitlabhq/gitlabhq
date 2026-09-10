@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Analytics::CycleAnalytics::StageEventHash, type: :model do
+RSpec.describe Analytics::CycleAnalytics::StageEventHash do
   let_it_be(:organization) { create(:organization) }
 
   let(:stage_event_hash) { described_class.create!(organization_id: organization.id, hash_sha256: hash_sha256) }

@@ -165,6 +165,16 @@ module ObjectStorage
         !proxy_download_enabled?
       end
 
+      def default_download_mode
+        proxy_download_enabled? ? :proxy : :direct
+      end
+
+      # Policy of transfer modes allowed for this object type. Defaults to only
+      # the current default mode, preserving today's behavior.
+      def allowed_download_modes
+        object_store_options&.try(:allowed_download_modes)&.map(&:to_sym) || [default_download_mode]
+      end
+
       def object_store_credentials
         object_store_options.connection.to_hash.deep_symbolize_keys
       end
@@ -324,6 +334,14 @@ module ObjectStorage
 
     def direct_download_enabled?
       self.class.direct_download_enabled?
+    end
+
+    def default_download_mode
+      self.class.default_download_mode
+    end
+
+    def allowed_download_modes
+      self.class.allowed_download_modes
     end
 
     # allow to configure and overwrite the filename

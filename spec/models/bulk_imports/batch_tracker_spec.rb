@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::BatchTracker, type: :model, feature_category: :importers do
+RSpec.describe BulkImports::BatchTracker, feature_category: :importers do
   describe 'associations' do
     it { is_expected.to belong_to(:tracker) }
   end

@@ -55,6 +55,9 @@ module API
                   'available only on Premium and Ultimate tiers.'
           optional :search_recent_successful_pipelines, type: Boolean, default: false,
             desc: 'Search across recent successful pipelines instead of just the latest one.'
+          optional :download_mode, type: String, values: %w[proxy direct],
+            desc: 'Requested download transfer mode (`proxy` or `direct`). Only honored when allowed by the ' \
+                  'object storage configuration.'
         end
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs,
@@ -160,6 +163,9 @@ module API
           optional :job_token, type: String,
             desc: 'To be used with triggers for multi-project pipelines, ' \
                   'available only on Premium and Ultimate tiers.'
+          optional :download_mode, type: String, values: %w[proxy direct],
+            desc: 'Requested download transfer mode (`proxy` or `direct`). Only honored when allowed by the ' \
+                  'object storage configuration.'
         end
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs,

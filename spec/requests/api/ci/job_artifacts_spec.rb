@@ -457,6 +457,27 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
             end
           end
 
+          context 'when proxy download is enabled and direct mode is allowed' do
+            let(:proxy_download) { true }
+
+            before do
+              stub_artifacts_object_storage(proxy_download: proxy_download, allowed_download_modes: %w[proxy direct])
+            end
+
+            it 'returns location redirect when download_mode=direct is requested' do
+              get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user),
+                params: { download_mode: 'direct' }, headers: workhorse_headers
+
+              expect(response).to have_gitlab_http_status(:found)
+            end
+
+            it 'responds with the workhorse send-url when download_mode is not requested' do
+              get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), headers: workhorse_headers
+
+              expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("send-url:")
+            end
+          end
+
           context 'when Google CDN is configured' do
             let(:cdn_config) do
               {

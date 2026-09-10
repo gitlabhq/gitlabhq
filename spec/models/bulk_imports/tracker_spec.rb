@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Tracker, type: :model, feature_category: :importers do
+RSpec.describe BulkImports::Tracker, feature_category: :importers do
   describe 'associations' do
     it do
       is_expected.to belong_to(:entity).required.class_name('BulkImports::Entity')

@@ -852,7 +852,7 @@ module API
 
       if file.file_storage?
         present_disk_file!(file.path, file.filename, content_type: content_type, extra_response_headers: extra_response_headers)
-      elsif supports_direct_download && file.direct_download_enabled?
+      elsif resolved_download_mode(file, supports_direct_download: supports_direct_download) == :direct
         return redirect(ObjectStorage::S3.signed_head_url(file)) if request.head? && file.fog_credentials[:provider] == 'AWS'
 
         redirect_params = {}
@@ -998,6 +998,33 @@ module API
     end
 
     private
+
+    # Decides which transfer mode (:proxy or :direct) to use for a given file, honoring:
+    # * the object storage type's allowed modes (admin policy)
+    # * the endpoint's capability (supports_direct_download)
+    # * the client's requested mode (download_mode param), when allowed
+    def resolved_download_mode(file, supports_direct_download:)
+      allowed = file.allowed_download_modes.dup
+      allowed -= [:direct] unless supports_direct_download
+
+      requested = client_requested_download_mode
+      mode = requested if allowed.include?(requested)
+      mode ||= file.default_download_mode
+
+      allowed.include?(mode) ? mode : :proxy
+    end
+
+    def client_requested_download_mode
+      return unless respond_to?(:params)
+      # Only honor the override on endpoints that explicitly declare this parameter.
+      return unless respond_to?(:declared) &&
+        declared(params, include_parent_namespaces: false).key?(:download_mode)
+
+      mode = params[:download_mode]
+      return unless mode.in?(%w[proxy direct])
+
+      mode.to_sym
+    end
 
     # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def initial_current_user

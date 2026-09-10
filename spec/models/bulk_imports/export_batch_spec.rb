@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::ExportBatch, type: :model, feature_category: :importers do
+RSpec.describe BulkImports::ExportBatch, feature_category: :importers do
   describe 'associations' do
     it { is_expected.to belong_to(:export) }
     it { is_expected.to have_one(:upload) }

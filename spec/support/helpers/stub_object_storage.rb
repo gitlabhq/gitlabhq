@@ -15,14 +15,16 @@ module StubObjectStorage
     enabled: true,
     proxy_download: false,
     direct_upload: false,
-    cdn: {}
+    cdn: {},
+    allowed_download_modes: nil
   )
     old_config = ::Gitlab::Configs.build_options(config.to_h.deep_stringify_keys)
     new_config = config.to_h.deep_symbolize_keys.merge({
       enabled: enabled,
       proxy_download: proxy_download,
       direct_upload: direct_upload,
-      cdn: cdn
+      cdn: cdn,
+      allowed_download_modes: allowed_download_modes
     })
 
     # Needed for ObjectStorage::Config compatibility
@@ -31,6 +33,7 @@ module StubObjectStorage
     allow(config).to receive(:enabled) { enabled }
     allow(config).to receive(:proxy_download) { proxy_download }
     allow(config).to receive(:direct_upload) { direct_upload }
+    allow(config).to receive(:allowed_download_modes) { allowed_download_modes }
 
     uploader_config = ::Gitlab::Configs.build_options(new_config.to_h.deep_stringify_keys)
     allow(uploader).to receive(:object_store_options).and_return(uploader_config)

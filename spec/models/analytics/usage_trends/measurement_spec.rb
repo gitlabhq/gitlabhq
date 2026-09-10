@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Analytics::UsageTrends::Measurement, type: :model, feature_category: :devops_reports do
+RSpec.describe Analytics::UsageTrends::Measurement, feature_category: :devops_reports do
   describe 'validation' do
     let!(:measurement) { create(:usage_trends_measurement) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImport, type: :model, feature_category: :importers do
+RSpec.describe BulkImport, feature_category: :importers do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:created_bulk_import) { create(:bulk_import, :created, updated_at: 2.hours.ago) }

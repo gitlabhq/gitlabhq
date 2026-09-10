@@ -130,6 +130,9 @@ module API
       end
       params do
         requires :package_file_id, type: Integer, desc: 'ID of a package file'
+        optional :download_mode, type: String, values: %w[proxy direct],
+          desc: 'Requested download transfer mode (`proxy` or `direct`). Only honored when allowed by the ' \
+            'object storage configuration.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :download_package, boundary_type: :project,
