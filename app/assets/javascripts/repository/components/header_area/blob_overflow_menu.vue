@@ -96,7 +96,7 @@ export default {
           projectPath: this.projectPath,
         };
       },
-      update({ project }) {
+      update({ project } = {}) {
         this.userPermissions = project?.userPermissions || DEFAULT_BLOB_INFO.userPermissions;
       },
       error() {
@@ -122,7 +122,7 @@ export default {
         : this.blobInfo.simpleViewer;
     },
     hasRenderError() {
-      return Boolean(this.viewer.renderError);
+      return Boolean(this.viewer?.renderError);
     },
     canModifyFile() {
       return this.glLicensedFeatures.fileLocks ? this.eeCanModifyFile : true;

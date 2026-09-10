@@ -1144,6 +1144,76 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Engine, :click_house, 
       end
     end
 
+    describe 'tier dimension' do
+      let(:cte_engine_definition) do
+        described_class.build do
+          self.table_name = 'duo_workflows_workflows_enriched'
+
+          supporting_cte :user_activity, join_key: :user_id do |qb|
+            qb.select(qb.count.as('workflows'))
+          end
+
+          dimensions do
+            tier :user_tier, :string, -> { sql('user_activity.workflows') }, ctes: [:user_activity]
+          end
+
+          metrics do
+            count
+            count :users, :integer, -> { sql('user_id') }, distinct: true
+          end
+        end
+      end
+
+      it 'buckets values into tiers, with threshold boundaries going to the upper tier' do
+        # user 1 has 6 workflows (== last threshold => tier_2),
+        # user 2 has 3 (== first threshold => tier_1), user 3 has 1 (< 3 => tier_0).
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :user_tier, parameters: { thresholds: [3, 6] } }],
+          metrics: [{ identifier: :total_count }, { identifier: :users_count }],
+          order: [{ identifier: :user_tier, parameters: { thresholds: [3, 6] }, direction: :asc }]
+        )
+
+        expect(cte_engine).to execute_aggregation(request).and_return([
+          { user_tier_3_6: 'tier_0', total_count: 1, users_count: 1 },
+          { user_tier_3_6: 'tier_1', total_count: 3, users_count: 1 },
+          { user_tier_3_6: 'tier_2', total_count: 6, users_count: 1 }
+        ])
+      end
+
+      it 'fails validation when thresholds are missing' do
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :user_tier }],
+          metrics: [{ identifier: :total_count }]
+        )
+
+        expect(cte_engine).to execute_aggregation(request).with_errors([
+          a_string_matching(/parameter `thresholds` is required/)
+        ])
+      end
+
+      it 'fails validation when thresholds are not strictly ascending positive integers' do
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :user_tier, parameters: { thresholds: [6, 3] } }],
+          metrics: [{ identifier: :total_count }]
+        )
+
+        expect(cte_engine).to execute_aggregation(request).with_errors([
+          a_string_matching(/parameter `thresholds` must be strictly ascending positive integers/)
+        ])
+      end
+
+      it 'fails validation when too many thresholds are given' do
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :user_tier, parameters: { thresholds: (1..10).to_a } }],
+          metrics: [{ identifier: :total_count }]
+        )
+
+        expect(cte_engine).to execute_aggregation(request).with_errors([
+          a_string_matching(/parameter `thresholds` supports at most 9 values/)
+        ])
+      end
+    end
+
     context 'with part-level authorization on a CTE-backed dimension' do
       let(:current_user) { build_stubbed(:user) }
 

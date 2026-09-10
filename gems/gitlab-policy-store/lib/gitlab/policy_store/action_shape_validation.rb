@@ -22,7 +22,15 @@ module Gitlab
       def action_shape_valid?(action)
         action.is_a?(Hash) &&
           action['type'].is_a?(String) && !blank?(action['type']) &&
-          (action['value'].nil? || action['value'].is_a?(Hash))
+          valid_action_value?(action['value'])
+      end
+
+      def valid_action_value?(value)
+        return true if value.nil?
+        return false unless value.is_a?(Hash)
+
+        message = value['blockMessage']
+        message.nil? || message.is_a?(String)
       end
     end
   end

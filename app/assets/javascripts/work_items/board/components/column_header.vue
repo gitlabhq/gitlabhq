@@ -168,6 +168,8 @@ export default {
       :class="{ 'gl-rotate-90': collapsed }"
     />
     <h3
+      v-gl-tooltip.hover
+      :title="value.name"
       data-testid="column-header-name"
       class="gl-m-0 gl-min-w-0 gl-truncate gl-text-base gl-font-bold"
       :class="{ 'gl-mr-2': !collapsed }"

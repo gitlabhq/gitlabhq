@@ -204,6 +204,53 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
     end
   end
 
+  describe '#variables' do
+    context 'when config contains a variables allowlist' do
+      let(:config_content) do
+        <<~YAML
+          variables:
+            - MY_API_KEY
+            - DATABASE_URL
+            - MY_API_KEY
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns the unique list of variable names as strings' do
+        expect(config.variables).to eq(%w[MY_API_KEY DATABASE_URL])
+      end
+    end
+
+    context 'when config does not contain variables' do
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return("image: ruby:3.0")
+      end
+
+      it 'returns an empty array' do
+        expect(config.variables).to eq([])
+      end
+    end
+
+    context 'when config file does not exist' do
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(nil)
+      end
+
+      it 'returns an empty array' do
+        expect(config.variables).to eq([])
+      end
+    end
+  end
+
   describe '#setup_script' do
     context 'when config contains setup_script as array' do
       let(:config_content) do
@@ -709,6 +756,82 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
       let(:config_content) do
         tokens = (1..21).map { |i| "  TOKEN_#{i}:\n    aud: sigstore" }.join("\n")
         "id_tokens:\n#{tokens}\n"
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns false' do
+        expect(config.valid_format?).to be false
+      end
+    end
+
+    context 'with a variables allowlist' do
+      let(:config_content) do
+        <<~YAML
+          variables:
+            - MY_API_KEY
+            - _DATABASE_URL
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns true' do
+        expect(config.valid_format?).to be true
+      end
+    end
+
+    context 'with a variables entry that is not a valid CI variable name' do
+      let(:config_content) do
+        <<~YAML
+          variables:
+            - 1invalid
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns false' do
+        expect(config.valid_format?).to be false
+      end
+    end
+
+    context 'with duplicate variables entries' do
+      let(:config_content) do
+        <<~YAML
+          variables:
+            - MY_API_KEY
+            - MY_API_KEY
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns false' do
+        expect(config.valid_format?).to be false
+      end
+    end
+
+    context 'with more variables than the maximum allowed' do
+      let(:config_content) do
+        variables = (1..51).map { |i| "  - VAR_#{i}" }.join("\n")
+        "variables:\n#{variables}\n"
       end
 
       before do

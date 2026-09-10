@@ -184,7 +184,10 @@ function runJest({
   // /, _, alphanumerics, and dots, none of which conflict with the regex
   // interpretation in practice (dots match themselves as well as any char).
   // Combined with --shard, each parallel instance runs its slice of the list.
-  const filterArguments = filterFiles && filterFiles.length ? filterFiles : [];
+  // --passWithNoTests: the fixture/non-fixture partition in the sequencer can
+  // legitimately filter every queued spec out of one of the two passes.
+  const filterArguments =
+    filterFiles && filterFiles.length ? ['--passWithNoTests', ...filterFiles] : [];
 
   const childProcess = loggedSpawnSync(
     'node_modules/.bin/jest',

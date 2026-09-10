@@ -2592,6 +2592,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           .to contain_exactly('closes')
       end
 
+      it 'moves an issue from closes to mentioned when the description downgrades the reference',
+        :aggregate_failures do
+        subject.description = "Closes #{mentioned_issue.to_reference}"
+        subject.persist_merge_request_issues!(subject.author)
+        expect(subject.merge_request_issues.where(issue_id: mentioned_issue.id).pluck(:link_type))
+          .to contain_exactly('closes')
+
+        subject.description = "Relates to #{mentioned_issue.to_reference}"
+        subject.persist_merge_request_issues!(subject.author)
+
+        expect(subject.merge_request_issues.where(issue_id: mentioned_issue.id).pluck(:link_type))
+          .to contain_exactly('mentioned')
+      end
+
       it 'is idempotent when the description is unchanged' do
         subject.description = "Relates to #{mentioned_issue.to_reference}"
         subject.persist_merge_request_issues!(subject.author)

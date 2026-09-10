@@ -76,6 +76,8 @@ module Gitlab
       end
 
       def append(update)
+        raise ArgumentError, 'update must be a String' unless update.is_a?(String)
+
         token = SecureRandom.hex(16)
 
         full, claimed = with_redis do |redis|
@@ -92,7 +94,8 @@ module Gitlab
       end
 
       def replace(snapshot, token)
-        return false if token.blank?
+        return false unless snapshot.is_a?(String) && token.is_a?(String)
+        return false if token.empty?
 
         result = with_redis do |redis|
           redis.eval(

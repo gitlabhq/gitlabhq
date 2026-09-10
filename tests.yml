@@ -51,6 +51,14 @@ mapping:
   - source: '.gitlab/ci/(?<rest>.+)\.gitlab-ci\.yml'
     test: 'spec/dot_gitlab_ci/rules_spec.rb'
 
+  # The jest per-test-coverage generator mirrors the shard count of
+  # rspec-all frontend_fixture; run its spec when either side changes
+  - source:
+      - '.gitlab/ci/frontend\.gitlab-ci\.yml'
+      - '.gitlab/ci/per_test_coverage/jest_child_pipeline_template\.erb'
+      - 'scripts/generate_jest_pipeline\.rb'
+    test: 'spec/scripts/generate_jest_pipeline_spec.rb'
+
   # Map config to respective specs
   - source: 'config/(?<rest>.+)\..*'
     test: 'spec/config/%{rest}_spec.rb'

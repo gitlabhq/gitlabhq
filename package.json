@@ -322,7 +322,7 @@
     "jest-util": "^29.7.0",
     "miragejs": "^0.1.40",
     "mock-apollo-client": "1.2.0",
-    "msw": "1.3.5",
+    "msw": "^2.15.0",
     "nodemon": "^2.0.19",
     "postcss-loader": "^8.2.1",
     "prettier-plugin-tailwindcss": "^0.6.5",
@@ -346,6 +346,7 @@
     "@types/node": "14.17.5",
     "chokidar": "^3.5.3",
     "nwsapi": "2.2.2",
+    "@inquirer/confirm": "5.1.21",
     "tough-cookie": "4.1.3",
     "rollup": "^4.60.0"
   },

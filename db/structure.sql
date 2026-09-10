@@ -6056,33 +6056,6 @@ CREATE TABLE ai_usage_events (
 )
 PARTITION BY RANGE ("timestamp");
 
-CREATE SEQUENCE audit_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-CREATE TABLE audit_events (
-    id bigint DEFAULT nextval('audit_events_id_seq'::regclass) NOT NULL,
-    author_id bigint NOT NULL,
-    entity_id bigint NOT NULL,
-    entity_type character varying NOT NULL,
-    details text,
-    ip_address inet,
-    author_name text,
-    entity_path text,
-    target_details text,
-    created_at timestamp without time zone NOT NULL,
-    target_type text,
-    target_id bigint,
-    CONSTRAINT check_492aaa021d CHECK ((char_length(entity_path) <= 5500)),
-    CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255)),
-    CONSTRAINT check_97a8c868e7 CHECK ((char_length(target_type) <= 255)),
-    CONSTRAINT check_d493ec90b5 CHECK ((char_length(target_details) <= 5500))
-)
-PARTITION BY RANGE (created_at);
-
 CREATE TABLE background_operation_jobs (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     worker_id uuid NOT NULL,
@@ -6709,6 +6682,13 @@ CREATE TABLE p_ci_workloads (
     CONSTRAINT check_f2fe503728 CHECK ((char_length(branch_name) <= 255))
 )
 PARTITION BY LIST (partition_id);
+
+CREATE SEQUENCE audit_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 CREATE TABLE group_audit_events (
     id bigint DEFAULT nextval('audit_events_id_seq'::regclass) NOT NULL,
@@ -15368,6 +15348,26 @@ CREATE SEQUENCE atlassian_identities_user_id_seq
     CACHE 1;
 
 ALTER SEQUENCE atlassian_identities_user_id_seq OWNED BY atlassian_identities.user_id;
+
+CREATE TABLE audit_events (
+    id bigint DEFAULT nextval('audit_events_id_seq'::regclass) NOT NULL,
+    author_id bigint NOT NULL,
+    entity_id bigint NOT NULL,
+    entity_type character varying NOT NULL,
+    details text,
+    ip_address inet,
+    author_name text,
+    entity_path text,
+    target_details text,
+    created_at timestamp without time zone NOT NULL,
+    target_type text,
+    target_id bigint,
+    CONSTRAINT check_492aaa021d CHECK ((char_length(entity_path) <= 5500)),
+    CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255)),
+    CONSTRAINT check_97a8c868e7 CHECK ((char_length(target_type) <= 255)),
+    CONSTRAINT check_d493ec90b5 CHECK ((char_length(target_details) <= 5500))
+)
+PARTITION BY RANGE (created_at);
 
 CREATE TABLE audit_events_amazon_s3_configurations (
     id bigint NOT NULL,

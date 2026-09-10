@@ -101,6 +101,31 @@ describe('Blob Overflow Menu', () => {
     });
   });
 
+  describe('when blob info has not loaded yet', () => {
+    // blob_controls.vue provides `{}` while its query is loading or after it fails,
+    // so the viewers are undefined here
+    beforeEach(async () => {
+      await createComponent({ provide: { blobInfo: {} } });
+    });
+
+    it('still renders the file actions menu', () => {
+      expect(findBlobActionsDropdown().exists()).toBe(true);
+    });
+  });
+
+  describe('when the projectInfo query returns no project', () => {
+    beforeEach(async () => {
+      await createComponent({
+        projectInfoResolver: jest.fn().mockResolvedValue({ data: { project: null } }),
+      });
+    });
+
+    it('still renders the file actions menu without an error alert', () => {
+      expect(findBlobActionsDropdown().exists()).toBe(true);
+      expect(createAlert).not.toHaveBeenCalled();
+    });
+  });
+
   describe('active viewer based on plain attribute and blob.richViewer', () => {
     const { richViewer } = blobControlsDataMock.repository.blobs.nodes[0];
 

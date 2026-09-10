@@ -37,7 +37,7 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
       [
         [Group.all, true],
         [User.all, true],
-        [AuditEvent.all, false]
+        [Label.all, false]
       ]
     end
 

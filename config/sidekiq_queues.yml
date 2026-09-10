@@ -745,6 +745,8 @@
   - 1
 - - merge_requests_auto_assign_reviewers
   - 1
+- - merge_requests_cleanup_ai_suggested_reviewers
+  - 1
 - - merge_requests_cleanup_ref
   - 1
 - - merge_requests_close_issue

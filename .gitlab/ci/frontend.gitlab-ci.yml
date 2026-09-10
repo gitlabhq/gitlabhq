@@ -204,6 +204,8 @@ rspec-all frontend_fixture:
   script:
     - !reference [.frontend-fixtures-base, script]
     - rspec_parallelized_job "--tag ~click_house"
+  # Mirrored as FIXTURE_SHARD_COUNT in scripts/generate_jest_pipeline.rb,
+  # which renders one cross-pipeline need per shard; a spec enforces the match.
   parallel: 8
 
 rspec-all frontend_fixture clickhouse:

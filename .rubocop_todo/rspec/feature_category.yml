@@ -1079,7 +1079,6 @@ RSpec/FeatureCategory:
     - 'spec/helpers/bizible_helper_spec.rb'
     - 'spec/helpers/boards_helper_spec.rb'
     - 'spec/helpers/button_helper_spec.rb'
-    - 'spec/helpers/calendar_helper_spec.rb'
     - 'spec/helpers/ci/status_helper_spec.rb'
     - 'spec/helpers/ci/triggers_helper_spec.rb'
     - 'spec/helpers/colors_helper_spec.rb'

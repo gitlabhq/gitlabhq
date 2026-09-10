@@ -156,6 +156,11 @@ module MergeRequests
         return unless Feature.enabled?(:generated_ref_commits_for_automatic_rebase, project)
 
         ::MergeRequests::GeneratedRefCommit.delete_all_for(merge_request)
+      rescue StandardError => e
+        # Best-effort cleanup: raising here would replace the merge failure the
+        # caller is about to re-raise, downgrading a specific user-facing message
+        # to the generic one in MergeRequests::MergeService#try_merge.
+        ::Gitlab::ErrorTracking.track_exception(e, merge_request_id: merge_request.id)
       end
 
       def merge_commit!

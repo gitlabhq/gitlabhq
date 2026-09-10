@@ -8326,6 +8326,15 @@ msgstr ""
 msgid "AggregationEngine|ordering by '%{identifier}' is not authorized"
 msgstr ""
 
+msgid "AggregationEngine|parameter `thresholds` is required"
+msgstr ""
+
+msgid "AggregationEngine|parameter `thresholds` must be strictly ascending positive integers"
+msgstr ""
+
+msgid "AggregationEngine|parameter `thresholds` supports at most %{max} values"
+msgstr ""
+
 msgid "AggregationEngine|the specified identifier is not available: '%{identifier}'"
 msgstr ""
 
@@ -9507,6 +9516,12 @@ msgid "AiSuggestedReviewers|A suggested user or approval rule no longer exists"
 msgstr ""
 
 msgid "AiSuggestedReviewers|Each user can only be suggested once per merge request"
+msgstr ""
+
+msgid "Ai|I have posted my response as an [internal note](%{url}) (visible to project members)."
+msgstr ""
+
+msgid "Ai|The task could not be completed. Details are posted in an [internal note](%{url}) (visible to project members)."
 msgstr ""
 
 msgid "Ai|[View session](%{url})"
@@ -12417,6 +12432,12 @@ msgstr ""
 msgid "ArtifactRegistry|Delete repository?"
 msgstr ""
 
+msgid "ArtifactRegistry|Delete version"
+msgstr ""
+
+msgid "ArtifactRegistry|Delete version?"
+msgstr ""
+
 msgid "ArtifactRegistry|Description (optional)"
 msgstr ""
 
@@ -12930,6 +12951,9 @@ msgstr ""
 msgid "ArtifactRegistry|This action permanently deletes the repository and all of its artifacts. If this repository is connected to a virtual repository, the virtual repository loses access to this repository and its artifacts."
 msgstr ""
 
+msgid "ArtifactRegistry|This action permanently deletes version %{name} and all of its files. This action cannot be undone."
+msgstr ""
+
 msgid "ArtifactRegistry|This cannot be changed once claimed, even if Artifact Registry is disabled later. Choose something that represents your organization long-term."
 msgstr ""
 
@@ -12994,6 +13018,9 @@ msgid "ArtifactRegistry|Version details"
 msgstr ""
 
 msgid "ArtifactRegistry|Version list for %{name} updated."
+msgstr ""
+
+msgid "ArtifactRegistry|Version successfully scheduled for deletion."
 msgstr ""
 
 msgid "ArtifactRegistry|Versions"
@@ -20333,7 +20360,13 @@ msgstr ""
 msgid "ColorMode|Dark"
 msgstr ""
 
+msgid "ColorMode|Dark mode"
+msgstr ""
+
 msgid "ColorMode|Light"
+msgstr ""
+
+msgid "ColorMode|Light mode"
 msgstr ""
 
 msgid "ColorPicker|Enter any hex color or choose one of the suggested colors below."
@@ -66618,6 +66651,9 @@ msgstr ""
 msgid "Remove iteration"
 msgstr ""
 
+msgid "Remove label - %{label}"
+msgstr ""
+
 msgid "Remove labels"
 msgstr ""
 
@@ -72586,9 +72622,6 @@ msgid "SecurityInventory|Container scanning for registry"
 msgstr ""
 
 msgid "SecurityInventory|Container scanning for registry (CS)"
-msgstr ""
-
-msgid "SecurityInventory|Coverage across %{groups} and %{projects}"
 msgstr ""
 
 msgid "SecurityInventory|Coverage across all scanners, or for a single scanner, based on the scan status of the most recent pipeline on the default branch."
@@ -78754,7 +78787,16 @@ msgstr ""
 msgid "Sort by"
 msgstr ""
 
+msgid "Sort by:"
+msgstr ""
+
 msgid "Sort direction"
+msgstr ""
+
+msgid "Sort direction unavailable"
+msgstr ""
+
+msgid "Sort direction unavailable for %{sortField}"
 msgstr ""
 
 msgid "Sort direction: Ascending"

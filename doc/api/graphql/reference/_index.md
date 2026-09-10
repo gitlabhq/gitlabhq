@@ -5269,6 +5269,37 @@ Fields:
 | <a id="mutation-artifactregistryrolerevoke-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-artifactregistryrolerevoke-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.artifactRegistryUpstreamTestConnection`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Tests a supplied upstream connection for the remote repository create form in Artifact Registry, before any repository exists to hold it.
+
+Input type: `ArtifactRegistryUpstreamTestConnectionInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryupstreamtestconnection-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryupstreamtestconnection-credentials"></a>`credentials` | [`ArtifactRegistryRemoteCredentialsInput`](#artifactregistryremotecredentialsinput) | Upstream credentials to probe with. Omit or pass null to probe unauthenticated. Accepted for every format, but ignored when probing a container upstream (docker or oci), whose probe is always unauthenticated. |
+| <a id="mutation-artifactregistryupstreamtestconnection-format"></a>`format` | [`ArtifactRegistryRepositoryFormat!`](#artifactregistryrepositoryformat) | Package format of the upstream to probe. Decides the credential shape and the probe auth. |
+| <a id="mutation-artifactregistryupstreamtestconnection-url"></a>`url` | [`String!`](#string) | Base URL of the upstream to probe. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryupstreamtestconnection-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryupstreamtestconnection-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-artifactregistryupstreamtestconnection-httpstatus"></a>`httpStatus` | [`Int`](#int) | Status the upstream answered the probe with. Null when the probe failed in transport and no response arrived, and when no probe ran. |
+| <a id="mutation-artifactregistryupstreamtestconnection-passed"></a>`passed` | [`Boolean`](#boolean) | Indicates the upstream answered the probe with a status below 500. Reports reachability rather than credential validity, so an upstream 401 or 404 passes. Null when no probe ran. |
+
 ### `Mutation.artifactRegistryVersionDelete`
 
 {{< details >}}
@@ -35868,9 +35899,13 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="analytics-duoworkflows-activedaysfrom"></a>`activeDaysFrom` | [`Int`](#int) | Filter by the number of distinct days the user created flows in the selected period. Start of the range. |
+| <a id="analytics-duoworkflows-activedaysto"></a>`activeDaysTo` | [`Int`](#int) | Filter by the number of distinct days the user created flows in the selected period. End of the range. |
 | <a id="analytics-duoworkflows-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by flow creation timestamp. Start of the range. |
 | <a id="analytics-duoworkflows-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by flow creation timestamp. End of the range. |
 | <a id="analytics-duoworkflows-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
+| <a id="analytics-duoworkflows-flowtypesusedfrom"></a>`flowTypesUsedFrom` | [`Int`](#int) | Filter by the number of distinct flow types the user ran in the selected period. Start of the range. |
+| <a id="analytics-duoworkflows-flowtypesusedto"></a>`flowTypesUsedTo` | [`Int`](#int) | Filter by the number of distinct flow types the user ran in the selected period. End of the range. |
 | <a id="analytics-duoworkflows-projectid"></a>`projectId` | [`[String!]`](#string) | Filter by one or many project Global IDs. |
 | <a id="analytics-duoworkflows-status"></a>`status` | [`[String!]`](#string) | Filter by one or many flow statuses (created, running, finished, failed, ...). |
 | <a id="analytics-duoworkflows-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
@@ -43784,6 +43819,18 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date bucket granularity: daily, weekly, or monthly. |
+
+##### `DuoWorkflowsAggregationResponseDimensions.userTier`
+
+User activity tier, bucketing users by their number of flows in the selected period using the `thresholds` argument.
+
+Returns [`String`](#string).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsedimensions-usertier-thresholds"></a>`thresholds` | [`[Int!]`](#int) | Ascending tier boundaries. Values below the first threshold map to `tier_0`, values at or above the last threshold map to the highest tier. |
 
 ### `DuoWorkflowsAggregationScope`
 
@@ -56633,6 +56680,17 @@ Fields:
 | <a id="policystoreaction-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. Identifier of the action. |
 | <a id="policystoreaction-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Human-readable name of the action. |
 
+### `PolicyStoreRole`
+
+A role that can be assigned in a policy action.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policystorerole-id"></a>`id` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Unique identifier for the role. |
+| <a id="policystorerole-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Human-readable name of the role. |
+
 ### `PolicyStoreRule`
 
 Rule kind available when creating a policy in the policy store.
@@ -56652,6 +56710,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="policystoretrigger-availableroles"></a>`availableRoles` {{< icon name="warning-solid" >}} | [`[PolicyStoreRole!]!`](#policystorerole) | Introduced in GitLab 19.4. Status: Experiment. Roles available for the trigger type. |
 | <a id="policystoretrigger-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. Identifier of the trigger. |
 | <a id="policystoretrigger-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Human-readable name of the trigger. |
 

@@ -2,10 +2,28 @@
 
 require 'fast_spec_helper'
 require 'tempfile'
+require 'yaml'
 
 require_relative '../../scripts/generate_jest_pipeline'
 
 RSpec.describe GenerateJestPipeline, :silence_stdout, feature_category: :tooling do
+  describe 'FIXTURE_SHARD_COUNT' do
+    it 'matches parallel: on rspec-all frontend_fixture, whose shards the template enumerates as needs' do
+      # frontend.gitlab-ci.yml uses !reference tags. Whether that tag is
+      # already registered with Psych depends on suite run order, so
+      # register and permit it explicitly instead of relying on it.
+      Psych.add_tag('!reference', Gitlab::Ci::Config::Yaml::Tags::Reference)
+      frontend_ci_path = File.expand_path('../../.gitlab/ci/frontend.gitlab-ci.yml', __dir__)
+      parallel = YAML.safe_load(
+        File.read(frontend_ci_path),
+        permitted_classes: [Gitlab::Ci::Config::Yaml::Tags::Reference],
+        aliases: true
+      ).dig('rspec-all frontend_fixture', 'parallel')
+
+      expect(described_class::FIXTURE_SHARD_COUNT).to eq(parallel)
+    end
+  end
+
   describe '#generate!' do
     let!(:jest_files) { Tempfile.new(['jest_files_path', '.txt']) }
     let(:pipeline_template) { Tempfile.new(['pipeline_template', '.yml.erb']) }
@@ -15,6 +33,8 @@ RSpec.describe GenerateJestPipeline, :silence_stdout, feature_category: :tooling
         <% if parallelism > 1 %>
           parallel: <%= parallelism %>
         <% end %>
+        jest-with-fixtures per-test-coverage:
+          parallel: <%= fixture_parallelism %>
       YAML
     end
 
@@ -66,12 +86,12 @@ RSpec.describe GenerateJestPipeline, :silence_stdout, feature_category: :tooling
         jest_files.rewind
       end
 
-      it 'renders without a parallel: directive' do
+      it 'renders the main pass without parallel: and the fixture pass at 1' do
         generator.generate!
 
         content = File.read("#{pipeline_template.path}.yml")
         expect(content).to include('jest per-test-coverage:')
-        expect(content).not_to include('parallel:')
+        expect(content.scan(/parallel: (\d+)/).flatten).to eq(%w[1])
       end
     end
 
@@ -83,11 +103,13 @@ RSpec.describe GenerateJestPipeline, :silence_stdout, feature_category: :tooling
         jest_files.rewind
       end
 
-      it 'renders with parallel: capped at the default max' do
+      it 'renders with parallel: capped at the default max and the fixture pass at its own cap' do
         generator.generate!
 
         content = File.read("#{pipeline_template.path}.yml")
-        expect(content).to include("parallel: #{described_class::MAX_PARALLEL_DEFAULT}")
+        expect(content.scan(/parallel: (\d+)/).flatten).to eq(
+          [described_class::MAX_PARALLEL_DEFAULT.to_s, described_class::MAX_FIXTURE_PARALLEL.to_s]
+        )
       end
     end
 
@@ -103,7 +125,7 @@ RSpec.describe GenerateJestPipeline, :silence_stdout, feature_category: :tooling
         generator.generate!
 
         content = File.read("#{pipeline_template.path}.yml")
-        expect(content).to include('parallel: 3')
+        expect(content.scan(/parallel: (\d+)/).flatten).to eq(%w[3 2])
       end
     end
 
@@ -154,6 +176,43 @@ RSpec.describe GenerateJestPipeline, :silence_stdout, feature_category: :tooling
             expect(content).to include("parallel: #{described_class::MAX_PARALLEL_DEFAULT}")
           end
         end
+      end
+    end
+
+    context 'with the real child pipeline template' do
+      let(:generated_pipeline) { Tempfile.new(['generated_pipeline', '.yml']) }
+
+      subject(:generator) do
+        described_class.new(
+          pipeline_template_path: '.gitlab/ci/per_test_coverage/jest_child_pipeline_template.erb',
+          jest_files_path: jest_files.path,
+          generated_pipeline_path: generated_pipeline.path
+        )
+      end
+
+      before do
+        jest_files.write(%w[spec/frontend/a_spec.js spec/frontend/b_spec.js].join("\n"))
+        jest_files.rewind
+      end
+
+      after do
+        generated_pipeline.close
+        generated_pipeline.unlink
+      end
+
+      it 'renders valid YAML with a non-fixture and a fixture capture pass' do
+        generator.generate!
+
+        yaml = YAML.safe_load(File.read(generated_pipeline.path))
+
+        expect(yaml.keys).to include('jest per-test-coverage', 'jest-with-fixtures per-test-coverage')
+
+        shard_count = described_class::FIXTURE_SHARD_COUNT
+        expected_shard_needs = (1..shard_count).map { |i| "rspec-all frontend_fixture #{i}/#{shard_count}" }
+        fixture_needs = yaml['jest-with-fixtures per-test-coverage']['needs'].map { |need| need['job'] }
+        expect(fixture_needs).to include(*expected_shard_needs, 'rspec-all frontend_fixture clickhouse')
+        expect(yaml['jest-with-fixtures per-test-coverage']['script'].join).to include('--fixtures')
+        expect(yaml['jest per-test-coverage']['script'].join).not_to include('--fixtures')
       end
     end
   end

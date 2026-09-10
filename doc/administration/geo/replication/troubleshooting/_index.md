@@ -18,3 +18,4 @@ When working with Geo, you might encounter the following issues:
 - [Client and HTTP response code errors](client_http.md)
 - [PostgreSQL replication errors](postgresql_replication.md)
 - [Synchronization and verification errors](synchronization_verification.md)
+- [SSH proxying](ssh_proxying.md)

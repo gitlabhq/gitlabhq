@@ -43,17 +43,7 @@ function getVisibleDiscussions() {
   return getAllDiscussionElements().filter(isVisible);
 }
 
-const CONTENT_TOP_CLEARANCE = 1;
-
-function alignToContentTop(target) {
-  const overshoot = Math.round(
-    target.getBoundingClientRect().top - contentTop() - CONTENT_TOP_CLEARANCE,
-  );
-
-  if (overshoot !== 0) {
-    getScrollingElement(target).scrollBy({ top: overshoot, behavior: 'instant' });
-  }
-}
+const ACTIVE_TOLERANCE = 4;
 
 function usesLegacyStrategy() {
   return isOverviewPage() || !isRapidDiffs();
@@ -67,9 +57,6 @@ function nextFrame() {
 
 async function scrollToDiscussion(target) {
   target.scrollIntoView(true);
-  // Only the legacy strategy computes the current thread relative to
-  // contentTop(); rapidDiffs references the panel top, so leave it alone.
-  if (usesLegacyStrategy()) alignToContentTop(target);
   scrollPastCoveringElements(target);
   // Sticky headers (e.g. the merge request title bar) can toggle their own
   // visibility asynchronously, after this scroll, via an IntersectionObserver.
@@ -84,21 +71,52 @@ function hasReachedPageEnd() {
   return panel.scrollHeight <= Math.ceil(panel.scrollTop + panel.clientHeight);
 }
 
+function isStickyOrFixed(el) {
+  const { position } = getComputedStyle(el);
+  return position === 'sticky' || position === 'fixed';
+}
+
+function findStickyAncestor(el) {
+  let current = el;
+  while (current && current !== document.body) {
+    if (isStickyOrFixed(current)) return current;
+    current = current.offsetParent;
+  }
+  return null;
+}
+
+// The line a navigated thread comes to rest on is set by scrollPastCoveringElements,
+// which hit-tests the live sticky header to clear it. Measure the current thread
+// against that same hit-tested line so navigation and scrolling share one reference,
+// falling back to the summed-selector estimate contentTop() when nothing is covering.
+function getTopOffset() {
+  let offset = null;
+
+  offset = withHiddenTooltips(() => {
+    const panelRect = getPanel().getBoundingClientRect();
+    const hit = document.elementFromPoint(panelRect.left + 1, panelRect.top + 1);
+    const sticky = hit ? findStickyAncestor(hit) : null;
+
+    return sticky ? sticky.getBoundingClientRect().bottom : null;
+  });
+
+  if (offset === null) {
+    offset = contentTop();
+  }
+
+  return offset;
+}
+
 function findNextClosestVisibleDiscussion(elements) {
-  const offsetHeight = contentTop();
+  const offsetHeight = getTopOffset();
   let isActive;
   const index = elements.findIndex((element) => {
     const { y } = element.getBoundingClientRect();
     const visibleOffset = Math.ceil(y) - offsetHeight;
-    isActive = visibleOffset < 2;
-    return visibleOffset >= 0;
+    isActive = visibleOffset < ACTIVE_TOLERANCE;
+    return visibleOffset >= -ACTIVE_TOLERANCE;
   });
   return { element: elements[index], index, isActive };
-}
-
-function isStickyOrFixed(el) {
-  const { position } = getComputedStyle(el);
-  return position === 'sticky' || position === 'fixed';
 }
 
 function hasNonStickyAncestor(el, stopAt) {

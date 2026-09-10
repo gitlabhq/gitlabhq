@@ -1,0 +1,6 @@
+---
+retention_window: 90
+enforcement_strategy: bogus_strategy
+enforcing: false
+pause_mechanism:
+  type: none

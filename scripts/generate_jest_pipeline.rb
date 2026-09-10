@@ -19,6 +19,14 @@ class GenerateJestPipeline
   # parallelism keeps each shard well under the 90m timeout even with the
   # instrumented per-test reporter active.
   TARGET_SPECS_PER_SHARD = 500
+  # The fixture-using slice of a queue is far smaller than the rest; the
+  # regular pipeline runs the entire fixture-using suite at parallel: 2
+  # (jest-with-fixtures in .gitlab/ci/frontend.gitlab-ci.yml), so cap the
+  # fixture pass there too.
+  MAX_FIXTURE_PARALLEL = 2
+  # Shard count (parallel:) of rspec-all frontend_fixture in
+  # .gitlab/ci/frontend.gitlab-ci.yml; a spec enforces the match.
+  FIXTURE_SHARD_COUNT = 8
 
   def initialize(pipeline_template_path:, jest_files_path: nil, generated_pipeline_path: nil, max_parallel: nil)
     @pipeline_template_path = pipeline_template_path.to_s
@@ -39,7 +47,8 @@ class GenerateJestPipeline
 
     info "pipeline_template_path: #{pipeline_template_path}"
     info "generated_pipeline_path: #{generated_pipeline_path}"
-    info "Queued #{jest_files.size} jest files, rendering at parallel: #{parallelism}"
+    info "Queued #{jest_files.size} jest files, rendering at parallel: #{parallelism} " \
+      "(fixture pass: #{fixture_parallelism})"
 
     File.open(generated_pipeline_path, 'w') do |handle|
       pipeline_yaml = ERB.new(File.read(pipeline_template_path), trim_mode: '-').result_with_hash(**erb_binding)
@@ -70,9 +79,15 @@ class GenerateJestPipeline
     [[jest_files.size.fdiv(TARGET_SPECS_PER_SHARD).ceil, 1].max, @max_parallel].min
   end
 
+  def fixture_parallelism
+    [parallelism, MAX_FIXTURE_PARALLEL].min
+  end
+
   def erb_binding
     {
       parallelism: parallelism,
+      fixture_parallelism: fixture_parallelism,
+      fixture_shard_count: FIXTURE_SHARD_COUNT,
       repo_from_artifacts: ENV['CI_FETCH_REPO_GIT_STRATEGY'] == 'none'
     }
   end

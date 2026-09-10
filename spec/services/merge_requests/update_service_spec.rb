@@ -1310,6 +1310,24 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
         end.to change { MergeRequestsClosingIssues.count }.from(3).to(1)
       end
 
+      it 'retypes a from_mr_description row from closes to mentioned when the reference is downgraded' do
+        types_for = ->(issue) do
+          MergeRequestsClosingIssues.where(merge_request: merge_request, issue_id: issue.id).pluck(:link_type)
+        end
+
+        closing = described_class.new(project: project, current_user: user,
+          params: { description: "Closes #{first_issue.to_reference}" })
+        allow(closing).to receive(:execute_hooks)
+        closing.execute(merge_request)
+        expect(types_for.call(first_issue)).to contain_exactly('closes')
+
+        related = described_class.new(project: project, current_user: user,
+          params: { description: "Relates to #{first_issue.to_reference}" })
+        allow(related).to receive(:execute_hooks)
+        related.execute(merge_request.reload)
+        expect(types_for.call(first_issue)).to contain_exactly('mentioned')
+      end
+
       context 'when merge request has auto merge enabled' do
         before do
           merge_request.update!(auto_merge_enabled: true, merge_user: user)

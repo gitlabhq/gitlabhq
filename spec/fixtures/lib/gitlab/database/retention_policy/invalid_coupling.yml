@@ -1,0 +1,6 @@
+---
+retention_window: -1
+enforcement_strategy: none
+enforcing: false
+pause_mechanism:
+  type: none

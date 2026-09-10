@@ -124,7 +124,7 @@ test-coverage:export-per-test-jest:
     - job: per-test-coverage:trigger
       artifacts: false
   variables:
-    JOB_PATTERN: '^jest per-test-coverage( [0-9]+/[0-9]+)?$'
+    JOB_PATTERN: '^jest(-with-fixtures)? per-test-coverage( [0-9]+/[0-9]+)?$'
   script:
     # Stream (see export-per-test-rspec): batch download, insert, delete, repeat.
     - |

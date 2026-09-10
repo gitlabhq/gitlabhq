@@ -27,6 +27,14 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
       it 'returns nil' do
         is_expected.to be_nil
       end
+
+      it 'logs the authentication attempt' do
+        expect(Gitlab::AuthLogger).to receive(:info).with(
+          message: 'IAM JWT authentication attempt when disabled'
+        )
+
+        token
+      end
     end
 
     context 'when IAM is enabled' do
@@ -81,6 +89,34 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
           let(:sub) { non_existing_record_id.to_s }
 
           it 'returns nil when user does not exist in database' do
+            expect(token).to be_nil
+          end
+        end
+
+        context 'when token has a non-numeric subject that collides with a real user via to_i coercion' do
+          # sub.to_i silently truncates trailing garbage (e.g. "#{user.id}x".to_i
+          # == user.id), so without the user_id.to_s == sub check this would
+          # resolve to a real, existing user rather than being rejected.
+          let(:sub) { "#{user.id}x" }
+
+          it 'returns nil rather than resolving to the colliding user' do
+            expect(token).to be_nil
+          end
+
+          it 'logs the validation failure' do
+            expect(Gitlab::AuthLogger).to receive(:error).with(
+              message: 'IAM JWT validation failed',
+              Labkit::Fields::ERROR_MESSAGE => 'Invalid token subject'
+            )
+
+            token
+          end
+        end
+
+        context 'when token subject is not a valid positive integer string' do
+          let(:sub) { '0' }
+
+          it 'returns nil' do
             expect(token).to be_nil
           end
         end

@@ -1,0 +1,6 @@
+---
+retention_window: '90'
+enforcement_strategy: delete_rows
+enforcing: false
+pause_mechanism:
+  type: none

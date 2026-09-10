@@ -1,5 +1,6 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ColumnHeader from '~/work_items/board/components/column_header.vue';
 import { getAdaptiveStatusColor } from '~/lib/utils/color_utils';
 import { mockStatus } from '../mock_data';
@@ -31,6 +32,9 @@ describe('ColumnHeader', () => {
         count: 5,
         ...props,
       },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   };
 
@@ -39,6 +43,29 @@ describe('ColumnHeader', () => {
       createComponent();
 
       expect(findHeading().text()).toBe('To do');
+    });
+  });
+
+  describe.each([false, true])('title tooltip with collapsed=%s', (collapsed) => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          collapsed,
+          value: {
+            ...mockStatus,
+            name: 'A long status name that is truncated in the board header',
+          },
+        },
+      });
+    });
+
+    it('shows the full title on hover', () => {
+      expect(findHeading().attributes('title')).toBe(
+        'A long status name that is truncated in the board header',
+      );
+      expect(getBinding(findHeading().element, 'gl-tooltip').modifiers).toEqual({
+        hover: true,
+      });
     });
   });
 

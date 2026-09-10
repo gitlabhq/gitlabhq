@@ -419,6 +419,32 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
             'Fast-forward merge did not advance the target branch'
           )
       end
+
+      context 'and deleting the generated ref commits fails' do
+        let(:cleanup_error) { ActiveRecord::StatementInvalid.new('PG::UnableToSend') }
+
+        before do
+          allow(MergeRequests::GeneratedRefCommit).to receive(:delete_all_for).and_raise(cleanup_error)
+        end
+
+        it 'reports the cleanup failure and still raises the merge error' do
+          expect_next_instance_of(MergeRequests::CreateRefService) do |instance|
+            expect(instance).to receive(:execute).and_return(create_ref_service_response)
+          end
+
+          expect(merge_request.target_project.repository)
+            .to receive(:ff_merge).and_return(target_branch_sha)
+
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception).with(cleanup_error, merge_request_id: merge_request.id)
+
+          expect { strategy.execute_git_merge! }
+            .to raise_exception(
+              MergeRequests::MergeStrategies::StrategyError,
+              'Fast-forward merge did not advance the target branch'
+            )
+        end
+      end
     end
   end
 

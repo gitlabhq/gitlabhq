@@ -201,17 +201,6 @@ describe('Discussion navigation mixin', () => {
       });
     });
 
-    it('does not align to content top (that is legacy-only)', async () => {
-      const stickyEl = document.createElement('div');
-      setupRapidDiffs([105, 200, 400, 500, 600], () => stickyEl);
-      jest.spyOn(window, 'getComputedStyle').mockReturnValue({ position: 'sticky' });
-
-      await wrapper.vm.jumpToNextDiscussion();
-      await nextTick();
-
-      expect(getScrollingElement().scrollBy).not.toHaveBeenCalled();
-    });
-
     it('filters out discussions inside closed details elements', async () => {
       resetHTMLFixture();
       setHTMLFixture(
@@ -371,25 +360,24 @@ describe('Discussion navigation mixin', () => {
       });
     });
 
-    describe('aligning the target to the content top after navigating', () => {
-      beforeEach(() => {
-        window.mrTabs.currentAction = 'show';
-      });
+    it('measures the current thread against the hit-tested sticky header, not contentTop()', async () => {
+      window.mrTabs.currentAction = 'show';
 
-      it('scrolls the panel so the target lands just below the content top line', async () => {
-        // contentTop() resolves to 0 in jsdom. A target whose top is 120px below
-        // the line is pulled up by 119px, leaving a 1px clearance so its top edge
-        // sits just clear of the sticky header rather than on the boundary.
-        setDiscussionPositions([120, 200, 300, 400, 500]);
+      const stickyHeader = document.createElement('div');
+      jest.spyOn(stickyHeader, 'getBoundingClientRect').mockReturnValue({ bottom: 145 });
+      document.elementFromPoint = jest.fn(() => stickyHeader);
+      jest.spyOn(window, 'getComputedStyle').mockReturnValue({ position: 'sticky' });
 
-        await wrapper.vm.jumpToNextDiscussion();
-        await nextTick();
+      // contentTop() resolves to 0 in jsdom. Against that fallback, 'a' (y=140) is the
+      // current thread and Next would return it. Against the sticky header's bottom
+      // (145) 'a' is above the line and skipped, so Next returns 'c' instead. Asserting
+      // 'c' proves the sticky-hit branch of getTopOffset() drives the offset.
+      setDiscussionPositions([140, 160, 200, 300, 400]);
 
-        expect(getScrollingElement().scrollBy).toHaveBeenCalledWith({
-          top: 119,
-          behavior: 'instant',
-        });
-      });
+      await wrapper.vm.jumpToNextDiscussion();
+      await nextTick();
+
+      expect(useNotes().expandDiscussion).toHaveBeenCalledWith({ discussionId: 'c' });
     });
 
     describe('re-checking sticky coverage after the next frame', () => {

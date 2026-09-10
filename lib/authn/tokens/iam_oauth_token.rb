@@ -11,18 +11,27 @@ module Authn
       # strips it before validating; we mirror that here.
       ACCESS_TOKEN_PREFIX = 'gliamat-'
 
+      REQUIRED_CLAIMS = %w[sub jti exp iat iss aud scope].freeze
+      CLOCK_SKEW_SECONDS = 30
+
       class << self
         # Primary public interface for creating validated tokens.
         def from_jwt(token_string)
-          return unless Authn::IamAuthService.enabled?
+          unless Authn::IamAuthService.enabled?
+            Gitlab::AuthLogger.info(message: 'IAM JWT authentication attempt when disabled')
+            return
+          end
 
           jwt = strip_access_token_prefix(token_string)
           return unless jwt
 
-          result = ::Authn::IamService::JwtValidationService.new(token: jwt).execute
+          result = validate_jwt(jwt)
           return unless result.success?
 
-          token = from_validated_jwt(result.payload)
+          jwt_payload = result.payload[:jwt_payload]
+          return unless valid_subject?(jwt_payload['sub'])
+
+          token = from_validated_jwt(jwt_payload)
 
           # Check user-scoped feature flag for gradual production rollout
           return unless token&.user
@@ -33,6 +42,29 @@ module Authn
 
         private
 
+        def validate_jwt(jwt)
+          ::Authn::IamService::JwtValidationService.new(
+            token: jwt,
+            jwks: -> { ::Authn::IamService::JwksClient.new.keyset },
+            issuer: Authn::IamAuthService.jwt_issuer,
+            audience: Authn::IamAuthService.jwt_audience,
+            required_claims: REQUIRED_CLAIMS,
+            exp_leeway: CLOCK_SKEW_SECONDS,
+            verify_iat: true
+          ).execute
+        end
+
+        def valid_subject?(sub)
+          user_id = sub.to_i
+          return true if user_id > 0 && user_id.to_s == sub
+
+          Gitlab::AuthLogger.error(
+            message: 'IAM JWT validation failed',
+            Labkit::Fields::ERROR_MESSAGE => 'Invalid token subject'
+          )
+          false
+        end
+
         # Cheap prefix check before expensive JWT validation.
         def strip_access_token_prefix(token_string)
           return unless token_string.is_a?(String) && token_string.start_with?(ACCESS_TOKEN_PREFIX)
@@ -40,9 +72,7 @@ module Authn
           token_string.delete_prefix(ACCESS_TOKEN_PREFIX)
         end
 
-        def from_validated_jwt(validated_data)
-          jwt_payload = validated_data[:jwt_payload]
-
+        def from_validated_jwt(jwt_payload)
           scopes = extract_scopes(jwt_payload)
           scope_user_id = Authn::ScopedUserExtractor.extract_user_id_from_scopes(scopes)
 

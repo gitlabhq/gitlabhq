@@ -1828,14 +1828,27 @@ Key differences from unit tests:
   compatibility.
 - Do not mock child components. The goal is to test how they work
   together.
-- Reset the Apollo cache in `beforeEach` to prevent state from
-  leaking between tests.
+- Reset the Apollo cache in `beforeEach` to prevent state leaking
+  between tests. The test harness also cancels in-flight Apollo
+  operations, as MSW 2 streams response bodies across event-loop
+  ticks and tests can finish mid-read.
 - Do not add `afterEach` cleanup for wrapper destruction or Apollo
   client teardown. The global `test_setup.js` handles router resets,
   wrapper destroy and metadata cleanup.
 - Server lifecycle (`server.listen`, `server.resetHandlers`,
   `server.close`) is handled globally by `test_setup.js`. Do not add
   these calls in individual test files.
+
+### Test isolation for Apollo requests
+
+MSW 2 streams response bodies across multiple event-loop ticks. When a test
+finishes while Apollo is still reading a response, that read can complete
+after the next test has already started, because `cache.reset()` does not
+cancel in-flight requests. Apollo's query deduplication then reuses that
+stale response for the next test's identical query. To prevent this,
+`test_setup.js` calls `clearMountedApolloStores()` in `beforeEach`, which
+cancels in-flight fetches before each test runs. Spec files do not need to
+do anything extra beyond the usual `cache.reset()`.
 
 ### Run MSW integration tests
 

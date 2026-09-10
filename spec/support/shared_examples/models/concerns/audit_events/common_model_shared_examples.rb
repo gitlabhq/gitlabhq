@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'includes ::AuditEvents::CommonModel concern' do
   describe 'associations' do
-    it { is_expected.to belong_to(:user).with_foreign_key(:author_id).inverse_of(:audit_events) }
+    it { is_expected.to belong_to(:user).with_foreign_key(:author_id) }
   end
 
   describe 'validations' do
@@ -53,7 +53,7 @@ RSpec.shared_examples 'includes ::AuditEvents::CommonModel concern' do
 
         context 'when values are not provided' do
           let(:audit_event) do
-            create(:audit_event, field_name => nil, details: {})
+            create(audit_event_symbol, field_name => nil, details: {})
           end
 
           it 'does not set', :aggregate_failures do

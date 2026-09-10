@@ -31,6 +31,12 @@ module Gitlab
         tokens
       end
 
+      def variables
+        return [] unless config_present?
+
+        Array(@config['variables']).map(&:to_s).uniq
+      end
+
       def default_image
         return unless config_present?
 

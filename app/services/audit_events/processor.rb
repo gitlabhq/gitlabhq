@@ -18,11 +18,9 @@ module AuditEvents
     end
 
     def self.fetch_from_id(audit_event_id, model_class)
-      if model_class.present?
-        model_class.constantize.find(audit_event_id)
-      else
-        ::AuditEvent.find_by_id(audit_event_id)
-      end
+      return if model_class.blank?
+
+      model_class.constantize.find(audit_event_id)
     rescue ActiveRecord::RecordNotFound => e
       ::Gitlab::ErrorTracking.track_exception(
         e,

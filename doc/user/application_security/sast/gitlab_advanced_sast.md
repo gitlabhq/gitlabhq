@@ -219,6 +219,38 @@ GitLab Advanced SAST scanning performance is determined primarily by code covera
 resources. To improve GitLab Advanced SAST scan performance, you can tune code coverage and runner
 resources.
 
+### Diagnose scan performance
+
+Find what is slow before you change any settings. GitLab Advanced SAST can produce two timing
+artifacts for each scan, which show where scan time goes. These artifacts are not uploaded by default.
+
+To collect them, add the paths to the job's existing `artifacts` configuration in your
+`.gitlab-ci.yml` file:
+
+```yaml
+gitlab-advanced-sast:
+  artifacts:
+    paths:
+      - '**/scan_metrics.csv'
+      - '**/lightz_times.json'
+    when: always
+```
+
+If you already override `artifacts` for this job (for example, for incremental scanning), add these
+paths to the existing `artifacts.paths` list. Adding a second `gitlab-advanced-sast` block can drop
+other artifacts, such as the SAST report.
+
+`scan_metrics.csv` and `lightz_times.json` contain timing information for each rule and file. You can use
+this information to find which rules and files take the most time to scan. `scan_metrics.csv` is sortable in a
+spreadsheet by its timing column. `lightz_times.json` holds more detailed timing for each file that
+GitLab Support can help interpret. The analyzer produces these artifacts only when the job completes
+successfully. A job that times out does not produce them. If your job is timing out, first raise
+the job [`timeout`](../../../ci/yaml/_index.md#timeout) so a scan can complete, then collect the
+artifacts.
+
+After you identify the slowest rules and files, you can [exclude paths](#exclude-paths) or
+[disable specific rules](customize_rulesets.md#disable-specific-default-gitlab-advanced-sast-rules).
+
 ### Tune code coverage
 
 Code coverage refers to how much of your codebase is analyzed. GitLab Advanced SAST scans all
@@ -266,6 +298,10 @@ contain vulnerabilities.
 When excluding paths, be selective to avoid hiding vulnerabilities. Make changes incrementally and
 test the effect on scan duration after each exclusion.
 
+GitLab Advanced SAST excludes many common paths by default, including tests, `node_modules`,
+`vendor`, and build output. Use `SAST_EXCLUDED_PATHS` for additional paths specific to your
+project that the defaults do not cover.
+
 Consider excluding paths containing the following:
 
 - Database migrations
@@ -277,6 +313,16 @@ Consider excluding paths containing the following:
 - Test data
 - Infrastructure-as-code
 
+To identify exclusion candidates, list your repository's file-type distribution:
+
+```shell
+git ls-files | grep -o '\.[^.]*$' | sort | uniq -c | sort -nr
+```
+
+Bundled UI dependencies are common candidates. For example, excluding `swagger-ui` or
+`swagger-ui-dist/` directories can reduce scan time, because their bundled files inflate it.
+The wildcard pattern `**/*.min.js` also excludes minified content.
+
 Prerequisites:
 
 - The Maintainer or Owner role for the project.
@@ -285,6 +331,15 @@ To exclude paths:
 
 - List the excluded paths in the [`SAST_EXCLUDED_PATHS`](_index.md#vulnerability-filters) CI/CD
   variable.
+
+After you add exclusions, compare the finding count with a previous full scan. A drop can indicate
+that you excluded paths that contained real code. Review what each pattern removed and narrow the
+exclusions if needed.
+
+Finding counts do not map directly to the number of files excluded. Judge by which paths a change
+affected rather than by the totals. Expect some run-to-run variation, because under load, a rule that
+reaches its timeout for each file (`GITLAB_ADVANCED_SAST_RULE_TIMEOUT`) can be skipped.
+A persistent drop tied to specific excluded paths is more likely to indicate lost coverage.
 
 #### Exclude lines
 
@@ -418,6 +473,21 @@ Incremental scanning works like this:
 1. Subsequent scans (warm runs): The analyzer searches previous commits for a successful pipeline
    containing a cache artifact. If found, the cache is fetched and unchanged results are reused.
    After the scan completes, the updated cache is stored as a new artifact.
+
+If the analyzer cannot retrieve the cache, it runs a full scan and you see no improvement in scan
+speed. This can happen when:
+
+- No previous pipeline has a cache artifact yet (for example, on the first run).
+- The cache artifact expired or falls outside `GITLAB_ADV_SAST_INCR_SCAN_SEARCH_PERIOD`.
+- The job was renamed without setting `GITLAB_ADV_SAST_INCR_SCAN_CUSTOM_JOB_NAME`.
+- The cache exceeds the artifact size limit.
+
+If incremental scanning does not improve scan speed, check the job log for a line that starts with
+the following. Read the reason after the colon:
+
+```plaintext
+Failed to retrieve cache, continuing without cache:
+```
 
 ##### Cache invalidation
 
@@ -620,6 +690,13 @@ GitLab Advanced SAST entries. For example:
 [INFO] [GitLab Advanced SAST] [2026-03-30T02:38:09Z] ▶ No Memory limit is detected
 ```
 
+#### Recommended starting point
+
+For a large repository with slow scans, start with several CPU cores and enough memory for 4 GB per
+core. Then adjust based on the scan duration you observe. For an example configuration, see
+[configure runner resource settings](#configure-runner-resource-settings). Set the job
+[`timeout`](../../../ci/yaml/_index.md#timeout) high enough for a first full scan to complete.
+
 #### Configure runner resource settings
 
 You can manually tune the analyzer's CPU and memory settings by using CI/CD variables when:
@@ -655,6 +732,44 @@ variables:
   GITLAB_ADVANCED_SAST_ENABLED: 'true'
   ADVANCED_SAST_AVAILABLE_CPUS: '4'
   ADVANCED_SAST_AVAILABLE_MEMORY: '16384'  # 16 GB for 4 cores
+```
+
+#### Verify runner resource tuning took effect
+
+After you set `ADVANCED_SAST_AVAILABLE_CPUS` or `ADVANCED_SAST_AVAILABLE_MEMORY`, confirm the
+effective values in the `gitlab-advanced-sast` job log. The log reports the detected CPU and, when
+memory is set, the detected memory. For example:
+
+```plaintext
+Detected 2 CPU Cores
+Detected 8192 MB of Memory
+```
+
+If the effective values are lower than you requested:
+
+1. Confirm the runner's actual CPU and memory. The analyzer applies your override as set and does
+   not cap it to the runner's capacity. A value above the real capacity causes resource
+   contention rather than a faster scan. For GitLab-hosted runners, see the
+   [hosted runner specifications](../../../ci/runners/hosted_runners/linux.md). On self-managed
+   runners, check `nproc` and the cgroup limits on the runner host.
+1. Confirm the variable is set at the
+   [correct scope](../../../ci/variables/_index.md#cicd-variable-precedence) and that nothing else
+   overrides it.
+
+By default, the analyzer uses at most one core less than `MAX_UNVERIFIED_CORES` (default `4`), so it
+uses three cores. This behavior can make the job log show a line like the following even when you have
+not changed any settings:
+
+```plaintext
+Detected 8 cores but using 3; set --multi-core or MAX_UNVERIFIED_CORES for more
+```
+
+To use more cores, raise `MAX_UNVERIFIED_CORES`, or request a specific number with `--multi-core`
+through `SAST_SCANNER_ALLOWED_CLI_OPTS`:
+
+```yaml
+variables:
+  SAST_SCANNER_ALLOWED_CLI_OPTS: "--multi-core 6"
 ```
 
 ## Configuration

@@ -6,7 +6,7 @@ RSpec.describe AuditEvents::Processor, feature_category: :audit_events do
   describe '.fetch' do
     context 'when audit_event_json is present' do
       let(:audit_event_json) { { id: 1, details: {} }.to_json }
-      let(:parsed_audit_event) { instance_double(::AuditEvent) }
+      let(:parsed_audit_event) { instance_double(::AuditEvents::GroupAuditEvent) }
 
       it 'processes the JSON and returns an audit event' do
         expect(described_class).to receive(:fetch_from_json).with(audit_event_json).and_return(parsed_audit_event)
@@ -31,7 +31,7 @@ RSpec.describe AuditEvents::Processor, feature_category: :audit_events do
     context 'when both audit_event_id and audit_event_json are provided' do
       let(:audit_event_id) { 1 }
       let(:audit_event_json) { { id: 2, details: {} }.to_json }
-      let(:parsed_audit_event) { instance_double(::AuditEvent) }
+      let(:parsed_audit_event) { instance_double(::AuditEvents::GroupAuditEvent) }
 
       it 'prioritizes audit_event_json and ignores audit_event_id' do
         expect(described_class).to receive(:fetch_from_json).with(audit_event_json).and_return(parsed_audit_event)
@@ -99,13 +99,9 @@ RSpec.describe AuditEvents::Processor, feature_category: :audit_events do
     end
 
     context 'when model class is not provided' do
-      let(:audit_event) { instance_double(::AuditEvent) }
-
-      it 'finds the audit event using the AuditEvent model' do
-        expect(::AuditEvent).to receive(:find_by_id).with(audit_event_id).and_return(audit_event)
-
+      it 'returns nil' do
         result = described_class.fetch_from_id(audit_event_id, nil)
-        expect(result).to eq(audit_event)
+        expect(result).to be_nil
       end
     end
   end

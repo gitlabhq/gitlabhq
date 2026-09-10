@@ -1,0 +1,3 @@
+---
+- retention_window: 90
+- enforcement_strategy: delete_rows

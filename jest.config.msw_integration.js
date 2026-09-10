@@ -19,8 +19,14 @@ const config = baseConfig('spec/frontend/msw_integration', {
   ],
 });
 
+// `msw` dependencies that ship ESM only, so Jest has to transform them.
+const MSW_ESM_DEPENDENCIES = ['rettime', 'until-async', '@open-draft/.*'];
+
 module.exports = {
   ...config,
+  transformIgnorePatterns: config.transformIgnorePatterns.map((pattern) =>
+    pattern.replace('node_modules/(?!(', `node_modules/(?!(${MSW_ESM_DEPENDENCIES.join('|')}|`),
+  ),
   testPathIgnorePatterns: [],
   setupFiles: ['<rootDir>/ee/spec/frontend/msw_integration/polyfills.js'],
   setupFilesAfterEnv: [

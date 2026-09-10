@@ -11,6 +11,7 @@ module Gitlab
       class PolicyRepository
         include EnumeratedAttributeValidation
         include ActionShapeValidation
+        include RoleValidation
 
         REQUIRED_ATTRIBUTES = [:organization_id, :name, :trigger_type].freeze
 

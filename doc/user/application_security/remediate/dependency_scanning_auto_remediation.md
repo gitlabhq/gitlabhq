@@ -150,6 +150,44 @@ auto-remediation has nothing to act on. To generate the lock file, set
 [`RestorePackagesWithLockFile`](https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file)
 in your project file and commit the result.
 
+## Service account permissions
+
+The first time dependency scanning auto-remediation runs on a project, GitLab creates a
+service account for the project named `GitLab Dependency Management`. GitLab reuses this
+account for every subsequent auto-remediation merge request on the project, so each project has
+exactly one.
+
+GitLab adds the service account to the project as a Guest member. This membership makes the
+account a member of the project, but grants no other permission. A dedicated internal role then
+grants the account the following abilities:
+
+- Clone the repository.
+- Push a branch.
+- Create and update merge requests.
+- Create pipelines.
+
+This internal role, not the Guest membership, bounds what the account can do. The
+account holds no broader role because the design grants these abilities directly and narrowly,
+instead of giving an automated account the Developer role on every project that turns the
+feature on. For the full rationale behind this design, see
+[ADR 003: Single service account model](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/automated_dependency_updates/decisions/003_single_service_account/).
+
+Pipelines on auto-remediation merge requests run as this service account. If a job needs
+permissions beyond what that role grants, the job fails, even though the same pipeline succeeds
+when a person with the Developer role runs it. For example:
+
+- Pushing a container image to the project container registry requires the Developer role.
+  Pulling an existing image from the project container registry works with the service
+  account's permissions.
+- Reading the project package registry requires the Reporter role.
+
+A project that uses Auto DevOps hits the container registry case, because the Auto DevOps
+build job pushes an image.
+
+To let these jobs run, a user with at least the Maintainer role can grant the service account
+the Developer role on the project. For instructions, see
+[auto-remediation pipeline jobs fail with permission errors](#auto-remediation-pipeline-jobs-fail-with-permission-errors).
+
 ## Known issues
 
 During the beta phase:
@@ -172,3 +210,29 @@ During the beta phase:
   A `dependency-management/` branch that has no merge request and no commit that changes a
   manifest file indicates that the pipeline did not succeed.
   Check the status of the pipeline on that branch.
+
+## Troubleshooting
+
+### Auto-remediation pipeline jobs fail with permission errors
+
+Pipeline jobs on auto-remediation merge requests run as the `GitLab Dependency Management`
+service account, which gets its abilities from an internal role rather than from the Guest
+role it also holds. This internal role does not cover everything a project pipeline might need.
+For more information, see [service account permissions](#service-account-permissions). A job
+that needs permissions beyond what that role grants fails, even though the same job succeeds
+when a person with the Developer role runs it. The error differs by job. For example, a
+job that pushes an image to the project container registry receives a denial, and a job
+that reads the project package registry receives a `403` error.
+
+To work around this issue, a user with at least the Maintainer role can grant the service
+account the Developer role for the project:
+
+1. In the left sidebar, select **Search or go to** and find your project.
+1. Select **Manage** > **Members**.
+1. Find the `GitLab Dependency Management` member.
+1. Change its role to **Developer**.
+
+This action grants the service account the full Developer role on the project. Make this change
+only if your pipeline needs it. The change applies only to this project. It persists, so subsequent
+auto-remediation merge requests on the project get pipelines that work. Re-run the failed
+pipeline to pick up the change.

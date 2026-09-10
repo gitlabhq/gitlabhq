@@ -12,7 +12,6 @@ Gitlab::Application.config.to_prepare do
 
   Gitlab::Database::Partitioning.register_models(
     [
-      AuditEvent,
       AuditEvents::UserAuditEvent,
       AuditEvents::GroupAuditEvent,
       AuditEvents::ProjectAuditEvent,

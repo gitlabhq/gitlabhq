@@ -82,7 +82,8 @@ RSpec.shared_examples 'work item time tracker' do
     end
   end
 
-  it 'shows time tracking report and removes time log when deleted' do
+  it 'shows time tracking report and removes time log when deleted',
+    quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/44471' } do
     add_comment('/estimate 1w')
     add_comment("/spend 1d #{5.days.ago.strftime('%F')}")
     click_button 'Add time entry'

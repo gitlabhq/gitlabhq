@@ -43,6 +43,7 @@ apply only to that method. All other items apply to all installation methods.
 
 Before upgrading to GitLab 19.4, review the following:
 
+- [19.4.0] - [Geo SSH proxying enabled by default](#geo-ssh-proxying-enabled-by-default)
 - [19.4.0] - [Restores that use `SKIP_REPOSITORIES_PATHS` keep existing repositories](#restores-that-use-skip_repositories_paths-keep-existing-repositories)
 
 ### Upgrade to 19.3
@@ -79,6 +80,31 @@ Before upgrading to GitLab 19.0, review the following:
 ## Upgrade notes
 
 Specific upgrade notes for GitLab 19.
+
+### Geo SSH proxying enabled by default
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+- Affects: Helm charts
+- Affected versions: 19.4.0
+
+In GitLab 19.4 and later, the following feature flags are enabled by default:
+
+- `geo_proxy_fetch_ssh_to_primary`
+- `geo_proxy_push_ssh_to_primary`
+
+Because of this change, Cloud Native GitLab deployments using the bundled NGINX Ingress must either:
+
+- upgrade to use the [Gateway API with Envoy Gateway](#nginx-ingress-replaced-by-gateway-api-with-envoy-gateway) before this rollout, or
+- disable both feature flags after the rollout.
+
+Otherwise, SSH fetches and pushes through Geo secondaries may hang or time out.
+
+See the [Geo troubleshooting documentation](../../administration/geo/replication/troubleshooting/ssh_proxying.md) for SSH proxying for more information.
 
 ### Restores that use `SKIP_REPOSITORIES_PATHS` keep existing repositories
 

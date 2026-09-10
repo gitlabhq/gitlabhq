@@ -86,6 +86,18 @@ RSpec.describe MergeRequests::SquashService, feature_category: :source_code_mana
           expect(merge_request.target_project.repository).not_to have_received(:squash)
         end
       end
+
+      # The commits count comes from the persisted diff, but the commit itself is
+      # resolved through Gitaly, so a pruned object leaves the two disagreeing.
+      context 'and the commit can no longer be resolved' do
+        before do
+          allow(merge_request).to receive(:first_commit).and_return(nil)
+        end
+
+        it 'squashes rather than raising' do
+          expect(result).to match(status: :success, squash_sha: mock_sha)
+        end
+      end
     end
 
     describe 'the squashed commit' do

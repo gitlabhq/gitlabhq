@@ -1,7 +1,6 @@
 ---
 table_name: audit_events
-classes:
-- AuditEvent
+classes: []
 feature_categories:
 - audit_events
 description: Stores audit event records. See also the scope-specific tables user_audit_events,

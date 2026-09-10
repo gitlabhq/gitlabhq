@@ -1,0 +1,8 @@
+---
+retention_window: 90
+enforcement_strategy: delete_rows
+enforcing: true
+pause_mechanism:
+  type: application_setting
+  name: example_retention_enabled
+work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/601405
