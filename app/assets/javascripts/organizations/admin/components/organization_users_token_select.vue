@@ -1,9 +1,8 @@
 <script>
-import { GlAvatar, GlAvatarLabeled, GlSprintf, GlTokenSelector } from '@gitlab/ui';
+import { GlAvatar, GlAvatarLabeled, GlTokenSelector } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
 import { __, s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { isUserEmail } from '~/lib/utils/forms';
 import { memberName, searchUsers } from '~/invite_members/utils/member_utils';
 import { MAX_ORGANIZATION_USER_INVITES, MIN_SEARCH_LENGTH } from '../constants';
 
@@ -15,7 +14,6 @@ export default {
     GlTokenSelector,
     GlAvatar,
     GlAvatarLabeled,
-    GlSprintf,
   },
   inject: ['searchUrl'],
   props: {
@@ -50,9 +48,6 @@ export default {
     };
   },
   computed: {
-    emailIsValid() {
-      return isUserEmail(this.originalInput);
-    },
     placeholderText() {
       return this.selectedTokens.length === 0 ? s__('Organization|Search for users to invite') : '';
     },
@@ -67,9 +62,6 @@ export default {
     noMatchesFoundText() {
       return __('No matches found');
     },
-    inviteTextMessage() {
-      return __('Invite "%{email}" by email');
-    },
     textInputAttrs() {
       return {
         'data-testid': 'organization-users-token-select-input',
@@ -80,7 +72,7 @@ export default {
     hideDropdown() {
       if (this.hasReachedInviteCap) return true;
 
-      return !this.emailIsValid && this.users.length === 0 && !this.loading;
+      return this.users.length === 0 && !this.loading;
     },
   },
   created() {
@@ -157,7 +149,6 @@ export default {
       :state="isValid"
       :dropdown-items="users"
       :loading="loading"
-      :allow-user-defined-tokens="emailIsValid"
       :placeholder="placeholderText"
       :aria-labelledby="ariaLabelledby"
       :text-input-attrs="textInputAttrs"
@@ -188,14 +179,6 @@ export default {
 
       <template #no-results-content>
         {{ noMatchesFoundText }}
-      </template>
-
-      <template #user-defined-token-content="{ inputText: email }">
-        <gl-sprintf :message="inviteTextMessage">
-          <template #email>
-            <span>{{ email }}</span>
-          </template>
-        </gl-sprintf>
       </template>
     </gl-token-selector>
     <p

@@ -251,6 +251,7 @@ When a scanner is specified as an object instead of a string, each scanner type 
 | `severity_levels`          | `array` of `string` | false    | `info`, `unknown`, `low`, `medium`, `high`, `critical`                            | Overrides the rule-level `severity_levels` for this scanner. |
 | `vulnerabilities_allowed`  | `integer`           | false    | Greater than or equal to zero                                                     | Overrides the rule-level `vulnerabilities_allowed` for this scanner. |
 | `vulnerability_attributes` | `object`            | false    | [`vulnerability_attributes`](#vulnerability_attributes-object) object              | Overrides the rule-level `vulnerability_attributes` for this scanner. |
+| `is_malicious`             | `boolean`           | false    | `true`, `false`                                                                   | When `true`, findings from this scanner that are identified as malicious packages are treated as violations, regardless of the `severity_levels` and `vulnerability_states` filters, and even when a finding is dismissed. Valid only for `dependency_scanning`. For more information, see [block malicious packages with the malware rule](#block-malicious-packages-with-the-malware-rule). |
 
 Example using per-scanner criteria:
 
@@ -291,6 +292,66 @@ In this example:
 - **Dependency scanning** requires approval if any critical or high severity vulnerability with a fix available is detected.
 - **Container scanning** requires approval if any critical and known-exploited vulnerability is detected.
 - Each scanner is evaluated independently against its own thresholds. The rule-level `vulnerabilities_allowed: 5` and `severity_levels` serve as defaults for any scanner without explicit overrides.
+
+### Block malicious packages with the malware rule
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19465) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_malware_attribute`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253877) in GitLab 19.4.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Use the `is_malicious` scanner attribute to block merge requests when a scan detects a package
+listed in the
+[GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-malware-advisories).
+Malicious findings carry immediate risk, so they are always treated as violations, even when a
+finding does not match the other criteria in the rule. The rule blocks a malicious finding even when
+the finding is dismissed, or falls outside the `severity_levels` and `vulnerability_states` filters.
+
+The `is_malicious` attribute is valid only for the `dependency_scanning` and `container_scanning`
+scanners. Malicious findings are identified by a `GLAM-` identifier rather than the `CVE` or `CWE`
+identifiers used for other vulnerabilities. Malware advisories cover only the package types
+supported by dependency scanning, so `container_scanning` scanners do not produce malicious
+findings. For the full list of supported package types, see
+[supported package types](../gitlab_advisory_database/_index.md#supported-package-types).
+
+When you set `is_malicious: true` on a scanner, the rule evaluates that scanner as an `OR`
+condition. A merge request is in violation when malware is detected, when a finding matches the
+other rule criteria, or both. For example, the following rule requires approval when dependency
+scanning detects a malicious package, or when dependency scanning detects a finding with a critical
+severity:
+
+```yaml
+rules:
+  - type: scan_finding
+    branches: []
+    scanners:
+      - type: dependency_scanning
+        is_malicious: true
+      - type: dependency_scanning
+    vulnerabilities_allowed: 0
+    severity_levels:
+      - critical
+    vulnerability_states:
+      - new_needs_triage
+```
+
+Malicious findings appear in the merge request policy bot comment as violations, alongside any
+other scan finding violations.
+
+The interaction between the malware rule and [warn mode](#warn-mode) is proposed in [epic 19465](https://gitlab.com/groups/gitlab-org/-/epics/19465).
 
 ## `license_finding` rule type
 

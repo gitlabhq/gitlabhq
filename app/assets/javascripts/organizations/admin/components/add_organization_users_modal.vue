@@ -1,6 +1,5 @@
 <script>
 import { GlModal, GlFormGroup, GlFormSelect, GlAlert, GlSprintf } from '@gitlab/ui';
-import { isUserEmail } from '~/lib/utils/forms';
 import { n__, s__, sprintf } from '~/locale';
 import { memberName } from '~/invite_members/utils/member_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -91,19 +90,14 @@ export default {
       this.selectedTokens = tokens;
     },
     tokenToVariables(token) {
-      // Existing users carry a username; user-defined tokens carry an email in `name`.
-      const identifier = token.username
-        ? { username: token.username }
-        : isUserEmail(token.name) && { email: token.name };
-
-      if (!identifier) {
+      if (!token.username) {
         return null;
       }
 
       return {
         organizationId: this.organizationGid,
         userType: this.selectedUserType,
-        ...identifier,
+        username: token.username,
       };
     },
     async addUser(variables) {
@@ -121,9 +115,7 @@ export default {
       const variables = this.tokenToVariables(token);
 
       if (variables === null) {
-        const validationError = new Error(
-          s__('Organization|Enter an email address or GitLab username.'),
-        );
+        const validationError = new Error(s__('Organization|Select a user to invite.'));
         validationError.isValidationError = true;
         return Promise.reject(validationError);
       }
@@ -266,7 +258,7 @@ export default {
     </gl-alert>
 
     <gl-form-group
-      :label="s__('Organization|Email addresses or GitLab usernames')"
+      :label="s__('Organization|GitLab usernames')"
       label-for="organization-users-token-select"
     >
       <organization-users-token-select

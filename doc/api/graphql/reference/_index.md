@@ -35089,6 +35089,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aigovernancekpi-count"></a>`count` | [`Int`](#int) | Count in the selected timeframe. |
+| <a id="aigovernancekpi-cumulativetrend"></a>`cumulativeTrend` {{< icon name="warning-solid" >}} | [`[AiGovernanceKpiTrendPoint!]`](#aigovernancekpitrendpoint) | Introduced in GitLab 19.4. Status: Experiment. Running totals across the selected timeframe: each bucket is the total as of the end of that bucket, seeded with the 30 days before the timeframe. Agents count from the bucket of their first session in that period onward, so the series is monotonic and its last point can exceed `count`. |
 | <a id="aigovernancekpi-previouscount"></a>`previousCount` | [`Int`](#int) | Count in the preceding timeframe of equal length. |
 | <a id="aigovernancekpi-trend"></a>`trend` | [`[AiGovernanceKpiTrendPoint!]`](#aigovernancekpitrendpoint) | Bucketed counts across the selected timeframe. Each bucket is computed independently, so for distinct-count KPIs such as agents the buckets do not sum to `count`: an agent active on several days is counted once per day here and once in the total. |
 
@@ -47149,6 +47150,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="group-duoworkflowsessionartifacts-agentclass"></a>`agentClass` | [`AiGovernanceAgentClass`](#aigovernanceagentclass) | Filter sessions by agent class. Defaults to all agent classes. |
 | <a id="group-duoworkflowsessionartifacts-not"></a>`not` | [`DuoWorkflowSessionArtifactNegatedFilterInput`](#duoworkflowsessionartifactnegatedfilterinput) | Negated filter conditions. |
 | <a id="group-duoworkflowsessionartifacts-projectpath"></a>`projectPath` | [`String`](#string) | Filter by project full path. |
 | <a id="group-duoworkflowsessionartifacts-triggeredbyuserid"></a>`triggeredByUserId` | [`UserID`](#userid) | Filter to sessions triggered by the user with the given global ID. |
@@ -57862,6 +57864,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="project-duoworkflowsessionartifacts-agentclass"></a>`agentClass` | [`AiGovernanceAgentClass`](#aigovernanceagentclass) | Filter sessions by agent class. Defaults to all agent classes. |
 | <a id="project-duoworkflowsessionartifacts-not"></a>`not` | [`DuoWorkflowSessionArtifactNegatedFilterInput`](#duoworkflowsessionartifactnegatedfilterinput) | Negated filter conditions. |
 | <a id="project-duoworkflowsessionartifacts-triggeredbyuserid"></a>`triggeredByUserId` | [`UserID`](#userid) | Filter to sessions triggered by the user with the given global ID. |
 | <a id="project-duoworkflowsessionartifacts-workflowcreatedafter"></a>`workflowCreatedAfter` | [`Time`](#time) | Return sessions created after the timestamp. |
@@ -79099,6 +79102,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetagentplaninput-content"></a>`content` | [`String`](#string) | Content of the agent plan. |
 | <a id="workitemwidgetagentplaninput-readinessscore"></a>`readinessScore` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Readiness score of the agent plan (0-100). Null when the score is not yet available. Only available when the `workplan_score` feature flag is enabled. |
+| <a id="workitemwidgetagentplaninput-readinessscorefeedback"></a>`readinessScoreFeedback` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Markdown feedback explaining the readiness score. Only available when the `workplan_score` feature flag is enabled. |
 
 ### `WorkItemWidgetAssigneesInput`
 

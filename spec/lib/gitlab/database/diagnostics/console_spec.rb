@@ -3,6 +3,58 @@
 require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Database::Diagnostics::Console, feature_category: :database do
+  describe '.run' do
+    let(:output) { StringIO.new }
+    let(:runner) { instance_double(described_class::Runner, run: 'warning') }
+
+    it 'runs every registered view by default' do
+      expect(described_class::Runner).to receive(:new)
+        .with(database_names: %w[main], views: described_class::VIEWS.values, output: output)
+        .and_return(runner)
+
+      expect(described_class.run(database_names: %w[main], output: output)).to eq('warning')
+    end
+
+    it 'runs only the requested checks' do
+      expect(described_class::Runner).to receive(:new)
+        .with(database_names: %w[main], views: [described_class::Views::SchemaResolution], output: output)
+        .and_return(runner)
+
+      result = described_class.run(database_names: %w[main], check_names: %w[search_path], output: output)
+
+      expect(result).to eq('warning')
+    end
+
+    it 'runs every registered view when check_names is empty' do
+      expect(described_class::Runner).to receive(:new)
+        .with(database_names: %w[main], views: described_class::VIEWS.values, output: output)
+        .and_return(runner)
+
+      described_class.run(database_names: %w[main], check_names: [], output: output)
+    end
+
+    it 'runs a repeated check once' do
+      expect(described_class::Runner).to receive(:new)
+        .with(database_names: %w[main], views: [described_class::Views::SchemaResolution], output: output)
+        .and_return(runner)
+
+      described_class.run(database_names: %w[main], check_names: %w[search_path search_path], output: output)
+    end
+
+    it 'accepts symbol check names' do
+      expect(described_class::Runner).to receive(:new)
+        .with(database_names: %w[main], views: [described_class::Views::SchemaResolution], output: output)
+        .and_return(runner)
+
+      described_class.run(database_names: %w[main], check_names: [:search_path], output: output)
+    end
+
+    it 'raises on an unknown check name' do
+      expect { described_class.run(database_names: %w[main], check_names: %w[nope], output: output) }
+        .to raise_error(described_class::UnknownCheckError, /Unknown check\(s\): nope\. Valid: search_path/)
+    end
+  end
+
   describe '.summarize' do
     where(:counts, :expected) do
       [

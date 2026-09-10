@@ -23956,6 +23956,26 @@
               "deprecationReason": null
             },
             {
+              "name": "cumulativeTrend",
+              "description": "Running totals across the selected timeframe: each bucket is the total as of the end of that bucket, seeded with the 30 days before the timeframe. Agents count from the bucket of their first session in that period onward, so the series is monotonic and its last point can exceed `count`. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AiGovernanceKpiTrendPoint",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "previousCount",
               "description": "Count in the preceding timeframe of equal length.",
               "args": [],
@@ -179588,6 +179608,18 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "agentClass",
+                  "description": "Filter sessions by agent class. Defaults to all agent classes.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiGovernanceAgentClass",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "workflowCreatedAfter",
                   "description": "Return sessions created after the timestamp.",
                   "type": {
@@ -324042,6 +324074,18 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "agentClass",
+                  "description": "Filter sessions by agent class. Defaults to all agent classes.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiGovernanceAgentClass",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "workflowCreatedAfter",
                   "description": "Return sessions created after the timestamp.",
                   "type": {
@@ -456592,6 +456636,18 @@
               "defaultValue": null,
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "readinessScoreFeedback",
+              "description": "Markdown feedback explaining the readiness score. Only available when the `workplan_score` feature flag is enabled. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "interfaces": null,

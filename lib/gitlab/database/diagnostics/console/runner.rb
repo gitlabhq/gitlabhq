@@ -13,7 +13,7 @@ module Gitlab
 
           # interactive: nil auto-detects a terminal, so specs and pipes get the full report.
           def initialize(
-            database_names:, output: $stdout, views: Console::VIEWS, interactive: nil, prompt: nil, pager: nil)
+            database_names:, views:, output: $stdout, interactive: nil, prompt: nil, pager: nil)
             @database_names = database_names
             @printer = Printer.new(output: output)
             @views = views

@@ -40,11 +40,13 @@ GitLab automatically synchronizes these advisories to your GitLab instance in th
 > In [offline environments](../offline_deployments/_index.md), GitLab cannot synchronize these advisories automatically.
 > Instead, you [download them on a machine with internet access](../../../topics/offline/quick_start_guide.md#download-gitlab-malware-advisories) and copy them to the instance.
 
-These advisories serve two purposes:
+These advisories serve three purposes:
 
 - [Dependency scanning](../dependency_scanning/_index.md#dependency-scanning-using-sbom) uses them to create a vulnerability when a pipeline detects a malicious package.
 - [Continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md#malicious-packages)
   uses them to create a vulnerability without requiring a pipeline to run.
+- [Merge request approval policies](../policies/merge_request_approval_policies.md#block-malicious-packages-with-the-malware-rule)
+  use them to block a merge request that introduces a malicious package.
 
 ### Supported package types
 

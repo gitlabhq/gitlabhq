@@ -57436,13 +57436,10 @@ msgstr ""
 msgid "Organization|Drop groups here"
 msgstr ""
 
-msgid "Organization|Email addresses or GitLab usernames"
-msgstr ""
-
-msgid "Organization|Enter an email address or GitLab username."
-msgstr ""
-
 msgid "Organization|Get started with organizations"
+msgstr ""
+
+msgid "Organization|GitLab usernames"
 msgstr ""
 
 msgid "Organization|Go to Artifact Registry"
@@ -57606,6 +57603,9 @@ msgid "Organization|Search for an organization"
 msgstr ""
 
 msgid "Organization|Search for users to invite"
+msgstr ""
+
+msgid "Organization|Select a user to invite."
 msgstr ""
 
 msgid "Organization|Select an organization"
@@ -71096,13 +71096,7 @@ msgstr ""
 msgid "SecretsManagerPermissions|Allow the secrets manager to be enabled in any project or subgroup in this group."
 msgstr ""
 
-msgid "SecretsManagerPermissions|An error occurred while disabling the secrets manager for this namespace."
-msgstr ""
-
 msgid "SecretsManagerPermissions|An error occurred while disabling the secrets manager."
-msgstr ""
-
-msgid "SecretsManagerPermissions|An error occurred while enabling the secrets manager for this namespace."
 msgstr ""
 
 msgid "SecretsManagerPermissions|An error occurred while enabling the secrets manager."
@@ -71201,6 +71195,12 @@ msgstr ""
 msgid "SecretsManagerPermissions|The full path to the group to add. For example, %{example}."
 msgstr ""
 
+msgid "SecretsManagerPermissions|There was a problem disabling GitLab Secrets Manager. Please try again."
+msgstr ""
+
+msgid "SecretsManagerPermissions|There was a problem enabling GitLab Secrets Manager. Please try again."
+msgstr ""
+
 msgid "SecretsManagerPermissions|Write"
 msgstr ""
 
@@ -71276,6 +71276,9 @@ msgstr ""
 msgid "SecretsManager|Are you sure you want to delete secret %{secretName}? This action cannot be undone, and the secret cannot be recovered."
 msgstr ""
 
+msgid "SecretsManager|Are you sure you want to disable GitLab Secrets Manager?"
+msgstr ""
+
 msgid "SecretsManager|Are you sure you want to update secret %{secretName}? Saving these changes could cause disruptions, such as loss of access to connected services or failed deployments, if the value is rejected by the services."
 msgstr ""
 
@@ -71304,6 +71307,9 @@ msgid "SecretsManager|Credits are drawn from your Monthly Commitment Pool first.
 msgstr ""
 
 msgid "SecretsManager|Delete secret"
+msgstr ""
+
+msgid "SecretsManager|Disable"
 msgstr ""
 
 msgid "SecretsManager|Do not close this page until Secrets Manager is finished setting up."
@@ -71369,10 +71375,19 @@ msgstr ""
 msgid "SecretsManager|GitLab Secrets Manager is free during open beta, but will consume %{linkStart}GitLab Credits%{linkEnd} when it becomes generally available. Credits will be consumed only if you opt in. You will receive advance notice before general availability."
 msgstr ""
 
+msgid "SecretsManager|GitLab Secrets Manager will not use GitLab Credits when disabled."
+msgstr ""
+
 msgid "SecretsManager|How does GitLab Secrets Manager use GitLab Credits?"
 msgstr ""
 
 msgid "SecretsManager|How is GitLab Secrets Manager billed?"
+msgstr ""
+
+msgid "SecretsManager|If you have started a free 30-day trial, you can re-enable GitLab Secrets Manager at any time before the end of your trial period."
+msgstr ""
+
+msgid "SecretsManager|Jobs or workloads that fetch secrets will stop working."
 msgstr ""
 
 msgid "SecretsManager|Keep secrets secure with GitLab Secrets Manager"
@@ -71394,6 +71409,9 @@ msgid "SecretsManager|On-demand is enabled"
 msgstr ""
 
 msgid "SecretsManager|Please wait while the secrets manager is enabled."
+msgstr ""
+
+msgid "SecretsManager|Project and group members will only be able to view details or delete existing secrets."
 msgstr ""
 
 msgid "SecretsManager|Protect your organization from potential leaks."
@@ -71472,6 +71490,9 @@ msgid "SecretsManager|There was a problem enabling the GitLab Secrets Manager. T
 msgstr ""
 
 msgid "SecretsManager|This field is required and must be 200 characters or less."
+msgstr ""
+
+msgid "SecretsManager|This will disable GitLab Secrets Manager for all groups and projects in this namespace."
 msgstr ""
 
 msgid "SecretsManager|To confirm, enter %{secretName}:"
@@ -93037,6 +93058,9 @@ msgid "WorkItems|The Type filter URL has been changed. Please update any bookmar
 msgstr ""
 
 msgid "WorkItems|The readiness_score field requires the workplan_score feature flag to be enabled."
+msgstr ""
+
+msgid "WorkItems|The readiness_score_feedback field requires the workplan_score feature flag to be enabled."
 msgstr ""
 
 msgid "WorkItems|Your preferences"

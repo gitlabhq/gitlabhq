@@ -88,13 +88,13 @@ describe('AddOrganizationUsersModal', () => {
   });
 
   describe('when submitting with selected users', () => {
-    it('calls the mutation once per token with username or email', async () => {
+    it('calls the mutation once per token with username', async () => {
       const mutationHandler = jest.fn().mockResolvedValue(successResponse);
       createComponent({ mutationHandler });
 
       selectTokens([
         { id: 1, username: 'user1' },
-        { id: 2, name: 'new@example.com' },
+        { id: 2, username: 'user2' },
       ]);
       submit();
       await waitForPromises();
@@ -104,7 +104,7 @@ describe('AddOrganizationUsersModal', () => {
         input: { organizationId: organizationGid, userType: 'USER', username: 'user1' },
       });
       expect(mutationHandler).toHaveBeenCalledWith({
-        input: { organizationId: organizationGid, userType: 'USER', email: 'new@example.com' },
+        input: { organizationId: organizationGid, userType: 'USER', username: 'user2' },
       });
     });
 
@@ -143,7 +143,7 @@ describe('AddOrganizationUsersModal', () => {
 
       selectTokens([
         { id: 1, username: 'user1' },
-        { id: 2, name: 'user2@example.com' },
+        { id: 2, username: 'user2' },
       ]);
       submit();
       await waitForPromises();
@@ -179,13 +179,13 @@ describe('AddOrganizationUsersModal', () => {
 
       selectTokens([
         { id: 1, username: 'user1' },
-        { id: 2, name: 'bad@example.com' },
+        { id: 2, username: 'user2' },
       ]);
       submit();
       await waitForPromises();
 
       const alertText = findAlert().text();
-      expect(alertText).toContain('bad@example.com: The user could not be found');
+      expect(alertText).toContain('user2: The user could not be found');
       expect(alertText).not.toContain('user1');
     });
 
@@ -198,7 +198,7 @@ describe('AddOrganizationUsersModal', () => {
 
       selectTokens([
         { id: 1, username: 'user1' },
-        { id: 2, name: 'bad@example.com' },
+        { id: 2, username: 'user2' },
       ]);
       submit();
       await waitForPromises();
@@ -215,7 +215,7 @@ describe('AddOrganizationUsersModal', () => {
         .mockResolvedValueOnce(errorResponse);
       createComponent({ mutationHandler });
 
-      const failedToken = { id: 2, name: 'bad@example.com' };
+      const failedToken = { id: 2, username: 'user2' };
       selectTokens([{ id: 1, username: 'user1' }, failedToken]);
       submit();
       await waitForPromises();
@@ -227,7 +227,7 @@ describe('AddOrganizationUsersModal', () => {
       const mutationHandler = jest.fn().mockResolvedValue(errorResponse);
       createComponent({ mutationHandler });
 
-      selectTokens([{ id: 1, name: 'bad@example.com' }]);
+      selectTokens([{ id: 1, username: 'user1' }]);
       submit();
       await waitForPromises();
 
@@ -240,33 +240,31 @@ describe('AddOrganizationUsersModal', () => {
       createComponent({ mutationHandler });
 
       selectTokens([
-        { id: 1, name: 'bad1@example.com' },
-        { id: 2, name: 'bad2@example.com' },
+        { id: 1, username: 'user1' },
+        { id: 2, username: 'user2' },
       ]);
       submit();
       await waitForPromises();
 
       const alertText = findAlert().text();
       expect(mutationHandler).toHaveBeenCalledTimes(2);
-      expect(alertText).toContain('bad1@example.com: The user could not be found');
-      expect(alertText).toContain('bad2@example.com: The user could not be found');
+      expect(alertText).toContain('user1: The user could not be found');
+      expect(alertText).toContain('user2: The user could not be found');
     });
   });
 
-  describe('when a token has neither a username nor a valid email', () => {
+  describe('when a token has no username', () => {
     it('shows a validation error without calling the mutation or Sentry', async () => {
       const mutationHandler = jest.fn().mockResolvedValue(successResponse);
       createComponent({ mutationHandler });
 
-      selectTokens([{ id: 1, name: 'not-an-email' }]);
+      selectTokens([{ id: 1, name: 'No Username' }]);
       submit();
       await waitForPromises();
 
       expect(mutationHandler).not.toHaveBeenCalled();
       expect(Sentry.captureException).not.toHaveBeenCalled();
-      expect(findAlert().text()).toContain(
-        'not-an-email: Enter an email address or GitLab username.',
-      );
+      expect(findAlert().text()).toContain('No Username: Select a user to invite.');
       expect(wrapper.emitted('change')).toBeUndefined();
     });
   });

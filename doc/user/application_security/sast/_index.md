@@ -1092,6 +1092,8 @@ Some analyzers can be customized by using CI/CD variables.
 | CI/CD variable                      | Analyzer             | Default                                  | Description |
 |-------------------------------------|----------------------|------------------------------------------|-------------|
 | `GITLAB_ADVANCED_SAST_ENABLED`      | GitLab Advanced SAST | `false`                                  | Set to `true` to enable GitLab Advanced SAST scanning (available in GitLab Ultimate only). |
+| `GITLAB_ADV_SAST_INCR_SCAN` | GitLab Advanced SAST | `false` | Enable incremental scanning to cache taint signatures between pipeline runs. |
+| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | GitLab Advanced SAST | `true` | Set to `false` to turn off incremental scanning for the Swift and Objective-C (`gitlab-advanced-sast-ext`) analyzers. This variable is enabled by default and has no effect on repositories without Swift or Objective-C files. |
 | `SCAN_KUBERNETES_MANIFESTS`         | Kubesec              | `"false"`                                | Set to `"true"` to scan Kubernetes manifests. |
 | `KUBESEC_HELM_CHARTS_PATH`          | Kubesec              |                                          | Optional path to Helm charts that `helm` uses to generate a Kubernetes manifest that `kubesec` scans. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
 | `KUBESEC_HELM_OPTIONS`              | Kubesec              |                                          | Additional arguments for the `helm` executable. |

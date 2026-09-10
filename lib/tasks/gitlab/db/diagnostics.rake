@@ -6,22 +6,17 @@ namespace :gitlab do
     # gitlab:db:validate_schema, whose 0/1/2 the omnibus upgrade gate consumes.
     desc 'GitLab | DB | Report database diagnostics on the console'
     task :diagnostics, [:database_names] => :environment do |_, args|
-      # Rake splits `[main,ci]` on commas, so later names land in `extras`.
-      requested = [args[:database_names], *args.extras].compact.map(&:strip).reject(&:empty?)
+      Gitlab::Database::Diagnostics::RakeTask.run(args)
+    end
 
-      valid_names = Gitlab::Database.database_base_models.keys
-      unknown = requested - valid_names
-      abort("Unknown database(s): #{unknown.join(', ')}. Valid: #{valid_names.join(', ')}.") if unknown.any?
-
-      # Skip shared connections, or a single-cluster install reports the same database repeatedly.
-      database_names = requested.presence || Gitlab::Database.database_base_models
-        .reject { |_, model| Gitlab::Database.db_config_share_with(model.connection_db_config) }
-        .keys
-
-      result = Gitlab::Database::Diagnostics::Console.run(database_names: database_names)
-
-      if result == Gitlab::Database::Diagnostics::Findings::ERROR
-        abort('Database diagnostics found errors. Review the output above.')
+    namespace :diagnostics do
+      # Zeitwerk is not loaded yet, so the Diagnostics::Console::VIEWS registry
+      # keys are repeated here. The rake spec fails when the two lists drift.
+      %w[search_path autovacuum_settings].each do |check_name|
+        desc "GitLab | DB | Report #{check_name.tr('_', ' ')} diagnostics on the console"
+        task check_name, [:database_names] => :environment do |_, args|
+          Gitlab::Database::Diagnostics::RakeTask.run(args, check_name: check_name)
+        end
       end
     end
   end
