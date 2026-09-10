@@ -1091,7 +1091,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     describe '#user_with_password_for_git' do
-      let_it_be(:user) { create(:omniauth_user, :ldap) }
+      let_it_be(:user, freeze: false) { create(:omniauth_user, :ldap) }
       let_it_be(:ldap_username) { user.username }
       let_it_be(:password) { user.password }
 

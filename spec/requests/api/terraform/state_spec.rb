@@ -597,6 +597,29 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
         end
       end
     end
+
+    context 'when Workhorse did not rewrite the file param (route-matching bypass)' do
+      let(:leaked_file) { Tempfile.new('leaked-terraform-state') }
+
+      subject(:request) do
+        post api(state_path), params: { file: '', 'file.path' => leaked_file.path }, headers: auth_header
+      end
+
+      before do
+        leaked_file.write({ serial: 999, secret: 'leaked' }.to_json)
+        leaked_file.close
+      end
+
+      after do
+        leaked_file.unlink
+      end
+
+      it 'does not read the attacker-supplied file.path param', :aggregate_failures do
+        expect { request }.not_to change { state.reload.versions.count }
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/terraform/state/:name' do

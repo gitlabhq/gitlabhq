@@ -160,9 +160,11 @@ module API
             authorize! :admin_terraform_state, user_project
             check_terraform_state_protection!
 
-            # Direct upload is not supported, so we should have access to the file.
-            file_path = params['file.path']
-            unprocessable_entity!('Terraform state file not found on disk') unless File.exist?(file_path)
+            # Read the path from the Workhorse-verified UploadedFile, not the raw
+            # 'file.path' param, which is attacker-controlled if Workhorse's
+            # multipart preprocessing was bypassed.
+            file_path = params[:file]&.path
+            unprocessable_entity!('Terraform state file not found on disk') unless file_path && File.exist?(file_path)
             data = File.read(file_path)
 
             no_content! if data.empty?

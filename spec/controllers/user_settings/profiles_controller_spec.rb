@@ -183,15 +183,15 @@ RSpec.describe UserSettings::ProfilesController, :request_store, feature_categor
     end
 
     context 'for email OTP enrollment' do
-      context 'when the current password is not required' do
-        it 'allows enabling email OTP', :aggregate_failures, :freeze_time do
+      context 'when web password authentication is disabled' do
+        it 'does not enroll the user in email OTP', :aggregate_failures, :freeze_time do
           stub_application_setting(password_authentication_enabled_for_web?: false)
 
           sign_in(user)
 
           put :update, params: { user: { email_otp_required_as_boolean: true }, current_password: password }
 
-          expect(user.reload.email_otp_required_after).to eq(Time.current)
+          expect(user.reload.email_otp_required_after).to be_nil
           expect(response).to have_gitlab_http_status(:found)
         end
       end

@@ -1,5 +1,6 @@
 import { Node } from '@tiptap/core';
 import { VueNodeViewRenderer } from '@tiptap/vue-2';
+import { isIframeSrcAllowed } from '~/behaviors/markdown/render_iframe';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 import IframeWrapper from '../components/wrappers/iframe.vue';
 
@@ -59,6 +60,7 @@ export default Node.create({
         getAttrs: (element) => {
           const img = element.querySelector('img.js-render-iframe');
           if (!img) return false;
+          if (!isIframeSrcAllowed(img.getAttribute('src'))) return false;
           return null;
         },
       },

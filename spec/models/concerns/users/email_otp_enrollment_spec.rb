@@ -172,6 +172,14 @@ RSpec.describe Users::EmailOtpEnrollment, feature_category: :system_access do
 
     it { is_expected.to be true }
 
+    context 'when user is not allowed to use password authentication for web' do
+      before do
+        allow(user).to receive(:allow_password_authentication_for_web?).and_return(false)
+      end
+
+      it { is_expected.to be false }
+    end
+
     context 'when user does not use a password' do
       before do
         allow(user).to receive(:password_automatically_set).and_return(true)
@@ -243,6 +251,52 @@ RSpec.describe Users::EmailOtpEnrollment, feature_category: :system_access do
 
         it 'sets it to now' do
           expect { set_email_otp }.to change { user.email_otp_required_after }.to(Time.current)
+        end
+      end
+    end
+
+    context 'when user is not allowed to use password authentication for web' do
+      before do
+        allow(user).to receive(:allow_password_authentication_for_web?).and_return(false)
+      end
+
+      context 'when email_otp_required_after is being changed from a value to nil' do
+        let(:new_email_otp_required_after) { nil }
+
+        it 'allows it' do
+          expect { set_email_otp }.to change { user.email_otp_required_after }.to(nil)
+        end
+      end
+
+      context 'when email_otp_required_after is being changed to a value' do
+        let(:email_otp_required_after) { nil }
+        let(:new_email_otp_required_after) { Time.current }
+
+        it 'does not allow it' do
+          expect { set_email_otp }.to not_change { user.email_otp_required_after }
+        end
+      end
+    end
+
+    context 'when the password was automatically set for user' do
+      before do
+        allow(user).to receive(:password_automatically_set?).and_return(true)
+      end
+
+      context 'when email_otp_required_after is being changed from a value to nil' do
+        let(:new_email_otp_required_after) { nil }
+
+        it 'allows it' do
+          expect { set_email_otp }.to change { user.email_otp_required_after }.to(nil)
+        end
+      end
+
+      context 'when email_otp_required_after is being changed to a value' do
+        let(:email_otp_required_after) { nil }
+        let(:new_email_otp_required_after) { Time.current }
+
+        it 'does not allow it' do
+          expect { set_email_otp }.to not_change { user.email_otp_required_after }
         end
       end
     end

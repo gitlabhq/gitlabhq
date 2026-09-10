@@ -1,11 +1,15 @@
 <script>
 import { GlTable, GlFormInput } from '@gitlab/ui';
-import { memoize } from 'lodash-es';
+import { isObject, memoize, omit } from 'lodash-es';
 import { __ } from '~/locale';
 import { sanitize, defaultConfig } from '~/lib/dompurify';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 const domParser = new DOMParser();
+
+// Corresponds to node_modules/@gitlab/ui/dist/vendor/bootstrap-vue/src/components/table/helpers/constants.js's
+// IGNORED_FIELD_KEYS.
+const RESERVED_ITEM_KEYS = ['_cellVariants', '_rowVariant', '_showDetails'];
 
 export default {
   name: 'JsonTable',
@@ -47,6 +51,9 @@ export default {
     };
   },
   computed: {
+    cleanedItems() {
+      return this.items.map((item) => (isObject(item) ? omit(item, RESERVED_ITEM_KEYS) : item));
+    },
     cleanedFields() {
       return this.fields.map((field) => {
         if (typeof field === 'string') {
@@ -89,7 +96,7 @@ export default {
     />
     <gl-table
       :fields="cleanedFields"
-      :items="items"
+      :items="cleanedItems"
       :filter="filterInput"
       show-empty
       class="!gl-mt-0"

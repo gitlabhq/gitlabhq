@@ -142,8 +142,9 @@ module MergeRequests
       { project: value }
     end
 
-    def refresh_pipelines_on_merge_requests(merge_request, allow_duplicate: false)
-      create_pipeline_for(merge_request, current_user, async: true, allow_duplicate: allow_duplicate)
+    def refresh_pipelines_on_merge_requests(merge_request, allow_duplicate: false, checkout_sha: nil)
+      create_pipeline_for(merge_request, current_user, async: true, allow_duplicate: allow_duplicate,
+        checkout_sha: checkout_sha)
     end
 
     def enqueue_jira_connect_messages_for(merge_request)
@@ -246,8 +247,11 @@ module MergeRequests
         merge_request, merge_request.project, current_user, old_reviewers)
     end
 
-    def create_pipeline_for(merge_request, user, async: false, allow_duplicate: false)
-      create_pipeline_params = params.slice(:push_options, :gitaly_context).merge(allow_duplicate: allow_duplicate)
+    def create_pipeline_for(merge_request, user, async: false, allow_duplicate: false, checkout_sha: nil)
+      create_pipeline_params = params.slice(:push_options, :gitaly_context).merge(
+        allow_duplicate: allow_duplicate,
+        checkout_sha: checkout_sha
+      )
       service = MergeRequests::CreatePipelineService.new(
         project: project, current_user: user, params: create_pipeline_params
       )

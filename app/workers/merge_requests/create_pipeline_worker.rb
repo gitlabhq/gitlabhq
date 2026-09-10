@@ -48,6 +48,7 @@ module MergeRequests
       push_options = params.with_indifferent_access[:push_options]
       gitaly_context = params.with_indifferent_access[:gitaly_context]
       defer_request_completion = params.with_indifferent_access[:defer_request_completion]
+      checkout_sha = params.with_indifferent_access[:checkout_sha]
 
       result = MergeRequests::CreatePipelineService
         .new(
@@ -58,7 +59,8 @@ module MergeRequests
             pipeline_creation_request: pipeline_creation_request,
             push_options: push_options,
             gitaly_context: gitaly_context,
-            defer_request_completion: defer_request_completion
+            defer_request_completion: defer_request_completion,
+            checkout_sha: checkout_sha
           }
         ).execute(merge_request)
 
