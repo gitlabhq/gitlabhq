@@ -61,7 +61,8 @@ module Ci
 
     with_score 20
     condition(:read_runners_in_any_associated_projects) do
-      next true if can_admin_runners_in_owner_scope?
+      # doc/ci/runners/runners_scope.md#project-runner-ownership
+      next true if can_admin_runner?
 
       # Check if runner is associated to any projects where user has read_runners permission
       DeclarativePolicy.user_scope do
@@ -69,12 +70,6 @@ module Ci
           can?(:read_runners, project)
         end
       end
-    end
-
-    condition(:can_admin_runners_in_owner_scope) do
-      # Check if user can admin runners in the scope owning the runner
-      # doc/ci/runners/runners_scope.md#project-runner-ownership
-      can?(:admin_runners, @subject.owner)
     end
 
     with_score 20
@@ -120,10 +115,6 @@ module Ci
     # doc/user/permissions.md#cicd
     rule { is_project_runner & read_runners_in_any_associated_projects }.policy do
       enable :read_runner
-    end
-
-    rule { is_project_runner & can_admin_runners_in_owner_scope }.policy do
-      enable :update_runner
     end
 
     # Admins or users with a custom admin role that grants the ability to read CI/CD

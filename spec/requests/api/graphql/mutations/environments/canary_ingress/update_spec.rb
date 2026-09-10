@@ -37,5 +37,11 @@ RSpec.describe 'Update Environment Canary Ingress', :clean_gitlab_redis_cache, f
       expect(graphql_mutation_response(:environments_canary_ingress_update)['errors'])
         .to be_empty
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_environment do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
   end
 end

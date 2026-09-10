@@ -118,12 +118,12 @@ CREATE TABLE ai_usage_events
     `event` UInt16,
     `timestamp` DateTime64(6, 'UTC'),
     `namespace_path` String DEFAULT '0/',
-    `extras` String DEFAULT '{}',
-    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3))
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `extras` String DEFAULT '{}'
 )
 ENGINE = ReplacingMergeTree
 PARTITION BY toYYYYMM(timestamp)
-ORDER BY (namespace_path, event, timestamp, user_id)
+ORDER BY (traversal_path, event, timestamp, user_id)
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE ai_usage_events_daily
@@ -137,6 +137,20 @@ CREATE TABLE ai_usage_events_daily
 ENGINE = SummingMergeTree
 PARTITION BY toYear(date)
 ORDER BY (namespace_path, date, event, user_id)
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE ai_usage_events_tmp
+(
+    `user_id` UInt64,
+    `event` UInt16,
+    `timestamp` DateTime64(6, 'UTC'),
+    `namespace_path` String DEFAULT '0/',
+    `extras` String DEFAULT '{}',
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3))
+)
+ENGINE = ReplacingMergeTree
+PARTITION BY toYYYYMM(timestamp)
+ORDER BY (namespace_path, event, timestamp, user_id)
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE ci_finished_builds
@@ -1201,6 +1215,7 @@ CREATE TABLE siphon_duo_workflows_workflows
     `source_link` Nullable(String),
     `execution_mode` Nullable(Int16),
     `trigger_flow_schedule_id` Nullable(Int64),
+    `trigger_event_type` Nullable(Int16),
     INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1,
     PROJECTION pg_pkey_ordered
     (

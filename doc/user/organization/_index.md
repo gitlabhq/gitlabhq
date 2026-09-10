@@ -46,25 +46,68 @@ see [epic 9265](https://gitlab.com/groups/gitlab-org/-/epics/9265).
 
 {{< /history >}}
 
-1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New organization**.
-1. In the **Organization name** text box, enter a name for the organization.
-1. In the **Organization URL** text box, enter a path for the organization.
-1. In the **Organization description** text box, enter a description for the organization. Supports a [limited subset of Markdown](#supported-markdown-for-organization-description).
-1. In the **Organization avatar** field, select **Upload** or drag and drop an avatar.
-1. Select **Create organization**.
+You create an organization from one of your existing top-level groups. During this process you can also move your other top-level groups into the organization.
 
-## Switch organizations
+Prerequisites:
 
-{{< history >}}
+- You must have the Owner role for the top-level group you start from, and for any other top-level groups you want to include.
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440741) in GitLab 16.11 [with a feature flag](../../administration/feature_flags/_index.md) named `organization_switching`. Disabled by default.
+Create an organization from an existing top-level group.
+After you create your organization, all of your groups,
+projects, and users are transferred from the top-level
+group into your organization.
 
-{{< /history >}}
+If you have the Owner role for multiple top-level groups,
+you can optionally transfer those top-level groups into the
+organization.
 
-If you are a member of multiple organizations, you can switch between them. To switch organizations:
+Prerequisites:
 
-1. In the left sidebar, at the top, select the **Current organization** dropdown list.
-1. Select the organization you want to switch to.
+- The Owner role for any top-level groups you want to transfer to an organization.
+
+To create an organization:
+
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Advanced**.
+1. In the **Create an organization** section, select **Create organization**.
+1. In the **Create your Organizations** confirmation dialog, select the group you want to create an organization with, then select **Continue**.
+1. If you have the Owner role for multiple top-level groups (if you do not have multiple top-level groups, skip this step):
+   - In the **Assign top-level groups** confirmation dialog, drag top-level groups into the organization container to assign them. Groups you do not assign are not included in the organization.
+   - Select **Continue**.
+1. In the **Confirm your organization** confirmation dialog, review the proposed organization structure. After you confirm your organization structure, you cannot delete the organization or remove or add top-level groups.
+1. Select **Confirm**.
+
+> [!note]
+> After you confirm your organization structure, you cannot delete the organization or remove or
+> add top-level groups yourself. [Contact support](https://support.gitlab.com/) if you must make changes.
+
+After you confirm your organization structure:
+
+- Your groups, projects, and users are transferred into the
+organization asynchronously. You receive an email when the organization is ready. Larger groups might
+take longer to transfer.
+- Any users with the Owner role for top-level groups 
+assigned to the organization automatically become Organization Administrators. You can make changes to roles and permissions in **Organization settings**.
+
+When the organization is ready, you can:
+
+- Access your organization in the UI or
+from the link in the notification email.
+- Rename the organization, change its URL,
+and manage organization roles and permissions.
+
+## Go to your organization
+
+Prerequisites:
+
+- An organization is available.
+
+If you are a member of one or more organizations, you can go to any of them from the
+**Organizations** page. To access an organization:
+
+1. In the left sidebar, select **Organizations**.
+1. From the list, select the organization you want to go to.
 
 ## Supported Markdown for Organization description
 

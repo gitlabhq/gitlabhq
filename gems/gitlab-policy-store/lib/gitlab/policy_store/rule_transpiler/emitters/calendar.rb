@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "json"
-
 module Gitlab
   module PolicyStore
     class RuleTranspiler
       module Emitters
         class Calendar < Base
+          include JsonBytesize
+
           def initialize(rule_index:, value:, invalid:, reported_value:, max_projected_bytes:)
             super(rule_index: rule_index, value: value, invalid: invalid, reported_value: reported_value)
 
@@ -38,13 +38,14 @@ module Gitlab
             total = 0
 
             authored_windows.uniq.each do |window|
-              total += JSON.generate(window).bytesize
+              bytesize = json_bytesize(window)
+              return nil if bytesize.nil?
+
+              total += bytesize
               break if total > max_projected_bytes
             end
 
             total
-          rescue JSON::JSONError, Encoding::UndefinedConversionError
-            nil
           end
 
           def calendar_details

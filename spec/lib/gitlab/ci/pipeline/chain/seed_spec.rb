@@ -36,6 +36,28 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed, feature_category: :pipeline_co
       expect(pipeline.ci_ref).to be_present
     end
 
+    context 'when the command is readonly' do
+      shared_examples 'skips IID allocation' do
+        it 'does not allocate an IID' do
+          expect(pipeline).not_to receive(:ensure_project_iid!)
+
+          run_chain
+        end
+      end
+
+      context 'when it is a dry run' do
+        let(:command) { initialize_command(dry_run: true) }
+
+        it_behaves_like 'skips IID allocation'
+      end
+
+      context 'when it is linting' do
+        let(:command) { initialize_command(linting: true) }
+
+        it_behaves_like 'skips IID allocation'
+      end
+    end
+
     it 'sets the seeds in the command object' do
       run_chain
 
@@ -309,12 +331,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed, feature_category: :pipeline_co
 
   private
 
-  def initialize_command
+  def initialize_command(dry_run: false, linting: false)
     Gitlab::Ci::Pipeline::Chain::Command.new(
       project: project,
       current_user: user,
       origin_ref: 'master',
-      seeds_block: seeds_block
+      seeds_block: seeds_block,
+      dry_run: dry_run,
+      linting: linting
     )
   end
 end

@@ -17,8 +17,7 @@ module Gitlab
             def dimensions_mapping
               {
                 column: DimensionDefinition,
-                date_bucket: DateBucketDimension,
-                tier: TierDimension
+                date_bucket: DateBucketDimension
               }
             end
 

@@ -129,3 +129,5 @@ columns:
   type: Nullable(Int16)
 - name: trigger_flow_schedule_id
   type: Nullable(Int64)
+- name: trigger_event_type
+  type: Nullable(Int16)

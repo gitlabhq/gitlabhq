@@ -3422,19 +3422,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -3449,8 +3449,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -4067,19 +4067,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -4094,8 +4094,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -6107,19 +6107,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -6134,8 +6134,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -34312,54 +34312,6 @@
                   "defaultValue": null,
                   "isDeprecated": false,
                   "deprecationReason": null
-                },
-                {
-                  "name": "flowTypesUsedFrom",
-                  "description": "Filter by the number of distinct flow types the user ran in the selected period. Start of the range.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "flowTypesUsedTo",
-                  "description": "Filter by the number of distinct flow types the user ran in the selected period. End of the range.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "activeDaysFrom",
-                  "description": "Filter by the number of distinct days the user created flows in the selected period. Start of the range.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "activeDaysTo",
-                  "description": "Filter by the number of distinct days the user created flows in the selected period. End of the range.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
                 }
               ],
               "type": {
@@ -49053,19 +49005,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -49080,8 +49032,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -49698,19 +49650,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -49725,8 +49677,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -51747,19 +51699,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -51774,8 +51726,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -113117,19 +113069,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -113144,8 +113096,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -113762,19 +113714,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -113789,8 +113741,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -114411,19 +114363,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -114438,8 +114390,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -116717,19 +116669,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -116744,8 +116696,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -149714,39 +149666,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "UserCore",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "userTier",
-              "description": "User activity tier, bucketing users by their number of flows in the selected period using the `thresholds` argument",
-              "args": [
-                {
-                  "name": "thresholds",
-                  "description": "Ascending tier boundaries. Values below the first threshold map to `tier_0`, values at or above the last threshold map to the highest tier.",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "Int",
-                        "ofType": null
-                      }
-                    }
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                }
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -183939,19 +183858,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -183966,8 +183885,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -232337,19 +232256,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -232364,8 +232283,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -232982,19 +232901,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -233009,8 +232928,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -235010,19 +234929,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -235037,8 +234956,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -236880,19 +236799,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -236907,8 +236826,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -237525,19 +237444,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -237552,8 +237471,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -239553,19 +239472,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -239580,8 +239499,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -242997,19 +242916,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -243024,8 +242943,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -243642,19 +243561,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -243669,8 +243588,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -245670,19 +245589,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -245697,8 +245616,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -247986,19 +247905,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -248013,8 +247932,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -248631,19 +248550,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -248658,8 +248577,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -250659,19 +250578,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -250686,8 +250605,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -329660,19 +329579,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -329687,8 +329606,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -362075,19 +361994,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -362102,8 +362021,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -380484,6 +380403,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "severityLevel",
+              "description": "Minimum vulnerability severity that triggers false positive detection. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "VulnerabilitySeverity",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             }
           ],
           "inputFields": null,
@@ -388166,6 +388097,18 @@
           "description": "Configuration for the secret detection false positive detection trigger of a triage and remediation scan profile.",
           "fields": null,
           "inputFields": [
+            {
+              "name": "severityLevel",
+              "description": "Minimum vulnerability severity that triggers false positive detection. Findings below this threshold are skipped. Introduced in GitLab 19.4: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "VulnerabilitySeverity",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
             {
               "name": "runMode",
               "description": "Whether false positive detection runs automatically or only when triggered by a user. Introduced in GitLab 19.4: Status: Experiment.",
@@ -414818,19 +414761,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -414845,8 +414788,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -415463,19 +415406,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -415490,8 +415433,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -417459,19 +417402,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -417486,8 +417429,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -421116,19 +421059,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -421143,8 +421086,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -421761,19 +421704,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -421788,8 +421731,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",
@@ -423777,19 +423720,19 @@
                 },
                 {
                   "name": "reviewState",
-                  "description": "Reviewer state of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer state of the merge request.",
                   "type": {
                     "kind": "ENUM",
                     "name": "MergeRequestReviewState",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "reviewStates",
-                  "description": "Reviewer states of the merge request. Introduced in GitLab 17.0: Status: Experiment.",
+                  "description": "Reviewer states of the merge request.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -423804,8 +423747,8 @@
                     }
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "sort",

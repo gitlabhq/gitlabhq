@@ -3,6 +3,10 @@
 class CohortsService
   MONTHS_INCLUDED = 12
 
+  def initialize(organization: nil)
+    @organization = organization
+  end
+
   def execute
     {
       months_included: MONTHS_INCLUDED,
@@ -47,6 +51,8 @@ class CohortsService
 
   private
 
+  attr_reader :organization
+
   # Calculate a running sum of active users, so users active in later months
   # count as active in this month, too. Start with the most recent month first,
   # for calculating the running totals, and then reverse for displaying in the
@@ -85,8 +91,8 @@ class CohortsService
         created_at_month = column_to_date('created_at')
         last_activity_on_month = column_to_date('last_activity_on')
 
-        User
-          .where('created_at > ?', MONTHS_INCLUDED.months.ago.end_of_month)
+        users_scope
+          .where('users.created_at > ?', MONTHS_INCLUDED.months.ago.end_of_month)
           .group(created_at_month, last_activity_on_month)
           .reorder(Arel.sql("#{created_at_month} ASC, #{last_activity_on_month} ASC"))
           .count
@@ -95,6 +101,12 @@ class CohortsService
   # rubocop: enable CodeReuse/ActiveRecord
 
   def column_to_date(column)
-    "CAST(DATE_TRUNC('month', #{column}) AS date)"
+    "CAST(DATE_TRUNC('month', users.#{column}) AS date)"
+  end
+
+  def users_scope
+    return User.all unless organization
+
+    User.member_of_organization(organization)
   end
 end

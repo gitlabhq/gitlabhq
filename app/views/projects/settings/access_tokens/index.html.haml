@@ -3,19 +3,24 @@
 - type = _('project access token')
 
 = render ::Layouts::SettingsSectionComponent.new(page_title) do |c|
-  - c.with_description do
-    - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/settings/project_access_tokens.md') }
-    - if current_user.can?(:create_resource_access_tokens, @project)
-      = _('Generate project access tokens scoped to this project for your applications that need access to the GitLab API.')
-      = _('You can also use project access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}').html_safe % { link_start: help_link_start, link_end: '</a>'.html_safe }
-    - else
-      = _('Project access token creation is disabled in this group.')
-      - root_group = @project.group.root_ancestor
-      - if current_user.can?(:admin_group, root_group)
-        - link = link_to('', edit_group_path(root_group), target: '_blank', rel: 'noopener noreferrer')
-        = safe_format(_('You can enable project access token creation in %{link_start}group settings%{link_end}.'), tag_pair(link, :link_start, :link_end))
-      = html_escape(_('You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}')) % { link_start: help_link_start, link_end: '</a>'.html_safe }
+  - show_upgrade_card = show_project_access_token_upgrade_card?(@project)
+  - unless show_upgrade_card
+    - c.with_description do
+      - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/settings/project_access_tokens.md') }
+      - if current_user.can?(:create_resource_access_tokens, @project)
+        = _('Generate project access tokens scoped to this project for your applications that need access to the GitLab API.')
+        = _('You can also use project access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}').html_safe % { link_start: help_link_start, link_end: '</a>'.html_safe }
+      - else
+        = _('Project access token creation is disabled in this group.')
+        - root_group = @project.group.root_ancestor
+        - if current_user.can?(:admin_group, root_group)
+          - link = link_to('', edit_group_path(root_group), target: '_blank', rel: 'noopener noreferrer')
+          = safe_format(_('You can enable project access token creation in %{link_start}group settings%{link_end}.'), tag_pair(link, :link_start, :link_end))
+        = html_escape(_('You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}')) % { link_start: help_link_start, link_end: '</a>'.html_safe }
   - c.with_body do
+    - if show_upgrade_card
+      = render_if_exists 'projects/settings/access_tokens/upgrade_card', project: @project
+
     #js-new-access-token-app{ data: { access_token_type: type } }
 
     = render ::Layouts::CrudComponent.new(_('Active project access tokens'),

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Admin::Organizations::UsersController, feature_category: :organization do
   let_it_be(:organization) { create(:common_organization) }
+  let_it_be(:other_organization) { create(:organization) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:organization_owner) { create(:user, :organization_owner) }
   let_it_be(:regular_user) { create(:user) }
@@ -12,19 +13,17 @@ RSpec.describe Admin::Organizations::UsersController, feature_category: :organiz
   describe 'GET #index' do
     subject(:request) { get organization_admin_users_path(organization) }
 
+    let(:other_organization_request) { get organization_admin_users_path(other_organization) }
+
+    it_behaves_like 'an organization admin area request'
+
     context 'when user is an organization owner' do
       before do
         sign_in(organization_owner)
       end
 
-      it 'renders the index' do
-        request
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-
       it 'scopes the listed users to members of the organization' do
-        non_member = create(:user, organization: create(:organization))
+        non_member = create(:user, organization: create(:organization), username: 'non-member-scope-test')
 
         request
 
@@ -36,6 +35,12 @@ RSpec.describe Admin::Organizations::UsersController, feature_category: :organiz
         request
 
         expect(response.body).to include('js-admin-add-organization-users')
+      end
+
+      it 'renders the Cohorts tab scoped to the organization' do
+        request
+
+        expect(response.body).to include(organization_admin_cohorts_path(organization))
       end
 
       context 'when the user cannot create an organization user' do
@@ -53,28 +58,6 @@ RSpec.describe Admin::Organizations::UsersController, feature_category: :organiz
           expect(response.body).not_to include('js-admin-add-organization-users')
         end
       end
-
-      context 'when the org_admin_area flag is disabled' do
-        before do
-          stub_organization_release(org_admin_area: false)
-        end
-
-        it 'denies access' do
-          request
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
-      context 'when accessing another organization admin path' do
-        let_it_be(:other_organization) { create(:organization) }
-
-        it 'denies access' do
-          get organization_admin_users_path(other_organization)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
     end
 
     context 'when user is an instance admin', :enable_admin_mode do
@@ -86,26 +69,6 @@ RSpec.describe Admin::Organizations::UsersController, feature_category: :organiz
         request
 
         expect(response).to have_gitlab_http_status(:ok)
-      end
-    end
-
-    context 'when user is a regular user' do
-      before do
-        sign_in(regular_user)
-      end
-
-      it 'denies access' do
-        request
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'when user is not authenticated' do
-      it 'redirects to sign in' do
-        request
-
-        expect(response).to have_gitlab_http_status(:found)
       end
     end
   end

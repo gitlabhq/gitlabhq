@@ -219,6 +219,20 @@ RSpec.describe Mcp::Tools::Projects::ListProjectsTool, feature_category: :mcp_se
       )
     end
 
+    it 'unwraps project ids to numeric integers that chain back into project_id', :aggregate_failures do
+      node = tool.execute[:structuredContent]['nodes']
+        .find { |project| project['fullPath'] == project_mine_outside.full_path }
+
+      expect(node['id']).to eq(project_mine_outside.id)
+      expect(node['id']).to be_an(Integer)
+    end
+
+    it 'unwraps project ids on the subgroup-recursive group branch too' do
+      result = described_class.new(current_user: user, params: { group_id: group.full_path }).execute
+
+      expect(result[:structuredContent]['nodes'].map { |p| p['id'] }).to all(be_an(Integer))
+    end
+
     it 'does not return an unbounded total count' do
       expect(tool.execute[:structuredContent]).not_to have_key('count')
     end

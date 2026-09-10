@@ -417,6 +417,8 @@ gitlab-advanced-sast-cpp:
     - '**/*.dart'
     - '**/*.scala'
     - '**/*.sc'
+    - '**/*.kt'
+    - '**/*.kts'
 
 gitlab-advanced-sast-ext:
   extends: .sast-analyzer

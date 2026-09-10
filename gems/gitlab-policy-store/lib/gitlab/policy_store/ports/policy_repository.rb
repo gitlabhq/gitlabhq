@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'json'
-
 module Gitlab
   module PolicyStore
     module Ports
@@ -11,6 +9,7 @@ module Gitlab
       class PolicyRepository
         include EnumeratedAttributeValidation
         include ActionShapeValidation
+        include JsonBytesize
         include RoleValidation
 
         REQUIRED_ATTRIBUTES = [:organization_id, :name, :trigger_type].freeze
@@ -258,7 +257,7 @@ module Gitlab
 
         def validate_entry_sizes!(attribute, entries)
           oversized = entries.each_index.select do |index|
-            authored_bytesize_of(attribute, entries[index]) > ENTRY_SIZE_LIMIT
+            authored_bytesize_of(attribute, entries[index], index) > ENTRY_SIZE_LIMIT
           end
           return if oversized.empty?
 
@@ -269,11 +268,19 @@ module Gitlab
 
         # Only a `rules` entry ever carries a compiled `rego` key, added by `with_compiled_rules`.
         # Excluding it for `actions` too would let an oversized `rego` there escape the limit.
-        def authored_bytesize_of(attribute, entry)
-          return JSON.generate(entry).bytesize unless entry.is_a?(Hash)
-          return JSON.generate(entry).bytesize unless attribute == :rules
+        def authored_bytesize_of(attribute, entry, index)
+          measured = if entry.is_a?(Hash) && attribute == :rules
+                       entry.reject { |key, _value| key.to_s == COMPILED_RULE_KEY }
+                     else
+                       entry
+                     end
 
-          JSON.generate(entry.reject { |key, _value| key.to_s == COMPILED_RULE_KEY }).bytesize
+          bytesize = json_bytesize(measured)
+          return bytesize if bytesize
+
+          raise PolicyStore::ValidationError,
+            "#{attribute} has an entry that cannot be measured, its encoding is invalid or it " \
+              "is nested too deeply, at #{index}"
         end
 
         def validate_text_limits!(attributes, limits = TEXT_LIMITS)

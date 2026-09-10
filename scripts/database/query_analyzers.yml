@@ -13,6 +13,8 @@ MultiplePartitionScanDetector:
     - fingerprint: efc08db52e27a805
       reason: 'Runner jobs keyset pagination walks a global ID order across partitions; filtering by partition_id would omit jobs'
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/552362'
+    - fingerprint: d01e15eb99a73822
+      reason: 'Orphan artifact cleanup resolves object storage keys, which carry no partition_id, so the lookup cannot prune'
     # Queries that legitimately scan all partitions and cannot prune.
     # - fingerprint: c2cfe803a497101b
     #   reason: "Runner heartbeat scans all partitions by design"

@@ -1,6 +1,6 @@
 - form = local_assigns.fetch(:form)
 
-%fieldset.form-group#project-merge-options{ data: { project_full_path: @project.full_path }, aria: { describedby: :merge_options_description} }
+%fieldset.form-group#project-merge-options{ aria: { describedby: :merge_options_description} }
   %legend{ class: 'gl-m-0 gl-heading-5 gl-border-0' }
     = s_('ProjectSettings|Merge options')
   %p.gl-text-subtle{ id: :merge_options_description }

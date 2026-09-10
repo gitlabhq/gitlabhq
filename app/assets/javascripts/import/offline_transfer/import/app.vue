@@ -1,7 +1,8 @@
 <script>
 import { GlAlert, GlFormCheckbox } from '@gitlab/ui';
 import FormStepper from '~/import/offline_transfer/components/form_stepper.vue';
-import { OFFLINE_IMPORT_TAB_HEADINGS } from '../constants';
+import SelectDestinationTab from '~/import/offline_transfer/import/select_destination_tab.vue';
+import { OFFLINE_IMPORT_TAB_HEADINGS, DESTINATION_TOP_LEVEL } from '../constants';
 
 export default {
   name: 'OfflineTransferImportApp',
@@ -9,23 +10,49 @@ export default {
     FormStepper,
     GlAlert,
     GlFormCheckbox,
+    SelectDestinationTab,
   },
   data() {
     return {
-      isConfigComplete: false,
+      destinationSelection: {
+        type: DESTINATION_TOP_LEVEL,
+        parentGroup: null,
+      },
+      isConfigureComplete: false,
+      showDestinationError: false,
       isReviewComplete: false,
       hasSubmitSucceeded: false,
     };
+  },
+  computed: {
+    isDestinationValid() {
+      return (
+        this.destinationSelection.type === DESTINATION_TOP_LEVEL ||
+        Boolean(this.destinationSelection.parentGroup)
+      );
+    },
   },
   methods: {
     validateStep(stepIndex) {
       switch (stepIndex) {
         case 0:
-          return this.isConfigComplete;
+          return this.isDestinationValid;
         case 1:
+          return this.isConfigureComplete;
+        case 2:
           return this.isReviewComplete;
         default:
           return false;
+      }
+    },
+    onValidationFailed(stepIndex) {
+      if (stepIndex === 0) {
+        this.showDestinationError = true;
+      }
+    },
+    onStepChanged({ previousTabIndex }) {
+      if (previousTabIndex === 0) {
+        this.showDestinationError = false;
       }
     },
     submitForm() {
@@ -67,15 +94,26 @@ export default {
       :completion-button-text="s__('OfflineTransferImport|Start import')"
       :is-form-complete="hasSubmitSucceeded"
       @complete="submitForm"
+      @validation-failed="onValidationFailed"
+      @stepped-back="onStepChanged"
+      @stepped-forward="onStepChanged"
     >
       <template #step-0>
-        <div data-testid="configure-tab">
-          <gl-form-checkbox v-model="isConfigComplete">
-            {{ s__('OfflineTransferImport|Select destination') }}
+        <select-destination-tab
+          :destination-selection="destinationSelection"
+          :validation-attempted="showDestinationError"
+          @destination-input="destinationSelection = $event"
+        />
+      </template>
+      <template #step-1>
+        <div data-testid="configure-import-tab">
+          <h2 class="gl-heading-3">{{ s__('OfflineTransferImport|Enter AWS credentials') }}</h2>
+          <gl-form-checkbox v-model="isConfigureComplete">
+            {{ __('Configure') }}
           </gl-form-checkbox>
         </div>
       </template>
-      <template #step-1>
+      <template #step-2>
         <div data-testid="review-import-tab">
           <h2 v-if="hasSubmitSucceeded" class="gl-heading-3">
             {{ s__('OfflineTransferImport|Import has started.') }}

@@ -26,12 +26,7 @@ module Groups
           title: params[:title],
           fingerprint: fingerprint
         )
-
-        # title and key attributes are returned as [FILTERED]
-        # by config/application.rb#L181-233
-        # make attributes unfiltered by running find
-        ssh_certificate = group.ssh_certificates.find(result.id)
-        ServiceResponse.success(payload: ssh_certificate)
+        ServiceResponse.success(payload: result)
 
       rescue ActiveRecord::RecordInvalid, ArgumentError => e
         ServiceResponse.error(

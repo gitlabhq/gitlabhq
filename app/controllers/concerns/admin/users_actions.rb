@@ -20,7 +20,7 @@ module Admin
     end
 
     def index
-      return redirect_to admin_cohorts_path if cohorts_tab_available? && safe_params[:tab] == 'cohorts'
+      return redirect_to admin_cohorts_path if safe_params[:tab] == 'cohorts'
 
       @sort = safe_params[:sort].presence || sort_value_name
 
@@ -52,12 +52,6 @@ module Admin
 
     # Overridden in EE
     def partial_email_search?
-      true
-    end
-
-    # The cohorts tab links to the instance-only admin_cohorts_path, so it is
-    # not available in the organization admin area. Overridden there.
-    def cohorts_tab_available?
       true
     end
 

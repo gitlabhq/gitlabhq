@@ -79,6 +79,12 @@ module Mcp
           projects = extract_projects(processed_result[:structuredContent])
           return ::Mcp::Tools::Base::Response.error('Operation returned no data') unless projects
 
+          # Unwrap GIDs to numeric IDs so the output chains directly back into
+          # project_id inputs, matching the get_project/list_groups convention.
+          projects['nodes']&.each do |node|
+            node['id'] = ::GlobalID.parse(node['id']).model_id.to_i
+          end
+
           projects = projects.merge('subgroupsIncluded' => use_group_branch?) if params[:group_id].present?
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(projects) }]

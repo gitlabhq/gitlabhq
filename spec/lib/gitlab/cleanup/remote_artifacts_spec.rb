@@ -17,49 +17,131 @@ RSpec.describe Gitlab::Cleanup::RemoteArtifacts, feature_category: :geo_replicat
     end
   end
 
-  describe '#query_for_row_tracking_the_file' do
+  describe '#find_tracked_paths' do
     let(:cleaner) { described_class.new }
     let(:artifact) { create(:ci_job_artifact, :remote_store, :zip) }
+    let(:tracked_path) { artifact.file.path }
+    let(:unknown_format_path) { 'invalid/path/format.zip' }
+
+    # A legitimate path structure, but no matching row
+    let(:untracked_path) { "#{tracked_path}.foo" }
+
+    subject(:tracked_paths) { cleaner.send(:find_tracked_paths, file_paths) }
 
     before do
       stub_artifacts_object_storage
     end
 
     context 'with a tracked file' do
-      let(:file_path) { artifact.file.path }
+      let(:file_paths) { [tracked_path] }
 
-      it 'returns a relation that includes the artifact',
-        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9380' do
-        query = cleaner.send(:query_for_row_tracking_the_file, file_path)
-
-        expect(query.exists?).to be true
-      end
+      it { is_expected.to contain_exactly(tracked_path) }
     end
 
     context 'with an untracked file' do
-      # A legitimate path structure but with a different filename
-      let(:file_path) { "#{artifact.file.path}.foo" }
+      let(:file_paths) { [untracked_path] }
 
-      it 'returns a relation that does not find any artifact' do
-        query = cleaner.send(:query_for_row_tracking_the_file, file_path)
+      it { is_expected.to be_empty }
+    end
 
-        expect(query.exists?).to be false
+    context 'with a path in an unknown format' do
+      let(:file_paths) { [unknown_format_path] }
+
+      it 'reports it as tracked so that an unrecognized layout is never deleted' do
+        expect(tracked_paths).to contain_exactly(unknown_format_path)
       end
+
+      it 'does not query the database' do
+        queries = ActiveRecord::QueryRecorder.new { tracked_paths }
+
+        expect(queries.log.grep(/FROM "p_ci_job_artifacts"/)).to be_empty
+      end
+    end
+
+    context 'with a non-ASCII filename' do
+      let(:file_paths) { [artifact.reload.file.path] }
+
+      before do
+        artifact.update_column(:file, 'tëst-ärtifact.zip')
+      end
+
+      it 'matches the row rather than reporting an orphan' do
+        expect(tracked_paths).to eq(file_paths)
+      end
+    end
+
+    context 'with a valid path behind an unexpected prefix' do
+      let(:file_paths) { ["some-prefix/#{tracked_path}"] }
+
+      it 'reports it as tracked rather than shifting the parsed values' do
+        expect(tracked_paths).to eq(file_paths)
+      end
+    end
+
+    context 'when two paths share the same tracking values' do
+      # Same job_id, artifact_id and filename, but stored under a different date segment
+      let(:duplicate_path) do
+        path_parts = tracked_path.split('/')
+        path_parts[3] = '2020_01_01'
+        path_parts.join('/')
+      end
+
+      let(:file_paths) { [tracked_path, duplicate_path] }
+
+      it 'reports both as tracked rather than dropping one' do
+        expect(tracked_paths).to contain_exactly(tracked_path, duplicate_path)
+      end
+    end
+
+    context 'with a mixed batch' do
+      let(:other_artifact) { create(:ci_job_artifact, :remote_store, :zip) }
+      let(:file_paths) { [tracked_path, untracked_path, unknown_format_path, other_artifact.file.path] }
+
+      it 'returns only the tracked and unrecognized paths' do
+        expect(tracked_paths).to contain_exactly(tracked_path, other_artifact.file.path, unknown_format_path)
+      end
+
+      it 'resolves the batch with a single query' do
+        other_artifact # create before counting
+
+        queries = ActiveRecord::QueryRecorder.new { tracked_paths }
+
+        expect(queries.log.grep(/FROM "p_ci_job_artifacts"/).size).to eq(1)
+      end
+    end
+
+    context 'when a path is tracked by a different artifact' do
+      let(:other_artifact) { create(:ci_job_artifact, :remote_store, :zip) }
+
+      # Reuses another artifact's ID, so the ID matches a row but the rest of the path does not
+      let(:file_paths) do
+        [tracked_path.sub(%r{/(\d+)/([^/]+)\z}) { "/#{other_artifact.id}/#{::Regexp.last_match(2)}" }]
+      end
+
+      it { is_expected.to be_empty }
     end
   end
 
   describe '#expected_file_path_format_regexp' do
     let(:cleaner) { described_class.new }
 
+    subject(:regexp) { cleaner.send(:expected_file_path_format_regexp) }
+
     it 'validates correct artifact file paths' do
       valid_path =
         '4e/07/4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce/2025_04_23/1/2/ci_build_artifacts.zip'
-      expect(valid_path).to match(cleaner.send(:expected_file_path_format_regexp))
+      expect(valid_path).to match(regexp)
     end
 
     it 'rejects invalid file paths' do
       invalid_path = 'invalid/path/format.zip'
-      expect(invalid_path).not_to match(cleaner.send(:expected_file_path_format_regexp))
+      expect(invalid_path).not_to match(regexp)
+    end
+
+    it 'rejects an otherwise valid path behind a prefix' do
+      prefixed_path =
+        'x/4e/07/4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce/2025_04_23/1/2/build.zip'
+      expect(prefixed_path).not_to match(regexp)
     end
   end
 end

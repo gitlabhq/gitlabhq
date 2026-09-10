@@ -1,0 +1,12 @@
+---
+name: provision_secrets_manager
+description: Grants the ability to provision a secrets manager
+boundaries:
+  - group
+  - project
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - provision_secrets_manager
+  - create_secrets_manager_enrollment

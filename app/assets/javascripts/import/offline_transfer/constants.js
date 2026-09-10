@@ -1,12 +1,13 @@
 import { __, s__ } from '~/locale';
 
-const SELECT_ENTITIES = s__('OfflineTransfer|Select entities');
+const SELECT_ENTITIES = s__('OfflineTransferExport|Select entities');
+const SELECT_DESTINATION = s__('OfflineTransferImport|Select destination');
 const CONFIGURE = s__('OfflineTransfer|Configure');
 const EXPORT = __('Export');
 const IMPORT = __('Import');
 
 export const OFFLINE_EXPORT_TAB_HEADINGS = [SELECT_ENTITIES, CONFIGURE, EXPORT];
-export const OFFLINE_IMPORT_TAB_HEADINGS = [CONFIGURE, IMPORT];
+export const OFFLINE_IMPORT_TAB_HEADINGS = [SELECT_DESTINATION, CONFIGURE, IMPORT];
 
 export const FORM_STEPPER_TAB_STATE = {
   ACTIVE: 'active',
@@ -25,3 +26,6 @@ export const FORM_STEPPER_ACTIVE_TAB_BORDER =
 
 export const OBJECT_STORAGE_VARIANT_EXPORT = 'export';
 export const OBJECT_STORAGE_VARIANT_IMPORT = 'import';
+
+export const DESTINATION_TOP_LEVEL = 'top_level';
+export const DESTINATION_EXISTING_GROUP = 'existing_group';

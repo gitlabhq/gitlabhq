@@ -235,6 +235,15 @@ gaining cursor stability, and misleads the caller about the guarantees the endpo
   `notes_page`/`notes_per_page` on `get_merge_request`, `comments_page`/`comments_per_page` on
   `get_commit`) and follows the scheme of the endpoint backing that facet.
 
+**Output IDs (GraphQL-backed tools):** unwrap GIDs to numeric integers in `process_result` for
+resources that tools address by their global numeric ID — groups, projects, and pipelines — so
+the output chains directly back into inputs such as `project_id` or `group_id`
+(`GlobalID.parse(node['id']).model_id.to_i`; see `get_project_tool`, `list_groups_tool`, and
+`list_projects_tool`). Do not unwrap IDs of iid-addressed resources (work items, merge
+requests, issues): for those, `GlobalID#model_id` returns the global database key, not the iid,
+and an agent that feeds it back as an `*_iid` parameter silently operates on the wrong record.
+Expose `iid` alongside the GID instead.
+
 **Consolidation over proliferation:**
 
 - Merge scoped search variants into the unified `search` tool with a `scope` parameter instead of

@@ -790,6 +790,7 @@ Grants the ability to create, delete, read, resume, and update duo workflows.
 | Read | User | `GET` | `/ai/duo_workflows/workflows/:workflow_id/trace.jsonl` |
 | Read | User | `GET` | `/ai/duo_workflows/workflows/agent_privileges` |
 | Read | User | `GET` | `/ai/duo_workflows/ws` |
+| Read | User | `POST` | `/ai/duo_workflows/workflows/:workflow_id/execute` |
 | Resume | User | `POST` | `/ai/duo_workflows/workflows/:workflow_id/resume` |
 
 #### Duo Workflow Direct Access Token

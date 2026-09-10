@@ -238,6 +238,15 @@ a convention (non-standard verb, second write tool on one resource).
   missing `id` is the `graphql-verify` CI job, which needs the schema dump and does not run
   locally. Never remove an `id` to "slim" a payload; a reviewer (human or agent) suggesting that
   is wrong.
+- **Unwrap GIDs to numeric IDs in `process_result` — but only for global-ID-addressed
+  resources (groups, projects, pipelines).** A raw `gid://gitlab/Group/123` in the output cannot
+  be fed back into `group_id`/`project_id` inputs, so agents chaining calls hit not-found errors.
+  Unwrap with `GlobalID.parse(node['id']).model_id.to_i` (pattern: `get_project_tool`,
+  `list_groups_tool`, `list_projects_tool`). Do **NOT** unwrap ids of iid-addressed resources
+  (work items, merge requests, issues): `model_id` is the global database key, not the iid, and
+  an agent feeding it back as `*_iid` silently operates on the wrong record — expose `iid`
+  alongside the GID instead. (Convention decided in
+  https://gitlab.com/gitlab-org/gitlab/-/work_items/628289.)
 - **A root `oneOf`/`anyOf` silently disables `additionalProperties: false`.** `SchemaDefaults`
   skips composition schemas (tool-anatomy.md), so expressing "exactly one of `url`/`project_id`"
   as a schema `oneOf` quietly stops unknown args being rejected. Enforce mutual exclusivity in

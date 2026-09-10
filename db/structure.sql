@@ -20843,6 +20843,7 @@ CREATE TABLE duo_workflows_workflows (
     source_type smallint,
     source_link text,
     trigger_flow_schedule_id bigint,
+    trigger_event_type smallint,
     CONSTRAINT check_1033e7a455 CHECK ((char_length(title) <= 40)),
     CONSTRAINT check_13bb5688db CHECK ((char_length(summary) <= 1024)),
     CONSTRAINT check_3a9162f1ae CHECK ((char_length(image) <= 2048)),

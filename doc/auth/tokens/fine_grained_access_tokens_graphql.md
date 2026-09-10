@@ -115,16 +115,50 @@ Grants the ability to create, delete, read, and update policies in the policy st
 | Read | Instance | Type | `GovernPolicyEvaluation` |
 | Update | Instance | Mutation | `GovernPolicyUpdate` |
 
-#### Secrets Manager
+#### Secret
 
-Grants the ability to read secrets managers.
+Grants the ability to create, delete, and update secrets.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `ProjectSecretCreate` |
+| Create | Group | Mutation | `GroupSecretCreate` |
+| Delete | Project | Mutation | `ProjectSecretDelete` |
+| Delete | Group | Mutation | `GroupSecretDelete` |
+| Update | Project | Mutation | `ProjectSecretUpdate` |
+| Update | Group | Mutation | `GroupSecretUpdate` |
+
+#### Secrets Manager
+
+Grants the ability to deprovision, provision, and read secrets managers.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Deprovision | Project | Mutation | `ProjectSecretsManagerDeprovision` |
+| Deprovision | Group | Mutation | `GroupSecretsManagerDeprovision` |
+| Deprovision | Group | Mutation | `NamespaceSecretsManagerUnenroll` |
+| Deprovision | Instance | Mutation | `InstanceSecretsManagerUnenroll` |
+| Provision | Project | Mutation | `ProjectSecretsManagerInitialize` |
+| Provision | Group | Mutation | `GroupSecretsManagerInitialize` |
+| Provision | Group | Mutation | `NamespaceSecretsManagerEnroll` |
+| Provision | Instance | Mutation | `InstanceSecretsManagerEnroll` |
 | Read | Project | Type | `ProjectSecretsManager` |
 | Read | Group | Type | `GroupSecretsManager` |
 | Read | Group | Type | `SecretsManagerEntitlement` |
 | Read | Group | Mutation | `SecretsManagerStartTrial` |
+
+#### Secrets Permission
+
+Grants the ability to delete and update secrets permissions.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Delete | Project | Mutation | `ProjectSecretsPermissionDelete` |
+| Delete | Project | Mutation | `SecretPermissionDelete` |
+| Delete | Group | Mutation | `GroupSecretsPermissionDelete` |
+| Update | Project | Mutation | `ProjectSecretsPermissionUpdate` |
+| Update | Project | Mutation | `SecretPermissionUpdate` |
+| Update | Group | Mutation | `GroupSecretsPermissionUpdate` |
 
 #### Security Attribute
 
@@ -401,6 +435,7 @@ Grants the ability to update CI namespace settings.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Update | Group | Mutation | `NamespaceCiCdSettingsUpdate` |
 | Update | Group | Mutation | `NamespaceSettingsUpdate` |
 
 #### CI/CD Setting
@@ -458,6 +493,7 @@ Grants the ability to create, delete, read, stop, and update environments.
 | Read | Project | Type | `Environment` |
 | Stop | Project | Mutation | `EnvironmentStop` |
 | Update | Project | Mutation | `EnvironmentUpdate` |
+| Update | Project | Mutation | `EnvironmentsCanaryIngressUpdate` |
 
 #### Freeze Period
 
@@ -524,6 +560,15 @@ Grants the ability to create, delete, read, and update pipeline schedules.
 | Update | Project | Mutation | `PipelineScheduleTakeOwnership` |
 | Update | Project | Mutation | `PipelineScheduleUpdate` |
 
+#### Pipeline Subscription
+
+Grants the ability to create and delete pipeline subscriptions.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `ProjectSubscriptionCreate` |
+| Delete | Project | Mutation | `ProjectSubscriptionDelete` |
+
 #### Runner
 
 Grants the ability to assign, create, delete, read, and update runners.
@@ -545,6 +590,16 @@ Grants the ability to assign, create, delete, read, and update runners.
 | Update | Project | Mutation | `RunnerUpdate` |
 | Update | Group | Mutation | `RunnerUpdate` |
 | Update | Instance | Mutation | `RunnerUpdate` |
+
+#### Runner Usage
+
+Grants the ability to read runner usage data.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Project | Mutation | `RunnersExportUsage` |
+| Read | Group | Mutation | `RunnersExportUsage` |
+| Read | Instance | Mutation | `RunnersExportUsage` |
 
 #### Terraform State
 

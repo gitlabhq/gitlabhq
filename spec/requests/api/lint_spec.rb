@@ -233,6 +233,11 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
           let(:dry_run) { true }
 
           it_behaves_like 'valid config without warnings'
+
+          it 'does not allocate a pipeline IID' do
+            expect { ci_lint }
+              .not_to change { InternalId.where(project: project, usage: :ci_pipelines).count }
+          end
         end
 
         context 'when running static validation' do

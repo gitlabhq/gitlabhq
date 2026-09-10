@@ -4488,6 +4488,9 @@ msgstr ""
 msgid "AccessTokens|%{link_start}Group access token%{link_end} creation is not available on GitLab Free. Upgrade to Premium to create tokens scoped to this group and its projects."
 msgstr ""
 
+msgid "AccessTokens|%{link_start}Project access token%{link_end} creation is not available on GitLab Free. Upgrade to Premium to create a token scoped to a project."
+msgstr ""
+
 msgid "AccessTokens|%{name} (copy)"
 msgstr ""
 
@@ -5067,6 +5070,9 @@ msgid "AccessTokens|Tokens expiring in 2 weeks"
 msgstr ""
 
 msgid "AccessTokens|Try group access tokens with Premium"
+msgstr ""
+
+msgid "AccessTokens|Try project access tokens with Premium"
 msgstr ""
 
 msgid "AccessTokens|Type"
@@ -8324,15 +8330,6 @@ msgid "AggregationEngine|metric `%{identifier}` must be requested to filter by i
 msgstr ""
 
 msgid "AggregationEngine|ordering by '%{identifier}' is not authorized"
-msgstr ""
-
-msgid "AggregationEngine|parameter `thresholds` is required"
-msgstr ""
-
-msgid "AggregationEngine|parameter `thresholds` must be strictly ascending positive integers"
-msgstr ""
-
-msgid "AggregationEngine|parameter `thresholds` supports at most %{max} values"
 msgstr ""
 
 msgid "AggregationEngine|the specified identifier is not available: '%{identifier}'"
@@ -55527,6 +55524,9 @@ msgstr ""
 msgid "OfflineTransferExport|Select at least one group to continue"
 msgstr ""
 
+msgid "OfflineTransferExport|Select entities"
+msgstr ""
+
 msgid "OfflineTransferExport|Select groups to export"
 msgstr ""
 
@@ -55562,6 +55562,27 @@ msgstr[1] ""
 msgid "OfflineTransferExport|You have no groups available to export"
 msgstr ""
 
+msgid "OfflineTransferImport|All groups are imported as subgroups of one parent."
+msgstr ""
+
+msgid "OfflineTransferImport|Choose where the imported groups are created on this instance. This choice applies to every group in the package."
+msgstr ""
+
+msgid "OfflineTransferImport|Could not load your groups."
+msgstr ""
+
+msgid "OfflineTransferImport|Each imported group becomes a new top-level group, with no parent."
+msgstr ""
+
+msgid "OfflineTransferImport|Enter AWS credentials"
+msgstr ""
+
+msgid "OfflineTransferImport|Import all as top-level groups"
+msgstr ""
+
+msgid "OfflineTransferImport|Import all under an existing group"
+msgstr ""
+
 msgid "OfflineTransferImport|Import for offline transfer"
 msgstr ""
 
@@ -55571,7 +55592,16 @@ msgstr ""
 msgid "OfflineTransferImport|Import your exported groups from an AWS S3 storage service you control. Each group is imported with all of its subgroups and projects."
 msgstr ""
 
+msgid "OfflineTransferImport|Parent group"
+msgstr ""
+
 msgid "OfflineTransferImport|Review and import"
+msgstr ""
+
+msgid "OfflineTransferImport|Select a group"
+msgstr ""
+
+msgid "OfflineTransferImport|Select a parent group."
 msgstr ""
 
 msgid "OfflineTransferImport|Select destination"
@@ -55587,6 +55617,9 @@ msgid "OfflineTransferImport|The offline transfer import you started on %{start_
 msgstr ""
 
 msgid "OfflineTransferImport|The offline transfer import you started on %{start_date} has completed. You can now review your import results."
+msgstr ""
+
+msgid "OfflineTransferImport|You do not own any groups. Import the groups as top-level groups instead."
 msgstr ""
 
 msgid "OfflineTransfer|Access key ID"
@@ -55701,9 +55734,6 @@ msgid "OfflineTransfer|Region"
 msgstr ""
 
 msgid "OfflineTransfer|Secret access key"
-msgstr ""
-
-msgid "OfflineTransfer|Select entities"
 msgstr ""
 
 msgid "OfflineTransfer|Start offline export"
@@ -71229,7 +71259,7 @@ msgstr ""
 msgid "SecretsManagerPermissions|Delete"
 msgstr ""
 
-msgid "SecretsManagerPermissions|Enable secrets manager for this group"
+msgid "SecretsManagerPermissions|Enable GitLab Secrets Manager for this group"
 msgstr ""
 
 msgid "SecretsManagerPermissions|Failed to create secrets manager permission. Please try again."
@@ -71239,6 +71269,21 @@ msgid "SecretsManagerPermissions|Failed to delete secrets manager permissions. P
 msgstr ""
 
 msgid "SecretsManagerPermissions|Failed to fetch secrets manager permissions. Please try again later."
+msgstr ""
+
+msgid "SecretsManagerPermissions|GitLab Secrets Manager"
+msgstr ""
+
+msgid "SecretsManagerPermissions|GitLab Secrets Manager has been deprovisioned for this group."
+msgstr ""
+
+msgid "SecretsManagerPermissions|GitLab Secrets Manager has been deprovisioned for this project."
+msgstr ""
+
+msgid "SecretsManagerPermissions|GitLab Secrets Manager has been provisioned for this group."
+msgstr ""
+
+msgid "SecretsManagerPermissions|GitLab Secrets Manager has been provisioned for this project."
 msgstr ""
 
 msgid "SecretsManagerPermissions|GitLab Secrets Manager is disabled for this namespace."
@@ -71262,25 +71307,7 @@ msgstr ""
 msgid "SecretsManagerPermissions|Remove secrets manager permissions?"
 msgstr ""
 
-msgid "SecretsManagerPermissions|Secrets manager"
-msgstr ""
-
-msgid "SecretsManagerPermissions|Secrets manager has been deprovisioned for this group."
-msgstr ""
-
-msgid "SecretsManagerPermissions|Secrets manager has been deprovisioned for this project."
-msgstr ""
-
-msgid "SecretsManagerPermissions|Secrets manager has been provisioned for this group."
-msgstr ""
-
-msgid "SecretsManagerPermissions|Secrets manager has been provisioned for this project."
-msgstr ""
-
 msgid "SecretsManagerPermissions|Secrets manager permissions were successfully updated."
-msgstr ""
-
-msgid "SecretsManagerPermissions|Secrets manager user permissions"
 msgstr ""
 
 msgid "SecretsManagerPermissions|Select the access scopes to grant to this user for the secrets manager and related API endpoints."
@@ -71299,6 +71326,9 @@ msgid "SecretsManagerPermissions|There was a problem disabling GitLab Secrets Ma
 msgstr ""
 
 msgid "SecretsManagerPermissions|There was a problem enabling GitLab Secrets Manager. Please try again."
+msgstr ""
+
+msgid "SecretsManagerPermissions|User permissions"
 msgstr ""
 
 msgid "SecretsManagerPermissions|Write"
@@ -71421,6 +71451,9 @@ msgstr ""
 msgid "SecretsManager|Enable GitLab Secrets Manager"
 msgstr ""
 
+msgid "SecretsManager|Enable GitLab Secrets Manager for all groups and projects within this namespace."
+msgstr ""
+
 msgid "SecretsManager|Enable GitLab Secrets Manager with GitLab Credits"
 msgstr ""
 
@@ -71431,6 +71464,9 @@ msgid "SecretsManager|Enable on-demand billing to try GitLab Secrets Manager"
 msgstr ""
 
 msgid "SecretsManager|Enable with GitLab Credits"
+msgstr ""
+
+msgid "SecretsManager|Enable with GitLab Credits to continue using GitLab Secrets Manager and avoid service disruptions. %{linkStart}How does GitLab Secrets Manager use GitLab Credits?%{linkEnd}"
 msgstr ""
 
 msgid "SecretsManager|Enabling GitLab Secrets Manager"
@@ -71563,9 +71599,6 @@ msgid "SecretsManager|Something went wrong while setting up the secrets manager.
 msgstr ""
 
 msgid "SecretsManager|Spend caps don't limit Secrets Manager usage."
-msgstr ""
-
-msgid "SecretsManager|Start a 30-day trial to continue using GitLab Secrets Manager and avoid service disruption."
 msgstr ""
 
 msgid "SecretsManager|Stored secrets"
@@ -86379,12 +86412,6 @@ msgstr ""
 msgid "UsageBilling|Cancel"
 msgstr ""
 
-msgid "UsageBilling|Chat"
-msgstr ""
-
-msgid "UsageBilling|Code Suggestions"
-msgstr ""
-
 msgid "UsageBilling|Contact sales"
 msgstr ""
 
@@ -86496,9 +86523,6 @@ msgid "UsageBilling|GitLab Credits usage"
 msgstr ""
 
 msgid "UsageBilling|GitLab Credits usage trends chart"
-msgstr ""
-
-msgid "UsageBilling|GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "UsageBilling|Go to Customers Portal"

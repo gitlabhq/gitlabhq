@@ -524,7 +524,6 @@ module Ci
 
     scope :for_user, ->(user) { where(user: user) }
     scope :for_sha, ->(sha) { where(sha: sha) }
-    scope :where_not_sha, ->(sha) { where.not(sha: sha) }
     scope :for_source_sha, ->(source_sha) { where(source_sha: source_sha) }
     scope :for_sha_or_source_sha, ->(sha) { for_sha(sha).or(for_source_sha(sha)) }
     scope :for_ref, ->(ref) { where(ref: ref) }

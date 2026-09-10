@@ -508,7 +508,6 @@ read_runner_gke_provisioning_info
 read_runner_manager
 read_runner_sensitive_data
 read_runner_upgrade_status
-read_runner_usage
 read_runners
 read_runners_registration_token
 read_saved_replies

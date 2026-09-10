@@ -1,0 +1,9 @@
+---
+name: create_pipeline_subscription
+description: Grants the ability to create pipeline subscriptions
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_pipeline_subscription

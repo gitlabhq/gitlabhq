@@ -623,7 +623,6 @@ scopes:
   - with_runner_assigned
   - with_erasable_artifacts
   app/models/ci/pipeline.rb:
-  - where_not_sha
   - not_ref_protected
   app/models/ci/runner.rb:
   - deprecated_shared

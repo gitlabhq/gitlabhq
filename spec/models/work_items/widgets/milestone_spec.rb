@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::Milestone do
+RSpec.describe WorkItems::Widgets::Milestone, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:work_item) { create(:work_item, project: project, milestone: milestone) }

@@ -1,0 +1,12 @@
+---
+name: deprovision_secrets_manager
+description: Grants the ability to deprovision a secrets manager
+boundaries:
+  - group
+  - project
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - deprovision_secrets_manager
+  - delete_secrets_manager_enrollment

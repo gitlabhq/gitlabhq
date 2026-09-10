@@ -1896,6 +1896,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -2377,6 +2405,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -3845,6 +3901,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -11195,6 +11279,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -11676,6 +11788,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -13151,6 +13291,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -46369,6 +46537,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -46850,6 +47046,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -47341,6 +47565,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -48821,6 +49073,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -83964,6 +84244,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -110178,6 +110486,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -110659,6 +110995,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -112115,6 +112479,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -113689,6 +114081,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -114170,6 +114590,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -115626,6 +116074,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -118231,6 +118707,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -118712,6 +119216,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -120168,6 +120700,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -122068,6 +122628,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -122549,6 +123137,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -124005,6 +124621,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -165634,6 +166278,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -214269,6 +214941,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -214750,6 +215450,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -216174,6 +216902,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -219386,6 +220142,34 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort merge requests by the criteria.",
                   "type": {
@@ -219867,6 +220651,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -221311,6 +222123,34 @@
                     "kind": "ENUM",
                     "name": "MilestoneWildcardId",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewState",
+                  "description": "Reviewer state of the merge request.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestReviewState",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reviewStates",
+                  "description": "Reviewer states of the merge request.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestReviewState",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },

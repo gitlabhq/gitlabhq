@@ -325,6 +325,28 @@ RSpec.shared_examples 'a policy repository' do
           .to raise_error(Gitlab::PolicyStore::ValidationError,
             /#{attribute} has an entry exceeding maximum size of #{port::ENTRY_SIZE_LIMIT} bytes at 0, 2/)
       end
+
+      it "raises ValidationError, not JSON::GeneratorError, when an #{attribute} entry carries a string " \
+        "with an invalid byte sequence for its encoding" do
+        malformed = { 'type' => 'custom', 'value' => (+"p\xFF").force_encoding('UTF-8') }
+
+        expect { repository.create(attributes.merge(attribute => [malformed])) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /#{attribute} has an entry that cannot be measured/)
+      end
+
+      it "raises ValidationError, not JSON::NestingError, when an #{attribute} entry is nested more than " \
+        "100 levels deep" do
+        deeply_nested = {}
+        cursor = deeply_nested
+        101.times do |index|
+          cursor[index.to_s] = {}
+          cursor = cursor[index.to_s]
+        end
+        oversized_nesting = { 'type' => 'custom', 'value' => deeply_nested }
+
+        expect { repository.create(attributes.merge(attribute => [oversized_nesting])) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /#{attribute} has an entry that cannot be measured/)
+      end
     end
 
     it "measures an actions entry's own rego key, since only rules ever have one compiled onto them" do
@@ -683,6 +705,15 @@ RSpec.shared_examples 'a policy repository' do
 
       expect { repository.update(created.id, actions: { 'type' => 'block' }) }
         .to raise_error(Gitlab::PolicyStore::ValidationError, /actions must be an array/)
+    end
+
+    it 'raises ValidationError, not JSON::GeneratorError, when an update sets an actions entry with an ' \
+      'invalid byte sequence for its encoding' do
+      created = repository.create(attributes)
+      malformed = { 'type' => 'custom', 'value' => (+"p\xFF").force_encoding('UTF-8') }
+
+      expect { repository.update(created.id, actions: [malformed]) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has an entry that cannot be measured/)
     end
 
     # A stored rule carries the program compiled from it, so measuring the whole entry

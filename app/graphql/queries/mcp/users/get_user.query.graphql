@@ -1,0 +1,17 @@
+# @feature_category: mcp_server
+query mcpGetUser($username: String, $id: UserID, $me: Boolean = false) {
+  user(username: $username, id: $id) @skip(if: $me) {
+    ...UserFields
+  }
+  currentUser @include(if: $me) {
+    ...UserFields
+  }
+}
+
+fragment UserFields on User {
+  id
+  username
+  name
+  state
+  webUrl
+}

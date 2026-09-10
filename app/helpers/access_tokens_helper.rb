@@ -82,6 +82,10 @@ module AccessTokensHelper
     }
   end
 
+  def show_project_access_token_upgrade_card?(_project)
+    false
+  end
+
   private
 
   def max_date_allowed

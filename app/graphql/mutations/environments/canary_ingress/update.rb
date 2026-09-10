@@ -9,6 +9,8 @@ module Mutations
           '[See this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) for more information.'
 
         authorize :update_environment
+        authorize_granular_token permissions: :update_environment,
+          boundary_argument: :id, boundary: :project, boundary_type: :project
 
         argument :id,
           ::Types::GlobalIDType[::Environment],

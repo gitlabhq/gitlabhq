@@ -3,14 +3,15 @@
 - page_title _("Cohorts"), _("Users")
 
 = render ::Layouts::PageHeadingComponent.new(_('Cohorts')) do |c|
-  - c.with_actions do
-    = render_if_exists 'admin/users/admin_email_users'
-    = render_if_exists 'admin/users/admin_export_user_permissions'
-    = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_path) do
-      = s_('AdminUsers|New user')
+  - if can?(current_user, :admin_all_resources)
+    - c.with_actions do
+      = render_if_exists 'admin/users/admin_email_users'
+      = render_if_exists 'admin/users/admin_export_user_permissions'
+      = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_path) do
+        = s_('AdminUsers|New user')
 
 = render 'admin/users/tabs'
 
 .tab-content
   .tab-pane.active
-    = render 'cohorts'
+    = render 'admin/cohorts/cohorts'

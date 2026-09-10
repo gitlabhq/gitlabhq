@@ -55,6 +55,7 @@ module Mcp
         'get_pipeline' => ::Mcp::Tools::Pipelines::GetPipelineService,
         'get_project' => ::Mcp::Tools::Projects::GetProjectService,
         'get_saved_view_work_items' => ::Mcp::Tools::WorkItems::GetSavedViewWorkItemsService,
+        'get_user' => ::Mcp::Tools::Users::GetUserService,
         'get_work_item' => ::Mcp::Tools::WorkItems::GetWorkItemService,
         'get_workitem_notes' => ::Mcp::Tools::WorkItems::GetWorkItemNotesService,
         'get_work_item_types' => ::Mcp::Tools::WorkItems::GetWorkItemTypesService,

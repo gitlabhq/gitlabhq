@@ -477,36 +477,6 @@ Groups results by time intervals using ClickHouse's `toStartOfInterval()` functi
 |-----------|------|--------|---------|-------------|
 | `granularity` | String | `daily`, `weekly`, `monthly`, `yearly` | `monthly` | Time interval for grouping |
 
-#### `tier` dimension
-
-Buckets a numeric expression into ordinal tiers (`tier_0` to `tier_N`) using ClickHouse's `multiIf()`
-function, based on client-provided ascending integer thresholds. **Supports parameters.**
-
-A value below the first threshold lands in `tier_0`. A value at or above the last threshold lands in
-the highest tier, so N thresholds produce N+1 tiers (`tier_0` through `tier_N`).
-
-| Option | Type | Required | Description |
-|--------|------|----------|-------------|
-| `name` | Symbol | Yes | Column name or identifier |
-| `type` | Symbol | Yes | Data type of the output labels (use `:string`) |
-| `expression` | Proc | No | Numeric expression to bucket, instead of a column |
-| `description` | String | No | Human-readable description |
-
-**Supported Parameters:**
-
-| Parameter | Type | Values | Default | Description |
-|-----------|------|--------|---------|-------------|
-| `thresholds` | Array of Integers | Strictly ascending positive integers, at most 9 | None (required) | Tier boundaries |
-
-The `thresholds` parameter is declared automatically and is required in every request that uses the
-dimension. Any normalization of thresholds (for example, per-week scaling) is a client concern.
-
-```ruby
-dimensions do
-  tier :user_tier, :string, -> { sql('user_activity.sessions') }, ctes: [:user_activity]
-end
-```
-
 #### `exact_match` filter
 
 Filters rows by exact value match. Supports filtering on regular columns or merge columns (pre-aggregated data).

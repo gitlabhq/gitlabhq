@@ -110,11 +110,13 @@ describe('WorkItemCard', () => {
       expect(wrapper.emitted('set-active-item')).toEqual([[null]]);
     });
 
-    it('applies the active class when the card matches the active item', () => {
+    it('applies the active background and border when the card matches the active item', () => {
       const item = buildItem();
       createComponent({ item, activeItem: item });
 
-      expect(findCard().classes()).toContain('is-active');
+      expect(findCard().classes()).toEqual(
+        expect.arrayContaining(['!gl-border-feedback-info', '!gl-bg-feedback-info']),
+      );
     });
 
     it('navigates to the detail work item page if the side panel is disabled', async () => {
@@ -162,6 +164,8 @@ describe('WorkItemCard', () => {
       expect(findTypeIcon().props()).toMatchObject({
         workItemType: 'Issue',
         typeIconName: 'issue-type-issue',
+        iconVariant: 'subtle',
+        showTooltipOnHover: true,
       });
     });
 
@@ -181,6 +185,7 @@ describe('WorkItemCard', () => {
         backgroundColor: mockLabels[0].color,
         title: mockLabels[0].title,
         description: mockLabels[0].description,
+        scoped: false,
       });
     });
 
@@ -198,6 +203,19 @@ describe('WorkItemCard', () => {
       });
 
       expect(findLabels()).toHaveLength(0);
+    });
+
+    describe('when the namespace allows scoped labels', () => {
+      it('renders a scoped label as scoped', () => {
+        const scopedLabel = { ...mockLabels[0], title: 'team::frontend' };
+        createComponent({
+          item: buildItem({
+            widgets: [{ ...buildLabelsWidget([scopedLabel]), allowsScopedLabels: true }],
+          }),
+        });
+
+        expect(findLabels().at(0).props('scoped')).toBe(true);
+      });
     });
   });
 
@@ -299,6 +317,7 @@ describe('WorkItemCard', () => {
       createComponent({ item: buildItem({ widgets: [buildMilestoneWidget()] }) });
 
       expect(findMilestone().props('milestone')).toEqual(mockMilestone);
+      expect(findMilestone().classes()).toContain('!gl-max-w-28');
     });
 
     it('renders the due date from the START_AND_DUE_DATE widget', () => {

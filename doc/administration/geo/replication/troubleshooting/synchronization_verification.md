@@ -525,6 +525,11 @@ The same errors are also reflected in the UI under **Admin** > **Geo** > **Sites
 
 > [!warning]
 > Ensure you have a recent and working backup at hand before issuing any deletion commands.
+> Confirm the files are actually missing before you destroy any records.
+> Records that are [excluded from verification](#message-error-during-verificationerrorfile-is-not-checksummable)
+> fail with the same `File is not checksummable` error even though their files exist.
+> Spot-check a sample of the affected records, for example with `record.retrieve_uploader.exists?`
+> for uploads, or `record.file.exists?` for other blob types.
 
 To remove those errors, first identify which particular resources are affected. Then, run the appropriate `destroy` commands to ensure the deletion is propagated across all Geo sites and their databases. Based on the previous scenario, an upload is causing those errors which is used as an example below.
 
@@ -625,6 +630,21 @@ The error `"Error during verification","error":"File is not checksummable"` is c
   This behavior is expected when the primary site removes a record from the replication scope without deleting it.
   For example, GitLab moves old `MergeRequestDiff` records to the `without_files` state during storage optimization.
   The registry consistency worker removes these registry entries automatically over time.
+  Records stored in object storage are also excluded from verification when the
+  `geo_object_storage_verification` feature flag is disabled, even though their files exist.
+
+In GitLab 18.8 and earlier, the error message does not include the cause, so records that are
+excluded from verification are indistinguishable from records with missing files.
+Before you
+assume files are missing, [start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session)
+on the primary site and check whether object storage verification is enabled:
+
+```ruby
+Feature.enabled?(:geo_object_storage_verification)
+```
+
+If this command returns `false`, records in object storage are excluded from verification and
+their files are likely intact. Do not delete these records.
 
 To remove the affected `MergeRequestDiff` registry entries immediately, run the following command
 on the secondary site from the [Rails console](../../../operations/rails_console.md):
@@ -1157,6 +1177,13 @@ is [enabled on the secondary site](../../../packages/container_registry.md#enabl
 ### Object type-specific troubleshooting for `Error during verification: File is not checksummable`
 
 Different Geo data types have unique characteristics and common failure patterns. This section provides targeted troubleshooting for specific object types.
+
+> [!warning]
+> Confirm the files are actually missing before you run any of the following `destroy` scripts.
+> Records that are [excluded from verification](#message-error-during-verificationerrorfile-is-not-checksummable)
+> fail with the same error even though their files exist, and the following scripts would destroy
+> those records too.
+> Spot-check a sample of the affected records, for example with `record.file.exists?` (or `record.retrieve_uploader.exists?` for uploads).
 
 #### Uploads
 

@@ -46,11 +46,6 @@ module Admin
         super.member_of_organization(::Current.organization)
       end
 
-      override :cohorts_tab_available?
-      def cohorts_tab_available?
-        false
-      end
-
       override :impersonation_available?
       def impersonation_available?
         false

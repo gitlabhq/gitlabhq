@@ -31,6 +31,7 @@ module Sidebars
         add_menu(Sidebars::Admin::Menus::KubernetesMenu.new(context))
         add_menu(Sidebars::Admin::Menus::SpamLogsMenu.new(context))
         add_menu(Sidebars::Admin::Menus::DeployKeysMenu.new(context))
+        add_menu(Sidebars::Admin::Menus::SshCertificatesMenu.new(context)) if InstanceSshCertificate.available?
         add_menu(Sidebars::Admin::Menus::LabelsMenu.new(context))
         add_menu(Sidebars::Admin::Menus::AdminSettingsMenu.new(context))
       end

@@ -7356,6 +7356,12 @@
     "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe/events/john.doe"
   },
   {
+    "template": "/api/:version/ai/duo_workflows/workflows/:workflow_id/execute",
+    "example": "/api/v4/ai/duo_workflows/workflows/foo/execute",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/ai/duo_workflows/workflows/john.doe/execute"
+  },
+  {
     "template": "/api/:version/ai/duo_workflows/workflows/:workflow_id/resume",
     "example": "/api/v4/ai/duo_workflows/workflows/foo/resume",
     "acceptsFormat": true,
@@ -24724,6 +24730,12 @@
     "example": "/o/foo/admin",
     "acceptsFormat": true,
     "dottedExample": "/o/john.doe/admin"
+  },
+  {
+    "template": "/o/:organization_path/admin/cohorts",
+    "example": "/o/foo/admin/cohorts",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/admin/cohorts"
   },
   {
     "template": "/o/:organization_path/admin/sidekiq",
