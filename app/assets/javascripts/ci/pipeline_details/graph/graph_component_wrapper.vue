@@ -320,11 +320,12 @@ export default {
       this.showAlert = false;
       this.alertType = null;
     },
-    refreshPipelineGraph() {
+    async refreshPipelineGraph() {
       this.$apollo.queries.pipeline.refetch();
 
       // this will update the status in header_component since they share the same cache
       this.canRefetchHeaderPipeline = true;
+      await this.$nextTick();
       this.$apollo.queries.headerPipeline.refetch();
     },
     // eslint-disable-next-line @gitlab/require-i18n-strings

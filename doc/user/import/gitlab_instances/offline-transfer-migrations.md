@@ -206,3 +206,32 @@ For more information, see [non-configurable rate limits](../../../rate_limits/no
 ## Related topics
 
 - [Migrate groups and projects by using direct transfer](../../group/import/direct_transfer_migrations.md)
+
+## Troubleshooting
+
+If you have any problems with a migration performed by using offline transfer, see the following sections
+for possible solutions.
+
+### Clear export data from object storage
+
+Each export generates a fresh prefix in object storage, so one export does not overwrite another.
+Deleting stored data from failed exports is not necessary for retrying the export, but might reduce your object storage costs.
+
+To remove export data from object storage, use the bucket you provided and the `export_prefix` returned by the export API to identify and delete the data.
+Depending on your object storage configuration, this might be irreversible.
+
+### Identify import errors
+
+- Review `exceptions_json.log` and `importer.log` for relevant errors.
+- See [Troubleshooting direct transfer migrations](../../group/import/troubleshooting.md) for advice on extracting errors from the Rails console.
+
+### Retry an import
+
+To retry an import:
+
+1. Delete the groups or projects you want to retry. You can retry the entire import or target a subset of groups or projects:
+
+   - [Delete a group immediately](../../group/_index.md#delete-a-group-immediately)
+   - [Delete a project immediately](../../project/working_with_projects.md#delete-a-project-immediately)
+
+1. Use the REST API to retry the entire import or specify only previously failed entities in the `entities` parameter.

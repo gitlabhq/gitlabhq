@@ -106,17 +106,12 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
           project.add_owner(user)
         end
 
-        before do
-          # specs enable every flag by default, which would also switch the safety net off
-          stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
-        end
-
         # The user has two group memberships and one project membership.
         # Flag enabled: the worker asks for one batch refresh, UserProjectAccessChangedService.new(user.id).execute at
         # MEDIUM_PRIORITY, which schedules UserRefreshWithLowUrgencyWorker a minute out.
         # Flag disabled: every destroyed membership refreshes on its own. StubbedMember runs those inline, so they
         # appear as AuthorizedProjectsWorker.new per group membership, ProjectRecalculatePerUserWorker.new per project
-        # membership, and that membership's UserRefreshFromReplicaWorker safety net.
+        # membership, plus one low priority safety-net request through UserProjectAccessChangedService.
         it 'refreshes once for the whole batch instead of once per destroyed membership' do
           expect_next_instances_of(UserProjectAccessChangedService, 1, false, user.id) do |service|
             expect(service).to receive(:execute)
@@ -125,7 +120,6 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
 
           expect(AuthorizedProjectsWorker).not_to receive(:new)
           expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).not_to receive(:new)
-          expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).not_to receive(:bulk_perform_in)
 
           expect { perform_work }.to change { Member.with_user(user).count }.from(3).to(0)
         end
@@ -205,8 +199,6 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
           it 'refreshes after each destroyed membership instead' do
             expect(AuthorizedProjectsWorker).to receive(:new).twice.and_call_original
             expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).to receive(:new).once.and_call_original
-            expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker)
-              .to receive(:bulk_perform_in).once.and_call_original
             # the project membership's safety net is the only refresh request; there is no batch refresh
             expect_next_instance_of(UserProjectAccessChangedService, user.id) do |service|
               expect(service).to receive(:execute)

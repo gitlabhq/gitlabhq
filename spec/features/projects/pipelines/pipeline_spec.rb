@@ -221,9 +221,11 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         it 'is possible to retry the success job', :sidekiq_might_not_need_inline do
           find('#ci-badge-build-job .ci-action-icon-container').click
-          wait_for_requests
 
-          expect(page).not_to have_content('Retry job')
+          page.within('#ci-badge-build-job') do
+            expect(page).to have_css('.js-icon-cancel')
+          end
+
           within_testid('pipeline-header') do
             expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
@@ -275,9 +277,11 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         it 'is possible to retry the failed build', :sidekiq_might_not_need_inline do
           find('#ci-badge-test-job .ci-action-icon-container').click
-          wait_for_requests
 
-          expect(page).not_to have_content('Retry job')
+          page.within('#ci-badge-test-job') do
+            expect(page).to have_css('.js-icon-cancel')
+          end
+
           within_testid('pipeline-header') do
             expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
@@ -310,9 +314,11 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         it 'is possible to play the manual job', :sidekiq_might_not_need_inline do
           find('#ci-badge-manual-job .ci-action-icon-container').click
-          wait_for_requests
 
-          expect(page).not_to have_content('Run job')
+          page.within('#ci-badge-manual-job') do
+            expect(page).to have_css('.js-icon-cancel')
+          end
+
           within_testid('pipeline-header') do
             expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
@@ -395,7 +401,6 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
             context 'when retrying' do
               before do
                 click_button 'Retry downstream pipeline'
-                wait_for_requests
               end
 
               it 'shows running pipeline with the cancel action' do
@@ -415,7 +420,6 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
             context 'when retrying' do
               before do
                 click_button 'Retry downstream pipeline'
-                wait_for_requests
               end
 
               it 'shows running pipeline with the cancel action' do
@@ -493,7 +497,6 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
       before do
         visit_pipeline
-        wait_for_requests
       end
 
       context 'with test reports' do
@@ -1088,12 +1091,14 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       before do
         within_testid 'jobs-tab-table' do
           click_button('Run')
-
-          wait_for_requests
         end
       end
 
-      it { expect(build_manual.reload).to be_pending }
+      it 'marks the build as pending', :aggregate_failures do
+        expect(page).to have_current_path(project_job_path(project, build_manual))
+
+        expect(build_manual.reload).to be_pending
+      end
     end
 
     context 'when user unschedules a delayed job' do

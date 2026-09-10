@@ -1,5 +1,5 @@
 import { GlFormInput, GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import PasswordInput from '~/authentication/password/components/password_input.vue';
 import { SHOW_PASSWORD, HIDE_PASSWORD } from '~/authentication/password/constants';
 
@@ -92,6 +92,28 @@ describe('PasswordInput', () => {
       wrapper = createComponent({ state: false });
 
       expect(findPasswordInput().props('state')).toBe(false);
+    });
+  });
+
+  describe('listener forwarding', () => {
+    const mountWithParent = (onInput) =>
+      mount({
+        components: { PasswordInput },
+        data() {
+          return { childProps: propsData };
+        },
+        methods: { onInput },
+        template: '<password-input v-bind="childProps" @input="onInput" />',
+      });
+
+    it('forwards a parent `input` listener to the field exactly once', async () => {
+      const onInput = jest.fn();
+      const parent = mountWithParent(onInput);
+
+      await parent.find('input').setValue('hunter2');
+
+      expect(onInput).toHaveBeenCalledTimes(1);
+      expect(onInput).toHaveBeenCalledWith('hunter2');
     });
   });
 });

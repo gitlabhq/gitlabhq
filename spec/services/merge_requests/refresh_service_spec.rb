@@ -1240,4 +1240,67 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       end
     end
   end
+
+  describe '#abort_auto_merges for a merge request opened from a fork' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user, owner_of: group) }
+    let_it_be(:target_project) { create(:project, :repository, namespace: group) }
+    let_it_be(:source_project) { fork_project(target_project, user, repository: true) }
+
+    let_it_be_with_refind(:merge_request) do
+      create(
+        :merge_request,
+        source_project: source_project,
+        target_project: target_project,
+        merge_user: user,
+        auto_merge_enabled: true,
+        auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
+      )
+    end
+
+    # RefreshService runs with the pushed-to project, which for a fork merge request
+    # is the source project rather than the one that owns the merge request.
+    let(:service) { described_class.new(project: source_project, current_user: user) }
+    let(:oldrev) { merge_request.diff_refs.base_sha }
+    let(:newrev) { merge_request.diff_refs.head_sha }
+
+    subject(:refresh) do
+      merge_request.merge_params[:sha] = oldrev
+      merge_request.save!
+
+      service.execute(oldrev, newrev, "refs/heads/#{merge_request.source_branch}")
+
+      merge_request.reload
+    end
+
+    def abort_note
+      merge_request.notes.find { |note| note.note.include?('aborted the automatic merge') }
+    end
+
+    it 'files the abort note against the target project', :aggregate_failures do
+      refresh
+
+      expect(abort_note).to be_present
+      expect(abort_note.project).to eq(target_project)
+    end
+
+    it 'still aborts the auto merge', :aggregate_failures do
+      refresh
+
+      expect(merge_request.auto_merge_enabled?).to be_falsey
+      expect(merge_request.merge_user).to be_nil
+    end
+
+    context 'when auto_merge_abort_uses_target_project is disabled' do
+      before do
+        stub_feature_flags(auto_merge_abort_uses_target_project: false)
+      end
+
+      it 'does not persist the abort note' do
+        refresh
+
+        expect(abort_note).to be_nil
+      end
+    end
+  end
 end

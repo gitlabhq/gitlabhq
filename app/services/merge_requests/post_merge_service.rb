@@ -136,10 +136,16 @@ module MergeRequests
         .merge_requests
         .by_target_branch(merge_request.source_branch)
         .with_auto_merge_enabled.each do |targetting_merge_request|
-          if targetting_merge_request.auto_merge_strategy == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
-            abort_auto_merge_with_todo(targetting_merge_request,
-              "the target branch was merged in !#{merge_request.iid}.")
-          end
+          next unless targetting_merge_request.auto_merge_strategy ==
+            ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
+
+          # The aborted merge request can live in a fork while the merged one lives
+          # upstream, and a note resolves references against its own project, so the
+          # reference has to be scoped to the project the note is filed under.
+          reference = merge_request.to_reference(targetting_merge_request.target_project)
+
+          abort_auto_merge_with_todo(targetting_merge_request,
+            "the target branch was merged in #{reference}.")
         end
     end
   end
