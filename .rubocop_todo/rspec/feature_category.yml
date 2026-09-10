@@ -422,7 +422,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/serializers/linked_feature_flag_issue_entity_spec.rb'
     - 'ee/spec/serializers/member_user_entity_spec.rb'
     - 'ee/spec/serializers/metrics_report_metric_entity_spec.rb'
-    - 'ee/spec/serializers/metrics_reports_comparer_entity_spec.rb'
     - 'ee/spec/serializers/pipeline_serializer_spec.rb'
     - 'ee/spec/serializers/productivity_analytics_merge_request_entity_spec.rb'
     - 'ee/spec/serializers/protected_environments/deploy_access_level_entity_spec.rb'

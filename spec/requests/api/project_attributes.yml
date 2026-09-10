@@ -109,7 +109,6 @@ ci_cd_settings:
     - delete_pipelines_in_seconds
     - allow_composite_identities_to_run_pipelines
     - max_pipelines_per_merge_train
-    - skip_branch_pipelines_for_mrs
     - push_pipelines_for_job_token_allowed
   remapped_attributes:
     pipeline_variables_minimum_override_role: ci_pipeline_variables_minimum_override_role
@@ -123,6 +122,7 @@ ci_cd_settings:
     allow_fork_pipelines_to_run_in_parent_project: ci_allow_fork_pipelines_to_run_in_parent_project
     delete_pipelines_in_seconds: ci_delete_pipelines_in_seconds
     display_pipeline_variables: ci_display_pipeline_variables
+    skip_branch_pipelines_for_mrs: ci_skip_branch_pipelines_for_mrs
   computed_attributes:
     - restrict_user_defined_variables
 

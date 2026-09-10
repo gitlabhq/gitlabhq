@@ -35,7 +35,7 @@ There is a bug when passing a string of the format `yyyy-mm-dd` to the `Date` co
 
 From the [MDN Date page](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date):
 
-> When the time zone offset is absent, **date-only forms are interpreted as a UTC time and date-time forms are interpreted as local time**.
+> When the time zone offset is absent, date-only forms are interpreted as a UTC time and date-time forms are interpreted as local time.
 This is due to a historical spec error that was not consistent with ISO 8601 but could not be changed due to web compatibility.
 
 When doing `new Date('2020-02-02')`, you might expect this to create a date like `Sun Feb 02 2020 00:00:00` in your local time.

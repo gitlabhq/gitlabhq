@@ -526,6 +526,9 @@ Gitlab/Ai/OrderConstants:
 Gitlab/Ai/AvoidDirectCheckpointTableRead:
   Enabled: true
 
+Gitlab/Ai/AvoidFoundationalFlowStringLookup:
+  Enabled: true
+
 Gitlab/DocumentationLinks/HardcodedUrl:
   Enabled: true
   Exclude:

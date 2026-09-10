@@ -764,10 +764,6 @@ class Group < Namespace
     members_with_parents.all_owners.exists?(user_id: user)
   end
 
-  def blocked_owners
-    members.blocked.where(access_level: Gitlab::Access::OWNER)
-  end
-
   def has_container_repository_including_subgroups?
     ::ContainerRepository.for_group_and_its_subgroups(self).exists?
   end

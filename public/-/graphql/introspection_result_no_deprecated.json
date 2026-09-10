@@ -241639,6 +241639,24 @@
                 "ofType": null
               },
               "defaultValue": null
+            },
+            {
+              "name": "assignableWhen",
+              "description": "Conditions the current user must meet for the permissions to be offered in the token creation UI. Not a security control: the type, mutation, or field must still enforce the conditions. Valid values: admin, gitlab_team_member, saas, self_managed.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
             }
           ]
         },

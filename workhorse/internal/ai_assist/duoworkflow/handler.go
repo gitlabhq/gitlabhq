@@ -72,19 +72,29 @@ const (
 	errorTypeOther         = "other"
 )
 
+// The transport the client used to reach the handler. Both are reported under
+// the same metrics, because the flow they run is the same and the difference
+// that matters is who executes the actions.
+const (
+	transportWebSocket = "websocket"
+	transportHTTP      = "http"
+)
+
 // Stages at which a connection can fail with errorTypeOther. Logged so the
 // otherwise opaque "other" bucket can be traced back to a specific stage.
 const (
 	errorStageUpgrade        = "websocket_upgrade"
+	errorStageRequestBody    = "request_body"
 	errorStageInitialization = "runner_initialization"
 	errorStageExecution      = "runner_execution"
 )
 
 // countOtherConnectionError increments connectionErrorsTotal{error_type=other}
 // and logs the stage and underlying error, which the metric label alone loses.
-func countOtherConnectionError(r *http.Request, stage string, err error) {
-	connectionErrorsTotal.WithLabelValues(errorTypeOther).Inc()
+func countOtherConnectionError(r *http.Request, transport string, stage string, err error) {
+	connectionErrorsTotal.WithLabelValues(transport, errorTypeOther).Inc()
 	log.WithRequest(r).WithError(err).WithFields(log.Fields{
+		"transport":   transport,
 		"error_stage": stage,
 		"error_type":  errorTypeOther,
 	}).Error("duo workflow connection failed")
@@ -95,7 +105,7 @@ func countOtherConnectionError(r *http.Request, stage string, err error) {
 // and manages the lifecycle of the workflow runner including registration and cleanup.
 func (h *Handler) Build() http.Handler {
 	return h.rails.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
-		connectionsTotal.Inc()
+		connectionsTotal.WithLabelValues(transportWebSocket).Inc()
 
 		upgrader := h.upgrader
 		if len(h.trustedForwardedHosts) > 0 {
@@ -104,7 +114,7 @@ func (h *Handler) Build() http.Handler {
 
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			countOtherConnectionError(r, errorStageUpgrade, err)
+			countOtherConnectionError(r, transportWebSocket, errorStageUpgrade, err)
 			fail.Request(w, r, fmt.Errorf("failed to upgrade: %v", err))
 			return
 		}
@@ -114,18 +124,20 @@ func (h *Handler) Build() http.Handler {
 }
 
 func (h *Handler) handleWebSocketConnection(w http.ResponseWriter, r *http.Request, conn *websocket.Conn, duoWorkflowConfig *api.DuoWorkflow) {
-	runner, err := h.createRunner(conn, duoWorkflowConfig, r)
+	runner, err := h.createRunner(newWsManager(conn), duoWorkflowConfig, r)
 	if err != nil {
-		countOtherConnectionError(r, errorStageInitialization, err)
+		countOtherConnectionError(r, transportWebSocket, errorStageInitialization, err)
 		h.handleInitializationError(w, r, conn, err)
 		return
 	}
 
-	h.registerAndExecuteRunner(r, conn, runner)
+	h.registerAndExecuteRunner(r, transportWebSocket, runner, func(err error) {
+		h.handleWebSocketExecutionError(r, conn, err)
+	})
 }
 
-func (h *Handler) createRunner(conn *websocket.Conn, duoWorkflowConfig *api.DuoWorkflow, r *http.Request) (*runner, error) {
-	runner, err := newRunner(newWsManager(conn), h.rails, h.backend, h.relativeURLRoot, r, duoWorkflowConfig, h.rdb)
+func (h *Handler) createRunner(client clientTransport, duoWorkflowConfig *api.DuoWorkflow, r *http.Request) (*runner, error) {
+	runner, err := newRunner(client, h.rails, h.backend, h.relativeURLRoot, r, duoWorkflowConfig, h.rdb)
 	if err != nil {
 		return nil, err
 	}
@@ -140,45 +152,49 @@ func (h *Handler) handleInitializationError(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (h *Handler) registerAndExecuteRunner(r *http.Request, conn *websocket.Conn, runner *runner) {
+// registerAndExecuteRunner tracks the runner for the duration of the workflow
+// so that a server shutdown can stop it gracefully.
+//
+// reportError is called with a non-nil execution error while the connection is
+// still open, before the runner is closed, so that a transport can still tell
+// its client what went wrong.
+func (h *Handler) registerAndExecuteRunner(r *http.Request, transport string, runner *runner, reportError func(error)) {
+	openConnections := connectionsOpen.WithLabelValues(transport)
+
 	h.runners.Store(runner, true)
-	connectionsOpen.Inc()
+	openConnections.Inc()
 	defer func() {
-		defer connectionsOpen.Dec()
+		defer openConnections.Dec()
 		h.runners.Delete(runner)
 		_ = runner.Close()
 	}()
 
-	h.executeRunner(r, conn, runner)
-}
-
-func (h *Handler) executeRunner(r *http.Request, conn *websocket.Conn, runner *runner) {
 	start := time.Now()
 	if err := runner.Execute(r.Context()); err != nil {
 		log.WithRequest(r).WithError(err).WithFields(log.Fields{
 			"duration_ms": time.Since(start).Milliseconds(),
 		}).Error("error executing workflow")
 
-		h.handleExecutionError(r, conn, err)
+		reportError(err)
 	}
 }
 
-func (h *Handler) handleExecutionError(r *http.Request, conn *websocket.Conn, err error) {
+func (h *Handler) handleWebSocketExecutionError(r *http.Request, conn *websocket.Conn, err error) {
 	switch {
 	case errors.Is(err, errFailedToAcquireLockError):
 		// We provide the client with specific error details
 		// for this case so it can tell the user about the
 		// conflicting flow
-		connectionErrorsTotal.WithLabelValues(errorTypeLocked).Inc()
+		connectionErrorsTotal.WithLabelValues(transportWebSocket, errorTypeLocked).Inc()
 		h.sendCloseMessage(r, conn, websocket.CloseTryAgainLater, "Failed to acquire lock on workflow")
 	case errors.Is(err, errUsageQuotaExceededError):
 		// We close the connection with the specific error
 		// so client can process and inform user about the lack
 		// of credits
-		connectionErrorsTotal.WithLabelValues(errorTypeQuotaExceeded).Inc()
+		connectionErrorsTotal.WithLabelValues(transportWebSocket, errorTypeQuotaExceeded).Inc()
 		h.sendCloseMessage(r, conn, websocket.ClosePolicyViolation, "Insufficient credits: quota exceeded")
 	default:
-		countOtherConnectionError(r, errorStageExecution, err)
+		countOtherConnectionError(r, transportWebSocket, errorStageExecution, err)
 	}
 }
 

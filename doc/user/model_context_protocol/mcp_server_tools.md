@@ -400,6 +400,34 @@ Example:
 Show me all pipelines for merge request 42 in project gitlab-org/gitlab
 ```
 
+## `get_merge_request_conflicts`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221941) in GitLab 18.10.
+
+{{< /history >}}
+
+Retrieves the merge conflict content for a merge request that cannot be merged.
+Returns the raw Git conflict markers (`<<<<<<<`, `=======`, and `>>>>>>>`) exactly as they
+appear in the conflicted files. Each file's content is grouped under a `# File:` heading.
+For renamed files, the heading shows the path in each branch.
+
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `project_id`        | string  | Yes      | ID or full path of the project (for example, `gitlab-org/gitlab`). |
+| `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
+
+You must have permission to push to the source branch of the merge request.
+The tool returns an error when the merge request has no conflicts, when its mergeability
+has not been checked yet, or when a branch or diff ref is missing.
+
+Example:
+
+```plaintext
+Show the conflicts for merge request 42 in project gitlab-org/gitlab
+```
+
 ## `save_note`
 
 {{< history >}}
@@ -726,6 +754,36 @@ Example:
 Show me app/models/user.rb from the main branch of my-group/my-project
 ```
 
+## `list_repository_tree`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605873) in GitLab 19.4.
+
+{{< /history >}}
+
+Lists the files and directories in a GitLab repository at a given path and ref.
+Returns entry metadata only, never file contents. To read the contents of a file,
+use [`get_repository_file`](#get_repository_file).
+
+| Parameter    | Type    | Required | Description |
+|--------------|---------|----------|-------------|
+| `url`        | string  | No       | GitLab URL of the project. Provide exactly one of `url` or `project_id`. |
+| `project_id` | string  | No       | ID or full path of the project. Provide exactly one of `url` or `project_id`. |
+| `path`       | string  | No       | Path of the directory to list, relative to the repository root. Defaults to the root. |
+| `ref`        | string  | No       | Branch name, tag name, or commit SHA. Defaults to the default branch. |
+| `recursive`  | boolean | No       | Lists entries of all subdirectories recursively. Default is `false`. |
+| `after`      | string  | No       | Cursor for forward pagination. Use `endCursor` from the previous response. |
+
+Each call returns up to 100 entries. When `pageInfo.hasNextPage` is `true`, pass
+`pageInfo.endCursor` as `after` to fetch the next page.
+
+Example:
+
+```plaintext
+List the files under app/services in gitlab-org/gitlab on the default branch
+```
+
 ## `get_commit`
 
 {{< history >}}
@@ -753,6 +811,42 @@ Example:
 
 ```plaintext
 Show me commit abc123 in gitlab-org/gitlab with its diff stats
+```
+
+## `list_commits`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605875) in GitLab 19.4.
+
+{{< /history >}}
+
+Lists the commits of a GitLab project, optionally filtered by ref, author, path, or date.
+Returns compact commit metadata. To get the diff or notes of a single commit, use
+[`get_commit`](#get_commit).
+
+| Parameter      | Type    | Required | Description |
+|----------------|---------|----------|-------------|
+| `url`          | string  | No       | GitLab URL of the project. Provide exactly one of `url` or `project_id`. |
+| `project_id`   | string  | No       | ID or full path of the project. Provide exactly one of `url` or `project_id`. |
+| `ref_name`     | string  | No       | Branch or tag to list commits from. Defaults to the default branch. |
+| `author`       | string  | No       | Filters by commit author name or email. |
+| `path`         | string  | No       | Returns only commits that touch this file path. |
+| `since`        | string  | No       | Returns only commits with a committed date after this ISO 8601 date or time. |
+| `until`        | string  | No       | Returns only commits with a committed date before this ISO 8601 date or time. |
+| `order`        | string  | No       | Ordering strategy. Can be `topo` or `date`. Defaults to reverse chronological order. |
+| `first_parent` | boolean | No       | Follows only the first parent of merge commits. |
+| `with_stats`   | boolean | No       | Includes per-commit line-count stats (additions, deletions, and files changed). |
+| `after`        | string  | No       | Cursor for forward pagination. Use `endCursor` from the previous response. |
+| `first`        | integer | No       | Number of commits to return. Default is `20`, maximum is `100`. |
+
+Each commit costs a Gitaly call when `with_stats` is `true`, so `first` defaults to `10`
+and must not exceed `10` when `with_stats` is set.
+
+Example:
+
+```plaintext
+List commits to app/models in gitlab-org/gitlab since 2026-08-01 by Alex
 ```
 
 ## `list_releases`
@@ -1271,6 +1365,31 @@ Example:
 List my open tasks in the gitlab-org group updated this month.
 ```
 
+## `get_work_item_types`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237071) in GitLab 19.1.
+
+{{< /history >}}
+
+Lists the work item types available in a namespace (group or project), including
+system-defined types (such as Issue, Epic, and Task) and custom types.
+Each returned type includes its global ID, name, icon, and the widget types enabled on it,
+so you can avoid setting fields the type does not support.
+
+| Parameter    | Type   | Required | Description |
+|--------------|--------|----------|-------------|
+| `url`        | string | No       | GitLab URL for the namespace (project or group). Required if `group_id` and `project_id` are missing. |
+| `group_id`   | string | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
+| `project_id` | string | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
+
+Example:
+
+```plaintext
+List the work item types available in the gitlab-org group
+```
+
 ## `list_projects`
 
 {{< history >}}
@@ -1421,7 +1540,7 @@ Example:
 List the wiki pages in gitlab-org/gitlab
 ```
 
-## `semantic_code_search`
+## `semantic_search`
 
 {{< details >}}
 
@@ -1438,6 +1557,9 @@ List the wiki pages in gitlab-org/gitlab
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/581105) to the GitLab UI in GitLab 18.7 [with a feature flag](../../administration/feature_flags/_index.md) named `mcp_client`. Disabled by default.
 - [Updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228569) to use the [REST API](../../api/search.md#semantic-search) in GitLab 18.11 [with a feature flag](../../administration/feature_flags/_index.md) named `mcp_semantic_code_search_use_rest_api`. Disabled by default.
 - Using the REST API [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239364) in GitLab 19.1. Feature flag `mcp_semantic_code_search_use_rest_api` removed.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/work_items/606755) from `semantic_code_search` in GitLab 19.4. `semantic_code_search` continues to work as an alias.
+- `scope` parameter [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/606755) in GitLab 19.4.
+- `semantic_query` parameter [renamed](https://gitlab.com/gitlab-org/gitlab/-/work_items/606755) to `q` in GitLab 19.4.
 
 {{< /history >}}
 
@@ -1445,20 +1567,23 @@ List the wiki pages in gitlab-org/gitlab
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-Searches for relevant code snippets in a GitLab project.
+Searches relevant content in a GitLab project by meaning rather than by keyword. Use this tool when you do not know the exact symbol or file
+name, or to discover how a behavior is implemented across a codebase.
 For more information, including setup and enablement,
 see [semantic code search](../gitlab_duo/semantic_code_search.md).
 
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|
-| `semantic_query` | string  | Yes      | Search query for the code. |
-| `project_id`     | string  | Yes      | ID or path of the project. |
-| `directory_path` | string  | No       | Path of the directory (for example, `app/services/`). |
-| `knn`            | integer | No       | Number of nearest neighbors used to find similar code snippets. Default is `64`. |
-| `limit`          | integer | No       | Maximum number of results to return. Default is `20`. |
+| `scope`          | string  | Yes      | Type of content to search. Only `code` is supported. |
+| `q`              | string  | Yes      | Natural language search query. |
+| `project_id`     | string  | Yes      | ID or full path of the project. |
+| `directory_path` | string  | No       | Restricts the search to files under this directory path (for example, `app/services/`). Must be a relative path, without a leading slash or `..` segments. Applies only when `scope` is `code`. |
+| `knn`            | integer | No       | Number of nearest neighbors retrieved internally. Default is `64`, maximum is `100`. Higher values improve recall at the cost of latency. Applies only when `scope` is `code`. |
+| `limit`          | integer | No       | Maximum number of results to return. Default is `20`, maximum is `100`. Applies only when `scope` is `code`. |
 
-For best results, describe the functionality or behavior you're interested in
-rather than using generic keywords or specific function or variable names.
+Results are grouped by file. Each file includes merged line ranges with content and a
+relevance score. For best results, describe the functionality or behavior you're
+interested in rather than using generic keywords or specific function or variable names.
 
 Example:
 

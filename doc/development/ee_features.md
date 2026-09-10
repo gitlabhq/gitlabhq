@@ -92,7 +92,7 @@ flowchart TD
 This diagram shows the four main implementation layers:
 
 - **CE (Green)**: Community Edition features with no licensing requirements.
-  If your target audience is **free users on GitLab.com**, follow the **SaaS** decision path
+  If your target audience is free users on GitLab.com, follow the SaaS decision path
 - **EE (Orange)**: Enterprise Edition features requiring Premium/Ultimate licenses
 - **SaaS (Pink)**: Features exclusive to GitLab.com instances
 - **Dedicated (Blue)**: Features that behave differently on GitLab Dedicated instances
@@ -193,11 +193,11 @@ See [extending CE with EE guide](#extend-ce-features-with-ee-backend-code).
 ### SaaS-only features in tests
 
 Introducing a SaaS-only feature into the codebase creates an additional code path that should be tested.
-Include automated tests for all code affected by a SaaS-only feature, both when the feature is **enabled**
-and **disabled** to ensure the feature works properly.
+Include automated tests for all code affected by a SaaS-only feature, both when the feature is enabled
+and disabled to ensure the feature works properly.
 
 Just as we use `Gitlab::Saas.feature_available?(:specific_feature)` instead of `Gitlab.com?` in application code
-to convey **why** something is SaaS-only, we should use specific SaaS feature metadata tags in tests for the same
+to convey why something is SaaS-only, we should use specific SaaS feature metadata tags in tests for the same
 reason.
 This creates a clear connection between the feature implementation and its tests, making the codebase more maintainable
 and self-documenting.

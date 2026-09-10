@@ -36,6 +36,10 @@ module Gitlab
           possibly_extra.take_while { |partition| detach_partition_if.call(partition) }
         end
 
+        def detachable_since(partition)
+          ::Ci::Partition.archived_since(partition.values)
+        end
+
         def active_partition
           super || initial_partition
         end

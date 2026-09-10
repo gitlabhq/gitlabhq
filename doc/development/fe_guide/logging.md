@@ -11,7 +11,7 @@ frontend development.
 ## When to log to the browser console
 
 We do not want to log unnecessarily to the browser console, as excessively
-noisy console logs are not easy to read, parse, or process. We **do** want to
+noisy console logs are not easy to read, parse, or process. We do want to
 give visibility to unintended events in the system. If a possible but unexpected
 exception occurs during runtime, we want to log the details of this exception.
 These logs can give significantly helpful context to end users creating issues, or

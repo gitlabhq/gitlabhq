@@ -10,8 +10,8 @@ GitLab feature.
 
 Each glossary item provides a single term and its associated definition. The definition should answer the questions:
 
-- **What** is this?
-- **Why** would you use it?
+- What is this?
+- Why would you use it?
 
 For glossary terms:
 

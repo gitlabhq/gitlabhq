@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService,
-  :clean_gitlab_redis_shared_state, :clean_gitlab_redis_queues_metadata, feature_category: :global_search do
+  :clean_gitlab_redis_shared_state, :clean_gitlab_redis_concurrency_limit,
+  :clean_gitlab_redis_queues_metadata, feature_category: :global_search do
   let(:worker_class) do
     Class.new do
       def self.name

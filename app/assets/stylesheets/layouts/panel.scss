@@ -93,6 +93,14 @@
   @apply gl-rounded-t-lg;
   z-index: $panel-header-inner-z-index;
   min-height: $panel-header-inner-height;
+
+  // Override the size change of the button
+  // stylelint-disable-next-line gitlab/no-gl-class
+  .gl-button.button-ellipsis-horizontal.btn-sm {
+    @apply gl-px-0;
+    min-height: $gl-button-small-size;
+    min-width: $gl-button-small-size;
+  }
 }
 
 .panel-header-inner-text {

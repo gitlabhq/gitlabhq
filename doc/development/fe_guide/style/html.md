@@ -76,7 +76,7 @@ When using `gl-link`, using `target="_blank"` is sufficient as it automatically 
 
 ### Fake links
 
-**Do not use fake links.** Use a button tag if a link only invokes JavaScript click event handlers, which is more semantic.
+Do not use fake links. Use a button tag if a link only invokes JavaScript click event handlers, which is more semantic.
 
 ```html
 // bad

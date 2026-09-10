@@ -416,7 +416,6 @@ methods:
   - self.find_by_public_key
   app/models/group.rb:
   - get_ids_by_ids_or_paths
-  - blocked_owners
   - hierarchy_members_with_inactive
   app/models/group_custom_attribute.rb:
   - self.declarative_policy_class

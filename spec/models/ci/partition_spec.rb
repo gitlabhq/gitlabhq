@@ -209,6 +209,34 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
         it { is_expected.to be(false) }
       end
     end
+
+    describe '.archived_since' do
+      subject(:archived_since) { described_class.archived_since(ids) }
+
+      let_it_be(:archived) { create(:ci_partition, :archived, updated_at: 3.weeks.ago) }
+      let_it_be(:archived_later) { create(:ci_partition, :archived, updated_at: 1.week.ago) }
+      let_it_be(:active) { create(:ci_partition, :active) }
+
+      context 'when every id is archived' do
+        let(:ids) { [archived.id, archived_later.id] }
+
+        it 'returns when the last of them was archived' do
+          expect(archived_since).to be_within(1.second).of(archived_later.updated_at)
+        end
+      end
+
+      context 'when one id is not archived' do
+        let(:ids) { [archived.id, active.id] }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when no ids are given' do
+        let(:ids) { [] }
+
+        it { is_expected.to be_nil }
+      end
+    end
   end
 
   describe 'state machine' do

@@ -797,6 +797,7 @@ lib/api/entities/project.rb:
   - ci_pipeline_variables_minimum_override_role
   - ci_push_repository_for_job_token_allowed
   - ci_separated_caches
+  - ci_skip_branch_pipelines_for_mrs
   - cicd_catalog_enabled
   - cluster_agents
   - container_expiration_policy

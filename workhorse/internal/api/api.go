@@ -168,6 +168,11 @@ type DuoWorkflow struct {
 	// ServerCapabilities is a list of capability strings provided by Rails.
 	ServerCapabilities  []string
 	TimeoutHTTPRequests bool
+	// WorkflowID is the workflow Rails authorized this request for. It is set
+	// only for server-side execution, where workhorse starts the workflow
+	// itself and so cannot take the ID from the caller's request body. On the
+	// WebSocket path the ID comes from the client's StartWorkflowRequest.
+	WorkflowID string
 }
 
 // Response represents a structure containing various GitLab-related environment variables.

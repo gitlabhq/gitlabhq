@@ -19,11 +19,9 @@ module Tasks
               invalid_skip_reason: [],
               invalid_additional_scope: [],
               invalid_condition: [],
-              assignable_when_mismatch: [],
               insufficient_tests: []
             }
             @source_locations = {}.compare_by_identity
-            @route_conditions = Hash.new { |hash, key| hash[key] = [] }
           end
 
           private
@@ -32,8 +30,6 @@ module Tasks
 
           def validate!
             routes.each { |route| validate_route(route) }
-
-            validate_assignable_when_consistency
 
             violations[:insufficient_tests] = spec_permission_scanner.insufficient_test_coverage
 
@@ -80,7 +76,6 @@ module Tasks
 
               unless authorization[:skip_granular_token_authorization]
                 register_test_coverage(route, permission, boundary_types)
-                register_route_conditions(route, permission, boundary_types, conditions)
               end
             end
 
@@ -189,43 +184,6 @@ module Tasks
             @known_conditions ||= ::Authz::PermissionGroups::AssignableCondition::EVALUATORS.keys
           end
 
-          def register_route_conditions(route, permission, boundary_types, conditions)
-            boundary_types.each do |boundary_type|
-              @route_conditions[[permission.to_sym, boundary_type.to_sym]] << {
-                conditions: conditions,
-                route: route
-              }
-            end
-          end
-
-          # For each boundary, the YAML conditions must equal the conditions
-          # shared by every endpoint at that boundary (their intersection).
-          def validate_assignable_when_consistency
-            grouped = Hash.new { |hash, key| hash[key] = [] }
-
-            @route_conditions.each do |(permission, boundary), entries|
-              assignable = Authz::PermissionGroups::Assignable.available_for_permission(permission).first
-              next unless assignable
-
-              grouped[[assignable, boundary]].concat(entries)
-            end
-
-            grouped.each do |(assignable, boundary), entries|
-              endpoint_conditions = entries.map { |entry| entry[:conditions] }.reduce(:&).sort
-              yaml_conditions = assignable.conditions_for(boundary).sort
-
-              next if yaml_conditions == endpoint_conditions
-
-              violations[:assignable_when_mismatch] << {
-                assignable: assignable.name,
-                boundary: boundary,
-                yaml_conditions: yaml_conditions,
-                endpoint_conditions: endpoint_conditions,
-                routes: entries.map { |entry| base_error(entry[:route]) }
-              }
-            end
-          end
-
           def validate_assignable_permission(route, permission, boundary_types)
             return unless boundary_types.any?
 
@@ -282,7 +240,6 @@ module Tasks
             out += format_invalid_skip_reason_errors
             out += format_route_errors(:invalid_additional_scope)
             out += format_invalid_condition_errors
-            out += format_assignable_when_mismatch_errors
             out + format_insufficient_test_errors
           end
 
@@ -321,23 +278,6 @@ module Tasks
             violations[:invalid_condition].each do |violation|
               out += "  - #{violation[:method]} #{violation[:path]}: " \
                 "#{violation[:conditions].join(', ')} (#{violation[:source]})\n"
-            end
-
-            "#{out}\n"
-          end
-
-          def format_assignable_when_mismatch_errors
-            return '' if violations[:assignable_when_mismatch].empty?
-
-            out = "#{error_messages[:assignable_when_mismatch]}\n\n"
-
-            violations[:assignable_when_mismatch].each do |v|
-              out += "  - #{v[:assignable]} (#{v[:boundary]} boundary)\n"
-              out += "      YAML conditions: [#{v[:yaml_conditions].join(', ')}]\n"
-              out += "      Endpoint conditions: [#{v[:endpoint_conditions].join(', ')}]\n"
-              v[:routes].each do |route|
-                out += "      #{route[:method]} #{route[:path]} (#{route[:source]})\n"
-              end
             end
 
             "#{out}\n"
@@ -414,12 +354,6 @@ module Tasks
               invalid_condition: <<~MSG.chomp,
                 The following API routes use an unknown assignable_when condition.
                 Use one of: #{::Authz::PermissionGroups::AssignableCondition::EVALUATORS.keys.map { |c| ":#{c}" }.join(', ')}
-                #{assignable_permissions_link(anchor: 'conditionally-assignable-permissions')}
-              MSG
-              assignable_when_mismatch: <<~MSG.chomp,
-                The following assignable permissions have assignable_when conditions inconsistent with their REST endpoints.
-                For each boundary, the YAML conditions must equal the conditions shared by every endpoint at that boundary.
-                Tag the endpoints with assignable_when, or update the assignable permission YAML file.
                 #{assignable_permissions_link(anchor: 'conditionally-assignable-permissions')}
               MSG
               insufficient_tests: <<~MSG.chomp

@@ -130,11 +130,22 @@ describe('Rapid Diffs App Facade', () => {
     expect(useDiffsList().streamInitialDiffs).toHaveBeenCalledWith('/reload');
   });
 
-  it('reacts to files loading', () => {
+  it('reports mounted files to the store once per frame', () => {
     createApp();
     app.init();
-    document.querySelector('[data-rapid-diffs]').dispatchEvent(new CustomEvent(DIFF_FILE_MOUNTED));
-    expect(useDiffsList(pinia).addLoadedFile).toHaveBeenCalled();
+    const root = document.querySelector('[data-rapid-diffs]');
+    ['foo', 'bar'].forEach((id) => {
+      const file = document.createElement('diff-file');
+      file.id = id;
+      root.appendChild(file);
+      file.dispatchEvent(new CustomEvent(DIFF_FILE_MOUNTED, { bubbles: true }));
+    });
+    expect(useDiffsList(pinia).addLoadedFiles).not.toHaveBeenCalled();
+
+    jest.runOnlyPendingTimers();
+
+    expect(useDiffsList(pinia).addLoadedFiles).toHaveBeenCalledTimes(1);
+    expect(useDiffsList(pinia).addLoadedFiles).toHaveBeenCalledWith(['foo', 'bar']);
   });
 
   it('skips sorting', () => {

@@ -38,6 +38,38 @@ RSpec.describe Import::SourceUserPlaceholderReference, factory_default: :keep, f
     end
   end
 
+  describe '#expires_at' do
+    it 'defaults to one year from now for a new record' do
+      freeze_time do
+        reference = build(:import_source_user_placeholder_reference, expires_at: nil)
+        reference.valid?
+
+        expect(reference.expires_at).to be_within(1.second).of(1.year.from_now)
+      end
+    end
+
+    it 'defaults to one year from now, not one year from created_at, for a pre-existing record with no value set' do
+      created_at = 3.years.ago
+      reference = travel_to(created_at) { create(:import_source_user_placeholder_reference) }
+      reference.update_column(:expires_at, nil)
+
+      freeze_time do
+        reference.valid?
+
+        expect(reference.expires_at).to be_within(1.second).of(1.year.from_now)
+      end
+    end
+
+    it 'does not override an explicitly set value' do
+      expires_at = 5.days.from_now
+      reference = build(:import_source_user_placeholder_reference, expires_at: expires_at)
+
+      reference.valid?
+
+      expect(reference.expires_at).to be_within(1.second).of(expires_at)
+    end
+  end
+
   describe 'scopes' do
     let_it_be(:source_user_1) { create(:import_source_user) }
     let_it_be(:source_user_2) { create(:import_source_user) }

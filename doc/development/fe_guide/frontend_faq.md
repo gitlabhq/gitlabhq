@@ -7,16 +7,16 @@ title: Frontend FAQ
 
 ## Rules of Frontend FAQ
 
-1. **You talk about Frontend FAQ.**
-   Share links to it whenever applicable, so more eyes catch when content
-   gets outdated.
-1. **Keep it short and simple.**
-   Whenever an answer needs more than two sentences it does not belong here.
-1. **Provide background when possible.**
-   Linking to relevant source code, issue / epic, or other documentation helps
-   to understand the answer.
-1. **If you see something, do something.**
-   Remove or update any content that is outdated as soon as you see it.
+- You talk about Frontend FAQ.
+  Share links to it whenever applicable, so more eyes catch when content
+  gets outdated.
+- Keep it short and simple.
+  Whenever an answer needs more than two sentences it does not belong here.
+- Provide background when possible.
+  Linking to relevant source code, issue / epic, or other documentation helps
+  to understand the answer.
+- If you see something, do something.
+  Remove or update any content that is outdated as soon as you see it.
 
 ## FAQ
 

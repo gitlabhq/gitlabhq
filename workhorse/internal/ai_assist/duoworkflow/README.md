@@ -1,16 +1,17 @@
 # Duo Workflow Package
 
-This package implements Workhorse's support for AI-assisted features through integration with the Duo Workflow Service. It provides WebSocket proxying, gRPC communication, and action handling for AI workflows.
+This package implements Workhorse's support for AI-assisted features through integration with the Duo Workflow Service. It provides two entry points: a WebSocket endpoint that proxies between a client and the Duo Workflow Service, and an HTTP endpoint that runs a flow for a caller that cannot execute actions itself. Both share gRPC communication and action handling for AI workflows.
 
 ## Overview
 
 The `duoworkflow` package enables GitLab's AI-assisted features (Duo Chat, Duo Agent) by:
 
 1. Managing WebSocket connections between clients and Workhorse
-2. Establishing gRPC streams to the Duo Workflow Service
-3. Handling bidirectional message exchange
-4. Executing actions (HTTP requests, MCP tool calls) on behalf of the Duo Workflow Service
-5. Supporting various deployment scenarios (GitLab.com, self-managed, self-hosted)
+1. Running a flow on behalf of a caller that cannot execute actions, streaming its progress back as newline-delimited JSON
+1. Establishing gRPC streams to the Duo Workflow Service
+1. Handling bidirectional message exchange
+1. Executing actions (HTTP requests, MCP tool calls) on behalf of the Duo Workflow Service
+1. Supporting various deployment scenarios (GitLab.com, self-managed, self-hosted)
 
 ## Package structure
 
@@ -18,6 +19,8 @@ The `duoworkflow` package enables GitLab's AI-assisted features (Duo Chat, Duo A
 - **runner.go**: Main orchestrator that manages the lifecycle of a single workflow execution
 - **transport.go**: Defines the `clientTransport` interface, the runner's view of the client that started the workflow
 - **websocket.go**: WebSocket implementation of `clientTransport`, including read deadlines, keepalive pings, and close handling
+- **http_transport.go**: ndjson implementation of `clientTransport`, which streams actions to a caller that executes none of them
+- **http_handler.go**: HTTP handler for server-side flow execution, including start request decoding and outcome reporting
 - **stream_manager.go**: Manages gRPC streams to the Duo Workflow Service (primary and optional cloud-tracking stream for self-hosted deployments)
 - **client.go**: gRPC client for communicating with the Duo Workflow Service
 - **actions.go**: Handler for executing HTTP action requests from the Duo Workflow Service
@@ -100,6 +103,70 @@ type clientTransport interface {
 	Close() error
 }
 ```
+
+There are two implementations, and what separates them is whether the client is an executor:
+
+- `wsManager` backs the WebSocket endpoint. The client on the other end runs commands, reads
+  files, and answers with an `ActionResponse`, so every action is handed to it.
+- `ndjsonTransport` backs the server-side execution endpoint. Its caller executes nothing, so
+  only `NewCheckpoint` actions are written out and every other action is rejected with
+  `errActionUnsupported`. The runner then answers the Duo Workflow Service itself with an error
+  `ActionResponse`. This is not optional: the Duo Workflow Service waits for a response to every
+  action it emits, and an unanswered action stalls the flow until its own timeout.
+
+### Server-side execution
+
+`Handler.BuildHTTP` serves callers that want a flow run for them and cannot execute actions at
+all, such as a chat turn arriving from a Slack integration and handled in a Sidekiq job. Before
+this endpoint existed, the only way to run a flow for such a caller was to start a CI job whose
+only purpose was to hold the gRPC stream and answer actions.
+
+- **Route**: `POST /api/v4/ai/duo_workflows/workflows/:workflow_id/execute`, registered as
+  `duo_workflow_execute` in `internal/upstream/routes.go`
+- **Request**: a protojson-encoded `StartWorkflowRequest`, capped at `MaxMessageSize`. Workhorse
+  sends it as the first client event instead of waiting for a client to send one
+- **Response**: HTTP 200 with `Content-Type: application/x-ndjson`, one protojson-encoded
+  `Action` per line, flushed as it arrives over a single chunked response. Empty lines are
+  keepalives that carry no action, and ndjson readers skip them
+
+The request is pre-authorized with GitLab Rails through the same `PreAuthorizeHandler` mechanism
+as the `:ws` endpoint. The workflow ID comes from the pre-authorization response
+(`api.DuoWorkflow.WorkflowID`), never from the request body, because Workhorse authorizes nothing
+itself. A body naming a different workflow is rejected with `400`.
+
+The caller's `clientCapabilities`, `mcpTools`, and `preapprovedTools` are dropped from the body.
+Capabilities describe an executor, and Workhorse is not one here. The tools available to the flow
+are the ones Rails configured. The runner still appends the server capabilities Rails reported.
+
+Only `NewCheckpoint` actions reach the caller, so it can follow the flow's progress.
+`RunHTTPRequest`, `RunMCPTool` for known tools, and `TrackLlmCallForSelfHosted` are executed by
+Workhorse exactly as on the WebSocket path.
+
+The response header is committed lazily, on the first action or keepalive written. Until then, a
+failure is reported as a real HTTP status code:
+
+| Status | Trigger                                                                          |
+| ------ | -------------------------------------------------------------------------------- |
+| `400`  | Request body cannot be decoded, or the Duo Workflow Service rejects it as invalid |
+| `403`  | Usage quota is exhausted                                                          |
+| `409`  | Workflow lock is held by another run                                              |
+| `500`  | Pre-authorization response is missing the service config or the workflow ID       |
+| `502`  | gRPC stream to the Duo Workflow Service cannot be opened                          |
+
+On the WebSocket path the same conditions arrive as WebSocket close codes (`1013`, `1008`,
+`4400`) that the client has to interpret.
+
+Once the response is committed, a failure can only end the stream. The caller tells a completed
+run from an interrupted one through the workflow's status in the database, which the Duo Workflow
+Service keeps up to date. There is deliberately no in-band terminal record, so that the line
+format stays exactly the `Action` stream WebSocket clients already parse.
+
+If the caller hangs up, no `StopWorkflowRequest` can be sent: the gRPC stream is derived from the
+HTTP request context, so it is already gone. The Duo Workflow Service sees the canceled stream
+and treats it as a disconnect, exactly as when a WebSocket client vanishes, which leaves the
+workflow resumable from its last checkpoint. On a Workhorse graceful shutdown, where the caller
+is still connected and the stream is intact, the stop request is sent as usual. As on the
+WebSocket endpoint, there is deliberately no maximum run duration.
 
 ### Runner
 
@@ -273,39 +340,40 @@ The package exposes six Prometheus counters, one gauge and one histogram.
 
 ### `gitlab_workhorse_duo_workflow_connections_total`
 
-Incremented for every inbound request that passes pre-authorization, before the WebSocket upgrade is attempted. This includes requests that subsequently fail to upgrade.
+Incremented for every inbound request that passes pre-authorization, labeled by `transport`, which is `websocket` for the WebSocket endpoint and `http` for server-side execution. On the WebSocket transport the counter is incremented before the upgrade is attempted, so it includes requests that subsequently fail to upgrade.
 
 ### `gitlab_workhorse_duo_workflow_connections_open`
 
-The number of runners currently executing, incremented when a runner is registered and decremented when it is torn down.
+The number of runners currently executing, labeled by `transport`, incremented when a runner is registered and decremented when it is torn down.
 
-Connections stay open for hours, so concurrency cannot be derived from `connections_total` alone. `gitlab_workhorse_http_in_flight_requests` is not a substitute: it is unlabelled, so it cannot be narrowed to this route, and it also counts the HTTP actions that re-enter the upstream router while the WebSocket is still open.
+Connections stay open for hours, so concurrency cannot be derived from `connections_total` alone. `gitlab_workhorse_http_in_flight_requests` is not a substitute: it is unlabelled, so it cannot be narrowed to this route, and it also counts the HTTP actions that re-enter the upstream router while the connection is still open.
 
-Use it to normalise process memory per connection:
+Use it to normalise process memory per connection. Sum over `transport` first, because a WebSocket connection and a server-side run cost different amounts and mixing them makes the ratio meaningless on its own:
 
 ```promql
 go_memstats_heap_inuse_bytes{job=~"gitlab-workhorse.*"}
-  / on(instance) gitlab_workhorse_duo_workflow_connections_open
+  / on(instance) sum without(transport) (gitlab_workhorse_duo_workflow_connections_open)
 ```
 
 ### `gitlab_workhorse_duo_workflow_connection_errors_total`
 
-Incremented whenever a connection fails at any stage, labelled by `error_type`:
+Incremented whenever a connection fails at any stage, labeled by `transport` (`websocket`, `http`) and `error_type`:
 
-| Stage                 | Trigger                                           | `error_type`      |
-| --------------------- | ------------------------------------------------- | ----------------- |
-| WebSocket upgrade     | `websocket.Upgrader.Upgrade` returns an error     | `other`           |
-| Runner initialisation | `newRunner` / `newStreamManager` returns an error | `other`           |
-| Runner execution      | Usage quota exceeded                              | `quota_exceeded`  |
-| Runner execution      | Workflow lock cannot be acquired                  | `locked`          |
-| Runner execution      | Any other `runner.Execute` error                  | `other`           |
+| Stage                 | Trigger                                                              | `error_type`     |
+| --------------------- | -------------------------------------------------------------------- | ---------------- |
+| WebSocket upgrade     | `websocket.Upgrader.Upgrade` returns an error                        | `other`          |
+| Request body          | Start request body cannot be read or decoded (`http` transport only) | `other`          |
+| Runner initialisation | `newRunner` / `newStreamManager` returns an error                    | `other`          |
+| Runner execution      | Usage quota exceeded                                                 | `quota_exceeded` |
+| Runner execution      | Workflow lock cannot be acquired                                     | `locked`         |
+| Runner execution      | Any other `runner.Execute` error                                     | `other`          |
 
 The ratio `connection_errors_total / connections_total` gives the connection error rate.
 
-Example query to break down errors by type:
+Example query to break down errors by transport and type:
 
 ```promql
-sum(rate(gitlab_workhorse_duo_workflow_connection_errors_total[5m])) by (error_type)
+sum(rate(gitlab_workhorse_duo_workflow_connection_errors_total[5m])) by (transport, error_type)
 ```
 
 ### `gitlab_workhorse_duo_workflow_sessions_total`
@@ -441,6 +509,8 @@ During server shutdown:
 Test files are located in the same directory:
 
 - **handler_test.go**: WebSocket connection handling and pre-authorization
+- **http_transport_test.go**: ndjson line framing, keepalives, action rejection, and lazy header commit
+- **http_handler_test.go**: start request decoding, streamed responses, and failure status codes
 - **client_test.go**: gRPC client creation and connection management
 - **runner_test.go**: Message handling and workflow execution
 - **actions_test.go**: HTTP request execution and response handling
@@ -461,6 +531,8 @@ go test ./internal/ai_assist/duoworkflow/... -v
 - **wsWriteDeadline**: 60 seconds — WebSocket write timeout
 - **wsCloseTimeout**: 5 seconds — WebSocket close timeout
 - **wsStopWorkflowTimeout**: 10 seconds — workflow stop request timeout
+- **httpKeepaliveInterval**: 20 seconds — ndjson keepalive interval, matching the WebSocket ping interval
+- **startRequestBodyLimit**: 4MB (`MaxMessageSize`) — maximum server-side execution request body size
 - **gRPC keepalive time**: 20 seconds — keepalive ping interval
 - **gRPC retry attempts**: 4 — maximum retry attempts for failed requests
 

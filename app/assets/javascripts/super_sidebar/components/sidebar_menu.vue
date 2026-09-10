@@ -453,7 +453,7 @@ export default {
         :aria-label="$options.i18n.browseMoreFeatures"
         :class="{ 'feature-library-shimmer': shimmerActive }"
         data-testid="feature-library-trigger"
-        icon="applications"
+        icon="feature-addition"
         @click="dismissShimmerCallout"
       >
         {{ $options.i18n.browseMoreFeatures }}
@@ -467,7 +467,7 @@ export default {
       :aria-label="$options.i18n.browseMoreFeatures"
       :class="{ 'feature-library-shimmer': shimmerActive }"
       data-testid="feature-library-trigger"
-      icon="applications"
+      icon="feature-addition"
       :is-icon-only="isIconOnly"
       @click="dismissShimmerCallout"
     >

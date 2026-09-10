@@ -19,6 +19,7 @@ title: Managing security configuration profiles
 - SAST profile [added](https://gitlab.com/groups/gitlab-org/-/epics/19951) in GitLab 18.11.
 - Dependency scanning profile [introduced](https://gitlab.com/groups/gitlab-org/-/epics/19952) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_scan_profiles_dependency_scanning`. Enabled by default.
 - Dependency scanning auto-remediation profile [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/604588) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_remediation_profiles`. Enabled by default.
+- Secret detection scan profile configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606237) in GitLab 19.3 as an [experiment](../../../policy/development_stages_support.md), available through the GraphQL API only.
 - Feature flag `security_scan_profiles_feature` removed in GitLab 19.4.
 - Feature flag `security_remediation_profiles` removed in GitLab 19.4.
 - SAST scan profile configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/617070) in GitLab 19.4 as an [experiment](../../../policy/development_stages_support.md), available through the GraphQL API only.
@@ -190,6 +191,71 @@ To apply a security configuration profile:
    A single mutation accepts a maximum of 100 IDs, counting project and group IDs together.
 
 1. Check the `errors` field in the response to confirm that the profile was applied.
+
+## Customize a secret detection profile
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+Customize a secret detection profile to override the configuration the scanner uses when it runs.
+Each setting maps to an existing [secret detection CI/CD variable](../secret_detection/_index.md).
+
+This feature is available through the GraphQL API only.
+
+Prerequisites:
+
+- The Maintainer or Security Manager role for the associated group.
+
+To customize a secret detection profile, use the `securityScanProfileCreate` or `securityScanProfileUpdate`
+mutation. Set a `configuration.secretDetection` object on the trigger you want to customize.
+
+| Field | Description | Equivalent CI/CD variable |
+| ----- | ----------- | ------------------------- |
+| `secureAnalyzersPrefix` | Prefix for the container registry the analyzer image is pulled from. | `SECURE_ANALYZERS_PREFIX` |
+| `imageSuffix` | Suffix appended to the analyzer image name. Set to `DEFAULT` or `FIPS`. | `SECRET_DETECTION_IMAGE_SUFFIX` |
+| `historicScan` | Whether to scan the full Git history instead of only the current state. | `SECRET_DETECTION_HISTORIC_SCAN` |
+| `logOptions` | Options passed to `git log` to control the commit range scanned. | `SECRET_DETECTION_LOG_OPTIONS` |
+| `excludedPaths` | Glob paths excluded from the scan. | `SECRET_DETECTION_EXCLUDED_PATHS` |
+| `rulesetGitReference` | Git reference of the remote ruleset configuration to use. | `SECRET_DETECTION_RULESET_GIT_REFERENCE` |
+
+For example, to create a secret detection profile with a customized merge request pipeline trigger:
+
+```graphql
+mutation {
+  securityScanProfileCreate(input: {
+    namespaceId: "gid://gitlab/Group/123",
+    scanType: SECRET_DETECTION,
+    name: "Custom secret detection profile",
+    description: "Secret detection profile with a historic scan and path exclusions",
+    triggers: [
+      {
+        triggerType: MERGE_REQUEST_PIPELINE,
+        configuration: {
+          secretDetection: {
+            historicScan: true,
+            excludedPaths: ["spec/**/*", "test/**/*"]
+          }
+        }
+      }
+    ]
+  }) {
+    scanProfile {
+      id
+      name
+    }
+    errors
+  }
+}
+```
+
+By default, the `stripDefaults` argument removes trigger configuration values that match the
+defaults before storing the profile, so only your overrides persist.
+
+For the full list of arguments, see the
+[`securityScanProfileCreate` mutation](../../../api/graphql/reference/_index.md#mutationsecurityscanprofilecreate).
 
 ## Customize a SAST profile
 

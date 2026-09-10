@@ -18,20 +18,14 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
       stub_feature_flags(duo_flow_callback_hooks: project.root_ancestor)
     end
 
-    it 'persists the attribute on create' do
-      post project_hooks_path(project), params: {
-        hook: { url: 'http://example.com', duo_flow_callback_enabled: true }
-      }
+    context 'when on FOSS', unless: Gitlab.ee? do
+      it 'does not set the attribute even though the flag is enabled' do
+        post project_hooks_path(project), params: {
+          hook: { url: 'http://example.com', duo_flow_callback_enabled: true }
+        }
 
-      expect(ProjectHook.order_id_desc.take.duo_flow_callback_enabled).to be(true)
-    end
-
-    it 'persists the attribute on update' do
-      put project_hook_path(project, hook), params: {
-        hook: { url: hook.url, duo_flow_callback_enabled: true }
-      }
-
-      expect(hook.reload.duo_flow_callback_enabled).to be(true)
+        expect(ProjectHook.order_id_desc.take.duo_flow_callback_enabled).to be(false)
+      end
     end
 
     # The form omits the checkbox when the feature is unavailable, so these requests stand

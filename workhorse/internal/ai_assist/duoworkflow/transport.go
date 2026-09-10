@@ -2,6 +2,7 @@ package duoworkflow
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
@@ -12,6 +13,12 @@ import (
 // historical WebSocket wording so DWS-side telemetry matching on it keeps
 // working.
 const reasonKeepaliveFailed = "WORKHORSE_WEBSOCKET_PING_FAILED"
+
+// errActionUnsupported is returned by WriteAction when the client on the other
+// end cannot execute the action. Duo Workflow Service blocks until every action
+// it emits is answered, so runner turns this into an error ActionResponse
+// rather than dropping the action.
+var errActionUnsupported = errors.New("action cannot be executed by this client")
 
 // clientTransport is the connection to whoever started the workflow. runner
 // orchestrates a workflow purely through this interface, so the gRPC stream
@@ -38,7 +45,9 @@ type clientTransport interface {
 	ReadError(err error) (reason string, ok bool)
 
 	// WriteAction forwards an action from Duo Workflow Service to the client
-	// for execution.
+	// for execution. It returns errActionUnsupported when this client cannot
+	// execute the action, so that runner can answer Duo Workflow Service on
+	// its behalf.
 	WriteAction(ctx context.Context, action *pb.Action) error
 
 	// SendGoingAway tells the client that this workhorse instance is shutting

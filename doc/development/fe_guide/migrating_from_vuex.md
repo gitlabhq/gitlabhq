@@ -99,7 +99,7 @@ These values are especially useful when used by a lot of different components, s
 
 #### Simple read/write values
 
-If we go back to our example, `selectedSuiteIndex` is only used by **one component** and also **once inside a getter**. Additionally, this getter is only used once itself! It would be quite easy to translate this logic to Vue because this could become a `data` property on the component instance. For the getter, we can use a computed property instead, or a method on the component that returns the right item because we will have access to the index there as well. This is a perfect example of how the VueX store here complicates the application by adding a lot of abstractions when really everything could live inside the same component.
+If we go back to our example, `selectedSuiteIndex` is only used by one component and also once inside a getter. Additionally, this getter is only used once itself! It would be quite easy to translate this logic to Vue because this could become a `data` property on the component instance. For the getter, we can use a computed property instead, or a method on the component that returns the right item because we will have access to the index there as well. This is a perfect example of how the VueX store here complicates the application by adding a lot of abstractions when really everything could live inside the same component.
 
 Luckily, in our example all properties could live inside the same component. However, there are cases where it will not be possible. When this happens, we can use Vue events and props to communicate between sibling components. Store the data in question inside a parent component that should know about the state, and when a child component wants to write to the component, it can `$emit` an event with the new value and let the parent update. Then, by cascading props down to all of its children, all instances of the sibling components will share the same data.
 
@@ -142,7 +142,7 @@ mutation updateAppStatus($appStatus: String) {
 }
 ```
 
-For fields that **do not exist in our schema**, we need to set up `typeDefs`. For example:
+For fields that do not exist in our schema, we need to set up `typeDefs`. For example:
 
 ```javascript
 // typedefs.graphql
@@ -274,11 +274,11 @@ query getTestReportSummary($fullPath: ID!, $iid: ID!, endpoint: String!) {
 }
 ```
 
-The structure here is arbitrary in the sense that we could write this however we want. It might be tempting to skip the `project.pipeline.testReportSummary` because this is not how the REST call is structured. However, by making the query structure compliant with the `GraphQL` API, we will not need to modify our query if we do decide to transition to `GraphQL` later, and can simply remove the `@client` directive. This also gives us **caching for free** because if we try to fetch the summary again for the same pipeline, Apollo Client knows that we already have the result!
+The structure here is arbitrary in the sense that we could write this however we want. It might be tempting to skip the `project.pipeline.testReportSummary` because this is not how the REST call is structured. However, by making the query structure compliant with the `GraphQL` API, we will not need to modify our query if we do decide to transition to `GraphQL` later, and can simply remove the `@client` directive. This also gives us caching for free because if we try to fetch the summary again for the same pipeline, Apollo Client knows that we already have the result!
 
 Additionally, we are passing an `endpoint` argument to our field `testReportSummary`. This would not be necessary in pure `GraphQL`, but our resolver is going to need that information to make the `REST` call later.
 
-Now we need to write a client-side resolver. When we mark a field with an `@client` directive, it is **not sent to the server**, and Apollo Client instead expects us to [define our own code to resolve the value](graphql.md#using-client-side-resolvers). We can write a client-side resolver for `testReportSummary` inside the `cacheConfig` object that we pass to Apollo Client. We want this resolver to make the Axios call and return whatever data structure we want. This is also the perfect place to transfer a getter if it was always used when accessing the API data or massaging the data structure:
+Now we need to write a client-side resolver. When we mark a field with an `@client` directive, it is not sent to the server, and Apollo Client instead expects us to [define our own code to resolve the value](graphql.md#using-client-side-resolvers). We can write a client-side resolver for `testReportSummary` inside the `cacheConfig` object that we pass to Apollo Client. We want this resolver to make the Axios call and return whatever data structure we want. This is also the perfect place to transfer a getter if it was always used when accessing the API data or massaging the data structure:
 
 ```javascript
 // graphql_config.js

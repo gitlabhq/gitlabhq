@@ -322,10 +322,12 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
   height: 12px;
 }
 
-// Firefox rendering bug fix - force new stacking context
+// Firefox rendering bug fix - force new stacking context.
+// Not a transform: that also makes this a containing block for fixed
+// descendants, which misplaces the file browser while it's resized.
 .diffs.tab-pane,
 .notes.tab-pane {
   @supports (-moz-appearance: none) {
-    transform: translateZ(0);
+    isolation: isolate;
   }
 }

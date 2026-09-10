@@ -13,6 +13,7 @@ module Gitlab
         MANAGEMENT_LEASE_KEY = 'database_partition_management_%s'
         RETAIN_DETACHED_PARTITIONS_FOR = 1.week
         MAX_PARTITION_SIZE = 150.gigabytes
+        DETACH_DEFERRAL_GRACE = 2.weeks
 
         UnableToDetachPartition = Class.new(StandardError)
 
@@ -157,19 +158,20 @@ module Gitlab
           check = DetachEligibility.new(partition, connection: connection, detach_concurrently: detach_concurrently?)
           return true if check.detachable?
 
-          log_deferred_detach(partition, check.blocker)
+          log_detach_blocker(partition, check.blocker)
+          escalate_long_detach_deferral(partition, check.blocker)
           false
         rescue ActiveRecord::StatementInvalid => e
-          log_deferred_detach(partition, DetachEligibility::Blocker.new(
+          log_detach_blocker(partition, DetachEligibility::Blocker.new(
             reason: :database_error, level: :error, details: { exception_message: e.message }
           ))
           false
         end
 
-        def log_deferred_detach(partition, blocker)
+        def log_detach_blocker(partition, blocker)
           payload = log_payload(
-            message: 'Deferred detaching partition',
-            deferral_reason: blocker.reason,
+            message: blocker.level == :error ? 'Cannot detach partition' : 'Deferred detaching partition',
+            blocker_reason: blocker.reason,
             partition_name: partition.partition_name,
             **blocker.details
           )
@@ -183,6 +185,37 @@ module Gitlab
           else
             Gitlab::AppLogger.info(payload)
           end
+        end
+
+        # If a detach has been deferred for too long, we escalate it to an error.
+        def escalate_long_detach_deferral(partition, blocker)
+          return if blocker.level == :error
+
+          duration = deferral_duration(partition)
+          return unless duration && duration > max_detach_deferral
+
+          Gitlab::AppLogger.error(log_payload(
+            message: 'Detach deferred for too long',
+            partition_name: partition.partition_name,
+            blocker_reason: blocker.reason,
+            deferral_duration_s: duration
+          ))
+
+          @detach_error_messages << "#{partition.partition_name} (deferred too long)"
+        end
+
+        def deferral_duration(partition)
+          detachable_since = model.partitioning_strategy.detachable_since(partition)
+          return unless detachable_since
+
+          ::Time.current - detachable_since
+        end
+
+        # A referencing partition detaches, waits out a retention period of its own, then drops
+        # on a later run (it could be delayed until the weekend if it exceeds MAX_PARTITION_SIZE),
+        # so DETACH_DEFERRAL_GRACE must account for this timing.
+        def max_detach_deferral
+          detached_partition_retention_period + DETACH_DEFERRAL_GRACE
         end
 
         # An :error blocker is a misconfigured table or a database error in the eligibility check, and it must

@@ -175,11 +175,23 @@ Every boundary listed in `assignable_when` must also appear in the permission's
   with `403 Forbidden` when the endpoint's own checks reject the user.
   Existing tokens that already hold the permission continue to work even if
   the owner no longer meets the conditions.
-- REST endpoints declare the same conditions with
-  [`assignable_when` on their authorization decorator](rest_api_implementation_guide.md#tagging-conditionally-available-endpoints).
-  The validation task fails when the endpoint tags and the YAML conditions for
-  a boundary disagree, so tag the endpoints and update the YAML file in the
-  same merge request.
+- REST endpoints and GraphQL types, mutations, and fields declare the same
+  conditions with `assignable_when` on their
+  [authorization decorator](rest_api_implementation_guide.md#tagging-conditionally-available-endpoints)
+  or [directive](graphql_implementation_guide.md#tag-conditionally-available-types-and-mutations).
+
+The validation task checks that, for each boundary of an assignable
+permission available to granular access tokens, the YAML conditions equal
+the conditions shared by every REST endpoint and GraphQL type, mutation, or
+field using the permission at that boundary. A boundary that no endpoint or
+directive uses cannot declare conditions. Permissions listed in
+`GRANULAR_TOKEN_NON_API_CONSUMERS` in
+`lib/tasks/gitlab/permissions/assignable/validate_task.rb` are exempt
+because their consumers cannot be tagged. When you tag an endpoint or
+directive, declare the matching condition in the YAML file in the same
+merge request, and vice versa. Untagged code and permissions without
+conditions are always consistent, so untagged existing code passes
+validation unchanged.
 
 > [!warning]
 > `assignable_when` is not a security control. It only controls which
@@ -206,6 +218,7 @@ The validation task enforces several constraints:
 - Assignable permissions must be at exactly: `config/authz/permission_groups/assignable_permissions/<category>/<resource>/<action>.yml`
 - No extra directories allowed between the base path and the final filename
 - Each REST API route's `boundary_type` and each GraphQL directive's `boundary_type` must match at least one boundary in the assignable permission's `boundaries` field (e.g., if a route or directive declares `boundary_type: :project`, the assignable permission must include `project` in its boundaries)
+- The YAML `assignable_when` conditions for each boundary must match the tags on the REST endpoints and GraphQL declarations that use the permission there (see Conditionally Assignable Permissions above)
 
 ### Maintaining Assignable Permissions
 

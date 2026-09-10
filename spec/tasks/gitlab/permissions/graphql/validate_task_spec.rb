@@ -5,12 +5,13 @@ require 'spec_helper'
 RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdout, feature_category: :permissions do
   let(:task) { described_class.new }
 
-  def mock_directive(permissions:, boundary_type:)
+  def mock_directive(permissions:, boundary_type:, assignable_when: nil)
     Class.new(Directives::Authz::GranularScope).allocate.tap do |d|
-      allow(d).to receive(:arguments).and_return(
+      allow(d).to receive(:arguments).and_return({
         permissions: Array(permissions).map(&:to_s).map(&:upcase),
-        boundary_type: boundary_type.to_s
-      )
+        boundary_type: boundary_type.to_s,
+        assignable_when: assignable_when&.map(&:to_s)
+      }.compact)
     end
   end
 
@@ -566,6 +567,51 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
       it 'completes successfully' do
         expect { run }.to output(/GraphQL permissions are valid/).to_stdout
+      end
+    end
+
+    context 'when a directive declares known assignable_when conditions' do
+      let(:directive) { mock_directive(permissions: :read_project, boundary_type: :project, assignable_when: [:admin]) }
+      let(:type) { mock_type('ProjectType', directive: directive) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return({ 'ProjectType' => type, 'Mutation' => empty_mutation_type })
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+          .with(:read_project).and_return([mock_assignable])
+      end
+
+      it 'completes successfully' do
+        expect { run }.to output(/GraphQL permissions are valid/).to_stdout
+      end
+    end
+
+    context 'when a directive declares an unknown assignable_when condition' do
+      let(:directive) do
+        mock_directive(permissions: :read_project, boundary_type: :project, assignable_when: [:unknown])
+      end
+
+      let(:type) { mock_type('ProjectType', directive: directive) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return({ 'ProjectType' => type, 'Mutation' => empty_mutation_type })
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+          .with(:read_project).and_return([mock_assignable])
+      end
+
+      it 'returns an error' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following GraphQL types/mutations/fields use an unknown assignable_when condition.
+          #  Use one of: :admin, :gitlab_team_member, :saas, :self_managed
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#conditionally-assignable-permissions
+          #
+          #    - [type] ProjectType: unknown (app/graphql/types/test_type.rb)
+          #
+          #######################################################################
+        OUTPUT
       end
     end
 

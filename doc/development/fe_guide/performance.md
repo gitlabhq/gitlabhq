@@ -136,8 +136,8 @@ In return, the entries in the `measures` array are objects with the following AP
 | Attribute   | Type     | Required | Description           |
 |:------------|:---------|:---------|:----------------------|
 | `name`      | `String` | yes      | The name for the measurement. Used for retrieving the mark later. Must be specified for every measure object, otherwise JavaScript fails. |
-| `start`     | `String` | no       | The name of a mark **from** which the measurement should be taken. |
-| `end`       | `String` | no       | The name of a mark **to** which the measurement should be taken. |
+| `start`     | `String` | no       | The name of a mark from which the measurement should be taken. |
+| `end`       | `String` | no       | The name of a mark to which the measurement should be taken. |
 
 Example:
 
@@ -341,7 +341,7 @@ This snippet will add a new `<link rel="prefetch">` element into the resulting H
 ### Universal code
 
 Code that is contained in `main.js` and `commons/index.js` is loaded and
-run on _all_ pages. **Do not add** anything to these files unless it is truly
+run on _all_ pages. Do not add anything to these files unless it is truly
 needed _everywhere_. These bundles include ubiquitous libraries like `vue`,
 `axios`, and `jQuery`, as well as code for the main navigation and sidebar.
 Where possible we should aim to remove modules from these bundles to reduce our

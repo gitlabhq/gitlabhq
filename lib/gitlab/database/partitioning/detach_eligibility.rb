@@ -80,26 +80,26 @@ module Gitlab
         def not_pending_detach?
           return true unless pg_partition&.pending_detach
 
-          blocked_by(:partition_pending_detach, :info)
+          blocked_by(:partition_pending_detach, :warn)
         end
 
         def supported_partition_key?
           return true if parent_partition_key
 
-          blocked_by(:unsupported_partition_key, :warn)
+          blocked_by(:unsupported_partition_key, :error)
         end
 
         def supported_partition_ids?
           return true if partition_ids.any?
 
-          blocked_by(:unsupported_partition_ids, :warn)
+          blocked_by(:unsupported_partition_ids, :error)
         end
 
         def no_default_referencing_partition?
           foreign_key = referencing_foreign_keys.find { |fk| has_default_partition?(fk.constrained_table_name) }
           return true unless foreign_key
 
-          blocked_by(:referencing_table_has_default_partition, :warn,
+          blocked_by(:referencing_table_has_default_partition, :error,
             referencing_table: foreign_key.constrained_table_identifier)
         end
 
@@ -115,7 +115,7 @@ module Gitlab
           foreign_key = referencing_foreign_keys.find { |fk| !shares_partition_key?(fk) }
           return true unless foreign_key
 
-          blocked_by(:referencing_table_cannot_prune, :warn,
+          blocked_by(:referencing_table_cannot_prune, :error,
             referencing_table: foreign_key.constrained_table_identifier,
             foreign_key_name: foreign_key.name)
         end

@@ -81,7 +81,8 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
           { boundary_type: :project },
           { boundary: :project },
           { boundary_argument: :project_path },
-          { boundaries: [{ boundary_type: :project }] }
+          { boundaries: [{ boundary_type: :project }] },
+          { assignable_when: [:admin] }
         ]
 
         other_args.each do |other_arg|
@@ -89,6 +90,51 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
             test_type.authorize_granular_token(skip_reason: :parent_authorizes, **other_arg)
           end.to raise_error(ArgumentError, /cannot be combined with/), "expected #{other_arg.each_key.first} to raise"
         end
+      end
+    end
+
+    context 'when assignable_when is passed' do
+      it 'applies the conditions to the directive' do
+        test_type.authorize_granular_token(
+          permissions: :read_audit_event, boundary: :instance, boundary_type: :instance, assignable_when: [:admin]
+        )
+
+        directive = test_type.directives.first
+        expect(directive.arguments[:assignable_when]).to eq(['admin'])
+      end
+
+      it 'applies the conditions to every boundary and additional scope' do
+        test_mutation.authorize_granular_token(
+          permissions: :update_runner,
+          boundaries: [
+            { boundary_argument: :id, boundary_type: :project },
+            { boundary_argument: :id, boundary_type: :group }
+          ],
+          additional_scopes: [
+            { permissions: :read_project, boundary_argument: :project_path, boundary_type: :project }
+          ],
+          assignable_when: [:admin, :self_managed]
+        )
+
+        directives = test_mutation.directives.select { |d| d.is_a?(Directives::Authz::GranularScope) }
+        expect(directives.size).to eq(3)
+        expect(directives).to all(satisfy { |d| d.arguments[:assignable_when] == %w[admin self_managed] })
+      end
+
+      it 'adds boundary-specific conditions to the shared ones' do
+        test_mutation.authorize_granular_token(
+          permissions: :update_member_role,
+          boundaries: [
+            { boundary_argument: :id, boundary_type: :group, assignable_when: [:saas] },
+            { boundary: :instance, boundary_type: :instance, assignable_when: [:admin] }
+          ],
+          assignable_when: [:self_managed]
+        )
+
+        directives = test_mutation.directives.select { |d| d.is_a?(Directives::Authz::GranularScope) }
+        expect(directives.map { |d| d.arguments[:assignable_when] }).to eq(
+          [%w[self_managed saas], %w[self_managed admin]]
+        )
       end
     end
 
@@ -164,6 +210,21 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
           permissions: ['create_issue'],
           boundary_argument: 'project_path',
           boundary_type: 'PROJECT'
+        }
+      }])
+    end
+
+    it 'includes assignable_when conditions' do
+      result = test_type.granular_scope_directive(
+        permissions: :read_audit_event, boundary: :instance, boundary_type: :instance, assignable_when: [:admin]
+      )
+
+      expect(result).to eq([{
+        Directives::Authz::GranularScope => {
+          permissions: ['read_audit_event'],
+          boundary: 'instance',
+          boundary_type: 'INSTANCE',
+          assignable_when: ['admin']
         }
       }])
     end

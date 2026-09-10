@@ -61,10 +61,10 @@ RSpec.describe Gitlab::Database::Partitioning::DetachEligibility, feature_catego
       mark_pending_detach("#{referenced_table}_100")
     end
 
-    it 'defers until the dropper has finalized the detach' do
+    it 'reports that the partition is awaiting FINALIZE as a warning' do
       expect(check.detachable?).to be(false)
       expect(blocker.reason).to eq(:partition_pending_detach)
-      expect(blocker.level).to eq(:info)
+      expect(blocker.level).to eq(:warn)
     end
 
     context 'when nothing references the parent table' do
@@ -134,10 +134,10 @@ RSpec.describe Gitlab::Database::Partitioning::DetachEligibility, feature_catego
       SQL
     end
 
-    it 'warns that the partition key is unsupported' do
+    it 'reports that the partition key is unsupported as an error' do
       expect(check.detachable?).to be(false)
       expect(blocker.reason).to eq(:unsupported_partition_key)
-      expect(blocker.level).to eq(:warn)
+      expect(blocker.level).to eq(:error)
     end
   end
 
@@ -156,10 +156,10 @@ RSpec.describe Gitlab::Database::Partitioning::DetachEligibility, feature_catego
       create_partitioned_referencing_table
     end
 
-    it 'warns that the partition ids are unsupported' do
+    it 'reports that the partition ids are unsupported as an error' do
       expect(check.detachable?).to be(false)
       expect(blocker.reason).to eq(:unsupported_partition_ids)
-      expect(blocker.level).to eq(:warn)
+      expect(blocker.level).to eq(:error)
     end
   end
 
@@ -184,7 +184,7 @@ RSpec.describe Gitlab::Database::Partitioning::DetachEligibility, feature_catego
     it "does not read the other parent's partition ids" do
       expect(check.detachable?).to be(false)
       expect(blocker.reason).to eq(:unsupported_partition_ids)
-      expect(blocker.level).to eq(:warn)
+      expect(blocker.level).to eq(:error)
     end
   end
 
@@ -194,10 +194,10 @@ RSpec.describe Gitlab::Database::Partitioning::DetachEligibility, feature_catego
       create_default_referencing_partition
     end
 
-    it 'warns that the referencing table has a default partition' do
+    it 'reports the default partition on the referencing table as an error' do
       expect(check.detachable?).to be(false)
       expect(blocker.reason).to eq(:referencing_table_has_default_partition)
-      expect(blocker.level).to eq(:warn)
+      expect(blocker.level).to eq(:error)
       expect(blocker.details).to include(referencing_table: "public.#{referencing_table}")
     end
   end
@@ -207,10 +207,10 @@ RSpec.describe Gitlab::Database::Partitioning::DetachEligibility, feature_catego
       create_plain_referencing_table
     end
 
-    it 'warns that the referencing table cannot be pruned' do
+    it 'reports that the referencing table cannot be pruned as an error' do
       expect(check.detachable?).to be(false)
       expect(blocker.reason).to eq(:referencing_table_cannot_prune)
-      expect(blocker.level).to eq(:warn)
+      expect(blocker.level).to eq(:error)
       expect(blocker.details).to include(
         referencing_table: "public.#{referencing_table}",
         foreign_key_name: 'fk_test_referencing'
@@ -234,10 +234,10 @@ RSpec.describe Gitlab::Database::Partitioning::DetachEligibility, feature_catego
       SQL
     end
 
-    it 'warns that the referencing table cannot be pruned' do
+    it 'reports that the referencing table cannot be pruned as an error' do
       expect(check.detachable?).to be(false)
       expect(blocker.reason).to eq(:referencing_table_cannot_prune)
-      expect(blocker.level).to eq(:warn)
+      expect(blocker.level).to eq(:error)
     end
   end
 
@@ -261,10 +261,10 @@ RSpec.describe Gitlab::Database::Partitioning::DetachEligibility, feature_catego
       SQL
     end
 
-    it 'warns that the referencing table cannot be pruned' do
+    it 'reports that the referencing table cannot be pruned as an error' do
       expect(check.detachable?).to be(false)
       expect(blocker.reason).to eq(:referencing_table_cannot_prune)
-      expect(blocker.level).to eq(:warn)
+      expect(blocker.level).to eq(:error)
     end
   end
 
@@ -325,10 +325,10 @@ RSpec.describe Gitlab::Database::Partitioning::DetachEligibility, feature_catego
           end
 
           # Confirms order of precedence of the checks
-          it 'warns about the default partition instead of the detached one' do
+          it 'reports the default partition instead of the detached one' do
             expect(check.detachable?).to be(false)
             expect(blocker.reason).to eq(:referencing_table_has_default_partition)
-            expect(blocker.level).to eq(:warn)
+            expect(blocker.level).to eq(:error)
           end
         end
       end

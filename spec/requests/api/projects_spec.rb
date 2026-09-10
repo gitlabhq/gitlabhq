@@ -1397,6 +1397,24 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
+    context 'when exposing CI/CD settings' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:owner) { create(:user, owner_of: group) }
+
+      it 'avoids N+1 queries for ci_cd_settings' do
+        projects = create_list(:project, 3, :public, group: group)
+
+        recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get api(path, owner)
+        end
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.find { |p| p['id'] == projects.first.id })
+          .to have_key('ci_skip_branch_pipelines_for_mrs')
+        expect(recorder.log.grep(/FROM "project_ci_cd_settings"/).size).to eq(1)
+      end
+    end
+
     context 'rate limiting' do
       let_it_be(:current_user) { create(:user) }
 
@@ -3096,6 +3114,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response).to have_key('show_diff_preview_in_email')
         expect(json_response['protect_merge_request_pipelines']).to eq(project.protect_merge_request_pipelines)
         expect(json_response['ci_display_pipeline_variables']).to eq(project.ci_display_pipeline_variables)
+        expect(json_response['ci_skip_branch_pipelines_for_mrs']).to eq(project.ci_skip_branch_pipelines_for_mrs)
       end
 
       it 'exposes all necessary attributes' do
@@ -3621,7 +3640,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           'import_error',
           'ci_push_repository_for_job_token_allowed',
           'protect_merge_request_pipelines',
-          'ci_display_pipeline_variables'
+          'ci_display_pipeline_variables',
+          'ci_skip_branch_pipelines_for_mrs'
         )
       end
     end
@@ -4685,6 +4705,30 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:ok)
         expect(project.reload.ci_display_pipeline_variables).to be_truthy
         expect(json_response['ci_display_pipeline_variables']).to be(true)
+      end
+    end
+
+    describe 'updating ci_skip_branch_pipelines_for_mrs attribute' do
+      it 'is disabled by default' do
+        expect(project.ci_skip_branch_pipelines_for_mrs).to be_falsey
+      end
+
+      it 'enables ci_skip_branch_pipelines_for_mrs' do
+        put(api(path, user), params: { ci_skip_branch_pipelines_for_mrs: true })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.reload.ci_skip_branch_pipelines_for_mrs).to be_truthy
+        expect(json_response['ci_skip_branch_pipelines_for_mrs']).to be(true)
+      end
+
+      it 'disables ci_skip_branch_pipelines_for_mrs' do
+        project.update!(ci_skip_branch_pipelines_for_mrs: true)
+
+        put(api(path, user), params: { ci_skip_branch_pipelines_for_mrs: false })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.reload.ci_skip_branch_pipelines_for_mrs).to be_falsey
+        expect(json_response['ci_skip_branch_pipelines_for_mrs']).to be(false)
       end
     end
 

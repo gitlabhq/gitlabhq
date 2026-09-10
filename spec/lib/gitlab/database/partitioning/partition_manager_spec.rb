@@ -334,7 +334,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     let(:table) { :_test_foo }
     let(:partitioning_strategy) do
       double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil,
-        analyze_interval: nil, detach_concurrently?: false)
+        analyze_interval: nil, detach_concurrently?: false, detachable_since: nil)
     end
 
     let(:extra_partitions) do
@@ -391,8 +391,8 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         extra_partitions.each do |partition|
           expect(Gitlab::AppLogger).to receive(:error).with(
             hash_including(
-              'message' => 'Deferred detaching partition',
-              'deferral_reason' => :database_error,
+              'message' => 'Cannot detach partition',
+              'blocker_reason' => :database_error,
               'exception_message' => /statement timeout/,
               'partition_name' => partition.partition_name
             )
@@ -431,7 +431,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
           expect(Gitlab::AppLogger).to receive(:warn).with({
             'class_name' => described_class.name,
             'message' => 'Deferred detaching partition',
-            'deferral_reason' => :referencing_table_cannot_prune,
+            'blocker_reason' => :referencing_table_cannot_prune,
             'partition_name' => partition.partition_name,
             'table_name' => table,
             'connection_name' => 'main',
@@ -446,7 +446,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       context 'when the blocker is at error level' do
         let(:blocker_level) { :error }
 
-        it 'reports one error for the whole run, naming every partition it deferred' do
+        it 'reports one error for the whole run, naming every partition it could not detach' do
           expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once do |exception|
             expect(exception).to be_a(described_class::UnableToDetachPartition)
             expect(exception.message).to eq(
@@ -458,8 +458,10 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
           sync_partitions
         end
 
-        it 'logs every deferral before it escalates' do
-          expect(Gitlab::AppLogger).to receive(:error).exactly(extra_partitions.size).times.ordered
+        it 'logs every blocker before it escalates' do
+          expect(Gitlab::AppLogger).to receive(:error)
+            .with(hash_including('message' => 'Cannot detach partition'))
+            .exactly(extra_partitions.size).times.ordered
           expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).ordered
 
           sync_partitions
@@ -477,19 +479,117 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         end
 
         with_them do
-          it 'logs the deferrals at that level' do
+          it 'logs the blockers at that level' do
             allow(Gitlab::AppLogger).to receive(log_method)
 
             extra_partitions.each do |partition|
               expect(Gitlab::AppLogger).to receive(log_method).with(
                 hash_including(
-                  'deferral_reason' => :referencing_table_cannot_prune,
+                  'blocker_reason' => :referencing_table_cannot_prune,
                   'partition_name' => partition.partition_name
                 )
               )
             end
 
             sync_partitions
+          end
+        end
+      end
+
+      context 'when the partition has been deferred for longer than the referencing side can take' do
+        let(:max_detach_deferral) do
+          described_class::RETAIN_DETACHED_PARTITIONS_FOR + described_class::DETACH_DEFERRAL_GRACE
+        end
+
+        let(:blocker) do
+          Gitlab::Database::Partitioning::DetachEligibility::Blocker.new(
+            reason: :counterpart_partition_present, level: :info,
+            details: { referencing_table: 'public._test_bar', partition_id: 101 }
+          )
+        end
+
+        before do
+          allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+          allow(partitioning_strategy).to receive(:detachable_since).and_return(detachable_since)
+        end
+
+        context 'when the wait is still inside that window' do
+          let(:detachable_since) { max_detach_deferral.ago + 1.hour }
+
+          it 'reports the deferral at the level the blocker asked for' do
+            allow(Gitlab::AppLogger).to receive(:info)
+            expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+            extra_partitions.each do |partition|
+              expect(Gitlab::AppLogger).to receive(:info).with(
+                hash_including(
+                  'blocker_reason' => :counterpart_partition_present,
+                  'partition_name' => partition.partition_name
+                )
+              )
+            end
+
+            sync_partitions
+          end
+        end
+
+        context 'when the wait is past that window' do
+          let(:detachable_since) { max_detach_deferral.ago - 1.hour }
+
+          it 'reports the long wait separately from the deferral it logged' do
+            allow(Gitlab::AppLogger).to receive(:info)
+            allow(Gitlab::AppLogger).to receive(:error)
+
+            extra_partitions.each do |partition|
+              expect(Gitlab::AppLogger).to receive(:info).with(
+                hash_including(
+                  'message' => 'Deferred detaching partition',
+                  'blocker_reason' => :counterpart_partition_present,
+                  'partition_name' => partition.partition_name
+                )
+              )
+
+              expect(Gitlab::AppLogger).to receive(:error).with(
+                hash_including(
+                  'message' => 'Detach deferred for too long',
+                  'blocker_reason' => :counterpart_partition_present,
+                  'deferral_duration_s' => be_within(1.minute).of(max_detach_deferral + 1.hour),
+                  'partition_name' => partition.partition_name
+                )
+              )
+            end
+
+            sync_partitions
+          end
+
+          it 'names the long wait, not the blocker, in the error it reports' do
+            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once do |exception|
+              expect(exception.message).to eq(
+                'Unable to detach partitions of _test_foo: ' \
+                  'foo1 (deferred too long), foo2 (deferred too long)'
+              )
+            end
+
+            sync_partitions
+          end
+
+          context 'when the blocker is at error level' do
+            let(:blocker) do
+              Gitlab::Database::Partitioning::DetachEligibility::Blocker.new(
+                reason: :referencing_table_cannot_prune, level: :error, details: {}
+              )
+            end
+
+            it 'reports the blocker on its own, because an error is not a deferral' do
+              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once do |exception|
+                expect(exception.message).to eq(
+                  'Unable to detach partitions of _test_foo: ' \
+                    'foo1 (referencing_table_cannot_prune), foo2 (referencing_table_cannot_prune)'
+                )
+              end
+
+              sync_partitions
+            end
           end
         end
       end
@@ -753,7 +853,13 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         SQL
       end
 
-      it 'does not detach partitions with a referenced foreign key' do
+      # A range-partitioned parent is outside what the eligibility check supports, so a partition
+      # of one that is referenced can never be detached
+      it 'reports an error and detaches nothing' do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once do |exception|
+          expect(exception.message).to include('unsupported_partition_key')
+        end
+
         expect { subject }.not_to change { find_partitions(my_model.table_name).size }
       end
     end

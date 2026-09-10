@@ -261,6 +261,7 @@ following response attributes:
 | `ci_separated_caches` | boolean | Whether CI/CD caches are separated by branch. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_id_token_sub_claim_components` | array of strings | Components included in the CI/CD ID token subject claim. |
+| `ci_skip_branch_pipelines_for_mrs` | boolean | Whether [branch pipelines are skipped for merge requests](../ci/pipelines/settings.md#skip-branch-pipelines-for-merge-requests) when the branch has an open merge request. Only visible if you have administrator access or the Owner role for the project. |
 | `build_git_strategy` | string | Git strategy used for CI/CD builds (fetch or clone). Only visible if you have administrator access or the Owner role for the project. |
 | `keep_latest_artifact` | boolean | Indicates if the latest artifact is kept when a new one is created. Only visible if you have administrator access or the Owner role for the project. |
 | `restrict_user_defined_variables` | boolean | Whether user-defined variables are restricted. Only visible if you have administrator access or the Owner role for the project. |
@@ -476,6 +477,7 @@ Example response:
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
   "ci_display_pipeline_variables": false,
+  "ci_skip_branch_pipelines_for_mrs": false,
   "cicd_catalog_enabled": false,
   "protect_merge_request_pipelines": true,
   "public_jobs": true,
@@ -905,6 +907,7 @@ Example response:
     "ci_pipeline_variables_minimum_override_role": "maintainer",
     "ci_push_repository_for_job_token_allowed": false,
     "ci_display_pipeline_variables": false,
+    "ci_skip_branch_pipelines_for_mrs": false,
     "protect_merge_request_pipelines": true,
     "public_jobs": true,
     "build_timeout": 3600,
@@ -1261,6 +1264,7 @@ Example response:
     "ci_pipeline_variables_minimum_override_role": "maintainer",
     "ci_push_repository_for_job_token_allowed": false,
     "ci_display_pipeline_variables": false,
+    "ci_skip_branch_pipelines_for_mrs": false,
     "protect_merge_request_pipelines": true,
     "public_jobs": true,
     "shared_with_groups": [],
@@ -1390,6 +1394,7 @@ Example response:
     "ci_pipeline_variables_minimum_override_role": "maintainer",
     "ci_push_repository_for_job_token_allowed": false,
     "ci_display_pipeline_variables": false,
+    "ci_skip_branch_pipelines_for_mrs": false,
     "protect_merge_request_pipelines": true,
     "public_jobs": true,
     "shared_with_groups": [],
@@ -2390,6 +2395,7 @@ see [Project feature visibility level](#project-feature-visibility-level).
 - `automatic_rebase_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250632) in GitLab 19.4.
 - `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
 - `feature_flags_minimum_role` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8239) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `feature_flag_management_permissions`. Disabled by default.
+- `ci_skip_branch_pipelines_for_mrs` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/607869) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -2427,6 +2433,7 @@ Supported general project attributes:
 | `ci_display_pipeline_variables`                    | boolean           | No       | Display all manually-defined variables in the pipeline details page after running a pipeline manually. |
 | `ci_forward_deployment_enabled`                    | boolean           | No       | Enable or disable [prevent outdated deployment jobs](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_forward_deployment_rollback_allowed`           | boolean           | No       | Enable or disable [allow job retries for rollback deployments](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
+| `ci_skip_branch_pipelines_for_mrs`                 | boolean           | No       | Enable or disable [skip branch pipelines for merge requests](../ci/pipelines/settings.md#skip-branch-pipelines-for-merge-requests). |
 | `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). |
 | `ci_id_token_sub_claim_components`                 | array             | No       | Fields included in the `sub` claim of the [ID Token](../ci/secrets/id_token_authentication.md). Accepts an array starting with `project_path` or `project_id`. The array might also include `ref_type`, `ref`, `ref_protected`, `environment_protected`, and `deployment_tier`. Defaults to `["project_path", "ref_type", "ref"]`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477260) in GitLab 17.10. Support for `environment_protected` and `deployment_tier` introduced in GitLab 18.7. Support for `project_id` as the first component [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/600358) in GitLab 19.1. |
 | `ci_separated_caches`                              | boolean           | No       | Set whether or not caches should be [separated](../ci/caching/_index.md#cache-key-names) by branch protection status. |
@@ -2729,6 +2736,7 @@ Example response:
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
   "ci_display_pipeline_variables": false,
+  "ci_skip_branch_pipelines_for_mrs": false,
   "cicd_catalog_enabled": false,
   "protect_merge_request_pipelines": true,
   "public_jobs": true,
@@ -2887,6 +2895,7 @@ Example response:
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
   "ci_display_pipeline_variables": false,
+  "ci_skip_branch_pipelines_for_mrs": false,
   "cicd_catalog_enabled": false,
   "protect_merge_request_pipelines": true,
   "public_jobs": true,

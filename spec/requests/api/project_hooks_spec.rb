@@ -87,23 +87,15 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
       stub_feature_flags(duo_flow_callback_hooks: project.root_ancestor)
     end
 
-    it 'can be set when creating a project hook' do
-      post api("/projects/#{project.id}/hooks", user), params: {
-        url: 'https://example.com/callback',
-        duo_flow_callback_enabled: true
-      }
+    context 'when on FOSS', unless: Gitlab.ee? do
+      it 'rejects the attribute even though the flag is enabled' do
+        post api("/projects/#{project.id}/hooks", user), params: {
+          url: 'https://example.com/callback',
+          duo_flow_callback_enabled: true
+        }
 
-      expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['duo_flow_callback_enabled']).to be(true)
-    end
-
-    it 'can be updated on an existing project hook' do
-      put api("/projects/#{project.id}/hooks/#{hook.id}", user), params: {
-        duo_flow_callback_enabled: true
-      }
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['duo_flow_callback_enabled']).to be(true)
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
     end
 
     it 'is returned in the hook response' do
@@ -153,6 +145,18 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['duo_flow_callback_enabled']).to be(false)
+      end
+
+      it 'still accepts a request that re-asserts a stored true' do
+        hook.update!(duo_flow_callback_enabled: true)
+
+        put api("/projects/#{project.id}/hooks/#{hook.id}", user), params: {
+          url: hook.url,
+          duo_flow_callback_enabled: true
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['duo_flow_callback_enabled']).to be(true)
       end
     end
   end

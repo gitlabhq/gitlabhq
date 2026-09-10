@@ -127,6 +127,7 @@ authorize_granular_token(permissions:, boundary_type: nil, boundary: nil, bounda
 | `boundaries` | Array of boundary hashes for resources that support multiple boundary types. Each hash requires a `boundary_type` key and can include `boundary` or `boundary_argument`. For more details, see [Multiple boundaries](#multiple-boundaries). |
 | `additional_scopes` | Array of boundary hashes for a second container that the type or mutation acts on, each of which must be authorized in addition to the primary boundary. Each hash requires its own `permissions` and `boundary_type` keys, and can include `boundary` or `boundary_argument`. For more details, see [Additional required scopes](#additional-required-scopes). |
 | `skip_reason` | Symbol declaring that a type intentionally opts out of granular-token authorization. Use instead of `permissions:` and a boundary, not alongside them. For more details, see [Skip authorization with `skip_reason`](#skip-authorization-with-skip_reason). |
+| `assignable_when` | Optional. Array of condition symbols the current user must meet for the permission to be offered in the token creation UI. Applies to every boundary declared by the call, including every entry in `boundaries:` and `additional_scopes:`. Any hash inside `boundaries:` or `additional_scopes:` can also set its own `assignable_when`, which adds conditions for that boundary only. Not a security control. For more details, see [Tag conditionally available types and mutations](#tag-conditionally-available-types-and-mutations). |
 
 **For object types:**
 
@@ -327,6 +328,48 @@ listed in `config/authz/graphql/authorization_todo.txt`. Do not add new entries 
 that file. You cannot combine `skip_reason:` with `permissions:` or a boundary
 argument.
 
+#### Tag conditionally available types and mutations
+
+When a type, mutation, or resolver restricts access beyond membership, for
+example to administrators, tag it with `assignable_when` so the restriction
+is visible to the permissions tooling:
+
+```ruby
+class InstanceAuditEventType < BaseObject
+  authorize_granular_token permissions: :read_audit_event, boundary: :instance, boundary_type: :instance,
+    assignable_when: [:admin]
+end
+```
+
+The conditions apply to every directive the call emits: the primary
+boundary, every entry in `boundaries:`, and every entry in
+`additional_scopes:`.
+
+Each hash inside `boundaries:` or `additional_scopes:` can also set its own
+`assignable_when`. Use this when the call declares several boundaries but
+only one of them is restricted. The conditions on the hash add to the
+call-level conditions for that boundary only:
+
+```ruby
+authorize_granular_token permissions: :create_runner,
+  boundaries: [
+    { boundary_argument: :project_id, boundary_type: :project },
+    { boundary_argument: :group_id, boundary_type: :group },
+    { boundary: :instance, boundary_type: :instance, assignable_when: [:admin] }
+  ]
+```
+
+The tag describes the restriction. It does not enforce it. The type or
+mutation must still enforce the restriction itself, for example with
+`authorize :admin_all_resources` or an admin check in the resolver.
+
+The validation task rejects unknown condition names, as it does for REST
+endpoints.
+
+The validation task checks these tags against the conditions declared in
+the assignable permission YAML file. For more information, see
+[Conditionally Assignable Permissions](assignable_permissions.md#conditionally-assignable-permissions).
+
 ### Step 6: Add Authorization Tests
 
 **Goal:** Verify that granular PAT permissions are correctly enforced on GraphQL types and mutations.
@@ -487,6 +530,7 @@ IO.popen('pbcopy', 'w') { |f| f.puts "curl \"http://#{Gitlab.host_with_port}/api
    - A permission in a directive has no authorization test. Each type, mutation, or field declaring
      the permission needs its own test per boundary type. This is strictly enforced with no
      grandfathered exceptions, so add the test in the same merge request as the declaration.
+   - The `assignable_when` conditions do not match the tags on the code using the permission.
    - The generated reference documentation is out of date.
 
 ## See Also

@@ -18,11 +18,19 @@ module Import
       validates :project_id, uniqueness: { scope: [:source_user_id] }, allow_nil: true
       validates_with ExactlyOnePresentValidator, fields: [:group_id, :project_id]
 
+      before_validation :set_default_retention_expires_at
+
       scope :with_projects, -> { includes(:project) }
       scope :with_groups, -> { includes(:group) }
       scope :by_source_user, ->(source_users) { where(source_user: source_users) }
       scope :by_group, ->(groups) { where(group: groups) }
       scope :by_project, ->(projects) { where(project: projects) }
+
+      private
+
+      def set_default_retention_expires_at
+        self.retention_expires_at ||= Time.current + 1.year
+      end
     end
   end
 end

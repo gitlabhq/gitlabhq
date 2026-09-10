@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillImportPlaceholderMembershipsRetentionExpiresAt
+description: Backfills retention_expires_at for existing import_placeholder_memberships rows
+feature_category: importers
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253935
+milestone: '19.4'
+gitlab_schema: gitlab_main_org
+queued_migration_version: '20260907090700'
+finalized_by:

@@ -213,7 +213,7 @@ import GitLabStyleGuide from '../../../guides/GitLabStyleGuide';
 import GitLabStyleGuide from '~/GitLabStyleGuide';
 ```
 
-Additionally, **do not add to global namespace**.
+Additionally, do not add to global namespace.
 
 ## Do not use `DOMContentLoaded` in non-page modules
 

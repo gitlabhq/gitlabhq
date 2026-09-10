@@ -70,7 +70,7 @@ layering and how to work with it, see [Frontend package boundaries](package_boun
 
 ## Vision
 
-As Frontend engineers, we strive to give users **delightful experiences**. We should always think of how this applies at GitLab specifically: a great GitLab experience means helping our user base ship **their own projects faster and with more confidence** when shipping their own software. This means that whenever confronted with a choice for the future of our department, we should remember to try to put this first.
+As Frontend engineers, we strive to give users delightful experiences. We should always think of how this applies at GitLab specifically: a great GitLab experience means helping our user base ship their own projects faster and with more confidence when shipping their own software. This means that whenever confronted with a choice for the future of our department, we should remember to try to put this first.
 
 ### Values
 
@@ -78,9 +78,9 @@ We define three core values, Stability, Speed, and Maintainability (SSM)
 
 #### Stability
 
-Although velocity is extremely important, we believe that GitLab is now an enterprise-grade platform that requires even the smallest MVC to be **stable, tested, and with a good architecture**. We should not merge code, even as an MVC, that could introduce degradation, poor performance, confusion, or generally lower our users' expectations.
+Although velocity is extremely important, we believe that GitLab is now an enterprise-grade platform that requires even the smallest MVC to be stable, tested, and with a good architecture. We should not merge code, even as an MVC, that could introduce degradation, poor performance, confusion, or generally lower our users' expectations.
 
-This is an extension of the core value that want our users to have confidence in their own software and to do so, they need to have **confidence in GitLab first**. This means that our own confidence in our software should be at the absolute maximum.
+This is an extension of the core value that want our users to have confidence in their own software and to do so, they need to have confidence in GitLab first. This means that our own confidence in our software should be at the absolute maximum.
 
 #### Speed
 
@@ -90,7 +90,7 @@ Additionally, we want our speed to be felt and appreciated by our developers. Th
 
 #### Maintainability
 
-GitLab is now a large, enterprise-grade software and it often requires complex code to give the best possible experience. Although complexity is a necessity, we must remain vigilant to not let it grow more than it should. To minimize this, we want to focus on making our codebase maintainable by **encapsulating complexity**. This is done by:
+GitLab is now a large, enterprise-grade software and it often requires complex code to give the best possible experience. Although complexity is a necessity, we must remain vigilant to not let it grow more than it should. To minimize this, we want to focus on making our codebase maintainable by encapsulating complexity. This is done by:
 
 - Building tools that solve commonly-faced problems and making them easily discoverable.
 - Writing better documentation on how we solve our problems.
@@ -107,7 +107,7 @@ Now that our values have been defined, we can base our goals on these values and
 - Minimal page reloads when interacting with the UI
 - [Have as few Vue applications per page as possible](vue.md#avoid-multiple-vue-applications-on-the-page)
 - Leverage [Ruby ViewComponents](view_component.md) for simple pages and avoid Vue overhead when possible
-- [Migrate away from Vuex](migrating_from_vuex.md), but more urgently **stop using Apollo and Vuex together**
+- [Migrate away from Vuex](migrating_from_vuex.md), but more urgently stop using Apollo and Vuex together
 - Remove jQuery from our codebase
 - Add a visual testing framework
 - Reduce CSS bundle size to a minimum
@@ -148,7 +148,7 @@ Read the [frontend FAQ](frontend_faq.md) for common small pieces of helpful info
 
 #### Internationalization (i18n) and Translations
 
-Frontend internationalization support is described in [**Translate GitLab to your language**](../i18n/_index.md).
+Frontend internationalization support is described in [Translate GitLab to your language](../i18n/_index.md).
 The [externalization part of the guide](../i18n/externalization.md) explains the helpers/methods available.
 
 #### Troubleshooting

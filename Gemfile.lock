@@ -231,7 +231,7 @@ PATH
 PATH
   remote: vendor/gems/gitlab-duo-workflow-service-client
   specs:
-    gitlab-duo-workflow-service-client (0.12)
+    gitlab-duo-workflow-service-client (0.13)
       grpc
 
 PATH
@@ -3045,7 +3045,7 @@ CHECKSUMS
   gitlab-dangerfiles (4.12.0) sha256=0b8b7b00bf1ab155c3ab37cfc7c9815b5b82f403f85ddaf62aea137129403072
   gitlab-database-data_isolation (0.1.0)
   gitlab-deploy-driver-argo-rollouts (0.7.0)
-  gitlab-duo-workflow-service-client (0.12)
+  gitlab-duo-workflow-service-client (0.13)
   gitlab-email_handler (0.1.0)
   gitlab-experiment (2.0.0) sha256=05183dee7ddad1ef183de43c2c330e57a1457f679744c19c61f637e1135d3c76
   gitlab-fog-azure-rm (2.5.0) sha256=f10fd3f6667925e4ce97cea2fa707b926320c7b7fa06978788e2f452ee7f4db0

@@ -103,7 +103,7 @@ Alternatively, you can [configure the integration](https://about.gitlab.com/solu
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab.com, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
 
 {{< /details >}}
@@ -139,6 +139,14 @@ For example, you can ask GitLab Duo to do the following:
 - Summarize a discussion thread.
 - Answer questions about your projects.
 
+Each interaction runs a GitLab Duo Agent session and consumes GitLab Credits.
+Sessions execute on a CI/CD runner in the invoking user's default Duo namespace, and a `duo-workspace` project is created there automatically on first use.
+If you ask about a project in a different top-level group, GitLab Duo in Slack fails.
+
+When mentioned in a channel, the agent reads recent messages from that channel as context for its response.
+Messages posted after the one it is responding to are not included.
+After users interact with GitLab Duo, it creates an agent session that is visible only to the person who invoked it, not to everyone with access to the `duo-workspace` project.
+
 > [!note]
 > When you mention the GitLab bot in a thread, the full conversation content
 > (including messages from all participants) is sent to a large language model (LLM)
@@ -162,13 +170,27 @@ For example, you can ask GitLab Duo to do the following:
 
 To use GitLab Duo in Slack:
 
-1. In a Slack channel or thread, type `@GitLab` followed by your request
+1. Invite the app to a channel with `/invite @GitLab`.
+1. In the Slack channel or in a thread in the channel, type `@GitLab` followed by your request
    (for example, `@GitLab create an issue to track this bug`).
+1. The first time you type `@GitLab`, GitLab sends you a message with a link to connect your Slack and GitLab accounts.
 1. GitLab Duo acknowledges your request and starts working on the task.
 1. When the task is complete, GitLab Duo posts a threaded reply with the result.
 
-If an error occurs, GitLab Duo sends you a message with details about the issue.
+If an error occurs, GitLab Duo reacts to your message with a locked padlock emoji and sends you a message with details about the issue.
 This message is visible only to you.
+
+To leave feedback on this feature's performance, use the thumbs up or thumbs down on any response.
+
+GitLab Duo in Slack works in the following channels and threads:
+
+- Public and private channels where the agent is a member of the channel.
+- In a group direct messages between more than two people. GitLab Duo only sees the message it was mentioned in, not the earlier conversation.
+
+GitLab Duo does not work in the following threads:
+
+- One-to-one direct messages with the agent.
+- In the agent panel in the Slack top bar.
 
 ### Workspace project
 

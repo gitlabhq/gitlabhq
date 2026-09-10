@@ -144,6 +144,7 @@ module API
         expose :ci_push_repository_for_job_token_allowed, documentation: { type: 'Boolean' }
         expose :protect_merge_request_pipelines, documentation: { type: 'Boolean' }
         expose :ci_display_pipeline_variables, documentation: { type: 'Boolean' }
+        expose :ci_skip_branch_pipelines_for_mrs, documentation: { type: 'Boolean' }
       end
 
       with_options if: ->(_, _) { Ability.allowed?(options[:current_user], :read_runners_registration_token, project) } do

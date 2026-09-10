@@ -130,6 +130,7 @@ module API
         optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
         optional :protect_merge_request_pipelines, type: Boolean, desc: "Make protected CI/CD variables and runners available in merge request pipelines"
         optional :ci_display_pipeline_variables, type: Boolean, desc: "Display all manually-defined variables in the pipeline details page after running a pipeline manually"
+        optional :ci_skip_branch_pipelines_for_mrs, type: Boolean, desc: "Skip the branch pipeline when a branch has an open merge request, and run only the merge request pipeline"
         optional :automatic_rebase_enabled, type: Boolean, desc: 'Enable automatic rebase of the source branch before merge'
         optional :feature_flags_minimum_role, values: ::ProjectSetting::FEATURE_FLAGS_MANAGEMENT_ROLES.keys.map(&:to_s), type: String, desc: 'Limit the ability to create, update, toggle, and delete feature flags to only users with at least the set minimum role'
       end
@@ -241,6 +242,7 @@ module API
           :max_artifacts_size,
           :protect_merge_request_pipelines,
           :ci_display_pipeline_variables,
+          :ci_skip_branch_pipelines_for_mrs,
           :feature_flags_minimum_role,
 
           # TODO: remove in API v5, replaced by *_access_level

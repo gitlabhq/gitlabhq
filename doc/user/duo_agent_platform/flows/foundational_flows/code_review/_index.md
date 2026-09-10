@@ -15,7 +15,7 @@ title: Code Review Flow
 {{< collapsible title="Model information" >}}
 
 - LLM: Anthropic Claude Sonnet 5 Vertex
-- LLM for GitLab 19.0 or earlier: [Default LLM](../../../../gitlab_duo/model_selection.md#default-models) for **Code Review**
+- LLM for GitLab 19.0 or earlier: [Default LLM](../../../../gitlab_duo/model_selection.md#default-models) for GitLab Duo Code Review, the non-agentic version.
 - On GitLab.com, [select a different model](../../../model_selection.md#select-a-model-for-a-feature) using the **Agentic Code Review** setting.
 - On GitLab Self-Managed and GitLab Dedicated, [select a different model](../../../../../administration/gitlab_duo/model_selection.md#select-a-model-for-code-review-flow) using the setting appropriate for your GitLab version.
 - Available on [GitLab Duo with self-hosted models](../../../../../administration/gitlab_duo_self_hosted/_index.md)

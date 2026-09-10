@@ -12810,9 +12810,6 @@ msgstr ""
 msgid "ArtifactRegistry|Repository URL copied to clipboard."
 msgstr ""
 
-msgid "ArtifactRegistry|Repository details"
-msgstr ""
-
 msgid "ArtifactRegistry|Repository name"
 msgstr ""
 
@@ -13012,9 +13009,6 @@ msgid "ArtifactRegistry|Version %{version} stores no file"
 msgstr ""
 
 msgid "ArtifactRegistry|Version %{version} stores no files"
-msgstr ""
-
-msgid "ArtifactRegistry|Version details"
 msgstr ""
 
 msgid "ArtifactRegistry|Version list for %{name} updated."
@@ -39484,9 +39478,6 @@ msgid "GlobalSearch|The search term must be at least 3 characters long."
 msgstr ""
 
 msgid "GlobalSearch|There was an error fetching search autocomplete suggestions."
-msgstr ""
-
-msgid "GlobalSearch|These results cannot be filtered by language because their language could not be detected."
 msgstr ""
 
 msgid "GlobalSearch|Tip:"
@@ -72600,6 +72591,9 @@ msgstr ""
 msgid "SecurityInventory|An error occurred while fetching subgroups. Please try again."
 msgstr ""
 
+msgid "SecurityInventory|Any secret detection"
+msgstr ""
+
 msgid "SecurityInventory|Basic SAST"
 msgstr ""
 
@@ -72723,6 +72717,9 @@ msgid "SecurityInventory|Search subgroups (3 char min)"
 msgstr ""
 
 msgid "SecurityInventory|Secret detection"
+msgstr ""
+
+msgid "SecurityInventory|Secret detection (SD)"
 msgstr ""
 
 msgid "SecurityInventory|Secret push protection"

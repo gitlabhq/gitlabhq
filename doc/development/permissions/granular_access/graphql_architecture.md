@@ -41,6 +41,9 @@ When the flag is disabled, granular PATs do not work for GraphQL requests.
     every distinct group present on the type or mutation. A directive with no
     `requirement_group` belongs to the primary group. An additional scope gets a group
     name derived from its `boundary_argument`, or `additional_<index>` when it has none.
+  - `assignable_when`: Conditions the current user must meet for the permission to be
+    offered in the token creation UI. Read only by the validation task, never enforced at
+    request time.
 
 ### 3. Boundary extractor
 

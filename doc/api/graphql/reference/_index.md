@@ -36403,6 +36403,26 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="artifactregistryrepositorydetails-package-id"></a>`id` | [`ID!`](#id) | ID of the package in Artifact Registry. |
 
+##### `ArtifactRegistryRepositoryDetails.version`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Single version the repository holds, by Artifact Registry ID and the ID of the package it is displayed under. Can be selected once per operation. Returns `null` for a repository holding images, for a version that is gone, and for a version that belongs to a different package. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx.
+
+Returns [`ArtifactRegistryVersionDetails`](#artifactregistryversiondetails).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryrepositorydetails-version-artifactid"></a>`artifactId` | [`ID!`](#id) | ID of the package the version is displayed under, in Artifact Registry. The version resolves `null` when it belongs to a different package. |
+| <a id="artifactregistryrepositorydetails-version-id"></a>`id` | [`ID!`](#id) | ID of the version in Artifact Registry. |
+
 ### `ArtifactRegistryRoleAssignment`
 
 A direct role assignment. A user, the Artifact Registry role they hold, and the resource it is assigned on. Does not represent inherited access.
@@ -36430,7 +36450,25 @@ Fields:
 | <a id="artifactregistryversion-createdby"></a>`createdBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who published the version, resolved from the reference Artifact Registry stores. Null when it stored none or the user no longer exists. |
 | <a id="artifactregistryversion-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the version in Artifact Registry. |
 | <a id="artifactregistryversion-project"></a>`project` {{< icon name="warning-solid" >}} | [`Project`](#project) | Introduced in GitLab 19.4. Status: Experiment. Project the version was published from, resolved from the reference Artifact Registry stores. Null when it stored none, the project no longer exists, or the viewer cannot see the project. |
+| <a id="artifactregistryversion-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt`](#bigint) | Introduced in GitLab 19.4. Status: Experiment. Stored size of the version in bytes. Null for a Maven version until Artifact Registry serializes the column, and on a remote repository. |
 | <a id="artifactregistryversion-version"></a>`version` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Version string of the package. |
+
+### `ArtifactRegistryVersionDetails`
+
+Single version of a package in an Artifact Registry repository, reached by ID and the package it is displayed under.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryversiondetails-commitpath"></a>`commitPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Web path to the publishing commit within the resolved project. Null when there is no SHA or project, or the viewer cannot read the project code. |
+| <a id="artifactregistryversiondetails-commitsha"></a>`commitSha` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Commit SHA the version was published from, within the resolved project. Null when there is no SHA or project, or the viewer cannot read the project code. |
+| <a id="artifactregistryversiondetails-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the version was published. Null when Artifact Registry stored none. |
+| <a id="artifactregistryversiondetails-createdby"></a>`createdBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who published the version, resolved from the reference Artifact Registry stores. Null when it stored none or the user no longer exists. |
+| <a id="artifactregistryversiondetails-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the version in Artifact Registry. |
+| <a id="artifactregistryversiondetails-project"></a>`project` {{< icon name="warning-solid" >}} | [`Project`](#project) | Introduced in GitLab 19.4. Status: Experiment. Project the version was published from, resolved from the reference Artifact Registry stores. Null when it stored none, the project no longer exists, or the viewer cannot see the project. |
+| <a id="artifactregistryversiondetails-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt`](#bigint) | Introduced in GitLab 19.4. Status: Experiment. Stored size of the version in bytes. Null for a Maven version until Artifact Registry serializes the column, and on a remote repository. |
+| <a id="artifactregistryversiondetails-version"></a>`version` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Version string of the package. |
 
 ### `AscpComponent`
 

@@ -22670,7 +22670,8 @@ CREATE TABLE import_placeholder_memberships (
     project_id bigint,
     created_at timestamp with time zone NOT NULL,
     expires_at date,
-    access_level smallint NOT NULL
+    access_level smallint NOT NULL,
+    retention_expires_at timestamp with time zone
 );
 
 CREATE SEQUENCE import_placeholder_memberships_id_seq
@@ -22712,6 +22713,7 @@ CREATE TABLE import_source_user_placeholder_references (
     user_reference_column text NOT NULL,
     composite_key jsonb,
     alias_version smallint NOT NULL,
+    expires_at timestamp with time zone,
     CONSTRAINT check_782140eb9d CHECK ((char_length(user_reference_column) <= 50)),
     CONSTRAINT check_d17bd9dd4d CHECK ((char_length(model) <= 150))
 );
@@ -22741,6 +22743,7 @@ CREATE TABLE import_source_users (
     reassigned_by_user_id bigint,
     reassignment_error text,
     reassignment_token text,
+    reassignment_expires_at timestamp with time zone,
     CONSTRAINT check_05708218cd CHECK ((char_length(reassignment_error) <= 255)),
     CONSTRAINT check_0d7295a307 CHECK ((char_length(import_type) <= 255)),
     CONSTRAINT check_199c28ec54 CHECK ((char_length(source_username) <= 255)),
@@ -48955,6 +48958,8 @@ CREATE INDEX index_import_placeholder_memberships_on_namespace_id ON import_plac
 
 CREATE INDEX index_import_placeholder_memberships_on_project_id ON import_placeholder_memberships USING btree (project_id);
 
+CREATE INDEX index_import_placeholder_memberships_on_retention_expires_at ON import_placeholder_memberships USING btree (retention_expires_at);
+
 CREATE INDEX index_import_placeholder_user_details_on_eligible_for_deletion ON import_placeholder_user_details USING btree (deletion_attempts, last_deletion_attempt_at, id) WHERE (namespace_id IS NULL);
 
 CREATE INDEX index_import_placeholder_user_details_on_namespace_id ON import_placeholder_user_details USING btree (namespace_id);
@@ -48974,6 +48979,8 @@ CREATE UNIQUE INDEX index_import_source_users_on_namespace_id_reassignment_token
 CREATE INDEX index_import_source_users_on_placeholder_user_id ON import_source_users USING btree (placeholder_user_id);
 
 CREATE INDEX index_import_source_users_on_reassigned_by_user_id ON import_source_users USING btree (reassigned_by_user_id);
+
+CREATE INDEX index_import_source_users_on_reassignment_expires_at ON import_source_users USING btree (reassignment_expires_at);
 
 CREATE INDEX index_imported_projects_on_import_type_creator_id_created_at ON projects USING btree (import_type, creator_id, created_at) WHERE (import_type IS NOT NULL);
 

@@ -80,6 +80,7 @@ This is a repeatable directive and can be used with different arguments at the s
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| `assignableWhen` | [`[String!]`](scalars.md#string) | Conditions the current user must meet for the permissions to be offered in the token creation UI. Not a security control: the type, mutation, or field must still enforce the conditions. Valid values: admin, gitlab_team_member, saas, self_managed. |
 | `boundary` | [`String`](scalars.md#string) | Method name to call on the resolved object to extract the authorization boundary (Project/Group). Use when the object is already resolved (fields on types, nested fields). |
 | `boundaryArgument` | [`String`](scalars.md#string) | Argument name containing the authorization boundary (path or GlobalID). Use for mutations and query fields where the boundary is passed as an argument. |
 | `boundaryType` | [`PermissionBoundary`](enums.md#permissionboundary) | The type of authorization boundary (project, group, user, instance). Used for validation and documentation of the permission boundary. |

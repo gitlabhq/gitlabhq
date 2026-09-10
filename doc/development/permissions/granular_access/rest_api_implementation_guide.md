@@ -304,14 +304,11 @@ end
 The tag describes the restriction; it does not enforce it. The endpoint must
 still perform the check at request time.
 
-The validation task keeps endpoint tags and the
-[`assignable_when` conditions](assignable_permissions.md#conditionally-assignable-permissions)
-of the corresponding assignable permission consistent: for each boundary, the
-YAML conditions must equal the conditions shared by every endpoint using the
-permission at that boundary. When you tag an endpoint, declare the matching
-condition in the assignable permission YAML file in the same merge request,
-and vice versa. Endpoints without tags and permissions without conditions are
-always consistent, so untagged existing code passes validation unchanged.
+The validation task checks these tags against the conditions declared in
+the assignable permission YAML file. For more information, see
+[Conditionally Assignable Permissions](assignable_permissions.md#conditionally-assignable-permissions).
+To tag GraphQL types and mutations, see
+[Tag conditionally available types and mutations](graphql_implementation_guide.md#tag-conditionally-available-types-and-mutations).
 
 #### Allowing Access on Publicly Visible Resources
 
@@ -494,4 +491,5 @@ IO.popen('pbcopy', 'w') { |f| f.puts "curl \"http://#{Gitlab.host_with_port}/api
    - An endpoint's permission has no authorization test. Each endpoint declaration needs its own
      test per boundary type. Routes generated from a single declaration (for example, a shared
      concern mounted at both instance and project level) count as one endpoint.
+   - The `assignable_when` conditions do not match the tags on the code using the permission.
    - The generated reference documentation is out of date.

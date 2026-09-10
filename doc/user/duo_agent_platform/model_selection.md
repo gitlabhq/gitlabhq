@@ -41,7 +41,7 @@ This table lists the default model for each feature in the Agent Platform.
 **Footnotes**:
 
 1. For GitLab 19.0 or earlier, Code Review Flow uses the [default LLM](../gitlab_duo/model_selection.md#default-models)
-   set for GitLab Duo Code Review, listed under **Code Review**.
+   set for GitLab Duo Code Review, the non-agentic version.
 
 ## Supported models
 
@@ -91,7 +91,7 @@ in the Agent Platform.
 **Footnotes**:
 
 1. For GitLab 19.0 or earlier, Code Review Flow can only use the [models available](../gitlab_duo/model_selection.md#gitlab-duo-for-merge-requests)
-   for GitLab Duo Code Review, listed under **Code Review**.
+   for GitLab Duo Code Review, the non-agentic version.
 1. This model is subject to [limited vendor-side data retention](../gitlab_duo/data_usage.md#data-retention).
 
 ## Select a model for a feature

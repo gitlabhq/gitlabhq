@@ -207,7 +207,7 @@ If present, the urgency comment must use one of these valid values:
 - `default` - For standard operations
 - `low` - For non-critical background operations
 
-The urgency tag is **optional**. If you omit it, there will be no linter error. However, if you include it, the value must be one of the valid options listed above.
+The urgency tag is optional. If you omit it, there will be no linter error. However, if you include it, the value must be one of the valid options listed above.
 
 #### Format
 
@@ -261,7 +261,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 const primaryKeyId = getIdFromGraphQLId(data.id);
 ```
 
-**It is required** to query global `id` for every GraphQL type that has an `id` in the schema:
+It is required to query global `id` for every GraphQL type that has an `id` in the schema:
 
 ```javascript
 query allReleases(...) {
@@ -297,7 +297,7 @@ query allReleases(...) {
 
 ## Skip query with async variables
 
-Whenever a query has one or more variables that require another query to have executed before it can run, it is **vital** to add a `skip()` property to the query with all relations.
+Whenever a query has one or more variables that require another query to have executed before it can run, it is vital to add a `skip()` property to the query with all relations.
 
 Failing to do so will result in the query executing twice: once with the default value (whatever was defined on the `data` property or `undefined`) and once more once the initial query is resolved, triggering a new variable value to be injected in the smart query and then refetched by Apollo.
 
@@ -451,7 +451,7 @@ query workspaceAutocompleteUsersSearch(
 ## Immutability and cache updates
 
 From Apollo version 3.0.0 all the cache updates need to be immutable. It needs to be replaced entirely
-with a **new and updated** object.
+with a new and updated object.
 
 To facilitate the process of updating the cache and returning the new object we
 use the library [Immer](https://immerjs.github.io/immer/).
@@ -2164,7 +2164,7 @@ Tests using the default import get legacy mode (auto-resolution). To migrate to 
 
 The GitLab GraphQL mutations have two distinct error modes: [Top-level](#top-level-errors) and [errors-as-data](#errors-as-data).
 
-When utilising a GraphQL mutation, consider handling **both of these error modes** to ensure that the user receives the appropriate feedback when an error occurs.
+When utilising a GraphQL mutation, consider handling both of these error modes to ensure that the user receives the appropriate feedback when an error occurs.
 
 ### Top-level errors
 

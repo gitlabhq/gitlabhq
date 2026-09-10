@@ -469,6 +469,12 @@ func configureRoutes(u *upstream) {
 			newRoute(apiPattern+`v4/ai/duo_workflows/ws\z`, "duo_workflow_ws", railsBackend),
 			dwHandler.Build()),
 
+		// Duo Workflow server-side execution: workhorse runs the flow itself and
+		// streams the actions back, for callers that cannot execute them.
+		u.route("POST",
+			newRoute(apiPattern+`v4/ai/duo_workflows/workflows/\d+/execute\z`, "duo_workflow_execute", railsBackend),
+			dwHandler.BuildHTTP()),
+
 		// Long poll and limit capacity given to jobs/request and builds/register.json
 		u.route("",
 			newRoute(apiPattern+`v4/jobs/request\z`, "api_jobs_request", railsBackend), ciAPILongPolling),

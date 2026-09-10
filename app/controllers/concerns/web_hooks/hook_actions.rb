@@ -123,9 +123,7 @@ module WebHooks
     # Gates the form section and the permitted parameter together, so a request that
     # skips the form cannot set the attribute.
     def duo_flow_callback_available?
-      container = hook_container
-
-      container.present? && Feature.enabled?(:duo_flow_callback_hooks, container.root_ancestor)
+      ::Gitlab::WebHooks::DuoFlowCallback.available?(hook_container)
     end
 
     # Assigned rather than exposed as a helper method: the form is also rendered without

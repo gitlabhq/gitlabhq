@@ -25,7 +25,7 @@ This structure means the group can think through a proposed change, gather feedb
 
 When the work ahead might affect more than a single group, stage, or potentially an entire department (for example, all of the Frontend team) then it is likely that there is need for a [Design Document](https://handbook.gitlab.com/handbook/engineering/architecture/workflow/).
 
-This is well documented in the handbook, but to touch on it shortly, it is **the best way** to propose large changes and gather the required feedback and support to move forward. These documents are version controlled, keep evolving with time and are a great way to share a complex understanding across the entire organization. They also require a coach, which is a great way to involve someone with a lot of experience with larger changes. This process is shared across all engineering departments and is owned by the CTO.
+This is well documented in the handbook, but to touch on it shortly, it is the best way to propose large changes and gather the required feedback and support to move forward. These documents are version controlled, keep evolving with time and are a great way to share a complex understanding across the entire organization. They also require a coach, which is a great way to involve someone with a lot of experience with larger changes. This process is shared across all engineering departments and is owned by the CTO.
 
 To see all Design Documents, you can check the [Architecture at GitLab page](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/).
 
@@ -58,7 +58,7 @@ For recommending certain code patterns in our documentation, you can write the M
 
 If you'd like to propose a major change to the technological stack (Vue to React, JavaScript to TypeScript, and so on), start by reaching out on Slack to gauge interest. Always ask yourself whether or not the problems that you see can be fixed from our current tech stack, as we should always try to fix our problems with the tools we already have. Other departments, such as Backend and QA, do not have a clear process to propose technological changes either. That is because these changes would require huge investments from the company and probably cannot be decided without involving high-ranking executives from engineering.
 
-Instead, consider starting a Design Document that explains the problem and try to solve it with our current tools. Invite contribution from the department and research this thoroughly as there can only be two outcomes. Either the problem **can** be solved with our current tools or it cannot. If it can, this is a huge win for our teams since we've fixed an issue without the need to completely change our stack, and if it cannot, then the Design Document can be the start of the larger conversation around the technological change.
+Instead, consider starting a Design Document that explains the problem and try to solve it with our current tools. Invite contribution from the department and research this thoroughly as there can only be two outcomes. Either the problem can be solved with our current tools or it cannot. If it can, this is a huge win for our teams since we've fixed an issue without the need to completely change our stack, and if it cannot, then the Design Document can be the start of the larger conversation around the technological change.
 
 ## Widget architecture
 

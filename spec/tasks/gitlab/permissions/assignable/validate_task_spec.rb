@@ -26,6 +26,8 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
       Authz::PermissionGroups::Assignable.new(permission_definition, Rails.root.join(permission_source_file).to_s)
     end
 
+    let(:source_proc) { instance_double(Proc, source_location: [Rails.root.join('lib/api/test.rb').to_s, 42]) }
+
     subject(:run) { task.run }
 
     before do
@@ -49,8 +51,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
         .with(Rails.root.join("#{described_class::PERMISSION_DIR}/resource_metadata_schema.json"))
         .and_return(instance_double(JSONSchemer::Schema, validate: []))
 
-      # Skip the granular_access_token consumer check by default -- exercised separately below.
+      # Skip the consumer-dependent checks by default -- exercised separately below.
       allow(task).to receive(:validate_granular_access_token_consumers)
+      allow(task).to receive(:validate_assignable_when_consistency)
     end
 
     def stub_granular_token_consumers(rest_permissions: [], graphql_permissions: [])
@@ -58,16 +61,22 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
 
       authorization = rest_permissions.any? ? { permissions: rest_permissions } : nil
       route = instance_double(Grape::Router::Route, settings: { authorization: authorization })
-      endpoint = instance_double(Grape::Endpoint, routes: [route], endpoints: nil)
+      endpoint = instance_double(Grape::Endpoint, routes: [route], endpoints: nil, source: source_proc)
       allow(::API::API).to receive(:endpoints).and_return([endpoint])
 
-      directive = instance_double(::Directives::Authz::GranularScope,
-        arguments: { permissions: graphql_permissions })
-      allow(directive).to receive(:is_a?) { |klass| klass == ::Directives::Authz::GranularScope }
-      type_struct = Struct.new(:directives, :fields)
-      type_with_directives = type_struct.new([directive], {})
-      schema_types = graphql_permissions.any? ? { 'StubType' => type_with_directives } : {}
+      schema_types = {}
+      if graphql_permissions.any?
+        schema_types['StubType'] = graphql_type('StubType', directives: [{ permissions: graphql_permissions }])
+      end
+
       allow(GitlabSchema).to receive(:types).and_return(schema_types)
+    end
+
+    def graphql_type(name, directives: [])
+      Class.new(Types::BaseObject) do
+        graphql_name name
+        directives.each { |arguments| directive(::Directives::Authz::GranularScope, **arguments) }
+      end
     end
 
     context 'when all permissions are valid' do
@@ -741,7 +750,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
           allow(task).to receive(:validate_granular_access_token_consumers).and_call_original
           authorization = { permissions: %w[update_wiki], skip_granular_token_authorization: :job_token_auth }
           route = instance_double(Grape::Router::Route, settings: { authorization: authorization })
-          endpoint = instance_double(Grape::Endpoint, routes: [route], endpoints: nil)
+          endpoint = instance_double(Grape::Endpoint, routes: [route], endpoints: nil, source: source_proc)
           allow(::API::API).to receive(:endpoints).and_return([endpoint])
           allow(GitlabSchema).to receive(:types).and_return({})
         end
@@ -774,6 +783,226 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
         end
 
         it 'completes successfully' do
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
+        end
+      end
+    end
+
+    describe 'assignable_when consistency' do
+      let(:permission_definition) do
+        {
+          name: permission_name,
+          description: 'Update a wiki',
+          permissions: raw_permissions,
+          boundaries: %w[project instance],
+          available_for: ['granular_access_token'],
+          assignable_when: yaml_assignable_when
+        }.compact
+      end
+
+      let(:yaml_assignable_when) { nil }
+      let(:rest_routes) { [] }
+      let(:graphql_directives) { [] }
+
+      let(:error_header) do
+        <<~OUTPUT
+          #######################################################################
+          #
+          #  The following assignable permissions have `assignable_when` conditions inconsistent with the REST endpoints and GraphQL types, mutations, and fields that use their permissions.
+          #  For each boundary, the YAML conditions must equal the conditions shared by every endpoint and directive at that boundary.
+          #  Tag the endpoints and directives, or update the assignable permission YAML file.
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#conditionally-assignable-permissions
+          #
+        OUTPUT
+      end
+
+      before do
+        allow(task).to receive(:validate_assignable_when_consistency).and_call_original
+
+        endpoints = rest_routes.map do |route|
+          instance_double(Grape::Endpoint, routes: [route], endpoints: nil, source: source_proc)
+        end
+        allow(::API::API).to receive(:endpoints).and_return(endpoints)
+
+        allow(GitlabSchema).to receive(:types).and_return(
+          'Mutation' => graphql_type('Mutation'),
+          'StubWikiType' => graphql_type('StubWikiType', directives: graphql_directives)
+        )
+      end
+
+      def rest_route(method = 'GET', **authorization)
+        instance_double(Grape::Router::Route,
+          settings: { authorization: authorization },
+          request_method: method,
+          origin: '/api/:version/projects/:id/wikis')
+      end
+
+      context 'when neither the YAML nor the consumers declare conditions' do
+        let(:rest_routes) { [rest_route(permissions: :update_wiki, boundary_type: :project)] }
+        let(:graphql_directives) { [{ permissions: %w[update_wiki], boundary_type: 'PROJECT' }] }
+
+        it 'completes successfully' do
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
+        end
+      end
+
+      context 'when the YAML and every consumer declare the same conditions' do
+        let(:yaml_assignable_when) { [{ condition: 'admin', boundaries: ['project'] }] }
+        let(:rest_routes) do
+          [rest_route(permissions: :update_wiki, boundary_type: :project, assignable_when: [:admin])]
+        end
+
+        let(:graphql_directives) do
+          [{ permissions: %w[update_wiki], boundary_type: 'PROJECT', assignable_when: %w[admin] }]
+        end
+
+        it 'completes successfully' do
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
+        end
+      end
+
+      context 'when a GraphQL declaration lacks a condition the YAML declares' do
+        let(:yaml_assignable_when) { [{ condition: 'admin', boundaries: ['project'] }] }
+        let(:rest_routes) do
+          [rest_route(permissions: :update_wiki, boundary_type: :project, assignable_when: [:admin])]
+        end
+
+        let(:graphql_directives) { [{ permissions: %w[update_wiki], boundary_type: 'PROJECT' }] }
+
+        it 'returns an error listing every consumer at the boundary' do
+          expect { run }.to raise_error(SystemExit).and output(error_header + <<~OUTPUT).to_stdout
+            #    - update_wiki, project boundary (config/authz/permission_groups/assignable_permissions/wiki_category/wiki/update.yml)
+            #        YAML conditions: [admin]
+            #        Consumer conditions: []
+            #        GET /projects/:id/wikis (lib/api/test.rb:42)
+            #        [type] StubWikiType
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when every consumer declares a condition the YAML lacks' do
+        let(:rest_routes) do
+          [rest_route(permissions: :update_wiki, boundary_type: :project, assignable_when: [:admin])]
+        end
+
+        let(:graphql_directives) do
+          [{ permissions: %w[update_wiki], boundary_type: 'PROJECT', assignable_when: %w[admin] }]
+        end
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(error_header + <<~OUTPUT).to_stdout
+            #    - update_wiki, project boundary (config/authz/permission_groups/assignable_permissions/wiki_category/wiki/update.yml)
+            #        YAML conditions: []
+            #        Consumer conditions: [admin]
+            #        GET /projects/:id/wikis (lib/api/test.rb:42)
+            #        [type] StubWikiType
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when only some consumers declare the condition' do
+        let(:rest_routes) do
+          [rest_route(permissions: :update_wiki, boundary_type: :project, assignable_when: [:admin])]
+        end
+
+        let(:graphql_directives) { [{ permissions: %w[update_wiki], boundary_type: 'PROJECT' }] }
+
+        it 'completes successfully with unconditional YAML' do
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
+        end
+      end
+
+      context 'when the YAML declares a condition for a boundary without consumers' do
+        let(:yaml_assignable_when) { [{ condition: 'admin', boundaries: ['instance'] }] }
+        let(:rest_routes) { [rest_route(permissions: :update_wiki, boundary_type: :project)] }
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(error_header + <<~OUTPUT).to_stdout
+            #    - update_wiki, instance boundary (config/authz/permission_groups/assignable_permissions/wiki_category/wiki/update.yml)
+            #        YAML conditions: [admin]
+            #        Consumer conditions: []
+            #        No REST endpoint or GraphQL declaration uses this permission at this boundary
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when a role-only permission declares conditions' do
+        let(:permission_definition) { super().merge(available_for: ['role']) }
+        let(:yaml_assignable_when) { [{ condition: 'admin' }] }
+
+        it 'completes successfully' do
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
+        end
+      end
+
+      context 'when the raw permission is in GRANULAR_TOKEN_NON_API_CONSUMERS' do
+        let(:raw_permissions) { %w[download_code] }
+        let(:yaml_assignable_when) { [{ condition: 'admin' }] }
+
+        before do
+          allow(Authz::Permission).to receive(:defined?).with('download_code').and_return(true)
+        end
+
+        it 'completes successfully' do
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
+        end
+      end
+
+      context 'when the YAML and a consumer repeat a condition' do
+        let(:yaml_assignable_when) { [{ condition: 'admin' }, { condition: 'admin', boundaries: ['project'] }] }
+        let(:rest_routes) do
+          [
+            rest_route(permissions: :update_wiki, boundary_type: :project, assignable_when: [:admin, :admin]),
+            rest_route(permissions: :update_wiki, boundary_type: :instance, assignable_when: [:admin])
+          ]
+        end
+
+        it 'completes successfully' do
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
+        end
+      end
+
+      context 'when the permission is consumed through additional scopes' do
+        let(:yaml_assignable_when) { [{ condition: 'admin' }] }
+        let(:rest_routes) do
+          [rest_route(
+            permissions: :update_wiki, boundary_type: :project, assignable_when: [:admin],
+            additional_scopes: [{ permissions: :update_wiki, boundary_type: :instance }]
+          )]
+        end
+
+        let(:graphql_directives) do
+          [
+            { permissions: %w[update_wiki], boundary_type: 'PROJECT', assignable_when: %w[admin] },
+            { permissions: %w[update_wiki], boundary_type: 'INSTANCE', assignable_when: %w[admin],
+              requirement_group: 'additional_0' }
+          ]
+        end
+
+        it 'counts the additional scopes as consumers' do
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
+        end
+      end
+
+      context 'when consumers skip granular token authorization' do
+        let(:yaml_assignable_when) { [{ condition: 'admin', boundaries: ['project'] }] }
+        let(:rest_routes) do
+          [
+            rest_route(permissions: :update_wiki, boundary_type: :project, assignable_when: [:admin]),
+            rest_route('POST', permissions: :update_wiki, boundary_type: :project,
+              skip_granular_token_authorization: :job_token_auth)
+          ]
+        end
+
+        let(:graphql_directives) { [{ skip_reason: 'parent_authorizes' }] }
+
+        it 'ignores the skipped consumers' do
           expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
         end
       end

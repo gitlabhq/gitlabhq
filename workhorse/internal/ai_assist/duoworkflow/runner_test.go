@@ -1116,6 +1116,110 @@ func TestRunner_handleAgentAction(t *testing.T) {
 	}
 }
 
+// unsupportedActionTransport is a clientTransport whose client cannot execute
+// any action, like the ndjson transport used for server-side execution.
+type unsupportedActionTransport struct {
+	clientTransport
+	writtenActions []*pb.Action
+}
+
+func (t *unsupportedActionTransport) WriteAction(_ context.Context, action *pb.Action) error {
+	t.writtenActions = append(t.writtenActions, action)
+	return fmt.Errorf("%w: RunCommand", errActionUnsupported)
+}
+
+func TestRunner_handleAgentAction_UnsupportedByClient(t *testing.T) {
+	transport := &unsupportedActionTransport{}
+	mockWf := &mockWorkflowStream{}
+
+	req := httptest.NewRequest("GET", "/duo", nil)
+	r := &runner{
+		originalReq:   req,
+		client:        transport,
+		streamManager: newTestStreamManager(t, mockWf),
+		mcpManager:    &mockMcpManager{},
+	}
+
+	action := &pb.Action{
+		RequestID: "req-unsupported",
+		Action: &pb.Action_RunCommand{
+			RunCommand: &pb.RunCommandAction{Program: "ls"},
+		},
+	}
+
+	require.NoError(t, r.handleAgentAction(context.Background(), action))
+
+	require.Len(t, transport.writtenActions, 1, "the action should still be offered to the client first")
+
+	sendEvents := mockWf.getSendEvents()
+	require.Len(t, sendEvents, 1, "DWS must get a response so the workflow does not stall")
+
+	response := sendEvents[0].GetActionResponse()
+	require.Equal(t, "req-unsupported", response.RequestID)
+	require.Equal(
+		t,
+		"action cannot be executed by this client: RunCommand",
+		response.GetPlainTextResponse().Error,
+	)
+	require.Empty(t, response.GetPlainTextResponse().Response)
+}
+
+func TestRunner_handleAgentAction_UnknownMcpToolUnsupportedByClient(t *testing.T) {
+	transport := &unsupportedActionTransport{}
+	mockWf := &mockWorkflowStream{}
+
+	req := httptest.NewRequest("GET", "/duo", nil)
+	r := &runner{
+		originalReq:   req,
+		client:        transport,
+		streamManager: newTestStreamManager(t, mockWf),
+		// hasTool defaults to false, so the tool is unknown to workhorse and
+		// would be forwarded to the client on the WebSocket transport.
+		mcpManager: &mockMcpManager{},
+	}
+
+	action := &pb.Action{
+		RequestID: "req-mcp-unknown",
+		Action: &pb.Action_RunMCPTool{
+			RunMCPTool: &pb.RunMCPTool{Name: "local_ide_tool"},
+		},
+	}
+
+	require.NoError(t, r.handleAgentAction(context.Background(), action))
+
+	require.Len(t, transport.writtenActions, 1)
+	require.Empty(t, transport.writtenActions[0].GetRunMCPTool().Args)
+
+	sendEvents := mockWf.getSendEvents()
+	require.Len(t, sendEvents, 1)
+	require.Equal(t, "req-mcp-unknown", sendEvents[0].GetActionResponse().RequestID)
+	require.NotEmpty(t, sendEvents[0].GetActionResponse().GetPlainTextResponse().Error)
+}
+
+func TestRunner_handleAgentAction_UnsupportedActionSendFails(t *testing.T) {
+	transport := &unsupportedActionTransport{}
+	mockWf := &mockWorkflowStream{sendError: errors.New("stream closed")}
+
+	req := httptest.NewRequest("GET", "/duo", nil)
+	r := &runner{
+		originalReq:   req,
+		client:        transport,
+		streamManager: newTestStreamManager(t, mockWf),
+		mcpManager:    &mockMcpManager{},
+	}
+
+	action := &pb.Action{
+		RequestID: "req-unsupported",
+		Action:    &pb.Action_RunCommand{RunCommand: &pb.RunCommandAction{Program: "ls"}},
+	}
+
+	require.EqualError(
+		t,
+		r.handleAgentAction(context.Background(), action),
+		"writeActionToClient: failed to send gRPC message: stream closed",
+	)
+}
+
 func TestRunner_Close_WithCloudConnector(t *testing.T) {
 	t.Run("successful close with cloud service", func(t *testing.T) {
 		server := setupTestServer(t)
@@ -1735,55 +1839,83 @@ func TestRunner_Execute_stopAckFromDWS(t *testing.T) {
 }
 
 func TestRunner_Close_waitsForAgentDone(t *testing.T) {
-	server := setupTestServer(t)
+	newRunnerWithInFlightAgent := func(t *testing.T, stopRequested bool) *runner {
+		t.Helper()
 
-	mainClient, err := NewClient(&api.DuoWorkflowServiceConfig{
-		URI:     server.Addr,
-		Headers: map[string]string{},
-		Secure:  false,
-	}, "test-agent", "")
-	require.NoError(t, err)
+		server := setupTestServer(t)
 
-	mockWf := &mockWorkflowStream{}
-	mockConn := &mockWebSocketConn{}
-
-	r := &runner{
-		client: newWsManager(mockConn),
-		streamManager: &streamManager{
-			wf:     mockWf,
-			client: mainClient,
-		},
-		mcpManager: &mockMcpManager{},
-		stop: stopCoordinator{
-			acked: make(chan struct{}),
-		},
-	}
-
-	// Simulate an in-flight handleAgentMessages goroutine
-	r.stop.agentDone.Add(1)
-
-	closeDone := make(chan error, 1)
-	go func() {
-		closeDone <- r.Close()
-	}()
-
-	// Close should be blocked waiting for agentDone
-	select {
-	case <-closeDone:
-		t.Fatal("Close should not return before agentDone is signaled")
-	case <-time.After(100 * time.Millisecond):
-		// expected: Close is still waiting
-	}
-
-	// Signal that handleAgentMessages has finished
-	r.stop.agentDone.Done()
-
-	select {
-	case err := <-closeDone:
+		mainClient, err := NewClient(&api.DuoWorkflowServiceConfig{
+			URI:     server.Addr,
+			Headers: map[string]string{},
+			Secure:  false,
+		}, "test-agent", "")
 		require.NoError(t, err)
-	case <-time.After(2 * time.Second):
-		t.Fatal("Close should return after agentDone is signaled")
+
+		r := &runner{
+			client: newWsManager(&mockWebSocketConn{}),
+			streamManager: &streamManager{
+				wf:     &mockWorkflowStream{},
+				client: mainClient,
+			},
+			mcpManager: &mockMcpManager{},
+			stop: stopCoordinator{
+				acked: make(chan struct{}),
+			},
+		}
+		r.stop.requested.Store(stopRequested)
+
+		// Simulate an in-flight handleAgentMessages goroutine
+		r.stop.agentDone.Add(1)
+
+		return r
 	}
+
+	t.Run("waits when a stop was requested", func(t *testing.T) {
+		r := newRunnerWithInFlightAgent(t, true)
+
+		closeDone := make(chan error, 1)
+		go func() {
+			closeDone <- r.Close()
+		}()
+
+		// Close should be blocked waiting for agentDone, so that a pending Recv
+		// can observe the stop acknowledgment.
+		select {
+		case <-closeDone:
+			t.Fatal("Close should not return before agentDone is signaled")
+		case <-time.After(100 * time.Millisecond):
+			// expected: Close is still waiting
+		}
+
+		// Signal that handleAgentMessages has finished
+		r.stop.agentDone.Done()
+
+		select {
+		case err := <-closeDone:
+			require.NoError(t, err)
+		case <-time.After(2 * time.Second):
+			t.Fatal("Close should return after agentDone is signaled")
+		}
+	})
+
+	t.Run("does not wait when no stop was requested", func(t *testing.T) {
+		// There is no acknowledgment coming, so waiting would block until the
+		// gRPC stream failed on its own. A workflow that never started because
+		// the lock was held elsewhere ends up here.
+		r := newRunnerWithInFlightAgent(t, false)
+
+		closeDone := make(chan error, 1)
+		go func() {
+			closeDone <- r.Close()
+		}()
+
+		select {
+		case err := <-closeDone:
+			require.NoError(t, err)
+		case <-time.After(2 * time.Second):
+			t.Fatal("Close should not wait for agentDone when no stop was requested")
+		}
+	})
 }
 
 func TestRunner_Close_shutdownCoordination(t *testing.T) {

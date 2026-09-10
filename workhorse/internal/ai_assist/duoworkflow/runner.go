@@ -189,7 +189,7 @@ func (r *runner) handleClientEvents(errCh chan<- error) {
 			if reason, ok := r.client.ReadError(err); ok {
 				errCh <- r.stopAndWrapError("handleClientEvents", reason, err)
 			} else {
-				errCh <- fmt.Errorf("handleClientEvents: failed to read a client event: %v", err)
+				errCh <- fmt.Errorf("handleClientEvents: failed to read a client event: %w", err)
 			}
 			return
 		}
@@ -258,10 +258,18 @@ func (r *runner) logClose(name string, err error) error {
 }
 
 func (r *runner) Close() error {
-	// Wait for handleAgentMessages to finish before closing the gRPC stream.
-	// This ensures a pending Recv can observe the DWS stop acknowledgment
-	// (Unavailable) before the connection is torn down.
-	r.stop.agentDone.Wait()
+	// Wait for handleAgentMessages to finish before closing the gRPC stream, so
+	// that a pending Recv can observe the DWS stop acknowledgment (Unavailable)
+	// before the connection is torn down.
+	//
+	// Only when a stop was actually requested. Otherwise there is no
+	// acknowledgment coming and the wait would block until the stream fails on
+	// its own: a workflow that never started, because the lock was held
+	// elsewhere, leaves DWS waiting on its first Recv and workhorse waiting on
+	// ours.
+	if r.stop.requested.Load() {
+		r.stop.agentDone.Wait()
+	}
 
 	// When a server shutdown is in progress, wait for Shutdown to finish before
 	// closing the client transport. Shutdown signals the client to reconnect;
@@ -364,7 +372,7 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 		// If a tool is not recongnized, propagate the message to the client
 		// It's possible when a user has local MCP servers configured in IDE
 		if !r.mcpManager.HasTool(mcpTool.Name) {
-			return r.client.WriteAction(ctx, action)
+			return r.writeActionToClient(ctx, action)
 		}
 
 		event, err := r.mcpManager.CallTool(ctx, action)
@@ -378,7 +386,40 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 	case *pb.Action_TrackLlmCallForSelfHosted:
 		return r.streamManager.HandleCloudServiceTracking(ctx, action)
 	default:
-		return r.client.WriteAction(ctx, action)
+		return r.writeActionToClient(ctx, action)
+	}
+
+	return nil
+}
+
+// writeActionToClient hands an action to the client for execution. Transports
+// whose client cannot execute actions reject them with errActionUnsupported;
+// those are reported back to Duo Workflow Service as a failed action, because
+// it waits for a response to every action it emits and would otherwise stall
+// until its own timeout.
+func (r *runner) writeActionToClient(ctx context.Context, action *pb.Action) error {
+	err := r.client.WriteAction(ctx, action)
+	if !errors.Is(err, errActionUnsupported) {
+		return err
+	}
+
+	log.WithContextFields(ctx, log.Fields{
+		"request_id": action.RequestID,
+	}).WithError(err).Info("writeActionToClient: reporting unsupported action back to DWS")
+
+	event := &pb.ClientEvent{
+		Response: &pb.ClientEvent_ActionResponse{
+			ActionResponse: &pb.ActionResponse{
+				RequestID: action.RequestID,
+				ResponseType: &pb.ActionResponse_PlainTextResponse{
+					PlainTextResponse: &pb.PlainTextResponse{Error: err.Error()},
+				},
+			},
+		},
+	}
+
+	if sendErr := r.streamManager.Send(event); sendErr != nil {
+		return fmt.Errorf("writeActionToClient: failed to send gRPC message: %w", sendErr)
 	}
 
 	return nil

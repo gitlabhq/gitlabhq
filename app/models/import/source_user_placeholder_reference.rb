@@ -18,6 +18,8 @@ module Import
     validates_with ExactlyOnePresentValidator, fields: [:numeric_key, :composite_key]
     validate :validate_model_is_not_member
 
+    before_validation :set_default_expires_at
+
     attribute :composite_key, ::Gitlab::Database::Type::IndifferentJsonb.new
 
     scope :model_groups_for_source_user, ->(source_user) do
@@ -141,6 +143,10 @@ module Import
     end
 
     private
+
+    def set_default_expires_at
+      self.expires_at ||= Time.current + 1.year
+    end
 
     # Membership data is handled in `Import::Placeholders::Membership` records instead.
     # Use `Import::PlaceholderMemberships::CreateService` to save the membership data.

@@ -34,6 +34,12 @@ module Directives
           'requirement. The token must be authorized on any one boundary in a group, and on every ' \
           'group. Absent means the primary group. Set for a second container, such as a move target.'
 
+      argument :assignable_when, [GraphQL::Types::String],
+        required: false,
+        description: 'Conditions the current user must meet for the permissions to be offered in the token ' \
+          'creation UI. Not a security control: the type, mutation, or field must still enforce the conditions. ' \
+          "Valid values: #{::Authz::PermissionGroups::AssignableCondition::EVALUATORS.keys.join(', ')}."
+
       locations FIELD_DEFINITION, OBJECT
     end
   end

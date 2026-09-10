@@ -175,7 +175,7 @@ and IDs are supplied they are cross-validated and a mismatch raises an error. Wo
 `group_id` or `project_id` in the same group.
 
 `ResourceFinder#find_project!` and `#find_group!` fold authorization into the DB lookup.
-If the record is missing **or** the caller lacks the required ability, both raise the same error:
+If the record is missing or the caller lacks the required ability, both raise the same error:
 `"'<id>' not found or inaccessible"`. This prevents an authenticated caller from enumerating
 private projects or groups by comparing error strings. Do not add a separate authorization check
 after calling these finders. If you need a non-default ability, pass it with the `ability:` keyword:

@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
-  :clean_gitlab_redis_shared_state, :request_store, feature_category: :global_search do
+  :clean_gitlab_redis_shared_state, :clean_gitlab_redis_concurrency_limit, :request_store,
+  feature_category: :global_search do
   let(:worker_class) do
     Class.new do
       def self.name
@@ -61,7 +62,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     it 'stores context information' do
       add_to_queue!
 
-      Gitlab::Redis::SharedState.with do |r|
+      Gitlab::Redis::ConcurrencyLimit.with do |r|
         set_key = service.redis_key
         stored_job = service.send(:deserialize, r.lrange(set_key, 0, -1).first)
 
@@ -72,7 +73,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     it 'stores the jid' do
       add_to_queue!
 
-      Gitlab::Redis::SharedState.with do |r|
+      Gitlab::Redis::ConcurrencyLimit.with do |r|
         set_key = service.redis_key
         stored_job = service.send(:deserialize, r.lrange(set_key, 0, -1).first)
 
@@ -83,7 +84,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     it 'stores no size-limiter compression markers for an uncompressed job' do
       add_to_queue!
 
-      Gitlab::Redis::SharedState.with do |r|
+      Gitlab::Redis::ConcurrencyLimit.with do |r|
         stored_job = service.send(:deserialize, r.lrange(service.redis_key, 0, -1).first)
 
         # `Compressor.compressed?` keys off `has_key?`, so a nil-valued marker looks compressed.
@@ -97,7 +98,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
       it 'stores wal locations' do
         add_to_queue!
 
-        Gitlab::Redis::SharedState.with do |r|
+        Gitlab::Redis::ConcurrencyLimit.with do |r|
           set_key = service.redis_key
           stored_job = service.send(:deserialize, r.lrange(set_key, 0, -1).first)
 
@@ -126,7 +127,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     it 'leaves non-matching jobs intact' do
       service.drop_jobs!(matching_context, timeout: 10)
 
-      Gitlab::Redis::SharedState.with do |redis|
+      Gitlab::Redis::ConcurrencyLimit.with do |redis|
         remaining = redis.lrange(service.redis_key, 0, -1).map { |j| service.send(:deserialize, j) }
         expect(remaining.map { |j| j['context']['meta.user'] }).to contain_exactly('other_user')
       end
@@ -182,7 +183,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
       service.send(:request_drop!, 15)
 
       drop_key = service.instance_variable_get(:@drop_request_key)
-      ttl = Gitlab::Redis::SharedState.with { |redis| redis.ttl(drop_key) }
+      ttl = Gitlab::Redis::ConcurrencyLimit.with { |redis| redis.ttl(drop_key) }
 
       expect(service.send(:drop_requested?)).to be_truthy
       expect(ttl).to be_between(1, 15)
@@ -212,7 +213,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
 
     context 'when the queue is empty' do
       before do
-        Gitlab::Redis::SharedState.with { |redis| redis.del(service.redis_key) }
+        Gitlab::Redis::ConcurrencyLimit.with { |redis| redis.del(service.redis_key) }
       end
 
       it 'skips the drop-request/lock handshake and reports completed', :aggregate_failures do
@@ -245,6 +246,46 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
       expect { service.add_to_queue!(job, worker_context) }
         .to change { service.has_jobs_in_queue? }
         .from(false).to(true)
+    end
+  end
+
+  describe 'backing Redis store' do
+    it 'routes through Gitlab::Redis::ConcurrencyLimit' do
+      expect(Gitlab::Redis::ConcurrencyLimit).to receive(:with).and_call_original
+
+      service.add_to_queue!(job, worker_context)
+    end
+
+    shared_examples 'stores the deferred job on the ConcurrencyLimit instance' do
+      it 'writes the job to the ConcurrencyLimit store' do
+        service.add_to_queue!(job, worker_context)
+
+        stored = Gitlab::Redis::ConcurrencyLimit.with { |r| r.lrange(service.redis_key, 0, -1) }
+
+        expect(stored.size).to eq(1)
+      end
+    end
+
+    context 'when both MultiStore flags are disabled' do
+      before do
+        stub_feature_flags(
+          use_primary_and_secondary_stores_for_concurrency_limit: false,
+          use_primary_store_as_default_for_concurrency_limit: false
+        )
+      end
+
+      it_behaves_like 'stores the deferred job on the ConcurrencyLimit instance'
+    end
+
+    context 'when the primary store is the default' do
+      before do
+        stub_feature_flags(
+          use_primary_and_secondary_stores_for_concurrency_limit: true,
+          use_primary_store_as_default_for_concurrency_limit: true
+        )
+      end
+
+      it_behaves_like 'stores the deferred job on the ConcurrencyLimit instance'
     end
   end
 

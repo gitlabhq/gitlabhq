@@ -102,7 +102,7 @@ However there may be cases when it's OK to combine these two to seek specific be
 
 If you have to use both Apollo and Pinia, follow these rules:
 
-- **Never use Apollo Client in Pinia stores**. Apollo Client should only be consumed within a Vue component or a [composable](vue.md#composables).
+- Never use Apollo Client in Pinia stores. Apollo Client should only be consumed within a Vue component or a [composable](vue.md#composables).
 - Do not sync data between Apollo and Pinia.
 - You should have only one source of truth for your requests.
 

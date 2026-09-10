@@ -39,6 +39,8 @@ module Import
     }
     validate :validate_source_hostname, if: :source_hostname_changed?
 
+    before_validation :set_default_reassignment_expires_at
+
     scope :for_namespace, ->(namespace_id) { where(namespace_id: namespace_id) }
     scope :by_source_hostname, ->(source_hostname) { where(source_hostname: source_hostname) }
     scope :by_import_type, ->(import_type) { where(import_type: import_type) }
@@ -221,6 +223,10 @@ module Import
     end
 
     private
+
+    def set_default_reassignment_expires_at
+      self.reassignment_expires_at ||= Time.current + 1.year
+    end
 
     # Overridden in EE
     def bypass_placeholder_confirmation_allowed?

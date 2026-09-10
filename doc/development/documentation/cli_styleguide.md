@@ -319,13 +319,19 @@ They are overwritten each time `make gen-docs` runs.
 ## Environment variables
 
 The canonical reference for all environment variables that affect `glab` behavior
-is the [environment variables section of the `gitlab-org/cli` README](https://gitlab.com/gitlab-org/cli/-/blob/main/README.md#environment-variables).
-This includes GitLab access variables (such as `GITLAB_TOKEN` and `GITLAB_HOST`),
+is the [environment variables section of the configuration page](https://docs.gitlab.com/cli/configuration/#environment-variables).
+The reference lists GitLab access variables (such as `GITLAB_TOKEN` and `GITLAB_HOST`),
 `glab` configuration variables (such as `BROWSER`, `GLAB_NO_PROMPT`, and `GLAB_GLAMOUR_STYLE`),
 and their `config.yml` equivalents and defaults.
 
-Environment variables that affect `glab` behavior globally are documented on the
-root command page, generated from the `help:environment` annotation in the Go source.
+The table is generated from `KeySchema` in `internal/config/schema.go` and written between
+sentinel comments in `docs/source/configuration.md`.
+Variables that `glab` reads directly, rather than through a configuration key, are listed in
+`nonSchemaEnvVars` in `internal/config/envvars.go`.
+To add or change a variable, edit the Go source and run `make gen-docs`.
+Do not edit the generated table.
+
+The root command page links to the reference and does not repeat the variables.
 Do not duplicate the full variable list in individual command pages.
 
 When a specific command's behavior is also affected by an environment variable,
@@ -394,13 +400,16 @@ Commit the deleted page with your merge request.
 
 ### Deprecated environment variables
 
-When an environment variable is deprecated, update the `help:environment` annotation in `root.go`.
-Keep all entries in alphabetical order.
+When an environment variable is deprecated, update its `KeyDef` in `internal/config/schema.go`.
+The `EnvVars` field is the single source for both the configuration page and the variables listed when a user runs `glab config --help`, so one change updates every place the name appears.
 
-1. Remove the deprecated variable entry.
-1. Add a new entry for the replacement variable with a full description.
+1. Remove the deprecated name from the `EnvVars` field.
+1. Add the replacement name to `EnvVars`. The first name in the list takes precedence.
+1. Update the `Description` field if the change affects the behavior.
 1. Run `make gen-docs` and commit the regenerated files.
-1. Apply the same updates to the variables section of the [README](https://gitlab.com/gitlab-org/cli/-/blob/main/README.md#environment-variables).
+
+For a variable that `glab` reads directly, update its entry in `nonSchemaEnvVars` in
+`internal/config/envvars.go` instead.
 
 ## Version support
 

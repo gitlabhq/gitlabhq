@@ -9,6 +9,11 @@ module Gitlab
           @detach_concurrently || false
         end
 
+        # Strategies that can date a partition's detach eligibility override this
+        def detachable_since(_partition)
+          nil
+        end
+
         protected
 
         def ensure_connection_set

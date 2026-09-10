@@ -385,7 +385,7 @@ In such cases prefer migrating nested modules first:
 1. Create a Pinia store counterpart of the nested Vuex store module.
 1. Create a placeholder Pinia 'root' store for root module dependencies if applicable.
 1. Copy and adapt existing tests for the migrated module.
-1. **Do not use migrated modules yet.**
+1. Do not use migrated modules yet.
 1. Once all the nested modules are migrated you can migrate the root module and replace the placeholder store with the real one.
 1. Replace Vuex store with Pinia stores in components.
 

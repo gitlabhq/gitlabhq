@@ -3,6 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe ObjectPool::DestroyWorker, feature_category: :source_code_management do
+  describe '.sidekiq_retries_exhausted' do
+    it 'tracks the exception with the pool repository id' do
+      job = { 'args' => [123] }
+      exception = StandardError.new('gitaly failure')
+
+      expect(Gitlab::ErrorTracking).to receive(:track_exception)
+        .with(exception, pool_repository_id: 123)
+
+      described_class.sidekiq_retries_exhausted_block.call(job, exception)
+    end
+  end
+
   describe '#perform' do
     context 'when no pool is in the database' do
       it "doesn't raise an error" do

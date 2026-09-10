@@ -20,6 +20,7 @@ module Tasks
               invalid_skip_reason: [],
               conflicting_authorization: [],
               invalid_additional_scope: [],
+              invalid_condition: [],
               insufficient_tests: []
             }
             @seen_requirement_groups = Set.new
@@ -55,6 +56,8 @@ module Tasks
           def validate_granular_directive(item, directive)
             return if directive.arguments[:skip_reason].present?
 
+            validate_conditions(item, directive)
+
             permissions = directive.arguments[:permissions].map { |p| p.to_s.downcase.to_sym }
             boundary_type = directive.arguments[:boundary_type]&.to_sym
             requirement_group = directive.arguments[:requirement_group]
@@ -88,6 +91,17 @@ module Tasks
 
             violations[:invalid_additional_scope] <<
               item.merge(reason: "duplicate requirement_group '#{args[:requirement_group]}'")
+          end
+
+          def validate_conditions(item, directive)
+            unknown = Array(directive.arguments[:assignable_when]).map(&:to_sym) - known_conditions
+            return if unknown.empty?
+
+            violations[:invalid_condition] << item.merge(reason: unknown.join(', '))
+          end
+
+          def known_conditions
+            @known_conditions ||= ::Authz::PermissionGroups::AssignableCondition::EVALUATORS.keys
           end
 
           # A type, mutation, or field may declare multiple directives (one per
@@ -193,6 +207,7 @@ module Tasks
               format_invalid_skip_reason_errors +
               format_conflicting_authorization_errors +
               format_graphql_errors(:invalid_additional_scope) +
+              format_graphql_errors(:invalid_condition) +
               format_insufficient_test_errors
           end
 
@@ -305,6 +320,11 @@ module Tasks
                 and entries must not collide on a requirement group (use distinct boundary_arguments).
                 Otherwise the entry silently denies every request with 404 or goes unenforced.
                 #{graphql_implementation_guide_link(anchor: 'additional-required-scopes')}
+              MSG
+              invalid_condition: <<~MSG.chomp,
+                The following GraphQL types/mutations/fields use an unknown assignable_when condition.
+                Use one of: #{::Authz::PermissionGroups::AssignableCondition::EVALUATORS.keys.map { |c| ":#{c}" }.join(', ')}
+                #{assignable_permissions_link(anchor: 'conditionally-assignable-permissions')}
               MSG
               insufficient_tests: <<~MSG.chomp
                 The following permissions have fewer tests than GraphQL types/mutations/fields using them.

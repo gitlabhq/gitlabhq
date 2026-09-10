@@ -8,8 +8,8 @@ title: Design Patterns
 This page covers suggested design patterns and also anti-patterns.
 
 > [!note]
-> When adding a design pattern to this document, be sure to clearly state the **problem it solves**.
-> When adding a design anti-pattern, clearly state **the problem it prevents**.
+> When adding a design pattern to this document, be sure to clearly state the problem it solves.
+> When adding a design anti-pattern, clearly state the problem it prevents.
 
 ## Patterns
 
@@ -25,7 +25,7 @@ Throughout the GitLab codebase, there may be historic uses of these anti-pattern
 when figuring out whether or not to refactor, when touching code that uses one of these legacy patterns.
 
 > [!note]
-> For new features, anti-patterns are not necessarily prohibited, but it is **strongly suggested** to find another approach.
+> For new features, anti-patterns are not necessarily prohibited, but it is strongly suggested to find another approach.
 
 ### Shared Global Object
 
@@ -227,4 +227,4 @@ export class Foo {
 ```
 
 In this example, the lifecycle and implementation details of `mediator` are all managed
-**outside** the component (most likely the page entrypoint).
+outside the component (most likely the page entrypoint).

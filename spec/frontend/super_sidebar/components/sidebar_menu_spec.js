@@ -649,8 +649,8 @@ describe('Sidebar Menu', () => {
         expect(findTrigger().text()).toBe('More features');
       });
 
-      it('renders the applications icon on the trigger', () => {
-        expect(findTrigger().props('icon')).toBe('applications');
+      it('renders the feature-addition icon on the trigger', () => {
+        expect(findTrigger().props('icon')).toBe('feature-addition');
       });
 
       it('does not apply the shimmer class when showFeatureLibraryShimmer is false', () => {
