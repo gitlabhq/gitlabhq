@@ -45,7 +45,10 @@ module Authn
       def upsert_attributes(application)
         {
           client_id: application.uid,
-          client_secret: application.secret,
+          # application.secret is already a SHA-512 digest (Doorkeeper's
+          # Sha512Hash strategy), satisfying IAM's hashed_client_secret
+          # contract as-is; IAM stores it verbatim and never sees plaintext.
+          hashed_client_secret: application.secret,
           client_name: application.name,
           redirect_uris: application.redirect_uri.split,
           scopes: application.scopes.to_a,

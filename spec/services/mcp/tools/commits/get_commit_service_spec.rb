@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Mcp::Tools::Commits::GetCommitService, feature_category: :mcp_server do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:project) { create(:project, :small_repo, :public) }
   let_it_be(:commit) { project.commit }
 
   let(:service) { described_class.new(name: 'get_commit') }

@@ -369,6 +369,19 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
     end
   end
 
+  describe '#expand_context_attrs' do
+    let(:location) { 'some/file/config.yml' }
+
+    subject { file.send(:expand_context_attrs) }
+
+    it 'includes parent_file and pipeline_policy_context' do
+      is_expected.to include(
+        parent_file: file,
+        pipeline_policy_context: nil
+      )
+    end
+  end
+
   describe '#validate_content_keys!' do
     let(:location) { 'some/file/inputs.yml' }
 

@@ -243,7 +243,7 @@ module Gitlab
             end
 
             def expand_context_attrs
-              { parent_file: self }
+              { parent_file: self, pipeline_policy_context: context.pipeline_policy_context }
             end
 
             def masked_location

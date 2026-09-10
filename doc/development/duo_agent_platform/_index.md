@@ -26,7 +26,7 @@ Agent Platform consists of four separate services:
 
 1. [GitLab instance](https://gitlab.com/gitlab-org/gitlab/)
 1. GitLab Duo Agent Platform Service, which is part of [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/)
-1. [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/tree/main/packages/cli) (Node/TypeScript executor from `gitlab-lsp`)
+1. [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/tree/main/packages/cli) (TypeScript executor from `gitlab-lsp`, distributed as a precompiled binary)
 1. [GitLab Duo Agent Platform Webview](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md)
 
 ### Development Setup for Backend Components
@@ -34,7 +34,7 @@ Agent Platform consists of four separate services:
 You should [set up GitLab Duo Agent Platform with the GitLab Development Kit (GDK)](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/)
 to run local versions of GitLab and the GitLab Duo Agent Platform Service.
 
-This setup can be used as-is with the [publicly available version of the VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) or [GitLab Duo CLI](https://www.npmjs.com/package/@gitlab/duo-cli).
+This setup can be used as-is with the [publicly available version of the VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) or [GitLab Duo CLI](../../user/gitlab_duo_cli/_index.md).
 
 #### Testing Agentic GitLab Duo Chat in Web UI
 

@@ -1,0 +1,10 @@
+---
+name: org_mover_maintenance_api
+description: Enables the internal org_mover API to drive an organization's maintenance lifecycle. Enable per organization only for the duration of a move; never enable globally, and disable it once the move completes (it does not expire on its own).
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20404
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253143
+rollout_issue_url:
+milestone: '19.4'
+group: group::organizations
+type: wip
+default_enabled: false

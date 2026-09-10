@@ -679,4 +679,44 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       end
     end
   end
+
+  describe '#namespace_arguments' do
+    subject(:declared) { described_class.new(name: 'test_tool', route: route).namespace_arguments }
+
+    let(:default) { Mcp::Tools::Concerns::GovernanceNamespaceResolver::DEFAULT_NAMESPACE_ARGUMENTS }
+
+    before do
+      allow(app).to receive(:route_setting).with(:authorization).and_return(authorization)
+    end
+
+    context 'when the route declares a project boundary' do
+      let(:authorization) { { permissions: :read_project, boundary_type: :project } }
+
+      it { is_expected.to eq({ project: :id }) }
+    end
+
+    context 'when the route declares a group boundary' do
+      let(:authorization) { { permissions: :read_group, boundary_type: :group } }
+
+      it { is_expected.to eq({ group: :id }) }
+    end
+
+    context 'when the route declares a boundary that names no container' do
+      let(:authorization) { { permissions: :read_user, boundary_type: :user } }
+
+      it { is_expected.to eq(default) }
+    end
+
+    context 'when the route declares authorization without a boundary' do
+      let(:authorization) { { permissions: :read_project } }
+
+      it { is_expected.to eq(default) }
+    end
+
+    context 'when the route declares no authorization at all' do
+      let(:authorization) { nil }
+
+      it { is_expected.to eq(default) }
+    end
+  end
 end

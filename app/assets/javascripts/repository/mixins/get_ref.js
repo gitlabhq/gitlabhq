@@ -8,7 +8,7 @@ import refQuery from '../queries/ref.query.graphql';
 export const refApolloQuery = {
   query: refQuery,
   manual: true,
-  result({ data, loading }) {
+  result({ data, loading } = {}) {
     if (data && !loading) {
       this.ref = data.ref;
       this.escapedRef = data.escapedRef;

@@ -1,7 +1,7 @@
 <script>
 import { GlCollapsibleListbox, GlAvatar, GlButton, GlIcon, GlTruncate } from '@gitlab/ui';
 import { debounce, unionBy } from 'lodash-es';
-import { filterBySearchTerm, mapItemToListboxFormat } from '~/analytics/shared/utils';
+import { mapItemToListboxFormat } from '~/analytics/shared/utils';
 import { MIN_SEARCH_CHARS } from '~/analytics/shared/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -15,6 +15,9 @@ const defaultQueryParams = {
   first: 20,
   topLevelOnly: false,
 };
+
+const SORT_BY_NAME = 'name_asc';
+const SORT_BY_RELEVANCE = 'similarity';
 
 export default {
   name: 'GroupsDropdownFilter',
@@ -68,6 +71,7 @@ export default {
         return {
           ...defaultQueryParams,
           search: this.searchTerm,
+          sort: this.searchTerm ? SORT_BY_RELEVANCE : SORT_BY_NAME,
           ...this.queryParams,
         };
       },
@@ -104,14 +108,11 @@ export default {
     hasSelectedGroups() {
       return Boolean(this.selectedGroups.length);
     },
-    availableGroups() {
-      return filterBySearchTerm(this.groups, this.searchTerm);
-    },
     selectedItems() {
       return sortByGroupName(this.selectedGroups);
     },
     unselectedItems() {
-      return this.availableGroups.filter(({ id }) => !this.selectedGroupIds.includes(id));
+      return this.groups.filter(({ id }) => !this.selectedGroupIds.includes(id));
     },
     selectedGroupOptions() {
       return this.selectedItems.map(mapItemToListboxFormat);
@@ -165,12 +166,12 @@ export default {
       }
     },
     onClick(groupId) {
-      const group = this.availableGroups.find(({ id }) => id === groupId);
+      const group = this.groups.find(({ id }) => id === groupId);
       this.setSelectedGroups(group);
       this.handleUpdatedSelectedGroups();
     },
     onMultiSelectClick(groupIds) {
-      const newlySelectedGroups = this.getSelectedGroups(this.availableGroups, groupIds);
+      const newlySelectedGroups = this.getSelectedGroups(this.groups, groupIds);
       const selectedGroups = this.getSelectedGroups(this.selectedGroups, groupIds);
 
       this.setSelectedGroups(unionBy(newlySelectedGroups, selectedGroups, 'id'));

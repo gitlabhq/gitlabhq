@@ -60,6 +60,69 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::DateBucketDimension, :
     [session1, session2, session3]
   end
 
+  describe 'default parameters' do
+    let(:engine_definition) do
+      Gitlab::Database::Aggregation::ClickHouse::Engine.build do
+        self.table_name = 'agent_platform_sessions'
+
+        dimensions do
+          date_bucket :started_event_at, :date, -> { sql('anyIfMerge(started_event_at)') }
+        end
+
+        metrics do
+          count
+        end
+      end
+    end
+
+    def request_for(parameters)
+      Gitlab::Database::Aggregation::Request.new(
+        dimensions: [{ identifier: :started_event_at, parameters: parameters }],
+        metrics: [{ identifier: :total_count }]
+      )
+    end
+
+    it 'declares the calendar granularity parameter without an engine-level declaration' do
+      expect(engine_definition.dimensions.first.parameters)
+        .to eq(described_class::DEFAULT_PARAMETERS)
+    end
+
+    it 'accepts every calendar granularity' do
+      expect(engine).to execute_aggregation(request_for(granularity: 'daily')).and_return(match_array([
+        { started_event_at_daily: Date.parse('2025-03-01'), total_count: 1 },
+        { started_event_at_daily: Date.parse('2025-03-12'), total_count: 1 },
+        { started_event_at_daily: Date.parse('2025-04-04'), total_count: 1 }
+      ]))
+
+      expect(engine).to execute_aggregation(request_for(granularity: 'weekly')).and_return(match_array([
+        { started_event_at_weekly: Date.parse('2025-03-01').beginning_of_week, total_count: 1 },
+        { started_event_at_weekly: Date.parse('2025-03-12').beginning_of_week, total_count: 1 },
+        { started_event_at_weekly: Date.parse('2025-04-01').beginning_of_week, total_count: 1 }
+      ]))
+
+      expect(engine).to execute_aggregation(request_for(granularity: 'monthly')).and_return([
+        { started_event_at_monthly: Date.parse('2025-03-01'), total_count: 2 },
+        { started_event_at_monthly: Date.parse('2025-04-01'), total_count: 1 }
+      ])
+    end
+
+    it 'rejects granularities outside the calendar default' do
+      %w[yearly 30d].each do |granularity|
+        expect(engine).to execute_aggregation(request_for(granularity: granularity)).with_errors(array_including(
+          a_string_matching(%r{Invalid value\(s\) for parameter `granularity`: #{granularity}})
+        ))
+      end
+    end
+
+    it 'lets an explicit declaration replace the default' do
+      definition = described_class.new(:created_at, :date, parameters: {
+        granularity: { type: :string, in: %w[monthly] }
+      })
+
+      expect(definition.parameters).to eq(granularity: { type: :string, in: %w[monthly] })
+    end
+  end
+
   it 'returns monthly buckets by default' do
     request = Gitlab::Database::Aggregation::Request.new(
       dimensions: [{ identifier: :started_event_at }],

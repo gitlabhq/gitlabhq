@@ -21,7 +21,7 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
 
         expect(client).to have_received(:upsert_oauth_application).with(
           client_id: application.uid,
-          client_secret: application.secret,
+          hashed_client_secret: application.secret,
           client_name: application.name,
           redirect_uris: application.redirect_uri.split,
           scopes: application.scopes.to_a,
@@ -33,6 +33,16 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
           created_at: Google::Protobuf::Timestamp.new(seconds: application.created_at.to_i),
           updated_at: Google::Protobuf::Timestamp.new(seconds: application.updated_at.to_i)
         )
+      end
+
+      # Pins invariant: Doorkeeper's Sha512Hash output matches IAM's
+      # ^[0-9a-f]{128}$ pattern. Future storage-strategy changes fail
+      # this spec instead of silently wedging replication at IAM boundary.
+      it 'sends a hashed_client_secret in the digest format IAM validates' do
+        replicator.deliver(row)
+
+        expect(client).to have_received(:upsert_oauth_application)
+          .with(hash_including(hashed_client_secret: match(/\A[0-9a-f]{128}\z/)))
       end
 
       it 'delivers with a single upsert call' do

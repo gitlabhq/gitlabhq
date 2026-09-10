@@ -46,25 +46,25 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
   end
 
   shared_examples '.find' do
-    context 'nil path' do
+    context 'when nil path' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], nil) }
 
       it { expect(blob).to be_nil }
     end
 
-    context 'utf-8 branch' do
+    context 'when utf-8 branch' do
       let(:blob) { described_class.find(repository, 'Ääh-test-utf-8', "files/ruby/popen.rb") }
 
       it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
     end
 
-    context 'blank path' do
+    context 'when blank path' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], '') }
 
       it { expect(blob).to be_nil }
     end
 
-    context 'file in subdir' do
+    context 'when file in subdir' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], "files/ruby/popen.rb") }
 
       it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
@@ -76,7 +76,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
       it { expect(blob.mode).to eq("100644") }
     end
 
-    context 'file in root' do
+    context 'when file in root' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], ".gitignore") }
 
       it { expect(blob.id).to eq("dfaa3f97ca337e20154a98ac9d0be76ddd1fcc82") }
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
       it { expect(blob).not_to be_binary_in_repo }
     end
 
-    context 'file in root with leading slash' do
+    context 'when file in root with leading slash' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], "/.gitignore") }
 
       it { expect(blob.id).to eq("dfaa3f97ca337e20154a98ac9d0be76ddd1fcc82") }
@@ -101,19 +101,19 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
       it { expect(blob.mode).to eq("100644") }
     end
 
-    context 'file with a trailing slash' do
+    context 'when file with a trailing slash' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], '.gitignore/') }
 
       it { expect(blob.id).to eq("dfaa3f97ca337e20154a98ac9d0be76ddd1fcc82") }
     end
 
-    context 'non-exist file' do
+    context 'when non-exist file' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], "missing.rb") }
 
       it { expect(blob).to be_nil }
     end
 
-    context 'six submodule' do
+    context 'when six submodule' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], 'six') }
 
       it { expect(blob.id).to eq('409f37c4f05865e4fb208c771485f211a22c4c2d') }
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
       end
     end
 
-    context 'large file' do
+    context 'when large file' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], 'files/images/6049019_460s.jpg') }
       let(:blob_size) { 111803 }
       let(:stub_limit) { 1000 }
@@ -188,7 +188,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
 
     it { expect(subject.size).to eq(blob_references.size) }
 
-    context 'first blob' do
+    context 'when first blob' do
       let(:blob) { subject[0] }
 
       it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
@@ -200,7 +200,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
       it { expect(blob.mode).to eq("100644") }
     end
 
-    context 'second blob' do
+    context 'when second blob' do
       let(:blob) { subject[1] }
 
       it { expect(blob.id).to eq('409f37c4f05865e4fb208c771485f211a22c4c2d') }
@@ -211,16 +211,16 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
       end
     end
 
-    context 'limiting' do
+    context 'when limiting' do
       subject { described_class.batch(repository, blob_references, blob_size_limit: blob_size_limit) }
 
-      context 'positive' do
+      context 'when positive' do
         let(:blob_size_limit) { 10 }
 
         it { expect(subject.first.data.size).to eq(10) }
       end
 
-      context 'zero' do
+      context 'when zero' do
         let(:blob_size_limit) { 0 }
 
         it 'only loads the metadata' do
@@ -229,7 +229,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
         end
       end
 
-      context 'negative' do
+      context 'when negative' do
         let(:blob_size_limit) { -1 }
 
         it 'ignores MAX_DATA_DISPLAY_SIZE' do
@@ -359,7 +359,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
   end
 
   describe 'encoding', :aggregate_failures do
-    context 'file with russian text' do
+    context 'when file with russian text' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], "encoding/russian.rb") }
 
       it 'has the correct blob attributes' do
@@ -373,7 +373,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
       end
     end
 
-    context 'file with Japanese text' do
+    context 'when file with Japanese text' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], "encoding/テスト.txt") }
 
       it 'has the correct blob attributes' do
@@ -385,7 +385,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
       end
     end
 
-    context 'file with ISO-8859 text' do
+    context 'when file with ISO-8859 text' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], "encoding/iso8859.txt") }
 
       it 'has the correct blob attributes' do
@@ -399,7 +399,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
   end
 
   describe 'mode' do
-    context 'file regular' do
+    context 'when file regular' do
       let(:blob) do
         described_class.find(
           repository,
@@ -414,7 +414,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
       it { expect(blob.mode).to eq("100644") }
     end
 
-    context 'file binary' do
+    context 'when file binary' do
       let(:blob) do
         described_class.find(
           repository,
@@ -429,7 +429,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
       it { expect(blob.mode).to eq("100755") }
     end
 
-    context 'file symlink to regular' do
+    context 'when file symlink to regular' do
       let(:blob) do
         described_class.find(
           repository,
@@ -446,7 +446,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
   end
 
   describe 'lfs_pointers' do
-    context 'file a valid lfs pointer' do
+    context 'when file is a valid lfs pointer' do
       let(:blob) do
         described_class.find(
           repository,

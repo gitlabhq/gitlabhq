@@ -8,7 +8,7 @@ module Gitlab
 
       delegate :id, to: :@raw_tag
 
-      attr_reader :object_sha, :repository
+      attr_reader :repository
 
       MAX_TAG_MESSAGE_DISPLAY_SIZE = 10.megabytes
       SERIALIZE_KEYS = %i[name target target_commit message].freeze

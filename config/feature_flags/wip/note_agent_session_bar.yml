@@ -1,0 +1,10 @@
+---
+name: note_agent_session_bar
+description: Show the agent session bar on notes and work item notes pages.
+feature_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/624326'
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252355'
+rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/624349'
+milestone: '19.4'
+group: group::agent execution
+type: wip
+default_enabled: false

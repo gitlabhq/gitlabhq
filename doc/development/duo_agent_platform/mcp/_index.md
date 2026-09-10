@@ -388,6 +388,121 @@ you do not install anything:
 The guidelines are the source of truth.
 If the skill and the guidelines disagree, follow the guidelines and update the skill.
 
+#### Declare the namespace that governs the tool
+
+Administrators can set tool rules (Allow, Ask, Deny) on a project or group. To apply a rule
+to a call, the server has to know which project or group the call acts on, and it learns
+that from the tool's own declaration. The handler cannot guess that `list_vulnerabilities`
+names its project with `project_full_path` while `search_labels` names it with `full_path`.
+A tool that declares nothing usable resolves no namespace. It is served ungoverned, and no
+tool rule ever applies to its calls.
+
+The contract lives in `Mcp::Tools::Concerns::GovernanceNamespaceResolver`, which every tool
+includes. It exposes a class-level `namespace_arguments` method and the `resolve_governance_containers`
+method that reads it.
+
+**The default.** Every tool inherits:
+
+```ruby
+{ project: :project_id, group: :group_id }
+```
+
+If your tool's input schema already names its arguments `project_id` or `group_id`, you don't
+need to change anything. The resolver accepts a numeric ID, a full path, or a Global ID for
+either argument.
+
+**Overriding.** When your tool names its arguments differently, override
+`self.namespace_arguments` on the service class and return a hash. For example,
+`list_vulnerabilities` identifies its project with `project_full_path` instead of `project_id`:
+
+```ruby
+module Mcp
+  module Tools
+    module Security
+      class ListVulnerabilitiesService < Base::GraphqlService
+        def self.namespace_arguments
+          { project: :project_full_path }
+        end
+
+        # ...
+      end
+    end
+  end
+end
+```
+
+A tool doesn't have to name a project and a group separately. `search_labels` accepts one
+argument, `full_path`, that can point at either, so it declares a single `:project_or_group`
+entry instead:
+
+```ruby
+class SearchService < Base::GraphqlService
+  def self.namespace_arguments
+    { project_or_group: :full_path }
+  end
+end
+```
+
+**Recognized container kinds.** `resolve_governance_containers` only reads the following keys.
+Any other key is ignored, so the tool resolves nothing and is never governed:
+
+| Kind | Resolves as |
+|---|---|
+| `:project` | A project. |
+| `:group` | A group. |
+| `:project_or_group` | One argument that may name either a project or a group, resolved as a project first and then as a group. |
+
+A Global ID's own class must match the declared kind. A group's Global ID given in a
+`:project` argument resolves to nothing, rather than being looked up as a project by numeric
+ID. For a `:project_or_group` argument, a full path can't collide between the two, so an
+identifier the project lookup doesn't claim is offered to the group lookup.
+
+**Route-backed tools.** A tool created from a REST route with `route_setting :mcp` needs no
+declaration. `ApiTool` reads `boundary_type` from the route's `route_setting :authorization`
+and maps `:project` and `:group` onto the route's `:id` parameter. When the route sets no
+boundary type, `ApiTool` falls back to the default `{ project: :project_id, group: :group_id }`.
+
+**List arguments.** An argument can hold a list of identifiers instead of a single one. The
+resolver looks up every entry in the list, not just the first, and skips any entry that
+doesn't resolve to a real project or group rather than treating it as an error.
+`attach_scan_profile` uses a list argument to accept several projects and several groups in
+one call:
+
+```ruby
+class AttachScanProfileService < Base::GraphqlService
+  def self.namespace_arguments
+    { project: :project_ids, group: :group_ids }
+  end
+end
+```
+
+**Tools that cannot be governed.** When no argument on a tool names a project or a group, mark
+the class `ungovernable!` instead of declaring `namespace_arguments`. `GetServerVersionService`
+is an example, since it takes no arguments at all:
+
+```ruby
+class GetServerVersionService < Base::CustomService
+  ungovernable!
+
+  # ...
+end
+```
+
+> [!note]
+> Tools that take only a record ID, such as `get_duo_session` and `get_vulnerability`, are
+> currently marked `ungovernable!` too. Resolving their owning project would mean loading the
+> record first, and the resolver doesn't do that today. This is tracked in [issue 628447](https://gitlab.com/gitlab-org/gitlab/-/issues/628447).
+
+**The guardrail.** `ee/spec/lib/ai/tool_rules/governable_tools_namespace_spec.rb` asserts, for
+every governed tool:
+
+- The tool declares a namespace argument or is marked `ungovernable!`.
+- The declared argument is one the tool actually accepts.
+- The declaration is keyed on a recognized kind.
+
+If this spec fails on your tool, declare the argument that actually carries the project or
+group, or mark the tool `ungovernable!` if nothing on it names a container.
+
 ### Implement a custom tool
 
 For tools with distinct functionality that should remain separate from API exposure, you can define a standalone class (see [this example](https://gitlab.com/gitlab-org/gitlab/-/blob/5d394a38c3dc20a247473d5334d71dab15d26a4b/app/services/mcp/tools/manager.rb#L7) for reference).

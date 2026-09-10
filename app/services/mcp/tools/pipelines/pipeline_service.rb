@@ -16,6 +16,10 @@ module Mcp
           delete: 'deleted'
         }.freeze
 
+        def self.namespace_arguments
+          { project: :id }
+        end
+
         register_version '0.1.0', {
           description: <<~DESC.strip,
             Manage CI/CD pipelines in GitLab projects.

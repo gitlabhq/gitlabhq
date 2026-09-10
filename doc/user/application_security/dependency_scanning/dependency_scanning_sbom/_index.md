@@ -210,6 +210,73 @@ The dependency scanning report is:
 - Uploaded as a `dependency_scanning` report.
 - Saved in the root directory of the project.
 
+### Malicious packages
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+Dependency scanning identifies malicious packages when it ingests a CycloneDX SBOM. GitLab
+compares the components in the SBOM against
+[GitLab malware advisories](../../gitlab_advisory_database/_index.md#gitlab-malware-advisories),
+in addition to the usual security advisories. A match creates a vulnerability.
+
+A malicious package finding means the package itself is harmful, rather than containing a defect
+an attacker could exploit. This happens when a package typosquats the name of a popular package,
+when a compromised maintainer account publishes a harmful release, or when a package contains
+code written to behave like malware. Because the finding describes the package rather than a
+specific defect, detection does not depend on a vulnerability having been publicly disclosed
+first, unlike a finding based on a CVE record.
+
+The vulnerability details page for a malicious package finding has no solution, and includes no
+CVSS, Exploit Prediction Scoring System (EPSS), or Known Exploited Vulnerabilities (KEV)
+information. Malware advisories carry none of that data. Those fields describe how exploitable a
+defect is and how to fix it, and neither applies to a package that is malicious in itself. To
+resolve a malicious package finding, remove the package from the project rather than upgrade it.
+
+These vulnerabilities always have `Critical` severity. Malware advisories state severity directly
+rather than deriving it from a Common Vulnerability Scoring System (CVSS) score.
+
+Each vulnerability has an identifier in the form `GLAM-<year>-<month>-<sequence>`, for example
+`GLAM-2026-09-00138`. It does not carry a Common Vulnerabilities and Exposures (CVE) identifier.
+
+Malware advisories cover fewer package types than dependency scanning supports generally. For the
+full list, see
+[Supported package types](../../gitlab_advisory_database/_index.md#supported-package-types).
+
+This feature is available with GitLab Ultimate and has no separate setting to turn on. It follows
+your project's existing dependency scanning configuration. On GitLab Self-Managed, the package
+registries covered also follow the package metadata synchronization described in the
+[prerequisites](#prerequisites).
+
+If GitLab withdraws a malware advisory, it stops matching against that advisory and creates no new
+vulnerabilities from it.
+
+[Continuous vulnerability scanning](../../continuous_vulnerability_scanning/_index.md#malicious-packages)
+performs this same matching without requiring a pipeline to run.
+
+Malware findings appear in the [vulnerability report](../../vulnerability_report/_index.md) and the
+[dependency list](../../dependency_list/_index.md). Both show a red malware badge on an affected
+vulnerability or dependency, and both can filter by malware status.
+
+#### Known limitations
+
+Malware matching in dependency scanning has the following limitations:
+
+- GitLab evaluates components only on the default branch, and does not produce findings for
+  components on other branches.
+- GitLab does not proactively notify you when a new malware advisory is published for a package
+  you already use. You see the finding the next time you review the vulnerability report.
+- A finding lists the same advisory ID twice, once as `GLAM-<year>-<month>-<sequence>` and once as
+  a `Gemnasium-GLAM-<year>-<month>-<sequence>` identifier. The repeated entry affects only how the
+  identifiers are displayed, not detection or deduplication. For more information, see
+  [issue 627314](https://gitlab.com/gitlab-org/gitlab/-/issues/627314).
+- GitLab does not resolve vulnerabilities created from an advisory that is later withdrawn. Those
+  vulnerabilities stay in the vulnerability report until you resolve them. For more information,
+  see [issue 612099](https://gitlab.com/gitlab-org/gitlab/-/issues/612099).
+
 ## Improve scanning performance
 
 The main factor in dependency scanning performance is the number of dependencies to scan.

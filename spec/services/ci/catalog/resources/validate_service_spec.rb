@@ -47,7 +47,7 @@ RSpec.describe Ci::Catalog::Resources::ValidateService, feature_category: :pipel
 
     context 'when a project has a README but has neither a description nor components' do
       it 'is not valid' do
-        project = create(:project, :repository)
+        project = create(:project, :readme)
         response = described_class.new(project, project.default_branch).execute
 
         expect(response.message).to eq(

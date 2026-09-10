@@ -34316,7 +34316,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="agentplatformsessionsaggregationresponsedimensions-createdeventat-granularity"></a>`granularity` | [`String`](#string) |  |
+| <a id="agentplatformsessionsaggregationresponsedimensions-createdeventat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
 
 ### `AgentPlatformSessionsAggregationResponseDurationMetrics`
 
@@ -40677,7 +40677,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="contributionsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) |  |
+| <a id="contributionsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
 
 ### `ContributionsAggregationScope`
 
@@ -42571,7 +42571,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="deploymentsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) |  |
+| <a id="deploymentsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
 
 ##### `DeploymentsAggregationResponseDimensions.finishedAt`
 
@@ -42583,7 +42583,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="deploymentsaggregationresponsedimensions-finishedat-granularity"></a>`granularity` | [`String`](#string) |  |
+| <a id="deploymentsaggregationresponsedimensions-finishedat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
 
 ### `DeploymentsAggregationResponseDurationMetrics`
 
@@ -43274,7 +43274,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="duocodesuggestionsaggregationresponsedimensions-timestamp-granularity"></a>`granularity` | [`String`](#string) |  |
+| <a id="duocodesuggestionsaggregationresponsedimensions-timestamp-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
 
 ### `DuoCodeSuggestionsAggregationScope`
 
@@ -43395,7 +43395,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="duousageeventsaggregationresponsedimensions-timestamp-granularity"></a>`granularity` | [`String`](#string) |  |
+| <a id="duousageeventsaggregationresponsedimensions-timestamp-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
 
 ### `DuoUsageEventsAggregationScope`
 
@@ -43856,7 +43856,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="duoworkflowsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date bucket granularity: daily, weekly, or monthly. |
+| <a id="duoworkflowsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
 
 ##### `DuoWorkflowsAggregationResponseDimensions.userTier`
 
@@ -53193,7 +53193,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date bucket granularity: daily, weekly, or monthly. |
+| <a id="mergerequestsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
 
 ##### `MergeRequestsAggregationResponseDimensions.metricMergedAt`
 
@@ -53205,7 +53205,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestsaggregationresponsedimensions-metricmergedat-granularity"></a>`granularity` | [`String`](#string) | Date bucket granularity: daily, weekly, or monthly. |
+| <a id="mergerequestsaggregationresponsedimensions-metricmergedat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
 
 ### `MergeRequestsAggregationResponseTimeToMergeMetrics`
 
@@ -56393,7 +56393,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelinesaggregationresponsedimensions-finishedat-granularity"></a>`granularity` | [`String`](#string) |  |
+| <a id="pipelinesaggregationresponsedimensions-finishedat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
 
 ##### `PipelinesAggregationResponseDimensions.startedAt`
 
@@ -56405,7 +56405,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelinesaggregationresponsedimensions-startedat-granularity"></a>`granularity` | [`String`](#string) |  |
+| <a id="pipelinesaggregationresponsedimensions-startedat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
 
 ### `PipelinesAggregationResponseDurationMetrics`
 

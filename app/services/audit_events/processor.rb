@@ -22,7 +22,10 @@ module AuditEvents
 
       model_class.constantize.find(audit_event_id)
     rescue ActiveRecord::RecordNotFound => e
-      ::Gitlab::ErrorTracking.track_exception(
+      # The referenced entity was deleted between publish and consume; expected
+      # and non-actionable, so log rather than page Sentry (redelivery would
+      # otherwise re-report it for the same deleted entity on every attempt).
+      ::Gitlab::ErrorTracking.log_exception(
         e,
         audit_event_id: audit_event_id,
         model_class: model_class
@@ -35,7 +38,14 @@ module AuditEvents
       model_class, _entity = determine_audit_model_entity(parsed_json)
 
       create_scoped_audit_event(model_class, parsed_json)
-    rescue JSON::ParserError, ActiveRecord::RecordNotFound => e
+    rescue ActiveRecord::RecordNotFound => e
+      # Deleted entity: log rather than page Sentry (see fetch_from_id).
+      ::Gitlab::ErrorTracking.log_exception(
+        e,
+        audit_event_json: audit_event_json&.truncate(100)
+      )
+      nil
+    rescue JSON::ParserError => e
       ::Gitlab::ErrorTracking.track_exception(
         e,
         audit_event_json: audit_event_json&.truncate(100)

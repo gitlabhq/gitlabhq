@@ -8,8 +8,12 @@
 # it only drops groups pending deletion.
 # Capped at 20 per kind, matching the browse connections. Results are relevance-ordered, so
 # what matters is the top of the list, and a dropdown cannot show hundreds of rows anyway.
+#
+# `Query.projects` already ranks by similarity whenever `search` is given, but `Query.groups`
+# defaults to `name_asc`, so the groups half asks for it explicitly. `allAvailable: false` is
+# what makes it eligible: similarity is refused on scopes not bounded by membership.
 query searchAnalyticsDashboardNamespacesGlobal($search: String!) {
-  groups(first: 20, search: $search, allAvailable: false, active: true) {
+  groups(first: 20, search: $search, allAvailable: false, active: true, sort: "similarity") {
     nodes {
       id
       name

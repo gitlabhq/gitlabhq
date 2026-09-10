@@ -105,6 +105,21 @@ compile-production-assets istanbul:
     reports:
       dotenv: $GLCI_ASSETS_TAG_ENV_FILE_PATH
 
+compile-production-assets vue3:
+  extends:
+    - .compile-assets-base
+    - .production
+    - .vue3
+    - .frontend:rules:compile-production-assets
+  tags:
+    - $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
+  artifacts:
+    name: webpack-report-vue3
+    expire_in: 7d
+    when: always
+    paths:
+      - ${WEBPACK_COMPILE_LOG_PATH}
+
 compile-test-assets:
   extends:
     - .compile-assets-base
@@ -122,31 +137,6 @@ compile-test-assets:
 compile-test-assets vue3:
   extends:
     - compile-test-assets
-    - .vue3
-
-build-vite-prod:
-  extends:
-    - .production
-    - .default-retry
-    - .with-ci-node-image
-    - .yarn-cache
-    - .frontend:rules:compile-production-assets
-  stage: prepare
-  needs:
-    - job: cache:node-modules
-      optional: true
-  script:
-    - source scripts/utils.sh
-    - yarn_install_script
-    - yarn vite-prod
-  artifacts:
-    expire_in: 1d
-    paths:
-      - public/assets/vite/
-
-build-vite-prod-vue3:
-  extends:
-    - build-vite-prod
     - .vue3
 
 compile-fe-islands:
@@ -328,8 +318,6 @@ jest-build-cache:
 .vue3:
   variables:
     VUE_VERSION: 3
-    NODE_OPTIONS: --max-old-space-size=7680
-  allow_failure: true
 
 test-fe-islands:
   stage: test-frontend
@@ -363,8 +351,6 @@ test-fe-islands:
 jest-build-cache-vue3-ensure-compilable-sfcs:
   extends:
     - .vue3
-    # Make sure allow_failure is set by jest-build-cache rather than .vue3.
-    # Failures should not be allowed in merge requests.
     - jest-build-cache
     - .frontend:rules:jest
 
@@ -426,7 +412,6 @@ jest vue3:
   parallel: !reference [jest, parallel]
   script:
     - scripts/frontend/jest_ci.js --vue3
-  allow_failure: false
 
 jest-with-fixtures vue3:
   extends:
@@ -504,7 +489,6 @@ jest-with-fixtures vue3 predictive:
         scripts/frontend/jest_ci.js --vue3 --predictive --fixtures;
       fi
   parallel: !reference [jest-with-fixtures predictive, parallel]
-  allow_failure: false
 
 jest vue3 check quarantined predictive:
   extends:
@@ -605,8 +589,6 @@ jest-msw-integration vue3:
   extends:
     - jest-msw-integration
     - .vue3
-  # We do not allow new specs that aren't Vue3 compatible to avoid increased debt.
-  allow_failure: false
 
 jest-integration:
   extends:

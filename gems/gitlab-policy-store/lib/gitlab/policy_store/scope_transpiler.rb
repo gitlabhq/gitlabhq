@@ -28,7 +28,15 @@ module Gitlab
       MAX_BIGINT_ID = (2**63) - 1
       MAX_SIGNED_ID_LENGTH = MAX_BIGINT_ID.to_s.length + 1
       MAX_REPORTED_ID_LENGTH = 64
-      private_constant :MAX_BIGINT_ID, :MAX_SIGNED_ID_LENGTH, :MAX_REPORTED_ID_LENGTH
+
+      # Mirrors regorus's default max_col (DEFAULT_MAX_COL), which GLAZ inherits by not
+      # overriding it via set_policy_length_config. Lives upstream, so nothing catches drift.
+      MAX_LINE_COLUMNS = 1024
+      # Room for the indent and a prefix such as `input.project.id in ` ahead of the set.
+      SET_LINE_PREFIX_COLUMNS = 32
+
+      private_constant :MAX_BIGINT_ID, :MAX_SIGNED_ID_LENGTH, :MAX_REPORTED_ID_LENGTH,
+        :SET_LINE_PREFIX_COLUMNS
 
       # A nil or empty `policy_scope` is authored intent, not missing data: it means the
       # policy applies everywhere. `policy_name` is emitted into the generated program.
@@ -187,10 +195,18 @@ module Gitlab
 
       # `set()` is Rego's empty set literal, and membership against it is always
       # false. `{}` cannot be used for this: it is an empty object.
+      #
+      # The engine refuses a line over MAX_LINE_COLUMNS, which enough ids on one line would
+      # exceed, so a set that would is spread one member per line instead. Ids are bounded
+      # integers, so a single member can never overflow a line on its own.
       def rego_set(member_ids)
         return "set()" if member_ids.empty?
 
-        "{#{member_ids.uniq.sort.join(', ')}}"
+        members = member_ids.uniq.sort
+        inline = "{#{members.join(', ')}}"
+        return inline if inline.bytesize + SET_LINE_PREFIX_COLUMNS <= MAX_LINE_COLUMNS
+
+        "{\n#{members.map { |member| "\t\t#{member}" }.join(",\n")}\n\t}"
       end
 
       def indent(lines)

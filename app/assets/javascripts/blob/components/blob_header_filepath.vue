@@ -67,7 +67,7 @@ export default {
       >
     </template>
 
-    <small v-if="showBlobSize" class="gl-mx-3 gl-text-subtle">{{ blobSize }}</small>
+    <small v-if="showBlobSize" class="gl-mx-3 gl-pt-2 gl-text-subtle">{{ blobSize }}</small>
 
     <gl-badge v-if="showLfsBadge">{{ __('LFS') }}</gl-badge>
   </div>

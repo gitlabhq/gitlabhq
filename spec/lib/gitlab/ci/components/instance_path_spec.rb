@@ -566,6 +566,19 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
     end
   end
 
+  describe '#template_file_paths' do
+    let_it_be(:project, freeze: false) { create(:project) }
+    let(:project_path) { project.full_path }
+    let(:address) { "acme.com/#{project_path}/my-component@1.0.0" }
+
+    it 'returns both simple and complex template paths' do
+      expect(path.template_file_paths).to eq([
+        'templates/my-component.yml',
+        'templates/my-component/template.yml'
+      ])
+    end
+  end
+
   describe '.match?' do
     subject(:match) { described_class.match?(address) }
 

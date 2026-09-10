@@ -4,6 +4,10 @@ module Mcp
   module Tools
     module Pipelines
       class GetPipelineService < Base::GraphqlService
+        def self.namespace_arguments
+          { project: :id }
+        end
+
         register_version '0.1.0', {
           description: <<~DESC.strip,
             Get a CI/CD pipeline in a GitLab project, and optionally its jobs, downstream pipelines, or

@@ -52,6 +52,8 @@ export const FAILURE_REASONS = {
 
 export const CHECKING_REASONS = {
   conflict: __('Checking for merge conflicts.'),
+  need_rebase: __('Checking if a fast-forward merge is possible.'),
+  need_rebase_merge_train: __('Checking if a fast-forward merge is possible.'),
 };
 
 export const ICON_NAMES = Object.freeze({

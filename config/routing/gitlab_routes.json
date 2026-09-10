@@ -9992,6 +9992,36 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/internal/org_mover/cancel_maintenance",
+    "example": "/api/v4/internal/org_mover/cancel_maintenance",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/org_mover/confirm_maintenance",
+    "example": "/api/v4/internal/org_mover/confirm_maintenance",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/org_mover/exit_maintenance",
+    "example": "/api/v4/internal/org_mover/exit_maintenance",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/org_mover/maintenance_readiness",
+    "example": "/api/v4/internal/org_mover/maintenance_readiness",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/org_mover/maintenance_state",
+    "example": "/api/v4/internal/org_mover/maintenance_state",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/internal/org_mover/start_maintenance",
+    "example": "/api/v4/internal/org_mover/start_maintenance",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/internal/pages",
     "example": "/api/v4/internal/pages",
     "acceptsFormat": true

@@ -60,7 +60,7 @@ export default {
           error,
         });
       },
-      result({ loading }) {
+      result({ loading } = {}) {
         if (!loading && this.isSyncing) {
           this.increasePollInterval();
         }

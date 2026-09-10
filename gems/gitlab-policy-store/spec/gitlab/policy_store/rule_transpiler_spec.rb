@@ -113,6 +113,43 @@ RSpec.describe Gitlab::PolicyStore::RuleTranspiler do
         expect(rego).to include('{"a \"quoted\"\nname"}')
       end
 
+      # The engine counts a leading tab as 4 columns, so a raw bytesize understates the
+      # width it measures; mirror that expansion when asserting no line crosses the cap.
+      def engine_columns(line)
+        line.chomp.sub(/\A\t+/) { |tabs| " " * (4 * tabs.length) }.bytesize
+      end
+
+      it "spreads a set one member per line when one line would exceed the engine's column cap",
+        :aggregate_failures do
+        names = Array.new(60) { |index| format("environment-%04d", index) }
+        rego = transpile({ type: "environment", value: { names: names } })
+
+        expect(rego).to include("input.environment.name in {\n\t\t\"environment-0000\",\n")
+        expect(rego).to include("\t\t\"environment-0059\"\n\t}\n")
+      end
+
+      it "keeps a set inline at the last width the engine accepts, and wraps one byte over",
+        :aggregate_failures do
+        inline = transpile({ type: "environment", value: { names: ["e" * 988] } })
+        wrapped = transpile({ type: "environment", value: { names: ["e" * 989] } })
+
+        expect(inline).to include(%(in {"#{'e' * 988}"}))
+        expect(engine_columns(inline.lines.find { |line| line.include?("input.environment.name in") }))
+          .to be < described_class::Emitters::Base::MAX_LINE_COLUMNS
+        expect(wrapped).to include("in {\n")
+      end
+
+      it "spreads a tier set the same way, since both conditions share the emitter" do
+        tiers = Array.new(60) { |index| format("production-region-%04d", index) }
+
+        expect(transpile({ type: "environment", value: { tiers: tiers } })).to include("input.environment.tier in {\n")
+      end
+
+      it "refuses a single member too long for even its own wrapped line" do
+        expect { transpile({ type: "environment", value: { names: ["e" * 1013] } }) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /too long for the engine's line limit/)
+      end
+
       it "carries the rule index in the violation, which a merged module needs to tell rules apart" do
         rego = transpile({ type: "environment", value: { tiers: ["production"] } }, rule_index: 2)
 

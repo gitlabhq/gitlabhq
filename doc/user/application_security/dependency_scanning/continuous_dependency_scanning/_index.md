@@ -20,7 +20,9 @@ Continuous vulnerability scanning (CVS) for dependency scanning looks for securi
 
 A pipeline must run at least once on the default branch to register your project's components through a CycloneDX SBOM. After that, CVS runs as advisories are published, without further pipeline executions, until your dependencies change.
 
-[New vulnerabilities may arise](#checking-new-vulnerabilities) when continuous vulnerability scanning triggers scans on all projects that contain components with [supported package types](#supported-package-types).
+CVS re-evaluates your dependencies when GitLab updates its malware advisory database, in the same way it does for security advisories. If CVS identifies a package already in your dependencies as malicious, it creates a finding.
+
+GitLab does not notify you when it creates a finding, and [new vulnerabilities may arise](#checking-new-vulnerabilities) whenever continuous vulnerability scanning scans projects that contain components with [supported package types](#supported-package-types). You see them by checking the [vulnerability report](../../vulnerability_report/_index.md) or the [dependency list](../../dependency_list/_index.md).
 
 Vulnerabilities created by continuous vulnerability scanning for dependency scanning use `GitLab SBoM Vulnerability Scanner` as the scanner name and `Dependency Scanning` as the vulnerability type.
 

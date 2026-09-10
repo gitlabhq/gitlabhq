@@ -1,3 +1,5 @@
+const IS_EE = require('./is_ee_env');
+
 const baseEntryPoints = {
   default: ['./main'],
   sentry: './sentry/index.js',
@@ -13,5 +15,11 @@ const baseEntryPoints = {
 };
 
 const ALWAYS_LOADED_ENTRY_POINTS = ['super_sidebar', 'tracker', 'sentry', 'performance_bar'];
+
+// Only the EE layout loads the Duo Chat panel bundle.
+if (IS_EE) {
+  baseEntryPoints.duo_panel = './entrypoints/duo_panel.js';
+  ALWAYS_LOADED_ENTRY_POINTS.push('duo_panel');
+}
 
 module.exports = { baseEntryPoints, ALWAYS_LOADED_ENTRY_POINTS };

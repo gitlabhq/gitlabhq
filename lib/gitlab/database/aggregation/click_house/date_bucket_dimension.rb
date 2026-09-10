@@ -16,10 +16,22 @@ module Gitlab
 
           DEFAULT_GRANULARITY = :monthly
 
+          DEFAULT_PARAMETERS = {
+            granularity: {
+              type: :string,
+              in: %w[daily weekly monthly],
+              description: 'Date granularity: daily, weekly, or monthly'
+            }
+          }.freeze
+
           # Shape of a dynamic day granularity (`30d`). Parsing is deliberately
           # lenient: the allowed day range is enforced by each engine's `in:`
           # allowlist.
           DYNAMIC_GRANULARITY_PATTERN = /\A(?<days>\d+)d\z/
+
+          def initialize(*args, parameters: {}, **kwargs)
+            super(*args, parameters: DEFAULT_PARAMETERS.merge(parameters || {}), **kwargs)
+          end
 
           def to_outer_arel(context)
             configuration = context[name]

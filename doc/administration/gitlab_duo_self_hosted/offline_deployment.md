@@ -353,16 +353,24 @@ Add the self-hosted model deployment to your GitLab instance:
 For offline flow execution, use a custom executor image with
 `duo-cli` pre-installed.
 
-1. Build the custom image on a connected machine:
+1. On a connected machine, download the `duo-cli` binary:
 
-   ```dockerfile
-   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.6
-   RUN npm install --global @gitlab/duo-cli@8.86.0
+   ```shell
+   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.8.0/duo-linux-x64" \
+     --output duo-linux-x64
    ```
 
    To find the current `duo-cli` version, check the `DUO_CLI_VERSION`
    constant in the GitLab Rails source or the
-   [GitLab Duo CLI npm page](https://www.npmjs.com/package/@gitlab/duo-cli).
+   [`duo-cli` packages in the GitLab package registry](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/packages).
+
+1. Build the custom image with the binary included:
+
+   ```dockerfile
+   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.6
+   COPY duo-linux-x64 /usr/bin/duo
+   RUN chmod +x /usr/bin/duo
+   ```
 
 1. Transfer the image to your internal registry using the same
    `skopeo copy` procedure described above, then reference it
@@ -400,7 +408,7 @@ For offline flow execution, use a custom executor image with
 
 1. To verify Agent Platform Flows, trigger a flow and confirm that
    the executor image is pulled from your internal registry and
-   `duo-cli` is not downloaded from npm.
+   `duo-cli` is not downloaded from `gitlab.com`.
 
 For common issues, see
 [Troubleshooting](troubleshooting.md).

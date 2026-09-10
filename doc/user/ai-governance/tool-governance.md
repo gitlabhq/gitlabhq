@@ -187,8 +187,8 @@ To configure tool governance rules for a project:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601159) in GitLab 19.3 as a [beta](../../policy/development_stages_support.md) with a [feature flag](../../administration/feature_flags/_index.md) named `mcp_server_block_enforcement`. Disabled by default.
-- Enforcement [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251329) for GitLab Self-Managed and GitLab Dedicated in GitLab 19.4, applied when the session's tool configuration is built. Disabled by default.
-- Enabled on GitLab.com in GitLab 19.4.
+- Enforcement [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251329) for GitLab Self-Managed and GitLab Dedicated in GitLab 19.4, applied when the session's tool configuration is built. Enabled by default.
+- Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 19.4.
 
 {{< /history >}}
 

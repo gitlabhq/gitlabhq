@@ -130,15 +130,16 @@ export default {
   fields: [
     { key: 'firstName', sortable: true },
     { key: 'lastName', sortable: true },
-    { key: 'email', sortable: true },
+    { key: 'email', sortable: true, tdClass: 'gl-break-anywhere' },
     { key: 'phone', sortable: true },
-    { key: 'description', sortable: true },
+    { key: 'description', sortable: true, tdClass: 'gl-break-anywhere' },
     {
       key: 'organization',
       formatter: (organization) => {
         return organization?.name;
       },
       sortable: true,
+      tdClass: 'gl-break-anywhere',
     },
     {
       key: 'id',

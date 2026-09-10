@@ -86,8 +86,8 @@ RSpec.describe AuditEvents::Processor, feature_category: :audit_events do
           allow(::AuditEvents::GroupAuditEvent).to receive(:find).and_raise(ActiveRecord::RecordNotFound)
         end
 
-        it 'tracks the error and returns nil' do
-          expect(::Gitlab::ErrorTracking).to receive(:track_exception).with(
+        it 'logs the error (not Sentry) and returns nil' do
+          expect(::Gitlab::ErrorTracking).to receive(:log_exception).with(
             an_instance_of(ActiveRecord::RecordNotFound),
             hash_including(audit_event_id: audit_event_id, model_class: model_class)
           )
@@ -351,8 +351,8 @@ RSpec.describe AuditEvents::Processor, feature_category: :audit_events do
         }.to_json
       end
 
-      it 'tracks the exception and returns nil' do
-        expect(::Gitlab::ErrorTracking).to receive(:track_exception).with(
+      it 'logs the exception (not Sentry) and returns nil' do
+        expect(::Gitlab::ErrorTracking).to receive(:log_exception).with(
           an_instance_of(ActiveRecord::RecordNotFound),
           hash_including(audit_event_json: a_string_matching(/#{non_existing_id}/))
         )

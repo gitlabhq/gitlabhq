@@ -4,6 +4,10 @@ module Mcp
   module Tools
     module Labels
       class SearchService < Base::GraphqlService
+        def self.namespace_arguments
+          { project_or_group: :full_path }
+        end
+
         register_version '0.1.0', {
           description: 'Search labels in a GitLab project or group',
           annotations: {

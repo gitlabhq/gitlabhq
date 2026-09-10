@@ -4125,6 +4125,12 @@ incompatible with personal access tokens.
 | `GET` | `/internal/orbit/project/:project_id/repository/commits` | GitLab Orbit internal token |
 | `POST` | `/internal/orbit/project/:project_id/repository/list_blobs` | GitLab Orbit internal token |
 | `POST` | `/internal/orbit/redaction` | GitLab Orbit internal token |
+| `POST` | `/internal/org_mover/cancel_maintenance` | GitLab Shell token |
+| `POST` | `/internal/org_mover/confirm_maintenance` | GitLab Shell token |
+| `POST` | `/internal/org_mover/exit_maintenance` | GitLab Shell token |
+| `GET` | `/internal/org_mover/maintenance_readiness` | GitLab Shell token |
+| `GET` | `/internal/org_mover/maintenance_state` | GitLab Shell token |
+| `POST` | `/internal/org_mover/start_maintenance` | GitLab Shell token |
 | `GET` | `/internal/pages` | GitLab Pages token |
 | `GET` | `/internal/pages/status` | GitLab Pages token |
 | `POST` | `/internal/personal_access_token` | GitLab Shell token |

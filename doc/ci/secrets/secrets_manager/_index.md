@@ -22,6 +22,7 @@ ignore_in_report: true
 - [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/21731) from closed beta to public beta in GitLab 19.0.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/10723) to limited availability on GitLab.com in GitLab 19.3.
 - Default read and write permissions for the Maintainer role in projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623437) in GitLab 19.4.
+- Secrets permissions for groups [deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/623457) in GitLab 19.4. Group permissions no longer grant access. Grant permissions to users or roles instead.
 
 {{< /history >}}
 

@@ -1,7 +1,7 @@
 ---
 name: gitlab-mcp-tool-builder
 description: "Build a new GraphQL-backed MCP server tool in gitlab-org/gitlab. Use when adding or scaffolding a GitLab Duo Agent Platform MCP tool that follows the app/services/mcp/tools/ *Tool + Graphql*Service pattern — covers GraphQL API discovery, the two-class-plus-registration build recipe, and gotchas. Keywords: MCP tool, MCP server, GraphQL tool, GitLab Duo Agent Platform."
-version: 1.8.0
+version: 1.9.0
 license: MIT
 compatibility: opencode
 metadata:
@@ -164,29 +164,41 @@ a convention (non-standard verb, second write tool on one resource).
 5. **Service class** (`< Base::GraphqlService`): write `input_schema` (agent-facing args
    + `required`; do **not** add `additionalProperties`), `description`, `annotations`
    (`readOnlyHint` correct — it drives pre-approval); point `graphql_tool_class` at the Tool.
-6. **Agent-as-consumer review** — review name/description/schema/output as the LLM sees
+6. **Declare the governance namespace.** Every tool inherits
+   `{ project: :project_id, group: :group_id }` from `GovernanceNamespaceResolver`. If your
+   `input_schema` already names its project/group arguments `project_id`/`group_id`, skip this
+   step. Otherwise override `self.namespace_arguments` on the service class to point at the
+   argument(s) that actually carry it, keyed `:project`, `:group`, or `:project_or_group` (one
+   argument that may be either) — see `ListVulnerabilitiesService`
+   (`{ project: :project_full_path }`) and `Labels::SearchService`
+   (`{ project_or_group: :full_path }`). If no argument names a container at all, mark the class
+   `ungovernable!` instead (see `GetServerVersionService`). `ee/spec/lib/ai/tool_rules/governable_tools_namespace_spec.rb`
+   fails the build if a governable tool declares nothing usable, declares an argument the tool
+   doesn't accept, or keys on an unrecognized kind. Full contract:
+   [`_index.md#declare-the-namespace-that-governs-the-tool`](../../../doc/development/duo_agent_platform/mcp/_index.md#declare-the-namespace-that-governs-the-tool).
+7. **Agent-as-consumer review** — review name/description/schema/output as the LLM sees
    them, *before* specs. See **[references/agent-consumer-review.md](references/agent-consumer-review.md)**.
-7. **Register** in `manager.rb` `GRAPHQL_TOOLS`.
-8. **Update the `list_tools` specs — required, both files.** Each holds its own copy of the
+8. **Register** in `manager.rb` `GRAPHQL_TOOLS`.
+9. **Update the `list_tools` specs — required, both files.** Each holds its own copy of the
    same `expected_annotations` hash, so both need the identical
    `'<tool_name>' => { 'readOnlyHint' => … }` entry under the matching comment bucket (write
    non-destructive / write destructive / read-only) — annotations only, neither file asserts
    `description` or `inputSchema`. Both also assert every service under the MCP tools tree is
-   registered in `Mcp::Tools::Manager`, so they catch a skipped step 7.
+   registered in `Mcp::Tools::Manager`, so they catch a skipped step 8.
    - `spec/requests/api/mcp/handlers/list_tools_spec.rb` — its annotations example is guarded
      `unless: Gitlab.ee?`.
    - `ee/spec/requests/api/mcp/handlers/list_tools_spec.rb` — unguarded, and its hash also
      lists EE-only tools.
    Only one of the two annotations examples runs in a given pipeline, so green specs never
    prove you updated both files.
-9. **Unit specs** for the Tool and the Service. Lock the service `input_schema` as a
+10. **Unit specs** for the Tool and the Service. Lock the service `input_schema` as a
    whole with a single `expect(...).to eq({ … })` (a full version-lock, like
    `list_merge_requests_service_spec`), not property-by-property — it catches accidental
    schema drift across versions. Don't re-assert `readOnlyHint` here: the `list_tools`
-   specs (step 8) already cover annotations, so a per-tool "is marked read-only" example
+   specs (step 9) already cover annotations, so a per-tool "is marked read-only" example
    is redundant. Match the sibling MCP specs' `feature_category: :mcp_server` on both files.
-10. **Update user docs:** `doc/user/model_context_protocol/mcp_server_tools.md`.
-11. **`bundle exec rubocop` + `bundle exec rspec`** the changed files; fix failures. Also
+11. **Update user docs:** `doc/user/model_context_protocol/mcp_server_tools.md`.
+12. **`bundle exec rubocop` + `bundle exec rspec`** the changed files; fix failures. Also
     run `bundle exec rspec spec/graphql/all_queries_spec.rb` — it validates your new
     `.graphql` file against `GitlabSchema`, so a bad field/arg fails here. **It does not check
     `id` selections** — a missing `id` passes rspec and only fails the `graphql-verify` eslint CI
@@ -195,6 +207,10 @@ a convention (non-standard verb, second write tool on one resource).
 
 ## Gotchas (learned the hard way)
 
+- **A project argument not named `project_id`/`group_id` is silently ungoverned.** The default
+  `namespace_arguments` only reads `project_id`/`group_id`; a tool that names its argument
+  anything else (e.g. `project_full_path`) resolves no namespace and skips tool-rule
+  enforcement until it declares `self.namespace_arguments` itself (step 6 above).
 - **Inline operation → RuboCop failure.** `Mcp/UseGraphqlQueryFile` rejects a
   string/HEREDOC as `graphql_operation:`; use a `.graphql` file via `load_graphql`.
 - **Missing `# @feature_category:` → lint failure.** Every `.graphql` file needs it as

@@ -41,6 +41,43 @@ To configure the Language Server to use a proxy:
 
 {{< /tabs >}}
 
+## Connect GitLab Duo directly
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2490) in GitLab 19.3.
+  - Introduced in [GitLab for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.86.0) 6.86.0.
+  - Introduced in [GitLab Duo plugin for JetBrains IDEs](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.45.1) 3.45.1.
+
+{{< /history >}}
+
+When you configure the Language Server to use a proxy,
+traffic for GitLab Duo and other GitLab features handled by the Language Server
+uses that proxy by default.
+If your proxy blocks this traffic, configure your editor extension to connect the traffic directly.
+
+Direct connections apply only to traffic handled by the Language Server.
+Other editor extension network requests continue to use the proxy configuration for the editor.
+
+{{< tabs >}}
+
+{{< tab title="Visual Studio Code" >}}
+
+1. In Visual Studio Code, open your [user settings](https://code.visualstudio.com/docs/configure/settings).
+1. Search for `gitlab.duo.proxy.directConnection` and enable it.
+
+{{< /tab >}}
+
+{{< tab title="JetBrains IDEs" >}}
+
+1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
+1. Under **Advanced** > **GitLab Language Server**, select **Connect GitLab Duo directly from the Language Server**.
+1. Select **OK** or **Apply**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ## Troubleshooting
 
 ### Update your editor extension

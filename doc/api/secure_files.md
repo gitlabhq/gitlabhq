@@ -46,7 +46,8 @@ Example response:
         "checksum_algorithm": "sha256",
         "created_at": "2022-02-22T22:22:22.222Z",
         "expires_at": null,
-        "metadata": null
+        "metadata": null,
+        "file_extension": "jks"
     },
     {
         "id": 2,
@@ -71,7 +72,8 @@ Example response:
                 "UID":"ABC123XYZ"
             },
             "expires_at":"2023-09-21T14:55:59.000Z"
-        }
+        },
+        "file_extension": "cer"
     }
 ]
 ```
@@ -108,7 +110,8 @@ Example response:
     "checksum_algorithm": "sha256",
     "created_at": "2022-02-22T22:22:22.222Z",
     "expires_at": null,
-    "metadata": null
+    "metadata": null,
+    "file_extension": "jks"
 }
 ```
 
@@ -148,7 +151,8 @@ Example response:
     "checksum_algorithm": "sha256",
     "created_at": "2022-02-22T22:22:22.222Z",
     "expires_at": null,
-    "metadata": null
+    "metadata": null,
+    "file_extension": "jks"
 }
 ```
 

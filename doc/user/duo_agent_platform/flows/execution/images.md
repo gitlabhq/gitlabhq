@@ -76,7 +76,7 @@ For more information about SRT and how to install it on a custom image, see [rem
 If you use a custom Docker image, ensure that the following commands are available for the agent to function correctly:
 
 - `git`
-- `npm` with a Node.js version compatible with `@gitlab/duo-cli`. For more information, see [GitLab Duo CLI prerequisites](../../../gitlab_duo_cli/set_up.md#prerequisites).
+- `curl`, which downloads the GitLab Duo CLI binary at flow startup.
 
 Most base images include these commands by default. However, minimal images (like `alpine` variants)
 might require you to install them explicitly. If needed, you can install missing commands in the
@@ -97,7 +97,7 @@ For example, if you use an Alpine-based image:
 ```yaml
 image: python:3.11-alpine
 setup_script:
-  - apk add --update git nodejs npm
+  - apk add --update git curl
 ```
 
 ### Security and performance
@@ -112,15 +112,15 @@ and [configure a network policy](../../environment_sandbox.md#configure-a-networ
 (for example, firewall rules or network policies).
 
 To reduce job startup time by approximately 15-20 seconds, include the
-`@gitlab/duo-cli` npm package and the `glab` CLI in your custom image.
+GitLab Duo CLI binary and the `glab` CLI in your custom image.
 The hardened image pre-installs both tools.
 
 ## Use a custom image in an offline environment
 
 In offline environments where runners cannot reach external
 registries, you can prebuild a custom executor image that includes
-`@gitlab/duo-cli`. When the GitLab Duo CLI is already in the image, the
-flow startup skips the npm download step.
+the GitLab Duo CLI. When the GitLab Duo CLI is already in the image, the
+flow startup skips the download step.
 
 Prerequisites:
 
@@ -130,27 +130,20 @@ Prerequisites:
 
 To configure flows for an offline environment:
 
-1. On an online machine, build a custom image with the GitLab Duo CLI:
+1. On an online machine, download the GitLab Duo CLI binary from the
+   [GitLab package registry](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/packages):
 
-   ```dockerfile
-   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.6
-   RUN npm install -g @gitlab/duo-cli@8.86.0
+   ```shell
+   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.8.0/duo-linux-x64" \
+     --output duo-linux-x64
    ```
 
-   Alternatively, to avoid npm entirely, download the standalone binary
-   from the [GitLab package registry](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/packages):
+1. Build a custom image that includes the binary:
 
    ```dockerfile
    FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.6
    COPY duo-linux-x64 /usr/bin/duo
    RUN chmod +x /usr/bin/duo
-   ```
-
-   To download the standalone binary, run the following command:
-
-   ```shell
-   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/8.86.0/duo-linux-x64" \
-     --output duo-linux-x64
    ```
 
 1. Transfer the image to your offline environment.
@@ -238,8 +231,13 @@ The following table lists the current pinned versions:
 | `unshare`                             | UBI 9 (`util-linux-core`)                                |
 | Runtime user                          | Non-root, UID 1001 (`duo-runner`)                        |
 
-The image includes `@gitlab/duo-cli` and `glab`. Outbound access to `registry.npmjs.org` or `registry.gitlab.com`
+The image includes the GitLab Duo CLI and `glab`. Outbound access to `registry.npmjs.org` or `registry.gitlab.com`
 is not needed at flow execution time.
+
+Node.js and `npm` remain in the image only to install the Anthropic Sandbox Runtime (SRT).
+The GitLab Duo CLI itself is a precompiled binary and does not need them. When SRT is also
+distributed as a precompiled binary, a later version of the hardened image drops Node.js
+and `npm` entirely.
 
 ### Add additional packages
 

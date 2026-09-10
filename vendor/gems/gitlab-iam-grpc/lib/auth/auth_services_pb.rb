@@ -84,8 +84,8 @@ module Gitlab
             # (full-record mirror from gitlab-rails cells; the caller always sends the
             # complete record). All mutable fields are taken from the request. created_at
             # is stored on insert and immutable thereafter (never changed on update).
-            # Returns INVALID_ARGUMENT when client_id, client_secret, client_name,
-            # created_at, or updated_at is missing.
+            # Returns INVALID_ARGUMENT when client_id, hashed_client_secret,
+            # client_name, created_at, or updated_at is missing.
             rpc :UpsertClient, ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientRequest, ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientResponse
           end
 

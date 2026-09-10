@@ -89,12 +89,12 @@ In addition, runners must be able to connect to:
 
 | Destination | Port | Purpose |
 |-------------|------|---------|
-| `registry.npmjs.org` | `443` | Download the Duo CLI package at runtime |
+| `gitlab.com` | `443` | Download the GitLab Duo CLI binary from the package registry at runtime |
 | `registry.gitlab.com` | `443` | Download the default Docker image (unless using a [custom image](../../../user/duo_agent_platform/flows/execution/images.md#change-the-default-docker-image)) |
 
-If your organization cannot allow access to the public npm registry, you can use a
+If your organization cannot allow access to `gitlab.com`, you can use a
 [custom Docker image](../../../user/duo_agent_platform/flows/execution/images.md#change-the-default-docker-image)
-with the required dependencies already installed.
+with the GitLab Duo CLI already installed.
 
 > [!note]
 > The runner's connection to the GitLab Duo Agent Platform Service is routed through the

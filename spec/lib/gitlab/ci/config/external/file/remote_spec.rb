@@ -473,8 +473,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
 
     subject { remote_file.send(:expand_context_attrs) }
 
-    it 'includes parent_file' do
-      is_expected.to eq({ parent_file: remote_file })
+    it 'includes parent_file and pipeline_policy_context' do
+      is_expected.to eq({ parent_file: remote_file, pipeline_policy_context: nil })
     end
   end
 

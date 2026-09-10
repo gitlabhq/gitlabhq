@@ -47,6 +47,11 @@ module Gitlab
           verifier: :verify_shell
         },
         {
+          description: 'Org Mover',
+          patterns: [%r{\A/api/v4/internal/org_mover/}],
+          verifier: :verify_shell
+        },
+        {
           description: 'Error Tracking Service',
           patterns: [%r{\A/api/v4/internal/error_tracking/}],
           verifier: :verify_error_tracking

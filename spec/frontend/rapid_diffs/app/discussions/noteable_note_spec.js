@@ -417,9 +417,12 @@ describe('NoteableNote', () => {
       duo_session_status: 'running',
     });
 
-    describe('when duo_session_id_triggered is absent', () => {
+    describe('when noteAgentSessionBar feature flag is disabled', () => {
       beforeEach(() => {
-        createComponent({ note: { ...sessionNote, duo_session_id_triggered: null } });
+        createComponent(
+          { note: sessionNote },
+          { ...defaultProvisions, glFeatures: { noteAgentSessionBar: false } },
+        );
       });
 
       it('does not render', () => {
@@ -427,61 +430,79 @@ describe('NoteableNote', () => {
       });
     });
 
-    describe('when duo_session_agent_name is absent', () => {
-      beforeEach(() => {
-        createComponent({ note: { ...sessionNote, duo_session_agent_name: null } });
-      });
+    describe('when noteAgentSessionBar feature flag is enabled', () => {
+      const createSessionComponent = (props = {}) =>
+        createComponent(
+          { note: sessionNote, ...props },
+          { ...defaultProvisions, glFeatures: { noteAgentSessionBar: true } },
+        );
 
-      it('does not render', () => {
-        expect(findNoteSessionBar().exists()).toBe(false);
-      });
-    });
+      describe('when duo_session_id_triggered is absent', () => {
+        beforeEach(() => {
+          createSessionComponent({ note: { ...sessionNote, duo_session_id_triggered: null } });
+        });
 
-    describe('when session fields are present', () => {
-      beforeEach(() => {
-        createComponent({ note: sessionNote });
-      });
-
-      it('renders', () => {
-        expect(findNoteSessionBar().exists()).toBe(true);
-      });
-
-      it('passes correct props', () => {
-        expect(findNoteSessionBar().props()).toMatchObject({
-          agentName: AGENT_NAME,
-          sessionId: SESSION_ID,
-          status: 'running',
+        it('does not render', () => {
+          expect(findNoteSessionBar().exists()).toBe(false);
         });
       });
-    });
 
-    describe('when status is finished', () => {
-      beforeEach(() => {
-        createComponent({ note: { ...sessionNote, duo_session_status: 'finished' } });
+      describe('when duo_session_agent_name is absent', () => {
+        beforeEach(() => {
+          createSessionComponent({ note: { ...sessionNote, duo_session_agent_name: null } });
+        });
+
+        it('does not render', () => {
+          expect(findNoteSessionBar().exists()).toBe(false);
+        });
       });
 
-      it('renders (NoteSessionBar handles its own visibility)', () => {
-        expect(findNoteSessionBar().exists()).toBe(true);
-      });
-    });
+      describe('when session fields are present', () => {
+        beforeEach(() => {
+          createSessionComponent();
+        });
 
-    describe('when isFirstNote is true', () => {
-      beforeEach(() => {
-        createComponent({ note: sessionNote, isFirstNote: true });
-      });
+        it('renders', () => {
+          expect(findNoteSessionBar().exists()).toBe(true);
+        });
 
-      it('passes isReply as false', () => {
-        expect(findNoteSessionBar().props('isReply')).toBe(false);
-      });
-    });
-
-    describe('when isFirstNote is false', () => {
-      beforeEach(() => {
-        createComponent({ note: sessionNote, isFirstNote: false });
+        it('passes correct props', () => {
+          expect(findNoteSessionBar().props()).toMatchObject({
+            agentName: AGENT_NAME,
+            sessionId: SESSION_ID,
+            status: 'running',
+          });
+        });
       });
 
-      it('passes isReply as true', () => {
-        expect(findNoteSessionBar().props('isReply')).toBe(true);
+      describe('when status is finished', () => {
+        beforeEach(() => {
+          createSessionComponent({ note: { ...sessionNote, duo_session_status: 'finished' } });
+        });
+
+        it('renders (NoteSessionBar handles its own visibility)', () => {
+          expect(findNoteSessionBar().exists()).toBe(true);
+        });
+      });
+
+      describe('when isFirstNote is true', () => {
+        beforeEach(() => {
+          createSessionComponent({ isFirstNote: true });
+        });
+
+        it('passes isReply as false', () => {
+          expect(findNoteSessionBar().props('isReply')).toBe(false);
+        });
+      });
+
+      describe('when isFirstNote is false', () => {
+        beforeEach(() => {
+          createSessionComponent({ isFirstNote: false });
+        });
+
+        it('passes isReply as true', () => {
+          expect(findNoteSessionBar().props('isReply')).toBe(true);
+        });
       });
     });
   });

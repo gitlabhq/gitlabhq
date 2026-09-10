@@ -9,6 +9,7 @@ import { __, sprintf } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { isCurrentUser } from '~/lib/utils/common_utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import NoteActions from './note_actions.vue';
 import NoteBody from './note_body.vue';
@@ -31,7 +32,7 @@ export default {
     TimelineEntryItem,
     TimeAgoTooltip,
   },
-  mixins: [glSlotsMixin],
+  mixins: [glSlotsMixin, glFeatureFlagsMixin()],
   inject: {
     store: {
       type: Object,
@@ -139,7 +140,10 @@ export default {
       return this.author.username === 'amazon-q';
     },
     hasSession() {
-      return Boolean(this.note.duo_session_id_triggered && this.note.duo_session_agent_name);
+      return (
+        this.glFeatures.noteAgentSessionBar &&
+        Boolean(this.note.duo_session_id_triggered && this.note.duo_session_agent_name)
+      );
     },
   },
   watch: {

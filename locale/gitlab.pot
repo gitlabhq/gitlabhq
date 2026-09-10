@@ -12277,6 +12277,9 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact registry settings"
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact type: %{artifactType}"
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact: %d hour"
 msgid_plural "ArtifactRegistry|Artifact: %d hours"
 msgstr[0] ""
@@ -12546,11 +12549,22 @@ msgid_plural "ArtifactRegistry|Images cached"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ArtifactRegistry|Image digest: %{digest}"
+msgstr ""
+
 msgid "ArtifactRegistry|Image successfully scheduled for deletion."
 msgstr ""
 
 msgid "ArtifactRegistry|Index"
 msgstr ""
+
+msgid "ArtifactRegistry|Index digest: %{digest}"
+msgstr ""
+
+msgid "ArtifactRegistry|Index · %d platform"
+msgid_plural "ArtifactRegistry|Index · %d platforms"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "ArtifactRegistry|Install"
 msgstr ""
@@ -12591,6 +12605,9 @@ msgstr ""
 msgid "ArtifactRegistry|Loading files."
 msgstr ""
 
+msgid "ArtifactRegistry|Loading manifest details."
+msgstr ""
+
 msgid "ArtifactRegistry|Loading repositories."
 msgstr ""
 
@@ -12603,10 +12620,19 @@ msgstr ""
 msgid "ArtifactRegistry|Lowercase letters, numbers, hyphens (-), and underscores (_) only. The repository name cannot be changed after creation."
 msgstr ""
 
+msgid "ArtifactRegistry|Manifest %{digest} of %{name}."
+msgstr ""
+
 msgid "ArtifactRegistry|Manifest %{digest} was not deleted because it is indexed by %{total} other manifests, including: %{parents}."
 msgstr ""
 
 msgid "ArtifactRegistry|Manifest %{digest} was not deleted because it is indexed by other manifests: %{parents}."
+msgstr ""
+
+msgid "ArtifactRegistry|Manifest %{digest}."
+msgstr ""
+
+msgid "ArtifactRegistry|Manifest digest: %{digest}"
 msgstr ""
 
 msgid "ArtifactRegistry|Manually published"
@@ -12619,6 +12645,9 @@ msgid "ArtifactRegistry|Maven"
 msgstr ""
 
 msgid "ArtifactRegistry|Maven (settings.xml):"
+msgstr ""
+
+msgid "ArtifactRegistry|Media type: %{mediaType}"
 msgstr ""
 
 msgid "ArtifactRegistry|Metadata caching period"
@@ -12771,6 +12800,9 @@ msgstr ""
 msgid "ArtifactRegistry|Push your first manifest to get started."
 msgstr ""
 
+msgid "ArtifactRegistry|Referrer"
+msgstr ""
+
 msgid "ArtifactRegistry|Referrer for %{digest}"
 msgstr ""
 
@@ -12843,7 +12875,13 @@ msgstr ""
 msgid "ArtifactRegistry|Revocation %{number} on resource %{resource_id}: %{message}"
 msgstr ""
 
+msgid "ArtifactRegistry|SBOM attestation"
+msgstr ""
+
 msgid "ArtifactRegistry|SBOM attestation for %{digest}"
+msgstr ""
+
+msgid "ArtifactRegistry|SLSA attestation"
 msgstr ""
 
 msgid "ArtifactRegistry|SLSA attestation for %{digest}"
@@ -12861,6 +12899,9 @@ msgstr ""
 msgid "ArtifactRegistry|Sign in to the registry:"
 msgstr ""
 
+msgid "ArtifactRegistry|Signature"
+msgstr ""
+
 msgid "ArtifactRegistry|Signature for %{digest}"
 msgstr ""
 
@@ -12874,6 +12915,9 @@ msgid "ArtifactRegistry|Source"
 msgstr ""
 
 msgid "ArtifactRegistry|Store and manage packages and container images by creating a hosted or remote repository."
+msgstr ""
+
+msgid "ArtifactRegistry|Subject digest: %{digest}"
 msgstr ""
 
 msgid "ArtifactRegistry|Team documentation / READMEs:"
@@ -17724,6 +17768,9 @@ msgid "Checking branch validity…"
 msgstr ""
 
 msgid "Checking for merge conflicts."
+msgstr ""
+
+msgid "Checking if a fast-forward merge is possible."
 msgstr ""
 
 msgid "Checking if merge request can be merged…"
@@ -25052,7 +25099,13 @@ msgstr ""
 msgid "Could not be moved. Select another project or try again."
 msgstr ""
 
+msgid "Could not cancel maintenance"
+msgstr ""
+
 msgid "Could not change HEAD: branch '%{branch}' does not exist"
+msgstr ""
+
+msgid "Could not confirm maintenance"
 msgstr ""
 
 msgid "Could not connect to FogBugz, check your URL"
@@ -25089,6 +25142,9 @@ msgid "Could not delete wiki template"
 msgstr ""
 
 msgid "Could not draw the lines for job relationships"
+msgstr ""
+
+msgid "Could not exit maintenance"
 msgstr ""
 
 msgid "Could not fetch all changes. Try reloading the page."
@@ -25137,6 +25193,9 @@ msgid "Could not revoke personal access token \"%{personal_access_token_name}\".
 msgstr ""
 
 msgid "Could not save configuration. Please refresh the page, or try again later."
+msgstr ""
+
+msgid "Could not start maintenance"
 msgstr ""
 
 msgid "Could not update wiki page"
@@ -30492,7 +30551,9 @@ msgid "DuoAgentPlatform|Awaiting your input"
 msgstr ""
 
 msgid "DuoAgentPlatform|CI job"
-msgstr ""
+msgid_plural "DuoAgentPlatform|CI jobs"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "DuoAgentPlatform|CI/CD runner"
 msgstr ""
@@ -57289,6 +57350,18 @@ msgstr ""
 msgid "Organization has already been deleted"
 msgstr ""
 
+msgid "Organization is not active"
+msgstr ""
+
+msgid "Organization is not in maintenance"
+msgstr ""
+
+msgid "Organization is not initializing maintenance"
+msgstr ""
+
+msgid "Organization is not ready for maintenance"
+msgstr ""
+
 msgid "Organization is not soft-deleted"
 msgstr ""
 
@@ -72647,6 +72720,9 @@ msgid_plural "SecurityInventory|Edit security scanners for %d items"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "SecurityInventory|Enable scanners"
+msgstr ""
+
 msgid "SecurityInventory|Enabled"
 msgstr ""
 
@@ -79169,6 +79245,24 @@ msgid "SquashTmIntegration|Update Squash TM requirements when GitLab issues are 
 msgstr ""
 
 msgid "Squashing combines multiple commits into a single commit on merge. This keeps your repository history clean and makes it easier to revert changes."
+msgstr ""
+
+msgid "SshCertificates|An error occurred while fetching the SSH certificate authorities. Please try again."
+msgstr ""
+
+msgid "SshCertificates|Certificate authorities"
+msgstr ""
+
+msgid "SshCertificates|Copy fingerprint"
+msgstr ""
+
+msgid "SshCertificates|There are no trusted SSH certificates on this instance."
+msgstr ""
+
+msgid "SshCertificates|Trusted certificate authorities that allow anyone with a signed certificate to authenticate over SSH. Short-lived certificates are recommended."
+msgstr ""
+
+msgid "SshCertificates|What are SSH certificates?"
 msgstr ""
 
 msgid "Stack trace"
@@ -91995,6 +92089,9 @@ msgstr ""
 msgid "WorkItemDuoQuestion|Choose one or more of these options, or answer in your own words:"
 msgstr ""
 
+msgid "WorkItemDuoQuestion|Hide suggested answers"
+msgstr ""
+
 msgid "WorkItemDuoQuestion|Include your answer"
 msgstr ""
 
@@ -92002,6 +92099,9 @@ msgid "WorkItemDuoQuestion|Recommended"
 msgstr ""
 
 msgid "WorkItemDuoQuestion|Send answer"
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Show suggested answers"
 msgstr ""
 
 msgid "WorkItemDuoQuestion|Something went wrong while sending your answer. Please try again."

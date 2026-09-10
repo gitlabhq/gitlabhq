@@ -128,9 +128,9 @@ export default {
     },
   },
   fields: [
-    { key: 'name', sortable: true },
+    { key: 'name', sortable: true, tdClass: 'gl-break-anywhere' },
     { key: 'defaultRate', sortable: true },
-    { key: 'description', sortable: true },
+    { key: 'description', sortable: true, tdClass: 'gl-break-anywhere' },
     {
       key: 'id',
       label: '',

@@ -63,6 +63,16 @@ To improve your Service Desk project's security, you should:
 
 ## Customize emails sent to external participants
 
+{{< history >}}
+
+- Custom template restriction for new GitLab.com namespaces on Free and trial plans
+  [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254265) in GitLab 19.4
+  [with a feature flag](../../../administration/feature_flags/_index.md) named
+  `service_desk_restrict_custom_templates`. Disabled by default.
+  Applies to namespaces created on or after September 10, 2026.
+
+{{< /history >}}
+
 An email is sent to external participants when:
 
 - A requester submits a new ticket by emailing Service Desk.

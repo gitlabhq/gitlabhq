@@ -17,6 +17,7 @@ import { useCodeReview } from '~/diffs/stores/code_review';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { COLLAPSE_FILE_BY_USER, EXPAND_FILE } from '~/rapid_diffs/adapter_events';
+import { getCoveringElementSync } from '~/lib/utils/viewport';
 import {
   initHotkeys,
   createFileNavigation,
@@ -31,6 +32,26 @@ jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
 }));
 
+jest.mock('~/lib/utils/viewport', () => ({
+  getCoveringElementSync: jest.fn(() => null),
+}));
+
+const DEFAULT_VIEWPORT_HEIGHT = 1000;
+
+// Builds diff-file stand-ins from [top, bottom] rects. The "current" file is
+// the one with the greatest height visible between the sticky header bottom
+// and the window bottom.
+const makeFilesAt = (rects) =>
+  rects.map(([top, bottom], index) => ({
+    id: String.fromCharCode(97 + index),
+    selectFile: jest.fn(),
+    getBoundingClientRect: () => ({ top, bottom }),
+  }));
+
+const withStickyHeaderBottom = (value) => {
+  getCoveringElementSync.mockReturnValue({ getBoundingClientRect: () => ({ bottom: value }) });
+};
+
 describe('initHotkeys', () => {
   let teardown;
 
@@ -43,84 +64,186 @@ describe('initHotkeys', () => {
     teardown?.();
     teardown = null;
     Mousetrap.reset();
+    getCoveringElementSync.mockReturnValue(null);
     window.gon = {};
   });
 
   describe('createFileNavigation', () => {
-    const makeFile = (id) => ({ selectFile: jest.fn(), id });
+    describe('multi-file mode', () => {
+      beforeEach(() => {
+        useDiffsView().singleFileMode = false;
+        window.innerHeight = DEFAULT_VIEWPORT_HEIGHT;
+      });
 
-    it('starts at index 0', () => {
-      const nav = createFileNavigation();
-      jest.spyOn(DiffFile, 'getAll').mockReturnValue([makeFile('a'), makeFile('b')]);
+      it('treats the most visible file as current', () => {
+        const nav = createFileNavigation();
+        const files = makeFilesAt([
+          [-500, 120],
+          [120, 700],
+          [700, 3000],
+        ]);
+        jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
 
-      expect(nav.getCurrentFile().id).toBe('a');
+        expect(nav.getCurrentFile().id).toBe('b');
+      });
+
+      it('clips visibility below the sticky header', () => {
+        const nav = createFileNavigation();
+        const files = makeFilesAt([
+          [-500, 400],
+          [400, 990],
+        ]);
+        jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
+        withStickyHeaderBottom(350);
+
+        expect(nav.getCurrentFile().id).toBe('b');
+      });
+
+      it('advances forward from the most visible file', () => {
+        const nav = createFileNavigation();
+        const files = makeFilesAt([
+          [-500, 120],
+          [120, 700],
+          [700, 3000],
+        ]);
+        jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
+
+        nav.jumpToFile(+1);
+
+        expect(files[2].selectFile).toHaveBeenCalled();
+      });
+
+      it('advances backward from the most visible file', () => {
+        const nav = createFileNavigation();
+        const files = makeFilesAt([
+          [-500, 120],
+          [120, 700],
+          [700, 3000],
+        ]);
+        jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
+
+        nav.jumpToFile(-1);
+
+        expect(files[0].selectFile).toHaveBeenCalled();
+      });
+
+      it('advances on every repeated forward press without re-deriving from geometry', () => {
+        const nav = createFileNavigation();
+        const files = makeFilesAt([
+          [0, 900],
+          [900, 950],
+          [950, 1000],
+          [1000, 1050],
+        ]);
+        jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
+
+        // Geometry never changes between presses (as when selectFile pins a
+        // short file to the top); the cursor must still step 1 -> 2 -> 3.
+        nav.jumpToFile(+1);
+        nav.jumpToFile(+1);
+        nav.jumpToFile(+1);
+
+        expect(files[1].selectFile).toHaveBeenCalled();
+        expect(files[2].selectFile).toHaveBeenCalled();
+        expect(files[3].selectFile).toHaveBeenCalled();
+      });
+
+      it('resyncs to the most visible file after user scrolling', () => {
+        const nav = createFileNavigation();
+        const files = makeFilesAt([
+          [0, 900],
+          [900, 950],
+          [950, 1000],
+          [1000, 1050],
+        ]);
+        jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
+
+        nav.jumpToFile(+1);
+        expect(files[1].selectFile).toHaveBeenCalled();
+
+        // The reader wheel-scrolls so file d fills the viewport.
+        files[3].getBoundingClientRect = () => ({ top: 0, bottom: 900 });
+        files[0].getBoundingClientRect = () => ({ top: -900, bottom: 0 });
+        window.dispatchEvent(new Event('wheel'));
+
+        nav.jumpToFile(-1);
+        expect(files[2].selectFile).toHaveBeenCalled();
+      });
+
+      it('targets the navigated file with the review toggle', () => {
+        const nav = createFileNavigation();
+        const files = makeFilesAt([
+          [0, 900],
+          [900, 950],
+          [950, 1000],
+        ]);
+        jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
+
+        nav.jumpToFile(+1);
+
+        expect(nav.getCurrentFile().id).toBe('b');
+      });
+
+      it('does not navigate past the last file', () => {
+        const nav = createFileNavigation();
+        const files = makeFilesAt([[0, 900]]);
+        jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
+
+        nav.jumpToFile(+1);
+
+        expect(files[0].selectFile).not.toHaveBeenCalled();
+      });
+
+      it('does not navigate before the first file', () => {
+        const nav = createFileNavigation();
+        const files = makeFilesAt([[0, 900]]);
+        jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
+
+        nav.jumpToFile(-1);
+
+        expect(files[0].selectFile).not.toHaveBeenCalled();
+      });
+
+      it('does nothing when there are no files', () => {
+        const nav = createFileNavigation();
+        jest.spyOn(DiffFile, 'getAll').mockReturnValue([]);
+
+        nav.jumpToFile(+1);
+
+        expect(nav.getCurrentFile()).toBeNull();
+      });
     });
 
-    it('advances forward through files', () => {
-      const nav = createFileNavigation();
-      const files = [makeFile('a'), makeFile('b'), makeFile('c')];
-      jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
+    describe('single-file mode', () => {
+      beforeEach(() => {
+        useDiffsView().singleFileMode = true;
+      });
 
-      nav.jumpToFile(+1);
+      it('delegates forward navigation to the store', () => {
+        const goToNextFile = jest.spyOn(useDiffsView(), 'goToNextFile').mockImplementation();
+        const nav = createFileNavigation();
 
-      expect(files[1].selectFile).toHaveBeenCalled();
-      expect(nav.getCurrentFile().id).toBe('b');
-    });
+        nav.jumpToFile(+1);
 
-    it('advances backward through files', () => {
-      const nav = createFileNavigation();
-      const files = [makeFile('a'), makeFile('b'), makeFile('c')];
-      jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
+        expect(goToNextFile).toHaveBeenCalled();
+      });
 
-      nav.jumpToFile(+1);
-      nav.jumpToFile(+1);
-      nav.jumpToFile(-1);
+      it('delegates backward navigation to the store', () => {
+        const goToPrevFile = jest.spyOn(useDiffsView(), 'goToPrevFile').mockImplementation();
+        const nav = createFileNavigation();
 
-      expect(files[1].selectFile).toHaveBeenCalledTimes(2);
-      expect(nav.getCurrentFile().id).toBe('b');
-    });
+        nav.jumpToFile(-1);
 
-    it('does not navigate past the last file', () => {
-      const nav = createFileNavigation();
-      const files = [makeFile('a')];
-      jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
+        expect(goToPrevFile).toHaveBeenCalled();
+      });
 
-      nav.jumpToFile(+1);
+      it('returns the single loaded file as current', () => {
+        const nav = createFileNavigation();
+        const files = makeFilesAt([[0, 900]]);
+        jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
 
-      expect(files[0].selectFile).not.toHaveBeenCalled();
-    });
-
-    it('does not navigate before the first file', () => {
-      const nav = createFileNavigation();
-      const files = [makeFile('a')];
-      jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
-
-      nav.jumpToFile(-1);
-
-      expect(files[0].selectFile).not.toHaveBeenCalled();
-    });
-
-    it('does nothing when there are no files', () => {
-      const nav = createFileNavigation();
-      jest.spyOn(DiffFile, 'getAll').mockReturnValue([]);
-
-      nav.jumpToFile(+1);
-
-      expect(nav.getCurrentFile()).toBeNull();
-    });
-
-    it('clamps the index when files are removed', () => {
-      const nav = createFileNavigation();
-      const threeFiles = [makeFile('a'), makeFile('b'), makeFile('c')];
-      jest.spyOn(DiffFile, 'getAll').mockReturnValue(threeFiles);
-
-      nav.jumpToFile(+1);
-      nav.jumpToFile(+1);
-
-      const twoFiles = [makeFile('a'), makeFile('b')];
-      jest.spyOn(DiffFile, 'getAll').mockReturnValue(twoFiles);
-
-      expect(nav.getCurrentFile().id).toBe('b');
+        expect(nav.getCurrentFile().id).toBe('a');
+      });
     });
   });
 
@@ -128,23 +251,23 @@ describe('initHotkeys', () => {
     const nextFileKey = keysFor(MR_NEXT_FILE_IN_DIFF)[0];
     const prevFileKey = keysFor(MR_PREVIOUS_FILE_IN_DIFF)[0];
 
-    it('navigates forward and backward through files', () => {
-      const files = [
-        { selectFile: jest.fn(), id: 'a' },
-        { selectFile: jest.fn(), id: 'b' },
-        { selectFile: jest.fn(), id: 'c' },
-      ];
+    it('navigates forward and backward from the visible file', () => {
+      useDiffsView().singleFileMode = false;
+      const files = makeFilesAt([
+        [-500, 120],
+        [120, 700],
+        [700, 3000],
+      ]);
       jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
       teardown = initHotkeys();
 
       Mousetrap.trigger(nextFileKey);
-      expect(files[1].selectFile).toHaveBeenCalled();
-
-      Mousetrap.trigger(nextFileKey);
       expect(files[2].selectFile).toHaveBeenCalled();
 
+      // Backward steps from the navigation cursor, returning to the file
+      // the forward press started from.
       Mousetrap.trigger(prevFileKey);
-      expect(files[1].selectFile).toHaveBeenCalledTimes(2);
+      expect(files[1].selectFile).toHaveBeenCalled();
     });
   });
 
@@ -212,6 +335,7 @@ describe('initHotkeys', () => {
           data: { codeReviewId: CODE_REVIEW_ID },
           diffElement,
           trigger: jest.fn(),
+          selectFile: jest.fn(),
         },
         checkbox,
       };
@@ -226,6 +350,23 @@ describe('initHotkeys', () => {
       expect(checkbox.checked).toBe(true);
       expect(Object.hasOwn(file.diffElement.dataset, 'viewed')).toBe(true);
       expect(file.trigger).toHaveBeenCalledWith(COLLAPSE_FILE_BY_USER);
+    });
+
+    it('keeps the collapsed file in view when marking as reviewed', () => {
+      const { file } = makeMockFile({ isViewed: false });
+
+      toggleFileReview(file);
+
+      expect(file.selectFile).toHaveBeenCalled();
+    });
+
+    it('does not scroll when marking as unreviewed', () => {
+      const { file } = makeMockFile({ isViewed: true });
+      useCodeReview().setReviewed(CODE_REVIEW_ID, true);
+
+      toggleFileReview(file);
+
+      expect(file.selectFile).not.toHaveBeenCalled();
     });
 
     it('marks a reviewed file as unreviewed', () => {
@@ -267,6 +408,7 @@ describe('initHotkeys', () => {
 
     it('binds to Mousetrap keybindings and uses tracked file', () => {
       const { file } = makeMockFile();
+      useDiffsView().singleFileMode = true;
       jest.spyOn(DiffFile, 'getAll').mockReturnValue([file]);
       teardown = initHotkeys();
 
@@ -420,7 +562,10 @@ describe('initHotkeys', () => {
     });
 
     it('still registers file navigation', () => {
-      const files = [{ selectFile: jest.fn() }, { selectFile: jest.fn() }];
+      const files = makeFilesAt([
+        [0, 700],
+        [700, 800],
+      ]);
       jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
 
       Mousetrap.trigger(keysFor(MR_NEXT_FILE_IN_DIFF)[0]);
@@ -429,10 +574,12 @@ describe('initHotkeys', () => {
     });
 
     it('still registers backward file navigation', () => {
-      const files = [{ selectFile: jest.fn() }, { selectFile: jest.fn() }];
+      const files = makeFilesAt([
+        [-500, 100],
+        [100, 800],
+      ]);
       jest.spyOn(DiffFile, 'getAll').mockReturnValue(files);
 
-      Mousetrap.trigger(keysFor(MR_NEXT_FILE_IN_DIFF)[0]);
       Mousetrap.trigger(keysFor(MR_PREVIOUS_FILE_IN_DIFF)[0]);
 
       expect(files[0].selectFile).toHaveBeenCalled();

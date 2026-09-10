@@ -95,6 +95,12 @@ When you enable the dependency scanning profile, your project's dependencies are
 
 ### Dependency scanning auto-remediation profile
 
+{{< history >}}
+
+- Triage and remediation profile support for auto-remediation [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253780) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `triage_and_remediation_profile`. Enabled by default.
+
+{{< /history >}}
+
 When you enable the dependency scanning auto-remediation profile, GitLab opens merge requests
 that bump vulnerable dependencies to non-vulnerable versions. For more information about this
 capability, see [dependency scanning auto-remediation](../remediate/dependency_scanning_auto_remediation.md).
@@ -111,6 +117,10 @@ For example, to enable the profile for `my-group/my-project`:
 ```shell
 glab security config enable dependency_scanning_post_processing -R my-group/my-project
 ```
+
+> [!note]
+> A project can have both profiles attached at the same time. In that situation, GitLab only uses the profile that
+> was applied first. The configuration for the other profile is ignored.
 
 ### View details about a profile
 

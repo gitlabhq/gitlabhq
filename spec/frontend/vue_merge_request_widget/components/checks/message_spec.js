@@ -57,12 +57,20 @@ describe('Merge request merge checks message component', () => {
     expect(wrapper.findByTestId('checking-icon').exists()).toBe(true);
   });
 
-  it('renders the checking message instead of the failure reason for an identifier with a checking reason', () => {
-    factory({ check: { status: 'CHECKING', identifier: 'conflict' } });
+  it.each`
+    identifier
+    ${'conflict'}
+    ${'need_rebase'}
+    ${'need_rebase_merge_train'}
+  `(
+    'renders the checking message instead of the failure reason for an identifier with a checking reason',
+    ({ identifier }) => {
+      factory({ check: { status: 'CHECKING', identifier } });
 
-    expect(wrapper.text()).toBe(CHECKING_REASONS.conflict);
-    expect(wrapper.text()).not.toBe(FAILURE_REASONS.conflict);
-  });
+      expect(wrapper.text()).toBe(CHECKING_REASONS[identifier]);
+      expect(wrapper.text()).not.toBe(FAILURE_REASONS[identifier]);
+    },
+  );
 
   it('falls back to the failure reason while CHECKING for an identifier without a checking reason', () => {
     factory({ check: { status: 'CHECKING', identifier: 'discussions_not_resolved' } });

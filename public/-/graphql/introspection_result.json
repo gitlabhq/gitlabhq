@@ -9697,7 +9697,7 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": null,
+                  "description": "Date granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -105852,7 +105852,7 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": null,
+                  "description": "Date granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -135673,7 +135673,7 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": null,
+                  "description": "Date granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -135710,7 +135710,7 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": null,
+                  "description": "Date granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -144680,7 +144680,7 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": null,
+                  "description": "Date granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -145780,7 +145780,7 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": null,
+                  "description": "Date granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -149652,7 +149652,7 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date bucket granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -255603,7 +255603,7 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date bucket granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -255628,7 +255628,7 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": "Date bucket granularity: daily, weekly, or monthly",
+                  "description": "Date granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -315993,7 +315993,7 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": null,
+                  "description": "Date granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -316054,7 +316054,7 @@
               "args": [
                 {
                   "name": "granularity",
-                  "description": null,
+                  "description": "Date granularity: daily, weekly, or monthly",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",

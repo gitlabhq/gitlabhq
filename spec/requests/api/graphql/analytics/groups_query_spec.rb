@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 # Exercises the query document the analytics group filter actually ships, so
-# dropping `allAvailable: false` from it fails here rather than in production.
+# changing its `allAvailable` or `sort` arguments fails here rather than in production.
 RSpec.describe 'analyticsGetGroups query', feature_category: :custom_dashboards_foundation do
   include GraphqlHelpers
 
@@ -26,5 +26,18 @@ RSpec.describe 'analyticsGetGroups query', feature_category: :custom_dashboards_
   it 'returns only groups the user is a member of', :aggregate_failures do
     expect(returned_paths).to include(member_group.full_path)
     expect(returned_paths).not_to include(public_non_member_group.full_path)
+  end
+
+  context 'when sorting by similarity' do
+    # `Zeta` is the closer match for `zeta`, but sorts last by name and is created
+    # first, so this fails under both the `name_asc` default and the `id_desc` fallback.
+    let_it_be(:closest_match) { create(:group, :private, name: 'Zeta', developers: user) }
+    let_it_be(:distant_match) { create(:group, :private, name: 'Analytics zeta reporting', developers: user) }
+
+    let(:variables) { { 'search' => 'zeta', 'first' => 20, 'sort' => 'similarity' } }
+
+    it 'ranks the closest match first' do
+      expect(returned_paths).to eq([closest_match.full_path, distant_match.full_path])
+    end
   end
 end

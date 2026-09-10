@@ -5,6 +5,8 @@ require_relative '../helpers/capybara_node_helpers'
 RSpec::Matchers.define :have_testid do |testid, **options|
   include CapybaraNodeHelpers
 
+  text = options[:text]
+
   match do |actual|
     capybara_node_from(actual).has_selector?("[data-testid='#{testid}']", **options)
   end

@@ -477,6 +477,21 @@ Here's the workflow to make new types available for Rails:
 - After it's reviewed and merged, it should be available in the GitLab
   default branch
 
+### HTTP Router
+
+The [HTTP router](https://gitlab.com/gitlab-org/cells/http-router) is a
+separate consumer of the same claim types: it routes requests by matching
+claims returned from Topology Service.
+It consumes the generated TypeScript client the same way Rails consumes the
+gem, so a new claim type is only available to the router after its vendored
+client is re-synced:
+
+- Create a merge request in the HTTP router to update the
+  vendored Topology Service client, by running
+  `scripts/update-topology-service-client.sh` in the merge request branch
+- After it's reviewed and merged, it should be available in the router's
+  default branch
+
 ## Verification and backfilling
 
 The verification service (`Cells::Claims::VerificationService`) reconciles

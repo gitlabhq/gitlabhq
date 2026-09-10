@@ -27,6 +27,7 @@ You can create crosslinks through:
 - [Linked issues](#from-linked-issues)
 - [Merge requests](#from-merge-requests)
 - [Branch names](#from-branch-names)
+- [Explicit work item links](../../work_items/_index.md#work-items-in-merge-requests)
 
 ## From commit messages
 

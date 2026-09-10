@@ -165,6 +165,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
                     expected_attrs = {
                       parent_file: external_file,
                       parent_pipeline: parent_pipeline,
+                      pipeline_policy_context: anything,
                       project: anything,
                       sha: anything,
                       user: anything,

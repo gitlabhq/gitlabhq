@@ -9,10 +9,12 @@ module Ci
         ::Gitlab::Ci::Components::InstancePath
       ].freeze
 
-      def initialize(address:, current_user:, logger: nil)
+      def initialize(address:, current_user:, logger: nil, requesting_project: nil, pipeline_policy_context: nil)
         @address = address
         @current_user = current_user
         @logger = logger
+        @requesting_project = requesting_project
+        @pipeline_policy_context = pipeline_policy_context
       end
 
       def execute
@@ -21,8 +23,6 @@ module Ci
             message: "#{error_prefix} the component path is not supported",
             reason: :unsupported_path)
         end
-
-        component_path = component_path_class.new(address: address, logger: logger)
 
         result = component_path.fetch_content!(current_user: current_user)
 
@@ -50,6 +50,28 @@ module Ci
           ServiceResponse.error(message: "#{error_prefix} content not found", reason: :content_not_found)
         end
       rescue Gitlab::Access::AccessDeniedError
+        handle_access_denied_error
+      end
+
+      private
+
+      attr_reader :current_user, :address, :logger, :requesting_project, :pipeline_policy_context
+
+      def component_path_class
+        COMPONENT_PATHS.find { |klass| klass.match?(address) }
+      end
+      strong_memoize_attr :component_path_class
+
+      def error_prefix
+        "Component '#{address}' -"
+      end
+
+      def component_path
+        component_path_class.new(address: address, logger: logger)
+      end
+      strong_memoize_attr :component_path
+
+      def handle_access_denied_error
         if current_user.external? && component_path.project.internal?
           ServiceResponse.error(
             message: "#{error_prefix} project is `Internal`, it cannot be accessed by an External User",
@@ -60,19 +82,8 @@ module Ci
             reason: :not_allowed)
         end
       end
-
-      private
-
-      attr_reader :current_user, :address, :logger
-
-      def component_path_class
-        COMPONENT_PATHS.find { |klass| klass.match?(address) }
-      end
-      strong_memoize_attr :component_path_class
-
-      def error_prefix
-        "Component '#{address}' -"
-      end
     end
   end
 end
+
+Ci::Components::FetchService.prepend_mod

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Mcp::Tools::Projects::GetProjectService, feature_category: :mcp_server do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public) }
 
   let(:service) { described_class.new(name: 'get_project') }
 

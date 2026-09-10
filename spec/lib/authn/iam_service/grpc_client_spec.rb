@@ -65,7 +65,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
     it 'forwards every client field on the request', :aggregate_failures do
       expect(oauth_clients_stub).to receive(:create_client) do |request, **|
         expect(request.client_id).to eq('client-id')
-        expect(request.client_secret).to eq('client-secret')
+        expect(request.hashed_client_secret).to eq('client-secret')
         expect(request.client_name).to eq('Test App')
         expect(request.redirect_uris.to_a).to eq(['https://example.com/callback'])
         expect(request.grant_types.to_a).to eq(%w[authorization_code])
@@ -82,7 +82,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
 
       client.create_oauth_application(
         client_id: 'client-id',
-        client_secret: 'client-secret',
+        hashed_client_secret: 'client-secret',
         client_name: 'Test App',
         redirect_uris: ['https://example.com/callback'],
         grant_types: %w[authorization_code],
@@ -104,7 +104,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
     it 'forwards every client field on the request', :aggregate_failures do
       expect(oauth_clients_stub).to receive(:upsert_client) do |request, **|
         expect(request.client_id).to eq('client-id')
-        expect(request.client_secret).to eq('client-secret')
+        expect(request.hashed_client_secret).to eq('client-secret')
         expect(request.client_name).to eq('Test App')
         expect(request.redirect_uris.to_a).to eq(['https://example.com/callback'])
         expect(request.grant_types.to_a).to eq(%w[authorization_code])
@@ -121,7 +121,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
 
       client.upsert_oauth_application(
         client_id: 'client-id',
-        client_secret: 'client-secret',
+        hashed_client_secret: 'client-secret',
         client_name: 'Test App',
         redirect_uris: ['https://example.com/callback'],
         grant_types: %w[authorization_code],

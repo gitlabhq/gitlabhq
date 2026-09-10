@@ -480,6 +480,7 @@ module API
     mount ::API::Internal::Workhorse
     mount ::API::Internal::Shellhorse
     mount ::API::Internal::Gitaly
+    mount ::API::Internal::OrgMover
 
     route_setting :authorization, skip_granular_token_authorization: :catch_all
     route :any, '*path', feature_category: :not_owned do

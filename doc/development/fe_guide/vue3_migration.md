@@ -332,8 +332,8 @@ It reads a stale value, and nothing reports an error.
 
 #### The error
 
-We have built a safety mechanism that trips the bundling jobs (`compile-production-assets` and `build-vite-prod`) to prevent duplicating such singletons.
-Those jobs fail when a duplication is created.
+We have built a safety mechanism that trips the bundling job (`compile-production-assets`) to prevent duplicating such singletons.
+That job fails when a duplication is created.
 
 The scanner prints output like this:
 

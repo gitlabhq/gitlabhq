@@ -146,6 +146,29 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
       end
     end
 
+    context "with an id set large enough to exceed the engine's line cap" do
+      # The engine counts a leading tab as 4 columns, so a raw bytesize understates the
+      # width it measures; mirror that expansion when asserting no line crosses the cap.
+      def engine_columns(line)
+        line.chomp.sub(/\A\t+/) { |tabs| " " * (4 * tabs.length) }.bytesize
+      end
+
+      let(:policy_scope) { { projects: { including: Array.new(300) { |index| { id: index + 1 } } } } }
+
+      it "spreads the set one member per line so every line stays under the cap", :aggregate_failures do
+        expect(rego.lines.map { |line| engine_columns(line) }.max).to be < described_class::MAX_LINE_COLUMNS
+        expect(rego).to include("input.project.id in {\n\t\t1,\n")
+        expect(rego).to include("\t\t300\n\t}")
+      end
+
+      it "keeps an ordinary id set inline" do
+        small = described_class.new({ projects: { including: [{ id: 42 }, { id: 43 }] } },
+          policy_name: policy_name).transpile
+
+        expect(small).to include("input.project.id in {42, 43}")
+      end
+    end
+
     context "with input coercion" do
       context "with bare integer ids" do
         let(:policy_scope) { { compliance_frameworks: [5] } }

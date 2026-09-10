@@ -78,6 +78,10 @@ module Gitlab
           reference.match?(SHORTHAND_SEMVER_PATTERN) && project && project.catalog_resource.nil?
         end
 
+        def template_file_paths
+          [simple_template_path, complex_template_path]
+        end
+
         private
 
         def fetch_component_content
@@ -235,3 +239,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::Components::InstancePath.prepend_mod

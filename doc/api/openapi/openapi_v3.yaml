@@ -14840,6 +14840,155 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/RequestBody_b7568ec0593b"
+  "/api/v4/internal/org_mover/maintenance_state":
+    get:
+      operationId: getApiV4InternalOrgMoverMaintenanceState
+      summary: Report an organization's current lifecycle state
+      description: Returns the organization's current maintenance lifecycle state.
+      tags:
+      - Organizations
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '400':
+          description: Bad Request
+      parameters:
+      - name: organization_id
+        required: true
+        description: The ID of the organization
+        schema:
+          type: integer
+          nullable: true
+        in: query
+  "/api/v4/internal/org_mover/maintenance_readiness":
+    get:
+      operationId: getApiV4InternalOrgMoverMaintenanceReadiness
+      summary: Report cutover readiness for an organization
+      description: Reports whether an organization is drained and safe to enter maintenance.
+      tags:
+      - Organizations
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '400':
+          description: Bad Request
+      parameters:
+      - name: organization_id
+        required: true
+        description: The ID of the organization
+        schema:
+          type: integer
+          nullable: true
+        in: query
+  "/api/v4/internal/org_mover/start_maintenance":
+    post:
+      operationId: postApiV4InternalOrgMoverStartMaintenance
+      summary: Start maintenance on an organization (active -> maintenance_initialization)
+      description: Begins the maintenance transition for an organization.
+      tags:
+      - Organizations
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '422':
+          description: Unprocessable entity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_24ae73f25200"
+  "/api/v4/internal/org_mover/confirm_maintenance":
+    post:
+      operationId: postApiV4InternalOrgMoverConfirmMaintenance
+      summary: Confirm maintenance on an organization (maintenance_initialization
+        -> maintenance)
+      description: Completes the maintenance transition once the organization is drained.
+      tags:
+      - Organizations
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '409':
+          description: Conflict
+        '422':
+          description: Unprocessable entity
+        '400':
+          description: Bad Request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_b3428d7dbbdb"
+  "/api/v4/internal/org_mover/cancel_maintenance":
+    post:
+      operationId: postApiV4InternalOrgMoverCancelMaintenance
+      summary: Cancel maintenance on an organization (maintenance_initialization ->
+        active)
+      description: Aborts maintenance initialization before the organization reaches
+        the maintenance state, returning it to active.
+      tags:
+      - Organizations
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '422':
+          description: Unprocessable entity
+        '400':
+          description: Bad Request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_b3428d7dbbdb"
+  "/api/v4/internal/org_mover/exit_maintenance":
+    post:
+      operationId: postApiV4InternalOrgMoverExitMaintenance
+      summary: Exit maintenance on an organization (maintenance -> active)
+      description: Returns an organization from maintenance to active.
+      tags:
+      - Organizations
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '422':
+          description: Unprocessable entity
+        '400':
+          description: Bad Request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_b3428d7dbbdb"
   "/api/v4/internal/gitaly/object_pool_members":
     get:
       operationId: getApiV4InternalGitalyObjectPoolMembers
@@ -105220,6 +105369,35 @@ components:
           type: integer
           description: The weight of the board
           nullable: true
+    RequestBody_24ae73f25200:
+      type: object
+      properties:
+        organization_id:
+          type: integer
+          description: The ID of the organization
+          nullable: true
+        maintenance_reason:
+          type: string
+          enum:
+          - migration
+          - isolation
+          - incident
+          - billing
+          - legal
+          description: The reason for entering maintenance
+          minLength: 1
+      required:
+      - organization_id
+      - maintenance_reason
+    RequestBody_b3428d7dbbdb:
+      type: object
+      properties:
+        organization_id:
+          type: integer
+          description: The ID of the organization
+          nullable: true
+      required:
+      - organization_id
     RequestBody_d75fb92cf06c:
       type: object
       properties:

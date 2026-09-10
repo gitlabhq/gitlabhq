@@ -16,8 +16,6 @@ attributes:
   - skip_future_date_validation
   ee/app/services/epics/transfer_service.rb:
   - epic_created_events
-  lib/gitlab/git/tag.rb:
-  - object_sha
 constants:
   app/controllers/admin/application_settings_controller.rb:
   - PARAM_JOB_ID_MAX_SIZE
@@ -798,7 +796,6 @@ scopes:
   ee/app/models/security/scan_result_policy_violation.rb:
   - without_violation_data
   ee/app/models/vulnerabilities/finding.rb:
-  - ids_by_vulnerability
   - by_primary_identifiers
   - eager_load_vulnerability_flags
   ee/app/models/vulnerabilities/identifier.rb:

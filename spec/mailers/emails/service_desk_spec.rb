@@ -125,10 +125,14 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
       it 'logs the suppression once the template was found' do
         expect(Gitlab::AppJsonLogger).to receive(:info).with(
-          hash_including(
-            Labkit::Fields::LOG_MESSAGE => 'Service Desk custom email template suppressed',
-            Labkit::Fields::GL_PROJECT_ID => project.id
-          )
+          Labkit::Fields::LOG_MESSAGE => 'Service Desk custom email template suppressed',
+          # The suite exercises these emails through a stubbed mailer class, so
+          # assert the class that actually sends rather than hardcoding Notify.
+          Labkit::Fields::CLASS_NAME => ServiceEmailClass.name,
+          Labkit::Fields::GL_NAMESPACE_ID => project.namespace_id,
+          Labkit::Fields::GL_ROOT_NAMESPACE_ID => project.root_namespace.id,
+          Labkit::Fields::GL_PROJECT_ID => project.id,
+          Labkit::Fields::ADDITIONAL_DETAILS => "email_type: '#{template_key}'"
         )
 
         subject.text_part

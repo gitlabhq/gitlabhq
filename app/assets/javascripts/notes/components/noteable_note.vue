@@ -16,6 +16,7 @@ import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
@@ -43,7 +44,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [noteable, resolvable, glSlotsMixin],
+  mixins: [noteable, resolvable, glSlotsMixin, glFeatureFlagsMixin()],
   inject: {
     reportAbusePath: {
       default: '',
@@ -259,7 +260,10 @@ export default {
       return this.author.username === 'amazon-q';
     },
     hasSession() {
-      return Boolean(this.note.duo_session_id_triggered && this.note.duo_session_agent_name);
+      return (
+        this.glFeatures.noteAgentSessionBar &&
+        Boolean(this.note.duo_session_id_triggered && this.note.duo_session_agent_name)
+      );
     },
   },
   created() {

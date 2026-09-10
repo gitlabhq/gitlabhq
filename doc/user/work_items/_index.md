@@ -227,7 +227,7 @@ For more information, see [GitLab-specific references](../markdown.md#gitlab-spe
 {{< /history >}}
 
 When you reference a work item in a merge request description, it appears automatically in
-the **Work items** widget in the merge request sidebar. The widget groups work items into two categories:
+the **Work items** widget in the merge request sidebar. The widget groups work items by how they are linked:
 
 - **Closing**: Work items linked with a
   [closing pattern](../project/issues/managing_issues.md#closing-issues-automatically),
@@ -237,6 +237,60 @@ the **Work items** widget in the merge request sidebar. The widget groups work i
 
 If the widget contains more than two work items, it collapses by default. Select the widget
 header to expand it. Select any work item to open it in a drawer.
+
+### Link work items manually
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238648) in GitLab 19.1 [with a feature flag](../../administration/feature_flags/_index.md) named `explicit_mr_work_item_relations`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+You can also link work items to a merge request without editing the merge request description.
+Work items you link this way appear in the **Closing** or **Related** group, and the merge request
+appears in each linked work item's **Development** section.
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To link an existing work item to a merge request:
+
+1. On the merge request page, in the right sidebar, in the **Work items** section,
+   select **Add a work item** ({{< icon name="plus" >}}).
+1. In the **Link work item** dialog, from the **Relationship** dropdown list, select
+   **Closes** or **Relates to**.
+1. In the search field, search for the work item, or enter its URL or reference ID,
+   then select it.
+1. Select **Add**.
+
+To create a work item and link it to a merge request:
+
+1. On the merge request page, in the right sidebar, in the **Work items** section,
+   select **Add a work item** ({{< icon name="plus" >}}).
+1. In the **Link work item** dialog, from the **Relationship** dropdown list, select
+   **Closes** or **Relates to**.
+1. Select **Create new item**.
+1. From the **Project** dropdown list, select a project.
+1. From the **Type** dropdown list, select a work item type.
+1. Complete the fields.
+1. Select **Create** for the type you selected, for example **Create issue**.
+
+To remove a link:
+
+1. On the merge request page, in the right sidebar, in the **Work items** section, next to the
+   work item, select **Remove** ({{< icon name="close" >}}).
+
+You cannot remove work items that a closing pattern or a mention in the merge request description
+added.
+
+To link a work item from another project, enter its URL or its full reference, such as
+`group/project#123`.
 
 ## Related topics
 

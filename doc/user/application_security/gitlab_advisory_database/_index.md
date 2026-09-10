@@ -36,6 +36,17 @@ GitLab maintains a private database of advisories for known malicious packages f
 GitLab malware advisories (GLAM) are separate from the GLAD advisories described elsewhere on this page.
 GitLab automatically synchronizes these advisories to your GitLab instance in the background.
 
+GitLab obtains these advisories from three sources:
+
+- The [OpenSSF malicious-packages project](https://github.com/ossf/malicious-packages), an open
+  source repository of reports of malicious packages.
+- Scans of public package registries run by GitLab.
+- Upstream feeds of advisory data from package registries.
+
+Each malware advisory has an ID that starts with `GLAM-`, in the form
+`GLAM-<year>-<month>-<sequence>`, for example `GLAM-2026-09-00138`. Vulnerabilities created from
+these advisories carry that ID as an identifier, and have no CVE identifier.
+
 > [!note]
 > In [offline environments](../offline_deployments/_index.md), GitLab cannot synchronize these advisories automatically.
 > Instead, you [download them on a machine with internet access](../../../topics/offline/quick_start_guide.md#download-gitlab-malware-advisories) and copy them to the instance.

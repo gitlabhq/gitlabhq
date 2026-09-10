@@ -1,4 +1,4 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlTable } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -23,6 +23,7 @@ describe('Customer relations organizations root app', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findNewOrganizationButton = () => wrapper.findByTestId('new-organization-button');
   const findTable = () => wrapper.findComponent(PaginatedTableWithSearchAndTabs);
+  const findGlTable = () => wrapper.findComponent(GlTable);
   const successQueryHandler = jest.fn().mockResolvedValue(getGroupOrganizationsQueryResponse);
   const successCountQueryHandler = jest
     .fn()
@@ -80,6 +81,17 @@ describe('Customer relations organizations root app', () => {
       filterSearchTokens: [],
     });
     expect(findLoadingIcon().exists()).toBe(true);
+  });
+
+  describe('table fields', () => {
+    it('wraps the name and description columns so long values do not overflow into neighboring columns', () => {
+      mountComponent();
+
+      const fields = findGlTable().props('fields');
+
+      expect(fields.find((field) => field.key === 'name').tdClass).toBe('gl-break-anywhere');
+      expect(fields.find((field) => field.key === 'description').tdClass).toBe('gl-break-anywhere');
+    });
   });
 
   describe('contacts link', () => {
