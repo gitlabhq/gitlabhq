@@ -697,6 +697,7 @@ To enable this setting:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244421) in GitLab 19.2. Enabled by default for new groups.
 - Group and instance settings UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243465) in GitLab 19.3.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251669) to disabled by default for new groups in GitLab 19.2.6, GitLab 19.3.2, and GitLab 19.4.
 
 {{< /history >}}
 
@@ -706,7 +707,17 @@ setting is enabled, GitLab rejects calls to the
 `sha` parameter, and returns a `400` error. The merge fails if the `sha` parameter doesn't match the
 current HEAD of the source branch.
 
-This setting is enabled by default for groups created in GitLab 19.2 or later.
+This setting is disabled by default.
+
+> [!note]
+> For GitLab Self-Managed and GitLab Dedicated, this setting is enabled by default for new groups
+> created in:
+>
+> - GitLab 19.2.0 to GitLab 19.2.5
+> - GitLab 19.3.0 to GitLab 19.3.1
+>
+> If you want to disable the setting by default for all new groups, turn the setting off and select
+> **Enforce for all subgroups** or **Enforce this setting for all groups on this instance**.
 
 Prerequisites:
 
