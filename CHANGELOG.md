@@ -2,6 +2,48 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.3.2 (2026-09-10)
+
+### Fixed (4 changes)
+
+- [Stop resetting mcp_server_enabled when Duo settings change](https://gitlab.com/gitlab-org/security/gitlab/-/commit/25b02f48d85610be4fdc3e0dfdeb5ec727fec989) **GitLab Enterprise Edition**
+- [Fix partition cache crash on single-pipeline ranges](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f642741b2fa04abce2d74f4e4ced3d97e807ccfb)
+- [Geo: Support SSH cert gl_id formats in proxied Git requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8c6b338efc7f2f1239680db73e246c21316965d7) **GitLab Enterprise Edition**
+- [Default SHA on merge requirement for new groups to false](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5a962f1829dff1c05490d43b0e33784394641296)
+
+### Changed (1 change)
+
+- [Show "No available solution" message for CS when solution is empty](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4373039e55954d599e047ce4c6334db3f49c4237) **GitLab Enterprise Edition**
+
+### Security (17 changes)
+
+- [Prevent scheduled PEP test runs from bypassing policy scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d3e0d40707f5da43fc97f1945b5b985f1b410468) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6714))
+- [Reassign sole approver rules on permanent deletion (19.3)](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eca64bf0cafb7444b4fe577a6604933c891cca5b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6696))
+- [Preserve protected environment approval rule on approver revoke (19.3)](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0a0de667aaa5c782a6bf4a7872b005ef34894721) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6693))
+- [Sanitise items in JSONTable before passing to BTable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b3ca25f01d2d032d90b0ef355b5b8292a8e3c6ca) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6703))
+- [Fix complexity multiplier logic enables Unauthenticated DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/196385d8e37fa4270f4c3ca4b5745fbdf1ff7a82) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6665))
+- [Require update_package to change generic package status](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cce55f4ae4a2f321dc414735bc9ec8bdf652c195) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6669))
+- [Fix routing manipulation with group wiki [Backport 19.3]](https://gitlab.com/gitlab-org/security/gitlab/-/commit/06cc56559e85fce91bc18a14bd05af420e4d1c15) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6678))
+- [Content editor vets iframe sources before rendering](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a8bd90a4c9a442976a57bbbd0ec48a6a9970bf8a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6637))
+- [Pin checkout_sha at push time to prevent MR pipeline code injection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/30642b48e6f70ffab572d5064c399efb973d6865) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6682))
+- [Read Terraform state upload path from verified UploadedFile](https://gitlab.com/gitlab-org/security/gitlab/-/commit/56582c7e25a3bb5563bd399c0f7da8f5fbc63abc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6625))
+- [Remove admin compliance pipeline config from SM role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4656f4c7b1545016432b6d0a8a789e16a1f40887) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6607))
+- [Verify Workhorse JWT on all remaining senddata emitters](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0b178ead1759264afd42d1a0c0e8c3f747a4fb67) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6619))
+- [Prevent email OTP from bypassing SSO enforcement](https://gitlab.com/gitlab-org/security/gitlab/-/commit/456d3771b21694b4b9aa3bc4c73ac49e1e404792) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6615))
+- [Anchor and escape EnvironmentMatcher wildcard patterns](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0608e06b32204ec789f96afddf80fe49caf9ed1b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6622))
+- [Upgrade graphql gem and backport GlobalID serialization fixes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ae2e6e84bd3ee6000e6022710069877a89bc8306) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6767))
+- [Update GitLab Elasticsearch Indexer to 5.14.13](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2ae02ce0524f5af632337e894882793e8068d3ba) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6740))
+- [Fix unauthenticated arbitrary local file read in commits API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0ff7b6b2911723389f2271b10362591b0a69a166) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6754))
+
+### Performance (2 changes)
+
+- [Cache the previous chunk in Gitlab::HttpIO](https://gitlab.com/gitlab-org/security/gitlab/-/commit/97458d136388571e0aa4d3a04c04b50ad13b8748)
+- [Reuse HTTP connections and add timeouts in Gitlab::HttpIO](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a04997bde84f5741a23cd84812ede3bbb6d7bf3f)
+
+### Other (1 change)
+
+- [Stop logging GraphQL type conflict deprecation warnings](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ead4320a085c2d3f51f322046e1ae7b89f7e8bc1)
+
 ## 19.3.1 (2026-08-25)
 
 ### Fixed (2 changes)
