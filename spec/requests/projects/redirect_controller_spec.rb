@@ -50,8 +50,7 @@ RSpec.describe "Projects::RedirectController requests", feature_category: :group
     let_it_be(:sourcegraph_url) { 'https://sourcegraph.test' }
 
     before do
-      allow(Gitlab::CurrentSettings).to receive(:sourcegraph_url).and_return(sourcegraph_url)
-      allow(Gitlab::CurrentSettings).to receive(:sourcegraph_enabled).and_return(true)
+      allow(Gitlab::CurrentSettings).to receive_messages(sourcegraph_url: sourcegraph_url, sourcegraph_enabled: true)
 
       sign_in(user)
     end

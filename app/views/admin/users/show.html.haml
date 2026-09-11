@@ -11,13 +11,7 @@
         = @user.name
       - c.with_body do
         %ul.content-list
-          %li
-            = render Pajamas::AvatarComponent.new(@user, size: 64, class: 'gl-mr-3')
-          %li
-            %span.gl-text-subtle= _('Profile page:')
-            %strong
-              = link_to user_path(@user) do
-                = @user.username
+          = render 'admin/users/summary_details'
           = render_if_exists 'admin/users/audit_events_link', user: @user
     -# Rendered on mobile only so order of cards can be different on desktop vs mobile
     %div{ class: "@md/panel:gl-hidden" }
@@ -28,14 +22,7 @@
         = _('Account')
       - c.with_body do
         %ul.content-list
-          %li{ class: list_item_classes }
-            %span.gl-text-subtle= _('Name:')
-            .gl-col-span-2
-              %strong= @user.name
-          %li{ class: list_item_classes }
-            %span.gl-text-subtle= _('Username:')
-            .gl-col-span-2
-              %strong= @user.username
+          = render 'admin/users/basic_details'
           %li{ class: list_item_classes }
             %span.gl-text-subtle= _('Email:')
             .gl-col-span-2
@@ -61,15 +48,6 @@
                 %strong= render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
                 - if can?(current_user, :admin_all_resources)
                   = link_button_to nil, remove_email_admin_user_path(@user, email), data: { confirm: _("Are you sure you want to remove %{email}?") % { email: email.email }, 'confirm-btn-variant': 'danger' }, method: :delete, class: 'gl-float-right has-tooltip', title: _('Remove secondary email'), id: "remove_email_#{email.id}", category: :tertiary, size: :small, icon: 'remove'
-          %li{ class: list_item_classes }
-            %span.gl-text-subtle ID:
-            .gl-col-span-2
-              %strong{ data: { testid: 'user-id-content' } }= @user.id
-          %li{ class: list_item_classes }
-            %span.gl-text-subtle= _('Namespace ID:')
-            .gl-col-span-2
-              %strong= @user.namespace_id
-
           - if @user.placeholder?
             - placeholder_group = Import::SourceUser.for_placeholder_user(@user)&.take&.namespace
             %li{ class: list_item_classes }

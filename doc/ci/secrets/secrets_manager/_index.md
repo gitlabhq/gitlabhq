@@ -341,8 +341,11 @@ Wait for provisioning to complete and create the secret before re-running the pi
 ### Error: `namespace does not have access to GitLab Secrets Manager`
 
 Jobs that request secrets from GitLab Secrets Manager fail with this error before a runner
-picks them up when the top-level group does not have access to GitLab Secrets Manager.
-Possible causes:
+picks them up when the namespace does not have access to GitLab Secrets Manager.
+
+#### GitLab.com
+
+Possible causes on GitLab.com:
 
 - The trial has expired.
 - The group has no GitLab credits available.
@@ -350,6 +353,22 @@ Possible causes:
 - The subscription grace period has expired.
 - The open beta has ended and the namespace did not opt in.
 
-To restore access, start a trial or purchase GitLab Secrets Manager for the top-level group.
-Alternatively, make sure the top-level group has GitLab credits available and on-demand
-billing enabled.
+To restore access for the top-level group, start a free trial or enable on-demand
+billing for the Secrets Manager. If the subscription has lapsed, renew it. For more
+information, see [GitLab Secrets Manager usage and billing](secrets_manager_billing.md).
+
+#### GitLab Self-Managed
+
+On GitLab Self-Managed, GitLab resolves access to Secrets Manager at the instance
+level, not per group.
+
+Possible causes:
+
+- The instance is using a trial license. Secrets Manager trials are only available with a paid subscription.
+- The Secrets Manager trial has expired.
+- The instance subscription does not include GitLab Secrets Manager.
+- The subscription grace period has expired.
+- For offline licenses, the license does not include an active GitLab Secrets Manager add-on.
+
+To restore access, ask an instance administrator to add GitLab Secrets Manager to the
+instance subscription. Instances with a paid subscription can also start a free trial.

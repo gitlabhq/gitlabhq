@@ -62,8 +62,7 @@ RSpec.describe 'Tasks::Gitlab::Tokens::ManageExpiryTask', feature_category: :sys
 
       allow(task).to receive(:prompt_expiration_date_selection).and_return(expires_at)
       allow(TTY::Prompt).to receive(:new).and_return(prompt)
-      allow(prompt).to receive(:ask).and_return(new_date.to_s)
-      allow(prompt).to receive(:yes?).and_return(true)
+      allow(prompt).to receive_messages(ask: new_date.to_s, yes?: true)
       expect(task).to receive(:update_tokens_with_expiration).with(expires_at, new_date).and_call_original
 
       expect { task.send(:extend_expiration_date) }.to output(/Updated 2 tokens!/).to_stdout

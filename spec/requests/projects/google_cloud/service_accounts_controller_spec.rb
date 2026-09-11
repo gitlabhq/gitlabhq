@@ -107,10 +107,12 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController, feature_categor
           before do
             allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|
               mock_service_account = Struct.new(:project_id, :unique_id, :email).new(123, 456, 'em@ai.l')
-              allow(client).to receive(:list_projects).and_return([])
-              allow(client).to receive(:validate_token).and_return(true)
-              allow(client).to receive(:create_service_account).and_return(mock_service_account)
-              allow(client).to receive(:create_service_account_key).and_return({})
+              allow(client).to receive_messages(
+                list_projects: [],
+                validate_token: true,
+                create_service_account: mock_service_account,
+                create_service_account_key: {}
+              )
               allow(client).to receive(:grant_service_account_roles)
             end
           end
@@ -146,10 +148,12 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController, feature_categor
           before do
             allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|
               mock_service_account = Struct.new(:project_id, :unique_id, :email).new(123, 456, 'em@ai.l')
-              allow(client).to receive(:list_projects).and_return([{}, {}, {}])
-              allow(client).to receive(:validate_token).and_return(true)
-              allow(client).to receive(:create_service_account).and_return(mock_service_account)
-              allow(client).to receive(:create_service_account_key).and_return({})
+              allow(client).to receive_messages(
+                list_projects: [{}, {}, {}],
+                validate_token: true,
+                create_service_account: mock_service_account,
+                create_service_account_key: {}
+              )
               allow(client).to receive(:grant_service_account_roles)
             end
           end

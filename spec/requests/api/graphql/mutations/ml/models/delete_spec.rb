@@ -101,9 +101,8 @@ RSpec.describe 'Deleting a model', feature_category: :mlops do
       context 'when an error occurs' do
         it 'returns the errors in the response' do
           allow_next_found_instance_of(::Ml::Model) do |model|
-            allow(model).to receive(:destroy).and_return(nil)
             errors = ActiveModel::Errors.new(model).tap { |e| e.add(:id, 'some error') }
-            allow(model).to receive(:errors).and_return(errors)
+            allow(model).to receive_messages(destroy: nil, errors: errors)
           end
 
           mutation_request

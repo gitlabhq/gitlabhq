@@ -28,6 +28,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    scopePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   emits: ['set-date-range', 'set-scope', 'error'],
   computed: {
@@ -59,6 +64,7 @@ export default {
     <gl-form-group class="gl-full-w" :label="$options.i18n.scopeLabel">
       <scope-picker
         :group-full-path="defaultGroupFullPath || ''"
+        :initial-path="scopePath"
         @change="$emit('set-scope', $event)"
         @error="$emit('error', $event)"
       />

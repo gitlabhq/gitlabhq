@@ -22,11 +22,11 @@ RSpec.describe Tooling::Danger::AiLogging, feature_category: :service_ping do
       end
     end)
 
-    allow(fake_helper).to receive(:git).and_return(
-      Git.new(modified_files, file_content)
+    allow(fake_helper).to receive_messages(
+      git: Git.new(modified_files, file_content),
+      stable_branch?: false,
+      markdown_list: "app/services/llm/ai_service.rb"
     )
-    allow(fake_helper).to receive(:stable_branch?).and_return(false)
-    allow(fake_helper).to receive(:markdown_list).and_return("app/services/llm/ai_service.rb")
   end
 
   describe '#check_ai_logging' do

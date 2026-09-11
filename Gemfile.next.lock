@@ -1052,7 +1052,7 @@ GEM
     google-cloud-location (0.6.0)
       gapic-common (>= 0.20.0, < 2.a)
       google-cloud-errors (~> 1.0)
-    google-cloud-storage (1.57.0)
+    google-cloud-storage (1.62.0)
       addressable (~> 2.8)
       digest-crc (~> 0.4)
       google-apis-core (>= 0.18, < 2)
@@ -2578,7 +2578,7 @@ DEPENDENCIES
   google-apis-storage_v1 (~> 0.29)
   google-cloud-artifact_registry-v1 (~> 0.11.0)
   google-cloud-compute-v1 (~> 2.6.0)
-  google-cloud-storage (~> 1.57.0)
+  google-cloud-storage (~> 1.62.0)
   google-protobuf (>= 3.25, < 5.0)
   googleauth (~> 1.14)
   gpgme (~> 2.0.24)
@@ -3113,7 +3113,7 @@ CHECKSUMS
   google-cloud-env (2.2.1) sha256=3c6062aee0b5c863b83f3ce125ea7831507aadf1af7c0d384b74a116c4f649cf
   google-cloud-errors (1.3.0) sha256=450b681e24c089a20721a01acc4408bb4a7b0df28c175aaab488da917480d64b
   google-cloud-location (0.6.0) sha256=386c99ca156e5cac413731c055d7d9c55629860129ad7658a2bf39ea5004d2d0
-  google-cloud-storage (1.57.0) sha256=2b769315bfd333cd18f5d0c8746cdb7049f6c0f19efc9477d3822b17d1379b2b
+  google-cloud-storage (1.62.0) sha256=e2c3c08bf8fd40d50be92304084942203314d4fc0ee52028e99f9359c3ad1330
   google-cloud-storage_transfer (1.2.0) sha256=132901f50889e02a0d378e6117c6408cbfc4fdbd15c9d31fabec4f4189ef1658
   google-cloud-storage_transfer-v1 (0.8.0) sha256=9dbef80275db556e046bb24139ca6559affe641d1e38b2537b8caaf2f8896176
   google-logging-utils (0.1.0) sha256=70950b1e49314273cf2e167adb47b62af7917a4691b580da7e9be67b9205fcd5

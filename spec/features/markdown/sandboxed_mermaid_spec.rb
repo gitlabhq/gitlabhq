@@ -22,7 +22,7 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
 
   let(:mermaid_frame_selector) do
     src_prefix = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}#{sandbox_mermaid_v11_path}"
-    "iframe[src^='#{src_prefix}'][sandbox='allow-scripts allow-popups']"
+    "iframe[src^='#{src_prefix}'][sandbox='allow-scripts']"
   end
 
   context 'in an issue' do

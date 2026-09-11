@@ -48,8 +48,7 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
   let(:can_write_model_registry) { true }
 
   before do
-    allow(candidate).to receive(:metrics).and_return(metrics)
-    allow(candidate).to receive(:params).and_return(params)
+    allow(candidate).to receive_messages(metrics: metrics, params: params)
 
     allow(Ability).to receive(:allowed?).and_call_original
     allow(Ability).to receive(:allowed?)

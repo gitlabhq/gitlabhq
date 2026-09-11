@@ -9,13 +9,10 @@
 - if hook.is_a?(ProjectHook) && Feature.enabled?(:project_deploy_token_expiring_notifications, @project)
   .form-group
     = form.label :resource_deploy_token_events, s_('Webhooks|Additional Triggers'), class: 'label-bold'
-
-    %ul.list-unstyled
-      %li.gl-pb-3
-        - deploy_token_help_link = link_to _('Which project deploy token events trigger webhooks'), help_page_path('user/project/integrations/webhook_events.md', anchor: 'project-and-group-deploy-token-events')
-        = form.gitlab_ui_checkbox_component :resource_deploy_token_events,
-            integration_webhook_event_human_name(:resource_deploy_token_events),
-            help_text: s_('Webhooks|A deploy token is expiring soon. %{help_link}?').html_safe % { help_link: deploy_token_help_link }
+    - deploy_token_help_link = link_to _('Which project deploy token events trigger webhooks'), help_page_path('user/project/integrations/webhook_events.md', anchor: 'project-and-group-deploy-token-events')
+    = form.gitlab_ui_checkbox_component :resource_deploy_token_events,
+        integration_webhook_event_human_name(:resource_deploy_token_events),
+        help_text: s_('Webhooks|A deploy token is expiring soon. %{help_link}?').html_safe % { help_link: deploy_token_help_link }
 
 .form-group
   = form.label :custom_webhook_template, s_('Webhooks|Custom webhook template (optional)'), class: 'label-bold'
@@ -26,7 +23,5 @@
 = render_if_exists 'shared/web_hooks/duo_agent_platform_section', form: form
 
 .form-group
-  = form.label :enable_ssl_verification, s_('Webhooks|SSL verification'), class: 'label-bold checkbox'
-  %ul.list-unstyled
-    %li
-      = form.gitlab_ui_checkbox_component :enable_ssl_verification, s_('Webhooks|Enable SSL verification')
+  = form.label :enable_ssl_verification, s_('Webhooks|SSL verification'), class: 'label-bold'
+  = form.gitlab_ui_checkbox_component :enable_ssl_verification, s_('Webhooks|Enable SSL verification')

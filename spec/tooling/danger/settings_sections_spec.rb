@@ -16,9 +16,11 @@ RSpec.describe Tooling::Danger::SettingsSections, feature_category: :tooling do
   let(:stable_branch?) { false }
 
   before do
-    allow(fake_helper).to receive(:changed_files).and_return(matching_changed_files)
-    allow(fake_helper).to receive(:changed_lines).and_return(changed_lines)
-    allow(fake_helper).to receive(:stable_branch?).and_return(stable_branch?)
+    allow(fake_helper).to receive_messages(
+      changed_files: matching_changed_files,
+      changed_lines: changed_lines,
+      stable_branch?: stable_branch?
+    )
   end
 
   context 'when on stable branch' do

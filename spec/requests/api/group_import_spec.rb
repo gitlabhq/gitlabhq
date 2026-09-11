@@ -124,8 +124,7 @@ RSpec.describe API::GroupImport, :with_current_organization, feature_category: :
         context 'when group creation failed' do
           before do
             allow_next_instance_of(Group) do |group|
-              allow(group).to receive(:persisted?).and_return(false)
-              allow(group).to receive(:save).and_return(false)
+              allow(group).to receive_messages(persisted?: false, save: false)
             end
           end
 

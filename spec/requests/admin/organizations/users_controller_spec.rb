@@ -81,10 +81,21 @@ RSpec.describe Admin::Organizations::UsersController, feature_category: :organiz
         sign_in(organization_owner)
       end
 
-      it 'renders the user' do
+      it 'renders the organization user show page' do
         request
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to have_link('Account')
+      end
+
+      context 'when viewing a user belonging to another organization' do
+        let_it_be(:non_member) { create(:user, organization: create(:organization)) }
+
+        it 'denies access' do
+          get organization_admin_user_path(organization, non_member)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 
@@ -93,12 +104,11 @@ RSpec.describe Admin::Organizations::UsersController, feature_category: :organiz
         sign_in(admin)
       end
 
-      it 'renders the impersonate button disabled' do
+      it 'renders the show page without instance-only actions' do
         request
 
-        expect(response.body).to match(
-          /<[^>]*data-testid="impersonate-user-link"[^>]*\bdisabled\b/
-        )
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).not_to match(/data-testid="impersonate-user-link"/)
       end
     end
 

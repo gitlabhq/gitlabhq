@@ -15,6 +15,7 @@ import getSubgroupProjectsQuery from '~/explore/analytics_dashboards/graphql/get
 import getTopLevelGroupsQuery from '~/explore/analytics_dashboards/graphql/get_top_level_groups.query.graphql';
 import searchNamespacesQuery from '~/explore/analytics_dashboards/graphql/search_namespaces.query.graphql';
 import searchNamespacesGlobalQuery from '~/explore/analytics_dashboards/graphql/search_namespaces_global.query.graphql';
+import getScopeNamespaceQuery from '~/explore/analytics_dashboards/graphql/get_scope_namespace.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -27,6 +28,7 @@ describe('ScopePicker', () => {
   let topLevelGroupsRequestHandler;
   let searchRequestHandler;
   let globalSearchRequestHandler;
+  let scopeNamespaceRequestHandler;
 
   const groupFullPath = 'gitlab-org';
   const closeListbox = jest.fn();
@@ -199,6 +201,24 @@ describe('ScopePicker', () => {
       },
     });
 
+  // A project the `scope` URL param can name that browsing never lists, the browse connections
+  // being capped at 20.
+  const mockScopeProject = {
+    __typename: TYPENAME_PROJECT,
+    id: 'gid://gitlab/Project/51',
+    name: 'Runner',
+    fullName: 'GitLab.org / Runner',
+    fullPath: `${groupFullPath}/runner`,
+  };
+
+  const respondWithScopeNamespace = ({ group = null, projects = [] } = {}) =>
+    jest.fn().mockResolvedValue({
+      data: {
+        group,
+        projects: { __typename: 'ProjectConnection', nodes: projects },
+      },
+    });
+
   const respondWithTopLevelGroups = (groups = mockTopLevelGroups) =>
     jest.fn().mockResolvedValue({
       data: { groups: { __typename: 'GroupConnection', nodes: groups } },
@@ -247,6 +267,7 @@ describe('ScopePicker', () => {
     topLevelGroupsHandler = respondWithTopLevelGroups(),
     searchHandler = respondWithSearch(),
     globalSearchHandler = respondWithGlobalSearch(),
+    scopeNamespaceHandler = respondWithScopeNamespace(),
     props = {},
   } = {}) => {
     requestHandler = handler;
@@ -254,6 +275,7 @@ describe('ScopePicker', () => {
     topLevelGroupsRequestHandler = topLevelGroupsHandler;
     searchRequestHandler = searchHandler;
     globalSearchRequestHandler = globalSearchHandler;
+    scopeNamespaceRequestHandler = scopeNamespaceHandler;
 
     wrapper = shallowMountExtended(ScopePicker, {
       apolloProvider: createMockApollo([
@@ -262,6 +284,7 @@ describe('ScopePicker', () => {
         [getTopLevelGroupsQuery, topLevelGroupsRequestHandler],
         [searchNamespacesQuery, searchRequestHandler],
         [searchNamespacesGlobalQuery, globalSearchRequestHandler],
+        [getScopeNamespaceQuery, scopeNamespaceRequestHandler],
       ]),
       propsData: { groupFullPath, ...props },
       stubs: { GlCollapsibleListbox: listboxStub },
@@ -1290,6 +1313,192 @@ describe('ScopePicker', () => {
 
       it('logs the error to sentry', () => {
         expect(sentryBrowserWrapper.captureException).toHaveBeenCalledWith(error);
+      });
+    });
+  });
+
+  describe('an initial path, as the `scope` URL param supplies', () => {
+    const initialPath = mockFrontend.fullPath;
+
+    const respondWithGroup = (group) => ({
+      data: { group, projects: { __typename: 'ProjectConnection', nodes: [] } },
+    });
+
+    // Leaves the lookup outstanding once the browse queries have settled, so the two can be
+    // told apart.
+    const deferLookup = () => {
+      let resolveLookup;
+      const handler = jest.fn(
+        () =>
+          new Promise((resolve) => {
+            resolveLookup = resolve;
+          }),
+      );
+
+      return { handler, resolve: (value) => resolveLookup(value) };
+    };
+
+    it('does not look anything up when no path is given', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      expect(scopeNamespaceRequestHandler).not.toHaveBeenCalled();
+      expect(findListbox().props('toggleText')).toBe('Select a group or project');
+    });
+
+    // The path alone does not say which kind it is, so both sides go in the same request.
+    it('looks the path up as both a group and a project', () => {
+      createWrapper({ props: { initialPath } });
+
+      expect(scopeNamespaceRequestHandler).toHaveBeenCalledWith({
+        fullPath: initialPath,
+        fullPaths: [initialPath],
+      });
+    });
+
+    // The list is browsable without it, and the filter bar remounts on every view switch, so
+    // gating the list on the lookup flashed loading each time.
+    it('leaves the list usable while the lookup is outstanding, naming the toggle once it lands', async () => {
+      const lookup = deferLookup();
+      createWrapper({ props: { initialPath }, scopeNamespaceHandler: lookup.handler });
+      await waitForPromises();
+
+      expect(findListbox().props('loading')).toBe(false);
+      expect(findListbox().props('toggleText')).toBe('Select a group or project');
+
+      lookup.resolve(respondWithGroup(mockFrontend));
+      await waitForPromises();
+
+      expect(findListbox().props('toggleText')).toBe(mockFrontend.name);
+    });
+
+    describe('when the path is a group', () => {
+      beforeEach(async () => {
+        createWrapper({
+          props: { initialPath },
+          scopeNamespaceHandler: respondWithScopeNamespace({ group: mockFrontend }),
+        });
+        await waitForPromises();
+      });
+
+      it('names it on the toggle', () => {
+        expect(findListbox().props('toggleText')).toBe(mockFrontend.name);
+      });
+
+      it('marks its row selected', () => {
+        expect(findListbox().props('selected')).toEqual([mockFrontend.fullPath]);
+      });
+
+      // Emitted like a click, so the page applies it as an ordinary filter change.
+      it('emits it as a change', () => {
+        expect(wrapper.emitted('change')).toEqual([[asNamespace(mockFrontend)]]);
+      });
+    });
+
+    describe('when the path is a project', () => {
+      beforeEach(async () => {
+        createWrapper({
+          props: { initialPath: mockScopeProject.fullPath },
+          scopeNamespaceHandler: respondWithScopeNamespace({ projects: [mockScopeProject] }),
+        });
+        await waitForPromises();
+      });
+
+      it('names it on the toggle', () => {
+        expect(findListbox().props('toggleText')).toBe(mockScopeProject.name);
+      });
+
+      it('emits it as a change, typed as a project', () => {
+        expect(wrapper.emitted('change')).toEqual([[asNamespace(mockScopeProject)]]);
+      });
+
+      // The pick is held as the namespace itself, so it survives not being on screen. Only the
+      // ticked-row state is limited to what the listbox is currently showing.
+      it('ticks no row, the project being outside what browsing lists', () => {
+        expect(findListbox().props('selected')).toEqual([]);
+      });
+    });
+
+    // Renamed, deleted, or not visible to this user.
+    describe('when the path resolves to neither', () => {
+      beforeEach(async () => {
+        createWrapper({
+          props: { initialPath },
+          scopeNamespaceHandler: respondWithScopeNamespace(),
+        });
+        await waitForPromises();
+      });
+
+      it('leaves the picker empty rather than naming something whose panels cannot load', () => {
+        expect(findListbox().props('toggleText')).toBe('Select a group or project');
+        expect(findListbox().props('selected')).toEqual([]);
+      });
+
+      it('emits no change', () => {
+        expect(wrapper.emitted('change')).toBeUndefined();
+      });
+    });
+
+    describe('when the lookup fails', () => {
+      const error = new Error('nope');
+
+      beforeEach(async () => {
+        createWrapper({
+          props: { initialPath },
+          scopeNamespaceHandler: jest.fn().mockRejectedValue(error),
+        });
+        await waitForPromises();
+      });
+
+      it('emits error', () => {
+        expect(wrapper.emitted('error')).toEqual([[error]]);
+      });
+
+      it('logs the error to sentry', () => {
+        expect(sentryBrowserWrapper.captureException).toHaveBeenCalledWith(error);
+      });
+
+      it('leaves the picker empty', () => {
+        expect(findListbox().props('selected')).toEqual([]);
+      });
+    });
+
+    // The page hands its current selection back down through this prop, so it changes on every
+    // pick, not just the ones that came from the URL.
+    describe('when the page echoes a pick back through the prop', () => {
+      beforeEach(async () => {
+        createWrapper();
+        await waitForPromises();
+
+        await toggleSelected(mockProjects[0]);
+        await wrapper.setProps({ initialPath: mockProjects[0].fullPath });
+      });
+
+      it('looks nothing up, the click having already resolved the namespace', () => {
+        expect(scopeNamespaceRequestHandler).not.toHaveBeenCalled();
+      });
+
+      it('keeps the pick', () => {
+        expect(findListbox().props('selected')).toEqual([mockProjects[0].fullPath]);
+      });
+    });
+
+    describe('when the user picks something before the lookup lands', () => {
+      beforeEach(async () => {
+        const lookup = deferLookup();
+        createWrapper({ props: { initialPath }, scopeNamespaceHandler: lookup.handler });
+        await waitForPromises();
+
+        await toggleSelected(mockProjects[0]);
+
+        lookup.resolve(respondWithGroup(mockFrontend));
+        await waitForPromises();
+      });
+
+      // The pick is the more recent intent, so the arriving param must not stomp it.
+      it('keeps what the user picked', () => {
+        expect(findListbox().props('selected')).toEqual([mockProjects[0].fullPath]);
+        expect(findListbox().props('toggleText')).toBe(mockProjects[0].name);
       });
     });
   });

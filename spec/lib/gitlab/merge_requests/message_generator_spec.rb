@@ -1217,5 +1217,31 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
         end
       end
     end
+
+    context 'with the closes_issue placeholder' do
+      let(:issue) { create(:issue, project: project) }
+      let(:merge_request_description) { 'closes_issue:%{closes_issue}' }
+      let(:result_message_with_issue) { subject.new_mr_description(issue: issue) }
+
+      it 'renders the closing reference when an issue is inferred' do
+        expect(result_message_with_issue).to eq("closes_issue:Closes #{issue.to_reference}")
+      end
+
+      context 'when the project does not autoclose referenced issues' do
+        before do
+          project.update!(autoclose_referenced_issues: false)
+        end
+
+        it 'renders a related reference instead' do
+          expect(result_message_with_issue).to eq("closes_issue:Related to #{issue.to_reference}")
+        end
+      end
+
+      context 'when no issue is inferred' do
+        it 'renders nothing in its place' do
+          expect(result_message).to eq('closes_issue:')
+        end
+      end
+    end
   end
 end

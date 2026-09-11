@@ -46777,10 +46777,10 @@ msgstr ""
 msgid "Job|This job could not be executed because upstream bridge project could not be found."
 msgstr ""
 
-msgid "Job|This job could not retrieve secrets because the namespace does not have access to GitLab Secrets Manager. To restore access, start a trial or purchase GitLab Secrets Manager for the top-level group, or make sure the group has GitLab credits available and on-demand billing enabled."
+msgid "Job|This job failed because the necessary resources were not successfully created."
 msgstr ""
 
-msgid "Job|This job failed because the necessary resources were not successfully created."
+msgid "Job|This job failed to retrieve secrets because it does not have access to GitLab Secrets Manager."
 msgstr ""
 
 msgid "Job|This job is archived"

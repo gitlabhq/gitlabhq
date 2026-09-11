@@ -74,8 +74,7 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow, feature_ca
         sign_in(user)
 
         allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|
-          allow(client).to receive(:validate_token).and_return(true)
-          allow(client).to receive(:list_projects).and_return(mock_gcp_projects)
+          allow(client).to receive_messages(validate_token: true, list_projects: mock_gcp_projects)
         end
 
         allow_next_instance_of(BranchesFinder) do |finder|

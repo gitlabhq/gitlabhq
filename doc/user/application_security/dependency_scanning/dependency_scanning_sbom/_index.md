@@ -523,7 +523,7 @@ These variables can replace spec inputs and are also compatible with the beta `l
 | `DS_ENABLE_VULNERABILITY_SCAN`                 | Enable vulnerability scanning of generated SBOM files. Generates a [dependency scanning report](#dependency-scanning-report). Default: `"true"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `DS_API_TIMEOUT`                               | Dependency scanning SBOM API request timeout in seconds (minimum: `5`, maximum: `300`) Default: `10`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `DS_API_SCAN_DOWNLOAD_DELAY`                   | Initial delay in seconds before downloading scan results (minimum: 1, maximum: 120) Default: `3`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| `DS_ENABLE_MANIFEST_FALLBACK`                  | Enable manifest fallback when no lockfile or dependency graph export is available. See [Manifest fallback](#manifest-fallback). Default: `"true"`.                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `DS_ENABLE_MANIFEST_FALLBACK`                  | Enable manifest fallback when no lockfile or dependency graph export is available. See [Manifest fallback](#manifest-fallback). When set to `"false"`, directories with a manifest file but no lockfile or dependency graph export cause the analyzer to exit with a non-zero status and name each affected manifest. Default: `"true"`.                                                                                                                                                                                                                                                           |
 | `DS_SKIP_IF_NO_SUPPORTED_FILES`                | When set to `"true"`, skips the dependency scanning job if no [supported file](#supported-languages-and-files) is detected in the project. For details, see [skip the job when no supported file is present](#skip-the-job-when-no-supported-file-is-present). Default: `"false"`.                                                                                                                                                                                                                                                                                                                            |
 | `SECURE_LOG_LEVEL`                             | Log level. Default: `"info"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `DS_DISABLED_RESOLUTION_JOBS`                  | Comma-separated list of resolution jobs to disable (for example, `"maven, python"`). By default, all available resolution jobs are enabled. Possible values are: `maven`,`gradle`,`python`.                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -1307,7 +1307,11 @@ build:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585886) in GitLab 18.9. Only Maven manifest files supported, disabled by default.
 - [Updated](https://gitlab.com/gitlab-org/gitlab/-/work_items/586921) in GitLab 18.9. Support for Python requirements file added, disabled by default.
 - [Updated](https://gitlab.com/gitlab-org/gitlab/-/work_items/588788) in GitLab 18.10. Support for Gradle manifest files added, disabled by default.
-- Enabled by default in GitLab 19.0
+- Enabled by default in GitLab 19.0.
+- Behavior when disabled [changed](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/merge_requests/612):
+  the analyzer now exits with a non-zero status and names each affected manifest when
+  `DS_ENABLE_MANIFEST_FALLBACK` is `"false"` and a directory has no lockfile or dependency graph
+  export. Previously the analyzer skipped those directories and exited 0.
 
 {{< /history >}}
 
@@ -1339,6 +1343,22 @@ variables:
 include:
   - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
 ```
+
+When `DS_ENABLE_MANIFEST_FALLBACK` is `"false"` and a directory contains a manifest file but no
+lockfile or dependency graph export, the analyzer:
+
+1. Writes SBOMs and findings for all directories that did resolve successfully.
+1. Withholds manifest-derived results from the SBOM and marks them as uncovered.
+1. Exits with a non-zero status and names each affected manifest file.
+
+This means a scan that previously appeared clean (exit 0, no findings) now fails visibly when
+projects exist that cannot be resolved without manifest fallback.
+
+> [!note]
+> Only Maven (`pom.xml`), Gradle (`build.gradle`, `build.gradle.kts`), and pip
+> (`requirements.txt`) have a manifest parser. A directory that contains only a `package.json`
+> or a `Gemfile` is not covered by this check. Additionally, a Gradle subproject is exempt only
+> when the nearest build root above it has a `gradle-html-dependency-report.js` file.
 
 ## How it scans an application
 

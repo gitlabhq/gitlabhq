@@ -24,13 +24,14 @@ module Gitlab
         )
       end
 
-      def new_mr_description
+      def new_mr_description(issue: nil)
         return unless @merge_request.description.present?
 
         replace_placeholders(
           @merge_request.description,
           allowed_placeholders: ALLOWED_NEW_MR_PLACEHOLDERS,
-          keep_carriage_return: true
+          keep_carriage_return: true,
+          issue: issue
         )
       end
 
@@ -44,6 +45,15 @@ module Gitlab
         )
         # Safety net: ensure the title is always single-line regardless of placeholder expansion.
         result.lines.first&.strip.presence
+      end
+
+      # Shared with MergeRequests::BuildService so the reference a template renders
+      # and the one appended when no template uses it cannot drift apart.
+      def self.closes_issue_reference(merge_request, issue)
+        return if issue&.to_reference.blank?
+
+        verb = merge_request.target_project.autoclose_referenced_issues ? 'Closes' : 'Related to'
+        "#{verb} #{issue.to_reference}"
       end
 
       def self.humanize_branch_name(branch_name)
@@ -129,6 +139,12 @@ module Gitlab
             .join("\n\n")
         end,
         'issue_id' => ->(_, _, _, issue) { issue&.iid&.to_s },
+        # Safe on the same axis as issue_title below: this only ever emits the issue
+        # reference, and append_closes_description already writes that exact reference
+        # into the description today, so it adds no exposure that is not already there.
+        'closes_issue' => ->(merge_request, _, _, issue) do
+          MessageGenerator.closes_issue_reference(merge_request, issue)
+        end,
         # The MR title is persisted to a broadly-readable, non-redacted column, so
         # it must not carry the title of a confidential issue. `try` no-ops for
         # ExternalIssue, which has no #confidential? and a non-sensitive title.
@@ -142,6 +158,7 @@ module Gitlab
       # placeholders wouldn't make sense in context. Disallowed placeholders
       # will be replaced with an empty string.
       ALLOWED_NEW_MR_PLACEHOLDERS = %w[
+        closes_issue
         source_branch
         target_branch
         first_commit

@@ -7,6 +7,7 @@ import renderMermaid, {
   LAZY_ALERT_SHOWN_CLASS,
 } from '~/behaviors/markdown/render_sandboxed_mermaid';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
+import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/panel_breakpoint_instance', () => ({
   PanelBreakpointInstance: {
@@ -15,9 +16,15 @@ jest.mock('~/panel_breakpoint_instance', () => ({
   },
 }));
 
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn(),
+}));
+
 describe('Mermaid diagrams renderer', () => {
   // Finders
-  const findMermaidIframes = () => document.querySelectorAll('iframe[src*="/-/sandbox/mermaid"]');
+  const findAllIframes = () => document.querySelectorAll('iframe[src*="/-/sandbox/mermaid"]');
+  const findIframe = () => findAllIframes()[0];
   const findDangerousMermaidAlert = () =>
     createWrapper(document.querySelector('[data-testid="alert-warning"]'));
 
@@ -25,6 +32,16 @@ describe('Mermaid diagrams renderer', () => {
   const renderDiagrams = (selector = '.js-render-mermaid') => {
     renderMermaid([...document.querySelectorAll(selector)]);
     jest.runAllTimers();
+  };
+
+  const receiveMessage = (data, { origin = 'null', source } = {}) => {
+    window.dispatchEvent(
+      new MessageEvent('message', {
+        data,
+        origin,
+        source: source !== undefined ? source : findIframe().contentWindow,
+      }),
+    );
   };
 
   beforeEach(() => {
@@ -45,12 +62,12 @@ describe('Mermaid diagrams renderer', () => {
     `('renders a mermaid diagram $description', ({ fixture, selector }) => {
       setHTMLFixture(fixture);
 
-      expect(findMermaidIframes()).toHaveLength(0);
+      expect(findAllIframes()).toHaveLength(0);
 
       renderDiagrams(selector);
 
       expect(document.querySelector('pre').classList).toContain('gl-sr-only');
-      expect(findMermaidIframes()).toHaveLength(1);
+      expect(findAllIframes()).toHaveLength(1);
     });
   });
 
@@ -65,7 +82,7 @@ describe('Mermaid diagrams renderer', () => {
       setHTMLFixture(fixture);
       renderDiagrams();
 
-      expect(findMermaidIframes()).toHaveLength(0);
+      expect(findAllIframes()).toHaveLength(0);
     });
 
     it.each`
@@ -80,7 +97,7 @@ describe('Mermaid diagrams renderer', () => {
       triggerIntersection(el, { entry: { isIntersecting: true } });
       jest.runAllTimers();
 
-      expect(findMermaidIframes()).toHaveLength(1);
+      expect(findAllIframes()).toHaveLength(1);
     });
   });
 
@@ -97,7 +114,7 @@ describe('Mermaid diagrams renderer', () => {
         renderDiagrams();
       });
       it('does not render the diagram on load', () => {
-        expect(findMermaidIframes()).toHaveLength(0);
+        expect(findAllIframes()).toHaveLength(0);
       });
 
       it('shows a warning about performance impact when rendering the diagram', () => {
@@ -112,7 +129,7 @@ describe('Mermaid diagrams renderer', () => {
         findDangerousMermaidAlert().find('button').trigger('click');
         jest.runAllTimers();
 
-        expect(findMermaidIframes()).toHaveLength(1);
+        expect(findAllIframes()).toHaveLength(1);
       });
     });
 
@@ -129,7 +146,7 @@ describe('Mermaid diagrams renderer', () => {
       );
       renderDiagrams();
 
-      expect(findMermaidIframes()).toHaveLength(3);
+      expect(findAllIframes()).toHaveLength(3);
     });
 
     // Note: The test case below is provided for convenience but should remain skipped as the DOM
@@ -148,7 +165,7 @@ describe('Mermaid diagrams renderer', () => {
       expect([...document.querySelectorAll('.js-render-mermaid')]).toHaveLength(
         MAX_MERMAID_BLOCK_LIMIT + 1,
       );
-      expect(findMermaidIframes()).toHaveLength(MAX_MERMAID_BLOCK_LIMIT);
+      expect(findAllIframes()).toHaveLength(MAX_MERMAID_BLOCK_LIMIT);
     });
   });
 
@@ -161,50 +178,92 @@ describe('Mermaid diagrams renderer', () => {
       renderMermaid([orphanedCode]);
       jest.runAllTimers();
 
-      expect(findMermaidIframes()).toHaveLength(0);
+      expect(findAllIframes()).toHaveLength(0);
     });
   });
 
-  describe('height messages from the sandboxed iframe', () => {
-    const findIframe = () => document.querySelector('iframe[src*="/-/sandbox/mermaid"]');
-
-    const postMessageFromIframe = (data) => {
-      window.dispatchEvent(
-        new MessageEvent('message', {
-          data,
-          origin: 'null',
-          source: findIframe().contentWindow,
-        }),
-      );
-    };
-
+  describe('messages from the sandboxed iframe', () => {
     beforeEach(() => {
       setHTMLFixture('<pre><code class="js-render-mermaid">graph LR</code></pre>');
       renderDiagrams();
     });
 
-    it('sets the iframe height from a valid message', () => {
-      expect(findIframe().height).toBe('');
+    describe('height messages', () => {
+      it('sets the iframe height from a valid message', () => {
+        expect(findIframe().height).toBe('');
 
-      postMessageFromIframe({ h: 500, w: 800 });
+        receiveMessage({ h: 500, w: 800 });
 
-      expect(findIframe().height).toBe('510px');
+        expect(findIframe().height).toBe('510px');
+      });
+
+      it.each`
+        description                              | data
+        ${'no h (the ack Chrome for iOS posts)'} | ${{ command: 'registerAsChildFrameAck', remoteFrameId: '4547d9da50e1d06103b42b3e2a64ee86' }}
+        ${'a numeric-string h'}                  | ${{ h: '999' }}
+        ${'a null h'}                            | ${{ h: null }}
+        ${'an empty-string h'}                   | ${{ h: '' }}
+        ${'an undefined payload'}                | ${undefined}
+      `('ignores a message with $description', ({ data }) => {
+        expect(findIframe().height).toBe('');
+
+        receiveMessage({ h: 500, w: 800 });
+        receiveMessage(data);
+
+        expect(findIframe().height).toBe('510px');
+      });
     });
 
-    it.each`
-      description                              | data
-      ${'no h (the ack Chrome for iOS posts)'} | ${{ command: 'registerAsChildFrameAck', remoteFrameId: '4547d9da50e1d06103b42b3e2a64ee86' }}
-      ${'a numeric-string h'}                  | ${{ h: '999' }}
-      ${'a null h'}                            | ${{ h: null }}
-      ${'an empty-string h'}                   | ${{ h: '' }}
-      ${'an undefined payload'}                | ${undefined}
-    `('ignores a message with $description', ({ data }) => {
-      expect(findIframe().height).toBe('');
+    describe('link click messages', () => {
+      // eslint-disable-next-line no-script-url
+      const javascriptUrl = 'javascript:alert(1)';
 
-      postMessageFromIframe({ h: 500, w: 800 });
-      postMessageFromIframe(data);
+      it.each`
+        description              | href
+        ${'an absolute http(s)'} | ${'https://docs.gitlab.com/user/markdown/'}
+        ${'a root-relative'}     | ${'/help/user/markdown'}
+      `('opens $description link in a new tab', ({ href }) => {
+        receiveMessage({ href });
 
-      expect(findIframe().height).toBe('510px');
+        expect(visitUrl).toHaveBeenCalledWith(href, true);
+      });
+
+      it.each`
+        description                                 | data
+        ${'an empty-string href'}                   | ${{ href: '' }}
+        ${'a null href'}                            | ${{ href: null }}
+        ${'a non-string href'}                      | ${{ href: { toString: () => 'https://example.com' } }}
+        ${'a javascript: URL'}                      | ${{ href: javascriptUrl }}
+        ${'an undefined payload'}                   | ${undefined}
+        ${'no href (the ack Chrome for iOS posts)'} | ${{ command: 'registerAsChildFrameAck', remoteFrameId: '4547d9da50e1d06103b42b3e2a64ee86' }}
+      `('does not open a message with $description', ({ data }) => {
+        receiveMessage(data);
+
+        expect(visitUrl).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('sandbox message protocol', () => {
+      const href = 'https://docs.gitlab.com/user/markdown/';
+
+      it('treats a message with both link and height payloads as a link click', () => {
+        receiveMessage({ href, h: 500 });
+
+        expect(visitUrl).toHaveBeenCalledWith(href, true);
+        expect(findIframe().height).toBe('');
+      });
+
+      it.each`
+        description                      | overrides
+        ${'an unexpected origin'}        | ${{ origin: 'https://evil.example.com' }}
+        ${'an unexpected source window'} | ${{ source: window }}
+      `('ignores messages from $description', ({ overrides }) => {
+        receiveMessage({ href }, overrides);
+        receiveMessage({ h: 500, w: 800 }, overrides);
+
+        expect(visitUrl).not.toHaveBeenCalled();
+        expect(findIframe().height).toBe('');
+      });
     });
   });
 

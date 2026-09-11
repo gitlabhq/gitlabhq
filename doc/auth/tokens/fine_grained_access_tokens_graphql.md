@@ -145,7 +145,7 @@ Grants the ability to deprovision, provision, and read secrets managers.
 | Read | Project | Type | `ProjectSecretsManager` |
 | Read | Group | Type | `GroupSecretsManager` |
 | Read | Group | Type | `SecretsManagerEntitlement` |
-| Read | Group | Mutation | `SecretsManagerStartTrial` |
+| Read | Instance | Type | `SecretsManagerEntitlement` |
 
 #### Secrets Permission
 
@@ -1849,6 +1849,17 @@ Grants the ability to read secrets manager enrollments.
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Read | Instance | Type | `SecretsManagerInstanceEnrollment` |
+
+#### Secrets Manager Trial
+
+Grants the ability to start a Secrets Manager trial for a top-level group or for the whole instance.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Start <sup>1</sup> | Group | Mutation | `SecretsManagerStartTrial` |
+| Start <sup>1</sup> | Instance | Mutation | `SecretsManagerInstanceStartTrial` |
+
+<sup>1</sup> Also requires the `Read Secrets Manager` permission.
 
 ### Subscription and Licensing resources
 

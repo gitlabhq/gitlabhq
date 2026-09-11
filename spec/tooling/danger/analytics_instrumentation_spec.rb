@@ -20,8 +20,7 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
 
   before do
     allow(fake_helper).to receive(:changed_lines).and_return(changed_lines) if defined?(changed_lines)
-    allow(fake_helper).to receive(:labels_to_add).and_return(labels_to_add)
-    allow(fake_helper).to receive(:ci?).and_return(ci_env)
+    allow(fake_helper).to receive_messages(labels_to_add: labels_to_add, ci?: ci_env)
     allow(fake_helper).to receive(:mr_has_labels?).with('analytics instrumentation').and_return(has_analytics_instrumentation_label)
   end
 
@@ -37,8 +36,7 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
 
     before do
       allow(fake_changes).to receive(:by_category).with(:analytics_instrumentation).and_return(fake_changes)
-      allow(fake_helper).to receive(:changes).and_return(fake_changes)
-      allow(fake_helper).to receive(:all_changed_files).and_return(changed_files)
+      allow(fake_helper).to receive_messages(changes: fake_changes, all_changed_files: changed_files)
       allow(fake_helper).to receive(:markdown_list).with(changed_files).and_return(markdown_formatted_list)
     end
 
@@ -304,10 +302,8 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
 
     before do
       allow(fake_project_helper).to receive(:file_lines).with(filename).and_return(file_lines)
-      allow(fake_helper).to receive(:modified_files).and_return([filename])
       allow(fake_helper).to receive(:changed_lines).with(filename).and_return(file_diff)
-      allow(fake_helper).to receive(:mr_web_url).and_return(mr_url)
-      allow(fake_helper).to receive(:mr_milestone).and_return(milestone)
+      allow(fake_helper).to receive_messages(modified_files: [filename], mr_web_url: mr_url, mr_milestone: milestone)
       allow(analytics_instrumentation).to receive(:project_helper).and_return(fake_project_helper)
     end
 
@@ -532,8 +528,7 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
     end
 
     before do
-      allow(fake_helper).to receive(:added_files).and_return([])
-      allow(fake_helper).to receive(:modified_files).and_return([])
+      allow(fake_helper).to receive_messages(added_files: [], modified_files: [])
       allow(fake_helper).to receive(:changed_lines).with(anything).and_return(file_diff)
       allow(analytics_instrumentation).to receive(:project_helper).and_return(fake_project_helper)
       allow(analytics_instrumentation.project_helper).to receive(:file_lines).and_return(file_diff.map { |line| line.delete_prefix('+') })
@@ -585,8 +580,7 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
       let(:changed_spec) { 'spec/lib/changed_spec.rb' }
 
       before do
-        allow(fake_helper).to receive(:added_files).and_return([added_spec])
-        allow(fake_helper).to receive(:modified_files).and_return([changed_spec])
+        allow(fake_helper).to receive_messages(added_files: [added_spec], modified_files: [changed_spec])
       end
 
       it 'does not add suggestions' do

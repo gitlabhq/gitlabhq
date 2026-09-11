@@ -16,6 +16,37 @@ const setIframeRenderedSize = (h, w) => {
   window.parent.postMessage({ h, w }, origin);
 };
 
+// Links can't open from within the sandbox: popups are blocked,
+// and most targets refuse being framed. Delegate clicks to the parent,
+// which validates the URL and opens it in a regular browsing context.
+const delegateLinkClicksToParent = () => {
+  const onClick = (event) => {
+    // Only left (0) and middle (1) clicks open links; ignore other buttons.
+    if (event.button !== 0 && event.button !== 1) {
+      return;
+    }
+
+    const anchor = event.target.closest('a');
+    if (!anchor) {
+      return;
+    }
+
+    event.preventDefault();
+
+    // SVG anchors created by Mermaid's `click` directive may use xlink:href.
+    const href = anchor.getAttribute('href') ?? anchor.getAttribute('xlink:href');
+    if (!href) {
+      return;
+    }
+
+    window.parent.postMessage({ href }, window.location.origin);
+  };
+
+  document.addEventListener('click', onClick);
+  // Safari fires auxclick (not click) for middle clicks.
+  document.addEventListener('auxclick', onClick);
+};
+
 const drawDiagram = async (mermaid, source) => {
   const element = document.getElementById('app');
   const insertSvg = (svgCode) => {
@@ -114,4 +145,5 @@ export function initMermaidSandbox(mermaid) {
   addListener(mermaid);
   configureDOMPurify();
   initMermaid(mermaid);
+  delegateLinkClicksToParent();
 }

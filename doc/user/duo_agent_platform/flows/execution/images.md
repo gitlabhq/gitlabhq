@@ -62,7 +62,7 @@ Docker image with your preferred version:
 
 ```Docker
 # Install srt sandboxing with cache clearing and verification
-ARG SANDBOX_RUNTIME_VERSION=0.0.20
+ARG SANDBOX_RUNTIME_VERSION=0.0.63
 RUN npm cache clean --force && \
     npm install -g @anthropic-ai/sandbox-runtime@${SANDBOX_RUNTIME_VERSION} && \
     test -s "$(npm root -g)/@anthropic-ai/sandbox-runtime/package.json" && \
@@ -224,7 +224,7 @@ The following table lists the current pinned versions:
 | `npm`                                 | Bundled with Node.js 20                                  |
 | `@gitlab/duo-cli`                     | 8.109.0                                                  |
 | `glab` (GitLab CLI)                   | 1.107.0                                                  |
-| `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.20 (via npm)                                         |
+| `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.63 (via npm)                                         |
 | `bwrap` (bubblewrap)                  | AlmaLinux 9 EPEL (plain binary, userns-based sandboxing) |
 | `socat`                               | AlmaLinux 9 EPEL                                         |
 | `rg` (ripgrep)                        | AlmaLinux 9 EPEL                                         |

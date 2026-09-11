@@ -38,9 +38,8 @@ RSpec.describe Tooling::Danger::ConfigFiles, feature_category: :tooling do
 
     before do
       allow(config_file.project_helper).to receive(:file_lines).and_return(file_lines)
-      allow(config_file.helper).to receive(:added_files).and_return([filename])
       allow(config_file.helper).to receive(:changed_lines).with(filename).and_return(file_diff)
-      allow(config_file.helper).to receive(:mr_web_url).and_return(mr_url)
+      allow(config_file.helper).to receive_messages(added_files: [filename], mr_web_url: mr_url)
     end
 
     context 'when config file has an empty introduced_by_url line' do

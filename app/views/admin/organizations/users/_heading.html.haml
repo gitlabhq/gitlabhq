@@ -1,0 +1,5 @@
+= render ::Layouts::PageHeadingComponent.new(@user.name, options: { class: 'gl-mb-3' }) do |c|
+  - if can_edit_organization_user?(@user)
+    - c.with_actions do
+      = render Pajamas::ButtonComponent.new(variant: :default, href: edit_admin_user_path(@user)) do
+        = _('Edit')

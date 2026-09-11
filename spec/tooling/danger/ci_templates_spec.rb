@@ -57,10 +57,9 @@ RSpec.describe Tooling::Danger::CiTemplates, feature_category: :tooling do
 
         before do
           allow(fake_changes).to receive(:by_category).with(:ci_template).and_return(fake_changes)
-          allow(fake_helper).to receive(:changes).and_return(fake_changes)
           allow(ci_templates).to receive(:message)
           allow(ci_templates).to receive(:markdown)
-          allow(fake_helper).to receive(:markdown_list).and_return(modified_files)
+          allow(fake_helper).to receive_messages(changes: fake_changes, markdown_list: modified_files)
         end
 
         it 'adds the danger message, markdown and warning' do

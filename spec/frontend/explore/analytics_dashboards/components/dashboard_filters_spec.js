@@ -6,7 +6,7 @@ describe('DashboardFilters', () => {
 
   const ScopePickerStub = {
     name: 'ScopePicker',
-    props: ['groupFullPath'],
+    props: ['groupFullPath', 'initialPath'],
     template: '<div />',
   };
   const DateRangeFilterStub = {
@@ -43,6 +43,10 @@ describe('DashboardFilters', () => {
     it('renders the scope picker with no root, the instance-level page having no group', () => {
       expect(findScopePicker().exists()).toBe(true);
       expect(findScopePicker().props('groupFullPath')).toBe('');
+    });
+
+    it('starts the scope picker with no selection when the page passes no scope path', () => {
+      expect(findScopePicker().props('initialPath')).toBe('');
     });
 
     it('defaults the date range filter to the last 30 days', () => {
@@ -83,6 +87,14 @@ describe('DashboardFilters', () => {
       expect(findDateRangeFilter().props('defaultOption')).toBe('30d');
       expect(findDateRangeFilter().props('options')).toBeUndefined();
       expect(findDateRangeFilter().props('dateRangeLimit')).toBe(0);
+    });
+  });
+
+  describe('when the page passes a scope path, as it does from the URL param', () => {
+    beforeEach(() => createComponent({ props: { scopePath: 'gitlab-org/gitlab' } }));
+
+    it('hands it to the picker to start selected', () => {
+      expect(findScopePicker().props('initialPath')).toBe('gitlab-org/gitlab');
     });
   });
 

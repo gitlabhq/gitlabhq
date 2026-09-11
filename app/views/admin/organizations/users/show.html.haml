@@ -1,0 +1,9 @@
+- add_to_breadcrumbs _("Users"), admin_users_path
+- breadcrumb_title @user.name
+- page_title @user.name, _("Users")
+= render 'admin/organizations/users/head'
+
+.row
+  .gl-col-md-6
+    = render 'admin/organizations/users/account_summary'
+    = render 'admin/organizations/users/account'

@@ -15,10 +15,6 @@ module Admin
         render 'admin/users/index' unless performed?
       end
 
-      def show
-        render 'admin/users/show'
-      end
-
       def edit
         user
       end
@@ -44,6 +40,16 @@ module Admin
       override :filter_users
       def filter_users
         super.member_of_organization(::Current.organization)
+      end
+
+      override :user
+      def user
+        @user ||= find_routable!(
+          User,
+          safe_params[:id],
+          request.fullpath,
+          extra_authorization_proc: ->(user) { user.member_of_organization?(::Current.organization) }
+        )
       end
 
       override :impersonation_available?

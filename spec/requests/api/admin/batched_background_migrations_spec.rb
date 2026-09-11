@@ -149,8 +149,10 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
           let(:base_models) { { 'fake_db' => default_model, 'ci' => ci_model }.with_indifferent_access }
 
           it "uses CI database connection" do
-            allow(Gitlab::Database).to receive(:db_config_for_connection).and_return(db_config)
-            allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+            allow(Gitlab::Database).to receive_messages(
+              db_config_for_connection: db_config,
+              database_base_models: base_models
+            )
 
             expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(ci_model.connection).and_yield
 

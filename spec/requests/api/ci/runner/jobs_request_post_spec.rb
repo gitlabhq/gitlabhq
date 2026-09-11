@@ -1457,20 +1457,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             request_job_under_rack_timeout
           end
 
-          context 'when the ci_register_job_phase_timeouts feature flag is disabled' do
-            before do
-              stub_feature_flags(ci_register_job_phase_timeouts: false)
-            end
-
-            it 'leaves job assignment untimed' do
-              expect(::Ci::RegisterJobService).to receive(:new)
-                .with(anything, anything, request_timeout_at: nil)
-                .and_call_original
-
-              request_job_under_rack_timeout
-            end
-          end
-
           it 'leaves job assignment untimed when Rack::Timeout enforces no timeout' do
             expect(::Ci::RegisterJobService).to receive(:new)
               .with(anything, anything, request_timeout_at: nil)

@@ -10,7 +10,7 @@ import SectionHeader from '~/analytics/analytics_dashboards/components/section_h
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DashboardFilters from '../components/dashboard_filters.vue';
 import DashboardLoader from '../components/dashboard_loader.vue';
-import { DATE_RANGE_OPTION_LAST_30_DAYS } from '../components/constants';
+import { DATE_RANGE_OPTION_LAST_30_DAYS, SCOPE_FILTER_QUERY_NAME } from '../components/constants';
 import { dateRangeOptionToFilter, getDateRangeOption } from '../components/utils';
 
 export default {
@@ -66,6 +66,7 @@ export default {
       filtersKey: 0,
       dashboardFilterConfig: null,
       alert: null,
+      scopePath: getParameterByName(SCOPE_FILTER_QUERY_NAME) ?? '',
     };
   },
   computed: {
@@ -153,6 +154,18 @@ export default {
         groups: this.selectedGroup ? [this.selectedGroup.fullPath] : [],
         projects: this.selectedProject ? [this.selectedProject.fullPath] : [],
       };
+
+      this.scopePath = namespace?.fullPath ?? '';
+      this.syncScopeToUrl(this.scopePath);
+    },
+    // Written to history rather than through the router, because GlTabs pushes the `view` param
+    // the same way: routing this would rebuild the URL from a $route that never saw that push,
+    // dropping the active view. Replaced, not pushed, so Back leaves the dashboard.
+    syncScopeToUrl(fullPath) {
+      updateHistory({
+        url: setUrlParams({ [SCOPE_FILTER_QUERY_NAME]: fullPath || null }),
+        replace: true,
+      });
     },
     // The picker reports to Sentry itself, so this only has to tell the user. Without it a failed
     // query leaves an empty dropdown with nothing to explain why.
@@ -186,6 +199,8 @@ export default {
       this.filters = this.defaultFilters();
       this.selectedGroup = null;
       this.selectedProject = null;
+      this.scopePath = '';
+      this.syncScopeToUrl('');
       // The controls own their selection, so remount them to clear it.
       this.filtersKey += 1;
     },
@@ -227,6 +242,7 @@ export default {
           <dashboard-filters
             :key="filtersKey"
             :dashboard-filters="config.filters"
+            :scope-path="scopePath"
             @set-date-range="setDateRangeFilter"
             @set-scope="setScopeFilter"
             @error="onScopeError"

@@ -183,8 +183,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
         allow(File).to receive(:exist?).and_return(true)
         allow(File).to receive(:exist?).with(backup_restore_pid_path).and_return(false)
         allow(Kernel).to receive(:system).and_return(true)
-        allow(FileUtils).to receive(:cp_r).and_return(true)
-        allow(FileUtils).to receive(:mv).and_return(true)
+        allow(FileUtils).to receive_messages(cp_r: true, mv: true)
         allow(Rake::Task["gitlab:shell:setup"])
           .to receive(:invoke).and_return(true)
       end
@@ -268,8 +267,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
         allow(File).to receive(:exist?).and_return(true)
         allow(File).to receive(:exist?).with(backup_restore_pid_path).and_return(false)
         allow(Kernel).to receive(:system).and_return(true)
-        allow(FileUtils).to receive(:cp_r).and_return(true)
-        allow(FileUtils).to receive(:mv).and_return(true)
+        allow(FileUtils).to receive_messages(cp_r: true, mv: true)
         allow(YAML).to receive(:safe_load_file)
           .and_return({ gitlab_version: Gitlab::VERSION })
 

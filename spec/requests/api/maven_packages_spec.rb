@@ -1542,9 +1542,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
         before do
           allow_next_instance_of(UploadedFile) do |uploaded_file|
-            allow(uploaded_file).to receive(:size).and_return(123)
-            allow(uploaded_file).to receive(:sha1).and_return('sha1')
-            allow(uploaded_file).to receive(:md5).and_return('md5')
+            allow(uploaded_file).to receive_messages(size: 123, sha1: 'sha1', md5: 'md5')
           end
         end
 

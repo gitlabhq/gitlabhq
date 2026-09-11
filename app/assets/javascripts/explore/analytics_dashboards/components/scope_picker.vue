@@ -9,6 +9,7 @@ import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.gra
 import getTopLevelGroupsQuery from '../graphql/get_top_level_groups.query.graphql';
 import searchNamespacesQuery from '../graphql/search_namespaces.query.graphql';
 import searchNamespacesGlobalQuery from '../graphql/search_namespaces_global.query.graphql';
+import getScopeNamespaceQuery from '../graphql/get_scope_namespace.query.graphql';
 import ScopePickerItem from './scope_picker_item.vue';
 
 // Keeps a placeholder row's value from colliding with a real namespace path.
@@ -29,6 +30,12 @@ export default {
       required: false,
       default: '',
     },
+    // A namespace path to start selected (ex. URL param on page load)
+    initialPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   emits: ['change', 'error'],
   data() {
@@ -44,6 +51,7 @@ export default {
       // Each expanded subgroup's projects, flattened across its own subgroups, keyed by path.
       subgroupProjects: {},
       searchTerm: '',
+      initialScope: null,
       // Whichever of the two search queries the current mode uses. Only one is ever live.
       rootedResults: null,
       globalResults: null,
@@ -104,6 +112,23 @@ export default {
       }),
       skip() {
         return Boolean(this.groupFullPath) || !this.hasSearch;
+      },
+      error(error) {
+        this.$emit('error', error);
+        captureException(error);
+      },
+    },
+    initialScope: {
+      query: getScopeNamespaceQuery,
+      variables() {
+        return { fullPath: this.initialPath, fullPaths: [this.initialPath] };
+      },
+      // Only update if a valid group/project is returned
+      update: ({ group, projects }) => group ?? projects?.nodes?.[0] ?? null,
+      // The page echoes the current selection back through `initialPath`, so a path that is
+      // already selected needs no lookup -- the click resolved that namespace already.
+      skip() {
+        return !this.initialPath || this.initialPath === this.selectedPath;
       },
       error(error) {
         this.$emit('error', error);
@@ -232,6 +257,13 @@ export default {
     },
   },
   watch: {
+    initialScope(namespace) {
+      // Ignore initialScope if another namespace was already selected.
+      if (!namespace || this.selectedNamespace) return;
+
+      this.selectedNamespace = this.asNamespace(namespace);
+      this.$emit('change', this.selectedNamespace);
+    },
     // Everything loaded so far belongs to the old root, and the selection may no longer be in
     // scope, so start over rather than showing a mix of the two.
     groupFullPath(fullPath) {

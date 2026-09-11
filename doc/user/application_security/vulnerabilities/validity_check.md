@@ -103,14 +103,15 @@ Validity checks support the following secret types:
 - AWS IAM long-term access key IDs (beginning with `AKIA`)
 - Datadog API keys
 - GitHub personal access tokens (classic)
+- Google Cloud API keys
 - Heroku API keys
 - OpenAI project API keys
 - Postman API tokens
 - SendGrid API tokens
 - Stripe live secret keys
 
-Validity checks for AWS IAM access key IDs and Postman API tokens work with any secret
-detection analyzer.
+Validity checks for AWS IAM access key IDs, Google Cloud API keys, and Postman API tokens
+work with any secret detection analyzer.
 GitLab validates all other external service token types, including token types added in the
 future, only when
 [GitLab Secret Scanning for Source Code](../secret_detection/gitlab_secret_scanner/_index.md)
@@ -134,6 +135,7 @@ The supported URLs are:
 - `https://api.sendgrid.com/v3/scopes`
 - `https://api.stripe.com/v1/balance`
 - `https://sts.amazonaws.com/`
+- `https://www.googleapis.com/discovery/v1/apis`
 
 If you cannot allow outbound access to these endpoints, do not enable this feature.
 Enabling validity checks in a restricted network environment causes network errors during

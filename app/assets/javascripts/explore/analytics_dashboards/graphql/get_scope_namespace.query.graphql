@@ -1,0 +1,18 @@
+# @feature_category: custom_dashboards_foundation
+
+query getAnalyticsDashboardScopeNamespace($fullPath: ID!, $fullPaths: [String!]) {
+  group(fullPath: $fullPath) {
+    id
+    name
+    fullName
+    fullPath
+  }
+  projects(fullPaths: $fullPaths) {
+    nodes {
+      id
+      name
+      fullName: nameWithNamespace
+      fullPath
+    }
+  }
+}

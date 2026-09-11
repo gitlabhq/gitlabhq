@@ -44,8 +44,10 @@ RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode, featur
     let!(:main_database_migration) { create(:batched_background_migration, :active) }
 
     before do
-      allow(Gitlab::Database).to receive(:db_config_for_connection).and_return(db_config)
-      allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+      allow(Gitlab::Database).to receive_messages(
+        db_config_for_connection: db_config,
+        database_base_models: base_models
+      )
     end
 
     context 'when no database is provided' do

@@ -26,6 +26,12 @@ module Admin
       organization_field_app_data(user, ::Current.organization)
     end
 
+    def can_edit_organization_user?(user)
+      organization_user = ::Current.organization.membership_for(user)
+
+      organization_user.present? && can?(current_user, :update_organization_user, organization_user)
+    end
+
     def email_otp_status_text(user)
       return %{Yes (#{user.email_otp_required_after.to_fs(:medium)})} if user.email_otp_required_after
 

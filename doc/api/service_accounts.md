@@ -92,12 +92,16 @@ Example response:
   {
     "id": 114,
     "username": "service_account_33",
-    "name": "Service account user"
+    "public_email": "",
+    "name": "Service account user",
+    "email": "service_account_33@noreply.gitlab.example.com"
   },
   {
     "id": 137,
     "username": "service_account_34",
-    "name": "john doe"
+    "public_email": "",
+    "name": "john doe",
+    "email": "service_account_34@noreply.gitlab.example.com"
   }
 ]
 ```
@@ -139,6 +143,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Service account user",
   "email": "service_account_6018816a18e515214e0c34c2b33523fc@noreply.gitlab.example.com"
 }
@@ -185,6 +190,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Updated Service Account",
   "email": "service_account_<random_hash>@noreply.gitlab.example.com",
   "unconfirmed_email": "custom_email@example.com"
@@ -250,12 +256,14 @@ Example response:
   {
     "id": 57,
     "username": "service_account_group_345_<random_hash>",
+    "public_email": "",
     "name": "Service account user",
     "email": "service_account_group_345_<random_hash>@noreply.gitlab.example.com"
   },
   {
     "id": 58,
     "username": "service_account_group_345_<random_hash>",
+    "public_email": "",
     "name": "Service account user",
     "email": "service_account_group_345_<random_hash>@noreply.gitlab.example.com",
     "unconfirmed_email": "custom_email@example.com"
@@ -306,6 +314,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Service account user",
   "email": "service_account_group_345_6018816a18e515214e0c34c2b33523fc@noreply.gitlab.example.com"
 }
@@ -350,6 +359,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Service account user",
   "email": "custom_email@example.com"
 }
@@ -400,6 +410,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Updated Service Account",
   "email": "service_account_group_345_<random_hash>@noreply.gitlab.example.com",
   "unconfirmed_email": "custom_email@example.com"
@@ -696,12 +707,14 @@ Example response:
   {
     "id": 57,
     "username": "service_account_project_345_<random_hash>",
+    "public_email": "",
     "name": "Service account user",
     "email": "service_account_project_345_<random_hash>@noreply.gitlab.example.com"
   },
   {
     "id": 58,
     "username": "service_account_project_345_<random_hash>",
+    "public_email": "",
     "name": "Service account user",
     "email": "service_account_project_345_<random_hash>@noreply.gitlab.example.com",
     "unconfirmed_email": "custom_email@example.com"
@@ -751,6 +764,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_project_345_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Service account user",
   "email": "service_account_project_345_6018816a18e515214e0c34c2b33523fc@noreply.gitlab.example.com"
 }
@@ -788,6 +802,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_project_345_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Service account user",
   "email": "custom_email@example.com"
 }
@@ -826,6 +841,7 @@ Example response:
 {
   "id": 57,
   "username": "service_account_project_345_6018816a18e515214e0c34c2b33523fc",
+  "public_email": "",
   "name": "Updated Service Account",
   "email": "service_account_project_345_<random_hash>@noreply.gitlab.example.com",
   "unconfirmed_email": "custom_email@example.com"

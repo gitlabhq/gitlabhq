@@ -21,7 +21,7 @@ RSpec.describe 'Projects > Files > User previews file while editing in single fi
 
   let(:expected_mermaid_graph) do
     src_prefix = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}#{sandbox_mermaid_v11_path}"
-    %r{<iframe src="#{Regexp.escape(src_prefix)}(?:\?darkMode=true)?" sandbox="allow-scripts allow-popups"}
+    %r{<iframe src="#{Regexp.escape(src_prefix)}(?:\?darkMode=true)?" sandbox="allow-scripts"}
   end
 
   before_all do

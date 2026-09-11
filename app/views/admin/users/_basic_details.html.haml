@@ -1,0 +1,17 @@
+- list_item_classes = '!gl-grid @md/panel:gl-grid-cols-3 gl-gap-x-3'
+%li{ class: list_item_classes }
+  %span.gl-text-subtle ID:
+  .gl-col-span-2
+    %strong{ data: { testid: 'user-id-content' } }= @user.id
+%li{ class: list_item_classes }
+  %span.gl-text-subtle= _('Namespace ID:')
+  .gl-col-span-2
+    %strong= @user.namespace_id
+%li{ class: list_item_classes }
+  %span.gl-text-subtle= _('Name:')
+  .gl-col-span-2
+    %strong= @user.name
+%li{ class: list_item_classes }
+  %span.gl-text-subtle= _('Username:')
+  .gl-col-span-2
+    %strong= @user.username

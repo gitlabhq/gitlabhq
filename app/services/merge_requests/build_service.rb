@@ -256,6 +256,8 @@ module MergeRequests
     #
     def assign_title_and_description
       assign_description_from_repository_template
+      # Read before substitution consumes the placeholder.
+      closes_issue_placed_by_template = description&.include?('%{closes_issue}')
       replace_variables_in_description
       assign_description_from_cherry_picked_merge_request unless description_given?
 
@@ -265,7 +267,7 @@ module MergeRequests
       merge_request.title ||= branch_name_to_title(source_branch)
 
       set_draft_title_if_needed
-      append_closes_description
+      append_closes_description unless closes_issue_placed_by_template
     end
 
     def assign_labels
@@ -283,9 +285,8 @@ module MergeRequests
     end
 
     def append_closes_description
-      return unless issue&.to_reference.present?
-
-      closes_issue = "#{target_project.autoclose_referenced_issues ? 'Closes' : 'Related to'} #{issue.to_reference}"
+      closes_issue = ::Gitlab::MergeRequests::MessageGenerator.closes_issue_reference(merge_request, issue)
+      return if closes_issue.blank?
 
       if description.present?
         descr_parts = [merge_request.description, closes_issue]
@@ -398,7 +399,7 @@ module MergeRequests
     def replace_variables_in_description
       return unless merge_request.description.present?
 
-      merge_request.description = message_generator.new_mr_description
+      merge_request.description = message_generator.new_mr_description(issue: issue)
     end
 
     def mr_title_template_enabled?

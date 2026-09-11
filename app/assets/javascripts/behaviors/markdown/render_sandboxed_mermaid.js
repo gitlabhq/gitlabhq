@@ -1,6 +1,6 @@
 import { countBy, debounce } from 'lodash-es';
 import { __ } from '~/locale';
-import { getBaseURL, relativePathToAbsolute } from '~/lib/utils/url_utility';
+import { getBaseURL, isValidURL, relativePathToAbsolute, visitUrl } from '~/lib/utils/url_utility';
 import { sandboxMermaidV11Path } from '~/lib/utils/path_helpers/routes';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { setAttributes, isElementVisible } from '~/lib/utils/dom_utils';
@@ -33,13 +33,28 @@ export const MAX_MERMAID_BLOCK_LIMIT = 50;
 const MAX_CHAINING_OF_LINKS_LIMIT = 30;
 
 export const BUFFER_IFRAME_HEIGHT = 10;
-export const SANDBOX_ATTRIBUTES = 'allow-scripts allow-popups';
+export const SANDBOX_ATTRIBUTES = 'allow-scripts';
 
 // Messages other than the height payload can also arrive
 // from the sandboxed iframe (such as those injected by Chrome for iOS).
 export function getIframeHeightFromMessage(data) {
   const h = data?.h;
   return Number.isFinite(h) ? h + BUFFER_IFRAME_HEIGHT : null;
+}
+
+// Link clicks inside the sandboxed iframe are delegated to the parent
+// because links can't open from within the sandbox. Validate the URL here,
+// outside the reach of the diagram source, before opening it.
+export function openLinkFromMessage(data) {
+  const href = data?.href;
+  // visitUrl re-validates the URL, but throws;
+  // check first so non-link messages are silently ignored.
+  if (typeof href !== 'string' || !isValidURL(href)) {
+    return false;
+  }
+
+  visitUrl(href, true);
+  return true;
 }
 
 const ALERT_CONTAINER_CLASS = 'mermaid-alert-container';
@@ -138,6 +153,9 @@ function renderMermaidEl(el, source) {
     'message',
     (event) => {
       if (event.origin !== 'null' || event.source !== iframeEl.contentWindow) {
+        return;
+      }
+      if (openLinkFromMessage(event.data)) {
         return;
       }
       const height = getIframeHeightFromMessage(event.data);

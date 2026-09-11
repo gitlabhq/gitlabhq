@@ -11,6 +11,10 @@ RSpec.describe Todos::PushNotificationWorker, feature_category: :notifications d
     let(:job_args) { [[todo.id]] }
   end
 
+  it 'is not deferred on database health signals' do
+    expect(described_class.defer_on_database_health_signal?).to be(false)
+  end
+
   describe '#perform' do
     it 'runs the delivery service and logs its tallies' do
       response = ServiceResponse.success(

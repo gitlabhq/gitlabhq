@@ -1178,11 +1178,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     let(:openbao_ha_locks_table_path) { 'db/docs/openbao_ha_locks.yml' }
 
     before do
-      allow(Gitlab::Database).to receive(:db_config_for_connection).and_return(db_config)
-      allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+      allow(Gitlab::Database).to receive_messages(
+        db_config_for_connection: db_config,
+        database_base_models: base_models
+      )
 
-      allow(connection).to receive(:tables).and_return(tables)
-      allow(connection).to receive(:views).and_return(views)
+      allow(connection).to receive_messages(tables: tables, views: views)
     end
 
     after do
@@ -1403,10 +1404,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       before do
         skip_if_multiple_databases_are_setup
 
-        allow(connection).to receive(:execute).and_return(nil)
-
-        allow(connection).to receive(:tables).and_return(tables)
-        allow(connection).to receive(:views).and_return(views)
+        allow(connection).to receive_messages(execute: nil, tables: tables, views: views)
 
         allow(Backup::DatabaseConnection).to receive(:new).with('main')
           .and_return(instance_double(Backup::DatabaseConnection, connection: connection))
@@ -2018,7 +2016,6 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       allow(Rake::Task['db:create']).to receive(:invoke)
       allow(Rake::Task['db:migrate:main']).to receive(:invoke)
       allow(ActiveRecord).to receive(:dump_schema_after_migration=)
-      allow(ActiveRecord::Base).to receive(:configurations).and_return(configurations)
       allow(ActiveRecord::Base).to receive(:configurations=)
       allow(configurations).to receive(:configs_for).with(env_name: 'test').and_return([configuration])
       allow(configurations).to receive(:configs_for).with(include_hidden: true).and_return([configuration])
@@ -2032,7 +2029,10 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       allow(guard_pool).to receive(:with_connection).and_yield(guard_connection)
       allow(guard_pool).to receive(:migration_context).and_return(migration_context)
       allow(guard_connection).to receive(:select_value).and_return(42)
-      allow(ActiveRecord::Base).to receive(:establish_connection).and_return(connection_pool)
+      allow(ActiveRecord::Base).to receive_messages(
+        configurations: configurations,
+        establish_connection: connection_pool
+      )
       allow(Gitlab::Database).to receive(:check_for_non_superuser)
     end
 

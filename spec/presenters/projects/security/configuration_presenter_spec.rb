@@ -182,9 +182,11 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         with_them do
           before do
             allow_next_instance_of(described_class) do |presenter|
-              allow(presenter).to receive(:can?).and_return(is_admin)
-              allow(presenter).to receive(:archived?).and_return(archived)
-              allow(presenter).to receive(:feature_available?).and_return(feature_available)
+              allow(presenter).to receive_messages(
+                can?: is_admin,
+                archived?: archived,
+                feature_available?: feature_available
+              )
             end
           end
 

@@ -38,8 +38,10 @@ RSpec.describe Tooling::Danger::SidekiqQueues do
     it 'returns queue names added by this change' do
       old_queues = { post_receive: nil }
 
-      allow(sidekiq_queues).to receive(:old_queues).and_return(old_queues)
-      allow(sidekiq_queues).to receive(:new_queues).and_return(old_queues.merge(merge: nil, process_commit: nil))
+      allow(sidekiq_queues).to receive_messages(
+        old_queues: old_queues,
+        new_queues: old_queues.merge(merge: nil, process_commit: nil)
+      )
 
       expect(sidekiq_queues.added_queue_names).to contain_exactly(:merge, :process_commit)
     end
@@ -57,8 +59,7 @@ RSpec.describe Tooling::Danger::SidekiqQueues do
         post_receive: { name: :post_receive, urgency: :low },
         process_commit: { name: :process_commit, urgency: :low })
 
-      allow(sidekiq_queues).to receive(:old_queues).and_return(old_queues)
-      allow(sidekiq_queues).to receive(:new_queues).and_return(new_queues)
+      allow(sidekiq_queues).to receive_messages(old_queues: old_queues, new_queues: new_queues)
 
       expect(sidekiq_queues.changed_queue_names).to contain_exactly(:post_receive, :process_commit)
     end
@@ -73,8 +74,7 @@ RSpec.describe Tooling::Danger::SidekiqQueues do
         post_receive: { name: :post_receive, urgency: :low }
       }
 
-      allow(sidekiq_queues).to receive(:old_queues).and_return(old_queues)
-      allow(sidekiq_queues).to receive(:new_queues).and_return(new_queues)
+      allow(sidekiq_queues).to receive_messages(old_queues: old_queues, new_queues: new_queues)
 
       expect(sidekiq_queues.changed_queue_names).to contain_exactly(:post_receive)
     end

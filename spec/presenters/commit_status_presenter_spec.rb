@@ -34,6 +34,22 @@ RSpec.describe CommitStatusPresenter, feature_category: :continuous_integration 
       end
     end
 
+    context 'when the job could not access GitLab Secrets Manager' do
+      let(:failure_reason) { :secrets_manager_access_denied }
+
+      before do
+        build.failure_reason = failure_reason
+      end
+
+      it 'appends the troubleshooting link' do
+        is_expected.to eq(
+          "#{s_('Job|This job failed to retrieve secrets because it does not have access to GitLab Secrets Manager.')} " \
+            "<a href=\"#{help_page_path('ci/secrets/secrets_manager/_index.md', anchor: 'error-namespace-does-not-have-access-to-gitlab-secrets-manager')}\">" \
+            "#{s_('Job|How do I fix it?')}</a>"
+        )
+      end
+    end
+
     context 'when custom error message is available' do
       let(:failure_reason) { :job_router_failure }
 

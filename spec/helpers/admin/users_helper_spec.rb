@@ -134,6 +134,45 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
     end
   end
 
+  describe 'can_edit_organization_user?', :with_current_organization do
+    let_it_be(:user) { build_stubbed(:user) }
+
+    subject { helper.can_edit_organization_user?(user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(current_organization).to receive(:membership_for).with(user).and_return(organization_user)
+    end
+
+    context 'when the user is a member of the current organization' do
+      let(:organization_user) { build_stubbed(:organization_user) }
+
+      before do
+        allow(helper).to receive(:can?)
+          .with(current_user, :update_organization_user, organization_user)
+          .and_return(can_update)
+      end
+
+      context 'when the current user can update the organization user' do
+        let(:can_update) { true }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when the current user cannot update the organization user' do
+        let(:can_update) { false }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when the user is not a member of the current organization' do
+      let(:organization_user) { nil }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe 'email_otp_status_text' do
     subject { helper.email_otp_status_text(current_user) }
 

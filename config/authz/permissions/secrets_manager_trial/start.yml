@@ -1,0 +1,3 @@
+---
+name: start_secrets_manager_trial
+description: Grants the ability to start a Secrets Manager trial for a top-level group on GitLab.com, or for the whole instance on GitLab Self-Managed.

@@ -48,6 +48,8 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   const findViewTabs = () => wrapper.findAllComponents(GlTab);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findResetButton = () => wrapper.findComponentByTestId('dashboard-filters-reset');
+  const findScopePath = () => findDashboardFilters().props('scopePath');
+  const currentScopeParam = () => new URLSearchParams(window.location.search).get('scope');
 
   const mockGroup = { id: 1, name: 'GitLab.org', fullPath: 'gitlab-org', type: 'Group' };
   const mockProject = {
@@ -272,6 +274,92 @@ describe('ExploreAnalyticsDashboardDetails', () => {
 
       it('keeps the reset button mounted', () => {
         expect(findResetButton().element).toBe(buttonBefore);
+      });
+    });
+  });
+
+  describe('the scope URL param', () => {
+    afterEach(() => setWindowLocation(TEST_HOST));
+
+    it('starts the picker with no selection when the param is absent', async () => {
+      await createWithFilters();
+
+      expect(findScopePath()).toBe('');
+    });
+
+    it('hands the param to the picker on load, so a shared URL opens already scoped', async () => {
+      setWindowLocation('?scope=gitlab-org/gitlab');
+
+      await createWithFilters();
+
+      expect(findScopePath()).toBe('gitlab-org/gitlab');
+    });
+
+    it('writes the selected path to the param', async () => {
+      await createWithFilters();
+
+      await selectScope(mockProject);
+
+      expect(currentScopeParam()).toBe(mockProject.fullPath);
+    });
+
+    it('drops the param when the scope is cleared', async () => {
+      setWindowLocation('?scope=gitlab-org/gitlab');
+      await createWithFilters();
+
+      await selectScope(null);
+
+      expect(currentScopeParam()).toBeNull();
+    });
+
+    // GlTabs writes `view` straight to history, so the router never sees it. Going through the
+    // router here would rebuild the URL without it and drop the active view.
+    it('leaves the view param alone', async () => {
+      setWindowLocation('?view=1');
+      await createWithFilters();
+
+      await selectScope(mockGroup);
+
+      expect(window.location.search).toBe(`?view=1&scope=${mockGroup.fullPath}`);
+    });
+
+    it('adds no history entry, a filter change not being a place to go back to', async () => {
+      await createWithFilters();
+      const before = window.history.length;
+
+      await selectScope(mockGroup);
+
+      expect(window.history).toHaveLength(before);
+    });
+
+    // Switching views remounts the filter bar along with the rest of the layout, so the path
+    // handed to the fresh picker has to be the current selection, not the page-load value.
+    it('tracks the selection, so a remounted picker keeps it rather than reverting', async () => {
+      setWindowLocation('?scope=gitlab-org');
+      await createWithFilters();
+
+      await selectScope(mockProject);
+
+      expect(findScopePath()).toBe(mockProject.fullPath);
+    });
+
+    describe('when the filters are reset', () => {
+      beforeEach(async () => {
+        setWindowLocation('?scope=gitlab-org');
+        await createWithFilters();
+
+        await selectScope(mockProject);
+
+        findResetButton().vm.$emit('click');
+        await waitForPromises();
+      });
+
+      it('drops the param', () => {
+        expect(currentScopeParam()).toBeNull();
+      });
+
+      it('starts the remounted picker with no selection', () => {
+        expect(findScopePath()).toBe('');
       });
     });
   });
@@ -610,9 +698,10 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       });
 
       // GlTabs only writes the query param from its own click handler, so the page
-      // has to keep the URL in step itself.
+      // has to keep the URL in step itself. `createWithFooter` selects a group first,
+      // so the scope param it wrote has to survive the view change.
       it('updates the view query param', () => {
-        expect(window.location.search).toBe('?view=1');
+        expect(window.location.search).toBe('?scope=gitlab-org&view=1');
       });
     });
   });

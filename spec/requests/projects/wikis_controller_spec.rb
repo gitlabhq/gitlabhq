@@ -20,12 +20,10 @@ RSpec.describe Projects::WikisController, feature_category: :wiki do
 
   before do
     sign_in(user)
-    allow(Gitlab::CurrentSettings)
-      .to receive(:diagramsnet_enabled?)
-      .and_return(diagramsnet_is_enabled)
-    allow(Gitlab::CurrentSettings)
-      .to receive(:diagramsnet_url)
-      .and_return(diagramsnet_url)
+    allow(Gitlab::CurrentSettings).to receive_messages(
+      diagramsnet_enabled?: diagramsnet_is_enabled,
+      diagramsnet_url: diagramsnet_url
+    )
 
     allow_next_instance_of(described_class) do |instance|
       allow(instance).to receive(:content_security_policy_nonce).and_return(csp_nonce)

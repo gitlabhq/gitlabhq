@@ -1,0 +1,3 @@
+---
+name: read_secrets_manager_entitlement
+description: Grants the ability to read the Secrets Manager entitlement, instance-wide on GitLab Self-Managed.

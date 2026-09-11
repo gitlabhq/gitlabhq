@@ -347,6 +347,29 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
               expect(merge_request.description).to eq(expected_description)
             end
           end
+
+          context 'a Default.md template places the reference itself' do
+            let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Ref: %{closes_issue}' } }
+            let(:project) { create(:project, :custom_repo, files: files) }
+
+            it 'does not append the closing description a second time' do
+              expect(merge_request.description).to eq("Ref: #{closing_message}")
+            end
+          end
+        end
+
+        context 'when the description already contains an unrelated reference' do
+          let(:source_branch) { '1-fix-issue' }
+          let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Closes #123' } }
+          let(:project) { create(:project, :custom_repo, files: files) }
+
+          before do
+            issue.update!(iid: 1)
+          end
+
+          it 'still appends the reference for the matched issue' do
+            expect(merge_request.description).to eq("Closes #123\n\nCloses #1")
+          end
         end
 
         context 'when the source branch matches an internal issue' do

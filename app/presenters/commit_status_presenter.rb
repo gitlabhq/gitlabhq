@@ -37,7 +37,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     bridge_pipeline_is_child_pipeline: N_('Job|This job belongs to a child pipeline and cannot create further child pipelines'),
     downstream_pipeline_creation_failed: N_('Job|The downstream pipeline could not be created'),
     secrets_provider_not_found: N_('Job|The secrets provider can not be found. Check your CI/CD variables and try again.'),
-    secrets_manager_access_denied: N_('Job|This job could not retrieve secrets because the namespace does not have access to GitLab Secrets Manager. To restore access, start a trial or purchase GitLab Secrets Manager for the top-level group, or make sure the group has GitLab credits available and on-demand billing enabled.'),
+    secrets_manager_access_denied: N_('Job|This job failed to retrieve secrets because it does not have access to GitLab Secrets Manager.'),
     reached_max_descendant_pipelines_depth: N_('Job|You reached the maximum depth of child pipelines'),
     reached_max_pipeline_hierarchy_size: N_('Job|The downstream pipeline tree is too large'),
     project_deleted: N_('Job|The job belongs to a deleted project'),

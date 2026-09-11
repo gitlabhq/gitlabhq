@@ -1,0 +1,17 @@
+---
+name: start_secrets_manager_trial
+description: Grants the ability to start a Secrets Manager trial for a top-level group on GitLab.com, or for the whole instance on GitLab Self-Managed.
+boundaries:
+  - group
+  - instance
+available_for:
+  - granular_access_token
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance
+  - condition: self_managed
+    boundaries:
+      - instance
+permissions:
+  - start_secrets_manager_trial

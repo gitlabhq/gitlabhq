@@ -4,6 +4,7 @@
   extends:
     - .default-retry
     - .caching:rules:update-cache-on-code-changes
+  needs: []
   variables:
     GIT_DEPTH: 1
     GIT_STRATEGY: fetch

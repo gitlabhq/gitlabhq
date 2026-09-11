@@ -276,11 +276,9 @@ RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organ
         allow_next_instance_of(ApplicationsFinder) do |finder|
           allow(finder).to receive(:execute).and_return(application)
         end
-        allow(application).to receive(:renew_secret).and_return(true)
-        allow(application).to receive(:valid?).and_return(false)
         errors = ActiveModel::Errors.new(application)
         errors.add(:name, 'Error 1')
-        allow(application).to receive(:errors).and_return(errors)
+        allow(application).to receive_messages(renew_secret: true, valid?: false, errors: errors)
 
         post api(path, admin, admin_mode: true)
 

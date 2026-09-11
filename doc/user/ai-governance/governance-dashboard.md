@@ -16,7 +16,7 @@ title: AI Governance Dashboard
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603776) in GitLab 19.4 in [beta](../../policy/development_stages_support.md) with a [feature flag](../../administration/feature_flags/_index.md) named `ai_governance_dashboard`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603776) in GitLab 19.4 in [beta](../../policy/development_stages_support.md) with a [feature flag](../../administration/feature_flags/_index.md) named `ai_governance_dashboard`. Enabled by default.
 
 {{< /history >}}
 
@@ -67,7 +67,7 @@ ambient sessions. Duo Chat is included.
 
 ## Data cards
 
-Below the KPI tiles, four data cards provide breakdowns of agent activity.
+Below the KPI tiles, data cards provide breakdowns of agent activity.
 
 ### Audit logs
 
@@ -92,6 +92,18 @@ using AI agents.
 The **Project exposure** card shows the top projects by agent session count
 over the last 7 days. Use this to identify which projects have the highest
 volume of AI agent activity.
+
+### MCP servers
+
+The **MCP servers** card lists the Model Context Protocol (MCP) servers
+registered for your group, with their status. Use this to see which external
+MCP servers your agents can reach.
+
+To read a server's full description, hover over or focus the truncated
+description text.
+
+The card lists registered servers only. It does not show how often each server
+is used.
 
 ## Related topics
 

@@ -433,8 +433,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
     before do
       stub_container_registry_config(enabled: true)
       allow_next_instances_of(ContainerRegistry::GitlabApiClient, nil) do |client|
-        allow(client).to receive(:supports_gitlab_api?).and_return(true)
-        allow(client).to receive(:tags).and_return(response_body)
+        allow(client).to receive_messages(supports_gitlab_api?: true, tags: response_body)
         stub_container_registry_gitlab_api_repository_details(client, path: container_repository.path, sizing: :self)
       end
     end
