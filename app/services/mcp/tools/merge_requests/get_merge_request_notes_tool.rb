@@ -4,7 +4,11 @@ module Mcp
   module Tools
     module MergeRequests
       class GetMergeRequestNotesTool < Mcp::Tools::Base::GraphqlTool
+        extend Gitlab::Utils::Override
         include Mcp::Tools::Concerns::ResourceFinder
+        include Mcp::Tools::Concerns::CursorPagination
+
+        DEFAULT_NOTES_PAGE_SIZE = 100
 
         def self.build_query
           load_graphql('merge_requests/get_merge_request_notes.query.graphql')
@@ -21,10 +25,7 @@ module Mcp
           {
             fullPath: full_path,
             iid: iid.to_s,
-            after: params[:after],
-            before: params[:before],
-            first: params[:first],
-            last: params[:last]
+            **resolve_pagination_direction
           }.compact
         end
 
@@ -35,6 +36,11 @@ module Mcp
         end
 
         private
+
+        override :default_page_size
+        def default_page_size
+          DEFAULT_NOTES_PAGE_SIZE
+        end
 
         def resolve_target
           if params[:url].present?

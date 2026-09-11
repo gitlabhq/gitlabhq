@@ -11357,7 +11357,6 @@ Fields:
 | <a id="mutation-groupsecretdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-groupsecretdelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-groupsecretdelete-groupsecret"></a>`groupSecret` | [`GroupSecret`](#groupsecret) | Deleted group secret. |
-| <a id="mutation-groupsecretdelete-reason"></a>`reason` {{< icon name="warning-solid" >}} | [`SecretsManagerWriteDenialReason`](#secretsmanagerwritedenialreason) | Introduced in GitLab 19.2. Status: Experiment. Reason the write was denied due to entitlement; null when not denied for that reason. |
 
 ### `Mutation.groupSecretUpdate`
 
@@ -11459,7 +11458,7 @@ Arguments:
 | <a id="mutation-groupsecretspermissionupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-groupsecretspermissionupdate-expiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
 | <a id="mutation-groupsecretspermissionupdate-grouppath"></a>`groupPath` | [`ID!`](#id) | Group to which the permissions are added. |
-| <a id="mutation-groupsecretspermissionupdate-principal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role/Group that is provided access. |
+| <a id="mutation-groupsecretspermissionupdate-principal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role that is provided access. |
 
 Fields:
 
@@ -15628,7 +15627,6 @@ Fields:
 | <a id="mutation-projectsecretdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-projectsecretdelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-projectsecretdelete-projectsecret"></a>`projectSecret` | [`ProjectSecret`](#projectsecret) | Deleted project secret. |
-| <a id="mutation-projectsecretdelete-reason"></a>`reason` {{< icon name="warning-solid" >}} | [`SecretsManagerWriteDenialReason`](#secretsmanagerwritedenialreason) | Introduced in GitLab 19.2. Status: Experiment. Reason the write was denied due to entitlement; null when not denied for that reason. |
 
 ### `Mutation.projectSecretUpdate`
 
@@ -15706,7 +15704,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutation-projectsecretspermissiondelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutation-projectsecretspermissiondelete-principal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role/Group whose access is being removed. |
+| <a id="mutation-projectsecretspermissiondelete-principal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role whose access is being removed. |
 | <a id="mutation-projectsecretspermissiondelete-projectpath"></a>`projectPath` | [`ID!`](#id) | Project from which the permissions are removed. |
 
 Fields:
@@ -15729,7 +15727,7 @@ Arguments:
 | <a id="mutation-projectsecretspermissionupdate-actions"></a>`actions` | [`[SecretsManagementAction!]!`](#secretsmanagementaction) | Actions that can be performed on secrets. |
 | <a id="mutation-projectsecretspermissionupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-projectsecretspermissionupdate-expiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
-| <a id="mutation-projectsecretspermissionupdate-principal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role/Group that is provided access. |
+| <a id="mutation-projectsecretspermissionupdate-principal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role that is provided access. |
 | <a id="mutation-projectsecretspermissionupdate-projectpath"></a>`projectPath` | [`ID!`](#id) | Project to which the permissions are added. |
 
 Fields:
@@ -16901,7 +16899,7 @@ Arguments:
 | <a id="mutation-secretpermissionupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-secretpermissionupdate-expiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
 | <a id="mutation-secretpermissionupdate-permissions"></a>`permissions` | [`[String!]!`](#string) | Permissions to be provided. ['create', 'update', 'read', 'delete']. |
-| <a id="mutation-secretpermissionupdate-principal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role/Group that is provided access. |
+| <a id="mutation-secretpermissionupdate-principal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role that is provided access. |
 | <a id="mutation-secretpermissionupdate-projectpath"></a>`projectPath` | [`ID!`](#id) | Project to which the permissions are added. |
 
 Fields:
@@ -16938,6 +16936,31 @@ Fields:
 | <a id="mutation-secretsmanagerenableaddon-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-secretsmanagerenableaddon-entitlement"></a>`entitlement` | [`SecretsManagerEntitlement`](#secretsmanagerentitlement) | Secrets Manager entitlement state after enabling the add-on. Null when enabling failed; see errors for the reason. |
 | <a id="mutation-secretsmanagerenableaddon-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.secretsManagerInstanceEnableAddOn`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `SecretsManagerInstanceEnableAddOnInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-secretsmanagerinstanceenableaddon-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-secretsmanagerinstanceenableaddon-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-secretsmanagerinstanceenableaddon-entitlement"></a>`entitlement` | [`SecretsManagerEntitlement`](#secretsmanagerentitlement) | Instance-level Secrets Manager entitlement state after enabling the add-on. Null when enabling failed; see errors for the reason. |
+| <a id="mutation-secretsmanagerinstanceenableaddon-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.secretsManagerInstanceStartTrial`
 
@@ -22754,6 +22777,29 @@ Fields:
 | <a id="artifactregistrymanifestedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="artifactregistrymanifestedge-node"></a>`node` | [`ArtifactRegistryManifest`](#artifactregistrymanifest) | The item at the end of the edge. |
 
+#### `ArtifactRegistryNpmDistTagConnection`
+
+The connection type for [`ArtifactRegistryNpmDistTag`](#artifactregistrynpmdisttag).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrynpmdisttagconnection-edges"></a>`edges` | [`[ArtifactRegistryNpmDistTagEdge]`](#artifactregistrynpmdisttagedge) | A list of edges. |
+| <a id="artifactregistrynpmdisttagconnection-nodes"></a>`nodes` | [`[ArtifactRegistryNpmDistTag]`](#artifactregistrynpmdisttag) | A list of nodes. |
+| <a id="artifactregistrynpmdisttagconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ArtifactRegistryNpmDistTagEdge`
+
+The edge type for [`ArtifactRegistryNpmDistTag`](#artifactregistrynpmdisttag).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrynpmdisttagedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="artifactregistrynpmdisttagedge-node"></a>`node` | [`ArtifactRegistryNpmDistTag`](#artifactregistrynpmdisttag) | The item at the end of the edge. |
+
 #### `ArtifactRegistryPackageConnection`
 
 The connection type for [`ArtifactRegistryPackage`](#artifactregistrypackage).
@@ -27461,6 +27507,20 @@ Fields:
 | <a id="governpolicyevaluationconnection-edges"></a>`edges` | [`[GovernPolicyEvaluationEdge]`](#governpolicyevaluationedge) | A list of edges. |
 | <a id="governpolicyevaluationconnection-nodes"></a>`nodes` | [`[GovernPolicyEvaluation]`](#governpolicyevaluation) | A list of nodes. |
 | <a id="governpolicyevaluationconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `GovernPolicyEvaluationConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="governpolicyevaluationconnection-count-limit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `GovernPolicyEvaluationEdge`
 
@@ -35438,6 +35498,7 @@ Fields:
 | <a id="ainamespacesettings-aicatalogrestrictedtogrouphierarchy"></a>`aiCatalogRestrictedToGroupHierarchy` | [`Boolean!`](#boolean) | Indicates whether the AI Catalog is restricted to items within the top-level group's hierarchy. |
 | <a id="ainamespacesettings-duoworkflowmcpenabled"></a>`duoWorkflowMcpEnabled` | [`Boolean!`](#boolean) | Indicates whether the namespace has MCP enabled. |
 | <a id="ainamespacesettings-promptinjectionprotectionlevel"></a>`promptInjectionProtectionLevel` | [`PromptInjectionProtectionLevel!`](#promptinjectionprotectionlevel) | Level of prompt injection protection for the namespace. |
+| <a id="ainamespacesettings-websearchenabled"></a>`webSearchEnabled` | [`Boolean!`](#boolean) | Indicates whether web search is allowed in GitLab Duo Chat for the namespace. |
 
 ### `AiSelfHostedModel`
 
@@ -36294,6 +36355,57 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="artifactregistrymavenpackage-versions-sort"></a>`sort` {{< icon name="warning-solid" >}} | [`ArtifactRegistryVersionSort`](#artifactregistryversionsort) | Introduced in GitLab 19.4. Status: Experiment. Sort versions by the criteria. Defaults to publication date descending. |
 
+### `ArtifactRegistryMavenPackageDetails`
+
+A single Maven package in an Artifact Registry repository, returned by the by-ID package read.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrymavenpackagedetails-artifactid"></a>`artifactId` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Maven artifact ID coordinate of the package. |
+| <a id="artifactregistrymavenpackagedetails-groupid"></a>`groupId` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Maven group ID coordinate of the package. |
+| <a id="artifactregistrymavenpackagedetails-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.3. Status: Experiment. ID of the package in Artifact Registry. |
+| <a id="artifactregistrymavenpackagedetails-lastdownloadedat"></a>`lastDownloadedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the package was last pulled. Null when it was never pulled. |
+
+#### Fields with arguments
+
+##### `ArtifactRegistryMavenPackageDetails.versions`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Versions of the package, ordered by publication date descending by default. Resolves at most once per package in a page, so one operation reads versions for up to 20 packages. Returns `null` for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx.
+
+Returns [`ArtifactRegistryVersionConnection`](#artifactregistryversionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrymavenpackagedetails-versions-sort"></a>`sort` {{< icon name="warning-solid" >}} | [`ArtifactRegistryVersionSort`](#artifactregistryversionsort) | Introduced in GitLab 19.4. Status: Experiment. Sort versions by the criteria. Defaults to publication date descending. |
+
+### `ArtifactRegistryNpmDistTag`
+
+npm dist-tag of a package in an Artifact Registry repository.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrynpmdisttag-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the dist-tag in Artifact Registry. |
+| <a id="artifactregistrynpmdisttag-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Name of the dist-tag. |
+| <a id="artifactregistrynpmdisttag-version"></a>`version` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Version string the dist-tag points at. |
+| <a id="artifactregistrynpmdisttag-versionid"></a>`versionId` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. Artifact Registry ID of the version the dist-tag points at. |
+
 ### `ArtifactRegistryNpmPackage`
 
 npm package in an Artifact Registry repository.
@@ -36332,6 +36444,46 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="artifactregistrynpmpackage-versions-sort"></a>`sort` {{< icon name="warning-solid" >}} | [`ArtifactRegistryVersionSort`](#artifactregistryversionsort) | Introduced in GitLab 19.4. Status: Experiment. Sort versions by the criteria. Defaults to publication date descending. |
+
+### `ArtifactRegistryNpmPackageDetails`
+
+A single npm package in an Artifact Registry repository, returned by the by-ID package read; carries the npm dist-tags.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrynpmpackagedetails-disttags"></a>`distTags` {{< icon name="warning-solid" >}} | [`ArtifactRegistryNpmDistTagConnection`](#artifactregistrynpmdisttagconnection) | Introduced in GitLab 19.4. Status: Experiment. npm dist-tags of the package, ordered by name. Truncates above 100 dist-tags. Can be selected once per operation. `null` without a read on a remote repository, which Artifact Registry serves no dist-tag rows for. Also `null` for a package that is gone, and when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. |
+| <a id="artifactregistrynpmpackagedetails-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.3. Status: Experiment. ID of the package in Artifact Registry. |
+| <a id="artifactregistrynpmpackagedetails-lastdownloadedat"></a>`lastDownloadedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the package was last pulled. Null when it was never pulled. |
+| <a id="artifactregistrynpmpackagedetails-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Name of the package, including its scope when it has one. |
+| <a id="artifactregistrynpmpackagedetails-scope"></a>`scope` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. npm scope of the package. Null for an unscoped package. |
+| <a id="artifactregistrynpmpackagedetails-versionscount"></a>`versionsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Number of versions of the package. Buffered, so it can lag the version list. Null for a package of a remote repository, which Artifact Registry supplies no count for. |
+
+#### Fields with arguments
+
+##### `ArtifactRegistryNpmPackageDetails.versions`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Versions of the package, ordered by publication date descending by default. Resolves at most once per package in a page, so one operation reads versions for up to 20 packages. Returns `null` for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx.
+
+Returns [`ArtifactRegistryVersionConnection`](#artifactregistryversionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrynpmpackagedetails-versions-sort"></a>`sort` {{< icon name="warning-solid" >}} | [`ArtifactRegistryVersionSort`](#artifactregistryversionsort) | Introduced in GitLab 19.4. Status: Experiment. Sort versions by the criteria. Defaults to publication date descending. |
 
 ### `ArtifactRegistryRemoteSettings`
 
@@ -36428,7 +36580,7 @@ Arguments:
 
 Single package the repository holds, by Artifact Registry ID. Can be selected once per operation. Returns `null` for a repository holding images and for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx.
 
-Returns [`ArtifactRegistryPackage`](#artifactregistrypackage).
+Returns [`ArtifactRegistryPackageDetails`](#artifactregistrypackagedetails).
 
 Arguments:
 
@@ -46143,7 +46295,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionusercreditsusage-blockedstatus"></a>`blockedStatus` | [`GitlabSubscriptionUsageBlockedStatus`](#gitlabsubscriptionusageblockedstatus) | Blocked status of the current user under the subscription budget cap. |
-| <a id="gitlabsubscriptionusercreditsusage-creditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits consumed by the current user. |
+| <a id="gitlabsubscriptionusercreditsusage-creditsused"></a>`creditsUsed` | [`Float`](#float) | Total GitLab Credits consumed by the current user. |
 | <a id="gitlabsubscriptionusercreditsusage-dailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionUserCreditsUsageDailyUsage!]`](#gitlabsubscriptionusercreditsusagedailyusage) | Daily GitLab Credits usage for the current user. |
 | <a id="gitlabsubscriptionusercreditsusage-enabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates if the Customer Portal GitLab Credits API is enabled. |
 | <a id="gitlabsubscriptionusercreditsusage-enddate"></a>`endDate` | [`ISO8601Date`](#iso8601date) | End date of the period covered by the usage data. |
@@ -49207,6 +49359,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupsecretsmanager-group"></a>`group` | [`Group!`](#group) | Group the secrets manager belongs to. |
+| <a id="groupsecretsmanager-readonly"></a>`readOnly` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Whether the instance is in strict read-only mode (Geo secondary or maintenance mode). No secrets or permissions can be created, updated, or deleted while it is true. |
 | <a id="groupsecretsmanager-status"></a>`status` | [`GroupSecretsManagerStatus`](#groupsecretsmanagerstatus) | Status of the group secrets manager. |
 | <a id="groupsecretsmanager-userpermissions"></a>`userPermissions` | [`GroupSecretsManagerPermissions!`](#groupsecretsmanagerpermissions) | Permissions for the current user on the resource. |
 
@@ -49235,7 +49388,7 @@ Fields:
 | <a id="groupsecretspermission-expiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
 | <a id="groupsecretspermission-grantedby"></a>`grantedBy` | [`UserCore`](#usercore) | User who created the Secret Permission. |
 | <a id="groupsecretspermission-group"></a>`group` | [`Group!`](#group) | Group the secret permission belong to. |
-| <a id="groupsecretspermission-principal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole/Group. |
+| <a id="groupsecretspermission-principal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole. |
 
 ### `GroupSecurityPolicySource`
 
@@ -56817,15 +56970,14 @@ Fields:
 
 ### `Principal`
 
-Representation of who is provided access to. For eg: User/Role/MemberRole/Group.
+Representation of who is provided access to. For eg: User/Role/MemberRole.
 
 Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="principal-group"></a>`group` | [`Group`](#group) | Group who is provided access to. |
-| <a id="principal-id"></a>`id` | [`ID!`](#id) | ID of the principal (User, MemberRole, Role, Group). |
-| <a id="principal-type"></a>`type` | [`PrincipalType!`](#principaltype) | Name of the principal (User, MemberRole, Role, Group). |
+| <a id="principal-id"></a>`id` | [`ID!`](#id) | ID of the principal (User, MemberRole, Role). |
+| <a id="principal-type"></a>`type` | [`PrincipalType!`](#principaltype) | Name of the principal (User, MemberRole, Role). |
 | <a id="principal-user"></a>`user` | [`UserCore`](#usercore) | User who is provided access to. |
 | <a id="principal-userroleid"></a>`userRoleId` | [`String`](#string) | RoleID of the user. |
 
@@ -60356,6 +60508,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectsecretsmanager-project"></a>`project` | [`Project!`](#project) | Project the secrets manager belong to. |
+| <a id="projectsecretsmanager-readonly"></a>`readOnly` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Whether the instance is in strict read-only mode (Geo secondary or maintenance mode). No secrets or permissions can be created, updated, or deleted while it is true. |
 | <a id="projectsecretsmanager-status"></a>`status` | [`ProjectSecretsManagerStatus`](#projectsecretsmanagerstatus) | Status of the project secrets manager. |
 | <a id="projectsecretsmanager-userpermissions"></a>`userPermissions` | [`ProjectSecretsManagerPermissions!`](#projectsecretsmanagerpermissions) | Permissions for the current user on the resource. |
 
@@ -60383,7 +60536,7 @@ Fields:
 | <a id="projectsecretspermission-actions"></a>`actions` | [`[SecretsManagementAction!]!`](#secretsmanagementaction) | Actions that can be performed on secrets. |
 | <a id="projectsecretspermission-expiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
 | <a id="projectsecretspermission-grantedby"></a>`grantedBy` | [`UserCore`](#usercore) | User who created the Secret Permission. |
-| <a id="projectsecretspermission-principal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole/Group. |
+| <a id="projectsecretspermission-principal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole. |
 | <a id="projectsecretspermission-project"></a>`project` | [`Project!`](#project) | Project the secrets permission belongs to. |
 
 ### `ProjectSecurityExclusion`
@@ -61833,7 +61986,7 @@ Fields:
 | <a id="secretpermission-expiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
 | <a id="secretpermission-grantedby"></a>`grantedBy` | [`UserCore`](#usercore) | User who created the Secret Permission. |
 | <a id="secretpermission-permissions"></a>`permissions` | [`String!`](#string) | Permissions to be provided. ['create', 'update', 'read', 'delete']. |
-| <a id="secretpermission-principal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole/Group. |
+| <a id="secretpermission-principal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole. |
 | <a id="secretpermission-project"></a>`project` | [`Project!`](#project) | Project the secret permission belong to. |
 
 ### `SecretRotationInfo`
@@ -71800,7 +71953,6 @@ Types of principal that can have secrets permissions.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="principaltype-group"></a>`GROUP` | group. |
 | <a id="principaltype-member_role"></a>`MEMBER_ROLE` | member role. |
 | <a id="principaltype-role"></a>`ROLE` | predefined role. |
 | <a id="principaltype-user"></a>`USER` | user. |
@@ -75392,6 +75544,15 @@ One of:
 - [`ArtifactRegistryMavenPackage`](#artifactregistrymavenpackage)
 - [`ArtifactRegistryNpmPackage`](#artifactregistrynpmpackage)
 
+#### `ArtifactRegistryPackageDetails`
+
+Single package in an Artifact Registry repository, by package format.
+
+One of:
+
+- [`ArtifactRegistryMavenPackageDetails`](#artifactregistrymavenpackagedetails)
+- [`ArtifactRegistryNpmPackageDetails`](#artifactregistrynpmpackagedetails)
+
 #### `CiJobTokenScopeTarget`
 
 Represents an object that is the target of a CI_JOB_TOKEN allowlist entry.
@@ -78580,14 +78741,13 @@ Arguments:
 
 ### `PrincipalInput`
 
-Representation of who is provided access to. For eg: User/Role/MemberRole/Group.
+Representation of who is provided access to. For eg: User/Role/MemberRole.
 
 Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="principalinput-grouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group principal. Only used when type is GROUP. |
-| <a id="principalinput-id"></a>`id` | [`Int`](#int) | ID of the principal. Required unless group_path is provided for Group type. |
+| <a id="principalinput-id"></a>`id` | [`Int!`](#int) | ID of the principal. |
 | <a id="principalinput-type"></a>`type` | [`PrincipalType!`](#principaltype) | Type of the principal. |
 
 ### `ProjectComplianceControlStatusInput`

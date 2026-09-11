@@ -74,6 +74,11 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
         )
       end
 
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :update_work_item_user_preference do
+        let(:boundary_object) { namespace }
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+
       context 'when work item type id is not provided' do
         let(:input) do
           {

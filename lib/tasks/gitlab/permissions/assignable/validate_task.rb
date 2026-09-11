@@ -18,10 +18,12 @@ module Tasks
           #   - `download_code` via `Gitlab::GitAccess` (git protocol commands)
           #   - `create_editor_telemetry` via `EventForwardController`
           #   - `read_dependency_proxy` via `Auth::ContainerProxyAuthenticationService` (dependency proxy JWT flow)
+          #   - `archive_work_item_type` via `Mutations::WorkItems::Types::Update` (optional `archive` argument)
           GRANULAR_TOKEN_NON_API_CONSUMERS = Set[
             :download_code,
             :create_editor_telemetry,
-            :read_dependency_proxy
+            :read_dependency_proxy,
+            :archive_work_item_type
           ].freeze
 
           def initialize

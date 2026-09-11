@@ -44,7 +44,7 @@ RSpec.describe Notifications::MobileDevicePushSubscription, feature_category: :n
   end
 
   describe 'enums' do
-    it { is_expected.to define_enum_for(:platform).with_values(ios: 0) }
+    it { is_expected.to define_enum_for(:platform).with_values(ios: 0, macos: 1) }
     it { is_expected.to define_enum_for(:apns_environment).with_values(production: 0, sandbox: 1).with_prefix(:apns) }
     it { is_expected.to define_enum_for(:payload_mode).with_values(full: 0, id_only: 1).with_suffix(:payload) }
   end

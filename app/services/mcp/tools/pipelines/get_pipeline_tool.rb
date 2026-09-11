@@ -32,8 +32,7 @@ module Mcp
             fullPath: project.full_path,
             pipelineId: "gid://gitlab/Ci::Pipeline/#{params[:pipeline_id]}",
             jobStatuses: params[:job_status].present? ? [params[:job_status].upcase] : nil,
-            first: paginated_first,
-            after: params[:after]
+            **resolve_pagination_direction
           ).compact
         end
 

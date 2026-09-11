@@ -494,7 +494,6 @@ RSpec/NamedSubject:
     - 'ee/spec/serializers/security/vulnerability_report_data_entity_spec.rb'
     - 'ee/spec/serializers/test_reports_comparer_serializer_spec.rb'
     - 'ee/spec/serializers/test_suite_comparer_entity_spec.rb'
-    - 'ee/spec/serializers/vulnerabilities/feedback_entity_spec.rb'
     - 'ee/spec/serializers/vulnerabilities/finding_entity_spec.rb'
     - 'ee/spec/serializers/vulnerabilities/finding_reports_comparer_entity_spec.rb'
     - 'ee/spec/serializers/vulnerabilities/identifier_entity_spec.rb'

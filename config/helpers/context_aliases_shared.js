@@ -34,22 +34,14 @@ const INFECTION_BLOCKLIST = [
   // reaches it, so a migrated page would otherwise get a second cache. The provider
   // in `issuable_client.js` stays per-lane, because VueApollo cannot be shared.
   'app/assets/javascripts/graphql_shared/issuable_default_client.js',
-];
-
-// Infectable despite the scanner marking them clean, so a Vue 3 importer gets a
-// Vue 3 copy and infection continues past them. Otherwise the subtree below
-// reverts to Vue 2 inside a Vue 3 page. Exact paths, one entry per edition.
-// https://gitlab.com/gitlab-org/gitlab/-/work_items/625296
-const INFECTION_FORCELIST = [
-  'app/assets/javascripts/issuable/index.js',
-  'app/assets/javascripts/mr_notes/mount_app.js',
-  'app/assets/javascripts/sidebar/sidebar_bundle.js',
-  'ee/app/assets/javascripts/hand_raise_leads/hand_raise_lead/index.js',
+  // Holds the one `SidebarMediator.singleton`. The Vue 3 sidebar app writes it and
+  // `gfm_auto_complete` in `main.js` reads its store, so the two lanes must share
+  // it. Keeps `services/sidebar_service.js` and its Apollo client single too.
+  'app/assets/javascripts/sidebar/sidebar_mediator.js',
 ];
 
 module.exports = {
   CONTEXT_ALIASES,
   INFECTABLE_RE,
   INFECTION_BLOCKLIST,
-  INFECTION_FORCELIST,
 };

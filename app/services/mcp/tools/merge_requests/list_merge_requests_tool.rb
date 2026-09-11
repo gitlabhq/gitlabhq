@@ -33,8 +33,7 @@ module Mcp
             milestoneTitle: params[:milestone],
             labelName: split_labels(params[:labels]),
             search: params[:search],
-            first: paginated_first,
-            after: params[:after]
+            **resolve_pagination_direction
           }.compact
         end
 

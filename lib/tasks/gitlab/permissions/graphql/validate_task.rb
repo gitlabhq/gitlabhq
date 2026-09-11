@@ -23,7 +23,7 @@ module Tasks
               invalid_condition: [],
               insufficient_tests: []
             }
-            @seen_requirement_groups = Set.new
+            @seen_requirement_groups = {}
           end
 
           private
@@ -73,9 +73,9 @@ module Tasks
 
           # A malformed additional scope fails silently at request time: without a
           # boundary_type or a boundary source its group never resolves and every
-          # granular token is denied with 404, and two entries colliding on a group
-          # leave the second entry's permissions unenforced (`permissions_for` reads
-          # the first directive of a group).
+          # granular token is denied with 404. Entries sharing a group (project-or-group
+          # alternatives) must declare identical permissions (`permissions_for` reads
+          # only the first directive of a group) and distinct boundary types.
           def validate_additional_scope(item, directive)
             args = directive.arguments
 
@@ -86,11 +86,19 @@ module Tasks
               violations[:invalid_additional_scope] << item.merge(reason: 'missing boundary or boundary_argument')
             end
 
-            group_key = "#{item[:kind]}:#{item[:name]}:#{args[:requirement_group]}"
-            return if @seen_requirement_groups.add?(group_key)
+            requirement_group = args[:requirement_group]
+            group_key = "#{item[:kind]}:#{item[:name]}:#{requirement_group}"
+            permissions = Array(args[:permissions]).sort
+            seen = @seen_requirement_groups[group_key] ||= { permissions: permissions, boundary_types: Set.new }
 
-            violations[:invalid_additional_scope] <<
-              item.merge(reason: "duplicate requirement_group '#{args[:requirement_group]}'")
+            if seen[:permissions] != permissions
+              violations[:invalid_additional_scope] <<
+                item.merge(reason: "conflicting permissions for requirement_group '#{requirement_group}'")
+            elsif !seen[:boundary_types].add?(args[:boundary_type])
+              violations[:invalid_additional_scope] << item.merge(
+                reason: "duplicate boundary_type '#{args[:boundary_type]}' in requirement_group '#{requirement_group}'"
+              )
+            end
           end
 
           def validate_conditions(item, directive)
@@ -316,8 +324,9 @@ module Tasks
               MSG
               invalid_additional_scope: <<~MSG.chomp,
                 The following GraphQL types/mutations/fields have an invalid additional_scopes entry.
-                Each entry must declare boundary_type and locate its boundary with boundary_argument or boundary,
-                and entries must not collide on a requirement group (use distinct boundary_arguments).
+                Each entry must declare boundary_type and locate its boundary with boundary_argument or boundary.
+                Entries sharing a boundary_argument (project-or-group alternatives) must declare identical permissions
+                and distinct boundary types.
                 Otherwise the entry silently denies every request with 404 or goes unenforced.
                 #{graphql_implementation_guide_link(anchor: 'additional-required-scopes')}
               MSG

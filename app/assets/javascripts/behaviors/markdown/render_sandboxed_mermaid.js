@@ -8,6 +8,7 @@ import { createAlert, VARIANT_WARNING } from '~/alert';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { unrestrictedPages } from './constants';
+import { getRenderedMermaidBlocks, incrementRenderedMermaidBlocks } from './mermaid_render_count';
 
 // Renders diagrams and flowcharts from text using Mermaid in any element with the
 // `js-render-mermaid` class.
@@ -62,7 +63,6 @@ export const LAZY_ALERT_SHOWN_CLASS = 'lazy-alert-shown';
 
 // Keep a map of mermaid blocks we've already rendered.
 const elsProcessingMap = new WeakMap();
-let renderedMermaidBlocks = 0;
 
 /**
  * Determines whether a given Mermaid diagram is visible.
@@ -207,7 +207,7 @@ function renderMermaids(els) {
       !unrestrictedPages.includes(pageName) &&
       ((source && source.length > MAX_CHAR_LIMIT) ||
         renderedChars > MAX_CHAR_LIMIT ||
-        renderedMermaidBlocks >= MAX_MERMAID_BLOCK_LIMIT ||
+        getRenderedMermaidBlocks() >= MAX_MERMAID_BLOCK_LIMIT ||
         shouldLazyLoadMermaidBlock(source))
     ) {
       const parent = el.parentNode;
@@ -240,7 +240,7 @@ function renderMermaids(els) {
     }
 
     renderedChars += source.length;
-    renderedMermaidBlocks += 1;
+    incrementRenderedMermaidBlocks();
 
     const requestId = window.requestIdleCallback(() => {
       renderMermaidEl(el, source);

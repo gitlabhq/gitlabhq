@@ -156,6 +156,7 @@ import {
   isWorkItemCached,
   mergeWorkItemChangeAction,
   findMatchingWorkItems,
+  removeWorkItemFromNamespaceLists,
 } from '../list/graphql/cache_updates';
 
 import SavedViewsNotFoundModal from '../list/components/work_items_saved_views_not_found_modal.vue';
@@ -2135,10 +2136,11 @@ export default {
         const { cache } = client;
 
         const visibleDeleted = deleted.filter((id) => isWorkItemCached(cache, id));
-        const hasVisibleUpdate = updated.some((id) => isWorkItemCached(cache, id));
+        const visibleUpdated = updated.filter((id) => isWorkItemCached(cache, id));
         // Boards don't show one page at a time — they join every page together, so a new item
         // could always end up visible there.
         const canShowNewItems = this.isBoardView || this.isViewingFirstPage;
+        const checkableCreated = canShowNewItems ? created : [];
 
         // Close the drawer before evicting, otherwise its query reads an incomplete work item.
         if (this.activeItem && visibleDeleted.includes(this.activeItem.id)) {
@@ -2146,32 +2148,37 @@ export default {
           await this.$nextTick();
         }
 
-        // Skipped when hasVisibleUpdate is already true — the refetch below is happening
-        // regardless, so the match result can't change the outcome.
-        let hasVisibleCreate = false;
-        if (!hasVisibleUpdate && created.length > 0 && canShowNewItems) {
+        let needsListRefetch = false;
+        if (checkableCreated.length > 0 || visibleUpdated.length > 0) {
           try {
-            const createdMatches = await findMatchingWorkItems({
+            const matches = await findMatchingWorkItems({
               client,
               queryVariables: this.queryVariables,
-              ids: created,
+              ids: [...checkableCreated, ...visibleUpdated],
               useRestApi: this.useRestApi,
               isBoardView: this.isBoardView,
               glFeatures: this.glFeatures,
             });
-            // `null` means there were too many new items to ask the server about in one go —
-            // treat that as a bulk creation and reload rather than skip it.
-            hasVisibleCreate = createdMatches === null || createdMatches.size > 0;
+
+            if (matches === null) {
+              // Too many changed items to check in one go — treat it as a bulk change and reload.
+              needsListRefetch = true;
+            } else {
+              needsListRefetch = checkableCreated.some((id) => matches.has(id));
+              // A match already patched the item for free; a miss means it no longer belongs in
+              // the current filters, so it needs to leave every cached page and board column.
+              visibleUpdated
+                .filter((id) => !matches.has(id))
+                .forEach((id) => removeWorkItemFromNamespaceLists(cache, this.namespaceId, id));
+            }
           } catch (error) {
-            // No answer means the new items won't show until the next event or a reconnect,
-            // but the deletions and counts below still need handling.
+            // No answer means the changed items won't reflect correctly until the next event or
+            // a reconnect, but the deletions and counts below still need handling.
             Sentry.captureException(error);
           } finally {
             dropMatchCacheEntries(cache, this.namespaceId);
           }
         }
-
-        const needsListRefetch = hasVisibleUpdate || hasVisibleCreate;
 
         if (needsListRefetch) {
           this.refetchItems({ refetchCounts: true });

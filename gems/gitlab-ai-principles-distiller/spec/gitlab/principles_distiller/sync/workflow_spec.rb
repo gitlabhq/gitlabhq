@@ -227,6 +227,32 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
       expect(output).to include('session: https://gitlab.com/gitlab-org/gitlab/-/automate/agent-sessions/12345')
     end
 
+    context 'with a terminal HTTP response' do
+      let(:response) { Net::HTTPUnauthorized.new('1.1', '401', 'Unauthorized') }
+
+      before do
+        allow(response).to receive(:body).and_return('authentication failed')
+        allow(workflow).to receive(:post_json).and_return(response)
+      end
+
+      it 'preserves the status and diagnostic in a typed error' do
+        expect { start }.to raise_error(described_class::NonRetryableCreationError) do |error|
+          expect(error.status).to eq(401)
+          expect(error.message).to eq('Workflow creation failed: HTTP 401: authentication failed')
+        end
+      end
+    end
+
+    context 'when the request times out' do
+      before do
+        allow(workflow).to receive(:post_json).and_raise(Net::ReadTimeout)
+      end
+
+      it 'returns nil for the caller to retry' do
+        expect { expect(start).to be_nil }.to output(/Workflow create error/).to_stderr
+      end
+    end
+
     def capture_stdout
       original = $stdout
       $stdout = StringIO.new

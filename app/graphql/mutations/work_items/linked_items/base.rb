@@ -17,6 +17,11 @@ module Mutations
           null: true, description: 'Linked items update result message.'
 
         authorize :read_work_item
+        authorize_granular_token permissions: :update_work_item,
+          boundaries: [
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :project },
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :group }
+          ]
 
         def ready?(**args)
           if args[:work_items_ids].size > MAX_WORK_ITEMS

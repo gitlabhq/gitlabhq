@@ -47,18 +47,7 @@ RSpec.describe Mcp::Tools::Projects::ListProjectMembersService, feature_category
             type: 'string',
             description: 'Filter by name or username.'
           },
-          after: {
-            type: 'string',
-            description: 'Cursor for forward pagination. Use metadata.end_cursor from the ' \
-              'previous response.'
-          },
-          first: {
-            type: 'integer',
-            description: 'Number of members to return (forward pagination, default ' \
-              "#{described_class::DEFAULT_PAGE_SIZE}, max #{described_class::MAX_PAGE_SIZE}).",
-            minimum: 1,
-            maximum: described_class::MAX_PAGE_SIZE
-          }
+          **Mcp::Tools::Concerns::CursorPagination.input_schema_params(items: 'members', cursor_style: :metadata)
         }
       })
     end

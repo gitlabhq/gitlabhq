@@ -186,7 +186,6 @@ create_group_via_api
 create_group_with_default_branch_protection
 create_incident
 create_instance_runners
-create_iteration
 create_key_result
 create_merge_request_approval_rules
 create_merge_request_from
@@ -199,7 +198,6 @@ create_pages
 create_project_secrets
 create_projects
 create_protected_tags
-create_requirement
 create_requirement_test_report
 create_resource_access_tokens
 create_runners
@@ -207,7 +205,6 @@ create_saved_replies
 create_sentry_issue
 create_subgroup
 create_task
-create_test_case
 create_virtual_registry
 create_vulnerability_feedback
 create_vulnerability_state_transition
@@ -496,7 +493,6 @@ read_reject_non_dco_commits
 read_reject_unsigned_commits
 read_release_evidence
 read_repository_graphs
-read_requirement
 read_resource_access_tokens
 read_resource_iteration_event
 read_resource_label_event
@@ -632,7 +628,6 @@ update_pipeline
 update_project_member
 update_project_secrets
 update_protected_tags
-update_requirement
 update_runners_registration_token
 update_saved_replies
 update_security_orchestration_policy_project

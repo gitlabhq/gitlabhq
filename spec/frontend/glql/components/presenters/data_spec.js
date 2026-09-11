@@ -165,6 +165,47 @@ describe('DataPresenter', () => {
     });
   });
 
+  describe('table', () => {
+    const createTableWrapper = (propsData) =>
+      shallowMountExtended(DataPresenter, {
+        propsData: {
+          data: MOCK_AGGREGATED_DATA_ONE_DIM,
+          displayType: 'table',
+          fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
+          ...propsData,
+        },
+      });
+
+    it('forwards the comparison data to the table presenter', () => {
+      const comparisonData = { nodes: [{ language: 'ruby', totalCount: 4 }] };
+
+      const wrapper = createTableWrapper({ comparisonData });
+
+      expect(wrapper.findComponent(TablePresenter).props('comparisonData')).toBe(comparisonData);
+    });
+
+    it('forwards the trend metric to the table presenter', () => {
+      const wrapper = createTableWrapper({ trendMetric: 'totalCount' });
+
+      expect(wrapper.findComponent(TablePresenter).props('trendMetric')).toBe('totalCount');
+    });
+
+    it('forwards the query data source to the table presenter', () => {
+      const wrapper = createTableWrapper({ source: 'CodeSuggestions' });
+
+      expect(wrapper.findComponent(TablePresenter).props('source')).toBe('CodeSuggestions');
+    });
+
+    it('re-emits errors from the table presenter', () => {
+      const wrapper = createTableWrapper();
+
+      const error = new Error('boom');
+      wrapper.findComponent(TablePresenter).vm.$emit('error', error);
+
+      expect(wrapper.emitted('error')).toEqual([[error]]);
+    });
+  });
+
   describe('lineChart', () => {
     it('re-emits errors from the line chart presenter', () => {
       const wrapper = shallowMountExtended(DataPresenter, {

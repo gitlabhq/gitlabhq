@@ -242,16 +242,46 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
       end
     end
 
-    context 'when two entries collide on a requirement group' do
+    context 'when two entries share a requirement group with identical permissions and different boundary types' do
+      it 'does not add a violation' do
+        project_directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          boundary_argument: 'target_full_path', requirement_group: 'target_full_path')
+        group_directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'GROUP',
+          boundary_argument: 'target_full_path', requirement_group: 'target_full_path')
+
+        task.send(:validate_additional_scope, item, project_directive)
+        task.send(:validate_additional_scope, item, group_directive)
+
+        expect(scope_violations).to be_empty
+      end
+    end
+
+    context 'when two entries share a requirement group with identical permissions and boundary types' do
       it 'adds a violation for the second entry' do
         directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
-          boundary_argument: 'target_project_path', requirement_group: 'target_project_path')
+          boundary_argument: 'target_full_path', requirement_group: 'target_full_path')
 
         task.send(:validate_additional_scope, item, directive)
         task.send(:validate_additional_scope, item, directive)
+
+        expect(scope_violations).to contain_exactly(
+          item.merge(reason: "duplicate boundary_type 'PROJECT' in requirement_group 'target_full_path'")
+        )
+      end
+    end
+
+    context 'when two entries share a requirement group with different permissions' do
+      it 'adds a violation for the second entry' do
+        project_directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          boundary_argument: 'target_full_path', requirement_group: 'target_full_path')
+        group_directive = additional_directive(permissions: ['CREATE_EPIC'], boundary_type: 'GROUP',
+          boundary_argument: 'target_full_path', requirement_group: 'target_full_path')
+
+        task.send(:validate_additional_scope, item, project_directive)
+        task.send(:validate_additional_scope, item, group_directive)
 
         expect(scope_violations)
-          .to contain_exactly(item.merge(reason: "duplicate requirement_group 'target_project_path'"))
+          .to contain_exactly(item.merge(reason: "conflicting permissions for requirement_group 'target_full_path'"))
       end
     end
 

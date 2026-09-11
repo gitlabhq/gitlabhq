@@ -60,7 +60,7 @@ RSpec.describe Mcp::Tools::Wikis::ListWikiPagesService, feature_category: :mcp_s
               minimum: 1,
               maximum: 100,
               description: 'Number of wiki pages to return after the cursor (forward pagination). ' \
-                'Default 20, max 100.'
+                'Max 100.'
             },
             after: {
               type: 'string',

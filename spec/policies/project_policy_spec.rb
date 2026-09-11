@@ -4441,6 +4441,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
       with_them do
         it { is_expected.to be_allowed(:create_saved_view) }
+        it { is_expected.to be_allowed(:create_work_item_saved_view) }
       end
     end
 
@@ -4453,6 +4454,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
       with_them do
         it { is_expected.to be_disallowed(:create_saved_view) }
+        it { is_expected.to be_disallowed(:create_work_item_saved_view) }
       end
     end
   end

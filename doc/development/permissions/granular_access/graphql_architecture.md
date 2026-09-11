@@ -208,6 +208,10 @@ without either result affecting the other's cache entry.
 Declaring `additional_scopes` on `authorize_granular_token` adds a directive per entry, each with a
 `requirement_group` derived from its `boundary_argument`, or `additional_<index>` when it has none.
 The primary boundary, and any `boundaries` alternatives for it, keep the default group.
+Entries that share a `boundary_argument` belong to the same requirement group and act as
+alternatives within it. Because `permissions_for` reads a single permission list per group,
+taken from the first entry, entries in a shared requirement group must declare identical
+`permissions` values.
 
 ```ruby
 authorize_granular_token permissions: :move_issue,

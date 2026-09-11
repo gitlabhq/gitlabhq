@@ -74,7 +74,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemService, feature_category: :mcp
               minimum: 1,
               maximum: 100,
               description: 'Number of notes to return after the cursor (forward pagination). ' \
-                'Default 100, max 100. Applies only when notes is in include.'
+                'Max 100. Applies only when notes is in include.'
             },
             notes_after: {
               type: 'string',
@@ -86,7 +86,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemService, feature_category: :mcp
               minimum: 1,
               maximum: 100,
               description: 'Number of notes to return before the cursor (backward pagination). ' \
-                'Default 100, max 100. Applies only when notes is in include.'
+                'Max 100. Applies only when notes is in include.'
             },
             notes_before: {
               type: 'string',
@@ -98,7 +98,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemService, feature_category: :mcp
               minimum: 1,
               maximum: 100,
               description: 'Number of related merge requests to return after the cursor ' \
-                '(forward pagination). Default 20, max 100. ' \
+                '(forward pagination). Max 100. ' \
                 'Applies only when related_merge_requests is in include.'
             },
             related_merge_requests_after: {

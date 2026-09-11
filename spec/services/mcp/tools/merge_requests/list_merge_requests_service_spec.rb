@@ -110,7 +110,7 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsService, feature_cate
           first: {
             type: 'integer',
             description: 'Number of merge requests to return after the cursor (forward pagination). ' \
-              'Default 20, max 100.',
+              'Max 100.',
             minimum: 1,
             maximum: 100
           }

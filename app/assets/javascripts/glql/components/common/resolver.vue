@@ -48,6 +48,14 @@ export default {
       type: String,
       default: '',
     },
+    /**
+     * Key of the metric a table's trend column compares against `comparisonData`.
+     */
+    trendMetric: {
+      required: false,
+      type: String,
+      default: '',
+    },
   },
   emits: ['change'],
   data() {
@@ -253,6 +261,7 @@ export default {
       :fields="fields"
       :display-type="config.display"
       :display-config="config.displayConfig"
+      :trend-metric="trendMetric"
       :source="source"
       :loading="loading"
       @error="handlePresenterError"

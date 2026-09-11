@@ -25,6 +25,7 @@ require (
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/modelcontextprotocol/go-sdk v1.6.1
 	github.com/prometheus/client_golang v1.24.1
+	github.com/redis/go-redis-entraid v1.0.7
 	github.com/redis/go-redis/v9 v9.22.0
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
 	github.com/sirupsen/logrus v1.10.2

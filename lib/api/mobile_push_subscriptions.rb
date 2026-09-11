@@ -27,7 +27,7 @@ module API
         # stored value (for example `id_only` back to `full`). The column
         # defaults own the initial values instead. `apns_environment` keeps its
         # default because it is part of the lookup identity, not an attribute.
-        optional :platform, type: String, values: %w[ios], desc: 'The device platform'
+        optional :platform, type: String, values: %w[ios macos], desc: 'The device platform'
         optional :apns_environment, type: String, values: %w[production sandbox], default: 'production',
           desc: 'The APNs environment the token was issued for'
         optional :bundle_id, type: String, desc: 'The application bundle identifier'

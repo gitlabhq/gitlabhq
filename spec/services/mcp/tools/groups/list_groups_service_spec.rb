@@ -65,7 +65,7 @@ RSpec.describe Mcp::Tools::Groups::ListGroupsService, feature_category: :mcp_ser
           first: {
             type: 'integer',
             description: 'Number of groups to return after the cursor (forward pagination). ' \
-              'Default 20, max 100.',
+              'Max 100.',
             minimum: 1,
             maximum: 100
           }

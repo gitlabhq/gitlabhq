@@ -153,7 +153,8 @@ RSpec.describe CreateCommitSignatureWorker, feature_category: :source_code_manag
       let(:type) { :PGP }
 
       it 'performs a single query for commit signatures' do
-        expect(CommitSignatures::GpgSignature).to receive(:by_commit_sha).with(commit_shas).once.and_return([])
+        expect(CommitSignatures::GpgSignature).to receive(:by_commit_shas_and_project_ids)
+          .with(commit_shas, [project.id]).once.and_return([])
 
         subject
       end

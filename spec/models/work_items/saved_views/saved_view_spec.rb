@@ -222,6 +222,27 @@ RSpec.describe WorkItems::SavedViews::SavedView, feature_category: :planning_vie
     end
   end
 
+  describe '#resource_parent' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:project) { create(:project) }
+    let_it_be(:project_namespace) { project.project_namespace }
+
+    where(:saved_view_namespace, :expected_parent) do
+      ref(:project_namespace) | ref(:project)
+      ref(:group)             | ref(:group)
+      ref(:namespace)         | nil
+    end
+
+    with_them do
+      it 'returns the project or group used as the authorization boundary' do
+        saved_view = build_stubbed(:saved_view, namespace: saved_view_namespace)
+
+        expect(saved_view.resource_parent).to eq(expected_parent)
+      end
+    end
+  end
+
   describe '#allow_possible_spam?' do
     subject { saved_view.allow_possible_spam?(user) }
 

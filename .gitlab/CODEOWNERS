@@ -81,6 +81,10 @@ config.ru @gitlab-org/maintainers/rails-backend
 /spec/views/ @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend
 /ee/spec/views/ @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend
 
+# Analytics dashboard definitions are data, not Ruby: they override the
+# `/ee/` backend default so either maintainer group can approve them.
+/ee/lib/gitlab/analytics/**/*.yaml @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend
+
 # Frontend
 *.scss @gitlab-org/maintainers/frontend
 *.js @gitlab-org/maintainers/frontend
@@ -714,6 +718,9 @@ Dangerfile
 ^[Analytics Dashboards frontend] @gitlab-org/analytics-section/platform-insights/engineers/frontend @gitlab-org/plan-stage/optimize-group/engineers/frontend
 /app/assets/javascripts/vue_shared/components/customizable_dashboard/
 /ee/app/assets/javascripts/analytics/analytics_dashboards/
+
+[Analytics Dashboards definitions] @gitlab-org/plan-stage/optimize-group/engineers/backend @gitlab-org/plan-stage/optimize-group/engineers/frontend @gitlab-org/analytics-section/platform-insights/engineers/backend @gitlab-org/analytics-section/platform-insights/engineers/frontend
+/ee/lib/gitlab/analytics/**/*.yaml
 
 ^[Product Analytics backend] @gitlab-org/analytics-section/platform-insights/engineers/backend
 /ee/lib/analytics/product_analytics/

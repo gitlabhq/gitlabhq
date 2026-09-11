@@ -65,6 +65,13 @@ RSpec.describe API::MobilePushSubscriptions, feature_category: :notifications do
       expect(subscription.last_seen_at).to be_present
     end
 
+    it 'registers a macOS device when platform is macos' do
+      post api(path, user), params: params.merge(platform: 'macos')
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(user.mobile_device_push_subscriptions.order(:id).last).to be_macos
+    end
+
     it 'upserts the existing subscription for the same token and environment' do
       existing = create(
         :mobile_device_push_subscription,
@@ -156,6 +163,12 @@ RSpec.describe API::MobilePushSubscriptions, feature_category: :notifications do
 
     it 'returns 400 for an unknown apns_environment' do
       post api(path, user), params: params.merge(apns_environment: 'staging')
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    it 'returns 400 for an unknown platform' do
+      post api(path, user), params: params.merge(platform: 'android')
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end

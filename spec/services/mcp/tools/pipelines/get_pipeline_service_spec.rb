@@ -65,7 +65,7 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineService, feature_category: :mcp
             minimum: 1,
             maximum: 100,
             description: 'Number of items for the selected include facet to return after the cursor ' \
-              '(forward pagination). Default 20, max 100.'
+              '(forward pagination). Max 100.'
           },
           after: {
             type: 'string',

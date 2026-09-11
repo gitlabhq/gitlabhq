@@ -46,7 +46,7 @@ To view a list of commits made by project members per day:
 
 ## Retrieve project commits as an RSS feed
 
-To view the list of commits to the project as an RSS feed in Atom format:
+To view the list of commits to the project as an RSS feed:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Analyze** > **Contributor analytics**.

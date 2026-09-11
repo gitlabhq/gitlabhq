@@ -87,7 +87,7 @@ By default, GitLab fetches the release using `released_at` time. The use of the 
 
 ### Track releases with an RSS feed
 
-GitLab provides an RSS feed of a project's releases, in Atom format. To view the feed:
+GitLab provides an RSS feed of a project's releases. To view the feed:
 
 1. For projects you are a member of:
    1. In the top bar, select **Search or go to** and find your project.

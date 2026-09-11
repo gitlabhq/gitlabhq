@@ -13,7 +13,7 @@ module API
       end
 
       # EE::API::Namespaces would override this method
-      def custom_namespace_present_options
+      def custom_namespace_present_options(_namespaces = nil)
         {}
       end
     end
@@ -56,9 +56,11 @@ module API
           namespaces = namespaces.search(params[:search], include_parents: params[:full_path_search])
         end
 
+        namespaces = paginate(namespaces)
+
         options = { with: Entities::Namespace, current_user: current_user }
 
-        present paginate(namespaces), **options.reverse_merge(custom_namespace_present_options)
+        present namespaces, **options.reverse_merge(custom_namespace_present_options(namespaces))
       end
 
       desc 'Retrieve namespace details' do

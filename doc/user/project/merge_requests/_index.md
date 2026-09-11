@@ -125,6 +125,20 @@ To view the open merge requests for a file:
 
 {{< /tabs >}}
 
+## Subscribe to an RSS feed of the merge request list
+
+To subscribe to an RSS feed of a project's merge request list:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Code** > **Merge requests**.
+1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Subscribe to RSS feed**.
+
+To subscribe to an RSS feed of a group's merge request list, follow the same steps. In the top
+bar, select **Search or go to** and find your group instead of a project.
+
+The feed URL contains a [feed token](../../../security/tokens/_index.md#feed-token) that
+authenticates you as the feed reader.
+
 ## Filter the list of merge requests
 
 {{< history >}}

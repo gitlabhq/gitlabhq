@@ -24,8 +24,7 @@ module Mcp
         def build_variables
           {
             fullPath: full_path,
-            first: paginated_first,
-            after: params[:after]
+            **resolve_pagination_direction
           }.compact
         end
 

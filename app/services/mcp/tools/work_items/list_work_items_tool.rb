@@ -4,6 +4,8 @@ module Mcp
   module Tools
     module WorkItems
       class ListWorkItemsTool < BaseTool
+        include Mcp::Tools::Concerns::CursorPagination
+
         register_version VERSIONS[:v0_1_0], {
           operation_name: 'namespace',
           # Lambda defers evaluation until after prepend_mod applies the EE
@@ -17,12 +19,13 @@ module Mcp
 
           parent_info = resolve_parent
 
+          pagination = resolve_pagination_direction
           variables, _unsupported = WorkItemsQueryBuilder.build_variables(
             full_path: parent_info[:full_path],
             filters: agent_filters,
             sort: params[:sort],
-            first: params[:first],
-            after: params[:after]
+            first: pagination[:first],
+            after: pagination[:after]
           )
 
           variables

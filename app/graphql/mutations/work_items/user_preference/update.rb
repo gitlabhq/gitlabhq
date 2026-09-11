@@ -11,6 +11,11 @@ module Mutations
         include FindsNamespace
 
         authorize :update_work_item_user_preference
+        authorize_granular_token permissions: :update_work_item_user_preference,
+          boundaries: [
+            { boundary_argument: :namespace_path, boundary_type: :project },
+            { boundary_argument: :namespace_path, boundary_type: :group }
+          ]
 
         argument :namespace_path,
           type: GraphQL::Types::ID,

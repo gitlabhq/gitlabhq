@@ -1,7 +1,7 @@
 ---
 name: gitlab-mcp-tool-builder
 description: "Build a new GraphQL-backed MCP server tool in gitlab-org/gitlab. Use when adding or scaffolding a GitLab Duo Agent Platform MCP tool that follows the app/services/mcp/tools/ *Tool + Graphql*Service pattern — covers GraphQL API discovery, the two-class-plus-registration build recipe, and gotchas. Keywords: MCP tool, MCP server, GraphQL tool, GitLab Duo Agent Platform."
-version: 1.9.0
+version: 1.10.0
 license: MIT
 compatibility: opencode
 metadata:
@@ -121,7 +121,9 @@ never folded into a single `id`. `url` is the single-value convenience path; `pr
 - GraphQL-backed tools → native cursor pagination (`first`, `after`); return `pageInfo`
   with `endCursor` and `hasNextPage`. Never hardcode the page size numbers: splat
   `Mcp::Tools::Concerns::CursorPagination.input_schema_params(items:)` into the service's
-  `input_schema`, and use its `paginated_first` in the tool.
+  `input_schema`, include the concern in the tool, and splat `**resolve_pagination_direction`
+  into `build_variables` instead of reading `params[:first]`/`params[:after]` directly. This
+  resolves conflicts when GPT clients send both `first` and `last` simultaneously.
 - REST-backed tools → offset pagination (`page`, `per_page`); return `metadata` with
   `page`, `per_page`, `has_more`.
 

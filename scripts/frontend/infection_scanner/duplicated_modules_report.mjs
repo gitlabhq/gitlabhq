@@ -29,8 +29,7 @@ export function formatDuplicatedModulesReport(findings) {
     lines.push('');
   }
 
-  lines.push('  Add each sink above to INFECTION_FORCELIST, or see');
-  lines.push('  doc/development/fe_guide/vue3_migration.md#module-scope-singletons');
+  lines.push('  See doc/development/fe_guide/vue3_migration.md#module-scope-singletons');
   lines.push('');
 
   return lines.join('\n');

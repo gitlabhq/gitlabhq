@@ -6106,7 +6106,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response.size).to eq(2)
     end
 
-    it 'avoids N+1 queries when rendering last_used_ips' do
+    it 'avoids N+1 queries when listing impersonation tokens' do
       impersonation_token.last_used_ips.create!(organization: organization, ip_address: '192.0.2.30')
 
       get api(path, admin, admin_mode: true) # warm-up

@@ -61,6 +61,14 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    /**
+     * Key of the metric the table's trend column compares.
+     */
+    trendMetric: {
+      required: false,
+      type: String,
+      default: '',
+    },
     source: {
       required: false,
       type: String,
@@ -106,8 +114,12 @@ export default {
   <table-presenter
     v-if="displayType === $options.DISPLAY_TYPES.TABLE"
     :data="data"
+    :comparison-data="comparisonData"
     :fields="fields"
     :loading="loading"
+    :trend-metric="trendMetric"
+    :source="source"
+    @error="$emit('error', $event)"
   />
   <list-presenter
     v-else-if="isList"

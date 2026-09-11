@@ -16,6 +16,7 @@ title: GitLab Secrets Manager credit usage
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/10723) in GitLab 19.3 for GitLab.com
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628115) on GitLab Self-Managed in GitLab 19.4 as an experiment.
 
 {{< /history >}}
 
@@ -136,3 +137,74 @@ At the end of the trial:
   usage continues without interruption, drawing from the monthly commitment pool, then on-demand credits.
 - If you do not have access to GitLab credits, Secrets Manager operations are blocked,
   so read operations and dependent pipelines fail. To restore access, you must [buy GitLab Credits](../../../subscriptions/gitlab_credits.md#buy-gitlab-credits).
+
+## Enable the add-on on GitLab Self-Managed
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628115) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `secrets_manager_paid_experience`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+Administrators can enable the paid Secrets Manager add-on for a GitLab Self-Managed instance
+without starting a trial.
+
+Prerequisites:
+
+- Administrator access to the instance.
+- An online cloud license, so the subscription syncs with the GitLab subscription service.
+- Usage billing terms (on-demand billing) accepted for the subscription in the Customers Portal.
+
+An instance without a license, or with only a trial license, is not eligible and cannot enable
+the add-on.
+
+### Offline environments
+
+In an offline environment, the Secrets Manager add-on is activated by the activation code
+from your subscription. You do not need to run the mutation, and it returns an error on an
+offline license.
+
+### Enable the add-on with the API
+
+To enable the add-on with the [GraphQL API](../../../api/graphql/_index.md):
+
+1. Open GraphiQL in the instance with your administrator account, for example at:
+   `https://gitlab.example.com/-/graphql-explorer`.
+1. In GraphiQL, enter this mutation:
+
+   ```graphql
+   mutation {
+     secretsManagerInstanceEnableAddOn(input: {}) {
+       entitlement { state }
+       errors
+     }
+   }
+   ```
+
+On success, the mutation returns `PAID` for `entitlement.state`. On failure, `entitlement` is
+`null` and `errors` contains the reason. You can send the mutation again after a partial
+failure. It's idempotent and doesn't record the conversion twice.
+
+When you enable the add-on, GitLab enrolls the instance in Secrets Manager if it isn't already
+enrolled, and records the paid intent for the subscription. Secrets Manager usage across the
+instance's groups and projects then consumes GitLab Credits at the rates described earlier on
+this page. Groups and projects provision their own secrets manager the first time someone
+creates a secret.
+
+A button to enable the add-on from the Admin area is proposed in
+[issue 623334](https://gitlab.com/gitlab-org/gitlab/-/work_items/623334).
+
+If you later unenroll the instance from Secrets Manager, the paid add-on intent is also cleared.

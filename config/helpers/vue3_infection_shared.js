@@ -1,62 +1,13 @@
 const path = require('path');
 const { readFileSync, existsSync } = require('fs');
 const { spawnSync } = require('child_process');
-const {
-  INFECTABLE_RE,
-  INFECTION_BLOCKLIST,
-  INFECTION_FORCELIST,
-} = require('./context_aliases_shared');
+const { INFECTABLE_RE, INFECTION_BLOCKLIST } = require('./context_aliases_shared');
 
 const ROOT_PATH = path.resolve(__dirname, '..', '..');
 const SCANNER_JSON_PATH = path.join(ROOT_PATH, 'tmp', 'infection_scanner.json');
 
 const VUE3_QUERY = 'vue3';
 const SPECIAL_QUERIES = ['vue', 'worker', 'raw', 'url', 'inline', 'sharedworker'];
-
-const EDITION_PREFIXES = ['ee/', 'jh/'];
-
-/**
- * Whether a path belongs to an edition this checkout lacks: `ee/` in the FOSS
- * mirror, `jh/` in CE and EE. Such an entry is not applicable rather than missing.
- *
- * @param {string} relPath
- * @returns {boolean}
- */
-const isEditionAbsent = (relPath) =>
-  EDITION_PREFIXES.some(
-    (prefix) => relPath.startsWith(prefix) && !existsSync(path.join(ROOT_PATH, prefix)),
-  );
-
-const FORCELIST_ABSOLUTE = new Set(
-  INFECTION_FORCELIST.filter((relPath) => !isEditionAbsent(relPath)).map((relPath) => {
-    // The blocklist wins below, so an entry it also matches would be silently dead.
-    // Its test is a substring one, so mirror that here.
-    const blocked = INFECTION_BLOCKLIST.find((entry) => relPath.includes(entry));
-    if (blocked) {
-      throw new Error(
-        `[vue3-infection] '${relPath}' is on INFECTION_FORCELIST but matches ` +
-          `INFECTION_BLOCKLIST entry '${blocked}'. The blocklist wins, so the ` +
-          `forcelist entry would never apply.`,
-      );
-    }
-    const absolute = path.join(ROOT_PATH, relPath);
-    if (!existsSync(absolute)) {
-      throw new Error(
-        `[vue3-infection] INFECTION_FORCELIST entry does not exist: '${relPath}'. ` +
-          `Paths are matched exactly, so a moved entry is silently dead.`,
-      );
-    }
-    return absolute;
-  }),
-);
-
-/**
- * Whether a module must always get a per-Vue-version copy, whatever the graph says.
- *
- * @param {string} absolutePath - Query string already stripped.
- * @returns {boolean}
- */
-const isInfectionForced = (absolutePath) => FORCELIST_ABSOLUTE.has(absolutePath);
 
 /**
  * Strip the query string from a module ID.
@@ -117,7 +68,7 @@ const appendVue3Query = (resource) => {
 
 /**
  * Load and parse the infection scanner JSON data.
- * @returns {Map<string, {infected: boolean, appRoot: string}>}
+ * @returns {Map<string, {infected: boolean, exposedToVue: boolean, appRoot: boolean, imports: Array}>}
  */
 function loadScannerData() {
   if (!existsSync(SCANNER_JSON_PATH)) {
@@ -129,16 +80,31 @@ function loadScannerData() {
   const data = JSON.parse(readFileSync(SCANNER_JSON_PATH, 'utf-8'));
   const graph = new Map();
   for (const [filePath, entry] of Object.entries(data.graph)) {
+    // Refuse data that predates `exposedToVue` rather than falling back to `infected`.
+    // A missing flag reads as falsy, which would mark every module clean and render
+    // every Vue 3 page with Vue 2 silently, with no error anywhere.
+    if (!('exposedToVue' in entry)) {
+      throw new Error(
+        `[vue3-infection] Scanner data at ${SCANNER_JSON_PATH} predates the exposedToVue ` +
+          `flag. Delete it and re-run: ` +
+          `node scripts/frontend/infection_scanner/infection_scanner.mjs`,
+      );
+    }
     // Keep the resolved import edges (sans the bulky `alternatives`) so the loader can
     // propagate infection via the scanner's resolution instead of re-resolving.
     const imports = Array.isArray(entry.imports)
       ? entry.imports.map((e) => ({ source: e.source, resolved: e.resolved, dynamic: e.dynamic }))
       : [];
-    graph.set(filePath, { infected: entry.infected, appRoot: entry.appRoot, imports });
+    graph.set(filePath, {
+      infected: entry.infected,
+      exposedToVue: entry.exposedToVue,
+      appRoot: entry.appRoot,
+      imports,
+    });
   }
   console.log(
     `[vue3-infection] Loaded scanner data: ${graph.size} files, ` +
-      `${[...graph.values()].filter((e) => e.infected).length} infected`,
+      `${[...graph.values()].filter((e) => e.exposedToVue).length} exposed to Vue`,
   );
   return graph;
 }
@@ -214,8 +180,6 @@ const createIsInfectable = (scannerGraph, { shouldExclude, shouldBypass } = {}) 
     const clean = stripQuery(id);
     if (!INFECTABLE_RE.test(clean)) return false;
     if (INFECTION_BLOCKLIST.some((blocked) => clean.includes(blocked))) return false;
-    // Outranks the graph and both callbacks: the list exists for what they get wrong.
-    if (isInfectionForced(clean)) return true;
     if (!scannerGraph) return true;
     if (shouldExclude && shouldExclude(clean)) return false;
     if (shouldBypass && shouldBypass(clean)) return true;
@@ -226,7 +190,10 @@ const createIsInfectable = (scannerGraph, { shouldExclude, shouldBypass } = {}) 
           `Re-run: node scripts/frontend/infection_scanner/infection_scanner.mjs`,
       );
     }
-    return entry.infected;
+    // `exposedToVue`, not `infected`: this predicate answers the downward question
+    // ("a Vue 3 module imports this, so must the copy be Vue 3?"), and `infected` is
+    // computed with an app-root barrier that is only correct for the upward one.
+    return entry.exposedToVue;
   };
 };
 

@@ -52,14 +52,12 @@ module Mcp
               **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
                 items: 'files',
                 prefix: 'diffs_',
-                applies_to: 'diffs is in include and detail is full_patch',
-                default_page_size: nil
+                applies_to: 'diffs is in include and detail is full_patch'
               ),
               **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
                 items: 'notes',
                 prefix: 'notes_',
-                applies_to: 'notes is in include',
-                default_page_size: nil
+                applies_to: 'notes is in include'
               )
             }
           },

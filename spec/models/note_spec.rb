@@ -2222,6 +2222,36 @@ RSpec.describe Note, feature_category: :team_planning do
     end
   end
 
+  describe '#hidden?' do
+    subject { note.hidden? }
+
+    # The `:banned` user trait, not `create(:banned_user)`: `#hidden?` reads the
+    # user's state-machine state, and that factory writes only the table row.
+    context 'when the author is banned' do
+      let_it_be(:banned_author) { create(:user, :banned) }
+      let_it_be(:note) { create(:note, author: banned_author) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the author is not banned' do
+      let_it_be(:note) { create(:note) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the author has been deleted' do
+      let_it_be(:note) { create(:note) }
+
+      before do
+        allow(note).to receive(:author).and_return(nil)
+      end
+
+      # `false`, not `nil`: the value is serialised into a `boolean` ES field.
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe 'banzai_render_context' do
     let(:project) { build(:project_empty_repo) }
 

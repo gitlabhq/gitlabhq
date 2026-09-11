@@ -29,12 +29,14 @@ such as fixing bugs, writing code, or resolving vulnerabilities.
 {{< history >}}
 
 - Requirement for a composite identity service account when `start_workflow` is `true` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/601901) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `enforce_composite_identity_for_api_started_workflows`. Disabled by default.
+- `callback_hook_id` and `client_reference` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249147) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `duo_flow_callback_hooks`. Disabled by default.
 
 {{< /history >}}
 
 > [!flag]
 > The requirement for a composite identity service account is controlled by a feature flag.
-> For more information, see the history.
+> The availability of the `callback_hook_id` and `client_reference` attributes is controlled by a
+> separate feature flag. For more information, see the history.
 
 Triggers and starts a new flow.
 
@@ -58,6 +60,8 @@ Supported attributes:
 | `ai_catalog_item_consumer_id` | integer | No | ID of the AI Catalog item consumer that configures which catalog item to execute. Requires `project_id`. Cannot be used with `workflow_definition`; if both are provided, `ai_catalog_item_consumer_id` takes precedence. See [Look up the consumer ID](#look-up-the-consumer-id). |
 | `ai_catalog_item_version_id` | integer | No | ID of the AI Catalog item version that sourced the flow configuration. |
 | `allow_agent_to_request_user` | boolean | No | When `true` (default), the agent may pause to ask the user questions before proceeding. When `false`, the agent runs to completion without user input. |
+| `callback_hook_id` | integer | No | ID of a webhook with [GitLab Duo flow webhook callbacks](../user/duo_agent_platform/flows/webhook_callbacks.md) turned on. GitLab sends flow lifecycle events to that webhook, so you do not have to poll for the flow status. The webhook must belong to the project or namespace the flow runs in, or to one of its ancestor groups. |
+| `client_reference` | string | No | Opaque string echoed back in every callback payload, to correlate callbacks with the request that triggered the flow. Maximum 255 characters. Has no effect without `callback_hook_id`. |
 | `environment` | string | No | Execution environment. One of: `ide`, `web`, `chat_partial`, `chat`, `ambient`. |
 | `goal` | string | No | Description of the task for the agent to complete. Example: `Fix the failing pipeline`. |
 | `image` | string | No | Container image to use when running the flow in a CI pipeline. Must meet the [custom image requirements](../user/duo_agent_platform/flows/execution/images.md#use-a-custom-image). Example: `registry.gitlab.com/gitlab-org/duo-workflow/custom-image:latest`. |
@@ -106,6 +110,14 @@ GitLab Duo Agent Platform, GitLab returns [`403 Forbidden`](rest/troubleshooting
   "message": "403 Forbidden - Identity verification is required to use GitLab Duo Agent Platform"
 }
 ```
+
+GitLab returns [`400 Bad request`](rest/troubleshooting.md#status-codes) when `callback_hook_id`
+is set and either of the following is true:
+
+- The `duo_flow_callback_hooks` feature flag is not enabled for the top-level group of the
+  project or namespace the flow runs in.
+- The ID does not reference a webhook that has GitLab Duo flow callbacks turned on in the project
+  or namespace the flow runs in, or in one of its ancestor groups.
 
 ### Look up the consumer ID
 
@@ -187,153 +199,6 @@ Example response:
   "mcp_enabled": false,
   "gitlab_url": "https://gitlab.example.com"
 }
-```
-
-## Register a flow callback endpoint
-
-Registers an HTTPS endpoint that receives flow lifecycle events (`flow.started`, `flow.completed`,
-and `flow.failed`). Reference the returned `id` as the `callback_hook_id` attribute when you
-[trigger a flow](#trigger-a-flow) to receive lifecycle notifications instead of polling for status.
-
-The URL and secrets are encrypted at rest and are never returned by the API after registration.
-
-Prerequisites:
-
-- You must have the Owner role for the organization.
-
-```plaintext
-POST /ai/duo_workflows/flow_callbacks
-```
-
-Supported attributes:
-
-| Attribute        | Type   | Required | Description |
-|------------------|--------|----------|-------------|
-| `url`            | string | Yes      | HTTPS URL that receives callbacks. |
-| `name`           | string | No       | A label for this endpoint. |
-| `signing_token`  | string | No       | `HMAC` signing secret in `whsec_<base64-of-32-bytes>` format, used to compute the `webhook-signature` header so you can verify payloads. Not returned. |
-| `token`          | string | No       | Shared secret sent verbatim as the `X-Gitlab-Token` header. Not returned. |
-
-If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following response
-attributes:
-
-| Attribute            | Type    | Description |
-|----------------------|---------|-------------|
-| `created_at`         | string  | Date and time the endpoint was registered. |
-| `id`                 | integer | ID of the flow callback endpoint. |
-| `name`               | string  | Label for this endpoint. |
-| `signing_token_set`  | boolean | Whether a `signing_token` is set. |
-| `token_set`          | boolean | Whether a `token` is set. |
-| `url`                | string  | HTTPS URL that receives callbacks. |
-
-Example request:
-
-```shell
-curl --request POST \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
-  --header "Content-Type: application/json" \
-  --data '{
-    "url": "https://autoflow.example.com/duo/callbacks",
-    "name": "AutoFlow",
-    "signing_token": "whsec_<base64_encoded_32_byte_secret>"
-  }' \
-  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/flow_callbacks"
-```
-
-Example response:
-
-```json
-{
-  "id": 1,
-  "url": "https://autoflow.example.com/duo/callbacks",
-  "name": "AutoFlow",
-  "signing_token_set": true,
-  "token_set": false,
-  "created_at": "2026-07-22T11:37:00.000Z"
-}
-```
-
-## List flow callback endpoints
-
-Lists the flow callback endpoints registered for your organization. Secrets are not returned.
-
-Prerequisites:
-
-- You must have the Owner role for the organization.
-
-```plaintext
-GET /ai/duo_workflows/flow_callbacks
-```
-
-Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
-control the pagination of results.
-
-If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and an array of
-[flow callback endpoint](#register-a-flow-callback-endpoint) objects.
-
-Example request:
-
-```shell
-curl --request GET \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/flow_callbacks"
-```
-
-## Get a flow callback endpoint
-
-Returns a single registered flow callback endpoint. Secrets are not returned.
-
-Prerequisites:
-
-- You must have the Owner role for the organization.
-
-```plaintext
-GET /ai/duo_workflows/flow_callbacks/:id
-```
-
-Supported attributes:
-
-| Attribute | Type    | Required | Description |
-|-----------|---------|----------|-------------|
-| `id`      | integer | Yes      | ID of the flow callback endpoint. |
-
-If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and a
-[flow callback endpoint](#register-a-flow-callback-endpoint) object.
-
-Example request:
-
-```shell
-curl --request GET \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/flow_callbacks/1"
-```
-
-## Delete a flow callback endpoint
-
-Deletes a registered flow callback endpoint so it no longer receives deliveries.
-
-Prerequisites:
-
-- You must have the Owner role for the organization.
-
-```plaintext
-DELETE /ai/duo_workflows/flow_callbacks/:id
-```
-
-Supported attributes:
-
-| Attribute | Type    | Required | Description |
-|-----------|---------|----------|-------------|
-| `id`      | integer | Yes      | ID of the flow callback endpoint. |
-
-If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
-
-Example request:
-
-```shell
-curl --request DELETE \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/flow_callbacks/1"
 ```
 
 ## Get workflow trace as JSONL

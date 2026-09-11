@@ -32,6 +32,20 @@ RSpec.describe 'Import work items', feature_category: :team_planning do
   context 'when user has permissions to import work items' do
     let(:current_user) { reporter }
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_work_item do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:request) do
+        upload_params = mutation_to_apollo_uploads_param(mutation, files: file_paths_in_mutation(mutation))
+
+        workhorse_post_with_file(
+          api('/', version: 'graphql', personal_access_token: pat),
+          params: upload_params,
+          file_key: '1'
+        )
+      end
+    end
+
     context 'with valid CSV file' do
       it 'schedules import job with success message and correct parameters', :aggregate_failures do
         expect(WorkItems::PrepareImportCsvService).to receive(:new) do |received_project, received_user, options|

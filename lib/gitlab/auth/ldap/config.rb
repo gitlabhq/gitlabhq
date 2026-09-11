@@ -144,6 +144,14 @@ module Gitlab
           options['group_base']
         end
 
+        def group_filter
+          options['group_filter']
+        end
+
+        def constructed_group_filter
+          @constructed_group_filter ||= Net::LDAP::Filter.construct(group_filter)
+        end
+
         def admin_group
           options['admin_group']
         end

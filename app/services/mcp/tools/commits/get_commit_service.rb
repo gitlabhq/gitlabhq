@@ -46,8 +46,7 @@ module Mcp
               **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
                 items: 'notes',
                 prefix: 'notes_',
-                applies_to: 'notes is in include',
-                default_page_size: nil
+                applies_to: 'notes is in include'
               )
             }
           },

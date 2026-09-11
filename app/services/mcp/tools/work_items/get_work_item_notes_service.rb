@@ -36,8 +36,7 @@ module Mcp
               # Pagination parameters
               **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
                 items: 'notes',
-                params: %i[first last after before],
-                default_page_size: nil
+                params: %i[first last after before]
               )
             }
           },

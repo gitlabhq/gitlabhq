@@ -45,7 +45,7 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         expect(json_response.count).to eq(PersonalAccessToken.all.count)
       end
 
-      it 'avoids N+1 queries when rendering last_used_ips' do
+      it 'avoids N+1 queries when listing personal access tokens' do
         token = create(:personal_access_token)
         token.last_used_ips.create!(organization: token.organization, ip_address: '192.0.2.30')
 
@@ -563,18 +563,6 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         get api(invalid_path, admin_user)
 
         expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it 'avoids N+1 queries when rendering last_used_ips' do
-        admin_token.last_used_ips.create!(organization: admin_token.organization, ip_address: '192.0.2.1')
-
-        get api(admin_path, admin_user) # warm-up
-
-        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(admin_path, admin_user) }
-
-        admin_token.last_used_ips.create!(organization: admin_token.organization, ip_address: '192.0.2.2')
-
-        expect { get api(admin_path, admin_user) }.not_to exceed_all_query_limit(control)
       end
     end
 

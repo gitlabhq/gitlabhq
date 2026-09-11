@@ -273,11 +273,29 @@ When an additional scope's boundary cannot be resolved from the arguments, the r
 `404 Not Found` instead of skipping the requirement.
 
 Each `additional_scopes` entry must declare a `boundary_type` and locate its boundary
-using either `boundary_argument` or `boundary`. Two entries in the same
-`additional_scopes` list must not share a `boundary_argument` value, because each entry
-needs its own requirement group. Run `bundle exec rake gitlab:permissions:validate` to
-catch declarations that violate these rules at validation time, rather than have them
-silently deny every request with `404 Not Found` at request time.
+using either `boundary_argument` or `boundary`. Two entries in the same `additional_scopes`
+list may share a `boundary_argument` value. They then form a single requirement group and
+act as alternatives within it, the same way `boundaries` alternatives work for the primary
+scope. Entries that share a requirement group must declare identical `permissions` values,
+because a requirement group enforces a single permission list. Run
+`bundle exec rake gitlab:permissions:validate` to catch declarations that violate these
+rules at validation time, rather than have them silently deny every request with
+`404 Not Found` at request time.
+
+In this example, both the source and target containers can be either a project or a group.
+Each requirement group declares both alternatives by using the same `boundary_argument`:
+
+```ruby
+authorize_granular_token permissions: :update_work_item,
+  boundaries: [
+    { boundary_argument: :source_full_path, boundary_type: :project },
+    { boundary_argument: :source_full_path, boundary_type: :group }
+  ],
+  additional_scopes: [
+    { permissions: :create_work_item, boundary_argument: :target_full_path, boundary_type: :project },
+    { permissions: :create_work_item, boundary_argument: :target_full_path, boundary_type: :group }
+  ]
+```
 
 For more details, see [Additional required scopes](graphql_architecture.md#additional-required-scopes).
 

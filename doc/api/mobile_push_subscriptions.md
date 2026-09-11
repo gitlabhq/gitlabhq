@@ -49,7 +49,7 @@ Supported attributes:
 | Attribute          | Type   | Required | Description |
 |--------------------|--------|----------|-------------|
 | `device_token`     | string | Yes      | The hexadecimal APNs device token. |
-| `platform`         | string | No       | The device platform. Only `ios` is supported. New registrations default to `ios`. |
+| `platform`         | string | No       | The device platform. Either `ios` or `macos`. New registrations default to `ios`. |
 | `apns_environment` | string | No       | The APNs environment the token was issued for: `production` or `sandbox`. Default: `production`. |
 | `bundle_id`        | string | No       | The application bundle identifier. |
 | `device_name`      | string | No       | A human-readable device name. |

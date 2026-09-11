@@ -18,6 +18,13 @@ deployers:
       namespaces:
         - gitlab
 
+  # Gitaly server hook the E2E suite expects; a kustomize apply does not create namespaces
+  pre-receive-hook:
+    type: kustomize
+    needs: [prerequisites]
+    kustomize:
+      path: ./manifests/pre-receive-hook
+
   cloudnative-pg:
     type: helm
     helm:
@@ -49,7 +56,7 @@ deployers:
 
   gitlab:
     type: helm
-    needs: [prerequisites, gitlab-dev-stack]
+    needs: [prerequisites, gitlab-dev-stack, pre-receive-hook]
     helm:
       namespace: gitlab
       values_file: ./values/gitlab.yaml

@@ -7,6 +7,12 @@ module Mutations
         graphql_name 'workItemsHierarchyReorder'
         description 'Reorder a work item in the hierarchy tree.'
 
+        authorize_granular_token permissions: :update_work_item,
+          boundaries: [
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :project },
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :group }
+          ]
+
         argument :id, ::Types::GlobalIDType[::WorkItem],
           required: true, description: 'Global ID of the work item to be reordered.'
 

@@ -312,10 +312,10 @@ describe('Snippet Blob Edit component', () => {
       });
     });
 
-    describe('with a non-markdown file', () => {
+    describe('with a new unnamed file', () => {
       beforeEach(() => {
         createComponent({
-          blob: { ...TEST_BLOB_LOADED, path: 'script.rb' },
+          blob: { ...TEST_BLOB_LOADED, path: '' },
         });
       });
 
@@ -327,7 +327,7 @@ describe('Snippet Blob Edit component', () => {
         expect(unuseSpy).not.toHaveBeenCalled();
       });
 
-      it('installs the extension when renamed to a markdown file', async () => {
+      it('installs the extension when the file is named as markdown', async () => {
         emitEditorReady();
         await waitForPromises();
         await renameBlob('README.md');
@@ -336,7 +336,7 @@ describe('Snippet Blob Edit component', () => {
         expect(useSpy).toHaveBeenCalledWith(expectedUseArgs);
       });
 
-      it('installs the extension when renamed to a markdown file before the editor is ready', async () => {
+      it('installs the extension when the file is named as markdown before the editor is ready', async () => {
         await renameBlob('README.md');
         await waitForPromises();
         emitEditorReady();

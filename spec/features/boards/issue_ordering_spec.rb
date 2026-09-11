@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
+  include BoardHelpers
+
   let(:project) { create(:project, :public) }
   let(:board) { create(:board, project: project) }
   let(:user) { create(:user) }
@@ -205,15 +207,10 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
     end
 
     it 'moves to bottom of another list' do
-      lists = all('.board-list', minimum: 3)
-      from_list = lists.at(1)
-      from_item = from_list.all('.board-card', minimum: 1).at(0)
-      to_list = lists.at(2)
-
       # drag to the footer of the last card to ensure from_item is dropped below
-      to_item = to_list.all('.board-card', minimum: 3).last.find('.board-card-footer')
+      to_item = board_list(2).all('.board-card', minimum: 3).last.find('.board-card-footer')
 
-      from_item.drag_to(to_item)
+      board_card(1, 0).drag_to(to_item)
 
       wait_for_requests
 
@@ -239,14 +236,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
     end
   end
 
-  def drag(selector: '.board-list', list_from_index: 1, from_index: 0, to_index: 0, list_to_index: 1)
-    lists = all(selector, minimum: [list_from_index, list_to_index].max + 1)
-    from_list = lists.at(list_from_index)
-    from_item = from_list.all('.board-card', minimum: from_index + 1).at(from_index)
-    to_list = lists.at(list_to_index)
-
-    to_item = to_list.all('.board-card', minimum: to_index + 1).at(to_index)
-
-    from_item.drag_to(to_item)
+  def drag(list_from_index: 1, from_index: 0, to_index: 0, list_to_index: 1)
+    board_card(list_from_index, from_index).drag_to(board_card(list_to_index, to_index))
   end
 end

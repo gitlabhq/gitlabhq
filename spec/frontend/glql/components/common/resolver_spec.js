@@ -396,6 +396,23 @@ describe('Resolver', () => {
       });
     });
 
+    it('hands the trend metric down to the presenter', async () => {
+      mockParse();
+      execute.mockImplementation((query) =>
+        Promise.resolve(isComparison(query) ? PREVIOUS : CURRENT),
+      );
+      transform.mockImplementation(identity);
+
+      createWrapper({
+        glqlQuery: GLQL_QUERY,
+        comparisonQuery: COMPARISON_QUERY,
+        trendMetric: 'totalCount',
+      });
+      await waitForPromises();
+
+      expect(findPresenter().props('trendMetric')).toBe('totalCount');
+    });
+
     it('emits the change event with the main result as the data', async () => {
       await setup();
 

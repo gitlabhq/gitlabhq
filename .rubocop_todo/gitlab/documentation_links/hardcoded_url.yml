@@ -5,7 +5,6 @@ Gitlab/DocumentationLinks/HardcodedUrl:
     - 'app/serializers/build_details_entity.rb'
     - 'ee/app/graphql/mutations/requirements_management/export_requirements.rb'
     - 'ee/app/mailers/emails/user_cap.rb'
-    - 'ee/lib/system_check/app/advanced_search_migrations_check.rb'
     - 'ee/lib/tasks/gitlab/geo.rake'
     - 'lib/feature.rb'
     - 'lib/gitlab/audit/auditor.rb'

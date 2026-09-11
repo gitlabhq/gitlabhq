@@ -42,6 +42,32 @@ RSpec.describe 'Bulk move work items', feature_category: :team_planning do
       expect(mutation_response['movedWorkItemCount']).to eq(moveable_work_items.count)
       expect(mutation_response['errors']).to be_empty
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_work_item,
+      additional_scope_permissions: :create_work_item do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:additional_scope_requirements) do
+        [{ boundary_object: target_project, permissions: :create_work_item }]
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
+    context 'when the source namespace is a group' do
+      let(:source_full_path) { group.full_path }
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :update_work_item,
+        additional_scope_permissions: :create_work_item do
+        let(:user) { current_user }
+        let(:boundary_object) { group }
+        let(:additional_scope_requirements) do
+          [{ boundary_object: target_project, permissions: :create_work_item }]
+        end
+
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+    end
   end
 
   context 'when user cannot move all work items' do

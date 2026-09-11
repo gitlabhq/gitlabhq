@@ -46,29 +46,34 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-flex-col gl-justify-end gl-px-0">
-    <div class="gl-flex gl-items-center gl-gap-2">
-      <h3 class="gl-heading-4 gl-m-0" data-testid="section-header-title">{{ title }}</h3>
-      <template v-if="hasTooltip">
-        <gl-icon
-          :id="tooltipId"
-          name="information-o"
-          class="gl-text-subtle"
-          tabindex="0"
-          :aria-label="tooltipLabel"
-          data-testid="section-header-tooltip-icon"
-        />
-        <gl-popover :target="tooltipId" :title="tooltip.title">
-          {{ tooltip.description }}
-        </gl-popover>
-      </template>
+  <!-- gl-h-full fills the grid cell and gl-mt-auto sinks the rule and text to its bottom edge, so
+       the spare rows become spacing from the panel above. Not justify-end: a block taller than the
+       cell then overflows downward, where gridstack scrolls it, instead of off the clipped top. -->
+  <div class="gl-flex gl-h-full gl-flex-col gl-px-0">
+    <div class="gl-border-t gl-mt-auto gl-pt-4" data-testid="section-header-divider">
+      <div class="gl-flex gl-items-center gl-gap-2">
+        <h3 class="gl-heading-4 gl-m-0" data-testid="section-header-title">{{ title }}</h3>
+        <template v-if="hasTooltip">
+          <gl-icon
+            :id="tooltipId"
+            name="information-o"
+            class="gl-text-subtle"
+            tabindex="0"
+            :aria-label="tooltipLabel"
+            data-testid="section-header-tooltip-icon"
+          />
+          <gl-popover :target="tooltipId" :title="tooltip.title">
+            {{ tooltip.description }}
+          </gl-popover>
+        </template>
+      </div>
+      <p
+        v-if="description"
+        class="gl-m-0 gl-mt-1 gl-text-sm gl-text-subtle"
+        data-testid="section-header-description"
+      >
+        {{ description }}
+      </p>
     </div>
-    <p
-      v-if="description"
-      class="gl-m-0 gl-mt-1 gl-text-sm gl-text-subtle"
-      data-testid="section-header-description"
-    >
-      {{ description }}
-    </p>
   </div>
 </template>

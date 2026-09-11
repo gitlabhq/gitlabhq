@@ -369,7 +369,7 @@ module Gitlab
       def record_distill_artifact(name, content, failed)
         if failed.include?(name)
           artifacts.write(name, Artifacts::STATUS_FAILED)
-          abort "\n#{Rainbow("ERROR: #{name} failed distillation after retries").red}"
+          abort "\n#{Rainbow("ERROR: #{name} failed distillation").red}"
         end
 
         if content.nil?
@@ -386,7 +386,7 @@ module Gitlab
       # a principle that Duo could not distill from one whose job never got to run.
       def report_collected(result)
         if result.failed.any?
-          warn Rainbow("  #{result.failed.size} principle(s) failed distillation after retries: " \
+          warn Rainbow("  #{result.failed.size} principle(s) failed distillation: " \
             "#{result.failed.join(', ')}").red
         end
 
@@ -416,7 +416,7 @@ module Gitlab
       def abort_on_failures(failed)
         return if failed.empty?
 
-        abort "\n#{Rainbow("ERROR: #{failed.size} principle(s) failed after retries: #{failed.join(', ')}").red}"
+        abort "\n#{Rainbow("ERROR: #{failed.size} principle(s) failed distillation: #{failed.join(', ')}").red}"
       end
 
       # Emits the dotenv report read by the `ai-principles-report-failure` Slack job.
@@ -645,6 +645,13 @@ module Gitlab
         end
 
         repair_escape_artifacts(Diff.strip_preamble(updated), config, log_warn)
+      rescue Workflow::NonRetryableCreationError => e
+        warn_non_retryable_creation(name, e, log_warn)
+        nil
+      end
+
+      def warn_non_retryable_creation(name, error, log_warn)
+        log_warn.call(Rainbow("  ERROR: #{name}: #{error.message}; not retrying").red)
       end
 
       # Preserve literal escape artifacts copied from the SSOT while correcting entities and escaped quotes or brackets

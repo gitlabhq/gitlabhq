@@ -134,7 +134,7 @@ RSpec.describe Mcp::Tools::WorkItems::ListWorkItemsService, feature_category: :m
               minimum: 1,
               maximum: 100,
               description: 'Number of work items to return after the cursor (forward pagination). ' \
-                'Default 20, max 100.'
+                'Max 100.'
             },
             after: {
               type: 'string',

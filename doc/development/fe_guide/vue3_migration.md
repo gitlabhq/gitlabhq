@@ -358,19 +358,20 @@ The fields are:
 
 - `holds` is the kind of state found in the module.
 - The chain shows how each lane reaches the module. `V2` or `V3` marks the lane of each step.
-- `sink` names the module that reverted the subtree to Vue 2, when there is one. It is the module to fix.
+- `sink` names the module that reverted the subtree to Vue 2, when there is one.
+  After the bundler follows `exposedToVue`, only a module on `INFECTION_BLOCKLIST` can be a sink.
 - The roots list is trimmed in this example.
 
 #### How to fix it
 
-1. Usual fix: When `sink` names a module, add that module to `INFECTION_FORCELIST` in `config/helpers/context_aliases_shared.js`.
-   The module then gets a copy per lane, so the subtree below it stays on Vue 3.
-   The error prints paste-ready lines for the list.
-1. Alternative: When the state needs no Vue, move it into its own Vue-free module, and add that module to `INFECTION_BLOCKLIST` in the same file.
-   Every lane then shares one copy. `app/assets/javascripts/lib/utils/breadcrumbs_state.js` is an existing example.
+1. Usual fix: Move the state into its own module that is not exposed to Vue. It imports nothing, or only modules that are not exposed to Vue themselves.
+   The bundler never duplicates such a module, so every lane shares one copy.
+   `app/assets/javascripts/lib/graphql_pending_requests.js` and `app/assets/javascripts/graphql_shared/issuable_client_state.js` are existing examples.
+1. Alternative: When the state module must keep its imports, add it to `INFECTION_BLOCKLIST` in `config/helpers/context_aliases_shared.js`.
+   Every lane then shares one copy, but the subtree below the module runs Vue 2 inside a Vue 3 page.
+   `app/assets/javascripts/lib/utils/breadcrumbs_state.js` is an existing example.
 1. For flat reactive state, use `observable()` from `~/lib/utils/observable`.
 
-The two lists are opposites: `INFECTION_BLOCKLIST` means never duplicate, `INFECTION_FORCELIST` means always duplicate.
 Use the blocklist only for a module that runs no Vue-version-specific setup.
 A Pinia instance or a `VueApollo` provider is bound to the Vue version that built it, so one shared copy binds the wrong one.
 

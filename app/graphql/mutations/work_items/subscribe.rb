@@ -19,6 +19,11 @@ module Mutations
         description: 'Work item after mutation.'
 
       authorize :update_subscription
+      authorize_granular_token permissions: :subscribe_work_item,
+        boundaries: [
+          { boundary_argument: :id, boundary: :resource_parent, boundary_type: :project },
+          { boundary_argument: :id, boundary: :resource_parent, boundary_type: :group }
+        ]
 
       def resolve(args)
         work_item = authorized_find!(id: args[:id])

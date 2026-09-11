@@ -25,20 +25,18 @@ RSpec.describe Groups::Settings::AccessTokensController, feature_category: :syst
   end
 
   describe 'GET /:namespace/-/settings/access_tokens' do
-    let(:access_tokens_path) { group_settings_access_tokens_path(resource) }
-
     let(:get_access_tokens) do
-      get access_tokens_path
+      get group_settings_access_tokens_path(resource)
       response
     end
 
     let(:get_access_tokens_json) do
-      get access_tokens_path, params: { format: :json }
+      get group_settings_access_tokens_path(resource), params: { format: :json }
       response
     end
 
     subject(:get_access_tokens_with_page) do
-      get access_tokens_path, params: { page: 1 }
+      get group_settings_access_tokens_path(resource), params: { page: 1 }
       response
     end
 
@@ -48,10 +46,8 @@ RSpec.describe Groups::Settings::AccessTokensController, feature_category: :syst
   end
 
   describe 'GET /:namespace/-/settings/access_tokens/inactive.json' do
-    let(:inactive_access_tokens_path) { inactive_group_settings_access_tokens_path(resource, format: :json) }
-
     subject(:get_inactive_access_tokens) do
-      get inactive_access_tokens_path
+      get inactive_group_settings_access_tokens_path(resource, format: :json)
       response
     end
 

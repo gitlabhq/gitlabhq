@@ -13,7 +13,7 @@ RSpec.describe Mutations::WorkItems::SavedViews::Update, feature_category: :plan
 
   subject(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
-  specify { expect(described_class).to require_graphql_authorizations(:update_saved_view) }
+  specify { expect(described_class).to require_graphql_authorizations(:update_work_item_saved_view) }
 
   context 'when the user is not logged in' do
     let(:current_user) { nil }

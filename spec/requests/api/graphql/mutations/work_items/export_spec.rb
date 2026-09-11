@@ -49,5 +49,18 @@ RSpec.describe 'Export work items', feature_category: :team_planning do
       )
       expect(mutation_response['errors']).to be_empty
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_work_item do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_work_item do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) { graphql_mutation(:work_item_export, input) }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
   end
 end

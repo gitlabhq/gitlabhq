@@ -61,8 +61,8 @@ RSpec.shared_examples 'multiple issue boards' do
       wait_for_requests
 
       in_boards_switcher_dropdown do
-        expect(page).not_to have_content(board.name)
         expect(page).to have_content(board2.name)
+        expect(page).not_to have_content(board.name)
       end
     end
 
@@ -154,6 +154,7 @@ RSpec.shared_examples 'multiple issue boards' do
 
     it 'does not show action links' do
       in_boards_switcher_dropdown do
+        expect(page).to have_content(board.name)
         expect(page).not_to have_content('Create new board')
         expect(page).not_to have_content('Delete board')
       end
@@ -161,12 +162,13 @@ RSpec.shared_examples 'multiple issue boards' do
   end
 
   def in_boards_switcher_dropdown
-    find('.boards-switcher').click
+    within_testid('boards-selector') do
+      toggle_listbox
+    end
 
-    wait_for_requests
+    page.within('[data-testid="boards-selector"] .gl-new-dropdown') do
+      expect(page).to have_css('.gl-new-dropdown-item[role="option"]')
 
-    dropdown_selector = '[data-testid="boards-selector"] .gl-new-dropdown'
-    page.within(dropdown_selector) do
       yield
     end
   end

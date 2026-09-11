@@ -300,3 +300,30 @@ export const MOCK_AGGREGATED_DATA_TWO_DIMS = {
     { user: 'user-2', language: 'python', totalCount: 5, acceptanceRate: 0 },
   ],
 };
+
+export const MOCK_AGGREGATED_COMPARISON_DATA_ONE_DIM = {
+  nodes: [
+    { language: 'ruby', totalCount: 20, acceptanceRate: 0.5 },
+    { language: 'python', totalCount: 14, acceptanceRate: 0.4 },
+  ],
+};
+
+export const MOCK_AGGREGATED_FIELDS_OBJECT_DIM = [
+  { key: 'group', label: 'Group', name: 'group', type: 'dimension' },
+  { key: 'totalCount', label: 'Total count', name: 'totalCount', type: 'metric' },
+];
+
+// `Namespace` values carry no `id` here, so neither row can be identified and neither
+// pairs across periods.
+export const MOCK_AGGREGATED_DATA_OBJECT_DIM = {
+  nodes: [
+    {
+      group: { __typename: 'Namespace', fullName: 'Group A', webUrl: '/groups/group-a' },
+      totalCount: 10,
+    },
+    {
+      group: { __typename: 'Namespace', fullName: 'Group B', webUrl: '/groups/group-b' },
+      totalCount: 5,
+    },
+  ],
+};

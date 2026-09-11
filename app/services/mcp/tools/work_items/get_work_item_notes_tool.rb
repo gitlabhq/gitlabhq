@@ -4,20 +4,20 @@ module Mcp
   module Tools
     module WorkItems
       class GetWorkItemNotesTool < BaseTool
+        extend Gitlab::Utils::Override
+        include Mcp::Tools::Concerns::CursorPagination
+
+        DEFAULT_NOTES_PAGE_SIZE = 100
+
         register_version VERSIONS[:v0_1_0], {
           operation_name: 'workItem',
           graphql_operation: load_graphql('work_items/get_work_item_notes.query.graphql')
         }
 
         def build_variables
-          work_item_id = resolve_work_item_id
-
           {
-            id: work_item_id,
-            after: params[:after],
-            before: params[:before],
-            first: params[:first],
-            last: params[:last]
+            id: resolve_work_item_id,
+            **resolve_pagination_direction
           }.compact
         end
 
@@ -28,6 +28,11 @@ module Mcp
         end
 
         private
+
+        override :default_page_size
+        def default_page_size
+          DEFAULT_NOTES_PAGE_SIZE
+        end
 
         def process_result(result)
           processed_result = super

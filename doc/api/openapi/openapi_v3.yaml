@@ -43477,7 +43477,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_a41b1296e61e"
+              "$ref": "#/components/schemas/RequestBody_210e5e345564"
     delete:
       operationId: deleteApiV4UserPushSubscriptions
       summary: Unregister a mobile device from push notifications
@@ -75844,7 +75844,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_1ab15ee78a23"
+              "$ref": "#/components/schemas/RequestBody_ca36c5857eaa"
   "/api/v4/groups/{id}":
     put:
       operationId: putApiV4GroupsId
@@ -75876,7 +75876,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_458681bdbaec"
+              "$ref": "#/components/schemas/RequestBody_ea23abb32b0c"
     get:
       operationId: getApiV4GroupsId
       summary: Retrieve a group
@@ -96228,6 +96228,18 @@ components:
           type: object
           example:
             latest: 1.0.1
+    APIEntitiesCiMinutesUsage:
+      type: object
+      properties:
+        total_minutes_used:
+          type: integer
+          example: 105
+        monthly_minutes_used:
+          type: integer
+          example: 100
+        purchased_minutes_used:
+          type: integer
+          example: 5
     APIEntitiesNamespace:
       type: object
       properties:
@@ -96269,6 +96281,8 @@ components:
         shared_runners_minutes_limit:
           type: integer
           example: 133
+        ci_minutes_usage:
+          "$ref": "#/components/schemas/APIEntitiesCiMinutesUsage"
         extra_shared_runners_minutes_limit:
           type: integer
           example: 133
@@ -99720,6 +99734,9 @@ components:
         prompt_injection_protection_level:
           type: string
           example: no_checks
+        web_search_enabled:
+          type: boolean
+          example: false
         include_recommended_allowed:
           type: boolean
           example: false
@@ -116890,7 +116907,7 @@ components:
           nullable: true
       required:
       - reason
-    RequestBody_a41b1296e61e:
+    RequestBody_210e5e345564:
       type: object
       properties:
         device_token:
@@ -116901,6 +116918,7 @@ components:
           type: string
           enum:
           - ios
+          - macos
           description: The device platform
           nullable: true
         apns_environment:
@@ -123268,7 +123286,7 @@ components:
           example:
             environment: production
           nullable: true
-    RequestBody_1ab15ee78a23:
+    RequestBody_ca36c5857eaa:
       type: object
       properties:
         name:
@@ -123568,6 +123586,11 @@ components:
               description: Confine the AI Catalog to items within this top-level group
                 hierarchy
               nullable: true
+            web_search_enabled:
+              type: boolean
+              description: Allow web search in GitLab Duo Chat for this top-level
+                group
+              nullable: true
             foundational_agents_default_enabled:
               type: boolean
               description: Whether new foundational agents are enabled by default
@@ -123638,7 +123661,7 @@ components:
       required:
       - name
       - path
-    RequestBody_458681bdbaec:
+    RequestBody_ea23abb32b0c:
       type: object
       properties:
         name:
@@ -123939,6 +123962,11 @@ components:
               type: boolean
               description: Confine the AI Catalog to items within this top-level group
                 hierarchy
+              nullable: true
+            web_search_enabled:
+              type: boolean
+              description: Allow web search in GitLab Duo Chat for this top-level
+                group
               nullable: true
             foundational_agents_default_enabled:
               type: boolean

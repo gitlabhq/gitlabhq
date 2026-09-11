@@ -25,6 +25,7 @@ project:
   - admin_work_item
   - build_download_code
   - build_read_container_image
+  - create_dependency_firewall_evaluation
   - create_design
   - create_epic
   - create_incident
@@ -39,6 +40,7 @@ project:
   - create_test_case
   - create_ticket
   - create_timelog
+  - create_work_item_saved_view
   - daily_statistics
   - delete_project_secrets
   - destroy_design
@@ -127,6 +129,7 @@ group:
   - create_secret
   - create_secrets_manager_api_jwt
   - create_timelog
+  - create_work_item_saved_view
   - delete_secret
   - download_wiki_code
   - manage_devops_adoption_namespaces

@@ -533,6 +533,35 @@ export function computeInfected(graph, appRootSet, infectionSpecifiers) {
   return { infectedSet, infectionTriggers };
 }
 
+/**
+ * Compute which files a Vue 3 importer must hand a Vue 3 copy to.
+ *
+ * This is `computeInfected` with the app-root barrier removed, and the two answer
+ * different questions.
+ *
+ * `infected` answers the upward one: does this module hold Vue that needs a
+ * per-version copy? There the barrier is right, because an app root is a
+ * self-contained Vue boundary and its importers do not inherit its Vue-ness.
+ * Without the barrier, importing any bootstrap would infect the importer and
+ * infection would spread to the whole repo.
+ *
+ * `exposedToVue` answers the downward one: a Vue 3 module imports this, so must the
+ * copy be Vue 3? There the barrier is wrong. A pass-through module above an app
+ * root holds no Vue itself, but it still has to hand a Vue 3 copy to its own
+ * subtree. When it does not, the subtree reverts to Vue 2 inside a page meant to
+ * run Vue 3, and every module-scope singleton down there is duplicated.
+ *
+ * `infectedSet` is a subset of the returned set by construction, since removing a
+ * barrier can only add files.
+ *
+ * @param {Object<string, Array<{source: string, resolved: string|null}>>} graph
+ * @param {string[]} infectionSpecifiers
+ * @returns {Set<string>}
+ */
+export function computeExposedToVue(graph, infectionSpecifiers) {
+  return computeInfected(graph, new Set(), infectionSpecifiers).infectedSet;
+}
+
 function findNearestInfectionReasons({
   file,
   infectionTriggers,
@@ -614,12 +643,14 @@ export async function analyze({
     appRootSet,
     infectionSpecifiers,
   );
+  const exposedToVueSet = computeExposedToVue(graph, infectionSpecifiers);
 
   const annotatedGraph = {};
   for (const [file, imports] of Object.entries(graph)) {
     const entry = {
       imports,
       infected: infectedSet.has(file),
+      exposedToVue: exposedToVueSet.has(file),
       appRoot: appRootSet.has(file),
     };
     if (singletonsByFile.has(file)) {

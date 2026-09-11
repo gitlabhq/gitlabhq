@@ -3,6 +3,11 @@ export const generateMockPipeline = ({
   mergeRequestEventType = 'DETACHED',
   status = 'SUCCESS',
   downstream = { count: 0, nodes: [], __typename: 'PipelineConnection' },
+  userPermissions = {
+    cancelPipeline: true,
+    updatePipeline: true,
+    __typename: 'PipelinePermissions',
+  },
 } = {}) => ({
   id: `gid://gitlab/Ci::Pipeline/${id}`,
   iid: id,
@@ -15,7 +20,6 @@ export const generateMockPipeline = ({
   stuck: false,
   failureReason: null,
   yamlErrors: false,
-  yamlErrorMessages: null,
   latest: true,
   retryable: true,
   cancelable: false,
@@ -27,6 +31,7 @@ export const generateMockPipeline = ({
   hasScheduledActions: false,
   pipelineSchedule: null,
   failedJobsCount: 0,
+  userPermissions,
   __typename: 'Pipeline',
   commit: {
     id: 'gid://gitlab/Ci::Commit/1',
@@ -225,7 +230,6 @@ export const mockPipelineUpdateResponse = {
       source: 'web',
       latest: true,
       yamlErrors: false,
-      yamlErrorMessages: null,
       failureReason: null,
       configSource: 'REPOSITORY_SOURCE',
       stuck: false,
@@ -291,6 +295,11 @@ export const mockPipelineUpdateResponse = {
       hasScheduledActions: false,
       pipelineSchedule: null,
       failedJobsCount: 0,
+      userPermissions: {
+        cancelPipeline: true,
+        updatePipeline: true,
+        __typename: 'PipelinePermissions',
+      },
       __typename: 'Pipeline',
       downstream: {
         count: 0,

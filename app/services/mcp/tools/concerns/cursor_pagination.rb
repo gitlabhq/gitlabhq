@@ -23,7 +23,8 @@ module Mcp
         # :snake_case so the description tells callers where to actually find the cursor.
         CURSOR_LOCATIONS = {
           camel_case: { after: 'pageInfo.endCursor', before: 'pageInfo.startCursor' },
-          snake_case: { after: 'page_info.end_cursor', before: 'page_info.start_cursor' }
+          snake_case: { after: 'page_info.end_cursor', before: 'page_info.start_cursor' },
+          metadata: { after: 'metadata.end_cursor', before: 'metadata.start_cursor' }
         }.freeze
 
         # first and last are bounded page sizes, after and before are opaque cursor strings.
@@ -33,17 +34,13 @@ module Mcp
         class << self
           # Returns input_schema properties for the requested params, so every tool describes
           # and bounds its pagination the same way. Splat the result into the properties hash.
-          #
-          # Pass default_page_size: nil when the tool sends the page size on to GraphQL
-          # untouched, so the schema does not promise a default the tool never applies.
           def input_schema_params(
             items:, params: FORWARD_PARAMS, prefix: nil, applies_to: nil,
-            default_page_size: DEFAULT_PAGE_SIZE, cursor_style: :camel_case)
+            cursor_style: :camel_case)
             unsupported = params - SUPPORTED_PARAMS
             raise ArgumentError, "Unsupported cursor pagination params: #{unsupported.join(', ')}" if unsupported.any?
 
-            # The same for every param in one call, so build them once instead of per param.
-            bounds = page_size_bounds(default_page_size)
+            bounds = "Max #{MAX_PAGE_SIZE}."
             condition = "Applies only when #{applies_to}." if applies_to
             cursor_locations = CURSOR_LOCATIONS.fetch(cursor_style)
 
@@ -70,12 +67,6 @@ module Mcp
             PAGE_SIZE_PARAMS.include?(param)
           end
 
-          def page_size_bounds(default_page_size)
-            return "Max #{MAX_PAGE_SIZE}." unless default_page_size
-
-            "Default #{default_page_size}, max #{MAX_PAGE_SIZE}."
-          end
-
           def sentences(*parts)
             parts.compact.join(' ')
           end
@@ -83,9 +74,21 @@ module Mcp
 
         private
 
-        # Applies the default the schema documents. The including tool must expose params.
+        def default_page_size
+          DEFAULT_PAGE_SIZE
+        end
+
         def paginated_first
-          params[:first] || DEFAULT_PAGE_SIZE
+          params[:first] || default_page_size
+        end
+
+        # When both first and last are present, forward wins. GraphQL rejects both.
+        def resolve_pagination_direction
+          if params[:last].present? && !params[:first].present?
+            { last: params[:last], before: params[:before] }
+          else
+            { first: paginated_first, after: params[:after] }
+          end
         end
       end
     end

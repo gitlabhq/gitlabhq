@@ -96,25 +96,21 @@ describe('Blob Editing', () => {
     resetHTMLFixture();
   });
 
-  const editorInst = ({ isSecurityPolicy = false }) => {
+  const initEditor = async ({ isSecurityPolicy = false } = {}) => {
     blobInstance = new EditBlob({
       previewMarkdownPath: PREVIEW_MARKDOWN_PATH,
       filePath: isSecurityPolicy ? '.gitlab/security-policies/policy.yml' : filePath,
       projectPath: 'path/to/project',
       projectId,
     });
-    return blobInstance;
-  };
-
-  const initEditor = async ({ isSecurityPolicy = false } = {}) => {
-    editorInst({ isSecurityPolicy });
     await waitForPromises();
   };
 
   // The new file page has a file name input instead of a file path input,
-  // no Write/Preview tabs, and no filePath option (nothing to fetch).
+  // and no filePath option (nothing to fetch).
   const initNewFilePage = async ({ editorContent = '' } = {}) => {
     setHTMLFixture(`
+      <div class="js-edit-mode"><a href="#editor">Write</a><a href="#preview">Preview</a></div>
       <form class="js-edit-blob-form">
         <input id="file_name" />
         <div class="js-edit-mode-pane" id="editor" data-ref="main">${editorContent}</div>
@@ -167,8 +163,8 @@ describe('Blob Editing', () => {
     expect(findPane('#preview').style.display).not.toBe('none');
   };
 
-  const stubPreviewEndpoint = () => {
-    mock.onPost(PREVIEW_ENDPOINT).reply(HTTP_STATUS_OK, '<div>rendered</div>');
+  const stubPreviewEndpoint = (status = HTTP_STATUS_OK, response = '<div>rendered</div>') => {
+    mock.onPost(PREVIEW_ENDPOINT).reply(status, response);
     document.querySelector(`a[href='#preview']`).dataset.previewUrl = PREVIEW_ENDPOINT;
   };
 
@@ -223,6 +219,19 @@ describe('Blob Editing', () => {
     expect(mockInstance.updateModelLanguage).toHaveBeenLastCalledWith('index.ts');
   });
 
+  describe('Security Policy Yaml', () => {
+    it('does not load SecurityPolicySchemaExtension by default', async () => {
+      await initEditor();
+      expect(SecurityPolicySchemaExtension).not.toHaveBeenCalled();
+    });
+
+    it('loads SecurityPolicySchemaExtension only for the security policies yml', async () => {
+      await initEditor({ isSecurityPolicy: true });
+      expect(useMock).toHaveBeenCalledTimes(2);
+      expect(useMock.mock.calls[1]).toEqual([[{ definition: SecurityPolicySchemaExtension }]]);
+    });
+  });
+
   describe('Markdown', () => {
     const countMarkdownExtensionInstalls = () =>
       useMock.mock.calls.filter(
@@ -231,58 +240,29 @@ describe('Blob Editing', () => {
           extensions.some(({ definition }) => definition === EditorMarkdownExtension),
       ).length;
 
-    it('does not install markdown extensions by default', async () => {
-      await initEditor();
-      expect(countMarkdownExtensionInstalls()).toBe(0);
-      expect(EditorMarkdownExtension).not.toHaveBeenCalled();
-      expect(EditorMarkdownPreviewExtension).not.toHaveBeenCalled();
-    });
-
-    it('installs markdown extensions only once for a pre-filled markdown file name', async () => {
-      setFileName('README.md');
-      await initEditor();
-
-      expect(countMarkdownExtensionInstalls()).toBe(1);
-      expect(useMock).toHaveBeenCalledWith(markdownExtensions);
-    });
-
     it.each`
-      desc                                         | to
-      ${'when renamed to a markdown file'}         | ${'README.md'}
-      ${'when renamed to .rmd, unknown to Monaco'} | ${'README.rmd'}
-    `('installs markdown extensions $desc', async ({ to }) => {
+      desc                                 | from
+      ${'a pre-filled markdown file name'} | ${'README.md'}
+      ${'.rmd, unknown to Monaco'}         | ${'README.rmd'}
+    `(
+      'installs markdown extensions for $desc and uninstalls them when renamed away',
+      async ({ from }) => {
+        setFileName(from);
+        await initEditor();
+        expect(countMarkdownExtensionInstalls()).toBe(1);
+        expect(useMock).toHaveBeenCalledWith(markdownExtensions);
+
+        await renameFile('README.rst');
+
+        expect(unuseMock).toHaveBeenCalledWith(markdownExtensions);
+      },
+    );
+
+    it('does not install markdown extensions for a pre-filled non-markdown file name', async () => {
       setFileName('README.rst');
       await initEditor();
-      expect(countMarkdownExtensionInstalls()).toBe(0);
-
-      await renameFile(to);
-
-      expect(countMarkdownExtensionInstalls()).toBe(1);
-    });
-
-    it.each`
-      desc                                     | from
-      ${'when renamed to a non-markdown file'} | ${'README.md'}
-      ${'when renamed away from .rmd'}         | ${'README.rmd'}
-    `('uninstalls markdown extensions $desc', async ({ from }) => {
-      setFileName(from);
-      await initEditor();
-      expect(countMarkdownExtensionInstalls()).toBe(1);
-
-      await renameFile('README.rst');
-
-      expect(unuseMock).toHaveBeenCalledWith(markdownExtensions);
-    });
-
-    it('does nothing when renamed to another non-markdown file', async () => {
-      setFileName('README.rst');
-      await initEditor();
-      expect(countMarkdownExtensionInstalls()).toBe(0);
-
-      await renameFile('README.org');
 
       expect(countMarkdownExtensionInstalls()).toBe(0);
-      expect(unuseMock).not.toHaveBeenCalled();
     });
 
     it('does not reinstall markdown extensions when renamed to another markdown file extension', async () => {
@@ -310,10 +290,28 @@ describe('Blob Editing', () => {
       expect(countMarkdownExtensionInstalls()).toBe(2);
     });
 
-    describe('starting from a non-markdown file', () => {
+    describe('on the new file page', () => {
       beforeEach(async () => {
-        setFileName('README.rst');
-        await initEditor();
+        await initNewFilePage();
+      });
+
+      it.each`
+        desc                         | to
+        ${'a markdown file name'}    | ${'README.md'}
+        ${'.rmd, unknown to Monaco'} | ${'README.rmd'}
+      `('installs markdown extensions when $desc is entered', async ({ to }) => {
+        expect(countMarkdownExtensionInstalls()).toBe(0);
+
+        await renameFile(to);
+
+        expect(countMarkdownExtensionInstalls()).toBe(1);
+      });
+
+      it('does nothing when a non-markdown file name is entered', async () => {
+        await renameFile('README.rst');
+
+        expect(countMarkdownExtensionInstalls()).toBe(0);
+        expect(unuseMock).not.toHaveBeenCalled();
       });
 
       it('does not start a second load while one is in progress', async () => {
@@ -381,32 +379,6 @@ describe('Blob Editing', () => {
         expect(addEditorMarkdownListeners).toHaveBeenCalledTimes(1);
       });
     });
-
-    describe('on the new file page', () => {
-      it('installs and uninstalls markdown extensions using the file name input', async () => {
-        await initNewFilePage();
-        expect(countMarkdownExtensionInstalls()).toBe(0);
-
-        await renameFile('README.md');
-        expect(countMarkdownExtensionInstalls()).toBe(1);
-
-        await renameFile('README.rst');
-        expect(unuseMock).toHaveBeenCalledWith(markdownExtensions);
-      });
-    });
-  });
-
-  describe('Security Policy Yaml', () => {
-    it('does not load SecurityPolicySchemaExtension by default', async () => {
-      await initEditor();
-      expect(SecurityPolicySchemaExtension).not.toHaveBeenCalled();
-    });
-
-    it('loads SecurityPolicySchemaExtension only for the security policies yml', async () => {
-      await initEditor({ isSecurityPolicy: true });
-      expect(useMock).toHaveBeenCalledTimes(2);
-      expect(useMock.mock.calls[1]).toEqual([[{ definition: SecurityPolicySchemaExtension }]]);
-    });
   });
 
   describe('correctly handles toggling the live-preview panel for different file types', () => {
@@ -455,10 +427,10 @@ describe('Blob Editing', () => {
 
       beforeEach(() => {
         fire = mockEditorWithPreview();
+        stubPreviewEndpoint();
       });
 
       it('opens the preview pane instead of the live preview when renamed away from markdown', async () => {
-        stubPreviewEndpoint();
         setFileName('README.md');
         await initEditor();
 
@@ -468,69 +440,153 @@ describe('Blob Editing', () => {
         expectFallbackToPreviewPane(fire, 'README.rst');
       });
 
-      describe('starting from a non-markdown file', () => {
+      describe('with the preview pane shown before the rename', () => {
         beforeEach(async () => {
           setFileName('README.rst');
           await initEditor();
-        });
 
-        it('switches the preview tab to the live preview when renamed to markdown', async () => {
-          await renameFile('README.md');
+          // Show the preview pane, which hides the editor pane
           await clickTab('#preview');
 
-          expect(fire).toHaveBeenCalled();
+          await renameFile('README.md');
+        });
+
+        it('starts with the editor pane hidden by the preview pane', () => {
+          expectPreviewPaneVisible();
+        });
+
+        it('restores the editor pane when clicking the write tab', async () => {
+          await clickTab('#editor');
+
+          expect(fire).not.toHaveBeenCalled();
           expectEditorPaneVisible();
         });
 
-        it('falls back to the preview pane while markdown extensions are still loading', async () => {
-          stubPreviewEndpoint();
-
-          // Rename without waiting, so the load is still in flight on click.
-          startRename('README.md');
+        it('restores the editor pane and opens the live preview when clicking the preview tab', async () => {
           await clickTab('#preview');
 
-          expectFallbackToPreviewPane(fire, 'README.md');
+          expect(fire).toHaveBeenCalledTimes(1);
+          expectEditorPaneVisible();
+        });
+      });
+    });
+
+    describe('on the new file page', () => {
+      let fire;
+
+      beforeEach(async () => {
+        fire = mockEditorWithPreview();
+        await initNewFilePage();
+      });
+
+      it('switches the preview tab to the live preview when a markdown file name is entered', async () => {
+        await renameFile('README.md');
+        await clickTab('#preview');
+
+        expect(fire).toHaveBeenCalledTimes(1);
+        expectEditorPaneVisible();
+      });
+
+      it('falls back to the preview pane while markdown extensions are still loading', async () => {
+        stubPreviewEndpoint();
+
+        // Enter the file name without waiting, so the load is still in flight on click.
+        startRename('README.md');
+        await clickTab('#preview');
+
+        expectFallbackToPreviewPane(fire, 'README.md');
+      });
+
+      it('falls back to the preview pane after markdown extensions failed to load', async () => {
+        stubPreviewEndpoint();
+        useMock.mockImplementationOnce(() => {
+          throw new Error('loading failed');
         });
 
-        it('falls back to the preview pane after markdown extensions failed to load', async () => {
-          stubPreviewEndpoint();
-          useMock.mockImplementationOnce(() => {
-            throw new Error('loading failed');
-          });
+        await renameFile('README.md');
+        await clickTab('#preview');
 
-          await renameFile('README.md');
-          await clickTab('#preview');
+        expectFallbackToPreviewPane(fire, 'README.md');
+      });
+    });
+  });
 
-          expectFallbackToPreviewPane(fire, 'README.md');
+  describe('preview request', () => {
+    describe('on the edit page', () => {
+      beforeEach(async () => {
+        stubPreviewEndpoint();
+        setFileName('README.rst');
+        await initEditor();
+      });
+
+      it('renders the preview using the submitted file path', async () => {
+        await clickTab('#preview');
+
+        expectPreviewPaneRendered({
+          content: valueMock,
+          file_path: 'README.rst',
         });
+      });
 
-        describe('with the preview pane shown before the rename', () => {
-          beforeEach(async () => {
-            stubPreviewEndpoint();
+      it('omits the file path when the file name input is absent', async () => {
+        // Stands in for the race where the tab is clicked before the input is wired up.
+        findFileNameInput().remove();
+        await clickTab('#preview');
 
-            // Show the preview pane, which hides the editor pane
-            await clickTab('#preview');
+        expectPreviewPaneRendered({
+          content: valueMock,
+        });
+      });
+    });
 
-            await renameFile('README.md');
-          });
+    describe('on the new file page', () => {
+      beforeEach(async () => {
+        await initNewFilePage();
+        stubPreviewEndpoint();
+      });
 
-          it('starts with the editor pane hidden by the preview pane', () => {
-            expectPreviewPaneVisible();
-          });
+      it('renders the preview using the entered file name', async () => {
+        startRename('README.rst');
+        await clickTab('#preview');
 
-          it('restores the editor pane when clicking the write tab', async () => {
-            await clickTab('#editor');
+        expectPreviewPaneRendered({
+          content: valueMock,
+          file_path: 'README.rst',
+        });
+      });
 
-            expect(fire).not.toHaveBeenCalled();
-            expectEditorPaneVisible();
-          });
+      it('submits an empty file path when no file name is entered', async () => {
+        await clickTab('#preview');
 
-          it('restores the editor pane and opens the live preview when clicking the preview tab', async () => {
-            await clickTab('#preview');
+        expectPreviewPaneRendered({
+          content: valueMock,
+          file_path: '',
+        });
+      });
+    });
 
-            expect(fire).toHaveBeenCalled();
-            expectEditorPaneVisible();
-          });
+    describe('when the request fails', () => {
+      beforeEach(async () => {
+        await initEditor();
+      });
+
+      it('creates an alert for file size limit exceeded', async () => {
+        stubPreviewEndpoint(HTTP_STATUS_PAYLOAD_TOO_LARGE);
+        await clickTab('#preview');
+
+        expect(createAlert).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: 'The blob is too large to render',
+          }),
+        );
+      });
+
+      it('creates a generic alert for other errors', async () => {
+        stubPreviewEndpoint(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        await clickTab('#preview');
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'An error occurred previewing the blob',
         });
       });
     });
@@ -590,63 +646,6 @@ describe('Blob Editing', () => {
           captureError: true,
         }),
       );
-    });
-  });
-
-  describe('handles error during preview', () => {
-    const setupSpec = async () => {
-      await initEditor();
-      const findPreviewLink = () => document.querySelector('a[href="#preview"]');
-      findPreviewLink().dataset.previewUrl = PREVIEW_ENDPOINT;
-      findPreviewLink().click();
-      await waitForPromises();
-    };
-
-    it('creates an alert for file size limit exceeded', async () => {
-      mock.onPost(PREVIEW_ENDPOINT).reply(HTTP_STATUS_PAYLOAD_TOO_LARGE);
-      await setupSpec();
-
-      expect(createAlert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: 'The blob is too large to render',
-        }),
-      );
-    });
-
-    it('creates a generic alert for other errors', async () => {
-      mock.onPost(PREVIEW_ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-      await setupSpec();
-
-      expect(createAlert).toHaveBeenCalledWith({
-        message: 'An error occurred previewing the blob',
-      });
-    });
-  });
-
-  describe('preview request', () => {
-    beforeEach(async () => {
-      stubPreviewEndpoint();
-      setFileName('README.rst');
-      await initEditor();
-    });
-
-    it('renders the preview using the submitted file path', async () => {
-      await clickTab('#preview');
-
-      expectPreviewPaneRendered({
-        content: valueMock,
-        file_path: 'README.rst',
-      });
-    });
-
-    it('omits the file path when the file name input is absent', async () => {
-      // Stands in for the race where the tab is clicked before the input is wired up.
-      findFileNameInput().remove();
-      await clickTab('#preview');
-
-      expectPreviewPaneRendered({
-        content: valueMock,
-      });
     });
   });
 

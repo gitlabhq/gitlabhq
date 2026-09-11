@@ -5,13 +5,14 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DraggableCompat from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
+import { sortableStart, sortableEnd } from '~/sortable/utils';
 import WorkItemChildrenLoadMore from '~/work_items/components/shared/work_item_children_load_more.vue';
 import { DEFAULT_PAGE_SIZE_BOARD_COLUMN_SUBSEQUENT } from '~/work_items/constants';
 import { getWorkItemsConnection } from '~/work_items/utils';
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 
 import { boardColumnQuery, boardColumnQueryVariables, boardColumnCountVariables } from '../utils';
-import { BOARD_DND_GROUP, BOARD_CARD_CLASS } from '../constants';
+import { BOARD_DND_GROUP, BOARD_CARD_CLASS, BOARD_CARD_DROP_INDICATOR_CLASS } from '../constants';
 import ColumnHeader from './column_header.vue';
 import WorkItemCard from './work_item_card.vue';
 import WorkItemCardSkeleton from './work_item_card_skeleton.vue';
@@ -22,6 +23,7 @@ export default {
   sortableOptions: {
     ...defaultSortableOptions,
     draggable: `.${BOARD_CARD_CLASS}`,
+    ghostClass: BOARD_CARD_DROP_INDICATOR_CLASS,
     delay: DRAG_DELAY,
     delayOnTouchOnly: true,
   },
@@ -250,11 +252,18 @@ export default {
   },
   methods: {
     onDragStart(evt) {
+      sortableStart();
       const workItemId = evt.item?.dataset?.workItemId;
       this.$emit(
         'drag-start',
         this.workItems.find((workItem) => workItem.id === workItemId),
       );
+    },
+    onDragEnd(evt) {
+      // `end` fires for aborted drops too, so this is the only place we can
+      // reliably clean up the body class `sortableStart` added.
+      sortableEnd();
+      this.$emit('card-move', evt);
     },
     fetchNextPage() {
       if (!this.hasNextPage || this.fetchNextPageInProgress) {
@@ -338,7 +347,7 @@ export default {
     <div
       v-show="!collapsed"
       :id="columnBodyId"
-      class="gl-flex gl-min-h-0 gl-flex-1 gl-flex-col gl-overflow-y-auto gl-px-3 gl-pb-3"
+      class="gl-flex gl-min-h-0 gl-flex-1 gl-flex-col gl-overflow-y-auto gl-overflow-x-hidden gl-px-3 gl-pb-3"
     >
       <p
         v-if="error"
@@ -360,9 +369,9 @@ export default {
         v-bind="$options.sortableOptions"
         :group="groupConfig"
         :disabled="dragDisabled"
-        class="gl-m-0 gl-flex gl-flex-1 gl-list-none gl-flex-col gl-gap-3 gl-p-0"
+        class="board-card-list gl-m-0 gl-flex gl-flex-1 gl-list-none gl-flex-col gl-gap-3 gl-p-0"
         @start="onDragStart"
-        @end="$emit('card-move', $event)"
+        @end="onDragEnd"
       >
         <work-item-card-skeleton v-if="insertingCard" key="inserting-card" />
         <work-item-card

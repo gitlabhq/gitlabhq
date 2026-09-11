@@ -10,6 +10,17 @@ module Gitlab
       # under sharing because each computes a deterministic value from ENV.
       # Any new shared mutable state needs its own Mutex.
       class Workflow
+        class NonRetryableCreationError < StandardError
+          attr_reader :status
+
+          def initialize(response)
+            @status = response.code.to_i
+            super("Workflow creation failed: HTTP #{status}: #{response.body.to_s.slice(0, 500)}")
+          end
+        end
+
+        NON_RETRYABLE_CREATION_STATUSES = [401, 403, 404, 405, 410, 413, 414, 415, 431].freeze
+
         DEFAULT_GITLAB_HOST = 'https://gitlab.com'
 
         # Polling cadence is coarse (every 10s) to limit GraphQL request
@@ -89,6 +100,8 @@ module Gitlab
           return unless workflow_id
 
           poll(workflow_id, principle: name)
+        rescue NonRetryableCreationError
+          raise
         rescue StandardError => e
           warn Rainbow("Workflow preparation error for #{name}: #{e.message}").red
           nil
@@ -436,6 +449,8 @@ module Gitlab
             body: body)
 
           unless response.is_a?(Net::HTTPSuccess)
+            raise NonRetryableCreationError, response if NON_RETRYABLE_CREATION_STATUSES.include?(response.code.to_i)
+
             warn Rainbow("Workflow create failed#{principle ? " for #{principle}" : ''}: " \
               "HTTP #{response.code}: #{response.body.to_s.slice(0, 500)}").red
             return
@@ -454,6 +469,8 @@ module Gitlab
           puts Rainbow("    workflow id=#{workflow_id}#{principle ? " (#{principle})" : ''} " \
             "branch=#{source_branch}\n      session: #{session_url(workflow_id)}").faint
           workflow_id
+        rescue NonRetryableCreationError
+          raise
         rescue StandardError => e
           warn Rainbow("Workflow create error#{principle ? " for #{principle}" : ''}: #{e.message}").red
           nil

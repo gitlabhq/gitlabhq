@@ -553,6 +553,7 @@ actions:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469449) in GitLab 17.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `approval_policy_disable_bot_comment_group`. Disabled by default.
   - [Enabled on GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/469449) in GitLab 17.2.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/469449) in GitLab 17.3. Feature flag `approval_policy_disable_bot_comment_group` removed.
+- The `visibility` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254046) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -564,6 +565,7 @@ the bot message is sent as long as at least one of those policies has the `send_
 |-------|------|----------|-----------------|-------------|
 | `type` | `string` | true | `send_bot_message` | The action's type. |
 | `enabled` | `boolean` | true | `true`, `false` | Whether a bot message should be created when policy violations are detected. Default: `true` |
+| `visibility` | `string` | false | `public`, `internal` | Whether the bot message is publicly visible or an [internal note](../../discussions/_index.md#add-an-internal-note), visible only to project members with at least the Reporter role. Default: `public`. If multiple violated policies apply different visibility settings to the same merge request, the comment is internal if any of them set `internal`. If a policy change makes an existing public comment internal, GitLab deletes the existing comment and posts a new internal one on the next policy evaluation, which loses any replies posted to it. GitLab does not make an existing internal comment public again. |
 
 ### Example bot messages
 

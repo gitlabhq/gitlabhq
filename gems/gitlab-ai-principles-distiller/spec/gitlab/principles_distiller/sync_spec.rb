@@ -2,10 +2,12 @@
 
 require 'spec_helper'
 require_relative '../../support/tmpdir'
+require_relative '../../support/abort_capture'
 require_relative '../../../lib/gitlab/principles_distiller/sync'
 
 RSpec.describe Gitlab::PrinciplesDistiller::Sync do
   include TmpdirHelper
+  include AbortCaptureHelper
 
   let(:tmpdir) { mktmpdir }
   let(:sync) { described_class.new }
@@ -385,6 +387,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     end
 
     describe '.distill_one' do
+      subject(:distill_one) { sync.distill_one('qa') }
+
       let(:config) { { 'sources' => [{ 'path' => 'doc/qa.md' }] } }
       # [contents, failed] as build_distilled_contents returns it.
       # Each context below overrides this to pick the outcome it exercises.
@@ -450,6 +454,38 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
           expect { sync.distill_one('qa') }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
 
           expect(status_of('qa')).to eq(described_class::Artifacts::STATUS_FAILED)
+        end
+      end
+
+      context 'when workflow creation fails permanently' do
+        let(:response) { Net::HTTPUnauthorized.new('1.1', '401', 'Unauthorized') }
+
+        before do
+          allow(sync).to receive(:build_distilled_contents).and_call_original
+          allow(sync).to receive(:distillation_base_sha).and_return('2' * 40)
+          allow(sync.manifest).to receive(:loaded?).and_return(true)
+          allow(response).to receive(:body).and_return('Unauthorized')
+          stub_const('ENV', { 'GITLAB_TOKEN' => 'token' })
+          allow(sync.workflow).to receive_messages(
+            validate_sources!: nil, warn_if_sources_differ_from_pushed_branch: nil,
+            build_goal: 'goal', build_additional_context: [], catalog_project_path: 'gitlab-org/gitlab',
+            source_branch: 'master', catalog_item_consumer_id: '7368818', post_json: response,
+            sleep_with_heartbeat: nil, poll: nil)
+        end
+
+        it 'records failure and exits nonzero without misleading retry or content diagnostics', :aggregate_failures do
+          output = capture_abort_stderr do
+            expect { distill_one }.to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+          end
+
+          expect(output).to include('HTTP 401', 'not retrying', 'qa failed distillation')
+          expect(output).not_to include('invalid content', 'after retries')
+
+          expect(status_of('qa')).to eq(described_class::Artifacts::STATUS_FAILED)
+          expect(File.exist?(File.join(artifacts_dir, 'qa.md'))).to be(false)
+          expect(sync.workflow).to have_received(:post_json).once
+          expect(sync.workflow).not_to have_received(:poll)
+          expect(sync.workflow).not_to have_received(:sleep_with_heartbeat)
         end
       end
 
@@ -676,6 +712,47 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         expect(sync.workflow).to have_received(:sleep_with_heartbeat)
           .with(described_class::DISTILL_RETRY_BACKOFF_SECONDS[0], anything, anything)
           .once
+      end
+    end
+
+    context 'with workflow creation responses' do
+      let(:response) { Net::HTTPResponse.new('1.1', status.to_s, 'Response') }
+
+      before do
+        stub_const('ENV', { 'GITLAB_TOKEN' => 'token' })
+        allow(response).to receive(:body).and_return('creation error')
+        allow(sync.workflow).to receive_messages(
+          build_goal: 'goal', build_additional_context: [], catalog_project_path: 'gitlab-org/gitlab',
+          source_branch: 'master', catalog_item_consumer_id: '7368818', post_json: response, poll: valid_content)
+      end
+
+      [401, 403, 404, 405, 410, 413, 414, 415, 431].each do |http_status|
+        context "when creation returns HTTP #{http_status}" do
+          let(:status) { http_status }
+
+          it 'stops after one request without polling or retrying', :aggregate_failures do
+            expect { expect(distill).to be_nil }
+              .to output(/qa: Workflow creation failed: HTTP #{status}: creation error; not retrying/).to_stderr
+
+            expect(sync.workflow).to have_received(:post_json).once
+            expect(sync.workflow).not_to have_received(:poll)
+            expect(sync.workflow).not_to have_received(:sleep_with_heartbeat)
+          end
+        end
+      end
+
+      [400, 408, 409, 422, 429, 500, 502, 503, 504].each do |http_status|
+        context "when creation returns HTTP #{http_status}" do
+          let(:status) { http_status }
+
+          it 'retains the creation retry policy', :aggregate_failures do
+            expect(distill).to be_nil
+
+            expect(sync.workflow).to have_received(:post_json).exactly(3).times
+            expect(sync.workflow).to have_received(:sleep_with_heartbeat).twice
+            expect(sync.workflow).not_to have_received(:poll)
+          end
+        end
       end
     end
 

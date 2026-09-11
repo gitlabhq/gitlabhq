@@ -1956,7 +1956,7 @@ class MergeRequest < ApplicationRecord
     messages += commits(load_from_gitaly: true).map(&:safe_message) if merge_request_diff.persisted?
 
     ext = Gitlab::ReferenceExtractor.new(project, user)
-    ext.analyze(messages.join("\n"))
+    ext.analyze(messages.join("\n"), pipeline: :issue_reference_extraction)
 
     issues_from(ext)
   end
@@ -3237,7 +3237,7 @@ class MergeRequest < ApplicationRecord
     # ReferenceExtractor is expensive.
     strong_memoize_with(:referenced_issues_in_description, current_user&.id) do
       ext = Gitlab::ReferenceExtractor.new(project, current_user)
-      ext.analyze("#{title}\n#{description}")
+      ext.analyze("#{title}\n#{description}", pipeline: :issue_reference_extraction)
 
       issues_from(ext)
     end

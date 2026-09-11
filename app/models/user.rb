@@ -3039,8 +3039,8 @@ class User < ApplicationRecord
   def authorization_user
     return self unless service_account? && composite_identity_enforced?
 
-    identity = ::Gitlab::Auth::Identity.currently_linked
-    return self unless identity&.linked?
+    identity = ::Gitlab::Auth::Identity.new(self)
+    return self unless identity.linked?
 
     identity.scoped_user
   end

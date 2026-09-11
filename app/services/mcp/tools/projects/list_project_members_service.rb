@@ -4,9 +4,6 @@ module Mcp
   module Tools
     module Projects
       class ListProjectMembersService < Base::GraphqlService
-        DEFAULT_PAGE_SIZE = ::Mcp::Tools::Projects::ListProjectMembersTool::DEFAULT_PAGE_SIZE
-        MAX_PAGE_SIZE = ::Mcp::Tools::Projects::ListProjectMembersTool::MAX_PAGE_SIZE
-
         register_version '0.1.0', {
           toolset: :core,
           description: 'List the members of a GitLab project with their role and access level. ' \
@@ -27,18 +24,7 @@ module Mcp
                 type: 'string',
                 description: 'Filter by name or username.'
               },
-              after: {
-                type: 'string',
-                description: 'Cursor for forward pagination. Use metadata.end_cursor from the ' \
-                  'previous response.'
-              },
-              first: {
-                type: 'integer',
-                description: 'Number of members to return (forward pagination, default ' \
-                  "#{DEFAULT_PAGE_SIZE}, max #{MAX_PAGE_SIZE}).",
-                minimum: 1,
-                maximum: MAX_PAGE_SIZE
-              }
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(items: 'members', cursor_style: :metadata)
             }
           },
           annotations: {

@@ -669,4 +669,36 @@ AtlErSqafbECNDSwS5BX8yDpu5yRBJ4xegO/rNlmb8ICRYkuJapD1xXicFOsmfUK
       it { is_expected.to eq('extensionAttribute1') }
     end
   end
+
+  describe '#group_filter' do
+    subject(:group_filter) { config.group_filter }
+
+    context 'when config value is not set' do
+      before do
+        stub_ldap_config(options: {})
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when config value is set' do
+      before do
+        stub_ldap_config(options: { 'group_filter' => '(objectClass=group)' })
+      end
+
+      it { is_expected.to eq('(objectClass=group)') }
+    end
+  end
+
+  describe '#constructed_group_filter' do
+    subject(:constructed_group_filter) { config.constructed_group_filter }
+
+    before do
+      stub_ldap_config(options: { 'group_filter' => '(objectClass=group)' })
+    end
+
+    it 'constructs a Net::LDAP::Filter from the group_filter option' do
+      expect(constructed_group_filter).to eq(Net::LDAP::Filter.construct('(objectClass=group)'))
+    end
+  end
 end

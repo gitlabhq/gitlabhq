@@ -6,6 +6,10 @@ export const BOARD_DND_GROUP = 'work-item-board';
 // Class applied to each draggable card so the load-more row stays fixed.
 export const BOARD_CARD_CLASS = 'js-board-card';
 
+// Class applied to the card left behind in the target slot while dragging,
+// restyled from a card into an insertion line (see page_bundles/work_items.scss).
+export const BOARD_CARD_DROP_INDICATOR_CLASS = 'board-card-drop-indicator';
+
 // Separate sortablejs group for column reordering, so columns and cards can
 // never be dropped into each other's lists.
 export const BOARD_COLUMN_DND_GROUP = 'work-item-board-columns';

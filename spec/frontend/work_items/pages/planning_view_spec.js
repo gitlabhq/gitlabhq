@@ -4225,6 +4225,25 @@ describe('planning-view', () => {
     const evictedFields = (evictSpy) =>
       evictSpy.mock.calls.map(([{ fieldName }]) => fieldName).filter(Boolean);
 
+    // Every match check also runs `dropMatchCacheEntries`, which calls `cache.modify` on the same
+    // `workItems` field shape, so this replays each captured field function to find the one that
+    // actually filters the given id out of a list, rather than just asserting `modify` was called.
+    const wasRemovedFromLists = (modifySpy, workItemId) =>
+      modifySpy.mock.calls
+        .map(([{ fields }]) => fields.workItems)
+        .filter(Boolean)
+        .some((fieldFn) => {
+          const result = fieldFn(
+            { nodes: [{ id: workItemId }] },
+            {
+              storeFieldName: 'workItems({"sort":"CREATED_DESC"})',
+              DELETE: Symbol('DELETE'),
+              readField: (fieldName, node) => node[fieldName],
+            },
+          );
+          return result?.nodes?.every((node) => node.id !== workItemId);
+        });
+
     describe('when a work item that is not in the cache changes', () => {
       it('does not reload the list', async () => {
         await mountWithSubscription();
@@ -4248,15 +4267,32 @@ describe('planning-view', () => {
     });
 
     describe('when a work item in the cache is updated', () => {
-      it('reloads the list', async () => {
+      it('patches it in place, without reloading the list, when it still matches the current filters', async () => {
         await mountWithSubscription();
         cacheWorkItem(cachedWorkItemId);
+        slimMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(1)]));
         const evictSpy = jest.spyOn(getCache(), 'evict');
+        const modifySpy = jest.spyOn(getCache(), 'modify');
 
         emitChange(cachedWorkItemId, 'UPDATED');
         await flushChanges();
 
-        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+        expect(slimMatchHandler).toHaveBeenCalled();
+        expect(evictedFields(evictSpy)).toEqual([]);
+        expect(wasRemovedFromLists(modifySpy, cachedWorkItemId)).toBe(false);
+      });
+
+      it('removes it from every cached list, without reloading the list, when it no longer matches the current filters', async () => {
+        await mountWithSubscription();
+        cacheWorkItem(cachedWorkItemId);
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+        const modifySpy = jest.spyOn(getCache(), 'modify');
+
+        emitChange(cachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual([]);
+        expect(wasRemovedFromLists(modifySpy, cachedWorkItemId)).toBe(true);
       });
     });
 
@@ -4392,19 +4428,6 @@ describe('planning-view', () => {
         expect(evictedFields(evictSpy)).toEqual(['workItems']);
       });
 
-      it('skips the match query when a different item in the same batch is a visible update', async () => {
-        await mountWithSubscription();
-        cacheWorkItem(cachedWorkItemId);
-        const evictSpy = jest.spyOn(getCache(), 'evict');
-
-        emitChange(cachedWorkItemId, 'UPDATED');
-        emitChange(uncachedWorkItemId, 'CREATED');
-        await flushChanges();
-
-        expect(slimMatchHandler).not.toHaveBeenCalled();
-        expect(evictedFields(evictSpy)).toEqual(['workItems']);
-      });
-
       it('does not reload the list when the match query fails', async () => {
         await mountWithSubscription();
         const error = new Error('oh no!');
@@ -4435,9 +4458,10 @@ describe('planning-view', () => {
     });
 
     describe('when several changes arrive in quick succession', () => {
-      it('reloads the list once', async () => {
+      it('checks them together in a single match query, then reloads the list once', async () => {
         await mountWithSubscription();
         cacheWorkItem(cachedWorkItemId);
+        slimMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(2)]));
         const evictSpy = jest.spyOn(getCache(), 'evict');
 
         emitChange(cachedWorkItemId, 'UPDATED');
@@ -4445,6 +4469,7 @@ describe('planning-view', () => {
         emitChange(cachedWorkItemId, 'UPDATED');
         await flushChanges();
 
+        expect(slimMatchHandler).toHaveBeenCalledTimes(1);
         expect(evictedFields(evictSpy)).toEqual(['workItems']);
       });
     });

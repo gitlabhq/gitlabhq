@@ -307,11 +307,6 @@ msgid_plural "%d files"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d finding must be resolved"
-msgid_plural "%d findings must be resolved"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d group"
 msgid_plural "%d groups"
 msgstr[0] ""
@@ -1090,9 +1085,6 @@ msgstr ""
 msgid "%{human_readable_key} is less than %{min_value_length} characters"
 msgstr ""
 
-msgid "%{icon} %{severity} - %{name}"
-msgstr ""
-
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
@@ -1702,9 +1694,6 @@ msgid "%{text} is available"
 msgstr ""
 
 msgid "%{time_ago}"
-msgstr ""
-
-msgid "%{timeago} in pipeline %{pipeline}"
 msgstr ""
 
 msgid "%{timebox_type} does not support burnup charts"
@@ -8092,6 +8081,9 @@ msgstr ""
 msgid "AgentArtifacts|Author name"
 msgstr ""
 
+msgid "AgentArtifacts|Claude Code"
+msgstr ""
+
 msgid "AgentArtifacts|Client type"
 msgstr ""
 
@@ -8153,6 +8145,9 @@ msgid "AgentArtifacts|No audit events found."
 msgstr ""
 
 msgid "AgentArtifacts|No details available for this event."
+msgstr ""
+
+msgid "AgentArtifacts|OpenCode"
 msgstr ""
 
 msgid "AgentArtifacts|Previous error"
@@ -12432,6 +12427,12 @@ msgstr ""
 msgid "ArtifactRegistry|Delete image?"
 msgstr ""
 
+msgid "ArtifactRegistry|Delete manifest"
+msgstr ""
+
+msgid "ArtifactRegistry|Delete manifest?"
+msgstr ""
+
 msgid "ArtifactRegistry|Delete package"
 msgstr ""
 
@@ -12642,6 +12643,9 @@ msgid "ArtifactRegistry|Manifest %{digest}."
 msgstr ""
 
 msgid "ArtifactRegistry|Manifest digest: %{digest}"
+msgstr ""
+
+msgid "ArtifactRegistry|Manifest successfully scheduled for deletion."
 msgstr ""
 
 msgid "ArtifactRegistry|Manually published"
@@ -12998,7 +13002,16 @@ msgstr ""
 msgid "ArtifactRegistry|This action permanently deletes image %{name} and all of its manifests. This action cannot be undone."
 msgstr ""
 
+msgid "ArtifactRegistry|This action permanently deletes manifest %{name} and any tags pointing to it. Its child manifests are not deleted and will remain in Artifact Registry as untagged, standalone manifests. This action cannot be undone."
+msgstr ""
+
+msgid "ArtifactRegistry|This action permanently deletes manifest %{name} and any tags pointing to it. This action cannot be undone."
+msgstr ""
+
 msgid "ArtifactRegistry|This action permanently deletes package %{name} and all of its versions. This action cannot be undone."
+msgstr ""
+
+msgid "ArtifactRegistry|This action permanently deletes signature %{name} and any tags pointing to it. The image it signs will then verify as unsigned. This action cannot be undone."
 msgstr ""
 
 msgid "ArtifactRegistry|This action permanently deletes the repository and all of its artifacts. If this repository is connected to a virtual repository, the virtual repository loses access to this repository and its artifacts."
@@ -20839,9 +20852,6 @@ msgid "CompareRevisions|Unable to compare revisions"
 msgstr ""
 
 msgid "CompareRevisions|View open merge request"
-msgstr ""
-
-msgid "Comparison pipelines"
 msgstr ""
 
 msgid "Complete"
@@ -32235,6 +32245,12 @@ msgstr ""
 msgid "DuoChat|No results found"
 msgstr ""
 
+msgid "DuoChat|Non-agentic chat"
+msgstr ""
+
+msgid "DuoChat|Non-agentic chat does not use model selection."
+msgstr ""
+
 msgid "DuoChat|Not helpful"
 msgstr ""
 
@@ -32362,9 +32378,6 @@ msgid "DuoChat|Untitled Chat"
 msgstr ""
 
 msgid "DuoChat|Update file %{filePath}"
-msgstr ""
-
-msgid "DuoChat|Use Agentic Chat"
 msgstr ""
 
 msgid "DuoChat|Use Non-Agentic Chat"
@@ -39641,6 +39654,9 @@ msgid "Glql|GLQL query must be a string."
 msgstr ""
 
 msgid "Glql|Other (%{count})"
+msgstr ""
+
+msgid "Glql|vs previous period"
 msgstr ""
 
 msgid "Go Back"
@@ -52163,9 +52179,6 @@ msgstr ""
 msgid "MrReports|Add a scanning job to your CI/CD pipeline to see reports here."
 msgstr ""
 
-msgid "MrReports|Blockers"
-msgstr ""
-
 msgid "MrReports|Code quality"
 msgstr ""
 
@@ -53355,9 +53368,6 @@ msgid "No plan"
 msgstr ""
 
 msgid "No policy matches this license"
-msgstr ""
-
-msgid "No policy violations found"
 msgstr ""
 
 msgid "No preview for this file type"
@@ -61191,17 +61201,6 @@ msgstr ""
 msgid "Policy Store experiment is not available for this organization"
 msgstr ""
 
-msgid "Policy `%{policyName}` found %{count} violation"
-msgid_plural "Policy `%{policyName}` found %{count} violations"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Policy `%{policyName}` is being evaluated"
-msgstr ""
-
-msgid "Policy `%{policyName}` passed"
-msgstr ""
-
 msgid "Policy details"
 msgstr ""
 
@@ -67837,9 +67836,6 @@ msgstr ""
 msgid "Results limit reached"
 msgstr ""
 
-msgid "Results pending…"
-msgstr ""
-
 msgid "Resume"
 msgstr ""
 
@@ -69993,6 +69989,9 @@ msgstr ""
 msgid "ScanProfiles|Currently active"
 msgstr ""
 
+msgid "ScanProfiles|Custom"
+msgstr ""
+
 msgid "ScanProfiles|Default"
 msgstr ""
 
@@ -70002,7 +70001,16 @@ msgstr ""
 msgid "ScanProfiles|General Details"
 msgstr ""
 
+msgid "ScanProfiles|General details"
+msgstr ""
+
+msgid "ScanProfiles|GitLab"
+msgstr ""
+
 msgid "ScanProfiles|Information about this configuration profile."
+msgstr ""
+
+msgid "ScanProfiles|Managed by"
 msgstr ""
 
 msgid "ScanProfiles|Merge Request Pipelines"
@@ -71367,6 +71375,9 @@ msgstr ""
 msgid "SecretsManagerTrial|Contact your billing administrator to enable on-demand billing and avoid disruption."
 msgstr ""
 
+msgid "SecretsManagerTrial|GitLab Secrets Manager is disabled"
+msgstr ""
+
 msgid "SecretsManagerTrial|On-demand billing is disabled"
 msgstr ""
 
@@ -71382,7 +71393,7 @@ msgstr ""
 msgid "SecretsManagerTrial|Secrets manager trial ends in %{trialDaysRemaining} days"
 msgstr ""
 
-msgid "SecretsManagerTrial|Secrets manager trial period has ended"
+msgid "SecretsManagerTrial|You can only view details or delete existing secrets. Please contact your subscription owner to purchase a Monthly Commitment of GitLab Credits or accept on-demand billing, and then re-enable GitLab Secrets Manager."
 msgstr ""
 
 msgid "SecretsManagerTrial|You have a short grace period remaining before access is removed. Contact your billing administrator to enable on-demand billing and avoid disruption."
@@ -72222,6 +72233,9 @@ msgstr ""
 msgid "SecurityConfiguration|Failed to load projects"
 msgstr ""
 
+msgid "SecurityConfiguration|Failed to load scan profiles."
+msgstr ""
+
 msgid "SecurityConfiguration|Failed to load scanner statistics"
 msgstr ""
 
@@ -72472,6 +72486,9 @@ msgid "SecurityConfiguration|Status"
 msgstr ""
 
 msgid "SecurityConfiguration|The status of the tools only applies to the default branch and is based on the %{linkStart}latest pipeline%{linkEnd}."
+msgstr ""
+
+msgid "SecurityConfiguration|There are no profiles for this scanner yet."
 msgstr ""
 
 msgid "SecurityConfiguration|This project does not contain any archived vulnerabilities yet."
@@ -79094,9 +79111,6 @@ msgstr ""
 msgid "Source branch"
 msgstr ""
 
-msgid "Source branch (%{branch}): %{pipelines}"
-msgstr ""
-
 msgid "Source branch does not exist"
 msgstr ""
 
@@ -80783,9 +80797,6 @@ msgid "Target Path"
 msgstr ""
 
 msgid "Target branch"
-msgstr ""
-
-msgid "Target branch (%{branch}): %{pipelines}"
 msgstr ""
 
 msgid "Target branch: %{target_branch}"
@@ -85847,6 +85858,9 @@ msgstr ""
 msgid "Unknown icon for `%{key}`: `%{icon}`."
 msgstr ""
 
+msgid "Unknown metric for `trendMetric`: `%{metric}`."
+msgstr ""
+
 msgid "Unknown user"
 msgstr ""
 
@@ -86688,6 +86702,9 @@ msgid "UsageBilling|Share"
 msgstr ""
 
 msgid "UsageBilling|Shared pool of credits available to all users in the subscription."
+msgstr ""
+
+msgid "UsageBilling|Something went wrong while searching for users."
 msgstr ""
 
 msgid "UsageBilling|Sorting by total credits used displays only users with prior credit usage."
@@ -88875,9 +88892,6 @@ msgid "Viewed"
 msgstr ""
 
 msgid "Viewing commit"
-msgstr ""
-
-msgid "Violates security policy"
 msgstr ""
 
 msgid "Violation"
@@ -98419,6 +98433,9 @@ msgid "success"
 msgstr ""
 
 msgid "supported SSH public key."
+msgstr ""
+
+msgid "table display type requires `trendMetric` when several metrics are selected"
 msgstr ""
 
 msgid "tag name"

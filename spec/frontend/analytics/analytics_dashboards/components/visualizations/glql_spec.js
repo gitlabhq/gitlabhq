@@ -35,6 +35,7 @@ describe('GlqlVisualization', () => {
     expect(findResolver().props()).toEqual({
       glqlQuery,
       comparisonQuery: '',
+      trendMetric: '',
       trackingEventName: 'render_analytics_dashboard_glql_panel',
       scope: null,
     });
@@ -49,6 +50,15 @@ describe('GlqlVisualization', () => {
     });
 
     expect(findResolver().props('comparisonQuery')).toBe(comparisonQuery);
+  });
+
+  it('passes the trend metric on to the resolver', () => {
+    createWrapper({
+      data: 'type = Issue AND created >= "2026-02-01"',
+      options: { trendMetric: 'totalCount' },
+    });
+
+    expect(findResolver().props('trendMetric')).toBe('totalCount');
   });
 
   describe('scope', () => {

@@ -1,9 +1,17 @@
 ---
 name: enable_secrets_manager_add_on
-description: Grants the ability to enable the paid Secrets Manager add-on for a top-level group.
+description: Grants the ability to enable the paid Secrets Manager add-on for a top-level group on GitLab.com, or for the whole instance on GitLab Self-Managed.
 boundaries:
   - group
+  - instance
 available_for:
   - granular_access_token
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance
+  - condition: self_managed
+    boundaries:
+      - instance
 permissions:
   - enable_secrets_manager_add_on

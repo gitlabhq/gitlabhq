@@ -12,6 +12,12 @@ global:
   minio:
     enabled: false
 
+  gitaly:
+    hooks:
+      preReceive:
+        # Created by caproni.yaml's pre-receive-hook deployer
+        configmap: pre-receive-hook
+
   psql:
     host: gitlab-dev-stack-gitlab-rw.gitlab-dev-stack.svc
     username: gitlab-dev-stack

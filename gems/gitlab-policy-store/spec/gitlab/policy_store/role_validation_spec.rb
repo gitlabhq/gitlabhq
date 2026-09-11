@@ -84,6 +84,12 @@ RSpec.describe Gitlab::PolicyStore::RoleValidation do
     context 'with a non-deployment trigger' do
       let(:trigger_type) { 'some_other_trigger' }
 
+      # trigger_type's vocabulary is deployment-only today; stub the enum check
+      # so this scenario, which the module still guards against, stays testable.
+      before do
+        allow(repository).to receive(:validate_enumerated_attributes!)
+      end
+
       context 'with GitLab roles' do
         let(:actions) do
           [{ 'type' => 'require_approval', 'value' => { 'roles' => %w[developer maintainer] } }]
@@ -205,6 +211,13 @@ RSpec.describe Gitlab::PolicyStore::RoleValidation do
       let(:trigger_type) { 'some_other_trigger' }
       let(:actions) do
         [{ 'type' => 'require_approval', 'value' => { 'roles' => ['developer'] } }]
+      end
+
+      # trigger_type's vocabulary is deployment-only today; stub the enum check
+      # so this scenario, which the module still guards against, stays testable.
+      let(:policy) do
+        allow(repository).to receive(:validate_enumerated_attributes!)
+        repository.create(base_attributes)
       end
 
       it 'rejects CD roles even when trigger_type is not in update params' do

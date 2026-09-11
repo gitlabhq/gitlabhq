@@ -2044,7 +2044,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/web_hooks/rate_limiter_spec.rb'
     - 'spec/lib/gitlab/web_hooks/recursion_detection_spec.rb'
     - 'spec/lib/gitlab/webpack/file_loader_spec.rb'
-    - 'spec/lib/gitlab/webpack/manifest_spec.rb'
     - 'spec/lib/gitlab/word_diff/chunk_collection_spec.rb'
     - 'spec/lib/gitlab/word_diff/line_processor_spec.rb'
     - 'spec/lib/gitlab/word_diff/parser_spec.rb'

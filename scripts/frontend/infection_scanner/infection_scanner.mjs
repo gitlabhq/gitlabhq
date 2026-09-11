@@ -104,6 +104,9 @@ function promoteYamlDeclaredPages(graph) {
     const entry = graph[indexPath];
     if (!entry || entry.infected) continue;
     entry.infected = true;
+    // Keep `infected` a subset of `exposedToVue`. A promoted page is exposed to Vue anyway,
+    // because nothing barriers the downward walk, so this is defensive.
+    entry.exposedToVue = true;
     entry.infectionPromotedByYaml = true;
     promoted.add(indexPath);
   }
@@ -514,13 +517,27 @@ async function runAnalysis() {
   // analyze() produces the annotated graph; surface aggregate counts.
   let appRoots = 0;
   let infected = 0;
+  let exposedToVue = 0;
+  let invariantBreaches = 0;
   for (const entry of Object.values(result.graph)) {
     if (entry.appRoot) appRoots += 1;
     if (entry.infected) infected += 1;
+    if (entry.exposedToVue) exposedToVue += 1;
+    if (entry.infected && !entry.exposedToVue) invariantBreaches += 1;
+  }
+  if (invariantBreaches > 0) {
+    throw new Error(
+      `[vue3-infection-scanner] ${invariantBreaches} file(s) are infected but do not reach ` +
+        `Vue. Removing the app-root barrier can only add files, so this cannot happen.`,
+    );
   }
   console.log(`[vue3-infection-scanner] App roots: ${appRoots} files`);
   console.log(
     `[vue3-infection-scanner] Infected: ${infected} / ${Object.keys(result.graph).length} files`,
+  );
+  console.log(
+    `[vue3-infection-scanner] Exposed to Vue: ${exposedToVue} / ` +
+      `${Object.keys(result.graph).length} files`,
   );
 
   // Write first so a failed check still leaves a fresh graph on disk.

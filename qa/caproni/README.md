@@ -25,6 +25,7 @@ names the upstream issue that would retire it. They are not the intended pattern
 | `caproni.yaml` | The whole rig: cluster, deployers, edge and CNG image pinning |
 | `values/gitlab.yaml` | Chart values, ported from the orchestrator's Ruby |
 | `values/gitlab-dev-stack.yaml` | PostgreSQL (CNPG), Valkey and Garage; ClickHouse and NATS disabled |
+| `manifests/pre-receive-hook/` | Gitaly pre-receive server hook the E2E suite expects, applied by a kustomize deployer |
 | `scripts/package-chart.sh` | Packages the chart at the pinned `GITLAB_HELM_CHART_REF` |
 | `scripts/install-caproni.sh` | Fetches and checksum-verifies the Caproni binary at `CAPRONI_VERSION` |
 | `scripts/cng-image-tags.sh` | Resolves `*_TAG` / `*_VERSION` into image tags |
@@ -88,6 +89,16 @@ directly. `values/gitlab-dev-stack.yaml` pins the bucket list to exactly
 `Garage::BUCKETS` from the orchestrator, so no object-storage feature silently loses its
 bucket, including `git-lfs` rather than the chart's default `gitlab-lfs`.
 
+## Gitaly server hook
+
+`manifests/pre-receive-hook/` carries the global pre-receive hook the orchestrator creates
+in `Configurations::Kind`. The `pre-receive-hook` kustomize deployer applies it after
+`prerequisites` and before the `gitlab` Helm release, which mounts it through
+`global.gitaly.hooks.preReceive.configmap`. The E2E suite's
+`tag_revision_trigger_prereceive_hook_spec.rb` pushes to a project path matching
+`reject-prereceive` and expects the hook's error message. The chart mounts the ConfigMap by
+name, so the name `pre-receive-hook` has to stay stable.
+
 ## The chart
 
 `scripts/package-chart.sh` packages the exact commit named by `GITLAB_HELM_CHART_REF`,
@@ -103,7 +114,7 @@ orchestrator uses, and the job extends `.cng-qa-cache` to mount it.
 - EE licence secret: the suite licenses itself over the API, which needs
   `GITLAB_LICENSE_MODE=test` and `CUSTOMER_PORTAL_URL` (both set in
   `values/gitlab.yaml`). The orchestrator's pre-created `gitlab-license` secret is not
-  reproduced, since Caproni has no hook between namespace creation and the Helm install.
+  reproduced.
 - `save-cluster-logs.sh` only reads the `gitlab` namespace, so CloudNativePG, Valkey and
   Garage logs are not captured; they live in `gitlab-dev-stack` and `cnpg-system`.
 - Nothing validates the rendered charts ahead of a deploy, so a Helm template error is

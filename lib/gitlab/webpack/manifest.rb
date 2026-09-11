@@ -92,9 +92,17 @@ module Gitlab
           raise ManifestLoadError.new("Could not load compiled manifest from #{e.uri}.\n\nHave you run `rake gitlab:assets:compile`?", e.original_error)
         rescue Gitlab::Webpack::FileLoader::DevServerSSLError => e
           ssl_status = Gitlab.config.webpack.dev_server.https ? ' over SSL' : ''
-          raise ManifestLoadError.new("Could not connect to webpack-dev-server at #{e.uri}#{ssl_status}.\n\nIs SSL enabled? Check that settings in `gitlab.yml` and webpack-dev-server match.", e.original_error)
+          bundler = bundler_name(manifest_filename)
+          raise ManifestLoadError.new("Could not connect to the #{bundler} dev server at #{e.uri}#{ssl_status}.\n\nIs SSL enabled? Check that settings in `gitlab.yml` and the #{bundler} dev server match.", e.original_error)
         rescue Gitlab::Webpack::FileLoader::DevServerLoadError => e
-          raise ManifestLoadError.new("Could not load manifest from webpack-dev-server at #{e.uri}.\n\nIs webpack-dev-server running? Try running `gdk status webpack` or `gdk tail webpack`.", e.original_error)
+          bundler = bundler_name(manifest_filename)
+          raise ManifestLoadError.new("Could not load manifest from the #{bundler} dev server at #{e.uri}.\n\nIs it running? Try running `gdk status #{bundler}` or `gdk tail #{bundler}`.", e.original_error)
+        end
+
+        # The manifest filename is what tells us which bundler produced it, so the
+        # advice points at the service that actually exists.
+        def bundler_name(manifest_filename)
+          manifest_filename == RSPACK_MANIFEST_FILENAME ? 'rspack' : 'webpack'
         end
       end
     end

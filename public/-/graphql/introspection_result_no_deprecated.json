@@ -91773,7 +91773,7 @@
             },
             {
               "name": "principal",
-              "description": "Who is provided access to. For eg: User/Role/MemberRole/Group.",
+              "description": "Who is provided access to. For eg: User/Role/MemberRole.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -91933,7 +91933,7 @@
             },
             {
               "name": "principal",
-              "description": "User/MemberRole/Role/Group that is provided access.",
+              "description": "User/MemberRole/Role that is provided access.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -160071,23 +160071,11 @@
         {
           "kind": "OBJECT",
           "name": "Principal",
-          "description": "Representation of who is provided access to. For eg: User/Role/MemberRole/Group.",
+          "description": "Representation of who is provided access to. For eg: User/Role/MemberRole.",
           "fields": [
             {
-              "name": "group",
-              "description": "Group who is provided access to.",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Group",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "id",
-              "description": "ID of the principal (User, MemberRole, Role, Group).",
+              "description": "ID of the principal (User, MemberRole, Role).",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -160103,7 +160091,7 @@
             },
             {
               "name": "type",
-              "description": "Name of the principal (User, MemberRole, Role, Group).",
+              "description": "Name of the principal (User, MemberRole, Role).",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -160150,26 +160138,20 @@
         {
           "kind": "INPUT_OBJECT",
           "name": "PrincipalInput",
-          "description": "Representation of who is provided access to. For eg: User/Role/MemberRole/Group.",
+          "description": "Representation of who is provided access to. For eg: User/Role/MemberRole.",
           "fields": null,
           "inputFields": [
             {
               "name": "id",
-              "description": "ID of the principal. Required unless group_path is provided for Group type.",
+              "description": "ID of the principal.",
               "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "groupPath",
-              "description": "Full path of the group principal. Only used when type is GROUP.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
               },
               "defaultValue": null
             },
@@ -160203,12 +160185,6 @@
             {
               "name": "USER",
               "description": "user.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "GROUP",
-              "description": "group.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -175346,7 +175322,7 @@
             },
             {
               "name": "principal",
-              "description": "Who is provided access to. For eg: User/Role/MemberRole/Group.",
+              "description": "Who is provided access to. For eg: User/Role/MemberRole.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -175414,7 +175390,7 @@
             },
             {
               "name": "principal",
-              "description": "User/MemberRole/Role/Group whose access is being removed.",
+              "description": "User/MemberRole/Role whose access is being removed.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -175522,7 +175498,7 @@
             },
             {
               "name": "principal",
-              "description": "User/MemberRole/Role/Group that is provided access.",
+              "description": "User/MemberRole/Role that is provided access.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -192282,7 +192258,7 @@
             },
             {
               "name": "principal",
-              "description": "Who is provided access to. For eg: User/Role/MemberRole/Group.",
+              "description": "Who is provided access to. For eg: User/Role/MemberRole.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -192458,7 +192434,7 @@
             },
             {
               "name": "principal",
-              "description": "User/MemberRole/Role/Group that is provided access.",
+              "description": "User/MemberRole/Role that is provided access.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,

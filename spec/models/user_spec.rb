@@ -1980,41 +1980,38 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
     end
 
-    context 'when user is a service account with composite identity enforced' do
-      let(:user) { build(:user, :service_account, composite_identity_enforced: true) }
+    context 'when user is a service account with composite identity enforced', :request_store do
+      let_it_be(:user) { create(:user, :service_account, composite_identity_enforced: true) }
+      let_it_be(:scoped_user) { create(:user) }
 
-      context 'when no identity is currently linked' do
-        before do
-          allow(::Gitlab::Auth::Identity).to receive(:currently_linked).and_return(nil)
-        end
-
+      context 'when the account is not linked' do
         it 'returns self' do
           expect(user.authorization_user).to eq(user)
         end
       end
 
-      context 'when an identity is linked but not active' do
-        let(:identity) { instance_double(::Gitlab::Auth::Identity, linked?: false) }
-
+      context 'when the account is linked' do
         before do
-          allow(::Gitlab::Auth::Identity).to receive(:currently_linked).and_return(identity)
-        end
-
-        it 'returns self' do
-          expect(user.authorization_user).to eq(user)
-        end
-      end
-
-      context 'when an active identity is linked' do
-        let(:scoped_user) { build(:user) }
-        let(:identity) { instance_double(::Gitlab::Auth::Identity, linked?: true, scoped_user: scoped_user) }
-
-        before do
-          allow(::Gitlab::Auth::Identity).to receive(:currently_linked).and_return(identity)
+          ::Gitlab::Auth::Identity.new(user).link!(scoped_user)
         end
 
         it 'returns the scoped user' do
           expect(user.authorization_user).to eq(scoped_user)
+        end
+      end
+
+      context 'when another service account is linked in the same request' do
+        let_it_be(:other_account) { create(:user, :service_account, composite_identity_enforced: true) }
+        let_it_be(:other_scoped_user) { create(:user) }
+
+        before do
+          ::Gitlab::Auth::Identity.new(user).link!(scoped_user, context: :permission_check)
+          ::Gitlab::Auth::Identity.new(other_account).link!(other_scoped_user, context: :permission_check)
+        end
+
+        it 'returns the scoped user linked to the account it is called on' do
+          expect(user.authorization_user).to eq(scoped_user)
+          expect(other_account.authorization_user).to eq(other_scoped_user)
         end
       end
     end

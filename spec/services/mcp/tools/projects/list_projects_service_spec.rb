@@ -69,7 +69,7 @@ RSpec.describe Mcp::Tools::Projects::ListProjectsService, feature_category: :mcp
           first: {
             type: 'integer',
             description: 'Number of projects to return after the cursor (forward pagination). ' \
-              'Default 20, max 100.',
+              'Max 100.',
             minimum: 1,
             maximum: 100
           }

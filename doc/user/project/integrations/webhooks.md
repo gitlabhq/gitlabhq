@@ -120,6 +120,11 @@ To create a webhook:
      This token is sent as plain text in the `X-Gitlab-Token` HTTP header and provides weaker
      security guarantees than a signing token. Use the signing token instead for new webhooks.
 1. In the **Trigger** section, select the events to trigger the webhook.
+1. Optional. To send GitLab Duo flow lifecycle events to this webhook, under
+   **GitLab Duo Agent Platform**, select the **Send Duo flow events to this webhook** checkbox.
+   This section appears only where
+   [GitLab Duo flow webhook callbacks](../../duo_agent_platform/flows/webhook_callbacks.md) are
+   available.
 1. Optional. To disable SSL verification, clear the **Enable SSL verification** checkbox.
 1. Select **Add webhook**.
 

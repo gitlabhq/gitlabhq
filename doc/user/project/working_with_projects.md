@@ -177,7 +177,7 @@ To view only the projects you are the owner of:
 
 ## View project activity
 
-To view the activity of a project:
+You can view the most recent actions taken in a project:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Manage** > **Activity**.
@@ -190,6 +190,9 @@ To view the activity of a project:
    - **Comments**: Comments posted by project members.
    - **Designs**: Designs added, updated, and removed in the project.
    - **Team**: Members who joined and left the project.
+
+1. Optional. To subscribe to an RSS feed of this activity, select the feed symbol
+   ({{< icon name="rss" >}}).
 
 GitLab removes project activity events older than three years from the events table for performance reasons.
 

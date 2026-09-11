@@ -101,5 +101,44 @@ RSpec.describe Gitlab::SidekiqMiddleware::Identity::Passthrough, :request_store,
         expect(job[::Gitlab::Auth::Identity::COMPOSITE_IDENTITY_SIDEKIQ_ARG]).to be_nil
       end
     end
+
+    context 'when several service accounts are linked for permission checks' do
+      let_it_be_with_reload(:other_primary_user) { create(:user, :service_account) }
+
+      before do
+        primary_user.update!(composite_identity_enforced: true)
+        other_primary_user.update!(composite_identity_enforced: true)
+
+        ::Gitlab::Auth::Identity.new(primary_user).link!(scoped_user, context: :permission_check)
+        ::Gitlab::Auth::Identity.new(other_primary_user).link!(scoped_user, context: :permission_check)
+      end
+
+      it 'passes through the identity that was linked most recently' do
+        expect { |b| middleware.call(worker, job, queue, nil, &b) }.to yield_control
+
+        expect(job['sqci']).to eq([other_primary_user.id, scoped_user.id, :permission_check])
+      end
+
+      it 'passes through each identity as it is re-linked for its own work' do
+        ::Gitlab::Auth::Identity.new(primary_user).link!(scoped_user, context: :permission_check)
+
+        expect { |b| middleware.call(worker, job, queue, nil, &b) }.to yield_control
+
+        expect(job['sqci']).to eq([primary_user.id, scoped_user.id, :permission_check])
+      end
+
+      context 'when one of them is also the authenticated identity' do
+        before do
+          ::Gitlab::Auth::Identity.new(primary_user).link!(scoped_user, context: :authentication)
+          ::Gitlab::Auth::Identity.new(other_primary_user).link!(scoped_user, context: :permission_check)
+        end
+
+        it 'passes through the authenticated identity' do
+          expect { |b| middleware.call(worker, job, queue, nil, &b) }.to yield_control
+
+          expect(job['sqci']).to eq([primary_user.id, scoped_user.id, :authentication])
+        end
+      end
+    end
   end
 end

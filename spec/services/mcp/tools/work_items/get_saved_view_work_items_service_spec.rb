@@ -62,7 +62,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
             first: {
               type: 'integer',
               description: 'Number of work items to return after the cursor (forward pagination). ' \
-                'Default 20, max 100.',
+                'Max 100.',
               minimum: 1,
               maximum: 100
             }

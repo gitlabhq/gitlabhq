@@ -25,6 +25,18 @@ URL = "unix:/home/git/gitlab/redis/redis.socket"
 #   min_version = "tls1.2"
 #   max_version = "tls1.3"
 
+# Optional: passwordless authentication with a rotating cloud token (for
+# example Microsoft Entra for Azure Cache for Redis / Azure Managed Redis).
+# Takes precedence over username/password, refreshes the token on live
+# connections, and requires TLS. Point URL at the managed Redis endpoint; not
+# supported with Sentinel (managed Redis exposes a single endpoint).
+# [redis.credentials_provider]
+#   provider = "azure" # currently only "azure" is supported
+#   [redis.credentials_provider.azure]
+#     auth_type = "default" # Azure default credential chain (default); or "managed_identity"
+#     object_id = "00000000-0000-0000-0000-000000000000" # object (principal) ID of a user-assigned identity; omit for system-assigned
+#     scope = "https://redis.azure.com/.default"
+
 # Optional: TLS configuration for Sentinel connections
 # [Sentinel.tls]
 #   certificate = "/path/to/client/certificate.crt"

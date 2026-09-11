@@ -12,6 +12,16 @@ module Mutations
 
       description 'Moves work items between projects or groups.'
 
+      authorize_granular_token permissions: :update_work_item,
+        boundaries: [
+          { boundary_argument: :source_full_path, boundary_type: :project },
+          { boundary_argument: :source_full_path, boundary_type: :group }
+        ],
+        additional_scopes: [
+          { permissions: :create_work_item, boundary_argument: :target_full_path, boundary_type: :project },
+          { permissions: :create_work_item, boundary_argument: :target_full_path, boundary_type: :group }
+        ]
+
       argument :ids,
         [::Types::GlobalIDType[::WorkItem]],
         required: true,

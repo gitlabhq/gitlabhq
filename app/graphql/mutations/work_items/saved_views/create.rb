@@ -9,7 +9,12 @@ module Mutations
         include Mutations::SpamProtection
         include FindsNamespace
 
-        authorize :create_saved_view
+        authorize :create_work_item_saved_view
+        authorize_granular_token permissions: :create_work_item_saved_view,
+          boundaries: [
+            { boundary_argument: :namespace_path, boundary_type: :project },
+            { boundary_argument: :namespace_path, boundary_type: :group }
+          ]
 
         description "Creates a saved view."
 

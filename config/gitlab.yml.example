@@ -1128,6 +1128,13 @@ production: &base
         #
         group_base: ''
 
+        # Filter LDAP groups searched under group_base
+        #
+        #   Format: RFC 4515 https://www.rfc-editor.org/rfc/rfc4515
+        #   Ex. (objectclass=group)
+        #
+        group_filter: ''
+
         # LDAP group of users who should be admins in GitLab
         #
         #   Ex. GLAdmins
@@ -1995,6 +2002,7 @@ test:
         base: 'dc=example,dc=com'
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
+        group_filter: ''
         admin_group: ''
   prometheus:
     enabled: true

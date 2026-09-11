@@ -15,6 +15,8 @@ RSpec.describe Mutations::WorkItems::SavedViews::Unsubscribe, feature_category: 
     resolve(described_class, args: args, ctx: current_ctx)
   end
 
+  specify { expect(described_class).to require_graphql_authorizations(:unsubscribe_work_item_saved_view) }
+
   describe '#resolve' do
     context 'when the user is not logged in' do
       let(:current_ctx) { { current_user: nil } }

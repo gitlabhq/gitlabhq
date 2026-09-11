@@ -59,9 +59,9 @@ export default {
     data-testid="dashboard-filters"
     role="group"
     :aria-label="$options.i18n.region"
-    class="gl-flex gl-flex-col gl-gap-3 md:gl-flex-row"
+    class="gl-flex gl-flex-col gl-gap-5 md:gl-flex-row md:gl-gap-3"
   >
-    <gl-form-group class="gl-full-w" :label="$options.i18n.scopeLabel">
+    <gl-form-group class="gl-full-w gl-mb-0" :label="$options.i18n.scopeLabel">
       <scope-picker
         :group-full-path="defaultGroupFullPath || ''"
         :initial-path="scopePath"
@@ -69,7 +69,7 @@ export default {
         @error="$emit('error', $event)"
       />
     </gl-form-group>
-    <gl-form-group v-if="showDateRangeFilter" :label="$options.i18n.dateRangeLabel">
+    <gl-form-group v-if="showDateRangeFilter" class="gl-mb-0" :label="$options.i18n.dateRangeLabel">
       <date-range-filter
         :default-option="dateRangeDefaultOption"
         :options="dateRangeOptions"

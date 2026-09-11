@@ -328,6 +328,30 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   pointer-events: none;
 }
 
+// Styles BOARD_CARD_DROP_INDICATOR_CLASS. The `.board-card-list >` prefix is needed to
+// outrank the card's own utility classes, which load after this page bundle.
+.board-card-list > .board-card-drop-indicator {
+  position: relative;
+  height: 0;
+  min-height: 0;
+  border: 0;
+  pointer-events: none;
+
+  > * {
+    display: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: -1px;
+    height: 2px;
+    border-radius: 1px;
+    background-color: var(--gl-highlight-target-border-color);
+  }
+}
+
 .design-scaler-wrapper {
   bottom: 0;
   left: 50%;

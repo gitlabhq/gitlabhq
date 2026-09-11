@@ -65,7 +65,7 @@ module Mcp
               },
               first: {
                 type: 'integer',
-                description: 'Number of commits to return (forward pagination, default 20, max 100). ' \
+                description: 'Number of commits to return (forward pagination, max 100). ' \
                   'A maximum of 10 applies when with_stats is set.',
                 minimum: 1,
                 maximum: 100

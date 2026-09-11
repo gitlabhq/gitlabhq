@@ -13,6 +13,7 @@ import {
   mergeWorkItemChangeAction,
   findMatchingWorkItems,
   dropMatchCacheEntries,
+  removeWorkItemFromNamespaceLists,
   MAX_MATCH_IDS,
 } from '~/work_items/list/graphql/cache_updates';
 import { buildWorkItemNode, buildBoardWorkItemsResponse, mockGroupId } from '../../board/mock_data';
@@ -357,6 +358,116 @@ describe('work item list cache updates', () => {
         );
         expect(workItemsFields).toHaveLength(1);
         expect(workItemsFields[0]).not.toContain('"ids"');
+      });
+    });
+  });
+
+  describe('removeWorkItemFromNamespaceLists', () => {
+    it('unlinks the work item from the namespace workItems field', () => {
+      const cache = createFakeCache();
+
+      removeWorkItemFromNamespaceLists(cache, NAMESPACE_ID, workItemId(1));
+
+      expect(cache.modify).toHaveBeenCalledWith({
+        id: 'Namespace:gid://gitlab/Group/3',
+        fields: { workItems: expect.any(Function) },
+      });
+    });
+
+    it('also unlinks it from the top-level restWorkItems field', () => {
+      const cache = createFakeCache();
+
+      removeWorkItemFromNamespaceLists(cache, NAMESPACE_ID, workItemId(1));
+
+      expect(cache.modify).toHaveBeenCalledWith({
+        fields: { restWorkItems: expect.any(Function) },
+      });
+    });
+
+    it('skips the namespace-scoped call when there is no namespace id yet', () => {
+      const cache = createFakeCache();
+
+      removeWorkItemFromNamespaceLists(cache, null, workItemId(1));
+
+      expect(cache.modify).toHaveBeenCalledTimes(1);
+      expect(cache.modify).toHaveBeenCalledWith({
+        fields: { restWorkItems: expect.any(Function) },
+      });
+    });
+
+    it('does not garbage collect, since the entity itself is left in place', () => {
+      const cache = createFakeCache();
+
+      removeWorkItemFromNamespaceLists(cache, NAMESPACE_ID, workItemId(1));
+
+      expect(cache.gc).not.toHaveBeenCalled();
+    });
+
+    it('leaves a count-only entry (no nodes) untouched', () => {
+      const cache = createFakeCache();
+
+      removeWorkItemFromNamespaceLists(cache, NAMESPACE_ID, workItemId(1));
+      const [{ fields }] = cache.modify.mock.calls[0];
+
+      expect(fields.workItems({ count: 4 }, { readField: jest.fn() })).toEqual({ count: 4 });
+    });
+
+    // The helper relies on Apollo running the field function for every page and filter variant
+    // that reference the item, which only a real cache can demonstrate.
+    describe('with a real cache', () => {
+      const variables = { fullPath: 'group/path' };
+      const otherVariables = { fullPath: 'group/path', types: ['ISSUE'] };
+
+      const cacheWithWorkItems = (ids) => {
+        const cache = new InMemoryCache({ possibleTypes, typePolicies });
+        const write = (vars) =>
+          cache.writeQuery({
+            query: hasWorkItemsQuery,
+            variables: vars,
+            data: {
+              namespace: {
+                __typename: 'Namespace',
+                id: NAMESPACE_ID,
+                workItems: {
+                  __typename: 'WorkItemConnection',
+                  nodes: ids.map((id) => ({ __typename: 'WorkItem', id: workItemId(id) })),
+                },
+              },
+            },
+          });
+        write(variables);
+        write(otherVariables);
+        return cache;
+      };
+
+      const nodesIn = (cache, vars) =>
+        cache.readQuery({ query: hasWorkItemsQuery, variables: vars }).namespace.workItems.nodes;
+
+      it('removes the work item from every cached page and filter variant', () => {
+        const cache = cacheWithWorkItems([1, 2]);
+
+        removeWorkItemFromNamespaceLists(cache, NAMESPACE_ID, workItemId(1));
+
+        expect(nodesIn(cache, variables)).toEqual([{ __typename: 'WorkItem', id: workItemId(2) }]);
+        expect(nodesIn(cache, otherVariables)).toEqual([
+          { __typename: 'WorkItem', id: workItemId(2) },
+        ]);
+      });
+
+      it('leaves other work items in place', () => {
+        const cache = cacheWithWorkItems([1, 2]);
+
+        removeWorkItemFromNamespaceLists(cache, NAMESPACE_ID, workItemId(3));
+
+        expect(nodesIn(cache, variables)).toHaveLength(2);
+      });
+
+      it('leaves the entity itself in the cache, unlike evicting it', () => {
+        const cache = cacheWithWorkItems([1, 2]);
+
+        removeWorkItemFromNamespaceLists(cache, NAMESPACE_ID, workItemId(1));
+
+        expect(cache.extract()[`WorkItem:${workItemId(1)}`]).toBeDefined();
       });
     });
   });

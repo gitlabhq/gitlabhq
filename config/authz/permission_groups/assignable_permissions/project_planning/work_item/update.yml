@@ -18,6 +18,7 @@ permissions:
   - reset_issue_time_estimate
   - reset_merge_request_spent_time
   - reset_merge_request_time_estimate
+  - update_custom_field
   - update_epic
   - update_epic_issue
   - update_epic_link
@@ -36,7 +37,13 @@ permissions:
   - update_merge_request_note
   - update_milestone
   - update_note
+  - update_requirement
   - update_snippet_discussion
   - update_snippet_discussion_note
   - update_snippet_note
   - update_wiki_page_meta_note
+  - update_work_item_lifecycle
+  - update_work_item_setting
+  - update_work_item_type
+  - update_work_item_type_visibility
+  - update_work_item_user_preference

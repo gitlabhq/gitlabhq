@@ -158,6 +158,23 @@ To change the sort order between ascending and descending:
 For more information about sorting logic, see
 [sorting and ordering issue lists](../project/issues/sorting_issue_lists.md).
 
+### Subscribe to an RSS feed of the work item list
+
+GitLab provides an RSS feed of the work item list.
+
+To subscribe to the feed:
+
+1. In the top bar, select **Search or go to** and find your project or group.
+1. In the left sidebar, select **Plan** > **Work items**.
+1. Optional. Apply filters to narrow the list.
+1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Subscribe to RSS feed**.
+
+By default, the feed contains all work item types. If you applied filters, the feed matches
+those filters instead.
+
+The feed URL contains a [feed token](../../security/tokens/_index.md#feed-token) that
+authenticates you as the feed reader.
+
 ## Configure list display preferences
 
 {{< history >}}

@@ -251,7 +251,7 @@ export default {
           <gl-button
             category="secondary"
             icon="retry"
-            class="gl-mb-5 gl-basis-full md:gl-basis-auto md:gl-self-end"
+            class="gl-basis-full md:gl-basis-auto md:gl-self-end"
             :aria-label="$options.i18n.resetLabel"
             :disabled="!hasActiveFilters"
             data-testid="dashboard-filters-reset"

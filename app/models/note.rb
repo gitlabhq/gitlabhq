@@ -517,6 +517,13 @@ class Note < ApplicationRecord
     !system?
   end
 
+  # Single-record mirror of the `without_hidden` scope. Coerces with `!!` where
+  # Issue#hidden? and MergeRequest#hidden? return a nil-able `author&.banned?`,
+  # because this is serialised into a `boolean` Elasticsearch field.
+  def hidden?
+    !!author&.banned?
+  end
+
   # We used `last_edited_at` as an alias of `updated_at` before.
   # This makes it compatible with the previous way without data migration.
   def last_edited_at

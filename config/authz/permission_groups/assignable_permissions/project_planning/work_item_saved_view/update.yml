@@ -1,0 +1,10 @@
+---
+name: update_work_item_saved_view
+description: Grants the ability to update work item saved views
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_work_item_saved_view

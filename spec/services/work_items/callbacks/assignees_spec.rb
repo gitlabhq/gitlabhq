@@ -143,6 +143,30 @@ RSpec.describe WorkItems::Callbacks::Assignees, :request_store, :freeze_time, fe
       end
     end
 
+    context 'when two service accounts with composite_identity_enforced are given' do
+      let_it_be(:first_account) do
+        create(:user, :service_account, composite_identity_enforced: true, developer_of: project)
+      end
+
+      let_it_be(:second_account) do
+        create(:user, :service_account, composite_identity_enforced: true, developer_of: project)
+      end
+
+      let(:params) { { assignee_ids: [first_account.id, second_account.id] } }
+
+      before do
+        allow(work_item).to receive(:allows_multiple_assignees?).and_return(true)
+      end
+
+      it 'links both accounts for permission checks and sets both as assignees' do
+        assignees_callback
+
+        expect(work_item.assignee_ids).to contain_exactly(first_account.id, second_account.id)
+        expect(::Gitlab::Auth::Identity.new(first_account).scoped_user).to eq(current_user)
+        expect(::Gitlab::Auth::Identity.new(second_account).scoped_user).to eq(current_user)
+      end
+    end
+
     context 'when assignee is a regular user with composite_identity_enforced' do
       let_it_be(:new_assignee) do
         create(:user, developer_of: project)

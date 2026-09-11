@@ -127,14 +127,17 @@ curl --request GET \
 Evaluates a single package against the Dependency Firewall policies for a specified project.
 
 This endpoint accepts a personal access token, project access token, group access token,
-OAuth token, or [CI/CD job token](../ci/jobs/ci_job_token.md). A job token from a project
-outside the target project's job token scope is refused with a `403 Forbidden` status code.
-Deploy tokens are not supported.
+OAuth token, or [CI/CD job token](../ci/jobs/ci_job_token.md). A job token can only evaluate
+packages for the project its job runs in: a job token for any other project is refused with a
+`403 Forbidden` status code, even when the target project allows the job's project in its
+[inbound job token allowlist](../ci/jobs/ci_job_token.md). Deploy tokens are not supported.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
-- You must have permission to read packages in the project.
+- You must have at least the Reporter role for the project. The package registry does not
+  have to be turned on: the Dependency Firewall evaluates dependencies fetched from upstream
+  registries, so the evaluation permission is independent of the project's package registry
+  setting.
 
 ```plaintext
 POST /projects/:id/dependency_firewall/evaluate
@@ -187,7 +190,7 @@ This endpoint can also return the following status codes:
 |-------------|------|-------------|
 | `400` | None | `name` or `version` is blank, or `ecosystem` or `operation` is not one of the accepted values. |
 | `401` | None | The request was not authenticated. |
-| `403` | None | The authenticated user cannot read packages in the project, or the request used a job token from outside the project's job token scope. |
+| `403` | None | The authenticated user does not have at least the Reporter role for the project, or the request used a CI/CD job token for any project other than the one its job runs in. |
 | `404` | None | The project does not exist, the authenticated user has no access to it, or the `dependency_firewall_phase1` feature flag is disabled. |
 | `422` | `dependency_firewall_not_enforced` | The Dependency Firewall is not enabled for the project. |
 | `429` | None | The rate limit for this endpoint was exceeded. The limit is scoped to the combination of project and user. |

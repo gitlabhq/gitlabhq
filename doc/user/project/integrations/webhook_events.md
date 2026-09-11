@@ -31,6 +31,7 @@ For a list of events triggered for system webhooks, see [system webhooks](../../
 | [Deployment event](#deployment-events)                                        | A deployment starts, finishes, fails, is canceled, is awaiting approval, or is awaiting manual action. On Premium and Ultimate, also when a deployment is approved or rejected. |
 | [Emoji event](#emoji-events)                                                  | An emoji reaction is added or removed. |
 | [Feature flag event](#feature-flag-events)                                    | A feature flag is turned on or off. |
+| [GitLab Duo flow event](#gitlab-duo-flow-events)                              | A GitLab Duo flow that references the webhook starts, finishes, or fails. |
 | [Job event](#job-events)                                                      | A job status changes. |
 | [Merge request event](#merge-request-events)                                  | A merge request is created, edited, merged, or closed, or a commit is added in the source branch. |
 | [Milestone event](#milestone-events)                                          | A milestone is created, closed, reopened, or deleted. |
@@ -3068,3 +3069,143 @@ Payload example:
   }
 }
 ```
+
+## GitLab Duo flow events
+
+{{< details >}}
+
+- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249145) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `duo_flow_callback_hooks`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+A GitLab Duo flow event is triggered when a
+[GitLab Duo flow](../../duo_agent_platform/flows/_index.md) that references the webhook changes
+state.
+
+To receive GitLab Duo flow events, turn on
+[webhook callbacks](../../duo_agent_platform/flows/webhook_callbacks.md) for the webhook, then
+reference the webhook when you trigger a flow.
+GitLab sends events only for the flows that reference the webhook.
+
+Unlike other event types, GitLab Duo flow events are not selected in the **Trigger** section of
+the webhook.
+
+Request header:
+
+```plaintext
+X-Gitlab-Event: Duo Flow Callback
+```
+
+GitLab sends the following events:
+
+| Event            | Trigger |
+|------------------|---------|
+| `flow.started`   | The agent begins work on the flow. |
+| `flow.completed` | The flow finishes and produces a final message. |
+| `flow.failed`    | The flow fails, or finishes without a final message. |
+
+Payload example for `flow.completed`:
+
+```json
+{
+  "object_kind": "duo_workflow",
+  "version": "1",
+  "event": "flow.completed",
+  "event_id": "f5e5f430-f57b-4e6e-9fac-d9128cd7232f",
+  "client_reference": "run-abc123",
+  "result": {
+    "message": "I corrected the indentation in .gitlab-ci.yml and pushed the change."
+  },
+  "project": {
+    "id": 5,
+    "name": "Flight",
+    "description": "Example project",
+    "web_url": "https://gitlab.example.com/flightjs/Flight",
+    "avatar_url": null,
+    "git_ssh_url": "git@gitlab.example.com:flightjs/Flight.git",
+    "git_http_url": "https://gitlab.example.com/flightjs/Flight.git",
+    "namespace": "Flightjs",
+    "visibility_level": 20,
+    "path_with_namespace": "flightjs/Flight",
+    "default_branch": "main",
+    "ci_config_path": null,
+    "homepage": "https://gitlab.example.com/flightjs/Flight",
+    "url": "git@gitlab.example.com:flightjs/Flight.git",
+    "ssh_url": "git@gitlab.example.com:flightjs/Flight.git",
+    "http_url": "https://gitlab.example.com/flightjs/Flight.git"
+  },
+  "user": {
+    "id": 1,
+    "name": "Sidney Jones",
+    "username": "sidney_jones",
+    "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/1/avatar.png",
+    "email": "[REDACTED]"
+  },
+  "workflow": {
+    "id": 1,
+    "status": "finished",
+    "web_url": "https://gitlab.example.com/flightjs/Flight/-/automate/agent-sessions/1"
+  }
+}
+```
+
+Payload attributes:
+
+| Attribute          | Type    | Description |
+|--------------------|---------|-------------|
+| `client_reference` | string  | Value of the `client_reference` attribute from the request that triggered the flow. Omitted when the request did not set it. |
+| `error`            | object  | Reason the flow failed. Present only for `flow.failed`. Contains only `reason`. |
+| `error.reason`     | string  | Machine-readable failure reason. `flow_failed` when the flow itself failed, or `no_response` when the flow finished without a final message. A `no_response` event has a `workflow.status` of `finished`. |
+| `event`            | string  | Event name. One of `flow.started`, `flow.completed`, or `flow.failed`. |
+| `event_id`         | string  | ID of the event. Repeated when GitLab retries a delivery. Use it to ignore an event you have already processed. |
+| `object_kind`      | string  | Always `duo_workflow`. |
+| `project`          | object  | Project the flow ran in. Omitted for a flow that ran in a group. |
+| `result`           | object  | Final output of the flow. Present only for `flow.completed`. |
+| `result.message`   | string  | Final message from the agent. |
+| `user`             | object  | User who triggered the flow. |
+| `version`          | string  | Version of the payload structure. Always `1`. |
+| `workflow`         | object  | The flow. |
+| `workflow.id`      | integer | ID of the flow. |
+| `workflow.status`  | string  | Status of the flow when GitLab sent the event. |
+| `workflow.web_url` | string  | URL of the flow session in GitLab. Omitted for a flow that ran in a group. |
+
+GitLab omits a top-level attribute that has no value rather than sending it as `null`.
+Attributes nested in the `project` and `user` objects can be `null`.
+
+A `flow.failed` payload carries an `error` object instead of a `result` object.
+The following example shows only the attributes that differ from `flow.completed`.
+GitLab also sends `project` and `user`:
+
+```json
+{
+  "object_kind": "duo_workflow",
+  "version": "1",
+  "event": "flow.failed",
+  "event_id": "02affd2d-2cba-4033-917d-ec22d5dc4b38",
+  "client_reference": "run-abc123",
+  "error": {
+    "reason": "flow_failed"
+  },
+  "workflow": {
+    "id": 1,
+    "status": "failed",
+    "web_url": "https://gitlab.example.com/flightjs/Flight/-/automate/agent-sessions/1"
+  }
+}
+```
+
+For the delivery guarantees for these events, see
+[webhook callbacks](../../duo_agent_platform/flows/webhook_callbacks.md#handling-callbacks-in-your-endpoint).

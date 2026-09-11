@@ -78,20 +78,39 @@ export const findMatchingWorkItems = async ({
   return new Set(getWorkItemsConnection(data, useRestApi)?.nodes.map((node) => node.id) ?? []);
 };
 
-// The match query's `ids` argument gives it its own store entry, separate from the list's, because
-// `workItems` has no `keyArgs` — nothing else merges into it, so it just needs clearing out.
-export const dropMatchCacheEntries = (cache, namespaceId) => {
-  const stripMatchEntry = (value, { storeFieldName, DELETE }) =>
-    storeFieldName.includes('"ids":') ? DELETE : value;
-
+// Namespace-scoped `workItems` and the top-level `restWorkItems` are the two places a work item
+// list can live, so every field-level cache surgery here needs to reach both. Apollo calls
+// `fieldFn` once per distinct argument set, so one call still reaches every page and board column.
+const modifyWorkItemsFields = (cache, namespaceId, fieldFn) => {
   if (namespaceId) {
     cache.modify({
       id: cache.identify({ __typename: TYPENAME_NAMESPACE, id: namespaceId }),
-      fields: { workItems: stripMatchEntry },
+      fields: { workItems: fieldFn },
     });
   }
-  cache.modify({ fields: { restWorkItems: stripMatchEntry } });
+  cache.modify({ fields: { restWorkItems: fieldFn } });
+};
+
+// The match query's `ids` argument gives it its own store entry, separate from the list's, because
+// `workItems` has no `keyArgs` — nothing else merges into it, so it just needs clearing out.
+export const dropMatchCacheEntries = (cache, namespaceId) => {
+  modifyWorkItemsFields(cache, namespaceId, (value, { storeFieldName, DELETE }) =>
+    storeFieldName.includes('"ids":') ? DELETE : value,
+  );
   cache.gc();
+};
+
+// The item has been edited out of the current filters rather than deleted, so this only unlinks
+// it from every cached page and board column — evicting the entity would break an open drawer.
+export const removeWorkItemFromNamespaceLists = (cache, namespaceId, workItemId) => {
+  modifyWorkItemsFields(cache, namespaceId, (existing, { readField }) =>
+    existing?.nodes
+      ? {
+          ...existing,
+          nodes: existing.nodes.filter((node) => readField('id', node) !== workItemId),
+        }
+      : existing,
+  );
 };
 
 // True whenever the item could be on screen, but also true for items only cached as a

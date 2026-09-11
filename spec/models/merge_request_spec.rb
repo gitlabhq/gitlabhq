@@ -2179,6 +2179,19 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         related_issues
       end
+
+      it 'does not resolve hex words in commit messages as commits' do
+        commit_stub = double(
+          'commit1',
+          safe_message: "This reverts commit b83d6e391c22777fca1ed3012fce84f633d7fed0\n\n" \
+            "Fixes #{issue_referenced_in_mr_commit_msg.to_reference}"
+        )
+        allow(merge_request).to receive(:commits).and_return([commit_stub])
+
+        expect(Gitlab::Git::Commit).not_to receive(:batch_by_oid)
+
+        expect(related_issues).to include(issue_referenced_in_mr_commit_msg)
+      end
     end
 
     context 'for developer' do
@@ -3283,6 +3296,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       allow(subject.project).to receive(:default_branch)
         .and_return(subject.target_branch)
       subject.persist_merge_request_issues!
+
+      expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
+    end
+
+    it 'does not resolve hex words in the description as commits' do
+      subject.project.add_developer(subject.author)
+      subject.description = "Is related to #{mentioned_issue.to_reference} (86cf52818ce35ddc67a9aed6cc5ce19c)"
+
+      allow(subject).to receive(:commits).and_return([])
+      allow(subject.project).to receive(:default_branch).and_return(subject.target_branch)
+
+      expect(Gitlab::Git::Commit).not_to receive(:batch_by_oid)
 
       expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
     end

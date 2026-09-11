@@ -4,6 +4,8 @@ module Mcp
   module Tools
     module WorkItems
       class GetSavedViewWorkItemsTool < BaseTool
+        include Mcp::Tools::Concerns::CursorPagination
+
         class << self
           # Kept as delegators: the register_version lambda and existing specs
           # reference these on the tool class; the definitions live in the
@@ -40,12 +42,13 @@ module Mcp
           parent_info = resolve_parent
           filters = (params[:filters] || {}).stringify_keys
 
+          pagination = resolve_pagination_direction
           variables, @unsupported_filters = WorkItemsQueryBuilder.build_variables(
             full_path: parent_info[:full_path],
             filters: filters,
             sort: params[:sort],
-            first: params[:first],
-            after: params[:after]
+            first: pagination[:first],
+            after: pagination[:after]
           )
 
           variables

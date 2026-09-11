@@ -782,6 +782,26 @@ To open the issue in full view:
 
 To always open issues in full page view, [configure your list display preferences](../../work_items/_index.md#configure-list-display-preferences).
 
+### Subscribe to an RSS feed of the issue list
+
+You can subscribe to an RSS feed of the issue list. The feed reflects any filters
+applied to the list.
+
+To subscribe to an RSS feed of a project's issue list:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue**.
+1. Optional. Apply any filters.
+1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Subscribe to RSS feed**.
+
+To subscribe to an RSS feed of a group's issue list, follow the same steps. In the top bar,
+select **Search or go to** and find your group instead of a project. For your personal issue
+list, in the left sidebar, select **Your work** > **Work items**, then use the same
+**Actions** > **Subscribe to RSS feed**.
+
+The feed URL contains a [feed token](../../../security/tokens/_index.md#feed-token) that
+authenticates you as the feed reader.
+
 ## Copy issue reference
 
 To refer to an issue elsewhere in GitLab, you can use its full URL or a short reference, which looks like

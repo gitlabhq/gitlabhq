@@ -50,8 +50,7 @@ module Mcp
                 items: 'notes',
                 params: %i[first after last before],
                 prefix: 'notes_',
-                applies_to: 'notes is in include',
-                default_page_size: GetWorkItemTool::DEFAULT_NOTES_PAGE_SIZE
+                applies_to: 'notes is in include'
               ),
               **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
                 items: 'related merge requests',

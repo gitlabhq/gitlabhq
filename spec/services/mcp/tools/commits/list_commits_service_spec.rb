@@ -91,7 +91,7 @@ RSpec.describe Mcp::Tools::Commits::ListCommitsService, feature_category: :mcp_s
           },
           first: {
             type: 'integer',
-            description: 'Number of commits to return (forward pagination, default 20, max 100). ' \
+            description: 'Number of commits to return (forward pagination, max 100). ' \
               "A maximum of #{Mcp::Tools::Commits::ListCommitsTool.stats_max_first} applies when " \
               'with_stats is set.',
             minimum: 1,

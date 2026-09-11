@@ -32,7 +32,6 @@ fragment PipelineListItemBase on Pipeline {
   source
   latest
   yamlErrors
-  yamlErrorMessages
   failureReason
   configSource
   stuck
@@ -59,4 +58,8 @@ fragment PipelineListItemBase on Pipeline {
   hasManualActions
   hasScheduledActions
   failedJobsCount
+  userPermissions {
+    cancelPipeline
+    updatePipeline
+  }
 }

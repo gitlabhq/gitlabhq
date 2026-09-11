@@ -339,6 +339,26 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         expect(response.body.scan('<diff-file ').size).to eq(5)
       end
 
+      describe 'noteable data' do
+        def noteable_data
+          element = Nokogiri::HTML(response.body).at_css('#js-vue-mr-discussions')
+
+          Gitlab::Json.parse(element['data-noteable-data'])
+        end
+
+        it 'omits new_blob_path, which Rapid Diffs renders on its own' do
+          get diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true')
+
+          expect(noteable_data).not_to have_key('new_blob_path')
+        end
+
+        it 'includes new_blob_path for legacy diffs' do
+          get diffs_project_merge_request_path(project, merge_request)
+
+          expect(noteable_data).to have_key('new_blob_path')
+        end
+      end
+
       context 'when rapid_diffs_default_on_mr_show is enabled' do
         before do
           stub_feature_flags(rapid_diffs_default_on_mr_show: true)

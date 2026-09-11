@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'json'
 
-RSpec.describe Gitlab::Webpack::Manifest do
+RSpec.describe Gitlab::Webpack::Manifest, feature_category: :tooling do
   let(:manifest) do
     <<-JSON
       {
@@ -91,6 +91,57 @@ RSpec.describe Gitlab::Webpack::Manifest do
           stub_request(:get, "http://hostname:2000/public_path/my_manifest.json").to_return(body: error_manifest, status: 200)
           expect { described_class.asset_paths("entry1") }.not_to raise_error
         end
+      end
+    end
+
+    describe "dev server errors" do
+      let(:original_error) { Errno::ECONNREFUSED.new("connect(2)") }
+
+      before do
+        allow(Gitlab::Webpack::FileLoader).to receive(:load).and_raise(
+          Gitlab::Webpack::FileLoader::DevServerLoadError.new("http://localhost:3808/manifest", original_error)
+        )
+      end
+
+      it "names the rspack service when the rspack manifest is requested" do
+        expect { described_class.asset_paths("entry1", manifest_filename: "manifest.rspack.json") }
+          .to raise_error(Gitlab::Webpack::Manifest::ManifestLoadError, /gdk status rspack/)
+      end
+
+      it "names the webpack service when the webpack manifest is requested" do
+        expect { described_class.asset_paths("entry1", manifest_filename: "manifest.json") }
+          .to raise_error(Gitlab::Webpack::Manifest::ManifestLoadError, /gdk status webpack/)
+      end
+
+      it "does not point at a webpack service when rspack is the bundler" do
+        expect { described_class.asset_paths("entry1", manifest_filename: "manifest.rspack.json") }
+          .to raise_error(Gitlab::Webpack::Manifest::ManifestLoadError) { |error|
+            expect(error.message).not_to include("gdk status webpack")
+            expect(error.message).not_to include("webpack-dev-server")
+          }
+      end
+    end
+
+    describe "dev server SSL errors" do
+      let(:original_error) { OpenSSL::SSL::SSLError.new("wrong version number") }
+
+      before do
+        allow(Gitlab::Webpack::FileLoader).to receive(:load).and_raise(
+          Gitlab::Webpack::FileLoader::DevServerSSLError.new("https://localhost:3808/manifest", original_error)
+        )
+      end
+
+      it "names the rspack dev server when the rspack manifest is requested" do
+        expect { described_class.asset_paths("entry1", manifest_filename: "manifest.rspack.json") }
+          .to raise_error(Gitlab::Webpack::Manifest::ManifestLoadError) { |error|
+            expect(error.message).to include("Could not connect to the rspack dev server")
+            expect(error.message).not_to include("webpack dev server")
+          }
+      end
+
+      it "names the webpack dev server when the webpack manifest is requested" do
+        expect { described_class.asset_paths("entry1", manifest_filename: "manifest.json") }
+          .to raise_error(Gitlab::Webpack::Manifest::ManifestLoadError, /Could not connect to the webpack dev server/)
       end
     end
   end

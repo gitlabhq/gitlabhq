@@ -448,6 +448,12 @@ To view your activity:
    - **Wiki**: Wiki pages you created and updated in your projects.
    - **Designs**: Designs you added, updated, and removed in your projects.
    - **Team**: Projects you joined and left.
+1. Optional. To subscribe to an RSS feed of this activity, in the upper-right corner,
+   select the feed symbol ({{< icon name="rss" >}}).
+
+The feed always contains all activity from projects you are a member of, regardless
+of the tab or filter you selected. The feed URL contains a
+[feed token](../../security/tokens/_index.md#feed-token) that authenticates you.
 
 ## Sign-in services
 

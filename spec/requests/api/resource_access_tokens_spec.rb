@@ -107,7 +107,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
           end
         end
 
-        it 'avoids N+1 queries when rendering last_used_ips' do
+        it 'avoids N+1 queries when listing resource access tokens' do
           path = "/#{source_type}s/#{resource_id}/access_tokens"
 
           get api(path, user) # warm-up
@@ -125,6 +125,8 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
           end
 
           expect { get api(path, user) }.not_to exceed_all_query_limit(control)
+
+          expect(json_response.pluck('id')).to include(extra_token.id)
         end
 
         context "when using a #{source_type} access token to GET other #{source_type} access tokens" do

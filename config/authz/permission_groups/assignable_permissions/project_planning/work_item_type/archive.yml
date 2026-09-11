@@ -1,0 +1,9 @@
+---
+name: archive_work_item_type
+description: Grants the ability to archive work item types
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - archive_work_item_type

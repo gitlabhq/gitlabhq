@@ -35,13 +35,39 @@ RSpec.describe Mcp::Tools::Concerns::CursorPagination, feature_category: :mcp_se
     end
   end
 
+  describe '#resolve_pagination_direction' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:default_size) { described_class::DEFAULT_PAGE_SIZE }
+
+    # rubocop:disable Layout/LineLength -- table alignment
+    where(:description, :input, :expected_keys) do
+      'forward only'    | { first: 10, after: 'cursor_a' }                              | { first: 10, after: 'cursor_a' }
+      'backward only'   | { last: 5, before: 'cursor_b' }                               | { last: 5, before: 'cursor_b' }
+      'both directions' | { first: 10, after: 'cursor_a', last: 5, before: 'cursor_b' } | { first: 10, after: 'cursor_a' }
+      'neither'         | {}                                                            | :default_forward
+    end
+    # rubocop:enable Layout/LineLength
+
+    with_them do
+      let(:params) { input }
+
+      it 'resolves to the correct pagination direction' do
+        result = service.send(:resolve_pagination_direction)
+        expected = expected_keys == :default_forward ? { first: default_size, after: nil } : expected_keys
+
+        expect(result).to eq(expected)
+      end
+    end
+  end
+
   describe '.input_schema_params' do
     it 'describes the forward pagination params by default' do
       expect(described_class.input_schema_params(items: 'wiki pages')).to eq({
         first: {
           type: 'integer',
           description: 'Number of wiki pages to return after the cursor (forward pagination). ' \
-            'Default 20, max 100.',
+            'Max 100.',
           minimum: 1,
           maximum: 100
         },
@@ -58,7 +84,7 @@ RSpec.describe Mcp::Tools::Concerns::CursorPagination, feature_category: :mcp_se
         last: {
           type: 'integer',
           description: 'Number of notes to return before the cursor (backward pagination). ' \
-            'Default 20, max 100.',
+            'Max 100.',
           minimum: 1,
           maximum: 100
         },
@@ -82,19 +108,19 @@ RSpec.describe Mcp::Tools::Concerns::CursorPagination, feature_category: :mcp_se
       expect(params[:notes_after][:description]).to end_with('Applies only when notes is in include.')
     end
 
-    it 'omits the default when the tool does not apply one' do
-      params = described_class.input_schema_params(items: 'notes', default_page_size: nil)
-
-      expect(params[:first][:description]).to eq(
-        'Number of notes to return after the cursor (forward pagination). Max 100.'
-      )
-    end
-
     it 'points at the flattened snake_case cursor location when the tool requests it' do
       params = described_class.input_schema_params(items: 'jobs', cursor_style: :snake_case)
 
       expect(params[:after][:description]).to eq(
         'Cursor for forward pagination of jobs. Use page_info.end_cursor from a previous response.'
+      )
+    end
+
+    it 'points at metadata cursor location when the tool requests it' do
+      params = described_class.input_schema_params(items: 'members', cursor_style: :metadata)
+
+      expect(params[:after][:description]).to eq(
+        'Cursor for forward pagination of members. Use metadata.end_cursor from a previous response.'
       )
     end
 

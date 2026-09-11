@@ -2213,7 +2213,7 @@ Grants the ability to read and update usage data metrics.
 
 #### Work Item
 
-Grants the ability to create, delete, read, and update work items such as epics and issues.
+Grants the ability to create, delete, read, subscribe, and update work items such as epics and issues.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |

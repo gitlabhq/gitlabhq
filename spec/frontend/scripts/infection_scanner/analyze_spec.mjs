@@ -554,6 +554,33 @@ describe('infection scanner', () => {
       it('does NOT infect shared clean libraries', () => {
         expect(result.graph[fixture('app_root_barrier', 'shared.js')].infected).toBe(false);
       });
+
+      // `exposedToVue` answers the downward question, where the barrier is wrong: a
+      // Vue 3 copy of `page.js` must hand a Vue 3 copy to the app root below it.
+      describe('exposedToVue', () => {
+        it('reaches past the app root that infected stops at', () => {
+          const page = result.graph[fixture('app_root_barrier', 'page.js')];
+
+          expect(page.infected).toBe(false);
+          expect(page.exposedToVue).toBe(true);
+        });
+
+        it('is set on the app root itself', () => {
+          expect(result.graph[fixture('app_root_barrier', 'app_b.js')].exposedToVue).toBe(true);
+        });
+
+        it('is not set on a module with no Vue below it', () => {
+          expect(result.graph[fixture('app_root_barrier', 'shared.js')].exposedToVue).toBe(false);
+        });
+
+        it('holds infected as a subset, since removing a barrier only adds files', () => {
+          const breaches = Object.entries(result.graph).filter(
+            ([, entry]) => entry.infected && !entry.exposedToVue,
+          );
+
+          expect(breaches).toEqual([]);
+        });
+      });
     });
 
     describe('context-aliased specifier dual resolution', () => {

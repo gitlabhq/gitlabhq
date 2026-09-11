@@ -9,6 +9,8 @@ module Gitlab
     #
     class Identity
       COMPOSITE_IDENTITY_USERS_KEY = 'composite_identities'
+      AUTHENTICATED_IDENTITY_KEY = 'authenticated_composite_identity'
+      LAST_LINKED_IDENTITY_KEY = 'last_linked_composite_identity'
       COMPOSITE_IDENTITY_KEY_FORMAT = 'user:%s:composite_identity'
       COMPOSITE_IDENTITY_SIDEKIQ_ARG = 'sqci' # Sidekiq Composite Identity
 
@@ -68,9 +70,8 @@ module Gitlab
       end
 
       def self.currently_linked
-        user = ::Gitlab::SafeRequestStore
-          .store[COMPOSITE_IDENTITY_USERS_KEY]
-          .to_a.first
+        users = ::Gitlab::SafeRequestStore.store[COMPOSITE_IDENTITY_USERS_KEY].to_a
+        user = preferred_primary_user(users)
 
         return unless user.present?
 
@@ -89,8 +90,8 @@ module Gitlab
         # Get all composite identities from the store
         composite_identities = store.store[COMPOSITE_IDENTITY_USERS_KEY] || Set.new
 
-        # Check each composite identity to find the one with matching scoped user
-        composite_identities.find do |primary_user|
+        # Check each composite identity to find the ones with matching scoped user
+        matching = composite_identities.select do |primary_user|
           identity_key = format(COMPOSITE_IDENTITY_KEY_FORMAT, primary_user.id)
           link_data = store.store[identity_key]
 
@@ -98,6 +99,8 @@ module Gitlab
 
           scoped_user&.id == scoped_user_id
         end
+
+        preferred_primary_user(matching, store: store)
       end
 
       def self.resolve_composite_identity_actor(current_user)
@@ -106,15 +109,35 @@ module Gitlab
         primary_user = Gitlab::Auth::Identity.find_primary_user_by_scoped_user_id(current_user.id)
         return current_user unless primary_user
 
-        identity = currently_linked
-        return current_user unless identity
-
-        if identity.link_context == :authentication
+        if new(primary_user).link_context == :authentication
           primary_user
         else
           current_user
         end
       end
+
+      def self.preferred_primary_user(users, store: ::Gitlab::SafeRequestStore)
+        authenticated_primary_user(users, store: store) ||
+          last_linked_primary_user(users, store: store) ||
+          users.first
+      end
+      private_class_method :preferred_primary_user
+
+      def self.authenticated_primary_user(users, store: ::Gitlab::SafeRequestStore)
+        authenticated_id = store.store[AUTHENTICATED_IDENTITY_KEY]
+        return unless authenticated_id
+
+        users.find { |user| user.id == authenticated_id }
+      end
+      private_class_method :authenticated_primary_user
+
+      def self.last_linked_primary_user(users, store: ::Gitlab::SafeRequestStore)
+        last_linked_id = store.store[LAST_LINKED_IDENTITY_KEY]
+        return unless last_linked_id
+
+        users.find { |user| user.id == last_linked_id }
+      end
+      private_class_method :last_linked_primary_user
 
       def initialize(user, store: ::Gitlab::SafeRequestStore)
         raise UnexpectedIdentityError unless user.is_a?(::User)
@@ -199,11 +222,23 @@ module Gitlab
       end
 
       def store_identity_link!(scope_user, context: :authentication)
+        claim_authenticated_identity! if context == :authentication
+
         @request_store.store[store_key] = { user: scope_user, context: context }
+        @request_store.store[LAST_LINKED_IDENTITY_KEY] = @user.id
 
         composite_identities.add(@user)
+      end
 
-        raise TooManyIdentitiesLinkedError if composite_identities.size > 1
+      def claim_authenticated_identity!
+        claimed_id = @request_store.store[AUTHENTICATED_IDENTITY_KEY]
+
+        if claimed_id && claimed_id != @user.id
+          raise TooManyIdentitiesLinkedError,
+            "user #{@user.id} cannot be linked: user #{claimed_id} is already the authenticated identity"
+        end
+
+        @request_store.store[AUTHENTICATED_IDENTITY_KEY] = @user.id
       end
 
       def append_log!(scope_user)

@@ -1525,6 +1525,15 @@ Grants the ability to delete, read, and update custom attributes.
 | Update | Group | Mutation | `SetGroupCustomAttribute` |
 | Update | Instance | Mutation | `UserCustomAttributeSet` |
 
+#### Custom Field
+
+Grants the ability to archive custom fields.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Archive | Group | Mutation | `CustomFieldArchive` |
+| Archive | Group | Mutation | `CustomFieldUnarchive` |
+
 #### Design
 
 Grants the ability to create, delete, and update designs.
@@ -1561,7 +1570,7 @@ Grants the ability to create and delete timelogs.
 
 #### Work Item
 
-Grants the ability to create, delete, read, and update work items such as epics and issues.
+Grants the ability to create, delete, read, subscribe, and update work items such as epics and issues.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
@@ -1572,22 +1581,33 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Create | Project | Mutation | `CreateIssue` |
 | Create | Project | Mutation | `CreateLatestDiffNote` |
 | Create | Project | Mutation | `CreateNote` |
+| Create | Project | Mutation | `CreateRequirement` |
+| Create | Project | Mutation | `CreateTestCase` |
+| Create | Project | Mutation | `WorkItemBulkMove` |
 | Create | Project | Mutation | `WorkItemCreate` |
+| Create | Project | Mutation | `WorkItemsCsvImport` |
 | Create | Project | Field | `EpicIssue.createNoteEmail` |
 | Create | Project | Field | `Issue.createNoteEmail` |
 | Create | Project | Field | `WorkItem.createNoteEmail` |
 | Create | Group | Mutation | `CreateDiffNote` |
 | Create | Group | Mutation | `CreateDiscussion` |
 | Create | Group | Mutation | `CreateImageDiffNote` |
+| Create | Group | Mutation | `CreateIteration` |
 | Create | Group | Mutation | `CreateLatestDiffNote` |
 | Create | Group | Mutation | `CreateNote` |
+| Create | Group | Mutation | `CustomFieldCreate` |
 | Create | Group | Mutation | `IterationCadenceCreate` |
+| Create | Group | Mutation | `LifecycleCreate` |
+| Create | Group | Mutation | `WorkItemBulkMove` |
 | Create | Group | Mutation | `WorkItemCreate` |
+| Create | Group | Mutation | `WorkItemTypeCreate` |
+| Create | Group | Mutation | `iterationCreate` |
 | Delete | Project | Mutation | `DestroyNote` |
 | Delete | Project | Mutation | `WorkItemDelete` |
 | Delete | Group | Mutation | `DestroyNote` |
 | Delete | Group | Mutation | `IterationCadenceDestroy` |
 | Delete | Group | Mutation | `IterationDelete` |
+| Delete | Group | Mutation | `LifecycleDelete` |
 | Delete | Group | Mutation | `WorkItemDelete` |
 | Read | Project | Type | `Board` |
 | Read | Project | Type | `EpicIssue` |
@@ -1595,6 +1615,9 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Read | Project | Type | `Milestone` |
 | Read | Project | Type | `Note` |
 | Read | Project | Type | `WorkItem` |
+| Read | Project | Mutation | `ExportRequirements` |
+| Read | Project | Mutation | `WorkItemExport` |
+| Read | Project | Mutation | `WorkItemsCsvExport` |
 | Read | Group | Type | `Board` |
 | Read | Group | Type | `BoardEpic` |
 | Read | Group | Type | `Epic` |
@@ -1603,6 +1626,8 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Read | Group | Type | `Milestone` |
 | Read | Group | Type | `Note` |
 | Read | Group | Type | `WorkItemMoveTarget` |
+| Subscribe | Project | Mutation | `WorkItemSubscribe` |
+| Subscribe | Group | Mutation | `WorkItemSubscribe` |
 | Update | Project | Mutation | `DiscussionToggleResolve` |
 | Update | Project | Mutation | `IssueLinkAlerts` |
 | Update | Project | Mutation | `IssueMove` |
@@ -1623,26 +1648,65 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Project | Mutation | `UpdateImageDiffNote` |
 | Update | Project | Mutation | `UpdateIssue` |
 | Update | Project | Mutation | `UpdateNote` |
+| Update | Project | Mutation | `UpdateRequirement` |
 | Update | Project | Mutation | `WorkItemAddClosingMergeRequest` |
+| Update | Project | Mutation | `WorkItemAddLinkedItems` |
+| Update | Project | Mutation | `WorkItemAvailabilityToggle` |
+| Update | Project | Mutation | `WorkItemBulkMove` |
+| Update | Project | Mutation | `WorkItemBulkUpdate` |
 | Update | Project | Mutation | `WorkItemConvert` |
 | Update | Project | Mutation | `WorkItemCreateFromTask` |
 | Update | Project | Mutation | `WorkItemEnableAiPlanning` |
 | Update | Project | Mutation | `WorkItemGenerateReadinessScore` |
 | Update | Project | Mutation | `WorkItemGenerateWorkplan` |
+| Update | Project | Mutation | `WorkItemRemoveLinkedItems` |
 | Update | Project | Mutation | `WorkItemResumeWorkplan` |
 | Update | Project | Mutation | `WorkItemUpdate` |
+| Update | Project | Mutation | `WorkItemUserPreferenceUpdate` |
+| Update | Project | Mutation | `workItemsHierarchyReorder` |
 | Update | Project | Mutation | `workItemsReorder` |
+| Update | Group | Mutation | `CustomFieldUpdate` |
 | Update | Group | Mutation | `IterationCadenceUpdate` |
+| Update | Group | Mutation | `LifecycleAttachWorkItemType` |
+| Update | Group | Mutation | `LifecycleUpdate` |
 | Update | Group | Mutation | `UpdateImageDiffNote` |
 | Update | Group | Mutation | `UpdateIteration` |
 | Update | Group | Mutation | `UpdateNote` |
 | Update | Group | Mutation | `WorkItemAddClosingMergeRequest` |
+| Update | Group | Mutation | `WorkItemAddLinkedItems` |
+| Update | Group | Mutation | `WorkItemAvailabilityToggle` |
+| Update | Group | Mutation | `WorkItemBulkMove` |
+| Update | Group | Mutation | `WorkItemBulkUpdate` |
 | Update | Group | Mutation | `WorkItemConvert` |
 | Update | Group | Mutation | `WorkItemEnableAiPlanning` |
+| Update | Group | Mutation | `WorkItemRemoveLinkedItems` |
+| Update | Group | Mutation | `WorkItemSettingsUpdate` |
+| Update | Group | Mutation | `WorkItemTypeUpdate` |
 | Update | Group | Mutation | `WorkItemUpdate` |
+| Update | Group | Mutation | `WorkItemUserPreferenceUpdate` |
+| Update | Group | Mutation | `workItemsHierarchyReorder` |
 | Update | Group | Mutation | `workItemsReorder` |
 
 <sup>1</sup> Also requires the `Update Alert` permission.
+
+#### Work Item Saved View
+
+Grants the ability to create, delete, subscribe, and update work item saved views.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `WorkItemSavedViewCreate` |
+| Create | Group | Mutation | `WorkItemSavedViewCreate` |
+| Delete | Project | Mutation | `WorkItemSavedViewDelete` |
+| Delete | Group | Mutation | `WorkItemSavedViewDelete` |
+| Subscribe | Project | Mutation | `WorkItemSavedViewReorder` |
+| Subscribe | Project | Mutation | `WorkItemSavedViewSubscribe` |
+| Subscribe | Project | Mutation | `WorkItemSavedViewUnsubscribe` |
+| Subscribe | Group | Mutation | `WorkItemSavedViewReorder` |
+| Subscribe | Group | Mutation | `WorkItemSavedViewSubscribe` |
+| Subscribe | Group | Mutation | `WorkItemSavedViewUnsubscribe` |
+| Update | Project | Mutation | `WorkItemSavedViewUpdate` |
+| Update | Group | Mutation | `WorkItemSavedViewUpdate` |
 
 ### Projects resources
 
@@ -1836,11 +1900,14 @@ Grants the ability to create and delete target branch rules.
 
 #### Secrets Manager Add-on
 
-Grants the ability to enable the paid Secrets Manager add-on for a top-level group.
+Grants the ability to enable the paid Secrets Manager add-on for a top-level group or for the whole instance.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
-| Enable | Group | Mutation | `SecretsManagerEnableAddOn` |
+| Enable <sup>1</sup> | Group | Mutation | `SecretsManagerEnableAddOn` |
+| Enable <sup>1</sup> | Instance | Mutation | `SecretsManagerInstanceEnableAddOn` |
+
+<sup>1</sup> Also requires the `Read Secrets Manager` permission.
 
 #### Secrets Manager Enrollment
 

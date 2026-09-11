@@ -5,9 +5,8 @@ module Mcp
     module Projects
       class ListProjectMembersTool < Mcp::Tools::Base::GraphqlTool
         include Mcp::Tools::Concerns::ResourceFinder
+        include Mcp::Tools::Concerns::CursorPagination
 
-        DEFAULT_PAGE_SIZE = 20
-        MAX_PAGE_SIZE = 100
         DIRECT_RELATIONS = %w[DIRECT].freeze
         INHERITED_RELATIONS = %w[DIRECT INHERITED DESCENDANTS].freeze
 
@@ -21,8 +20,7 @@ module Mcp
             fullPath: find_project!(params[:project_id]).full_path,
             search: params[:query],
             relations: relations,
-            first: params[:first] || DEFAULT_PAGE_SIZE,
-            after: params[:after]
+            **resolve_pagination_direction
           }.compact
         end
 

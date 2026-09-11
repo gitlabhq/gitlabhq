@@ -6,7 +6,12 @@ module Mutations
       class Unsubscribe < BaseMutation
         graphql_name 'WorkItemSavedViewUnsubscribe'
 
-        authorize :unsubscribe_saved_view
+        authorize :unsubscribe_work_item_saved_view
+        authorize_granular_token permissions: :unsubscribe_work_item_saved_view,
+          boundaries: [
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :project },
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :group }
+          ]
 
         description "Unsubscribes the current user from a saved view."
 

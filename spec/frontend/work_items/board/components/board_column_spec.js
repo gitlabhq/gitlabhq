@@ -100,6 +100,12 @@ describe.each([
     countQueryHandler.mockResolvedValue(buildBoardWorkItemsCountResponse(1));
   });
 
+  afterEach(() => {
+    // A test that only emits `start` (without a matching `end`) would otherwise leak
+    // this class on `document.body` into later tests.
+    document.body.classList.remove('is-dragging');
+  });
+
   describe('column header', () => {
     it('passes the value, decoration, and item count to ColumnHeader', async () => {
       createComponent();
@@ -341,6 +347,26 @@ describe.each([
       });
       expect(findDraggable().attributes('tag')).toBe('ul');
       expect(findDraggable().attributes('data-column-value-id')).toBe(mockStatus.id);
+    });
+
+    it('gives the drop indicator its own ghost class', () => {
+      expect(findDraggable().vm.$attrs.ghostClass).toBe('board-card-drop-indicator');
+    });
+
+    it('marks the document body as dragging when a card drag starts', () => {
+      expect(document.body.classList.contains('is-dragging')).toBe(false);
+
+      findDraggable().vm.$emit('start', { item: { dataset: { workItemId: nodes[0].id } } });
+
+      expect(document.body.classList.contains('is-dragging')).toBe(true);
+    });
+
+    it('unmarks the document body as dragging when a card is dropped', () => {
+      document.body.classList.add('is-dragging');
+
+      findDraggable().vm.$emit('end', { oldIndex: 0, newIndex: 1 });
+
+      expect(document.body.classList.contains('is-dragging')).toBe(false);
     });
 
     it('emits card-move with the drag event when a card is dropped', () => {

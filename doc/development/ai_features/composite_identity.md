@@ -79,6 +79,15 @@ A request made with a composite identity token is authorized only if both are tr
 - The service account has access to the resource.
 - The human user identified by `user:$ID` in the token scopes has access to the resource.
 
+## How many identities a single request can link
+
+A request links a composite identity for one of two reasons, and the number of allowed links differs:
+
+- One `:authentication` link, at most. This link records the principal the request acts as. If a second service account tries to claim it, the account raises `Gitlab::Auth::Identity::TooManyIdentitiesLinkedError`.
+- Any number of `:permission_check` links. A human can name several AI service accounts in one action, for example by requesting a review from two AI reviewers in a single quick action. Each account is linked so `Ability` can confirm the account has access to the resource.
+
+When more than one identity is linked, `Gitlab::Auth::Identity.currently_linked` returns the authenticated identity. If the request has no authenticated identity, it returns the most recently linked one, so work started for a given service account propagates that account to Gitaly, Workhorse, and background jobs. Because a background job carries a single identity, code that must act as a specific service account should link that account immediately before it starts the work.
+
 ## Request context and current_user
 
 When a request includes a composite identity OAuth token, the Rails request context overrides `current_user` to the human user extracted from the `user:$ID` scope. While the token itself still belongs to the service account, the user who originated the request is considered the current user. This means:

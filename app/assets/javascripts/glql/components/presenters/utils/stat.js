@@ -1,7 +1,8 @@
 import { badgeVariantOptions } from '@gitlab/ui/src/utils/constants';
-import { __, formatNumber, sprintf } from '~/locale';
+import { __, sprintf } from '~/locale';
 import { baseFieldKeyOf } from '../../../utils/chart_data';
 import { unitFor, valueFormatterFor } from '../../../utils/value_format';
+import { formatChange, trendChangeFor } from './trend';
 
 const POSITIVE_DIRECTION_BY_UNIT = {
   count: 'up',
@@ -87,13 +88,6 @@ const TREND_ICON_BY_DIRECTION = { up: 'arrow-up', down: 'arrow-down' };
 /** The GlSingleStat props a trend fills in. */
 export const TREND_KEYS = ['metaText', 'metaIcon', 'metaTooltip', 'variant'];
 
-// Rounded half away from zero to the one decimal the badge shows, so the arrow and colour
-// agree with the text: 10,004 against 10,000 reads `0%` with no arrow rather than an up arrow.
-const roundChange = (change) => (Math.sign(change) * Math.round(Math.abs(change) * 1000)) / 1000;
-
-const formatChange = (change) =>
-  formatNumber(Math.abs(change), { style: 'percent', maximumFractionDigits: 1 });
-
 // The arrow icon and badge colour convey direction visually but are not announced, so the
 // tooltip spells it out for screen reader users.
 const trendTooltipFor = (direction, change, value) => {
@@ -129,7 +123,7 @@ export const trendPresentationFor = (source, metric, { value, previousValue }) =
     };
   }
 
-  const change = roundChange(value === previousValue ? 0 : (value - previousValue) / previousValue);
+  const change = trendChangeFor(value, previousValue);
   let direction = null;
   if (change > 0) direction = 'up';
   else if (change < 0) direction = 'down';

@@ -98,6 +98,14 @@ module WorkItems
       def unsubscribe_other_users!(user:)
         user_saved_views.where.not(user: user).delete_all
       end
+
+      # Any other namespace type yields nil, which leaves no authorization boundary and fails closed.
+      def resource_parent
+        case namespace
+        when ::Namespaces::ProjectNamespace then namespace.project
+        when ::Group then namespace
+        end
+      end
     end
   end
 end

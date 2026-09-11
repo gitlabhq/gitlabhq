@@ -8,6 +8,7 @@ describe('SectionHeader', () => {
 
   const findTitle = () => wrapper.findByTestId('section-header-title');
   const findDescription = () => wrapper.findByTestId('section-header-description');
+  const findDivider = () => wrapper.findByTestId('section-header-divider');
   const findTooltipIcon = () => wrapper.findComponentByTestId('section-header-tooltip-icon');
   const findPopover = () => wrapper.findComponent(GlPopover);
 
@@ -37,10 +38,14 @@ describe('SectionHeader', () => {
       expect(findPopover().exists()).toBe(false);
     });
 
-    it('renders without a border or horizontal padding', () => {
+    it('renders without a panel border or horizontal padding', () => {
       const classes = wrapper.attributes('class');
       expect(classes).toContain('gl-px-0');
       expect(classes).not.toContain('gl-border');
+    });
+
+    it('renders the heading inside the divider', () => {
+      expect(findDivider().find('[data-testid="section-header-title"]').exists()).toBe(true);
     });
   });
 

@@ -14643,6 +14643,7 @@ CREATE TABLE application_settings (
     o11y_oauth_application_id bigint,
     code_dropdown_custom_clients jsonb DEFAULT '[]'::jsonb NOT NULL,
     secrets_manager_instance_beta_enrolled boolean DEFAULT false NOT NULL,
+    secrets_manager_instance_add_on_requested_at timestamp with time zone,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -25229,6 +25230,7 @@ CREATE TABLE namespace_ai_settings (
     allowed_domains text[] DEFAULT '{}'::text[] NOT NULL,
     denied_domains text[] DEFAULT '{}'::text[] NOT NULL,
     ai_catalog_restricted_to_group_hierarchy boolean DEFAULT false NOT NULL,
+    web_search_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT check_namespace_ai_settings_feature_settings_is_hash CHECK ((jsonb_typeof(feature_settings) = 'object'::text))
 );
 
