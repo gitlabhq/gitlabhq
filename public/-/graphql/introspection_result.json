@@ -34328,6 +34328,54 @@
                   "defaultValue": null,
                   "isDeprecated": false,
                   "deprecationReason": null
+                },
+                {
+                  "name": "flowTypesUsedFrom",
+                  "description": "Filter by the number of distinct flow types the user ran in the selected period. Start of the range.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "flowTypesUsedTo",
+                  "description": "Filter by the number of distinct flow types the user ran in the selected period. End of the range.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "activeDaysFrom",
+                  "description": "Filter by the number of distinct days the user created flows in the selected period. Start of the range.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "activeDaysTo",
+                  "description": "Filter by the number of distinct days the user created flows in the selected period. End of the range.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 }
               ],
               "type": {
@@ -34406,6 +34454,26 @@
                       "ofType": {
                         "kind": "SCALAR",
                         "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "createdByDuo",
+                  "description": "Filter by whether the merge request was created by a GitLab Duo Agent Platform session",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "Boolean",
                         "ofType": null
                       }
                     }
@@ -42372,6 +42440,30 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
+              "name": "distTags",
+              "description": "Names of the npm dist-tags bound to the version, in ascending name order. Empty for Maven versions. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "id",
               "description": "ID of the version in Artifact Registry. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
@@ -42655,6 +42747,30 @@
                 "kind": "OBJECT",
                 "name": "UserCore",
                 "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "distTags",
+              "description": "Names of the npm dist-tags bound to the version, in ascending name order. Empty for Maven versions. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
@@ -150239,6 +150355,39 @@
               "deprecationReason": null
             },
             {
+              "name": "userTier",
+              "description": "User activity tier, bucketing users by their number of flows in the selected period using the `thresholds` argument",
+              "args": [
+                {
+                  "name": "thresholds",
+                  "description": "Ascending tier boundaries. Values below the first threshold map to `tier_0`, values at or above the last threshold map to the highest tier.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "Int",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "workflowDefinition",
               "description": "Type of flow",
               "args": [],
@@ -255946,6 +256095,18 @@
           "description": "Response for `MergeRequests` aggregation engine",
           "fields": [
             {
+              "name": "acceptanceRate",
+              "description": "Share of merge requests that were merged",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "dimensions",
               "description": "Aggregation dimensions. Every selected dimension will be used for aggregation.",
               "args": [],
@@ -256136,6 +256297,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Date",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "createdByDuo",
+              "description": "Whether the merge request was created by a GitLab Duo session",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               },
               "isDeprecated": false,

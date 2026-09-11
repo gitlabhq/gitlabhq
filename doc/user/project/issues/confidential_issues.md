@@ -3,6 +3,7 @@ stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Confidential issues
+description: Turn on confidentiality for an issue to limit visibility to project members with at least the Planner role.
 ---
 
 {{< details >}}

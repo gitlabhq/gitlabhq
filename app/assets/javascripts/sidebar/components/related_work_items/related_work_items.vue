@@ -17,7 +17,6 @@ import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import mergeRequestRelatedWorkItemsQuery from '~/sidebar/queries/merge_request_related_work_items.query.graphql';
-import createMergeRequestWorkItemRelationMutation from '~/sidebar/queries/create_merge_request_work_item_relation.mutation.graphql';
 import destroyMergeRequestWorkItemRelationMutation from '~/sidebar/queries/destroy_merge_request_work_item_relation.mutation.graphql';
 import { DETAIL_VIEW_QUERY_PARAM_NAME, VIEW_CONTEXT } from '~/work_items/constants';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
@@ -150,45 +149,13 @@ export default {
   },
   methods: {
     getIdFromGraphQLId,
-    async handleLink({ workItems = [], linkType } = {}) {
-      if (!workItems.length) {
-        this.isAddModalVisible = false;
-        return;
-      }
-
-      try {
-        const { data } = await this.$apollo.mutate({
-          mutation: createMergeRequestWorkItemRelationMutation,
-          variables: {
-            projectPath: this.fullPath,
-            iid: this.mergeRequest.iid,
-            workItemIds: workItems.map((item) => item.id),
-            linkType,
-          },
-          update: (cache, { data: result }) => this.updateLinkedWorkItemsCache(cache, result),
-        });
-
-        const errors = data?.mergeRequestCreateWorkItemRelations?.errors || [];
-        if (errors.length) {
-          createAlert({ message: errors.join(' ') });
-          return;
-        }
-
-        /**
-         * Close the modal only after a successful response so a failed link
-         * keeps the modal open and the user can retry without reopening it.
-         */
-        this.isAddModalVisible = false;
-        this.$toast.show(
-          n__('WorkItem|Linked item added', 'WorkItem|Linked items added', workItems.length),
-        );
-      } catch (error) {
-        createAlert({
-          message: __('Something went wrong while linking the work item.'),
-          error,
-          captureError: true,
-        });
-      }
+    /**
+     * The add form links the items itself and keeps the modal open to show its
+     * own error, so it only reports the successful links back here.
+     */
+    handleLinked({ count = 1 } = {}) {
+      this.isAddModalVisible = false;
+      this.$toast.show(n__('WorkItem|Linked item added', 'WorkItem|Linked items added', count));
     },
     async handleCreated() {
       this.isAddModalVisible = false;
@@ -205,66 +172,6 @@ export default {
        * does not show a success message.
        */
       this.$toast.show(s__('WorkItem|Linked item added'));
-    },
-    updateLinkedWorkItemsCache(cache, result) {
-      const created = result?.mergeRequestCreateWorkItemRelations?.workItemRelations || [];
-      if (!created.length) {
-        return;
-      }
-
-      const variables = {
-        id: this.mergeRequestGid,
-        explicitMrWorkItemRelations: Boolean(this.glFeatures.explicitMrWorkItemRelations),
-      };
-
-      const existing = cache.readQuery({ query: mergeRequestRelatedWorkItemsQuery, variables });
-      if (!existing?.mergeRequest) {
-        return;
-      }
-
-      if (this.glFeatures.explicitMrWorkItemRelations) {
-        const existingNodes = existing.mergeRequest.workItemRelations?.nodes || [];
-        const existingIds = new Set(existingNodes.map((node) => node.workItem?.id));
-        const newNodes = created.filter(
-          (relation) => relation.workItem && !existingIds.has(relation.workItem.id),
-        );
-
-        cache.writeQuery({
-          query: mergeRequestRelatedWorkItemsQuery,
-          variables,
-          data: {
-            mergeRequest: {
-              ...existing.mergeRequest,
-              workItemRelations: {
-                __typename: 'MergeRequestWorkItemRelationConnection',
-                nodes: [...existingNodes, ...newNodes],
-              },
-            },
-          },
-        });
-        return;
-      }
-
-      const existingLinks = existing.mergeRequest.linkedWorkItems || [];
-      const existingIds = new Set(existingLinks.map((link) => link.workItem?.id));
-      const newLinks = created
-        .filter((relation) => relation.workItem && !existingIds.has(relation.workItem.id))
-        .map((relation) => ({
-          __typename: 'LinkedWorkItem',
-          linkType: relation.linkType,
-          workItem: relation.workItem,
-        }));
-
-      cache.writeQuery({
-        query: mergeRequestRelatedWorkItemsQuery,
-        variables,
-        data: {
-          mergeRequest: {
-            ...existing.mergeRequest,
-            linkedWorkItems: [...existingLinks, ...newLinks],
-          },
-        },
-      });
     },
     canRemoveRelation(relation) {
       return this.canRemoveRelations && Boolean(relation.id) && !relation.fromMrDescription;
@@ -510,11 +417,12 @@ export default {
       v-if="canAdminMergeRequest"
       :full-path="fullPath"
       :merge-request-id="mergeRequestGid"
+      :merge-request-iid="mergeRequest.iid"
       :merge-request-title="mergeRequest.title"
       :merge-request-reference="mergeRequest.reference"
       :visible="isAddModalVisible"
       @hide="isAddModalVisible = false"
-      @link="handleLink"
+      @linked="handleLinked"
       @created="handleCreated"
     />
   </div>

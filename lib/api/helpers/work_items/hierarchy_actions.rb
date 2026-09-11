@@ -10,7 +10,7 @@ module API
           parent_work_item = work_item_for!(resource_parent, work_item_iid)
           authorize! :update_work_item, parent_work_item
 
-          child_work_item = find_child_work_item!(child_id)
+          child_work_item = ::WorkItem.find_by_id(child_id)
 
           result = execute_attach_child(parent_work_item, child_work_item)
           render_child_response(result, child_work_item, status_code: :created)
@@ -22,8 +22,7 @@ module API
           parent_work_item = work_item_for!(resource_parent, work_item_iid)
           authorize! :update_work_item, parent_work_item
 
-          child_work_item = find_child_work_item!(child_id)
-          parent_link = find_parent_link!(parent_work_item, child_work_item)
+          parent_link = find_parent_link!(parent_work_item, child_id)
 
           result = execute_detach_child(parent_link)
 

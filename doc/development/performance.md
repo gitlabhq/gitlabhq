@@ -127,6 +127,69 @@ The GitLab Gemfile also contains the [`benchmark-memory`](https://github.com/mic
 gem, which works similarly to the `benchmark` and `benchmark-ips` gems. However, `benchmark-memory`
 instead returns the memory size, objects, and strings allocated and retained during the benchmark.
 
+The Gemfile also contains the [`benchmark-swap`](https://github.com/meinac/benchmark-swap) gem.
+It benchmarks a second implementation of a method where that method already runs. You do not have to
+extract the method into two standalone lambdas first, which is awkward when it sits deep in a call
+chain.
+
+Keep the original method and add a second implementation next to it, with a `_perf` suffix on the
+name. Then call `Benchmark.swap` with a block that exercises the code. The gem finds the pairs by
+tracing the block with `TracePoint`. It warns when the two implementations return different results,
+then benchmarks each side with `benchmark-ips` and compares them. The swap happens in place, so the
+block can call the public entry point. You measure the whole call chain, not the method on its own.
+
+`benchmark-swap` is in the `development` and `test` groups with `require: false`, so you must
+`require "benchmark/swap"` first. It works from the Rails console. Remove the `_perf` method before
+you commit.
+
+`Security::MergeReportsService#deduplicated_findings` builds a `Set` for every finding, to test that
+finding against the identifiers it has already seen. `Set#intersect?` accepts any enumerable, so that
+per-finding `Set` is not needed. The example below parses a real report fixture, then benchmarks
+`execute`, the public entry point, so the whole merge is measured. `class_eval` defines the
+alternative for the console session only, so no file changes and nothing reaches a commit.
+
+```ruby
+require "benchmark/swap"
+
+Security::MergeReportsService.class_eval do
+  def deduplicated_findings_perf
+    prioritized_findings.each_with_object([[], Set.new]) do |finding, (deduplicated, seen_identifiers)|
+      keys = finding.keys
+
+      next if seen_identifiers.intersect?(keys)
+
+      seen_identifiers.merge(keys)
+      deduplicated << finding
+    end.first
+  end
+end
+
+project = Project.first
+raise "no project in this instance, the parser needs one" unless project
+
+pipeline = Ci::Pipeline.new(project: project)
+fixture = Rails.root.join("spec/fixtures/security_reports/master/gl-sast-report.json")
+json = File.read(fixture)
+
+report = Gitlab::Ci::Reports::Security::Report.new(:sast, pipeline, Time.current)
+Gitlab::Ci::Parsers::Security::Sast.parse!(json, report)
+
+Benchmark.swap(time: 5, warmup: 2) do
+  Security::MergeReportsService.new(report).execute.findings.map(&:uuid)
+end
+```
+
+On that fixture, `execute` runs about 1.4 times faster:
+
+```plaintext
+benchmark-swap: swapping 1 method
+  Security::MergeReportsService#deduplicated_findings -> deduplicated_findings_perf
+
+Comparison:
+original:    60314.2 i/s
+ swapped:    84453.7 i/s - 1.40x  faster
+```
+
 In short:
 
 - Don't trust benchmarks you find on the internet.

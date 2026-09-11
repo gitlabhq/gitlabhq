@@ -143,8 +143,38 @@ RSpec.describe API::Pages, feature_category: :pages do
         end
       end
 
-      context 'when the service returns any kind of error' do
-        let(:service_response) { ServiceResponse.error(message: service_error_message) }
+      context 'when the project has no unique domain yet' do
+        let(:params) { { pages_unique_domain_enabled: true } }
+
+        before do
+          project.project_setting.update_columns(pages_unique_domain_enabled: false, pages_unique_domain: nil)
+        end
+
+        it 'generates a unique domain and returns 200' do
+          patch api(path, admin, admin_mode: true), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['is_unique_domain_enabled']).to be(true)
+          expect(project.project_setting.reload.pages_unique_domain).to be_present
+        end
+
+        context 'when no unique domain can be generated' do
+          before do
+            create(:project_setting, pages_unique_domain: 'existing-domain')
+            allow(Gitlab::Pages::RandomDomain).to receive(:generate).and_return('existing-domain')
+          end
+
+          it 'returns 422 unprocessable entity' do
+            patch api(path, admin, admin_mode: true), params: params
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+            expect(json_response['message']).to eq("Can't generate unique domain for GitLab Pages")
+          end
+        end
+      end
+
+      context 'when the service returns a forbidden error' do
+        let(:service_response) { ServiceResponse.error(message: service_error_message, reason: :forbidden) }
         let(:service_error_message) { 'the reason it stopped' }
 
         before do

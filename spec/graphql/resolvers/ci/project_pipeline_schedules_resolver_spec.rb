@@ -7,13 +7,13 @@ RSpec.describe Resolvers::Ci::ProjectPipelineSchedulesResolver, feature_category
 
   let_it_be(:developer) { create(:user) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, public_builds: false, owners: user) }
+  let_it_be(:project) { create(:project, public_builds: false, owners: user) }
 
   describe 'With filters' do
-    let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: developer) }
-
-    before do
-      pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
+    let_it_be(:pipeline_schedule) do
+      create(:ci_pipeline_schedule, project: project, owner: developer) do |schedule|
+        schedule.pipelines << build(:ci_pipeline, project: project)
+      end
     end
 
     it 'shows active pipeline schedules' do

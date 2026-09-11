@@ -37,7 +37,11 @@ const getBucketNameError = (value = '') =>
   getFieldError(value, s__('OfflineTransfer|Enter a bucket name.'), AWS_MAX_BUCKET_NAME_LENGTH);
 
 export const getExportPrefixError = (value = '') =>
-  getFieldError(value, s__('OfflineTransfer|Enter an export prefix.'), MAX_EXPORT_PREFIX_LENGTH);
+  getFieldError(
+    value,
+    s__('OfflineTransferImport|Enter an export prefix.'),
+    MAX_EXPORT_PREFIX_LENGTH,
+  );
 
 export const getStorageConfigErrors = (config = {}) => ({
   accessKeyId: getAccessKeyIdError(config.accessKeyId),

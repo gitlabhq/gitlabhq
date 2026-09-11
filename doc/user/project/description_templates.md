@@ -107,7 +107,7 @@ When you select a description template, its content is copied to the description
 
 To discard any changes to the description you've made after selecting the template: expand the **Choose a template** dropdown list and select **Reset template**.
 
-![Choosing a description template in an issue](img/description_templates_v17_10.png)
+![Choosing a description template in an issue.](img/description_templates_v17_10.png)
 
 > [!note]
 > You can create shortcut links to create an issue using a designated template.
@@ -142,8 +142,8 @@ your merge request template with their values:
 
 {{< /details >}}
 
-You can set a description template at the instance level for issues
-and merge requests by using an [instance template repository](../../administration/settings/instance_template_repository.md).
+For issues and merge requests, you can set a description template for an entire instance
+by using an [instance template repository](../../administration/settings/instance_template_repository.md).
 You can also use the instance template repository for file templates.
 
 You might also be interested in [project templates](../../administration/project_templates.md)
@@ -158,7 +158,7 @@ that you can use when creating a new project in the instance.
 
 {{< /details >}}
 
-With group-level description templates, you can select a project within the group to store
+With description templates for a group, you can select a project in the group to store
 your templates. Then, you can access these templates in other projects in the group.
 As a result, you can use the same templates in issues and merge requests in all the group's projects.
 
@@ -172,10 +172,10 @@ To re-use templates [you've created](#create-a-description-template):
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Templates**.
-1. From the dropdown list, select your template project as the template repository at group level.
+1. From the dropdown list, select your template project as the template repository for the group.
 1. Select **Save changes**.
 
-![Group template settings](img/group_file_template_settings_v11_5.png)
+![Group template settings.](img/group_file_template_settings_v11_5.png)
 
 You might also be interested in templates for various
 [file types in groups](../group/manage.md#group-file-templates).
@@ -218,8 +218,8 @@ To set a default description for work items, either:
   1. Fill in the text area.
   1. Select **Save changes**.
 
-Because GitLab merge request and issues support [Markdown](../markdown.md), you can use it to format
-headings, lists, and so on.
+Because GitLab merge requests and issues support [Markdown](../markdown.md), you can use it to format
+text like headings and lists.
 
 You can also provide `issues_template` and `merge_requests_template` attributes in the
 [Projects REST API](../../api/projects.md) to keep your default issue and merge request templates up to date.
@@ -239,9 +239,9 @@ that depend on the contents of commit messages and branch names.
 
 ## Example description template
 
-We use description templates for issues and merge requests in the
+For examples, see the description templates for issues and merge requests in the
 [`.gitlab` folder](https://gitlab.com/gitlab-org/gitlab/-/tree/master/.gitlab) of the
-GitLab project, which you can refer to for some examples.
+GitLab project.
 
 > [!note]
 > It's possible to use [quick actions](quick_actions.md) in description templates to quickly add

@@ -530,6 +530,7 @@ module Ci
     end
 
     def id_token_burned_project_path?(build)
+      return false unless Gitlab::CurrentSettings.block_jwt_for_reclaimed_paths
       return false unless build.id_tokens?
       return false unless build.project.ci_id_token_sub_claim_components.include?('project_path')
 

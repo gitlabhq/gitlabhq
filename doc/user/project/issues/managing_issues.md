@@ -79,7 +79,7 @@ Generate a detailed description for an issue based on a short summary you provid
 
 Prerequisites:
 
-- You must belong to at least one group with the [experiment and beta features setting](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
+- You must belong to at least one group with the [experiment and beta features setting](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) turned on.
 - You must have permission to create an issue.
 - Only available for the plain text editor.
 - Only available when creating a new issue.
@@ -89,7 +89,7 @@ Prerequisites:
 To generate an issue description:
 
 1. Create a new issue.
-1. Above the **Description** field, select **GitLab Duo** ({{< icon name="tanuki-ai" >}}) > **Generate issue description**.
+1. Above the **Description** text box, select **GitLab Duo** ({{< icon name="tanuki-ai" >}}) > **Generate issue description**.
 1. Write a short description and select **Submit**.
 
 The issue description is replaced with AI-generated text.
@@ -351,14 +351,14 @@ description:
 Alternatively, when you [create a merge request from an issue](../merge_requests/creating_merge_requests.md#from-an-issue),
 it inherits the issue's milestone and labels.
 
-For performance reasons, automatic issue closing is disabled for the very first
+For performance reasons, automatic issue closing is turned off for the very first
 push from an existing repository.
 
 #### User responsibility when merging
 
 When you merge a merge request, it's your responsibility to check that it's appropriate for any targeted issues
 to close. Users can include issue closing patterns in the merge request description, and also in the body
-of a commit message. Closing messages in commit messages are easy to miss. In both cases, the merge request widget
+of a commit message. Closing messages in commit messages are less visible. In both cases, the merge request widget
 shows information about the issue to close on merge:
 
 ![This merge request closes issue #2754.](img/closing_pattern_v17_4.png)
@@ -368,8 +368,8 @@ In public repositories, this check is important, because external users can crea
 and commits that contain closing patterns. When you are the user who merges, it's important
 that you are aware of the effects the merge has on both the code and issues in your project.
 
-When [auto-merge](../merge_requests/auto_merge.md) is enabled for a merge request, no further changes can be made to
-the list of issues that will be automatically closed.
+When [auto-merge](../merge_requests/auto_merge.md) is turned on for a merge request, no further changes can be made to
+the list of issues that are automatically closed.
 
 #### Default closing pattern
 
@@ -408,7 +408,7 @@ and https://gitlab.example.com/group/otherproject/-/issues/23.
 ```
 
 The previous commit message closes `#18`, `#19`, `#20`, and `#21` in the project this commit is pushed to,
-as well as `#22` and `#23` in `group/otherproject`. `#17` is not closed as it does
+and `#22` and `#23` in `group/otherproject`. `#17` is not closed as it does
 not match the pattern.
 
 You can use the closing patterns in multi-line commit messages or one-liners
@@ -422,14 +422,14 @@ The default issue closing pattern regex:
 
 #### Disable automatic issue closing
 
-You can disable the automatic issue closing feature on a per-project basis
+You can turn off the automatic issue closing feature on a per-project basis
 in the [project's settings](#disable-automatic-issue-closing).
 
 Prerequisites:
 
 - You must have the Maintainer or Owner role for the project.
 
-To disable automatic issue closing:
+To turn off automatic issue closing:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Repository**.
@@ -441,7 +441,7 @@ Referenced issues are still displayed, but are not closed automatically.
 
 Changing this setting applies only to new merge requests or commits. Already
 closed issues remain as they are.
-Disabling automatic issue closing only applies to issues in the project where the setting was disabled.
+Turning off automatic issue closing only applies to issues in the project where the setting was turned off.
 Merge requests and commits in this project can still close another project's issues.
 
 #### Customize the issue closing pattern
@@ -669,9 +669,6 @@ The following sections describe how to work with the issue list.
 
 {{< history >}}
 
-- OR filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `or_issuable_queries`. Disabled by default.
-- OR filtering [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104292) in GitLab 15.9.
-- Filtering by created date, closed date, due date, and updated date [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120160) in GitLab 16.3 with a [with a feature flag](../../../administration/feature_flags/_index.md) named `issue_date_filter`. Disabled by default.
 - OR filtering [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/296031) in GitLab 17.0. Feature flag `or_issuable_queries` removed.
 - Filtering the list of issues by custom status or the parent item [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/520791) in GitLab 18.7.
 - Filtering by created date, closed date, due date, and updated date [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/17758) in GitLab 19.4. Feature flag `issue_date_filter` removed.
@@ -917,7 +914,7 @@ You can see the issue's health status in:
 - Epic's **Child items** section
 - Issue cards in issue boards
 
-After an issue is closed, its health status can't be edited and the **Edit** button becomes disabled
+After an issue is closed, its health status can't be edited and **Edit** is not available
 until the issue is reopened.
 
 You can also set and clear health statuses using the [`/health_status`](../quick_actions.md#health_status) and [`/clear_health_status`](../quick_actions.md#clear_health_status)

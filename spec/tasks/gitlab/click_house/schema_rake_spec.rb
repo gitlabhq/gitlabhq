@@ -47,4 +47,44 @@ RSpec.describe 'gitlab:click_house:schema', :click_house, feature_category: :dat
       end
     end
   end
+
+  describe 'dump' do
+    let(:schema_sql_path) { Rails.root.join('db/click_house/main.sql') }
+
+    before do
+      stub_env('ENABLE_CLICKHOUSE_DB_DUMP', 'true')
+      allow(File).to receive(:writable?).and_call_original
+      allow(File).to receive(:writable?).with(schema_sql_path).and_return(false)
+    end
+
+    it 'dumps the schema cache in test environment' do
+      expect(ClickHouse::SchemaCache).to receive(:dump).with(instance_of(ClickHouse::Connection), :main)
+
+      run_rake_task('gitlab:clickhouse:schema:dump:main')
+    end
+
+    context 'when in development environment' do
+      before do
+        allow(Rails.env).to receive_messages(development?: true, test?: false)
+      end
+
+      it 'dumps the schema cache' do
+        expect(ClickHouse::SchemaCache).to receive(:dump).with(instance_of(ClickHouse::Connection), :main)
+
+        run_rake_task('gitlab:clickhouse:schema:dump:main')
+      end
+    end
+
+    context 'when in production environment' do
+      before do
+        allow(Rails.env).to receive_messages(development?: false, test?: false)
+      end
+
+      it 'does not dump the schema cache' do
+        expect(ClickHouse::SchemaCache).not_to receive(:dump)
+
+        run_rake_task('gitlab:clickhouse:schema:dump:main')
+      end
+    end
+  end
 end

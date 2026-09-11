@@ -52,7 +52,7 @@ module Sidebars
               # rubocop:disable Gitlab/AvoidOrganizationUrlRoutes -- We only want to generate org-scoped path here
               link: organization_admin_users_path(context.current_organization),
               # rubocop:enable Gitlab/AvoidOrganizationUrlRoutes
-              active_routes: { controller: 'admin/organizations/users' },
+              active_routes: { controller: ['admin/organizations/users', 'admin/organizations/cohorts'] },
               item_id: :organization_admin_users
             )
           end

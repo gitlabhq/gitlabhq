@@ -67,6 +67,11 @@ When adding a table, you should:
    - `gitlab_geo` table: `ee/db/geo/docs/`
 1. Name the file `<table_name>.yml`, and include as much information as you know about the table.
 1. Include this file in the commit with the migration that creates the table.
+1. Add a seed fixture in `db/fixtures/development/` that creates at least one row. The fixture can
+   call your factory, but a `spec/factories/` entry on its own is not enough because nothing invokes
+   it during seeding. Without seed data the table is empty in the dump used by
+   [`db:migrate:multi-version-upgrade`](dbmigrate_multi_version_upgrade_job.md), so migrations
+   touching the table are never exercised, and the `run-dev-fixtures-ee` job fails.
 
 ## Dropping tables
 

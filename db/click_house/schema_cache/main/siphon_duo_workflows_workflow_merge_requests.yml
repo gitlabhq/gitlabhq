@@ -3,11 +3,12 @@ name: siphon_duo_workflows_workflow_merge_requests
 engine: ReplacingMergeTree
 engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
   (traversal_path, workflow_id, id) ORDER BY (traversal_path, workflow_id, id) SETTINGS
-  index_granularity = 2048
+  index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild'
 primary_key: traversal_path, workflow_id, id
 sorting_key: traversal_path, workflow_id, id
 settings:
   index_granularity: '2048'
+  deduplicate_merge_projection_mode: "'rebuild'"
 columns:
 - name: id
   type: Int64

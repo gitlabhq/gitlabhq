@@ -28,5 +28,13 @@ RSpec.describe Sidebars::Admin::Menus::AdminOverviewMenu, :enable_admin_mode, fe
         it { is_expected.to be_nil }
       end
     end
+
+    describe 'Users' do
+      it 'keeps the Users item active on the cohorts page' do
+        users_item = described_class.new(context).renderable_items.find { |item| item.item_id == :users }
+
+        expect(users_item.active_routes).to eq(controller: ['admin/users', 'admin/cohorts'])
+      end
+    end
   end
 end

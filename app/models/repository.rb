@@ -1307,14 +1307,15 @@ class Repository
     @submodule_links ||= ::Gitlab::SubmoduleLinks.new(self)
   end
 
-  def update_submodule(user, submodule, commit_sha, message:, branch:)
+  def update_submodule(user, submodule, commit_sha, message:, branch:, expected_old_oid: '')
     with_cache_hooks do
       raw.update_submodule(
         user: user,
         submodule: submodule,
         commit_sha: commit_sha,
         branch: branch,
-        message: message
+        message: message,
+        expected_old_oid: expected_old_oid
       )
     end
   end

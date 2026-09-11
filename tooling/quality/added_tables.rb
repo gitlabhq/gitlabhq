@@ -21,7 +21,9 @@ module Quality
       # than returning nothing, which would look identical to "this diff adds no entries".
       raise UnreadableBaseRef, "base ref '#{base_ref}' is not readable (shallow clone?)" unless base_ref_readable?
 
-      added_files.filter_map { |path| File.basename(path, '.yml') if path.end_with?('.yml') }
+      # `db/docs/` has sub-directories, so one table can be named by two added files. Reporting it
+      # twice would also make the caller's count disagree with the findings it prints.
+      added_files.filter_map { |path| File.basename(path, '.yml') if path.end_with?('.yml') }.uniq
     end
 
     private

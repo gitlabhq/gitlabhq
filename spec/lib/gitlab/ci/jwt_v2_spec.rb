@@ -511,6 +511,17 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
         it 'raises OidcBurnedPathError' do
           expect { mint }.to raise_error(Gitlab::Ci::OidcBurnedPathError)
         end
+
+        context 'when block_jwt_for_reclaimed_paths is false' do
+          before do
+            stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+            create(:application_setting, block_jwt_for_reclaimed_paths: false)
+          end
+
+          it 'mints the token successfully' do
+            expect { mint }.not_to raise_error
+          end
+        end
       end
 
       context 'when sub_components excludes project_path (smart escape)' do

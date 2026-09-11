@@ -5139,8 +5139,6 @@
 - './spec/lib/gitlab/template/finders/repo_template_finders_spec.rb'
 - './spec/lib/gitlab/template/gitignore_template_spec.rb'
 - './spec/lib/gitlab/template/gitlab_ci_yml_template_spec.rb'
-- './spec/lib/gitlab/template/issue_template_spec.rb'
-- './spec/lib/gitlab/template/merge_request_template_spec.rb'
 - './spec/lib/gitlab/template_parser/ast_spec.rb'
 - './spec/lib/gitlab/template_parser/parser_spec.rb'
 - './spec/lib/gitlab/terraform_registry_token_spec.rb'

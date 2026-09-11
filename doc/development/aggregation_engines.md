@@ -446,6 +446,74 @@ where `timestamp` is a `date_bucket` with `granularity: 'daily'` and the metric 
 `OVER (PARTITION BY aeq_feature ORDER BY aeq_timestamp_daily ASC)`. Retention for
 `code_suggestions` does not mix with `chat`.
 
+#### `acquired_count` metric
+
+Counts distinct values present in the current period but absent from the previous one.
+Subtracts the `arrayIntersect` length from the current period's distinct count,
+using `groupArray` and `arrayDistinct`.
+`lagInFrame` supplies the previous period.
+Use `acquired_count` for new-user counts.
+The dimension referenced by `over:` must be requested in the query.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Identifier name. Identifier becomes `:{name}_count` |
+| `type` | Symbol | No | Data type. Default: `:integer` |
+| `expression` | Proc | No | Expression for the value to deduplicate, for example `user_id` |
+| `over` | Symbol | Yes | Dimension that defines the period. Must be a dimension on the engine |
+| `lag_offset` | Integer | No | Number of periods to compare against. Default: `1` |
+| `description` | String | No | Human-readable description |
+
+Example:
+
+```ruby
+metrics do
+  acquired_count :new_users, :integer, -> { sql('user_id') }, over: :timestamp,
+    description: 'Users active in the current period but not in the previous one'
+end
+```
+
+#### `churned_count` metric
+
+Counts distinct values present in the previous period but absent from the current one.
+Subtracts the `arrayIntersect` length from the previous period's distinct count,
+using `groupArray` and `arrayDistinct`.
+`lagInFrame` supplies the previous period.
+The dimension referenced by `over:` must be requested in the query.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Identifier name. Identifier becomes `:{name}_count` |
+| `type` | Symbol | No | Data type. Default: `:integer` |
+| `expression` | Proc | No | Expression for the value to deduplicate, for example `user_id` |
+| `over` | Symbol | Yes | Dimension that defines the period. Must be a dimension on the engine |
+| `lag_offset` | Integer | No | Number of periods to compare against. Default: `1` |
+| `description` | String | No | Human-readable description |
+
+Example:
+
+```ruby
+metrics do
+  churned_count :churned_users, :integer, -> { sql('user_id') }, over: :timestamp,
+    description: 'Users active in the previous period but not in the current one'
+end
+```
+
+`retained_count`, `acquired_count`, and `churned_count` measure change relative to the
+previous period only, not to a value's first or last appearance overall. A user returning
+after a gap counts as acquired again, and a user skipping one period counts as churned in
+that period.
+
+The first period in a requested range has no previous period, so all of its values count as
+acquired and its churned count is `0`, mirroring how `retained_count` returns `0` there.
+Periods with no rows are absent from the result set, so the lag compares against the last
+non-empty period. Churn is visible only in periods that have at least one row, because a
+period with zero rows produces no output row at all.
+
+In any period, `retained_count` plus `acquired_count` equals the distinct value count for
+the current period, and `retained_count` plus `churned_count` equals `lagged_count`. You can
+therefore derive a churn rate from a single response without extra queries.
+
 #### `column` dimension
 
 Groups results by a column value.
@@ -476,6 +544,36 @@ Groups results by time intervals using ClickHouse's `toStartOfInterval()` functi
 | Parameter | Type | Values | Default | Description |
 |-----------|------|--------|---------|-------------|
 | `granularity` | String | `daily`, `weekly`, `monthly`, `yearly` | `monthly` | Time interval for grouping |
+
+#### `tier` dimension
+
+Buckets a numeric expression into ordinal tiers (`tier_0` to `tier_N`) using ClickHouse's `multiIf()`
+function, based on client-provided ascending integer thresholds. **Supports parameters.**
+
+A value below the first threshold lands in `tier_0`. A value at or above the last threshold lands in
+the highest tier, so N thresholds produce N+1 tiers (`tier_0` through `tier_N`).
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Column name or identifier |
+| `type` | Symbol | Yes | Data type of the output labels (use `:string`) |
+| `expression` | Proc | No | Numeric expression to bucket, instead of a column |
+| `description` | String | No | Human-readable description |
+
+**Supported Parameters:**
+
+| Parameter | Type | Values | Default | Description |
+|-----------|------|--------|---------|-------------|
+| `thresholds` | Array of Integers | Strictly ascending positive integers, at most 9 | None (required) | Tier boundaries |
+
+The `thresholds` parameter is declared automatically and is required in every request that uses the
+dimension. Any normalization of thresholds (for example, per-week scaling) is a client concern.
+
+```ruby
+dimensions do
+  tier :user_tier, :string, -> { sql('user_activity.sessions') }, ctes: [:user_activity]
+end
+```
 
 #### `exact_match` filter
 

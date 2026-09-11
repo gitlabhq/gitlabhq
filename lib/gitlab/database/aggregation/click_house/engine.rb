@@ -17,7 +17,8 @@ module Gitlab
             def dimensions_mapping
               {
                 column: DimensionDefinition,
-                date_bucket: DateBucketDimension
+                date_bucket: DateBucketDimension,
+                tier: TierDimension
               }
             end
 
@@ -31,7 +32,9 @@ module Gitlab
                 quantile: Quantile,
                 sum: Sum,
                 retained_count: RetainedCount,
-                lagged_count: LaggedCount
+                lagged_count: LaggedCount,
+                acquired_count: AcquiredCount,
+                churned_count: ChurnedCount
               }
             end
 

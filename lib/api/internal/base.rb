@@ -169,6 +169,49 @@ module API
 
           header(WORKHORSE_CIRCUIT_BREAKER_HEADER, "true")
         end
+
+        def authorized_cert_payload
+          group_response = group_ssh_certificate_response
+
+          if group_response&.success?
+            group, user = group_response.payload.values_at(:group, :user)
+
+            return { instance: false, namespace: group.full_path, username: user.username }
+          end
+
+          instance_response = ::InstanceSshCertificates::FindService
+            .new(params[:key], params[:user_identifier]).execute
+
+          if instance_response.success?
+            return { instance: true, username: instance_response.payload[:user].username }
+          end
+
+          # Only the scope that matched the fingerprint can explain the denial.
+          matched = group_claimed_fingerprint?(group_response) ? group_response : instance_response
+
+          render_api_error!(matched.message, ssh_certificate_error_status(matched.reason))
+        end
+
+        # Overridden in EE
+        def group_ssh_certificate_response
+          nil
+        end
+
+        def group_claimed_fingerprint?(group_response)
+          return false unless group_response
+
+          group_response.reason != ::Gitlab::SshCertificates::Reason::CERTIFICATE_NOT_FOUND
+        end
+
+        def ssh_certificate_error_status(reason)
+          case reason
+          when ::Gitlab::SshCertificates::Reason::FEATURE_NOT_AVAILABLE,
+            ::Gitlab::SshCertificates::Reason::NOT_ENTERPRISE_USER
+            :forbidden
+          else
+            :not_found
+          end
+        end
       end
 
       namespace 'internal' do
@@ -416,6 +459,19 @@ module API
           status 200
 
           two_factor_manual_otp_check
+        end
+
+        # Resolve an SSH certificate authority fingerprint and a user identifier to a user
+        #
+        # /internal/authorized_certs
+        #
+        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
+        get '/authorized_certs', feature_category: :source_code_management, urgency: :high do
+          payload = authorized_cert_payload
+
+          status 200
+
+          { success: true, **payload }
         end
       end
     end

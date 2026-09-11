@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::Gitlab::GlRepository do
   describe '.parse' do
-    let_it_be(:project) { create(:project_with_design, :repository) }
+    let_it_be(:project) { create(:project_with_design) }
     let_it_be(:snippet) { create(:personal_snippet) }
 
     it 'parses a project gl_repository' do

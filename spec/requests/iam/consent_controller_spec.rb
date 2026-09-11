@@ -188,6 +188,46 @@ RSpec.describe Iam::ConsentController, :use_clean_rails_memory_store_caching,
       end
     end
 
+    describe 'added-by sentence rendering' do
+      using RSpec::Parameterized::TableSyntax
+
+      anonymous_sentence = 'An anonymous service added this dynamically created OAuth application'
+      owner_sentence = 'GitLab User added this OAuth application'
+      administrator_sentence = 'An administrator added this OAuth application'
+
+      # rubocop:disable Layout/LineLength -- readable one-line table rows
+      where(:case_name, :dynamic, :owner, :expected_sentence, :excluded_sentences) do
+        'dynamic true, blank owner => anonymous'                  | true  | ''            | anonymous_sentence     | [administrator_sentence, owner_sentence]
+        'dynamic true, present owner => anonymous (dynamic wins)' | true  | 'GitLab User' | anonymous_sentence     | [administrator_sentence, owner_sentence]
+        'dynamic false, present owner => owner'                   | false | 'GitLab User' | owner_sentence         | [anonymous_sentence, administrator_sentence]
+        'dynamic false, blank owner => administrator'             | false | ''            | administrator_sentence | [anonymous_sentence, owner_sentence]
+      end
+      # rubocop:enable Layout/LineLength
+
+      with_them do
+        let(:client_message) do
+          ::Gitlab::Iam::Auth::V1::Client.new(
+            client_id: client_id,
+            client_name: client_name,
+            client_owner: owner,
+            scopes: client_scopes,
+            created_at: created_at_timestamp,
+            dynamic: dynamic
+          )
+        end
+
+        it 'renders only the matching added-by sentence', :aggregate_failures do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include(expected_sentence)
+          excluded_sentences.each do |sentence|
+            expect(response.body).not_to include(sentence)
+          end
+        end
+      end
+    end
+
     context 'when the current user is an admin' do
       let_it_be(:user) { create(:admin) }
 

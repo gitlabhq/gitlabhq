@@ -1913,6 +1913,60 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
   end
 
+  describe 'GET /internal/authorized_certs', feature_category: :source_code_management do
+    let_it_be(:cert) { create(:instance_ssh_certificate) }
+
+    let(:params) { { key: cert.fingerprint, user_identifier: user.username } }
+
+    shared_examples 'a certificate not found response' do
+      it 'returns 404', :aggregate_failures do
+        get(api('/internal/authorized_certs'), params: params, headers: gitlab_shell_internal_api_request_header)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('Certificate Not Found')
+      end
+    end
+
+    it 'finds the user and reports no namespace', :aggregate_failures do
+      get(api('/internal/authorized_certs'), params: params, headers: gitlab_shell_internal_api_request_header)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['success']).to be(true)
+      expect(json_response['instance']).to be(true)
+      expect(json_response['username']).to eq(user.username)
+      expect(json_response).not_to have_key('namespace')
+    end
+
+    context 'when no certificate matches the fingerprint' do
+      let(:params) { super().merge(key: 'invalid') }
+
+      it_behaves_like 'a certificate not found response'
+    end
+
+    context 'when the user is not found' do
+      let(:params) { super().merge(user_identifier: 'invalid') }
+
+      it 'returns 404', :aggregate_failures do
+        get(api('/internal/authorized_certs'), params: params, headers: gitlab_shell_internal_api_request_header)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('User Not Found')
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(instance_ssh_certificates: false)
+      end
+
+      it_behaves_like 'a certificate not found response'
+    end
+
+    context 'on GitLab.com', :saas do
+      it_behaves_like 'a certificate not found response'
+    end
+  end
+
   def lfs_auth_project(project)
     post(
       api("/internal/lfs_authenticate"),

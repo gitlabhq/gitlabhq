@@ -19,6 +19,7 @@ require_relative "policy_store/rule_transpiler/emitters/environment"
 require_relative "policy_store/rule_transpiler/emitters/calendar"
 require_relative "policy_store/rule_transpiler"
 require_relative "policy_store/rule_program_merger"
+require_relative "policy_store/rego_validator"
 require_relative "policy_store/violation"
 require_relative "policy_store/evaluation"
 require_relative "policy_store/enumerated_attribute_validation"
@@ -45,6 +46,8 @@ module Gitlab
     Error = Class.new(StandardError)
     NotFound = Class.new(Error)
     ValidationError = Class.new(Error)
+    # Raised when the Rego engine itself fails.
+    EngineError = Class.new(ValidationError)
 
     class << self
       def configure

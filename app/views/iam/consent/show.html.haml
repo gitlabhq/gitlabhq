@@ -46,10 +46,19 @@
         = safe_format(_('Make sure you trust %{strong_start}%{client_name}%{strong_end} before authorizing.'),
           { client_name: client_name },
           tag_pair(tag.strong, :strong_start, :strong_end))
-      %p
-        = safe_format(_('%{owner} added this OAuth application %{created_date} ago.'),
-          { owner: @consent_data[:client_owner],
-            created_date: time_ago_in_words(@consent_data[:client_created_at]) })
+      - if @consent_data[:client_dynamic] == true
+        %p
+          = safe_format(_('An anonymous service added this dynamically created OAuth application %{created_date} ago.'),
+            { created_date: time_ago_in_words(@consent_data[:client_created_at]) })
+      - elsif @consent_data[:client_owner].present?
+        %p
+          = safe_format(_('%{owner} added this OAuth application %{created_date} ago.'),
+            { owner: @consent_data[:client_owner],
+              created_date: time_ago_in_words(@consent_data[:client_created_at]) })
+      - else
+        %p
+          = safe_format(_('An administrator added this OAuth application %{created_date} ago.'),
+            { created_date: time_ago_in_words(@consent_data[:client_created_at]) })
   %div
     = form_tag accept_iam_consent_path, method: :post, class: 'gl-inline-block gl-pr-3' do
       = hidden_field_tag 'consent_challenge', @consent_challenge

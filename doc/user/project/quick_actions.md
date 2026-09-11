@@ -131,7 +131,6 @@ Add one or more active CRM contacts.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a feature flag](../../administration/feature_flags/list.md) named `issue_email_participants`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 18.10. Feature flag `issue_email_participants` removed.
 
 {{< /history >}}
@@ -241,7 +240,7 @@ Assign one or more users to the work item.
 
 Assign one or more users as reviewers, or request a new review from existing reviewers.
 
-**Alias for [`/request_review`](#request_review).**
+**Alias for [`/request_review`](#request_review)**.
 
 **Availability**:
 
@@ -464,7 +463,7 @@ Schedule check-in reminders for objectives.
   /checkin_reminder weekly
   ```
 
-- Disable reminders:
+- Turn off reminders:
 
   ```plaintext
   /checkin_reminder never
@@ -576,8 +575,8 @@ Clone the work item to a given group or project.
   fails if the type is not available in the target namespace.
 - The `[type:...]` value is matched case-insensitively against the names of
   the work item types available in the target namespace.
-- The clone fails if the resolved type is disabled in the target namespace
-  (archived, admin-disabled, or not visible in the destination context).
+- The clone fails if the resolved type is turned off in the target namespace
+  (archived, turned off by an administrator, or not visible in the destination context).
 - When cloning to the same namespace, the `[type:...]` argument is validated
   but no conversion is performed. The clone keeps the source work item type.
 - Basic type conversion between built-in types (for example, `Issue`, `Task`,
@@ -1229,8 +1228,8 @@ Move the work item to another group or project.
   fails if the type is not available in the target namespace.
 - The `[type:...]` value is matched case-insensitively against the names of
   the work item types available in the target namespace.
-- The move fails if the resolved type is disabled in the target namespace
-  (archived, admin-disabled, or not visible in the destination context).
+- The move fails if the resolved type is turned off in the target namespace
+  (archived, turned off by an administrator, or not visible in the destination context).
 - When moving to the same namespace, the `[type:...]` argument is validated
   but no conversion is performed. The work item keeps its existing type.
 - Basic type conversion between built-in types (for example, `Issue`, `Task`,
@@ -1648,7 +1647,6 @@ Remove the due date.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a feature flag](../../administration/feature_flags/list.md) named `issue_email_participants`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 18.10. Feature flag `issue_email_participants` removed.
 
 {{< /history >}}

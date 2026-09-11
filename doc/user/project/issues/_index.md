@@ -54,8 +54,8 @@ To learn how the GitLab Strategic Marketing department uses GitLab issues with [
 
 {{< /history >}}
 
-We have changed how issues look by migrating them to a unified framework for work items to better
-meet the product needs of our Agile Planning offering.
+Issues have moved to a unified framework for work items, to better
+meet the product needs of the GitLab Agile Planning offering.
 
 For more information, see [epic 9290](https://gitlab.com/groups/gitlab-org/-/work_items/9290) and the [new Agile planning experience in GitLab](https://about.gitlab.com/blog/first-look-the-new-agile-planning-experience-in-gitlab/) blog post (June 2024).
 

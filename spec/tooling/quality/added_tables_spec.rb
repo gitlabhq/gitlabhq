@@ -34,6 +34,12 @@ RSpec.describe Quality::AddedTables, feature_category: :tooling do
       expect(added_tables.entry_names).to eq(%w[widgets BackfillWidgets])
     end
 
+    it 'returns a name once when two added files share a basename' do
+      stub_git("db/docs/widgets.yml\ndb/docs/data_retention/widgets.yml\n")
+
+      expect(added_tables.entry_names).to eq(%w[widgets])
+    end
+
     it 'ignores files that are not YAML' do
       stub_git("db/docs/widgets.yml\ndb/docs/README.md\n")
 

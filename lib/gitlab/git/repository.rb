@@ -753,13 +753,14 @@ module Gitlab
         end
       end
 
-      def update_submodule(user:, submodule:, commit_sha:, message:, branch:)
+      def update_submodule(user:, submodule:, commit_sha:, message:, branch:, expected_old_oid: '')
         args = {
           user: user,
           submodule: submodule,
           commit_sha: commit_sha,
           branch: branch,
-          message: message
+          message: message,
+          expected_old_oid: expected_old_oid
         }
 
         wrapped_gitaly_errors do

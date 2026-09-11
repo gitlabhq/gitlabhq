@@ -6,7 +6,7 @@ RSpec.describe Resolvers::Environments::NestedEnvironmentsResolver, feature_cate
   include GraphqlHelpers
   include Gitlab::Graphql::Laziness
 
-  let_it_be(:project) { create(:project, :repository, :private) }
+  let_it_be(:project) { create(:project, :private) }
   let_it_be(:environment) { create(:environment, project: project, name: 'test') }
   let_it_be(:environment2) { create(:environment, project: project, name: 'folder1/test') }
   let_it_be(:environment3) { create(:environment, project: project, name: 'folder1/test2') }

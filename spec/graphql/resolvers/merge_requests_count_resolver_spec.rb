@@ -7,8 +7,8 @@ RSpec.describe Resolvers::MergeRequestsCountResolver do
 
   describe '#resolve' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project1) { create(:project, :repository, :public) }
-    let_it_be(:project2) { create(:project, :repository, repository_access_level: ProjectFeature::PRIVATE) }
+    let_it_be(:project1) { create(:project, :public) }
+    let_it_be(:project2) { create(:project, repository_access_level: ProjectFeature::PRIVATE) }
     let_it_be(:issue) { create(:issue, project: project1) }
     let_it_be(:merge_request_closing_issue1) { create(:merge_requests_closing_issues, issue: issue) }
     let_it_be(:merge_request_closing_issue2) do

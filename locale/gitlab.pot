@@ -6626,6 +6626,9 @@ msgstr ""
 msgid "AdminSettings|Automatically accept achievements for all users"
 msgstr ""
 
+msgid "AdminSettings|Block JWT generation in reclaimed project paths"
+msgstr ""
+
 msgid "AdminSettings|Built-in project templates"
 msgstr ""
 
@@ -6795,6 +6798,9 @@ msgid "AdminSettings|For more information, see %{link_start}the documentation%{l
 msgstr ""
 
 msgid "AdminSettings|Git abuse rate limit"
+msgstr ""
+
+msgid "AdminSettings|GitLab prevents namespace reclamation authentication bypass attacks by blocking JWT generation in projects that were moved or renamed to a previously existing project path. Only allow JWT generation for reclaimed project paths if you understand and accept the insider-threat risk. The restriction is enabled by default and should remain enabled on most instances."
 msgstr ""
 
 msgid "AdminSettings|GitLab uses the %{bold_start}Rails%{bold_end} and %{bold_start}Browser JavaScript%{bold_end} Sentry SDKs to send events to Sentry. For changes to Rails integration settings to take effect, restart GitLab."
@@ -8322,6 +8328,15 @@ msgid "AggregationEngine|metric `%{identifier}` must be requested to filter by i
 msgstr ""
 
 msgid "AggregationEngine|ordering by '%{identifier}' is not authorized"
+msgstr ""
+
+msgid "AggregationEngine|parameter `thresholds` is required"
+msgstr ""
+
+msgid "AggregationEngine|parameter `thresholds` must be strictly ascending positive integers"
+msgstr ""
+
+msgid "AggregationEngine|parameter `thresholds` supports at most %{max} values"
 msgstr ""
 
 msgid "AggregationEngine|the specified identifier is not available: '%{identifier}'"
@@ -10432,6 +10447,9 @@ msgstr ""
 msgid "An administrator added this OAuth application "
 msgstr ""
 
+msgid "An administrator added this OAuth application %{created_date} ago."
+msgstr ""
+
 msgid "An administrator can review the affected member's access or the group's email domain restrictions, then run the sync again."
 msgstr ""
 
@@ -10454,6 +10472,9 @@ msgid "An alert has been triggered in %{project_path}."
 msgstr ""
 
 msgid "An anonymous service added this dynamically created OAuth application "
+msgstr ""
+
+msgid "An anonymous service added this dynamically created OAuth application %{created_date} ago."
 msgstr ""
 
 msgid "An email notification was recently sent from the admin panel. Please wait %{wait_time_in_words} before attempting to send another message."
@@ -13141,6 +13162,9 @@ msgid "ArtifactRegistry|pnpm"
 msgstr ""
 
 msgid "ArtifactRegistry|sbt"
+msgstr ""
+
+msgid "ArtifactRegistry|untagged"
 msgstr ""
 
 msgid "ArtifactRegistry|yarn"
@@ -37158,6 +37182,9 @@ msgstr ""
 msgid "FoundationalFlow|Analyze project codebase to generate security context for vulnerability prioritization."
 msgstr ""
 
+msgid "FoundationalFlow|Answers questions and takes actions when GitLab Duo is mentioned in Slack."
+msgstr ""
+
 msgid "FoundationalFlow|Classify the risk of a merge request so review effort can be routed to the changes that warrant it."
 msgstr ""
 
@@ -37180,6 +37207,9 @@ msgid "FoundationalFlow|Fix CI/CD Pipeline"
 msgstr ""
 
 msgid "FoundationalFlow|Generate Workplan"
+msgstr ""
+
+msgid "FoundationalFlow|GitLab Duo for Slack"
 msgstr ""
 
 msgid "FoundationalFlow|Migrate your Jenkins pipelines to GitLab CI/CD."
@@ -55614,6 +55644,12 @@ msgstr ""
 msgid "OfflineTransferImport|Enter AWS credentials"
 msgstr ""
 
+msgid "OfflineTransferImport|Enter an export prefix."
+msgstr ""
+
+msgid "OfflineTransferImport|Export prefix"
+msgstr ""
+
 msgid "OfflineTransferImport|Import all as top-level groups"
 msgstr ""
 
@@ -55647,6 +55683,9 @@ msgstr ""
 msgid "OfflineTransferImport|Start import"
 msgstr ""
 
+msgid "OfflineTransferImport|The export prefix was provided in an email from GitLab after your offline export completed."
+msgstr ""
+
 msgid "OfflineTransferImport|The export was created on %{strong_open}%{hostname}%{strong_close}. This source is self-reported by the export and is not verified, so it may not be trustworthy."
 msgstr ""
 
@@ -55654,6 +55693,9 @@ msgid "OfflineTransferImport|The offline transfer import you started on %{start_
 msgstr ""
 
 msgid "OfflineTransferImport|The offline transfer import you started on %{start_date} has completed. You can now review your import results."
+msgstr ""
+
+msgid "OfflineTransferImport|These credentials are used to read the export package to be imported. The credentials are not used to browse or write to your storage."
 msgstr ""
 
 msgid "OfflineTransferImport|You do not own any groups. Import the groups as top-level groups instead."
@@ -55693,9 +55735,6 @@ msgid "OfflineTransfer|Enter a secret access key."
 msgstr ""
 
 msgid "OfflineTransfer|Enter an access key ID."
-msgstr ""
-
-msgid "OfflineTransfer|Enter an export prefix."
 msgstr ""
 
 msgid "OfflineTransfer|Export"
@@ -56979,9 +57018,6 @@ msgstr ""
 msgid "Orbit|Jump to definition"
 msgstr ""
 
-msgid "Orbit|Jump to definitions and find references for symbols while reading a file, with no CI configuration. Open a file on the default branch of an indexed project and select Code navigation."
-msgstr ""
-
 msgid "Orbit|L%{line}"
 msgstr ""
 
@@ -56992,6 +57028,9 @@ msgid "Orbit|Last indexed:"
 msgstr ""
 
 msgid "Orbit|Learn more"
+msgstr ""
+
+msgid "Orbit|Learn more about code navigation"
 msgstr ""
 
 msgid "Orbit|Leave feedback"
@@ -57289,6 +57328,9 @@ msgid "Orbit|Unable to load cluster status."
 msgstr ""
 
 msgid "Orbit|Unable to load index status. Please try again."
+msgstr ""
+
+msgid "Orbit|Understand unfamiliar code without leaving the file you are reading. See what calls a symbol before you change it, and what that symbol calls. Open a file on the default branch, then select Code navigation %{icon} in the upper-right corner."
 msgstr ""
 
 msgid "Orbit|Use Orbit in GitLab Duo"
@@ -71423,7 +71465,7 @@ msgstr ""
 msgid "SecretsManager|After the trial period, GitLab Secrets Manager consumes GitLab credits to store and fetch secrets. Enable on-demand billing to avoid a service interruption when the trial ends."
 msgstr ""
 
-msgid "SecretsManager|Allow GitLab Secrets Manager to be used in groups and projects."
+msgid "SecretsManager|After you use up all your trial credits or your trial period ends, you need %{linkStart}GitLab Credits%{linkEnd} to continue using GitLab Secrets Manager as a paid capability. To avoid a disruption at the end of your trial, contact your subscription owner to make sure you have purchased a Monthly Commitment of GitLab Credits or accepted on-demand billing. You can disable this feature any time in your settings to avoid credit consumption."
 msgstr ""
 
 msgid "SecretsManager|An error occurred while enabling GitLab Secrets Manager."
@@ -71483,13 +71525,13 @@ msgstr ""
 msgid "SecretsManager|Enable GitLab Secrets Manager"
 msgstr ""
 
+msgid "SecretsManager|Enable GitLab Secrets Manager for all groups and projects in this instance."
+msgstr ""
+
 msgid "SecretsManager|Enable GitLab Secrets Manager for all groups and projects within this namespace."
 msgstr ""
 
 msgid "SecretsManager|Enable GitLab Secrets Manager with GitLab Credits"
-msgstr ""
-
-msgid "SecretsManager|Enable Secrets Manager for this instance. When enabled, the secrets manager can be turned on for any project or group in the instance."
 msgstr ""
 
 msgid "SecretsManager|Enable on-demand billing to try GitLab Secrets Manager"
@@ -71534,6 +71576,9 @@ msgstr ""
 msgid "SecretsManager|GitLab Secrets Manager consumes GitLab Credits to store and fetch secrets."
 msgstr ""
 
+msgid "SecretsManager|GitLab Secrets Manager consumes GitLab Credits when storing new secrets or fetching secrets."
+msgstr ""
+
 msgid "SecretsManager|GitLab Secrets Manager has been enabled for this group. %{linkStart}Manage permissions.%{linkEnd}"
 msgstr ""
 
@@ -71552,6 +71597,9 @@ msgstr ""
 msgid "SecretsManager|How is GitLab Secrets Manager billed?"
 msgstr ""
 
+msgid "SecretsManager|How is Secrets Manager billed?"
+msgstr ""
+
 msgid "SecretsManager|If you have started a free 30-day trial, you can re-enable GitLab Secrets Manager at any time before the end of your trial period."
 msgstr ""
 
@@ -71561,10 +71609,10 @@ msgstr ""
 msgid "SecretsManager|Keep secrets secure with GitLab Secrets Manager"
 msgstr ""
 
-msgid "SecretsManager|Learn more about GitLab Secrets Manager."
+msgid "SecretsManager|Learn more about the 30-day trial"
 msgstr ""
 
-msgid "SecretsManager|Learn more about the 30-day trial"
+msgid "SecretsManager|Learn more about the trial"
 msgstr ""
 
 msgid "SecretsManager|Maximum 200 characters."
@@ -71633,13 +71681,22 @@ msgstr ""
 msgid "SecretsManager|Spend caps don't limit Secrets Manager usage."
 msgstr ""
 
+msgid "SecretsManager|Start free 30-day trial of GitLab Secrets Manager"
+msgstr ""
+
 msgid "SecretsManager|Stored secrets"
 msgstr ""
 
 msgid "SecretsManager|Storing secrets and reading them consumes GitLab Credits."
 msgstr ""
 
+msgid "SecretsManager|The GitLab Secrets Manager has been enabled for all groups and projects in this instance. Visit any group or project to create secrets."
+msgstr ""
+
 msgid "SecretsManager|The GitLab Secrets Manager has been enabled for all groups and projects in this namespace. %{linkStart}Manage group permissions.%{linkEnd}"
+msgstr ""
+
+msgid "SecretsManager|The GitLab Secrets Manager trial could not be started. Please try again."
 msgstr ""
 
 msgid "SecretsManager|The GitLab Secrets Manager trial has been enabled for all groups and projects within this namespace. %{linkStart}Manage group permissions.%{linkEnd}"
@@ -71651,10 +71708,16 @@ msgstr ""
 msgid "SecretsManager|The name should be unique within this project and can contain only letters, digits, and '_'."
 msgstr ""
 
+msgid "SecretsManager|The trial has started, but the instance failed to enable the secrets manager. Please try again with the toggle below."
+msgstr ""
+
 msgid "SecretsManager|There was a problem enabling the GitLab Secrets Manager. Try again later."
 msgstr ""
 
 msgid "SecretsManager|This field is required and must be 200 characters or less."
+msgstr ""
+
+msgid "SecretsManager|This will disable GitLab Secrets Manager for all groups and projects in this instance."
 msgstr ""
 
 msgid "SecretsManager|This will disable GitLab Secrets Manager for all groups and projects in this namespace."
@@ -71667,6 +71730,9 @@ msgid "SecretsManager|Use the secrets manager to store your sensitive credential
 msgstr ""
 
 msgid "SecretsManager|You pay for GitLab Secrets Manager through GitLab Credits. Usage across all projects and subgroups is combined."
+msgstr ""
+
+msgid "SecretsManager|You will be granted 500 trial credits for a period of 30 days for use across all projects and subgroups in your instance."
 msgstr ""
 
 msgid "SecretsManager|Your Beta period is over and GitLab Secrets Manager has been disabled"
@@ -86788,6 +86854,9 @@ msgid "UsageBilling|When off, usage is tracked but not blocked."
 msgstr ""
 
 msgid "UsageBilling|You are currently using temporary evaluation credits to access GitLab Duo features. Your subscription's included credits for users will be available after your evaluation ends. If you have access to the %{linkStart}Customers Portal%{linkEnd}, you can view your usage breakdown, remaining balance, and some usage details."
+msgstr ""
+
+msgid "UsageBilling|You have reached your GitLab Credits limit for this group."
 msgstr ""
 
 msgid "UsageBilling|You will be billed for this usage at the end of the month. Learn more about %{pricingLinkStart}GitLab Credit pricing%{pricingLinkEnd}."

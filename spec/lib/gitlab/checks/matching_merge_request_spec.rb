@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest, feature_category: :source_c
   describe '#match?' do
     let_it_be(:newrev) { '012345678' }
     let_it_be(:target_branch) { 'feature' }
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:locked_merge_request) do
       create(:merge_request,
         :locked,

@@ -15,7 +15,7 @@ RSpec.describe Pages::UpdateService, feature_category: :pages do
   end
 
   before do
-    stub_pages_setting(external_https: true)
+    stub_pages_setting(enabled: true, external_https: true)
     create(:pages_domain, project: project, domain: domain)
   end
 
@@ -44,6 +44,55 @@ RSpec.describe Pages::UpdateService, feature_category: :pages do
           expect(result).to be_a(ServiceResponse)
           expect(result).to be_success
           expect(result.payload[:project]).to eq(project)
+        end
+      end
+
+      context 'when enabling the unique domain for a project without one' do
+        let(:params) { { pages_unique_domain_enabled: true } }
+
+        before do
+          create(:project_setting, project: project, pages_unique_domain_enabled: false)
+        end
+
+        it 'generates a unique domain and enables it' do
+          expect(service.execute).to be_success
+
+          project_setting = project.project_setting.reload
+          expect(project_setting.pages_unique_domain_enabled).to be(true)
+          expect(project_setting.pages_unique_domain).to be_present
+        end
+
+        context 'when no unique domain can be generated' do
+          before do
+            create(:project_setting, pages_unique_domain: 'existing-domain')
+            allow(Gitlab::Pages::RandomDomain).to receive(:generate).and_return('existing-domain')
+          end
+
+          it 'returns an unprocessable entity response and leaves the unique domain disabled' do
+            result = service.execute
+
+            expect(result).to be_error
+            expect(result.reason).to eq(:unprocessable_entity)
+            expect(result.message).to eq("Can't generate unique domain for GitLab Pages")
+            expect(project.project_setting.reload.pages_unique_domain_enabled).to be(false)
+          end
+        end
+      end
+
+      context 'when the update is invalid' do
+        let(:params) { { pages_https_only: true } }
+
+        before do
+          project.update!(pages_https_only: false)
+          create(:pages_domain, :without_certificate, :without_key, project: project)
+        end
+
+        it 'returns an unprocessable entity response' do
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.reason).to eq(:unprocessable_entity)
+          expect(result.message).to eq('Pages https only cannot be enabled unless all domains have TLS certificates')
         end
       end
     end

@@ -1426,7 +1426,8 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         branch: branch,
         submodule: submodule,
         commit_message: message,
-        timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+        timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
+        expected_old_oid: 'expected-old-oid'
       )
     end
 
@@ -1436,7 +1437,8 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         submodule: submodule,
         commit_sha: commit_sha,
         branch: branch,
-        message: message
+        message: message,
+        expected_old_oid: 'expected-old-oid'
       )
     end
 
@@ -1607,6 +1609,18 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
 
       context 'with non-detailed GRPC error' do
         let(:grpc_error) { GRPC::Internal.new('non-detailed error') }
+
+        it 're-raises the original error' do
+          expect_any_instance_of(Gitaly::OperationService::Stub)
+            .to receive(:user_update_submodule)
+                  .and_raise(grpc_error)
+
+          expect { subject }.to raise_error(grpc_error)
+        end
+      end
+
+      context 'when expected_old_oid is malformed' do
+        let(:grpc_error) { GRPC::InvalidArgument.new('invalid expected old object ID: reference not found') }
 
         it 're-raises the original error' do
           expect_any_instance_of(Gitaly::OperationService::Stub)

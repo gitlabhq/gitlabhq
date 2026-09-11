@@ -72,6 +72,7 @@ module ClickHouseHelpers
         created_at: data[:created_at],
         updated_at: data.fetch(:updated_at, data[:created_at]),
         metric_merged_at: data[:metric_merged_at],
+        created_by_duo: data.fetch(:created_by_duo, false),
         traversal_path: project&.project_namespace&.traversal_path(with_organization: true)&.to_s || '0/',
         _siphon_replicated_at: data.fetch(:_siphon_replicated_at, data[:created_at]),
         _siphon_deleted: data.fetch(:_siphon_deleted, false)

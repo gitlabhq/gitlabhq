@@ -15,7 +15,7 @@ description: Visualization, workflow, Kanban, and prioritization.
 
 {{< history >}}
 
-- Ability to delete the last board in a group or project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499579) in GitLab 17.6.
+- Deleting the last board in a group or project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499579) in GitLab 17.6.
 - Minimum role to manage issue boards [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -76,7 +76,7 @@ Using the search box at the top of the menu, you can filter the listed boards.
 When you have ten or more boards available, a **Recent** section is also shown in the menu, with
 shortcuts to your last four visited boards.
 
-![Multiple issue boards](img/issue_boards_multiple_v17_1.png)
+![Multiple issue boards.](img/issue_boards_multiple_v17_1.png)
 
 When you're revisiting an issue board in a project or group with multiple boards,
 GitLab automatically loads the last board you visited.
@@ -129,13 +129,13 @@ For example, let's consider this simplified development workflow:
 If you have the labels **Backend**, **Frontend**, **Staging**, and
 **Production**, and an issue board with a list for each, you can:
 
-- Visualize the entire flow of implementations since the beginning of the development lifecycle
+- Visualize the entire flow of implementations from the beginning of the development lifecycle
   until deployed to production.
 - Prioritize the issues in a list by moving them vertically.
 - Move issues between lists to organize them according to the labels you've set.
 - Add multiple issues to lists in the board by selecting one or more existing issues.
 
-![issue card moving](img/issue_board_move_issue_card_list_v17_1.png)
+![Moving issue cards.](img/issue_board_move_issue_card_list_v17_1.png)
 
 ### Scrum team
 
@@ -196,7 +196,7 @@ When an issue is created, the system assigns a relative order value that is grea
 of that issue's project or top-level group. This means the issue is at the bottom of any issue list that
 it appears in.
 
-When you visit a board, issues appear ordered in any list. You're able to change
+When you visit a board, issues appear ordered in any list. You can change
 that order by dragging the issues. The changed order is saved, so that anybody who visits the same
 board later sees the reordering, with some exceptions.
 
@@ -215,11 +215,11 @@ and vice versa.
 ## Focus mode
 
 In focus mode, the navigation UI is hidden, allowing you to focus on issues in the board.
-To enable or disable focus mode, in the upper-right corner, select **Toggle focus mode** ({{< icon name="maximize" >}}).
+To turn focus mode on or off, in the upper-right corner, select **Toggle focus mode** ({{< icon name="maximize" >}}).
 
 ## Group issue boards
 
-Accessible at the group navigation level, a group issue board offers the same features as a project-level board.
+Accessible at the group navigation level, a group issue board offers the same features as a project issue board.
 It can display issues from all projects that fall under the group and its descendant subgroups.
 
 Users on GitLab Free can use a single group issue board.
@@ -241,16 +241,16 @@ advanced functionality is present in [higher tiers only](https://about.gitlab.co
 An issue board can be associated with a [milestone](milestones/_index.md),
 [labels](labels.md), assignee, weight, and current [iteration](../group/iterations/_index.md),
 which automatically filter the board issues accordingly.
-This allows you to create unique boards according to your team's needs.
+With these filters, you can create unique boards according to your team's needs.
 
-![Create scoped board](img/issue_board_creation_v17_1.png)
+![Create scoped board.](img/issue_board_creation_v17_1.png)
 
 You can define the scope of your board when creating it or by selecting the **Configure board** ({{< icon name="settings" >}}) button.
 After a milestone, iteration, assignee, or weight is assigned to an issue board, you can no longer
 filter through these in the search bar. To do that, you need to remove the desired scope
 (for example, milestone, assignee, or weight) from the issue board.
 
-If you don't have editing permission in a board, you're still able to see the configuration by
+If you don't have editing permission in a board, you can still see the configuration by
 selecting **Board configuration** ({{< icon name="settings" >}}).
 
 ### Assignee lists
@@ -281,7 +281,7 @@ Now that the assignee list is added, you can assign or unassign issues to that u
 by [moving issues](#move-issues-and-lists) to and from an assignee list.
 To remove an assignee list, just as with a label list, select the trash icon.
 
-![Assignee lists](img/issue_board_assignee_lists_v17_1.png)
+![Set the scope of the list to Assignee.](img/issue_board_assignee_lists_v17_1.png)
 
 ### Milestone lists
 
@@ -308,7 +308,7 @@ To add a milestone list:
 
 To change the milestone of issues, [drag issue cards](#move-issues-and-lists) to and from a milestone list.
 
-![Milestone lists](img/issue_board_milestone_lists_v17_1.png)
+![Set the scope of the list to Milestone.](img/issue_board_milestone_lists_v17_1.png)
 
 ### Iteration lists
 
@@ -334,7 +334,7 @@ To add an iteration list:
 
 To change the iteration of issues, [drag issue cards](#move-issues-and-lists) to and from an iteration list.
 
-![Iteration lists](img/issue_board_iteration_lists_v17_1.png)
+![Set the scope of the list to Iteration.](img/issue_board_iteration_lists_v17_1.png)
 
 ### Status lists
 
@@ -377,7 +377,7 @@ The status list is added to the board and displays issues with that status.
 
 To change the status of issues, [drag issue cards](#move-issues-and-lists) to and from a status list.
 
-![Status list](img/issue_board_status_lists_v18_2.png)
+![Set the scope of the list to Status.](img/issue_board_status_lists_v18_2.png)
 
 ### Group issues in swimlanes
 
@@ -390,7 +390,7 @@ To change the status of issues, [drag issue cards](#move-issues-and-lists) to an
 
 With swimlanes you can visualize issues grouped by epic.
 Your issue board keeps all the other features, but with a different visual organization of issues.
-This feature is available both at the project and group level.
+This feature is available for both projects and groups.
 
 Prerequisites:
 
@@ -411,7 +411,7 @@ them to change their position and epic assignment:
 - To remove an issue from an epic, drag it to the **Issues with no epic assigned** lane.
 - To move an issue to another epic and another list, at the same time, drag the issue diagonally.
 
-![Drag issues between swimlanes](img/epics_swimlanes_drag_and_drop_v13_6.png)
+![Drag issues between swimlanes.](img/epics_swimlanes_drag_and_drop_v13_6.png)
 
 ### Sum of issue weights
 
@@ -423,10 +423,10 @@ them to change their position and epic assignment:
 {{< /details >}}
 
 The top of each list indicates the sum of issue weights for the issues that
-belong to that list. This is useful when using boards for capacity allocation,
+belong to that list. The sum helps when you use boards for capacity allocation,
 especially in combination with [assignee lists](#assignee-lists).
 
-![issue board summed weights](img/issue_board_summed_weights_v17_1.png)
+![The summed weights of an issue board.](img/issue_board_summed_weights_v17_1.png)
 
 ### Work in progress limits
 
@@ -446,7 +446,7 @@ especially in combination with [assignee lists](#assignee-lists).
 You can set a work in progress (WIP) limit for each issue list on an issue board.
 When a limit is set, the current state and configured limit are shown in the board list header.
 
-A line in the list separates items within the limit from those in excess of the limit.
+A line in the list separates items that are inside the limit from those that exceed it.
 You cannot set a WIP limit on the default lists (**Open** and **Closed**).
 
 #### Types of limits
@@ -473,7 +473,7 @@ Examples:
   If you exceed the limit, the current number of issues is shown in red.
 - You have a list with five issues with an item limit of five. When you move another issue to that list,
   the list's header displays **6/5**, with the six shown in red. The work in progress limit line is shown before the sixth issue.
-- When using weight limits, if you have three issues with weights of 1, 2, and 5 (total weight of 8) and a weight limit of 5, the header shows **8/5** with the 8 in red. The work in progress limit line appears after the issues whose combined weight is within the limit, separating them from issues that exceed the limit.
+- When using weight limits, if you have three issues with weights of 1, 2, and 5 (total weight of 8) and a weight limit of 5, the header shows **8/5** with the 8 in red. The work in progress limit line appears after the issues whose combined weight does not exceed the limit, separating them from those that do.
 
 #### Set work in progress limit
 
@@ -508,7 +508,7 @@ status.
 
 When you hover over the blocked icon ({{< icon name="entity-blocked" >}}), a detailed information popover is displayed.
 
-![Blocked issues](img/issue_boards_blocked_icon_v17_9.png)
+![Blocked issues with details.](img/issue_boards_blocked_icon_v17_9.png)
 
 ## Actions you can take on an issue board
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Resolvers::Ci::RunnerJobsResolver, feature_category: :fleet_visibility do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:irrelevant_pipeline) { create(:ci_pipeline, project: project) }
 

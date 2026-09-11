@@ -181,8 +181,8 @@ The following cap types are available:
 | Cap type | Applies to | Credit sources counted | Managed through |
 |---|---|---|---|
 | Subscription cap | All users on the subscription | On-Demand only | Customers Portal |
-| Flat user cap | Individual users (default limit) | All | GraphQL API |
-| Per-user override | A specific user's total usage, including their included credits. Overrides the flat cap. A user can therefore consume up to whichever is larger: their included allocation, or their cap. | All | GraphQL API |
+| Flat user cap | Individual users (default limit) | All | User interface, GraphQL API |
+| Per-user override | A specific user's total usage, including their included credits. Overrides the flat cap. A user can therefore consume up to whichever is larger: their included allocation, or their cap. | All | User interface, GraphQL API |
 
 When on-demand usage in the current billing period reaches or exceeds the configured cap,
 all credit-based features
@@ -248,6 +248,83 @@ no subscription-level on-demand GitLab Credits cap is enforced, and behavior fal
 existing billing behavior.
 
 You can use the GraphQL API to [view usage caps](../api/graphql/reference/_index.md#gitlabsubscriptionbudgetcaps) and set a [flat user-level cap](../api/graphql/reference/_index.md#mutationupsertflatusercap) or a [per-user override cap](../api/graphql/reference/_index.md#mutationupsertuserbudgetcapoverrides).
+
+### Manage credit caps
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/628559) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `credit_caps_ui`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+To manage credit caps:
+
+{{< tabs >}}
+
+{{< tab title="GitLab.com" >}}
+
+Prerequisites:
+
+- The Owner role for the group.
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. Select **Settings** > **GitLab Credits**.
+1. Select **Credit caps**.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Self-Managed" >}}
+
+Prerequisites:
+
+- Administrator access.
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Credits**.
+1. Select **Credit caps**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+On the **Credit caps** page, you can set the following:
+
+- **Flat user cap**: A default credit cap for all users on the subscription.
+- **Per-user cap overrides**: A specific cap for individual users that overrides the flat user cap.
+
+#### Set a flat user cap
+
+To set a flat user cap that applies to all users by default:
+
+1. Enter the maximum number of GitLab Credits a user can consume per billing period.
+1. Turn on the toggle to enable enforcement.
+1. Select **Save**.
+
+#### Set per-user cap overrides
+
+You can add, update, and turn off cap overrides for individual users.
+
+To add an override:
+
+1. Select **Add override**.
+1. Select one or more users.
+1. Set the cap value and turn the **Enabled** toggle on or off.
+1. Select **Save**.
+
+To update an override:
+
+1. Under **Per-user cap overrides**, adjust the cap value for the user
+   and turn the **Enabled** toggle on or off.
+1. Select **Save**.
+
+To turn off an override:
+
+1. Under **Per-user cap overrides**, turn the **Enabled** toggle off for the user.
+1. Select **Save**.
 
 ## Usage control status
 

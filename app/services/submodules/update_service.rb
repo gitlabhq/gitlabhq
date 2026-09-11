@@ -31,10 +31,15 @@ module Submodules
         @submodule,
         @commit_sha,
         message: @commit_message,
-        branch: @branch_name
+        branch: @branch_name,
+        expected_old_oid: expected_old_oid
       )
     rescue ArgumentError, TypeError
       raise ValidationError, 'Invalid parameters'
+    end
+
+    def expected_old_oid
+      repository.find_branch(@branch_name)&.dereferenced_target&.id
     end
   end
 end

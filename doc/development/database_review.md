@@ -262,7 +262,8 @@ of these methods:
 - Add indexes for fields that are used in statements such as `WHERE`, `ORDER BY`, `GROUP BY`, and `JOIN`s.
 - New tables must be seeded by a file in `db/fixtures/development/`. These fixtures are also used
   to ensure that [upgrades complete successfully](database/dbmigrate_multi_version_upgrade_job.md),
-  so it's important that new tables are always populated.
+  so it's important that new tables are always populated. The `run-dev-fixtures-ee` job fails when a
+  table added by the merge request holds no rows after seeding.
 - Ensure that you do not use database tables to store
   [static data](cells/_index.md#static-data). Use a [fixed items model](fixed_items_model.md) instead.
 - New tables and columns are not necessarily risky, but over time some access patterns are inherently

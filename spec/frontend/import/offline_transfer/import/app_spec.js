@@ -4,6 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import OfflineTransferImportApp from '~/import/offline_transfer/import/app.vue';
 import FormStepper from '~/import/offline_transfer/components/form_stepper.vue';
+import ImportConfigTab from '~/import/offline_transfer/import/import_config_tab.vue';
 import SelectDestinationTab from '~/import/offline_transfer/import/select_destination_tab.vue';
 import { mockGroups } from '../mock_data';
 
@@ -16,11 +17,18 @@ describe('OfflineTransferImportApp', () => {
 
   const existingGroup = 'existing_group';
   const [parentGroup] = mockGroups;
+  const validStorageConfig = {
+    accessKeyId: 'AKIAEXAMPLE',
+    secretAccessKey: 'mySecretKey',
+    region: 'us-east-1',
+    bucketName: 'my-bucket',
+    pathStyle: false,
+    exportPrefix: 'my-export',
+  };
   const findFormStepper = () => wrapper.findComponent(FormStepper);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findSelectDestinationTab = () => wrapper.findComponent(SelectDestinationTab);
-  const findConfigureTab = () => wrapper.findByTestId('configure-import-tab');
-  const findConfigureCheckbox = () => findConfigureTab().findComponent(GlFormCheckbox);
+  const findImportConfigTab = () => wrapper.findComponent(ImportConfigTab);
   const findReviewTab = () => wrapper.findByTestId('review-import-tab');
 
   beforeEach(() => {
@@ -71,14 +79,14 @@ describe('OfflineTransferImportApp', () => {
         await nextTick();
       };
 
+      it('passes with the default top-level destination', () => {
+        expect(findFormStepper().props('validateStep')(0)).toBe(true);
+      });
+
       it('fails when an existing group is chosen without a parent', async () => {
         await setDestination({ type: existingGroup, parentGroup: null });
 
         expect(findFormStepper().props('validateStep')(0)).toBe(false);
-      });
-
-      it('passes with the default top-level destination', () => {
-        expect(findFormStepper().props('validateStep')(0)).toBe(true);
       });
 
       it('passes once a parent group is chosen', async () => {
@@ -87,14 +95,14 @@ describe('OfflineTransferImportApp', () => {
         expect(findFormStepper().props('validateStep')(0)).toBe(true);
       });
 
-      it('on failure is registered as validationAttempted', async () => {
+      it('registers as validationAttempted when step validation fails', async () => {
         findFormStepper().vm.$emit('validation-failed', 0);
         await nextTick();
 
         expect(findSelectDestinationTab().props('validationAttempted')).toBe(true);
       });
 
-      it('once the step is left is cleared', async () => {
+      it('clears after the corrected step is left', async () => {
         findFormStepper().vm.$emit('validation-failed', 0);
         await nextTick();
         findFormStepper().vm.$emit('stepped-forward', { previousTabIndex: 0 });
@@ -106,20 +114,59 @@ describe('OfflineTransferImportApp', () => {
   });
 
   describe('configure tab', () => {
-    it('renders the checkbox with the correct text', () => {
-      expect(findConfigureCheckbox().text()).toBe('Configure');
+    const setStorageConfig = async (config) => {
+      findImportConfigTab().vm.$emit('storage-input', config);
+      await nextTick();
+    };
+
+    it('receives an empty initial AWS storage config', () => {
+      expect(findImportConfigTab().props('storageConfig')).toEqual({
+        accessKeyId: '',
+        secretAccessKey: '',
+        region: '',
+        bucketName: '',
+        pathStyle: false,
+        exportPrefix: '',
+      });
+    });
+
+    it('receives the updated storage config back down after the tab emits storage-input', async () => {
+      await setStorageConfig(validStorageConfig);
+
+      expect(findImportConfigTab().props('storageConfig')).toEqual(validStorageConfig);
     });
 
     describe('validation', () => {
-      it('fails while the checkbox is unchecked', () => {
+      it('fails with an empty initial storage config', () => {
         expect(findFormStepper().props('validateStep')(1)).toBe(false);
       });
 
-      it('passes once the checkbox is checked', async () => {
-        findConfigureCheckbox().vm.$emit('input', true);
-        await nextTick();
+      it('fails when the storage config has no export prefix', async () => {
+        await setStorageConfig({ ...validStorageConfig, exportPrefix: '' });
+
+        expect(findFormStepper().props('validateStep')(1)).toBe(false);
+      });
+
+      it('passes with a complete storage config', async () => {
+        await setStorageConfig(validStorageConfig);
 
         expect(findFormStepper().props('validateStep')(1)).toBe(true);
+      });
+
+      it('registers as validationAttempted when step validation fails', async () => {
+        findFormStepper().vm.$emit('validation-failed', 1);
+        await nextTick();
+
+        expect(findImportConfigTab().props('validationAttempted')).toBe(true);
+      });
+
+      it('clears after the corrected step is left', async () => {
+        findFormStepper().vm.$emit('validation-failed', 1);
+        await nextTick();
+        findFormStepper().vm.$emit('stepped-forward', { previousTabIndex: 1 });
+        await nextTick();
+
+        expect(findImportConfigTab().props('validationAttempted')).toBe(false);
       });
     });
   });

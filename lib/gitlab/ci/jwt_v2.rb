@@ -75,6 +75,8 @@ module Gitlab
       strong_memoize_attr :sub_claims
 
       def verify_path_not_burned!
+        return unless Gitlab::CurrentSettings.block_jwt_for_reclaimed_paths
+
         return unless ::Authn::BurnedProjectRoute.blocked_for?(
           organization_id: source_project.organization_id,
           path: source_project.full_path,

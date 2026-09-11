@@ -707,6 +707,7 @@ CREATE TABLE merge_requests
         user_id UInt64,
         created_at DateTime64(6, 'UTC'))),
     `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `created_by_duo` Bool DEFAULT false CODEC(ZSTD(1)),
     INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1,
     PROJECTION pg_pkey_ordered
     (
@@ -1153,12 +1154,26 @@ CREATE TABLE siphon_duo_workflows_workflow_merge_requests
     `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
     `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
     `idempotency_key` Nullable(String),
-    INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1
+    INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1,
+    PROJECTION by_merge_request_id
+    (
+        SELECT
+            id,
+            workflow_id,
+            merge_request_id,
+            link_type,
+            traversal_path,
+            _siphon_replicated_at,
+            _siphon_deleted
+        ORDER BY
+            merge_request_id,
+            id
+    )
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, workflow_id, id)
 ORDER BY (traversal_path, workflow_id, id)
-SETTINGS index_granularity = 2048;
+SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
 
 CREATE TABLE siphon_duo_workflows_workflow_merge_requests_pg_pkey_ordered
 (
@@ -4315,7 +4330,8 @@ CREATE MATERIALIZED VIEW merge_requests_mv TO merge_requests
     `award_emojis` Array(Tuple(
         String,
         Int64,
-        DateTime64(6, 'UTC')))
+        DateTime64(6, 'UTC'))),
+    `created_by_duo` Bool
 )
 AS WITH
     base AS
@@ -4530,6 +4546,30 @@ AS WITH
         GROUP BY
             traversal_path,
             awardable_id
+    ),
+    siphon_duo_workflows_workflow_merge_requests_cte AS
+    (
+        SELECT
+            merge_request_id,
+            true AS created_by_duo
+        FROM
+        (
+            SELECT
+                merge_request_id,
+                id,
+                argMax(link_type, _siphon_replicated_at) AS link_type,
+                argMax(_siphon_deleted, _siphon_replicated_at) AS deleted
+            FROM siphon_duo_workflows_workflow_merge_requests
+            WHERE merge_request_id IN (
+                SELECT id
+                FROM base
+            )
+            GROUP BY
+                merge_request_id,
+                id
+            HAVING (deleted = false) AND (link_type = 1)
+        )
+        GROUP BY merge_request_id
     )
 SELECT
     base.id AS id,
@@ -4602,14 +4642,16 @@ SELECT
     siphon_merge_request_assignees_cte.assignees AS assignees,
     siphon_approvals_cte.approvals AS approvals,
     siphon_label_links_cte.label_ids AS label_ids,
-    siphon_award_emoji_cte.award_emojis AS award_emojis
+    siphon_award_emoji_cte.award_emojis AS award_emojis,
+    siphon_duo_workflows_workflow_merge_requests_cte.created_by_duo AS created_by_duo
 FROM base
 LEFT JOIN siphon_merge_request_metrics_cte ON (base.traversal_path = siphon_merge_request_metrics_cte.traversal_path) AND (base.id = siphon_merge_request_metrics_cte.merge_request_id)
 LEFT JOIN siphon_merge_request_reviewers_cte ON (base.traversal_path = siphon_merge_request_reviewers_cte.traversal_path) AND (base.id = siphon_merge_request_reviewers_cte.merge_request_id)
 LEFT JOIN siphon_merge_request_assignees_cte ON (base.traversal_path = siphon_merge_request_assignees_cte.traversal_path) AND (base.id = siphon_merge_request_assignees_cte.merge_request_id)
 LEFT JOIN siphon_approvals_cte ON (base.traversal_path = siphon_approvals_cte.traversal_path) AND (base.id = siphon_approvals_cte.merge_request_id)
 LEFT JOIN siphon_label_links_cte ON (base.traversal_path = siphon_label_links_cte.traversal_path) AND (base.id = siphon_label_links_cte.merge_request_id)
-LEFT JOIN siphon_award_emoji_cte ON (base.traversal_path = siphon_award_emoji_cte.traversal_path) AND (base.id = siphon_award_emoji_cte.merge_request_id);
+LEFT JOIN siphon_award_emoji_cte ON (base.traversal_path = siphon_award_emoji_cte.traversal_path) AND (base.id = siphon_award_emoji_cte.merge_request_id)
+LEFT JOIN siphon_duo_workflows_workflow_merge_requests_cte ON base.id = siphon_duo_workflows_workflow_merge_requests_cte.merge_request_id;
 
 CREATE MATERIALIZED VIEW namespace_traversal_path_refresh_to_projects_mv TO siphon_projects
 (

@@ -3,6 +3,7 @@ stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Export issues to CSV
+description: Export issues to a CSV file emailed to you for offline analysis, reporting, or importing into other systems.
 ---
 
 {{< details >}}

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Resolvers::Ci::PipelineStagesResolver, feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user, developer_of: project) }
 
   def resolve_stages(pipeline)

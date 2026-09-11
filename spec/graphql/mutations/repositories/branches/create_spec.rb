@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::Repositories::Branches::Create, feature_category: :api do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:current_user) { create(:user) }
 
   subject(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }

@@ -119,6 +119,7 @@ To split merged cells: In the upper-right corner of a cell, select the chevron {
 {{< history >}}
 
 - Table menu paste actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627112) in GitLab 19.4.
+- Keyboard shortcut for pasting into a table cell [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627699) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -134,13 +135,18 @@ To choose how the content is pasted:
      table nested inside the cell.
    - **Paste and merge into table**: Distributes the copied cells across the table (default behavior).
 
+Each option also shows its keyboard shortcut next to its label.
+To paste a copied table as a nested table without opening the menu, place your cursor in a table cell.
+Then press <kbd>Control</kbd>+<kbd>Alt</kbd>+<kbd>V</kbd>
+(or <kbd>Command</kbd>+<kbd>Option</kbd>+<kbd>V</kbd> on macOS).
+
 The first time you use either option, your browser might ask for permission to read your
 clipboard.
 
 > [!note]
-> The paste options appear only when your browser can read the clipboard. Browsers allow this
-> only on pages served over HTTPS or from `localhost`, so the options are not available on a
-> GitLab Self-Managed instance served over plain HTTP.
+> On GitLab Self-Managed, the paste options and the keyboard shortcut are not available if your
+> instance is served over plain HTTP. These features require browser access to the clipboard, and
+> browsers allow that access only on pages served over HTTPS or from `localhost`.
 
 ## Insert diagrams
 

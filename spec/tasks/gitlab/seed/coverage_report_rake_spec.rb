@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_relative '../../../../tooling/quality/added_tables'
 
-RSpec.describe 'gitlab:seed:coverage_report', :silence_stdout, feature_category: :tooling do
+RSpec.describe 'gitlab:seed:coverage_report', :silence_output, feature_category: :tooling do
   let(:added_tables) { instance_double(Quality::AddedTables) }
 
   before do
@@ -78,17 +78,45 @@ RSpec.describe 'gitlab:seed:coverage_report', :silence_stdout, feature_category:
     end
 
     it 'reports coverage for an added table' do
+      create(:project)
       stub_entry_names(%w[projects])
 
       expect { run_rake_task('gitlab:seed:coverage_report') }
-        .to output(/Fixture coverage for 1 newly added table\(s\).*projects:/m).to_stdout
+        .to output(/Fixture coverage for 1 newly added table\(s\).*projects: 1 row/m).to_stdout
+    end
+  end
+
+  describe 'failing the job' do
+    before do
+      stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_SHA', 'target-sha')
     end
 
-    it 'never fails the job' do
+    it 'fails when a table the merge request adds holds no rows' do
       stub_entry_names(%w[projects])
 
       expect { run_rake_task('gitlab:seed:coverage_report') }
-        .to output(/Report only - this task never fails the job\./).to_stdout
+        .to raise_error(SystemExit, /No seed data for projects/)
+    end
+
+    it 'does not fail when the added table holds rows' do
+      create(:project)
+      stub_entry_names(%w[projects])
+
+      expect { run_rake_task('gitlab:seed:coverage_report') }.not_to raise_error
+    end
+
+    # A dictionary entry can outlive its table: this one is kept as a safety net during a
+    # partitioning swap and has no CREATE TABLE, so there is nothing an author could seed.
+    it 'does not fail for a table that is absent from the schema' do
+      stub_entry_names(%w[merge_request_diff_commits_archived])
+
+      expect { run_rake_task('gitlab:seed:coverage_report') }.not_to raise_error
+    end
+
+    it 'does not fail when the diff adds no table' do
+      stub_entry_names(%w[postgres_constraints])
+
+      expect { run_rake_task('gitlab:seed:coverage_report') }.not_to raise_error
     end
   end
 end

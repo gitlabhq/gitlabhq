@@ -52,7 +52,8 @@ RSpec.describe Authn::IamService::GetConsentChallengeService, feature_category: 
           client_name: 'Test App',
           client_owner: 'GitLab User',
           client_created_at: created_at_time,
-          client_scopes: %w[openid profile email]
+          client_scopes: %w[openid profile email],
+          client_dynamic: false
         )
       end
 
@@ -78,6 +79,23 @@ RSpec.describe Authn::IamService::GetConsentChallengeService, feature_category: 
       end
     end
 
+    context 'when the client is dynamic' do
+      let(:client_attrs) { super().merge(dynamic: true) }
+
+      it 'exposes client_dynamic in the payload' do
+        expect(result.payload[:client_dynamic]).to be(true)
+      end
+    end
+
+    context 'when client_owner is blank' do
+      let(:client_attrs) { super().merge(client_owner: '') }
+
+      it 'succeeds with a blank client_owner in the payload', :aggregate_failures do
+        expect(result).to be_success
+        expect(result.payload[:client_owner]).to eq('')
+      end
+    end
+
     context 'when skip is true' do
       let(:response_attrs) { super().merge(skip: true) }
 
@@ -93,7 +111,6 @@ RSpec.describe Authn::IamService::GetConsentChallengeService, feature_category: 
       where(:client_overrides, :response_overrides, :missing_field) do
         {}                   | { requested_scopes: [] } | 'requested_scopes'
         { client_id: '' }    | {}                       | 'client_id'
-        { client_owner: '' } | {}                       | 'client_owner'
         { scopes: [] }       | {}                       | 'client_scopes'
       end
 

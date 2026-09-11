@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Resolvers::Ci::JobsResolver, feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
   before_all do

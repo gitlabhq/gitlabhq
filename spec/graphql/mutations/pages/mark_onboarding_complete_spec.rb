@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::Pages::MarkOnboardingComplete, feature_category: :pages do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:owner) { create(:user, owner_of: project) }
 

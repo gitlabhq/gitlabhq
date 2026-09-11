@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ::Gitlab::RepoPath do
   include Gitlab::Routing
 
-  let_it_be(:project) { create(:project_with_design, :repository) }
+  let_it_be(:project) { create(:project_with_design) }
   let_it_be(:personal_snippet) { create(:personal_snippet) }
   let_it_be(:project_snippet) { create(:project_snippet, project: project) }
   let_it_be(:redirect_route) { 'foo/bar/baz' }

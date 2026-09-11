@@ -779,6 +779,134 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Engine, :click_house, 
       end
     end
 
+    context 'with all bitmap metrics over a date bucket' do
+      let(:engine_definition) do
+        described_class.build do
+          self.table_name = 'agent_platform_sessions'
+
+          dimensions do
+            column :flow_type, :string
+            date_bucket :event_date, :date, -> { Arel.sql('anyIfMerge(created_event_at)') }, parameters: {
+              granularity: { type: :string, in: %w[daily] }
+            }
+          end
+
+          metrics do
+            count :distinct_users, :integer, -> { Arel.sql('user_id') }, distinct: true
+            retained_count :returning_users, :integer, -> { Arel.sql('user_id') }, over: :event_date
+            lagged_count :previous_users, :integer, -> { Arel.sql('user_id') }, over: :event_date
+            acquired_count :new_users, :integer, -> { Arel.sql('user_id') }, over: :event_date
+            churned_count :churned_users, :integer, -> { Arel.sql('user_id') }, over: :event_date
+          end
+        end
+      end
+
+      let(:request) do
+        Gitlab::Database::Aggregation::Request.new(
+          dimensions: [
+            { identifier: :flow_type },
+            { identifier: :event_date, parameters: { granularity: 'daily' } }
+          ],
+          metrics: [
+            { identifier: :distinct_users_count },
+            { identifier: :returning_users_count },
+            { identifier: :previous_users_count },
+            { identifier: :new_users_count },
+            { identifier: :churned_users_count }
+          ],
+          order: [{ identifier: :event_date, parameters: { granularity: 'daily' }, direction: :asc }]
+        )
+      end
+
+      # 2025-03-04 holds two rows for user 1 (sessions 3 and 4), so groupArray yields [1, 1]
+      # there. Without arrayDistinct, new_users_count on that date would be 2 instead of 1.
+      it 'computes acquired and churned counts alongside the existing bitmap metrics' do
+        expect(engine).to execute_aggregation(request).and_return([
+          { flow_type: 'chat', event_date_daily: Date.parse('2025-03-01'), distinct_users_count: 1,
+            returning_users_count: 0, previous_users_count: 0, new_users_count: 1, churned_users_count: 0 },
+          { flow_type: 'chat', event_date_daily: Date.parse('2025-03-02'), distinct_users_count: 1,
+            returning_users_count: 0, previous_users_count: 1, new_users_count: 1, churned_users_count: 1 },
+          { flow_type: 'chat', event_date_daily: Date.parse('2025-03-04'), distinct_users_count: 1,
+            returning_users_count: 0, previous_users_count: 1, new_users_count: 1, churned_users_count: 1 },
+          { flow_type: 'chat', event_date_daily: Date.parse('2025-04-04'), distinct_users_count: 1,
+            returning_users_count: 1, previous_users_count: 1, new_users_count: 0, churned_users_count: 0 }
+        ])
+      end
+
+      it 'satisfies the retained/acquired and retained/churned identities per bucket',
+        :aggregate_failures do
+        rows = engine.execute(request)[:data].to_a.map(&:with_indifferent_access)
+
+        expect(rows).not_to be_empty
+
+        rows.each do |row|
+          expect(row[:returning_users_count] + row[:new_users_count]).to eq(row[:distinct_users_count])
+          expect(row[:returning_users_count] + row[:churned_users_count]).to eq(row[:previous_users_count])
+        end
+      end
+    end
+
+    context 'with acquired_count as the only metric' do
+      let(:engine_definition) do
+        described_class.build do
+          self.table_name = 'agent_platform_sessions'
+
+          dimensions do
+            column :user_id, :integer
+          end
+
+          metrics do
+            acquired_count :new_users, :integer, -> { Arel.sql('user_id') }, over: :user_id
+          end
+        end
+      end
+
+      it 'returns acquired user counts using difference window logic' do
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :user_id }],
+          metrics: [{ identifier: :new_users_count }],
+          order: [{ identifier: :user_id, direction: :asc }]
+        )
+
+        # Each user_id group holds only itself, and no group repeats the previous one,
+        # so every group acquires exactly one value.
+        expect(engine).to execute_aggregation(request).and_return([
+          { user_id: 1, new_users_count: 1 },
+          { user_id: 2, new_users_count: 1 }
+        ])
+      end
+    end
+
+    context 'with churned_count as the only metric' do
+      let(:engine_definition) do
+        described_class.build do
+          self.table_name = 'agent_platform_sessions'
+
+          dimensions do
+            column :user_id, :integer
+          end
+
+          metrics do
+            churned_count :churned_users, :integer, -> { Arel.sql('user_id') }, over: :user_id
+          end
+        end
+      end
+
+      it 'returns churned user counts using reverse difference window logic' do
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :user_id }],
+          metrics: [{ identifier: :churned_users_count }],
+          order: [{ identifier: :user_id, direction: :asc }]
+        )
+
+        # user_id=1 is the first group so nothing can have churned; user_id=2 loses user 1.
+        expect(engine).to execute_aggregation(request).and_return([
+          { user_id: 1, churned_users_count: 0 },
+          { user_id: 2, churned_users_count: 1 }
+        ])
+      end
+    end
+
     context 'with filter, order, and pagination applied' do
       let(:engine_definition) do
         described_class.build do
@@ -1141,6 +1269,76 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Engine, :click_house, 
             supporting_cte(:user_activity, join_key: :user_id)
           end
         end.to raise_error(ArgumentError, /requires a block/)
+      end
+    end
+
+    describe 'tier dimension' do
+      let(:cte_engine_definition) do
+        described_class.build do
+          self.table_name = 'duo_workflows_workflows_enriched'
+
+          supporting_cte :user_activity, join_key: :user_id do |qb|
+            qb.select(qb.count.as('workflows'))
+          end
+
+          dimensions do
+            tier :user_tier, :string, -> { sql('user_activity.workflows') }, ctes: [:user_activity]
+          end
+
+          metrics do
+            count
+            count :users, :integer, -> { sql('user_id') }, distinct: true
+          end
+        end
+      end
+
+      it 'buckets values into tiers, with threshold boundaries going to the upper tier' do
+        # user 1 has 6 workflows (== last threshold => tier_2),
+        # user 2 has 3 (== first threshold => tier_1), user 3 has 1 (< 3 => tier_0).
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :user_tier, parameters: { thresholds: [3, 6] } }],
+          metrics: [{ identifier: :total_count }, { identifier: :users_count }],
+          order: [{ identifier: :user_tier, parameters: { thresholds: [3, 6] }, direction: :asc }]
+        )
+
+        expect(cte_engine).to execute_aggregation(request).and_return([
+          { user_tier_3_6: 'tier_0', total_count: 1, users_count: 1 },
+          { user_tier_3_6: 'tier_1', total_count: 3, users_count: 1 },
+          { user_tier_3_6: 'tier_2', total_count: 6, users_count: 1 }
+        ])
+      end
+
+      it 'fails validation when thresholds are missing' do
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :user_tier }],
+          metrics: [{ identifier: :total_count }]
+        )
+
+        expect(cte_engine).to execute_aggregation(request).with_errors([
+          a_string_matching(/parameter `thresholds` is required/)
+        ])
+      end
+
+      it 'fails validation when thresholds are not strictly ascending positive integers' do
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :user_tier, parameters: { thresholds: [6, 3] } }],
+          metrics: [{ identifier: :total_count }]
+        )
+
+        expect(cte_engine).to execute_aggregation(request).with_errors([
+          a_string_matching(/parameter `thresholds` must be strictly ascending positive integers/)
+        ])
+      end
+
+      it 'fails validation when too many thresholds are given' do
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :user_tier, parameters: { thresholds: (1..10).to_a } }],
+          metrics: [{ identifier: :total_count }]
+        )
+
+        expect(cte_engine).to execute_aggregation(request).with_errors([
+          a_string_matching(/parameter `thresholds` supports at most 9 values/)
+        ])
       end
     end
 

@@ -68,6 +68,14 @@ RSpec.describe Sidebars::Admin::Organizations::Menus::OverviewMenu, feature_cate
       expect(users_item).to be_present
       expect(users_item.title).to eq(_('Users'))
     end
+
+    it 'keeps the Users item active on the cohorts page' do
+      users_item = menu.renderable_items.find { |item| item.item_id == :organization_admin_users }
+
+      expect(users_item.active_routes).to eq(
+        controller: ['admin/organizations/users', 'admin/organizations/cohorts']
+      )
+    end
   end
 end
 # rubocop:enable RSpec/FactoryBot/AvoidCreate

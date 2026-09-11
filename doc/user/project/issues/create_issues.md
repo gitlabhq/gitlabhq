@@ -3,6 +3,7 @@ stage: Plan
 group: Work Items
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Create an issue
+description: Create an issue from a project, group, another issue, an issue board, email, a prefilled URL, or Service Desk.
 ---
 
 {{< details >}}
@@ -214,7 +215,7 @@ To create an issue in the GitLab project:
 
 ## Using Service Desk
 
-To offer email support, enable [Service Desk](../service_desk/_index.md) for your project.
+To offer email support, turn on [Service Desk](../service_desk/_index.md) for your project.
 
 Now, when your customer sends a new email, a new issue can be created in
 the appropriate project and followed up from there.

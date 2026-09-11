@@ -357,7 +357,7 @@ The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https:/
        </tr>
        <tr>
          <td>
-           <a href="https://gitlab.com/groups/security-products/dependency-management/-/settings/ci_cd#ci-variables"><code>groups/security-products/dependency-management</code></a>
+           <a href="https://gitlab.com/groups/gitlab-org/security-products/dependency-management/-/settings/ci_cd#ci-variables"><code>gitlab-org/security-products/dependency-management</code></a>
          </td>
        </tr>
        <tr>

@@ -1394,6 +1394,18 @@ module Ci
             expect(pending_job.failure_reason).to eq('id_token_burned_project_path')
             expect(pending_job).to be_id_token_burned_project_path
           end
+
+          context 'when block_jwt_for_reclaimed_paths is false' do
+            before do
+              stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+              create(:application_setting, block_jwt_for_reclaimed_paths: false)
+            end
+
+            it 'picks the build' do
+              expect(build_on(runner)).not_to be_nil
+              expect(pending_job.reload).to be_running
+            end
+          end
         end
 
         context 'and the build has no id_tokens defined' do

@@ -161,11 +161,31 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
 
       spec_files.each { |file| require file }
 
+      groups = transfer_group_examples(spec_files)
+      bypass_example_filters(groups)
+
       reporter = RSpec::Core::NullReporter
 
-      transfer_group_examples(spec_files).each do |group|
+      groups.each do |group|
         group.run(reporter)
       end
+
+      return if transfer_examples(groups).any? { |example| example.execution_result.status }
+
+      raise ArgumentError, "Expected transfer specs at **/#{transfer_path_pattern} to run but no examples were executed"
+    end
+
+    # The transfer specs are run manually, so they must not be pruned by the filters used to run
+    # this file (for example `--only-failures` on CI retries, or a `file:line` location filter).
+    # Otherwise no transfer example runs and every 'supported' table is reported as not updated.
+    def bypass_example_filters(groups)
+      groups.flat_map(&:descendants).each do |group|
+        RSpec.world.filtered_examples[group] = group.examples
+      end
+    end
+
+    def transfer_examples(groups)
+      groups.flat_map(&:descendants).flat_map(&:examples)
     end
 
     def transfer_spec_files

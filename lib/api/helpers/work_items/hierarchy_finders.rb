@@ -8,14 +8,6 @@ module API
         # tell "this work item does not exist" apart from "it exists but you can't see/admin it".
         CHILD_NOT_FOUND_MESSAGE = 'No matching work item found. Make sure that you are adding a valid work item ID.'
 
-        def find_child_work_item!(child_id)
-          child_work_item = ::WorkItem.find_by_id(child_id)
-
-          return child_work_item if child_work_item
-
-          render_api_error!(CHILD_NOT_FOUND_MESSAGE, 404)
-        end
-
         def find_sibling_work_item!(parent_work_item, child_id)
           sibling_work_item = parent_work_item.work_item_children.find_by_id(child_id)
 
@@ -34,10 +26,10 @@ module API
           render_api_error!(CHILD_NOT_FOUND_MESSAGE, 404)
         end
 
-        def find_parent_link!(parent_work_item, child_work_item)
+        def find_parent_link!(parent_work_item, child_id)
           ::WorkItems::ParentLink
             .for_parents(parent_work_item.id)
-            .for_children(child_work_item.id)
+            .for_children(child_id)
             .first || render_api_error!(CHILD_NOT_FOUND_MESSAGE, 404)
         end
       end

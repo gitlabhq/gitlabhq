@@ -338,6 +338,7 @@ module ApplicationSettingsHelper
       :disable_admin_oauth_scopes,
       :disable_feed_token,
       :disable_password_authentication_for_users_with_sso_identities,
+      :block_jwt_for_reclaimed_paths,
       :root_moved_permanently_redirection,
       :disabled_oauth_sign_in_sources,
       :domain_denylist,

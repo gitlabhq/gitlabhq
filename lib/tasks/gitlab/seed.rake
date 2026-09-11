@@ -133,15 +133,23 @@ namespace :gitlab do
 
       puts "\nFixture coverage for #{entries.size} newly added table(s)"
 
+      unseeded = []
+
       entries.group_by { |entry| base_model_for_entry(entry) }.each do |base_model, group|
         tables = group.map(&:table_name)
         next puts "  #{tables.join(', ')}: no connection for gitlab_schema, cannot check" unless base_model
 
         coverage = Quality::FixtureCoverage.new(tables, connection: base_model.connection)
-        coverage.findings.each { |finding| puts "  #{finding.table}: #{finding.summary}" }
+        coverage.findings.each do |finding|
+          puts "  #{finding.table}: #{finding.summary}"
+          unseeded << finding.table if finding.unseeded?
+        end
       end
 
-      puts "\nReport only - this task never fails the job."
+      next if unseeded.empty?
+
+      abort "\nNo seed data for #{unseeded.join(', ')}. Add a fixture in db/fixtures/development/ " \
+        "so that migrations touching it are exercised by db:migrate:multi-version-upgrade."
     end
   end
 end

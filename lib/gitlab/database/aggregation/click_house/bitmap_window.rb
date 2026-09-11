@@ -7,7 +7,7 @@ module Gitlab
         class BitmapWindow < MetricDefinition
           attr_reader :over_dimension, :operation, :lag_offset
 
-          VALID_OPERATIONS = %i[lag intersection].freeze
+          VALID_OPERATIONS = %i[lag intersection difference reverse_difference].freeze
 
           def initialize(name, type = :integer, expression = nil, operation:, over:, lag_offset: 1, **kwargs)
             raise ArgumentError, "Invalid operation: #{operation}" unless VALID_OPERATIONS.include?(operation)
@@ -68,6 +68,10 @@ module Gitlab
               build_lag_sql(bitmap_alias, over_alias, partition_aliases)
             when :intersection
               build_intersection_sql(bitmap_alias, over_alias, partition_aliases)
+            when :difference
+              build_difference_sql(bitmap_alias, over_alias, partition_aliases)
+            when :reverse_difference
+              build_reverse_difference_sql(bitmap_alias, over_alias, partition_aliases)
             end
           end
 
@@ -75,7 +79,7 @@ module Gitlab
             case operation
             when :lag
               "bitmapCardinality(finalizeAggregation(#{alias_name}))"
-            when :intersection
+            when :intersection, :difference, :reverse_difference
               "finalizeAggregation(#{alias_name})"
             end
           end
@@ -96,13 +100,29 @@ module Gitlab
               "#{partition_clause(partition_aliases)}ORDER BY #{over_alias} ASC)".squish
           end
 
-          def build_intersection_sql(bitmap_alias, over_alias, partition_aliases = [])
-            # Only reached when operation == :intersection (i.e. RetainedCount subclass).
-            # RetainedCount#to_outer_arel returns Array(UInt64) via groupArray, so
-            # lagInFrame works on arrays and [] is the correct default for the first row.
-            lagged = "lagInFrame(#{bitmap_alias}, #{lag_offset}, []) OVER (" \
+          # The array operations are only reached from subclasses whose #to_outer_arel returns
+          # Array(UInt64) via groupArray, so lagInFrame works on arrays and [] is the correct
+          # default for the first row.
+          def lagged_array_sql(bitmap_alias, over_alias, partition_aliases)
+            "lagInFrame(#{bitmap_alias}, #{lag_offset}, []) OVER (" \
               "#{partition_clause(partition_aliases)}ORDER BY #{over_alias} ASC)"
+          end
+
+          def build_intersection_sql(bitmap_alias, over_alias, partition_aliases = [])
+            lagged = lagged_array_sql(bitmap_alias, over_alias, partition_aliases)
             "length(arrayIntersect(#{bitmap_alias}, #{lagged}))".squish
+          end
+
+          # arrayDistinct is needed because groupArray repeats values.
+          # Intersection avoids quadratic memory growth from arrayFilter capturing an array.
+          def build_difference_sql(bitmap_alias, over_alias, partition_aliases = [])
+            lagged = lagged_array_sql(bitmap_alias, over_alias, partition_aliases)
+            "length(arrayDistinct(#{bitmap_alias})) - length(arrayIntersect(#{bitmap_alias}, #{lagged}))".squish
+          end
+
+          def build_reverse_difference_sql(bitmap_alias, over_alias, partition_aliases = [])
+            lagged = lagged_array_sql(bitmap_alias, over_alias, partition_aliases)
+            "length(arrayDistinct(#{lagged})) - length(arrayIntersect(#{bitmap_alias}, #{lagged}))".squish
           end
         end
       end

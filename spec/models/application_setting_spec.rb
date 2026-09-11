@@ -108,6 +108,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         disable_feed_token: false,
         disable_invite_members: false,
         disable_password_authentication_for_users_with_sso_identities: false,
+        block_jwt_for_reclaimed_paths: true,
         disabled_oauth_sign_in_sources: [],
         dns_rebinding_protection_enabled: Settings.gitlab['dns_rebinding_protection_enabled'],
         domain_allowlist: Settings.gitlab['domain_allowlist'],
@@ -1999,6 +2000,12 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
       describe 'ci_partitions_in_seconds_limit default value' do
         it 'has correct default for ci_partitions_in_seconds_limit' do
           expect(setting.ci_partitions_in_seconds_limit).to eq(ChronicDuration.parse('1 month'))
+        end
+      end
+
+      describe 'block_jwt_for_reclaimed_paths' do
+        it 'defaults to true' do
+          expect(setting.block_jwt_for_reclaimed_paths).to be(true)
         end
       end
 

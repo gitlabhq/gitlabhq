@@ -600,7 +600,8 @@ class ApplicationSetting < ApplicationRecord
       ci_partitions_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 month') }],
       ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
       git_push_pipeline_limit: [:integer, { default: 4 }],
-      ci_max_caches_per_job: [:integer, { default: 4 }]
+      ci_max_caches_per_job: [:integer, { default: 4 }],
+      block_jwt_for_reclaimed_paths: [:boolean, { default: true }]
     }
   end
 

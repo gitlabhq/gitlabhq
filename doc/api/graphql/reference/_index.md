@@ -35997,9 +35997,13 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="analytics-duoworkflows-activedaysfrom"></a>`activeDaysFrom` | [`Int`](#int) | Filter by the number of distinct days the user created flows in the selected period. Start of the range. |
+| <a id="analytics-duoworkflows-activedaysto"></a>`activeDaysTo` | [`Int`](#int) | Filter by the number of distinct days the user created flows in the selected period. End of the range. |
 | <a id="analytics-duoworkflows-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by flow creation timestamp. Start of the range. |
 | <a id="analytics-duoworkflows-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by flow creation timestamp. End of the range. |
 | <a id="analytics-duoworkflows-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
+| <a id="analytics-duoworkflows-flowtypesusedfrom"></a>`flowTypesUsedFrom` | [`Int`](#int) | Filter by the number of distinct flow types the user ran in the selected period. Start of the range. |
+| <a id="analytics-duoworkflows-flowtypesusedto"></a>`flowTypesUsedTo` | [`Int`](#int) | Filter by the number of distinct flow types the user ran in the selected period. End of the range. |
 | <a id="analytics-duoworkflows-projectid"></a>`projectId` | [`[String!]`](#string) | Filter by one or many project Global IDs. |
 | <a id="analytics-duoworkflows-status"></a>`status` | [`[String!]`](#string) | Filter by one or many flow statuses (created, running, finished, failed, ...). |
 | <a id="analytics-duoworkflows-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
@@ -36025,6 +36029,7 @@ Arguments:
 | <a id="analytics-mergerequests-authorid"></a>`authorId` | [`[String!]`](#string) | Filter by one or many author Global IDs. |
 | <a id="analytics-mergerequests-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by merge request creation timestamp. Start of the range. |
 | <a id="analytics-mergerequests-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by merge request creation timestamp. End of the range. |
+| <a id="analytics-mergerequests-createdbyduo"></a>`createdByDuo` | [`[Boolean!]`](#boolean) | Filter by whether the merge request was created by a GitLab Duo Agent Platform session. |
 | <a id="analytics-mergerequests-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-mergerequests-metricmergedatfrom"></a>`metricMergedAtFrom` | [`Time`](#time) | Filter by merge timestamp. Start of the range. |
 | <a id="analytics-mergerequests-metricmergedatto"></a>`metricMergedAtTo` | [`Time`](#time) | Filter by merge timestamp. End of the range. |
@@ -36633,6 +36638,7 @@ Fields:
 | <a id="artifactregistryversion-commitsha"></a>`commitSha` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Commit SHA the version was published from, within the resolved project. Null when there is no SHA or project, or the viewer cannot read the project code. |
 | <a id="artifactregistryversion-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the version was published. Null when Artifact Registry stored none. |
 | <a id="artifactregistryversion-createdby"></a>`createdBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who published the version, resolved from the reference Artifact Registry stores. Null when it stored none or the user no longer exists. |
+| <a id="artifactregistryversion-disttags"></a>`distTags` {{< icon name="warning-solid" >}} | [`[String!]!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Names of the npm dist-tags bound to the version, in ascending name order. Empty for Maven versions. |
 | <a id="artifactregistryversion-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the version in Artifact Registry. |
 | <a id="artifactregistryversion-project"></a>`project` {{< icon name="warning-solid" >}} | [`Project`](#project) | Introduced in GitLab 19.4. Status: Experiment. Project the version was published from, resolved from the reference Artifact Registry stores. Null when it stored none, the project no longer exists, or the viewer cannot see the project. |
 | <a id="artifactregistryversion-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt`](#bigint) | Introduced in GitLab 19.4. Status: Experiment. Stored size of the version in bytes. Null for a Maven version until Artifact Registry serializes the column, and on a remote repository. |
@@ -36650,6 +36656,7 @@ Fields:
 | <a id="artifactregistryversiondetails-commitsha"></a>`commitSha` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Commit SHA the version was published from, within the resolved project. Null when there is no SHA or project, or the viewer cannot read the project code. |
 | <a id="artifactregistryversiondetails-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the version was published. Null when Artifact Registry stored none. |
 | <a id="artifactregistryversiondetails-createdby"></a>`createdBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who published the version, resolved from the reference Artifact Registry stores. Null when it stored none or the user no longer exists. |
+| <a id="artifactregistryversiondetails-disttags"></a>`distTags` {{< icon name="warning-solid" >}} | [`[String!]!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Names of the npm dist-tags bound to the version, in ascending name order. Empty for Maven versions. |
 | <a id="artifactregistryversiondetails-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. ID of the version in Artifact Registry. |
 | <a id="artifactregistryversiondetails-project"></a>`project` {{< icon name="warning-solid" >}} | [`Project`](#project) | Introduced in GitLab 19.4. Status: Experiment. Project the version was published from, resolved from the reference Artifact Registry stores. Null when it stored none, the project no longer exists, or the viewer cannot see the project. |
 | <a id="artifactregistryversiondetails-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt`](#bigint) | Introduced in GitLab 19.4. Status: Experiment. Stored size of the version in bytes. Null for a Maven version until Artifact Registry serializes the column, and on a remote repository. |
@@ -44042,6 +44049,18 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowsaggregationresponsedimensions-createdat-granularity"></a>`granularity` | [`String`](#string) | Date granularity: daily, weekly, or monthly. |
+
+##### `DuoWorkflowsAggregationResponseDimensions.userTier`
+
+User activity tier, bucketing users by their number of flows in the selected period using the `thresholds` argument.
+
+Returns [`String`](#string).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsedimensions-usertier-thresholds"></a>`thresholds` | [`[Int!]`](#int) | Ascending tier boundaries. Values below the first threshold map to `tier_0`, values at or above the last threshold map to the highest tier. |
 
 ### `DuoWorkflowsAggregationScope`
 
@@ -53324,6 +53343,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestsaggregationresponse-acceptancerate"></a>`acceptanceRate` | [`Float`](#float) | Share of merge requests that were merged. |
 | <a id="mergerequestsaggregationresponse-dimensions"></a>`dimensions` | [`MergeRequestsAggregationResponseDimensions`](#mergerequestsaggregationresponsedimensions) | Aggregation dimensions. Every selected dimension will be used for aggregation. |
 | <a id="mergerequestsaggregationresponse-throughputcount"></a>`throughputCount` | [`Int`](#int) | Number of merged merge requests. |
 | <a id="mergerequestsaggregationresponse-timetomerge"></a>`timeToMerge` | [`MergeRequestsAggregationResponseTimeToMergeMetrics`](#mergerequestsaggregationresponsetimetomergemetrics) | Aggregated `time_to_merge` metrics. |
@@ -53352,6 +53372,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestsaggregationresponsedimensions-author"></a>`author` | [`UserCore`](#usercore) | Merge request author. |
+| <a id="mergerequestsaggregationresponsedimensions-createdbyduo"></a>`createdByDuo` | [`Boolean`](#boolean) | Whether the merge request was created by a GitLab Duo session. |
 | <a id="mergerequestsaggregationresponsedimensions-stateid"></a>`stateId` | [`String`](#string) | Merge request state. |
 | <a id="mergerequestsaggregationresponsedimensions-targetbranch"></a>`targetBranch` | [`String`](#string) | Target branch of the merge request. |
 

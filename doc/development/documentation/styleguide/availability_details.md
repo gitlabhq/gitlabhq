@@ -266,6 +266,19 @@ instance requirement:
 - [Introduced](https://release-page-link) in GitLab for VS Code 6.14.0 during the GitLab 18.1 release.
 ```
 
+#### Changed or updated models
+
+The models available for GitLab Duo features, including default models, are defined in the
+[AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist). In most
+cases, model changes reach all GitLab versions immediately and are not gated by GitLab releases.
+
+In the history item, use a date instead of a milestone. Link the AI Gateway merge
+request that made the change, not the documentation merge request.
+
+```markdown
+- Claude Sonnet 5 [added](https://ai-gateway-mr-link) as a supported model for Code Review Flow on August 3, 2026.
+```
+
 #### Removing versions
 
 Remove history items and inline text that refer to unsupported versions. When you remove a history

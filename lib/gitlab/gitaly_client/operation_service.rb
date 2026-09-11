@@ -503,7 +503,7 @@ module Gitlab
         end
       end
 
-      def user_update_submodule(user:, submodule:, commit_sha:, branch:, message:)
+      def user_update_submodule(user:, submodule:, commit_sha:, branch:, message:, expected_old_oid: '')
         request = Gitaly::UserUpdateSubmoduleRequest.new(
           repository: @gitaly_repo,
           user: gitaly_user(user),
@@ -511,7 +511,8 @@ module Gitlab
           branch: encode_binary(branch),
           submodule: encode_binary(submodule),
           commit_message: encode_binary(message),
-          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
+          expected_old_oid: expected_old_oid
         )
 
         response = gitaly_client_call(
@@ -529,7 +530,6 @@ module Gitlab
         else
           Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
         end
-
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 

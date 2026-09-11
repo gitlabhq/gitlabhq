@@ -77,7 +77,7 @@ gem 'logger', '~> 1.7.0', feature_category: :shared # rubocop:todo Gemfile/Missi
 
 # Authorization
 gem 'declarative_policy', '~> 2.1.0', feature_category: :permissions
-gem 'gitlab-glaz', '~> 1.1.0', feature_category: :permissions
+gem 'gitlab-glaz', '~> 1.2.0', feature_category: :permissions
 
 # For source code paths mapping
 gem 'coverband', '6.2.2', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
@@ -573,6 +573,7 @@ group :development, :test do
   # Benchmarking & profiling
   gem 'benchmark-ips', '~> 2.15.0', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
   gem 'benchmark-memory', '~> 0.1', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+  gem 'benchmark-swap', '~> 0.2', require: false, feature_category: :tooling
 
   gem 'knapsack', '~> 4.0.0', feature_category: :tooling
   gem 'gitlab-crystalball', '~> 1.1.3', require: false, feature_category: :tooling

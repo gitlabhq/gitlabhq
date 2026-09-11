@@ -144,6 +144,7 @@ PATH
   remote: gems/gitlab-policy-store
   specs:
     gitlab-policy-store (0.1.0)
+      gitlab-glaz (~> 1.2)
 
 PATH
   remote: gems/gitlab-rspec_flaky
@@ -477,6 +478,8 @@ GEM
     benchmark-memory (0.2.0)
       memory_profiler (~> 1)
     benchmark-perf (0.6.0)
+    benchmark-swap (0.2.0)
+      benchmark-ips (~> 2.13)
     benchmark-trend (0.4.0)
     bigdecimal (3.3.1)
     bindata (2.5.1)
@@ -866,19 +869,19 @@ GEM
       mime-types
       net-http-persistent (~> 4.0)
       nokogiri (~> 1, >= 1.10.8)
-    gitlab-glaz (1.1.0)
+    gitlab-glaz (1.2.0)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
-    gitlab-glaz (1.1.0-aarch64-linux-gnu)
+    gitlab-glaz (1.2.0-aarch64-linux-gnu)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
-    gitlab-glaz (1.1.0-arm64-darwin)
+    gitlab-glaz (1.2.0-arm64-darwin)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
-    gitlab-glaz (1.1.0-x86_64-darwin)
+    gitlab-glaz (1.2.0-x86_64-darwin)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
-    gitlab-glaz (1.1.0-x86_64-linux-gnu)
+    gitlab-glaz (1.2.0-x86_64-linux-gnu)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
     gitlab-glfm-markdown (0.0.43)
@@ -2451,6 +2454,7 @@ DEPENDENCIES
   bcrypt (~> 3.1, >= 3.1.14)
   benchmark-ips (~> 2.15.0)
   benchmark-memory (~> 0.1)
+  benchmark-swap (~> 0.2)
   bootsnap (~> 1.26.0)
   browser (~> 5.3.1)
   bullet (~> 8.0.0)
@@ -2533,7 +2537,7 @@ DEPENDENCIES
   gitlab-email_handler!
   gitlab-experiment (~> 2.0.0)
   gitlab-fog-azure-rm (~> 2.5.0)
-  gitlab-glaz (~> 1.1.0)
+  gitlab-glaz (~> 1.2.0)
   gitlab-glfm-markdown (~> 0.0.42)
   gitlab-grape-openapi (~> 0.5.0)
   gitlab-housekeeper!
@@ -2877,6 +2881,7 @@ CHECKSUMS
   benchmark-malloc (0.2.0) sha256=37c68f0435261634026f584d79956a35325a3027e3e6b4cc8d7575aa10537e6b
   benchmark-memory (0.2.0) sha256=ca1e436433b09535ee8f64f80600a5edb407cff1f6ac70e089ca238118e6ab5c
   benchmark-perf (0.6.0) sha256=fe2b01959f3de0f9dd34820d54ef881eb4f3589fccb7d17b63068ac92d7f9621
+  benchmark-swap (0.2.0) sha256=d2f8ccb5e2b826d77a9069d276b286c63ce3b0e7a2361a2101ed49b093d3db8f
   benchmark-trend (0.4.0) sha256=de5a02a9f443babefbbd97784759820decee8554a0c273d859c02a0990845d81
   bigdecimal (3.3.1) sha256=eaa01e228be54c4f9f53bf3cc34fe3d5e845c31963e7fcc5bedb05a4e7d52218
   bindata (2.5.1) sha256=53186a1ec2da943d4cb413583d680644eb810aacbf8902497aac8f191fad9e58
@@ -3046,11 +3051,11 @@ CHECKSUMS
   gitlab-email_handler (0.1.0)
   gitlab-experiment (2.0.0) sha256=05183dee7ddad1ef183de43c2c330e57a1457f679744c19c61f637e1135d3c76
   gitlab-fog-azure-rm (2.5.0) sha256=f10fd3f6667925e4ce97cea2fa707b926320c7b7fa06978788e2f452ee7f4db0
-  gitlab-glaz (1.1.0) sha256=ee328b12c6bd7f030faa62bcd3fbdaca78273ef126e31c438a9fe5f6f17319a2
-  gitlab-glaz (1.1.0-aarch64-linux-gnu) sha256=89195fba971e841a16a87171219de47687a6f7694c4991d0f5a9d7a85882d32b
-  gitlab-glaz (1.1.0-arm64-darwin) sha256=58689eadd3b366530aaeba8e0935f2f9b89dc7a3a005a44cbff31c1d0f70ade9
-  gitlab-glaz (1.1.0-x86_64-darwin) sha256=7959dfd56c2d1e9a156aed1e1cd80d380c3a312cc796793110bbb64ab78823a8
-  gitlab-glaz (1.1.0-x86_64-linux-gnu) sha256=e72429dd1546b85b1f6ec0097adf89ae632ba51969e8f115fb7564ca0c7e139d
+  gitlab-glaz (1.2.0) sha256=6dc4376c86dd56f660d81bcf75266424949c5a524e462abac514c35e7f4be7f1
+  gitlab-glaz (1.2.0-aarch64-linux-gnu) sha256=3e2afad4dcedc1ca5c51afce5e7acaeca6262a92f7177e80333ceeb667faff85
+  gitlab-glaz (1.2.0-arm64-darwin) sha256=8bd4267d7c4475e111062297018a387ceb556d7b2dce2408efce697ef98c1810
+  gitlab-glaz (1.2.0-x86_64-darwin) sha256=ef05ccd79f862c3f2626ae297ab2b9d034035baa1ed2bfe6c42ba0ac2492c4a4
+  gitlab-glaz (1.2.0-x86_64-linux-gnu) sha256=11c45533a470a9d9a99c983aae4f59c7d5fd5c0153d000d0ea427109fb61c09a
   gitlab-glfm-markdown (0.0.43) sha256=2c9625b0c42cbcf673a10a57639a2eb9de5d63a953a98460a00dfd400881b426
   gitlab-glfm-markdown (0.0.43-aarch64-linux-gnu) sha256=2d63885cd9c2d3322edff99bc1f5c9fcd9ca790633e236dd32c4b46f7597c25b
   gitlab-glfm-markdown (0.0.43-arm64-darwin) sha256=3082e78f2693ed8c4b47cc34953df0ca20f60ab389af285d225443b8ec005b14

@@ -62,6 +62,10 @@ type ndjsonTransport struct {
 	// status code instead of an empty 200 response.
 	headerWritten bool
 	buf           []byte
+	// done seals the transport once the handler is unwinding. After it is set
+	// no goroutine may touch the response, so net/http can finish it without a
+	// concurrent write from a runner goroutine that has not yet stopped.
+	done bool
 
 	// invalidRequestMu guards invalidRequestReason, which is set from the
 	// goroutine reading from Duo Workflow Service and read by the handler
@@ -204,9 +208,24 @@ func (t *ndjsonTransport) HeaderWritten() bool {
 	return t.headerWritten
 }
 
+// finish seals the transport so no goroutine writes to the response after the
+// HTTP handler returns. It blocks until any in-flight write completes and makes
+// every later write a no-op, which is what keeps net/http's finishing of the
+// response from racing a runner goroutine that has not noticed the run ended.
+func (t *ndjsonTransport) finish() {
+	t.writeMu.Lock()
+	defer t.writeMu.Unlock()
+
+	t.done = true
+}
+
 // flushLineLocked terminates buf with a newline, writes it and flushes,
 // committing the response header on the first call.
 func (t *ndjsonTransport) flushLineLocked() error {
+	if t.done {
+		return nil
+	}
+
 	if !t.headerWritten {
 		t.w.Header().Set("Content-Type", ndjsonContentType)
 		t.w.WriteHeader(http.StatusOK)

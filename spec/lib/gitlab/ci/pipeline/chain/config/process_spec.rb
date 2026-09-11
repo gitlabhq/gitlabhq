@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Process, feature_category: :pipeline_composition do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { project.first_owner }
 
   let(:pipeline) { build(:ci_pipeline, project: project, ref: 'master') }

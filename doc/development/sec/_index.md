@@ -166,3 +166,5 @@ to remap DB records previously generated with the legacy analyzers to those gene
 For security scanning and license compliance features that use the Package Metadata Database (PMDB), you need to set up PMDB synchronization in your development environment.
 
 See the [Package Metadata Synchronization guide](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/package_metadata_synchronization/) in the GDK documentation for detailed setup instructions.
+
+For how GitLab synchronizes malware advisories (GLAM) into the instance, see [Malware advisory synchronization](malware_advisory_sync.md).

@@ -70,6 +70,28 @@ RSpec.describe ObjectPool::DestroyWorker, feature_category: :source_code_managem
           expect(PoolRepository.find_by_id(pool.id)).to eq(pool)
         end
       end
+
+      context 'when the pool does not have a source project' do
+        before do
+          # Mirrors production: deleting the source project triggers the loose
+          # foreign key that nullifies pool_repositories.source_project_id.
+          pool.update_column(:source_project_id, nil)
+        end
+
+        it 'requests Gitaly to remove the object pool and destroys the pool record' do
+          expect(Gitlab::GitalyClient).to receive(:call).with(
+            pool.shard_name,
+            :object_pool_service,
+            :delete_object_pool,
+            Object,
+            timeout: Gitlab::GitalyClient.long_timeout
+          ).and_call_original
+
+          subject.perform(pool.id)
+
+          expect(PoolRepository.find_by_id(pool.id)).to be_nil
+        end
+      end
     end
   end
 end

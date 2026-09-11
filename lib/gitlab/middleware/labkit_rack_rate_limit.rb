@@ -25,8 +25,9 @@ module Gitlab
     # non-429 responses, taking over from RackAttackHeaders, which the safelist leaves
     # with nothing to read.
     #
-    # The middleware blocks only when an enforcing cohort's rule blocks; otherwise it
-    # never blocks. The request's own errors propagate (@app.call is not wrapped);
+    # The middleware blocks only when an enforcing cohort's rule blocks, or when a
+    # rule with no registry entry (a plan rule) blocks, otherwise it never blocks.
+    # The request's own errors propagate (@app.call is not wrapped);
     # the labkit decision is guarded, so a failure there is tracked and falls open to
     # Rack::Attack rather than affecting the response. labkit itself also fails open
     # on any Redis error.
@@ -74,27 +75,43 @@ module Gitlab
       # carries its own), added only once labkit fully owns enforcement - until then
       # Rack::Attack still evaluates throttles and RackAttackHeaders builds these.
       # Built from the counted evaluations, not each limiter's reported result (an
-      # under-limit result reports the claim rule, which carries no counter info);
-      # min is the most constraining evaluation across all limiters.
+      # under-limit result reports the claim rule, which carries no counter info).
       def annotate_rate_limit_headers(status, headers, results)
         return if status == 429 || !registry.fully_enforced?
 
-        evaluation = results.flat_map(&:evaluations).min
-        entry = evaluation && entry_for_rule(evaluation.rule.name)
-        return unless entry
+        evaluation = most_constraining_enforced(results)
+        return unless evaluation
 
         rate_limit_headers = ::Gitlab::RackAttack::RequestThrottleData
-          .from_labkit_result(name: entry.name, result: evaluation)
+          .from_labkit_result(name: throttle_name_for(evaluation.rule), result: evaluation)
           &.common_response_headers
 
         headers.merge!(rate_limit_headers) if rate_limit_headers
       end
 
-      # The byte-identical legacy 429 for the first blocking rule whose cohort
-      # enforces, or nil when none enforces a block. The counter was already
-      # incremented in the limiter check, so reading the decision here never
-      # double-counts. Mirrors Gitlab::RackAttack's throttled_responder so a promoted
-      # throttle is indistinguishable from the legacy stack to clients.
+      # The most constraining evaluation across all limiters, skipping :log rules: a
+      # :log rule never enforces, so its quota is never advertised. Ties keep the
+      # earlier evaluation, as Enumerable#min would.
+      def most_constraining_enforced(results)
+        evaluation = nil
+
+        results.each do |result|
+          result.evaluations.each do |counted|
+            next if counted.rule.action == :log
+
+            evaluation = counted if evaluation.nil? || counted < evaluation
+          end
+        end
+
+        evaluation
+      end
+
+      # The byte-identical legacy 429 for the first blocking rule that enforces: a
+      # registry rule whose cohort enforces, or a rule with no entry (a plan rule is
+      # only built as :limit when its enforce flag is on). Nil when none does. The
+      # counter was already incremented in the limiter check, so reading the decision
+      # here never double-counts. Mirrors Gitlab::RackAttack's throttled_responder so
+      # a promoted throttle is indistinguishable from the legacy stack to clients.
       def enforced_response(results)
         blocked = results.find do |result|
           # An unmatched or synthetic-allow result carries no rule, so its cohort can
@@ -104,18 +121,22 @@ module Gitlab
           next false unless blocked?(result)
 
           entry = entry_for_rule(result.rule.name)
-          entry && registry.enforce_enabled?(entry.cohort)
+          entry.nil? || registry.enforce_enabled?(entry.cohort)
         end
         return unless blocked
 
-        # The 429's RateLimit-Name is the real throttle name (Entry#name), not the
-        # matched rule name, so the header stays byte-identical to the legacy
-        # Rack::Attack responder for that throttle.
         headers = ::Gitlab::RackAttack::RequestThrottleData
-          .from_labkit_result(name: entry_for_rule(blocked.rule.name).name, result: blocked)
+          .from_labkit_result(name: throttle_name_for(blocked.rule), result: blocked)
           &.throttled_response_headers
 
         [429, { 'Content-Type' => 'text/plain' }.merge(headers || {}), [::Gitlab::Throttle.rate_limiting_response_text]]
+      end
+
+      # The RateLimit-Name for a rule: the backing throttle's name (Entry#name), not
+      # the rule name, so a registry rule's headers stay byte-identical to the legacy
+      # Rack::Attack responder, a rule with no entry carries its own name.
+      def throttle_name_for(rule)
+        entry_for_rule(rule.name)&.name || rule.name
       end
 
       # A dry-run throttle's rule is :log, so it never reports :block; the synthetic
@@ -129,8 +150,8 @@ module Gitlab
       # use (the first request, past initialization, so the require_dependency'd
       # middleware never resolves its registry sibling at load time). Keyed by Labkit
       # rule name, from which both the enforce cohort (Entry#cohort) and the 429 header
-      # name (Entry#name, the backing throttle) resolve. A synthetic rule has no entry,
-      # but a synthetic rule never blocks, so it is never looked up here.
+      # name (Entry#name, the backing throttle) resolve. Synthetic and plan rules have
+      # no entry: a synthetic rule never blocks, and a plan rule needs no cohort.
       def entry_for_rule(rule_name)
         @entries_by_rule ||= registry.by_rule_name
         @entries_by_rule[rule_name]

@@ -1,8 +1,10 @@
 <script>
 import { GlAlert, GlFormCheckbox } from '@gitlab/ui';
 import FormStepper from '~/import/offline_transfer/components/form_stepper.vue';
+import ImportConfigTab from '~/import/offline_transfer/import/import_config_tab.vue';
 import SelectDestinationTab from '~/import/offline_transfer/import/select_destination_tab.vue';
 import { OFFLINE_IMPORT_TAB_HEADINGS, DESTINATION_TOP_LEVEL } from '../constants';
+import { isImportStorageConfigValid } from '../storage_config_validation';
 
 export default {
   name: 'OfflineTransferImportApp',
@@ -10,16 +12,25 @@ export default {
     FormStepper,
     GlAlert,
     GlFormCheckbox,
+    ImportConfigTab,
     SelectDestinationTab,
   },
   data() {
     return {
-      destinationSelection: {
+      destinationConfig: {
         type: DESTINATION_TOP_LEVEL,
         parentGroup: null,
       },
-      isConfigureComplete: false,
-      showDestinationError: false,
+      showDestinationConfigTabError: false,
+      storageConfig: {
+        accessKeyId: '',
+        secretAccessKey: '',
+        region: '',
+        bucketName: '',
+        pathStyle: false,
+        exportPrefix: '',
+      },
+      showStorageConfigTabError: false,
       isReviewComplete: false,
       hasSubmitSucceeded: false,
     };
@@ -27,8 +38,8 @@ export default {
   computed: {
     isDestinationValid() {
       return (
-        this.destinationSelection.type === DESTINATION_TOP_LEVEL ||
-        Boolean(this.destinationSelection.parentGroup)
+        this.destinationConfig.type === DESTINATION_TOP_LEVEL ||
+        Boolean(this.destinationConfig.parentGroup)
       );
     },
   },
@@ -38,7 +49,7 @@ export default {
         case 0:
           return this.isDestinationValid;
         case 1:
-          return this.isConfigureComplete;
+          return isImportStorageConfigValid(this.storageConfig);
         case 2:
           return this.isReviewComplete;
         default:
@@ -47,12 +58,16 @@ export default {
     },
     onValidationFailed(stepIndex) {
       if (stepIndex === 0) {
-        this.showDestinationError = true;
+        this.showDestinationConfigTabError = true;
+      } else if (stepIndex === 1) {
+        this.showStorageConfigTabError = true;
       }
     },
     onStepChanged({ previousTabIndex }) {
       if (previousTabIndex === 0) {
-        this.showDestinationError = false;
+        this.showDestinationConfigTabError = false;
+      } else if (previousTabIndex === 1) {
+        this.showStorageConfigTabError = false;
       }
     },
     submitForm() {
@@ -100,18 +115,17 @@ export default {
     >
       <template #step-0>
         <select-destination-tab
-          :destination-selection="destinationSelection"
-          :validation-attempted="showDestinationError"
-          @destination-input="destinationSelection = $event"
+          :destination-selection="destinationConfig"
+          :validation-attempted="showDestinationConfigTabError"
+          @destination-input="destinationConfig = $event"
         />
       </template>
       <template #step-1>
-        <div data-testid="configure-import-tab">
-          <h2 class="gl-heading-3">{{ s__('OfflineTransferImport|Enter AWS credentials') }}</h2>
-          <gl-form-checkbox v-model="isConfigureComplete">
-            {{ __('Configure') }}
-          </gl-form-checkbox>
-        </div>
+        <import-config-tab
+          :storage-config="storageConfig"
+          :validation-attempted="showStorageConfigTabError"
+          @storage-input="storageConfig = $event"
+        />
       </template>
       <template #step-2>
         <div data-testid="review-import-tab">

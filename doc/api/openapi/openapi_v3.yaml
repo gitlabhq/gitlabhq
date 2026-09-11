@@ -19824,7 +19824,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_8af545d0360b"
+              "$ref": "#/components/schemas/RequestBody_b33eea6589ea"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -90775,6 +90775,8 @@ components:
           type: string
         disable_password_authentication_for_users_with_sso_identities:
           type: string
+        block_jwt_for_reclaimed_paths:
+          type: string
         root_moved_permanently_redirection:
           type: string
         disabled_oauth_sign_in_sources:
@@ -106520,7 +106522,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_8af545d0360b:
+    RequestBody_b33eea6589ea:
       type: object
       properties:
         admin_mode:
@@ -108961,6 +108963,9 @@ components:
           type: string
           nullable: true
         deny_all_requests_except_allowed:
+          type: string
+          nullable: true
+        block_jwt_for_reclaimed_paths:
           type: string
           nullable: true
         root_moved_permanently_redirection:

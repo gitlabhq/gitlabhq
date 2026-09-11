@@ -6,7 +6,7 @@ RSpec.describe Resolvers::Projects::PlanLimitsResolver, feature_category: :api d
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
 
   describe 'Pipeline schedule limits' do
     it 'gets the current limits for pipeline schedules' do

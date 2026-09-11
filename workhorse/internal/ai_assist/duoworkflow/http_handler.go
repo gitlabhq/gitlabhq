@@ -66,6 +66,11 @@ func (h *Handler) handleHTTPConnection(w http.ResponseWriter, r *http.Request, d
 	var execErr error
 	h.registerAndExecuteRunner(r, transportHTTP, runner, func(err error) { execErr = err })
 
+	// Seal the transport before returning: a runner goroutine may still be
+	// mid-write when Execute returns, and net/http finishes the response once
+	// this handler returns, so the two must not touch the response at once.
+	transport.finish()
+
 	h.reportHTTPOutcome(w, r, transport, execErr)
 }
 
