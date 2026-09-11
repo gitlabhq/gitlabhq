@@ -228,7 +228,7 @@ func TestNdjsonTransport_SendGoingAway(t *testing.T) {
 
 	// There is no reconnect signal to send: the caller learns that the flow was
 	// stopped from the workflow's status.
-	require.NoError(t, transport.SendGoingAway())
+	require.NoError(t, transport.SendGoingAway(closeReasonWorkhorseShutdown))
 	require.Empty(t, recorder.Body.String())
 	require.False(t, transport.HeaderWritten())
 }

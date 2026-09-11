@@ -12181,6 +12181,9 @@ msgstr ""
 msgid "ArtifactRegistry|%{verdict}. Last verified: not yet checked"
 msgstr ""
 
+msgid "ArtifactRegistry|+%{count} more"
+msgstr ""
+
 msgid "ArtifactRegistry|A hosted repository directly hosts artifacts. You can publish artifacts to and pull them from a hosted repository."
 msgstr ""
 
@@ -12230,6 +12233,9 @@ msgid "ArtifactRegistry|Add this to your %{codeStart}pom.xml%{codeEnd} file:"
 msgstr ""
 
 msgid "ArtifactRegistry|All formats"
+msgstr ""
+
+msgid "ArtifactRegistry|All tags"
 msgstr ""
 
 msgid "ArtifactRegistry|Ancestor ID must be a valid UUIDv7."
@@ -12915,6 +12921,9 @@ msgid "ArtifactRegistry|Store and manage packages and container images by creati
 msgstr ""
 
 msgid "ArtifactRegistry|Subject digest: %{digest}"
+msgstr ""
+
+msgid "ArtifactRegistry|Tags"
 msgstr ""
 
 msgid "ArtifactRegistry|Team documentation / READMEs:"
@@ -96726,6 +96735,12 @@ msgid "design"
 msgstr ""
 
 msgid "disabled"
+msgstr ""
+
+msgid "divergingBarChart display type requires exactly 1 dimension"
+msgstr ""
+
+msgid "divergingBarChart display type requires exactly 2 metrics"
 msgstr ""
 
 msgid "documentation"

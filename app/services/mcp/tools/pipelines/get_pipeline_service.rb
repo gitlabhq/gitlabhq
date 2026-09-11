@@ -9,6 +9,7 @@ module Mcp
         end
 
         register_version '0.1.0', {
+          toolset: :ci,
           description: <<~DESC.strip,
             Get a CI/CD pipeline in a GitLab project, and optionally its jobs, downstream pipelines, or
             bridge (trigger) jobs. A bridge job's downstream pipeline is omitted if you do not have

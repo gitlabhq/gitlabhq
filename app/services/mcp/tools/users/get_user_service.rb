@@ -8,6 +8,7 @@ module Mcp
         ungovernable!
 
         register_version '0.1.0', {
+          toolset: :core,
           description: 'Get a single GitLab user. Use me: true to look up the authenticated user, for example ' \
             'to find your own user id before setting assignee_ids or reviewer_ids. Provide exactly one of ' \
             'username, id, or me. Returns the numeric id, username, name, state, and web URL.',

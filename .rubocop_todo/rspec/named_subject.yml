@@ -477,7 +477,6 @@ RSpec/NamedSubject:
     - 'ee/spec/serializers/environment_entity_spec.rb'
     - 'ee/spec/serializers/epic_entity_spec.rb'
     - 'ee/spec/serializers/epic_note_entity_spec.rb'
-    - 'ee/spec/serializers/group_vulnerability_autocomplete_entity_spec.rb'
     - 'ee/spec/serializers/incident_management/escalation_policy_entity_spec.rb'
     - 'ee/spec/serializers/incident_management/oncall_schedule_entity_spec.rb'
     - 'ee/spec/serializers/integrations/jira_serializers/issue_detail_entity_spec.rb'

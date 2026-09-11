@@ -417,7 +417,8 @@ module API
           desc: 'The target project of the merge request defaults to the :id of the project.'
         use :optional_params
       end
-      route_setting :mcp, tool_name: :create_merge_request, params: Helpers::MergeRequestsHelpers.create_merge_request_mcp_params,
+      route_setting :mcp, tool_name: :create_merge_request,
+        params: Helpers::MergeRequestsHelpers.create_merge_request_mcp_params,
         annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project",
         aggregators: [::Mcp::Tools::MergeRequests::SaveMergeRequestService]
       route_setting :authorization, permissions: :create_merge_request, boundary_type: :project
@@ -553,7 +554,8 @@ module API
         requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request.'
         use :pagination
       end
-      route_setting :mcp, tool_name: :get_merge_request_commits, params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
+      route_setting :mcp, tool_name: :get_merge_request_commits, toolset: :merge_requests,
+        params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
       route_setting :authorization, permissions: :read_merge_request_commit, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/commits', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
@@ -701,7 +703,9 @@ module API
         use :pagination
         use :with_unidiff
       end
-      route_setting :mcp, tool_name: :get_merge_request_diffs, tool_aliases: [:list_merge_request_diffs], params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
+      route_setting :mcp, tool_name: :get_merge_request_diffs, toolset: :merge_requests,
+        tool_aliases: [:list_merge_request_diffs],
+        params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
       route_setting :authorization, permissions: :read_merge_request_diff, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/diffs', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
@@ -745,7 +749,8 @@ module API
       params do
         requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request.'
       end
-      route_setting :mcp, tool_name: :get_merge_request_pipelines, params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
+      route_setting :mcp, tool_name: :get_merge_request_pipelines, toolset: :merge_requests,
+        params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
       route_setting :authorization, permissions: :read_merge_request_pipeline, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/pipelines', urgency: :low, feature_category: :pipeline_composition do
         pipelines = merge_request_pipelines_with_access
@@ -818,7 +823,8 @@ module API
         use :optional_params
         at_least_one_of(*::API::MergeRequests.update_params_at_least_one_of)
       end
-      route_setting :mcp, tool_name: :update_merge_request, params: Helpers::MergeRequestsHelpers.update_merge_request_mcp_params,
+      route_setting :mcp, tool_name: :update_merge_request,
+        params: Helpers::MergeRequestsHelpers.update_merge_request_mcp_params,
         annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "merge request",
         aggregators: [::Mcp::Tools::MergeRequests::SaveMergeRequestService]
       route_setting :authorization, permissions: :update_merge_request, boundary_type: :project

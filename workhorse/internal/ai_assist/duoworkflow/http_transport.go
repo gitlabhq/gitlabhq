@@ -162,7 +162,7 @@ func (t *ndjsonTransport) WriteAction(_ context.Context, action *pb.Action) erro
 // shutdown just ends the stream. The caller tells a stopped flow apart from a
 // finished one through the workflow's status, which Duo Workflow Service keeps
 // up to date.
-func (t *ndjsonTransport) SendGoingAway() error { return nil }
+func (t *ndjsonTransport) SendGoingAway(_ string) error { return nil }
 
 // SendInvalidRequest records the reason for the handler rather than sending it,
 // for the same reason as SendGoingAway. The handler reports it as a 400 when

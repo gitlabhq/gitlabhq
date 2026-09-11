@@ -73,6 +73,7 @@ module API
 
         route_setting :mcp,
           tool_name: :list_pipelines,
+          toolset: :ci,
           params: [:id, :ref, :status, :source, :created_after, :created_before, :order_by, :sort, :page, :per_page],
           resource_name: "project"
         route_setting :authentication, job_token_allowed: true
@@ -192,7 +193,8 @@ module API
           use :pagination
         end
 
-        route_setting :mcp, tool_name: :get_pipeline_jobs, params: [:id, :pipeline_id, :per_page, :page], resource_name: "pipeline"
+        route_setting :mcp, tool_name: :get_pipeline_jobs, toolset: :ci,
+          params: [:id, :pipeline_id, :per_page, :page], resource_name: "pipeline"
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs,
           allow_public_access_for_enabled_project_features: [:repository, :builds],

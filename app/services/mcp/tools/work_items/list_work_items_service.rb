@@ -12,6 +12,7 @@ module Mcp
         MAX_FILTER_VALUES = 100
 
         register_version '0.1.0', {
+          toolset: :work_items,
           description:
             "List or search work items (#{TYPE_VALUES.join(', ')}) " \
             'in a group or project. Filter by state, author, assignees, labels, milestone, dates, ' \

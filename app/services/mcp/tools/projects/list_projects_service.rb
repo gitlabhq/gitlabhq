@@ -7,6 +7,7 @@ module Mcp
         MIN_ACCESS_LEVELS = %w[guest planner reporter developer maintainer owner].freeze
 
         register_version '0.1.0', {
+          toolset: :core,
           description: 'List GitLab projects. Without group_id, defaults to projects you have at least ' \
             'guest access to; pass min_access_level to raise the threshold. With group_id, lists every ' \
             'project in that group and its subgroups regardless of access level; adding min_access_level ' \

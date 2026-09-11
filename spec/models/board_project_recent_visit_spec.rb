@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BoardProjectRecentVisit do
+RSpec.describe BoardProjectRecentVisit, feature_category: :planning_views do
   let_it_be(:board_parent) { create(:project) }
   let_it_be(:board) { create(:board, project: board_parent) }
 

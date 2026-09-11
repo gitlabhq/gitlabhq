@@ -5,6 +5,7 @@ module Mcp
     module Commits
       class GetCommitService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :repository,
           description: 'Get a single commit\'s metadata, optionally including its diff or notes. ' \
             'Identify the commit with either url, or project_id and commit_sha.',
           input_schema: {

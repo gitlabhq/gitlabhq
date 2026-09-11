@@ -11,6 +11,9 @@ level: error
 action:
   name: replace
 ignorecase: true
+# To avoid false positive
+exceptions:
+  - Key Vault Administrator role
 swap:
   admin user: administrator
   admin users: administrators

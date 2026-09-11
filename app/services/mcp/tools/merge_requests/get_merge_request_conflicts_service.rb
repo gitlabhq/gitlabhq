@@ -8,6 +8,7 @@ module Mcp
 
         # Register version with schema definition
         register_version '0.1.0', {
+          toolset: :merge_requests,
           description: 'Get merge conflict content for a merge request that cannot be merged. ' \
             'Returns raw git conflict markers (<<<<<<, =======, >>>>>>>) exactly as they appear in conflicted files.',
           input_schema: {

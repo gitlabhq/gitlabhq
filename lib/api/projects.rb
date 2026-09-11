@@ -630,7 +630,7 @@ module API
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
         optional :branches, type: String, desc: 'Branches to fork'
       end
-      route_setting :mcp, tool_name: :fork_repository,
+      route_setting :mcp, tool_name: :fork_repository, toolset: :repository,
         params: [:id, :namespace_id, :namespace_path, :name, :path, :description, :visibility],
         annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project"
       route_setting :authorization, permissions: :create_fork, boundary_type: :project

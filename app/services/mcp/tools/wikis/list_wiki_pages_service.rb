@@ -5,6 +5,7 @@ module Mcp
     module Wikis
       class ListWikiPagesService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :wikis,
           description: 'List wiki pages in a GitLab project or group.',
           annotations: {
             readOnlyHint: true

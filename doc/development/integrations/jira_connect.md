@@ -103,7 +103,7 @@ The following steps describe setting up an environment to test the GitLab OAuth 
 
 ### Set up the app in Jira
 
-Ensure you have [set up OAuth first](#set-up-the-gitlab-oauth-authentication-flow) first before doing these steps,
+Ensure you have [set up OAuth](#set-up-the-gitlab-oauth-authentication-flow) first before doing these steps,
 otherwise these steps fail.
 
 1. In Jira, go to **Jira settings** > **Apps** > **Manage apps**.

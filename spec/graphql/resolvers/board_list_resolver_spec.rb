@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::BoardListResolver do
+RSpec.describe Resolvers::BoardListResolver, feature_category: :planning_views do
   include GraphqlHelpers
   include Gitlab::Graphql::Laziness
 

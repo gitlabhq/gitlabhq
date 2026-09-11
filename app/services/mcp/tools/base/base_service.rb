@@ -66,6 +66,10 @@ module Mcp
           true
         end
 
+        def toolset
+          Toolsets::UNASSIGNED
+        end
+
         def unlisted?
           false
         end

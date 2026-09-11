@@ -5,6 +5,7 @@ module Mcp
     module Repositories
       class ListRepositoryTreeService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :repository,
           description: 'List files and directories in a GitLab repository at a given path and ref. ' \
             'Identify the project with exactly one of url or project_id. Returns entry metadata only, ' \
             'never file contents; use get_repository_file to read a file. Each call returns up to 100 ' \

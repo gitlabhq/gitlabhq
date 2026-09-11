@@ -17,6 +17,7 @@ module Mcp
         PARENT_PARAMS = %i[url project_id].freeze
 
         register_version '0.1.0', {
+          toolset: :repository,
           description: 'List releases in a GitLab project, most recently released first. Identify the ' \
             'project with exactly one of url or project_id. Returns release metadata and asset links, ' \
             'not release assets themselves. Releases scheduled for a future date are omitted ' \

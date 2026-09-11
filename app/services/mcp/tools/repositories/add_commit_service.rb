@@ -15,6 +15,7 @@ module Mcp
         end
 
         register_version '0.1.0', {
+          toolset: :repository,
           description: 'Add a commit with one or more file actions to a project branch.',
           annotations: {
             readOnlyHint: false,

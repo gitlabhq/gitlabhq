@@ -8,6 +8,7 @@ module Mcp
         MAX_PAGE_SIZE = ::Mcp::Tools::Projects::ListProjectMembersTool::MAX_PAGE_SIZE
 
         register_version '0.1.0', {
+          toolset: :core,
           description: 'List the members of a GitLab project with their role and access level. ' \
             'Direct members only, unless include_inherited is true.',
           input_schema: {

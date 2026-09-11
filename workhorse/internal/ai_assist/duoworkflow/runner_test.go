@@ -45,6 +45,7 @@ type mockWebSocketConn struct {
 	readError          error
 	writeError         error
 	closeError         error
+	closeCalls         int
 	writeControlError  error
 	setDeadlineError   error
 	clearDeadlineError error
@@ -78,6 +79,7 @@ func (m *mockWebSocketConn) WriteMessage(_ int, data []byte) error {
 }
 
 func (m *mockWebSocketConn) Close() error {
+	m.closeCalls++
 	return m.closeError
 }
 
@@ -1529,8 +1531,8 @@ func TestRunner_Shutdown(t *testing.T) {
 		// Verify a CloseGoingAway frame was sent
 		require.Len(t, controlMessages, 1)
 		require.Equal(t, websocket.CloseMessage, controlMessages[0].msgType)
-		expectedMsg := websocket.FormatCloseMessage(websocket.CloseGoingAway, "server shutdown")
-		require.Equal(t, expectedMsg, controlMessages[0].data)
+		expectedMsg := websocket.FormatCloseMessage(websocket.CloseGoingAway, closeReasonWorkhorseShutdown)
+		require.Equal(t, expectedMsg, controlMessages[0].data, "a workhorse drain keeps its own reason text")
 	})
 
 	t.Run("skips CloseGoingAway when request context fires first", func(t *testing.T) {
@@ -1769,14 +1771,23 @@ func TestRunner_handleAgentMessages_stopAck(t *testing.T) {
 		}
 	})
 
-	t.Run("returns error when Unavailable received without stop requested", func(t *testing.T) {
+	t.Run("sends CloseGoingAway when Unavailable received without stop requested", func(t *testing.T) {
 		mockWf := &mockWorkflowStream{
 			recvError: status.Error(codes.Unavailable, "service unavailable"),
+		}
+		controlMessages := []struct {
+			msgType int
+			data    []byte
+		}{}
+		wrappedConn := &shutdownTrackingConn{
+			mockWebSocketConn: &mockWebSocketConn{},
+			controlMessages:   &controlMessages,
 		}
 		req := httptest.NewRequest("GET", "/duo", nil)
 
 		r := &runner{
 			originalReq: req,
+			client:      newWsManager(wrappedConn),
 			streamManager: &streamManager{
 				wf:          mockWf,
 				originalReq: req,
@@ -1785,14 +1796,56 @@ func TestRunner_handleAgentMessages_stopAck(t *testing.T) {
 				acked: make(chan struct{}),
 			},
 		}
-		// stop.requested is false by default
+		// stop.requested is false by default: DWS closed the stream on its own.
 
 		errCh := make(chan error, 1)
 		r.handleAgentMessages(context.Background(), errCh)
 
 		err := <-errCh
-		require.Error(t, err, "should return error when stop was not requested")
-		require.Contains(t, err.Error(), "stream unavailable")
+		require.NoError(t, err, "an unsolicited Unavailable is a DWS drain, not a failure")
+		require.True(t, r.stop.workflowEnded.Load(), "nothing is left to stop on the DWS side")
+
+		// stop.acked must stay open: no stop request was sent, so there is nothing to acknowledge.
+		select {
+		case <-r.stop.acked:
+			t.Fatal("stop.acked should not be closed when no stop was requested")
+		default:
+		}
+
+		require.Len(t, controlMessages, 1)
+		require.Equal(t, websocket.CloseMessage, controlMessages[0].msgType)
+		expectedMsg := websocket.FormatCloseMessage(websocket.CloseGoingAway, closeReasonDWSUnavailable)
+		require.Equal(t, expectedMsg, controlMessages[0].data, "client must be told to reconnect, naming DWS as the side that went away")
+
+		// The runner's deferred Close must still release the transport, without a second close frame.
+		require.NoError(t, r.client.Close())
+		require.Equal(t, 1, wrappedConn.closeCalls, "underlying connection must be closed after CloseGoingAway")
+		require.Len(t, controlMessages, 1, "no CloseNormalClosure frame after CloseGoingAway")
+	})
+
+	t.Run("returns nil when CloseGoingAway fails after unsolicited Unavailable", func(t *testing.T) {
+		mockWf := &mockWorkflowStream{
+			recvError: status.Error(codes.Unavailable, "service unavailable"),
+		}
+		req := httptest.NewRequest("GET", "/duo", nil)
+
+		r := &runner{
+			originalReq: req,
+			client:      newWsManager(&mockWebSocketConn{writeControlError: errors.New("write failed")}),
+			streamManager: &streamManager{
+				wf:          mockWf,
+				originalReq: req,
+			},
+			stop: stopCoordinator{
+				acked: make(chan struct{}),
+			},
+		}
+
+		errCh := make(chan error, 1)
+		r.handleAgentMessages(context.Background(), errCh)
+
+		require.NoError(t, <-errCh, "a failed close frame is logged, not surfaced as a workflow error")
+		require.True(t, r.stop.workflowEnded.Load())
 	})
 }
 

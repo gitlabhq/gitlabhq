@@ -10,6 +10,7 @@ module Mcp
         end
 
         register_version '0.1.0', {
+          toolset: :work_items,
           description: 'Get all comments (notes) for a specific work item',
           input_schema: {
             type: 'object',

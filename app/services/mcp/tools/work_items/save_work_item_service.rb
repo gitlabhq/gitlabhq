@@ -11,6 +11,7 @@ module Mcp
         UPDATE_INTENT_URL = %r{/-/(?:work_items|issues|epics)/\d+(?:[/?#]|\z)}
 
         register_version '0.1.0', {
+          toolset: :work_items,
           description: <<~DESC.strip,
             Create or update a GitLab work item, such as an issue, task, or epic.
             Omit work_item_iid to create a new work item; provide work_item_iid or a

@@ -5,6 +5,7 @@ module Mcp
     module WorkItems
       class GetSavedViewWorkItemsService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :work_items,
           description: 'Fetch a saved view and its work items list from a namespace',
           input_schema: {
             type: 'object',

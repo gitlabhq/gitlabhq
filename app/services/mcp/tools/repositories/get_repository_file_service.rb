@@ -8,6 +8,7 @@ module Mcp
         DEFAULT_LIMIT = ::Mcp::Tools::Repositories::GetRepositoryFileTool::DEFAULT_LIMIT
 
         register_version '0.1.0', {
+          toolset: :repository,
           description: 'Read a file from a GitLab repository at a given ref. Reads from GitLab, not the local ' \
             'filesystem: use it for a project you have not checked out, or a specific branch, tag, or commit — ' \
             'not your local working copy. Returns the file as committed at ref. For large files, use offset and ' \

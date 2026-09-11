@@ -15,6 +15,7 @@ module Mcp
           PARENT_PARAMS = %i[url project_id].freeze
 
           register_version '0.1.0', {
+            toolset: :repository,
             description: 'List tags in a GitLab project, most recently updated first. Identify the project ' \
               'with exactly one of url or project_id. When search is given, a tag whose name matches it ' \
               'exactly is listed first. Returns each tag name and its tip commit, not ' \

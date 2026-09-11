@@ -154,6 +154,20 @@ describe('DivergingBarChart', () => {
     });
   });
 
+  // The GLQL wrappers above this component are auto-height, so relying on
+  // gl-h-full collapses the chart to nothing inside a dashboard panel.
+  describe('height', () => {
+    it('sizes itself from its row count rather than its container', () => {
+      expect(wrapper.element.style.height).toBe('144px');
+    });
+
+    it('grows with the number of rows', () => {
+      createWrapper({ data: [...rows, { name: 'Extra', values: [1, 2] }] });
+
+      expect(wrapper.element.style.height).toBe('176px');
+    });
+  });
+
   describe('with a row missing a value', () => {
     beforeEach(() => createWrapper({ data: [{ name: 'Power (100+)', values: [107] }] }));
 

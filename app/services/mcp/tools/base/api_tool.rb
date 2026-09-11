@@ -102,6 +102,10 @@ module Mcp
           auto_annotations
         end
 
+        def toolset
+          settings[:toolset] || Toolsets::UNASSIGNED
+        end
+
         def unlisted?
           settings[:unlisted].present?
         end

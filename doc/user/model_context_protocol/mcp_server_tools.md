@@ -1221,6 +1221,7 @@ Show me all comments on work item 42 in project gitlab-org/gitlab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230221) in GitLab 19.0.
+- Plain iids for `work_items_ids` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254551) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -1228,7 +1229,7 @@ Links a work item to one or more other work items with a relationship type.
 
 | Parameter        | Type             | Required | Description |
 |------------------|------------------|----------|-------------|
-| `work_items_ids` | array of strings | Yes      | Global IDs of the work items to link to (in the format `gid://gitlab/WorkItem/<id>`). Maximum 10 items. |
+| `work_items_ids` | array            | Yes      | Work items to link to: plain iids, resolved in the same project or group as the source, or global IDs (`gid://gitlab/WorkItem/<id>`) for work items in other projects or groups. Maximum 10 items. |
 | `url`            | string           | No       | URL for the source work item. Required if `group_id` or `project_id` and `work_item_iid` are missing. |
 | `group_id`       | string           | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
 | `project_id`     | string           | No       | ID or path of the project. Required if `url` and `group_id` are missing. |

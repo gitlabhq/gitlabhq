@@ -127,7 +127,6 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
         [
           ['not-a-gid'],
           ['gid://gitlab/Issue/123'],
-          ['123'],
           ['']
         ]
       end
@@ -141,10 +140,81 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
           }
         end
 
-        it 'raises ArgumentError with descriptive message' do
+        it 'raises ArgumentError naming the id and both accepted formats' do
           expect { tool.build_variables }
-            .to raise_error(ArgumentError, /Invalid work item ID format/)
+            .to raise_error(ArgumentError, /Invalid target work item ID format: '#{Regexp.escape(invalid_id)}'/)
         end
+      end
+    end
+
+    context 'when work_items_ids contains plain iids' do
+      where(:iid_form) { [[2], ['2']] }
+
+      with_them do
+        let(:params) do
+          {
+            project_id: project.id.to_s,
+            work_item_iid: source_work_item.iid,
+            work_items_ids: [iid_form]
+          }
+        end
+
+        it 'resolves the iid in the source parent to a global ID' do
+          expect(tool.build_variables[:input][:workItemsIds]).to eq([target_work_item.to_global_id.to_s])
+        end
+      end
+    end
+
+    context 'when work_items_ids mixes global IDs and iids' do
+      let_it_be(:second_target) { create(:work_item, :issue, project: project, iid: 3) }
+
+      let(:params) do
+        {
+          project_id: project.id.to_s,
+          work_item_iid: source_work_item.iid,
+          work_items_ids: [target_gid, second_target.iid]
+        }
+      end
+
+      it 'resolves each element in its own format' do
+        expect(tool.build_variables[:input][:workItemsIds]).to eq(
+          [target_gid, second_target.to_global_id.to_s]
+        )
+      end
+    end
+
+    context 'when a target iid does not exist in the source parent' do
+      let(:params) do
+        {
+          project_id: project.id.to_s,
+          work_item_iid: source_work_item.iid,
+          work_items_ids: [non_existing_record_iid]
+        }
+      end
+
+      it 'raises an error naming the iid, the parent, and the cross-parent escape hatch' do
+        expect { tool.build_variables }.to raise_error(
+          ArgumentError,
+          /Target work item with iid '#{non_existing_record_iid}' not found in #{Regexp.escape(project.full_path)}/
+        )
+      end
+    end
+
+    context 'when a target iid belongs to a different project' do
+      let_it_be(:other_project) { create(:project, :public) }
+      let_it_be(:foreign_item) { create(:work_item, :issue, project: other_project, iid: 77) }
+
+      let(:params) do
+        {
+          project_id: project.id.to_s,
+          work_item_iid: source_work_item.iid,
+          work_items_ids: [foreign_item.iid]
+        }
+      end
+
+      it 'does not resolve it, keeping iids scoped to the source parent' do
+        expect { tool.build_variables }
+          .to raise_error(ArgumentError, /Target work item with iid '77' not found in/)
       end
     end
 

@@ -14,6 +14,7 @@ module Mcp
         FORWARDED_KEY = { project_id: :id, assignees: :assignee_ids, reviewers: :reviewer_ids }.freeze
 
         register_version '0.1.0', {
+          toolset: :merge_requests,
           description: <<~DESC.strip,
             Create or update a merge request in a GitLab project.
 

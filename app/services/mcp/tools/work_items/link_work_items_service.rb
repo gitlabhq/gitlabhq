@@ -5,6 +5,7 @@ module Mcp
     module WorkItems
       class LinkWorkItemsService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :work_items,
           description:
             'Link a work item to other work items with a relationship type (relates_to)',
           annotations: {
@@ -36,9 +37,11 @@ module Mcp
               work_items_ids: {
                 type: 'array',
                 description:
-                  'Global IDs of the work items to link to (format: gid://gitlab/WorkItem/<id>). Maximum 10 items.',
+                  'Work items to link to: plain iids (resolved in the same project or group as the ' \
+                  'source) or global IDs (gid://gitlab/WorkItem/<id>) for work items in other ' \
+                  'projects or groups. Maximum 10 items.',
                 items: {
-                  type: 'string'
+                  type: %w[integer string]
                 },
                 minItems: 1,
                 maxItems: 10

@@ -318,6 +318,32 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
     end
   end
 
+  describe '#toolset' do
+    it 'returns the declared toolset from metadata' do
+      toolset_class = Class.new do
+        include Mcp::Tools::Concerns::Versionable
+
+        register_version '1.0.0', {
+          description: 'Tool with toolset',
+          input_schema: { type: 'object', properties: {} },
+          toolset: :core
+        }
+
+        def initialize(version: nil)
+          initialize_version(version)
+        end
+      end
+
+      instance = toolset_class.new(version: '1.0.0')
+      expect(instance.toolset).to eq(:core)
+    end
+
+    it 'returns UNASSIGNED when toolset is missing from metadata' do
+      instance = test_class.new(version: '1.0.0')
+      expect(instance.toolset).to eq(Mcp::Tools::Toolsets::UNASSIGNED)
+    end
+  end
+
   describe '#annotations' do
     it 'returns empty hash when annotations not defined in metadata' do
       instance = test_class.new(version: '1.0.0')

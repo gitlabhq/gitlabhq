@@ -1,7 +1,6 @@
 <script>
 import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlChart } from '@gitlab/ui/src/charts';
-import { HEIGHT_AUTO_CLASSES } from '@gitlab/ui/src/utils/charts/constants';
 import { colorFromDefaultPalette } from '@gitlab/ui/src/utils/charts/theme';
 import { merge } from 'lodash-es';
 import { formatCountCompact } from '~/glql/utils/value_format';
@@ -12,6 +11,7 @@ const SERIES_COUNT = 2;
 const formatValue = (value) => formatCountCompact(value, { lowercaseThousands: true });
 
 const BAR_HEIGHT = 7;
+const ROW_HEIGHT = 32;
 const GRID_VERTICAL_PADDING = 8;
 const CATEGORY_LABEL_SIZE = 13;
 const VALUE_LABEL_SIZE = 11;
@@ -92,6 +92,12 @@ export default {
     };
   },
   computed: {
+    // The GLQL wrappers between this and a dashboard panel body are all
+    // auto-height, so `gl-h-full` resolves to nothing and the chart collapses.
+    // Size it from its own content instead.
+    chartHeight() {
+      return this.rows.length * ROW_HEIGHT + LEGEND_HEIGHT + GRID_VERTICAL_PADDING * 2;
+    },
     // The centre is a share of the width but label text is not, so truncating
     // needs the band in pixels.
     categoryLabelWidth() {
@@ -184,11 +190,14 @@ export default {
       };
     },
   },
-  HEIGHT_AUTO_CLASSES,
 };
 </script>
 <template>
-  <div v-gl-resize-observer="onResize" class="gl-relative" :class="$options.HEIGHT_AUTO_CLASSES">
+  <div
+    v-gl-resize-observer="onResize"
+    class="gl-chart-h-auto gl-relative gl-flex gl-flex-col"
+    :style="{ height: `${chartHeight}px` }"
+  >
     <gl-chart
       :options="fullOptions"
       height="auto"

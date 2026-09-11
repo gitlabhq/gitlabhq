@@ -107,17 +107,29 @@ module SupplyChain
 
         attr_accessor :source, :entry_point, :variables
 
+        ALLOWLIST = %w[
+          CI_PIPELINE_ID
+          CI_PIPELINE_URL
+          CI_JOB_ID
+          CI_JOB_URL
+          CI_JOB_NAME
+          CI_PROJECT_ID
+          CI_PROJECT_NAME
+        ].freeze
+
+        def self.allowed_keys
+          ALLOWLIST
+        end
+
         def self.from_build(build)
           source = Gitlab::Routing.url_helpers.project_url(build.project)
           entry_point = build.name
 
           variables = {}
           build.variables.each do |variable|
-            variables[variable.key] = if variable.masked?
-                                        '[MASKED]'
-                                      else
-                                        variable.value
-                                      end
+            next unless allowed_keys.include?(variable.key)
+
+            variables[variable.key] = variable.value
           end
 
           ExternalParameters.new(source: source, entry_point: entry_point, variables: variables)

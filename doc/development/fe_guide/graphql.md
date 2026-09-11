@@ -348,7 +348,9 @@ Splitting queries in Apollo is often done to optimize data fetching by breaking 
 
 1. Define multiple queries and use them independently in various parts of your component hierarchy. This way, each component fetches only the data it needs.
 
-If you look at [work item query architecture](../work_items_widgets.md#frontend-architecture) , we have [split the queries](../work_items_widgets.md#widget-responsibility-and-structure) for most of the widgets for the same reason of query complexity and splitting of concerned data.
+If you look at [work item query architecture](../work_items_widgets.md#frontend-architecture),
+we have [split the queries](../work_items_widgets.md#widget-responsibility-and-structure) for
+most of the widgets for the same reason of query complexity and splitting of concerned data.
 
 ```javascript
 #import "ee_else_ce/work_items/graphql/work_item_development.fragment.graphql"

@@ -5,6 +5,7 @@ module Mcp
     module Groups
       class ListGroupsService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :core,
           description: 'List GitLab groups. Without group_id, lists top-level groups where you ' \
             'are a member. With group_id, lists the direct subgroups of that group, regardless ' \
             'of membership. Set include_subgroups to true to recurse into all descendant ' \

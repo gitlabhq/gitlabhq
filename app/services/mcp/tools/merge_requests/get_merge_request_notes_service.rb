@@ -10,6 +10,7 @@ module Mcp
         end
 
         register_version '0.1.0', {
+          toolset: :merge_requests,
           description: 'Get the notes (comments and system notes) for a specific merge request.',
           input_schema: {
             type: 'object',

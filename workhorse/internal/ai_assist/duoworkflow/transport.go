@@ -50,9 +50,11 @@ type clientTransport interface {
 	// its behalf.
 	WriteAction(ctx context.Context, action *pb.Action) error
 
-	// SendGoingAway tells the client that this workhorse instance is shutting
-	// down and that it should reconnect to resume the workflow.
-	SendGoingAway() error
+	// SendGoingAway tells the client that the workflow stream is going away, either
+	// because this workhorse instance is shutting down or because Duo Workflow
+	// Service closed the stream, and that it should reconnect to resume the
+	// workflow. The reason is forwarded to the client for diagnostics only.
+	SendGoingAway(reason string) error
 
 	// SendInvalidRequest tells the client that Duo Workflow Service rejected
 	// the request as invalid, so it must not be retried unchanged.

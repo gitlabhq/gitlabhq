@@ -5,6 +5,6 @@ rust 1.89.0
 yarn 1.22.19
 
 # For linting documentation
-markdownlint-cli2 0.22.1
+markdownlint-cli2 0.23.2
 lychee 0.24.2
-vale 3.14.1
+vale 3.21.0

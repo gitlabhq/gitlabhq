@@ -308,7 +308,7 @@ module API
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
-      route_setting :mcp, tool_name: :get_issue, params: [:id, :issue_iid], resource_name: "issue"
+      route_setting :mcp, tool_name: :get_issue, toolset: :work_items, params: [:id, :issue_iid], resource_name: "issue"
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :read_issue, boundary_type: :project, job_token_policies: :read_work_items, allow_public_access_for_enabled_project_features: :issues
       get ":id/issues/:issue_iid", as: :api_v4_project_issue do
@@ -334,7 +334,8 @@ module API
 
         use :issue_params
       end
-      route_setting :mcp, tool_name: :create_issue, params: Helpers::IssuesHelpers.create_issue_mcp_params,
+      route_setting :mcp, tool_name: :create_issue, toolset: :work_items,
+        params: Helpers::IssuesHelpers.create_issue_mcp_params,
         annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project"
       route_setting :authorization, permissions: :create_issue, boundary_type: :project
       post ':id/issues' do

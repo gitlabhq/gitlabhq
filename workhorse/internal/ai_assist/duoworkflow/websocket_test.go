@@ -404,7 +404,7 @@ func TestWsManager_SendGoingAway(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ws := newWsManager(&mockWebSocketConn{writeControlError: tt.writeCtrlErr})
 
-			err := ws.SendGoingAway()
+			err := ws.SendGoingAway(closeReasonWorkhorseShutdown)
 
 			assert.Equal(t, tt.expectErr, err != nil)
 			assert.Equal(t, tt.expectClosed, ws.closed.Load())
@@ -489,11 +489,20 @@ func TestWsManager_SendInvalidRequest(t *testing.T) {
 }
 
 func TestWsManager_Close(t *testing.T) {
-	t.Run("no-op when already closed", func(t *testing.T) {
-		ws := newWsManager(&mockWebSocketConn{writeControlError: errors.New("should not be called")})
+	t.Run("closes the transport without a close frame when already marked closed", func(t *testing.T) {
+		mockConn := &mockWebSocketConn{writeControlError: errors.New("should not be called")}
+		ws := newWsManager(mockConn)
 		ws.closed.Store(true)
 
 		require.NoError(t, ws.Close())
+		assert.Equal(t, 1, mockConn.closeCalls, "underlying connection must be closed even when a close frame was already sent")
+	})
+
+	t.Run("returns the close error when already marked closed", func(t *testing.T) {
+		ws := newWsManager(&mockWebSocketConn{closeError: errors.New("close failed")})
+		ws.closed.Store(true)
+
+		require.EqualError(t, ws.Close(), "failed to close connection: close failed")
 	})
 
 	tests := []struct {

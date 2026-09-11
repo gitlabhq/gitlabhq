@@ -24,6 +24,7 @@ module Mcp
         MAX_REVIEW_COMMENTS = 20
 
         register_version '0.1.0', {
+          toolset: :merge_requests,
           description: 'Write merge request review artifacts as the authenticated user. ' \
             'Exactly one method per call: create_note adds a top-level comment; reply_discussion ' \
             'replies within an existing discussion; create_diff_note comments on a specific diff line; ' \

@@ -5,6 +5,7 @@ module Mcp
     module MergeRequests
       class AcceptMergeRequestService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :merge_requests,
           description: 'Merge a merge request, or schedule it to merge automatically. Without ' \
             'strategy the merge starts immediately and completes asynchronously; with strategy, ' \
             'auto-merge is armed and the merge request merges once its checks pass. Identify the ' \

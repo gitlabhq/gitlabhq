@@ -198,7 +198,7 @@ describe('DataPresenter', () => {
       expect(error.message).toBe(
         'Unknown display type: `pieChart`. Supported display types are: ' +
           '`list`, `orderedList`, `table`, `stat`, `columnChart`, `lineChart`, `barChart`, ' +
-          '`barList`, `areaChart`, `heatMap`.',
+          '`barList`, `areaChart`, `heatMap`, `divergingBarChart`.',
       );
     });
 

@@ -17,15 +17,18 @@ module Gitlab
         { key: :shard_name, header: 'Shard Name' }
       ].freeze
 
-      CSV_HEADERS = COLUMNS.pluck(:header).freeze # rubocop:disable CodeReuse/ActiveRecord -- COLUMNS is a plain Ruby array, not ActiveRecord
-
-      def initialize(output_file)
+      def initialize(output_file, columns: COLUMNS)
+        @columns = columns
         @csv = CSV.open(output_file, 'w')
-        @csv << CSV_HEADERS
+        @csv << columns.pluck(:header) # rubocop:disable CodeReuse/ActiveRecord -- plain Ruby array
       end
 
       def write_row(record)
-        @csv << COLUMNS.map { |c| record[c[:key]] }
+        @csv << @columns.map { |c| record[c[:key]] }
+      end
+
+      def flush
+        @csv&.flush
       end
 
       def close

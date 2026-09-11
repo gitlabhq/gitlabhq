@@ -423,6 +423,34 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
     end
   end
 
+  describe '#tools_in_toolsets' do
+    let(:manager) { described_class.new }
+
+    it 'returns tool names for the requested toolsets' do
+      result = manager.tools_in_toolsets([:core])
+
+      expect(result).to include('save_note', 'search')
+    end
+
+    it 'always includes ALWAYS_ON tools' do
+      result = manager.tools_in_toolsets([:core])
+
+      expect(result).to include('get_mcp_server_version')
+    end
+
+    it 'excludes tools from toolsets not requested' do
+      result = manager.tools_in_toolsets([:core])
+
+      expect(result).not_to include('add_commit')
+    end
+
+    it 'returns an empty set (plus always-on) for unknown toolsets' do
+      result = manager.tools_in_toolsets([:nonexistent])
+
+      expect(result).to contain_exactly('get_mcp_server_version')
+    end
+  end
+
   describe 'MCP route settings' do
     it 'does not declare tool_aliases on a route that also sets aggregators' do
       offenders = ::API::Base.descendants.flat_map(&:routes).filter_map do |route|
@@ -436,6 +464,20 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
       expect(offenders).to be_empty,
         "tool_aliases on an aggregated route is silently ignored; declare the alias on the " \
           "aggregator class's self.tool_aliases instead. Offending routes: #{offenders}"
+    end
+
+    it 'does not declare toolset on aggregated routes' do
+      offenders = ::API::Base.descendants.flat_map(&:routes).filter_map do |route|
+        settings = route.app.route_setting(:mcp)
+        next if settings.blank?
+        next unless settings[:aggregators].present? && settings[:toolset].present?
+
+        settings[:tool_name]
+      end
+
+      expect(offenders).to be_empty,
+        "toolset on an aggregated route is dead metadata (the route is skipped by discover_api_tools); " \
+          "declare the toolset on the aggregator service class instead. Offending routes: #{offenders}"
     end
   end
 

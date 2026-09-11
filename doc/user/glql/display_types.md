@@ -46,6 +46,7 @@ The following display types are available only in analytics mode:
 | Line chart     | `lineChart`     | A chart that plots one or more metrics as lines over a dimension, to show trends. |
 | Area chart     | `areaChart`     | A chart that plots one or more metrics as filled areas over a dimension, to show trends and volume. |
 | Heat map     | `heatMap`     | A grid of shaded cells, one per pair of dimension values, where a darker cell is a larger value. |
+| Diverging bar chart | `divergingBarChart` | A chart that mirrors two metrics around a shared category column, each scaled to its own largest bar. |
 
 ## Table
 
@@ -449,6 +450,52 @@ mode: analytics
 query: type = CodeSuggestion and timestamp >= -30d
 dimensions: ideName, language
 metrics: acceptedCount
+```
+````
+
+## Diverging bar chart
+
+A diverging bar chart visualizes aggregated data from [analytics mode](_index.md#analytics-mode)
+as two metrics mirrored around a shared, centered category column. Bars for the first metric grow
+leftward from the center, and bars for the second metric grow rightward. Use a diverging bar chart
+to compare two metrics across categories when one metric can dwarf the other in absolute terms.
+
+Each half of the chart is scaled independently, to its own largest bar. This means a category can
+be a small share of one metric and the bulk of the other, and both bars still fill their side of
+the chart. Because the two halves use different scales, bar lengths are comparable only within a
+half, never across the center.
+
+A diverging bar chart requires:
+
+- Analytics mode, set with `mode: analytics`.
+- Exactly one value in `dimensions` to group results by.
+- Exactly two metrics to plot (using the `metrics` parameter).
+
+Anything other than exactly one dimension and exactly two metrics causes a validation error in the
+view.
+
+Rows render in the order the query returns them. Use `sort` to control this order, because a
+diverging bar chart does not sort rows itself. Each metric's values are formatted in that metric's
+own unit, so you can pair a count with a rate.
+
+The category column is a share of the chart's width, so category labels that do not fit are
+truncated. In a narrow panel, keep category names short.
+
+There is no `displayConfig` option for this display type.
+
+### Example
+
+To compare the number of unique users against the total number of sessions for GitLab Duo
+Agent Platform, grouped by flow type, over the last 30 days:
+
+````yaml
+```glql
+display: divergingBarChart
+mode: analytics
+query: type = AgentPlatformSession and created >= -30d
+dimensions: flowType
+metrics: usersCount, totalCount
+sort: totalCount desc
 ```
 ````
 

@@ -148796,7 +148796,7 @@
             },
             {
               "name": "genericDuplicateExceptionRegex",
-              "description": "When generic_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.",
+              "description": "When generic_duplicates_allowed is false, you can publish duplicate packages with names or versions that match this regex. When generic_duplicates_allowed is true, duplicate packages with names or versions that match this regex are rejected.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -148888,7 +148888,7 @@
             },
             {
               "name": "mavenDuplicateExceptionRegex",
-              "description": "When maven_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.",
+              "description": "When maven_duplicates_allowed is false, you can publish duplicate packages with names or versions that match this regex. When maven_duplicates_allowed is true, duplicate packages with names or versions that match this regex are rejected.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -148972,7 +148972,7 @@
             },
             {
               "name": "nugetDuplicateExceptionRegex",
-              "description": "When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. ",
+              "description": "When nuget_duplicates_allowed is false, you can publish duplicate packages with names or versions that match this regex. When nuget_duplicates_allowed is true, duplicate packages with names or versions that match this regex are rejected.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -149072,7 +149072,7 @@
             },
             {
               "name": "terraformModuleDuplicateExceptionRegex",
-              "description": "When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.",
+              "description": "When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. When terraform_module_duplicates_allowed is true, duplicate packages with names that match this regex are rejected.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -212808,7 +212808,7 @@
             },
             {
               "name": "mavenDuplicateExceptionRegex",
-              "description": "When maven_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.",
+              "description": "When maven_duplicates_allowed is false, you can publish duplicate packages with names or versions that match this regex. When maven_duplicates_allowed is true, duplicate packages with names or versions that match this regex are rejected.",
               "type": {
                 "kind": "SCALAR",
                 "name": "UntrustedRegexp",
@@ -212828,7 +212828,7 @@
             },
             {
               "name": "genericDuplicateExceptionRegex",
-              "description": "When generic_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.",
+              "description": "When generic_duplicates_allowed is false, you can publish duplicate packages with names or versions that match this regex. When generic_duplicates_allowed is true, duplicate packages with names or versions that match this regex are rejected.",
               "type": {
                 "kind": "SCALAR",
                 "name": "UntrustedRegexp",
@@ -212848,7 +212848,7 @@
             },
             {
               "name": "nugetDuplicateExceptionRegex",
-              "description": "When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. ",
+              "description": "When nuget_duplicates_allowed is false, you can publish duplicate packages with names or versions that match this regex. When nuget_duplicates_allowed is true, duplicate packages with names or versions that match this regex are rejected.",
               "type": {
                 "kind": "SCALAR",
                 "name": "UntrustedRegexp",
@@ -212868,7 +212868,7 @@
             },
             {
               "name": "terraformModuleDuplicateExceptionRegex",
-              "description": "When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.",
+              "description": "When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. When terraform_module_duplicates_allowed is true, duplicate packages with names that match this regex are rejected.",
               "type": {
                 "kind": "SCALAR",
                 "name": "UntrustedRegexp",

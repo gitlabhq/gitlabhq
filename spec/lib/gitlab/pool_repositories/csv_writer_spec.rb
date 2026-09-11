@@ -67,6 +67,23 @@ RSpec.describe Gitlab::PoolRepositories::CsvWriter, feature_category: :source_co
     end
   end
 
+  describe '#flush' do
+    it 'makes written rows readable from the file before close' do
+      csv_writer.write_row(record)
+      csv_writer.flush
+
+      rows = CSV.read(temp_file.path)
+      expect(rows.size).to eq(2)
+      expect(rows[1]).to include('@pools/test')
+    end
+
+    it 'does not raise after close' do
+      csv_writer.close
+
+      expect { csv_writer.flush }.not_to raise_error
+    end
+  end
+
   describe '#close' do
     it 'does not raise when called' do
       expect { csv_writer.close }.not_to raise_error
@@ -79,7 +96,27 @@ RSpec.describe Gitlab::PoolRepositories::CsvWriter, feature_category: :source_co
 
       rows = CSV.read(temp_file.path)
       expect(rows.size).to eq(1)
-      expect(rows[0]).to eq(described_class::CSV_HEADERS)
+      expect(rows[0]).to eq(described_class::COLUMNS.map { |c| c[:header] })
+    end
+
+    context 'with custom columns' do
+      let(:columns) do
+        [
+          { key: :pool_id, header: 'Pool ID' },
+          { key: :shard_name, header: 'Shard Name' }
+        ]
+      end
+
+      let(:csv_writer) { described_class.new(temp_file.path, columns: columns) }
+
+      it 'writes only the given columns' do
+        csv_writer.write_row(record)
+        csv_writer.close
+
+        rows = CSV.read(temp_file.path)
+        expect(rows[0]).to eq(['Pool ID', 'Shard Name'])
+        expect(rows[1]).to eq(%w[1 default])
+      end
     end
   end
 end

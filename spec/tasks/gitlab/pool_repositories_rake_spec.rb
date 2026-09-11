@@ -146,4 +146,90 @@ RSpec.describe 'gitlab:pool_repositories namespace rake task', :silence_stdout, 
       end
     end
   end
+
+  describe 'cleanup_orphaned_on_missing_shards' do
+    subject(:run_task) { run_rake_task(task_name) }
+
+    let(:task_name) { 'gitlab:pool_repositories:cleanup_orphaned_on_missing_shards' }
+    let(:cleaner) { instance_double(Gitlab::PoolRepositories::MissingShardCleaner) }
+    let(:logger) { instance_double(Logger, info: nil, error: nil) }
+
+    before do
+      Rake::Task[task_name].reenable
+      allow(Gitlab::PoolRepositories::RakeTask).to receive(:logger).and_return(logger)
+      allow(Gitlab::PoolRepositories::MissingShardCleaner).to receive(:new).and_return(cleaner)
+      allow(cleaner).to receive(:run!)
+    end
+
+    context 'when required environment variables are missing' do
+      where(:shard_names_env, :output_file_env) do
+        [
+          [nil, '/tmp/output.csv'],
+          ['shard1', nil],
+          [nil, nil]
+        ]
+      end
+
+      with_them do
+        before do
+          stub_env('SHARD_NAMES', shard_names_env)
+          stub_env('OUTPUT_FILE', output_file_env)
+        end
+
+        it 'logs an error and exits without running the cleaner' do
+          expect { run_task }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+
+          expect(logger).to have_received(:error).with(/SHARD_NAMES and OUTPUT_FILE/)
+          expect(Gitlab::PoolRepositories::MissingShardCleaner).not_to have_received(:new)
+        end
+      end
+    end
+
+    context 'with required environment variables set' do
+      before do
+        stub_env('SHARD_NAMES', 'shard1,shard2')
+        stub_env('OUTPUT_FILE', '/tmp/output.csv')
+      end
+
+      it 'runs the cleaner in dry-run mode by default and hints at DRY_RUN=false' do
+        run_task
+
+        expect(Gitlab::PoolRepositories::MissingShardCleaner).to have_received(:new).with(
+          shard_names: %w[shard1 shard2],
+          output_file: '/tmp/output.csv',
+          logger: logger,
+          dry_run: true
+        )
+        expect(cleaner).to have_received(:run!)
+        expect(logger).to have_received(:info).with(/DRY_RUN=false/)
+      end
+
+      context 'when DRY_RUN=false' do
+        before do
+          stub_env('DRY_RUN', 'false')
+        end
+
+        it 'runs the cleaner with dry_run: false' do
+          run_task
+
+          expect(Gitlab::PoolRepositories::MissingShardCleaner).to have_received(:new).with(
+            hash_including(dry_run: false)
+          )
+        end
+      end
+
+      context 'when the cleaner raises a validation error' do
+        before do
+          allow(cleaner).to receive(:run!)
+            .and_raise(Gitlab::PoolRepositories::MissingShardCleaner::ValidationError, 'bad shard')
+        end
+
+        it 'logs the error and exits' do
+          expect { run_task }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+
+          expect(logger).to have_received(:error).with(/bad shard/)
+        end
+      end
+    end
+  end
 end

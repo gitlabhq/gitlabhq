@@ -5,6 +5,7 @@ module Mcp
     module WorkItems
       class GetWorkItemService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :work_items,
           description:
             'Get a single work item (issue, epic, task, incident, objective, key result) with its ' \
             'type, dates, assignees, labels, milestone, and parent. Optionally include its notes ' \

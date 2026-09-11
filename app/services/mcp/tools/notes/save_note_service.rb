@@ -7,6 +7,7 @@ module Mcp
         extend ::Gitlab::Utils::Override
 
         register_version '0.1.0', {
+          toolset: :core,
           description: 'Add a comment to a GitLab merge request or work item, or reply to an existing ' \
             'discussion thread. Identify the target with url, or with merge_request_iid or work_item_iid ' \
             'plus its project_id or group_id',

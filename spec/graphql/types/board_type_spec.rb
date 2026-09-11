@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['Board'] do
+RSpec.describe GitlabSchema.types['Board'], feature_category: :planning_views do
   specify { expect(described_class.graphql_name).to eq('Board') }
 
   specify { expect(described_class).to require_graphql_authorizations(:read_issue_board) }

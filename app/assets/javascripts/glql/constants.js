@@ -11,6 +11,7 @@ export const DISPLAY_TYPES = {
   BAR_LIST: 'barList',
   AREA_CHART: 'areaChart',
   HEAT_MAP: 'heatMap',
+  DIVERGING_BAR_CHART: 'divergingBarChart',
 };
 
 // Display types that opt into the page-size default and the load-more UI.

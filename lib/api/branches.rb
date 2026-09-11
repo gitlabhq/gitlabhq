@@ -72,6 +72,7 @@ module API
         permissions: :read_branch, boundary_type: :project
       route_setting :mcp,
         tool_name: :list_branches,
+        toolset: :repository,
         params: [:id, :search, :page, :per_page],
         resource_name: 'project'
       get ':id/repository/branches', urgency: :low do

@@ -408,7 +408,7 @@ default to `reverse_lock_order: true`. This acquires locks in target-source
 order before the constraint operation, which prevents deadlocks with
 concurrent application transactions.
 
-You can read more about the context for this in the
+You can read more about the context for this in
 [the original issue](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67448).
 
 ### When deadlocks happen

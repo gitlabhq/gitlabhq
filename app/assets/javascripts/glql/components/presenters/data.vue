@@ -5,6 +5,7 @@ import AreaChartPresenter from './area_chart.vue';
 import BarChartPresenter from './bar_chart.vue';
 import BarListPresenter from './bar_list.vue';
 import ColumnChartPresenter from './column_chart.vue';
+import DivergingBarChartPresenter from './diverging_bar_chart.vue';
 import HeatMapPresenter from './heat_map.vue';
 import LineChartPresenter from './line_chart.vue';
 import ListPresenter from './list.vue';
@@ -25,6 +26,7 @@ export default {
     BarListPresenter,
     AreaChartPresenter,
     HeatMapPresenter,
+    DivergingBarChartPresenter,
   },
   props: {
     displayType: {
@@ -169,6 +171,13 @@ export default {
     :fields="fields"
     :loading="loading"
     :display-config="displayConfig"
+    @error="$emit('error', $event)"
+  />
+  <diverging-bar-chart-presenter
+    v-else-if="displayType === $options.DISPLAY_TYPES.DIVERGING_BAR_CHART"
+    :data="data"
+    :fields="fields"
+    :loading="loading"
     @error="$emit('error', $event)"
   />
 </template>

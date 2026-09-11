@@ -94,6 +94,13 @@ module Mcp
         tools
       end
 
+      def tools_in_toolsets(toolset_ids)
+        selected = Array(toolset_ids).map(&:to_sym) | Toolsets::ALWAYS_ON
+        tools.each_with_object([]) do |(name, tool), result|
+          result << name if selected.include?(tool.toolset)
+        end
+      end
+
       def get_tool(name:, version: nil)
         raise InvalidVersionFormatError, version if version && !validate_semantic_version(version)
 

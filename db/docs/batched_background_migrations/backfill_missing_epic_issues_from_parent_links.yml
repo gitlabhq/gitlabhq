@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillMissingEpicIssuesFromParentLinks
+description: Creates the missing legacy epic_issues row for parent links of issues
+  under legacy-synced epics
+feature_category: portfolio_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253761
+milestone: '19.4'
+queued_migration_version: 20260904174707
+finalized_by: # version of the migration that finalized this BBM

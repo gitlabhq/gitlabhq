@@ -5,6 +5,7 @@ module Mcp
     module MergeRequests
       class GetMergeRequestService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :merge_requests,
           description: 'Get a merge request and optionally its diffs, commits, notes, pipelines, discussions, ' \
             'approvals, or conflicts. By default only the base merge request metadata is returned; request ' \
             'associated data through the `include` parameter so nothing extra is fetched unless asked for.',

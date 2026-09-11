@@ -54,7 +54,8 @@ type stopCoordinator struct {
 	agentDone sync.WaitGroup
 
 	// workflowEnded is set to true when handleAgentMessages receives io.EOF,
-	// meaning DWS finished the workflow naturally. When this is set,
+	// meaning DWS finished the workflow naturally, or an unsolicited Unavailable,
+	// meaning DWS closed the stream while draining. When this is set,
 	// handleClientEvents should not attempt to send a StopWorkflowRequest
 	workflowEnded atomic.Bool
 
@@ -224,6 +225,17 @@ func (r *runner) handleAgentMessages(ctx context.Context, errCh chan<- error) {
 			case errors.Is(err, errStreamUnavailable) && r.stop.requested.Load():
 				log.WithRequest(r.originalReq).Info("handleAgentMessages: DWS acknowledged stop request")
 				close(r.stop.acked)
+				errCh <- nil
+			case errors.Is(err, errStreamUnavailable):
+				// DWS closed the stream on its own, e.g. its instance is draining on
+				// SIGTERM. The session is resumable from its last checkpoint, so tell
+				// the client to reconnect the same way Shutdown does for a workhorse
+				// drain. Nothing is left to stop on the DWS side.
+				log.WithRequest(r.originalReq).Info("handleAgentMessages: DWS closed the stream as unavailable, signaling client to reconnect")
+				r.stop.workflowEnded.Store(true)
+				if clientErr := r.client.SendGoingAway(closeReasonDWSUnavailable); clientErr != nil {
+					log.WithRequest(r.originalReq).WithError(clientErr).Error("handleAgentMessages: failed to signal going away to client")
+				}
 				errCh <- nil
 			case errors.Is(err, errInvalidRequest):
 				log.WithRequest(r.originalReq).WithError(err).Info("handleAgentMessages: DWS rejected reconnect with INVALID_ARGUMENT")
@@ -514,7 +526,7 @@ func (r *runner) Shutdown(ctx context.Context) error {
 	// first (client is already gone) or when the workflow ended naturally
 	// (nothing to reconnect to).
 	if !requestContextDone && !workflowEnded {
-		if clientErr := r.client.SendGoingAway(); clientErr != nil {
+		if clientErr := r.client.SendGoingAway(closeReasonWorkhorseShutdown); clientErr != nil {
 			log.WithRequest(r.originalReq).WithError(clientErr).Info("Shutdown: failed to signal going away to client")
 		} else {
 			log.WithRequest(r.originalReq).Info("Shutdown: successfully signaled going away to client")

@@ -1453,8 +1453,8 @@ application code in order to avoid copying hundreds of lines of code spread
 across multiple files into the migration. In these rare cases it's critical to
 ensure the migration has good tests so that anyone refactoring the code in
 future will learn if they break the migration. Using application code is also
-[discouraged for batched background migrations](database/batched_background_migrations.md#isolation)
-, the model needs to be declared in the migration.
+[discouraged for batched background migrations](database/batched_background_migrations.md#isolation),
+the model needs to be declared in the migration.
 
 Usually you can avoid using application code (specifically models) in a
 migration by defining a class that inherits from `MigrationRecord` (see

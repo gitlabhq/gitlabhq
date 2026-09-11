@@ -83,6 +83,10 @@ module Mcp
           Mcp::Tools::Base::SchemaDefaults.with_additional_properties(schema)
         end
 
+        def toolset
+          version_metadata.fetch(:toolset, Toolsets::UNASSIGNED)
+        end
+
         def annotations
           version_metadata.fetch(:annotations, {})
         end

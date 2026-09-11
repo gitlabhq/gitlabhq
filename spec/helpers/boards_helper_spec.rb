@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BoardsHelper do
+RSpec.describe BoardsHelper, feature_category: :planning_views do
   let_it_be(:user) { create(:user) }
   let_it_be(:base_group) { create(:group, path: 'base') }
   let_it_be(:project) { create(:project, group: base_group) }

@@ -34,7 +34,7 @@ When you remove a cluster integration, you only remove the cluster relationship
 to GitLab, not the cluster. To remove the cluster itself, go to your cluster's
 GKE or EKS dashboard to do it from their UI or use `kubectl`.
 
-You need at least Maintainer [permissions](../../permissions.md) to your
+You need the Maintainer or Owner role for your
 project or group to remove the integration with GitLab.
 
 When removing a cluster integration, you have two options:

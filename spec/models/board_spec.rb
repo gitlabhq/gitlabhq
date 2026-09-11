@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Board do
+RSpec.describe Board, feature_category: :planning_views do
   let_it_be(:project) { create(:project) }
   let_it_be(:other_project) { create(:project) }
 

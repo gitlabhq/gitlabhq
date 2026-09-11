@@ -5,6 +5,7 @@ module Mcp
     module Pipelines
       class SavePipelineService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :ci,
           description: 'Run, retry, cancel, or rename a CI/CD pipeline in a GitLab project. ' \
             'Omit pipeline_id and pass ref to run a new pipeline, and identify the project with ' \
             'exactly one of url or project_id. Pass pipeline_id with action to retry, cancel, or ' \

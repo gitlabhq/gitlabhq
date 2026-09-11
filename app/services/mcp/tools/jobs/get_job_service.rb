@@ -19,6 +19,7 @@ module Mcp
         end
 
         register_version '0.1.0', {
+          toolset: :ci,
           description: 'Get a CI/CD job in a GitLab project. Add include: log to also get the ' \
             "job's trace/log, which you can page through with byte_offset and byte_limit.",
           annotations: {

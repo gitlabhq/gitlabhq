@@ -11,6 +11,7 @@ module Mcp
         # rely upon the database and are defined
         # as methods for lazy loading
         register_version '0.1.0', {
+          toolset: :core,
           annotations: {
             readOnlyHint: true
           }

@@ -5,6 +5,7 @@ module Mcp
     module Projects
       class GetProjectService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :core,
           description: 'Get metadata for a single GitLab project: numeric ID, full path, default ' \
             'branch, visibility, and web URL. Identify the project with exactly one of url or ' \
             'project_id. Use search with scope projects to find a project you cannot name yet.',

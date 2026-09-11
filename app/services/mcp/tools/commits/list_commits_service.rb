@@ -5,6 +5,7 @@ module Mcp
     module Commits
       class ListCommitsService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :repository,
           description: 'List commits in a GitLab project, filtered by ref, author, path, or date. ' \
             'Identify the project with exactly one of url or project_id. Returns compact commit ' \
             'metadata; use get_commit for a single commit\'s diff or notes.',

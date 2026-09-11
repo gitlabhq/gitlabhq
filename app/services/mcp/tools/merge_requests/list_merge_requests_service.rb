@@ -5,6 +5,7 @@ module Mcp
     module MergeRequests
       class ListMergeRequestsService < Base::GraphqlService
         register_version '0.1.0', {
+          toolset: :merge_requests,
           description: 'List or search merge requests in a GitLab project or group by author, assignee, ' \
             'reviewer, state, milestone, labels, or text. Identify the project or group with exactly one ' \
             'of url, project_id, or group_id. Group results always include merge requests from ' \

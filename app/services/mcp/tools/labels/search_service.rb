@@ -9,6 +9,7 @@ module Mcp
         end
 
         register_version '0.1.0', {
+          toolset: :core,
           description: 'Search labels in a GitLab project or group',
           annotations: {
             readOnlyHint: true

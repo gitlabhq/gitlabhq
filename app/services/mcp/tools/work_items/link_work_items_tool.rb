@@ -25,16 +25,33 @@ module Mcp
         private
 
         def resolve_target_work_item_ids
-          ids = Array(params[:work_items_ids])
+          Array(params[:work_items_ids]).map do |id|
+            next id if id.is_a?(String) && id.start_with?('gid://gitlab/WorkItem/')
 
-          ids.map do |id|
-            unless id.is_a?(String) && id.start_with?('gid://gitlab/WorkItem/')
+            resolve_target_iid(id)
+          end
+        end
+
+        # Plain iids resolve in the source work item's project or group, matching
+        # how agents already identify the source; cross-parent targets need a GID.
+        def resolve_target_iid(value)
+          unless value.to_s.match?(/\A\d+\z/)
+            raise ArgumentError,
+              "Invalid target work item ID format: '#{value}'. Expected an iid (integer) " \
+                'or a global ID (gid://gitlab/WorkItem/<id>)'
+          end
+
+          parent_info = resolve_parent
+          work_item =
+            begin
+              find_work_item_in_parent!(parent_info[:record], value)
+            rescue ArgumentError
               raise ArgumentError,
-                "Invalid work item ID format: '#{id}'. Expected GitLab global ID (gid://gitlab/WorkItem/<id>)"
+                "Target work item with iid '#{value}' not found in #{parent_info[:full_path]}. " \
+                  'Use a global ID (gid://gitlab/WorkItem/<id>) for work items in other projects or groups.'
             end
 
-            id
-          end
+          work_item.to_global_id.to_s
         end
 
         def normalized_link_type
